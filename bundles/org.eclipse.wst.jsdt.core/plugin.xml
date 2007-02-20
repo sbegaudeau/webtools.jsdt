@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<!-- =================================================================================== -->
+<!-- JSDT/CORE Plug-in Manifest                                                           -->
+<!-- =================================================================================== -->
+<plugin>
+
+<!-- =================================================================================== -->
+<!-- Prerequisite Plug-ins                                                               -->
+<!-- =================================================================================== -->
+
+
+<!-- =================================================================================== -->
+<!-- Runtime Libraries                                                                   -->
+<!-- =================================================================================== -->
+
+
+<!-- =================================================================================== -->
+<!-- Extension Point: Initializers of Classpath Variables                                -->
+<!-- =================================================================================== -->
+
+<extension-point name="%classpathVariableInitializersName" 
+	id="classpathVariableInitializer"
+	schema="schema/classpathVariableInitializer.exsd"/>
+  
+<!-- =================================================================================== -->
+<!-- Extension Point: Initializers of Classpath Containers                               -->
+<!-- =================================================================================== -->
+
+<extension-point name="%classpathContainerInitializersName" 
+	id="classpathContainerInitializer" 
+	schema="schema/classpathContainerInitializer.exsd"/>
+
+<!-- =================================================================================== -->
+<!-- Extension Point: Formatter of Source Code                                           -->
+<!-- =================================================================================== -->
+
+<extension-point name="%codeFormattersName" 
+	id="codeFormatter"
+	schema="schema/codeFormatter.exsd"/>
+
+<!-- =================================================================================== -->
+<!-- Extension Point: Compilation Participant                                            -->
+<!-- =================================================================================== -->
+
+<extension-point name="%compilationParticipantsName" 
+	id="compilationParticipant"
+	schema="schema/compilationParticipant.exsd"/>
+
+<!-- =================================================================================== -->
+<!-- Extension: JavaScript Nature                                                              -->
+<!-- =================================================================================== -->
+
+<extension 
+	point="org.eclipse.core.resources.natures" 
+	id="jsNature"
+	name="%javaScriptNatureName">
+	<runtime>
+		<run class="org.eclipse.wst.jsdt.internal.core.JavaProject">
+		</run>
+	</runtime>
+</extension>
+
+ 
+
+<!-- =================================================================================== -->
+<!-- Extension: JavaScript Problem                                                             -->
+<!-- =================================================================================== -->
+<extension id="problem" point="org.eclipse.core.resources.markers" name="%jsScriptProblemName">
+	<super type="org.eclipse.core.resources.problemmarker"/>
+	<super type="org.eclipse.core.resources.textmarker"/>
+	<persistent value="true"/>
+	<attribute name="id"/>
+	<attribute name="flags"/>
+	<attribute name="arguments"/>
+	<attribute name="categoryId"/>
+</extension>   
+
+<!-- =================================================================================== -->
+<!-- Extension: JavaScript Buildpath Problem                                                   -->
+<!-- =================================================================================== -->
+<extension id="buildpath_problem" point="org.eclipse.core.resources.markers" name="%buildPathProblemName">
+	<super type="org.eclipse.core.resources.problemmarker"/>
+	<super type="org.eclipse.core.resources.textmarker"/>
+	<persistent value="true"/>
+	<attribute name ="cycleDetected"/>
+	<attribute name="id"/>
+	<attribute name="arguments"/>
+</extension>   
+
+<!-- =================================================================================== -->
+<!-- Extension: JavaScript Transient Problem                                                   -->
+<!-- =================================================================================== -->
+<extension id="transient_problem" point="org.eclipse.core.resources.markers" name="%transientJavaProblemName">
+	<super type="org.eclipse.core.resources.textmarker"/>
+	<persistent value="false"/>
+	<attribute name="id"/>
+	<attribute name="flags"/>
+	<attribute name="arguments"/>
+</extension>
+
+<!-- =================================================================================== -->
+<!-- Extension: Java Task                                                                -->
+<!-- =================================================================================== -->
+<extension id="task" name="%jsScriptTaskName" point="org.eclipse.core.resources.markers">
+    <super type="org.eclipse.core.resources.taskmarker"/> 
+    <persistent value="true"/>
+</extension>
+    
+<!-- =================================================================================== -->
+<!-- Extension: Javac Ant Adapter                                                        -->
+<!-- =================================================================================== -->
+<extension 
+	point="org.eclipse.ant.core.extraClasspathEntries">
+	<extraClasspathEntry
+		library="jsdtCompilerAdapter.jar">
+	</extraClasspathEntry>
+</extension> 
+
+<!-- =================================================================================== -->
+<!-- Extension: Javac Ant Task                                                           -->
+<!-- =================================================================================== -->
+<extension point="org.eclipse.ant.core.antTasks">
+	<antTask
+		name="eclipse.checkDebugAttributes"
+		class="org.eclipse.wst.jsdt.core.CheckDebugAttributes"
+		library="jsdtCompilerAdapter.jar">
+	</antTask>
+</extension>
+      
+<!-- =================================================================================== -->
+<!-- Extension: User Library Container                                                   -->
+<!-- =================================================================================== -->
+<extension
+      point="org.eclipse.wst.jsdt.core.classpathContainerInitializer">
+      <classpathContainerInitializer
+            class="org.eclipse.wst.jsdt.internal.core.UserLibraryClasspathContainerInitializer"
+            id="org.eclipse.wst.jsdt.USER_LIBRARY">
+      </classpathContainerInitializer>
+   </extension>
+
+<!-- =================================================================================== -->
+<!-- Extension: Java File Types                                                          -->
+<!-- =================================================================================== -->
+<extension point="org.eclipse.team.core.fileTypes">
+	<fileTypes extension="js" type="text"/>
+
+</extension>
+
+<!-- =================================================================================== -->
+<!-- Extension: Java Code Formatter                                                      -->
+<!-- =================================================================================== -->
+<extension
+      id="JavaCodeFormatter"
+      point="org.eclipse.core.runtime.applications">
+      	<application>
+      		<run class="org.eclipse.wst.jsdt.core.formatter.CodeFormatterApplication" />
+		</application>
+</extension>
+
+<!-- =================================================================================== -->
+<!-- Extension: Java Content Types                                                       -->
+<!-- =================================================================================== -->
+<extension point="org.eclipse.core.runtime.contentTypes">
+
+	<!-- Associates .classpath to the XML content type -->
+	<file-association 
+		content-type="org.eclipse.core.runtime.xml" 
+		file-names=".classpath"/>  
+	<!-- declares a content type for Java Source files -->
+	<content-type id="jsSource" name="%jsSourceName" 
+		base-type="org.eclipse.core.runtime.text"
+		priority="high"				
+		file-extensions="js"/>
+	<!-- declares a content type for Java class files -->
+    <content-type id="jsClass" name="%jsClassName" 
+        priority="high"				
+        file-extensions="class">        
+        <describer
+            class="org.eclipse.core.runtime.content.BinarySignatureDescriber">
+            <parameter name="signature" value="CA, FE, BA, BE"/>
+        </describer>
+    </content-type>        
+	<!-- declares a content type for JAR manifest files -->
+    <content-type id="JARManifest" name="%jarManifestName" 
+        base-type="org.eclipse.core.runtime.text"
+        priority="high"				
+        file-names="MANIFEST.MF"
+        default-charset="UTF-8"/>
+</extension>
+      
+<!-- =================================================================================== -->
+<!-- Extension: Eclipse preferences initializer                                          -->
+<!-- =================================================================================== -->
+<extension
+      point="org.eclipse.core.runtime.preferences">
+   <initializer class="org.eclipse.wst.jsdt.internal.core.JavaCorePreferenceInitializer"/>
+</extension>
+<extension
+      point="org.eclipse.core.runtime.preferences">
+   <modifier class="org.eclipse.wst.jsdt.internal.core.JavaCorePreferenceModifyListener"/>
+</extension>
+
+</plugin>
