@@ -23,6 +23,8 @@ import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
+import org.eclipse.wst.jsdt.internal.infer.InferOptions;
+
 
 public class CompilerOptions {
 	
@@ -309,6 +311,11 @@ public class CompilerOptions {
 	public boolean generateClassFiles = true;
 	public boolean processAnnotations = true;
 	
+	
+
+	public InferOptions inferOptions=new InferOptions();
+
+	
 	/** 
 	 * Initializing the compiler options with defaults
 	 */
@@ -335,7 +342,7 @@ public class CompilerOptions {
 	}
 
 	public Map getMap() {
-		Map optionsMap = new HashMap(30);
+		HashMap optionsMap = new HashMap(30);
 		optionsMap.put(OPTION_LocalVariableAttribute, (this.produceDebugAttributes & ClassFileConstants.ATTR_VARS) != 0 ? GENERATE : DO_NOT_GENERATE); 
 		optionsMap.put(OPTION_LineNumberAttribute, (this.produceDebugAttributes & ClassFileConstants.ATTR_LINES) != 0 ? GENERATE : DO_NOT_GENERATE);
 		optionsMap.put(OPTION_SourceFileAttribute, (this.produceDebugAttributes & ClassFileConstants.ATTR_SOURCE) != 0 ? GENERATE : DO_NOT_GENERATE);
@@ -420,6 +427,10 @@ public class CompilerOptions {
 		optionsMap.put(OPTION_ReportOverridingMethodWithoutSuperInvocation, getSeverityString(OverridingMethodWithoutSuperInvocation));
 		optionsMap.put(OPTION_GenerateClassFiles, this.generateClassFiles ? ENABLED : DISABLED); 
 		optionsMap.put(OPTION_Process_Annotations, this.processAnnotations ? ENABLED : DISABLED); 
+
+		Map inferOptionsMap = inferOptions.getMap();
+		optionsMap.putAll(inferOptionsMap);
+		
 		return optionsMap;		
 	}
 	
@@ -762,6 +773,8 @@ public class CompilerOptions {
 				this.processAnnotations = false;
 			}
 		}
+		inferOptions.set(optionsMap);
+
 	}
 
 	public String toString() {
