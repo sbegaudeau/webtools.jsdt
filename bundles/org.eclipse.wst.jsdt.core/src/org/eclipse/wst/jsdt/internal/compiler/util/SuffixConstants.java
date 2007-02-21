@@ -11,10 +11,10 @@
 package org.eclipse.wst.jsdt.internal.compiler.util;
 
 public interface SuffixConstants {
-	public final static String EXTENSION_class = "class"; //$NON-NLS-1$
-	public final static String EXTENSION_CLASS = "CLASS"; //$NON-NLS-1$
-	public final static String EXTENSION_java = "java"; //$NON-NLS-1$
-	public final static String EXTENSION_JAVA = "JAVA"; //$NON-NLS-1$
+	public final static String EXTENSION_class = "js"; //$NON-NLS-1$
+	public final static String EXTENSION_CLASS = "JS"; //$NON-NLS-1$
+	public final static String EXTENSION_java = "js"; //$NON-NLS-1$
+	public final static String EXTENSION_JAVA = "JS"; //$NON-NLS-1$
 	
 	public final static String SUFFIX_STRING_class = "." + EXTENSION_class; //$NON-NLS-1$
 	public final static String SUFFIX_STRING_CLASS = "." + EXTENSION_CLASS; //$NON-NLS-1$

@@ -240,7 +240,7 @@ public final class BindingKey {
 	public boolean isParameterizedMethod() {
 		KeyKind kind = new KeyKind(this.key);
 		kind.parse();
-		return (kind.flags & KeyKind.F_PARAMETERIZED_METHOD) != 0;
+		return (kind.flags & KeyKind.F_PARAMETERIZED_METHOD) ==KeyKind.F_PARAMETERIZED_METHOD;
 	}
 	
 	/**

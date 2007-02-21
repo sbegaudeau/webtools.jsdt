@@ -209,6 +209,14 @@ public final class Signature {
 	 */
 	public static final char C_VOID			= 'V';
 	
+	
+	/**
+	 * Character constant indicating any type in a signature.
+	 * Value is <code>'A'</code>.
+	 */
+	public static final char C_ANY			= 'A';
+
+
 	/**
 	 * Character constant indicating the start of a resolved type variable in a 
 	 * signature. Value is <code>'T'</code>.
@@ -270,6 +278,14 @@ public final class Signature {
 	 * signature. Value is <code>'L'</code>.
 	 */
 	public static final char C_RESOLVED		= 'L';
+
+	
+	/** 
+	 * Character constant indicating a compilation unit. 
+	 *  Value is <code>'X'</code>.
+	 */
+	public static final char C_COMPILATION_UNIT		= 'X';
+
 
 	/** 
 	 * Character constant indicating the start of an unresolved, named type in a
@@ -369,6 +385,9 @@ public final class Signature {
 	 */
 	public static final String SIG_VOID			= "V"; //$NON-NLS-1$
 	
+	public static final String SIG_ANY		= "A"; //$NON-NLS-1$
+
+	public static final String SIG_COMPILATION_UNIT			= "X"; //$NON-NLS-1$
 
 	/**
 	 * Kind constant for a class type signature.
@@ -424,7 +443,8 @@ public final class Signature {
 	private static final char[] EXTENDS = "extends".toCharArray(); //$NON-NLS-1$
 	private static final char[] SUPER = "super".toCharArray(); //$NON-NLS-1$
 	private static final char[] CAPTURE = "capture-of".toCharArray(); //$NON-NLS-1$
-		
+	public static final char[] ANY = "any".toCharArray(); //$NON-NLS-1$
+
 private Signature() {
 	// Not instantiable
 }
@@ -623,7 +643,11 @@ public static String createTypeSignature(char[] typeName, boolean isResolved) {
  * @since 2.0
  */
 public static char[] createCharArrayTypeSignature(char[] typeName, boolean isResolved) {
-	if (typeName == null) throw new IllegalArgumentException("null"); //$NON-NLS-1$
+	if (typeName == null) 
+	{
+		return new char[]{C_ANY};
+	}
+
 	int length = typeName.length;
 	if (length == 0) throw new IllegalArgumentException(new String(typeName));
 	StringBuffer buffer = new StringBuffer(5);
@@ -983,6 +1007,8 @@ public static String getElementType(String typeSignature) throws IllegalArgument
  * @since 2.0
  */
 public static int getParameterCount(char[] methodSignature) throws IllegalArgumentException {
+	if (methodSignature==null)
+		return 0;
 	try {
 		int count = 0;
 		int i = CharOperation.indexOf(C_PARAM_START, methodSignature);
@@ -1060,6 +1086,7 @@ public static int getTypeSignatureKind(char[] typeSignature) {
 		case C_LONG :
 		case C_SHORT :
 		case C_VOID :
+		case C_ANY :
 			return BASE_TYPE_SIGNATURE;
 		case C_STAR :
 		case C_SUPER :
@@ -1124,6 +1151,8 @@ public static int getTypeSignatureKind(String typeSignature) {
 		case C_LONG :
 		case C_SHORT :
 		case C_VOID :
+		case C_ANY :
+			
 			return BASE_TYPE_SIGNATURE;
 		case C_STAR :
 		case C_SUPER :
@@ -1636,6 +1665,8 @@ public static String getQualifier(String name) {
  */
 public static char[] getReturnType(char[] methodSignature) throws IllegalArgumentException {
 	// skip type parameters
+	if (methodSignature==null)
+		return CharOperation.NO_CHAR;
 	int paren = CharOperation.lastIndexOf(C_PARAM_END, methodSignature);
 	if (paren == -1) {
 		throw new IllegalArgumentException();
@@ -1742,29 +1773,29 @@ public static char[] getSignatureSimpleName(char[] typeSignature) {
 	
 	char[] qualifiedType = Signature.toCharArray(typeSignature);
 	
-	int dotCount = 0;
-	indexFound: for(int i = 0; i < typeSignature.length; i++) {
-		switch(typeSignature[i]) {
-			case C_DOT:
-				dotCount++;
-				break;
-			case C_GENERIC_START:
-				break indexFound;
-			case C_DOLLAR:
-				break indexFound;
-		}
-	}
-	
-	if(dotCount > 0) {
-		for(int i = 0; i < qualifiedType.length; i++) {
-			if(qualifiedType[i] == '.') {
-				dotCount--;
-			}
-			if(dotCount <= 0) {
-				return CharOperation.subarray(qualifiedType, i + 1, qualifiedType.length);
-			}
-		}
-	}
+//	int dotCount = 0;
+//	indexFound: for(int i = 0; i < typeSignature.length; i++) {
+//		switch(typeSignature[i]) {
+//			case C_DOT:
+//				dotCount++;
+//				break;
+//			case C_GENERIC_START:
+//				break indexFound;
+//			case C_DOLLAR:
+//				break indexFound;
+//		}
+//	}
+//	
+//	if(dotCount > 0) {
+//		for(int i = 0; i < qualifiedType.length; i++) {
+//			if(qualifiedType[i] == '.') {
+//				dotCount--;
+//			}
+//			if(dotCount <= 0) {
+//				return CharOperation.subarray(qualifiedType, i + 1, qualifiedType.length);
+//			}
+//		}
+//	}
 	return qualifiedType;
 }
 /**
@@ -2343,6 +2374,11 @@ private static int appendTypeSignature(char[] string, int start, boolean fullyQu
 			case C_CHAR :
 				buffer.append(CHAR);
 				return start;
+			case C_COMPILATION_UNIT :
+				return appendCompilationUnitSignature(string, start, fullyQualifyTypeNames, buffer);
+			case C_ANY :
+				buffer.append(ANY);
+				return start;
 			case C_DOUBLE :
 				buffer.append(DOUBLE);
 				return start;
@@ -2372,6 +2408,38 @@ private static int appendTypeSignature(char[] string, int start, boolean fullyQu
 		}
 	}
 }
+
+
+private static int appendCompilationUnitSignature(char[] string, int start, boolean fullyQualifyTypeNames, StringBuffer buffer) {
+	// need a minimum 3 chars "Lx;"
+	if (start >= string.length - 2) { 
+		throw new IllegalArgumentException();
+	}
+	// must start in "L" or "Q"
+	char c = string[start];
+	if (c != C_COMPILATION_UNIT) {
+		throw new IllegalArgumentException();
+	}
+	int p = start + 1;
+	int checkpoint = buffer.length();
+	while (true) {
+		if (p >= string.length) {
+			throw new IllegalArgumentException();
+		}
+		c = string[p];
+		switch(c) {
+			case C_SEMICOLON :
+				// all done
+				return p;
+			 default :
+				buffer.append(c);
+		}
+		p++;
+	}
+}
+
+
+
 /**
  * Scans the given string for an array type signature starting at the given
  * index and appends it to the given buffer, and returns the index of the last

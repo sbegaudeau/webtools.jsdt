@@ -67,6 +67,7 @@
 package org.eclipse.wst.jsdt.core;
 
 import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -86,12 +87,14 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.QualifiedName;
@@ -2808,7 +2811,10 @@ public final class JavaCore extends Plugin {
 			File externalFile = JavaModel.getFile(target);
 			if (externalFile != null) {
 				String fileName = externalFile.getName().toLowerCase();
-				if (fileName.endsWith(SuffixConstants.SUFFIX_STRING_jar) || fileName.endsWith(SuffixConstants.SUFFIX_STRING_zip)) { 
+				if (fileName.endsWith(SuffixConstants.SUFFIX_STRING_java)
+						|| fileName.endsWith(SuffixConstants.SUFFIX_STRING_jar)
+						|| fileName.endsWith(SuffixConstants.SUFFIX_STRING_zip)
+						) { 
 					// external binary archive
 					return JavaCore.newLibraryEntry(
 							resolvedPath,
@@ -4369,4 +4375,12 @@ public final class JavaCore extends Plugin {
 		super.start(context);
 		JavaModelManager.getJavaModelManager().startup();
 	}
+	public static String getSystemPath()
+	{
+		URL url=FileLocator.find(getJavaCore().getBundle(),new Path("libraries"),null);
+		return url.getFile();
+	}
+
+	
+
 }

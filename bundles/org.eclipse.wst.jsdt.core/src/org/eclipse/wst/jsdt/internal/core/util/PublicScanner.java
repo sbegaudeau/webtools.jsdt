@@ -173,6 +173,8 @@ public class PublicScanner implements IScanner, ITerminalSymbols {
 		newEntry6 = 0;
 	public boolean insideRecovery = false;
 
+	protected int currentToken;
+
 	public static final int RoundBracket = 0;
 	public static final int SquareBracket = 1;
 	public static final int CurlyBracket = 2;	
@@ -1040,6 +1042,7 @@ public int getNextToken() throws InvalidInputException {
 		return this.currentPosition > this.eofPosition ? TokenNameEOF : TokenNameRBRACE;
 	}
 	int whiteStart = 0;
+	int previousToken = this.currentToken;
 	try {
 		while (true) { //loop for jumping over comments
 			this.withoutUnicodePtr = 0;
@@ -1063,13 +1066,13 @@ public int getNextToken() throws InvalidInputException {
 						// reposition scanner in case we are interested by spaces as tokens
 						this.currentPosition--;
 						this.startPosition = whiteStart;
-						return TokenNameWHITESPACE;
+						return this.currentToken=TokenNameWHITESPACE;
 					}
 					if (this.currentPosition > this.eofPosition)
-						return TokenNameEOF;
+						return this.currentToken=TokenNameEOF;
 				}
 				if (this.currentPosition > this.eofPosition)
-					return TokenNameEOF;
+					return this.currentToken=TokenNameEOF;
 				if (checkIfUnicode) {
 					isWhiteSpace = jumpOverUnicodeWhiteSpace();
 					offset = this.currentPosition - offset;
@@ -1107,7 +1110,7 @@ public int getNextToken() throws InvalidInputException {
 					if (checkIfUnicode) {
 						this.withoutUnicodePtr = unicodePtr;
 					}
-					return TokenNameWHITESPACE;
+					return this.currentToken=TokenNameWHITESPACE;
 				} else if (checkIfUnicode) {
 					this.withoutUnicodePtr = 0;
 					unicodeStore();
@@ -1119,138 +1122,136 @@ public int getNextToken() throws InvalidInputException {
 			switch (this.currentCharacter) {
 				case '@' :
 /*					if (this.sourceLevel >= ClassFileConstants.JDK1_5) {
-						return TokenNameAT;
+						return this.currentToken=TokenNameAT;
 					} else {
-						return TokenNameERROR;
+						return this.currentToken=TokenNameERROR;
 					}*/
-					return TokenNameAT;
+					return this.currentToken=TokenNameAT;
 				case '(' :
-					return TokenNameLPAREN;
+					return this.currentToken=TokenNameLPAREN;
 				case ')' :
-					return TokenNameRPAREN;
+					return this.currentToken=TokenNameRPAREN;
 				case '{' :
-					return TokenNameLBRACE;
+					return this.currentToken=TokenNameLBRACE;
 				case '}' :
-					return TokenNameRBRACE;
+					return this.currentToken=TokenNameRBRACE;
 				case '[' :
-					return TokenNameLBRACKET;
+					return this.currentToken=TokenNameLBRACKET;
 				case ']' :
-					return TokenNameRBRACKET;
+					return this.currentToken=TokenNameRBRACKET;
 				case ';' :
-					return TokenNameSEMICOLON;
+					return this.currentToken=TokenNameSEMICOLON;
 				case ',' :
-					return TokenNameCOMMA;
+					return this.currentToken=TokenNameCOMMA;
 				case '.' :
 					if (getNextCharAsDigit()) {
 						return scanNumber(true);
 					}
-					int temp = this.currentPosition;
-					if (getNextChar('.')) {
-						if (getNextChar('.')) {
-							return TokenNameELLIPSIS;
-						} else {
-							this.currentPosition = temp;
-							return TokenNameDOT;
-						}
-					} else {
-						this.currentPosition = temp;
-						return TokenNameDOT;
-					}
+						return this.currentToken=TokenNameDOT;
+					
 				case '+' :
 					{
 						int test;
 						if ((test = getNextChar('+', '=')) == 0)
-							return TokenNamePLUS_PLUS;
+							return this.currentToken=TokenNamePLUS_PLUS;
 						if (test > 0)
-							return TokenNamePLUS_EQUAL;
-						return TokenNamePLUS;
+							return this.currentToken=TokenNamePLUS_EQUAL;
+						return this.currentToken=TokenNamePLUS;
 					}
 				case '-' :
 					{
 						int test;
 						if ((test = getNextChar('-', '=')) == 0)
-							return TokenNameMINUS_MINUS;
+							return this.currentToken=TokenNameMINUS_MINUS;
 						if (test > 0)
-							return TokenNameMINUS_EQUAL;
-						return TokenNameMINUS;
+							return this.currentToken=TokenNameMINUS_EQUAL;
+						return this.currentToken=TokenNameMINUS;
 					}
 				case '~' :
-					return TokenNameTWIDDLE;
+					return this.currentToken=TokenNameTWIDDLE;
 				case '!' :
 					if (getNextChar('='))
-						return TokenNameNOT_EQUAL;
-					return TokenNameNOT;
+					{
+						if (getNextChar('='))
+							return this.currentToken=TokenNameNOT_EQUAL_EQUAL;
+						return this.currentToken=TokenNameNOT_EQUAL;
+					}
+					return this.currentToken=TokenNameNOT;
 				case '*' :
 					if (getNextChar('='))
-						return TokenNameMULTIPLY_EQUAL;
-					return TokenNameMULTIPLY;
+						return this.currentToken=TokenNameMULTIPLY_EQUAL;
+					return this.currentToken=TokenNameMULTIPLY;
 				case '%' :
 					if (getNextChar('='))
-						return TokenNameREMAINDER_EQUAL;
-					return TokenNameREMAINDER;
+						return this.currentToken=TokenNameREMAINDER_EQUAL;
+					return this.currentToken=TokenNameREMAINDER;
 				case '<' :
 					{
 						int test;
 						if ((test = getNextChar('=', '<')) == 0)
-							return TokenNameLESS_EQUAL;
+							return this.currentToken=TokenNameLESS_EQUAL;
 						if (test > 0) {
 							if (getNextChar('='))
-								return TokenNameLEFT_SHIFT_EQUAL;
-							return TokenNameLEFT_SHIFT;
+								return this.currentToken=TokenNameLEFT_SHIFT_EQUAL;
+							return this.currentToken=TokenNameLEFT_SHIFT;
 						}
-						return TokenNameLESS;
+						return this.currentToken=TokenNameLESS;
 					}
 				case '>' :
 					{
 						int test;
 						if (this.returnOnlyGreater) {
-							return TokenNameGREATER;
+							return this.currentToken=TokenNameGREATER;
 						}
 						if ((test = getNextChar('=', '>')) == 0)
-							return TokenNameGREATER_EQUAL;
+							return this.currentToken=TokenNameGREATER_EQUAL;
 						if (test > 0) {
 							if ((test = getNextChar('=', '>')) == 0)
-								return TokenNameRIGHT_SHIFT_EQUAL;
+								return this.currentToken=TokenNameRIGHT_SHIFT_EQUAL;
 							if (test > 0) {
 								if (getNextChar('='))
-									return TokenNameUNSIGNED_RIGHT_SHIFT_EQUAL;
-								return TokenNameUNSIGNED_RIGHT_SHIFT;
+									return this.currentToken=TokenNameUNSIGNED_RIGHT_SHIFT_EQUAL;
+								return this.currentToken=TokenNameUNSIGNED_RIGHT_SHIFT;
 							}
-							return TokenNameRIGHT_SHIFT;
+							return this.currentToken=TokenNameRIGHT_SHIFT;
 						}
-						return TokenNameGREATER;
+						return this.currentToken=TokenNameGREATER;
 					}
 				case '=' :
 					if (getNextChar('='))
-						return TokenNameEQUAL_EQUAL;
-					return TokenNameEQUAL;
+					{
+						if (getNextChar('='))
+							return this.currentToken=TokenNameEQUAL_EQUAL_EQUAL;
+						return this.currentToken=TokenNameEQUAL_EQUAL;
+					}
+					return this.currentToken=TokenNameEQUAL;
 				case '&' :
 					{
 						int test;
 						if ((test = getNextChar('&', '=')) == 0)
-							return TokenNameAND_AND;
+							return this.currentToken=TokenNameAND_AND;
 						if (test > 0)
-							return TokenNameAND_EQUAL;
-						return TokenNameAND;
+							return this.currentToken=TokenNameAND_EQUAL;
+						return this.currentToken=TokenNameAND;
 					}
 				case '|' :
 					{
 						int test;
 						if ((test = getNextChar('|', '=')) == 0)
-							return TokenNameOR_OR;
+							return this.currentToken=TokenNameOR_OR;
 						if (test > 0)
-							return TokenNameOR_EQUAL;
-						return TokenNameOR;
+							return this.currentToken=TokenNameOR_EQUAL;
+						return this.currentToken=TokenNameOR;
 					}
 				case '^' :
 					if (getNextChar('='))
-						return TokenNameXOR_EQUAL;
-					return TokenNameXOR;
+						return this.currentToken=TokenNameXOR_EQUAL;
+					return this.currentToken=TokenNameXOR;
 				case '?' :
-					return TokenNameQUESTION;
+					return this.currentToken=TokenNameQUESTION;
 				case ':' :
-					return TokenNameCOLON;
-				case '\'' :
+					return this.currentToken=TokenNameCOLON;
+/*				case '\'' :
 					{
 						int test;
 						if ((test = getNextChar('\n', '\r')) == 0) {
@@ -1319,7 +1320,7 @@ public int getNextToken() throws InvalidInputException {
 						}
 					}
 					if (getNextChar('\''))
-						return TokenNameCharacterLiteral;
+						return this.currentToken=TokenNameCharacterLiteral;
 					// relocate if finding another quote fairly close: thus unicode '/u000D' will be fully consumed
 					for (int lookAhead = 0; lookAhead < 20; lookAhead++) {
 						if (this.currentPosition + lookAhead == this.eofPosition)
@@ -1331,8 +1332,10 @@ public int getNextToken() throws InvalidInputException {
 							break;
 						}
 					}
-					throw new InvalidInputException(INVALID_CHARACTER_CONSTANT);
+					throw new InvalidInputException(INVALID_CHARACTER_CONSTANT); */
+				case '\'' :
 				case '"' :
+					char character = this.currentCharacter;
 					try {
 						// consume next character
 						this.unicodeAsBackSlash = false;
@@ -1347,34 +1350,9 @@ public int getNextToken() throws InvalidInputException {
 							}
 						}
 
-						while (this.currentCharacter != '"') {
-							/**** \r and \n are not valid in string literals ****/
-							if ((this.currentCharacter == '\n') || (this.currentCharacter == '\r')) {
-								// relocate if finding another quote fairly close: thus unicode '/u000D' will be fully consumed
-								if (isUnicode) {
-									int start = this.currentPosition;
-									for (int lookAhead = 0; lookAhead < 50; lookAhead++) {
-										if (this.currentPosition >= this.eofPosition) {
-											this.currentPosition = start;
-											break;
-										}
-										if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\') && (this.source[this.currentPosition] == 'u')) {
-											isUnicode = true;
-											getNextUnicodeChar();
-										} else {
-											isUnicode = false;
-										}
-										if (!isUnicode && this.currentCharacter == '\n') {
-											this.currentPosition--; // set current position on new line character
-											break;
-										}
-										if (this.currentCharacter == '\"') {
-											throw new InvalidInputException(INVALID_CHAR_IN_STRING);
-										}
-									}
-								} else {
-									this.currentPosition--; // set current position on new line character
-								}
+						while ((this.currentCharacter !=  character) || ((this.currentCharacter ==  character) && (isUnicode == true))) {
+							if ((this.currentCharacter == '\n' && !isUnicode) || (this.currentCharacter == '\r' && !isUnicode)) {
+								this.currentPosition--; // set current position on new line character
 								throw new InvalidInputException(INVALID_CHAR_IN_STRING);
 							}
 							if (this.currentCharacter == '\\') {
@@ -1427,7 +1405,7 @@ public int getNextToken() throws InvalidInputException {
 									break;
 								if (this.source[this.currentPosition + lookAhead] == '\n')
 									break;
-								if (this.source[this.currentPosition + lookAhead] == '\"') {
+								if (this.source[this.currentPosition + lookAhead] == character) {
 									this.currentPosition += lookAhead + 1;
 									break;
 								}
@@ -1436,38 +1414,24 @@ public int getNextToken() throws InvalidInputException {
 						}
 						throw e; // rethrow
 					}
-					return TokenNameStringLiteral;
+					if (character == '\'') {
+						return this.currentToken=TokenNameCharacterLiteral;
+					} 
+					return this.currentToken=TokenNameStringLiteral;
+
 				case '/' :
 					{
 						int test;
 						if ((test = getNextChar('/', '*')) == 0) { //line comment 
 							this.lastCommentLinePosition = this.currentPosition;
 							try { //get the next char 
-								if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
-										&& (this.source[this.currentPosition] == 'u')) {
-									getNextUnicodeChar();
-								}
+								this.currentCharacter = this.source[this.currentPosition++];
 
-								//handle the \\u case manually into comment
-								if (this.currentCharacter == '\\') {
-									if (this.source[this.currentPosition] == '\\')
-										this.currentPosition++;
-								} //jump over the \\
 								boolean isUnicode = false;
 								while (this.currentCharacter != '\r' && this.currentCharacter != '\n') {
 									this.lastCommentLinePosition = this.currentPosition;
 									//get the next char
-									isUnicode = false;									
-									if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
-											&& (this.source[this.currentPosition] == 'u')) {
-										getNextUnicodeChar();
-										isUnicode = true;
-									}
-									//handle the \\u case manually into comment
-									if (this.currentCharacter == '\\') {
-										if (this.source[this.currentPosition] == '\\')
-											this.currentPosition++;
-									} //jump over the \\
+									this.currentCharacter = this.source[this.currentPosition++];								
 								}
 								/*
 								 * We need to completely consume the line break
@@ -1498,7 +1462,7 @@ public int getNextToken() throws InvalidInputException {
 									}
 								}
 								if (this.tokenizeComments) {
-									return TokenNameCOMMENT_LINE;
+									return this.currentToken=TokenNameCOMMENT_LINE;
 								}
 							} catch (IndexOutOfBoundsException e) {
 								this.currentPosition--;
@@ -1508,7 +1472,7 @@ public int getNextToken() throws InvalidInputException {
 									parseTags();
 								}
 								if (this.tokenizeComments) {
-									return TokenNameCOMMENT_LINE;
+									return this.currentToken=TokenNameCOMMENT_LINE;
 								} else {
 									this.currentPosition++; 
 								}
@@ -1522,16 +1486,7 @@ public int getNextToken() throws InvalidInputException {
 								int previous;
 								// consume next character
 								this.unicodeAsBackSlash = false;
-								if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
-									&& (this.source[this.currentPosition] == 'u')) {
-									getNextUnicodeChar();
-									isUnicode = true;
-								} else {
-									isUnicode = false;
-									if (this.withoutUnicodePtr != 0) {
-										unicodeStore();
-									}
-								}
+								this.currentCharacter = this.source[this.currentPosition++];
 
 								if (this.currentCharacter == '*') {
 									isJavadoc = true;
@@ -1548,19 +1503,7 @@ public int getNextToken() throws InvalidInputException {
 								}
 								isUnicode = false;
 								previous = this.currentPosition;
-								if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
-									&& (this.source[this.currentPosition] == 'u')) {
-									//-------------unicode traitement ------------
-									getNextUnicodeChar();
-									isUnicode = true;
-								} else {
-									isUnicode = false;
-								}
-								//handle the \\u case manually into comment
-								if (this.currentCharacter == '\\') {
-									if (this.source[this.currentPosition] == '\\')
-										this.currentPosition++; //jump over the \\
-								}
+								this.currentCharacter = this.source[this.currentPosition++];
 								// empty comment is not a javadoc /**/
 								if (this.currentCharacter == '/') { 
 									isJavadoc = false;
@@ -1591,19 +1534,7 @@ public int getNextToken() throws InvalidInputException {
 									}
 									//get next char
 									previous = this.currentPosition;
-									if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
-										&& (this.source[this.currentPosition] == 'u')) {
-										//-------------unicode traitement ------------
-										getNextUnicodeChar();
-										isUnicode = true;
-									} else {
-										isUnicode = false;
-									}
-									//handle the \\u case manually into comment
-									if (this.currentCharacter == '\\') {
-										if (this.source[this.currentPosition] == '\\')
-											this.currentPosition++;
-									} //jump over the \\
+									this.currentCharacter = this.source[this.currentPosition++];
 								}
 								int token = isJavadoc ? TokenNameCOMMENT_JAVADOC : TokenNameCOMMENT_BLOCK;
 								recordComment(token);
@@ -1612,10 +1543,10 @@ public int getNextToken() throws InvalidInputException {
 								if (this.tokenizeComments) {
 									/*
 									if (isJavadoc)
-										return TokenNameCOMMENT_JAVADOC;
-									return TokenNameCOMMENT_BLOCK;
+										return this.currentToken=TokenNameCOMMENT_JAVADOC;
+									return this.currentToken=TokenNameCOMMENT_BLOCK;
 									*/
-									return token;
+									return this.currentToken=token;
 								}
 							} catch (IndexOutOfBoundsException e) {
 								this.currentPosition--;
@@ -1623,14 +1554,26 @@ public int getNextToken() throws InvalidInputException {
 							}
 							break;
 						}
-						if (getNextChar('='))
-							return TokenNameDIVIDE_EQUAL;
-						return TokenNameDIVIDE;
+						if (checkIfDivide(previousToken)){
+							if (getNextChar('='))
+							{
+								currentToken=TokenNameDIVIDE_EQUAL;
+								return currentToken;
+							}
+							currentToken=TokenNameDIVIDE;
+							return currentToken;
+						}
+						
+						// check if regular expression
+						if (checkIfRegExp()) {
+							currentToken = TokenNameRegExLiteral;
+							return currentToken;
+						}
 					}
 				case '\u001a' :
 					if (atEnd())
-						return TokenNameEOF;
-					//the atEnd may not be <currentPosition == source.length> if source is only some part of a real (external) stream
+						return this.currentToken=TokenNameEOF;
+					//the atEnd may not be <currentPosition == eofPosition> if source is only some part of a real (external) stream
 					throw new InvalidInputException("Ctrl-Z"); //$NON-NLS-1$
 				default :
 					char c = this.currentCharacter;
@@ -1640,7 +1583,7 @@ public int getNextToken() throws InvalidInputException {
 						} else if ((ScannerHelper.OBVIOUS_IDENT_CHAR_NATURES[c] & ScannerHelper.C_DIGIT) != 0) {
 								return scanNumber(false);
 						} else {
-							return TokenNameERROR;
+							return this.currentToken=TokenNameERROR;
 						}
 					}
 					boolean isJavaIdStart;
@@ -1670,7 +1613,7 @@ public int getNextToken() throws InvalidInputException {
 					if (ScannerHelper.isDigit(this.currentCharacter)) {
 						return scanNumber(false);
 					}						
-					return TokenNameERROR;
+					return this.currentToken=TokenNameERROR;
 			}
 		}
 	} //-----------------end switch while try--------------------
@@ -1679,11 +1622,12 @@ public int getNextToken() throws InvalidInputException {
 			// reposition scanner in case we are interested by spaces as tokens
 			this.currentPosition--;
 			this.startPosition = whiteStart;
-			return TokenNameWHITESPACE;
+			return this.currentToken=TokenNameWHITESPACE;
 		}
 	}
-	return TokenNameEOF;
+	return this.currentToken=TokenNameEOF;
 }
+
 public void getNextUnicodeChar()
 	throws InvalidInputException {
 	//VOID
@@ -2555,7 +2499,7 @@ public void resetTo(int begin, int end) {
 
 	this.diet = false;
 	this.initialPosition = this.startPosition = this.currentPosition = begin;
-	if (this.source != null && this.source.length < end) {
+	if (this.source != null && this.eofPosition < end) {
 		this.eofPosition = this.source.length;
 	} else {
 		this.eofPosition = end < Integer.MAX_VALUE ? end + 1 : end;
@@ -2592,6 +2536,17 @@ public final void scanEscapeCharacter() throws InvalidInputException {
 		case '\\' :
 			this.currentCharacter = '\\';
 			break;
+		case 'x' :
+			int digit1 = ScannerHelper.digit(this.source[this.currentPosition], 16);
+			int digit2 = ScannerHelper.digit(this.source[this.currentPosition + 1], 16);
+			if ( digit1 != -1 && digit2 != -1 ) {
+				
+				int number = (digit1 * 16) + digit2;
+				this.currentPosition = this.currentPosition + 2;
+				this.currentCharacter = (char)number;
+				break;
+			}			
+			
 		default :
 			// -----------octal escape--------------
 			// OctalDigit
@@ -2628,8 +2583,11 @@ public final void scanEscapeCharacter() throws InvalidInputException {
 				if (number > 255)
 					throw new InvalidInputException(INVALID_ESCAPE);
 				this.currentCharacter = (char) number;
-			} else
-				throw new InvalidInputException(INVALID_ESCAPE);
+			} 
+// in JavaScript when a backslash followed by character, the
+// backslash is ignored. 
+//			else
+//				throw new InvalidInputException(INVALID_ESCAPE);
 	}
 }
 public int scanIdentifierOrKeywordWithBoundCheck() {
@@ -2759,552 +2717,640 @@ public int scanIdentifierOrKeyword() {
 
 private int internalScanIdentifierOrKeyword(int index, int length, char[] data) {
 	switch (data[index]) {
-		case 'a' : 
-			switch(length) {
-				case 8: //abstract
-					if ((data[++index] == 'b')
-						&& (data[++index] == 's')
-						&& (data[++index] == 't')
-						&& (data[++index] == 'r')
-						&& (data[++index] == 'a')
-						&& (data[++index] == 'c')
-						&& (data[++index] == 't')) {
-							return TokenNameabstract;
-						} else {
-							return TokenNameIdentifier;
-						}
-				case 6: // assert
-					if ((data[++index] == 's')
-						&& (data[++index] == 's')
-						&& (data[++index] == 'e')
-						&& (data[++index] == 'r')
-						&& (data[++index] == 't')) {
-							if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
-								this.containsAssertKeyword = true;
-								return TokenNameassert;
-							} else {
-								this.useAssertAsAnIndentifier = true;
-								return TokenNameIdentifier;								
-							}
-						} else {
-							return TokenNameIdentifier;
-						}
-				default: 
-					return TokenNameIdentifier;
-			}
-		case 'b' : //boolean break byte
-			switch (length) {
-				case 4 :
-					if ((data[++index] == 'y') && (data[++index] == 't') && (data[++index] == 'e'))
-						return TokenNamebyte;
-					else
-						return TokenNameIdentifier;
-				case 5 :
-					if ((data[++index] == 'r')
-						&& (data[++index] == 'e')
-						&& (data[++index] == 'a')
-						&& (data[++index] == 'k'))
-						return TokenNamebreak;
-					else
-						return TokenNameIdentifier;
-				case 7 :
-					if ((data[++index] == 'o')
-						&& (data[++index] == 'o')
-						&& (data[++index] == 'l')
-						&& (data[++index] == 'e')
-						&& (data[++index] == 'a')
-						&& (data[++index] == 'n'))
-						return TokenNameboolean;
-					else
-						return TokenNameIdentifier;
-				default :
-					return TokenNameIdentifier;
-			}
 
-		case 'c' : //case char catch const class continue
-			switch (length) {
-				case 4 :
-					if (data[++index] == 'a')
-						if ((data[++index] == 's') && (data[++index] == 'e'))
-							return TokenNamecase;
-						else
-							return TokenNameIdentifier;
-					else
-						if ((data[index] == 'h') && (data[++index] == 'a') && (data[++index] == 'r'))
-							return TokenNamechar;
-						else
-							return TokenNameIdentifier;
-				case 5 :
-					if (data[++index] == 'a')
-						if ((data[++index] == 't') && (data[++index] == 'c') && (data[++index] == 'h'))
-							return TokenNamecatch;
-						else
-							return TokenNameIdentifier;
-					else
-						if (data[index] == 'l')
-							if ((data[++index] == 'a')
-								&& (data[++index] == 's')
-								&& (data[++index] == 's'))
-								return TokenNameclass;
-							else
-								return TokenNameIdentifier;
-						else if ((data[index] == 'o')
-							&& (data[++index] == 'n')
-							&& (data[++index] == 's')
-							&& (data[++index] == 't'))
-							return TokenNameconst; //const is not used in java ???????
-						else
-							return TokenNameIdentifier;
-				case 8 :
-					if ((data[++index] == 'o')
-						&& (data[++index] == 'n')
-						&& (data[++index] == 't')
-						&& (data[++index] == 'i')
-						&& (data[++index] == 'n')
-						&& (data[++index] == 'u')
-						&& (data[++index] == 'e'))
-						return TokenNamecontinue;
-					else
-						return TokenNameIdentifier;
-				default :
-					return TokenNameIdentifier;
-			}
-
-		case 'd' : //default do double
-			switch (length) {
-				case 2 :
-					if ((data[++index] == 'o'))
-						return TokenNamedo;
-					else
-						return TokenNameIdentifier;
-				case 6 :
-					if ((data[++index] == 'o')
-						&& (data[++index] == 'u')
-						&& (data[++index] == 'b')
-						&& (data[++index] == 'l')
-						&& (data[++index] == 'e'))
-						return TokenNamedouble;
-					else
-						return TokenNameIdentifier;
-				case 7 :
-					if ((data[++index] == 'e')
-						&& (data[++index] == 'f')
-						&& (data[++index] == 'a')
-						&& (data[++index] == 'u')
-						&& (data[++index] == 'l')
-						&& (data[++index] == 't'))
-						return TokenNamedefault;
-					else
-						return TokenNameIdentifier;
-				default :
-					return TokenNameIdentifier;
-			}
-		case 'e' : //else extends
-			switch (length) {
-				case 4 :
-					if ((data[++index] == 'l') && (data[++index] == 's') && (data[++index] == 'e'))
-						return TokenNameelse;
-					else if ((data[index] == 'n')
-						&& (data[++index] == 'u')
-						&& (data[++index] == 'm')) {
-							if (this.sourceLevel >= ClassFileConstants.JDK1_5) {
-								return TokenNameenum;
-							} else {
-								this.useEnumAsAnIndentifier = true;
-								return TokenNameIdentifier;								
-							}
-						} else {
-							return TokenNameIdentifier;
-						}
-				case 7 :
-					if ((data[++index] == 'x')
-						&& (data[++index] == 't')
-						&& (data[++index] == 'e')
-						&& (data[++index] == 'n')
-						&& (data[++index] == 'd')
-						&& (data[++index] == 's'))
-						return TokenNameextends;
-					else
-						return TokenNameIdentifier;
-				default :
-					return TokenNameIdentifier;
-			}
-
-		case 'f' : //final finally float for false
-			switch (length) {
-				case 3 :
-					if ((data[++index] == 'o') && (data[++index] == 'r'))
-						return TokenNamefor;
-					else
-						return TokenNameIdentifier;
-				case 5 :
-					if (data[++index] == 'i')
-						if ((data[++index] == 'n')
-							&& (data[++index] == 'a')
-							&& (data[++index] == 'l')) {
-							return TokenNamefinal;
-						} else
-							return TokenNameIdentifier;
-					else
-						if (data[index] == 'l')
-							if ((data[++index] == 'o')
-								&& (data[++index] == 'a')
-								&& (data[++index] == 't'))
-								return TokenNamefloat;
-							else
-								return TokenNameIdentifier;
-						else
-							if ((data[index] == 'a')
-								&& (data[++index] == 'l')
-								&& (data[++index] == 's')
-								&& (data[++index] == 'e'))
-								return TokenNamefalse;
-							else
-								return TokenNameIdentifier;
-				case 7 :
-					if ((data[++index] == 'i')
-						&& (data[++index] == 'n')
-						&& (data[++index] == 'a')
-						&& (data[++index] == 'l')
-						&& (data[++index] == 'l')
-						&& (data[++index] == 'y'))
-						return TokenNamefinally;
-					else
-						return TokenNameIdentifier;
-
-				default :
-					return TokenNameIdentifier;
-			}
-		case 'g' : //goto
-			if (length == 4) {
-				if ((data[++index] == 'o')
+	case 'a' : 
+		switch(length) {
+			case 8: //abstract
+				if ((data[++index] == 'b')
+					&& (data[++index] == 's')
 					&& (data[++index] == 't')
-					&& (data[++index] == 'o')) {
-					return TokenNamegoto;
-				}
-			} //no goto in java are allowed, so why java removes this keyword ???
-			return TokenNameIdentifier;
-
-		case 'i' : //if implements import instanceof int interface
-			switch (length) {
-				case 2 :
-					if (data[++index] == 'f')
-						return TokenNameif;
-					else
+					&& (data[++index] == 'r')
+					&& (data[++index] == 'a')
+					&& (data[++index] == 'c')
+					&& (data[++index] == 't')) {
+						return TokenNameabstract;
+					} else {
 						return TokenNameIdentifier;
-				case 3 :
-					if ((data[++index] == 'n') && (data[++index] == 't'))
-						return TokenNameint;
-					else
-						return TokenNameIdentifier;
-				case 6 :
-					if ((data[++index] == 'm')
-						&& (data[++index] == 'p')
-						&& (data[++index] == 'o')
-						&& (data[++index] == 'r')
-						&& (data[++index] == 't'))
-						return TokenNameimport;
-					else
-						return TokenNameIdentifier;
-				case 9 :
-					if ((data[++index] == 'n')
-						&& (data[++index] == 't')
-						&& (data[++index] == 'e')
-						&& (data[++index] == 'r')
-						&& (data[++index] == 'f')
-						&& (data[++index] == 'a')
-						&& (data[++index] == 'c')
-						&& (data[++index] == 'e'))
-						return TokenNameinterface;
-					else
-						return TokenNameIdentifier;
-				case 10 :
-					if (data[++index] == 'm')
-						if ((data[++index] == 'p')
-							&& (data[++index] == 'l')
-							&& (data[++index] == 'e')
-							&& (data[++index] == 'm')
-							&& (data[++index] == 'e')
-							&& (data[++index] == 'n')
-							&& (data[++index] == 't')
-							&& (data[++index] == 's'))
-							return TokenNameimplements;
-						else
-							return TokenNameIdentifier;
-					else
-						if ((data[index] == 'n')
-							&& (data[++index] == 's')
-							&& (data[++index] == 't')
-							&& (data[++index] == 'a')
-							&& (data[++index] == 'n')
-							&& (data[++index] == 'c')
-							&& (data[++index] == 'e')
-							&& (data[++index] == 'o')
-							&& (data[++index] == 'f'))
-							return TokenNameinstanceof;
-						else
-							return TokenNameIdentifier;
-
-				default :
+					}
+//			case 6: // assert
+//				if ((data[++index] == 's')
+//					&& (data[++index] == 's')
+//					&& (data[++index] == 'e')
+//					&& (data[++index] == 'r')
+//					&& (data[++index] == 't')) {
+//						if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+//							this.containsAssertKeyword = true;
+//							return TokenNameassert;
+//						} else {
+//							this.useAssertAsAnIndentifier = true;
+//							return TokenNameIdentifier;								
+//						}
+//					} else {
+//						return TokenNameIdentifier;
+//					}
+			default: 
+				return TokenNameIdentifier;
+		}
+	case 'b' : //boolean break byte
+		switch (length) {
+			case 4 :
+				if ((data[++index] == 'y') && (data[++index] == 't') && (data[++index] == 'e'))
+					return TokenNamebyte;
+				else
 					return TokenNameIdentifier;
-			}
+			case 5 :
+				if ((data[++index] == 'r')
+					&& (data[++index] == 'e')
+					&& (data[++index] == 'a')
+					&& (data[++index] == 'k'))
+					return TokenNamebreak;
+				else
+					return TokenNameIdentifier;
+			case 7 :
+				if ((data[++index] == 'o')
+					&& (data[++index] == 'o')
+					&& (data[++index] == 'l')
+					&& (data[++index] == 'e')
+					&& (data[++index] == 'a')
+					&& (data[++index] == 'n'))
+					return TokenNameboolean;
+				else
+					return TokenNameIdentifier;
+			default :
+				return TokenNameIdentifier;
+		}
 
-		case 'l' : //long
-			if (length == 4) {
+	case 'c' : //case char catch const class continue
+		switch (length) {
+			case 4 :
+				if (data[++index] == 'a')
+					if ((data[++index] == 's') && (data[++index] == 'e'))
+						return TokenNamecase;
+					else
+						return TokenNameIdentifier;
+				else
+					if ((data[index] == 'h') && (data[++index] == 'a') && (data[++index] == 'r'))
+						return TokenNamechar;
+					else
+						return TokenNameIdentifier;
+			case 5 :
+				if (data[++index] == 'a')
+					if ((data[++index] == 't') && (data[++index] == 'c') && (data[++index] == 'h'))
+						return TokenNamecatch;
+					else
+						return TokenNameIdentifier;
+				else
+					if (data[index] == 'l')
+						if ((data[++index] == 'a')
+							&& (data[++index] == 's')
+							&& (data[++index] == 's'))
+							return TokenNameclass;
+						else
+							return TokenNameIdentifier;
+					else if ((data[index] == 'o')
+						&& (data[++index] == 'n')
+						&& (data[++index] == 's')
+						&& (data[++index] == 't'))
+						return TokenNameconst; //const is not used in java ???????
+					else
+						return TokenNameIdentifier;
+			case 8 :
 				if ((data[++index] == 'o')
 					&& (data[++index] == 'n')
-					&& (data[++index] == 'g')) {
-					return TokenNamelong;
-				}
-			}
-			return TokenNameIdentifier;
+					&& (data[++index] == 't')
+					&& (data[++index] == 'i')
+					&& (data[++index] == 'n')
+					&& (data[++index] == 'u')
+					&& (data[++index] == 'e'))
+					return TokenNamecontinue;
+				else
+					return TokenNameIdentifier;
+			default :
+				return TokenNameIdentifier;
+		}
 
-		case 'n' : //native new null
-			switch (length) {
-				case 3 :
-					if ((data[++index] == 'e') && (data[++index] == 'w'))
-						return TokenNamenew;
+	case 'd' : //default do double
+		switch (length) {
+			case 2 :
+				if ((data[++index] == 'o'))
+					return TokenNamedo;
+				else
+					return TokenNameIdentifier;
+			case 6 :
+				if (data[++index] == 'o')
+				{
+					if ( (data[++index] == 'u')
+					&& (data[++index] == 'b')
+					&& (data[++index] == 'l')
+					&& (data[++index] == 'e'))
+					return TokenNamedouble;
+				} else if (data[index] == 'e')
+				{
+					if ( (data[++index] == 'l')
+							&& (data[++index] == 'e')
+							&& (data[++index] == 't')
+							&& (data[++index] == 'e'))
+							return TokenNamedelete;
+				}
+				else
+					return TokenNameIdentifier;
+			case 7 :
+				if ((data[++index] == 'e')
+					&& (data[++index] == 'f')
+					&& (data[++index] == 'a')
+					&& (data[++index] == 'u')
+					&& (data[++index] == 'l')
+					&& (data[++index] == 't'))
+					return TokenNamedefault;
+				else
+					return TokenNameIdentifier;
+			case 8 :
+				if ((data[++index] == 'e')
+					&& (data[++index] == 'b')
+					&& (data[++index] == 'u')
+					&& (data[++index] == 'g')
+					&& (data[++index] == 'g')
+					&& (data[++index] == 'e')
+					&& (data[++index] == 'r'))
+					return TokenNamedebugger;
+				else
+					return TokenNameIdentifier;				default :
+				return TokenNameIdentifier;
+		}
+	case 'e' : //else extends
+		switch (length) {
+			case 4 :
+				if ((data[++index] == 'l') && (data[++index] == 's') && (data[++index] == 'e'))
+					return TokenNameelse;
+				else if ((data[index] == 'n')
+					&& (data[++index] == 'u')
+					&& (data[++index] == 'm')) {
+						if (this.sourceLevel >= ClassFileConstants.JDK1_5) {
+							return TokenNameenum;
+						} else {
+							this.useEnumAsAnIndentifier = true;
+							return TokenNameIdentifier;								
+						}
+					} else {
+						return TokenNameIdentifier;
+					}
+			case 7 :
+				if ((data[++index] == 'x')
+					&& (data[++index] == 't')
+					&& (data[++index] == 'e')
+					&& (data[++index] == 'n')
+					&& (data[++index] == 'd')
+					&& (data[++index] == 's'))
+					return TokenNameextends;
+				else
+					return TokenNameIdentifier;
+			case 6 :
+				if ((data[++index] == 'x')
+					&& (data[++index] == 'p')
+					&& (data[++index] == 'o')
+					&& (data[++index] == 'r')
+					&& (data[++index] == 't'))
+					return TokenNameexport;
+				else
+					return TokenNameIdentifier;
+			default :
+				return TokenNameIdentifier;
+		}
+
+	case 'f' : //final finally float for false
+		switch (length) {
+			case 3 :
+				if ((data[++index] == 'o') && (data[++index] == 'r'))
+					return TokenNamefor;
+				else
+					return TokenNameIdentifier;
+			case 5 :
+				if (data[++index] == 'i')
+					if ((data[++index] == 'n')
+						&& (data[++index] == 'a')
+						&& (data[++index] == 'l')) {
+						return TokenNamefinal;
+					} else
+						return TokenNameIdentifier;
+				else
+					if (data[index] == 'l')
+						if ((data[++index] == 'o')
+							&& (data[++index] == 'a')
+							&& (data[++index] == 't'))
+							return TokenNamefloat;
+						else
+							return TokenNameIdentifier;
+					else
+						if ((data[index] == 'a')
+							&& (data[++index] == 'l')
+							&& (data[++index] == 's')
+							&& (data[++index] == 'e'))
+							return TokenNamefalse;
+						else
+							return TokenNameIdentifier;
+			case 7 :
+				if ((data[++index] == 'i')
+					&& (data[++index] == 'n')
+					&& (data[++index] == 'a')
+					&& (data[++index] == 'l')
+					&& (data[++index] == 'l')
+					&& (data[++index] == 'y'))
+					return TokenNamefinally;
+				else
+					return TokenNameIdentifier;
+
+			case 8 :
+				if ((data[++index] == 'u')
+					&& (data[++index] == 'n')
+					&& (data[++index] == 'c')
+					&& (data[++index] == 't')
+					&& (data[++index] == 'i')
+					&& (data[++index] == 'o')
+					&& (data[++index] == 'n'))
+					return TokenNamefunction;
+				else
+					return TokenNameIdentifier;
+
+			default :
+				return TokenNameIdentifier;
+		}
+	case 'g' : //goto
+		if (length == 4) {
+			if ((data[++index] == 'o')
+				&& (data[++index] == 't')
+				&& (data[++index] == 'o')) {
+				return TokenNamegoto;
+			}
+		} //no goto in java are allowed, so why java removes this keyword ???
+		return TokenNameIdentifier;
+
+	case 'i' : //if implements import instanceof int interface
+		switch (length) {
+			case 2 :
+				if (data[++index] == 'f')
+					return TokenNameif;
+				else if (data[index] == 'n')
+					return TokenNamein;
+				else
+					return TokenNameIdentifier;
+			case 3 :
+				if ((data[++index] == 'n') && (data[++index] == 't'))
+					return TokenNameint;
+				else
+					return TokenNameIdentifier;
+			case 6 :
+				if ((data[++index] == 'm')
+					&& (data[++index] == 'p')
+					&& (data[++index] == 'o')
+					&& (data[++index] == 'r')
+					&& (data[++index] == 't'))
+					return TokenNameimport;
+				else
+					return TokenNameIdentifier;
+			case 8 :
+				if ((data[++index] == 'n')
+					&& (data[++index] == 'f')
+					&& (data[++index] == 'i')
+					&& (data[++index] == 'n')
+					&& (data[++index] == 'i')
+					&& (data[++index] == 't')
+					&& (data[++index] == 'y'))
+					return TokenNameinfinity;
+				else
+					return TokenNameIdentifier;
+			case 9 :
+				if ((data[++index] == 'n')
+					&& (data[++index] == 't')
+					&& (data[++index] == 'e')
+					&& (data[++index] == 'r')
+					&& (data[++index] == 'f')
+					&& (data[++index] == 'a')
+					&& (data[++index] == 'c')
+					&& (data[++index] == 'e'))
+					return TokenNameinterface;
+				else
+					return TokenNameIdentifier;
+			case 10 :
+				if (data[++index] == 'm')
+					if ((data[++index] == 'p')
+						&& (data[++index] == 'l')
+						&& (data[++index] == 'e')
+						&& (data[++index] == 'm')
+						&& (data[++index] == 'e')
+						&& (data[++index] == 'n')
+						&& (data[++index] == 't')
+						&& (data[++index] == 's'))
+						return TokenNameimplements;
 					else
 						return TokenNameIdentifier;
-				case 4 :
-					if ((data[++index] == 'u') && (data[++index] == 'l') && (data[++index] == 'l'))
-						return TokenNamenull;
+				else
+					if ((data[index] == 'n')
+						&& (data[++index] == 's')
+						&& (data[++index] == 't')
+						&& (data[++index] == 'a')
+						&& (data[++index] == 'n')
+						&& (data[++index] == 'c')
+						&& (data[++index] == 'e')
+						&& (data[++index] == 'o')
+						&& (data[++index] == 'f'))
+						return TokenNameinstanceof;
 					else
 						return TokenNameIdentifier;
-				case 6 :
+
+			default :
+				return TokenNameIdentifier;
+		}
+
+	case 'l' : //long
+		if (length == 4) {
+			if ((data[++index] == 'o')
+				&& (data[++index] == 'n')
+				&& (data[++index] == 'g')) {
+				return TokenNamelong;
+			}
+		}
+		return TokenNameIdentifier;
+
+	case 'n' : //native new null
+		switch (length) {
+			case 3 :
+				if ((data[++index] == 'e') && (data[++index] == 'w'))
+					return TokenNamenew;
+				else
+					return TokenNameIdentifier;
+			case 4 :
+				if ((data[++index] == 'u') && (data[++index] == 'l') && (data[++index] == 'l'))
+					return TokenNamenull;
+				else
+					return TokenNameIdentifier;
+			case 6 :
+				if ((data[++index] == 'a')
+					&& (data[++index] == 't')
+					&& (data[++index] == 'i')
+					&& (data[++index] == 'v')
+					&& (data[++index] == 'e')) {
+					return TokenNamenative;
+				} else
+					return TokenNameIdentifier;
+			default :
+				return TokenNameIdentifier;
+		}
+
+	case 'p' : //package private protected public
+		switch (length) {
+			case 6 :
+				if ((data[++index] == 'u')
+					&& (data[++index] == 'b')
+					&& (data[++index] == 'l')
+					&& (data[++index] == 'i')
+					&& (data[++index] == 'c')) {
+					return TokenNamepublic;
+				} else
+					return TokenNameIdentifier;
+			case 7 :
+				if (data[++index] == 'a')
+					if ((data[++index] == 'c')
+						&& (data[++index] == 'k')
+						&& (data[++index] == 'a')
+						&& (data[++index] == 'g')
+						&& (data[++index] == 'e'))
+						return TokenNamepackage;
+					else
+						return TokenNameIdentifier;
+				else
+					if ((data[index] == 'r')
+						&& (data[++index] == 'i')
+						&& (data[++index] == 'v')
+						&& (data[++index] == 'a')
+						&& (data[++index] == 't')
+						&& (data[++index] == 'e')) {
+						return TokenNameprivate;
+					} else
+						return TokenNameIdentifier;
+			case 9 :
+				if ((data[++index] == 'r')
+					&& (data[++index] == 'o')
+					&& (data[++index] == 't')
+					&& (data[++index] == 'e')
+					&& (data[++index] == 'c')
+					&& (data[++index] == 't')
+					&& (data[++index] == 'e')
+					&& (data[++index] == 'd')) {
+					return TokenNameprotected;
+				} else
+					return TokenNameIdentifier;
+
+			default :
+				return TokenNameIdentifier;
+		}
+
+	case 'r' : //return
+		if (length == 6) {
+			if ((data[++index] == 'e')
+				&& (data[++index] == 't')
+				&& (data[++index] == 'u')
+				&& (data[++index] == 'r')
+				&& (data[++index] == 'n')) {
+				return TokenNamereturn;
+			}
+		}
+		return TokenNameIdentifier;
+
+	case 's' : //short static super switch synchronized strictfp
+		switch (length) {
+			case 5 :
+				if (data[++index] == 'h')
+					if ((data[++index] == 'o') && (data[++index] == 'r') && (data[++index] == 't'))
+						return TokenNameshort;
+					else
+						return TokenNameIdentifier;
+				else
+					if ((data[index] == 'u')
+						&& (data[++index] == 'p')
+						&& (data[++index] == 'e')
+						&& (data[++index] == 'r'))
+						return TokenNamesuper;
+					else
+						return TokenNameIdentifier;
+
+			case 6 :
+				if (data[++index] == 't')
 					if ((data[++index] == 'a')
 						&& (data[++index] == 't')
 						&& (data[++index] == 'i')
-						&& (data[++index] == 'v')
-						&& (data[++index] == 'e')) {
-						return TokenNamenative;
-					} else
-						return TokenNameIdentifier;
-				default :
-					return TokenNameIdentifier;
-			}
-
-		case 'p' : //package private protected public
-			switch (length) {
-				case 6 :
-					if ((data[++index] == 'u')
-						&& (data[++index] == 'b')
-						&& (data[++index] == 'l')
-						&& (data[++index] == 'i')
 						&& (data[++index] == 'c')) {
-						return TokenNamepublic;
+						return TokenNamestatic;
 					} else
 						return TokenNameIdentifier;
-				case 7 :
-					if (data[++index] == 'a')
-						if ((data[++index] == 'c')
-							&& (data[++index] == 'k')
-							&& (data[++index] == 'a')
-							&& (data[++index] == 'g')
-							&& (data[++index] == 'e'))
-							return TokenNamepackage;
-						else
-							return TokenNameIdentifier;
-					else
-						if ((data[index] == 'r')
-							&& (data[++index] == 'i')
-							&& (data[++index] == 'v')
-							&& (data[++index] == 'a')
-							&& (data[++index] == 't')
-							&& (data[++index] == 'e')) {
-							return TokenNameprivate;
-						} else
-							return TokenNameIdentifier;
-				case 9 :
-					if ((data[++index] == 'r')
-						&& (data[++index] == 'o')
+				else
+					if ((data[index] == 'w')
+						&& (data[++index] == 'i')
 						&& (data[++index] == 't')
-						&& (data[++index] == 'e')
 						&& (data[++index] == 'c')
-						&& (data[++index] == 't')
-						&& (data[++index] == 'e')
-						&& (data[++index] == 'd')) {
-						return TokenNameprotected;
-					} else
+						&& (data[++index] == 'h'))
+						return TokenNameswitch;
+					else
 						return TokenNameIdentifier;
-
-				default :
-					return TokenNameIdentifier;
-			}
-
-		case 'r' : //return
-			if (length == 6) {
-				if ((data[++index] == 'e')
-					&& (data[++index] == 't')
-					&& (data[++index] == 'u')
+			case 8 :
+				if ((data[++index] == 't')
 					&& (data[++index] == 'r')
-					&& (data[++index] == 'n')) {
-					return TokenNamereturn;
-				}
-			}
-			return TokenNameIdentifier;
+					&& (data[++index] == 'i')
+					&& (data[++index] == 'c')
+					&& (data[++index] == 't')
+					&& (data[++index] == 'f')
+					&& (data[++index] == 'p'))
+					return TokenNamestrictfp;
+				else
+					return TokenNameIdentifier;
+			case 12 :
+				if ((data[++index] == 'y')
+					&& (data[++index] == 'n')
+					&& (data[++index] == 'c')
+					&& (data[++index] == 'h')
+					&& (data[++index] == 'r')
+					&& (data[++index] == 'o')
+					&& (data[++index] == 'n')
+					&& (data[++index] == 'i')
+					&& (data[++index] == 'z')
+					&& (data[++index] == 'e')
+					&& (data[++index] == 'd')) {
+					return TokenNamesynchronized;
+				} else
+					return TokenNameIdentifier;
+			default :
+				return TokenNameIdentifier;
+		}
 
-		case 's' : //short static super switch synchronized strictfp
-			switch (length) {
-				case 5 :
-					if (data[++index] == 'h')
-						if ((data[++index] == 'o') && (data[++index] == 'r') && (data[++index] == 't'))
-							return TokenNameshort;
-						else
-							return TokenNameIdentifier;
-					else
-						if ((data[index] == 'u')
-							&& (data[++index] == 'p')
-							&& (data[++index] == 'e')
-							&& (data[++index] == 'r'))
-							return TokenNamesuper;
-						else
-							return TokenNameIdentifier;
-
-				case 6 :
-					if (data[++index] == 't')
-						if ((data[++index] == 'a')
-							&& (data[++index] == 't')
-							&& (data[++index] == 'i')
-							&& (data[++index] == 'c')) {
-							return TokenNamestatic;
-						} else
-							return TokenNameIdentifier;
-					else
-						if ((data[index] == 'w')
-							&& (data[++index] == 'i')
-							&& (data[++index] == 't')
-							&& (data[++index] == 'c')
-							&& (data[++index] == 'h'))
-							return TokenNameswitch;
-						else
-							return TokenNameIdentifier;
-				case 8 :
-					if ((data[++index] == 't')
-						&& (data[++index] == 'r')
-						&& (data[++index] == 'i')
-						&& (data[++index] == 'c')
-						&& (data[++index] == 't')
-						&& (data[++index] == 'f')
-						&& (data[++index] == 'p'))
-						return TokenNamestrictfp;
+	case 't' : //try throw throws transient this true
+		switch (length) {
+			case 3 :
+				if ((data[++index] == 'r') && (data[++index] == 'y'))
+					return TokenNametry;
+				else
+					return TokenNameIdentifier;
+			case 4 :
+				if (data[++index] == 'h') 
+					if ((data[++index] == 'i') && (data[++index] == 's'))
+						return TokenNamethis;
 					else
 						return TokenNameIdentifier;
-				case 12 :
-					if ((data[++index] == 'y')
-						&& (data[++index] == 'n')
-						&& (data[++index] == 'c')
-						&& (data[++index] == 'h')
-						&& (data[++index] == 'r')
-						&& (data[++index] == 'o')
-						&& (data[++index] == 'n')
-						&& (data[++index] == 'i')
-						&& (data[++index] == 'z')
+				else
+					if ((data[index] == 'r') && (data[++index] == 'u') && (data[++index] == 'e'))
+						return TokenNametrue;
+					else
+						return TokenNameIdentifier;
+			case 5 :
+				if ((data[++index] == 'h')
+					&& (data[++index] == 'r')
+					&& (data[++index] == 'o')
+					&& (data[++index] == 'w'))
+					return TokenNamethrow;
+				else
+					return TokenNameIdentifier;
+			case 6 :
+				if ((data[++index] == 'h')
+					&& (data[++index] == 'r')
+					&& (data[++index] == 'o')
+					&& (data[++index] == 'w')
+					&& (data[++index] == 's'))
+					return TokenNamethrows;
+				if ((data[index] == 'y')
+						&& (data[++index] == 'p')
 						&& (data[++index] == 'e')
-						&& (data[++index] == 'd')) {
-						return TokenNamesynchronized;
-					} else
-						return TokenNameIdentifier;
-				default :
-					return TokenNameIdentifier;
-			}
-
-		case 't' : //try throw throws transient this true
-			switch (length) {
-				case 3 :
-					if ((data[++index] == 'r') && (data[++index] == 'y'))
-						return TokenNametry;
-					else
-						return TokenNameIdentifier;
-				case 4 :
-					if (data[++index] == 'h') 
-						if ((data[++index] == 'i') && (data[++index] == 's'))
-							return TokenNamethis;
-						else
-							return TokenNameIdentifier;
-					else
-						if ((data[index] == 'r') && (data[++index] == 'u') && (data[++index] == 'e'))
-							return TokenNametrue;
-						else
-							return TokenNameIdentifier;
-				case 5 :
-					if ((data[++index] == 'h')
-						&& (data[++index] == 'r')
 						&& (data[++index] == 'o')
-						&& (data[++index] == 'w'))
-						return TokenNamethrow;
-					else
-						return TokenNameIdentifier;
-				case 6 :
-					if ((data[++index] == 'h')
-						&& (data[++index] == 'r')
-						&& (data[++index] == 'o')
-						&& (data[++index] == 'w')
-						&& (data[++index] == 's'))
-						return TokenNamethrows;
-					else
-						return TokenNameIdentifier;
-				case 9 :
-					if ((data[++index] == 'r')
-						&& (data[++index] == 'a')
-						&& (data[++index] == 'n')
-						&& (data[++index] == 's')
-						&& (data[++index] == 'i')
-						&& (data[++index] == 'e')
-						&& (data[++index] == 'n')
-						&& (data[++index] == 't')) {
-						return TokenNametransient;
-					} else
-						return TokenNameIdentifier;
-
-				default :
+						&& (data[++index] == 'f'))
+						return TokenNametypeof;
+				else
 					return TokenNameIdentifier;
-			}
-
-		case 'v' : //void volatile
-			switch (length) {
-				case 4 :
-					if ((data[++index] == 'o') && (data[++index] == 'i') && (data[++index] == 'd'))
-						return TokenNamevoid;
-					else
-						return TokenNameIdentifier;
-				case 8 :
-					if ((data[++index] == 'o')
-						&& (data[++index] == 'l')
-						&& (data[++index] == 'a')
-						&& (data[++index] == 't')
-						&& (data[++index] == 'i')
-						&& (data[++index] == 'l')
-						&& (data[++index] == 'e')) {
-						return TokenNamevolatile;
-					} else
-						return TokenNameIdentifier;
-
-				default :
+			case 9 :
+				if ((data[++index] == 'r')
+					&& (data[++index] == 'a')
+					&& (data[++index] == 'n')
+					&& (data[++index] == 's')
+					&& (data[++index] == 'i')
+					&& (data[++index] == 'e')
+					&& (data[++index] == 'n')
+					&& (data[++index] == 't')) {
+					return TokenNametransient;
+				} else
 					return TokenNameIdentifier;
-			}
 
-		case 'w' : //while widefp
-			switch (length) {
-				case 5 :
-					if ((data[++index] == 'h')
-						&& (data[++index] == 'i')
-						&& (data[++index] == 'l')
-						&& (data[++index] == 'e'))
-						return TokenNamewhile;
-					else
-						return TokenNameIdentifier;
-					//case 6:if ( (data[++index] =='i') && (data[++index]=='d') && (data[++index]=='e') && (data[++index]=='f')&& (data[++index]=='p'))
-					//return TokenNamewidefp ;
-					//else
-					//return TokenNameIdentifier;
-				default :
+			default :
+				return TokenNameIdentifier;
+		}
+
+	case 'u' : //goto
+		if (length == 9) {
+			if ((data[++index] == 'n')
+				&& (data[++index] == 'd')
+				&& (data[++index] == 'e')
+				&& (data[++index] == 'f')
+				&& (data[++index] == 'i')
+				&& (data[++index] == 'n')
+				&& (data[++index] == 'e')
+				&& (data[++index] == 'd')) {
+				return TokenNameundefined;
+			}
+		} 
+		return TokenNameIdentifier;
+
+
+	case 'v' : //void volatile
+		switch (length) {
+		case 3 :
+			if ((data[++index] == 'a')  && (data[++index] == 'r'))
+				return TokenNamevar;
+			else
+				return TokenNameIdentifier;
+			case 4 :
+				if ((data[++index] == 'o') && (data[++index] == 'i') && (data[++index] == 'd'))
+					return TokenNamevoid;
+				else
 					return TokenNameIdentifier;
-			}
+			case 8 :
+				if ((data[++index] == 'o')
+					&& (data[++index] == 'l')
+					&& (data[++index] == 'a')
+					&& (data[++index] == 't')
+					&& (data[++index] == 'i')
+					&& (data[++index] == 'l')
+					&& (data[++index] == 'e')) {
+					return TokenNamevolatile;
+				} else
+					return TokenNameIdentifier;
 
-		default :
-			return TokenNameIdentifier;
-	}
+			default :
+				return TokenNameIdentifier;
+		}
+
+	case 'w' : //while widefp
+		switch (length) {
+		case 4 :
+			if ((data[++index] == 'i')
+				&& (data[++index] == 't')
+				&& (data[++index] == 'h'))
+				return TokenNamewith;
+			else
+				return TokenNameIdentifier;
+			case 5 :
+				if ((data[++index] == 'h')
+					&& (data[++index] == 'i')
+					&& (data[++index] == 'l')
+					&& (data[++index] == 'e'))
+					return TokenNamewhile;
+				else
+					return TokenNameIdentifier;
+				//case 6:if ( (data[++index] =='i') && (data[++index]=='d') && (data[++index]=='e') && (data[++index]=='f')&& (data[++index]=='p'))
+				//return TokenNamewidefp ;
+				//else
+				//return TokenNameIdentifier;
+			default :
+				return TokenNameIdentifier;
+		}
+
+	default :
+		return TokenNameIdentifier;
+}
 }
 
 
@@ -3647,6 +3693,7 @@ public String toString() {
 		+ "<-- Ends here\n===============================\n" //$NON-NLS-1$
 		+ new String(end); 
 }
+
 public String toStringAction(int act) {
 	switch (act) {
 		case TokenNameIdentifier :
@@ -3671,6 +3718,10 @@ public String toStringAction(int act) {
 			return "continue"; //$NON-NLS-1$
 		case TokenNamedefault :
 			return "default"; //$NON-NLS-1$
+		case TokenNamedelete :
+			return "delete"; //$NON-NLS-1$
+		case TokenNamedebugger :
+			return "debugger"; //$NON-NLS-1$
 		case TokenNamedo :
 			return "do"; //$NON-NLS-1$
 		case TokenNamedouble :
@@ -3689,12 +3740,18 @@ public String toStringAction(int act) {
 			return "float"; //$NON-NLS-1$
 		case TokenNamefor :
 			return "for"; //$NON-NLS-1$
+		case TokenNamefunction :
+			return "function"; //$NON-NLS-1$
 		case TokenNameif :
 			return "if"; //$NON-NLS-1$
 		case TokenNameimplements :
 			return "implements"; //$NON-NLS-1$
 		case TokenNameimport :
 			return "import"; //$NON-NLS-1$
+		case TokenNamein :
+			return "in"; //$NON-NLS-1$
+		case TokenNameinfinity :
+			return "infinity"; //$NON-NLS-1$
 		case TokenNameinstanceof :
 			return "instanceof"; //$NON-NLS-1$
 		case TokenNameint :
@@ -3741,12 +3798,19 @@ public String toStringAction(int act) {
 			return "true"; //$NON-NLS-1$
 		case TokenNametry :
 			return "try"; //$NON-NLS-1$
+		case TokenNameundefined :
+			return "undefined"; //$NON-NLS-1$
+		case TokenNamevar :
+			return "var"; //$NON-NLS-1$
 		case TokenNamevoid :
 			return "void"; //$NON-NLS-1$
 		case TokenNamevolatile :
 			return "volatile"; //$NON-NLS-1$
 		case TokenNamewhile :
 			return "while"; //$NON-NLS-1$
+		case TokenNamewith :
+			return "with"; //$NON-NLS-1$
+
 
 		case TokenNameIntegerLiteral :
 			return "Integer(" + new String(getCurrentTokenSource()) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
@@ -3767,12 +3831,16 @@ public String toStringAction(int act) {
 			return "--"; //$NON-NLS-1$
 		case TokenNameEQUAL_EQUAL :
 			return "=="; //$NON-NLS-1$
+		case TokenNameEQUAL_EQUAL_EQUAL :
+			return "==="; //$NON-NLS-1$
 		case TokenNameLESS_EQUAL :
 			return "<="; //$NON-NLS-1$
 		case TokenNameGREATER_EQUAL :
 			return ">="; //$NON-NLS-1$
 		case TokenNameNOT_EQUAL :
 			return "!="; //$NON-NLS-1$
+		case TokenNameNOT_EQUAL_EQUAL :
+			return "!=="; //$NON-NLS-1$
 		case TokenNameLEFT_SHIFT :
 			return "<<"; //$NON-NLS-1$
 		case TokenNameRIGHT_SHIFT :
@@ -3861,6 +3929,7 @@ public String toStringAction(int act) {
 			return "not-a-token"; //$NON-NLS-1$
 	}
 }
+
 public void unicodeInitializeBuffer(int length) {
 	this.withoutUnicodePtr = length;	
     if (this.withoutUnicodeBuffer == null) this.withoutUnicodeBuffer = new char[length+(1+10)];
@@ -3879,4 +3948,149 @@ public void unicodeStore() {
     }
 	this.withoutUnicodeBuffer[pos] = this.currentCharacter;
 }
+protected boolean checkIfDivide(int previousToken){
+	
+	if (previousToken == TokenNameIdentifier || previousToken == TokenNameStringLiteral ||
+			previousToken == TokenNameCharacterLiteral || previousToken == TokenNameRPAREN ||
+			previousToken == TokenNameRBRACKET) {
+		
+		return true;
+	}
+	
+	return false;
+}
+/*
+ *  This code is duplicated in PublicScanner.java
+ */
+
+public static final String NON_TERM_REGEXP = "Non-Terminating_Regular_Expression";
+public static final String INVALID_REGEXP_OPT = "Invalid_Regular_Expression_Options";
+public static final String UNEXP_REGEXP = "Unexpected_Error_Processing_Regular_Expression";
+
+protected boolean checkIfRegExp() throws IndexOutOfBoundsException, InvalidInputException {
+	// Try to process as regular expression
+	
+/*	int regExpPosition = this.currentPosition;
+	char regexpCharacter = this.currentCharacter;
+	char orginalCharaceter = this.currentCharacter; */
+	char previousCharacter = this.currentCharacter;
+	int previousPosition = this.currentPosition;
+	int previousUnicodePtr = this.withoutUnicodePtr;
+	boolean regExp = false;
+	
+	// consume next character
+	this.unicodeAsBackSlash = false;
+	boolean isUnicode = false;
+	if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
+		&& (this.source[this.currentPosition] == 'u')) {
+		getNextUnicodeChar();
+		isUnicode = true;
+	} else {
+		if (this.withoutUnicodePtr != 0) {
+			unicodeStore();
+		}
+	}
+
+	try {
+		while (this.currentCharacter != '/' &&
+				this.currentCharacter != '\r' && this.currentCharacter != '\n') {
+			
+			if (this.currentCharacter == '\\') {
+				if (this.unicodeAsBackSlash) {
+					this.withoutUnicodePtr--;
+					// consume next character
+					this.unicodeAsBackSlash = false;
+					if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\') && (this.source[this.currentPosition] == 'u')) {
+						getNextUnicodeChar();
+						isUnicode = true;
+						this.withoutUnicodePtr--;
+					} else {
+						isUnicode = false;
+					}
+				} else {
+					if (this.withoutUnicodePtr == 0) {
+						unicodeInitializeBuffer(this.currentPosition - this.startPosition);
+					}
+					this.withoutUnicodePtr --;
+					this.currentCharacter = this.source[this.currentPosition++];
+				}
+				// we need to compute the escape character in a separate buffer
+				scanEscapeCharacter();
+				if (this.withoutUnicodePtr != 0) {
+					unicodeStore();
+				}
+			}
+			
+			// consume next character
+			previousCharacter=this.currentCharacter;
+			previousPosition=this.currentPosition;
+			previousUnicodePtr=this.withoutUnicodePtr;
+			this.unicodeAsBackSlash = false;
+			if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
+				&& (this.source[this.currentPosition] == 'u')) {
+				getNextUnicodeChar();
+				isUnicode = true;
+			} else {
+				isUnicode = false;
+				if (this.withoutUnicodePtr != 0) {
+					unicodeStore();
+				}
+			}
+			
+			if (this.currentCharacter == '/') {
+				regExp = true;
+			}
+	
+		}
+		
+		// Check for valid RegExp options
+		if (regExp == true) {
+			boolean haverexExpCharI = false;
+			boolean haverexExpCharG = false;
+			boolean haverexExpCharM = false;
+			for (int count =0; count<=3; count++) {
+				previousCharacter=this.currentCharacter;
+				previousPosition=this.currentPosition;
+				previousUnicodePtr=this.withoutUnicodePtr;
+				if (getNextChar() != -1) {	
+					if (Character.isLetterOrDigit(this.currentCharacter)){
+						if (this.currentCharacter == 'i'  && haverexExpCharI == false) {
+							haverexExpCharI = true;						
+						} else if (this.currentCharacter == 'g' && haverexExpCharG == false) {
+							haverexExpCharG = true;						
+						} else if (this.currentCharacter == 'm' && haverexExpCharM == false) {
+							haverexExpCharM = true;
+						} else {
+							if (count != 3)
+								throw new InvalidInputException(INVALID_REGEXP_OPT);
+						}
+					} else {
+						break;
+					}
+				} else {
+					// Just fall through, may be end of file.
+				}
+			}
+		}
+	} catch (IndexOutOfBoundsException e) {
+		throw new InvalidInputException(NON_TERM_REGEXP);
+	}
+		
+	if (regExp == false){
+		throw new InvalidInputException(NON_TERM_REGEXP);
+	}
+		// Back up one character 
+	this.currentCharacter = previousCharacter;
+	this.currentPosition = previousPosition;
+	this.withoutUnicodePtr = previousUnicodePtr;
+	return true;
+	
+	
+/*	this.currentPosition = regExpPosition;
+	this.currentCharacter = regexpCharacter;
+	this.currentCharacter = orginalCharaceter;
+	this.withoutUnicodePtr = 0; */
+	
+}
+
 }

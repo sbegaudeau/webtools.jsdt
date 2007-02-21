@@ -2258,6 +2258,8 @@ public class Util {
 	 * e.g. "QString;", "[int", "[[Qjava.util.Vector;"
 	 */
 	public static String typeSignature(TypeReference type) {
+		if (type==null)
+			return Signature.SIG_ANY;
 		char[][] compoundName = type.getParameterizedTypeName();
 		char[] typeName =CharOperation.concatWith(compoundName, '.');
 		String signature = Signature.createTypeSignature(typeName, false/*don't resolve*/);
@@ -2416,6 +2418,7 @@ public class Util {
 			case Signature.C_LONG :
 			case Signature.C_SHORT :
 			case Signature.C_VOID :
+			case Signature.C_ANY :
 				return scanBaseTypeSignature(string, start);
 			case Signature.C_CAPTURE :
 				return scanCaptureTypeSignature(string, start);
@@ -2451,7 +2454,7 @@ public class Util {
 			throw new IllegalArgumentException();
 		}
 		char c = string[start];
-		if ("BCDFIJSVZ".indexOf(c) >= 0) { //$NON-NLS-1$
+		if ("BCDFIJSVZA".indexOf(c) >= 0) { //$NON-NLS-1$
 			return start;
 		} else {
 			throw new IllegalArgumentException();

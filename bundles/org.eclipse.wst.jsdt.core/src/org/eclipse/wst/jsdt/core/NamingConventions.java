@@ -530,8 +530,8 @@ public final class NamingConventions {
 		return convertCharsToString(
 			suggestArgumentNames(
 				javaProject,
-				packageName.toCharArray(),
-				qualifiedTypeName.toCharArray(),
+				packageName!=null ? packageName.toCharArray() : null,
+				qualifiedTypeName!=null ? qualifiedTypeName.toCharArray():null,
 				dim,
 				convertStringToChars(excludedNames)));
 	}

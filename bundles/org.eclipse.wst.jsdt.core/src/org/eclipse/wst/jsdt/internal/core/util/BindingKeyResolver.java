@@ -30,6 +30,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BinaryTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CaptureBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalTypeBinding;
@@ -105,7 +106,6 @@ public class BindingKeyResolver extends BindingKeyParser {
 			this.typeBinding = baseTypeBinding;
 		}
 	}
-	
 	public void consumeCapture(final int position) {
 		CompilationUnitDeclaration outerParsedUnit = this.outerMostParsedUnit == null ? this.parsedUnit : this.outerMostParsedUnit;
 		if (outerParsedUnit == null) return;
@@ -140,42 +140,42 @@ public class BindingKeyResolver extends BindingKeyParser {
 				}
 				return false;
 			}
-			public boolean visit(SingleNameReference singleNameReference, BlockScope blockScope) {
+			public boolean visit(SingleNameReference singleNameReference, Scope blockScope) {
 				if (checkType(singleNameReference.resolvedType)) 
 					return false;
 				return super.visit(singleNameReference, blockScope);
 			}
-			public boolean visit(QualifiedNameReference qualifiedNameReference, BlockScope blockScope) {
+			public boolean visit(QualifiedNameReference qualifiedNameReference, Scope blockScope) {
 				if (checkType(qualifiedNameReference.resolvedType))
 					return false;
 				return super.visit(qualifiedNameReference, blockScope);
 			}
-			public boolean visit(MessageSend messageSend, BlockScope blockScope) {
+			public boolean visit(MessageSend messageSend, Scope blockScope) {
 				if (checkType(messageSend.resolvedType))
 					return false;
 				return super.visit(messageSend, blockScope);
 			}
-			public boolean visit(FieldReference fieldReference, BlockScope blockScope) {
+			public boolean visit(FieldReference fieldReference, Scope blockScope) {
 				if (checkType(fieldReference.resolvedType))
 					return false;
 				return super.visit(fieldReference, blockScope);
 			}
-			public boolean visit(ConditionalExpression conditionalExpression, BlockScope blockScope) {
+			public boolean visit(ConditionalExpression conditionalExpression, Scope blockScope) {
 				if (checkType(conditionalExpression.resolvedType))
 					return false;
 				return super.visit(conditionalExpression, blockScope);
 			}
-			public boolean visit(CastExpression castExpression, BlockScope blockScope) {
+			public boolean visit(CastExpression castExpression, Scope blockScope) {
 				if (checkType(castExpression.resolvedType))
 					return false;
 				return super.visit(castExpression, blockScope);
 			}
-			public boolean visit(Assignment assignment, BlockScope blockScope) {
+			public boolean visit(Assignment assignment, Scope blockScope) {
 				if (checkType(assignment.resolvedType))
 					return false;
 				return super.visit(assignment, blockScope);
 			}
-			public boolean visit(ArrayReference arrayReference, BlockScope blockScope) {
+			public boolean visit(ArrayReference arrayReference, Scope blockScope) {
 				if (checkType(arrayReference.resolvedType))
 					return false;
 				return super.visit(arrayReference, blockScope);
@@ -185,7 +185,6 @@ public class BindingKeyResolver extends BindingKeyParser {
 		outerParsedUnit.traverse(captureFinder, outerParsedUnit.scope);
 		this.typeBinding = captureFinder.capture;
 	}
-	
 	public void consumeException() {
 		this.types = new ArrayList();
 	}
