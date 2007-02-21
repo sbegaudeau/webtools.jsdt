@@ -107,7 +107,7 @@ public abstract class ASTNode implements TypeConstants, TypeIds {
 	public static final int UnsafeCast = Bit8;
 	
 	// for name references 
-	public static final int RestrictiveFlagMASK = Bit1|Bit2|Bit3;	
+	public static final int RestrictiveFlagMASK = Bit1|Bit2|Bit3|Bit4;	
 	
 	// for name refs or local decls
 	public static final int FirstAssignmentToLocal = Bit4;
@@ -206,20 +206,20 @@ public abstract class ASTNode implements TypeConstants, TypeIds {
 	public static void checkInvocationArguments(BlockScope scope, Expression receiver, TypeBinding receiverType, MethodBinding method, Expression[] arguments, TypeBinding[] argumentTypes, boolean argsContainCast, InvocationSite invocationSite) {
 		TypeBinding[] params = method.parameters;
 		int paramLength = params.length;
-		boolean isRawMemberInvocation = !method.isStatic() 
-				&& !receiverType.isUnboundWildcard() 
-				&& method.declaringClass.isRawType() 
-				&& method.hasSubstitutedParameters();
+//		boolean isRawMemberInvocation = false;//!method.isStatic() 
+//				&& !receiverType.isUnboundWildcard() 
+//				&& method.declaringClass.isRawType() 
+//				&& method.hasSubstitutedParameters();
 		
 		MethodBinding rawOriginalGenericMethod = null;
-		if (!isRawMemberInvocation) {
-			if (method instanceof ParameterizedGenericMethodBinding) {
-				ParameterizedGenericMethodBinding paramMethod = (ParameterizedGenericMethodBinding) method;
-				if (paramMethod.isUnchecked || (paramMethod.isRaw && method.hasSubstitutedParameters())) {
-					rawOriginalGenericMethod = method.original();
-				}
-			}
-		}
+//		if (!isRawMemberInvocation) {
+//			if (method instanceof ParameterizedGenericMethodBinding) {
+//				ParameterizedGenericMethodBinding paramMethod = (ParameterizedGenericMethodBinding) method;
+//				if (paramMethod.isUnchecked || (paramMethod.isRaw && method.hasSubstitutedParameters())) {
+//					rawOriginalGenericMethod = method.original();
+//				}
+//			}
+//		}
 		int invocationStatus = INVOCATION_ARGUMENT_OK;
 		if (arguments == null) {
 			if (method.isVarargs()) {
@@ -286,13 +286,13 @@ public abstract class ASTNode implements TypeConstants, TypeIds {
 				CastExpression.checkNeedForArgumentCasts(scope, receiver, receiverType, method, arguments, argumentTypes, invocationSite);
 			}
 		}
-		if ((invocationStatus & INVOCATION_ARGUMENT_WILDCARD) != 0) {
-		    scope.problemReporter().wildcardInvocation((ASTNode)invocationSite, receiverType, method, argumentTypes);
-		} else if (!method.isStatic() && !receiverType.isUnboundWildcard() && method.declaringClass.isRawType() && method.hasSubstitutedParameters()) {
-		    scope.problemReporter().unsafeRawInvocation((ASTNode)invocationSite, method);
-		} else if (rawOriginalGenericMethod != null) {
-		    scope.problemReporter().unsafeRawGenericMethodInvocation((ASTNode)invocationSite, method);
-		}
+//		if ((invocationStatus & INVOCATION_ARGUMENT_WILDCARD) != 0) {
+//		    scope.problemReporter().wildcardInvocation((ASTNode)invocationSite, receiverType, method, argumentTypes);
+//		} else if (!method.isStatic() && !receiverType.isUnboundWildcard() && method.declaringClass.isRawType() && method.hasSubstitutedParameters()) {
+//		    scope.problemReporter().unsafeRawInvocation((ASTNode)invocationSite, method);
+//		} else if (rawOriginalGenericMethod != null) {
+//		    scope.problemReporter().unsafeRawGenericMethodInvocation((ASTNode)invocationSite, method);
+//		}
 	}
 	public ASTNode concreteStatement() {
 		return this;
@@ -662,5 +662,10 @@ public static void resolveDeprecatedAnnotations(BlockScope scope, Annotation[] a
 
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
 		// do nothing by default
+	}
+	
+	public boolean isInferred()
+	{
+		return false;
 	}
 }

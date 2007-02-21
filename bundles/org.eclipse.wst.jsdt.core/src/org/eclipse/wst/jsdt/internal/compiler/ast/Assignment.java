@@ -177,7 +177,7 @@ public TypeBinding resolveType(BlockScope scope) {
 		scope.problemReporter().expressionShouldBeAVariable(this.lhs);
 		return null;
 	}
-	TypeBinding lhsType = lhs.resolveType(scope);
+	TypeBinding lhsType = lhs.resolveType(scope,true);
 	this.expression.setExpectedType(lhsType); // needed in case of generic method invocation
 	if (lhsType != null) 
 		this.resolvedType = lhsType.capture(scope, this.sourceEnd);

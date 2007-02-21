@@ -113,12 +113,13 @@ public class ArrayInitializer extends Expression {
 
 	public StringBuffer printExpression(int indent, StringBuffer output) {
 	
-		output.append('{');
+		output.append('[');
 		if (expressions != null) { 	
 			int j = 20 ; 
 			for (int i = 0 ; i < expressions.length ; i++) {	
 				if (i > 0) output.append(", "); //$NON-NLS-1$
-				expressions[i].printExpression(0, output);
+				if (expressions[i]!=null)
+					expressions[i].printExpression(0, output);
 				j -- ;
 				if (j == 0) {
 					output.append('\n');
@@ -127,7 +128,7 @@ public class ArrayInitializer extends Expression {
 				}
 			}
 		}
-		return output.append('}');
+		return output.append(']');
 	}
 
 	public TypeBinding resolveTypeExpecting(BlockScope scope, TypeBinding expectedType) {
@@ -187,7 +188,7 @@ public class ArrayInitializer extends Expression {
 		TypeBinding leafElementType = null;
 		int dim = 1;
 		if (this.expressions == null) {
-			leafElementType = scope.getJavaLangObject();
+			leafElementType = TypeBinding.ANY;
 		} else {
 			Expression expression = this.expressions[0];
 			while(expression != null && expression instanceof ArrayInitializer) {
@@ -212,7 +213,7 @@ public class ArrayInitializer extends Expression {
 			}		}
 		if (leafElementType != null) {
 			this.resolvedType = scope.createArrayType(leafElementType, dim);
-			if (expectedType != null)
+			if (expectedType != null )
 				scope.problemReporter().typeMismatchError(this.resolvedType, expectedType, this);
 		}
 		return null;

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.*;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -524,9 +525,10 @@ public TypeBinding resolveType(BlockScope scope) {
 	// the case receiverType.isArrayType and token = 'length' is handled by the scope API
 	FieldBinding fieldBinding = this.codegenBinding = this.binding = scope.getField(this.receiverType, token, this);
 	if (!fieldBinding.isValidBinding()) {
-		constant = Constant.NotAConstant;
-		scope.problemReporter().invalidField(this, this.receiverType);
-		return null;
+//		constant = Constant.NotAConstant;
+//		scope.problemReporter().invalidField(this, this.receiverType);
+//		return null;
+		return TypeBinding.ANY;
 	}
 	TypeBinding receiverErasure = this.receiverType.erasure();
 	if (receiverErasure instanceof ReferenceBinding) {
@@ -581,4 +583,9 @@ public void traverse(ASTVisitor visitor, BlockScope scope) {
 	}
 	visitor.endVisit(this, scope);
 }
+public boolean isPrototype()
+{
+	return (CharOperation.equals(TypeConstants.PROTOTYPE,this.token));
+}
+
 }

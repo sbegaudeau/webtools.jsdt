@@ -781,7 +781,7 @@ public class EqualExpression extends BinaryExpression {
 			}
 		}
 		// both base type
-		if (leftType.isBaseType() && rightType.isBaseType()) {
+		if ( leftType.isBasicType() && rightType.isBasicType()) {
 			int leftTypeID = leftType.id;
 			int rightTypeID = rightType.id;
 	

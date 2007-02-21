@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Iterator;
 
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -19,9 +21,12 @@ import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ImportBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.parser.NLSTag;
@@ -30,6 +35,9 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.AbortMethod;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortType;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
+import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
+import org.eclipse.wst.jsdt.internal.infer.InferredMethod;
+import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 public class CompilationUnitDeclaration
 	extends ASTNode
@@ -47,20 +55,28 @@ public class CompilationUnitDeclaration
 	public ImportReference currentPackage;
 	public ImportReference[] imports;
 	public TypeDeclaration[] types;
+	public ProgramElement[] statements;
 	public int[][] comments;
 
+
+	public ArrayList inferredTypes;
+	
 	public boolean ignoreFurtherInvestigation = false;	// once pointless to investigate due to errors
 	public boolean ignoreMethodBodies = false;
 	public CompilationUnitScope scope;
 	public ProblemReporter problemReporter;
 	public CompilationResult compilationResult;
 
+	
 	public LocalTypeBinding[] localTypes;
 	public int localTypeCount = 0;
+
+	public CompilationUnitBinding compilationUnitBinding;
+	
 	
 	public boolean isPropagatingInnerClassEmulation;
 
-	public Javadoc javadoc; // 1.5 addition for package-info.java
+	public Javadoc javadoc; // 1.5 addition for package-info.js
 	
 	public NLSTag[] nlsTags;
 	private StringLiteral[] stringLiterals;
@@ -190,6 +206,22 @@ public class CompilationUnitDeclaration
 		}
 		return null;
 	}
+	
+	
+	public AbstractMethodDeclaration declarationOf(MethodBinding methodBinding) {
+		if (methodBinding != null && this.statements != null) {
+			for (int i = 0, max = this.statements.length; i < max; i++) {
+				if (this.statements[i] instanceof AbstractMethodDeclaration)
+				{
+					AbstractMethodDeclaration methodDecl = (AbstractMethodDeclaration)this.statements[i];
+					if (methodDecl.binding == methodBinding)
+						return methodDecl;
+				}
+			}
+		}
+		return null;
+	}
+
 
 	/**
 	 * Bytecode generation
@@ -245,7 +277,7 @@ public class CompilationUnitDeclaration
 
 	public boolean isEmpty() {
 
-		return (currentPackage == null) && (imports == null) && (types == null);
+		return (currentPackage == null) && (imports == null) && (types == null) && (statements==null);
 	}
 
 	public boolean isPackageInfo() {
@@ -275,6 +307,11 @@ public class CompilationUnitDeclaration
 				types[i].print(indent, output).append("\n"); //$NON-NLS-1$
 			}
 		}
+		if (statements != null) {
+			for (int i = 0; i < statements.length; i++) {
+				statements[i].printStatement(indent, output).append("\n"); //$NON-NLS-1$
+			}
+		}
 		return output;
 	}
 	
@@ -288,7 +325,7 @@ public class CompilationUnitDeclaration
 				
 			LocalTypeBinding localType = localTypes[i];
 			// only propagate for reachable local types
-			if ((localType.scope.referenceType().bits & IsReachable) != 0) {
+			if ((localType.classScope.referenceType().bits & IsReachable) != 0) {
 				localType.updateInnerEmulationDependents();
 			}
 		}
@@ -357,6 +394,11 @@ public class CompilationUnitDeclaration
 			if (types != null) {
 				for (int i = startingTypeIndex, count = types.length; i < count; i++) {
 					types[i].resolve(scope);
+				}
+			}
+			if (statements != null) {
+				for (int i = 0, count = statements.length; i < count; i++) {
+					statements[i].resolve(scope);
 				}
 			}
 			if (!this.compilationResult.hasErrors()) checkUnusedImports();
@@ -495,25 +537,82 @@ public class CompilationUnitDeclaration
 						}
 					}
 				}
-				if (currentPackage != null) {
-					currentPackage.traverse(visitor, this.scope);
-				}
-				if (imports != null) {
-					int importLength = imports.length;
-					for (int i = 0; i < importLength; i++) {
-						imports[i].traverse(visitor, this.scope);
+				
+//				if (currentPackage != null) {
+//					currentPackage.traverse(visitor, this.scope);
+//				}
+//				if (imports != null) {
+//					int importLength = imports.length;
+//					for (int i = 0; i < importLength; i++) {
+//						imports[i].traverse(visitor, this.scope);
+//					}
+//				}
+//				if (types != null) {
+//					int typesLength = types.length;
+//					for (int i = 0; i < typesLength; i++) {
+//						types[i].traverse(visitor, this.scope);
+//					}
+//				}
+				if (statements != null) {
+					int statementsLength = statements.length;
+					for (int i = 0; i < statementsLength; i++) {
+						statements[i].traverse(visitor, this.scope);
 					}
 				}
-				if (types != null) {
-					int typesLength = types.length;
-					for (int i = 0; i < typesLength; i++) {
-						types[i].traverse(visitor, this.scope);
-					}
-				}
+				traverseInferredTypes(visitor,unitScope);
 			}
 			visitor.endVisit(this, this.scope);
 		} catch (AbortCompilationUnit e) {
 			// ignore
 		}
+	}
+
+	public void traverseInferredTypes(ASTVisitor visitor,BlockScope unitScope) {
+		if (this.inferredTypes!=null)
+		{
+			boolean continueVisiting=true;
+			for (Iterator iter = this.inferredTypes.iterator();  continueVisiting && iter.hasNext();) {
+				InferredType inferredType = (InferredType) iter.next();
+				continueVisiting=visitor.visit(inferredType, scope);
+				if (inferredType.attributes!=null)
+					for (Iterator iterator = inferredType.attributes.iterator(); continueVisiting && iterator
+							.hasNext();) {
+						InferredAttribute inferredAttribute = (InferredAttribute) iterator.next();
+						visitor.visit(inferredAttribute, scope);
+					}
+				if (inferredType.methods!=null)
+					for (Iterator iterator = inferredType.methods.iterator();  continueVisiting && iterator
+							.hasNext();) {
+						InferredMethod inferredMethod = (InferredMethod) iterator.next();
+						visitor.visit(inferredMethod, scope);
+					}
+				visitor.endVisit(inferredType, scope);
+			}
+		}
+	}
+	
+	public InferredType findInferredType(char [] name)
+	{
+		if (inferredTypes!=null)
+		 for (Iterator iter = inferredTypes.iterator(); iter.hasNext();) {
+			InferredType type = (InferredType) iter.next();
+			if (CharOperation.equals(name,type.getName()))
+					return type; 
+		}
+		return null;
+	}
+	
+	public void printInferredTypes(StringBuffer sb)
+	{
+		if (inferredTypes!=null)
+			 for (Iterator iter = inferredTypes.iterator(); iter.hasNext();) {
+				InferredType type = (InferredType) iter.next();
+				if (type.isDefinition)
+				{
+					type.print(0,sb);
+					sb.append("\n");
+				}
+			}
+		
 	}
 }

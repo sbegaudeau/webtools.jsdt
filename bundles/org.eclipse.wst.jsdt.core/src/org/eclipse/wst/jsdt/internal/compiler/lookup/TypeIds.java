@@ -28,6 +28,11 @@ public interface TypeIds {
 	final int T_int = 10;
 	final int T_JavaLangString = 11;
 	final int T_null = 12;
+	final int T_any = 13;
+	final int T_function = 14;
+
+	final int T_last_basic = 14;
+
 
 	//=========end of 4 bits constraint===========
 

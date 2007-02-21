@@ -87,6 +87,8 @@ public abstract class Expression extends Statement {
 						return constant.byteValue() == constant.doubleValue();
 					case T_long :
 						return constant.longValue() == constant.doubleValue();
+					case T_any :
+						return true;
 					default :
 						return false; //boolean
 				} 
@@ -107,6 +109,8 @@ public abstract class Expression extends Statement {
 						return true;
 					case T_long :
 						return constant.longValue() == constant.byteValue();
+					case T_any :
+						return true;
 					default :
 						return false; //boolean
 				} 
@@ -127,6 +131,8 @@ public abstract class Expression extends Statement {
 						return constant.byteValue() == constant.shortValue();
 					case T_long :
 						return constant.longValue() == constant.shortValue();
+					case T_any :
+						return true;
 					default :
 						return false; //boolean
 				} 
@@ -147,6 +153,8 @@ public abstract class Expression extends Statement {
 						return constant.byteValue() == constant.intValue();
 					case T_long :
 						return constant.longValue() == constant.intValue();
+					case T_any :
+						return true;
 					default :
 						return false; //boolean
 				} 
@@ -167,6 +175,9 @@ public abstract class Expression extends Statement {
 						return constant.byteValue() == constant.longValue();
 					case T_long :
 						return true;
+					case T_any :
+						return true;
+						
 					default :
 						return false; //boolean
 				} 
@@ -215,7 +226,9 @@ public abstract class Expression extends Statement {
 		// we then do not report an obvious-cascade-error.
 	
 		if (castType == null || expressionType == null) return true;
-	
+		if (castType==expressionType || castType.id==expressionType.id)
+			return true;
+
 		// identity conversion cannot be performed upfront, due to side-effects
 		// like constant propagation
 		boolean use15specifics = scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5;
@@ -763,6 +776,8 @@ public boolean checkUnsafeCast(Scope scope, TypeBinding castType, TypeBinding ex
 			return false;
 		if (constantType == targetType)
 			return true;
+		if (constantType.id==targetType.id)
+			return true;
 		if (constantType.isBaseType() && targetType.isBaseType()) {
 			//No free assignment conversion from anything but to integral ones.
 			if ((constantType == TypeBinding.INT
@@ -884,6 +899,11 @@ public void markAsNonNull() {
 		return;
 	}
 
+	public TypeBinding resolveType(BlockScope scope, boolean define) {
+		return resolveType(scope);
+	}
+
+
 	public TypeBinding resolveType(BlockScope scope) {
 		// by default... subclasses should implement a better TB if required.
 		return null;
@@ -952,10 +972,26 @@ public void markAsNonNull() {
 
 		return this;
 	}
+	
+	public void traverse(ASTVisitor visitior, Scope scope)
+	{
+		if (scope instanceof BlockScope)
+			traverse(visitior,(BlockScope)scope);
+		else if (scope instanceof ClassScope)
+			traverse(visitior,(ClassScope)scope);
+		else if (scope instanceof CompilationUnitScope)
+			traverse(visitior,(CompilationUnitScope)scope);
+	}
+	
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
 		// nothing to do
 	}
 	public void traverse(ASTVisitor visitor, ClassScope scope) {
 		// nothing to do
 	}
+	public boolean isPrototype()
+	{
+		return false;
+	}
+
 }

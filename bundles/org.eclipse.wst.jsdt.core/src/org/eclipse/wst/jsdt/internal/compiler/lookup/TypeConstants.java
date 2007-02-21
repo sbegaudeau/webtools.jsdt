@@ -13,7 +13,9 @@ package org.eclipse.wst.jsdt.internal.compiler.lookup;
 // TODO should rename into TypeNames (once extracted last non name constants)
 public interface TypeConstants {
 	
+	char[] PROTOTYPE = "prototype".toCharArray(); //$NON-NLS-1$
 	char[] JAVA = "java".toCharArray(); //$NON-NLS-1$
+	char[] SYSTEMJS = "system.js".toCharArray(); //$NON-NLS-1$
 	char[] LANG = "lang".toCharArray(); //$NON-NLS-1$
 	char[] IO = "io".toCharArray(); //$NON-NLS-1$
 	char[] UTIL = "util".toCharArray(); //$NON-NLS-1$
@@ -73,6 +75,8 @@ public interface TypeConstants {
     char[] UPPER_LOCAL_VARIABLE = "LOCAL_VARIABLE".toCharArray(); //$NON-NLS-1$
     char[] UPPER_ANNOTATION_TYPE = "ANNOTATION_TYPE".toCharArray(); //$NON-NLS-1$
     char[] UPPER_PACKAGE = "PACKAGE".toCharArray(); //$NON-NLS-1$
+	char[] UNDEFINED = "undefined".toCharArray(); //$NON-NLS-1$
+	char[] ANY = "any".toCharArray(); //$NON-NLS-1$
  
 	// Constant compound names
 	char[][] JAVA_LANG = {JAVA, LANG};
@@ -88,8 +92,12 @@ public interface TypeConstants {
 	char[][] JAVA_LANG_ILLEGALARGUMENTEXCEPTION = {JAVA, LANG, "IllegalArgumentException".toCharArray()}; //$NON-NLS-1$
 	char[][] JAVA_LANG_ITERABLE = {JAVA, LANG, "Iterable".toCharArray()}; //$NON-NLS-1$
 	char[][] JAVA_LANG_NOCLASSDEFERROR = {JAVA, LANG, "NoClassDefError".toCharArray()}; //$NON-NLS-1$
-	char[][] JAVA_LANG_OBJECT = {JAVA, LANG, OBJECT};
-	char[][] JAVA_LANG_STRING = {JAVA, LANG, "String".toCharArray()}; //$NON-NLS-1$
+	char[][] JAVA_LANG_OBJECT = {/*JAVA, LANG, */SYSTEMJS, OBJECT};
+	char[][] JAVA_LANG_STRING = {/*JAVA, LANG, */SYSTEMJS, "String".toCharArray()}; //$NON-NLS-1$
+	char[][] NUMBER = {/*JAVA, LANG, */SYSTEMJS,  "Number".toCharArray()}; //$NON-NLS-1$
+	char[][] FUNCTION = {/*JAVA, LANG, */SYSTEMJS,  "Function".toCharArray()}; //$NON-NLS-1$
+	char[][] BOOLEAN_OBJECT = {/*JAVA, LANG, */SYSTEMJS,  "Boolean".toCharArray()}; //$NON-NLS-1$
+	char[][] ARRAY = {/*JAVA, LANG, */SYSTEMJS,  "Array".toCharArray()}; //$NON-NLS-1$
 	char[][] JAVA_LANG_STRINGBUFFER = {JAVA, LANG, "StringBuffer".toCharArray()}; //$NON-NLS-1$
 	char[][] JAVA_LANG_STRINGBUILDER = {JAVA, LANG, "StringBuilder".toCharArray()}; //$NON-NLS-1$
 	char[][] JAVA_LANG_SYSTEM = {JAVA, LANG, "System".toCharArray()}; //$NON-NLS-1$

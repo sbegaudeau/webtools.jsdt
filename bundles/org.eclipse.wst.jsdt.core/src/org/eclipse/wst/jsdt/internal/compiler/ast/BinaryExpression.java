@@ -1868,13 +1868,16 @@ public TypeBinding resolveType(BlockScope scope) {
 			this.resolvedType = TypeBinding.FLOAT;
 			break;
 		case T_int :
-			this.resolvedType = TypeBinding.INT;
+			this.resolvedType = scope.getJavaLangNumber();
 			break;
 		case T_long :
 			this.resolvedType = TypeBinding.LONG;
 			break;
 		case T_JavaLangString :
 			this.resolvedType = scope.getJavaLangString();
+			break;
+		case T_any:
+			this.resolvedType = TypeBinding.ANY;
 			break;
 		default : //error........
 			this.constant = Constant.NotAConstant;

@@ -7,7 +7,6 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *     Perry James - nullStatus method improvement (165346)
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
@@ -45,6 +44,9 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		OperatorSignatures[RIGHT_SHIFT] = get_RIGHT_SHIFT();
 		OperatorSignatures[UNSIGNED_RIGHT_SHIFT] = get_UNSIGNED_RIGHT_SHIFT();
 		OperatorSignatures[XOR] = get_XOR();
+		OperatorSignatures[EQUAL_EQUAL_EQUAL] = get_EQUAL_EQUAL();
+		OperatorSignatures[NOT_EQUAL_EQUAL] = get_EQUAL_EQUAL();
+		OperatorSignatures[INSTANCEOF] = get_EQUAL_EQUAL();
 	}
 
 	public static final String generateTableTestCase(){
@@ -74,7 +76,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 					case T_null		: return "null"; //$NON-NLS-1$
 					case T_short	: return "((short) 5)"; //$NON-NLS-1$
 					case T_JavaLangObject	: return "null";} //$NON-NLS-1$
-				return Util.EMPTY_STRING;}
+				return Util.EMPTY_STRING;} //$NON-NLS-1$
 	
 			public  final String type(int code){
 				switch(code){ 
@@ -205,6 +207,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_byte<<4)+T_char] 		= (Byte2Int<<12) +(Char2Int<<4) +T_int;
 		table[(T_byte<<4)+T_int] 		= (Byte2Int<<12) +(Int2Int<<4)  +T_int;
 		//	table[(T_byte<<4)+T_null] 		= T_undefined;
+			table[(T_byte<<4)+T_any] 		= T_any;
 		
 		//	table[(T_long<<4)+T_undefined] 	= T_undefined;
 		table[(T_long<<4)+T_byte] 		= (Long2Long<<12)+(Byte2Long<<4)+T_long;
@@ -219,6 +222,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_long<<4)+T_char] 		= (Long2Long<<12)+(Char2Long<<4)+T_long;
 		table[(T_long<<4)+T_int] 		= (Long2Long<<12)+(Int2Long<<4)+T_long;
 		//	table[(T_long<<4)+T_null] 		= T_undefined;
+			table[(T_long<<4)+T_any] 		= T_any;
 		
 		//	table[(T_short<<4)+T_undefined] 	= T_undefined;
 		table[(T_short<<4)+T_byte] 			= (Short2Int<<12)+(Byte2Int<<4)+T_int;
@@ -233,6 +237,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_short<<4)+T_char] 			= (Short2Int<<12)+(Char2Int<<4)+T_int;
 		table[(T_short<<4)+T_int] 			= (Short2Int<<12)+(Int2Int<<4)+T_int;
 		//	table[(T_short<<4)+T_null] 			= T_undefined;
+			table[(T_short<<4)+T_any] 			= T_any;
 		
 		//	table[(T_void<<4)+T_undefined] 	= T_undefined;
 		//	table[(T_void<<4)+T_byte] 		= T_undefined;
@@ -247,6 +252,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_void<<4)+T_char] 		= T_undefined;
 		//	table[(T_void<<4)+T_int] 		= T_undefined;
 		//	table[(T_void<<4)+T_null] 		= T_undefined;
+			table[(T_void<<4)+T_any] 		= T_any;
 		
 		//	table[(T_String<<4)+T_undefined] 	= T_undefined;
 		//	table[(T_String<<4)+T_byte] 		= T_undefined;
@@ -261,6 +267,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_String<<4)+T_char] 		= T_undefined;
 		//	table[(T_String<<4)+T_int] 			= T_undefined;
 		//	table[(T_String<<4)+T_null] 		= T_undefined;
+			table[(T_JavaLangString<<4)+T_any] 		= T_any;
 		
 		//	table[(T_Object<<4)+T_undefined] 	= T_undefined;
 		//	table[(T_Object<<4)+T_byte] 		= T_undefined;
@@ -275,6 +282,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_Object<<4)+T_char] 		= T_undefined;
 		//	table[(T_Object<<4)+T_int] 			= T_undefined;
 		//	table[(T_Object<<4)+T_null] 		= T_undefined;
+			table[(T_JavaLangObject<<4)+T_any] 		= T_any;
 		
 		//	table[(T_double<<4)+T_undefined] 	= T_undefined;
 		//	table[(T_double<<4)+T_byte] 		= T_undefined;
@@ -289,6 +297,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_double<<4)+T_char] 		= T_undefined;
 		//	table[(T_double<<4)+T_int] 			= T_undefined;
 		//	table[(T_double<<4)+T_null] 		= T_undefined;
+			table[(T_double<<4)+T_any] 		= T_any;
 		
 		//	table[(T_float<<4)+T_undefined] 	= T_undefined;
 		//	table[(T_float<<4)+T_byte] 			= T_undefined;
@@ -303,6 +312,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_float<<4)+T_char] 			= T_undefined;
 		//	table[(T_float<<4)+T_int] 			= T_undefined;
 		//	table[(T_float<<4)+T_null] 			= T_undefined;
+			table[(T_float<<4)+T_any] 		= T_any;
 		
 		//	table[(T_boolean<<4)+T_undefined] 		= T_undefined;
 		//	table[(T_boolean<<4)+T_byte] 			= T_undefined;
@@ -317,6 +327,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_boolean<<4)+T_char] 			= T_undefined;
 		//	table[(T_boolean<<4)+T_int] 			= T_undefined;
 		//	table[(T_boolean<<4)+T_null] 			= T_undefined;
+		table[(T_boolean<<4)+T_any] 		= T_any;
 			
 		//	table[(T_char<<4)+T_undefined] 		= T_undefined;
 		table[(T_char<<4)+T_byte] 			= (Char2Int<<12)+(Byte2Int<<4)+T_int;
@@ -331,6 +342,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_char<<4)+T_char] 			= (Char2Int<<12)+(Char2Int<<4)+T_int;
 		table[(T_char<<4)+T_int] 			= (Char2Int<<12)+(Int2Int<<4)+T_int;
 		//	table[(T_char<<4)+T_null] 			= T_undefined;
+		table[(T_char<<4)+T_any] 		= T_any;
 			
 		//	table[(T_int<<4)+T_undefined] 	= T_undefined;
 		table[(T_int<<4)+T_byte] 		= (Int2Int<<12)+(Byte2Int<<4)+T_int;
@@ -345,6 +357,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_int<<4)+T_char] 		= (Int2Int<<12)+(Char2Int<<4)+T_int;
 		table[(T_int<<4)+T_int] 		= (Int2Int<<12)+(Int2Int<<4)+T_int;
 		//	table[(T_int<<4)+T_null] 		= T_undefined;
+		table[(T_int<<4)+T_any] 		= T_any;
 		
 		//	table[(T_null<<4)+T_undefined] 		= T_undefined;
 		//	table[(T_null<<4)+T_byte] 			= T_undefined;
@@ -359,6 +372,22 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_null<<4)+T_char] 			= T_undefined;
 		//	table[(T_null<<4)+T_int] 			= T_undefined;
 		//	table[(T_null<<4)+T_null] 			= T_undefined;
+		table[(T_null<<4)+T_any] 		= T_any;
+	
+			table[(T_any<<4)+T_undefined] 		= T_any;
+			table[(T_any<<4)+T_byte] 			= T_any;
+			table[(T_any<<4)+T_long] 			= T_any;
+			table[(T_any<<4)+T_short] 			= T_any;
+			table[(T_any<<4)+T_void] 			= T_any;
+			table[(T_any<<4)+T_JavaLangString] 		= T_any;
+			table[(T_any<<4)+T_JavaLangObject] 		= T_any;
+			table[(T_any<<4)+T_double] 		= T_any;
+			table[(T_any<<4)+T_float] 			= T_any;
+			table[(T_any<<4)+T_boolean] 		= T_any;
+			table[(T_any<<4)+T_char] 			= T_any;
+			table[(T_any<<4)+T_int] 			= T_any;
+			table[(T_any<<4)+T_null] 			= T_any;
+			table[(T_any<<4)+T_any] 			= T_any;
 	
 		return table;
 	}
@@ -399,6 +428,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//     table[(T_byte<<4)+T_char] 		= T_undefined;
 		//     table[(T_byte<<4)+T_int] 		= T_undefined;
 		//     table[(T_byte<<4)+T_null] 		= T_undefined;
+		table[(T_byte<<4)+T_any] 		= T_boolean;
 		
 		//     table[(T_long<<4)+T_undefined] 	= T_undefined;
 		//     table[(T_long<<4)+T_byte] 		= T_undefined;
@@ -413,6 +443,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//     table[(T_long<<4)+T_char] 		= T_undefined;
 		//     table[(T_long<<4)+T_int] 		= T_undefined;
 		//     table[(T_long<<4)+T_null] 		= T_undefined;
+		table[(T_long<<4)+T_any] 		= T_boolean;
 		
 		//     table[(T_short<<4)+T_undefined] 	= T_undefined;
 		//     table[(T_short<<4)+T_byte] 		= T_undefined;
@@ -427,7 +458,8 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//     table[(T_short<<4)+T_char] 		= T_undefined;
 		//     table[(T_short<<4)+T_int] 		= T_undefined;
 		//     table[(T_short<<4)+T_null] 		= T_undefined;
-		
+		table[(T_short<<4)+T_any] 			= T_boolean;
+			
 		//     table[(T_void<<4)+T_undefined] 	= T_undefined;
 		//     table[(T_void<<4)+T_byte] 		= T_undefined;
 		//     table[(T_void<<4)+T_long] 		= T_undefined;
@@ -441,6 +473,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//     table[(T_void<<4)+T_char] 		= T_undefined;
 		//     table[(T_void<<4)+T_int] 		= T_undefined;
 		//     table[(T_void<<4)+T_null] 		= T_undefined;
+		table[(T_short<<4)+T_any] 			= T_boolean;
 		
 		//     table[(T_String<<4)+T_undefined] 	= T_undefined;
 		//     table[(T_String<<4)+T_byte] 		= T_undefined;
@@ -455,6 +488,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//     table[(T_String<<4)+T_char] 		= T_undefined;
 		//     table[(T_String<<4)+T_int] 			= T_undefined;
 		//     table[(T_String<<4)+T_null] 		= T_undefined;
+		table[(T_JavaLangString<<4)+T_any] 			= T_boolean;
 		
 		//     table[(T_Object<<4)+T_undefined] 	= T_undefined;
 		//     table[(T_Object<<4)+T_byte] 		= T_undefined;
@@ -469,6 +503,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//     table[(T_Object<<4)+T_char] 		= T_undefined;
 		//     table[(T_Object<<4)+T_int] 			= T_undefined;
 		//     table[(T_Object<<4)+T_null] 		= T_undefined;
+		table[(T_JavaLangObject<<4)+T_any] 			= T_boolean;
 		
 		//     table[(T_double<<4)+T_undefined] 	= T_undefined;
 		//     table[(T_double<<4)+T_byte] 		= T_undefined;
@@ -483,6 +518,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//     table[(T_double<<4)+T_char] 		= T_undefined;
 		//     table[(T_double<<4)+T_int] 			= T_undefined;
 		//     table[(T_double<<4)+T_null] 		= T_undefined;
+		table[(T_double<<4)+T_any] 			= T_boolean;
 		
 		//     table[(T_float<<4)+T_undefined] 	= T_undefined;
 		//     table[(T_float<<4)+T_byte] 			= T_undefined;
@@ -497,6 +533,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//     table[(T_float<<4)+T_char] 			= T_undefined;
 		//     table[(T_float<<4)+T_int] 			= T_undefined;
 		//     table[(T_float<<4)+T_null] 			= T_undefined;
+		table[(T_float<<4)+T_any] 			= T_boolean;
 		
 		//     table[(T_boolean<<4)+T_undefined] 		= T_undefined;
 		//     table[(T_boolean<<4)+T_byte] 			= T_undefined;
@@ -511,6 +548,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//     table[(T_boolean<<4)+T_char] 			= T_undefined;
 		//     table[(T_boolean<<4)+T_int] 			= T_undefined;
 		//     table[(T_boolean<<4)+T_null] 			= T_undefined;
+		table[(T_boolean<<4)+T_any] 			= T_boolean;
 			
 		//     table[(T_char<<4)+T_undefined] 		= T_undefined;
 		//     table[(T_char<<4)+T_byte] 			= T_undefined;
@@ -525,6 +563,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//     table[(T_char<<4)+T_char] 			= T_undefined;
 		//     table[(T_char<<4)+T_int] 			= T_undefined;
 		//     table[(T_char<<4)+T_null] 			= T_undefined;
+		table[(T_char<<4)+T_any] 			= T_boolean;
 			
 		//     table[(T_int<<4)+T_undefined] 	= T_undefined;
 		//     table[(T_int<<4)+T_byte] 		= T_undefined;
@@ -539,6 +578,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//     table[(T_int<<4)+T_char] 		= T_undefined;
 		//     table[(T_int<<4)+T_int] 		= T_undefined;
 		//     table[(T_int<<4)+T_null] 		= T_undefined;
+		table[(T_int<<4)+T_any] 			= T_boolean;
 		
 		//     table[(T_null<<4)+T_undefined] 		= T_undefined;
 		//     table[(T_null<<4)+T_byte] 			= T_undefined;
@@ -553,6 +593,22 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//     table[(T_null<<4)+T_char] 			= T_undefined;
 		//     table[(T_null<<4)+T_int] 			= T_undefined;
 		//     table[(T_null<<4)+T_null] 			= T_undefined;
+		table[(T_null<<4)+T_any] 			= T_boolean;
+
+	   table[(T_any<<4)+T_undefined] 		= T_boolean;
+		table[(T_any<<4)+T_byte] 			= T_boolean;
+		table[(T_any<<4)+T_long] 			= T_boolean;
+		table[(T_any<<4)+T_short] 			= T_boolean;
+		table[(T_any<<4)+T_void] 			= T_boolean;
+		table[(T_any<<4)+T_JavaLangString] 		= T_boolean;
+		table[(T_any<<4)+T_JavaLangObject] 		= T_boolean;
+		table[(T_any<<4)+T_double] 		= T_boolean;
+		table[(T_any<<4)+T_float] 			= T_boolean;
+		table[(T_any<<4)+T_boolean] 		= T_boolean;
+		table[(T_any<<4)+T_char] 			= T_boolean;
+		table[(T_any<<4)+T_int] 			= T_boolean;
+		table[(T_any<<4)+T_null] 			= T_boolean;
+		table[(T_any<<4)+T_any] 			= T_boolean;
 		return table;
 	}
 
@@ -605,6 +661,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_byte<<4)+T_char] 		= (Byte2Int<<12)+(Char2Int<<4)+T_boolean;
 		table[(T_byte<<4)+T_int] 		= (Byte2Int<<12)+(Int2Int<<4)+T_boolean;
 		//	table[(T_byte<<4)+T_null] 		= T_undefined;
+		table[(T_byte<<4)+T_any] 		=  (Byte2Int<<12)+(Int2Int<<4)+T_boolean;
 	
 		//	table[(T_long<<4)+T_undefined] 	= T_undefined;
 		table[(T_long<<4)+T_byte] 		= (Long2Long<<12)+(Byte2Long<<4)+T_boolean;
@@ -619,6 +676,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_long<<4)+T_char] 		= (Long2Long<<12)+(Char2Long<<4)+T_boolean;
 		table[(T_long<<4)+T_int] 		= (Long2Long<<12)+(Int2Long<<4)+T_boolean;
 		//	table[(T_long<<4)+T_null] 		= T_undefined;
+		table[(T_long<<4)+T_any] 		= (Long2Long<<12)+(Int2Long<<4)+T_boolean;
 	
 		//	table[(T_short<<4)+T_undefined] 	= T_undefined;
 		table[(T_short<<4)+T_byte] 			= (Short2Int<<12)+(Byte2Int<<4)+T_boolean;
@@ -633,6 +691,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_short<<4)+T_char] 			= (Short2Int<<12)+(Char2Int<<4)+T_boolean;
 		table[(T_short<<4)+T_int] 			= (Short2Int<<12)+(Int2Int<<4)+T_boolean;
 		//	table[(T_short<<4)+T_null] 			= T_undefined;
+		table[(T_short<<4)+T_any] 			= (Short2Int<<12)+(Int2Int<<4)+T_boolean;
 		
 		//	table[(T_void<<4)+T_undefined] 	= T_undefined;
 		//	table[(T_void<<4)+T_byte] 		= T_undefined;
@@ -647,6 +706,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_void<<4)+T_char] 		= T_undefined;
 		//	table[(T_void<<4)+T_int] 		= T_undefined;
 		//	table[(T_void<<4)+T_null] 		= T_undefined;
+		table[(T_void<<4)+T_any] 			= T_undefined;
 		
 		//	table[(T_String<<4)+T_undefined] 	= T_undefined; 
 		//	table[(T_String<<4)+T_byte] 		= T_undefined;
@@ -664,6 +724,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_String<<4)+T_int] 			= T_undefined;
 		table[(T_JavaLangString<<4)+T_null] 		= /*Object2String                null2Object */
 											  (T_JavaLangObject<<16)+(T_JavaLangString<<12)+(T_JavaLangObject<<8)+(T_null<<4)+T_boolean;
+		table[(T_JavaLangString<<4)+T_any] 			= T_any;
 	
 		//	table[(T_Object<<4)+T_undefined] 	= T_undefined;
 		//	table[(T_Object<<4)+T_byte] 		= T_undefined;
@@ -681,6 +742,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_Object<<4)+T_int] 			= T_undefined;
 		table[(T_JavaLangObject<<4)+T_null] 		= /*Object2Object                 null2Object*/
 											  (T_JavaLangObject<<16)+(T_JavaLangObject<<12)+(T_JavaLangObject<<8)+(T_null<<4)+T_boolean;
+		table[(T_JavaLangObject<<4)+T_any] 			= T_boolean;
 	
 		//	table[(T_double<<4)+T_undefined] 	= T_undefined;
 		table[(T_double<<4)+T_byte] 		= (Double2Double<<12)+(Byte2Double<<4)+T_boolean;
@@ -695,6 +757,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_double<<4)+T_char] 		= (Double2Double<<12)+(Char2Double<<4)+T_boolean;
 		table[(T_double<<4)+T_int] 			= (Double2Double<<12)+(Int2Double<<4)+T_boolean;
 		//	table[(T_double<<4)+T_null] 		= T_undefined;
+		table[(T_double<<4)+T_any] 			= T_boolean;
 	
 		//	table[(T_float<<4)+T_undefined] 	= T_undefined;
 		table[(T_float<<4)+T_byte] 			= (Float2Float<<12)+(Byte2Float<<4)+T_boolean;
@@ -709,6 +772,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_float<<4)+T_char] 			= (Float2Float<<12)+(Char2Float<<4)+T_boolean;
 		table[(T_float<<4)+T_int] 			= (Float2Float<<12)+(Int2Float<<4)+T_boolean;
 		//	table[(T_float<<4)+T_null] 			= T_undefined;
+		table[(T_float<<4)+T_any] 			= T_boolean;
 		
 		//	table[(T_boolean<<4)+T_undefined] 		= T_undefined;
 		//	table[(T_boolean<<4)+T_byte] 			= T_undefined;
@@ -723,6 +787,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_boolean<<4)+T_char] 			= T_undefined;
 		//	table[(T_boolean<<4)+T_int] 			= T_undefined;
 		//	table[(T_boolean<<4)+T_null] 			= T_undefined;
+		table[(T_boolean<<4)+T_any] 			= T_boolean;
 			
 		//	table[(T_char<<4)+T_undefined] 		= T_undefined;
 		table[(T_char<<4)+T_byte] 			= (Char2Int<<12)+(Byte2Int<<4)+T_boolean;
@@ -737,6 +802,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_char<<4)+T_char] 			= (Char2Int<<12)+(Char2Int<<4)+T_boolean;
 		table[(T_char<<4)+T_int] 			= (Char2Int<<12)+(Int2Int<<4)+T_boolean;
 		//	table[(T_char<<4)+T_null] 			= T_undefined;
+		table[(T_char<<4)+T_any] 			= T_boolean;
 			
 		//	table[(T_int<<4)+T_undefined] 	= T_undefined;
 		table[(T_int<<4)+T_byte] 		= (Int2Int<<12)+(Byte2Int<<4)+T_boolean;
@@ -751,6 +817,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_int<<4)+T_char] 		= (Int2Int<<12)+(Char2Int<<4)+T_boolean;
 		table[(T_int<<4)+T_int] 		= (Int2Int<<12)+(Int2Int<<4)+T_boolean;
 		//	table[(T_int<<4)+T_null] 		= T_undefined;
+		table[(T_int<<4)+T_any] 			= T_boolean;
 		
 		//	table[(T_null<<4)+T_undefined] 		= T_undefined;
 		//	table[(T_null<<4)+T_byte] 			= T_undefined;
@@ -768,6 +835,23 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_null<<4)+T_int] 			= T_undefined;
 		table[(T_null<<4)+T_null] 			= /*null2Object                 null2Object*/
 											  (T_JavaLangObject<<16)+(T_null<<12)+(T_JavaLangObject<<8)+(T_null<<4)+T_boolean;
+		table[(T_null<<4)+T_any] 			= T_boolean;
+		
+		table[(T_any<<4)+T_undefined] 		= T_undefined;
+		table[(T_any<<4)+T_byte] 			= T_boolean;
+		table[(T_any<<4)+T_long] 			= T_boolean;
+		table[(T_any<<4)+T_short] 			= T_boolean;
+		table[(T_any<<4)+T_void] 			= T_boolean;
+		table[(T_any<<4)+T_JavaLangString] 		= T_boolean;
+		table[(T_any<<4)+T_JavaLangObject] 		= T_boolean;
+		table[(T_any<<4)+T_double] 		= T_boolean;
+		table[(T_any<<4)+T_float] 			= T_boolean;
+		table[(T_any<<4)+T_boolean] 		= T_boolean;
+		table[(T_any<<4)+T_char] 			= T_boolean;
+		table[(T_any<<4)+T_int] 			= T_boolean;
+		table[(T_any<<4)+T_null] 			= T_boolean;
+		table[(T_any<<4)+T_any] 			= T_boolean;
+
 		return table;
 	}
 
@@ -829,6 +913,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_byte<<4)+T_char] 		= (Byte2Int<<12)+(Char2Int<<4)+T_int;
 		table[(T_byte<<4)+T_int] 		= (Byte2Int<<12)+(Int2Int<<4)+T_int;
 		//	table[(T_byte<<4)+T_null] 		= T_undefined;
+		table[(T_byte<<4)+T_any] 		= T_any;
 		
 		//	table[(T_long<<4)+T_undefined] 	= T_undefined;
 		table[(T_long<<4)+T_byte] 		= (Long2Long<<12)+(Byte2Int<<4)+T_long;
@@ -843,6 +928,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_long<<4)+T_char] 		= (Long2Long<<12)+(Char2Int<<4)+T_long;
 		table[(T_long<<4)+T_int] 		= (Long2Long<<12)+(Int2Int<<4)+T_long;
 		//	table[(T_long<<4)+T_null] 		= T_undefined;
+		table[(T_long<<4)+T_any] 		= T_any;
 		
 		//	table[(T_short<<4)+T_undefined] 	= T_undefined;
 		table[(T_short<<4)+T_byte] 			= (Short2Int<<12)+(Byte2Int<<4)+T_int;
@@ -857,6 +943,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_short<<4)+T_char] 			= (Short2Int<<12)+(Char2Int<<4)+T_int;
 		table[(T_short<<4)+T_int] 			= (Short2Int<<12)+(Int2Int<<4)+T_int;
 		//	table[(T_short<<4)+T_null] 			= T_undefined;
+		table[(T_void<<4)+T_any] 			= T_any;
 		
 		//	table[(T_void<<4)+T_undefined] 	= T_undefined;
 		//	table[(T_void<<4)+T_byte] 		= T_undefined;
@@ -871,6 +958,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_void<<4)+T_char] 		= T_undefined;
 		//	table[(T_void<<4)+T_int] 		= T_undefined;
 		//	table[(T_void<<4)+T_null] 		= T_undefined;
+		table[(T_void<<4)+T_any] 			= T_any;
 		
 		//	table[(T_String<<4)+T_undefined] 	= T_undefined;
 		//	table[(T_String<<4)+T_byte] 		= T_undefined;
@@ -885,6 +973,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_String<<4)+T_char] 		= T_undefined;
 		//	table[(T_String<<4)+T_int] 			= T_undefined;
 		//	table[(T_String<<4)+T_null] 		= T_undefined;
+		table[(T_JavaLangString<<4)+T_any] 			= T_any;
 		
 		//	table[(T_Object<<4)+T_undefined] 	= T_undefined;
 		//	table[(T_Object<<4)+T_byte] 		= T_undefined;
@@ -899,6 +988,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_Object<<4)+T_char] 		= T_undefined;
 		//	table[(T_Object<<4)+T_int] 			= T_undefined;
 		//	table[(T_Object<<4)+T_null] 		= T_undefined;
+		table[(T_JavaLangObject<<4)+T_any] 			= T_any;
 		
 		//	table[(T_double<<4)+T_undefined] 	= T_undefined;
 		//	table[(T_double<<4)+T_byte] 		= T_undefined;
@@ -913,6 +1003,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_double<<4)+T_char] 		= T_undefined;
 		//	table[(T_double<<4)+T_int] 			= T_undefined;
 		//	table[(T_double<<4)+T_null] 		= T_undefined;
+		table[(T_double<<4)+T_any] 			= T_any;
 		
 		//	table[(T_float<<4)+T_undefined] 	= T_undefined;
 		//	table[(T_float<<4)+T_byte] 			= T_undefined;
@@ -927,6 +1018,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_float<<4)+T_char] 			= T_undefined;
 		//	table[(T_float<<4)+T_int] 			= T_undefined;
 		//	table[(T_float<<4)+T_null] 			= T_undefined;
+		table[(T_float<<4)+T_any] 			= T_any;
 		
 		//	table[(T_boolean<<4)+T_undefined] 		= T_undefined;
 		//	table[(T_boolean<<4)+T_byte] 			= T_undefined;
@@ -941,6 +1033,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_boolean<<4)+T_char] 			= T_undefined;
 		//	table[(T_boolean<<4)+T_int] 			= T_undefined;
 		//	table[(T_boolean<<4)+T_null] 			= T_undefined;
+		table[(T_boolean<<4)+T_any] 			= T_any;
 			
 		//	table[(T_char<<4)+T_undefined] 		= T_undefined;
 		table[(T_char<<4)+T_byte] 			= (Char2Int<<12)+(Byte2Int<<4)+T_int;
@@ -955,6 +1048,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_char<<4)+T_char] 			= (Char2Int<<12)+(Char2Int<<4)+T_int;
 		table[(T_char<<4)+T_int] 			= (Char2Int<<12)+(Int2Int<<4)+T_int;
 		//	table[(T_char<<4)+T_null] 			= T_undefined;
+		table[(T_char<<4)+T_any] 			= T_any;
 		
 		//	table[(T_int<<4)+T_undefined] 	= T_undefined;
 		table[(T_int<<4)+T_byte] 		= (Int2Int<<12)+(Byte2Int<<4)+T_int;
@@ -969,6 +1063,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_int<<4)+T_char] 		= (Int2Int<<12)+(Char2Int<<4)+T_int;
 		table[(T_int<<4)+T_int] 		= (Int2Int<<12)+(Int2Int<<4)+T_int;
 		//	table[(T_int<<4)+T_null] 		= T_undefined;
+		table[(T_int<<4)+T_any] 			= T_any;
 		
 		//	table[(T_null<<4)+T_undefined] 		= T_undefined;
 		//	table[(T_null<<4)+T_byte] 			= T_undefined;
@@ -983,7 +1078,24 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_null<<4)+T_char] 			= T_undefined;
 		//	table[(T_null<<4)+T_int] 			= T_undefined;
 		//	table[(T_null<<4)+T_null] 			= T_undefined;
+		table[(T_null<<4)+T_any] 			= T_any;
 	
+
+		table[(T_any<<4)+T_undefined] 		= T_any;
+		table[(T_any<<4)+T_byte] 			= T_any;
+		table[(T_any<<4)+T_long] 			= T_any;
+		table[(T_any<<4)+T_short] 			= T_any;
+		table[(T_any<<4)+T_void] 			= T_any;
+		table[(T_any<<4)+T_JavaLangString] 		= T_any;
+		table[(T_any<<4)+T_JavaLangObject] 		= T_any;
+		table[(T_any<<4)+T_double] 		= T_any;
+		table[(T_any<<4)+T_float] 			= T_any;
+		table[(T_any<<4)+T_boolean] 		= T_any;
+		table[(T_any<<4)+T_char] 			= T_any;
+		table[(T_any<<4)+T_int] 			= T_any;
+		table[(T_any<<4)+T_null] 			= T_any;
+		table[(T_any<<4)+T_any] 			= T_any;
+
 		return table;
 	}
 
@@ -1023,6 +1135,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_byte<<4)+T_char] 		= (Byte2Int<<12)+(Char2Int<<4)+T_boolean;
 		table[(T_byte<<4)+T_int] 		= (Byte2Int<<12)+(Int2Int<<4)+T_boolean;
 		//	table[(T_byte<<4)+T_null] 		= T_undefined;
+		table[(T_byte<<4)+T_any] 		= T_boolean;
 	
 		//	table[(T_long<<4)+T_undefined] 	= T_undefined;
 		table[(T_long<<4)+T_byte] 		= (Long2Long<<12)+(Byte2Long<<4)+T_boolean;
@@ -1037,6 +1150,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_long<<4)+T_char] 		= (Long2Long<<12)+(Char2Long<<4)+T_boolean;
 		table[(T_long<<4)+T_int] 		= (Long2Long<<12)+(Int2Long<<4)+T_boolean;
 		//	table[(T_long<<4)+T_null] 		= T_undefined;
+		table[(T_long<<4)+T_any] 		= T_boolean;
 	
 		//	table[(T_short<<4)+T_undefined] 	= T_undefined;
 		table[(T_short<<4)+T_byte] 			= (Short2Int<<12)+(Byte2Int<<4)+T_boolean;
@@ -1051,6 +1165,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_short<<4)+T_char] 			= (Short2Int<<12)+(Char2Int<<4)+T_boolean;
 		table[(T_short<<4)+T_int] 			= (Short2Int<<12)+(Int2Int<<4)+T_boolean;
 		//	table[(T_short<<4)+T_null] 			= T_undefined;
+		table[(T_short<<4)+T_any] 			= T_boolean;
 	
 		//	table[(T_void<<4)+T_undefined] 	= T_undefined;
 		//	table[(T_void<<4)+T_byte] 		= T_undefined;
@@ -1065,6 +1180,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_void<<4)+T_char] 		= T_undefined;
 		//	table[(T_void<<4)+T_int] 		= T_undefined;
 		//	table[(T_void<<4)+T_null] 		= T_undefined;
+		table[(T_void<<4)+T_any] 			= T_undefined;
 		
 		//	table[(T_String<<4)+T_undefined] 	= T_undefined; 
 		//	table[(T_String<<4)+T_byte] 		= T_undefined;
@@ -1079,6 +1195,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_String<<4)+T_char] 		= T_undefined;
 		//	table[(T_String<<4)+T_int] 			= T_undefined;
 		//	table[(T_String<<4)+T_null] 		= T_undefined;
+		table[(T_JavaLangString<<4)+T_any] 			= T_boolean;
 		
 		//	table[(T_Object<<4)+T_undefined] 	= T_undefined;
 		//	table[(T_Object<<4)+T_byte] 		= T_undefined;
@@ -1093,6 +1210,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_Object<<4)+T_char] 		= T_undefined;
 		//	table[(T_Object<<4)+T_int] 			= T_undefined;
 		//	table[(T_Object<<4)+T_null] 		= T_undefined;
+		table[(T_JavaLangObject<<4)+T_any] 			= T_boolean;
 	
 		//	table[(T_double<<4)+T_undefined] 	= T_undefined;
 		table[(T_double<<4)+T_byte] 		= (Double2Double<<12)+(Byte2Double<<4)+T_boolean;
@@ -1107,6 +1225,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_double<<4)+T_char] 		= (Double2Double<<12)+(Char2Double<<4)+T_boolean;
 		table[(T_double<<4)+T_int] 			= (Double2Double<<12)+(Int2Double<<4)+T_boolean;
 		//	table[(T_double<<4)+T_null] 		= T_undefined;
+		table[(T_double<<4)+T_any] 			= T_boolean;
 	
 		//	table[(T_float<<4)+T_undefined] 	= T_undefined;
 		table[(T_float<<4)+T_byte] 			= (Float2Float<<12)+(Byte2Float<<4)+T_boolean;
@@ -1121,6 +1240,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_float<<4)+T_char] 			= (Float2Float<<12)+(Char2Float<<4)+T_boolean;
 		table[(T_float<<4)+T_int] 			= (Float2Float<<12)+(Int2Float<<4)+T_boolean;
 		//	table[(T_float<<4)+T_null] 			= T_undefined;
+		table[(T_float<<4)+T_any] 			= T_boolean;
 		
 		//	table[(T_boolean<<4)+T_undefined] 		= T_undefined;
 		//	table[(T_boolean<<4)+T_byte] 			= T_undefined;
@@ -1135,6 +1255,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_boolean<<4)+T_char] 			= T_undefined;
 		//	table[(T_boolean<<4)+T_int] 			= T_undefined;
 		//	table[(T_boolean<<4)+T_null] 			= T_undefined;
+		table[(T_boolean<<4)+T_any] 			= T_undefined;
 			
 		//	table[(T_char<<4)+T_undefined] 		= T_undefined;
 		table[(T_char<<4)+T_byte] 			= (Char2Int<<12)+(Byte2Int<<4)+T_boolean;
@@ -1149,6 +1270,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_char<<4)+T_char] 			= (Char2Int<<12)+(Char2Int<<4)+T_boolean;
 		table[(T_char<<4)+T_int] 			= (Char2Int<<12)+(Int2Int<<4)+T_boolean;
 		//	table[(T_char<<4)+T_null] 			= T_undefined;
+		table[(T_char<<4)+T_any] 			= T_boolean;
 		
 		//	table[(T_int<<4)+T_undefined] 	= T_undefined;
 		table[(T_int<<4)+T_byte] 		= (Int2Int<<12)+(Byte2Int<<4)+T_boolean;
@@ -1163,6 +1285,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_int<<4)+T_char] 		= (Int2Int<<12)+(Char2Int<<4)+T_boolean;
 		table[(T_int<<4)+T_int] 		= (Int2Int<<12)+(Int2Int<<4)+T_boolean;
 		//	table[(T_int<<4)+T_null] 		= T_undefined;
+		table[(T_int<<4)+T_any] 			= T_boolean;
 		
 		//	table[(T_null<<4)+T_undefined] 		= T_undefined;
 		//	table[(T_null<<4)+T_byte] 			= T_undefined;
@@ -1178,6 +1301,21 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_null<<4)+T_int] 			= T_undefined;
 		//	table[(T_null<<4)+T_null] 			= T_undefined;
 	
+		table[(T_any<<4)+T_undefined] 		= T_boolean;
+		table[(T_any<<4)+T_byte] 			= T_boolean;
+		table[(T_any<<4)+T_long] 			= T_boolean;
+		table[(T_any<<4)+T_short] 			= T_boolean;
+		table[(T_any<<4)+T_void] 			= T_boolean;
+		table[(T_any<<4)+T_JavaLangString] 		= T_boolean;
+		table[(T_any<<4)+T_JavaLangObject] 		= T_boolean;
+		table[(T_any<<4)+T_double] 		= T_boolean;
+		table[(T_any<<4)+T_float] 			= T_boolean;
+		table[(T_any<<4)+T_boolean] 		= T_boolean;
+		table[(T_any<<4)+T_char] 			= T_boolean;
+		table[(T_any<<4)+T_int] 			= T_boolean;
+		table[(T_any<<4)+T_null] 			= T_boolean;
+		table[(T_any<<4)+T_any] 			= T_boolean;
+
 		return table;
 	}
 
@@ -1199,7 +1337,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//  0000   0000       0000   0000      0000
 		//  <<16   <<12       <<8    <<4       
 		
-		int[] table = (int[]) get_PLUS().clone();
+		int[] table  = (int[]) get_PLUS().clone();
 
 		// customization	
 		table[(T_JavaLangString<<4)+T_byte] 		= T_undefined;
@@ -1229,6 +1367,21 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		
 		table[(T_null<<4)	+T_null] 		= T_undefined;
 	
+		table[(T_any<<4)+T_undefined] 		= T_any;
+		table[(T_any<<4)+T_byte] 			= T_any;
+		table[(T_any<<4)+T_long] 			= T_any;
+		table[(T_any<<4)+T_short] 			= T_any;
+		table[(T_any<<4)+T_void] 			= T_any;
+		table[(T_any<<4)+T_JavaLangString] 		= T_any;
+		table[(T_any<<4)+T_JavaLangObject] 		= T_any;
+		table[(T_any<<4)+T_double] 		= T_any;
+		table[(T_any<<4)+T_float] 			= T_any;
+		table[(T_any<<4)+T_boolean] 		= T_any;
+		table[(T_any<<4)+T_char] 			= T_any;
+		table[(T_any<<4)+T_int] 			= T_any;
+		table[(T_any<<4)+T_null] 			= T_any;
+		table[(T_any<<4)+T_any] 			= T_any;
+
 		return table;
 	}
 
@@ -1302,6 +1455,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_byte<<4)+T_char] 		= (Byte2Int<<12)+(Char2Int<<4)+T_int;
 		table[(T_byte<<4)+T_int] 		= (Byte2Int<<12)+(Int2Int<<4)+T_int;
 		//	table[(T_byte<<4)+T_null] 		= T_undefined;
+		table[(T_byte<<4)+T_any] 		= T_any;
 	
 		//	table[(T_long<<4)+T_undefined] 	= T_undefined;
 		table[(T_long<<4)+T_byte] 		= (Long2Long<<12)+(Byte2Long<<4)+T_long;
@@ -1316,6 +1470,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_long<<4)+T_char] 		= (Long2Long<<12)+(Char2Long<<4)+T_long;
 		table[(T_long<<4)+T_int] 		= (Long2Long<<12)+(Int2Long<<4)+T_long; 
 		//	table[(T_long<<4)+T_null] 		= T_undefined;
+		table[(T_long<<4)+T_any] 		= T_any;
 		
 		//	table[(T_short<<4)+T_undefined] 	= T_undefined;
 		table[(T_short<<4)+T_byte] 			= (Short2Int<<12)+(Byte2Int<<4)+T_int;
@@ -1330,6 +1485,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_short<<4)+T_char] 			= (Short2Int<<12)+(Char2Int<<4)+T_int;
 		table[(T_short<<4)+T_int] 			= (Short2Int<<12)+(Int2Int<<4)+T_int;
 		//	table[(T_short<<4)+T_null] 			= T_undefined;
+		table[(T_short<<4)+T_any] 			= T_any;
 	
 		//	table[(T_void<<4)+T_undefined] 	= T_undefined;
 		//	table[(T_void<<4)+T_byte] 		= T_undefined;
@@ -1344,6 +1500,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_void<<4)+T_char] 		= T_undefined;
 		//	table[(T_void<<4)+T_int] 		= T_undefined;
 		//	table[(T_void<<4)+T_null] 		= T_undefined;
+		table[(T_void<<4)+T_any] 			= T_any;
 		
 		//	table[(T_String<<4)+T_undefined] 	= T_undefined; 
 		table[(T_JavaLangString<<4)+T_byte] 		= (String2String<<12)+(Byte2Byte<<4)+T_JavaLangString;
@@ -1358,6 +1515,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_JavaLangString<<4)+T_char] 		= (String2String<<12)+(Char2Char<<4)+T_JavaLangString;
 		table[(T_JavaLangString<<4)+T_int] 			= (String2String<<12)+(Int2Int<<4)+T_JavaLangString;
 		table[(T_JavaLangString<<4)+T_null] 		= (String2String<<12)+(T_null<<8)+(T_null<<4)+T_JavaLangString;
+		table[(T_JavaLangString<<4)+T_any] 			= T_any;
 	
 		//	table[(T_Object<<4)+T_undefined] 	= T_undefined;
 		//	table[(T_Object<<4)+T_byte] 		= T_undefined;
@@ -1372,6 +1530,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_Object<<4)+T_char] 		= T_undefined;
 		//	table[(T_Object<<4)+T_int] 			= T_undefined;
 		//	table[(T_Object<<4)+T_null] 		= T_undefined;
+		table[(T_JavaLangObject<<4)+T_any] 			= T_any;
 		
 		//	table[(T_double<<4)+T_undefined] 	= T_undefined;
 		table[(T_double<<4)+T_byte] 		= (Double2Double<<12)+(Byte2Double<<4)+T_double;
@@ -1386,6 +1545,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_double<<4)+T_char] 		= (Double2Double<<12)+(Char2Double<<4)+T_double; 
 		table[(T_double<<4)+T_int] 			= (Double2Double<<12)+(Int2Double<<4)+T_double; 
 		//	table[(T_double<<4)+T_null] 		= T_undefined;
+		table[(T_double<<4)+T_any] 			= T_any;
 		
 		//	table[(T_float<<4)+T_undefined] 	= T_undefined;
 		table[(T_float<<4)+T_byte] 			= (Float2Float<<12)+(Byte2Float<<4)+T_float;
@@ -1400,6 +1560,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_float<<4)+T_char] 			= (Float2Float<<12)+(Char2Float<<4)+T_float;
 		table[(T_float<<4)+T_int] 			= (Float2Float<<12)+(Int2Float<<4)+T_float;
 		//	table[(T_float<<4)+T_null] 			= T_undefined;
+		table[(T_float<<4)+T_any] 			= T_any;
 		
 		//	table[(T_boolean<<4)+T_undefined] 		= T_undefined;
 		//	table[(T_boolean<<4)+T_byte] 			= T_undefined;
@@ -1414,6 +1575,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_boolean<<4)+T_char] 			= T_undefined;
 		//	table[(T_boolean<<4)+T_int] 			= T_undefined;
 		//	table[(T_boolean<<4)+T_null] 			= T_undefined;
+		table[(T_boolean<<4)+T_any] 			= T_any;
 		
 		//	table[(T_char<<4)+T_undefined] 		= T_undefined;
 		table[(T_char<<4)+T_byte] 			= (Char2Int<<12)+(Byte2Int<<4)+T_int;
@@ -1428,6 +1590,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_char<<4)+T_char] 			= (Char2Int<<12)+(Char2Int<<4)+T_int;
 		table[(T_char<<4)+T_int] 			= (Char2Int<<12)+(Int2Int<<4)+T_int;
 		//	table[(T_char<<4)+T_null] 			= T_undefined;
+		table[(T_char<<4)+T_any] 			= T_any;
 		
 		//	table[(T_int<<4)+T_undefined] 	= T_undefined;
 		table[(T_int<<4)+T_byte] 		= (Int2Int<<12)+(Byte2Int<<4)+T_int;
@@ -1442,6 +1605,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_int<<4)+T_char] 		= (Int2Int<<12)+(Char2Int<<4)+T_int;
 		table[(T_int<<4)+T_int] 		= (Int2Int<<12)+(Int2Int<<4)+T_int;
 		//	table[(T_int<<4)+T_null] 		= T_undefined;
+		table[(T_int<<4)+T_any] 			= T_any;
 	
 		//	table[(T_null<<4)+T_undefined] 		= T_undefined;
 		//	table[(T_null<<4)+T_byte] 			= T_undefined;
@@ -1456,7 +1620,23 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_null<<4)+T_char] 			= T_undefined;
 		//	table[(T_null<<4)+T_int] 			= T_undefined;
 		//	table[(T_null<<4)+T_null] 			= (Null2String<<12)+(Null2String<<4)+T_String;;
+		table[(T_null<<4)+T_any] 			= T_any;
 	
+		table[(T_any<<4)+T_undefined] 		= T_any;
+		table[(T_any<<4)+T_byte] 			= T_any;
+		table[(T_any<<4)+T_long] 			= T_any;
+		table[(T_any<<4)+T_short] 			= T_any;
+		table[(T_any<<4)+T_void] 			= T_any;
+		table[(T_any<<4)+T_JavaLangString] 		= T_any;
+		table[(T_any<<4)+T_JavaLangObject] 		= T_any;
+		table[(T_any<<4)+T_double] 		= T_any;
+		table[(T_any<<4)+T_float] 			= T_any;
+		table[(T_any<<4)+T_boolean] 		= T_any;
+		table[(T_any<<4)+T_char] 			= T_any;
+		table[(T_any<<4)+T_int] 			= T_any;
+		table[(T_any<<4)+T_null] 			= T_any;
+		table[(T_any<<4)+T_any] 			= T_any;
+
 		return table;
 	}
 
@@ -1552,6 +1732,20 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 				return "?:"; //$NON-NLS-1$
 			case EQUAL :
 				return "="; //$NON-NLS-1$
+			case TYPEOF :
+				return "typeof"; //$NON-NLS-1$
+			case DELETE :
+				return "delete"; //$NON-NLS-1$
+			case OperatorIds.VOID  :
+				return "void"; //$NON-NLS-1$
+			case OperatorIds.INSTANCEOF  :
+				return "instanceof"; //$NON-NLS-1$
+			case OperatorIds.IN  :
+				return "in"; //$NON-NLS-1$
+			case OperatorIds.EQUAL_EQUAL_EQUAL  :
+				return "==="; //$NON-NLS-1$
+			case OperatorIds.NOT_EQUAL_EQUAL  :
+				return "!=="; //$NON-NLS-1$
 		}
 		return "unknown operator"; //$NON-NLS-1$
 	}

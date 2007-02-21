@@ -101,7 +101,9 @@ public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean
 	codeStream.recordPositionsFrom(pc, this.sourceStart);
 }
 public TypeBinding literalType(BlockScope scope) {
-	return TypeBinding.INT;
+//	return TypeBinding.INT;
+	return scope.getJavaLangNumber();
+	
 }
 public final boolean mayRepresentMIN_VALUE(){
 	//a special autorized int literral is 2147483648

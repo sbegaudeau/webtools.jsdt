@@ -823,15 +823,15 @@ public void resolve(BlockScope upperScope) {
 		}
 		// Verify that the catch clause are ordered in the right way:
 		// more specialized first.
-		this.caughtExceptionTypes = new ReferenceBinding[length];
-		for (int i = 0; i < length; i++) {
-			this.caughtExceptionTypes[i] = (ReferenceBinding) argumentTypes[i];
-			for (int j = 0; j < i; j++) {
-				if (this.caughtExceptionTypes[i].isCompatibleWith(argumentTypes[j])) {
-					this.scope.problemReporter().wrongSequenceOfExceptionTypesError(this, this.caughtExceptionTypes[i], i, argumentTypes[j]);
-				}
-			}
-		}
+//		this.caughtExceptionTypes = new ReferenceBinding[length];
+//		for (int i = 0; i < length; i++) {
+//			this.caughtExceptionTypes[i] = (ReferenceBinding) argumentTypes[i];
+//			for (int j = 0; j < i; j++) {
+//				if (this.caughtExceptionTypes[i].isCompatibleWith(argumentTypes[j])) {
+//					this.scope.problemReporter().wrongSequenceOfExceptionTypesError(this, this.caughtExceptionTypes[i], i, argumentTypes[j]);
+//				}
+//			}
+//		}
 	} else {
 		this.caughtExceptionTypes = new ReferenceBinding[0];
 	}

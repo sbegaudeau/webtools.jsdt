@@ -84,7 +84,7 @@ public void computeConversion(Scope scope, TypeBinding runtimeTimeType, TypeBind
 	    		? compileTimeType  // unboxing: checkcast before conversion
 	    		: runtimeTimeType;
 	        this.valueCast = originalType.genericCast(targetType); 
-		} 	else if (this.actualReceiverType.isArrayType() 
+		} 	else if (this.actualReceiverType!=null && this.actualReceiverType.isArrayType() 
 						&& runtimeTimeType.id != T_JavaLangObject
 						&& this.binding.parameters == Binding.NO_PARAMETERS 
 						&& scope.compilerOptions().complianceLevel >= ClassFileConstants.JDK1_5 
@@ -174,7 +174,7 @@ public TypeBinding[] genericTypeArguments() {
 }	
 
 public boolean isSuperAccess() {	
-	return receiver.isSuper();
+	return receiver!=null && receiver.isSuper();
 }
 public boolean isTypeAccess() {	
 	return receiver != null && receiver.isTypeReference();
@@ -284,7 +284,7 @@ public TypeBinding postConversionType(Scope scope) {
 	
 public StringBuffer printExpression(int indent, StringBuffer output){
 	
-	if (!receiver.isImplicitThis()) receiver.printExpression(0, output).append('.');
+	if (receiver!=null && !receiver.isImplicitThis()) receiver.printExpression(0, output).append('.');
 	if (this.typeArguments != null) {
 		output.append('<');
 		int max = typeArguments.length - 1;
@@ -315,7 +315,7 @@ public TypeBinding resolveType(BlockScope scope) {
 		this.receiver.bits |= DisableUnnecessaryCastCheck; // will check later on
 		receiverCast = true;
 	}
-	this.actualReceiverType = receiver.resolveType(scope); 
+	this.actualReceiverType = (receiver!=null) ?receiver.resolveType(scope):null; 
 	boolean receiverIsType = receiver instanceof NameReference && (((NameReference) receiver).bits & Binding.TYPE) != 0;
 	if (receiverCast && this.actualReceiverType != null) {
 		 // due to change of declaring class with receiver type, only identity cast should be notified
@@ -517,7 +517,8 @@ public void setFieldIndex(int depth) {
 
 public void traverse(ASTVisitor visitor, BlockScope blockScope) {
 	if (visitor.visit(this, blockScope)) {
-		receiver.traverse(visitor, blockScope);
+		if (receiver!=null)
+			receiver.traverse(visitor, blockScope);
 		if (this.typeArguments != null) {
 			for (int i = 0, typeArgumentsLength = this.typeArguments.length; i < typeArgumentsLength; i++) {
 				this.typeArguments[i].traverse(visitor, blockScope);

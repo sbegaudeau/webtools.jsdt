@@ -324,7 +324,7 @@ public class Javadoc extends ASTNode {
 					MethodDeclaration meth = (MethodDeclaration) methDecl;
 					if (meth.binding.returnType != TypeBinding.VOID) {
 						// method with return should have @return tag
-						methScope.problemReporter().javadocMissingReturnTag(meth.returnType.sourceStart, meth.returnType.sourceEnd, methDecl.binding.modifiers);
+						methScope.problemReporter().javadocMissingReturnTag(meth.declarationSourceStart, meth.declarationSourceEnd, methDecl.binding.modifiers);
 					}
 				}
 			}

@@ -15,7 +15,7 @@ import org.eclipse.wst.jsdt.internal.compiler.flow.*;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
 
-public abstract class Statement extends ASTNode {
+public abstract class Statement extends ProgramElement {
 	
 	public abstract FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo);
 	
@@ -127,7 +127,7 @@ public abstract class Statement extends ASTNode {
 	public StringBuffer print(int indent, StringBuffer output) {
 		return printStatement(indent, output);
 	}
-	public abstract StringBuffer printStatement(int indent, StringBuffer output);
+//	public abstract StringBuffer printStatement(int indent, StringBuffer output);
 
 	public abstract void resolve(BlockScope scope);
 	

@@ -789,17 +789,30 @@ public int nullStatus(FlowInfo flowInfo) {
 	}
 		
 	public TypeBinding resolveType(BlockScope scope) {
+		return resolveType(scope,false);
+	}
+	
+	public TypeBinding resolveType(BlockScope scope, boolean define) {
+
 		// for code gen, harm the restrictiveFlag 	
 	
 		if (this.actualReceiverType != null) {
 			this.binding = scope.getField(this.actualReceiverType, token, this);
 		} else {
 			this.actualReceiverType = scope.enclosingSourceType();
-			this.binding = scope.getBinding(token, bits & RestrictiveFlagMASK, this, true /*resolve*/);
+			this.binding = scope.getBinding(token, (Binding.TYPE|Binding.METHOD | bits)  & RestrictiveFlagMASK, this, true /*resolve*/);
+		}
+		if (define && this.binding instanceof ProblemBinding)
+		{
+			LocalDeclaration localDeclaration = new LocalDeclaration(this.token,this.sourceEnd,this.sourceEnd);
+			LocalVariableBinding localBinding=new LocalVariableBinding(localDeclaration,TypeBinding.ANY,0,false);
+		    scope.compilationUnitScope().addLocalVariable(localBinding);
+			this.binding=localBinding;
 		}
 		this.codegenBinding = this.binding;
 		if (this.binding.isValidBinding()) {
 			switch (bits & RestrictiveFlagMASK) {
+				case Binding.LOCAL : // =========only variable============
 				case Binding.VARIABLE : // =========only variable============
 				case Binding.VARIABLE | Binding.TYPE : //====both variable and type============
 					if (binding instanceof VariableBinding) {
@@ -836,6 +849,9 @@ public int nullStatus(FlowInfo flowInfo) {
 					// thus it was a type
 					bits &= ~RestrictiveFlagMASK;  // clear bits
 					bits |= Binding.TYPE;
+					if (binding instanceof MethodBinding)
+						return BaseTypeBinding.ANY;
+
 				case Binding.TYPE : //========only type==============
 					constant = Constant.NotAConstant;
 					//deprecated test

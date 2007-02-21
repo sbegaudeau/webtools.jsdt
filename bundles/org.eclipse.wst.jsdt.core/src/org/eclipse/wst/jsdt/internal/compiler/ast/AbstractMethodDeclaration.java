@@ -12,17 +12,18 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.compiler.*;
 import org.eclipse.wst.jsdt.internal.compiler.*;
+import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.flow.InitializationFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.impl.*;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
-import org.eclipse.wst.jsdt.internal.compiler.problem.*;
 import org.eclipse.wst.jsdt.internal.compiler.parser.*;
+import org.eclipse.wst.jsdt.internal.compiler.problem.*;
+import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 public abstract class AbstractMethodDeclaration
-	extends ASTNode
+	extends ProgramElement
 	implements ProblemSeverities, ReferenceContext {
 		
 	public MethodScope scope;
@@ -47,7 +48,9 @@ public abstract class AbstractMethodDeclaration
 	public int bodyStart;
 	public int bodyEnd = -1;
 	public CompilationResult compilationResult;
-	
+
+	public InferredType inferredType;
+
 	public boolean errorInSignature = false; 
 	
 	AbstractMethodDeclaration(CompilationResult compilationResult){
@@ -73,7 +76,7 @@ public abstract class AbstractMethodDeclaration
 
 	public abstract void analyseCode(ClassScope classScope, InitializationFlowContext initializationContext, FlowInfo info);
 
-	/**
+		/**
 	 * Bind and add argument's binding into the scope of the method
 	 */
 	public void bindArguments() {
@@ -327,6 +330,11 @@ public abstract class AbstractMethodDeclaration
 		Parser parser,
 		CompilationUnitDeclaration unit);
 
+	public StringBuffer printStatement(int indent, StringBuffer output)
+	{
+		return print(indent,output);
+	}
+
 	public StringBuffer print(int tab, StringBuffer output) {
 
 		if (this.javadoc != null) {
@@ -334,21 +342,23 @@ public abstract class AbstractMethodDeclaration
 		}
 		printIndent(tab, output);
 		printModifiers(this.modifiers, output);
-		if (this.annotations != null) printAnnotations(this.annotations, output);
+//		if (this.annotations != null) printAnnotations(this.annotations, output);
 		
-		TypeParameter[] typeParams = typeParameters();
-		if (typeParams != null) {
-			output.append('<');
-			int max = typeParams.length - 1;
-			for (int j = 0; j < max; j++) {
-				typeParams[j].print(0, output);
-				output.append(", ");//$NON-NLS-1$
-			}
-			typeParams[max].print(0, output);
-			output.append('>');
-		}
-		
-		printReturnType(0, output).append(this.selector).append('(');
+//		TypeParameter[] typeParams = typeParameters();
+//		if (typeParams != null) {
+//			output.append('<');
+//			int max = typeParams.length - 1;
+//			for (int j = 0; j < max; j++) {
+//				typeParams[j].print(0, output);
+//				output.append(", ");//$NON-NLS-1$
+//			}
+//			typeParams[max].print(0, output);
+//			output.append('>');
+//		}
+		output.append("function ");
+		if (this.selector!=null)
+			output.append(this.selector);
+		output.append('(');
 		if (this.arguments != null) {
 			for (int i = 0; i < this.arguments.length; i++) {
 				if (i > 0) output.append(", "); //$NON-NLS-1$
@@ -356,13 +366,13 @@ public abstract class AbstractMethodDeclaration
 			}
 		}
 		output.append(')');
-		if (this.thrownExceptions != null) {
-			output.append(" throws "); //$NON-NLS-1$
-			for (int i = 0; i < this.thrownExceptions.length; i++) {
-				if (i > 0) output.append(", "); //$NON-NLS-1$
-				this.thrownExceptions[i].print(0, output);
-			}
-		}
+//		if (this.thrownExceptions != null) {
+//			output.append(" throws "); //$NON-NLS-1$
+//			for (int i = 0; i < this.thrownExceptions.length; i++) {
+//				if (i > 0) output.append(", "); //$NON-NLS-1$
+//				this.thrownExceptions[i].print(0, output);
+//			}
+//		}
 		printBody(tab + 1, output);
 		return output;
 	}
@@ -389,7 +399,7 @@ public abstract class AbstractMethodDeclaration
 		return output;
 	}
 
-	public void resolve(ClassScope upperScope) {
+	public void resolve(Scope upperScope) {
 
 		if (this.binding == null) {
 			this.ignoreFurtherInvestigation = true;
@@ -443,7 +453,7 @@ public abstract class AbstractMethodDeclaration
 
 	public void traverse(
 		ASTVisitor visitor,
-		ClassScope classScope) {
+		Scope classScope) {
 		// default implementation: subclass will define it
 	}
 	

@@ -60,6 +60,13 @@ abstract public class TypeBinding extends Binding {
 	public final static BaseTypeBinding VOID = new BaseTypeBinding(
 			TypeIds.T_void, TypeConstants.VOID, new char[] { 'V' });
 
+	public final static BaseTypeBinding UNDEFINED = new BaseTypeBinding(
+			TypeIds.T_undefined, TypeConstants.UNDEFINED, new char[] { 'U' }); //N stands for null even if it is never internally used
+
+	public final static BaseTypeBinding ANY = new BaseTypeBinding(
+			TypeIds.T_any, TypeConstants.ANY, new char[] { 'A' });
+
+
 /**
  * Match a well-known type id to its binding
  */
@@ -349,6 +356,12 @@ public final boolean isArrayType() {
 public final boolean isBaseType() {
 	return (this.tagBits & TagBits.IsBaseType) != 0;
 }
+public  boolean isBasicType() {
+	if ((this.tagBits & TagBits.IsBaseType) != 0)
+		return true;
+	return id <=TypeIds.T_last_basic;
+}
+
 
 /**
  *  Returns true if parameterized type AND not of the form List<?>

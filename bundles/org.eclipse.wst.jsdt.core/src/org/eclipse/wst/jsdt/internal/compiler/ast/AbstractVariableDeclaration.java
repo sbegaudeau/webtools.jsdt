@@ -16,6 +16,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 public abstract class AbstractVariableDeclaration extends Statement implements InvocationSite {
 	public int declarationEnd;
@@ -26,7 +27,10 @@ public abstract class AbstractVariableDeclaration extends Statement implements I
 	public int modifiers;
 	public int modifiersSourceStart;
 	public Annotation[] annotations;
+	public Javadoc javadoc;
 
+
+	public InferredType inferredType;
 	public char[] name;
 
 	public TypeReference type;
@@ -82,6 +86,7 @@ public abstract class AbstractVariableDeclaration extends Statement implements I
 	public StringBuffer printAsExpression(int indent, StringBuffer output) {
 		printIndent(indent, output);
 		printModifiers(this.modifiers, output);
+		output.append("var ");
 		if (this.annotations != null) printAnnotations(this.annotations, output);
 		
 		if (type != null) {
@@ -127,5 +132,15 @@ public abstract class AbstractVariableDeclaration extends Statement implements I
 	 */
 	public void setFieldIndex(int depth) {
 		// do nothing by default
+	}
+	
+	public TypeBinding getTypeBinding()
+	{
+		if (type!=null)
+			return type.resolvedType;
+		else if (inferredType!=null)
+			return inferredType.binding;
+		return null;
+			
 	}
 }

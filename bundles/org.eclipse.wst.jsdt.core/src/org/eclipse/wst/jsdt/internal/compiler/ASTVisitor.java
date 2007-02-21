@@ -16,6 +16,10 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
+import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
+import org.eclipse.wst.jsdt.internal.infer.InferredMethod;
+import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 /** 
  * A visitor for iterating through the parse tree.
@@ -164,12 +168,20 @@ public abstract class ASTVisitor {
 	public void endVisit(ForStatement forStatement, BlockScope scope) {
 		// do nothing by default
 	}
+	public void endVisit(ForInStatement forInStatement, BlockScope scope) {
+		// do nothing by default
+	}
+
 	public void endVisit(IfStatement ifStatement, BlockScope scope) {
 		// do nothing by default
 	}
 	public void endVisit(ImportReference importRef, CompilationUnitScope scope) {
 		// do nothing by default
 	}
+	public void endVisit(InferredType inferredType, BlockScope scope) {
+		// do nothing by default
+	}
+
 	public void endVisit(Initializer initializer, MethodScope scope) {
 		// do nothing by default
 	}
@@ -280,7 +292,7 @@ public abstract class ASTVisitor {
 	public void endVisit(MessageSend messageSend, BlockScope scope) {
 		// do nothing by default
 	}
-	public void endVisit(MethodDeclaration methodDeclaration, ClassScope scope) {
+	public void endVisit(MethodDeclaration methodDeclaration, Scope scope) {
 		// do nothing by default
 	}
 	public void endVisit(StringLiteralConcatenation literal, BlockScope scope) {
@@ -363,6 +375,12 @@ public abstract class ASTVisitor {
     		ClassScope scope) {
 		// do nothing by default
 	}
+	
+	public void endVisit(RegExLiteral stringLiteral, BlockScope scope) {
+		// do nothing by default
+	}
+
+	
 	public void endVisit(ReturnStatement returnStatement, BlockScope scope) {
 		// do nothing by default
 	}
@@ -447,6 +465,10 @@ public abstract class ASTVisitor {
 	public void endVisit(UnaryExpression unaryExpression, BlockScope scope) {
 		// do nothing by default
 	}
+	public void endVisit(UndefinedLiteral undefinedLiteral, BlockScope scope) {
+		// do nothing by default
+	}
+
 	public void endVisit(WhileStatement whileStatement, BlockScope scope) {
 		// do nothing by default
 	}
@@ -593,6 +615,9 @@ public abstract class ASTVisitor {
 	public boolean visit(ForeachStatement forStatement, BlockScope scope) {
 		return true; // do nothing by default, keep traversing
 	}
+	public boolean visit(ForInStatement forInStatement, BlockScope scope) {
+		return true; // do nothing by default, keep traversing
+	}
 	public boolean visit(ForStatement forStatement, BlockScope scope) {
 		return true; // do nothing by default, keep traversing
 	}
@@ -600,6 +625,18 @@ public abstract class ASTVisitor {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(ImportReference importRef, CompilationUnitScope scope) {
+		return true; // do nothing by default, keep traversing
+	}
+
+	public boolean visit(InferredType inferredType, BlockScope scope) {
+		return true; // do nothing by default, keep traversing
+	}
+
+	public boolean visit(InferredMethod inferredMethod, BlockScope scope) {
+		return true; // do nothing by default, keep traversing
+	}
+
+	public boolean visit(InferredAttribute inferredField, BlockScope scope) {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(Initializer initializer, MethodScope scope) {
@@ -713,7 +750,7 @@ public abstract class ASTVisitor {
 	public boolean visit(MessageSend messageSend, BlockScope scope) {
 		return true; // do nothing by default, keep traversing
 	}
-	public boolean visit(MethodDeclaration methodDeclaration, ClassScope scope) {
+	public boolean visit(MethodDeclaration methodDeclaration, Scope scope) {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(
@@ -798,6 +835,9 @@ public abstract class ASTVisitor {
     		ClassScope scope) {
 		return true; // do nothing by default, keep traversing
 	}
+	public boolean visit(RegExLiteral stringLiteral, BlockScope scope) {
+		return true; // do nothing by default, keep traversing
+	}
 	public boolean visit(ReturnStatement returnStatement, BlockScope scope) {
 		return true; // do nothing by default, keep traversing
 	}
@@ -880,6 +920,9 @@ public abstract class ASTVisitor {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(UnaryExpression unaryExpression, BlockScope scope) {
+		return true; // do nothing by default, keep traversing
+	}
+	public boolean visit(UndefinedLiteral undefined, BlockScope scope) {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(WhileStatement whileStatement, BlockScope scope) {

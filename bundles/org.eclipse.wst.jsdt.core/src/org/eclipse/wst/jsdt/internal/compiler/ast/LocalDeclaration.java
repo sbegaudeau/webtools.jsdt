@@ -135,7 +135,16 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 	public void resolve(BlockScope scope) {
 
 		// create a binding and add it to the scope
-		TypeBinding variableType = type.resolveType(scope, true /* check bounds*/);
+		TypeBinding variableType = null;
+			if (type!=null) 
+				variableType=type.resolveType(scope, true /* check bounds*/); 
+			else {
+				if (inferredType!=null)
+				  variableType=inferredType.resolveType(scope,this);
+				else
+					variableType=TypeBinding.ANY;
+			}
+ 
 
 		checkModifiers();
 		if (variableType != null) {
@@ -149,12 +158,21 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 			}
 		}
 		
-		Binding existingVariable = scope.getBinding(name, Binding.VARIABLE, this, false /*do not resolve hidden field*/);
-		if (existingVariable != null && existingVariable.isValidBinding()){
+		Binding varBinding  = scope.getBinding(name, Binding.VARIABLE, this, false /*do not resolve hidden field*/);
+		if (varBinding != null && varBinding.isValidBinding()){
+			VariableBinding existingVariable=(VariableBinding)varBinding;
+			if (existingVariable.isFor(this))
+			{
+				existingVariable.type=variableType;
+			}
+			else
+			{
+
 			if (existingVariable instanceof LocalVariableBinding && this.hiddenVariableDepth == 0) {
 				scope.problemReporter().redefineLocal(this);
 			} else {
 				scope.problemReporter().localVariableHiding(this, existingVariable, false);
+			}
 			}
 		}
 				
@@ -225,10 +243,26 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 					? initialization.constant.castTo((variableType.id << 4) + initialization.constant.typeID())
 					: Constant.NotAConstant);
 		}
+		// Resolve Javadoc comment if one is present
+		if (this.javadoc != null) {
+			/*
+			if (classScope != null) {
+				this.javadoc.resolve(classScope);
+			}
+			*/
+			this.javadoc.resolve(scope.enclosingMethodScope());
+		}  
+		
 		// only resolve annotation at the end, for constant to be positionned before (96991)
 		resolveAnnotations(scope, this.annotations, this.binding);
 	}
-
+	public StringBuffer printStatement(int indent, StringBuffer output) {
+		if (this.javadoc != null) {
+			this.javadoc.print(indent, output);
+		}
+		return super.printStatement(indent, output);
+	}
+	
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
 
 		if (visitor.visit(this, scope)) {
@@ -237,10 +271,20 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 				for (int i = 0; i < annotationsLength; i++)
 					this.annotations[i].traverse(visitor, scope);
 			}
-			type.traverse(visitor, scope);
+			if (type!=null)
+				type.traverse(visitor, scope);
 			if (initialization != null)
 				initialization.traverse(visitor, scope);
 		}
 		visitor.endVisit(this, scope);
+	}
+	
+	public String getTypeName()
+	{
+		if (type!=null)
+			return type.toString();
+		if (inferredType!=null)
+			return new String(inferredType.getName());
+		return null;
 	}
 }

@@ -18,8 +18,10 @@ import org.eclipse.wst.jsdt.internal.compiler.flow.ExceptionHandlingFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.flow.InitializationFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
@@ -136,10 +138,10 @@ public class MethodDeclaration extends AbstractMethodDeclaration {
 			this.returnType.resolvedType = this.binding.returnType;
 			// record the return type binding
 		}
-		// check if method with constructor name
-		if (CharOperation.equals(this.scope.enclosingSourceType().sourceName, selector)) {
-			this.scope.problemReporter().methodWithConstructorName(this);
-		}
+//		// check if method with constructor name
+//		if (CharOperation.equals(this.scope.enclosingSourceType().sourceName, selector)) {
+//			this.scope.problemReporter().methodWithConstructorName(this);
+//		}
 		
 		if (this.typeParameters != null) {
 			for (int i = 0, length = this.typeParameters.length; i < length; i++) {
@@ -175,23 +177,23 @@ public class MethodDeclaration extends AbstractMethodDeclaration {
 		}
 				
 		// by grammatical construction, interface methods are always abstract
-		switch (TypeDeclaration.kind(this.scope.referenceType().modifiers)) {
-			case TypeDeclaration.ENUM_DECL :
-				if (this.selector == TypeConstants.VALUES) break;
-				if (this.selector == TypeConstants.VALUEOF) break;
-			case TypeDeclaration.CLASS_DECL :
-				// if a method has an semicolon body and is not declared as abstract==>error
-				// native methods may have a semicolon body 
-				if ((this.modifiers & ExtraCompilerModifiers.AccSemicolonBody) != 0) {
-					if ((this.modifiers & ClassFileConstants.AccNative) == 0)
-						if ((this.modifiers & ClassFileConstants.AccAbstract) == 0)
-							this.scope.problemReporter().methodNeedBody(this);
-				} else {
-					// the method HAS a body --> abstract native modifiers are forbiden
-					if (((this.modifiers & ClassFileConstants.AccNative) != 0) || ((this.modifiers & ClassFileConstants.AccAbstract) != 0))
-						this.scope.problemReporter().methodNeedingNoBody(this);
-				}
-		}
+//		switch (TypeDeclaration.kind(this.scope.referenceType().modifiers)) {
+//			case TypeDeclaration.ENUM_DECL :
+//				if (this.selector == TypeConstants.VALUES) break;
+//				if (this.selector == TypeConstants.VALUEOF) break;
+//			case TypeDeclaration.CLASS_DECL :
+//				// if a method has an semicolon body and is not declared as abstract==>error
+//				// native methods may have a semicolon body 
+//				if ((this.modifiers & ExtraCompilerModifiers.AccSemicolonBody) != 0) {
+//					if ((this.modifiers & ClassFileConstants.AccNative) == 0)
+//						if ((this.modifiers & ClassFileConstants.AccAbstract) == 0)
+//							this.scope.problemReporter().methodNeedBody(this);
+//				} else {
+//					// the method HAS a body --> abstract native modifiers are forbiden
+//					if (((this.modifiers & ClassFileConstants.AccNative) != 0) || ((this.modifiers & ClassFileConstants.AccAbstract) != 0))
+//						this.scope.problemReporter().methodNeedingNoBody(this);
+//				}
+//		}
 		super.resolveStatements();
 		
 		// TagBits.OverridingMethodWithSupercall is set during the resolveStatements() call
@@ -208,7 +210,7 @@ public class MethodDeclaration extends AbstractMethodDeclaration {
 
 	public void traverse(
 		ASTVisitor visitor,
-		ClassScope classScope) {
+		 Scope classScope) {
 
 		if (visitor.visit(this, classScope)) {
 			if (this.javadoc != null) {
@@ -245,6 +247,44 @@ public class MethodDeclaration extends AbstractMethodDeclaration {
 		}
 		visitor.endVisit(this, classScope);
 	}
+	public void traverse(
+			ASTVisitor visitor,
+			BlockScope blockScope) {
+
+			if (visitor.visit(this, blockScope)) {
+				if (this.annotations != null) {
+					int annotationsLength = this.annotations.length;
+					for (int i = 0; i < annotationsLength; i++)
+						this.annotations[i].traverse(visitor, scope);
+				}
+				if (this.typeParameters != null) {
+					int typeParametersLength = this.typeParameters.length;
+					for (int i = 0; i < typeParametersLength; i++) {
+						this.typeParameters[i].traverse(visitor, scope);
+					}
+				}			
+				if (returnType != null)
+					returnType.traverse(visitor, scope);
+				if (arguments != null) {
+					int argumentLength = arguments.length;
+					for (int i = 0; i < argumentLength; i++)
+						arguments[i].traverse(visitor, scope);
+				}
+				if (thrownExceptions != null) {
+					int thrownExceptionsLength = thrownExceptions.length;
+					for (int i = 0; i < thrownExceptionsLength; i++)
+						thrownExceptions[i].traverse(visitor, scope);
+				}
+				if (statements != null) {
+					int statementsLength = statements.length;
+					for (int i = 0; i < statementsLength; i++)
+						statements[i].traverse(visitor, scope);
+				}
+			}
+			visitor.endVisit(this, blockScope);
+		}
+
+	
 	public TypeParameter[] typeParameters() {
 	    return this.typeParameters;
 	}		

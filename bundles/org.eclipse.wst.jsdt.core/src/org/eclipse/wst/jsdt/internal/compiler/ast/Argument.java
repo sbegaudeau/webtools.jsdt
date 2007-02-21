@@ -78,13 +78,13 @@ public class Argument extends LocalDeclaration {
 
 		printIndent(indent, output);
 		printModifiers(this.modifiers, output);
-		if (this.annotations != null) printAnnotations(this.annotations, output);
+//		if (this.annotations != null) printAnnotations(this.annotations, output);
 		
-		if (type == null) {
-			output.append("<no type> "); //$NON-NLS-1$
-		} else {
-			type.print(0, output).append(' '); 
-		}
+//		if (type == null) {
+//			output.append("<no type> "); //$NON-NLS-1$
+//		} else {
+//			type.print(0, output).append(' '); 
+//		}
 		return output.append(this.name);
 	}
 
@@ -99,7 +99,8 @@ public class Argument extends LocalDeclaration {
 		// provide the scope with a side effect : insertion of a LOCAL
 		// that represents the argument. The type must be from JavaThrowable
 
-		TypeBinding exceptionType = this.type.resolveType(scope, true /* check bounds*/);
+		TypeBinding exceptionType = this.type!=null ? 
+			this.type.resolveType(scope, true /* check bounds*/) : TypeBinding.ANY;
 		if (exceptionType == null) return null;
 		if (exceptionType.isBoundParameterizedType()) {
 			scope.problemReporter().invalidParameterizedExceptionType(exceptionType, this);

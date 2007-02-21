@@ -31,13 +31,20 @@ public interface OperatorIds {
 	public static final int RIGHT_SHIFT = 17;
 	public static final int EQUAL_EQUAL = 18;
 	public static final int UNSIGNED_RIGHT_SHIFT= 19;
-	public static final int NumberOfTables = 20;
+	public static final int DELETE = 20;
+	public static final int VOID = 21;
+	public static final int TYPEOF = 22;
+	public static final int IN = 23;
+	public static final int EQUAL_EQUAL_EQUAL = 24;
+	public static final int NOT_EQUAL_EQUAL = 25;
+	public static final int INSTANCEOF = 26;
+	
+	public static final int NumberOfTables = 27;
 
-	public static final int QUESTIONCOLON = 23;
+	public static final int QUESTIONCOLON = 31;
 
 	public static final int NOT_EQUAL = 29;
 	public static final int EQUAL = 30;
-	public static final int INSTANCEOF = 31;
 	public static final int PLUS_PLUS = 32;
 	public static final int MINUS_MINUS = 33;
 }

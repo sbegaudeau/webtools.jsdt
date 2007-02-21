@@ -21,7 +21,7 @@ public class FieldDeclaration extends AbstractVariableDeclaration {
 	
 	public FieldBinding binding;
 	boolean hasBeenResolved = false; // TODO (philippe) should use a tagBit instead
-	public Javadoc javadoc;
+// is in super	public Javadoc javadoc;
 
 	//allows to retrieve both the "type" part of the declaration (part1)
 	//and also the part that decribe the name and the init and optionally
@@ -123,7 +123,8 @@ public class FieldDeclaration extends AbstractVariableDeclaration {
 	 * @see org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration#getKind()
 	 */
 	public int getKind() {
-		return this.type == null ? ENUM_CONSTANT : FIELD;
+//		return this.type == null ? ENUM_CONSTANT : FIELD;
+		return  FIELD;
 	}
 	
 	public boolean isStatic() {

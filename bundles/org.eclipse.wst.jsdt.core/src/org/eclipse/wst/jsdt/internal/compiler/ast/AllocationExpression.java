@@ -27,7 +27,10 @@ public class AllocationExpression extends Expression implements InvocationSite {
 	public TypeReference[] typeArguments;	
 	public TypeBinding[] genericTypeArguments;
 	public FieldDeclaration enumConstant; // for enum constant initializations
-
+    public Expression member;
+	public boolean isShort;
+	
+	
 public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
 	// check captured variables are initialized in current context (26134)
 	checkCapturedLocalInitializationIfNecessary((ReferenceBinding)this.binding.declaringClass.erasure(), currentScope, flowInfo);
@@ -191,9 +194,10 @@ public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FlowInfo f
 }
 
 public StringBuffer printExpression(int indent, StringBuffer output) {
-	if (this.type != null) { // type null for enum constant initializations
+//	if (this.type != null) { // type null for enum constant initializations
 		output.append("new "); //$NON-NLS-1$
-	}
+		member.print(indent, output);
+//	}
 	if (typeArguments != null) {
 		output.append('<');
 		int max = typeArguments.length - 1;
@@ -207,23 +211,32 @@ public StringBuffer printExpression(int indent, StringBuffer output) {
 	if (type != null) { // type null for enum constant initializations
 		type.printExpression(0, output); 
 	}
-	output.append('(');
-	if (arguments != null) {
-		for (int i = 0; i < arguments.length; i++) {
-			if (i > 0) output.append(", "); //$NON-NLS-1$
-			arguments[i].printExpression(0, output);
+	if (!isShort)
+	{
+		output.append('(');
+		if (arguments != null) {
+			for (int i = 0; i < arguments.length; i++) {
+				if (i > 0) output.append(", "); //$NON-NLS-1$
+				arguments[i].printExpression(0, output);
+			}
 		}
-	}
-	return output.append(')');
+		output.append(')');
+	} 
+	return output;
 }
 
 public TypeBinding resolveType(BlockScope scope) {
 	// Propagate the type checking to the arguments, and check if the constructor is defined.
 	constant = Constant.NotAConstant;
-	if (this.type == null) {
+	if (this.member!=null) {
+		// initialization of an enum constant
+		this.resolvedType = this.member.resolveType(scope);
+	}
+	else if (this.type == null) {
 		// initialization of an enum constant
 		this.resolvedType = scope.enclosingReceiverType();
-	} else {
+	}
+	else {
 		this.resolvedType = this.type.resolveType(scope, true /* check bounds*/);
 		checkParameterizedAllocation: {
 			if (this.type instanceof ParameterizedQualifiedTypeReference) { // disallow new X<String>.Y<Integer>()
