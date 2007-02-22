@@ -49,7 +49,7 @@ public MethodBinding(int modifiers, char[] selector, TypeBinding returnType, Typ
 	}
 }
 public MethodBinding(int modifiers, TypeBinding[] parameters, ReferenceBinding[] thrownExceptions, ReferenceBinding declaringClass) {
-	this(modifiers, TypeConstants.INIT, TypeBinding.VOID, parameters, thrownExceptions, declaringClass);
+	this(modifiers, TypeConstants.INIT, TypeBinding.ANY, parameters, thrownExceptions, declaringClass);
 }
 // special API used to change method declaring class for runtime visibility check
 public MethodBinding(MethodBinding initialMethodBinding, ReferenceBinding declaringClass) {
@@ -449,7 +449,7 @@ public final int getAccessFlags() {
 public long getAnnotationTagBits() {
 	MethodBinding originalMethod = this.original();
 	if ((originalMethod.tagBits & TagBits.AnnotationResolved) == 0 && originalMethod.declaringClass instanceof SourceTypeBinding) {
-		ClassScope scope = ((SourceTypeBinding) originalMethod.declaringClass).scope;
+		ClassScope scope = ((SourceTypeBinding) originalMethod.declaringClass).classScope;
 		if (scope != null) {
 			TypeDeclaration typeDecl = scope.referenceContext;
 			AbstractMethodDeclaration methodDecl = typeDecl.declarationOf(originalMethod);
@@ -919,10 +919,8 @@ public AbstractMethodDeclaration sourceMethod() {
 		return null;		
 	}
 
-	AbstractMethodDeclaration[] methods = sourceType.scope.referenceContext.methods;
-	for (int i = methods.length; --i >= 0;)
-		if (this == methods[i].binding)
-			return methods[i];
+	if (sourceType!=null)
+		return sourceType.sourceMethod(this);
 	return null;		
 }
 public final int sourceStart() {

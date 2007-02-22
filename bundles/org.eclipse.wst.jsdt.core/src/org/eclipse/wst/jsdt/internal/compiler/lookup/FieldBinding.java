@@ -12,10 +12,12 @@ package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
 
 public class FieldBinding extends VariableBinding {
 	public ReferenceBinding declaringClass;
@@ -27,7 +29,7 @@ public FieldBinding(char[] name, TypeBinding type, int modifiers, ReferenceBindi
 	super(name, type, modifiers, constant);
 	this.declaringClass = declaringClass;
 }
-public FieldBinding(FieldDeclaration field, TypeBinding type, int modifiers, ReferenceBinding declaringClass) {
+public FieldBinding(InferredAttribute field, TypeBinding type, int modifiers, ReferenceBinding declaringClass) {
 	this(field.name, type, modifiers, declaringClass, null);
 	field.binding = this; // record binding in declaration
 }
@@ -196,7 +198,7 @@ public Constant constant() {
 			if (originalField.declaringClass instanceof SourceTypeBinding) {
 				SourceTypeBinding sourceType = (SourceTypeBinding) originalField.declaringClass;
 				if (sourceType.scope != null) {
-					TypeDeclaration typeDecl = sourceType.scope.referenceContext;
+					TypeDeclaration typeDecl = sourceType.classScope.referenceContext;
 					FieldDeclaration fieldDecl = typeDecl.declarationOf(originalField);
 					fieldDecl.resolve(originalField.isStatic() //side effect on binding 
 							? typeDecl.staticInitializerScope
@@ -235,7 +237,7 @@ public final int getAccessFlags() {
 public long getAnnotationTagBits() {
 	FieldBinding originalField = this.original();
 	if ((originalField.tagBits & TagBits.AnnotationResolved) == 0 && originalField.declaringClass instanceof SourceTypeBinding) {
-		ClassScope scope = ((SourceTypeBinding) originalField.declaringClass).scope;
+		ClassScope scope = ((SourceTypeBinding) originalField.declaringClass).classScope;
 		if (scope == null) { // synthetic fields do not have a scope nor any annotations
 			this.tagBits |= (TagBits.AnnotationResolved | TagBits.DeprecatedAnnotationResolved);
 			return 0;
@@ -343,20 +345,24 @@ public FieldBinding original() {
 public void setAnnotations(AnnotationBinding[] annotations) {
 	this.declaringClass.storeAnnotations(this, annotations);
 }
-public FieldDeclaration sourceField() {
-	SourceTypeBinding sourceType;
-	try {
-		sourceType = (SourceTypeBinding) declaringClass;
-	} catch (ClassCastException e) {
-		return null;		
-	}
-
-	FieldDeclaration[] fields = sourceType.scope.referenceContext.fields;
-	if (fields != null) {
-		for (int i = fields.length; --i >= 0;)
-			if (this == fields[i].binding)
-				return fields[i];
-	}
-	return null;		
+public  boolean isFor(AbstractVariableDeclaration variableDeclaration)
+{
+	return false;
 }
+//public FieldDeclaration sourceField() {
+//	SourceTypeBinding sourceType;
+//	try {
+//		sourceType = (SourceTypeBinding) declaringClass;
+//	} catch (ClassCastException e) {
+//		return null;		
+//	}
+//
+//	FieldDeclaration[] fields = sourceType.scope.referenceContext.fields;
+//	if (fields != null) {
+//		for (int i = fields.length; --i >= 0;)
+//			if (this == fields[i].binding)
+//				return fields[i];
+//	}
+//	return null;		
+//}
 }

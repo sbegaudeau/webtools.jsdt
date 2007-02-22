@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 
@@ -56,4 +57,5 @@ public abstract class VariableBinding extends Binding {
 		s += (name != null) ? new String(name) : "UNNAMED FIELD"; //$NON-NLS-1$
 		return s;
 	}
-}
+	public abstract boolean isFor(AbstractVariableDeclaration variableDeclaration);
+	}

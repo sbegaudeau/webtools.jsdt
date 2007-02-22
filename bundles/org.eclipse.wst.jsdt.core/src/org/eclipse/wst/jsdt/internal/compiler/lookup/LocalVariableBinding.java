@@ -12,7 +12,9 @@ package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
@@ -44,7 +46,7 @@ public class LocalVariableBinding extends VariableBinding {
 	// regular local variable or argument
 	public LocalVariableBinding(LocalDeclaration declaration, TypeBinding type, int modifiers, boolean isArgument) {
 
-		this(declaration.name, type, modifiers, isArgument);
+		this(declaration.name, type!=null ? type : BaseTypeBinding.ANY, modifiers, isArgument);
 		this.declaration = declaration;
 	}
 
@@ -64,18 +66,37 @@ public class LocalVariableBinding extends VariableBinding {
 		StringBuffer buffer = new StringBuffer();
 		
 		// declaring method or type
-		BlockScope scope = this.declaringScope;
-		MethodScope methodScope = scope instanceof MethodScope ? (MethodScope) scope : scope.enclosingMethodScope();
-		ReferenceContext referenceContext = methodScope.referenceContext;
-		if (referenceContext instanceof AbstractMethodDeclaration) {
-			MethodBinding methodBinding = ((AbstractMethodDeclaration) referenceContext).binding;
-			if (methodBinding != null) {
-				buffer.append(methodBinding.computeUniqueKey(false/*not a leaf*/));
+ 		BlockScope scope = this.declaringScope;
+		
+		if (scope instanceof CompilationUnitScope) {
+			CompilationUnitScope compilationUnitScope = (CompilationUnitScope) scope;
+			buffer.append(compilationUnitScope.referenceContext.compilationUnitBinding.computeUniqueKey(false));
+		}
+		else
+		{
+			ReferenceContext referenceContext = null;
+			MethodScope methodScope = scope instanceof MethodScope ? (MethodScope) scope : scope.enclosingMethodScope();
+			if (methodScope!=null)
+			{
+				referenceContext = methodScope.referenceContext;
 			}
-		} else if (referenceContext instanceof TypeDeclaration) {
-			TypeBinding typeBinding = ((TypeDeclaration) referenceContext).binding;
-			if (typeBinding != null) {
-				buffer.append(typeBinding.computeUniqueKey(false/*not a leaf*/));
+			else
+				referenceContext =	scope.enclosingCompilationUnit().scope.referenceCompilationUnit();
+			if (referenceContext instanceof AbstractMethodDeclaration) {
+				MethodBinding methodBinding = ((AbstractMethodDeclaration) referenceContext).binding;
+				if (methodBinding != null) {
+					buffer.append(methodBinding.computeUniqueKey(false/*not a leaf*/));
+				}
+			} else if (referenceContext instanceof TypeDeclaration) {
+				TypeBinding typeBinding = ((TypeDeclaration) referenceContext).binding;
+				if (typeBinding != null) {
+					buffer.append(typeBinding.computeUniqueKey(false/*not a leaf*/));
+				}
+			} else if (referenceContext instanceof CompilationUnitDeclaration) {
+				 CompilationUnitBinding compilationUnitBinding = ((CompilationUnitDeclaration) referenceContext).compilationUnitBinding;
+				if (compilationUnitBinding != null) {
+					buffer.append(compilationUnitBinding.computeUniqueKey(false/*not a leaf*/));
+				}
 			}
 		}
 
@@ -169,6 +190,10 @@ public class LocalVariableBinding extends VariableBinding {
 			sourceType.storeAnnotations(this, annotations);
 	}
 
+	public  boolean isFor(AbstractVariableDeclaration variableDeclaration)
+	{
+		return variableDeclaration.equals(this.declaration);
+	}
 	public String toString() {
 
 		String s = super.toString();

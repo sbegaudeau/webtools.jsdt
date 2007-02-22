@@ -15,6 +15,7 @@ import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
+import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 /*
  * Special unchecked exception type used 
@@ -71,6 +72,15 @@ public class AbortCompilation extends RuntimeException {
 		this.problem.setSourceStart(astNode.sourceStart());
 		this.problem.setSourceEnd(astNode.sourceEnd());
 		this.problem.setSourceLineNumber(Util.searchLineNumber(unitResult.getLineSeparatorPositions(), astNode.sourceStart()));
+		this.compilationResult = unitResult;
+	}
+	
+	public void updateContext(InferredType inferredType, CompilationResult unitResult) {
+		if (this.problem == null) return;
+		if (this.problem.getSourceStart() != 0 || this.problem.getSourceEnd() != 0) return;
+		this.problem.setSourceStart(inferredType.sourceStart);
+		this.problem.setSourceEnd(inferredType.sourceEnd);
+		this.problem.setSourceLineNumber(Util.searchLineNumber(unitResult.getLineSeparatorPositions(), inferredType.sourceStart));
 		this.compilationResult = unitResult;
 	}
 }

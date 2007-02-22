@@ -17,6 +17,7 @@ import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.flow.UnconditionalFlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
+import org.eclipse.wst.jsdt.internal.infer.InferredMethod;
 
 /**
  * Particular block scope used for methods, constructors or clinits, representing
@@ -49,7 +50,7 @@ public class MethodScope extends BlockScope {
 	// inner-emulation
 	public SyntheticArgumentBinding[] extraSyntheticArguments;
 	
-	public MethodScope(ClassScope parent, ReferenceContext context, boolean isStatic) {
+	public MethodScope(Scope parent, ReferenceContext context, boolean isStatic) {
 
 		super(METHOD_SCOPE, parent);
 		locals = new LocalVariableBinding[5];
@@ -67,7 +68,8 @@ public class MethodScope extends BlockScope {
 		if ((modifiers & ExtraCompilerModifiers.AccAlternateModifierProblem) != 0)
 			problemReporter().duplicateModifierForMethod(declaringClass, (AbstractMethodDeclaration) referenceContext);
 
-		if (((ConstructorDeclaration) referenceContext).isDefaultConstructor) {
+//		if (((ConstructorDeclaration) referenceContext).isDefaultConstructor) {
+		if ((methodBinding.modifiers&ExtraCompilerModifiers.AccIsDefaultConstructor)>0) {
 			// certain flags are propagated from declaring class onto constructor
 			final int DECLARING_FLAGS = ClassFileConstants.AccEnum|ClassFileConstants.AccPublic|ClassFileConstants.AccProtected;
 			final int VISIBILITY_FLAGS = ClassFileConstants.AccPrivate|ClassFileConstants.AccPublic|ClassFileConstants.AccProtected;
@@ -142,15 +144,15 @@ public class MethodScope extends BlockScope {
 		int realModifiers = modifiers & ExtraCompilerModifiers.AccJustFlag;
 
 		// set the requested modifiers for a method in an interface/annotation
-		if (declaringClass.isInterface()) {
-			if ((realModifiers & ~(ClassFileConstants.AccPublic | ClassFileConstants.AccAbstract)) != 0) {
-				if ((declaringClass.modifiers & ClassFileConstants.AccAnnotation) != 0)
-					problemReporter().illegalModifierForAnnotationMember((AbstractMethodDeclaration) referenceContext);
-				else
-					problemReporter().illegalModifierForInterfaceMethod((AbstractMethodDeclaration) referenceContext);
-			}
-			return;
-		}
+//		if (declaringClass.isInterface()) {
+//			if ((realModifiers & ~(ClassFileConstants.AccPublic | ClassFileConstants.AccAbstract)) != 0) {
+//				if ((declaringClass.modifiers & ClassFileConstants.AccAnnotation) != 0)
+//					problemReporter().illegalModifierForAnnotationMember((AbstractMethodDeclaration) referenceContext);
+//				else
+//					problemReporter().illegalModifierForInterfaceMethod((AbstractMethodDeclaration) referenceContext);
+//			}
+//			return;
+//		}
 
 		// check for abnormal modifiers
 		final int UNEXPECTED_MODIFIERS = ~(ClassFileConstants.AccPublic | ClassFileConstants.AccPrivate | ClassFileConstants.AccProtected
@@ -277,32 +279,40 @@ public class MethodScope extends BlockScope {
 	 * 		otherwise return a correct method binding (but without the element
 	 *		that caused the problem) : ie : Incorrect thrown exception
 	 */
-	MethodBinding createMethod(AbstractMethodDeclaration method) {
+	
+	MethodBinding createMethod(InferredMethod inferredMethod) {
+		
+		return createMethod(inferredMethod.methodDeclaration,inferredMethod.name,inferredMethod.inferredType.binding, inferredMethod.isConstructor);
+	}
+	
+	MethodBinding createMethod(AbstractMethodDeclaration method,char[] name,SourceTypeBinding declaringClass, boolean isConstructor) {
 
+		MethodBinding methodBinding=null;
 		// is necessary to ensure error reporting
 		this.referenceContext = method;
 		method.scope = this;
-		SourceTypeBinding declaringClass = referenceType().binding;
-		int modifiers = method.modifiers | ExtraCompilerModifiers.AccUnresolved;
-		if (method.isConstructor()) {
-			if (method.isDefaultConstructor())
+		int modifiers = method.modifiers | ExtraCompilerModifiers.AccUnresolved | ClassFileConstants.AccPublic;
+		if (method.isConstructor() || isConstructor) {
+			if (method.isDefaultConstructor() || isConstructor)
 				modifiers |= ExtraCompilerModifiers.AccIsDefaultConstructor;
-			method.binding = new MethodBinding(modifiers, null, null, declaringClass);
-			checkAndSetModifiersForConstructor(method.binding);
+			methodBinding = new MethodBinding(modifiers, null, null, declaringClass);
+			checkAndSetModifiersForConstructor(methodBinding);
 		} else {
-			if (declaringClass.isInterface()) // interface or annotation type
-				modifiers |= ClassFileConstants.AccPublic | ClassFileConstants.AccAbstract;
-			method.binding =
-				new MethodBinding(modifiers, method.selector, null, null, null, declaringClass);
-			checkAndSetModifiersForMethod(method.binding);
+//			if (declaringClass.isInterface()) // interface or annotation type
+//				modifiers |= ClassFileConstants.AccPublic | ClassFileConstants.AccAbstract;
+//			TypeBinding returnType =
+//				 (method.inferredType!=null)?method.inferredType.resolveType(this,method):TypeBinding.ANY;
+			methodBinding =
+				new MethodBinding(modifiers, name, TypeBinding.ANY, null, null, declaringClass);
+			checkAndSetModifiersForMethod(methodBinding);
 		}
-		this.isStatic = method.binding.isStatic();
+		this.isStatic =methodBinding.isStatic();
 
 		Argument[] argTypes = method.arguments;
 		int argLength = argTypes == null ? 0 : argTypes.length;
 		if (argLength > 0 && compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5) {
 			if (argTypes[--argLength].isVarArgs())
-				method.binding.modifiers |= ClassFileConstants.AccVarargs;
+				methodBinding.modifiers |= ClassFileConstants.AccVarargs;
 			while (--argLength >= 0) {
 				if (argTypes[argLength].isVarArgs())
 					problemReporter().illegalVararg(argTypes[argLength], method);
@@ -312,12 +322,12 @@ public class MethodScope extends BlockScope {
 		TypeParameter[] typeParameters = method.typeParameters();
 	    // do not construct type variables if source < 1.5
 		if (typeParameters == null || compilerOptions().sourceLevel < ClassFileConstants.JDK1_5) {
-		    method.binding.typeVariables = Binding.NO_TYPE_VARIABLES;
+			methodBinding.typeVariables = Binding.NO_TYPE_VARIABLES;
 		} else {
-			method.binding.typeVariables = createTypeVariables(typeParameters, method.binding);
-			method.binding.modifiers |= ExtraCompilerModifiers.AccGenericSignature;
+			methodBinding.typeVariables = createTypeVariables(typeParameters, methodBinding);
+			methodBinding.modifiers |= ExtraCompilerModifiers.AccGenericSignature;
 		}
-		return method.binding;
+		return methodBinding;
 	}
 
 	/* Overridden to detect the error case inside an explicit constructor call:
@@ -471,8 +481,9 @@ public class MethodScope extends BlockScope {
 	* It is the nearest enclosing type of this scope.
 	*/
 	public TypeDeclaration referenceType() {
-
-		return ((ClassScope) parent).referenceContext;
+		if (parent instanceof ClassScope)
+		  return ((ClassScope) parent).referenceContext;
+		return null;
 	}
 
 	String basicToString(int tab) {

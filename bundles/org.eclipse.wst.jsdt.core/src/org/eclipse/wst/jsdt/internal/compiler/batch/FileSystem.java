@@ -19,6 +19,7 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
 import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.wst.jsdt.internal.compiler.env.NameEnvironmentAnswer;
+import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
@@ -29,6 +30,7 @@ public class FileSystem implements INameEnvironment, SuffixConstants {
 	public interface Classpath {
 		NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageName, String qualifiedBinaryFileName);
 		boolean isPackage(String qualifiedPackageName); 
+		NameEnvironmentAnswer findBinding(char[] typeName, String qualifiedPackageName, int type, ITypeRequestor requestor);
 		/**
 		 * This method resets the environment. The resulting state is equivalent to
 		 * a new name environment without creating a new object.
@@ -132,6 +134,12 @@ static Classpath getClasspath(String classpathName, String encoding,
 				}
 			}
 		}
+		else if (lowercaseClasspathName.endsWith(SUFFIX_STRING_java))
+		{
+			result=new ClasspathFile(file, encoding,accessRuleSet,destinationPath == null || destinationPath == Main.NONE ?
+						destinationPath : // keep == comparison valid
+						convertPathSeparators(destinationPath));
+		}
 	}
 	return result;
 }
@@ -155,7 +163,8 @@ private void initializeKnownFileNames(String[] initialFileNames) {
 		}
 		if (matchingPathName == null) {
 			this.knownFileNames.add(new String(fileName)); // leave as is...
-		} else {
+		}
+		else {
 			this.knownFileNames.add(new String(CharOperation.subarray(fileName, matchingPathName.length, fileName.length)));
 		}
 		matchingPathName = null;
@@ -214,14 +223,49 @@ private NameEnvironmentAnswer findClass(String qualifiedTypeName, char[] typeNam
 		return suggestedAnswer;
 	return null;
 }
-public NameEnvironmentAnswer findType(char[][] compoundName) {
+
+private NameEnvironmentAnswer findBinding(String qualifiedTypeName, char[] typeName, int type, ITypeRequestor requestor){
+	if (this.knownFileNames.contains(qualifiedTypeName)) return null; // looking for a file which we know was provided at the beginning of the compilation
+
+	String qualifiedPackageName =
+		qualifiedTypeName.length() == typeName.length
+			? "" //$NON-NLS-1$
+			: qualifiedTypeName.substring(0, qualifiedTypeName.length() - typeName.length - 1);
+	NameEnvironmentAnswer suggestedAnswer = null;
+	for (int i = 0, length = this.classpaths.length; i < length; i++) {
+			NameEnvironmentAnswer answer = this.classpaths[i].findBinding(typeName, qualifiedPackageName, type,requestor);
+			if (answer != null) {
+				if (!answer.ignoreIfBetter()) {
+					if (answer.isBetter(suggestedAnswer))
+						return answer;
+				} else if (answer.isBetter(suggestedAnswer))
+					// remember suggestion and keep looking
+					suggestedAnswer = answer;
+			}
+		}
+	if (suggestedAnswer != null)
+		// no better answer was found
+		return suggestedAnswer;
+	return null;
+}
+
+public NameEnvironmentAnswer findBinding(char[] typeName, char[][] packageName, int type, ITypeRequestor requestor) {
+	if (typeName != null)
+		return findBinding(
+			new String(CharOperation.concatWith(packageName, typeName, '/')),
+			typeName,type,requestor);
+	return null;
+}
+
+
+public NameEnvironmentAnswer findType(char[][] compoundName, ITypeRequestor requestor) {
 	if (compoundName != null)
 		return findClass(
 			new String(CharOperation.concatWith(compoundName, '/')),
 			compoundName[compoundName.length - 1]);
 	return null;
 }
-public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName) {
+public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName, ITypeRequestor requestor) {
 	if (typeName != null)
 		return findClass(
 			new String(CharOperation.concatWith(packageName, typeName, '/')),

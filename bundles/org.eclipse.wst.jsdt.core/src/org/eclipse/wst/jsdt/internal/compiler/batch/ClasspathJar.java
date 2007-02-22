@@ -22,6 +22,7 @@ import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileReader;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFormatException;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
 import org.eclipse.wst.jsdt.internal.compiler.env.NameEnvironmentAnswer;
+import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 public class ClasspathJar extends ClasspathLocation {
@@ -106,4 +107,8 @@ public char[] normalizedPath() {
 public String getPath(){
 	return this.file.getPath();
 }
+public NameEnvironmentAnswer findBinding(char[] typeName, String qualifiedPackageName, int type, ITypeRequestor requestor) {
+//	TODO: implement
+	throw new org.eclipse.wst.jsdt.core.UnimplementedException();
+	}
 }

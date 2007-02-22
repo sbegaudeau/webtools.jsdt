@@ -8,13 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.jsdt.internal.compiler.ast;
+package org.eclipse.wst.jsdt.internal.compiler.ast;
 
-import org.eclipse.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.jsdt.internal.compiler.codegen.*;
-import org.eclipse.jsdt.internal.compiler.flow.FlowInfo;
-import org.eclipse.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
 
 public class UndefinedLiteral extends MagicLiteral {
 
@@ -33,8 +33,8 @@ public class UndefinedLiteral extends MagicLiteral {
 	/**
 	 * Code generation for the null literal
 	 *
-	 * @param currentScope org.eclipse.jsdt.internal.compiler.lookup.BlockScope
-	 * @param codeStream org.eclipse.jsdt.internal.compiler.codegen.CodeStream
+	 * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
+	 * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
 	 * @param valueRequired boolean
 	 */ 
 	public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {

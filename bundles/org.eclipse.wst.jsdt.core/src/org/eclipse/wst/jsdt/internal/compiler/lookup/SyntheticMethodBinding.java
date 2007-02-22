@@ -113,7 +113,7 @@ public class SyntheticMethodBinding extends MethodBinding {
 		} while (needRename);
 	
 		// retrieve sourceStart position for the target field for line number attributes
-		FieldDeclaration[] fieldDecls = declaringSourceType.scope.referenceContext.fields;
+		FieldDeclaration[] fieldDecls = declaringSourceType.classScope.referenceContext.fields;
 		if (fieldDecls != null) {
 			for (int i = 0, max = fieldDecls.length; i < max; i++) {
 				if (fieldDecls[i].binding == targetField) {
@@ -139,7 +139,7 @@ public class SyntheticMethodBinding extends MethodBinding {
 	*/
 		// We now at this point - per construction - it is for sure an enclosing instance, we are going to
 		// show the target field type declaration location.
-		this.sourceStart = declaringSourceType.scope.referenceContext.sourceStart; // use the target declaring class name position instead
+		this.sourceStart = declaringSourceType.classScope.referenceContext.sourceStart; // use the target declaring class name position instead
 	}
 
 	public SyntheticMethodBinding(FieldBinding targetField, ReferenceBinding declaringClass, TypeBinding enumBinding, char[] selector) {
@@ -203,7 +203,7 @@ public class SyntheticMethodBinding extends MethodBinding {
 
 		// We now at this point - per construction - it is for sure an enclosing instance, we are going to
 		// show the target field type declaration location.
-		this.sourceStart = declaringSourceType.scope.referenceContext.sourceStart; // use the target declaring class name position instead
+		this.sourceStart = declaringSourceType.classScope.referenceContext.sourceStart; // use the target declaring class name position instead
 	}
 	
 	public SyntheticMethodBinding(MethodBinding targetMethod, boolean isSuperAccess, ReferenceBinding receiverType) {
@@ -332,7 +332,7 @@ public class SyntheticMethodBinding extends MethodBinding {
 	
 		// retrieve sourceStart position for the target method for line number attributes
 		AbstractMethodDeclaration[] methodDecls = 
-			sourceType.scope.referenceContext.methods; 
+			sourceType.classScope.referenceContext.methods; 
 		if (methodDecls != null) {
 			for (int i = 0, length = methodDecls.length; i < length; i++) {
 				if (methodDecls[i].binding == accessedConstructor) {
@@ -400,7 +400,7 @@ public class SyntheticMethodBinding extends MethodBinding {
 		} while (needRename);
 	
 		// retrieve sourceStart position for the target method for line number attributes
-		AbstractMethodDeclaration[] methodDecls = declaringSourceType.scope.referenceContext.methods;
+		AbstractMethodDeclaration[] methodDecls = declaringSourceType.classScope.referenceContext.methods;
 		if (methodDecls != null) {
 			for (int i = 0, length = methodDecls.length; i < length; i++) {
 				if (methodDecls[i].binding == accessedMethod) {

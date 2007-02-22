@@ -44,6 +44,7 @@ import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
+import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraries;
 import org.eclipse.wst.jsdt.internal.compiler.AbstractAnnotationProcessorManager;
 import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
@@ -1702,7 +1703,7 @@ protected ArrayList handleBootclasspath(ArrayList bootclasspaths, String customE
 				paths[i], customEncoding, false, true);
 		}
 	} else {
-	 	final File javaHome = getJavaHome();
+//	 	final File javaHome = getJavaHome();
 	 	bootclasspaths = new ArrayList(DEFAULT_SIZE_CLASSPATH);
 		/* no bootclasspath specified
 		 * we can try to retrieve the default librairies of the VM used to run
@@ -1715,37 +1716,38 @@ protected ArrayList handleBootclasspath(ArrayList bootclasspaths, String customE
 			return null;
 		 }
 
-	 	/*
-	 	 * Handle >= JDK 1.2.2 settings: retrieve rt.jar
-	 	 */
-	 	 if (javaHome != null) {
-			File[] directoriesToCheck = null;
-			if (System.getProperty("os.name").startsWith("Mac")) {//$NON-NLS-1$//$NON-NLS-2$
-				directoriesToCheck = new File[] {
-					new File(javaHome, "../Classes"), //$NON-NLS-1$
-				};
-			} else {
-				directoriesToCheck = new File[] { 
-					new File(javaHome, "lib") //$NON-NLS-1$
-				};
-			}
-			File[][] systemLibrariesJars = getLibrariesFiles(directoriesToCheck);
-			if (systemLibrariesJars != null) {
-				for (int i = 0, max = systemLibrariesJars.length; i < max; i++) {
-					File[] current = systemLibrariesJars[i];
-					if (current != null) {
-						for (int j = 0, max2 = current.length; j < max2; j++) {
-							FileSystem.Classpath classpath = 
-								FileSystem.getClasspath(current[j].getAbsolutePath(),
-									null, false, null, null); 
-							if (classpath != null) {
-								bootclasspaths.add(classpath);
-							}
-						}
-					}
-				}
-			}
- 		}
+		 bootclasspaths.add(FileSystem.getClasspath(SystemLibraries.getLibraryPath(new String(SystemLibraries.SYSTEM_LIBARAY_NAME)), null, null));
+//	 	/*
+//	 	 * Handle >= JDK 1.2.2 settings: retrieve rt.jar
+//	 	 */
+//	 	 if (javaHome != null) {
+//			File[] directoriesToCheck = null;
+//			if (System.getProperty("os.name").startsWith("Mac")) {//$NON-NLS-1$//$NON-NLS-2$
+//				directoriesToCheck = new File[] {
+//					new File(javaHome, "../Classes"), //$NON-NLS-1$
+//				};
+//			} else {
+//				directoriesToCheck = new File[] { 
+//					new File(javaHome, "lib") //$NON-NLS-1$
+//				};
+//			}
+//			File[][] systemLibrariesJars = getLibrariesFiles(directoriesToCheck);
+//			if (systemLibrariesJars != null) {
+//				for (int i = 0, max = systemLibrariesJars.length; i < max; i++) {
+//					File[] current = systemLibrariesJars[i];
+//					if (current != null) {
+//						for (int j = 0, max2 = current.length; j < max2; j++) {
+//							FileSystem.Classpath classpath = 
+//								FileSystem.getClasspath(current[j].getAbsolutePath(),
+//									null, false, null, null); 
+//							if (classpath != null) {
+//								bootclasspaths.add(classpath);
+//							}
+//						}
+//					}
+//				}
+//			}
+// 		}
 	}
 	return bootclasspaths;
 }
@@ -1764,25 +1766,25 @@ protected ArrayList handleClasspath(ArrayList classpaths, String customEncoding)
 		}
 	} else {
 		// no user classpath specified.
-		classpaths = new ArrayList(DEFAULT_SIZE_CLASSPATH);
-		String classProp = System.getProperty("java.class.path"); //$NON-NLS-1$
-		if ((classProp == null) || (classProp.length() == 0)) {
-			this.logger.logNoClasspath();
-			classpaths.add(FileSystem.getClasspath(System.getProperty("user.dir"), customEncoding, null));//$NON-NLS-1$
-		} else {
-			StringTokenizer tokenizer = new StringTokenizer(classProp, File.pathSeparator);
-			String token;
-			while (tokenizer.hasMoreTokens()) {
-				token = tokenizer.nextToken();
-				FileSystem.Classpath currentClasspath = FileSystem
-						.getClasspath(token, customEncoding, null);
-				if (currentClasspath != null) {
-					classpaths.add(currentClasspath);
-				} else if (token.length() != 0) {
-					this.logger.logIncorrectClasspath(token);
-				}
-			}
-		}
+//		classpaths = new ArrayList(DEFAULT_SIZE_CLASSPATH);
+//		String classProp = System.getProperty("java.class.path"); //$NON-NLS-1$
+//		if ((classProp == null) || (classProp.length() == 0)) {
+//			this.logger.logNoClasspath();
+//			classpaths.add(FileSystem.getClasspath(System.getProperty("user.dir"), customEncoding, null));//$NON-NLS-1$
+//		} else {
+//			StringTokenizer tokenizer = new StringTokenizer(classProp, File.pathSeparator);
+//			String token;
+//			while (tokenizer.hasMoreTokens()) {
+//				token = tokenizer.nextToken();
+//				FileSystem.Classpath currentClasspath = FileSystem
+//						.getClasspath(token, customEncoding, null);
+//				if (currentClasspath != null) {
+//					classpaths.add(currentClasspath);
+//				} else if (token.length() != 0) {
+//					this.logger.logIncorrectClasspath(token);
+//				}
+//			}
+//		}
 	}
 	return classpaths;
 }
@@ -1799,47 +1801,47 @@ protected ArrayList handleExtdirs(ArrayList extdirsClasspaths) {
 	 * - else java.ext.dirs if defined;
 	 * - else default extensions directory for the platform.
 	 */
-	if (extdirsClasspaths == null) {
-		extdirsClasspaths = new ArrayList(DEFAULT_SIZE_CLASSPATH);
-		String extdirsStr = System.getProperty("java.ext.dirs"); //$NON-NLS-1$
-		if (extdirsStr == null) {
-			extdirsClasspaths.add(javaHome.getAbsolutePath() + "/lib/ext"); //$NON-NLS-1$
-		} else {
-			StringTokenizer tokenizer = new StringTokenizer(extdirsStr, File.pathSeparator);
-			while (tokenizer.hasMoreTokens()) 
-				extdirsClasspaths.add(tokenizer.nextToken());
-		}
-	}
-	
+//	if (extdirsClasspaths == null) {
+//		extdirsClasspaths = new ArrayList(DEFAULT_SIZE_CLASSPATH);
+//		String extdirsStr = System.getProperty("java.ext.dirs"); //$NON-NLS-1$
+//		if (extdirsStr == null) {
+//			extdirsClasspaths.add(javaHome.getAbsolutePath() + "/lib/ext"); //$NON-NLS-1$
+//		} else {
+//			StringTokenizer tokenizer = new StringTokenizer(extdirsStr, File.pathSeparator);
+//			while (tokenizer.hasMoreTokens()) 
+//				extdirsClasspaths.add(tokenizer.nextToken());
+//		}
+//	}
+//	
 	/*
 	 * Feed extdirsClasspath with the entries found into the directories listed by
 	 * extdirsNames.
 	 */
-	if (extdirsClasspaths.size() != 0) {
-		File[] directoriesToCheck = new File[extdirsClasspaths.size()];
-		for (int i = 0; i < directoriesToCheck.length; i++) 
-			directoriesToCheck[i] = new File((String) extdirsClasspaths.get(i));
-		extdirsClasspaths.clear();
-		File[][] extdirsJars = getLibrariesFiles(directoriesToCheck);
-		if (extdirsJars != null) {
-			for (int i = 0, max = extdirsJars.length; i < max; i++) {
-				File[] current = extdirsJars[i];
-				if (current != null) {
-					for (int j = 0, max2 = current.length; j < max2; j++) {
-						FileSystem.Classpath classpath = 
-							FileSystem.getClasspath(
-									current[j].getAbsolutePath(),
-									null, null); 
-						if (classpath != null) {
-							extdirsClasspaths.add(classpath);
-						}
-					}
-				} else if (directoriesToCheck[i].isFile()) {
-					this.logger.logIncorrectExtDirsEntry(directoriesToCheck[i].getAbsolutePath());
-				}
-			}
-		}
-	}
+//	if (extdirsClasspaths.size() != 0) {
+//		File[] directoriesToCheck = new File[extdirsClasspaths.size()];
+//		for (int i = 0; i < directoriesToCheck.length; i++) 
+//			directoriesToCheck[i] = new File((String) extdirsClasspaths.get(i));
+//		extdirsClasspaths.clear();
+//		File[][] extdirsJars = getLibrariesFiles(directoriesToCheck);
+//		if (extdirsJars != null) {
+//			for (int i = 0, max = extdirsJars.length; i < max; i++) {
+//				File[] current = extdirsJars[i];
+//				if (current != null) {
+//					for (int j = 0, max2 = current.length; j < max2; j++) {
+//						FileSystem.Classpath classpath = 
+//							FileSystem.getClasspath(
+//									current[j].getAbsolutePath(),
+//									null, null); 
+//						if (classpath != null) {
+//							extdirsClasspaths.add(classpath);
+//						}
+//					}
+//				} else if (directoriesToCheck[i].isFile()) {
+//					this.logger.logIncorrectExtDirsEntry(directoriesToCheck[i].getAbsolutePath());
+//				}
+//			}
+//		}
+//	}
 	
 	return extdirsClasspaths;
 }
@@ -1854,50 +1856,50 @@ protected ArrayList handleEndorseddirs(ArrayList endorsedDirClasspaths) {
 	 * - else java.endorsed.dirs if defined;
 	 * - else default extensions directory for the platform. (/lib/endorsed)
 	 */
-	if (endorsedDirClasspaths == null) {
-		endorsedDirClasspaths = new ArrayList(DEFAULT_SIZE_CLASSPATH);
-		String endorsedDirsStr = System.getProperty("java.endorsed.dirs"); //$NON-NLS-1$
-		if (endorsedDirsStr == null) {
-			if (javaHome != null) {
-				endorsedDirClasspaths.add(javaHome.getAbsolutePath() + "/lib/endorsed"); //$NON-NLS-1$
-			}
-		} else {
-			StringTokenizer tokenizer = new StringTokenizer(endorsedDirsStr, File.pathSeparator);
-			while (tokenizer.hasMoreTokens()) {
-				endorsedDirClasspaths.add(tokenizer.nextToken());
-			}
-		}
-	}
-	
-	/*
-	 * Feed extdirsClasspath with the entries found into the directories listed by
-	 * extdirsNames.
-	 */
-	if (endorsedDirClasspaths.size() != 0) {
-		File[] directoriesToCheck = new File[endorsedDirClasspaths.size()];
-		for (int i = 0; i < directoriesToCheck.length; i++) 
-			directoriesToCheck[i] = new File((String) endorsedDirClasspaths.get(i));
-		endorsedDirClasspaths.clear();
-		File[][] endorsedDirsJars = getLibrariesFiles(directoriesToCheck);
-		if (endorsedDirsJars != null) {
-			for (int i = 0, max = endorsedDirsJars.length; i < max; i++) {
-				File[] current = endorsedDirsJars[i];
-				if (current != null) {
-					for (int j = 0, max2 = current.length; j < max2; j++) {
-						FileSystem.Classpath classpath = 
-							FileSystem.getClasspath(
-									current[j].getAbsolutePath(),
-									null, null); 
-						if (classpath != null) {
-							endorsedDirClasspaths.add(classpath);
-						}
-					}
-				} else if (directoriesToCheck[i].isFile()) {
-					this.logger.logIncorrectEndorsedDirsEntry(directoriesToCheck[i].getAbsolutePath());
-				}
-			}
-		}
-	}
+//	if (endorsedDirClasspaths == null) {
+//		endorsedDirClasspaths = new ArrayList(DEFAULT_SIZE_CLASSPATH);
+//		String endorsedDirsStr = System.getProperty("java.endorsed.dirs"); //$NON-NLS-1$
+//		if (endorsedDirsStr == null) {
+//			if (javaHome != null) {
+//				endorsedDirClasspaths.add(javaHome.getAbsolutePath() + "/lib/endorsed"); //$NON-NLS-1$
+//			}
+//		} else {
+//			StringTokenizer tokenizer = new StringTokenizer(endorsedDirsStr, File.pathSeparator);
+//			while (tokenizer.hasMoreTokens()) {
+//				endorsedDirClasspaths.add(tokenizer.nextToken());
+//			}
+//		}
+//	}
+//	
+//	/*
+//	 * Feed extdirsClasspath with the entries found into the directories listed by
+//	 * extdirsNames.
+//	 */
+//	if (endorsedDirClasspaths.size() != 0) {
+//		File[] directoriesToCheck = new File[endorsedDirClasspaths.size()];
+//		for (int i = 0; i < directoriesToCheck.length; i++) 
+//			directoriesToCheck[i] = new File((String) endorsedDirClasspaths.get(i));
+//		endorsedDirClasspaths.clear();
+//		File[][] endorsedDirsJars = getLibrariesFiles(directoriesToCheck);
+//		if (endorsedDirsJars != null) {
+//			for (int i = 0, max = endorsedDirsJars.length; i < max; i++) {
+//				File[] current = endorsedDirsJars[i];
+//				if (current != null) {
+//					for (int j = 0, max2 = current.length; j < max2; j++) {
+//						FileSystem.Classpath classpath = 
+//							FileSystem.getClasspath(
+//									current[j].getAbsolutePath(),
+//									null, null); 
+//						if (classpath != null) {
+//							endorsedDirClasspaths.add(classpath);
+//						}
+//					}
+//				} else if (directoriesToCheck[i].isFile()) {
+//					this.logger.logIncorrectEndorsedDirsEntry(directoriesToCheck[i].getAbsolutePath());
+//				}
+//			}
+//		}
+//	}
 	return endorsedDirClasspaths;
 }
 
@@ -3432,8 +3434,8 @@ protected void setPaths(ArrayList bootclasspaths,
 	 * entries are searched for both sources and binaries except
 	 * the sourcepath entries which are searched for sources only.
 	 */
-	bootclasspaths.addAll(endorsedDirClasspaths);
-	bootclasspaths.addAll(extdirsClasspaths);
+//	bootclasspaths.addAll(endorsedDirClasspaths);
+//	bootclasspaths.addAll(extdirsClasspaths);
 	bootclasspaths.addAll(sourcepathClasspaths);
 	bootclasspaths.addAll(classpaths);
 	classpaths = bootclasspaths;

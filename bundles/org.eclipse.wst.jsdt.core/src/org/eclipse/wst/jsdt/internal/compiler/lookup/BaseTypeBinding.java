@@ -48,9 +48,11 @@ public final class BaseTypeBinding extends TypeBinding {
 
 		if (this == right)
 			return true;
-		if (!right.isBaseType())
+		if (!right.isBasicType())
 			return this == TypeBinding.NULL;
 
+		if (this.id==TypeIds.T_any)
+			return true;
 		switch (right.id) {
 			case TypeIds.T_boolean :
 			case TypeIds.T_byte :
@@ -100,6 +102,8 @@ public final class BaseTypeBinding extends TypeBinding {
 				}
 			case TypeIds.T_short :
 				return (id == TypeIds.T_byte);
+			case TypeIds.T_any :
+				return true;
 		}
 		return false;
 	}
@@ -108,6 +112,8 @@ public final class BaseTypeBinding extends TypeBinding {
 
 		//can "left" store a "right" using some narrowing conversion
 		//(is left smaller than right)
+		if (right==TypeIds.T_any)
+			return true;
 		switch (left) {
 			case TypeIds.T_boolean :
 				return right == TypeIds.T_boolean;
@@ -131,6 +137,8 @@ public final class BaseTypeBinding extends TypeBinding {
 					return true;
 			case TypeIds.T_double :
 				if (right == TypeIds.T_double)
+					return true;
+			case TypeIds.T_any :
 					return true;
 			default :
 				return false;

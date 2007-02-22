@@ -125,7 +125,7 @@ boolean canSkipInheritedMethods(MethodBinding one, MethodBinding two) {
 }
 void checkAbstractMethod(MethodBinding abstractMethod) {
 	if (mustImplementAbstractMethod(abstractMethod.declaringClass)) {
-		TypeDeclaration typeDeclaration = this.type.scope.referenceContext;
+		TypeDeclaration typeDeclaration = this.type.classScope.referenceContext;
 		if (typeDeclaration != null) {
 			MethodDeclaration missingAbstractMethod = typeDeclaration.addMissingAbstractMethodFor(abstractMethod);
 			missingAbstractMethod.scope.problemReporter().abstractMethodMustBeImplemented(this.type, abstractMethod);
@@ -246,7 +246,7 @@ void checkInheritedMethods(MethodBinding[] methods, int length) {
 		if (!this.type.isAbstract()) {
 			for (int i = length; --i >= 0;) {
 				if (mustImplementAbstractMethod(methods[i].declaringClass)) {
-					TypeDeclaration typeDeclaration = this.type.scope.referenceContext;
+					TypeDeclaration typeDeclaration = this.type.classScope.referenceContext;
 					if (typeDeclaration != null) {
 						MethodDeclaration missingAbstractMethod = typeDeclaration.addMissingAbstractMethodFor(methods[0]);
 						missingAbstractMethod.scope.problemReporter().abstractMethodMustBeImplemented(this.type, methods[0]);

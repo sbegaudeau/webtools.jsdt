@@ -21,6 +21,8 @@ public class BlockScope extends Scope {
 
 	// Local variable management
 	public LocalVariableBinding[] locals;
+	public MethodBinding[] methods;
+	public int numberMethods; // for variable allocation throughout scopes
 	public int localIndex; // position for next variable
 	public int startIndex;	// start position in this scope - for ordering scopes vs. variables
 	public int offset; // for variable allocation throughout scopes
@@ -47,6 +49,7 @@ public BlockScope(BlockScope parent) {
 public BlockScope(BlockScope parent, boolean addToParentScope) {
 	this(Scope.BLOCK_SCOPE, parent);
 	this.locals = new LocalVariableBinding[5];
+	this.methods=new MethodBinding[5];
 	if (addToParentScope) parent.addSubscope(this);
 	this.startIndex = parent.localIndex;
 }
@@ -54,12 +57,15 @@ public BlockScope(BlockScope parent, boolean addToParentScope) {
 public BlockScope(BlockScope parent, int variableCount) {
 	this(Scope.BLOCK_SCOPE, parent);
 	this.locals = new LocalVariableBinding[variableCount];
+	this.methods=new MethodBinding[5];
 	parent.addSubscope(this);
 	this.startIndex = parent.localIndex;
 }
 
 protected BlockScope(int kind, Scope parent) {
 	super(kind, parent);
+	this.locals = new LocalVariableBinding[5];
+	this.methods=new MethodBinding[5];
 }
 
 /* Create the class scope & binding for the anonymous type.
@@ -82,7 +88,7 @@ public final void addLocalType(TypeDeclaration localType) {
 /* Insert a local variable into a given scope, updating its position
  * and checking there are not too many locals or arguments allocated.
  */
-public final void addLocalVariable(LocalVariableBinding binding) {
+public  void addLocalVariable(LocalVariableBinding binding) {
 	checkAndSetModifiersForVariable(binding);
 	// insert local in scope
 	if (this.localIndex == this.locals.length)
@@ -96,9 +102,28 @@ public final void addLocalVariable(LocalVariableBinding binding) {
 
 	// update local variable binding 
 	binding.declaringScope = this;
-	binding.id = this.outerMostMethodScope().analysisIndex++;
+	
+	MethodScope outerMostMethodScope = this.outerMostMethodScope();
+	binding.id = (outerMostMethodScope!=null)? outerMostMethodScope.analysisIndex++ : this.compilationUnitScope().analysisIndex++;
 	// share the outermost method scope analysisIndex
+
+	if (binding.declaration.initialization instanceof FunctionExpression) {
+		FunctionExpression functionExpr = (FunctionExpression) binding.declaration.initialization;
+
+		MethodBinding methodBinding=
+			new MethodBinding(0, binding.name, TypeBinding.ANY, null, null,this.enclosingTypeBinding());
+		if (this.numberMethods == this.methods.length)
+			System.arraycopy(
+				this.methods,
+				0,
+				(this.methods = new MethodBinding[this.numberMethods * 2]),
+				0,
+				this.numberMethods);
+		this.methods[this.numberMethods++] = methodBinding;
+
+	}
 }
+
 
 public void addSubscope(Scope childScope) {
 	if (this.subscopeCount == this.subscopes.length)
@@ -289,7 +314,7 @@ public final ReferenceBinding findLocalType(char[] name) {
 	long compliance = compilerOptions().complianceLevel;
 	for (int i = this.subscopeCount-1; i >= 0; i--) {
 		if (this.subscopes[i] instanceof ClassScope) {
-			LocalTypeBinding sourceType = (LocalTypeBinding)((ClassScope) this.subscopes[i]).referenceContext.binding;
+			LocalTypeBinding sourceType = (LocalTypeBinding)((ClassScope) this.subscopes[i]).getReferenceBinding();
 			// from 1.4 on, local types should not be accessed across switch case blocks (52221)				
 			if (compliance >= ClassFileConstants.JDK1_4 && sourceType.enclosingCase != null) {
 				if (!this.isInsideCase(sourceType.enclosingCase)) {
@@ -302,6 +327,17 @@ public final ReferenceBinding findLocalType(char[] name) {
 	}
 	return null;
 }
+public MethodBinding findMethod(char[] methodName,TypeBinding[]argumentTypes) {
+	int methodLength = methodName.length;
+	for (int i = this.numberMethods-1; i >= 0; i--) {
+		MethodBinding method;
+		char[] name;
+		if ((name = (method = this.methods[i]).selector).length == methodLength && CharOperation.equals(name, methodName))
+			return method;
+	}
+	return null;
+}
+
 
 /**
  * Returns all declarations of most specific locals containing a given position in their source range.
@@ -417,7 +453,7 @@ public Binding getBinding(char[][] compoundName, int mask, InvocationSite invoca
 		PackageBinding packageBinding = (PackageBinding) binding;
 		while (currentIndex < length) {
 			unitScope.recordReference(packageBinding.compoundName, compoundName[currentIndex]);
-			binding = packageBinding.getTypeOrPackage(compoundName[currentIndex++]);
+			binding = packageBinding.getTypeOrPackage(compoundName[currentIndex++], mask);
 			invocationSite.setFieldIndex(currentIndex);
 			if (binding == null) {
 				if (currentIndex == length) {
@@ -542,7 +578,8 @@ public final Binding getBinding(char[][] compoundName, InvocationSite invocation
 	foundType : if (binding instanceof PackageBinding) {
 		while (currentIndex < length) {
 			PackageBinding packageBinding = (PackageBinding) binding;
-			binding = packageBinding.getTypeOrPackage(compoundName[currentIndex++]);
+			binding = packageBinding.getTypeOrPackage(compoundName[currentIndex++], Binding.VARIABLE | Binding.TYPE | Binding.PACKAGE);
+
 			if (binding == null) {
 				if (currentIndex == length) {
 					// must be a type if its the last name, otherwise we have no idea if its a package or type
@@ -865,7 +902,7 @@ public TypeDeclaration referenceType() {
  * For method scope, answers -1 (not a classScope relative position)
  */
 public int scopeIndex() {
-	if (this instanceof MethodScope) return -1;
+	if (this instanceof MethodScope ||this instanceof CompilationUnitScope) return -1;
 	BlockScope parentScope = (BlockScope)this.parent;
 	Scope[] parentSubscopes = parentScope.subscopes;
 	for (int i = 0, max = parentScope.subscopeCount; i < max; i++) {
@@ -873,7 +910,9 @@ public int scopeIndex() {
 	}
 	return -1;
 }
-
+public void setMethods(MethodBinding[] methods) {
+	this.methods = methods;
+}
 // start position in this scope - for ordering scopes vs. variables
 int startIndex() {
 	return this.startIndex;

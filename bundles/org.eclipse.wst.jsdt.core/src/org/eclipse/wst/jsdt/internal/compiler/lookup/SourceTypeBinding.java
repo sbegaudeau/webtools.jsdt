@@ -26,19 +26,26 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
+import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
+import org.eclipse.wst.jsdt.internal.infer.InferredMethod;
+import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 public class SourceTypeBinding extends ReferenceBinding {
 	public ReferenceBinding superclass;
-	public ReferenceBinding[] superInterfaces;
+	public ReferenceBinding[] superInterfaces= Binding.NO_SUPERINTERFACES;
 	private FieldBinding[] fields;
 	private MethodBinding[] methods;
 	public ReferenceBinding[] memberTypes;
-    public TypeVariableBinding[] typeVariables;
+    public TypeVariableBinding[] typeVariables=Binding.NO_TYPE_VARIABLES;
 
-	public ClassScope scope;
+	public Scope scope;
+	public ClassScope  classScope;
 
+	public InferredType inferredType;
+	
 	// Synthetics are separated into 5 categories: methods, super methods, fields, class literals, changed declaring type bindings and bridge methods
 	public final static int METHOD_EMUL = 0;
 	public final static int FIELD_EMUL = 1;
@@ -49,12 +56,23 @@ public class SourceTypeBinding extends ReferenceBinding {
 
 	private SimpleLookupTable storedAnnotations = null; // keys are this ReferenceBinding & its fields and methods, value is an AnnotationHolder
 
-public SourceTypeBinding(char[][] compoundName, PackageBinding fPackage, ClassScope scope) {
+public SourceTypeBinding(char[][] compoundName, PackageBinding fPackage,  Scope scope) {
 	this.compoundName = compoundName;
 	this.fPackage = fPackage;
 	this.fileName = scope.referenceCompilationUnit().getFileName();
-	this.modifiers = scope.referenceContext.modifiers;
-	this.sourceName = scope.referenceContext.name;
+	if (scope instanceof ClassScope)
+	{
+		this.classScope=(ClassScope)scope;
+		if (this.classScope.referenceContext!=null) {
+			this.modifiers = this.classScope.referenceContext.modifiers;
+			this.sourceName = this.classScope.referenceContext.name;
+		}
+		else
+		{
+			this.sourceName = this.classScope.inferredType.getName();
+			this.modifiers=ClassFileConstants.AccPublic;
+		}
+	}
 	this.scope = scope;
 
 	// expect the fields & methods to be initialized correctly later
@@ -62,7 +80,111 @@ public SourceTypeBinding(char[][] compoundName, PackageBinding fPackage, ClassSc
 	this.methods = Binding.NO_METHODS;
 
 	computeId();
+
 }
+
+
+void buildFieldsAndMethods() {
+	buildFields();
+	buildMethods();
+
+}
+
+private void buildFields() {
+	FieldBinding prototype = new FieldBinding(TypeConstants.PROTOTYPE, BaseTypeBinding.ANY, modifiers | ExtraCompilerModifiers.AccUnresolved, this,null);
+	int size = (inferredType.attributes!=null)? inferredType.attributes.size():0;
+	if (size == 0) {
+		 setFields(new FieldBinding[]{prototype});
+		return;
+	}
+
+	// iterate the field declarations to create the bindings, lose all duplicates
+	FieldBinding[] fieldBindings = new FieldBinding[size+1];
+	HashtableOfObject knownFieldNames = new HashtableOfObject(size);
+	boolean duplicate = false;
+	int count = 0;
+	for (int i = 0; i < size; i++) {
+		InferredAttribute field = (InferredAttribute)inferredType.attributes.get(i);
+		int modifiers=0;
+		if (field.isStatic)
+			modifiers|=ClassFileConstants.AccStatic;
+		
+			FieldBinding fieldBinding = new FieldBinding(field, BaseTypeBinding.ANY, modifiers | ExtraCompilerModifiers.AccUnresolved, this);
+			fieldBinding.id = count;
+			// field's type will be resolved when needed for top level types
+//			checkAndSetModifiersForField(fieldBinding, field);
+
+			if (knownFieldNames.containsKey(field.name)) {
+				duplicate = true;
+				FieldBinding previousBinding = (FieldBinding) knownFieldNames.get(field.name);
+				if (previousBinding != null) {
+					for (int f = 0; f < i; f++) {
+						InferredAttribute previousField = (InferredAttribute)inferredType.attributes.get(f);
+						if (previousField.binding == previousBinding) {
+							scope.problemReporter().duplicateFieldInType(this, previousField);
+							previousField.binding = null;
+							break;
+						}
+					}
+				}
+				knownFieldNames.put(field.name, null); // ensure that the duplicate field is found & removed
+				scope.problemReporter().duplicateFieldInType(this, field);
+				field.binding = null;
+			} else {
+				knownFieldNames.put(field.name, fieldBinding);
+				// remember that we have seen a field with this name
+				if (fieldBinding != null)
+					fieldBindings[count++] = fieldBinding;
+			}
+	}
+	fieldBindings[count++]=prototype;
+	// remove duplicate fields
+	if (duplicate) {
+		FieldBinding[] newFieldBindings = new FieldBinding[fieldBindings.length];
+		// we know we'll be removing at least 1 duplicate name
+		size = count;
+		count = 0;
+		for (int i = 0; i < size; i++) {
+			FieldBinding fieldBinding = fieldBindings[i];
+			if (knownFieldNames.get(fieldBinding.name) != null) {
+				fieldBinding.id = count;
+				newFieldBindings[count++] = fieldBinding;
+			}
+		}
+		fieldBindings = newFieldBindings;
+	}
+	if (count != fieldBindings.length)
+		System.arraycopy(fieldBindings, 0, fieldBindings = new FieldBinding[count], 0, count);
+	setFields(fieldBindings);
+}
+
+
+private void buildMethods() {
+	int size = (inferredType.methods!=null)?inferredType.methods.size() :0;
+
+	if (size==0 ) {
+		setMethods(Binding.NO_METHODS);
+		return;
+	} 
+
+	int count =  0;
+	MethodBinding[] methodBindings = new MethodBinding[size];
+	// create bindings for source methods
+	for (int i = 0; i < size; i++) {
+		 InferredMethod method = (InferredMethod)inferredType.methods.get(i);
+			MethodScope scope = new MethodScope(this.scope, method.methodDeclaration, false);
+			MethodBinding methodBinding = scope.createMethod(method);
+			method.methodBinding=methodBinding;
+			if (methodBinding != null) // is null if binding could not be created
+				methodBindings[count++] = methodBinding;
+	}
+	if (count != methodBindings.length)
+		System.arraycopy(methodBindings, 0, methodBindings = new MethodBinding[count], 0, count);
+	tagBits &= ~TagBits.AreMethodsSorted; // in case some static imports reached already into this type
+	setMethods(methodBindings);
+}
+
+
 
 private void addDefaultAbstractMethods() {
 	if ((this.tagBits & TagBits.KnowsDefaultAbstractMethods) != 0) return;
@@ -163,7 +285,7 @@ public FieldBinding addSyntheticFieldForInnerclass(LocalVariableBinding actualOu
 		needRecheck = false;
 		FieldBinding existingField;
 		if ((existingField = this.getField(synthField.name, true /*resolve*/)) != null) {
-			TypeDeclaration typeDecl = this.scope.referenceContext;
+			TypeDeclaration typeDecl = this.classScope.referenceContext;
 			for (int i = 0, max = typeDecl.fields.length; i < max; i++) {
 				FieldDeclaration fieldDecl = typeDecl.fields[i];
 				if (fieldDecl.binding == existingField) {
@@ -207,7 +329,7 @@ public FieldBinding addSyntheticFieldForInnerclass(ReferenceBinding enclosingTyp
 		needRecheck = false;
 		FieldBinding existingField;
 		if ((existingField = this.getField(synthField.name, true /*resolve*/)) != null) {
-			TypeDeclaration typeDecl = this.scope.referenceContext;
+			TypeDeclaration typeDecl = this.classScope.referenceContext;
 			for (int i = 0, max = typeDecl.fields.length; i < max; i++) {
 				FieldDeclaration fieldDecl = typeDecl.fields[i];
 				if (fieldDecl.binding == existingField) {
@@ -291,7 +413,7 @@ public FieldBinding addSyntheticFieldForAssert(BlockScope blockScope) {
 		needRecheck = false;
 		FieldBinding existingField;
 		if ((existingField = this.getField(synthField.name, true /*resolve*/)) != null) {
-			TypeDeclaration typeDecl = this.scope.referenceContext;
+			TypeDeclaration typeDecl = this.classScope.referenceContext;
 			for (int i = 0, max = typeDecl.fields.length; i < max; i++) {
 				FieldDeclaration fieldDecl = typeDecl.fields[i];
 				if (fieldDecl.binding == existingField) {
@@ -334,7 +456,7 @@ public FieldBinding addSyntheticFieldForEnumValues() {
 		needRecheck = false;
 		FieldBinding existingField;
 		if ((existingField = this.getField(synthField.name, true /*resolve*/)) != null) {
-			TypeDeclaration typeDecl = this.scope.referenceContext;
+			TypeDeclaration typeDecl = this.classScope.referenceContext;
 			for (int i = 0, max = typeDecl.fields.length; i < max; i++) {
 				FieldDeclaration fieldDecl = typeDecl.fields[i];
 				if (fieldDecl.binding == existingField) {
@@ -422,7 +544,7 @@ public SyntheticFieldBinding addSyntheticFieldForSwitchEnum(char[] fieldName, St
 		needRecheck = false;
 		FieldBinding existingField;
 		if ((existingField = this.getField(synthField.name, true /*resolve*/)) != null) {
-			TypeDeclaration typeDecl = this.scope.referenceContext;
+			TypeDeclaration typeDecl = this.classScope.referenceContext;
 			for (int i = 0, max = typeDecl.fields.length; i < max; i++) {
 				FieldDeclaration fieldDecl = typeDecl.fields[i];
 				if (fieldDecl.binding == existingField) {
@@ -575,15 +697,15 @@ public char[] computeUniqueKey(boolean isLeaf) {
 }
 void faultInTypesForFieldsAndMethods() {
 	// check @Deprecated annotation
-	getAnnotationTagBits(); // marks as deprecated by side effect
+//	getAnnotationTagBits(); // marks as deprecated by side effect
 	ReferenceBinding enclosingType = this.enclosingType();
 	if (enclosingType != null && enclosingType.isViewedAsDeprecated() && !this.isDeprecated())
 		this.modifiers |= ExtraCompilerModifiers.AccDeprecatedImplicitly;
 	fields();
 	methods();
 
-	for (int i = 0, length = this.memberTypes.length; i < length; i++)
-		((SourceTypeBinding) this.memberTypes[i]).faultInTypesForFieldsAndMethods();
+//	for (int i = 0, length = this.memberTypes.length; i < length; i++)
+//		((SourceTypeBinding) this.memberTypes[i]).faultInTypesForFieldsAndMethods();
 }
 // NOTE: the type of each field of a source type is resolved when needed
 public FieldBinding[] fields() {
@@ -674,7 +796,7 @@ public char[] genericSignature() {
  */
 public long getAnnotationTagBits() {
 	if ((this.tagBits & TagBits.AnnotationResolved) == 0 && this.scope != null) {
-		TypeDeclaration typeDecl = this.scope.referenceContext;
+		TypeDeclaration typeDecl = this.classScope.referenceContext;
 		boolean old = typeDecl.staticInitializerScope.insideTypeAnnotation;
 		try {
 			typeDecl.staticInitializerScope.insideTypeAnnotation = true;
@@ -734,13 +856,14 @@ public MethodBinding getExactConstructor(TypeBinding[] argumentTypes) {
 					methods();
 					return getExactConstructor(argumentTypes);  // try again since the problem methods have been removed
 				}
-				if (method.parameters.length == argCount) {
-					TypeBinding[] toMatch = method.parameters;
-					for (int iarg = 0; iarg < argCount; iarg++)
-						if (toMatch[iarg] != argumentTypes[iarg])
-							continue nextMethod;
-					return method;
-				}
+//				if (method.parameters.length == argCount) {
+//					TypeBinding[] toMatch = method.parameters;
+//					for (int iarg = 0; iarg < argCount; iarg++)
+//						if (toMatch[iarg] != argumentTypes[iarg])
+//							continue nextMethod;
+//					return method;
+//				}
+				return method;
 			}
 		}
 	}	
@@ -764,7 +887,10 @@ public MethodBinding getExactMethod(char[] selector, TypeBinding[] argumentTypes
 					TypeBinding[] toMatch = method.parameters;
 					for (int iarg = 0; iarg < argCount; iarg++)
 						if (toMatch[iarg] != argumentTypes[iarg])
-							continue nextMethod;
+						{
+						if (toMatch[iarg]!=BaseTypeBinding.ANY && argumentTypes[iarg]!=BaseTypeBinding.ANY)
+						continue nextMethod;
+					}
 					return method;
 				}
 			}
@@ -972,20 +1098,20 @@ public SyntheticMethodBinding getSyntheticBridgeMethod(MethodBinding inheritedMe
  * @see org.eclipse.wst.jsdt.internal.compiler.lookup.Binding#initializeDeprecatedAnnotationTagBits()
  */
 public void initializeDeprecatedAnnotationTagBits() {
-	if ((this.tagBits & TagBits.DeprecatedAnnotationResolved) == 0) {
-		TypeDeclaration typeDecl = this.scope.referenceContext;
-		boolean old = typeDecl.staticInitializerScope.insideTypeAnnotation;
-		try {
-			typeDecl.staticInitializerScope.insideTypeAnnotation = true;
-			ASTNode.resolveDeprecatedAnnotations(typeDecl.staticInitializerScope, typeDecl.annotations, this);
-			this.tagBits |= TagBits.DeprecatedAnnotationResolved;
-		} finally {
-			typeDecl.staticInitializerScope.insideTypeAnnotation = old;
-		}
-		if ((this.tagBits & TagBits.AnnotationDeprecated) != 0) {
-			this.modifiers |= ClassFileConstants.AccDeprecated;
-		}
-	}
+//	if ((this.tagBits & TagBits.DeprecatedAnnotationResolved) == 0) {
+//		TypeDeclaration typeDecl = this.classScope.referenceContext;
+//		boolean old = typeDecl.staticInitializerScope.insideTypeAnnotation;
+//		try {
+//			typeDecl.staticInitializerScope.insideTypeAnnotation = true;
+//			ASTNode.resolveDeprecatedAnnotations(typeDecl.staticInitializerScope, typeDecl.annotations, this);
+//			this.tagBits |= TagBits.DeprecatedAnnotationResolved;
+//		} finally {
+//			typeDecl.staticInitializerScope.insideTypeAnnotation = old;
+//		}
+//		if ((this.tagBits & TagBits.AnnotationDeprecated) != 0) {
+//			this.modifiers |= ClassFileConstants.AccDeprecated;
+//		}
+//	}
 }
 
 /**
@@ -1077,7 +1203,7 @@ public MethodBinding getUpdatedMethodBinding(MethodBinding targetMethod, Referen
 	return updatedMethod;
 }
 public boolean hasMemberTypes() {
-    return this.memberTypes.length > 0;
+    return this!=null &&  this.memberTypes.length > 0;
 }
 // NOTE: the return type, arg & exception types of each method of a source type are resolved when needed
 public MethodBinding[] methods() {
@@ -1255,48 +1381,49 @@ private FieldBinding resolveTypeFor(FieldBinding field) {
 		field.modifiers |= ExtraCompilerModifiers.AccDeprecatedImplicitly;	
 	if (hasRestrictedAccess())
 		field.modifiers |= ExtraCompilerModifiers.AccRestrictedAccess;
-	FieldDeclaration[] fieldDecls = this.scope.referenceContext.fields;
-	for (int f = 0, length = fieldDecls.length; f < length; f++) {
-		if (fieldDecls[f].binding != field)
-			continue;
-
-			MethodScope initializationScope = field.isStatic() 
-				? this.scope.referenceContext.staticInitializerScope 
-				: this.scope.referenceContext.initializerScope;
-			FieldBinding previousField = initializationScope.initializedField;
-			try {
-				initializationScope.initializedField = field;
-				FieldDeclaration fieldDecl = fieldDecls[f];
-				TypeBinding fieldType = 
-					fieldDecl.getKind() == AbstractVariableDeclaration.ENUM_CONSTANT
-						? initializationScope.environment().convertToRawType(this) // enum constant is implicitly of declaring enum type
-						: fieldDecl.type.resolveType(initializationScope, true /* check bounds*/);
-				field.type = fieldType;
-				field.modifiers &= ~ExtraCompilerModifiers.AccUnresolved;
-				if (fieldType == null) {
-					fieldDecl.binding = null;
-					return null;
-				}
-				if (fieldType == TypeBinding.VOID) {
-					this.scope.problemReporter().variableTypeCannotBeVoid(fieldDecl);
-					fieldDecl.binding = null;
-					return null;
-				}
-				if (fieldType.isArrayType() && ((ArrayBinding) fieldType).leafComponentType == TypeBinding.VOID) {
-					this.scope.problemReporter().variableTypeCannotBeVoidArray(fieldDecl);
-					fieldDecl.binding = null;
-					return null;
-				}
-				TypeBinding leafType = fieldType.leafComponentType();
-				if (leafType instanceof ReferenceBinding && (((ReferenceBinding)leafType).modifiers & ExtraCompilerModifiers.AccGenericSignature) != 0) {
-					field.modifiers |= ExtraCompilerModifiers.AccGenericSignature;
-				}				
-			} finally {
-			    initializationScope.initializedField = previousField;
-			}
-		return field;
-	}
-	return null; // should never reach this point
+	return field;
+//	FieldDeclaration[] fieldDecls = this.classScope.referenceContext.fields;
+//	for (int f = 0, length = fieldDecls.length; f < length; f++) {
+//		if (fieldDecls[f].binding != field)
+//			continue;
+//
+//			MethodScope initializationScope = field.isStatic() 
+//				? this.classScope.referenceContext.staticInitializerScope 
+//				: this.classScope.referenceContext.initializerScope;
+//			FieldBinding previousField = initializationScope.initializedField;
+//			try {
+//				initializationScope.initializedField = field;
+//				FieldDeclaration fieldDecl = fieldDecls[f];
+//				TypeBinding fieldType = 
+//					fieldDecl.getKind() == AbstractVariableDeclaration.ENUM_CONSTANT
+//						? initializationScope.environment().convertToRawType(this) // enum constant is implicitly of declaring enum type
+//						: fieldDecl.type.resolveType(initializationScope, true /* check bounds*/);
+//				field.type = fieldType;
+//				field.modifiers &= ~ExtraCompilerModifiers.AccUnresolved;
+//				if (fieldType == null) {
+//					fieldDecl.binding = null;
+//					return null;
+//				}
+//				if (fieldType == TypeBinding.VOID) {
+//					this.scope.problemReporter().variableTypeCannotBeVoid(fieldDecl);
+//					fieldDecl.binding = null;
+//					return null;
+//				}
+//				if (fieldType.isArrayType() && ((ArrayBinding) fieldType).leafComponentType == TypeBinding.VOID) {
+//					this.scope.problemReporter().variableTypeCannotBeVoidArray(fieldDecl);
+//					fieldDecl.binding = null;
+//					return null;
+//				}
+//				TypeBinding leafType = fieldType.leafComponentType();
+//				if (leafType instanceof ReferenceBinding && (((ReferenceBinding)leafType).modifiers & ExtraCompilerModifiers.AccGenericSignature) != 0) {
+//					field.modifiers |= ExtraCompilerModifiers.AccGenericSignature;
+//				}				
+//			} finally {
+//			    initializationScope.initializedField = previousField;
+//			}
+//		return field;
+//	}
+//	return null; // should never reach this point
 }
 private MethodBinding resolveTypesFor(MethodBinding method) {
 	if ((method.modifiers & ExtraCompilerModifiers.AccUnresolved) == 0)
@@ -1355,7 +1482,7 @@ private MethodBinding resolveTypesFor(MethodBinding method) {
 		TypeBinding[] newParameters = new TypeBinding[size];
 		for (int i = 0; i < size; i++) {
 			Argument arg = arguments[i];
-			TypeBinding parameterType = arg.type.resolveType(methodDecl.scope, true /* check bounds*/);
+			TypeBinding parameterType = (arg.type!=null)?arg.type.resolveType(methodDecl.scope, true /* check bounds*/):   TypeBinding.ANY;
 			if (parameterType == null) {
 				foundArgProblem = true;
 			} else if (parameterType == TypeBinding.VOID) {
@@ -1381,12 +1508,14 @@ private MethodBinding resolveTypesFor(MethodBinding method) {
 		TypeReference returnType = methodDecl instanceof MethodDeclaration
 			? ((MethodDeclaration) methodDecl).returnType
 			: null;
-		if (returnType == null) {
+		if (returnType == null && !(methodDecl instanceof MethodDeclaration)) {
 			methodDecl.scope.problemReporter().missingReturnType(methodDecl);
 			method.returnType = null;
 			foundReturnTypeProblem = true;
 		} else {
-		    TypeBinding methodType = returnType.resolveType(methodDecl.scope, true /* check bounds*/);
+		    TypeBinding methodType = (returnType!=null )? returnType.resolveType(methodDecl.scope, true /* check bounds*/) : null;
+		    if (methodType==null)
+		    	methodType=(methodDecl.inferredType!=null)?methodDecl.inferredType.resolveType(methodDecl.scope, methodDecl):TypeBinding.ANY;
 			if (methodType == null) {
 				foundReturnTypeProblem = true;
 			} else if (methodType.isArrayType() && ((ArrayBinding) methodType).leafComponentType == TypeBinding.VOID) {
@@ -1428,10 +1557,16 @@ public void setMethods(MethodBinding[] methods) {
 	this.methods = methods;
 }
 public final int sourceEnd() {
-	return this.scope.referenceContext.sourceEnd;
+	if (this.classScope.referenceContext!=null)
+		return this.classScope.referenceContext.sourceEnd;
+	else
+		return this.classScope.inferredType.sourceEnd;
 }
 public final int sourceStart() {
-	return this.scope.referenceContext.sourceStart;
+	if (this.classScope.referenceContext!=null)
+		return this.classScope.referenceContext.sourceStart;
+	else
+		return this.classScope.inferredType.sourceStart;
 }
 SimpleLookupTable storedAnnotations(boolean forceInitialize) {
 	if (forceInitialize && this.storedAnnotations == null && this.scope != null) { // scope null when no annotation cached, and type got processed fully (159631)
@@ -1622,7 +1757,18 @@ public TypeVariableBinding[] typeVariables() {
 void verifyMethods(MethodVerifier verifier) {
 	verifier.verify(this);
 
-	for (int i = this.memberTypes.length; --i >= 0;)
-		 ((SourceTypeBinding) this.memberTypes[i]).verifyMethods(verifier);
+//	for (int i = this.memberTypes.length; --i >= 0;)
+//		 ((SourceTypeBinding) this.memberTypes[i]).verifyMethods(verifier);
+}
+
+public AbstractMethodDeclaration sourceMethod(MethodBinding binding) {
+	InferredMethod inferredMethod = inferredType.findMethod(binding.selector, null);
+	if (inferredMethod!=null)
+		return inferredMethod.methodDeclaration;
+//	AbstractMethodDeclaration[] methods = classScope.referenceContext.methods;
+//	for (int i = methods.length; --i >= 0;)
+//		if (binding == methods[i].binding)
+//			return methods[i];
+	return null;
 }
 }

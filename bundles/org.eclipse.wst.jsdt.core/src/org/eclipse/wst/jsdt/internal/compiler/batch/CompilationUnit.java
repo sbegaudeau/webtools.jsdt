@@ -23,6 +23,7 @@ public class CompilationUnit implements ICompilationUnit {
 	public char[] fileName;
 	public char[] mainTypeName;
 	String encoding;
+	public char[][] packageName;
 	public String destinationPath;
 		// a specific destination path for this compilation unit; coding is
 		// aligned with Main.destinationPath:
@@ -84,7 +85,7 @@ public char[] getMainTypeName() {
 	return this.mainTypeName;
 }
 public char[][] getPackageName() {
-	return null;
+	return packageName;
 }
 public String toString() {
 	return "CompilationUnit[" + new String(this.fileName) + "]";  //$NON-NLS-2$ //$NON-NLS-1$

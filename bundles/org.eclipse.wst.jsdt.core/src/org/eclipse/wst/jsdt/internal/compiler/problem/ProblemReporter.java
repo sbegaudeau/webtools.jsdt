@@ -28,6 +28,8 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
 import org.eclipse.wst.jsdt.internal.compiler.parser.*;
 import org.eclipse.wst.jsdt.internal.compiler.util.Messages;
+import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
+import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 public class ProblemReporter extends ProblemHandler {
 	
@@ -1281,6 +1283,15 @@ public void duplicateFieldInType(SourceTypeBinding type, FieldDeclaration fieldD
 		fieldDecl.sourceEnd);
 }
 
+public void duplicateFieldInType(SourceTypeBinding type, InferredAttribute fieldDecl) {
+	this.handle(
+		IProblem.DuplicateField,
+		new String[] {new String(type.sourceName()), new String(fieldDecl.name)},
+		new String[] {new String(type.shortReadableName()), new String(fieldDecl.name)},
+		fieldDecl.sourceStart,
+		fieldDecl.sourceEnd);
+}
+
 public void duplicateImport(ImportReference importRef) {
 	String[] arguments = new String[] {CharOperation.toString(importRef.tokens)};
 	this.handle(
@@ -1325,7 +1336,7 @@ public void duplicateInitializationOfFinalLocal(LocalVariableBinding local, ASTN
 		nodeSourceEnd(local, location));
 }
 
-public void duplicateMethodInType(SourceTypeBinding type, AbstractMethodDeclaration methodDecl) {
+public void duplicateMethodInType( Binding type, AbstractMethodDeclaration methodDecl) {
     MethodBinding method = methodDecl.binding;
     boolean duplicateErasure = false;
     if ((method.modifiers & ExtraCompilerModifiers.AccGenericSignature) != 0) {
@@ -1467,6 +1478,17 @@ public void duplicateTypes(CompilationUnitDeclaration compUnitDecl, TypeDeclarat
 		typeDecl.sourceEnd,
 		compUnitDecl.compilationResult);
 }
+public void duplicateTypes(CompilationUnitDeclaration compUnitDecl, InferredType typeDecl) {
+	String[] arguments = new String[] {new String(compUnitDecl.getFileName()), new String(typeDecl.getName())};
+	this.referenceContext = compUnitDecl; // report the problem against the type not the entire compilation unit
+	this.handle(
+		IProblem.DuplicateTypes,
+		arguments,
+		arguments,
+		typeDecl.sourceStart,
+		typeDecl.sourceEnd,
+		compUnitDecl.compilationResult);
+}
 public void emptyControlFlowStatement(int sourceStart, int sourceEnd) {
 	this.handle(
 		IProblem.EmptyControlFlowStatement,
@@ -1530,11 +1552,18 @@ public void errorNoMethodFor(MessageSend messageSend, TypeBinding recType, TypeB
 		shortBuffer.append(new String(params[i].shortReadableName()));
 	}
 
-	int id = recType.isArrayType() ? IProblem.NoMessageSendOnArrayType : IProblem.NoMessageSendOnBaseType;
+	String shortName="";
+	String readableName="";
+	if (recType!=null)
+	{
+		readableName=new String(recType.readableName());
+		shortName=new String(recType.shortReadableName());
+	}
+	int id = recType!=null && recType.isArrayType() ? IProblem.NoMessageSendOnArrayType : IProblem.NoMessageSendOnBaseType;
 	this.handle(
 		id,
-		new String[] {new String(recType.readableName()), new String(messageSend.selector), buffer.toString()},
-		new String[] {new String(recType.shortReadableName()), new String(messageSend.selector), shortBuffer.toString()},
+		new String[] {readableName, new String(messageSend.selector), buffer.toString()},
+		new String[] {shortName, new String(messageSend.selector), shortBuffer.toString()},
 		messageSend.sourceStart,
 		messageSend.sourceEnd);
 }
@@ -3034,7 +3063,6 @@ public void invalidFileNameForPackageAnnotations(Annotation annotation) {
 			annotation.sourceStart,
 			annotation.sourceEnd);	
 }
-
 public void invalidMethod(MessageSend messageSend, MethodBinding method) {
 	if (isRecoveredName(messageSend.selector)) return;
 	
@@ -3207,13 +3235,21 @@ public void invalidMethod(MessageSend messageSend, MethodBinding method) {
 			break;
 	}
 
+	String shortName="";
+	String readableName="";
+	if (method.declaringClass!=null)
+	{
+		shortName=new String(shownMethod.selector);
+		readableName=new String(method.declaringClass.readableName());
+		
+	}
 	this.handle(
 		id,
 		new String[] {
-			new String(method.declaringClass.readableName()),
-			new String(shownMethod.selector), typesAsString(shownMethod.isVarargs(), shownMethod.parameters, false)},
+				readableName,
+				shortName, typesAsString(shownMethod.isVarargs(), shownMethod.parameters, false)},
 		new String[] {
-			new String(method.declaringClass.shortReadableName()),
+				shortName,
 			new String(shownMethod.selector), typesAsString(shownMethod.isVarargs(), shownMethod.parameters, true)},
 		(int) (messageSend.nameSourcePosition >>> 32),
 		(int) messageSend.nameSourcePosition);
@@ -3507,7 +3543,6 @@ private boolean isIdentifier(int token) {
 private boolean isKeyword(int token) {
 	switch(token) {
 		case TerminalTokens.TokenNameabstract:
-		case TerminalTokens.TokenNameassert:
 		case TerminalTokens.TokenNamebyte:
 		case TerminalTokens.TokenNamebreak:
 		case TerminalTokens.TokenNameboolean:
@@ -3556,6 +3591,14 @@ private boolean isKeyword(int token) {
 		case TerminalTokens.TokenNamevoid:
 		case TerminalTokens.TokenNamevolatile:
 		case TerminalTokens.TokenNamewhile:
+		case TerminalTokens.TokenNamedelete :
+		case TerminalTokens.TokenNamedebugger :
+		case TerminalTokens.TokenNameexport :
+		case TerminalTokens.TokenNamefunction :
+		case TerminalTokens.TokenNamein :
+		case TerminalTokens.TokenNameinfinity :
+		case TerminalTokens.TokenNameundefined :
+		case TerminalTokens.TokenNamewith :
 			return true;
 		default: 
 			return false;
@@ -5660,6 +5703,14 @@ public void stringConstantIsExceedingUtf8Limit(ASTNode location) {
 		location.sourceEnd);
 }
 public void superclassMustBeAClass(SourceTypeBinding type, TypeReference superclassRef, ReferenceBinding superType) {
+	this.handle(
+		IProblem.SuperclassMustBeAClass,
+		new String[] {new String(superType.readableName()), new String(type.sourceName())},
+		new String[] {new String(superType.shortReadableName()), new String(type.sourceName())},
+		superclassRef.sourceStart,
+		superclassRef.sourceEnd);
+}
+public void superclassMustBeAClass(SourceTypeBinding type, InferredType superclassRef, ReferenceBinding superType) {
 	this.handle(
 		IProblem.SuperclassMustBeAClass,
 		new String[] {new String(superType.readableName()), new String(type.sourceName())},

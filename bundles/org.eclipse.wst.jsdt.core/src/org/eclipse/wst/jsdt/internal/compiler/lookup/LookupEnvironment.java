@@ -93,7 +93,7 @@ public LookupEnvironment(ITypeRequestor typeRequestor, CompilerOptions globalOpt
  */
 
 public ReferenceBinding askForType(char[][] compoundName) {
-	NameEnvironmentAnswer answer = nameEnvironment.findType(compoundName);
+	NameEnvironmentAnswer answer = nameEnvironment.findType(compoundName,this.typeRequestor);
 	if (answer == null)
 		return null;
 
@@ -114,12 +114,16 @@ public ReferenceBinding askForType(char[][] compoundName) {
 */
 
 ReferenceBinding askForType(PackageBinding packageBinding, char[] name) {
+	return (ReferenceBinding)askForBinding(packageBinding, name, Binding.TYPE|Binding.PACKAGE);
+}
+
+Binding askForBinding(PackageBinding packageBinding, char[] name, int mask) {
 	if (packageBinding == null) {
 		if (defaultPackage == null)
 			return null;
 		packageBinding = defaultPackage;
 	}
-	NameEnvironmentAnswer answer = nameEnvironment.findType(name, packageBinding.compoundName);
+	NameEnvironmentAnswer answer = nameEnvironment.findBinding(name, packageBinding.compoundName,mask,this.typeRequestor);
 	if (answer == null)
 		return null;
 
@@ -133,7 +137,7 @@ ReferenceBinding askForType(PackageBinding packageBinding, char[] name) {
 		// the type was found as a source model
 		typeRequestor.accept(answer.getSourceTypes(), packageBinding, answer.getAccessRestriction());
 
-	return packageBinding.getType0(name);
+	return packageBinding.getBinding0(name,mask);
 }
 /* Create the initial type bindings for the compilation unit.
 *
@@ -156,7 +160,7 @@ public void buildTypeBindings(CompilationUnitDeclaration unit, AccessRestriction
 * Answer the created BinaryTypeBinding or null if the type is already in the cache.
 */
 
-public BinaryTypeBinding cacheBinaryType(IBinaryType binaryType, AccessRestriction accessRestriction) {
+public BinaryTypeBinding cacheBinaryType(ISourceType binaryType, AccessRestriction accessRestriction) {
 	return cacheBinaryType(binaryType, true, accessRestriction);
 }
 /* Cache the binary type since we know it is needed during this compile.
@@ -164,7 +168,7 @@ public BinaryTypeBinding cacheBinaryType(IBinaryType binaryType, AccessRestricti
 * Answer the created BinaryTypeBinding or null if the type is already in the cache.
 */
 
-public BinaryTypeBinding cacheBinaryType(IBinaryType binaryType, boolean needFieldsAndMethods, AccessRestriction accessRestriction) {
+public BinaryTypeBinding cacheBinaryType(ISourceType binaryType, boolean needFieldsAndMethods, AccessRestriction accessRestriction) {
 	char[][] compoundName = CharOperation.splitOn('/', binaryType.getName());
 	ReferenceBinding existingType = getCachedType(compoundName);
 
@@ -574,10 +578,10 @@ public ArrayBinding createArrayType(TypeBinding leafComponentType, int dimension
 	uniqueArrayBindings[dimIndex] = arrayBindings;
 	return arrayBindings[length] = new ArrayBinding(leafComponentType, dimensionCount, this);
 }
-public BinaryTypeBinding createBinaryTypeFrom(IBinaryType binaryType, PackageBinding packageBinding, AccessRestriction accessRestriction) {
+public BinaryTypeBinding createBinaryTypeFrom(ISourceType binaryType, PackageBinding packageBinding, AccessRestriction accessRestriction) {
 	return createBinaryTypeFrom(binaryType, packageBinding, true, accessRestriction);
 }
-public BinaryTypeBinding createBinaryTypeFrom(IBinaryType binaryType, PackageBinding packageBinding, boolean needFieldsAndMethods, AccessRestriction accessRestriction) {
+public BinaryTypeBinding createBinaryTypeFrom(ISourceType binaryType, PackageBinding packageBinding, boolean needFieldsAndMethods, AccessRestriction accessRestriction) {
 	BinaryTypeBinding binaryBinding = new BinaryTypeBinding(packageBinding, binaryType, this);
 	
 	// resolve any array bindings which reference the unresolvedType
@@ -626,7 +630,7 @@ PackageBinding createPackage(char[][] compoundName) {
 			// catches the case of a package statement of: package java.lang.Object;
 			// since the package can be added after a set of source files have already been compiled,
 			// we need to check whenever a package is created
-			if (nameEnvironment.findType(compoundName[i], parent.compoundName) != null)
+			if (nameEnvironment.findType(compoundName[i], parent.compoundName,this.typeRequestor) != null)
 				return null;
 
 			packageBinding = new PackageBinding(CharOperation.subarray(compoundName, 0, i + 1), parent, this);

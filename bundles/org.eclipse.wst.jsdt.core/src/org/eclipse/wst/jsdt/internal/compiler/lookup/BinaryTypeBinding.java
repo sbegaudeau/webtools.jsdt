@@ -18,6 +18,8 @@ import org.eclipse.wst.jsdt.internal.compiler.env.*;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
+import org.eclipse.wst.jsdt.internal.core.SourceField;
+import org.eclipse.wst.jsdt.internal.core.SourceMethod;
 
 /*
 Not all fields defined by this type are initialized when it is created.
@@ -146,7 +148,7 @@ protected BinaryTypeBinding() {
  * @param binaryType
  * @param environment
  */
-public BinaryTypeBinding(PackageBinding packageBinding, IBinaryType binaryType, LookupEnvironment environment) {
+public BinaryTypeBinding(PackageBinding packageBinding, ISourceType binaryType, LookupEnvironment environment) {
 	this.compoundName = CharOperation.splitOn('/', binaryType.getName());
 	computeId();
 
@@ -155,33 +157,33 @@ public BinaryTypeBinding(PackageBinding packageBinding, IBinaryType binaryType, 
 	this.fPackage = packageBinding;
 	this.fileName = binaryType.getFileName();
 
-	char[] typeSignature = environment.globalOptions.sourceLevel >= ClassFileConstants.JDK1_5 ? binaryType.getGenericSignature() : null;
-	this.typeVariables = typeSignature != null && typeSignature.length > 0 && typeSignature[0] == '<'
-		? null // is initialized in cachePartsFrom (called from LookupEnvironment.createBinaryTypeFrom())... must set to null so isGenericType() answers true
-		: Binding.NO_TYPE_VARIABLES;
+//	char[] typeSignature = environment.globalOptions.sourceLevel >= ClassFileConstants.JDK1_5 ? binaryType.getGenericSignature() : null;
+//	this.typeVariables = typeSignature != null && typeSignature.length > 0 && typeSignature[0] == '<'
+//		? null // is initialized in cachePartsFrom (called from LookupEnvironment.createBinaryTypeFrom())... must set to null so isGenericType() answers true
+//		: Binding.NO_TYPE_VARIABLES;
 
-	this.sourceName = binaryType.getSourceName();
+	this.sourceName = binaryType.getFileName();
 	this.modifiers = binaryType.getModifiers();
 		
-	if (binaryType.isAnonymous()) {
-		this.tagBits |= TagBits.AnonymousTypeMask;
-	} else if (binaryType.isLocal()) {
-		this.tagBits |= TagBits.LocalTypeMask;
-	} else if (binaryType.isMember()) {
-		this.tagBits |= TagBits.MemberTypeMask;
-	}
-	// need enclosing type to access type variables
-	char[] enclosingTypeName = binaryType.getEnclosingTypeName();
-	if (enclosingTypeName != null) {
-		// attempt to find the enclosing type if it exists in the cache (otherwise - resolve it when requested)
-		this.enclosingType = environment.getTypeFromConstantPoolName(enclosingTypeName, 0, -1, true); // pretend parameterized to avoid raw
-		this.tagBits |= TagBits.MemberTypeMask;   // must be a member type not a top-level or local type
-		this.tagBits |= 	TagBits.HasUnresolvedEnclosingType;
-		if (this.enclosingType().isStrictfp())
-			this.modifiers |= ClassFileConstants.AccStrictfp;
-		if (this.enclosingType().isDeprecated())
-			this.modifiers |= ExtraCompilerModifiers.AccDeprecatedImplicitly;
-	}	
+//	if (binaryType.isAnonymous()) {
+//		this.tagBits |= TagBits.AnonymousTypeMask;
+//	} else if (binaryType.isLocal()) {
+//		this.tagBits |= TagBits.LocalTypeMask;
+//	} else if (binaryType.isMember()) {
+//		this.tagBits |= TagBits.MemberTypeMask;
+//	}
+//	// need enclosing type to access type variables
+//	char[] enclosingTypeName = binaryType.getEnclosingTypeName();
+//	if (enclosingTypeName != null) {
+//		// attempt to find the enclosing type if it exists in the cache (otherwise - resolve it when requested)
+//		this.enclosingType = environment.getTypeFromConstantPoolName(enclosingTypeName, 0, -1, true); // pretend parameterized to avoid raw
+//		this.tagBits |= TagBits.MemberTypeMask;   // must be a member type not a top-level or local type
+//		this.tagBits |= 	TagBits.HasUnresolvedEnclosingType;
+//		if (this.enclosingType().isStrictfp())
+//			this.modifiers |= ClassFileConstants.AccStrictfp;
+//		if (this.enclosingType().isDeprecated())
+//			this.modifiers |= ExtraCompilerModifiers.AccDeprecatedImplicitly;
+//	}	
 }
 
 public FieldBinding[] availableFields() {
@@ -234,7 +236,7 @@ public MethodBinding[] availableMethods() {
 		System.arraycopy(availableMethods, 0, availableMethods = new MethodBinding[count], 0, count);
 	return availableMethods;
 }
-void cachePartsFrom(IBinaryType binaryType, boolean needFieldsAndMethods) {
+void cachePartsFrom(ISourceType binaryType, boolean needFieldsAndMethods) {
 	// default initialization for super-interfaces early, in case some aborting compilation error occurs,
 	// and still want to use binaries passed that point (e.g. type hierarchy resolver, see bug 63748).
 	this.typeVariables = Binding.NO_TYPE_VARIABLES;
@@ -242,7 +244,7 @@ void cachePartsFrom(IBinaryType binaryType, boolean needFieldsAndMethods) {
 
 	// must retrieve member types in case superclass/interfaces need them
 	this.memberTypes = Binding.NO_MEMBER_TYPES;
-	IBinaryNestedType[] memberTypeStructures = binaryType.getMemberTypes();
+	ISourceType[] memberTypeStructures = binaryType.getMemberTypes();
 	if (memberTypeStructures != null) {
 		int size = memberTypeStructures.length;
 		if (size > 0) {
@@ -256,10 +258,10 @@ void cachePartsFrom(IBinaryType binaryType, boolean needFieldsAndMethods) {
 
 	long sourceLevel = environment.globalOptions.sourceLevel;
 	char[] typeSignature = null;
-	if (sourceLevel >= ClassFileConstants.JDK1_5) {
-		typeSignature = binaryType.getGenericSignature();
-		this.tagBits |= binaryType.getTagBits();
-	}
+//	if (sourceLevel >= ClassFileConstants.JDK1_5) {
+//		typeSignature = binaryType.getGenericSignature();
+//		this.tagBits |= binaryType.getTagBits();
+//	}
 	if (typeSignature == null) {
 		char[] superclassName = binaryType.getSuperclassName();
 		if (superclassName != null) {
@@ -316,10 +318,10 @@ void cachePartsFrom(IBinaryType binaryType, boolean needFieldsAndMethods) {
 		this.fields = Binding.NO_FIELDS;
 		this.methods = Binding.NO_METHODS;
 	}
-	if (this.environment.globalOptions.storeAnnotations)
-		setAnnotations(createAnnotations(binaryType.getAnnotations(), this.environment));	
+//	if (this.environment.globalOptions.storeAnnotations)
+//		setAnnotations(createAnnotations(binaryType.getAnnotations(), this.environment));	
 }
-private void createFields(IBinaryField[] iFields, long sourceLevel) {
+private void createFields(ISourceField[] iFields, long sourceLevel) {
 	this.fields = Binding.NO_FIELDS;
 	if (iFields != null) {
 		int size = iFields.length;
@@ -330,26 +332,27 @@ private void createFields(IBinaryField[] iFields, long sourceLevel) {
 			boolean hasRestrictedAccess = hasRestrictedAccess();
 			int firstAnnotatedFieldIndex = -1;
 			for (int i = 0; i < size; i++) {
-				IBinaryField binaryField = iFields[i];
-				char[] fieldSignature = use15specifics ? binaryField.getGenericSignature() : null;
+				ISourceField binaryField = iFields[i];
+				char[] fieldSignature = null;//use15specifics ? binaryField.getGenericSignature() : null;
 				TypeBinding type = fieldSignature == null 
 					? environment.getTypeFromSignature(binaryField.getTypeName(), 0, -1, false, this) 
 					: environment.getTypeFromTypeSignature(new SignatureWrapper(fieldSignature), Binding.NO_TYPE_VARIABLES, this);
 				FieldBinding field = 
 					new FieldBinding(
-						binaryField.getName(), 
+//						binaryField.getName(), 
+						((SourceField)binaryField).getElementName ().toCharArray(), 
 						type, 
 						binaryField.getModifiers() | ExtraCompilerModifiers.AccUnresolved, 
 						this, 
-						binaryField.getConstant());
-				if (firstAnnotatedFieldIndex < 0
-						&& this.environment.globalOptions.storeAnnotations 
-						&& binaryField.getAnnotations() != null) {
-					firstAnnotatedFieldIndex = i;
-				}
+						null);//binaryField.getConstant());
+//				if (firstAnnotatedFieldIndex < 0
+//						&& this.environment.globalOptions.storeAnnotations 
+//						&& binaryField.getAnnotations() != null) {
+//					firstAnnotatedFieldIndex = i;
+//				}
 				field.id = i; // ordinal
-				if (use15specifics)
-					field.tagBits |= binaryField.getTagBits();
+//				if (use15specifics)
+//					field.tagBits |= binaryField.getTagBits();
 				if (isViewedAsDeprecated && !field.isDeprecated())
 					field.modifiers |= ExtraCompilerModifiers.AccDeprecatedImplicitly;
 				if (hasRestrictedAccess)
@@ -359,15 +362,15 @@ private void createFields(IBinaryField[] iFields, long sourceLevel) {
 				this.fields[i] = field;
 			}
 			// second pass for reifying annotations, since may refer to fields being constructed (147875)
-			if (firstAnnotatedFieldIndex >= 0) {
-				for (int i = firstAnnotatedFieldIndex; i <size; i++) {
-					this.fields[i].setAnnotations(createAnnotations(iFields[i].getAnnotations(), this.environment));
-				}
-			}
+//			if (firstAnnotatedFieldIndex >= 0) {
+//				for (int i = firstAnnotatedFieldIndex; i <size; i++) {
+//					this.fields[i].setAnnotations(createAnnotations(iFields[i].getAnnotations(), this.environment));
+//				}
+//			}
 		}
 	}
 }
-private MethodBinding createMethod(IBinaryMethod method, long sourceLevel) {
+private MethodBinding createMethod(ISourceMethod method, long sourceLevel) {
 	int methodModifiers = method.getModifiers() | ExtraCompilerModifiers.AccUnresolved;
 	if (sourceLevel < ClassFileConstants.JDK1_5)
 		methodModifiers &= ~ClassFileConstants.AccVarargs; // vararg methods are not recognized until 1.5
@@ -506,7 +509,7 @@ private MethodBinding createMethod(IBinaryMethod method, long sourceLevel) {
 /**
  * Create method bindings for binary type, filtering out <clinit> and synthetics
  */
-private void createMethods(IBinaryMethod[] iMethods, long sourceLevel) {
+private void createMethods(ISourceMethod[] iMethods, long sourceLevel) {
 	int total = 0, initialTotal = 0, iClinit = -1;
 	int[] toSkip = null;
 	if (iMethods != null) {
@@ -514,7 +517,7 @@ private void createMethods(IBinaryMethod[] iMethods, long sourceLevel) {
 		boolean keepBridgeMethods = sourceLevel < ClassFileConstants.JDK1_5
 			&& this.environment.globalOptions.complianceLevel >= ClassFileConstants.JDK1_5;
 		for (int i = total; --i >= 0;) {
-			IBinaryMethod method = iMethods[i];
+			ISourceMethod method = iMethods[i];
 			if ((method.getModifiers() & ClassFileConstants.AccSynthetic) != 0) {
 				if (keepBridgeMethods && (method.getModifiers() & ClassFileConstants.AccBridge) != 0)
 					continue; // want to see bridge methods as real methods
@@ -523,7 +526,7 @@ private void createMethods(IBinaryMethod[] iMethods, long sourceLevel) {
 				toSkip[i] = -1;
 				total--;
 			} else if (iClinit == -1) {
-				char[] methodName = method.getSelector();
+				char[] methodName =((SourceMethod)method).getElementName().toCharArray();
 				if (methodName.length == 8 && methodName[0] == '<') {
 					// discard <clinit>
 					iClinit = i;

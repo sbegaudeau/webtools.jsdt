@@ -775,7 +775,7 @@ void verify(SourceTypeBinding someType) {
 				: itsInterfaces[j];
 		}
 		computeInheritedMethods(superclass, superInterfaces);
-		checkTypeVariableMethods(someType.scope.referenceContext.typeParameters[i]);
+		checkTypeVariableMethods(someType.classScope.referenceContext.typeParameters[i]);
 	}
 }
 }

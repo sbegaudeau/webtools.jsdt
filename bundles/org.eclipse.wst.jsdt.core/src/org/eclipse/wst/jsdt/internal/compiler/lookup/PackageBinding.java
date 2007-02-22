@@ -11,8 +11,8 @@
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfBinding;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfPackage;
-import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfType;
 
 public class PackageBinding extends Binding implements TypeConstants {
 	public long tagBits = 0; // See values in the interface TagBits below
@@ -20,8 +20,12 @@ public class PackageBinding extends Binding implements TypeConstants {
 	public char[][] compoundName;
 	PackageBinding parent;
 	public LookupEnvironment environment;
-	HashtableOfType knownTypes;
+//	HashtableOfType knownTypes;
+	HashtableOfBinding[] knownBindings=new HashtableOfBinding[NUMBER_BASIC_BINDING];
 	HashtableOfPackage knownPackages;
+
+	
+	 
 protected PackageBinding() {
 	// for creating problem package
 }
@@ -29,7 +33,7 @@ public PackageBinding(char[][] compoundName, PackageBinding parent, LookupEnviro
 	this.compoundName = compoundName;
 	this.parent = parent;
 	this.environment = environment;
-	this.knownTypes = null; // initialized if used... class counts can be very large 300-600
+//	this.knownTypes = null; // initialized if used... class counts can be very large 300-600
 	this.knownPackages = new HashtableOfPackage(3); // sub-package counts are typically 0-3
 }
 public PackageBinding(char[] topLevelPackageName, LookupEnvironment environment) {
@@ -45,17 +49,37 @@ private void addNotFoundPackage(char[] simpleName) {
 	knownPackages.put(simpleName, LookupEnvironment.TheNotFoundPackage);
 }
 private void addNotFoundType(char[] simpleName) {
-	if (knownTypes == null)
-		knownTypes = new HashtableOfType(25);
-	knownTypes.put(simpleName, LookupEnvironment.TheNotFoundType);
+	if (knownBindings[Binding.TYPE] == null)
+		knownBindings[Binding.TYPE] = new HashtableOfBinding(25);
+	knownBindings[Binding.TYPE].put(simpleName, LookupEnvironment.TheNotFoundType);
+}
+
+private void addNotFoundBinding1(char[] simpleName,int mask) {
+	if (knownBindings[mask] == null)
+		knownBindings[mask] = new HashtableOfBinding(25);
+	knownBindings[mask].put(simpleName, LookupEnvironment.TheNotFoundType);
+}
+private void addNotFoundBinding(char[] simpleName,int mask) {
+	if (((Binding.VARIABLE|Binding.FIELD)&mask)!=0)
+		addNotFoundBinding1(simpleName, Binding.VARIABLE|Binding.FIELD);
+	if ((Binding.METHOD&mask)!=0)
+		addNotFoundBinding1(simpleName, Binding.METHOD);
+	if ((Binding.TYPE&mask)!=0)
+		addNotFoundBinding1(simpleName, Binding.TYPE);
 }
 void addPackage(PackageBinding element) {
 	knownPackages.put(element.compoundName[element.compoundName.length - 1], element);
 }
 void addType(ReferenceBinding element) {
-	if (knownTypes == null)
-		knownTypes = new HashtableOfType(25);
-	knownTypes.put(element.compoundName[element.compoundName.length - 1], element);
+	if (knownBindings[Binding.TYPE] == null)
+		knownBindings[Binding.TYPE] = new HashtableOfBinding(25);
+	knownBindings[Binding.TYPE].put(element.compoundName[element.compoundName.length - 1], element);
+}
+
+void addBinding(Binding element, char[] name, int mask) {
+	if (knownBindings[mask] == null)
+		knownBindings[mask] = new HashtableOfBinding(25);
+	knownBindings[mask].put(name, element);
 }
 /* API
 * Answer the receiver's binding type from Binding.BindingID.
@@ -66,7 +90,7 @@ public final int kind() {
 }
 /*
  * slash separated name
- * org.eclipse.wst.jsdt.core --> org/eclipse/jdt/core
+ * org.eclipse.wst.wst.jsdt.core --> org/eclipse/jdt/core
  */
 public char[] computeUniqueKey(boolean isLeaf) {
 	return CharOperation.concatWith(compoundName, '/');
@@ -119,13 +143,16 @@ PackageBinding getPackage0(char[] name) {
 * NOTE: This should only be used by source types/scopes which know there is NOT a
 * package with the same name.
 */
-
 ReferenceBinding getType(char[] name) {
-	ReferenceBinding typeBinding = getType0(name);
+	return (ReferenceBinding)getBinding(name, Binding.TYPE);
+}
+
+public Binding getBinding(char[] name, int mask) {
+	Binding typeBinding = getBinding0(name,mask);
 	if (typeBinding == null) {
-		if ((typeBinding = environment.askForType(this, name)) == null) {
+		if ((typeBinding = environment.askForBinding(this, name,mask)) == null) {
 			// not found so remember a problem type binding in the cache for future lookups
-			addNotFoundType(name);
+			addNotFoundBinding(name,mask);
 			return null;
 		}
 	}
@@ -133,9 +160,9 @@ ReferenceBinding getType(char[] name) {
 	if (typeBinding == LookupEnvironment.TheNotFoundType)
 		return null;
 
-	typeBinding = BinaryTypeBinding.resolveType(typeBinding, environment, false); // no raw conversion for now
-	if (typeBinding.isNestedType())
-		return new ProblemReferenceBinding(name, typeBinding, ProblemReasons.InternalNameProvided);
+//	typeBinding = BinaryTypeBinding.resolveType(typeBinding, environment, false); // no raw conversion for now
+//	if (typeBinding.isNestedType())
+//		return new ProblemReferenceBinding(name, typeBinding, ProblemReasons.InternalNameProvided);
 	return typeBinding;
 }
 /* Answer the type named name if it exists in the cache.
@@ -147,10 +174,41 @@ ReferenceBinding getType(char[] name) {
 */
 
 ReferenceBinding getType0(char[] name) {
-	if (knownTypes == null)
+	if (knownBindings[Binding.TYPE] == null)
 		return null;
-	return knownTypes.get(name);
+	return (ReferenceBinding)knownBindings[Binding.TYPE].get(name);
 }
+
+Binding getBinding1(char[]name, int mask)
+{
+	if (knownBindings[mask] == null)
+		return null;
+	return knownBindings[mask].get(name);
+}
+
+Binding getBinding0(char[] name, int mask) {
+	Binding binding;
+	if ( (mask&(Binding.VARIABLE|Binding.FIELD))!=0)
+	{
+		binding=getBinding1(name,Binding.VARIABLE|Binding.FIELD);
+		if (binding!=null)
+			return binding;
+	}
+	if ( (mask&(Binding.TYPE))!=0)
+	{
+		binding=getBinding1(name,Binding.TYPE);
+		if (binding!=null)
+			return binding;
+	}
+	if ( (mask&(Binding.METHOD))!=0)
+	{
+		binding=getBinding1(name,Binding.METHOD);
+		if (binding!=null)
+			return binding;
+	}
+	return null;
+}
+
 /* Answer the package or type named name; ask the oracle if it is not in the cache.
 * Answer null if it could not be resolved.
 *
@@ -161,29 +219,31 @@ ReferenceBinding getType0(char[] name) {
 * THIS SHOULD ONLY BE USED BY SOURCE TYPES/SCOPES.
 */
 
-public Binding getTypeOrPackage(char[] name) {
-	ReferenceBinding typeBinding = getType0(name);
-	if (typeBinding != null && typeBinding != LookupEnvironment.TheNotFoundType) {
-		typeBinding = BinaryTypeBinding.resolveType(typeBinding, environment, false); // no raw conversion for now
-		if (typeBinding.isNestedType())
-			return new ProblemReferenceBinding(name, typeBinding, ProblemReasons.InternalNameProvided);
+public Binding getTypeOrPackage(char[] name, int mask) {
+	Binding typeBinding = getBinding0(name, mask);
+//	if (typeBinding != null && typeBinding != LookupEnvironment.TheNotFoundType) {
+//		typeBinding = BinaryTypeBinding.resolveType(typeBinding, environment, false); // no raw conversion for now
+//		if (typeBinding.isNestedType())
+//			return new ProblemReferenceBinding(name, typeBinding, ProblemReasons.InternalNameProvided);
+//		return typeBinding;
+//	}
+	if (typeBinding!=null)
 		return typeBinding;
-	}
-
+	
 	PackageBinding packageBinding = getPackage0(name);
 	if (packageBinding != null && packageBinding != LookupEnvironment.TheNotFoundPackage)
 		return packageBinding;
 
 	if (typeBinding == null) { // have not looked for it before
-		if ((typeBinding = environment.askForType(this, name)) != null) {
-			if (typeBinding.isNestedType())
-				return new ProblemReferenceBinding(name, typeBinding, ProblemReasons.InternalNameProvided);
+		if ((typeBinding = environment.askForBinding(this, name,mask)) != null) {
+//			if (typeBinding.isNestedType())
+//				return new ProblemReferenceBinding(name, typeBinding, ProblemReasons.InternalNameProvided);
 			return typeBinding;
 		}
 
 		// Since name could not be found, add a problem binding
 		// to the collections so it will be reported as an error next time.
-		addNotFoundType(name);
+		addNotFoundBinding(name, mask);
 	}
 
 	if (packageBinding == null) { // have not looked for it before

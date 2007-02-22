@@ -120,7 +120,7 @@ public class NestedTypeBinding extends SourceTypeBinding {
 			// position the enclosing instance synthetic arg
 			argument.resolvedPosition = slotSize + 1; // shift by 1 to leave room for aload0==this
 			if (slotSize + 1 > 0xFF) { // no more than 255 words of arguments
-				this.scope.problemReporter().noMoreAvailableSpaceForArgument(argument, this.scope.referenceType()); 
+				this.scope.problemReporter().noMoreAvailableSpaceForArgument(argument, this.classScope.referenceType()); 
 			}
 			if ((argument.type == TypeBinding.LONG) || (argument.type == TypeBinding.DOUBLE)){
 				slotSize += 2;

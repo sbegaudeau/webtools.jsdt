@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.env;
 
+import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
+
 /**
  * The name environment provides a callback API that the compiler
  * can use to look up types, compilation units, and packages in the
@@ -31,7 +33,7 @@ public interface INameEnvironment {
  * file is inconsistent.
  */
 
-NameEnvironmentAnswer findType(char[][] compoundTypeName);
+NameEnvironmentAnswer findType(char[][] compoundTypeName, ITypeRequestor requestor);
 /**
  * Find a type named <typeName> in the package <packageName>.
  * Answer the binary form of the type if it is known to be consistent.
@@ -46,7 +48,7 @@ NameEnvironmentAnswer findType(char[][] compoundTypeName);
  * file is inconsistent.
  */
 
-NameEnvironmentAnswer findType(char[] typeName, char[][] packageName);
+NameEnvironmentAnswer findType(char[] typeName, char[][] packageName, ITypeRequestor requestor);
 /**
  * Answer whether packageName is the name of a known subpackage inside
  * the package parentPackageName. A top level package is found relative to null.
@@ -58,6 +60,7 @@ NameEnvironmentAnswer findType(char[] typeName, char[][] packageName);
  */
 
 boolean isPackage(char[][] parentPackageName, char[] packageName);
+NameEnvironmentAnswer findBinding(char[] typeName, char[][] packageName, int type, ITypeRequestor requestor);
 
 /**
  * This method cleans the environment uo. It is responsible for releasing the memory
