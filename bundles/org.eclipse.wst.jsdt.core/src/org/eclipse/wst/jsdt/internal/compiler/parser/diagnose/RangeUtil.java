@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.internal.compiler.parser.diagnose;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
 
@@ -116,29 +117,32 @@ public class RangeUtil {
 		return method.sourceEnd + 1 == method.bodyStart	|| method.bodyEnd == method.declarationSourceEnd;
 	}
 
-	public static int[][] computeDietRange(TypeDeclaration[] types) {
-		if(types == null || types.length == 0) {
+	public static int[][] computeDietRange(ProgramElement[] statements) {
+		if(statements == null || statements.length == 0) {
 			return new int[3][0];
 		} else {
 			RangeResult result = new RangeResult();
-			computeDietRange0(types, result);
+			computeDietRange0(statements, result);
 			return result.getRanges();
 		}
 	}
 	
-	private static void computeDietRange0(TypeDeclaration[] types, RangeResult result) {
-		for (int j = 0; j < types.length; j++) {
+	private static void computeDietRange0(ProgramElement[] statements, RangeResult result) {
+		for (int j = 0; j < statements.length; j++) {
 			//members
-			TypeDeclaration[] memberTypeDeclarations = types[j].memberTypes;
-			if(memberTypeDeclarations != null && memberTypeDeclarations.length > 0) {
-				computeDietRange0(types[j].memberTypes, result);
-			}
+//			TypeDeclaration[] memberTypeDeclarations = types[j].memberTypes;
+//			if(memberTypeDeclarations != null && memberTypeDeclarations.length > 0) {
+//				computeDietRange0(types[j].memberTypes, result);
+//			}
 			//methods
-			AbstractMethodDeclaration[] methods = types[j].methods;
-			if (methods != null) {
-				int length = methods.length;
-				for (int i = 0; i < length; i++) {
-					AbstractMethodDeclaration method = methods[i];
+			if (statements[j] instanceof AbstractMethodDeclaration) {
+				AbstractMethodDeclaration method = (AbstractMethodDeclaration) statements[j];
+				
+//			AbstractMethodDeclaration[] methods = types[j].methods;
+//			if (methods != null) {
+//				int length = methods.length;
+//				for (int i = 0; i < length; i++) {
+//					AbstractMethodDeclaration method = methods[i];
 					if(containsIgnoredBody(method)) {
 						if(containsErrorInSignature(method)) {
 							method.errorInSignature = true;
@@ -148,25 +152,25 @@ public class RangeUtil {
 							result.addInterval(method.bodyStart, method.bodyEnd, flags);
 						}
 					}
-				}
+//				}
 			}
 	
 			//initializers
-			FieldDeclaration[] fields = types[j].fields;
-			if (fields != null) {
-				int length = fields.length;
-				for (int i = 0; i < length; i++) {
-					if (fields[i] instanceof Initializer) {
-						Initializer initializer = (Initializer)fields[i];
-						if(initializer.declarationSourceEnd == initializer.bodyEnd && initializer.declarationSourceStart != initializer.declarationSourceEnd){
-							initializer.errorInSignature = true;
-							result.addInterval(initializer.declarationSourceStart, initializer.declarationSourceEnd, IGNORE);
-						} else {
-							result.addInterval(initializer.bodyStart, initializer.bodyEnd);
-						}
-					}
-				}
-			}
+//			FieldDeclaration[] fields = types[j].fields;
+//			if (fields != null) {
+//				int length = fields.length;
+//				for (int i = 0; i < length; i++) {
+//					if (fields[i] instanceof Initializer) {
+//						Initializer initializer = (Initializer)fields[i];
+//						if(initializer.declarationSourceEnd == initializer.bodyEnd && initializer.declarationSourceStart != initializer.declarationSourceEnd){
+//							initializer.errorInSignature = true;
+//							result.addInterval(initializer.declarationSourceStart, initializer.declarationSourceEnd, IGNORE);
+//						} else {
+//							result.addInterval(initializer.bodyStart, initializer.bodyEnd);
+//						}
+//					}
+//				}
+//			}
 		}
 	}
 		

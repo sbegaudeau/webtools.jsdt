@@ -13,129 +13,163 @@ package org.eclipse.wst.jsdt.internal.compiler.parser;
 /**
  * Internal field structure for parsing recovery 
  */
-import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
+import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 
 public class RecoveredUnit extends RecoveredElement {
 
 	public CompilationUnitDeclaration unitDeclaration;
 	
-	public RecoveredImport[] imports;
-	public int importCount;
-	public RecoveredType[] types;
-	public int typeCount;
-public RecoveredUnit(CompilationUnitDeclaration unitDeclaration, int bracketBalance, Parser parser){
+//	public RecoveredImport[] imports;
+//	public int importCount;
+//	public RecoveredType[] types;
+//	public int typeCount;
+	
+	public RecoveredElement[] statements;
+	public int statementCount;
+
+	public RecoveredUnit(CompilationUnitDeclaration unitDeclaration, int bracketBalance, Parser parser){
 	super(null, bracketBalance, parser);
 	this.unitDeclaration = unitDeclaration;
 }
-/*
+	
+	
+/* 
  *	Record a method declaration: should be attached to last type
  */
 public RecoveredElement add(AbstractMethodDeclaration methodDeclaration, int bracketBalanceValue) {
 
-	/* attach it to last type - if any */
-	if (this.typeCount > 0){
-		RecoveredType type = this.types[this.typeCount -1];
-		int start = type.bodyEnd;
-		int end = type.typeDeclaration.bodyEnd;
-		type.bodyEnd = 0; // reset position
-		type.typeDeclaration.declarationSourceEnd = 0; // reset position
-		type.typeDeclaration.bodyEnd = 0;
-		
-		int kind = TypeDeclaration.kind(type.typeDeclaration.modifiers);
-		if(start > 0 &&
-				start < end && 
-				kind != TypeDeclaration.INTERFACE_DECL &&
-				kind != TypeDeclaration.ANNOTATION_TYPE_DECL) {
-			// the } of the last type can be considered as the end of an initializer
-			Initializer initializer = new Initializer(new Block(0), 0);
-			initializer.bodyStart = end;
-			initializer.bodyEnd = end;
-			initializer.declarationSourceStart = end;
-			initializer.declarationSourceEnd = end;
-			initializer.sourceStart = end;
-			initializer.sourceEnd = end;
-			type.add(initializer, bracketBalanceValue);
-		}
-		
-		return type.add(methodDeclaration, bracketBalanceValue);
+
+	RecoveredMethod element = new RecoveredMethod(methodDeclaration, this, bracketBalanceValue, this.recoveringParser);
+	addStatement(element);
+
+	
+	/* consider that if the opening brace was not found, it is there */
+	if (!foundOpeningBrace){
+		foundOpeningBrace = true;
+		this.bracketBalance++;
 	}
-	return this; // ignore
+	/* if method not finished, then method becomes current */
+	if (methodDeclaration.declarationSourceEnd == 0) return element;
+	return this;
 }
 /*
  *	Record a field declaration: should be attached to last type
  */
 public RecoveredElement add(FieldDeclaration fieldDeclaration, int bracketBalanceValue) {
 
-	/* attach it to last type - if any */
-	if (this.typeCount > 0){
-		RecoveredType type = this.types[this.typeCount -1];
-		type.bodyEnd = 0; // reset position
-		type.typeDeclaration.declarationSourceEnd = 0; // reset position
-		type.typeDeclaration.bodyEnd = 0;
-		return type.add(fieldDeclaration, bracketBalanceValue);
-	}
-	return this; // ignore
-}
-public RecoveredElement add(ImportReference importReference, int bracketBalanceValue) {
-	if (this.imports == null) {
-		this.imports = new RecoveredImport[5];
-		this.importCount = 0;
-	} else {
-		if (this.importCount == this.imports.length) {
-			System.arraycopy(
-				this.imports, 
-				0, 
-				(this.imports = new RecoveredImport[2 * this.importCount]), 
-				0, 
-				this.importCount); 
-		}
-	}
-	RecoveredImport element = new RecoveredImport(importReference, this, bracketBalanceValue);
-	this.imports[this.importCount++] = element;
+	RecoveredField element;
+			element = new RecoveredField(fieldDeclaration, this, bracketBalanceValue);
+	addStatement(element);
 
-	/* if import not finished, then import becomes current */
-	if (importReference.declarationSourceEnd == 0) return element;
+	/* consider that if the opening brace was not found, it is there */
+	if (!foundOpeningBrace){
+		foundOpeningBrace = true;
+		this.bracketBalance++;
+	}
+	/* if field not finished, then field becomes current */
+	if (fieldDeclaration.declarationSourceEnd == 0) return element;
+	return this;
+}
+
+public RecoveredElement add(LocalDeclaration localDeclaration, int bracketBalanceValue) {
+	RecoveredLocalVariable element;
+	element = new RecoveredLocalVariable(localDeclaration, this, bracketBalanceValue);
+addStatement(element);
+
+/* consider that if the opening brace was not found, it is there */
+if (!foundOpeningBrace){
+foundOpeningBrace = true;
+this.bracketBalance++;
+}
+/* if field not finished, then field becomes current */
+if (localDeclaration.declarationSourceEnd == 0) return element;
+return this;
+}
+
+
+
+public RecoveredElement add(ImportReference importReference, int bracketBalanceValue) {
+//	if (this.imports == null) {
+//		this.imports = new RecoveredImport[5];
+//		this.importCount = 0;
+//	} else {
+//		if (this.importCount == this.imports.length) {
+//			System.arraycopy(
+//				this.imports, 
+//				0, 
+//				(this.imports = new RecoveredImport[2 * this.importCount]), 
+//				0, 
+//				this.importCount); 
+//		}
+//	}
+//	RecoveredImport element = new RecoveredImport(importReference, this, bracketBalanceValue);
+//	this.imports[this.importCount++] = element;
+//
+//	/* if import not finished, then import becomes current */
+//	if (importReference.declarationSourceEnd == 0) return element;
 	return this;		
 }
 public RecoveredElement add(TypeDeclaration typeDeclaration, int bracketBalanceValue) {
 	
-	if ((typeDeclaration.bits & ASTNode.IsAnonymousType) != 0){
-		if (this.typeCount > 0) {
-			// add it to the last type
-			RecoveredType lastType = this.types[this.typeCount-1];
-			lastType.bodyEnd = 0; // reopen type
-			lastType.typeDeclaration.bodyEnd = 0; // reopen type
-			lastType.typeDeclaration.declarationSourceEnd = 0; // reopen type
-			lastType.bracketBalance++; // expect one closing brace
-			return lastType.add(typeDeclaration, bracketBalanceValue);
-		}
-	}
-	if (this.types == null) {
-		this.types = new RecoveredType[5];
-		this.typeCount = 0;
-	} else {
-		if (this.typeCount == this.types.length) {
-			System.arraycopy(
-				this.types, 
-				0, 
-				(this.types = new RecoveredType[2 * this.typeCount]), 
-				0, 
-				this.typeCount); 
-		}
-	}
-	RecoveredType element = new RecoveredType(typeDeclaration, this, bracketBalanceValue);
-	this.types[this.typeCount++] = element;
-
-	/* if type not finished, then type becomes current */
-	if (typeDeclaration.declarationSourceEnd == 0) return element;
+//	if ((typeDeclaration.bits & ASTNode.IsAnonymousType) != 0){
+//		if (this.typeCount > 0) {
+//			// add it to the last type
+//			RecoveredType lastType = this.types[this.typeCount-1];
+//			lastType.bodyEnd = 0; // reopen type
+//			lastType.typeDeclaration.bodyEnd = 0; // reopen type
+//			lastType.typeDeclaration.declarationSourceEnd = 0; // reopen type
+//			lastType.bracketBalance++; // expect one closing brace
+//			return lastType.add(typeDeclaration, bracketBalanceValue);
+//		}
+//	}
+//	if (this.types == null) {
+//		this.types = new RecoveredType[5];
+//		this.typeCount = 0;
+//	} else {
+//		if (this.typeCount == this.types.length) {
+//			System.arraycopy(
+//				this.types, 
+//				0, 
+//				(this.types = new RecoveredType[2 * this.typeCount]), 
+//				0, 
+//				this.typeCount); 
+//		}
+//	}
+//	RecoveredType element = new RecoveredType(typeDeclaration, this, bracketBalanceValue);
+//	this.types[this.typeCount++] = element;
+//
+//	/* if type not finished, then type becomes current */
+//	if (typeDeclaration.declarationSourceEnd == 0) return element;
 	return this;	
+}
+
+private void addStatement(RecoveredElement statement)
+{
+	if (this.statements == null) {
+		this.statements = new RecoveredElement[5];
+		this.statementCount = 0;
+	} else {
+		if (this.statementCount == this.statements.length) {
+			System.arraycopy(
+				this.statements, 
+				0, 
+				(this.statements = new RecoveredElement[2 * this.statementCount]), 
+				0, 
+				this.statementCount); 
+		}
+	}
+	this.statements[this.statementCount++] = statement;
 }
 /* 
  * Answer the associated parsed structure
@@ -155,16 +189,16 @@ public String toString(int tab) {
 	this.unitDeclaration.print(tab + 1, result);
 	result.append(tabString(tab + 1));
 	result.append("]"); //$NON-NLS-1$
-	if (this.imports != null) {
-		for (int i = 0; i < this.importCount; i++) {
+//	if (this.imports != null) {
+//		for (int i = 0; i < this.importCount; i++) {
+//			result.append("\n"); //$NON-NLS-1$
+//			result.append(this.imports[i].toString(tab + 1));
+//		}
+//	}
+	if (this.statements != null) {
+		for (int i = 0; i < this.statementCount; i++) {
 			result.append("\n"); //$NON-NLS-1$
-			result.append(this.imports[i].toString(tab + 1));
-		}
-	}
-	if (this.types != null) {
-		for (int i = 0; i < this.typeCount; i++) {
-			result.append("\n"); //$NON-NLS-1$
-			result.append(this.types[i].toString(tab + 1));
+			result.append(this.statements[i].toString(tab + 1));
 		}
 	}
 	return result.toString();
@@ -172,45 +206,82 @@ public String toString(int tab) {
 public CompilationUnitDeclaration updatedCompilationUnitDeclaration(){
 
 	/* update imports */
-	if (this.importCount > 0){
-		ImportReference[] importRefences = new ImportReference[this.importCount];
-		for (int i = 0; i < this.importCount; i++){
-			importRefences[i] = this.imports[i].updatedImportReference();
-		}
-		this.unitDeclaration.imports = importRefences;
-	}
+//	if (this.importCount > 0){
+//		ImportReference[] importRefences = new ImportReference[this.importCount];
+//		for (int i = 0; i < this.importCount; i++){
+//			importRefences[i] = this.imports[i].updatedImportReference();
+//		}
+//		this.unitDeclaration.imports = importRefences;
+//	}
 	/* update types */
-	if (this.typeCount > 0){
-		int existingCount = this.unitDeclaration.types == null ? 0 : this.unitDeclaration.types.length;
-		TypeDeclaration[] typeDeclarations = new TypeDeclaration[existingCount + this.typeCount];
+	if (this.statementCount > 0){
+		int existingCount = this.unitDeclaration.statements == null ? 0 : this.unitDeclaration.statements.length;
+		ProgramElement[] stmts = new ProgramElement[existingCount + this.statementCount];
 		if (existingCount > 0){
-			System.arraycopy(this.unitDeclaration.types, 0, typeDeclarations, 0, existingCount);
+			System.arraycopy(this.unitDeclaration.statements, 0, stmts, 0, existingCount);
 		}
+		ASTNode astNode = this.statements[this.statementCount - 1].parseTree();
 		// may need to update the declarationSourceEnd of the last type
-		if (this.types[this.typeCount - 1].typeDeclaration.declarationSourceEnd == 0){
-			this.types[this.typeCount - 1].typeDeclaration.declarationSourceEnd = this.unitDeclaration.sourceEnd;
-			this.types[this.typeCount - 1].typeDeclaration.bodyEnd = this.unitDeclaration.sourceEnd;
+		if (astNode.sourceEnd == 0){
+			astNode.sourceEnd= this.unitDeclaration.sourceEnd;
+			
+//			this.statements[this.statementCount - 1].updateSourceEndIfNecessary(sourceEnd)typeDeclaration.bodyEnd = this.unitDeclaration.sourceEnd;
 		}
+	    if (astNode instanceof AbstractMethodDeclaration && ((AbstractMethodDeclaration)astNode).bodyEnd<=0)
+			 ((AbstractMethodDeclaration)astNode).bodyEnd=this.unitDeclaration.sourceEnd;
 		int actualCount = existingCount;
-		for (int i = 0; i < this.typeCount; i++){
-			TypeDeclaration typeDecl = this.types[i].updatedTypeDeclaration();
+		for (int i = 0; i < this.statementCount; i++){
+			 ProgramElement updatedASTNode = this.statements[i].updatedASTNode();
+			 if (updatedASTNode!=null && updatedASTNode.sourceEnd<=0 )
+			 {
+				 updatedASTNode.sourceEnd=this.unitDeclaration.sourceEnd;
+			 }
+			 if (updatedASTNode instanceof AbstractMethodDeclaration && ((AbstractMethodDeclaration)updatedASTNode).bodyEnd<=0 )
+				 ((AbstractMethodDeclaration)updatedASTNode).bodyEnd=this.unitDeclaration.sourceEnd;
+				 
+				//			  this.statements[i].updateParseTree();
 			// filter out local types (12454)
-			if ((typeDecl.bits & ASTNode.IsLocalType) == 0){
-				typeDeclarations[actualCount++] = typeDecl;
-			}
+//			if ((typeDecl.bits & ASTNode.IsLocalType) == 0){
+				stmts[actualCount++] = updatedASTNode;
+//			}
 		}
-		if (actualCount != this.typeCount){
+		if (actualCount != this.statementCount){
 			System.arraycopy(
-				typeDeclarations, 
+					stmts, 
 				0, 
-				typeDeclarations = new TypeDeclaration[existingCount+actualCount], 
+				stmts = new ProgramElement[existingCount+actualCount], 
 				0, 
 				existingCount+actualCount);
 		}
-		this.unitDeclaration.types = typeDeclarations;
+		this.unitDeclaration.statements = stmts;
 	}
+	else if (this.unitDeclaration.statements==null)
+		this.unitDeclaration.statements=new ProgramElement[0];
 	return this.unitDeclaration;
 }
+public RecoveredElement add(Block nestedBlockDeclaration, int bracketBalanceValue) {
+	RecoveredBlock element = new RecoveredBlock(nestedBlockDeclaration, this, bracketBalanceValue);
+
+	// if we have a pending Argument, promote it into the new block
+//	if (this.pendingArgument != null){
+//		element.attach(this.pendingArgument);
+//		this.pendingArgument = null;
+//	}
+	if(this.parser().statementRecoveryActivated) {
+		this.addBlockStatement(element);
+	}
+	addStatement(element);
+	if (nestedBlockDeclaration.sourceEnd == 0) return element;
+	return this;	
+}
+public RecoveredElement add(Statement statement, int bracketBalanceValue) {
+	RecoveredStatement element = new RecoveredStatement(statement, this, bracketBalanceValue);
+	addStatement(element);
+	if (statement.sourceEnd == 0) return element;
+	return this;	
+}
+
+
 public void updateParseTree(){
 	this.updatedCompilationUnitDeclaration();
 }
@@ -220,5 +291,19 @@ public void updateParseTree(){
 public void updateSourceEndIfNecessary(int bodyStart, int bodyEnd){
 	if (this.unitDeclaration.sourceEnd == 0)
 		this.unitDeclaration.sourceEnd = bodyEnd;
+}
+
+
+public ProgramElement updatedASTNode() {
+	//TODO: implement  SHOULD NOT GET HERE
+	throw new org.eclipse.wst.jsdt.core.UnimplementedException();
+}
+
+
+public void updateFromParserState() {
+		if (parser().astPtr>=0)
+		{
+			int i=0;
+		}
 }
 }

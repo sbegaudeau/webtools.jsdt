@@ -118,7 +118,7 @@ public class SourceTypeConverter {
 		this.cu = (ICompilationUnit) cuHandle;
 		this.annotationPositions = ((CompilationUnitElementInfo) ((JavaElement) this.cu).getElementInfo()).annotationPositions;
 
-		if (this.has1_5Compliance && this.annotationPositions != null && this.annotationPositions.size() > 10) { // experimental value
+		if (true){//this.has1_5Compliance && this.annotationPositions != null && this.annotationPositions.size() > 10) { // experimental value
 			// if more than 10 annotations, diet parse as this is faster
 			return new Parser(this.problemReporter, true).dietParse(this.cu, compilationResult);
 		}

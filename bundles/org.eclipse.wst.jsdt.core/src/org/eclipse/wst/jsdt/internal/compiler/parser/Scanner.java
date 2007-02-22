@@ -68,7 +68,7 @@ public class Scanner implements TerminalTokens {
 	public boolean scanningFloatLiteral = false;
 
 	//support for /** comments
-	public final static int COMMENT_ARRAYS_SIZE = 30;
+	public static final int COMMENT_ARRAYS_SIZE = 30;
 	public int[] commentStops = new int[COMMENT_ARRAYS_SIZE];
 	public int[] commentStarts = new int[COMMENT_ARRAYS_SIZE];
 	public int[] commentTagStarts = new int[COMMENT_ARRAYS_SIZE];
@@ -175,6 +175,9 @@ public class Scanner implements TerminalTokens {
 		newEntry5 = 0, 
 		newEntry6 = 0;
 	public boolean insideRecovery = false;
+	
+	protected int currentToken;
+	protected boolean pushedBack=false;
 
 	public static final int RoundBracket = 0;
 	public static final int SquareBracket = 1;
@@ -236,7 +239,7 @@ public final boolean atEnd() {
 	// This code is not relevant if source is 
 	// Only a part of the real stream input
 
-	return this.eofPosition <= this.currentPosition;
+	return this.eofPosition == this.currentPosition;
 }
 
 // chech presence of task: tags
@@ -601,6 +604,7 @@ public final int getNextCharWithBoundChecks() {
 	}
 	return this.currentCharacter;
 }
+
 public final boolean getNextChar(char testedChar) {
 	//BOOLEAN
 	//handle the case of unicode.
@@ -855,6 +859,7 @@ public boolean getNextCharAsJavaIdentifierPartWithBoundCheck() {
 		return false;
 	}
 }
+
 public boolean getNextCharAsJavaIdentifierPart() {
 	//BOOLEAN
 	//handle the case of unicode.
@@ -929,6 +934,7 @@ public boolean getNextCharAsJavaIdentifierPart() {
 		return false;
 	}
 }
+
 /*
  * External API in JavaConventions.
  * This is used to optimize the case where the scanner is used to scan a single identifier.
@@ -1035,12 +1041,20 @@ public int scanIdentifier() throws InvalidInputException {
 		return TokenNameERROR;
 	}
 }
+
+
 public int getNextToken() throws InvalidInputException {
+	if ( pushedBack ) {
+		pushedBack = false;
+		return currentToken;
+	}
+	int previousToken = this.currentToken;
 	this.wasAcr = false;
 	if (this.diet) {
 		jumpOverMethodBody();
 		this.diet = false;
-		return this.currentPosition > this.eofPosition ? TokenNameEOF : TokenNameRBRACE;
+		currentToken=this.currentPosition > this.eofPosition ? TokenNameEOF : TokenNameRBRACE;
+		return currentToken; 
 	}
 	int whiteStart = 0;
 	try {
@@ -1066,13 +1080,20 @@ public int getNextToken() throws InvalidInputException {
 						// reposition scanner in case we are interested by spaces as tokens
 						this.currentPosition--;
 						this.startPosition = whiteStart;
-						return TokenNameWHITESPACE;
+						currentToken=TokenNameWHITESPACE;
+						return currentToken;
 					}
 					if (this.currentPosition > this.eofPosition)
-						return TokenNameEOF;
+					{
+						currentToken=TokenNameEOF;
+						return currentToken;
+					}
 				}
 				if (this.currentPosition > this.eofPosition)
-					return TokenNameEOF;
+				{
+					currentToken=TokenNameEOF;
+					return currentToken;
+				}
 				if (checkIfUnicode) {
 					isWhiteSpace = jumpOverUnicodeWhiteSpace();
 					offset = this.currentPosition - offset;
@@ -1110,7 +1131,8 @@ public int getNextToken() throws InvalidInputException {
 					if (checkIfUnicode) {
 						this.withoutUnicodePtr = unicodePtr;
 					}
-					return TokenNameWHITESPACE;
+					currentToken=TokenNameWHITESPACE;
+					return currentToken;
 				} else if (checkIfUnicode) {
 					this.withoutUnicodePtr = 0;
 					unicodeStore();
@@ -1126,134 +1148,217 @@ public int getNextToken() throws InvalidInputException {
 					} else {
 						return TokenNameERROR;
 					}*/
-					return TokenNameAT;
+					currentToken=TokenNameAT;
+					return currentToken;
 				case '(' :
-					return TokenNameLPAREN;
+					currentToken=TokenNameLPAREN;
+					return currentToken;
 				case ')' :
-					return TokenNameRPAREN;
+					currentToken=TokenNameRPAREN;
+					return currentToken;
 				case '{' :
-					return TokenNameLBRACE;
+					currentToken=TokenNameLBRACE;
+					return currentToken;
 				case '}' :
-					return TokenNameRBRACE;
+					currentToken=TokenNameRBRACE;
+					return currentToken;
 				case '[' :
-					return TokenNameLBRACKET;
+					currentToken=TokenNameLBRACKET;
+					return currentToken;
 				case ']' :
-					return TokenNameRBRACKET;
+					currentToken=TokenNameRBRACKET;
+					return currentToken;
 				case ';' :
-					return TokenNameSEMICOLON;
+					currentToken=TokenNameSEMICOLON;
+					return currentToken;
 				case ',' :
-					return TokenNameCOMMA;
+					currentToken=TokenNameCOMMA;
+					return currentToken;
 				case '.' :
 					if (getNextCharAsDigit()) {
-						return scanNumber(true);
+						currentToken=scanNumber(true);
+						return currentToken;
 					}
-					int temp = this.currentPosition;
-					if (getNextChar('.')) {
-						if (getNextChar('.')) {
-							return TokenNameELLIPSIS;
-						} else {
-							this.currentPosition = temp;
-							return TokenNameDOT;
-						}
-					} else {
-						this.currentPosition = temp;
-						return TokenNameDOT;
-					}
+						currentToken=TokenNameDOT;
+						return currentToken;
+				 
 				case '+' :
 					{
 						int test;
 						if ((test = getNextChar('+', '=')) == 0)
-							return TokenNamePLUS_PLUS;
+						{
+							currentToken=TokenNamePLUS_PLUS;
+							return currentToken;
+						}
 						if (test > 0)
-							return TokenNamePLUS_EQUAL;
-						return TokenNamePLUS;
+						{
+							currentToken=TokenNamePLUS_EQUAL;
+							return currentToken;
+						}
+						currentToken=TokenNamePLUS;
+						return currentToken;
 					}
 				case '-' :
 					{
 						int test;
 						if ((test = getNextChar('-', '=')) == 0)
-							return TokenNameMINUS_MINUS;
+						{
+							currentToken=TokenNameMINUS_MINUS;
+							return currentToken;
+						}
 						if (test > 0)
-							return TokenNameMINUS_EQUAL;
-						return TokenNameMINUS;
+						{
+							currentToken=TokenNameMINUS_EQUAL;
+							return currentToken;
+						}
+						currentToken=TokenNameMINUS;
+						return currentToken;
 					}
 				case '~' :
-					return TokenNameTWIDDLE;
+					currentToken=TokenNameTWIDDLE;
+					return currentToken;
 				case '!' :
 					if (getNextChar('='))
-						return TokenNameNOT_EQUAL;
-					return TokenNameNOT;
+					{
+						if (getNextChar('='))
+						{
+							currentToken=TokenNameNOT_EQUAL_EQUAL;
+							return currentToken;
+						}
+						currentToken=TokenNameNOT_EQUAL;
+						return currentToken;
+					}
+					currentToken=TokenNameNOT;
+					return currentToken;
 				case '*' :
 					if (getNextChar('='))
-						return TokenNameMULTIPLY_EQUAL;
-					return TokenNameMULTIPLY;
+					{
+						currentToken=TokenNameMULTIPLY_EQUAL;
+						return currentToken;
+					}
+					currentToken=TokenNameMULTIPLY;
+					return currentToken;
 				case '%' :
 					if (getNextChar('='))
-						return TokenNameREMAINDER_EQUAL;
-					return TokenNameREMAINDER;
+					{
+						currentToken=TokenNameREMAINDER_EQUAL;
+						return currentToken;
+					}
+					currentToken=TokenNameREMAINDER;
+					return currentToken;
 				case '<' :
 					{
 						int test;
 						if ((test = getNextChar('=', '<')) == 0)
-							return TokenNameLESS_EQUAL;
+						{
+							currentToken=TokenNameLESS_EQUAL;
+							return currentToken;
+						}
 						if (test > 0) {
 							if (getNextChar('='))
-								return TokenNameLEFT_SHIFT_EQUAL;
-							return TokenNameLEFT_SHIFT;
+							{
+								currentToken=TokenNameLEFT_SHIFT_EQUAL;
+								return currentToken;
+							}
+							currentToken=TokenNameLEFT_SHIFT;
+							return currentToken;
 						}
-						return TokenNameLESS;
+						currentToken=TokenNameLESS;
+						return currentToken;
 					}
 				case '>' :
 					{
 						int test;
 						if (this.returnOnlyGreater) {
-							return TokenNameGREATER;
+							currentToken=TokenNameGREATER;
+							return currentToken;
 						}
 						if ((test = getNextChar('=', '>')) == 0)
-							return TokenNameGREATER_EQUAL;
+						{
+							currentToken=TokenNameGREATER_EQUAL;
+							return currentToken;
+						}
 						if (test > 0) {
 							if ((test = getNextChar('=', '>')) == 0)
-								return TokenNameRIGHT_SHIFT_EQUAL;
+							{
+								currentToken=TokenNameRIGHT_SHIFT_EQUAL;
+								return currentToken;
+							}
 							if (test > 0) {
 								if (getNextChar('='))
-									return TokenNameUNSIGNED_RIGHT_SHIFT_EQUAL;
-								return TokenNameUNSIGNED_RIGHT_SHIFT;
+								{
+									currentToken=TokenNameUNSIGNED_RIGHT_SHIFT_EQUAL;
+									return currentToken;
+								}
+								currentToken=TokenNameUNSIGNED_RIGHT_SHIFT;
+								return currentToken;
 							}
-							return TokenNameRIGHT_SHIFT;
+							currentToken=TokenNameRIGHT_SHIFT;
+							return currentToken;
 						}
-						return TokenNameGREATER;
+						currentToken=TokenNameGREATER;
+						return currentToken;
 					}
 				case '=' :
 					if (getNextChar('='))
-						return TokenNameEQUAL_EQUAL;
-					return TokenNameEQUAL;
+					{
+						if (getNextChar('='))
+						{
+							currentToken=TokenNameEQUAL_EQUAL_EQUAL;
+							return currentToken;
+						}
+						currentToken=TokenNameEQUAL_EQUAL;
+						return currentToken;
+					}
+					currentToken=TokenNameEQUAL;
+					return currentToken;
 				case '&' :
 					{
 						int test;
 						if ((test = getNextChar('&', '=')) == 0)
-							return TokenNameAND_AND;
+						{
+							currentToken=TokenNameAND_AND;
+							return currentToken;
+						}
 						if (test > 0)
-							return TokenNameAND_EQUAL;
-						return TokenNameAND;
+						{
+							currentToken=TokenNameAND_EQUAL;
+							return currentToken;
+						}
+						currentToken=TokenNameAND;
+						return currentToken;
 					}
 				case '|' :
 					{
 						int test;
 						if ((test = getNextChar('|', '=')) == 0)
-							return TokenNameOR_OR;
+						{
+							currentToken=TokenNameOR_OR;
+							return currentToken;
+						}
 						if (test > 0)
-							return TokenNameOR_EQUAL;
-						return TokenNameOR;
+						{
+							currentToken=TokenNameOR_EQUAL;
+							return currentToken;
+						}
+						currentToken=TokenNameOR;
+						return currentToken;
 					}
 				case '^' :
 					if (getNextChar('='))
-						return TokenNameXOR_EQUAL;
-					return TokenNameXOR;
+					{
+						currentToken=TokenNameXOR_EQUAL;
+						return currentToken;
+					}
+					currentToken=TokenNameXOR;
+					return currentToken;
 				case '?' :
-					return TokenNameQUESTION;
+					currentToken=TokenNameQUESTION;
+					return currentToken;
 				case ':' :
-					return TokenNameCOLON;
-				case '\'' :
+					currentToken=TokenNameCOLON;
+					return currentToken;
+/*				case '\'' :
 					{
 						int test;
 						if ((test = getNextChar('\n', '\r')) == 0) {
@@ -1322,7 +1427,10 @@ public int getNextToken() throws InvalidInputException {
 						}
 					}
 					if (getNextChar('\''))
-						return TokenNameCharacterLiteral;
+					{
+						currentToken=TokenNameCharacterLiteral;
+						return currentToken;
+					}
 					// relocate if finding another quote fairly close: thus unicode '/u000D' will be fully consumed
 					for (int lookAhead = 0; lookAhead < 20; lookAhead++) {
 						if (this.currentPosition + lookAhead == this.eofPosition)
@@ -1334,8 +1442,10 @@ public int getNextToken() throws InvalidInputException {
 							break;
 						}
 					}
-					throw new InvalidInputException(INVALID_CHARACTER_CONSTANT);
+					throw new InvalidInputException(INVALID_CHARACTER_CONSTANT); */
+				case '\'':
 				case '"' :
+					char character = this.currentCharacter;
 					try {
 						// consume next character
 						this.unicodeAsBackSlash = false;
@@ -1350,34 +1460,9 @@ public int getNextToken() throws InvalidInputException {
 							}
 						}
 
-						while (this.currentCharacter != '"') {
-							/**** \r and \n are not valid in string literals ****/
-							if ((this.currentCharacter == '\n') || (this.currentCharacter == '\r')) {
-								// relocate if finding another quote fairly close: thus unicode '/u000D' will be fully consumed
-								if (isUnicode) {
-									int start = this.currentPosition;
-									for (int lookAhead = 0; lookAhead < 50; lookAhead++) {
-										if (this.currentPosition >= this.eofPosition) {
-											this.currentPosition = start;
-											break;
-										}
-										if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\') && (this.source[this.currentPosition] == 'u')) {
-											isUnicode = true;
-											getNextUnicodeChar();
-										} else {
-											isUnicode = false;
-										}
-										if (!isUnicode && this.currentCharacter == '\n') {
-											this.currentPosition--; // set current position on new line character
-											break;
-										}
-										if (this.currentCharacter == '\"') {
-											throw new InvalidInputException(INVALID_CHAR_IN_STRING);
-										}
-									}
-								} else {
-									this.currentPosition--; // set current position on new line character
-								}
+						while ((this.currentCharacter !=  character) || ((this.currentCharacter ==  character) && (isUnicode == true))) {
+							if ((this.currentCharacter == '\n' && !isUnicode) || (this.currentCharacter == '\r' && !isUnicode)) {
+								this.currentPosition--; // set current position on new line character
 								throw new InvalidInputException(INVALID_CHAR_IN_STRING);
 							}
 							if (this.currentCharacter == '\\') {
@@ -1430,7 +1515,7 @@ public int getNextToken() throws InvalidInputException {
 									break;
 								if (this.source[this.currentPosition + lookAhead] == '\n')
 									break;
-								if (this.source[this.currentPosition + lookAhead] == '\"') {
+								if (this.source[this.currentPosition + lookAhead] == character) {
 									this.currentPosition += lookAhead + 1;
 									break;
 								}
@@ -1439,14 +1524,22 @@ public int getNextToken() throws InvalidInputException {
 						}
 						throw e; // rethrow
 					}
-					return TokenNameStringLiteral;
+					if (character == '\''){
+						currentToken=TokenNameCharacterLiteral;
+					} else {
+						currentToken=TokenNameStringLiteral;
+					}
+					return currentToken;
 				case '/' :
 					{
 						int test;
 						if ((test = getNextChar('/', '*')) == 0) { //line comment 
 							this.lastCommentLinePosition = this.currentPosition;
 							try { //get the next char 
-								if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
+								
+								this.currentCharacter = this.source[this.currentPosition++];
+								// Don't process unicode characters in JavaScript comments
+/*								if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
 										&& (this.source[this.currentPosition] == 'u')) {
 									getNextUnicodeChar();
 								}
@@ -1455,12 +1548,14 @@ public int getNextToken() throws InvalidInputException {
 								if (this.currentCharacter == '\\') {
 									if (this.source[this.currentPosition] == '\\')
 										this.currentPosition++;
-								} //jump over the \\
-								boolean isUnicode = false;
+								} //jump over the \\ 
+								boolean isUnicode = false; */
 								while (this.currentCharacter != '\r' && this.currentCharacter != '\n') {
 									this.lastCommentLinePosition = this.currentPosition;
 									//get the next char
-									isUnicode = false;									
+									this.currentCharacter = this.source[this.currentPosition++];
+									// Don't process unicode characters in JavaScript comments
+/*									isUnicode = false;									
 									if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
 											&& (this.source[this.currentPosition] == 'u')) {
 										getNextUnicodeChar();
@@ -1470,11 +1565,12 @@ public int getNextToken() throws InvalidInputException {
 									if (this.currentCharacter == '\\') {
 										if (this.source[this.currentPosition] == '\\')
 											this.currentPosition++;
-									} //jump over the \\
+									} //jump over the \\ */
 								}
 								/*
 								 * We need to completely consume the line break
 								 */
+								boolean isUnicode = false;
 								if (this.currentCharacter == '\r'
 								   && this.eofPosition > this.currentPosition) {
 								   	if (this.source[this.currentPosition] == '\n') {
@@ -1501,7 +1597,8 @@ public int getNextToken() throws InvalidInputException {
 									}
 								}
 								if (this.tokenizeComments) {
-									return TokenNameCOMMENT_LINE;
+									currentToken=TokenNameCOMMENT_LINE;
+									return currentToken;
 								}
 							} catch (IndexOutOfBoundsException e) {
 								this.currentPosition--;
@@ -1511,7 +1608,8 @@ public int getNextToken() throws InvalidInputException {
 									parseTags();
 								}
 								if (this.tokenizeComments) {
-									return TokenNameCOMMENT_LINE;
+									currentToken=TokenNameCOMMENT_LINE;
+									return currentToken;
 								} else {
 									this.currentPosition++; 
 								}
@@ -1525,7 +1623,9 @@ public int getNextToken() throws InvalidInputException {
 								int previous;
 								// consume next character
 								this.unicodeAsBackSlash = false;
-								if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
+								this.currentCharacter = this.source[this.currentPosition++];
+//								Don't process unicode characters in JavaScript comments                                    
+/*								if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
 									&& (this.source[this.currentPosition] == 'u')) {
 									getNextUnicodeChar();
 									isUnicode = true;
@@ -1534,7 +1634,7 @@ public int getNextToken() throws InvalidInputException {
 									if (this.withoutUnicodePtr != 0) {
 										unicodeStore();
 									}
-								}
+								} */
 
 								if (this.currentCharacter == '*') {
 									isJavadoc = true;
@@ -1551,7 +1651,9 @@ public int getNextToken() throws InvalidInputException {
 								}
 								isUnicode = false;
 								previous = this.currentPosition;
-								if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
+								this.currentCharacter = this.source[this.currentPosition++];
+//								Don't process unicode characters in JavaScript comments  								
+/*								if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
 									&& (this.source[this.currentPosition] == 'u')) {
 									//-------------unicode traitement ------------
 									getNextUnicodeChar();
@@ -1563,7 +1665,7 @@ public int getNextToken() throws InvalidInputException {
 								if (this.currentCharacter == '\\') {
 									if (this.source[this.currentPosition] == '\\')
 										this.currentPosition++; //jump over the \\
-								}
+								} */
 								// empty comment is not a javadoc /**/
 								if (this.currentCharacter == '/') { 
 									isJavadoc = false;
@@ -1594,7 +1696,8 @@ public int getNextToken() throws InvalidInputException {
 									}
 									//get next char
 									previous = this.currentPosition;
-									if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
+									this.currentCharacter = this.source[this.currentPosition++];
+/*									if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
 										&& (this.source[this.currentPosition] == 'u')) {
 										//-------------unicode traitement ------------
 										getNextUnicodeChar();
@@ -1606,7 +1709,7 @@ public int getNextToken() throws InvalidInputException {
 									if (this.currentCharacter == '\\') {
 										if (this.source[this.currentPosition] == '\\')
 											this.currentPosition++;
-									} //jump over the \\
+									} //jump over the \\ */
 								}
 								int token = isJavadoc ? TokenNameCOMMENT_JAVADOC : TokenNameCOMMENT_BLOCK;
 								recordComment(token);
@@ -1618,6 +1721,7 @@ public int getNextToken() throws InvalidInputException {
 										return TokenNameCOMMENT_JAVADOC;
 									return TokenNameCOMMENT_BLOCK;
 									*/
+									currentToken=token;
 									return token;
 								}
 							} catch (IndexOutOfBoundsException e) {
@@ -1626,24 +1730,43 @@ public int getNextToken() throws InvalidInputException {
 							}
 							break;
 						}
-						if (getNextChar('='))
-							return TokenNameDIVIDE_EQUAL;
-						return TokenNameDIVIDE;
+						
+						if (checkIfDivide(previousToken)){
+							if (getNextChar('='))
+							{
+								currentToken=TokenNameDIVIDE_EQUAL;
+								return currentToken;
+							}
+							currentToken=TokenNameDIVIDE;
+							return currentToken;
+						}
+						
+						// check if regular expression
+						if (checkIfRegExp()) {
+							currentToken = TokenNameRegExLiteral;
+							return currentToken;
+						}
 					}
 				case '\u001a' :
 					if (atEnd())
-						return TokenNameEOF;
-					//the atEnd may not be <currentPosition == source.length> if source is only some part of a real (external) stream
+					{
+						currentToken=TokenNameEOF;
+						return currentToken;
+					}
+					//the atEnd may not be <currentPosition == eofPosition> if source is only some part of a real (external) stream
 					throw new InvalidInputException("Ctrl-Z"); //$NON-NLS-1$
 				default :
 					char c = this.currentCharacter;
 					if (c < ScannerHelper.MAX_OBVIOUS) {
 						if ((ScannerHelper.OBVIOUS_IDENT_CHAR_NATURES[c] & ScannerHelper.C_IDENT_START) != 0) {
-							return scanIdentifierOrKeyword();
+							currentToken=scanIdentifierOrKeyword();
+							return currentToken;
 						} else if ((ScannerHelper.OBVIOUS_IDENT_CHAR_NATURES[c] & ScannerHelper.C_DIGIT) != 0) {
-								return scanNumber(false);
+								currentToken=scanNumber(false);
+								return currentToken;
 						} else {
-							return TokenNameERROR;
+							currentToken=TokenNameERROR;
+							return currentToken;
 						}
 					}
 					boolean isJavaIdStart;
@@ -1669,11 +1792,16 @@ public int getNextToken() throws InvalidInputException {
 						isJavaIdStart = Character.isJavaIdentifierStart(c);
 					}
 					if (isJavaIdStart)
-						return scanIdentifierOrKeyword();
+					{
+						currentToken=scanIdentifierOrKeyword();
+						return currentToken;
+					}
 					if (ScannerHelper.isDigit(this.currentCharacter)) {
-						return scanNumber(false);
+						currentToken=scanNumber(false);
+						return currentToken;
 					}						
-					return TokenNameERROR;
+					currentToken=TokenNameERROR;
+					return currentToken;
 			}
 		}
 	} //-----------------end switch while try--------------------
@@ -1682,60 +1810,63 @@ public int getNextToken() throws InvalidInputException {
 			// reposition scanner in case we are interested by spaces as tokens
 			this.currentPosition--;
 			this.startPosition = whiteStart;
-			return TokenNameWHITESPACE;
+			currentToken=TokenNameWHITESPACE;
+			return currentToken;
 		}
 	}
-	return TokenNameEOF;
+	currentToken=TokenNameEOF;
+	return currentToken;
 }
 public void getNextUnicodeChar()
-	throws InvalidInputException {
-	//VOID
-	//handle the case of unicode.
-	//when a unicode appears then we must use a buffer that holds char internal values
-	//At the end of this method currentCharacter holds the new visited char
-	//and currentPosition points right next after it
+throws InvalidInputException {
+//VOID
+//handle the case of unicode.
+//when a unicode appears then we must use a buffer that holds char internal values
+//At the end of this method currentCharacter holds the new visited char
+//and currentPosition points right next after it
 
-	//ALL getNextChar.... ARE OPTIMIZED COPIES 
-	int c1 = 0, c2 = 0, c3 = 0, c4 = 0, unicodeSize = 6;
-	this.currentPosition++;
-	if (this.currentPosition < this.eofPosition) {
-		while (this.source[this.currentPosition] == 'u') {
-			this.currentPosition++;
-			if (this.currentPosition >= this.eofPosition) {
-				this.currentPosition--;
-				throw new InvalidInputException(INVALID_UNICODE_ESCAPE);
-			}
-			unicodeSize++;
+//ALL getNextChar.... ARE OPTIMIZED COPIES 
+int c1 = 0, c2 = 0, c3 = 0, c4 = 0, unicodeSize = 6;
+this.currentPosition++;
+if (this.currentPosition < this.eofPosition) {
+	while (this.source[this.currentPosition] == 'u') {
+		this.currentPosition++;
+		if (this.currentPosition >= this.eofPosition) {
+			this.currentPosition--;
+			throw new InvalidInputException(INVALID_UNICODE_ESCAPE);
 		}
-	} else {
-		this.currentPosition--;
-		throw new InvalidInputException(INVALID_UNICODE_ESCAPE);
+		unicodeSize++;
 	}
-
-	if ((this.currentPosition + 4) > this.eofPosition) {
-		this.currentPosition += (this.eofPosition - this.currentPosition);
-		throw new InvalidInputException(INVALID_UNICODE_ESCAPE);
-	}
-	if ((c1 = ScannerHelper.getNumericValue(this.source[this.currentPosition++])) > 15
-    		|| c1 < 0
-    		|| (c2 = ScannerHelper.getNumericValue(this.source[this.currentPosition++])) > 15
-    		|| c2 < 0
-    		|| (c3 = ScannerHelper.getNumericValue(this.source[this.currentPosition++])) > 15
-    		|| c3 < 0
-    		|| (c4 = ScannerHelper.getNumericValue(this.source[this.currentPosition++])) > 15
-    		|| c4 < 0){
-		throw new InvalidInputException(INVALID_UNICODE_ESCAPE);
-	}
-	this.currentCharacter = (char) (((c1 * 16 + c2) * 16 + c3) * 16 + c4);
-	//need the unicode buffer
-	if (this.withoutUnicodePtr == 0) {
-		//buffer all the entries that have been left aside....
-		unicodeInitializeBuffer(this.currentPosition - unicodeSize - this.startPosition);
-	}
-	//fill the buffer with the char
-	unicodeStore();
-	this.unicodeAsBackSlash = this.currentCharacter == '\\';
+} else {
+	this.currentPosition--;
+	throw new InvalidInputException(INVALID_UNICODE_ESCAPE);
 }
+
+if ((this.currentPosition + 4) > this.eofPosition) {
+	this.currentPosition += (this.eofPosition - this.currentPosition);
+	throw new InvalidInputException(INVALID_UNICODE_ESCAPE);
+}
+if ((c1 = ScannerHelper.getNumericValue(this.source[this.currentPosition++])) > 15
+		|| c1 < 0
+		|| (c2 = ScannerHelper.getNumericValue(this.source[this.currentPosition++])) > 15
+		|| c2 < 0
+		|| (c3 = ScannerHelper.getNumericValue(this.source[this.currentPosition++])) > 15
+		|| c3 < 0
+		|| (c4 = ScannerHelper.getNumericValue(this.source[this.currentPosition++])) > 15
+		|| c4 < 0){
+	throw new InvalidInputException(INVALID_UNICODE_ESCAPE);
+}
+this.currentCharacter = (char) (((c1 * 16 + c2) * 16 + c3) * 16 + c4);
+//need the unicode buffer
+if (this.withoutUnicodePtr == 0) {
+	//buffer all the entries that have been left aside....
+	unicodeInitializeBuffer(this.currentPosition - unicodeSize - this.startPosition);
+}
+//fill the buffer with the char
+unicodeStore();
+this.unicodeAsBackSlash = this.currentCharacter == '\\';
+}
+
 public NLSTag[] getNLSTags() {
 	final int length = this.nlsTagsPtr;
 	if (length != 0) {
@@ -1891,7 +2022,8 @@ public final void jumpOverMethodBody() {
 							try {
 								this.lastCommentLinePosition = this.currentPosition;
 								//get the next char 
-								if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
+								this.currentCharacter = this.source[this.currentPosition++];
+/*								if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
 										&& (this.source[this.currentPosition] == 'u')) {
 									getNextUnicodeChar();
 								}
@@ -1899,12 +2031,13 @@ public final void jumpOverMethodBody() {
 								if (this.currentCharacter == '\\') {
 									if (this.source[this.currentPosition] == '\\')
 										this.currentPosition++;
-								} //jump over the \\
-								boolean isUnicode = false;
+								} //jump over the \\ */
+								
 								while (this.currentCharacter != '\r' && this.currentCharacter != '\n') {
 									this.lastCommentLinePosition = this.currentPosition;
+									this.currentCharacter = this.source[this.currentPosition++];
 									//get the next char 
-									isUnicode = false;
+/*									isUnicode = false;
 									if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
 											&& (this.source[this.currentPosition] == 'u')) {
 										isUnicode = true;
@@ -1914,11 +2047,12 @@ public final void jumpOverMethodBody() {
 									if (this.currentCharacter == '\\') {
 										if (this.source[this.currentPosition] == '\\')
 											this.currentPosition++;
-									} //jump over the \\
+									} //jump over the \\ */
 								}
 								/*
 								 * We need to completely consume the line break
 								 */
+								boolean isUnicode = false;
 								if (this.currentCharacter == '\r'
 								   && this.eofPosition > this.currentPosition) {
 								   	if (this.source[this.currentPosition] == '\n') {
@@ -1965,7 +2099,8 @@ public final void jumpOverMethodBody() {
 								boolean isUnicode = false;
 								// consume next character
 								this.unicodeAsBackSlash = false;
-								if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
+								this.currentCharacter = this.source[this.currentPosition++];
+/*								if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
 										&& (this.source[this.currentPosition] == 'u')) {
 									getNextUnicodeChar();
 									isUnicode = true;
@@ -1974,7 +2109,7 @@ public final void jumpOverMethodBody() {
 									if (this.withoutUnicodePtr != 0) {
     								    unicodeStore();
 									}
-								}
+								} */
 	
 								if (this.currentCharacter == '*') {
 									isJavadoc = true;
@@ -1991,7 +2126,8 @@ public final void jumpOverMethodBody() {
 								}
 								isUnicode = false;
 								previous = this.currentPosition;
-								if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
+								this.currentCharacter = this.source[this.currentPosition++];
+/*								if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
 										&& (this.source[this.currentPosition] == 'u')) {
 									getNextUnicodeChar();
 									isUnicode = true;
@@ -2002,7 +2138,7 @@ public final void jumpOverMethodBody() {
 								if (this.currentCharacter == '\\') {
 									if (this.source[this.currentPosition] == '\\')
 										this.currentPosition++; //jump over the \\
-								}
+								} */
 								// empty comment is not a javadoc /**/
 								if (this.currentCharacter == '/') { 
 									isJavadoc = false;
@@ -2033,7 +2169,8 @@ public final void jumpOverMethodBody() {
 									}
 									//get next char
 									previous = this.currentPosition;
-									if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
+									this.currentCharacter = this.source[this.currentPosition++];
+/*									if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
 											&& (this.source[this.currentPosition] == 'u')) {
 										getNextUnicodeChar();
 										isUnicode = true;
@@ -2044,7 +2181,7 @@ public final void jumpOverMethodBody() {
 									if (this.currentCharacter == '\\') {
 										if (this.source[this.currentPosition] == '\\')
 											this.currentPosition++;
-									} //jump over the \\
+									} //jump over the \\ */
 								}
 								recordComment(isJavadoc ? TokenNameCOMMENT_JAVADOC : TokenNameCOMMENT_BLOCK);
 								this.commentTagStarts[this.commentPtr] = firstTag;
@@ -2116,9 +2253,9 @@ public final boolean jumpOverUnicodeWhiteSpace() throws InvalidInputException {
 	//On false, the currentCharacter is filled up with a potential
 	//correct char
 
-	this.wasAcr = false;
-	getNextUnicodeChar();
-	return CharOperation.isWhitespace(this.currentCharacter);
+		this.wasAcr = false;
+		getNextUnicodeChar();
+		return CharOperation.isWhitespace(this.currentCharacter);
 }
 
 final char[] optimizedCurrentTokenSource1() {
@@ -2595,6 +2732,16 @@ public final void scanEscapeCharacter() throws InvalidInputException {
 		case '\\' :
 			this.currentCharacter = '\\';
 			break;
+		case 'x' :
+			int digit1 = ScannerHelper.digit(this.source[this.currentPosition], 16);
+			int digit2 = ScannerHelper.digit(this.source[this.currentPosition + 1], 16);
+			if ( digit1 != -1 && digit2 != -1 ) {
+				
+				int number = (digit1 * 16) + digit2;
+				this.currentPosition = this.currentPosition + 2;
+				this.currentCharacter = (char)number;
+				break;
+			}			
 		default :
 			// -----------octal escape--------------
 			// OctalDigit
@@ -2631,10 +2778,12 @@ public final void scanEscapeCharacter() throws InvalidInputException {
 				if (number > 255)
 					throw new InvalidInputException(INVALID_ESCAPE);
 				this.currentCharacter = (char) number;
-			} else
-				throw new InvalidInputException(INVALID_ESCAPE);
+			} 
+			// in JavaScript when a backslash followed by character, the
+			// backslash is ignored. 
 	}
 }
+
 public int scanIdentifierOrKeywordWithBoundCheck() {
 	//test keywords
 
@@ -2697,6 +2846,8 @@ public int scanIdentifierOrKeywordWithBoundCheck() {
 
 	return internalScanIdentifierOrKeyword(index, length, data);
 }
+
+
 public int scanIdentifierOrKeyword() {
 	//test keywords
 
@@ -2742,9 +2893,12 @@ public int scanIdentifierOrKeyword() {
 	int index, length;
 	char[] data;
 	if (this.withoutUnicodePtr == 0) {
+
+
 		//quick test on length == 1 but not on length > 12 while most identifier
 		//have a length which is <= 12...but there are lots of identifier with
 		//only one char....
+
 		if ((length = this.currentPosition - this.startPosition) == 1) {
 			return TokenNameIdentifier;
 		}
@@ -2756,15 +2910,16 @@ public int scanIdentifierOrKeyword() {
 		data = this.withoutUnicodeBuffer;
 		index = 1;
 	}
-
 	return internalScanIdentifierOrKeyword(index, length, data);
 }
 
 private int internalScanIdentifierOrKeyword(int index, int length, char[] data) {
+
 	switch (data[index]) {
-		case 'a' : 
-			switch(length) {
-				case 8: //abstract
+
+		case 'a' :
+			if (length==8) {
+				  //abstract
 					if ((data[++index] == 'b')
 						&& (data[++index] == 's')
 						&& (data[++index] == 't')
@@ -2776,25 +2931,9 @@ private int internalScanIdentifierOrKeyword(int index, int length, char[] data) 
 						} else {
 							return TokenNameIdentifier;
 						}
-				case 6: // assert
-					if ((data[++index] == 's')
-						&& (data[++index] == 's')
-						&& (data[++index] == 'e')
-						&& (data[++index] == 'r')
-						&& (data[++index] == 't')) {
-							if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
-								this.containsAssertKeyword = true;
-								return TokenNameassert;
-							} else {
-								this.useAssertAsAnIndentifier = true;
-								return TokenNameIdentifier;								
-							}
-						} else {
-							return TokenNameIdentifier;
-						}
-				default: 
-					return TokenNameIdentifier;
 			}
+			else 
+				return TokenNameIdentifier;
 		case 'b' : //boolean break byte
 			switch (length) {
 				case 4 :
@@ -2881,12 +3020,27 @@ private int internalScanIdentifierOrKeyword(int index, int length, char[] data) 
 					else
 						return TokenNameIdentifier;
 				case 6 :
-					if ((data[++index] == 'o')
-						&& (data[++index] == 'u')
+					if (data[++index] == 'o')
+					{		
+						if ((data[++index] == 'u')
 						&& (data[++index] == 'b')
 						&& (data[++index] == 'l')
 						&& (data[++index] == 'e'))
 						return TokenNamedouble;
+					else
+						return TokenNameIdentifier;
+					}
+					else if (data[index]=='e')
+					{
+						if ((data[++index] == 'l')
+								&& (data[++index] == 'e')
+								&& (data[++index] == 't')
+								&& (data[++index] == 'e'))
+								return TokenNamedelete;
+							else
+								return TokenNameIdentifier;
+						
+					}
 					else
 						return TokenNameIdentifier;
 				case 7 :
@@ -2897,6 +3051,17 @@ private int internalScanIdentifierOrKeyword(int index, int length, char[] data) 
 						&& (data[++index] == 'l')
 						&& (data[++index] == 't'))
 						return TokenNamedefault;
+					else
+						return TokenNameIdentifier;
+				case 8 :
+					if ((data[++index] == 'e')
+						&& (data[++index] == 'b')
+						&& (data[++index] == 'u')
+						&& (data[++index] == 'g')
+						&& (data[++index] == 'g')
+						&& (data[++index] == 'e')
+						&& (data[++index] == 'r'))
+						return TokenNamedebugger;
 					else
 						return TokenNameIdentifier;
 				default :
@@ -2919,6 +3084,15 @@ private int internalScanIdentifierOrKeyword(int index, int length, char[] data) 
 						} else {
 							return TokenNameIdentifier;
 						}
+				case 6 :
+					if ((data[++index] == 'x')
+						&& (data[++index] == 'p')
+						&& (data[++index] == 'o')
+						&& (data[++index] == 'r')
+						&& (data[++index] == 't'))
+						return TokenNameexport;
+					else
+						return TokenNameIdentifier;
 				case 7 :
 					if ((data[++index] == 'x')
 						&& (data[++index] == 't')
@@ -2975,6 +3149,18 @@ private int internalScanIdentifierOrKeyword(int index, int length, char[] data) 
 					else
 						return TokenNameIdentifier;
 
+				case 8 :
+					if ((data[++index] == 'u')
+						&& (data[++index] == 'n')
+						&& (data[++index] == 'c')
+						&& (data[++index] == 't')
+						&& (data[++index] == 'i')
+						&& (data[++index] == 'o')
+						&& (data[++index] == 'n'))
+						return TokenNamefunction;
+					else
+						return TokenNameIdentifier;
+
 				default :
 					return TokenNameIdentifier;
 			}
@@ -2993,6 +3179,8 @@ private int internalScanIdentifierOrKeyword(int index, int length, char[] data) 
 				case 2 :
 					if (data[++index] == 'f')
 						return TokenNameif;
+					else if (data[index] == 'n')
+						return TokenNamein;
 					else
 						return TokenNameIdentifier;
 				case 3 :
@@ -3007,6 +3195,17 @@ private int internalScanIdentifierOrKeyword(int index, int length, char[] data) 
 						&& (data[++index] == 'r')
 						&& (data[++index] == 't'))
 						return TokenNameimport;
+					else
+						return TokenNameIdentifier;
+				case 8 :
+					if ((data[++index] == 'n')
+						&& (data[++index] == 'f')
+						&& (data[++index] == 'i')
+						&& (data[++index] == 'n')
+						&& (data[++index] == 'i')
+						&& (data[++index] == 't')
+						&& (data[++index] == 'y'))
+						return TokenNameinfinity;
 					else
 						return TokenNameIdentifier;
 				case 9 :
@@ -3245,6 +3444,13 @@ private int internalScanIdentifierOrKeyword(int index, int length, char[] data) 
 						&& (data[++index] == 'w')
 						&& (data[++index] == 's'))
 						return TokenNamethrows;
+					else  
+						if ((data[index] == 'y')
+								&& (data[++index] == 'p')
+								&& (data[++index] == 'e')
+								&& (data[++index] == 'o')
+								&& (data[++index] == 'f'))
+								return TokenNametypeof;
 					else
 						return TokenNameIdentifier;
 				case 9 :
@@ -3264,13 +3470,33 @@ private int internalScanIdentifierOrKeyword(int index, int length, char[] data) 
 					return TokenNameIdentifier;
 			}
 
+		case 'u' : //goto
+			if (length == 9) {
+				if ((data[++index] == 'n')
+					&& (data[++index] == 'd')
+					&& (data[++index] == 'e')
+					&& (data[++index] == 'f')
+					&& (data[++index] == 'i')
+					&& (data[++index] == 'n')
+					&& (data[++index] == 'e')
+					&& (data[++index] == 'd')) {
+					return TokenNameundefined;
+				}
+			} //no goto in java are allowed, so why java removes this keyword ???
+			return TokenNameIdentifier;
+
 		case 'v' : //void volatile
 			switch (length) {
-				case 4 :
-					if ((data[++index] == 'o') && (data[++index] == 'i') && (data[++index] == 'd'))
-						return TokenNamevoid;
-					else
-						return TokenNameIdentifier;
+			case 3 :
+				if ((data[++index] == 'a')  && (data[++index] == 'r'))
+					return TokenNamevar;
+				else
+					return TokenNameIdentifier;
+			case 4 :
+				if ((data[++index] == 'o') && (data[++index] == 'i') && (data[++index] == 'd'))
+					return TokenNamevoid;
+				else
+					return TokenNameIdentifier;
 				case 8 :
 					if ((data[++index] == 'o')
 						&& (data[++index] == 'l')
@@ -3289,14 +3515,21 @@ private int internalScanIdentifierOrKeyword(int index, int length, char[] data) 
 
 		case 'w' : //while widefp
 			switch (length) {
-				case 5 :
-					if ((data[++index] == 'h')
-						&& (data[++index] == 'i')
-						&& (data[++index] == 'l')
-						&& (data[++index] == 'e'))
-						return TokenNamewhile;
-					else
-						return TokenNameIdentifier;
+			case 4 :
+				if ((data[++index] == 'i')
+					&& (data[++index] == 't')
+					&& (data[++index] == 'h'))
+					return TokenNamewith;
+				else
+					return TokenNameIdentifier;
+			case 5 :
+				if ((data[++index] == 'h')
+					&& (data[++index] == 'i')
+					&& (data[++index] == 'l')
+					&& (data[++index] == 'e'))
+					return TokenNamewhile;
+				else
+					return TokenNameIdentifier;
 					//case 6:if ( (data[++index] =='i') && (data[++index]=='d') && (data[++index]=='e') && (data[++index]=='f')&& (data[++index]=='p'))
 					//return TokenNamewidefp ;
 					//else
@@ -3562,7 +3795,7 @@ public final int getLineNumber(int position) {
 		if (position < this.lineEnds[m]) {
 			d = m-1;
 		} else if (position > this.lineEnds[m]) {
-			g = m+1;
+			g = m+1; 
 		} else {
 			return m + 1;
 		}
@@ -3572,7 +3805,7 @@ public final int getLineNumber(int position) {
 	}
 	return m+2;
 }
-public final void setSource(char[] sourceString){
+public  void setSource(char[] sourceString){
 	//the source-buffer is set to sourceString
 
 	int sourceLength;
@@ -3650,6 +3883,12 @@ public String toString() {
 		+ "<-- Ends here\n===============================\n" //$NON-NLS-1$
 		+ new String(end); 
 }
+
+public String dumpCurrent()
+{
+	return "token='"+toStringAction(currentToken)+"', position="+currentPosition;
+}
+
 public String toStringAction(int act) {
 	switch (act) {
 		case TokenNameIdentifier :
@@ -3672,6 +3911,10 @@ public String toStringAction(int act) {
 			return "class"; //$NON-NLS-1$
 		case TokenNamecontinue :
 			return "continue"; //$NON-NLS-1$
+		case TokenNamedelete :
+			return "delete"; //$NON-NLS-1$
+		case TokenNamedebugger :
+			return "debugger"; //$NON-NLS-1$
 		case TokenNamedefault :
 			return "default"; //$NON-NLS-1$
 		case TokenNamedo :
@@ -3680,6 +3923,8 @@ public String toStringAction(int act) {
 			return "double"; //$NON-NLS-1$
 		case TokenNameelse :
 			return "else"; //$NON-NLS-1$
+		case TokenNameexport :
+			return "export"; //$NON-NLS-1$
 		case TokenNameextends :
 			return "extends"; //$NON-NLS-1$
 		case TokenNamefalse :
@@ -3690,6 +3935,8 @@ public String toStringAction(int act) {
 			return "finally"; //$NON-NLS-1$
 		case TokenNamefloat :
 			return "float"; //$NON-NLS-1$
+		case TokenNamefunction :
+			return "function"; //$NON-NLS-1$
 		case TokenNamefor :
 			return "for"; //$NON-NLS-1$
 		case TokenNameif :
@@ -3702,6 +3949,10 @@ public String toStringAction(int act) {
 			return "instanceof"; //$NON-NLS-1$
 		case TokenNameint :
 			return "int"; //$NON-NLS-1$
+		case TokenNamein :
+			return "in"; //$NON-NLS-1$
+		case TokenNameinfinity :
+			return "infinity"; //$NON-NLS-1$
 		case TokenNameinterface :
 			return "interface"; //$NON-NLS-1$
 		case TokenNamelong :
@@ -3746,10 +3997,16 @@ public String toStringAction(int act) {
 			return "try"; //$NON-NLS-1$
 		case TokenNamevoid :
 			return "void"; //$NON-NLS-1$
+		case TokenNameundefined :
+			return "undefined"; //$NON-NLS-1$
+		case TokenNamevar :
+			return "var"; //$NON-NLS-1$
 		case TokenNamevolatile :
 			return "volatile"; //$NON-NLS-1$
 		case TokenNamewhile :
 			return "while"; //$NON-NLS-1$
+		case TokenNamewith :
+			return "with"; //$NON-NLS-1$
 
 		case TokenNameIntegerLiteral :
 			return "Integer(" + new String(getCurrentTokenSource()) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
@@ -3763,19 +4020,24 @@ public String toStringAction(int act) {
 			return "Char(" + new String(getCurrentTokenSource()) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 		case TokenNameStringLiteral :
 			return "String(" + new String(getCurrentTokenSource()) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-
+		case TokenNameRegExLiteral :
+			return "RegExp(" + new String(getCurrentTokenSource()) + ")"; //$NON-NLS-1$ 
 		case TokenNamePLUS_PLUS :
 			return "++"; //$NON-NLS-1$
 		case TokenNameMINUS_MINUS :
 			return "--"; //$NON-NLS-1$
 		case TokenNameEQUAL_EQUAL :
 			return "=="; //$NON-NLS-1$
+		case TokenNameEQUAL_EQUAL_EQUAL :
+			return "==="; //$NON-NLS-1$
 		case TokenNameLESS_EQUAL :
 			return "<="; //$NON-NLS-1$
 		case TokenNameGREATER_EQUAL :
 			return ">="; //$NON-NLS-1$
 		case TokenNameNOT_EQUAL :
 			return "!="; //$NON-NLS-1$
+		case TokenNameNOT_EQUAL_EQUAL :
+			return "!=="; //$NON-NLS-1$
 		case TokenNameLEFT_SHIFT :
 			return "<<"; //$NON-NLS-1$
 		case TokenNameRIGHT_SHIFT :
@@ -3882,4 +4144,158 @@ public void unicodeStore() {
     }
 	this.withoutUnicodeBuffer[pos] = this.currentCharacter;
 }
+
+public void pushBack() {
+	pushedBack=true;
+}
+
+/*
+ *  This code is duplicated in PublicScanner.java
+ */
+protected boolean checkIfDivide(int previousToken){
+	
+	if (previousToken == TokenNameIdentifier || previousToken == TokenNameStringLiteral ||
+			previousToken == TokenNameCharacterLiteral || previousToken == TokenNameRPAREN ||
+			previousToken == TokenNameRBRACKET) {
+		
+		return true;
+	}
+	
+	return false;
+}
+
+/*
+ *  This code is duplicated in PublicScanner.java
+ */
+
+public static final String NON_TERM_REGEXP = "Non-Terminating_Regular_Expression";
+public static final String INVALID_REGEXP_OPT = "Invalid_Regular_Expression_Options";
+public static final String UNEXP_REGEXP = "Unexpected_Error_Processing_Regular_Expression";
+
+protected boolean checkIfRegExp() throws IndexOutOfBoundsException, InvalidInputException {
+	// Try to process as regular expression
+	
+/*	int regExpPosition = this.currentPosition;
+	char regexpCharacter = this.currentCharacter;
+	char orginalCharaceter = this.currentCharacter; */
+	char previousCharacter = this.currentCharacter;
+	int previousPosition = this.currentPosition;
+	int previousUnicodePtr = this.withoutUnicodePtr;
+	boolean regExp = false;
+	
+	// consume next character
+	this.unicodeAsBackSlash = false;
+	boolean isUnicode = false;
+	if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
+		&& (this.source[this.currentPosition] == 'u')) {
+		getNextUnicodeChar();
+		isUnicode = true;
+	} else {
+		if (this.withoutUnicodePtr != 0) {
+			unicodeStore();
+		}
+	}
+
+	try {
+		while (this.currentCharacter != '/' &&
+				this.currentCharacter != '\r' && this.currentCharacter != '\n') {
+			
+			if (this.currentCharacter == '\\') {
+				if (this.unicodeAsBackSlash) {
+					this.withoutUnicodePtr--;
+					// consume next character
+					this.unicodeAsBackSlash = false;
+					if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\') && (this.source[this.currentPosition] == 'u')) {
+						getNextUnicodeChar();
+						isUnicode = true;
+						this.withoutUnicodePtr--;
+					} else {
+						isUnicode = false;
+					}
+				} else {
+					if (this.withoutUnicodePtr == 0) {
+						unicodeInitializeBuffer(this.currentPosition - this.startPosition);
+					}
+					this.withoutUnicodePtr --;
+					this.currentCharacter = this.source[this.currentPosition++];
+				}
+				// we need to compute the escape character in a separate buffer
+				scanEscapeCharacter();
+				if (this.withoutUnicodePtr != 0) {
+					unicodeStore();
+				}
+			}
+			
+			// consume next character
+			previousCharacter=this.currentCharacter;
+			previousPosition=this.currentPosition;
+			previousUnicodePtr=this.withoutUnicodePtr;
+			this.unicodeAsBackSlash = false;
+			if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
+				&& (this.source[this.currentPosition] == 'u')) {
+				getNextUnicodeChar();
+				isUnicode = true;
+			} else {
+				isUnicode = false;
+				if (this.withoutUnicodePtr != 0) {
+					unicodeStore();
+				}
+			}
+			
+			if (this.currentCharacter == '/') {
+				regExp = true;
+			}
+	
+		}
+		
+		// Check for valid RegExp options
+		if (regExp == true) {
+			boolean haverexExpCharI = false;
+			boolean haverexExpCharG = false;
+			boolean haverexExpCharM = false;
+			for (int count =0; count<=3; count++) {
+				previousCharacter=this.currentCharacter;
+				previousPosition=this.currentPosition;
+				previousUnicodePtr=this.withoutUnicodePtr;
+				if (getNextChar() != -1) {	
+					if (Character.isLetterOrDigit(this.currentCharacter)){
+						if (this.currentCharacter == 'i'  && haverexExpCharI == false) {
+							haverexExpCharI = true;						
+						} else if (this.currentCharacter == 'g' && haverexExpCharG == false) {
+							haverexExpCharG = true;						
+						} else if (this.currentCharacter == 'm' && haverexExpCharM == false) {
+							haverexExpCharM = true;
+						} else {
+							if (count != 3)
+								throw new InvalidInputException(INVALID_REGEXP_OPT);
+						}
+					} else {
+						break;
+					}
+				} else {
+					// Just fall through, may be end of file.
+				}
+			}
+		}
+	} catch (IndexOutOfBoundsException e) {
+		throw new InvalidInputException(NON_TERM_REGEXP);
+	}
+		
+	if (regExp == false){
+		throw new InvalidInputException(NON_TERM_REGEXP);
+	}
+		// Back up one character 
+	this.currentCharacter = previousCharacter;
+	this.currentPosition = previousPosition;
+	this.withoutUnicodePtr = previousUnicodePtr;
+	return true;
+	
+	
+/*	this.currentPosition = regExpPosition;
+	this.currentCharacter = regexpCharacter;
+	this.currentCharacter = orginalCharaceter;
+	this.withoutUnicodePtr = 0; */
+	
+}
+
 }

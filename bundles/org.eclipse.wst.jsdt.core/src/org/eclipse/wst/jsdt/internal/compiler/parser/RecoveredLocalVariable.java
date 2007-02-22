@@ -10,14 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.parser;
 
-/**
+/** 
  * Internal local variable structure for parsing recovery 
  */
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayTypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
 
 public class RecoveredLocalVariable extends RecoveredStatement {
@@ -105,5 +106,9 @@ public void updateSourceEndIfNecessary(int bodyStart, int bodyEnd){
 		this.localDeclaration.declarationSourceEnd = bodyEnd;
 		this.localDeclaration.declarationEnd = bodyEnd;	
 	}
+}
+
+public ProgramElement updatedASTNode() {
+	return updatedStatement();
 }
 }

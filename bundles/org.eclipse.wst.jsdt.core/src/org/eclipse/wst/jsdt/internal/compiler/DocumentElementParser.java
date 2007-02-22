@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler;
 
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.env.*;
 
-import org.eclipse.wst.jsdt.internal.compiler.impl.*;
 import org.eclipse.wst.jsdt.core.compiler.*;
 import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
+import org.eclipse.wst.jsdt.internal.compiler.env.*;
+import org.eclipse.wst.jsdt.internal.compiler.impl.*;
 import org.eclipse.wst.jsdt.internal.compiler.parser.*;
 import org.eclipse.wst.jsdt.internal.compiler.problem.*;
 
@@ -553,38 +553,38 @@ protected void consumeFormalParameter(boolean isVarArgs) {
 	identifierLengthPtr--;
 	char[] parameterName = identifierStack[identifierPtr];
 	long namePositions = identifierPositionStack[identifierPtr--];
-	int extendedDimensions = this.intStack[this.intPtr--];
-	int endOfEllipsis = 0;
-	if (isVarArgs) {
-		endOfEllipsis = this.intStack[this.intPtr--];
-	}
-	int firstDimensions = this.intStack[this.intPtr--];
-	final int typeDimensions = firstDimensions + extendedDimensions;
-	TypeReference type = getTypeReference(typeDimensions);
-	if (isVarArgs) {
-		type = copyDims(type, typeDimensions + 1);
-		if (extendedDimensions == 0) {
-			type.sourceEnd = endOfEllipsis;
-		}
-		type.bits |= ASTNode.IsVarArgs; // set isVarArgs
-	}
+//	int extendedDimensions = this.intStack[this.intPtr--];
+//	int endOfEllipsis = 0;
+//	if (isVarArgs) {
+//		endOfEllipsis = this.intStack[this.intPtr--];
+//	}
+//	int firstDimensions = this.intStack[this.intPtr--];
+//	final int typeDimensions = firstDimensions + extendedDimensions;
+//	TypeReference type = getTypeReference(typeDimensions);
+//	if (isVarArgs) {
+//		type = copyDims(type, typeDimensions + 1);
+//		if (extendedDimensions == 0) {
+//			type.sourceEnd = endOfEllipsis;
+//		}
+//		type.bits |= ASTNode.IsVarArgs; // set isVarArgs
+//	}
 	intPtr -= 3;
 	Argument arg = 
 		new Argument(
 			parameterName, 
 			namePositions, 
-			type, 
+			null, 
 			intStack[intPtr + 1]);// modifiers
 	// consume annotations
-	int length;
-	if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-		System.arraycopy(
-			this.expressionStack, 
-			(this.expressionPtr -= length) + 1, 
-			arg.annotations = new Annotation[length], 
-			0, 
-			length); 
-	}
+//	int length;
+//	if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
+//		System.arraycopy(
+//			this.expressionStack, 
+//			(this.expressionPtr -= length) + 1, 
+//			arg.annotations = new Annotation[length], 
+//			0, 
+//			length); 
+//	}
 	pushOnAstStack(arg);
 	intArrayPtr--;
 }
@@ -873,7 +873,8 @@ protected void consumeMethodHeaderName(boolean isAnnotationMethod) {
 	// javadoc
 	md.javadoc = this.javadoc;
 	this.javadoc = null;
-
+    incrementNestedType();
+	
 	//highlight starts at selector start
 	md.sourceStart = (int) (selectorSourcePositions >>> 32);
 	pushOnAstStack(md);

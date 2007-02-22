@@ -302,6 +302,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 				parsedUnit = parser.dietParse(sourceUnit, unitResult);
 			}
 			parsedUnit.bits |= ASTNode.IsImplicitUnit;
+			parser.inferTypes(parsedUnit,this.options);
 			// initial type binding creation
 			lookupEnvironment.buildTypeBindings(parsedUnit, accessRestriction);
 			this.addCompilationUnit(sourceUnit, parsedUnit);
@@ -318,6 +319,41 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 			}
 		}
 	}
+
+	public CompilationUnitDeclaration doParse(ICompilationUnit sourceUnit, AccessRestriction accessRestriction) {
+		CompilationResult unitResult =
+			new CompilationResult(sourceUnit, totalUnits, totalUnits, this.options.maxProblemsPerUnit);
+		try {
+			if (options.verbose) {
+				String count = String.valueOf(totalUnits + 1);
+				this.out.println(
+					Messages.bind(Messages.compilation_request,
+						new String[] {
+							count,
+							count,
+							new String(sourceUnit.getFileName())
+						}));
+			}
+			// diet parsing for large collection of unit
+			CompilationUnitDeclaration parsedUnit;
+			if (totalUnits < parseThreshold) {
+				parsedUnit = parser.parse(sourceUnit, unitResult);
+			} else {
+				parsedUnit = parser.dietParse(sourceUnit, unitResult);
+			}
+			parser.inferTypes(parsedUnit,this.options);
+			return parsedUnit;
+		} catch (AbortCompilationUnit e) {
+//			// at this point, currentCompilationUnitResult may not be sourceUnit, but some other
+//			// one requested further along to resolve sourceUnit.
+//			if (unitResult.compilationUnit == sourceUnit) { // only report once
+//				requestor.acceptResult(unitResult.tagAsAccepted());
+//			} else {
+				throw e; // want to abort enclosing request to compile
+//			}
+		}
+	}
+
 
 	/**
 	 * Add additional source types
@@ -581,6 +617,8 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 				} else {
 					parsedUnit = parser.dietParse(sourceUnits[i], unitResult);
 				}
+				
+				parser.inferTypes(parsedUnit,this.options);
 				// initial type binding creation
 				lookupEnvironment.buildTypeBindings(parsedUnit, null /*no access restriction*/);
 				this.addCompilationUnit(sourceUnits[i], parsedUnit);

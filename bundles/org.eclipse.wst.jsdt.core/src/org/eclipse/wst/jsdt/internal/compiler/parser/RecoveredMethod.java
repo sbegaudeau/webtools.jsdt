@@ -21,6 +21,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SuperReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
@@ -84,41 +85,43 @@ public RecoveredElement add(Block nestedBlockDeclaration, int bracketBalanceValu
  */
 public RecoveredElement add(FieldDeclaration fieldDeclaration, int bracketBalanceValue) {
 
-	/* local variables inside method can only be final and non void */
-	char[][] fieldTypeName; 
-	if ((fieldDeclaration.modifiers & ~ClassFileConstants.AccFinal) != 0 // local var can only be final 
-		|| (fieldDeclaration.type == null) // initializer
-		|| ((fieldTypeName = fieldDeclaration.type.getTypeName()).length == 1 // non void
-			&& CharOperation.equals(fieldTypeName[0], TypeBinding.VOID.sourceName()))){ 
-
-		if (this.parent == null){
-			return this; // ignore
-		} else {
-			this.updateSourceEndIfNecessary(this.previousAvailableLineEnd(fieldDeclaration.declarationSourceStart - 1));
-			return this.parent.add(fieldDeclaration, bracketBalanceValue);
-		}
+	throw new org.eclipse.wst.jsdt.core.UnimplementedException("SHOULD NOT BE CALLED");
+			
+		/* local variables inside method can only be final and non void */
+//		char[][] fieldTypeName; 
+//		if ((fieldDeclaration.modifiers & ~ClassFileConstants.AccFinal) != 0 // local var can only be final 
+//			|| (fieldDeclaration.type == null) // initializer
+//			|| ((fieldTypeName = fieldDeclaration.type.getTypeName()).length == 1 // non void
+//				&& CharOperation.equals(fieldTypeName[0], TypeBinding.VOID.sourceName()))){ 
+	//
+//			if (this.parent == null){
+//				return this; // ignore
+//			} else {
+//				this.updateSourceEndIfNecessary(this.previousAvailableLineEnd(fieldDeclaration.declarationSourceStart - 1));
+//				return this.parent.add(fieldDeclaration, bracketBalanceValue);
+//			}
+//		}
+//		/* default behavior is to delegate recording to parent if any,
+//		do not consider elements passed the known end (if set)
+//		it must be belonging to an enclosing element 
+//		*/
+//		if (methodDeclaration.declarationSourceEnd > 0
+//			&& fieldDeclaration.declarationSourceStart
+//				> methodDeclaration.declarationSourceEnd){
+//			if (this.parent == null){
+//				return this; // ignore
+//			} else {
+//				return this.parent.add(fieldDeclaration, bracketBalanceValue);
+//			}
+//		}
+//		/* consider that if the opening brace was not found, it is there */
+//		if (!foundOpeningBrace){
+//			foundOpeningBrace = true;
+//			this.bracketBalance++;
+//		}
+//		// still inside method, treat as local variable
+//		return this; // ignore
 	}
-	/* default behavior is to delegate recording to parent if any,
-	do not consider elements passed the known end (if set)
-	it must be belonging to an enclosing element 
-	*/
-	if (methodDeclaration.declarationSourceEnd > 0
-		&& fieldDeclaration.declarationSourceStart
-			> methodDeclaration.declarationSourceEnd){
-		if (this.parent == null){
-			return this; // ignore
-		} else {
-			return this.parent.add(fieldDeclaration, bracketBalanceValue);
-		}
-	}
-	/* consider that if the opening brace was not found, it is there */
-	if (!foundOpeningBrace){
-		foundOpeningBrace = true;
-		this.bracketBalance++;
-	}
-	// still inside method, treat as local variable
-	return this; // ignore
-}
 /*
  * Record a local declaration - regular method should have been created a block body
  */
@@ -382,7 +385,7 @@ public void updateFromParserState(){
 					if(aNode instanceof Argument) {
 						Argument argument = (Argument)aNode;
 						/* cannot be an argument if non final */
-						char[][] argTypeName = argument.type.getTypeName();
+						char[][] argTypeName = (argument.type!=null)?argument.type.getTypeName():new char[][]{};
 						if ((argument.modifiers & ~ClassFileConstants.AccFinal) != 0
 							|| (argTypeName.length == 1
 								&& CharOperation.equals(argTypeName[0], TypeBinding.VOID.sourceName()))){
@@ -516,4 +519,8 @@ void attach(TypeParameter[] parameters, int startPos) {
 		this.methodDeclaration.declarationSourceStart = startPos;
 	}
 }
+public ProgramElement updatedASTNode() {
+	return updatedMethodDeclaration();
+}
+
 }

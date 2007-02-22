@@ -11,12 +11,13 @@
 package org.eclipse.wst.jsdt.internal.compiler.parser;
 
 import org.eclipse.wst.jsdt.core.compiler.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -47,6 +48,7 @@ public RecoveredElement add(AbstractMethodDeclaration methodDeclaration, int bra
 	}
 	return super.add(methodDeclaration, bracketBalanceValue);
 }
+
 /*
  * Record a nested block declaration 
  */
@@ -373,31 +375,38 @@ public Statement updateStatement(){
 	return this.blockDeclaration;
 }
 
-/*
+/* 
  * Record a field declaration 
  */
 public RecoveredElement add(FieldDeclaration fieldDeclaration, int bracketBalanceValue) {
+	return add(fieldDeclaration,bracketBalanceValue,false);
+}
+public RecoveredElement add(FieldDeclaration fieldDeclaration, int bracketBalanceValue, boolean delegatedByParent ) {
 
-	/* local variables inside method can only be final and non void */
-	char[][] fieldTypeName; 
-	if ((fieldDeclaration.modifiers & ~ClassFileConstants.AccFinal) != 0 // local var can only be final 
-		|| (fieldDeclaration.type == null) // initializer
-		|| ((fieldTypeName = fieldDeclaration.type.getTypeName()).length == 1 // non void
-			&& CharOperation.equals(fieldTypeName[0], TypeBinding.VOID.sourceName()))){ 
-		this.updateSourceEndIfNecessary(this.previousAvailableLineEnd(fieldDeclaration.declarationSourceStart - 1));
-		return this.parent.add(fieldDeclaration, bracketBalanceValue);
-	}
-	
-	/* do not consider a local variable starting passed the block end (if set)
-		it must be belonging to an enclosing block */
-	if (this.blockDeclaration.sourceEnd != 0 
-		&& fieldDeclaration.declarationSourceStart > this.blockDeclaration.sourceEnd){
-		return this.parent.add(fieldDeclaration, bracketBalanceValue);
-	}
-
-	// ignore the added field, since indicates a local variable behind recovery point
-	// which thus got parsed as a field reference. This can happen if restarting after
-	// having reduced an assistNode to get the following context (see 1GEK7SG)
-	return this;	
+	throw new org.eclipse.wst.jsdt.core.UnimplementedException("SHOULD NOT BE CALLED");
+//	/* local variables inside method can only be final and non void */
+//	char[][] fieldTypeName; 
+//	if ((fieldDeclaration.modifiers & ~ClassFileConstants.AccFinal) != 0 // local var can only be final 
+//		|| (fieldDeclaration.type == null) // initializer
+//		|| ((fieldTypeName = fieldDeclaration.type.getTypeName()).length == 1 // non void
+//			&& CharOperation.equals(fieldTypeName[0], TypeBinding.VOID.sourceName()))){ 
+//		this.updateSourceEndIfNecessary(this.previousAvailableLineEnd(fieldDeclaration.declarationSourceStart - 1));
+//		return this.parent.add(fieldDeclaration, bracketBalanceValue);
+//	}
+//	
+//	/* do not consider a local variable starting passed the block end (if set)
+//		it must be belonging to an enclosing block */
+//	if (this.blockDeclaration.sourceEnd != 0 
+//		&& fieldDeclaration.declarationSourceStart > this.blockDeclaration.sourceEnd){
+//		return this.parent.add(fieldDeclaration, bracketBalanceValue);
+//	}
+//
+//	// ignore the added field, since indicates a local variable behind recovery point
+//	// which thus got parsed as a field reference. This can happen if restarting after
+//	// having reduced an assistNode to get the following context (see 1GEK7SG)
+//	return this;	
+}
+public ProgramElement updatedASTNode() {
+	return updateStatement();
 }
 }

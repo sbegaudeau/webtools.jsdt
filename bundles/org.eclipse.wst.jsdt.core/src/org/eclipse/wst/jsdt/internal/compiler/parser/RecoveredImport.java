@@ -15,6 +15,7 @@ package org.eclipse.wst.jsdt.internal.compiler.parser;
  */
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 
 public class RecoveredImport extends RecoveredElement {
 
@@ -53,5 +54,9 @@ public void updateSourceEndIfNecessary(int bodyStart, int bodyEnd){
 		this.importReference.declarationSourceEnd = bodyEnd;
 		this.importReference.declarationEnd = bodyEnd;
 	}
+}
+public ProgramElement updatedASTNode() {
+	// TODO Auto-generated method stub
+	return null;
 }
 }

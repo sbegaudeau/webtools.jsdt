@@ -12,24 +12,30 @@ package org.eclipse.wst.jsdt.internal.compiler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
+import org.eclipse.wst.jsdt.core.compiler.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.*;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.*;
 import org.eclipse.wst.jsdt.internal.compiler.impl.*;
-import org.eclipse.wst.jsdt.core.compiler.*;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
 import org.eclipse.wst.jsdt.internal.compiler.parser.*;
 import org.eclipse.wst.jsdt.internal.compiler.problem.*;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObjectToInt;
+import org.eclipse.wst.jsdt.internal.core.LocalVariable;
 import org.eclipse.wst.jsdt.internal.core.util.CommentRecorderParser;
+import org.eclipse.wst.jsdt.internal.infer.InferEngine;
+import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
+import org.eclipse.wst.jsdt.internal.infer.InferredMethod;
+import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 /**
  * A source element parser extracts structural and reference information
  * from a piece of source.
  *
  * also see @ISourceElementRequestor
- *
+ *  
  * The structural investigation includes:
  * - the package statement
  * - import statements
@@ -239,19 +245,26 @@ public void checkComment() {
 		}
 	}
 }
-protected void classInstanceCreation(boolean alwaysQualified) {
+protected void classInstanceCreation(boolean alwaysQualified, boolean isShort) {
 
 	boolean previousFlag = reportReferenceInfo;
 	reportReferenceInfo = false; // not to see the type reference reported in super call to getTypeReference(...)
-	super.classInstanceCreation(alwaysQualified);
+	super.classInstanceCreation(alwaysQualified, isShort);
 	reportReferenceInfo = previousFlag;
 	if (reportReferenceInfo){
 		AllocationExpression alloc = (AllocationExpression)expressionStack[expressionPtr];
 		TypeReference typeRef = alloc.type;
-		requestor.acceptConstructorReference(
-			typeRef instanceof SingleTypeReference 
-				? ((SingleTypeReference) typeRef).token
-				: CharOperation.concatWith(alloc.type.getParameterizedTypeName(), '.'),
+		char [] name={};
+		if (alloc.member instanceof SingleNameReference)
+			name=((SingleNameReference) alloc.member).token;
+		else if (alloc.type!=null)
+			name= CharOperation.concatWith(alloc.type.getParameterizedTypeName(), '.');
+		else 
+			System.out.println("UNIMPLEMENTED in SOURCEELEMENTPARESER.classInstanceCreatation");
+		requestor.acceptConstructorReference(name,
+//			typeRef instanceof SingleTypeReference 
+//				? ((SingleTypeReference) typeRef).token
+//				: CharOperation.concatWith(alloc.type.getParameterizedTypeName(), '.'),
 			alloc.arguments == null ? 0 : alloc.arguments.length, 
 			alloc.sourceStart);
 	}
@@ -393,6 +406,16 @@ protected void consumeFieldAccess(boolean isSuperAccess) {
 		requestor.acceptFieldReference(fr.token, fr.sourceStart);
 	}
 }
+protected void consumePropertyOperator()
+{
+	super.consumePropertyOperator();
+	FieldReference fr = (FieldReference) expressionStack[expressionPtr];
+	if (reportReferenceInfo) {
+		requestor.acceptFieldReference(fr.token, fr.sourceStart);
+	}
+	
+}
+
 protected void consumeFormalParameter(boolean isVarArgs) {
 	super.consumeFormalParameter(isVarArgs);
 	
@@ -422,11 +445,12 @@ protected void consumeMarkerAnnotation() {
 		this.requestor.acceptTypeReference(annotation.type.getTypeName(), annotation.sourceStart, annotation.sourceEnd);
 	}
 }
-protected void consumeMethodHeaderName(boolean isAnnotationMethod) {
-	long selectorSourcePositions = this.identifierPositionStack[this.identifierPtr];
+protected void consumeMethodHeaderName(boolean isAnonymousMethod) {
+	long selectorSourcePositions = (isAnonymousMethod) ? this.lParenPos
+			:this.identifierPositionStack[this.identifierPtr];
 	int selectorSourceEnd = (int) selectorSourcePositions;
 	int currentAstPtr = this.astPtr;
-	super.consumeMethodHeaderName(isAnnotationMethod);
+	super.consumeMethodHeaderName(isAnonymousMethod);
 	if (this.astPtr > currentAstPtr) { // if ast node was pushed on the ast stack
 		this.sourceEnds.put(this.astStack[this.astPtr], selectorSourceEnd);
 		rememberCategories();
@@ -981,6 +1005,9 @@ protected QualifiedNameReference newQualifiedNameReference(char[][] tokens, long
 protected SingleNameReference newSingleNameReference(char[] source, long positions) {
 	return new SingleNameReference(source, positions);
 }
+
+
+ 
 /*
  * Update the bodyStart of the corresponding parse node
  */
@@ -994,6 +1021,9 @@ public void notifySourceElementRequestor(CompilationUnitDeclaration parsedUnit) 
 		}
 		return;
 	}
+	
+	inferTypes(parsedUnit,this.options);
+	
 	// range check
 	boolean isInRange = 
 				scanner.initialPosition <= parsedUnit.sourceStart
@@ -1006,55 +1036,156 @@ public void notifySourceElementRequestor(CompilationUnitDeclaration parsedUnit) 
 		if (isInRange) {
 			requestor.enterCompilationUnit();
 		}
-		ImportReference currentPackage = parsedUnit.currentPackage;
-		ImportReference[] imports = parsedUnit.imports;
-		TypeDeclaration[] types = parsedUnit.types;
-		length = 
-			(currentPackage == null ? 0 : 1) 
-			+ (imports == null ? 0 : imports.length)
-			+ (types == null ? 0 : types.length);
-		nodes = new ASTNode[length];
-		int index = 0;
-		if (currentPackage != null) {
-			nodes[index++] = currentPackage;
-		}
-		if (imports != null) {
-			for (int i = 0, max = imports.length; i < max; i++) {
-				nodes[index++] = imports[i];
-			}
-		}
-		if (types != null) {
-			for (int i = 0, max = types.length; i < max; i++) {
-				nodes[index++] = types[i];
-			}
-		}
+		char[][] packageName = parsedUnit.compilationResult.compilationUnit.getPackageName();
+		requestor.acceptPackage(
+				-1, 
+				-1, 
+				CharOperation.concatWith(packageName, '.')); 
+//		ImportReference currentPackage = parsedUnit.currentPackage;
+//		ImportReference[] imports = parsedUnit.imports;
+//		TypeDeclaration[] types = parsedUnit.types;
+//		length = 
+//			(currentPackage == null ? 0 : 1) 
+//			+ (imports == null ? 0 : imports.length)
+//			+ (types == null ? 0 : types.length);
+//		nodes = new ASTNode[length];
+//		int index = 0;
+//		if (currentPackage != null) {
+//			nodes[index++] = currentPackage;
+//		}
+//		if (imports != null) {
+//			for (int i = 0, max = imports.length; i < max; i++) {
+//				nodes[index++] = imports[i];
+//			}
+//		}
+//		if (types != null) {
+//			for (int i = 0, max = types.length; i < max; i++) {
+//				nodes[index++] = types[i];
+//			}
+//		}
 	} else {
-		TypeDeclaration[] types = parsedUnit.types;
-		if (types != null) {
-			length = types.length;
-			nodes = new ASTNode[length];
-			for (int i = 0, max = types.length; i < max; i++) {
-				nodes[i] = types[i];
-			}
-		}
+//		TypeDeclaration[] types = parsedUnit.types;
+//		if (types != null) {
+//			length = types.length;
+//			nodes = new ASTNode[length];
+//			for (int i = 0, max = types.length; i < max; i++) {
+//				nodes[i] = types[i];
+//			}
+//		}
 	}
+	length=(parsedUnit.statements!=null)? parsedUnit.statements.length : 0;
+	nodes = new ASTNode[length];
 	
 	// notify the nodes in the syntactical order
 	if (nodes != null && length > 0) {
+		System.arraycopy(parsedUnit.statements, 0, nodes, 0, length);
 		quickSort(nodes, 0, length-1);
 		for (int i=0;i<length;i++) {
 			ASTNode node = nodes[i];
-			if (node instanceof ImportReference) {
-				ImportReference importRef = (ImportReference)node;
-				if (node == parsedUnit.currentPackage) {
-					notifySourceElementRequestor(importRef, true);
-				} else {
-					notifySourceElementRequestor(importRef, false);
-				}
-			} else { // instanceof TypeDeclaration
-				notifySourceElementRequestor((TypeDeclaration)node, sourceType == null, null);
+			if (node instanceof LocalDeclaration) {
+				LocalDeclaration var = (LocalDeclaration) node;
+				notifySourceElementRequestor(var, null);
+				
 			}
+			else if (node instanceof AbstractMethodDeclaration) {
+				AbstractMethodDeclaration methodDeclaration = (AbstractMethodDeclaration) node;
+				notifySourceElementRequestor(methodDeclaration);
+			} 
+			else
+			{
+				notifySourceStatment(node);
+			}
+//			if (node instanceof ImportReference) {
+//				ImportReference importRef = (ImportReference)node;
+//				if (node == parsedUnit.currentPackage) {
+//					notifySourceElementRequestor(importRef, true);
+//				} else {
+//					notifySourceElementRequestor(importRef, false);
+//				}
+//			} else { // instanceof TypeDeclaration
+//				notifySourceElementRequestor((TypeDeclaration)node, sourceType == null, null);
+//			}
 		}
+	}
+	
+	if (parsedUnit.inferredTypes!=null)
+		for (Iterator iter = parsedUnit.inferredTypes.iterator(); iter.hasNext();) {
+		InferredType type = (InferredType) iter.next();
+		if (!type.isDefinition)
+			continue;
+		ISourceElementRequestor.TypeInfo typeInfo = new ISourceElementRequestor.TypeInfo();
+		typeInfo.declarationStart = type.sourceStart;
+		typeInfo.modifiers = 0;
+		typeInfo.name = type.getName();
+		typeInfo.nameSourceStart = type.sourceStart;
+		typeInfo.nameSourceEnd = -1;
+		typeInfo.superclass = type.getSuperClassName();
+		typeInfo.superinterfaces = null;
+//		typeInfo.typeParameters = getTypeParameterInfos(typeDeclaration.typeParameters);
+//		typeInfo.annotationPositions = collectAnnotationPositions(typeDeclaration.annotations);
+//		typeInfo.categories = (char[][]) this.nodesToCategories.get(typeDeclaration);
+		typeInfo.secondary = false;
+		requestor.enterType(typeInfo);
+		
+		if (type.attributes!=null)
+		  for (Iterator iterator = type.attributes.iterator(); iterator.hasNext();) {
+			InferredAttribute field = (InferredAttribute) iterator.next();
+			ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
+			fieldInfo.declarationStart = -1;
+			fieldInfo.name = field.name;
+			fieldInfo.modifiers = 0;
+			fieldInfo.type = field.type!=null ? field.type.getName():null;
+			fieldInfo.nameSourceStart = -1;
+			fieldInfo.nameSourceEnd = -1;
+//			fieldInfo.annotationPositions = collectAnnotationPositions(fieldDeclaration.annotations);
+//			fieldInfo.categories = (char[][]) this.nodesToCategories.get(fieldDeclaration);
+			requestor.enterField(fieldInfo);
+
+			requestor.exitField(-1, -1, -1);
+		}
+		
+		if (type.methods!=null)
+		  for (Iterator iterator = type.methods.iterator(); iterator.hasNext();) {
+			InferredMethod method = (InferredMethod) iterator.next();
+			
+			ISourceElementRequestor.MethodInfo methodInfo = new ISourceElementRequestor.MethodInfo();
+			methodInfo.isConstructor = false;
+			MethodDeclaration methodDeclaration=method.methodDeclaration;
+			
+			char[][] argumentTypes = null;
+			char[][] argumentNames = null;
+			Argument[] arguments = methodDeclaration.arguments;
+			if (arguments != null) {
+				int argumentLength = arguments.length;
+				argumentTypes = new char[argumentLength][];
+				argumentNames = new char[argumentLength][];
+				for (int i = 0; i < argumentLength; i++) {
+					if (arguments[i].type!=null)
+						argumentTypes[i] = CharOperation.concatWith(arguments[i].type.getParameterizedTypeName(), '.');
+					argumentNames[i] = arguments[i].name;
+				}
+			}			
+			int selectorSourceEnd = this.sourceEnds.get(methodDeclaration);
+			
+			methodInfo.declarationStart = methodDeclaration.declarationSourceStart;
+			methodInfo.modifiers = 0;
+			methodInfo.name =method.name;
+			methodInfo.nameSourceStart = methodDeclaration.sourceStart;
+			methodInfo.nameSourceEnd = selectorSourceEnd;
+			methodInfo.parameterTypes = argumentTypes;
+			methodInfo.parameterNames = argumentNames;
+			methodInfo.exceptionTypes = null;
+			methodInfo.typeParameters = getTypeParameterInfos(methodDeclaration.typeParameters());
+			methodInfo.annotationPositions = collectAnnotationPositions(methodDeclaration.annotations);
+			methodInfo.categories = (char[][]) this.nodesToCategories.get(methodDeclaration);
+			requestor.enterMethod(methodInfo);
+			
+			requestor.exitMethod(methodDeclaration.declarationSourceEnd, -1, -1);
+
+		}
+		
+		
+		requestor.exitType(-1);
 	}
 	
 	if (sourceType == null){
@@ -1062,6 +1193,11 @@ public void notifySourceElementRequestor(CompilationUnitDeclaration parsedUnit) 
 			requestor.exitCompilationUnit(parsedUnit.sourceEnd);
 		}
 	}
+}
+
+private void notifySourceStatment(ASTNode node) {
+	// TODO Auto-generated method stub
+	
 }
 
 /*
@@ -1112,7 +1248,8 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 		argumentTypes = new char[argumentLength][];
 		argumentNames = new char[argumentLength][];
 		for (int i = 0; i < argumentLength; i++) {
-			argumentTypes[i] = CharOperation.concatWith(arguments[i].type.getParameterizedTypeName(), '.');
+			if (arguments[i].type!=null)
+				argumentTypes[i] = CharOperation.concatWith(arguments[i].type.getParameterizedTypeName(), '.');
 			argumentNames[i] = arguments[i].name;
 		}
 		isVarArgs = arguments[argumentLength-1].isVarArgs();
@@ -1228,7 +1365,7 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 /*
 * Update the bodyStart of the corresponding parse node
 */
-public void notifySourceElementRequestor(FieldDeclaration fieldDeclaration, TypeDeclaration declaringType) {
+public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclaration, TypeDeclaration declaringType) {
 	
 	// range check
 	boolean isInRange = 
@@ -1247,6 +1384,7 @@ public void notifySourceElementRequestor(FieldDeclaration fieldDeclaration, Type
 			}
 			// fall through next case
 		case AbstractVariableDeclaration.FIELD:
+		case AbstractVariableDeclaration.LOCAL_VARIABLE:
 			int fieldEndPosition = this.sourceEnds.get(fieldDeclaration);
 			if (fieldEndPosition == -1) {
 				// use the declaration source end by default
@@ -1259,14 +1397,14 @@ public void notifySourceElementRequestor(FieldDeclaration fieldDeclaration, Type
 				boolean deprecated = (currentModifiers & ClassFileConstants.AccDeprecated) != 0 || hasDeprecatedAnnotation(fieldDeclaration.annotations);	
 			
 				char[] typeName = null;
-				if (fieldDeclaration.type == null) {
-					// enum constant
-					typeName = declaringType.name;
-					currentModifiers |= ClassFileConstants.AccEnum;
-				} else {
-					// regular field
-					typeName = CharOperation.concatWith(fieldDeclaration.type.getParameterizedTypeName(), '.');
-				}
+//				if (fieldDeclaration.type == null) {
+//					// enum constant
+//					typeName = declaringType.name;
+//					currentModifiers |= ClassFileConstants.AccEnum;
+//				} else {
+//					// regular field
+//					typeName = CharOperation.concatWith(fieldDeclaration.type.getParameterizedTypeName(), '.');
+//				}
 				ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
 				fieldInfo.declarationStart = fieldDeclaration.declarationSourceStart;
 				fieldInfo.name = fieldDeclaration.name;
@@ -1512,7 +1650,7 @@ public CompilationUnitDeclaration parseCompilationUnit(
 	boolean old = diet;
 
 	try {
-		diet = true;
+		diet = DO_DIET_PARSE;
 		this.reportReferenceInfo = fullParse;
 		CompilationResult compilationUnitResult = new CompilationResult(unit, 0, 0, this.options.maxProblemsPerUnit);
 		CompilationUnitDeclaration parsedUnit = parse(unit, compilationUnitResult);
@@ -1632,7 +1770,7 @@ public void parseTypeMemberDeclarations(
 private static void quickSort(ASTNode[] sortedCollection, int left, int right) {
 	int original_left = left;
 	int original_right = right;
-	ASTNode mid = sortedCollection[left +  (right - left) / 2];
+	ASTNode mid = sortedCollection[ left +  (right - left) / 2];
 	do {
 		while (sortedCollection[left].sourceStart < mid.sourceStart) {
 			left++;
@@ -1699,7 +1837,7 @@ private void visitIfNeeded(AbstractMethodDeclaration method) {
 	}
 }
 
-private void visitIfNeeded(FieldDeclaration field, TypeDeclaration declaringType) {
+private void visitIfNeeded(AbstractVariableDeclaration field, TypeDeclaration declaringType) {
 	if (this.localDeclarationVisitor != null 
 		&& (field.bits & ASTNode.HasLocalType) != 0) {
 			if (field.initialization != null) {

@@ -463,12 +463,12 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 					consumeToken();
 					dimPositions[dim++] = (((long) dimStart) << 32) + this.scanner.getCurrentTokenEndPosition();
 				}
-			} else if (readToken() == TerminalTokens.TokenNameELLIPSIS) {
-				// ellipsis declaration
-				int dimStart = this.scanner.getCurrentTokenStartPosition();
-				dimPositions[dim++] = (((long) dimStart) << 32) + this.scanner.getCurrentTokenEndPosition();
-				consumeToken();
-				isVarargs = true;
+//			} else if (readToken() == TerminalTokens.TokenNameELLIPSIS) {
+//				// ellipsis declaration
+//				int dimStart = this.scanner.getCurrentTokenStartPosition();
+//				dimPositions[dim++] = (((long) dimStart) << 32) + this.scanner.getCurrentTokenEndPosition();
+//				consumeToken();
+//				isVarargs = true;
 			}
 
 			// Read argument name

@@ -13,21 +13,25 @@ package org.eclipse.wst.jsdt.internal.compiler.parser;
 /**
  * Internal structure for parsing recovery 
  */
-import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 
-public class RecoveredElement {
+public abstract class RecoveredElement {
 
 	public RecoveredElement parent;
 	public int bracketBalance;
 	public boolean foundOpeningBrace;
 	protected Parser recoveringParser;
+	
+ 
+	
 public RecoveredElement(RecoveredElement parent, int bracketBalance){
 	this(parent, bracketBalance, null);
 }
@@ -36,6 +40,10 @@ public RecoveredElement(RecoveredElement parent, int bracketBalance, Parser pars
 	this.bracketBalance = bracketBalance;
 	this.recoveringParser = parser;
 }
+
+
+public abstract ProgramElement updatedASTNode();
+
 /*
  *	Record a method declaration
  */
@@ -115,6 +123,8 @@ protected void addBlockStatement(RecoveredBlock recoveredBlock) {
 		}
 	}
 }
+
+
 /*
  * Answer the depth of this element, considering the parent link.
  */

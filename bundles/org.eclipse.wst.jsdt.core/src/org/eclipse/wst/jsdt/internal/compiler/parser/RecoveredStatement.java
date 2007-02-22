@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.parser;
 
-/**
+/** 
  * Internal statement structure for parsing recovery 
  */
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
 
 public class RecoveredStatement extends RecoveredElement {
@@ -50,5 +51,8 @@ public void updateParseTree(){
 public void updateSourceEndIfNecessary(int bodyStart, int bodyEnd){
 	if (this.statement.sourceEnd == 0)	
 		this.statement.sourceEnd = bodyEnd;
+}
+public ProgramElement updatedASTNode() {
+	return updatedStatement();
 }
 }

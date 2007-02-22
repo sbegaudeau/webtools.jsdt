@@ -13,12 +13,13 @@ package org.eclipse.wst.jsdt.internal.compiler.parser;
 /**
  * Internal field structure for parsing recovery 
  */
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayTypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 
@@ -204,5 +205,8 @@ public void updateSourceEndIfNecessary(int bodyStart, int bodyEnd){
 		this.fieldDeclaration.declarationSourceEnd = bodyEnd;
 		this.fieldDeclaration.declarationEnd = bodyEnd;
 	}
+}
+public ProgramElement updatedASTNode() {
+	return updatedFieldDeclaration();
 }
 }

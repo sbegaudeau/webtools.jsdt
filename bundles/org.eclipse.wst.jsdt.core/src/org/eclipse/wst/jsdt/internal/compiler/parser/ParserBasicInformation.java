@@ -14,22 +14,27 @@ package org.eclipse.wst.jsdt.internal.compiler.parser;
  about the parser such as the number of rules in the grammar, the starting state, etc...*/
 public interface ParserBasicInformation {
 
-	int ERROR_SYMBOL = 110,
-		MAX_NAME_LENGTH = 41,
-		NUM_STATES = 955,
+	int 
 
-		NT_OFFSET = 110,
-		SCOPE_UBOUND = 131,
-		SCOPE_SIZE = 132,
-		LA_STATE_OFFSET = 12777,
-		MAX_LA = 1,
-		NUM_RULES = 694,
-		NUM_TERMINALS = 110,
-		NUM_NON_TERMINALS = 308,
-		NUM_SYMBOLS = 418,
-		START_STATE = 767,
-		EOFT_SYMBOL = 69,
-		EOLT_SYMBOL = 69,
-		ACCEPT_ACTION = 12776,
-		ERROR_ACTION = 12777;
+
+
+    ERROR_SYMBOL      = 121,
+    MAX_NAME_LENGTH   = 36,
+    NUM_STATES        = 587,
+
+    NT_OFFSET         = 121,
+    SCOPE_UBOUND      = 51,
+    SCOPE_SIZE        = 52,
+    LA_STATE_OFFSET   = 6432,
+    MAX_LA            = 1,
+    NUM_RULES         = 427,
+    NUM_TERMINALS     = 121,
+    NUM_NON_TERMINALS = 197,
+    NUM_SYMBOLS       = 318,
+    START_STATE       = 755, 
+    EOFT_SYMBOL       = 55,
+    EOLT_SYMBOL       = 55,
+    ACCEPT_ACTION     = 6431,
+    ERROR_ACTION      = 6432;
+
 }
