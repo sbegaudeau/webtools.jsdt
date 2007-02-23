@@ -30,6 +30,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblemFactory;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 
@@ -76,7 +77,7 @@ public class SelectionJavadocTest extends AbstractSelectionTest {
 			return super.visit(field, scope);
 		}
 
-		public boolean visit(MethodDeclaration method, ClassScope scope) {
+		public boolean visit(MethodDeclaration method, Scope scope) {
 			if (method.javadoc != null) {
 				assertTrue("Invalid type for Javadoc on " + method, method.javadoc instanceof SelectionJavadoc);
 				SelectionJavadocTest.this.result.append(method.javadoc.toString());

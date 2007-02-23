@@ -19,6 +19,7 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
+import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraries;
 import org.eclipse.wst.jsdt.core.tests.compiler.regression.Requestor;
 import org.eclipse.wst.jsdt.internal.compiler.Compiler;
 import org.eclipse.wst.jsdt.internal.compiler.IErrorHandlingPolicy;
@@ -637,38 +638,33 @@ public static int getFreePort() {
  * Example of use: [org.eclipse.wst.jsdt.core.tests.util.Util.getJavaClassLib()]
 */
 public static String[] getJavaClassLibs() {
-	String jreDir = getJREDirectory();
-	final String osName = System.getProperty("os.name");
-	if (jreDir == null) {
-		return new String[] {};
-	}
-	if (osName.startsWith("Mac")) {
-		return new String[] { toNativePath(jreDir + "/../Classes/classes.jar") };
-	}
-	final String vmName = System.getProperty("java.vm.name");
-	if ("J9".equals(vmName)) {
-		return new String[] { toNativePath(jreDir + "/lib/jclMax/classes.zip") };
-	}
-	File file = new File(jreDir + "/lib/rt.jar");
-	if (file.exists()) {
-		return new String[] {
-			toNativePath(jreDir + "/lib/rt.jar")
-		};
-	}
-	file = new File(jreDir + "/lib/vm.jar");
-	if (file.exists()) {
-		// The IBM J2SE 5.0 has put the java.lang classes in vm.jar.
-		return new String[] { 
-			toNativePath(jreDir + "/lib/vm.jar"),
-			toNativePath(jreDir + "/lib/core.jar"),
-			toNativePath(jreDir + "/lib/security.jar"),
-			toNativePath(jreDir + "/lib/graphics.jar") };				
-	}
-	return new String[] { 
-		toNativePath(jreDir + "/lib/core.jar"),
-		toNativePath(jreDir + "/lib/security.jar"),
-		toNativePath(jreDir + "/lib/graphics.jar")
-	};
+	return new String[]
+	                  {
+			SystemLibraries.getLibraryPath("system.js")
+	                  };
+//	String jreDir = getJREDirectory();
+//	final String osName = System.getProperty("os.name");
+//	if (jreDir == null)  {
+//		return new String[] {};
+//	}
+//	if (osName.startsWith("Mac")) {
+//		return new String[] { toNativePath(jreDir + "/../Classes/classes.jar")};
+//	}
+//	final String vmName = System.getProperty("java.vm.name");
+//	if ("J9".equals(vmName)) {
+//		return new String[] { toNativePath(jreDir + "/lib/jclMax/classes.zip")};
+//	}
+//	File file = new File(jreDir + "/lib/rt.jar");
+//	if (file.exists()) {
+//		return new String[] {
+//			toNativePath(jreDir + "/lib/rt.jar")
+//		};				
+//	}
+//	return new String[] { 
+//		toNativePath(jreDir + "/lib/core.jar"),
+//		toNativePath(jreDir + "/lib/security.jar"),
+//		toNativePath(jreDir + "/lib/graphics.jar")
+//	};
 }
 public static String getJavaClassLibsAsString() {
 	String[] classLibs = getJavaClassLibs();

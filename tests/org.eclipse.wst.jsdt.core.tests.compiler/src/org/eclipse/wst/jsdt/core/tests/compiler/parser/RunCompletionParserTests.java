@@ -25,24 +25,16 @@ public class RunCompletionParserTests extends junit.framework.TestCase {
 	public final static List TEST_CLASSES_1_5 = new ArrayList();
 	static {
 		TEST_CLASSES.add(AllocationExpressionCompletionTest.class);
-		TEST_CLASSES.add(ClassLiteralAccessCompletionTest.class);
 		TEST_CLASSES.add(CompletionParserTest.class);
 		TEST_CLASSES.add(CompletionParserTest2.class);
 		TEST_CLASSES.add(CompletionParserTestKeyword.class);
 		TEST_CLASSES.add(CompletionRecoveryTest.class);
-		TEST_CLASSES.add(DietCompletionTest.class);
-		TEST_CLASSES.add(ExplicitConstructorInvocationCompletionTest.class);
 		TEST_CLASSES.add(FieldAccessCompletionTest.class);
-		TEST_CLASSES.add(InnerTypeCompletionTest.class);
 		TEST_CLASSES.add(JavadocCompletionParserTest.class);
 		TEST_CLASSES.add(LabelStatementCompletionTest.class);
 		TEST_CLASSES.add(MethodInvocationCompletionTest.class);
 		TEST_CLASSES.add(NameReferenceCompletionTest.class);
-		TEST_CLASSES.add(ReferenceTypeCompletionTest.class);
 		
-		TEST_CLASSES_1_5.add(GenericsCompletionParserTest.class);
-		TEST_CLASSES_1_5.add(EnumCompletionParserTest.class);
-		TEST_CLASSES_1_5.add(AnnotationCompletionParserTest.class);
 	}
 
 	public RunCompletionParserTests(String name) {
@@ -109,6 +101,7 @@ public class RunCompletionParserTests extends junit.framework.TestCase {
 			TestCase.RUN_ONLY_ID = null;
 			all.addTest(AbstractCompilerTest.buildComplianceTestSuite(AbstractCompilerTest.COMPLIANCE_1_7, tests_1_7));
 		}
+
 
 		return all;
 	}

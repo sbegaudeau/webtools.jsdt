@@ -14,13 +14,13 @@ import java.util.Locale;
 
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.tests.util.AbstractCompilerTest;
 import org.eclipse.wst.jsdt.internal.compiler.DocumentElementParser;
 import org.eclipse.wst.jsdt.internal.compiler.IDocumentElementRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.batch.CompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblemFactory;
+import org.eclipse.wst.jsdt.core.tests.util.AbstractCompilerTest;
 
 public class DocumentElementParserTest extends AbstractCompilerTest {
 public DocumentElementParserTest(String testName) {

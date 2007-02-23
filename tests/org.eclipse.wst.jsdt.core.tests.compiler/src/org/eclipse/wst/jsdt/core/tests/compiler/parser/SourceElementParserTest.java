@@ -16,7 +16,6 @@ import junit.framework.Test;
 
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.tests.util.AbstractCompilerTest;
 import org.eclipse.wst.jsdt.internal.compiler.ISourceElementRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.SourceElementParser;
 import org.eclipse.wst.jsdt.internal.compiler.batch.CompilationUnit;
@@ -24,8 +23,10 @@ import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblemFactory;
+import org.eclipse.wst.jsdt.core.tests.util.AbstractCompilerTest;
 
 public class SourceElementParserTest extends AbstractCompilerTest implements ISourceElementRequestor {
+	private  SourceUnit currentUnit;
 	private SourceType currentType;
 	private SourceMethod currentMethod;
 	private SourceField currentField;
@@ -147,6 +148,7 @@ public void dietParse(String s, String testName) {
 }
 public void dietParse(String s, String testName, boolean recordLocalDeclaration) {
 
+
 	this.source = s.toCharArray();
 	reset();
 	SourceElementParser parser = 
@@ -225,22 +227,39 @@ public void enterType(TypeInfo typeInfo) {
 	}
 }
 public void enterCompilationUnit() {
+	currentUnit=new SourceUnit();
 }
 public void enterConstructor(MethodInfo methodInfo) {
 	enterAbtractMethod(methodInfo);
 }
 public void enterField(FieldInfo fieldInfo) {
+	if (currentType!=null)
+	{
+		
 	currentType.addField(
-		currentField = 
-			new SourceField(
-				fieldInfo.declarationStart, 
-				fieldInfo.modifiers, 
-				fieldInfo.type, 
-				fieldInfo.name, 
-				fieldInfo.nameSourceStart, 
-				fieldInfo.nameSourceEnd, 
-				source)); 
+			currentField = 
+				new SourceField(
+					fieldInfo.declarationStart, 
+					fieldInfo.modifiers, 
+					fieldInfo.type, 
+					fieldInfo.name, 
+					fieldInfo.nameSourceStart, 
+					fieldInfo.nameSourceEnd, 
+					source)); 
+	}else{
+		currentUnit.addField(
+				currentField = 
+					new SourceField(
+						fieldInfo.declarationStart, 
+						fieldInfo.modifiers, 
+						fieldInfo.type, 
+						fieldInfo.name, 
+						fieldInfo.nameSourceStart, 
+						fieldInfo.nameSourceEnd, 
+						source)); 
 
+		
+	}
 }
 public void enterInitializer(int declarationSourceStart, int modifiers) {
 	currentType.addField(
@@ -255,19 +274,40 @@ public void enterMethod(MethodInfo methodInfo) {
 	enterAbtractMethod(methodInfo);
 }
 protected void enterAbtractMethod(MethodInfo methodInfo) {
-	currentType.addMethod(
-		currentMethod = 
-			new SourceMethod(
-				methodInfo.declarationStart, 
-				methodInfo.modifiers, 
-				methodInfo.returnType, 
-				methodInfo.name, // null for constructors
-				methodInfo.nameSourceStart, 
-				methodInfo.nameSourceEnd, 
-				methodInfo.parameterTypes, 
-				methodInfo.parameterNames, 
-				methodInfo.exceptionTypes,
-				source)); 
+	if (currentType!=null)
+	{
+		currentType.addMethod(
+				currentMethod = 
+					new SourceMethod(
+						methodInfo.declarationStart, 
+						methodInfo.modifiers, 
+						methodInfo.returnType, 
+						methodInfo.name, // null for constructors
+						methodInfo.nameSourceStart, 
+						methodInfo.nameSourceEnd, 
+						methodInfo.parameterTypes, 
+						methodInfo.parameterNames, 
+						methodInfo.exceptionTypes,
+						source)); 
+		
+	}
+	else
+	{
+		currentUnit.addMethod(
+				currentMethod = 
+					new SourceMethod(
+						methodInfo.declarationStart, 
+						methodInfo.modifiers, 
+						methodInfo.returnType, 
+						methodInfo.name, // null for constructors
+						methodInfo.nameSourceStart, 
+						methodInfo.nameSourceEnd, 
+						methodInfo.parameterTypes, 
+						methodInfo.parameterNames, 
+						methodInfo.exceptionTypes,
+						source)); 
+
+	}
 	
 	if (methodInfo.typeParameters != null) {
 		for (int i = 0, length = methodInfo.typeParameters.length; i < length; i++) {
@@ -326,6 +366,7 @@ public void fullParse(String s, String testName, boolean recordLocalDeclaration)
 }
 public void reset() {
 	currentType = null;
+	currentUnit = null;
 	currentMethod = null;
 	currentField = null;
 	currentPackage = null;
@@ -345,72 +386,120 @@ public void setImports() {
 	}
 	currentType.setImports(currentImports);
 }
+//public void test00() {
+//
+//	String s = 
+//			 "i=0;" 
+//			+ "\n"; 
+//
+//	String expectedUnitToString = 
+//		"i=0;\n"
+//			+ " "; 
+//
+//	String testName = "test00: full parse";
+//	fullParse(s,testName);
+////
+////	assertEquals(
+////		"Invalid class declarationSourceStart ", 
+////		52, 
+////		currentType.getDeclarationSourceStart()); 
+////
+////	assertEquals(
+////		"Invalid class declarationSourceEnd ", 
+////		178, 
+////		currentType.getDeclarationSourceEnd()); 
+////
+////	SourceField[] fields = currentType.getFields();
+////	assertTrue(" invalid fields ", fields != null);
+////	assertEquals("Invalid fields length ", 2, fields.length);
+////
+////	assertEquals("Invalid declaration source start for field h", 105, fields[0].getDeclarationSourceStart());
+////	assertEquals("Invalid declaration source end for field h", 117, fields[0].getDeclarationSourceEnd());
+////
+////	assertEquals("Invalid declaration source start for field i", 119, fields[1].getDeclarationSourceStart());
+////	assertEquals("Invalid declaration source end for field i", 144, fields[1].getDeclarationSourceEnd());
+////
+////	SourceMethod[] methods = currentType.getMethods();
+////	assertTrue(" invalid methods ", methods != null);
+////	assertEquals("Invalid methods length ", 3, methods.length);
+////
+////	assertEquals("Invalid declaration source start for method foo", 69, methods[0].getDeclarationSourceStart());
+////	assertEquals("Invalid declaration source end for method foo", 103, methods[0].getDeclarationSourceEnd());
+////
+////	assertEquals("Invalid declaration source start for method bare", 147, methods[1].getDeclarationSourceStart());
+////	assertEquals("Invalid declaration source end for method bare", 163, methods[1].getDeclarationSourceEnd());
+////
+////	assertEquals("Invalid declaration source start for method truc", 164, methods[2].getDeclarationSourceStart());
+////	assertEquals("Invalid declaration source end for method truc", 177, methods[2].getDeclarationSourceEnd());
+////
+////	assertEquals(" Invalid actual name for method foo", "foo", methods[0].getActualName());
+////
+////	assertEquals(" Invalid actual name for method bare", "bar" + "\\" + "u0065", methods[1].getActualName());
+//	
+//	assertEquals(
+//		"Invalid source " + testName, 
+//		expectedUnitToString, 
+//		currentUnit.toString()); 
+//}
+
 public void test01() {
 
 	String s = 
-		"package a;\n"
-			+ "import java.lang.*;\n"
-			+ "import java.util.*;\n"
-			+ "\n"
-			+ "public class X {\n"
-			+ "void foo() {\n"
+			 "function foo() {\n"
 			+ "System.out.println();\n"
+			+ "}\n"
+			+ "var h;\n"
+			+ "var i ;\n"
+//			+ "var i = { 0, 1 };\n"
 			+ "\n"
-			+ "public int h;\n"
-			+ "public int[] i = { 0, 1 };\n"
-			+ "\n"
-			+ "int bar" + "\\" + "u0065(){\n"
-			+ "void truc(){\n"
-			+ "}\n"; 
+			+ "function bar" + "\\" + "u0065(){}\n"
+			+ "function truc(){}\n"
+			+ "\n"; 
 
 	String expectedUnitToString = 
-		"package a;\n"
-			+ "import java.lang.*;\n"
-			+ "import java.util.*;\n"
-			+ "public class X {\n"
-			+ "\tpublic int h;\n"
-			+ "\tpublic int[] i;\n"
-			+ "\tjava.lang.Object(0)\n"
-			+ "\tvoid foo() {}\n"
-			+ "\tint bare() {}\n"
-			+ "\tvoid truc() {}\n"
-			+ "}"; 
+			 "\tvar h;\n"
+			+ "\tvar i;\n"
+			+ "\tfunction foo() {}\n" 
+			+ "\tfunction bare() {}\n"
+			+ "\tfunction truc() {}\n"
+			+ ""; 
 
 	String testName = "test01: full parse";
 	fullParse(s,testName);
 
-	assertEquals(
-		"Invalid class declarationSourceStart ", 
-		52, 
-		currentType.getDeclarationSourceStart()); 
+//	assertEquals(
+//		"Invalid class declarationSourceStart ", 
+//		52, 
+//		currentType.getDeclarationSourceStart()); 
 
-	assertEquals(
-		"Invalid class declarationSourceEnd ", 
-		178, 
-		currentType.getDeclarationSourceEnd()); 
+//	assertEquals(
+//		"Invalid class declarationSourceEnd ", 
+//		178, 
+//		currentType.getDeclarationSourceEnd()); 
 
-	SourceField[] fields = currentType.getFields();
+	currentUnit.toString();
+	SourceField[] fields = currentUnit.getFields();
 	assertTrue(" invalid fields ", fields != null);
 	assertEquals("Invalid fields length ", 2, fields.length);
 
-	assertEquals("Invalid declaration source start for field h", 105, fields[0].getDeclarationSourceStart());
-	assertEquals("Invalid declaration source end for field h", 117, fields[0].getDeclarationSourceEnd());
+	assertEquals("Invalid declaration source start for field h", 41, fields[0].getDeclarationSourceStart());
+	assertEquals("Invalid declaration source end for field h",46 , fields[0].getDeclarationSourceEnd());
 
-	assertEquals("Invalid declaration source start for field i", 119, fields[1].getDeclarationSourceStart());
-	assertEquals("Invalid declaration source end for field i", 144, fields[1].getDeclarationSourceEnd());
+	assertEquals("Invalid declaration source start for field i", 48, fields[1].getDeclarationSourceStart());
+	assertEquals("Invalid declaration source end for field i", 54, fields[1].getDeclarationSourceEnd());
 
-	SourceMethod[] methods = currentType.getMethods();
+	SourceMethod[] methods = currentUnit.getMethods();
 	assertTrue(" invalid methods ", methods != null);
 	assertEquals("Invalid methods length ", 3, methods.length);
 
-	assertEquals("Invalid declaration source start for method foo", 69, methods[0].getDeclarationSourceStart());
-	assertEquals("Invalid declaration source end for method foo", 103, methods[0].getDeclarationSourceEnd());
+	assertEquals("Invalid declaration source start for method foo", 0, methods[0].getDeclarationSourceStart());
+	assertEquals("Invalid declaration source end for method foo", 39, methods[0].getDeclarationSourceEnd());
 
-	assertEquals("Invalid declaration source start for method bare", 147, methods[1].getDeclarationSourceStart());
-	assertEquals("Invalid declaration source end for method bare", 163, methods[1].getDeclarationSourceEnd());
+	assertEquals("Invalid declaration source start for method bare", 57, methods[1].getDeclarationSourceStart());
+	assertEquals("Invalid declaration source end for method bare", 78, methods[1].getDeclarationSourceEnd());
 
-	assertEquals("Invalid declaration source start for method truc", 164, methods[2].getDeclarationSourceStart());
-	assertEquals("Invalid declaration source end for method truc", 177, methods[2].getDeclarationSourceEnd());
+	assertEquals("Invalid declaration source start for method truc", 80, methods[2].getDeclarationSourceStart());
+	assertEquals("Invalid declaration source end for method truc", 96, methods[2].getDeclarationSourceEnd());
 
 	assertEquals(" Invalid actual name for method foo", "foo", methods[0].getActualName());
 
@@ -419,19 +508,20 @@ public void test01() {
 	assertEquals(
 		"Invalid source " + testName, 
 		expectedUnitToString, 
-		currentType.toString()); 
+		currentUnit.toString()); 
 }
+
+
 public void test02() {
 
 	String s =
 			"/** javadoc comment */\n"
-			+ "public class X {\n"
-			+ "}\n"; 
+			+ "function ss()"
+			+ "\n"; 
 
 	String expectedUnitToString = 
-			"public class X {\n"
-			+ "\tjava.lang.Object(0)\n"
-			+ "}"; 
+			 "\tfunction ss() {}\n"
+			+ ""; 
 
 	String testName = "test02: full parse";
 	fullParse(s,testName);
@@ -439,87 +529,79 @@ public void test02() {
 	assertEquals(
 		"Invalid class declarationSourceStart ", 
 		0, 
-		currentType.getDeclarationSourceStart()); 
+		currentUnit.getDeclarationSourceStart()); 
 
-	assertEquals(
-		"Invalid class declarationSourceEnd ", 
-		40, 
-		currentType.getDeclarationSourceEnd());
+//	assertEquals(
+//		"Invalid class declarationSourceEnd ", 
+//		40, 
+//		currentUnit.getDeclarationSourceEnd());
 
 	assertEquals(
 		"Invalid source " + testName, 
 		expectedUnitToString, 
-		currentType.toString()); 
+		currentUnit.toString()); 
 }
 public void test03() {
 
 	String s = 
-		"package a;\n"
-			+ "import java.lang.*;\n"
-			+ "import java.util.*;\n"
-			+ "\n"
-			+ "public class X {\n"
-			+ "void foo() {\n"
-			+ "System.out.println();\n"
-			+ "\n"
-			+ "public int h;\n"
-			+ "public int[] i = { 0, 1 };\n"
-			+ "\n"
-			+ "int bar" + "\\" + "u0065(){\n"
-			+ "void truc(){\n"
-			+ "}\n"; 
+		 "function X() {\n"
+		+ "  this.h=1;\n"
+		+ "  this.i=[];\n"
+		+ "}\n"
+		+ "function X_foo() {\n"
+		+ "}\n"
+		+ "X.prototype.foo=X_foo;\n"
+		+ ""; 
 
 	String expectedUnitToString = 
-		"package a;\n"
-			+ "import java.lang.*;\n"
-			+ "import java.util.*;\n"
-			+ "public class X {\n"
-			+ "\tpublic int h;\n"
-			+ "\tpublic int[] i;\n"
-			+ "\tvoid foo() {}\n"
-			+ "\tint bare() {}\n"
-			+ "\tvoid truc() {}\n"
-			+ "}"; 
-
+	 "class X extends Object {\n"
+	+ "	var h;\n"
+	+ "	var i;\n"
+	+ "	function foo() {}\n"
+	+ "	function X() {}\n"
+	+ "}"
+	+ ""; 
+	
 	String testName = "test03: diet parse";
 	dietParse(s,testName);
 
-	assertEquals(
-		"Invalid class declarationSourceStart ", 
-		52, 
-		currentType.getDeclarationSourceStart()); 
-
-	assertEquals(
-		"Invalid class declarationSourceEnd ", 
-		178, 
-		currentType.getDeclarationSourceEnd()); 
-
+//	assertEquals(
+//		"Invalid class declarationSourceStart ", 
+//		52, 
+//		currentType.getDeclarationSourceStart()); 
+//
+//	assertEquals(
+//		"Invalid class declarationSourceEnd ", 
+//		178, 
+//		currentType.getDeclarationSourceEnd()); 
+//
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
 	assertEquals("Invalid fields length ", 2, fields.length);
 
-	assertEquals("Invalid declaration source start for field h", 105, fields[0].getDeclarationSourceStart());
-	assertEquals("Invalid declaration source end for field h", 117, fields[0].getDeclarationSourceEnd());
-
-	assertEquals("Invalid declaration source start for field i", 119, fields[1].getDeclarationSourceStart());
-	assertEquals("Invalid declaration source end for field i", 144, fields[1].getDeclarationSourceEnd());
+//	assertEquals("Invalid declaration source start for field h", 105, fields[0].getDeclarationSourceStart());
+//	assertEquals("Invalid declaration source end for field h", 117, fields[0].getDeclarationSourceEnd());
+//
+//	assertEquals("Invalid declaration source start for field i", 119, fields[1].getDeclarationSourceStart());
+//	assertEquals("Invalid declaration source end for field i", 144, fields[1].getDeclarationSourceEnd());
 
 	SourceMethod[] methods = currentType.getMethods();
 	assertTrue(" invalid methods ", methods != null);
-	assertEquals("Invalid methods length ", 3, methods.length);
+	assertEquals("Invalid methods length ", 2, methods.length);
 
-	assertEquals("Invalid declaration source start for method foo", 69, methods[0].getDeclarationSourceStart());
-	assertEquals("Invalid declaration source end for method foo", 103, methods[0].getDeclarationSourceEnd());
+//	assertEquals("Invalid declaration source start for method foo", 69, methods[0].getDeclarationSourceStart());
+//	assertEquals("Invalid declaration source end for method foo", 103, methods[0].getDeclarationSourceEnd());
+//
+//	assertEquals("Invalid declaration source start for method bar", 147, methods[1].getDeclarationSourceStart());
+//	assertEquals("Invalid declaration source end for method bar", 163, methods[1].getDeclarationSourceEnd());
+//
+//	assertEquals("Invalid declaration source start for method truc", 164, methods[2].getDeclarationSourceStart());
+//	assertEquals("Invalid declaration source end for method truc", 177, methods[2].getDeclarationSourceEnd());
 
-	assertEquals("Invalid declaration source start for method bar", 147, methods[1].getDeclarationSourceStart());
-	assertEquals("Invalid declaration source end for method bar", 163, methods[1].getDeclarationSourceEnd());
+	assertEquals(" Invalid actual name for method foo", "X_foo", methods[0].getActualName());
+	assertEquals(" Invalid  name for method foo", "foo", new String(methods[0].getSelector()));
 
-	assertEquals("Invalid declaration source start for method truc", 164, methods[2].getDeclarationSourceStart());
-	assertEquals("Invalid declaration source end for method truc", 177, methods[2].getDeclarationSourceEnd());
-
-	assertEquals(" Invalid actual name for method foo", "foo", methods[0].getActualName());
-
-	assertEquals(" Invalid actual name for method bare", "bar" + "\\" + "u0065", methods[1].getActualName());
+//	assertEquals(" Invalid actual name for method bare", "bar" + "\\" + "u0065", methods[1].getActualName());
 	
 	assertEquals(
 		"Invalid source " + testName, 
@@ -4635,6 +4717,7 @@ public void test66() {
 			
 	String expectedUnitToString = 
 		"public interface X {\n"
+		+ "\t{}\n"
 		+ "\tint foo() {}\n"
 		+ "\tint x() {}\n"
 		+ "}";
@@ -4655,7 +4738,11 @@ public void test66() {
 	assertTrue("has no superinterfaces " , currentType.getInterfaceNames() == null);
 
 	SourceField[] fields = currentType.getFields();
-	assertTrue(" invalid fields ", fields == null);
+	assertTrue(" invalid fields ", fields != null);
+	assertEquals(" invalid fields length ", 1, fields.length);
+
+	assertEquals("Invalid declaration source start for initializer", 51, fields[0].getDeclarationSourceStart());
+	assertEquals("Invalid declaration source end for initializer", 51, fields[0].getDeclarationSourceEnd());
 
 	SourceMethod[] methods = currentType.getMethods();
 	assertTrue(" invalid methods ", methods != null);
@@ -5161,7 +5248,7 @@ public void testBug99662() {
 
 	assertNull("package-info.java file should not have ANY type!",  this.currentType);
 }
-// https://bugs.eclipse.org/bugs/show_bug.cgi?id=167357
+//https://bugs.eclipse.org/bugs/show_bug.cgi?id=167357
 public void _test77() {
 
 	String s =
@@ -5190,7 +5277,6 @@ public void _test77() {
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=167357
 public void _test78() {
-
 	String s =
 		"public class X {\n" + 
 		"	void foo() {\n" + 
@@ -5269,4 +5355,5 @@ public void _test80() {
 		expectedUnitToString, 
 		currentType.toString()); 
 }
+
 }

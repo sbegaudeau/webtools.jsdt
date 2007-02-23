@@ -14,8 +14,6 @@ import java.util.Locale;
 
 import junit.framework.Test;
 
-import org.eclipse.wst.jsdt.core.tests.util.AbstractCompilerTest;
-import org.eclipse.wst.jsdt.core.tests.util.Util;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.DefaultErrorHandlingPolicies;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
@@ -26,9 +24,11 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblemFactory;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
-
+import org.eclipse.wst.jsdt.core.tests.util.AbstractCompilerTest;
+import org.eclipse.wst.jsdt.core.tests.util.Util;
+ 
 public class StatementRecoveryTest extends AbstractCompilerTest {
-	public static final boolean ONLY_DIET_PLUS_BODY_WITH_STATEMENT_RECOVERY = false;
+	public static final boolean ONLY_DIET_PLUS_BODY_WITH_STATEMENT_RECOVERY = true;
 	
 	public static boolean optimizeStringLiterals = false;
 	public static long sourceLevel = ClassFileConstants.JDK1_3; //$NON-NLS-1$
@@ -232,34 +232,21 @@ public void checkParse(
 public void test0001() {
 
 	String s = 
-		"package a;											\n"
-			+ "public class X {								\n"
-			+ "  void foo() {								\n"
+			"  function foo() {								\n"
 			+ "    System.out.println();					\n"
-			+ "  }											\n"
 			+ "}											\n"; 	
 
 	String expectedDietUnitToString = 
-		"package a;\n" + 
-		"public class X {\n" + 
-		"  public X() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+    	 "  System.out.println();\n"+
 		"}\n";
 	
 	String expectedDietWithStatementRecoveryUnitToString =
 		expectedDietUnitToString;
 	
 	String expectedDietPlusBodyUnitToString = 
-		"package a;\n" + 
-		"public class X {\n" + 
-		"  public X() {\n" + 
-		"    super();\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    System.out.println();\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+   	    "  System.out.println();\n"+
 		"}\n";
 
 	String expectedDietPlusBodyWithStatementRecoveryUnitToString = 
@@ -285,45 +272,27 @@ public void test0001() {
 public void test0002() {
 
 	String s = 
-		"package a;											\n"
-			+ "public class X {								\n"
-			+ "  void foo() {								\n"
-			+ "    #                    					\n"
-			+ "    System.out.println();					\n"
-			+ "  }											\n"
-			+ "}											\n"; 	
+		"  function foo() {								\n"
+		+ "    #                    					\n"
+		+ "    System.out.println();					\n"
+		+ "}											\n"; 	
 
 	String expectedDietUnitToString = 
-		"package a;\n" + 
-		"public class X {\n" + 
-		"  public X() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+   	    "  System.out.println();\n"+
 		"}\n";
 	
 	String expectedDietWithStatementRecoveryUnitToString =
 		expectedDietUnitToString;
 	
 	String expectedDietPlusBodyUnitToString = 
-		"package a;\n" + 
-		"public class X {\n" + 
-		"  public X() {\n" + 
-		"    super();\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+   	    "  System.out.println();\n"+
 		"}\n";
 
 	String expectedDietPlusBodyWithStatementRecoveryUnitToString = 
-		"package a;\n" + 
-		"public class X {\n" + 
-		"  public X() {\n" + 
-		"    super();\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    System.out.println();\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+   	    "  System.out.println();\n"+
 		"}\n";
 	
 	String expectedFullUnitToString =
@@ -346,45 +315,27 @@ public void test0002() {
 public void test0003() {
 
 	String s = 
-		"package a;											\n"
-			+ "public class X {								\n"
-			+ "  void foo() {								\n"
-			+ "    System.out.println();					\n"
-			+ "    #                    					\n"
-			+ "  }											\n"
-			+ "}											\n"; 	
+		"  function foo() {								\n"
+		+ "    System.out.println();					\n"
+		+ "    #                    					\n"
+		+ "}											\n"; 	
 
 	String expectedDietUnitToString = 
-		"package a;\n" + 
-		"public class X {\n" + 
-		"  public X() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+   	    "  System.out.println();\n"+
 		"}\n";
 	
 	String expectedDietWithStatementRecoveryUnitToString =
 		expectedDietUnitToString;
 	
 	String expectedDietPlusBodyUnitToString = 
-		"package a;\n" + 
-		"public class X {\n" + 
-		"  public X() {\n" + 
-		"    super();\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+   	    "  System.out.println();\n"+
 		"}\n";
 
 	String expectedDietPlusBodyWithStatementRecoveryUnitToString = 
-		"package a;\n" + 
-		"public class X {\n" + 
-		"  public X() {\n" + 
-		"    super();\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    System.out.println();\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+   	    "  System.out.println();\n"+
 		"}\n";
 	
 	String expectedFullUnitToString =
@@ -407,47 +358,31 @@ public void test0003() {
 public void test0004() {
 
 	String s = 
-		"package a;											\n"
-			+ "public class X {								\n"
-			+ "  void foo() {								\n"
-			+ "    #                    					\n"
-			+ "    System.out.println();					\n"
-			+ "    System.out.println();					\n"
-			+ "  }											\n"
-			+ "}											\n"; 	
+		"  function foo() {								\n"
+		+ "    #                    					\n"
+		+ "    System.out.println();					\n"
+		+ "    System.out.println();					\n"
+		+ "}											\n"; 	
 
 	String expectedDietUnitToString = 
-		"package a;\n" + 
-		"public class X {\n" + 
-		"  public X() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+   	    "  System.out.println();\n"+
+   	    "  System.out.println();\n"+
 		"}\n";
 	
 	String expectedDietWithStatementRecoveryUnitToString =
 		expectedDietUnitToString;
 	
 	String expectedDietPlusBodyUnitToString = 
-		"package a;\n" + 
-		"public class X {\n" + 
-		"  public X() {\n" + 
-		"    super();\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+   	    "  System.out.println();\n"+
+   	    "  System.out.println();\n"+
 		"}\n";
 
 	String expectedDietPlusBodyWithStatementRecoveryUnitToString = 
-		"package a;\n" + 
-		"public class X {\n" + 
-		"  public X() {\n" + 
-		"    super();\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    System.out.println();\n" + 
-		"    System.out.println();\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+   	    "  System.out.println();\n"+
+   	    "  System.out.println();\n"+
 		"}\n";
 	
 	String expectedFullUnitToString =
@@ -470,47 +405,31 @@ public void test0004() {
 public void test0005() {
 
 	String s = 
-		"package a;											\n"
-			+ "public class X {								\n"
-			+ "  void foo() {								\n"
-			+ "    System.out.println();					\n"
-			+ "    System.out.println();					\n"
-			+ "    #                    					\n"
-			+ "  }											\n"
-			+ "}											\n"; 	
+		"  function foo() {								\n"
+		+ "    System.out.println();					\n"
+		+ "    System.out.println();					\n"
+		+ "    #                    					\n"
+		+ "}											\n"; 	
 
 	String expectedDietUnitToString = 
-		"package a;\n" + 
-		"public class X {\n" + 
-		"  public X() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+   	    "  System.out.println();\n"+
+   	    "  System.out.println();\n"+
 		"}\n";
 	
 	String expectedDietWithStatementRecoveryUnitToString =
 		expectedDietUnitToString;
 	
 	String expectedDietPlusBodyUnitToString = 
-		"package a;\n" + 
-		"public class X {\n" + 
-		"  public X() {\n" + 
-		"    super();\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+   	    "  System.out.println();\n"+
+   	    "  System.out.println();\n"+
 		"}\n";
 
 	String expectedDietPlusBodyWithStatementRecoveryUnitToString = 
-		"package a;\n" + 
-		"public class X {\n" + 
-		"  public X() {\n" + 
-		"    super();\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    System.out.println();\n" + 
-		"    System.out.println();\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+   	    "  System.out.println();\n"+
+   	    "  System.out.println();\n"+
 		"}\n";
 	
 	String expectedFullUnitToString =
@@ -533,51 +452,39 @@ public void test0005() {
 public void test0006() {
 
 	String s = 
-		"package a;											\n"
-			+ "public class X {								\n"
-			+ "  void foo() {								\n"
-			+ "    System.out.println();					\n"
-			+ "    System.out.println();					\n"
-			+ "    #                    					\n"
-			+ "    System.out.println();					\n"
-			+ "    System.out.println();					\n"
-			+ "  }											\n"
-			+ "}											\n"; 	
+		"function foo() {\n"  
+		+ "    System.out.println();					\n"
+		+ "    System.out.println();					\n"
+		+ "    #                    					\n"
+		+ "    System.out.println();					\n"
+		+ "    System.out.println();					\n"
+		+"}\n";
 
 	String expectedDietUnitToString = 
-		"package a;\n" + 
-		"public class X {\n" + 
-		"  public X() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+   	    "  System.out.println();\n"+
+   	    "  System.out.println();\n"+
+   	    "  System.out.println();\n"+
+   	    "  System.out.println();\n"+
 		"}\n";
 	
 	String expectedDietWithStatementRecoveryUnitToString =
 		expectedDietUnitToString;
 	
 	String expectedDietPlusBodyUnitToString = 
-		"package a;\n" + 
-		"public class X {\n" + 
-		"  public X() {\n" + 
-		"    super();\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+   	    "  System.out.println();\n"+
+   	    "  System.out.println();\n"+
+   	    "  System.out.println();\n"+
+   	    "  System.out.println();\n"+
 		"}\n";
 
 	String expectedDietPlusBodyWithStatementRecoveryUnitToString = 
-		"package a;\n" + 
-		"public class X {\n" + 
-		"  public X() {\n" + 
-		"    super();\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    System.out.println();\n" + 
-		"    System.out.println();\n" + 
-		"    System.out.println();\n" + 
-		"    System.out.println();\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+   	    "  System.out.println();\n"+
+   	    "  System.out.println();\n"+
+   	    "  System.out.println();\n"+
+   	    "  System.out.println();\n"+
 		"}\n";
 	
 	String expectedFullUnitToString =
@@ -600,55 +507,47 @@ public void test0006() {
 public void test0007() {
 
 	String s = 
-		"package a;											\n"
-			+ "public class X {								\n"
-			+ "  void foo() {								\n"
-			+ "    #                    					\n"
-			+ "    System.out.println();					\n"
-			+ "    if(true) {								\n"
-			+ "      System.out.println();					\n"
-			+ "    }										\n"
-			+ "    System.out.println();					\n"
-			+ "  }											\n"
-			+ "}											\n"; 	
+		"function foo() {\n"  
+		+ "    #                    					\n"
+		+ "    System.out.println();					\n"
+		+ "    if(true) {								\n"
+		+ "      System.out.println();					\n"
+		+ "    }										\n"
+		+ "    System.out.println();					\n"
+		+"}\n";
 
 	String expectedDietUnitToString = 
-		"package a;\n" + 
-		"public class X {\n" + 
-		"  public X() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"  }\n" + 
-		"}\n";
+		"function foo() {\n" 
+		+ "  System.out.println();\n"
+		+ "  if (true)\n" 
+		+ "      {\n"
+		+ "        System.out.println();\n"
+		+ "      }\n"
+		+ "  System.out.println();\n"
+		+"}\n";
 	
 	String expectedDietWithStatementRecoveryUnitToString =
 		expectedDietUnitToString;
 	
 	String expectedDietPlusBodyUnitToString = 
-		"package a;\n" + 
-		"public class X {\n" + 
-		"  public X() {\n" + 
-		"    super();\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"  }\n" + 
-		"}\n";
+		"function foo() {\n" 
+		+ "  System.out.println();\n"
+		+ "  if (true)\n" 
+		+ "      {\n"
+		+ "        System.out.println();\n"
+		+ "      }\n"
+		+ "  System.out.println();\n"
+		+"}\n";
 
 	String expectedDietPlusBodyWithStatementRecoveryUnitToString = 
-		"package a;\n" + 
-		"public class X {\n" + 
-		"  public X() {\n" + 
-		"    super();\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    System.out.println();\n" + 
-		"    if (true)\n" + 
-		"        {\n" + 
-		"          System.out.println();\n" + 
-		"        }\n" + 
-		"    System.out.println();\n" + 
-		"  }\n" + 
-		"}\n";
+		"function foo() {\n" 
+		+ "  System.out.println();\n"
+		+ "  if (true)\n" 
+		+ "      {\n"
+		+ "        System.out.println();\n"
+		+ "      }\n"
+		+ "  System.out.println();\n"
+		+"}\n";
 	
 	String expectedFullUnitToString =
 		expectedDietUnitToString;
@@ -1861,6 +1760,9 @@ public void test0022() {
 		"  void foo() {\n" + 
 		"    System.out.println();\n" + 
 		"    new Object() {\n" + 
+		"      () {\n" + 
+		"        super();\n" + 
+		"      }\n" + 
 		"      void foo() {\n" + 
 		"      }\n" + 
 		"    };\n" + 
@@ -1931,6 +1833,9 @@ public void test0023() {
 		"  void foo() {\n" + 
 		"    System.out.println();\n" + 
 		"    new Object() {\n" + 
+		"      () {\n" + 
+		"        super();\n" + 
+		"      }\n" + 
 		"      void bar() {\n" + 
 		"      }\n" + 
 		"    };\n" + 
@@ -2006,12 +1911,18 @@ public void test0024() {
 		"  void foo() {\n" + 
 		"    System.out.println();\n" + 
 		"    new Object() {\n" + 
+		"      () {\n" + 
+		"        super();\n" + 
+		"      }\n" + 
 		"      void bar() {\n" + 
 		"      }\n" + 
 		"    };\n" + 
 		"    System.out.println();\n" + 
 		"    System.out.println();\n" + 
 		"    new Object() {\n" + 
+		"      () {\n" + 
+		"        super();\n" + 
+		"      }\n" + 
 		"      void bar() {\n" + 
 		"      }\n" + 
 		"    };\n" + 
@@ -2084,6 +1995,9 @@ public void test0025() {
 		"  void foo() {\n" + 
 		"    System.out.println();\n" + 
 		"    new Object() {\n" + 
+		"      () {\n" + 
+		"        super();\n" + 
+		"      }\n" + 
 		"      void foo() {\n" + 
 		"        System.out.println();\n" + 
 		"      }\n" + 
@@ -2157,6 +2071,9 @@ public void test0026() {
 		"  void foo() {\n" + 
 		"    System.out.println();\n" + 
 		"    new Object() {\n" + 
+		"      () {\n" + 
+		"        super();\n" + 
+		"      }\n" + 
 		"      void foo() {\n" + 
 		"        System.out.println();\n" + 
 		"      }\n" + 
@@ -2237,6 +2154,9 @@ public void test0027() {
 		"  void foo() {\n" + 
 		"    System.out.println();\n" + 
 		"    new Object() {\n" + 
+		"      () {\n" + 
+		"        super();\n" + 
+		"      }\n" + 
 		"      void foo() {\n" + 
 		"        System.out.println();\n" + 
 		"      }\n" + 
@@ -2244,6 +2164,9 @@ public void test0027() {
 		"    System.out.println();\n" + 
 		"    System.out.println();\n" + 
 		"    new Object() {\n" + 
+		"      () {\n" + 
+		"        super();\n" + 
+		"      }\n" + 
 		"      void foo() {\n" + 
 		"        System.out.println();\n" + 
 		"      }\n" + 
@@ -2321,6 +2244,9 @@ public void test0028() {
 		"  void foo() {\n" + 
 		"    System.out.println();\n" + 
 		"    new Object() {\n" + 
+		"      () {\n" + 
+		"        super();\n" + 
+		"      }\n" + 
 		"      void foo() {\n" + 
 		"        System.out.println();\n" + 
 		"        if (true)\n" + 
@@ -2403,6 +2329,9 @@ public void test0029() {
 		"  void foo() {\n" + 
 		"    System.out.println();\n" + 
 		"    new Object() {\n" + 
+		"      () {\n" + 
+		"        super();\n" + 
+		"      }\n" + 
 		"      void foo() {\n" + 
 		"        System.out.println();\n" + 
 		"        if (true)\n" + 
@@ -2490,6 +2419,9 @@ public void test0030() {
 		"  void foo() {\n" + 
 		"    System.out.println();\n" + 
 		"    new Object() {\n" + 
+		"      () {\n" + 
+		"        super();\n" + 
+		"      }\n" + 
 		"      void foo() {\n" + 
 		"        System.out.println();\n" + 
 		"        if (true)\n" + 
@@ -2584,6 +2516,9 @@ public void test0031() {
 		"  void foo() {\n" + 
 		"    System.out.println();\n" + 
 		"    new Object() {\n" + 
+		"      () {\n" + 
+		"        super();\n" + 
+		"      }\n" + 
 		"      void foo() {\n" + 
 		"        System.out.println();\n" + 
 		"        if (true)\n" + 
@@ -2678,6 +2613,9 @@ public void test0032() {
 		"  void foo() {\n" + 
 		"    System.out.println();\n" + 
 		"    bar(new Object() {\n" + 
+		"  () {\n" + 
+		"    super();\n" + 
+		"  }\n" + 
 		"  void foo() {\n" + 
 		"    System.out.println();\n" + 
 		"    if (true)\n" + 
@@ -2831,6 +2769,9 @@ public void test0034() {
 		"  }\n" + 
 		"  void foo() {\n" + 
 		"    new Object() {\n" + 
+		"      () {\n" + 
+		"        super();\n" + 
+		"      }\n" + 
 		"      void foo() {\n" + 
 		"        System.out.println();\n" + 
 		"      }\n" + 
@@ -3495,6 +3436,7 @@ public void test0042() {
 		expectedFullWithStatementRecoveryUnitToString,
 		testName);
 }
+
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=80339
 public void test0043() {
 
@@ -3545,4 +3487,5 @@ public void test0043() {
 		expectedFullWithStatementRecoveryUnitToString,
 		testName);
 }
+
 }

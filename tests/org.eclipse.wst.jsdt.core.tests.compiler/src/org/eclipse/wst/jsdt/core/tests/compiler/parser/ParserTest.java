@@ -28,15 +28,13 @@ public ParserTest(String name) {
 public void test001() {
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\n" +
-			"	void foo(){\n" +
+			"X.js",
+			"	function foo(){\n" +
 			"		throws\n" +
-			"	}\n" +
 			"}\n"
 		},
 		"----------\n" + 
-		"1. ERROR in X.java (at line 3)\n" + 
+		"1. ERROR in X.js (at line 2)\n" + 
 		"	throws\n" + 
 		"	^^^^^^\n" + 
 		"Syntax error on token \"throws\", delete this token\n" + 
@@ -46,15 +44,13 @@ public void test001() {
 public void test002() {
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\n" +
-			"	void foo(){\n" +
+			"X.js",
+			"	function foo(){\n" +
 			"		throws new\n" +
-			"	}\n" +
 			"}\n"
 		},
 		"----------\n" + 
-		"1. ERROR in X.java (at line 3)\n" + 
+		"1. ERROR in X.js (at line 2)\n" + 
 		"	throws new\n" + 
 		"	^^^^^^^^^^\n" + 
 		"Syntax error on tokens, delete these tokens\n" + 
@@ -64,188 +60,182 @@ public void test002() {
 public void test003() {
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\n" +
-			"	void foo(){\n" +
+			"X.js",
+			"	function foo(){\n" +
 			"		throws new X\n" +
-			"	}\n" +
 			"}\n"
 		},
 		"----------\n" + 
-		"1. ERROR in X.java (at line 3)\n" + 
+		"1. ERROR in X.js (at line 2)\n" + 
 		"	throws new X\n" + 
 		"	^^^^^^\n" + 
 		"Syntax error on token \"throws\", throw expected\n" + 
 		"----------\n" + 
-		"2. ERROR in X.java (at line 3)\n" + 
+		"2. ERROR in X.js (at line 2)\n" + 
 		"	throws new X\n" + 
 		"	           ^\n" + 
 		"Syntax error, unexpected end of method\n" + 
 		"----------\n"
 	);
 }
-public void test004() {
-	this.runNegativeTest(
-		new String[] {
-			"X.java",
-			"public class X {\n" +
-			"	{\n" +
-			"		throws\n" +
-			"	}\n" +
-			"}\n"
-		},
-		"----------\n" + 
-		"1. ERROR in X.java (at line 3)\n" + 
-		"	throws\n" + 
-		"	^^^^^^\n" + 
-		"Syntax error on token \"throws\", delete this token\n" + 
-		"----------\n"
-	);
-}
-public void test005() {
-	this.runNegativeTest(
-		new String[] {
-			"X.java",
-			"public class X {\n" +
-			"	{\n" +
-			"		throws new\n" +
-			"	}\n" +
-			"}\n"
-		},
-		"----------\n" + 
-		"1. ERROR in X.java (at line 3)\n" + 
-		"	throws new\n" + 
-		"	^^^^^^^^^^\n" + 
-		"Syntax error on tokens, delete these tokens\n" + 
-		"----------\n"
-	);
-}
+//public void test004() {
+//	this.runNegativeTest(
+//		new String[] {
+//			"X.js",
+//			"public class X {\n" +
+//			"	{\n" +
+//			"		throws\n" +
+//			"	}\n" +
+//			"}\n"
+//		},
+//		"----------\n" + 
+//		"1. ERROR in X.js (at line 3)\n" + 
+//		"	throws\n" + 
+//		"	^^^^^^\n" + 
+//		"Syntax error on token \"throws\", delete this token\n" + 
+//		"----------\n"
+//	);
+//}
+//public void test005() {
+//	this.runNegativeTest(
+//		new String[] {
+//			"X.js",
+//			"public class X {\n" +
+//			"	{\n" +
+//			"		throws new\n" +
+//			"	}\n" +
+//			"}\n"
+//		},
+//		"----------\n" + 
+//		"1. ERROR in X.js (at line 3)\n" + 
+//		"	throws new\n" + 
+//		"	^^^^^^^^^^\n" + 
+//		"Syntax error on tokens, delete these tokens\n" + 
+//		"----------\n"
+//	);
+//}
 public void test006() {
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\n" +
+			"X.js",
 			"	{\n" +
 			"		throws new X\n" +
-			"	}\n" +
 			"}\n"
 		},
 		"----------\n" + 
-		"1. ERROR in X.java (at line 3)\n" + 
+		"1. ERROR in X.js (at line 3)\n" + 
 		"	throws new X\n" + 
 		"	^^^^^^\n" + 
 		"Syntax error on token \"throws\", throw expected\n" + 
 		"----------\n" + 
-		"2. ERROR in X.java (at line 3)\n" + 
+		"2. ERROR in X.js (at line 3)\n" + 
 		"	throws new X\n" + 
 		"	           ^\n" + 
 		"Syntax error, unexpected end of initializer\n" + 
 		"----------\n"
 	);
 }
-public void test007() {
-	this.runNegativeTest(
-		new String[] {
-			"X.java",
-			"public class X {\n" +
-			"	void foo()throw {\n" +
-			"	}\n" +
-			"}\n"
-		},
-		"----------\n" + 
-		"1. ERROR in X.java (at line 1)\n" + 
-		"	public class X {\n" + 
-		"	               ^\n" + 
-		"Syntax error, insert \"}\" to complete ClassBody\n" + 
-		"----------\n" + 
-		"2. ERROR in X.java (at line 2)\n" + 
-		"	void foo()throw {\n" + 
-		"	          ^^^^^\n" + 
-		"Syntax error on token \"throw\", { expected\n" + 
-		"----------\n"
-	);
-}
-public void test008() {
-	this.runNegativeTest(
-		new String[] {
-			"X.java",
-			"public class X {\n" +
-			"	void foo()throw E {\n" +
-			"	}\n" +
-			"}\n"
-		},
-		"----------\n" + 
-		"1. ERROR in X.java (at line 1)\n" + 
-		"	public class X {\n" + 
-		"	               ^\n" + 
-		"Syntax error, insert \"}\" to complete ClassBody\n" + 
-		"----------\n" + 
-		"2. ERROR in X.java (at line 2)\n" + 
-		"	void foo()throw E {\n" + 
-		"	          ^^^^^\n" + 
-		"Syntax error on token \"throw\", throws expected\n" + 
-		"----------\n" + 
-		"3. ERROR in X.java (at line 4)\n" + 
-		"	}\n" + 
-		"	^\n" + 
-		"Syntax error on token \"}\", delete this token\n" + 
-		"----------\n"
-	);
-}
+//public void test007() {
+//	this.runNegativeTest(
+//		new String[] {
+//			"X.js",
+//			"public class X {\n" +
+//			"	void foo()throw {\n" +
+//			"	}\n" +
+//			"}\n"
+//		},
+//		"----------\n" + 
+//		"1. ERROR in X.js (at line 1)\n" + 
+//		"	public class X {\n" + 
+//		"	               ^\n" + 
+//		"Syntax error, insert \"}\" to complete ClassBody\n" + 
+//		"----------\n" + 
+//		"2. ERROR in X.js (at line 2)\n" + 
+//		"	void foo()throw {\n" + 
+//		"	          ^^^^^\n" + 
+//		"Syntax error on token \"throw\", { expected\n" + 
+//		"----------\n"
+//	);
+//}
+//public void test008() {
+//	this.runNegativeTest(
+//		new String[] {
+//			"X.js",
+//			"public class X {\n" +
+//			"	void foo()throw E {\n" +
+//			"	}\n" +
+//			"}\n"
+//		},
+//		"----------\n" + 
+//		"1. ERROR in X.js (at line 1)\n" + 
+//		"	public class X {\n" + 
+//		"	               ^\n" + 
+//		"Syntax error, insert \"}\" to complete ClassBody\n" + 
+//		"----------\n" + 
+//		"2. ERROR in X.js (at line 2)\n" + 
+//		"	void foo()throw E {\n" + 
+//		"	          ^^^^^\n" + 
+//		"Syntax error on token \"throw\", throws expected\n" + 
+//		"----------\n" + 
+//		"3. ERROR in X.js (at line 4)\n" + 
+//		"	}\n" + 
+//		"	^\n" + 
+//		"Syntax error on token \"}\", delete this token\n" + 
+//		"----------\n"
+//	);
+//}
 public void test009() {
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\n" +
-			"	void foo(){\n" +
+			"X.js",
+			"	function foo(){\n" +
 			"		throws e\n" +
-			"	}\n" +
 			"}\n"
 		},
 		"----------\n" + 
-		"1. ERROR in X.java (at line 3)\n" + 
+		"1. ERROR in X.js (at line 2)\n" + 
 		"	throws e\n" + 
 		"	^^^^^^^^\n" + 
 		"Syntax error on tokens, delete these tokens\n" + 
 		"----------\n"
 	);
 }
-public void test010() {
-	this.runNegativeTest(
-		new String[] {
-			"X.java",
-			"public class X {\n" +
-			"	void foo(){\n" +
-			"		throws e;\n" +
-			"	}\n" +
-			"}\n"
-		},
-		"----------\n" + 
-		"1. ERROR in X.java (at line 3)\n" + 
-		"	throws e;\n" + 
-		"	^^^^^^\n" + 
-		"Syntax error on token \"throws\", throw expected\n" + 
-		"----------\n"
-	);
-}
-public void test011() {
-	this.runNegativeTest(
-		new String[] {
-			"X.java",
-			"public class X {\n" +
-			"	public void foo(X, Object o, String s) {\n" +
-			"	}\n" +
-			"   public void bar(){}\n" + 
-			"}\n"
-		},
-		"----------\n" + 
-		"1. ERROR in X.java (at line 2)\n" + 
-		"	public void foo(X, Object o, String s) {\n" + 
-		"	                 ^\n" + 
-		"Syntax error on token \",\", . expected\n" + 
-		"----------\n"
-	);
-}
+//public void test010() {
+//	this.runNegativeTest(
+//		new String[] {
+//			"X.js",
+//			"public class X {\n" +
+//			"	void foo(){\n" +
+//			"		throws e;\n" +
+//			"	}\n" +
+//			"}\n"
+//		},
+//		"----------\n" + 
+//		"1. ERROR in X.js (at line 3)\n" + 
+//		"	throws e;\n" + 
+//		"	^^^^^^\n" + 
+//		"Syntax error on token \"throws\", throw expected\n" + 
+//		"----------\n"
+//	);
+//}
+//public void test011() {
+//	this.runNegativeTest(
+//		new String[] {
+//			"X.js",
+//			"public class X {\n" +
+//			"	public void foo(X, Object o, String s) {\n" +
+//			"	}\n" +
+//			"   public void bar(){}\n" + 
+//			"}\n"
+//		},
+//		"----------\n" + 
+//		"1. ERROR in X.js (at line 2)\n" + 
+//		"	public void foo(X, Object o, String s) {\n" + 
+//		"	                 ^\n" + 
+//		"Syntax error on token \",\", . expected\n" + 
+//		"----------\n"
+//	);
+//}
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=40681
  */
@@ -254,21 +244,19 @@ public void test012() {
 	nls.put(CompilerOptions.OPTION_ReportNonExternalizedStringLiteral, CompilerOptions.ERROR);
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\n" +
-			"	public void foo() {\n" +
+			"X.js",
+			"	function foo() {\n" +
 			"		\"foo\".equals(\"bar\");\n" +
 			"		;\n" +
-			"	}\n" +
 			"}\n"
 		},
 		"----------\n" + 
-		"1. ERROR in X.java (at line 3)\n" + 
+		"1. ERROR in X.js (at line 2)\n" + 
 		"	\"foo\".equals(\"bar\");\n" + 
 		"	^^^^^\n" + 
 		"Non-externalized string literal; it should be followed by //$NON-NLS-<n>$\n" + 
 		"----------\n" + 
-		"2. ERROR in X.java (at line 3)\n" + 
+		"2. ERROR in X.js (at line 2)\n" + 
 		"	\"foo\".equals(\"bar\");\n" + 
 		"	             ^^^^^\n" + 
 		"Non-externalized string literal; it should be followed by //$NON-NLS-<n>$\n" + 
@@ -286,21 +274,19 @@ public void test013() {
 	nls.put(CompilerOptions.OPTION_ReportNonExternalizedStringLiteral, CompilerOptions.ERROR);
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\n" +
-			"	public void foo() {\n" +
+			"X.js",
+			"	function foo() {\n" +
 			"		\"foo\".equals(\"bar\");\n" +
 			"		//;\n" +
-			"	}\n" +
 			"}\n"
 		},
 		"----------\n" + 
-		"1. ERROR in X.java (at line 3)\n" + 
+		"1. ERROR in X.js (at line 2)\n" + 
 		"	\"foo\".equals(\"bar\");\n" + 
 		"	^^^^^\n" + 
 		"Non-externalized string literal; it should be followed by //$NON-NLS-<n>$\n" + 
 		"----------\n" + 
-		"2. ERROR in X.java (at line 3)\n" + 
+		"2. ERROR in X.js (at line 2)\n" + 
 		"	\"foo\".equals(\"bar\");\n" + 
 		"	             ^^^^^\n" + 
 		"Non-externalized string literal; it should be followed by //$NON-NLS-<n>$\n" + 
@@ -313,44 +299,44 @@ public void test013() {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=47227
  */
-public void test014() {
-	this.runNegativeTest(
-		new String[] {
-			"X.java",
-			"public class X {\n" +
-			"	public void foo() { \n" +
-			"		import java.lang.*;\n" +
-			"	} \n" +
-			"}\n"
-		},
-		"----------\n" + 
-		"1. ERROR in X.java (at line 3)\n" + 
-		"	import java.lang.*;\n" + 
-		"	^^^^^^\n" + 
-		"Syntax error on token \"import\", delete this token\n" + 
-		"----------\n" + 
-		"2. ERROR in X.java (at line 3)\n" + 
-		"	import java.lang.*;\n" + 
-		"	^^^^^^^^^^^^^^^^^\n" + 
-		"Syntax error on token(s), misplaced construct(s)\n" + 
-		"----------\n"
-	);
-}
+//public void test014() {
+//	this.runNegativeTest(
+//		new String[] {
+//			"X.js",
+//			"public class X {\n" +
+//			"	public void foo() { \n" +
+//			"		import java.lang.*;\n" +
+//			"	} \n" +
+//			"}\n"
+//		},
+//		"----------\n" + 
+//		"1. ERROR in X.js (at line 3)\n" + 
+//		"	import java.lang.*;\n" + 
+//		"	^^^^^^\n" + 
+//		"Syntax error on token \"import\", delete this token\n" + 
+//		"----------\n" + 
+//		"2. ERROR in X.js (at line 3)\n" + 
+//		"	import java.lang.*;\n" + 
+//		"	^^^^^^^^^^^^^^^^^\n" + 
+//		"Syntax error on token(s), misplaced construct(s)\n" + 
+//		"----------\n"
+//	);
+//}
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=60848
  */
-public void test015() {
+public void _test015() {
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\n" + 
+			"X.js",
+			"function foo() {\n" + 
 			"// some code\n" + 
 			"}\n" + 
 			"/*\n" + 
 			"// some comments\n"
 		},
 		"----------\n" + 
-		"1. ERROR in X.java (at line 4)\n" + 
+		"1. ERROR in X.js (at line 4)\n" + 
 		"	/*\n" + 
 		"// some comments\n" + 
 		"\n" + 
@@ -365,13 +351,13 @@ public void test015() {
 public void test016() {
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\n" + 
-			"	String s = \""
+			"X.js",
+			"function foo() {\n" + 
+			"	var s = \""
 		},
 		"----------\n" + 
-		"1. ERROR in X.java (at line 2)\n" + 
-		"	String s = \"\n" + 
+		"1. ERROR in X.js (at line 2)\n" + 
+		"	var s = \"\n" + 
 		"	           ^\n" + 
 		"String literal is not properly closed by a double-quote\n" + 
 		"----------\n"
@@ -383,13 +369,13 @@ public void test016() {
 public void test017() {
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\n" + 
-			"	char c = '"
+			"X.js",
+			"function foo() {\n" + 
+			"	var c = '"
 		},
 		"----------\n" + 
-		"1. ERROR in X.java (at line 2)\n" + 
-		"	char c = \'\n" + 
+		"1. ERROR in X.js (at line 2)\n" + 
+		"	var c = \'\n" + 
 		"	         ^\n" + 
 		"Invalid character constant\n" + 
 		"----------\n"
@@ -401,13 +387,13 @@ public void test017() {
 public void test018() {
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\n" + 
-			"	char c = '\\u0"
+			"X.js",
+			"function foo() {\n" + 
+			"	var c = '\\u0"
 		},
 		"----------\n" + 
-		"1. ERROR in X.java (at line 2)\n" + 
-		"	char c = \'\\u0\n" + 
+		"1. ERROR in X.js (at line 2)\n" + 
+		"	var c = \'\\u0\n" + 
 		"	          ^^^\n" + 
 		"Invalid unicode\n" + 
 		"----------\n"
@@ -419,21 +405,19 @@ public void test018() {
 public void test019() {
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\n" + 
-			"	public void doit() {\n" + 
-			"		int[] foo = null;\n" + 
+			"X.js",
+			"	function doit() {\n" + 
+			"		var foo = null;\n" + 
 			"		foo[0] = \n" + 
-			"	}\n" + 
 			"}"
 		},
 		"----------\n" + 
-		"1. ERROR in X.java (at line 4)\n" + 
+		"1. ERROR in X.js (at line 3)\n" + 
 		"	foo[0] = \n" + 
 		"	     ^\n" + 
 		"Syntax error, insert \"AssignmentOperator Expression\" to complete Assignment\n" + 
 		"----------\n" + 
-		"2. ERROR in X.java (at line 4)\n" + 
+		"2. ERROR in X.js (at line 3)\n" + 
 		"	foo[0] = \n" + 
 		"	     ^\n" + 
 		"Syntax error, insert \";\" to complete Statement\n" + 
@@ -446,11 +430,10 @@ public void test019() {
 public void test020() {
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\n" + 
-			"	public static void main(String[] args) {\n" + 
+			"X.js",
+			"	function main( args) {\n" + 
 			"	}\n" + 
-			"	public static int newLibraryEntry() {\n" + 
+			"	function newLibraryEntry() {\n" + 
 			
 			"		if (sourceAttachmentPath != null) {\n" + 
 			"			if (sourceAttachmentPath.isEmpty()) { && !\n" + 
@@ -460,19 +443,19 @@ public void test020() {
 			"		return null;\n" + 
 			"	}\n" + 
 			"	}\n" + 
-			"	public void foo() {\n" + 
+			"	function foo() {\n" + 
 			"	}\n" + 
-			"	public void bar() {\n" + 
+			"	function bar() {\n" + 
 			"	}\n" + 
-			"}"
+			""
 		},
 		"----------\n" + 
-		"1. ERROR in X.java (at line 6)\n" + 
+		"1. ERROR in X.js (at line 5)\n" + 
 		"	if (sourceAttachmentPath.isEmpty()) { && !\n" + 
 		"	                                      ^^\n" + 
 		"Syntax error on token \"&&\", invalid (\n" + 
 		"----------\n" + 
-		"2. ERROR in X.java (at line 7)\n" + 
+		"2. ERROR in X.js (at line 6)\n" + 
 		"	sourceAttachmentPath.isAbsolute()) {\n" + 
 		"	                                   ^\n" + 
 		"Syntax error on token \"{\", invalid AssignmentOperator\n" + 
@@ -481,72 +464,72 @@ public void test020() {
 }
 public void test021() {
 	StringBuffer buffer = new StringBuffer();
-	buffer.append("public class X {\n");
+//	buffer.append("public class X {\n");
 	for (int i = 0; i < 1000; i++) {
-		buffer.append("\tint field_" + i + " = 0; \n");
+		buffer.append("\tvar field_" + i + " = 0; \n");
 	}
 	for (int i = 0; i < 1000; i++) {
 		if (i == 0)
-			buffer.append("\tvoid method_" + i + "() { /* default */ } \n");
+			buffer.append("\tfunction method_" + i + "() { /* default */ } \n");
 		else
-			buffer.append("\tvoid method_" + i + "() { method_" + (i - 1) + "() \n");
+			buffer.append("\tfunction method_" + i + "() { method_" + (i - 1) + "() \n");
 	}
-	buffer.append("}\n");
+//	buffer.append("}\n");
 	
 	Hashtable options = new Hashtable();
 	options.put(CompilerOptions.OPTION_MaxProblemPerUnit, "10");
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
+			"X.js",
 			buffer.toString()
 		},
 		"----------\n" + 
-		"1. ERROR in X.java (at line 1003)\n" + 
+		"1. ERROR in X.js (at line 1002)\n" + 
 		"	void method_1() { method_0() \n" + 
 		"	                           ^\n" + 
 		"Syntax error, insert \"}\" to complete MethodBody\n" + 
 		"----------\n" + 
-		"2. ERROR in X.java (at line 1003)\n" + 
+		"2. ERROR in X.js (at line 1002)\n" + 
 		"	void method_1() { method_0() \n" + 
 		"	                           ^\n" + 
 		"Syntax error, insert \";\" to complete BlockStatements\n" + 
 		"----------\n" + 
-		"3. ERROR in X.java (at line 1004)\n" + 
+		"3. ERROR in X.js (at line 1003)\n" + 
 		"	void method_2() { method_1() \n" + 
 		"	                           ^\n" + 
 		"Syntax error, insert \"}\" to complete MethodBody\n" + 
 		"----------\n" + 
-		"4. ERROR in X.java (at line 1004)\n" + 
+		"4. ERROR in X.js (at line 1003)\n" + 
 		"	void method_2() { method_1() \n" + 
 		"	                           ^\n" + 
 		"Syntax error, insert \";\" to complete BlockStatements\n" + 
 		"----------\n" + 
-		"5. ERROR in X.java (at line 1005)\n" + 
+		"5. ERROR in X.js (at line 1004)\n" + 
 		"	void method_3() { method_2() \n" + 
 		"	                           ^\n" + 
 		"Syntax error, insert \"}\" to complete MethodBody\n" + 
 		"----------\n" + 
-		"6. ERROR in X.java (at line 1005)\n" + 
+		"6. ERROR in X.js (at line 1004)\n" + 
 		"	void method_3() { method_2() \n" + 
 		"	                           ^\n" + 
 		"Syntax error, insert \";\" to complete BlockStatements\n" + 
 		"----------\n" + 
-		"7. ERROR in X.java (at line 1006)\n" + 
+		"7. ERROR in X.js (at line 1005)\n" + 
 		"	void method_4() { method_3() \n" + 
 		"	                           ^\n" + 
 		"Syntax error, insert \"}\" to complete MethodBody\n" + 
 		"----------\n" + 
-		"8. ERROR in X.java (at line 1006)\n" + 
+		"8. ERROR in X.js (at line 1005)\n" + 
 		"	void method_4() { method_3() \n" + 
 		"	                           ^\n" + 
 		"Syntax error, insert \";\" to complete BlockStatements\n" + 
 		"----------\n" + 
-		"9. ERROR in X.java (at line 1007)\n" + 
+		"9. ERROR in X.js (at line 1006)\n" + 
 		"	void method_5() { method_4() \n" + 
 		"	                           ^\n" + 
 		"Syntax error, insert \"}\" to complete MethodBody\n" + 
 		"----------\n" + 
-		"10. ERROR in X.java (at line 2002)\n" + 
+		"10. ERROR in X.js (at line 2001)\n" + 
 		"	}\n" + 
 		"	^\n" + 
 		"Syntax error, insert \"}\" to complete ClassBody\n" + 
@@ -564,13 +547,13 @@ public void test022() {
 	options.put(CompilerOptions.OPTION_ReportEmptyStatement, CompilerOptions.ERROR);
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
+			"X.js",
 			"interface X {\n" + 
 			"    int f= 1;;\n" + 
 			"}"
 		},
 		"----------\n" + 
-		"1. ERROR in X.java (at line 2)\n" + 
+		"1. ERROR in X.js (at line 2)\n" + 
 		"	int f= 1;;\n" + 
 		"	         ^\n" + 
 		"Unnecessary semicolon\n" + 
@@ -588,13 +571,13 @@ public void test023() {
 	options.put(CompilerOptions.OPTION_ReportEmptyStatement, CompilerOptions.ERROR);
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
+			"X.js",
 			"class X {\n" + 
 			"    int f= 1;;\n" + 
 			"}"
 		},
 		"----------\n" + 
-		"1. ERROR in X.java (at line 2)\n" + 
+		"1. ERROR in X.js (at line 2)\n" + 
 		"	int f= 1;;\n" + 
 		"	         ^\n" + 
 		"Unnecessary semicolon\n" + 
@@ -612,13 +595,13 @@ public void test024() {
 	options.put(CompilerOptions.OPTION_ReportEmptyStatement, CompilerOptions.ERROR);
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
+			"X.js",
 			"interface X {\n" + 
 			"    int f= 1;\\u003B\n" + 
 			"}"
 		},
 		"----------\n" + 
-		"1. ERROR in X.java (at line 2)\n" + 
+		"1. ERROR in X.js (at line 2)\n" + 
 		"	int f= 1;\\u003B\n" + 
 		"	         ^^^^^^\n" + 
 		"Unnecessary semicolon\n" + 
@@ -636,7 +619,7 @@ public void test025() {
 	options.put(CompilerOptions.OPTION_ReportUndocumentedEmptyBlock, CompilerOptions.ERROR);
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
+			"X.js",
 			"public class X {\n" + 
 			"        static class Y {\n" + 
 			"                public void foo(int i) {}\n" + 
@@ -647,12 +630,12 @@ public void test025() {
 			"}"
 		},
 		"----------\n" + 
-		"1. ERROR in X.java (at line 3)\n" + 
+		"1. ERROR in X.js (at line 3)\n" + 
 		"	public void foo(int i) {}\n" + 
 		"	                       ^^\n" + 
 		"Empty block should be documented\n" + 
 		"----------\n" + 
-		"2. ERROR in X.java (at line 6)\n" + 
+		"2. ERROR in X.js (at line 6)\n" + 
 		"	public void foo(int i) {}\n" + 
 		"	                       ^^\n" + 
 		"Empty block should be documented\n" + 
@@ -670,7 +653,7 @@ public void test026() {
 	options.put(CompilerOptions.OPTION_ReportUndocumentedEmptyBlock, CompilerOptions.ERROR);
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
+			"X.js",
 			"public class X {\n" + 
 			"        static class Y {\n" + 
 			"                public void foo(int i) {}\n" + 
@@ -687,17 +670,17 @@ public void test026() {
 			"}"
 		},
 		"----------\n" + 
-		"1. ERROR in X.java (at line 3)\n" + 
+		"1. ERROR in X.js (at line 3)\n" + 
 		"	public void foo(int i) {}\n" + 
 		"	                       ^^\n" + 
 		"Empty block should be documented\n" + 
 		"----------\n" + 
-		"2. ERROR in X.java (at line 8)\n" + 
+		"2. ERROR in X.js (at line 8)\n" + 
 		"	A() {}\n" + 
 		"	    ^^\n" + 
 		"Empty block should be documented\n" + 
 		"----------\n" + 
-		"3. ERROR in X.java (at line 9)\n" + 
+		"3. ERROR in X.js (at line 9)\n" + 
 		"	public void bar() {}\n" + 
 		"	                  ^^\n" + 
 		"Empty block should be documented\n" + 

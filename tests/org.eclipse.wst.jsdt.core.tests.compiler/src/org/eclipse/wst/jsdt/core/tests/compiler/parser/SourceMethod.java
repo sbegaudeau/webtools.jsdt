@@ -148,7 +148,7 @@ public String toString(int tab) {
 	if (returnTypeName != null) {
 		buffer.append(returnTypeName).append(" ");
 	}
-	buffer.append(selector).append("(");
+	buffer.append("function ").append(selector).append("(");
 	if (argumentTypeNames != null) {
 		for (int i = 0, max = argumentTypeNames.length; i < max; i++) {
 			buffer.append(argumentTypeNames[i]).append(" ").append(

@@ -26,17 +26,13 @@ public static Test suite() {
 }
 public void testA() {
 	String str =
-		"package p; \n" + 
-		"public class A {\n" + 
-		"	public void foo(\n" + 
-		"		java.util.Locale, \n" + 
-		"		java.util.Vector) {\n" + 
-		"		int i;\n" + 
+		"	function foo(){\n" + 
+		"		var i;\n" + 
 		"		if (i instanceof O) {\n" + 
 		"		}\n" + 
-		"		String s = \"hello\";\n" + 
+		"		var s = \"hello\";\n" + 
 		"		s.}\n" + 
-		"}\n";
+		"\n";
 
 	String testName = "<complete on methods/fields>";
 	String completeBehind = "s.";
@@ -45,18 +41,15 @@ public void testA() {
 	String expectedReplacedSource = "s.";
 	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
 	String expectedUnitDisplayString =
-		"package p;\n" + 
-		"public class A {\n" + 
-		"  public A() {\n" + 
-		"  }\n" + 
-		"  public void foo() {\n" + 
-		"    {\n" + 
-		"      int i;\n" + 
-		"      String s;\n" + 
-		"      <CompleteOnName:s.>;\n" + 
-		"    }\n" + 
-		"  }\n" + 
-		"}\n";
+		"function foo() {\n" + 
+		"  var i;\n" + 
+		"  if ((i instanceof O))\n" + 
+		"      {\n" + 
+		"      }\n" + 
+		"  var s = \"hello\";\n" + 
+		"  <CompleteOnName:s.>;\n" + 
+		"}" + 
+		"\n";
 
 	checkMethodParse(
 		str.toCharArray(), 
@@ -69,40 +62,23 @@ public void testA() {
 }
 public void testAA_1() {
 	String str = 
-			"package p; \n" + 
-			"import something; \n" + 
-			"import p2.; \n" + 
-			"public class AA {\n" + 
-			"	void foo() {\n" + 
-			"		int maxUnits = 0;\n" + 
-			"		for (int i = 0; \n" + 
-			"			i < maxUnits; \n" + 
-			"			i++) {\n" + 
-			"			CompilationUnitResult unitResult = \n" + 
+			"	function foo() {\n" + 
+			"		var maxUnits = 0;\n" + 
+			"			var unitResult = \n" + 
 			"				new CompilationUnitResult(\n" + 
 			"					null, \n" + 
 			"					i, \n" + 
 			"					maxUnits); \n" + 
-			"		}\n" + 
-			"	}\n" + 
+			"	}" + 
 			"}\n";
 
 	String completeBehind = "n";
 	String expectedCompletionNodeToString = "<CompleteOnName:n>";
 	String completionIdentifier = "n";
 	String expectedUnitDisplayString =
-		"package p;\n" + 
-		"import something;\n" + 
-		"public class AA {\n" + 
-		"  public AA() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    int maxUnits;\n" + 
-		"    int i;\n" + 
-		"    {\n" + 
-		"      CompilationUnitResult unitResult = <CompleteOnName:n>;\n" + 
-		"    }\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  var maxUnits = 0;\n" + 
+		"  var unitResult = <CompleteOnName:n>;\n" + 
 		"}\n";
 	String expectedReplacedSource = "new";
 	String testName = "<complete on initializer (new)>";
@@ -117,47 +93,19 @@ public void testAA_1() {
 		expectedReplacedSource,
 		testName); 
 }
+
 public void testAA_2() {
 	String str =
-			"package p; \n" + 
-			"import something; \n" + 
-			"import p2.; \n" + 
-			"public class AA {\n" + 
-			"	void foo() {\n" + 
-			"		int maxUnits = 0;\n" + 
-			"		for (int i = 0; \n" + 
-			"			i < maxUnits; \n" + 
-			"			i++) {\n" + 
-			"			CompilationUnitResult unitResult = \n" + 
-			"				new CompilationUnitResult(\n" + 
-			"					null, \n" + 
-			"					i, \n" + 
-			"					maxUnits); \n" + 
-			"		}\n" + 
-			"	}\n" + 
-			"}\n";
-
-	String testName = "<complete on method call argument>";
-	String completeBehind = "n";
-	String expectedCompletionNodeToString = "<CompleteOnName:n>";
-	String completionIdentifier = "n";
-	String expectedReplacedSource = "null";
-	int cursorLocation = str.indexOf("null, ") + completeBehind.length() - 1;
+		"// test unicode \\u000a var c = 1; \n" +
+		"var b = 2; \n";
+	String testName = "<unicode in comment complete on variable>";
+	String expectedCompletionNodeToString = "<CompleteOnName:c>";
+	String completionIdentifier = "c";
+	String expectedReplacedSource = "c";
+	int cursorLocation = str.indexOf("var b =") -1 /*+ completeBehind.length() - 1*/;
 	String expectedUnitDisplayString =
-		"package p;\n" + 
-		"import something;\n" + 
-		"public class AA {\n" + 
-		"  public AA() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    int maxUnits;\n" + 
-		"    int i;\n" + 
-		"    {\n" + 
-		"      CompilationUnitResult unitResult = new CompilationUnitResult(<CompleteOnName:n>);\n" + 
-		"    }\n" + 
-		"  }\n" + 
-		"}\n";
-
+		"// test unicode \\u000a var c = 1; \n" +
+		"var b = <CompleteOnName:c>;\n";
 	checkMethodParse(
 		str.toCharArray(), 
 		cursorLocation, 
@@ -167,47 +115,17 @@ public void testAA_2() {
 		expectedReplacedSource,
 		testName); 
 }
+
 public void testAA_3() {
-	String str = 
-			"package p; \n" + 
-			"import something; \n" + 
-			"import p2.; \n" + 
-			"public class AA {\n" + 
-			"	void foo() {\n" + 
-			"		int maxUnits = 0;\n" + 
-			"		for (int i = 0; \n" + 
-			"			i < maxUnits; \n" + 
-			"			i++) {\n" + 
-			"			CompilationUnitResult unitResult = \n" + 
-			"				new CompilationUnitResult(\n" + 
-			"					null, \n" + 
-			"					i, \n" + 
-			"					maxUnits); \n" + 
-			"		}\n" + 
-			"	}\n" + 
-			"}\n";
-
-	String testName = "<complete on call to constructor argument>";
-	String completeBehind = "i";
-	String expectedCompletionNodeToString = "<CompleteOnName:i>";
-	String completionIdentifier = "i";
-	String expectedReplacedSource = "i";
-	int cursorLocation = str.indexOf("i, ") + completeBehind.length() - 1;
+	String str =
+		"'abc\\u0027def';\n";
+	String testName = "<unicode in comment complete on variable>";
+	String expectedCompletionNodeToString = "<CompleteOnName:c>";
+	String completionIdentifier = "c";
+	String expectedReplacedSource = "c";
+	int cursorLocation = str.indexOf("var b =") -1 /*+ completeBehind.length() - 1*/;
 	String expectedUnitDisplayString =
-		"package p;\n" + 
-		"import something;\n" + 
-		"public class AA {\n" + 
-		"  public AA() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    int maxUnits;\n" + 
-		"    int i;\n" + 
-		"    {\n" + 
-		"      CompilationUnitResult unitResult = new CompilationUnitResult(null, <CompleteOnName:i>);\n" + 
-		"    }\n" + 
-		"  }\n" + 
-		"}\n";
-
+		"'abc\\u0027def';\n";
 	checkMethodParse(
 		str.toCharArray(), 
 		cursorLocation, 
@@ -217,277 +135,324 @@ public void testAA_3() {
 		expectedReplacedSource,
 		testName); 
 }
-public void testAA_4() {
-	String str = 
-			"package p; \n" + 
-			"import something; \n" + 
-			"import p2.; \n" + 
-			"public class AA {\n" + 
-			"	void foo() {\n" + 
-			"		int maxUnits = 0;\n" + 
-			"		for (int i = 0; \n" + 
-			"			i < maxUnits; \n" + 
-			"			i++) {\n" + 
-			"			CompilationUnitResult unitResult = \n" + 
-			"				new CompilationUnitResult(\n" + 
-			"					null, \n" + 
-			"					i, \n" + 
-			"					maxUnits); \n" + 
-			"		}\n" + 
-			"	}\n" + 
-			"}\n";
 
-	String testName = "<complete on constructor call argument>";
-	String completeBehind = "max";
-	String expectedCompletionNodeToString = "<CompleteOnName:max>";
-	String completionIdentifier = "max";
-	String expectedReplacedSource = "maxUnits";
-	int cursorLocation = str.indexOf("maxUnits); ") + completeBehind.length() - 1;
-	String expectedUnitDisplayString =
-		"package p;\n" + 
-		"import something;\n" + 
-		"public class AA {\n" + 
-		"  public AA() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    int maxUnits;\n" + 
-		"    int i;\n" + 
-		"    {\n" + 
-		"      CompilationUnitResult unitResult = new CompilationUnitResult(null, i, <CompleteOnName:max>);\n" + 
-		"    }\n" + 
-		"  }\n" + 
-		"}\n";
-
-	checkMethodParse(
-		str.toCharArray(), 
-		cursorLocation, 
-		expectedCompletionNodeToString,
-		expectedUnitDisplayString,
-		completionIdentifier,
-		expectedReplacedSource,
-		testName); 
-}
-public void testAB_1FHU9LU() {
-	String str = 
-			"package p; \n" + 
-			"/**\n" + 
-			" * 1FHU9LU\n" + 
-			" */\n" + 
-			"class SuperClass {\n" + 
-			"	static void eFooStatic() {\n" + 
-			"	}\n" + 
-			"	void eFoo() {\n" + 
-			"	}\n" + 
-			"}\n" + 
-			"public class AB\n" + 
-			"	extends SuperClass {\n" + 
-			"	void eBar() {\n" + 
-			"		super.eFoo();\n" + 
-			"	}\n" + 
-			"}\n";
-
-	String testName = "<complete on methods/fields from super class>";
-	String completeBehind = "super.";
-	String expectedCompletionNodeToString = "<CompleteOnMemberAccess:super.>";
-	String completionIdentifier = "";
-	String expectedReplacedSource = "super.";
-	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
-	String expectedUnitDisplayString =
-		"package p;\n" + 
-		"class SuperClass {\n" + 
-		"  SuperClass() {\n" + 
-		"  }\n" + 
-		"  static void eFooStatic() {\n" + 
-		"  }\n" + 
-		"  void eFoo() {\n" + 
-		"  }\n" + 
-		"}\n" + 
-		"public class AB extends SuperClass {\n" + 
-		"  public AB() {\n" + 
-		"  }\n" + 
-		"  void eBar() {\n" + 
-		"    <CompleteOnMemberAccess:super.>;\n" + 
-		"  }\n" + 
-		"}\n";
-
-	checkMethodParse(
-		str.toCharArray(), 
-		cursorLocation, 
-		expectedCompletionNodeToString,
-		expectedUnitDisplayString,
-		completionIdentifier,
-		expectedReplacedSource,
-		testName); 
-}
-public void testAC_1FJ8D9Z_1() {
-	String str = 
-			"package p; \n" + 
-			"/**\n" + 
-			" * 1FJ8D9Z\n" + 
-			" */\n" + 
-			"import java.io.*;\n" + 
-			"public class AC {\n" + 
-			"	AC() {\n" + 
-			"	}\n" + 
-			"	AC(int i) {\n" + 
-			"	}\n" + 
-			"	AC(int i, String s) {\n" + 
-			"	}\n" + 
-			"	void foo() {\n" + 
-			"		new AC(new File(\n" + 
-			"			new java\n" + 
-			"			.util\n" + 
-			"			.Vector(}\n" + 
-			"}\n";
-
-	String testName = "<complete on constructor argument>";
-	String completeBehind = "new AC(";
-	String expectedCompletionNodeToString = "<CompleteOnAllocationExpression:new AC()>";
-	String completionIdentifier = "";
-	String expectedReplacedSource = "";
-	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
-	String expectedUnitDisplayString =
-		"package p;\n" + 
-		"import java.io.*;\n" + 
-		"public class AC {\n" + 
-		"  AC() {\n" + 
-		"  }\n" + 
-		"  AC(int i) {\n" + 
-		"  }\n" + 
-		"  AC(int i, String s) {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnAllocationExpression:new AC()>;\n" + 
-		"  }\n" + 
-		"}\n";
-
-	checkMethodParse(
-		str.toCharArray(), 
-		cursorLocation, 
-		expectedCompletionNodeToString,
-		expectedUnitDisplayString,
-		completionIdentifier,
-		expectedReplacedSource,
-		testName); 
-}
-public void testAC_1FJ8D9Z_2() {
-	String str = 
-			"package p; \n" + 
-			"/**\n" + 
-			" * 1FJ8D9Z\n" + 
-			" */\n" + 
-			"import java.io.*;\n" + 
-			"public class AC {\n" + 
-			"	AC() {\n" + 
-			"	}\n" + 
-			"	AC(int i) {\n" + 
-			"	}\n" + 
-			"	AC(int i, String s) {\n" + 
-			"	}\n" + 
-			"	void foo() {\n" + 
-			"		new AC(new File(\n" + 
-			"			new java\n" + 
-			"			.util\n" + 
-			"			.Vector(}\n" + 
-			"}\n";
-
-	String testName = "<complete on constructor argument>";
-	String completeBehind = "new File(";
-	String expectedCompletionNodeToString = "<CompleteOnAllocationExpression:new File()>";
-	String completionIdentifier = "";
-	String expectedReplacedSource = "";
-	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
-	String expectedUnitDisplayString =
-		"package p;\n" + 
-		"import java.io.*;\n" + 
-		"public class AC {\n" + 
-		"  AC() {\n" + 
-		"  }\n" + 
-		"  AC(int i) {\n" + 
-		"  }\n" + 
-		"  AC(int i, String s) {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnAllocationExpression:new File()>;\n" + 
-		"  }\n" + 
-		"}\n";
-
-	checkMethodParse(
-		str.toCharArray(), 
-		cursorLocation, 
-		expectedCompletionNodeToString,
-		expectedUnitDisplayString,
-		completionIdentifier,
-		expectedReplacedSource,
-		testName); 
-}
-public void testAC_1FJ8D9Z_3() {
-	String str = 
-			"package p; \n" + 
-			"/**\n" + 
-			" * 1FJ8D9Z\n" + 
-			" */\n" + 
-			"import java.io.*;\n" + 
-			"public class AC {\n" + 
-			"	AC() {\n" + 
-			"	}\n" + 
-			"	AC(int i) {\n" + 
-			"	}\n" + 
-			"	AC(int i, String s) {\n" + 
-			"	}\n" + 
-			"	void foo() {\n" + 
-			"		new AC(new File(\n" + 
-			"			new java.util.Vector(}\n" + 
-			"}\n";
-
-	String testName = "<complete on constructor argument>";
-	String completeBehind = "new java.util.Vector(";
-	String expectedCompletionNodeToString = "<CompleteOnAllocationExpression:new java.util.Vector()>";
-	String completionIdentifier = "";
-	String expectedReplacedSource = "";
-	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
-	String expectedUnitDisplayString =
-		"package p;\n" + 
-		"import java.io.*;\n" + 
-		"public class AC {\n" + 
-		"  AC() {\n" + 
-		"  }\n" + 
-		"  AC(int i) {\n" + 
-		"  }\n" + 
-		"  AC(int i, String s) {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnAllocationExpression:new java.util.Vector()>;\n" + 
-		"  }\n" + 
-		"}\n";
-
-	checkMethodParse(
-		str.toCharArray(), 
-		cursorLocation, 
-		expectedCompletionNodeToString,
-		expectedUnitDisplayString,
-		completionIdentifier,
-		expectedReplacedSource,
-		testName); 
-}
+//public void testAA_3() {
+//	String str = 
+//			"package p; \n" + 
+//			"import something; \n" + 
+//			"import p2.; \n" + 
+//			"public class AA {\n" + 
+//			"	void foo() {\n" + 
+//			"		int maxUnits = 0;\n" + 
+//			"		for (int i = 0; \n" + 
+//			"			i < maxUnits; \n" + 
+//			"			i++) {\n" + 
+//			"			CompilationUnitResult unitResult = \n" + 
+//			"				new CompilationUnitResult(\n" + 
+//			"					null, \n" + 
+//			"					i, \n" + 
+//			"					maxUnits); \n" + 
+//			"		}\n" + 
+//			"	}\n" + 
+//			"}\n";
+//
+//	String testName = "<complete on call to constructor argument>";
+//	String completeBehind = "i";
+//	String expectedCompletionNodeToString = "<CompleteOnName:i>";
+//	String completionIdentifier = "i";
+//	String expectedReplacedSource = "i";
+//	int cursorLocation = str.indexOf("i, ") + completeBehind.length() - 1;
+//	String expectedUnitDisplayString =
+//		"package p;\n" + 
+//		"import something;\n" + 
+//		"public class AA {\n" + 
+//		"  public AA() {\n" + 
+//		"  }\n" + 
+//		"  void foo() {\n" + 
+//		"    int maxUnits;\n" + 
+//		"    int i;\n" + 
+//		"    {\n" + 
+//		"      CompilationUnitResult unitResult = new CompilationUnitResult(null, <CompleteOnName:i>);\n" + 
+//		"    }\n" + 
+//		"  }\n" + 
+//		"}\n";
+//
+//	checkMethodParse(
+//		str.toCharArray(), 
+//		cursorLocation, 
+//		expectedCompletionNodeToString,
+//		expectedUnitDisplayString,
+//		completionIdentifier,
+//		expectedReplacedSource,
+//		testName); 
+//}
+//public void testAA_4() {
+//	String str = 
+//			"package p; \n" + 
+//			"import something; \n" + 
+//			"import p2.; \n" + 
+//			"public class AA {\n" + 
+//			"	void foo() {\n" + 
+//			"		int maxUnits = 0;\n" + 
+//			"		for (int i = 0; \n" + 
+//			"			i < maxUnits; \n" + 
+//			"			i++) {\n" + 
+//			"			CompilationUnitResult unitResult = \n" + 
+//			"				new CompilationUnitResult(\n" + 
+//			"					null, \n" + 
+//			"					i, \n" + 
+//			"					maxUnits); \n" + 
+//			"		}\n" + 
+//			"	}\n" + 
+//			"}\n";
+//
+//	String testName = "<complete on constructor call argument>";
+//	String completeBehind = "max";
+//	String expectedCompletionNodeToString = "<CompleteOnName:max>";
+//	String completionIdentifier = "max";
+//	String expectedReplacedSource = "maxUnits";
+//	int cursorLocation = str.indexOf("maxUnits); ") + completeBehind.length() - 1;
+//	String expectedUnitDisplayString =
+//		"package p;\n" + 
+//		"import something;\n" + 
+//		"public class AA {\n" + 
+//		"  public AA() {\n" + 
+//		"  }\n" + 
+//		"  void foo() {\n" + 
+//		"    int maxUnits;\n" + 
+//		"    int i;\n" + 
+//		"    {\n" + 
+//		"      CompilationUnitResult unitResult = new CompilationUnitResult(null, i, <CompleteOnName:max>);\n" + 
+//		"    }\n" + 
+//		"  }\n" + 
+//		"}\n";
+//
+//	checkMethodParse(
+//		str.toCharArray(), 
+//		cursorLocation, 
+//		expectedCompletionNodeToString,
+//		expectedUnitDisplayString,
+//		completionIdentifier,
+//		expectedReplacedSource,
+//		testName); 
+//}
+//public void testAB_1FHU9LU() {
+//	String str = 
+//			"package p; \n" + 
+//			"/**\n" + 
+//			" * 1FHU9LU\n" + 
+//			" */\n" + 
+//			"class SuperClass {\n" + 
+//			"	static void eFooStatic() {\n" + 
+//			"	}\n" + 
+//			"	void eFoo() {\n" + 
+//			"	}\n" + 
+//			"}\n" + 
+//			"public class AB\n" + 
+//			"	extends SuperClass {\n" + 
+//			"	void eBar() {\n" + 
+//			"		super.eFoo();\n" + 
+//			"	}\n" + 
+//			"}\n";
+//
+//	String testName = "<complete on methods/fields from super class>";
+//	String completeBehind = "super.";
+//	String expectedCompletionNodeToString = "<CompleteOnMemberAccess:super.>";
+//	String completionIdentifier = "";
+//	String expectedReplacedSource = "super.";
+//	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
+//	String expectedUnitDisplayString =
+//		"package p;\n" + 
+//		"class SuperClass {\n" + 
+//		"  SuperClass() {\n" + 
+//		"  }\n" + 
+//		"  static void eFooStatic() {\n" + 
+//		"  }\n" + 
+//		"  void eFoo() {\n" + 
+//		"  }\n" + 
+//		"}\n" + 
+//		"public class AB extends SuperClass {\n" + 
+//		"  public AB() {\n" + 
+//		"  }\n" + 
+//		"  void eBar() {\n" + 
+//		"    <CompleteOnMemberAccess:super.>;\n" + 
+//		"  }\n" + 
+//		"}\n";
+//
+//	checkMethodParse(
+//		str.toCharArray(), 
+//		cursorLocation, 
+//		expectedCompletionNodeToString,
+//		expectedUnitDisplayString,
+//		completionIdentifier,
+//		expectedReplacedSource,
+//		testName); 
+//}
+//public void testAC_1FJ8D9Z_1() {
+//	String str = 
+//			"package p; \n" + 
+//			"/**\n" + 
+//			" * 1FJ8D9Z\n" + 
+//			" */\n" + 
+//			"import java.io.*;\n" + 
+//			"public class AC {\n" + 
+//			"	AC() {\n" + 
+//			"	}\n" + 
+//			"	AC(int i) {\n" + 
+//			"	}\n" + 
+//			"	AC(int i, String s) {\n" + 
+//			"	}\n" + 
+//			"	void foo() {\n" + 
+//			"		new AC(new File(\n" + 
+//			"			new java\n" + 
+//			"			.util\n" + 
+//			"			.Vector(}\n" + 
+//			"}\n";
+//
+//	String testName = "<complete on constructor argument>";
+//	String completeBehind = "new AC(";
+//	String expectedCompletionNodeToString = "<CompleteOnAllocationExpression:new AC()>";
+//	String completionIdentifier = "";
+//	String expectedReplacedSource = "";
+//	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
+//	String expectedUnitDisplayString =
+//		"package p;\n" + 
+//		"import java.io.*;\n" + 
+//		"public class AC {\n" + 
+//		"  AC() {\n" + 
+//		"  }\n" + 
+//		"  AC(int i) {\n" + 
+//		"  }\n" + 
+//		"  AC(int i, String s) {\n" + 
+//		"  }\n" + 
+//		"  void foo() {\n" + 
+//		"    <CompleteOnAllocationExpression:new AC()>;\n" + 
+//		"  }\n" + 
+//		"}\n";
+//
+//	checkMethodParse(
+//		str.toCharArray(), 
+//		cursorLocation, 
+//		expectedCompletionNodeToString,
+//		expectedUnitDisplayString,
+//		completionIdentifier,
+//		expectedReplacedSource,
+//		testName); 
+//}
+//public void testAC_1FJ8D9Z_2() {
+//	String str = 
+//			"package p; \n" + 
+//			"/**\n" + 
+//			" * 1FJ8D9Z\n" + 
+//			" */\n" + 
+//			"import java.io.*;\n" + 
+//			"public class AC {\n" + 
+//			"	AC() {\n" + 
+//			"	}\n" + 
+//			"	AC(int i) {\n" + 
+//			"	}\n" + 
+//			"	AC(int i, String s) {\n" + 
+//			"	}\n" + 
+//			"	void foo() {\n" + 
+//			"		new AC(new File(\n" + 
+//			"			new java\n" + 
+//			"			.util\n" + 
+//			"			.Vector(}\n" + 
+//			"}\n";
+//
+//	String testName = "<complete on constructor argument>";
+//	String completeBehind = "new File(";
+//	String expectedCompletionNodeToString = "<CompleteOnAllocationExpression:new File()>";
+//	String completionIdentifier = "";
+//	String expectedReplacedSource = "";
+//	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
+//	String expectedUnitDisplayString =
+//		"package p;\n" + 
+//		"import java.io.*;\n" + 
+//		"public class AC {\n" + 
+//		"  AC() {\n" + 
+//		"  }\n" + 
+//		"  AC(int i) {\n" + 
+//		"  }\n" + 
+//		"  AC(int i, String s) {\n" + 
+//		"  }\n" + 
+//		"  void foo() {\n" + 
+//		"    <CompleteOnAllocationExpression:new File()>;\n" + 
+//		"  }\n" + 
+//		"}\n";
+//
+//	checkMethodParse(
+//		str.toCharArray(), 
+//		cursorLocation, 
+//		expectedCompletionNodeToString,
+//		expectedUnitDisplayString,
+//		completionIdentifier,
+//		expectedReplacedSource,
+//		testName); 
+//}
+//public void testAC_1FJ8D9Z_3() {
+//	String str = 
+//			"package p; \n" + 
+//			"/**\n" + 
+//			" * 1FJ8D9Z\n" + 
+//			" */\n" + 
+//			"import java.io.*;\n" + 
+//			"public class AC {\n" + 
+//			"	AC() {\n" + 
+//			"	}\n" + 
+//			"	AC(int i) {\n" + 
+//			"	}\n" + 
+//			"	AC(int i, String s) {\n" + 
+//			"	}\n" + 
+//			"	void foo() {\n" + 
+//			"		new AC(new File(\n" + 
+//			"			new java.util.Vector(}\n" + 
+//			"}\n";
+//
+//	String testName = "<complete on constructor argument>";
+//	String completeBehind = "new java.util.Vector(";
+//	String expectedCompletionNodeToString = "<CompleteOnAllocationExpression:new java.util.Vector()>";
+//	String completionIdentifier = "";
+//	String expectedReplacedSource = "";
+//	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
+//	String expectedUnitDisplayString =
+//		"package p;\n" + 
+//		"import java.io.*;\n" + 
+//		"public class AC {\n" + 
+//		"  AC() {\n" + 
+//		"  }\n" + 
+//		"  AC(int i) {\n" + 
+//		"  }\n" + 
+//		"  AC(int i, String s) {\n" + 
+//		"  }\n" + 
+//		"  void foo() {\n" + 
+//		"    <CompleteOnAllocationExpression:new java.util.Vector()>;\n" + 
+//		"  }\n" + 
+//		"}\n";
+//
+//	checkMethodParse(
+//		str.toCharArray(), 
+//		cursorLocation, 
+//		expectedCompletionNodeToString,
+//		expectedUnitDisplayString,
+//		completionIdentifier,
+//		expectedReplacedSource,
+//		testName); 
+//}
 public void testB() {
 	String str = 
-		"package p; \n" + 
-		"public class B {\n" + 
-		"	Object o = new Object }\n";
+		"function B() {\n" + 
+		"	var o = new Object \n}\n";
 
 	String testName = "<complete on type into type creation>";
 	String completeBehind = "new Object";
-	String expectedCompletionNodeToString = "<CompleteOnType:Object>";
+	String expectedCompletionNodeToString = "<CompleteOnName:Object>";
 	String completionIdentifier = "Object";
 	String expectedReplacedSource = "Object";
 	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
 	String expectedUnitDisplayString =
-		"package p;\n" + 
-		"public class B {\n" + 
-		"  Object o = new <CompleteOnType:Object>();\n" + 
-		"  public B() {\n" + 
-		"  }\n" + 
+		"function B() {\n" + 
+		"  var o = new   <CompleteOnName:Object>;\n" + 
 		"}\n";
 
 	checkDietParse(
@@ -499,103 +464,94 @@ public void testB() {
 		expectedReplacedSource,
 		testName); 
 }
-public void testBA_1() {
-	String str = 
-			"package p; \n" + 
-			"public class BA {\n" + 
-			"	void foo() {\n" + 
-			"		java.util.Vector v2;\n" + 
-			"		java.util.Vector v1;\n" + 
-			"	}\n" + 
-			"}\n";
-
-	String testName = "<complete on package name>";
-	String completeBehind = "java.";
-	String expectedCompletionNodeToString = "<CompleteOnName:java.>";
-	String completionIdentifier = "";
-	String expectedReplacedSource = "java.";
-	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
-	String expectedUnitDisplayString =
-		"package p;\n" + 
-		"public class BA {\n" + 
-		"  public BA() {\n" + 
-
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnName:java.>;\n" + 
-		"  }\n" + 
-		"}\n";
-
-	checkMethodParse(
-		str.toCharArray(), 
-		cursorLocation, 
-		expectedCompletionNodeToString,
-		expectedUnitDisplayString,
-		completionIdentifier,
-		expectedReplacedSource,
-		testName); 
-}
-public void testBA_2() {
-	String str = 
-			"package p; \n" + 
-			"public class BA {\n" + 
-			"	void foo() {\n" + 
-			"		java.util.Vector v2;\n" + 
-			"		java.util.Vector v1;\n" + 
-			"	}\n" + 
-			"}\n";
-
-	String testName = "<complete on package contents>";
-	String completeBehind = "java.util.";
-	String expectedCompletionNodeToString = "<CompleteOnName:java.util.>";
-	String completionIdentifier = "";
-	String expectedReplacedSource = "java.util.";
-	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
-	String expectedUnitDisplayString =
-		"package p;\n" + 
-		"public class BA {\n" + 
-		"  public BA() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnName:java.util.>;\n" + 
-		"  }\n" + 
-		"}\n";
-
-	checkMethodParse(
-		str.toCharArray(), 
-		cursorLocation, 
-		expectedCompletionNodeToString,
-		expectedUnitDisplayString,
-		completionIdentifier,
-		expectedReplacedSource,
-		testName); 
-}
+//public void testBA_1() {
+//	String str = 
+//			"package p; \n" + 
+//			"public class BA {\n" + 
+//			"	void foo() {\n" + 
+//			"		java.util.Vector v2;\n" + 
+//			"		java.util.Vector v1;\n" + 
+//			"	}\n" + 
+//			"}\n";
+//
+//	String testName = "<complete on package name>";
+//	String completeBehind = "java.";
+//	String expectedCompletionNodeToString = "<CompleteOnName:java.>";
+//	String completionIdentifier = "";
+//	String expectedReplacedSource = "java.";
+//	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
+//	String expectedUnitDisplayString =
+//		"package p;\n" + 
+//		"public class BA {\n" + 
+//		"  public BA() {\n" + 
+//
+//		"  }\n" + 
+//		"  void foo() {\n" + 
+//		"    <CompleteOnName:java.>;\n" + 
+//		"  }\n" + 
+//		"}\n";
+//
+//	checkMethodParse(
+//		str.toCharArray(), 
+//		cursorLocation, 
+//		expectedCompletionNodeToString,
+//		expectedUnitDisplayString,
+//		completionIdentifier,
+//		expectedReplacedSource,
+//		testName); 
+//}
+//public void testBA_2() {
+//	String str = 
+//			"package p; \n" + 
+//			"public class BA {\n" + 
+//			"	void foo() {\n" + 
+//			"		java.util.Vector v2;\n" + 
+//			"		java.util.Vector v1;\n" + 
+//			"	}\n" + 
+//			"}\n";
+//
+//	String testName = "<complete on package contents>";
+//	String completeBehind = "java.util.";
+//	String expectedCompletionNodeToString = "<CompleteOnName:java.util.>";
+//	String completionIdentifier = "";
+//	String expectedReplacedSource = "java.util.";
+//	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
+//	String expectedUnitDisplayString =
+//		"package p;\n" + 
+//		"public class BA {\n" + 
+//		"  public BA() {\n" + 
+//		"  }\n" + 
+//		"  void foo() {\n" + 
+//		"    <CompleteOnName:java.util.>;\n" + 
+//		"  }\n" + 
+//		"}\n";
+//
+//	checkMethodParse(
+//		str.toCharArray(), 
+//		cursorLocation, 
+//		expectedCompletionNodeToString,
+//		expectedUnitDisplayString,
+//		completionIdentifier,
+//		expectedReplacedSource,
+//		testName); 
+//}
 public void testBB_1FHJ8H9() {
 	String str = 
-			"package p; \n" + 
-			"/**\n" + 
-			" * 1FHJ8H9\n" + 
-			" */\n" + 
-			"public class BB {\n" + 
-			"	void bar() {\n" + 
-			"		f }\n" + 
-			"}\n";
+			"function bar() {\n" + 
+			"		z }\n" + 
+			"\n";
 
 	String testName = "<complete on method/field from implicit method call>";
-	String completeBehind = "f";
-	String expectedCompletionNodeToString = "<CompleteOnName:f>";
-	String completionIdentifier = "f";
-	String expectedReplacedSource = "f";
+	String completeBehind = "z";
+	String expectedCompletionNodeToString = "<CompleteOnName:z>";
+	String completionIdentifier = "z";
+	String expectedReplacedSource = "z";
 	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
 	String expectedUnitDisplayString =
-		"package p;\n" + 
-		"public class BB {\n" + 
-		"  public BB() {\n" + 
-		"  }\n" + 
-		"  void bar() {\n" + 
-		"    <CompleteOnName:f>;\n" + 
-		"  }\n" + 
-		"}\n";
+		"function bar() {\n" + 
+		"  <CompleteOnName:z>;\n" + 
+		"}" + 
+		"\n";
 
 	checkMethodParse(
 		str.toCharArray(), 
@@ -606,52 +562,137 @@ public void testBB_1FHJ8H9() {
 		expectedReplacedSource,
 		testName); 
 }
-public void testBC_1FJ4GSG_1() {
+//public void testBC_1FJ4GSG_1() {
+//	String str = 
+//			"package p; \n" + 
+//			"/**\n" + 
+//			" * 1FJ4GSG\n" + 
+//			" */\n" + 
+//			"import java.util.Vector;\n" + 
+//			"public class BC {\n" + 
+//			"	int Value1 = 0;\n" + 
+//			"	interface Constants {\n" + 
+//			"		int OK = 1;\n" + 
+//			"		int CANCEL = 2;\n" + 
+//			"	}\n" + 
+//			"	void foo() {\n" + 
+//			"		Vector v = \n" + 
+//			"			new Vector(\n" + 
+//			"				Value1, \n" + 
+//			"				BC.Constants.OK\n" + 
+//			"					| BC.Constants.CANCEL); \n" + 
+//			"		Object ans = v.elementAt(1);\n" + 
+//			"	}\n" + 
+//			"}\n";
+//
+//	String testName = "<complete on member type>";
+//	String completeBehind = "BC.";
+//	String expectedCompletionNodeToString = "<CompleteOnName:BC.>";
+//	String completionIdentifier = "";
+//	String expectedReplacedSource = "BC.";
+//	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
+//	String expectedUnitDisplayString =
+//		"package p;\n" + 
+//		"import java.util.Vector;\n" + 
+//		"public class BC {\n" + 
+//		"  interface Constants {\n" + 
+//		"    int OK;\n" + 
+//		"    int CANCEL;\n" + 
+//		"    <clinit>() {\n" + 
+//		"    }\n" + 
+//		"  }\n" + 
+//		"  int Value1;\n" + 
+//		"  public BC() {\n" + 
+//		"  }\n" + 
+//		"  void foo() {\n" + 
+//		"    Vector v = new Vector(Value1, <CompleteOnName:BC.>);\n" + 
+//		"  }\n" + 
+//		"}\n";
+//
+//	checkMethodParse(
+//		str.toCharArray(), 
+//		cursorLocation, 
+//		expectedCompletionNodeToString,
+//		expectedUnitDisplayString,
+//		completionIdentifier,
+//		expectedReplacedSource,
+//		testName); 
+//}
+//public void testBC_1FJ4GSG_2() {
+//	String str = 
+//			"package p; \n" + 
+//			"/**\n" + 
+//			" * 1FJ4GSG\n" + 
+//			" */\n" + 
+//			"import java.util.Vector;\n" + 
+//			"public class BC {\n" + 
+//			"	int Value1 = 0;\n" + 
+//			"	interface Constants {\n" + 
+//			"		int OK = 1;\n" + 
+//			"		int CANCEL = 2;\n" + 
+//			"	}\n" + 
+//			"	void foo() {\n" + 
+//			"		Vector v = \n" + 
+//			"			new Vector(\n" + 
+//			"				Value1, \n" + 
+//			"				BC.Constants.OK\n" + 
+//			"					| BC.Constants.CANCEL); \n" + 
+//			"		Object ans = v.elementAt(1);\n" + 
+//			"	}\n" + 
+//			"}\n";
+//
+//	String testName = "<complete on member type method/field>";
+//	String completeBehind = "| BC.Constants.";
+//	String expectedCompletionNodeToString = "<CompleteOnName:BC.Constants.>";
+//	String completionIdentifier = "";
+//	String expectedReplacedSource = "BC.Constants.";
+//	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
+//	String expectedUnitDisplayString =
+//		"package p;\n" + 
+//		"import java.util.Vector;\n" + 
+//		"public class BC {\n" + 
+//		"  interface Constants {\n" + 
+//		"    int OK;\n" + 
+//		"    int CANCEL;\n" + 
+//		"    <clinit>() {\n" + 
+//		"    }\n" + 
+//		"  }\n" + 
+//		"  int Value1;\n" + 
+//		"  public BC() {\n" + 
+//		"  }\n" + 
+//		"  void foo() {\n" + 
+//		"    Vector v = (BC.Constants.OK | <CompleteOnName:BC.Constants.>);\n" + 
+//		"  }\n" + 
+//		"}\n";
+//
+//	checkMethodParse(
+//		str.toCharArray(), 
+//		cursorLocation, 
+//		expectedCompletionNodeToString,
+//		expectedUnitDisplayString,
+//		completionIdentifier,
+//		expectedReplacedSource,
+//		testName); 
+//}
+public void testMsgSend() {
 	String str = 
-			"package p; \n" + 
-			"/**\n" + 
-			" * 1FJ4GSG\n" + 
-			" */\n" + 
-			"import java.util.Vector;\n" + 
-			"public class BC {\n" + 
-			"	int Value1 = 0;\n" + 
-			"	interface Constants {\n" + 
-			"		int OK = 1;\n" + 
-			"		int CANCEL = 2;\n" + 
-			"	}\n" + 
-			"	void foo() {\n" + 
-			"		Vector v = \n" + 
-			"			new Vector(\n" + 
-			"				Value1, \n" + 
-			"				BC.Constants.OK\n" + 
-			"					| BC.Constants.CANCEL); \n" + 
-			"		Object ans = v.elementAt(1);\n" + 
-			"	}\n" + 
-			"}\n";
+		"  function foo() {\n"+
+		"    var removed = 0;\n"+
+		"    toto(Test.vvv).titi(removed);\n"+
+		"  }\n";
 
-	String testName = "<complete on member type>";
-	String completeBehind = "BC.";
-	String expectedCompletionNodeToString = "<CompleteOnName:BC.>";
-	String completionIdentifier = "";
-	String expectedReplacedSource = "BC.";
-	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
+	String testName = "<complete on method call>";
+	String completeBehind = "removed";
+	String expectedCompletionNodeToString = "<CompleteOnName:removed>";
+	String completionIdentifier = "removed";
+	String expectedReplacedSource = "removed";
+	int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length() - 1;
 	String expectedUnitDisplayString =
-		"package p;\n" + 
-		"import java.util.Vector;\n" + 
-		"public class BC {\n" + 
-		"  interface Constants {\n" + 
-		"    int OK;\n" + 
-		"    int CANCEL;\n" + 
-		"    <clinit>() {\n" + 
-		"    }\n" + 
-		"  }\n" + 
-		"  int Value1;\n" + 
-		"  public BC() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    Vector v = new Vector(Value1, <CompleteOnName:BC.>);\n" + 
-		"  }\n" + 
-		"}\n";
+		"function foo() {\n" + 
+		"  var removed = 0;\n" + 
+		"  toto(Test.vvv).titi(<CompleteOnName:removed>);\n" + 
+		"}" + 
+		"\n";
 
 	checkMethodParse(
 		str.toCharArray(), 
@@ -662,52 +703,21 @@ public void testBC_1FJ4GSG_1() {
 		expectedReplacedSource,
 		testName); 
 }
-public void testBC_1FJ4GSG_2() {
+
+public void testMsgSend2() {
 	String str = 
-			"package p; \n" + 
-			"/**\n" + 
-			" * 1FJ4GSG\n" + 
-			" */\n" + 
-			"import java.util.Vector;\n" + 
-			"public class BC {\n" + 
-			"	int Value1 = 0;\n" + 
-			"	interface Constants {\n" + 
-			"		int OK = 1;\n" + 
-			"		int CANCEL = 2;\n" + 
-			"	}\n" + 
-			"	void foo() {\n" + 
-			"		Vector v = \n" + 
-			"			new Vector(\n" + 
-			"				Value1, \n" + 
-			"				BC.Constants.OK\n" + 
-			"					| BC.Constants.CANCEL); \n" + 
-			"		Object ans = v.elementAt(1);\n" + 
-			"	}\n" + 
-			"}\n";
+		"    abc.titi();\n"+
+		"";
 
-	String testName = "<complete on member type method/field>";
-	String completeBehind = "| BC.Constants.";
-	String expectedCompletionNodeToString = "<CompleteOnName:BC.Constants.>";
-	String completionIdentifier = "";
-	String expectedReplacedSource = "BC.Constants.";
-	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
+	String testName = "<complete on method call 2>";
+	String completeBehind = "titi";
+	String expectedCompletionNodeToString = "<CompleteOnMessageSend:abc.titi()>";
+	String completionIdentifier = "titi";
+	String expectedReplacedSource = "abc.titi()";
+	int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length() - 1;
 	String expectedUnitDisplayString =
-		"package p;\n" + 
-		"import java.util.Vector;\n" + 
-		"public class BC {\n" + 
-		"  interface Constants {\n" + 
-		"    int OK;\n" + 
-		"    int CANCEL;\n" + 
-		"    <clinit>() {\n" + 
-		"    }\n" + 
-		"  }\n" + 
-		"  int Value1;\n" + 
-		"  public BC() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    Vector v = (BC.Constants.OK | <CompleteOnName:BC.Constants.>);\n" + 
-		"  }\n" + 
-		"}\n";
+		"<CompleteOnMessageSend:abc.titi()>;" + 
+		"\n";
 
 	checkMethodParse(
 		str.toCharArray(), 
@@ -718,28 +728,46 @@ public void testBC_1FJ4GSG_2() {
 		expectedReplacedSource,
 		testName); 
 }
+
+public void testMsgSend3() {
+	String str = 
+		"  function foo() {\n"+
+		"    var removed = 0;\n"+
+		"    toto(Test.vvv).titi(removed);\n"+
+		"  }\n";
+
+	String testName = "<complete on method call 3>";
+	String completeBehind = "titi";
+	String expectedCompletionNodeToString = "<CompleteOnMessageSend:toto(Test.vvv).titi(removed)>";
+	String completionIdentifier = "titi";
+	String expectedReplacedSource = "toto(Test.vvv).titi(removed)";
+	int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length() - 1;
+	String expectedUnitDisplayString =
+		"function foo() {\n" + 
+		"  var removed = 0;\n" + 
+		"  <CompleteOnMessageSend:toto(Test.vvv).titi(removed)>;\n" + 
+		"}" + 
+		"\n";
+
+	checkMethodParse(
+		str.toCharArray(), 
+		cursorLocation, 
+		expectedCompletionNodeToString,
+		expectedUnitDisplayString,
+		completionIdentifier,
+		expectedReplacedSource,
+		testName); 
+}
+
+
 public void testBC_1FJ4GSG_3() {
 	String str = 
-			"package p; \n" + 
-			"/**\n" + 
-			" * 1FJ4GSG\n" + 
-			" */\n" + 
-			"import java.util.Vector;\n" + 
-			"public class BC {\n" + 
-			"	int Value1 = 0;\n" + 
-			"	interface Constants {\n" + 
-			"		int OK = 1;\n" + 
-			"		int CANCEL = 2;\n" + 
+			"	function foo() {\n" + 
+			"		var v = \n" + 
+			"			new Vector();\n" + 
+			"		var ans = v.elementAt(1);\n" + 
 			"	}\n" + 
-			"	void foo() {\n" + 
-			"		Vector v = \n" + 
-			"			new Vector(\n" + 
-			"				Value1, \n" + 
-			"				BC.Constants.OK\n" + 
-			"					| BC.Constants.CANCEL); \n" + 
-			"		Object ans = v.elementAt(1);\n" + 
-			"	}\n" + 
-			"}\n";
+			"\n";
 
 	String testName = "<complete on method/field>";
 	String completeBehind = "v.";
@@ -748,23 +776,11 @@ public void testBC_1FJ4GSG_3() {
 	String expectedReplacedSource = "v.";
 	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
 	String expectedUnitDisplayString =
-		"package p;\n" + 
-		"import java.util.Vector;\n" + 
-		"public class BC {\n" + 
-		"  interface Constants {\n" + 
-		"    int OK;\n" + 
-		"    int CANCEL;\n" + 
-		"    <clinit>() {\n" + 
-		"    }\n" + 
-		"  }\n" + 
-		"  int Value1;\n" + 
-		"  public BC() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    Vector v;\n" + 
-		"    Object ans = <CompleteOnName:v.>;\n" + 
-		"  }\n" + 
-		"}\n";
+		"function foo() {\n" + 
+		"  var v = new   Vector();\n" + 
+		"  var ans = <CompleteOnName:v.>;\n" + 
+		"}" + 
+		"\n";
 
 	checkMethodParse(
 		str.toCharArray(), 
@@ -775,26 +791,21 @@ public void testBC_1FJ4GSG_3() {
 		expectedReplacedSource,
 		testName); 
 }
+
+
 public void testC() {
 	String str = 
-		"package p; \n" + 
-		"public class C {\n" + 
-		"	void foo() {\n" + 
-		"		String string = n;\n" + 
+		"function foo() {\n" + 
+		"		var string = n;\n" + 
 		"	}\n" + 
-		"}\n";
+		"\n";
 
 	String completeBehind = "= n";
 	String expectedCompletionNodeToString = "<CompleteOnName:n>";
 	String completionIdentifier = "n";
 	String expectedUnitDisplayString =
-		"package p;\n" + 
-		"public class C {\n" + 
-		"  public C() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    String string = <CompleteOnName:n>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  var string = <CompleteOnName:n>;\n" + 
 		"}\n";
 	String expectedReplacedSource = "n";
 	String testName = "<complete on local variable initializer>";
@@ -811,13 +822,7 @@ public void testC() {
 }
 public void testCA_1FGPJQZ() {
 	String str = 
-			"package p; \n" + 
-			"import p2.X; \n" + 
-			"/**\n" + 
-			" * 1FGPJQZ\n" + 
-			" */\n" + 
-			"public class CA {\n" + 
-			"	void moo() {\n" + 
+			"	function moo() {\n" + 
 			"		unknownField.}\n" + 
 			"}\n";
 
@@ -827,14 +832,8 @@ public void testCA_1FGPJQZ() {
 	String completionIdentifier = "";
 	String expectedReplacedSource = "unknownField.";
 	String expectedUnitDisplayString =
-		"package p;\n" + 
-		"import p2.X;\n" + 
-		"public class CA {\n" + 
-		"  public CA() {\n" + 
-		"  }\n" + 
-		"  void moo() {\n" + 
-		"    <CompleteOnName:unknownField.>;\n" + 
-		"  }\n" + 
+		"function moo() {\n" + 
+		"  <CompleteOnName:unknownField.>;\n" + 
 		"}\n";
 
 	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
@@ -849,18 +848,11 @@ public void testCA_1FGPJQZ() {
 }
 public void testCB_1FHSKQ9_1() {
 	String str = 
-			"package p; \n" + 
-			"/**\n" + 
-			" * 1FHSKQ9\n" + 
-			" */\n" + 
-			"public class CB {\n" + 
-			"	void foo() {\n" + 
-			"		int i = 0;\n" + 
-			"		int[] tab1 = new int[10];\n" + 
-			"		int j = tab1[i];\n" + 
+			"	function foo() {\n" + 
+			"		var i = 0;\n" + 
+			"		var tab1 = 0;\n" + 
 			"		System.out.println(\n" + 
 			"			\" \" + (i + 1)); \n" + 
-			"	}\n" + 
 			"}\n";
 
 	String testName = "<complete on method call argument>";
@@ -870,16 +862,10 @@ public void testCB_1FHSKQ9_1() {
 	String expectedReplacedSource = "i";
 	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
 	String expectedUnitDisplayString =
-		"package p;\n" + 
-		"public class CB {\n" + 
-		"  public CB() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    int i;\n" + 
-		"    int[] tab1;\n" + 
-		"    int j;\n" + 
-		"    (\" \" + <CompleteOnName:i>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  var i = 0;\n" + 
+		"  var tab1 = 0;\n" + 
+		"  System.out.println((\" \" + (<CompleteOnName:i> + 1)));\n" + 
 		"}\n";
 
 	checkMethodParse(
@@ -893,18 +879,10 @@ public void testCB_1FHSKQ9_1() {
 }
 public void testCB_1FHSKQ9_2() {
 	String str = 
-			"package p; \n" + 
-			"/**\n" + 
-			" * 1FHSKQ9\n" + 
-			" */\n" + 
-			"public class CB {\n" + 
-			"	void foo() {\n" + 
-			"		int i = 0;\n" + 
-			"		int[] tab1 = new int[10];\n" + 
-			"		int j = tab1[i];\n" + 
+			"	function foo() {\n" + 
+			"		var i = 0;\n" + 
 			"		System.out.println(\n" + 
 			"			\" \" + (i + 1)); \n" + 
-			"	}\n" + 
 			"}\n";
 
 	String completeBehind = "i + 1";
@@ -930,143 +908,136 @@ public void testCB_1FHSKQ9_2() {
 		assertEquals("invalid cursor location: ", e.irritant, InvalidCursorLocation.NO_COMPLETION_INSIDE_NUMBER);
 	}
 }
-public void testCC_1FJ64I9() {
-	String str = 
-			"package p; \n" + 
-			"/**\n" + 
-			" * 1FJ64I9\n" + 
-			" */\n" + 
-			"class CCHelper {\n" + 
-			"	class Member1 {\n" + 
-			"	}\n" + 
-			"	class Member2 {\n" + 
-			"	}\n" + 
-			"	void foo() {\n" + 
-			"	}\n" + 
-			"}\n" + 
-			"public class CC {\n" + 
-			"	void foo() {\n" + 
-			"		new CCHelper()\n" + 
-			"			.new CCHelper()\n" + 
-			"			.new M }\n" + 
-			"}\n";
-
-	String testName = "<complete on qualified member type>";
-	String completeBehind = ".new M";
-	String expectedCompletionNodeToString = "<CompleteOnType:M>";
-	String completionIdentifier = "M";
-	String expectedReplacedSource = "M";
-	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
-	String expectedUnitDisplayString =
-		"package p;\n" + 
-		"class CCHelper {\n" + 
-		"  class Member1 {\n" + 
-		"    Member1() {\n" + 
-		"    }\n" + 
-		"  }\n" + 
-		"  class Member2 {\n" + 
-		"    Member2() {\n" + 
-		"    }\n" + 
-		"  }\n" + 
-		"  CCHelper() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"  }\n" + 
-		"}\n" + 
-		"public class CC {\n" + 
-		"  public CC() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    new CCHelper().new CCHelper().new <CompleteOnType:M>();\n" + 
-		"  }\n" + 
-		"}\n";
-
-	checkMethodParse(
-		str.toCharArray(), 
-		cursorLocation, 
-		expectedCompletionNodeToString,
-		expectedUnitDisplayString,
-		completionIdentifier,
-		expectedReplacedSource,
-		testName); 
-}
-public void testD_1() {
-	String str = 
-		"package p; \n" + 
-		"import java.util.*;\n" + 
-		"public class D {\n" + 
-		"	static int i;\n" + 
-		"	static {\n" + 
-		"		i = 5;\n" + 
-		"	}\n" + 
-		"	public int j;\n" + 
-		"	Vector a = new Vector();\n" + 
-		"	void foo(String s) {\n" + 
-		"		String string = null;\n" + 
-		"		int soso;\n" + 
-		"		float f;\n" + 
-		"		string.regionMatches(\n" + 
-		"			0, \n" + 
-		"			\"\", \n" + 
-		"			0, \n" + 
-		"			0); \n" + 
-		"	}\n" + 
-		"}\n";
-
-	String testName = "<complete on variable into type initializer>";
-	String completeBehind = "i";
-	String expectedCompletionNodeToString = "<CompleteOnName:i>";
-	String completionIdentifier = "i";
-	String expectedReplacedSource = "i";
-	int cursorLocation = str.indexOf("i = 5;") + completeBehind.length() - 1;
-	String expectedUnitDisplayString =
-		"package p;\n" + 
-		"import java.util.*;\n" + 
-		"public class D {\n" + 
-		"  static int i;\n" + 
-		"  static {\n" + 
-		"    <CompleteOnName:i>;\n" + 
-		"  }\n" + 
-		"  public int j;\n" + 
-		"  Vector a;\n" + 
-		"  <clinit>() {\n" + 
-		"  }\n" + 
-		"  public D() {\n" + 
-		"  }\n" + 
-		"  void foo(String s) {\n" + 
-		"  }\n" + 
-		"}\n";
-
-	checkMethodParse(
-		str.toCharArray(), 
-		cursorLocation, 
-		expectedCompletionNodeToString,
-		expectedUnitDisplayString,
-		completionIdentifier,
-		expectedReplacedSource,
-		testName); 
-}
+//public void testCC_1FJ64I9() {
+//	String str = 
+//			"package p; \n" + 
+//			"/**\n" + 
+//			" * 1FJ64I9\n" + 
+//			" */\n" + 
+//			"class CCHelper {\n" + 
+//			"	class Member1 {\n" + 
+//			"	}\n" + 
+//			"	class Member2 {\n" + 
+//			"	}\n" + 
+//			"	void foo() {\n" + 
+//			"	}\n" + 
+//			"}\n" + 
+//			"public class CC {\n" + 
+//			"	void foo() {\n" + 
+//			"		new CCHelper()\n" + 
+//			"			.new CCHelper()\n" + 
+//			"			.new M }\n" + 
+//			"}\n";
+//
+//	String testName = "<complete on qualified member type>";
+//	String completeBehind = ".new M";
+//	String expectedCompletionNodeToString = "<CompleteOnType:M>";
+//	String completionIdentifier = "M";
+//	String expectedReplacedSource = "M";
+//	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
+//	String expectedUnitDisplayString =
+//		"package p;\n" + 
+//		"class CCHelper {\n" + 
+//		"  class Member1 {\n" + 
+//		"    Member1() {\n" + 
+//		"    }\n" + 
+//		"  }\n" + 
+//		"  class Member2 {\n" + 
+//		"    Member2() {\n" + 
+//		"    }\n" + 
+//		"  }\n" + 
+//		"  CCHelper() {\n" + 
+//		"  }\n" + 
+//		"  void foo() {\n" + 
+//		"  }\n" + 
+//		"}\n" + 
+//		"public class CC {\n" + 
+//		"  public CC() {\n" + 
+//		"  }\n" + 
+//		"  void foo() {\n" + 
+//		"    new CCHelper().new CCHelper().new <CompleteOnType:M>();\n" + 
+//		"  }\n" + 
+//		"}\n";
+//
+//	checkMethodParse(
+//		str.toCharArray(), 
+//		cursorLocation, 
+//		expectedCompletionNodeToString,
+//		expectedUnitDisplayString,
+//		completionIdentifier,
+//		expectedReplacedSource,
+//		testName); 
+//}
+//public void testD_1() {
+//	String str = 
+//		"package p; \n" + 
+//		"import java.util.*;\n" + 
+//		"public class D {\n" + 
+//		"	static int i;\n" + 
+//		"	static {\n" + 
+//		"		i = 5;\n" + 
+//		"	}\n" + 
+//		"	public int j;\n" + 
+//		"	Vector a = new Vector();\n" + 
+//		"	void foo(String s) {\n" + 
+//		"		String string = null;\n" + 
+//		"		int soso;\n" + 
+//		"		float f;\n" + 
+//		"		string.regionMatches(\n" + 
+//		"			0, \n" + 
+//		"			\"\", \n" + 
+//		"			0, \n" + 
+//		"			0); \n" + 
+//		"	}\n" + 
+//		"}\n";
+//
+//	String testName = "<complete on variable into type initializer>";
+//	String completeBehind = "i";
+//	String expectedCompletionNodeToString = "<CompleteOnName:i>";
+//	String completionIdentifier = "i";
+//	String expectedReplacedSource = "i";
+//	int cursorLocation = str.indexOf("i = 5;") + completeBehind.length() - 1;
+//	String expectedUnitDisplayString =
+//		"package p;\n" + 
+//		"import java.util.*;\n" + 
+//		"public class D {\n" + 
+//		"  static int i;\n" + 
+//		"  static {\n" + 
+//		"    <CompleteOnName:i>;\n" + 
+//		"  }\n" + 
+//		"  public int j;\n" + 
+//		"  Vector a;\n" + 
+//		"  <clinit>() {\n" + 
+//		"  }\n" + 
+//		"  public D() {\n" + 
+//		"  }\n" + 
+//		"  void foo(String s) {\n" + 
+//		"  }\n" + 
+//		"}\n";
+//
+//	checkMethodParse(
+//		str.toCharArray(), 
+//		cursorLocation, 
+//		expectedCompletionNodeToString,
+//		expectedUnitDisplayString,
+//		completionIdentifier,
+//		expectedReplacedSource,
+//		testName); 
+//}
 public void testD_2() {
 	String str = 
-		"package p; \n" + 
-		"import java.util.*;\n" + 
-		"public class D {\n" + 
-		"	static int i;\n" + 
-		"	static {\n" + 
-		"		i = 5;\n" + 
-		"	}\n" + 
-		"	public int j;\n" + 
-		"	Vector a = new Vector();\n" + 
-		"	void foo(String s) {\n" + 
-		"		String string = null;\n" + 
-		"		int soso;\n" + 
-		"		float f;\n" + 
+		"	var i;\n" + 
+		"	var j;\n" + 
+		"	var a = new Vector();\n" + 
+		"	function foo(s) {\n" + 
+		"		var string = null;\n" + 
+		"		var soso;\n" + 
+		"		var f;\n" + 
 		"		string.regionMatches(\n" + 
 		"			0, \n" + 
 		"			\"\", \n" + 
 		"			0, \n" + 
 		"			0); \n" + 
-		"	}\n" + 
 		"}\n";
 
 	String testName = "<complete on method/field>";
@@ -1075,24 +1046,14 @@ public void testD_2() {
 	String completionIdentifier = "";
 	String expectedReplacedSource = "string.";
 	String expectedUnitDisplayString =
-		"package p;\n" + 
-		"import java.util.*;\n" + 
-		"public class D {\n" + 
-		"  static int i;\n" + 
-		"  static {\n" + 
-		"  }\n" + 
-		"  public int j;\n" + 
-		"  Vector a;\n" + 
-		"  <clinit>() {\n" + 
-		"  }\n" + 
-		"  public D() {\n" + 
-		"  }\n" + 
-		"  void foo(String s) {\n" + 
-		"    String string;\n" + 
-		"    int soso;\n" + 
-		"    float f;\n" + 
-		"    <CompleteOnName:string.>;\n" + 
-		"  }\n" + 
+		"var i;\n" + 
+		"var j;\n" + 
+		"var a;\n" + 
+		"function foo(s) {\n" + 
+		"  var string;\n" + 
+		"  var soso;\n" + 
+		"  var f;\n" + 
+		"  <CompleteOnName:string.>;\n" + 
 		"}\n";
 
 	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
@@ -1131,6 +1092,8 @@ public void testDA_1() {
 		"  }\n" + 
 		"  void foo() {\n" + 
 		"    new TestCase(\"error\") {\n" + 
+		"      () {\n" + 
+		"      }\n" + 
 		"      protected void runTest() {\n" + 
 		"        Vector v11111;\n" + 
 		"        <CompleteOnName:v>;\n" + 
@@ -1172,6 +1135,8 @@ public void testDA_2() {
 		"  void foo() {\n" + 
 		"    new TestCase(\"error\") {\n" + 
 		"      <CompleteOnType:v>;\n" + 
+		"      () {\n" + 
+		"      }\n" + 
 		"      runTest() {\n" + 
 		"      }\n" + 
 		"    };\n" + 
@@ -1219,6 +1184,8 @@ public void testDA_3() {
 		"      <CompleteOnFieldName:void r>;\n" + 
 		"      {\n" + 
 		"      }\n" + 
+		"      () {\n" + 
+		"      }\n" + 
 		"    };\n" + 
 		"  }\n" + 
 		"}\n";
@@ -1258,6 +1225,8 @@ public void testDA_4() {
 		"  }\n" + 
 		"  void foo() {\n" + 
 		"    new TestCase(\"error\") {\n" + 
+		"      () {\n" + 
+		"      }\n" + 
 		"      protected void runTest() {\n" + 
 		"        <CompleteOnName:V>;\n" + 
 		"      }\n" + 
@@ -1300,6 +1269,8 @@ public void testDA_5() {
 		"  }\n" + 
 		"  void foo() {\n" + 
 		"    new TestCase(\"error\") {\n" + 
+		"      () {\n" + 
+		"      }\n" + 
 		"      protected void runTest() {\n" + 
 		"        Vector v11111;\n" + 
 		"        <CompleteOnName:v>;\n" + 
@@ -1577,12 +1548,7 @@ public void testEA_1() {
 		"  public EA() {\n" + 
 		"  }\n" + 
 		"  void foo() {\n" + 
-		"    try \n" + 
-		"      {\n" + 
-		"        throw new Error();\n" + 
-		"      }\n" + 
-		"    catch (<CompleteOnException:E>  )       {\n" + 
-		"      }\n" + 
+		"    <CompleteOnException:E>;\n" + 
 		"  }\n" + 
 		"}\n";
 
@@ -2109,6 +2075,8 @@ public void testGC_1FSHLHV_2() {
 		"  public static void main(String[] args) {\n" + 
 		"    Object l;\n" + 
 		"    new Object() {\n" + 
+		"      () {\n" + 
+		"      }\n" + 
 		"      public void handleEvent(String[] event) {\n" + 
 		"        String s;\n" + 
 		"        <CompleteOnName:s.>;\n" + 
@@ -2163,6 +2131,8 @@ public void testGC_1FSHLHV_3() {
 		"  public static void main(String[] args) {\n" + 
 		"    Object l;\n" + 
 		"    new Object() {\n" + 
+		"      () {\n" + 
+		"      }\n" + 
 		"      public void handleEvent(String[] event) {\n" + 
 		"        String s;\n" + 
 		"        {\n" + 
@@ -2219,6 +2189,8 @@ public void testGC_1FSHLHV_4() {
 		"  public static void main(String[] args) {\n" + 
 		"    Object l;\n" + 
 		"    new Object() {\n" + 
+		"      () {\n" + 
+		"      }\n" + 
 		"      public void handleEvent(String[] event) {\n" + 
 		"        String s;\n" + 
 		"        {\n" + 
@@ -2239,13 +2211,41 @@ public void testGC_1FSHLHV_4() {
 		expectedReplacedSource,
 		testName); 
 }
+
+public void testH0() {
+	String str = 
+		"	function foo() {\n" + 
+		"		whil \n" + 
+		"\n";
+
+	String testName = "<complete on while keyword argument>";
+	String completeBehind = "whil";
+	String expectedCompletionNodeToString = "<CompleteOnName:whil>";
+	String completionIdentifier = "whil";
+	String expectedReplacedSource = "whil";
+	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
+	String expectedUnitDisplayString =
+		"function foo() {\n" + 
+		"  <CompleteOnName:whil>;\n" + 
+		"}\n";
+
+	checkMethodParse(
+		str.toCharArray(), 
+		cursorLocation, 
+		expectedCompletionNodeToString,
+		expectedUnitDisplayString,
+		completionIdentifier,
+		expectedReplacedSource,
+		testName); 
+}
+
+
+
 public void testH() {
 	String str = 
-		"package p; \n" + 
-		"public class H {\n" + 
-		"	void foo(boolean bbbb) {\n" + 
+		"	function foo(bbbb) {\n" + 
 		"		while (Xbm }\n" + 
-		"	void bar() {\n" + 
+		"	function bar() {\n" + 
 		"	}\n" + 
 		"}\n";
 
@@ -2260,10 +2260,10 @@ public void testH() {
 		"public class H {\n" + 
 		"  public H() {\n" + 
 		"  }\n" + 
-		"  void foo(boolean bbbb) {\n" + 
+		"  function foo( bbbb) {\n" + 
 		"    <CompleteOnName:Xbm>;\n" + 
 		"  }\n" + 
-		"  void bar() {\n" + 
+		"  function bar() {\n" + 
 		"  }\n" + 
 		"}\n";
 

@@ -24,7 +24,7 @@ import org.eclipse.wst.jsdt.internal.core.util.PublicScanner;
 
 public class ScannerTest extends AbstractRegressionTest {
 
-	public ScannerTest(String name) {
+	public ScannerTest(String name) { 
 		super(name);
 	}
 	// Static initializer to specify tests subset using TESTS_* static variables
@@ -998,4 +998,205 @@ public class ScannerTest extends AbstractRegressionTest {
 				},
 				"SUCCESS");
 	}
+	
+	public void test046() {
+		StringBuffer buf = new StringBuffer();
+		buf.append("'Hello'");
+		String str = buf.toString();
+		IScanner scanner = ToolFactory.createScanner(true, false, false, false);
+		scanner.setSource(str.toCharArray());
+		scanner.resetTo(0, str.length() - 1);
+		int token = 0;
+		try {
+			token = scanner.getNextToken();
+			assertEquals("Wrong token type", ITerminalSymbols.TokenNameCharacterLiteral, token);
+			token = scanner.getNextToken();
+			assertEquals("Wrong token type", ITerminalSymbols.TokenNameEOF, token);
+		} catch (InvalidInputException e) {
+			assertTrue(false);
+		}
+	}
+	
+	public void test047() {
+		StringBuffer buf = new StringBuffer();
+		buf.append("/=/g");
+		String str = buf.toString();
+		IScanner scanner = ToolFactory.createScanner(true, false, false, false);
+		scanner.setSource(str.toCharArray());
+		scanner.resetTo(0, str.length() - 1);
+		int token = 0;
+		try {
+			token = scanner.getNextToken();
+			assertEquals("Wrong token type", ITerminalSymbols.TokenNameRegExLiteral, token);
+		} catch (InvalidInputException e) {
+			assertTrue(false);
+		}
+	}
+	
+	public void test048() {
+		StringBuffer buf = new StringBuffer();
+		buf.append("// test unicode \\u000a var a =1; \n");
+		String str = buf.toString();
+		IScanner scanner = ToolFactory.createScanner(true, false, false, false);
+		scanner.setSource(str.toCharArray());
+		scanner.resetTo(0, str.length() - 1);
+		int token = 0;
+		try {
+			token = scanner.getNextToken();
+			assertEquals("Wrong token type", ITerminalSymbols.TokenNameCOMMENT_LINE, token);
+			token = scanner.getNextToken();
+			assertEquals("Wrong token type", ITerminalSymbols.TokenNameEOF, token);
+		} catch (InvalidInputException e) {
+			assertTrue(false);
+		}
+	}
+	
+	public void test049() {
+		StringBuffer buf = new StringBuffer();
+		buf.append("/* \n");
+		buf.append("* test unicode \\u000a var a =1; \n ");
+		buf.append("*/");
+		String str = buf.toString();
+		IScanner scanner = ToolFactory.createScanner(true, false, false, false);
+		scanner.setSource(str.toCharArray());
+		scanner.resetTo(0, str.length() - 1);
+		int token = 0;
+		try {
+			token = scanner.getNextToken();
+			assertEquals("Wrong token type", ITerminalSymbols.TokenNameCOMMENT_BLOCK, token);
+			token = scanner.getNextToken();
+			assertEquals("Wrong token type", ITerminalSymbols.TokenNameEOF, token);
+		} catch (InvalidInputException e) {
+			assertTrue(false);
+		}
+	}
+	
+	public void test050() {
+		StringBuffer buf = new StringBuffer();
+		buf.append("\"a\\>\"");
+		String str = buf.toString();
+		IScanner scanner = ToolFactory.createScanner(true, false, false, false);
+		scanner.setSource(str.toCharArray());
+		scanner.resetTo(0, str.length() - 1);
+		int token = 0;
+		try {
+			token = scanner.getNextToken();
+			assertEquals("Wrong token type", ITerminalSymbols.TokenNameStringLiteral, token);
+		} catch (InvalidInputException e) {
+			assertTrue(false);
+		}
+	}
+
+	public void test051() {
+		StringBuffer buf = new StringBuffer();
+		buf.append("\"abc\\u000adef\";");
+		String str = buf.toString();
+		IScanner scanner = ToolFactory.createScanner(true, false, false, false);
+		scanner.setSource(str.toCharArray());
+		scanner.resetTo(0, str.length() - 1);
+		int token = 0;
+		try {
+			token = scanner.getNextToken();
+			assertEquals("Wrong token type", ITerminalSymbols.TokenNameStringLiteral, token);
+			token = scanner.getNextToken();
+			assertEquals("Wrong token type", ITerminalSymbols.TokenNameSEMICOLON, token);
+		} catch (InvalidInputException e) {
+			assertTrue(false);
+		}
+	}
+	
+	public void test052() {
+		StringBuffer buf = new StringBuffer();
+		buf.append("\"abc\\u0022def\";\n");
+		String str = buf.toString();
+		IScanner scanner = ToolFactory.createScanner(true, false, false, false);
+		scanner.setSource(str.toCharArray());
+		scanner.resetTo(0, str.length() - 1);
+		int token = 0;
+		try {
+			token = scanner.getNextToken();
+			assertEquals("Wrong token type", ITerminalSymbols.TokenNameStringLiteral, token);
+			token = scanner.getNextToken();
+			assertEquals("Wrong token type", ITerminalSymbols.TokenNameSEMICOLON, token);
+		} catch (InvalidInputException e) {
+			assertTrue(false);
+		}
+	}
+	
+	public void test053() {
+		StringBuffer buf = new StringBuffer();
+		buf.append("'abc\\u0027def';\n");
+		String str = buf.toString();
+		IScanner scanner = ToolFactory.createScanner(true, false, false, false);
+		scanner.setSource(str.toCharArray());
+		scanner.resetTo(0, str.length() - 1);
+		int token = 0;
+		try {
+			token = scanner.getNextToken();
+			assertEquals("Wrong token type", ITerminalSymbols.TokenNameCharacterLiteral, token);
+			token = scanner.getNextToken();
+			assertEquals("Wrong token type", ITerminalSymbols.TokenNameSEMICOLON, token);
+		} catch (InvalidInputException e) {
+			assertTrue(false);
+		}
+	}
+
+	public void test054() {
+		StringBuffer buf = new StringBuffer();
+		buf.append("\"\\u0022def\";\n");
+		String str = buf.toString();
+		IScanner scanner = ToolFactory.createScanner(true, false, false, false);
+		scanner.setSource(str.toCharArray());
+		scanner.resetTo(0, str.length() - 1);
+		int token = 0;
+		try {
+			token = scanner.getNextToken();
+			assertEquals("Wrong token type", ITerminalSymbols.TokenNameStringLiteral, token);
+			token = scanner.getNextToken();
+			assertEquals("Wrong token type", ITerminalSymbols.TokenNameSEMICOLON, token);
+		} catch (InvalidInputException e) {
+			assertTrue(false);
+		}
+	}
+	
+	public void test055() {
+		StringBuffer buf = new StringBuffer();
+		buf.append("\"abc\\x22def\";\n");
+		String str = buf.toString();
+		IScanner scanner = ToolFactory.createScanner(true, false, false, false);
+		scanner.setSource(str.toCharArray());
+		scanner.resetTo(0, str.length() - 1);
+		int token = 0;
+		try {
+			token = scanner.getNextToken();
+			assertEquals("Wrong token type", ITerminalSymbols.TokenNameStringLiteral, token);
+			char[] characters = scanner.getCurrentTokenSource();
+			String results = String.valueOf(characters);
+			token = scanner.getNextToken();
+			assertEquals("Wrong token type", ITerminalSymbols.TokenNameSEMICOLON, token);
+		} catch (InvalidInputException e) {
+			assertTrue(false);
+		}
+	}
+
+	public void test056() {
+		StringBuffer buf = new StringBuffer();
+		buf.append("\"\\x22def\";\n");
+		String str = buf.toString();
+		IScanner scanner = ToolFactory.createScanner(true, false, false, false);
+		scanner.setSource(str.toCharArray());
+		scanner.resetTo(0, str.length() - 1);
+		int token = 0;
+		try {
+			token = scanner.getNextToken();
+			char[] characters = scanner.getCurrentTokenSource();
+			String results = String.valueOf(characters);
+			assertEquals("Wrong token type", ITerminalSymbols.TokenNameStringLiteral, token);
+			token = scanner.getNextToken();
+			assertEquals("Wrong token type", ITerminalSymbols.TokenNameSEMICOLON, token);
+		} catch (InvalidInputException e) {
+			assertTrue(false);
+		}
+	}
+	
 }

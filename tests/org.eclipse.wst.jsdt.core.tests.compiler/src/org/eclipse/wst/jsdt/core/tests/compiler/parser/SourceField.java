@@ -20,7 +20,7 @@ public class SourceField implements ISourceField {
 	protected int declarationStart;
 	protected int declarationEnd;
 	protected int nameSourceStart;
-	protected int nameSourceEnd;
+	protected int nameSourceEnd; 
 	protected char[] source;
 public SourceField(
 	int declarationStart,
@@ -112,7 +112,12 @@ public String toString(int tab) {
 	if (displayModifiers != null) {
 		buffer.append(displayModifiers);
 	}
-	buffer.append(typeName).append(" ").append(name);
+	buffer.append("var ");
+//	if (typeName!=null)
+//	{
+//		buffer.append(typeName).append(" ");	
+//	}
+	buffer.append(name);
 	buffer.append(";");
 	return buffer.toString();
 }

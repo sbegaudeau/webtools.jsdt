@@ -30,6 +30,7 @@ import junit.framework.AssertionFailedError;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.ToolFactory;
+import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.search.SearchDocument;
 import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.core.tests.junit.extension.StopableTestCase;
@@ -39,18 +40,30 @@ import org.eclipse.wst.jsdt.core.tests.util.TestVerifier;
 import org.eclipse.wst.jsdt.core.tests.util.Util;
 import org.eclipse.wst.jsdt.core.util.ClassFileBytesDisassembler;
 import org.eclipse.wst.jsdt.core.util.ClassFormatException;
+import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.Compiler;
+import org.eclipse.wst.jsdt.internal.compiler.DefaultErrorHandlingPolicies;
 import org.eclipse.wst.jsdt.internal.compiler.ICompilerRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.IErrorHandlingPolicy;
 import org.eclipse.wst.jsdt.internal.compiler.IProblemFactory;
+import org.eclipse.wst.jsdt.internal.compiler.SourceJavadocParser;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.batch.CompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.batch.FileSystem;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileReader;
+import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
+import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
+import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblemFactory;
+import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.core.search.JavaSearchParticipant;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.BinaryIndexer;
+import org.eclipse.wst.jsdt.internal.infer.InferEngine;
+import org.eclipse.wst.jsdt.internal.infer.InferOptions;
+import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
 
 public abstract class AbstractRegressionTest extends AbstractCompilerTest implements StopableTestCase {
 	// javac comparison related types, fields and methods - see runJavac for
@@ -1303,4 +1316,227 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest implem
 			printJavacResultsSummary();
 		}
 	}
+	
+	protected void runBasicTest(String[] testFiles) {
+		runBasicTest(
+			testFiles, 
+			null /* no extra class libraries */, 
+			null /* no custom options*/,
+			null /* no custom requestor*/   	);	 
+	}
+
+	protected void runBasicTest(
+			String[] testFiles, 
+			String[] classLib,
+			Map customOptions,
+			ICompilerRequestor clientRequestor) {
+			// Non-javac part
+			try {
+		
+				IProblemFactory problemFactory = getProblemFactory();
+				Requestor requestor = 
+					new Requestor(
+						problemFactory, 
+						OUTPUT_DIR.endsWith(File.separator) ? OUTPUT_DIR : OUTPUT_DIR + File.separator, 
+						false,
+						clientRequestor,
+						false, /* show category */
+						false /* show warning token*/);
+		
+				Map options = getCompilerOptions();
+				if (customOptions != null) {
+					options.putAll(customOptions);
+				}
+				CompilerOptions compilerOptions = new CompilerOptions(options);
+				compilerOptions.performStatementsRecovery = false;
+				Compiler batchCompiler = 
+					new Compiler(
+						getNameEnvironment(new String[]{}, classLib), 
+						getErrorHandlingPolicy(), 
+						compilerOptions,
+						requestor, 
+						problemFactory);
+				compilerOptions.produceReferenceInfo = true;
+				try {
+					batchCompiler.compile(Util.compilationUnits(testFiles)); // compile all files together
+				} catch(RuntimeException e) {
+					System.out.println(getClass().getName() + '#' + getName());
+					e.printStackTrace();
+					for (int i = 0; i < testFiles.length; i += 2) {
+						System.out.print(testFiles[i]);
+						System.out.println(" ["); //$NON-NLS-1$
+						System.out.println(testFiles[i + 1]);
+						System.out.println("]"); //$NON-NLS-1$
+					}
+					throw e;
+				}
+				if (!requestor.hasErrors) {
+					String sourceFile = testFiles[0];
+		            boolean passed=true;
+					if (!passed) {
+						System.out.println(getClass().getName() + '#' + getName());
+						for (int i = 0; i < testFiles.length; i += 2) {
+							System.out.print(testFiles[i]);
+							System.out.println(" ["); //$NON-NLS-1$
+							System.out.println(testFiles[i + 1]);
+							System.out.println("]"); //$NON-NLS-1$
+						}
+					}
+					assertTrue(this.verifier.failureReason, // computed by verifyClassFiles(...) action
+							passed);
+				} else {
+					System.out.println(getClass().getName() + '#' + getName());
+					System.out.println(Util.displayString(requestor.problemLog, INDENT, SHIFT));
+					for (int i = 0; i < testFiles.length; i += 2) {
+						System.out.print(testFiles[i]);
+						System.out.println(" ["); //$NON-NLS-1$
+						System.out.println(testFiles[i + 1]);
+						System.out.println("]"); //$NON-NLS-1$
+					}
+					assertTrue("Unexpected problems: " + requestor.problemLog, false);
+				}
+			// javac part
+			} catch (AssertionFailedError e) {
+				throw e;
+			} finally {
+			}
+		}
+
+ 
+
+	static class TestParser extends Parser
+	{
+
+		public TestParser(
+				IProblemFactory problemFactory,
+				CompilerOptions options,
+				boolean optimizeStringLiterals,
+				boolean useSourceJavadocParser) {
+			
+			super(
+				new ProblemReporter(
+					DefaultErrorHandlingPolicies.exitAfterAllProblems(),
+					options, 
+					problemFactory),
+				optimizeStringLiterals);
+			
+			// we want to notify all syntax error with the acceptProblem API
+			// To do so, we define the record method of the ProblemReporter
+			this.problemReporter = new ProblemReporter(
+				DefaultErrorHandlingPolicies.exitAfterAllProblems(),
+				options, 
+				problemFactory) {
+				public void record(CategorizedProblem problem, CompilationResult unitResult, ReferenceContext context) {
+					unitResult.record(problem, context); // TODO (jerome) clients are trapping problems either through factory or requestor... is result storing needed?
+					System.out.println("PARSER ERROR: "+problem.toString());
+					assertTrue("unexpected parse Error", false);
+				}
+			};
+			this.options = options;
+			// set specific javadoc parser
+			if (useSourceJavadocParser) {
+				this.javadocParser = new SourceJavadocParser(this);
+			}
+		}
+
+		public CompilationUnitDeclaration parseCompilationUnit(
+				ICompilationUnit unit, 
+				boolean fullParse) {
+					
+				boolean old = diet;
+
+				try {
+					diet = !fullParse;
+					CompilationResult compilationUnitResult = new CompilationResult(unit, 0, 0, this.options.maxProblemsPerUnit);
+					CompilationUnitDeclaration parsedUnit = parse(unit, compilationUnitResult);
+					int initialStart = this.scanner.initialPosition;
+					int initialEnd = this.scanner.eofPosition;
+					if ( fullParse){
+						diet = false;
+						this.getMethodBodies(parsedUnit);
+					}
+					this.scanner.resetTo(initialStart, initialEnd);
+					assertTrue(this.expressionPtr<0);
+					assertTrue(this.expressionLengthPtr<0);
+					assertTrue(this.astPtr<0);
+					assertTrue(this.astLengthPtr<0);
+					assertTrue(this.intPtr<0);
+					return parsedUnit;
+				} catch (AbortCompilation e) {
+					// ignore this exception
+				} finally {
+					diet = old;
+				}
+				return null;
+			}		
+	}
+	protected CompilationUnitDeclaration runParseTest(
+			String s, String testName,String expected
+			) {
+			// Non-javac part
+			try {
+		
+				char[] source = s.toCharArray();
+				TestParser parser = 
+					new TestParser(
+					  new DefaultProblemFactory(Locale.getDefault()), 
+						new CompilerOptions(getCompilerOptions()),
+						true/*optimize string literals*/,
+						false); 
+
+				ICompilationUnit sourceUnit = new CompilationUnit(source, testName, null);
+
+				CompilationUnitDeclaration compUnit= parser.parseCompilationUnit(sourceUnit, true);
+				if (expected!=null)
+				{
+					String result=compUnit.toString();
+					assertEquals(expected, result);
+				}
+				return compUnit;
+			// javac part
+			} catch (AssertionFailedError e) {
+				throw e;
+			} finally {
+			}
+		}
+
+	protected CompilationUnitDeclaration runInferTest(
+			String s, 
+			String testName,String expected,
+			InferOptions inferOptions
+			) {
+			// Non-javac part
+			try {
+		
+				char[] source = s.toCharArray();
+				TestParser parser = 
+					new TestParser(
+					  new DefaultProblemFactory(Locale.getDefault()), 
+						new CompilerOptions(getCompilerOptions()),
+						true/*optimize string literals*/,
+						false); 
+
+				ICompilationUnit sourceUnit = new CompilationUnit(source, testName, null);
+
+				CompilationUnitDeclaration compUnit= parser.parseCompilationUnit(sourceUnit, true);
+				
+				InferEngine inferEngine=inferOptions.createEngine();
+				inferEngine.setCompilationUnit(compUnit);
+				inferEngine.doInfer();
+				if (expected!=null)
+				{
+					StringBuffer sb = new StringBuffer();
+					compUnit.printInferredTypes(sb);
+					String result=sb.toString();
+					assertEquals(expected, result);
+				}
+				return compUnit;
+			// javac part
+			} catch (AssertionFailedError e) {
+				throw e;
+			} finally {
+			}
+		}
+
+
 }

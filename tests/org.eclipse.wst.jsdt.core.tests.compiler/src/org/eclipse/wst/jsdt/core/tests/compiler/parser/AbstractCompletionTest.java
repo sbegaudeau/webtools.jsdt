@@ -25,6 +25,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.batch.CompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
+import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblemFactory;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -182,6 +183,8 @@ public void checkMethodParse(
 
 	CompilationUnitDeclaration unit = parser.dietParse(sourceUnit, compilationResult, cursorLocation);
 
+	if (Parser.DO_DIET_PARSE)
+	{
 	ASTNode foundMethod = null;
 	if (unit.types != null) {
 		for (int i = 0; i < unit.types.length; i++) {
@@ -210,6 +213,7 @@ public void checkMethodParse(
 				}
 			}
 		}
+	}
 	}
 	
 	String computedCompletion = parser.assistNode == null 
