@@ -428,6 +428,10 @@ public abstract class ASTVisitor {
 		return true;
 	}
 
+	public boolean visit(RegularExpressionLiteral node) {
+		return true;
+	}
+
 	/**
 	 * Visits the given type-specific AST node.
 	 * <p>
@@ -655,6 +659,11 @@ public abstract class ASTVisitor {
 		return true;
 	}
 
+	public boolean visit(ForInStatement node) {
+		return true;
+	}
+ 
+
 	/**
 	 * Visits the given type-specific AST node.
 	 * <p>
@@ -684,6 +693,11 @@ public abstract class ASTVisitor {
 	 * be skipped
 	 */
 	public boolean visit(ImportDeclaration node) {
+		return true;
+	}
+
+	
+	public boolean visit(InferredType node) {
 		return true;
 	}
 
@@ -968,6 +982,10 @@ public abstract class ASTVisitor {
 	 * be skipped
 	 */
 	public boolean visit(NullLiteral node) {
+		return true;
+	}
+	
+	public boolean visit(UndefinedLiteral node) {
 		return true;
 	}
 	
@@ -1544,6 +1562,15 @@ public abstract class ASTVisitor {
 		return true;
 	}
 	
+	public boolean visit(ObjectLiteral node) {
+		return true;
+	}
+	public boolean visit(ObjectLiteralField node) {
+		return true;
+	}
+	public boolean visit(FunctionExpression node) {
+		return true;
+	}
 	/**
 	 * End of visit the given type-specific AST node.
 	 * <p>
@@ -1743,7 +1770,10 @@ public abstract class ASTVisitor {
 	public void endVisit(CharacterLiteral node) {
 		// default implementation: do nothing
 	}
-
+	public void endVisit(RegularExpressionLiteral node) {
+		// default implementation: do nothing
+	}
+	
 	/**
 	 * End of visit the given type-specific AST node.
 	 * <p>
@@ -1915,6 +1945,10 @@ public abstract class ASTVisitor {
 		// default implementation: do nothing
 	}
 
+	public void endVisit(ForInStatement node) {
+		// default implementation: do nothing
+	}
+
 	/**
 	 * End of visit the given type-specific AST node.
 	 * <p>
@@ -1962,6 +1996,11 @@ public abstract class ASTVisitor {
 	public void endVisit(InstanceofExpression node) {
 		// default implementation: do nothing
 	}
+	
+	public void endVisit(InferredType node) {
+		// default implementation: do nothing
+	}
+
 
 	/**
 	 * End of visit the given type-specific AST node.
@@ -2141,6 +2180,10 @@ public abstract class ASTVisitor {
 	 * @param node the node to visit
 	 */
 	public void endVisit(NullLiteral node) {
+		// default implementation: do nothing
+	}
+
+	public void endVisit(UndefinedLiteral node) {
 		// default implementation: do nothing
 	}
 
@@ -2570,4 +2613,17 @@ public abstract class ASTVisitor {
 	public void endVisit(WildcardType node) {
 		// default implementation: do nothing
 	}
+	
+	public void endVisit(ObjectLiteral node) {
+		// default implementation: do nothing
+	}
+
+	public void endVisit(ObjectLiteralField node) {
+		// default implementation: do nothing
+	}
+
+	public void endVisit(FunctionExpression node) {
+		// default implementation: do nothing
+	}
+
 }

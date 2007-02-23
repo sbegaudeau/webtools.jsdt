@@ -168,4 +168,10 @@ public abstract class Type extends ASTNode {
 	public final ITypeBinding resolveBinding() {
 		return this.ast.getBindingResolver().resolveType(this);
 	}
+	
+	public boolean isInferred()
+	{
+		return false;
+	}
+	
 }

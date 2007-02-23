@@ -74,6 +74,10 @@ class DefaultASTVisitor extends ASTVisitor {
 	public boolean visit(CharacterLiteral node) {
 		return visitNode(node);
 	}
+	public boolean visit(RegularExpressionLiteral node) {
+		return visitNode(node);
+	}
+
 	public boolean visit(ClassInstanceCreation node) {
 		return visitNode(node);
 	}
@@ -113,6 +117,18 @@ class DefaultASTVisitor extends ASTVisitor {
 	public boolean visit(ForStatement node) {
 		return visitNode(node);
 	}
+	public boolean visit(ForInStatement node) {
+		return visitNode(node);
+	}
+	public boolean visit(FunctionExpression node) {
+		return visitNode(node);
+	}
+	public boolean visit(ObjectLiteral node) {
+		return visitNode(node);
+	}
+	public boolean visit(ObjectLiteralField node) {
+		return visitNode(node);
+	}
 	public boolean visit(IfStatement node) {
 		return visitNode(node);
 	}
@@ -145,6 +161,9 @@ class DefaultASTVisitor extends ASTVisitor {
 		return visitNode(node);
 	}
 	public boolean visit(NullLiteral node) {
+		return visitNode(node);
+	}
+	public boolean visit(UndefinedLiteral node) {
 		return visitNode(node);
 	}
 	public boolean visit(NumberLiteral node) {
@@ -291,9 +310,15 @@ class DefaultASTVisitor extends ASTVisitor {
 	public void endVisit(CatchClause node) {
 		endVisitNode(node);
 	}
+
 	public void endVisit(CharacterLiteral node) {
 		endVisitNode(node);
 	}
+	
+	public void endVisit(RegularExpressionLiteral node) {
+		endVisitNode(node);
+	}
+	
 	public void endVisit(ClassInstanceCreation node) {
 		endVisitNode(node);
 	}
@@ -333,6 +358,12 @@ class DefaultASTVisitor extends ASTVisitor {
 	public void endVisit(ForStatement node) {
 		endVisitNode(node);
 	}
+	public void endVisit(ForInStatement node) {
+		endVisitNode(node);
+	}
+	public void endVisit(FunctionExpression node) {
+		endVisitNode(node);
+	}
 	public void endVisit(IfStatement node) {
 		endVisitNode(node);
 	}
@@ -363,10 +394,19 @@ class DefaultASTVisitor extends ASTVisitor {
 	public void endVisit(NullLiteral node) {
 		endVisitNode(node);
 	}
+	public void endVisit(UndefinedLiteral node) {
+		endVisitNode(node);
+	}
 	public void endVisit(NumberLiteral node) {
 		endVisitNode(node);
 	}
 	public void endVisit(PackageDeclaration node) {
+		endVisitNode(node);
+	}
+	public void endVisit(ObjectLiteral node) {
+		endVisitNode(node);
+	}
+	public void endVisit(ObjectLiteralField node) {
 		endVisitNode(node);
 	}
 	public void endVisit(ParenthesizedExpression node) {
@@ -469,6 +509,14 @@ class DefaultASTVisitor extends ASTVisitor {
 	}
 	public void endVisit(TextElement node) {
 		endVisitNode(node);
+	}
+
+	public void endVisit(InferredType node) {
+		endVisitNode(node);
+	}
+
+	public boolean visit(InferredType node) {
+		return visitNode(node);
 	}
 
 }

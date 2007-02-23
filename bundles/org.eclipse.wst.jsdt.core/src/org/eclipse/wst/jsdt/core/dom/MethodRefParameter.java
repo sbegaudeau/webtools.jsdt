@@ -243,7 +243,7 @@ public class MethodRefParameter extends ASTNode {
 			synchronized (this) {
 				if (this.type == null) {
 					preLazyInit();
-					this.type = this.ast.newPrimitiveType(PrimitiveType.INT);
+					this.type = this.ast.newInferredType(null);
 					postLazyInit(this.type, TYPE_PROPERTY);
 				}
 			}

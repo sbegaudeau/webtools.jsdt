@@ -521,10 +521,12 @@ class DefaultBindingResolver extends BindingResolver {
 					break;
 				case ASTNode.BOOLEAN_LITERAL :
 				case ASTNode.NULL_LITERAL : 
+				case ASTNode.UNDEFINED_LITERAL : 
 				case ASTNode.CHARACTER_LITERAL :
+				case ASTNode.REGULAR_EXPRESSION_LITERAL :
 				case ASTNode.NUMBER_LITERAL :
 					Literal literal = (Literal) this.newAstToOldAst.get(expression);
-					return this.getTypeBinding(literal.literalType(null));
+					return this.getTypeBinding(literal.literalType(this.scope));
 				case ASTNode.THIS_EXPRESSION :
 					ThisReference thisReference = (ThisReference) this.newAstToOldAst.get(expression);
 					BlockScope blockScope = (BlockScope) this.astNodesToBlockScope.get(expression);
@@ -1110,7 +1112,10 @@ class DefaultBindingResolver extends BindingResolver {
 				Binding binding = singleNameReference.binding;
 				if (binding != null) {
 					if (binding.isValidBinding()) {
-						return this.getVariableBinding((org.eclipse.wst.jsdt.internal.compiler.lookup.VariableBinding) binding);				
+						if (binding instanceof org.eclipse.wst.jsdt.internal.compiler.lookup.VariableBinding)
+							return this.getVariableBinding((org.eclipse.wst.jsdt.internal.compiler.lookup.VariableBinding) binding);				
+						if (binding instanceof org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding)
+								return this.getMethodBinding((org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding) binding);
 					} else {
 						/*
 						 * http://dev.eclipse.org/bugs/show_bug.cgi?id=24449
@@ -1421,7 +1426,28 @@ class DefaultBindingResolver extends BindingResolver {
 		}
 		return null;
 	}
-	
+
+	ITypeBinding resolveType(CompilationUnit compilationUnit) {
+		final Object node = this.newAstToOldAst.get(compilationUnit);
+		if (node instanceof org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration) {
+			org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration compilationUnitDeclaration = 
+				(org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration) node;
+			if (compilationUnitDeclaration != null) {
+				ITypeBinding typeBinding = this.getTypeBinding(compilationUnitDeclaration.compilationUnitBinding);
+				if (typeBinding == null) {
+					return null;
+				}
+				this.bindingsToAstNodes.put(typeBinding, compilationUnitDeclaration);
+				String key = typeBinding.getKey();
+				if (key != null) {
+					this.bindingTables.bindingKeysToBindings.put(key, typeBinding);				
+				}
+				return typeBinding;
+			}
+		}
+		return null;
+	}
+
 	synchronized ITypeBinding resolveTypeParameter(TypeParameter typeParameter) {
 		final Object node = this.newAstToOldAst.get(typeParameter);
 		if (node instanceof org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter) {
@@ -1496,60 +1522,98 @@ class DefaultBindingResolver extends BindingResolver {
 		return null;
 	}
 	
+	synchronized IVariableBinding resolveVariable(VariableDeclarationStatement variable) {
+		final Object node = this.newAstToOldAst.get(variable);
+		if (node instanceof AbstractVariableDeclaration) {
+			AbstractVariableDeclaration abstractVariableDeclaration = (AbstractVariableDeclaration) node;
+			if (abstractVariableDeclaration instanceof org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration) {
+				org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration fieldDeclaration = (org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration) abstractVariableDeclaration;
+				IVariableBinding variableBinding = this.getVariableBinding(fieldDeclaration.binding);
+				if (variableBinding == null) {
+					return null;
+				}
+				this.bindingsToAstNodes.put(variableBinding, variable);
+				String key = variableBinding.getKey();
+				if (key != null) {
+					this.bindingTables.bindingKeysToBindings.put(key, variableBinding);				
+				}
+				return variableBinding;
+			}
+			IVariableBinding variableBinding = this.getVariableBinding(((LocalDeclaration) abstractVariableDeclaration).binding);
+			if (variableBinding == null) {
+				return null;
+			}
+			this.bindingsToAstNodes.put(variableBinding, variable);
+			String key = variableBinding.getKey();
+			if (key != null) {
+				this.bindingTables.bindingKeysToBindings.put(key, variableBinding);				
+			}
+			return variableBinding;
+		}
+		return null;
+	}
+
 	/*
 	 * Method declared on BindingResolver.
 	 */
 	synchronized ITypeBinding resolveWellKnownType(String name) {
 		if (this.scope == null) return null;
 		try {
-			if (("boolean".equals(name))//$NON-NLS-1$
-				|| ("char".equals(name))//$NON-NLS-1$
-				|| ("byte".equals(name))//$NON-NLS-1$
-				|| ("short".equals(name))//$NON-NLS-1$
-				|| ("int".equals(name))//$NON-NLS-1$
-				|| ("long".equals(name))//$NON-NLS-1$
-				|| ("float".equals(name))//$NON-NLS-1$
-				|| ("double".equals(name))//$NON-NLS-1$
-				|| ("void".equals(name))) {//$NON-NLS-1$
-				return this.getTypeBinding(Scope.getBaseType(name.toCharArray()));
-			} else if ("java.lang.Object".equals(name)) {//$NON-NLS-1$
+//			if (("boolean".equals(name))//$NON-NLS-1$
+//				|| ("char".equals(name))//$NON-NLS-1$
+//				|| ("byte".equals(name))//$NON-NLS-1$
+//				|| ("short".equals(name))//$NON-NLS-1$
+//				|| ("int".equals(name))//$NON-NLS-1$
+//				|| ("long".equals(name))//$NON-NLS-1$
+//				|| ("float".equals(name))//$NON-NLS-1$
+//				|| ("double".equals(name))//$NON-NLS-1$
+//				|| ("void".equals(name))) {//$NON-NLS-1$
+//				return this.getTypeBinding(Scope.getBaseType(name.toCharArray()));
+//			} else 
+			if ("Object".equals(name)) {//$NON-NLS-1$
 				return this.getTypeBinding(this.scope.getJavaLangObject());
-			} else if ("java.lang.String".equals(name)) {//$NON-NLS-1$
+			} else if ("String".equals(name)) {//$NON-NLS-1$
 				return this.getTypeBinding(this.scope.getJavaLangString());
-			} else if ("java.lang.StringBuffer".equals(name)) {//$NON-NLS-1$
-				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_STRINGBUFFER, 3));
-			} else if ("java.lang.Throwable".equals(name)) {//$NON-NLS-1$
-				return this.getTypeBinding(this.scope.getJavaLangThrowable());
-			} else if ("java.lang.Exception".equals(name)) {//$NON-NLS-1$
-				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_EXCEPTION, 3));
-			} else if ("java.lang.RuntimeException".equals(name)) {//$NON-NLS-1$
-				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_RUNTIMEEXCEPTION, 3));
-			} else if ("java.lang.Error".equals(name)) {//$NON-NLS-1$
-				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_ERROR, 3));
-			} else if ("java.lang.Class".equals(name)) {//$NON-NLS-1$ 
-				return this.getTypeBinding(this.scope.getJavaLangClass());
-			} else if ("java.lang.Cloneable".equals(name)) {//$NON-NLS-1$ 
-				return this.getTypeBinding(this.scope.getJavaLangCloneable());
-			} else if ("java.io.Serializable".equals(name)) {//$NON-NLS-1$ 
-				return this.getTypeBinding(this.scope.getJavaIoSerializable());
-			} else if ("java.lang.Boolean".equals(name)) {//$NON-NLS-1$
-				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_BOOLEAN, 3));
-			} else if ("java.lang.Byte".equals(name)) {//$NON-NLS-1$
-				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_BYTE, 3));
-			} else if ("java.lang.Character".equals(name)) {//$NON-NLS-1$
-				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_CHARACTER, 3));
-			} else if ("java.lang.Double".equals(name)) {//$NON-NLS-1$
-				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_DOUBLE, 3));
-			} else if ("java.lang.Float".equals(name)) {//$NON-NLS-1$
-				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_FLOAT, 3));
-			} else if ("java.lang.Integer".equals(name)) {//$NON-NLS-1$
-				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_INTEGER, 3));
-			} else if ("java.lang.Long".equals(name)) {//$NON-NLS-1$
-				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_LONG, 3));
-			} else if ("java.lang.Short".equals(name)) {//$NON-NLS-1$
-				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_SHORT, 3));
-			} else if ("java.lang.Void".equals(name)) {//$NON-NLS-1$
-				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_VOID, 3));
+			} else if ("Number".equals(name)) {//$NON-NLS-1$
+				return this.getTypeBinding(this.scope.getJavaLangNumber());
+			} else if ("Function".equals(name)) {//$NON-NLS-1$
+				return this.getTypeBinding(this.scope.getJavaLangFunction());
+			} else if ("Boolean".equals(name)) {//$NON-NLS-1$
+				return this.getTypeBinding(this.scope.getJavaLangBoolean());
+//			} else if ("java.lang.StringBuffer".equals(name)) {//$NON-NLS-1$
+//				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_STRINGBUFFER, 3));
+//			} else if ("java.lang.Throwable".equals(name)) {//$NON-NLS-1$
+//				return this.getTypeBinding(this.scope.getJavaLangThrowable());
+//			} else if ("java.lang.Exception".equals(name)) {//$NON-NLS-1$
+//				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_EXCEPTION, 3));
+//			} else if ("java.lang.RuntimeException".equals(name)) {//$NON-NLS-1$
+//				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_RUNTIMEEXCEPTION, 3));
+//			} else if ("java.lang.Error".equals(name)) {//$NON-NLS-1$
+//				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_ERROR, 3));
+//			} else if ("java.lang.Class".equals(name)) {//$NON-NLS-1$ 
+//				return this.getTypeBinding(this.scope.getJavaLangClass());
+//			} else if ("java.lang.Cloneable".equals(name)) {//$NON-NLS-1$ 
+//				return this.getTypeBinding(this.scope.getJavaLangCloneable());
+//			} else if ("java.io.Serializable".equals(name)) {//$NON-NLS-1$ 
+//				return this.getTypeBinding(this.scope.getJavaIoSerializable());
+//			} else if ("java.lang.Boolean".equals(name)) {//$NON-NLS-1$
+//				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_BOOLEAN, 3));
+//			} else if ("java.lang.Byte".equals(name)) {//$NON-NLS-1$
+//				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_BYTE, 3));
+//			} else if ("java.lang.Character".equals(name)) {//$NON-NLS-1$
+//				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_CHARACTER, 3));
+//			} else if ("java.lang.Double".equals(name)) {//$NON-NLS-1$
+//				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_DOUBLE, 3));
+//			} else if ("java.lang.Float".equals(name)) {//$NON-NLS-1$
+//				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_FLOAT, 3));
+//			} else if ("java.lang.Integer".equals(name)) {//$NON-NLS-1$
+//				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_INTEGER, 3));
+//			} else if ("java.lang.Long".equals(name)) {//$NON-NLS-1$
+//				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_LONG, 3));
+//			} else if ("java.lang.Short".equals(name)) {//$NON-NLS-1$
+//				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_SHORT, 3));
+//			} else if ("java.lang.Void".equals(name)) {//$NON-NLS-1$
+//				return this.getTypeBinding(this.scope.getType(TypeConstants.JAVA_LANG_VOID, 3));
 			}
 		} catch (AbortCompilation e) {
 			// ignore missing types

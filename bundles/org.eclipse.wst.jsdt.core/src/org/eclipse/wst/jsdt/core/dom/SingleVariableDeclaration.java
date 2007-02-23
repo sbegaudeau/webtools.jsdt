@@ -21,7 +21,7 @@ import java.util.List;
  * parameter lists and catch clauses. They are not used for field declarations
  * and regular variable declaration statements.
  * For JLS2:
- * <pre>
+ * <pre> 
  * SingleVariableDeclaration:
  *    { Modifier } Type Identifier { <b>[</b><b>]</b> } [ <b>=</b> Expression ]
  * </pre>
@@ -499,7 +499,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 			synchronized (this) {
 				if (this.type == null) {
 					preLazyInit();
-					this.type = this.ast.newPrimitiveType(PrimitiveType.INT);
+					this.type = this.ast.newInferredType(null);
 					postLazyInit(this.type, TYPE_PROPERTY);
 				}
 			}
@@ -520,11 +520,14 @@ public class SingleVariableDeclaration extends VariableDeclaration {
 	 */ 
 	public void setType(Type type) {
 		if (type == null) {
-			throw new IllegalArgumentException();
+			return;
 		}
 		ASTNode oldChild = this.type;
 		preReplaceChild(oldChild, type, TYPE_PROPERTY);
-		this.type = type;
+		if (type instanceof InferredType && ((InferredType)type).getType()==null)
+			this.type=null;
+		else
+			this.type = type;
 		postReplaceChild(oldChild, type, TYPE_PROPERTY);
 	}
 

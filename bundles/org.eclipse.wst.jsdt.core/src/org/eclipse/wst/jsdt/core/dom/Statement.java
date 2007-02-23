@@ -73,7 +73,7 @@ import org.eclipse.wst.jsdt.internal.compiler.parser.TerminalTokens;
  * 
  * @since 2.0
  */
-public abstract class Statement extends ASTNode {
+public abstract class Statement extends ProgramElement  {
 	
 	/**
 	 * The leading comment, or <code>null</code> if none.

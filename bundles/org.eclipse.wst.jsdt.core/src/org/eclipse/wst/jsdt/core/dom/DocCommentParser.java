@@ -513,7 +513,6 @@ class DocCommentParser extends AbstractCommentParser {
 				valid = parseThrows();
 				break;
 			case TerminalTokens.TokenNameabstract:
-			case TerminalTokens.TokenNameassert:
 			case TerminalTokens.TokenNameboolean:
 			case TerminalTokens.TokenNamebreak:
 			case TerminalTokens.TokenNamebyte:
@@ -560,6 +559,7 @@ class DocCommentParser extends AbstractCommentParser {
 			case TerminalTokens.TokenNamevoid:
 			case TerminalTokens.TokenNamevolatile:
 			case TerminalTokens.TokenNamewhile:
+			case TerminalTokens.TokenNameundefined:
 				this.tagValue = TAG_OTHERS_VALUE;
 				createTag();
 				break;

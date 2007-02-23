@@ -15,7 +15,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Map; 
 import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -1478,6 +1478,15 @@ public final class AST {
 		return result;
 	}
 
+	public InferredType newInferredType(String typeName) {
+		InferredType result = new InferredType(this);
+		result.setSourceRange(-1, 0);
+		if (typeName!=null)
+		  result.type=typeName;
+		return result;
+	}
+
+	
 	/**
 	 * Creates and returns a new unparented parameterized type node with the
 	 * given type and an empty list of type arguments.
@@ -2231,6 +2240,10 @@ public final class AST {
 		return new ForStatement(this);
 	}
 
+	public ForInStatement newForInStatement() {
+		return new ForInStatement(this);
+	}
+
 	/**
 	 * Creates a new unparented enhanced for statement node owned by this AST.
 	 * By default, the paramter and expression are unspecified
@@ -2267,7 +2280,11 @@ public final class AST {
 		return new CharacterLiteral(this);
 	}
 
-	/**
+
+	public RegularExpressionLiteral newRegularExpressionLiteral() {
+		return new RegularExpressionLiteral(this);
+	}
+/**
 	 * Creates and returns a new unparented number literal node.
 	 * 
 	 * @param literal the token for the numeric literal as it would 
@@ -2302,6 +2319,10 @@ public final class AST {
 	 */
 	public NullLiteral newNullLiteral() {
 		return new NullLiteral(this);
+	}
+	
+	public UndefinedLiteral newUndefinedLiteral() {
+		return new UndefinedLiteral(this);
 	}
 	
 	/**
@@ -2522,6 +2543,21 @@ public final class AST {
 	 */
 	public CastExpression newCastExpression() {
 		CastExpression result = new CastExpression(this);
+		return result;
+	}
+	
+	public FunctionExpression newFunctionExpression() {
+		FunctionExpression result = new FunctionExpression(this);
+		return result;
+	}
+
+	public ObjectLiteral newObjectLiteral() {
+		ObjectLiteral result = new ObjectLiteral(this);
+		return result;
+	}
+
+	public ObjectLiteralField newObjectLiteralField() {
+		ObjectLiteralField result = new ObjectLiteralField(this);
 		return result;
 	}
 
@@ -2780,7 +2816,7 @@ public final class AST {
 		this.rewriter = new InternalASTRewrite(root);
 		this.setEventHandler(this.rewriter);
 	}
-
+	
 	/**
 	 * Converts all modifications recorded into an object
 	 * representing the corresponding text edits to the

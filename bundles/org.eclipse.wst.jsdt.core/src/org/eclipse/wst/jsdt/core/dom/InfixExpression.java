@@ -121,6 +121,11 @@ public class InfixExpression extends Expression {
 		/** Conditional AND "&amp;&amp;" operator. */
 		public static final Operator CONDITIONAL_AND = new Operator("&&");//$NON-NLS-1$
 		
+		public static final Operator INSTANCEOF = new Operator("instanceof");//$NON-NLS-1$
+		public static final Operator EQUAL_EQUAL_EQUAL = new Operator("===");//$NON-NLS-1$
+		public static final Operator NOT_EQUAL_EQUAL = new Operator("!==");//$NON-NLS-1$
+
+
 		/**
 		 * Map from token to operator (key type: <code>String</code>;
 		 * value type: <code>Operator</code>).

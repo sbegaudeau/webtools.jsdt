@@ -17,6 +17,7 @@ import java.util.Vector;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
+import org.eclipse.wst.jsdt.internal.compiler.ast.UndefinedLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.parser.RecoveryScanner;
 import org.eclipse.wst.jsdt.internal.compiler.parser.RecoveryScannerData;
 import org.eclipse.wst.jsdt.internal.compiler.parser.TerminalTokens;
@@ -32,13 +33,14 @@ class ASTRecoveryPropagator extends DefaultASTVisitor {
 		this.endingTokens.put(AnonymousClassDeclaration.class, new int[]{TerminalTokens.TokenNameRBRACE});
 		this.endingTokens.put(ArrayAccess.class, new int[]{TerminalTokens.TokenNameRBRACKET});
 		this.endingTokens.put(ArrayCreation.class, new int[]{NOTHING, TerminalTokens.TokenNameRBRACKET});
-		this.endingTokens.put(ArrayInitializer.class, new int[]{TerminalTokens.TokenNameRBRACE});
+		this.endingTokens.put(ArrayInitializer.class, new int[]{TerminalTokens.TokenNameRBRACKET});
 		this.endingTokens.put(ArrayType.class, new int[]{TerminalTokens.TokenNameRBRACKET});
 		this.endingTokens.put(AssertStatement.class, new int[]{TerminalTokens.TokenNameSEMICOLON});
 		this.endingTokens.put(Block.class, new int[]{TerminalTokens.TokenNameRBRACE});
 		this.endingTokens.put(BooleanLiteral.class, new int[]{TerminalTokens.TokenNamefalse, TerminalTokens.TokenNametrue});
 		this.endingTokens.put(BreakStatement.class, new int[]{TerminalTokens.TokenNameSEMICOLON});
 		this.endingTokens.put(CharacterLiteral.class, new int[]{TerminalTokens.TokenNameCharacterLiteral});
+		this.endingTokens.put(RegularExpressionLiteral.class, new int[]{TerminalTokens.TokenNameRegExLiteral});
 		this.endingTokens.put(ClassInstanceCreation.class, new int[]{TerminalTokens.TokenNameRBRACE, TerminalTokens.TokenNameRPAREN});
 		this.endingTokens.put(ConstructorInvocation.class, new int[]{TerminalTokens.TokenNameSEMICOLON});
 		this.endingTokens.put(ContinueStatement.class, new int[]{TerminalTokens.TokenNameSEMICOLON});
@@ -51,6 +53,7 @@ class ASTRecoveryPropagator extends DefaultASTVisitor {
 		this.endingTokens.put(MethodDeclaration.class, new int[]{NOTHING, TerminalTokens.TokenNameSEMICOLON});
 		this.endingTokens.put(MethodInvocation.class, new int[]{TerminalTokens.TokenNameRPAREN});
 		this.endingTokens.put(NullLiteral.class, new int[]{TerminalTokens.TokenNamenull});
+		this.endingTokens.put(UndefinedLiteral.class, new int[]{TerminalTokens.TokenNameundefined});
 		this.endingTokens.put(NumberLiteral.class, new int[]{TerminalTokens.TokenNameIntegerLiteral, TerminalTokens.TokenNameLongLiteral, TerminalTokens.TokenNameFloatingPointLiteral, TerminalTokens.TokenNameDoubleLiteral});
 		this.endingTokens.put(PackageDeclaration.class, new int[]{TerminalTokens.TokenNameSEMICOLON});
 		this.endingTokens.put(ParenthesizedExpression.class, new int[]{TerminalTokens.TokenNameRPAREN});
@@ -140,6 +143,8 @@ class ASTRecoveryPropagator extends DefaultASTVisitor {
 	
 	protected boolean visitNode(ASTNode node) {
 		if(this.blockDepth > 0) {
+			if (node instanceof InferredType)
+				return true;
 			int start = node.getStartPosition();
 			int end = start + node.getLength() - 1;
 			

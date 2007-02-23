@@ -544,6 +544,8 @@ class DefaultCommentMapper {
 		HashMap waitingSiblings = new HashMap(10);
 
 		protected boolean visitNode(ASTNode node) {
+			if (node instanceof InferredType)
+				return true;
 
 			// Get default previous end
 			ASTNode parent = node.getParent();

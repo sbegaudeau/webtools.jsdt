@@ -804,16 +804,16 @@ public class ASTParser {
 							BinaryType type = (BinaryType) this.typeRoot.findPrimaryType();
 							IBinaryType binaryType = (IBinaryType) type.getElementInfo();
 							// file name is used to recreate the Java element, so it has to be the toplevel .class file name
-							char[] fileName = binaryType.getFileName();
-							int firstDollar = CharOperation.indexOf('$', fileName);
-							if (firstDollar != -1) {
-								char[] suffix = SuffixConstants.SUFFIX_class;
-								int suffixLength = suffix.length;
-								char[] newFileName = new char[firstDollar + suffixLength];
-								System.arraycopy(fileName, 0, newFileName, 0, firstDollar);
-								System.arraycopy(suffix, 0, newFileName, firstDollar, suffixLength);
-								fileName = newFileName;
-							}
+							char[] fileName = type.getElementName().toCharArray();
+//							int firstDollar = CharOperation.indexOf('$', fileName);
+//							if (firstDollar != -1) {
+//								char[] suffix = SuffixConstants.SUFFIX_class;
+//								int suffixLength = suffix.length;
+//								char[] newFileName = new char[firstDollar + suffixLength];
+//								System.arraycopy(fileName, 0, newFileName, 0, firstDollar);
+//								System.arraycopy(suffix, 0, newFileName, firstDollar, suffixLength);
+//								fileName = newFileName;
+//							}
 							sourceUnit = new BasicCompilationUnit(sourceString.toCharArray(), Util.toCharArrays(packageFragment.names), new String(fileName), this.project);
 						} catch(JavaModelException e) {
 							// an error occured accessing the java element
@@ -1039,12 +1039,14 @@ public class ASTParser {
 				}
 				compilationUnit.setLineEndTable(recordedParsingInformation.lineEnds);
 				if (nodes != null) {
-					TypeDeclaration typeDeclaration = converter.convert(nodes);
-					typeDeclaration.setSourceRange(this.sourceOffset, this.sourceOffset + this.sourceLength);
-					rootNodeToCompilationUnit(typeDeclaration.getAST(), compilationUnit, typeDeclaration, codeSnippetParsingUtil.recordedParsingInformation, null);
+//					TypeDeclaration typeDeclaration = converter.convert(nodes);
+//					typeDeclaration.setSourceRange(this.sourceOffset, this.sourceOffset + this.sourceLength);
+//					rootNodeToCompilationUnit(typeDeclaration.getAST(), compilationUnit, typeDeclaration, codeSnippetParsingUtil.recordedParsingInformation, null);
+					CompilationUnit compUnit=converter.convert(nodes, compilationUnit);
+					rootNodeToCompilationUnit(compUnit.getAST(), compilationUnit, compUnit, codeSnippetParsingUtil.recordedParsingInformation, null);
 					ast.setDefaultNodeFlag(0);
 					ast.setOriginalModificationCount(ast.modificationCount());
-					return typeDeclaration;
+					return compilationUnit;
 				} else {
 					CategorizedProblem[] problems = recordedParsingInformation.problems;
 					if (problems != null) {
@@ -1084,6 +1086,22 @@ public class ASTParser {
 					compilationUnit.types().add(typeDeclaration);
 				}
 				break;
+			case ASTNode.COMPILATION_UNIT :
+			{
+				CompilationUnit compUnit = (CompilationUnit) node;
+				if (problemsCount != 0) {
+					// propagate and record problems
+					final CategorizedProblem[] problems = recordedParsingInformation.problems;
+					for (int i = 0, max = compUnit.statements().size(); i < max; i++) {
+						propagateErrors((ASTNode) compUnit.statements().get(i), problems, data);
+					}
+					compilationUnit.setProblems(problems);
+				}
+				if (compilationUnit!=node)
+					for (int i = 0, max = compUnit.statements().size(); i < max; i++)  
+						compilationUnit.statements().add(compUnit.statements().get(i));
+			}
+			break;
 			case ASTNode.TYPE_DECLARATION :
 				{
 					TypeDeclaration typeDeclaration = (TypeDeclaration) node;

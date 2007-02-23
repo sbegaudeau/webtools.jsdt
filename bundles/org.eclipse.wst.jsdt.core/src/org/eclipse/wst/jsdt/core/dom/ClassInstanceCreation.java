@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.core.dom;
 
 import java.util.ArrayList;
 import java.util.List;
-
+ 
 /**
  * Class instance creation expression AST node type.
  * For JLS2:
@@ -102,7 +102,10 @@ public class ClassInstanceCreation extends Expression {
 	 */
 	public static final ChildPropertyDescriptor ANONYMOUS_CLASS_DECLARATION_PROPERTY = 
 		new ChildPropertyDescriptor(ClassInstanceCreation.class, "anonymousClassDeclaration", AnonymousClassDeclaration.class, OPTIONAL, CYCLE_RISK); //$NON-NLS-1$
-	
+
+	public static final ChildPropertyDescriptor MEMBER_PROPERTY = 
+		new ChildPropertyDescriptor(ClassInstanceCreation.class, "member", AnonymousClassDeclaration.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
+
 	/**
 	 * A list of property descriptors (element type: 
 	 * {@link StructuralPropertyDescriptor}),
@@ -126,6 +129,7 @@ public class ClassInstanceCreation extends Expression {
 		addProperty(NAME_PROPERTY, properyList);
 		addProperty(ARGUMENTS_PROPERTY, properyList);
 		addProperty(ANONYMOUS_CLASS_DECLARATION_PROPERTY, properyList);
+		addProperty(MEMBER_PROPERTY, properyList);
 		PROPERTY_DESCRIPTORS_2_0 = reapPropertyList(properyList);
 		
 		properyList = new ArrayList(6);
@@ -135,6 +139,7 @@ public class ClassInstanceCreation extends Expression {
 		addProperty(TYPE_PROPERTY, properyList);
 		addProperty(ARGUMENTS_PROPERTY, properyList);
 		addProperty(ANONYMOUS_CLASS_DECLARATION_PROPERTY, properyList);
+		addProperty(MEMBER_PROPERTY, properyList);
 		PROPERTY_DESCRIPTORS_3_0 = reapPropertyList(properyList);
 	}
 
@@ -161,7 +166,9 @@ public class ClassInstanceCreation extends Expression {
 	 * The optional expression; <code>null</code> for none; defaults to none.
 	 */
 	private Expression optionalExpression = null;
-	
+
+	private Expression member = null;
+
 	/**
 	 * The type arguments (element type: <code>Type</code>). 
 	 * Null in JLS2. Added in JLS3; defaults to an empty list
@@ -244,6 +251,14 @@ public class ClassInstanceCreation extends Expression {
 				return null;
 			}
 		}
+		if (property == MEMBER_PROPERTY) {
+			if (get) {
+				return getMember();
+			} else {
+				setMember((Expression) child);
+				return null;
+			}
+		}
 		if (property == TYPE_PROPERTY) {
 			if (get) {
 				return getType();
@@ -292,7 +307,9 @@ public class ClassInstanceCreation extends Expression {
 		ClassInstanceCreation result = new ClassInstanceCreation(target);
 		result.setSourceRange(this.getStartPosition(), this.getLength());
 		result.setExpression(
-			(Expression) ASTNode.copySubtree(target, getExpression()));
+				(Expression) ASTNode.copySubtree(target, getExpression()));
+		result.setMember(
+				(Expression) ASTNode.copySubtree(target, getMember()));
 		if (this.ast.apiLevel == AST.JLS2_INTERNAL) {
 			result.setName((Name) getName().clone(target));
 		}
@@ -323,6 +340,7 @@ public class ClassInstanceCreation extends Expression {
 		if (visitChildren) {
 			// visit children in normal left to right reading order
 			acceptChild(visitor, getExpression());
+			acceptChild(visitor, getMember());
 			if (this.ast.apiLevel == AST.JLS2_INTERNAL) {
 				acceptChild(visitor, getName());
 			}
@@ -346,6 +364,10 @@ public class ClassInstanceCreation extends Expression {
 		return this.optionalExpression;
 	}
 	
+	public Expression getMember() {
+		return this.member;
+	}
+	
 	/**
 	 * Sets or clears the expression of this class instance creation expression.
 	 * 
@@ -365,6 +387,15 @@ public class ClassInstanceCreation extends Expression {
 		preReplaceChild(oldChild, expression, EXPRESSION_PROPERTY);
 		this.optionalExpression = expression;
 		postReplaceChild(oldChild, expression, EXPRESSION_PROPERTY);
+	}
+
+	public void setMember(Expression expression) {
+		// a ClassInstanceCreation may occur inside an Expression
+		// must check cycles
+		ASTNode oldChild = this.member;
+		preReplaceChild(oldChild, expression, MEMBER_PROPERTY);
+		this.member = expression;
+		postReplaceChild(oldChild, expression, MEMBER_PROPERTY);
 	}
 
 	/**
@@ -467,16 +498,16 @@ public class ClassInstanceCreation extends Expression {
 	 */ 
 	public Type getType() {
 	    unsupportedIn2();
-		if (this.type == null) {
-			// lazy init must be thread-safe for readers
-			synchronized (this) {
-				if (this.type == null) {
-					preLazyInit();
-					this.type = new SimpleType(this.ast);
-					postLazyInit(this.type, TYPE_PROPERTY);
-				}
-			}
-		}
+//		if (this.type == null) {
+//			// lazy init must be thread-safe for readers
+//			synchronized (this) {
+//				if (this.type == null) {
+//					preLazyInit();
+//					this.type = new SimpleType(this.ast);
+//					postLazyInit(this.type, TYPE_PROPERTY);
+//				}
+//			}
+//		}
 		return this.type;
 	}
 	
@@ -576,6 +607,7 @@ public class ClassInstanceCreation extends Expression {
 			+ (this.typeName == null ? 0 : getName().treeSize())
 			+ (this.type == null ? 0 : getType().treeSize())
 			+ (this.optionalExpression == null ? 0 : getExpression().treeSize())
+			+ (this.member == null ? 0 : getMember().treeSize())
 			+ (this.typeArguments == null ? 0 : this.typeArguments.listSize())
 			+ (this.arguments == null ? 0 : this.arguments.listSize())
 			+ (this.optionalAnonymousClassDeclaration == null ? 0 : getAnonymousClassDeclaration().treeSize());

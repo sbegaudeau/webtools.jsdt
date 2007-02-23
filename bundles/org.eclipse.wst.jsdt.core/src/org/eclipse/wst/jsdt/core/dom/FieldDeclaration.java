@@ -304,7 +304,7 @@ public class FieldDeclaration extends BodyDeclaration {
 			synchronized (this) {
 				if (this.baseType == null) {
 					preLazyInit();
-					this.baseType = this.ast.newPrimitiveType(PrimitiveType.INT);
+					this.baseType = this.ast.newInferredType(null);
 					postLazyInit(this.baseType, TYPE_PROPERTY);
 				}
 			}

@@ -226,7 +226,7 @@ public class ArrayCreation extends Expression {
 				if (this.arrayType == null) {
 					preLazyInit();
 					this.arrayType = this.ast.newArrayType(
-							this.ast.newPrimitiveType(PrimitiveType.INT));
+							this.ast.newInferredType(null));
 					postLazyInit(this.arrayType, TYPE_PROPERTY);
 				}
 			}

@@ -748,13 +748,26 @@ public abstract class ASTNode {
 	 */
 	public static final int ANNOTATION_TYPE_MEMBER_DECLARATION = 82;
 	
+
+	public static final int FOR_IN_STATEMENT = 83;
+	public static final int FUNCTION_EXPRESSION = 84;
+	public static final int OBJECT_LITERAL = 85;
+	public static final int OBJECT_LITERAL_FIELD = 86;
+	public static final int UNDEFINED_LITERAL = 87;
+	public static final int REGULAR_EXPRESSION_LITERAL = 88;
+	public static final int INFERRED_TYPE = 89;
+
+	
+	
+	
+	
 	/**
 	 * Node type constant indicating a node of type 
 	 * <code>Modifier</code>.
 	 * @see Modifier
 	 * @since 3.1
 	 */
-	public static final int MODIFIER = 83;
+	public static final int MODIFIER = 89;
 	
 	/**
 	 * Returns the node class for the corresponding node type.
@@ -828,6 +841,8 @@ public abstract class ASTNode {
 				return FieldDeclaration.class;
 			case FOR_STATEMENT :
 				return ForStatement.class;
+			case FOR_IN_STATEMENT:
+				return ForInStatement.class;
 			case IF_STATEMENT :
 				return IfStatement.class;
 			case IMPORT_DECLARATION :
@@ -864,6 +879,8 @@ public abstract class ASTNode {
 				return NormalAnnotation.class;
 			case NULL_LITERAL :
 				return NullLiteral.class;
+			case UNDEFINED_LITERAL :
+				return UndefinedLiteral.class;
 			case NUMBER_LITERAL :
 				return NumberLiteral.class;
 			case PACKAGE_DECLARATION :
@@ -934,6 +951,14 @@ public abstract class ASTNode {
 				return WhileStatement.class;
 			case WILDCARD_TYPE :
 				return WildcardType.class;
+			case OBJECT_LITERAL :
+				return ObjectLiteral.class;
+			case OBJECT_LITERAL_FIELD :
+				return ObjectLiteralField.class;
+			case FUNCTION_EXPRESSION :
+				return FunctionExpression.class;
+			case REGULAR_EXPRESSION_LITERAL :
+				return RegularExpressionLiteral.class;
 		}
 		throw new IllegalArgumentException();
 	}
@@ -2318,7 +2343,7 @@ public abstract class ASTNode {
 	public final boolean equals(Object obj) {
 		return this == obj; // equivalent to Object.equals
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * This makes it consistent with the fact that a equals methods has been provided.

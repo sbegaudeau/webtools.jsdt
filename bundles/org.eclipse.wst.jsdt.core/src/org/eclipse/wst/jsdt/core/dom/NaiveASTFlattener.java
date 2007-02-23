@@ -229,7 +229,7 @@ class NaiveASTFlattener extends ASTVisitor {
 	 * @see ASTVisitor#visit(ArrayInitializer)
 	 */
 	public boolean visit(ArrayInitializer node) {
-		this.buffer.append("{");//$NON-NLS-1$
+		this.buffer.append("[");//$NON-NLS-1$
 		for (Iterator it = node.expressions().iterator(); it.hasNext(); ) {
 			Expression e = (Expression) it.next();
 			e.accept(this);
@@ -237,7 +237,7 @@ class NaiveASTFlattener extends ASTVisitor {
 				this.buffer.append(",");//$NON-NLS-1$
 			}
 		}
-		this.buffer.append("}");//$NON-NLS-1$
+		this.buffer.append("]");//$NON-NLS-1$
 		return false;
 	}
 
@@ -338,6 +338,13 @@ class NaiveASTFlattener extends ASTVisitor {
 		return false;
 	}
 
+
+	public boolean visit(FunctionExpression node) {
+		node.getMethod().accept(this);
+		return false;
+	}
+
+	
 	/*
 	 * @see ASTVisitor#visit(CatchClause)
 	 */
@@ -356,6 +363,11 @@ class NaiveASTFlattener extends ASTVisitor {
 		this.buffer.append(node.getEscapedValue());
 		return false;
 	}
+	
+	public boolean visit(RegularExpressionLiteral node) {
+		this.buffer.append(node.getRegularExpression());
+		return false;
+	}
 
 	/*
 	 * @see ASTVisitor#visit(ClassInstanceCreation)
@@ -366,23 +378,24 @@ class NaiveASTFlattener extends ASTVisitor {
 			this.buffer.append(".");//$NON-NLS-1$
 		}
 		this.buffer.append("new ");//$NON-NLS-1$
-		if (node.getAST().apiLevel() == AST.JLS2_INTERNAL) {
-			node.internalGetName().accept(this);
-		}
-		if (node.getAST().apiLevel() >= AST.JLS3) {
-			if (!node.typeArguments().isEmpty()) {
-				this.buffer.append("<");//$NON-NLS-1$
-				for (Iterator it = node.typeArguments().iterator(); it.hasNext(); ) {
-					Type t = (Type) it.next();
-					t.accept(this);
-					if (it.hasNext()) {
-						this.buffer.append(",");//$NON-NLS-1$
-					}
-				}
-				this.buffer.append(">");//$NON-NLS-1$
-			}
-			node.getType().accept(this);
-		}
+//		if (node.getAST().apiLevel() == AST.JLS2_INTERNAL) {
+//			node.internalGetName().accept(this);
+//		}
+//		if (node.getAST().apiLevel() >= AST.JLS3) {
+//			if (!node.typeArguments().isEmpty()) {
+//				this.buffer.append("<");//$NON-NLS-1$
+//				for (Iterator it = node.typeArguments().iterator(); it.hasNext(); ) {
+//					Type t = (Type) it.next();
+//					t.accept(this);
+//					if (it.hasNext()) {
+//						this.buffer.append(",");//$NON-NLS-1$
+//					}
+//				}
+//				this.buffer.append(">");//$NON-NLS-1$
+//			}
+//			node.getType().accept(this);
+//		}
+		node.getMember().accept(this);
 		this.buffer.append("(");//$NON-NLS-1$
 		for (Iterator it = node.arguments().iterator(); it.hasNext(); ) {
 			Expression e = (Expression) it.next();
@@ -411,6 +424,10 @@ class NaiveASTFlattener extends ASTVisitor {
 		}
 		for (Iterator it = node.types().iterator(); it.hasNext(); ) {
 			AbstractTypeDeclaration d = (AbstractTypeDeclaration) it.next();
+			d.accept(this);
+		}
+		for (Iterator it = node.statements().iterator(); it.hasNext(); ) {
+			ProgramElement d = (ProgramElement) it.next();
 			d.accept(this);
 		}
 		return false;
@@ -656,6 +673,21 @@ class NaiveASTFlattener extends ASTVisitor {
 		return false;
 	}
 
+	public boolean visit(ForInStatement node) {
+		printIndent();
+		this.buffer.append("for (");//$NON-NLS-1$
+		if (node.getIterationVariable() != null) {
+			node.getIterationVariable().accept(this);
+		}
+		this.buffer.append(" in ");//$NON-NLS-1$
+		if (node.getCollection() != null) {
+			node.getCollection().accept(this);
+		}
+		this.buffer.append(") ");//$NON-NLS-1$
+		node.getBody().accept(this);
+		return false;
+	}
+
 	/*
 	 * @see ASTVisitor#visit(IfStatement)
 	 */
@@ -872,20 +904,23 @@ class NaiveASTFlattener extends ASTVisitor {
 				this.buffer.append(">");//$NON-NLS-1$
 			}
 		}
-		if (!node.isConstructor()) {
-			if (node.getAST().apiLevel() == AST.JLS2_INTERNAL) {
-				node.internalGetReturnType().accept(this);
-			} else {
-				if (node.getReturnType2() != null) {
-					node.getReturnType2().accept(this);
-				} else {
-					// methods really ought to have a return type
-					this.buffer.append("void");//$NON-NLS-1$
-				}
-			}
-			this.buffer.append(" ");//$NON-NLS-1$
-		}
-		node.getName().accept(this);
+		this.buffer.append("function ");//$NON-NLS-1$
+//		if (!node.isConstructor()) {
+//			if (node.getAST().apiLevel() == AST.JLS2_INTERNAL) {
+//				node.internalGetReturnType().accept(this);
+//			} else {
+//				if (node.getReturnType2() != null) {
+//					node.getReturnType2().accept(this);
+//				} else {
+//					// methods really ought to have a return type
+//					this.buffer.append("void");//$NON-NLS-1$
+//				}
+//			}
+//			this.buffer.append(" ");//$NON-NLS-1$
+//		}
+		SimpleName name = node.getName();
+		if (name!=null)
+			name.accept(this);
 		this.buffer.append("(");//$NON-NLS-1$
 		for (Iterator it = node.parameters().iterator(); it.hasNext(); ) {
 			SingleVariableDeclaration v = (SingleVariableDeclaration) it.next();
@@ -987,6 +1022,11 @@ class NaiveASTFlattener extends ASTVisitor {
 		return false;
 	}
 
+	public boolean visit(UndefinedLiteral node) {
+		this.buffer.append("undefined");//$NON-NLS-1$
+		return false;
+	}
+
 	/*
 	 * @see ASTVisitor#visit(NumberLiteral)
 	 */
@@ -995,6 +1035,36 @@ class NaiveASTFlattener extends ASTVisitor {
 		return false;
 	}
 
+	
+
+	/*
+	 * @see ASTVisitor#visit(PrefixExpression)
+	 */
+	public boolean visit(ObjectLiteral node) {
+		if (node.fields().isEmpty())
+			this.buffer.append("{}");//$NON-NLS-1$
+		else {	
+			this.buffer.append("{\n");//$NON-NLS-1$
+			for (Iterator it = node.fields().iterator(); it.hasNext(); ) {
+				ObjectLiteralField field = (ObjectLiteralField) it.next();
+				field.accept(this);
+				if (it.hasNext()) {
+					this.buffer.append(",\n");//$NON-NLS-1$
+				}
+			}
+			this.buffer.append("\n}");//$NON-NLS-1$
+		}
+		return false;
+	}
+
+	public boolean visit(ObjectLiteralField node) {
+		node.getFieldName().accept(this);
+		this.buffer.append(" : ");
+		node.getInitializer().accept(this);
+		return false;
+	}
+
+	
 	/*
 	 * @see ASTVisitor#visit(PackageDeclaration)
 	 */
@@ -1555,8 +1625,10 @@ class NaiveASTFlattener extends ASTVisitor {
 		if (node.getAST().apiLevel() >= AST.JLS3) {
 			printModifiers(node.modifiers());
 		}
-		node.getType().accept(this);
-		this.buffer.append(" ");//$NON-NLS-1$
+//		Type type = node.getType();
+//		if (type!=null)
+//			type.accept(this);
+		this.buffer.append("var ");//$NON-NLS-1$
 		for (Iterator it = node.fragments().iterator(); it.hasNext(); ) {
 			VariableDeclarationFragment f = (VariableDeclarationFragment) it.next();
 			f.accept(this);

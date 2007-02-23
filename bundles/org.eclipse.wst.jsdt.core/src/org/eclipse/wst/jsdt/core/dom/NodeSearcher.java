@@ -19,6 +19,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 
 class NodeSearcher extends ASTVisitor {
 	public org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode found;
@@ -75,7 +76,7 @@ class NodeSearcher extends ASTVisitor {
 
 	public boolean visit(
 		MethodDeclaration methodDeclaration,
-		ClassScope scope) {
+		Scope scope) {
 
 		if (methodDeclaration.declarationSourceStart <= position
 			&& position <= methodDeclaration.declarationSourceEnd) {

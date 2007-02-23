@@ -97,14 +97,14 @@ public class MethodDeclaration extends BodyDeclaration {
 	 * @since 3.0
 	 */
 	public static final ChildPropertyDescriptor NAME_PROPERTY = 
-		new ChildPropertyDescriptor(MethodDeclaration.class, "name", SimpleName.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
+		new ChildPropertyDescriptor(MethodDeclaration.class, "name", SimpleName.class, OPTIONAL, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "returnType" structural property of this node type (JLS2 API only).
 	 * @since 3.0
 	 */
 	public static final ChildPropertyDescriptor RETURN_TYPE_PROPERTY = 
-		new ChildPropertyDescriptor(MethodDeclaration.class, "returnType", Type.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
+		new ChildPropertyDescriptor(MethodDeclaration.class, "returnType", Type.class, OPTIONAL, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "returnType2" structural property of this node type (added in JLS3 API).
@@ -551,16 +551,16 @@ public class MethodDeclaration extends BodyDeclaration {
 	 * @return the method name node
 	 */ 
 	public SimpleName getName() {
-		if (this.methodName == null) {
-			// lazy init must be thread-safe for readers
-			synchronized (this) {
-				if (this.methodName == null) {
-					preLazyInit();
-					this.methodName = new SimpleName(this.ast);
-					postLazyInit(this.methodName, NAME_PROPERTY);
-				}
-			}
-		}
+//		if (this.methodName == null) {
+//			// lazy init must be thread-safe for readers
+//			synchronized (this) {
+//				if (this.methodName == null) {
+//					preLazyInit();
+//					this.methodName = new SimpleName(this.ast);
+//					postLazyInit(this.methodName, NAME_PROPERTY);
+//				}
+//			}
+//		}
 		return this.methodName;
 	}
 	
@@ -775,7 +775,10 @@ public class MethodDeclaration extends BodyDeclaration {
 		this.returnType2Initialized = true;
 		ASTNode oldChild = this.returnType;
 		preReplaceChild(oldChild, type, RETURN_TYPE2_PROPERTY);
-		this.returnType = type;
+		if (type instanceof InferredType && ((InferredType)type).getType()==null)
+			this.returnType=null;
+		else
+			this.returnType = type;
 		postReplaceChild(oldChild, type, RETURN_TYPE2_PROPERTY);
 	}
 

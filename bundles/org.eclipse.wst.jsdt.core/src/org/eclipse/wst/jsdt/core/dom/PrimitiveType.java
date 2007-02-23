@@ -100,6 +100,8 @@ public class PrimitiveType extends Type {
 	public static final Code DOUBLE = new Code("double");//$NON-NLS-1$
 	/** Type code for the primitive type "byte". */
 	public static final Code BYTE = new Code("byte");//$NON-NLS-1$
+	/** Type code for the primitive type "any". */
+	public static final Code ANY_CODE = new Code("any");//$NON-NLS-1$
 
 	/** Type code for the primitive type "void". Note that "void" is
 	 * special in that its only legitimate uses are as a method return
@@ -130,6 +132,7 @@ public class PrimitiveType extends Type {
 				FLOAT,
 				DOUBLE,
 				VOID,
+				ANY_CODE,
 			};
 		for (int i = 0; i < ops.length; i++) {
 			CODES.put(ops[i].toString(), ops[i]);
@@ -166,7 +169,7 @@ public class PrimitiveType extends Type {
 	 * or null if uninitialized.
 	 */
 	private static final List PROPERTY_DESCRIPTORS;
-	
+
 	static {
 		List propertyList = new ArrayList(2);
 		createPropertyList(PrimitiveType.class, propertyList);
@@ -188,7 +191,16 @@ public class PrimitiveType extends Type {
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
 	}
-			
+
+	
+	public static PrimitiveType createAnyType(AST ast)
+	{
+		PrimitiveType type = new PrimitiveType(ast);
+		type.setPrimitiveTypeCode(ANY_CODE);
+		return type;
+	}
+	
+	
 	/**
 	 * Creates a new unparented node for a primitive type owned by the given
 	 * AST. By default, the node has type "int".

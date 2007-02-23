@@ -53,6 +53,9 @@ public class VariableDeclarationStatement extends Statement {
 	public static final SimplePropertyDescriptor MODIFIERS_PROPERTY = 
 		new SimplePropertyDescriptor(VariableDeclarationStatement.class, "modifiers", int.class, MANDATORY); //$NON-NLS-1$
 	
+	public static final ChildPropertyDescriptor JAVADOC_PROPERTY = 
+		new ChildPropertyDescriptor(VariableDeclarationStatement.class, "javadoc", Javadoc.class, OPTIONAL, NO_CYCLE_RISK);  //$NON-NLS-1$
+
 	/**
 	 * The "modifiers" structural property of this node type (added in JLS3 API).
 	 * @since 3.1
@@ -96,6 +99,7 @@ public class VariableDeclarationStatement extends Statement {
 		addProperty(MODIFIERS_PROPERTY, propertyList);
 		addProperty(TYPE_PROPERTY, propertyList);
 		addProperty(FRAGMENTS_PROPERTY, propertyList);
+		addProperty(JAVADOC_PROPERTY, propertyList);
 		PROPERTY_DESCRIPTORS_2_0 = reapPropertyList(propertyList);
 		
 		propertyList = new ArrayList(4);
@@ -103,6 +107,7 @@ public class VariableDeclarationStatement extends Statement {
 		addProperty(MODIFIERS2_PROPERTY, propertyList);
 		addProperty(TYPE_PROPERTY, propertyList);
 		addProperty(FRAGMENTS_PROPERTY, propertyList);
+		addProperty(JAVADOC_PROPERTY, propertyList);
 		PROPERTY_DESCRIPTORS_3_0 = reapPropertyList(propertyList);
 	}
 
@@ -139,6 +144,9 @@ public class VariableDeclarationStatement extends Statement {
 	 */
 	private int modifierFlags = Modifier.NONE;
 		
+	
+	Javadoc optionalDocComment = null;
+
 	/**
 	 * The base type; lazily initialized; defaults to an unspecified,
 	 * legal type.
@@ -189,6 +197,7 @@ public class VariableDeclarationStatement extends Statement {
 				return 0;
 			}
 		}
+		
 		// allow default implementation to flag the error
 		return super.internalGetSetIntProperty(property, get, value);
 	}
@@ -205,6 +214,15 @@ public class VariableDeclarationStatement extends Statement {
 				return null;
 			}
 		}
+		if (property == JAVADOC_PROPERTY) {
+			if (get) {
+				return getJavadoc();
+			} else {
+				setJavadoc((Javadoc) child);
+				return null;
+			}
+		}
+
 		// allow default implementation to flag the error
 		return super.internalGetSetChildProperty(property, get, child);
 	}
@@ -245,6 +263,8 @@ public class VariableDeclarationStatement extends Statement {
 			result.modifiers().addAll(ASTNode.copySubtrees(target, modifiers()));
 		}
 		result.setType((Type) getType().clone(target));
+		result.setJavadoc(
+				(Javadoc) ASTNode.copySubtree(target, getJavadoc()));
 		result.fragments().addAll(
 			ASTNode.copySubtrees(target, fragments()));
 		return result;
@@ -269,6 +289,7 @@ public class VariableDeclarationStatement extends Statement {
 				acceptChildren(visitor, this.modifiers);
 			}
 			acceptChild(visitor, getType());
+			acceptChild(visitor, getJavadoc());
 			acceptChildren(visitor, this.variableDeclarationFragments);
 		}
 		visitor.endVisit(this);
@@ -372,7 +393,7 @@ public class VariableDeclarationStatement extends Statement {
 			synchronized (this) {
 				if (this.baseType == null) {
 					preLazyInit();
-					this.baseType = this.ast.newPrimitiveType(PrimitiveType.INT);
+					this.baseType = this.ast.newInferredType(null);
 					postLazyInit(this.baseType, TYPE_PROPERTY);
 				}
 			}
@@ -432,5 +453,36 @@ public class VariableDeclarationStatement extends Statement {
 			+ (this.baseType == null ? 0 : getType().treeSize())
 			+ this.variableDeclarationFragments.listSize();
 	}
+	
+	public IVariableBinding resolveBinding() {
+		return this.ast.getBindingResolver().resolveVariable(this);
+	}
+
+	/**
+	 * Returns the doc comment node.
+	 * 
+	 * @return the doc comment node, or <code>null</code> if none
+	 */
+	public Javadoc getJavadoc() {
+		return this.optionalDocComment;
+	}
+
+	/**
+	 * Sets or clears the doc comment node.
+	 * 
+	 * @param docComment the doc comment node, or <code>null</code> if none
+	 * @exception IllegalArgumentException if the doc comment string is invalid
+	 */
+	public void setJavadoc(Javadoc docComment) {
+		ChildPropertyDescriptor p = internalJavadocProperty();
+		ASTNode oldChild = this.optionalDocComment;
+		preReplaceChild(oldChild, docComment, p);
+		this.optionalDocComment = docComment;
+		postReplaceChild(oldChild, docComment, p);
+	}
+	final ChildPropertyDescriptor internalJavadocProperty() {
+		return JAVADOC_PROPERTY;
+	}
+
 }
 

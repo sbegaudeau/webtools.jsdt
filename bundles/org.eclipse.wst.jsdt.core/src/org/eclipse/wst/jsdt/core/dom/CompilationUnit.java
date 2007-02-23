@@ -93,12 +93,16 @@ public class CompilationUnit extends ASTNode {
 	public static final ChildListPropertyDescriptor TYPES_PROPERTY =
 		new ChildListPropertyDescriptor(CompilationUnit.class, "types", AbstractTypeDeclaration.class, CYCLE_RISK); //$NON-NLS-1$
 			
+	public static final ChildListPropertyDescriptor STATEMENTS_PROPERTY =
+		new ChildListPropertyDescriptor(CompilationUnit.class, "statements", ProgramElement.class, CYCLE_RISK); //$NON-NLS-1$
+			
 	static {
 		List properyList = new ArrayList(4);
 		createPropertyList(CompilationUnit.class, properyList);
 		addProperty(PACKAGE_PROPERTY, properyList);
 		addProperty(IMPORTS_PROPERTY, properyList);
 		addProperty(TYPES_PROPERTY, properyList);
+		addProperty(STATEMENTS_PROPERTY, properyList);
 		PROPERTY_DESCRIPTORS = reapPropertyList(properyList);
 	}
 	
@@ -185,6 +189,10 @@ public class CompilationUnit extends ASTNode {
 	private ASTNode.NodeList types =
 		new ASTNode.NodeList(TYPES_PROPERTY);
 	
+	private ASTNode.NodeList statements =
+		new ASTNode.NodeList(STATEMENTS_PROPERTY);
+	
+
 	/**
 	 * Creates a new AST node for a compilation owned by the given AST.
 	 * The compilation unit initially has no package declaration, no
@@ -211,6 +219,7 @@ public class CompilationUnit extends ASTNode {
 			acceptChild(visitor, getPackage());
 			acceptChildren(visitor, this.imports);
 			acceptChildren(visitor, this.types);
+			acceptChildren(visitor, this.statements);
 		}
 		visitor.endVisit(this);
 	}
@@ -226,6 +235,7 @@ public class CompilationUnit extends ASTNode {
 			(PackageDeclaration) ASTNode.copySubtree(target, getPackage()));
 		result.imports().addAll(ASTNode.copySubtrees(target, imports()));
 		result.types().addAll(ASTNode.copySubtrees(target, types()));
+		result.statements().addAll(ASTNode.copySubtrees(target, statements()));
 		return result;
 	}
 	
@@ -695,6 +705,9 @@ public class CompilationUnit extends ASTNode {
 		if (property == TYPES_PROPERTY) {
 			return types();
 		}
+		if (property == STATEMENTS_PROPERTY) {
+			return statements();
+		}
 		// allow default implementation to flag the error
 		return super.internalGetChildListProperty(property);
 	}
@@ -1027,6 +1040,7 @@ public class CompilationUnit extends ASTNode {
 		}
 		size += this.imports.listSize();
 		size += this.types.listSize();
+		size += this.statements.listSize();
 		// include disconnected comments
 		if (this.optionalCommentList != null) {
 			for (int i = 0; i < this.optionalCommentList.size(); i++) {
@@ -1053,6 +1067,14 @@ public class CompilationUnit extends ASTNode {
 	 */ 
 	public List types() {
 		return this.types;
+	}
+	
+	public List statements() {
+		return this.statements;
+	}
+
+	public ITypeBinding resolveBinding() {
+		return this.ast.getBindingResolver().resolveType(this);
 	}
 }
 

@@ -89,6 +89,7 @@ public interface ITerminalSymbols {
 	int TokenNameDoubleLiteral = 43;
 	int TokenNameCharacterLiteral = 44;
 	int TokenNameStringLiteral = 45;
+	int TokenNameRegExLiteral = 46;
 	int TokenNamePLUS_PLUS = 1;
 	int TokenNameMINUS_MINUS = 2;
 	int TokenNameEQUAL_EQUAL = 35;
@@ -165,4 +166,18 @@ public interface ITerminalSymbols {
 	 * @since 3.1
 	 */
 	int TokenNamegoto = 404;
+	
+	int TokenNameNOT_EQUAL_EQUAL=450;
+	int TokenNameEQUAL_EQUAL_EQUAL=451;
+	int TokenNamedelete=452;
+	int TokenNamedebugger=453;
+	int TokenNameexport=454;
+	int TokenNamefunction=455;
+	int TokenNamein=456;
+	int TokenNameinfinity=457;
+	int TokenNametypeof=458;
+	int TokenNameundefined=459;
+	int TokenNamevar=460;
+	int TokenNamewith=461;
+	
 }

@@ -495,6 +495,15 @@ public class ASTMatcher {
 				&& safeSubtreeMatch(node.getExpression(), o.getExpression()));
 	}
 
+	public boolean match(FunctionExpression node, Object other) {
+		if (!(other instanceof FunctionExpression)) {
+			return false;
+		}
+		FunctionExpression o = (FunctionExpression) other;
+		return 
+			safeSubtreeMatch(node.getMethod(), o.getMethod());
+	}
+
 	/**
 	 * Returns whether the given node and the other object match.
 	 * <p>
@@ -541,6 +550,14 @@ public class ASTMatcher {
 		return safeEquals(node.getEscapedValue(), o.getEscapedValue());
 	}
 
+	public boolean match(RegularExpressionLiteral node, Object other) {
+		if (!(other instanceof CharacterLiteral)) {
+			return false;
+		}
+		RegularExpressionLiteral o = (RegularExpressionLiteral) other;
+		return safeEquals(node.getRegularExpression(), o.getRegularExpression());
+	}
+
 	/**
 	 * Returns whether the given node and the other object match.
 	 * <p>
@@ -576,6 +593,7 @@ public class ASTMatcher {
 		}
 		return 
 			safeSubtreeMatch(node.getExpression(), o.getExpression())
+			&& safeSubtreeMatch(node.getMember(), o.getMember())
 				&& safeSubtreeListMatch(node.arguments(), o.arguments())
 				&& safeSubtreeMatch(
 					node.getAnonymousClassDeclaration(),
@@ -921,6 +939,17 @@ public class ASTMatcher {
 				&& safeSubtreeMatch(node.getBody(), o.getBody()));
 	}
 
+	public boolean match(ForInStatement node, Object other) {
+		if (!(other instanceof ForInStatement)) {
+			return false;
+		}
+		ForInStatement o = (ForInStatement) other;
+		return (
+			safeSubtreeMatch(node.getIterationVariable(), o.getIterationVariable())
+				&& safeSubtreeMatch(node.getCollection(), o.getCollection())
+				&& safeSubtreeMatch(node.getBody(), o.getBody()));
+	}
+
 	/**
 	 * Returns whether the given node and the other object match.
 	 * <p>
@@ -975,6 +1004,17 @@ public class ASTMatcher {
 				&& node.isOnDemand() == o.isOnDemand());
 	}
 
+	
+	public boolean match(InferredType node, Object other) {
+		if (!(other instanceof InferredType)) {
+			return false;
+		}
+		InferredType o = (InferredType) other;
+		return 
+				safeSubtreeMatch(node.type,o.type);
+	}
+
+	
 	/**
 	 * Returns whether the given node and the other object match.
 	 * <p>
@@ -1451,6 +1491,13 @@ public class ASTMatcher {
 	 */
 	public boolean match(NullLiteral node, Object other) {
 		if (!(other instanceof NullLiteral)) {
+			return false;
+		}
+		return true;
+	}
+
+	public boolean match(UndefinedLiteral node, Object other) {
+		if (!(other instanceof UndefinedLiteral)) {
 			return false;
 		}
 		return true;
@@ -2361,6 +2408,23 @@ public class ASTMatcher {
 		WildcardType o = (WildcardType) other;
 		return node.isUpperBound() == o.isUpperBound()
 		&& safeSubtreeMatch(node.getBound(), o.getBound());
+	}
+
+	public boolean match(ObjectLiteral node, Object other) {
+		if (!(other instanceof ObjectLiteral)) {
+			return false;
+		}
+		ObjectLiteral o = (ObjectLiteral) other;
+		return   safeSubtreeListMatch(node.fields(), o.fields());
+	}
+	
+	public boolean match(ObjectLiteralField node, Object other) {
+		if (!(other instanceof ObjectLiteralField)) {
+			return false;
+		}
+		ObjectLiteralField o = (ObjectLiteralField) other;
+		return safeSubtreeMatch(node.getFieldName(), o.getFieldName())
+		&& safeSubtreeMatch(node.getInitializer(), o.getInitializer());
 	}
 	
 }

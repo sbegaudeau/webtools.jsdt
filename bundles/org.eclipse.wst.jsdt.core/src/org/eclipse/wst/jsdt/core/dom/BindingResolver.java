@@ -761,6 +761,12 @@ class BindingResolver {
 		return null;
 	}
 
+	
+	ITypeBinding resolveType(CompilationUnit compilationUnit) {
+		return null;
+	}
+
+
 	/**
 	 * Resolves the given type parameter and returns the type binding for the
 	 * type parameter.
@@ -829,6 +835,10 @@ class BindingResolver {
 		return null;
 	}
 	
+	IVariableBinding resolveVariable(VariableDeclarationStatement variable) {
+		return null;
+	}
+
 	/**
 	 * Resolves the given well known type by name and returns the type binding
 	 * for it.

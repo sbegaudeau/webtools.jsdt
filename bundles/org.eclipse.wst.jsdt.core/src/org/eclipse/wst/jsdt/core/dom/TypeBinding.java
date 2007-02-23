@@ -832,7 +832,7 @@ class TypeBinding implements ITypeBinding {
 			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63550
 			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=64299
 			 */
-			return this.resolver.resolveWellKnownType("java.lang.Object"); //$NON-NLS-1$
+			return this.resolver.resolveWellKnownType("Object"); //$NON-NLS-1$
 		}
 		if (superclass == null) {
 			return null;
