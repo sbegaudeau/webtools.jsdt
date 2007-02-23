@@ -140,7 +140,9 @@ public String getPath() {
 }
 public NameEnvironmentAnswer findBinding(char[] typeName, String qualifiedPackageName, int type, ITypeRequestor requestor) {
 //	TODO: implement
-	throw new org.eclipse.wst.jsdt.core.UnimplementedException();
-	}
+//	throw new org.eclipse.wst.jsdt.core.UnimplementedException();
+	return null;
+
+}
 
 }

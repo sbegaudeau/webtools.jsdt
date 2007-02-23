@@ -382,21 +382,21 @@ public TypeBinding resolveType(BlockScope scope) {
 			return null;
 		}
 	}
-	if (this.actualReceiverType == null) {
-		return null;
-	}
+//	if (this.actualReceiverType == null) {
+//		return null;
+//	}
 	// base type cannot receive any message
-	if (this.actualReceiverType.isBaseType()) {
+	if (this.actualReceiverType!=null && this.actualReceiverType.isBaseType()) {
 		scope.problemReporter().errorNoMethodFor(this, this.actualReceiverType, argumentTypes);
 		return null;
 	}
 	this.binding = 
-		receiver.isImplicitThis()
+		receiver==null || receiver.isImplicitThis()
 			? scope.getImplicitMethod(selector, argumentTypes, this)
 			: scope.getMethod(this.actualReceiverType, selector, argumentTypes, this); 
 	if (!binding.isValidBinding()) {
 		if (binding.declaringClass == null) {
-			if (this.actualReceiverType instanceof ReferenceBinding) {
+			if (this.actualReceiverType==null || this.actualReceiverType instanceof ReferenceBinding) {
 				binding.declaringClass = (ReferenceBinding) this.actualReceiverType;
 			} else { 
 				scope.problemReporter().errorNoMethodFor(this, this.actualReceiverType, argumentTypes);
@@ -438,14 +438,15 @@ public TypeBinding resolveType(BlockScope scope) {
 				scope.problemReporter().rawTypeReference(this.receiver, this.actualReceiverType);
 			}
 		} else {
-			receiver.computeConversion(scope, this.actualReceiverType, this.actualReceiverType);
+			if (receiver!=null)
+				receiver.computeConversion(scope, this.actualReceiverType, this.actualReceiverType);
 			// compute generic cast if necessary
-			TypeBinding receiverErasure = this.actualReceiverType.erasure();
-			if (receiverErasure instanceof ReferenceBinding) {
-				if (receiverErasure.findSuperTypeWithSameErasure(this.binding.declaringClass) == null) {
-					this.receiverGenericCast = this.binding.declaringClass; // handle indirect inheritance thru variable secondary bound
-				}
-			}
+//			TypeBinding receiverErasure = this.actualReceiverType.erasure();
+//			if (receiverErasure instanceof ReferenceBinding) {
+//				if (receiverErasure.findSuperTypeWithSameErasure(this.binding.declaringClass) == null) {
+//					this.receiverGenericCast = this.binding.declaringClass; // handle indirect inheritance thru variable secondary bound
+//				}
+//			}
 		}
 	} else {
 		// static message invoked through receiver? legal but unoptimal (optional warning).
@@ -456,7 +457,7 @@ public TypeBinding resolveType(BlockScope scope) {
 			scope.problemReporter().indirectAccessToStaticMethod(this, binding);
 		}		
 	}
-	checkInvocationArguments(scope, this.receiver, actualReceiverType, binding, this.arguments, argumentTypes, argsContainCast, this);
+//	checkInvocationArguments(scope, this.receiver, actualReceiverType, binding, this.arguments, argumentTypes, argsContainCast, this);
 
 	//-------message send that are known to fail at compile time-----------
 	if (binding.isAbstract()) {
@@ -469,7 +470,7 @@ public TypeBinding resolveType(BlockScope scope) {
 		scope.problemReporter().deprecatedMethod(binding, this);
 
 	// from 1.5 compliance on, array#clone() returns the array type (but binding still shows Object)
-	if (actualReceiverType.isArrayType() 
+	if (actualReceiverType!=null && actualReceiverType.isArrayType() 
 			&& this.binding.parameters == Binding.NO_PARAMETERS 
 			&& compilerOptions.complianceLevel >= ClassFileConstants.JDK1_5 
 			&& CharOperation.equals(this.binding.selector, CLONE)) {
@@ -479,7 +480,7 @@ public TypeBinding resolveType(BlockScope scope) {
 		if (returnType != null) returnType = returnType.capture(scope, this.sourceEnd);
 		this.resolvedType = returnType;
 	}
-	if (receiver.isSuper() && compilerOptions.getSeverity(CompilerOptions.OverridingMethodWithoutSuperInvocation) != ProblemSeverities.Ignore) {
+	if (receiver!=null && receiver.isSuper() && compilerOptions.getSeverity(CompilerOptions.OverridingMethodWithoutSuperInvocation) != ProblemSeverities.Ignore) {
 		final ReferenceContext referenceContext = scope.methodScope().referenceContext;
 		if (referenceContext instanceof AbstractMethodDeclaration) {
 			final AbstractMethodDeclaration abstractMethodDeclaration = (AbstractMethodDeclaration) referenceContext;

@@ -1203,7 +1203,7 @@ public MethodBinding getUpdatedMethodBinding(MethodBinding targetMethod, Referen
 	return updatedMethod;
 }
 public boolean hasMemberTypes() {
-    return this!=null &&  this.memberTypes.length > 0;
+    return this.memberTypes!=null &&  this.memberTypes.length > 0;
 }
 // NOTE: the return type, arg & exception types of each method of a source type are resolved when needed
 public MethodBinding[] methods() {

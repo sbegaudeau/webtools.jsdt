@@ -2538,7 +2538,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			// check on demand imports
 			if (imports != null) {
 				boolean foundInImport = false;
-				ReferenceBinding type = null;
+				Binding type = null;
 				for (int i = 0, length = imports.length; i < length; i++) {
 					ImportBinding someImport = imports[i];
 					if (someImport.onDemand) {
@@ -2559,12 +2559,12 @@ public abstract class Scope implements TypeConstants, TypeIds {
 								if (importReference != null) importReference.used = true;
 								if (foundInImport) {
 									// Answer error binding -- import on demand conflict; name found in two import on demand packages.
-									temp = new ProblemReferenceBinding(name, type, ProblemReasons.Ambiguous);
+									temp = new ProblemReferenceBinding(name, null, ProblemReasons.Ambiguous);
 									if (typeOrPackageCache != null)
 										typeOrPackageCache.put(name, temp);
 									return temp;
 								}
-								type = (ReferenceBinding )temp;
+								type =  temp;
 								foundInImport = true;
 							} else if (foundType == null) {
 								foundType = temp;

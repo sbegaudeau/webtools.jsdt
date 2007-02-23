@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.impl;
 
+import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
@@ -35,4 +36,7 @@ public interface ITypeRequestor {
 	 * requested type.
 	 */
 	void accept(ISourceType[] sourceType, PackageBinding packageBinding, AccessRestriction accessRestriction);
+
+	CompilationUnitDeclaration doParse(ICompilationUnit unit, AccessRestriction accessRestriction);
+
 }
