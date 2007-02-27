@@ -101,6 +101,8 @@ public String containerRelativePath(String documentPath) {
 		index = this.containerPath.length();
 		if (documentPath.length() <= index)
 			throw new IllegalArgumentException("Document path " + documentPath + " must be relative to " + this.containerPath); //$NON-NLS-1$ //$NON-NLS-2$
+		else if (documentPath.length()==index)
+			index--;
 	}
 	return documentPath.substring(index + 1);
 }

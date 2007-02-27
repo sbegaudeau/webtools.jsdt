@@ -48,7 +48,7 @@ protected void closing(Object info) throws JavaModelException {
 }
 public boolean equals(Object o) {
 	if (!(o instanceof SourceMethod)) return false;
-	return super.equals(o) && Util.equalArraysOrNull(this.parameterTypes, ((SourceMethod)o).parameterTypes);
+	return super.equals(o);// && Util.equalArraysOrNull(this.parameterTypes, ((SourceMethod)o).parameterTypes);
 }
 /**
  * @see IJavaElement
@@ -72,10 +72,10 @@ protected void getHandleMemento(StringBuffer buff) {
 	char delimiter = getHandleMementoDelimiter();
 	buff.append(delimiter);
 	escapeMementoName(buff, getElementName());
-	for (int i = 0; i < this.parameterTypes.length; i++) {
-		buff.append(delimiter);
-		escapeMementoName(buff, this.parameterTypes[i]);
-	}
+//	for (int i = 0; i < this.parameterTypes.length; i++) {
+//		buff.append(delimiter);
+//		escapeMementoName(buff, this.parameterTypes[i]);
+//	}
 	if (this.occurrenceCount > 1) {
 		buff.append(JEM_COUNT);
 		buff.append(this.occurrenceCount);
@@ -164,7 +164,9 @@ public IJavaElement getPrimaryElement(boolean checkOwner) {
 		if (cu.isPrimary()) return this;
 	}
 	IJavaElement primaryParent = this.parent.getPrimaryElement(false);
-	return ((IType)primaryParent).getMethod(this.name, this.parameterTypes);
+	if (primaryParent instanceof IType)
+		return ((IType)primaryParent).getMethod(this.name, this.parameterTypes);
+	return ((ICompilationUnit)primaryParent).getMethod(this.name, this.parameterTypes);
 }
 public String[] getRawParameterNames() throws JavaModelException {
 	return getParameterNames();
@@ -174,7 +176,7 @@ public String[] getRawParameterNames() throws JavaModelException {
  */
 public String getReturnType() throws JavaModelException {
 	SourceMethodElementInfo info = (SourceMethodElementInfo) getElementInfo();
-	return Signature.createTypeSignature(info.getReturnTypeName(), false);
+	return  Signature.createTypeSignature(info.getReturnTypeName(), false) ;
 }
 /**
  * @see IMethod
@@ -188,9 +190,10 @@ public String getSignature() throws JavaModelException {
  */
 public int hashCode() {
    int hash = super.hashCode();
-	for (int i = 0, length = this.parameterTypes.length; i < length; i++) {
-	    hash = Util.combineHashCodes(hash, this.parameterTypes[i].hashCode());
-	}
+//	for (int i = 0, length = this.parameterTypes.length; i < length; i++) {
+//	    int hashCode = (this.parameterTypes[i]!=null) ? this.parameterTypes[i].hashCode() : "".hashCode();
+//		hash = Util.combineHashCodes(hash, hashCode);
+//	}
 	return hash;
 }
 /**
@@ -267,8 +270,8 @@ protected void toStringInfo(int tab, StringBuffer buffer, Object info, boolean s
 			buffer.append("static "); //$NON-NLS-1$
 		}
 		if (!methodInfo.isConstructor()) {
-			buffer.append(methodInfo.getReturnTypeName());
-			buffer.append(' ');
+//			buffer.append(methodInfo.getReturnTypeName());
+			buffer.append("function ");
 		}
 		toStringName(buffer, flags);
 	}
@@ -286,7 +289,8 @@ protected void toStringName(StringBuffer buffer, int flags) {
 		for (int i = 0; i < length; i++) {
 			try {
 				if (i < length - 1) {
-					buffer.append(Signature.toString(parameters[i]));
+//					buffer.append(Signature.toString(parameters[i]));
+					buffer.append("p"+i);
 					buffer.append(", "); //$NON-NLS-1$
 				} else if (isVarargs) {
 					// remove array from signature
@@ -294,7 +298,8 @@ protected void toStringName(StringBuffer buffer, int flags) {
 					buffer.append(Signature.toString(parameter));
 					buffer.append(" ..."); //$NON-NLS-1$
 				} else {
-					buffer.append(Signature.toString(parameters[i]));
+//					buffer.append(Signature.toString(parameters[i]));
+					buffer.append("p"+i);
 				}
 			} catch (IllegalArgumentException e) {
 				// parameter signature is malformed

@@ -18,8 +18,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
@@ -31,6 +33,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.util.HashtableOfArrayToObject;
@@ -56,9 +59,14 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 public class NameLookup implements SuffixConstants {
 	public static class Answer {
 		public IType type;
+		public Object element;
 		AccessRestriction restriction;
 		Answer(IType type, AccessRestriction restriction) {
 			this.type = type;
+			this.restriction = restriction;
+		}
+		Answer(Object element, AccessRestriction restriction) {
+			this.element = element;
 			this.restriction = restriction;
 		}
 		public boolean ignoreIfBetter() {
@@ -106,6 +114,7 @@ public class NameLookup implements SuffixConstants {
 	public static boolean VERBOSE = false;
 	
 	private static final IType[] NO_TYPES = {};
+	private static final IJavaElement[] NO_BINDINGS = {};
 
 	/**
 	 * The <code>IPackageFragmentRoot</code>'s associated
@@ -142,6 +151,7 @@ public class NameLookup implements SuffixConstants {
 	 * Allows working copies to take precedence over compilation units.
 	 */
 	protected HashMap typesInWorkingCopies;
+	protected HashMap bindingsInWorkingCopies;
 
 	public long timeSpentInSeekTypesInSourcePackage = 0;
 	public long timeSpentInSeekTypesInBinaryPackage = 0;
@@ -173,13 +183,17 @@ public class NameLookup implements SuffixConstants {
 				// ignore (implementation of HashtableOfArrayToObject supports cloning)
 			}
 			this.typesInWorkingCopies = new HashMap();
+			this.bindingsInWorkingCopies = new HashMap();
 			for (int i = 0, length = workingCopies.length; i < length; i++) {
 				ICompilationUnit workingCopy = workingCopies[i];
 				PackageFragment pkg = (PackageFragment) workingCopy.getParent();
 				HashMap typeMap = (HashMap) this.typesInWorkingCopies.get(pkg);
+				HashMap bindingsMap = (HashMap) this.bindingsInWorkingCopies.get(pkg);
 				if (typeMap == null) {
 					typeMap = new HashMap();
 					this.typesInWorkingCopies.put(pkg, typeMap);
+					bindingsMap = new HashMap();
+					this.bindingsInWorkingCopies.put(pkg, bindingsMap);
 				}
 				try {
 					IType[] types = workingCopy.getTypes();
@@ -205,6 +219,10 @@ public class NameLookup implements SuffixConstants {
 							}
 						}
 					}
+					
+					addWorkingCopyBindings(workingCopy.getFields(), bindingsMap);
+					addWorkingCopyBindings(workingCopy.getMethods(), bindingsMap);
+					
 				} catch (JavaModelException e) {
 					// working copy doesn't exist -> ignore
 				}
@@ -248,6 +266,28 @@ public class NameLookup implements SuffixConstants {
         }
 	}
 
+	
+	private void addWorkingCopyBindings(IJavaElement [] elements, HashMap bindingsMap)
+	{
+		for (int j = 0; j < elements.length; j++) {
+			IJavaElement element = elements[j];
+			String elementName = element.getElementName();
+			Object existing = bindingsMap.get(elementName);
+			if (existing == null) {
+				bindingsMap.put(elementName, element);
+			} else if (existing instanceof IJavaElement) {
+				bindingsMap.put(elementName, new IJavaElement[] {(IJavaElement) existing, element});
+			} else {
+				IJavaElement[] existingElements = (IJavaElement[]) existing;
+				int existingElementsLength = existingElements.length;
+				System.arraycopy(existingElements, 0, existingElements = new IJavaElement[existingElementsLength+1], 0, existingElementsLength);
+				existingElements[existingElementsLength] = element;
+				bindingsMap.put(elementName, existingElements);
+			}
+		}
+
+	}
+	
 	/**
 	 * Returns true if:<ul>
 	 *  <li>the given type is an existing class and the flag's <code>ACCEPT_CLASSES</code>
@@ -260,12 +300,16 @@ public class NameLookup implements SuffixConstants {
 	 * Otherwise, false is returned. 
 	 */
 	protected boolean acceptType(IType type, int acceptFlags, boolean isSourceType) {
+		if (!type.exists())
+			return false;
 		if (acceptFlags == 0 || acceptFlags == ACCEPT_ALL)
 			return true; // no flags or all flags, always accepted
 		try {
-			int kind = isSourceType
-					? TypeDeclaration.kind(((SourceTypeElementInfo) ((SourceType) type).getElementInfo()).getModifiers())
-					: TypeDeclaration.kind(((IBinaryType) ((BinaryType) type).getElementInfo()).getModifiers());
+			int kind =  TypeDeclaration.kind(((SourceTypeElementInfo) ((SourceType) type).getElementInfo()).getModifiers());
+
+//			int kind = isSourceType
+//					? TypeDeclaration.kind(((SourceTypeElementInfo) ((SourceType) type).getElementInfo()).getModifiers())
+//					: TypeDeclaration.kind(((IBinaryType) ((BinaryType) type).getElementInfo()).getModifiers());
 			switch (kind) {
 				case TypeDeclaration.CLASS_DECL :
 					return (acceptFlags & ACCEPT_CLASSES) != 0;
@@ -282,6 +326,45 @@ public class NameLookup implements SuffixConstants {
 		}
 	}
 
+	protected boolean doAcceptBinding(IJavaElement element, int bindingType, boolean isSourceType,IJavaElementRequestor requestor) {
+		switch (bindingType)
+		{
+		  case Binding.FIELD | Binding.METHOD:
+			  if (element instanceof IMethod)
+			  {
+				  requestor.acceptMethod((IMethod)element);
+				  return true;
+			  }
+			  if (element instanceof IField)
+			  {
+				  requestor.acceptField( (IField)element);
+				  return true;
+			  }
+			  return false;
+		  case Binding.FIELD:
+			  if (element instanceof IField)
+			  {
+				  requestor.acceptField( (IField)element);
+				  return true;
+			  }
+			  return false;
+		  case Binding.METHOD:
+			  if (element instanceof IMethod)
+			  {
+				  requestor.acceptMethod((IMethod)element);
+				  return true;
+			  }
+		  case Binding.TYPE:
+			  if (element instanceof IType)
+			  {
+				  requestor.acceptType((IType)element);
+				  return true;
+			  }
+			
+		}
+		return false;
+	}
+	
 	/**
 	 * Finds every type in the project whose simple name matches
 	 * the prefix, informing the requestor of each hit. The requestor
@@ -307,6 +390,28 @@ public class NameLookup implements SuffixConstants {
 					if (requestor.isCanceled())
 						return;
 					seekTypes(prefix, (IPackageFragment) packages[j], partialMatch, acceptFlags, requestor);
+				}
+			}
+		}
+	}
+	
+	private void findAllBindings(String prefix,int bindingType, boolean partialMatch, int acceptFlags, IJavaElementRequestor requestor) {
+		int count= this.packageFragmentRoots.length;
+		for (int i= 0; i < count; i++) {
+			if (requestor.isCanceled())
+				return;
+			IPackageFragmentRoot root= this.packageFragmentRoots[i];
+			IJavaElement[] packages= null;
+			try {
+				packages= root.getChildren();
+			} catch (JavaModelException npe) {
+				continue; // the root is not present, continue;
+			}
+			if (packages != null) {
+				for (int j= 0, packageCount= packages.length; j < packageCount; j++) {
+					if (requestor.isCanceled())
+						return;
+					seekBindings(prefix,bindingType, (IPackageFragment) packages[j], partialMatch, acceptFlags, requestor);
 				}
 			}
 		}
@@ -513,8 +618,10 @@ public class NameLookup implements SuffixConstants {
 			pkgs.toArray(result);
 			return result;
 		} else {
-			String[] splittedName = Util.splitOn('.', name, 0, name.length());
+			String[] splittedName = (name.length()>0)? new String[]{name}: new String[0];//Util.splitOn('.', name, 0, name.length());
 			Object value = this.packageFragments.get(splittedName);
+			if (value==null)
+				value=this.packageFragments.get(new String[]{name});
 			if (value == null)
 				return null;
 			if (value instanceof PackageFragmentRoot) {
@@ -571,6 +678,18 @@ public class NameLookup implements SuffixConstants {
 	public Answer findType(String typeName, String packageName, boolean partialMatch, int acceptFlags, boolean checkRestrictions) {
 		return findType(typeName,
 			packageName,
+			partialMatch,
+			acceptFlags,
+			true/* consider secondary types */,
+			false/* do NOT wait for indexes */,
+			checkRestrictions,
+			null);
+	}
+	
+	public Answer findBinding(String typeName, String packageName,int type, boolean partialMatch, int acceptFlags, boolean checkRestrictions) {
+		return findBinding(typeName,
+			packageName,
+			type,
 			partialMatch,
 			acceptFlags,
 			true/* consider secondary types */,
@@ -656,6 +775,82 @@ public class NameLookup implements SuffixConstants {
 		return type == null ? null : new Answer(type, null);
 	}
 
+	public Answer findBinding(
+			String bindingName, 
+			String packageName,
+			int bindingType,
+			boolean partialMatch, 
+			int acceptFlags, 
+			boolean considerSecondaryTypes, 
+			boolean waitForIndexes, 
+			boolean checkRestrictions,
+			IProgressMonitor monitor) {
+		if (packageName == null || packageName.length() == 0) {
+			packageName= IPackageFragment.DEFAULT_PACKAGE_NAME;
+		} else if (bindingName.length() > 0 && ScannerHelper.isLowerCase(bindingName.charAt(0))) {
+			// see if this is a known package and not a type
+			if (findPackageFragments(packageName + "." + bindingName, false) != null) return null; //$NON-NLS-1$
+		}
+
+		// Look for concerned package fragments
+		JavaElementRequestor elementRequestor = new JavaElementRequestor();
+		seekPackageFragments(packageName, false, elementRequestor);
+		IPackageFragment[] packages= elementRequestor.getPackageFragments();
+
+		// Try to find type in package fragments list
+//		IType type = null;
+		Object element = null;
+		int length= packages.length;
+		HashSet projects = null;
+		IJavaProject javaProject = null;
+		Answer suggestedAnswer = null;
+		for (int i= 0; i < length; i++) {
+			element = findBinding(bindingName, bindingType,packages[i], partialMatch, acceptFlags);
+			if (element != null) {
+				AccessRestriction accessRestriction = null;
+				if (checkRestrictions) {
+					accessRestriction = getViolatedRestriction(bindingName, packageName, element, accessRestriction);
+				}
+				Answer answer = new Answer(element, accessRestriction);
+				if (!answer.ignoreIfBetter()) {
+					if (answer.isBetter(suggestedAnswer))
+						return answer;
+				} else if (answer.isBetter(suggestedAnswer))
+					// remember suggestion and keep looking
+					suggestedAnswer = answer;
+			}
+			else if (suggestedAnswer == null && considerSecondaryTypes) {
+				if (javaProject == null) {
+					javaProject = packages[i].getJavaProject();
+				} else if (projects == null)  {
+					if (!javaProject.equals(packages[i].getJavaProject())) {
+						projects = new HashSet(3);
+						projects.add(javaProject);
+						projects.add(packages[i].getJavaProject());
+					}
+				} else {
+					projects.add(packages[i].getJavaProject());
+				}
+			}
+		}
+		if (suggestedAnswer != null)
+			// no better answer was found
+			return suggestedAnswer;
+
+//		// If type was not found, try to find it as secondary in source folders
+//		if (considerSecondaryTypes && javaProject != null) {
+//			if (projects == null) {
+//				type = findSecondaryType(packageName, bindingName, javaProject, waitForIndexes, monitor);
+//			} else {
+//				Iterator allProjects = projects.iterator();
+//				while (type == null && allProjects.hasNext()) {
+//					type = findSecondaryType(packageName, typeName, (IJavaProject) allProjects.next(), waitForIndexes, monitor);
+//				}
+//			}
+//		}
+		return element == null ? null : new Answer(element, null);
+	}
+
 	private AccessRestriction getViolatedRestriction(String typeName, String packageName, IType type, AccessRestriction accessRestriction) {
 		PackageFragmentRoot root = (PackageFragmentRoot) type.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
 		ClasspathEntry entry = (ClasspathEntry) this.rootToResolvedEntries.get(root);
@@ -668,6 +863,23 @@ public class NameLookup implements SuffixConstants {
 				accessRestriction = accessRuleSet.getViolatedRestriction(CharOperation.concatWith(packageChars, typeChars, '/'));
 			}
 		}
+		return accessRestriction;
+	}
+
+	private AccessRestriction getViolatedRestriction(String typeName, String packageName, Object element, AccessRestriction accessRestriction) {
+//TODO: implement 
+		System.out.println("implement NameLookup.getViolatedRestriction");
+//		PackageFragmentRoot root = (PackageFragmentRoot) type.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+//		ClasspathEntry entry = (ClasspathEntry) this.rootToResolvedEntries.get(root);
+//		if (entry != null) { // reverse map always contains resolved CP entry
+//			AccessRuleSet accessRuleSet = entry.getAccessRuleSet();
+//			if (accessRuleSet != null) {
+//				// TODO (philippe) improve char[] <-> String conversions to avoid performing them on the fly
+//				char[][] packageChars = CharOperation.splitOn('.', packageName.toCharArray());
+//				char[] typeChars = typeName.toCharArray();
+//				accessRestriction = accessRuleSet.getViolatedRestriction(CharOperation.concatWith(packageChars, typeChars, '/'));
+//			}
+//		}
 		return accessRestriction;
 	}
 
@@ -728,6 +940,52 @@ public class NameLookup implements SuffixConstants {
 		SingleTypeRequestor typeRequestor = new SingleTypeRequestor();
 		seekTypes(name, pkg, partialMatch, acceptFlags, typeRequestor);
 		return typeRequestor.getType();
+	}
+
+	public IJavaElement findBinding(String name, int type, IPackageFragment pkg, boolean partialMatch, int acceptFlags) {
+		if (pkg == null) return null;
+
+		// Return first found (ignore duplicates).
+		JavaElementRequestor requestor = new JavaElementRequestor();
+		seekBindings(name,type, pkg, partialMatch, acceptFlags, requestor);
+		  IField[] fields = requestor.getFields();
+		  IMethod[] methods = requestor.getMethods();
+		  IType[] types = requestor.getTypes();
+		switch (type)
+		{
+		  case Binding.FIELD | Binding.METHOD:
+			  if (methods.length>0)
+				  return methods[0];
+		  case Binding.FIELD:
+			  return (fields.length>0)?fields[0]:null;
+
+		  case Binding.METHOD:
+			  return (methods.length>0)?methods[0]:null;
+		  case Binding.TYPE:
+		  case Binding.TYPE|Binding.PACKAGE:
+			  return (types.length>0)?types[0]:null;
+		
+		  default:
+		  {
+				if ((Binding.TYPE & type)!=0)
+				{
+					  if (types.length>0)
+						  return types[0];
+				}
+				if ((Binding.METHOD & type)!=0)
+				{
+					  if (methods.length>0)
+						  return methods[0];
+				}
+				if ((Binding.VARIABLE & type)!=0)
+				{
+					  if (fields.length>0)
+						  return fields[0];
+				}			  
+		  }
+			
+		}
+		return null;
 	}
 
 	/**
@@ -834,7 +1092,7 @@ public class NameLookup implements SuffixConstants {
 			Util.verbose(" -> partial match:" + partialMatch);  //$NON-NLS-1$
 		}
 */		if (partialMatch) {
-			String[] splittedName = Util.splitOn('.', name, 0, name.length());
+			String[] splittedName = splitPackageName(name);
 			Object[][] keys = this.packageFragments.keyTable;
 			for (int i = 0, length = keys.length; i < length; i++) {
 				if (requestor.isCanceled())
@@ -857,7 +1115,7 @@ public class NameLookup implements SuffixConstants {
 				}
 			}
 		} else {
-			String[] splittedName = Util.splitOn('.', name, 0, name.length());
+			String[] splittedName = splitPackageName(name);
 			Object value = this.packageFragments.get(splittedName);
 			if (value instanceof PackageFragmentRoot) {
 				requestor.acceptPackageFragment(((PackageFragmentRoot) value).getPackageFragment(splittedName));
@@ -873,8 +1131,37 @@ public class NameLookup implements SuffixConstants {
 				}
 			}
 		}
+		if (name==null || name.equals(IPackageFragment.DEFAULT_PACKAGE_NAME))
+		{
+			for (int i = 0; i < this.packageFragmentRoots.length; i++) {
+				if (packageFragmentRoots[i] instanceof LibraryFragmentRoot)
+				{
+					IJavaElement[] children;
+					try {
+						children = packageFragmentRoots[i].getChildren();
+						for (int j = 0; j < children.length; j++) {
+							requestor.acceptPackageFragment((IPackageFragment)children[j]);
+						}
+					} catch (JavaModelException e) {
+					}
+				}
+			}
+		}
 	}
 
+	private String [] splitPackageName(String name)
+	{
+		String[] strings;
+		if (name.endsWith(".js"))
+		{
+			strings= Util.splitOn('.', name, 0, name.length()-3);
+			strings[strings.length-1]=strings[strings.length-1]+".js";
+		}
+		else
+		strings  = Util.splitOn('.', name, 0, name.length());
+		
+		return strings;
+	}
 	/**
 	 * Notifies the given requestor of all types (classes and interfaces) in the
 	 * given package fragment with the given (unqualified) name.
@@ -929,7 +1216,7 @@ public class NameLookup implements SuffixConstants {
 			switch (packageFlavor) {
 				case IPackageFragmentRoot.K_BINARY :
 					matchName= matchName.replace('.', '$');
-					seekTypesInBinaryPackage(matchName, pkg, partialMatch, acceptFlags, requestor);
+					seekBindingsInBinaryPackage(matchName,Binding.TYPE, pkg, partialMatch, acceptFlags, requestor);
 					break;
 				case IPackageFragmentRoot.K_SOURCE :
 					seekTypesInSourcePackage(matchName, pkg, firstDot, partialMatch, topLevelTypeName, acceptFlags, requestor);
@@ -942,32 +1229,190 @@ public class NameLookup implements SuffixConstants {
 		}
 	}
 
+
+	public void seekBindings(String name, int bindingType, IPackageFragment pkg, boolean partialMatch, int acceptFlags, IJavaElementRequestor requestor) {
+		/*		if (VERBOSE) {
+					Util.verbose(" SEEKING TYPES");  //$NON-NLS-1$
+					Util.verbose(" -> name: " + name);  //$NON-NLS-1$
+					Util.verbose(" -> pkg: " + ((JavaElement) pkg).toStringWithAncestors());  //$NON-NLS-1$
+					Util.verbose(" -> partial match:" + partialMatch);  //$NON-NLS-1$
+				}
+		*/
+				String matchName= partialMatch ? name.toLowerCase() : name;
+				if (pkg == null) {
+					findAllBindings(matchName, bindingType, partialMatch, acceptFlags, requestor);
+					return;
+				}
+				IPackageFragmentRoot root= (IPackageFragmentRoot) pkg.getParent();
+				try {
+
+					// look in working copies first
+					int firstDot = -1;
+					String topLevelTypeName = null;
+					int packageFlavor= root.getKind();
+					if (this.typesInWorkingCopies != null || packageFlavor == IPackageFragmentRoot.K_SOURCE) {
+						firstDot = matchName.indexOf('.');
+						if (!partialMatch)
+							topLevelTypeName = firstDot == -1 ? matchName : matchName.substring(0, firstDot);
+					}
+					if (this.bindingsInWorkingCopies != null) {
+						if (seekBindingsInWorkingCopies(matchName,bindingType, pkg, firstDot, partialMatch, topLevelTypeName, acceptFlags, requestor))
+							return;
+					}
+					
+					// look in model
+					switch (packageFlavor) {
+						case IPackageFragmentRoot.K_BINARY :
+//							matchName= matchName.replace('.', '$');
+							seekBindingsInBinaryPackage(matchName,  bindingType,pkg, partialMatch, acceptFlags, requestor);
+							break;
+						case IPackageFragmentRoot.K_SOURCE :
+							seekBindingsInSourcePackage(matchName, bindingType,pkg, firstDot, partialMatch, topLevelTypeName, acceptFlags, requestor);
+							break;
+						default :
+							return;
+					}
+				} catch (JavaModelException e) {
+					return;
+				}
+			}
+
+
 	/**
 	 * Performs type search in a binary package.
 	 */
-	protected void seekTypesInBinaryPackage(String name, IPackageFragment pkg, boolean partialMatch, int acceptFlags, IJavaElementRequestor requestor) {
+//	protected void seekTypesInBinaryPackage(String name, IPackageFragment pkg, boolean partialMatch, int acceptFlags, IJavaElementRequestor requestor) {
+//		long start = -1;
+//		if (VERBOSE)
+//			start = System.currentTimeMillis();
+//		try {
+//			if (!partialMatch) {
+//				// exact match
+//				if (requestor.isCanceled()) return;
+//				ClassFile classFile =  new ClassFile((PackageFragment) pkg, name);
+//				if (classFile.existsUsingJarTypeCache()) {
+//					IType type = classFile.getType();
+//					if (acceptType(type, acceptFlags, false/*not a source type*/)) {
+//						requestor.acceptType(type);
+//					}
+//				}
+//			} else {
+//				IJavaElement[] classFiles= null;
+//				try {
+//					classFiles= pkg.getChildren();
+//				} catch (JavaModelException npe) {
+//					return; // the package is not present
+//				}
+//				int length= classFiles.length;
+//				String unqualifiedName = name;
+//				int index = name.lastIndexOf('$');
+//				if (index != -1) {
+//					//the type name of the inner type
+//					unqualifiedName = Util.localTypeName(name, index, name.length());
+//					// unqualifiedName is empty if the name ends with a '$' sign.
+//					// See http://dev.eclipse.org/bugs/show_bug.cgi?id=14642
+//				}
+//				int matchLength = name.length();
+//				for (int i = 0; i < length; i++) {
+//					if (requestor.isCanceled())
+//						return;
+//					IJavaElement classFile= classFiles[i];
+//					// MatchName will never have the extension ".class" and the elementName always will.
+//					String elementName = classFile.getElementName();
+//					if (elementName.regionMatches(true /*ignore case*/, 0, name, 0, matchLength)) {
+//						IType type = ((ClassFile) classFile).getType();
+//						String typeName = type.getElementName();
+//						if (typeName.length() > 0 && !Character.isDigit(typeName.charAt(0))) { //not an anonymous type
+//							if (nameMatches(unqualifiedName, type, true/*partial match*/) && acceptType(type, acceptFlags, false/*not a source type*/))
+//								requestor.acceptType(type);
+//						}
+//					}
+//				}
+//			}
+//		} finally {
+//			if (VERBOSE)
+//				this.timeSpentInSeekTypesInBinaryPackage += System.currentTimeMillis()-start;
+//		}
+//	}
+//
+	protected void seekBindingsInBinaryPackage(String name, int bindingType,IPackageFragment pkg, boolean partialMatch, int acceptFlags, IJavaElementRequestor requestor) {
 		long start = -1;
 		if (VERBOSE)
 			start = System.currentTimeMillis();
 		try {
+			IJavaElement[] classFiles= null;
+			try {
+				classFiles= pkg.getChildren();
+			} catch (JavaModelException npe) {
+				return; // the package is not present
+			}
+			int length= classFiles.length;
 			if (!partialMatch) {
-				// exact match
-				if (requestor.isCanceled()) return;
-				ClassFile classFile =  new ClassFile((PackageFragment) pkg, name);
-				if (classFile.existsUsingJarTypeCache()) {
-					IType type = classFile.getType();
-					if (acceptType(type, acceptFlags, false/*not a source type*/)) {
-						requestor.acceptType(type);
+				for (int i = 0; i < length; i++) {
+					ClassFile classFile=(ClassFile)classFiles[i];
+					switch (bindingType) {
+					case Binding.TYPE:
+					case Binding.TYPE | Binding.PACKAGE:
+						IType type = classFile.getType(name);
+						if (acceptType(type, acceptFlags, false/*not a source type*/)) {
+							requestor.acceptType(type);
+						}
+						
+						break;
+					case Binding.VARIABLE:
+//						String cuName = cu.getElementName();
+//						int lastDot = cuName.lastIndexOf('.');
+//						if (lastDot != topLevelTypeName.length() || !topLevelTypeName.regionMatches(0, cuName, 0, lastDot)) 
+//							continue;
+						IField field = classFile.getField(name);
+						if (field.exists())
+							requestor.acceptField(field);
+						
+						break;
+
+					case Binding.METHOD:
+//						String cuName = cu.getElementName();
+//						int lastDot = cuName.lastIndexOf('.');
+//						if (lastDot != topLevelTypeName.length() || !topLevelTypeName.regionMatches(0, cuName, 0, lastDot)) 
+//							continue;
+						IMethod method = classFile.getMethod(name, null);
+						if (method.exists())
+							requestor.acceptMethod(method);
+						break;
+					case Binding.METHOD | Binding.VARIABLE:
+						 method = classFile.getMethod(name, null);
+						if (method!=null && method.exists())
+							requestor.acceptMethod(method);
+						else
+						{
+						   field = classFile.getField(name);
+						  requestor.acceptField(field);
+						}
+						break;
+					  default:
+					  {
+							if ((Binding.TYPE & bindingType)!=0)
+							{
+								IType thisType = classFile.getType();
+								if (acceptType(thisType, acceptFlags, false/*not a source type*/)) {
+									requestor.acceptType(thisType);
+								}
+							}
+							if ((Binding.METHOD & bindingType)!=0)
+							{
+								 method = classFile.getMethod(name, null);
+									if (method!=null && method.exists())
+										requestor.acceptMethod(method);
+							}
+							if ((Binding.VARIABLE & bindingType)!=0)
+							{
+							   field = classFile.getField(name);
+								  requestor.acceptField(field);
+							}
+					  }
 					}
 				}
 			} else {
-				IJavaElement[] classFiles= null;
-				try {
-					classFiles= pkg.getChildren();
-				} catch (JavaModelException npe) {
-					return; // the package is not present
-				}
-				int length= classFiles.length;
 				String unqualifiedName = name;
 				int index = name.lastIndexOf('$');
 				if (index != -1) {
@@ -1032,6 +1477,108 @@ public class NameLookup implements SuffixConstants {
 							requestor.acceptType(type);
 							break;  // since an exact match was requested, no other matching type can exist
 						}
+					}
+				} catch (JavaModelException e) {
+					// package doesn't exist -> ignore
+				}
+			} else {
+				try {
+					String cuPrefix = firstDot == -1 ? name : name.substring(0, firstDot);
+					IJavaElement[] compilationUnits = pkg.getChildren();
+					for (int i = 0, length = compilationUnits.length; i < length; i++) {
+						if (requestor.isCanceled())
+							return;
+						IJavaElement cu = compilationUnits[i];
+						if (!cu.getElementName().toLowerCase().startsWith(cuPrefix))
+							continue;
+						try {
+							IType[] types = ((ICompilationUnit) cu).getTypes();
+							for (int j = 0, typeLength = types.length; j < typeLength; j++)
+								seekTypesInTopLevelType(name, firstDot, types[j], requestor, acceptFlags);
+						} catch (JavaModelException e) {
+							// cu doesn't exist -> ignore
+						}
+					}
+				} catch (JavaModelException e) {
+					// package doesn't exist -> ignore
+				}
+			}
+		} finally {
+			if (VERBOSE)
+				this.timeSpentInSeekTypesInSourcePackage += System.currentTimeMillis()-start;
+		}
+	}
+	
+	protected void seekBindingsInSourcePackage(
+			String name, 
+			int bindingType,
+			IPackageFragment pkg, 
+			int firstDot, 
+			boolean partialMatch, 
+			String topLevelTypeName, 
+			int acceptFlags,
+			IJavaElementRequestor requestor) {
+		
+		long start = -1;
+		if (VERBOSE)
+			start = System.currentTimeMillis();
+		try {
+			if (!partialMatch) {
+				try {
+					IJavaElement[] compilationUnits = pkg.getChildren();
+					for (int i = 0, length = compilationUnits.length; i < length; i++) {
+						if (requestor.isCanceled())
+							return;
+						IJavaElement cu = compilationUnits[i];
+						
+						switch (bindingType) {
+						case Binding.TYPE:
+//							String cuName = cu.getElementName();
+//							int lastDot = cuName.lastIndexOf('.');
+//							if (lastDot != topLevelTypeName.length() || !topLevelTypeName.regionMatches(0, cuName, 0, lastDot)) 
+//								continue;
+							IType type = ((ICompilationUnit) cu).getType(topLevelTypeName);
+							type = getMemberType(type, name, firstDot);
+							if (acceptType(type, acceptFlags, true/*a source type*/)) { // accept type checks for existence
+								requestor.acceptType(type);
+								break;  // since an exact match was requested, no other matching type can exist
+							}
+							
+							break;
+						case Binding.VARIABLE:
+//							String cuName = cu.getElementName();
+//							int lastDot = cuName.lastIndexOf('.');
+//							if (lastDot != topLevelTypeName.length() || !topLevelTypeName.regionMatches(0, cuName, 0, lastDot)) 
+//								continue;
+							IField field = ((ICompilationUnit) cu).getField(name);
+							requestor.acceptField(field);
+							
+							break;
+
+						case Binding.METHOD:
+//							String cuName = cu.getElementName();
+//							int lastDot = cuName.lastIndexOf('.');
+//							if (lastDot != topLevelTypeName.length() || !topLevelTypeName.regionMatches(0, cuName, 0, lastDot)) 
+//								continue;
+							IMethod method = ((ICompilationUnit) cu).getMethod(name, null);
+							if (method.exists())
+								requestor.acceptMethod(method);
+							break;
+						case Binding.METHOD | Binding.VARIABLE:
+							 method = ((ICompilationUnit) cu).getMethod(name, null);
+							if (method!=null)
+								requestor.acceptMethod(method);
+							else
+							{
+							   field = ((ICompilationUnit) cu).getField(name);
+							  requestor.acceptField(field);
+							}
+							break;
+							
+						default:
+							break;
+						}
+						
 					}
 				} catch (JavaModelException e) {
 					// package doesn't exist -> ignore
@@ -1159,6 +1706,57 @@ public class NameLookup implements SuffixConstants {
 			HashMap typeMap = (HashMap) (this.typesInWorkingCopies == null ? null : this.typesInWorkingCopies.get(pkg));
 			if (typeMap != null) {
 				Iterator iterator = typeMap.values().iterator();
+				while (iterator.hasNext()) {
+					if (requestor.isCanceled())
+						return false;
+					Object object = iterator.next();
+					if (object instanceof IType) {
+						seekTypesInTopLevelType(name, firstDot, (IType) object, requestor, acceptFlags);
+					} else if (object instanceof IType[]) {
+						IType[] topLevelTypes = (IType[]) object;
+						for (int i = 0, length = topLevelTypes.length; i < length; i++)
+							seekTypesInTopLevelType(name, firstDot, topLevelTypes[i], requestor, acceptFlags);
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	protected boolean seekBindingsInWorkingCopies(
+			String name, 
+			int bindingType,
+			IPackageFragment pkg, 
+			int firstDot, 
+			boolean partialMatch, 
+			String topLevelTypeName, 
+			int acceptFlags,
+			IJavaElementRequestor requestor) {
+
+		if (!partialMatch) {
+			HashMap bindingsMap = (HashMap) (this.bindingsInWorkingCopies == null ? null : this.bindingsInWorkingCopies.get(pkg));
+			if (bindingsMap != null) {
+				Object object = bindingsMap.get(topLevelTypeName);
+				if (object instanceof IJavaElement) {
+					if (doAcceptBinding((IJavaElement)object, bindingType , true/*a source type*/,requestor)) {
+						return true; // don't continue with compilation unit
+					}
+				} else if (object instanceof IJavaElement[]) {
+					if (object == NO_BINDINGS) return true; // all types where deleted -> type is hidden
+					IJavaElement[] topLevelElements = (IJavaElement[]) object;
+					for (int i = 0, length = topLevelElements.length; i < length; i++) {
+						if (requestor.isCanceled())
+							return false;
+						if (doAcceptBinding(topLevelElements[i], bindingType, true/*a source type*/,requestor)) {
+							return true; // return the first one
+						}
+					}
+				}
+			}
+		} else {
+			HashMap bindingsMap = (HashMap) (this.bindingsInWorkingCopies == null ? null : this.bindingsInWorkingCopies.get(pkg));
+			if (bindingsMap != null) {
+				Iterator iterator = bindingsMap.values().iterator();
 				while (iterator.hasNext()) {
 					if (requestor.isCanceled())
 						return false;

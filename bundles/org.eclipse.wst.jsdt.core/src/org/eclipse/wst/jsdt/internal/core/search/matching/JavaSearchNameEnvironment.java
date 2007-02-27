@@ -18,15 +18,13 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 //import org.eclipse.wst.jsdt.core.*;
-import org.eclipse.wst.jsdt.core.*;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
 //import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.*;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.wst.jsdt.internal.compiler.env.NameEnvironmentAnswer;
+import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.ClasspathEntry;
 import org.eclipse.wst.jsdt.internal.core.JavaModel;
@@ -105,9 +103,12 @@ private void computeClasspathLocations(IWorkspaceRoot workspaceRoot, JavaProject
 					System.arraycopy(cpLocations, 0, cpLocations = new ClasspathLocation[cpLocations.length-1], 0, index);
 				} else if (root.getKind() == IPackageFragmentRoot.K_SOURCE) {
 					cpLocations[index++] = new ClasspathSourceDirectory((IContainer)target, root.fullExclusionPatternChars(), root.fullInclusionPatternChars());
-				} else {
+				} else  if (target instanceof IContainer){
 					cpLocations[index++] = ClasspathLocation.forBinaryFolder((IContainer) target, false, ((ClasspathEntry) root.getRawClasspathEntry()).getAccessRuleSet());
 				}
+				else
+					cpLocations[index++] = ClasspathLocation.forLibrary(path.toOSString(), ((ClasspathEntry) root.getRawClasspathEntry()).getAccessRuleSet());
+					 
 			}
 		} catch (CoreException e1) {
 			// problem opening zip file or getting root kind
@@ -179,8 +180,12 @@ private NameEnvironmentAnswer findClass(String qualifiedTypeName, char[] typeNam
 		return suggestedAnswer;
 	return null;
 }
-
-public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName) {
+public NameEnvironmentAnswer findBinding(char[] typeName, char[][] packageName, int type, ITypeRequestor requestor) {
+	//TODO: implement
+	throw new org.eclipse.wst.jsdt.core.UnimplementedException();
+//	return findType(typeName,packageName);
+}
+public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName, ITypeRequestor requestor) {
 	if (typeName != null)
 		return findClass(
 			new String(CharOperation.concatWith(packageName, typeName, '/')),
@@ -188,7 +193,7 @@ public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName) {
 	return null;
 }
 
-public NameEnvironmentAnswer findType(char[][] compoundName) {
+public NameEnvironmentAnswer findType(char[][] compoundName, ITypeRequestor requestor) {
 	if (compoundName != null)
 		return findClass(
 			new String(CharOperation.concatWith(compoundName, '/')),

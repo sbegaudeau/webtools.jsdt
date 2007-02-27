@@ -20,6 +20,7 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.*;
 import org.eclipse.wst.jsdt.internal.compiler.*;
 import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
@@ -503,6 +504,335 @@ public class BasicSearchEngine {
 		}
 		findMatches(pattern, participants, scope, requestor, monitor);
 	}
+
+	
+	public void searchAllBindingNames(
+			final char[] packageName, 
+			final char[] bindingName,
+			final int bindingType,
+			final int matchRule, 
+//			int searchFor, 
+			IJavaSearchScope scope, 
+			final IRestrictedAccessBindingRequestor nameRequestor,
+			int waitingPolicy,
+			IProgressMonitor progressMonitor)  throws JavaModelException {
+
+			if (VERBOSE) {
+				Util.verbose("BasicSearchEngine.searchAllBindingNames(char[], char[], int, int, IJavaSearchScope, IRestrictedAccessTypeRequestor, int, IProgressMonitor)"); //$NON-NLS-1$
+				Util.verbose("	- package name: "+(packageName==null?"null":new String(packageName))); //$NON-NLS-1$ //$NON-NLS-2$
+				Util.verbose("	- type name: "+(bindingName==null?"null":new String(bindingName))); //$NON-NLS-1$ //$NON-NLS-2$
+				Util.verbose("	- match rule: "+getMatchRuleString(matchRule)); //$NON-NLS-1$
+				Util.verbose("	- bindingType for: "+bindingType); //$NON-NLS-1$
+				Util.verbose("	- scope: "+scope); //$NON-NLS-1$
+			}
+
+			// Return on invalid combination of package and type names
+			if (packageName == null || packageName.length == 0) {
+				if (bindingName != null && bindingName.length == 0) {
+					if (VERBOSE) {
+						Util.verbose("	=> return no result due to invalid empty values for package and type names!"); //$NON-NLS-1$
+					}
+					return;
+				}
+			}
+
+			IndexManager indexManager = JavaModelManager.getJavaModelManager().getIndexManager();
+			JavaSearchPattern searchPattern=null;
+			char suffix=0;
+			switch(bindingType){
+			
+				case Binding.TYPE :
+				{
+					suffix = IIndexConstants.CLASS_SUFFIX;
+					searchPattern = new TypeDeclarationPattern(
+							packageName,
+							null, // do find member types
+							bindingName,
+							suffix,
+							matchRule);
+
+					break;
+				}
+				case Binding.VARIABLE :
+				case Binding.LOCAL :
+				case Binding.FIELD :
+				{
+					searchPattern = new   LocalVariablePattern(true, false, false,bindingName,   matchRule);
+				}
+				break;
+				case Binding.METHOD:
+				{
+					searchPattern = new MethodPattern(
+							true,false,
+							bindingName,
+							null,null,null,null,
+							null,null,null,
+							matchRule);
+					 
+				}
+				break;
+			}
+			final JavaSearchPattern pattern =searchPattern;
+			final char typeSuffix=suffix;
+
+			// Get working copy path(s). Store in a single string in case of only one to optimize comparison in requestor
+			final HashSet workingCopyPaths = new HashSet();
+			String workingCopyPath = null;
+			ICompilationUnit[] copies = getWorkingCopies();
+			final int copiesLength = copies == null ? 0 : copies.length;
+			if (copies != null) {
+				if (copiesLength == 1) {
+					workingCopyPath = copies[0].getPath().toString();
+				} else {
+					for (int i = 0; i < copiesLength; i++) {
+						ICompilationUnit workingCopy = copies[i];
+						workingCopyPaths.add(workingCopy.getPath().toString());
+					}
+				}
+			}
+			final String singleWkcpPath = workingCopyPath;
+
+			// Index requestor
+			IndexQueryRequestor searchRequestor = new IndexQueryRequestor(){
+				public boolean acceptIndexMatch(String documentPath, SearchPattern indexRecord, SearchParticipant participant, AccessRuleSet access) {
+					// Filter unexpected types
+					JavaSearchPattern record = (JavaSearchPattern)indexRecord;
+//					if (record.enclosingTypeNames == IIndexConstants.ONE_ZERO_CHAR) {
+//						return true; // filter out local and anonymous classes
+//					}
+					switch (copiesLength) {
+						case 0:
+							break;
+						case 1:
+							if (singleWkcpPath.equals(documentPath)) {
+								return true; // fliter out *the* working copy
+							}
+							break;
+						default:
+							if (workingCopyPaths.contains(documentPath)) {
+								return true; // filter out working copies
+							}
+							break;
+					}
+
+					// Accept document path
+					AccessRestriction accessRestriction = null;
+//					if (access != null) {
+//						// Compute document relative path
+//						int pkgLength = (record.pkg==null || record.pkg.length==0) ? 0 : record.pkg.length+1;
+//						int nameLength = record.simpleName==null ? 0 : record.simpleName.length;
+//						char[] path = new char[pkgLength+nameLength];
+//						int pos = 0;
+//						if (pkgLength > 0) {
+//							System.arraycopy(record.pkg, 0, path, pos, pkgLength-1);
+//							CharOperation.replace(path, '.', '/');
+//							path[pkgLength-1] = '/';
+//							pos += pkgLength;
+//						}
+//						if (nameLength > 0) {
+//							System.arraycopy(record.simpleName, 0, path, pos, nameLength);
+//							pos += nameLength;
+//						}
+//						// Update access restriction if path is not empty
+//						if (pos > 0) {
+//							accessRestriction = access.getViolatedRestriction(path);
+//						}
+//					}
+					int modifiers=ClassFileConstants.AccPublic;
+					char[] packageName=null;
+					char[] simpleBindingName=null;
+					if (record instanceof MethodPattern) {
+						MethodPattern methodPattern = (MethodPattern) record;
+						simpleBindingName=methodPattern.selector;
+						Path path = new Path(documentPath);
+						String string = path.lastSegment();
+						if (path.hasTrailingSeparator())	// is library
+						{
+							packageName=string.toCharArray();
+						}
+					}
+					else if (record instanceof LocalVariablePattern)
+					{
+						LocalVariablePattern localVariablePattern = (LocalVariablePattern) record;
+						simpleBindingName=localVariablePattern.name;
+						Path path = new Path(documentPath);
+						String string = path.lastSegment();
+						if (path.hasTrailingSeparator())	// is library
+						{
+							packageName=string.toCharArray();
+						}
+						
+					}
+
+					nameRequestor.acceptBinding( bindingType,modifiers, packageName, simpleBindingName,   documentPath, accessRestriction);
+					return true;
+				}
+			};
+		
+			try {
+				if (progressMonitor != null) {
+					progressMonitor.beginTask(Messages.engine_searching, 100); 
+				}
+				// add type names from indexes
+				indexManager.performConcurrentJob(
+					new PatternSearchJob(
+						pattern, 
+						getDefaultSearchParticipant(), // Java search only
+						scope, 
+						searchRequestor),
+					waitingPolicy,
+					progressMonitor == null ? null : new SubProgressMonitor(progressMonitor, 100));	
+					
+				// add type names from working copies
+				if (copies != null) {
+					for (int i = 0; i < copiesLength; i++) {
+						ICompilationUnit workingCopy = copies[i];
+						if (!scope.encloses(workingCopy)) continue;
+						final String path = workingCopy.getPath().toString();
+						if (workingCopy.isConsistent()) {
+							IPackageDeclaration[] packageDeclarations = workingCopy.getPackageDeclarations();
+							char[] packageDeclaration = packageDeclarations.length == 0 ? CharOperation.NO_CHAR : packageDeclarations[0].getElementName().toCharArray();
+							switch (bindingType)
+							{
+							case Binding.TYPE:
+							{
+								IType[] allTypes = workingCopy.getAllTypes();
+								for (int j = 0, allTypesLength = allTypes.length; j < allTypesLength; j++) {
+									IType type = allTypes[j];
+									IJavaElement parent = type.getParent();
+									char[][] enclosingTypeNames;
+									if (parent instanceof IType) {
+										char[] parentQualifiedName = ((IType)parent).getTypeQualifiedName('.').toCharArray();
+										enclosingTypeNames = CharOperation.splitOn('.', parentQualifiedName);
+									} else {
+										enclosingTypeNames = CharOperation.NO_CHAR_CHAR;
+									}
+									char[] simpleName = type.getElementName().toCharArray();
+									int kind;
+									if (type.isEnum()) {
+										kind = TypeDeclaration.ENUM_DECL;
+									} else if (type.isAnnotation()) {
+										kind = TypeDeclaration.ANNOTATION_TYPE_DECL;
+									}	else if (type.isClass()) {
+										kind = TypeDeclaration.CLASS_DECL;
+									} else /*if (type.isInterface())*/ {
+										kind = TypeDeclaration.INTERFACE_DECL;
+									}
+									if (match(typeSuffix, packageName, bindingName, matchRule, kind, packageDeclaration, simpleName)) {
+										nameRequestor.acceptBinding(bindingType,type.getFlags(), packageDeclaration, simpleName,   path, null);
+									}
+								}
+							}
+							case Binding.METHOD:
+							{
+								IMethod[] allMethods = workingCopy.getMethods();
+								for (int j = 0, allMethodsLength = allMethods.length; j < allMethodsLength; j++) {
+									IMethod method = allMethods[j];
+									IJavaElement parent = method.getParent();
+									char[][] enclosingTypeNames;
+									if (parent instanceof IType) {
+										char[] parentQualifiedName = ((IType)parent).getTypeQualifiedName('.').toCharArray();
+										enclosingTypeNames = CharOperation.splitOn('.', parentQualifiedName);
+									} else {
+										enclosingTypeNames = CharOperation.NO_CHAR_CHAR;
+									}
+									char[] simpleName = method.getElementName().toCharArray();
+									int kind;
+									if (match(typeSuffix, packageName, bindingName, matchRule, 0, packageDeclaration, simpleName)) {
+										nameRequestor.acceptBinding(bindingType,method.getFlags(), packageDeclaration, simpleName,   path, null);
+									}
+								}
+							}
+							break;
+							case Binding.VARIABLE :
+							case Binding.LOCAL :
+							case Binding.FIELD :
+							{
+								IField[] allFields = workingCopy.getFields ();
+								for (int j = 0, allFieldsLength = allFields.length; j < allFieldsLength; j++) {
+									IField field = allFields[j];
+									IJavaElement parent = field.getParent();
+									char[][] enclosingTypeNames;
+									if (parent instanceof IType) {
+										char[] parentQualifiedName = ((IType)parent).getTypeQualifiedName('.').toCharArray();
+										enclosingTypeNames = CharOperation.splitOn('.', parentQualifiedName);
+									} else {
+										enclosingTypeNames = CharOperation.NO_CHAR_CHAR;
+									}
+									char[] simpleName = field.getElementName().toCharArray();
+									int kind;
+									if (match(typeSuffix, packageName, bindingName, matchRule, 0, packageDeclaration, simpleName)) {
+										nameRequestor.acceptBinding(bindingType,field.getFlags(), packageDeclaration, simpleName,   path, null);
+									}
+								}
+							}
+							break;
+							}
+						} else {
+							Parser basicParser = getParser();
+							org.eclipse.jsdt.internal.compiler.env.ICompilationUnit unit = (org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit) workingCopy;
+							CompilationResult compilationUnitResult = new CompilationResult(unit, 0, 0, this.compilerOptions.maxProblemsPerUnit);
+							CompilationUnitDeclaration parsedUnit = basicParser.dietParse(unit, compilationUnitResult);
+							if (parsedUnit != null) {
+								final char[] packageDeclaration = parsedUnit.currentPackage == null ? CharOperation.NO_CHAR : CharOperation.concatWith(parsedUnit.currentPackage.getImportName(), '.');
+								class AllTypeDeclarationsVisitor extends ASTVisitor {
+									public boolean visit(TypeDeclaration typeDeclaration, Scope blockScope) {
+										return false; // no local/anonymous type
+									}
+									public boolean visit(TypeDeclaration typeDeclaration, CompilationUnitScope compilationUnitScope) {
+										if (bindingType==Binding.TYPE &&
+												match(typeSuffix, packageName, bindingName, matchRule, TypeDeclaration.kind(typeDeclaration.modifiers), packageDeclaration, typeDeclaration.name)) {
+											nameRequestor.acceptBinding(bindingType,typeDeclaration.modifiers, packageDeclaration, typeDeclaration.name,  path, null);
+										}
+										return true;
+									}
+									public boolean visit(LocalDeclaration localDeclaration, BlockScope scope) {
+										if ((scope instanceof CompilationUnitScope) && (bindingType==Binding.LOCAL || bindingType==Binding.FIELD || bindingType==Binding.VARIABLE )&& 
+												match(typeSuffix, packageName, bindingName, matchRule,0, packageDeclaration, localDeclaration.name)) {
+											nameRequestor.acceptBinding(bindingType,localDeclaration.modifiers, packageDeclaration,  localDeclaration.name,  path, null);
+										}
+										return true;
+									}
+									public boolean visit(MethodDeclaration methodDeclaration, Scope scope) {
+										if (bindingType==Binding.METHOD &&
+												match(typeSuffix, packageName, bindingName, matchRule,0, packageDeclaration, methodDeclaration.selector)) {
+											nameRequestor.acceptBinding(bindingType,methodDeclaration.modifiers, packageDeclaration,  methodDeclaration.selector,  path, null);
+										}
+										return true;
+									}
+//									public boolean visit(TypeDeclaration memberTypeDeclaration, ClassScope classScope) {
+//										if (match(typeSuffix, packageName, bindingName, matchRule, TypeDeclaration.kind(memberTypeDeclaration.modifiers), packageDeclaration, memberTypeDeclaration.name)) {
+//											// compute encloising type names
+//											TypeDeclaration enclosing = memberTypeDeclaration.enclosingType;
+//											char[][] enclosingTypeNames = CharOperation.NO_CHAR_CHAR;
+//											while (enclosing != null) {
+//												enclosingTypeNames = CharOperation.arrayConcat(new char[][] {enclosing.name}, enclosingTypeNames);
+//												if ((enclosing.bits & ASTNode.IsMemberType) != 0) {
+//													enclosing = enclosing.enclosingType;
+//												} else {
+//													enclosing = null;
+//												}
+//											}
+//											// report
+//											nameRequestor.acceptType(memberTypeDeclaration.modifiers, packageDeclaration, memberTypeDeclaration.name, enclosingTypeNames, path, null);
+//										}
+//										return true;
+//									}
+								}
+								parsedUnit.traverse(new AllTypeDeclarationsVisitor(), parsedUnit.scope);
+							}
+						}
+					}
+				}	
+			} finally {
+				if (progressMonitor != null) {
+					progressMonitor.done();
+				}
+			}
+		}
+
+
+	
 
 	/**
 	 * Searches for all secondary types in the given scope.

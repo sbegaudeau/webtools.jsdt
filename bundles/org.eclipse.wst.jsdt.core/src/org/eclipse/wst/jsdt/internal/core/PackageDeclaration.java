@@ -25,6 +25,10 @@ protected PackageDeclaration(CompilationUnit parent, String name) {
 	super(parent);
 	this.name = name;
 }
+protected PackageDeclaration(ClassFile parent, String name) {
+	super(parent);
+	this.name = name;
+}
 public boolean equals(Object o) {
 	if (!(o instanceof PackageDeclaration)) return false;
 	return super.equals(o);

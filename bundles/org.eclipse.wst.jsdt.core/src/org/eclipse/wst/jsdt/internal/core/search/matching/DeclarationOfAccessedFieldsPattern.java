@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
+import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
 
@@ -19,7 +20,8 @@ protected IJavaElement enclosingElement;
 protected SimpleSet knownFields;
 
 public DeclarationOfAccessedFieldsPattern(IJavaElement enclosingElement) {
-	super(false, true, true, null, null, null, null, null, R_PATTERN_MATCH);
+	super(false, true, true, null, null, null, null, null, R_PATTERN_MATCH,
+			(enclosingElement instanceof IField) ?(IField)enclosingElement :null);
 
 	this.enclosingElement = enclosingElement;
 	this.knownFields = new SimpleSet();

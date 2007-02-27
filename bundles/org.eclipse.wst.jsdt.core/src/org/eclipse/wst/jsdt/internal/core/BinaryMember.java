@@ -41,7 +41,7 @@ public void copy(IJavaElement container, IJavaElement sibling, String rename, bo
 protected void generateInfos(Object info, HashMap newElements, IProgressMonitor pm) throws JavaModelException {
 	Openable openableParent = (Openable) getOpenableParent();
 	if (JavaModelManager.getJavaModelManager().getInfo(openableParent) == null) {
-		openableParent.generateInfos(openableParent.createElementInfo(), newElements, pm);
+//		openableParent.generateInfos(openableParent.createElementInfo(), newElements, pm);
 	}
 }
 public String[] getCategories() throws JavaModelException {
@@ -87,17 +87,17 @@ public ISourceRange getNameRange() throws JavaModelException {
 /*
  * @see ISourceReference
  */
-public ISourceRange getSourceRange() throws JavaModelException {
-	SourceMapper mapper= getSourceMapper();
-	if (mapper != null) {
-		// ensure the class file's buffer is open so that source ranges are computed
-		((ClassFile)getClassFile()).getBuffer();
-
-		return mapper.getSourceRange(this);
-	} else {
-		return SourceMapper.UNKNOWN_RANGE;
-	}
-}
+//public ISourceRange getSourceRange() throws JavaModelException {
+//	SourceMapper mapper= getSourceMapper();
+//	if (mapper != null) {
+//		// ensure the class file's buffer is open so that source ranges are computed
+//		((ClassFile)getClassFile()).getBuffer();
+//
+//		return mapper.getSourceRange(this);
+//	} else {
+//		return SourceMapper.UNKNOWN_RANGE;
+//	}
+//}
 /*
  * @see IMember
  */

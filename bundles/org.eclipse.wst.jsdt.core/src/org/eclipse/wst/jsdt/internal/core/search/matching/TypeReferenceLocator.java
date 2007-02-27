@@ -601,7 +601,7 @@ protected void reportDeclaration(ReferenceBinding typeBinding, int maxType, Matc
 			} else {
 				if (typeBinding instanceof ParameterizedTypeBinding)
 					typeBinding = ((ParameterizedTypeBinding) typeBinding).type;
-				ClassScope scope = ((SourceTypeBinding) typeBinding).scope;
+				ClassScope scope = (ClassScope)((SourceTypeBinding) typeBinding).scope;
 				if (scope != null) {
 					TypeDeclaration typeDecl = scope.referenceContext;
 					int offset = typeDecl.sourceStart;

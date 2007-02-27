@@ -107,7 +107,7 @@ public class InternalNamingConventions {
 			internalPrefix = removePrefix(internalPrefix, prefixes);
 		}
 		
-		char[] typeName = CharOperation.lastSegment(qualifiedTypeName, '.');
+		char[] typeName = (qualifiedTypeName!=null)? CharOperation.lastSegment(qualifiedTypeName, '.'):null;
 	
 		if(prefixes == null || prefixes.length == 0) {
 			prefixes = new char[1][0];

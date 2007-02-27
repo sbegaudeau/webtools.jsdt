@@ -203,7 +203,7 @@ private void buildForProject(JavaProject project, ArrayList potentialSubtypes, o
 				if (!inProjectOfFocusType) {
 					char[] typeQualifiedName = focusType.getTypeQualifiedName('.').toCharArray();
 					String[] packageName = ((PackageFragment) focusType.getPackageFragment()).names;
-					if (searchableEnvironment.findType(typeQualifiedName, Util.toCharArrays(packageName)) == null) {
+					if (searchableEnvironment.findType(typeQualifiedName, Util.toCharArrays(packageName),this.hierarchyResolver) == null) {
 						// focus type is not visible in this project: no need to go further
 						return;
 					}

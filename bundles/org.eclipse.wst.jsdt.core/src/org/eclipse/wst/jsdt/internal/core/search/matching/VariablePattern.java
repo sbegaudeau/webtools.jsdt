@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.ISourceReference;
+import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 
 public abstract class VariablePattern extends JavaSearchPattern {
@@ -19,9 +22,12 @@ protected boolean findReferences;
 protected boolean readAccess;
 protected boolean writeAccess;
 
-protected char[] name;
+public char[] name;
 
-public VariablePattern(int patternKind, boolean findDeclarations, boolean readAccess, boolean writeAccess, char[] name, int matchRule) {
+ISourceReference sourceVariable;
+
+public VariablePattern(int patternKind, boolean findDeclarations, boolean readAccess, boolean writeAccess, char[] name, int matchRule,
+		ISourceReference sourceRef) {
 	super(patternKind, matchRule);
 
 	this.findDeclarations = findDeclarations; // set to find declarations & all occurences
@@ -30,7 +36,32 @@ public VariablePattern(int patternKind, boolean findDeclarations, boolean readAc
 	this.findReferences = readAccess || writeAccess;
 
 	this.name = (isCaseSensitive() || isCamelCase())  ? name : CharOperation.toLowerCase(name);
+	this.sourceVariable=sourceRef;
 }
+
+public IJavaElement getJavaElement()
+{
+	return (IJavaElement) this.sourceVariable;
+}
+
+protected int getVariableStart()
+{
+	try {
+		return this.sourceVariable.getSourceRange().getOffset();
+	} catch (JavaModelException e) {
+		return -1;
+	}
+}
+
+protected int getVariableLength()
+{
+	try {
+		return this.sourceVariable.getSourceRange().getLength();
+	} catch (JavaModelException e) {
+		return -1;
+	}
+}
+
 /*
  * Returns whether a method declaration or message send will need to be resolved to 
  * find out if this method pattern matches it.

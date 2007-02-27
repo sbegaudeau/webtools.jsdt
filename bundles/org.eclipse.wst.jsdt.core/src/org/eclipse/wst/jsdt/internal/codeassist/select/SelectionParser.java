@@ -20,13 +20,13 @@ package org.eclipse.wst.jsdt.internal.codeassist.select;
  *  n  means completion behind the n-th character
  */
  
-import org.eclipse.wst.jsdt.internal.compiler.*;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.env.*;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.codeassist.impl.*;
+import org.eclipse.wst.jsdt.internal.compiler.*;
 import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
+import org.eclipse.wst.jsdt.internal.compiler.env.*;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.*;
@@ -152,7 +152,7 @@ private boolean checkRecoveredType() {
 	}
 	return false;
 }
-protected void classInstanceCreation(boolean hasClassBody) {
+protected void classInstanceCreation(boolean hasClassBody, boolean isShort) {
 	
 	// ClassInstanceCreationExpression ::= 'new' ClassType '(' ArgumentListopt ')' ClassBodyopt
 
@@ -160,22 +160,27 @@ protected void classInstanceCreation(boolean hasClassBody) {
 	// An empty class body produces a 0 on the length stack.....
 
 	
-	if ((astLengthStack[astLengthPtr] == 1)
-		&& (astStack[astPtr] == null)) {
+//	if ((astLengthStack[astLengthPtr] == 1)
+//		&& (astStack[astPtr] == null)) {
 
 		
-		int index;
-		if ((index = this.indexOfAssistIdentifier()) < 0) {
-			super.classInstanceCreation(hasClassBody);
-			return;
-		} else if(this.identifierLengthPtr > -1 &&
-					(this.identifierLengthStack[this.identifierLengthPtr] - 1) != index) {
-			super.classInstanceCreation(hasClassBody);
+//		int index;
+		int argsLength= expressionLengthStack[expressionLengthPtr];
+		if (!(this.expressionStack[this.expressionPtr-argsLength] instanceof SelectionOnSingleNameReference))
+		{
+//				
+//		
+//		if ((index = this.indexOfAssistIdentifier()) < 0) {
+//			super.classInstanceCreation(hasClassBody, isShort);
+//			return;
+//		} else if(this.identifierLengthPtr > -1 &&
+//					(this.identifierLengthStack[this.identifierLengthPtr] - 1) != index) {
+			super.classInstanceCreation(hasClassBody, isShort);
 			return;
 		}
 		QualifiedAllocationExpression alloc;
-		astPtr--;
-		astLengthPtr--;
+//		astPtr--;
+//		astLengthPtr--;
 		alloc = new SelectionOnQualifiedAllocationExpression();
 		alloc.sourceEnd = endPosition; //the position has been stored explicitly
 
@@ -192,7 +197,9 @@ protected void classInstanceCreation(boolean hasClassBody) {
 		// trick to avoid creating a selection on type reference
 		char [] oldIdent = this.assistIdentifier();
 		this.setAssistIdentifier(null);
-		alloc.type = getTypeReference(0);
+//		alloc.type = getTypeReference(0);
+		alloc.member = this.expressionStack[this.expressionPtr--];
+		this.expressionLengthPtr--;
 		
 		this.setAssistIdentifier(oldIdent);
 		
@@ -204,13 +211,13 @@ protected void classInstanceCreation(boolean hasClassBody) {
 		this.assistNode = alloc;
 		this.lastCheckPoint = alloc.sourceEnd + 1;
 		if (!diet){
-			this.restartRecovery	= true;	// force to restart in recovery mode
+			this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
 			this.lastIgnoredToken = -1;	
 		}
 		this.isOrphanCompletionNode = true;
-	} else {
-		super.classInstanceCreation(hasClassBody);
-	}
+//	} else {
+//		super.classInstanceCreation(hasClassBody, isShort);
+//	}
 }
 protected void consumeArrayCreationExpressionWithoutInitializer() {
 	// ArrayCreationWithoutArrayInitializer ::= 'new' PrimitiveType DimWithOrWithOutExprs
@@ -219,13 +226,13 @@ protected void consumeArrayCreationExpressionWithoutInitializer() {
 	super.consumeArrayCreationExpressionWithoutInitializer();
 
 	ArrayAllocationExpression alloc = (ArrayAllocationExpression)expressionStack[expressionPtr];
-	if (alloc.type == assistNode){
-		if (!diet){
-			this.restartRecovery	= true;	// force to restart in recovery mode
-			this.lastIgnoredToken = -1;	
-		}
-		this.isOrphanCompletionNode = true;
-	}
+//	if (alloc.type == assistNode){
+//		if (!diet){
+//			this.restartRecovery	= true;	// force to restart in recovery mode
+//			this.lastIgnoredToken = -1;	
+//		}
+//		this.isOrphanCompletionNode = true;
+//	}
 }
 protected void consumeArrayCreationExpressionWithInitializer() {
 	// ArrayCreationWithArrayInitializer ::= 'new' ClassOrInterfaceType DimWithOrWithOutExprs ArrayInitializer
@@ -233,13 +240,13 @@ protected void consumeArrayCreationExpressionWithInitializer() {
 	super.consumeArrayCreationExpressionWithInitializer();
 
 	ArrayAllocationExpression alloc = (ArrayAllocationExpression)expressionStack[expressionPtr];
-	if (alloc.type == assistNode){
-		if (!diet){
-			this.restartRecovery	= true;	// force to restart in recovery mode
-			this.lastIgnoredToken = -1;	
-		}
-		this.isOrphanCompletionNode = true;
-	}
+//	if (alloc.type == assistNode){
+//		if (!diet){
+//			this.restartRecovery	= true;	// force to restart in recovery mode
+//			this.lastIgnoredToken = -1;	
+//		}
+//		this.isOrphanCompletionNode = true;
+//	}
 }
 protected void consumeClassInstanceCreationExpressionQualifiedWithTypeArguments() {
 	// ClassInstanceCreationExpression ::= Primary '.' 'new' TypeArguments SimpleName '(' ArgumentListopt ')' ClassBodyopt
@@ -258,7 +265,7 @@ protected void consumeClassInstanceCreationExpressionQualifiedWithTypeArguments(
 		this.astPtr--;
 		this.astLengthPtr--;
 		alloc = new SelectionOnQualifiedAllocationExpression();
-		alloc.sourceEnd = this.endPosition; //the position has been stored explicitly
+		alloc.sourceEnd = this.rParenPos;; //the position has been stored explicitly
 
 		if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
 			this.expressionPtr -= length;
@@ -290,7 +297,7 @@ protected void consumeClassInstanceCreationExpressionQualifiedWithTypeArguments(
 		this.assistNode = alloc;
 		this.lastCheckPoint = alloc.sourceEnd + 1;
 		if (!diet){
-			this.restartRecovery	= true;	// force to restart in recovery mode
+			this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
 			this.lastIgnoredToken = -1;	
 		}
 		this.isOrphanCompletionNode = true;
@@ -353,7 +360,7 @@ protected void consumeClassInstanceCreationExpressionWithTypeArguments() {
 		this.assistNode = alloc;
 		this.lastCheckPoint = alloc.sourceEnd + 1;
 		if (!diet){
-			this.restartRecovery	= true;	// force to restart in recovery mode
+			this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
 			this.lastIgnoredToken = -1;	
 		}
 		this.isOrphanCompletionNode = true;
@@ -428,13 +435,13 @@ protected void consumeEnterVariable() {
 	super.consumeEnterVariable();
 
 	AbstractVariableDeclaration variable = (AbstractVariableDeclaration) astStack[astPtr];
-	if (variable.type == assistNode){
-		if (!diet){
-			this.restartRecovery	= true;	// force to restart in recovery mode
-			this.lastIgnoredToken = -1;	
-		}
-		isOrphanCompletionNode = false; // already attached inside variable decl
-	}
+//	if (variable.type == assistNode){
+//		if (!diet){
+//			this.restartRecovery	= true;	// force to restart in recovery mode
+//			this.lastIgnoredToken = -1;	
+//		}
+//		isOrphanCompletionNode = false; // already attached inside variable decl
+//	}
 }
 
 protected void consumeExitVariableWithInitialization() {
@@ -450,7 +457,29 @@ protected void consumeExitVariableWithInitialization() {
 	}
 
 }
+protected void consumePropertyOperator() {
+	if (this.indexOfAssistIdentifier() < 0) {
+		super.consumePropertyOperator();
+		return;
+	} 
+	FieldReference fieldReference = 
+		new SelectionOnFieldReference(
+			identifierStack[identifierPtr], 
+			identifierPositionStack[identifierPtr--]);
+	identifierLengthPtr--;
+		if ((fieldReference.receiver = expressionStack[expressionPtr]).isThis()) { //fieldReferenceerence begins at the this
+			fieldReference.sourceStart = fieldReference.receiver.sourceStart;
+		}
+		expressionStack[expressionPtr] = fieldReference;
+	assistNode = fieldReference;
+	this.lastCheckPoint = fieldReference.sourceEnd + 1;
+	if (!diet){
+		this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
+		this.lastIgnoredToken = -1;
+	}
+	this.isOrphanCompletionNode = true;	
 
+}
 protected void consumeFieldAccess(boolean isSuperAccess) {
 	// FieldAccess ::= Primary '.' 'Identifier'
 	// FieldAccess ::= 'super' '.' 'Identifier'
@@ -477,7 +506,7 @@ protected void consumeFieldAccess(boolean isSuperAccess) {
 	assistNode = fieldReference;
 	this.lastCheckPoint = fieldReference.sourceEnd + 1;
 	if (!diet){
-		this.restartRecovery	= true;	// force to restart in recovery mode
+		this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
 		this.lastIgnoredToken = -1;
 	}
 	this.isOrphanCompletionNode = true;	
@@ -485,40 +514,40 @@ protected void consumeFieldAccess(boolean isSuperAccess) {
 protected void consumeFormalParameter(boolean isVarArgs) {
 	if (this.indexOfAssistIdentifier() < 0) {
 		super.consumeFormalParameter(isVarArgs);
-		if((!diet || dietInt != 0) && astPtr > -1) {
-			Argument argument = (Argument) astStack[astPtr];
-			if(argument.type == assistNode) {
-				isOrphanCompletionNode = true;
-				this.restartRecovery	= true;	// force to restart in recovery mode
-				this.lastIgnoredToken = -1;	
-			}
-		}
+//		if((!diet || dietInt != 0) && astPtr > -1) {
+//			Argument argument = (Argument) astStack[astPtr];
+//			if(argument.type == assistNode) {
+//				isOrphanCompletionNode = true;
+//				this.restartRecovery	= true;	// force to restart in recovery mode
+//				this.lastIgnoredToken = -1;	
+//			}
+//		}
 	} else {
 		identifierLengthPtr--;
 		char[] identifierName = identifierStack[identifierPtr];
 		long namePositions = identifierPositionStack[identifierPtr--];
-		int extendedDimensions = this.intStack[this.intPtr--];
-		int endOfEllipsis = 0;
-		if (isVarArgs) {
-			endOfEllipsis = this.intStack[this.intPtr--];
-		}
-		int firstDimensions = this.intStack[this.intPtr--];
-		final int typeDimensions = firstDimensions + extendedDimensions;
-		TypeReference type = getTypeReference(typeDimensions);
-		if (isVarArgs) {
-			type = copyDims(type, typeDimensions + 1);
-			if (extendedDimensions == 0) {
-				type.sourceEnd = endOfEllipsis;
-			}
-			type.bits |= ASTNode.IsVarArgs; // set isVarArgs
-		}
+//		int extendedDimensions = this.intStack[this.intPtr--];
+//		int endOfEllipsis = 0;
+//		if (isVarArgs) {
+//			endOfEllipsis = this.intStack[this.intPtr--];
+//		}
+//		int firstDimensions = this.intStack[this.intPtr--];
+//		final int typeDimensions = firstDimensions + extendedDimensions;
+//		TypeReference type = getTypeReference(typeDimensions);
+//		if (isVarArgs) {
+//			type = copyDims(type, typeDimensions + 1);
+//			if (extendedDimensions == 0) {
+//				type.sourceEnd = endOfEllipsis;
+//			}
+//			type.bits |= ASTNode.IsVarArgs; // set isVarArgs
+//		}
 		int modifierPositions = intStack[intPtr--];
 		intPtr--;
 		Argument arg = 
 			new SelectionOnArgumentName(
 				identifierName, 
 				namePositions, 
-				type, 
+				null, 
 				intStack[intPtr + 1] & ~ClassFileConstants.AccDeprecated); // modifiers
 		arg.declarationSourceStart = modifierPositions;
 		pushOnAstStack(arg);
@@ -528,7 +557,7 @@ protected void consumeFormalParameter(boolean isVarArgs) {
 		isOrphanCompletionNode = true;
 		
 		if (!diet){
-			this.restartRecovery	= true;	// force to restart in recovery mode
+			this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
 			this.lastIgnoredToken = -1;	
 		}
 
@@ -537,13 +566,22 @@ protected void consumeFormalParameter(boolean isVarArgs) {
 		listLength++;
 	} 	
 }
+
+
+protected void consumeFullNewSubexpressionSimpleName () {
+//	FullNewSubexpression ::=	SimpleName
+	// call super.getUnspecifiedReferenceOptimized so state isnt reset by our getUnspecifiedReferenceOptimized
+	pushOnExpressionStack(super.getUnspecifiedReferenceOptimized());
+}
+
+
 protected void consumeInstanceOfExpression() {
 	if (indexOfAssistIdentifier() < 0) {
 		super.consumeInstanceOfExpression();
 	} else {
 		getTypeReference(intStack[intPtr--]);
 		this.isOrphanCompletionNode = true;
-		this.restartRecovery = true;
+		this.restartRecovery = AssistParser.STOP_AT_CURSOR;
 		this.lastIgnoredToken = -1;
 	}
 }
@@ -553,7 +591,7 @@ protected void consumeInstanceOfExpressionWithName() {
 	} else {
 		getTypeReference(intStack[intPtr--]);
 		this.isOrphanCompletionNode = true;
-		this.restartRecovery = true;
+		this.restartRecovery = AssistParser.STOP_AT_CURSOR;
 		this.lastIgnoredToken = -1;
 	}
 }
@@ -565,7 +603,7 @@ protected void consumeLocalVariableDeclarationStatement() {
 		LocalDeclaration localDeclaration = (LocalDeclaration) this.astStack[this.astPtr];
 		if ((this.selectionStart >= localDeclaration.sourceStart) 
 				&&  (this.selectionEnd <= localDeclaration.sourceEnd)) {
-			this.restartRecovery	= true;	
+			this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	
 			this.lastIgnoredToken = -1;	
 		}
 	}
@@ -670,7 +708,7 @@ protected void consumeMethodInvocationName() {
 
 	if (!diet){
 		pushOnAstStack(constructorCall);
-		this.restartRecovery	= true;	// force to restart in recovery mode
+		this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
 		this.lastIgnoredToken = -1;
 	} else {
 		pushOnExpressionStack(new Expression(){
@@ -719,7 +757,7 @@ protected void consumeMethodInvocationPrimary() {
 	
 	if (!diet){
 		pushOnAstStack(constructorCall);
-		this.restartRecovery	= true;	// force to restart in recovery mode
+		this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
 		this.lastIgnoredToken = -1;
 	} else {
 		pushOnExpressionStack(new Expression(){
@@ -1047,7 +1085,7 @@ protected NameReference getUnspecifiedReference() {
 		this.assistNode = reference;	
 		this.lastCheckPoint = reference.sourceEnd + 1;
 		if (!diet || dietInt != 0){
-			this.restartRecovery	= true;	// force to restart in recovery mode
+			this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
 			this.lastIgnoredToken = -1;		
 		}
 		this.isOrphanCompletionNode = true;
@@ -1096,7 +1134,7 @@ protected NameReference getUnspecifiedReferenceOptimized() {
 
 	if (index >= 0){
 		if (!diet){
-			this.restartRecovery	= true;	// force to restart in recovery mode
+			this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
 			this.lastIgnoredToken = -1;		
 		}
 		this.isOrphanCompletionNode = true;
@@ -1127,7 +1165,7 @@ protected MessageSend newMessageSend() {
 	}
 	assistNode = messageSend;
 	if (!diet){
-		this.restartRecovery	= true;	// force to restart in recovery mode
+		this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
 		this.lastIgnoredToken = -1;	
 	}
 	
@@ -1152,7 +1190,7 @@ protected MessageSend newMessageSendWithTypeArguments() {
 	}
 	assistNode = messageSend;
 	if (!diet){
-		this.restartRecovery	= true;	// force to restart in recovery mode
+		this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
 		this.lastIgnoredToken = -1;	
 	}
 	
@@ -1245,5 +1283,8 @@ public  String toString() {
 	}
 	s = s + "}\n"; //$NON-NLS-1$
 	return s + super.toString();
+}
+public int getCursorLocation() {
+	return this.selectionStart;
 }
 }

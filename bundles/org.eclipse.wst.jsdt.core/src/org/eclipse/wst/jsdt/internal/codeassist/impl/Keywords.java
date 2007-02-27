@@ -9,9 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.codeassist.impl;
-
+ 
 public interface Keywords {
-	int COUNT = 41;
+	int COUNT = 48;
 	
 	char[] ABSTRACT = "abstract".toCharArray(); //$NON-NLS-1$
 	char[] ASSERT = "assert".toCharArray(); //$NON-NLS-1$
@@ -54,4 +54,12 @@ public interface Keywords {
 	char[] TRUE = "true".toCharArray(); //$NON-NLS-1$
 	char[] FALSE = "false".toCharArray(); //$NON-NLS-1$
 	char[] NULL = "null".toCharArray(); //$NON-NLS-1$
+	char[] VAR = "var".toCharArray(); //$NON-NLS-1$
+	char[] FUNCTION = "function".toCharArray(); //$NON-NLS-1$
+	char[] UNDEFINED = "undefined".toCharArray(); //$NON-NLS-1$
+	char[] DELETE = "delete".toCharArray(); //$NON-NLS-1$
+	char[] TYPEOF = "typeof".toCharArray(); //$NON-NLS-1$
+	char[] WITH = "with".toCharArray(); //$NON-NLS-1$
+	char[] IN = "in".toCharArray(); //$NON-NLS-1$
+
 }

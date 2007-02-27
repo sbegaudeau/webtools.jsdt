@@ -68,7 +68,7 @@ public class SuperTypeNamesCollector {
 		public boolean visit(ConstructorDeclaration constructorDeclaration, ClassScope scope) {
 			return false; // don't visit constructor declarations
 		}
-		public boolean visit(MethodDeclaration methodDeclaration, ClassScope scope) {
+		public boolean visit(MethodDeclaration methodDeclaration, Scope scope) {
 			return false; // don't visit method declarations
 		}
 	}

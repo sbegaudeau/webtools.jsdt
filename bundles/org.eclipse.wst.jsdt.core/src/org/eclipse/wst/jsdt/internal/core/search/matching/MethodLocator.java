@@ -23,6 +23,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
 import org.eclipse.wst.jsdt.internal.core.search.BasicSearchEngine;
+import org.eclipse.wst.jsdt.internal.infer.InferredMethod;
 
 public class MethodLocator extends PatternLocator {
 
@@ -224,40 +225,40 @@ protected int matchMethod(MethodBinding method, boolean skipImpossibleArg) {
 	int parameterCount = this.pattern.parameterSimpleNames == null ? -1 : this.pattern.parameterSimpleNames.length;
 	if (parameterCount > -1) {
 		// global verification
-		if (method.parameters == null) return INACCURATE_MATCH;
-		if (parameterCount != method.parameters.length) return IMPOSSIBLE_MATCH;
-		if (!method.isValidBinding() && ((ProblemMethodBinding)method).problemId() == ProblemReasons.Ambiguous) {
-			// return inaccurate match for ambiguous call (bug 80890)
-			return INACCURATE_MATCH;
-		}
-
-		// verify each parameter
-		for (int i = 0; i < parameterCount; i++) {
-			TypeBinding argType = method.parameters[i];
-			int newLevel = IMPOSSIBLE_MATCH;
-			if (argType.isMemberType()) {
-				// only compare source name for member type (bug 41018)
-				newLevel = CharOperation.match(this.pattern.parameterSimpleNames[i], argType.sourceName(), this.isCaseSensitive)
-					? ACCURATE_MATCH
-					: IMPOSSIBLE_MATCH;
-			} else {
-				// TODO (frederic) use this call to refine accuracy on parameter types
-//				 newLevel = resolveLevelForType(this.pattern.parameterSimpleNames[i], this.pattern.parameterQualifications[i], this.pattern.parametersTypeArguments[i], 0, argType);
-				newLevel = resolveLevelForType(this.pattern.parameterSimpleNames[i], this.pattern.parameterQualifications[i], argType);
-			}
-			if (level > newLevel) {
-				if (newLevel == IMPOSSIBLE_MATCH) {
-					if (skipImpossibleArg) {
-						// Do not consider match as impossible while finding declarations and source level >= 1.5
-					 	// (see  bugs https://bugs.eclipse.org/bugs/show_bug.cgi?id=79990, 96761, 96763)
-						newLevel = level;
-					} else {
-						return IMPOSSIBLE_MATCH;
-					}
-				}
-				level = newLevel; // can only be downgraded
-			}
-		}
+//		if (method.parameters == null) return INACCURATE_MATCH;
+//		if (parameterCount != method.parameters.length) return IMPOSSIBLE_MATCH;
+//		if (!method.isValidBinding() && ((ProblemMethodBinding)method).problemId() == ProblemReasons.Ambiguous) {
+//			// return inaccurate match for ambiguous call (bug 80890)
+//			return INACCURATE_MATCH;
+//		}
+//
+//		// verify each parameter
+//		for (int i = 0; i < parameterCount; i++) {
+//			TypeBinding argType = method.parameters[i];
+//			int newLevel = IMPOSSIBLE_MATCH;
+//			if (argType.isMemberType()) {
+//				// only compare source name for member type (bug 41018)
+//				newLevel = CharOperation.match(this.pattern.parameterSimpleNames[i], argType.sourceName(), this.isCaseSensitive)
+//					? ACCURATE_MATCH
+//					: IMPOSSIBLE_MATCH;
+//			} else {
+//				// TODO (frederic) use this call to refine accuracy on parameter types
+////				 newLevel = resolveLevelForType(this.pattern.parameterSimpleNames[i], this.pattern.parameterQualifications[i], this.pattern.parametersTypeArguments[i], 0, argType);
+//				newLevel = resolveLevelForType(this.pattern.parameterSimpleNames[i], this.pattern.parameterQualifications[i], argType);
+//			}
+//			if (level > newLevel) {
+//				if (newLevel == IMPOSSIBLE_MATCH) {
+//					if (skipImpossibleArg) {
+//						// Do not consider match as impossible while finding declarations and source level >= 1.5
+//					 	// (see  bugs https://bugs.eclipse.org/bugs/show_bug.cgi?id=79990, 96761, 96763)
+//						newLevel = level;
+//					} else {
+//						return IMPOSSIBLE_MATCH;
+//					}
+//				}
+//				level = newLevel; // can only be downgraded
+//			}
+//		}
 	}
 
 	return level;
@@ -528,7 +529,7 @@ protected void reportDeclaration(MethodBinding methodBinding, MatchLocator locat
 	} else {
 		if (declaringClass instanceof ParameterizedTypeBinding)
 			declaringClass = ((ParameterizedTypeBinding) declaringClass).type;
-		ClassScope scope = ((SourceTypeBinding) declaringClass).scope;
+		ClassScope scope = (ClassScope)((SourceTypeBinding) declaringClass).scope;
 		if (scope != null) {
 			TypeDeclaration typeDecl = scope.referenceContext;
 			AbstractMethodDeclaration methodDecl = null;
@@ -568,7 +569,9 @@ public int resolveLevel(ASTNode possibleMatchingNode) {
 		if (possibleMatchingNode instanceof MethodDeclaration) {
 			return resolveLevel(((MethodDeclaration) possibleMatchingNode).binding);
 		}
-	}
+		else if (possibleMatchingNode instanceof InferredMethod)
+			return resolveLevel(((InferredMethod) possibleMatchingNode).methodBinding);
+}
 	return IMPOSSIBLE_MATCH;
 }
 public int resolveLevel(Binding binding) {
@@ -730,5 +733,45 @@ protected int resolveLevelAsSubtype(char[] qualifiedPattern, ReferenceBinding ty
 }
 public String toString() {
 	return "Locator for " + this.pattern.toString(); //$NON-NLS-1$
+}
+
+public int match(InferredMethod inferredMethod, MatchingNodeSet nodeSet) {
+	if (!this.pattern.findDeclarations) return IMPOSSIBLE_MATCH;
+
+	// Verify method name
+	if (!matchesName(this.pattern.selector, inferredMethod.name)) return IMPOSSIBLE_MATCH;
+	
+	// Verify parameters types
+	boolean resolve = ((InternalSearchPattern)this.pattern).mustResolve;
+	if (this.pattern.parameterSimpleNames != null) {
+		int length = this.pattern.parameterSimpleNames.length;
+		ASTNode[] args = inferredMethod.methodDeclaration.arguments;
+		int argsLength = args == null ? 0 : args.length;
+		if (length != argsLength) return IMPOSSIBLE_MATCH;
+		for (int i = 0; i < argsLength; i++) {
+			if (args != null && !matchesTypeReference(this.pattern.parameterSimpleNames[i], ((Argument) args[i]).type)) {
+				// Do not return as impossible when source level is at least 1.5
+				if (this.mayBeGeneric) {
+					if (!((InternalSearchPattern)this.pattern).mustResolve) {
+						// Set resolution flag on node set in case of types was inferred in parameterized types from generic ones...
+					 	// (see  bugs https://bugs.eclipse.org/bugs/show_bug.cgi?id=79990, 96761, 96763)
+						nodeSet.mustResolve = true;
+						resolve = true;
+					}
+					this.methodDeclarationsWithInvalidParam.put(inferredMethod.methodDeclaration, null);
+				} else {
+					return IMPOSSIBLE_MATCH;
+				}
+			}
+		}
+	}
+
+	// Verify type arguments (do not reject if pattern has no argument as it can be an erasure match)
+//	if (this.pattern.hasMethodArguments()) {
+//		if (node.typeParameters == null || node.typeParameters.length != this.pattern.methodArguments.length) return IMPOSSIBLE_MATCH;
+//	}
+
+	// Method declaration may match pattern
+	return nodeSet.addMatch(inferredMethod , resolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
 }
 }

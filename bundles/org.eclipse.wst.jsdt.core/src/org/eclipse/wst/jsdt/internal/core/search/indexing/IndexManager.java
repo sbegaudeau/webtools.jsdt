@@ -353,7 +353,8 @@ public void indexLibrary(IPath path, IProject requestingProject) {
 	Object target = JavaModel.getTarget(ResourcesPlugin.getWorkspace().getRoot(), path, true);
 	IndexRequest request = null;
 	if (target instanceof IFile) {
-		request = new AddJarFileToIndex((IFile) target, this);
+		request = new AddLibraryFileToIndex((IFile) target, this);
+//		request = new AddJarFileToIndex((IFile) target, this);
 	} else if (target instanceof File) {
 		if (((File) target).isFile()) {
 			request = new AddJarFileToIndex(path, this);
@@ -433,7 +434,8 @@ private void rebuildIndex(IPath indexLocation, IPath containerPath) {
 	} else if (target instanceof IFile) {
 		request = new AddJarFileToIndex((IFile) target, this);
 	} else if (target instanceof File) {
-		request = new AddJarFileToIndex(containerPath, this);
+		request = new AddLibraryFileToIndex(containerPath, this);
+//		request = new AddJarFileToIndex(containerPath, this);
 	}
 	if (request != null)
 		request(request);

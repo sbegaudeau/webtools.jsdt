@@ -81,7 +81,7 @@ public class CompletionJavadoc extends Javadoc {
 				}
 			} else if (this.completionNode instanceof CompletionOnJavadocMessageSend) {
 				CompletionOnJavadocMessageSend msg = (CompletionOnJavadocMessageSend) this.completionNode;
-				if (!msg.receiver.isThis()) qualifiedBinding = msg.receiver.resolvedType;
+				if (msg.receiver!=null && !msg.receiver.isThis()) qualifiedBinding = msg.receiver.resolvedType;
 			} else if (this.completionNode instanceof CompletionOnJavadocAllocationExpression) {
 				CompletionOnJavadocAllocationExpression alloc = (CompletionOnJavadocAllocationExpression) this.completionNode;
 				qualifiedBinding = alloc.type.resolvedType;

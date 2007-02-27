@@ -554,7 +554,7 @@ public TypeBinding getReceiverType(BlockScope currentScope) {
 	while (true) {
 			switch (scope.kind) {
 				case Scope.CLASS_SCOPE :
-					return ((ClassScope) scope).referenceContext.binding;
+					return ((ClassScope) scope).getReferenceBinding();
 				default:
 					scope = scope.parent;
 			}

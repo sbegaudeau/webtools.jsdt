@@ -29,6 +29,7 @@ public interface ISearchRequestor {
 	 *    The default package is represented by an empty array.
 	 */
 	public void acceptType(char[] packageName, char[] typeName, char[][] enclosingTypeNames, int modifiers, AccessRestriction accessRestriction);
+	public void acceptBinding(char[] packageName, char[] bindingName, int bindingType, int modifiers, AccessRestriction accessRestriction);
 
 //	/**
 //	 * One result of the search consists of a new annotation.

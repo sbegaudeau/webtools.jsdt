@@ -13,6 +13,8 @@ package org.eclipse.wst.jsdt.internal.core;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaModelStatus;
@@ -23,6 +25,7 @@ import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
+import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
@@ -31,9 +34,8 @@ import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.TextUtilities;
 
 /**
  * Implements functionality common to
@@ -67,7 +69,10 @@ public CreateTypeMemberOperation(IJavaElement parentElement, String source, bool
 protected StructuralPropertyDescriptor getChildPropertyDescriptor(ASTNode parent) {
 	switch (parent.getNodeType()) {
 		case ASTNode.COMPILATION_UNIT:
-			return CompilationUnit.TYPES_PROPERTY;
+			if (createdNode instanceof AbstractTypeDeclaration)
+				return CompilationUnit.TYPES_PROPERTY;
+			else
+				return CompilationUnit.STATEMENTS_PROPERTY;
 		case ASTNode.ENUM_DECLARATION:
 			return EnumDeclaration.BODY_DECLARATIONS_PROPERTY;
 		case ASTNode.ANNOTATION_TYPE_DECLARATION:
@@ -85,14 +90,20 @@ protected ASTNode generateElementAST(ASTRewrite rewriter, IDocument document, IC
 		parser.setKind(ASTParser.K_CLASS_BODY_DECLARATIONS);
 		ASTNode node = parser.createAST(this.progressMonitor);
 		String createdNodeSource;
-		if (node.getNodeType() != ASTNode.TYPE_DECLARATION) {
-			createdNodeSource = generateSyntaxIncorrectAST();
-			if (this.createdNode == null)
-				throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INVALID_CONTENTS));
-		} else {
+		if (node.getNodeType() == ASTNode.COMPILATION_UNIT) {
+			CompilationUnit compilationUnit = (CompilationUnit) node;
+			this.createdNode = (ASTNode) compilationUnit.statements().iterator().next();
+			createdNodeSource = this.source;
+		} 
+		else if (node.getNodeType() == ASTNode.TYPE_DECLARATION) {
 			TypeDeclaration typeDeclaration = (TypeDeclaration) node;
 			this.createdNode = (ASTNode) typeDeclaration.bodyDeclarations().iterator().next();
 			createdNodeSource = this.source;
+		} 
+		else {
+			createdNodeSource = generateSyntaxIncorrectAST();
+			if (this.createdNode == null)
+				throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INVALID_CONTENTS));
 		}
 		if (this.alteredName != null) {
 			SimpleName newName = this.createdNode.getAST().newSimpleName(this.alteredName);
@@ -153,23 +164,25 @@ protected String generateSyntaxIncorrectAST() {
 	StringBuffer buff = new StringBuffer();
 	IType type = getType();
 	String lineSeparator = org.eclipse.wst.jsdt.internal.core.util.Util.getLineSeparator(this.source, type == null ? null : type.getJavaProject());
-	buff.append(lineSeparator + " public class A {" + lineSeparator); //$NON-NLS-1$
+//	buff.append(lineSeparator + " public class A {" + lineSeparator); //$NON-NLS-1$
 	buff.append(this.source);
-	buff.append(lineSeparator).append('}');
+//	buff.append(lineSeparator).append('}');
 	ASTParser parser = ASTParser.newParser(AST.JLS3);
 	parser.setSource(buff.toString().toCharArray());
 	CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
-	TypeDeclaration typeDeclaration = (TypeDeclaration) compilationUnit.types().iterator().next();
-	List bodyDeclarations = typeDeclaration.bodyDeclarations();
-	if (bodyDeclarations.size() != 0)
-		this.createdNode = (ASTNode) bodyDeclarations.iterator().next();
+
+//	TypeDeclaration typeDeclaration = (TypeDeclaration) compilationUnit.types().iterator().next();
+	List statements = compilationUnit.statements() ;
+	if (statements.size() != 0)
+		this.createdNode = (ASTNode) statements.iterator().next();
 	return buff.toString();
 }
 /**
  * Returns the IType the member is to be created in.
  */
 protected IType getType() {
-	return (IType)getParentElement();
+	IJavaElement parentElement = getParentElement();
+	return (parentElement instanceof IType) ? (IType)parentElement : null;
 }
 /**
  * Sets the name of the <code>ASTNode</code> that will be used to

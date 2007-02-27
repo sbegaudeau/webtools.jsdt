@@ -58,7 +58,7 @@ public class OrPattern extends SearchPattern implements IIndexConstants {
 			matchCompatibility |= ((JavaSearchPattern) this.patterns[i]).matchCompatibility;
 		}
 	}
-	void findIndexMatches(Index index, IndexQueryRequestor requestor, SearchParticipant participant, IJavaSearchScope scope, IProgressMonitor progressMonitor) throws IOException {
+	public void findIndexMatches(Index index, IndexQueryRequestor requestor, SearchParticipant participant, IJavaSearchScope scope, IProgressMonitor progressMonitor) throws IOException {
 		// per construction, OR pattern can only be used with a PathCollector (which already gather results using a set)
 		try {
 			index.startQuery();

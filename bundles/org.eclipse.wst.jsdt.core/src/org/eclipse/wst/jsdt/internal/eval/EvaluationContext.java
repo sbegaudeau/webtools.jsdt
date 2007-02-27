@@ -193,19 +193,19 @@ public void deleteVariable(GlobalVariable variable) {
 }
 private void deployCodeSnippetClassIfNeeded(IRequestor requestor) {
 	if (this.codeSnippetBinary == null) {
-		// Deploy CodeSnippet class (only once)
-		requestor.acceptClassFiles(
-			new ClassFile[] {
-				new ClassFile() {
-					public byte[] getBytes() {
-						return getCodeSnippetBytes();
-					}
-					public char[][] getCompoundName() {
-						return EvaluationConstants.ROOT_COMPOUND_NAME;
-					}
-				}
-			}, 
-			null);
+//		// Deploy CodeSnippet class (only once)
+//		requestor.acceptClassFiles(
+//			new ClassFile[] {
+//				new ClassFile() {
+//					public byte[] getBytes() {
+//						return getCodeSnippetBytes();
+//					}
+//					public char[][] getCompoundName() {
+//						return EvaluationConstants.ROOT_COMPOUND_NAME;
+//					}
+//				}
+//			}, 
+//			null);
 	}
 }
 /**

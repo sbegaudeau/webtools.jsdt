@@ -17,6 +17,7 @@ import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFormatException;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
 import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.wst.jsdt.internal.compiler.env.NameEnvironmentAnswer;
+import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
 
 /**
  * An environment that wraps the client's name environment.
@@ -37,8 +38,8 @@ public CodeSnippetEnvironment(INameEnvironment env, EvaluationContext context) {
 /**
  * @see INameEnvironment#findType(char[][])
  */
-public NameEnvironmentAnswer findType(char[][] compoundTypeName) {
-	NameEnvironmentAnswer result = this.env.findType(compoundTypeName);
+public NameEnvironmentAnswer findType(char[][] compoundTypeName, ITypeRequestor requestor) {
+	NameEnvironmentAnswer result = this.env.findType(compoundTypeName,requestor);
 	if (result != null) {
 		return result;
 	}
@@ -67,15 +68,21 @@ public NameEnvironmentAnswer findType(char[][] compoundTypeName) {
 	}
 	return null;
 }
+
+public NameEnvironmentAnswer findBinding(char[] typeName, char[][] packageName, int type, ITypeRequestor requestor) {
+	//TODO: implement
+	throw new org.eclipse.wst.jsdt.core.UnimplementedException();
+//	return findType(typeName,packageName);
+}
 /**
  * @see INameEnvironment#findType(char[], char[][])
  */
-public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName) {
-	NameEnvironmentAnswer result = this.env.findType(typeName, packageName);
+public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName, ITypeRequestor requestor) {
+	NameEnvironmentAnswer result = this.env.findType(typeName, packageName,requestor);
 	if (result != null) {
 		return result;
 	}
-	return findType(CharOperation.arrayConcat(packageName, typeName));
+	return findType(CharOperation.arrayConcat(packageName, typeName),requestor);
 }
 /**
  * @see INameEnvironment#isPackage(char[][], char[])

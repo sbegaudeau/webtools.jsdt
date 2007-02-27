@@ -19,16 +19,17 @@ package org.eclipse.wst.jsdt.internal.codeassist.complete;
  *	0  means completion behind the first character
  *  n  means completion behind the n-th character
  */
-import org.eclipse.wst.jsdt.internal.compiler.*;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.env.*;
 
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
-import org.eclipse.wst.jsdt.internal.compiler.parser.*;
-import org.eclipse.wst.jsdt.internal.compiler.problem.*;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.codeassist.impl.*;
-
+import org.eclipse.wst.jsdt.internal.codeassist.select.SelectionOnMessageSend;
+import org.eclipse.wst.jsdt.internal.compiler.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
+import org.eclipse.wst.jsdt.internal.compiler.env.*;
+import org.eclipse.wst.jsdt.internal.compiler.parser.*;
+import org.eclipse.wst.jsdt.internal.compiler.problem.*;
+ 
 public class CompletionParser extends AssistParser {
 	// OWNER
 	protected static final int COMPLETION_PARSER = 1024;
@@ -150,9 +151,12 @@ public char[] assistIdentifier(){
 protected void attachOrphanCompletionNode(){
 	if(assistNode == null || this.isAlreadyAttached) return;
 	
-	this.isAlreadyAttached = true;
-	
+
+	if (STOP_AT_CURSOR)
+		this.isAlreadyAttached = true;
 	if (this.isOrphanCompletionNode) {
+		if (!STOP_AT_CURSOR)
+			this.isAlreadyAttached = true;
 		ASTNode orphan = this.assistNode;
 		this.isOrphanCompletionNode = false;
 		
@@ -209,7 +213,6 @@ protected void attachOrphanCompletionNode(){
 						new CompletionOnFieldType((TypeReference)orphan, true), 0);
 					return;
 				}
-				
 				if(orphan instanceof Annotation) {
 					TypeDeclaration fakeType =
 						new CompletionOnAnnotationOfType(
@@ -218,7 +221,7 @@ protected void attachOrphanCompletionNode(){
 								(Annotation)orphan);
 					currentElement.parent.add(fakeType, 0);
 					return;
-				}
+			}
 			}
 		}
 
@@ -236,7 +239,6 @@ protected void attachOrphanCompletionNode(){
 				currentElement.add(fakeType, 0);
 				return;
 		}
-		
 		if ((topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_BETWEEN_CATCH_AND_RIGHT_PAREN)) {
 			if (this.assistNode instanceof CompletionOnSingleTypeReference &&
 					((CompletionOnSingleTypeReference)this.assistNode).isException()) {
@@ -251,9 +253,7 @@ protected void attachOrphanCompletionNode(){
 				buildMoreTryStatementCompletionContext((TypeReference)this.assistNode);
 				return;
 			}
-		}
-		
-		// add the completion node to the method declaration or constructor declaration
+		}		// add the completion node to the method declaration or constructor declaration
 		if (orphan instanceof Statement) {
 			/* check for completion at the beginning of method body
 				behind an invalid signature
@@ -436,7 +436,7 @@ protected void attachOrphanCompletionNode(){
 				}
 			}
 			if(node == this.assistNode){
-				buildMoreGenericsCompletionContext(node, true);
+				buildMoreGenericsCompletionContext(node,true);
 			}
 		}
 	}
@@ -551,7 +551,7 @@ private void buildMoreCompletionContext(Expression expression) {
 		nextElement : switch (kind) {
 			case K_SELECTOR_QUALIFIER :
 				int selector = topKnownElementInfo(COMPLETION_OR_ASSIST_PARSER, 2);
-				if(selector == THIS_CONSTRUCTOR || selector == SUPER_CONSTRUCTOR) {
+				if(false){// Not Possible selector == THIS_CONSTRUCTOR || selector == SUPER_CONSTRUCTOR) {
 					ExplicitConstructorCall call = new ExplicitConstructorCall(
 						(selector == THIS_CONSTRUCTOR) ? 
 							ExplicitConstructorCall.This : 
@@ -570,7 +570,12 @@ private void buildMoreCompletionContext(Expression expression) {
 					
 					// search previous arguments if missing
 					if(this.expressionPtr > 0 && this.expressionLengthPtr > 0 && length == 1) {
-						int start = (int) (identifierPositionStack[selector] >>> 32);
+						int start = 0;
+						if (invocType != ALLOCATION && invocType != QUALIFIED_ALLOCATION)
+						  start=(int) (identifierPositionStack[selector] >>> 32);
+						else 
+							start=expressionStack[info].sourceStart;
+						
 						if(this.expressionStack[expressionPtr-1] != null && this.expressionStack[expressionPtr-1].sourceStart > start) {
 							length += expressionLengthStack[expressionLengthPtr-1];
 						}
@@ -632,9 +637,10 @@ private void buildMoreCompletionContext(Expression expression) {
 						if(invocType == ALLOCATION) {
 							AllocationExpression allocationExpr = new AllocationExpression();
 							allocationExpr.arguments = arguments;
-							pushOnGenericsIdentifiersLengthStack(identifierLengthStack[identifierLengthPtr]);
-							pushOnGenericsLengthStack(0);
-							allocationExpr.type = getTypeReference(0);
+//							pushOnGenericsIdentifiersLengthStack(identifierLengthStack[identifierLengthPtr]);
+//							pushOnGenericsLengthStack(0);
+//							allocationExpr.type = getTypeReference(0);
+							allocationExpr.member=expressionStack[info];
 							assistNodeParent = allocationExpr;
 						} else {
 							QualifiedAllocationExpression allocationExpr = new QualifiedAllocationExpression();
@@ -905,7 +911,8 @@ private void buildMoreGenericsCompletionContext(ASTNode node, boolean consumeTyp
 				}
 				if(info == LESS && node instanceof TypeReference) {
 					if(this.identifierLengthPtr > -1 && this.identifierLengthStack[this.identifierLengthPtr]!= 0) {
-						if (consumeTypeArguments) this.consumeTypeArguments();
+						if (consumeTypeArguments)
+							this.consumeTypeArguments();
 						TypeReference ref = this.getTypeReference(0);
 						if(prevKind == K_PARAMETERIZED_CAST) {
 							ref = computeQualifiedGenericsFromRightSide(ref, 0);
@@ -973,6 +980,7 @@ private void buildMoreTryStatementCompletionContext(TypeReference exceptionRef) 
 		currentElement = currentElement.add(exceptionRef, 0);
 	}
 }
+
 public int bodyEnd(AbstractMethodDeclaration method){
 	return cursorLocation;
 }
@@ -1132,41 +1140,41 @@ private boolean checkKeyword() {
 			
 			char[][] keywords = new char[Keywords.COUNT][];
 			int count = 0;
-			if(unit.typeCount == 0
-				&& lastModifiers == ClassFileConstants.AccDefault) {
-				keywords[count++] = Keywords.IMPORT;
-			}
-			if(unit.typeCount == 0
-				&& unit.importCount == 0
-				&& lastModifiers == ClassFileConstants.AccDefault
-				&& compilationUnit.currentPackage == null) {
-				keywords[count++] = Keywords.PACKAGE;
-			}
-			if((lastModifiers & ClassFileConstants.AccPublic) == 0) {
-				boolean hasNoPublicType = true;
-				for (int i = 0; i < unit.typeCount; i++) {
-					if((unit.types[i].typeDeclaration.modifiers & ClassFileConstants.AccPublic) != 0) {
-						hasNoPublicType = false;
-					}
-				}
-				if(hasNoPublicType) {
-					keywords[count++] = Keywords.PUBLIC;
-				}
-			}
-			if((lastModifiers & ClassFileConstants.AccAbstract) == 0
-				&& (lastModifiers & ClassFileConstants.AccFinal) == 0) {
-				keywords[count++] = Keywords.ABSTRACT;
-			}
-			if((lastModifiers & ClassFileConstants.AccAbstract) == 0
-				&& (lastModifiers & ClassFileConstants.AccFinal) == 0) {
-				keywords[count++] = Keywords.FINAL;
-			}
-			
-			keywords[count++] = Keywords.CLASS;
-			
-			if((lastModifiers & ClassFileConstants.AccFinal) == 0) {
-				keywords[count++] = Keywords.INTERFACE;
-			}
+//			if(unit.typeCount == 0
+//				&& lastModifiers == ClassFileConstants.AccDefault) {
+//				keywords[count++] = Keywords.IMPORT;
+//			}
+//			if(unit.typeCount == 0
+//				&& unit.importCount == 0
+//				&& lastModifiers == ClassFileConstants.AccDefault
+//				&& compilationUnit.currentPackage == null) {
+//				keywords[count++] = Keywords.PACKAGE;
+//			}
+//			if((lastModifiers & ClassFileConstants.AccPublic) == 0) {
+//				boolean hasNoPublicType = true;
+//				for (int i = 0; i < unit.typeCount; i++) {
+//					if((unit.types[i].typeDeclaration.modifiers & ClassFileConstants.AccPublic) != 0) {
+//						hasNoPublicType = false;
+//					}
+//				}
+//				if(hasNoPublicType) {
+//					keywords[count++] = Keywords.PUBLIC;
+//				}
+//			}
+//			if((lastModifiers & ClassFileConstants.AccAbstract) == 0
+//				&& (lastModifiers & ClassFileConstants.AccFinal) == 0) {
+//				keywords[count++] = Keywords.ABSTRACT;
+//			}
+//			if((lastModifiers & ClassFileConstants.AccAbstract) == 0
+//				&& (lastModifiers & ClassFileConstants.AccFinal) == 0) {
+//				keywords[count++] = Keywords.FINAL;
+//			}
+//			
+//			keywords[count++] = Keywords.CLASS;
+//			
+//			if((lastModifiers & ClassFileConstants.AccFinal) == 0) {
+//				keywords[count++] = Keywords.INTERFACE;
+//			}
 			if(count != 0) {
 				System.arraycopy(keywords, 0, keywords = new char[count][], 0, count);
 				
@@ -1194,6 +1202,15 @@ private boolean checkInstanceofKeyword() {
 						identifierStack[ptr],
 						identifierPositionStack[ptr],
 						Keywords.INSTANCEOF);
+				this.lastCheckPoint = assistNode.sourceEnd + 1;
+				this.isOrphanCompletionNode = true;
+				return true;
+			}
+			if(identifierStack[ptr].length > 0 && CharOperation.prefixEquals(identifierStack[ptr], Keywords.TYPEOF)) {
+				this.assistNode = new CompletionOnKeyword3(
+						identifierStack[ptr],
+						identifierPositionStack[ptr],
+						Keywords.TYPEOF);
 				this.lastCheckPoint = assistNode.sourceEnd + 1;
 				this.isOrphanCompletionNode = true;
 				return true;
@@ -1689,9 +1706,9 @@ public void completionIdentifierCheck(){
 	if (checkRecoveredMethod()) return;
 
 	// if not in a method in non diet mode and if not inside a field initializer, only record references attached to types
-	if (!(isInsideMethod() && !this.diet)
-		&& !isIndirectlyInsideFieldInitialization()
-		&& !isInsideAttributeValue()) return; 
+//	if (!(isInsideMethod() && !this.diet)
+//		&& !isIndirectlyInsideFieldInitialization()
+//		&& !isInsideAttributeValue()) return; 
 
 	/*
 	 	In some cases, the completion identifier may not have yet been consumed,
@@ -1839,7 +1856,7 @@ protected void consumeClassBodyopt() {
 	super.consumeClassBodyopt();
 }
 /* (non-Javadoc)
- * @see org.eclipse.wst.jsdt.internal.compiler.parser.Parser#consumeClassDeclaration()
+ * @see org.eclipse.jdt.internal.compiler.parser.Parser#consumeClassDeclaration()
  */
 protected void consumeClassDeclaration() {
 	if (this.astPtr >= 0) {
@@ -1857,6 +1874,7 @@ protected void consumeClassDeclaration() {
 	}
 	super.consumeClassDeclaration();
 }
+
 protected void consumeClassHeaderName1() {
 	super.consumeClassHeaderName1();
 
@@ -1901,9 +1919,8 @@ protected void consumeClassTypeElt() {
 	super.consumeClassTypeElt();
 	popElement(K_NEXT_TYPEREF_IS_EXCEPTION);
 }
-
 /* (non-Javadoc)
- * @see org.eclipse.wst.jsdt.internal.compiler.parser.Parser#consumeCompilationUnit()
+ * @see org.eclipse.jdt.internal.compiler.parser.Parser#consumeCompilationUnit()
  */
 protected void consumeCompilationUnit() {
 	this.javadoc = null;
@@ -1922,6 +1939,7 @@ protected void consumeCompilationUnit() {
 	}
 	super.consumeCompilationUnit();
 }
+
 protected void consumeConditionalExpression(int op) {
 	popElement(K_CONDITIONAL_OPERATOR);
 	super.consumeConditionalExpression(op);
@@ -1952,7 +1970,7 @@ protected void consumeConstructorHeaderName() {
 	}
 	pushOnGenericsIdentifiersLengthStack(this.identifierLengthStack[this.identifierLengthPtr]);
 	pushOnGenericsLengthStack(0); // handle type arguments
-	this.restartRecovery = true;
+	this.restartRecovery = AssistParser.STOP_AT_CURSOR;
 }
 protected void consumeDefaultLabel() {
 	super.consumeDefaultLabel();
@@ -1974,7 +1992,7 @@ protected void consumeEnterVariable() {
 	identifierPtr--;
 	identifierLengthPtr--;
 
-	boolean isLocalDeclaration = nestedMethod[nestedType] != 0;
+	boolean isLocalDeclaration = true;//nestedMethod[nestedType] != 0;
 	int variableIndex = variablesCounter[nestedType];
 	int extendedDimension = intStack[intPtr + 1];
 	
@@ -1983,7 +2001,7 @@ protected void consumeEnterVariable() {
 		identifierLengthPtr++;
 		super.consumeEnterVariable();
 	} else {
-		restartRecovery = true;
+		restartRecovery = AssistParser.STOP_AT_CURSOR;
 		
 //		private boolean checkKeyword() {
 //			if (currentElement instanceof RecoveredUnit) {
@@ -2013,7 +2031,7 @@ protected void consumeEnterVariable() {
 		
 		// recovery
 		if (currentElement != null) {
-			if(!checkKeyword() && !(currentElement instanceof RecoveredUnit && ((RecoveredUnit)currentElement).typeCount == 0)) {
+			if(!checkKeyword() && !(currentElement instanceof RecoveredUnit && ((RecoveredUnit)currentElement).statementCount == 0)) {
 				int nameSourceStart = (int)(identifierPositionStack[identifierPtr] >>> 32);
 				intPtr--;
 //				pushOnGenericsIdentifiersLengthStack(identifierLengthStack[identifierLengthPtr]);
@@ -2065,7 +2083,8 @@ protected void consumeExitVariableWithInitialization() {
 	AbstractVariableDeclaration variable = (AbstractVariableDeclaration) astStack[astPtr];
 	if (cursorLocation + 1 < variable.initialization.sourceStart ||
 		cursorLocation > variable.initialization.sourceEnd) {
-		variable.initialization = null;
+		if (STOP_AT_CURSOR)
+			variable.initialization = null;
 	} else if (assistNode != null && assistNode == variable.initialization) {
 		assistNodeParent = variable;
 	}
@@ -2094,6 +2113,17 @@ protected void consumeFieldAccess(boolean isSuperAccess) {
 		this.pushCompletionOnMemberAccessOnExpressionStack(isSuperAccess);
 	}
 }
+
+protected void consumePropertyOperator() {
+	this.invocationType = NO_RECEIVER;
+	this.qualifier = -1;
+
+	if (this.indexOfAssistIdentifier() < 0) {
+		super.consumePropertyOperator();
+	} else {
+		this.pushCompletionOnMemberAccessOnExpressionStack(false);
+	}
+}
 protected void consumeForceNoDiet() {
 	super.consumeForceNoDiet();
 	if (isInsideMethod()) {
@@ -2108,38 +2138,38 @@ protected void consumeFormalParameter(boolean isVarArgs) {
 		identifierLengthPtr--;
 		char[] identifierName = identifierStack[identifierPtr];
 		long namePositions = identifierPositionStack[identifierPtr--];
-		int extendedDimensions = this.intStack[this.intPtr--];
-		int endOfEllipsis = 0;
-		if (isVarArgs) {
-			endOfEllipsis = this.intStack[this.intPtr--];
-		}
-		int firstDimensions = this.intStack[this.intPtr--];
-		final int typeDimensions = firstDimensions + extendedDimensions;
-		TypeReference type = getTypeReference(typeDimensions);
-		if (isVarArgs) {
-			type = copyDims(type, typeDimensions + 1);
-			if (extendedDimensions == 0) {
-				type.sourceEnd = endOfEllipsis;
-			}
-			type.bits |= ASTNode.IsVarArgs; // set isVarArgs
-		}
+//		int extendedDimensions = this.intStack[this.intPtr--];
+//		int endOfEllipsis = 0;
+//		if (isVarArgs) {
+//			endOfEllipsis = this.intStack[this.intPtr--];
+//		}
+//		int firstDimensions = this.intStack[this.intPtr--];
+//		final int typeDimensions = firstDimensions + extendedDimensions;
+//		TypeReference type = getTypeReference(typeDimensions);
+//		if (isVarArgs) {
+//			type = copyDims(type, typeDimensions + 1);
+//			if (extendedDimensions == 0) {
+//				type.sourceEnd = endOfEllipsis;
+//			}
+//			type.bits |= ASTNode.IsVarArgs; // set isVarArgs
+//		}
 		intPtr -= 2;
 		CompletionOnArgumentName arg = 
 			new CompletionOnArgumentName(
 				identifierName, 
 				namePositions, 
-				type, 
+				null, 
 				intStack[intPtr + 1] & ~ClassFileConstants.AccDeprecated); // modifiers
 		// consume annotations
-		int length;
-		if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-			System.arraycopy(
-				this.expressionStack, 
-				(this.expressionPtr -= length) + 1, 
-				arg.annotations = new Annotation[length], 
-				0, 
-				length); 
-		}
+//		int length;
+//		if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
+//			System.arraycopy(
+//				this.expressionStack, 
+//				(this.expressionPtr -= length) + 1, 
+//				arg.annotations = new Annotation[length], 
+//				0, 
+//				length); 
+//		}
 				
 		arg.isCatchArgument = topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_BETWEEN_CATCH_AND_RIGHT_PAREN;
 		pushOnAstStack(arg);
@@ -2274,7 +2304,7 @@ protected void consumeMethodHeaderName(boolean isAnnotationMethod) {
 			identifierLengthPtr++;
 			super.consumeMethodHeaderName(isAnnotationMethod);
 		} else {
-			restartRecovery = true;
+			restartRecovery = AssistParser.STOP_AT_CURSOR;
 			
 			// recovery
 			if (currentElement != null) {
@@ -2282,55 +2312,55 @@ protected void consumeMethodHeaderName(boolean isAnnotationMethod) {
 				char[] selector = identifierStack[identifierPtr + 1];
 				long selectorSource = identifierPositionStack[identifierPtr + 1];
 				
-				//type
-				TypeReference type = getTypeReference(intStack[intPtr--]);
-				((CompletionOnSingleTypeReference)type).isCompletionNode = false;
-				//modifiers
+//				//type
+//				TypeReference type = getTypeReference(intStack[intPtr--]);
+//				((CompletionOnSingleTypeReference)type).isCompletionNode = false;
+//				//modifiers
 				int declarationSourceStart = intStack[intPtr--];
 				int mod = intStack[intPtr--];
 				
-				if(scanner.getLineNumber(type.sourceStart) != scanner.getLineNumber((int) (selectorSource >>> 32))) {
-					FieldDeclaration completionFieldDecl = new CompletionOnFieldType(type, false);
-					// consume annotations
-					int length;
-					if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-						System.arraycopy(
-							this.expressionStack, 
-							(this.expressionPtr -= length) + 1, 
-							completionFieldDecl.annotations = new Annotation[length], 
-							0, 
-							length); 
-					}
-					completionFieldDecl.modifiers = mod;
-					assistNode = completionFieldDecl;
-					lastCheckPoint = type.sourceEnd + 1;
-					currentElement = currentElement.add(completionFieldDecl, 0);
-					lastIgnoredToken = -1;
-				} else {
-					CompletionOnMethodReturnType md = new CompletionOnMethodReturnType(type, this.compilationUnit.compilationResult);
-					// consume annotations
-					int length;
-					if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-						System.arraycopy(
-							this.expressionStack, 
-							(this.expressionPtr -= length) + 1, 
-							md.annotations = new Annotation[length], 
-							0, 
-							length); 
-					}
-					md.selector = selector;
-					md.declarationSourceStart = declarationSourceStart;
-					md.modifiers = mod;
-					md.bodyStart = lParenPos+1;
-					listLength = 0; // initialize listLength before reading parameters/throws
-					assistNode = md;
-					this.lastCheckPoint = md.bodyStart;
-					currentElement = currentElement.add(md, 0);
-					lastIgnoredToken = -1;
-					// javadoc
-					md.javadoc = this.javadoc;
-					this.javadoc = null;
-				}
+//				if(scanner.getLineNumber(type.sourceStart) != scanner.getLineNumber((int) (selectorSource >>> 32))) {
+//					FieldDeclaration completionFieldDecl = new CompletionOnFieldType(type, false);
+//					// consume annotations
+//					int length;
+//					if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
+//						System.arraycopy(
+//							this.expressionStack, 
+//							(this.expressionPtr -= length) + 1, 
+//							completionFieldDecl.annotations = new Annotation[length], 
+//							0, 
+//							length); 
+//					}
+//					completionFieldDecl.modifiers = mod;
+//					assistNode = completionFieldDecl;
+//					lastCheckPoint = type.sourceEnd + 1;
+//					currentElement = currentElement.add(completionFieldDecl, 0);
+//					lastIgnoredToken = -1;
+//				} else {
+//					CompletionOnMethodReturnType md = new CompletionOnMethodReturnType(type, this.compilationUnit.compilationResult);
+//					// consume annotations
+//					int length;
+//					if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
+//						System.arraycopy(
+//							this.expressionStack, 
+//							(this.expressionPtr -= length) + 1, 
+//							md.annotations = new Annotation[length], 
+//							0, 
+//							length); 
+//					}
+//					md.selector = selector;
+//					md.declarationSourceStart = declarationSourceStart;
+//					md.modifiers = mod;
+//					md.bodyStart = lParenPos+1;
+//					listLength = 0; // initialize listLength before reading parameters/throws
+//					assistNode = md;
+//					this.lastCheckPoint = md.bodyStart;
+//					currentElement = currentElement.add(md, 0);
+//					lastIgnoredToken = -1;
+//					// javadoc
+//					md.javadoc = this.javadoc;
+//					this.javadoc = null;
+//				}
 			}
 		}
 	} else {
@@ -2381,7 +2411,7 @@ protected void consumeMethodHeaderName(boolean isAnnotationMethod) {
 				lastIgnoredToken = -1;
 			} else {
 				lastCheckPoint = md.sourceStart;
-				restartRecovery = true;
+				restartRecovery = AssistParser.STOP_AT_CURSOR;
 			}
 		}
 	}
@@ -2499,7 +2529,7 @@ protected void consumeAnnotationName() {
 	
 	assistNode = markerAnnotation;
 	this.isOrphanCompletionNode = true;
-	this.restartRecovery = true;
+	this.restartRecovery = AssistParser.STOP_AT_CURSOR;
 	
 	this.lastCheckPoint = markerAnnotation.sourceEnd + 1;
 }
@@ -2546,7 +2576,7 @@ protected void consumeMemberValueAsName() {
 	} else {
 		super.consumeMemberValueAsName();
 		if(this.topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_BETWEEN_ANNOTATION_NAME_AND_RPAREN) {
-			this.restartRecovery = true;
+			this.restartRecovery = AssistParser.STOP_AT_CURSOR;
 		}
 	}
 }
@@ -2762,7 +2792,8 @@ protected void consumeToken(int token) {
 								this.pushOnElementStack(K_BETWEEN_ANNOTATION_NAME_AND_RPAREN, LPAREN_CONSUMED);
 							} else {
 								this.pushOnElementStack(K_SELECTOR_INVOCATION_TYPE, this.invocationType);
-								this.pushOnElementStack(K_SELECTOR_QUALIFIER, this.qualifier);
+								int selectorQualifier=(this.invocationType==ALLOCATION)?this.expressionPtr:this.qualifier;
+								this.pushOnElementStack(K_SELECTOR_QUALIFIER, selectorQualifier);
 							}
 						}
 						this.qualifier = -1;
@@ -2793,8 +2824,8 @@ protected void consumeToken(int token) {
 								// it's not a selector invocation
 								popElement(K_SELECTOR);
 							} else {
-								this.pushOnElementStack(K_SELECTOR_INVOCATION_TYPE, (this.invocationType == QUALIFIED_ALLOCATION) ? QUALIFIED_ALLOCATION : ALLOCATION);
-								this.pushOnElementStack(K_SELECTOR_QUALIFIER, this.qualifier);
+							this.pushOnElementStack(K_SELECTOR_INVOCATION_TYPE, (this.invocationType == QUALIFIED_ALLOCATION) ? QUALIFIED_ALLOCATION : ALLOCATION);
+							this.pushOnElementStack(K_SELECTOR_QUALIFIER, this.qualifier);
 							}
 						}
 						this.qualifier = -1;
@@ -3045,9 +3076,9 @@ protected void consumeToken(int token) {
 			case TokenNamesynchronized:
 				pushOnElementStack(K_BETWEEN_SYNCHRONIZED_AND_RIGHT_PAREN, bracketDepth);
 				break;
-			case TokenNameassert:
-				pushOnElementStack(K_INSIDE_ASSERT_STATEMENT, this.bracketDepth);
-				break;
+//			case TokenNameassert:
+//				pushOnElementStack(K_INSIDE_ASSERT_STATEMENT, this.bracketDepth);
+//				break;
 			case TokenNamecase :
 				pushOnElementStack(K_BETWEEN_CASE_AND_COLON);
 				break;
@@ -3348,7 +3379,7 @@ public TypeReference createParameterizedQualifiedAssistTypeReference(char[][] pr
 }
 public NameReference createSingleAssistNameReference(char[] assistName, long position) {
 	int kind = topKnownElementKind(COMPLETION_OR_ASSIST_PARSER);
-	if(!isInsideMethod()) {
+	if(false){//!isInsideMethod()) {
 		if (isInsideFieldInitialization()) {
 			return new CompletionOnSingleNameReference(
 					assistName,
@@ -3375,13 +3406,13 @@ public NameReference createSingleAssistNameReference(char[] assistName, long pos
 			char[][] keywords = new char[Keywords.COUNT][];
 			int count = 0;
 			
-			if((lastModifiers & ClassFileConstants.AccStatic) == 0) {
-				keywords[count++]= Keywords.SUPER;
+//			if((lastModifiers & ClassFileConstants.AccStatic) == 0) {
+//				keywords[count++]= Keywords.SUPER;
 				keywords[count++]= Keywords.THIS;
-			}
+//			}
 			keywords[count++]= Keywords.NEW;
 			
-			if(kind == K_BLOCK_DELIMITER) {
+			if(kind == K_BLOCK_DELIMITER || kind==0) {
 				if(canBeExplicitConstructor == YES) {
 					canBeExplicitConstructorCall = true;
 				}
@@ -3392,13 +3423,15 @@ public NameReference createSingleAssistNameReference(char[] assistName, long pos
 				keywords[count++]= Keywords.IF;
 				keywords[count++]= Keywords.RETURN;
 				keywords[count++]= Keywords.SWITCH;
-				keywords[count++]= Keywords.SYNCHRONIZED;
+//				keywords[count++]= Keywords.SYNCHRONIZED;
 				keywords[count++]= Keywords.THROW;
 				keywords[count++]= Keywords.TRY;
 				keywords[count++]= Keywords.WHILE;
+				keywords[count++]= Keywords.VAR;
+				keywords[count++]= Keywords.FUNCTION;
 				
-				keywords[count++]= Keywords.FINAL;
-				keywords[count++]= Keywords.CLASS;
+//				keywords[count++]= Keywords.FINAL;
+//				keywords[count++]= Keywords.CLASS;
 				
 				if(previousKind == K_BLOCK_DELIMITER) {
 					switch (previousInfo) {
@@ -3421,6 +3454,7 @@ public NameReference createSingleAssistNameReference(char[] assistName, long pos
 				keywords[count++]= Keywords.TRUE;
 				keywords[count++]= Keywords.FALSE;
 				keywords[count++]= Keywords.NULL;
+				keywords[count++]= Keywords.UNDEFINED;
 			
 				if(kind == K_SWITCH_LABEL) {
 					if(topKnownElementInfo(COMPLETION_OR_ASSIST_PARSER) != DEFAULT) {
@@ -3501,7 +3535,7 @@ protected StringLiteral createStringLiteral(char[] token, int start, int end, in
 					lineNumber);
 			
 			this.assistNode = stringLiteral;
-			this.restartRecovery = true;
+			this.restartRecovery = AssistParser.STOP_AT_CURSOR;
 			this.lastCheckPoint = end;
 			
 			return stringLiteral;
@@ -3769,6 +3803,14 @@ public MethodDeclaration parseStatementsAfterCompletion(int start, int end, Comp
 	
 	return fakeMethod;
 }
+protected boolean moveRecoveryCheckpoint() {
+	CompletionScanner completionScanner = (CompletionScanner) this.scanner;
+	if (completionScanner.record) {
+		completionScanner.currentToken = -1;
+		completionScanner.currentTokenStart = 0;
+	}
+	return super.moveRecoveryCheckpoint();
+}
 /*
  * Prepares the state of the parser to go for BlockStatements.
  */
@@ -3812,14 +3854,6 @@ private void pushCompletionOnMemberAccessOnExpressionStack(boolean isSuperAccess
 		}
 		expressionStack[expressionPtr] = fr;
 	}
-}
-protected boolean moveRecoveryCheckpoint() {
-	CompletionScanner completionScanner = (CompletionScanner) this.scanner;
-	if (completionScanner.record) {
-		completionScanner.currentToken = -1;
-		completionScanner.currentTokenStart = 0;
-	}
-	return super.moveRecoveryCheckpoint();
 }
 public void recordCompletionOnReference(){
 
@@ -4010,7 +4044,7 @@ protected LocalDeclaration createLocalDeclaration(char[] assistName, int sourceS
 }
 
 protected FieldDeclaration createFieldDeclaration(char[] assistName, int sourceStart, int sourceEnd) {
-	if (this.indexOfAssistIdentifier() < 0 || (currentElement instanceof RecoveredUnit && ((RecoveredUnit)currentElement).typeCount == 0)) {
+	if (this.indexOfAssistIdentifier() < 0 || (currentElement instanceof RecoveredUnit && ((RecoveredUnit)currentElement).statementCount == 0)) {
 		return super.createFieldDeclaration(assistName, sourceStart, sourceEnd);
 	} else {
 		CompletionOnFieldName field = new CompletionOnFieldName(assistName, sourceStart, sourceEnd);
@@ -4019,4 +4053,45 @@ protected FieldDeclaration createFieldDeclaration(char[] assistName, int sourceS
 		return field;
 	}
 }
+protected void classInstanceCreation(boolean isQualified, boolean isShort) {
+	popElement(K_SELECTOR_QUALIFIER);
+	popElement(K_SELECTOR_INVOCATION_TYPE);
+	super.classInstanceCreation(isQualified, isShort);
+}
+public int getCursorLocation() {
+	return this.cursorLocation;
+}
+
+
+protected MessageSend newMessageSend() {
+	if (AssistParser.STOP_AT_CURSOR)
+		return super.newMessageSend();
+	// '(' ArgumentListopt ')'
+	// the arguments are on the expression stack
+
+	char[] selector = identifierStack[identifierPtr];
+	if (selector != this.assistIdentifier()){
+		return super.newMessageSend();
+	}	
+	MessageSend messageSend = new CompletionOnMessageSend();
+	int length;
+	if ((length = expressionLengthStack[expressionLengthPtr--]) != 0) {
+		expressionPtr -= length;
+		System.arraycopy(
+			expressionStack, 
+			expressionPtr + 1, 
+			messageSend.arguments = new Expression[length], 
+			0, 
+			length); 
+	}
+	assistNode = messageSend;
+	if (!diet){
+		this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
+		this.lastIgnoredToken = -1;	
+	}
+	
+	this.isOrphanCompletionNode = true;
+	return messageSend;
+}
+
 }

@@ -26,7 +26,7 @@ public class CompletionOnMessageSendName extends MessageSend {
 
 	public TypeBinding resolveType(BlockScope scope) {
 		
-		if (receiver.isImplicitThis())
+		if (receiver==null || receiver.isImplicitThis())
 			throw new CompletionNodeFound();
 
 		this.actualReceiverType = receiver.resolveType(scope);
@@ -53,7 +53,7 @@ public class CompletionOnMessageSendName extends MessageSend {
 	public StringBuffer printExpression(int indent, StringBuffer output) {
 
 		output.append("<CompleteOnMessageSendName:"); //$NON-NLS-1$
-		if (!receiver.isImplicitThis()) receiver.printExpression(0, output).append('.');
+		if (receiver!=null && receiver.isImplicitThis()) receiver.printExpression(0, output).append('.');
 		if (this.typeArguments != null) {
 			output.append('<');
 			int max = typeArguments.length - 1;

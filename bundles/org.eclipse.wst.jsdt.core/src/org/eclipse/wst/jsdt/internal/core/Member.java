@@ -337,6 +337,8 @@ public ITypeRoot getTypeRoot() {
  * @see IMember
  */
 public boolean isBinary() {
+	if (getClassFile()!=null)
+		return true;
 	return false;
 }
 protected boolean isMainMethod(IMethod method) throws JavaModelException {

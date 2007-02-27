@@ -24,6 +24,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.env.IGenericType;
+import org.eclipse.wst.jsdt.internal.compiler.env.ISourceType;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblemFactory;
 import org.eclipse.wst.jsdt.internal.core.*;
@@ -196,7 +197,7 @@ public abstract class HierarchyBuilder {
 			ClassFile classFile = (ClassFile) this.infoToHandle.get(genericType);
 			// if it's null, it's from outside the region, so do lookup
 			if (classFile == null) {
-				IType handle = lookupBinaryHandle((IBinaryType) genericType);
+				IType handle = lookupBinaryHandle((ISourceType) genericType);
 				if (handle == null)
 					return null;
 				// case of an anonymous type (see 1G2O5WK: ITPJCORE:WINNT - NullPointerException when selecting "Show in Type Hierarchy" for a inner class)
@@ -217,7 +218,7 @@ public abstract class HierarchyBuilder {
 	/**
 	 * Looks up and returns a handle for the given binary info.
 	 */
-	protected IType lookupBinaryHandle(IBinaryType typeInfo) {
+	protected IType lookupBinaryHandle(ISourceType typeInfo) {
 		int flag;
 		String qualifiedName;
 		switch (TypeDeclaration.kind(typeInfo.getModifiers())) {

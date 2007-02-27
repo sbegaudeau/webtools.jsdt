@@ -111,11 +111,11 @@ protected JavaModelOperation getNestedOperation(IJavaElement element) {
 			case IJavaElement.METHOD :
 				String source = getSourceFor(element);
 				String lineSeparator = org.eclipse.wst.jsdt.internal.core.util.Util.getLineSeparator(source, element.getJavaProject());
-				return new CreateMethodOperation((IType) dest, source + lineSeparator, this.force);
+				return new CreateMethodOperation((IJavaElement) dest, source + lineSeparator, this.force);
 			case IJavaElement.FIELD :
 				source = getSourceFor(element);
 				lineSeparator = org.eclipse.wst.jsdt.internal.core.util.Util.getLineSeparator(source, element.getJavaProject());
-				return new CreateFieldOperation((IType) dest, source + lineSeparator, this.force);
+				return new CreateFieldOperation((IJavaElement) dest, source + lineSeparator, this.force);
 			case IJavaElement.INITIALIZER :
 				source = getSourceFor(element);
 				lineSeparator = org.eclipse.wst.jsdt.internal.core.util.Util.getLineSeparator(source, element.getJavaProject());

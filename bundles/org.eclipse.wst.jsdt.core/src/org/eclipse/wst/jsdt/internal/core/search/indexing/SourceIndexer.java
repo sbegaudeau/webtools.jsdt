@@ -20,6 +20,7 @@ import org.eclipse.wst.jsdt.internal.compiler.SourceElementParser;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.jdom.CompilationUnit;
+import org.eclipse.wst.jsdt.internal.core.search.JavaSearchDocument;
 import org.eclipse.wst.jsdt.internal.core.search.processing.JobManager;
 
 /**
@@ -63,7 +64,14 @@ public class SourceIndexer extends AbstractIndexer implements SuffixConstants {
 			// ignore
 		}
 		if (source == null || name == null) return; // could not retrieve document info (e.g. resource was discarded)
-		CompilationUnit compilationUnit = new CompilationUnit(source, name);
+		String pkgName=((JavaSearchDocument)document).getPackageName();
+		char [][]packageName=null;
+		if (pkgName!=null) 
+		{
+			packageName=new char[1][];
+			packageName[0]=pkgName.toCharArray(); 
+		}
+		CompilationUnit compilationUnit = new CompilationUnit(source, name,packageName);
 		try {
 			parser.parseCompilationUnit(compilationUnit, true/*full parse*/);
 		} catch (Exception e) {

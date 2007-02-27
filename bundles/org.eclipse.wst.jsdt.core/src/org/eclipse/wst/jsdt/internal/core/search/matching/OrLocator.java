@@ -29,6 +29,9 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MemberTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
+import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
+import org.eclipse.wst.jsdt.internal.infer.InferredMethod;
+import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 public class OrLocator extends PatternLocator {
 
@@ -91,6 +94,19 @@ public int match(FieldDeclaration node, MatchingNodeSet nodeSet) {
 	}
 	return level;
 }
+
+public int match(InferredAttribute node, MatchingNodeSet nodeSet) {
+	int level = IMPOSSIBLE_MATCH;
+	for (int i = 0, length = this.patternLocators.length; i < length; i++) {
+		int newLevel = this.patternLocators[i].match(node, nodeSet);
+		if (newLevel > level) {
+			if (newLevel == ACCURATE_MATCH) return ACCURATE_MATCH;
+			level = newLevel;
+		}
+	}
+	return level;
+}
+
 public int match(LocalDeclaration node, MatchingNodeSet nodeSet) {
 	int level = IMPOSSIBLE_MATCH;
 	for (int i = 0, length = this.patternLocators.length; i < length; i++) {
@@ -113,6 +129,19 @@ public int match(MethodDeclaration node, MatchingNodeSet nodeSet) {
 	}
 	return level;
 }
+
+public int match(InferredMethod node, MatchingNodeSet nodeSet) {
+	int level = IMPOSSIBLE_MATCH;
+	for (int i = 0, length = this.patternLocators.length; i < length; i++) {
+		int newLevel = this.patternLocators[i].match(node, nodeSet);
+		if (newLevel > level) {
+			if (newLevel == ACCURATE_MATCH) return ACCURATE_MATCH;
+			level = newLevel;
+		}
+	}
+	return level;
+}
+
 public int match(MessageSend node, MatchingNodeSet nodeSet) {
 	int level = IMPOSSIBLE_MATCH;
 	for (int i = 0, length = this.patternLocators.length; i < length; i++) {
@@ -146,6 +175,19 @@ public int match(TypeDeclaration node, MatchingNodeSet nodeSet) {
 	}
 	return level;
 }
+
+public int match(InferredType node, MatchingNodeSet nodeSet) {
+	int level = IMPOSSIBLE_MATCH;
+	for (int i = 0, length = this.patternLocators.length; i < length; i++) {
+		int newLevel = this.patternLocators[i].match(node, nodeSet);
+		if (newLevel > level) {
+			if (newLevel == ACCURATE_MATCH) return ACCURATE_MATCH;
+			level = newLevel;
+		}
+	}
+	return level;
+}
+
 public int match(TypeReference node, MatchingNodeSet nodeSet) {
 	int level = IMPOSSIBLE_MATCH;
 	for (int i = 0, length = this.patternLocators.length; i < length; i++) {

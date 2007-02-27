@@ -44,7 +44,7 @@ public class CompletionOnMessageSend extends MessageSend {
 				arguments[a].resolveType(scope);
 		}
 		
-		if (receiver.isImplicitThis())
+		if (receiver==null || receiver.isImplicitThis())
 			throw new CompletionNodeFound(this, null, scope);
 
 		this.actualReceiverType = receiver.resolveType(scope);
@@ -59,7 +59,7 @@ public class CompletionOnMessageSend extends MessageSend {
 	public StringBuffer printExpression(int indent, StringBuffer output) {
 
 		output.append("<CompleteOnMessageSend:"); //$NON-NLS-1$
-		if (!receiver.isImplicitThis()) receiver.printExpression(0, output).append('.');
+		if (receiver!=null && !receiver.isImplicitThis()) receiver.printExpression(0, output).append('.');
 		if (this.typeArguments != null) {
 			output.append('<');
 			int max = typeArguments.length - 1;

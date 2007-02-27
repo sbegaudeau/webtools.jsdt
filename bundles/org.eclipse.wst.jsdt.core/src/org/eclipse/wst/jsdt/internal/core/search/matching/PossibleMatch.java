@@ -62,12 +62,13 @@ public char[] getContents() {
 	if (this.source != null) return this.source;
 
 	if (this.openable instanceof ClassFile) {
-		String fileName = getSourceFileName();
-		if (fileName == NO_SOURCE_FILE_NAME) return CharOperation.NO_CHAR;
-
-		SourceMapper sourceMapper = this.openable.getSourceMapper();
-		IType type = ((ClassFile) this.openable).getType();
-		return this.source = sourceMapper.findSource(type, fileName);
+//		String fileName = getSourceFileName();
+//		if (fileName == NO_SOURCE_FILE_NAME) return CharOperation.NO_CHAR;
+//
+//		SourceMapper sourceMapper = this.openable.getSourceMapper();
+//		IType type = ((ClassFile) this.openable).getType();
+//		return this.source = sourceMapper.findSource(type, fileName);
+		return this.source = ((ClassFile)this.openable ).getContents();
 	}
 	return this.source = this.document.getCharContents();
 }

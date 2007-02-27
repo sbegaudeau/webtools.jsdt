@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.wst.jsdt.core.*;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.env.*;
+import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
@@ -298,7 +299,7 @@ private NameEnvironmentAnswer findClass(String qualifiedTypeName, char[] typeNam
 	return null;
 }
 
-public NameEnvironmentAnswer findType(char[][] compoundName) {
+public NameEnvironmentAnswer findType(char[][] compoundName, ITypeRequestor requestor) {
 	if (compoundName != null)
 		return findClass(
 			new String(CharOperation.concatWith(compoundName, '/')),
@@ -306,7 +307,38 @@ public NameEnvironmentAnswer findType(char[][] compoundName) {
 	return null;
 }
 
-public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName) {
+
+public NameEnvironmentAnswer findBinding(char[] bindingName, char[][] packageName, int type, ITypeRequestor requestor) {
+
+//	String qBinaryFileName = qualifiedTypeName + SUFFIX_STRING_class;
+//	String binaryFileName = qBinaryFileName;
+//	String qPackageName =  ""; //$NON-NLS-1$
+//	if (qualifiedTypeName.length() > typeName.length) {
+//		int typeNameStart = qBinaryFileName.length() - typeName.length - 6; // size of ".class"
+//		qPackageName =  qBinaryFileName.substring(0, typeNameStart - 1);
+//		binaryFileName = qBinaryFileName.substring(typeNameStart);
+//	}
+//
+	// NOTE: the output folders are added at the beginning of the binaryLocations
+	NameEnvironmentAnswer suggestedAnswer = null;
+	for (int i = 0, l = binaryLocations.length; i < l; i++) {
+		NameEnvironmentAnswer answer = binaryLocations[i].findClass(binaryFileName, qPackageName, qBinaryFileName);
+		if (answer != null) {
+			if (!answer.ignoreIfBetter()) {
+				if (answer.isBetter(suggestedAnswer))
+					return answer;
+			} else if (answer.isBetter(suggestedAnswer))
+				// remember suggestion and keep looking
+				suggestedAnswer = answer;
+		}
+	}
+	if (suggestedAnswer != null)
+		// no better answer was found
+		return suggestedAnswer;
+	return null;
+}
+
+public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName, ITypeRequestor requestor) {
 	if (typeName != null)
 		return findClass(
 			new String(CharOperation.concatWith(packageName, typeName, '/')),

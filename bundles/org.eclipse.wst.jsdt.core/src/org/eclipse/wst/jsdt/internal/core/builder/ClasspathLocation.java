@@ -26,11 +26,11 @@ public static ClasspathLocation forBinaryFolder(IContainer binaryFolder, boolean
 	return new ClasspathDirectory(binaryFolder, isOutputFolder, accessRuleSet);
 }
 
-static ClasspathLocation forLibrary(String libraryPathname, long lastModified, AccessRuleSet accessRuleSet) {
-	return new ClasspathJar(libraryPathname, lastModified, accessRuleSet);
+public static ClasspathLocation forLibrary(String libraryPathname, long lastModified, AccessRuleSet accessRuleSet) {
+	return new ClasspathLibrary(libraryPathname, lastModified, accessRuleSet);
 }
 
-static ClasspathLocation forLibrary(String libraryPathname, AccessRuleSet accessRuleSet) {
+public static ClasspathLocation forLibrary(String libraryPathname, AccessRuleSet accessRuleSet) {
 	return forLibrary(libraryPathname, 0, accessRuleSet);
 }
 

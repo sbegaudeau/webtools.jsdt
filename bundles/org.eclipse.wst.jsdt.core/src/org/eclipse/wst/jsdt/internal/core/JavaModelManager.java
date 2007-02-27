@@ -2723,7 +2723,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 		for(Iterator it = newElements.entrySet().iterator(); it.hasNext(); ) {
 			Map.Entry entry = (Map.Entry)it.next();
 			IJavaElement element = (IJavaElement)entry.getKey();
-			if( element instanceof JarPackageFragmentRoot ){
+			if( element instanceof JarPackageFragmentRoot || element instanceof LibraryFragmentRoot ){
 				Object info = entry.getValue();
 				it.remove();
 				this.cache.putInfo(element, info);

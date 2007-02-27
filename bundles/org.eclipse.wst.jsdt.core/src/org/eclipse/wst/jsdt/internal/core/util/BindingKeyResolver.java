@@ -29,8 +29,8 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BinaryTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CaptureBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalTypeBinding;
@@ -106,6 +106,7 @@ public class BindingKeyResolver extends BindingKeyParser {
 			this.typeBinding = baseTypeBinding;
 		}
 	}
+	
 	public void consumeCapture(final int position) {
 		CompilationUnitDeclaration outerParsedUnit = this.outerMostParsedUnit == null ? this.parsedUnit : this.outerMostParsedUnit;
 		if (outerParsedUnit == null) return;
@@ -185,6 +186,7 @@ public class BindingKeyResolver extends BindingKeyParser {
 		outerParsedUnit.traverse(captureFinder, outerParsedUnit.scope);
 		this.typeBinding = captureFinder.capture;
 	}
+	
 	public void consumeException() {
 		this.types = new ArrayList();
 	}

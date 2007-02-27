@@ -117,7 +117,7 @@ protected boolean hasPossibleNodes(int start, int end) {
 	Object[] nodes = this.possibleMatchingNodesSet.values;
 	for (int i = 0, l = nodes.length; i < l; i++) {
 		ASTNode node = (ASTNode) nodes[i];
-		if (node != null && start <= node.sourceStart && node.sourceEnd <= end)
+		if (node != null && !node.isInferred()&& start <= node.sourceStart && node.sourceEnd <= end)
 			return true;
 	}
 	nodes = this.matchingNodes.keyTable;
@@ -137,8 +137,11 @@ protected ASTNode[] matchingNodes(int start, int end) {
 	for (int i = 0, l = keyTable.length; i < l; i++) {
 		ASTNode node = (ASTNode) keyTable[i];
 		if (node != null && start <= node.sourceStart && node.sourceEnd <= end) {
-			if (nodes == null) nodes = new ArrayList();
-			nodes.add(node);
+			if (!node.isInferred())
+			{
+				if (nodes == null) nodes = new ArrayList();
+				nodes.add(node);
+			}
 		}
 	}
 	if (nodes == null) return null;

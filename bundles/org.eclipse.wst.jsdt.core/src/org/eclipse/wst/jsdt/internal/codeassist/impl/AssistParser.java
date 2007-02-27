@@ -15,6 +15,7 @@ package org.eclipse.wst.jsdt.internal.codeassist.impl;
  *
  */
 
+import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionScanner;
 import org.eclipse.wst.jsdt.internal.compiler.ast.*;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
@@ -31,6 +32,11 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 
 public abstract class AssistParser extends Parser {
+
+	// Default behavior is to stop parsing at the cursor position, but
+	// we need to parse fully so that types can be inferred
+	public static final boolean STOP_AT_CURSOR=false;
+	
 	public ASTNode assistNode;
 	public boolean isOrphanCompletionNode;
 		
@@ -96,6 +102,8 @@ public RecoveredElement buildInitialRecoveryState(){
 		RecoveredElement element = super.buildInitialRecoveryState();
 		flushAssistState();
 		flushElementStack();
+		if (element instanceof RecoveredMethod)
+			pushOnElementStack(K_METHOD_DELIMITER);
 		return element;
 	}
 
@@ -448,7 +456,7 @@ protected void consumePackageDeclarationName() {
 	// recovery
 	if (currentElement != null){
 		lastCheckPoint = reference.declarationSourceEnd+1;
-		restartRecovery = true; // used to avoid branching back into the regular automaton		
+		restartRecovery = AssistParser.STOP_AT_CURSOR; // used to avoid branching back into the regular automaton		
 	}	
 }
 protected void consumePackageDeclarationNameWithModifiers() {
@@ -694,7 +702,7 @@ protected void consumeToken(int token) {
 			case TokenNameLPAREN :
 				switch (this.previousToken) {
 					case TokenNameIdentifier:
-						this.pushOnElementStack(K_SELECTOR, this.identifierPtr);
+						this.pushOnElementStack(K_SELECTOR, this.previousIdentifierPtr);
 						break;
 					case TokenNamethis: // explicit constructor invocation, eg. this(1, 2)
 						this.pushOnElementStack(K_SELECTOR, THIS_CONSTRUCTOR);
@@ -706,7 +714,7 @@ protected void consumeToken(int token) {
 					case TokenNameRIGHT_SHIFT: // or fred<X<X>>[(]1, 2) 
 					case TokenNameUNSIGNED_RIGHT_SHIFT: //or Fred<X<X<X>>>[(]1, 2)
 						if(this.identifierPtr > -1) {
-							this.pushOnElementStack(K_SELECTOR, this.identifierPtr);
+							this.pushOnElementStack(K_SELECTOR, this.previousIdentifierPtr);
 						}
 						break;
 				}
@@ -789,10 +797,16 @@ public abstract TypeReference createParameterizedSingleAssistTypeReference(TypeR
 /*
  * Flush parser/scanner state regarding to code assist
  */
+
+public abstract int getCursorLocation();
+
 public void flushAssistState(){
-	this.assistNode = null;
+	if (STOP_AT_CURSOR || this.lastCheckPoint<this.getCursorLocation())
+	{
+		this.assistNode = null;
+		this.setAssistIdentifier(null);
+	}
 	this.isOrphanCompletionNode = false;
-	this.setAssistIdentifier(null);
 }
 protected void flushElementStack() {
 	this.elementPtr = -1;
@@ -1008,6 +1022,12 @@ public void goForBlockStatementsOrCatchHeader() {
 	super.goForBlockStatementsOrCatchHeader();
 	isFirst = true;
 }
+
+public void goForProgramElements() {
+	super.goForProgramElements();
+	isFirst = true;
+}
+
 /*
  * Retrieve a partial subset of a qualified name reference up to the completion point.
  * It does not pop the actual awaiting identifiers, so as to be able to retrieve position
@@ -1029,7 +1049,7 @@ protected char[][] identifierSubSet(int subsetLength){
 
 protected int indexOfAssistIdentifier(){
 	return this.indexOfAssistIdentifier(false);
-}
+} 
 /*
  * Iterate the most recent group of awaiting identifiers (grouped for qualified name reference (eg. aa.bb.cc)
  * so as to check whether one of them is the assist identifier.
@@ -1393,13 +1413,13 @@ protected void prepareForHeaders() {
 	variablesCounter[nestedType] = 0;
 	realBlockStack[realBlockPtr = 0] = 0;
 	
-	popUntilElement(K_TYPE_DELIMITER);
-
-	if(this.topKnownElementKind(ASSIST_PARSER) != K_TYPE_DELIMITER) {
-		// is outside a type and inside a compilation unit.
-		// remove all elements.
-		this.flushElementStack();
-	}
+//	popUntilElement(K_TYPE_DELIMITER);
+//
+//	if(this.topKnownElementKind(ASSIST_PARSER) != K_TYPE_DELIMITER) {
+//		// is outside a type and inside a compilation unit.
+//		// remove all elements.
+//		this.flushElementStack();
+//	}
 }
 protected void pushOnElementStack(int kind){
 	this.pushOnElementStack(kind, 0);
@@ -1523,8 +1543,13 @@ protected boolean resumeAfterRecovery() {
 			goForBlockStatementsOrCatchHeader();
 		} else {
 			this.prepareForHeaders();
-			goForHeaders();
-			diet = true; // passed this point, will not consider method bodies
+			if (DO_DIET_PARSE)
+			{
+				goForHeaders();
+				this.diet = true; // passed this point, will not consider method bodies
+			}
+			else
+				goForProgramElements();
 		}
 		return true;
 	}
@@ -1595,4 +1620,87 @@ protected ASTNode wrapWithExplicitConstructorCallIfNeeded(ASTNode ast) {
 		return ast;
 	}
 }
+protected void consumePropertyOperator() {
+	int completionIndex;
+
+	/* no need to take action if not inside completed identifiers */
+	if ((completionIndex = indexOfAssistIdentifier()) < 0) {
+		 super.consumePropertyOperator();
+		 return;
+	}
+
+	
+	int length = identifierLengthStack[identifierLengthPtr];
+	char[][] subset = identifierSubSet(completionIndex);
+	identifierLengthPtr--;
+	identifierPtr -= length;
+
+	Expression receiver = this.expressionStack[this.expressionPtr];
+	int subsetLength=0;
+	long []subsetPositions=null;
+	if (receiver instanceof SingleNameReference) {
+		SingleNameReference snr = (SingleNameReference) receiver;
+		subsetLength=1;
+		subset=new char[][]{snr.token};
+		subsetPositions=new long[]{(((long)snr.sourceStart)<<32)+snr.sourceEnd};
+	}
+	else if (receiver instanceof ThisReference)
+	{
+		ThisReference thisReference = (ThisReference) receiver;
+
+		subsetLength=1; 
+	subsetLength=1;
+	subset=new char[][]{{'t','h','i','s'}};
+	subsetPositions=new long[]{ (((long)thisReference.sourceStart)<<32)+thisReference.sourceEnd};
+
+	}
+	else
+		//TODO: implement
+		throw new org.eclipse.wst.jsdt.core.UnimplementedException();
+
+	long[] positions = new long[length+subsetLength];
+	if (subsetLength>0)
+	{
+		System.arraycopy( 
+				subsetPositions, 
+				0, 
+				positions, 
+				0, 
+				subsetLength);
+		
+	}
+	System.arraycopy(
+			identifierPositionStack, 
+			identifierPtr + 1, 
+			positions, 
+			subsetLength, 
+			length);
+
+	
+	
+	/* build specific completion on name reference */
+	NameReference reference;
+	if (completionIndex == 0 && subsetLength==0) {
+		/* completion inside first identifier */
+		reference = this.createSingleAssistNameReference(assistIdentifier(), positions[0]);
+	} else {
+		/* completion inside subsequent identifier */
+		reference = this.createQualifiedAssistNameReference(subset, assistIdentifier(), positions);
+	}
+	reference.bits &= ~ASTNode.RestrictiveFlagMASK;
+	reference.bits |= Binding.LOCAL | Binding.FIELD;
+	
+	assistNode = reference;
+	lastCheckPoint = reference.sourceEnd + 1;
+	this.expressionStack[this.expressionPtr] =reference ;
+	this.isOrphanCompletionNode = true;
+
+
+}
+
+protected void classInstanceCreation(boolean isQualified, boolean isShort) {
+	popElement(K_SELECTOR);
+	super.classInstanceCreation(isQualified, isShort);
+}
+
 }

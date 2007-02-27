@@ -30,7 +30,8 @@ public class SelectionOnLocalName extends LocalDeclaration{
 		printIndent(indent, output);
 		output.append("<SelectionOnLocalName:"); //$NON-NLS-1$
 		printModifiers(this.modifiers, output);
-		 type.print(0, output).append(' ').append(this.name);
+//		 type.print(0, output).append(' ').append(this.name);
+		 output.append(this.name);
 		if (initialization != null) {
 			output.append(" = "); //$NON-NLS-1$
 			initialization.printExpression(0, output);

@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.internal.core;
 import java.util.ArrayList;
 
 import org.eclipse.wst.jsdt.core.Flags;
+import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IJavaElement;
@@ -28,6 +29,7 @@ import org.eclipse.wst.jsdt.internal.codeassist.ISelectionRequestor;
 import org.eclipse.wst.jsdt.internal.codeassist.SelectionEngine;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
@@ -189,15 +191,15 @@ public void acceptType(char[] packageName, char[] typeName, int modifiers, boole
 		type = resolveType(packageName, typeName, acceptFlags);
 		if(type != null ) {
 			String key = uniqueKey == null ? type.getKey() : new String(uniqueKey);
-			if(type.isBinary()) {
-				ResolvedBinaryType resolvedType = new ResolvedBinaryType((JavaElement)type.getParent(), type.getElementName(), key);
-				resolvedType.occurrenceCount = type.getOccurrenceCount();
-				type = resolvedType;
-			} else {
+//			if(type.isBinary()) {
+//				ResolvedBinaryType resolvedType = new ResolvedBinaryType((JavaElement)type.getParent(), type.getElementName(), key);
+//				resolvedType.occurrenceCount = type.getOccurrenceCount();
+//				type = resolvedType;
+//			} else {
 				ResolvedSourceType resolvedType = new ResolvedSourceType((JavaElement)type.getParent(), type.getElementName(), key);
 				resolvedType.occurrenceCount = type.getOccurrenceCount();
 				type = resolvedType;
-			}
+//			}
 		}
 	}
 	
@@ -417,12 +419,26 @@ public void acceptLocalMethodTypeParameter(TypeVariableBinding typeVariableBindi
 }
 public void acceptLocalVariable(LocalVariableBinding binding) {
 	LocalDeclaration local = binding.declaration;
-	IJavaElement parent = findLocalElement(local.sourceStart); // findLocalElement() cannot find local variable
+	IJavaElement parent =null;
+	if (binding.declaringScope instanceof CompilationUnitScope) {
+		CompilationUnitScope compilationUnitScope = (CompilationUnitScope) binding.declaringScope;
+		char [] packageName=CharOperation.concatWith(compilationUnitScope.currentPackageName, '.');
+		char[] fileName = compilationUnitScope.referenceContext.compilationUnitBinding.qualifiedSourceName();
+		parent=resolveCompilationUnit(packageName, fileName);
+	} else
+	 parent = findLocalElement(local.sourceStart); // findLocalElement() cannot find local variable
 	IJavaElement localVar = null;
 	if(parent != null) {
+		String localName=new String(local.name);
+			// this may have been put in model as Source Field
+		if (parent instanceof SourceField) {
+			SourceField sourceField = (SourceField) parent;
+			if (sourceField.name.equals(localName))
+				parent=sourceField.getParent();
+		}
 		localVar = new LocalVariable(
 				(JavaElement)parent, 
-				new String(local.name), 
+				localName, 
 				local.declarationSourceStart,
 				local.declarationSourceEnd,
 				local.sourceStart,
@@ -437,6 +453,7 @@ public void acceptLocalVariable(LocalVariableBinding binding) {
 			System.out.println(")"); //$NON-NLS-1$
 		}
 	}
+
 }
 /**
  * Resolve the method
@@ -466,42 +483,43 @@ public void acceptMethod(
 				NameLookup.ACCEPT_ALL,
 				start, end);
 		
-		if(type != null) {
+//		if(type != null) {
 			this.acceptMethodDeclaration(type, selector, start, end);
-		}
+//		}
 	} else {
-		IType type = resolveType(declaringTypePackageName, declaringTypeName,
+		IJavaElement parent = resolveType(declaringTypePackageName, declaringTypeName,
 			NameLookup.ACCEPT_ALL);
-		// fix for 1FWFT6Q
-		if (type != null) {
-			if (type.isBinary()) {
-				
-				// need to add a paramater for constructor in binary type
-				IType declaringDeclaringType = type.getDeclaringType();
-				
-				boolean isStatic = false;
-				try {
-					isStatic = Flags.isStatic(type.getFlags());
-				} catch (JavaModelException e) {
-					// isStatic == false
-				}
-				
-				if(declaringDeclaringType != null && isConstructor	&& !isStatic) {
-					int length = parameterPackageNames.length;
-					System.arraycopy(parameterPackageNames, 0, parameterPackageNames = new char[length+1][], 1, length);
-					System.arraycopy(parameterTypeNames, 0, parameterTypeNames = new char[length+1][], 1, length);
-					System.arraycopy(parameterSignatures, 0, parameterSignatures = new String[length+1], 1, length);
-					
-					parameterPackageNames[0] = declaringDeclaringType.getPackageFragment().getElementName().toCharArray();
-					parameterTypeNames[0] = declaringDeclaringType.getTypeQualifiedName().toCharArray();
-					parameterSignatures[0] = Signature.getTypeErasure(enclosingDeclaringTypeSignature);
-				}
-				
-				acceptBinaryMethod(type, selector, parameterPackageNames, parameterTypeNames, parameterSignatures, typeParameterNames, typeParameterBoundNames, uniqueKey, isConstructor);
-			} else {
-				acceptSourceMethod(type, selector, parameterPackageNames, parameterTypeNames, parameterSignatures, typeParameterNames, typeParameterBoundNames, uniqueKey);
-			}
-		}
+		if (parent==null)
+			parent=resolveCompilationUnit(declaringTypePackageName, declaringTypeName);		// fix for 1FWFT6Q
+//		if (type != null) {
+//			if (type.isBinary()) {
+//				
+//				// need to add a paramater for constructor in binary type
+//				IType declaringDeclaringType = type.getDeclaringType();
+//				
+//				boolean isStatic = false;
+//				try {
+//					isStatic = Flags.isStatic(type.getFlags());
+//				} catch (JavaModelException e) {
+//					// isStatic == false
+//				}
+//				
+//				if(declaringDeclaringType != null && isConstructor	&& !isStatic) {
+//					int length = parameterPackageNames.length;
+//					System.arraycopy(parameterPackageNames, 0, parameterPackageNames = new char[length+1][], 1, length);
+//					System.arraycopy(parameterTypeNames, 0, parameterTypeNames = new char[length+1][], 1, length);
+//					System.arraycopy(parameterSignatures, 0, parameterSignatures = new String[length+1], 1, length);
+//					
+//					parameterPackageNames[0] = declaringDeclaringType.getPackageFragment().getElementName().toCharArray();
+//					parameterTypeNames[0] = declaringDeclaringType.getTypeQualifiedName().toCharArray();
+//					parameterSignatures[0] = Signature.getTypeErasure(enclosingDeclaringTypeSignature);
+//				}
+//				
+//				acceptBinaryMethod(type, selector, parameterPackageNames, parameterTypeNames, parameterSignatures, typeParameterNames, typeParameterBoundNames, uniqueKey, isConstructor);
+//			} else {
+				acceptSourceMethod(parent, selector, parameterPackageNames, parameterTypeNames, parameterSignatures, typeParameterNames, typeParameterBoundNames, uniqueKey);
+//			}
+//		}
 	}
 	
 	if(previousElementIndex > -1) {
@@ -535,7 +553,7 @@ public void acceptPackage(char[] packageName) {
  * fix for 1FWFT6Q
  */
 protected void acceptSourceMethod(
-		IType type,
+		IJavaElement parent,
 		char[] selector,
 		char[][] parameterPackageNames,
 		char[][] parameterTypeNames,
@@ -547,10 +565,19 @@ protected void acceptSourceMethod(
 	String name = new String(selector);
 	IMethod[] methods = null;
 	try {
-		methods = type.getMethods();
-		for (int i = 0; i < methods.length; i++) {
+		if (parent instanceof IType)
+			methods = ((IType)parent).getMethods();
+		else if (parent instanceof ICompilationUnit)
+			methods=((ICompilationUnit)parent).getMethods();
+		else if (parent instanceof IClassFile)
+		{
+			methods=((IClassFile)parent).getMethods();
+		}
+		if (methods!=null)
+			for (int i = 0; i < methods.length; i++) {
 			if (methods[i].getElementName().equals(name)
-					&& methods[i].getParameterTypes().length == parameterTypeNames.length) {
+//					&& methods[i].getParameterTypes().length == parameterTypeNames.length
+					) {
 				IMethod method = methods[i];
 				if (uniqueKey != null) {
 					ResolvedSourceMethod resolvedMethod = new ResolvedSourceMethod(
@@ -571,10 +598,10 @@ protected void acceptSourceMethod(
 	// if no matches, nothing to report
 	if (this.elementIndex == -1) {
 		// no match was actually found, but a method was originally given -> default constructor
-		addElement(type);
+		addElement(parent);
 		if(SelectionEngine.DEBUG){
 			System.out.print("SELECTION - accept type("); //$NON-NLS-1$
-			System.out.print(type.toString());
+			System.out.print(parent.toString());
 			System.out.println(")"); //$NON-NLS-1$
 		}
 		return;
@@ -627,7 +654,13 @@ protected void acceptMethodDeclaration(IType type, char[] selector, int start, i
 	String name = new String(selector);
 	IMethod[] methods = null;
 	try {
-		methods = type.getMethods();
+		if (type!=null)
+			methods = type.getMethods();
+			else
+				if (this.openable instanceof CompilationUnit)
+					methods=((CompilationUnit)this.openable).getMethods();
+				else if (this.openable instanceof ClassFile)
+				methods=((ClassFile)this.openable).getMethods();
 		for (int i = 0; i < methods.length; i++) {
 			ISourceRange range = methods[i].getNameRange();
 			if(range.getOffset() <= start
@@ -885,6 +918,61 @@ protected IType resolveType(char[] packageName, char[] typeName, int acceptFlags
 	}
 	return type;
 }
+
+
+protected IJavaElement resolveCompilationUnit(char[] packageName, char[] compilationUnitName) {
+
+	ICompilationUnit compilationUnit= null;
+	
+	if (this.openable instanceof CompilationUnit || this.openable instanceof ClassFile) {
+		if (new String(compilationUnitName).equals(this.openable.getElementName()) &&
+				new String(packageName).equals(this.openable.getParent().getElementName()))
+		{
+			return this.openable;
+		}
+	}
+
+		IPackageFragment[] pkgs = this.nameLookup.findPackageFragments(
+			(packageName == null || packageName.length == 0) ? IPackageFragment.DEFAULT_PACKAGE_NAME : new String(packageName), 
+			false);
+		// iterate type lookup in each package fragment
+		String name=new String(compilationUnitName);
+		for (int i = 0, length = pkgs == null ? 0 : pkgs.length; i < length; i++) {
+			ICompilationUnit compUnit=pkgs[i].getCompilationUnit(name);
+			if (compUnit.exists())
+				return compUnit;
+			IClassFile classFile=pkgs[i].getClassFile(name);
+			if (classFile.exists())
+				return classFile;
+		}
+//		if (type == null) {
+//			String pName= IPackageFragment.DEFAULT_PACKAGE_NAME;
+//			if (packageName != null) {
+//				pName = new String(packageName);
+//			}
+//			if (this.openable != null && this.openable.getParent().getElementName().equals(pName)) {
+//				// look inside the type in which we are resolving in
+//				String tName= new String(typeName);
+//				tName = tName.replace('.','$');
+//				IType[] allTypes= null;
+//				try {
+//					ArrayList list = this.openable.getChildrenOfType(IJavaElement.TYPE);
+//					allTypes = new IType[list.size()];
+//					list.toArray(allTypes);
+//				} catch (JavaModelException e) {
+//					return null;
+//				}
+//				for (int i= 0; i < allTypes.length; i++) {
+//					if (allTypes[i].getTypeQualifiedName().equals(tName)) {
+//						return allTypes[i];
+//					}
+//				}
+//			}
+//		}
+	return compilationUnit;
+}
+
+
 protected IType resolveTypeByLocation(char[] packageName, char[] typeName, int acceptFlags, int start, int end) {
 
 	IType type= null;
@@ -929,7 +1017,7 @@ protected IType resolveTypeByLocation(char[] packageName, char[] typeName, int a
 		}
 	}
 
-	if(type == null) {
+	if(type == null&& typeName!=null) {
 		IPackageFragment[] pkgs = this.nameLookup.findPackageFragments(
 			(packageName == null || packageName.length == 0) ? IPackageFragment.DEFAULT_PACKAGE_NAME : new String(packageName), 
 			false);

@@ -110,6 +110,7 @@ public abstract class AbstractIndexer implements IIndexConstants {
 	}	
 	public void addFieldDeclaration(char[] typeName, char[] fieldName) {
 		addIndexEntry(FIELD_DECL, FieldPattern.createIndexKey(fieldName));
+		if (typeName!=null)
 		addTypeReference(typeName);
 	}
 	public void addFieldReference(char[] fieldName) {
@@ -154,6 +155,7 @@ public abstract class AbstractIndexer implements IIndexConstants {
 		addIndexEntry(REF, name);
 	}
 	public void addTypeReference(char[] typeName) {
+		if (typeName!=null)
 		addNameReference(CharOperation.lastSegment(typeName, '.'));
 	}
 	public abstract void indexDocument();

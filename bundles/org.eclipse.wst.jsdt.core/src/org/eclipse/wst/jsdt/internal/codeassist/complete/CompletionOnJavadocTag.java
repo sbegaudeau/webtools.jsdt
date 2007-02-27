@@ -121,9 +121,9 @@ public class CompletionOnJavadocTag extends JavadocSingleNameReference implement
 							switch (scope.kind) {
 								case Scope.CLASS_SCOPE:
 									if (scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5) {
-										if (((ClassScope)scope).referenceContext.binding.isGenericType()) {
-											filteredTags[size++] = possibleTag;
-										}
+//										if (((ClassScope)scope).referenceContext.binding.isGenericType()) {
+//											filteredTags[size++] = possibleTag;
+//										}
 									}
 									break;
 								case Scope.COMPILATION_UNIT_SCOPE:

@@ -40,7 +40,7 @@ public CodeSnippetParser(ProblemReporter problemReporter, EvaluationContext eval
 	this.reportOnlyOneSyntaxError = true;
 	this.javadocParser.checkDocComment = false;
 }
-protected void classInstanceCreation(boolean alwaysQualified) {
+protected void classInstanceCreation(boolean alwaysQualified, boolean isShort) {
 	// ClassInstanceCreationExpression ::= 'new' ClassType '(' ArgumentListopt ')' ClassBodyopt
 
 	// ClassBodyopt produces a null item on the astStak if it produces NO class body
@@ -391,6 +391,23 @@ protected void consumePrimaryNoNewArrayThis() {
 	} else {
 		super.consumePrimaryNoNewArrayThis();
 	}
+}
+protected void consumePropertyOperator() {
+	// FieldAccess ::= Primary '.' 'Identifier'
+	// FieldAccess ::= 'super' '.' 'Identifier'
+
+	FieldReference fr =
+		new CodeSnippetFieldReference(
+			this.identifierStack[this.identifierPtr],
+			this.identifierPositionStack[this.identifierPtr--],
+			this.evaluationContext);
+	this.identifierLengthPtr--;
+		//optimize push/pop
+		if ((fr.receiver = this.expressionStack[this.expressionPtr]).isThis()) {
+			//fieldreference begins at the this
+			fr.sourceStart = fr.receiver.sourceStart;
+		}
+		this.expressionStack[this.expressionPtr] = fr;
 }
 protected void consumeStatementBreak() {
 	super.consumeStatementBreak();

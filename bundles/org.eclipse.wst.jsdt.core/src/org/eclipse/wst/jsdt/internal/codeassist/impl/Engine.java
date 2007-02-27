@@ -60,13 +60,12 @@ public abstract class Engine implements ITypeRequestor {
 		lookupEnvironment.createBinaryTypeFrom(binaryType, packageBinding, accessRestriction);
 	}
 
+	public abstract CompilationUnitDeclaration doParse(ICompilationUnit unit, AccessRestriction accessRestriction) ;
 	/**
 	 * Add an additional compilation unit.
 	 */
 	public void accept(ICompilationUnit sourceUnit, AccessRestriction accessRestriction) {
-		CompilationResult result = new CompilationResult(sourceUnit, 1, 1, this.compilerOptions.maxProblemsPerUnit);
-		CompilationUnitDeclaration parsedUnit =
-			this.getParser().dietParse(sourceUnit, result);
+		CompilationUnitDeclaration parsedUnit =  doParse(sourceUnit,accessRestriction);
 
 		lookupEnvironment.buildTypeBindings(parsedUnit, accessRestriction);
 		lookupEnvironment.completeTypeBindings(parsedUnit, true);
@@ -325,7 +324,7 @@ public abstract class Engine implements ITypeRequestor {
 		if ((binding.kind() & Binding.TYPE) != 0) {
 			TypeBinding typeBinding = (TypeBinding)binding;
 			result = typeBinding.genericTypeSignature();
-		} else if ((binding.kind() & Binding.METHOD) != 0) {
+		} else if ((binding.kind() & Binding.METHOD) != 0 || (binding.kind() & Binding.COMPILATION_UNIT) != 0) {
 			MethodBinding methodBinding = (MethodBinding)binding;
 			int oldMod = methodBinding.modifiers;
 			//TODO remove the next line when method from binary type will be able to generate generic siganute
@@ -337,6 +336,7 @@ public abstract class Engine implements ITypeRequestor {
 			methodBinding.modifiers = oldMod;
 		}
 		if (result != null) {
+			if ( (binding.kind() & Binding.TYPE) != 0 ) 
 			result = CharOperation.replaceOnCopy(result, '/', '.');
 		}
 		return result;

@@ -60,6 +60,13 @@ public class SourceTypeElementInfo extends MemberElementInfo implements ISourceT
 	 */
 	protected HashMap categories;
 	
+	protected boolean isBinary;
+	
+	public SourceTypeElementInfo(boolean isBinary) {
+			super();
+			this.isBinary=isBinary;
+		}
+
 protected void addCategories(IJavaElement element, char[][] elementCategories) {
 	if (elementCategories == null) return;
 	if (this.categories == null)
@@ -277,7 +284,7 @@ public char[][] getTypeParameterNames() {
  * @see ISourceType
  */
 public boolean isBinaryType() {
-	return false;
+	return isBinary;
 }
 /*
  * Returns whether the source type is an anonymous type of a member type.

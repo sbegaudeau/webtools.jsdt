@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
+import java.util.Arrays;
+
 import org.eclipse.core.runtime.*;
 import org.eclipse.wst.jsdt.core.*;
 import org.eclipse.wst.jsdt.core.compiler.*;
@@ -17,6 +19,9 @@ import org.eclipse.wst.jsdt.core.search.*;
 import org.eclipse.wst.jsdt.internal.compiler.ast.*;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
+import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
+import org.eclipse.wst.jsdt.internal.infer.InferredMethod;
+import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 public abstract class PatternLocator implements IIndexConstants {
 
@@ -79,6 +84,12 @@ public static PatternLocator patternLocator(SearchPattern pattern) {
 		case IIndexConstants.CONSTRUCTOR_PATTERN :
 			return new ConstructorLocator((ConstructorPattern) pattern);
 		case IIndexConstants.FIELD_PATTERN :
+			IJavaElement element = ((FieldPattern)pattern).getJavaElement();
+			if (element instanceof IField) {
+				IField field = (IField) element;
+				if (field.getDeclaringType()==null)
+					return new LocalVariableLocator((VariablePattern)pattern);
+			}
 			return new FieldLocator((FieldPattern) pattern);
 		case IIndexConstants.METHOD_PATTERN :
 			return new MethodLocator((MethodPattern) pattern);
@@ -230,6 +241,21 @@ public int match(TypeReference node, MatchingNodeSet nodeSet) {
 	// each subtype should override if needed
 	return IMPOSSIBLE_MATCH;
 }
+public int match(InferredType inferredType, MatchingNodeSet nodeSet) {
+	// each subtype should override if needed
+	return IMPOSSIBLE_MATCH;
+}
+
+public int match(InferredMethod inferredMethod, MatchingNodeSet nodeSet) {
+	// each subtype should override if needed
+	return IMPOSSIBLE_MATCH;
+}
+
+public int match(InferredAttribute inferredAttribute, MatchingNodeSet nodeSet) {
+	// each subtype should override if needed
+	return IMPOSSIBLE_MATCH;
+}
+
 /**
  * Returns the type(s) of container for this pattern.
  * It is a bit combination of types, denoting compilation unit, class declarations, field declarations or method declarations.
@@ -694,6 +720,10 @@ public int resolveLevel(Binding binding) {
  */
 protected int resolveLevelForType(char[] simpleNamePattern, char[] qualificationPattern, TypeBinding binding) {
 //	return resolveLevelForType(qualifiedPattern(simpleNamePattern, qualificationPattern), type);
+	if (binding==TypeBinding.ANY)
+		return ACCURATE_MATCH;
+	if (Arrays.equals(Signature.ANY, simpleNamePattern))
+		return ACCURATE_MATCH;
 	char[] qualifiedPattern = getQualifiedPattern(simpleNamePattern, qualificationPattern);
 	int level = resolveLevelForType(qualifiedPattern, binding);
 	if (level == ACCURATE_MATCH || binding == null) return level;

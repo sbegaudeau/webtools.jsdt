@@ -27,6 +27,8 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.parser.SourceTypeConverter;
+import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilationUnit;
+import org.eclipse.wst.jsdt.internal.compiler.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.CommentRecorderParser;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
@@ -113,6 +115,52 @@ public class CompilationUnitProblemFinder extends Compiler {
 		}
 	}
 
+
+	/**
+	 * Add an additional compilation unit into the loop
+	 *  ->  build compilation unit declarations, their bindings and record their results.
+	 */
+	public void accept(org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit sourceUnit, AccessRestriction accessRestriction) {
+		// Switch the current policy and compilation result for this unit to the requested one.
+		CompilationResult unitResult =
+			new CompilationResult(sourceUnit, 1, 1, this.options.maxProblemsPerUnit);
+		try {
+			if (options.verbose) {
+				String count = String.valueOf(totalUnits + 1);
+				this.out.println(
+					Messages.bind(Messages.compilation_request,
+						new String[] {
+							count,
+							count,
+							new String(sourceUnit.getFileName())
+						}));
+			}
+			// diet parsing for large collection of unit
+			CompilationUnitDeclaration parsedUnit;
+			if (totalUnits < parseThreshold) {
+				parsedUnit = parser.parse(sourceUnit, unitResult);
+			} else {
+				parsedUnit = parser.dietParse(sourceUnit, unitResult);
+			}
+			parser.inferTypes(parsedUnit,this.options);
+			
+			// initial type binding creation
+			lookupEnvironment.buildTypeBindings(parsedUnit, accessRestriction);
+
+			// binding resolution
+			lookupEnvironment.completeTypeBindings(parsedUnit);
+		} catch (AbortCompilationUnit e) {
+			// at this point, currentCompilationUnitResult may not be sourceUnit, but some other
+			// one requested further along to resolve sourceUnit.
+			if (unitResult.compilationUnit == sourceUnit) { // only report once
+				requestor.acceptResult(unitResult.tagAsAccepted());
+			} else {
+				throw e; // want to abort enclosing request to compile
+			}
+		}
+	}
+
+	
 	protected static CompilerOptions getCompilerOptions(Map settings, boolean creatingAST, boolean statementsRecovery) {
 		CompilerOptions compilerOptions = new CompilerOptions(settings);
 		compilerOptions.performMethodsFullRecovery = statementsRecovery;

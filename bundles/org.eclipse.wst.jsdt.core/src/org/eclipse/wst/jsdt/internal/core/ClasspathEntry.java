@@ -1660,7 +1660,10 @@ public class ClasspathEntry implements IClasspathEntry {
 						IResource resolvedResource = (IResource) target;
 						switch(resolvedResource.getType()){
 							case IResource.FILE :
-								if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(resolvedResource.getName())) {
+								if ( 
+										org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(resolvedResource.getName()) ||
+										org.eclipse.wst.jsdt.internal.compiler.util.Util.isJavaFileName(resolvedResource.getName())
+									) {
 									if (checkSourceAttachment 
 										&& sourceAttachment != null
 										&& !sourceAttachment.isEmpty()
@@ -1683,7 +1686,10 @@ public class ClasspathEntry implements IClasspathEntry {
 						File file = JavaModel.getFile(target);
 					    if (file == null) {
 							return  new JavaModelStatus(IJavaModelStatusConstants.INVALID_CLASSPATH, Messages.bind(Messages.classpath_illegalExternalFolder, new String[] {path.toOSString(), projectName})); 
-					    } else if (!org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(file.getName())) {
+					    } else if (!
+					    		(org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(file.getName())
+							    		||		org.eclipse.wst.jsdt.internal.compiler.util.Util.isJavaFileName(file.getName()))
+							    		) {
 							return  new JavaModelStatus(IJavaModelStatusConstants.INVALID_CLASSPATH, Messages.bind(Messages.classpath_illegalLibraryArchive, (new String[] {path.toOSString(), projectName}))); 
 					    } else if (checkSourceAttachment 
 								&& sourceAttachment != null 

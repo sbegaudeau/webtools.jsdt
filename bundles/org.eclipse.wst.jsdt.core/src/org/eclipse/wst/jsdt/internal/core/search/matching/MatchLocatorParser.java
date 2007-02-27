@@ -15,6 +15,10 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.*;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
+import org.eclipse.wst.jsdt.internal.infer.InferEngine;
+import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
+import org.eclipse.wst.jsdt.internal.infer.InferredMethod;
+import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 /**
  * A parser that locates ast nodes that match a given search pattern.
@@ -35,7 +39,7 @@ public static MatchLocatorParser createParser(ProblemReporter problemReporter, M
  * An ast visitor that visits local type declarations.
  */
 public class NoClassNoMethodDeclarationVisitor extends ASTVisitor {
-	public boolean visit(ConstructorDeclaration constructorDeclaration, ClassScope scope) {
+	public boolean visit(ConstructorDeclaration constructorDeclaration, Scope scope) {
 		return (constructorDeclaration.bits & ASTNode.HasLocalType) != 0; // continue only if it has local type
 	}
 	public boolean visit(FieldDeclaration fieldDeclaration, MethodScope scope) {
@@ -44,44 +48,60 @@ public class NoClassNoMethodDeclarationVisitor extends ASTVisitor {
 	public boolean visit(Initializer initializer, MethodScope scope) {
 		return (initializer.bits & ASTNode.HasLocalType) != 0; // continue only if it has local type
 	}
-	public boolean visit(MethodDeclaration methodDeclaration, ClassScope scope) {
+	public boolean visit(MethodDeclaration methodDeclaration, Scope scope) {
 		return (methodDeclaration.bits & ASTNode.HasLocalType) != 0; // continue only if it has local type
 	}
 }
 public class MethodButNoClassDeclarationVisitor extends NoClassNoMethodDeclarationVisitor {
-	public boolean visit(TypeDeclaration localTypeDeclaration, BlockScope scope) {
+	public boolean visit(TypeDeclaration localTypeDeclaration, Scope scope) {
+		patternLocator.match(localTypeDeclaration, nodeSet);
+		return true;
+	}
+	public boolean visit(InferredType localTypeDeclaration, BlockScope scope) {
 		patternLocator.match(localTypeDeclaration, nodeSet);
 		return true;
 	}
 }
 public class ClassButNoMethodDeclarationVisitor extends ASTVisitor {
-	public boolean visit(ConstructorDeclaration constructorDeclaration, ClassScope scope) {
+	public boolean visit(ConstructorDeclaration constructorDeclaration, Scope scope) {
 		patternLocator.match(constructorDeclaration, nodeSet);
 		return (constructorDeclaration.bits & ASTNode.HasLocalType) != 0; // continue only if it has local type
 	}
-	public boolean visit(FieldDeclaration fieldDeclaration, MethodScope scope) {
+	public boolean visit(FieldDeclaration fieldDeclaration, Scope scope) {
 		patternLocator.match(fieldDeclaration, nodeSet);
 		return (fieldDeclaration.bits & ASTNode.HasLocalType) != 0; // continue only if it has local type;
+	}
+	public boolean visit(InferredAttribute field, BlockScope scope) {
+		patternLocator.match(field, nodeSet);
+		return false; // continue only if it has local type;
 	}
 	public boolean visit(Initializer initializer, MethodScope scope) {
 		patternLocator.match(initializer, nodeSet);
 		return (initializer.bits & ASTNode.HasLocalType) != 0; // continue only if it has local type
 	}
-	public boolean visit(TypeDeclaration memberTypeDeclaration, ClassScope scope) {
+	public boolean visit(TypeDeclaration memberTypeDeclaration, Scope scope) {
 		patternLocator.match(memberTypeDeclaration, nodeSet);
 		return true;
 	}
-	public boolean visit(MethodDeclaration methodDeclaration, ClassScope scope) {
+	public boolean visit(MethodDeclaration methodDeclaration, Scope scope) {
 		patternLocator.match(methodDeclaration, nodeSet);
 		return (methodDeclaration.bits & ASTNode.HasLocalType) != 0; // continue only if it has local type
 	}
-	public boolean visit(AnnotationMethodDeclaration methodDeclaration, ClassScope scope) {
+	public boolean visit(InferredMethod inferredMethod, BlockScope scope) {
+		patternLocator.match(inferredMethod, nodeSet);
+		return false;
+	}
+	public boolean visit(AnnotationMethodDeclaration methodDeclaration, Scope scope) {
 		patternLocator.match(methodDeclaration, nodeSet);
 		return false; // no local type for annotation type members
 	}
 }
 public class ClassAndMethodDeclarationVisitor extends ClassButNoMethodDeclarationVisitor {
-	public boolean visit(TypeDeclaration localTypeDeclaration, BlockScope scope) {
+	public boolean visit(TypeDeclaration localTypeDeclaration, Scope scope) {
+		patternLocator.match(localTypeDeclaration, nodeSet);
+		return true;
+	}
+	public boolean visit(InferredType localTypeDeclaration, BlockScope scope) {
 		patternLocator.match(localTypeDeclaration, nodeSet);
 		return true;
 	}
@@ -179,8 +199,8 @@ public void checkComment() {
 		}
 	}
 }
-protected void classInstanceCreation(boolean alwaysQualified) {
-	super.classInstanceCreation(alwaysQualified);
+protected void classInstanceCreation(boolean alwaysQualified, boolean isShort) {
+	super.classInstanceCreation(alwaysQualified, isShort);
 	this.patternLocator.match(this.expressionStack[this.expressionPtr], this.nodeSet);
 }
 protected void consumeAssignment() {
@@ -209,6 +229,14 @@ protected void consumeFieldAccess(boolean isSuperAccess) {
 	// this is always a Reference
 	this.patternLocator.match((Reference) this.expressionStack[this.expressionPtr], this.nodeSet);
 }
+
+protected void consumePropertyOperator() {
+	super.consumePropertyOperator();
+
+	// this is always a Reference
+	this.patternLocator.match((Reference) this.expressionStack[this.expressionPtr], this.nodeSet);
+}
+
 protected void consumeFormalParameter(boolean isVarArgs) {
 	super.consumeFormalParameter(isVarArgs);
 
@@ -337,13 +365,34 @@ protected NameReference getUnspecifiedReferenceOptimized() {
  */
 public void parseBodies(CompilationUnitDeclaration unit) {
 	TypeDeclaration[] types = unit.types;
-	if (types == null) return;
-
-	for (int i = 0; i < types.length; i++) {
+	if (types != null) 
+	  for (int i = 0; i < types.length; i++) {
 		TypeDeclaration type = types[i];
 		this.patternLocator.match(type, this.nodeSet);
 		this.parseBodies(type, unit);
 	}
+	
+	
+	ProgramElement[] statements = unit.statements;
+	if (statements != null) 
+ 	  for (int i = 0; i < statements.length; i++) {
+		if (statements[i] instanceof LocalDeclaration)
+		{
+			((LocalDeclaration)statements[i]).traverse(localDeclarationVisitor, null);
+			if (patternLocator instanceof FieldLocator)
+				((FieldLocator)patternLocator).matchLocalDeclaration((LocalDeclaration)statements[i], this.nodeSet);
+		}
+		else if (statements[i] instanceof AbstractMethodDeclaration)
+		{
+			AbstractMethodDeclaration methodDeclaration=(AbstractMethodDeclaration)statements[i];
+//			this.parse(methodDeclaration, unit);
+			methodDeclaration.traverse(localDeclarationVisitor, (Scope) null);
+
+		}
+		
+	}
+	
+	unit.traverseInferredTypes(localDeclarationVisitor,  null);
 }
 /**
  * Parses the member bodies in the given type.
@@ -369,11 +418,11 @@ protected void parseBodies(TypeDeclaration type, CompilationUnitDeclaration unit
 				if (method instanceof MethodDeclaration) {
 					MethodDeclaration methodDeclaration = (MethodDeclaration) method;
 					this.parse(methodDeclaration, unit);
-					methodDeclaration.traverse(localDeclarationVisitor, (ClassScope) null);
+					methodDeclaration.traverse(localDeclarationVisitor, (Scope) null);
 				} else if (method instanceof ConstructorDeclaration) {
 					ConstructorDeclaration constructorDeclaration = (ConstructorDeclaration) method;
 					this.parse(constructorDeclaration, unit);
-					constructorDeclaration.traverse(localDeclarationVisitor, (ClassScope) null);
+					constructorDeclaration.traverse(localDeclarationVisitor, (Scope) null);
 				}
 			} else if (method.isDefaultConstructor()) {
 				method.parseStatements(this, unit);
@@ -381,14 +430,17 @@ protected void parseBodies(TypeDeclaration type, CompilationUnitDeclaration unit
 		}
 	}
 
-	TypeDeclaration[] memberTypes = type.memberTypes;
-	if (memberTypes != null) {
-		for (int i = 0; i < memberTypes.length; i++) {
-			TypeDeclaration memberType = memberTypes[i];
-			this.parseBodies(memberType, unit);
-			memberType.traverse(localDeclarationVisitor, (ClassScope) null);
-		}
-	}
+//	TypeDeclaration[] memberTypes = type.memberTypes;
+//	if (memberTypes != null) {
+//		for (int i = 0; i < memberTypes.length; i++) {
+//			TypeDeclaration memberType = memberTypes[i];
+//			this.parseBodies(memberType, unit);
+//			memberType.traverse(localDeclarationVisitor, (Scope) null);
+//		}
+//	}
 }
+
+ 
+
 }
 

@@ -506,9 +506,15 @@ public IJavaElement[] findElements(IJavaElement element) {
 				currentElement = ((IType)currentElement).getInitializer(child.occurrenceCount);
 				break;
 			case IJavaElement.FIELD:
+				if (currentElement instanceof CompilationUnit)
+					currentElement = ((CompilationUnit)currentElement).getField(child.getElementName());
+				else
 				currentElement = ((IType)currentElement).getField(child.getElementName());
 				break;
 			case IJavaElement.METHOD:
+				if (currentElement instanceof CompilationUnit)
+					currentElement = ((CompilationUnit)currentElement).getMethod(child.getElementName(), ((IMethod)child).getParameterTypes());
+				else
 				currentElement = ((IType)currentElement).getMethod(child.getElementName(), ((IMethod)child).getParameterTypes());
 				break;
 		}
@@ -826,8 +832,11 @@ public IResource getResource() {
 	if (root.isArchive()) {
 		return root.getResource();
 	} else {
-		return ((IContainer) getParent().getResource()).getFile(new Path(getElementName()));
+		IContainer parentResource = (IContainer) getParent().getResource();
+		if (parentResource!=null)
+			return parentResource.getFile(new Path(getElementName()));
 	}
+	return null;
 }
 /**
  * @see ISourceReference#getSource()
@@ -1230,5 +1239,49 @@ protected void updateTimeStamp(CompilationUnit original) throws JavaModelExcepti
 	}
 	((CompilationUnitElementInfo) getElementInfo()).timestamp = timeStamp;
 }
+
+public IField getField(String fieldName) {
+	return new SourceField(this, fieldName);
+}
+public IField[] getFields() throws JavaModelException {
+	ArrayList list = getChildrenOfType(FIELD);
+	IField[] array= new IField[list.size()];
+	list.toArray(array);
+	return array;
+
+}
+public IMethod getMethod(String selector, String[] parameterTypeSignatures) {
+	return new SourceMethod(this, selector, parameterTypeSignatures);
+}
+public IMethod[] getMethods() throws JavaModelException {
+	ArrayList list = getChildrenOfType(METHOD);
+	IMethod[] array= new IMethod[list.size()];
+	list.toArray(array);
+	return array;
+}
+public IField createField(String contents, IJavaElement sibling, boolean force, IProgressMonitor monitor) throws JavaModelException {
+	CreateFieldOperation op = new CreateFieldOperation(this, contents, force);
+	if (sibling != null) {
+		op.createBefore(sibling);
+	}
+	op.runOperation(monitor);
+	return (IField) op.getResultElements()[0];
+}
+/**
+ * @see IType
+ */
+ 
+/**
+ * @see IType
+ */
+public IMethod createMethod(String contents, IJavaElement sibling, boolean force, IProgressMonitor monitor) throws JavaModelException {
+	CreateMethodOperation op = new CreateMethodOperation(this, contents, force);
+	if (sibling != null) {
+		op.createBefore(sibling);
+	}
+	op.runOperation(monitor);
+	return (IMethod) op.getResultElements()[0];
+}
+
 
 }

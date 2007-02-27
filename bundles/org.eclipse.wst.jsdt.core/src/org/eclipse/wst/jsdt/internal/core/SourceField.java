@@ -124,7 +124,9 @@ public IJavaElement getPrimaryElement(boolean checkOwner) {
 		if (cu.isPrimary()) return this;
 	}
 	IJavaElement primaryParent =this.parent.getPrimaryElement(false);
-	return ((IType)primaryParent).getField(this.name);
+	if (primaryParent instanceof IType)
+		return ((IType)primaryParent).getField(this.name);
+	return ((ICompilationUnit)primaryParent).getField(this.name);
 }
 /**
  * @see IField
@@ -160,13 +162,13 @@ protected void toStringInfo(int tab, StringBuffer buffer, Object info, boolean s
 	} else if (info == NO_INFO) {
 		toStringName(buffer);
 	} else {
-		try {
-			buffer.append(Signature.toString(this.getTypeSignature()));
-			buffer.append(" "); //$NON-NLS-1$
+//		try {
+//			buffer.append(Signature.toString(this.getTypeSignature()));
+			buffer.append("var "); //$NON-NLS-1$
 			toStringName(buffer);
-		} catch (JavaModelException e) {
-			buffer.append("<JavaModelException in toString of " + getElementName()); //$NON-NLS-1$
-		}
+//		} catch (JavaModelException e) {
+//			buffer.append("<JavaModelException in toString of " + getElementName()); //$NON-NLS-1$
+//		}
 	}
 }
 }

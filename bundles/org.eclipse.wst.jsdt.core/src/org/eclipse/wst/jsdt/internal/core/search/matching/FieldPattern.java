@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
+import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 
@@ -42,9 +43,9 @@ public FieldPattern(
 	char[] declaringSimpleName,	
 	char[] typeQualification, 
 	char[] typeSimpleName,
-	int matchRule) {
+	int matchRule, IField field) {
 
-	super(FIELD_PATTERN, findDeclarations, readAccess, writeAccess, name, matchRule);
+	super(FIELD_PATTERN, findDeclarations, readAccess, writeAccess, name, matchRule,field);
 
 	this.declaringQualification = isCaseSensitive() ? declaringQualification : CharOperation.toLowerCase(declaringQualification);
 	this.declaringSimpleName = isCaseSensitive() ? declaringSimpleName : CharOperation.toLowerCase(declaringSimpleName);
@@ -66,9 +67,9 @@ public FieldPattern(
 	char[] typeQualification, 
 	char[] typeSimpleName,
 	String typeSignature,
-	int matchRule) {
+	int matchRule, IField field) {
 
-	this(findDeclarations, readAccess, writeAccess, name, declaringQualification, declaringSimpleName, typeQualification, typeSimpleName, matchRule);
+	this(findDeclarations, readAccess, writeAccess, name, declaringQualification, declaringSimpleName, typeQualification, typeSimpleName, matchRule,field);
 
 	// store type signatures and arguments
 	if (typeSignature != null) {
@@ -80,10 +81,10 @@ public void decodeIndexKey(char[] key) {
 	this.name = key;
 }
 public SearchPattern getBlankPattern() {
-	return new FieldPattern(false, false, false, null, null, null, null, null, R_EXACT_MATCH | R_CASE_SENSITIVE);
+	return new FieldPattern(false, false, false, null, null, null, null, null, R_EXACT_MATCH | R_CASE_SENSITIVE,null);
 }
 public char[] getIndexKey() {
-	return this.name;
+	return this.name; 
 }
 public char[][] getIndexCategories() {
 	if (this.findReferences)

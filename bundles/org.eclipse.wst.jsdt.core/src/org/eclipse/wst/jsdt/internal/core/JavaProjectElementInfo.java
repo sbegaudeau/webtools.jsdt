@@ -216,7 +216,11 @@ class JavaProjectElementInfo extends OpenableElementInfo {
 				IPackageFragmentRoot root = roots[i];
 				IJavaElement[] frags = null;
 				try {
-					if (root.isArchive() && !root.isOpen()) {
+					if (root instanceof LibraryFragmentRoot) {
+						LibraryFragmentRootInfo info = new LibraryFragmentRootInfo();
+						((LibraryFragmentRoot) root).computeChildren(info, new HashMap());
+						frags = info.children;
+					} else if (root.isArchive() && !root.isOpen()) {
 						JarPackageFragmentRootInfo info = new JarPackageFragmentRootInfo();
 						((JarPackageFragmentRoot) root).computeChildren(info, new HashMap());
 						frags = info.children;

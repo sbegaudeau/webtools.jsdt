@@ -580,7 +580,7 @@ private static SearchPattern createFieldPattern(String patternString, int limitT
 			declaringTypeSimpleName,
 			typeQualification,
 			typeSimpleName,
-			matchRule);
+			matchRule,null);
 }
 
 /**
@@ -1232,11 +1232,14 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 			IField field = (IField) element; 
 			if (!ignoreDeclaringType) {
 				IType declaringClass = field.getDeclaringType();
-				declaringSimpleName = declaringClass.getElementName().toCharArray();
-				declaringQualification = declaringClass.getPackageFragment().getElementName().toCharArray();
-				char[][] enclosingNames = enclosingTypeNames(declaringClass);
-				if (enclosingNames.length > 0) {
-					declaringQualification = CharOperation.concat(declaringQualification, CharOperation.concatWith(enclosingNames, '.'), '.');
+				if (declaringClass!=null)
+				{
+					declaringSimpleName = declaringClass.getElementName().toCharArray();
+					declaringQualification = declaringClass.getPackageFragment().getElementName().toCharArray();
+					char[][] enclosingNames = enclosingTypeNames(declaringClass);
+					if (enclosingNames.length > 0) {
+						declaringQualification = CharOperation.concat(declaringQualification, CharOperation.concatWith(enclosingNames, '.'), '.');
+					}
 				}
 			}
 			char[] name = field.getElementName().toCharArray();
@@ -1298,7 +1301,7 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 					typeQualification, 
 					typeSimpleName,
 					typeSignature,
-					matchRule);
+					matchRule,field);
 			break;
 		case IJavaElement.IMPORT_DECLARATION :
 			String elementName = element.getElementName();
@@ -1380,16 +1383,26 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 				return null;
 			}
 			IType declaringClass = method.getDeclaringType();
-			if (ignoreDeclaringType) {
-				if (isConstructor) declaringSimpleName = declaringClass.getElementName().toCharArray();
-			} else {
-				declaringSimpleName = declaringClass.getElementName().toCharArray();
-				declaringQualification = declaringClass.getPackageFragment().getElementName().toCharArray();
-				char[][] enclosingNames = enclosingTypeNames(declaringClass);
-				if (enclosingNames.length > 0) {
-					declaringQualification = CharOperation.concat(declaringQualification, CharOperation.concatWith(enclosingNames, '.'), '.');
+			
+			if (declaringClass!=null) {
+				if (ignoreDeclaringType) {
+					if (isConstructor)
+						declaringSimpleName = declaringClass.getElementName()
+								.toCharArray();
+				} else {
+					declaringSimpleName = declaringClass.getElementName()
+							.toCharArray();
+					declaringQualification = declaringClass
+							.getPackageFragment().getElementName()
+							.toCharArray();
+					char[][] enclosingNames = enclosingTypeNames(declaringClass);
+					if (enclosingNames.length > 0) {
+						declaringQualification = CharOperation.concat(
+								declaringQualification, CharOperation
+										.concatWith(enclosingNames, '.'), '.');
+					}
 				}
-			}
+			}			
 			char[] selector = method.getElementName().toCharArray();
 			char[] returnSimpleName = null;
 			char[] returnQualification = null;

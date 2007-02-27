@@ -79,7 +79,7 @@ public class SelectionOnMessageSend extends MessageSend {
 	public StringBuffer printExpression(int indent, StringBuffer output) {
 
 		output.append("<SelectOnMessageSend:"); //$NON-NLS-1$
-		if (!receiver.isImplicitThis()) receiver.printExpression(0, output).append('.');
+		if (receiver!=null && !receiver.isImplicitThis()) receiver.printExpression(0, output).append('.');
 		output.append(this.selector).append('(');
 		if (arguments != null) {
 			for (int i = 0; i < arguments.length; i++) {

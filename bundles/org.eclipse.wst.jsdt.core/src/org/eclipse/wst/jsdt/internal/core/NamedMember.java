@@ -68,7 +68,13 @@ public abstract class NamedMember extends Member {
 		StringBuffer key = new StringBuffer();
 		
 		// declaring class 
-		String declaringKey = getKey((IType) field.getParent(), forceOpen);
+		
+		IJavaElement parent = field.getParent();
+		String declaringKey = "??";
+		if (parent instanceof ICompilationUnit)
+			 declaringKey = getKey((ICompilationUnit) parent, forceOpen);
+		else if (parent instanceof IType)
+		 declaringKey = getKey((IType) parent, forceOpen);
 		key.append(declaringKey);
 		
 		// field name
@@ -82,7 +88,12 @@ public abstract class NamedMember extends Member {
 		StringBuffer key = new StringBuffer();
 		
 		// declaring class 
-		String declaringKey = getKey((IType) method.getParent(), forceOpen);
+		IJavaElement parent = method.getParent();
+		String declaringKey = "??";
+		if (parent instanceof ICompilationUnit)
+			 declaringKey = getKey((ICompilationUnit) parent, forceOpen);
+		else if (parent instanceof IType)
+		 declaringKey = getKey((IType) parent, forceOpen);
 		key.append(declaringKey);
 		
 		// selector
@@ -114,20 +125,35 @@ public abstract class NamedMember extends Member {
 		
 		// parameters
 		key.append('(');
-		String[] parameters = method.getParameterTypes();
+		String[] parameters = method.getParameterNames();
 		for (int i = 0, length = parameters.length; i < length; i++)
 			key.append(parameters[i].replace('.', '/'));
 		key.append(')');
 		
 		// return type
 		if (forceOpen)
-			key.append(method.getReturnType().replace('.', '/'));
+		{
+			if (method.getReturnType()!=null)
+				key.append(method.getReturnType().replace('.', '/'));
+		}
 		else
 			key.append('V');
 		
 		return key.toString();
 	}
 	
+	protected String getKey(ICompilationUnit unit, boolean forceOpen) throws JavaModelException {
+		StringBuffer key = new StringBuffer();
+		key.append('U');
+		String packageName = unit.getParent().getElementName();
+		key.append(packageName.replace('.', '/'));
+		if (packageName.length() > 0)
+			key.append('/');
+		key.append(unit.getElementName());
+		key.append(';');
+		return key.toString();
+	}
+
 	protected String getKey(IType type, boolean forceOpen) throws JavaModelException {
 		StringBuffer key = new StringBuffer();
 		key.append('L');

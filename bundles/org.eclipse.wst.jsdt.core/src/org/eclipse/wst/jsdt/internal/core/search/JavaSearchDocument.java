@@ -27,6 +27,7 @@ public class JavaSearchDocument extends SearchDocument {
 	private IFile file;
 	protected byte[] byteContents;
 	protected char[] charContents;
+	private String packageName;
 	
 	public JavaSearchDocument(String documentPath, SearchParticipant participant) {
 		super(documentPath, participant);
@@ -34,6 +35,13 @@ public class JavaSearchDocument extends SearchDocument {
 	public JavaSearchDocument(java.util.zip.ZipEntry zipEntry, IPath zipFilePath, byte[] contents, SearchParticipant participant) {
 		super(zipFilePath + IJavaSearchScope.JAR_FILE_ENTRY_SEPARATOR + zipEntry.getName(), participant);
 		this.byteContents = contents;
+	}
+
+	public JavaSearchDocument( IPath filePath, char[] contents, SearchParticipant participant, String packageName) {
+		super(filePath.toString(), participant);
+		this.charContents = contents;
+		this.packageName=packageName;
+		
 	}
 
 	public byte[] getByteContents() {
@@ -82,5 +90,8 @@ public class JavaSearchDocument extends SearchDocument {
 	}
 	public String toString() {
 		return "SearchDocument for " + getPath(); //$NON-NLS-1$
+	}
+	public String getPackageName() {
+		return packageName;
 	}
 }

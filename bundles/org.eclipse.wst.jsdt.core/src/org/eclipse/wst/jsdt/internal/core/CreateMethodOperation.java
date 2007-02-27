@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.internal.core;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaModelStatus;
@@ -27,7 +28,6 @@ import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
-import org.eclipse.jface.text.IDocument;
 
 /**
  * <p>This operation creates an instance method. 
@@ -46,7 +46,7 @@ public class CreateMethodOperation extends CreateTypeMemberOperation {
  * When executed, this operation will create a method
  * in the given type with the specified source.
  */
-public CreateMethodOperation(IType parentElement, String source, boolean force) {
+public CreateMethodOperation(IJavaElement parentElement, String source, boolean force) {
 	super(parentElement, source, force);
 }
 /**
@@ -86,7 +86,9 @@ protected ASTNode generateElementAST(ASTRewrite rewriter, IDocument document, IC
 protected IJavaElement generateResultHandle() {
 	String[] types = convertASTMethodTypesToSignatures();
 	String name = getASTNodeName();
-	return getType().getMethod(name, types);
+	if (getType()!=null)
+		return getType().getMethod(name, types);
+	return getCompilationUnit().getMethod(name,types);
 }
 private String getASTNodeName() {
 	return ((MethodDeclaration) this.createdNode).getName().getIdentifier();
@@ -106,21 +108,28 @@ protected SimpleName rename(ASTNode node, SimpleName newName) {
 /**
  * @see CreateTypeMemberOperation#verifyNameCollision
  */
-protected IJavaModelStatus verifyNameCollision() {
-	if (this.createdNode != null) {
-		IType type = getType();
-		String name;
-		if (((MethodDeclaration) this.createdNode).isConstructor())
-			name = type.getElementName();
-		else
-			name = getASTNodeName();
-		String[] types = convertASTMethodTypesToSignatures();
-		if (type.getMethod(name, types).exists()) {
-			return new JavaModelStatus(
-				IJavaModelStatusConstants.NAME_COLLISION, 
-				Messages.bind(Messages.status_nameCollision, name)); 
+	protected IJavaModelStatus verifyNameCollision() {
+		if (this.createdNode != null) {
+			IType type = getType();
+			String name;
+			if (((MethodDeclaration) this.createdNode).isConstructor())
+				name = type.getElementName();
+			else
+				name = getASTNodeName();
+			String[] types = convertASTMethodTypesToSignatures();
+			if (type != null) {
+				if (type.getMethod(name, types).exists())
+					return new JavaModelStatus(
+							IJavaModelStatusConstants.NAME_COLLISION, Messages
+									.bind(Messages.status_nameCollision, name));
+			} else {
+				if (this.getCompilationUnit().getMethod(name, types).exists())
+					return new JavaModelStatus(
+							IJavaModelStatusConstants.NAME_COLLISION, Messages
+									.bind(Messages.status_nameCollision, name));
+			}
+
 		}
-	}
-	return JavaModelStatus.VERIFIED_OK;
-}
+		return JavaModelStatus.VERIFIED_OK;
+	} 
 }

@@ -189,7 +189,7 @@ public IClassFile getClassFile(String classFileName) {
 	}
 	// don't hold on the .class file extension to save memory
 	// also make sure to not use substring as the resulting String may hold on the underlying char[] which might be much bigger than necessary
-	int length = classFileName.length() - 6;
+	int length = classFileName.length() - SUFFIX_CLASS.length;
 	char[] nameWithoutExtension = new char[length];
 	classFileName.getChars(0, length, nameWithoutExtension, 0);
 	return new ClassFile(this, new String(nameWithoutExtension));
@@ -327,7 +327,7 @@ public IPath getPath() {
  */
 public IResource getResource() {
 	PackageFragmentRoot root = this.getPackageFragmentRoot();
-	if (root.isArchive()) {
+	if (root.isArchive() || root instanceof LibraryFragmentRoot) {
 		return root.getResource();
 	} else {
 		int length = this.names.length;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2006 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.matching;
+
+import java.util.Iterator;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -20,6 +22,8 @@ import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
+import org.eclipse.wst.jsdt.internal.core.LocalVariable;
+import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
 
 public class FieldLocator extends VariableLocator {
 
@@ -72,6 +76,29 @@ public int match(FieldDeclaration node, MatchingNodeSet nodeSet) {
 	}
 	return nodeSet.addMatch(node, referencesLevel >= declarationsLevel ? referencesLevel : declarationsLevel); // use the stronger match
 }
+
+//public int match(ConstructorDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
+public int match(InferredAttribute node, MatchingNodeSet nodeSet) {
+	int referencesLevel = IMPOSSIBLE_MATCH;
+	if (this.pattern.findReferences)
+		// must be a write only access with an initializer
+		if (this.pattern.writeAccess && !this.pattern.readAccess /*&& node.initialization != null*/)
+			if (matchesName(this.pattern.name, node.name))
+				referencesLevel = ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH;
+
+	int declarationsLevel = IMPOSSIBLE_MATCH;
+	if (this.pattern.findDeclarations) {
+//		switch (node.getKind()) {
+//			case AbstractVariableDeclaration.FIELD :
+//			case AbstractVariableDeclaration.ENUM_CONSTANT :
+				if (matchesName(this.pattern.name, node.name))
+//					if (matchesTypeReference(((FieldPattern)this.pattern).typeSimpleName, node.type))
+						declarationsLevel = ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH;
+//				break;
+//		}
+	}
+	return nodeSet.addMatch(node, referencesLevel >= declarationsLevel ? referencesLevel : declarationsLevel); // use the stronger match
+}
 //public int match(MethodDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(MessageSend node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(TypeDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
@@ -84,6 +111,7 @@ protected int matchContainer() {
 	}
 	return CLASS_CONTAINER;
 }
+
 protected int matchField(FieldBinding field, boolean matchName) {
 	if (field == null) return INACCURATE_MATCH;
 
@@ -116,6 +144,15 @@ protected int matchField(FieldBinding field, boolean matchName) {
 	int typeLevel = resolveLevelForType(fieldBinding.type);
 	return declaringLevel > typeLevel ? typeLevel : declaringLevel; // return the weaker match
 }
+
+protected int matchLocalVariable(LocalVariableBinding variable, boolean matchName) {
+	if (variable == null) return INACCURATE_MATCH;
+
+	if (matchName && !matchesName(this.pattern.name, variable.readableName())) return IMPOSSIBLE_MATCH;
+
+	return ACCURATE_MATCH;
+}
+
 /* (non-Javadoc)
  * @see org.eclipse.wst.jsdt.internal.core.search.matching.PatternLocator#matchLevelAndReportImportRef(org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference, org.eclipse.wst.jsdt.internal.compiler.lookup.Binding, org.eclipse.wst.jsdt.internal.core.search.matching.MatchLocator)
  * Accept to report match of static field on static import
@@ -254,7 +291,7 @@ protected void reportDeclaration(FieldBinding fieldBinding, MatchLocator locator
 
 	char[] bindingName = fieldBinding.name;
 	IField field = type.getField(new String(bindingName));
-	if (knownFields.addIfNotIncluded(field) == null) return;
+	if (knownFields.addIfNotIncluded(field)==null) return;
 
 	IResource resource = type.getResource();
 	boolean isBinary = type.isBinary();
@@ -267,23 +304,53 @@ protected void reportDeclaration(FieldBinding fieldBinding, MatchLocator locator
 	} else {
 		if (declaringClass instanceof ParameterizedTypeBinding)
 			declaringClass = ((ParameterizedTypeBinding) declaringClass).type;
-		ClassScope scope = ((SourceTypeBinding) declaringClass).scope;
-		if (scope != null) {
+		Scope scp = ((SourceTypeBinding) declaringClass).scope;
+		if (scp instanceof ClassScope) {
+			ClassScope scope=(ClassScope)scp;
 			TypeDeclaration typeDecl = scope.referenceContext;
-			FieldDeclaration fieldDecl = null;
-			FieldDeclaration[] fieldDecls = typeDecl.fields;
-			for (int i = 0, length = fieldDecls.length; i < length; i++) {
-				if (CharOperation.equals(bindingName, fieldDecls[i].name)) {
-					fieldDecl = fieldDecls[i];
-					break;
+			if (typeDecl!=null) {
+				FieldDeclaration fieldDecl = null;
+				FieldDeclaration[] fieldDecls = typeDecl.fields;
+				for (int i = 0, length = fieldDecls.length; i < length; i++) {
+					if (CharOperation.equals(bindingName, fieldDecls[i].name)) {
+						fieldDecl = fieldDecls[i];
+						break;
+					}
 				}
-			} 
-			if (fieldDecl != null) {
-				int offset = fieldDecl.sourceStart;
-				match = new FieldDeclarationMatch(((JavaElement) field).resolved(fieldBinding), SearchMatch.A_ACCURATE, offset, fieldDecl.sourceEnd-offset+1, locator.getParticipant(), resource);
-				locator.report(match);
+				if (fieldDecl != null) {
+					int offset = fieldDecl.sourceStart;
+					match = new FieldDeclarationMatch(((JavaElement) field)
+							.resolved(fieldBinding), SearchMatch.A_ACCURATE,
+							offset, fieldDecl.sourceEnd - offset + 1, locator
+									.getParticipant(), resource);
+					locator.report(match);
+				}
+			} else if (scope.inferredType!=null)
+			{
+				InferredAttribute attribute=null;
+				for (Iterator iter = scope.inferredType.attributes.iterator(); iter.hasNext();) {
+					InferredAttribute element = (InferredAttribute) iter.next();
+					if (CharOperation.equals(bindingName, element.name)) {
+						attribute =element;
+						break;
+					}
+					
+				}
+				if (attribute != null) {
+					int offset = attribute.sourceStart;
+					match = new FieldDeclarationMatch(((JavaElement) field)
+							.resolved(fieldBinding), SearchMatch.A_ACCURATE,
+							offset, attribute.sourceEnd - offset + 1, locator
+									.getParticipant(), resource);
+					locator.report(match);
+				}
+				
 			}
+				
 		}
+		else if (scp !=null)
+			//TODO: could be compilation unit scope
+			throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	}
 }
 protected int referenceType() {
@@ -298,6 +365,8 @@ public int resolveLevel(ASTNode possiblelMatchingNode) {
 	}
 	if (possiblelMatchingNode instanceof FieldDeclaration)
 		return matchField(((FieldDeclaration) possiblelMatchingNode).binding, true);
+	else if (possiblelMatchingNode instanceof LocalDeclaration)
+		return matchLocalVariable(((LocalDeclaration) possiblelMatchingNode).binding, true);
 	return IMPOSSIBLE_MATCH;
 }
 public int resolveLevel(Binding binding) {
@@ -350,5 +419,21 @@ protected int resolveLevelForType(TypeBinding typeBinding) {
 			fieldPattern.getTypeArguments(),
 			0,
 			fieldTypeBinding);
+}
+
+public int matchLocalDeclaration(LocalDeclaration node, MatchingNodeSet nodeSet) {
+	int referencesLevel = IMPOSSIBLE_MATCH;
+	if (this.pattern.findReferences)
+		// must be a write only access with an initializer
+		if (this.pattern.writeAccess && !this.pattern.readAccess && node.initialization != null)
+			if (matchesName(this.pattern.name, node.name))
+				referencesLevel = ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH;
+
+	int declarationsLevel = IMPOSSIBLE_MATCH;
+	if (this.pattern.findDeclarations)
+		if (matchesName(this.pattern.name, node.name))
+				declarationsLevel = ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH;
+
+	return nodeSet.addMatch(node, referencesLevel >= declarationsLevel ? referencesLevel : declarationsLevel); // use the stronger match
 }
 }

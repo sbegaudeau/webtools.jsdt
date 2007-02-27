@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.core.LocalVariable;
 
 public class LocalVariableLocator extends VariableLocator {
 
-public LocalVariableLocator(LocalVariablePattern pattern) {
+public LocalVariableLocator(VariablePattern pattern) {
 	super(pattern);
 }
 public int match(LocalDeclaration node, MatchingNodeSet nodeSet) {
@@ -33,14 +33,17 @@ public int match(LocalDeclaration node, MatchingNodeSet nodeSet) {
 	int declarationsLevel = IMPOSSIBLE_MATCH;
 	if (this.pattern.findDeclarations)
 		if (matchesName(this.pattern.name, node.name))
-			if (node.declarationSourceStart == getLocalVariable().declarationSourceStart)
+			if (node.declarationSourceStart == this.pattern.getVariableStart())
 				declarationsLevel = ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH;
 
 	return nodeSet.addMatch(node, referencesLevel >= declarationsLevel ? referencesLevel : declarationsLevel); // use the stronger match
 }
-private LocalVariable getLocalVariable() {
-	return ((LocalVariablePattern) this.pattern).localVariable;
-}
+
+//private LocalVariable getLocalVariable() {
+//	return ((LocalVariablePattern) this.pattern).localVariable;
+//}
+
+
 protected void matchReportReference(ASTNode reference, IJavaElement element, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
 	int offset = -1;
 	int length = -1;
@@ -53,10 +56,18 @@ protected void matchReportReference(ASTNode reference, IJavaElement element, Bin
 		offset = (int) (sourcePosition >>> 32);
 		length = ((int) sourcePosition) - offset +1;
 	} else if (reference instanceof LocalDeclaration) {
-		LocalVariable localVariable = getLocalVariable();
-		offset = localVariable.nameStart;
-		length = localVariable.nameEnd-offset+1;
-		element = localVariable;
+		element = this.pattern.getJavaElement();
+		if (element instanceof LocalVariable)
+		{
+	 		LocalVariable localVariable = (LocalVariable)element;
+			offset = localVariable.nameStart;
+			length = localVariable.nameEnd-offset+1;
+		}
+		else
+		{
+			offset=this.pattern.getVariableStart();
+			length=this.pattern.getVariableLength();
+		}
 	}
 	if (offset >= 0) {
 		match = locator.newLocalVariableReferenceMatch(element, accuracy, offset, length, reference);
@@ -71,7 +82,7 @@ protected int matchLocalVariable(LocalVariableBinding variable, boolean matchNam
 
 	if (matchName && !matchesName(this.pattern.name, variable.readableName())) return IMPOSSIBLE_MATCH;
 
-	return variable.declaration.declarationSourceStart == getLocalVariable().declarationSourceStart
+	return variable.declaration.declarationSourceStart ==this.pattern.getVariableStart()
 		? ACCURATE_MATCH
 		: IMPOSSIBLE_MATCH;
 }

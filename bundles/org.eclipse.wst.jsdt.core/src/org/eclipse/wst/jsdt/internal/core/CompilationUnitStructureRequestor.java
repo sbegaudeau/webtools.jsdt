@@ -33,7 +33,7 @@ public class CompilationUnitStructureRequestor extends ReferenceInfoAdapter impl
 	/**
 	 * The handle to the compilation unit being parsed
 	 */
-	protected ICompilationUnit unit;
+	protected IJavaElement unit;
 
 	/**
 	 * The info object for the compilation unit being parsed
@@ -100,7 +100,7 @@ public class CompilationUnitStructureRequestor extends ReferenceInfoAdapter impl
 	protected HashtableOfObject typeRefCache;
 	protected HashtableOfObject unknownRefCache;
 
-protected CompilationUnitStructureRequestor(ICompilationUnit unit, CompilationUnitElementInfo unitInfo, Map newElements) {
+protected CompilationUnitStructureRequestor(IJavaElement unit, CompilationUnitElementInfo unitInfo, Map newElements) {
 	this.unit = unit;
 	this.unitInfo = unitInfo;
 	this.newElements = newElements;
@@ -157,6 +157,9 @@ public void acceptPackage(int declarationStart, int declarationEnd, char[] name)
 		
 		if (parentHandle.getElementType() == IJavaElement.COMPILATION_UNIT) {
 			handle = new PackageDeclaration((CompilationUnit) parentHandle, new String(name));
+		}
+		else if (parentHandle.getElementType() == IJavaElement.CLASS_FILE) {
+			handle = new PackageDeclaration((ClassFile) parentHandle, new String(name));
 		}
 		else {
 			Assert.isTrue(false); // Should not happen
@@ -220,10 +223,13 @@ public void enterConstructor(MethodInfo methodInfo) {
  */
 public void enterField(FieldInfo fieldInfo) {
 
-	SourceTypeElementInfo parentInfo = (SourceTypeElementInfo) this.infoStack.peek();
+	JavaElementInfo parentInfo = (JavaElementInfo) this.infoStack.peek();
 	JavaElement parentHandle= (JavaElement) this.handleStack.peek();
 	SourceField handle = null;
-	if (parentHandle.getElementType() == IJavaElement.TYPE) {
+	if (parentHandle.getElementType() == IJavaElement.TYPE 
+			|| parentHandle.getElementType() == IJavaElement.COMPILATION_UNIT 
+			|| parentHandle.getElementType() == IJavaElement.CLASS_FILE 
+			) {
 		String fieldName = JavaModelManager.getJavaModelManager().intern(new String(fieldInfo.name));
 		handle = new SourceField(parentHandle, fieldName);
 	}
@@ -237,13 +243,19 @@ public void enterField(FieldInfo fieldInfo) {
 	info.setNameSourceEnd(fieldInfo.nameSourceEnd);
 	info.setSourceRangeStart(fieldInfo.declarationStart);
 	info.setFlags(fieldInfo.modifiers);
-	char[] typeName = JavaModelManager.getJavaModelManager().intern(fieldInfo.type);
-	info.setTypeName(typeName);
+	if (fieldInfo.type!=null)
+	{
+	  char[] typeName = JavaModelManager.getJavaModelManager().intern(fieldInfo.type);
+	  info.setTypeName(typeName);
+	}
 	
 	this.unitInfo.addAnnotationPositions(handle, fieldInfo.annotationPositions);
 
 	addToChildren(parentInfo, handle);
-	parentInfo.addCategories(handle, fieldInfo.categories);
+	if (parentInfo instanceof CompilationUnitElementInfo) {
+		CompilationUnitElementInfo compilationUnitInfo = (CompilationUnitElementInfo) parentInfo;
+		compilationUnitInfo.addCategories(handle, fieldInfo.categories);
+	}
 	this.newElements.put(handle, info);
 
 	this.infoStack.push(info);
@@ -282,7 +294,7 @@ public void enterInitializer(
  */
 public void enterMethod(MethodInfo methodInfo) {
 
-	SourceTypeElementInfo parentInfo = (SourceTypeElementInfo) this.infoStack.peek();
+	JavaElementInfo parentInfo = (JavaElementInfo) this.infoStack.peek();
 	JavaElement parentHandle= (JavaElement) this.handleStack.peek();
 	SourceMethod handle = null;
 
@@ -298,7 +310,10 @@ public void enterMethod(MethodInfo methodInfo) {
 	}
 	
 	String[] parameterTypeSigs = convertTypeNamesToSigs(methodInfo.parameterTypes);
-	if (parentHandle.getElementType() == IJavaElement.TYPE) {
+	if (parentHandle.getElementType() == IJavaElement.TYPE 
+			|| parentHandle.getElementType() == IJavaElement.COMPILATION_UNIT
+			|| parentHandle.getElementType() == IJavaElement.CLASS_FILE
+			) {
 		String selector = JavaModelManager.getJavaModelManager().intern(new String(methodInfo.name));
 		handle = new SourceMethod(parentHandle, selector, parameterTypeSigs);
 	}
@@ -324,15 +339,18 @@ public void enterMethod(MethodInfo methodInfo) {
 	for (int i = 0, length = parameterNames.length; i < length; i++)
 		parameterNames[i] = manager.intern(parameterNames[i]);
 	info.setArgumentNames(parameterNames);
-	char[] returnType = methodInfo.returnType == null ? new char[]{'v', 'o','i', 'd'} : methodInfo.returnType;
-	info.setReturnType(manager.intern(returnType));
+	char[] returnType = methodInfo.returnType == null ? null : manager.intern(methodInfo.returnType);
+	info.setReturnType(returnType);
 	char[][] exceptionTypes = methodInfo.exceptionTypes;
 	info.setExceptionTypeNames(exceptionTypes);
 	for (int i = 0, length = exceptionTypes.length; i < length; i++)
 		exceptionTypes[i] = manager.intern(exceptionTypes[i]);
 	this.unitInfo.addAnnotationPositions(handle, methodInfo.annotationPositions);
 	addToChildren(parentInfo, handle);
-	parentInfo.addCategories(handle, methodInfo.categories);
+	if (parentInfo instanceof CompilationUnitElementInfo) {
+		CompilationUnitElementInfo compilationUnitInfo = (CompilationUnitElementInfo) parentInfo;
+		compilationUnitInfo.addCategories(handle, methodInfo.categories);
+	}
 	this.newElements.put(handle, info);
 	this.infoStack.push(info);
 	this.handleStack.push(handle);
@@ -356,14 +374,15 @@ public void enterType(TypeInfo typeInfo) {
 	SourceType handle = new SourceType(parentHandle, nameString); //NB: occurenceCount is computed in resolveDuplicates
 	resolveDuplicates(handle);
 	
-	SourceTypeElementInfo info = 
-		typeInfo.anonymousMember ? 
-			new SourceTypeElementInfo() {
-				public boolean isAnonymousMember() {
-					return true;
-				}
-			} : 
-		new SourceTypeElementInfo();
+	 
+	SourceTypeElementInfo info =
+//		typeInfo.anonymousMember ? 
+//				new SourceTypeElementInfo() {
+//					public boolean isAnonymousMember() {
+//						return true;
+//					}
+//				} : 
+			new SourceTypeElementInfo(parentHandle instanceof ClassFile);
 	info.setHandle(handle);
 	info.setSourceRangeStart(typeInfo.declarationStart);
 	info.setFlags(typeInfo.modifiers);

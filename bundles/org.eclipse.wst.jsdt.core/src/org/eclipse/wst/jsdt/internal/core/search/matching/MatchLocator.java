@@ -75,6 +75,9 @@ import org.eclipse.wst.jsdt.internal.core.index.Index;
 import org.eclipse.wst.jsdt.internal.core.search.*;
 import org.eclipse.wst.jsdt.internal.core.util.HandleFactory;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
+import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
+import org.eclipse.wst.jsdt.internal.infer.InferredMethod;
+import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 public class MatchLocator implements ITypeRequestor {
 
@@ -363,7 +366,9 @@ public void accept(ICompilationUnit sourceUnit, AccessRestriction accessRestrict
 	// Switch the current policy and compilation result for this unit to the requested one.
 	CompilationResult unitResult = new CompilationResult(sourceUnit, 1, 1, this.options.maxProblemsPerUnit);
 	try {
-		CompilationUnitDeclaration parsedUnit = basicParser().dietParse(sourceUnit, unitResult);
+		Parser parser = basicParser();
+		CompilationUnitDeclaration parsedUnit = parser.dietParse(sourceUnit, unitResult);
+		parser.inferTypes(parsedUnit, this.options);
 		this.lookupEnvironment.buildTypeBindings(parsedUnit, accessRestriction);
 		this.lookupEnvironment.completeTypeBindings(parsedUnit, true);
 	} catch (AbortCompilationUnit e) {
@@ -480,59 +485,63 @@ protected char[][][] computeSuperTypeNames(IType focusType) {
  * Creates an IMethod from the given method declaration and type. 
  */
 protected IJavaElement createHandle(AbstractMethodDeclaration method, IJavaElement parent) {
-	if (!(parent instanceof IType)) return parent;
+	if (!(parent instanceof IType ||
+			parent instanceof org.eclipse.wst.jsdt.core.ICompilationUnit ||
+			parent instanceof org.eclipse.wst.jsdt.core.IClassFile
+			)) return parent;
 
-	IType type = (IType) parent;
+//	IType type = (IType) parent;
 	Argument[] arguments = method.arguments;
 	int argCount = arguments == null ? 0 : arguments.length;
-	if (type.isBinary()) {
-		// don't cache the methods of the binary type
-		// fall thru if its a constructor with a synthetic argument... find it the slower way
-		ClassFileReader reader = classFileReader(type);
-		if (reader != null) {
-			IBinaryMethod[] methods = reader.getMethods();
-			if (methods != null) {
-				// build arguments names
-				boolean firstIsSynthetic = false;
-				if (reader.isMember() && method.isConstructor() && !Flags.isStatic(reader.getModifiers())) { // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=48261
-					firstIsSynthetic = true;
-					argCount++;
-				}
-				char[][] argumentTypeNames = new char[argCount][];
-				for (int i = 0; i < argCount; i++) {
-					char[] typeName = null;
-					if (i == 0 && firstIsSynthetic) {
-						typeName = type.getDeclaringType().getFullyQualifiedName().toCharArray();
-					} else if (arguments != null) {
-						TypeReference typeRef = arguments[firstIsSynthetic ? i - 1 : i].type;
-						typeName = CharOperation.concatWith(typeRef.getTypeName(), '.');
-						for (int k = 0, dim = typeRef.dimensions(); k < dim; k++)
-							typeName = CharOperation.concat(typeName, new char[] {'[', ']'});
-					}
-					if (typeName == null) {
-						// invalid type name
-						return null;
-					}
-					argumentTypeNames[i] = typeName;
-				}
-				
-				// return binary method
-				return createBinaryMethodHandle(type, method.selector, argumentTypeNames);
-			}
-		}
-		return null;
-	}
+//	if (type.isBinary()) {
+//		// don't cache the methods of the binary type
+//		// fall thru if its a constructor with a synthetic argument... find it the slower way
+//		ClassFileReader reader = classFileReader(type);
+//		if (reader != null) {
+//			IBinaryMethod[] methods = reader.getMethods();
+//			if (methods != null) {
+//				// build arguments names
+//				boolean firstIsSynthetic = false;
+//				if (reader.isMember() && method.isConstructor() && !Flags.isStatic(reader.getModifiers())) { // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=48261
+//					firstIsSynthetic = true;
+//					argCount++;
+//				}
+//				char[][] argumentTypeNames = new char[argCount][];
+//				for (int i = 0; i < argCount; i++) {
+//					char[] typeName = null;
+//					if (i == 0 && firstIsSynthetic) {
+//						typeName = type.getDeclaringType().getFullyQualifiedName().toCharArray();
+//					} else if (arguments != null) {
+//						TypeReference typeRef = arguments[firstIsSynthetic ? i - 1 : i].type;
+//						typeName = CharOperation.concatWith(typeRef.getTypeName(), '.');
+//						for (int k = 0, dim = typeRef.dimensions(); k < dim; k++)
+//							typeName = CharOperation.concat(typeName, new char[] {'[', ']'});
+//					}
+//					if (typeName == null) {
+//						// invalid type name
+//						return null;
+//					}
+//					argumentTypeNames[i] = typeName;
+//				}
+//				
+//				// return binary method
+//				return createBinaryMethodHandle(type, method.selector, argumentTypeNames);
+//			}
+//		}
+//		return null;
+//	}
 
 	String[] parameterTypeSignatures = new String[argCount];
 	if (arguments != null) {
 		for (int i = 0; i < argCount; i++) {
 			TypeReference typeRef = arguments[i].type;
-			char[] typeName = CharOperation.concatWith(typeRef.getParameterizedTypeName(), '.');
+			char[] typeName = typeRef!=null ? CharOperation.concatWith(typeRef.getParameterizedTypeName(), '.')
+					: null;
 			parameterTypeSignatures[i] = Signature.createTypeSignature(typeName, false);
 		}
 	}
 
-	return createMethodHandle(type, new String(method.selector), parameterTypeSignatures);
+	return createMethodHandle(parent, new String(method.selector), parameterTypeSignatures);
 }
 /*
  * Create binary method handle
@@ -570,8 +579,23 @@ IMethod createBinaryMethodHandle(IType type, char[] methodSelector, char[][] arg
  * Create method handle.
  * Store occurences for create handle to retrieve possible duplicate ones.
  */
-private IJavaElement createMethodHandle(IType type, String methodName, String[] parameterTypeSignatures) {
-	IMethod methodHandle = type.getMethod(methodName, parameterTypeSignatures);
+private IJavaElement createMethodHandle(IJavaElement parent, String methodName, String[] parameterTypeSignatures) {
+	IMethod methodHandle = null;
+	if (parent instanceof org.eclipse.wst.jsdt.core.ICompilationUnit) {
+		org.eclipse.wst.jsdt.core.ICompilationUnit compUnit = (org.eclipse.wst.jsdt.core.ICompilationUnit ) parent;
+		 methodHandle = compUnit.getMethod(methodName, parameterTypeSignatures);
+		
+	}
+	else if (parent instanceof ICompilationUnit) {
+		org.eclipse.wst.jsdt.core.IClassFile classFile = (org.eclipse.wst.jsdt.core.IClassFile ) parent;
+		 methodHandle = classFile.getMethod(methodName, parameterTypeSignatures);
+		
+	}
+	else if (parent instanceof IType) {
+		IType type = (IType) parent;
+		 methodHandle = type.getMethod(methodName, parameterTypeSignatures);
+		
+	}
 	if (methodHandle instanceof SourceMethod) {
 		while (this.methodHandles.contains(methodHandle)) {
 			((SourceMethod) methodHandle).occurrenceCount++;
@@ -580,6 +604,13 @@ private IJavaElement createMethodHandle(IType type, String methodName, String[] 
 	this.methodHandles.add(methodHandle);
 	return methodHandle;
 }
+protected IJavaElement createHandle(InferredAttribute fieldDeclaration, InferredType typeDeclaration, IJavaElement parent) {
+	if (!(parent instanceof IType)) return parent;
+
+	return ((IType) parent).getField(new String(fieldDeclaration.name));
+}
+
+
 /**
  * Creates an IField from the given field declaration and type. 
  */
@@ -614,13 +645,15 @@ protected IJavaElement createHandle(FieldDeclaration fieldDeclaration, TypeDecla
 protected IJavaElement createHandle(AbstractVariableDeclaration variableDeclaration, IJavaElement parent) {
 	switch (variableDeclaration.getKind()) {
 		case AbstractVariableDeclaration.LOCAL_VARIABLE:
+			String signature = (variableDeclaration.type!=null) ?
+					new String(variableDeclaration.type.resolvedType.signature()): Signature.SIG_ANY;
 			return new LocalVariable((JavaElement)parent,
 				new String(variableDeclaration.name),
 				variableDeclaration.declarationSourceStart,
 				variableDeclaration.declarationSourceEnd,
 				variableDeclaration.sourceStart,
 				variableDeclaration.sourceEnd,
-				new String(variableDeclaration.type.resolvedType.signature())
+				signature
 			);
 		case AbstractVariableDeclaration.PARAMETER:
 			return new LocalVariable((JavaElement)parent,
@@ -707,20 +740,20 @@ protected IType createTypeHandle(String simpleTypeName) {
 	if (openable instanceof CompilationUnit)
 		return ((CompilationUnit) openable).getType(simpleTypeName);
 
-	IType binaryType = ((ClassFile) openable).getType();
-	String binaryTypeQualifiedName = binaryType.getTypeQualifiedName();
-	if (simpleTypeName.equals(binaryTypeQualifiedName))
+	IType binaryType = ((ClassFile) openable).getType(simpleTypeName);
+//	String binaryTypeQualifiedName = binaryType.getTypeQualifiedName();
+//	if (simpleTypeName.equals(binaryTypeQualifiedName))
 		return binaryType; // answer only top-level types, sometimes the classFile is for a member/local type
 
-	try {
-		// type name may be null for anonymous (see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=164791)
-		String classFileName = simpleTypeName.length() == 0 ? binaryTypeQualifiedName : simpleTypeName;
-		IClassFile classFile = binaryType.getPackageFragment().getClassFile(classFileName + SuffixConstants.SUFFIX_STRING_class);
-		return classFile.getType();
-	} catch (JavaModelException e) {
-		// ignore as implementation of getType() cannot throw this exception
-	}
-	return null;
+//	try {
+//		// type name may be null for anonymous (see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=164791)
+//		String classFileName = simpleTypeName.length() == 0 ? binaryTypeQualifiedName : simpleTypeName;
+//		IClassFile classFile = binaryType.getPackageFragment().getClassFile(classFileName + SuffixConstants.SUFFIX_STRING_class);
+//		return classFile.getType();
+//	} catch (JavaModelException e) {
+//		// ignore as implementation of getType() cannot throw this exception
+//	}
+//	return null;
 }
 protected boolean encloses(IJavaElement element) {
 	return element != null && this.scope.encloses(element);
@@ -941,7 +974,7 @@ public void initialize(JavaProject project, int possibleMatchSize) throws JavaMo
 	// if only one possible match, a file name environment costs too much,
 	// so use the existing searchable  environment which will populate the java model
 	// only for this possible match and its required types.
-	this.nameEnvironment = possibleMatchSize == 1
+	this.nameEnvironment = true//possibleMatchSize == 1
 		? (INameEnvironment) searchableEnvironment
 		: (INameEnvironment) new JavaSearchNameEnvironment(project, this.workingCopies);
 
@@ -1482,6 +1515,7 @@ protected boolean parseAndBuildBindings(PossibleMatch possibleMatch, boolean mus
 		CompilationResult unitResult = new CompilationResult(possibleMatch, 1, 1, this.options.maxProblemsPerUnit);
 		CompilationUnitDeclaration parsedUnit = this.parser.dietParse(possibleMatch, unitResult);
 		if (parsedUnit != null) {
+			this.parser.inferTypes(parsedUnit,this.options);
 			if (!parsedUnit.isEmpty()) {
 				if (mustResolve) {
 					this.lookupEnvironment.buildTypeBindings(parsedUnit, null /*no access restriction*/);
@@ -1538,7 +1572,7 @@ protected void process(PossibleMatch possibleMatch, boolean bindingsWereCreated)
 
 		boolean mustResolve = (((InternalSearchPattern)this.pattern).mustResolve || possibleMatch.nodeSet.mustResolve);
 		if (bindingsWereCreated && mustResolve) {
-			if (unit.types != null) {
+			if (unit.types != null || unit.statements!=null) {
 				if (BasicSearchEngine.VERBOSE)
 					System.out.println("Resolving " + this.currentPossibleMatch.openable.toStringWithAncestors()); //$NON-NLS-1$
 	
@@ -1575,10 +1609,7 @@ protected void purgeMethodStatements(TypeDeclaration type, boolean checkEachMeth
 		if (checkEachMethod) {
 			for (int j = 0, length = methods.length; j < length; j++) {
 				AbstractMethodDeclaration method = methods[j];
-				if (!this.currentPossibleMatch.nodeSet.hasPossibleNodes(method.declarationSourceStart, method.declarationSourceEnd)) {
-					method.statements = null;
-					method.javadoc = null;
-				}
+				purgeMethodStatements(method);
 			}
 		} else {
 			for (int j = 0, length = methods.length; j < length; j++) {
@@ -1593,14 +1624,31 @@ protected void purgeMethodStatements(TypeDeclaration type, boolean checkEachMeth
 		for (int i = 0, l = memberTypes.length; i < l; i++)
 			purgeMethodStatements(memberTypes[i], checkEachMethod);
 }
+
+private void purgeMethodStatements(AbstractMethodDeclaration method) {
+	if (!this.currentPossibleMatch.nodeSet.hasPossibleNodes(method.declarationSourceStart, method.declarationSourceEnd)) {
+		method.statements = null;
+		method.javadoc = null;
+	}
+}
+
 /**
  * Called prior to the unit being resolved. Reduce the parse tree where possible.
  */
 protected void reduceParseTree(CompilationUnitDeclaration unit) {
 	// remove statements from methods that have no possible matching nodes
-	TypeDeclaration[] types = unit.types;
-	for (int i = 0, l = types.length; i < l; i++)
-		purgeMethodStatements(types[i], true); 
+	if (unit.types!=null)
+	{
+		TypeDeclaration[] types = unit.types;
+		for (int i = 0, l = types.length; i < l; i++)
+			purgeMethodStatements(types[i], true); 
+	}
+	if (unit.statements!=null)
+		for (int i = 0; i < unit.statements.length; i++) {
+			if (unit.statements[i] instanceof AbstractMethodDeclaration)
+				purgeMethodStatements((AbstractMethodDeclaration)unit.statements[i]);
+		}
+	
 }
 public SearchParticipant getParticipant() {
 	return this.currentPossibleMatch.document.getParticipant();
@@ -2211,7 +2259,86 @@ protected void reportMatching(CompilationUnitDeclaration unit, boolean mustResol
 			reportMatching(type, null, accuracy, nodeSet, 1);
 		}
 	}
+	ProgramElement[] statements = unit.statements;
+	if (statements!=null)
+	{
+		IJavaElement enclosingElement = this.currentPossibleMatch.openable;
+		if (enclosingElement == null) return;
+		boolean typeInHierarchy = true;
+		boolean matchedClassContainer=true;
+		for (int i = 0; i < statements.length; i++) {
+			if (nodeSet.matchingNodes.elementSize == 0) return; // reported all the matching nodes
+			if (statements[i] instanceof AbstractMethodDeclaration) {
+				AbstractMethodDeclaration method = (AbstractMethodDeclaration) statements[i];
+				Integer level = (Integer) nodeSet.matchingNodes.removeKey(method);
+				int value = (level != null && matchedClassContainer) ? level.intValue() : -1;
+				reportMatching(null, method, enclosingElement, value, typeInHierarchy, nodeSet);
 	
+			} else if (statements[i] instanceof LocalDeclaration) {
+				LocalDeclaration var = (LocalDeclaration) statements[i];
+					// Single field, report normally
+					Integer level = (Integer) nodeSet.matchingNodes.removeKey(var);
+					int accuracy = (level != null && matchedClassContainer) ? level.intValue() : -1;
+					reportMatching(var, null, null, enclosingElement, accuracy, typeInHierarchy, nodeSet);
+			}
+			else
+			{
+				ASTNode[] nodes = nodeSet.matchingNodes(statements[i].sourceStart, statements[i].sourceEnd);
+				if (nodes != null) {
+					if ((this.matchContainer & PatternLocator.COMPILATION_UNIT_CONTAINER) != 0) {
+						if (encloses(enclosingElement)) {
+							for (int j = 0, l = nodes.length; j < l; j++) {
+								ASTNode node = nodes[j];
+								Integer level = (Integer) nodeSet.matchingNodes.removeKey(node);
+								int accuracy = (level != null && matchedClassContainer) ? level.intValue() : -1;
+								this.patternLocator.matchReportReference(node, enclosingElement, unit.compilationUnitBinding, unit.scope, accuracy, this);
+							}
+							return;
+						}
+					}
+					for (int j = 0, l = nodes.length; j < l; j++)
+						nodeSet.matchingNodes.removeKey(nodes[j]);
+				}				
+			}
+			
+		}
+	}
+	ArrayList inferredTypes= unit.inferredTypes;
+	if (inferredTypes!=null)
+		for (Iterator iter = inferredTypes.iterator(); iter.hasNext();) {
+			IJavaElement enclosingElement = this.currentPossibleMatch.openable;
+			if (enclosingElement == null) return;
+			boolean typeInHierarchy = true;
+			boolean matchedClassContainer=true;
+
+			InferredType inferredType = (InferredType) iter.next();
+			Integer level = (Integer) nodeSet.matchingNodes.removeKey(inferredType);
+			int accuracy = (level != null && matchedClassContainer) ? level.intValue() : -1;
+			reportMatching(inferredType, null, accuracy, nodeSet, 1);
+
+			ArrayList attributes = inferredType.attributes;
+			if (attributes!=null)
+				for (Iterator iterator = attributes.iterator(); iterator
+						.hasNext();) {
+					InferredAttribute attribute = (InferredAttribute) iterator.next();
+					 level = (Integer) nodeSet.matchingNodes.removeKey(attribute);
+					 accuracy = (level != null && matchedClassContainer) ? level.intValue() : -1;
+						reportMatching(attribute, inferredType, enclosingElement, accuracy, typeInHierarchy, nodeSet);
+					
+				}
+			ArrayList methods = inferredType.methods;
+			if (methods!=null)
+				for (Iterator iterator = methods.iterator(); iterator.hasNext();) {
+					InferredMethod method = (InferredMethod) iterator.next();
+					 level = (Integer) nodeSet.matchingNodes.removeKey(method);
+					 accuracy = (level != null && matchedClassContainer) ? level.intValue() : -1;
+					int value = (level != null && matchedClassContainer) ? level.intValue() : -1;
+					reportMatching(null, method.methodDeclaration, enclosingElement, value, typeInHierarchy, nodeSet);
+					
+				}
+		}
+	
+
 	// Clear handle cache
 	this.methodHandles = null;
 	this.bindings.removeKey(this.pattern);
@@ -2325,6 +2452,98 @@ protected void reportMatching(FieldDeclaration field, FieldDeclaration[] otherFi
 		}
 	}
 }
+
+
+protected void reportMatching(InferredAttribute field,   InferredType type, IJavaElement parent, int accuracy, boolean typeInHierarchy, MatchingNodeSet nodeSet) throws CoreException {
+	IJavaElement enclosingElement = null;
+	if (accuracy > -1) {
+		enclosingElement = createHandle(field, type, parent);
+		if (encloses(enclosingElement)) {
+			int offset = field.sourceStart;
+			SearchMatch match = newDeclarationMatch(enclosingElement, field.binding, accuracy, offset, field.sourceEnd-offset+1);
+			report(match);
+		}
+	}
+
+
+}
+
+protected void reportMatching(InferredType type, IJavaElement parent, int accuracy, MatchingNodeSet nodeSet, int occurrenceCount) throws CoreException {
+	// create type handle
+	IJavaElement enclosingElement = parent;
+	if (enclosingElement == null) {
+		enclosingElement = createTypeHandle(new String(type.getName()));
+	} else if (enclosingElement instanceof IType) {
+		enclosingElement = ((IType) parent).getType(new String(type.getName()));
+	} else if (enclosingElement instanceof IMember) {
+	    IMember member = (IMember) parent;
+		if (member.isBinary())  {
+			enclosingElement = ((IClassFile)this.currentPossibleMatch.openable).getType();
+		} else {
+			enclosingElement = member.getType(new String(type.getName()), occurrenceCount);
+		}
+	}
+	if (enclosingElement == null) return;
+	boolean enclosesElement = encloses(enclosingElement);
+
+	// report the type declaration
+	if (accuracy > -1 && enclosesElement) {
+		int offset = type.sourceStart;
+		SearchMatch match = this.patternLocator.newDeclarationMatch(type, enclosingElement, type.binding, accuracy, type.sourceEnd-offset+1, this);
+		report(match);
+	}
+
+	boolean matchedClassContainer = (this.matchContainer & PatternLocator.CLASS_CONTAINER) != 0;
+
+}
+
+
+
+protected void reportMatching(LocalDeclaration field, LocalDeclaration[] otherFields, TypeDeclaration type, IJavaElement parent, int accuracy, boolean typeInHierarchy, MatchingNodeSet nodeSet) throws CoreException {
+	IJavaElement enclosingElement = null;
+	if (accuracy > -1) {
+		enclosingElement = createHandle(field,   parent);
+		if (encloses(enclosingElement)) {
+			int offset = field.sourceStart;
+			SearchMatch match = newDeclarationMatch(enclosingElement, field.binding, accuracy, offset, field.sourceEnd-offset+1);
+			report(match);
+		}
+	}
+ 
+ 
+	if (typeInHierarchy) {
+		// Look in initializer
+		ASTNode[] nodes = nodeSet.matchingNodes(field.sourceStart, field.declarationSourceEnd);
+		if (nodes != null) {
+			if ((this.matchContainer & PatternLocator.FIELD_CONTAINER) == 0) {
+				for (int i = 0, l = nodes.length; i < l; i++)
+					nodeSet.matchingNodes.removeKey(nodes[i]);
+			} else {
+				if (enclosingElement == null) {
+					enclosingElement = createHandle(field,  parent);
+				}
+				if (encloses(enclosingElement)) {
+					for (int i = 0, l = nodes.length; i < l; i++) {
+						ASTNode node = nodes[i];
+						Integer level = (Integer) nodeSet.matchingNodes.removeKey(node);
+						if (node instanceof TypeDeclaration) {
+							// use field declaration to report match (see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=88174)
+							AllocationExpression allocation = ((TypeDeclaration)node).allocation;
+							if (allocation != null && allocation.enumConstant != null) {
+								node = field;
+							}
+						}
+						// Set block scope for initializer in case there would have other local and other elements to report
+						BlockScope blockScope = null;
+						this.patternLocator.matchReportReference(node, enclosingElement, field.binding, blockScope, level.intValue(), this);
+					}
+				}
+			}
+		}
+	}
+}
+
+
 /**
  * Visit the given type declaration and report the nodes that match exactly the
  * search pattern (ie. the ones in the matching nodes set)
@@ -2547,5 +2766,25 @@ protected boolean typeInHierarchy(ReferenceBinding binding) {
 				return true;
 	}
 	return false;
+}
+
+public CompilationUnitDeclaration doParse(ICompilationUnit unit, AccessRestriction accessRestriction) {
+	CompilationResult unitResult =
+		new CompilationResult(unit, 1, 1, this.options.maxProblemsPerUnit);
+	try {
+		Parser parser=basicParser();
+		CompilationUnitDeclaration parsedUnit = parser.parse(unit, unitResult);
+		parser.inferTypes(parsedUnit,this.options);
+		return parsedUnit;
+	} catch (AbortCompilationUnit e) {
+//		// at this point, currentCompilationUnitResult may not be sourceUnit, but some other
+//		// one requested further along to resolve sourceUnit.
+//		if (unitResult.compilationUnit == sourceUnit) { // only report once
+//			requestor.acceptResult(unitResult.tagAsAccepted());
+//		} else {
+			throw e; // want to abort enclosing request to compile
+//		}
+	}
+
 }
 }

@@ -21,9 +21,11 @@ public class CompilationUnit implements ICompilationUnit {
 	protected char[] fContents;
 	protected char[] fFileName;
 	protected char[] fMainTypeName;
-public CompilationUnit(char[] contents, char[] filename) {
+	protected char [][]fPackageName;
+public CompilationUnit(char[] contents, char[] filename,char [][]packageName) {
 	fContents = contents;
 	fFileName = filename;
+	fPackageName=packageName;
 
 	String file = new String(filename);
 	int start = file.lastIndexOf("/") + 1; //$NON-NLS-1$
@@ -36,6 +38,10 @@ public CompilationUnit(char[] contents, char[] filename) {
 
 	fMainTypeName = file.substring(start, end).toCharArray();
 }
+public CompilationUnit(char[] contents, char[] filename) {
+	this(contents,filename,null);
+}
+
 public char[] getContents() {
 	return fContents;
 }
@@ -49,7 +55,7 @@ public char[] getMainTypeName() {
 	return fMainTypeName;
 }
 public char[][] getPackageName() {
-	return null;
+	return fPackageName;
 }
 public String toString() {
 	return "CompilationUnit[" + new String(fFileName) + "]";  //$NON-NLS-2$ //$NON-NLS-1$

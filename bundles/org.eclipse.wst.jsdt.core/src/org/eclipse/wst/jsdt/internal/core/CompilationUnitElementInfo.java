@@ -14,6 +14,7 @@ import java.util.HashMap;
 
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.ISourceRange;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 
 public class CompilationUnitElementInfo extends OpenableElementInfo {
 
@@ -34,6 +35,25 @@ public class CompilationUnitElementInfo extends OpenableElementInfo {
 	 */
 	public HashMap annotationPositions;
 	
+	/*
+	 * A map from an IJavaElement (this type or a child of this type) to a String[] (the categories of this element)
+	 */
+	protected HashMap categories;
+	
+protected void addCategories(IJavaElement element, char[][] elementCategories) {
+	if (elementCategories == null) return;
+	if (this.categories == null)
+		this.categories = new HashMap();
+	this.categories.put(element, CharOperation.toStrings(elementCategories));
+}
+
+/*
+ * Return a map from an IJavaElement (this type or a child of this type) to a String[] (the categories of this element)
+ */
+public HashMap getCategories() {
+	return this.categories;
+}
+
 public void addAnnotationPositions(IJavaElement handle, long[] positions) {
 	if (positions == null) return;
 	if (this.annotationPositions == null)

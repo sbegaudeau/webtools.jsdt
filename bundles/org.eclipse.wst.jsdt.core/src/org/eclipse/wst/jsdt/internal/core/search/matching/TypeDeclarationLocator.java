@@ -14,6 +14,7 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 public class TypeDeclarationLocator extends PatternLocator {
 
@@ -38,7 +39,12 @@ public int match(TypeDeclaration node, MatchingNodeSet nodeSet) {
 	return IMPOSSIBLE_MATCH;
 }
 //public int match(TypeReference node, MatchingNodeSet nodeSet) - SKIP IT
+public int match(InferredType node, MatchingNodeSet nodeSet) {
+	if (this.pattern.simpleName == null || matchesName(this.pattern.simpleName, node.getName()))
+		return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
 
+	return IMPOSSIBLE_MATCH;
+}
 public int resolveLevel(ASTNode node) {
 	if (!(node instanceof TypeDeclaration)) return IMPOSSIBLE_MATCH;
 

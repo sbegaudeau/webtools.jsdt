@@ -567,8 +567,16 @@ public class JavaProject
 						root = getPackageFragmentRoot((IResource) target);
 					} else {
 						// external target - only JARs allowed
-						if (JavaModel.isFile(target) && (org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(entryPath.lastSegment()))) {
-							root = new JarPackageFragmentRoot(entryPath, this);
+						if (JavaModel.isFile(target))
+						{
+							 if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isJavaFileName(entryPath.lastSegment())) {
+									root = new LibraryFragmentRoot(entryPath, this);
+							 }
+							 else
+							 {
+								 root = new JarPackageFragmentRoot(entryPath, this);
+								 
+							 }
 						}
 					}
 				} else {
@@ -733,14 +741,15 @@ public class JavaProject
 				 // folders are always included in src/lib entries
 				 return true;
 			}
-			switch (innerMostEntry.getEntryKind()) {
-				case IClasspathEntry.CPE_SOURCE:
-					// .class files are not visible in source folders 
-					return !org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(fullPath.lastSegment());
-				case IClasspathEntry.CPE_LIBRARY:
-					// .js files are not visible in library folders
-					return !org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(fullPath.lastSegment());
-			}
+			return true;
+//			switch (innerMostEntry.getEntryKind()) {
+//				case IClasspathEntry.CPE_SOURCE:
+//					// .class files are not visible in source folders 
+//					return !org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(fullPath.lastSegment());
+//				case IClasspathEntry.CPE_LIBRARY:
+//					// .js files are not visible in library folders
+//					return !org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(fullPath.lastSegment());
+//			}
 		}
 		if (innerMostOutput != null) {
 			return false;
@@ -1628,6 +1637,7 @@ public class JavaProject
 			path = getPath().append(path);
 		}
 		int segmentCount = path.segmentCount();
+		String lastSegment = path.lastSegment();
 		switch (segmentCount) {
 			case 0:
 				return null;
@@ -1639,7 +1649,8 @@ public class JavaProject
 			default:
 				// a path ending with .jar/.zip is still ambiguous and could still resolve to a source/lib folder 
 				// thus will try to guess based on existing resource
-				if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(path.lastSegment())) {
+				if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(lastSegment) 
+						|| org.eclipse.wst.jsdt.internal.compiler.util.Util.isJavaFileName(lastSegment)) {
 					IResource resource = this.project.getWorkspace().getRoot().findMember(path); 
 					if (resource != null && resource.getType() == IResource.FOLDER){
 						return getPackageFragmentRoot(resource);
@@ -1647,7 +1658,7 @@ public class JavaProject
 					return getPackageFragmentRoot0(path);
 				} else if (segmentCount == 1) {
 					// lib being another project
-					return getPackageFragmentRoot(this.project.getWorkspace().getRoot().getProject(path.lastSegment()));
+					return getPackageFragmentRoot(this.project.getWorkspace().getRoot().getProject(lastSegment));
 				} else {
 					// lib being a folder
 					return getPackageFragmentRoot(this.project.getWorkspace().getRoot().getFolder(path));
@@ -1689,7 +1700,7 @@ public class JavaProject
 	 */
 	public IPackageFragmentRoot getPackageFragmentRoot0(IPath jarPath) {
 
-		return new JarPackageFragmentRoot(jarPath, this);
+		return new LibraryFragmentRoot(jarPath, this);
 	}
 
 	/**

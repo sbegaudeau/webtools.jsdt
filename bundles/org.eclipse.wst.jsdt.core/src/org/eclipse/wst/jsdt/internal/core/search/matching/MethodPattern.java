@@ -18,7 +18,7 @@ import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.core.index.*;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
-public class MethodPattern extends JavaSearchPattern {
+public class MethodPattern extends JavaSearchPattern  {
 
 protected boolean findDeclarations;
 protected boolean findReferences;
@@ -149,14 +149,16 @@ public MethodPattern(
 		methodParameters = true;
 	}
 
-	// Store type signature and arguments for declaring type
-	if (genericDeclaringTypeSignature != null) {
-		this.typeSignatures = Util.splitTypeLevelsSignature(genericDeclaringTypeSignature);
-		setTypeArguments(Util.getAllTypeArguments(this.typeSignatures));
-	} else {
-		storeTypeSignaturesAndArguments(declaringType);
-	}
-
+	if (declaringType!=null) {
+		// Store type signature and arguments for declaring type
+		if (genericDeclaringTypeSignature != null) {
+			this.typeSignatures = Util
+					.splitTypeLevelsSignature(genericDeclaringTypeSignature);
+			setTypeArguments(Util.getAllTypeArguments(this.typeSignatures));
+		} else {
+			storeTypeSignaturesAndArguments(declaringType);
+		}
+	}	
 	// Store type signatures and arguments for return type
 	if (returnSignature != null) {
 		returnTypeSignatures = Util.splitTypeLevelsSignature(returnSignature);
