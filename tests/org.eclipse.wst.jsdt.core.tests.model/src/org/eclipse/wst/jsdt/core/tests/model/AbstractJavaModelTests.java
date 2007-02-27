@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.wst.jsdt.core.*;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
+import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraries;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.search.*;
@@ -104,7 +105,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 			copy[deltas.length]= ev.getDelta();
 			deltas= copy;
 			
-			new Throwable("Caller of IElementChangedListener#elementChanged").printStackTrace(new PrintStream(this.stackTraces));
+//			new Throwable("Caller of IElementChangedListener#elementChanged").printStackTrace(new PrintStream(this.stackTraces));
 		}
 		public CompilationUnit getCompilationUnitAST(ICompilationUnit workingCopy) {
 			for (int i=0, length= this.deltas.length; i<length; i++) {
@@ -251,24 +252,35 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	protected void addLibrary(IJavaProject javaProject, String jarName, String sourceZipName, String[] pathAndContents, String compliance) throws CoreException, IOException {
 		addLibrary(javaProject, jarName, sourceZipName, pathAndContents, null, null, compliance);
 	}
-	protected void addLibrary(IJavaProject javaProject, String jarName, String sourceZipName, String[] pathAndContents, String[] librariesInclusionPatterns, String[] librariesExclusionPatterns, String compliance) throws CoreException, IOException {
+	protected void addLibrary(IJavaProject javaProject, String libraryPath, String sourceZipName, String[] pathAndContents, String[] librariesInclusionPatterns, String[] librariesExclusionPatterns, String compliance) throws CoreException, IOException {
 		IProject project = javaProject.getProject();
 		String projectLocation = project.getLocation().toOSString();
-		String jarPath = projectLocation + File.separator + jarName;
-		String sourceZipPath = projectLocation + File.separator + sourceZipName;
-		org.eclipse.wst.jsdt.core.tests.util.Util.createJar(pathAndContents, jarPath, compliance);
-		org.eclipse.wst.jsdt.core.tests.util.Util.createSourceZip(pathAndContents, sourceZipPath);
-		project.refreshLocal(IResource.DEPTH_INFINITE, null);
-		String projectPath = '/' + project.getName() + '/';
-		addLibraryEntry(
-			javaProject,
-			new Path(projectPath + jarName),
-			new Path(projectPath + sourceZipName),
-			null,
-			toIPathArray(librariesInclusionPatterns),
-			toIPathArray(librariesExclusionPatterns),
-			true
-		);
+	    boolean projectbased=libraryPath==null;
+	    if (projectbased)
+	    	libraryPath=projectLocation;
+		
+		for (int i = 0; i < pathAndContents.length; i+=2) {
+			
+			String jarPath = libraryPath + File.separator + pathAndContents[i];
+			org.eclipse.wst.jsdt.core.tests.util.Util.createFile(jarPath, pathAndContents[i+1]);
+			if (projectbased)
+				project.refreshLocal(IResource.DEPTH_INFINITE, null);
+			String projectPath = '/' + project.getName() + '/';
+			Path path = (projectbased) ?
+					new Path(projectPath +  pathAndContents[i]) :
+						new Path(jarPath);
+			addLibraryEntry(
+				javaProject,
+				path,
+				null,
+				null,
+				toIPathArray(librariesInclusionPatterns),
+				toIPathArray(librariesExclusionPatterns),
+				true
+			);
+			
+		}
+
 	}
 	protected void addLibraryEntry(String path, boolean exported) throws JavaModelException {
 		addLibraryEntry(this.currentProject, new Path(path), null, null, null, null, exported);
@@ -685,7 +697,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	}
 	
 	public boolean convertToIndependantLineDelimiter(File file) {
-		return file.getName().endsWith(".java");
+		return file.getName().endsWith(".js");
 	}
 	
 	/**
@@ -1357,19 +1369,21 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	 * Returns the IPath to the external java class library (e.g. jclMin.jar)
 	 */
 	protected IPath getExternalJCLPath(String compliance) {
-		return new Path(getExternalJCLPathString(compliance));
+ 		return new Path(getExternalJCLPathString(compliance));
 	}
 	/**
 	 * Returns the java.io path to the external java class library (e.g. jclMin.jar)
 	 */
 	protected String getExternalJCLPathString() {
-		return getExternalJCLPathString("");
+		return SystemLibraries.getLibraryPath("system.js");
+//		return getExternalJCLPathString("");
 	}
 	/**
 	 * Returns the java.io path to the external java class library (e.g. jclMin.jar)
 	 */
 	protected String getExternalJCLPathString(String compliance) {
-		return getExternalPath() + "jclMin" + compliance + ".jar";
+		return SystemLibraries.getLibraryPath("system.js");
+//		return getExternalPath() + "jclMin" + compliance + ".jar";
 	}
 	/**
 	 * Returns the IPath to the root source of the external java class library (e.g. "src")

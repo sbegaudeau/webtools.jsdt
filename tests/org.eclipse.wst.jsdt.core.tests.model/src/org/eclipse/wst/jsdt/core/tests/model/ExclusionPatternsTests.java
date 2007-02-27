@@ -60,14 +60,14 @@ protected void tearDown() throws Exception {
 public void testAddExclusionOnCompilationUnit() throws CoreException {
 	createFolder("/P/src/p");
 	createFile(
-		"/P/src/p/A.java",
+		"/P/src/p/A.js",
 		"package p;\n" +
 		"public class A {\n" +
 		"}"
 	);
 	
 	clearDeltas();
-	setClasspath(new String[] {"/P/src", "**/A.java"});
+	setClasspath(new String[] {"/P/src", "**/A.js"});
 	
 	assertDeltas(
 		"Unexpected deltas",
@@ -84,7 +84,7 @@ public void testAddExclusionOnCompilationUnit() throws CoreException {
 		
 	assertResourceNamesEqual(
 		"Unexpected non-java resources",
-		"A.java",
+		"A.js",
 		pkg.getNonJavaResources());
 }
 /*
@@ -159,7 +159,7 @@ public void testAddExclusionOnPackage() throws CoreException {
 public void testAddExclusionOnPrimaryWorkingCopy() throws CoreException {
 	createFolder("/P/src/p");
 	createFile(
-		"/P/src/p/A.java",
+		"/P/src/p/A.js",
 		"package p;\n" +
 		"public class A {\n" +
 		"}"
@@ -167,11 +167,11 @@ public void testAddExclusionOnPrimaryWorkingCopy() throws CoreException {
 		
 	ICompilationUnit workingCopy = null;
 	try {
-		workingCopy = getCompilationUnit("/P/src/p/A.java");
+		workingCopy = getCompilationUnit("/P/src/p/A.js");
 		workingCopy.becomeWorkingCopy(null, null);
 		
 		clearDeltas();
-		setClasspath(new String[] {"/P/src", "**/A.java"});
+		setClasspath(new String[] {"/P/src", "**/A.js"});
 		
 		assertDeltas(
 			"Unexpected deltas",
@@ -188,7 +188,7 @@ public void testAddExclusionOnPrimaryWorkingCopy() throws CoreException {
 			
 		assertResourceNamesEqual(
 			"Unexpected non-java resources",
-			"A.java",
+			"A.js",
 			pkg.getNonJavaResources());
 	} finally {
 		if (workingCopy != null) {
@@ -229,13 +229,13 @@ public void testAddToExcludedFolder() throws CoreException {
  * doesn't make it appear as a child of its package but it is a non-java resource.
  */
 public void testCreateExcludedCompilationUnit() throws CoreException {
-	setClasspath(new String[] {"/P/src", "**/A.java"});
+	setClasspath(new String[] {"/P/src", "**/A.js"});
 	createFolder("/P/src/p");
 	IPackageFragment pkg = getPackage("/P/src/p");
 
 	clearDeltas();
 	pkg.createCompilationUnit(
-		"A.java",
+		"A.js",
 		"package p;\n" +
 		"public class A {\n" +
 		"}",
@@ -257,7 +257,7 @@ public void testCreateExcludedCompilationUnit() throws CoreException {
 		
 	assertResourceNamesEqual(
 		"Unexpected non-java resources",
-		"A.java",
+		"A.js",
 		pkg.getNonJavaResources());
 }
 /*
@@ -352,12 +352,12 @@ public void testCreateExcludedAndIncludedPackages() throws CoreException {
  * doesn't make it appear as a child of its package but it is a non-java resource.
  */
 public void testCreateResourceExcludedCompilationUnit() throws CoreException {
-	setClasspath(new String[] {"/P/src", "**/A.java"});
+	setClasspath(new String[] {"/P/src", "**/A.js"});
 	createFolder("/P/src/p");
 	
 	clearDeltas();
 	createFile(
-		"/P/src/p/A.java",
+		"/P/src/p/A.js",
 		"package p;\n" +
 		"public class A {\n" +
 		"}"
@@ -379,7 +379,7 @@ public void testCreateResourceExcludedCompilationUnit() throws CoreException {
 		
 	assertResourceNamesEqual(
 		"Unexpected non-java resources",
-		"A.java",
+		"A.js",
 		pkg.getNonJavaResources());
 }
 /*
@@ -417,31 +417,31 @@ public void testIsOnClasspath1() throws CoreException {
 	setClasspath(new String[] {"/P/src", ""});
 	createFolder("/P/src/p");
 	IFile file = createFile(
-		"/P/src/p/A.java",
+		"/P/src/p/A.js",
 		"package p;\n" +
 		"public class A {\n" +
 		"}"
 	);
 	assertTrue("Resource should be on classpath", project.isOnClasspath(file));
 	
-	ICompilationUnit cu = getCompilationUnit("/P/src/p/A.java");
+	ICompilationUnit cu = getCompilationUnit("/P/src/p/A.js");
 	assertTrue("CU should be on classpath", project.isOnClasspath(cu));
 }
 /*
  * Ensures that a cu that is excluded is not on the classpath of the project.
  */
 public void testIsOnClasspath2() throws CoreException {
-	setClasspath(new String[] {"/P/src", "**/A.java"});
+	setClasspath(new String[] {"/P/src", "**/A.js"});
 	createFolder("/P/src/p");
 	IFile file = createFile(
-		"/P/src/p/A.java",
+		"/P/src/p/A.js",
 		"package p;\n" +
 		"public class A {\n" +
 		"}"
 	);
 	assertTrue("Resource should not be on classpath", !project.isOnClasspath(file));
 	
-	ICompilationUnit cu = getCompilationUnit("/P/src/p/A.java");
+	ICompilationUnit cu = getCompilationUnit("/P/src/p/A.js");
 	assertTrue("CU should not be on classpath", !project.isOnClasspath(cu));
 }
 /*
@@ -486,7 +486,7 @@ public void testNestedSourceFolder2() throws CoreException {
 	
 	clearDeltas();
 	createFile(
-		"/P/src1/src2/A.java",
+		"/P/src1/src2/A.js",
 		"public class A {\n" +
 		"}"
 	);
@@ -579,17 +579,17 @@ public void testNestedSourceFolder6() throws CoreException {
  * makes it appears as a child of its package and it is removed from the non-java resources.
  */
 public void testRenameExcludedCompilationUnit() throws CoreException {
-	setClasspath(new String[] {"/P/src", "**/A.java"});
+	setClasspath(new String[] {"/P/src", "**/A.js"});
 	createFolder("/P/src/p");
 	IFile file = createFile(
-		"/P/src/p/A.java",
+		"/P/src/p/A.js",
 		"package p;\n" +
 		"public class A {\n" +
 		"}"
 	);
 
 	clearDeltas();
-	file.move(new Path("/P/src/p/B.java"), false, null);
+	file.move(new Path("/P/src/p/B.js"), false, null);
 	
 	assertDeltas(
 		"Unexpected deltas",
@@ -648,17 +648,17 @@ public void testRenameExcludedPackage() throws CoreException {
  * makes it appears as a child of its package and it is removed from the non-java resources.
  */
 public void testRenameResourceExcludedCompilationUnit() throws CoreException {
-	setClasspath(new String[] {"/P/src", "**/A.java"});
+	setClasspath(new String[] {"/P/src", "**/A.js"});
 	createFolder("/P/src/p");
 	IFile file = createFile(
-		"/P/src/p/A.java",
+		"/P/src/p/A.js",
 		"package p;\n" +
 		"public class A {\n" +
 		"}"
 	);
 	
 	clearDeltas();
-	file.move(new Path("/P/src/p/B.java"),  false, null);
+	file.move(new Path("/P/src/p/B.js"),  false, null);
 	
 	assertDeltas(
 		"Unexpected deltas",
@@ -684,10 +684,10 @@ public void testRenameResourceExcludedCompilationUnit() throws CoreException {
  * Ensure search doesn't find matches in an excluded compilation unit.
  */
 public void testSearchWithExcludedCompilationUnit1() throws CoreException {
-	setClasspath(new String[] {"/P/src", "**/A.java"});
+	setClasspath(new String[] {"/P/src", "**/A.js"});
 	createFolder("/P/src/p");
 	createFile(
-		"/P/src/p/A.java",
+		"/P/src/p/A.js",
 		"package p;\n" +
 		"public class A {\n" +
 		"}"
@@ -709,10 +709,10 @@ public void testSearchWithExcludedCompilationUnit1() throws CoreException {
  * Ensure search find matches in a compilation unit that was excluded but that is not any longer.
  */
 public void testSearchWithExcludedCompilationUnit2() throws CoreException {
-	setClasspath(new String[] {"/P/src", "A.java"});
+	setClasspath(new String[] {"/P/src", "A.js"});
 	createFolder("/P/src/p");
 	createFile(
-		"/P/src/p/A.java",
+		"/P/src/p/A.js",
 		"package p;\n" +
 		"public class A {\n" +
 		"}"
@@ -806,7 +806,7 @@ public void testSearchPotentialMatchInOutput() throws CoreException {
 				IJavaProject javaProject = createJavaProject("P2", new String[] {}, "bin");
 				javaProject.setRawClasspath(createClasspath(new String[] {"/P2", "src/", "/P2/src", ""}, false/*no inclusion*/, true/*exclusion*/), null);
 				createFile(
-					"/P2/bin/X.java",
+					"/P2/bin/X.js",
 					"public class X {\n" +
 					"}"
 				);
@@ -831,10 +831,10 @@ public void testSearchPotentialMatchInOutput() throws CoreException {
  * makes it appears as a child of its package and it is removed from the non-java resources.
  */
 public void testRemoveExclusionOnCompilationUnit() throws CoreException {
-	setClasspath(new String[] {"/P/src", "A.java"});
+	setClasspath(new String[] {"/P/src", "A.js"});
 	createFolder("/P/src/p");
 	createFile(
-		"/P/src/p/A.java",
+		"/P/src/p/A.js",
 		"package p;\n" +
 		"public class A {\n" +
 		"}"

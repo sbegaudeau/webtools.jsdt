@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.tests.model;
 
-import org.eclipse.wst.jsdt.core.*;
 
 import org.eclipse.wst.jsdt.internal.codeassist.RelevanceConstants;
+import org.eclipse.wst.jsdt.core.*;
 
 import junit.framework.*;
 
@@ -36,9 +36,8 @@ public static Test suite() {
 public void test0001() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0001/X.java",
-		"package test0001;\n" + 
-		"public class X {\n" + 
+		"/Completion/src3/test0001/X.js",
+		"function X(){\n" + 
 		"  ZZZZ\n" + 
 		"}");
 	
@@ -61,9 +60,8 @@ public void test0001() throws JavaModelException {
 public void test0002() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0002/X.java",
-		"package test0002;\n" + 
-		"public class X {\n" + 
+		"/Completion/src3/test0002/X.js",
+		"function X() {\n" + 
 		"  ZZZZ\n" + 
 		"}");
 	
@@ -86,9 +84,8 @@ public void test0002() throws JavaModelException {
 public void test0003() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0003/X.java",
-		"package test0003;\n" + 
-		"public class X {\n" + 
+		"/Completion/src3/test0003/X.js",
+		"function X() {\n" + 
 		"  ZZZZ\n" + 
 		"}");
 	
@@ -111,9 +108,8 @@ public void test0003() throws JavaModelException {
 public void test0004() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0004/X.java",
-		"package test0004;\n" + 
-		"public class X {\n" + 
+		"/Completion/src3/test0004/X.js",
+		"function X() {\n" + 
 		"  /**/\n" + 
 		"}");
 	
@@ -133,89 +129,87 @@ public void test0004() throws JavaModelException {
 		"expectedTypesKeys=null",
 		result.context);
 }
-public void test0005() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
-	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0005/X.java",
-		"package test0005;\n" + 
-		"public class X {\n" + 
-		"  ZZZZ foo()\n" + 
-		"}");
-	
-	String str = this.workingCopies[0].getSource();
-	int tokenStart = str.lastIndexOf("ZZZZ");
-	int tokenEnd = tokenStart + "ZZZZ".length() - 1;
-	int cursorLocation = str.lastIndexOf("ZZZZ") + "ZZZZ".length();
-
-	CompletionResult result = contextComplete(this.workingCopies[0], cursorLocation);
-
-	assertResults(
-		"completion offset="+(cursorLocation)+"\n" +
-		"completion range=["+(tokenStart)+", "+(tokenEnd)+"]\n" +
-		"completion token=\"ZZZZ\"\n" +
-		"completion token kind=TOKEN_KIND_NAME\n" +
-		"expectedTypesSignatures=null\n" +
-		"expectedTypesKeys=null",
-		result.context);
-}
-public void test0006() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
-	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0006/X.java",
-		"package test0006;\n" + 
-		"public class X {\n" + 
-		"  ZZZZ foo()\n" + 
-		"}");
-	
-	String str = this.workingCopies[0].getSource();
-	int tokenStart = str.lastIndexOf("ZZZZ");
-	int tokenEnd = tokenStart + "ZZZZ".length() - 1;
-	int cursorLocation = str.lastIndexOf("ZZZZ");
-
-	CompletionResult result = contextComplete(this.workingCopies[0], cursorLocation);
-
-	assertResults(
-		"completion offset="+(cursorLocation)+"\n" +
-		"completion range=["+(tokenStart)+", "+(tokenEnd)+"]\n" +
-		"completion token=\"\"\n" +
-		"completion token kind=TOKEN_KIND_NAME\n" +
-		"expectedTypesSignatures=null\n" +
-		"expectedTypesKeys=null",
-		result.context);
-}
-public void test0007() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
-	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0007/X.java",
-		"package test0007;\n" + 
-		"public class X {\n" + 
-		"  ZZZZ foo()\n" + 
-		"}");
-	
-	String str = this.workingCopies[0].getSource();
-	int tokenStart = str.lastIndexOf("ZZZZ");
-	int tokenEnd = tokenStart + "ZZZZ".length() - 1;
-	int cursorLocation = str.lastIndexOf("ZZZZ") + "ZZ".length();
-
-	CompletionResult result = contextComplete(this.workingCopies[0], cursorLocation);
-	
-	assertResults(
-		"completion offset="+(cursorLocation)+"\n" +
-		"completion range=["+(tokenStart)+", "+(tokenEnd)+"]\n" +
-		"completion token=\"ZZ\"\n" +
-		"completion token kind=TOKEN_KIND_NAME\n" +
-		"expectedTypesSignatures=null\n" +
-		"expectedTypesKeys=null",
-		result.context);
-}
+//public void test0005() throws JavaModelException {
+//	this.workingCopies = new ICompilationUnit[1];
+//	this.workingCopies[0] = getWorkingCopy(
+//		"/Completion/src3/test0005/X.js",
+//		"package test0005;\n" + 
+//		"public class X {\n" + 
+//		"  ZZZZ foo()\n" + 
+//		"}");
+//	
+//	String str = this.workingCopies[0].getSource();
+//	int tokenStart = str.lastIndexOf("ZZZZ");
+//	int tokenEnd = tokenStart + "ZZZZ".length() - 1;
+//	int cursorLocation = str.lastIndexOf("ZZZZ") + "ZZZZ".length();
+//
+//	CompletionResult result = contextComplete(this.workingCopies[0], cursorLocation);
+//
+//	assertResults(
+//		"completion offset="+(cursorLocation)+"\n" +
+//		"completion range=["+(tokenStart)+", "+(tokenEnd)+"]\n" +
+//		"completion token=\"ZZZZ\"\n" +
+//		"completion token kind=TOKEN_KIND_NAME\n" +
+//		"expectedTypesSignatures=null\n" +
+//		"expectedTypesKeys=null",
+//		result.context);
+//}
+//public void test0006() throws JavaModelException {
+//	this.workingCopies = new ICompilationUnit[1];
+//	this.workingCopies[0] = getWorkingCopy(
+//		"/Completion/src3/test0006/X.js",
+//		"package test0006;\n" + 
+//		"public class X {\n" + 
+//		"  ZZZZ foo()\n" + 
+//		"}");
+//	
+//	String str = this.workingCopies[0].getSource();
+//	int tokenStart = str.lastIndexOf("ZZZZ");
+//	int tokenEnd = tokenStart + "ZZZZ".length() - 1;
+//	int cursorLocation = str.lastIndexOf("ZZZZ");
+//
+//	CompletionResult result = contextComplete(this.workingCopies[0], cursorLocation);
+//
+//	assertResults(
+//		"completion offset="+(cursorLocation)+"\n" +
+//		"completion range=["+(tokenStart)+", "+(tokenEnd)+"]\n" +
+//		"completion token=\"\"\n" +
+//		"completion token kind=TOKEN_KIND_NAME\n" +
+//		"expectedTypesSignatures=null\n" +
+//		"expectedTypesKeys=null",
+//		result.context);
+//}
+//public void test0007() throws JavaModelException {
+//	this.workingCopies = new ICompilationUnit[1];
+//	this.workingCopies[0] = getWorkingCopy(
+//		"/Completion/src3/test0007/X.js",
+//		"package test0007;\n" + 
+//		"public class X {\n" + 
+//		"  ZZZZ foo()\n" + 
+//		"}");
+//	
+//	String str = this.workingCopies[0].getSource();
+//	int tokenStart = str.lastIndexOf("ZZZZ");
+//	int tokenEnd = tokenStart + "ZZZZ".length() - 1;
+//	int cursorLocation = str.lastIndexOf("ZZZZ") + "ZZ".length();
+//
+//	CompletionResult result = contextComplete(this.workingCopies[0], cursorLocation);
+//	
+//	assertResults(
+//		"completion offset="+(cursorLocation)+"\n" +
+//		"completion range=["+(tokenStart)+", "+(tokenEnd)+"]\n" +
+//		"completion token=\"ZZ\"\n" +
+//		"completion token kind=TOKEN_KIND_NAME\n" +
+//		"expectedTypesSignatures=null\n" +
+//		"expectedTypesKeys=null",
+//		result.context);
+//}
 public void test0008() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0008/X.java",
-		"package test0008;\n" + 
-		"public class X {\n" + 
-		"  /**/ foo()\n" + 
-		"}");
+		"/Completion/src3/test0008/X.js",
+		"  /**/ function foo()\n" + 
+		"");
 	
 	String str = this.workingCopies[0].getSource();
 	int tokenStart = str.lastIndexOf("/**/") + "/**/".length();
@@ -233,37 +227,37 @@ public void test0008() throws JavaModelException {
 		"expectedTypesKeys=null",
 		result.context);
 }
-public void test0009() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
-	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0009/X.java",
-		"package test0009;\n" + 
-		"public class X {\n" + 
-		"  void foo() {\n" + 
-		"    ZZZZ\n" + 
-		"  }\n" + 
-		"}");
-	
-	String str = this.workingCopies[0].getSource();
-	int tokenStart = str.lastIndexOf("ZZZZ");
-	int tokenEnd = tokenStart + "ZZZZ".length() - 1;
-	int cursorLocation = str.lastIndexOf("ZZZZ") + "ZZZZ".length();
-
-	CompletionResult result = contextComplete(this.workingCopies[0], cursorLocation);
-
-	assertResults(
-		"completion offset="+(cursorLocation)+"\n" +
-		"completion range=["+(tokenStart)+", "+(tokenEnd)+"]\n" +
-		"completion token=\"ZZZZ\"\n" +
-		"completion token kind=TOKEN_KIND_NAME\n" +
-		"expectedTypesSignatures=null\n" +
-		"expectedTypesKeys=null",
-		result.context);
-}
+//public void test0009() throws JavaModelException {
+//	this.workingCopies = new ICompilationUnit[1];
+//	this.workingCopies[0] = getWorkingCopy(
+//		"/Completion/src3/test0009/X.js",
+//		"package test0009;\n" + 
+//		"public class X {\n" + 
+//		"  void foo() {\n" + 
+//		"    ZZZZ\n" + 
+//		"  }\n" + 
+//		"}");
+//	
+//	String str = this.workingCopies[0].getSource();
+//	int tokenStart = str.lastIndexOf("ZZZZ");
+//	int tokenEnd = tokenStart + "ZZZZ".length() - 1;
+//	int cursorLocation = str.lastIndexOf("ZZZZ") + "ZZZZ".length();
+//
+//	CompletionResult result = contextComplete(this.workingCopies[0], cursorLocation);
+//
+//	assertResults(
+//		"completion offset="+(cursorLocation)+"\n" +
+//		"completion range=["+(tokenStart)+", "+(tokenEnd)+"]\n" +
+//		"completion token=\"ZZZZ\"\n" +
+//		"completion token kind=TOKEN_KIND_NAME\n" +
+//		"expectedTypesSignatures=null\n" +
+//		"expectedTypesKeys=null",
+//		result.context);
+//}
 public void test0010() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0010/X.java",
+		"/Completion/src3/test0010/X.js",
 		"package test0010;\n" + 
 		"public class X {\n" + 
 		"  void foo() {\n" + 
@@ -290,7 +284,7 @@ public void test0010() throws JavaModelException {
 public void test0011() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0011/X.java",
+		"/Completion/src3/test0011/X.js",
 		"package test0011;\n" + 
 		"public class X {\n" + 
 		"  void foo() {\n" + 
@@ -317,7 +311,7 @@ public void test0011() throws JavaModelException {
 public void test0012() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0012/X.java",
+		"/Completion/src3/test0012/X.js",
 		"package test0012;\n" + 
 		"public class X {\n" + 
 		"  void foo() {\n" + 
@@ -344,7 +338,7 @@ public void test0012() throws JavaModelException {
 public void test0013() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0013/X.java",
+		"/Completion/src3/test0013/X.js",
 		"package test0013;\n" + 
 		"public class X extends ZZZZ {\n" + 
 		"}");
@@ -368,7 +362,7 @@ public void test0013() throws JavaModelException {
 public void test0014() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0014/X.java",
+		"/Completion/src3/test0014/X.js",
 		"package test0014;\n" + 
 		"public class X extends ZZZZ {\n" + 
 		"}");
@@ -392,7 +386,7 @@ public void test0014() throws JavaModelException {
 public void test0015() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0015/X.java",
+		"/Completion/src3/test0015/X.js",
 		"package test0015;\n" + 
 		"public class X extends ZZZZ {\n" + 
 		"}");
@@ -416,7 +410,7 @@ public void test0015() throws JavaModelException {
 public void test0016() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0016/X.java",
+		"/Completion/src3/test0016/X.js",
 		"package test0016;\n" + 
 		"public class X extends /**/ {\n" + 
 		"}");
@@ -440,14 +434,14 @@ public void test0016() throws JavaModelException {
 public void test0017() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src3/test0017/YYYY.java",
+		"/Completion/src3/test0017/YYYY.js",
 		"package test0017;\n" + 
 		"public class YYYY {\n" + 
 		"  public class ZZZZ {\n" + 
 		"  }\n" + 
 		"}");
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0017/X.java",
+		"/Completion/src3/test0017/X.js",
 		"package test0017;\n" + 
 		"public class X {\n" + 
 		"  void foo() {\n" + 
@@ -474,14 +468,14 @@ public void test0017() throws JavaModelException {
 public void test0018() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src3/test0018/YYYY.java",
+		"/Completion/src3/test0018/YYYY.js",
 		"package test0018;\n" + 
 		"public class YYYY {\n" + 
 		"  public class ZZZZ {\n" + 
 		"  }\n" + 
 		"}");
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0018/X.java",
+		"/Completion/src3/test0018/X.js",
 		"package test0018;\n" + 
 		"public class X {\n" + 
 		"  void foo() {\n" + 
@@ -508,14 +502,14 @@ public void test0018() throws JavaModelException {
 public void test0019() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src3/test0019/YYYY.java",
+		"/Completion/src3/test0019/YYYY.js",
 		"package test0019;\n" + 
 		"public class YYYY {\n" + 
 		"  public class ZZZZ {\n" + 
 		"  }\n" + 
 		"}");
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0019/X.java",
+		"/Completion/src3/test0019/X.js",
 		"package test0019;\n" + 
 		"public class X {\n" + 
 		"  void foo() {\n" + 
@@ -542,14 +536,14 @@ public void test0019() throws JavaModelException {
 public void test0020() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src3/test0020/YYYY.java",
+		"/Completion/src3/test0020/YYYY.js",
 		"package test0020;\n" + 
 		"public class YYYY {\n" + 
 		"  public class ZZZZ {\n" + 
 		"  }\n" + 
 		"}");
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0020/X.java",
+		"/Completion/src3/test0020/X.js",
 		"package test0020;\n" + 
 		"public class X {\n" + 
 		"  void foo() {\n" + 
@@ -576,7 +570,7 @@ public void test0020() throws JavaModelException {
 public void test0021() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0021/X.java",
+		"/Completion/src3/test0021/X.js",
 		"package test0021;\n" + 
 		"public class X {\n" + 
 		"  void foo() {\n" + 
@@ -603,7 +597,7 @@ public void test0021() throws JavaModelException {
 public void test0022() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0022/X.java",
+		"/Completion/src3/test0022/X.js",
 		"package test0022;\n" + 
 		"public class X {\n" + 
 		"  void foo() {\n" + 
@@ -630,7 +624,7 @@ public void test0022() throws JavaModelException {
 public void test0023() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0023/X.java",
+		"/Completion/src3/test0023/X.js",
 		"package test0023;\n" + 
 		"public class X {\n" + 
 		"  void foo() {\n" + 
@@ -657,7 +651,7 @@ public void test0023() throws JavaModelException {
 public void test0024() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0024/X.java",
+		"/Completion/src3/test0024/X.js",
 		"package test0024;\n" + 
 		"public class X {\n" + 
 		"  void foo() {\n" + 
@@ -684,7 +678,7 @@ public void test0024() throws JavaModelException {
 public void test0025() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0025/X.java",
+		"/Completion/src3/test0025/X.js",
 		"package test0025;\n" + 
 		"public class X {\n" + 
 		"  Object var;\n" + 
@@ -712,7 +706,7 @@ public void test0025() throws JavaModelException {
 public void test0026() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0026/X.java",
+		"/Completion/src3/test0026/X.js",
 		"package test0026;\n" + 
 		"public class X {\n" + 
 		"  Object var;\n" + 
@@ -742,7 +736,7 @@ public void test0026() throws JavaModelException {
 public void test0027() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0027/X.java",
+		"/Completion/src3/test0027/X.js",
 		"package test0027;\n" + 
 		"public class X {\n" + 
 		"  Object var;\n" + 
@@ -770,7 +764,7 @@ public void test0027() throws JavaModelException {
 public void test0028() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0028/X.java",
+		"/Completion/src3/test0028/X.js",
 		"package test0028;\n" + 
 		"public class X {\n" + 
 		"  Object var;\n" + 
@@ -798,14 +792,14 @@ public void test0028() throws JavaModelException {
 public void test0029() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src3/test0029/YYYY.java",
+		"/Completion/src3/test0029/YYYY.js",
 		"package test0029;\n" + 
 		"public class YYYY {\n" + 
 		"  public class ZZZZ {\n" + 
 		"  }\n" + 
 		"}");
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0029/X.java",
+		"/Completion/src3/test0029/X.js",
 		"package test0029;\n" + 
 		"public class X extends YYYY.ZZZZ {\n" + 
 		"}");
@@ -829,14 +823,14 @@ public void test0029() throws JavaModelException {
 public void test0030() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src3/test0030/YYYY.java",
+		"/Completion/src3/test0030/YYYY.js",
 		"package test0030;\n" + 
 		"public class YYYY {\n" + 
 		"  public class ZZZZ {\n" + 
 		"  }\n" + 
 		"}");
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0030/X.java",
+		"/Completion/src3/test0030/X.js",
 		"package test0030;\n" + 
 		"public class X extends YYYY.ZZZZ {\n" + 
 		"}");
@@ -862,14 +856,14 @@ public void test0030() throws JavaModelException {
 public void test0031() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src3/test0031/YYYY.java",
+		"/Completion/src3/test0031/YYYY.js",
 		"package test0031;\n" + 
 		"public class YYYY {\n" + 
 		"  public class ZZZZ {\n" + 
 		"  }\n" + 
 		"}");
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0031/X.java",
+		"/Completion/src3/test0031/X.js",
 		"package test0031;\n" + 
 		"public class X extends YYYY.ZZZZ {\n" + 
 		"}");
@@ -893,14 +887,14 @@ public void test0031() throws JavaModelException {
 public void test0032() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src3/test0032/YYYY.java",
+		"/Completion/src3/test0032/YYYY.js",
 		"package test0032;\n" + 
 		"public class YYYY {\n" + 
 		"  public class ZZZZ {\n" + 
 		"  }\n" + 
 		"}");
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0032/X.java",
+		"/Completion/src3/test0032/X.js",
 		"package test0032;\n" + 
 		"public class X extends YYYY. {\n" + 
 		"}");
@@ -924,7 +918,7 @@ public void test0032() throws JavaModelException {
 public void test0033() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0033/X.java",
+		"/Completion/src3/test0033/X.js",
 		"package test0033;\n" + 
 		"public class X extends test0033.ZZZZ {\n" + 
 		"}");
@@ -948,7 +942,7 @@ public void test0033() throws JavaModelException {
 public void test0034() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0034/X.java",
+		"/Completion/src3/test0034/X.js",
 		"package test0034;\n" + 
 		"public class X extends test0034.ZZZZ {\n" + 
 		"}");
@@ -972,7 +966,7 @@ public void test0034() throws JavaModelException {
 public void test0035() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0035/X.java",
+		"/Completion/src3/test0035/X.js",
 		"package test0035;\n" + 
 		"public class X extends test0035.ZZZZ {\n" + 
 		"}");
@@ -996,7 +990,7 @@ public void test0035() throws JavaModelException {
 public void test0036() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0036/X.java",
+		"/Completion/src3/test0036/X.js",
 		"package test0036;\n" + 
 		"public class X extends test0036. {\n" + 
 		"}");
@@ -1020,7 +1014,7 @@ public void test0036() throws JavaModelException {
 public void test0037() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0037/X.java",
+		"/Completion/src3/test0037/X.js",
 		"package test0037;\n" + 
 		"public class X {\n" + 
 		"  X ZZZZ;\n" + 
@@ -1048,7 +1042,7 @@ public void test0037() throws JavaModelException {
 public void test0038() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0038/X.java",
+		"/Completion/src3/test0038/X.js",
 		"package test0038;\n" + 
 		"public class X {\n" + 
 		"  X ZZZZ;\n" + 
@@ -1076,7 +1070,7 @@ public void test0038() throws JavaModelException {
 public void test0039() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0039/X.java",
+		"/Completion/src3/test0039/X.js",
 		"package test0039;\n" + 
 		"public class X {\n" + 
 		"  X ZZZZ;\n" + 
@@ -1104,7 +1098,7 @@ public void test0039() throws JavaModelException {
 public void test0040() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0040/X.java",
+		"/Completion/src3/test0040/X.js",
 		"package test0040;\n" + 
 		"public class X {\n" + 
 		"  X ZZZZ;\n" + 
@@ -1132,7 +1126,7 @@ public void test0040() throws JavaModelException {
 public void test0041() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0041/X.java",
+		"/Completion/src3/test0041/X.js",
 		"package test0041;\n" + 
 		"public class X {\n" + 
 		"  X ZZZZ;\n" + 
@@ -1160,7 +1154,7 @@ public void test0041() throws JavaModelException {
 public void test0042() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0042/X.java",
+		"/Completion/src3/test0042/X.js",
 		"package test0042;\n" + 
 		"public class X {\n" + 
 		"  X ZZZZ;\n" + 
@@ -1188,7 +1182,7 @@ public void test0042() throws JavaModelException {
 public void test0043() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0043/X.java",
+		"/Completion/src3/test0043/X.js",
 		"package test0043;\n" + 
 		"public class X {\n" + 
 		"  X ZZZZ;\n" + 
@@ -1216,7 +1210,7 @@ public void test0043() throws JavaModelException {
 public void test0044() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0044/X.java",
+		"/Completion/src3/test0044/X.js",
 		"package test0044;\n" + 
 		"public class X {\n" + 
 		"  X ZZZZ;\n" + 
@@ -1244,7 +1238,7 @@ public void test0044() throws JavaModelException {
 public void test0045() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0045/X.java",
+		"/Completion/src3/test0045/X.js",
 		"package test0045;\n" + 
 		"public class X {\n" + 
 		"  void ZZZZ(){\n" + 
@@ -1270,7 +1264,7 @@ public void test0045() throws JavaModelException {
 public void test0046() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0046/X.java",
+		"/Completion/src3/test0046/X.js",
 		"package test0046;\n" + 
 		"public class X {\n" + 
 		"  void ZZZZ(){\n" + 
@@ -1296,7 +1290,7 @@ public void test0046() throws JavaModelException {
 public void test0047() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0047/X.java",
+		"/Completion/src3/test0047/X.js",
 		"package test0047;\n" + 
 		"public class X {\n" + 
 		"  void ZZZZ(){\n" + 
@@ -1322,7 +1316,7 @@ public void test0047() throws JavaModelException {
 public void test0048() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0048/X.java",
+		"/Completion/src3/test0048/X.js",
 		"package test0048;\n" + 
 		"public class X {\n" + 
 		"  void (){\n" + 
@@ -1348,7 +1342,7 @@ public void test0048() throws JavaModelException {
 public void test0049() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0049/X.java",
+		"/Completion/src3/test0049/X.js",
 		"package test0049;\n" + 
 		"public class X {\n" + 
 		"  int ZZZZ;\n" + 
@@ -1373,7 +1367,7 @@ public void test0049() throws JavaModelException {
 public void test0050() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0050/X.java",
+		"/Completion/src3/test0050/X.js",
 		"package test0050;\n" + 
 		"public class X {\n" + 
 		"  int ZZZZ;\n" + 
@@ -1398,7 +1392,7 @@ public void test0050() throws JavaModelException {
 public void test0051() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0051/X.java",
+		"/Completion/src3/test0051/X.js",
 		"package test0051;\n" + 
 		"public class X {\n" + 
 		"  int ZZZZ;\n" + 
@@ -1423,7 +1417,7 @@ public void test0051() throws JavaModelException {
 public void test0052() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0052/X.java",
+		"/Completion/src3/test0052/X.js",
 		"package test0052;\n" + 
 		"public class X {\n" + 
 		"  int ;\n" + 
@@ -1448,7 +1442,7 @@ public void test0052() throws JavaModelException {
 public void test0053() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0053/X.java",
+		"/Completion/src3/test0053/X.js",
 		"package test0053;\n" + 
 		"public class X {\n" + 
 		"  {int ZZZZ;}\n" + 
@@ -1473,7 +1467,7 @@ public void test0053() throws JavaModelException {
 public void test0054() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0054/X.java",
+		"/Completion/src3/test0054/X.js",
 		"package test0054;\n" + 
 		"public class X {\n" + 
 		"  {int ZZZZ;}\n" + 
@@ -1498,7 +1492,7 @@ public void test0054() throws JavaModelException {
 public void test0055() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0055/X.java",
+		"/Completion/src3/test0055/X.js",
 		"package test0055;\n" + 
 		"public class X {\n" + 
 		"  {int ZZZZ;}\n" + 
@@ -1523,7 +1517,7 @@ public void test0055() throws JavaModelException {
 public void test0056() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0056/X.java",
+		"/Completion/src3/test0056/X.js",
 		"package test0056;\n" + 
 		"public class X {\n" + 
 		"  {int ;}\n" + 
@@ -1548,7 +1542,7 @@ public void test0056() throws JavaModelException {
 public void test0057() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0057/X.java",
+		"/Completion/src3/test0057/X.js",
 		"package test0057;\n" + 
 		"public class X {\n" + 
 		"  void foo(int ZZZZ){}\n" + 
@@ -1573,7 +1567,7 @@ public void test0057() throws JavaModelException {
 public void test0058() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0058/X.java",
+		"/Completion/src3/test0058/X.js",
 		"package test0058;\n" + 
 		"public class X {\n" + 
 		"  void foo(int ZZZZ){}\n" + 
@@ -1598,7 +1592,7 @@ public void test0058() throws JavaModelException {
 public void test0059() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0059/X.java",
+		"/Completion/src3/test0059/X.js",
 		"package test0059;\n" + 
 		"public class X {\n" + 
 		"  void foo(int ZZZZ){}\n" + 
@@ -1623,7 +1617,7 @@ public void test0059() throws JavaModelException {
 public void test0060() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0060/X.java",
+		"/Completion/src3/test0060/X.js",
 		"package test0060;\n" + 
 		"public class X {\n" + 
 		"  void foo(int ){}\n" + 
@@ -1648,7 +1642,7 @@ public void test0060() throws JavaModelException {
 public void test0061() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0061/X.java",
+		"/Completion/src3/test0061/X.js",
 		"package test0061;\n" + 
 		"public class X ZZZZ {\n" + 
 		"}");
@@ -1672,7 +1666,7 @@ public void test0061() throws JavaModelException {
 public void test0062() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0062/X.java",
+		"/Completion/src3/test0062/X.js",
 		"package test0062;\n" + 
 		"public class X ZZZZ {\n" + 
 		"}");
@@ -1696,7 +1690,7 @@ public void test0062() throws JavaModelException {
 public void test0063() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0063/X.java",
+		"/Completion/src3/test0063/X.js",
 		"package test0063;\n" + 
 		"public class X ZZZZ {\n" + 
 		"}");
@@ -1720,7 +1714,7 @@ public void test0063() throws JavaModelException {
 public void test0064() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0064/X.java",
+		"/Completion/src3/test0064/X.js",
 		"package test0064;\n" + 
 		"public class X  {\n" + 
 		"}");
@@ -1744,7 +1738,7 @@ public void test0064() throws JavaModelException {
 public void test0065() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0065/X.java",
+		"/Completion/src3/test0065/X.js",
 		"package test0065;\n" + 
 		"ZZZZ\n" + 
 		"}");
@@ -1768,7 +1762,7 @@ public void test0065() throws JavaModelException {
 public void test0066() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0066/X.java",
+		"/Completion/src3/test0066/X.js",
 		"package test0066;\n" + 
 		"ZZZZ\n" + 
 		"}");
@@ -1792,7 +1786,7 @@ public void test0066() throws JavaModelException {
 public void test0067() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0067/X.java",
+		"/Completion/src3/test0067/X.js",
 		"package test0067;\n" + 
 		"ZZZZ\n" + 
 		"}");
@@ -1816,7 +1810,7 @@ public void test0067() throws JavaModelException {
 public void test0068() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0068/X.java",
+		"/Completion/src3/test0068/X.js",
 		"package test0068;\n" + 
 		"/**/\n" + 
 		"}");
@@ -1840,7 +1834,7 @@ public void test0068() throws JavaModelException {
 public void test0069() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0069/X.java",
+		"/Completion/src3/test0069/X.js",
 		"package test0069;\n" + 
 		"public class X {\n" + 
 		"  {\n" + 
@@ -1868,7 +1862,7 @@ public void test0069() throws JavaModelException {
 public void test0070() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0070/X.java",
+		"/Completion/src3/test0070/X.js",
 		"package test0070;\n" + 
 		"public class X {\n" + 
 		"  {\n" + 
@@ -1896,7 +1890,7 @@ public void test0070() throws JavaModelException {
 public void test0071() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0071/X.java",
+		"/Completion/src3/test0071/X.js",
 		"package test0071;\n" + 
 		"public class X {\n" + 
 		"  {\n" + 
@@ -1924,7 +1918,7 @@ public void test0071() throws JavaModelException {
 public void test0072() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0072/X.java",
+		"/Completion/src3/test0072/X.js",
 		"package test0072;\n" + 
 		"public class X {\n" + 
 		"  {\n" + 
@@ -1952,7 +1946,7 @@ public void test0072() throws JavaModelException {
 public void test0073() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0073/X.java",
+		"/Completion/src3/test0073/X.js",
 		"package ZZZZ;\n" + 
 		"public class X {\n" + 
 		"}");
@@ -1976,7 +1970,7 @@ public void test0073() throws JavaModelException {
 public void test0074() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0074/X.java",
+		"/Completion/src3/test0074/X.js",
 		"package ZZZZ;\n" + 
 		"public class X {\n" + 
 		"}");
@@ -2000,7 +1994,7 @@ public void test0074() throws JavaModelException {
 public void test0075() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0075/X.java",
+		"/Completion/src3/test0075/X.js",
 		"package ZZZZ;\n" + 
 		"public class X {\n" + 
 		"}");
@@ -2024,7 +2018,7 @@ public void test0075() throws JavaModelException {
 public void test0076() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0076/X.java",
+		"/Completion/src3/test0076/X.js",
 		"package \n" + 
 		"public class X {\n" + 
 		"}");
@@ -2048,7 +2042,7 @@ public void test0076() throws JavaModelException {
 public void test0077() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0077/test/X.java",
+		"/Completion/src3/test0077/test/X.js",
 		"package test0077.ZZZZ;\n" + 
 		"public class X {\n" + 
 		"}");
@@ -2072,7 +2066,7 @@ public void test0077() throws JavaModelException {
 public void test0078() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0078/test/X.java",
+		"/Completion/src3/test0078/test/X.js",
 		"package test0078.ZZZZ;\n" + 
 		"public class X {\n" + 
 		"}");
@@ -2096,7 +2090,7 @@ public void test0078() throws JavaModelException {
 public void test0079() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0079/test/X.java",
+		"/Completion/src3/test0079/test/X.js",
 		"package test0079.ZZZZ;\n" + 
 		"public class X {\n" + 
 		"}");
@@ -2120,7 +2114,7 @@ public void test0079() throws JavaModelException {
 public void test0080() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0080/test/X.java",
+		"/Completion/src3/test0080/test/X.js",
 		"package test0080.\n" + 
 		"public class X {\n" + 
 		"}");
@@ -2144,7 +2138,7 @@ public void test0080() throws JavaModelException {
 public void test0081() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0081/X.java",
+		"/Completion/src3/test0081/X.js",
 		"package test0081;\n" + 
 		"import ZZZZ;\n" + 
 		"public class X {\n" + 
@@ -2169,7 +2163,7 @@ public void test0081() throws JavaModelException {
 public void test0082() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0082/X.java",
+		"/Completion/src3/test0082/X.js",
 		"package test0082;\n" + 
 		"import ZZZZ;\n" + 
 		"public class X {\n" + 
@@ -2194,7 +2188,7 @@ public void test0082() throws JavaModelException {
 public void test0083() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0083/X.java",
+		"/Completion/src3/test0083/X.js",
 		"package test0083;\n" + 
 		"import ZZZZ;\n" + 
 		"public class X {\n" + 
@@ -2219,7 +2213,7 @@ public void test0083() throws JavaModelException {
 public void test0084() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0084/X.java",
+		"/Completion/src3/test0084/X.js",
 		"package test0084;\n" + 
 		"import \n" + 
 		"public class X {\n" + 
@@ -2244,7 +2238,7 @@ public void test0084() throws JavaModelException {
 public void test0085() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0085/test/X.java",
+		"/Completion/src3/test0085/test/X.js",
 		"package test0085;\n" + 
 		"import test0085.ZZZZ;\n" + 
 		"public class X {\n" + 
@@ -2269,7 +2263,7 @@ public void test0085() throws JavaModelException {
 public void test0086() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0086/test/X.java",
+		"/Completion/src3/test0086/test/X.js",
 		"package test0086;\n" + 
 		"import test0086.ZZZZ;\n" + 
 		"public class X {\n" + 
@@ -2294,7 +2288,7 @@ public void test0086() throws JavaModelException {
 public void test0087() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0087/test/X.java",
+		"/Completion/src3/test0087/test/X.js",
 		"package test0087;\n" + 
 		"import test0087.ZZZZ;\n" + 
 		"public class X {\n" + 
@@ -2319,7 +2313,7 @@ public void test0087() throws JavaModelException {
 public void test0088() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0084/test/X.java",
+		"/Completion/src3/test0084/test/X.js",
 		"package test0088;\n" + 
 		"import test0085.\n" + 
 		"public class X {\n" + 
@@ -2344,7 +2338,7 @@ public void test0088() throws JavaModelException {
 public void test0089() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0089/X.java",
+		"/Completion/src3/test0089/X.js",
 		"package test0089;\n" + 
 		"public class X {\n" + 
 		"  void foo(int a, int b) {\n" + 
@@ -2371,7 +2365,7 @@ public void test0089() throws JavaModelException {
 public void test0090() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0090/X.java",
+		"/Completion/src3/test0090/X.js",
 		"package test0090;\n" + 
 		"public class X {\n" + 
 		"  void foo(int a, int b) {\n" + 
@@ -2398,7 +2392,7 @@ public void test0090() throws JavaModelException {
 public void test0091() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0091/X.java",
+		"/Completion/src3/test0091/X.js",
 		"package test0091;\n" + 
 		"public class X {\n" + 
 		"  void foo(int a, int b) {\n" + 
@@ -2425,7 +2419,7 @@ public void test0091() throws JavaModelException {
 public void test0092() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0092/X.java",
+		"/Completion/src3/test0092/X.js",
 		"package test0092;\n" + 
 		"public class X {\n" + 
 		"  void foo(int a, int b) {\n" + 
@@ -2452,7 +2446,7 @@ public void test0092() throws JavaModelException {
 public void test0093() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0093/X.java",
+		"/Completion/src3/test0093/X.js",
 		"package test0093;\n" + 
 		"public class X {\n" + 
 		"  void foo(int a, int b) {\n" + 
@@ -2479,7 +2473,7 @@ public void test0093() throws JavaModelException {
 public void test0094() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0094/X.java",
+		"/Completion/src3/test0094/X.js",
 		"package test0094;\n" + 
 		"public class X {\n" + 
 		"  void foo(int a, int b) {\n" + 
@@ -2506,7 +2500,7 @@ public void test0094() throws JavaModelException {
 public void test0095() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0095/X.java",
+		"/Completion/src3/test0095/X.js",
 		"package test0095;\n" + 
 		"public class X {\n" + 
 		"  void foo(int a, int b) {\n" + 
@@ -2533,7 +2527,7 @@ public void test0095() throws JavaModelException {
 public void test0096() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0096/X.java",
+		"/Completion/src3/test0096/X.js",
 		"package test0096;\n" + 
 		"public class X {\n" + 
 		"  void foo(int a, int b) {\n" + 
@@ -2560,7 +2554,7 @@ public void test0096() throws JavaModelException {
 public void test0097() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0097/X.java",
+		"/Completion/src3/test0097/X.js",
 		"package test0097;\n" + 
 		"public class X {\n" + 
 		"  X(int a, int b) {}\n" +
@@ -2588,7 +2582,7 @@ public void test0097() throws JavaModelException {
 public void test0098() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0098/X.java",
+		"/Completion/src3/test0098/X.js",
 		"package test0098;\n" + 
 		"public class X {\n" + 
 		"  X(int a, int b) {}\n" +
@@ -2616,7 +2610,7 @@ public void test0098() throws JavaModelException {
 public void test0099() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0099/X.java",
+		"/Completion/src3/test0099/X.js",
 		"package test0099;\n" + 
 		"public class X {\n" + 
 		"  X(int a, int b) {}\n" +
@@ -2644,7 +2638,7 @@ public void test0099() throws JavaModelException {
 public void test0100() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0100/X.java",
+		"/Completion/src3/test0100/X.js",
 		"package test0100;\n" + 
 		"public class X {\n" + 
 		"  X(int a, int b) {}\n" +
@@ -2672,7 +2666,7 @@ public void test0100() throws JavaModelException {
 public void test0101() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0101/X.java",
+		"/Completion/src3/test0101/X.js",
 		"package test0101;\n" + 
 		"public class X {\n" + 
 		"  X(int a, int b) {}\n" +
@@ -2700,7 +2694,7 @@ public void test0101() throws JavaModelException {
 public void test0102() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0102/X.java",
+		"/Completion/src3/test0102/X.js",
 		"package test0102;\n" + 
 		"public class X {\n" + 
 		"  X(int a, int b) {}\n" +
@@ -2728,7 +2722,7 @@ public void test0102() throws JavaModelException {
 public void test0103() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0103/X.java",
+		"/Completion/src3/test0103/X.js",
 		"package test0103;\n" + 
 		"public class X {\n" + 
 		"  X(int a, int b) {}\n" +
@@ -2756,7 +2750,7 @@ public void test0103() throws JavaModelException {
 public void test0104() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0104/X.java",
+		"/Completion/src3/test0104/X.js",
 		"package test0104;\n" + 
 		"public class X {\n" + 
 		"  X(int a, int b) {}\n" +
@@ -2784,7 +2778,7 @@ public void test0104() throws JavaModelException {
 public void test0105() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0105/X.java",
+		"/Completion/src3/test0105/X.js",
 		"package test0105;\n" + 
 		"public class X {\n" + 
 		"  Object o = ZZZZ\n" +
@@ -2809,7 +2803,7 @@ public void test0105() throws JavaModelException {
 public void test0106() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0106/X.java",
+		"/Completion/src3/test0106/X.js",
 		"package test0106;\n" + 
 		"public class X {\n" + 
 		"  Object o = ZZZZ\n" +
@@ -2834,7 +2828,7 @@ public void test0106() throws JavaModelException {
 public void test0107() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0107/X.java",
+		"/Completion/src3/test0107/X.js",
 		"package test0107;\n" + 
 		"public class X {\n" + 
 		"  Object o = ZZZZ\n" +
@@ -2859,7 +2853,7 @@ public void test0107() throws JavaModelException {
 public void test0108() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0108/X.java",
+		"/Completion/src3/test0108/X.js",
 		"package test0108;\n" + 
 		"public class X {\n" + 
 		"  Object o = \n" +
@@ -2884,7 +2878,7 @@ public void test0108() throws JavaModelException {
 public void test0109() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0109/X.java",
+		"/Completion/src3/test0109/X.js",
 		"package test0109;\n" + 
 		"public class X {\n" + 
 		"  Object o = new ZZZZ\n" +
@@ -2909,7 +2903,7 @@ public void test0109() throws JavaModelException {
 public void test0110() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0110/X.java",
+		"/Completion/src3/test0110/X.js",
 		"package test0110;\n" + 
 		"public class X {\n" + 
 		"  Object o = new ZZZZ\n" +
@@ -2934,7 +2928,7 @@ public void test0110() throws JavaModelException {
 public void test0111() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0111/X.java",
+		"/Completion/src3/test0111/X.js",
 		"package test0111;\n" + 
 		"public class X {\n" + 
 		"  Object o = new ZZZZ\n" +
@@ -2959,7 +2953,7 @@ public void test0111() throws JavaModelException {
 public void test0112() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0112/X.java",
+		"/Completion/src3/test0112/X.js",
 		"package test0112;\n" + 
 		"public class X {\n" + 
 		"  Object o = new \n" +
@@ -2984,7 +2978,7 @@ public void test0112() throws JavaModelException {
 public void test0113() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0113/X.java",
+		"/Completion/src3/test0113/X.js",
 		"package test0113;\n" + 
 		"public class X {\n" + 
 		"  Object o = new Object() {\n" +
@@ -3011,7 +3005,7 @@ public void test0113() throws JavaModelException {
 public void test0114() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0114/X.java",
+		"/Completion/src3/test0114/X.js",
 		"package test0114;\n" + 
 		"public class X {\n" + 
 		"  Object o = new Object() {\n" +
@@ -3038,7 +3032,7 @@ public void test0114() throws JavaModelException {
 public void test0115() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0115/X.java",
+		"/Completion/src3/test0115/X.js",
 		"package test0115;\n" + 
 		"public class X {\n" + 
 		"  Object o = new Object() {\n" +
@@ -3065,7 +3059,7 @@ public void test0115() throws JavaModelException {
 public void test0116() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0116/X.java",
+		"/Completion/src3/test0116/X.js",
 		"package test0116;\n" + 
 		"public class X {\n" + 
 		"  Object o = new Object() {\n" +
@@ -3092,7 +3086,7 @@ public void test0116() throws JavaModelException {
 public void test0117() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0117/X.java",
+		"/Completion/src3/test0117/X.js",
 		"package test0117;\n" + 
 		"public class X {\n" + 
 		"  String s = \"ZZZZ\";\n" +
@@ -3117,7 +3111,7 @@ public void test0117() throws JavaModelException {
 public void test0118() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0118/X.java",
+		"/Completion/src3/test0118/X.js",
 		"package test0118;\n" + 
 		"public class X {\n" + 
 		"  String s = \"ZZZZ\";\n" +
@@ -3142,7 +3136,7 @@ public void test0118() throws JavaModelException {
 public void test0119() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0119/X.java",
+		"/Completion/src3/test0119/X.js",
 		"package test0119;\n" + 
 		"public class X {\n" + 
 		"  String s = \"ZZZZ\";\n" +
@@ -3167,7 +3161,7 @@ public void test0119() throws JavaModelException {
 public void test0120() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0120/X.java",
+		"/Completion/src3/test0120/X.js",
 		"package test0120;\n" + 
 		"public class X {\n" + 
 		"  String s = \"ZZZZ\";\n" +
@@ -3192,7 +3186,7 @@ public void test0120() throws JavaModelException {
 public void test0121() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0121/X.java",
+		"/Completion/src3/test0121/X.js",
 		"package test0121;\n" + 
 		"public class X {\n" + 
 		"  String s = \"ZZZZ\";\n" +
@@ -3215,7 +3209,7 @@ public void test0121() throws JavaModelException {
 public void test0122() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0122/X.java",
+		"/Completion/src3/test0122/X.js",
 		"package test0122;\n" + 
 		"public class X {\n" + 
 		"  String s = \"\";\n" +
@@ -3240,7 +3234,7 @@ public void test0122() throws JavaModelException {
 public void test0123() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0123/X.java",
+		"/Completion/src3/test0123/X.js",
 		"package test0123;\n" + 
 		"public class X {\n" + 
 		"  String s = \"ZZZZ\n" +
@@ -3265,7 +3259,7 @@ public void test0123() throws JavaModelException {
 public void test0124() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0124/X.java",
+		"/Completion/src3/test0124/X.js",
 		"package test0124;\n" + 
 		"public class X {\n" + 
 		"  String s = \"ZZZZ\n" +
@@ -3290,7 +3284,7 @@ public void test0124() throws JavaModelException {
 public void test0125() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0125/X.java",
+		"/Completion/src3/test0125/X.js",
 		"package test0125;\n" + 
 		"public class X {\n" + 
 		"  String s = \"ZZZZ\n" +
@@ -3315,7 +3309,7 @@ public void test0125() throws JavaModelException {
 public void test0126() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0126/X.java",
+		"/Completion/src3/test0126/X.js",
 		"package test0126;\n" + 
 		"public class X {\n" + 
 		"  String s = \"ZZZZ\n" +
@@ -3340,7 +3334,7 @@ public void test0126() throws JavaModelException {
 public void test0127() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0127/X.java",
+		"/Completion/src3/test0127/X.js",
 		"package test0127;\n" + 
 		"public class X {\n" + 
 		"  String s = \"\n" +
@@ -3365,7 +3359,7 @@ public void test0127() throws JavaModelException {
 public void test0128() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0127/X.java",
+		"/Completion/src3/test0127/X.js",
 		"package test0127;\n" + 
 		"public class X {\n" + 
 		"  String s0 = \"\n" +

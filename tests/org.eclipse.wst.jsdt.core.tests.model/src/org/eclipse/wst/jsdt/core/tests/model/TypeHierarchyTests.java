@@ -49,11 +49,11 @@ public void setUpSuite() throws Exception {
 
 	setUpJavaProject("TypeHierarchy");
 	addLibrary("myLib.jar", "myLibsrc.zip", new String[] {
-		"my/pkg/X.java",
+		"my/pkg/X.js",
 		"package my.pkg;\n" + 
 		"public class X {\n" + 
 		"}",
-		"my/pkg/Y.java",
+		"my/pkg/Y.js",
 		"package my.pkg;\n" + 
 		"public class Y {\n" + 
 		"  void foo() {\n" +
@@ -69,88 +69,88 @@ public void setUpSuite() throws Exception {
 	
 	IJavaProject project15 = createJavaProject("TypeHierarchy15", new String[] {"src"}, new String[] {"JCL15_LIB"}, "bin", "1.5");
 	addLibrary(project15, "lib15.jar", "lib15src.zip", new String[] {
-		"util/AbstractList.java",
+		"util/AbstractList.js",
 		"package util;\n" + 
 		"public class AbstractList<E> {\n" + 
 		"}",
-		"util/ArrayList.java",
+		"util/ArrayList.js",
 		"package util;\n" + 
 		"public class ArrayList<E> extends AbstractList<E> implements List<E> {\n" + 
 		"}",
-		"util/List.java",
+		"util/List.js",
 		"package util;\n" + 
 		"public interface List<E> {\n" + 
 		"}",
-		"util/Map.java",
+		"util/Map.js",
 		"package util;\n" + 
 		"public class Map<K,V> extends AbstractList<V> {\n" + 
 		"}",
 	}, JavaCore.VERSION_1_5);
 	createFile(
-		"/TypeHierarchy15/src/X.java", 
+		"/TypeHierarchy15/src/X.js", 
 		"import util.*;\n" +
 		"public class X<E> extends ArrayList<E> implements List<E> {\n" +
 		"}"
 	);
 	createFile(
-		"/TypeHierarchy15/src/Y.java", 
+		"/TypeHierarchy15/src/Y.js", 
 		"import util.*;\n" +
 		"public class Y extends ArrayList implements List {\n" +
 		"}"
 	);
 	createFile(
-		"/TypeHierarchy15/src/I.java", 
+		"/TypeHierarchy15/src/I.js", 
 		"public interface I<E> {\n" +
 		"}"
 	);
 	createFile(
-		"/TypeHierarchy15/src/A.java", 
+		"/TypeHierarchy15/src/A.js", 
 		"public class A<E> implements I<E> {\n" +
 		"}"
 	);
 	createFile(
-		"/TypeHierarchy15/src/X99606.java", 
+		"/TypeHierarchy15/src/X99606.js", 
 		"public class X99606 extends Y99606<X99606.Color> {\n" + 
 		"	static class Color {}\n" + 
 		"}"
 	);
 	createFile(
-		"/TypeHierarchy15/src/Y99606.java", 
+		"/TypeHierarchy15/src/Y99606.js", 
 		"public class Y99606<T> {\n" + 
 		"}"
 	);
 	createFile(
-		"/TypeHierarchy15/src/A108740.java", 
+		"/TypeHierarchy15/src/A108740.js", 
 		"class A108740<T> {}"
 	);
 	createFile(
-		"/TypeHierarchy15/src/B108740.java", 
+		"/TypeHierarchy15/src/B108740.js", 
 		"class B108740<T> extends A108740<C108740> {}"
 	);
 	createFile(
-		"/TypeHierarchy15/src/C108740.java", 
+		"/TypeHierarchy15/src/C108740.js", 
 		"class C108740 extends B108740<C108740> {}"
 	);
 	createFile(
-		"/TypeHierarchy15/src/D108740.java", 
+		"/TypeHierarchy15/src/D108740.js", 
 		"class D108740 extends B108740<D108740> {}"
 	);
 	createFile(
-		"/TypeHierarchy15/src/CycleParent.java", 
+		"/TypeHierarchy15/src/CycleParent.js", 
 		"class CycleParent extends CycleBase<CycleChild> {}"
 	);
 	createFile(
-		"/TypeHierarchy15/src/CycleBase.java", 
+		"/TypeHierarchy15/src/CycleBase.js", 
 		"class CycleBase<T extends CycleBase> {}"
 	);
 	createFile(
-		"/TypeHierarchy15/src/CycleChild.java", 
+		"/TypeHierarchy15/src/CycleChild.js", 
 		"class CycleChild extends CycleParent implements Comparable<CycleChild> {\n" +
 		"	public int compareTo(CycleChild o) { return 0; }\n" +
 		"}"
 	);
 	createFile(
-		"/TypeHierarchy15/src/Try.java", 
+		"/TypeHierarchy15/src/Try.js", 
 		"public enum Try {\n" + 
 		"    THIS,\n" + 
 		"    THAT(),\n" + 
@@ -174,7 +174,7 @@ public void tearDownSuite() throws Exception {
  * Ensures that a hierarchy on an anonymous type in an initializer is correct.
  */
 public void testAnonymousType01() throws JavaModelException {
-	IType typeA = getCompilationUnit("TypeHierarchy", "src", "p7", "A.java").getType("A");
+	IType typeA = getCompilationUnit("TypeHierarchy", "src", "p7", "A.js").getType("A");
 	IType type = typeA.getInitializer(1).getType("", 1);
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	assertHierarchyEquals(
@@ -189,7 +189,7 @@ public void testAnonymousType01() throws JavaModelException {
  * Ensures that a hierarchy on an anonymous type in a second initializer is correct.
  */
 public void testAnonymousType02() throws JavaModelException {
-	IType typeA = getCompilationUnit("TypeHierarchy", "src", "p7", "A.java").getType("A");
+	IType typeA = getCompilationUnit("TypeHierarchy", "src", "p7", "A.js").getType("A");
 	IType type = typeA.getInitializer(2).getType("", 1);
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	assertHierarchyEquals(
@@ -204,7 +204,7 @@ public void testAnonymousType02() throws JavaModelException {
  * Ensures that a hierarchy on an anonymous type in a field declaration is correct.
  */
 public void testAnonymousType03() throws JavaModelException {
-	IType typeA = getCompilationUnit("TypeHierarchy", "src", "p7", "A.java").getType("A");
+	IType typeA = getCompilationUnit("TypeHierarchy", "src", "p7", "A.js").getType("A");
 	IType type = typeA.getField("field1").getType("", 1);
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	assertHierarchyEquals(
@@ -219,7 +219,7 @@ public void testAnonymousType03() throws JavaModelException {
  * Ensures that a hierarchy on an anonymous type in a field declaration is correct.
  */
 public void testAnonymousType04() throws JavaModelException {
-	IType typeA = getCompilationUnit("TypeHierarchy", "src", "p7", "A.java").getType("A");
+	IType typeA = getCompilationUnit("TypeHierarchy", "src", "p7", "A.js").getType("A");
 	IType type = typeA.getField("field2").getType("", 1);
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	assertHierarchyEquals(
@@ -243,7 +243,7 @@ public void testAnonymousType04() throws JavaModelException {
  * Ensures that a hierarchy on an anonymous type in a method declaration is correct.
  */
 public void testAnonymousType05() throws JavaModelException {
-	IType typeA = getCompilationUnit("TypeHierarchy", "src", "p7", "A.java").getType("A");
+	IType typeA = getCompilationUnit("TypeHierarchy", "src", "p7", "A.js").getType("A");
 	IType type = typeA.getMethod("foo", new String[] {}).getType("", 1);
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	assertHierarchyEquals(
@@ -259,7 +259,7 @@ public void testAnonymousType05() throws JavaModelException {
  * (regression test for bug 44506 Type hierarchy is missing anonymous type)
  */
 public void testAnonymousType06() throws JavaModelException {
-	IType typeA = getCompilationUnit("TypeHierarchy", "src", "p8", "X.java").getType("X");
+	IType typeA = getCompilationUnit("TypeHierarchy", "src", "p8", "X.js").getType("X");
 	IType type = typeA.getMethod("foo", new String[] {}).getType("", 1);
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	assertHierarchyEquals(
@@ -285,7 +285,7 @@ public void testAnonymousType07() throws CoreException {
  * (regression test for bug 120667 [hierarchy] Type hierarchy for enum type does not include anonymous subtypes)
  */
 public void testAnonymousType08() throws CoreException {
-	IType type = getCompilationUnit("TypeHierarchy15/src/Try.java").getType("Try");
+	IType type = getCompilationUnit("TypeHierarchy15/src/Try.js").getType("Try");
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	assertHierarchyEquals(
 		"Focus: Try [in Try.java [in <default> [in src [in TypeHierarchy15]]]]\n" + 
@@ -303,7 +303,7 @@ public void testAnonymousType08() throws CoreException {
  * (regression test for bug 120667 [hierarchy] Type hierarchy for enum type does not include anonymous subtypes)
  */
 public void testAnonymousType09() throws CoreException {
-	IType type = getCompilationUnit("TypeHierarchy15/src/Try.java").getType("Try").getField("ANONYMOUS").getType("", 1);
+	IType type = getCompilationUnit("TypeHierarchy15/src/Try.js").getType("Try").getField("ANONYMOUS").getType("", 1);
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	assertHierarchyEquals(
 		"Focus: <anonymous #1> [in ANONYMOUS [in Try [in Try.java [in <default> [in src [in TypeHierarchy15]]]]]]\n" + 
@@ -321,7 +321,7 @@ public void testAnonymousType09() throws CoreException {
  * (regression test for bug 122444 [hierarchy] Type hierarchy of inner member type misses anonymous subtypes)
  */
 public void testAnonymousType10() throws CoreException {
-	ICompilationUnit cu =  getCompilationUnit("TypeHierarchy/src/q7/X.java");
+	ICompilationUnit cu =  getCompilationUnit("TypeHierarchy/src/q7/X.js");
 	cu.open(null);
 	IType type = cu.getType("X").getType("Member");
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
@@ -365,7 +365,7 @@ public void testBinaryInWrongPackage() throws CoreException {
 		createJavaProject("P", new String[] {"src"}, new String[] {"JCL_LIB", "lib"}, "bin");
 		createFolder("/P/src/p");
 		createFile(
-			"/P/src/p/X.java",
+			"/P/src/p/X.js",
 			"pakage p;\n" +
 			"public class X {\n" +
 			"}"
@@ -389,7 +389,7 @@ public void testBinaryInWrongPackage() throws CoreException {
  * (regression test for bug 48459 NPE in Type hierarchy)
  */
 public  void testBinarySubclass() throws JavaModelException {
-	IType type = getCompilationUnit("TypeHierarchy/src/p48459/p1/X48459.java").getType("X48459");
+	IType type = getCompilationUnit("TypeHierarchy/src/p48459/p1/X48459.js").getType("X48459");
 	ITypeHierarchy h = type.newTypeHierarchy(null);
 	assertHierarchyEquals(
 		"Focus: X48459 [in X48459.java [in p48459.p1 [in src [in TypeHierarchy]]]]\n" + 
@@ -462,11 +462,11 @@ public void testBinaryTypeHiddenByOtherJar() throws CoreException, IOException {
 		externalJar1 = Util.getOutputDirectory() + File.separator + "test1.jar";
 		Util.createJar(
 			new String[] {
-				"p/X.java",
+				"p/X.js",
 				"package p;\n" +
 				"public class X {\n" + 
 				"}" ,
-				"p/Y.java",
+				"p/Y.js",
 				"package p;\n" +
 				"public class Y extends X {\n" + 
 				"}" 
@@ -477,11 +477,11 @@ public void testBinaryTypeHiddenByOtherJar() throws CoreException, IOException {
 		externalJar2 = Util.getOutputDirectory() + File.separator + "test2.jar";
 		Util.createJar(
 			new String[] {
-				"p/X.java",
+				"p/X.js",
 				"package p;\n" +
 				"public class X {\n" + 
 				"}" ,
-				"p/Y.java",
+				"p/Y.js",
 				"package p;\n" +
 				"public class Y extends X {\n" + 
 				"}" 
@@ -517,11 +517,11 @@ public void testBinaryTypeInDotClassJar() throws CoreException, IOException {
 		externalJar = Util.getOutputDirectory() + File.separator + "test.classic.jar";
 		Util.createJar(
 			new String[] {
-				"p/X.java",
+				"p/X.js",
 				"package p;\n" +
 				"public class X {\n" + 
 				"}" ,
-				"p/Y.java",
+				"p/Y.js",
 				"package p;\n" +
 				"public class Y {\n" +
 				"  void foo() {\n" +
@@ -554,7 +554,7 @@ public void testBinaryTypeInDotClassJar() throws CoreException, IOException {
  */
 public void testCancel() throws JavaModelException {
 	boolean isCanceled = false;
-	IType type = getCompilationUnit("TypeHierarchy", "src", "p1", "X.java").getType("X");
+	IType type = getCompilationUnit("TypeHierarchy", "src", "p1", "X.js").getType("X");
 	IRegion region = JavaCore.newRegion();
 	region.add(getPackageFragmentRoot("TypeHierarchy", "src"));
 	try {
@@ -586,7 +586,7 @@ public void testContains() throws JavaModelException {
 	assertTrue("I must be included", this.typeHierarchy.contains(type));
 }
 public void testCycle() throws JavaModelException {
-	IType type = getCompilationUnit("/TypeHierarchy/src/cycle/X.java").getType("X");
+	IType type = getCompilationUnit("/TypeHierarchy/src/cycle/X.js").getType("X");
 	ITypeHierarchy hierarchy = type.newSupertypeHierarchy(null);
 	assertHierarchyEquals(
 		"Focus: X [in X.java [in cycle [in src [in TypeHierarchy]]]]\n" + 
@@ -597,7 +597,7 @@ public void testCycle() throws JavaModelException {
 	);
 }
 public void testCycle2() throws JavaModelException {
-	IType type = getCompilationUnit("/TypeHierarchy15/src/CycleParent.java").getType("CycleParent");
+	IType type = getCompilationUnit("/TypeHierarchy15/src/CycleParent.js").getType("CycleParent");
 	ITypeHierarchy hierarchy = type.newSupertypeHierarchy(null);
 	assertHierarchyEquals(
 		"Focus: CycleParent [in CycleParent.java [in <default> [in src [in TypeHierarchy15]]]]\n" + 
@@ -616,11 +616,11 @@ public void testEfficiencyMultipleProjects() throws CoreException {
 		createJavaProject("P1", new String[] {""}, new String[] {"JCL_LIB"}, "");
 		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P1"}, "");
 		createJavaProject("P3", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P1"}, "");
-		createFile("/P1/X.java", "public class X {}");
-		createFile("/P3/Y.java", "public class Y extends X {}");
-		createFile("/P3/Z.java", "public class Z extends X {}");
-		createFile("/P2/W.java", "public class W extends X {}");
-		IType type = getCompilationUnit("/P1/X.java").getType("X");
+		createFile("/P1/X.js", "public class X {}");
+		createFile("/P3/Y.js", "public class Y extends X {}");
+		createFile("/P3/Z.js", "public class Z extends X {}");
+		createFile("/P2/W.js", "public class W extends X {}");
+		IType type = getCompilationUnit("/P1/X.js").getType("X");
 		class ProgressCounter extends TestProgressMonitor {
 			int count = 0;
 			public boolean isCanceled() {
@@ -642,12 +642,12 @@ public void testEfficiencyMultipleProjects() throws CoreException {
 public void testEmptyWorkingCopyPotentialSubtype() throws JavaModelException {
     ICompilationUnit workingCopy = null;
     try {
-        workingCopy = getCompilationUnit("/TypeHierarchy/src/q4/Y.java");
+        workingCopy = getCompilationUnit("/TypeHierarchy/src/q4/Y.js");
         workingCopy.becomeWorkingCopy(null, null);
         workingCopy.getBuffer().setContents("");
         workingCopy.makeConsistent(null);
         
-        IType type = getCompilationUnit("/TypeHierarchy/src/q4/X.java").getType("X");
+        IType type = getCompilationUnit("/TypeHierarchy/src/q4/X.js").getType("X");
 		ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 		assertHierarchyEquals(
 			"Focus: X [in X.java [in q4 [in src [in TypeHierarchy]]]]\n" + 
@@ -664,7 +664,7 @@ public void testEmptyWorkingCopyPotentialSubtype() throws JavaModelException {
  * Ensures that a hierarchy on a type with local and anonymous types is correct.
  */
 public void testFocusWithLocalAndAnonymousTypes() throws JavaModelException {
-	IType type = getCompilationUnit("TypeHierarchy", "src", "p7", "X.java").getType("X");
+	IType type = getCompilationUnit("TypeHierarchy", "src", "p7", "X.js").getType("X");
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	assertHierarchyEquals(
 		"Focus: X [in X.java [in p7 [in src [in TypeHierarchy]]]]\n" + 
@@ -687,7 +687,7 @@ public void testFocusWithLocalAndAnonymousTypes() throws JavaModelException {
  * Ensures that a hierarchy on a generic type can be opened
  */
 public void testGeneric01() throws JavaModelException {
-	IType type = getCompilationUnit("/TypeHierarchy15/src/X.java").getType("X");
+	IType type = getCompilationUnit("/TypeHierarchy15/src/X.js").getType("X");
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	assertHierarchyEquals(
 		"Focus: X [in X.java [in <default> [in src [in TypeHierarchy15]]]]\n" + 
@@ -723,7 +723,7 @@ public void testGeneric02() throws JavaModelException {
  * Ensures that a hierarchy on a generic type can be opened
  */
 public void testGeneric03() throws JavaModelException {
-	IType type = getCompilationUnit("/TypeHierarchy15/src/Y.java").getType("Y");
+	IType type = getCompilationUnit("/TypeHierarchy15/src/Y.js").getType("Y");
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	assertHierarchyEquals(
 		"Focus: Y [in Y.java [in <default> [in src [in TypeHierarchy15]]]]\n" + 
@@ -742,7 +742,7 @@ public void testGeneric03() throws JavaModelException {
  * (regression test for bug 72348 [1.5][Type Hierarchy] Super type hierarchy of class extending generic type is empty)
  */
 public void testGeneric04() throws JavaModelException {
-	IType type = getCompilationUnit("/TypeHierarchy15/src/X.java").getType("X");
+	IType type = getCompilationUnit("/TypeHierarchy15/src/X.js").getType("X");
 	ITypeHierarchy hierarchy = type.newSupertypeHierarchy(null);
 	assertHierarchyEquals(
 		"Focus: X [in X.java [in <default> [in src [in TypeHierarchy15]]]]\n" + 
@@ -761,7 +761,7 @@ public void testGeneric04() throws JavaModelException {
  * (regression test for bug 82004 [model][5.0] 3.1M4 type hierarchy for generic interface)
  */
 public void testGeneric05() throws JavaModelException {
-	IType type = getCompilationUnit("/TypeHierarchy15/src/I.java").getType("I");
+	IType type = getCompilationUnit("/TypeHierarchy15/src/I.js").getType("I");
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	assertHierarchyEquals(
 		"Focus: I [in I.java [in <default> [in src [in TypeHierarchy15]]]]\n" + 
@@ -787,7 +787,7 @@ public void testGeneric06() throws CoreException {
  * (regression test for bug 99606 Subtype not found if parameterized on inner class)
  */
 public void testGeneric07() throws JavaModelException {
-	IType type = getCompilationUnit("/TypeHierarchy15/src/Y99606.java").getType("Y99606");
+	IType type = getCompilationUnit("/TypeHierarchy15/src/Y99606.js").getType("Y99606");
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	assertHierarchyEquals(
 		"Focus: Y99606 [in Y99606.java [in <default> [in src [in TypeHierarchy15]]]]\n" + 
@@ -800,7 +800,7 @@ public void testGeneric07() throws JavaModelException {
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=108740
 public void testGeneric08() throws JavaModelException {
-	IType type = getCompilationUnit("/TypeHierarchy15/src/D108740.java").getType("D108740");
+	IType type = getCompilationUnit("/TypeHierarchy15/src/D108740.js").getType("D108740");
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	assertHierarchyEquals(
 		"Focus: D108740 [in D108740.java [in <default> [in src [in TypeHierarchy15]]]]\n" + 
@@ -819,21 +819,21 @@ public void testGeneric08() throws JavaModelException {
 public void testGeneric09() throws CoreException {
 	try {
 		createFile(
-			"/TypeHierarchy15/src/I1_136095.java", 
+			"/TypeHierarchy15/src/I1_136095.js", 
 			"public interface I1_136095<E> {\n" + 
 			"}"
 		);
 		createFile(
-			"/TypeHierarchy15/src/I2_136095.java", 
+			"/TypeHierarchy15/src/I2_136095.js", 
 			"public interface I2_136095 extends I1_136095<String>{\n" + 
 			"}"
 		);
 		createFile(
-			"/TypeHierarchy15/src/X_136095.java", 
+			"/TypeHierarchy15/src/X_136095.js", 
 			"public abstract class X_136095 implements I1_136095<Integer>, I2_136095 {\n" + 
 			"}"
 		);
-		IType type = getCompilationUnit("/TypeHierarchy15/src/X_136095.java").getType("X_136095");
+		IType type = getCompilationUnit("/TypeHierarchy15/src/X_136095.js").getType("X_136095");
 		ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 		assertHierarchyEquals(
 			"Focus: X_136095 [in X_136095.java [in <default> [in src [in TypeHierarchy15]]]]\n" + 
@@ -846,9 +846,9 @@ public void testGeneric09() throws CoreException {
 			hierarchy
 		);
 	} finally {
-		deleteFile("/TypeHierarchy15/src/I1_136095.java");
-		deleteFile("/TypeHierarchy15/src/I2_136095.java");
-		deleteFile("/TypeHierarchy15/src/X_136095.java");
+		deleteFile("/TypeHierarchy15/src/I1_136095.js");
+		deleteFile("/TypeHierarchy15/src/I2_136095.js");
+		deleteFile("/TypeHierarchy15/src/X_136095.js");
 	}
 }
 /*
@@ -858,20 +858,20 @@ public void testGeneric09() throws CoreException {
 public void testGeneric10() throws CoreException {
 	try {
 		createFile(
-			"/TypeHierarchy15/src/Y_140340.java", 
+			"/TypeHierarchy15/src/Y_140340.js", 
 			"public class Y_140340 {\n" + 
 			"  public static class Z {\n" +
 			"  }\n" +
 			"}"
 		);
 		createFile(
-			"/TypeHierarchy15/src/X_140340.java", 
+			"/TypeHierarchy15/src/X_140340.js", 
 			"public class X_140340 implements I1_140340<Y_140340.Z> {\n" + 
 			"}\n" +
 			"interface I1_140340<T> {\n" +
 			"}"
 		);
-		IType type = getCompilationUnit("/TypeHierarchy15/src/X_140340.java").getType("X_140340");
+		IType type = getCompilationUnit("/TypeHierarchy15/src/X_140340.js").getType("X_140340");
 		ITypeHierarchy hierarchy = type.newSupertypeHierarchy(null);
 		assertHierarchyEquals(
 			"Focus: X_140340 [in X_140340.java [in <default> [in src [in TypeHierarchy15]]]]\n" + 
@@ -882,8 +882,8 @@ public void testGeneric10() throws CoreException {
 			hierarchy
 		);
 	} finally {
-		deleteFile("/TypeHierarchy15/src/Y_140340.java");
-		deleteFile("/TypeHierarchy15/src/X_140340.java");
+		deleteFile("/TypeHierarchy15/src/Y_140340.js");
+		deleteFile("/TypeHierarchy15/src/X_140340.js");
 	}
 }
 /**
@@ -922,7 +922,7 @@ public void testGetAllInterfacesInRegion() {
  * hierarchy.
  */
 public void testGetAllSubtypes() throws JavaModelException {
-	IType type = getCompilationUnit("TypeHierarchy", "src", "p1", "X.java").getType("X");
+	IType type = getCompilationUnit("TypeHierarchy", "src", "p1", "X.js").getType("X");
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	IType[] types = hierarchy.getAllSubtypes(type);
 	this.assertTypesEqual(
@@ -957,7 +957,7 @@ public void testGetAllSubtypesFromBinary() throws JavaModelException {
  * hierarchy.
  */
 public void testGetAllSuperclasses() throws JavaModelException {
-	IType type = getCompilationUnit("TypeHierarchy", "src", "p1", "Z.java").getType("Z");
+	IType type = getCompilationUnit("TypeHierarchy", "src", "p1", "Z.js").getType("Z");
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	IType[] types = hierarchy.getAllSuperclasses(type);
 	assertTypesEqual(
@@ -1013,7 +1013,7 @@ public void testGetAllSuperclassesFromBinary2() throws JavaModelException {
  * hierarchy.
  */
 public void testGetAllSuperInterfaces() throws JavaModelException {
-	IType type = getCompilationUnit("TypeHierarchy", "src", "p1", "Z.java").getType("Z");
+	IType type = getCompilationUnit("TypeHierarchy", "src", "p1", "Z.js").getType("Z");
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	IType[] types = hierarchy.getAllSuperInterfaces(type);
 	assertTypesEqual(
@@ -1027,7 +1027,7 @@ public void testGetAllSuperInterfaces() throws JavaModelException {
  * hierarchy.
  */
 public void testGetAllSupertypes() throws JavaModelException {
-	IType type = getCompilationUnit("TypeHierarchy", "src", "p1", "Z.java").getType("Z");
+	IType type = getCompilationUnit("TypeHierarchy", "src", "p1", "Z.js").getType("Z");
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	IType[] types = hierarchy.getAllSupertypes(type);
 	assertTypesEqual(
@@ -1045,7 +1045,7 @@ public void testGetAllSupertypes() throws JavaModelException {
  * (regression test for bug 23644 hierarchy: getAllSuperTypes does not include all superinterfaces?)
  */
 public void testGetAllSupertypes2() throws JavaModelException {
-	IType type = getCompilationUnit("TypeHierarchy", "src", "p3", "B.java").getType("B");
+	IType type = getCompilationUnit("TypeHierarchy", "src", "p3", "B.js").getType("B");
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	IType[] types = hierarchy.getAllSupertypes(type);
 	assertTypesEqual(
@@ -1061,7 +1061,7 @@ public void testGetAllSupertypes2() throws JavaModelException {
  * hierarchy.
  */
 public void testGetAllTypes() throws JavaModelException {
-	IType type = getCompilationUnit("TypeHierarchy", "src", "p1", "Y.java").getType("Y");
+	IType type = getCompilationUnit("TypeHierarchy", "src", "p1", "Y.js").getType("Y");
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	this.assertTypesEqual(
 		"Unexpected types in hierarchy of Y",
@@ -1091,7 +1091,7 @@ public void testGetCachedFlags() throws JavaModelException {
  * hierarchy.
  */
 public void testGetExtendingInterfaces() throws JavaModelException {
-	IType type = getCompilationUnit("TypeHierarchy", "src", "p2", "I.java").getType("I");
+	IType type = getCompilationUnit("TypeHierarchy", "src", "p2", "I.js").getType("I");
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	IType[] types = hierarchy.getExtendingInterfaces(type);
 	this.assertTypesEqual(
@@ -1101,7 +1101,7 @@ public void testGetExtendingInterfaces() throws JavaModelException {
 		types
 	);
 
-	type = getCompilationUnit("TypeHierarchy", "src", "p2", "X.java").getType("X");
+	type = getCompilationUnit("TypeHierarchy", "src", "p2", "X.js").getType("X");
 	hierarchy = type.newTypeHierarchy(null);
 	types = hierarchy.getExtendingInterfaces(type);
 	this.assertTypesEqual(
@@ -1115,7 +1115,7 @@ public void testGetExtendingInterfaces() throws JavaModelException {
  * hierarchy.
  */
 public void testGetImplementingClasses() throws JavaModelException {
-	IType type = getCompilationUnit("TypeHierarchy", "src", "p2", "I.java").getType("I");
+	IType type = getCompilationUnit("TypeHierarchy", "src", "p2", "I.js").getType("I");
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	IType[] types = hierarchy.getImplementingClasses(type);
 	this.assertTypesEqual(
@@ -1124,7 +1124,7 @@ public void testGetImplementingClasses() throws JavaModelException {
 		types
 	);
 
-	type = getCompilationUnit("TypeHierarchy", "src", "p2", "X.java").getType("X");
+	type = getCompilationUnit("TypeHierarchy", "src", "p2", "X.js").getType("X");
 	hierarchy = type.newTypeHierarchy(null);
 	types = hierarchy.getImplementingClasses(type);
 	this.assertTypesEqual(
@@ -1149,7 +1149,7 @@ public void testGetRootClasses() {
  * hierarchy.
  */
 public void testGetRootInterfaces() throws JavaModelException {
-	IType type = getCompilationUnit("TypeHierarchy", "src", "p2", "Y.java").getType("Y");
+	IType type = getCompilationUnit("TypeHierarchy", "src", "p2", "Y.js").getType("Y");
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	IType[] types = hierarchy.getRootInterfaces();
 	assertTypesEqual(
@@ -1223,7 +1223,7 @@ public void testGetSuperclassInRegion() throws JavaModelException {
 	r.add(p);
 	ITypeHierarchy hierarchy = p.getJavaProject().newTypeHierarchy(r, null);
 
-	IType type = getCompilationUnit("TypeHierarchy", "src", "p1", "Y.java").getType("Y");
+	IType type = getCompilationUnit("TypeHierarchy", "src", "p1", "Y.js").getType("Y");
 	IType superclass= hierarchy.getSuperclass(type);
 	assertEquals("Unexpected super class of Y", "X", superclass.getElementName());
 }
@@ -1293,7 +1293,7 @@ public void testImplementBinaryInnerInterface() throws JavaModelException {
  * Ensures that a hierarchy on an inner type is correctly rooted.
  */
 public void testInnerType1() throws JavaModelException {
-	IType type = getCompilationUnit("TypeHierarchy", "src", "p5", "X.java").getType("X").getType("Inner");
+	IType type = getCompilationUnit("TypeHierarchy", "src", "p5", "X.js").getType("X").getType("Inner");
 	ITypeHierarchy hierarchy = null;
 	try {
 		hierarchy = type.newTypeHierarchy(null);
@@ -1314,7 +1314,7 @@ public void testInnerType1() throws JavaModelException {
  * (regression test for bug 43274 Type hierarchy broken)
  */
 public void testInnerType2() throws JavaModelException {
-	IType type = getCompilationUnit("TypeHierarchy", "src", "p6", "A.java").getType("A").getType("Inner");
+	IType type = getCompilationUnit("TypeHierarchy", "src", "p6", "A.js").getType("A").getType("Inner");
 	ITypeHierarchy hierarchy = null;
 	try {
 		hierarchy = type.newTypeHierarchy(null);
@@ -1333,7 +1333,7 @@ public void testInnerType2() throws JavaModelException {
  * Ensures that a hierarchy on a local type in an initializer is correct.
  */
 public void testLocalType1() throws JavaModelException {
-	IType typeA = getCompilationUnit("TypeHierarchy", "src", "p7", "A.java").getType("A");
+	IType typeA = getCompilationUnit("TypeHierarchy", "src", "p7", "A.js").getType("A");
 	IType type = typeA.getInitializer(1).getType("Y1", 1);
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	assertHierarchyEquals(
@@ -1349,7 +1349,7 @@ public void testLocalType1() throws JavaModelException {
  * Ensures that a hierarchy on a local type in a second initializer is correct.
  */
 public void testLocalType2() throws JavaModelException {
-	IType typeA = getCompilationUnit("TypeHierarchy", "src", "p7", "A.java").getType("A");
+	IType typeA = getCompilationUnit("TypeHierarchy", "src", "p7", "A.js").getType("A");
 	IType type = typeA.getInitializer(2).getType("Y3", 1);
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	assertHierarchyEquals(
@@ -1363,7 +1363,7 @@ public void testLocalType2() throws JavaModelException {
  * Ensures that a hierarchy on a local type in a method declaration is correct.
  */
 public void testLocalType3() throws JavaModelException {
-	IType typeA = getCompilationUnit("TypeHierarchy", "src", "p7", "A.java").getType("A");
+	IType typeA = getCompilationUnit("TypeHierarchy", "src", "p7", "A.js").getType("A");
 	IType type = typeA.getMethod("foo", new String[] {}).getType("Y2", 1);
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	assertHierarchyEquals(
@@ -1380,7 +1380,7 @@ public void testLocalType3() throws JavaModelException {
  * (regression test for bug 44073 Override methods action does not work for local types [code manipulation])
  */
 public void testLocalType4() throws JavaModelException {
-	IType typeA = getCompilationUnit("TypeHierarchy", "src", "p7", "A.java").getType("A");
+	IType typeA = getCompilationUnit("TypeHierarchy", "src", "p7", "A.js").getType("A");
 	IType type = typeA.getMethod("foo", new String[] {}).getType("Y1", 1);
 	ITypeHierarchy hierarchy = type.newSupertypeHierarchy(null);
 	assertHierarchyEquals(
@@ -1399,7 +1399,7 @@ public void testMemberTypeSubtypeDifferentProject() throws CoreException {
 	try {
 		createJavaProject("P1");
 		createFile(
-			"/P1/X.java",
+			"/P1/X.js",
 			"public class X {\n" +
 			"  public class Member {\n" +
 			"  }\n" +
@@ -1407,11 +1407,11 @@ public void testMemberTypeSubtypeDifferentProject() throws CoreException {
 			);
 		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P1"}, "");
 		createFile(
-			"/P2/Y.java",
+			"/P2/Y.js",
 			"public class Y extends X.Member {\n" +
 			"}"
 		);
-		IType focus = getCompilationUnit("/P1/X.java").getType("X").getType("Member");
+		IType focus = getCompilationUnit("/P1/X.js").getType("X").getType("Member");
 		ITypeHierarchy hierarchy = focus.newTypeHierarchy(null/*no progress*/);
 		assertHierarchyEquals(
 			"Focus: Member [in X [in X.java [in <default> [in <project root> [in P1]]]]]\n" + 
@@ -1429,7 +1429,7 @@ public void testMemberTypeSubtypeDifferentProject() throws CoreException {
  * (regression test for bug 24691 Missing interface makes hierarchy incomplete)
  */
 public void testMissingInterface() throws JavaModelException {
-	IType type = getCompilationUnit("TypeHierarchy", "src", "p4", "X.java").getType("X");
+	IType type = getCompilationUnit("TypeHierarchy", "src", "p4", "X.js").getType("X");
 	ITypeHierarchy hierarchy = null;
 	try {
 		hierarchy = type.newTypeHierarchy(null);
@@ -1449,7 +1449,7 @@ public void testMissingInterface() throws JavaModelException {
  */
 public void testPotentialSubtypeNotInClasspath() throws JavaModelException {
 	IJavaProject project = getJavaProject("TypeHierarchy");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchy", "src", "p1", "X.java");
+	ICompilationUnit cu = getCompilationUnit("TypeHierarchy", "src", "p1", "X.js");
 	IType type = cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(project, null);
 	IType[] types = h.getSubtypes(type);
@@ -1518,17 +1518,17 @@ public void testRegion4() throws CoreException {
 		IJavaProject p2 = createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P1"}, "");
 		IJavaProject p3 = createJavaProject("P3", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P1"}, "");
 		createFile(
-			"/P1/X.java",
+			"/P1/X.js",
 			"public class X {\n" +
 			"}"
 		);
 		createFile(
-			"/P2/Y.java",
+			"/P2/Y.js",
 			"public class Y extends X X {\n" +
 			"}"
 		);
 		createFile(
-			"/P3/Z.java",
+			"/P3/Z.js",
 			"public class Z extends X X {\n" +
 			"}"
 		);
@@ -1572,7 +1572,7 @@ public void testResilienceToMissingBinaries() throws CoreException {
 		createJavaProject("P", new String[] {"src"}, new String[] {"JCL_LIB", "/TypeHierarchy/test144976.jar"}, "bin");
 		createFolder("/P/src/tools/");
 		createFile(
-			"/P/src/tools/DisplayTestResult2.java",
+			"/P/src/tools/DisplayTestResult2.js",
 			"pakage tools;\n" +
 			"import servlet.*;\n" +
 			"public class DisplayTestResult2 extends TmrServlet2 {\n" +
@@ -1580,19 +1580,19 @@ public void testResilienceToMissingBinaries() throws CoreException {
 		);
 		createFolder("/P/src/servlet/");
 		createFile(
-				"/P/src/servlet/TmrServlet2.java",
+				"/P/src/servlet/TmrServlet2.js",
 				"pakage servlet;\n" +
 				"public class TmrServlet2 extends TmrServlet {\n" +
 				"}"
 			);
 		createFile(
-				"/P/src/servlet/TmrServlet.java",
+				"/P/src/servlet/TmrServlet.js",
 				"pakage servlet;\n" +
 				"import gk.*;\n" +
 				"public class TmrServlet extends GKServlet {\n" +
 				"}"
 			);
-		IType type = getCompilationUnit("P", "src", "tools", "DisplayTestResult2.java").getType("DisplayTestResult2");		
+		IType type = getCompilationUnit("P", "src", "tools", "DisplayTestResult2.js").getType("DisplayTestResult2");		
 		ITypeHierarchy hierarchy = type.newSupertypeHierarchy(null);
 		assertNotNull(hierarchy.getSupertypes(type));
 		assertHierarchyEquals(
@@ -1620,10 +1620,10 @@ public void testResolvedTypeAsFocus() throws CoreException {
 			"}\n" +
 			"class Y<E> {\n" +
 			"}";
-		createFile("/P/X.java", source);
+		createFile("/P/X.js", source);
 		int start = source.indexOf("Y");
 		int end = source.indexOf("<String>");
-		IJavaElement[] elements = getCompilationUnit("/P/X.java").codeSelect(start, end-start);
+		IJavaElement[] elements = getCompilationUnit("/P/X.js").codeSelect(start, end-start);
 		IType focus = (IType) elements[0];
 		ITypeHierarchy hierarchy = focus.newTypeHierarchy(null);
 		assertElementsEqual(
@@ -1644,24 +1644,24 @@ public void testRootOrder() throws CoreException, IOException {
 		IJavaProject project = createJavaProject("P", new String[] {"abc"}, new String[] {"JCL_LIB"}, "bin");
 		createFolder("/P/abc/p");
 		createFile(
-			"/P/abc/p/X.java", 
+			"/P/abc/p/X.js", 
 			"package p;\n"+ 
 			"public class X {}"
 		);
 		createFile(
-			"/P/abc/p/Y.java", 
+			"/P/abc/p/Y.js", 
 			"package p;\n"+ 
 			"public class Y extends X {}"
 		);
 		addLibrary(project, "lib.jar", "libsrc.zip", new String[] {
-			"p/X.java", 
+			"p/X.js", 
 			"package p;\n"+ 
 			"public class X {}",
-			"p/Y.java", 
+			"p/Y.js", 
 			"package p;\n"+ 
 			"public class Y extends X {}"
 		}, "1.4");
-		IType type = getCompilationUnit("/P/abc/p/X.java").getType("X");
+		IType type = getCompilationUnit("/P/abc/p/X.js").getType("X");
 		ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 		assertHierarchyEquals(
 			"Focus: X [in X.java [in p [in abc [in P]]]]\n" + 
@@ -1679,7 +1679,7 @@ public void testRootOrder() throws CoreException, IOException {
  */
 public void testSourceTypeGetSuperclass() throws JavaModelException {
 	//unqualified superclass in a source type
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchy", "src", "p1", "Y.java");
+	ICompilationUnit cu = getCompilationUnit("TypeHierarchy", "src", "p1", "Y.js");
 	IType type = cu.getType("Y");
 	ITypeHierarchy h = type.newSupertypeHierarchy(null);
 	IType superclass = h.getSuperclass(type);
@@ -1692,7 +1692,7 @@ public void testSourceTypeGetSuperclass() throws JavaModelException {
  */
 public void testSourceTypeGetSuperclass2() throws JavaModelException {
 	//no superclass specified for a source type
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchy", "src", "p1", "X.java");
+	ICompilationUnit cu = getCompilationUnit("TypeHierarchy", "src", "p1", "X.js");
 	IType type = cu.getType("X");
 	ITypeHierarchy h = type.newSupertypeHierarchy(null);
 	IType superclass = h.getSuperclass(type);
@@ -1705,7 +1705,7 @@ public void testSourceTypeGetSuperclass2() throws JavaModelException {
  */
 public void testSourceTypeGetSuperclass3() throws JavaModelException {
 	//no superclass specified for a source type
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchy", "src", "p1", "Deep.java");
+	ICompilationUnit cu = getCompilationUnit("TypeHierarchy", "src", "p1", "Deep.js");
 	IType type = cu.getType("Deep");
 	ITypeHierarchy h = type.newSupertypeHierarchy(null);
 	IType superclass = h.getSuperclass(type);
@@ -1717,7 +1717,7 @@ public void testSourceTypeGetSuperclass3() throws JavaModelException {
  * in the same compilation unit.
  */
 public void testSourceTypeGetSuperclass4() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchy", "src", "p1", "A.java");
+	ICompilationUnit cu = getCompilationUnit("TypeHierarchy", "src", "p1", "A.js");
 	IType type = cu.getType("A");
 	ITypeHierarchy h = type.newSupertypeHierarchy(null);
 	IType superclass = h.getSuperclass(type);
@@ -1729,7 +1729,7 @@ public void testSourceTypeGetSuperclass4() throws JavaModelException {
  * Ensures that the superinterfaces can be retrieved for a source type's superinterfaces.
  */
 public void testSourceTypeGetSuperInterfaces() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchy", "src", "p1", "Y.java");
+	ICompilationUnit cu = getCompilationUnit("TypeHierarchy", "src", "p1", "Y.js");
 	IType type = cu.getType("Y");
 	ITypeHierarchy h = type.newSupertypeHierarchy(null);
 	IType[] superInterfaces = h.getSuperInterfaces(type);
@@ -1751,7 +1751,7 @@ public void testSupertypeHierarchyGetSubclasses() throws JavaModelException {
 		"", 
 		types);
 	
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchy", "src", "p1", "Y.java");
+	ICompilationUnit cu = getCompilationUnit("TypeHierarchy", "src", "p1", "Y.js");
 	type = cu.getType("Y");
 	hierarchy = type.newSupertypeHierarchy(null);
 	types = hierarchy.getSubclasses(type);
@@ -1772,7 +1772,7 @@ public void testSupertypeHierarchyGetSubtypes() throws JavaModelException {
 		"", 
 		types);
 	
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchy", "src", "p1", "Y.java");
+	ICompilationUnit cu = getCompilationUnit("TypeHierarchy", "src", "p1", "Y.js");
 	type = cu.getType("Y");
 	hierarchy = type.newSupertypeHierarchy(null);
 	types = hierarchy.getSubtypes(type);
@@ -1786,7 +1786,7 @@ public void testSupertypeHierarchyGetSubtypes() throws JavaModelException {
  * (regression test for bug 3446 type hierarchy: incorrect behavior wrt working copies (1GLDHOA))
  */
 public void testSupertypeHierarchyOnWorkingCopy() throws JavaModelException {
-	ICompilationUnit cu = this.getCompilationUnit("TypeHierarchy", "src", "wc", "X.java");
+	ICompilationUnit cu = this.getCompilationUnit("TypeHierarchy", "src", "wc", "X.js");
 	ICompilationUnit workingCopy = null;
 	try {
 		workingCopy = cu.getWorkingCopy(null);
@@ -1832,7 +1832,7 @@ public void testSuperTypeHierarchyWithMissingBinary() throws JavaModelException 
 		System.arraycopy(originalClasspath, 0, newClasspath, 0, length);
 		newClasspath[length] = JavaCore.newLibraryEntry(new Path("/TypeHierarchy/test49809.jar"), null, null);
 		project.setRawClasspath(newClasspath, null);
-		ICompilationUnit cu = getCompilationUnit("/TypeHierarchy/src/q3/Z.java");
+		ICompilationUnit cu = getCompilationUnit("/TypeHierarchy/src/q3/Z.js");
 		IType type = cu.getType("Z");
 		ITypeHierarchy hierarchy = type.newSupertypeHierarchy(null);
 		assertHierarchyEquals(
@@ -1850,7 +1850,7 @@ public void testSuperTypeHierarchyWithMissingBinary() throws JavaModelException 
  * Ensures that a hierarchy where the super type is not visible can still be constructed.
  */
 public void testVisibility1() throws JavaModelException {
-	IType type = getCompilationUnit("/TypeHierarchy/src/q6/Y.java").getType("Y");
+	IType type = getCompilationUnit("/TypeHierarchy/src/q6/Y.js").getType("Y");
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	assertHierarchyEquals(
 		"Focus: Y [in Y.java [in q6 [in src [in TypeHierarchy]]]]\n" + 
@@ -1865,7 +1865,7 @@ public void testVisibility1() throws JavaModelException {
  * Ensures that a hierarchy where the super interface is not visible can still be constructed.
  */
 public void testVisibility2() throws JavaModelException {
-	IType type = getCompilationUnit("/TypeHierarchy/src/q6/Z.java").getType("Z");
+	IType type = getCompilationUnit("/TypeHierarchy/src/q6/Z.js").getType("Z");
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
 	assertHierarchyEquals(
 		"Focus: Z [in Z.java [in q6 [in src [in TypeHierarchy]]]]\n" + 

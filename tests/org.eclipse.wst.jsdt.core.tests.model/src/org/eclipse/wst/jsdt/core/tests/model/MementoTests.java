@@ -97,7 +97,7 @@ public void tearDownSuite() throws Exception {
  * Tests that an anonymous type can be persisted and restored using its memento.
  */
 public void testAnonymousTypeMemento1() {
-	IType type = getCompilationUnit("/P/src/p/X.java").getType("X");
+	IType type = getCompilationUnit("/P/src/p/X.js").getType("X");
 	
 	IType anonymous = type.getInitializer(1).getType("", 1);
 	assertMemento(
@@ -113,7 +113,7 @@ public void testAnonymousTypeMemento1() {
  * Tests that an anonymous type can be persisted and restored using its memento.
  */
 public void testAnonymousTypeMemento2() {
-	IType type = getCompilationUnit("/P/src/p/X.java").getType("X");
+	IType type = getCompilationUnit("/P/src/p/X.js").getType("X");
 	
 	IType anonymous = type.getField("f").getType("", 1);
 	assertMemento(
@@ -129,7 +129,7 @@ public void testAnonymousTypeMemento2() {
  * Tests that an anonymous type can be persisted and restored using its memento.
  */
 public void testAnonymousTypeMemento3() {
-	IType type = getCompilationUnit("/P/src/p/X.java").getType("X");
+	IType type = getCompilationUnit("/P/src/p/X.js").getType("X");
 	
 	IType anonymous = type.getMethod("foo", new String[]{}).getType("", 1);
 	assertMemento(
@@ -241,14 +241,14 @@ public void testClassFileMemento() {
  * Tests that a compilation unit can be persisted and restored using its memento.
  */
 public void testCompilationUnitMemento() {
-	ICompilationUnit cu = getCompilationUnit("/P/src/p/X.java");
+	ICompilationUnit cu = getCompilationUnit("/P/src/p/X.js");
 	assertMemento(
-		"=P/src<p{X.java",
+		"=P/src<p{X.js",
 		cu);
 		
-	cu = getCompilationUnit("/P/src/Y.java");
+	cu = getCompilationUnit("/P/src/Y.js");
 	assertMemento(
-		"=P/src<{Y.java",
+		"=P/src<{Y.js",
 		cu);
 }
 /**
@@ -304,7 +304,7 @@ public void testExternalJarClassFileMemento() throws JavaModelException {
  * Tests that an import declaration can be persisted and restored using its memento.
  */
 public void testImportContainerMemento() {
-	IImportContainer importContainer = getCompilationUnit("/P/src/p/X.java").getImportContainer();
+	IImportContainer importContainer = getCompilationUnit("/P/src/p/X.js").getImportContainer();
 	assertMemento(
 		"=P/src<p{X.java#",
 		importContainer);
@@ -313,12 +313,12 @@ public void testImportContainerMemento() {
  * Tests that an import declaration can be persisted and restored using its memento.
  */
 public void testImportDeclarationMemento() {
-	IImportDeclaration importDecl = getCompilationUnit("/P/src/p/X.java").getImport("java.io.Serializable");
+	IImportDeclaration importDecl = getCompilationUnit("/P/src/p/X.js").getImport("java.io.Serializable");
 	assertMemento(
 		"=P/src<p{X.java#java.io.Serializable",
 		importDecl);
 	
-	importDecl = getCompilationUnit("/P/src/p/X.java").getImport("java.util.*");
+	importDecl = getCompilationUnit("/P/src/p/X.js").getImport("java.util.*");
 	assertMemento(
 		"=P/src<p{X.java#java.util.*",
 		importDecl);
@@ -335,7 +335,7 @@ public void testInvalidMemento() {
  * Tests that an initializer can be persisted and restored using its memento.
  */
 public void testInitializerMemento() {
-	IType type = getCompilationUnit("/P/src/p/X.java").getType("X");
+	IType type = getCompilationUnit("/P/src/p/X.js").getType("X");
 	
 	IInitializer initializer = type.getInitializer(1);
 	assertMemento(
@@ -389,7 +389,7 @@ public void testInternalJarBinaryTypeMemento() throws JavaModelException {
  * Tests that a local type can be persisted and restored using its memento.
  */
 public void testLocalTypeMemento1() {
-	IType type = getCompilationUnit("/P/src/p/X.java").getType("X");
+	IType type = getCompilationUnit("/P/src/p/X.js").getType("X");
 	
 	IType anonymous = type.getInitializer(1).getType("Y", 1);
 	assertMemento(
@@ -405,7 +405,7 @@ public void testLocalTypeMemento1() {
  * Tests that a local type can be persisted and restored using its memento.
  */
 public void testLocalTypeMemento2() {
-	IType type = getCompilationUnit("/P/src/p/X.java").getType("X");
+	IType type = getCompilationUnit("/P/src/p/X.js").getType("X");
 	
 	IType anonymous = type.getMethod("foo", new String[]{}).getType("Y", 1);
 	assertMemento(
@@ -421,7 +421,7 @@ public void testLocalTypeMemento2() {
  * Tests that a local variable can be persisted and restored using its memento.
  */
 public void testLocalVariableMemento1() {
-	IType type = getCompilationUnit("/P/src/p/X.java").getType("X");
+	IType type = getCompilationUnit("/P/src/p/X.js").getType("X");
 	IMethod method = type.getMethod("foo", new String[]{});
 
 	ILocalVariable localVar = new LocalVariable((JavaElement)method, "var", 1, 2, 3, 4, "Z");
@@ -433,7 +433,7 @@ public void testLocalVariableMemento1() {
  * Tests that a local variable can be persisted and restored using its memento.
  */
 public void testLocalVariableMemento3() {
-	IType type = getCompilationUnit("/P/src/p/X.java").getType("X");
+	IType type = getCompilationUnit("/P/src/p/X.js").getType("X");
 	IInitializer initializer = type.getInitializer(1);
 
 	ILocalVariable localVar = new LocalVariable((JavaElement)initializer, "var", 1, 2, 3, 4, "Z");
@@ -457,12 +457,12 @@ public void testLocalVariableMemento2() throws JavaModelException {
  * Tests that a package declaration can be persisted and restored using its memento.
  */
 public void testPackageDeclarationMemento() {
-	IPackageDeclaration declaration = getCompilationUnit("/P/src/p/X.java").getPackageDeclaration("p");
+	IPackageDeclaration declaration = getCompilationUnit("/P/src/p/X.js").getPackageDeclaration("p");
 	assertMemento(
 		"=P/src<p{X.java%p",
 		declaration);
 		
-	declaration = getCompilationUnit("/P/src/p1/p2/X.java").getPackageDeclaration("p1.p2");
+	declaration = getCompilationUnit("/P/src/p1/p2/X.js").getPackageDeclaration("p1.p2");
 	assertMemento(
 		"=P/src<p1.p2{X.java%p1.p2",
 		declaration);
@@ -636,7 +636,7 @@ public void testRestoreBogusMemento() {
  * Tests that a source field can be persisted and restored using its memento.
  */
 public void testSourceFieldMemento() {
-	IField field = getCompilationUnit("/P/src/p/X.java").getType("X").getField("field");
+	IField field = getCompilationUnit("/P/src/p/X.js").getType("X").getField("field");
 	assertMemento(
 		"=P/src<p{X.java[X^field",
 		field);
@@ -646,7 +646,7 @@ public void testSourceFieldMemento() {
  * using mementos.
  */
 public void testSourceInnerTypeMemento() {
-	IType innerType = getCompilationUnit("/P/src/p/X.java").getType("X").getType("Inner");
+	IType innerType = getCompilationUnit("/P/src/p/X.js").getType("X").getType("Inner");
 	assertMemento(
 		"=P/src<p{X.java[X[Inner",
 		innerType);
@@ -655,7 +655,7 @@ public void testSourceInnerTypeMemento() {
  * Tests that a source method can be persisted and restored using its memento.
  */
 public void testSourceMethodMemento1() {
-	IType type = getCompilationUnit("/P/src/p/X.java").getType("X");
+	IType type = getCompilationUnit("/P/src/p/X.js").getType("X");
 	IMethod method = type.getMethod("foo", new String[] {"I", "Ljava.lang.String;"});
 	assertMemento(
 		"=P/src<p{X.java[X~foo~I~Ljava.lang.String;",
@@ -665,7 +665,7 @@ public void testSourceMethodMemento1() {
  * Tests that a source method can be persisted and restored using its memento.
  */
 public void testSourceMethodMemento2() {
-	IType type = getCompilationUnit("/P/src/p/X.java").getType("X");
+	IType type = getCompilationUnit("/P/src/p/X.js").getType("X");
 	IMethod method = type.getMethod("bar", new String[] {});
 	assertMemento(
 		"=P/src<p{X.java[X~bar",
@@ -675,7 +675,7 @@ public void testSourceMethodMemento2() {
  * Tests that a source method can be persisted and restored using its memento.
  */
 public void testSourceMethodMemento3() {
-	IType type = getCompilationUnit("/P/src/p/X.java").getType("X");
+	IType type = getCompilationUnit("/P/src/p/X.js").getType("X");
 	IMethod method = type.getMethod("fred", new String[] {"[Z"});
 	assertMemento(
 		"=P/src<p{X.java[X~fred~\\[Z",
@@ -685,7 +685,7 @@ public void testSourceMethodMemento3() {
  * Tests that a source type can be persisted and restored using its memento.
  */
 public void testSourceTypeMemento() {
-	IType type = getCompilationUnit("/P/src/p/X.java").getType("X");
+	IType type = getCompilationUnit("/P/src/p/X.js").getType("X");
 	assertMemento(
 		"=P/src<p{X.java[X",
 		type);
@@ -694,7 +694,7 @@ public void testSourceTypeMemento() {
  * Tests that a type parameter can be persisted and restored using its memento.
  */
 public void testTypeParameter1() {
-	ITypeParameter typeParameter = getCompilationUnit("/P/src/p/X.java").getType("X").getTypeParameter("T");
+	ITypeParameter typeParameter = getCompilationUnit("/P/src/p/X.js").getType("X").getTypeParameter("T");
 	assertMemento(
 		"=P/src<p{X.java[X]T",
 		typeParameter);
@@ -703,7 +703,7 @@ public void testTypeParameter1() {
  * Tests that a type parameter can be persisted and restored using its memento.
  */
 public void testTypeParameter2() {
-	ITypeParameter typeParameter = getCompilationUnit("/P/src/p/X.java").getType("X").getMethod("foo", new String[0]).getTypeParameter("T");
+	ITypeParameter typeParameter = getCompilationUnit("/P/src/p/X.js").getType("X").getMethod("foo", new String[0]).getTypeParameter("T");
 	assertMemento(
 		"=P/src<p{X.java[X~foo]T",
 		typeParameter);

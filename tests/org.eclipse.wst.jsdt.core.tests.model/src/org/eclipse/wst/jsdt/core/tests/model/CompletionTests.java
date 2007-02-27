@@ -44,11 +44,36 @@ public void setUpSuite() throws Exception {
 public void tearDownSuite() throws Exception {
 	super.tearDownSuite();
 }
+
+public void test00() throws JavaModelException {
+    this.wc = getWorkingCopy(
+            "/Completion/src/test/Test.js",
+			"MyClass.prototype.someMethod = MyClass_someMethod;"+ 
+			"function MyClass(){}"+
+			"function MyClass_someMethod(){}"+
+			"var myClassObj = new MyClass();\n"+
+			"myClassObj.someMethod();\n"+
+            "");
+    
+    
+    CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true);
+    String str = this.wc.getSource();
+    String completeBehind = "someMethod";
+    int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+    this.wc.codeComplete(cursorLocation, requestor, this.wcOwner);
+
+	assertResults(
+            "someMethod[METHOD_REF]{, Ltest.MyClass;, ()V, someMethod, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME +  R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
+            requestor.getResults());
+}
+
+
+
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=164311
 public void testBug164311() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"    public int zzzzzz;\n" + 
@@ -73,7 +98,7 @@ public void testBug164311() throws JavaModelException {
 public void testBug164311_2() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class X {\n"+
 		"    public void zork() { \n"+
@@ -106,7 +131,7 @@ public void testBug164311_2() throws JavaModelException {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=96213
 public void testBug96213() throws JavaModelException {
     this.wc = getWorkingCopy(
-            "/Completion/src/test/Test.java",
+            "/Completion/src/test/Test.js",
             "package test;\n" +
             "public class Test{\n"+
             "  Test toto(Object o) {\n"+
@@ -136,11 +161,11 @@ public void testBug99811() throws JavaModelException {
 	ICompilationUnit aType = null;
     try {
     	this.wc = getWorkingCopy(
-	            "/Completion/src/test/A.java",
+	            "/Completion/src/test/A.js",
 	            "public abstract class A implements I {}");
     	
 	    aType = getWorkingCopy(
-	            "/Completion/src/test/I.java",
+	            "/Completion/src/test/I.js",
 	            "public interface I {\n"+
 	            "  public class M extends A {}\n"+
 	            "}");
@@ -168,7 +193,7 @@ public void testCamelCaseField1() throws JavaModelException {
 		
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/camelcase/Test.java",
+			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
 			"public class Test {\n"+
 			"  int oneTwoThree;\n"+
@@ -202,7 +227,7 @@ public void testCamelCaseLocalVariable1() throws JavaModelException {
 		
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/camelcase/Test.java",
+			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
 			"public class Test {\n"+
 			"  void foo() {\n"+
@@ -236,7 +261,7 @@ public void testCamelCaseMethod1() throws JavaModelException {
 		
 	this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/camelcase/Test.java",
+			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
 			"public class Test {\n"+
 			"  void oneTwoThree(){}\n"+
@@ -270,14 +295,14 @@ public void testCamelCaseMethodDeclaration1() throws JavaModelException {
 		
 		this.workingCopies = new ICompilationUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/camelcase/Test.java",
+			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
 			"public class Test extends SuperClass {\n"+
 			"  oTT\n"+
 			"}");
 		
 		this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/camelcase/SuperClass.java",
+			"/Completion/src/camelcase/SuperClass.js",
 			"package camelcase;"+
 			"public class SuperClass {\n"+
 			"  public void oneTwoThree(){}\n"+
@@ -309,20 +334,20 @@ public void testCamelCaseType1() throws JavaModelException {
 		
 		this.workingCopies = new ICompilationUnit[3];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/camelcase/Test.java",
+			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
 			"public class Test {\n"+
 			"  FF\n"+
 			"}");
 	
 		this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/camelcase/FoFoFo.java",
+			"/Completion/src/camelcase/FoFoFo.js",
 			"package camelcase;"+
 			"public class FoFoFo {\n"+
 			"}");
 		
 		this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src/camelcase/FFFTest.java",
+			"/Completion/src/camelcase/FFFTest.js",
 			"package camelcase;"+
 			"public class FFFTest {\n"+
 			"}");
@@ -352,20 +377,20 @@ public void testCamelCaseType2() throws JavaModelException {
 		
 		this.workingCopies = new ICompilationUnit[3];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/camelcase/Test.java",
+			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
 			"public class Test {\n"+
 			"  camelcase.FF\n"+
 			"}");
 	
 		this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/camelcase/FoFoFo.java",
+			"/Completion/src/camelcase/FoFoFo.js",
 			"package camelcase;"+
 			"public class FoFoFo {\n"+
 			"}");
 		
 		this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src/camelcase/FFFTest.java",
+			"/Completion/src/camelcase/FFFTest.js",
 			"package camelcase;"+
 			"public class FFFTest {\n"+
 			"}");
@@ -394,7 +419,7 @@ public void testCamelCaseType3() throws JavaModelException {
 			
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/camelcase/Test.java",
+			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
 			"public class Test {\n"+
 			"  /**/FF\n"+
@@ -430,14 +455,14 @@ public void testCamelCaseType4() throws JavaModelException {
 		
 		this.workingCopies = new ICompilationUnit[3];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/camelcase/Test.java",
+			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
 			"public class Test {\n"+
 			"  FF\n"+
 			"}");
 	
 		this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/camelcase/Member1.java",
+			"/Completion/src/camelcase/Member1.js",
 			"package camelcase;"+
 			"public class Member1 {\n"+
 			"  public class FoFoFo {\n"+
@@ -445,7 +470,7 @@ public void testCamelCaseType4() throws JavaModelException {
 			"}");
 		
 		this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src/camelcase/Member2.java",
+			"/Completion/src/camelcase/Member2.js",
 			"package camelcase;"+
 			"public class Member2 {\n"+
 			"  public class FFFTest {\n"+
@@ -477,7 +502,7 @@ public void testCamelCaseType5() throws JavaModelException {
 		
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/camelcase/Test.java",
+			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
 			"public class Test {\n"+
 			"  public class FoFoFo {\n"+
@@ -506,7 +531,7 @@ public void testCamelCaseType5() throws JavaModelException {
 public void testCatchClauseExceptionRef01() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[4];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"	public void throwing() throws IZZAException, IZZException {}\n" +
@@ -523,19 +548,19 @@ public void testCatchClauseExceptionRef01() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/test/IZZAException.java",
+			"/Completion/src/test/IZZAException.js",
 			"package test;"+
 			"public class IZZAException extends Exception {\n" + 
 			"}\n");
 	
 	this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src/test/IZZBException.java",
+			"/Completion/src/test/IZZBException.js",
 			"package test;"+
 			"public class IZZBException extends Exception {\n" + 
 			"}\n");
 	
 	this.workingCopies[3] = getWorkingCopy(
-			"/Completion/src/test/IZZException.java",
+			"/Completion/src/test/IZZException.js",
 			"package test;"+
 			"public class IZZException extends Exception {\n" + 
 			"}\n");
@@ -555,7 +580,7 @@ public void testCatchClauseExceptionRef01() throws JavaModelException {
 public void testCatchClauseExceptionRef02() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[4];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"	public void throwing() throws IZZAException, IZZException {}\n" +
@@ -572,19 +597,19 @@ public void testCatchClauseExceptionRef02() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/test/IZZAException.java",
+			"/Completion/src/test/IZZAException.js",
 			"package test;"+
 			"public class IZZAException extends Exception {\n" + 
 			"}\n");
 	
 	this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src/test/IZZBException.java",
+			"/Completion/src/test/IZZBException.js",
 			"package test;"+
 			"public class IZZBException extends Exception {\n" + 
 			"}\n");
 	
 	this.workingCopies[3] = getWorkingCopy(
-			"/Completion/src/test/IZZException.java",
+			"/Completion/src/test/IZZException.js",
 			"package test;"+
 			"public class IZZException extends Exception {\n" + 
 			"}\n");
@@ -605,7 +630,7 @@ public void testCatchClauseExceptionRef02() throws JavaModelException {
 public void testCatchClauseExceptionRef03() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[4];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"	public void throwing() throws IZZAException, IZZException {}\n" +
@@ -623,19 +648,19 @@ public void testCatchClauseExceptionRef03() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/test/IZZAException.java",
+			"/Completion/src/test/IZZAException.js",
 			"package test;"+
 			"public class IZZAException extends Exception {\n" + 
 			"}\n");
 	
 	this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src/test/IZZBException.java",
+			"/Completion/src/test/IZZBException.js",
 			"package test;"+
 			"public class IZZBException extends Exception {\n" + 
 			"}\n");
 	
 	this.workingCopies[3] = getWorkingCopy(
-			"/Completion/src/test/IZZException.java",
+			"/Completion/src/test/IZZException.js",
 			"package test;"+
 			"public class IZZException extends Exception {\n" + 
 			"}\n");
@@ -656,7 +681,7 @@ public void testCatchClauseExceptionRef03() throws JavaModelException {
 public void testCatchClauseExceptionRef04() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[4];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"	public void throwing() throws test.p.IZZAException, test.p.IZZException {}\n" +
@@ -673,19 +698,19 @@ public void testCatchClauseExceptionRef04() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/test/p/IZZAException.java",
+			"/Completion/src/test/p/IZZAException.js",
 			"package test.p;"+
 			"public class IZZAException extends Exception {\n" + 
 			"}\n");
 	
 	this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src/test/p/IZZBException.java",
+			"/Completion/src/test/p/IZZBException.js",
 			"package test.p;"+
 			"public class IZZBException extends Exception {\n" + 
 			"}\n");
 	
 	this.workingCopies[3] = getWorkingCopy(
-			"/Completion/src/test/p/IZZException.java",
+			"/Completion/src/test/p/IZZException.js",
 			"package test.p;"+
 			"public class IZZException extends Exception {\n" + 
 			"}\n");
@@ -705,7 +730,7 @@ public void testCatchClauseExceptionRef04() throws JavaModelException {
 public void testCatchClauseExceptionRef05() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"	public class IZZAException extends Exception {}\n" +
@@ -739,7 +764,7 @@ public void testCatchClauseExceptionRef05() throws JavaModelException {
 public void testCatchClauseExceptionRef06() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"   public class Inner {\n" + 
@@ -775,7 +800,7 @@ public void testCatchClauseExceptionRef06() throws JavaModelException {
 public void testCatchClauseExceptionRef07() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"   void zork() {\n" + 
@@ -813,7 +838,7 @@ public void testCatchClauseExceptionRef07() throws JavaModelException {
 public void testCatchClauseExceptionRef08() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[4];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"	public void throwing() throws IZZAException, IZZException {}\n" +
@@ -830,19 +855,19 @@ public void testCatchClauseExceptionRef08() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/test/IZZAException.java",
+			"/Completion/src/test/IZZAException.js",
 			"package test;"+
 			"public class IZZAException extends Exception {\n" + 
 			"}\n");
 	
 	this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src/test/IZZBException.java",
+			"/Completion/src/test/IZZBException.js",
 			"package test;"+
 			"public class IZZBException extends Exception {\n" + 
 			"}\n");
 	
 	this.workingCopies[3] = getWorkingCopy(
-			"/Completion/src/test/IZZException.java",
+			"/Completion/src/test/IZZException.js",
 			"package test;"+
 			"public class IZZException extends Exception {\n" + 
 			"}\n");
@@ -863,7 +888,7 @@ public void testCatchClauseExceptionRef08() throws JavaModelException {
 public void testCatchClauseExceptionRef09() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[5];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"	public void throwing() throws IZZAException, IZZCException, IZZException {}\n" +
@@ -885,25 +910,25 @@ public void testCatchClauseExceptionRef09() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/test/IZZAException.java",
+			"/Completion/src/test/IZZAException.js",
 			"package test;"+
 			"public class IZZAException extends Exception {\n" + 
 			"}\n");
 	
 	this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src/test/IZZBException.java",
+			"/Completion/src/test/IZZBException.js",
 			"package test;"+
 			"public class IZZBException extends Exception {\n" + 
 			"}\n");
 	
 	this.workingCopies[3] = getWorkingCopy(
-			"/Completion/src/test/IZZCException.java",
+			"/Completion/src/test/IZZCException.js",
 			"package test;"+
 			"public class IZZCException extends Exception {\n" + 
 			"}\n");
 	
 	this.workingCopies[4] = getWorkingCopy(
-			"/Completion/src/test/IZZException.java",
+			"/Completion/src/test/IZZException.js",
 			"package test;"+
 			"public class IZZException extends Exception {\n" + 
 			"}\n");
@@ -924,7 +949,7 @@ public void testCatchClauseExceptionRef09() throws JavaModelException {
 public void testCatchClauseExceptionRef10() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[4];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"	public void throwing() throws IZZAException, IZZException {}\n" +
@@ -941,19 +966,19 @@ public void testCatchClauseExceptionRef10() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/test/IZZAException.java",
+			"/Completion/src/test/IZZAException.js",
 			"package test;"+
 			"public class IZZAException extends Exception {\n" + 
 			"}\n");
 	
 	this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src/test/IZZBException.java",
+			"/Completion/src/test/IZZBException.js",
 			"package test;"+
 			"public class IZZBException extends Exception {\n" + 
 			"}\n");
 	
 	this.workingCopies[3] = getWorkingCopy(
-			"/Completion/src/test/IZZException.java",
+			"/Completion/src/test/IZZException.js",
 			"package test;"+
 			"public class IZZException extends IZZBException {\n" + 
 			"}\n");
@@ -975,7 +1000,7 @@ public void testCatchClauseExceptionRef10() throws JavaModelException {
 public void testCatchClauseExceptionRef11() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[4];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"	public void throwing() throws IZZAException, IZZException {}\n" +
@@ -992,19 +1017,19 @@ public void testCatchClauseExceptionRef11() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/test/IZZAException.java",
+			"/Completion/src/test/IZZAException.js",
 			"package test;"+
 			"public class IZZAException extends Exception {\n" + 
 			"}\n");
 	
 	this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src/test/IZZBException.java",
+			"/Completion/src/test/IZZBException.js",
 			"package test;"+
 			"public class IZZBException extends IZZAException {\n" + 
 			"}\n");
 	
 	this.workingCopies[3] = getWorkingCopy(
-			"/Completion/src/test/IZZException.java",
+			"/Completion/src/test/IZZException.js",
 			"package test;"+
 			"public class IZZException extends Exception {\n" + 
 			"}\n");
@@ -1024,7 +1049,7 @@ public void testCatchClauseExceptionRef11() throws JavaModelException {
 public void testCatchClauseExceptionRef12() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[4];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"	public void throwing() throws IZZAException, IZZException {}\n" +
@@ -1038,19 +1063,19 @@ public void testCatchClauseExceptionRef12() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/test/IZZAException.java",
+			"/Completion/src/test/IZZAException.js",
 			"package test;"+
 			"public class IZZAException extends Exception {\n" + 
 			"}\n");
 	
 	this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src/test/IZZBException.java",
+			"/Completion/src/test/IZZBException.js",
 			"package test;"+
 			"public class IZZBException extends Exception {\n" + 
 			"}\n");
 	
 	this.workingCopies[3] = getWorkingCopy(
-			"/Completion/src/test/IZZException.java",
+			"/Completion/src/test/IZZException.js",
 			"package test;"+
 			"public class IZZException extends Exception {\n" + 
 			"}\n");
@@ -1071,7 +1096,7 @@ public void testCatchClauseExceptionRef12() throws JavaModelException {
 public void testCatchClauseExceptionRef13() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[4];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"	public void throwing() throws IZZException {}\n" +
@@ -1087,19 +1112,19 @@ public void testCatchClauseExceptionRef13() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/test/IZZAException.java",
+			"/Completion/src/test/IZZAException.js",
 			"package test;"+
 			"public class IZZAException extends Exception {\n" + 
 			"}\n");
 	
 	this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src/test/IZZBException.java",
+			"/Completion/src/test/IZZBException.js",
 			"package test;"+
 			"public class IZZBException extends Exception {\n" + 
 			"}\n");
 	
 	this.workingCopies[3] = getWorkingCopy(
-			"/Completion/src/test/IZZException.java",
+			"/Completion/src/test/IZZException.js",
 			"package test;"+
 			"public class IZZException extends IZZAException {\n" + 
 			"}\n");
@@ -1118,7 +1143,7 @@ public void testCatchClauseExceptionRef14() throws JavaModelException {
 	
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"	public void throwing() throws IZZException {}\n" +
@@ -1160,7 +1185,7 @@ public void testCatchClauseExceptionRef14() throws JavaModelException {
 public void testCatchClauseExceptionRef15() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"	public void throwing() throws IZZException, IZZAException {}\n" +
@@ -1178,13 +1203,13 @@ public void testCatchClauseExceptionRef15() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/test/IZZAException.java",
+			"/Completion/src/test/IZZAException.js",
 			"package test;"+
 			"public class IZZAException extends Exception {\n" + 
 			"}\n");
 	
 	this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src/test/IZZException.java",
+			"/Completion/src/test/IZZException.js",
 			"package test;"+
 			"public class IZZException extends Exception {\n" + 
 			"}\n");
@@ -1204,7 +1229,7 @@ public void testCatchClauseExceptionRef15() throws JavaModelException {
  */
 public void testCompletion2InterfacesWithSameMethod() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "Completion2InterfacesWithSameMethod.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "Completion2InterfacesWithSameMethod.js");
 
 	String str = cu.getSource();
 	String completeBehind = "var.meth";
@@ -1217,7 +1242,7 @@ public void testCompletion2InterfacesWithSameMethod() throws JavaModelException 
 }
 public void testCompletionAbstractMethod1() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionAbstractMethod1.java",
+            "/Completion/src/CompletionAbstractMethod1.js",
             "public class CompletionAbstractMethod1 {\n" +
             "	abstract class A {\n" +
             "		abstract void foo();\n" +
@@ -1243,7 +1268,7 @@ public void testCompletionAbstractMethod1() throws JavaModelException {
 }
 public void testCompletionAbstractMethod2() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionAbstractMethod2.java",
+            "/Completion/src/CompletionAbstractMethod2.js",
             "public class CompletionAbstractMethod2 {\n" +
             "	abstract class A {\n" +
             "		abstract void foo();\n" +
@@ -1269,7 +1294,7 @@ public void testCompletionAbstractMethod2() throws JavaModelException {
 }
 public void testCompletionAbstractMethod3() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionAbstractMethod3.java",
+            "/Completion/src/CompletionAbstractMethod3.js",
             "public class CompletionAbstractMethod3 {\n" +
             "	abstract class A {\n" +
             "		abstract void foo();\n" +
@@ -1294,7 +1319,7 @@ public void testCompletionAbstractMethod3() throws JavaModelException {
 }
 public void testCompletionAbstractMethod4() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionAbstractMethod4.java",
+            "/Completion/src/CompletionAbstractMethod4.js",
             "public class CompletionAbstractMethod1 {\n" +
             "	class A {\n" +
             "		void foo(){}\n" +
@@ -1329,7 +1354,7 @@ public void testCompletionAbstractMethodRelevance1() throws JavaModelException {
 	ICompilationUnit superClass = null;
 	try {
 		superClass = getWorkingCopy(
-	            "/Completion/src/CompletionAbstractSuperClass.java",
+	            "/Completion/src/CompletionAbstractSuperClass.js",
 	            "public abstract class CompletionAbstractSuperClass {\n"+
 	            "	public void foo1(){}\n"+
 	            "	public abstract void foo2();\n"+
@@ -1337,7 +1362,7 @@ public void testCompletionAbstractMethodRelevance1() throws JavaModelException {
 	            "}");
 		
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionAbstractMethodRelevance1.java",
+	            "/Completion/src/CompletionAbstractMethodRelevance1.js",
 	            "public class CompletionAbstractMethodRelevance1 extends CompletionAbstractSuperClass {\n"+
 	            "	foo\n"+
 	            "}");
@@ -1368,13 +1393,13 @@ public void testCompletionAbstractMethodRelevance2() throws JavaModelException {
 	ICompilationUnit superClass = null;
 	try {
 		superClass = getWorkingCopy(
-	            "/Completion/src/CompletionSuperInterface.java",
+	            "/Completion/src/CompletionSuperInterface.js",
 	            "public interface CompletionSuperInterface{\n"+
 	            "	public int eqFoo(int a,Object b);\n"+
 	            "}");
 		
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionAbstractMethodRelevance2.java",
+	            "/Completion/src/CompletionAbstractMethodRelevance2.js",
 	            "public class CompletionAbstractMethodRelevance2 implements CompletionSuperInterface {\n"+
 	            "	eq\n"+
 	            "}");
@@ -1399,7 +1424,7 @@ public void testCompletionAbstractMethodRelevance2() throws JavaModelException {
 }
 public void testCompletionAfterCase1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAfterCase1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAfterCase1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "zz";
@@ -1412,7 +1437,7 @@ public void testCompletionAfterCase1() throws JavaModelException {
 }
 public void testCompletionAfterCase2() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAfterCase2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAfterCase2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "zz";
@@ -1426,7 +1451,7 @@ public void testCompletionAfterCase2() throws JavaModelException {
 public void testCompletionAfterSupercall1() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/CompletionAfterSupercall1.java",
+		"/Completion/src/CompletionAfterSupercall1.js",
 		"public class CompletionAfterSupercall1 extends CompletionAfterSupercall1_1 {\n" +
 		"	public void foo(){\n" +
 		"		super.foo\n" +
@@ -1454,7 +1479,7 @@ public void testCompletionAfterSupercall1() throws JavaModelException {
 }
 public void testCompletionAfterSwitch() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAfterSwitch.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAfterSwitch.js");
 
 	String str = cu.getSource();
 	String completeBehind = "bar";
@@ -1467,7 +1492,7 @@ public void testCompletionAfterSwitch() throws JavaModelException {
 }
 public void testCompletionAllMemberTypes() throws JavaModelException {
     this.wc = getWorkingCopy(
-            "/Completion/src/test/CompletionAllMemberTypes.java",
+            "/Completion/src/test/CompletionAllMemberTypes.js",
             "package test;\n" +
             "public class CompletionAllMemberTypes {\n" +
             "  class Member1 {\n" +
@@ -1496,7 +1521,7 @@ public void testCompletionAllMemberTypes() throws JavaModelException {
 }
 public void testCompletionAllMemberTypes2() throws JavaModelException {
     this.wc = getWorkingCopy(
-            "/Completion/src/test/CompletionAllMemberTypes2.java",
+            "/Completion/src/test/CompletionAllMemberTypes2.js",
             "package test;\n" +
             "public class CompletionAllMemberTypes2 {\n" +
             "  class Member1 {\n" +
@@ -1534,7 +1559,7 @@ public void testCompletionAllMemberTypes2() throws JavaModelException {
 }
 public void testCompletionAllMemberTypes3() throws JavaModelException {
     this.wc = getWorkingCopy(
-            "/Completion/src/test/CompletionAllMemberTypes2.java",
+            "/Completion/src/test/CompletionAllMemberTypes2.js",
             "package test;\n" +
             "public interface CompletionAllMemberTypes2 {\n" +
             "  interface Member1 {\n" +
@@ -1573,7 +1598,7 @@ public void testCompletionAllMemberTypes4() throws JavaModelException {
 	ICompilationUnit anInterface = null;
 	try {
 		anInterface = getWorkingCopy(
-	            "/Completion/src/test/AnInterface.java",
+	            "/Completion/src/test/AnInterface.js",
 	            "package test;\n" +
 	            "public interface AnInterface {\n" +
 	            "  public interface Member1 {\n" +
@@ -1592,7 +1617,7 @@ public void testCompletionAllMemberTypes4() throws JavaModelException {
 	            "}");
 		
 	    this.wc = getWorkingCopy(
-	            "/Completion/src/test/CompletionAllMemberTypes2.java",
+	            "/Completion/src/test/CompletionAllMemberTypes2.js",
 	            "package test;\n" +
 	            "public class CompletionAllMemberTypes2 {\n" +
 	            "  class Member1 {\n" +
@@ -1649,7 +1674,7 @@ public void testCompletionAllMemberTypes5() throws JavaModelException {
 		JavaCore.setOptions(options);
 		
 		aType = getWorkingCopy(
-	            "/Completion/src/test/AType.java",
+	            "/Completion/src/test/AType.js",
 	            "package test;\n" +
 	            "public class AType {\n" +
 	            "  public class Member1 {\n" +
@@ -1663,7 +1688,7 @@ public void testCompletionAllMemberTypes5() throws JavaModelException {
 	            "}");
 		
 	    this.wc = getWorkingCopy(
-	            "/Completion/src/test/CompletionAllMemberTypes5.java",
+	            "/Completion/src/test/CompletionAllMemberTypes5.js",
 	            "package test;\n" +
 	            "public class CompletionAllMemberTypes5 {\n" +
 	            "  void foo(){\n" +
@@ -1701,7 +1726,7 @@ public void testCompletionAllMemberTypes6() throws JavaModelException {
 		JavaCore.setOptions(options);
 		
 	    this.wc = getWorkingCopy(
-	            "/Completion/src/test/CompletionAllMemberTypes6.java",
+	            "/Completion/src/test/CompletionAllMemberTypes6.js",
 	            "package test;\n" +
 	            "class AType {\n" +
 	            "  public class Member1 {\n" +
@@ -1740,7 +1765,7 @@ public void testCompletionAllMemberTypes7() throws JavaModelException {
 		JavaCore.setOptions(options);
 		
 	    this.wc = getWorkingCopy(
-	            "/Completion/src/test/AType.java",
+	            "/Completion/src/test/AType.js",
 	            "package test;\n" +
 	            "class AType {\n" +
 	            "  public class Member1 {\n" +
@@ -1773,7 +1798,7 @@ public void testCompletionAllMemberTypes7() throws JavaModelException {
 
 public void testCompletionAllocationExpressionIsParent1() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAllocationExpressionIsParent1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAllocationExpressionIsParent1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -1790,7 +1815,7 @@ public void testCompletionAllocationExpressionIsParent1() throws JavaModelExcept
 }
 public void testCompletionAllocationExpressionIsParent2() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionAllocationExpressionIsParent2.java",
+            "/Completion/src/CompletionAllocationExpressionIsParent2.js",
             "public class CompletionAllocationExpressionIsParent2 {\n" +
             "	public class Inner {\n" +
             "		public Inner(long i, long j){super();}\n" +
@@ -1827,7 +1852,7 @@ public void testCompletionAllocationExpressionIsParent2() throws JavaModelExcept
 
 public void testCompletionAllocationExpressionIsParent3() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionAllocationExpressionIsParent3.java",
+            "/Completion/src/CompletionAllocationExpressionIsParent3.js",
             "public class CompletionAllocationExpressionIsParent3 {\n" +
             "	public class Inner {\n" +
             "		public Inner(long i, long j){super();}\n" +
@@ -1864,7 +1889,7 @@ public void testCompletionAllocationExpressionIsParent3() throws JavaModelExcept
 
 public void testCompletionAllocationExpressionIsParent4() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAllocationExpressionIsParent4.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAllocationExpressionIsParent4.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -1882,7 +1907,7 @@ public void testCompletionAllocationExpressionIsParent4() throws JavaModelExcept
 
 public void testCompletionAllocationExpressionIsParent5() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAllocationExpressionIsParent5.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAllocationExpressionIsParent5.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -1901,7 +1926,7 @@ public void testCompletionAllocationExpressionIsParent5() throws JavaModelExcept
 
 public void testCompletionAllocationExpressionIsParent6() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionAllocationExpressionIsParent6.java",
+            "/Completion/src/CompletionAllocationExpressionIsParent6.js",
             "public class CompletionAllocationExpressionIsParent6 {\n" +
             "	\n" +
             "	long zzlong;\n" +
@@ -1941,7 +1966,7 @@ public void testCompletionAllocationExpressionIsParent6() throws JavaModelExcept
 public void testCompletionAmbiguousFieldName() throws JavaModelException {
 
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAmbiguousFieldName.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAmbiguousFieldName.js");
 
 	String str = cu.getSource();
 	String completeBehind = "xBa";
@@ -1957,7 +1982,7 @@ public void testCompletionAmbiguousFieldName() throws JavaModelException {
 
 public void testCompletionAmbiguousFieldName2() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionAmbiguousFieldName2.java",
+            "/Completion/src/CompletionAmbiguousFieldName2.js",
             "public class CompletionAmbiguousFieldName2 {\n"+
             "	int xBar;\n"+
             "	class classFoo {\n"+
@@ -1983,7 +2008,7 @@ public void testCompletionAmbiguousFieldName2() throws JavaModelException {
 public void testCompletionAmbiguousFieldName3() throws JavaModelException {
 
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAmbiguousFieldName3.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAmbiguousFieldName3.js");
 
 	String str = cu.getSource();
 	String completeBehind = "xBa";
@@ -1999,7 +2024,7 @@ public void testCompletionAmbiguousFieldName3() throws JavaModelException {
 public void testCompletionAmbiguousFieldName4() throws JavaModelException {
 
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAmbiguousFieldName4.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAmbiguousFieldName4.js");
 
 	String str = cu.getSource();
 	String completeBehind = "xBa";
@@ -2013,7 +2038,7 @@ public void testCompletionAmbiguousFieldName4() throws JavaModelException {
 }
 public void testCompletionAmbiguousType() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAmbiguousType.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAmbiguousType.js");
 
 	String str = cu.getSource();
 	String completeBehind = "ABC";
@@ -2028,7 +2053,7 @@ public void testCompletionAmbiguousType() throws JavaModelException {
 }
 public void testCompletionAmbiguousType2() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAmbiguousType2.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAmbiguousType2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "ABC";
@@ -2044,7 +2069,7 @@ public void testCompletionAmbiguousType2() throws JavaModelException {
 
 public void testCompletionArgumentName() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionArgumentName.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionArgumentName.js");
 
 	String str = cu.getSource();
 	String completeBehind = "ClassWithComplexName ";
@@ -2062,7 +2087,7 @@ public void testCompletionArgumentName() throws JavaModelException {
 
 public void testCompletionArrayAccess1() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionArrayAccess1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionArrayAccess1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zzz";
@@ -2078,7 +2103,7 @@ public void testCompletionArrayAccess1() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=84690
 public void testCompletionArrayClone() throws JavaModelException {
     this.wc = getWorkingCopy(
-            "/Completion/src/test/CompletionArrayClone.java",
+            "/Completion/src/test/CompletionArrayClone.js",
             "package test;\n" +
             "public class CompletionArrayClone {\n" +
             "  public void foo() {\n" +
@@ -2102,7 +2127,7 @@ public void testCompletionArrayClone() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=84690
 public void testCompletionArrayLength() throws JavaModelException {
     this.wc = getWorkingCopy(
-            "/Completion/src/test/CompletionArrayLength.java",
+            "/Completion/src/test/CompletionArrayLength.js",
             "package test;\n" +
             "public class CompletionArrayLength {\n" +
             "  public void foo() {\n" +
@@ -2125,7 +2150,7 @@ public void testCompletionArrayLength() throws JavaModelException {
 
 public void testCompletionArraysCloneMethod() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionArraysCloneMethod.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionArraysCloneMethod.js");
 
 	String str = cu.getSource();
 	String completeBehind = ".cl";
@@ -2139,7 +2164,7 @@ public void testCompletionArraysCloneMethod() throws JavaModelException {
 
 public void testCompletionAssignmentInMethod1() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAssignmentInMethod1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAssignmentInMethod1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -2157,7 +2182,7 @@ public void testCompletionAssignmentInMethod1() throws JavaModelException {
 
 public void testCompletionAssignmentInMethod2() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAssignmentInMethod2.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAssignmentInMethod2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -2175,7 +2200,7 @@ public void testCompletionAssignmentInMethod2() throws JavaModelException {
 
 public void testCompletionAssignmentInMethod3() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAssignmentInMethod3.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAssignmentInMethod3.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Objec";
@@ -2190,7 +2215,7 @@ public void testCompletionAssignmentInMethod3() throws JavaModelException {
 
 public void testCompletionAssignmentInMethod4() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAssignmentInMethod4.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAssignmentInMethod4.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Objec";
@@ -2205,7 +2230,7 @@ public void testCompletionAssignmentInMethod4() throws JavaModelException {
 
 public void testCompletionBasicAnonymousDeclaration1() throws JavaModelException {
 	CompletionResult result = complete(
-			"/Completion/src3/test0000/CompletionBasicCompletionContext.java",
+			"/Completion/src3/test0000/CompletionBasicCompletionContext.js",
 			"public class CompletionBasicAnonymousDeclaration1 {\n"+
 			"	void foo() {\n"+
 			"		new Object(\n"+
@@ -2226,7 +2251,7 @@ public void testCompletionBasicAnonymousDeclaration1() throws JavaModelException
 
 public void testCompletionBasicCompletionContext() throws JavaModelException {
 	CompletionResult result = complete(
-			"/Completion/src3/test0000/CompletionBasicCompletionContext.java",
+			"/Completion/src3/test0000/CompletionBasicCompletionContext.js",
 			"package test0000;\n" +
 			"public class CompletionBasicCompletionContext {\n" +
 			"  void bar(String o) {\n" +
@@ -2248,7 +2273,7 @@ public void testCompletionBasicCompletionContext() throws JavaModelException {
 
 public void testCompletionBasicField1() throws JavaModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicField1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicField1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zzvar";
@@ -2262,7 +2287,7 @@ public void testCompletionBasicField1() throws JavaModelException {
 
 public void testCompletionBasicKeyword1() throws JavaModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicKeyword1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicKeyword1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "whil";
@@ -2276,7 +2301,7 @@ public void testCompletionBasicKeyword1() throws JavaModelException {
 
 public void testCompletionBasicLocalVariable1() throws JavaModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicLocalVariable1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicLocalVariable1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zzvar";
@@ -2290,7 +2315,7 @@ public void testCompletionBasicLocalVariable1() throws JavaModelException {
 
 public void testCompletionBasicMethod1() throws JavaModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicMethod1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicMethod1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zzfo";
@@ -2304,7 +2329,7 @@ public void testCompletionBasicMethod1() throws JavaModelException {
 
 public void testCompletionBasicMethodDeclaration1() throws JavaModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicMethodDeclaration1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicMethodDeclaration1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "equals";
@@ -2319,7 +2344,7 @@ public void testCompletionBasicMethodDeclaration1() throws JavaModelException {
 
 public void testCompletionBasicPackage1() throws JavaModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicPackage1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicPackage1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "java.lan";
@@ -2334,7 +2359,7 @@ public void testCompletionBasicPackage1() throws JavaModelException {
 
 public void testCompletionBasicPotentialMethodDeclaration1() throws JavaModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicPotentialMethodDeclaration1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicPotentialMethodDeclaration1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zzpot";
@@ -2349,7 +2374,7 @@ public void testCompletionBasicPotentialMethodDeclaration1() throws JavaModelExc
 
 public void testCompletionBasicType1() throws JavaModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicType1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicType1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Objec";
@@ -2364,7 +2389,7 @@ public void testCompletionBasicType1() throws JavaModelException {
 public void testCompletionBasicVariableDeclaration1() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/CompletionBasicVariableDeclaration1.java",
+		"/Completion/src/CompletionBasicVariableDeclaration1.js",
 		"public class CompletionBasicVariableDeclaration1 {\n"+
 		"	public Object obj;\n"+
 		"}\n");
@@ -2382,7 +2407,7 @@ public void testCompletionBasicVariableDeclaration1() throws JavaModelException 
 
 public void testCompletionBinaryOperator1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBinaryOperator1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBinaryOperator1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "var";
@@ -2399,7 +2424,7 @@ public void testCompletionBinaryOperator1() throws JavaModelException {
 
 public void testCompletionBinaryOperator2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBinaryOperator2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBinaryOperator2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "var";
@@ -2416,7 +2441,7 @@ public void testCompletionBinaryOperator2() throws JavaModelException {
 
 public void testCompletionBinaryOperator3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBinaryOperator3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBinaryOperator3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "var";
@@ -2436,7 +2461,7 @@ public void testCompletionBinaryOperator3() throws JavaModelException {
  */
 public void testCompletionCaseInsensitive() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src", "", "CompletionCaseInsensitive.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src", "", "CompletionCaseInsensitive.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "Fiel";
@@ -2454,7 +2479,7 @@ public void testCompletionCaseInsensitive() throws JavaModelException {
  */
 public void testCompletionCaseInsensitivePackage() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionCaseInsensitivePackage.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionCaseInsensitivePackage.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Ja";
@@ -2474,7 +2499,7 @@ public void testCompletionCaseInsensitivePackage() throws JavaModelException {
 
 public void testCompletionCastIsParent1() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionCastIsParent1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionCastIsParent1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -2508,7 +2533,7 @@ public void testCompletionCastIsParent1() throws JavaModelException {
 
 public void testCompletionCastIsParent2() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionCastIsParent2.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionCastIsParent2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "xx";
@@ -2531,7 +2556,7 @@ public void testCompletionCastIsParent2() throws JavaModelException {
 public void testCompletionCatchArgumentName() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/CompletionCatchArgumentName.java",
+		"/Completion/src/CompletionCatchArgumentName.js",
 		"public class CompletionCatchArgumentName {\n"+
 		"	public void foo(){\n"+
 		"		try{\n"+
@@ -2563,7 +2588,7 @@ public void testCompletionCatchArgumentName2() throws JavaModelException {
 	
 	try {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionCatchArgumentName2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionCatchArgumentName2.js");
 	
 		String str = cu.getSource();
 		String completeBehind = "Exception ";
@@ -2583,7 +2608,7 @@ public void testCompletionCatchArgumentName2() throws JavaModelException {
 
 public void testCompletionClassLiteralAfterAnonymousType1() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionClassLiteralAfterAnonymousType1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionClassLiteralAfterAnonymousType1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "double.";
@@ -2597,7 +2622,7 @@ public void testCompletionClassLiteralAfterAnonymousType1() throws JavaModelExce
 
 public void testCompletionConditionalExpression1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionConditionalExpression1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionConditionalExpression1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "var";
@@ -2614,7 +2639,7 @@ public void testCompletionConditionalExpression1() throws JavaModelException {
 
 public void testCompletionConditionalExpression2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionConditionalExpression2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionConditionalExpression2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "var";
@@ -2631,7 +2656,7 @@ public void testCompletionConditionalExpression2() throws JavaModelException {
 
 public void testCompletionConditionalExpression3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionConditionalExpression3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionConditionalExpression3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "var";
@@ -2652,7 +2677,7 @@ public void testCompletionConditionalExpression3() throws JavaModelException {
 */
 public void testCompletionConstructorForAnonymousType() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionConstructorForAnonymousType.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionConstructorForAnonymousType.js");
 
 	String str = cu.getSource();
 	String completeBehind = "TypeWithConstructor(";
@@ -2666,7 +2691,7 @@ public void testCompletionConstructorForAnonymousType() throws JavaModelExceptio
 
 public void testCompletionEmptyToken1() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionEmptyToken1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionEmptyToken1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -2714,7 +2739,7 @@ public void testCompletionEmptyToken1() throws JavaModelException {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=100808
 public void testCompletionEmptyToken2() throws JavaModelException {
     this.wc = getWorkingCopy(
-            "/Completion/src/testCompletionEmptyToken2/Test.java",
+            "/Completion/src/testCompletionEmptyToken2/Test.js",
             "package testCompletionEmptyToken2.");
     
     CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true, false, true);
@@ -2742,7 +2767,7 @@ public void testCompletionEmptyToken2() throws JavaModelException {
 */
 public void testCompletionEmptyTypeName1() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionEmptyTypeName1.java",
+            "/Completion/src/CompletionEmptyTypeName1.js",
             "public class CompletionEmptyTypeName1 {\n"+
            "	void foo() {\n"+
            "		A a = new \n"+
@@ -2773,7 +2798,7 @@ public void testCompletionEmptyTypeName1() throws JavaModelException {
 */
 public void testCompletionEmptyTypeName2() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionEmptyTypeName2.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionEmptyTypeName2.js");
 
 	String str = cu.getSource();
 	String completeBehind = " = ";
@@ -2822,7 +2847,7 @@ public void testCompletionEmptyTypeName2() throws JavaModelException {
 */
 public void testCompletionEmptyTypeName3() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionEmptyTypeName3.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionEmptyTypeName3.js");
 
 	String str = cu.getSource();
 	String completeBehind = " = ";
@@ -2873,7 +2898,7 @@ public void testCompletionEmptyTypeName3() throws JavaModelException {
  */
 public void testCompletionEndOfCompilationUnit() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src", "", "CompletionEndOfCompilationUnit.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src", "", "CompletionEndOfCompilationUnit.js");
 	cu.codeComplete(cu.getSourceRange().getOffset() + cu.getSourceRange().getLength(), requestor);
 	assertEquals(
 		"should have two methods of 'foo'", 
@@ -2886,7 +2911,7 @@ public void testCompletionEndOfCompilationUnit() throws JavaModelException {
  */
 public void testCompletionExactNameCaseInsensitive() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionExactNameCaseInsensitive.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionExactNameCaseInsensitive.js");
 
 	String str = cu.getSource();
 	String completeBehind = "(compleTionexactnamecaseInsensitive";
@@ -2903,7 +2928,7 @@ public void testCompletionExactNameCaseInsensitive() throws JavaModelException {
 */
 public void testCompletionExpectedTypeIsNotValid() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionExpectedTypeIsNotValid.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionExpectedTypeIsNotValid.js");
 
 	String str = cu.getSource();
 	String completeBehind = "new U";
@@ -2920,13 +2945,13 @@ public void testCompletionExpectedTypeOnEmptyToken1() throws JavaModelException 
 	try {
 		
 		aType = getWorkingCopy(
-	            "/Completion/src/test/AType.java",
+	            "/Completion/src/test/AType.js",
 	            "package test;\n" +
 	            "public class AType{\n"+
 	            "}");
 		
 	    this.wc = getWorkingCopy(
-	            "/Completion/src/test/Test.java",
+	            "/Completion/src/test/Test.js",
 	            "package test;\n" +
 	            "public class Test{\n"+
 	            "  void foo() {\n"+
@@ -2968,13 +2993,13 @@ public void testCompletionExpectedTypeOnEmptyToken3() throws JavaModelException 
 	ICompilationUnit aType = null;
 	try {
 		aType = getWorkingCopy(
-	            "/Completion/src/test/AType.java",
+	            "/Completion/src/test/AType.js",
 	            "package test;\n" +
 	            "public class AType{\n"+
 	            "}");
 		
 	    this.wc = getWorkingCopy(
-	            "/Completion/src/test/Test.java",
+	            "/Completion/src/test/Test.js",
 	            "package test;\n" +
 	            "public class Test{\n"+
 	            "  void foo() {\n"+
@@ -3020,13 +3045,13 @@ public void testCompletionExpectedTypeOnEmptyToken4() throws JavaModelException 
 	ICompilationUnit aType = null;
 	try {
 		aType = getWorkingCopy(
-	            "/Completion/src/test/AInterface.java",
+	            "/Completion/src/test/AInterface.js",
 	            "package test;\n" +
 	            "public interface AInterface{\n"+
 	            "}");
 		
 	    this.wc = getWorkingCopy(
-	            "/Completion/src/test/Test.java",
+	            "/Completion/src/test/Test.js",
 	            "package test;\n" +
 	            "public class Test{\n"+
 	            "  void foo() {\n"+
@@ -3067,7 +3092,7 @@ public void testCompletionExpectedTypeOnEmptyToken4() throws JavaModelException 
 
 public void testCompletionFieldInitializer1() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFieldInitializer1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFieldInitializer1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -3086,7 +3111,7 @@ public void testCompletionFieldInitializer1() throws JavaModelException {
 
 public void testCompletionFieldInitializer2() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFieldInitializer2.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFieldInitializer2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -3105,7 +3130,7 @@ public void testCompletionFieldInitializer2() throws JavaModelException {
 
 public void testCompletionFieldInitializer3() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFieldInitializer3.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFieldInitializer3.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Objec";
@@ -3120,7 +3145,7 @@ public void testCompletionFieldInitializer3() throws JavaModelException {
 
 public void testCompletionFieldInitializer4() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFieldInitializer4.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFieldInitializer4.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Objec";
@@ -3135,7 +3160,7 @@ public void testCompletionFieldInitializer4() throws JavaModelException {
 
 public void testCompletionFieldName() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFieldName.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFieldName.js");
 
 	String str = cu.getSource();
 	String completeBehind = "ClassWithComplexName ";
@@ -3157,7 +3182,7 @@ public void testCompletionFieldName() throws JavaModelException {
  */
 public void testCompletionFindClass() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionFindClass.java",
+            "/Completion/src/CompletionFindClass.js",
             "public class CompletionFindClass {\n" +
             "	private    A[] a;\n" +
             "	public CompletionFindClass () {\n" +
@@ -3186,7 +3211,7 @@ public void testCompletionFindClass() throws JavaModelException {
  */
 public void testCompletionFindClass2() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindClass2.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindClass2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "PX";
@@ -3205,7 +3230,7 @@ public void testCompletionFindClass2() throws JavaModelException {
  */
 public void testCompletionFindClassDefaultPackage() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionDefaultPackage.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionDefaultPackage.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Def";
@@ -3224,7 +3249,7 @@ public void testCompletionFindClassDefaultPackage() throws JavaModelException {
  */
 public void testCompletionFindConstructor() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionFindConstructor.java",
+            "/Completion/src/CompletionFindConstructor.js",
             "public class CompletionFindConstructor {\n"+
             "	public CompletionFindConstructor (int i) {\n"+
             "	}\n"+
@@ -3259,7 +3284,7 @@ public void testCompletionFindConstructor() throws JavaModelException {
  */
 public void testCompletionFindConstructor2() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionFindConstructor2.java",
+            "/Completion/src/CompletionFindConstructor2.js",
             "import zconstructors.*;\n"+
             "public class CompletionFindConstructor2 {\n"+
             "	Constructor2 c = new Constructor2();\n"+
@@ -3289,7 +3314,7 @@ public void testCompletionFindConstructor2() throws JavaModelException {
  */
 public void testCompletionFindConstructor3() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionFindConstructor3.java",
+            "/Completion/src/CompletionFindConstructor3.js",
             "import zconstructors.*;\n"+
             "public class CompletionFindConstructor3 {\n"+
             "	Constructor3 c = new Constructor3();\n"+
@@ -3319,7 +3344,7 @@ public void testCompletionFindConstructor3() throws JavaModelException {
  */
 public void testCompletionFindConstructor4() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionFindConstructor4.java",
+            "/Completion/src/CompletionFindConstructor4.js",
             "import zconstructors.*;\n"+
             "public class CompletionFindConstructor4 {\n"+
             "	Constructor4 c = new Constructor4();\n"+
@@ -3349,7 +3374,7 @@ public void testCompletionFindConstructor4() throws JavaModelException {
  */
 public void testCompletionFindConstructor5() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionFindConstructor5.java",
+            "/Completion/src/CompletionFindConstructor5.js",
             "import zconstructors.*;\n"+
             "public class CompletionFindConstructor5 {\n"+
             "	Constructor5 c = new Constructor5();\n"+
@@ -3379,7 +3404,7 @@ public void testCompletionFindConstructor5() throws JavaModelException {
  */
 public void testCompletionFindExceptions1() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindException1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindException1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Ex";
@@ -3397,7 +3422,7 @@ public void testCompletionFindExceptions1() throws JavaModelException {
  */
 public void testCompletionFindExceptions2() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindException2.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindException2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Ex";
@@ -3415,7 +3440,7 @@ public void testCompletionFindExceptions2() throws JavaModelException {
  */
 public void testCompletionFindField1() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindField1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindField1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "va";
@@ -3434,7 +3459,7 @@ public void testCompletionFindField1() throws JavaModelException {
  */
 public void testCompletionFindField2() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindField2.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindField2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "va";
@@ -3449,7 +3474,7 @@ public void testCompletionFindField2() throws JavaModelException {
 
 public void testCompletionFindField3() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindField3.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindField3.js");
 
 	String str = cu.getSource();
 	String completeBehind = "b.ba";
@@ -3466,7 +3491,7 @@ public void testCompletionFindField3() throws JavaModelException {
  */
 public void testCompletionFindImport1() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionFindImport1.java",
+            "/Completion/src/CompletionFindImport1.js",
             "import pac\n"+
             "\n"+
             "public class CompletionFindImport1 {\n"+
@@ -3490,7 +3515,7 @@ public void testCompletionFindImport1() throws JavaModelException {
 
 public void testCompletionFindImport2() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionFindImport2.java",
+            "/Completion/src/CompletionFindImport2.js",
             "import pack1.P\n"+
             "\n"+
             "public class CompletionFindImport2 {\n"+
@@ -3515,7 +3540,7 @@ public void testCompletionFindImport2() throws JavaModelException {
  */
 public void testCompletionFindLocalVariable() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindLocalVariable.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindLocalVariable.js");
 
 	String str = cu.getSource();
 	String completeBehind = "va";
@@ -3529,7 +3554,7 @@ public void testCompletionFindLocalVariable() throws JavaModelException {
 
 public void testCompletionFindMemberType1() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionFindMemberType1.java",
+            "/Completion/src/CompletionFindMemberType1.js",
             "interface A1 {\n"+
             "	class Inner1 {\n"+
             "	}\n"+
@@ -3558,7 +3583,7 @@ public void testCompletionFindMemberType1() throws JavaModelException {
 
 public void testCompletionFindMemberType2() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionPrefixMethodName2.java",
+            "/Completion/src/CompletionPrefixMethodName2.js",
             "interface A2 {\n"+
             "	class ZInner2{\n"+
             "	}\n"+
@@ -3589,7 +3614,7 @@ public void testCompletionFindMemberType2() throws JavaModelException {
  */
 public void testCompletionFindMethod1() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindMethod1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindMethod1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "fooba";
@@ -3607,7 +3632,7 @@ public void testCompletionFindMethod1() throws JavaModelException {
 public void testCompletionFindMethod2() throws JavaModelException {
 	
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindMethod2.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindMethod2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "fooba";
@@ -3625,7 +3650,7 @@ public void testCompletionFindMethod2() throws JavaModelException {
  */
 public void testCompletionFindMethodInThis() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindMethodInThis.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindMethodInThis.js");
 
 	String str = cu.getSource();
 	String completeBehind = "fooba";
@@ -3643,7 +3668,7 @@ public void testCompletionFindMethodInThis() throws JavaModelException {
  */
 public void testCompletionFindMethodWhenInProcess() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindMethodInProcess.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindMethodInProcess.js");
 
 	String str = cu.getSource();
 	String completeBehind = "fooba";
@@ -3658,7 +3683,7 @@ public void testCompletionFindMethodWhenInProcess() throws JavaModelException {
 
 public void testCompletionFindSecondaryType1() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindSecondaryType1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindSecondaryType1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "/**/Secondary";
@@ -3673,7 +3698,7 @@ public void testCompletionFindSecondaryType1() throws JavaModelException {
 
 public void testCompletionFindSuperInterface() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionFindSuperInterface.java",
+            "/Completion/src/CompletionFindSuperInterface.js",
             "public class CompletionFindSuperInterface implements SuperInterface {\n"+
             "}");
     
@@ -3694,7 +3719,7 @@ public void testCompletionFindSuperInterface() throws JavaModelException {
  */
 public void testCompletionFindThisDotField() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindThisDotField.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindThisDotField.js");
 
 	String str = cu.getSource();
 	String completeBehind = "this.ba";
@@ -3709,14 +3734,14 @@ public void testCompletionFindThisDotField() throws JavaModelException {
 public void testCompletionImportedType1() throws JavaModelException {
     this.workingCopies = new ICompilationUnit[2];
     this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/imported/ZZZZ.java",
+		"/Completion/src/test/imported/ZZZZ.js",
 		"package test.imported;"+
 		"public class ZZZZ {\n"+
 		"  \n"+
 		"}");
 		
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/test/CompletionImportedType1.java",
+			"/Completion/src/test/CompletionImportedType1.js",
 			"package test;"+
 			"public class CompletionImportedType1 {"+
 			"  ZZZ\n"+
@@ -3737,26 +3762,26 @@ public void testCompletionImportedType1() throws JavaModelException {
 public void testCompletionImportedType2() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[4];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/imported1/ZZZZ.java",
+		"/Completion/src/test/imported1/ZZZZ.js",
 		"package test.imported1;"+
 		"public class ZZZZ {\n"+
 		"  \n"+
 		"}");
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/imported2/ZZZZ.java",
+		"/Completion/src/test/imported2/ZZZZ.js",
 		"package test.imported2;"+
 		"public class ZZZZ {\n"+
 		"  \n"+
 		"}");
 	this.workingCopies[2] = getWorkingCopy(
-		"/Completion/src/test/imported3/ZZZZ.java",
+		"/Completion/src/test/imported3/ZZZZ.js",
 		"package test.imported3;"+
 		"public class ZZZZ {\n"+
 		"  \n"+
 		"}");
 	
 	this.workingCopies[3] = getWorkingCopy(
-		"/Completion/src/test/CompletionImportedType2.java",
+		"/Completion/src/test/CompletionImportedType2.js",
 		"package test;"+
 		"import test.imported1.*;"+
 		"import test.imported2.*;"+
@@ -3782,26 +3807,26 @@ public void testCompletionImportedType2() throws JavaModelException {
 public void testCompletionImportedType3() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[4];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/imported1/ZZZZ.java",
+		"/Completion/src/test/imported1/ZZZZ.js",
 		"package test.imported1;"+
 		"public class ZZZZ {\n"+
 		"  \n"+
 		"}");
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/imported2/ZZZZ.java",
+		"/Completion/src/test/imported2/ZZZZ.js",
 		"package test.imported2;"+
 		"public class ZZZZ {\n"+
 		"  \n"+
 		"}");
 	this.workingCopies[2] = getWorkingCopy(
-		"/Completion/src/test/imported3/ZZZZ.java",
+		"/Completion/src/test/imported3/ZZZZ.js",
 		"package test.imported3;"+
 		"public class ZZZZ {\n"+
 		"  \n"+
 		"}");
 	
 	this.workingCopies[3] = getWorkingCopy(
-		"/Completion/src/test/CompletionImportedType3.java",
+		"/Completion/src/test/CompletionImportedType3.js",
 		"package test;"+
 		"import test.imported2.*;"+
 		"public class CompletionImportedType3 {"+
@@ -3825,20 +3850,20 @@ public void testCompletionImportedType3() throws JavaModelException {
 public void testCompletionImportedType4() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/imported1/ZZZZ.java",
+		"/Completion/src/test/imported1/ZZZZ.js",
 		"package test.imported1;"+
 		"public class ZZZZ {\n"+
 		"  \n"+
 		"}");
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/imported2/ZZZZ.java",
+		"/Completion/src/test/imported2/ZZZZ.js",
 		"package test.imported2;"+
 		"public class ZZZZ {\n"+
 		"  \n"+
 		"}");
 		
 	this.workingCopies[2] = getWorkingCopy(
-		"/Completion/src/test/CompletionImportedType4.java",
+		"/Completion/src/test/CompletionImportedType4.js",
 		"package test;"+
 		"import test.imported1.*;"+
 		"public class CompletionImportedType4 {"+
@@ -3861,20 +3886,20 @@ public void testCompletionImportedType4() throws JavaModelException {
 public void testCompletionImportedType5() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/imported1/ZZZZ.java",
+		"/Completion/src/test/imported1/ZZZZ.js",
 		"package test.imported1;"+
 		"public class ZZZZ {\n"+
 		"  \n"+
 		"}");
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/imported2/ZZZZ.java",
+		"/Completion/src/test/imported2/ZZZZ.js",
 		"package test.imported2;"+
 		"public class ZZZZ {\n"+
 		"  \n"+
 		"}");
 		
 	this.workingCopies[2] = getWorkingCopy(
-		"/Completion/src/test/CompletionImportedType5.java",
+		"/Completion/src/test/CompletionImportedType5.js",
 		"package test;"+
 		"import test.imported2.*;"+
 		"public class CompletionImportedType5 {"+
@@ -3897,7 +3922,7 @@ public void testCompletionImportedType5() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
 public void testCompletionInsideExtends1() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src/test/CompletionInsideExtends1.java",
+			"/Completion/src/test/CompletionInsideExtends1.js",
 			"package test;\n" +
 			"public class CompletionInsideExtends1 extends  {\n" +
 			"  public class CompletionInsideExtends1Inner {}\n" +
@@ -3927,7 +3952,7 @@ public void testCompletionInsideExtends1() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
 public void testCompletionInsideExtends10() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src/test/CompletionInsideExtends10.java",
+			"/Completion/src/test/CompletionInsideExtends10.js",
 			"package test;\n" +
 			"public interface CompletionInsideExtends10 {\n" +
 			"  public interface CompletionInsideExtends10Inner extends CompletionInsideExtends{\n" +
@@ -3954,7 +3979,7 @@ public void testCompletionInsideExtends10() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
 public void testCompletionInsideExtends11() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src/test/CompletionInsideExtends11.java",
+			"/Completion/src/test/CompletionInsideExtends11.js",
 			"package test;\n" +
 			"public class CompletionInsideExtends11 implements {\n" +
 			"  public class CompletionInsideExtends11Inner {\n" +
@@ -3984,7 +4009,7 @@ public void testCompletionInsideExtends11() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
 public void testCompletionInsideExtends12() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src/test/CompletionInsideExtends12.java",
+			"/Completion/src/test/CompletionInsideExtends12.js",
 			"package test;\n" +
 			"public class CompletionInsideExtends12 implements CompletionInsideExtends {\n" +
 			"  public class CompletionInsideExtends12Inner {\n" +
@@ -4008,7 +4033,7 @@ public void testCompletionInsideExtends12() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
 public void testCompletionInsideExtends2() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src/test/CompletionInsideExtends2.java",
+			"/Completion/src/test/CompletionInsideExtends2.js",
 			"package test;\n" +
 			"public class CompletionInsideExtends2 extends CompletionInsideExtends {\n" +
 			"  public class CompletionInsideExtends2Inner {}\n" +
@@ -4031,7 +4056,7 @@ public void testCompletionInsideExtends2() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
 public void testCompletionInsideExtends3() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src/test/CompletionInsideExtends3.java",
+			"/Completion/src/test/CompletionInsideExtends3.js",
 			"package test;\n" +
 			"public class CompletionInsideExtends3 {\n" +
 			"  public class CompletionInsideExtends3Inner extends {\n" +
@@ -4064,7 +4089,7 @@ public void testCompletionInsideExtends3() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
 public void testCompletionInsideExtends4() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src/test/CompletionInsideExtends4.java",
+			"/Completion/src/test/CompletionInsideExtends4.js",
 			"package test;\n" +
 			"public class CompletionInsideExtends4 {\n" +
 			"  public class CompletionInsideExtends4Inner extends CompletionInsideExtends{\n" +
@@ -4091,7 +4116,7 @@ public void testCompletionInsideExtends4() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
 public void testCompletionInsideExtends5() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src/test/CompletionInsideExtends5.java",
+			"/Completion/src/test/CompletionInsideExtends5.js",
 			"package test;\n" +
 			"public class CompletionInsideExtends5 {\n" +
 			"  void foo() {\n" +
@@ -4126,7 +4151,7 @@ public void testCompletionInsideExtends5() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
 public void testCompletionInsideExtends6() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src/test/CompletionInsideExtends6.java",
+			"/Completion/src/test/CompletionInsideExtends6.js",
 			"package test;\n" +
 			"public class CompletionInsideExtends6 {\n" +
 			"  void foo() {\n" +
@@ -4155,7 +4180,7 @@ public void testCompletionInsideExtends6() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
 public void testCompletionInsideExtends7() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src/test/CompletionInsideExtends7.java",
+			"/Completion/src/test/CompletionInsideExtends7.js",
 			"package test;\n" +
 			"public interface CompletionInsideExtends7 extends  {\n" +
 			"  public interface CompletionInsideExtends7Inner {}\n" +
@@ -4183,7 +4208,7 @@ public void testCompletionInsideExtends7() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
 public void testCompletionInsideExtends8() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src/test/CompletionInsideExtends8.java",
+			"/Completion/src/test/CompletionInsideExtends8.js",
 			"package test;\n" +
 			"public interface CompletionInsideExtends8 extends CompletionInsideExtends {\n" +
 			"  public interface CompletionInsideExtends8Inner {}\n" +
@@ -4206,7 +4231,7 @@ public void testCompletionInsideExtends8() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
 public void testCompletionInsideExtends9() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src/test/CompletionInsideExtends9.java",
+			"/Completion/src/test/CompletionInsideExtends9.js",
 			"package test;\n" +
 			"public interface CompletionInsideExtends9 {\n" +
 			"  public interface CompletionInsideExtends9Inner extends {\n" +
@@ -4239,7 +4264,7 @@ public void testCompletionInsideExtends9() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=82740
 public void testCompletionInsideGenericClass() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src/test/CompletionInsideGenericClass.java",
+			"/Completion/src/test/CompletionInsideGenericClass.js",
 			"package test;\n" +
 			"public class CompletionInsideGenericClass <CompletionInsideGenericClassParameter> {\n" +
 			"  CompletionInsideGenericClas\n" +
@@ -4260,7 +4285,7 @@ public void testCompletionInsideGenericClass() throws JavaModelException {
 
 public void testCompletionInsideStaticMethod() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionInsideStaticMethod.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionInsideStaticMethod.js");
 
 	String str = cu.getSource();
 	String completeBehind = "doT";
@@ -4273,7 +4298,7 @@ public void testCompletionInsideStaticMethod() throws JavaModelException {
 }
 public void testCompletionInstanceofOperator1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionInstanceofOperator1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionInstanceofOperator1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "x instanceof WWWCompletionInstanceof";
@@ -4290,7 +4315,7 @@ public void testCompletionInstanceofOperator1() throws JavaModelException {
 
 public void testCompletionKeywordAbstract1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4304,7 +4329,7 @@ public void testCompletionKeywordAbstract1() throws JavaModelException {
 
 public void testCompletionKeywordAbstract10() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract10.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4318,7 +4343,7 @@ public void testCompletionKeywordAbstract10() throws JavaModelException {
 
 public void testCompletionKeywordAbstract11() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract11.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract11.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4331,7 +4356,7 @@ public void testCompletionKeywordAbstract11() throws JavaModelException {
 }
 public void testCompletionKeywordAbstract12() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract12.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract12.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4345,7 +4370,7 @@ public void testCompletionKeywordAbstract12() throws JavaModelException {
 
 public void testCompletionKeywordAbstract13() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract13.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract13.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4359,7 +4384,7 @@ public void testCompletionKeywordAbstract13() throws JavaModelException {
 
 public void testCompletionKeywordAbstract14() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract14.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract14.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4373,7 +4398,7 @@ public void testCompletionKeywordAbstract14() throws JavaModelException {
 
 public void testCompletionKeywordAbstract15() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract15.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract15.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4386,7 +4411,7 @@ public void testCompletionKeywordAbstract15() throws JavaModelException {
 }
 public void testCompletionKeywordAbstract16() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract16.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract16.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4399,7 +4424,7 @@ public void testCompletionKeywordAbstract16() throws JavaModelException {
 }
 public void testCompletionKeywordAbstract2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4412,7 +4437,7 @@ public void testCompletionKeywordAbstract2() throws JavaModelException {
 }
 public void testCompletionKeywordAbstract3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4425,7 +4450,7 @@ public void testCompletionKeywordAbstract3() throws JavaModelException {
 }
 public void testCompletionKeywordAbstract4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4438,7 +4463,7 @@ public void testCompletionKeywordAbstract4() throws JavaModelException {
 }
 public void testCompletionKeywordAbstract5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4451,7 +4476,7 @@ public void testCompletionKeywordAbstract5() throws JavaModelException {
 }
 public void testCompletionKeywordAbstract6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4464,7 +4489,7 @@ public void testCompletionKeywordAbstract6() throws JavaModelException {
 }
 public void testCompletionKeywordAbstract7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4477,7 +4502,7 @@ public void testCompletionKeywordAbstract7() throws JavaModelException {
 }
 public void testCompletionKeywordAbstract8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4490,7 +4515,7 @@ public void testCompletionKeywordAbstract8() throws JavaModelException {
 }
 public void testCompletionKeywordAbstract9() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract9.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4503,7 +4528,7 @@ public void testCompletionKeywordAbstract9() throws JavaModelException {
 }
 public void testCompletionKeywordAssert1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "as";
@@ -4516,7 +4541,7 @@ public void testCompletionKeywordAssert1() throws JavaModelException {
 }
 public void testCompletionKeywordAssert2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "as";
@@ -4529,7 +4554,7 @@ public void testCompletionKeywordAssert2() throws JavaModelException {
 }
 public void testCompletionKeywordAssert3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "as";
@@ -4542,7 +4567,7 @@ public void testCompletionKeywordAssert3() throws JavaModelException {
 }
 public void testCompletionKeywordAssert4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "as";
@@ -4555,7 +4580,7 @@ public void testCompletionKeywordAssert4() throws JavaModelException {
 }
 public void testCompletionKeywordAssert5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "as";
@@ -4568,7 +4593,7 @@ public void testCompletionKeywordAssert5() throws JavaModelException {
 }
 public void testCompletionKeywordAssert6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "as";
@@ -4581,7 +4606,7 @@ public void testCompletionKeywordAssert6() throws JavaModelException {
 }
 public void testCompletionKeywordBreak1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "bre";
@@ -4594,7 +4619,7 @@ public void testCompletionKeywordBreak1() throws JavaModelException {
 }
 public void testCompletionKeywordBreak2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "bre";
@@ -4607,7 +4632,7 @@ public void testCompletionKeywordBreak2() throws JavaModelException {
 }
 public void testCompletionKeywordBreak3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "bre";
@@ -4620,7 +4645,7 @@ public void testCompletionKeywordBreak3() throws JavaModelException {
 }
 public void testCompletionKeywordBreak4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "bre";
@@ -4633,7 +4658,7 @@ public void testCompletionKeywordBreak4() throws JavaModelException {
 }
 public void testCompletionKeywordBreak5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "bre";
@@ -4646,7 +4671,7 @@ public void testCompletionKeywordBreak5() throws JavaModelException {
 }
 public void testCompletionKeywordBreak6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "bre";
@@ -4659,7 +4684,7 @@ public void testCompletionKeywordBreak6() throws JavaModelException {
 }
 public void testCompletionKeywordCase1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cas";
@@ -4672,7 +4697,7 @@ public void testCompletionKeywordCase1() throws JavaModelException {
 }
 public void testCompletionKeywordCase10() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase10.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cas";
@@ -4685,7 +4710,7 @@ public void testCompletionKeywordCase10() throws JavaModelException {
 }
 public void testCompletionKeywordCase2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cas";
@@ -4698,7 +4723,7 @@ public void testCompletionKeywordCase2() throws JavaModelException {
 }
 public void testCompletionKeywordCase3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cas";
@@ -4711,7 +4736,7 @@ public void testCompletionKeywordCase3() throws JavaModelException {
 }
 public void testCompletionKeywordCase4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cas";
@@ -4724,7 +4749,7 @@ public void testCompletionKeywordCase4() throws JavaModelException {
 }
 public void testCompletionKeywordCase5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cas";
@@ -4737,7 +4762,7 @@ public void testCompletionKeywordCase5() throws JavaModelException {
 }
 public void testCompletionKeywordCase6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cas";
@@ -4750,7 +4775,7 @@ public void testCompletionKeywordCase6() throws JavaModelException {
 }
 public void testCompletionKeywordCase7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cas";
@@ -4763,7 +4788,7 @@ public void testCompletionKeywordCase7() throws JavaModelException {
 }
 public void testCompletionKeywordCase8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cas";
@@ -4776,7 +4801,7 @@ public void testCompletionKeywordCase8() throws JavaModelException {
 }
 public void testCompletionKeywordCase9() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase9.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cas";
@@ -4789,7 +4814,7 @@ public void testCompletionKeywordCase9() throws JavaModelException {
 }
 public void testCompletionKeywordCatch1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cat";
@@ -4802,7 +4827,7 @@ public void testCompletionKeywordCatch1() throws JavaModelException {
 }
 public void testCompletionKeywordCatch10() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch10.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cat";
@@ -4816,7 +4841,7 @@ public void testCompletionKeywordCatch10() throws JavaModelException {
 }
 public void testCompletionKeywordCatch2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cat";
@@ -4829,7 +4854,7 @@ public void testCompletionKeywordCatch2() throws JavaModelException {
 }
 public void testCompletionKeywordCatch3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cat";
@@ -4842,7 +4867,7 @@ public void testCompletionKeywordCatch3() throws JavaModelException {
 }
 public void testCompletionKeywordCatch4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cat";
@@ -4855,7 +4880,7 @@ public void testCompletionKeywordCatch4() throws JavaModelException {
 }
 public void testCompletionKeywordCatch5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cat";
@@ -4869,7 +4894,7 @@ public void testCompletionKeywordCatch5() throws JavaModelException {
 }
 public void testCompletionKeywordCatch6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cat";
@@ -4882,7 +4907,7 @@ public void testCompletionKeywordCatch6() throws JavaModelException {
 }
 public void testCompletionKeywordCatch7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cat";
@@ -4895,7 +4920,7 @@ public void testCompletionKeywordCatch7() throws JavaModelException {
 }
 public void testCompletionKeywordCatch8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cat";
@@ -4908,7 +4933,7 @@ public void testCompletionKeywordCatch8() throws JavaModelException {
 }
 public void testCompletionKeywordCatch9() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch9.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cat";
@@ -4921,7 +4946,7 @@ public void testCompletionKeywordCatch9() throws JavaModelException {
 }
 public void testCompletionKeywordClass1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -4934,7 +4959,7 @@ public void testCompletionKeywordClass1() throws JavaModelException {
 }
 public void testCompletionKeywordClass10() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass10.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -4949,7 +4974,7 @@ public void testCompletionKeywordClass10() throws JavaModelException {
 }
 public void testCompletionKeywordClass11() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass11.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass11.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -4964,7 +4989,7 @@ public void testCompletionKeywordClass11() throws JavaModelException {
 }
 public void testCompletionKeywordClass12() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass12.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass12.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -4979,7 +5004,7 @@ public void testCompletionKeywordClass12() throws JavaModelException {
 }
 public void testCompletionKeywordClass13() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass13.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass13.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -4992,7 +5017,7 @@ public void testCompletionKeywordClass13() throws JavaModelException {
 }
 public void testCompletionKeywordClass14() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass14.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass14.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5007,7 +5032,7 @@ public void testCompletionKeywordClass14() throws JavaModelException {
 }
 public void testCompletionKeywordClass15() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass15.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass15.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5022,7 +5047,7 @@ public void testCompletionKeywordClass15() throws JavaModelException {
 }
 public void testCompletionKeywordClass16() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass16.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass16.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5037,7 +5062,7 @@ public void testCompletionKeywordClass16() throws JavaModelException {
 }
 public void testCompletionKeywordClass17() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass17.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass17.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5050,7 +5075,7 @@ public void testCompletionKeywordClass17() throws JavaModelException {
 }
 public void testCompletionKeywordClass18() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass18.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass18.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5063,7 +5088,7 @@ public void testCompletionKeywordClass18() throws JavaModelException {
 }
 public void testCompletionKeywordClass19() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass19.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass19.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5076,7 +5101,7 @@ public void testCompletionKeywordClass19() throws JavaModelException {
 }
 public void testCompletionKeywordClass2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5089,7 +5114,7 @@ public void testCompletionKeywordClass2() throws JavaModelException {
 }
 public void testCompletionKeywordClass20() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass20.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass20.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5102,7 +5127,7 @@ public void testCompletionKeywordClass20() throws JavaModelException {
 }
 public void testCompletionKeywordClass21() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass21.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass21.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5117,7 +5142,7 @@ public void testCompletionKeywordClass21() throws JavaModelException {
 }
 public void testCompletionKeywordClass22() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass22.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass22.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5132,7 +5157,7 @@ public void testCompletionKeywordClass22() throws JavaModelException {
 }
 public void testCompletionKeywordClass23() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass23.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass23.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5147,7 +5172,7 @@ public void testCompletionKeywordClass23() throws JavaModelException {
 }
 public void testCompletionKeywordClass24() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass24.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass24.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5162,7 +5187,7 @@ public void testCompletionKeywordClass24() throws JavaModelException {
 }
 public void testCompletionKeywordClass3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5175,7 +5200,7 @@ public void testCompletionKeywordClass3() throws JavaModelException {
 }
 public void testCompletionKeywordClass4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5188,7 +5213,7 @@ public void testCompletionKeywordClass4() throws JavaModelException {
 }
 public void testCompletionKeywordClass5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5201,7 +5226,7 @@ public void testCompletionKeywordClass5() throws JavaModelException {
 }
 public void testCompletionKeywordClass6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5216,7 +5241,7 @@ public void testCompletionKeywordClass6() throws JavaModelException {
 }
 public void testCompletionKeywordClass7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5231,7 +5256,7 @@ public void testCompletionKeywordClass7() throws JavaModelException {
 }
 public void testCompletionKeywordClass8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5246,7 +5271,7 @@ public void testCompletionKeywordClass8() throws JavaModelException {
 }
 public void testCompletionKeywordClass9() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass9.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5261,7 +5286,7 @@ public void testCompletionKeywordClass9() throws JavaModelException {
 }
 public void testCompletionKeywordContinue1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordContinue1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordContinue1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cont";
@@ -5274,7 +5299,7 @@ public void testCompletionKeywordContinue1() throws JavaModelException {
 }
 public void testCompletionKeywordContinue2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordContinue2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordContinue2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cont";
@@ -5287,7 +5312,7 @@ public void testCompletionKeywordContinue2() throws JavaModelException {
 }
 public void testCompletionKeywordContinue3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordContinue3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordContinue3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cont";
@@ -5300,7 +5325,7 @@ public void testCompletionKeywordContinue3() throws JavaModelException {
 }
 public void testCompletionKeywordContinue4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordContinue4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordContinue4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cont";
@@ -5313,7 +5338,7 @@ public void testCompletionKeywordContinue4() throws JavaModelException {
 }
 public void testCompletionKeywordDefault1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "def";
@@ -5326,7 +5351,7 @@ public void testCompletionKeywordDefault1() throws JavaModelException {
 }
 public void testCompletionKeywordDefault10() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault10.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "def";
@@ -5339,7 +5364,7 @@ public void testCompletionKeywordDefault10() throws JavaModelException {
 }
 public void testCompletionKeywordDefault2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "def";
@@ -5353,7 +5378,7 @@ public void testCompletionKeywordDefault2() throws JavaModelException {
 }
 public void testCompletionKeywordDefault3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "def";
@@ -5367,7 +5392,7 @@ public void testCompletionKeywordDefault3() throws JavaModelException {
 }
 public void testCompletionKeywordDefault4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "def";
@@ -5380,7 +5405,7 @@ public void testCompletionKeywordDefault4() throws JavaModelException {
 }
 public void testCompletionKeywordDefault5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "def";
@@ -5393,7 +5418,7 @@ public void testCompletionKeywordDefault5() throws JavaModelException {
 }
 public void testCompletionKeywordDefault6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "def";
@@ -5406,7 +5431,7 @@ public void testCompletionKeywordDefault6() throws JavaModelException {
 }
 public void testCompletionKeywordDefault7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "def";
@@ -5420,7 +5445,7 @@ public void testCompletionKeywordDefault7() throws JavaModelException {
 }
 public void testCompletionKeywordDefault8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "def";
@@ -5434,7 +5459,7 @@ public void testCompletionKeywordDefault8() throws JavaModelException {
 }
 public void testCompletionKeywordDefault9() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault9.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "def";
@@ -5447,7 +5472,7 @@ public void testCompletionKeywordDefault9() throws JavaModelException {
 }
 public void testCompletionKeywordDo1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "do";
@@ -5461,7 +5486,7 @@ public void testCompletionKeywordDo1() throws JavaModelException {
 }
 public void testCompletionKeywordDo2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "do";
@@ -5474,7 +5499,7 @@ public void testCompletionKeywordDo2() throws JavaModelException {
 }
 public void testCompletionKeywordDo3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "do";
@@ -5487,7 +5512,7 @@ public void testCompletionKeywordDo3() throws JavaModelException {
 }
 public void testCompletionKeywordDo4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "do";
@@ -5501,7 +5526,7 @@ public void testCompletionKeywordDo4() throws JavaModelException {
 }
 public void testCompletionKeywordDo5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "do";
@@ -5514,7 +5539,7 @@ public void testCompletionKeywordDo5() throws JavaModelException {
 }
 public void testCompletionKeywordDo6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "do";
@@ -5527,7 +5552,7 @@ public void testCompletionKeywordDo6() throws JavaModelException {
 }
 public void testCompletionKeywordElse1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "els";
@@ -5540,7 +5565,7 @@ public void testCompletionKeywordElse1() throws JavaModelException {
 }
 public void testCompletionKeywordElse2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "els";
@@ -5553,7 +5578,7 @@ public void testCompletionKeywordElse2() throws JavaModelException {
 }
 public void testCompletionKeywordElse3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "els";
@@ -5566,7 +5591,7 @@ public void testCompletionKeywordElse3() throws JavaModelException {
 }
 public void testCompletionKeywordElse4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "els";
@@ -5579,7 +5604,7 @@ public void testCompletionKeywordElse4() throws JavaModelException {
 }
 public void testCompletionKeywordElse5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "els";
@@ -5592,7 +5617,7 @@ public void testCompletionKeywordElse5() throws JavaModelException {
 }
 public void testCompletionKeywordElse6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "els";
@@ -5605,7 +5630,7 @@ public void testCompletionKeywordElse6() throws JavaModelException {
 }
 public void testCompletionKeywordElse7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "els";
@@ -5618,7 +5643,7 @@ public void testCompletionKeywordElse7() throws JavaModelException {
 }
 public void testCompletionKeywordElse8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "els";
@@ -5631,7 +5656,7 @@ public void testCompletionKeywordElse8() throws JavaModelException {
 }
 public void testCompletionKeywordExtends1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ext";
@@ -5644,7 +5669,7 @@ public void testCompletionKeywordExtends1() throws JavaModelException {
 }
 public void testCompletionKeywordExtends10() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends10.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ext";
@@ -5657,7 +5682,7 @@ public void testCompletionKeywordExtends10() throws JavaModelException {
 }
 public void testCompletionKeywordExtends2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ext";
@@ -5670,7 +5695,7 @@ public void testCompletionKeywordExtends2() throws JavaModelException {
 }
 public void testCompletionKeywordExtends3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ext";
@@ -5683,7 +5708,7 @@ public void testCompletionKeywordExtends3() throws JavaModelException {
 }
 public void testCompletionKeywordExtends4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ext";
@@ -5696,7 +5721,7 @@ public void testCompletionKeywordExtends4() throws JavaModelException {
 }
 public void testCompletionKeywordExtends5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ext";
@@ -5709,7 +5734,7 @@ public void testCompletionKeywordExtends5() throws JavaModelException {
 }
 public void testCompletionKeywordExtends6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ext";
@@ -5722,7 +5747,7 @@ public void testCompletionKeywordExtends6() throws JavaModelException {
 }
 public void testCompletionKeywordExtends7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ext";
@@ -5735,7 +5760,7 @@ public void testCompletionKeywordExtends7() throws JavaModelException {
 }
 public void testCompletionKeywordExtends8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ext";
@@ -5748,7 +5773,7 @@ public void testCompletionKeywordExtends8() throws JavaModelException {
 }
 public void testCompletionKeywordExtends9() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends9.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ext";
@@ -5761,7 +5786,7 @@ public void testCompletionKeywordExtends9() throws JavaModelException {
 }
 public void testCompletionKeywordFalse1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFalse1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFalse1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fal";
@@ -5774,7 +5799,7 @@ public void testCompletionKeywordFalse1() throws JavaModelException {
 }
 public void testCompletionKeywordFalse2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFalse2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFalse2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fal";
@@ -5787,7 +5812,7 @@ public void testCompletionKeywordFalse2() throws JavaModelException {
 }
 public void testCompletionKeywordFalse3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFalse3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFalse3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fal";
@@ -5800,7 +5825,7 @@ public void testCompletionKeywordFalse3() throws JavaModelException {
 }
 public void testCompletionKeywordFalse4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFalse4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFalse4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fal";
@@ -5815,7 +5840,7 @@ public void testCompletionKeywordFalse4() throws JavaModelException {
 public void testCompletionKeywordFalse5() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"  boolean test = ;\n" + 
@@ -5847,7 +5872,7 @@ public void testCompletionKeywordFalse5() throws JavaModelException {
 }
 public void testCompletionKeywordFinal1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -5860,7 +5885,7 @@ public void testCompletionKeywordFinal1() throws JavaModelException {
 }
 public void testCompletionKeywordFinal10() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal10.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -5873,7 +5898,7 @@ public void testCompletionKeywordFinal10() throws JavaModelException {
 }
 public void testCompletionKeywordFinal11() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal11.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal11.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -5886,7 +5911,7 @@ public void testCompletionKeywordFinal11() throws JavaModelException {
 }
 public void testCompletionKeywordFinal12() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal12.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal12.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -5899,7 +5924,7 @@ public void testCompletionKeywordFinal12() throws JavaModelException {
 }
 public void testCompletionKeywordFinal13() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal13.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal13.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -5912,7 +5937,7 @@ public void testCompletionKeywordFinal13() throws JavaModelException {
 }
 public void testCompletionKeywordFinal14() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal14.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal14.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -5926,7 +5951,7 @@ public void testCompletionKeywordFinal14() throws JavaModelException {
 }
 public void testCompletionKeywordFinal15() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal15.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal15.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -5939,7 +5964,7 @@ public void testCompletionKeywordFinal15() throws JavaModelException {
 }
 public void testCompletionKeywordFinal16() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal16.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal16.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -5953,7 +5978,7 @@ public void testCompletionKeywordFinal16() throws JavaModelException {
 }
 public void testCompletionKeywordFinal17() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal17.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal17.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -5966,7 +5991,7 @@ public void testCompletionKeywordFinal17() throws JavaModelException {
 }
 public void testCompletionKeywordFinal18() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal18.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal18.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -5980,7 +6005,7 @@ public void testCompletionKeywordFinal18() throws JavaModelException {
 }
 public void testCompletionKeywordFinal2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -5993,7 +6018,7 @@ public void testCompletionKeywordFinal2() throws JavaModelException {
 }
 public void testCompletionKeywordFinal3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -6006,7 +6031,7 @@ public void testCompletionKeywordFinal3() throws JavaModelException {
 }
 public void testCompletionKeywordFinal4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -6019,7 +6044,7 @@ public void testCompletionKeywordFinal4() throws JavaModelException {
 }
 public void testCompletionKeywordFinal5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -6033,7 +6058,7 @@ public void testCompletionKeywordFinal5() throws JavaModelException {
 }
 public void testCompletionKeywordFinal6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -6046,7 +6071,7 @@ public void testCompletionKeywordFinal6() throws JavaModelException {
 }
 public void testCompletionKeywordFinal7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -6060,7 +6085,7 @@ public void testCompletionKeywordFinal7() throws JavaModelException {
 }
 public void testCompletionKeywordFinal8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -6073,7 +6098,7 @@ public void testCompletionKeywordFinal8() throws JavaModelException {
 }
 public void testCompletionKeywordFinal9() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal9.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -6087,7 +6112,7 @@ public void testCompletionKeywordFinal9() throws JavaModelException {
 }
 public void testCompletionKeywordFinally1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6100,7 +6125,7 @@ public void testCompletionKeywordFinally1() throws JavaModelException {
 }
 public void testCompletionKeywordFinally10() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally10.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6113,7 +6138,7 @@ public void testCompletionKeywordFinally10() throws JavaModelException {
 }
 public void testCompletionKeywordFinally11() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally11.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally11.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6126,7 +6151,7 @@ public void testCompletionKeywordFinally11() throws JavaModelException {
 }
 public void testCompletionKeywordFinally12() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally12.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally12.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6139,7 +6164,7 @@ public void testCompletionKeywordFinally12() throws JavaModelException {
 }
 public void testCompletionKeywordFinally13() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally13.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally13.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6153,7 +6178,7 @@ public void testCompletionKeywordFinally13() throws JavaModelException {
 }
 public void testCompletionKeywordFinally14() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally14.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally14.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6166,7 +6191,7 @@ public void testCompletionKeywordFinally14() throws JavaModelException {
 }
 public void testCompletionKeywordFinally2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6179,7 +6204,7 @@ public void testCompletionKeywordFinally2() throws JavaModelException {
 }
 public void testCompletionKeywordFinally3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6192,7 +6217,7 @@ public void testCompletionKeywordFinally3() throws JavaModelException {
 }
 public void testCompletionKeywordFinally4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6205,7 +6230,7 @@ public void testCompletionKeywordFinally4() throws JavaModelException {
 }
 public void testCompletionKeywordFinally5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6218,7 +6243,7 @@ public void testCompletionKeywordFinally5() throws JavaModelException {
 }
 public void testCompletionKeywordFinally6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6232,7 +6257,7 @@ public void testCompletionKeywordFinally6() throws JavaModelException {
 }
 public void testCompletionKeywordFinally7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6245,7 +6270,7 @@ public void testCompletionKeywordFinally7() throws JavaModelException {
 }
 public void testCompletionKeywordFinally8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6258,7 +6283,7 @@ public void testCompletionKeywordFinally8() throws JavaModelException {
 }
 public void testCompletionKeywordFinally9() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally9.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6271,7 +6296,7 @@ public void testCompletionKeywordFinally9() throws JavaModelException {
 }
 public void testCompletionKeywordFor1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fo";
@@ -6285,7 +6310,7 @@ public void testCompletionKeywordFor1() throws JavaModelException {
 }
 public void testCompletionKeywordFor2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fo";
@@ -6298,7 +6323,7 @@ public void testCompletionKeywordFor2() throws JavaModelException {
 }
 public void testCompletionKeywordFor3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fo";
@@ -6311,7 +6336,7 @@ public void testCompletionKeywordFor3() throws JavaModelException {
 }
 public void testCompletionKeywordFor4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fo";
@@ -6325,7 +6350,7 @@ public void testCompletionKeywordFor4() throws JavaModelException {
 }
 public void testCompletionKeywordFor5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fo";
@@ -6338,7 +6363,7 @@ public void testCompletionKeywordFor5() throws JavaModelException {
 }
 public void testCompletionKeywordFor6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fo";
@@ -6351,7 +6376,7 @@ public void testCompletionKeywordFor6() throws JavaModelException {
 }
 public void testCompletionKeywordIf1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "if";
@@ -6364,7 +6389,7 @@ public void testCompletionKeywordIf1() throws JavaModelException {
 }
 public void testCompletionKeywordIf2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "if";
@@ -6377,7 +6402,7 @@ public void testCompletionKeywordIf2() throws JavaModelException {
 }
 public void testCompletionKeywordIf3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "if";
@@ -6390,7 +6415,7 @@ public void testCompletionKeywordIf3() throws JavaModelException {
 }
 public void testCompletionKeywordIf4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "if";
@@ -6403,7 +6428,7 @@ public void testCompletionKeywordIf4() throws JavaModelException {
 }
 public void testCompletionKeywordIf5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "if";
@@ -6416,7 +6441,7 @@ public void testCompletionKeywordIf5() throws JavaModelException {
 }
 public void testCompletionKeywordIf6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "if";
@@ -6429,7 +6454,7 @@ public void testCompletionKeywordIf6() throws JavaModelException {
 }
 public void testCompletionKeywordImplements1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6442,7 +6467,7 @@ public void testCompletionKeywordImplements1() throws JavaModelException {
 }
 public void testCompletionKeywordImplements2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6455,7 +6480,7 @@ public void testCompletionKeywordImplements2() throws JavaModelException {
 }
 public void testCompletionKeywordImplements3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6468,7 +6493,7 @@ public void testCompletionKeywordImplements3() throws JavaModelException {
 }
 public void testCompletionKeywordImplements4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6481,7 +6506,7 @@ public void testCompletionKeywordImplements4() throws JavaModelException {
 }
 public void testCompletionKeywordImplements5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6494,7 +6519,7 @@ public void testCompletionKeywordImplements5() throws JavaModelException {
 }
 public void testCompletionKeywordImplements6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6507,7 +6532,7 @@ public void testCompletionKeywordImplements6() throws JavaModelException {
 }
 public void testCompletionKeywordImport1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6520,7 +6545,7 @@ public void testCompletionKeywordImport1() throws JavaModelException {
 }
 public void testCompletionKeywordImport2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "p", "CompletionKeywordImport2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "p", "CompletionKeywordImport2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6533,7 +6558,7 @@ public void testCompletionKeywordImport2() throws JavaModelException {
 }
 public void testCompletionKeywordImport3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6546,7 +6571,7 @@ public void testCompletionKeywordImport3() throws JavaModelException {
 }
 public void testCompletionKeywordImport4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6559,7 +6584,7 @@ public void testCompletionKeywordImport4() throws JavaModelException {
 }
 public void testCompletionKeywordImport5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6572,7 +6597,7 @@ public void testCompletionKeywordImport5() throws JavaModelException {
 }
 public void testCompletionKeywordImport6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6585,7 +6610,7 @@ public void testCompletionKeywordImport6() throws JavaModelException {
 }
 public void testCompletionKeywordImport7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6598,7 +6623,7 @@ public void testCompletionKeywordImport7() throws JavaModelException {
 }
 public void testCompletionKeywordImport8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "p", "CompletionKeywordImport8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "p", "CompletionKeywordImport8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6611,7 +6636,7 @@ public void testCompletionKeywordImport8() throws JavaModelException {
 }
 public void testCompletionKeywordInstanceof1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ins";
@@ -6624,7 +6649,7 @@ public void testCompletionKeywordInstanceof1() throws JavaModelException {
 }
 public void testCompletionKeywordInstanceof2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ins";
@@ -6637,7 +6662,7 @@ public void testCompletionKeywordInstanceof2() throws JavaModelException {
 }
 public void testCompletionKeywordInstanceof3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ins";
@@ -6650,7 +6675,7 @@ public void testCompletionKeywordInstanceof3() throws JavaModelException {
 }
 public void testCompletionKeywordInstanceof4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ins";
@@ -6663,7 +6688,7 @@ public void testCompletionKeywordInstanceof4() throws JavaModelException {
 }
 public void testCompletionKeywordInstanceof5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ins";
@@ -6676,7 +6701,7 @@ public void testCompletionKeywordInstanceof5() throws JavaModelException {
 }
 public void testCompletionKeywordInstanceof6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ins";
@@ -6689,7 +6714,7 @@ public void testCompletionKeywordInstanceof6() throws JavaModelException {
 }
 public void testCompletionKeywordInterface1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6702,7 +6727,7 @@ public void testCompletionKeywordInterface1() throws JavaModelException {
 }
 public void testCompletionKeywordInterface10() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6715,7 +6740,7 @@ public void testCompletionKeywordInterface10() throws JavaModelException {
 }
 public void testCompletionKeywordInterface11() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface11.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface11.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6728,7 +6753,7 @@ public void testCompletionKeywordInterface11() throws JavaModelException {
 }
 public void testCompletionKeywordInterface12() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface12.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface12.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6741,7 +6766,7 @@ public void testCompletionKeywordInterface12() throws JavaModelException {
 }
 public void testCompletionKeywordInterface13() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface13.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface13.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6754,7 +6779,7 @@ public void testCompletionKeywordInterface13() throws JavaModelException {
 }
 public void testCompletionKeywordInterface14() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface14.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface14.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6767,7 +6792,7 @@ public void testCompletionKeywordInterface14() throws JavaModelException {
 }
 public void testCompletionKeywordInterface15() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface15.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface15.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6780,7 +6805,7 @@ public void testCompletionKeywordInterface15() throws JavaModelException {
 }
 public void testCompletionKeywordInterface16() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface16.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface16.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6793,7 +6818,7 @@ public void testCompletionKeywordInterface16() throws JavaModelException {
 }
 public void testCompletionKeywordInterface17() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface17.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface17.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6806,7 +6831,7 @@ public void testCompletionKeywordInterface17() throws JavaModelException {
 }
 public void testCompletionKeywordInterface18() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface18.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface18.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6819,7 +6844,7 @@ public void testCompletionKeywordInterface18() throws JavaModelException {
 }
 public void testCompletionKeywordInterface2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6832,7 +6857,7 @@ public void testCompletionKeywordInterface2() throws JavaModelException {
 }
 public void testCompletionKeywordInterface3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6845,7 +6870,7 @@ public void testCompletionKeywordInterface3() throws JavaModelException {
 }
 public void testCompletionKeywordInterface4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6858,7 +6883,7 @@ public void testCompletionKeywordInterface4() throws JavaModelException {
 }
 public void testCompletionKeywordInterface5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6871,7 +6896,7 @@ public void testCompletionKeywordInterface5() throws JavaModelException {
 }
 public void testCompletionKeywordInterface6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6884,7 +6909,7 @@ public void testCompletionKeywordInterface6() throws JavaModelException {
 }
 public void testCompletionKeywordInterface7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6897,7 +6922,7 @@ public void testCompletionKeywordInterface7() throws JavaModelException {
 }
 public void testCompletionKeywordInterface8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6910,7 +6935,7 @@ public void testCompletionKeywordInterface8() throws JavaModelException {
 }
 public void testCompletionKeywordInterface9() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface9.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6923,7 +6948,7 @@ public void testCompletionKeywordInterface9() throws JavaModelException {
 }
 public void testCompletionKeywordNative1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "nat";
@@ -6936,7 +6961,7 @@ public void testCompletionKeywordNative1() throws JavaModelException {
 }
 public void testCompletionKeywordNative2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "nat";
@@ -6949,7 +6974,7 @@ public void testCompletionKeywordNative2() throws JavaModelException {
 }
 public void testCompletionKeywordNative3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "nat";
@@ -6962,7 +6987,7 @@ public void testCompletionKeywordNative3() throws JavaModelException {
 }
 public void testCompletionKeywordNative4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "nat";
@@ -6975,7 +7000,7 @@ public void testCompletionKeywordNative4() throws JavaModelException {
 }
 public void testCompletionKeywordNative5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "nat";
@@ -6988,7 +7013,7 @@ public void testCompletionKeywordNative5() throws JavaModelException {
 }
 public void testCompletionKeywordNative6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "nat";
@@ -7001,7 +7026,7 @@ public void testCompletionKeywordNative6() throws JavaModelException {
 }
 public void testCompletionKeywordNative7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "nat";
@@ -7014,7 +7039,7 @@ public void testCompletionKeywordNative7() throws JavaModelException {
 }
 public void testCompletionKeywordNative8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "nat";
@@ -7027,7 +7052,7 @@ public void testCompletionKeywordNative8() throws JavaModelException {
 }
 public void testCompletionKeywordNew1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7040,7 +7065,7 @@ public void testCompletionKeywordNew1() throws JavaModelException {
 }
 public void testCompletionKeywordNew10() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew10.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7053,7 +7078,7 @@ public void testCompletionKeywordNew10() throws JavaModelException {
 }
 public void testCompletionKeywordNew11() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew11.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew11.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7066,7 +7091,7 @@ public void testCompletionKeywordNew11() throws JavaModelException {
 }
 public void testCompletionKeywordNew12() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew12.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew12.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7079,7 +7104,7 @@ public void testCompletionKeywordNew12() throws JavaModelException {
 }
 public void testCompletionKeywordNew13() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew13.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew13.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7092,7 +7117,7 @@ public void testCompletionKeywordNew13() throws JavaModelException {
 }
 public void testCompletionKeywordNew14() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew14.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew14.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7105,7 +7130,7 @@ public void testCompletionKeywordNew14() throws JavaModelException {
 }
 public void testCompletionKeywordNew15() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew15.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew15.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7118,7 +7143,7 @@ public void testCompletionKeywordNew15() throws JavaModelException {
 }
 public void testCompletionKeywordNew16() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew16.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew16.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7131,7 +7156,7 @@ public void testCompletionKeywordNew16() throws JavaModelException {
 }
 public void testCompletionKeywordNew2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7144,7 +7169,7 @@ public void testCompletionKeywordNew2() throws JavaModelException {
 }
 public void testCompletionKeywordNew3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7157,7 +7182,7 @@ public void testCompletionKeywordNew3() throws JavaModelException {
 }
 public void testCompletionKeywordNew4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7170,7 +7195,7 @@ public void testCompletionKeywordNew4() throws JavaModelException {
 }
 public void testCompletionKeywordNew5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7183,7 +7208,7 @@ public void testCompletionKeywordNew5() throws JavaModelException {
 }
 public void testCompletionKeywordNew6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7196,7 +7221,7 @@ public void testCompletionKeywordNew6() throws JavaModelException {
 }
 public void testCompletionKeywordNew7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7209,7 +7234,7 @@ public void testCompletionKeywordNew7() throws JavaModelException {
 }
 public void testCompletionKeywordNew8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7222,7 +7247,7 @@ public void testCompletionKeywordNew8() throws JavaModelException {
 }
 public void testCompletionKeywordNew9() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew9.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7235,7 +7260,7 @@ public void testCompletionKeywordNew9() throws JavaModelException {
 }
 public void testCompletionKeywordNull1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNull1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNull1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "nul";
@@ -7248,7 +7273,7 @@ public void testCompletionKeywordNull1() throws JavaModelException {
 }
 public void testCompletionKeywordNull2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNull2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNull2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "nul";
@@ -7261,7 +7286,7 @@ public void testCompletionKeywordNull2() throws JavaModelException {
 }
 public void testCompletionKeywordNull3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNull3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNull3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "nul";
@@ -7274,7 +7299,7 @@ public void testCompletionKeywordNull3() throws JavaModelException {
 }
 public void testCompletionKeywordNull4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNull4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNull4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "nul";
@@ -7287,7 +7312,7 @@ public void testCompletionKeywordNull4() throws JavaModelException {
 }
 public void testCompletionKeywordPackage1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pac";
@@ -7300,7 +7325,7 @@ public void testCompletionKeywordPackage1() throws JavaModelException {
 }
 public void testCompletionKeywordPackage2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "p", "CompletionKeywordPackage2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "p", "CompletionKeywordPackage2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pac";
@@ -7314,7 +7339,7 @@ public void testCompletionKeywordPackage2() throws JavaModelException {
 
 public void testCompletionKeywordPackage3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pac";
@@ -7327,7 +7352,7 @@ public void testCompletionKeywordPackage3() throws JavaModelException {
 }
 public void testCompletionKeywordPackage4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pac";
@@ -7340,7 +7365,7 @@ public void testCompletionKeywordPackage4() throws JavaModelException {
 }
 public void testCompletionKeywordPackage5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pac";
@@ -7353,7 +7378,7 @@ public void testCompletionKeywordPackage5() throws JavaModelException {
 }
 public void testCompletionKeywordPackage6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pac";
@@ -7366,7 +7391,7 @@ public void testCompletionKeywordPackage6() throws JavaModelException {
 }
 public void testCompletionKeywordPackage7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pac";
@@ -7379,7 +7404,7 @@ public void testCompletionKeywordPackage7() throws JavaModelException {
 }
 public void testCompletionKeywordPackage8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "p", "CompletionKeywordPackage8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "p", "CompletionKeywordPackage8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pac";
@@ -7392,7 +7417,7 @@ public void testCompletionKeywordPackage8() throws JavaModelException {
 }
 public void testCompletionKeywordPrivate1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pri";
@@ -7405,7 +7430,7 @@ public void testCompletionKeywordPrivate1() throws JavaModelException {
 }
 public void testCompletionKeywordPrivate10() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate10.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pri";
@@ -7418,7 +7443,7 @@ public void testCompletionKeywordPrivate10() throws JavaModelException {
 }
 public void testCompletionKeywordPrivate2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pri";
@@ -7431,7 +7456,7 @@ public void testCompletionKeywordPrivate2() throws JavaModelException {
 }
 public void testCompletionKeywordPrivate3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pri";
@@ -7444,7 +7469,7 @@ public void testCompletionKeywordPrivate3() throws JavaModelException {
 }
 public void testCompletionKeywordPrivate4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pri";
@@ -7457,7 +7482,7 @@ public void testCompletionKeywordPrivate4() throws JavaModelException {
 }
 public void testCompletionKeywordPrivate5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pri";
@@ -7470,7 +7495,7 @@ public void testCompletionKeywordPrivate5() throws JavaModelException {
 }
 public void testCompletionKeywordPrivate6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pri";
@@ -7483,7 +7508,7 @@ public void testCompletionKeywordPrivate6() throws JavaModelException {
 }
 public void testCompletionKeywordPrivate7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pri";
@@ -7496,7 +7521,7 @@ public void testCompletionKeywordPrivate7() throws JavaModelException {
 }
 public void testCompletionKeywordPrivate8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pri";
@@ -7509,7 +7534,7 @@ public void testCompletionKeywordPrivate8() throws JavaModelException {
 }
 public void testCompletionKeywordPrivate9() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate9.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pri";
@@ -7522,7 +7547,7 @@ public void testCompletionKeywordPrivate9() throws JavaModelException {
 }
 public void testCompletionKeywordProtected1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pro";
@@ -7535,7 +7560,7 @@ public void testCompletionKeywordProtected1() throws JavaModelException {
 }
 public void testCompletionKeywordProtected10() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected10.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pro";
@@ -7548,7 +7573,7 @@ public void testCompletionKeywordProtected10() throws JavaModelException {
 }
 public void testCompletionKeywordProtected2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pro";
@@ -7561,7 +7586,7 @@ public void testCompletionKeywordProtected2() throws JavaModelException {
 }
 public void testCompletionKeywordProtected3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pro";
@@ -7574,7 +7599,7 @@ public void testCompletionKeywordProtected3() throws JavaModelException {
 }
 public void testCompletionKeywordProtected4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pro";
@@ -7587,7 +7612,7 @@ public void testCompletionKeywordProtected4() throws JavaModelException {
 }
 public void testCompletionKeywordProtected5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pro";
@@ -7600,7 +7625,7 @@ public void testCompletionKeywordProtected5() throws JavaModelException {
 }
 public void testCompletionKeywordProtected6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pro";
@@ -7613,7 +7638,7 @@ public void testCompletionKeywordProtected6() throws JavaModelException {
 }
 public void testCompletionKeywordProtected7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pro";
@@ -7626,7 +7651,7 @@ public void testCompletionKeywordProtected7() throws JavaModelException {
 }
 public void testCompletionKeywordProtected8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pro";
@@ -7639,7 +7664,7 @@ public void testCompletionKeywordProtected8() throws JavaModelException {
 }
 public void testCompletionKeywordProtected9() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected9.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pro";
@@ -7652,7 +7677,7 @@ public void testCompletionKeywordProtected9() throws JavaModelException {
 }
 public void testCompletionKeywordPublic1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7665,7 +7690,7 @@ public void testCompletionKeywordPublic1() throws JavaModelException {
 }
 public void testCompletionKeywordPublic10() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic10.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7678,7 +7703,7 @@ public void testCompletionKeywordPublic10() throws JavaModelException {
 }
 public void testCompletionKeywordPublic11() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic11.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic11.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7691,7 +7716,7 @@ public void testCompletionKeywordPublic11() throws JavaModelException {
 }
 public void testCompletionKeywordPublic12() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic12.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic12.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7704,7 +7729,7 @@ public void testCompletionKeywordPublic12() throws JavaModelException {
 }
 public void testCompletionKeywordPublic13() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic13.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic13.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7717,7 +7742,7 @@ public void testCompletionKeywordPublic13() throws JavaModelException {
 }
 public void testCompletionKeywordPublic14() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic14.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic14.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7730,7 +7755,7 @@ public void testCompletionKeywordPublic14() throws JavaModelException {
 }
 public void testCompletionKeywordPublic15() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic15.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic15.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7743,7 +7768,7 @@ public void testCompletionKeywordPublic15() throws JavaModelException {
 }
 public void testCompletionKeywordPublic16() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic16.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic16.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7756,7 +7781,7 @@ public void testCompletionKeywordPublic16() throws JavaModelException {
 }
 public void testCompletionKeywordPublic17() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic17.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic17.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7769,7 +7794,7 @@ public void testCompletionKeywordPublic17() throws JavaModelException {
 }
 public void testCompletionKeywordPublic18() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic18.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic18.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7782,7 +7807,7 @@ public void testCompletionKeywordPublic18() throws JavaModelException {
 }
 public void testCompletionKeywordPublic19() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic19.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic19.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7795,7 +7820,7 @@ public void testCompletionKeywordPublic19() throws JavaModelException {
 }
 public void testCompletionKeywordPublic2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7808,7 +7833,7 @@ public void testCompletionKeywordPublic2() throws JavaModelException {
 }
 public void testCompletionKeywordPublic20() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic10.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7821,7 +7846,7 @@ public void testCompletionKeywordPublic20() throws JavaModelException {
 }
 public void testCompletionKeywordPublic3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7834,7 +7859,7 @@ public void testCompletionKeywordPublic3() throws JavaModelException {
 }
 public void testCompletionKeywordPublic4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7847,7 +7872,7 @@ public void testCompletionKeywordPublic4() throws JavaModelException {
 }
 public void testCompletionKeywordPublic5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7860,7 +7885,7 @@ public void testCompletionKeywordPublic5() throws JavaModelException {
 }
 public void testCompletionKeywordPublic6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7873,7 +7898,7 @@ public void testCompletionKeywordPublic6() throws JavaModelException {
 }
 public void testCompletionKeywordPublic7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7886,7 +7911,7 @@ public void testCompletionKeywordPublic7() throws JavaModelException {
 }
 public void testCompletionKeywordPublic8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7899,7 +7924,7 @@ public void testCompletionKeywordPublic8() throws JavaModelException {
 }
 public void testCompletionKeywordPublic9() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic9.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7912,7 +7937,7 @@ public void testCompletionKeywordPublic9() throws JavaModelException {
 }
 public void testCompletionKeywordReturn1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "re";
@@ -7925,7 +7950,7 @@ public void testCompletionKeywordReturn1() throws JavaModelException {
 }
 public void testCompletionKeywordReturn2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "re";
@@ -7938,7 +7963,7 @@ public void testCompletionKeywordReturn2() throws JavaModelException {
 }
 public void testCompletionKeywordReturn3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "re";
@@ -7951,7 +7976,7 @@ public void testCompletionKeywordReturn3() throws JavaModelException {
 }
 public void testCompletionKeywordReturn4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "re";
@@ -7964,7 +7989,7 @@ public void testCompletionKeywordReturn4() throws JavaModelException {
 }
 public void testCompletionKeywordReturn5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "re";
@@ -7977,7 +8002,7 @@ public void testCompletionKeywordReturn5() throws JavaModelException {
 }
 public void testCompletionKeywordReturn6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "re";
@@ -7990,7 +8015,7 @@ public void testCompletionKeywordReturn6() throws JavaModelException {
 }
 public void testCompletionKeywordStatic1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sta";
@@ -8003,7 +8028,7 @@ public void testCompletionKeywordStatic1() throws JavaModelException {
 }
 public void testCompletionKeywordStatic10() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic10.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sta";
@@ -8016,7 +8041,7 @@ public void testCompletionKeywordStatic10() throws JavaModelException {
 }
 public void testCompletionKeywordStatic2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sta";
@@ -8029,7 +8054,7 @@ public void testCompletionKeywordStatic2() throws JavaModelException {
 }
 public void testCompletionKeywordStatic3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sta";
@@ -8042,7 +8067,7 @@ public void testCompletionKeywordStatic3() throws JavaModelException {
 }
 public void testCompletionKeywordStatic4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sta";
@@ -8055,7 +8080,7 @@ public void testCompletionKeywordStatic4() throws JavaModelException {
 }
 public void testCompletionKeywordStatic5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sta";
@@ -8068,7 +8093,7 @@ public void testCompletionKeywordStatic5() throws JavaModelException {
 }
 public void testCompletionKeywordStatic6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sta";
@@ -8081,7 +8106,7 @@ public void testCompletionKeywordStatic6() throws JavaModelException {
 }
 public void testCompletionKeywordStatic7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sta";
@@ -8094,7 +8119,7 @@ public void testCompletionKeywordStatic7() throws JavaModelException {
 }
 public void testCompletionKeywordStatic8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sta";
@@ -8107,7 +8132,7 @@ public void testCompletionKeywordStatic8() throws JavaModelException {
 }
 public void testCompletionKeywordStatic9() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic9.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sta";
@@ -8120,7 +8145,7 @@ public void testCompletionKeywordStatic9() throws JavaModelException {
 }
 public void testCompletionKeywordStrictfp1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "stric";
@@ -8133,7 +8158,7 @@ public void testCompletionKeywordStrictfp1() throws JavaModelException {
 }
 public void testCompletionKeywordStrictfp2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "stric";
@@ -8146,7 +8171,7 @@ public void testCompletionKeywordStrictfp2() throws JavaModelException {
 }
 public void testCompletionKeywordStrictfp3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "stric";
@@ -8159,7 +8184,7 @@ public void testCompletionKeywordStrictfp3() throws JavaModelException {
 }
 public void testCompletionKeywordStrictfp4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "stric";
@@ -8172,7 +8197,7 @@ public void testCompletionKeywordStrictfp4() throws JavaModelException {
 }
 public void testCompletionKeywordStrictfp5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "stric";
@@ -8185,7 +8210,7 @@ public void testCompletionKeywordStrictfp5() throws JavaModelException {
 }
 public void testCompletionKeywordStrictfp6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "stric";
@@ -8198,7 +8223,7 @@ public void testCompletionKeywordStrictfp6() throws JavaModelException {
 }
 public void testCompletionKeywordStrictfp7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "stric";
@@ -8211,7 +8236,7 @@ public void testCompletionKeywordStrictfp7() throws JavaModelException {
 }
 public void testCompletionKeywordStrictfp8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "stric";
@@ -8224,7 +8249,7 @@ public void testCompletionKeywordStrictfp8() throws JavaModelException {
 }
 public void testCompletionKeywordSuper1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sup";
@@ -8239,7 +8264,7 @@ public void testCompletionKeywordSuper1() throws JavaModelException {
 }
 public void testCompletionKeywordSuper10() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper10.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sup";
@@ -8254,7 +8279,7 @@ public void testCompletionKeywordSuper10() throws JavaModelException {
 }
 public void testCompletionKeywordSuper11() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper11.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper11.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sup";
@@ -8268,7 +8293,7 @@ public void testCompletionKeywordSuper11() throws JavaModelException {
 }
 public void testCompletionKeywordSuper12() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src2/CompletionKeywordSuper12.java",
+            "/Completion/src2/CompletionKeywordSuper12.js",
             "public class CompletionKeywordSuper12 {\n"+
             "	public CompletionKeywordSuper12() {\n"+
             "		#\n"+
@@ -8298,7 +8323,7 @@ public void testCompletionKeywordSuper12() throws JavaModelException {
 }
 public void testCompletionKeywordSuper2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sup";
@@ -8313,7 +8338,7 @@ public void testCompletionKeywordSuper2() throws JavaModelException {
 }
 public void testCompletionKeywordSuper3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sup";
@@ -8327,7 +8352,7 @@ public void testCompletionKeywordSuper3() throws JavaModelException {
 }
 public void testCompletionKeywordSuper4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sup";
@@ -8342,7 +8367,7 @@ public void testCompletionKeywordSuper4() throws JavaModelException {
 }
 public void testCompletionKeywordSuper5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sup";
@@ -8356,7 +8381,7 @@ public void testCompletionKeywordSuper5() throws JavaModelException {
 }
 public void testCompletionKeywordSuper6() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src2/CompletionKeywordSuper6.java",
+            "/Completion/src2/CompletionKeywordSuper6.js",
             "public class CompletionKeywordSuper6 {\n"+
             "	public CompletionKeywordSuper6() {\n"+
             "		sup\n"+
@@ -8385,7 +8410,7 @@ public void testCompletionKeywordSuper6() throws JavaModelException {
 }
 public void testCompletionKeywordSuper7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sup";
@@ -8400,7 +8425,7 @@ public void testCompletionKeywordSuper7() throws JavaModelException {
 }
 public void testCompletionKeywordSuper8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sup";
@@ -8415,7 +8440,7 @@ public void testCompletionKeywordSuper8() throws JavaModelException {
 }
 public void testCompletionKeywordSuper9() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper9.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sup";
@@ -8429,7 +8454,7 @@ public void testCompletionKeywordSuper9() throws JavaModelException {
 }
 public void testCompletionKeywordSwitch1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sw";
@@ -8442,7 +8467,7 @@ public void testCompletionKeywordSwitch1() throws JavaModelException {
 }
 public void testCompletionKeywordSwitch2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sw";
@@ -8455,7 +8480,7 @@ public void testCompletionKeywordSwitch2() throws JavaModelException {
 }
 public void testCompletionKeywordSwitch3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sw";
@@ -8468,7 +8493,7 @@ public void testCompletionKeywordSwitch3() throws JavaModelException {
 }
 public void testCompletionKeywordSwitch4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sw";
@@ -8481,7 +8506,7 @@ public void testCompletionKeywordSwitch4() throws JavaModelException {
 }
 public void testCompletionKeywordSwitch5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sw";
@@ -8494,7 +8519,7 @@ public void testCompletionKeywordSwitch5() throws JavaModelException {
 }
 public void testCompletionKeywordSwitch6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sw";
@@ -8507,7 +8532,7 @@ public void testCompletionKeywordSwitch6() throws JavaModelException {
 }
 public void testCompletionKeywordSynchronized1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8520,7 +8545,7 @@ public void testCompletionKeywordSynchronized1() throws JavaModelException {
 }
 public void testCompletionKeywordSynchronized10() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized10.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8533,7 +8558,7 @@ public void testCompletionKeywordSynchronized10() throws JavaModelException {
 }
 public void testCompletionKeywordSynchronized11() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized11.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized11.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8546,7 +8571,7 @@ public void testCompletionKeywordSynchronized11() throws JavaModelException {
 }
 public void testCompletionKeywordSynchronized12() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized12.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized12.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8559,7 +8584,7 @@ public void testCompletionKeywordSynchronized12() throws JavaModelException {
 }
 public void testCompletionKeywordSynchronized2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8572,7 +8597,7 @@ public void testCompletionKeywordSynchronized2() throws JavaModelException {
 }
 public void testCompletionKeywordSynchronized3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8585,7 +8610,7 @@ public void testCompletionKeywordSynchronized3() throws JavaModelException {
 }
 public void testCompletionKeywordSynchronized4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8598,7 +8623,7 @@ public void testCompletionKeywordSynchronized4() throws JavaModelException {
 }
 public void testCompletionKeywordSynchronized5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8611,7 +8636,7 @@ public void testCompletionKeywordSynchronized5() throws JavaModelException {
 }
 public void testCompletionKeywordSynchronized6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8624,7 +8649,7 @@ public void testCompletionKeywordSynchronized6() throws JavaModelException {
 }
 public void testCompletionKeywordSynchronized7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8637,7 +8662,7 @@ public void testCompletionKeywordSynchronized7() throws JavaModelException {
 }
 public void testCompletionKeywordSynchronized8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8650,7 +8675,7 @@ public void testCompletionKeywordSynchronized8() throws JavaModelException {
 }
 public void testCompletionKeywordSynchronized9() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized9.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8663,7 +8688,7 @@ public void testCompletionKeywordSynchronized9() throws JavaModelException {
 }
 public void testCompletionKeywordThis1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8676,7 +8701,7 @@ public void testCompletionKeywordThis1() throws JavaModelException {
 }
 public void testCompletionKeywordThis10() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis10.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8689,7 +8714,7 @@ public void testCompletionKeywordThis10() throws JavaModelException {
 }
 public void testCompletionKeywordThis11() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis11.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis11.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8702,7 +8727,7 @@ public void testCompletionKeywordThis11() throws JavaModelException {
 }
 public void testCompletionKeywordThis12() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis12.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis12.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8715,7 +8740,7 @@ public void testCompletionKeywordThis12() throws JavaModelException {
 }
 public void testCompletionKeywordThis13() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis13.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis13.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8728,7 +8753,7 @@ public void testCompletionKeywordThis13() throws JavaModelException {
 }
 public void testCompletionKeywordThis14() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis14.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis14.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8744,7 +8769,7 @@ public void testCompletionKeywordThis14() throws JavaModelException {
  */
 public void testCompletionKeywordThis15() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src2/CompletionKeywordThis15.java",
+            "/Completion/src2/CompletionKeywordThis15.js",
             "public class CompletionKeywordThis15 {\n" +
             "	public class InnerClass {\n" +
             "		public InnerClass() {\n" +
@@ -8768,7 +8793,7 @@ public void testCompletionKeywordThis15() throws JavaModelException {
 }
 public void testCompletionKeywordThis2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8781,7 +8806,7 @@ public void testCompletionKeywordThis2() throws JavaModelException {
 }
 public void testCompletionKeywordThis3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8794,7 +8819,7 @@ public void testCompletionKeywordThis3() throws JavaModelException {
 }
 public void testCompletionKeywordThis4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8807,7 +8832,7 @@ public void testCompletionKeywordThis4() throws JavaModelException {
 }
 public void testCompletionKeywordThis5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8820,7 +8845,7 @@ public void testCompletionKeywordThis5() throws JavaModelException {
 }
 public void testCompletionKeywordThis6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8833,7 +8858,7 @@ public void testCompletionKeywordThis6() throws JavaModelException {
 }
 public void testCompletionKeywordThis7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8846,7 +8871,7 @@ public void testCompletionKeywordThis7() throws JavaModelException {
 }
 public void testCompletionKeywordThis8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8859,7 +8884,7 @@ public void testCompletionKeywordThis8() throws JavaModelException {
 }
 public void testCompletionKeywordThis9() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis9.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8872,7 +8897,7 @@ public void testCompletionKeywordThis9() throws JavaModelException {
 }
 public void testCompletionKeywordThrow1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thr";
@@ -8886,7 +8911,7 @@ public void testCompletionKeywordThrow1() throws JavaModelException {
 }
 public void testCompletionKeywordThrow2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thr";
@@ -8899,7 +8924,7 @@ public void testCompletionKeywordThrow2() throws JavaModelException {
 }
 public void testCompletionKeywordThrow3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thr";
@@ -8912,7 +8937,7 @@ public void testCompletionKeywordThrow3() throws JavaModelException {
 }
 public void testCompletionKeywordThrow4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thr";
@@ -8926,7 +8951,7 @@ public void testCompletionKeywordThrow4() throws JavaModelException {
 }
 public void testCompletionKeywordThrow5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thr";
@@ -8939,7 +8964,7 @@ public void testCompletionKeywordThrow5() throws JavaModelException {
 }
 public void testCompletionKeywordThrow6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thr";
@@ -8952,7 +8977,7 @@ public void testCompletionKeywordThrow6() throws JavaModelException {
 }
 public void testCompletionKeywordThrows1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thro";
@@ -8965,7 +8990,7 @@ public void testCompletionKeywordThrows1() throws JavaModelException {
 }
 public void testCompletionKeywordThrows2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thro";
@@ -8978,7 +9003,7 @@ public void testCompletionKeywordThrows2() throws JavaModelException {
 }
 public void testCompletionKeywordThrows3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thro";
@@ -8991,7 +9016,7 @@ public void testCompletionKeywordThrows3() throws JavaModelException {
 }
 public void testCompletionKeywordThrows4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thro";
@@ -9004,7 +9029,7 @@ public void testCompletionKeywordThrows4() throws JavaModelException {
 }
 public void testCompletionKeywordThrows5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thro";
@@ -9017,7 +9042,7 @@ public void testCompletionKeywordThrows5() throws JavaModelException {
 }
 public void testCompletionKeywordThrows6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thro";
@@ -9030,7 +9055,7 @@ public void testCompletionKeywordThrows6() throws JavaModelException {
 }
 public void testCompletionKeywordThrows7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thro";
@@ -9043,7 +9068,7 @@ public void testCompletionKeywordThrows7() throws JavaModelException {
 }
 public void testCompletionKeywordThrows8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thro";
@@ -9056,7 +9081,7 @@ public void testCompletionKeywordThrows8() throws JavaModelException {
 }
 public void testCompletionKeywordTransient1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tran";
@@ -9069,7 +9094,7 @@ public void testCompletionKeywordTransient1() throws JavaModelException {
 }
 public void testCompletionKeywordTransient2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tran";
@@ -9082,7 +9107,7 @@ public void testCompletionKeywordTransient2() throws JavaModelException {
 }
 public void testCompletionKeywordTransient3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tran";
@@ -9095,7 +9120,7 @@ public void testCompletionKeywordTransient3() throws JavaModelException {
 }
 public void testCompletionKeywordTransient4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tran";
@@ -9108,7 +9133,7 @@ public void testCompletionKeywordTransient4() throws JavaModelException {
 }
 public void testCompletionKeywordTransient5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tran";
@@ -9121,7 +9146,7 @@ public void testCompletionKeywordTransient5() throws JavaModelException {
 }
 public void testCompletionKeywordTransient6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tran";
@@ -9134,7 +9159,7 @@ public void testCompletionKeywordTransient6() throws JavaModelException {
 }
 public void testCompletionKeywordTransient7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tran";
@@ -9147,7 +9172,7 @@ public void testCompletionKeywordTransient7() throws JavaModelException {
 }
 public void testCompletionKeywordTransient8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tran";
@@ -9160,7 +9185,7 @@ public void testCompletionKeywordTransient8() throws JavaModelException {
 }
 public void testCompletionKeywordTrue1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTrue1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTrue1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tru";
@@ -9173,7 +9198,7 @@ public void testCompletionKeywordTrue1() throws JavaModelException {
 }
 public void testCompletionKeywordTrue2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTrue2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTrue2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tru";
@@ -9186,7 +9211,7 @@ public void testCompletionKeywordTrue2() throws JavaModelException {
 }
 public void testCompletionKeywordTrue3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTrue3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTrue3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tru";
@@ -9199,7 +9224,7 @@ public void testCompletionKeywordTrue3() throws JavaModelException {
 }
 public void testCompletionKeywordTrue4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTrue4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTrue4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tru";
@@ -9213,7 +9238,7 @@ public void testCompletionKeywordTrue4() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=90615
 public void testCompletionKeywordTrue5() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src/test/CompletionKeywordTrue5.java",
+			"/Completion/src/test/CompletionKeywordTrue5.js",
 			"package test;\n" +
 			"public class CompletionKeywordTrue5 {\n" +
 			"  public void foo() {\n" +
@@ -9236,7 +9261,7 @@ public void testCompletionKeywordTrue5() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=90615
 public void testCompletionKeywordTrue6() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src/test/CompletionKeywordTrue6.java",
+			"/Completion/src/test/CompletionKeywordTrue6.js",
 			"package test;\n" +
 			"public class CompletionKeywordTrue6 {\n" +
 			"  public void foo() {\n" +
@@ -9293,7 +9318,7 @@ public void testCompletionKeywordTrue6() throws JavaModelException {
 }
 public void testCompletionKeywordTry1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tr";
@@ -9306,7 +9331,7 @@ public void testCompletionKeywordTry1() throws JavaModelException {
 }
 public void testCompletionKeywordTry2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tr";
@@ -9319,7 +9344,7 @@ public void testCompletionKeywordTry2() throws JavaModelException {
 }
 public void testCompletionKeywordTry3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "try";
@@ -9332,7 +9357,7 @@ public void testCompletionKeywordTry3() throws JavaModelException {
 }
 public void testCompletionKeywordTry4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tr";
@@ -9345,7 +9370,7 @@ public void testCompletionKeywordTry4() throws JavaModelException {
 }
 public void testCompletionKeywordTry5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tr";
@@ -9358,7 +9383,7 @@ public void testCompletionKeywordTry5() throws JavaModelException {
 }
 public void testCompletionKeywordTry6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "try";
@@ -9371,7 +9396,7 @@ public void testCompletionKeywordTry6() throws JavaModelException {
 }
 public void testCompletionKeywordVolatile1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "vol";
@@ -9384,7 +9409,7 @@ public void testCompletionKeywordVolatile1() throws JavaModelException {
 }
 public void testCompletionKeywordVolatile2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "vol";
@@ -9397,7 +9422,7 @@ public void testCompletionKeywordVolatile2() throws JavaModelException {
 }
 public void testCompletionKeywordVolatile3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "vol";
@@ -9410,7 +9435,7 @@ public void testCompletionKeywordVolatile3() throws JavaModelException {
 }
 public void testCompletionKeywordVolatile4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "vol";
@@ -9423,7 +9448,7 @@ public void testCompletionKeywordVolatile4() throws JavaModelException {
 }
 public void testCompletionKeywordVolatile5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "vol";
@@ -9436,7 +9461,7 @@ public void testCompletionKeywordVolatile5() throws JavaModelException {
 }
 public void testCompletionKeywordVolatile6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "vol";
@@ -9449,7 +9474,7 @@ public void testCompletionKeywordVolatile6() throws JavaModelException {
 }
 public void testCompletionKeywordVolatile7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "vol";
@@ -9462,7 +9487,7 @@ public void testCompletionKeywordVolatile7() throws JavaModelException {
 }
 public void testCompletionKeywordVolatile8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "vol";
@@ -9475,7 +9500,7 @@ public void testCompletionKeywordVolatile8() throws JavaModelException {
 }
 public void testCompletionKeywordWhile1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "wh";
@@ -9488,7 +9513,7 @@ public void testCompletionKeywordWhile1() throws JavaModelException {
 }
 public void testCompletionKeywordWhile10() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile10.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "wh";
@@ -9501,7 +9526,7 @@ public void testCompletionKeywordWhile10() throws JavaModelException {
 }
 public void testCompletionKeywordWhile2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "wh";
@@ -9514,7 +9539,7 @@ public void testCompletionKeywordWhile2() throws JavaModelException {
 }
 public void testCompletionKeywordWhile3() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "wh";
@@ -9527,7 +9552,7 @@ public void testCompletionKeywordWhile3() throws JavaModelException {
 }
 public void testCompletionKeywordWhile4() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile4.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "wh";
@@ -9540,7 +9565,7 @@ public void testCompletionKeywordWhile4() throws JavaModelException {
 }
 public void testCompletionKeywordWhile5() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile5.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "wh";
@@ -9553,7 +9578,7 @@ public void testCompletionKeywordWhile5() throws JavaModelException {
 }
 public void testCompletionKeywordWhile6() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile6.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "wh";
@@ -9566,7 +9591,7 @@ public void testCompletionKeywordWhile6() throws JavaModelException {
 }
 public void testCompletionKeywordWhile7() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile7.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "wh";
@@ -9579,7 +9604,7 @@ public void testCompletionKeywordWhile7() throws JavaModelException {
 }
 public void testCompletionKeywordWhile8() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile8.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "wh";
@@ -9592,7 +9617,7 @@ public void testCompletionKeywordWhile8() throws JavaModelException {
 }
 public void testCompletionKeywordWhile9() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile9.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "wh";
@@ -9605,7 +9630,7 @@ public void testCompletionKeywordWhile9() throws JavaModelException {
 }
 public void testCompletionLocalName() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionLocalName.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionLocalName.js");
 
 	String str = cu.getSource();
 	String completeBehind = "ClassWithComplexName ";
@@ -9623,7 +9648,7 @@ public void testCompletionLocalName() throws JavaModelException {
 public void testCompletionLocalType1() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/CompletionLocalType1.java",
+		"/Completion/src/CompletionLocalType1.js",
 		"public class CompletionLocalType1 {\n" +
 		"	void foo() {\n" +
 		"		class ZZZZ {\n" +
@@ -9648,7 +9673,7 @@ public void testCompletionLocalType1() throws JavaModelException {
 */
 public void testCompletionMemberType() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionMemberType.java",
+            "/Completion/src/CompletionMemberType.js",
             "public class CompletionMemberType {\n"+
             "	public class Y {\n"+
             "		public void foo(){\n"+
@@ -9670,7 +9695,7 @@ public void testCompletionMemberType() throws JavaModelException {
 }
 public void testCompletionMemberType2() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/test/CompletionMemberType2.java",
+            "/Completion/src/test/CompletionMemberType2.js",
             "public class CompletionMemberType2 {\n"+
             "	public class MemberException extends Exception {\n"+
             "	}\n"+
@@ -9699,7 +9724,7 @@ public void testCompletionMemberType2() throws JavaModelException {
 }
 public void testCompletionMemberType3() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/test/CompletionArrayClone.java",
+            "/Completion/src/test/CompletionArrayClone.js",
             "public class CompletionMemberType3 {\n"+
             "	public class MemberException extends Exception {\n"+
             "	}\n"+
@@ -9721,7 +9746,7 @@ public void testCompletionMemberType3() throws JavaModelException {
 }
 public void testCompletionMessageSendIsParent1() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -9738,7 +9763,7 @@ public void testCompletionMessageSendIsParent1() throws JavaModelException {
 }
 public void testCompletionMessageSendIsParent2() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent2.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -9755,7 +9780,7 @@ public void testCompletionMessageSendIsParent2() throws JavaModelException {
 }
 public void testCompletionMessageSendIsParent3() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent3.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent3.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -9772,7 +9797,7 @@ public void testCompletionMessageSendIsParent3() throws JavaModelException {
 }
 public void testCompletionMessageSendIsParent4() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent4.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent4.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -9789,7 +9814,7 @@ public void testCompletionMessageSendIsParent4() throws JavaModelException {
 }
 public void testCompletionMessageSendIsParent5() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent5.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent5.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -9806,7 +9831,7 @@ public void testCompletionMessageSendIsParent5() throws JavaModelException {
 }
 public void testCompletionMessageSendIsParent6() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent6.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent6.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -9824,7 +9849,7 @@ public void testCompletionMessageSendIsParent6() throws JavaModelException {
 public void testCompletionMethodDeclaration() throws JavaModelException {
 
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration.js");
 
 	String str = cu.getSource();
 	String completeBehind = "eq";
@@ -9840,7 +9865,7 @@ public void testCompletionMethodDeclaration() throws JavaModelException {
 public void testCompletionMethodDeclaration10() throws JavaModelException {
 
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration10.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration10.js");
 
 	String str = cu.getSource();
 	String completeBehind = "clon";
@@ -9856,7 +9881,7 @@ public void testCompletionMethodDeclaration10() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=80063
 public void testCompletionMethodDeclaration11() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src/test/CompletionMethodDeclaration11.java",
+			"/Completion/src/test/CompletionMethodDeclaration11.js",
 			"package test;\n" +
 			"public class CompletionMethodDeclaration11 {\n" +
 			"  private void foo() {\n" +
@@ -9879,7 +9904,7 @@ public void testCompletionMethodDeclaration11() throws JavaModelException {
 }
 public void testCompletionMethodDeclaration12() throws JavaModelException {
     this.wc = getWorkingCopy(
-            "/Completion/src/test/CompletionMethodDeclaration12.java",
+            "/Completion/src/test/CompletionMethodDeclaration12.js",
             "package test;\n" +
             "public class CompletionMethodDeclaration12 {\n" +
             "  public void foo() {\n" +
@@ -9908,7 +9933,7 @@ public void testCompletionMethodDeclaration2() throws JavaModelException {
 	ICompilationUnit superClass = null;
 	try {
 		superClass = getWorkingCopy(
-	            "/Completion/src/CompletionSuperClass.java",
+	            "/Completion/src/CompletionSuperClass.js",
 	            "public class CompletionSuperClass{\n" +
 	            "	public class Inner {}\n" +
 	            "	public int eqFoo(int a,Object b){\n" +
@@ -9917,7 +9942,7 @@ public void testCompletionMethodDeclaration2() throws JavaModelException {
 	            "}");
 		
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionMethodDeclaration2.java",
+	            "/Completion/src/CompletionMethodDeclaration2.js",
 	            "public class CompletionMethodDeclaration2 extends CompletionSuperClass {\n" +
 	            "	eq\n" +
 	            "}");
@@ -9947,7 +9972,7 @@ public void testCompletionMethodDeclaration3() throws JavaModelException {
 	ICompilationUnit superClass = null;
 	try {
 		superClass = getWorkingCopy(
-	            "/Completion/src/CompletionSuperClass.java",
+	            "/Completion/src/CompletionSuperClass.js",
 	            "public class CompletionSuperClass{\n" +
 	            "	public class Inner {}\n" +
 	            "	public int eqFoo(int a,Object b){\n" +
@@ -9956,7 +9981,7 @@ public void testCompletionMethodDeclaration3() throws JavaModelException {
 	            "}");
 		
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionMethodDeclaration3.java",
+	            "/Completion/src/CompletionMethodDeclaration3.js",
 	            "public class CompletionMethodDeclaration3 extends CompletionSuperClass {\n" +
 	            "	eq\n" +
 	            "	\n" +
@@ -9986,13 +10011,13 @@ public void testCompletionMethodDeclaration4() throws JavaModelException {
 	ICompilationUnit superClass = null;
 	try {
 		superClass = getWorkingCopy(
-	            "/Completion/src/CompletionSuperInterface.java",
+	            "/Completion/src/CompletionSuperInterface.js",
 	            "public interface CompletionSuperInterface{\n"+
 	            "	public int eqFoo(int a,Object b);\n"+
 	            "}");
 		
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionMethodDeclaration4.java",
+	            "/Completion/src/CompletionMethodDeclaration4.js",
 	            "public abstract class CompletionMethodDeclaration4 implements CompletionSuperInterface {\n"+
 	            "	eq\n"+
 	            "}");
@@ -10019,7 +10044,7 @@ public void testCompletionMethodDeclaration5() throws JavaModelException {
 	ICompilationUnit superClass = null;
 	try {
 		superClass = getWorkingCopy(
-	            "/Completion/src/CompletionSuperClass.java",
+	            "/Completion/src/CompletionSuperClass.js",
 	            "public class CompletionSuperClass{\n" +
 	            "	public class Inner {}\n" +
 	            "	public int eqFoo(int a,Object b){\n" +
@@ -10028,7 +10053,7 @@ public void testCompletionMethodDeclaration5() throws JavaModelException {
 	            "}");
 		
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionMethodDeclaration5.java",
+	            "/Completion/src/CompletionMethodDeclaration5.js",
 	            "public class CompletionMethodDeclaration5 {\n" +
 	            "	public static void main(String[] args) {\n" +
 	            "		new CompletionSuperClass() {\n" +
@@ -10074,7 +10099,7 @@ public void testCompletionMethodDeclaration5() throws JavaModelException {
 public void testCompletionMethodDeclaration6() throws JavaModelException {
 
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration6.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration6.js");
 
 	String str = cu.getSource();
 	String completeBehind = "clon";
@@ -10089,7 +10114,7 @@ public void testCompletionMethodDeclaration6() throws JavaModelException {
 public void testCompletionMethodDeclaration7() throws JavaModelException {
 
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration7.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration7.js");
 
 	String str = cu.getSource();
 	String completeBehind = "clon";
@@ -10105,7 +10130,7 @@ public void testCompletionMethodDeclaration7() throws JavaModelException {
 public void testCompletionMethodDeclaration8() throws JavaModelException {
 
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration8.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration8.js");
 
 	String str = cu.getSource();
 	String completeBehind = "clon";
@@ -10121,7 +10146,7 @@ public void testCompletionMethodDeclaration8() throws JavaModelException {
 public void testCompletionMethodDeclaration9() throws JavaModelException {
 
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration9.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration9.js");
 
 	String str = cu.getSource();
 	String completeBehind = "clon";
@@ -10136,7 +10161,7 @@ public void testCompletionMethodDeclaration9() throws JavaModelException {
 }
 public void testCompletionMethodThrowsClause() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodThrowsClause.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodThrowsClause.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Ex";
@@ -10149,7 +10174,7 @@ public void testCompletionMethodThrowsClause() throws JavaModelException {
 }
 public void testCompletionMethodThrowsClause2() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodThrowsClause2.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodThrowsClause2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Ex";
@@ -10162,7 +10187,7 @@ public void testCompletionMethodThrowsClause2() throws JavaModelException {
 }
 public void testCompletionNonEmptyToken1() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionNonEmptyToken1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionNonEmptyToken1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -10177,7 +10202,7 @@ public void testCompletionNonEmptyToken1() throws JavaModelException {
 }
 public void testCompletionNonStaticFieldRelevance() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionNonStaticFieldRelevance.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionNonStaticFieldRelevance.js");
 
 	String str = cu.getSource();
 	String completeBehind = "var.Ii";
@@ -10194,7 +10219,7 @@ public void testCompletionNonStaticFieldRelevance() throws JavaModelException {
  */
 public void testCompletionNullRequestor() throws JavaModelException {
 	try {
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindThisDotField.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindThisDotField.js");
 		cu.codeComplete(5, (CompletionRequestor)null);
 	} catch (IllegalArgumentException iae) {
 		return;
@@ -10206,7 +10231,7 @@ public void testCompletionNullRequestor() throws JavaModelException {
 */
 public void testCompletionObjectsMethodWithInterfaceReceiver() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionObjectsMethodWithInterfaceReceiver.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionObjectsMethodWithInterfaceReceiver.js");
 
 	String str = cu.getSource();
 	String completeBehind = "hash";
@@ -10238,7 +10263,7 @@ public void testCompletionOnClassFile() throws JavaModelException {
 */
 public void testCompletionOnStaticMember1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionOnStaticMember1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionOnStaticMember1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "var";
@@ -10255,7 +10280,7 @@ public void testCompletionOnStaticMember1() throws JavaModelException {
 */
 public void testCompletionOnStaticMember2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionOnStaticMember2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionOnStaticMember2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "method";
@@ -10272,7 +10297,7 @@ public void testCompletionOnStaticMember2() throws JavaModelException {
  */
 public void testCompletionOutOfBounds() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionOutOfBounds.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionOutOfBounds.js");
 	try {
 		cu.codeComplete(cu.getSource().length() + 1, requestor);
 	} catch (JavaModelException e) {
@@ -10282,7 +10307,7 @@ public void testCompletionOutOfBounds() throws JavaModelException {
 }
 public void testCompletionPackageAndClass1() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "z1.z2.qla0", "Qla3.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "z1.z2.qla0", "Qla3.js");
 
 	String str = cu.getSource();
 	String completeBehind = "z1.z2.ql";
@@ -10297,7 +10322,7 @@ public void testCompletionPackageAndClass1() throws JavaModelException {
 }
 public void testCompletionPackageAndClass2() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "z1.z2.qla0", "Wla.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "z1.z2.qla0", "Wla.js");
 
 	String str = cu.getSource();
 	String completeBehind = "z1.z2.qla0.";
@@ -10312,7 +10337,7 @@ public void testCompletionPackageAndClass2() throws JavaModelException {
 }
 public void testCompletionPrefixFieldName1() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionPrefixFieldName1.java",
+            "/Completion/src/CompletionPrefixFieldName1.js",
             "public class CompletionPrefixFieldName1 {\n"+
             "	int xBar;\n"+
             "	\n"+
@@ -10339,7 +10364,7 @@ public void testCompletionPrefixFieldName1() throws JavaModelException {
 }
 public void testCompletionPrefixFieldName2() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionPrefixFieldName2.java",
+            "/Completion/src/CompletionPrefixFieldName2.js",
             "public class CompletionPrefixFieldName2 {\n"+
             "	int xBar;\n"+
             "	\n"+
@@ -10365,7 +10390,7 @@ public void testCompletionPrefixFieldName2() throws JavaModelException {
 }
 public void testCompletionPrefixMethodName1() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionPrefixMethodName1.java",
+            "/Completion/src/CompletionPrefixMethodName1.js",
             "public class CompletionPrefixMethodName1 {\n"+
            "	int xBar(){}\n"+
            "	\n"+
@@ -10392,7 +10417,7 @@ public void testCompletionPrefixMethodName1() throws JavaModelException {
 }
 public void testCompletionPrefixMethodName2() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionPrefixMethodName2.java",
+            "/Completion/src/CompletionPrefixMethodName2.js",
             "public class CompletionPrefixMethodName2 {\n"+
             "	int xBar(){}\n"+
             "	\n"+
@@ -10418,7 +10443,7 @@ public void testCompletionPrefixMethodName2() throws JavaModelException {
 }
 public void testCompletionPrefixMethodName3() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionPrefixMethodName2.java",
+            "/Completion/src/CompletionPrefixMethodName2.js",
             "public class CompletionPrefixMethodName3 {\n"+
             "	int xBar(int a, int b){}\n"+
             "	\n"+
@@ -10445,7 +10470,7 @@ public void testCompletionPrefixMethodName3() throws JavaModelException {
 }
 public void testCompletionQualifiedAllocationType1() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionQualifiedAllocationType1.java",
+            "/Completion/src/CompletionQualifiedAllocationType1.js",
             "public class CompletionQualifiedAllocationType1 {\n"+
             "	public class YYY {\n"+
             "	}\n"+
@@ -10470,7 +10495,7 @@ public void testCompletionQualifiedAllocationType1() throws JavaModelException {
 */
 public void testCompletionQualifiedExpectedType() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/test/CompletionQualifiedExpectedType.java",
+            "/Completion/src/test/CompletionQualifiedExpectedType.js",
             "import pack1.PX;\n"+
             "\n"+
             "public class CompletionQualifiedExpectedType {\n"+
@@ -10502,7 +10527,7 @@ public void testCompletionQualifiedExpectedType() throws JavaModelException {
  */
 public void testCompletionRepeatedType() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionRepeatedType.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionRepeatedType.js");
 
 	String str = cu.getSource();
 	String completeBehind = "/**/CompletionRepeated";
@@ -10519,7 +10544,7 @@ public void testCompletionRepeatedType() throws JavaModelException {
 */
 public void testCompletionReturnInInitializer() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionReturnInInitializer.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionReturnInInitializer.js");
 
 	String str = cu.getSource();
 	String completeBehind = "eq";
@@ -10532,7 +10557,7 @@ public void testCompletionReturnInInitializer() throws JavaModelException {
 }
 public void testCompletionReturnStatementIsParent1() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionReturnStatementIsParent1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionReturnStatementIsParent1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -10564,7 +10589,7 @@ public void testCompletionReturnStatementIsParent1() throws JavaModelException {
 }
 public void testCompletionReturnStatementIsParent2() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionReturnStatementIsParent2.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionReturnStatementIsParent2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "xx";
@@ -10588,7 +10613,7 @@ public void testCompletionReturnStatementIsParent2() throws JavaModelException {
  */
 public void testCompletionSameClass() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionSameClass.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionSameClass.js");
 
 	String str = cu.getSource();
 	String completeBehind = "(CompletionSameClas";
@@ -10601,7 +10626,7 @@ public void testCompletionSameClass() throws JavaModelException {
 }
 public void testCompletionSameSuperClass() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionSameSuperClass.java",
+            "/Completion/src/CompletionSameSuperClass.js",
             "public class CompletionSameSuperClass extends A {\n" +
             "	class Inner extends A {\n" +
             "		void foo(int bar){\n" +
@@ -10629,14 +10654,14 @@ public void testCompletionStaticMethod1() throws JavaModelException {
 	ICompilationUnit aType = null;
 	try {
 		aType = getWorkingCopy(
-	            "/Completion/src/TypeWithAMethodAndAStaticMethod .java",
+	            "/Completion/src/TypeWithAMethodAndAStaticMethod .js",
 	            "public class TypeWithAMethodAndAStaticMethod {\n"+
 	            "	public static void foo(){}\n"+
 	            "	public void foo0(){}\n"+
 	            "}");
 			
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionStaticMethod1.java",
+	            "/Completion/src/CompletionStaticMethod1.js",
 	            "public class CompletionStaticMethod1 extends TypeWithAMethodAndAStaticMethod {\n"+
 	            "	void bar(){\n"+
 	            "		new TypeWithAMethodAndAStaticMethod(){\n"+
@@ -10673,14 +10698,14 @@ public void testCompletionStaticMethodDeclaration1() throws JavaModelException {
 	ICompilationUnit aType = null;
 	try {
 		aType = getWorkingCopy(
-	            "/Completion/src/TypeWithAMethodAndAStaticMethod .java",
+	            "/Completion/src/TypeWithAMethodAndAStaticMethod .js",
 	            "public class TypeWithAMethodAndAStaticMethod {\n"+
 	            "	public static void foo(){}\n"+
 	            "	public void foo0(){}\n"+
 	            "}");
 		
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionStaticMethodDeclaration1.java",
+	            "/Completion/src/CompletionStaticMethodDeclaration1.js",
 	            "public class CompletionStaticMethodDeclaration1 extends TypeWithAMethodAndAStaticMethod {\n"+
 	            "	foo\n"+
 	            "}");
@@ -10706,14 +10731,14 @@ public void testCompletionStaticMethodDeclaration2() throws JavaModelException {
 	ICompilationUnit aType = null;
 	try {
 		aType = getWorkingCopy(
-	            "/Completion/src/TypeWithAMethodAndAStaticMethod .java",
+	            "/Completion/src/TypeWithAMethodAndAStaticMethod .js",
 	            "public class TypeWithAMethodAndAStaticMethod {\n"+
 	            "	public static void foo(){}\n"+
 	            "	public void foo0(){}\n"+
 	            "}");
 			
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionStaticMethodDeclaration2.java",
+	            "/Completion/src/CompletionStaticMethodDeclaration2.js",
 	            "public class CompletionStaticMethodDeclaration2 {\n" +
 	            "	class Inner1 extends TypeWithAMethodAndAStaticMethod {\n" +
 	            "		foo\n" +
@@ -10741,14 +10766,14 @@ public void testCompletionStaticMethodDeclaration3() throws JavaModelException {
 	ICompilationUnit aType = null;
 	try {
 		aType = getWorkingCopy(
-	            "/Completion/src/TypeWithAMethodAndAStaticMethod .java",
+	            "/Completion/src/TypeWithAMethodAndAStaticMethod .js",
 	            "public class TypeWithAMethodAndAStaticMethod {\n"+
 	            "	public static void foo(){}\n"+
 	            "	public void foo0(){}\n"+
 	            "}");
 			
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionStaticMethodDeclaration3.java",
+	            "/Completion/src/CompletionStaticMethodDeclaration3.js",
 	            "public class CompletionStaticMethodDeclaration3 {\n" +
 	            "	static class Inner1 extends TypeWithAMethodAndAStaticMethod {\n" +
 	            "		foo\n" +
@@ -10776,14 +10801,14 @@ public void testCompletionStaticMethodDeclaration4() throws JavaModelException {
 	ICompilationUnit aType = null;
 	try {
 		aType = getWorkingCopy(
-	            "/Completion/src/TypeWithAMethodAndAStaticMethod .java",
+	            "/Completion/src/TypeWithAMethodAndAStaticMethod .js",
 	            "public class TypeWithAMethodAndAStaticMethod {\n"+
 	            "	public static void foo(){}\n"+
 	            "	public void foo0(){}\n"+
 	            "}");
 			
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionStaticMethodDeclaration4.java",
+	            "/Completion/src/CompletionStaticMethodDeclaration4.js",
 	            "public class CompletionStaticMethodDeclaration4 {\n" +
 	            "	void bar() {\n" +
 	            "		class Local1 extends TypeWithAMethodAndAStaticMethod {\n" +
@@ -10813,14 +10838,14 @@ public void testCompletionStaticMethodDeclaration5() throws JavaModelException {
 	ICompilationUnit aType = null;
 	try {
 		aType = getWorkingCopy(
-	            "/Completion/src/TypeWithAMethodAndAStaticMethod .java",
+	            "/Completion/src/TypeWithAMethodAndAStaticMethod .js",
 	            "public class TypeWithAMethodAndAStaticMethod {\n"+
 	            "	public static void foo(){}\n"+
 	            "	public void foo0(){}\n"+
 	            "}");
 			
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionStaticMethodDeclaration5.java",
+	            "/Completion/src/CompletionStaticMethodDeclaration5.js",
 	            "public class CompletionStaticMethodDeclaration5 {\n"+
 	            "	void bar() {\n"+
 	            "		static class Local1 extends TypeWithAMethodAndAStaticMethod {\n"+
@@ -10850,14 +10875,14 @@ public void testCompletionStaticMethodDeclaration6() throws JavaModelException {
 	ICompilationUnit aType = null;
 	try {
 		aType = getWorkingCopy(
-	            "/Completion/src/TypeWithAMethodAndAStaticMethod .java",
+	            "/Completion/src/TypeWithAMethodAndAStaticMethod .js",
 	            "public class TypeWithAMethodAndAStaticMethod {\n"+
 	            "	public static void foo(){}\n"+
 	            "	public void foo0(){}\n"+
 	            "}");
 			
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionStaticMethodDeclaration6.java",
+	            "/Completion/src/CompletionStaticMethodDeclaration6.js",
 	            "public class CompletionStaticMethodDeclaration6 {\n"+
 	            "	void bar() {\n"+
 	            "		new TypeWithAMethodAndAStaticMethod() {\n"+
@@ -10887,7 +10912,7 @@ public void testCompletionSuperType() throws JavaModelException {
 	ICompilationUnit superClass = null;
 	try {
 		superClass = getWorkingCopy(
-	            "/Completion/src/CompletionSuperClass.java",
+	            "/Completion/src/CompletionSuperClass.js",
 	            "public class CompletionSuperClass{\n" +
 	            "	public class Inner {}\n" +
 	            "	public int eqFoo(int a,Object b){\n" +
@@ -10896,7 +10921,7 @@ public void testCompletionSuperType() throws JavaModelException {
 	            "}");
 		
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionSuperType.java",
+	            "/Completion/src/CompletionSuperType.js",
 	            "public class CompletionSuperType extends CompletionSuperClass.");
 	    
 	    
@@ -10922,7 +10947,7 @@ public void testCompletionSuperType2() throws JavaModelException {
 	ICompilationUnit superInterface2 = null;
 	try {
 		superClass = getWorkingCopy(
-	            "/Completion/src/CompletionSuperClass.java",
+	            "/Completion/src/CompletionSuperClass.js",
 	            "public class CompletionSuperClass{\n" +
 	            "	public class Inner {}\n" +
 	            "	public int eqFoo(int a,Object b){\n" +
@@ -10931,27 +10956,27 @@ public void testCompletionSuperType2() throws JavaModelException {
 	            "}");
 		
 		superClass2 = getWorkingCopy(
-	            "/Completion/src/CompletionSuperClass2.java",
+	            "/Completion/src/CompletionSuperClass2.js",
 	            "public class CompletionSuperClass2 {\n" +
 	            "	public class InnerClass {}\n" +
 	            "	public interface InnerInterface {}\n" +
 	            "}");
 		
 		superInterface = getWorkingCopy(
-	            "/Completion/src/CompletionSuperInterface.java",
+	            "/Completion/src/CompletionSuperInterface.js",
 	            "public interface CompletionSuperInterface{\n" +
 	            "	public int eqFoo(int a,Object b);\n" +
 	            "}");
 		
 		superInterface2 = getWorkingCopy(
-	            "/Completion/src/CompletionSuperInterface2.java",
+	            "/Completion/src/CompletionSuperInterface2.js",
 	            "public interface CompletionSuperInterface2 {\n" +
 	            "	public class InnerClass {}\n" +
 	            "	public interface InnerInterface {}\n" +
 	            "}");
 		
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionSuperType2.java",
+	            "/Completion/src/CompletionSuperType2.js",
 	            "public class CompletionSuperType2 extends CompletionSuper");
 	    
 	    
@@ -10987,7 +11012,7 @@ public void testCompletionSuperType3() throws JavaModelException {
 	ICompilationUnit superInterface2 = null;
 	try {
 		superClass = getWorkingCopy(
-	            "/Completion/src/CompletionSuperClass.java",
+	            "/Completion/src/CompletionSuperClass.js",
 	            "public class CompletionSuperClass{\n" +
 	            "	public class Inner {}\n" +
 	            "	public int eqFoo(int a,Object b){\n" +
@@ -10996,27 +11021,27 @@ public void testCompletionSuperType3() throws JavaModelException {
 	            "}");
 		
 		superClass2 = getWorkingCopy(
-	            "/Completion/src/CompletionSuperClass2.java",
+	            "/Completion/src/CompletionSuperClass2.js",
 	            "public class CompletionSuperClass2 {\n" +
 	            "	public class InnerClass {}\n" +
 	            "	public interface InnerInterface {}\n" +
 	            "}");
 		
 		superInterface = getWorkingCopy(
-	            "/Completion/src/CompletionSuperInterface.java",
+	            "/Completion/src/CompletionSuperInterface.js",
 	            "public interface CompletionSuperInterface{\n" +
 	            "	public int eqFoo(int a,Object b);\n" +
 	            "}");
 		
 		superInterface2 = getWorkingCopy(
-	            "/Completion/src/CompletionSuperInterface2.java",
+	            "/Completion/src/CompletionSuperInterface2.js",
 	            "public interface CompletionSuperInterface2 {\n" +
 	            "	public class InnerClass {}\n" +
 	            "	public interface InnerInterface {}\n" +
 	            "}");
 		
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionSuperType3.java",
+	            "/Completion/src/CompletionSuperType3.js",
 	            "public class CompletionSuperType3 implements CompletionSuper");
 	    
 	    
@@ -11049,14 +11074,14 @@ public void testCompletionSuperType4() throws JavaModelException {
 	ICompilationUnit superClass2 = null;
 	try {
 		superClass2 = getWorkingCopy(
-	            "/Completion/src/CompletionSuperClass2.java",
+	            "/Completion/src/CompletionSuperClass2.js",
 	            "public class CompletionSuperClass2 {\n" +
 	            "	public class InnerClass {}\n" +
 	            "	public interface InnerInterface {}\n" +
 	            "}");
 		
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionSuperType4.java",
+	            "/Completion/src/CompletionSuperType4.js",
 	            "public class CompletionSuperType4 extends CompletionSuperClass2.Inner");
 	    
 	    
@@ -11080,14 +11105,14 @@ public void testCompletionSuperType5() throws JavaModelException {
 	ICompilationUnit superInterface2 = null;
 	try {
 		superInterface2 = getWorkingCopy(
-	            "/Completion/src/CompletionSuperInterface2.java",
+	            "/Completion/src/CompletionSuperInterface2.js",
 	            "public interface CompletionSuperInterface2 {\n" +
 	            "	public class InnerClass {}\n" +
 	            "	public interface InnerInterface {}\n" +
 	            "}");
 		
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionSuperType5.java",
+	            "/Completion/src/CompletionSuperType5.js",
 	            "public class CompletionSuperType5 implements CompletionSuperInterface2.Inner");
 	    
 	    
@@ -11114,7 +11139,7 @@ public void testCompletionSuperType6() throws JavaModelException {
 	ICompilationUnit superInterface2 = null;
 	try {
 		superClass = getWorkingCopy(
-	            "/Completion/src/CompletionSuperClass.java",
+	            "/Completion/src/CompletionSuperClass.js",
 	            "public class CompletionSuperClass{\n" +
 	            "	public class Inner {}\n" +
 	            "	public int eqFoo(int a,Object b){\n" +
@@ -11123,27 +11148,27 @@ public void testCompletionSuperType6() throws JavaModelException {
 	            "}");
 		
 		superClass2 = getWorkingCopy(
-	            "/Completion/src/CompletionSuperClass2.java",
+	            "/Completion/src/CompletionSuperClass2.js",
 	            "public class CompletionSuperClass2 {\n" +
 	            "	public class InnerClass {}\n" +
 	            "	public interface InnerInterface {}\n" +
 	            "}");
 		
 		superInterface = getWorkingCopy(
-	            "/Completion/src/CompletionSuperInterface.java",
+	            "/Completion/src/CompletionSuperInterface.js",
 	            "public interface CompletionSuperInterface{\n" +
 	            "	public int eqFoo(int a,Object b);\n" +
 	            "}");
 		
 		superInterface2 = getWorkingCopy(
-	            "/Completion/src/CompletionSuperInterface2.java",
+	            "/Completion/src/CompletionSuperInterface2.js",
 	            "public interface CompletionSuperInterface2 {\n" +
 	            "	public class InnerClass {}\n" +
 	            "	public interface InnerInterface {}\n" +
 	            "}");
 		
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionSuperType6.java",
+	            "/Completion/src/CompletionSuperType6.js",
 	            "public interface CompletionSuperType6 extends CompletionSuper");
 	    
 	    
@@ -11176,14 +11201,14 @@ public void testCompletionSuperType7() throws JavaModelException {
 	ICompilationUnit superClass2 = null;
 	try {
 		superClass2 = getWorkingCopy(
-	            "/Completion/src/CompletionSuperClass2.java",
+	            "/Completion/src/CompletionSuperClass2.js",
 	            "public class CompletionSuperClass2 {\n" +
 	            "	public class InnerClass {}\n" +
 	            "	public interface InnerInterface {}\n" +
 	            "}");
 		
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionSuperType7.java",
+	            "/Completion/src/CompletionSuperType7.js",
 	            "public interface CompletionSuperType7 extends CompletionSuperClass2.Inner");
 	    
 	    
@@ -11207,14 +11232,14 @@ public void testCompletionSuperType8() throws JavaModelException {
 	ICompilationUnit superInterface2 = null;
 	try {
 		superInterface2 = getWorkingCopy(
-	            "/Completion/src/CompletionSuperInterface2.java",
+	            "/Completion/src/CompletionSuperInterface2.js",
 	            "public interface CompletionSuperInterface2 {\n" +
 	            "	public class InnerClass {}\n" +
 	            "	public interface InnerInterface {}\n" +
 	            "}");
 		
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionSuperType8.java",
+	            "/Completion/src/CompletionSuperType8.js",
 	            "public interface CompletionSuperType8 extends CompletionSuperInterface2.Inner");
 	    
 	    
@@ -11236,7 +11261,7 @@ public void testCompletionSuperType8() throws JavaModelException {
 }
 public void testCompletionThrowStatement() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionThrowStatement.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionThrowStatement.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Ex";
@@ -11249,7 +11274,7 @@ public void testCompletionThrowStatement() throws JavaModelException {
 }
 public void testCompletionToplevelType1() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "p3", "CompletionToplevelType1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src", "p3", "CompletionToplevelType1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "CompletionToplevelType1";
@@ -11262,7 +11287,7 @@ public void testCompletionToplevelType1() throws JavaModelException {
 }
 public void testCompletionType1() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionType1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionType1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "CT1";
@@ -11276,7 +11301,7 @@ public void testCompletionType1() throws JavaModelException {
 }
 public void testCompletionUnaryOperator1() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnaryOperator1.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnaryOperator1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "var";
@@ -11291,7 +11316,7 @@ public void testCompletionUnaryOperator1() throws JavaModelException {
 }
 public void testCompletionUnaryOperator2() throws JavaModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnaryOperator2.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnaryOperator2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "var";
@@ -11309,7 +11334,7 @@ public void testCompletionUnaryOperator2() throws JavaModelException {
  */
 public void testCompletionUnresolvedEnclosingType() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnresolvedEnclosingType.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnresolvedEnclosingType.js");
 
 	String str = cu.getSource();
 	String completeBehind = "new ZZZ(";
@@ -11321,7 +11346,7 @@ public void testCompletionUnresolvedEnclosingType() throws JavaModelException {
 }
 public void testCompletionUnresolvedFieldType() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnresolvedFieldType.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnresolvedFieldType.js");
 
 	String str = cu.getSource();
 	String completeBehind = "bar";
@@ -11334,7 +11359,7 @@ public void testCompletionUnresolvedFieldType() throws JavaModelException {
 }
 public void testCompletionUnresolvedParameterType() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnresolvedParameterType.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnresolvedParameterType.js");
 
 	String str = cu.getSource();
 	String completeBehind = "bar";
@@ -11347,7 +11372,7 @@ public void testCompletionUnresolvedParameterType() throws JavaModelException {
 }
 public void testCompletionUnresolvedReturnType() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnresolvedReturnType.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnresolvedReturnType.js");
 
 	String str = cu.getSource();
 	String completeBehind = "bar";
@@ -11360,7 +11385,7 @@ public void testCompletionUnresolvedReturnType() throws JavaModelException {
 }
 public void testCompletionVariableInitializerInInitializer1() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInInitializer1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInInitializer1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -11377,7 +11402,7 @@ public void testCompletionVariableInitializerInInitializer1() throws JavaModelEx
 }
 public void testCompletionVariableInitializerInInitializer2() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInInitializer2.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInInitializer2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -11394,7 +11419,7 @@ public void testCompletionVariableInitializerInInitializer2() throws JavaModelEx
 }
 public void testCompletionVariableInitializerInInitializer3() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInInitializer3.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInInitializer3.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Objec";
@@ -11407,7 +11432,7 @@ public void testCompletionVariableInitializerInInitializer3() throws JavaModelEx
 }
 public void testCompletionVariableInitializerInInitializer4() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInInitializer4.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInInitializer4.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Objec";
@@ -11420,7 +11445,7 @@ public void testCompletionVariableInitializerInInitializer4() throws JavaModelEx
 }
 public void testCompletionVariableInitializerInMethod1() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInMethod1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInMethod1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -11437,7 +11462,7 @@ public void testCompletionVariableInitializerInMethod1() throws JavaModelExcepti
 }
 public void testCompletionVariableInitializerInMethod2() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInMethod2.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInMethod2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -11454,7 +11479,7 @@ public void testCompletionVariableInitializerInMethod2() throws JavaModelExcepti
 }
 public void testCompletionVariableInitializerInMethod3() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInMethod3.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInMethod3.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Objec";
@@ -11467,7 +11492,7 @@ public void testCompletionVariableInitializerInMethod3() throws JavaModelExcepti
 }
 public void testCompletionVariableInitializerInMethod4() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInMethod4.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInMethod4.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Objec";
@@ -11483,7 +11508,7 @@ public void testCompletionVariableInitializerInMethod4() throws JavaModelExcepti
 */
 public void testCompletionVariableName1() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableName1.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableName1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "TEST_FOO_MyClass ";
@@ -11506,7 +11531,7 @@ public void testCompletionVariableName10() throws JavaModelException {
 
 	try {
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionVariableName10.java",
+	            "/Completion/src/CompletionVariableName10.js",
 	            "class FooBar {\n"+
 	            "}\n"+
 	            "public class CompletionVariableName10 {\n"+
@@ -11545,7 +11570,7 @@ public void testCompletionVariableName11() throws JavaModelException {
 
 	try {
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionVariableName11.java",
+	            "/Completion/src/CompletionVariableName11.js",
 	            "class FooBar {\n"+
 	            "}\n"+
 	            "public class CompletionVariableName11 {\n"+
@@ -11584,7 +11609,7 @@ public void testCompletionVariableName12() throws JavaModelException {
 
 	try {
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionVariableName12.java",
+	            "/Completion/src/CompletionVariableName12.js",
 	            "class FooBar {\n"+
 	            "}\n"+
 	            "public class CompletionVariableName12 {\n"+
@@ -11623,7 +11648,7 @@ public void testCompletionVariableName13() throws JavaModelException {
 
 	try {
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionVariableName13.java",
+	            "/Completion/src/CompletionVariableName13.js",
 	            "class FooBar {\n"+
 	            "}\n"+
 	            "public class CompletionVariableName13 {\n"+
@@ -11662,7 +11687,7 @@ public void testCompletionVariableName14() throws JavaModelException {
 
 	try {
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionVariableName14.java",
+	            "/Completion/src/CompletionVariableName14.js",
 	            "class FooBar {\n"+
 	            "}\n"+
 	            "public class CompletionVariableName14 {\n"+
@@ -11702,7 +11727,7 @@ public void testCompletionVariableName15() throws JavaModelException {
 
 	try {
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionVariableName15.java",
+	            "/Completion/src/CompletionVariableName15.js",
 	            "class FooBar {\n"+
 	            "}\n"+
 	            "public class CompletionVariableName15 {\n"+
@@ -11734,7 +11759,7 @@ public void testCompletionVariableName15() throws JavaModelException {
 public void testCompletionVariableName16() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-            "/Completion/src/test/Test.java",
+            "/Completion/src/test/Test.js",
             "package test;\n"+
             "public class Test {\n"+
             "	void foo(){\n"+
@@ -11758,7 +11783,7 @@ public void testCompletionVariableName16() throws JavaModelException {
 public void testCompletionVariableName17() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-            "/Completion/src/test/Test.java",
+            "/Completion/src/test/Test.js",
             "package test;\n"+
             "public class Test {\n"+
             "	void foo(){\n"+
@@ -11786,7 +11811,7 @@ public void testCompletionVariableName17() throws JavaModelException {
 public void testCompletionVariableName18() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-            "/Completion/src/test/Test.java",
+            "/Completion/src/test/Test.js",
             "package test;\n"+
             "public class Test {\n"+
             "	void foo(){\n"+
@@ -11810,7 +11835,7 @@ public void testCompletionVariableName18() throws JavaModelException {
 public void testCompletionVariableName19() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-            "/Completion/src/test/Test.java",
+            "/Completion/src/test/Test.js",
             "package test;\n"+
             "public class Test {\n"+
             "	void foo(){\n"+
@@ -11834,7 +11859,7 @@ public void testCompletionVariableName19() throws JavaModelException {
 */
 public void testCompletionVariableName2() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableName2.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableName2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Test_Bar_MyClass ";
@@ -11852,7 +11877,7 @@ public void testCompletionVariableName2() throws JavaModelException {
 public void testCompletionVariableName20() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-            "/Completion/src/test/Test.java",
+            "/Completion/src/test/Test.js",
             "package test;\n"+
             "public class Test {\n"+
             "	void foo(){\n"+
@@ -11886,7 +11911,7 @@ public void testCompletionVariableName20() throws JavaModelException {
 public void testCompletionVariableName21() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-            "/Completion/src/test/Test.java",
+            "/Completion/src/test/Test.js",
             "package test;\n"+
             "public class Test {\n"+
             "	void foo(){\n"+
@@ -11913,7 +11938,7 @@ public void testCompletionVariableName21() throws JavaModelException {
 public void testCompletionVariableName22() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-            "/Completion/src/test/Test.java",
+            "/Completion/src/test/Test.js",
             "package test;\n"+
             "public class Test {\n"+
             "	void foo(){\n"+
@@ -11943,7 +11968,7 @@ public void testCompletionVariableName22() throws JavaModelException {
 public void testCompletionVariableName23() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-            "/Completion/src/test/Test.java",
+            "/Completion/src/test/Test.js",
             "package test;\n"+
             "public class Test {\n"+
             "	void foo(){\n"+
@@ -11968,7 +11993,7 @@ public void testCompletionVariableName23() throws JavaModelException {
 public void testCompletionVariableName24() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-            "/Completion/src/test/Test.java",
+            "/Completion/src/test/Test.js",
             "package test;\n"+
             "public class Test {\n"+
             "	void foo(){\n"+
@@ -11993,7 +12018,7 @@ public void testCompletionVariableName24() throws JavaModelException {
 public void testCompletionVariableName25() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-            "/Completion/src/test/Test.java",
+            "/Completion/src/test/Test.js",
             "package test;\n"+
             "public class Test {\n"+
             "	void foo(){\n"+
@@ -12021,7 +12046,7 @@ public void testCompletionVariableName25() throws JavaModelException {
 public void testCompletionVariableName26() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-            "/Completion/src/test/Test.java",
+            "/Completion/src/test/Test.js",
             "package test;\n"+
             "public class Test {\n"+
             "	void foo(){\n"+
@@ -12050,7 +12075,7 @@ public void testCompletionVariableName26() throws JavaModelException {
 public void testCompletionVariableName27() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-            "/Completion/src/test/Test.java",
+            "/Completion/src/test/Test.js",
             "package test;\n"+
             "public class Test {\n"+
             "	void foo(){\n"+
@@ -12087,7 +12112,7 @@ public void testCompletionVariableName27() throws JavaModelException {
 public void testCompletionVariableName28() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-            "/Completion/src/test/Test.java",
+            "/Completion/src/test/Test.js",
             "package test;\n"+
             "public class Test {\n"+
             "	void foo(){\n"+
@@ -12113,7 +12138,7 @@ public void testCompletionVariableName28() throws JavaModelException {
 public void testCompletionVariableName29() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-            "/Completion/src/test/Test.java",
+            "/Completion/src/test/Test.js",
             "package test;\n"+
             "public class Test {\n"+
             "	void foo(){\n"+
@@ -12161,7 +12186,7 @@ public void testCompletionVariableName3() throws JavaModelException {
 
 	try {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableName3.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableName3.js");
 	
 		String str = cu.getSource();
 		String completeBehind = "OneName ";
@@ -12198,7 +12223,7 @@ public void testCompletionVariableName3() throws JavaModelException {
 public void testCompletionVariableName30() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-            "/Completion/src/test/Test.java",
+            "/Completion/src/test/Test.js",
             "package test;\n"+
             "public class Test {\n"+
             "	public Test(){\n"+
@@ -12222,7 +12247,7 @@ public void testCompletionVariableName30() throws JavaModelException {
 public void testCompletionVariableName31() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-            "/Completion/src/test/Test.java",
+            "/Completion/src/test/Test.js",
             "package test;\n"+
             "public class Test {\n"+
             "	{\n"+
@@ -12246,7 +12271,7 @@ public void testCompletionVariableName31() throws JavaModelException {
 public void testCompletionVariableName32() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-            "/Completion/src/test/Test.java",
+            "/Completion/src/test/Test.js",
             "package test;\n"+
             "public class Test {\n"+
             "	void bar(Object ) {\n"+
@@ -12269,7 +12294,7 @@ public void testCompletionVariableName32() throws JavaModelException {
 public void testCompletionVariableName33() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-            "/Completion/src/test/Test.java",
+            "/Completion/src/test/Test.js",
             "package test;\n"+
             "public class Test {\n"+
             "	void bar() {\n"+
@@ -12295,7 +12320,7 @@ public void testCompletionVariableName33() throws JavaModelException {
 public void testCompletionVariableName34() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-            "/Completion/src/test/Test.java",
+            "/Completion/src/test/Test.js",
             "package test;\n"+
             "public class Test {\n"+
             "	int vDefined;\n"+
@@ -12321,7 +12346,7 @@ public void testCompletionVariableName34() throws JavaModelException {
 public void testCompletionVariableName35() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-            "/Completion/src/test/Test.java",
+            "/Completion/src/test/Test.js",
             "package test;\n"+
             "public class Test {\n"+
             "	void bar() {\n"+
@@ -12331,7 +12356,7 @@ public void testCompletionVariableName35() throws JavaModelException {
             "}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-            "/Completion/src/test/Test2.java",
+            "/Completion/src/test/Test2.js",
             "package test;\n"+
             "public class Test2 {\n"+
             "}");
@@ -12348,7 +12373,7 @@ public void testCompletionVariableName35() throws JavaModelException {
 }
 public void testCompletionVariableName4() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionVariableName4.java",
+            "/Completion/src/CompletionVariableName4.js",
             "class FooBar {\n"+
             "}\n"+
             "public class CompletionVariableName4 {\n"+
@@ -12371,7 +12396,7 @@ public void testCompletionVariableName4() throws JavaModelException {
 }
 public void testCompletionVariableName5() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionVariableName5.java",
+            "/Completion/src/CompletionVariableName5.js",
             "class FooBar {\n"+
             "}\n"+
             "public class CompletionVariableName5 {\n"+
@@ -12394,7 +12419,7 @@ public void testCompletionVariableName5() throws JavaModelException {
 }
 public void testCompletionVariableName6() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionVariableName6.java",
+            "/Completion/src/CompletionVariableName6.js",
             "class FooBar {\n"+
             "}\n"+
             "public class CompletionVariableName6 {\n"+
@@ -12417,7 +12442,7 @@ public void testCompletionVariableName6() throws JavaModelException {
 }
 public void testCompletionVariableName7() throws JavaModelException {
 	this.wc = getWorkingCopy(
-            "/Completion/src/CompletionVariableName7.java",
+            "/Completion/src/CompletionVariableName7.js",
             "class FooBar {\n"+
             "}\n"+
             "public class CompletionVariableName7 {\n"+
@@ -12450,7 +12475,7 @@ public void testCompletionVariableName8() throws JavaModelException {
 
 	try {
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionVariableName8.java",
+	            "/Completion/src/CompletionVariableName8.js",
 	            "class FooBar {\n"+
 	            "}\n"+
 	            "public class CompletionVariableName8 {\n"+
@@ -12489,7 +12514,7 @@ public void testCompletionVariableName9() throws JavaModelException {
 
 	try {
 		this.wc = getWorkingCopy(
-	            "/Completion/src/CompletionVariableName9.java",
+	            "/Completion/src/CompletionVariableName9.js",
 	            "class FooBar {\n"+
 	            "}\n"+
 	            "public class CompletionVariableName9 {\n"+
@@ -12520,7 +12545,7 @@ public void testCompletionVariableName9() throws JavaModelException {
 public void testCompletionVariableNameOfArray1() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/CompletionVariableNameOfArray1.java",
+		"/Completion/src/CompletionVariableNameOfArray1.js",
 		"public class CompletionVariableNameOfArray1 {\n"+
 		"	Object[] ob\n"+
 		"}\n");
@@ -12538,7 +12563,7 @@ public void testCompletionVariableNameOfArray1() throws JavaModelException {
 public void testCompletionVariableNameOfArray2() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/CompletionVariableNameOfArray2.java",
+		"/Completion/src/CompletionVariableNameOfArray2.js",
 		"public class CompletionVariableNameOfArray2 {\n"+
 		"	Class[] cl\n"+
 		"}\n");
@@ -12556,7 +12581,7 @@ public void testCompletionVariableNameOfArray2() throws JavaModelException {
 public void testCompletionVariableNameOfArray3() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/CompletionVariableNameOfArray3.java",
+		"/Completion/src/CompletionVariableNameOfArray3.js",
 		"public class CompletionVariableNameOfArray3 {\n"+
 		"	Object[][] ob\n"+
 		"}\n");
@@ -12574,7 +12599,7 @@ public void testCompletionVariableNameOfArray3() throws JavaModelException {
 public void testCompletionVariableNameOfArray4() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/CompletionVariableNameOfArray4.java",
+		"/Completion/src/CompletionVariableNameOfArray4.js",
 		"public class CompletionVariableNameOfArray4 {\n"+
 		"	Objectz[] ob\n"+
 		"}\n");
@@ -12591,7 +12616,7 @@ public void testCompletionVariableNameOfArray4() throws JavaModelException {
 }
 public void testCompletionVariableNameUnresolvedType() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableNameUnresolvedType.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableNameUnresolvedType.js");
 
 	String str = cu.getSource();
 	String completeBehind = "ob";
@@ -12611,7 +12636,7 @@ public void testCompletionVisibilityCheckDisabled() throws JavaModelException {
 	JavaCore.setOptions(options);
 	
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVisibilityCheck.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVisibilityCheck.js");
 
 	String str = cu.getSource();
 	String completeBehind = "x.p";
@@ -12635,7 +12660,7 @@ public void testCompletionVisibilityCheckEnabled() throws JavaModelException {
 	JavaCore.setOptions(options);
 	
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVisibilityCheck.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVisibilityCheck.js");
 
 	String str = cu.getSource();
 	String completeBehind = "x.p";
@@ -12655,7 +12680,7 @@ public void testCompletionVisibilityCheckEnabled() throws JavaModelException {
 */
 public void testCompletionVoidMethod() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVoidMethod.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVoidMethod.js");
 
 	String str = cu.getSource();
 	String completeBehind = "foo";
@@ -12670,7 +12695,7 @@ public void testCompletionVoidMethod() throws JavaModelException {
 }
 public void testCompletionWithBinaryFolder() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionWithBinaryFolder.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionWithBinaryFolder.js");
 
 	String str = cu.getSource();
 	String completeBehind = "My";
@@ -12688,7 +12713,7 @@ public void testCompletionWithProblem1() throws JavaModelException {
 	ICompilationUnit aType = null;
 	try {
 		aType = getWorkingCopy(
-	            "/Completion/src/test/AType.java",
+	            "/Completion/src/test/AType.js",
 	            "package test;\n" +
 	            "public class AType{\n"+
 	            "  void foo(Unknown var) {\n"+
@@ -12696,7 +12721,7 @@ public void testCompletionWithProblem1() throws JavaModelException {
 	            "}");
 		
 	    this.wc = getWorkingCopy(
-	            "/Completion/src/test/Test.java",
+	            "/Completion/src/test/Test.js",
 	            "package test;\n" +
 	            "public class Test{\n"+
 	            "  void foo() {\n"+
@@ -12738,20 +12763,20 @@ public void testDeprecationCheck1() throws JavaModelException {
 	try {
 		this.workingCopies = new ICompilationUnit[3];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/deprecation/Test.java",
+			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
 			"public class Test {\n"+
 			"  ZZZTy\n"+
 			"}");
 		
 		this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/deprecation/ZZZType1.java",
+			"/Completion/src/deprecation/ZZZType1.js",
 			"package deprecation;"+
 			"public class ZZZType1 {\n"+
 			"}");
 		
 		this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src/deprecation/ZZZType2.java",
+			"/Completion/src/deprecation/ZZZType2.js",
 			"package deprecation;"+
 			"/** @deprecated */\n"+
 			"public class ZZZType2 {\n"+
@@ -12785,7 +12810,7 @@ public void testDeprecationCheck10() throws JavaModelException {
 
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/deprecation/Test.java",
+			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
 			"public class Test {\n"+
 			"  public void bar1(){}\n"+
@@ -12823,7 +12848,7 @@ public void testDeprecationCheck11() throws JavaModelException {
 
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/deprecation/Test.java",
+			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
 			"public class Test {\n"+
 			"  public int bar1;\n"+
@@ -12861,7 +12886,7 @@ public void testDeprecationCheck12() throws JavaModelException {
 
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/deprecation/Test.java",
+			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
 			"public class Test {\n"+
 			"  public int bar1;\n"+
@@ -12899,7 +12924,7 @@ public void testDeprecationCheck13() throws JavaModelException {
 
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/deprecation/Test.java",
+			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
 			"public class Test {\n"+
 			"  class Inner1 {}\n"+
@@ -12937,7 +12962,7 @@ public void testDeprecationCheck14() throws JavaModelException {
 
 		this.workingCopies = new ICompilationUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/deprecation/Test.java",
+			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
 			"public class Test {\n"+
 			"  class Inner1 {}\n"+
@@ -12975,7 +13000,7 @@ public void testDeprecationCheck15() throws JavaModelException {
 
 		this.workingCopies = new ICompilationUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/deprecation/Test.java",
+			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
 			"public class Test {\n"+
 			"  void foo() {"+
@@ -12984,7 +13009,7 @@ public void testDeprecationCheck15() throws JavaModelException {
 			"}");
 		
 		this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/deprecation/ZZZType1.java",
+			"/Completion/src/deprecation/ZZZType1.js",
 			"package deprecation;"+
 			"/** @deprecated */\n"+
 			"public class ZZZType1 {\n"+
@@ -13018,7 +13043,7 @@ public void testDeprecationCheck16() throws JavaModelException {
 
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/deprecation/Test.java",
+			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
 			"/** @deprecated */\n"+
 			"public class ZZZType1 {\n"+
@@ -13055,7 +13080,7 @@ public void testDeprecationCheck17() throws JavaModelException {
 
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/deprecation/Test.java",
+			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
 			"public class Test {\n"+
 			"  Bug127628Ty\n"+
@@ -13089,20 +13114,20 @@ public void testDeprecationCheck2() throws JavaModelException {
 	try {
 		this.workingCopies = new ICompilationUnit[3];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/deprecation/Test.java",
+			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
 			"public class Test {\n"+
 			"  ZZZTy\n"+
 			"}");
 		
 		this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/deprecation/ZZZType1.java",
+			"/Completion/src/deprecation/ZZZType1.js",
 			"package deprecation;"+
 			"public class ZZZType1 {\n"+
 			"}");
 		
 		this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src/deprecation/ZZZType2.java",
+			"/Completion/src/deprecation/ZZZType2.js",
 			"package deprecation;"+
 			"/** @deprecated */\n"+
 			"public class ZZZType2 {\n"+
@@ -13135,7 +13160,7 @@ public void testDeprecationCheck3() throws JavaModelException {
 	
 		this.workingCopies = new ICompilationUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/deprecation/Test.java",
+			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
 			"public class Test {\n"+
 			"  void foo() {"+
@@ -13144,7 +13169,7 @@ public void testDeprecationCheck3() throws JavaModelException {
 			"}");
 		
 		this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/deprecation/ZZZType1.java",
+			"/Completion/src/deprecation/ZZZType1.js",
 			"package deprecation;"+
 			"public class ZZZType1 {\n"+
 			"  public static void foo1(){}\n"+
@@ -13179,7 +13204,7 @@ public void testDeprecationCheck4() throws JavaModelException {
 
 		this.workingCopies = new ICompilationUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/deprecation/Test.java",
+			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
 			"public class Test {\n"+
 			"  void foo() {"+
@@ -13188,7 +13213,7 @@ public void testDeprecationCheck4() throws JavaModelException {
 			"}");
 		
 		this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/deprecation/ZZZType1.java",
+			"/Completion/src/deprecation/ZZZType1.js",
 			"package deprecation;"+
 			"public class ZZZType1 {\n"+
 			"  public static void foo1(){}\n"+
@@ -13222,14 +13247,14 @@ public void testDeprecationCheck5() throws JavaModelException {
 
 		this.workingCopies = new ICompilationUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/deprecation/Test.java",
+			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
 			"public class Test {\n"+
 			"  ZZZType1.Inn\n"+
 			"}");
 		
 		this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/deprecation/ZZZType1.java",
+			"/Completion/src/deprecation/ZZZType1.js",
 			"package deprecation;"+
 			"public class ZZZType1 {\n"+
 			"  public class Inner1 {}\n"+
@@ -13264,14 +13289,14 @@ public void testDeprecationCheck6() throws JavaModelException {
 
 		this.workingCopies = new ICompilationUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/deprecation/Test.java",
+			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
 			"public class Test {\n"+
 			"  ZZZType1.Inn\n"+
 			"}");
 		
 		this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/deprecation/ZZZType1.java",
+			"/Completion/src/deprecation/ZZZType1.js",
 			"package deprecation;"+
 			"public class ZZZType1 {\n"+
 			"  public class Inner1 {}\n"+
@@ -13305,7 +13330,7 @@ public void testDeprecationCheck7() throws JavaModelException {
 
 		this.workingCopies = new ICompilationUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/deprecation/Test.java",
+			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
 			"public class Test {\n"+
 			"  void foo() {"+
@@ -13314,7 +13339,7 @@ public void testDeprecationCheck7() throws JavaModelException {
 			"}");
 		
 		this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/deprecation/ZZZType1.java",
+			"/Completion/src/deprecation/ZZZType1.js",
 			"package deprecation;"+
 			"public class ZZZType1 {\n"+
 			"  public static int foo1;\n"+
@@ -13349,7 +13374,7 @@ public void testDeprecationCheck8() throws JavaModelException {
 
 		this.workingCopies = new ICompilationUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/deprecation/Test.java",
+			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
 			"public class Test {\n"+
 			"  void foo() {"+
@@ -13358,7 +13383,7 @@ public void testDeprecationCheck8() throws JavaModelException {
 			"}");
 		
 		this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/deprecation/ZZZType1.java",
+			"/Completion/src/deprecation/ZZZType1.js",
 			"package deprecation;"+
 			"public class ZZZType1 {\n"+
 			"  public static int foo1;\n"+
@@ -13392,7 +13417,7 @@ public void testDeprecationCheck9() throws JavaModelException {
 
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/deprecation/Test.java",
+			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
 			"public class Test {\n"+
 			"  public void bar1(){}\n"+
@@ -13422,7 +13447,7 @@ public void testDeprecationCheck9() throws JavaModelException {
 public void testDuplicateLocals1() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"	void foo() {\n" + 
@@ -13433,7 +13458,7 @@ public void testDuplicateLocals1() throws JavaModelException {
 		"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/TestString.java",
+		"/Completion/src/test/TestString.js",
 		"package test;"+
 		"public class TestString {\n" + 
 		"	public void bar() {\n" + 
@@ -13454,7 +13479,7 @@ public void testDuplicateLocals1() throws JavaModelException {
 public void testDuplicateLocals2() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"        public static void main(String[] args) {\n" + 
@@ -13469,7 +13494,7 @@ public void testDuplicateLocals2() throws JavaModelException {
 		"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/TestException.java",
+		"/Completion/src/test/TestException.js",
 		"package test;"+
 		"public class TestException extends Exception {\n" + 
 		"	public void bar() {\n" + 
@@ -13490,7 +13515,7 @@ public void testDuplicateLocals2() throws JavaModelException {
 public void testDuplicateLocals3() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"        public static void main(String[] args) {\n" + 
@@ -13502,7 +13527,7 @@ public void testDuplicateLocals3() throws JavaModelException {
 		"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/TestString.java",
+		"/Completion/src/test/TestString.js",
 		"package test;"+
 		"public class TestString {\n" + 
 		"	public void bar() {\n" + 
@@ -13523,7 +13548,7 @@ public void testDuplicateLocals3() throws JavaModelException {
 public void testDuplicateLocals4() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"        public static void main(String[] args) {\n" + 
@@ -13536,7 +13561,7 @@ public void testDuplicateLocals4() throws JavaModelException {
 		"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/TestString.java",
+		"/Completion/src/test/TestString.js",
 		"package test;"+
 		"public class TestString {\n" + 
 		"	public void bar() {\n" + 
@@ -13557,7 +13582,7 @@ public void testDuplicateLocals4() throws JavaModelException {
 public void testDuplicateLocals5() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"        public static void main(String[] args) {\n" + 
@@ -13570,7 +13595,7 @@ public void testDuplicateLocals5() throws JavaModelException {
 		"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/TestString.java",
+		"/Completion/src/test/TestString.js",
 		"package test;"+
 		"public class TestString {\n" + 
 		"	public void bar() {\n" + 
@@ -13591,7 +13616,7 @@ public void testDuplicateLocals5() throws JavaModelException {
 public void testDuplicateLocalsType1() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"  void foo() {\n" + 
@@ -13626,7 +13651,7 @@ public void testDuplicateLocalsType1() throws JavaModelException {
 public void testDuplicateLocalsType2() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"        void foo() {\n" + 
@@ -13718,7 +13743,7 @@ public void testEvaluationContextCompletion2() throws JavaModelException {
 public void testEvaluationContextCompletion3() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/TestEvaluationContextCompletion3.java",
+		"/Completion/src/test/TestEvaluationContextCompletion3.js",
 		"package test;"+
 		"public class TestEvaluationContextCompletion3 {\n"+
 		"}");
@@ -13750,7 +13775,7 @@ public void testEvaluationContextCompletion3() throws JavaModelException {
 public void testEvaluationContextCompletion4() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/TestEvaluationContextCompletion4.java",
+		"/Completion/src/test/TestEvaluationContextCompletion4.js",
 		"package test;"+
 		"public class TestEvaluationContextCompletion4 {\n"+
 		"}");
@@ -13783,7 +13808,7 @@ public void testEvaluationContextCompletion4() throws JavaModelException {
 public void testEvaluationContextCompletion5() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/TestEvaluationContextCompletion5.java",
+		"/Completion/src/test/TestEvaluationContextCompletion5.js",
 		"package test;"+
 		"public class TestEvaluationContextCompletion5 {\n"+
 		"}");
@@ -13817,7 +13842,7 @@ public void testEvaluationContextCompletion5() throws JavaModelException {
 public void testFavoriteImports001() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -13826,7 +13851,7 @@ public void testFavoriteImports001() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo;\n" +
@@ -13855,7 +13880,7 @@ public void testFavoriteImports001() throws JavaModelException {
 public void testFavoriteImports002() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -13864,7 +13889,7 @@ public void testFavoriteImports002() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -13893,7 +13918,7 @@ public void testFavoriteImports002() throws JavaModelException {
 public void testFavoriteImports003() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -13902,7 +13927,7 @@ public void testFavoriteImports003() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo;\n" +
@@ -13925,7 +13950,7 @@ public void testFavoriteImports003() throws JavaModelException {
 public void testFavoriteImports004() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -13934,7 +13959,7 @@ public void testFavoriteImports004() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -13957,7 +13982,7 @@ public void testFavoriteImports004() throws JavaModelException {
 public void testFavoriteImports005() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -13966,7 +13991,7 @@ public void testFavoriteImports005() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo;\n" +
@@ -13995,7 +14020,7 @@ public void testFavoriteImports005() throws JavaModelException {
 public void testFavoriteImports006() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -14004,7 +14029,7 @@ public void testFavoriteImports006() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -14033,7 +14058,7 @@ public void testFavoriteImports006() throws JavaModelException {
 public void testFavoriteImports007() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"import test.p.ZZZ.*;\n" +
 			"public class Test {\n" +
@@ -14043,7 +14068,7 @@ public void testFavoriteImports007() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -14072,7 +14097,7 @@ public void testFavoriteImports007() throws JavaModelException {
 public void testFavoriteImports009() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"import test.p.ZZZ.*;\n" +
 			"public class Test {\n" +
@@ -14082,7 +14107,7 @@ public void testFavoriteImports009() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -14111,7 +14136,7 @@ public void testFavoriteImports009() throws JavaModelException {
 public void testFavoriteImports011() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"import test.p.ZZZ.foo;\n" +
 			"public class Test {\n" +
@@ -14121,7 +14146,7 @@ public void testFavoriteImports011() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -14150,7 +14175,7 @@ public void testFavoriteImports011() throws JavaModelException {
 public void testFavoriteImports013() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"import test.p.ZZZ.foo;\n" +
 			"public class Test {\n" +
@@ -14160,7 +14185,7 @@ public void testFavoriteImports013() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -14189,7 +14214,7 @@ public void testFavoriteImports013() throws JavaModelException {
 public void testFavoriteImports016() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public class foo {\n" +
@@ -14200,7 +14225,7 @@ public void testFavoriteImports016() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -14230,7 +14255,7 @@ public void testFavoriteImports016() throws JavaModelException {
 public void testFavoriteImports017() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void foo() {\n" +
@@ -14239,7 +14264,7 @@ public void testFavoriteImports017() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -14264,7 +14289,7 @@ public void testFavoriteImports017() throws JavaModelException {
 public void testFavoriteImports018() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public int foo;\n" +
@@ -14274,7 +14299,7 @@ public void testFavoriteImports018() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -14304,7 +14329,7 @@ public void testFavoriteImports018() throws JavaModelException {
 public void testFavoriteImports019() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -14314,7 +14339,7 @@ public void testFavoriteImports019() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -14344,7 +14369,7 @@ public void testFavoriteImports019() throws JavaModelException {
 public void testFavoriteImports020() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -14353,7 +14378,7 @@ public void testFavoriteImports020() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -14385,7 +14410,7 @@ public void testFavoriteImports020() throws JavaModelException {
 public void testFavoriteImports022() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -14394,7 +14419,7 @@ public void testFavoriteImports022() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -14417,7 +14442,7 @@ public void testFavoriteImports022() throws JavaModelException {
 public void testFavoriteImports023() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"/** */\n" +
 			"public class Test {\n" +
@@ -14427,7 +14452,7 @@ public void testFavoriteImports023() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo;\n" +
@@ -14456,7 +14481,7 @@ public void testFavoriteImports023() throws JavaModelException {
 public void testFavoriteImports024() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -14465,7 +14490,7 @@ public void testFavoriteImports024() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public int foo;\n" +
@@ -14488,7 +14513,7 @@ public void testFavoriteImports024() throws JavaModelException {
 public void testFavoriteImports025() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -14497,7 +14522,7 @@ public void testFavoriteImports025() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public int foo;\n" +
@@ -14520,7 +14545,7 @@ public void testFavoriteImports025() throws JavaModelException {
 public void testFavoriteImports026() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -14529,7 +14554,7 @@ public void testFavoriteImports026() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public int foo(){return 0;};\n" +
@@ -14552,7 +14577,7 @@ public void testFavoriteImports026() throws JavaModelException {
 public void testFavoriteImports027() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -14561,7 +14586,7 @@ public void testFavoriteImports027() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public int foo(){return 0;};\n" +
@@ -14584,7 +14609,7 @@ public void testFavoriteImports027() throws JavaModelException {
 public void testFavoriteImports028() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"import test.p.ZZZ;\n" +
 			"public class Test {\n" +
@@ -14594,7 +14619,7 @@ public void testFavoriteImports028() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){return 0;};\n" +
@@ -14626,7 +14651,7 @@ public void testFavoriteImports030() throws JavaModelException {
 		
 		this.workingCopies = new ICompilationUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
-				"/Completion/src3/test/Test.java",
+				"/Completion/src3/test/Test.js",
 				"package test;\n" +
 				"public class Test {\n" +
 				"    public void method() {\n" +
@@ -14635,7 +14660,7 @@ public void testFavoriteImports030() throws JavaModelException {
 				"}");
 		
 		this.workingCopies[1] = getWorkingCopy(
-				"/Completion/src3/test/p/ZZZ.java",
+				"/Completion/src3/test/p/ZZZ.js",
 				"package test.p;\n" +
 				"public class ZZZ {\n" +
 				"    public static int foo(){}\n" +
@@ -14674,7 +14699,7 @@ public void testFavoriteImports031() throws JavaModelException {
 		
 		this.workingCopies = new ICompilationUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
-				"/Completion/src3/test/Test.java",
+				"/Completion/src3/test/Test.js",
 				"package test;\n" +
 				"public class Test {\n" +
 				"    public void method() {\n" +
@@ -14683,7 +14708,7 @@ public void testFavoriteImports031() throws JavaModelException {
 				"}");
 		
 		this.workingCopies[1] = getWorkingCopy(
-				"/Completion/src3/test/p/ZZZ.java",
+				"/Completion/src3/test/p/ZZZ.js",
 				"package test.p;\n" +
 				"public class ZZZ {\n" +
 				"    public static int foo(){}\n" +
@@ -14714,7 +14739,7 @@ public void testFavoriteImports031() throws JavaModelException {
 public void testInconsistentHierarchy1() throws CoreException, IOException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/p/Test.java",
+		"/Completion/src/p/Test.js",
 		"package p;"+
 		"public class Test extends Unknown {\n" + 
 		"  void foo() {\n" + 
@@ -14736,7 +14761,7 @@ public void testInconsistentHierarchy1() throws CoreException, IOException {
 public void testLabel1() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/label/Test.java",
+		"/Completion/src/label/Test.js",
 		"package label;"+
 		"public class Test {\n"+
 		"  void foo() {\n"+
@@ -14766,7 +14791,7 @@ public void testLabel1() throws JavaModelException {
 public void testLabel2() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/label/Test.java",
+		"/Completion/src/label/Test.js",
 		"package label;"+
 		"public class Test {\n"+
 		"  void foo() {\n"+
@@ -14797,7 +14822,7 @@ public void testLabel2() throws JavaModelException {
 public void testLabel3() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/label/Test.java",
+		"/Completion/src/label/Test.js",
 		"package label;"+
 		"public class Test {\n"+
 		"  void foo() {\n"+
@@ -14825,7 +14850,7 @@ public void testLabel3() throws JavaModelException {
 public void testLabel4() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/label/Test.java",
+		"/Completion/src/label/Test.js",
 		"package label;"+
 		"public class Test {\n"+
 		"  void foo() {\n"+
@@ -14854,7 +14879,7 @@ public void testLabel4() throws JavaModelException {
 public void testLabel5() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/label/Test.java",
+		"/Completion/src/label/Test.js",
 		"package label;"+
 		"public class Test {\n" + 
 		"  void foo() {\n" + 
@@ -14884,7 +14909,7 @@ public void testLabel5() throws JavaModelException {
 public void testLabel6() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/label/Test.java",
+		"/Completion/src/label/Test.js",
 		"package label;"+
 		"public class Test {\n" + 
 		"  void foo() {\n" + 
@@ -14921,7 +14946,7 @@ public void testParameterNames1() throws CoreException, IOException {
 	try {
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/p/Test.java",
+			"/Completion/src/p/Test.js",
 			"package p;"+
 			"public class Test {\n" + 
 			"  void foo(doctest.X x) {\n" + 
@@ -14959,7 +14984,7 @@ public void testParameterNames1() throws CoreException, IOException {
 public void testStaticMembers1() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"  void foo() {\n" + 
@@ -14968,7 +14993,7 @@ public void testStaticMembers1() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/StaticMembers.java",
+		"/Completion/src/test/StaticMembers.js",
 		"package test;"+
 		"public class StaticMembers extends SuperStaticMembers {\n" + 
 		"  public static int staticField;\n" + 
@@ -14978,7 +15003,7 @@ public void testStaticMembers1() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src/test/SuperStaticMembers.java",
+			"/Completion/src/test/SuperStaticMembers.js",
 			"package test;"+
 			"public class SuperStaticMembers {\n" + 
 			"  public static int superStaticField;\n" + 

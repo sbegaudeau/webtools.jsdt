@@ -61,7 +61,7 @@ public class ASTRewritingTrackingTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");		
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -128,7 +128,7 @@ public class ASTRewritingTrackingTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -200,7 +200,7 @@ public class ASTRewritingTrackingTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -277,7 +277,7 @@ public class ASTRewritingTrackingTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -349,7 +349,7 @@ public class ASTRewritingTrackingTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -417,7 +417,7 @@ public class ASTRewritingTrackingTest extends ASTRewritingTest {
 		buf.append("    public void foo(String s, int i) {\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -471,7 +471,7 @@ public class ASTRewritingTrackingTest extends ASTRewritingTest {
 		buf.append("        return s;\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();

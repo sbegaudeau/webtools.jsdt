@@ -255,7 +255,7 @@ public void testContainerInitializer04() throws CoreException {
 		simulateExitRestart();
 		
 		startDeltas();
-		createFile("/P2/X.java", "public class X {}");
+		createFile("/P2/X.js", "public class X {}");
 		
 		assertEquals("Should not get exception", null, initializer.exception);
 		
@@ -291,7 +291,7 @@ public void testContainerInitializer05() throws CoreException {
 		startDeltas();
 
 		// will trigger classpath resolution (with null container value)
-		createFile("/P1/X.java", "public class X {}");
+		createFile("/P1/X.js", "public class X {}");
 		assertDeltas(
 			"Unexpected delta on startup", 
 			"P1[*]: {CHILDREN}\n" + 
@@ -355,7 +355,7 @@ public void testContainerInitializer06() throws CoreException {
 		simulateExitRestart();
 		
 		startDeltas();
-		workingCopy = getCompilationUnit("/P2/src/X.java");
+		workingCopy = getCompilationUnit("/P2/src/X.js");
 		workingCopy.becomeWorkingCopy(null, null);
 		
 		assertDeltas(

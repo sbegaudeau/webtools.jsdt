@@ -92,7 +92,7 @@ public void test0001() throws Exception {
 		
 		this.createFolder("/P1/src/a");
 		this.createFile(
-				"/P1/src/a/XX.java",
+				"/P1/src/a/XX.js",
 				"package a;\n"+
 				"public class XX {\n"+
 				"  void foo() {}\n"+
@@ -100,7 +100,7 @@ public void test0001() throws Exception {
 
 		this.createFolder("/P1/src/b");
 		this.createFile(
-				"/P1/src/b/XX.java",
+				"/P1/src/b/XX.js",
 				"package b;\n"+
 				"public class XX {\n"+
 				"  void foo() {}\n"+
@@ -123,7 +123,7 @@ public void test0001() throws Exception {
 			null,
 			"1.4");
 		this.createFile(
-			"/P2/src/YY.java",
+			"/P2/src/YY.js",
 			"public class YY {\n"+
 			"  void foo() {\n"+
 			"    XX x = null;\n"+
@@ -136,7 +136,7 @@ public void test0001() throws Exception {
 		// do completion
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true, false, true, false, true);
 		requestor.allowAllRequiredProposals();
-		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.java");
+		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "x.fo";
@@ -186,7 +186,7 @@ public void test0002() throws Exception {
 		
 		this.createFolder("/P1/src/a");
 		this.createFile(
-				"/P1/src/a/XX.java",
+				"/P1/src/a/XX.js",
 				"package a;\n"+
 				"public class XX {\n"+
 				"  void foo() {}\n"+
@@ -194,7 +194,7 @@ public void test0002() throws Exception {
 
 		this.createFolder("/P1/src/b");
 		this.createFile(
-				"/P1/src/b/XX.java",
+				"/P1/src/b/XX.js",
 				"package b;\n"+
 				"public class XX {\n"+
 				"  void foo() {}\n"+
@@ -217,7 +217,7 @@ public void test0002() throws Exception {
 			null,
 			"1.4");
 		this.createFile(
-			"/P2/src/YY.java",
+			"/P2/src/YY.js",
 			"public class YY {\n"+
 			"  void foo() {\n"+
 			"    XX x = null;\n"+
@@ -230,7 +230,7 @@ public void test0002() throws Exception {
 		// do completion
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true, false, true, false, true);
 		requestor.allowAllRequiredProposals();
-		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.java");
+		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "x.fo";

@@ -56,11 +56,11 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test001() throws JavaModelException {
 		ITypeBinding[] bindings = createTypeBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"}",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y extends X {\n" +
 				"}",
@@ -78,7 +78,7 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test002() throws JavaModelException {
 		ITypeBinding[] bindings = createTypeBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"}",
@@ -95,11 +95,11 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test003() throws JavaModelException {
 		ITypeBinding[] bindings = createTypeBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"}",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y extends X {\n" +
 				"}",
@@ -117,11 +117,11 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test004() throws JavaModelException {
 		ITypeBinding[] bindings = createTypeBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"}",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y {\n" +
 				"}",
@@ -165,11 +165,11 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test007() throws JavaModelException {
 		ITypeBinding[] bindings = createTypeBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"}",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y extends X {\n" +
 				"}",
@@ -187,7 +187,7 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test008() throws JavaModelException {
 		ITypeBinding[] bindings = createTypeBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"}",
@@ -204,11 +204,11 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test009() throws JavaModelException {
 		ITypeBinding[] bindings = createTypeBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"}",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y extends X {\n" +
 				"}",
@@ -226,11 +226,11 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test010() throws JavaModelException {
 		ITypeBinding[] bindings = createTypeBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"}",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y {\n" +
 				"}",
@@ -280,11 +280,11 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test013() throws JavaModelException {
 		ITypeBinding[] bindings = createTypeBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"}",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y extends X {\n" +
 				"}",
@@ -302,7 +302,7 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test014() throws JavaModelException {
 		ITypeBinding[] bindings = createTypeBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"}",
@@ -319,11 +319,11 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test015() throws JavaModelException {
 		ITypeBinding[] bindings = createTypeBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"}",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y extends X {\n" +
 				"}",
@@ -341,11 +341,11 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test016() throws JavaModelException {
 		ITypeBinding[] bindings = createTypeBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"}",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y {\n" +
 				"}",
@@ -389,13 +389,13 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test019() throws JavaModelException {
 		IMethodBinding[] bindings = createMethodBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  void foo() {\n" +
 				"  }\n" +
 				"}",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y extends X {\n" +
 				"  void foo() {\n" +
@@ -415,13 +415,13 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test020() throws JavaModelException {
 		IMethodBinding[] bindings = createMethodBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  void foo() {\n" +
 				"  }\n" +
 				"}",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y extends X {\n" +
 				"  void foo() {\n" +
@@ -441,13 +441,13 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test021() throws JavaModelException {
 		IMethodBinding[] bindings = createMethodBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  void foo() {\n" +
 				"  }\n" +
 				"}",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y {\n" +
 				"  void foo() {\n" +
@@ -469,7 +469,7 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test022() throws JavaModelException {
 		ICompilationUnit workingCopy = null;
 		try {
-			workingCopy = getWorkingCopy("/P/p1/X.java", true/*compute problems to get bindings*/);
+			workingCopy = getWorkingCopy("/P/p1/X.js", true/*compute problems to get bindings*/);
 			ASTNode node = buildAST(
 				"package p1;\n" +
 				"public class X {\n" +
@@ -492,7 +492,7 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test023() throws JavaModelException {
 		ITypeBinding[] bindings = createTypeBindings(
 			new String[] {
-				"/P/java/lang/Integer.java",
+				"/P/java/lang/Integer.js",
 				"package java.lang;\n" +
 				"public class Integer {\n" +
 				"}",
@@ -523,7 +523,7 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test025() throws JavaModelException {
 		IMethodBinding[] bindings = createMethodBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  void foo() {\n" +
@@ -542,13 +542,13 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test026() throws JavaModelException {
 		IMethodBinding[] bindings = createMethodBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  String foo(Object o) {\n" +
 				"  }\n" +
 				"}",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y extends X {\n" +
 				"  String foo(Object o) {\n" +
@@ -568,19 +568,19 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test027() throws JavaModelException {
 		IMethodBinding[] bindings = createMethodBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X<T>  {\n" +
 				"  Z<T> foo(Z<T> o) {\n" +
 				"  }\n" +
 				"}",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y extends X {\n" +
 				"  Z foo(Z o) {\n" +
 				"  }\n" +
 				"}",
-				"/P/p1/Z.java",
+				"/P/p1/Z.js",
 				"package p1;\n" +
 				"public class Z<T> {\n" +
 				"}",
@@ -598,13 +598,13 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test028() throws JavaModelException {
 		IMethodBinding[] bindings = createMethodBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  void foo() {\n" +
 				"  }\n" +
 				"}",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y {\n" +
 				"  void bar() {\n" +
@@ -624,13 +624,13 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test029() throws JavaModelException {
 		IMethodBinding[] bindings = createMethodBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  void foo() {\n" +
 				"  }\n" +
 				"}",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y extends X {\n" +
 				"  void bar() {\n" +
@@ -651,13 +651,13 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test030() throws JavaModelException {
 		IMethodBinding[] bindings = createMethodBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X<T> {\n" +
 				"  void foo(T t) {\n" +
 				"  }\n" +
 				"}",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y extends X<String> {\n" +
 				"  void foo(String s) {\n" +
@@ -678,7 +678,7 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test031() throws JavaModelException {
 		IMethodBinding[] bindings = createMethodBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  void foo() {\n" +
@@ -706,13 +706,13 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 			IJavaProject project = createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, "", "1.4");
 			IMethodBinding[] bindings = createMethodBindings(
 				new String[] {
-					"/P/p1/X.java",
+					"/P/p1/X.js",
 					"package p1;\n" +
 					"public class X {\n" +
 					"  Object foo() {\n" +
 					"  }\n" +
 					"}",
-					"/P/p1/Y.java",
+					"/P/p1/Y.js",
 					"package p1;\n" +
 					"public class Y extends X {\n" +
 					"  String foo() {\n" +
@@ -737,13 +737,13 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test033() throws JavaModelException {
 		IMethodBinding[] bindings = createMethodBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  private void foo() {\n" +
 				"  }\n" +
 				"}",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y extends X {\n" +
 				"  void foo() {\n" +
@@ -764,13 +764,13 @@ public class CompatibilityRulesTests extends AbstractASTTests {
 	public void test034() throws JavaModelException {
 		IMethodBinding[] bindings = createMethodBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  void foo() {\n" +
 				"  }\n" +
 				"}",
-				"/P/p2/Y.java",
+				"/P/p2/Y.js",
 				"package p2;\n" +
 				"public class Y extends p1.X {\n" +
 				"  void foo() {\n" +

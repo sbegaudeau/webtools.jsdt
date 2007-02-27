@@ -51,7 +51,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 	public void testAnonymousType1() throws CoreException {
 		try {
 			createFile(
-				"/P/X.java",
+				"/P/X.js",
 				"public class X {\n" +
 				"  void foo() {\n" +
 				"    run(new X() {\n" +
@@ -61,7 +61,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"  }\n" +
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.java");
+			ICompilationUnit cu = getCompilationUnit("/P/X.js");
 			assertElementDescendants(
 				"Unexpected compilation unit contents",
 				"X.java\n" + 
@@ -71,7 +71,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"    void run(X)",
 				cu);
 		} finally {
-			deleteFile("/P/X.java");
+			deleteFile("/P/X.js");
 		}
 	}
 
@@ -81,7 +81,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 	public void testAnonymousType2() throws CoreException {
 		try {
 			createFile(
-				"/P/X.java",
+				"/P/X.js",
 				"public class X {\n" +
 				"  public class Y {\n" +
 				"  }\n" +
@@ -95,7 +95,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"  }\n" +
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.java");
+			ICompilationUnit cu = getCompilationUnit("/P/X.js");
 			assertElementDescendants(
 				"Unexpected compilation unit contents",
 				"X.java\n" + 
@@ -107,7 +107,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"    void run(X)",
 				cu);
 		} finally {
-			deleteFile("/P/X.java");
+			deleteFile("/P/X.js");
 		}
 	}
 
@@ -117,7 +117,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 	public void testAnonymousType3() throws CoreException {
 		try {
 			createFile(
-				"/P/X.java",
+				"/P/X.js",
 				"public class X {\n" +
 				"  void foo() {\n" +
 				"    run(new X() {\n" +
@@ -131,7 +131,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"  }\n" +
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.java");
+			ICompilationUnit cu = getCompilationUnit("/P/X.js");
 			assertElementDescendants(
 				"Unexpected compilation unit contents",
 				"X.java\n" + 
@@ -143,7 +143,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"    void run(X)",
 				cu);
 		} finally {
-			deleteFile("/P/X.java");
+			deleteFile("/P/X.js");
 		}
 	}
 
@@ -153,7 +153,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 	public void testAnonymousType4() throws CoreException {
 		try {
 			createFile(
-				"/P/X.java",
+				"/P/X.js",
 				"public class X {\n" +
 				"  {\n" +
 				"      field = new Vector() {\n" +
@@ -169,7 +169,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"  }\n" +
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.java");
+			ICompilationUnit cu = getCompilationUnit("/P/X.js");
 			assertElementDescendants(
 				"Unexpected compilation unit contents",
 				"X.java\n" + 
@@ -183,7 +183,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"    void run(X)",
 				cu);
 		} finally {
-			deleteFile("/P/X.java");
+			deleteFile("/P/X.js");
 		}
 	}
 	
@@ -194,7 +194,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 	public void testAnonymousType5() throws CoreException {
 		try {
 			createFile(
-				"/P/X.java",
+				"/P/X.js",
 				"public class X {\n" +
 				"  X(Object o) {\n" +
 				"  }\n" +
@@ -205,7 +205,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"  }\n" +
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.java");
+			ICompilationUnit cu = getCompilationUnit("/P/X.js");
 			assertElementDescendants(
 				"Unexpected compilation unit contents",
 				"X.java\n" + 
@@ -216,7 +216,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"      class <anonymous #1>",
 				cu);
 		} finally {
-			deleteFile("/P/X.java");
+			deleteFile("/P/X.js");
 		}
 	}
 	
@@ -228,12 +228,12 @@ public class LocalElementTests extends ModifyingResourceTests {
 		try {
 			createJavaProject("P15", new String[] {""}, new String[] {"JCL15_LIB"}, "", "1.5");
 			createFile(
-				"/P15/En.java",
+				"/P15/En.js",
 				"public enum En {\n" +
 				"  CONST() {};\n" +
 				"}"
 			);
-			IType type = getCompilationUnit("/P15/En.java").getType("En").getField("CONST").getType("", 1);
+			IType type = getCompilationUnit("/P15/En.js").getType("En").getField("CONST").getType("", 1);
 			assertTrue("Should be a local type", type.isLocal());
 		} finally {
 			deleteProject("P15");
@@ -247,7 +247,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 	public void testAnonymousType7() throws CoreException {
 		try {
 			createFile(
-				"/P/X.java",
+				"/P/X.js",
 				"public class X {\n" + 
 				"	class Y {\n" + 
 				"	}\n" + 
@@ -263,7 +263,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"	}\n" + 
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.java");
+			ICompilationUnit cu = getCompilationUnit("/P/X.js");
 			assertElementDescendants(
 				"Unexpected compilation unit contents",
 				"X.java\n" + 
@@ -276,7 +276,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"          class <anonymous #1>",
 				cu);
 		} finally {
-			deleteFile("/P/X.java");
+			deleteFile("/P/X.js");
 		}
 	}
 	
@@ -286,7 +286,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 	public void testGetSuperclassName() throws CoreException {
 		try {
 			createFile(
-				"/P/X.java",
+				"/P/X.js",
 				"public class X {\n" +
 				"  void foo() {\n" +
 				"    run(new X() {\n" +
@@ -296,14 +296,14 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"  }\n" +
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.java");
+			ICompilationUnit cu = getCompilationUnit("/P/X.js");
 			IType type = cu.getType("X").getMethod("foo", new String[0]).getType("", 1);
 			assertEquals(
 				"Unexpected superclass name",
 				"X",
 				type.getSuperclassName());
 		} finally {
-			deleteFile("/P/X.java");
+			deleteFile("/P/X.js");
 		}
 	}
 
@@ -311,7 +311,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 	 * IMember.getType(...) test
 	 */
 	public void testGetType() {
-		ICompilationUnit cu = getCompilationUnit("P/X.java");
+		ICompilationUnit cu = getCompilationUnit("P/X.js");
 		IType topLevelType = cu.getType("X");
 		IJavaElement[] types = new IJavaElement[5];
 		types[0] = topLevelType.getInitializer(1).getType("", 1);
@@ -335,7 +335,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 	public void testLocalType1() throws CoreException {
 		try {
 			createFile(
-				"/P/X.java",
+				"/P/X.js",
 				"public class X {\n" +
 				"  void foo() {\n" +
 				"    class Y {\n" +
@@ -343,7 +343,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"  }\n" +
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.java");
+			ICompilationUnit cu = getCompilationUnit("/P/X.js");
 			assertElementDescendants(
 				"Unexpected compilation unit contents",
 				"X.java\n" + 
@@ -352,7 +352,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"      class Y",
 				cu);
 		} finally {
-			deleteFile("/P/X.java");
+			deleteFile("/P/X.js");
 		}
 	}
 
@@ -362,7 +362,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 	public void testLocalType2() throws CoreException {
 		try {
 			createFile(
-				"/P/X.java",
+				"/P/X.js",
 				"public class X {\n" +
 				"  void foo() {\n" +
 				"    class Y {\n" +
@@ -372,7 +372,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"  }\n" +
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.java");
+			ICompilationUnit cu = getCompilationUnit("/P/X.js");
 			assertElementDescendants(
 				"Unexpected compilation unit contents",
 				"X.java\n" + 
@@ -382,7 +382,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"      class Z", 
 				cu);
 		} finally {
-			deleteFile("/P/X.java");
+			deleteFile("/P/X.js");
 		}
 	}
 
@@ -392,7 +392,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 	public void testLocalType3() throws CoreException {
 		try {
 			createFile(
-				"/P/X.java",
+				"/P/X.js",
 				"public class X {\n" +
 				"  void foo() {\n" +
 				"    class Y {\n" +
@@ -404,7 +404,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"  }\n" +
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.java");
+			ICompilationUnit cu = getCompilationUnit("/P/X.js");
 			assertElementDescendants(
 				"Unexpected compilation unit contents",
 				"X.java\n" + 
@@ -415,7 +415,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"          class Z",
 				cu);
 		} finally {
-			deleteFile("/P/X.java");
+			deleteFile("/P/X.js");
 		}
 	}
 
@@ -425,7 +425,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 	public void testLocalType4() throws CoreException {
 		try {
 			createFile(
-				"/P/X.java",
+				"/P/X.js",
 				"public class X {\n" +
 				"  {\n" +
 				"      class Y {\n" +
@@ -437,7 +437,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"  }\n" +
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.java");
+			ICompilationUnit cu = getCompilationUnit("/P/X.js");
 			assertElementDescendants(
 				"Unexpected compilation unit contents",
 				"X.java\n" + 
@@ -448,7 +448,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"      class Z",
 				cu);
 		} finally {
-			deleteFile("/P/X.java");
+			deleteFile("/P/X.js");
 		}
 	}
 	
@@ -458,7 +458,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 	public void testLocalType5() throws CoreException {
 		try {
 			createFile(
-				"/P/X.java",
+				"/P/X.js",
 				"public class X {\n" +
 				"  void foo() {\n" +
 				"    class Z {\n" +
@@ -467,7 +467,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"  }\n" +
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.java");
+			ICompilationUnit cu = getCompilationUnit("/P/X.js");
 			assertElementDescendants(
 				"Unexpected compilation unit contents",
 				"X.java\n" + 
@@ -476,7 +476,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"      class Z",
 				cu);
 		} finally {
-			deleteFile("/P/X.java");
+			deleteFile("/P/X.js");
 		}
 	}
     
@@ -484,7 +484,7 @@ public class LocalElementTests extends ModifyingResourceTests {
     public void _testLocalType6() throws CoreException {
         try {
             createFile(
-                "/P/X.java",
+                "/P/X.js",
                 "public class X {\n" +
                 "  void foo() {\n" +
                 "    class Y {\n" +
@@ -496,7 +496,7 @@ public class LocalElementTests extends ModifyingResourceTests {
                 "  }\n" +
                 "}"
             );
-            ICompilationUnit cu = getCompilationUnit("/P/X.java");
+            ICompilationUnit cu = getCompilationUnit("/P/X.js");
             assertElementDescendants(
                 "Unexpected compilation unit contents",
                 "X.java\n" + 
@@ -507,7 +507,7 @@ public class LocalElementTests extends ModifyingResourceTests {
                 "          class Z",
                 cu);
         } finally {
-            deleteFile("/P/X.java");
+            deleteFile("/P/X.js");
         }
     }    
 
@@ -515,7 +515,7 @@ public class LocalElementTests extends ModifyingResourceTests {
     public void _testLocalType7() throws CoreException {
         try {
             createFile(
-                "/P/X.java",
+                "/P/X.js",
                 "public class X {\n" +
                 "  void foo() {\n" +
                 "    class Y {\n" +
@@ -528,7 +528,7 @@ public class LocalElementTests extends ModifyingResourceTests {
                 "  }\n" +
                 "}"
             );
-            ICompilationUnit cu = getCompilationUnit("/P/X.java");
+            ICompilationUnit cu = getCompilationUnit("/P/X.js");
             assertElementDescendants(
                 "Unexpected compilation unit contents",
                 "X.java\n" + 
@@ -540,7 +540,7 @@ public class LocalElementTests extends ModifyingResourceTests {
                 "        String s", 
                 cu);
         } finally {
-            deleteFile("/P/X.java");
+            deleteFile("/P/X.js");
         }
     }         
     
@@ -548,7 +548,7 @@ public class LocalElementTests extends ModifyingResourceTests {
     public void _testLocalType8() throws CoreException {
         try {
             createFile(
-                "/P/X.java",
+                "/P/X.js",
                 "public class X {\n" +
                 "  void foo() {\n" +
                 "    class Y {\n" +
@@ -561,7 +561,7 @@ public class LocalElementTests extends ModifyingResourceTests {
                 "  }\n" +
                 "}"
             );
-            ICompilationUnit cu = getCompilationUnit("/P/X.java");
+            ICompilationUnit cu = getCompilationUnit("/P/X.js");
             assertElementDescendants(
                 "Unexpected compilation unit contents",
                 "X.java\n" + 
@@ -573,7 +573,7 @@ public class LocalElementTests extends ModifyingResourceTests {
                 "          class Z",
                 cu);
         } finally {
-            deleteFile("/P/X.java");
+            deleteFile("/P/X.js");
         }
     }      
     

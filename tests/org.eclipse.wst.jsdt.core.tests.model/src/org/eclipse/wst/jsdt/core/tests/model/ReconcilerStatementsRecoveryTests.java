@@ -15,11 +15,11 @@ import junit.framework.Test;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.wst.jsdt.core.*;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IndexManager;
+import org.eclipse.wst.jsdt.core.*;
 
 public class ReconcilerStatementsRecoveryTests extends ModifyingResourceTests {
 	
@@ -121,7 +121,7 @@ protected void removeClasspathEntries(IClasspathEntry[] entries) throws JavaMode
 public void setUp() throws Exception {
 	super.setUp();
 	this.problemRequestor =  new ProblemRequestor();
-	this.workingCopy = getCompilationUnit("Reconciler/src/p1/X.java").getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
+	this.workingCopy = getCompilationUnit("Reconciler/src/p1/X.js").getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
 	this.problemRequestor.initialize(this.workingCopy.getSource().toCharArray());
 	startDeltas();
 }
@@ -133,12 +133,8 @@ public void setUpSuite() throws Exception {
 	createFolder("/Reconciler/src/p1");
 	createFolder("/Reconciler/src/p2");
 	createFile(
-		"/Reconciler/src/p1/X.java", 
-		"package p1;\n" +
-		"import p2.*;\n" +
-		"public class X {\n" +
-		"  public void foo() {\n" +
-		"  }\n" +
+		"/Reconciler/src/p1/X.js", 
+		"  function foo() {\n" +
 		"}"
 	);
 	project14.setOption(JavaCore.COMPILER_PB_UNUSED_LOCAL, JavaCore.IGNORE);
@@ -151,27 +147,27 @@ public void setUpSuite() throws Exception {
 		"lib15.jar", 
 		"lib15src.zip", 
 		new String[] {
-			"java/util/List.java",
+			"java/util/List.js",
 			"package java.util;\n" +
 			"public class List<T> {\n" +
 			"}",
-			"java/util/Stack.java",
+			"java/util/Stack.js",
 			"package java.util;\n" +
 			"public class Stack<T> {\n" +
 			"}",
-			"java/util/Map.java",
+			"java/util/Map.js",
 			"package java.util;\n" +
 			"public interface Map<K,V> {\n" +
 			"}",
-			"java/lang/annotation/Annotation.java",
+			"java/lang/annotation/Annotation.js",
 			"package java.lang.annotation;\n" +
 			"public interface Annotation {\n" +
 			"}",
-			"java/lang/Deprecated.java",
+			"java/lang/Deprecated.js",
 			"package java.lang;\n" +
 			"public @interface Deprecated {\n" +
 			"}",
-			"java/lang/SuppressWarnings.java",
+			"java/lang/SuppressWarnings.js",
 			"package java.lang;\n" +
 			"public @interface SuppressWarnings {\n" +
 			"   String[] value();\n" +
@@ -182,7 +178,7 @@ public void setUpSuite() throws Exception {
 	project15.setOption(JavaCore.COMPILER_PB_UNUSED_LOCAL, JavaCore.IGNORE);
 }
 //private void setUp15WorkingCopy() throws JavaModelException {
-//	setUp15WorkingCopy("Reconciler15/src/p1/X.java", new WorkingCopyOwner() {});
+//	setUp15WorkingCopy("Reconciler15/src/p1/X.js", new WorkingCopyOwner() {});
 //}
 //private void setUp15WorkingCopy(String path, WorkingCopyOwner owner) throws JavaModelException {
 //	String contents = this.workingCopy.getSource();
@@ -233,12 +229,12 @@ public void testStatementsRecovery01() throws CoreException {
 	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, false, null, null);
 	assertDeltas(
 		"Unexpected delta after syntax error", 
-		"[Working copy] X.java[*]: {CONTENT | FINE GRAINED}"
+		"[Working copy] X.js[*]: {CONTENT | FINE GRAINED}"
 	);
 	assertProblems(
 		"Unexpected problems",
 		"----------\n" + 
-		"1. ERROR in /Reconciler/src/p1/X.java (at line 5)\n" + 
+		"1. ERROR in /Reconciler/src/p1/X.js (at line 5)\n" + 
 		"	UnknownType name\n" + 
 		"	            ^^^^\n" + 
 		"Syntax error, insert \";\" to complete BlockStatements\n" + 
@@ -263,12 +259,12 @@ public void testStatementsRecovery02() throws CoreException {
 	this.workingCopy.reconcile(AST.JLS3, false, false, null, null);
 	assertDeltas(
 		"Unexpected delta after syntax error", 
-		"[Working copy] X.java[*]: {CONTENT | FINE GRAINED | AST AFFECTED}"
+		"[Working copy] X.js[*]: {CONTENT | FINE GRAINED | AST AFFECTED}"
 	);
 	assertProblems(
 		"Unexpected problems",
 		"----------\n" + 
-		"1. ERROR in /Reconciler/src/p1/X.java (at line 5)\n" + 
+		"1. ERROR in /Reconciler/src/p1/X.js (at line 5)\n" + 
 		"	UnknownType name\n" + 
 		"	            ^^^^\n" + 
 		"Syntax error, insert \";\" to complete BlockStatements\n" + 
@@ -293,17 +289,17 @@ public void testStatementsRecovery03() throws CoreException {
 	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, true, null, null);
 	assertDeltas(
 		"Unexpected delta after syntax error", 
-		"[Working copy] X.java[*]: {CONTENT | FINE GRAINED}"
+		"[Working copy] X.js[*]: {CONTENT | FINE GRAINED}"
 	);
 	assertProblems(
 		"Unexpected problems",
 		"----------\n" + 
-		"1. ERROR in /Reconciler/src/p1/X.java (at line 5)\n" + 
+		"1. ERROR in /Reconciler/src/p1/X.js (at line 5)\n" + 
 		"	UnknownType name\n" + 
 		"	^^^^^^^^^^^\n" + 
 		"UnknownType cannot be resolved to a type\n" + 
 		"----------\n" + 
-		"2. ERROR in /Reconciler/src/p1/X.java (at line 5)\n" + 
+		"2. ERROR in /Reconciler/src/p1/X.js (at line 5)\n" + 
 		"	UnknownType name\n" + 
 		"	            ^^^^\n" + 
 		"Syntax error, insert \";\" to complete BlockStatements\n" + 
@@ -328,17 +324,17 @@ public void testStatementsRecovery04() throws CoreException {
 	this.workingCopy.reconcile(AST.JLS3, false, true, null, null);
 	assertDeltas(
 		"Unexpected delta after syntax error", 
-		"[Working copy] X.java[*]: {CONTENT | FINE GRAINED | AST AFFECTED}"
+		"[Working copy] X.js[*]: {CONTENT | FINE GRAINED | AST AFFECTED}"
 	);
 	assertProblems(
 		"Unexpected problems",
 		"----------\n" + 
-		"1. ERROR in /Reconciler/src/p1/X.java (at line 5)\n" + 
+		"1. ERROR in /Reconciler/src/p1/X.js (at line 5)\n" + 
 		"	UnknownType name\n" + 
 		"	^^^^^^^^^^^\n" + 
 		"UnknownType cannot be resolved to a type\n" + 
 		"----------\n" + 
-		"2. ERROR in /Reconciler/src/p1/X.java (at line 5)\n" + 
+		"2. ERROR in /Reconciler/src/p1/X.js (at line 5)\n" + 
 		"	UnknownType name\n" + 
 		"	            ^^^^\n" + 
 		"Syntax error, insert \";\" to complete BlockStatements\n" + 

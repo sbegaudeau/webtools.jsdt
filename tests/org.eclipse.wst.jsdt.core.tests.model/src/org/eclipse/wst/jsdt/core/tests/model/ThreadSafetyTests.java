@@ -77,8 +77,8 @@ public void testDeadlock01() throws CoreException {
 								System.out.println(Thread.currentThread() + " got workspace lock");
 								step1.release();
 								step2.acquire(); // ensure the java model lock is taken
-								ThreadSafetyTests.this.createFile("/P/X.java", "public class X {}");
-								System.out.println(Thread.currentThread() + " created file X.java");
+								ThreadSafetyTests.this.createFile("/P/X.js", "public class X {}");
+								System.out.println(Thread.currentThread() + " created file X.js");
 							}
 						}, null);
 					} catch (CoreException e) {

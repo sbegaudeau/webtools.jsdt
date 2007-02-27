@@ -217,19 +217,19 @@ public void tearDown() throws Exception {
 public void testCopyCU() throws CoreException {
 	this.createFolder("/P/src/p1");
 	this.createFile(
-		"/P/src/p1/X.java",
+		"/P/src/p1/X.js",
 		"package p1;\n" +
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	this.createFolder("/P/src/p2");
 	IPackageFragment pkgDest = getPackage("/P/src/p2");
 
 	copyPositive(cuSource, pkgDest, null, null, false);
 	
-	ICompilationUnit cu= pkgDest.getCompilationUnit("X.java");
+	ICompilationUnit cu= pkgDest.getCompilationUnit("X.js");
 	assertTrue("Package declaration not updated for copied cu", cu.getPackageDeclaration("p2").exists());
 }
 /**
@@ -239,18 +239,18 @@ public void testCopyCU() throws CoreException {
 public void testCopyCUAndType() throws CoreException {
 	this.createFolder("/P/src/p1");
 	this.createFile(
-		"/P/src/p1/X.java",
+		"/P/src/p1/X.js",
 		"package p1;\n" +
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	copyNegative(
 		new IJavaElement[]{cuSource, cuSource.getType("X")}, 
 		new IJavaElement[]{cuSource.getParent(), cuSource}, 
 		null, 
-		new String[]{"Y.java", "Y"}, 
+		new String[]{"Y.js", "Y"}, 
 		false, 
 		IJavaModelStatusConstants.INVALID_ELEMENT_TYPES);
 }
@@ -260,16 +260,16 @@ public void testCopyCUAndType() throws CoreException {
 public void testCopyCUForce() throws CoreException {
 	this.createFolder("/P/src/p1");
 	this.createFile(
-		"/P/src/p1/X.java",
+		"/P/src/p1/X.js",
 		"package p1;\n" +
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	this.createFolder("/P/src/p2");
 	this.createFile(
-		"/P/src/p2/X.java",
+		"/P/src/p2/X.js",
 		"package p2;\n" +
 		"public class X {\n" +
 		"}"
@@ -283,18 +283,18 @@ public void testCopyCUForce() throws CoreException {
  */
 public void testCopyCUFromDefaultToNonDefault() throws CoreException {
 	createFile(
-		"/P/src/X.java",
+		"/P/src/X.js",
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/X.java");
+	ICompilationUnit cuSource = getCompilationUnit("/P/src/X.js");
 
 	createFolder("/P/src/p");
 	IPackageFragment pkgDest = getPackage("/P/src/p");
 
 	copyPositive(cuSource, pkgDest, null, null, false);
 	
-	ICompilationUnit cu= pkgDest.getCompilationUnit("X.java");
+	ICompilationUnit cu= pkgDest.getCompilationUnit("X.js");
 	assertTrue("Package declaration not updated for copied cu", cu.getPackageDeclaration("p").exists());
 }
 /**
@@ -304,17 +304,17 @@ public void testCopyCUFromDefaultToNonDefault() throws CoreException {
 public void testCopyCURename() throws CoreException {
 	this.createFolder("/P/src/p1");
 	this.createFile(
-		"/P/src/p1/X.java",
+		"/P/src/p1/X.js",
 		"package p1;\n" +
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	this.createFolder("/P/src/p2");
 	IPackageFragment pkgDest = getPackage("/P/src/p2");
 
-	copyPositive(cuSource, pkgDest, null, "Y.java", false);
+	copyPositive(cuSource, pkgDest, null, "Y.js", false);
 }
 /**
  * Ensures that a read-only CU can be copied to a different package.
@@ -329,20 +329,20 @@ public void testCopyCUReadOnly() throws CoreException {
 	try {
 		this.createFolder("/P/src/p1");
 		file = this.createFile(
-			"/P/src/p1/X.java",
+			"/P/src/p1/X.js",
 			"package p1;\n" +
 			"public class X {\n" +
 			"}"
 		);
 		Util.setReadOnly(file, true);
-		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 	
 		this.createFolder("/P/src/p2");
 		IPackageFragment pkgDest = getPackage("/P/src/p2");
 	
 		copyPositive(cuSource, pkgDest, null, null, false);
 		
-		file2 = getFile("/P/src/p2/X.java");
+		file2 = getFile("/P/src/p2/X.js");
 		assertTrue("Destination cu should be read-only", file2.isReadOnly());
 	} finally {
 		if (file != null) {
@@ -362,23 +362,23 @@ public void testCopyCUReadOnly() throws CoreException {
 public void testCopyCURenameForce() throws CoreException {
 	this.createFolder("/P/src/p1");
 	this.createFile(
-		"/P/src/p1/X.java",
+		"/P/src/p1/X.js",
 		"package p1;\n" +
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	this.createFolder("/P/src/p2");
 	this.createFile(
-		"/P/src/p2/Y.java",
+		"/P/src/p2/Y.js",
 		"package p2;\n" +
 		"public class Y {\n" +
 		"}"
 	);
 	IPackageFragment pkgDest = getPackage("/P/src/p2");
 
-	copyPositive(cuSource, pkgDest, null, "Y.java", true);
+	copyPositive(cuSource, pkgDest, null, "Y.js", true);
 }
 /**
  * Ensures that a CU cannot be copied to a different package,over an existing CU when no force.
@@ -386,16 +386,16 @@ public void testCopyCURenameForce() throws CoreException {
 public void testCopyCUWithCollision() throws CoreException {
 	this.createFolder("/P/src/p1");
 	this.createFile(
-		"/P/src/p1/X.java",
+		"/P/src/p1/X.js",
 		"package p1;\n" +
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	this.createFolder("/P/src/p2");
 	this.createFile(
-		"/P/src/p2/X.java",
+		"/P/src/p2/X.js",
 		"package p2;\n" +
 		"public class X {\n" +
 		"}"
@@ -410,12 +410,12 @@ public void testCopyCUWithCollision() throws CoreException {
 public void testCopyCUWithInvalidDestination() throws CoreException {
 	this.createFolder("/P/src/p1");
 	this.createFile(
-		"/P/src/p1/X.java",
+		"/P/src/p1/X.js",
 		"package p1;\n" +
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	copyNegative(cuSource, cuSource, null, null, false, IJavaModelStatusConstants.INVALID_DESTINATION);
 }
@@ -425,12 +425,12 @@ public void testCopyCUWithInvalidDestination() throws CoreException {
 public void testCopyCUWithNullContainer() throws CoreException {
 	this.createFolder("/P/src/p1");
 	this.createFile(
-		"/P/src/p1/X.java",
+		"/P/src/p1/X.js",
 		"package p1;\n" +
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	try {
 		cuSource.copy(null, null, null, false, null);
@@ -446,12 +446,12 @@ public void testCopyCUWithNullContainer() throws CoreException {
 public void testCopyCUWithServerProperties() throws CoreException {
 	this.createFolder("/P/src/p1");
 	this.createFile(
-		"/P/src/p1/X.java",
+		"/P/src/p1/X.js",
 		"package p1;\n" +
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	QualifiedName qualifiedName = new QualifiedName("x.y.z", "a property");
 	cuSource.getUnderlyingResource().setPersistentProperty(
@@ -462,7 +462,7 @@ public void testCopyCUWithServerProperties() throws CoreException {
 	IPackageFragment pkgDest = getPackage("/P/src/p2");
 
 	copyPositive(cuSource, pkgDest, null, null, false);
-	ICompilationUnit cu= pkgDest.getCompilationUnit("X.java");
+	ICompilationUnit cu= pkgDest.getCompilationUnit("X.js");
 	String propertyValue = cu.getUnderlyingResource().getPersistentProperty(qualifiedName);
 	assertEquals(
 		"Server property should be copied with cu",
@@ -476,7 +476,7 @@ public void testCopyCUWithServerProperties() throws CoreException {
 public void testCopyPackageFragment() throws CoreException {
 	this.createFolder("/P/src/p1");
 	this.createFile(
-		"/P/src/p1/X.java",
+		"/P/src/p1/X.js",
 		"package p1;\n" +
 		"public class X {\n" +
 		"}"
@@ -500,12 +500,12 @@ public void testCopyReadOnlyPackageFragment() throws CoreException {
 	try {
 		this.createFolder("/P/src/p1/p2/p3");
 		this.createFile(
-			"/P/src/p1/p2/p3/X.java",
+			"/P/src/p1/p2/p3/X.js",
 			"package p1.p2.p3;\n" +
 			"public class X {\n" +
 			"}"
 		);
-		Util.setReadOnly(getFile("/P/src/p1/p2/p3/X.java"), true);
+		Util.setReadOnly(getFile("/P/src/p1/p2/p3/X.js"), true);
 		pkgSource = getPackage("/P/src/p1");
 		Util.setReadOnly(pkgSource.getResource(), true);
 		pkg2 = getPackage("/P/src/p1/p2/p3");
@@ -518,9 +518,9 @@ public void testCopyReadOnlyPackageFragment() throws CoreException {
 		assertTrue("Not readOnly", Util.isReadOnly(getPackage("/P/src2/p1").getResource()));
 		assertTrue("Is readOnly", !Util.isReadOnly(getPackage("/P/src2/p1/p2").getResource()));
 		assertTrue("Not readOnly", Util.isReadOnly(getPackage("/P/src2/p1/p2/p3").getResource()));
-		assertTrue("Is readOnly", Util.isReadOnly(getFile("/P/src2/p1/p2/p3/X.java")));
+		assertTrue("Is readOnly", Util.isReadOnly(getFile("/P/src2/p1/p2/p3/X.js")));
 	} finally {
-		IFile xSrcFile = getFile("/P/src/p1/p2/p3/X.java");
+		IFile xSrcFile = getFile("/P/src/p1/p2/p3/X.js");
 		if (xSrcFile != null) {
 			Util.setReadOnly(xSrcFile, false);
 		}
@@ -538,7 +538,7 @@ public void testCopyReadOnlyPackageFragment() throws CoreException {
 		if (p3Fragment != null) {
 			Util.setReadOnly(p3Fragment.getResource(), false);
 		}
-		IFile xFile = getFile("/P/src2/p1/p2/p3/X.java");
+		IFile xFile = getFile("/P/src2/p1/p2/p3/X.js");
 		if (xFile != null) {
 			Util.setReadOnly(xFile, false);
 		}
@@ -553,12 +553,12 @@ public void testCopyWorkingCopy() throws CoreException {
 	try {
 		this.createFolder("/P/src/p1");
 		this.createFile(
-			"/P/src/p1/X.java",
+			"/P/src/p1/X.js",
 			"package p1;\n" +
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 		copy = cuSource.getWorkingCopy(null);
 	
 		this.createFolder("/P/src/p2");
@@ -578,24 +578,24 @@ public void testCopyWorkingCopyDestination() throws CoreException {
 	try {
 		createFolder("/P/src/p1");
 		createFile(
-			"/P/src/p1/X.java",
+			"/P/src/p1/X.js",
 			"package p1;\n" +
 			"public class X {\n" +
 			"  void foo() {}\n" +
 			"}"
 		);
-		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 	
 		createFolder("/P/src/p2");
 		IPackageFragment pkgDest = getPackage("/P/src/p2");
 		createFile(
-			"/P/src/p2/X.java",
+			"/P/src/p2/X.js",
 			"\n" +
 			"package p1;\n" +
 			"public class X {\n" +
 			"}"
 		);
-		copy = getCompilationUnit("/P/src/p2/X.java");
+		copy = getCompilationUnit("/P/src/p2/X.js");
 		copy.becomeWorkingCopy(null, null);
 	
 		copyPositive(cuSource, pkgDest, null, null, true/*force*/);
@@ -611,17 +611,17 @@ public void testCopyWorkingCopyForce() throws CoreException {
 	try {
 		this.createFolder("/P/src/p1");
 		this.createFile(
-			"/P/src/p1/X.java",
+			"/P/src/p1/X.js",
 			"package p1;\n" +
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 		copy = cuSource.getWorkingCopy(null);
 	
 		this.createFolder("/P/src/p2");
 		this.createFile(
-			"/P/src/p2/X.java",
+			"/P/src/p2/X.js",
 			"package p2;\n" +
 			"public class X {\n" +
 			"}"
@@ -642,18 +642,18 @@ public void testCopyWorkingCopyRename() throws CoreException {
 	try {
 		this.createFolder("/P/src/p1");
 		this.createFile(
-			"/P/src/p1/X.java",
+			"/P/src/p1/X.js",
 			"package p1;\n" +
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 		copy = cuSource.getWorkingCopy(null);
 	
 		this.createFolder("/P/src/p2");
 		IPackageFragment pkgDest = getPackage("/P/src/p2");
 	
-		copyPositive(copy, pkgDest, null, "Y.java", false);
+		copyPositive(copy, pkgDest, null, "Y.js", false);
 	} finally {
 		if (copy != null) copy.discardWorkingCopy();
 	}
@@ -667,24 +667,24 @@ public void testCopyWorkingCopyRenameForce() throws CoreException {
 	try {
 		this.createFolder("/P/src/p1");
 		this.createFile(
-			"/P/src/p1/X.java",
+			"/P/src/p1/X.js",
 			"package p1;\n" +
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 		copy = cuSource.getWorkingCopy(null);
 	
 		this.createFolder("/P/src/p2");
 		this.createFile(
-			"/P/src/p2/Y.java",
+			"/P/src/p2/Y.js",
 			"package p2;\n" +
 			"public class Y {\n" +
 			"}"
 		);
 		IPackageFragment pkgDest = getPackage("/P/src/p2");
 	
-		copyPositive(copy, pkgDest, null, "Y.java", true);
+		copyPositive(copy, pkgDest, null, "Y.js", true);
 	} finally {
 		if (copy != null) copy.discardWorkingCopy();
 	}
@@ -697,17 +697,17 @@ public void testCopyWorkingCopyWithCollision() throws CoreException {
 	try {
 		this.createFolder("/P/src/p1");
 		this.createFile(
-			"/P/src/p1/X.java",
+			"/P/src/p1/X.js",
 			"package p1;\n" +
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 		copy = cuSource.getWorkingCopy(null);
 	
 		this.createFolder("/P/src/p2");
 		this.createFile(
-			"/P/src/p2/X.java",
+			"/P/src/p2/X.js",
 			"package p2;\n" +
 			"public class X {\n" +
 			"}"
@@ -727,12 +727,12 @@ public void testCopyWorkingCopyWithInvalidDestination() throws CoreException {
 	try {
 		this.createFolder("/P/src/p1");
 		this.createFile(
-			"/P/src/p1/X.java",
+			"/P/src/p1/X.js",
 			"package p1;\n" +
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 		copy = cuSource.getWorkingCopy(null);
 	
 		copyNegative(copy, cuSource, null, null, false, IJavaModelStatusConstants.INVALID_DESTINATION);
@@ -746,19 +746,19 @@ public void testCopyWorkingCopyWithInvalidDestination() throws CoreException {
 public void testMoveCU() throws CoreException {
 	this.createFolder("/P/src/p1");
 	this.createFile(
-		"/P/src/p1/X.java",
+		"/P/src/p1/X.js",
 		"package p1;\n" +
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	this.createFolder("/P/src/p2");
 	IPackageFragment pkgDest = getPackage("/P/src/p2");
 
 	movePositive(cuSource, pkgDest, null, null, false);
 	
-	ICompilationUnit cu= pkgDest.getCompilationUnit("X.java");
+	ICompilationUnit cu= pkgDest.getCompilationUnit("X.js");
 	assertTrue("Package declaration not updated for copied cu", cu.getPackageDeclaration("p2").exists());
 }
 /**
@@ -768,18 +768,18 @@ public void testMoveCU() throws CoreException {
 public void testMoveCUAndType() throws CoreException {
 	this.createFolder("/P/src/p1");
 	this.createFile(
-		"/P/src/p1/X.java",
+		"/P/src/p1/X.js",
 		"package p1;\n" +
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	moveNegative(
 		new IJavaElement[]{cuSource, cuSource.getType("X")}, 
 		new IJavaElement[]{cuSource.getParent(), cuSource}, 
 		null, 
-		new String[]{"Y.java", "Y"}, 
+		new String[]{"Y.js", "Y"}, 
 		false, 
 		IJavaModelStatusConstants.INVALID_ELEMENT_TYPES);
 }
@@ -790,16 +790,16 @@ public void testMoveCUAndType() throws CoreException {
 public void testMoveCUForce() throws CoreException {
 	this.createFolder("/P/src/p1");
 	this.createFile(
-		"/P/src/p1/X.java",
+		"/P/src/p1/X.js",
 		"package p1;\n" +
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	this.createFolder("/P/src/p2");
 	this.createFile(
-		"/P/src/p2/X.java",
+		"/P/src/p2/X.js",
 		"package p2;\n" +
 		"public class X {\n" +
 		"}"
@@ -815,17 +815,17 @@ public void testMoveCUForce() throws CoreException {
 public void testMoveCURename() throws CoreException {
 	this.createFolder("/P/src/p1");
 	this.createFile(
-		"/P/src/p1/X.java",
+		"/P/src/p1/X.js",
 		"package p1;\n" +
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	this.createFolder("/P/src/p2");
 	IPackageFragment pkgDest = getPackage("/P/src/p2");
 
-	movePositive(cuSource, pkgDest, null, "Y.java", false);
+	movePositive(cuSource, pkgDest, null, "Y.js", false);
 }
 /**
  * Ensures that a CU can be moved to a different package,
@@ -834,23 +834,23 @@ public void testMoveCURename() throws CoreException {
 public void testMoveCURenameForce() throws CoreException {
 	this.createFolder("/P/src/p1");
 	this.createFile(
-		"/P/src/p1/X.java",
+		"/P/src/p1/X.js",
 		"package p1;\n" +
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	this.createFolder("/P/src/p2");
 	this.createFile(
-		"/P/src/p2/Y.java",
+		"/P/src/p2/Y.js",
 		"package p2;\n" +
 		"public class Y {\n" +
 		"}"
 	);
 	IPackageFragment pkgDest = getPackage("/P/src/p2");
 
-	movePositive(cuSource, pkgDest, null, "Y.java", true);
+	movePositive(cuSource, pkgDest, null, "Y.js", true);
 }
 /**
  * Ensures that a CU cannot be moved to a different package, replacing an
@@ -859,16 +859,16 @@ public void testMoveCURenameForce() throws CoreException {
 public void testMoveCUWithCollision() throws CoreException {
 	this.createFolder("/P/src/p1");
 	this.createFile(
-		"/P/src/p1/X.java",
+		"/P/src/p1/X.js",
 		"package p1;\n" +
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	this.createFolder("/P/src/p2");
 	this.createFile(
-		"/P/src/p2/X.java",
+		"/P/src/p2/X.js",
 		"package p2;\n" +
 		"public class X {\n" +
 		"}"
@@ -883,12 +883,12 @@ public void testMoveCUWithCollision() throws CoreException {
 public void testMoveCUWithInvalidDestination() throws CoreException {
 	this.createFolder("/P/src/p1");
 	this.createFile(
-		"/P/src/p1/X.java",
+		"/P/src/p1/X.js",
 		"package p1;\n" +
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	moveNegative(cuSource, cuSource, null, null, false, IJavaModelStatusConstants.INVALID_DESTINATION);
 }
@@ -898,12 +898,12 @@ public void testMoveCUWithInvalidDestination() throws CoreException {
 public void testMoveCUWithNullContainer() throws CoreException {
 	this.createFolder("/P/src/p1");
 	this.createFile(
-		"/P/src/p1/X.java",
+		"/P/src/p1/X.js",
 		"package p1;\n" +
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	try {
 		cuSource.move(null, null, null, false, null);
@@ -918,7 +918,7 @@ public void testMoveCUWithNullContainer() throws CoreException {
 public void testMovePackageFragment() throws CoreException {
 	this.createFolder("/P/src/p1");
 	this.createFile(
-		"/P/src/p1/X.java",
+		"/P/src/p1/X.js",
 		"package p1;\n" +
 		"public class X {\n" +
 		"}"
@@ -942,12 +942,12 @@ public void testMoveReadOnlyPackageFragment() throws CoreException {
 	try {
 		this.createFolder("/P/src/p1/p2/p3");
 		this.createFile(
-			"/P/src/p1/p2/p3/X.java",
+			"/P/src/p1/p2/p3/X.js",
 			"package p1.p2.p3;\n" +
 			"public class X {\n" +
 			"}"
 		);
-		Util.setReadOnly(getFile("/P/src/p1/p2/p3/X.java"), true);
+		Util.setReadOnly(getFile("/P/src/p1/p2/p3/X.js"), true);
 		pkgSource = getPackage("/P/src/p1");
 		Util.setReadOnly(pkgSource.getResource(), true);
 		pkg2 = getPackage("/P/src/p1/p2/p3");
@@ -960,9 +960,9 @@ public void testMoveReadOnlyPackageFragment() throws CoreException {
 		assertTrue("Not readOnly", Util.isReadOnly(getPackage("/P/src2/p1").getResource()));
 		assertTrue("Is readOnly", !Util.isReadOnly(getPackage("/P/src2/p1/p2").getResource()));
 		assertTrue("Not readOnly", Util.isReadOnly(getPackage("/P/src2/p1/p2/p3").getResource()));
-		assertTrue("Is readOnly", Util.isReadOnly(getFile("/P/src2/p1/p2/p3/X.java")));
+		assertTrue("Is readOnly", Util.isReadOnly(getFile("/P/src2/p1/p2/p3/X.js")));
 	} finally {
-		IFile xSrcFile = getFile("/P/src/p1/p2/p3/X.java");
+		IFile xSrcFile = getFile("/P/src/p1/p2/p3/X.js");
 		if (xSrcFile != null) {
 			Util.setReadOnly(xSrcFile, false);
 		}
@@ -980,7 +980,7 @@ public void testMoveReadOnlyPackageFragment() throws CoreException {
 		if (p3Fragment != null) {
 			Util.setReadOnly(p3Fragment.getResource(), false);
 		}
-		IFile xFile = getFile("/P/src2/p1/p2/p3/X.java");
+		IFile xFile = getFile("/P/src2/p1/p2/p3/X.js");
 		if (xFile != null) {
 			Util.setReadOnly(xFile, false);
 		}
@@ -995,12 +995,12 @@ public void testMoveWorkingCopy() throws CoreException {
 	try {
 		this.createFolder("/P/src/p1");
 		this.createFile(
-			"/P/src/p1/X.java",
+			"/P/src/p1/X.js",
 			"package p1;\n" +
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.java");
+		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 		copy = cuSource.getWorkingCopy(null);
 	
 		this.createFolder("/P/src/p2");
@@ -1022,12 +1022,12 @@ public void testMoveWorkingCopy2() throws CoreException {
 	try {
 		this.createFolder("/P/src/p1");
 		this.createFile(
-			"/P/src/p1/X.java",
+			"/P/src/p1/X.js",
 			"package p1;\n" +
 			"public class X {\n" +
 			"}"
 		);
-		copy = getCompilationUnit("/P/src/p1/X.java");
+		copy = getCompilationUnit("/P/src/p1/X.js");
 		copy.becomeWorkingCopy(null, null);
 	
 		this.createFolder("/P/src/p2");

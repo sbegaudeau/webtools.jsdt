@@ -47,11 +47,11 @@ public void setUpSuite() throws Exception {
 	super.setUpSuite();
 	IJavaProject javaProject = createJavaProject("P");
 	String[] pathAndContents = new String[] {
-		"nongeneric/A.java", 
+		"nongeneric/A.js", 
 		"package nongeneric;\n" +
 		"public class A {\n" + 
 		"}",			
-		"generic/X.java", 
+		"generic/X.js", 
 		"package generic;\n" +
 		"public class X<T> {\n" + 
 		"  <U extends Exception> X<T> foo(X<T> x) throws RuntimeException, U {\n" +
@@ -61,40 +61,40 @@ public void setUpSuite() throws Exception {
 		"    return value;\n" +
 		"  }\n" +
 		"}",
-		"generic/Y.java", 
+		"generic/Y.js", 
 		"package generic;\n" +
 		"public class Y<K, L> {\n" + 
 		"}",
-		"generic/Z.java", 
+		"generic/Z.js", 
 		"package generic;\n" +
 		"public class Z<T extends Object & I<? super T>> {\n" + 
 		"}",
-		"generic/I.java", 
+		"generic/I.js", 
 		"package generic;\n" +
 		"public interface I<T> {\n" + 
 		"}",
-		"generic/W.java", 
+		"generic/W.js", 
 		"package generic;\n" +
 		"public class W<T extends X<T> , U extends T> {\n" + 
 		"}",
-		"generic/V.java", 
+		"generic/V.js", 
 		"package generic;\n" +
 		"public class V extends X<Thread> implements I<String> {\n" + 
 		"}",
-		"varargs/X.java", 
+		"varargs/X.js", 
 		"package varargs;\n" +
 		"public class X {\n" + 
 		"  void foo(String s, Object ... others) {\n" +
 		"  }\n" +
 		"}",
-		"workingcopy/X.java", 
+		"workingcopy/X.js", 
 		"package workingcopy;\n" +
 		"public class X {\n" + 
 		"  void foo() {\n" +
 		"    System.out.println();\n" +
 		"  }\n" +
 		"}",
-		"workingcopy/Y.java", 
+		"workingcopy/Y.js", 
 		"package workingcopy;\n" +
 		"public class Y<W> {\n" + 
 		"  <T> T foo(T t, String... args) {\n" +
@@ -123,7 +123,7 @@ protected void tearDown() throws Exception {
 
 private IClassFile createClassFile(String contents) throws CoreException, IOException {
 	IJavaProject project = getJavaProject("P");
-	addLibrary(project, "lib2.jar", "src2.zip", new String[] {"p/X.java", contents}, "1.5");
+	addLibrary(project, "lib2.jar", "src2.zip", new String[] {"p/X.js", contents}, "1.5");
 	this.classFile =  project.getPackageFragmentRoot(getFile("/P/lib2.jar")).getPackageFragment("p").getClassFile("X.class");
 	return this.classFile;
 }
@@ -828,7 +828,7 @@ public void testWorkingCopy08() throws CoreException {
 	);
 	this.workingCopy.makeConsistent(null);
 	
-	ICompilationUnit cu = getCompilationUnit("/P/Y.java");
+	ICompilationUnit cu = getCompilationUnit("/P/Y.js");
 	ICompilationUnit copy = null;
 	try {
 		ProblemRequestor problemRequestor = new ProblemRequestor();
@@ -863,7 +863,7 @@ public void testWorkingCopy09() throws CoreException {
 	this.workingCopy.getBuffer().setContents(	"");
 	this.workingCopy.makeConsistent(null);
 	
-	ICompilationUnit cu = getCompilationUnit("/P/Y.java");
+	ICompilationUnit cu = getCompilationUnit("/P/Y.js");
 	ICompilationUnit copy = null;
 	try {
 		ProblemRequestor problemRequestor = new ProblemRequestor();

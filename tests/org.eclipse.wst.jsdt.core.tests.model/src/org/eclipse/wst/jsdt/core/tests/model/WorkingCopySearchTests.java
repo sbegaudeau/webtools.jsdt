@@ -45,7 +45,7 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 	protected void setUp() throws Exception {
 		super.setUp();
 		try {
-			this.workingCopy = this.getCompilationUnit("JavaSearch", "src", "wc", "X.java").getWorkingCopy(null);
+			this.workingCopy = this.getCompilationUnit("JavaSearch", "src", "wc", "X.js").getWorkingCopy(null);
 		} catch (JavaModelException e) {
 			e.printStackTrace();
 		}
@@ -64,7 +64,7 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 	 * Hierarchy scope on a working copy test.
 	 */
 	public void testHierarchyScopeOnWorkingCopy() throws CoreException {
-		ICompilationUnit unit = this. getCompilationUnit("JavaSearch", "src", "a9", "A.java");
+		ICompilationUnit unit = this. getCompilationUnit("JavaSearch", "src", "a9", "A.js");
 		ICompilationUnit copy = unit.getWorkingCopy(null);
 		try {
 			IType type = copy.getType("A");
@@ -181,7 +181,7 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 	 * (regression test for bug 44884 Wrong list displayed while code completion)
 	 */
 	public void testAllTypeNames3() throws CoreException {
-		ICompilationUnit wc = getCompilationUnit("/JavaSearch/wc3/X44884.java");
+		ICompilationUnit wc = getCompilationUnit("/JavaSearch/wc3/X44884.js");
 		try {
 			wc.becomeWorkingCopy(null, null);
 			wc.getBuffer().setContents(
@@ -220,7 +220,7 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 	 * (regression test for bug 44884 Wrong list displayed while code completion)
 	 */
 	public void testAllTypeNames4() throws CoreException {
-		ICompilationUnit wc = getCompilationUnit("/JavaSearch/wc3/X44884.java");
+		ICompilationUnit wc = getCompilationUnit("/JavaSearch/wc3/X44884.js");
 		try {
 			wc.becomeWorkingCopy(null, null);
 			wc.getBuffer().setContents(
@@ -295,14 +295,14 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 			projects[0] = createJavaProject("P1");
 			projects[1] = createJavaProject("P2");
 			workingCopies = new ICompilationUnit[2];
-			workingCopies[0] = getWorkingCopy("/P1/p1/A1.java",
+			workingCopies[0] = getWorkingCopy("/P1/p1/A1.js",
 				"package p1;\n" + 
 				"public class A1 {\n" + 
 				"	public static class A1Inner1 {}" + 
 				"	public static class A1Inner2 {}" + 
 				"}"
 			);
-			workingCopies[1] = getWorkingCopy("/P2/p2/A2.java",
+			workingCopies[1] = getWorkingCopy("/P2/p2/A2.js",
 				"package p2;\n" + 
 				"public class A2 {\n" + 
 				"	public static class A2Inner1 {}" + 
@@ -364,8 +364,8 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 	public void testMoveType() throws CoreException {
 		
 		// move type X from working copy in one package to a working copy in another package
-		ICompilationUnit workingCopy1 = getCompilationUnit("JavaSearch", "src", "wc1", "X.java").getWorkingCopy(null);
-		ICompilationUnit workingCopy2 = getCompilationUnit("JavaSearch", "src", "wc2", "Y.java").getWorkingCopy(null);
+		ICompilationUnit workingCopy1 = getCompilationUnit("JavaSearch", "src", "wc1", "X.js").getWorkingCopy(null);
+		ICompilationUnit workingCopy2 = getCompilationUnit("JavaSearch", "src", "wc2", "Y.js").getWorkingCopy(null);
 		
 		try {
 			workingCopy1.getType("X").move(workingCopy2, null, null, true, null);

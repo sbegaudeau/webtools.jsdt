@@ -59,7 +59,7 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 	public void test0001() throws JavaModelException {
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Converter/src/test/X.java",
+			"/Converter/src/test/X.js",
 			"package test;\n"+
 			"\n"+
 			"public class X {\n"+
@@ -126,7 +126,7 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 	public void test0002() throws JavaModelException {
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Converter/src/test/X.java",
+			"/Converter/src/test/X.js",
 			"package test;\n"+
 			"\n"+
 			"public class X {\n"+
@@ -193,7 +193,7 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 	public void test0003() throws JavaModelException {
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Converter/src/test/X.java",
+			"/Converter/src/test/X.js",
 			"package test;\n"+
 			"\n"+
 			"public class X {\n"+
@@ -262,7 +262,7 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 	public void test0004() throws JavaModelException {
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Converter/src/test/X.java",
+			"/Converter/src/test/X.js",
 			"package test;\n"+
 			"\n"+
 			"public class X {\n"+
@@ -305,7 +305,7 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 	public void test0005() throws JavaModelException {
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Converter/src/test/X.java",
+			"/Converter/src/test/X.js",
 			"package test;\n"+
 			"\n"+
 			"public class X {\n"+
@@ -362,7 +362,7 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 	public void test0006() throws JavaModelException {
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Converter/src/test/X.java",
+			"/Converter/src/test/X.js",
 			"package test;\n"+
 			"\n"+
 			"public class X {\n"+
@@ -408,7 +408,7 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 	public void test0007() throws JavaModelException {
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Converter/src/test/X.java",
+			"/Converter/src/test/X.js",
 			"package test;\n"+
 			"\n"+
 			"public class X {\n"+
@@ -461,7 +461,7 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 	public void test0008() throws JavaModelException {
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Converter/src/test/X.java",
+			"/Converter/src/test/X.js",
 			"package test;\n"+
 			"\n"+
 			"public class X {\n"+
@@ -522,7 +522,7 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 	public void test0009() throws JavaModelException {
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Converter/src/test/X.java",
+			"/Converter/src/test/X.js",
 			"package test;\n"+
 			"\n"+
 			"public class X {\n"+
@@ -575,7 +575,7 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 	public void test0010() throws JavaModelException {
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Converter/src/test/X.java",
+			"/Converter/src/test/X.js",
 			"package test;\n"+
 			"\n"+
 			"public class X {\n"+
@@ -628,7 +628,7 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 	public void test0011() throws JavaModelException {
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Converter/src/test/X.java",
+			"/Converter/src/test/X.js",
 			"package test;\n"+
 			"\n"+
 			"public class X {\n"+
@@ -681,7 +681,7 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 	public void test0012() throws JavaModelException {
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Converter/src/test/X.java",
+			"/Converter/src/test/X.js",
 			"package test;\n"+
 			"\n"+
 			"public class X {\n"+
@@ -727,7 +727,7 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 	public void test0013() throws JavaModelException {
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Converter/src/test/X.java",
+			"/Converter/src/test/X.js",
 			"package test;\n"+
 			"\n"+
 			"public class X {\n"+
@@ -777,7 +777,7 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 	public void test0014() throws JavaModelException {
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Converter/src/test/X.java",
+			"/Converter/src/test/X.js",
 			"package test;\n"+
 			"\n"+
 			"public class X {\n"+
@@ -822,7 +822,7 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 	public void test0015() throws JavaModelException {
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Converter/src/test/X.java",
+			"/Converter/src/test/X.js",
 			"package test;\n"+
 			"\n"+
 			"public class X {\n"+
@@ -867,7 +867,7 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 	public void test0016() throws JavaModelException {
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Converter/src/test/X.java",
+			"/Converter/src/test/X.js",
 			"package test;\n"+
 			"\n"+
 			"public class X {\n"+
@@ -911,7 +911,7 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 	public void test0017() throws JavaModelException {
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Converter/src/test/X.java",
+			"/Converter/src/test/X.js",
 			"package test;\n"+
 			"\n"+
 			"public class X {\n"+

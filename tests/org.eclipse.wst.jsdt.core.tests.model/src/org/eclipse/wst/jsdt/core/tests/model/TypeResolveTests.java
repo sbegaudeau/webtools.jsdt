@@ -63,7 +63,7 @@ private String resultToString(String[][] result) {
 public void setUpSuite() throws Exception {
 	super.setUpSuite();
 	this.setUpJavaProject("TypeResolve");
-	this.cu = this.getCompilationUnit("TypeResolve", "src", "p", "TypeResolve.java");
+	this.cu = this.getCompilationUnit("TypeResolve", "src", "p", "TypeResolve.js");
 }
 	static {
 //		TESTS_NUMBERS = new int[] { 182, 183 };
@@ -84,7 +84,7 @@ public void tearDownSuite() throws Exception {
  * (regression test for bug 23829 IType::resolveType incorrectly returns null)
  */
 public void testResolveInSecondaryType() throws JavaModelException {
-	IType type = this.getCompilationUnit("/TypeResolve/src/p3/B.java").getType("Test");
+	IType type = this.getCompilationUnit("/TypeResolve/src/p3/B.js").getType("Test");
 	String[][] types = type.resolveType("B");
 	assertEquals(
 		"Unexpected result", 
@@ -109,12 +109,12 @@ public void testResolveParameterizedType() throws CoreException {
 	try {
 		createJavaProject("P", new String[] {"src"}, new String[] {"JCL15_LIB"}, "bin", "1.5");
 		createFile(
-			"/P/src/X.java",
+			"/P/src/X.js",
 			"public class X<T> {\n" +
 			"  X<String> field;\n" +
 			"}"
 		);
-		IType type = getCompilationUnit("/P/src/X.java").getType("X");
+		IType type = getCompilationUnit("/P/src/X.js").getType("X");
 		String[][] types = type.resolveType("X<String>");
 		assertEquals(
 			"Unexpected result", 
@@ -150,7 +150,7 @@ public void testResolveTypeInInner() throws JavaModelException {
  * (regression test for bug 48350 IType#resolveType(String) fails on local types)
  */
 public void testResolveTypeInInner2() throws JavaModelException {
-	IType type = this.getCompilationUnit("/TypeResolve/src/p5/A.java").getType("A").getMethod("foo", new String[] {}).getType("Local", 1);
+	IType type = this.getCompilationUnit("/TypeResolve/src/p5/A.js").getType("A").getMethod("foo", new String[] {}).getType("Local", 1);
 	
 	String[][] types = type.resolveType("Object");
 	assertEquals(
@@ -212,7 +212,7 @@ public void testResolveString() throws JavaModelException {
  * Resolve the type "A.Inner".
  */
 public void testResolveInnerType1() throws JavaModelException {
-	IType type = this.getCompilationUnit("/TypeResolve/src/p4/B.java").getType("B");
+	IType type = this.getCompilationUnit("/TypeResolve/src/p4/B.js").getType("B");
 	String[][] types = type.resolveType("A.Inner");
 	assertEquals(
 		"Unexpected result", 
@@ -223,7 +223,7 @@ public void testResolveInnerType1() throws JavaModelException {
  * Resolve the type "p4.A.Inner".
  */
 public void testResolveInnerType2() throws JavaModelException {
-	IType type = this.getCompilationUnit("/TypeResolve/src/p4/B.java").getType("B");
+	IType type = this.getCompilationUnit("/TypeResolve/src/p4/B.js").getType("B");
 	String[][] types = type.resolveType("p4.A.Inner");
 	assertEquals(
 		"Unexpected result", 

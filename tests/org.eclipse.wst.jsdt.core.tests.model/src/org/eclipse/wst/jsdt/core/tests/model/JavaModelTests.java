@@ -92,12 +92,12 @@ public void testContains1() throws CoreException {
 		IJavaProject project = this.createJavaProject("P", new String[] {""}, "");
 
 		// .java file
-		IFile file = this.getFile("/P/X.java");
+		IFile file = this.getFile("/P/X.js");
 		assertTrue("/P/X.java should be in model", getJavaModel().contains(file));
 
 		// .class file
-		file = this.getFile("/P/X.class");
-		assertTrue("/P/X.class should not be in model", !getJavaModel().contains(file));
+//		file = this.getFile("/P/X.class");
+//		assertTrue("/P/X.class should not be in model", !getJavaModel().contains(file));
 
 		// non-Java resource
 		file = this.getFile("/P/read.txt");
@@ -108,7 +108,7 @@ public void testContains1() throws CoreException {
 		assertTrue("/P/p should be in model", getJavaModel().contains(folder));
 		
 		// resource in closed project
-		file = this.createFile("/P/X.java", "");
+		file = this.createFile("/P/X.js", "");
 		project.getProject().close(null);
 		assertTrue("/P/X.java should be in model (even if project is closed)", getJavaModel().contains(file));
 		
@@ -143,7 +143,7 @@ public void testContains3() throws CoreException {
 		this.createJavaProject("P", new String[] {""}, "");
 
 		// .java file
-		IFile file = this.createFile("/P/X.java", "");
+		IFile file = this.createFile("/P/X.js", "");
 		assertTrue("/P/X.java should be in model", getJavaModel().contains(file));
 
 		// .class file
@@ -170,7 +170,7 @@ public void testContains4() throws CoreException {
 		this.createJavaProject("P", new String[] {}, "bin");
 
 		// .java file
-		IFile file = this.createFile("/P/X.java", "");
+		IFile file = this.createFile("/P/X.js", "");
 		assertTrue("/P/X.java should be in model", getJavaModel().contains(file));
 		
 		// .class file
@@ -210,7 +210,7 @@ public void testContains5() throws CoreException {
 		this.createJavaProject("P", new String[] {"src"}, "bin");
 
 		// .java file
-		IFile file = this.createFile("/P/src/X.java", "");
+		IFile file = this.createFile("/P/src/X.js", "");
 		assertTrue("/P/src/X.java should be in model", getJavaModel().contains(file));
 
 		// resource file in src
@@ -251,7 +251,7 @@ public void testContains6() throws CoreException {
 		this.createJavaProject("P", new String[] {""}, "bin");
 
 		// .java file
-		IFile file = this.createFile("/P/X.java", "");
+		IFile file = this.createFile("/P/X.js", "");
 		assertTrue("/P/X.java should be in model", getJavaModel().contains(file));
 
 		// resource file in src
@@ -312,11 +312,11 @@ public void testFindLineSeparator01() throws CoreException {
 	try {
 		createJavaProject("P");
 		createFile(
-			"/P/X.java", 
+			"/P/X.js", 
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("/P/X.java");
+		ICompilationUnit cu = getCompilationUnit("/P/X.js");
 		assertEquals("\n", cu.findRecommendedLineSeparator());
 	} finally {
 		deleteProject("P");
@@ -330,11 +330,11 @@ public void testFindLineSeparator02() throws CoreException {
 	try {
 		createJavaProject("P");
 		createFile(
-			"/P/X.java", 
+			"/P/X.js", 
 			"public class X {\r\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("/P/X.java");
+		ICompilationUnit cu = getCompilationUnit("/P/X.js");
 		assertEquals("\r\n", cu.findRecommendedLineSeparator());
 	} finally {
 		deleteProject("P");
@@ -348,10 +348,10 @@ public void testFindLineSeparator03() throws CoreException {
 	try {
 		createJavaProject("P");
 		createFile(
-			"/P/X.java", 
+			"/P/X.js", 
 			""
 		);
-		ICompilationUnit cu = getCompilationUnit("/P/X.java");
+		ICompilationUnit cu = getCompilationUnit("/P/X.js");
 		assertEquals(System.getProperty("line.separator"), cu.findRecommendedLineSeparator());
 	} finally {
 		deleteProject("P");

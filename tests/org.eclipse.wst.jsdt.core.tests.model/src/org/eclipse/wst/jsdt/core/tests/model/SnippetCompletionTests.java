@@ -92,7 +92,7 @@ public void testCodeSnippetAssistForClassFile() throws JavaModelException {
 
 public void testCodeSnippetAssistForCompilationUnit() throws JavaModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(false,false,true);
-	ICompilationUnit cu = getCompilationUnit("SnippetCompletion", "src", "aa.bb.cc", "BClass.java");
+	ICompilationUnit cu = getCompilationUnit("SnippetCompletion", "src", "aa.bb.cc", "BClass.js");
 	IType type = cu.getTypes()[0];
 	String snippet = 
 		"int varX;\n" +
@@ -160,7 +160,7 @@ public void testCodeSnippetAssistForClassFileWithSource() throws JavaModelExcept
 
 public void testCodeSnippetAssistForCompilationUnitWithoutSource() throws JavaModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(false,false,true);
-	ICompilationUnit cu = getCompilationUnit("SnippetCompletion", "src", "aa.bb.cc", "BClass.java");
+	ICompilationUnit cu = getCompilationUnit("SnippetCompletion", "src", "aa.bb.cc", "BClass.js");
 	IType type = cu.getTypes()[0];
 	
 	String snippet = 

@@ -69,7 +69,7 @@ public class EncodingTests extends ModifyingResourceTests {
 		System.out.println("Encoding tests using Workspace charset: "+wkspEncoding+" and VM charset: "+vmEncoding);
 		this.encodingJavaProject = setUpJavaProject("Encoding");
 		this.encodingProject = (IProject) this.encodingJavaProject.getResource();
-		this.utf8File = (IFile) this.encodingProject.findMember("src/testUTF8/Test.java");
+		this.utf8File = (IFile) this.encodingProject.findMember("src/testUTF8/Test.js");
 	}
 
 	public void tearDownSuite() throws Exception {
@@ -146,12 +146,12 @@ public class EncodingTests extends ModifyingResourceTests {
 				"		System.out.println(\"\u00e9\");\r\n" +
 				"	}\r\n" +
 				"}";
-			ICompilationUnit cu= pkg.createCompilationUnit("A.java", source, false, new NullProgressMonitor());
+			ICompilationUnit cu= pkg.createCompilationUnit("A.js", source, false, new NullProgressMonitor());
 			assertCreation(cu);
-			cu.rename("B.java", true, new NullProgressMonitor());
-			cu = pkg.getCompilationUnit("B.java");
-			cu.rename("A.java", true, new NullProgressMonitor());
-			cu = pkg.getCompilationUnit("A.java");
+			cu.rename("B.js", true, new NullProgressMonitor());
+			cu = pkg.getCompilationUnit("B.js");
+			cu.rename("A.js", true, new NullProgressMonitor());
+			cu = pkg.getCompilationUnit("A.js");
 			byte[] tab = null;
 			try {
 				tab = cu.getSource().getBytes(encoding);
@@ -514,9 +514,9 @@ public class EncodingTests extends ModifyingResourceTests {
 			String initialContent = "/**\n"+
 				" */\n"+
 				"public class Test {}";
-			IFile file = this.createFile("P/Test.java", initialContent);
+			IFile file = this.createFile("P/Test.js", initialContent);
 			file.setCharset(encoding, null);
-			ICompilationUnit cu = this.getCompilationUnit("P/Test.java"); 
+			ICompilationUnit cu = this.getCompilationUnit("P/Test.js"); 
 			
 			// Modif direct the buffer
 			String firstModif = "/**\n"+
@@ -560,9 +560,9 @@ public class EncodingTests extends ModifyingResourceTests {
 			String initialContent = "/**\n"+
 				" */\n"+
 				"public class Test {}";
-			IFile file = this.createFile("P/Test.java", initialContent);
+			IFile file = this.createFile("P/Test.js", initialContent);
 			file.setCharset(encoding, null);
-			ICompilationUnit cu = this.getCompilationUnit("P/Test.java"); 
+			ICompilationUnit cu = this.getCompilationUnit("P/Test.js"); 
 			
 			// Modif using working copy
 			workingCopy = cu.getWorkingCopy(null);
@@ -611,7 +611,7 @@ public class EncodingTests extends ModifyingResourceTests {
 		String source = this.utf8Source.getSource();
 
 		// Get source and compare with file contents
-		IFile bomFile = (IFile) this.encodingProject.findMember("src/testUTF8BOM/Test.java");
+		IFile bomFile = (IFile) this.encodingProject.findMember("src/testUTF8BOM/Test.js");
 		ISourceReference bomSourceRef = getCompilationUnit(bomFile.getFullPath().toString());
 		String bomSource = bomSourceRef.getSource();
 		assertEquals("BOM UTF-8 source should be idtentical than UTF-8!", source, bomSource);
@@ -631,7 +631,7 @@ public class EncodingTests extends ModifyingResourceTests {
 					IFile file = null;
 					try {
 						file = createFile(
-							"/Encoding/src/test68585/X.java", 
+							"/Encoding/src/test68585/X.js", 
 							"package  test68585;\n" +
 							"public class X {\n" +
 							"}\n" +
@@ -657,7 +657,7 @@ public class EncodingTests extends ModifyingResourceTests {
 			assertSearchResults("Should not get any result", "", resultCollector);
 			
 			// change encoding so that file is readable
-			getFile("/Encoding/src/test68585/X.java").setCharset(encoding, null);
+			getFile("/Encoding/src/test68585/X.js").setCharset(encoding, null);
 			search(
 				"Y\u00F4", 
 				IJavaSearchConstants.TYPE,
@@ -725,7 +725,7 @@ public class EncodingTests extends ModifyingResourceTests {
 
 		// Set file encoding
 		String encoding = "UTF-8".equals(vmEncoding) ? "Cp1252" : "UTF-8";
-		IFile file = (IFile) this.encodingProject.findMember("src/testBug66898/Test.java");
+		IFile file = (IFile) this.encodingProject.findMember("src/testBug66898/Test.js");
 		file.setCharset(encoding, null);
 		String fileName = file.getName();
 		ICompilationUnit cu = getCompilationUnit(file.getFullPath().toString());
@@ -743,8 +743,8 @@ public class EncodingTests extends ModifyingResourceTests {
 			compareContents(destSource, encoding);
 			
 			// Rename file
-			destSource.rename("TestUTF8.java", false, null);
-			ICompilationUnit renamedSource = packFrag.getCompilationUnit("TestUTF8.java");
+			destSource.rename("TestUTF8.js", false, null);
+			ICompilationUnit renamedSource = packFrag.getCompilationUnit("TestUTF8.js");
 			IFile renamedFile = (IFile) renamedSource.getUnderlyingResource();
 			assertEquals("Moved file should keep encoding", encoding, renamedFile.getCharset());
 			
@@ -762,7 +762,7 @@ public class EncodingTests extends ModifyingResourceTests {
 
 		// Set file encoding
 		final String encoding = "UTF-8".equals(vmEncoding) ? "Cp1252" : "UTF-8";
-		final IFile file = (IFile) this.encodingProject.findMember("src/testBug66898b/Test.java");
+		final IFile file = (IFile) this.encodingProject.findMember("src/testBug66898b/Test.js");
 		file.setCharset(encoding, null);
 		final String fileName = file.getName();
 		final IPackageFragment srcFolder = getPackageFragment("Encoding", "src", "testBug66898b");
@@ -790,9 +790,9 @@ public class EncodingTests extends ModifyingResourceTests {
 			IWorkspaceRunnable rename = new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
 					ICompilationUnit cu = tmpFolder.getCompilationUnit(fileName);
-					cu.rename("Renamed.java", true, null);
+					cu.rename("Renamed.js", true, null);
 					cu.close(); // purge buffer contents from cache
-					ICompilationUnit ren = tmpFolder.getCompilationUnit("Renamed.java");
+					ICompilationUnit ren = tmpFolder.getCompilationUnit("Renamed.js");
 					IFile renFile = (IFile) ren.getUnderlyingResource();
 					assertEquals("Renamed file should keep encoding", encoding, renFile.getCharset());
 			
@@ -805,10 +805,10 @@ public class EncodingTests extends ModifyingResourceTests {
 			// Move file
 			IWorkspaceRunnable move = new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
-					ICompilationUnit cu = tmpFolder.getCompilationUnit("Renamed.java");
+					ICompilationUnit cu = tmpFolder.getCompilationUnit("Renamed.js");
 					cu.move(srcFolder, null, null, true, null);
 					cu.close(); // purge buffer contents from cache
-					ICompilationUnit moved = srcFolder.getCompilationUnit("Renamed.java");
+					ICompilationUnit moved = srcFolder.getCompilationUnit("Renamed.js");
 					IFile movedFile = (IFile) moved.getUnderlyingResource();
 					assertEquals("Renamed file should keep encoding", encoding, movedFile.getCharset());
 			
@@ -820,7 +820,7 @@ public class EncodingTests extends ModifyingResourceTests {
 		}
 		finally {
 			// Delete temporary file and folder
-			ICompilationUnit cu = srcFolder.getCompilationUnit("Renamed.java");
+			ICompilationUnit cu = srcFolder.getCompilationUnit("Renamed.js");
 			if (cu.exists()) cu.delete(true, null);
 			deleteFolder("/Encoding/src/tmp");
 		}
@@ -833,7 +833,7 @@ public class EncodingTests extends ModifyingResourceTests {
 	public void testBug70598() throws JavaModelException, CoreException, IOException {
 
 		// Create empty file
-		IFile emptyFile = createFile("/Encoding/src/testUTF8BOM/Empty.java", new byte[0]);
+		IFile emptyFile = createFile("/Encoding/src/testUTF8BOM/Empty.js", new byte[0]);
 
 		// Test read empty content using io file
 		File file = new File(this.encodingProject.getLocation().toString(), emptyFile.getProjectRelativePath().toString());
@@ -861,7 +861,7 @@ public class EncodingTests extends ModifyingResourceTests {
 		}
 
 		// Verify file UTF-8 BOM encoding
-		IFile file = (IFile) this.encodingProject.findMember("src/testBug110576/Test.java");
+		IFile file = (IFile) this.encodingProject.findMember("src/testBug110576/Test.js");
 		verifyUtf8BOM(file);
 
 		String fileName = file.getName();
@@ -880,8 +880,8 @@ public class EncodingTests extends ModifyingResourceTests {
 			compareContents(copiedCU, "UTF-8", true/*BOM*/);
 
 			// Rename file
-			copiedCU.rename("TestUTF8.java", false, null);
-			ICompilationUnit renamedCU = tmpPackage.getCompilationUnit("TestUTF8.java");
+			copiedCU.rename("TestUTF8.js", false, null);
+			ICompilationUnit renamedCU = tmpPackage.getCompilationUnit("TestUTF8.js");
 			IFile renamedFile = (IFile) renamedCU.getUnderlyingResource();
 			verifyUtf8BOM(renamedFile);
 			fileName = renamedFile.getName();

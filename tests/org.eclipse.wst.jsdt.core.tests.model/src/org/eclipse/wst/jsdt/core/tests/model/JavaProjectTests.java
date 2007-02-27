@@ -192,9 +192,9 @@ public void testClassFileCorrespondingResource() throws JavaModelException {
  * has a corresponding resource.
  */
 public void testCompilationUnitCorrespondingResource() throws JavaModelException {
-	ICompilationUnit element= getCompilationUnit("JavaProjectTests", "", "q", "A.java");
+	ICompilationUnit element= getCompilationUnit("JavaProjectTests", "", "q", "A.js");
 	IResource corr= element.getCorrespondingResource();
-	IResource res= getWorkspace().getRoot().getProject("JavaProjectTests").getFolder("q").getFile("A.java");
+	IResource res= getWorkspace().getRoot().getProject("JavaProjectTests").getFolder("q").getFile("A.js");
 	assertTrue("incorrect corresponding resource", corr.equals(res));
 	assertEquals("Project is incorrect for the compilation unit", "JavaProjectTests", corr.getProject().getName());
 }
@@ -261,7 +261,7 @@ public void testExtraJavaLikeExtension1() throws CoreException {
 	try {
 		createJavaProject("P");
 		createFolder("/P/pack");
-		createFile("/P/pack/X.java", "package pack; public class X {}");
+		createFile("/P/pack/X.js", "package pack; public class X {}");
 		createFile("/P/pack/Y.bar", "package pack; public class Y {}");
 		IPackageFragment pkg = getPackage("/P/pack");
 		assertSortedElementsEqual(
@@ -296,7 +296,7 @@ public void testExtraJavaLikeExtension2() throws CoreException {
  */
 public void testFindElementClassFile() throws JavaModelException {
 	IJavaProject project= getJavaProject("JavaProjectTests");
-	IJavaElement element= project.findElement(new Path("java/lang/Object.java"));
+	IJavaElement element= project.findElement(new Path("java/lang/Object.js"));
 	assertTrue("CU not found" , element != null && element.getElementType() == IJavaElement.CLASS_FILE
 		&& element.getElementName().equals("Object.class"));
 }
@@ -305,18 +305,18 @@ public void testFindElementClassFile() throws JavaModelException {
  */
 public void testFindElementCompilationUnit() throws JavaModelException {
 	IJavaProject project= getJavaProject("JavaProjectTests");
-	IJavaElement element= project.findElement(new Path("x/y/Main.java"));
+	IJavaElement element= project.findElement(new Path("x/y/Main.js"));
 	assertTrue("CU not found" , element != null && element.getElementType() == IJavaElement.COMPILATION_UNIT
-		&& element.getElementName().equals("Main.java"));
+		&& element.getElementName().equals("Main.js"));
 }
 /**
  * Test that a compilation unit can be found in a default package
  */
 public void testFindElementCompilationUnitDefaultPackage() throws JavaModelException {
 	IJavaProject project= getJavaProject("JavaProjectTests");
-	IJavaElement element= project.findElement(new Path("B.java"));
+	IJavaElement element= project.findElement(new Path("B.js"));
 	assertTrue("CU not found" , element != null && element.getElementType() == IJavaElement.COMPILATION_UNIT
-		&& element.getElementName().equals("B.java"));
+		&& element.getElementName().equals("B.js"));
 }
 /**
  * Test that an invlaid path throws an exception
@@ -341,7 +341,7 @@ public void testFindElementInvalidPath() throws JavaModelException {
 	}
 	assertTrue("Shold have failed", failed);
 
-	IJavaElement element= project.findElement(new Path("does/not/exist/HelloWorld.java"));
+	IJavaElement element= project.findElement(new Path("does/not/exist/HelloWorld.js"));
 	assertTrue("should get no element", element == null);
 }
 /**
@@ -362,11 +362,11 @@ public void testFindElementPrereqSimpleProject() throws CoreException {
 		this.createProject("R");
 		IJavaProject project = this.createJavaProject("J", new String[] {"src"}, new String[] {}, new String[] {"/R"}, "bin");
 		this.createFile(
-			"J/src/X.java",
+			"J/src/X.js",
 			"public class X {\n" +
 			"}"
 		);
-		assertTrue("X.java not found", project.findElement(new Path("X.java")) != null);
+		assertTrue("X.java not found", project.findElement(new Path("X.js")) != null);
 	} finally {
 		this.deleteProject("R");
 		this.deleteProject("J");
@@ -1125,7 +1125,7 @@ public void testRootGetPackageFragments3() throws CoreException {
 	try {
 		IJavaProject p1 = createJavaProject("P1");
 		createFile(
-			"/P1/X.java",
+			"/P1/X.js",
 			"public class X {\n" +
 			"}"
 		);
@@ -1161,7 +1161,7 @@ public void testRootGetPackageFragments3() throws CoreException {
 public void testSourceFolderWithJarName() throws CoreException {
 	try {
 		this.createJavaProject("P", new String[] {"src.jar"}, "bin");
-		IFile file = createFile("/P/src.jar/X.java", "class X {}");
+		IFile file = createFile("/P/src.jar/X.js", "class X {}");
 		ICompilationUnit unit = (ICompilationUnit)JavaCore.create(file);
 		unit.getAllTypes(); // force to open
 	} catch (CoreException e) {
@@ -1174,7 +1174,7 @@ public void testSourceFolderWithJarName() throws CoreException {
  * has no corresponding resource.
  */
 public void testSourceMethodCorrespondingResource() throws JavaModelException {
-	ICompilationUnit element= getCompilationUnit("JavaProjectTests", "", "q", "A.java");
+	ICompilationUnit element= getCompilationUnit("JavaProjectTests", "", "q", "A.js");
 	IMethod[] methods = element.getType("A").getMethods();
 	assertTrue("missing methods", methods.length > 0);
 	IResource corr= methods[0].getCorrespondingResource();

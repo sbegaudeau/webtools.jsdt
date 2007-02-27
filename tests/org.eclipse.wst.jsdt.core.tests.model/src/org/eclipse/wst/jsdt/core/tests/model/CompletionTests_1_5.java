@@ -45,7 +45,7 @@ private ICompilationUnit[] getExternalQQTypes() throws JavaModelException {
 	ICompilationUnit[] units = new ICompilationUnit[6];
 	
 	units[0] = getWorkingCopy(
-		"/Completion/src3/pkgstaticimport/QQType1.java",
+		"/Completion/src3/pkgstaticimport/QQType1.js",
 		"package pkgstaticimport;\n"+
 		"\n"+
 		"public class QQType1 {\n"+
@@ -60,7 +60,7 @@ private ICompilationUnit[] getExternalQQTypes() throws JavaModelException {
 		"}");
 	
 	units[1] = getWorkingCopy(
-		"/Completion/src3/pkgstaticimport/QQType3.java",
+		"/Completion/src3/pkgstaticimport/QQType3.js",
 		"package pkgstaticimport;\n"+
 		"\n"+
 		"public class QQType3 extends QQType1 {\n"+
@@ -68,7 +68,7 @@ private ICompilationUnit[] getExternalQQTypes() throws JavaModelException {
 		"}");
 	
 	units[2] = getWorkingCopy(
-		"/Completion/src3/pkgstaticimport/QQType4.java",
+		"/Completion/src3/pkgstaticimport/QQType4.js",
 		"package pkgstaticimport;\n"+
 		"\n"+
 		"public class QQType4 {\n"+
@@ -83,7 +83,7 @@ private ICompilationUnit[] getExternalQQTypes() throws JavaModelException {
 		"}");
 	
 	units[3] = getWorkingCopy(
-		"/Completion/src3/pkgstaticimport/QQType6.java",
+		"/Completion/src3/pkgstaticimport/QQType6.js",
 		"package pkgstaticimport;\n"+
 		"\n"+
 		"public class QQType6 extends QQType4 {\n"+
@@ -91,7 +91,7 @@ private ICompilationUnit[] getExternalQQTypes() throws JavaModelException {
 		"}");
 	
 	units[4] = getWorkingCopy(
-		"/Completion/src3/pkgstaticimport/QQType7.java",
+		"/Completion/src3/pkgstaticimport/QQType7.js",
 		"package pkgstaticimport;\n"+
 		"\n"+
 		"public class QQType7 {\n"+
@@ -106,7 +106,7 @@ private ICompilationUnit[] getExternalQQTypes() throws JavaModelException {
 		"}");
 	
 	units[5] = getWorkingCopy(
-		"/Completion/src3/pkgstaticimport/QQType9.java",
+		"/Completion/src3/pkgstaticimport/QQType9.js",
 		"package pkgstaticimport;\n"+
 		"\n"+
 		"public class QQType9 extends QQType7 {\n"+
@@ -117,7 +117,7 @@ private ICompilationUnit[] getExternalQQTypes() throws JavaModelException {
 }
 public void test0001() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0001", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0001", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "X<St";
@@ -130,7 +130,7 @@ public void test0001() throws JavaModelException {
 }
 public void test0002() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0002", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0002", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "X<Ob";
@@ -143,7 +143,7 @@ public void test0002() throws JavaModelException {
 }
 public void test0003() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0003", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0003", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "X<St";
@@ -156,7 +156,7 @@ public void test0003() throws JavaModelException {
 }
 public void test0004() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0004", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0004", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "X<XZ";
@@ -170,7 +170,7 @@ public void test0004() throws JavaModelException {
 }
 public void test0005() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0005/Test.java",
+            "/Completion/src3/test0005/Test.js",
             "package test0005;\n" +
             "\n" +
             "public class Test {\n" +
@@ -196,7 +196,7 @@ public void test0005() throws JavaModelException {
 }
 public void test0006() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0006/Test.java",
+            "/Completion/src3/test0006/Test.js",
             "package test0006;\n" +
             "\n" +
             "public class Test {\n" +
@@ -222,7 +222,7 @@ public void test0006() throws JavaModelException {
 }
 public void test0007() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0007/Test.java",
+            "/Completion/src3/test0007/Test.js",
             "package test0007;\n" +
             "\n" +
             "public class Test {\n" +
@@ -248,7 +248,7 @@ public void test0007() throws JavaModelException {
 }
 public void test0008() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0008/Test.java",
+            "/Completion/src3/test0008/Test.js",
             "package test0008;\n" +
             "\n" +
             "public class Test {\n" +
@@ -281,7 +281,7 @@ public void test0008() throws JavaModelException {
 }
 public void test0009() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0009", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0009", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "/**/T_";
@@ -295,7 +295,7 @@ public void test0009() throws JavaModelException {
 }
 public void test0010() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0010", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0010", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "/**/T_";
@@ -311,7 +311,7 @@ public void test0010() throws JavaModelException {
 }
 public void test0011() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0011/Test.java",
+            "/Completion/src3/test0011/Test.js",
             "package test0011;\n"+
             "\n"+
             "public class Test <T extends Z0011<Object>.Y001> {\n"+
@@ -334,7 +334,7 @@ public void test0011() throws JavaModelException {
 }
 public void test0012() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0012/Test.java",
+            "/Completion/src3/test0012/Test.js",
             "package test0012;\n"+
             "\n"+
             "public class Test {\n"+
@@ -357,7 +357,7 @@ public void test0012() throws JavaModelException {
 }
 public void test0013() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0013/Test.java",
+            "/Completion/src3/test0013/Test.js",
             "package test0013;\n"+
             "\n"+
             "public class Test {\n"+
@@ -380,7 +380,7 @@ public void test0013() throws JavaModelException {
 }
 public void test0014() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0014/Test.java",
+            "/Completion/src3/test0014/Test.js",
             "package test0014;\n" +
             "\n" +
             "public class Test extends Z0014<Object>.Y001 {\n" +
@@ -402,7 +402,7 @@ public void test0014() throws JavaModelException {
 }
 public void test0015() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0015/Test.java",
+            "/Completion/src3/test0015/Test.js",
             "package test0015;\n" +
             "\n" +
             "public class Test implements Z0015<Object>.Y001 {\n" +
@@ -427,7 +427,7 @@ public void test0015() throws JavaModelException {
 }
 public void test0016() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0016/Test.java",
+            "/Completion/src3/test0016/Test.js",
             "package test0016;\n" +
             "\n" +
             "public class Test implements  {\n" +
@@ -452,7 +452,7 @@ public void test0016() throws JavaModelException {
 }
 public void test0017() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0017/Test.java",
+            "/Completion/src3/test0017/Test.js",
             "package test0017;\n" +
             "\n" +
             "public class Test implements  {\n" +
@@ -477,7 +477,7 @@ public void test0017() throws JavaModelException {
 }
 public void test0018() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0018/Test.java",
+            "/Completion/src3/test0018/Test.js",
             "package test0018;\n" +
             "\n" +
             "public class Test {\n" +
@@ -502,7 +502,7 @@ public void test0018() throws JavaModelException {
 }
 public void test0019() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0019/Test.java",
+            "/Completion/src3/test0019/Test.js",
             "package test0019;\n" +
             "\n" +
             "public class Test {\n" +
@@ -525,7 +525,7 @@ public void test0019() throws JavaModelException {
 }
 public void test0020() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0020/Test.java",
+            "/Completion/src3/test0020/Test.js",
             "package test0020;\n"+
             "\n"+
             "public class Test {\n"+
@@ -551,7 +551,7 @@ public void test0020() throws JavaModelException {
 public void test0021() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0021/Test.java",
+		"/Completion/src3/test0021/Test.js",
 		"package test0021;\n" +
 		"\n" +
 		"public class Test {\n" +
@@ -580,7 +580,7 @@ public void test0021() throws JavaModelException {
 public void test0022() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0022/Test.java",
+		"/Completion/src3/test0022/Test.js",
 		"package test0022;\n" +
 		"\n" +
 		"public class Test {\n" +
@@ -611,7 +611,7 @@ public void test0022() throws JavaModelException {
 }
 public void test0023() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0023", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0023", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "<St";
@@ -624,7 +624,7 @@ public void test0023() throws JavaModelException {
 }
 public void test0024() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0024", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0024", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "<St";
@@ -637,7 +637,7 @@ public void test0024() throws JavaModelException {
 }
 public void test0025() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0025", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0025", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "<St";
@@ -651,7 +651,7 @@ public void test0025() throws JavaModelException {
 public void test0026() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0026/Test.java",
+		"/Completion/src3/test0026/Test.js",
 		"package test0026;\n" +
 		"\n" +
 		"public class Test {\n" +
@@ -678,7 +678,7 @@ public void test0026() throws JavaModelException {
 public void test0027() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0026/Test.java",
+		"/Completion/src3/test0026/Test.js",
 		"package test0027;\n" +
 		"\n" +
 		"public class Test {\n" +
@@ -706,7 +706,7 @@ public void test0027() throws JavaModelException {
 }
 public void test0028() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0028", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0028", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "<St";
@@ -719,7 +719,7 @@ public void test0028() throws JavaModelException {
 }
 public void test0029() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0029/Test.java",
+            "/Completion/src3/test0029/Test.js",
             "package test0029;\n"+
             "\n"+
             "public class Test {\n"+
@@ -738,7 +738,7 @@ public void test0029() throws JavaModelException {
 }
 public void test0030() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0030", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0030", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "ZZ";
@@ -755,7 +755,7 @@ public void test0030() throws JavaModelException {
  */
 public void test0031() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0031/Test.java",
+            "/Completion/src3/test0031/Test.js",
             "package test0031;\n" +
             "\n" +
             "public class Test <T> {\n" +
@@ -781,7 +781,7 @@ public void test0031() throws JavaModelException {
  */
 public void test0032() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0032", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0032", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "Stri";
@@ -797,7 +797,7 @@ public void test0032() throws JavaModelException {
  */
 public void test0033() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0033", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0033", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "Stri";
@@ -813,7 +813,7 @@ public void test0033() throws JavaModelException {
  */
 public void test0034() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0034", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0034", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "Stri";
@@ -829,7 +829,7 @@ public void test0034() throws JavaModelException {
  */
 public void test0035() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0035", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0035", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "Stri";
@@ -845,7 +845,7 @@ public void test0035() throws JavaModelException {
  */
 public void test0036() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0036", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0036", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "Stri";
@@ -861,7 +861,7 @@ public void test0036() throws JavaModelException {
  */
 public void test0037() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0037", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0037", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "Stri";
@@ -877,7 +877,7 @@ public void test0037() throws JavaModelException {
  */
 public void test0038() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0038", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0038", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "Stri";
@@ -893,7 +893,7 @@ public void test0038() throws JavaModelException {
  */
 public void test0039() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0039", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0039", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "Stri";
@@ -909,7 +909,7 @@ public void test0039() throws JavaModelException {
  */
 public void test0040() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0040/Test.java",
+            "/Completion/src3/test0040/Test.js",
             "package test0040;\n" +
             "\n" +
             "public class Test <T> {\n" +
@@ -936,7 +936,7 @@ public void test0040() throws JavaModelException {
  */
 public void test0041() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0041/Test.java",
+            "/Completion/src3/test0041/Test.js",
             "package test0041;\n" +
             "\n" +
             "public class Test <T> {\n" +
@@ -965,7 +965,7 @@ public void test0041() throws JavaModelException {
  */
 public void test0042() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0042/Test.java",
+            "/Completion/src3/test0042/Test.js",
             "package test0042;\n" +
             "\n" +
             "public class Test <T> {\n" +
@@ -993,7 +993,7 @@ public void test0042() throws JavaModelException {
  */
 public void test0043() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0043/Test.java",
+            "/Completion/src3/test0043/Test.js",
             "package test0043;\n" +
             "\n" +
             "public class Test <T> {\n" +
@@ -1022,7 +1022,7 @@ public void test0043() throws JavaModelException {
  */
 public void test0044() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0044/Test.java",
+            "/Completion/src3/test0044/Test.js",
             "package test0044;\n" +
             "\n" +
             "public class Test <T> {\n" +
@@ -1049,7 +1049,7 @@ public void test0044() throws JavaModelException {
  */
 public void test0045() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0045/Test.java",
+            "/Completion/src3/test0045/Test.js",
             "package test0045;\n" +
             "\n" +
             "public class Test <T> {\n" +
@@ -1078,7 +1078,7 @@ public void test0045() throws JavaModelException {
  */
 public void test0046() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0046/Test.java",
+            "/Completion/src3/test0046/Test.js",
             "package test0046;\n" +
             "\n" +
             "public class Test <T> {\n" +
@@ -1105,7 +1105,7 @@ public void test0046() throws JavaModelException {
  */
 public void test0047() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0047/Test.java",
+            "/Completion/src3/test0047/Test.js",
             "package test0047;\n" +
             "\n" +
             "public class Test <T> {\n" +
@@ -1134,7 +1134,7 @@ public void test0047() throws JavaModelException {
  */
 public void test0048() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0048", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0048", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "l.ba";
@@ -1150,7 +1150,7 @@ public void test0048() throws JavaModelException {
  */
 public void test0049() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0049", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0049", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "l.ba";
@@ -1166,7 +1166,7 @@ public void test0049() throws JavaModelException {
  */
 public void test0050() throws JavaModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0050", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0050", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "Test<T_0050";
@@ -1190,7 +1190,7 @@ public void test0051() throws JavaModelException {
 		qqTypes = this.getExternalQQTypes();
 		
 		this.wc = getWorkingCopy(
-				"/Completion/src3/test0051/Test.java",
+				"/Completion/src3/test0051/Test.js",
 				"package test0051;\n"+
 				"import static pkgstaticimport.QQType1.*;\n"+
 				"public class Test {\n"+
@@ -1229,7 +1229,7 @@ public void test0052() throws JavaModelException {
 		qqTypes = this.getExternalQQTypes();
 		
 		qqType2 = getWorkingCopy(
-				"/Completion/src3/test0052/QQType2.java",
+				"/Completion/src3/test0052/QQType2.js",
 				"package test0052;\n"+
 				"public class QQType2 {\n"+
 				"	public class Inner1 {}\n"+
@@ -1243,7 +1243,7 @@ public void test0052() throws JavaModelException {
 				"}");
 		
 		this.wc = getWorkingCopy(
-				"/Completion/src3/test0052/Test.java",
+				"/Completion/src3/test0052/Test.js",
 				"package test0052;\n"+
 				"import static test0052.QQType2.*;\n"+
 				"public class Test {\n"+
@@ -1290,7 +1290,7 @@ public void test0053() throws JavaModelException {
 		qqTypes = this.getExternalQQTypes();
 		
 		this.wc = getWorkingCopy(
-				"/Completion/src3/test0053/Test.java",
+				"/Completion/src3/test0053/Test.js",
 				"package test0053;\n"+
 				"import static pkgstaticimport.QQType1.*;\n"+
 				"public class Test extends pkgstaticimport.QQType1 {\n"+
@@ -1330,7 +1330,7 @@ public void test0054() throws JavaModelException {
 		qqTypes = this.getExternalQQTypes();
 		
 		this.wc = getWorkingCopy(
-				"/Completion/src3/test0054/Test.java",
+				"/Completion/src3/test0054/Test.js",
 				"package test0054;\n"+
 				"import static pkgstaticimport.QQType1.Inner2;\n"+
 				"public class Test {\n"+
@@ -1368,7 +1368,7 @@ public void test0055() throws JavaModelException {
 		qqTypes = this.getExternalQQTypes();
 		
 		this.wc = getWorkingCopy(
-				"/Completion/src3/test0055/Test.java",
+				"/Completion/src3/test0055/Test.js",
 				"package test0055;\n"+
 				"import static pkgstaticimport.QQType1.*;\n"+
 				"import static pkgstaticimport.QQType1.Inner2;\n"+
@@ -1407,7 +1407,7 @@ public void test0056() throws JavaModelException {
 		qqTypes = this.getExternalQQTypes();
 		
 		this.wc = getWorkingCopy(
-				"/Completion/src3/test0056/Test.java",
+				"/Completion/src3/test0056/Test.js",
 				"package test0056;\n"+
 				"import static pkgstaticimport.QQType1.Inner2;\n"+
 				"import static pkgstaticimport.QQType1.*;\n"+
@@ -1446,7 +1446,7 @@ public void test0057() throws JavaModelException {
 		qqTypes = this.getExternalQQTypes();
 		
 		this.wc = getWorkingCopy(
-				"/Completion/src3/test0056/Test.java",
+				"/Completion/src3/test0056/Test.js",
 				"package test0057;\n"+
 				"import static pkgstaticimport.QQType3.*;\n"+
 				"public class Test {\n"+
@@ -1485,7 +1485,7 @@ public void test0058() throws JavaModelException {
 		
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test0058/Test.java",
+			"/Completion/src3/test0058/Test.js",
 			"package test0058;\n"+
 			"import static pkgstaticimport.QQType4.*;\n"+
 			"public class Test {\n"+
@@ -1523,7 +1523,7 @@ public void test0059() throws JavaModelException {
 		qqTypes = this.getExternalQQTypes();
 		
 		qqType5 = getWorkingCopy(
-				"/Completion/src3/test0059/QQType5.java",
+				"/Completion/src3/test0059/QQType5.js",
 				"package test0059;\n"+
 				"\n"+
 				"public class QQType5 {\n"+
@@ -1539,7 +1539,7 @@ public void test0059() throws JavaModelException {
 	
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test0059/Test.java",
+			"/Completion/src3/test0059/Test.js",
 			"package test0059;\n"+
 			"import static test0059.QQType5.*;\n"+
 			"public class Test {\n"+
@@ -1579,7 +1579,7 @@ public void test0060() throws JavaModelException {
 		qqTypes = this.getExternalQQTypes();
 		
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0060", "Test.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0060", "Test.js");
 	
 		String str = cu.getSource();
 		String completeBehind = "zzvarzz";
@@ -1611,7 +1611,7 @@ public void test0061() throws JavaModelException {
 		
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test0061/Test.java",
+			"/Completion/src3/test0061/Test.js",
 			"package test0061;\n" +
 			"import static pkgstaticimport.QQType4.zzvarzz2;\n" +
 			"public class Test {\n" +
@@ -1648,7 +1648,7 @@ public void test0062() throws JavaModelException {
 		
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test0062/Test.java",
+			"/Completion/src3/test0062/Test.js",
 			"package test0062;\n" +
 			"import static pkgstaticimport.QQType4.*;\n" +
 			"import static pkgstaticimport.QQType4.zzvarzz2;\n" +
@@ -1686,7 +1686,7 @@ public void test0063() throws JavaModelException {
 		
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test0063/Test.java",
+			"/Completion/src3/test0063/Test.js",
 			"package test0063;\n" +
 			"import static pkgstaticimport.QQType4.zzvarzz2;\n" +
 			"import static pkgstaticimport.QQType4.*;\n" +
@@ -1723,7 +1723,7 @@ public void test0064() throws JavaModelException {
 		qqTypes = this.getExternalQQTypes();
 		
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0064", "Test.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0064", "Test.js");
 	
 		String str = cu.getSource();
 		String completeBehind = "zzvarzz";
@@ -1752,7 +1752,7 @@ public void test0065() throws JavaModelException {
 	
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test0065/Test.java",
+			"/Completion/src3/test0065/Test.js",
 			"package test0065;\n" +
 			"import static pkgstaticimport.QQType7.*;\n" +
 			"public class Test {\n" +
@@ -1789,7 +1789,7 @@ public void test0066() throws JavaModelException {
 		qqTypes = this.getExternalQQTypes();
 		
 		qqType8 = getWorkingCopy(
-				"/Completion/src3/test0066/QQType8.java",
+				"/Completion/src3/test0066/QQType8.js",
 				"package test0066;\n"+
 				"\n"+
 				"public class QQType8 {\n"+
@@ -1805,7 +1805,7 @@ public void test0066() throws JavaModelException {
 	
 		this.workingCopies = new ICompilationUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test0066/Test.java",
+			"/Completion/src3/test0066/Test.js",
 			"package test0066;\n" +
 			"import static test0066.QQType8.*;\n" +
 			"public class Test {\n" +
@@ -1845,7 +1845,7 @@ public void test0067() throws JavaModelException {
 		qqTypes = this.getExternalQQTypes();
 		
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0067", "Test.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0067", "Test.js");
 	
 		String str = cu.getSource();
 		String completeBehind = "zzfoozz";
@@ -1876,7 +1876,7 @@ public void test0068() throws JavaModelException {
 		qqTypes = this.getExternalQQTypes();
 		
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0068", "Test.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0068", "Test.js");
 	
 		String str = cu.getSource();
 		String completeBehind = "zzfoozz";
@@ -1897,7 +1897,7 @@ public void test0068() throws JavaModelException {
  */
 public void test0069() throws JavaModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true);
-	ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0069", "Test.java");
+	ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0069", "Test.js");
 
 	String str = cu.getSource();
 	String completeBehind = "icell.p";
@@ -1915,7 +1915,7 @@ public void test0070() throws JavaModelException {
 	ICompilationUnit importedClass = null;
 	try {
 		importedClass = getWorkingCopy(
-				"/Completion/src3/test0070/p/ImportedClass.java",
+				"/Completion/src3/test0070/p/ImportedClass.js",
 				"package test0070.p;\n"+
 				"\n"+
 				"public class ImportedClass {\n"+
@@ -1923,7 +1923,7 @@ public void test0070() throws JavaModelException {
 				"}");
 		
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true);
-		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0070", "Test.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0070", "Test.js");
 	
 		String str = cu.getSource();
 		String completeBehind = "test0070";
@@ -1948,7 +1948,7 @@ public void test0071() throws JavaModelException {
 	ICompilationUnit importedClass = null;
 	try {
 		importedClass = getWorkingCopy(
-				"/Completion/src3/test0071/p/ImportedClass.java",
+				"/Completion/src3/test0071/p/ImportedClass.js",
 				"package test0071.p;\n"+
 				"\n"+
 				"public class ImportedClass {\n"+
@@ -1956,7 +1956,7 @@ public void test0071() throws JavaModelException {
 				"}");
 
 		CompletionResult result = complete(
-	            "/Completion/src3/test0071/Test.java",
+	            "/Completion/src3/test0071/Test.js",
 	            "package test0071;\n" +
 	            "\n" +
 	            "import static test0071.p.Im\n" +
@@ -1988,7 +1988,7 @@ public void test0072() throws JavaModelException {
 	ICompilationUnit importedClass = null;
 	try {
 		importedClass = getWorkingCopy(
-				"/Completion/src3/test0072/p/ImportedClass.java",
+				"/Completion/src3/test0072/p/ImportedClass.js",
 				"package test0072.p;\n"+
 				"\n"+
 				"public class ImportedClass {\n"+
@@ -1998,7 +1998,7 @@ public void test0072() throws JavaModelException {
 				"}");
 		
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true);
-		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0072", "Test.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0072", "Test.js");
 	
 		String str = cu.getSource();
 		String completeBehind = "test0072.p.ImportedClass.ZZ";
@@ -2023,7 +2023,7 @@ public void test0073() throws JavaModelException {
 	ICompilationUnit importedClass = null;
 	try {
 		importedClass = getWorkingCopy(
-				"/Completion/src3/test0073/p/ImportedClass.java",
+				"/Completion/src3/test0073/p/ImportedClass.js",
 				"package test0073.p;\n"+
 				"\n"+
 				"public class ImportedClass {\n"+
@@ -2035,7 +2035,7 @@ public void test0073() throws JavaModelException {
 				"}");
 		
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true);
-		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0073", "Test.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0073", "Test.js");
 	
 		String str = cu.getSource();
 		String completeBehind = "test0073.p.ImportedClass.Inner.ZZ";
@@ -2060,7 +2060,7 @@ public void test0074() throws JavaModelException {
 	ICompilationUnit importedClass = null;
 	try {
 		importedClass = getWorkingCopy(
-				"/Completion/src3/test0074/p/ImportedClass.java",
+				"/Completion/src3/test0074/p/ImportedClass.js",
 				"package test0074.p;\n"+
 				"\n"+
 				"public class ImportedClass {\n"+
@@ -2072,7 +2072,7 @@ public void test0074() throws JavaModelException {
 				"}");
 		
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true);
-		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0074", "Test.java");
+		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0074", "Test.js");
 	
 		String str = cu.getSource();
 		String completeBehind = "test0074.p.ImportedClass.Inner.ZZ";
@@ -2093,13 +2093,13 @@ public void test0074() throws JavaModelException {
 public void test0075() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test0075/Test.java",
+			"/Completion/src3/test0075/Test.js",
 			"package test0075;\n" +
 			"public @QQAnnot class Test {\n" +
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/pkgannotations/QQAnnotation.java",
+		"/Completion/src/pkgannotations/QQAnnotation.js",
 		"package pkgannotations;"+
 		"public @interface QQAnnotation {\n"+
 		"}");
@@ -2117,13 +2117,13 @@ public void test0075() throws JavaModelException {
 public void test0076() throws JavaModelException {	
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test0076/Test.java",
+			"/Completion/src3/test0076/Test.js",
 			"package test0076;\n" +
 			"public @QQAnnot class Test\n" +
 			"");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/pkgannotations/QQAnnotation.java",
+		"/Completion/src/pkgannotations/QQAnnotation.js",
 		"package pkgannotations;"+
 		"public @interface QQAnnotation {\n"+
 		"}");
@@ -2141,13 +2141,13 @@ public void test0076() throws JavaModelException {
 public void test0077() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test0077/Test.java",
+			"/Completion/src3/test0077/Test.js",
 			"package test0077;\n" +
 			"public @QQAnnot\n" +
 			"");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/pkgannotations/QQAnnotation.java",
+		"/Completion/src/pkgannotations/QQAnnotation.js",
 		"package pkgannotations;"+
 		"public @interface QQAnnotation {\n"+
 		"}");
@@ -2166,7 +2166,7 @@ public void test0077() throws JavaModelException {
 public void test0078() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test0078/Test.java",
+			"/Completion/src3/test0078/Test.js",
 			"package test0078;\n" +
 			"public class Test {\n" +
 			"  public @QQAnnot void foo() {\n" +
@@ -2174,7 +2174,7 @@ public void test0078() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/pkgannotations/QQAnnotation.java",
+		"/Completion/src/pkgannotations/QQAnnotation.js",
 		"package pkgannotations;"+
 		"public @interface QQAnnotation {\n"+
 		"}");
@@ -2192,14 +2192,14 @@ public void test0078() throws JavaModelException {
 public void test0079() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test0078/Test.java",
+			"/Completion/src3/test0078/Test.js",
 			"package test0078;\n" +
 			"public class Test {\n" +
 			"  public @QQAnnot void foo(\n" +
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/pkgannotations/QQAnnotation.java",
+		"/Completion/src/pkgannotations/QQAnnotation.js",
 		"package pkgannotations;"+
 		"public @interface QQAnnotation {\n"+
 		"}");
@@ -2217,14 +2217,14 @@ public void test0079() throws JavaModelException {
 public void test0080() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test0078/Test.java",
+			"/Completion/src3/test0078/Test.js",
 			"package test0078;\n" +
 			"public class Test {\n" +
 			"  public @QQAnnot int var;\n" +
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/pkgannotations/QQAnnotation.java",
+		"/Completion/src/pkgannotations/QQAnnotation.js",
 		"package pkgannotations;"+
 		"public @interface QQAnnotation {\n"+
 		"}");
@@ -2242,14 +2242,14 @@ public void test0080() throws JavaModelException {
 public void test0081() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test0078/Test.java",
+			"/Completion/src3/test0078/Test.js",
 			"package test0078;\n" +
 			"public class Test {\n" +
 			"  public @QQAnnot int var\n" +
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/pkgannotations/QQAnnotation.java",
+		"/Completion/src/pkgannotations/QQAnnotation.js",
 		"package pkgannotations;"+
 		"public @interface QQAnnotation {\n"+
 		"}");
@@ -2267,14 +2267,14 @@ public void test0081() throws JavaModelException {
 public void test0082() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test0078/Test.java",
+			"/Completion/src3/test0078/Test.js",
 			"package test0078;\n" +
 			"public class Test {\n" +
 			"  void foo(@QQAnnot int i) {}\n" +
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/pkgannotations/QQAnnotation.java",
+		"/Completion/src/pkgannotations/QQAnnotation.js",
 		"package pkgannotations;"+
 		"public @interface QQAnnotation {\n"+
 		"}");
@@ -2293,14 +2293,14 @@ public void test0082() throws JavaModelException {
 public void test0083() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test0078/Test.java",
+			"/Completion/src3/test0078/Test.js",
 			"package test0078;\n" +
 			"public class Test {\n" +
 			"  void foo() {@QQAnnot int i}\n" +
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/pkgannotations/QQAnnotation.java",
+		"/Completion/src/pkgannotations/QQAnnotation.js",
 		"package pkgannotations;"+
 		"public @interface QQAnnotation {\n"+
 		"}");
@@ -2320,7 +2320,7 @@ public void test0084() throws JavaModelException {
 	ICompilationUnit imported = null;
 	try {
 		imported = getWorkingCopy(
-				"/Completion/src3/pkgstaticimport/MyClass0084.java",
+				"/Completion/src3/pkgstaticimport/MyClass0084.js",
 				"package pkgstaticimport;\n" +
 				"public class MyClass0084 {\n" +
 				"   public static int foo() {return 0;}\n" +
@@ -2328,7 +2328,7 @@ public void test0084() throws JavaModelException {
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0084/Test.java",
+				"/Completion/src3/test0084/Test.js",
 				"package test0084;\n" +
 				"import static pkgstaticimport.MyClass0084.foo;\n" +
 				"public class Test {\n" +
@@ -2351,7 +2351,7 @@ public void test0084() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=85290
 public void test0085() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0085/TestAnnotation.java",
+			"/Completion/src3/test0085/TestAnnotation.js",
 			"package test0085;\n" +
 			"public @interface TestAnnotation {\n" +
 			"}\n" +
@@ -2373,7 +2373,7 @@ public void test0085() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=85290
 public void test0086() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/TestAnnotation.java",
+			"/Completion/src3/TestAnnotation.js",
 			"public @interface TestAnnotation {\n" +
 			"}\n" +
 			"@TestAnnotati\n" +
@@ -2394,7 +2394,7 @@ public void test0086() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=85402
 public void test0087() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0087/TestAnnotation.java",
+			"/Completion/src3/test0087/TestAnnotation.js",
 			"package test0087;\n" +
 			"public @interface TestAnnotation {\n" +
 			"}\n" +
@@ -2421,7 +2421,7 @@ public void test0087() throws JavaModelException {
 }
 public void test0088() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0088/TestAnnotation.java",
+			"/Completion/src3/test0088/TestAnnotation.js",
 			"package test0088;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2443,7 +2443,7 @@ public void test0088() throws JavaModelException {
 }
 public void test0089() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0089/TestAnnotation.java",
+			"/Completion/src3/test0089/TestAnnotation.js",
 			"package test0089;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2466,7 +2466,7 @@ public void test0089() throws JavaModelException {
 }
 public void test0090() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0090/TestAnnotation.java",
+			"/Completion/src3/test0090/TestAnnotation.js",
 			"package test0090;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2489,7 +2489,7 @@ public void test0090() throws JavaModelException {
 }
 public void test0091() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0091/TestAnnotation.java",
+			"/Completion/src3/test0091/TestAnnotation.js",
 			"package test0091;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2514,7 +2514,7 @@ public void test0091() throws JavaModelException {
 }
 public void test0092() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0092/TestAnnotation.java",
+			"/Completion/src3/test0092/TestAnnotation.js",
 			"package test0092;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2537,7 +2537,7 @@ public void test0092() throws JavaModelException {
 }
 public void test0093() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0093/TestAnnotation.java",
+			"/Completion/src3/test0093/TestAnnotation.js",
 			"package test0093;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2561,7 +2561,7 @@ public void test0093() throws JavaModelException {
 }
 public void test0094() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0094/TestAnnotation.java",
+			"/Completion/src3/test0094/TestAnnotation.js",
 			"package test0094;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2583,7 +2583,7 @@ public void test0094() throws JavaModelException {
 }
 public void test0095() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0095/TestAnnotation.java",
+			"/Completion/src3/test0095/TestAnnotation.js",
 			"package test0095;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2606,7 +2606,7 @@ public void test0095() throws JavaModelException {
 }
 public void test0096() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0096/TestAnnotation.java",
+			"/Completion/src3/test0096/TestAnnotation.js",
 			"package test0096;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2629,7 +2629,7 @@ public void test0096() throws JavaModelException {
 }
 public void test0097() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0097/TestAnnotation.java",
+			"/Completion/src3/test0097/TestAnnotation.js",
 			"package test0097;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2654,7 +2654,7 @@ public void test0097() throws JavaModelException {
 }
 public void test0098() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0098/TestAnnotation.java",
+			"/Completion/src3/test0098/TestAnnotation.js",
 			"package test0098;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2677,7 +2677,7 @@ public void test0098() throws JavaModelException {
 }
 public void test0099() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0099/TestAnnotation.java",
+			"/Completion/src3/test0099/TestAnnotation.js",
 			"package test0099;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2701,7 +2701,7 @@ public void test0099() throws JavaModelException {
 }
 public void test0100() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0100/TestAnnotation.java",
+			"/Completion/src3/test0100/TestAnnotation.js",
 			"package test0100;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2723,7 +2723,7 @@ public void test0100() throws JavaModelException {
 }
 public void test0101() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0101/TestAnnotation.java",
+			"/Completion/src3/test0101/TestAnnotation.js",
 			"package test00101;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2746,7 +2746,7 @@ public void test0101() throws JavaModelException {
 }
 public void test0102() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0102/TestAnnotation.java",
+			"/Completion/src3/test0102/TestAnnotation.js",
 			"package test0102;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2769,7 +2769,7 @@ public void test0102() throws JavaModelException {
 }
 public void test0103() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0103/TestAnnotation.java",
+			"/Completion/src3/test0103/TestAnnotation.js",
 			"package test00103;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2794,7 +2794,7 @@ public void test0103() throws JavaModelException {
 }
 public void test0104() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0104/TestAnnotation.java",
+			"/Completion/src3/test0104/TestAnnotation.js",
 			"package test0104;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2817,7 +2817,7 @@ public void test0104() throws JavaModelException {
 }
 public void test0105() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0105/TestAnnotation.java",
+			"/Completion/src3/test0105/TestAnnotation.js",
 			"package test0105;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2841,7 +2841,7 @@ public void test0105() throws JavaModelException {
 }
 public void test0106() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0106/TestAnnotation.java",
+			"/Completion/src3/test0106/TestAnnotation.js",
 			"package test0106;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2863,7 +2863,7 @@ public void test0106() throws JavaModelException {
 }
 public void test0107() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0107/TestAnnotation.java",
+			"/Completion/src3/test0107/TestAnnotation.js",
 			"package test0107;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2886,7 +2886,7 @@ public void test0107() throws JavaModelException {
 }
 public void test0108() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0108/TestAnnotation.java",
+			"/Completion/src3/test0108/TestAnnotation.js",
 			"package test0108;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2909,7 +2909,7 @@ public void test0108() throws JavaModelException {
 }
 public void test0109() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0109/TestAnnotation.java",
+			"/Completion/src3/test0109/TestAnnotation.js",
 			"package test0109;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2934,7 +2934,7 @@ public void test0109() throws JavaModelException {
 }
 public void test0110() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0110/TestAnnotation.java",
+			"/Completion/src3/test0110/TestAnnotation.js",
 			"package test0110;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2957,7 +2957,7 @@ public void test0110() throws JavaModelException {
 }
 public void test0111() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0111/TestAnnotation.java",
+			"/Completion/src3/test0111/TestAnnotation.js",
 			"package test0111;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -2981,7 +2981,7 @@ public void test0111() throws JavaModelException {
 }
 public void test0112() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0112/TestAnnotation.java",
+			"/Completion/src3/test0112/TestAnnotation.js",
 			"package test0112;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3004,7 +3004,7 @@ public void test0112() throws JavaModelException {
 }
 public void test0113() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0113/TestAnnotation.java",
+			"/Completion/src3/test0113/TestAnnotation.js",
 			"package test0113;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3028,7 +3028,7 @@ public void test0113() throws JavaModelException {
 }
 public void test0114() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0114/TestAnnotation.java",
+			"/Completion/src3/test0114/TestAnnotation.js",
 			"package test0114;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3052,7 +3052,7 @@ public void test0114() throws JavaModelException {
 }
 public void test0115() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0115/TestAnnotation.java",
+			"/Completion/src3/test0115/TestAnnotation.js",
 			"package test0115;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3078,7 +3078,7 @@ public void test0115() throws JavaModelException {
 }
 public void test0116() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0116/TestAnnotation.java",
+			"/Completion/src3/test0116/TestAnnotation.js",
 			"package test0116;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3102,7 +3102,7 @@ public void test0116() throws JavaModelException {
 }
 public void test0117() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0117/TestAnnotation.java",
+			"/Completion/src3/test0117/TestAnnotation.js",
 			"package test0117;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3127,7 +3127,7 @@ public void test0117() throws JavaModelException {
 }
 public void test0118() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0118/TestAnnotation.java",
+			"/Completion/src3/test0118/TestAnnotation.js",
 			"package test0118;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3150,7 +3150,7 @@ public void test0118() throws JavaModelException {
 }
 public void test0119() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0119/TestAnnotation.java",
+			"/Completion/src3/test0119/TestAnnotation.js",
 			"package test0119;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3174,7 +3174,7 @@ public void test0119() throws JavaModelException {
 }
 public void test0120() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0120/TestAnnotation.java",
+			"/Completion/src3/test0120/TestAnnotation.js",
 			"package test0120;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3198,7 +3198,7 @@ public void test0120() throws JavaModelException {
 }
 public void test0121() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0121/TestAnnotation.java",
+			"/Completion/src3/test0121/TestAnnotation.js",
 			"package test0121;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3224,7 +3224,7 @@ public void test0121() throws JavaModelException {
 }
 public void test0122() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0122/TestAnnotation.java",
+			"/Completion/src3/test0122/TestAnnotation.js",
 			"package test0122;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3248,7 +3248,7 @@ public void test0122() throws JavaModelException {
 }
 public void test0123() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0123/TestAnnotation.java",
+			"/Completion/src3/test0123/TestAnnotation.js",
 			"package test0123;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3273,7 +3273,7 @@ public void test0123() throws JavaModelException {
 }
 public void test0124() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0124/TestAnnotation.java",
+			"/Completion/src3/test0124/TestAnnotation.js",
 			"package test0124;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3296,7 +3296,7 @@ public void test0124() throws JavaModelException {
 }
 public void test0125() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0125/TestAnnotation.java",
+			"/Completion/src3/test0125/TestAnnotation.js",
 			"package test0125;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3320,7 +3320,7 @@ public void test0125() throws JavaModelException {
 }
 public void test0126() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0126/TestAnnotation.java",
+			"/Completion/src3/test0126/TestAnnotation.js",
 			"package test0126;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3344,7 +3344,7 @@ public void test0126() throws JavaModelException {
 }
 public void test0127() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0127/TestAnnotation.java",
+			"/Completion/src3/test0127/TestAnnotation.js",
 			"package test0127;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3370,7 +3370,7 @@ public void test0127() throws JavaModelException {
 }
 public void test0128() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0128/TestAnnotation.java",
+			"/Completion/src3/test0128/TestAnnotation.js",
 			"package test0128;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3394,7 +3394,7 @@ public void test0128() throws JavaModelException {
 }
 public void test0129() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0129/TestAnnotation.java",
+			"/Completion/src3/test0129/TestAnnotation.js",
 			"package test0129;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3419,7 +3419,7 @@ public void test0129() throws JavaModelException {
 }
 public void test0130() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0130/TestAnnotation.java",
+			"/Completion/src3/test0130/TestAnnotation.js",
 			"package test0130;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3442,7 +3442,7 @@ public void test0130() throws JavaModelException {
 }
 public void test0131() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0131/TestAnnotation.java",
+			"/Completion/src3/test0131/TestAnnotation.js",
 			"package test0131;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3466,7 +3466,7 @@ public void test0131() throws JavaModelException {
 }
 public void test0132() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0132/TestAnnotation.java",
+			"/Completion/src3/test0132/TestAnnotation.js",
 			"package test0132;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3490,7 +3490,7 @@ public void test0132() throws JavaModelException {
 }
 public void test0133() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0133/TestAnnotation.java",
+			"/Completion/src3/test0133/TestAnnotation.js",
 			"package test0133;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3516,7 +3516,7 @@ public void test0133() throws JavaModelException {
 }
 public void test0134() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Completion/src3/test0134/TestAnnotation.java",
+			"/Completion/src3/test0134/TestAnnotation.js",
 			"package test0134;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3540,7 +3540,7 @@ public void test0134() throws JavaModelException {
 }
 public void test0135() throws JavaModelException {
 	CompletionResult result = complete(
-			"/Completion/src3/test0135/TestAnnotation.java",
+			"/Completion/src3/test0135/TestAnnotation.js",
 			"package test0135;\n" +
 			"public @interface TestAnnotation {\n" +
 			"  String foo1();\n" +
@@ -3562,14 +3562,14 @@ public void test0136() throws JavaModelException {
 	ICompilationUnit enumeration = null;
 	try {
 		enumeration = getWorkingCopy(
-				"/Completion/src3/test0136/Colors.java",
+				"/Completion/src3/test0136/Colors.js",
 				"package test0136;\n" +
 				"public enum Colors {\n" +
 				"  RED, BLUE, WHITE;\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0136/Test.java",
+				"/Completion/src3/test0136/Test.js",
 				"package test0136;\n" +
 				"public class Test {\n" +
 				"  void bar(Colors c) {\n" +
@@ -3600,14 +3600,14 @@ public void test0137() throws JavaModelException {
 	ICompilationUnit enumeration = null;
 	try {
 		enumeration = getWorkingCopy(
-				"/Completion/src3/test0137/Colors.java",
+				"/Completion/src3/test0137/Colors.js",
 				"package test0137;\n" +
 				"public enum Colors {\n" +
 				"  RED, BLUE, WHITE;\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0137/Test.java",
+				"/Completion/src3/test0137/Test.js",
 				"package test0137;\n" +
 				"public class Test {\n" +
 				"  void bar(Colors c) {\n" +
@@ -3639,14 +3639,14 @@ public void test0138() throws JavaModelException {
 	ICompilationUnit enumeration = null;
 	try {
 		enumeration = getWorkingCopy(
-				"/Completion/src3/test0138/Colors.java",
+				"/Completion/src3/test0138/Colors.js",
 				"package test0138;\n" +
 				"public enum Colors {\n" +
 				"  RED, BLUE, WHITE;\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0138/Test.java",
+				"/Completion/src3/test0138/Test.js",
 				"package test0138;\n" +
 				"public class Test {\n" +
 				"  void bar(Colors c) {\n" +
@@ -3679,14 +3679,14 @@ public void test0139() throws JavaModelException {
 	ICompilationUnit enumeration = null;
 	try {
 		enumeration = getWorkingCopy(
-				"/Completion/src3/test0139/Colors.java",
+				"/Completion/src3/test0139/Colors.js",
 				"package test0139;\n" +
 				"public enum Colors {\n" +
 				"  RED, BLUE, WHITE;\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0139/Test.java",
+				"/Completion/src3/test0139/Test.js",
 				"package test0139;\n" +
 				"public class Test {\n" +
 				"  void bar(Colors c) {\n" +
@@ -3718,14 +3718,14 @@ public void test0140() throws JavaModelException {
 	ICompilationUnit enumeration = null;
 	try {
 		enumeration = getWorkingCopy(
-				"/Completion/src3/test0140/Colors.java",
+				"/Completion/src3/test0140/Colors.js",
 				"package test0140;\n" +
 				"public enum Colors {\n" +
 				"  RED, BLUE, WHITE;\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0140/Test.java",
+				"/Completion/src3/test0140/Test.js",
 				"package test0140;\n" +
 				"public class Test {\n" +
 				"  void bar(Colors c) {\n" +
@@ -3757,14 +3757,14 @@ public void test0141() throws JavaModelException {
 	ICompilationUnit enumeration = null;
 	try {
 		enumeration = getWorkingCopy(
-				"/Completion/src3/test0141/Colors.java",
+				"/Completion/src3/test0141/Colors.js",
 				"package test0141;\n" +
 				"public class Colors {\n" +
 				"  public final static int RED = 0, BLUE = 1, WHITE = 3;\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0141/Test.java",
+				"/Completion/src3/test0141/Test.js",
 				"package test0141;\n" +
 				"public class Test {\n" +
 				"  void bar(Colors c) {\n" +
@@ -3798,7 +3798,7 @@ public void test0142() throws JavaModelException {
 	ICompilationUnit enumeration = null;
 	try {
 		enumeration = getWorkingCopy(
-				"/Completion/src3/test0142/Colors.java",
+				"/Completion/src3/test0142/Colors.js",
 				"package test0142;\n" +
 				"public enum Colors {\n" +
 				"  RED, BLUE, WHITE;\n" +
@@ -3806,7 +3806,7 @@ public void test0142() throws JavaModelException {
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0142/Test.java",
+				"/Completion/src3/test0142/Test.js",
 				"package test0142;\n" +
 				"public class Test {\n" +
 				"  void bar(Colors REDc) {\n" +
@@ -3844,7 +3844,7 @@ public void test0143() throws JavaModelException {
 		JavaCore.setOptions(options);
 		
 		enumeration = getWorkingCopy(
-				"/Completion/src3/test0143/Colors.java",
+				"/Completion/src3/test0143/Colors.js",
 				"package test0143;\n" +
 				"public enum Colors {\n" +
 				"  RED, BLUE, WHITE;\n" +
@@ -3852,7 +3852,7 @@ public void test0143() throws JavaModelException {
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0143/Test.java",
+				"/Completion/src3/test0143/Test.js",
 				"package test0143;\n" +
 				"public class Test {\n" +
 				"  void bar() {\n" +
@@ -3886,7 +3886,7 @@ public void test0144() throws JavaModelException {
 		JavaCore.setOptions(options);
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0144/X.java",
+				"/Completion/src3/test0144/X.js",
 				"package test0144;\n" +
 				"public class X {\n" +
 				"  public class Y {}\n" +
@@ -3894,7 +3894,7 @@ public void test0144() throws JavaModelException {
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0144/Test.java",
+				"/Completion/src3/test0144/Test.js",
 				"package test0144;\n" +
 				"public class Test extends X.\n" +
 				"{}",
@@ -3921,7 +3921,7 @@ public void test0145() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0145/ZZAnnotation.java",
+				"/Completion/src3/test0145/ZZAnnotation.js",
 				"package test0145;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int foo1();\n" +
@@ -3929,13 +3929,13 @@ public void test0145() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0145/ZZClass.java",
+				"/Completion/src3/test0145/ZZClass.js",
 				"package test0145;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0145/Test.java",
+				"/Completion/src3/test0145/Test.js",
 				"package test0145;\n" +
 				"@ZZAnnotation(foo1=ZZ)\n" +
 				"public class Test {\n" +
@@ -3967,7 +3967,7 @@ public void test0146() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0146/ZZAnnotation.java",
+				"/Completion/src3/test0146/ZZAnnotation.js",
 				"package test0146;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int foo1();\n" +
@@ -3975,13 +3975,13 @@ public void test0146() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0146/ZZClass.java",
+				"/Completion/src3/test0146/ZZClass.js",
 				"package test0146;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0146/Test.java",
+				"/Completion/src3/test0146/Test.js",
 				"package test0146;\n" +
 				"@ZZAnnotation(foo1= 0 + ZZ)\n" +
 				"public class Test {\n" +
@@ -4013,7 +4013,7 @@ public void test0147() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0147/ZZAnnotation.java",
+				"/Completion/src3/test0147/ZZAnnotation.js",
 				"package test0147;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int[] foo1();\n" +
@@ -4021,13 +4021,13 @@ public void test0147() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0147/ZZClass.java",
+				"/Completion/src3/test0147/ZZClass.js",
 				"package test0147;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0147/Test.java",
+				"/Completion/src3/test0147/Test.js",
 				"package test0147;\n" +
 				"@ZZAnnotation(foo1= {ZZ})\n" +
 				"public class Test {\n" +
@@ -4059,7 +4059,7 @@ public void test0148() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0148/ZZAnnotation.java",
+				"/Completion/src3/test0148/ZZAnnotation.js",
 				"package test0148;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int foo1();\n" +
@@ -4067,13 +4067,13 @@ public void test0148() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0148/ZZClass.java",
+				"/Completion/src3/test0148/ZZClass.js",
 				"package test0148;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0148/Test.java",
+				"/Completion/src3/test0148/Test.js",
 				"package test0148;\n" +
 				"@ZZAnnotation(foo1=ZZ\n" +
 				"public class Test {\n" +
@@ -4105,7 +4105,7 @@ public void test0149() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0149/ZZAnnotation.java",
+				"/Completion/src3/test0149/ZZAnnotation.js",
 				"package test0149;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int foo1();\n" +
@@ -4113,13 +4113,13 @@ public void test0149() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0149/ZZClass.java",
+				"/Completion/src3/test0149/ZZClass.js",
 				"package test0149;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0149/Test.java",
+				"/Completion/src3/test0149/Test.js",
 				"package test0149;\n" +
 				"@ZZAnnotation(foo1= 0 + ZZ\n" +
 				"public class Test {\n" +
@@ -4151,7 +4151,7 @@ public void test0150() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0150/ZZAnnotation.java",
+				"/Completion/src3/test0150/ZZAnnotation.js",
 				"package test0150;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int[] foo1();\n" +
@@ -4159,13 +4159,13 @@ public void test0150() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0150/ZZClass.java",
+				"/Completion/src3/test0150/ZZClass.js",
 				"package test0150;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0150/Test.java",
+				"/Completion/src3/test0150/Test.js",
 				"package test0150;\n" +
 				"@ZZAnnotation(foo1= {ZZ}\n" +
 				"public class Test {\n" +
@@ -4197,7 +4197,7 @@ public void test0151() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0151/ZZAnnotation.java",
+				"/Completion/src3/test0151/ZZAnnotation.js",
 				"package test0151;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int[] foo1();\n" +
@@ -4205,13 +4205,13 @@ public void test0151() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0151/ZZClass.java",
+				"/Completion/src3/test0151/ZZClass.js",
 				"package test0151;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0151/Test.java",
+				"/Completion/src3/test0151/Test.js",
 				"package test0151;\n" +
 				"@ZZAnnotation(foo1= {ZZ\n" +
 				"public class Test {\n" +
@@ -4243,7 +4243,7 @@ public void test0152() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0152/ZZAnnotation.java",
+				"/Completion/src3/test0152/ZZAnnotation.js",
 				"package test0152;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int foo1();\n" +
@@ -4251,13 +4251,13 @@ public void test0152() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0152/ZZClass.java",
+				"/Completion/src3/test0152/ZZClass.js",
 				"package test0152;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0152/Test.java",
+				"/Completion/src3/test0152/Test.js",
 				"package test0152;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -4291,7 +4291,7 @@ public void test0153() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0153/ZZAnnotation.java",
+				"/Completion/src3/test0153/ZZAnnotation.js",
 				"package test0153;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int foo1();\n" +
@@ -4299,13 +4299,13 @@ public void test0153() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0153/ZZClass.java",
+				"/Completion/src3/test0153/ZZClass.js",
 				"package test0153;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0153/Test.java",
+				"/Completion/src3/test0153/Test.js",
 				"package test0153;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -4339,7 +4339,7 @@ public void test0154() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0154/ZZAnnotation.java",
+				"/Completion/src3/test0154/ZZAnnotation.js",
 				"package test0154;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int[] foo1();\n" +
@@ -4347,13 +4347,13 @@ public void test0154() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0154/ZZClass.java",
+				"/Completion/src3/test0154/ZZClass.js",
 				"package test0154;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0154/Test.java",
+				"/Completion/src3/test0154/Test.js",
 				"package test0154;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -4387,7 +4387,7 @@ public void test0155() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0155/ZZAnnotation.java",
+				"/Completion/src3/test0155/ZZAnnotation.js",
 				"package test0155;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int foo1();\n" +
@@ -4395,13 +4395,13 @@ public void test0155() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0155/ZZClass.java",
+				"/Completion/src3/test0155/ZZClass.js",
 				"package test0155;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0155/Test.java",
+				"/Completion/src3/test0155/Test.js",
 				"package test0155;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -4435,7 +4435,7 @@ public void test0156() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0156/ZZAnnotation.java",
+				"/Completion/src3/test0156/ZZAnnotation.js",
 				"package test0156;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int foo1();\n" +
@@ -4443,13 +4443,13 @@ public void test0156() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0156/ZZClass.java",
+				"/Completion/src3/test0156/ZZClass.js",
 				"package test0156;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0156/Test.java",
+				"/Completion/src3/test0156/Test.js",
 				"package test0156;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -4483,7 +4483,7 @@ public void test0157() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0157/ZZAnnotation.java",
+				"/Completion/src3/test0157/ZZAnnotation.js",
 				"package test0157;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int[] foo1();\n" +
@@ -4491,13 +4491,13 @@ public void test0157() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0157/ZZClass.java",
+				"/Completion/src3/test0157/ZZClass.js",
 				"package test0157;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0157/Test.java",
+				"/Completion/src3/test0157/Test.js",
 				"package test0157;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -4531,7 +4531,7 @@ public void test0158() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0158/ZZAnnotation.java",
+				"/Completion/src3/test0158/ZZAnnotation.js",
 				"package test0158;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int[] foo1();\n" +
@@ -4539,13 +4539,13 @@ public void test0158() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0158/ZZClass.java",
+				"/Completion/src3/test0158/ZZClass.js",
 				"package test0158;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0158/Test.java",
+				"/Completion/src3/test0158/Test.js",
 				"package test0158;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -4579,7 +4579,7 @@ public void test0159() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0159/ZZAnnotation.java",
+				"/Completion/src3/test0159/ZZAnnotation.js",
 				"package test0159;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int foo1();\n" +
@@ -4587,13 +4587,13 @@ public void test0159() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0159/ZZClass.java",
+				"/Completion/src3/test0159/ZZClass.js",
 				"package test0159;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0159/Test.java",
+				"/Completion/src3/test0159/Test.js",
 				"package test0159;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -4627,7 +4627,7 @@ public void test0160() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0160/ZZAnnotation.java",
+				"/Completion/src3/test0160/ZZAnnotation.js",
 				"package test0160;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int foo1();\n" +
@@ -4635,13 +4635,13 @@ public void test0160() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0160/ZZClass.java",
+				"/Completion/src3/test0160/ZZClass.js",
 				"package test0160;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0160/Test.java",
+				"/Completion/src3/test0160/Test.js",
 				"package test0160;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -4675,7 +4675,7 @@ public void test0161() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0161/ZZAnnotation.java",
+				"/Completion/src3/test0161/ZZAnnotation.js",
 				"package test0161;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int[] foo1();\n" +
@@ -4683,13 +4683,13 @@ public void test0161() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0161/ZZClass.java",
+				"/Completion/src3/test0161/ZZClass.js",
 				"package test0161;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0161/Test.java",
+				"/Completion/src3/test0161/Test.js",
 				"package test0161;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -4723,7 +4723,7 @@ public void test0162() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0162/ZZAnnotation.java",
+				"/Completion/src3/test0162/ZZAnnotation.js",
 				"package test0162;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int foo1();\n" +
@@ -4731,13 +4731,13 @@ public void test0162() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0162/ZZClass.java",
+				"/Completion/src3/test0162/ZZClass.js",
 				"package test0162;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0162/Test.java",
+				"/Completion/src3/test0162/Test.js",
 				"package test0162;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -4771,7 +4771,7 @@ public void test0163() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0163/ZZAnnotation.java",
+				"/Completion/src3/test0163/ZZAnnotation.js",
 				"package test0163;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int foo1();\n" +
@@ -4779,13 +4779,13 @@ public void test0163() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0163/ZZClass.java",
+				"/Completion/src3/test0163/ZZClass.js",
 				"package test0163;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0163/Test.java",
+				"/Completion/src3/test0163/Test.js",
 				"package test0163;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -4819,7 +4819,7 @@ public void test0164() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0164/ZZAnnotation.java",
+				"/Completion/src3/test0164/ZZAnnotation.js",
 				"package test0164;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int[] foo1();\n" +
@@ -4827,13 +4827,13 @@ public void test0164() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0164/ZZClass.java",
+				"/Completion/src3/test0164/ZZClass.js",
 				"package test0164;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0164/Test.java",
+				"/Completion/src3/test0164/Test.js",
 				"package test0164;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -4867,7 +4867,7 @@ public void test0165() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0165/ZZAnnotation.java",
+				"/Completion/src3/test0165/ZZAnnotation.js",
 				"package test0165;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int[] foo1();\n" +
@@ -4875,13 +4875,13 @@ public void test0165() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0165/ZZClass.java",
+				"/Completion/src3/test0165/ZZClass.js",
 				"package test0165;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0165/Test.java",
+				"/Completion/src3/test0165/Test.js",
 				"package test0165;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -4915,7 +4915,7 @@ public void test0166() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0166/ZZAnnotation.java",
+				"/Completion/src3/test0166/ZZAnnotation.js",
 				"package test0166;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int foo1();\n" +
@@ -4923,13 +4923,13 @@ public void test0166() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0166/ZZClass.java",
+				"/Completion/src3/test0166/ZZClass.js",
 				"package test0166;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0166/Test.java",
+				"/Completion/src3/test0166/Test.js",
 				"package test0166;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -4965,7 +4965,7 @@ public void test0167() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0167/ZZAnnotation.java",
+				"/Completion/src3/test0167/ZZAnnotation.js",
 				"package test0167;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int foo1();\n" +
@@ -4973,13 +4973,13 @@ public void test0167() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0167/ZZClass.java",
+				"/Completion/src3/test0167/ZZClass.js",
 				"package test0167;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0167/Test.java",
+				"/Completion/src3/test0167/Test.js",
 				"package test0167;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -5015,7 +5015,7 @@ public void test0168() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0168/ZZAnnotation.java",
+				"/Completion/src3/test0168/ZZAnnotation.js",
 				"package test0168;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int[] foo1();\n" +
@@ -5023,13 +5023,13 @@ public void test0168() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0168/ZZClass.java",
+				"/Completion/src3/test0168/ZZClass.js",
 				"package test0168;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0168/Test.java",
+				"/Completion/src3/test0168/Test.js",
 				"package test0168;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -5065,7 +5065,7 @@ public void test0169() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0169/ZZAnnotation.java",
+				"/Completion/src3/test0169/ZZAnnotation.js",
 				"package test0169;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int foo1();\n" +
@@ -5073,13 +5073,13 @@ public void test0169() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0169/ZZClass.java",
+				"/Completion/src3/test0169/ZZClass.js",
 				"package test0169;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0169/Test.java",
+				"/Completion/src3/test0169/Test.js",
 				"package test0169;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -5115,7 +5115,7 @@ public void test0170() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0170/ZZAnnotation.java",
+				"/Completion/src3/test0170/ZZAnnotation.js",
 				"package test0170;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int foo1();\n" +
@@ -5123,13 +5123,13 @@ public void test0170() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0170/ZZClass.java",
+				"/Completion/src3/test0170/ZZClass.js",
 				"package test0170;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0170/Test.java",
+				"/Completion/src3/test0170/Test.js",
 				"package test0170;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -5165,7 +5165,7 @@ public void test0171() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0171/ZZAnnotation.java",
+				"/Completion/src3/test0171/ZZAnnotation.js",
 				"package test0171;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int[] foo1();\n" +
@@ -5173,13 +5173,13 @@ public void test0171() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0171/ZZClass.java",
+				"/Completion/src3/test0171/ZZClass.js",
 				"package test0171;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0171/Test.java",
+				"/Completion/src3/test0171/Test.js",
 				"package test0171;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -5215,7 +5215,7 @@ public void test0172() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0172/ZZAnnotation.java",
+				"/Completion/src3/test0172/ZZAnnotation.js",
 				"package test0172;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int[] foo1();\n" +
@@ -5223,13 +5223,13 @@ public void test0172() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0172/ZZClass.java",
+				"/Completion/src3/test0172/ZZClass.js",
 				"package test0172;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0172/Test.java",
+				"/Completion/src3/test0172/Test.js",
 				"package test0172;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -5265,7 +5265,7 @@ public void test0173() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0173/ZZAnnotation.java",
+				"/Completion/src3/test0173/ZZAnnotation.js",
 				"package test0173;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int foo1();\n" +
@@ -5273,13 +5273,13 @@ public void test0173() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0173/ZZClass.java",
+				"/Completion/src3/test0173/ZZClass.js",
 				"package test0173;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0173/Test.java",
+				"/Completion/src3/test0173/Test.js",
 				"package test0173;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -5313,7 +5313,7 @@ public void test0174() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0174/ZZAnnotation.java",
+				"/Completion/src3/test0174/ZZAnnotation.js",
 				"package test0174;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int foo1();\n" +
@@ -5321,13 +5321,13 @@ public void test0174() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0174/ZZClass.java",
+				"/Completion/src3/test0174/ZZClass.js",
 				"package test0174;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0174/Test.java",
+				"/Completion/src3/test0174/Test.js",
 				"package test0174;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -5361,7 +5361,7 @@ public void test0175() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0175/ZZAnnotation.java",
+				"/Completion/src3/test0175/ZZAnnotation.js",
 				"package test0175;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int[] foo1();\n" +
@@ -5369,13 +5369,13 @@ public void test0175() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0175/ZZClass.java",
+				"/Completion/src3/test0175/ZZClass.js",
 				"package test0175;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0175/Test.java",
+				"/Completion/src3/test0175/Test.js",
 				"package test0175;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -5409,7 +5409,7 @@ public void test0176() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0176/ZZAnnotation.java",
+				"/Completion/src3/test0176/ZZAnnotation.js",
 				"package test0176;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int foo1();\n" +
@@ -5417,13 +5417,13 @@ public void test0176() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0176/ZZClass.java",
+				"/Completion/src3/test0176/ZZClass.js",
 				"package test0176;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0176/Test.java",
+				"/Completion/src3/test0176/Test.js",
 				"package test0176;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -5457,7 +5457,7 @@ public void test0177() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0177/ZZAnnotation.java",
+				"/Completion/src3/test0177/ZZAnnotation.js",
 				"package test0177;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int foo1();\n" +
@@ -5465,13 +5465,13 @@ public void test0177() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0177/ZZClass.java",
+				"/Completion/src3/test0177/ZZClass.js",
 				"package test0177;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0177/Test.java",
+				"/Completion/src3/test0177/Test.js",
 				"package test0177;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -5505,7 +5505,7 @@ public void test0178() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0178/ZZAnnotation.java",
+				"/Completion/src3/test0178/ZZAnnotation.js",
 				"package test0178;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int[] foo1();\n" +
@@ -5513,13 +5513,13 @@ public void test0178() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0178/ZZClass.java",
+				"/Completion/src3/test0178/ZZClass.js",
 				"package test0178;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0178/Test.java",
+				"/Completion/src3/test0178/Test.js",
 				"package test0178;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -5553,7 +5553,7 @@ public void test0179() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0179/ZZAnnotation.java",
+				"/Completion/src3/test0179/ZZAnnotation.js",
 				"package test0179;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int[] foo1();\n" +
@@ -5561,13 +5561,13 @@ public void test0179() throws JavaModelException {
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0179/ZZClass.java",
+				"/Completion/src3/test0179/ZZClass.js",
 				"package test0179;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0179/Test.java",
+				"/Completion/src3/test0179/Test.js",
 				"package test0179;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -5601,20 +5601,20 @@ public void test0180() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0180/ZZAnnotation.java",
+				"/Completion/src3/test0180/ZZAnnotation.js",
 				"package test0180;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int value();\n" +
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0180/ZZClass.java",
+				"/Completion/src3/test0180/ZZClass.js",
 				"package test0180;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0180/Test.java",
+				"/Completion/src3/test0180/Test.js",
 				"package test0180;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -5649,20 +5649,20 @@ public void test0181() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0181/ZZAnnotation.java",
+				"/Completion/src3/test0181/ZZAnnotation.js",
 				"package test0181;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int value();\n" +
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0181/ZZClass.java",
+				"/Completion/src3/test0181/ZZClass.js",
 				"package test0181;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0181/Test.java",
+				"/Completion/src3/test0181/Test.js",
 				"package test0181;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -5697,20 +5697,20 @@ public void test0182() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0182/ZZAnnotation.java",
+				"/Completion/src3/test0182/ZZAnnotation.js",
 				"package test0182;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int[] value();\n" +
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0182/ZZClass.java",
+				"/Completion/src3/test0182/ZZClass.js",
 				"package test0182;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0182/Test.java",
+				"/Completion/src3/test0182/Test.js",
 				"package test0182;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -5745,20 +5745,20 @@ public void test0183() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0183/ZZAnnotation.java",
+				"/Completion/src3/test0183/ZZAnnotation.js",
 				"package test0183;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int value();\n" +
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0183/ZZClass.java",
+				"/Completion/src3/test0183/ZZClass.js",
 				"package test0183;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0183/Test.java",
+				"/Completion/src3/test0183/Test.js",
 				"package test0183;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -5793,20 +5793,20 @@ public void test0184() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0184/ZZAnnotation.java",
+				"/Completion/src3/test0184/ZZAnnotation.js",
 				"package test0184;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int value();\n" +
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0184/ZZClass.java",
+				"/Completion/src3/test0184/ZZClass.js",
 				"package test0184;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0184/Test.java",
+				"/Completion/src3/test0184/Test.js",
 				"package test0184;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -5841,20 +5841,20 @@ public void test0185() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0185/ZZAnnotation.java",
+				"/Completion/src3/test0185/ZZAnnotation.js",
 				"package test0185;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int[] value();\n" +
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0185/ZZClass.java",
+				"/Completion/src3/test0185/ZZClass.js",
 				"package test0185;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0185/Test.java",
+				"/Completion/src3/test0185/Test.js",
 				"package test0185;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -5889,20 +5889,20 @@ public void test0186() throws JavaModelException {
 	ICompilationUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
-				"/Completion/src3/test0186/ZZAnnotation.java",
+				"/Completion/src3/test0186/ZZAnnotation.js",
 				"package test0186;\n" +
 				"public @interface ZZAnnotation {\n" +
 				"  int[] value();\n" +
 				"}");
 		
 		aClass = getWorkingCopy(
-				"/Completion/src3/test0186/ZZClass.java",
+				"/Completion/src3/test0186/ZZClass.js",
 				"package test0186;\n" +
 				"public class ZZClass {\n" +
 				"}");
 		
 		CompletionResult result = complete(
-				"/Completion/src3/test0186/Test.java",
+				"/Completion/src3/test0186/Test.js",
 				"package test0186;\n" +
 				"public class Test {\n" +
 				"  public static final int zzint = 0;\n" +
@@ -5934,7 +5934,7 @@ public void test0186() throws JavaModelException {
 // completion test with capture
 public void test0187() throws JavaModelException {
     CompletionResult result = complete(
-            "/Completion/src3/test0187/Test.java",
+            "/Completion/src3/test0187/Test.js",
             "package test0187;\n" +
             "public class Test<U> {\n" +
             "  void bar(ZZClass1<? extends U> var) {\n" +
@@ -5962,7 +5962,7 @@ public void test0187() throws JavaModelException {
 // completion test with capture
 public void test0188() throws JavaModelException {
     CompletionResult result = complete(
-            "/Completion/src3/test0188/Test.java",
+            "/Completion/src3/test0188/Test.js",
             "package test0188;\n" +
             "public class Test<U> {\n" +
             "  ZZClass1<? extends U> var1;\n" +
@@ -5991,7 +5991,7 @@ public void test0188() throws JavaModelException {
 // completion test with capture
 public void test0189() throws JavaModelException {
     CompletionResult result = complete(
-            "/Completion/src3/test0189/Test.java",
+            "/Completion/src3/test0189/Test.js",
             "package test0189;\n" +
             "public class Test<U> {\n" +
             "  void bar(ZZClass3 var) {\n" +
@@ -6017,7 +6017,7 @@ public void test0189() throws JavaModelException {
 // completion test with capture
 public void test0190() throws JavaModelException {
     CompletionResult result = complete(
-            "/Completion/src3/test0190/Test.java",
+            "/Completion/src3/test0190/Test.js",
             "package test0190;\n" +
             "public class Test<U> {\n" +
             "  ZZClass1<? extends U> var1\n" +
@@ -6051,7 +6051,7 @@ public void test0190() throws JavaModelException {
 // completion test with capture
 public void test0191() throws JavaModelException {
     CompletionResult result = complete(
-            "/Completion/src3/test0191/Test.java",
+            "/Completion/src3/test0191/Test.js",
             "package test0191;\n" +
             "public class Test<U> {\n" +
             "  ZZClass1<? extends U> var1;\n" +
@@ -6079,7 +6079,7 @@ public void test0191() throws JavaModelException {
 }
 public void test0192() throws JavaModelException {
     CompletionResult result = complete(
-            "/Completion/src3/test0192/Test.java",
+            "/Completion/src3/test0192/Test.js",
             "package test0192;\n" +     
             "class ZZClass1<X,Y> {\n" +
             "}\n" +
@@ -6099,7 +6099,7 @@ public void test0192() throws JavaModelException {
 }
 public void test0193() throws JavaModelException {
     CompletionResult result = complete(
-            "/Completion/src3/test0193/Test.java",
+            "/Completion/src3/test0193/Test.js",
             "package test0193;\n" +
             "class ZZClass1<X,Y> {\n" +
             "}\n" +
@@ -6121,7 +6121,7 @@ public void test0193() throws JavaModelException {
 }
 public void test0194() throws JavaModelException {
     CompletionResult result = complete(
-            "/Completion/src3/test0194/Test.java",
+            "/Completion/src3/test0194/Test.js",
             "package test0194;\n" +     
             "class ZZClass1<X,Y> {\n" +
             "}\n" +
@@ -6141,7 +6141,7 @@ public void test0194() throws JavaModelException {
 }
 public void test0195() throws JavaModelException {
     CompletionResult result = complete(
-            "/Completion/src3/test0195/Test.java",
+            "/Completion/src3/test0195/Test.js",
             "package test0195;\n" +
             "class ZZClass1<X,Y> {\n" +
             "}\n" +
@@ -6163,7 +6163,7 @@ public void test0195() throws JavaModelException {
 }
 public void test0196() throws JavaModelException {
     CompletionResult result = complete(
-            "/Completion/src3/test0196/Test.java",
+            "/Completion/src3/test0196/Test.js",
             "package test0196;\n" +
             "class ZZAnnot {\n" +
             "  int foo1();\n" +
@@ -6185,7 +6185,7 @@ public void test0196() throws JavaModelException {
 }
 public void test0196b() throws JavaModelException {
     CompletionResult result = complete(
-            "/Completion/src3/test0196/Test.java",
+            "/Completion/src3/test0196/Test.js",
             "package test0196;\n" +
             "@interface ZZAnnot {\n" +
             "  int foo1();\n" +
@@ -6208,7 +6208,7 @@ public void test0196b() throws JavaModelException {
 }
 public void test0197() throws JavaModelException {
     CompletionResult result = complete(
-            "/Completion/src3/test0197/Test.java",
+            "/Completion/src3/test0197/Test.js",
             "package test0197;\n" +
             "class ZZAnnot {\n" +
             "  int foo1();\n" +
@@ -6231,7 +6231,7 @@ public void test0197() throws JavaModelException {
 }
 public void test0197b() throws JavaModelException {
     CompletionResult result = complete(
-            "/Completion/src3/test0197/Test.java",
+            "/Completion/src3/test0197/Test.js",
             "package test0197;\n" +
             "@interface ZZAnnot {\n" +
             "  int foo1();\n" +
@@ -6255,7 +6255,7 @@ public void test0197b() throws JavaModelException {
 }
 public void test0198() throws JavaModelException {
     CompletionResult result = complete(
-            "/Completion/src3/test0198/Test.java",
+            "/Completion/src3/test0198/Test.js",
             "package test0198;\n" +
             "class ZZAnnot {\n" +
             "  int foo1();\n" +
@@ -6278,7 +6278,7 @@ public void test0198() throws JavaModelException {
 }
 public void test0198b() throws JavaModelException {
     CompletionResult result = complete(
-            "/Completion/src3/test0198/Test.java",
+            "/Completion/src3/test0198/Test.js",
             "package test0198;\n" +
             "@interface ZZAnnot {\n" +
             "  int foo1();\n" +
@@ -6302,7 +6302,7 @@ public void test0198b() throws JavaModelException {
 }
 public void test0199() throws JavaModelException {
     CompletionResult result = complete(
-            "/Completion/src3/test0199/Test.java",
+            "/Completion/src3/test0199/Test.js",
             "package test0199;\n" +
             "class ZZAnnot {\n" +
             "  int foo1();\n" +
@@ -6324,7 +6324,7 @@ public void test0199() throws JavaModelException {
 }
 public void test0199b() throws JavaModelException {
     CompletionResult result = complete(
-            "/Completion/src3/test0199/Test.java",
+            "/Completion/src3/test0199/Test.js",
             "package test0199;\n" +
             "@interface ZZAnnot {\n" +
             "  int foo1();\n" +
@@ -6346,7 +6346,7 @@ public void test0199b() throws JavaModelException {
 }
 public void test0200() throws JavaModelException {
     CompletionResult result = complete(
-            "/Completion/src3/test0200/Test.java",
+            "/Completion/src3/test0200/Test.js",
             "package test0200;\n" +
             "class ZZAnnot {\n" +
             "  int foo1();\n" +
@@ -6369,7 +6369,7 @@ public void test0200() throws JavaModelException {
 }
 public void test0200b() throws JavaModelException {
     CompletionResult result = complete(
-            "/Completion/src3/test0200/Test.java",
+            "/Completion/src3/test0200/Test.js",
             "package test0200;\n" +
             "@interface ZZAnnot {\n" +
             "  int foo1();\n" +
@@ -6392,7 +6392,7 @@ public void test0200b() throws JavaModelException {
 }
 public void test0201() throws JavaModelException {
     CompletionResult result = complete(
-            "/Completion/src3/test0201/Test.java",
+            "/Completion/src3/test0201/Test.js",
             "package test0201;\n" +
             "class ZZAnnot {\n" +
             "  int foo1();\n" +
@@ -6415,7 +6415,7 @@ public void test0201() throws JavaModelException {
 }
 public void test0201b() throws JavaModelException {
     CompletionResult result = complete(
-            "/Completion/src3/test0201/Test.java",
+            "/Completion/src3/test0201/Test.js",
             "package test0201;\n" +
             "@interface ZZAnnot {\n" +
             "  int foo1();\n" +
@@ -6440,7 +6440,7 @@ public void test0202() throws JavaModelException {
 	ICompilationUnit aType = null;
 	try {
 		aType = getWorkingCopy(
-	            "/Completion/src3/p/ZZType.java",
+	            "/Completion/src3/p/ZZType.js",
 	            "package p;\n" +
 	            "public class ZZType {\n" +
 	            "  public class ZZClass {" +
@@ -6454,7 +6454,7 @@ public void test0202() throws JavaModelException {
 	            "}");
 		
 	    CompletionResult result = complete(
-	            "/Completion/src3/test0202/Test.java",
+	            "/Completion/src3/test0202/Test.js",
 	            "package test0202;\n" +
 	            "public class Test {\n" +
 	            "  public void foo() {" +
@@ -6486,7 +6486,7 @@ public void test0203() throws JavaModelException {
 	ICompilationUnit aType = null;
 	try {
 		aType = getWorkingCopy(
-	            "/Completion/src3/p/ZZType.java",
+	            "/Completion/src3/p/ZZType.js",
 	            "package p;\n" +
 	            "public class ZZType {\n" +
 	            "  public class ZZClass {" +
@@ -6500,7 +6500,7 @@ public void test0203() throws JavaModelException {
 	            "}");
 		
 	    CompletionResult result = complete(
-	            "/Completion/src3/test0203/Test.java",
+	            "/Completion/src3/test0203/Test.js",
 	            "package test0203;\n" +
 	            "public class Test extends ZZ{\n" +
 	            "}",
@@ -6526,7 +6526,7 @@ public void test0204() throws JavaModelException {
 	ICompilationUnit aType = null;
 	try {
 		aType = getWorkingCopy(
-	            "/Completion/src3/p/ZZType.java",
+	            "/Completion/src3/p/ZZType.js",
 	            "package p;\n" +
 	            "public class ZZType {\n" +
 	            "  public class ZZClass {" +
@@ -6540,7 +6540,7 @@ public void test0204() throws JavaModelException {
 	            "}");
 		
 	    CompletionResult result = complete(
-	            "/Completion/src3/test0204/Test.java",
+	            "/Completion/src3/test0204/Test.js",
 	            "package test0204;\n" +
 	            "public interface Test extends ZZ{\n" +
 	            "}",
@@ -6566,7 +6566,7 @@ public void test0205() throws JavaModelException {
 	ICompilationUnit aType = null;
 	try {
 		aType = getWorkingCopy(
-	            "/Completion/src3/p/ZZType.java",
+	            "/Completion/src3/p/ZZType.js",
 	            "package p;\n" +
 	            "public class ZZType {\n" +
 	            "  public class ZZClass {" +
@@ -6580,7 +6580,7 @@ public void test0205() throws JavaModelException {
 	            "}");
 		
 	    CompletionResult result = complete(
-	            "/Completion/src3/test0205/Test.java",
+	            "/Completion/src3/test0205/Test.js",
 	            "package test0205;\n" +
 	            "public class Test implements ZZ {\n" +
 	            "}",
@@ -6606,7 +6606,7 @@ public void test0206() throws JavaModelException {
 	ICompilationUnit aType = null;
 	try {
 		aType = getWorkingCopy(
-	            "/Completion/src3/p/ZZType.java",
+	            "/Completion/src3/p/ZZType.js",
 	            "package p;\n" +
 	            "public class ZZType {\n" +
 	            "  public class ZZClass {" +
@@ -6620,7 +6620,7 @@ public void test0206() throws JavaModelException {
 	            "}");
 		
 	    CompletionResult result = complete(
-	            "/Completion/src3/test0206/Test.java",
+	            "/Completion/src3/test0206/Test.js",
 	            "package test0206;\n" +
 	            "@ZZ\n" +
 	            "public class Test {\n" +
@@ -6647,13 +6647,13 @@ public void test0207() throws JavaModelException {
 	ICompilationUnit aType = null;
 	try {
 		aType = getWorkingCopy(
-	            "/Completion/src3/p/Annot.java",
+	            "/Completion/src3/p/Annot.js",
 	            "package p;\n" +
 	            "public @interface Annot {\n" +
 	            "}");
 		
 	    CompletionResult result = complete(
-	            "/Completion/src3/test0207/Test.java",
+	            "/Completion/src3/test0207/Test.js",
 	            "package test0206;\n" +
 	            "@p.Annot\n",
             	"@p.Annot");
@@ -6677,12 +6677,12 @@ public void test0208() throws JavaModelException {
 	ICompilationUnit aType = null;
 	try {
 		aType = getWorkingCopy(
-	            "/Completion/src3/p/Colors.java",
+	            "/Completion/src3/p/Colors.js",
 	            "package p;\n" +
 	            "public enum Colors { BLACK, BLUE, WHITE, RED }\n");
 		
 	    CompletionResult result = complete(
-	            "/Completion/src3/test0208/Test.java",
+	            "/Completion/src3/test0208/Test.js",
 	            "package test0208;\n" +
 	            "public class Test {\n" +
 	            "  static final String BLANK = \"    \";\n" +
@@ -6720,7 +6720,7 @@ public void test0209() throws JavaModelException {
 	ICompilationUnit importedClass = null;
 	try {
 		importedClass = getWorkingCopy(
-				"/Completion/src3/test0209/p/ImportedClass.java",
+				"/Completion/src3/test0209/p/ImportedClass.js",
 				"package test0209.p;\n"+
 				"\n"+
 				"public class ImportedClass {\n"+
@@ -6729,7 +6729,7 @@ public void test0209() throws JavaModelException {
 				"}");
 
 		CompletionResult result = complete(
-	            "/Completion/src3/test0209/Test.java",
+	            "/Completion/src3/test0209/Test.js",
 	            "package test0209;\n" +
 	            "\n" +
 	            "import static Imported\n" +
@@ -6762,7 +6762,7 @@ public void test0210() throws JavaModelException {
 	ICompilationUnit importedClass = null;
 	try {
 		importedClass = getWorkingCopy(
-				"/Completion/src3/test0210/p/ImportedClass.java",
+				"/Completion/src3/test0210/p/ImportedClass.js",
 				"package test0210.p;\n"+
 				"\n"+
 				"public class ImportedClass {\n"+
@@ -6771,7 +6771,7 @@ public void test0210() throws JavaModelException {
 				"}");
 
 		CompletionResult result = complete(
-	            "/Completion/src3/test0210/Test.java",
+	            "/Completion/src3/test0210/Test.js",
 	            "package test0210;\n" +
 	            "\n" +
 	            "import static test0210.p.ImportedClass.Im\n" +
@@ -6803,7 +6803,7 @@ public void test0211() throws JavaModelException {
 	ICompilationUnit importedClass = null;
 	try {
 		importedClass = getWorkingCopy(
-				"/Completion/src3/test0211/p/ImportedClass.java",
+				"/Completion/src3/test0211/p/ImportedClass.js",
 				"package test0211.p;\n"+
 				"\n"+
 				"public class ImportedClass {\n"+
@@ -6812,7 +6812,7 @@ public void test0211() throws JavaModelException {
 				"}");
 
 		CompletionResult result = complete(
-	            "/Completion/src3/test0211/Test.java",
+	            "/Completion/src3/test0211/Test.js",
 	            "package test0211;\n" +
 	            "\n" +
 	            "import static test0211.p.ImportedClass.Im\n" +
@@ -6844,7 +6844,7 @@ public void test0212() throws JavaModelException {
 	ICompilationUnit importedClass = null;
 	try {
 		importedClass = getWorkingCopy(
-				"/Completion/src3/test0212/p/ImportedClass.java",
+				"/Completion/src3/test0212/p/ImportedClass.js",
 				"package test0212.p;\n"+
 				"\n"+
 				"public class ImportedClass {\n"+
@@ -6853,7 +6853,7 @@ public void test0212() throws JavaModelException {
 				"}");
 
 		CompletionResult result = complete(
-	            "/Completion/src3/test0212/Test.java",
+	            "/Completion/src3/test0212/Test.js",
 	            "package test0212;\n" +
 	            "\n" +
 	            "import test0212.p.Im\n" +
@@ -6885,14 +6885,14 @@ public void test0213() throws JavaModelException {
 	ICompilationUnit importedClass = null;
 	try {
 		importedClass = getWorkingCopy(
-				"/Completion/src3/test0213/p/ImportedClass.java",
+				"/Completion/src3/test0213/p/ImportedClass.js",
 				"package test0213.p;\n"+
 				"\n"+
 				"public class ImportedClass {\n"+
 				"}");
 
 		CompletionResult result = complete(
-	            "/Completion/src3/test0213/Test.java",
+	            "/Completion/src3/test0213/Test.js",
 	            "package test0213;\n" +
 	            "\n" +
 	            "import test0213.p.Im\n" +
@@ -6926,21 +6926,21 @@ public void test0214() throws JavaModelException {
 	ICompilationUnit superClass = null;
 	try {
 		paramClass1 = getWorkingCopy(
-				"/Completion/src3/test0214/AClass1.java",
+				"/Completion/src3/test0214/AClass1.js",
 				"package test0214;\n"+
 				"\n"+
 				"public class AClass1 {\n"+
 				"}");
 		
 		paramClass2 = getWorkingCopy(
-				"/Completion/src3/test0214/AClass2.java",
+				"/Completion/src3/test0214/AClass2.js",
 				"package test0214;\n"+
 				"\n"+
 				"public class AClass2 {\n"+
 				"}");
 		
 		superClass = getWorkingCopy(
-				"/Completion/src3/test0214/SuperClass.java",
+				"/Completion/src3/test0214/SuperClass.js",
 				"package test0214;\n"+
 				"\n"+
 				"public class SuperClass<T> {\n"+
@@ -6951,7 +6951,7 @@ public void test0214() throws JavaModelException {
 				"}");
 
 		CompletionResult result = complete(
-	            "/Completion/src3/test0214/Test.java",
+	            "/Completion/src3/test0214/Test.js",
 	            "package test0214;\n" +
 	            "\n" +
 	            "public class Test<Z> extends SuperClass<Z>{\n" +
@@ -6990,7 +6990,7 @@ public void test0215() throws JavaModelException {
 	ICompilationUnit superClass = null;
 	try {
 		paramClass = getWorkingCopy(
-				"/Completion/src3/test0215/p/ParamClass.java",
+				"/Completion/src3/test0215/p/ParamClass.js",
 				"package test0215.p;\n"+
 				"\n"+
 				"public class ParamClass {\n"+
@@ -6999,7 +6999,7 @@ public void test0215() throws JavaModelException {
 				"}");
 		
 		superClass = getWorkingCopy(
-				"/Completion/src3/test0215/SuperClass.java",
+				"/Completion/src3/test0215/SuperClass.js",
 				"package test0215;\n"+
 				"\n"+
 				"public class SuperClass<T> {\n"+
@@ -7009,7 +7009,7 @@ public void test0215() throws JavaModelException {
 				"}");
 
 		CompletionResult result = complete(
-	            "/Completion/src3/test0215/Test.java",
+	            "/Completion/src3/test0215/Test.js",
 	            "package test0215;\n" +
 	            "\n" +
 	            "public class Test<Z> extends SuperClass<Z>{\n" +
@@ -7045,21 +7045,21 @@ public void test0216() throws JavaModelException {
 	ICompilationUnit superClass = null;
 	try {
 		paramClass1 = getWorkingCopy(
-				"/Completion/src3/test0216/p/ParamClass.java",
+				"/Completion/src3/test0216/p/ParamClass.js",
 				"package test0216.p;\n"+
 				"\n"+
 				"public class ParamClass {\n"+
 				"}");
 		
 		paramClass2 = getWorkingCopy(
-				"/Completion/src3/test0216/q/ParamClass.java",
+				"/Completion/src3/test0216/q/ParamClass.js",
 				"package test0216.q;\n"+
 				"\n"+
 				"public class ParamClass {\n"+
 				"}");
 		
 		superClass = getWorkingCopy(
-				"/Completion/src3/test0216/SuperClass.java",
+				"/Completion/src3/test0216/SuperClass.js",
 				"package test0216;\n"+
 				"\n"+
 				"public class SuperClass<T> {\n"+
@@ -7070,7 +7070,7 @@ public void test0216() throws JavaModelException {
 				"}");
 
 		CompletionResult result = complete(
-	            "/Completion/src3/test0216/Test.java",
+	            "/Completion/src3/test0216/Test.js",
 	            "package test0216;\n" +
 	            "\n" +
 	            "public class Test<Z> extends SuperClass<Z>{\n" +
@@ -7108,7 +7108,7 @@ public void test0217() throws JavaModelException {
 	ICompilationUnit paramClass1 = null;
 	try {
 		paramClass1 = getWorkingCopy(
-				"/Completion/src3/test0217/AType.java",
+				"/Completion/src3/test0217/AType.js",
 				"package test0217;\n"+
 				"\n"+
 				"public class AType<T> {\n"+
@@ -7117,7 +7117,7 @@ public void test0217() throws JavaModelException {
 
 
 		CompletionResult result = complete(
-	            "/Completion/src3/test0217/Test.java",
+	            "/Completion/src3/test0217/Test.js",
 	            "package test0217;\n" +
 	            "\n" +
 	            "public class Test {\n" +
@@ -7147,7 +7147,7 @@ public void test0218() throws JavaModelException {
 	ICompilationUnit paramClass1 = null;
 	try {
 		paramClass1 = getWorkingCopy(
-				"/Completion/src3/test0218/AType.java",
+				"/Completion/src3/test0218/AType.js",
 				"package test0218;\n"+
 				"\n"+
 				"public class AType<T> {\n"+
@@ -7156,7 +7156,7 @@ public void test0218() throws JavaModelException {
 
 
 		CompletionResult result = complete(
-	            "/Completion/src3/test0218/Test.java",
+	            "/Completion/src3/test0218/Test.js",
 	            "package test0218;\n" +
 	            "\n" +
 	            "public class Test {\n" +
@@ -7186,7 +7186,7 @@ public void test0219() throws JavaModelException {
 	ICompilationUnit paramClass1 = null;
 	try {
 		paramClass1 = getWorkingCopy(
-				"/Completion/src3/test0219/AType.java",
+				"/Completion/src3/test0219/AType.js",
 				"package test0219;\n"+
 				"\n"+
 				"public class AType<T> {\n"+
@@ -7195,7 +7195,7 @@ public void test0219() throws JavaModelException {
 
 
 		CompletionResult result = complete(
-	            "/Completion/src3/test0219/Test.java",
+	            "/Completion/src3/test0219/Test.js",
 	            "package test0219;\n" +
 	            "\n" +
 	            "public class Test {\n" +
@@ -7227,7 +7227,7 @@ public void test0220() throws JavaModelException {
 	ICompilationUnit paramClass1 = null;
 	try {
 		paramClass1 = getWorkingCopy(
-				"/Completion/src3/test0220/AType.java",
+				"/Completion/src3/test0220/AType.js",
 				"package test0220;\n"+
 				"\n"+
 				"public class AType<T> {\n"+
@@ -7236,7 +7236,7 @@ public void test0220() throws JavaModelException {
 
 
 		CompletionResult result = complete(
-	            "/Completion/src3/test0220/Test.java",
+	            "/Completion/src3/test0220/Test.js",
 	            "package test0220;\n" +
 	            "\n" +
 	            "public class Test {\n" +
@@ -7265,7 +7265,7 @@ public void test0221() throws JavaModelException {
 	ICompilationUnit paramClass1 = null;
 	try {
 		paramClass1 = getWorkingCopy(
-				"/Completion/src3/test0221/AType.java",
+				"/Completion/src3/test0221/AType.js",
 				"package test0221;\n"+
 				"\n"+
 				"public class AType<T> {\n"+
@@ -7274,7 +7274,7 @@ public void test0221() throws JavaModelException {
 
 
 		CompletionResult result = complete(
-	            "/Completion/src3/test0221/Test.java",
+	            "/Completion/src3/test0221/Test.js",
 	            "package test0221;\n" +
 	            "\n" +
 	            "public class Test {\n" +
@@ -7304,7 +7304,7 @@ public void test0222() throws JavaModelException {
 	ICompilationUnit paramClass1 = null;
 	try {
 		paramClass1 = getWorkingCopy(
-				"/Completion/src3/test0222/AType.java",
+				"/Completion/src3/test0222/AType.js",
 				"package test0222;\n"+
 				"\n"+
 				"public class AType<T> {\n"+
@@ -7313,7 +7313,7 @@ public void test0222() throws JavaModelException {
 
 
 		CompletionResult result = complete(
-	            "/Completion/src3/test0222/Test.java",
+	            "/Completion/src3/test0222/Test.js",
 	            "package test0222;\n" +
 	            "\n" +
 	            "public class Test {\n" +
@@ -7346,7 +7346,7 @@ public void test0223() throws JavaModelException {
 	ICompilationUnit paramClass1 = null;
 	try {
 		paramClass1 = getWorkingCopy(
-				"/Completion/src3/test0223/AType.java",
+				"/Completion/src3/test0223/AType.js",
 				"package test0223;\n"+
 				"\n"+
 				"public class AType {\n"+
@@ -7356,7 +7356,7 @@ public void test0223() throws JavaModelException {
 
 
 		CompletionResult result = complete(
-	            "/Completion/src3/test0223/Test.java",
+	            "/Completion/src3/test0223/Test.js",
 	            "package test0223;\n" +
 	            "\n" +
 	            "import static test0223.AType.va\n" +
@@ -7389,7 +7389,7 @@ public void test0223() throws JavaModelException {
  */
 public void test0224() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0224/Test.java",
+            "/Completion/src3/test0224/Test.js",
             "package test0224;\n" +
             "\n" +
             "public class Test<T ext> {\n" +
@@ -7411,7 +7411,7 @@ public void test0224() throws JavaModelException {
  */
 public void test0225() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0225/Test.java",
+            "/Completion/src3/test0225/Test.js",
             "package test0225;\n" +
             "\n" +
             "public class Test<T ext\n" +
@@ -7433,7 +7433,7 @@ public void test0225() throws JavaModelException {
  */
 public void test0226() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0226/Test.java",
+            "/Completion/src3/test0226/Test.js",
             "package test0226;\n" +
             "\n" +
             "public class Test {\n" +
@@ -7456,7 +7456,7 @@ public void test0226() throws JavaModelException {
  */
 public void test0227() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0227/Test.java",
+            "/Completion/src3/test0227/Test.js",
             "package test0227;\n" +
             "\n" +
             "public class Test {\n" +
@@ -7479,7 +7479,7 @@ public void test0227() throws JavaModelException {
  */
 public void test0228() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0228/Test.java",
+            "/Completion/src3/test0228/Test.js",
             "package test0228;\n" +
             "\n" +
             "public class Test {\n" +
@@ -7504,7 +7504,7 @@ public void test0228() throws JavaModelException {
  */
 public void test0229() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0229/Test.java",
+            "/Completion/src3/test0229/Test.js",
             "package test0229;\n" +
             "\n" +
             "public class Test<T> {\n" +
@@ -7527,7 +7527,7 @@ public void test0229() throws JavaModelException {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=96944
 public void test0230() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0230/Test.java",
+            "/Completion/src3/test0230/Test.js",
             "package test0230;\n" +
             "\n" +
             "public class Test<ZT> {\n" +
@@ -7550,7 +7550,7 @@ public void test0230() throws JavaModelException {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=96944
 public void test0231() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0231/Test.java",
+            "/Completion/src3/test0231/Test.js",
             "package test0231;\n" +
             "\n" +
             "public class Test<ZT> {\n" +
@@ -7573,7 +7573,7 @@ public void test0231() throws JavaModelException {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=96944
 public void test0232() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0232/Test.java",
+            "/Completion/src3/test0232/Test.js",
             "package test0232;\n" +
             "\n" +
             "public class Test<ZT> {\n" +
@@ -7602,7 +7602,7 @@ public void test0232() throws JavaModelException {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=82560
 public void test0233() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0233/Test0233Z.java",
+            "/Completion/src3/test0233/Test0233Z.js",
             "package test0233;\n" +
             "\n" +
             "public class Test0233Z<ZT> {\n" +
@@ -7627,7 +7627,7 @@ public void test0233() throws JavaModelException {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=97860
 public void test0234() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0234/Test.java",
+            "/Completion/src3/test0234/Test.js",
             "package test0234;\n" +
             "\n" +
             "public class Test<ZT> {\n" +
@@ -7650,7 +7650,7 @@ public void test0234() throws JavaModelException {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=97860
 public void test0235() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0235/Test.java",
+            "/Completion/src3/test0235/Test.js",
             "package test0235;\n" +
             "\n" +
             "public class Test<ZT> {\n" +
@@ -7672,7 +7672,7 @@ public void test0235() throws JavaModelException {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=94641
 public void test0236() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0236/Test.java",
+            "/Completion/src3/test0236/Test.js",
             "package test0236;\n" +
             "\n" +
             "public class Test<ZT> {\n" +
@@ -7696,7 +7696,7 @@ public void test0236() throws JavaModelException {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=94907
 public void test0237() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0237/Test.java",
+            "/Completion/src3/test0237/Test.js",
             "package test0237;\n" +
             "\n" +
             "public class Test<ZT> ext {\n" +
@@ -7716,7 +7716,7 @@ public void test0237() throws JavaModelException {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=94907
 public void test0238() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0238/Test.java",
+            "/Completion/src3/test0238/Test.js",
             "package test0238;\n" +
             "\n" +
             "public class Test<ZT> imp {\n" +
@@ -7736,7 +7736,7 @@ public void test0238() throws JavaModelException {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=94907
 public void test0239() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0239/Test.java",
+            "/Completion/src3/test0239/Test.js",
             "package test0239;\n" +
             "\n" +
             "public class Test<ZT> extends Object ext {\n" +
@@ -7756,7 +7756,7 @@ public void test0239() throws JavaModelException {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=94907
 public void test0240() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0204/Test.java",
+            "/Completion/src3/test0204/Test.js",
             "package test0240;\n" +
             "\n" +
             "public class Test<ZT> extends Object imp {\n" +
@@ -7776,7 +7776,7 @@ public void test0240() throws JavaModelException {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=94907
 public void test0241() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0241/Test.java",
+            "/Completion/src3/test0241/Test.js",
             "package test0241;\n" +
             "\n" +
             "public interface Test<ZT> ext {\n" +
@@ -7796,7 +7796,7 @@ public void test0241() throws JavaModelException {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=94907
 public void test0242() throws JavaModelException {
 	CompletionResult result = complete(
-            "/Completion/src3/test0242/Test.java",
+            "/Completion/src3/test0242/Test.js",
             "package test0242;\n" +
             "\n" +
             "public interface Test<ZT> imp {\n" +
@@ -7816,7 +7816,7 @@ public void test0242() throws JavaModelException {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=99686
 	public void test0243() throws JavaModelException {
 		CompletionResult result = complete(
-			"/Completion/src3/test0243/X.java",
+			"/Completion/src3/test0243/X.js",
 			"package test0243;\n" + 
 			"public class X {\n" + 
 			"	void test() {\n" + 
@@ -7840,7 +7840,7 @@ public void test0242() throws JavaModelException {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=100009
 public void test0244() throws JavaModelException {
 		CompletionResult result = complete(
-			"/Completion/src3/test0244/X.java",
+			"/Completion/src3/test0244/X.js",
 			"package test0244;\n" + 
 			"import generics.*;\n" + 
 			"public class X extends ZAGenericType {\n" + 
@@ -7857,19 +7857,19 @@ public void test0244() throws JavaModelException {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=101456
 public void test0245() throws JavaModelException {
     this.wc = getWorkingCopy(
-            "/Completion/src/test/SnapshotImpl.java",
+            "/Completion/src/test/SnapshotImpl.js",
             "class SnapshotImpl extends AbstractSnapshot<SnapshotImpl, ProviderImpl> {}");
     getWorkingCopy(
-            "/Completion/src/test/Snapshot.java",
+            "/Completion/src/test/Snapshot.js",
             "public interface Snapshot<S extends Snapshot> {}");
     getWorkingCopy(
-            "/Completion/src/test/SnapshotProvider.java",
+            "/Completion/src/test/SnapshotProvider.js",
             "interface SnapshotProvider<S extends Snapshot> {}");
     getWorkingCopy(
-            "/Completion/src/test/AbstractSnapshot.java",
+            "/Completion/src/test/AbstractSnapshot.js",
             "abstract class AbstractSnapshot<S extends Snapshot, P extends SnapshotProvider<S>> implements Snapshot<S> {}");
     getWorkingCopy(
-            "/Completion/src/test/ProviderImpl.java",
+            "/Completion/src/test/ProviderImpl.js",
             "class ProviderImpl implements SnapshotProvider<SnapshotImpl> {}");
 
     CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true);
@@ -7883,7 +7883,7 @@ public void test0245() throws JavaModelException {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=83005
 public void test0246() throws JavaModelException {
 		CompletionResult result = complete(
-			"/Completion/src3/test0245/X.java",
+			"/Completion/src3/test0245/X.js",
 			"package test0245;\n" + 
 			"public @interface X {\n" + 
 			"	ann\n" +  
@@ -7897,7 +7897,7 @@ public void test0246() throws JavaModelException {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=102284
 public void test0247() throws JavaModelException {
 		CompletionResult result = complete(
-			"/Completion/src3/test0245/X.java",
+			"/Completion/src3/test0245/X.js",
 			"package test0245;\n" + 
 			"public class X {\n" + 
 			"  void test() {\n" + 
@@ -7923,7 +7923,7 @@ public void test0248() throws JavaModelException {
 		
 		this.workingCopies = new ICompilationUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/camelcase/Test.java",
+			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
 			"import static camelcase.ImportedType.*;"+
 			"public class Test {\n"+
@@ -7933,7 +7933,7 @@ public void test0248() throws JavaModelException {
 			"}");
 		
 		this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/camelcase/ImportedType.java",
+			"/Completion/src/camelcase/ImportedType.js",
 			"package camelcase;"+
 			"public class ImportedType {\n"+
 			"  public static void oneTwoThree(){}\n"+
@@ -7964,7 +7964,7 @@ public void test0249() throws JavaModelException {
 		
 		this.workingCopies = new ICompilationUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/camelcase/Test.java",
+			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
 			"import static camelcase.ImportedType.*;"+
 			"public class Test {\n"+
@@ -7974,7 +7974,7 @@ public void test0249() throws JavaModelException {
 			"}");
 		
 		this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/camelcase/ImportedType.java",
+			"/Completion/src/camelcase/ImportedType.js",
 			"package camelcase;"+
 			"public class ImportedType {\n"+
 			"  public static int oneTwoThree;\n"+
@@ -8005,14 +8005,14 @@ public void test0250() throws JavaModelException {
 	
 		this.workingCopies = new ICompilationUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/camelcase/Test.java",
+			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
 			"import static camelcase.ImportedType.oTT;"+
 			"public class Test {\n"+
 			"}");
 		
 		this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/camelcase/ImportedType.java",
+			"/Completion/src/camelcase/ImportedType.js",
 			"package camelcase;"+
 			"public class ImportedType {\n"+
 			"  public static void oneTwoThree(){}\n"+
@@ -8043,14 +8043,14 @@ public void test0260() throws JavaModelException {
 		
 		this.workingCopies = new ICompilationUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src/camelcase/Test.java",
+			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
 			"@Annot(oTT)"+
 			"public class Test {\n"+
 			"}");
 		
 		this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/camelcase/Annot.java",
+			"/Completion/src/camelcase/Annot.js",
 			"package camelcase;"+
 			"public @interface Annot {\n"+
 			"  String oneTwoThree() default \"\";\n"+
@@ -8075,7 +8075,7 @@ public void test0260() throws JavaModelException {
 public void test0261() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class Test<T extends SuperClass> {\n"+
 		"  T foo() {\n"+
@@ -8084,7 +8084,7 @@ public void test0261() throws JavaModelException {
 		"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/SuperClass.java",
+		"/Completion/src/test/SuperClass.js",
 		"package test;"+
 		"public class SuperClass {\n"+
 		"  public int zzfield;\n"+
@@ -8106,7 +8106,7 @@ public void test0261() throws JavaModelException {
 public void test0262() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class Test<T extends SuperInterface> {\n"+
 		"  T foo() {\n"+
@@ -8115,7 +8115,7 @@ public void test0262() throws JavaModelException {
 		"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/SuperInterface.java",
+		"/Completion/src/test/SuperInterface.js",
 		"package test;"+
 		"public interface SuperInterface {\n"+
 		"  public static int zzfield;\n"+
@@ -8138,7 +8138,7 @@ public void test0262() throws JavaModelException {
 public void test0263() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class Test<T extends SuperClass & SuperInterface> {\n"+
 		"  T foo() {\n"+
@@ -8147,7 +8147,7 @@ public void test0263() throws JavaModelException {
 		"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/SuperClass.java",
+		"/Completion/src/test/SuperClass.js",
 		"package test;"+
 		"public class SuperClass {\n"+
 		"  public int zzfield;\n"+
@@ -8155,7 +8155,7 @@ public void test0263() throws JavaModelException {
 		"}");
 	
 	this.workingCopies[2] = getWorkingCopy(
-		"/Completion/src/test/SuperInterface.java",
+		"/Completion/src/test/SuperInterface.js",
 		"package test;"+
 		"public interface SuperInterface {\n"+
 		"  public static int zzfield2;\n"+
@@ -8179,21 +8179,21 @@ public void test0263() throws JavaModelException {
 public void test0264() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"@MyAnnot(MyEnum\n"+
 		"public class Test {\n"+
 		"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/MyEnum.java",
+		"/Completion/src/test/MyEnum.js",
 		"package test;"+
 		"public enum MyEnum {\n"+
 		"  AAA\n"+
 		"}");
 	
 	this.workingCopies[2] = getWorkingCopy(
-		"/Completion/src/test/MyAnnot.java",
+		"/Completion/src/test/MyAnnot.js",
 		"package test;"+
 		"public @interface MyAnnot {\n"+
 		"  MyEnum[] value();\n"+
@@ -8215,7 +8215,7 @@ public void test0264() throws JavaModelException {
 public void test0265() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/enumbug/EnumBug.java",
+		"/Completion/src/enumbug/EnumBug.js",
 		"package enumbug;\n"+
 		"public class EnumBug {\n"+
 		"  public static enum Foo {foo, bar, baz}\n"+
@@ -8244,14 +8244,14 @@ public void test0265() throws JavaModelException {
 public void test0266() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class Test<T, U, TU> extends SuperTest<T> {\n"+
 		"  foo\n"+
 		"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/SuperTest.java",
+		"/Completion/src/test/SuperTest.js",
 		"package test;\n"+
 		"public class SuperTest<E> {\n"+
 		"  public <T, U, TU> T foo(SuperTest<T> t, SuperTest<U> u, SuperTest<TU> tu, SuperTest<E> e) {return null;}\n"+
@@ -8277,14 +8277,14 @@ public void test0266() throws JavaModelException {
 public void test0267() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class Test<T, U, TU> extends SuperTest {\n"+
 		"  foo\n"+
 		"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/SuperTest.java",
+		"/Completion/src/test/SuperTest.js",
 		"package test;\n"+
 		"public class SuperTest<E> {\n"+
 		"  public <T, U, TU> T foo(SuperTest<T> t, SuperTest<U> u, SuperTest<TU> tu, SuperTest<E> e) {return null;}\n"+
@@ -8308,14 +8308,14 @@ public void test0267() throws JavaModelException {
 public void test0268() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class Test<T, U, TU> extends SuperTest {\n"+
 		"  foo\n"+
 		"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/SuperTest.java",
+		"/Completion/src/test/SuperTest.js",
 		"package test;\n"+
 		"public class SuperTest {\n"+
 		"  public <T, U, TU> T foo(T t, U u, TU tu) {return null;}\n"+
@@ -8338,14 +8338,14 @@ public void test0268() throws JavaModelException {
 public void test0269() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class Test extends SuperTest {\n"+
 		"  foo\n"+
 		"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/SuperTest.java",
+		"/Completion/src/test/SuperTest.js",
 		"package test;\n"+
 		"public class SuperTest {\n"+
 		"  public <T> void foo() {}\n"+
@@ -8366,19 +8366,19 @@ public void test0269() throws JavaModelException {
 public void test0270() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test270_2.java",
+		"/Completion/src/test/Test270_2.js",
 		"package test;\n"+
 		"public class Test270_2 extends SuperTest<Test270> {\n"+
 		"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/SuperTest.java",
+		"/Completion/src/test/SuperTest.js",
 		"package test;\n"+
 		"public class SuperTest<T> {\n"+
 		"}");
 	
 	this.workingCopies[2] = getWorkingCopy(
-		"/Completion/src/test/Test270.java",
+		"/Completion/src/test/Test270.js",
 		"package test;\n"+
 		"public class Test270 {\n"+
 		"}");
@@ -8399,7 +8399,7 @@ public void test0270() throws JavaModelException {
 public void test0271() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class Test {\n"+
 		"	void foo() {\n"+
@@ -8408,7 +8408,7 @@ public void test0271() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/TestCollections.java",
+		"/Completion/src/test/TestCollections.js",
 		"package test;\n"+
 		"public class TestCollections {\n"+
 		"  public <T> void zzz1(T t) {}\n"+
@@ -8430,7 +8430,7 @@ public void test0271() throws JavaModelException {
 public void test0272() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class Test {\n"+
 		"	void foo(TestCollections t) {\n"+
@@ -8439,7 +8439,7 @@ public void test0272() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/TestCollections.java",
+		"/Completion/src/test/TestCollections.js",
 		"package test;\n"+
 		"public class TestCollections {\n"+
 		"  public <T> void zzz1(T t) {}\n"+
@@ -8462,7 +8462,7 @@ public void test0272() throws JavaModelException {
 public void test0273() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class Test {\n"+
 		"	TestCollections bar() {\n"+
@@ -8474,7 +8474,7 @@ public void test0273() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/TestCollections.java",
+		"/Completion/src/test/TestCollections.js",
 		"package test;\n"+
 		"public class TestCollections {\n"+
 		"  public <T> void zzz1(T t) {}\n"+
@@ -8497,7 +8497,7 @@ public void test0273() throws JavaModelException {
 public void test0274() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class Test {\n"+
 		"	void foo() {\n"+
@@ -8506,7 +8506,7 @@ public void test0274() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/TestCollections.java",
+		"/Completion/src/test/TestCollections.js",
 		"package test;\n"+
 		"public class TestCollections {\n"+
 		"  public <T> void zzz1(T t) {}\n"+
@@ -8528,7 +8528,7 @@ public void test0274() throws JavaModelException {
 public void test0275() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class Test {\n"+
 		"	void foo(int t) {\n"+
@@ -8537,7 +8537,7 @@ public void test0275() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/TestCollections.java",
+		"/Completion/src/test/TestCollections.js",
 		"package test;\n"+
 		"public class TestCollections {\n"+
 		"  public <T> void zzz1(T t) {}\n"+
@@ -8559,7 +8559,7 @@ public void test0275() throws JavaModelException {
 public void test0276() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class Test {\n"+
 		"	int bar() {\n"+
@@ -8571,7 +8571,7 @@ public void test0276() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/TestCollections.java",
+		"/Completion/src/test/TestCollections.js",
 		"package test;\n"+
 		"public class TestCollections {\n"+
 		"  public <T> void zzz1(T t) {}\n"+
@@ -8593,7 +8593,7 @@ public void test0276() throws JavaModelException {
 public void test0277() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class Test {\n"+
 		"	void foo(TestCollections[] o) {\n"+
@@ -8602,7 +8602,7 @@ public void test0277() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/TestCollections.java",
+		"/Completion/src/test/TestCollections.js",
 		"package test;\n"+
 		"public class TestCollections {\n"+
 		"  public <T> void zzz1(T t) {}\n"+
@@ -8624,7 +8624,7 @@ public void test0277() throws JavaModelException {
 public void test0278() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class Test {\n"+
 		"  public <T> void zzz1(T t) {}\n"+
@@ -8649,7 +8649,7 @@ public void test0278() throws JavaModelException {
 public void test0279() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class Test extends TestCollections {\n"+
 		"	void foo() {\n"+
@@ -8658,7 +8658,7 @@ public void test0279() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/TestCollections.java",
+		"/Completion/src/test/TestCollections.js",
 		"package test;\n"+
 		"public class TestCollections {\n"+
 		"  public <T> void zzz1(T t) {}\n"+
@@ -8680,7 +8680,7 @@ public void test0279() throws JavaModelException {
 public void test0280() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class Test {\n"+
 		"	void foo() {\n"+
@@ -8689,7 +8689,7 @@ public void test0280() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/TestCollections.java",
+		"/Completion/src/test/TestCollections.js",
 		"package test;\n"+
 		"public class TestCollections {\n"+
 		"  public <T> void zzz1(T t) {}\n"+
@@ -8711,7 +8711,7 @@ public void test0280() throws JavaModelException {
 public void test0281() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class Test {\n"+
 		"	void foo() {\n"+
@@ -8720,7 +8720,7 @@ public void test0281() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/TestCollections.java",
+		"/Completion/src/test/TestCollections.js",
 		"package test;\n"+
 		"public class TestCollections {\n"+
 		"  public <T> void zzz1(T t) {}\n"+
@@ -8742,7 +8742,7 @@ public void test0281() throws JavaModelException {
 public void test0282() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class Test {\n"+
 		"  public <T> void zzz1(T t) {}\n"+
@@ -8767,7 +8767,7 @@ public void test0282() throws JavaModelException {
 public void test0283() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class Test {\n"+
 		"  public <T, U> void zzz1(T t) {}\n"+
@@ -8792,7 +8792,7 @@ public void test0283() throws JavaModelException {
 public void test0284() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class Test {\n"+
 		"  public <T extends Test2> void zzz1(T t) {}\n"+
@@ -8803,7 +8803,7 @@ public void test0284() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/Test2.java",
+		"/Completion/src/test/Test2.js",
 		"package test;\n"+
 		"public class Test2 {\n"+
 		"}\n");
@@ -8823,7 +8823,7 @@ public void test0284() throws JavaModelException {
 public void test0285() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/other/Test.java",
+		"/Completion/src/other/Test.js",
 		"package other;\n"+
 		"import pack.*;\n"+
 		"public class Test {\n"+
@@ -8833,14 +8833,14 @@ public void test0285() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/pack/ZZZNeedsImportEnum.java",
+		"/Completion/src/pack/ZZZNeedsImportEnum.js",
 		"package pack;\n"+
 		"public enum ZZZNeedsImportEnum {\n"+
 		"  HELLO;\n"+
 		"}\n");
 	
 	this.workingCopies[2] = getWorkingCopy(
-		"/Completion/src/pack/MyAnnotation.java",
+		"/Completion/src/pack/MyAnnotation.js",
 		"package pack;\n"+
 		"public @interface MyAnnotation {\n"+
 		"  ZZZNeedsImportEnum value();\n"+
@@ -8862,7 +8862,7 @@ public void test0285() throws JavaModelException {
 public void test0286() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class Test {\n"+
 		"  void bar(Test2<Object> t) {\n"+
@@ -8871,14 +8871,14 @@ public void test0286() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/Test1.java",
+		"/Completion/src/test/Test1.js",
 		"package test;\n"+
 		"public interface Test1<U> {\n"+
 		"  <T> T[] foo(T[] t);\n"+
 		"}\n");
 	
 	this.workingCopies[2] = getWorkingCopy(
-		"/Completion/src/test/Test2.java",
+		"/Completion/src/test/Test2.js",
 		"package test;\n"+
 		"public interface Test2<U> extends Test1<U> {\n"+
 		"  <T> T[] foo(T[] t);\n"+
@@ -8899,21 +8899,21 @@ public void test0286() throws JavaModelException {
 public void test0287() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;\n"+
 		"public class Test implements Test2<Object>{\n"+
 		"  fo\n"+
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/Test1.java",
+		"/Completion/src/test/Test1.js",
 		"package test;\n"+
 		"public interface Test1<U> {\n"+
 		"  <T> T[] foo(T[] t);\n"+
 		"}\n");
 	
 	this.workingCopies[2] = getWorkingCopy(
-		"/Completion/src/test/Test2.java",
+		"/Completion/src/test/Test2.js",
 		"package test;\n"+
 		"public interface Test2<U> extends Test1<U> {\n"+
 		"  <T> T[] foo(T[] t);\n"+
@@ -8935,14 +8935,14 @@ public void test0287() throws JavaModelException {
 public void test0288() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"import test0.tes"+
 		"public class Test {\n"+
 		"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test0/test1/X.java",
+		"/Completion/src/test0/test1/X.js",
 		"package test0/test1;"+
 		"public class X {\n"+
 		"}");
@@ -8961,14 +8961,14 @@ public void test0288() throws JavaModelException {
 public void test0289() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"import static test0.tes"+
 		"public class Test {\n"+
 		"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test0/test1/X.java",
+		"/Completion/src/test0/test1/X.js",
 		"package test0/test1;"+
 		"public class X {\n"+
 		"}");
@@ -8987,14 +8987,14 @@ public void test0289() throws JavaModelException {
 public void test0290() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test0290/Test.java",
+			"/Completion/src3/test0290/Test.js",
 			"package test0290;\n" +
 			"@\n" +
 			"public class Test {\n" +
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/pkgannotations/QQAnnotation.java",
+		"/Completion/src/pkgannotations/QQAnnotation.js",
 		"package pkgannotations;"+
 		"public @interface QQAnnotation {\n"+
 		"}");
@@ -9014,7 +9014,7 @@ public void test0290() throws JavaModelException {
 public void test0291() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[5];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"  public void foo(){\n" +
@@ -9023,27 +9023,27 @@ public void test0291() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/Test1.java",
+			"/Completion/src3/test/Test1.js",
 			"package test;\n" +
 			"public class Test1<TTest1> {\n" +
 			"  public void foo(TTest1 t){}\n" +
 			"}");
 	
 	this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src3/test/Test2.java",
+			"/Completion/src3/test/Test2.js",
 			"package test;\n" +
 			"public class Test2<TTest2 extends Test3> extends Test1<TTest2> {\n" +
 			"  public void foo(Test3 t){}\n" +
 			"}");
 	
 	this.workingCopies[3] = getWorkingCopy(
-			"/Completion/src3/test/Test3.java",
+			"/Completion/src3/test/Test3.js",
 			"package test;\n" +
 			"public class Test3 {\n" +
 			"}");
 	
 	this.workingCopies[4] = getWorkingCopy(
-			"/Completion/src3/test/Test4.java",
+			"/Completion/src3/test/Test4.js",
 			"package test;\n" +
 			"public class Test4 extends Test3 {\n" +
 			"}");
@@ -9062,7 +9062,7 @@ public void test0291() throws JavaModelException {
 public void test0292() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[6];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"  public void foo(){\n" +
@@ -9071,33 +9071,33 @@ public void test0292() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/Test1.java",
+			"/Completion/src3/test/Test1.js",
 			"package test;\n" +
 			"public class Test1<TTest1> {\n" +
 			"  public void foo(TTest1 t){}\n" +
 			"}");
 	
 	this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src3/test/Test2.java",
+			"/Completion/src3/test/Test2.js",
 			"package test;\n" +
 			"public class Test2<TTest2 extends Test3> extends Test1<TTest2> {\n" +
 			"  public void foo(Test3 t){}\n" +
 			"}");
 	
 	this.workingCopies[3] = getWorkingCopy(
-			"/Completion/src3/test/Test3.java",
+			"/Completion/src3/test/Test3.js",
 			"package test;\n" +
 			"public class Test3 {\n" +
 			"}");
 	
 	this.workingCopies[4] = getWorkingCopy(
-			"/Completion/src3/test/Test4.java",
+			"/Completion/src3/test/Test4.js",
 			"package test;\n" +
 			"public class Test4 extends Test3 {\n" +
 			"}");
 	
 	this.workingCopies[5] = getWorkingCopy(
-			"/Completion/src3/test/Test5.java",
+			"/Completion/src3/test/Test5.js",
 			"package test;\n" +
 			"public class Test5 extends Test2<Test4> {\n" +
 			"  public void foo(Test4 t){}\n" +
@@ -9118,7 +9118,7 @@ public void test0292() throws JavaModelException {
 public void test0293() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[5];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test extends Test2<Test4> {\n" +
 			"  public void foo(Test4 t){}\n" +
@@ -9128,27 +9128,27 @@ public void test0293() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/Test1.java",
+			"/Completion/src3/test/Test1.js",
 			"package test;\n" +
 			"public class Test1<TTest1> {\n" +
 			"  public void foo(TTest1 t){}\n" +
 			"}");
 	
 	this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src3/test/Test2.java",
+			"/Completion/src3/test/Test2.js",
 			"package test;\n" +
 			"public class Test2<TTest2 extends Test3> extends Test1<TTest2> {\n" +
 			"  public void foo(Test3 t){}\n" +
 			"}");
 	
 	this.workingCopies[3] = getWorkingCopy(
-			"/Completion/src3/test/Test3.java",
+			"/Completion/src3/test/Test3.js",
 			"package test;\n" +
 			"public class Test3 {\n" +
 			"}");
 	
 	this.workingCopies[4] = getWorkingCopy(
-			"/Completion/src3/test/Test4.java",
+			"/Completion/src3/test/Test4.js",
 			"package test;\n" +
 			"public class Test4 extends Test3 {\n" +
 			"}");
@@ -9168,20 +9168,20 @@ public void test0293() throws JavaModelException {
 public void test0294() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"  Test1<Test2> var[];\n" +
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/Test1.java",
+			"/Completion/src3/test/Test1.js",
 			"package test;\n" +
 			"public class Test1<TTest1> {\n" +
 			"}");
 	
 	this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src3/test/Test2.java",
+			"/Completion/src3/test/Test2.js",
 			"package test;\n" +
 			"public class Test2 {\n" +
 			"}");
@@ -9200,7 +9200,7 @@ public void test0294() throws JavaModelException {
 public void test0295() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[5];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    void test(StringTest s, IntegerTest i) {\n" +
@@ -9213,7 +9213,7 @@ public void test0295() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/StringTest.java",
+			"/Completion/src3/test/StringTest.js",
 			"package test;\n" +
 			"public class StringTest implements ComparableTest<StringTest>, SerializableTest {\n" +
 			"    public int compareTo(StringTest s) {\n" +
@@ -9222,7 +9222,7 @@ public void test0295() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src3/test/IntegerTest.java",
+			"/Completion/src3/test/IntegerTest.js",
 			"package test;\n" +
 			"public class IntegerTest implements ComparableTest<IntegerTest>, SerializableTest {\n" +
 			"    public int compareTo(IntegerTest i) {\n" +
@@ -9231,14 +9231,14 @@ public void test0295() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[3] = getWorkingCopy(
-			"/Completion/src3/test/ComparableTest.java",
+			"/Completion/src3/test/ComparableTest.js",
 			"package test;\n" +
 			"public interface ComparableTest<T> {\n" +
 			"    public int compareTo(T t) ;\n" +
 			"}");
 	
 	this.workingCopies[4] = getWorkingCopy(
-			"/Completion/src3/test/SerializableTest.java",
+			"/Completion/src3/test/SerializableTest.js",
 			"package test;\n" +
 			"public interface SerializableTest {\n" +
 			"}");
@@ -9257,7 +9257,7 @@ public void test0295() throws JavaModelException {
 public void test0296() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[5];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"        public static void main(String[] args) {\n" +
@@ -9268,7 +9268,7 @@ public void test0296() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/StringTest.java",
+			"/Completion/src3/test/StringTest.js",
 			"package test;\n" +
 			"public class StringTest implements ComparableTest<StringTest>, SerializableTest {\n" +
 			"    public int compareTo(StringTest s) {\n" +
@@ -9277,7 +9277,7 @@ public void test0296() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src3/test/IntegerTest.java",
+			"/Completion/src3/test/IntegerTest.js",
 			"package test;\n" +
 			"public class IntegerTest implements ComparableTest<IntegerTest>, SerializableTest {\n" +
 			"    public int compareTo(IntegerTest i) {\n" +
@@ -9286,14 +9286,14 @@ public void test0296() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[3] = getWorkingCopy(
-			"/Completion/src3/test/ComparableTest.java",
+			"/Completion/src3/test/ComparableTest.js",
 			"package test;\n" +
 			"public interface ComparableTest<T> {\n" +
 			"    public int compareTo(T t) ;\n" +
 			"}");
 	
 	this.workingCopies[4] = getWorkingCopy(
-			"/Completion/src3/test/SerializableTest.java",
+			"/Completion/src3/test/SerializableTest.js",
 			"package test;\n" +
 			"public interface SerializableTest {\n" +
 			"}");
@@ -9312,7 +9312,7 @@ public void test0296() throws JavaModelException {
 public void test0297() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    String description = \"Some description\";\n" +
@@ -9321,7 +9321,7 @@ public void test0297() throws JavaModelException {
 			"    }");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/Description.java",
+			"/Completion/src3/test/Description.js",
 			"package test;\n" +
 			"public @interface Description {\n" +
 			"    String value();\n" +
@@ -9341,7 +9341,7 @@ public void test0297() throws JavaModelException {
 public void test0298() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method(ZZZ[] z) {\n" +
@@ -9350,7 +9350,7 @@ public void test0298() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/ZZZ.java",
+			"/Completion/src3/test/ZZZ.js",
 			"package test;\n" +
 			"public class ZZZ {\n" +
 			"}");
@@ -9369,7 +9369,7 @@ public void test0298() throws JavaModelException {
 public void test0299() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method(ZZZ z) {\n" +
@@ -9378,7 +9378,7 @@ public void test0299() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/ZZZ.java",
+			"/Completion/src3/test/ZZZ.js",
 			"package test;\n" +
 			"public class ZZZ {\n" +
 			"}");
@@ -9397,7 +9397,7 @@ public void test0299() throws JavaModelException {
 public void test0300() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"	public void throwing() throws IZZAException, Top<Object>.IZZException {}\n" +
@@ -9414,13 +9414,13 @@ public void test0300() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src/test/IZZAException.java",
+			"/Completion/src/test/IZZAException.js",
 			"package test;"+
 			"public class IZZAException extends Exception {\n" + 
 			"}\n");
 	
 	this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src/test/IZZException.java",
+			"/Completion/src/test/IZZException.js",
 			"package test;"+
 			"public class Top<T> {\n" + 
 			"  public class IZZException extends Exception {\n" + 
@@ -9441,7 +9441,7 @@ public void test0300() throws JavaModelException {
 public void testEC001() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test<T> {\n"+
 		"}");
@@ -9473,7 +9473,7 @@ public void testEC001() throws JavaModelException {
 public void testFavoriteImports001() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -9482,7 +9482,7 @@ public void testFavoriteImports001() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo;\n" +
@@ -9511,7 +9511,7 @@ public void testFavoriteImports001() throws JavaModelException {
 public void testFavoriteImports002() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -9520,7 +9520,7 @@ public void testFavoriteImports002() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -9549,7 +9549,7 @@ public void testFavoriteImports002() throws JavaModelException {
 public void testFavoriteImports003() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -9558,7 +9558,7 @@ public void testFavoriteImports003() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo;\n" +
@@ -9581,7 +9581,7 @@ public void testFavoriteImports003() throws JavaModelException {
 public void testFavoriteImports004() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -9590,7 +9590,7 @@ public void testFavoriteImports004() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -9613,7 +9613,7 @@ public void testFavoriteImports004() throws JavaModelException {
 public void testFavoriteImports005() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -9622,7 +9622,7 @@ public void testFavoriteImports005() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo;\n" +
@@ -9651,7 +9651,7 @@ public void testFavoriteImports005() throws JavaModelException {
 public void testFavoriteImports006() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -9660,7 +9660,7 @@ public void testFavoriteImports006() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -9689,7 +9689,7 @@ public void testFavoriteImports006() throws JavaModelException {
 public void testFavoriteImports007() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"import test.p.ZZZ.*;\n" +
 			"public class Test {\n" +
@@ -9699,7 +9699,7 @@ public void testFavoriteImports007() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -9728,7 +9728,7 @@ public void testFavoriteImports007() throws JavaModelException {
 public void testFavoriteImports008() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"import static test.p.ZZZ.*;\n" +
 			"public class Test {\n" +
@@ -9738,7 +9738,7 @@ public void testFavoriteImports008() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -9763,7 +9763,7 @@ public void testFavoriteImports008() throws JavaModelException {
 public void testFavoriteImports009() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"import test.p.ZZZ.*;\n" +
 			"public class Test {\n" +
@@ -9773,7 +9773,7 @@ public void testFavoriteImports009() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -9802,7 +9802,7 @@ public void testFavoriteImports009() throws JavaModelException {
 public void testFavoriteImports010() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"import static test.p.ZZZ.*;\n" +
 			"public class Test {\n" +
@@ -9812,7 +9812,7 @@ public void testFavoriteImports010() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -9837,7 +9837,7 @@ public void testFavoriteImports010() throws JavaModelException {
 public void testFavoriteImports011() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"import test.p.ZZZ.foo;\n" +
 			"public class Test {\n" +
@@ -9847,7 +9847,7 @@ public void testFavoriteImports011() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -9876,7 +9876,7 @@ public void testFavoriteImports011() throws JavaModelException {
 public void testFavoriteImports012() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"import static test.p.ZZZ.foo;\n" +
 			"public class Test {\n" +
@@ -9886,7 +9886,7 @@ public void testFavoriteImports012() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -9911,7 +9911,7 @@ public void testFavoriteImports012() throws JavaModelException {
 public void testFavoriteImports013() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"import test.p.ZZZ.foo;\n" +
 			"public class Test {\n" +
@@ -9921,7 +9921,7 @@ public void testFavoriteImports013() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -9950,7 +9950,7 @@ public void testFavoriteImports013() throws JavaModelException {
 public void testFavoriteImports014() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"import static test.p.ZZZ.foo;\n" +
 			"public class Test {\n" +
@@ -9960,7 +9960,7 @@ public void testFavoriteImports014() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -9985,7 +9985,7 @@ public void testFavoriteImports014() throws JavaModelException {
 public void testFavoriteImports015() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"import static test.p.ZZZ.foo;\n" +
 			"public class Test {\n" +
@@ -9995,14 +9995,14 @@ public void testFavoriteImports015() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
 			"}");
 	
 	this.workingCopies[2] = getWorkingCopy(
-			"/Completion/src3/test/q/ZZZ2.java",
+			"/Completion/src3/test/q/ZZZ2.js",
 			"package test.q;\n" +
 			"public class ZZZ2 {\n" +
 			"    public static int foo(){}\n" +
@@ -10027,7 +10027,7 @@ public void testFavoriteImports015() throws JavaModelException {
 public void testFavoriteImports016() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public class foo {\n" +
@@ -10038,7 +10038,7 @@ public void testFavoriteImports016() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -10068,7 +10068,7 @@ public void testFavoriteImports016() throws JavaModelException {
 public void testFavoriteImports017() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void foo() {\n" +
@@ -10077,7 +10077,7 @@ public void testFavoriteImports017() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -10102,7 +10102,7 @@ public void testFavoriteImports017() throws JavaModelException {
 public void testFavoriteImports018() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public int foo;\n" +
@@ -10112,7 +10112,7 @@ public void testFavoriteImports018() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -10142,7 +10142,7 @@ public void testFavoriteImports018() throws JavaModelException {
 public void testFavoriteImports019() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -10152,7 +10152,7 @@ public void testFavoriteImports019() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -10182,7 +10182,7 @@ public void testFavoriteImports019() throws JavaModelException {
 public void testFavoriteImports020() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -10191,7 +10191,7 @@ public void testFavoriteImports020() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -10223,7 +10223,7 @@ public void testFavoriteImports020() throws JavaModelException {
 public void testFavoriteImports021() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -10232,7 +10232,7 @@ public void testFavoriteImports021() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static <T> int foo(){}\n" +
@@ -10261,7 +10261,7 @@ public void testFavoriteImports021() throws JavaModelException {
 public void testFavoriteImports022() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -10270,7 +10270,7 @@ public void testFavoriteImports022() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){}\n" +
@@ -10293,7 +10293,7 @@ public void testFavoriteImports022() throws JavaModelException {
 public void testFavoriteImports023() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"/** */\n" +
 			"public class Test {\n" +
@@ -10303,7 +10303,7 @@ public void testFavoriteImports023() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo;\n" +
@@ -10332,7 +10332,7 @@ public void testFavoriteImports023() throws JavaModelException {
 public void testFavoriteImports024() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -10341,7 +10341,7 @@ public void testFavoriteImports024() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public int foo;\n" +
@@ -10364,7 +10364,7 @@ public void testFavoriteImports024() throws JavaModelException {
 public void testFavoriteImports025() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -10373,7 +10373,7 @@ public void testFavoriteImports025() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public int foo;\n" +
@@ -10396,7 +10396,7 @@ public void testFavoriteImports025() throws JavaModelException {
 public void testFavoriteImports026() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -10405,7 +10405,7 @@ public void testFavoriteImports026() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public int foo(){return 0;};\n" +
@@ -10428,7 +10428,7 @@ public void testFavoriteImports026() throws JavaModelException {
 public void testFavoriteImports027() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"public class Test {\n" +
 			"    public void method() {\n" +
@@ -10437,7 +10437,7 @@ public void testFavoriteImports027() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public int foo(){return 0;};\n" +
@@ -10460,7 +10460,7 @@ public void testFavoriteImports027() throws JavaModelException {
 public void testFavoriteImports029() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-			"/Completion/src3/test/Test.java",
+			"/Completion/src3/test/Test.js",
 			"package test;\n" +
 			"import test.p.ZZZ;\n" +
 			"public class Test {\n" +
@@ -10470,7 +10470,7 @@ public void testFavoriteImports029() throws JavaModelException {
 			"}");
 	
 	this.workingCopies[1] = getWorkingCopy(
-			"/Completion/src3/test/p/ZZZ.java",
+			"/Completion/src3/test/p/ZZZ.js",
 			"package test.p;\n" +
 			"public class ZZZ {\n" +
 			"    public static int foo(){return 0;};\n" +
@@ -10506,7 +10506,7 @@ public void testFavoriteImports030() throws JavaModelException {
 		
 		this.workingCopies = new ICompilationUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
-				"/Completion/src3/test/Test.java",
+				"/Completion/src3/test/Test.js",
 				"package test;\n" +
 				"public class Test {\n" +
 				"    public void method() {\n" +
@@ -10515,7 +10515,7 @@ public void testFavoriteImports030() throws JavaModelException {
 				"}");
 		
 		this.workingCopies[1] = getWorkingCopy(
-				"/Completion/src3/test/p/ZZZ.java",
+				"/Completion/src3/test/p/ZZZ.js",
 				"package test.p;\n" +
 				"public class ZZZ {\n" +
 				"    public static int foo(){}\n" +
@@ -10554,7 +10554,7 @@ public void testFavoriteImports031() throws JavaModelException {
 		
 		this.workingCopies = new ICompilationUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
-				"/Completion/src3/test/Test.java",
+				"/Completion/src3/test/Test.js",
 				"package test;\n" +
 				"public class Test {\n" +
 				"    public void method() {\n" +
@@ -10563,7 +10563,7 @@ public void testFavoriteImports031() throws JavaModelException {
 				"}");
 		
 		this.workingCopies[1] = getWorkingCopy(
-				"/Completion/src3/test/p/ZZZ.java",
+				"/Completion/src3/test/p/ZZZ.js",
 				"package test.p;\n" +
 				"public class ZZZ {\n" +
 				"    public static int foo(){}\n" +

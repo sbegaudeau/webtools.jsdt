@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
 import org.eclipse.wst.jsdt.core.*;
+
 import junit.framework.Test;
 
 public class BufferTests extends ModifyingResourceTests implements IBufferChangedListener {
@@ -76,7 +77,7 @@ public static Test suite() {
  */
 public void testAppend() throws CoreException {
 	IBuffer buffer = this.createBuffer(
-		"P/x/y/A.java",
+		"P/x/y/A.js",
 		"package x.y;\n" +
 		"public class A {\n" +
 		"}"
@@ -105,8 +106,9 @@ public void testAppendReadOnly() throws CoreException {
 	IBuffer buffer = null;
 	try {
 		createJavaProject("P1", new String[] {}, new String[] {"JCL_LIB,JCL_SRC,JCL_SRCROOT"}, "");
-		IClassFile classFile = getClassFile("P1", getExternalJCLPathString(), "java.lang", "String.class");
-		buffer = classFile.getBuffer();
+//		IClassFile classFile = getClassFile("P1", getExternalJCLPathString(), "", "system.js");
+		ICompilationUnit unit=getCompilationUnit("P1", getExternalJCLPathString(), "", "system.js");
+		buffer = unit.getBuffer();
 		buffer.addBufferChangedListener(this);
 		this.events = new ArrayList();
 		buffer.append("\nclass B {}");
@@ -129,7 +131,7 @@ public void testAppendReadOnly() throws CoreException {
 }
 public void testClose() throws CoreException {
 	IBuffer buffer = this.createBuffer(
-		"P/x/y/A.java",
+		"P/x/y/A.js",
 		"package x.y;\n" +
 		"public class A {\n" +
 		"}"
@@ -148,17 +150,17 @@ public void testClose() throws CoreException {
  */
 public void testGetUnderlyingResource() throws CoreException {
 	IBuffer buffer = this.createBuffer(
-		"P/x/y/A.java",
+		"P/x/y/A.js",
 		"package x.y;\n" +
 		"public class A {\n" +
 		"}"
 	);
 	ICompilationUnit copy = null;
 	try {
-		IFile file = this.getFile("P/x/y/A.java");
+		IFile file = this.getFile("P/x/y/A.js");
 		assertEquals("Unexpected underlying resource", file, buffer.getUnderlyingResource());
 		
-		copy = this.getCompilationUnit("P/x/y/A.java").getWorkingCopy(null);
+		copy = this.getCompilationUnit("P/x/y/A.js").getWorkingCopy(null);
 		assertEquals("Unexpected underlying resource 2", file, copy.getBuffer().getUnderlyingResource());
 	} finally {
 		this.deleteBuffer(buffer);
@@ -172,7 +174,7 @@ public void testGetUnderlyingResource() throws CoreException {
  */
 public void testDeleteBeginning() throws CoreException {
 	IBuffer buffer = this.createBuffer(
-		"P/x/y/A.java",
+		"P/x/y/A.js",
 		"package x.y;\n" +
 		"public class A {\n" +
 		"}"
@@ -196,7 +198,7 @@ public void testDeleteBeginning() throws CoreException {
  */
 public void testDeleteMiddle() throws CoreException {
 	IBuffer buffer = this.createBuffer(
-		"P/x/y/A.java",
+		"P/x/y/A.js",
 		"package x.y;\n" +
 		"public class A {\n" +
 		"}"
@@ -222,7 +224,7 @@ public void testDeleteMiddle() throws CoreException {
  */
 public void testDeleteEnd() throws CoreException {
 	IBuffer buffer = this.createBuffer(
-		"P/x/y/A.java",
+		"P/x/y/A.js",
 		"package x.y;\n" +
 		"public class A {\n" +
 		"}"
@@ -246,7 +248,7 @@ public void testDeleteEnd() throws CoreException {
  */
 public void testGetChar() throws CoreException {
 	IBuffer buffer = this.createBuffer(
-		"P/x/y/A.java",
+		"P/x/y/A.js",
 		"package x.y;\n" +
 		"public class A {\n" +
 		"}"
@@ -263,7 +265,7 @@ public void testGetChar() throws CoreException {
  */
 public void testGetChar2() throws CoreException {
 	IBuffer buffer = this.createBuffer(
-		"P/x/y/A.java",
+		"P/x/y/A.js",
 		"package x.y;\n" +
 		"public class A {\n" +
 		"}"
@@ -280,7 +282,7 @@ public void testGetChar2() throws CoreException {
  */
 public void testGetLength() throws CoreException {
 	IBuffer buffer = this.createBuffer(
-		"P/x/y/A.java",
+		"P/x/y/A.js",
 		"package x.y;\n" +
 		"public class A {\n" +
 		"}"
@@ -296,7 +298,7 @@ public void testGetLength() throws CoreException {
  */
 public void testGetText() throws CoreException {
 	IBuffer buffer = this.createBuffer(
-		"P/x/y/A.java",
+		"P/x/y/A.js",
 		"package x.y;\n" +
 		"public class A {\n" +
 		"}"
@@ -314,7 +316,7 @@ public void testGetText() throws CoreException {
  */
 public void testInsertBeginning() throws CoreException {
 	IBuffer buffer = this.createBuffer(
-		"P/x/y/A.java",
+		"P/x/y/A.js",
 		"package x.y;\n" +
 		"public class A {\n" +
 		"}"
@@ -340,7 +342,7 @@ public void testInsertBeginning() throws CoreException {
  */
 public void testReplaceBeginning() throws CoreException {
 	IBuffer buffer = this.createBuffer(
-		"P/x/y/A.java",
+		"P/x/y/A.js",
 		"package x.y;\n" +
 		"public class A {\n" +
 		"}"
@@ -365,7 +367,7 @@ public void testReplaceBeginning() throws CoreException {
  */
 public void testReplaceMiddle() throws CoreException {
 	IBuffer buffer = this.createBuffer(
-		"P/x/y/A.java",
+		"P/x/y/A.js",
 		"package x.y;\n" +
 		"public class A {\n" +
 		"}"
@@ -391,7 +393,7 @@ public void testReplaceMiddle() throws CoreException {
  */
 public void testReplaceEnd() throws CoreException {
 	IBuffer buffer = this.createBuffer(
-		"P/x/y/A.java",
+		"P/x/y/A.js",
 		"package x.y;\n" +
 		"public class A {\n" +
 		"}"
@@ -418,7 +420,7 @@ public void testReplaceEnd() throws CoreException {
  */
 public void testInsertMiddle() throws CoreException {
 	IBuffer buffer = this.createBuffer(
-		"P/x/y/A.java",
+		"P/x/y/A.js",
 		"package x.y;\n" +
 		"public class A {\n" +
 		"}"
@@ -445,7 +447,7 @@ public void testInsertMiddle() throws CoreException {
  */
 public void testInsertEnd() throws CoreException {
 	IBuffer buffer = this.createBuffer(
-		"P/x/y/A.java",
+		"P/x/y/A.js",
 		"package x.y;\n" +
 		"public class A {\n" +
 		"}"
@@ -469,40 +471,40 @@ public void testInsertEnd() throws CoreException {
 	}
 }
 
-/**
- * Tests replacing text within a buffer using a create import
- * (regression test for PR #1G7A0WI).
- */
-public void testCreateImport() throws CoreException {
-	IFile file = this.createFile(
-		"P/x/y/A.java",
-		"package x.y;\n" +
-		"public class A {\n" +
-		"}"
-	);
-	ICompilationUnit copy = null;
-	IBuffer buffer = null;
-	try {
-		copy = this.getCompilationUnit("P/x/y/A.java").getWorkingCopy(null);
-		buffer = copy.getBuffer();
-		buffer.addBufferChangedListener(this);
-		this.events = new ArrayList();
-		copy.createImport("java.io.IOException", null, null);
-		assertBufferEvents(
-			"(12, 0) import java.io.IOException;\n" + 
-			"(12, 0) \n" + 
-			"\n"
-		); // A.java has a \n line delimiter
-	} finally {
-		if (buffer != null) {
-			buffer.removeBufferChangedListener(this);
-		}
-		if (copy != null) {
-			copy.discardWorkingCopy();
-		}
-		deleteResource(file);
-	}
-}
+///**
+// * Tests replacing text within a buffer using a create import
+// * (regression test for PR #1G7A0WI).
+// */
+//public void testCreateImport() throws CoreException {
+//	IFile file = this.createFile(
+//		"P/x/y/A.js",
+//		"package x.y;\n" +
+//		"public class A {\n" +
+//		"}"
+//	);
+//	ICompilationUnit copy = null;
+//	IBuffer buffer = null;
+//	try {
+//		copy = this.getCompilationUnit("P/x/y/A.js").getWorkingCopy(null);
+//		buffer = copy.getBuffer();
+//		buffer.addBufferChangedListener(this);
+//		this.events = new ArrayList();
+//		copy.createImport("java.io.IOException", null, null);
+//		assertBufferEvents(
+//			"(12, 0) import java.io.IOException;\n" + 
+//			"(12, 0) \n" + 
+//			"\n"
+//		); // A.js has a \n line delimiter
+//	} finally {
+//		if (buffer != null) {
+//			buffer.removeBufferChangedListener(this);
+//		}
+//		if (copy != null) {
+//			copy.discardWorkingCopy();
+//		}
+//		deleteResource(file);
+//	}
+//}
 /**
  * Verify the buffer changed event.
  * The given text must contain '\n' line separators.

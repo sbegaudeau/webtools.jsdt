@@ -13,15 +13,10 @@ package org.eclipse.wst.jsdt.core.tests.model;
 import java.util.ArrayList;
 
 import org.eclipse.core.resources.*;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.*;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
@@ -31,8 +26,7 @@ import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.internal.core.*;
-import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
-import org.eclipse.wst.jsdt.internal.core.JavaProject;
+import org.eclipse.wst.jsdt.core.*;
 
 import junit.framework.Test;
 
@@ -112,15 +106,15 @@ public void testAddCommentAndCommit() throws CoreException {
 	ICompilationUnit copy = null;
 	try {
 		createJavaProject("P", new String[] {""}, "");
-		createFile("P/X.java",
-			"public class X {\n" +
+		createFile("P/X.js",
+			"function X() {\n" +
 			"}");
-		ICompilationUnit unit = getCompilationUnit("P", "", "", "X.java");
+		ICompilationUnit unit = getCompilationUnit("P", "", "", "X.js");
 		copy = unit.getWorkingCopy(null);
 		
 		// add comment to working copy
 		copy.getBuffer().setContents(
-			"public class X {\n" +
+			"function X(){\n" +
 			"  // some comment\n" +
 			"}");
 
@@ -132,7 +126,7 @@ public void testAddCommentAndCommit() throws CoreException {
 			"P[*]: {CHILDREN}\n" + 
 			"	<project root>[*]: {CHILDREN}\n" + 
 			"		<default>[*]: {CHILDREN}\n" + 
-			"			X.java[*]: {CONTENT | FINE GRAINED | PRIMARY RESOURCE}",
+			"			X.js[*]: {CONTENT | FINE GRAINED | PRIMARY RESOURCE}",
 			listener.toString());
 	} finally {
 		JavaCore.removeElementChangedListener(listener);
@@ -148,15 +142,15 @@ public void testAddCuInDefaultPkg1() throws CoreException {
 	try {
 		createJavaProject("P", new String[] {""}, "");
 		startDeltas();
-		createFile("P/X.java",
-			"public class X {\n" +
+		createFile("P/X.js",
+			"function X() {\n" +
 			"}");
 		assertDeltas(
 			"Unexpected delta", 
 			"P[*]: {CHILDREN}\n" +
 			"	<project root>[*]: {CHILDREN}\n" +
 			"		<default>[*]: {CHILDREN}\n" +
-			"			X.java[+]: {}"
+			"			X.js[+]: {}"
 		);
 	} finally {
 		stopDeltas();
@@ -171,15 +165,15 @@ public void testAddCuInDefaultPkg2() throws CoreException {
 	try {
 		createJavaProject("P", new String[] {"src"}, "bin");
 		startDeltas();
-		createFile("P/src/X.java",
-			"public class X {\n" +
+		createFile("P/src/X.js",
+			"function X() {\n" +
 			"}");
 		assertDeltas(
 			"Unexpected delta", 
 			"P[*]: {CHILDREN}\n" +
 			"	src[*]: {CHILDREN}\n" +
 			"		<default>[*]: {CHILDREN}\n" +
-			"			X.java[+]: {}"
+			"			X.js[+]: {}"
 		);
 	} finally {
 		stopDeltas();
@@ -194,8 +188,8 @@ public void testAddCuAfterProjectOpen() throws CoreException {
 	try {
 		IJavaProject p1 = createJavaProject("P1", new String[] {"src"}, "bin");
 		IJavaProject p2 = createJavaProject("P2", new String[] {"src"}, "bin");
-		createFile("P2/src/X.java",
-			"public class X {\n" +
+		createFile("P2/src/X.js",
+			"function X() {\n" +
 			"}");
 		IProject project = p2.getProject();
 		project.close(null);
@@ -207,15 +201,15 @@ public void testAddCuAfterProjectOpen() throws CoreException {
 		project.open(null);
 		
 		startDeltas();
-		createFile("P2/src/Y.java",
-			"public class Y {\n" +
+		createFile("P2/src/Y.js",
+			"function Y() {\n" +
 			"}");
 		assertDeltas(
 			"Unexpected delta", 
 			"P2[*]: {CHILDREN}\n" +
 			"	src[*]: {CHILDREN}\n" +
 			"		<default>[*]: {CHILDREN}\n" +
-			"			Y.java[+]: {}"
+			"			Y.js[+]: {}"
 		);
 	} finally {
 		stopDeltas();
@@ -243,13 +237,13 @@ public void testAddDotClasspathFile() throws CoreException {
 			"	</projects>\n" +
 			"	<buildSpec>\n" +
 			"		<buildCommand>\n" +
-			"			<name>org.eclipse.wst.jsdt.core.javabuilder</name>\n" +
+			"			<name>org.eclipse.wst.jsdt.core.jsbuilder</name>\n" +
 			"			<arguments>\n" +
 			"			</arguments>\n" +
 			"		</buildCommand>\n" +
 			"	</buildSpec>\n" +
 			"	<natures>\n" +
-			"		<nature>org.eclipse.wst.jsdt.core.javanature</nature>\n" +
+			"		<nature>org.eclipse.wst.jsdt.core.jsnature</nature>\n" +
 			"	</natures>\n" +
 			"</projectDescription>"
 		);
@@ -265,7 +259,7 @@ public void testAddDotClasspathFile() throws CoreException {
 		);
 		assertDeltas(
 			"Unexpected delta", 
-			"P[*]: {CHILDREN | CONTENT | CLASSPATH CHANGED}\n" + 
+			"P[*]: {CHILDREN}\n" + 
 			"	<project root>[*]: {REMOVED FROM CLASSPATH}\n" + 
 			"	src[*]: {ADDED TO CLASSPATH}\n" + 
 			"	ResourceDelta(/P/.classpath)[+]"
@@ -501,29 +495,26 @@ public void testBatchOperation() throws CoreException {
 		createJavaProject("P", new String[] {"src"}, "bin");
 		createFolder("P/src/x");
 		createFile(
-			"P/src/x/A.java",
-			"package x;\n" +
-			"public class A {\n" +
+			"P/src/x/A.js",
+			"function A() {\n" +
 			"}");
 		startDeltas();
 		JavaCore.run(
 			new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
-					ICompilationUnit unit = getCompilationUnit("P/src/x/A.java");
-					unit.createType("class B {}", null, false, monitor);
-					unit.getType("A").createField("int i;", null, false, monitor);
+					ICompilationUnit unit = getCompilationUnit("P/src/x/A.js");
+//					unit.createType("class B {}", null, false, monitor);
+					unit.createField("var i;", null, false, monitor);
 				}
 			},
 			null);
 		assertDeltas(
 			"Unexpected delta", 
-			"P[*]: {CHILDREN}\n" + 
-			"	src[*]: {CHILDREN}\n" + 
-			"		x[*]: {CHILDREN}\n" + 
-			"			A.java[*]: {CHILDREN | FINE GRAINED | PRIMARY RESOURCE}\n" + 
-			"				A[*]: {CHILDREN | FINE GRAINED}\n" + 
-			"					i[+]: {}\n" + 
-			"				B[+]: {}"
+			"P[*]: {CHILDREN}\n" +
+			"	src[*]: {CHILDREN}\n" +
+			"		x[*]: {CHILDREN}\n" +
+			"			A.js[*]: {CHILDREN | FINE GRAINED | PRIMARY RESOURCE}\n" +
+			"				i[+]: {}"
 		);
 	} finally {
 		stopDeltas();
@@ -539,8 +530,8 @@ public void testBuildProjectUsedAsLib() throws CoreException {
 		IJavaProject p1 = createJavaProject("P1", new String[] {"src1"}, new String[] {"JCL_LIB"}, "bin1");
 		createJavaProject("P2", new String[] {"src2"}, new String[] {"/P1/bin1"}, "bin2");
 		createFile(
-			"/P1/src1/X.java",
-			"public class X {\n" +
+			"/P1/src1/X.js",
+			"function X() {\n" +
 			"}"
 		);
 		
@@ -561,11 +552,11 @@ public void testBuildProjectUsedAsLib() throws CoreException {
 			);
 			
 		editFile(
-			"/P1/src1/X.java",
-			"public class X {\n" +
-			"  void foo() {}\n" +
+			"/P1/src1/X.js",
+			"function X() {\n" +
+//			"  void foo() {}\n" +
 			"}\n" +
-			"class Y {\n" +
+			"function Y() {\n" +
 			"}"
 		);
 		clearDeltas();
@@ -603,7 +594,7 @@ public void testChangeCustomOutput() throws CoreException {
 			});
 		assertDeltas(
 			"Unexpected delta", 
-			"P[*]: {CHILDREN | CONTENT | CLASSPATH CHANGED}\n" + 
+			"P[*]: {CHILDREN | CLASSPATH CHANGED}\n" + 
 			"	src[*]: {ADDED TO CLASSPATH | REMOVED FROM CLASSPATH}\n" + 
 			"	ResourceDelta(/P/.classpath)[*]"
 		);
@@ -612,33 +603,33 @@ public void testChangeCustomOutput() throws CoreException {
 		deleteProject("P");
 	}
 }
-
-/*
- * Ensures that the setting the classpath where the only change is the export flag
- * triggers a F_CLASSPATH CHANGED delta.
- * (regression test for bug 75517 No classpath delta for project becoming exported)
- */
-public void testChangeExportFlag() throws CoreException {
-	try {
-		createJavaProject("P1");
-		IJavaProject proj = createJavaProject("P2", new String[] {}, new String[] {}, new String[] {"/P1"}, new boolean[] {false}, "bin");
-		startDeltas();
-		setClasspath(
-			proj, 
-			new IClasspathEntry[] {
-				JavaCore.newProjectEntry(new Path("/P1"), true)
-			});
-		assertDeltas(
-			"Unexpected delta", 
-			"P2[*]: {CONTENT | CLASSPATH CHANGED}\n" + 
-			"	ResourceDelta(/P2/.classpath)[*]"
-		);
-	} finally {
-		stopDeltas();
-		deleteProject("P1");
-		deleteProject("P2");
-	}
-}
+//
+///*
+// * Ensures that the setting the classpath where the only change is the export flag
+// * triggers a F_CLASSPATH CHANGED delta.
+// * (regression test for bug 75517 No classpath delta for project becoming exported)
+// */
+//public void testChangeExportFlag() throws CoreException {
+//	try {
+//		createJavaProject("P1");
+//		IJavaProject proj = createJavaProject("P2", new String[] {}, new String[] {}, new String[] {"/P1"}, new boolean[] {false}, "bin");
+//		startDeltas();
+//		setClasspath(
+//			proj, 
+//			new IClasspathEntry[] {
+//				JavaCore.newProjectEntry(new Path("/P1"), true)
+//			});
+//		assertDeltas(
+//			"Unexpected delta", 
+//			"P2[*]: {CONTENT | CLASSPATH CHANGED}\n" + 
+//			"	ResourceDelta(/P2/.classpath)[*]"
+//		);
+//	} finally {
+//		stopDeltas();
+//		deleteProject("P1");
+//		deleteProject("P2");
+//	}
+//}
 
 /**
  * Ensures that the setting the classpath with a library entry
@@ -655,7 +646,7 @@ public void testChangeRootKind() throws CoreException {
 			});
 		assertDeltas(
 			"Unexpected delta", 
-			"P[*]: {CHILDREN | CONTENT | CLASSPATH CHANGED}\n" + 
+			"P[*]: {CHILDREN | CLASSPATH CHANGED}\n" + 
 			"	src[*]: {ADDED TO CLASSPATH | REMOVED FROM CLASSPATH}\n" + 
 			"	ResourceDelta(/P/.classpath)[*]"
 		);
@@ -704,31 +695,31 @@ public void testCloseNonJavaProject() throws CoreException {
 	}
 }
 
-/*
- * Closing a non-java project that contains a jar referenced in another project should produce
- * a delta on this other project.
- * (regression test for bug 19058 Closing non-java project doesn't remove root from java project)
- */
-public void testCloseNonJavaProjectUpdateDependent() throws CoreException {
-	try {
-		createProject("SP");
-		createFile("/SP/x.jar", "");
-		createJavaProject("JP", new String[] {""}, new String[] {"/SP/x.jar"}, "");
-		IProject project = getProject("SP");
-		startDeltas();
-		project.close(null);
-		assertDeltas(
-			"Unexpected delta", 
-			"JP[*]: {CHILDREN}\n" + 
-			"	/SP/x.jar[-]: {}\n" + 
-			"ResourceDelta(/SP)"
-		);
-	} finally {
-		stopDeltas();
-		deleteProject("SP");
-		deleteProject("JP");
-	}
-}
+///*
+// * Closing a non-java project that contains a jar referenced in another project should produce
+// * a delta on this other project.
+// * (regression test for bug 19058 Closing non-java project doesn't remove root from java project)
+// */
+//public void testCloseNonJavaProjectUpdateDependent() throws CoreException {
+//	try {
+//		createProject("SP");
+//		createFile("/SP/x.jar", "");
+//		createJavaProject("JP", new String[] {""}, new String[] {"/SP/x.jar"}, "");
+//		IProject project = getProject("SP");
+//		startDeltas();
+//		project.close(null);
+//		assertDeltas(
+//			"Unexpected delta", 
+//			"JP[*]: {CHILDREN}\n" + 
+//			"	/SP/x.jar[-]: {}\n" + 
+//			"ResourceDelta(/SP)"
+//		);
+//	} finally {
+//		stopDeltas();
+//		deleteProject("SP");
+//		deleteProject("JP");
+//	}
+//}
 /**
  * Test that deltas are generated when a compilation unit is added
  * and removed from a package via core API.
@@ -736,11 +727,10 @@ public void testCloseNonJavaProjectUpdateDependent() throws CoreException {
 public void testCompilationUnitRemoveAndAdd() throws CoreException {
 	try {
 		createJavaProject("P");
-		createFolder("/P/p");
+//		createFolder("/P/p");
 		IFile file = createFile(
-			"/P/p/X.java",
-			"package p;\n" +
-			"public class X {\n" +
+			"/P/X.js",
+			"function X() {\n" +
 			"}"
 		);
 		
@@ -748,27 +738,26 @@ public void testCompilationUnitRemoveAndAdd() throws CoreException {
 		startDeltas();
 		deleteResource(file);
 		assertDeltas(
-			"Unexpected delta after deleting /P/p/X.java",
+			"Unexpected delta after deleting /P/X.js",
 			"P[*]: {CHILDREN}\n" + 
 			"	<project root>[*]: {CHILDREN}\n" + 
-			"		p[*]: {CHILDREN}\n" + 
-			"			X.java[-]: {}"
+			"		<default>[*]: {CHILDREN}\n" + 
+			"			X.js[-]: {}"
 		);
 		
 		// add cu
 		clearDeltas();
 		createFile(
-			"/P/p/X.java",
-			"package p;\n" +
-			"public class X {\n" +
+			"/P/X.js",
+			"function X() {\n" +
 			"}"
 		);
 		assertDeltas(
-			"Unexpected delta after adding /P/p/X.java",
+			"Unexpected delta after adding /P/p/X.js",
 			"P[*]: {CHILDREN}\n" + 
 			"	<project root>[*]: {CHILDREN}\n" + 
 			"		p[*]: {CHILDREN}\n" + 
-			"			X.java[+]: {}"
+			"			X.js[+]: {}"
 		);
 	} finally {
 		stopDeltas();
@@ -780,10 +769,10 @@ public void testCreateSharedWorkingCopy() throws CoreException {
 	ICompilationUnit copy = null;
 	try {
 		createJavaProject("P", new String[] {""}, "");
-		createFile("P/X.java",
-			"public class X {\n" +
+		createFile("P/X.js",
+			"function X() {\n" +
 			"}");
-		ICompilationUnit unit = getCompilationUnit("P", "", "", "X.java");
+		ICompilationUnit unit = getCompilationUnit("P", "", "", "X.js");
 		startDeltas();
 		copy = unit.getWorkingCopy(new WorkingCopyOwner() {}, null, null);
 		assertDeltas(
@@ -791,7 +780,7 @@ public void testCreateSharedWorkingCopy() throws CoreException {
 			"P[*]: {CHILDREN}\n" +
 			"	<project root>[*]: {CHILDREN}\n" +
 			"		<default>[*]: {CHILDREN}\n" +
-			"			[Working copy] X.java[+]: {}"
+			"			[Working copy] X.js[+]: {}"
 		);
 	} finally {
 		stopDeltas();
@@ -803,10 +792,10 @@ public void testCreateWorkingCopy() throws CoreException {
 	ICompilationUnit copy = null;
 	try {
 		createJavaProject("P", new String[] {""}, "");
-		createFile("P/X.java",
-			"public class X {\n" +
+		createFile("P/X.js",
+			"function X() {\n" +
 			"}");
-		ICompilationUnit unit = getCompilationUnit("P", "", "", "X.java");
+		ICompilationUnit unit = getCompilationUnit("P", "", "", "X.js");
 		startDeltas();
 		copy = unit.getWorkingCopy(null);
 		assertDeltas(
@@ -814,7 +803,7 @@ public void testCreateWorkingCopy() throws CoreException {
 			"P[*]: {CHILDREN}\n" +
 			"	<project root>[*]: {CHILDREN}\n" +
 			"		<default>[*]: {CHILDREN}\n" +
-			"			[Working copy] X.java[+]: {}"
+			"			[Working copy] X.js[+]: {}"
 		);
 	} finally {
 		stopDeltas();
@@ -830,21 +819,20 @@ public void testCreateWorkingCopy() throws CoreException {
 public void testCopyAndOverwritePackage() throws CoreException {
 	try {
 		createJavaProject("P", new String[] {"src1", "src2"}, "bin");
-		createFolder("/P/src1/p");
+//		createFolder("/P/src1/p");
 		createFile(
-			"P/src1/p/X.java",
-			"package p;\n" +
-			"public class X {\n" +
+			"P/src1/X.js",
+			"function X() {\n" +
 			"}");
-		createFolder("/P/src2/p");
+		createFolder("/P/src2");
 		startDeltas();
-		getPackage("/P/src1/p").copy(getPackageFragmentRoot("/P/src2"), null/*no sibling*/, null/*no rename*/, true/*replace*/, null/*no progress*/);
+		getPackage("/P/src1").copy(getPackageFragmentRoot("/P/src2"), null/*no sibling*/, null/*no rename*/, true/*replace*/, null/*no progress*/);
 		assertDeltas(
 			"Unexpected delta", 
 			"P[*]: {CHILDREN}\n" + 
 			"	src2[*]: {CHILDREN}\n" + 
 			"		p[*]: {CHILDREN}\n" + 
-			"			X.java[+]: {}"
+			"			X.js[+]: {}"
 		);
 	} finally {
 		stopDeltas();
@@ -858,31 +846,29 @@ public void testCopyAndOverwritePackage() throws CoreException {
 public void testCUNotOnClasspath() throws CoreException {
 	try {
 		createJavaProject("P", new String[] {}, "bin");
-		createFolder("/P/src/p");
+//		createFolder("/P/src/p");
 		IFile file = createFile(
-			"/P/src/p/X.java",
-			"package p;\n" +
-			"public class X {\n" +
+			"/P/src/p/X.js",
+			"function X() {\n" +
 			"}"
 		);
 		
 		startDeltas();
 		deleteResource(file);
 		assertDeltas(
-			"Unexpected delta after deletion of /P/src/p/X.java",
+			"Unexpected delta after deletion of /P/src/X.js",
 			"P[*]: {CONTENT}\n" + 
 			"	ResourceDelta(/P/src)[*]"
 		);
 		
 		clearDeltas();
 		createFile(
-			"/P/src/p/X.java",
-			"package p;\n" +
-			"public class X {\n" +
+			"/P/src/X.js",
+			"function X() {\n" +
 			"}"
 		);
 		assertDeltas(
-			"Unexpected delta after addition of /P/src/p/X.java",
+			"Unexpected delta after addition of /P/src/X.js",
 			"P[*]: {CONTENT}\n" + 
 			"	ResourceDelta(/P/src)[*]"
 		);
@@ -891,30 +877,30 @@ public void testCUNotOnClasspath() throws CoreException {
 		deleteProject("P");
 	}
 }
-/*
- * Ensure that deleting a jar that is in a folder and that is on the classpath reports
- * a removed  pkg fragment root delta.
- * (regression test for bug 27068 Elements in the Package Explorer are displayed but don't more exist [package explorer])
- * 
- */
-public void testDeleteInnerJar() throws CoreException {
-	try {
-		createJavaProject("P", new String[] {"src"}, new String[] {"/P/lib/x.jar"}, "bin");
-		createFolder("/P/lib");
-		IFile file = createFile("/P/lib/x.jar", "");
-		startDeltas();
-		deleteResource(file);
-		assertDeltas(
-			"Unexpected deltas",
-			"P[*]: {CHILDREN | CONTENT}\n" + 
-			"	lib/x.jar[-]: {}\n" + 
-			"	ResourceDelta(/P/lib)[*]"
-		);
-	} finally {
-		stopDeltas();
-		deleteProject("P");
-	}
-}
+///*
+// * Ensure that deleting a jar that is in a folder and that is on the classpath reports
+// * a removed  pkg fragment root delta.
+// * (regression test for bug 27068 Elements in the Package Explorer are displayed but don't more exist [package explorer])
+// * 
+// */
+//public void testDeleteInnerJar() throws CoreException {
+//	try {
+//		createJavaProject("P", new String[] {"src"}, new String[] {"/P/lib/x.jar"}, "bin");
+//		createFolder("/P/lib");
+//		IFile file = createFile("/P/lib/x.jar", "");
+//		startDeltas();
+//		deleteResource(file);
+//		assertDeltas(
+//			"Unexpected deltas",
+//			"P[*]: {CHILDREN | CONTENT}\n" + 
+//			"	lib/x.jar[-]: {}\n" + 
+//			"	ResourceDelta(/P/lib)[*]"
+//		);
+//	} finally {
+//		stopDeltas();
+//		deleteProject("P");
+//	}
+//}
 /*
  * Ensure that deleting a non-Java folder that contains a source root folder reports
  * a removed root delta as well as a resource delta for the removed folder.
@@ -960,8 +946,7 @@ public void testDeleteProjectAfterChangingClasspath() throws CoreException {
 		stopDeltas();
 		deleteProject("P");
 	}
-}
-/*
+}/*
  * Ensure that deleting a project and setting the classpath on another project
  * in an IWorkspaceRunnable doesn't throw a NullPointerException
  * (regression test for bug 25197 NPE importing external plugins)
@@ -986,7 +971,7 @@ public void testDeleteProjectSetCPAnotherProject() throws CoreException {
 			null);
 		assertDeltas(
 			"Unexpected deltas",
-			"P1[*]: {CHILDREN | CONTENT | CLASSPATH CHANGED}\n" + 
+			"P1[*]: {CHILDREN | CLASSPATH CHANGED}\n" + 
 			"	<project root>[*]: {ADDED TO CLASSPATH}\n" + 
 			"	src[*]: {REMOVED FROM CLASSPATH}\n" + 
 			"	ResourceDelta(/P1/.classpath)[*]\n" + 
@@ -1002,10 +987,10 @@ public void testDiscardWorkingCopy1() throws CoreException { // renamed from tes
 	ICompilationUnit copy = null;
 	try {
 		createJavaProject("P", new String[] {""}, "");
-		createFile("P/X.java",
+		createFile("P/X.js",
 			"public class X {\n" +
 			"}");
-		ICompilationUnit unit = getCompilationUnit("P", "", "", "X.java");
+		ICompilationUnit unit = getCompilationUnit("P", "", "", "X.js");
 		copy = unit.getWorkingCopy(null);
 		startDeltas();
 		copy.discardWorkingCopy();
@@ -1014,7 +999,7 @@ public void testDiscardWorkingCopy1() throws CoreException { // renamed from tes
 			"P[*]: {CHILDREN}\n" +
 			"	<project root>[*]: {CHILDREN}\n" +
 			"		<default>[*]: {CHILDREN}\n" +
-			"			[Working copy] X.java[-]: {}"
+			"			[Working copy] X.js[-]: {}"
 		);
 	} finally {
 		stopDeltas();
@@ -1027,10 +1012,10 @@ public void testDiscardWorkingCopy2() throws CoreException { // renamed from tes
 	ICompilationUnit copy = null;
 	try {
 		createJavaProject("P", new String[] {""}, "");
-		createFile("P/X.java",
+		createFile("P/X.js",
 			"public class X {\n" +
 			"}");
-		ICompilationUnit unit = getCompilationUnit("P", "", "", "X.java");
+		ICompilationUnit unit = getCompilationUnit("P", "", "", "X.js");
 		copy = unit.getWorkingCopy(new WorkingCopyOwner() {}, null, null);
 		startDeltas();
 		copy.discardWorkingCopy();
@@ -1039,7 +1024,7 @@ public void testDiscardWorkingCopy2() throws CoreException { // renamed from tes
 			"P[*]: {CHILDREN}\n" +
 			"	<project root>[*]: {CHILDREN}\n" +
 			"		<default>[*]: {CHILDREN}\n" +
-			"			[Working copy] X.java[-]: {}"
+			"			[Working copy] X.js[-]: {}"
 		);
 	} finally {
 		stopDeltas();
@@ -1062,7 +1047,7 @@ public void testListenerPostChange() throws CoreException {
 		// cu creation
 		IPackageFragment pkg = getPackage("P");
 		ICompilationUnit cu = pkg.createCompilationUnit(
-			"X.java",
+			"X.js",
 			"public class X {\n" +
 			"}",
 			false,
@@ -1072,7 +1057,7 @@ public void testListenerPostChange() throws CoreException {
 			"P[*]: {CHILDREN}\n" +
 			"	<project root>[*]: {CHILDREN}\n" +
 			"		<default>[*]: {CHILDREN}\n" +
-			"			X.java[+]: {}", 
+			"			X.js[+]: {}", 
 			listener.toString());
 		listener.flush();
 		
@@ -1088,7 +1073,7 @@ public void testListenerPostChange() throws CoreException {
 			"P[*]: {CHILDREN}\n" +
 			"	<project root>[*]: {CHILDREN}\n" +
 			"		<default>[*]: {CHILDREN}\n" +
-			"			X.java[*]: {CHILDREN | FINE GRAINED | PRIMARY RESOURCE}\n" +
+			"			X.js[*]: {CHILDREN | FINE GRAINED | PRIMARY RESOURCE}\n" +
 			"				A[+]: {}", 
 			listener.toString());
 		listener.flush();
@@ -1109,7 +1094,7 @@ public void testListenerPostChange() throws CoreException {
 			"P[*]: {CHILDREN}\n" +
 			"	<project root>[*]: {CHILDREN}\n" +
 			"		<default>[*]: {CHILDREN}\n" +
-			"			[Working copy] X.java[+]: {}",
+			"			[Working copy] X.js[+]: {}",
 			listener.toString());
 		listener.flush();
 			
@@ -1133,7 +1118,7 @@ public void testListenerPostChange() throws CoreException {
 			"P[*]: {CHILDREN}\n" +
 			"	<project root>[*]: {CHILDREN}\n" +
 			"		<default>[*]: {CHILDREN}\n" +
-			"			X.java[*]: {CHILDREN | FINE GRAINED | PRIMARY RESOURCE}\n" +
+			"			X.js[*]: {CHILDREN | FINE GRAINED | PRIMARY RESOURCE}\n" +
 			"				X[*]: {CHILDREN | FINE GRAINED}\n" +
 			"					foo()[+]: {}\n" +
 			"				A[-]: {}",
@@ -1147,7 +1132,7 @@ public void testListenerPostChange() throws CoreException {
 			"P[*]: {CHILDREN}\n" +
 			"	<project root>[*]: {CHILDREN}\n" +
 			"		<default>[*]: {CHILDREN}\n" +
-			"			[Working copy] X.java[-]: {}",
+			"			[Working copy] X.js[-]: {}",
 			listener.toString());
 		listener.flush();
 		wc = null;
@@ -1173,7 +1158,7 @@ public void testListenerReconcile() throws CoreException {
 		// cu creation
 		IPackageFragment pkg = getPackage("P");
 		ICompilationUnit cu = pkg.createCompilationUnit(
-			"X.java",
+			"X.js",
 			"public class X {\n" +
 			"}",
 			false,
@@ -1267,7 +1252,7 @@ public void testMergeResourceDeltas() throws CoreException {
 					// an operation that creates a java delta without firing it
 					IPackageFragment pkg = getPackageFragment("P", "", "");
 					pkg.createCompilationUnit(
-						"X.java",
+						"X.js",
 						"public class X {\n" +
 						"}",
 						true,
@@ -1284,7 +1269,7 @@ public void testMergeResourceDeltas() throws CoreException {
 			"P[*]: {CHILDREN}\n" +
 			"	<project root>[*]: {CHILDREN}\n" +
 			"		<default>[*]: {CHILDREN}\n" +
-			"			X.java[+]: {}\n" +
+			"			X.js[+]: {}\n" +
 			"	ResourceDelta(/P/Y.txt)[+]"
 		);
 	} finally {
@@ -1299,13 +1284,13 @@ public void testModifyMethodBodyAndSave() throws CoreException {
 	try {
 		createJavaProject("P", new String[] {""}, "");
 		createFolder("P/x/y");
-		createFile("P/x/y/A.java",
+		createFile("P/x/y/A.js",
 			"package x.y;\n" +
 			"public class A {\n" +
 			"  public void foo() {\n" +
 			"  }\n" +
 			"}");
-		ICompilationUnit cu = getCompilationUnit("P/x/y/A.java"); 
+		ICompilationUnit cu = getCompilationUnit("P/x/y/A.js"); 
 		workingCopy = cu.getWorkingCopy(null);
 		workingCopy.getBuffer().setContents(
 			"package x.y;\n" +
@@ -1322,7 +1307,7 @@ public void testModifyMethodBodyAndSave() throws CoreException {
 			"P[*]: {CHILDREN}\n" +
 			"	<project root>[*]: {CHILDREN}\n" +
 			"		x.y[*]: {CHILDREN}\n" +
-			"			A.java[*]: {CONTENT | FINE GRAINED | PRIMARY RESOURCE}"
+			"			A.js[*]: {CONTENT | FINE GRAINED | PRIMARY RESOURCE}"
 		);
 	} finally {
 		stopDeltas();
@@ -1458,28 +1443,28 @@ public void testMoveCuInEnclosingPkg() throws CoreException {
 	try {
 		createJavaProject("P", new String[] {""}, "");
 		createFolder("P/x/y");
-		createFile("P/x/y/A.java",
+		createFile("P/x/y/A.js",
 			"package x.y;\n" +
 			"public class A {\n" +
 			"}");
-		ICompilationUnit cu = getCompilationUnit("P/x/y/A.java"); 
+		ICompilationUnit cu = getCompilationUnit("P/x/y/A.js"); 
 		IPackageFragment pkg = getPackage("P/x");
 		
 		startDeltas();
 		cu.move(pkg, null, null, true, null);
 		assertDeltas(
 			"Unexpected delta", 
-			"P[*]: {CHILDREN}\n" + 
-			"	<project root>[*]: {CHILDREN}\n" + 
-			"		x[*]: {CHILDREN}\n" + 
-			"			A.java[+]: {MOVED_FROM(A.java [in x.y [in <project root> [in P]]])}\n" + 
-			"		x.y[*]: {CHILDREN}\n" + 
-			"			A.java[-]: {MOVED_TO(A.java [in x [in <project root> [in P]]])}"
+			"P[*]: {CHILDREN}\n" +
+			"	<project root>[*]: {CHILDREN}\n" +
+			"		x[*]: {CHILDREN}\n" +
+			"			A.js[+]: {MOVED_FROM(A.js [in x.y [in <project root> [in P]]])}"+
+			"		x.y[*]: {CHILDREN}\n" +
+			"			A.js[-]: {MOVED_TO(A.js [in x [in <project root> [in P]]])}\n" 
 		);
 		assertElementDescendants(
 			"Unexpected children for package x",
 			"x\n" +
-			"  A.java\n" +
+			"  A.js\n" +
 			"    package x\n" +
 			"    class A",
 			pkg);
@@ -1524,15 +1509,15 @@ public void testMoveResInDotNamedFolder() throws CoreException {
 public void testMoveTwoResInRoot() throws CoreException {
 	try {
 		createJavaProject("P", new String[] {"src"}, "bin");
-		final IFile f1 = createFile("P/X.java", "public class X {}");
-		final IFile f2 = createFile("P/Y.java", "public class Y {}");
+		final IFile f1 = createFile("P/X.js", "public class X {}");
+		final IFile f2 = createFile("P/Y.js", "public class Y {}");
 		
 		startDeltas();
 		JavaCore.run(
 			new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
-					f1.move(new Path("/P/src/X.java"), true, null);
-					f2.move(new Path("/P/src/Y.java"), true, null);
+					f1.move(new Path("/P/src/X.js"), true, null);
+					f2.move(new Path("/P/src/Y.js"), true, null);
 				}
 			},
 			null);
@@ -1541,10 +1526,10 @@ public void testMoveTwoResInRoot() throws CoreException {
 			"P[*]: {CHILDREN | CONTENT}\n" + 
 			"	src[*]: {CHILDREN}\n" + 
 			"		<default>[*]: {CHILDREN}\n" + 
-			"			X.java[+]: {}\n" + 
-			"			Y.java[+]: {}\n" + 
-			"	ResourceDelta(/P/X.java)[-]\n" + 
-			"	ResourceDelta(/P/Y.java)[-]"
+			"			X.js[+]: {}\n" + 
+			"			Y.js[+]: {}\n" + 
+			"	ResourceDelta(/P/X.js)[-]\n" + 
+			"	ResourceDelta(/P/Y.js)[-]"
 		);
 	} finally {
 		stopDeltas();
@@ -1677,7 +1662,7 @@ public void testOverwriteClasspath() throws CoreException {
 		getWorkspace().run(run, null);
 		assertDeltas(
 			"Unexpected delta", 
-			"P[*]: {CHILDREN | CONTENT | CLASSPATH CHANGED}\n" +
+			"P[*]: {CHILDREN}\n" +
 			"	<project root>[*]: {REMOVED FROM CLASSPATH}\n" +
 			"	src[*]: {ADDED TO CLASSPATH}\n" +
 			"	ResourceDelta(/P/.classpath)[*]\n" +
@@ -1795,7 +1780,7 @@ public void testRemoveAddBinaryProject() throws CoreException {
 			null);
 		assertDeltas(
 			"Unexpected delta", 
-			"P[*]: {CHILDREN | CONTENT | CLASSPATH CHANGED}\n" + 
+			"P[*]: {CHILDREN | CLASSPATH CHANGED}\n" + 
 			"	<project root>[*]: {ADDED TO CLASSPATH}\n" + 
 			"	lib.jar[-]: {}\n" + 
 			"	ResourceDelta(/P/.classpath)[*]\n" + 
@@ -1823,7 +1808,7 @@ public void testRemoveAddJavaProject() throws CoreException {
 			null);
 		assertDeltas(
 			"Unexpected delta", 
-			"P[*]: {CONTENT}\n" + 
+			"P[*]: {CONTENT | CLASSPATH CHANGED}\n" + 
 			"	ResourceDelta(/P/.classpath)[*]\n" + 
 			"	ResourceDelta(/P/.project)[*]"
 		);
@@ -1860,7 +1845,7 @@ public void testRemoveCPEntryAndRoot1() throws CoreException {
 			null);
 		assertDeltas(
 			"Unexpected delta", 
-			"P[*]: {CHILDREN | CONTENT | CLASSPATH CHANGED}\n" + 
+			"P[*]: {CHILDREN}\n" + 
 			"	src[-]: {}\n" + 
 			"	ResourceDelta(/P/.classpath)[*]"
 		);
@@ -1892,7 +1877,7 @@ public void testRemoveCPEntryAndRoot2() throws CoreException {
 			null);
 		assertDeltas(
 			"Unexpected delta", 
-			"P[*]: {CHILDREN | CONTENT | CLASSPATH CHANGED}\n" + 
+			"P[*]: {CHILDREN | CLASSPATH CHANGED}\n" + 
 			"	src[-]: {}\n" + 
 			"	ResourceDelta(/P/.classpath)[*]"
 		);
@@ -1924,7 +1909,7 @@ public void testRemoveCPEntryAndRoot3() throws CoreException {
 			null);
 		assertDeltas(
 			"Unexpected delta", 
-			"P[*]: {CHILDREN | CONTENT | CLASSPATH CHANGED}\n" + 
+			"P[*]: {CHILDREN | CLASSPATH CHANGED}\n" + 
 			"	src[-]: {}\n" + 
 			"	ResourceDelta(/P/.classpath)[*]"
 		);
@@ -2089,13 +2074,13 @@ public void testRenameMethodAndSave() throws CoreException {
 	try {
 		createJavaProject("P", new String[] {""}, "");
 		createFolder("P/x/y");
-		createFile("P/x/y/A.java",
+		createFile("P/x/y/A.js",
 			"package x.y;\n" +
 			"public class A {\n" +
 			"  public void foo1() {\n" +
 			"  }\n" +
 			"}");
-		ICompilationUnit cu = getCompilationUnit("P/x/y/A.java"); 
+		ICompilationUnit cu = getCompilationUnit("P/x/y/A.js"); 
 		workingCopy = cu.getWorkingCopy(null);
 		workingCopy.getBuffer().setContents(
 			"package x.y;\n" +
@@ -2111,9 +2096,9 @@ public void testRenameMethodAndSave() throws CoreException {
 			"P[*]: {CHILDREN}\n" + 
 			"	<project root>[*]: {CHILDREN}\n" + 
 			"		x.y[*]: {CHILDREN}\n" + 
-			"			A.java[*]: {CHILDREN | FINE GRAINED | PRIMARY RESOURCE}\n" + 
+			"			A.js[*]: {CHILDREN | FINE GRAINED | PRIMARY RESOURCE}\n" + 
 			"				A[*]: {CHILDREN | FINE GRAINED}\n" + 
-			"					foo1()[-]: {}\n" + 
+			"					foo1()[-]: {}\n" +
 			"					foo2()[+]: {}"
 		);
 	} finally {
@@ -2153,7 +2138,7 @@ public void testRenameOuterPkgFragment() throws CoreException {
 		createJavaProject("P", new String[] {""}, "");
 		createFolder("P/x/y");
 		createFile(
-			"P/x/y/X.java",
+			"P/x/y/X.js",
 			"package x.y;\n" +
 			"public class X {\n" +
 			"}");
@@ -2179,10 +2164,10 @@ public void testSaveWorkingCopy() throws CoreException {
 	ICompilationUnit copy = null;
 	try {
 		createJavaProject("P", new String[] {""}, "");
-		createFile("P/X.java",
+		createFile("P/X.js",
 			"public class X {\n" +
 			"}");
-		ICompilationUnit unit = getCompilationUnit("P", "", "", "X.java");
+		ICompilationUnit unit = getCompilationUnit("P", "", "", "X.js");
 		copy = unit.getWorkingCopy(null);
 		copy.getType("X").createMethod("void foo() {}", null, true, null);
 		startDeltas();
@@ -2197,7 +2182,7 @@ public void testSaveWorkingCopy() throws CoreException {
 			"P[*]: {CHILDREN}\n" + 
 			"	<project root>[*]: {CHILDREN}\n" + 
 			"		<default>[*]: {CHILDREN}\n" + 
-			"			X.java[*]: {CHILDREN | FINE GRAINED | PRIMARY RESOURCE}\n" + 
+			"			X.js[*]: {CHILDREN | FINE GRAINED | PRIMARY RESOURCE}\n" + 
 			"				X[*]: {CHILDREN | FINE GRAINED}\n" + 
 			"					foo()[+]: {}"
 		);
@@ -2233,7 +2218,7 @@ public void testSetClasspathOnFreshProject() throws CoreException {
 		p1.setRawClasspath(classpath, null);
 		assertDeltas(
 			"Should notice src2 and myLib additions to the classpath", 
-			"P1[*]: {CHILDREN | CONTENT | CLASSPATH CHANGED}\n" + 
+			"P1[*]: {CHILDREN | CLASSPATH CHANGED}\n" + 
 			"	<project root>[*]: {REMOVED FROM CLASSPATH}\n" + 
 			"	/LibProj/mylib.jar[*]: {ADDED TO CLASSPATH}\n" + 
 			"	src2[*]: {ADDED TO CLASSPATH}\n" + 
@@ -2308,11 +2293,11 @@ public void testWorkingCopyCommit() throws CoreException {
 	try {
 		createJavaProject("P", new String[] {""}, "");
 		createFolder("P/x/y");
-		createFile("P/x/y/A.java", 
+		createFile("P/x/y/A.js", 
 			"package x.y;\n" +
 			"public class A {\n" +
 			"}");
-		ICompilationUnit cu = getCompilationUnit("P/x/y/A.java");
+		ICompilationUnit cu = getCompilationUnit("P/x/y/A.js");
 		ICompilationUnit copy = cu.getWorkingCopy(null);
 		copy.getBuffer().setContents(
 			"package x.y;\n" +
@@ -2328,7 +2313,7 @@ public void testWorkingCopyCommit() throws CoreException {
 			"P[*]: {CHILDREN}\n" + 
 			"	<project root>[*]: {CHILDREN}\n" + 
 			"		x.y[*]: {CHILDREN}\n" + 
-			"			A.java[*]: {CHILDREN | FINE GRAINED | PRIMARY RESOURCE}\n" + 
+			"			A.js[*]: {CHILDREN | FINE GRAINED | PRIMARY RESOURCE}\n" + 
 			"				A[*]: {CHILDREN | FINE GRAINED}\n" + 
 			"					foo()[+]: {}"
 		);

@@ -159,47 +159,47 @@ private static void testFocusHierarchy(IType type, IJavaProject project) throws 
 	compare(type.getFullyQualifiedName(), h1, h2);
 }
 public void test001() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "X.java");
+	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "X.js");
 	IType type = cu.getType("X");
 	testFocusHierarchy(type, project);
 }
 public void test002() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "Y.java");
+	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "Y.js");
 	IType type = cu.getType("Y");
 	testFocusHierarchy(type, project);
 }
 public void test003() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "Z.java");
+	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "Z.js");
 	IType type = cu.getType("Z");
 	testFocusHierarchy(type, project);
 }
 public void test004() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I1.java");
+	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I1.js");
 	IType type = cu.getType("I1");
 	testFocusHierarchy(type, project);
 }
 public void test005() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I2.java");
+	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I2.js");
 	IType type = cu.getType("I2");
 	testFocusHierarchy(type, project);
 }
 public void test006() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I3.java");
+	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I3.js");
 	IType type = cu.getType("I3");
 	testFocusHierarchy(type, project);
 }
 public void test007() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I4.java");
+	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I4.js");
 	IType type = cu.getType("I4");
 	testFocusHierarchy(type, project);
 }
 public void test008() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I5.java");
+	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I5.js");
 	IType type = cu.getType("I5");
 	testFocusHierarchy(type, project);
 }
 public void test009() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I6.java");
+	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I6.js");
 	IType type = cu.getType("I6");
 	testFocusHierarchy(type, project);
 }

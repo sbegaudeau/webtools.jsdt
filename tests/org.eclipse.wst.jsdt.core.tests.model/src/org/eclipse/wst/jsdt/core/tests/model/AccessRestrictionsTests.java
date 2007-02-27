@@ -72,7 +72,7 @@ public void test001() throws CoreException {
 			"bin");
 		this.problemRequestor = new ProblemRequestor();
 		x1 = getWorkingCopy(
-			"/P1/src/p/X1.java",
+			"/P1/src/p/X1.js",
 			"package p;\n" +
 			"public class X1 {\n" +
 			"	void foo() {\n" +
@@ -86,7 +86,7 @@ public void test001() throws CoreException {
 			"----------\n"
 		);
 		x2 = getWorkingCopy(			
-			"/P1/src/p/X2.java",
+			"/P1/src/p/X2.js",
 			"package p;\n" +
 			"public class X2 extends X1 {\n" +
 			"	void bar() {\n" +
@@ -112,7 +112,7 @@ public void test001() throws CoreException {
 			"}";
 		this.problemRequestor = new ProblemRequestor(src);
 		z = getWorkingCopy(			
-			"/P2/src/p/Z.java", 
+			"/P2/src/p/Z.js", 
 			src,
 			owner,
 			this.problemRequestor);
@@ -136,7 +136,7 @@ public void test001() throws CoreException {
 			"}";
 		this.problemRequestor = new ProblemRequestor(src);
 		y = getWorkingCopy(			
-			"/P2/src/p/Y.java", 
+			"/P2/src/p/Y.js", 
 			src,
 			owner,
 			this.problemRequestor);
@@ -179,7 +179,7 @@ public void test002() throws CoreException {
 			"bin");
 		this.problemRequestor = new ProblemRequestor();
 		x1 = getWorkingCopy(
-			"/P1/src/p/X1.java",
+			"/P1/src/p/X1.js",
 			"package p;\n" +
 			"public class X1 {\n" +
 			"	int m1;\n" +
@@ -192,7 +192,7 @@ public void test002() throws CoreException {
 			"----------\n"
 		);
 		x2 = getWorkingCopy(			
-			"/P1/src/p/X2.java",
+			"/P1/src/p/X2.js",
 			"package p;\n" +
 			"public class X2 extends X1 {\n" +
 			"	char m2;\n" +
@@ -221,7 +221,7 @@ public void test002() throws CoreException {
 			"}";
 		this.problemRequestor = new ProblemRequestor(src);
 		y = getWorkingCopy(			
-			"/P2/src/p/Y.java", 
+			"/P2/src/p/Y.js", 
 			src,
 			owner,
 			this.problemRequestor);
@@ -262,7 +262,7 @@ public void test003() throws CoreException {
 			"bin");
 		this.problemRequestor = new ProblemRequestor();
 		x1 = getWorkingCopy(
-			"/P1/src/p/X1.java",
+			"/P1/src/p/X1.js",
 			"package p;\n" +
 			"public class X1 {\n" +
 			"	class C1 {\n" +
@@ -279,7 +279,7 @@ public void test003() throws CoreException {
 			"----------\n"
 		);
 		x2 = getWorkingCopy(			
-			"/P1/src/p/X2.java",
+			"/P1/src/p/X2.js",
 			"package p;\n" +
 			"public class X2 extends X1 {\n" +
 			"	class C2 {}\n" +
@@ -317,7 +317,7 @@ public void test003() throws CoreException {
 			"}";
 		this.problemRequestor = new ProblemRequestor(src);
 		y = getWorkingCopy(			
-			"/P2/src/p/Y.java", 
+			"/P2/src/p/Y.js", 
 			src,
 			owner,
 			this.problemRequestor);
@@ -380,7 +380,7 @@ public void test004() throws CoreException {
 			"bin");
 		this.problemRequestor = new ProblemRequestor();
 		x1 = getWorkingCopy(
-			"/P1/src/p/X1.java",
+			"/P1/src/p/X1.js",
 			"package p;\n" +
 			"public class X1 {\n" +
 			"	class C1 {}\n" +
@@ -406,7 +406,7 @@ public void test004() throws CoreException {
 			"}";
 		this.problemRequestor = new ProblemRequestor(src);
 		z = getWorkingCopy(			
-			"/P2/src/p/Z.java", 
+			"/P2/src/p/Z.js", 
 			src,
 			owner,
 			this.problemRequestor);
@@ -452,7 +452,7 @@ public void test005() throws CoreException {
 			"bin");
 		this.problemRequestor = new ProblemRequestor();
 		x1 = getWorkingCopy(
-			"/P1/src/p/X1.java",
+			"/P1/src/p/X1.js",
 			"package p;\n" +
 			"public class X1 {\n" +
 			"	public void foo() {\n" +
@@ -466,7 +466,7 @@ public void test005() throws CoreException {
 			"----------\n"
 		);
 		i1 = getWorkingCopy(			
-			"/P1/src/q/I1.java",
+			"/P1/src/q/I1.js",
 			"package q;\n" +
 			"interface I1 {\n" +
 			"	void foo();\n" +
@@ -479,7 +479,7 @@ public void test005() throws CoreException {
 			"----------\n"
 		);
 		x2 = getWorkingCopy(			
-			"/P1/src/q/X2.java",
+			"/P1/src/q/X2.js",
 			"package q;\n" +
 			"public class X2 extends p.X1 {\n" +
 			"	public void bar() {\n" +
@@ -514,7 +514,7 @@ public void test005() throws CoreException {
 			"}";
 		this.problemRequestor = new ProblemRequestor(src);
 		y = getWorkingCopy(			
-			"/P2/src/r/Y.java", 
+			"/P2/src/r/Y.js", 
 			src,
 			owner,
 			this.problemRequestor);
@@ -559,7 +559,7 @@ public void test006() throws CoreException {
 		p1.setOption(JavaCore.COMPILER_PB_RAW_TYPE_REFERENCE, JavaCore.IGNORE);
 		this.problemRequestor = new ProblemRequestor();
 		x = getWorkingCopy(
-			"/P1/src/p/X.java",
+			"/P1/src/p/X.js",
 			"package p;\n" +
 			"public class X<T> {\n" +
 			"	T m;\n" +
@@ -593,7 +593,7 @@ public void test006() throws CoreException {
 			"}";
 		this.problemRequestor = new ProblemRequestor(src);
 		y = getWorkingCopy(			
-			"/P2/src/p/Y.java", 
+			"/P2/src/p/Y.js", 
 			src,
 			owner,
 			this.problemRequestor);
@@ -651,7 +651,7 @@ public void test007() throws CoreException {
 		p1.setOption(JavaCore.COMPILER_PB_RAW_TYPE_REFERENCE, JavaCore.IGNORE);
 		this.problemRequestor = new ProblemRequestor();
 		x = getWorkingCopy(
-			"/P1/src/p/X.java",
+			"/P1/src/p/X.js",
 			"package p;\n" +
 			"public class X<T extends String> {\n" +
 			"  T m;\n" +
@@ -688,7 +688,7 @@ public void test007() throws CoreException {
 			"}";
 		this.problemRequestor = new ProblemRequestor(src);
 		y = getWorkingCopy(			
-			"/P2/src/p/Y.java", 
+			"/P2/src/p/Y.js", 
 			src,
 			owner,
 			this.problemRequestor);
@@ -746,7 +746,7 @@ public void test008() throws CoreException {
 		p1.setOption(JavaCore.COMPILER_PB_RAW_TYPE_REFERENCE, JavaCore.IGNORE);
 		this.problemRequestor = new ProblemRequestor();
 		x1 = getWorkingCopy(
-			"/P1/src/p/X1.java",
+			"/P1/src/p/X1.js",
 			"package p;\n" +
 			"public class X1<T> {\n" +
 			"	void foo() {\n" +
@@ -760,7 +760,7 @@ public void test008() throws CoreException {
 			"----------\n"
 		);
 		x2 = getWorkingCopy(			
-			"/P1/src/p/X2.java",
+			"/P1/src/p/X2.js",
 			"package p;\n" +
 			"public class X2 extends X1 {\n" +
 			"	void bar() {\n" +
@@ -792,7 +792,7 @@ public void test008() throws CoreException {
 			"}";
 		this.problemRequestor = new ProblemRequestor(src);
 		y = getWorkingCopy(			
-			"/P2/src/p/Y.java", 
+			"/P2/src/p/Y.js", 
 			src,
 			owner,
 			this.problemRequestor);
@@ -836,7 +836,7 @@ public void test009() throws CoreException {
 		p1.setOption(JavaCore.COMPILER_PB_RAW_TYPE_REFERENCE, JavaCore.IGNORE);
 		this.problemRequestor = new ProblemRequestor();
 		x1 = getWorkingCopy(
-			"/P1/src/p/X1.java",
+			"/P1/src/p/X1.js",
 			"package p;\n" +
 			"public class X1<T> {\n" +
 			"	int m1;\n" +
@@ -849,7 +849,7 @@ public void test009() throws CoreException {
 			"----------\n"
 		);
 		x2 = getWorkingCopy(			
-			"/P1/src/p/X2.java",
+			"/P1/src/p/X2.js",
 			"package p;\n" +
 			"public class X2 extends X1 {\n" +
 			"	char m2;\n" +
@@ -881,7 +881,7 @@ public void test009() throws CoreException {
 			"}";
 		this.problemRequestor = new ProblemRequestor(src);
 		y = getWorkingCopy(			
-			"/P2/src/p/Y.java", 
+			"/P2/src/p/Y.js", 
 			src,
 			owner,
 			this.problemRequestor);
@@ -925,7 +925,7 @@ public void test010() throws CoreException {
 		p1.setOption(JavaCore.COMPILER_PB_RAW_TYPE_REFERENCE, JavaCore.IGNORE);
 		this.problemRequestor = new ProblemRequestor();
 		x1 = getWorkingCopy(
-			"/P1/src/p/X1.java",
+			"/P1/src/p/X1.js",
 			"package p;\n" +
 			"public class X1<T> {\n" +
 			"	class C1 {\n" +
@@ -942,7 +942,7 @@ public void test010() throws CoreException {
 			"----------\n"
 		);
 		x2 = getWorkingCopy(			
-			"/P1/src/p/X2.java",
+			"/P1/src/p/X2.js",
 			"package p;\n" +
 			"public class X2 extends X1 {\n" +
 			"	class C2 {}\n" +
@@ -984,7 +984,7 @@ public void test010() throws CoreException {
 			"}";
 		this.problemRequestor = new ProblemRequestor(src);
 		y = getWorkingCopy(			
-			"/P2/src/p/Y.java", 
+			"/P2/src/p/Y.js", 
 			src,
 			owner,
 			this.problemRequestor);

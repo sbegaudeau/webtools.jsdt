@@ -483,7 +483,7 @@ public abstract class AbstractJavadocCompletionModelTest extends AbstractJavaMod
 			String fileName = (typeName.length() <= 3) ? typeName : typeName.substring(0, typeName.length()-3);
 			fileName = fileName + testName.substring(4);
 			names[i][1] = fileName;
-			names[i][2] = packageDir.getAbsolutePath()+"\\"+fileName+".java";
+			names[i][2] = packageDir.getAbsolutePath()+"\\"+fileName+".js";
 		}
 			
 		// Write modified contents

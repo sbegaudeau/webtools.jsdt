@@ -41,7 +41,7 @@ public static Test suite() {
 public void test0001() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"  void foo() {\n" + 
@@ -51,7 +51,7 @@ public void test0001() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/missing/MissingType.java",
+		"/Completion/src/missing/MissingType.js",
 		"package missing;"+
 		"public class MissingType<T> {\n" + 
 		"  public void bar() {};\n" + 
@@ -78,7 +78,7 @@ public void test0001() throws JavaModelException {
 public void test0002() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"  void foo() {\n" + 
@@ -88,7 +88,7 @@ public void test0002() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/missing/MissingType.java",
+		"/Completion/src/missing/MissingType.js",
 		"package missing;"+
 		"public class MissingType<T> {\n" + 
 		"  public void bar() {};\n" + 
@@ -96,7 +96,7 @@ public void test0002() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[2] = getWorkingCopy(
-		"/Completion/src/missing/MissingType2.java",
+		"/Completion/src/missing/MissingType2.js",
 		"package missing;"+
 		"public class MissingType2 {\n" + 
 		"}\n");
@@ -128,7 +128,7 @@ public void test0002() throws JavaModelException {
 public void test0003() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"import missing.MissingType;"+
 		"public class Test {\n" + 
@@ -139,7 +139,7 @@ public void test0003() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/missing/MissingType.java",
+		"/Completion/src/missing/MissingType.js",
 		"package missing;"+
 		"public class MissingType<T> {\n" + 
 		"  public void bar() {};\n" + 
@@ -147,7 +147,7 @@ public void test0003() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[2] = getWorkingCopy(
-		"/Completion/src/missing/MissingType2.java",
+		"/Completion/src/missing/MissingType2.js",
 		"package missing;"+
 		"public class MissingType2 {\n" + 
 		"}\n");
@@ -175,7 +175,7 @@ public void test0003() throws JavaModelException {
 public void test0004() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"import missing.MissingType2;"+
 		"public class Test {\n" + 
@@ -186,7 +186,7 @@ public void test0004() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/missing/MissingType.java",
+		"/Completion/src/missing/MissingType.js",
 		"package missing;"+
 		"public class MissingType<T> {\n" + 
 		"  public void bar() {};\n" + 
@@ -194,7 +194,7 @@ public void test0004() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[2] = getWorkingCopy(
-		"/Completion/src/missing/MissingType2.java",
+		"/Completion/src/missing/MissingType2.js",
 		"package missing;"+
 		"public class MissingType2 {\n" + 
 		"}\n");
@@ -222,7 +222,7 @@ public void test0004() throws JavaModelException {
 public void test0005() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[6];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"  void foo() {\n" + 
@@ -232,32 +232,32 @@ public void test0005() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/missing/MissingType.java",
+		"/Completion/src/missing/MissingType.js",
 		"package missing;"+
 		"public class MissingType<T, U> {\n" + 
 		"  public void bar(T t, U u) {};\n" + 
 		"}\n");
 	
 	this.workingCopies[2] = getWorkingCopy(
-		"/Completion/src/missing/MissingType1.java",
+		"/Completion/src/missing/MissingType1.js",
 		"package missing;"+
 		"public class MissingType1 {\n" + 
 		"}\n");
 	
 	this.workingCopies[3] = getWorkingCopy(
-		"/Completion/src/missing/MissingType2.java",
+		"/Completion/src/missing/MissingType2.js",
 		"package missing;"+
 		"public class MissingType2 {\n" + 
 		"}\n");
 	
 	this.workingCopies[4] = getWorkingCopy(
-		"/Completion/src/missing2/MissingType1.java",
+		"/Completion/src/missing2/MissingType1.js",
 		"package missing2;"+
 		"public class MissingType1 {\n" + 
 		"}\n");
 	
 	this.workingCopies[5] = getWorkingCopy(
-		"/Completion/src/missing2/MissingType2.java",
+		"/Completion/src/missing2/MissingType2.js",
 		"package missing2;"+
 		"public class MissingType2 {\n" + 
 		"}\n");
@@ -301,7 +301,7 @@ public void test0005() throws JavaModelException {
 public void test0006() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"  MissingType m(int ... i) {return null;}\n" + 
@@ -311,7 +311,7 @@ public void test0006() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/missing/MissingType.java",
+		"/Completion/src/missing/MissingType.js",
 		"package missing;"+
 		"public class MissingType {\n" + 
 		"  public void bar() {}\n" + 
@@ -338,7 +338,7 @@ public void test0006() throws JavaModelException {
 public void test0007() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"  void foo() {\n" + 
@@ -348,14 +348,14 @@ public void test0007() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/test/AType.java",
+		"/Completion/src/test/AType.js",
 		"package tezt;"+
 		"public class AType<T> {\n" + 
 		"  public void bar(T t) {};\n" + 
 		"}\n");
 	
 	this.workingCopies[2] = getWorkingCopy(
-		"/Completion/src/missing/MissingType.java",
+		"/Completion/src/missing/MissingType.js",
 		"package missing;"+
 		"public class MissingType {\n" + 
 		"}\n");
@@ -381,7 +381,7 @@ public void test0007() throws JavaModelException {
 public void test0008() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"  void foo() {\n" + 
@@ -391,7 +391,7 @@ public void test0008() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/missing/MissingType.java",
+		"/Completion/src/missing/MissingType.js",
 		"package missing;"+
 		"public class MissingType {\n" + 
 		"  public class MissingMemberType<T> {\n" + 
@@ -420,7 +420,7 @@ public void test0008() throws JavaModelException {
 public void test0009() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"  void foo() {\n" + 
@@ -430,7 +430,7 @@ public void test0009() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/missing1/missing2/MissingType.java",
+		"/Completion/src/missing1/missing2/MissingType.js",
 		"package missing1.missing2;"+
 		"public class MissingType<T> {\n" + 
 		"  public void bar() {};\n" + 
@@ -451,7 +451,7 @@ public void test0009() throws JavaModelException {
 public void test0010() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"  void foo() {\n" + 
@@ -461,7 +461,7 @@ public void test0010() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/missing/MissingType.java",
+		"/Completion/src/missing/MissingType.js",
 		"package missing;"+
 		"public class MissingType<T> {\n" + 
 		"  public class MissingMemberType<T> {\n" + 
@@ -490,7 +490,7 @@ public void test0010() throws JavaModelException {
 public void test0011() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"  void foo() {\n" + 
@@ -500,7 +500,7 @@ public void test0011() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/missing/MissingType.java",
+		"/Completion/src/missing/MissingType.js",
 		"package missing;"+
 		"public class MissingType<T> {\n" + 
 		"  public class MissingMemberType<T> {\n" + 
@@ -523,7 +523,7 @@ public void test0011() throws JavaModelException {
 public void test0012() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src/test/Test.java",
+		"/Completion/src/test/Test.js",
 		"package test;"+
 		"public class Test {\n" + 
 		"  void foo() {\n" + 
@@ -533,14 +533,14 @@ public void test0012() throws JavaModelException {
 		"}\n");
 	
 	this.workingCopies[1] = getWorkingCopy(
-		"/Completion/src/missing1/MissingType.java",
+		"/Completion/src/missing1/MissingType.js",
 		"package missing1;"+
 		"public class MissingType<T> {\n" + 
 		"  public void bar() {};\n" + 
 		"}\n");
 	
 	this.workingCopies[2] = getWorkingCopy(
-		"/Completion/src/missing2/MissingType.java",
+		"/Completion/src/missing2/MissingType.js",
 		"package missing2;"+
 		"public class MissingType {\n" + 
 		"  public void bar() {};\n" + 

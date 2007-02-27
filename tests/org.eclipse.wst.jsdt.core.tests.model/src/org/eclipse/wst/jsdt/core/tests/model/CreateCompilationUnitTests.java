@@ -45,7 +45,7 @@ public void tearDown() throws Exception {
  */
 public void testCUAndImportContainer() throws JavaModelException {
 	IPackageFragment pkg = getPackage("/P/p");
-	ICompilationUnit cu= pkg.createCompilationUnit("HelloImports.java", 
+	ICompilationUnit cu= pkg.createCompilationUnit("HelloImports.js", 
 		("package p;\n" +
 		"\n" +
 		"import java.util.Enumeration;\n" +
@@ -77,7 +77,7 @@ public void testCUAndImportContainer() throws JavaModelException {
  */
 public void testDefaultCU() throws CoreException {
 	IPackageFragment pkg = getPackage("/P/p");
-	ICompilationUnit cu= pkg.getCompilationUnit("Default.java");
+	ICompilationUnit cu= pkg.getCompilationUnit("Default.js");
 	IType type= cu.createType("public class Default {}", null, false, null);
 	assertCreation(cu);
 	assertCreation(type);
@@ -104,13 +104,13 @@ public void testDefaultCU() throws CoreException {
 
 	// should fail if we try again
 	try {
-		pkg.createCompilationUnit("Default.java", "", false, null);
+		pkg.createCompilationUnit("Default.js", "", false, null);
 	} catch (JavaModelException jme) {
 		assertTrue("Exception status not correct for creating a cu that already exists", jme.getStatus().getCode() == IJavaModelStatusConstants.NAME_COLLISION);
 	}
 	// should fail if we try again
 	try {
-		pkg.createCompilationUnit("Default.java", "public class Default {}", true, null);
+		pkg.createCompilationUnit("Default.js", "public class Default {}", true, null);
 		return;
 	} catch (JavaModelException jme) {
 	}
@@ -124,10 +124,10 @@ public void testEmptyCU() {
 	IPackageFragment pkg = getPackage("/P/p");
 	// should fail if we try again
 	try {
-		pkg.createCompilationUnit("Empty.java", "", true, null);
+		pkg.createCompilationUnit("Empty.js", "", true, null);
 	} catch (JavaModelException jme) {
 	}
-	ICompilationUnit cu= pkg.getCompilationUnit("Empty.java");
+	ICompilationUnit cu= pkg.getCompilationUnit("Empty.js");
 	assertCreation(cu);
 }
 /*
@@ -137,9 +137,9 @@ public void testEmptyCU() {
 public void testForce() throws JavaModelException, IOException {
 	IPackageFragment pkg = getPackage("/P/p");
 	File folder = pkg.getResource().getLocation().toFile();
-	new File(folder, "X.java").createNewFile();
+	new File(folder, "X.js").createNewFile();
 	ICompilationUnit cu = pkg.createCompilationUnit(
-		"X.java", 
+		"X.js", 
 		"package p;\n" +
 		"public class X {\n" +
 		"}",
@@ -180,7 +180,7 @@ public void testInvalidName() {
 public void testNullContents() {
 	IPackageFragment pkg = getPackage("/P/p");
 	try {
-		pkg.createCompilationUnit("HelloWorld.java", null, false, null);
+		pkg.createCompilationUnit("HelloWorld.js", null, false, null);
 	} catch (JavaModelException jme) {
 		assertTrue("Incorrect JavaModelException thrown for creating a cu with null contents: " + jme, jme.getStatus().getCode() == IJavaModelStatusConstants.INVALID_CONTENTS);
 		return;
@@ -195,7 +195,7 @@ public void testNullContents() {
  */
 public void testSimpleCreation() throws JavaModelException {
 	IPackageFragment pkg = getPackage("/P/p");
-	ICompilationUnit cu= pkg.createCompilationUnit("HelloWorld.java", 
+	ICompilationUnit cu= pkg.createCompilationUnit("HelloWorld.js", 
 		("package p;\n" +
 		"\n" +
 		"public class HelloWorld {\n" +

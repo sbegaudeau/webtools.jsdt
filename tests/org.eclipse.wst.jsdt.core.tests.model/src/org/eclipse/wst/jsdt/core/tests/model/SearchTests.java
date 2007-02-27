@@ -199,23 +199,16 @@ protected void assertValidMatchRule(String pattern, int rule, int expected) {
 public void setUpSuite() throws Exception {
 	super.setUpSuite();
 	createJavaProject("P");
-	createFolder("/P/x/y/z");
+	createFolder("/P/x");
 	createFile(
-		"/P/x/y/z/Foo.java",
-		"package x.y,z;\n" +
-		"import x.y.*;\n" +
-		"import java.util.Vector;\n" +
-		"public class Foo {\n" +
-		"  int field;\n" +
-		"  void bar() {\n" +
-		"  }\n" +
+		"/P/x/Foo.js",
+		"function foo1(){\n" +
 		"}"
 	);
 	createFile(
-		"/P/x/y/z/I.java",
-		"package x.y,z;\n" +
-		"public interface I {\n" +
-		"}"
+		"/P/x/I.js",
+		"var v;\n" +
+		""
 	);
 }
 public void tearDownSuite() throws Exception {
@@ -236,10 +229,10 @@ public void testChangeClasspath() throws CoreException, TimeOutException {
 			public void run(IProgressMonitor monitor) throws CoreException {
 				createJavaProject("P1");
 				createFile(
-					"/P1/X.java",
-					"public class X {\n" +
-					"}"
-				);
+						"/P1/X.js",
+						"function bar() {\n" +
+						"}"
+					);
 			}
 		}, null);
 		
@@ -276,9 +269,10 @@ public void testChangeClasspath2() throws CoreException {
 	try {
 		final IJavaProject project = createJavaProject("P1", new String[] {""}, "bin");
 		createFile(
-			"/P1/X.java",
-			"public class X {}"
-		);
+				"/P1/X.js",
+				"function bar() {\n" +
+				"}"
+			);
 		assertAllTypes(
 			"Unexpected types before changing the classpath",
 			null, // workspace search
@@ -470,7 +464,7 @@ public void testRemoveOuterFolder() throws CoreException {
 					null);
 				createFolder("/P1/src1/src2");
 				createFile(
-					"/P1/src1/src2/X.java",
+					"/P1/src1/src2/X.js",
 					"public class X {\n" +
 					"}"
 				);
@@ -645,7 +639,7 @@ public void testSearchPatternCreation10() {
  * Test pattern creation
  */
 public void testSearchPatternCreation12() {
-	IField field = getCompilationUnit("/P/x/y/z/Foo.java").getType("Foo").getField("field");
+	IField field = getCompilationUnit("/P/x/y/z/Foo.js").getType("Foo").getField("field");
 	SearchPattern searchPattern = createPattern(
 			field, 
 			IJavaSearchConstants.REFERENCES);
@@ -659,7 +653,7 @@ public void testSearchPatternCreation12() {
  * Test pattern creation
  */
 public void testSearchPatternCreation13() {
-	IField field = getCompilationUnit("/P/x/y/z/Foo.java").getType("Foo").getField("field");
+	IField field = getCompilationUnit("/P/x/y/z/Foo.js").getType("Foo").getField("field");
 	SearchPattern searchPattern = createPattern(
 			field, 
 			IJavaSearchConstants.DECLARATIONS);
@@ -673,7 +667,7 @@ public void testSearchPatternCreation13() {
  * Test pattern creation
  */
 public void testSearchPatternCreation14() {
-	IField field = getCompilationUnit("/P/x/y/z/Foo.java").getType("Foo").getField("field");
+	IField field = getCompilationUnit("/P/x/y/z/Foo.js").getType("Foo").getField("field");
 	SearchPattern searchPattern = createPattern(
 			field, 
 			IJavaSearchConstants.ALL_OCCURRENCES);
@@ -687,7 +681,7 @@ public void testSearchPatternCreation14() {
  * Test pattern creation
  */
 public void testSearchPatternCreation15() {
-	IImportDeclaration importDecl = getCompilationUnit("/P/x/y/z/Foo.java").getImport("x.y.*");
+	IImportDeclaration importDecl = getCompilationUnit("/P/x/y/z/Foo.js").getImport("x.y.*");
 	SearchPattern searchPattern = createPattern(
 			importDecl, 
 			IJavaSearchConstants.REFERENCES);
@@ -701,7 +695,7 @@ public void testSearchPatternCreation15() {
  * Test pattern creation
  */
 public void testSearchPatternCreation16() {
-	IMethod method = getCompilationUnit("/P/x/y/z/Foo.java").getType("Foo").getMethod("bar", new String[] {});
+	IMethod method = getCompilationUnit("/P/x/y/z/Foo.js").getType("Foo").getMethod("bar", new String[] {});
 	SearchPattern searchPattern = createPattern(
 			method, 
 			IJavaSearchConstants.DECLARATIONS);
@@ -715,7 +709,7 @@ public void testSearchPatternCreation16() {
  * Test pattern creation
  */
 public void testSearchPatternCreation17() {
-	IMethod method = getCompilationUnit("/P/x/y/z/Foo.java").getType("Foo").getMethod("bar", new String[] {});
+	IMethod method = getCompilationUnit("/P/x/y/z/Foo.js").getType("Foo").getMethod("bar", new String[] {});
 	SearchPattern searchPattern = createPattern(
 			method, 
 			IJavaSearchConstants.REFERENCES);
@@ -729,7 +723,7 @@ public void testSearchPatternCreation17() {
  * Test pattern creation
  */
 public void testSearchPatternCreation18() {
-	IMethod method = getCompilationUnit("/P/x/y/z/Foo.java").getType("Foo").getMethod("bar", new String[] {});
+	IMethod method = getCompilationUnit("/P/x/y/z/Foo.js").getType("Foo").getMethod("bar", new String[] {});
 	SearchPattern searchPattern = createPattern(
 			method, 
 			IJavaSearchConstants.ALL_OCCURRENCES);
@@ -743,7 +737,7 @@ public void testSearchPatternCreation18() {
  * Test pattern creation
  */
 public void testSearchPatternCreation19() {
-	IType type = getCompilationUnit("/P/x/y/z/Foo.java").getType("Foo");
+	IType type = getCompilationUnit("/P/x/y/z/Foo.js").getType("Foo");
 	SearchPattern searchPattern = createPattern(
 			type, 
 			IJavaSearchConstants.DECLARATIONS);
@@ -757,7 +751,7 @@ public void testSearchPatternCreation19() {
  * Test pattern creation
  */
 public void testSearchPatternCreation20() {
-	IType type = getCompilationUnit("/P/x/y/z/Foo.java").getType("Foo");
+	IType type = getCompilationUnit("/P/x/y/z/Foo.js").getType("Foo");
 	SearchPattern searchPattern = createPattern(
 			type, 
 			IJavaSearchConstants.REFERENCES);
@@ -771,7 +765,7 @@ public void testSearchPatternCreation20() {
  * Test pattern creation
  */
 public void testSearchPatternCreation21() {
-	IType type = getCompilationUnit("/P/x/y/z/I.java").getType("I");
+	IType type = getCompilationUnit("/P/x/y/z/I.js").getType("I");
 	SearchPattern searchPattern = createPattern(
 			type, 
 			IJavaSearchConstants.IMPLEMENTORS);
@@ -785,7 +779,7 @@ public void testSearchPatternCreation21() {
  * Test pattern creation
  */
 public void testSearchPatternCreation22() {
-	IType type = getCompilationUnit("/P/x/y/z/Foo.java").getType("Foo");
+	IType type = getCompilationUnit("/P/x/y/z/Foo.js").getType("Foo");
 	SearchPattern searchPattern = createPattern(
 			type, 
 			IJavaSearchConstants.ALL_OCCURRENCES);
@@ -800,7 +794,7 @@ public void testSearchPatternCreation22() {
  * Test pattern creation
  */
 public void testSearchPatternCreation23() {
-	IPackageDeclaration pkg = getCompilationUnit("/P/x/y/z/Foo.java").getPackageDeclaration("x.y.z");
+	IPackageDeclaration pkg = getCompilationUnit("/P/x/y/z/Foo.js").getPackageDeclaration("x.y.z");
 	SearchPattern searchPattern = createPattern(
 			pkg, 
 			IJavaSearchConstants.REFERENCES);
@@ -828,7 +822,7 @@ public void testSearchPatternCreation24() {
  * Test pattern creation
  */
 public void testSearchPatternCreation25() {
-	IImportDeclaration importDecl = getCompilationUnit("/P/x/y/z/Foo.java").getImport("java.util.Vector");
+	IImportDeclaration importDecl = getCompilationUnit("/P/x/y/z/Foo.js").getImport("java.util.Vector");
 	SearchPattern searchPattern = createPattern(
 			importDecl, 
 			IJavaSearchConstants.REFERENCES);
@@ -856,7 +850,7 @@ public void testSearchPatternCreation26() {
  * Test pattern creation
  */
 public void testSearchPatternCreation27() {
-	IPackageDeclaration pkg = getCompilationUnit("/P/x/y/z/Foo.java").getPackageDeclaration("x.y.z");
+	IPackageDeclaration pkg = getCompilationUnit("/P/x/y/z/Foo.js").getPackageDeclaration("x.y.z");
 	SearchPattern searchPattern = createPattern(
 			pkg, 
 			IJavaSearchConstants.DECLARATIONS);
@@ -870,7 +864,7 @@ public void testSearchPatternCreation27() {
  * Test pattern creation
  */
 public void testSearchPatternCreation28() {
-	IImportDeclaration importDecl = getCompilationUnit("/P/x/y/z/Foo.java").getImport("x.y.*");
+	IImportDeclaration importDecl = getCompilationUnit("/P/x/y/z/Foo.js").getImport("x.y.*");
 	SearchPattern searchPattern = createPattern(
 			importDecl, 
 			IJavaSearchConstants.DECLARATIONS);
@@ -899,7 +893,7 @@ public void testSearchPatternCreation29() {
  * Test LocalVarDeclarationPattern creation
  */
 public void testSearchPatternCreation30() {
-	ILocalVariable localVar = new LocalVariable((JavaElement)getCompilationUnit("/P/X.java").getType("X").getMethod("foo", new String[0]),  "var", 1, 2, 3, 4, "Z");
+	ILocalVariable localVar = new LocalVariable((JavaElement)getCompilationUnit("/P/X.js").getType("X").getMethod("foo", new String[0]),  "var", 1, 2, 3, 4, "Z");
 	SearchPattern searchPattern = createPattern(
 			localVar, 
 			IJavaSearchConstants.DECLARATIONS);
@@ -913,7 +907,7 @@ public void testSearchPatternCreation30() {
  * Test LocalVarReferencePattern creation
  */
 public void testSearchPatternCreation31() {
-	ILocalVariable localVar = new LocalVariable((JavaElement)getCompilationUnit("/P/X.java").getType("X").getMethod("foo", new String[0]),  "var", 1, 2, 3, 4, "Z");
+	ILocalVariable localVar = new LocalVariable((JavaElement)getCompilationUnit("/P/X.js").getType("X").getMethod("foo", new String[0]),  "var", 1, 2, 3, 4, "Z");
 	SearchPattern searchPattern = createPattern(
 			localVar, 
 			IJavaSearchConstants.REFERENCES);
@@ -927,7 +921,7 @@ public void testSearchPatternCreation31() {
  * Test LocalVarCombinedPattern creation
  */
 public void testSearchPatternCreation32() {
-	ILocalVariable localVar = new LocalVariable((JavaElement)getCompilationUnit("/P/X.java").getType("X").getMethod("foo", new String[0]),  "var", 1, 2, 3, 4, "Z");
+	ILocalVariable localVar = new LocalVariable((JavaElement)getCompilationUnit("/P/X.js").getType("X").getMethod("foo", new String[0]),  "var", 1, 2, 3, 4, "Z");
 	SearchPattern searchPattern = createPattern(
 			localVar, 
 			IJavaSearchConstants.ALL_OCCURRENCES);
@@ -941,7 +935,7 @@ public void testSearchPatternCreation32() {
  * Test TypeDeclarationPattern creation
  */
 public void testSearchPatternCreation33() {
-	IType localType = getCompilationUnit("/P/X.java").getType("X").getMethod("foo", new String[0]).getType("Y", 2);
+	IType localType = getCompilationUnit("/P/X.js").getType("X").getMethod("foo", new String[0]).getType("Y", 2);
 	SearchPattern searchPattern = createPattern(
 			localType, 
 			IJavaSearchConstants.DECLARATIONS);
@@ -955,7 +949,7 @@ public void testSearchPatternCreation33() {
  * Test TypeReferencePattern creation
  */
 public void testSearchPatternCreation34() {
-	IType localType = getCompilationUnit("/P/X.java").getType("X").getMethod("foo", new String[0]).getType("Y", 3);
+	IType localType = getCompilationUnit("/P/X.js").getType("X").getMethod("foo", new String[0]).getType("Y", 3);
 	SearchPattern searchPattern = createPattern(
 			localType, 
 			IJavaSearchConstants.REFERENCES);
@@ -969,7 +963,7 @@ public void testSearchPatternCreation34() {
  * Test TypeDeclarationPattern creation
  */
 public void testSearchPatternCreation35() {
-	IType localType = getCompilationUnit("/P/X.java").getType("X").getInitializer(1).getType("Y", 2);
+	IType localType = getCompilationUnit("/P/X.js").getType("X").getInitializer(1).getType("Y", 2);
 	SearchPattern searchPattern = createPattern(
 			localType, 
 			IJavaSearchConstants.DECLARATIONS);
@@ -983,7 +977,7 @@ public void testSearchPatternCreation35() {
  * Test TypeReferencePattern creation
  */
 public void testSearchPatternCreation36() {
-	IType localType = getCompilationUnit("/P/X.java").getType("X").getInitializer(2).getType("Y", 3);
+	IType localType = getCompilationUnit("/P/X.js").getType("X").getInitializer(2).getType("Y", 3);
 	SearchPattern searchPattern = createPattern(
 			localType, 
 			IJavaSearchConstants.REFERENCES);

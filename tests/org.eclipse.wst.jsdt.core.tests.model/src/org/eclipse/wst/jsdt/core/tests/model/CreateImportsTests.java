@@ -36,7 +36,7 @@ public class CreateImportsTests extends AbstractJavaModelTests {
 	}
 	protected void setUp() throws Exception {
 		super.setUp();
-		ICompilationUnit workingCopy = getCompilationUnit("P/X.java");
+		ICompilationUnit workingCopy = getCompilationUnit("P/X.js");
 		workingCopy.becomeWorkingCopy(null/*no problem requested*/, null/*no progress*/);
 		this.workingCopies = new ICompilationUnit[] {workingCopy};
 		setContents(

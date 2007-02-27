@@ -100,7 +100,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 		
 		String[] order= new String[] { "java", "com", "pack" };
 		
@@ -143,7 +143,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 		
 		String[] order= new String[] { "java.util", "java.new", "p" };
 		
@@ -178,7 +178,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 		
 		String[] order= new String[] { "java.util", "java.new", "p" };
 		
@@ -216,7 +216,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 
 		String[] order= new String[] { "java", "java.util", "com", "pack" };
 
@@ -249,7 +249,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 
 		String[] order= new String[] { "java", "java.util", "com", "pack" };
 
@@ -284,7 +284,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 		
 		String[] order= new String[] { "java", "com", "pack" };
 		
@@ -318,7 +318,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 		
 		String[] order= new String[] { "java", "com", "pack" };
 		
@@ -348,7 +348,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 
 		String[] order= new String[] { };
 
@@ -380,7 +380,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");		
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 
 		String[] order= new String[] { "java.awt", "java" };
 
@@ -412,7 +412,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");		
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 
 		String[] order= new String[] { "java" };
 
@@ -443,7 +443,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");		
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 
 		String[] order= new String[] { "java" };
 
@@ -473,7 +473,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");		
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 
 		String[] order= new String[] { "#", "java" };
 
@@ -507,7 +507,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");		
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 
 		String[] order= new String[] { "#", "java" };
 
@@ -543,7 +543,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");		
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 
 		String[] order= new String[] { "#", "java" };
 
@@ -592,7 +592,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		if (idx != -1) {
 			name= typeName.substring(0, idx);
 		}
-		pack1.createCompilationUnit(name + ".java", content, false, null);
+		pack1.createCompilationUnit(name + ".js", content, false, null);
 	}
 	
 	
@@ -616,14 +616,14 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("    }\n");
 		buf.append("}\n");	
 		String content= buf.toString();
-		ICompilationUnit cu1= pack1.createCompilationUnit("A.java", content, false, null);
+		ICompilationUnit cu1= pack1.createCompilationUnit("A.js", content, false, null);
 		
 		buf= new StringBuffer();
 		buf.append("package test1;\n");
 		buf.append("public class B {\n");
 		buf.append("}\n");	
 		String content2= buf.toString();
-		ICompilationUnit cu2= pack1.createCompilationUnit("B.java", content2, false, null);
+		ICompilationUnit cu2= pack1.createCompilationUnit("B.js", content2, false, null);
 		
 		String[] order= new String[] { "java.util", "java.io", "java.net" };
 		int threshold= 99;
@@ -689,14 +689,14 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("    }\n");
 		buf.append("}\n");	
 		String content= buf.toString();
-		ICompilationUnit cu1= pack1.createCompilationUnit("A.java", content, false, null);
+		ICompilationUnit cu1= pack1.createCompilationUnit("A.js", content, false, null);
 		
 		buf= new StringBuffer();
 		buf.append("package test1;\n");
 		buf.append("public class B {\n");
 		buf.append("}\n");	
 		String content2= buf.toString();
-		ICompilationUnit cu2= pack1.createCompilationUnit("B.java", content2, false, null);
+		ICompilationUnit cu2= pack1.createCompilationUnit("B.js", content2, false, null);
 		
 		String[] order= new String[] { "java.util", "java.io", "java.net" };
 		int threshold= 99;
@@ -738,7 +738,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("public class C {\n");
 		buf.append("    public final static int CONST= 9;\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 
 		String[] order= new String[] { "#", "java" };
 

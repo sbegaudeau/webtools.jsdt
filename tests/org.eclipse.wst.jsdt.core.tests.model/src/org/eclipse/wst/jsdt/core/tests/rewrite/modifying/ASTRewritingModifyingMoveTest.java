@@ -54,7 +54,7 @@ public class ASTRewritingModifyingMoveTest extends ASTRewritingModifyingTest {
 		buf.append("class Z {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createCU(cu, false);
 		
@@ -96,7 +96,7 @@ public class ASTRewritingModifyingMoveTest extends ASTRewritingModifyingTest {
 		buf.append("class Z {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createCU(cu, false);
 		
@@ -145,7 +145,7 @@ public class ASTRewritingModifyingMoveTest extends ASTRewritingModifyingTest {
 		buf.append("class Z {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createCU(cu, false);
 		
@@ -188,7 +188,7 @@ public class ASTRewritingModifyingMoveTest extends ASTRewritingModifyingTest {
 		buf.append("class Z {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createCU(cu, false);
 		
@@ -228,7 +228,7 @@ public class ASTRewritingModifyingMoveTest extends ASTRewritingModifyingTest {
 		buf.append("class Z {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createCU(cu, false);
 		
@@ -270,7 +270,7 @@ public class ASTRewritingModifyingMoveTest extends ASTRewritingModifyingTest {
 		buf.append("class Z {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createCU(cu, false);
 		
@@ -313,7 +313,7 @@ public class ASTRewritingModifyingMoveTest extends ASTRewritingModifyingTest {
 		buf.append("class Z {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createCU(cu, false);
 		
@@ -359,7 +359,7 @@ public class ASTRewritingModifyingMoveTest extends ASTRewritingModifyingTest {
 		buf.append("class Y {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createCU(cu, false);
 		
@@ -403,7 +403,7 @@ public class ASTRewritingModifyingMoveTest extends ASTRewritingModifyingTest {
 		buf.append("        bar3();\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createCU(cu, false);
 		
@@ -452,7 +452,7 @@ public class ASTRewritingModifyingMoveTest extends ASTRewritingModifyingTest {
 //		buf.append("    \n");
 //		buf.append("    }\n");
 //		buf.append("}\n");
-//		ICompilationUnit cu= pack1.createCompilationUnit("X.java", buf.toString(), false, null);
+//		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 //		
 //		CompilationUnit astRoot= parseCompilationUnit(cu, false);
 //		

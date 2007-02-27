@@ -14,9 +14,10 @@ import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.core.JavaProject;
 import org.eclipse.wst.jsdt.internal.core.NameLookup;
+import org.eclipse.wst.jsdt.core.*;
 
 import junit.framework.Test;
 
@@ -143,33 +144,26 @@ public void testDuplicateTypesInWorkingCopies() throws CoreException {
 	try {
 		JavaProject project = (JavaProject)createJavaProject("P");
 		workingCopies[0] = getWorkingCopy(
-			"/P/X.java", 
-			"public class X {\n" +
-			"}\n" +
-			"class Other {\n" +
+			"/P/X.js", 
+			"function foo() {\n" +
 			"}"
 		);
 		workingCopies[1] = getWorkingCopy(
-			"/P/Y.java", 
-			"public class Y {\n" +
-			"}\n" +
-			"class Other {\n" +
+			"/P/Y.js", 
+			"function foo() {\n" +
 			"}"
 		);
 		workingCopies[2] = getWorkingCopy(
-			"/P/Z.java", 
-			"public class Z {\n" +
-			"}\n" +
-			"class Other {\n" +
+			"/P/Z.js", 
+			"function foo() {\n" +
 			"}"
 		);
 		NameLookup nameLookup = project.newNameLookup(workingCopies);
-		IType type = nameLookup.findType("Other", false, NameLookup.ACCEPT_ALL); // TODO (jerome) should use seekTypes
-		assertTypesEqual(
-			"Unepexted types",
-			"Other\n",
-			new IType[] {type}
-		);
+		NameLookup.Answer answer=nameLookup.findBinding("foo","",Binding.METHOD, false, NameLookup.ACCEPT_ALL,false); 
+		assertEquals(
+			"Unepexted ",
+			"foo",
+			((IJavaElement)answer.element).getElementName());
 	} finally {
 //		discardWorkingCopies(workingCopies);
 		deleteProject("P");
@@ -203,7 +197,7 @@ public void testFindPackageFragmentWithWorkingCopy() throws CoreException {
 		JavaProject project = (JavaProject)createJavaProject("P");
 		createFolder("/P/p1");
 		workingCopies[0] = getWorkingCopy(
-			"/P/p1/X.java", 
+			"/P/p1/X.js", 
 			"package p1;\n" +
 			"public class X {\n" +
 			"}"
@@ -227,7 +221,7 @@ public void testFindBinaryTypeWithDollarName() throws CoreException, IOException
 		IJavaProject project = createJavaProject("P");
 		addLibrary(project, "lib.jar", "libsrc.zip", 
 			new String[] {
-				"p/X.java",
+				"p/X.js",
 				"package p;\n" +
 				"public class X {\n" +
 				"  public class $1 {\n" +

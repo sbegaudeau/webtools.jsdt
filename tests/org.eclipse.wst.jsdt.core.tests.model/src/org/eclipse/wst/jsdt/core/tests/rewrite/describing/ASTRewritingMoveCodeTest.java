@@ -53,7 +53,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("    public void foo() {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -105,7 +105,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("}\n");
 		buf.append("interface G {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);	
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -216,7 +216,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("}\n");
 		buf.append("interface G {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);	
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -324,7 +324,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("}\n");
 		buf.append("interface G {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -444,7 +444,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("}\n");
 		buf.append("interface G {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -559,7 +559,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("}\n");
 		buf.append("interface G {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -657,7 +657,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("}\n");
 		buf.append("interface G {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -738,7 +738,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("    public void goo() {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -795,7 +795,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("        x= 1;\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -864,7 +864,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("        x= 1;\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -929,7 +929,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("        goo(xoo(/*hello*/), k * 2);\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -982,7 +982,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("        goo(xoo(/*hello*/), k * 2);\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -1040,7 +1040,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -1092,7 +1092,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -1146,7 +1146,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -1211,7 +1211,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -1279,7 +1279,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -1328,7 +1328,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -1390,7 +1390,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -1454,7 +1454,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -1509,7 +1509,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -1562,7 +1562,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -1623,7 +1623,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -1681,7 +1681,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -1725,7 +1725,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("        i--;\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -1773,7 +1773,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("            foo();\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -1820,7 +1820,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("            foo();\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -1867,7 +1867,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		buf.append("        int i= (String) o.indexOf('1');\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();

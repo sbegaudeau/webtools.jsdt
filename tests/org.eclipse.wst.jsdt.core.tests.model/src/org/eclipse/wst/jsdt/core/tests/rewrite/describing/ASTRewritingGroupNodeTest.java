@@ -59,7 +59,7 @@ public class ASTRewritingGroupNodeTest extends ASTRewritingTest {
 		buf.append("        return;\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -109,7 +109,7 @@ public class ASTRewritingGroupNodeTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 
 		CompilationUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());

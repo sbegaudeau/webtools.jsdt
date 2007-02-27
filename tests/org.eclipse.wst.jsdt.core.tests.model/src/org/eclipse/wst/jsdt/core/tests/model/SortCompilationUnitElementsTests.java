@@ -167,7 +167,7 @@ public void tearDownSuite() throws Exception {
 public void test001() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/p/X.java", //$NON-NLS-1$
+			"/P/src/p/X.js", //$NON-NLS-1$
 			"/**\n" + //$NON-NLS-1$
 			" *\n" + //$NON-NLS-1$
 			" */\n" + //$NON-NLS-1$
@@ -254,15 +254,15 @@ public void test001() throws CoreException {
 			"	void bar(int i) {\n" + //$NON-NLS-1$
 			"	}\n" + //$NON-NLS-1$
 			"}\n";//$NON-NLS-1$
-		sortUnit(this.getCompilationUnit("/P/src/p/X.java"), expectedResult); //$NON-NLS-1$
+		sortUnit(this.getCompilationUnit("/P/src/p/X.js"), expectedResult); //$NON-NLS-1$
 	} finally {
-		this.deleteFile("/P/src/p/X.java"); //$NON-NLS-1$
+		this.deleteFile("/P/src/p/X.js"); //$NON-NLS-1$
 	}
 }
 public void test002() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/p/X.java", //$NON-NLS-1$
+			"/P/src/p/X.js", //$NON-NLS-1$
 			"package p;\n" + //$NON-NLS-1$
 			"public class X {\n" + //$NON-NLS-1$
 			"	\n" + //$NON-NLS-1$
@@ -320,9 +320,9 @@ public void test002() throws CoreException {
 			"		return o;\n" + //$NON-NLS-1$
 			"	}\n" + //$NON-NLS-1$
 			"}"; //$NON-NLS-1$
-		sortUnit(this.getCompilationUnit("/P/src/p/X.java"), expectedSource); //$NON-NLS-1$
+		sortUnit(this.getCompilationUnit("/P/src/p/X.js"), expectedSource); //$NON-NLS-1$
 	} finally {
-		this.deleteFile("/P/src/p/X.java"); //$NON-NLS-1$
+		this.deleteFile("/P/src/p/X.js"); //$NON-NLS-1$
 	}
 }
 /**
@@ -331,7 +331,7 @@ public void test002() throws CoreException {
 public void test003() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/p/X.java", //$NON-NLS-1$
+			"/P/src/p/X.js", //$NON-NLS-1$
 			"/**\n" + //$NON-NLS-1$
 			" *\n" + //$NON-NLS-1$
 			" */\n" + //$NON-NLS-1$
@@ -418,9 +418,9 @@ public void test003() throws CoreException {
 			"	void bar(final int i[]) {\n" + //$NON-NLS-1$
 			"	}\n" + //$NON-NLS-1$
 			"}\n"; //$NON-NLS-1$
-		sortUnit(this.getCompilationUnit("/P/src/p/X.java"), expectedResult); //$NON-NLS-1$
+		sortUnit(this.getCompilationUnit("/P/src/p/X.js"), expectedResult); //$NON-NLS-1$
 	} finally {
-		this.deleteFile("/P/src/p/X.java"); //$NON-NLS-1$
+		this.deleteFile("/P/src/p/X.js"); //$NON-NLS-1$
 	}
 }
 /**
@@ -429,7 +429,7 @@ public void test003() throws CoreException {
 public void test004() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/p/X.java", //$NON-NLS-1$
+			"/P/src/p/X.js", //$NON-NLS-1$
 			"/**\n" + //$NON-NLS-1$
 			" *\n" + //$NON-NLS-1$
 			" */\n" + //$NON-NLS-1$
@@ -501,15 +501,15 @@ public void test004() throws CoreException {
 			"	}\n" + //$NON-NLS-1$
 			"\n" + //$NON-NLS-1$
 			"}\n"; //$NON-NLS-1$
-		sortUnit(this.getCompilationUnit("/P/src/p/X.java"), expectedResult); //$NON-NLS-1$
+		sortUnit(this.getCompilationUnit("/P/src/p/X.js"), expectedResult); //$NON-NLS-1$
 	} finally {
-		this.deleteFile("/P/src/p/X.java"); //$NON-NLS-1$
+		this.deleteFile("/P/src/p/X.js"); //$NON-NLS-1$
 	}
 }
 public void test005() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/p/X.java", //$NON-NLS-1$
+			"/P/src/p/X.js", //$NON-NLS-1$
 			"package p;\n" + //$NON-NLS-1$
 			"public class X {\n" + //$NON-NLS-1$
 			"	Object bar3() {\n" + //$NON-NLS-1$
@@ -529,15 +529,15 @@ public void test005() throws CoreException {
 			"		return o;\n" + //$NON-NLS-1$
 			"	}\n" + //$NON-NLS-1$
 			"}"; //$NON-NLS-1$
-		sortUnit(this.getCompilationUnit("/P/src/p/X.java"), expectedResult); //$NON-NLS-1$
+		sortUnit(this.getCompilationUnit("/P/src/p/X.js"), expectedResult); //$NON-NLS-1$
 	} finally {
-		this.deleteFile("/P/src/p/X.java"); //$NON-NLS-1$
+		this.deleteFile("/P/src/p/X.js"); //$NON-NLS-1$
 	}
 }
 public void test006() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/p/X.java", //$NON-NLS-1$
+			"/P/src/p/X.js", //$NON-NLS-1$
 			"package p;\n" + //$NON-NLS-1$
 			"public class X {\n" + //$NON-NLS-1$
 			"	Object bar3() {\n" + //$NON-NLS-1$
@@ -561,15 +561,15 @@ public void test006() throws CoreException {
 			"       };\n" + //$NON-NLS-1$
 			"	}\n" + //$NON-NLS-1$
 			"}"; //$NON-NLS-1$
-		sortUnit(this.getCompilationUnit("/P/src/p/X.java"), expectedResult); //$NON-NLS-1$
+		sortUnit(this.getCompilationUnit("/P/src/p/X.js"), expectedResult); //$NON-NLS-1$
 	} finally {
-		this.deleteFile("/P/src/p/X.java"); //$NON-NLS-1$
+		this.deleteFile("/P/src/p/X.js"); //$NON-NLS-1$
 	}
 }
 public void test007() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/p/X.java", //$NON-NLS-1$
+			"/P/src/p/X.js", //$NON-NLS-1$
 			"package p;\n" + //$NON-NLS-1$
 			"public class X {\n" + //$NON-NLS-1$
 			"	Object bar3() {\n" + //$NON-NLS-1$
@@ -593,16 +593,16 @@ public void test007() throws CoreException {
 			"       };\n" + //$NON-NLS-1$
 			"	}\n" + //$NON-NLS-1$
 			"}"; //$NON-NLS-1$
-		sortUnit(this.getCompilationUnit("/P/src/p/X.java"), expectedResult); //$NON-NLS-1$
+		sortUnit(this.getCompilationUnit("/P/src/p/X.js"), expectedResult); //$NON-NLS-1$
 	} finally {
-		this.deleteFile("/P/src/p/X.java"); //$NON-NLS-1$
+		this.deleteFile("/P/src/p/X.js"); //$NON-NLS-1$
 	}
 }
 
 public void test008() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/p/X.java", //$NON-NLS-1$
+			"/P/src/p/X.js", //$NON-NLS-1$
 			"package p;\n" + //$NON-NLS-1$
 			"public class X {\n" + //$NON-NLS-1$
 			"	Object bar3() {\n" + //$NON-NLS-1$
@@ -626,9 +626,9 @@ public void test008() throws CoreException {
 			"       };\n" + //$NON-NLS-1$
 			"	}\n" + //$NON-NLS-1$
 			"}"; //$NON-NLS-1$
-		sortUnit(this.getCompilationUnit("/P/src/p/X.java"), expectedResult); //$NON-NLS-1$
+		sortUnit(this.getCompilationUnit("/P/src/p/X.js"), expectedResult); //$NON-NLS-1$
 	} finally {
-		this.deleteFile("/P/src/p/X.java"); //$NON-NLS-1$
+		this.deleteFile("/P/src/p/X.js"); //$NON-NLS-1$
 	}
 }
 /**
@@ -637,7 +637,7 @@ public void test008() throws CoreException {
 public void test009() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/p/X.java", //$NON-NLS-1$
+			"/P/src/p/X.js", //$NON-NLS-1$
 			"/**\n" + //$NON-NLS-1$
 			" *\n" + //$NON-NLS-1$
 			" */\n" + //$NON-NLS-1$
@@ -727,16 +727,16 @@ public void test009() throws CoreException {
 			"	void bar(int i) {\n" + //$NON-NLS-1$
 			"	}\n" + //$NON-NLS-1$
 			"}\n"; //$NON-NLS-1$
-		ICompilationUnit unit = this.getCompilationUnit("/P/src/p/X.java"); //$NON-NLS-1$
+		ICompilationUnit unit = this.getCompilationUnit("/P/src/p/X.js"); //$NON-NLS-1$
 		sortUnit(unit, expectedResult, false);
 	} finally {
-		this.deleteFile("/P/src/p/X.java"); //$NON-NLS-1$
+		this.deleteFile("/P/src/p/X.js"); //$NON-NLS-1$
 	}
 }
 public void test010() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/SuperReference.java", //$NON-NLS-1$
+			"/P/src/SuperReference.js", //$NON-NLS-1$
 			"public class SuperReference extends ThisReference {\r\n" + //$NON-NLS-1$
 			"public SuperReference(int sourceStart, int sourceEnd) {\r\n" + //$NON-NLS-1$
 			"	super(sourceStart, sourceEnd);\r\n" + //$NON-NLS-1$
@@ -818,15 +818,15 @@ public void test010() throws CoreException {
 			"	visitor.endVisit(this, blockScope);\r\n" + //$NON-NLS-1$
 			"}\r\n" + //$NON-NLS-1$
 			"}"; //$NON-NLS-1$
-		sortUnit(this.getCompilationUnit("/P/src/SuperReference.java"), expectedResult); //$NON-NLS-1$
+		sortUnit(this.getCompilationUnit("/P/src/SuperReference.js"), expectedResult); //$NON-NLS-1$
 	} finally {
-		this.deleteFile("/P/src/SuperReference.java"); //$NON-NLS-1$
+		this.deleteFile("/P/src/SuperReference.js"); //$NON-NLS-1$
 	}
 }
 public void test011() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/p/BaseTypes.java", //$NON-NLS-1$
+			"/P/src/p/BaseTypes.js", //$NON-NLS-1$
 			"/*******************************************************************************\r\n" + //$NON-NLS-1$
 			" * Copyright (c) 2000, 2001, 2002 International Business Machines Corp. and others.\r\n" + //$NON-NLS-1$
 			" * All rights reserved. This program and the accompanying materials \r\n" + //$NON-NLS-1$
@@ -876,15 +876,15 @@ public void test011() throws CoreException {
 			"	final BaseTypeBinding ShortBinding = new BaseTypeBinding(TypeIds.T_short, \"short\".toCharArray(), new char[] {'S'}); //$NON-NLS-1$\r\n" + //$NON-NLS-1$
 			"	final BaseTypeBinding VoidBinding = new BaseTypeBinding(TypeIds.T_void, \"void\".toCharArray(), new char[] {'V'}); //$NON-NLS-1$\r\n" + //$NON-NLS-1$
 			"}\r\n"; //$NON-NLS-1$
-		sortUnit(this.getCompilationUnit("/P/src/p/BaseTypes.java"), expectedResult); //$NON-NLS-1$
+		sortUnit(this.getCompilationUnit("/P/src/p/BaseTypes.js"), expectedResult); //$NON-NLS-1$
 	} finally {
-		this.deleteFile("/P/src/p/BaseTypes.java"); //$NON-NLS-1$
+		this.deleteFile("/P/src/p/BaseTypes.js"); //$NON-NLS-1$
 	}
 }
 public void test012() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/p/X.java", //$NON-NLS-1$
+			"/P/src/p/X.js", //$NON-NLS-1$
 			"package p;\n" + //$NON-NLS-1$
 			"public class X {\n" + //$NON-NLS-1$
 			"	\n" + //$NON-NLS-1$
@@ -922,16 +922,16 @@ public void test012() throws CoreException {
 			"		return new C();\n" + //$NON-NLS-1$
 			"	}\n" + //$NON-NLS-1$
 			"}"; //$NON-NLS-1$
-		sortUnit(this.getCompilationUnit("/P/src/p/X.java"), expectedSource); //$NON-NLS-1$
+		sortUnit(this.getCompilationUnit("/P/src/p/X.js"), expectedSource); //$NON-NLS-1$
 	} finally {
-		this.deleteFile("/P/src/p/X.java"); //$NON-NLS-1$
+		this.deleteFile("/P/src/p/X.js"); //$NON-NLS-1$
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=40954
 public void test013() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/p/X.java", //$NON-NLS-1$
+			"/P/src/p/X.js", //$NON-NLS-1$
 			"package p;\n" + //$NON-NLS-1$
 			"public class X {\n" + //$NON-NLS-1$
 			"	X bar() {\n" + //$NON-NLS-1$
@@ -955,9 +955,9 @@ public void test013() throws CoreException {
 			"		};\n" + //$NON-NLS-1$
 			"	}\n" + //$NON-NLS-1$
 			"}"; //$NON-NLS-1$
-		sortUnit(this.getCompilationUnit("/P/src/p/X.java"), expectedSource); //$NON-NLS-1$
+		sortUnit(this.getCompilationUnit("/P/src/p/X.js"), expectedSource); //$NON-NLS-1$
 	} finally {
-		this.deleteFile("/P/src/p/X.java"); //$NON-NLS-1$
+		this.deleteFile("/P/src/p/X.js"); //$NON-NLS-1$
 	}
 }
 /**
@@ -966,7 +966,7 @@ public void test013() throws CoreException {
 public void test014() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/X.java",
+			"/P/src/X.js",
 			"public class X {\n" +
 			"  int j;\n" + 
 			"  \n" +
@@ -981,9 +981,9 @@ public void test014() throws CoreException {
 			"  \n" +
 			"  int j;\n" + 
 			"}";
-		sortUnit(this.getCompilationUnit("/P/src/X.java"), expectedResult);
+		sortUnit(this.getCompilationUnit("/P/src/X.js"), expectedResult);
 	} finally {
-		this.deleteFile("/P/src/X.java");
+		this.deleteFile("/P/src/X.js");
 	}
 }
 /**
@@ -992,7 +992,7 @@ public void test014() throws CoreException {
 public void test015() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/X.java",
+			"/P/src/X.js",
 			"public class X {\n" +
 			"  int j;\n" + 
 			"  \n" +
@@ -1011,9 +1011,9 @@ public void test015() throws CoreException {
 			"  \n" +
 			"  int j;\n" +
 			"}";
-		sortUnit(this.getCompilationUnit("/P/src/X.java"), expectedResult);
+		sortUnit(this.getCompilationUnit("/P/src/X.js"), expectedResult);
 	} finally {
-		this.deleteFile("/P/src/X.java");
+		this.deleteFile("/P/src/X.js");
 	}
 }
 /**
@@ -1022,7 +1022,7 @@ public void test015() throws CoreException {
 public void test016() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/X.java",
+			"/P/src/X.js",
 			"public class X {\n" + 
 			"   \n" + 
 			"   public void c() {\n" + 
@@ -1095,9 +1095,9 @@ public void test016() throws CoreException {
 			"      \n" + 
 			"   }\n" + 
 			"}";
-		sortUnit(this.getCompilationUnit("/P/src/X.java"), expectedResult);
+		sortUnit(this.getCompilationUnit("/P/src/X.js"), expectedResult);
 	} finally {
-		this.deleteFile("/P/src/X.java");
+		this.deleteFile("/P/src/X.js");
 	}
 }
 /**
@@ -1106,7 +1106,7 @@ public void test016() throws CoreException {
 public void test017() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/X.java",
+			"/P/src/X.js",
 			"public class X {\n" + 
 			"   \n" + 
 			"   public void c() {\n" + 
@@ -1179,15 +1179,15 @@ public void test017() throws CoreException {
 			"      \n" + 
 			"   }\n" + 
 			"}";
-		sortUnit(this.getCompilationUnit("/P/src/X.java"), expectedResult);
+		sortUnit(this.getCompilationUnit("/P/src/X.js"), expectedResult);
 	} finally {
-		this.deleteFile("/P/src/X.java");
+		this.deleteFile("/P/src/X.js");
 	}
 }
 public void test018() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/X.java",
+			"/P/src/X.js",
 			"public class X {\n" + 
 			"   public void c() {\n" + 
 			"   }\n" + 
@@ -1204,16 +1204,16 @@ public void test018() throws CoreException {
 			"   public void c() {\n" + 
 			"   }\n" + 
 			"}";
-		sortUnit(this.getCompilationUnit("/P/src/X.java"), expectedResult);
+		sortUnit(this.getCompilationUnit("/P/src/X.js"), expectedResult);
 	} finally {
-		this.deleteFile("/P/src/X.java");
+		this.deleteFile("/P/src/X.js");
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=80036
 public void test019() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/X.java",
+			"/P/src/X.js",
 			"public enum X {\n" + 
 			"	Z, A, C, B;\n" + 
 			"}"
@@ -1222,16 +1222,16 @@ public void test019() throws CoreException {
 			"public enum X {\n" + 
 			"	A, B, C, Z;\n" + 
 			"}";
-		sortUnit(AST.JLS3, this.getCompilationUnit("/P/src/X.java"), expectedResult);
+		sortUnit(AST.JLS3, this.getCompilationUnit("/P/src/X.js"), expectedResult);
 	} finally {
-		this.deleteFile("/P/src/X.java");
+		this.deleteFile("/P/src/X.js");
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=80036
 public void test020() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/X.java",
+			"/P/src/X.js",
 			"public enum X {\n" +
 			"	A , B, C;\n" +
 			"	\n" +
@@ -1252,16 +1252,16 @@ public void test020() throws CoreException {
 			"		\n" +
 			"	}\n" +
 			"}";
-		sortUnit(AST.JLS3, this.getCompilationUnit("/P/src/X.java"), expectedResult);
+		sortUnit(AST.JLS3, this.getCompilationUnit("/P/src/X.js"), expectedResult);
 	} finally {
-		this.deleteFile("/P/src/X.java");
+		this.deleteFile("/P/src/X.js");
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=80036
 public void test021() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/X.java",
+			"/P/src/X.js",
 			"public class X {\n" +
 			"\n" +
 			"	public enum Suit {\n" +
@@ -1298,16 +1298,16 @@ public void test021() throws CoreException {
 			"	\n" +
 			"	public void method2() { }\n" +
 			"}";
-		sortUnit(AST.JLS3, this.getCompilationUnit("/P/src/X.java"), expectedResult);
+		sortUnit(AST.JLS3, this.getCompilationUnit("/P/src/X.js"), expectedResult);
 	} finally {
-		this.deleteFile("/P/src/X.java");
+		this.deleteFile("/P/src/X.js");
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=80036
 public void test022() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/BuildUtilities.java",
+			"/P/src/BuildUtilities.js",
 			"/*******************************************************************************" +
 			" * Copyright (c) 2000, 2006 IBM Corporation and others." +
 			" * All rights reserved. This program and the accompanying materials" +
@@ -1644,16 +1644,16 @@ public void test022() throws CoreException {
 			"	private BuildUtilities() {\n" +
 			"	}\n" +
 			"}";
-		sortUnit(this.getCompilationUnit("/P/src/BuildUtilities.java"), expectedResult);
+		sortUnit(this.getCompilationUnit("/P/src/BuildUtilities.js"), expectedResult);
 	} finally {
-		this.deleteFile("/P/src/BuildUtilities.java");
+		this.deleteFile("/P/src/BuildUtilities.js");
 	}
 }
 // Sorting annotation type declaration
 public void test023() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/X.java",
+			"/P/src/X.js",
 			"public @interface X {\n" + 
 			"	String name();\n" + 
 			"	int id() default 0;\n" + 
@@ -1670,16 +1670,16 @@ public void test023() throws CoreException {
 			"	int id() default 0;\n" +
 			"	String name();\n" +
 			"}";
-		sortUnit(AST.JLS3, this.getCompilationUnit("/P/src/X.java"), expectedResult);
+		sortUnit(AST.JLS3, this.getCompilationUnit("/P/src/X.js"), expectedResult);
 	} finally {
-		this.deleteFile("/P/src/X.java");
+		this.deleteFile("/P/src/X.js");
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=81329
 public void test024() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/X.java",
+			"/P/src/X.js",
 			"public class X {\n" +
 			"	void foo() {\n" +
 			"		class Local {\n" +
@@ -1704,16 +1704,16 @@ public void test024() throws CoreException {
 			"		}\n" +
 			"	}\n" +
 			"}";
-		sortUnit(AST.JLS3, this.getCompilationUnit("/P/src/X.java"), expectedResult);
+		sortUnit(AST.JLS3, this.getCompilationUnit("/P/src/X.js"), expectedResult);
 	} finally {
-		this.deleteFile("/P/src/X.java");
+		this.deleteFile("/P/src/X.js");
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=81329
 public void test025() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/X.java",
+			"/P/src/X.js",
 			"interface Jpf {\n" +
 			"	@interface Action {\n" +
 			"		ValidatableProperty[] validatableProperties();\n" +
@@ -1756,16 +1756,16 @@ public void test025() throws CoreException {
 			"		return null;\n" +
 			"	}\n" +
 			"}";
-		sortUnit(AST.JLS3, this.getCompilationUnit("/P/src/X.java"), expectedResult);
+		sortUnit(AST.JLS3, this.getCompilationUnit("/P/src/X.js"), expectedResult);
 	} finally {
-		this.deleteFile("/P/src/X.java");
+		this.deleteFile("/P/src/X.js");
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=95388
 public void test026() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/X.java",
+			"/P/src/X.js",
 			"public class X {\n" +
 			"	void z() {\n" +
 			"	}\n" +
@@ -1792,16 +1792,16 @@ public void test026() throws CoreException {
 			"	void z() {\n" +
 			"	}\n" +
 			"}";
-		sortUnit(this.getCompilationUnit("/P/src/X.java"), expectedResult);
+		sortUnit(this.getCompilationUnit("/P/src/X.js"), expectedResult);
 	} finally {
-		this.deleteFile("/P/src/X.java");
+		this.deleteFile("/P/src/X.js");
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=96583
 public void test027() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/X.java",
+			"/P/src/X.js",
 			"public final class X\n" +
 			"{\n" +
 			"	static\n" +
@@ -1836,9 +1836,9 @@ public void test027() throws CoreException {
 			"	{\n" +
 			"	}\n" +
 			"}";
-		sortUnit(this.getCompilationUnit("/P/src/X.java"), expectedResult);
+		sortUnit(this.getCompilationUnit("/P/src/X.js"), expectedResult);
 	} finally {
-		this.deleteFile("/P/src/X.java");
+		this.deleteFile("/P/src/X.js");
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=101453
@@ -1846,7 +1846,7 @@ public void test027() throws CoreException {
 public void test028() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/X.java",
+			"/P/src/X.js",
 			"public final class X\n" +
 			"{\n" +
 			"/** JavaDoc comment2 */\n" +
@@ -1863,7 +1863,7 @@ public void test028() throws CoreException {
 			"/** JavaDoc comment2 */\n" +
 			"int j;\n" +
 			"}";
-		oldAPISortUnit(this.getCompilationUnit("/P/src/X.java"), expectedResult, false, new Comparator() {
+		oldAPISortUnit(this.getCompilationUnit("/P/src/X.js"), expectedResult, false, new Comparator() {
 			public int compare(Object o1, Object o2) {
 				BodyDeclaration bodyDeclaration1 = (BodyDeclaration) o1;
 				BodyDeclaration bodyDeclaration2 = (BodyDeclaration) o2;
@@ -1878,14 +1878,14 @@ public void test028() throws CoreException {
 			}
 		});
 	} finally {
-		this.deleteFile("/P/src/X.java");
+		this.deleteFile("/P/src/X.js");
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=101885
 public void test029() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/X.java",
+			"/P/src/X.js",
 			"public enum X {\n" + 
 			"	Z, A, C, B;\n" + 
 			"}"
@@ -1894,7 +1894,7 @@ public void test029() throws CoreException {
 			"public enum X {\n" + 
 			"	Z, A, C, B;\n" + 
 			"}";
-		sortUnit(AST.JLS3, this.getCompilationUnit("/P/src/X.java"), expectedResult, false, new Comparator() {
+		sortUnit(AST.JLS3, this.getCompilationUnit("/P/src/X.js"), expectedResult, false, new Comparator() {
 			public int compare(Object o1, Object o2) {
 				BodyDeclaration bodyDeclaration1 = (BodyDeclaration) o1;
 				BodyDeclaration bodyDeclaration2 = (BodyDeclaration) o2;
@@ -1904,14 +1904,14 @@ public void test029() throws CoreException {
 			}
 		});
 	} finally {
-		this.deleteFile("/P/src/X.java");
+		this.deleteFile("/P/src/X.js");
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=113722
 public void test030() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/I.java",
+			"/P/src/I.js",
 			"public interface I<T> {\n" +
 			"	public I<T> foo(A<T> A);\n" +
 			"	public <S> I<S> foo2(C<T,S> c);\n" +
@@ -1932,16 +1932,16 @@ public void test030() throws CoreException {
 			"	public <K> I<K<K,T> bar3(C<T,K> c);\n" +
 			"	public <K,E> I<K<K,E> bar3(C<T,K> c, C<T,E> c2);\n" +
 			"}";
-		sortUnit(AST.JLS3, this.getCompilationUnit("/P/src/I.java"), expectedResult);
+		sortUnit(AST.JLS3, this.getCompilationUnit("/P/src/I.js"), expectedResult);
 	} finally {
-		this.deleteFile("/P/src/I.java");
+		this.deleteFile("/P/src/I.js");
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=113722
 public void test031() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/I.java",
+			"/P/src/I.js",
 			"public interface I<T> {\n" +
 			"	public I<T> foo(A<T> A);\n" +
 			"	public <S> I<S> foo2(C<T,S> c);\n" +
@@ -1962,16 +1962,16 @@ public void test031() throws CoreException {
 			"	public <S> I<S> foo3(C<T,I<S>> c);\n" +
 			"	public I<T> foo(A<T> A);\n" +
 			"}";
-		sortUnit(AST.JLS3, this.getCompilationUnit("/P/src/I.java"), expectedResult);
+		sortUnit(AST.JLS3, this.getCompilationUnit("/P/src/I.js"), expectedResult);
 	} finally {
-		this.deleteFile("/P/src/I.java");
+		this.deleteFile("/P/src/I.js");
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=113722
 public void test032() throws CoreException {
 	try {
 		this.createFile(
-			"/P/src/X.java",
+			"/P/src/X.js",
 			"import java.util.*;\n" +
 			"public interface X<T> {\n" +
 			"	<K> List<Map<K,T> foo(Map<T,K> m);\n" +
@@ -1984,9 +1984,9 @@ public void test032() throws CoreException {
 			"	<K> List<Map<K,T> foo(Map<T,K> m);\n" +
 			"	<K,E> List<Map<K,E> bar(Map<T,K> m, Map<T,E> e);\n" +
 			"}";
-		sortUnit(AST.JLS3, this.getCompilationUnit("/P/src/X.java"), expectedResult);
+		sortUnit(AST.JLS3, this.getCompilationUnit("/P/src/X.js"), expectedResult);
 	} finally {
-		this.deleteFile("/P/src/X.java");
+		this.deleteFile("/P/src/X.js");
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=171066
@@ -1995,7 +1995,7 @@ public void test033() throws CoreException {
 	
 	try {
 		this.createFile(
-			"/P/src/X.java",
+			"/P/src/X.js",
 			"public enum X {\n" + 
 			"	Z, A, C, B;\n" + 
 			"}"
@@ -2004,7 +2004,7 @@ public void test033() throws CoreException {
 			"public enum X {\n" + 
 			"	A, B, C, Z;\n" + 
 			"}";
-		unit = this.getCompilationUnit("/P/src/X.java");
+		unit = this.getCompilationUnit("/P/src/X.js");
 		unit.becomeWorkingCopy(null, null);
 		String source = unit.getSource();
 		Document document = new Document(source);
@@ -2041,7 +2041,7 @@ public void test033() throws CoreException {
 		}
 		assertEquals("Different output", expectedResult, document.get());
 	} finally {
-		this.deleteFile("/P/src/X.java");
+		this.deleteFile("/P/src/X.js");
 		if (unit != null) {
 			unit.discardWorkingCopy();
 		}
@@ -2052,12 +2052,12 @@ public void test034() throws CoreException {
 	ICompilationUnit unit = null;
 	try {
 		this.createFile(
-			"/P/src/X.java",
+			"/P/src/X.js",
 			"public enum X {\n" + 
 			"	Z, A, C, B;\n" + 
 			"}"
 		);
-		unit = this.getCompilationUnit("/P/src/X.java");
+		unit = this.getCompilationUnit("/P/src/X.js");
 		unit.becomeWorkingCopy(null, null);
 		CompilerOptions options = new CompilerOptions(unit.getJavaProject().getOptions(true));
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
@@ -2079,7 +2079,7 @@ public void test034() throws CoreException {
 		TextEdit edit = CompilationUnitSorter.sort(ast , comparator, 0, null, new NullProgressMonitor());
 		assertNull("Should be null", edit);
 	} finally {
-		this.deleteFile("/P/src/X.java");
+		this.deleteFile("/P/src/X.js");
 		if (unit != null) {
 			unit.discardWorkingCopy();
 		}

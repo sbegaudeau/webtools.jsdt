@@ -77,7 +77,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 	 * ===================================================
 	 */
 	public void testJavadocTypeDeclaration() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.java").getType("JavadocSearched");
+		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.js").getType("JavadocSearched");
 		search(
 				type, 
 				DECLARATIONS,
@@ -99,7 +99,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 				this.resultCollector);
 	}
 	public void testJavadocTypeDeclarationWithJavadoc() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.java").getType("JavadocSearched");
+		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.js").getType("JavadocSearched");
 		setJavadocOptions();
 		search(
 				type, 
@@ -116,7 +116,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 	 * ====================================================
 	 */
 	public void testJavadocFieldDeclaration() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.java").getType("JavadocSearched");
+		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.js").getType("JavadocSearched");
 		IField field = type.getField("javadocSearchedVar");
 		search(
 				field, 
@@ -139,7 +139,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 				this.resultCollector);
 	}
 	public void testJavadocFieldDeclarationWithJavadoc() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.java").getType("JavadocSearched");
+		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.js").getType("JavadocSearched");
 		IField field = type.getField("javadocSearchedVar");
 		setJavadocOptions();
 		search(
@@ -157,7 +157,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 	 * ======================================================
 	 */
 	public void testJavadocMethodDeclaration() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.java").getType("JavadocSearched");
+		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.js").getType("JavadocSearched");
 		IMethod method = type.getMethod("javadocSearchedMethod", null);
 		search(
 				method, 
@@ -169,7 +169,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 				this.resultCollector);
 	}
 	public void testJavadocMethodArgDeclaration() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.java").getType("JavadocSearched");
+		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.js").getType("JavadocSearched");
 		IMethod method = type.getMethod("javadocSearchedMethod", new String[] { "QString;" });
 		search(
 				method, 
@@ -193,7 +193,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 				this.resultCollector);
 	}
 	public void testJavadocMethodDeclarationWithJavadoc() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.java").getType("JavadocSearched");
+		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.js").getType("JavadocSearched");
 		setJavadocOptions();
 		IMethod method = type.getMethod("javadocSearchedMethod", null);
 		search(
@@ -206,7 +206,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 				this.resultCollector);
 	}
 	public void testJavadocMethodArgDeclarationWithJavadoc() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.java").getType("JavadocSearched");
+		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.js").getType("JavadocSearched");
 		setJavadocOptions();
 		IMethod method = type.getMethod("javadocSearchedMethod", new String[] { "QString;" });
 		search(
@@ -224,7 +224,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 	 * ==================================================
 	 */
 	public void testJavadocTypeReference() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.java").getType("JavadocSearched");
+		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.js").getType("JavadocSearched");
 		search(
 				type, 
 				REFERENCES,
@@ -266,7 +266,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 			this.resultCollector);
 	}
 	public void testJavadocTypeReferenceWithJavadoc() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.java").getType("JavadocSearched");
+		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.js").getType("JavadocSearched");
 		setJavadocOptions();
 		search(
 				type, 
@@ -310,7 +310,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 			this.resultCollector);
 	}
 	public void testJavadocTypeStringReferenceWithJavadocDisabled() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.java").getType("JavadocSearched");
+		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.js").getType("JavadocSearched");
 		disableJavadocOptions();
 		search(
 				type, 
@@ -325,7 +325,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 	 * ===================================================
 	 */
 	public void testJavadocFieldReference() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.java").getType("JavadocSearched");
+		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.js").getType("JavadocSearched");
 		IField field = type.getField("javadocSearchedVar");
 		search(
 				field, 
@@ -352,7 +352,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 				this.resultCollector);
 	}
 	public void testJavadocFieldReferenceWithJavadoc() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.java").getType("JavadocSearched");
+		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.js").getType("JavadocSearched");
 		IField field = type.getField("javadocSearchedVar");
 		setJavadocOptions();
 		search(
@@ -396,7 +396,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 	 * ====================================================
 	 */
 	public void testJavadocMethodReference() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.java").getType("JavadocSearched");
+		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.js").getType("JavadocSearched");
 		IMethod method = type.getMethod("javadocSearchedMethod", null);
 		search(
 				method, 
@@ -409,7 +409,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 				this.resultCollector);
 	}
 	public void testJavadocMethodArgReference() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.java").getType("JavadocSearched");
+		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.js").getType("JavadocSearched");
 		IMethod method = type.getMethod("javadocSearchedMethod", new String[] { "QString;" });
 		search(
 				method, 
@@ -436,7 +436,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 				this.resultCollector);
 	}
 	public void testJavadocMethodReferenceWithJavadoc() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.java").getType("JavadocSearched");
+		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.js").getType("JavadocSearched");
 		setJavadocOptions();
 		IMethod method = type.getMethod("javadocSearchedMethod", null);
 		search(
@@ -450,7 +450,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 				this.resultCollector);
 	}
 	public void testJavadocMethodArgReferenceWithJavadoc() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.java").getType("JavadocSearched");
+		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.js").getType("JavadocSearched");
 		setJavadocOptions();
 		IMethod method = type.getMethod("javadocSearchedMethod", new String[] { "QString;" });
 		search(
@@ -479,7 +479,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 				this.resultCollector);
 	}
 	public void testJavadocMethodArgReferenceWithJavadocDisabled() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.java").getType("JavadocSearched");
+		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.js").getType("JavadocSearched");
 		IMethod method = type.getMethod("javadocSearchedMethod", new String[] { "QString;" });
 		disableJavadocOptions();
 		search(
@@ -495,7 +495,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 	 * ====================================================
 	 */
 	public void testJavadocConstructorReference() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.java").getType("JavadocSearched");
+		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.js").getType("JavadocSearched");
 		IMethod method = type.getMethod("JavadocSearched", null);
 		search(
 				method, 
@@ -508,7 +508,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 		);
 	}
 	public void testJavadocConstructorArgReference() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.java").getType("JavadocSearched");
+		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.js").getType("JavadocSearched");
 		IMethod method = type.getMethod("JavadocSearched", new String[] { "QString;" });
 		search(
 				method, 
@@ -535,7 +535,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 		);
 	}
 	public void testJavadocConstructorReferenceWithJavadoc() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.java").getType("JavadocSearched");
+		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.js").getType("JavadocSearched");
 		setJavadocOptions();
 		IMethod method = type.getMethod("JavadocSearched", null);
 		search(
@@ -549,7 +549,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 		);
 	}
 	public void testJavadocConstructorArgReferenceWithJavadoc() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.java").getType("JavadocSearched");
+		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.js").getType("JavadocSearched");
 		setJavadocOptions();
 		IMethod method = type.getMethod("JavadocSearched", new String[] { "QString;" });
 		search(
@@ -578,7 +578,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 		);
 	}
 	public void testJavadocConstructorReferenceWithJavadocDisabled() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.java").getType("JavadocSearched");
+		IType type = getCompilationUnit("JavaSearch", "src", "j1", "JavadocSearched.js").getType("JavadocSearched");
 		IMethod method = type.getMethod("JavadocSearched", null);
 		disableJavadocOptions();
 		search(
@@ -590,7 +590,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 	}
 	private void setUpJavadocTypeParameterReferences() throws CoreException {
 		workingCopies = new ICompilationUnit[1];
-		workingCopies[0] = getWorkingCopy("/JavaSearch15/src/b81190/Test.java",
+		workingCopies[0] = getWorkingCopy("/JavaSearch15/src/b81190/Test.js",
 			"package b81190;\n" + 
 			"/**\n" + 
 			" * @param <T1> First class type parameter\n" + 
@@ -647,7 +647,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 	 * @throws CoreException
 	 */
 	public void testBug47909() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j3", "Y.java").getType("Y");
+		IType type = getCompilationUnit("JavaSearch", "src", "j3", "Y.js").getType("Y");
 		setJavadocOptions();
 		IMethod method = type.getMethod("Y", new String[] { "I" });
 		search(
@@ -666,7 +666,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 	 * @throws CoreException
 	 */
 	public void testBug47968type() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j2", "Bug47968.java").getType("Bug47968");
+		IType type = getCompilationUnit("JavaSearch", "src", "j2", "Bug47968.js").getType("Bug47968");
 		setJavadocOptions();
 		search(
 			type, 
@@ -695,7 +695,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 			this.resultCollector);
 	}
 	public void testBug47968field() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j2", "Bug47968.java").getType("Bug47968");
+		IType type = getCompilationUnit("JavaSearch", "src", "j2", "Bug47968.js").getType("Bug47968");
 		setJavadocOptions();
 		IField field = type.getField("x");
 		search(
@@ -711,7 +711,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 			this.resultCollector);
 	}
 	public void testBug47968method() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j2", "Bug47968.java").getType("Bug47968");
+		IType type = getCompilationUnit("JavaSearch", "src", "j2", "Bug47968.js").getType("Bug47968");
 		setJavadocOptions();
 		IMethod method = type.getMethod("foo", new String[] { "I" });
 		search(
@@ -727,7 +727,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 			this.resultCollector);
 	}
 	public void testBug47968constructor() throws CoreException {
-		IType type = getCompilationUnit("JavaSearch", "src", "j2", "Bug47968.java").getType("Bug47968");
+		IType type = getCompilationUnit("JavaSearch", "src", "j2", "Bug47968.js").getType("Bug47968");
 		setJavadocOptions();
 		IMethod method = type.getMethod("Bug47968", new String[] { "QString;" });
 		search(
@@ -750,13 +750,13 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 	 */
 	public void testBug47209type() throws CoreException {
 		setJavadocOptions();
-		IType type = getCompilationUnit("JavaSearch", "src", "j4", "TT47209.java").getType("TT47209");
+		IType type = getCompilationUnit("JavaSearch", "src", "j4", "TT47209.js").getType("TT47209");
 		search(type,  REFERENCES, getJavaSearchScope());
-		type = getCompilationUnit("JavaSearch", "src", "j4", "TF47209.java").getType("TF47209");
+		type = getCompilationUnit("JavaSearch", "src", "j4", "TF47209.js").getType("TF47209");
 		search(type,  REFERENCES, getJavaSearchScope());
-		type = getCompilationUnit("JavaSearch", "src", "j4", "TC47209.java").getType("TC47209");
+		type = getCompilationUnit("JavaSearch", "src", "j4", "TC47209.js").getType("TC47209");
 		search(type,  REFERENCES, getJavaSearchScope());
-		type = getCompilationUnit("JavaSearch", "src", "j4", "TT47209.java").getType("TM47209");
+		type = getCompilationUnit("JavaSearch", "src", "j4", "TT47209.js").getType("TM47209");
 		search(type,  REFERENCES, getJavaSearchScope());
 		assertSearchResults(
 			"src/j4/TT47209.java j4.TT47209 [TT47209] EXACT_MATCH INSIDE_JAVADOC\n" + 
@@ -767,13 +767,13 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 	}
 	public void testBug47209field() throws CoreException {
 		setJavadocOptions();
-		IType type = getCompilationUnit("JavaSearch", "src", "j4", "FT47209.java").getType("FT47209");
+		IType type = getCompilationUnit("JavaSearch", "src", "j4", "FT47209.js").getType("FT47209");
 		search(type,  REFERENCES, getJavaSearchScope());
-		type = getCompilationUnit("JavaSearch", "src", "j4", "FF47209.java").getType("FF47209");
+		type = getCompilationUnit("JavaSearch", "src", "j4", "FF47209.js").getType("FF47209");
 		search(type,  REFERENCES, getJavaSearchScope());
-		type = getCompilationUnit("JavaSearch", "src", "j4", "FC47209.java").getType("FC47209");
+		type = getCompilationUnit("JavaSearch", "src", "j4", "FC47209.js").getType("FC47209");
 		search(type,  REFERENCES, getJavaSearchScope());
-		type = getCompilationUnit("JavaSearch", "src", "j4", "FT47209.java").getType("FM47209");
+		type = getCompilationUnit("JavaSearch", "src", "j4", "FT47209.js").getType("FM47209");
 		search(type,  REFERENCES, getJavaSearchScope());
 		assertSearchResults(
 			"src/j4/FT47209.java j4.FT47209 [FT47209] EXACT_MATCH INSIDE_JAVADOC\n" + 
@@ -784,13 +784,13 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 	}
 	public void testBug47209method() throws CoreException {
 		setJavadocOptions();
-		IType type = getCompilationUnit("JavaSearch", "src", "j4", "MT47209.java").getType("MT47209");
+		IType type = getCompilationUnit("JavaSearch", "src", "j4", "MT47209.js").getType("MT47209");
 		search(type,  REFERENCES, getJavaSearchScope());
-		type = getCompilationUnit("JavaSearch", "src", "j4", "MF47209.java").getType("MF47209");
+		type = getCompilationUnit("JavaSearch", "src", "j4", "MF47209.js").getType("MF47209");
 		search(type,  REFERENCES, getJavaSearchScope());
-		type = getCompilationUnit("JavaSearch", "src", "j4", "MC47209.java").getType("MC47209");
+		type = getCompilationUnit("JavaSearch", "src", "j4", "MC47209.js").getType("MC47209");
 		search(type,  REFERENCES, getJavaSearchScope());
-		type = getCompilationUnit("JavaSearch", "src", "j4", "MT47209.java").getType("MM47209");
+		type = getCompilationUnit("JavaSearch", "src", "j4", "MT47209.js").getType("MM47209");
 		search(type,  REFERENCES, getJavaSearchScope());
 		assertSearchResults(
 			"src/j4/MT47209.java j4.MT47209 [MT47209] EXACT_MATCH INSIDE_JAVADOC\n" + 
@@ -801,13 +801,13 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 	}
 	public void testBug47209constructor() throws CoreException {
 		setJavadocOptions();
-		IType type = getCompilationUnit("JavaSearch", "src", "j4", "CT47209.java").getType("CT47209");
+		IType type = getCompilationUnit("JavaSearch", "src", "j4", "CT47209.js").getType("CT47209");
 		search(type,  REFERENCES, getJavaSearchScope());
-		type = getCompilationUnit("JavaSearch", "src", "j4", "CF47209.java").getType("CF47209");
+		type = getCompilationUnit("JavaSearch", "src", "j4", "CF47209.js").getType("CF47209");
 		search(type,  REFERENCES, getJavaSearchScope());
-		type = getCompilationUnit("JavaSearch", "src", "j4", "CC47209.java").getType("CC47209");
+		type = getCompilationUnit("JavaSearch", "src", "j4", "CC47209.js").getType("CC47209");
 		search(type,  REFERENCES, getJavaSearchScope());
-		type = getCompilationUnit("JavaSearch", "src", "j4", "CT47209.java").getType("CM47209");
+		type = getCompilationUnit("JavaSearch", "src", "j4", "CT47209.js").getType("CM47209");
 		search(type,  REFERENCES, getJavaSearchScope());
 		assertSearchResults(
 			"src/j4/CT47209.java j4.CT47209 [CT47209] EXACT_MATCH INSIDE_JAVADOC\n" + 
@@ -824,27 +824,27 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 	 */
 	public void testBug49994() throws CoreException {
 		setJavadocOptions();
-		IType type = getCompilationUnit("JavaSearch", "src", "j5", "Bug49994.java").getType("Bug49994");
+		IType type = getCompilationUnit("JavaSearch", "src", "j5", "Bug49994.js").getType("Bug49994");
 		search(type,  REFERENCES, getJavaSearchScope());
 		assertSearchResults("", this.resultCollector);
 	}
 	public void testBug49994field() throws CoreException {
 		setJavadocOptions();
-		IType type = getCompilationUnit("JavaSearch", "src", "j5", "Bug49994.java").getType("Bug49994");
+		IType type = getCompilationUnit("JavaSearch", "src", "j5", "Bug49994.js").getType("Bug49994");
 		IField field = type.getField("field");
 		search(field, REFERENCES, getJavaSearchScope(), this.resultCollector);
 		assertSearchResults("src/j5/Bug49994.java void j5.Bug49994.foo() [field] EXACT_MATCH INSIDE_JAVADOC", this.resultCollector);
 	}
 	public void testBug49994method() throws CoreException {
 		setJavadocOptions();
-		IType type = getCompilationUnit("JavaSearch", "src", "j5", "Bug49994.java").getType("Bug49994");
+		IType type = getCompilationUnit("JavaSearch", "src", "j5", "Bug49994.js").getType("Bug49994");
 		IMethod method = type.getMethod("bar", new String[0]);
 		search(method, REFERENCES, getJavaSearchScope(), this.resultCollector);
 		assertSearchResults("src/j5/Bug49994.java void j5.Bug49994.foo() [bar()] EXACT_MATCH INSIDE_JAVADOC", this.resultCollector);
 	}
 	public void testBug49994constructor() throws CoreException {
 		setJavadocOptions();
-		IType type = getCompilationUnit("JavaSearch", "src", "j5", "Bug49994.java").getType("Bug49994");
+		IType type = getCompilationUnit("JavaSearch", "src", "j5", "Bug49994.js").getType("Bug49994");
 		IMethod method = type.getMethod("Bug49994", new String[] { "QString;" });
 		search(method, REFERENCES, getJavaSearchScope(), this.resultCollector);
 		assertSearchResults("src/j5/Bug49994.java void j5.Bug49994.foo() [Bug49994(String)] EXACT_MATCH INSIDE_JAVADOC", this.resultCollector);
@@ -858,7 +858,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 	public void testBug54962() throws CoreException {
 		setJavadocOptions();
 		this.resultCollector.showInsideDoc = true;
-		IPackageDeclaration packDecl = getCompilationUnit("JavaSearch", "src", "j6", "Bug54962.java").getPackageDeclaration("j6");
+		IPackageDeclaration packDecl = getCompilationUnit("JavaSearch", "src", "j6", "Bug54962.js").getPackageDeclaration("j6");
 		search(packDecl, REFERENCES, getJavaSearchScope());
 		assertSearchResults(
 			"src/j6/Bug54962.java j6.Bug54962 [j6] EXACT_MATCH INSIDE_JAVADOC\n" + 
@@ -870,7 +870,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 	public void testBug54962qualified() throws CoreException {
 		setJavadocOptions();
 		this.resultCollector.showInsideDoc = true;
-		IPackageDeclaration packDecl = getCompilationUnit("JavaSearch", "src", "j7.qua.li.fied", "Bug54962a.java").getPackageDeclaration("j7.qua.li.fied");
+		IPackageDeclaration packDecl = getCompilationUnit("JavaSearch", "src", "j7.qua.li.fied", "Bug54962a.js").getPackageDeclaration("j7.qua.li.fied");
 		search(packDecl, REFERENCES, getJavaSearchScope());
 		assertSearchResults(
 			"src/j7/qua/li/fied/Bug54962a.java j7.qua.li.fied.Bug54962a [j7.qua.li.fied] EXACT_MATCH INSIDE_JAVADOC\n" + 
@@ -887,7 +887,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 	public void testBug71267() throws CoreException {
 		setJavadocOptions();
 		this.resultCollector.showInsideDoc = true;
-		IPackageDeclaration packDecl = getCompilationUnit("JavaSearch", "src", "p71267", "Test.java").getPackageDeclaration("p71267");
+		IPackageDeclaration packDecl = getCompilationUnit("JavaSearch", "src", "p71267", "Test.js").getPackageDeclaration("p71267");
 		search(packDecl, REFERENCES, getJavaSearchScope());
 		assertSearchResults(
 			"src/p71267/Test.java p71267.Test [p71267] EXACT_MATCH INSIDE_JAVADOC\n" + 
@@ -898,7 +898,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 	public void testBug71267qualified() throws CoreException {
 		setJavadocOptions();
 		this.resultCollector.showInsideDoc = true;
-		IPackageDeclaration packDecl = getCompilationUnit("JavaSearch", "src", "p71267.q71267", "Test.java").getPackageDeclaration("p71267.q71267");
+		IPackageDeclaration packDecl = getCompilationUnit("JavaSearch", "src", "p71267.q71267", "Test.js").getPackageDeclaration("p71267.q71267");
 		search(packDecl, REFERENCES, getJavaSearchScope());
 		assertSearchResults(
 			"src/p71267/q71267/Test.java p71267.q71267.Test [p71267.q71267] EXACT_MATCH INSIDE_JAVADOC\n" + 
@@ -917,7 +917,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 	public void testBug83285() throws CoreException {
 		resultCollector.showRule = true;
 		workingCopies = new ICompilationUnit[1];
-		workingCopies[0] = getWorkingCopy("/JavaSearch/src/b83285/A.java",
+		workingCopies[0] = getWorkingCopy("/JavaSearch/src/b83285/A.js",
 			"package b83285;\n" + 
 			"class A { }\n" + 
 			"class C {\n" + 
@@ -940,7 +940,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 	public void testBug83285a() throws CoreException {
 		resultCollector.showRule = true;
 		workingCopies = new ICompilationUnit[1];
-		workingCopies[0] = getWorkingCopy("/JavaSearch/src/b83285/A.java",
+		workingCopies[0] = getWorkingCopy("/JavaSearch/src/b83285/A.js",
 			"package b83285;\n" + 
 			"class A {\n" + 
 			"	A(char c) {}\n" + 
@@ -973,7 +973,7 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 	public void testBug83285b() throws CoreException {
 		resultCollector.showRule = true;
 		workingCopies = new ICompilationUnit[1];
-		workingCopies[0] = getWorkingCopy("/JavaSearch/src/b83285/A.java",
+		workingCopies[0] = getWorkingCopy("/JavaSearch/src/b83285/A.js",
 			"package b83285;\n" + 
 			"class A {\n" + 
 			"	A(char c) {}\n" + 

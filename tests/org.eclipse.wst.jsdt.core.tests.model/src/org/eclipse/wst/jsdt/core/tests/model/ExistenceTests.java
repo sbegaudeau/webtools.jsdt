@@ -116,7 +116,7 @@ public void testJarFile() throws Exception {
 	try {
 		IJavaProject p2 = createJavaProject("P2");
 		String[] pathsAndContents = new String[] {
-			"test/X.java", 
+			"test/X.js", 
 			"package test;\n" +
 			"public class X {\n" + 
 			"}",
@@ -172,10 +172,10 @@ public void testCompilationUnitInLibrary1() throws CoreException {
 	try {
 		this.createJavaProject("P", new String[] {}, new String[] {"lib"},  "bin");
 		this.createFile(
-			"P/lib/X.java", 
+			"P/lib/X.js", 
 			"public class X {}"
 		);
-		ICompilationUnit cu = this.getCompilationUnit("P/lib/X.java");
+		ICompilationUnit cu = this.getCompilationUnit("P/lib/X.js");
 		assertTrue("Ccompilation unit should not exist", !cu.exists()); 
 	} finally {
 		this.deleteProject("P");
@@ -190,10 +190,10 @@ public void testCompilationUnitInLibrary2() throws CoreException {
 	try {
 		this.createJavaProject("P", new String[] {}, new String[] {"lib"},  "bin");
 		this.createFile(
-			"P/lib/X.java", 
+			"P/lib/X.js", 
 			"public class X {}"
 		);
-		ICompilationUnit cu = this.getCompilationUnit("P/lib/X.java");
+		ICompilationUnit cu = this.getCompilationUnit("P/lib/X.js");
 		assertOpenFails(
 			"Operation not supported for specified element type(s):lib [in P]",
 			cu);
@@ -209,10 +209,10 @@ public void testMethodWithInvalidParameter() throws CoreException {
 	try {
 		createJavaProject("P");
 		createFile(
-			"P/X.java", 
+			"P/X.js", 
 			"public class X {}"
 		);
-		IMethod method = getCompilationUnit("P/X.java").getType("X").getMethod("foo", new String[] {"~12345@"});
+		IMethod method = getCompilationUnit("P/X.js").getType("X").getMethod("foo", new String[] {"~12345@"});
 		assertTrue("Methodr should not exist", !method.exists()); 
 	} finally {
 		deleteProject("P");
@@ -254,7 +254,7 @@ public void testNonExistingClassFile2() throws CoreException {
 public void testNonExistingCompilationUnit() throws CoreException {
 	try {
 		this.createJavaProject("P", new String[] {"src"}, "bin");
-		ICompilationUnit cu = getCompilationUnit("/P/src/X.java");
+		ICompilationUnit cu = getCompilationUnit("/P/src/X.js");
 		assertOpenFails(
 			"X.java [in <default> [in src [in P]]] does not exist", 
 			cu);
@@ -351,10 +351,10 @@ public void testTypeParameter1() throws CoreException {
 	try {
 		createJavaProject("P");
 		createFile(
-			"P/X.java", 
+			"P/X.js", 
 			"public class X<T> {}"
 		);
-		ITypeParameter typeParameter = getCompilationUnit("P/X.java").getType("X").getTypeParameter("T");
+		ITypeParameter typeParameter = getCompilationUnit("P/X.js").getType("X").getTypeParameter("T");
 		assertTrue("Type parameter should exist", typeParameter.exists()); 
 	} finally {
 		deleteProject("P");
@@ -367,12 +367,12 @@ public void testTypeParameter2() throws CoreException {
 	try {
 		createJavaProject("P");
 		createFile(
-			"P/X.java", 
+			"P/X.js", 
 			"public class X {\n" +
 			"  <T extends String> void foo() {}\n" +
 			"}"
 		);
-		ITypeParameter typeParameter = getCompilationUnit("P/X.java").getType("X").getMethod("foo", new String[0]).getTypeParameter("T");
+		ITypeParameter typeParameter = getCompilationUnit("P/X.js").getType("X").getMethod("foo", new String[0]).getTypeParameter("T");
 		assertTrue("Type parameter should exist", typeParameter.exists()); 
 	} finally {
 		deleteProject("P");
@@ -385,10 +385,10 @@ public void testTypeParameter3() throws CoreException {
 	try {
 		createJavaProject("P");
 		createFile(
-			"P/X.java", 
+			"P/X.js", 
 			"public class X<T> {}"
 		);
-		ITypeParameter typeParameter = getCompilationUnit("P/X.java").getType("X").getTypeParameter("U");
+		ITypeParameter typeParameter = getCompilationUnit("P/X.js").getType("X").getTypeParameter("U");
 		assertTrue("Type parameter should not exist", !typeParameter.exists()); 
 	} finally {
 		deleteProject("P");
@@ -401,12 +401,12 @@ public void testTypeParameter4() throws CoreException {
 	try {
 		createJavaProject("P");
 		createFile(
-			"P/X.java", 
+			"P/X.js", 
 			"public class X {\n" +
 			"  <T extends String> void foo() {}\n" +
 			"}"
 		);
-		ITypeParameter typeParameter = getCompilationUnit("P/X.java").getType("X").getMethod("foo", new String[0]).getTypeParameter("String");
+		ITypeParameter typeParameter = getCompilationUnit("P/X.js").getType("X").getMethod("foo", new String[0]).getTypeParameter("String");
 		assertTrue("Type parameter should not exist", !typeParameter.exists()); 
 	} finally {
 		deleteProject("P");
@@ -420,12 +420,12 @@ public void testTypeParameter5() throws CoreException {
 	try {
 		createJavaProject("P");
 		createFile(
-			"P/X.java", 
+			"P/X.js", 
 			"public class X {\n" +
 			"  class T {}\n" +
 			"}"
 		);
-		ITypeParameter typeParameter = getCompilationUnit("P/X.java").getType("X").getTypeParameter("T");
+		ITypeParameter typeParameter = getCompilationUnit("P/X.js").getType("X").getTypeParameter("T");
 		assertTrue("Type parameter should not exist", !typeParameter.exists()); 
 	} finally {
 		deleteProject("P");
@@ -449,7 +449,7 @@ public void testCorrespondingResourceNonExistingClassFile() throws CoreException
 public void testCorrespondingResourceNonExistingCompilationUnit() throws CoreException {
 	try {
 		createJavaProject("P", new String[] {"src"}, "bin");
-		ICompilationUnit compilationUnit = getCompilationUnit("/P/src/X.java");
+		ICompilationUnit compilationUnit = getCompilationUnit("/P/src/X.js");
 		assertCorrespondingResourceFails(compilationUnit);
 	} finally {
 		deleteProject("P");
@@ -507,11 +507,11 @@ public void testCorrespondingResourceNonExistingType() throws CoreException {
 	try {
 		createJavaProject("P", new String[] {"src"}, "bin");
 		createFile(
-			"/P/src/X.java",
+			"/P/src/X.js",
 			"public class X{\n" +
 			"}"
 		);
-		IType type = getCompilationUnit("/P/src/X.java").getType("NonExisting");
+		IType type = getCompilationUnit("/P/src/X.js").getType("NonExisting");
 		assertCorrespondingResourceFails(type);
 	} finally {
 		deleteProject("P");
@@ -535,7 +535,7 @@ public void testUnderlyingResourceNonExistingClassFile() throws CoreException {
 public void testUnderlyingResourceNonExistingCompilationUnit() throws CoreException {
 	try {
 		createJavaProject("P", new String[] {"src"}, "bin");
-		ICompilationUnit compilationUnit = getCompilationUnit("/P/src/X.java");
+		ICompilationUnit compilationUnit = getCompilationUnit("/P/src/X.js");
 		assertUnderlyingResourceFails(compilationUnit);
 	} finally {
 		deleteProject("P");
@@ -593,11 +593,11 @@ public void testUnderlyingResourceNonExistingType() throws CoreException {
 	try {
 		createJavaProject("P", new String[] {"src"}, "bin");
 		createFile(
-			"/P/src/X.java",
+			"/P/src/X.js",
 			"public class X{\n" +
 			"}"
 		);
-		IType type = getCompilationUnit("/P/src/X.java").getType("NonExisting");
+		IType type = getCompilationUnit("/P/src/X.js").getType("NonExisting");
 		assertUnderlyingResourceFails(type);
 	} finally {
 		deleteProject("P");

@@ -76,7 +76,7 @@ protected void tearDown() throws Exception {
 	super.tearDown();
 }
 public void test0001() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0001", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0001", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "iii";
@@ -91,7 +91,7 @@ public void test0001() throws JavaModelException {
 	);
 }
 public void test0002() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0002", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0002", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "Y";
@@ -106,7 +106,7 @@ public void test0002() throws JavaModelException {
 	);
 }
 public void test0003() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0003", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0003", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "X";
@@ -122,7 +122,7 @@ public void test0003() throws JavaModelException {
 }
 public void test0004() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0004/Test.java",
+			"/Resolve/src2/test0004/Test.js",
 			"package test0004;\n" +
 			"public class Test <T> {\n" +
 			"	test0004.Test.X<Object>.Y<Object> var;\n" +
@@ -145,7 +145,7 @@ public void test0004() throws JavaModelException {
 	);
 }
 public void test0005() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0005", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0005", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "test0005";
@@ -160,7 +160,7 @@ public void test0005() throws JavaModelException {
 	);
 }
 public void test0006() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0006", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0006", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "Test0006";
@@ -175,7 +175,7 @@ public void test0006() throws JavaModelException {
 	);
 }
 public void test0007() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0007", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0007", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "Test0007";
@@ -190,7 +190,7 @@ public void test0007() throws JavaModelException {
 	);
 }
 public void test0008() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0008", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0008", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "Test0008";
@@ -205,7 +205,7 @@ public void test0008() throws JavaModelException {
 	);
 }
 public void test0009() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0009", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0009", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "Test0009";
@@ -220,7 +220,7 @@ public void test0009() throws JavaModelException {
 	);
 }
 public void test0010() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0010", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0010", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "Test0010";
@@ -235,7 +235,7 @@ public void test0010() throws JavaModelException {
 	);
 }
 public void test0011() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0011", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0011", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "Test0011";
@@ -250,7 +250,7 @@ public void test0011() throws JavaModelException {
 	);
 }
 public void test0012() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0012", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0012", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "Test0012";
@@ -265,7 +265,7 @@ public void test0012() throws JavaModelException {
 	);
 }
 public void test0013() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0013", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0013", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "Test0013";
@@ -280,7 +280,7 @@ public void test0013() throws JavaModelException {
 	);
 }
 public void test0014() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0014", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0014", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "Test0014";
@@ -298,7 +298,7 @@ public void test0014() throws JavaModelException {
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=71852
  */
 public void test0015() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0015", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0015", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "var";
@@ -316,7 +316,7 @@ public void test0015() throws JavaModelException {
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=72105
  */
 public void test0016() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0016", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0016", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "T";
@@ -334,7 +334,7 @@ public void test0016() throws JavaModelException {
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=72105
  */
 public void test0017() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0017", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0017", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "T";
@@ -352,7 +352,7 @@ public void test0017() throws JavaModelException {
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=72105
  */
 public void test0018() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0018", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0018", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "T";
@@ -370,7 +370,7 @@ public void test0018() throws JavaModelException {
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=72105
  */
 public void test0019() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0019", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0019", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "T";
@@ -388,7 +388,7 @@ public void test0019() throws JavaModelException {
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=72105
  */
 public void test0020() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0020", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0020", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "T";
@@ -406,7 +406,7 @@ public void test0020() throws JavaModelException {
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=72105
  */
 public void test0021() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0021", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0021", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "T";
@@ -424,7 +424,7 @@ public void test0021() throws JavaModelException {
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=74286
  */
 public void test0022() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0022", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0022", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "add";
@@ -442,7 +442,7 @@ public void test0022() throws JavaModelException {
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=74286
  */
 public void test0023() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0023", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0023", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "add";
@@ -460,7 +460,7 @@ public void test0023() throws JavaModelException {
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=77184
  */
 public void test0024() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0024", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0024", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "Test";
@@ -478,7 +478,7 @@ public void test0024() throws JavaModelException {
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=77184
  */
 public void test0025() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0025", "Test.java");
+	ICompilationUnit cu = getCompilationUnit("Resolve", "src2", "test0025", "Test.js");
 	
 	String str = cu.getSource();
 	String selection = "Test";
@@ -494,7 +494,7 @@ public void test0025() throws JavaModelException {
 }
 public void test0026() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0026/Test.java",
+			"/Resolve/src2/test0026/Test.js",
 			"package test0026;\n" +
 			"public class Test<T> {\n" +
 			"	public class Inner<U> {\n" +
@@ -515,7 +515,7 @@ public void test0026() throws JavaModelException {
 }
 public void test0027() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0027/Test.java",
+			"/Resolve/src2/test0027/Test.js",
 			"package test0027;\n" +
 			"public class Test<T> {\n" +
 			"	public class Inner<U> {\n" +
@@ -536,7 +536,7 @@ public void test0027() throws JavaModelException {
 }
 public void test0028() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0028/Test.java",
+			"/Resolve/src2/test0028/Test.js",
 			"package test0028;\n" +
 			"public class Test<T> {\n" +
 			"	public class Inner<U> {\n" +
@@ -557,7 +557,7 @@ public void test0028() throws JavaModelException {
 }
 public void test0029() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0029/Test.java",
+			"/Resolve/src2/test0029/Test.js",
 			"package test0029;\n" +
 			"public class Test<T> {\n" +
 			"	public class Inner<U> {\n" +
@@ -578,7 +578,7 @@ public void test0029() throws JavaModelException {
 }
 public void test0030() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0030/Test.java",
+			"/Resolve/src2/test0030/Test.js",
 			"package test0030;\n" +
 			"public class Test<T> {\n" +
 			"	public class Inner<U> {\n" +
@@ -600,7 +600,7 @@ public void test0030() throws JavaModelException {
 }
 public void test0031() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0031/Test.java",
+			"/Resolve/src2/test0031/Test.js",
 			"package test0031;\n" +
 			"public class Test<T> {\n" +
 			"	public class Inner<U> {\n" +
@@ -622,7 +622,7 @@ public void test0031() throws JavaModelException {
 }
 public void test0032() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0032/Test.java",
+			"/Resolve/src2/test0032/Test.js",
 			"package test0032;\n" +
 			"public class Test<T> {\n" +
 			"	public class Inner<U> {	\n" +
@@ -644,7 +644,7 @@ public void test0032() throws JavaModelException {
 }
 public void test0033() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0033/Test.java",
+			"/Resolve/src2/test0033/Test.js",
 			"package test0033;\n" +
 			"public class Test<T> {\n" +
 			"	public class Inner<U> {\n" +
@@ -666,7 +666,7 @@ public void test0033() throws JavaModelException {
 }
 public void test0034() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0034/Test.java",
+			"/Resolve/src2/test0034/Test.js",
 			"package test0034;\n" +
 			"public class Test<T> {\n" +
 			"	public class Inner<U> {\n" +
@@ -688,7 +688,7 @@ public void test0034() throws JavaModelException {
 }
 public void test0035() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0035/Test.java",
+			"/Resolve/src2/test0035/Test.js",
 			"package test0035;\n" +
 			"public class Test<T> {\n" +
 			"	public class Inner<U> {	\n" +
@@ -710,7 +710,7 @@ public void test0035() throws JavaModelException {
 }
 public void test0036() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0036/Test.java",
+			"/Resolve/src2/test0036/Test.js",
 			"package test0036;\n" +
 			"public class Test<T> {\n" +
 			"	public class Inner<U> {	\n" +
@@ -732,7 +732,7 @@ public void test0036() throws JavaModelException {
 }
 public void test0037() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0037/Test.java",
+			"/Resolve/src2/test0037/Test.js",
 			"package test0037;\n" +
 			"public class Test<T> {\n" +
 			"	public class Inner<U> {	\n" +
@@ -754,7 +754,7 @@ public void test0037() throws JavaModelException {
 }
 public void test0038() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0038/Test.java",
+			"/Resolve/src2/test0038/Test.js",
 			"package test0038;\n" +
 			"public class Test<T> {\n" +
 			"	public class Inner<U> {\n" +
@@ -776,7 +776,7 @@ public void test0038() throws JavaModelException {
 }
 public void test0039() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0039/Test.java",
+			"/Resolve/src2/test0039/Test.js",
 			"package test0039;\n" +
 			"public class Test<T> {\n" +
 			"	public class Inner<U> {\n" +
@@ -798,7 +798,7 @@ public void test0039() throws JavaModelException {
 }
 public void test0040() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0040/Test.java",
+			"/Resolve/src2/test0040/Test.js",
 			"package test0040;\n" +
 			"public class Test<T> {\n" +
 			"	public class Inner<U> {\n" +
@@ -820,7 +820,7 @@ public void test0040() throws JavaModelException {
 }
 public void test0041() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0041/Test.java",
+			"/Resolve/src2/test0041/Test.js",
 			"package test0041;\n" +
 			"public class Test<T> {\n" +
 			"	void foo() {\n" +
@@ -848,7 +848,7 @@ public void test0041() throws JavaModelException {
 }
 public void test0042() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0042/Test.java",
+			"/Resolve/src2/test0042/Test.js",
 			"package test0042;\n" +
 			"public class Test<T> {\n" +
 			"	public class Inner<U> {	\n" +
@@ -870,7 +870,7 @@ public void test0042() throws JavaModelException {
 }
 public void test0043() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0043/Test.java",
+			"/Resolve/src2/test0043/Test.js",
 			"package test0043;\n" +
 			"public class Test<T> {\n" +
 			"	Test<T> var;\n" +
@@ -890,7 +890,7 @@ public void test0043() throws JavaModelException {
 }
 public void test0044() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0044/Test.java",
+			"/Resolve/src2/test0044/Test.js",
 			"package test0044;\n" +
 			"public class Test<T1> {\n" +
 			"}\n" +
@@ -912,7 +912,7 @@ public void test0044() throws JavaModelException {
 }
 public void test0045() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0045/Test.java",
+			"/Resolve/src2/test0045/Test.js",
 			"package test0045;\n" +
 			"public class Test<T1> {\n" +
 			"	String var;\n" +
@@ -932,7 +932,7 @@ public void test0045() throws JavaModelException {
 }
 public void test0046() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0046/Test.java",
+			"/Resolve/src2/test0046/Test.js",
 			"package test0046;\n" +
 			"public class Test<T1> {\n" +
 			"	String var;\n" +
@@ -955,7 +955,7 @@ public void test0046() throws JavaModelException {
 }
 public void test0047() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0047/Test.java",
+			"/Resolve/src2/test0047/Test.js",
 			"package test0047;\n" +
 			"public class Test<T1> {\n" +
 			"	public String var;\n" +
@@ -979,7 +979,7 @@ public void test0047() throws JavaModelException {
 }
 public void test0048() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0048/Test.java",
+			"/Resolve/src2/test0048/Test.js",
 			"package test0048;\n" +
 			"public class Test<T1> {\n" +
 			"	public String var;\n" +
@@ -1003,7 +1003,7 @@ public void test0048() throws JavaModelException {
 }
 public void test0049() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0049/Test.java",
+			"/Resolve/src2/test0049/Test.js",
 			"package test0049;\n" +
 			"public class Test<T1> {\n" +
 			"	public String var;\n" +
@@ -1027,7 +1027,7 @@ public void test0049() throws JavaModelException {
 }
 public void test0050() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0050/Test.java",
+			"/Resolve/src2/test0050/Test.js",
 			"package test0050;\n" +
 			"public class Test<T1> {\n" +
 			"	public String var;\n" +
@@ -1051,7 +1051,7 @@ public void test0050() throws JavaModelException {
 }
 public void test0051() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0051/Test.java",
+			"/Resolve/src2/test0051/Test.js",
 			"package test0051;\n" +
 			"public class Test {\n" +
 			"	void foo() {\n" +
@@ -1077,7 +1077,7 @@ public void test0051() throws JavaModelException {
 }
 public void test0052() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0052/Test.java",
+			"/Resolve/src2/test0052/Test.js",
 			"package test0052;\n" +
 			"public class Test {\n" +
 			"	void foo() {\n" +
@@ -1103,7 +1103,7 @@ public void test0052() throws JavaModelException {
 }
 public void test0053() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0053/Test.java",
+			"/Resolve/src2/test0053/Test.js",
 			"package test0053;\n" +
 			"public class Test<T> {\n" +
 			"	public void foo() {\n" +
@@ -1130,7 +1130,7 @@ public void test0053() throws JavaModelException {
 }
 public void test0054() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0054/Test.java",
+			"/Resolve/src2/test0054/Test.js",
 			"package test0054;\n" +
 			"public class Test<T> {\n" +
 			"	public void foo() {\n" +
@@ -1157,7 +1157,7 @@ public void test0054() throws JavaModelException {
 }
 public void test0055() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0055/Test.java",
+			"/Resolve/src2/test0055/Test.js",
 			"package test0055;\n" +
 			"public class Test<T> {\n" +
 			"	public void foo() {\n" +
@@ -1184,7 +1184,7 @@ public void test0055() throws JavaModelException {
 }
 public void test0056() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0056/Test.java",
+			"/Resolve/src2/test0056/Test.js",
 			"package test0056;\n" +
 			"public class Test<T> {\n" +
 			"  public void foo() {\n" +
@@ -1209,7 +1209,7 @@ public void test0056() throws JavaModelException {
 }
 public void test0057() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0057/Test.java",
+			"/Resolve/src2/test0057/Test.js",
 			"package test0057;\n" +
 			"public class Test<T1> {\n" +
 			"  public <T2> void foo() {\n" +
@@ -1236,7 +1236,7 @@ public void test0057() throws JavaModelException {
 }
 public void test0058() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0058/Test.java",
+			"/Resolve/src2/test0058/Test.js",
 			"package test0058;\n" +
 			"public class Test<T1> {\n" +
 			"  public <T2> void foo() {\n" +
@@ -1263,7 +1263,7 @@ public void test0058() throws JavaModelException {
 }
 public void test0059() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0059/Test.java",
+			"/Resolve/src2/test0059/Test.js",
 			"package test0059;\n" +
 			"public class Test {\n" +
 			"  public <T2> void foo() {\n" +
@@ -1290,7 +1290,7 @@ public void test0059() throws JavaModelException {
 }
 public void test0060() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0060/Test.java",
+			"/Resolve/src2/test0060/Test.js",
 			"package test0060;\n" +
 			"public class Test {\n" +
 			"  public <T2> void foo() {\n" +
@@ -1317,7 +1317,7 @@ public void test0060() throws JavaModelException {
 }
 public void test0061() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0061/Test.java",
+			"/Resolve/src2/test0061/Test.js",
 			"package test0061;\n" +
 			"public class Test {\n" +
 			"  public <T2> void foo() {\n" +
@@ -1340,7 +1340,7 @@ public void test0061() throws JavaModelException {
 }
 public void test0062() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0062/Test.java",
+			"/Resolve/src2/test0062/Test.js",
 			"package test0062;\n" +
 			"public class Test<T1> {\n" +
 			"  public <T2> void foo() {\n" +
@@ -1363,7 +1363,7 @@ public void test0062() throws JavaModelException {
 }
 public void test0063() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0063/Test.java",
+			"/Resolve/src2/test0063/Test.js",
 			"package test0063;\n" +
 			"public class Test<T1> {\n" +
 			"  public void foo() {\n" +
@@ -1390,7 +1390,7 @@ public void test0063() throws JavaModelException {
 }
 public void test0064() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0064/Test.java",
+			"/Resolve/src2/test0064/Test.js",
 			"package test0064;\n" +
 			"public class Test {\n" +
 			"  public <U> Test(U u) {\n" +
@@ -1414,7 +1414,7 @@ public void test0064() throws JavaModelException {
 }
 public void test0065() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0065/Test.java",
+			"/Resolve/src2/test0065/Test.js",
 			"package test0065;\n" +
 			"public class Test {\n" +
 			"  public <U> Test(U u) {\n" +
@@ -1438,7 +1438,7 @@ public void test0065() throws JavaModelException {
 }
 public void test0066() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0066/Test.java",
+			"/Resolve/src2/test0066/Test.js",
 			"package test0066;\n" +
 			"public class Test<T> {\n" +
 			"  public <U> Test(U u) {\n" +
@@ -1462,7 +1462,7 @@ public void test0066() throws JavaModelException {
 }
 public void test0067() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0067/Test.java",
+			"/Resolve/src2/test0067/Test.js",
 			"package test0067;\n" +
 			"public class Test<T> {\n" +
 			"  public <U> Test(U u) {\n" +
@@ -1486,7 +1486,7 @@ public void test0067() throws JavaModelException {
 }
 public void test0068() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0068/Test.java",
+			"/Resolve/src2/test0068/Test.js",
 			"package test0068;\n" +
 			"public class Test<T> {\n" +
 			"  public <U> Test(U u) {\n" +
@@ -1510,7 +1510,7 @@ public void test0068() throws JavaModelException {
 }
 public void test0069() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0069/Test.java",
+			"/Resolve/src2/test0069/Test.js",
 			"package test0069;\n" +
 			"public class Test<T> {\n" +
 			"  public <U> Test(U u) {\n" +
@@ -1538,7 +1538,7 @@ public void test0069() throws JavaModelException {
 }
 public void test0070() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0070/Test.java",
+			"/Resolve/src2/test0070/Test.js",
 			"package test0070;\n" +
 			"public class Test {\n" +
 			"  public <U> Test(U u) {\n" +
@@ -1562,7 +1562,7 @@ public void test0070() throws JavaModelException {
 }
 public void test0071() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0071/Test.java",
+			"/Resolve/src2/test0071/Test.js",
 			"package test0071;\n" +
 			"public class Test {\n" +
 			"  public <U> Test(U u) {\n" +
@@ -1586,7 +1586,7 @@ public void test0071() throws JavaModelException {
 }
 public void test0072() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0072/Test.java",
+			"/Resolve/src2/test0072/Test.js",
 			"package test0072;\n" +
 			"public class Test<T> {\n" +
 			"  public <U> Test(U u) {\n" +
@@ -1610,7 +1610,7 @@ public void test0072() throws JavaModelException {
 }
 public void test0073() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0073/Test.java",
+			"/Resolve/src2/test0073/Test.js",
 			"package test0073;\n" +
 			"public class Test<T> {\n" +
 			"  public <U> Test(U u) {\n" +
@@ -1634,7 +1634,7 @@ public void test0073() throws JavaModelException {
 }
 public void test0074() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0074/Test.java",
+			"/Resolve/src2/test0074/Test.js",
 			"package test0074;\n" +
 			"public class Test<T> {\n" +
 			"  public <U> Test(U u) {\n" +
@@ -1658,7 +1658,7 @@ public void test0074() throws JavaModelException {
 }
 public void test0075() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0075/Test.java",
+			"/Resolve/src2/test0075/Test.js",
 			"package test0075;\n" +
 			"public class Test<T> {\n" +
 			"  public <U> Test(U u) {\n" +
@@ -1686,7 +1686,7 @@ public void test0075() throws JavaModelException {
 }
 public void test0076() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0076/Test.java",
+			"/Resolve/src2/test0076/Test.js",
 			"package test0076;\n" +
 			"public class Test<T> {\n" +
 			"  public class Inner<U, V> {\n" +
@@ -1708,7 +1708,7 @@ public void test0076() throws JavaModelException {
 }
 public void test0077() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0077/Test.java",
+			"/Resolve/src2/test0077/Test.js",
 			"package test0077;\n" +
 			"@interface MyAnn {\n" +
 			"}\n" +
@@ -1729,7 +1729,7 @@ public void test0077() throws JavaModelException {
 }
 public void test0078() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0078/Test.java",
+			"/Resolve/src2/test0078/Test.js",
 			"package test0078;\n" +
 			"@interface MyAnn {\n" +
 			"  String value();\n" +
@@ -1751,7 +1751,7 @@ public void test0078() throws JavaModelException {
 }
 public void test0079() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0079/Test.java",
+			"/Resolve/src2/test0079/Test.js",
 			"package test0079;\n" +
 			"@interface MyAnn {\n" +
 			"  String value();\n" +
@@ -1773,7 +1773,7 @@ public void test0079() throws JavaModelException {
 }
 public void test0080() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0080/Test.java",
+			"/Resolve/src2/test0080/Test.js",
 			"package test0080;\n" +
 			"@interface MyAnn {\n" +
 			"  String value1();\n" +
@@ -1796,7 +1796,7 @@ public void test0080() throws JavaModelException {
 }
 public void test0081() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0081/Test.java",
+			"/Resolve/src2/test0081/Test.js",
 			"package test0080;\n" +
 			"@interface MyAnn {\n" +
 			"  String value1();\n" +
@@ -1819,7 +1819,7 @@ public void test0081() throws JavaModelException {
 }
 public void test0082() throws JavaModelException {
 	IJavaElement[] elements = select(
-			"/Resolve/src2/test0082/Test.java",
+			"/Resolve/src2/test0082/Test.js",
 			"package test0082;\n" +
 			"public class Test<T> {\n" +
 			"}",
@@ -1828,7 +1828,7 @@ public void test0082() throws JavaModelException {
 }
 public void test0083() throws JavaModelException {
 	IJavaElement[] elements = select(
-			"/Resolve/src2/test0083/Test.java",
+			"/Resolve/src2/test0083/Test.js",
 			"package test0083;\n" +
 			"public class Test<T> {\n" +
 			"  Test<String> field;\n" +
@@ -1838,7 +1838,7 @@ public void test0083() throws JavaModelException {
 }
 public void test0084() throws JavaModelException {
 	IJavaElement[] elements = select(
-			"/Resolve/src2/test0084/Test.java",
+			"/Resolve/src2/test0084/Test.js",
 			"package test0084;\n" +
 			"public class Test<T> {\n" +
 			"  Test field;\n" +
@@ -1848,7 +1848,7 @@ public void test0084() throws JavaModelException {
 }
 public void test0085() throws JavaModelException {
 	IJavaElement[] elements = select(
-			"/Resolve/src2/test0085/Test.java",
+			"/Resolve/src2/test0085/Test.js",
 			"package test0085;\n" +
 			"public class Test<T> {\n" +
 			"  class Member {\n" +
@@ -1860,7 +1860,7 @@ public void test0085() throws JavaModelException {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=80957
 public void test0086() throws JavaModelException {
 	this.wc = getWorkingCopy(
-			"/Resolve/src2/test0086/Test.java",
+			"/Resolve/src2/test0086/Test.js",
 			"package test0080;\n" +
 			"public class Test {\n" +
 			"   List<Integer> list;\n" +
@@ -1883,14 +1883,14 @@ public void test0087() throws JavaModelException {
 	ICompilationUnit imported = null;
 	try {
 		imported = getWorkingCopy(
-				"/Resolve/src2/p/MyClass0087.java",
+				"/Resolve/src2/p/MyClass0087.js",
 				"package p;\n" +
 				"public class MyClass0087 {\n" +
 				"   public static int bar = 0;\n" +
 				"}");
 		
 		IJavaElement[] elements = select(
-				"/Resolve/src2/test0087/Test.java",
+				"/Resolve/src2/test0087/Test.js",
 				"import static p.MyClass0087.bar;\n" +
 				"package test0087;\n" +
 				"public class Test {\n" +
@@ -1913,7 +1913,7 @@ public void test0088() throws JavaModelException {
 	ICompilationUnit imported = null;
 	try {
 		imported = getWorkingCopy(
-				"/Resolve/src2/p/MyClass0088.java",
+				"/Resolve/src2/p/MyClass0088.js",
 				"package p;\n" +
 				"public class MyClass0088 {\n" +
 				"   public static void foo() {}\n" +
@@ -1921,7 +1921,7 @@ public void test0088() throws JavaModelException {
 				"}");
 		
 		IJavaElement[] elements = select(
-				"/Resolve/src2/test0088/Test.java",
+				"/Resolve/src2/test0088/Test.js",
 				"import static p.MyClass0088.foo;\n" +
 				"package test0088;\n" +
 				"public class Test {\n" +
@@ -1943,7 +1943,7 @@ public void test0088() throws JavaModelException {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=82558
 public void test0089() throws JavaModelException {
 	IJavaElement[] elements = selectAfter(
-			"/Resolve/src2/test0089/Test.java",
+			"/Resolve/src2/test0089/Test.js",
 			"package test0089;\n" +
 			"public class Test<T> {\n" +
 			"  Test(String t) {}\n" +
@@ -1964,7 +1964,7 @@ public void test0089() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=83489
 public void test0090() throws JavaModelException {
 	IJavaElement[] elements = selectAfter(
-			"/Resolve/src2/test0090/Test.java",
+			"/Resolve/src2/test0090/Test.js",
 			"package test0090;\n" +
 			"public class Test {\n" +
 			"  <T>Test(T t) {}\n" +
@@ -1983,13 +1983,13 @@ public void test0091() throws JavaModelException {
 	ICompilationUnit imported = null;
 	try {
 		imported = getWorkingCopy(
-				"/Resolve/src2/test0091/MyAnnot.java",
+				"/Resolve/src2/test0091/MyAnnot.js",
 				"package test0091;\n" +
 				"public @interface MyAnnot {\n" +
 				"}");
 		
 		IJavaElement[] elements = select(
-				"/Resolve/src2/test0091/Test.java",
+				"/Resolve/src2/test0091/Test.js",
 				"package test0091;\n" +
 				"@MyAnnot\n" +
 				"public class Test {\n" +
@@ -2012,13 +2012,13 @@ public void test0092() throws JavaModelException {
 	ICompilationUnit imported = null;
 	try {
 		imported = getWorkingCopy(
-				"/Resolve/src2/test0092/MyAnnot.java",
+				"/Resolve/src2/test0092/MyAnnot.js",
 				"package test0092;\n" +
 				"public @interface MyAnnot {\n" +
 				"}");
 		
 		IJavaElement[] elements = select(
-				"/Resolve/src2/test0092/Test.java",
+				"/Resolve/src2/test0092/Test.js",
 				"package test0092;\n" +
 				"@MyAnnot @MyAnnot\n" +
 				"public class Test {\n" +
@@ -2041,14 +2041,14 @@ public void test0093() throws JavaModelException {
 	ICompilationUnit imported = null;
 	try {
 		imported = getWorkingCopy(
-				"/Resolve/src2/test0093/MyEnum.java",
+				"/Resolve/src2/test0093/MyEnum.js",
 				"package test0093;\n" +
 				"public enum MyEnum {\n" +
 				"  MyEnumConstant;\n" +
 				"}");
 		
 		IJavaElement[] elements = select(
-				"/Resolve/src2/test0093/Test.java",
+				"/Resolve/src2/test0093/Test.js",
 				"package test0093;\n" +
 				"public class Test {\n" + 
 				"  void foo(MyEnum e) {\n" +
@@ -2073,7 +2073,7 @@ public void test0093() throws JavaModelException {
 }
 public void test0094() throws JavaModelException {
 	IJavaElement[] elements = select(
-			"/Resolve/src2/test0094/Test.java",
+			"/Resolve/src2/test0094/Test.js",
 			"package test0094;\n" +
 			"package import;\n" +
 			"public class Test {\n" + 
@@ -2095,7 +2095,7 @@ public void test0094() throws JavaModelException {
  */
 public void test0095() throws JavaModelException {
 	IJavaElement[] elements = select(
-			"/Resolve/src2/test0095/X.java",
+			"/Resolve/src2/test0095/X.js",
 			"package test0095;\n" +
 			"public class X {\n" + 
 			"	Y<?, ? extends Z<? super Exception>> y;\n" + 
@@ -2125,7 +2125,7 @@ public void test0095() throws JavaModelException {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=94653
 public void test0096() throws JavaModelException {
 	IJavaElement[] elements = select(
-			"/Resolve/src2/test0096/X.java",
+			"/Resolve/src2/test0096/X.js",
 			"package test0095;\n" +
 			"public class X<T> {\n" + 
 			"  class Inner<U> {\n" + 
@@ -2146,14 +2146,14 @@ public void test0097() throws JavaModelException {
 	ICompilationUnit imported = null;
 	try {
 		imported = getWorkingCopy(
-				"/Resolve/src2/test0097/Key.java",
+				"/Resolve/src2/test0097/Key.js",
 				"public class Key<\n" +
 				"	TT extends Test<KK, TT>,\n" +
 				"	KK extends Key<TT, KK>> {\n" +
 				"}\n");
 
 		IJavaElement[] elements = select(
-				"/Resolve/src2/test0097/Test.java",
+				"/Resolve/src2/test0097/Test.js",
 				"public class Test<\n" +
 				"	K extends Key<T, K>,\n" +
 				"	T extends Test<K, T>> {\n" +
@@ -2176,14 +2176,14 @@ public void test0098() throws JavaModelException {
 	ICompilationUnit imported = null;
 	try {
 		imported = getWorkingCopy(
-				"/Resolve/src2/test0098/Color.java",
+				"/Resolve/src2/test0098/Color.js",
 				"public enum Color<\n" +
 				"	BLUE,\n" +
 				"	RED;\n" +
 				"}\n");
 
 		IJavaElement[] elements = select(
-				"/Resolve/src2/test0098/Test.java",
+				"/Resolve/src2/test0098/Test.js",
 				"public class Test<\n" +
 				"	void foo() {\n" +
 				"		Color.valueOf(\"RED\");\n" +
@@ -2205,7 +2205,7 @@ public void test0098() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=99645
 public void test0099() throws JavaModelException {
 	IJavaElement[] elements = select(
-			"/Resolve/src2/test0099/Test.java",
+			"/Resolve/src2/test0099/Test.js",
 			"public class Test<\n" +
 			"	void foo() {\n" +
 			"		class Local<TLocal>{}\n" +
@@ -2222,7 +2222,7 @@ public void test0099() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=99645
 public void test0100() throws JavaModelException {
 	IJavaElement[] elements = select(
-			"/Resolve/src2/test0100/Test.java",
+			"/Resolve/src2/test0100/Test.js",
 			"public class Test<\n" +
 			"	void foo() {\n" +
 			"		class Local<TLocal>{\n" +
@@ -2272,7 +2272,7 @@ public void test0102() throws CoreException, IOException {
 			"    return new Y();\n" +
 			"  }\n" +
 			"}";
-		addLibrary(project, "lib15.jar", "lib15.zip", new String[] {"X.java", source}, "1.5");
+		addLibrary(project, "lib15.jar", "lib15.zip", new String[] {"X.js", source}, "1.5");
 		IClassFile classFile = getClassFile("P", "/P/lib15.jar", "", "X.class");
 		int start = source.indexOf("Y()");
 		int end = source.indexOf("();");
@@ -2289,7 +2289,7 @@ public void test0102() throws CoreException, IOException {
 public void test103() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Resolve/src/test/Test.java",
+		"/Resolve/src/test/Test.js",
 		"package test;\n"+
 		"public class Test {\n" + 
 		"  <T extends Test1> void foo(T t) {}\n" + 
@@ -2318,7 +2318,7 @@ public void test103() throws JavaModelException {
 public void test104() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Resolve/src/test/Test.java",
+		"/Resolve/src/test/Test.js",
 		"package test;\n"+
 		"public class Test {\n" + 
 		"  <T extends Test1> T foo(Test3<T> t) {return null;}\n" + 
@@ -2349,7 +2349,7 @@ public void test104() throws JavaModelException {
 public void test105() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Resolve/src/test/Test.java",
+		"/Resolve/src/test/Test.js",
 		"package test;\n"+
 		"public class Test {\n" + 
 		"  <T extends Test1> T foo(Test3<T> t) {return null;}\n" + 
@@ -2380,7 +2380,7 @@ public void test105() throws JavaModelException {
 public void test106() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Resolve/src/test/Test.java",
+		"/Resolve/src/test/Test.js",
 		"package test;\n"+
 		"public class Test {\n" + 
 		"  <T extends Test1> T foo(Test3<T> t) {return null;}\n" + 

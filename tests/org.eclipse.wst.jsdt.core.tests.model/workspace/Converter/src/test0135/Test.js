@@ -1,0 +1,3 @@
+  /** JavaDoc Comment*/
+ var i;
+

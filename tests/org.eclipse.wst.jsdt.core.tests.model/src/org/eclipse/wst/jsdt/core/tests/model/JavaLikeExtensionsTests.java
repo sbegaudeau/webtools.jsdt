@@ -89,7 +89,7 @@ public class JavaLikeExtensionsTests extends ModifyingResourceTests {
 	 * Ensure that file.java is a Java-like file name
 	 */
 	public void testIJavaLikeFileName02() {
-		assertTrue("file.java should be a Java-like file name", JavaCore.isJavaLikeFileName("file.java"));
+		assertTrue("file.java should be a Java-like file name", JavaCore.isJavaLikeFileName("file.js"));
 	}
 
 	/*
@@ -117,7 +117,7 @@ public class JavaLikeExtensionsTests extends ModifyingResourceTests {
 	 * Ensure that removing the Java-like extension for file.java returns foo
 	 */
 	public void testRemoveJavaLikeExtension02() {
-		assertEquals("Unexpected file without Java-like extension", "file", JavaCore.removeJavaLikeExtension("file.java"));
+		assertEquals("Unexpected file without Java-like extension", "file", JavaCore.removeJavaLikeExtension("file.js"));
 	}
 
 	/*

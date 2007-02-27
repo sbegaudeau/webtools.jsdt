@@ -1,0 +1,5 @@
+ 
+  // Line comment
+  var i;/**/
+
+ 

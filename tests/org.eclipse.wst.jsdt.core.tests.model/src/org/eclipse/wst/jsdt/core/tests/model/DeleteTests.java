@@ -61,13 +61,13 @@ public void tearDownSuite() throws Exception {
 public void testDeleteAllImports() throws CoreException {
 	try {
 		createFile(
-			"P/X.java",
+			"P/X.js",
 			"import java.util.*;\n" +
 			"import q.Y;\n" +
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.java");
+		ICompilationUnit cu = getCompilationUnit("P/X.js");
 		IImportDeclaration[] children= cu.getImports();
 
 		startDeltas();
@@ -82,7 +82,7 @@ public void testDeleteAllImports() throws CoreException {
 		);
 	} finally {
 		stopDeltas();
-		deleteFile("P/X.java");
+		deleteFile("P/X.js");
 	}
 }
 /**
@@ -161,11 +161,11 @@ public void testDeleteBinaryType() throws CoreException {
 public void testDeleteCompilationUnit1() throws CoreException {
 	try {
 		createFile(
-			"P/X.java",
+			"P/X.js",
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.java");
+		ICompilationUnit cu = getCompilationUnit("P/X.js");
 
 		startDeltas();
 		cu.delete(false, null);
@@ -179,7 +179,7 @@ public void testDeleteCompilationUnit1() throws CoreException {
 		);
 	} finally {
 		stopDeltas();
-		deleteFile("P/X.java");
+		deleteFile("P/X.js");
 	}
 }
 
@@ -190,11 +190,11 @@ public void testDeleteCompilationUnit1() throws CoreException {
 public void testDeleteCompilationUnit2() throws CoreException {
 	try {
 		IFile file = createFile(
-			"P/X.java",
+			"P/X.js",
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.java");
+		ICompilationUnit cu = getCompilationUnit("P/X.js");
 
 		startDeltas();
 		Util.delete(file);
@@ -208,7 +208,7 @@ public void testDeleteCompilationUnit2() throws CoreException {
 		);
 	} finally {
 		stopDeltas();
-		deleteFile("P/X.java");
+		deleteFile("P/X.js");
 	}
 }
 /**
@@ -218,11 +218,11 @@ public void testDeleteCompilationUnit2() throws CoreException {
 public void testDeleteCompilationUnit3() throws CoreException {
 	try {
 		createFile(
-			"P/X.java",
+			"P/X.js",
 			"public class X {\n" +
 			"}"
 		);
-		final ICompilationUnit cu = getCompilationUnit("P/X.java");
+		final ICompilationUnit cu = getCompilationUnit("P/X.js");
 		
 		// force the cu to be opened
 		cu.open(null);
@@ -247,7 +247,7 @@ public void testDeleteCompilationUnit3() throws CoreException {
 		);
 	} finally {
 		stopDeltas();
-		deleteFile("P/X.java");
+		deleteFile("P/X.js");
 	}
 }
 /**
@@ -257,12 +257,12 @@ public void testDeleteCompilationUnit4() throws CoreException {
 	try {
 		createFolder("P/p");
 		IFile file = createFile(
-			"P/p/X.java",
+			"P/p/X.js",
 			"package p;\n" +
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/p/X.java");
+		ICompilationUnit cu = getCompilationUnit("P/p/X.js");
 
 		startDeltas();
 		cu.delete(false, null);
@@ -287,13 +287,13 @@ public void testDeleteCompilationUnit4() throws CoreException {
 public void testDeleteConstructor() throws CoreException {
 	try {
 		createFile(
-			"P/X.java",
+			"P/X.js",
 			"public class X {\n" +
 			"  public X(String s) {\n" +
 			"  }\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.java");
+		ICompilationUnit cu = getCompilationUnit("P/X.js");
 		IMethod constructor = cu.getType("X").getMethod("X", new String[] {"QString;"});
 
 		startDeltas();
@@ -310,7 +310,7 @@ public void testDeleteConstructor() throws CoreException {
 		);
 	} finally {
 		stopDeltas();
-		deleteFile("P/X.java");
+		deleteFile("P/X.js");
 	}
 }
 /**
@@ -341,12 +341,12 @@ public void testDeleteEmptyPackageFragment() throws CoreException {
 public void testDeleteField1() throws CoreException { // was testDeleteField
 	try {
 		createFile(
-			"P/X.java",
+			"P/X.js",
 			"public class X {\n" +
 			"  int field;\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.java");
+		ICompilationUnit cu = getCompilationUnit("P/X.js");
 		IField field = cu.getType("X").getField("field");
 
 		startDeltas();
@@ -362,7 +362,7 @@ public void testDeleteField1() throws CoreException { // was testDeleteField
 		);
 	} finally {
 		stopDeltas();
-		deleteFile("P/X.java");
+		deleteFile("P/X.js");
 	}
 }
 /**
@@ -371,12 +371,12 @@ public void testDeleteField1() throws CoreException { // was testDeleteField
 public void testDeleteField2() throws CoreException { // was testDeleteFieldWithCancel
 	try {
 		createFile(
-			"P/X.java",
+			"P/X.js",
 			"public class X {\n" +
 			"  int field;\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.java");
+		ICompilationUnit cu = getCompilationUnit("P/X.js");
 		IField field = cu.getType("X").getField("field");
 
 		boolean isCanceled = false;
@@ -389,7 +389,7 @@ public void testDeleteField2() throws CoreException { // was testDeleteFieldWith
 		}
 		assertTrue("Operation should have thrown an operation canceled exception", isCanceled);
 	} finally {
-		deleteFile("P/X.java");
+		deleteFile("P/X.js");
 	}
 }
 /*
@@ -399,12 +399,12 @@ public void testDeleteField2() throws CoreException { // was testDeleteFieldWith
 public void testDeleteField3() throws CoreException {
 	try {
 		IFile file = createFile(
-			"P/X.java",
+			"P/X.js",
 			"public class X {\n" +
 			"  int field;\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.java");
+		ICompilationUnit cu = getCompilationUnit("P/X.js");
 		final IField field = cu.getType("X").getField("field");
 
 		startDeltas();
@@ -428,7 +428,7 @@ public void testDeleteField3() throws CoreException {
 		);
 	} finally {
 		stopDeltas();
-		deleteFile("P/X.java");
+		deleteFile("P/X.js");
 	}
 }
 /*
@@ -438,12 +438,12 @@ public void testDeleteField3() throws CoreException {
 public void testDeleteField4() throws CoreException {
 	try {
 		createFile(
-			"P/X.java",
+			"P/X.js",
 			"public class X {\n" +
 			"  private String t = \"sample test\";\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.java");
+		ICompilationUnit cu = getCompilationUnit("P/X.js");
 		IField field = cu.getType("X").getField("t");
 		field.delete(false, null);
 		assertSourceEquals(
@@ -452,7 +452,7 @@ public void testDeleteField4() throws CoreException {
 			"}",
 			cu.getSource());
 	} finally {
-		deleteFile("P/X.java");
+		deleteFile("P/X.js");
 	}
 }
 /**
@@ -462,12 +462,12 @@ public void testDeleteField5() throws CoreException {
 	try {
 		this.createJavaProject("P1", new String[] {""}, new String[] {"JCL15_LIB"}, null, "", "1.5");
 		createFile(
-			"P1/X.java",
+			"P1/X.js",
 			"public enum X {\n" +
 			"  A, B, C\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P1/X.java");
+		ICompilationUnit cu = getCompilationUnit("P1/X.js");
 		IField field = cu.getType("X").getField("A");
 		field.delete(false, null);
 		assertSourceEquals(
@@ -486,13 +486,13 @@ public void testDeleteField5() throws CoreException {
 public void testDeleteImportDeclaration() throws CoreException {
 	try {
 		createFile(
-			"P/X.java",
+			"P/X.js",
 			"import java.util.*;\n" +
 			"import q.Y;\n" +
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.java");
+		ICompilationUnit cu = getCompilationUnit("P/X.js");
 		IImportDeclaration imp= cu.getImport("q.Y");
 
 		startDeltas();
@@ -508,7 +508,7 @@ public void testDeleteImportDeclaration() throws CoreException {
 		);
 	} finally {
 		stopDeltas();
-		deleteFile("P/X.java");
+		deleteFile("P/X.js");
 	}
 }
 /**
@@ -517,13 +517,13 @@ public void testDeleteImportDeclaration() throws CoreException {
 public void testDeleteMethod() throws CoreException {
 	try {
 		createFile(
-			"P/X.java",
+			"P/X.js",
 			"public class X {\n" +
 			"  public void foo() {\n" +
 			"  }\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.java");
+		ICompilationUnit cu = getCompilationUnit("P/X.js");
 		IMethod method = cu.getType("X").getMethod("foo", new String[] {});
 
 		startDeltas();
@@ -539,7 +539,7 @@ public void testDeleteMethod() throws CoreException {
 		);
 	} finally {
 		stopDeltas();
-		deleteFile("P/X.java");
+		deleteFile("P/X.js");
 	}
 }
 /**
@@ -551,7 +551,7 @@ public void testDeleteMultipleMembersFromVariousCUs() throws CoreException {
 	try {
 		createFolder("P/a/b/c");
 		createFile(
-			"P/a/b/c/X.java",
+			"P/a/b/c/X.js",
 			"package a.b.c;\n" +
 			"import java.util.Vector;\n" +
 			"import java.util.Enumeration;\n" +
@@ -570,7 +570,7 @@ public void testDeleteMultipleMembersFromVariousCUs() throws CoreException {
 			"}"
 		);
 		createFile(
-			"P/a/b/Y.java",
+			"P/a/b/Y.js",
 			"package a.b;\n" +
 			"public class Y {\n" +
 			"  int foo;\n" +
@@ -593,7 +593,7 @@ public void testDeleteMultipleMembersFromVariousCUs() throws CoreException {
 		//   foo
 		//   main
 		
-		ICompilationUnit cuX = getCompilationUnit("P/a/b/c/X.java");
+		ICompilationUnit cuX = getCompilationUnit("P/a/b/c/X.js");
 		IType typeX = cuX.getType("X");
 		IType typeBar = typeX.getType("Bar");
 	
@@ -605,7 +605,7 @@ public void testDeleteMultipleMembersFromVariousCUs() throws CoreException {
 		toBeDeleted[4] = typeBar.getMethod("test", new String[] {});
 		toBeDeleted[5] = typeBar;
 		
-		ICompilationUnit cuY = getCompilationUnit("P/a/b/Y.java");
+		ICompilationUnit cuY = getCompilationUnit("P/a/b/Y.js");
 		IType typeY = cuY.getType("Y");
 		
 		toBeDeleted[6] = typeY.getField("foo");
@@ -642,12 +642,12 @@ public void testDeletePackageDeclaration() throws CoreException {
 	try {
 		createFolder("P/a/b/c");
 		createFile(
-			"P/a/b/c/X.java",
+			"P/a/b/c/X.js",
 			"package a.b.c;\n" +
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/a/b/c/X.java");
+		ICompilationUnit cu = getCompilationUnit("P/a/b/c/X.js");
 		IPackageDeclaration packageDeclaration = cu.getPackageDeclaration("a.b.c");
 
 		startDeltas();
@@ -669,7 +669,7 @@ public void testDeletePackageFragment1() throws CoreException {
 	try {
 		createFolder("P/a/b/c");
 		createFile(
-			"P/a/b/c/X.java",
+			"P/a/b/c/X.js",
 			"package a.b.c;\n" +
 			"public class X {\n" +
 			"}"
@@ -700,13 +700,13 @@ public void testDeletePackageFragment2() throws CoreException {
 	try {
 		createJavaProject("P1", new String[] {"src"}, "bin");
 		IFile file = createFile(
-			"P1/src/X.java",
+			"P1/src/X.js",
 			"public class X {\n" +
 			"}"
 		);
 		IPackageFragment pkg = getPackage("P1/src");
 		IFolder folder = getFolder("P1/src");
-		ICompilationUnit cu = getCompilationUnit("P1/src/X.java");
+		ICompilationUnit cu = getCompilationUnit("P1/src/X.js");
 
 		startDeltas();
 		pkg.delete(false, null);
@@ -734,13 +734,13 @@ public void testDeletePackageFragment3() throws CoreException {
 	try {
 		createJavaProject("P1");
 		IFile file = createFile(
-			"P1/X.java",
+			"P1/X.js",
 			"public class X {\n" +
 			"}"
 		);
 		IPackageFragment pkg = getPackage("P1");
 		IProject project = getProject("P1");
-		ICompilationUnit cu = getCompilationUnit("P1/X.java");
+		ICompilationUnit cu = getCompilationUnit("P1/X.js");
 
 		startDeltas();
 		pkg.delete(false, null);
@@ -800,7 +800,7 @@ public void testDeleteProjectAfterUsingJar() throws CoreException, IOException {
 			"lib.jar", 
 			"libsrc.zip", 
 			new String[] {
-				"p/X.java",
+				"p/X.js",
 				"package p;\n" +
 				"public class X {\n" +
 				"}",
@@ -822,12 +822,12 @@ public void testDeleteProjectAfterUsingJar() throws CoreException, IOException {
 public void testDeleteSyntaxErrorField() throws CoreException {
 	try {
 		createFile(
-			"P/X.java",
+			"P/X.js",
 			"public class X {\n" +
 			"  int field\n" + // missing semi-colon
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.java");
+		ICompilationUnit cu = getCompilationUnit("P/X.js");
 		IField field = cu.getType("X").getField("field");
 
 		startDeltas();
@@ -843,7 +843,7 @@ public void testDeleteSyntaxErrorField() throws CoreException {
 		);
 	} finally {
 		stopDeltas();
-		deleteFile("P/X.java");
+		deleteFile("P/X.js");
 	}
 }
 /**
@@ -852,7 +852,7 @@ public void testDeleteSyntaxErrorField() throws CoreException {
 public void testDeleteSyntaxErrorInMethod1() throws CoreException {
 	try {
 		createFile(
-			"P/X.java",
+			"P/X.js",
 			"public class X {\n" +
 			"  public void foo() {\n" +
 			"    String s = ;\n" +
@@ -860,7 +860,7 @@ public void testDeleteSyntaxErrorInMethod1() throws CoreException {
 			"  }\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.java");
+		ICompilationUnit cu = getCompilationUnit("P/X.js");
 		IMethod method = cu.getType("X").getMethod("foo", new String[] {});
 
 		startDeltas();
@@ -876,7 +876,7 @@ public void testDeleteSyntaxErrorInMethod1() throws CoreException {
 		);
 	} finally {
 		stopDeltas();
-		deleteFile("P/X.java");
+		deleteFile("P/X.js");
 	}
 }
 /**
@@ -885,12 +885,12 @@ public void testDeleteSyntaxErrorInMethod1() throws CoreException {
 public void testDeleteSyntaxErrorInMethod2() throws CoreException {
 	try {
 		createFile(
-			"P/X.java",
+			"P/X.js",
 			"public class X {\n" +
 			"  public void foo() \n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.java");
+		ICompilationUnit cu = getCompilationUnit("P/X.js");
 		IMethod method = cu.getType("X").getMethod("foo", new String[] {});
 
 		startDeltas();
@@ -906,7 +906,7 @@ public void testDeleteSyntaxErrorInMethod2() throws CoreException {
 		);
 	} finally {
 		stopDeltas();
-		deleteFile("P/X.java");
+		deleteFile("P/X.js");
 	}
 }
 /**
@@ -915,13 +915,13 @@ public void testDeleteSyntaxErrorInMethod2() throws CoreException {
 public void testDeleteSyntaxErrorInMethod3() throws CoreException {
 	try {
 		createFile(
-			"P/X.java",
+			"P/X.js",
 			"public class X {\n" +
 			"  public void foo( \n" +
 			"  }\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.java");
+		ICompilationUnit cu = getCompilationUnit("P/X.js");
 		IMethod method = cu.getType("X").getMethod("foo", new String[] {});
 
 		startDeltas();
@@ -937,7 +937,7 @@ public void testDeleteSyntaxErrorInMethod3() throws CoreException {
 		);
 	} finally {
 		stopDeltas();
-		deleteFile("P/X.java");
+		deleteFile("P/X.js");
 	}
 }
 /**
@@ -946,12 +946,12 @@ public void testDeleteSyntaxErrorInMethod3() throws CoreException {
 public void testDeleteSyntaxErrorType() throws CoreException {
 	try {
 		createFile(
-			"P/X.java",
+			"P/X.js",
 			"public class X {\n" +
 			"  method() {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.java");
+		ICompilationUnit cu = getCompilationUnit("P/X.js");
 		IType type = cu.getType("X");
 
 		startDeltas();
@@ -966,7 +966,7 @@ public void testDeleteSyntaxErrorType() throws CoreException {
 		);
 	} finally {
 		stopDeltas();
-		deleteFile("P/X.java");
+		deleteFile("P/X.js");
 	}
 }
 /**
@@ -975,11 +975,11 @@ public void testDeleteSyntaxErrorType() throws CoreException {
 public void testDeleteType1() throws CoreException{
 	try {
 		createFile(
-			"P/X.java",
+			"P/X.js",
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.java");
+		ICompilationUnit cu = getCompilationUnit("P/X.js");
 		IType type = cu.getType("X");
 
 		startDeltas();
@@ -994,7 +994,7 @@ public void testDeleteType1() throws CoreException{
 		);
 	} finally {
 		stopDeltas();
-		deleteFile("P/X.java");
+		deleteFile("P/X.js");
 	}
 }
 /**
@@ -1005,11 +1005,11 @@ public void testDeleteType2() throws CoreException {
 	try {
 		createJavaProject("P1", new String[] {"src"}, "bin");
 		createFile(
-			"P1/src/X.java",
+			"P1/src/X.js",
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P1/src/X.java");
+		ICompilationUnit cu = getCompilationUnit("P1/src/X.js");
 		IType type = cu.getType("X");
 
 		startDeltas();
@@ -1034,11 +1034,11 @@ public void testDeleteWithInvalidInput() throws CoreException {
 	IType type = null;
 	try {
 		createFile(
-			"P/X.java",
+			"P/X.js",
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.java");
+		ICompilationUnit cu = getCompilationUnit("P/X.js");
 		type = cu.getType("X");
 
 		getJavaModel().delete(null, false, null);
@@ -1051,7 +1051,7 @@ public void testDeleteWithInvalidInput() throws CoreException {
 		}
 		return;
 	} finally {
-		deleteFile("P/X.java");
+		deleteFile("P/X.js");
 	}
 }
 }

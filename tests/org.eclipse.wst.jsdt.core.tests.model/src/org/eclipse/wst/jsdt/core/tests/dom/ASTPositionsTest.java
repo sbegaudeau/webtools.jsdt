@@ -64,7 +64,7 @@ public class ASTPositionsTest extends ConverterTestSetup {
 	}
 		
 	public void test001() throws JavaModelException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/X.java", true/*resolve*/);
+    	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
     	final String contents =
 			"import java.util.Map;\r\n" +
 			"public class X {\r\n" +
@@ -89,7 +89,7 @@ public class ASTPositionsTest extends ConverterTestSetup {
 	}
 
 	public void test002() throws JavaModelException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/X.java", true/*resolve*/);
+    	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
     	final String contents =
 			"import java.util.Map;\n" +
 			"public class X {\n" +
@@ -105,7 +105,7 @@ public class ASTPositionsTest extends ConverterTestSetup {
 	}
 	
 	public void test003() throws JavaModelException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/X.java", true/*resolve*/);
+    	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
     	final String contents =
 			"import java.util.Map;\r" +
 			"public class X {\r" +
@@ -121,7 +121,7 @@ public class ASTPositionsTest extends ConverterTestSetup {
 	}
 	
 	public void test004() throws JavaModelException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/X.java", true/*resolve*/);
+    	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
     	String contents =
 			"package pack1;\npublic class X {}";
     	ASTNode node = buildAST(
@@ -135,7 +135,7 @@ public class ASTPositionsTest extends ConverterTestSetup {
 	}
 	
 	public void test005() throws JavaModelException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/X.java", true/*resolve*/);
+    	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
     	String contents =
 			"package pack1;public class X {}";
     	ASTNode node = buildAST(

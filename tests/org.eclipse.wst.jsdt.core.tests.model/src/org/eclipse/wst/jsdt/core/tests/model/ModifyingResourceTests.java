@@ -59,7 +59,7 @@ protected void assertStatus(String message, String expected, IStatus status) {
  *   "}")
  */
 public static void generateClassFile(String className, String javaSource) throws IOException {
-	String cu = "d:/temp/" + className + ".java";
+	String cu = "d:/temp/" + className + ".js";
 	Util.createFile(cu, javaSource);
 	Main.compile(cu + " -d d:/temp -classpath " + System.getProperty("java.home") + "/lib/rt.jar");
 	FileInputStream input = new FileInputStream("d:/temp/" + className + ".class");
@@ -226,7 +226,7 @@ protected IClassFile createClassFile(String libPath, String classFileRelativePat
 	Util.delete(classFile.getResource());
 	IJavaProject javaProject = classFile.getJavaProject();
 	IProject project = javaProject.getProject();
-	String sourcePath = project.getLocation().toOSString() + File.separatorChar + classFile.getType().getElementName() + ".java";
+	String sourcePath = project.getLocation().toOSString() + File.separatorChar + classFile.getType().getElementName() + ".js";
 	String libOSPath = new Path(libPath).segmentCount() > 1 ? getFolder(libPath).getLocation().toOSString() : getProject(libPath).getLocation().toOSString();
 	Util.compile(new String[] {sourcePath, contents}, javaProject.getOptions(true), libOSPath);
 	project.refreshLocal(IResource.DEPTH_INFINITE, null);
@@ -238,7 +238,7 @@ protected IClassFile createClassFile(String libPath, String classFileRelativePat
  * The given array as the following form:
  * [<folder>, "<pattern>[|<pattern]*"]*
  * E.g. new String[] {
- *   "/P/src1", "p/A.java",
+ *   "/P/src1", "p/A.js",
  *   "/P", "*.txt|com.tests/**"
  * }
  */
@@ -282,7 +282,7 @@ protected IClasspathEntry[] createClasspath(String[] foldersAndPatterns, boolean
  * The given array as the following form:
  * [<folder>, "<+|-><pattern>[|<+|-><pattern]*"]*
  * E.g. new String[] {
- *   "/P/src1", "+p/A.java",
+ *   "/P/src1", "+p/A.js",
  *   "/P", "-*.txt|+com.tests/**"
  * }
  */

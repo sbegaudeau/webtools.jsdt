@@ -180,7 +180,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 			ICompilationUnit[] dummyWorkingCopies = null;
 			try {
 				dummyWorkingCopies = createWorkingCopies(new String[] {
-					"/P/Test.java",
+					"/P/Test.js",
 					"public class Test {\n" +
 					"}"
 				});
@@ -251,11 +251,11 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	 */
 	public void test001() throws CoreException {
 		this.workingCopies = createWorkingCopies(new String[] {
-			"/P/p1/X.java",
+			"/P/p1/X.js",
 			"package p1;\n" +
 			"public class X extends Y {\n" +
 			"}",
-			"/P/p1/Y.java",
+			"/P/p1/Y.js",
 			"package p1;\n" +
 			"public class Y {\n" +
 			"}",
@@ -280,11 +280,11 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	 */
 	public void test002() throws CoreException {
 		MarkerInfo[] markerInfos = createMarkerInfos(new String[] {
-			"/P/p1/X.java",
+			"/P/p1/X.js",
 			"package p1;\n" +
 			"public class X extends /*start*/Y/*end*/ {\n" +
 			"}",
-			"/P/p1/Y.java",
+			"/P/p1/Y.js",
 			"package p1;\n" +
 			"/*start*/public class Y {\n" +
 			"}/*end*/",
@@ -320,13 +320,13 @@ public class BatchASTCreationTests extends AbstractASTTests {
 		ICompilationUnit[] otherWorkingCopies = null;
 		try {
 			this.workingCopies = createWorkingCopies(new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X extends Y {\n" +
 				"}",
 			});
 			otherWorkingCopies = createWorkingCopies(new String[] {
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y {\n" +
 				"}",
@@ -353,7 +353,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test004() throws CoreException {
 		assertRequestedBindingFound(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"/*start*/package p1;/*end*/\n" +
 				"public class X {\n" +
 				"}",
@@ -367,11 +367,11 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test005() throws CoreException {
 		assertRequestedBindingFound(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"/*start*/public class X extends Y {\n" +
 				"}/*end*/",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y {\n" +
 				"}",
@@ -385,11 +385,11 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test006() throws CoreException {
 		assertRequestedBindingFound(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X extends Y {\n" +
 				"}",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"/*start*/public class Y {\n" +
 				"}/*end*/",
@@ -403,7 +403,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test007() throws CoreException {
 		assertRequestedBindingFound(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  /*start*/class Member {\n" +
@@ -419,7 +419,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test008() throws CoreException {
 		assertRequestedBindingFound(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  class Member1 {\n" +
@@ -436,7 +436,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test009() throws CoreException {
 		assertRequestedBindingFound(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  void foo() {\n" +
@@ -453,7 +453,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test010() throws CoreException {
 		assertRequestedBindingFound(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  void foo() {\n" +
@@ -471,7 +471,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test011() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"}",
@@ -485,11 +485,11 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test012() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X extends Y {\n" +
 				"}",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y {\n" +
 				"}",
@@ -503,11 +503,11 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test013() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X extends Y {\n" +
 				"}",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y {\n" +
 				"}",
@@ -521,7 +521,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test014() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  class Member {\n" +
@@ -537,7 +537,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test015() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  class Member1 {\n" +
@@ -555,7 +555,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test016() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  void foo() {\n" +
@@ -573,7 +573,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test017() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  void foo() {\n" +
@@ -591,7 +591,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test018() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  void foo() {\n" +
@@ -607,7 +607,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test019() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  void foo(Object o) {\n" +
@@ -623,7 +623,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test020() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  X(Object o) {\n" +
@@ -639,7 +639,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test021() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  int field;\n" +
@@ -661,7 +661,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test023() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"}",
@@ -682,7 +682,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test025() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  class Y {\n" +
@@ -705,7 +705,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test026() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X<T> {\n" +
 				"}",
@@ -719,15 +719,15 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test027() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X<T extends Y & I, U extends Y> {\n" +
 				"}",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y {\n" +
 				"}",
-				"/P/p1/I.java",
+				"/P/p1/I.js",
 				"package p1;\n" +
 				"public interface I {\n" +
 				"}",
@@ -741,7 +741,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test028() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X<T> {\n" +
 				"  X<String> field;\n" +
@@ -756,7 +756,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test029() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X<T,U> {\n" +
 				"  class Y<V> {\n" +
@@ -773,7 +773,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test030() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X<T,U> {\n" +
 				"   X field;\n" +
@@ -788,7 +788,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test031() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X<T,U> {\n" +
 				"  class Y<V> {\n" +
@@ -805,7 +805,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test032() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  <T> void foo() {\n" +
@@ -821,7 +821,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test033() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  void foo() {\n" +
@@ -838,7 +838,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test034() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  void foo() {\n" +
@@ -860,7 +860,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test035() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X<T> {\n" +
 				"  void foo(T t) {\n" +
@@ -879,7 +879,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test036() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X<T> {\n" +
 				"  <U> void foo(T t, U u) {\n" +
@@ -899,7 +899,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test037() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X<T> {\n" +
 				"  <U> void foo(T t, U u) {\n" +
@@ -918,7 +918,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test038() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X<T> {\n" +
 				"  void foo() {\n" +
@@ -937,7 +937,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test039() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X<T> {\n" +
 				"  void foo() {\n" +
@@ -956,7 +956,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test040() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X<T> {\n" +
 				"  void foo() {\n" +
@@ -975,7 +975,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test041() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X<T, U, V, W> {\n" +
 				"  void foo() {\n" +
@@ -995,7 +995,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 		ICompilationUnit workingCopy = null;
 		try {
 			workingCopy = getWorkingCopy(
-				"/P/X.java",
+				"/P/X.js",
 				"public class X {\n" +
 				"  int field;\n" +
 				"}"
@@ -1029,7 +1029,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test043() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X<T> {\n" +
 				"  X<? super T> field;\n" +
@@ -1045,7 +1045,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test044() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X<E> {\n" +
 				"  Class<? extends E> field;\n" +
@@ -1061,11 +1061,11 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test045() throws CoreException {
 		ITypeBinding[] bindings = createTypeBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"}",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y<E> {\n" +
 				"}"
@@ -1158,7 +1158,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 		try {
 			createFolder("/P/p1");
 			createFile(
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"}\n" +
@@ -1178,7 +1178,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 		try {
 			createFolder("/P/p1");
 			createFile(
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"}\n" +
@@ -1200,7 +1200,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test054() throws CoreException {
 		assertRequestedBindingFound(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  void foo() {\n" +
@@ -1223,7 +1223,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test055() throws CoreException {
 		assertBindingCreated(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X<T> {\n" +
 				"  <U> void foo(U u) {\n" +
@@ -1245,7 +1245,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 		try {
 			IJavaProject project = createJavaProject("BinaryProject", new String[0], new String[] {"JCL15_LIB"}, "", "1.5");
 			addLibrary(project, "lib.jar", "src.zip", new String[] {
-				"/BinaryProject/p/X.java",
+				"/BinaryProject/p/X.js",
 				"package p;\n" +
 				"public class X<K, V> {\n" +
 				"  public class Y<K1, V1> {\n" +
@@ -1283,7 +1283,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test058() throws CoreException {
 		assertRequestedBindingFound(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  </*start*/T/*end*/> void foo(T t) {\n" +
@@ -1299,7 +1299,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test059() throws CoreException {
 		assertRequestedBindingFound(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X<T> {\n" + 
 				"    Object foo(X<?> list) {\n" + 
@@ -1320,7 +1320,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test060() throws CoreException {
 		assertRequestedBindingFound(
 			new String[] {
-				"/P/xy/Cap.java",
+				"/P/xy/Cap.js",
 				"package xy;\n" + 
 				"import java.util.Vector;\n" + 
 				"public class Cap {\n" + 
@@ -1329,7 +1329,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 				"		/*start*/v.get(0)/*end*/;\n" + 
 				"	}\n" + 
 				"}",
-				"/P/java/util/Vector.java",
+				"/P/java/util/Vector.js",
 				"package java.util;\n" +
 				"public class Vector<T> {\n" +
 				"  public T get(int i) {\n" +
@@ -1347,7 +1347,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test061() throws CoreException {
 		assertRequestedBindingFound(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" + 
 				"    /*start*/<T> X() {\n" + 
@@ -1365,7 +1365,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test062() throws CoreException {
 		assertRequestedBindingFound(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" + 
 				"  <T> /*start*/T[]/*end*/ foo(T[] a) {\n" + 
@@ -1384,7 +1384,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test063() throws CoreException {
 		assertRequestedBindingFound(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" + 
 				"	public static <T extends Y<? super T>> void foo(Z<T> z) {\n" + 
@@ -1414,7 +1414,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test064() throws CoreException {
 		assertRequestedBindingsFound(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"/*start1*/public class X {\n" + 
 				"	Object o= null;\n" + 
@@ -1423,7 +1423,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 				"		/*start2*/o = field/*end2*/;\n" + 
 				"	}\n" + 
 				"}/*end1*/\n",
-				"/P/p1/Y.java",
+				"/P/p1/Y.js",
 				"package p1;\n" +
 				"public class Y<T> {\n" + 
 				"}",
@@ -1442,7 +1442,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test065() throws CoreException {
 		assertRequestedBindingFound(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" + 
 				"  <T> void foo(/*start*/Y<T>/*end*/ y) {\n" + 
@@ -1464,7 +1464,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 		ICompilationUnit ownedWorkingcopy = null;
 		try {
 			// primary working copy with no method foo()
-			primaryWorkingCopy = getCompilationUnit("/P/p1/X.java");
+			primaryWorkingCopy = getCompilationUnit("/P/p1/X.js");
 			primaryWorkingCopy.becomeWorkingCopy(null/*no pb requestor*/, null/*no progress*/);
 			primaryWorkingCopy.getBuffer().setContents(
 				"package p1;\n" +
@@ -1475,7 +1475,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 			
 			// working copy for the test's owner with a method foo()
 			ownedWorkingcopy = getWorkingCopy(
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X {\n" +
 				"  void foo() {}\n" +
@@ -1487,7 +1487,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 			// create bindings
 			assertRequestedBindingFound(
 				new String[] {
-					"/P/p1/Y.java",
+					"/P/p1/Y.js",
 					"package p1;\n" +
 					"public class Y {\n" + 
 					"  void bar() {\n" +
@@ -1510,7 +1510,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void test067() throws CoreException {
 		ITypeBinding[] bindings = createTypeBindings(
 			new String[] {
-				"/P/p1/X.java",
+				"/P/p1/X.js",
 				"package p1;\n" +
 				"public class X<K, V> {\n" +
 				"  public class Y<K1, V1> {\n" +
@@ -1533,13 +1533,13 @@ public class BatchASTCreationTests extends AbstractASTTests {
 		try {
 			IJavaProject project = createJavaProject("P1", new String[] {""}, new String[] {"JCL15_LIB"}, "", "1.5");
 			addLibrary(project, "lib.jar", "src.zip", new String[] {
-				"/P1/p/X.java",
+				"/P1/p/X.js",
 				"package p;\n" +
 				"public class X<K, V> {\n" +
 				"  public static class Member<K1, V1> {\n" +
 				"  }\n" +
 				"}",
-				"/P1/p/Y.java",
+				"/P1/p/Y.js",
 				"package p;\n" +
 				"public class Y {\n" +
 				"  void foo(X.Member x) {\n" +
@@ -1548,7 +1548,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 			}, "1.5");
 			assertRequestedBindingFound(
 				new String[] {
-					"/P1/p1/Z.java",
+					"/P1/p1/Z.js",
 					"package p1;\n" +
 					"public class Z extends p.Y {\n" +
 					"  /*start*/p.X.Member/*end*/ field;\n" +
@@ -1567,13 +1567,13 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	 */
 	public void test069() throws CoreException {
 		this.workingCopies = createWorkingCopies(new String[] {
-			"/P/pkg/RefAnnoAndClassWithAnno.java",
+			"/P/pkg/RefAnnoAndClassWithAnno.js",
 			"package pkg;\n" +
 			"public class RefMyAnnoAndClassWithAnno {\n" + 
 			"	final Class anno = MyAnno.class;\n" + 
 			"	final Class withAnno = ClassWithAnnotation.class;\n" + 
 			"}",
-			"/P/pkg/MyAnno.java",
+			"/P/pkg/MyAnno.js",
 			"package pkg;\n" +
 			"public @interface MyAnno {\n" + 
 			"	public enum EnumColor{\n" + 
@@ -1581,7 +1581,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 			"	}\n" + 
 			"	EnumColor aEnum();\n" + 
 			"}",
-			"/P/pkg/ClassWithAnnotation.java",
+			"/P/pkg/ClassWithAnnotation.js",
 			"package pkg;\n" +
 			"import pkg.MyAnno.EnumColor;\n" + 
 			"@MyAnno(aEnum = EnumColor.BLUE)\n" + 
@@ -1602,11 +1602,11 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	 */
 	public void test070() throws CoreException {
 		MarkerInfo[] markerInfos = createMarkerInfos(new String[] {
-			"/P/p1/X.java",
+			"/P/p1/X.js",
 			"package p1;\n" +
 			"public class X extends /*start*/Y/*end*/ {\n" +
 			"}",
-			"/P/p1/Y.java",
+			"/P/p1/Y.js",
 			"package p1;\n" +
 			"public class Y {\n" +
 			"  static final int CONST = 2 + 3;\n" +
@@ -1630,11 +1630,11 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	 */
 	public void test071() throws CoreException {
 		final MarkerInfo[] markerInfos = createMarkerInfos(new String[] {
-			"/P/p1/X.java",
+			"/P/p1/X.js",
 			"package p1;\n" +
 			"public class X extends /*start*/Y/*end*/ {\n" +
 			"}",
-			"/P/p1/Y.java",
+			"/P/p1/Y.js",
 			"package p1;\n" +
 			"public class Y {\n" +
 			"  static final int CONST = 2 + 3;\n" +
@@ -1665,7 +1665,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	public void _test072() throws CoreException {
 		IVariableBinding[] bindings = createVariableBindings(
 			new String[] {
-				"/P/X.java",
+				"/P/X.js",
 				"public class X {\n" + 
 				"    void m() {\n" + 
 				"        Object o;\n" + 
@@ -1687,7 +1687,7 @@ public void test073() throws CoreException, IOException {
 		IJavaProject project = createJavaProject("P072", new String[] {}, Util.getJavaClassLibs(), "", "1.5");
 		ICompilationUnit compilationUnits[] = new ICompilationUnit[3]; 
 		compilationUnits[0] = getWorkingCopy(
-			"P072/X.java",
+			"P072/X.js",
 			"public class X {\n" +
 			"  @Override" +
 			"  public boolean equals(Object o) {\n" +
@@ -1695,11 +1695,11 @@ public void test073() throws CoreException, IOException {
 			"  }\n" +
 			"}");
 		compilationUnits[1] = getWorkingCopy(
-			"P072/Y.java",
+			"P072/Y.js",
 			"public class Y extends X {\n" +
 			"}");
 		compilationUnits[2] = getWorkingCopy(
-			"P072/Z.java",
+			"P072/Z.js",
 			"public class Z {\n" +
 			"  Y m;\n" +
 			"  boolean foo(Object p) {\n" +
@@ -1726,7 +1726,7 @@ public void test073() throws CoreException, IOException {
 public void test074_Bug155003() throws CoreException {
 	assertBindingCreated(
 		new String[] {
-			"/P/X.java",
+			"/P/X.js",
 			"public class X {\n" + 
 			"    public void foo() throws InterruptedException, IllegalMonitorStateException {\n" + 
 			"    }\n" + 
@@ -1744,7 +1744,7 @@ public void test074_Bug155003() throws CoreException {
 			"    	/*start*/foo()/*end*/;\n" + 
 			"    }\n" + 
 			"}";
-	this.workingCopies = createWorkingCopies(new String[] { "/P/X.java", content }, true /*resolve*/);
+	this.workingCopies = createWorkingCopies(new String[] { "/P/X.js", content }, true /*resolve*/);
 	ASTNode node = buildAST(content, this.workingCopies[0]);
 	assertEquals("Invalid node type!", ASTNode.METHOD_INVOCATION, node.getNodeType());
 	IBinding binding = resolveBinding(node);
@@ -1764,7 +1764,7 @@ public void test075_Bug155003() throws CoreException {
 		"		/*start*/foo(this)/*end*/;\n" + 
 		"	}\n" + 
 		"}";
-	this.workingCopies = createWorkingCopies(new String[] { "/P/X.java", content }, true /*resolve*/);
+	this.workingCopies = createWorkingCopies(new String[] { "/P/X.js", content }, true /*resolve*/);
 	ASTNode node = buildAST(content, this.workingCopies[0]);
 	assertEquals("Invalid node type!", ASTNode.METHOD_INVOCATION, node.getNodeType());
 	IBinding binding = resolveBinding(node);
@@ -1784,7 +1784,7 @@ public void test076_Bug155003() throws CoreException {
 		"		/*start*/bar(\"\", \"\")/*end*/;\n" + 
 		"	}\n" + 
 		"}";
-	this.workingCopies = createWorkingCopies(new String[] { "/P/X.java", content }, true /*resolve*/);
+	this.workingCopies = createWorkingCopies(new String[] { "/P/X.js", content }, true /*resolve*/);
 	ASTNode node = buildAST(content, this.workingCopies[0]);
 	assertEquals("Invalid node type!", ASTNode.METHOD_INVOCATION, node.getNodeType());
 	IBinding binding = resolveBinding(node);
@@ -1816,7 +1816,7 @@ public void test077_Bug163647() throws CoreException {
 		"    public void foo() throws CloneNotSupportedException, IllegalMonitorStateException, InterruptedException {\n" + 
 		"    }\n" + 
 		"}";
-	this.workingCopies = createWorkingCopies(new String[] { "/P/Test.java", content }, true /*resolve*/);
+	this.workingCopies = createWorkingCopies(new String[] { "/P/Test.js", content }, true /*resolve*/);
 	ASTNode node = buildAST(content, this.workingCopies[0]);
 	assertEquals("Invalid node type!", ASTNode.METHOD_INVOCATION, node.getNodeType());
 	IBinding binding = resolveBinding(node);
@@ -1834,7 +1834,7 @@ public void test078() throws CoreException, IOException {
 		IJavaProject project = createJavaProject("P078", new String[] {}, Util.getJavaClassLibs(), "", "1.5");
 		ICompilationUnit compilationUnits[] = new ICompilationUnit[1]; 
 		compilationUnits[0] = getWorkingCopy(
-			"P078/Test.java",
+			"P078/Test.js",
 			"import java.util.*;\n" + 
 			"public class Test {\n" + 
 			"        public interface ExtraIterator<T> extends Iterator {\n" + 
@@ -1889,7 +1889,7 @@ public void test079() throws CoreException, IOException {
 	try {
 		IJavaProject project = createJavaProject("P079", new String[] {"src"}, Util.getJavaClassLibs(), "bin", "1.5");
 		createFolder("/P079/src/test");
-		createFile("/P079/src/test/Test.java",
+		createFile("/P079/src/test/Test.js",
 				"package test;\n" +
 				"import java.util.*;\n" +
 				"interface ExtraIterator<T> extends Iterator {\n" + 
@@ -1908,7 +1908,7 @@ public void test079() throws CoreException, IOException {
 				"    }\n" + 
 				"}");
 		ICompilationUnit compilationUnits[] = new ICompilationUnit[1]; 
-		compilationUnits[0] = getCompilationUnit("P079", "src", "test", "Test.java");
+		compilationUnits[0] = getCompilationUnit("P079", "src", "test", "Test.js");
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setResolveBindings(true);
 		parser.setProject(project);
@@ -1945,7 +1945,7 @@ public void test080() throws CoreException, IOException {
 	try {
 		IJavaProject project = createJavaProject(projectName, new String[] {"src"}, Util.getJavaClassLibs(), "bin", "1.5");
 		createFolder("/" + projectName + "/src/test");
-		createFile("/" + projectName + "/src/test/Test.java",
+		createFile("/" + projectName + "/src/test/Test.js",
 				"package test;\n" +
 				"import java.util.*;\n" + 
 				"public class Test {\n" + 
@@ -1966,7 +1966,7 @@ public void test080() throws CoreException, IOException {
 				"        }\n" + 
 				"}");
 		ICompilationUnit compilationUnits[] = new ICompilationUnit[1]; 
-		compilationUnits[0] = getCompilationUnit(projectName, "src", "test", "Test.java");
+		compilationUnits[0] = getCompilationUnit(projectName, "src", "test", "Test.js");
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setResolveBindings(true);
 		parser.setProject(project);

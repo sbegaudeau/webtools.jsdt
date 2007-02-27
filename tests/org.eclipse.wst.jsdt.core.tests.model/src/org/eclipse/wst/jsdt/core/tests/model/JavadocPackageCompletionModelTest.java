@@ -97,7 +97,7 @@ protected void writeFiles(String[] sources) {
 		}
 		
 		// Store names info
-		String fullPathName = testDir.getAbsolutePath()+"\\"+typeName+".java";
+		String fullPathName = testDir.getAbsolutePath()+"\\"+typeName+".js";
 		System.out.println("Write file "+fullPathName);
 		String contents = null;
 		if (i==0) { // package-info
@@ -123,7 +123,7 @@ public void test001() throws JavaModelException {
 		" * 	@\n" +
 		" */\n" +
 		"package javadoc;\n";
-	completeInJavadoc("/Completion/src/javadoc/package-info.java", source, true, "@");
+	completeInJavadoc("/Completion/src/javadoc/package-info.js", source, true, "@");
 	assertResults(
 		"author[JAVADOC_BLOCK_TAG]{@author, null, null, author, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
 		"see[JAVADOC_BLOCK_TAG]{@see, null, null, see, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
@@ -145,7 +145,7 @@ public void test002() throws JavaModelException {
 		" * 	@deprec\n" +
 		" */\n" +
 		"package javadoc;\n";
-	completeInJavadoc("/Completion/src/javadoc/package-info.java", source, true, "@deprec");
+	completeInJavadoc("/Completion/src/javadoc/package-info.js", source, true, "@deprec");
 	assertResults("");
 }
 
@@ -156,7 +156,7 @@ public void test003() throws JavaModelException {
 		" * 	@a\n" +
 		" */\n" +
 		"package javadoc;\n";
-	completeInJavadoc("/Completion/src/javadoc/package-info.java", source, true, "@a");
+	completeInJavadoc("/Completion/src/javadoc/package-info.js", source, true, "@a");
 	assertResults(
 		"author[JAVADOC_BLOCK_TAG]{@author, null, null, author, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
@@ -169,7 +169,7 @@ public void test004() throws JavaModelException {
 		" * 	@ser\n" +
 		" */\n" +
 		"package javadoc;\n";
-	completeInJavadoc("/Completion/src/javadoc/package-info.java", source, true, "@ser");
+	completeInJavadoc("/Completion/src/javadoc/package-info.js", source, true, "@ser");
 	assertResults(
 		"serial[JAVADOC_BLOCK_TAG]{@serial, null, null, serial, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
@@ -182,7 +182,7 @@ public void test005() throws JavaModelException {
 		" * 	@since\n" +
 		" */\n" +
 		"package javadoc;\n";
-	completeInJavadoc("/Completion/src/javadoc/package-info.java", source, true, "@since");
+	completeInJavadoc("/Completion/src/javadoc/package-info.js", source, true, "@since");
 	assertResults(
 		"since[JAVADOC_BLOCK_TAG]{@since, null, null, since, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
@@ -194,7 +194,7 @@ public void test006() throws JavaModelException {
 		" * Completion on @ inside text\n" +
 		" */\n" +
 		"package javadoc;\n";
-	completeInJavadoc("/Completion/src/javadoc/package-info.java", source, true, "@");
+	completeInJavadoc("/Completion/src/javadoc/package-info.js", source, true, "@");
 	assertResults(
 		"link[JAVADOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
 		"docRoot[JAVADOC_INLINE_TAG]{{@docRoot}, null, null, docRoot, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
@@ -209,7 +209,7 @@ public void test007() throws JavaModelException {
 		" * Completion on @d inside text\n" +
 		" */\n" +
 		"package javadoc;\n";
-	completeInJavadoc("/Completion/src/javadoc/package-info.java", source, true, "@d");
+	completeInJavadoc("/Completion/src/javadoc/package-info.js", source, true, "@d");
 	assertResults(
 		"docRoot[JAVADOC_INLINE_TAG]{{@docRoot}, null, null, docRoot, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
@@ -225,7 +225,7 @@ public void test010() throws JavaModelException {
 		" * 	@see Obj\n" + 
 		" */\n" + 
 		"package javadoc.tags;\n";
-	completeInJavadoc("/Completion/src/javadoc/tags/package-info.java", source, true, "Obj");
+	completeInJavadoc("/Completion/src/javadoc/tags/package-info.js", source, true, "Obj");
 	assertResults(
 		"Object[TYPE_REF]{Object, java.lang, Ljava.lang.Object;, null, null, "+this.positions+R_DICUNR+"}"
 	);
@@ -238,7 +238,7 @@ public void test011() throws JavaModelException {
 		" * 	@see BasicTestRef\n" + 
 		" */\n" + 
 		"package javadoc.tags;\n";
-	completeInJavadoc("/Completion/src/javadoc/tags/package-info.java", source, true, "BasicTestRef");
+	completeInJavadoc("/Completion/src/javadoc/tags/package-info.js", source, true, "BasicTestRef");
 	assertResults(
 		"BasicTestReferences[TYPE_REF]{org.eclipse.wst.jsdt.core.tests.BasicTestReferences, org.eclipse.wst.jsdt.core.tests, Lorg.eclipse.wst.jsdt.core.tests.BasicTestReferences;, null, null, "+this.positions+R_DICNR+"}"
 	);
@@ -252,7 +252,7 @@ public void test012() throws JavaModelException {
 		" * 		Note: JDT-UI failed on this one\n" + 
 		" */\n" + 
 		"package javadoc.tags;\n";
-	completeInJavadoc("/Completion/src/javadoc/tags/package-info.java", source, true, "org.eclipse.wst.jsdt.core.tests.BasicTestRef");
+	completeInJavadoc("/Completion/src/javadoc/tags/package-info.js", source, true, "org.eclipse.wst.jsdt.core.tests.BasicTestRef");
 	assertResults(
 		"BasicTestReferences[TYPE_REF]{org.eclipse.wst.jsdt.core.tests.BasicTestReferences, org.eclipse.wst.jsdt.core.tests, Lorg.eclipse.wst.jsdt.core.tests.BasicTestReferences;, null, null, "+this.positions+R_DICQNR+"}"
 	);
@@ -266,7 +266,7 @@ public void test013() throws JavaModelException {
 		" * 		Note: JDT-UI fails on this one\n" + 
 		" */\n" + 
 		"package javadoc.tags;\n";
-	completeInJavadoc("/Completion/src/javadoc/tags/package-info.java", source, true, "java.la");
+	completeInJavadoc("/Completion/src/javadoc/tags/package-info.js", source, true, "java.la");
 	assertResults(
 		"java.lang.annotation[PACKAGE_REF]{java.lang.annotation, java.lang.annotation, null, null, null, "+this.positions+R_DICQNR+"}\n" + 
 		"java.lang[PACKAGE_REF]{java.lang, java.lang, null, null, null, "+this.positions+R_DICQNR+"}"
@@ -280,7 +280,7 @@ public void test014() throws JavaModelException {
 		" * 	@see pack.Bin\n" + 
 		" */\n" + 
 		"package javadoc.tags;\n";
-	completeInJavadoc("/Completion/src/javadoc/tags/package-info.java", source, true, "pack.Bin");
+	completeInJavadoc("/Completion/src/javadoc/tags/package-info.js", source, true, "pack.Bin");
 	assertSortedResults(
 		"Bin1[TYPE_REF]{pack.Bin1, pack, Lpack.Bin1;, null, null, "+this.positions+R_DICQNR+"}\n" + 
 		"Bin2[TYPE_REF]{pack.Bin2, pack, Lpack.Bin2;, null, null, "+this.positions+R_DICQNR+"}\n" + 
@@ -296,7 +296,7 @@ public void test015() throws JavaModelException {
 		" * 		Note: completion list shoud not include base types.\n" + 
 		" */\n" + 
 		"package javadoc.tags;\n";
-	completeInJavadoc("/Completion/src/javadoc/tags/package-info.java", source, true, "I");
+	completeInJavadoc("/Completion/src/javadoc/tags/package-info.js", source, true, "I");
 	assertSortedResults(
 		"IllegalMonitorStateException[TYPE_REF]{IllegalMonitorStateException, java.lang, Ljava.lang.IllegalMonitorStateException;, null, null, "+this.positions+R_DICUNR+"}\n" + 
 		"InterruptedException[TYPE_REF]{InterruptedException, java.lang, Ljava.lang.InterruptedException;, null, null, "+this.positions+R_DICUNR+"}"
@@ -313,7 +313,7 @@ public void test020() throws JavaModelException {
 		" * 	@see BasicTestReferences#FIE\n" + 
 		" */\n" + 
 		"package javadoc.tags;\n";
-	completeInJavadoc("/Completion/src/javadoc/tags/package-info.java", source, true, "FIE");
+	completeInJavadoc("/Completion/src/javadoc/tags/package-info.js", source, true, "FIE");
 	assertResults("");
 }
 
@@ -324,7 +324,7 @@ public void test021() throws JavaModelException {
 		" * 	@see org.eclipse.wst.jsdt.core.tests.BasicTestReferences#FIE\n" + 
 		" */\n" + 
 		"package javadoc.tags;\n";
-	completeInJavadoc("/Completion/src/javadoc/tags/package-info.java", source, true, "FIE");
+	completeInJavadoc("/Completion/src/javadoc/tags/package-info.js", source, true, "FIE");
 	assertResults(
 		"FIELD[FIELD_REF]{FIELD, Lorg.eclipse.wst.jsdt.core.tests.BasicTestReferences;, I, FIELD, null, "+this.positions+R_DICNR+"}"
 	);
@@ -332,13 +332,13 @@ public void test021() throws JavaModelException {
 
 public void test022() throws JavaModelException {
 	String[] sources = {
-		"/Completion/src/javadoc/tags/package-info.java",
+		"/Completion/src/javadoc/tags/package-info.js",
 			"/**\n" + 
 			" * Completion after:\n" + 
 			" * 	@see OtherTypes#bar\n" + 
 			" */\n" + 
 			"package javadoc.tags;\n",
-		"/Completion/src/javadoc/tags/OtherTypes.java",
+		"/Completion/src/javadoc/tags/OtherTypes.js",
 			"package javadoc.tags;\n" + 
 			"public class OtherTypes {\n" + 
 			"	int bar;\n" + 
@@ -357,7 +357,7 @@ public void test023() throws JavaModelException {
 		" * 	@see BasicTestReferences#\n" + 
 		" */\n" + 
 		"package javadoc.tags;\n";
-	completeInJavadoc("/Completion/src/javadoc/tags/package-info.java", source, true, "#", 0); // empty token
+	completeInJavadoc("/Completion/src/javadoc/tags/package-info.js", source, true, "#", 0); // empty token
 	assertResults("");
 }
 
@@ -368,7 +368,7 @@ public void test024() throws JavaModelException {
 		" * 	@see org.eclipse.wst.jsdt.core.tests.BasicTestReferences#\n" + 
 		" */\n" + 
 		"package javadoc.tags;\n";
-	completeInJavadoc("/Completion/src/javadoc/tags/package-info.java", source, true, "#", 0); // empty token
+	completeInJavadoc("/Completion/src/javadoc/tags/package-info.js", source, true, "#", 0); // empty token
 	assertResults(
 		"FIELD[FIELD_REF]{FIELD, Lorg.eclipse.wst.jsdt.core.tests.BasicTestReferences;, I, FIELD, null, "+this.positions+R_DICNR+"}\n" + 
 		"wait[METHOD_REF]{wait(long, int), Ljava.lang.Object;, (JI)V, wait, (millis, nanos), "+this.positions+R_DICNRNS+"}\n" + 
@@ -388,13 +388,13 @@ public void test024() throws JavaModelException {
 
 public void test025() throws JavaModelException {
 	String[] sources = {
-		"/Completion/src/javadoc/tags/package-info.java",
+		"/Completion/src/javadoc/tags/package-info.js",
 			"/**\n" + 
 			" * Completion after:\n" + 
 			" * 	@see OtherTypes#\n" + 
 			" */\n" + 
 			"package javadoc.tags;\n",
-		"/Completion/src/javadoc/tags/OtherTypes.java",
+		"/Completion/src/javadoc/tags/OtherTypes.js",
 			"package javadoc.tags;\n" + 
 			"public class OtherTypes {\n" + 
 			"	int foo;\n" + 
@@ -425,13 +425,13 @@ public void test025() throws JavaModelException {
  */
 public void test030() throws JavaModelException {
 	String[] sources = {
-		"/Completion/src/javadoc/tags/package-info.java",
+		"/Completion/src/javadoc/tags/package-info.js",
 			"/**\n" + 
 			" * Completion after:\n" + 
 			" * 	@see OtherTypes#meth\n" + 
 			" */\n" + 
 			"package javadoc.tags;",
-		"/Completion/src/javadoc/tags/OtherTypes.java",
+		"/Completion/src/javadoc/tags/OtherTypes.js",
 			"package javadoc.tags;\n" + 
 			"public class OtherTypes {\n" + 
 			"	void method() {};\n" +
@@ -444,13 +444,13 @@ public void test030() throws JavaModelException {
 }
 public void test031() throws JavaModelException {
 	String[] sources = {
-		"/Completion/src/javadoc/tags/package-info.java",
+		"/Completion/src/javadoc/tags/package-info.js",
 			"/**\n" + 
 			" * Completion after:\n" + 
 			" * 	@see OtherTypes#\n" + 
 			" */\n" + 
 			"package javadoc.tags;",
-		"/Completion/src/javadoc/tags/OtherTypes.java",
+		"/Completion/src/javadoc/tags/OtherTypes.js",
 			"package javadoc.tags;\n" + 
 			"public class OtherTypes {\n" + 
 			"	void method() {};\n" +
@@ -481,13 +481,13 @@ public void test031() throws JavaModelException {
  */
 public void test040() throws JavaModelException {
 	String[] sources = {
-		"/Completion/src/javadoc/tags/package-info.java",
+		"/Completion/src/javadoc/tags/package-info.js",
 			"/**\n" + 
 			" * Completion after:\n" + 
 			" * 	@see OtherTypes#O\n" + 
 			" */\n" + 
 			"package javadoc.tags;\n",
-		"/Completion/src/javadoc/tags/OtherTypes.java",
+		"/Completion/src/javadoc/tags/OtherTypes.js",
 			"package javadoc.tags;\n" + 
 			"public class OtherTypes {\n" + 
 			"	void method() {};\n" +
@@ -501,13 +501,13 @@ public void test040() throws JavaModelException {
 }
 public void test041() throws JavaModelException {
 	String[] sources = {
-		"/Completion/src/javadoc/tags/package-info.java",
+		"/Completion/src/javadoc/tags/package-info.js",
 			"/**\n" + 
 			" * Completion after:\n" + 
 			" * 	@see OtherTypes#O\n" + 
 			" */\n" + 
 			"package javadoc.tags;\n",
-		"/Completion/src/javadoc/tags/OtherTypes.java",
+		"/Completion/src/javadoc/tags/OtherTypes.js",
 			"package javadoc.tags;\n" + 
 			"public class OtherTypes {\n" + 
 			"	OtherTypes(int x) {};\n" +

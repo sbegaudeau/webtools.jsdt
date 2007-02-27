@@ -152,7 +152,7 @@ public IJavaElement generateHandle(IJavaElement original, String rename, IJavaEl
 				case IJavaElement.TYPE :
 					if (isMainType(original, container)) {
 						//the cu has been renamed as well
-						container = ((IPackageFragment) container.getParent()).getCompilationUnit(name + ".java");
+						container = ((IPackageFragment) container.getParent()).getCompilationUnit(name + ".js");
 					}
 					return ((ICompilationUnit) container).getType(name);
 				default :

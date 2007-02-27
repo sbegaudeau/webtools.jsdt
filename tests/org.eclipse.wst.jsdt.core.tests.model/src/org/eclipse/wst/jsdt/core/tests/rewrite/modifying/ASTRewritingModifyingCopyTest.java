@@ -55,7 +55,7 @@ public class ASTRewritingModifyingCopyTest extends ASTRewritingModifyingTest {
 		buf.append("class Z {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createCU(cu, false);
 		
@@ -105,7 +105,7 @@ public class ASTRewritingModifyingCopyTest extends ASTRewritingModifyingTest {
 		buf.append("class Z {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createCU(cu, false);
 		
@@ -153,7 +153,7 @@ public class ASTRewritingModifyingCopyTest extends ASTRewritingModifyingTest {
 		buf.append("class Y {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createCU(cu, false);
 		
@@ -200,7 +200,7 @@ public class ASTRewritingModifyingCopyTest extends ASTRewritingModifyingTest {
 		buf.append("class Y {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createCU(cu, false);
 		
@@ -248,7 +248,7 @@ public class ASTRewritingModifyingCopyTest extends ASTRewritingModifyingTest {
 		buf.append("class Y {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createCU(cu, false);
 		
@@ -298,7 +298,7 @@ public class ASTRewritingModifyingCopyTest extends ASTRewritingModifyingTest {
 		buf.append("        bar3();\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createCU(cu, false);
 		
@@ -341,7 +341,7 @@ public class ASTRewritingModifyingCopyTest extends ASTRewritingModifyingTest {
 		IPackageFragment pack1= fSourceFolder.createPackageFragment("test", false, null);
 		StringBuffer buf= new StringBuffer();
 		buf.append("package test; public class Test { }");
-		ICompilationUnit cu= pack1.createCompilationUnit("Test.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("Test.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createCU(cu, false);
 		
@@ -398,7 +398,7 @@ public class ASTRewritingModifyingCopyTest extends ASTRewritingModifyingTest {
 //		buf.append("    \n");
 //		buf.append("    }\n");
 //		buf.append("}\n");
-//		ICompilationUnit cu= pack1.createCompilationUnit("X.java", buf.toString(), false, null);
+//		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 //		
 //		CompilationUnit astRoot= parseCompilationUnit(cu, false);
 //		

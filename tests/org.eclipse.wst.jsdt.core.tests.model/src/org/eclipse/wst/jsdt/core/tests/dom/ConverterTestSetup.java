@@ -22,6 +22,7 @@ import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
+import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraries;
 import org.eclipse.wst.jsdt.core.dom.*;
 import org.eclipse.wst.jsdt.core.tests.util.Util;
 
@@ -43,7 +44,8 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 	}
 
 	protected IPath getConverterJCLPath(String compliance) {
-		return new Path(getExternalPath() + "converterJclMin" + compliance + ".jar"); //$NON-NLS-1$
+//		return new Path(getExternalPath() + "converterJclMin" + compliance + ".jar"); //$NON-NLS-1$
+		return new Path(SystemLibraries.getLibraryPath("system.js"));
 	}
 
 	protected IPath getConverterJCLSourcePath() {
@@ -512,7 +514,7 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 	}
 
 	protected ASTNode getASTNode(org.eclipse.wst.jsdt.core.dom.CompilationUnit unit, int typeIndex, int bodyIndex) {
-		return (ASTNode) ((AbstractTypeDeclaration)unit.types().get(typeIndex)).bodyDeclarations().get(bodyIndex);
+		return (ASTNode) unit.statements().get(bodyIndex);
 	}
 
 	protected ASTNode getASTNode(org.eclipse.wst.jsdt.core.dom.CompilationUnit unit, int typeIndex) {

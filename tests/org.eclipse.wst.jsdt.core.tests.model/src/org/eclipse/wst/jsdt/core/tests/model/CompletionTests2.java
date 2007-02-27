@@ -200,7 +200,7 @@ public void testBug29832() throws Exception {
 			new String[]{"/P1"},
 			"bin");
 		this.createFile(
-			"/P2/src/X.java",
+			"/P2/src/X.js",
 			"public class X {\n"+
 			"  ZZZ z;\n"+
 			"}");
@@ -209,7 +209,7 @@ public void testBug29832() throws Exception {
 		
 		// do completion
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "X.java");
+		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "X.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "ZZZ";
@@ -258,7 +258,7 @@ public void testBug29832() throws Exception {
 		
 		File pz = this.createDirectory(src, "pz");
 		
-		this.createFile(pz, "ZZZ.java",
+		this.createFile(pz, "ZZZ.js",
 			"package pz;\n" +
 			"public class ZZZ {\n" +
 			"}");
@@ -325,7 +325,7 @@ public void testBug33560() throws Exception {
 			new String[]{"/P2"},
 			"bin");
 		this.createFile(
-			"/P3/src/X.java",
+			"/P3/src/X.js",
 			"public class X {\n"+
 			"  ZZZ z;\n"+
 			"}");
@@ -334,7 +334,7 @@ public void testBug33560() throws Exception {
 		
 		// do completion
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("P3", "src", "", "X.java");
+		ICompilationUnit cu= getCompilationUnit("P3", "src", "", "X.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "ZZZ";
@@ -383,7 +383,7 @@ public void testBug33560() throws Exception {
 		
 		File pz = this.createDirectory(src, "pz");
 		
-		this.createFile(pz, "ZZZ.java",
+		this.createFile(pz, "ZZZ.js",
 			"package pz;\n" +
 			"public class ZZZ {\n" +
 			"}");
@@ -430,7 +430,7 @@ public void testBug79288() throws Exception {
 		
 		this.createFolder("/P1/src/a");
 		this.createFile(
-				"/P1/src/a/XX1.java",
+				"/P1/src/a/XX1.js",
 				"package a;\n"+
 				"public class XX1 {\n"+
 				"}");
@@ -445,7 +445,7 @@ public void testBug79288() throws Exception {
 		
 		this.createFolder("/P2/src/b");
 		this.createFile(
-				"/P2/src/b/XX2.java",
+				"/P2/src/b/XX2.js",
 				"package b;\n"+
 				"public class XX2 {\n"+
 				"}");
@@ -459,7 +459,7 @@ public void testBug79288() throws Exception {
 			"bin");
 		
 		this.createFile(
-				"/P3/src/YY.java",
+				"/P3/src/YY.js",
 				"public class YY {\n"+
 				"  vois foo(){\n"+
 				"    XX\n"+
@@ -470,7 +470,7 @@ public void testBug79288() throws Exception {
 		
 		// do completion
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("P3", "src", "", "YY.java");
+		ICompilationUnit cu= getCompilationUnit("P3", "src", "", "YY.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "XX";
@@ -503,7 +503,7 @@ public void testBug91772() throws Exception {
 		
 		this.createFolder("/P1/src/a");
 		this.createFile(
-				"/P1/src/a/XX1.java",
+				"/P1/src/a/XX1.js",
 				"package a;\n"+
 				"public class XX1 {\n"+
 				"}");
@@ -523,7 +523,7 @@ public void testBug91772() throws Exception {
 		
 		this.createFolder("/P2/src/b");
 		this.createFile(
-				"/P2/src/b/XX2.java",
+				"/P2/src/b/XX2.js",
 				"package b;\n"+
 				"public class XX2 {\n"+
 				"}");
@@ -537,7 +537,7 @@ public void testBug91772() throws Exception {
 			"bin");
 		
 		this.createFile(
-				"/P3/src/YY.java",
+				"/P3/src/YY.js",
 				"public class YY {\n"+
 				"  vois foo(){\n"+
 				"    XX\n"+
@@ -548,7 +548,7 @@ public void testBug91772() throws Exception {
 		
 		// do completion
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("P3", "src", "", "YY.java");
+		ICompilationUnit cu= getCompilationUnit("P3", "src", "", "YY.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "XX";
@@ -596,14 +596,14 @@ public void testBug93891() throws Exception {
 		
 		this.createFolder("/P1/src/a");
 		this.createFile(
-				"/P1/src/a/XX1.java",
+				"/P1/src/a/XX1.js",
 				"package a;\n"+
 				"public class XX1 {\n"+
 				"}");
 		
 		this.createFolder("/P1/src/b");
 		this.createFile(
-				"/P1/src/b/XX2.java",
+				"/P1/src/b/XX2.js",
 				"package b;\n"+
 				"public class XX2 {\n"+
 				"}");
@@ -623,7 +623,7 @@ public void testBug93891() throws Exception {
 		
 		this.createFolder("/P2/src/b");
 		this.createFile(
-				"/P2/src/YY.java",
+				"/P2/src/YY.js",
 				"public class YY {\n"+
 				"  void foo() {\n"+
 				"    XX\n"+
@@ -634,7 +634,7 @@ public void testBug93891() throws Exception {
 		
 		// do completion
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.java");
+		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "XX";
@@ -682,14 +682,14 @@ public void testAccessRestriction1() throws Exception {
 		
 		this.createFolder("/P1/src/a");
 		this.createFile(
-				"/P1/src/a/XX1.java",
+				"/P1/src/a/XX1.js",
 				"package a;\n"+
 				"public class XX1 {\n"+
 				"}");
 
 		this.createFolder("/P1/src/b");
 		this.createFile(
-				"/P1/src/b/XX2.java",
+				"/P1/src/b/XX2.js",
 				"package b;\n"+
 				"public class XX2 {\n"+
 				"}");
@@ -702,7 +702,7 @@ public void testAccessRestriction1() throws Exception {
 			new String[]{"/P1"},
 			"bin");
 		this.createFile(
-			"/P2/src/YY.java",
+			"/P2/src/YY.js",
 			"public class YY {\n"+
 			"  void foo() {\n"+
 			"    XX\n"+
@@ -713,7 +713,7 @@ public void testAccessRestriction1() throws Exception {
 		
 		// do completion
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.java");
+		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "XX";
@@ -756,14 +756,14 @@ public void testAccessRestriction2() throws Exception {
 		
 		this.createFolder("/P1/src/a");
 		this.createFile(
-				"/P1/src/a/XX1.java",
+				"/P1/src/a/XX1.js",
 				"package a;\n"+
 				"public class XX1 {\n"+
 				"}");
 
 		this.createFolder("/P1/src/b");
 		this.createFile(
-				"/P1/src/b/XX2.java",
+				"/P1/src/b/XX2.js",
 				"package b;\n"+
 				"public class XX2 {\n"+
 				"}");
@@ -785,7 +785,7 @@ public void testAccessRestriction2() throws Exception {
 			null,
 			"1.4");
 		this.createFile(
-			"/P2/src/YY.java",
+			"/P2/src/YY.js",
 			"public class YY {\n"+
 			"  void foo() {\n"+
 			"    XX\n"+
@@ -796,7 +796,7 @@ public void testAccessRestriction2() throws Exception {
 		
 		// do completion
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.java");
+		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "XX";
@@ -837,14 +837,14 @@ public void testAccessRestriction3() throws Exception {
 		
 		this.createFolder("/P1/src/a");
 		this.createFile(
-				"/P1/src/a/XX1.java",
+				"/P1/src/a/XX1.js",
 				"package a;\n"+
 				"public class XX1 {\n"+
 				"}");
 
 		this.createFolder("/P1/src/b");
 		this.createFile(
-				"/P1/src/b/XX2.java",
+				"/P1/src/b/XX2.js",
 				"package b;\n"+
 				"public class XX2 {\n"+
 				"}");
@@ -866,7 +866,7 @@ public void testAccessRestriction3() throws Exception {
 			null,
 			"1.4");
 		this.createFile(
-			"/P2/src/YY.java",
+			"/P2/src/YY.js",
 			"public class YY {\n"+
 			"  void foo() {\n"+
 			"    XX\n"+
@@ -877,7 +877,7 @@ public void testAccessRestriction3() throws Exception {
 		
 		// do completion
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.java");
+		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "XX";
@@ -919,14 +919,14 @@ public void testAccessRestriction4() throws Exception {
 		
 		this.createFolder("/P1/src/a");
 		this.createFile(
-				"/P1/src/a/XX1.java",
+				"/P1/src/a/XX1.js",
 				"package a;\n"+
 				"public class XX1 {\n"+
 				"}");
 
 		this.createFolder("/P1/src/b");
 		this.createFile(
-				"/P1/src/b/XX2.java",
+				"/P1/src/b/XX2.js",
 				"package b;\n"+
 				"public class XX2 {\n"+
 				"}");
@@ -948,7 +948,7 @@ public void testAccessRestriction4() throws Exception {
 			null,
 			"1.4");
 		this.createFile(
-			"/P2/src/YY.java",
+			"/P2/src/YY.js",
 			"public class YY {\n"+
 			"  void foo() {\n"+
 			"    XX\n"+
@@ -959,7 +959,7 @@ public void testAccessRestriction4() throws Exception {
 		
 		// do completion
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.java");
+		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "XX";
@@ -1000,14 +1000,14 @@ public void testAccessRestriction5() throws Exception {
 		
 		this.createFolder("/P1/src/a");
 		this.createFile(
-				"/P1/src/a/XX1.java",
+				"/P1/src/a/XX1.js",
 				"package a;\n"+
 				"public class XX1 {\n"+
 				"}");
 
 		this.createFolder("/P1/src/b");
 		this.createFile(
-				"/P1/src/b/XX2.java",
+				"/P1/src/b/XX2.js",
 				"package b;\n"+
 				"public class XX2 {\n"+
 				"}");
@@ -1029,7 +1029,7 @@ public void testAccessRestriction5() throws Exception {
 			null,
 			"1.4");
 		this.createFile(
-			"/P2/src/YY.java",
+			"/P2/src/YY.js",
 			"public class YY {\n"+
 			"  void foo() {\n"+
 			"    XX\n"+
@@ -1040,7 +1040,7 @@ public void testAccessRestriction5() throws Exception {
 		
 		// do completion
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.java");
+		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "XX";
@@ -1080,21 +1080,21 @@ public void testAccessRestriction6() throws Exception {
 		
 		this.createFolder("/P1/src/a");
 		this.createFile(
-				"/P1/src/a/XX1.java",
+				"/P1/src/a/XX1.js",
 				"package a;\n"+
 				"public class XX1 {\n"+
 				"}");
 
 		this.createFolder("/P1/src/b");
 		this.createFile(
-				"/P1/src/b/XX2.java",
+				"/P1/src/b/XX2.js",
 				"package b;\n"+
 				"public class XX2 {\n"+
 				"}");
 		
 		this.createFolder("/P1/src/c");
 		this.createFile(
-				"/P1/src/c/XX3.java",
+				"/P1/src/c/XX3.js",
 				"package c;\n"+
 				"public class XX3 {\n"+
 				"}");
@@ -1134,7 +1134,7 @@ public void testAccessRestriction6() throws Exception {
 			"1.4");
 		
 		this.createFile(
-			"/P3/src/YY.java",
+			"/P3/src/YY.js",
 			"public class YY {\n"+
 			"  void foo() {\n"+
 			"    XX\n"+
@@ -1145,7 +1145,7 @@ public void testAccessRestriction6() throws Exception {
 		
 		// do completion
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("P3", "src", "", "YY.java");
+		ICompilationUnit cu= getCompilationUnit("P3", "src", "", "YY.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "XX";
@@ -1186,14 +1186,14 @@ public void testAccessRestriction7() throws Exception {
 		
 		this.createFolder("/P1/src/a");
 		this.createFile(
-				"/P1/src/a/XX1.java",
+				"/P1/src/a/XX1.js",
 				"package a;\n"+
 				"public class XX1 {\n"+
 				"}");
 
 		this.createFolder("/P1/src/b");
 		this.createFile(
-				"/P1/src/b/XX2.java",
+				"/P1/src/b/XX2.js",
 				"package b;\n"+
 				"public class XX2 {\n"+
 				"}");
@@ -1215,7 +1215,7 @@ public void testAccessRestriction7() throws Exception {
 			null,
 			"1.4");
 		this.createFile(
-				"/P2/src/YY.java",
+				"/P2/src/YY.js",
 				"public class YY {\n"+
 				"  void foo() {\n"+
 				"    XX\n"+
@@ -1243,7 +1243,7 @@ public void testAccessRestriction7() throws Exception {
 		
 		// do completion
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.java");
+		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "XX";
@@ -1284,14 +1284,14 @@ public void testAccessRestriction8() throws Exception {
 		
 		this.createFolder("/P1/src/a");
 		this.createFile(
-				"/P1/src/a/XX1.java",
+				"/P1/src/a/XX1.js",
 				"package a;\n"+
 				"public class XX1 {\n"+
 				"}");
 
 		this.createFolder("/P1/src/b");
 		this.createFile(
-				"/P1/src/b/XX2.java",
+				"/P1/src/b/XX2.js",
 				"package b;\n"+
 				"public class XX2 {\n"+
 				"}");
@@ -1313,7 +1313,7 @@ public void testAccessRestriction8() throws Exception {
 			null,
 			"1.4");
 		this.createFile(
-				"/P2/src/YY.java",
+				"/P2/src/YY.js",
 				"public class YY {\n"+
 				"  void foo() {\n"+
 				"    XX\n"+
@@ -1341,7 +1341,7 @@ public void testAccessRestriction8() throws Exception {
 		
 		// do completion
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.java");
+		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "XX";
@@ -1383,14 +1383,14 @@ public void testAccessRestriction9() throws Exception {
 		
 		this.createFolder("/P1/src/p11");
 		this.createFile(
-				"/P1/src/p11/XX11.java",
+				"/P1/src/p11/XX11.js",
 				"package p11;\n"+
 				"public class XX11 {\n"+
 				"}");
 		
 		this.createFolder("/P1/src/p12");
 		this.createFile(
-				"/P1/src/p12/XX12.java",
+				"/P1/src/p12/XX12.js",
 				"package p12;\n"+
 				"public class XX12 {\n"+
 				"}");
@@ -1414,14 +1414,14 @@ public void testAccessRestriction9() throws Exception {
 		
 		this.createFolder("/P2/src/p21");
 		this.createFile(
-				"/P2/src/p21/XX21.java",
+				"/P2/src/p21/XX21.js",
 				"package p21;\n"+
 				"public class XX21 {\n"+
 				"}");
 		
 		this.createFolder("/P2/src/p22");
 		this.createFile(
-				"/P2/src/p22/XX22.java",
+				"/P2/src/p22/XX22.js",
 				"package p22;\n"+
 				"public class XX22 {\n"+
 				"}");
@@ -1445,14 +1445,14 @@ public void testAccessRestriction9() throws Exception {
 		
 		this.createFolder("/P3/src/p31");
 		this.createFile(
-				"/P3/src/p31/XX31.java",
+				"/P3/src/p31/XX31.js",
 				"package p31;\n"+
 				"public class XX31 {\n"+
 				"}");
 		
 		this.createFolder("/P3/src/p32");
 		this.createFile(
-				"/P3/src/p32/XX32.java",
+				"/P3/src/p32/XX32.js",
 				"package p32;\n"+
 				"public class XX32 {\n"+
 				"}");
@@ -1475,7 +1475,7 @@ public void testAccessRestriction9() throws Exception {
 				"1.4");
 		
 		this.createFile(
-				"/PX/src/X.java",
+				"/PX/src/X.js",
 				"public class X {\n"+
 				"  void foo() {\n"+
 				"    XX\n"+
@@ -1486,7 +1486,7 @@ public void testAccessRestriction9() throws Exception {
 		
 		// do completion
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("PX", "src", "", "X.java");
+		ICompilationUnit cu= getCompilationUnit("PX", "src", "", "X.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "XX";
@@ -1531,14 +1531,14 @@ public void testAccessRestriction10() throws Exception {
 		
 		this.createFolder("/P1/src/p11");
 		this.createFile(
-				"/P1/src/p11/XX11.java",
+				"/P1/src/p11/XX11.js",
 				"package p11;\n"+
 				"public class XX11 {\n"+
 				"}");
 		
 		this.createFolder("/P1/src/p12");
 		this.createFile(
-				"/P1/src/p12/XX12.java",
+				"/P1/src/p12/XX12.js",
 				"package p12;\n"+
 				"public class XX12 {\n"+
 				"}");
@@ -1562,14 +1562,14 @@ public void testAccessRestriction10() throws Exception {
 		
 		this.createFolder("/P2/src/p21");
 		this.createFile(
-				"/P2/src/p21/XX21.java",
+				"/P2/src/p21/XX21.js",
 				"package p21;\n"+
 				"public class XX21 {\n"+
 				"}");
 		
 		this.createFolder("/P2/src/p22");
 		this.createFile(
-				"/P2/src/p22/XX22.java",
+				"/P2/src/p22/XX22.js",
 				"package p22;\n"+
 				"public class XX22 {\n"+
 				"}");
@@ -1593,14 +1593,14 @@ public void testAccessRestriction10() throws Exception {
 		
 		this.createFolder("/P3/src/p31");
 		this.createFile(
-				"/P3/src/p31/XX31.java",
+				"/P3/src/p31/XX31.js",
 				"package p31;\n"+
 				"public class XX31 {\n"+
 				"}");
 		
 		this.createFolder("/P3/src/p32");
 		this.createFile(
-				"/P3/src/p32/XX32.java",
+				"/P3/src/p32/XX32.js",
 				"package p32;\n"+
 				"public class XX32 {\n"+
 				"}");
@@ -1623,7 +1623,7 @@ public void testAccessRestriction10() throws Exception {
 				"1.4");
 		
 		this.createFile(
-				"/PX/src/X.java",
+				"/PX/src/X.js",
 				"public class X {\n"+
 				"  void foo() {\n"+
 				"    XX\n"+
@@ -1634,7 +1634,7 @@ public void testAccessRestriction10() throws Exception {
 		
 		// do completion
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("PX", "src", "", "X.java");
+		ICompilationUnit cu= getCompilationUnit("PX", "src", "", "X.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "XX";
@@ -1681,14 +1681,14 @@ public void testAccessRestriction11() throws Exception {
 		
 		this.createFolder("/P1/src/x/y/z/p11");
 		this.createFile(
-				"/P1/src/x/y/z/p11/XX11.java",
+				"/P1/src/x/y/z/p11/XX11.js",
 				"package x.y.z.p11;\n"+
 				"public class XX11 {\n"+
 				"}");
 		
 		this.createFolder("/P1/src/x/y/z/p12");
 		this.createFile(
-				"/P1/src/x/y/z/p12/XX12.java",
+				"/P1/src/x/y/z/p12/XX12.js",
 				"package x.y.z.p12;\n"+
 				"public class XX12 {\n"+
 				"}");
@@ -1712,14 +1712,14 @@ public void testAccessRestriction11() throws Exception {
 		
 		this.createFolder("/P2/src/x/y/z/p21");
 		this.createFile(
-				"/P2/src/x/y/z/p21/XX21.java",
+				"/P2/src/x/y/z/p21/XX21.js",
 				"package x.y.z.p21;\n"+
 				"public class XX21 {\n"+
 				"}");
 		
 		this.createFolder("/P2/src/x/y/z/p22");
 		this.createFile(
-				"/P2/src/x/y/z/p22/XX22.java",
+				"/P2/src/x/y/z/p22/XX22.js",
 				"package x.y.z.p22;\n"+
 				"public class XX22 {\n"+
 				"}");
@@ -1743,14 +1743,14 @@ public void testAccessRestriction11() throws Exception {
 		
 		this.createFolder("/P3/src/x/y/z/p31");
 		this.createFile(
-				"/P3/src/x/y/z/p31/XX31.java",
+				"/P3/src/x/y/z/p31/XX31.js",
 				"package x.y.z.p31;\n"+
 				"public class XX31 {\n"+
 				"}");
 		
 		this.createFolder("/P3/src/x/y/z/p32");
 		this.createFile(
-				"/P3/src/x/y/z/p32/XX32.java",
+				"/P3/src/x/y/z/p32/XX32.js",
 				"package x.y.z.p32;\n"+
 				"public class XX32 {\n"+
 				"}");
@@ -1773,7 +1773,7 @@ public void testAccessRestriction11() throws Exception {
 				"1.4");
 		
 		this.createFile(
-				"/PX/src/X.java",
+				"/PX/src/X.js",
 				"public class X {\n"+
 				"  void foo() {\n"+
 				"    XX\n"+
@@ -1784,7 +1784,7 @@ public void testAccessRestriction11() throws Exception {
 		
 		// do completion
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("PX", "src", "", "X.java");
+		ICompilationUnit cu= getCompilationUnit("PX", "src", "", "X.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "XX";
@@ -1829,14 +1829,14 @@ public void testAccessRestriction12() throws Exception {
 		
 		this.createFolder("/P1/src/p11");
 		this.createFile(
-				"/P1/src/p11/XX11.java",
+				"/P1/src/p11/XX11.js",
 				"package p11;\n"+
 				"public class XX11 {\n"+
 				"}");
 		
 		this.createFolder("/P1/src/p12");
 		this.createFile(
-				"/P1/src/p12/XX12.java",
+				"/P1/src/p12/XX12.js",
 				"package p12;\n"+
 				"public class XX12 {\n"+
 				"}");
@@ -1860,14 +1860,14 @@ public void testAccessRestriction12() throws Exception {
 		
 		this.createFolder("/P2/src/p21");
 		this.createFile(
-				"/P2/src/p21/XX21.java",
+				"/P2/src/p21/XX21.js",
 				"package p21;\n"+
 				"public class XX21 {\n"+
 				"}");
 		
 		this.createFolder("/P2/src/p22");
 		this.createFile(
-				"/P2/src/p22/XX22.java",
+				"/P2/src/p22/XX22.js",
 				"package p22;\n"+
 				"public class XX22 {\n"+
 				"}");
@@ -1891,14 +1891,14 @@ public void testAccessRestriction12() throws Exception {
 		
 		this.createFolder("/P3/src/p31");
 		this.createFile(
-				"/P3/src/p31/XX31.java",
+				"/P3/src/p31/XX31.js",
 				"package p31;\n"+
 				"public class XX31 {\n"+
 				"}");
 		
 		this.createFolder("/P3/src/p32");
 		this.createFile(
-				"/P3/src/p32/XX32.java",
+				"/P3/src/p32/XX32.js",
 				"package p32;\n"+
 				"public class XX32 {\n"+
 				"}");
@@ -1921,7 +1921,7 @@ public void testAccessRestriction12() throws Exception {
 				"1.4");
 		
 		this.createFile(
-				"/PX/src/X.java",
+				"/PX/src/X.js",
 				"public class X {\n"+
 				"  void foo() {\n"+
 				"    XX\n"+
@@ -1932,7 +1932,7 @@ public void testAccessRestriction12() throws Exception {
 		
 		// do completion
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("PX", "src", "", "X.java");
+		ICompilationUnit cu= getCompilationUnit("PX", "src", "", "X.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "XX";
@@ -1979,14 +1979,14 @@ public void testAccessRestriction13() throws Exception {
 		
 		this.createFolder("/P1/src/a");
 		this.createFile(
-				"/P1/src/a/XX1.java",
+				"/P1/src/a/XX1.js",
 				"package a;\n"+
 				"public class XX1 {\n"+
 				"}");
 
 		this.createFolder("/P1/src/b");
 		this.createFile(
-				"/P1/src/b/XX2.java",
+				"/P1/src/b/XX2.js",
 				"package b;\n"+
 				"public class XX2 {\n"+
 				"}");
@@ -2008,7 +2008,7 @@ public void testAccessRestriction13() throws Exception {
 			null,
 			"1.4");
 		this.createFile(
-			"/P2/src/YY.java",
+			"/P2/src/YY.js",
 			"public class YY {\n"+
 			"  void foo() {\n"+
 			"    XX\n"+
@@ -2019,7 +2019,7 @@ public void testAccessRestriction13() throws Exception {
 		
 		// do completion
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.java");
+		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "XX";
@@ -2059,14 +2059,14 @@ public void testAccessRestriction14() throws Exception {
 		
 		this.createFolder("/P1/src/a");
 		this.createFile(
-				"/P1/src/a/XX1.java",
+				"/P1/src/a/XX1.js",
 				"package a;\n"+
 				"public class XX1 {\n"+
 				"}");
 
 		this.createFolder("/P1/src/b");
 		this.createFile(
-				"/P1/src/b/XX2.java",
+				"/P1/src/b/XX2.js",
 				"package b;\n"+
 				"public class XX2 {\n"+
 				"}");
@@ -2088,7 +2088,7 @@ public void testAccessRestriction14() throws Exception {
 			null,
 			"1.4");
 		this.createFile(
-			"/P2/src/YY.java",
+			"/P2/src/YY.js",
 			"public class YY {\n"+
 			"  void foo() {\n"+
 			"    XX\n"+
@@ -2099,7 +2099,7 @@ public void testAccessRestriction14() throws Exception {
 		
 		// do completion
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.java");
+		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "XX";
@@ -2138,7 +2138,7 @@ public void testAccessRestriction14() throws Exception {
 //		
 //		this.createFolder("/P1/src/a");
 //		this.createFile(
-//				"/P1/src/a/XX1.java",
+//				"/P1/src/a/XX1.js",
 //				"package a;\n"+
 //				"public class XX1 {\n"+
 //				"  public void foo() {\n"+
@@ -2162,7 +2162,7 @@ public void testAccessRestriction14() throws Exception {
 //			null,
 //			"1.4");
 //		this.createFile(
-//			"/P2/src/YY.java",
+//			"/P2/src/YY.js",
 //			"public class YY {\n"+
 //			"  void foo() {\n"+
 //			"    a.XX1 x;\n"+
@@ -2174,7 +2174,7 @@ public void testAccessRestriction14() throws Exception {
 //		
 //		// do completion
 //		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-//		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.java");
+//		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 //		
 //		String str = cu.getSource();
 //		String completeBehind = "x.fo";
@@ -2205,7 +2205,7 @@ public void testBug96950() throws Exception {
 			new String[]{"JCL_LIB"},
 			 "bin");
 		this.createFile(
-				"/P1/src/Taratata.java",
+				"/P1/src/Taratata.js",
 				"public class Taratata {\n"+
 				"}");
 		
@@ -2226,7 +2226,7 @@ public void testBug96950() throws Exception {
 			null,
 			"1.4");
 		this.createFile(
-				"/P2/src/BreakRules.java",
+				"/P2/src/BreakRules.js",
 				"public class BreakRules {\n"+
 				"	Tara\n"+
 				"}");
@@ -2235,7 +2235,7 @@ public void testBug96950() throws Exception {
 		
 		// do completion
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "BreakRules.java");
+		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "BreakRules.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "Tara";
@@ -2260,7 +2260,7 @@ public void testChangeInternalJar() throws CoreException, IOException {
 	try {
 		// Create jar file with a class with 2 methods doXXX
 		String[] pathAndContents = new String[] {
-			"pack/Util.java",
+			"pack/Util.js",
 			"package pack;\n" + 
 			"public class Util {\n" + 
 			"    public void doit2A(int x, int y) { }\n" + 
@@ -2278,7 +2278,7 @@ public void testChangeInternalJar() throws CoreException, IOException {
 		}
 
 		// Create compilation unit in which completion occurs
-		String path = "/Completion/src/test/Test.java";
+		String path = "/Completion/src/test/Test.js";
 		String source = "package test;\n" + 
 			"import pack.*;\n" + 
 			"public class Test {\n" + 
@@ -2305,7 +2305,7 @@ public void testChangeInternalJar() throws CoreException, IOException {
 		String projectLocation = this.currentProject.getProject().getLocation().toOSString();
 		String jarPath = projectLocation + File.separator + jarName;
 		org.eclipse.wst.jsdt.core.tests.util.Util.createJar(new String[] {
-			"pack/Util.java",
+			"pack/Util.js",
 			"package pack;\n" + 
 			"public class Util {\n" + 
 			"    public void doit2A(int x, int y) { }\n" + 

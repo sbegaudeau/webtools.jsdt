@@ -66,24 +66,57 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		assertTrue("Selection should be empty", elements == null || elements.length == 0);
 	}
 
-	public void test01() throws JavaModelException {
-		setUnit("Test.java",
-			"public class Test {\n" + 
-			"	/** @see #foo() */\n" + 
-			"	void bar() {\n" + 
+	public void test00() throws JavaModelException {
+		setUnit("Test.js",
+			"" + 
+			"" + 
+			"function bar() {\n" + 
 			"		foo();\n" + 
-			"	}\n" + 
-			"	void foo() {}\n" + 
+			"}\n" + 
+			"function foo() {}\n" + 
 			"}\n"
 		);
 		this.element = selectMethod(this.workingCopies[0], "foo");
 		assertElementEquals("Invalid selected method",
-			"foo() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]"
+			"foo() [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]"
+		);
+	}
+
+
+	public void test01() throws JavaModelException {
+		setUnit("Test.js",
+			"" + 
+			"" + 
+			"function foo() {}\n" + 
+			"}\n" + 
+			"function bar() {\n" + 
+			"		foo();\n" + 
+			"}\n"
+		);
+		this.element = selectMethod(this.workingCopies[0], "foo");
+		assertElementEquals("Invalid selected method",
+			"foo() [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]"
+		);
+	}
+
+	public void test01a() throws JavaModelException {
+		setUnit("Test.js",
+			"" + 
+			"" + 
+			"function bar() {\n" + 
+			"		foo();\n" + 
+			"}\n" + 
+			"function foo() {}\n" + 
+			"}\n"
+		);
+		this.element = selectMethod(this.workingCopies[0], "foo");
+		assertElementEquals("Invalid selected method",
+			"foo() [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]"
 		);
 	}
 
 	public void test02() throws JavaModelException {
-		setUnit("Test.java",
+		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	/** {@link #foo() foo} */\n" + 
 			"	void bar() {\n" + 
@@ -94,12 +127,12 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 		this.element = selectMethod(this.workingCopies[0], "foo");
 		assertElementEquals("Invalid selected method",
-			"foo() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]"
+			"foo() [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]"
 		);
 	}
 
 	public void test03() throws JavaModelException {
-		setUnit("Test.java",
+		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	/** @see Test */\n" + 
 			"	void foo() {}\n" + 
@@ -107,12 +140,12 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 		this.element = selectType(this.workingCopies[0], "Test", 2);
 		assertElementEquals("Invalid selected type",
-			"Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]"
+			"Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]"
 		);
 	}
 
 	public void test04() throws JavaModelException {
-		setUnit("Test.java",
+		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	/** Javadoc {@link Test} */\n" + 
 			"	void foo() {}\n" + 
@@ -120,12 +153,12 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 		this.element = selectType(this.workingCopies[0], "Test", 2);
 		assertElementEquals("Invalid selected type",
-			"Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]"
+			"Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]"
 		);
 	}
 
 	public void test05() throws JavaModelException {
-		setUnit("Test.java",
+		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	int field;\n" + 
 			"	/** @see #field */\n" + 
@@ -134,12 +167,12 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 		this.element = selectField(this.workingCopies[0], "field", 2);
 		assertElementEquals("Invalid selected field",
-			"field [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]"
+			"field [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]"
 		);
 	}
 
 	public void test06() throws JavaModelException {
-		setUnit("Test.java",
+		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	int field;\n" + 
 			"	/**{@link #field}*/\n" + 
@@ -148,12 +181,12 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 		this.element = selectField(this.workingCopies[0], "field", 2);
 		assertElementEquals("Invalid selected field",
-			"field [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]"
+			"field [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]"
 		);
 	}
 
 	public void test07() throws JavaModelException {
-		setUnit("Test.java",
+		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	/**\n" + 
 			"	 * @see Test#field\n" + 
@@ -176,19 +209,19 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		elements[5] = selectMethod(this.workingCopies[0], "foo", 2);
 		elements[6] = selectType(this.workingCopies[0], "String", 2);
 		assertElementsEqual("Invalid selection(s)",
-			"Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"field [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"foo(int, String) [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"String [in String.class [in java.lang [in "+ getExternalJCLPathString("1.5") + "]]]\n" + 
-			"Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"foo(int, String) [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"String [in String.class [in java.lang [in "+ getExternalJCLPathString("1.5") + "]]]",
+			"Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"field [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"foo(int, String) [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"String [in String.class [in java.lang [in "+ getExternalJCLPathString("1.5") + " [in Tests]]]]\n" + 
+			"Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"foo(int, String) [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"String [in String.class [in java.lang [in "+ getExternalJCLPathString("1.5") + " [in Tests]]]]",
 			elements
 		);
 	}
 
 	public void test08() throws JavaModelException {
-		setUnit("Test.java",
+		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	/**\n" + 
 			"	 * First {@link #foo(int, String)}\n" + 
@@ -211,19 +244,19 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		elements[5] = selectMethod(this.workingCopies[0], "foo", 2);
 		elements[6] = selectType(this.workingCopies[0], "String", 2);
 		assertElementsEqual("Invalid selection(s)",
-			"Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"field [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"foo(int, String) [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"String [in String.class [in java.lang [in "+ getExternalJCLPathString("1.5") + "]]]\n" + 
-			"Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"foo(int, String) [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"String [in String.class [in java.lang [in "+ getExternalJCLPathString("1.5") + "]]]",
+			"Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"field [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"foo(int, String) [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"String [in String.class [in java.lang [in "+ getExternalJCLPathString("1.5") + " [in Tests]]]]\n" + 
+			"Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"foo(int, String) [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"String [in String.class [in java.lang [in "+ getExternalJCLPathString("1.5") + " [in Tests]]]]",
 			elements
 		);
 	}
 
 	public void test09() throws JavaModelException {
-		setUnit("test/junit/Test.java",
+		setUnit("test/junit/Test.js",
 			"package test.junit;\n" + 
 			"public class Test {\n" + 
 			"	/**\n" + 
@@ -253,18 +286,18 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		elements[5] = selectType(this.workingCopies[0], "Object");
 		assertSelectionIsEmpty(this.workingCopies[0], "array");
 		assertElementsEqual("Invalid selection(s)",
-			"Test [in [Working copy] Test.java [in test.junit [in <project root> [in Tests]]]]\n" + 
-			"Test [in [Working copy] Test.java [in test.junit [in <project root> [in Tests]]]]\n" + 
-			"field [in Test [in [Working copy] Test.java [in test.junit [in <project root> [in Tests]]]]]\n" + 
-			"Test [in [Working copy] Test.java [in test.junit [in <project root> [in Tests]]]]\n" + 
-			"foo(Object[]) [in Test [in [Working copy] Test.java [in test.junit [in <project root> [in Tests]]]]]\n" + 
-			"Object [in Object.class [in java.lang [in "+ getExternalJCLPathString("1.5") + "]]]",
+			"Test [in [Working copy] Test.js [in test.junit [in <project root> [in Tests]]]]\n" + 
+			"Test [in [Working copy] Test.js [in test.junit [in <project root> [in Tests]]]]\n" + 
+			"field [in Test [in [Working copy] Test.js [in test.junit [in <project root> [in Tests]]]]]\n" + 
+			"Test [in [Working copy] Test.js [in test.junit [in <project root> [in Tests]]]]\n" + 
+			"foo(Object[]) [in Test [in [Working copy] Test.js [in test.junit [in <project root> [in Tests]]]]]\n" + 
+			"Object [in Object.class [in java.lang [in "+ getExternalJCLPathString("1.5") + " [in Tests]]]]",
 			elements
 		);
 	}
 
 	public void test10() throws JavaModelException {
-		setUnit("test/junit/Test.java",
+		setUnit("test/junit/Test.js",
 			"package test.junit;\n" + 
 			"public class Test {\n" + 
 			"	/** Javadoc {@linkplain test.junit.Test}\n" + 
@@ -293,18 +326,18 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		elements[5] = selectType(this.workingCopies[0], "Object");
 		assertSelectionIsEmpty(this.workingCopies[0], "array");
 		assertElementsEqual("Invalid selection(s)",
-			"Test [in [Working copy] Test.java [in test.junit [in <project root> [in Tests]]]]\n" + 
-			"Test [in [Working copy] Test.java [in test.junit [in <project root> [in Tests]]]]\n" + 
-			"field [in Test [in [Working copy] Test.java [in test.junit [in <project root> [in Tests]]]]]\n" + 
-			"Test [in [Working copy] Test.java [in test.junit [in <project root> [in Tests]]]]\n" + 
-			"foo(Object[]) [in Test [in [Working copy] Test.java [in test.junit [in <project root> [in Tests]]]]]\n" + 
-			"Object [in Object.class [in java.lang [in "+ getExternalJCLPathString("1.5") + "]]]",
+			"Test [in [Working copy] Test.js [in test.junit [in <project root> [in Tests]]]]\n" + 
+			"Test [in [Working copy] Test.js [in test.junit [in <project root> [in Tests]]]]\n" + 
+			"field [in Test [in [Working copy] Test.js [in test.junit [in <project root> [in Tests]]]]]\n" + 
+			"Test [in [Working copy] Test.js [in test.junit [in <project root> [in Tests]]]]\n" + 
+			"foo(Object[]) [in Test [in [Working copy] Test.js [in test.junit [in <project root> [in Tests]]]]]\n" + 
+			"Object [in Object.class [in java.lang [in "+ getExternalJCLPathString("1.5") + " [in Tests]]]]",
 			elements
 		);
 	}
 
 	public void test11() throws JavaModelException {
-		setUnit("Test.java",
+		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	/**\n" + 
 			"	 * @throws RuntimeException runtime exception\n" + 
@@ -317,14 +350,14 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		elements[0] = selectType(this.workingCopies[0], "RuntimeException");
 		elements[1] = selectType(this.workingCopies[0], "InterruptedException");
 		assertElementsEqual("Invalid selection(s)",
-			"RuntimeException [in RuntimeException.class [in java.lang [in "+ getExternalJCLPathString("1.5") + "]]]\n" + 
-			"InterruptedException [in InterruptedException.class [in java.lang [in "+ getExternalJCLPathString("1.5") + "]]]",
+			"RuntimeException [in RuntimeException.class [in java.lang [in "+ getExternalJCLPathString("1.5") + " [in Tests]]]]\n" + 
+			"InterruptedException [in InterruptedException.class [in java.lang [in "+ getExternalJCLPathString("1.5") + " [in Tests]]]]",
 			elements
 		);
 	}
 
 	public void test12() throws JavaModelException {
-		setUnit("Test.java",
+		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	/**\n" + 
 			"	 * @exception RuntimeException runtime exception\n" + 
@@ -337,14 +370,14 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		elements[0] = selectType(this.workingCopies[0], "RuntimeException");
 		elements[1] = selectType(this.workingCopies[0], "InterruptedException");
 		assertElementsEqual("Invalid selection(s)",
-			"RuntimeException [in RuntimeException.class [in java.lang [in "+ getExternalJCLPathString("1.5") + "]]]\n" + 
-			"InterruptedException [in InterruptedException.class [in java.lang [in "+ getExternalJCLPathString("1.5") + "]]]",
+			"RuntimeException [in RuntimeException.class [in java.lang [in "+ getExternalJCLPathString("1.5") + " [in Tests]]]]\n" + 
+			"InterruptedException [in InterruptedException.class [in java.lang [in "+ getExternalJCLPathString("1.5") + " [in Tests]]]]",
 			elements
 		);
 	}
 
 	public void test13() throws JavaModelException {
-		setUnit("Test.java",
+		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	/**\n" + 
 			"	 * @param xxx integer param\n" +
@@ -357,14 +390,14 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		elements[0] = selectLocalVariable(this.workingCopies[0], "xxx");
 		elements[1] = selectLocalVariable(this.workingCopies[0], "str");
 		assertElementsEqual("Invalid selection(s)",
-			"xxx [in foo(int, String) [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]\n" + 
-			"str [in foo(int, String) [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]",
+			"xxx [in foo(int, String) [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]\n" + 
+			"str [in foo(int, String) [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]",
 			elements
 		);
 	}
 
 	public void test14() throws JavaModelException {
-		setUnit("Test.java",
+		setUnit("Test.js",
 			"/**\n" + 
 			" * Javadoc of {@link Test}\n" + 
 			" * @see Field#foo\n" + 
@@ -394,21 +427,21 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		elements[7] = selectType(this.workingCopies[0], "Field", 4);
 		elements[8] = selectField(this.workingCopies[0], "foo", 5);
 		assertElementsEqual("Invalid selection(s)",
-			"Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"Field [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"foo [in Field [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"Field [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"foo [in Field [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"foo [in Field [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"foo [in Field [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"Field [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"foo [in Field [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]",
+			"Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"Field [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"foo [in Field [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"Field [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"foo [in Field [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"foo [in Field [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"foo [in Field [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"Field [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"foo [in Field [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]",
 			elements
 		);
 	}
 
 	public void test15() throws JavaModelException {
-		setUnit("Test.java",
+		setUnit("Test.js",
 			"/**\n" + 
 			" * Javadoc of {@link Test}\n" + 
 			" * @see Method#foo\n" + 
@@ -450,25 +483,25 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		elements[11] = selectType(this.workingCopies[0], "RuntimeException");
 		elements[12] = selectType(this.workingCopies[0], "InterruptedException");
 		assertElementsEqual("Invalid selection(s)",
-			"Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"Method [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"foo(int, String) [in Method [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"Method [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"foo(int, String) [in Method [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"foo(int, String) [in Method [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"foo(int, String) [in Method [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"Method [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"foo(int, String) [in Method [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"xxx [in foo(int, String) [in Method [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]\n" + 
-			"str [in foo(int, String) [in Method [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]\n" + 
-			"RuntimeException [in RuntimeException.class [in java.lang [in "+ getExternalJCLPathString("1.5") + "]]]\n" + 
-			"InterruptedException [in InterruptedException.class [in java.lang [in "+ getExternalJCLPathString("1.5") + "]]]",
+			"Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"Method [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"foo(int, String) [in Method [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"Method [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"foo(int, String) [in Method [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"foo(int, String) [in Method [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"foo(int, String) [in Method [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"Method [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"foo(int, String) [in Method [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"xxx [in foo(int, String) [in Method [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]\n" + 
+			"str [in foo(int, String) [in Method [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]\n" + 
+			"RuntimeException [in RuntimeException.class [in java.lang [in "+ getExternalJCLPathString("1.5") + " [in Tests]]]]\n" + 
+			"InterruptedException [in InterruptedException.class [in java.lang [in "+ getExternalJCLPathString("1.5") + " [in Tests]]]]",
 			elements
 		);
 	}
 
 	public void test16() throws JavaModelException {
-		setUnit("Test.java",
+		setUnit("Test.js",
 			"/**\n" + 
 			" * Javadoc of {@link Test}\n" + 
 			" * @see Other\n" + 
@@ -486,16 +519,16 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		elements[2] = selectType(this.workingCopies[0], "Test", 3);
 		elements[3] = selectType(this.workingCopies[0], "Other", 2);
 		assertElementsEqual("Invalid selection(s)",
-			"Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"Other [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"Other [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]",
+			"Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"Other [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"Other [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]",
 			elements
 		);
 	}
 
 	public void test17() throws JavaModelException {
-		setUnit("Test.java",
+		setUnit("Test.js",
 			"/**\n" + 
 			" * @see Test.Field#foo\n" + 
 			" */\n" + 
@@ -526,23 +559,23 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		elements[9] = selectType(this.workingCopies[0], "Field", 5);
 		elements[10] = selectField(this.workingCopies[0], "foo", 5);
 		assertElementsEqual("Invalid selection(s)",
-			"Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"Field [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"foo [in Field [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]\n" + 
-			"Field [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"foo [in Field [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]\n" + 
-			"foo [in Field [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]\n" + 
-			"Field [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"foo [in Field [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]\n" + 
-			"Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"Field [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"foo [in Field [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]",
+			"Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"Field [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"foo [in Field [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]\n" + 
+			"Field [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"foo [in Field [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]\n" + 
+			"foo [in Field [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]\n" + 
+			"Field [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"foo [in Field [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]\n" + 
+			"Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"Field [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"foo [in Field [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]",
 			elements
 		);
 	}
 
 	public void test18() throws JavaModelException {
-		setUnit("Test.java",
+		setUnit("Test.js",
 			"/**\n" + 
 			" * @see Test.Method#foo()\n" + 
 			" */\n" + 
@@ -573,23 +606,23 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		elements[9] = selectType(this.workingCopies[0], "Method", 5);
 		elements[10] = selectMethod(this.workingCopies[0], "foo", 5);
 		assertElementsEqual("Invalid selection(s)",
-			"Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"Method [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"foo() [in Method [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]\n" + 
-			"Method [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"foo() [in Method [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]\n" + 
-			"foo() [in Method [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]\n" + 
-			"Method [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"foo() [in Method [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]\n" + 
-			"Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"Method [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"foo() [in Method [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]",
+			"Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"Method [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"foo() [in Method [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]\n" + 
+			"Method [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"foo() [in Method [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]\n" + 
+			"foo() [in Method [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]\n" + 
+			"Method [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"foo() [in Method [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]\n" + 
+			"Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"Method [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"foo() [in Method [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]",
 			elements
 		);
 	}
 
 	public void test19() throws JavaModelException {
-		setUnit("Test.java",
+		setUnit("Test.js",
 			"/**\n" + 
 			" * @see Test.Other\n" + 
 			" */\n" + 
@@ -610,18 +643,18 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		elements[4] = selectType(this.workingCopies[0], "Test", 4);
 		elements[5] = selectType(this.workingCopies[0], "Other", 3);
 		assertElementsEqual("Invalid selection(s)",
-			"Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"Other [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"Other [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"Other [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]",
+			"Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"Other [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"Other [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"Other [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]",
 			elements
 		);
 	}
 
 	public void test20() throws JavaModelException {
-		setUnit("Test.java",
+		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	void bar() {\n" + 
 			"		/**\n" + 
@@ -645,17 +678,17 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		elements[4] = selectField(this.workingCopies[0], "foo", 3);
 		// Running test with Unix/Windows do not matter even if result includes positions as we use working copies
 		assertElementsEqual("Invalid selection(s)",
-			"Field [in bar() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]\n" + 
-			"foo [in Field [in bar() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]]\n" + 
-			"foo [in Field [in bar() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]]\n" + 
-			"Field [in bar() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]\n" + 
-			"foo [in Field [in bar() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]]",
+			"Field [in bar() [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]\n" + 
+			"foo [in Field [in bar() [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]]\n" + 
+			"foo [in Field [in bar() [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]]\n" + 
+			"Field [in bar() [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]\n" + 
+			"foo [in Field [in bar() [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]]",
 			elements
 		);
 	}
 
 	public void test21() throws JavaModelException {
-		setUnit("Test.java",
+		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	void bar() {\n" + 
 			"		/**\n" + 
@@ -679,17 +712,17 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		elements[4] = selectMethod(this.workingCopies[0], "foo", 3);
 		// Running test with Unix/Windows do not matter even if result includes positions as we use working copies
 		assertElementsEqual("Invalid selection(s)",
-			"Method [in bar() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]\n" + 
-			"foo() [in Method [in bar() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]]\n" + 
-			"foo() [in Method [in bar() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]]\n" + 
-			"Method [in bar() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]\n" + 
-			"foo() [in Method [in bar() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]]",
+			"Method [in bar() [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]\n" + 
+			"foo() [in Method [in bar() [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]]\n" + 
+			"foo() [in Method [in bar() [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]]\n" + 
+			"Method [in bar() [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]\n" + 
+			"foo() [in Method [in bar() [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]]",
 			elements
 		);
 	}
 
 	public void test22() throws JavaModelException {
-		setUnit("Test.java",
+		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	void bar() {\n" + 
 			"		/**\n" + 
@@ -705,14 +738,14 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		elements[1] = selectType(this.workingCopies[0], "Other");
 		// Running test with Unix/Windows do not matter even if result includes positions as we use working copies
 		assertElementsEqual("Invalid selection(s)",
-			"Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"Other [in bar() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]",
+			"Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"Other [in bar() [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]",
 			elements
 		);
 	}
 
 	public void test23() throws JavaModelException {
-		setUnit("Test.java",
+		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	void bar() {\n" + 
 			"		new Object() {\n" + 
@@ -738,17 +771,17 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		elements[4] = selectField(this.workingCopies[0], "foo", 3);
 		// Running test with Unix/Windows do not matter even if result includes positions as we use working copies
 		assertElementsEqual("Invalid selection(s)",
-			"Field [in <anonymous #1> [in bar() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]]\n" + 
-			"foo [in Field [in <anonymous #1> [in bar() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]]]\n" + 
-			"foo [in Field [in <anonymous #1> [in bar() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]]]\n" + 
-			"Field [in <anonymous #1> [in bar() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]]\n" + 
-			"foo [in Field [in <anonymous #1> [in bar() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]]]",
+			"Field [in <anonymous #1> [in bar() [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]]\n" + 
+			"foo [in Field [in <anonymous #1> [in bar() [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]]]\n" + 
+			"foo [in Field [in <anonymous #1> [in bar() [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]]]\n" + 
+			"Field [in <anonymous #1> [in bar() [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]]\n" + 
+			"foo [in Field [in <anonymous #1> [in bar() [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]]]",
 			elements
 		);
 	}
 
 	public void test24() throws JavaModelException {
-		setUnit("Test.java",
+		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	void bar() {\n" + 
 			"		new Object() {\n" + 
@@ -774,17 +807,17 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		elements[4] = selectMethod(this.workingCopies[0], "foo", 3);
 		// Running test with Unix/Windows do not matter even if result includes positions as we use working copies
 		assertElementsEqual("Invalid selection(s)",
-			"Method [in <anonymous #1> [in bar() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]]\n" + 
-			"foo() [in Method [in <anonymous #1> [in bar() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]]]\n" + 
-			"foo() [in Method [in <anonymous #1> [in bar() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]]]\n" + 
-			"Method [in <anonymous #1> [in bar() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]]\n" + 
-			"foo() [in Method [in <anonymous #1> [in bar() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]]]",
+			"Method [in <anonymous #1> [in bar() [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]]\n" + 
+			"foo() [in Method [in <anonymous #1> [in bar() [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]]]\n" + 
+			"foo() [in Method [in <anonymous #1> [in bar() [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]]]\n" + 
+			"Method [in <anonymous #1> [in bar() [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]]\n" + 
+			"foo() [in Method [in <anonymous #1> [in bar() [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]]]",
 			elements
 		);
 	}
 
 	public void test25() throws JavaModelException {
-		setUnit("Test.java",
+		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	void bar() {\n" + 
 			"		new Object() {\n" + 
@@ -802,14 +835,14 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		elements[1] = selectType(this.workingCopies[0], "Other");
 		// Running test with Unix/Windows do not matter even if result includes positions as we use working copies
 		assertElementsEqual("Invalid selection(s)",
-			"Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"Other [in <anonymous #1> [in bar() [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]]]",
+			"Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"Other [in <anonymous #1> [in bar() [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]]]",
 			elements
 		);
 	}
 
 	public void test26() throws JavaModelException {
-		setUnit("Test.java",
+		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	static int field;\n" + 
 			"	/** \n" +
@@ -824,9 +857,9 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		elements[1] = selectType(this.workingCopies[0], "Test");
 		elements[2] = selectField(this.workingCopies[0], "field");
 		assertElementsEqual("Invalid selection(s)",
-			"field [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]\n" + 
-			"Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]\n" + 
-			"field [in Test [in [Working copy] Test.java [in <default> [in <project root> [in Tests]]]]]",
+			"field [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]\n" + 
+			"Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]\n" + 
+			"field [in Test [in [Working copy] Test.js [in <default> [in <project root> [in Tests]]]]]",
 			elements
 		);
 	}
@@ -838,7 +871,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 	public void testBug86380() throws CoreException {
 		this.wcOwner = new WorkingCopyOwner() {};
 		workingCopies = new ICompilationUnit[2];
-		workingCopies[0] = getWorkingCopy("/Tests/b86380/package-info.java",
+		workingCopies[0] = getWorkingCopy("/Tests/b86380/package-info.js",
 			"/**\n" + 
 			" * Valid javadoc.\n" + 
 			" * @see Test\n" + 
@@ -855,7 +888,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			wcOwner,
 			null/*don't compute problems*/
 		);
-		workingCopies[1] = getWorkingCopy("/Tests/b86380/Test.java",
+		workingCopies[1] = getWorkingCopy("/Tests/b86380/Test.js",
 			"/**\n" + 
 			" * Invalid javadoc\n" + 
 			" */\n" + 
@@ -872,9 +905,9 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		elements[1] = selectMethod(this.workingCopies[0], "foo");
 		elements[2] = selectField(this.workingCopies[0], "field");
 		assertElementsEqual("Invalid selection(s)",
-			"Test [in [Working copy] Test.java [in b86380 [in <project root> [in Tests]]]]\n" + 
-			"foo() [in Test [in [Working copy] Test.java [in b86380 [in <project root> [in Tests]]]]]\n" + 
-			"field [in Test [in [Working copy] Test.java [in b86380 [in <project root> [in Tests]]]]]",
+			"Test [in [Working copy] Test.js [in b86380 [in <project root> [in Tests]]]]\n" + 
+			"foo() [in Test [in [Working copy] Test.js [in b86380 [in <project root> [in Tests]]]]]\n" + 
+			"field [in Test [in [Working copy] Test.js [in b86380 [in <project root> [in Tests]]]]]",
 			elements
 		);
 	}
@@ -884,7 +917,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=90266"
 	 */
 	public void testBug90266_String() throws JavaModelException {
-		setUnit("b90266/Test.java",
+		setUnit("b90266/Test.js",
 			"package b90266;\n" + 
 			"public class Test {\n" + 
 			"	public int field;\n" + 
@@ -897,12 +930,12 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		int[] selectionPositions = selectionInfo(workingCopies[0], "field", 2);
 		IJavaElement[] elements = workingCopies[0].codeSelect(selectionPositions[0], 0);
 		assertElementsEqual("Invalid selection(s)",
-			"field [in Test [in [Working copy] Test.java [in b90266 [in <project root> [in Tests]]]]]",
+			"field [in Test [in [Working copy] Test.js [in b90266 [in <project root> [in Tests]]]]]",
 			elements
 		);
 	}
 	public void testBug90266_Char() throws JavaModelException {
-		setUnit("b90266/Test.java",
+		setUnit("b90266/Test.js",
 			"package b90266;\n" + 
 			"public class Test {\n" + 
 			"	public int field;\n" + 
@@ -915,73 +948,72 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		int[] selectionPositions = selectionInfo(workingCopies[0], "field", 2);
 		IJavaElement[] elements = workingCopies[0].codeSelect(selectionPositions[0], 0);
 		assertElementsEqual("Invalid selection(s)",
-			"field [in Test [in [Working copy] Test.java [in b90266 [in <project root> [in Tests]]]]]",
+			"field [in Test [in [Working copy] Test.js [in b90266 [in <project root> [in Tests]]]]]",
 			elements
 		);
 	}
-
 	/**
-	 * @bug 165701: [model] No hint for ambiguous javadoc
-	 * @test Ensure that no exception is thrown while selecting method in javadoc comment
-	 * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=165701"
-	 */
-	public void testBug165701() throws JavaModelException {
-		setUnit("b165701/Test.java",
-			"package b165701;\n" + 
-			"/**\n" + 
-			" * @see #fooo(int)\n" + 
-			" */\n" + 
-			"public class Test {\n" + 
-			"	public void foo() {}\n" + 
-			"}\n"
-		);
-		int[] selectionPositions = selectionInfo(workingCopies[0], "fooo", 1);
-		IJavaElement[] elements = workingCopies[0].codeSelect(selectionPositions[0], 0);
-		assertElementsEqual("Invalid selection(s)",
-			"Test [in [Working copy] Test.java [in b165701 [in <project root> [in Tests]]]]",
-			elements
-		);
-	}
-
-	/**
-	 * @bug 165794: [model] No hint for ambiguous javadoc
-	 * @test Ensure that no exception is thrown while selecting method in javadoc comment
-	 * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=165794"
-	 */
-	public void testBug165794() throws JavaModelException {
-		setUnit("b165794/Test.java",
-			"package b165794;\n" + 
-			"/**\n" + 
-			" * No reasonable hint for resolving the {@link #getMax(A)}.\n" + 
-			" */\n" + 
-			"public class X {\n" + 
-			"    /**\n" + 
-			"     * Extends Number method.\n" + 
-			"     * @see #getMax(A ipZ)\n" + 
-			"     */\n" + 
-			"    public <T extends Y> T getMax(final A<T> ipY) {\n" + 
-			"        return ipY.t();\n" + 
-			"    }\n" + 
-			"    \n" + 
-			"    /**\n" + 
-			"     * Extends Exception method.\n" + 
-			"     * @see #getMax(A ipY)\n" + 
-			"     */\n" + 
-			"    public <T extends Z> T getMax(final A<T> ipZ) {\n" + 
-			"        return ipZ.t();\n" + 
-			"    }\n" + 
-			"}\n" + 
-			"class A<T> {\n" + 
-			"	T t() { return null; }\n" + 
-			"}\n" + 
-			"class Y {}\n" + 
-			"class Z {}"
-		);
-		int[] selectionPositions = selectionInfo(workingCopies[0], "getMax", 1);
-		IJavaElement[] elements = workingCopies[0].codeSelect(selectionPositions[0], 0);
-		assertElementsEqual("Invalid selection(s)",
-			"getMax(A<T>) [in X [in [Working copy] Test.java [in b165794 [in <project root> [in Tests]]]]]",
-			elements
-		);
-	}
+	);
+ * @bug 165701: [model] No hint for ambiguous javadoc
+ * @test Ensure that no exception is thrown while selecting method in javadoc comment
+ * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=165701"
+ */
+public void testBug165701() throws JavaModelException {
+	setUnit("b165701/Test.js",
+		"package b165701;\n" + 
+		"/**\n" + 
+		" * @see #fooo(int)\n" + 
+		" */\n" + 
+		"public class Test {\n" + 
+		"	public void foo() {}\n" + 
+		"}\n"
+	);
+	int[] selectionPositions = selectionInfo(workingCopies[0], "fooo", 1);
+	IJavaElement[] elements = workingCopies[0].codeSelect(selectionPositions[0], 0);
+	assertElementsEqual("Invalid selection(s)",
+		"Test [in [Working copy] Test.js [in b165701 [in <project root> [in Tests]]]]",
+		elements
+	);
 }
+
+/**
+ * @bug 165794: [model] No hint for ambiguous javadoc
+ * @test Ensure that no exception is thrown while selecting method in javadoc comment
+ * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=165794"
+ */
+public void testBug165794() throws JavaModelException {
+	setUnit("b165794/Test.js",
+		"package b165794;\n" + 
+		"/**\n" + 
+		" * No reasonable hint for resolving the {@link #getMax(A)}.\n" + 
+		" */\n" + 
+		"public class X {\n" + 
+		"    /**\n" + 
+		"     * Extends Number method.\n" + 
+		"     * @see #getMax(A ipZ)\n" + 
+		"     */\n" + 
+		"    public <T extends Y> T getMax(final A<T> ipY) {\n" + 
+		"        return ipY.t();\n" + 
+		"    }\n" + 
+		"    \n" + 
+		"    /**\n" + 
+		"     * Extends Exception method.\n" + 
+		"     * @see #getMax(A ipY)\n" + 
+		"     */\n" + 
+		"    public <T extends Z> T getMax(final A<T> ipZ) {\n" + 
+		"        return ipZ.t();\n" + 
+		"    }\n" + 
+		"}\n" + 
+		"class A<T> {\n" + 
+		"	T t() { return null; }\n" + 
+		"}\n" + 
+		"class Y {}\n" + 
+		"class Z {}"
+	);
+	int[] selectionPositions = selectionInfo(workingCopies[0], "getMax", 1);
+	IJavaElement[] elements = workingCopies[0].codeSelect(selectionPositions[0], 0);
+	assertElementsEqual("Invalid selection(s)",
+		"getMax(A<T>) [in X [in [Working copy] Test.js [in b165794 [in <project root> [in Tests]]]]]",
+		elements
+	);
+}}

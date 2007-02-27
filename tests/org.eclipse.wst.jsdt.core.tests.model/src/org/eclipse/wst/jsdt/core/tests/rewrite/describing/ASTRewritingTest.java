@@ -150,6 +150,22 @@ public class ASTRewritingTest extends AbstractJavaModelTests {
 		return null;
 	}
 	
+	
+	public static MethodDeclaration findMethodDeclaration(CompilationUnit astRoot, String simpleTypeName) {
+		List statements= astRoot.statements();
+		for (int i= 0; i < statements.size(); i++) {
+			Object obj=statements.get(i);
+			if (obj instanceof MethodDeclaration) {
+							MethodDeclaration elem= (MethodDeclaration)obj; 
+							if (simpleTypeName.equals(elem.getName().getIdentifier())) {
+								return elem;
+							}
+			}
+		}
+		return null;
+	}
+
+
 	public static MethodDeclaration findMethodDeclaration(TypeDeclaration typeDecl, String methodName) {
 		MethodDeclaration[] methods= typeDecl.getMethods();
 		for (int i= 0; i < methods.length; i++) {

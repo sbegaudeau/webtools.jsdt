@@ -28,7 +28,7 @@ public class GetSourceTests extends ModifyingResourceTests {
 		createJavaProject("P");
 		createFolder("/P/p");
 		createFile(
-			"/P/p/X.java",
+			"/P/p/X.js",
 			"package p;\n" +
 			"import java.lang.*;\n" +
 			"public class X {\n" +
@@ -52,7 +52,7 @@ public class GetSourceTests extends ModifyingResourceTests {
 			"  }\n" +
 			"}"
 		);
-		this.cu = getCompilationUnit("/P/p/X.java");
+		this.cu = getCompilationUnit("/P/p/X.js");
 		String cuSource = 
 			"package p;\n" +
 			"public class Constants {\n" +
@@ -64,7 +64,7 @@ public class GetSourceTests extends ModifyingResourceTests {
 			"  static final float field6 = 123456f;\n" +
 			"  static final int field7 = 1<<0;\n" +
 			"}";
-		createFile("/P/p/Constants.java", cuSource);
+		createFile("/P/p/Constants.js", cuSource);
 	}
 
 	// Use this static initializer to specify subset for tests
@@ -115,7 +115,7 @@ public class GetSourceTests extends ModifyingResourceTests {
 	 * Ensures the source for a local variable contains the modifiers, type and name.
 	 */
 	public void testLocalVariable1() throws JavaModelException {
-		ILocalVariable var = getLocalVariable("/P/p/X.java", "var1 = 2;", "var1");
+		ILocalVariable var = getLocalVariable("/P/p/X.js", "var1 = 2;", "var1");
 		
 		String actualSource = ((ISourceReference)var).getSource();
 		String expectedSource = "final int var1 = 2;";
@@ -126,7 +126,7 @@ public class GetSourceTests extends ModifyingResourceTests {
 	 * Ensures the source for a local variable contains the modifiers, type and name.
 	 */
 	public void testLocalVariable2() throws JavaModelException {
-		ILocalVariable var = getLocalVariable("/P/p/X.java", "var2;", "var2");
+		ILocalVariable var = getLocalVariable("/P/p/X.js", "var2;", "var2");
 		
 		String actualSource = ((ISourceReference)var).getSource();
 		String expectedSource = "Object var2;";
@@ -137,7 +137,7 @@ public class GetSourceTests extends ModifyingResourceTests {
 	 * Ensures the source for a local variable contains the modifiers, type and name.
 	 */
 	public void testLocalVariable3() throws JavaModelException {
-		ILocalVariable var = getLocalVariable("/P/p/X.java", "i = 0;", "i");
+		ILocalVariable var = getLocalVariable("/P/p/X.js", "i = 0;", "i");
 		
 		String actualSource = ((ISourceReference)var).getSource();
 		String expectedSource = "int i = 0"; // semi-colon is not part of the local declaration in a for statement
@@ -148,7 +148,7 @@ public class GetSourceTests extends ModifyingResourceTests {
 	 * Ensures the source for a local variable contains the modifiers, type and name.
 	 */
 	public void testLocalVariable4() throws JavaModelException {
-		ILocalVariable var = getLocalVariable("/P/p/X.java", "s) {", "s");
+		ILocalVariable var = getLocalVariable("/P/p/X.js", "s) {", "s");
 		
 		String actualSource = ((ISourceReference)var).getSource();
 		String expectedSource = "String s";
@@ -184,14 +184,14 @@ public class GetSourceTests extends ModifyingResourceTests {
 				"  }\n" +
 				"  void static bar() {}\n" +
 				"}";
-			createFile("/P/p/Y.java", cuSource);
-			IMethod method= getCompilationUnit("/P/p/Y.java").getType("Y").getMethod("bar", new String[0]);
+			createFile("/P/p/Y.js", cuSource);
+			IMethod method= getCompilationUnit("/P/p/Y.js").getType("Y").getMethod("bar", new String[0]);
 		
 			String actualSource = getNameSource(cuSource, method);
 			String expectedSource = "bar";
 			assertSourceEquals("Unexpected source'", expectedSource, actualSource);
 		} finally {
-			deleteFile("/P/p/Y.java");
+			deleteFile("/P/p/Y.js");
 		}
 	}
 	
@@ -210,14 +210,14 @@ public class GetSourceTests extends ModifyingResourceTests {
 				"    }\n"+
 				"  }\n" +
 				"}";
-			createFile("/P/p/Y.java", cuSource);
-			IType anonymous = getCompilationUnit("/P/p/Y.java").getType("Y").getMethod("foo", new String[0]).getType("", 1);
+			createFile("/P/p/Y.js", cuSource);
+			IType anonymous = getCompilationUnit("/P/p/Y.js").getType("Y").getMethod("foo", new String[0]).getType("", 1);
 		
 			String actualSource = getNameSource(cuSource, anonymous);
 			String expectedSource = "Y";
 			assertSourceEquals("Unexpected source'", expectedSource, actualSource);
 		} finally {
-			deleteFile("/P/p/Y.java");
+			deleteFile("/P/p/Y.js");
 		}
 	}
 	
@@ -230,14 +230,14 @@ public class GetSourceTests extends ModifyingResourceTests {
 				"package p;\n" +
 				"public class Y<T extends String> {\n" +
 				"}";
-			createFile("/P/p/Y.java", cuSource);
-			ITypeParameter typeParameter = getCompilationUnit("/P/p/Y.java").getType("Y").getTypeParameter("T");
+			createFile("/P/p/Y.js", cuSource);
+			ITypeParameter typeParameter = getCompilationUnit("/P/p/Y.js").getType("Y").getTypeParameter("T");
 			assertSourceEquals(
 				"Unexpected source'", 
 				"T", 
 				getNameSource(cuSource, typeParameter));
 		} finally {
-			deleteFile("/P/p/Y.java");
+			deleteFile("/P/p/Y.js");
 		}
 	}
 	
@@ -251,14 +251,14 @@ public class GetSourceTests extends ModifyingResourceTests {
 				"public class Y {\n" +
 				"  <T extends String, U extends StringBuffer & Runnable> void foo() {} \n" +
 				"}";
-			createFile("/P/p/Y.java", cuSource);
-			ITypeParameter typeParameter = getCompilationUnit("/P/p/Y.java").getType("Y").getMethod("foo", new String[0]).getTypeParameter("U");
+			createFile("/P/p/Y.js", cuSource);
+			ITypeParameter typeParameter = getCompilationUnit("/P/p/Y.js").getType("Y").getMethod("foo", new String[0]).getTypeParameter("U");
 			assertSourceEquals(
 				"Unexpected source'", 
 				"U", 
 				getNameSource(cuSource, typeParameter));
 		} finally {
-			deleteFile("/P/p/Y.java");
+			deleteFile("/P/p/Y.js");
 		}
 	}
 	
@@ -271,14 +271,14 @@ public class GetSourceTests extends ModifyingResourceTests {
 				"package p;\n" +
 				"public class Y<T extends String> {\n" +
 				"}";
-			createFile("/P/p/Y.java", cuSource);
-			ITypeParameter typeParameter = getCompilationUnit("/P/p/Y.java").getType("Y").getTypeParameter("T");
+			createFile("/P/p/Y.js", cuSource);
+			ITypeParameter typeParameter = getCompilationUnit("/P/p/Y.js").getType("Y").getTypeParameter("T");
 			assertSourceEquals(
 				"Unexpected source'", 
 				"T extends String", 
 				typeParameter.getSource());
 		} finally {
-			deleteFile("/P/p/Y.java");
+			deleteFile("/P/p/Y.js");
 		}
 	}
 
@@ -292,14 +292,14 @@ public class GetSourceTests extends ModifyingResourceTests {
 				"public class Y {\n" +
 				"  <T extends String, U extends StringBuffer & Runnable> void foo() {} \n" +
 				"}";
-			createFile("/P/p/Y.java", cuSource);
-			ITypeParameter typeParameter = getCompilationUnit("/P/p/Y.java").getType("Y").getMethod("foo", new String[0]).getTypeParameter("U");
+			createFile("/P/p/Y.js", cuSource);
+			ITypeParameter typeParameter = getCompilationUnit("/P/p/Y.js").getType("Y").getMethod("foo", new String[0]).getTypeParameter("U");
 			assertSourceEquals(
 				"Unexpected source'", 
 				"U extends StringBuffer & Runnable", 
 				typeParameter.getSource());
 		} finally {
-			deleteFile("/P/p/Y.java");
+			deleteFile("/P/p/Y.js");
 		}
 	}
 	
@@ -341,7 +341,7 @@ public class GetSourceTests extends ModifyingResourceTests {
 	 * Test the field constant
 	 */
 	private IField getConstantField(String fieldName) {
-		IType type = getCompilationUnit("/P/p/Constants.java").getType("Constants");
+		IType type = getCompilationUnit("/P/p/Constants.js").getType("Constants");
 		IField field = type.getField(fieldName);
 		return field;
 	}

@@ -135,7 +135,7 @@ public void testCopySourceFolder1() throws CoreException {
 		this.createJavaProject("P2", new String[] {}, "bin");
 		this.createFolder("/P1/src/p");
 		this.createFile(
-			"/P1/src/p/X.java", 
+			"/P1/src/p/X.js", 
 			"package p;\n" +
 			"public class X {\n" +
 			"}"
@@ -149,7 +149,7 @@ public void testCopySourceFolder1() throws CoreException {
 			"	src[+]: {}\n" + 
 			"	ResourceDelta(/P2/.classpath)[*]"
 		);
-		ICompilationUnit cu = this.getCompilationUnit("/P2/src/p/X.java");
+		ICompilationUnit cu = this.getCompilationUnit("/P2/src/p/X.js");
 		assertTrue("Destination cu should exist", cu.exists());
 	} finally {
 		this.stopDeltas();
@@ -167,7 +167,7 @@ public void testCopySourceFolder2() throws CoreException {
 		this.createJavaProject("P2", new String[] {}, "bin");
 		this.createFolder("/P1/src/p");
 		this.createFile(
-			"/P1/src/p/X.java", 
+			"/P1/src/p/X.js", 
 			"package p;\n" +
 			"public class X {\n" +
 			"}"
@@ -181,7 +181,7 @@ public void testCopySourceFolder2() throws CoreException {
 			"	src2[+]: {}\n" + 
 			"	ResourceDelta(/P2/.classpath)[*]"
 		);
-		ICompilationUnit cu = this.getCompilationUnit("/P2/src2/p/X.java");
+		ICompilationUnit cu = this.getCompilationUnit("/P2/src2/p/X.js");
 		assertTrue("Destination cu should exist", cu.exists());
 	} finally {
 		this.stopDeltas();
@@ -200,14 +200,14 @@ public void testCopySourceFolder3() throws CoreException {
 		this.createJavaProject("P2", new String[] {}, "bin");
 		this.createFolder("/P1/src1/p");
 		this.createFile(
-			"/P1/src1/p/X.java", 
+			"/P1/src1/p/X.js", 
 			"package p;\n" +
 			"public class X {\n" +
 			"}"
 		);
 		this.createFolder("/P1/src1/src2/q");
 		this.createFile(
-			"/P1/src1/src2/q/Y.java", 
+			"/P1/src1/src2/q/Y.js", 
 			"package q;\n" +
 			"public class Y {\n" +
 			"}"
@@ -221,9 +221,9 @@ public void testCopySourceFolder3() throws CoreException {
 			"	src1[+]: {}\n" + 
 			"	ResourceDelta(/P2/.classpath)[*]"
 		);
-		ICompilationUnit cu = this.getCompilationUnit("/P2/src1/p/X.java");
+		ICompilationUnit cu = this.getCompilationUnit("/P2/src1/p/X.js");
 		assertTrue("Destination cu should exist", cu.exists());
-		cu = this.getCompilationUnit("/P2/src1/src2/q/Y.java");
+		cu = this.getCompilationUnit("/P2/src1/src2/q/Y.js");
 		assertTrue("Nested cu should not exist", !cu.exists());
 	} finally {
 		this.stopDeltas();
@@ -313,7 +313,7 @@ public void testCopySourceFolder5() throws CoreException {
 		IJavaProject p2 = this.createJavaProject("P2", new String[] {"src"}, "bin");
 		this.createFolder("/P1/src/p");
 		this.createFile(
-			"/P1/src/p/X.java", 
+			"/P1/src/p/X.js", 
 			"package p;\n" +
 			"public class X {\n" +
 			"}"
@@ -353,7 +353,7 @@ public void testCopySourceFolder6() throws CoreException {
 		IJavaProject project = this.createJavaProject("P", new String[] {"src"}, "bin");
 		this.createFolder("/P/src/p");
 		this.createFile(
-			"/P/src/p/X.java", 
+			"/P/src/p/X.js", 
 			"package p;\n" +
 			"public class X {\n" +
 			"}"
@@ -549,7 +549,7 @@ public void testDeleteSourceFolder1() throws CoreException {
 		IJavaProject project = this.createJavaProject("P", new String[] {"src"}, "bin");
 		this.createFolder("/P/src/p");
 		this.createFile(
-			"/P/src/p/X.java", 
+			"/P/src/p/X.js", 
 			"package p;\n" +
 			"public class X {\n" +
 			"}"
@@ -583,14 +583,14 @@ public void testDeleteSourceFolder2() throws CoreException {
 		project.setRawClasspath(createClasspath(new String[] {"/P/src1", "src2/**", "/P/src1/src2", ""}, false/*no inclusion*/, true/*exclusion*/), null);
 		IFolder folder = this.createFolder("/P/src1/p");
 		IFile file = this.createFile(
-			"/P/src1/p/X.java", 
+			"/P/src1/p/X.js", 
 			"package p;\n" +
 			"public class X {\n" +
 			"}"
 		);
 		this.createFolder("/P/src1/src2/q");
 		this.createFile(
-			"/P/src1/src2/q/Y.java", 
+			"/P/src1/src2/q/Y.js", 
 			"package q;\n" +
 			"public class Y {\n" +
 			"}"
@@ -636,7 +636,7 @@ public void testMoveSourceFolder1() throws CoreException {
 		IJavaProject p2 = this.createJavaProject("P2", new String[] {}, "bin");
 		this.createFolder("/P1/src/p");
 		this.createFile(
-			"/P1/src/p/X.java", 
+			"/P1/src/p/X.js", 
 			"package p;\n" +
 			"public class X {\n" +
 			"}"
@@ -683,7 +683,7 @@ public void testMoveSourceFolder2() throws CoreException {
 		IJavaProject p2 = this.createJavaProject("P2", new String[] {}, "bin");
 		this.createFolder("/P1/src/p");
 		this.createFile(
-			"/P1/src/p/X.java", 
+			"/P1/src/p/X.js", 
 			"package p;\n" +
 			"public class X {\n" +
 			"}"
@@ -733,14 +733,14 @@ public void testMoveSourceFolder3() throws CoreException {
 		IJavaProject p2 = this.createJavaProject("P2", new String[] {}, "bin");
 		this.createFolder("/P1/src1/p");
 		this.createFile(
-			"/P1/src1/p/X.java", 
+			"/P1/src1/p/X.js", 
 			"package p;\n" +
 			"public class X {\n" +
 			"}"
 		);
 		this.createFolder("/P1/src1/src2/q");
 		this.createFile(
-			"/P1/src1/src2/q/Y.java", 
+			"/P1/src1/src2/q/Y.js", 
 			"package q;\n" +
 			"public class Y {\n" +
 			"}"
@@ -932,7 +932,7 @@ public void testRenameSourceFolder1() throws CoreException {
 		IJavaProject project = this.createJavaProject("P", new String[] {"src1"}, "bin");
 		this.createFolder("/P/src1/p");
 		this.createFile(
-			"/P/src1/p/X.java", 
+			"/P/src1/p/X.js", 
 			"package p;\n" +
 			"public class X {\n" +
 			"}"

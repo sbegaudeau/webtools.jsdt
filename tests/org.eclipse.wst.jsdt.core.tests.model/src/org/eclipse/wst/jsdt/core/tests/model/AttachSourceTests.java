@@ -77,7 +77,7 @@ public void setUpSuite() throws Exception {
 }
 private void setUpGenericJar() throws IOException, CoreException {
 	String[] pathAndContents = new String[] {
-		"generic/X.java", 
+		"generic/X.js", 
 		"package generic;\n" +
 		"public class X<T> {\n" + 
 		"  void foo(X<T> x) {\n" +
@@ -113,7 +113,7 @@ private void setUpGenericJar() throws IOException, CoreException {
 }
 private void setUpInnerClassesJar() throws IOException, CoreException {
 	String[] pathAndContents = new String[] {
-		"inner/X.java", 
+		"inner/X.js", 
 		"package inner;\n" +
 		"public class X {\n" + 
 		"  void foo() {\n" +
@@ -304,7 +304,7 @@ public void testClassFileInOutput() throws CoreException {
 }
 /**
  * Retrieves the source code for "A.class", which is
- * the entire CU for "A.java".
+ * the entire CU for "A.js".
  */
 public void testClassRetrieval() throws JavaModelException {
 	IClassFile objectCF = this.pkgFragmentRoot.getPackageFragment("x.y").getClassFile("A.class");
@@ -629,7 +629,7 @@ public void testProjectAsClassFolder1() throws CoreException {
 		createJavaProject("P1");
 		createFolder("/P1/p");
 		createFile(
-			"/P1/p/X.java",
+			"/P1/p/X.js",
 			"package p;\n" +
 			"public class X {\n" +
 			"}"
@@ -661,7 +661,7 @@ public void testProjectAsClassFolder2() throws CoreException {
 	try {
 		createJavaProject("P1");
 		createFile(
-			"/P1/X.java",
+			"/P1/X.js",
 			"public class X {\n" +
 			"}"
 		);
@@ -690,7 +690,7 @@ public void testProjectAsSourceAttachment() throws CoreException {
 	try {
 		IJavaProject javaProject = createJavaProject("Test", new String[]{""}, new String[]{"/AttachSourceTests/test.jar"}, "");
 		createFolder("/Test/test1");
-		createFile("/Test/test1/Test.java",
+		createFile("/Test/test1/Test.js",
 			"package test1;\n" + 
 			"\n" + 
 			"public class Test {}");

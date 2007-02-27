@@ -51,7 +51,7 @@ public void testFieldOccurencesInWorkingCopies() throws CoreException {
 		IJavaProject p1 = createJavaProject("P1");
 		createFolder("/P1/p1");
 		createFile(
-			"/P1/p1/X.java",
+			"/P1/p1/X.js",
 			"package p1;\n" +
 			"public class X {\n" +
 			"    public static int FOO;\n" +
@@ -62,7 +62,7 @@ public void testFieldOccurencesInWorkingCopies() throws CoreException {
 		IJavaProject p2 = createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P1"}, "");
 		createFolder("/P2/p2");
 		createFile(
-			"/P2/p2/Y.java",
+			"/P2/p2/Y.js",
 			"package p2;\n" +
 			"import p1.X;\n" +
 			"public class Y {\n" +
@@ -72,7 +72,7 @@ public void testFieldOccurencesInWorkingCopies() throws CoreException {
 		);
 		
 		// create working copies and rename X.FOO to X.BAR in these working copies
-		wc1 = getCompilationUnit("P1/p1/X.java").getWorkingCopy(null);
+		wc1 = getCompilationUnit("P1/p1/X.js").getWorkingCopy(null);
 		wc1.getBuffer().setContents(
 			"package p1;\n" +
 			"public class X {\n" +
@@ -80,7 +80,7 @@ public void testFieldOccurencesInWorkingCopies() throws CoreException {
 			"}"
 		);
 		wc1.reconcile(ICompilationUnit.NO_AST, false, null, null);
-		wc2 = getCompilationUnit("P2/p2/Y.java").getWorkingCopy(null);
+		wc2 = getCompilationUnit("P2/p2/Y.js").getWorkingCopy(null);
 		wc2.getBuffer().setContents(
 			"package p2;\n" +
 			"import p1.X;\n" +
@@ -126,7 +126,7 @@ public void testHierarchyScope1() throws CoreException {
 		createJavaProject("P1");
 		createFolder("/P1/p");
 		createFile(
-			"/P1/p/X.java",
+			"/P1/p/X.js",
 			"package p;\n" +
 			"public class X {\n" +
 			"	protected void foo() {\n" +
@@ -138,14 +138,14 @@ public void testHierarchyScope1() throws CoreException {
 		);
 		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P1"}, "");
 		createFile(
-			"/P2/Y.java",
+			"/P2/Y.js",
 			"import p.X;\n" +
 			"public class Y extends X {\n" +
 			"	protected void foo() {\n" +
 			"	}\n" +
 			"}" 
 		);
-		ICompilationUnit cu = getCompilationUnit("/P2/Y.java");
+		ICompilationUnit cu = getCompilationUnit("/P2/Y.js");
 		IType type = cu.getType("Y");
 		IMethod method = type.getMethod("foo", new String[] {});
 		IJavaSearchScope scope = SearchEngine.createHierarchyScope(type);
@@ -173,7 +173,7 @@ public void testHierarchyScope2() throws CoreException {
 		createJavaProject("P1");
 		createFolder("/P1/p");
 		createFile(
-			"/P1/p/X.java",
+			"/P1/p/X.js",
 			"package p;\n" +
 			"public class X {\n" +
 			"	protected void foo() {\n" +
@@ -185,7 +185,7 @@ public void testHierarchyScope2() throws CoreException {
 		);
 		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P1"}, "");
 		createFile(
-			"/P2/Y.java",
+			"/P2/Y.js",
 			"import p.X;\n" +
 			"public class Y extends X {\n" +
 			"	protected void foo() {\n" +
@@ -193,14 +193,14 @@ public void testHierarchyScope2() throws CoreException {
 			"}" 
 		);
 		createFile(
-			"/P2/Z.java",
+			"/P2/Z.js",
 			"public class Z extends Y {\n" +
 			"	protected void foo() {\n" +
 			"	}\n" +
 			"}" 
 		);
 
-		ICompilationUnit cu = getCompilationUnit("/P2/Z.java");
+		ICompilationUnit cu = getCompilationUnit("/P2/Z.js");
 		IType type = cu.getType("Z");
 		IMethod method = type.getMethod("foo", new String[] {});
 		IJavaSearchScope scope = SearchEngine.createHierarchyScope(type);
@@ -228,7 +228,7 @@ public void testHierarchyScope3() throws CoreException {
 		createJavaProject("P1");
 		createFolder("/P1/p");
 		createFile(
-			"/P1/p/X.java",
+			"/P1/p/X.js",
 			"package p;\n" +
 			"public class X {\n" +
 			"	protected void foo() {\n" +
@@ -238,7 +238,7 @@ public void testHierarchyScope3() throws CoreException {
 		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P1"}, "");
 		createFolder("/P2/q");
 		createFile(
-			"/P2/q/Y.java",
+			"/P2/q/Y.js",
 			"package q;\n" +
 			"import p.X;\n" +
 			"public class Y extends X {\n" +
@@ -248,7 +248,7 @@ public void testHierarchyScope3() throws CoreException {
 			"}" 
 		);
 
-		ICompilationUnit cu = getCompilationUnit("/P1/p/X.java");
+		ICompilationUnit cu = getCompilationUnit("/P1/p/X.js");
 		IType type = cu.getType("X");
 		IMethod method = type.getMethod("foo", new String[] {});
 		IJavaSearchScope scope = SearchEngine.createHierarchyScope(type);
@@ -276,7 +276,7 @@ public void testHierarchyScope4() throws CoreException {
 		createJavaProject("P0");
 		createFolder("/P0/p0");
 		createFile(
-			"/P0/p0/X.java",
+			"/P0/p0/X.js",
 			"package p0;\n" +
 			"public class X {\n" +
 			"  public static X TheX;\n" +
@@ -287,7 +287,7 @@ public void testHierarchyScope4() throws CoreException {
 		createJavaProject("P1", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P0"}, "");
 		createFolder("/P1/p1");
 		createFile(
-			"/P1/p1/T.java",
+			"/P1/p1/T.js",
 			"package p1;\n" +
 			"import p0.X;\n" +
 			"public class T {\n" +
@@ -299,7 +299,7 @@ public void testHierarchyScope4() throws CoreException {
 		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P0", "/P1"}, "");
 		createFolder("/P2/p2");
 		createFile(
-			"/P2/p2/Y.java",
+			"/P2/p2/Y.js",
 			"package p2;\n" +
 			"import p0.X;\n" +
 			"import p1.T;\n" +
@@ -312,7 +312,7 @@ public void testHierarchyScope4() throws CoreException {
 		createJavaProject("P3", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P0", "/P2"}, "");
 		createFolder("/P3/p3");
 		createFile(
-			"/P3/p3/Z.java",
+			"/P3/p3/Z.js",
 			"package p3;\n" +
 			"import p0.X;\n" +
 			"import p2.Y;\n" +
@@ -325,7 +325,7 @@ public void testHierarchyScope4() throws CoreException {
 			"}" 
 		);
 
-		ICompilationUnit cu = getCompilationUnit("/P3/p3/Z.java");
+		ICompilationUnit cu = getCompilationUnit("/P3/p3/Z.js");
 		IType type = cu.getType("Z");
 		IMethod method = type.getMethod("foo", new String[] {});
 		IJavaSearchScope scope = SearchEngine.createHierarchyScope(type);
@@ -354,14 +354,14 @@ public void testMethodOccurences() throws CoreException {
 		IJavaProject p1 = createJavaProject("P1");
 		createFolder("/P1/p");
 		createFile(
-			"/P1/p/I.java",
+			"/P1/p/I.js",
 			"package p;\n" +
 			"public interface I {\n" +
 			"    void method(Object o);\n" +
 			"}"
 		);
 		createFile(
-			"/P1/p/C.java",
+			"/P1/p/C.js",
 			"package p;\n" +
 			"public class C implements I {\n" +
 			"    void method(Object o) {\n" +
@@ -376,7 +376,7 @@ public void testMethodOccurences() throws CoreException {
 		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {p1, p2});
 		JavaSearchResultCollector resultCollector = new JavaSearchResultCollector();
 		resultCollector.showProject = true;
-		IMethod method = getCompilationUnit("/P1/p/I.java").getType("I").getMethod("method", new String[] {"QObject;"});
+		IMethod method = getCompilationUnit("/P1/p/I.js").getType("I").getMethod("method", new String[] {"QObject;"});
 		search(
 			method, 
 			ALL_OCCURRENCES,
@@ -402,7 +402,7 @@ public void testPackageDeclaration() throws CoreException {
 		IJavaProject p1 = createJavaProject("P1");
 		createFolder("/P1/p");
 		createFile(
-			"/P1/p/X.java",
+			"/P1/p/X.js",
 			"package p;\n" +
 			"public class X {\n" +
 			"}"
@@ -440,7 +440,7 @@ public void testPackageReference1() throws CoreException {
 		IJavaProject p1 = createJavaProject("P1");
 		createFolder("/P1/p");
 		createFile(
-			"/P1/p/X.java",
+			"/P1/p/X.js",
 			"package p;\n" +
 			"public class X {\n" +
 			"}"
@@ -455,7 +455,7 @@ public void testPackageReference1() throws CoreException {
 			"");
 		createFolder("/P2/p");
 		createFile(
-			"/P2/p/Y.java",
+			"/P2/p/Y.js",
 			"package p;\n" +
 			"public class Y {\n" +
 			"}"
@@ -464,7 +464,7 @@ public void testPackageReference1() throws CoreException {
 		// create package references
 		createFolder("/P2/q");
 		createFile(
-			"/P2/q/Z.java",
+			"/P2/q/Z.js",
 			"package q;\n" +
 			"import p.X;\n" +
 			"import p.Y;\n" +
@@ -540,7 +540,7 @@ public void testReferenceInWorkingCopies() throws CoreException {
 		IJavaProject p1 = createJavaProject("P1");
 		createFolder("/P1/p1");
 		createFile(
-			"/P1/p1/X.java",
+			"/P1/p1/X.js",
 			"package p1;\n" +
 			"public class X {\n" +
 			"  void foo() {\n" +
@@ -548,7 +548,7 @@ public void testReferenceInWorkingCopies() throws CoreException {
 			"}"
 		);
 		createFile(
-			"/P1/p1/Test.java",
+			"/P1/p1/Test.js",
 			"package p1;\n" +
 			"public class Test {\n" +
 			"}"
@@ -563,14 +563,14 @@ public void testReferenceInWorkingCopies() throws CoreException {
 			"");
 		createFolder("/P2/p2");
 		createFile(
-			"/P2/p2/Y.java",
+			"/P2/p2/Y.js",
 			"package p2;\n" +
 			"public class Y {\n" +
 			"}"
 		);
 		// need a second potential match to see the problem
 		createFile(
-			"/P2/p2/Z.java",
+			"/P2/p2/Z.js",
 			"public class Z {\n" +
 			"  void bar(p1.Test test) {\n" +
 			"  }\n" +
@@ -582,7 +582,7 @@ public void testReferenceInWorkingCopies() throws CoreException {
 		
 		// create working copies
 		WorkingCopyOwner owner = new WorkingCopyOwner() {};
-		workingCopy1 = getCompilationUnit("/P1/p1/X.java").getWorkingCopy(owner, null/*no problem requestor*/, null/*no progress monitor*/);
+		workingCopy1 = getCompilationUnit("/P1/p1/X.js").getWorkingCopy(owner, null/*no problem requestor*/, null/*no progress monitor*/);
 		workingCopy1.getBuffer().setContents(
 			"package p1;\n" +
 			"public class X {\n" +
@@ -591,7 +591,7 @@ public void testReferenceInWorkingCopies() throws CoreException {
 			"}"
 		);
 		workingCopy1.makeConsistent(null);
-		workingCopy2 = getCompilationUnit("/P2/p2/Y.java").getWorkingCopy(owner, null/*no problem requestor*/, null/*no progress monitor*/);
+		workingCopy2 = getCompilationUnit("/P2/p2/Y.js").getWorkingCopy(owner, null/*no problem requestor*/, null/*no progress monitor*/);
 		workingCopy2.getBuffer().setContents(
 			"package p2;\n" +
 			"import p1.X;\n" +
@@ -676,14 +676,14 @@ public void testBug151189_Workspace() throws CoreException {
 		/*IJavaProject p1 = */createJavaProject("P1");
 		createFolder("/P1/pack");
 		createFile(
-			"/P1/pack/Declaration.java",
+			"/P1/pack/Declaration.js",
 			"package pack;\n" + 
 			"public class Declaration implements Interface {\n" + 
 			"	public void doOperation(int val) {}\n" + 
 			"}\n"
 		);
 		createFile(
-			"/P1/pack/Interface.java",
+			"/P1/pack/Interface.js",
 			"package pack;\n" + 
 			"public interface Interface {\n" + 
 			"	void doOperation(int val);\n" + 
@@ -694,7 +694,7 @@ public void testBug151189_Workspace() throws CoreException {
 		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P1" }, "");
 		createFolder("/P2/test");
 		createFile(
-			"/P2/test/Declaration_bis.java",
+			"/P2/test/Declaration_bis.js",
 			"package test;\n" + 
 			"import pack.Interface;\n" + 
 			"public class Declaration_bis implements Interface {\n" + 
@@ -703,7 +703,7 @@ public void testBug151189_Workspace() throws CoreException {
 		);
 
 		// Get method
-		IMethod method = getCompilationUnit("/P2/test/Declaration_bis.java").getType("Declaration_bis").getMethod("doOperation", new String[] {"I"});
+		IMethod method = getCompilationUnit("/P2/test/Declaration_bis.js").getType("Declaration_bis").getMethod("doOperation", new String[] {"I"});
 
 		// search method declaration in workspace scope
 		IJavaSearchScope scope = SearchEngine.createWorkspaceScope(); //JavaSearchScope(new IJavaElement[] {p1, p2});
@@ -744,14 +744,14 @@ public void testBug151189_Project() throws CoreException {
 		createJavaProject("P1");
 		createFolder("/P1/pack");
 		createFile(
-			"/P1/pack/Declaration.java",
+			"/P1/pack/Declaration.js",
 			"package pack;\n" + 
 			"public class Declaration implements Interface {\n" + 
 			"	public void doOperation(int val) {}\n" + 
 			"}\n"
 		);
 		createFile(
-			"/P1/pack/Interface.java",
+			"/P1/pack/Interface.js",
 			"package pack;\n" + 
 			"public interface Interface {\n" + 
 			"	void doOperation(int val);\n" + 
@@ -762,7 +762,7 @@ public void testBug151189_Project() throws CoreException {
 		IJavaProject p2 = createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P1" }, "");
 		createFolder("/P2/test");
 		createFile(
-			"/P2/test/Declaration_bis.java",
+			"/P2/test/Declaration_bis.js",
 			"package test;\n" + 
 			"import pack.Interface;\n" + 
 			"public class Declaration_bis implements Interface {\n" + 
@@ -771,7 +771,7 @@ public void testBug151189_Project() throws CoreException {
 		);
 
 		// Get method
-		IMethod method = getCompilationUnit("/P2/test/Declaration_bis.java").getType("Declaration_bis").getMethod("doOperation", new String[] {"I"});
+		IMethod method = getCompilationUnit("/P2/test/Declaration_bis.js").getType("Declaration_bis").getMethod("doOperation", new String[] {"I"});
 
 		// search method declaration in project scope
 		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {p2});
@@ -805,7 +805,7 @@ public void testBug163072() throws CoreException {
 		/*IJavaProject p1 = */createJavaProject("P1"); // standard project using 1.4 compliance
 		createFolder("/P1/test");
 		createFile(
-			"/P1/test/Test.java",
+			"/P1/test/Test.js",
 			"package test;\n" + 
 			"public class Test {\n" + 
 			"	public Object getType() {\n" + 
@@ -823,7 +823,7 @@ public void testBug163072() throws CoreException {
 		createJavaProject("P2", new String[] {""}, new String[] {"JCL15_LIB"}, new String[] { "/P1" }, "", "1.5");
 		createFolder("/P2/pack");
 		createFile(
-			"/P2/pack/FactoryContainer.java",
+			"/P2/pack/FactoryContainer.js",
 			"package pack;\n" + 
 			"public class FactoryContainer {\n" + 
 			"	public enum FactoryType { PLUGIN }\n" + 
@@ -833,7 +833,7 @@ public void testBug163072() throws CoreException {
 			"}\n"
 		);
 		createFile(
-			"/P2/pack/Reference.java",
+			"/P2/pack/Reference.js",
 			"package pack;\n" + 
 			"public class Reference {\n" + 
 			"	private final FactoryContainer _fc;\n" + 
@@ -847,7 +847,7 @@ public void testBug163072() throws CoreException {
 		);
 
 		// Get method
-		IMethod method = getCompilationUnit("/P1/test/Test.java").getType("Test").getMethod("getType", new String[0]);
+		IMethod method = getCompilationUnit("/P1/test/Test.js").getType("Test").getMethod("getType", new String[0]);
 		assertTrue("Method 'Test.getType()' should exist!", method.exists());
 
 		// search method declaration in workspace scope
@@ -876,7 +876,7 @@ public void testBug167743() throws CoreException {
 		IJavaProject p = createJavaProject("P");
 		createFolder("/P/test");
 		createFile(
-			"/P/test/TestClass.java",
+			"/P/test/TestClass.js",
 			"package test;\n" + 
 			"public class Test {\n" + 
 			"}\n"

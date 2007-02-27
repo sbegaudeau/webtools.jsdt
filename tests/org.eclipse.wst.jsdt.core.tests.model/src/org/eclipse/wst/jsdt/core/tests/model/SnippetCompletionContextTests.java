@@ -39,7 +39,7 @@ static {
 public void test0001() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0001/X.java",
+		"/Completion/src3/test0001/X.js",
 		"package test0001;\n" + 
 		"public class X {\n" + 
 		"  /**/\n" + 
@@ -76,7 +76,7 @@ public void test0001() throws JavaModelException {
 public void test0002() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0002/X.java",
+		"/Completion/src3/test0002/X.js",
 		"package test0002;\n" + 
 		"public class X {\n" + 
 		"  /**/\n" + 
@@ -113,7 +113,7 @@ public void test0002() throws JavaModelException {
 public void test0003() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0003/X.java",
+		"/Completion/src3/test0003/X.js",
 		"package test0003;\n" + 
 		"public class X {\n" + 
 		"  /**/\n" + 
@@ -150,7 +150,7 @@ public void test0003() throws JavaModelException {
 public void test0004() throws JavaModelException {
 	this.workingCopies = new ICompilationUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
-		"/Completion/src3/test0004/X.java",
+		"/Completion/src3/test0004/X.js",
 		"package test0004;\n" + 
 		"public class X {\n" + 
 		"  /**/\n" + 

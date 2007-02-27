@@ -95,7 +95,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -160,7 +160,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -229,7 +229,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -301,7 +301,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -364,7 +364,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");		
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -437,7 +437,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -504,7 +504,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		
@@ -552,7 +552,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		
@@ -603,7 +603,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		
@@ -651,7 +651,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		
@@ -698,7 +698,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -760,7 +760,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -833,7 +833,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -899,7 +899,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -962,7 +962,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");		
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -1034,7 +1034,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");		
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -1099,7 +1099,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -1165,7 +1165,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");		
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -1230,7 +1230,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -1305,7 +1305,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -1380,7 +1380,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -1439,7 +1439,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -1499,7 +1499,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -1560,7 +1560,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
@@ -1622,7 +1622,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("    //c4\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		

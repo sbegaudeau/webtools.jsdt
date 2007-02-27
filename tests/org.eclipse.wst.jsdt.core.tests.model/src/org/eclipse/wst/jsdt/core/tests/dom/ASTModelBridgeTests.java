@@ -91,13 +91,13 @@ public class ASTModelBridgeTests extends AbstractASTTests {
 			"lib.jar",
 			"libsrc.zip", 
 			new String[] {
-				"p/Y.java",
+				"p/Y.js",
 				"package p;\n" +
 				"public class Y<T> {\n" +
 				"  public Y(T t) {\n" +
 				"  }\n" +
 				"}",
-				"p/Z.java",
+				"p/Z.js",
 				"package p;\n" +
 				"public class Z {\n" +
 				"  /*start*/class Member {\n" +
@@ -106,7 +106,7 @@ public class ASTModelBridgeTests extends AbstractASTTests {
 				"    new Member() {};\n" +
 				"  }\n" +
 				"}",
-				"p/W.java",
+				"p/W.js",
 				"package p;\n" +
 				"public class W {\n" +
 				"  class Member {\n" +
@@ -114,11 +114,11 @@ public class ASTModelBridgeTests extends AbstractASTTests {
 				"    }/*end*/\n" +
 				"  }\n" +
 				"}",
-				"p/ABC.java",
+				"p/ABC.js",
 				"package p;\n" +
 				"public class ABC {\n" +
 				"}",
-				"Z.java",
+				"Z.js",
 				"public class Z {\n" +
 				"  /*start*/class Member {\n" +
 				"  }/*end*/\n" +
@@ -128,7 +128,7 @@ public class ASTModelBridgeTests extends AbstractASTTests {
 				"}"
 			}, 
 			"1.5");
-		this.workingCopy = getCompilationUnit("/P/src/X.java").getWorkingCopy(
+		this.workingCopy = getCompilationUnit("/P/src/X.js").getWorkingCopy(
 			new WorkingCopyOwner() {}, 
 			new IProblemRequestor() {
 				public void acceptProblem(IProblem problem) {}
@@ -320,7 +320,7 @@ public class ASTModelBridgeTests extends AbstractASTTests {
 		//search for references to p.ABC after adding references in exactly 1 file
 		try {
 			createFile(
-				"/P/src/Test.java",
+				"/P/src/Test.js",
 				"import p.ABC;\n" +
 				"public class Test extends ABC {\n" +
 				"}"
@@ -328,7 +328,7 @@ public class ASTModelBridgeTests extends AbstractASTTests {
 			IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {getPackageFragmentRoot("/P/src")});
 			search(classFile.getType(), IJavaSearchConstants.REFERENCES, scope, new AbstractJavaSearchTests.JavaSearchResultCollector());
 		} finally {
-			deleteFile("/P/src/Test.java");
+			deleteFile("/P/src/Test.js");
 		}
 		
 		String source = classFile.getSource();
@@ -363,12 +363,12 @@ public class ASTModelBridgeTests extends AbstractASTTests {
 			
 			createJavaProject("P1", new String[] {""}, new String[] {"JCL15_LIB"}, "", "1.5");
 			createFile(
-				"/P1/X.java",
+				"/P1/X.js",
 				"public class X {\n" + 
 				"    /*start*/String/*end*/ field;\n" + 
 				"}"
 			);
-			ASTNode node = buildAST(getCompilationUnit("/P1/X.java"));
+			ASTNode node = buildAST(getCompilationUnit("/P1/X.js"));
 			IBinding binding = ((Type) node).resolveBinding();
 			IJavaElement element = binding.getJavaElement();
 			assertElementEquals(
@@ -438,14 +438,14 @@ public class ASTModelBridgeTests extends AbstractASTTests {
 		WorkingCopyOwner owner = new WorkingCopyOwner() {};
 		this.workingCopies = new ICompilationUnit[3];
 		this.workingCopies[0] = getWorkingCopy(
-			"/P/src/X.java", 
+			"/P/src/X.js", 
 			"public class X {\n" +
 			"  public void foo(int i, String s) {\n" +
 			"  }\n" +
 			"}",
 			owner, false);
 		this.workingCopies[1] = getWorkingCopy(
-			"/P/src/Y.java", 
+			"/P/src/Y.js", 
 			"public class Y extends X {\n" +
 			"  void bar() {\n" +
 			"    new Y() {};\n" +
@@ -453,7 +453,7 @@ public class ASTModelBridgeTests extends AbstractASTTests {
 			"}",
 			owner, false);
 		this.workingCopies[2] = getWorkingCopy(
-			"/P/src/I.java", 
+			"/P/src/I.js", 
 			"public interface I {\n" +
 			"  int BAR;\n" +
 			"}",
@@ -828,7 +828,7 @@ public class ASTModelBridgeTests extends AbstractASTTests {
 	 * and coming from a binding key resolution is correct.
 	 */
 	public void testLocalType2() throws CoreException {
-		String filePath = "/P/src/Z.java";
+		String filePath = "/P/src/Z.js";
 		try {
 			String contents = 
 				"public class Z {\n" +
@@ -1008,7 +1008,7 @@ public class ASTModelBridgeTests extends AbstractASTTests {
 		ICompilationUnit otherWorkingCopy = null;
 		try {
 			otherWorkingCopy = getWorkingCopy(
-				"/P/src/Y.java",
+				"/P/src/Y.js",
 				"public class Y {\n" +
 				"  void foo(int i, String[] args, java.lang.Class clazz) {}\n" +
 				"}",
@@ -1194,7 +1194,7 @@ public class ASTModelBridgeTests extends AbstractASTTests {
 		try {
 			// use a compilation unit instead of a working copy to use the ASTParser instead of reconcile
 			createFile(
-				"/P/src/Test.java",
+				"/P/src/Test.js",
 				"public class X {\n" + 
 				"        void test() {\n" + 
 				"                new Object() {\n" + 
@@ -1205,7 +1205,7 @@ public class ASTModelBridgeTests extends AbstractASTTests {
 				"        }\n" + 
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/src/Test.java");
+			ICompilationUnit cu = getCompilationUnit("/P/src/Test.js");
 			
 			ASTNode node = buildAST(null/*use existing contents*/, cu, false/*don't report errors*/, true/*statement recovery*/);
 			IBinding binding = ((MethodDeclaration) node).resolveBinding();
@@ -1218,7 +1218,7 @@ public class ASTModelBridgeTests extends AbstractASTTests {
 			);
 			assertTrue("Element should exist", element.exists());
 		} finally {
-			deleteFile("/P/src/Test.java");
+			deleteFile("/P/src/Test.js");
 		}
 	}
 
@@ -1354,7 +1354,7 @@ public class ASTModelBridgeTests extends AbstractASTTests {
 	public void testTopLevelType2() throws CoreException {
 		try {
 			createFile(
-				"/P/src/Y.java",
+				"/P/src/Y.js",
 				"public class Y {\n" +
 				"}"
 			);
@@ -1372,7 +1372,7 @@ public class ASTModelBridgeTests extends AbstractASTTests {
 			);
 			assertTrue("Element should exist", element.exists());
 		} finally {
-			deleteFile("/P/src/Y.java");
+			deleteFile("/P/src/Y.js");
 		}
 	}
 

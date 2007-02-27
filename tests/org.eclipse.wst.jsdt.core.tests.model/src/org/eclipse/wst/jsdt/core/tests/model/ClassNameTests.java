@@ -55,7 +55,7 @@ protected void setUp() throws Exception {
 		TEST_PROJECT = createJavaProject("TestProject", sourceFolders, new String[] {"JCL_LIB"}, "bin");
 		createFolder("/TestProject/src0/org/eclipse/jdt/core/test0");
 		createFile(
-			"/TestProject/src0/org/eclipse/jdt/core/test0/Foo.java", 
+			"/TestProject/src0/org/eclipse/jdt/core/test0/Foo.js", 
 			"package org.eclipse.wst.jsdt.core.test0;\n" +
 			"public class Foo {\n" +
 			"	class InFoo {}\n" +
@@ -65,7 +65,7 @@ protected void setUp() throws Exception {
 			"}\n"
 		);
 		createFile(
-			"/TestProject/src1/Foo.java", 
+			"/TestProject/src1/Foo.js", 
 			"public class Foo {\n" +
 			"	class InFoo {}\n" +
 			"}\n" +
@@ -76,7 +76,7 @@ protected void setUp() throws Exception {
 		int length = SF_LENGTH - 1;
 		createFolder("/TestProject/src"+length+"/org/eclipse/jdt/core/test"+length);
 		createFile(
-			"/TestProject/src"+length+"/org/eclipse/jdt/core/test"+length+"/Foo.java", 
+			"/TestProject/src"+length+"/org/eclipse/jdt/core/test"+length+"/Foo.js", 
 			"package org.eclipse.wst.jsdt.core.test"+length+";\n" +
 			"public class Foo {\n" +
 			"}\n" +
@@ -84,7 +84,7 @@ protected void setUp() throws Exception {
 			"}\n"
 		);
 		createFile(
-			"/TestProject/src"+length+"/org/eclipse/jdt/core/test"+length+"/Test.java", 
+			"/TestProject/src"+length+"/org/eclipse/jdt/core/test"+length+"/Test.js", 
 			"package org.eclipse.wst.jsdt.core.test"+length+";\n" +
 			"public class Test {\n" +
 			"	public static void main(String[] args) {\n" +
@@ -546,7 +546,7 @@ public void testFindTypeWithDot() throws JavaModelException, CoreException {
 		IJavaProject javaProject = createJavaProject("P", new String[] {""}, "");
 		this.createFolder("/P/p");
 		this.createFile(
-			"/P/p/X.java", 
+			"/P/p/X.js", 
 			"package p;\n" +
 			"public class X {\n" +
 			"  public class Y {\n" +
@@ -1111,7 +1111,7 @@ public void testFindSecondaryType_Bug72179() throws JavaModelException, CoreExce
 		IJavaProject javaProject = createJavaProject("P", new String[] {""}, "");
 		createFolder("/P/p1");
 		createFile(
-			"/P/p1/jc.java", 
+			"/P/p1/jc.js", 
 			"package p1;\n" +
 			"class jc008{}\n" +
 			"class jc009{}\n" +

@@ -103,7 +103,7 @@ public class ASTParserTest extends org.eclipse.wst.jsdt.core.tests.junit.extensi
 	    parser.setWorkingCopyOwner(null);
 
 	    parser.setUnitName(null);
-	    parser.setUnitName("Foo.java"); //$NON-NLS-1$
+	    parser.setUnitName("Foo.js"); //$NON-NLS-1$
 
 	    parser.setProject(null);
 

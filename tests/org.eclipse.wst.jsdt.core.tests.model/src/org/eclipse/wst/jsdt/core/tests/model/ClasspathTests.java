@@ -352,7 +352,7 @@ public void testClasspathForceReload() throws CoreException {
 public void testClasspathCreateLibraryEntry() throws CoreException {
 	try {
 		IJavaProject proj = this.createJavaProject("P", new String[] {"src"}, "bin");
-		this.createFile("P/src/X.java", "public class X {}");
+		this.createFile("P/src/X.js", "public class X {}");
 		this.createFile("P/src/X.class", "");
 	
 		IFolder rootFolder = proj.getProject().getFolder(new Path("src"));
@@ -2016,8 +2016,8 @@ public void testEncodeDecodeEntry02() {
 		"</classpathentry>\n",
 		JavaCore.newSourceEntry(
 			new Path("/P/src"), 
-			new IPath[] {new Path("**/Y.java")},
-			new IPath[] {new Path("**/X.java")},
+			new IPath[] {new Path("**/Y.js")},
+			new IPath[] {new Path("**/X.js")},
 			new Path("/P/bin"),
 			new IClasspathAttribute[] {JavaCore.newClasspathAttribute("attrName", "some value")})
 	);
@@ -2050,7 +2050,7 @@ public void testEncodeDecodeEntry04() {
 			new Path("/P/lib.jar"),
 			new Path("/P/src.zip"),
 			new Path("root"),
-			new IAccessRule[] {JavaCore.newAccessRule(new Path("**/A*.java"), IAccessRule.K_ACCESSIBLE)},
+			new IAccessRule[] {JavaCore.newAccessRule(new Path("**/A*.js"), IAccessRule.K_ACCESSIBLE)},
 			new IClasspathAttribute[] {JavaCore.newClasspathAttribute("attr1", "val1")},
 			true)
 	);
@@ -2073,7 +2073,7 @@ public void testEncodeDecodeEntry05() {
 			new Path("/P/lib.jar"),
 			new Path("/P/src.zip"),
 			new Path("root"),
-			new IAccessRule[] {JavaCore.newAccessRule(new Path("**/A*.java"), IAccessRule.K_ACCESSIBLE | IAccessRule.IGNORE_IF_BETTER)},
+			new IAccessRule[] {JavaCore.newAccessRule(new Path("**/A*.js"), IAccessRule.K_ACCESSIBLE | IAccessRule.IGNORE_IF_BETTER)},
 			new IClasspathAttribute[] {JavaCore.newClasspathAttribute("attr1", "val1")},
 			true)
 	);
@@ -3258,11 +3258,11 @@ public void testNoResourceChange03() throws CoreException {
 	try {
 		IJavaProject project = createJavaProject("P", new String[] {"src1"}, "bin");
 		createFile(
-			"/P/src1/X.java",
+			"/P/src1/X.js",
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("/P/src1/X.java");
+		ICompilationUnit cu = getCompilationUnit("/P/src1/X.js");
 		cu.open(null);
 		IClasspathEntry[] newClasspath = createClasspath("P", new String[] {"/P/src2", ""});
 		project.setRawClasspath(newClasspath, false/*cannot modify resources*/, null/*no progress*/);

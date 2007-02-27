@@ -499,7 +499,7 @@ public class OverflowingCacheTests extends ModifyingResourceTests {
 			createJavaProject("P");
 			for (int i = 0; i < 61; i++) {
 				createFile(
-					"P/X" + i + ".java",
+					"P/X" + i + ".js",
 					"public class X" + i + " {\n" +
 					"}"
 				);

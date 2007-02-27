@@ -41,7 +41,7 @@ public void setUp() throws Exception {
 	try {
 		this.createJavaProject("P", new String[] {"src"}, "bin");
 		this.createFolder("P/txt");
-		IFile file = this.createFile("P/txt/X.java",
+		IFile file = this.createFile("P/txt/X.js",
 			"public class X {\n" +
 			"}");
 		ICompilationUnit cu = (ICompilationUnit)JavaCore.create(file);	
@@ -94,8 +94,8 @@ public void testCommitWorkingCopy2() throws CoreException {
 	try {
 		createJavaProject( "P2", new String[] {"src"}, null, null, null, "bin", null, null, new String[][] {new String[] {"p1/"}}, "1.4");
 		createFolder("/P2/src/p1/p2");
-		createFile("/P2/src/p1/p2/X.java", "");
-		copy = getCompilationUnit("P2", "src", "p1.p2", "X.java").getWorkingCopy(null);
+		createFile("/P2/src/p1/p2/X.js", "");
+		copy = getCompilationUnit("P2", "src", "p1.p2", "X.js").getWorkingCopy(null);
 		copy.getBuffer().setContents("public class X {}");
 		copy.makeConsistent(null);
 		copy.commitWorkingCopy(false, null);
@@ -122,7 +122,7 @@ public void testGetSource() throws CoreException {
 			"package junit.test;\n" +
 			"public class X {\n" +
 			"}";
-		IFile file = this.createFile("/P1/src/junit/test/X.java", source);
+		IFile file = this.createFile("/P1/src/junit/test/X.js", source);
 		ICompilationUnit cu = JavaCore.createCompilationUnitFrom(file);
 		copy = cu.getWorkingCopy(null);
 		assertEquals(
@@ -145,7 +145,7 @@ public void testReconcileNonExistingProject() throws CoreException {
 	ICompilationUnit wc = null;
 	try {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IFile file = root.getProject("NonExisting").getFile("A.java");
+		IFile file = root.getProject("NonExisting").getFile("A.js");
 		wc = JavaCore.createCompilationUnitFrom(file).getWorkingCopy(null);
 		wc.reconcile(ICompilationUnit.NO_AST, false, null, null);
 	} finally {
@@ -162,7 +162,7 @@ public void testReconcileSimpleProject() throws CoreException {
 	ICompilationUnit wc = null;
 	try {
 	    IProject project = createProject("SimpleProject");
-		IFile file = project.getFile("A.java");
+		IFile file = project.getFile("A.js");
 		wc = JavaCore.createCompilationUnitFrom(file);
 		ReconcilerTests.ProblemRequestor pbRequestor = new ReconcilerTests.ProblemRequestor();
 		wc.becomeWorkingCopy(pbRequestor, null);
@@ -184,7 +184,7 @@ public void testReconcileSimpleProject2() throws CoreException {
 	ICompilationUnit wc = null;
 	try {
 	    IProject project = createProject("SimpleProject");
-		IFile file = project.getFile("A.java");
+		IFile file = project.getFile("A.js");
 		wc = JavaCore.createCompilationUnitFrom(file);
 		ReconcilerTests.ProblemRequestor pbRequestor = new ReconcilerTests.ProblemRequestor();
 		wc.becomeWorkingCopy(pbRequestor, null);
@@ -205,7 +205,7 @@ public void testSimpleProject() throws CoreException {
 	try {
 		createProject("SimpleProject");
 		IFile file = createFile(
-			"/SimpleProject/X.java",
+			"/SimpleProject/X.js",
 			"public class X {\n" +
 			"}"
 		);
@@ -260,7 +260,7 @@ public void testIsOnClasspath() throws CoreException {
 			"package junit.test;\n" +
 			"public class X {\n" +
 			"}";
-		IFile file = this.createFile("/SimpleProject/src/junit/test/X.java", source);
+		IFile file = this.createFile("/SimpleProject/src/junit/test/X.js", source);
 		ICompilationUnit cu = JavaCore.createCompilationUnitFrom(file);
 		copy = cu.getWorkingCopy(null);
 		
@@ -281,7 +281,7 @@ public void testReconcileAndCommit1() throws CoreException {
 		this.createFolder("/JavaProject/src/native.1");
 		String source = 
 			"class X {}";
-		IFile file = this.createFile("/JavaProject/src/native.1/X.java", source);
+		IFile file = this.createFile("/JavaProject/src/native.1/X.js", source);
 		ICompilationUnit cu = JavaCore.createCompilationUnitFrom(file);
 		copy = cu.getWorkingCopy(null);
 		
@@ -319,7 +319,7 @@ public void testReconcileAndCommit2() throws CoreException {
 		this.createFolder("/SimpleProject/src/native.1");
 		String source = 
 			"class X {}";
-		IFile file = this.createFile("/SimpleProject/src/native.1/X.java", source);
+		IFile file = this.createFile("/SimpleProject/src/native.1/X.js", source);
 		ICompilationUnit cu = JavaCore.createCompilationUnitFrom(file);
 		copy = cu.getWorkingCopy(null);
 		
@@ -357,7 +357,7 @@ public void testReconcileAndCommit3() throws CoreException {
 		this.createFolder("/SimpleProject/src/native.1");
 		String source = 
 			"class X {}";
-		IFile file = this.createFile("/SimpleProject/src/native.1/X.java", source);
+		IFile file = this.createFile("/SimpleProject/src/native.1/X.js", source);
 		primary = JavaCore.createCompilationUnitFrom(file);
 		primary.becomeWorkingCopy(null, null);
 		
@@ -395,7 +395,7 @@ public void testReconcileAndCommit4() throws CoreException {
 		this.createFolder("/SimpleProject/src/native.1");
 		String source = 
 			"class X {}";
-		IFile file = this.createFile("/SimpleProject/src/native.1/some invalid name.java", source);
+		IFile file = this.createFile("/SimpleProject/src/native.1/some invalid name.js", source);
 		primary = JavaCore.createCompilationUnitFrom(file);
 		primary.becomeWorkingCopy(null, null);
 		
@@ -435,7 +435,7 @@ public void testReconcileAndCommit5() throws CoreException {
 		String source = 
 			"package p; \n" +
 			"public class X {}";
-		IFile file = this.createFile("/JavaProject/src/invalid unit name.java", source);
+		IFile file = this.createFile("/JavaProject/src/invalid unit name.js", source);
 		ICompilationUnit cu = JavaCore.createCompilationUnitFrom(file);
 		copy = cu.getWorkingCopy(null);
 		

@@ -50,7 +50,7 @@ public void test001() throws JavaModelException {
 		" * Completion on @ inside text\n" +
 		" */\n" +
 		"public class BasicTestTextIns {}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "@");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "@");
 	assertResults(
 		"link[JAVADOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
 		"docRoot[JAVADOC_INLINE_TAG]{{@docRoot}, null, null, docRoot, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
@@ -66,7 +66,7 @@ public void test002() throws JavaModelException {
 		" * Completion on @s inside text\n" +
 		" */\n" +
 		"public class BasicTestTextIns {}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "@s");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "@s");
 	assertResults("");
 }
 
@@ -80,7 +80,7 @@ public void test003() throws JavaModelException {
 		"	 */\n" +
 		"	int field;\n" +
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "@");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "@");
 	assertResults(
 		"link[JAVADOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
 		"docRoot[JAVADOC_INLINE_TAG]{{@docRoot}, null, null, docRoot, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
@@ -99,7 +99,7 @@ public void test004() throws JavaModelException {
 		"	 */\n" +
 		"	int field;\n" +
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "@d");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "@d");
 	assertResults(
 		"docRoot[JAVADOC_INLINE_TAG]{{@docRoot}, null, null, docRoot, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
@@ -114,7 +114,7 @@ public void test005() throws JavaModelException {
 		"	 */\n" +
 		"	public void foo() {}\n" +
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "@");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "@");
 	assertResults(
 		"link[JAVADOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
 		"docRoot[JAVADOC_INLINE_TAG]{{@docRoot}, null, null, docRoot, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
@@ -133,7 +133,7 @@ public void test006() throws JavaModelException {
 		"	 */\n" +
 		"	public void foo() {}\n" +
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "@ret");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "@ret");
 	assertResults("");
 }
 
@@ -146,7 +146,7 @@ public void test007() throws JavaModelException {
 		"	 */\n" +
 		"	public void foo() {}\n" +
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "@l");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "@l");
 	assertResults(
 		"link[JAVADOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
 		"linkplain[JAVADOC_INLINE_TAG]{{@linkplain}, null, null, linkplain, null, "+this.positions+JAVADOC_RELEVANCE+"}"
@@ -162,7 +162,7 @@ public void test008() throws JavaModelException {
 		"	 */\n" +
 		"	public void foo() {}\n" +
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "{@li");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "{@li");
 	assertResults(
 		"link[JAVADOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
 		"linkplain[JAVADOC_INLINE_TAG]{{@linkplain}, null, null, linkplain, null, "+this.positions+JAVADOC_RELEVANCE+"}"
@@ -179,7 +179,7 @@ public void test009() throws JavaModelException {
 		"	 */\n" +
 		"	public void foo(String str) {}\n" +
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "@inh");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "@inh");
 	assertResults(
 		"inheritDoc[JAVADOC_INLINE_TAG]{{@inheritDoc}, null, null, inheritDoc, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
@@ -195,7 +195,7 @@ public void test010() throws JavaModelException {
 		"	 */\n" +
 		"	public void foo(String str) {}\n" +
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "{@inh");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "{@inh");
 	assertResults(
 		"inheritDoc[JAVADOC_INLINE_TAG]{{@inheritDoc}, null, null, inheritDoc, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
@@ -210,7 +210,7 @@ public void test011() throws JavaModelException {
 		"	 */\n" +
 		"	public void foo() {}\n" +
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "{@docRoot");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "{@docRoot");
 	assertResults(
 		"docRoot[JAVADOC_INLINE_TAG]{{@docRoot}, null, null, docRoot, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
@@ -227,7 +227,7 @@ public void test020() throws JavaModelException {
 		" */\n" + 
 		"public class BasicTestTextIns {\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "BasicTestTextIns");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "BasicTestTextIns");
 	assertSortedResults(
 		"BasicTestTextIns[JAVADOC_TYPE_REF]{{@link BasicTestTextIns}, javadoc.text, Ljavadoc.text.BasicTestTextIns;, null, null, "+this.positions+R_DICENUNRIT+"}\n" + 
 		"BasicTestTextIns[TYPE_REF]{BasicTestTextIns, javadoc.text, Ljavadoc.text.BasicTestTextIns;, null, null, "+this.positions+R_DICENUNR+"}"
@@ -244,7 +244,7 @@ public void test021() throws JavaModelException {
 		"}\n" + 
 		"class BasicTestTextInsException extends Exception{\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "BasicTestTextIns");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "BasicTestTextIns");
 	assertSortedResults(
 		"BasicTestTextIns[TYPE_REF]{BasicTestTextIns, javadoc.text, Ljavadoc.text.BasicTestTextIns;, null, null, "+this.positions+R_DICENUNR+"}\n" + 
 		"BasicTestTextInsException[TYPE_REF]{BasicTestTextInsException, javadoc.text, Ljavadoc.text.BasicTestTextInsException;, null, null, "+this.positions+R_DICUNR+"}"
@@ -262,7 +262,7 @@ public void test022() throws JavaModelException {
 		"}\n" + 
 		"class BasicTestTextInsException extends Exception{\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "BasicTestTextIns");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "BasicTestTextIns");
 	assertSortedResults(
 		"BasicTestTextIns[JAVADOC_TYPE_REF]{{@link BasicTestTextIns}, javadoc.text, Ljavadoc.text.BasicTestTextIns;, null, null, "+this.positions+(R_DICENUNR+R_INLINE_TAG)+"}\n" +
 		"BasicTestTextInsException[JAVADOC_TYPE_REF]{{@link BasicTestTextInsException}, javadoc.text, Ljavadoc.text.BasicTestTextInsException;, null, null, "+this.positions+R_DICUNRIT+"}\n" + 
@@ -282,7 +282,7 @@ public void test023() throws JavaModelException {
 		"}\n" + 
 		"class BasicTestTextInsException extends Exception{\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "BasicTestTextIns", 2); // 2nd occurrence
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "BasicTestTextIns", 2); // 2nd occurrence
 	assertSortedResults(
 		"BasicTestTextInsException[JAVADOC_TYPE_REF]{{@link BasicTestTextInsException}, javadoc.text, Ljavadoc.text.BasicTestTextInsException;, null, null, "+this.positions+R_DICUNREETIT+"}\n" + 
 		"BasicTestTextIns[JAVADOC_TYPE_REF]{{@link BasicTestTextIns}, javadoc.text, Ljavadoc.text.BasicTestTextIns;, null, null, "+this.positions+R_DICENUNRIT+"}\n" +
@@ -300,7 +300,7 @@ public void test024() throws JavaModelException {
 		"public class BasicTestTextIns {\n" + 
 		"	public void foo() {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "BasicTestTextIns");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "BasicTestTextIns");
 	assertSortedResults(
 		"BasicTestTextIns[JAVADOC_TYPE_REF]{{@link BasicTestTextIns}, javadoc.text, Ljavadoc.text.BasicTestTextIns;, null, null, "+this.positions+R_DICENUNRIT+"}\n" + 
 		"BasicTestTextIns[TYPE_REF]{BasicTestTextIns, javadoc.text, Ljavadoc.text.BasicTestTextIns;, null, null, "+this.positions+R_DICENUNR+"}"
@@ -316,7 +316,7 @@ public void test025() throws JavaModelException {
 		"	 */\n" + 
 		"	public void foo() {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "BasicTestTextIns", 2); // 2nd occurrence
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "BasicTestTextIns", 2); // 2nd occurrence
 	assertSortedResults(
 		"BasicTestTextIns[JAVADOC_TYPE_REF]{{@link BasicTestTextIns}, javadoc.text, Ljavadoc.text.BasicTestTextIns;, null, null, "+this.positions+R_DICENUNRIT+"}\n" + 
 		"BasicTestTextIns[TYPE_REF]{BasicTestTextIns, javadoc.text, Ljavadoc.text.BasicTestTextIns;, null, null, "+this.positions+R_DICENUNR+"}"
@@ -333,7 +333,7 @@ public void test026() throws JavaModelException {
 		"	public void foo() throws InterruptedException {\n" + 
 		"	}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "java.la");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "java.la");
 	assertSortedResults(
 		"java.lang[PACKAGE_REF]{java.lang, java.lang, null, null, null, "+this.positions+R_DICQNR+"}"
 	);
@@ -349,7 +349,7 @@ public void test027() throws JavaModelException {
 		"	public void foo() throws InterruptedException {\n" + 
 		"	}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "java.lang.I");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "java.lang.I");
 	assertSortedResults(
 		"IllegalMonitorStateException[JAVADOC_TYPE_REF]{{@link IllegalMonitorStateException}, java.lang, Ljava.lang.IllegalMonitorStateException;, null, null, "+this.positions+R_DICNRIT+"}\n" + 
 		"InterruptedException[JAVADOC_TYPE_REF]{{@link InterruptedException}, java.lang, Ljava.lang.InterruptedException;, null, null, "+this.positions+R_DICNRIT+"}\n" + 
@@ -368,7 +368,7 @@ public void test028() throws JavaModelException {
 		"	public void foo() throws InterruptedException {\n" + 
 		"	}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "java.lang.I");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "java.lang.I");
 	assertSortedResults(
 		"InterruptedException[JAVADOC_TYPE_REF]{{@link InterruptedException}, java.lang, Ljava.lang.InterruptedException;, null, null, "+this.positions+R_DICNREETIT+"}\n" + 
 		"IllegalMonitorStateException[JAVADOC_TYPE_REF]{{@link IllegalMonitorStateException}, java.lang, Ljava.lang.IllegalMonitorStateException;, null, null, "+this.positions+R_DICNRIT+"}\n" + 
@@ -389,7 +389,7 @@ public void test030() throws JavaModelException {
 		"	 */\n" + 
 		"	int foo;\n" + 
 		"}";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "#fo");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "#fo");
 	assertSortedResults(
 		"foo[JAVADOC_FIELD_REF]{{@link #foo}, Ljavadoc.text.BasicTestTextIns;, I, foo, null, "+this.positions+R_DICNRNSIT+"}"
 	);
@@ -404,7 +404,7 @@ public void test031() throws JavaModelException {
 		"	 */\n" + 
 		"	static int foo;\n" + 
 		"}";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "BasicTestTextIns#fo");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "BasicTestTextIns#fo");
 	assertSortedResults(
 		"foo[JAVADOC_FIELD_REF]{{@link BasicTestTextIns#foo}, Ljavadoc.text.BasicTestTextIns;, I, foo, null, "+this.positions+R_DICNRIT+"}\n" + 
 		"foo[JAVADOC_VALUE_REF]{{@value BasicTestTextIns#foo}, Ljavadoc.text.BasicTestTextIns;, I, foo, null, "+this.positions+R_DICNRIT+"}"
@@ -420,7 +420,7 @@ public void test032() throws JavaModelException {
 		"	 */\n" + 
 		"	int foo;\n" + 
 		"}";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "javadoc.text.BasicTestTextIns#fo");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "javadoc.text.BasicTestTextIns#fo");
 	assertSortedResults(
 		"foo[JAVADOC_FIELD_REF]{{@link javadoc.text.BasicTestTextIns#foo}, Ljavadoc.text.BasicTestTextIns;, I, foo, null, "+this.positions+R_DICNRNSIT+"}"
 	);
@@ -428,7 +428,7 @@ public void test032() throws JavaModelException {
 
 public void test033() throws JavaModelException {
 	String[] sources = {
-		"/Completion/src/javadoc/text/BasicTestTextIns.java",
+		"/Completion/src/javadoc/text/BasicTestTextIns.js",
 			"package javadoc.text;\n" + 
 			"public class BasicTestTextIns {\n" + 
 			"	/**\n" + 
@@ -436,7 +436,7 @@ public void test033() throws JavaModelException {
 			"	 */\n" + 
 			"	int foo;\n" +
 			"}",
-		"/Completion/src/javadoc/text/OtherFields.java",
+		"/Completion/src/javadoc/text/OtherFields.js",
 			"package javadoc.text;\n" + 
 			"public class OtherFields {\n" + 
 			"	static int foo;\n" + 
@@ -459,7 +459,7 @@ public void test034() throws JavaModelException {
 		"	 */\n" + 
 		"	int foo;\n" + 
 		"}";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "fo");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "fo");
 	assertSortedResults(
 		"foo[FIELD_REF]{foo, Ljavadoc.text.BasicTestTextIns;, I, foo, null, "+this.positions+R_DICNRNS+"}"
 	);
@@ -476,7 +476,7 @@ public void test035() throws JavaModelException {
 		"	 */\n" + 
 		"	int foo;\n" + 
 		"}";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "fo");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "fo");
 	assertSortedResults(
 		"foo[FIELD_REF]{foo, Ljavadoc.text.BasicTestTextIns;, I, foo, null, "+this.positions+R_DICNRNS+"}"
 	);
@@ -491,7 +491,7 @@ public void test036() throws JavaModelException {
 		"	 */\n" + 
 		"	static int foo;\n" + 
 		"}";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "fo");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "fo");
 	assertSortedResults(
 		"foo[FIELD_REF]{foo, Ljavadoc.text.BasicTestTextIns;, I, foo, null, "+this.positions+R_DICNR+"}"
 	);
@@ -506,7 +506,7 @@ public void test037() throws JavaModelException {
 		"	 */\n" + 
 		"	int foo;\n" + 
 		"}";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "fo");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "fo");
 	assertSortedResults(
 		"foo[FIELD_REF]{foo, Ljavadoc.text.BasicTestTextIns;, I, foo, null, "+this.positions+R_DICNRNS+"}"
 	);
@@ -515,7 +515,7 @@ public void test037() throws JavaModelException {
 public void test038() throws JavaModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_5);
 	String[] sources = {
-		"/Completion/src/javadoc/text/BasicTestTextIns.java",
+		"/Completion/src/javadoc/text/BasicTestTextIns.js",
 			"package javadoc.text;\n" + 
 			"public class BasicTestTextIns {\n" + 
 			"	/**\n" + 
@@ -524,7 +524,7 @@ public void test038() throws JavaModelException {
 			"	 */\n" + 
 			"	int foo;\n" +
 			"}",
-		"/Completion/src/javadoc/text/OtherFields.java",
+		"/Completion/src/javadoc/text/OtherFields.js",
 			"package javadoc.text;\n" + 
 			"public class OtherFields {\n" + 
 			"	static int foo;\n" + 
@@ -549,7 +549,7 @@ public void test040() throws JavaModelException {
 		"	void method() {}\n" + 
 		"	void paramMethod(String str, boolean flag, Object obj) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "meth");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "meth");
 	assertSortedResults("");
 }
 
@@ -563,7 +563,7 @@ public void test041() throws JavaModelException {
 		"	void method() {}\n" + 
 		"	void paramMethod(String str, boolean flag, Object obj) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "#meth");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "#meth");
 	assertSortedResults(
 		"method[JAVADOC_METHOD_REF]{{@link #method()}, Ljavadoc.text.BasicTestTextIns;, ()V, method, null, "+this.positions+R_DICNRNSIT+"}"
 	);
@@ -579,7 +579,7 @@ public void test042() throws JavaModelException {
 		"	void method() {}\n" + 
 		"	void paramMethod(String str, boolean flag, Object obj) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "#meth");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "#meth");
 	assertSortedResults(
 		"method[JAVADOC_METHOD_REF]{{@link #method()}, Ljavadoc.text.BasicTestTextIns;, ()V, method, null, "+this.positions+R_DICNRNSIT+"}"
 	);
@@ -595,7 +595,7 @@ public void test043() throws JavaModelException {
 		"	void method() {}\n" + 
 		"	void paramMethod(String str, boolean flag, Object obj) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "#meth");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "#meth");
 	assertSortedResults(
 		"method[JAVADOC_METHOD_REF]{{@link #method()}, Ljavadoc.text.BasicTestTextIns;, ()V, method, null, "+this.positions+R_DICNRNSIT+"}"
 	);
@@ -611,7 +611,7 @@ public void test044() throws JavaModelException {
 		"	void method() {}\n" + 
 		"	void paramMethod(String str, boolean flag, Object obj) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "BasicTestTextIns#param");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "BasicTestTextIns#param");
 	assertSortedResults(
 		"paramMethod[JAVADOC_METHOD_REF]{{@link BasicTestTextIns#paramMethod(String, boolean, Object)}, Ljavadoc.text.BasicTestTextIns;, (Ljava.lang.String;ZLjava.lang.Object;)V, paramMethod, (str, flag, obj), "+this.positions+R_DICNRNSIT+"}"
 	);
@@ -627,7 +627,7 @@ public void test045() throws JavaModelException {
 		"	void method() {}\n" + 
 		"	void paramMethod(String str, boolean flag, Object obj) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "javadoc.text.BasicTestTextIns#meth");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "javadoc.text.BasicTestTextIns#meth");
 	assertSortedResults(
 		"method[JAVADOC_METHOD_REF]{{@link javadoc.text.BasicTestTextIns#method()}, Ljavadoc.text.BasicTestTextIns;, ()V, method, null, "+this.positions+R_DICNRNSIT+"}"
 	);
@@ -643,7 +643,7 @@ public void test046() throws JavaModelException {
 		"	 */\n" + 
 		"	void paramMethod(String str, boolean flag, Object obj) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "param");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "param");
 	assertSortedResults(
 		"paramMethod[METHOD_REF]{paramMethod(String, boolean, Object), Ljavadoc.text.BasicTestTextIns;, (Ljava.lang.String;ZLjava.lang.Object;)V, paramMethod, (str, flag, obj), "+this.positions+R_DICNRNS+"}"
 	);
@@ -659,7 +659,7 @@ public void test047() throws JavaModelException {
 		"	void method() {}\n" + 
 		"	void paramMethod(String str, boolean flag, Object obj) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "meth");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "meth");
 	assertSortedResults(
 		"method[METHOD_REF]{method(), Ljavadoc.text.BasicTestTextIns;, ()V, method, null, "+this.positions+R_DICNRNS+"}"
 	);
@@ -675,7 +675,7 @@ public void test048() throws JavaModelException {
 		"	 */\n" + 
 		"	void paramMethod(String str, boolean flag, Object obj) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "param");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "param");
 	assertSortedResults(
 		"paramMethod[METHOD_REF]{paramMethod(String, boolean, Object), Ljavadoc.text.BasicTestTextIns;, (Ljava.lang.String;ZLjava.lang.Object;)V, paramMethod, (str, flag, obj), "+this.positions+R_DICNRNS+"}"
 	);
@@ -683,7 +683,7 @@ public void test048() throws JavaModelException {
 
 public void test049() throws JavaModelException {
 	String[] sources = {
-		"/Completion/src/javadoc/text/BasicTestTextIns.java",
+		"/Completion/src/javadoc/text/BasicTestTextIns.js",
 			"package javadoc.text;\n" + 
 			"public class BasicTestTextIns {\n" + 
 			"	/**\n" + 
@@ -691,7 +691,7 @@ public void test049() throws JavaModelException {
 			"	 */\n" + 
 			"	void foo() {};\n" +
 			"}",
-		"/Completion/src/javadoc/text/OtherTypes.java",
+		"/Completion/src/javadoc/text/OtherTypes.js",
 			"package javadoc.text;\n" + 
 			"public class OtherTypes {\n" + 
 			"	void method() {};\n" +
@@ -705,7 +705,7 @@ public void test049() throws JavaModelException {
 
 public void test050() throws JavaModelException {
 	String[] sources = {
-		"/Completion/src/javadoc/text/BasicTestTextIns.java",
+		"/Completion/src/javadoc/text/BasicTestTextIns.js",
 			"package javadoc.text;\n" + 
 			"public class BasicTestTextIns {\n" + 
 			"	/**\n" + 
@@ -713,7 +713,7 @@ public void test050() throws JavaModelException {
 			"	 */\n" + 
 			"	void foo() {};\n" +
 			"}",
-		"/Completion/src/javadoc/text/OtherTypes.java",
+		"/Completion/src/javadoc/text/OtherTypes.js",
 			"package javadoc.text;\n" + 
 			"public class OtherTypes {\n" + 
 			"	void method() {};\n" +
@@ -735,7 +735,7 @@ public void test051() throws JavaModelException {
 		"	void method() {}\n" + 
 		"	void paramMethod(String str, boolean flag, Object obj) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "#");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "#");
 	assertSortedResults(
 		"clone[JAVADOC_METHOD_REF]{{@link #clone()}, Ljava.lang.Object;, ()Ljava.lang.Object;, clone, null, "+this.positions+R_DICNRNSIT+"}\n" + 
 		"equals[JAVADOC_METHOD_REF]{{@link #equals(Object)}, Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, null, "+this.positions+R_DICNRNSIT+"}\n" + 
@@ -764,7 +764,7 @@ public void test052() throws JavaModelException {
 		"	void method() {}\n" + 
 		"	void paramMethod(String str, boolean flag, Object obj) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "#");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "#");
 	assertSortedResults(
 		"clone[JAVADOC_METHOD_REF]{{@link #clone()}, Ljava.lang.Object;, ()Ljava.lang.Object;, clone, null, "+this.positions+R_DICNRNSIT+"}\n" + 
 		"equals[JAVADOC_METHOD_REF]{{@link #equals(Object)}, Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, null, "+this.positions+R_DICNRNSIT+"}\n" + 
@@ -793,7 +793,7 @@ public void test053() throws JavaModelException {
 		"	void method() {}\n" + 
 		"	void paramMethod(String str, boolean flag, Object obj) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "#", 0); //empty token
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "#", 0); //empty token
 	assertSortedResults(
 		"clone[METHOD_REF]{clone(), Ljava.lang.Object;, ()Ljava.lang.Object;, clone, null, "+this.positions+R_DICNRNS+"}\n" + 
 		"equals[METHOD_REF]{equals(Object), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), "+this.positions+R_DICNRNS+"}\n" + 
@@ -822,7 +822,7 @@ public void test054() throws JavaModelException {
 		"	void method() {}\n" + 
 		"	void paramMethod(String str, boolean flag, Object obj) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "#", 0); //empty token
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "#", 0); //empty token
 	assertSortedResults(
 		"clone[METHOD_REF]{clone(), Ljava.lang.Object;, ()Ljava.lang.Object;, clone, null, "+this.positions+R_DICNRNS+"}\n" + 
 		"equals[METHOD_REF]{equals(Object), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), "+this.positions+R_DICNRNS+"}\n" + 
@@ -851,7 +851,7 @@ public void test055() throws JavaModelException {
 		"	 */\n" + 
 		"	void paramMethod(String str, boolean flag, Object obj) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "#paramMethod(");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "#paramMethod(");
 	assertSortedResults(
 		"paramMethod[JAVADOC_METHOD_REF]{{@link #paramMethod(String, boolean, Object)}, Ljavadoc.text.BasicTestTextIns;, (Ljava.lang.String;ZLjava.lang.Object;)V, paramMethod, (str, flag, obj), "+this.positions+R_DICENUNRIT+"}"
 	);
@@ -867,7 +867,7 @@ public void test056() throws JavaModelException {
 		"	 */\n" + 
 		"	void paramMethod(String str, boolean flag, Object obj) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "Str");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "Str");
 	assertSortedResults(
 		"String[TYPE_REF]{String, java.lang, Ljava.lang.String;, null, null, "+this.positions+R_DICUNR+"}"
 	);
@@ -883,7 +883,7 @@ public void test057() throws JavaModelException {
 		"	 */\n" + 
 		"	void paramMethod(String str, boolean flag, Object obj) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "paramMethod(String s");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "paramMethod(String s");
 	assertSortedResults(
 		"paramMethod[METHOD_REF]{paramMethod(String, boolean, Object), Ljavadoc.text.BasicTestTextIns;, (Ljava.lang.String;ZLjava.lang.Object;)V, paramMethod, (str, flag, obj), "+this.positions+R_DICENUNR+"}"
 	);
@@ -899,7 +899,7 @@ public void test058() throws JavaModelException {
 		"	 */\n" + 
 		"	void paramMethod(String str, boolean flag, Object obj) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "#paramMethod(String str,");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "#paramMethod(String str,");
 	assertSortedResults(
 		"paramMethod[JAVADOC_METHOD_REF]{{@link #paramMethod(String, boolean, Object)}, Ljavadoc.text.BasicTestTextIns;, (Ljava.lang.String;ZLjava.lang.Object;)V, paramMethod, (str, flag, obj), "+this.positions+R_DICENUNRIT+"}"
 	);
@@ -915,7 +915,7 @@ public void test059() throws JavaModelException {
 		"	 */\n" + 
 		"	void paramMethod(String str, boolean flag, Object obj) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "paramMethod(String,");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "paramMethod(String,");
 	assertSortedResults(
 		"paramMethod[METHOD_REF]{paramMethod(String, boolean, Object), Ljavadoc.text.BasicTestTextIns;, (Ljava.lang.String;ZLjava.lang.Object;)V, paramMethod, (str, flag, obj), "+this.positions+R_DICENUNR+"}"
 	);
@@ -934,7 +934,7 @@ public void test070() throws JavaModelException {
 		"	BasicTestTextIns() {}\n" + 
 		"	BasicTestTextIns(int xxx, float real, Class clazz) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "#BasicTest");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "#BasicTest");
 	assertSortedResults(
 		"BasicTestTextIns[JAVADOC_METHOD_REF]{{@link #BasicTestTextIns(int, float, Class)}, Ljavadoc.text.BasicTestTextIns;, (IFLjava.lang.Class;)V, BasicTestTextIns, (xxx, real, clazz), "+this.positions+JAVADOC_RELEVANCE_IT+"}\n" + 
 		"BasicTestTextIns[JAVADOC_METHOD_REF]{{@link #BasicTestTextIns()}, Ljavadoc.text.BasicTestTextIns;, ()V, BasicTestTextIns, null, "+this.positions+JAVADOC_RELEVANCE_IT+"}"
@@ -951,7 +951,7 @@ public void test071() throws JavaModelException {
 		"	BasicTestTextIns() {}\n" + 
 		"	BasicTestTextIns(int xxx, float real, Class clazz) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "BasicTest", 3); // 3rd occurence
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "BasicTest", 3); // 3rd occurence
 	assertSortedResults(
 		"BasicTestTextIns[METHOD_REF<CONSTRUCTOR>]{BasicTestTextIns(int, float, Class), Ljavadoc.text.BasicTestTextIns;, (IFLjava.lang.Class;)V, BasicTestTextIns, (xxx, real, clazz), "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
 		"BasicTestTextIns[METHOD_REF<CONSTRUCTOR>]{BasicTestTextIns(), Ljavadoc.text.BasicTestTextIns;, ()V, BasicTestTextIns, null, "+this.positions+JAVADOC_RELEVANCE+"}"
@@ -968,7 +968,7 @@ public void test072() throws JavaModelException {
 		"	BasicTestTextIns() {}\n" + 
 		"	BasicTestTextIns(int xxx, float real, Class clazz) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "BasicTest", 3); // 3rd occurence
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "BasicTest", 3); // 3rd occurence
 	assertSortedResults(
 		"BasicTestTextIns[METHOD_REF<CONSTRUCTOR>]{BasicTestTextIns(int, float, Class), Ljavadoc.text.BasicTestTextIns;, (IFLjava.lang.Class;)V, BasicTestTextIns, (xxx, real, clazz), "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
 		"BasicTestTextIns[METHOD_REF<CONSTRUCTOR>]{BasicTestTextIns(), Ljavadoc.text.BasicTestTextIns;, ()V, BasicTestTextIns, null, "+this.positions+JAVADOC_RELEVANCE+"}"
@@ -977,7 +977,7 @@ public void test072() throws JavaModelException {
 
 public void test073() throws JavaModelException {
 	String[] sources = {
-		"/Completion/src/javadoc/text/BasicTestTextIns.java",
+		"/Completion/src/javadoc/text/BasicTestTextIns.js",
 			"package javadoc.text;\n" + 
 			"public class BasicTestTextIns {\n" + 
 			"	/**\n" + 
@@ -985,7 +985,7 @@ public void test073() throws JavaModelException {
 			"	 */\n" + 
 			"	void foo() {};\n" +
 			"}",
-		"/Completion/src/javadoc/text/OtherTypes.java",
+		"/Completion/src/javadoc/text/OtherTypes.js",
 			"package javadoc.text;\n" + 
 			"public class OtherTypes {\n" + 
 			"	OtherTypes() {};\n" +
@@ -999,7 +999,7 @@ public void test073() throws JavaModelException {
 
 public void test074() throws JavaModelException {
 	String[] sources = {
-		"/Completion/src/javadoc/text/BasicTestTextIns.java",
+		"/Completion/src/javadoc/text/BasicTestTextIns.js",
 			"package javadoc.text;\n" + 
 			"public class BasicTestTextIns {\n" + 
 			"	/**\n" + 
@@ -1007,7 +1007,7 @@ public void test074() throws JavaModelException {
 			"	 */\n" + 
 			"	void foo() {};\n" +
 			"}",
-		"/Completion/src/javadoc/text/OtherTypes.java",
+		"/Completion/src/javadoc/text/OtherTypes.js",
 			"package javadoc.text;\n" + 
 			"public class OtherTypes {\n" + 
 			"}"
@@ -1028,7 +1028,7 @@ public void test075() throws JavaModelException {
 		"	BasicTestTextIns() {}\n" + 
 		"	BasicTestTextIns(int xxx, float real, Class clazz) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "#");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "#");
 	assertSortedResults(
 		"clone[JAVADOC_METHOD_REF]{{@link #clone()}, Ljava.lang.Object;, ()Ljava.lang.Object;, clone, null, "+this.positions+R_DICNRNSIT+"}\n" + 
 		"equals[JAVADOC_METHOD_REF]{{@link #equals(Object)}, Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, null, "+this.positions+R_DICNRNSIT+"}\n" + 
@@ -1056,7 +1056,7 @@ public void test076() throws JavaModelException {
 		"	BasicTestTextIns() {}\n" + 
 		"	BasicTestTextIns(int xxx, float real, Class clazz) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "#");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "#");
 	assertSortedResults(
 		"clone[JAVADOC_METHOD_REF]{{@link #clone()}, Ljava.lang.Object;, ()Ljava.lang.Object;, clone, null, "+this.positions+R_DICNRNSIT+"}\n" + 
 		"equals[JAVADOC_METHOD_REF]{{@link #equals(Object)}, Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, null, "+this.positions+R_DICNRNSIT+"}\n" + 
@@ -1084,7 +1084,7 @@ public void test077() throws JavaModelException {
 		"	BasicTestTextIns() {}\n" + 
 		"	BasicTestTextIns(int xxx, float real, Class clazz) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "#", 0); // empty token
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "#", 0); // empty token
 	assertSortedResults(
 		"clone[METHOD_REF]{clone(), Ljava.lang.Object;, ()Ljava.lang.Object;, clone, null, "+this.positions+R_DICNRNS+"}\n" + 
 		"equals[METHOD_REF]{equals(Object), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), "+this.positions+R_DICNRNS+"}\n" + 
@@ -1112,7 +1112,7 @@ public void test078() throws JavaModelException {
 		"	 */\n" + 
 		"	BasicTestTextIns(int xxx, float real, Class clazz) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "BasicTestTextIns(");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "BasicTestTextIns(");
 	assertSortedResults(
 		"BasicTestTextIns[METHOD_REF<CONSTRUCTOR>]{BasicTestTextIns(int, float, Class), Ljavadoc.text.BasicTestTextIns;, (IFLjava.lang.Class;)V, BasicTestTextIns, (xxx, real, clazz), "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
@@ -1129,7 +1129,7 @@ public void test079() throws JavaModelException {
 		"	BasicTestTextIns() {}\n" + 
 		"	BasicTestTextIns(int xxx, float real, Class clazz) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "BasicTestTextIns#BasicTestTextIns(int,");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "BasicTestTextIns#BasicTestTextIns(int,");
 	assertSortedResults(
 		"BasicTestTextIns[JAVADOC_METHOD_REF]{{@link BasicTestTextIns#BasicTestTextIns(int, float, Class)}, Ljavadoc.text.BasicTestTextIns;, (IFLjava.lang.Class;)V, BasicTestTextIns, (xxx, real, clazz), "+this.positions+JAVADOC_RELEVANCE_IT+"}"
 	);
@@ -1147,7 +1147,7 @@ public void test080() throws JavaModelException {
 		"	BasicTestTextIns() {}\n" + 
 		"	BasicTestTextIns(int xxx, float real, Class clazz) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "BasicTestTextIns#BasicTestTextIns(");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "BasicTestTextIns#BasicTestTextIns(");
 	assertSortedResults(
 			"BasicTestTextIns[JAVADOC_METHOD_REF]{{@link BasicTestTextIns#BasicTestTextIns(int, float, Class)}, Ljavadoc.text.BasicTestTextIns;, (IFLjava.lang.Class;)V, BasicTestTextIns, (xxx, real, clazz), "+this.positions+JAVADOC_RELEVANCE_IT+"}\n" + 
 			"BasicTestTextIns[JAVADOC_METHOD_REF]{{@link BasicTestTextIns#BasicTestTextIns()}, Ljavadoc.text.BasicTestTextIns;, ()V, BasicTestTextIns, null, "+this.positions+JAVADOC_RELEVANCE_IT+"}"
@@ -1164,7 +1164,7 @@ public void test081() throws JavaModelException {
 		"	 */\n" + 
 		"	void method() {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "javadoc.text.BasicTestTextIns#BasicTestTextIns(");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "javadoc.text.BasicTestTextIns#BasicTestTextIns(");
 	assertSortedResults(
 		"BasicTestTextIns[JAVADOC_METHOD_REF]{{@link javadoc.text.BasicTestTextIns#BasicTestTextIns()}, Ljavadoc.text.BasicTestTextIns;, ()V, BasicTestTextIns, null, "+this.positions+JAVADOC_RELEVANCE_IT+"}"
 	);
@@ -1181,7 +1181,7 @@ public void test082() throws JavaModelException {
 		"	 */\n" + 
 		"	BasicTestTextIns(int xxx, float real, Class clazz) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "#BasicTestTextIns(int, float, java.lang.");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "#BasicTestTextIns(int, float, java.lang.");
 	assertSortedResults(
 		"BasicTestTextIns[JAVADOC_METHOD_REF]{{@link #BasicTestTextIns(int, float, Class)}, Ljavadoc.text.BasicTestTextIns;, (IFLjava.lang.Class;)V, BasicTestTextIns, (xxx, real, clazz), "+this.positions+JAVADOC_RELEVANCE_IT+"}"
 	);
@@ -1198,7 +1198,7 @@ public void test083() throws JavaModelException {
 		"	 */\n" + 
 		"	BasicTestTextIns(int xxx, float real, Class clazz) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "#BasicTestTextIns(int, float, java.lang.Cla");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "#BasicTestTextIns(int, float, java.lang.Cla");
 	assertSortedResults(
 		"BasicTestTextIns[JAVADOC_METHOD_REF]{{@link #BasicTestTextIns(int, float, Class)}, Ljavadoc.text.BasicTestTextIns;, (IFLjava.lang.Class;)V, BasicTestTextIns, (xxx, real, clazz), "+this.positions+JAVADOC_RELEVANCE_IT+"}"
 	);
@@ -1216,7 +1216,7 @@ public void test084() throws JavaModelException {
 		"	 */\n" + 
 		"	BasicTestTextIns(int xxx, float real, Class clazz) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "#BasicTestTextIns(int, float, Class");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "#BasicTestTextIns(int, float, Class");
 	assertSortedResults(
 		"BasicTestTextIns[JAVADOC_METHOD_REF]{{@link #BasicTestTextIns(int, float, Class)}, Ljavadoc.text.BasicTestTextIns;, (IFLjava.lang.Class;)V, BasicTestTextIns, (xxx, real, clazz), "+this.positions+JAVADOC_RELEVANCE_IT+"}"
 	);
@@ -1234,7 +1234,7 @@ public void test085() throws JavaModelException {
 		"	 */\n" + 
 		"	BasicTestTextIns(int xxx, float real, Class clazz) {}\n" + 
 		"}\n";
-	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.java", source, true, "#BasicTestTextIns(int, float, Class)");
+	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "#BasicTestTextIns(int, float, Class)");
 	assertSortedResults("");
 	}
 }

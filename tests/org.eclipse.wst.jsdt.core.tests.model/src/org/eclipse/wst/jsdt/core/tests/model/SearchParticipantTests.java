@@ -39,7 +39,7 @@ public class SearchParticipantTests extends ModifyingResourceTests implements IJ
 			private SearchDocument document;
 			
 			WrapperDocument(SearchDocument document, SearchParticipant participant) {
-				super(document.getPath().replaceAll(".test", ".java"), participant);
+				super(document.getPath().replaceAll(".test", ".js"), participant);
 				this.document = document;
 			}
 
@@ -120,7 +120,7 @@ public class SearchParticipantTests extends ModifyingResourceTests implements IJ
 			return fileContent.toCharArray();
 		}
 		protected String getPathString(IResource resource, IJavaElement element) {
-			return super.getPathString(resource, element).replaceAll(".java", ".test");
+			return super.getPathString(resource, element).replaceAll(".js", ".test");
 		}
 	}
 

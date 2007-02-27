@@ -466,7 +466,7 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 			// ensure no side-effect
 			ProblemRequestor problemRequestor = new ProblemRequestor();
 			workingCopy = getWorkingCopy(
-				"/AttachedJavadocProject/src/Test.java", 
+				"/AttachedJavadocProject/src/Test.js", 
 				"import p2.Y;\n" +
 				"public class Test extends Y { }",
 				new WorkingCopyOwner() {},

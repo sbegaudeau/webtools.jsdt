@@ -139,7 +139,7 @@ public void setUp() throws Exception {
 
 	this.createJavaProject("P", new String[] {"src"}, "bin");
 	this.createFile(
-		"/P/src/X.java",
+		"/P/src/X.js",
 		"public class X {\n" +
 		"  boolean other;\n" +
 		"  int bar;\n" +
@@ -154,7 +154,7 @@ public void setUp() throws Exception {
 		"  }\n" +
 		"}"
 	);
-	this.cu = getCompilationUnit("/P/src/X.java");
+	this.cu = getCompilationUnit("/P/src/X.js");
 	
 	startDeltas();
 }
@@ -163,7 +163,7 @@ public void setUpSuite() throws Exception {
 	
 	IJavaProject project = this.createJavaProject("BinaryProject", new String[] {"src"}, new String[] {"JCL_LIB"}, "lib");
 	this.createFile(
-		"/BinaryProject/src/X.java",
+		"/BinaryProject/src/X.js",
 		"public class X {\n" +
 		"  int bar;\n" +
 		"  public void foo() {\n" +
@@ -236,7 +236,7 @@ public void testRenameBinaryType() throws JavaModelException {
 public void testRenameCompilationUnitAndType() {
 	renameNegative(
 		new IJavaElement[] {this.cu, this.cu.getType("X")}, 
-		new String[]{"Y.java", "Y"}, 
+		new String[]{"Y.js", "Y"}, 
 		false, 
 		IJavaModelStatusConstants.INVALID_ELEMENT_TYPES);
 }
@@ -246,13 +246,13 @@ public void testRenameCompilationUnitAndType() {
  */
 public void testRenameCompilationUnitResultingInCollision() throws CoreException{
 	this.createFile(
-		"/P/src/Y.java",
+		"/P/src/Y.js",
 		"public class Y {\n" +
 		"}"
 	);
 	
-	renameNegative(this.cu, "Y.java", false, IJavaModelStatusConstants.NAME_COLLISION);
-	renamePositive(this.cu, "Y.java", true);
+	renameNegative(this.cu, "Y.js", false, IJavaModelStatusConstants.NAME_COLLISION);
+	renamePositive(this.cu, "Y.js", true);
 }
 /**
  * Ensures that compilation units can be renamed.
@@ -261,16 +261,16 @@ public void testRenameCompilationUnitResultingInCollision() throws CoreException
  */
 public void testRenameCompilationUnitsCheckingDeltas() throws CoreException{
 	this.createFile(
-		"/P/src/Y.java",
+		"/P/src/Y.js",
 		"public class Y {\n" +
 		"}"
 	);
-	ICompilationUnit cu2 = this.getCompilationUnit("/P/src/Y.java");
+	ICompilationUnit cu2 = this.getCompilationUnit("/P/src/Y.js");
 	
 	clearDeltas();
 	renamePositive(
 		new ICompilationUnit[] {this.cu, cu2}, 
-		new String[] {"NewX.java", "NewY.java"}, 
+		new String[] {"NewX.js", "NewY.js"}, 
 		false);
 	
 	assertDeltas(
@@ -290,7 +290,7 @@ public void testRenameCompilationUnitsCheckingDeltas() throws CoreException{
  */
 public void testRenameCompilationUnitWithInvalidName() {
 	renameNegative(this.cu, "NewX", false, IJavaModelStatusConstants.INVALID_NAME);
-	renameNegative(this.cu, "New X.java", false, IJavaModelStatusConstants.INVALID_NAME);
+	renameNegative(this.cu, "New X.js", false, IJavaModelStatusConstants.INVALID_NAME);
 }
 /**
  * This operation should fail as renaming a CU with a null name should throw
@@ -317,10 +317,10 @@ public void testRenameConstructor() {
  * 
  */
 public void testRenameCU() throws CoreException {
-	this.cu.rename("NewX.java", false, null);
+	this.cu.rename("NewX.js", false, null);
 	assertTrue("Original CU should not exist", !cu.exists());
 
-	ICompilationUnit newCU = getCompilationUnit("/P/src/NewX.java");
+	ICompilationUnit newCU = getCompilationUnit("/P/src/NewX.js");
 	assertTrue("New CU should exist", newCU.exists());
 	
 	assertTypesEqual(
@@ -339,16 +339,16 @@ public void testRenameCU() throws CoreException {
 }
 public void testRenameCUForce() throws CoreException {
 	this.createFile(
-		"/P/src/Y.java",
+		"/P/src/Y.js",
 		"public class Y {\n" +
 		"}"
 	);
 
 	clearDeltas();
-	this.cu.rename("Y.java", true, null);
+	this.cu.rename("Y.js", true, null);
 
 	IFile file = (IFile)this.cu.getResource();
-	ICompilationUnit destCU = getCompilationUnit("/P/src/Y.java");
+	ICompilationUnit destCU = getCompilationUnit("/P/src/Y.js");
 	IFile destFile = (IFile)destCU.getResource();
 
 	assertTrue("Original CU should not exist", !cu.exists());
@@ -398,16 +398,16 @@ public void testRenameEnum() throws CoreException {
 	try {
 		createJavaProject("P15", new String[] {""}, new String[] {"JCL15_LIB"}, "", "1.5");
 		createFile(
-			"/P15/En.java",
+			"/P15/En.js",
 			"public enum En {\n" +
 			"  ;\n" +
 			"  En() {\n" +
 			"  }\n" +
 			"}"
 		);
-		ICompilationUnit enumCU = getCompilationUnit("/P15/En.java");
-		enumCU.rename("OtherEnum.java", false, null);
-		ICompilationUnit renamedCu = getCompilationUnit("/P15/OtherEnum.java");
+		ICompilationUnit enumCU = getCompilationUnit("/P15/En.js");
+		enumCU.rename("OtherEnum.js", false, null);
+		ICompilationUnit renamedCu = getCompilationUnit("/P15/OtherEnum.js");
 		assertSourceEquals(
 			"Unexpected source after rename",
 			"public enum OtherEnum {\n" +
@@ -429,15 +429,15 @@ public void testRenameEnum2() throws CoreException {
 	try {
 		createJavaProject("P15", new String[] {""}, new String[] {"JCL15_LIB"}, "", "1.5");
 		createFile(
-			"/P15/En.java",
+			"/P15/En.js",
 			"public enum En {\n" +
 			"  CONST() {\n" +
 			"  }\n" +
 			"}"
 		);
-		ICompilationUnit enumCU = getCompilationUnit("/P15/En.java");
-		enumCU.rename("OtherEnum.java", false, null);
-		ICompilationUnit renamedCu = getCompilationUnit("/P15/OtherEnum.java");
+		ICompilationUnit enumCU = getCompilationUnit("/P15/En.js");
+		enumCU.rename("OtherEnum.js", false, null);
+		ICompilationUnit renamedCu = getCompilationUnit("/P15/OtherEnum.js");
 		assertSourceEquals(
 			"Unexpected source after rename",
 			"public enum OtherEnum {\n" +
@@ -479,12 +479,12 @@ public void testRenameFieldsCheckingDeltasAndPositions() throws JavaModelExcepti
  */
 public void testRenameFieldFragment() throws Exception {
      this.createFile(
-            "/P/src/Y.java",
+            "/P/src/Y.js",
             "public class Y {\n" +
             "  int int1, int2, int3;\n" +
             "}"
     );
-    ICompilationUnit c = getCompilationUnit("/P/src/Y.java");
+    ICompilationUnit c = getCompilationUnit("/P/src/Y.js");
     IType type = c.getType("Y");
     IField field = type.getField("int2");
     renamePositive(field, "int2_renamed", false);
@@ -585,13 +585,13 @@ public void testRenameInitializer() {
  */
 public void testRenameMainTypes() throws CoreException {
 	this.createFile(
-		"/P/src/Y.java",
+		"/P/src/Y.js",
 		"public class Y {\n" +
 		"  public Y() {\n" +
 		"  }\n" +
 		"}"
 	);
-	ICompilationUnit cu2 = getCompilationUnit("/P/src/Y.java");
+	ICompilationUnit cu2 = getCompilationUnit("/P/src/Y.js");
 	IPackageFragment pkg = (IPackageFragment) this.cu.getParent();
 
 	IJavaElement[] types = new IJavaElement[] {
@@ -611,8 +611,8 @@ public void testRenameMainTypes() throws CoreException {
 		false);
 
 	//test that both the compilation unit, main type and constructors have been renamed.
-	ICompilationUnit renamedCU1= pkg.getCompilationUnit("NewX.java");
-	ICompilationUnit renamedCU2= pkg.getCompilationUnit("NewY.java");
+	ICompilationUnit renamedCU1= pkg.getCompilationUnit("NewX.js");
+	ICompilationUnit renamedCU2= pkg.getCompilationUnit("NewY.js");
 	IType newType1 = renamedCU1.getType("NewX");
 	IType newType2 = renamedCU2.getType("NewY");
 	assertTrue("NewX should be present", newType1.exists());
@@ -631,13 +631,13 @@ public void testRenameMainTypes() throws CoreException {
  */
 public void testRenameMainTypesAndAChild() throws CoreException {
 	this.createFile(
-		"/P/src/Y.java",
+		"/P/src/Y.js",
 		"public class Y {\n" +
 		"  public Y() {\n" +
 		"  }\n" +
 		"}"
 	);
-	ICompilationUnit cu2 = getCompilationUnit("/P/src/Y.java");
+	ICompilationUnit cu2 = getCompilationUnit("/P/src/Y.js");
 
 	String[] newNames = new String[] {
 		"newBar",
@@ -658,11 +658,11 @@ public void testRenameMainTypesAndAChild() throws CoreException {
 
 	//test that both the compilation unit and the main type have been renamed.
 	IPackageFragment pkg = (IPackageFragment) this.cu.getParent();
-	ICompilationUnit renamedCU1= pkg.getCompilationUnit("NewX.java");
+	ICompilationUnit renamedCU1= pkg.getCompilationUnit("NewX.js");
 	IType newX = renamedCU1.getType("NewX");
 	assertTrue("NewX should be present", newX.exists());
 	
-	ICompilationUnit renamedCU2= pkg.getCompilationUnit("NewY.java");
+	ICompilationUnit renamedCU2= pkg.getCompilationUnit("NewY.js");
 	IType newY = renamedCU2.getType("NewY");
 	assertTrue("NewY should be present", newY.exists());
 	
@@ -701,7 +701,7 @@ public void testRenameMethodsWithInvalidName() {
 public void testRenamePF() throws CoreException {
 	this.createFolder("/P/src/x/y/z");
 	this.createFile(
-		"/P/src/x/y/z/A.java",
+		"/P/src/x/y/z/A.js",
 		"package x.y.z;\n" +
 		"public class A {\n" +
 		"}"
@@ -715,7 +715,7 @@ public void testRenamePF() throws CoreException {
 	assertTrue("Old package should not exist", !frag.exists());
 	assertTrue("New package should exist", newFrag.exists());
 
-	ICompilationUnit compilationUnit = newFrag.getCompilationUnit("A.java");
+	ICompilationUnit compilationUnit = newFrag.getCompilationUnit("A.js");
 	assertTrue("A.java should exits in new package", compilationUnit.exists());
 	
 	IType[] types = compilationUnit.getTypes();
@@ -741,7 +741,7 @@ public void testRenamePF() throws CoreException {
 public void testRenamePF2() throws CoreException {
 	this.createFolder("/P/src/x/y/z");
 	this.createFile(
-		"/P/src/x/y/z/A.java",
+		"/P/src/x/y/z/A.js",
 		"package x.y.z;\n" +
 		"public class A {\n" +
 		"}"
@@ -755,7 +755,7 @@ public void testRenamePF2() throws CoreException {
 	assertTrue("Old package should not exist", !frag.exists());
 	assertTrue("New package should exist", newFrag.exists());
 
-	ICompilationUnit compilationUnit = newFrag.getCompilationUnit("A.java");
+	ICompilationUnit compilationUnit = newFrag.getCompilationUnit("A.js");
 	assertTrue("A.java should exits in new package", compilationUnit.exists());
 	
 	IType[] types = compilationUnit.getTypes();
@@ -782,7 +782,7 @@ public void testRenamePF2() throws CoreException {
 public void testRenamePF3() throws CoreException {
 	createFolder("/P/src/x");
 	createFile(
-		"/P/src/x/A.java",
+		"/P/src/x/A.js",
 		"package x;\n" +
 		"public class A {\n" +
 		"}"
@@ -802,7 +802,7 @@ public void testRenamePF3() throws CoreException {
 public void testRenamePFWithSubPackages() throws CoreException {
 	this.createFolder("/P/src/x/y/z");
 	this.createFile(
-		"/P/src/x/y/z/A.java",
+		"/P/src/x/y/z/A.js",
 		"package x.y.z;\n" +
 		"public class A {\n" +
 		"}"
@@ -817,7 +817,7 @@ public void testRenamePFWithSubPackages() throws CoreException {
 	IPackageFragment newFrag = getPackage("/P/src/newX");
 	assertTrue("New package should exist", newFrag.exists());
 
-	ICompilationUnit compilationUnit = oldFrag.getCompilationUnit("A.java");
+	ICompilationUnit compilationUnit = oldFrag.getCompilationUnit("A.js");
 	assertTrue("A.java should exits in old inner package", compilationUnit.exists());
 	
 	assertDeltas(
@@ -832,20 +832,20 @@ public void testRenamePFWithSubPackages() throws CoreException {
  */
 public void testRenameSyntaxErrorMethod() throws CoreException {
 	this.createFile(
-		"/P/src/Y.java",
+		"/P/src/Y.js",
 		"public class Y {\n" +
 		"  void foo( {\n" + // syntax error
 		"  }\n" +
 		"}"
 	);
-	IMethod method = getCompilationUnit("/P/src/Y.java").getType("Y").getMethod("foo", null);
+	IMethod method = getCompilationUnit("/P/src/Y.js").getType("Y").getMethod("foo", null);
 	renamePositive(method, "newFoo", false);
 }
 /**
  * Ensures that attempting to rename with an incorrect number of renamings fails
  */
 public void testRenameWithInvalidRenamings() {
-	IMethod method = getCompilationUnit("/P/src/X.java").getType("X").getMethod("foo", null);
+	IMethod method = getCompilationUnit("/P/src/X.js").getType("X").getMethod("foo", null);
 
 	renameNegative(
 		new IJavaElement[] {method}, 

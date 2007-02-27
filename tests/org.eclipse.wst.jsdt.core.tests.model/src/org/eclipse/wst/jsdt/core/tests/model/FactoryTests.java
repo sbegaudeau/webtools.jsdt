@@ -51,13 +51,13 @@ public void testCreateCompilationUnits() throws CoreException {
 		this.createJavaProject("P", new String[] {"src"}, "bin");
 		this.createFolder("/P/src/x/y/z");
 		IFile fileA = this.createFile(
-			"/P/src/x/y/z/A.java", 
+			"/P/src/x/y/z/A.js", 
 			"package x.y.z;\n" +
 			"public class A {\n" +
 			"}"
 		);
 		IFile fileB = this.createFile(
-			"/P/src/x/y/B.java", 
+			"/P/src/x/y/B.js", 
 			"package x.y;\n" +
 			"public class B {\n" +
 			"}"
@@ -86,9 +86,9 @@ public void testCreateCompilationUnitsNotOnClasspath() throws CoreException {
 	try {
 		this.createJavaProject("P", new String[] {"src"}, "bin");
 		this.createFolder("/P/other/nested");
-		IFile fileA = this.createFile("/P/other/A.java", "public class A {}");
-		IFile fileB = this.createFile("/P/other/nested/B.java", "public class B {}");
-		IFile fileC = this.createFile("/P/C.java", "public class C {}");
+		IFile fileA = this.createFile("/P/other/A.js", "public class A {}");
+		IFile fileB = this.createFile("/P/other/nested/B.js", "public class B {}");
+		IFile fileC = this.createFile("/P/C.js", "public class C {}");
 		
 		IJavaElement objectA = JavaCore.create(fileA);
 		assertTrue("tooling object A not created", objectA != null);
@@ -170,7 +170,7 @@ public void testCreateFolderToolObjects() throws CoreException {
 public void testCreateFromEmptyJavaFile() throws CoreException {
 	try {
 		this.createJavaProject("P", new String[] {"src"}, "bin");
-		IFile file = this.createFile("/P/src/X.java", "");
+		IFile file = this.createFile("/P/src/X.js", "");
 
 		IJavaElement cu = JavaCore.create(file);
 		assertTrue("does not handle empty Java files", cu != null);

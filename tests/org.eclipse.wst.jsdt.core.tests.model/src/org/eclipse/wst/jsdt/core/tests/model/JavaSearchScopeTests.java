@@ -324,7 +324,7 @@ public void testScopeEncloses09() throws CoreException {
 	try {
 		IJavaProject project = createJavaProject("P");
 		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {project});
-		assertTrue("scope on P should enclose \"/P/x/y/A.java\"", scope.encloses("/P/x/y/A.java"));
+		assertTrue("scope on P should enclose \"/P/x/y/A.java\"", scope.encloses("/P/x/y/A.js"));
 	} finally {
 		deleteProject("P");
 	}
@@ -337,8 +337,8 @@ public void testScopeEncloses10() throws CoreException {
 	try {
 		IJavaProject project = createJavaProject("P");
 		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {project});
-		ICompilationUnit cu = getCompilationUnit("/P/x/y/A.java");
-		assertTrue("scope on P should enclose compilation unit A.java", scope.encloses(cu));
+		ICompilationUnit cu = getCompilationUnit("/P/x/y/A.js");
+		assertTrue("scope on P should enclose compilation unit A.js", scope.encloses(cu));
 	} finally {
 		deleteProject("P");
 	}
@@ -351,7 +351,7 @@ public void testScopeEncloses11() throws CoreException {
 	try {
 		IJavaProject project = createJavaProject("P");
 		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {project});
-		assertTrue("scope on P should enclose \"/P/A.java\"", scope.encloses("/P/A.java"));
+		assertTrue("scope on P should enclose \"/P/A.java\"", scope.encloses("/P/A.js"));
 	} finally {
 		deleteProject("P");
 	}
@@ -364,8 +364,8 @@ public void testScopeEncloses12() throws CoreException {
 	try {
 		IJavaProject project = createJavaProject("P");
 		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {project});
-		ICompilationUnit cu = getCompilationUnit("/P/A.java");
-		assertTrue("scope on P should enclose compilation unit A.java", scope.encloses(cu));
+		ICompilationUnit cu = getCompilationUnit("/P/A.js");
+		assertTrue("scope on P should enclose compilation unit A.js", scope.encloses(cu));
 	} finally {
 		deleteProject("P");
 	}
@@ -378,7 +378,7 @@ public void testScopeEncloses13() throws CoreException {
 	try {
 		IJavaProject project = createJavaProject("P");
 		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {project});
-		ICompilationUnit cu = getCompilationUnit("/P/x/y/A.java");
+		ICompilationUnit cu = getCompilationUnit("/P/x/y/A.js");
 		IType type = cu.getType("A");
 		assertTrue("scope on P should enclose type A", scope.encloses(type));
 	} finally {
@@ -539,7 +539,7 @@ public void testScopeEncloses23() throws CoreException {
 	try {
 		IJavaProject project = createJavaProject("P", new String[] {"src"}, "bin");
 		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {project});
-		assertTrue("scope on P should enclose \"/P/src/x/y/A.java\"", scope.encloses("/P/src/x/y/A.java"));
+		assertTrue("scope on P should enclose \"/P/src/x/y/A.java\"", scope.encloses("/P/src/x/y/A.js"));
 	} finally {
 		deleteProject("P");
 	}
@@ -552,8 +552,8 @@ public void testScopeEncloses24() throws CoreException {
 	try {
 		IJavaProject project = createJavaProject("P", new String[] {"src"}, "bin");
 		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {project});
-		ICompilationUnit cu = getCompilationUnit("/P/src/x/y/A.java");
-		assertTrue("scope on P should enclose compilation unit A.java", scope.encloses(cu));
+		ICompilationUnit cu = getCompilationUnit("/P/src/x/y/A.js");
+		assertTrue("scope on P should enclose compilation unit A.js", scope.encloses(cu));
 	} finally {
 		deleteProject("P");
 	}
@@ -566,7 +566,7 @@ public void testScopeEncloses25() throws CoreException {
 	try {
 		IJavaProject project = createJavaProject("P", new String[] {"src"}, "bin");
 		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {project});
-		assertTrue("scope on P should enclose \"/P/src/A.java\"", scope.encloses("/P/src/A.java"));
+		assertTrue("scope on P should enclose \"/P/src/A.java\"", scope.encloses("/P/src/A.js"));
 	} finally {
 		deleteProject("P");
 	}
@@ -579,8 +579,8 @@ public void testScopeEncloses26() throws CoreException {
 	try {
 		IJavaProject project = createJavaProject("P", new String[] {"src"}, "bin");
 		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {project});
-		ICompilationUnit cu = getCompilationUnit("/P/src/A.java");
-		assertTrue("scope on P should enclose compilation unit A.java", scope.encloses(cu));
+		ICompilationUnit cu = getCompilationUnit("/P/src/A.js");
+		assertTrue("scope on P should enclose compilation unit A.js", scope.encloses(cu));
 	} finally {
 		deleteProject("P");
 	}
@@ -593,7 +593,7 @@ public void testScopeEncloses27() throws CoreException {
 	try {
 		IJavaProject project = createJavaProject("P", new String[] {"src"}, "bin");
 		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {project});
-		ICompilationUnit cu = getCompilationUnit("/P/src/x/y/A.java");
+		ICompilationUnit cu = getCompilationUnit("/P/src/x/y/A.js");
 		IType type = cu.getType("A");
 		assertTrue("scope on P should enclose type A", scope.encloses(type));
 	} finally {
@@ -754,7 +754,7 @@ public void testScopeEncloses37() throws CoreException {
 	try {
 		IJavaProject project = createJavaProject("P", new String[] {"src/"}, "bin");
 		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {project});
-		assertTrue("scope on P should enclose \"/P/src/x/y/A.java\"", scope.encloses("/P/src/x/y/A.java"));
+		assertTrue("scope on P should enclose \"/P/src/x/y/A.java\"", scope.encloses("/P/src/x/y/A.js"));
 	} finally {
 		deleteProject("P");
 	}
@@ -767,8 +767,8 @@ public void testScopeEncloses38() throws CoreException {
 	try {
 		IJavaProject project = createJavaProject("P", new String[] {"src/"}, "bin");
 		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {project});
-		ICompilationUnit cu = getCompilationUnit("/P/src/x/y/A.java");
-		assertTrue("scope on P should enclose compilation unit A.java", scope.encloses(cu));
+		ICompilationUnit cu = getCompilationUnit("/P/src/x/y/A.js");
+		assertTrue("scope on P should enclose compilation unit A.js", scope.encloses(cu));
 	} finally {
 		deleteProject("P");
 	}
@@ -781,7 +781,7 @@ public void testScopeEncloses39() throws CoreException {
 	try {
 		IJavaProject project = createJavaProject("P", new String[] {"src/"}, "bin");
 		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {project});
-		assertTrue("scope on P should enclose \"/P/src/A.java\"", scope.encloses("/P/src/A.java"));
+		assertTrue("scope on P should enclose \"/P/src/A.java\"", scope.encloses("/P/src/A.js"));
 	} finally {
 		deleteProject("P");
 	}
@@ -794,8 +794,8 @@ public void testScopeEncloses40() throws CoreException {
 	try {
 		IJavaProject project = createJavaProject("P", new String[] {"src/"}, "bin");
 		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {project});
-		ICompilationUnit cu = getCompilationUnit("/P/src/A.java");
-		assertTrue("scope on P should enclose compilation unit A.java", scope.encloses(cu));
+		ICompilationUnit cu = getCompilationUnit("/P/src/A.js");
+		assertTrue("scope on P should enclose compilation unit A.js", scope.encloses(cu));
 	} finally {
 		deleteProject("P");
 	}
@@ -808,7 +808,7 @@ public void testScopeEncloses41() throws CoreException {
 	try {
 		IJavaProject project = createJavaProject("P", new String[] {"src/"}, "bin");
 		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {project});
-		ICompilationUnit cu = getCompilationUnit("/P/src/x/y/A.java");
+		ICompilationUnit cu = getCompilationUnit("/P/src/x/y/A.js");
 		IType type = cu.getType("A");
 		assertTrue("scope on P should enclose type A", scope.encloses(type));
 	} finally {
@@ -824,19 +824,19 @@ public void testBug101022() throws CoreException {
 	try {
 		IJavaProject project = createJavaProject("P1", new String[] {"src", "test", "test2"}, "bin");
 		createFile(
-			"/P1/src/Test.java",
+			"/P1/src/Test.js",
 			"public class Test {\n" +
 			"	protected void foo() {}\n" +
 			"}" 
 		);
 		createFile(
-			"/P1/test/Test.java",
+			"/P1/test/Test.js",
 			"public class Test {\n" +
 			"	protected void foo() {}\n" +
 			"}" 
 		);
 		createFile(
-			"/P1/test2/Test.java",
+			"/P1/test2/Test.js",
 			"public class Test {\n" +
 			"	protected void foo() {}\n" +
 			"}" 
@@ -863,18 +863,18 @@ public void testBug101426() throws CoreException {
 	try {
 		IJavaProject project = createJavaProject("P1", new String[] {"src/", "test/", "test2/"}, new String[] {"JCL_LIB"}, "bin");
 		createFile(
-			"/P1/src/Test.java",
+			"/P1/src/Test.js",
 			"public interface ITest {\n" +
 			"}" 
 		);
 		createFile(
-			"/P1/test/Test.java",
+			"/P1/test/Test.js",
 			"public class Test {\n" +
 			"	ITest test;\n" +
 			"}" 
 		);
 		createFile(
-			"/P1/test2/Test.java",
+			"/P1/test2/Test.js",
 			"public class Test2 {\n" +
 			"	ITest test;\n" +
 			"}" 
@@ -901,7 +901,7 @@ public void testBug101777() throws CoreException {
 	try {
 		IJavaProject project = createJavaProject("P1");
 		createFile(
-			"/P1/Test.java",
+			"/P1/Test.js",
 			"public class Test {\n" +
 			"	public static void main(String[] args) {}\n" +
 			"}"
@@ -941,12 +941,12 @@ public void testBug119203() throws CoreException {
 	try {
 		IJavaProject project = createJavaProject("P1", new String[] {"src"}, "bin");
 		createFile(
-			"/P1/src/Test.java",
+			"/P1/src/Test.js",
 			"public class Test {\n" +
 			"}" 
 		);
 		createFile(
-			"/P1/src/X.java",
+			"/P1/src/X.js",
 			"public class X {\n" +
 			"	Test test;\n" +
 			"}" 

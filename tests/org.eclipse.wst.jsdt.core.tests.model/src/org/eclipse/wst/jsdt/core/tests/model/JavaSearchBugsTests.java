@@ -115,11 +115,11 @@ protected void search(String patternString, int searchFor, int limitTo, int matc
 public void setUpSuite() throws Exception {
 	super.setUpSuite();
 	JAVA_PROJECT = setUpJavaProject("JavaSearchBugs", "1.5");
-	addLibraryEntry(JAVA_PROJECT, "/JavaSearchBugs/lib/b95152.jar", false);
-	addLibraryEntry(JAVA_PROJECT, "/JavaSearchBugs/lib/b123679.jar", false);
-	addLibraryEntry(JAVA_PROJECT, "/JavaSearchBugs/lib/b140156.jar", false);
-	addLibraryEntry(JAVA_PROJECT, "/JavaSearchBugs/lib/b164791.jar", false);
-	addLibraryEntry(JAVA_PROJECT, "/JavaSearchBugs/lib/b166348.jar", false);
+//	addLibraryEntry(JAVA_PROJECT, "/JavaSearchBugs/lib/b95152.jar", false);
+//	addLibraryEntry(JAVA_PROJECT, "/JavaSearchBugs/lib/b123679.jar", false);
+//	addLibraryEntry(JAVA_PROJECT, "/JavaSearchBugs/lib/b140156.jar", false);
+//	addLibraryEntry(JAVA_PROJECT, "/JavaSearchBugs/lib/b164791.jar", false);
+//	addLibraryEntry(JAVA_PROJECT, "/JavaSearchBugs/lib/b166348.jar", false);
 }
 public void tearDownSuite() throws Exception {
 	deleteProject("JavaSearchBugs");
@@ -138,7 +138,7 @@ protected void setUp () throws Exception {
  */
 public void testBug41018() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b41018/A.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b41018/A.js",
 		"package b41018;\n" +
 		"public class A {\n" + 
 		"	protected void anotherMethod() {\n" + 
@@ -169,7 +169,7 @@ public void testBug41018() throws CoreException {
  */
 public void testBug70827() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b70827/A.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b70827/A.js",
 		"package b70827;\n" + 
 		"class A {\n" + 
 		"	private void privateMethod() {\n" + 
@@ -206,7 +206,7 @@ public void testBug71279() throws CoreException {
         }
 	};
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b71279/AA.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b71279/AA.js",
 		"package b71279;\n" + 
 		"public class AA {\n" + 
 		"	Unknown ref;\n" + 
@@ -226,7 +226,7 @@ public void testBug71279() throws CoreException {
 public void testBug72866() throws CoreException {
 	workingCopies = new ICompilationUnit[4];
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b72866/A.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b72866/A.js",
 		"package b72866;\n" + 
 		"public abstract class A {\n" + 
 		"	public abstract void foo(V v);\n" + 
@@ -234,7 +234,7 @@ public void testBug72866() throws CoreException {
 		owner,
 		true
 		);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b72866/SX.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b72866/SX.js",
 		"package b72866;\n" + 
 		"public class SX extends A {\n" + 
 		"	public void foo(V v) {\n" + 
@@ -243,7 +243,7 @@ public void testBug72866() throws CoreException {
 		"}\n"	,
 		owner,
 		true);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b72866/V.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b72866/V.js",
 		"package b72866;\n" + 
 		"public class V {\n" + 
 		"	void bar(A a) {}\n" + 
@@ -252,7 +252,7 @@ public void testBug72866() throws CoreException {
 		"}\n"	,
 		owner,
 		true);
-	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/b72866/X.java",
+	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/b72866/X.js",
 		"package b72866;\n" + 
 		"public class X extends A {\n" + 
 		"	public void foo(V v) {\n" + 
@@ -275,7 +275,7 @@ public void testBug72866() throws CoreException {
  */
 public void testBug73112a() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b73112/A.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b73112/A.js",
 		"package b73112;\n" + 
 		"public class A {\n" + 
 		"    int fieldA73112a = 1, fieldA73112b = new Integer(2).intValue(), fieldA73112c = fieldA73112a + fieldA73112b;\n" + 
@@ -296,7 +296,7 @@ public void testBug73112a() throws CoreException {
 }
 public void testBug73112b() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = super.getWorkingCopy("/JavaSearchBugs/src/b73112/B.java",
+	workingCopies[0] = super.getWorkingCopy("/JavaSearchBugs/src/b73112/B.js",
 		"package b73112;\n" + 
 		"public class B {\n" + 
 		"    int fieldB73112a, fieldB73112b = 10;\n" + 
@@ -326,24 +326,24 @@ public void testBug73112b() throws CoreException {
 public void testBug73336() throws CoreException {
 	workingCopies = new ICompilationUnit[6];
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b73336/A.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b73336/A.js",
 		"package b73336;\n" + 
 		"public class A {}\n",
 		owner,
 		true);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b73336/AA.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b73336/AA.js",
 		"package b73336;\n" + 
 		"public class AA extends A {}\n",
 		owner,
 		true);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b73336/B.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b73336/B.js",
 		"package b73336;\n" + 
 		"public class B extends X<A, A> {\n" + 
 		"	<T> void foo(T t) {}\n" + 
 		"}\n",
 		owner,
 		true);
-	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/b73336/C.java",
+	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/b73336/C.js",
 		"package b73336;\n" + 
 		"public class C implements I<A> {\n" + 
 		"	public void foo() {\n" + 
@@ -353,14 +353,14 @@ public void testBug73336() throws CoreException {
 		"}\n",
 		owner,
 		true	);
-	workingCopies[4] = getWorkingCopy("/JavaSearchBugs/src/b73336/I.java",
+	workingCopies[4] = getWorkingCopy("/JavaSearchBugs/src/b73336/I.js",
 		"package b73336;\n" + 
 		"public interface I<T>  {\n" + 
 		"	public void foo();\n" + 
 		"}\n",
 		owner,
 		true	);
-	workingCopies[5] = getWorkingCopy("/JavaSearchBugs/src/b73336/X.java",
+	workingCopies[5] = getWorkingCopy("/JavaSearchBugs/src/b73336/X.js",
 		"package b73336;\n" + 
 		"public class X<T, U> {\n" + 
 		"	<V> void foo(V v) {}\n" + 
@@ -385,18 +385,18 @@ public void testBug73336() throws CoreException {
 public void testBug73336b() throws CoreException {
 	workingCopies = new ICompilationUnit[4];
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b73336b/A.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b73336b/A.js",
 		"package b73336b;\n" + 
 		"public class A {}\n",
 		owner,
 		true);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b73336b/B.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b73336b/B.js",
 		"package b73336b;\n" + 
 		"public class B extends X<A, A> {\n" + 
 		"}\n",
 		owner,
 		true);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b73336b/C.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b73336b/C.js",
 		"package b73336b;\n" + 
 		"public class C extends X<A, A>.Member<A> {\n" + 
 		"	public C() {\n" + 
@@ -405,7 +405,7 @@ public void testBug73336b() throws CoreException {
 		"}\n",
 		owner,
 		true);
-	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/b73336b/X.java",
+	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/b73336b/X.js",
 		"package b73336b;\n" + 
 		"public class X<T, U> {\n" + 
 		"	<V> void foo(V v) {}\n" + 
@@ -433,25 +433,25 @@ public void testBug73336b() throws CoreException {
 public void testBug73336c() throws CoreException {
 	workingCopies = new ICompilationUnit[4];
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b73336c/A.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b73336c/A.js",
 		"package b73336c;\n" + 
 		"public class A {}\n",
 		owner,
 		true);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b73336c/B.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b73336c/B.js",
 		"package b73336c;\n" + 
 		"public class B extends X<A, A> {\n" + 
 		"}\n",
 		owner,
 		true);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b73336c/C.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b73336c/C.js",
 		"package b73336c;\n" + 
 		"public class C implements X<A, A>.Interface<A>  {\n" + 
 		"	void bar() {}\n" + 
 		"}\n",
 		owner,
 		true);
-	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/b73336c/X.java",
+	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/b73336c/X.js",
 		"package b73336c;\n" + 
 		"public class X<T, U> {\n" + 
 		"	interface Interface<V> {\n" + 
@@ -480,13 +480,13 @@ public void testBug73336c() throws CoreException {
 public void testBug73696() throws CoreException {
 	workingCopies = new ICompilationUnit[2];
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b73696/C.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b73696/C.js",
 		"package b73696;\n" + 
 		"public class C implements  I {\n" + 
 		"}",
 		owner,
 		true);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b73696/I.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b73696/I.js",
 		"package b73696;\n" + 
 		"public interface I {}\n",
 		owner,
@@ -534,7 +534,7 @@ public void testBug73696() throws CoreException {
 public void testBug74776() throws CoreException {
 	workingCopies = new ICompilationUnit[3];
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b74776/A.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b74776/A.js",
 		"package b74776;\n" + 
 		"public class A {\n" + 
 		"	/**\n" + 
@@ -549,13 +549,13 @@ public void testBug74776() throws CoreException {
 		"}\n",
 		owner,
 		true);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b74776/IRegion.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b74776/IRegion.js",
 		"package b74776;\n" + 
 		"public interface IRegion {\n" + 
 		"}\n",
 		owner,
 		true);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b74776/Region.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b74776/Region.js",
 		"package b74776;\n" + 
 		"public class Region implements IRegion {\n" + 
 		"\n" + 
@@ -590,7 +590,7 @@ public void testBug75816() throws CoreException {
  */
 private void setUpBug77093() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b77093/X.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b77093/X.js",
 		"package b77093;\n" + 
 		"public class X {\n" + 
 		"	class Z {\n" + 
@@ -651,7 +651,7 @@ public void testBug77093method() throws CoreException {
  */
 public void testBug77388() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b77388/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b77388/Test.js",
 		"package b77388;\n" + 
 		"class Test {\n" + 
 		"	Test(int a, int b) {	}\n" + 
@@ -676,14 +676,14 @@ public void testBug77388() throws CoreException {
 public void testBug78082() throws CoreException {
 	workingCopies = new ICompilationUnit[2];
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b78082/M.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b78082/M.js",
 		"package b78082;\n" + 
 		"public class M {\n" + 
 		"	static int VAL=78082;\n" + 
 		"}\n",
 		owner,
 		true);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b78082/XY.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b78082/XY.js",
 		"package b78082;\n" + 
 		"import static b78082.M.VAL;\n" + 
 		"public class XY {\n" + 
@@ -710,7 +710,7 @@ public void testBug78082() throws CoreException {
  */
 public void testBug79267() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b79267/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b79267/Test.js",
 		"package b79267;\n" + 
 		"public class Test {\n" + 
 		"	private static final X<String, String> BEFORE	= new X<String, String>(4);\n" + 
@@ -754,7 +754,7 @@ public void testBug79267() throws CoreException {
  */
 public void testBug79378() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b79378/A.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b79378/A.js",
 		"package b79378;\n" + 
 		"public class Test {\n" + 
 		"	void foo79378(String s, RuntimeException[] exceptions) {}\n" + 
@@ -776,7 +776,7 @@ public void testBug79378() throws CoreException {
 public void testBug79378b() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b79378/A.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b79378/A.js",
 		"package b79378;\n" + 
 		"public class Test {\n" + 
 		"	void foo79378(String s, RuntimeException[] exceptions) {}\n" + 
@@ -800,7 +800,7 @@ public void testBug79378b() throws CoreException {
  */
 public void testBug79803() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b79803/A.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b79803/A.js",
 		"package b79803;\n" + 
 		"class A<A> {\n" + 
 		"    A a;\n" + 
@@ -816,7 +816,7 @@ public void testBug79803() throws CoreException {
 }
 public void testBug79803string() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b79803/A.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b79803/A.js",
 		"package b79803;\n" + 
 		"class A<A> {\n" + 
 		"    A a;\n" + 
@@ -838,13 +838,13 @@ public void testBug79803string() throws CoreException {
 public void testBug79860() throws CoreException {
 	workingCopies = new ICompilationUnit[2];
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b79860/X.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b79860/X.js",
 		"package b79860;\n" + 
 		"public class X<T extends A> { }\n" + 
 		"class A { }",
 		owner,
 		true);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b79860/Y.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b79860/Y.js",
 		"package b79860;\n" + 
 		"public class Y<T extends B&I1&I2&I3> { }\n" + 
 		"class B { }\n" + 
@@ -862,13 +862,13 @@ public void testBug79860() throws CoreException {
 public void testBug79860string() throws CoreException {
 	workingCopies = new ICompilationUnit[2];
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b79860/X.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b79860/X.js",
 		"package b79860;\n" + 
 		"public class X<T extends A> { }\n" + 
 		"class A { }",
 		owner,
 		true);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b79860/Y.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b79860/Y.js",
 		"package b79860;\n" + 
 		"public class Y<T extends B&I1&I2&I3> { }\n" + 
 		"class B { }\n" + 
@@ -891,7 +891,7 @@ public void testBug79860string() throws CoreException {
  */
 private void setUpBug79990() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b79990/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b79990/Test.js",
 		"package b79990;\n" + 
 		"class Test<T> {\n" + 
 		"    public void first(Exception num) {}\n" + 
@@ -931,7 +931,7 @@ public void testBug79990c() throws CoreException {
 }
 public void testBug79990d() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b79990/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b79990/Test.js",
 		"package b79990;\n" + 
 		"public class Test<T> {\n" + 
 		"	void methodT(T t) {}\n" + 
@@ -954,7 +954,7 @@ public void testBug79990d() throws CoreException {
  */
 public void testBug80084() throws CoreException, JavaModelException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b80084/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b80084/Test.js",
 		"package b80084;\n" + 
 		"class List<T> {}\n" + 
 		"public class Test {\n" + 
@@ -979,7 +979,7 @@ public void testBug80084() throws CoreException, JavaModelException {
  */
 private void setUpBug80194() throws CoreException, JavaModelException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b80194/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b80194/Test.js",
 		"package b80194;\n" + 
 		"interface Map<K, V> {}\n" + 
 		"class HashMap<K, V> implements Map {}\n" + 
@@ -1048,14 +1048,14 @@ public void testBug80194string3() throws CoreException, JavaModelException {
 public void testBug80223() throws CoreException {
 	workingCopies = new ICompilationUnit[2];
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b80223/a/A.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b80223/a/A.js",
 		"package b80223.a;\n" + 
 		"public class A {\n" + 
 		"    void m() {}\n" + 
 		"}",
 		owner,
 		true);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b80223/b/B.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b80223/b/B.js",
 		"package b80223.b;\n" + 
 		"public class B extends b80223.a.A {\n" + 
 		"    void m() {}\n" + 
@@ -1082,7 +1082,7 @@ public void testBug80223() throws CoreException {
 // Methods
 private void setUpBug80264_Methods() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b80264/Methods.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b80264/Methods.js",
 		"package b80264;\n" + 
 		"class Methods {\n" + 
 		"    Methods stable() { return null; }\n" + 
@@ -1156,7 +1156,7 @@ public void testBug80264_MethodsIgnoreBothTypes() throws CoreException, JavaMode
 // Classes
 private void setUpBug80264_Classes() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b80264/Classes.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b80264/Classes.js",
 		"package b80264;\n" + 
 		"class Classes {\n" + 
 		"    class Inner {}\n" + 
@@ -1208,7 +1208,7 @@ public void testBug80264_ClassesIgnoreTypes() throws CoreException, JavaModelExc
 // Fields
 private void setUpBug80264_Fields() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b80264/Fields.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b80264/Fields.js",
 		"package b80264;\n" + 
 		"class Fields {\n" + 
 		"    Fields field1;\n" + 
@@ -1282,7 +1282,7 @@ public void testBug80264_FieldsIgnoreBothTypes() throws CoreException, JavaModel
  */
 public void testBug80890() throws CoreException, JavaModelException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b80890/A.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b80890/A.js",
 		"package b80890;\n" + 
 		"public class A {\n" + 
 		"	protected void foo(Exception e) {}\n" + 
@@ -1332,7 +1332,7 @@ public void testBug80918() throws CoreException {
  */
 public void testBug81084a() throws CoreException, JavaModelException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b81084a/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b81084a/Test.js",
 		"package b81084a;\n" + 
 		"class List<E> {}\n" + 
 		"public class Test {\n" + 
@@ -1359,7 +1359,7 @@ public void testBug81084a() throws CoreException, JavaModelException {
 }
 public void testBug81084string() throws CoreException, JavaModelException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b81084a/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b81084a/Test.js",
 		"package b81084a;\n" + 
 		"class List<E> {}\n" + 
 		"public class Test {\n" + 
@@ -1383,7 +1383,7 @@ public void testBug81084string() throws CoreException, JavaModelException {
 }
 public void testBug81084b() throws CoreException, JavaModelException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b81084b/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b81084b/Test.js",
 		"package b81084b;\n" + 
 		"class List<E> {}\n" + 
 		"public class Test {\n" + 
@@ -1415,7 +1415,7 @@ public void testBug81084b() throws CoreException, JavaModelException {
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=81556"
  */
 public void testBug81556() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearchBugs", "src", "b81556.a", "X81556.java");
+	ICompilationUnit unit = getCompilationUnit("JavaSearchBugs", "src", "b81556.a", "X81556.js");
 	IType type = unit.getType("X81556");
 	IMethod method = type.getMethod("foo", new String[0]);
 	search(method, REFERENCES);
@@ -1430,7 +1430,7 @@ public void testBug81556() throws CoreException {
  */
 public void testBug82088method() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b82088/m/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b82088/m/Test.js",
 		"package b82088.m;\n" +
 		"/**\n" + 
 		" * @see #setA(A)\n" + 
@@ -1453,7 +1453,7 @@ public void testBug82088method() throws CoreException {
 }
 public void testBug82088constructor() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b82088/c/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b82088/c/Test.js",
 		"package b82088.c;\n" +
 		"/**\n" + 
 		" * @see #Test(A)\n" + 
@@ -1481,7 +1481,7 @@ public void testBug82088constructor() throws CoreException {
  */
 private void setUpBug82208() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b82208/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b82208/Test.js",
 		"package b82208;\n" + 
 		"interface B82208_I {}\n" + 
 		"enum B82208_E {}\n" + 
@@ -1558,7 +1558,7 @@ public void testBug82208_CLASS_AND_ENUMERATION() throws CoreException {
 public void testBug82673() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b82673/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b82673/Test.js",
 		"package b82673;\n" + 
 		"public class Test {\n" + 
 		"    void test1() {\n" + 
@@ -1591,7 +1591,7 @@ public void testBug82673() throws CoreException {
 public void testBug83012() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83012/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83012/Test.js",
 		"package b83012;\n" + 
 		"@interface A {\n" + 
 		"    String value() default \"\";\n" + 
@@ -1623,7 +1623,7 @@ public void testBug83012() throws CoreException {
 private void setUpBug83230_Explicit() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83230/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83230/Test.js",
 		"package b83230;\n" + 
 		"@interface Author {\n" + 
 		"	String[] authorName() default \"FREDERIC\";\n" + 
@@ -1723,7 +1723,7 @@ public void testBug83230_Explicit05() throws CoreException {
 public void testBug83230_Implicit01() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83230/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83230/Test.js",
 		"package b83230;\n" + 
 		"@interface Annot {\n" + 
 		"	int value();\n" +
@@ -1748,7 +1748,7 @@ public void testBug83230_Implicit01() throws CoreException {
 public void testBug83230_Implicit02() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83230/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83230/Test.js",
 		"package b83230;\n" + 
 		"@interface A {\n" + 
 		"    String value() default \"\";\n" + 
@@ -1779,7 +1779,7 @@ public void testBug83230_Implicit02() throws CoreException {
 public void testBug83304() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83304/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83304/Test.js",
 		"package b83304;\n" + 
 		"public class Test {\n" + 
 		"	void foo() {\n" + 
@@ -1801,7 +1801,7 @@ public void testBug83304() throws CoreException {
 private void setUpBug83304_TypeParameterizedElementPattern() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83304/Types.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83304/Types.js",
 		"package b83304;\n" + 
 		"import g1.t.s.def.Generic;\n" + 
 		"public class Types {\n" + 
@@ -1864,7 +1864,7 @@ public void testBug83304_TypeStringPattern() throws CoreException {
 private void setUpBug83304_MethodParameterizedElementPattern() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83304/Methods.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83304/Methods.js",
 		"package b83304;\n" + 
 		"import g5.m.def.Single;\n" + 
 		"public class Methods {\n" + 
@@ -1914,7 +1914,7 @@ public void testBug83304_MethodStringPattern() throws CoreException {
 private void setUpBug83304_ConstructorGenericElementPattern() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83304/Constructors.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83304/Constructors.js",
 		"package b83304;\n" + 
 		"import g5.c.def.Single;\n" + 
 		"public class Constructors {\n" + 
@@ -1969,7 +1969,7 @@ public void testBug83304_ConstructorStringPattern() throws CoreException {
  */
 private void setUpBug83804_Type() throws CoreException {
 	workingCopies = new ICompilationUnit[2];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83804/package-info.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83804/package-info.js",
 		"/**\n" + 
 		" * Valid javadoc.\n" + 
 		" * @see Test\n" + 
@@ -1984,7 +1984,7 @@ private void setUpBug83804_Type() throws CoreException {
 		" */\n" + 
 		"package b83804;\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b83804/Test.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b83804/Test.js",
 		"/**\n" + 
 		" * Invalid javadoc\n" + 
 		" */\n" + 
@@ -2036,7 +2036,7 @@ public void testBug83804_Field() throws CoreException {
 public void testBug83388() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83388/R.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83388/R.js",
 		"package b83388;\n" + 
 		"import b83388.*;\n" + 
 		"public class R {}\n"
@@ -2064,7 +2064,7 @@ public void testBug83388() throws CoreException {
 public void testBug83388b() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83388/R.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83388/R.js",
 		"package b83388;\n" + 
 		"import b83388.*;\n" + 
 		"public class R {}\n"
@@ -2098,7 +2098,7 @@ public void testBug83693() throws CoreException {
 	resultCollector.showRule = true;
 	resultCollector.showInsideDoc = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83693/A.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83693/A.js",
 		"package b83693;\n" + 
 		"import static b83693.A.m;\n" + 
 		"/**\n" + 
@@ -2130,7 +2130,7 @@ public void testBug83693() throws CoreException {
  */
 public void testBug83716() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83716/X.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83716/X.js",
 		"package b83716;\n" + 
 		"public class X {\n" + 
 		"	X() {}\n" + 
@@ -2154,7 +2154,7 @@ public void testBug83716() throws CoreException {
 private void setUpBug84100() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[2];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b84100/X.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b84100/X.js",
 		"package b84100;\n" + 
 		"public class X {\n" + 
 		"	void foo() {}\n" + 
@@ -2164,7 +2164,7 @@ private void setUpBug84100() throws CoreException {
 		"	void foo(String s, int x, String... xs) {}\n" + 
 		"}\n"
 		);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b84100/Z.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b84100/Z.js",
 		"package b84100;\n" + 
 		"public class Z {\n" + 
 		"	X x;\n" + 
@@ -2233,7 +2233,7 @@ public void testBug84100e() throws CoreException {
 public void testBug84121() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b84121/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b84121/Test.js",
 		"package b84121;\n" + 
 		"public class Test {\n" + 
 		"	void foo(Test... t) {}\n" + 
@@ -2258,7 +2258,7 @@ public void testBug84121() throws CoreException {
 private void setUpBug84724() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[2];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b84724/X.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b84724/X.js",
 		"package b84724;\n" + 
 		"public class X {\n" + 
 		"	X(String s) {}\n" + 
@@ -2267,7 +2267,7 @@ private void setUpBug84724() throws CoreException {
 		"	X(String s, int x, String... v) {}\n" + 
 		"}\n"
 		);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b84724/Z.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b84724/Z.js",
 		"package b84724;\n" + 
 		"public class Z {\n" + 
 		"	void foo() {\n" + 
@@ -2327,14 +2327,14 @@ public void testBug84724d() throws CoreException {
 private void setUpBug84727() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[3];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b84727/A.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b84727/A.js",
 		"package b84727;\n" + 
 		"public interface A {\n" + 
 		"	Set<Set<Exception>> getXYZ(List<Set<Exception>> arg);\n" + 
 		"	void getXYZ(String s);\n" + 
 		"}\n"
 		);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b84727/X.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b84727/X.js",
 		"package b84727;\n" + 
 		"public class X {\n" + 
 		"	A a;\n" + 
@@ -2344,7 +2344,7 @@ private void setUpBug84727() throws CoreException {
 		"	}\n" + 
 		"}\n"
 		);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b84727/List.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b84727/List.js",
 		"package b84727;\n" + 
 		"public interface List<E> {}\n" + 
 		"interface Set<E> {}\n" + 
@@ -2379,7 +2379,7 @@ public void testBug84727b() throws CoreException {
 public void testBug85810() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b85810/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b85810/Test.js",
 		"package b85810;\n" + 
 		"public class Test<E> implements In<Test<E>> {\n" + 
 		"	E e;\n" + 
@@ -2401,15 +2401,15 @@ public void testBug85810() throws CoreException {
 public void testBug86596() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[3];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b86596/aa/link/A.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b86596/aa/link/A.js",
 		"package b86596.aa.link;\n" + 
 		"public interface A {}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b86596/bb/Link.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b86596/bb/Link.js",
 		"package b86596.bb;\n" + 
 		"public class Link{}\n"
 	);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b86596/cc/X.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b86596/cc/X.js",
 		"package b86596.cc;\n" + 
 		"import b86596.aa.link.A;\n" + 
 		"import b86596.bb.Link;\n" + 
@@ -2432,14 +2432,14 @@ public void testBug86596() throws CoreException {
 public void testBug86642() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[2];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b86642/A.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b86642/A.js",
 		"package b86642;\n" + 
 		"class A {\n" + 
 		"	public void m() {}\n" + 
 		"	protected void f(A a){}\n" + 
 		"}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b86642/B.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b86642/B.js",
 		"package b86642;\n" + 
 		"public class B extends A{\n" + 
 		"	protected void f(A a){\n" + 
@@ -2476,14 +2476,14 @@ public void testBug86293() throws CoreException {
 private void setUpBug86380() throws CoreException {
 	resultCollector.showInsideDoc = true;
 	workingCopies = new ICompilationUnit[2];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b86380/package-info.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b86380/package-info.js",
 		"/**\n" + 
 		" * @see Annot#field\n" + 
 		" */\n" + 
 		"@Annot(value=11)\n" + 
 		"package b86380;\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b86380/Test.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b86380/Test.js",
 		"package b86380;\n" + 
 		"@Annot(12) public class Test {\n" + 
 		"	public int field = Annot.field;\n" + 
@@ -2494,7 +2494,7 @@ private void setUpBug86380() throws CoreException {
 public void testBug86380_Type() throws CoreException {
 	resultCollector.showInsideDoc = true;
 	setUpBug86380();
-	ICompilationUnit unit = getCompilationUnit("JavaSearchBugs", "src", "b86380", "Annot.java");
+	ICompilationUnit unit = getCompilationUnit("JavaSearchBugs", "src", "b86380", "Annot.js");
 	IType type = unit.getType("Annot");
 	search(type, REFERENCES);
 	assertSearchResults(
@@ -2507,7 +2507,7 @@ public void testBug86380_Type() throws CoreException {
 public void testBug86380_Method() throws CoreException {
 	resultCollector.showInsideDoc = true;
 	setUpBug86380();
-	ICompilationUnit unit = getCompilationUnit("JavaSearchBugs", "src", "b86380", "Annot.java");
+	ICompilationUnit unit = getCompilationUnit("JavaSearchBugs", "src", "b86380", "Annot.js");
 	IMethod[] methods = unit.getType("Annot").getMethods();
 	assertEquals("Invalid number of methods", 1, methods.length);
 	search(methods[0], REFERENCES);
@@ -2519,7 +2519,7 @@ public void testBug86380_Method() throws CoreException {
 public void testBug86380_Field() throws CoreException {
 	resultCollector.showInsideDoc = true;
 	setUpBug86380();
-	ICompilationUnit unit = getCompilationUnit("JavaSearchBugs", "src", "b86380", "Annot.java");
+	ICompilationUnit unit = getCompilationUnit("JavaSearchBugs", "src", "b86380", "Annot.js");
 	IField[] fields = unit.getType("Annot").getFields();
 	assertEquals("Invalid number of fields", 1, fields.length);
 	search(fields[0], REFERENCES);
@@ -2536,7 +2536,7 @@ public void testBug86380_Field() throws CoreException {
 public void testBug88174() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[2];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b88174/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b88174/Test.js",
 		"package b88174;\n" + 
 		"public enum Test {\n" + 
 		"  a {\n" + 
@@ -2547,7 +2547,7 @@ public void testBug88174() throws CoreException {
 		"  abstract int getTheValue();\n" + 
 		"}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b88174/X.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b88174/X.js",
 		"package b88174;\n" + 
 		"public class X {\n" + 
 		"  X x = new X() {\n" + 
@@ -2590,7 +2590,7 @@ public void testBug87627() throws CoreException {
  */
 public void testBug88300() throws CoreException {
 	workingCopies = new ICompilationUnit[3];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b88300/SubClass.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b88300/SubClass.js",
 		"package b88300;\n" + 
 		"public class SubClass extends SuperClass {\n" + 
 		"	private void aMethod(String x) {\n" + 
@@ -2599,14 +2599,14 @@ public void testBug88300() throws CoreException {
 		"	}\n" + 
 		"}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b88300/SuperClass.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b88300/SuperClass.js",
 		"package b88300;\n" + 
 		"public class SuperClass {\n" + 
 		"    public void aMethod(Object x) {\n" + 
 		"    }\n" + 
 		"}\n"
 		);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b88300/User.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b88300/User.js",
 		"package b88300;\n" + 
 		"public class User {\n" + 
 		"    public void methodUsingSubClassMethod() {\n" + 
@@ -2623,7 +2623,7 @@ public void testBug88300() throws CoreException {
 }
 public void testBug88300b() throws CoreException {
 	workingCopies = new ICompilationUnit[3];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b88300/SubClass.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b88300/SubClass.js",
 		"package b88300;\n" + 
 		"public class SubClass extends SuperClass {\n" + 
 		"	public void aMethod(Object x) {\n" + 
@@ -2632,14 +2632,14 @@ public void testBug88300b() throws CoreException {
 		"	}\n" + 
 		"}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b88300/SuperClass.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b88300/SuperClass.js",
 		"package b88300;\n" + 
 		"public class SuperClass {\n" + 
 		"    public void aMethod(Object x) {\n" + 
 		"    }\n" + 
 		"}\n"
 		);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b88300/User.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b88300/User.js",
 		"package b88300;\n" + 
 		"public class User {\n" + 
 		"    public void methodUsingSubClassMethod() {\n" + 
@@ -2656,7 +2656,7 @@ public void testBug88300b() throws CoreException {
 }
 public void testBug88300c() throws CoreException {
 	workingCopies = new ICompilationUnit[3];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b88300/not/fixed/ConditionalFlowInfo.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b88300/not/fixed/ConditionalFlowInfo.js",
 		"package b88300.not.fixed;\n" + 
 		"public class ConditionalFlowInfo extends FlowInfo {\n" + 
 		"	public FlowInfo info;\n" + 
@@ -2671,7 +2671,7 @@ public void testBug88300c() throws CoreException {
 		"	}\n" + 
 		"}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b88300/not/fixed/FlowInfo.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b88300/not/fixed/FlowInfo.js",
 		"package b88300.not.fixed;\n" + 
 		"\n" + 
 		"class FieldBinding {\n" + 
@@ -2684,7 +2684,7 @@ public void testBug88300c() throws CoreException {
 		"	abstract public void markAsDefinitelyNull(FieldBinding field);\n" + 
 		"}\n"
 		);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b88300/not/fixed/UnconditionalFlowInfo.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b88300/not/fixed/UnconditionalFlowInfo.js",
 		"package b88300.not.fixed;\n" + 
 		"public class UnconditionalFlowInfo extends FlowInfo {\n" + 
 		"	final private void markAsDefinitelyNull(int position) {}\n" + 
@@ -2709,7 +2709,7 @@ public void testBug88300c() throws CoreException {
  */
 public void testBug89686() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b89686/A.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b89686/A.js",
 		"package b89686;\n" + 
 		"public enum Color {\n" + 
 		"    RED, GREEN(), BLUE(17), PINK((1+(1+1))) {/*anon*/};\n" + 
@@ -2727,7 +2727,7 @@ public void testBug89686() throws CoreException {
 }
 public void testBug89686b() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b89686/A.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b89686/A.js",
 		"package b89686;\n" + 
 		"public enum Color {\n" + 
 		"    RED, GREEN(), BLUE(17), PINK((1+(1+1))) {/*anon*/};\n" + 
@@ -2764,19 +2764,19 @@ public void testBug89848() throws CoreException {
  */
 public void testBug90779() throws CoreException {
 	workingCopies = new ICompilationUnit[3];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b90779/A.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b90779/A.js",
 		"package b90779;\n" +
 		"public class A {\n" + 
 		"	public A() {}\n" + 
 		"}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b90779/B.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b90779/B.js",
 		"package b90779;\n" +
 		"public class B {\n" + 
 		"	public B() {}\n" + 
 		"}\n"
 	);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b90779/C.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b90779/C.js",
 		"package b90779;\n" +
 		"public class C {\n" + 
 		"	public C() {}\n" + 
@@ -2797,7 +2797,7 @@ public void testBug90779() throws CoreException {
  */
 public void testBug90915() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b90915/X.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b90915/X.js",
 		"package b90915;\n" +
 		"import g5.m.def.Single;\n" + 
 		"public class X<T> {\n" + 
@@ -2829,7 +2829,7 @@ public void testBug90915() throws CoreException {
  */
 public void testBug91542() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b91542/A.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b91542/A.js",
 		"package b91542;\n" + 
 		"\n" + 
 		"class A<T> {\n" + 
@@ -2856,7 +2856,7 @@ public void testBug91542() throws CoreException {
  */
 public void testBug91078() throws CoreException {
 	workingCopies = new ICompilationUnit[3];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b91078/test/Example.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b91078/test/Example.js",
 		"package b91078.test;\n" + 
 		"import b91078.util.HashMap;\n" + 
 		"import b91078.util.Map;\n" + 
@@ -2874,13 +2874,13 @@ public void testBug91078() throws CoreException {
 		"    }\n" + 
 		"}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b91078/util/HashMap.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b91078/util/HashMap.js",
 		"package b91078.util;\n" + 
 		"public class HashMap implements Map {\n" + 
 		"	public Entry entry;\n" + 
 		"}\n"
 	);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b91078/util/Map.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b91078/util/Map.js",
 		"package b91078.util;\n" + 
 		"public interface Map {\n" + 
 		"	class Entry{}\n" + 
@@ -3007,7 +3007,7 @@ public void testBug92264d() throws CoreException {
 private void setUpBug92944() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b92944/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b92944/Test.js",
 		"package b92944;\n" + 
 		"interface B92944_I {}\n" + 
 		"enum B92944_E {}\n" + 
@@ -3176,7 +3176,7 @@ public void testBug93392() throws CoreException {
 	TestCollector collector = new TestCollector();
 	collector.showAccuracy = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b93392/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b93392/Test.js",
 		"package b93392;\n" + 
 		"@interface Annot {\n" + 
 		"	int value();\n" +
@@ -3222,7 +3222,7 @@ public void testBug93392() throws CoreException {
  */
 public void testBug94160() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b94160/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b94160/Test.js",
 		"package b94160;\n" + 
 		"public class Test {\n" + 
 		"	<T> List<T> generateList(Class<T> clazz) {\n" + 
@@ -3252,7 +3252,7 @@ public void testBug94160() throws CoreException {
  */
 public void testBug94389() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b94389/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b94389/Test.js",
 		"package b94389;\n" + 
 		"public class Test {\n" + 
 		"	public void foo() {}\n" + 
@@ -3294,13 +3294,13 @@ public void testBug94389() throws CoreException {
  */
 public void testBug94718() throws CoreException {
 	workingCopies = new ICompilationUnit[2];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b94718/SetUp.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b94718/SetUp.js",
 		"package b94718;\n" + 
 		"public @interface SetUp {\n" + 
 		"	String value() {}\n" + 
 		"}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b94718/Test.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b94718/Test.js",
 		"package b94718;\n" + 
 		"@SetUp(\"howdy\")\n" + 
 		"public class Test {\n" + 
@@ -3367,7 +3367,7 @@ public void testBug95152_jar04() throws CoreException {
 }
 public void testBug95152_wc01() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b95152/T.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b95152/T.js",
 		"package b95152;\n" + 
 		"public class T {\n" + 
 		"	T2 c2;\n" + 
@@ -3398,7 +3398,7 @@ public void testBug95152_wc01() throws CoreException {
 }
 public void testBug95152_wc02() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b95152/T.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b95152/T.js",
 		"package b95152;\n" + 
 		"public class T {\n" + 
 		"	T2 c2;\n" + 
@@ -3429,7 +3429,7 @@ public void testBug95152_wc02() throws CoreException {
 }
 public void testBug95152_wc03() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b95152/T.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b95152/T.js",
 		"package b95152;\n" + 
 		"public class T {\n" + 
 		"	T2 c2;\n" + 
@@ -3460,7 +3460,7 @@ public void testBug95152_wc03() throws CoreException {
 }
 public void testBug95152_wc04() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b95152/T.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b95152/T.js",
 		"package b95152;\n" + 
 		"public class T {\n" + 
 		"	T2 c2;\n" + 
@@ -3495,7 +3495,7 @@ public void testBug95152_wc04() throws CoreException {
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=95794"
  */
 public void testBug95794() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearchBugs", "src", "b95794", "Test.java");
+	ICompilationUnit unit = getCompilationUnit("JavaSearchBugs", "src", "b95794", "Test.js");
 	IType type = unit.getType("Test");
 	
 	// Verify matches
@@ -3517,7 +3517,7 @@ public void testBug95794() throws CoreException {
 }
 public void testBug95794b() throws CoreException {
 	resultCollector.showRule = true;
-	ICompilationUnit unit = getCompilationUnit("JavaSearchBugs", "src", "b95794", "Test.java");
+	ICompilationUnit unit = getCompilationUnit("JavaSearchBugs", "src", "b95794", "Test.js");
 	IType type = unit.getType("Test").getType("Color");
 	
 	// Verify matches
@@ -3539,7 +3539,7 @@ public void testBug95794b() throws CoreException {
 }
 public void testBug95794c() throws CoreException {
 	resultCollector.showRule = true;
-	ICompilationUnit unit = getCompilationUnit("JavaSearchBugs", "src", "b95794", "Test.java");
+	ICompilationUnit unit = getCompilationUnit("JavaSearchBugs", "src", "b95794", "Test.js");
 	IField field = unit.getType("Test").getType("Color").getField("WHITE");
 	
 	// Verify matches
@@ -3565,7 +3565,7 @@ public void testBug95794c() throws CoreException {
  */
 public void testBug96761() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b96761/Generic.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b96761/Generic.js",
 		"package b96761;\n" + 
 		"public class Generic<G> {\n" + 
 		"	void take(G g) {\n" + 
@@ -3590,7 +3590,7 @@ public void testBug96761() throws CoreException {
  */
 public void testBug96763() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b96763/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b96763/Test.js",
 		"package b96763;\n" + 
 		"class Test<T> {\n" + 
 		"    public void first(Exception num) {}\n" + 
@@ -3610,7 +3610,7 @@ public void testBug96763() throws CoreException {
 }
 public void testBug96763b() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b96763/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b96763/Test.js",
 		"package b96763;\n" + 
 		"class Test<T> {\n" + 
 		"    public void first(Exception num) {}\n" + 
@@ -3630,7 +3630,7 @@ public void testBug96763b() throws CoreException {
 }
 public void testBug96763c() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b96763/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b96763/Test.js",
 		"package b96763;\n" + 
 		"public class Test<T> {\n" + 
 		"	void methodT(T t) {}\n" + 
@@ -3654,7 +3654,7 @@ public void testBug96763c() throws CoreException {
 public void testBug97087() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
 	this.resultCollector.showRule = true;
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b97087/Bug.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b97087/Bug.js",
 		"package b97087;\n" + 
 		"public class Bug<Type> {\n" + 
 		"    Bug(){}\n" + 
@@ -3708,7 +3708,7 @@ public void testBug97120() throws CoreException {
  */
 public void testBug97322() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b97322/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b97322/Test.js",
 		"package b97322;\n" + 
 		"class Test {\n" + 
 		"	static void myMethod(int a, String b) {}\n" + 
@@ -3729,13 +3729,13 @@ public void testBug97322() throws CoreException {
  */
 public void testBug97547() throws CoreException {
 	workingCopies = new ICompilationUnit[2];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b97547/IX.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b97547/IX.js",
 		"package b97547;\n" + 
 		"public interface IX {\n" + 
 		"	public interface IX1 {}\n" + 
 		"}"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b97547/X.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b97547/X.js",
 		"package b97547;\n" + 
 		"import b97547.IX.*;\n" + 
 		"class X {\n" + 
@@ -3756,11 +3756,11 @@ public void testBug97547() throws CoreException {
  */
 public void testBug97606() throws CoreException {
 	workingCopies = new ICompilationUnit[4];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b97606/pack/def/L.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b97606/pack/def/L.js",
 		"package b97606.pack.def;\n" + 
 		"public interface L<E> {}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b97606/pack/def/LL.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b97606/pack/def/LL.js",
 		"package b97606.pack.def;\n" + 
 		"public class LL<E> implements L<E> {\n" + 
 		"	public Object clone() {\n" + 
@@ -3768,11 +3768,11 @@ public void testBug97606() throws CoreException {
 		"	}\n" + 
 		"}\n"
 	);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b97606/pack/ref/K.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b97606/pack/ref/K.js",
 		"package b97606.pack.ref;\n" + 
 		"public interface K {}\n"
 	);
-	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/b97606/pack/ref/X.java",
+	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/b97606/pack/ref/X.js",
 		"package b97606.pack.ref;\n" + 
 		"public class X implements K {\n" + 
 		"	private b97606.pack.def.LL sg;\n" + 
@@ -3808,11 +3808,11 @@ public void testBug97606() throws CoreException {
 }
 public void testBug97606b() throws CoreException {
 	workingCopies = new ICompilationUnit[4];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b97606/pack/def/L.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b97606/pack/def/L.js",
 		"package b97606.pack.def;\n" + 
 		"public interface L<E> {}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b97606/pack/def/LL.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b97606/pack/def/LL.js",
 		"package b97606.pack.def;\n" + 
 		"public class LL<E> implements L<E> {\n" + 
 		"	public Object clone() {\n" + 
@@ -3820,11 +3820,11 @@ public void testBug97606b() throws CoreException {
 		"	}\n" + 
 		"}\n"
 	);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b97606/pack/ref/K.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b97606/pack/ref/K.js",
 		"package b97606.pack.ref;\n" + 
 		"public interface K {}\n"
 	);
-	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/b97606/pack/ref/X.java",
+	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/b97606/pack/ref/X.js",
 		"package b97606.pack.ref;\n" + 
 		"import b97606.pack.def.*;\n" + 
 		"public class X implements K {\n" + 
@@ -3866,7 +3866,7 @@ public void testBug97606b() throws CoreException {
  */
 public void testBug97614() throws CoreException {
 	workingCopies = new ICompilationUnit[3];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b97614/W.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b97614/W.js",
 		"package b97614;\n" + 
 		"public class W {\n" + 
 		"	private final Map<String, Y<?, ? extends b97614.X.XX<?, ?>, ? >> m1 = null;     // (a)\n" + 
@@ -3878,7 +3878,7 @@ public void testBug97614() throws CoreException {
 		"	V get(Object k);\n" + 
 		"}"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b97614/X.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b97614/X.js",
 		"package b97614;\n" + 
 		"import java.io.Serializable;\n" + 
 		"public interface X<T extends X<T, U, V>, \n" + 
@@ -3892,7 +3892,7 @@ public void testBug97614() throws CoreException {
 		"	}\n" + 
 		"}"
 	);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b97614/Y.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b97614/Y.js",
 		"package b97614;\n" + 
 		"public class Y<T extends X<T, U, V>, U extends X.XX<T, V>, V extends X.XY> {\n" + 
 		"}\n"
@@ -3910,7 +3910,7 @@ public void testBug97614() throws CoreException {
  */
 public void testBug98378() throws CoreException {
 	workingCopies = new ICompilationUnit[2];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b98378/X.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b98378/X.js",
 		"package b98378;\n" + 
 		"public class  X implements java.lang.CharSequence {\n" + 
 		"	public int length() {\n" + 
@@ -3918,7 +3918,7 @@ public void testBug98378() throws CoreException {
 		"	}\n" + 
 		"}"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b98378/Y.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b98378/Y.js",
 		"package b98378;\n" + 
 		"public class Y {\n" + 
 		"	public int length() {\n" + 
@@ -3937,7 +3937,7 @@ public void testBug98378() throws CoreException {
 }
 public void testBug98378b() throws CoreException {
 	workingCopies = new ICompilationUnit[2];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b98378/X.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b98378/X.js",
 		"package b98378;\n" + 
 		"public class  X implements java.lang.CharSequence {\n" + 
 		"	public int length() {\n" + 
@@ -3945,7 +3945,7 @@ public void testBug98378b() throws CoreException {
 		"	}\n" + 
 		"}"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b98378/Y.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b98378/Y.js",
 		"package b98378;\n" + 
 		"public class Y {\n" + 
 		"	public int length() {\n" + 
@@ -3970,7 +3970,7 @@ public void testBug98378b() throws CoreException {
  */
 public void testBug99600() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b99600/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b99600/Test.js",
 		"package b99600;\n" + 
 		"public class Test {\n" + 
 		"	public class C1 {}\n" + 
@@ -3997,19 +3997,19 @@ public void testBug99600() throws CoreException {
  */
 public void testBug99903_annotation() throws CoreException {
 	workingCopies = new ICompilationUnit[3];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b99903/package-info.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b99903/package-info.js",
 		"/**\n" + 
 		" * @see Test\n" + 
 		" */\n" + 
 		"@Annot\n" + 
 		"package b99903;\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b99903/Test.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b99903/Test.js",
 		"package b99903;\n" + 
 		"public class Test {\n" + 
 		"}\n"
 	);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b99903/Annot.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b99903/Annot.js",
 		"package b99903;\n" + 
 		"public @interface Annot {\n" + 
 		"}\n"
@@ -4022,19 +4022,19 @@ public void testBug99903_annotation() throws CoreException {
 }
 public void testBug99903_javadoc() throws CoreException {
 	workingCopies = new ICompilationUnit[3];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b99903/package-info.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b99903/package-info.js",
 		"/**\n" + 
 		" * @see Test\n" + 
 		" */\n" + 
 		"@Annot\n" + 
 		"package b99903;\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b99903/Test.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b99903/Test.js",
 		"package b99903;\n" + 
 		"public class Test {\n" + 
 		"}\n"
 	);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b99903/Annot.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b99903/Annot.js",
 		"package b99903;\n" + 
 		"public @interface Annot {\n" + 
 		"}\n"
@@ -4053,7 +4053,7 @@ public void testBug99903_javadoc() throws CoreException {
  */
 public void testBug100695() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100695/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100695/Test.js",
 		"package b100695;\n" + 
 		"public class Test {\n" + 
 		"	Class<Class>[] foo;\n" + 
@@ -4072,7 +4072,7 @@ public void testBug100695() throws CoreException {
 }
 public void testBug100695a() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100695/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100695/Test.js",
 		"package b100695;\n" + 
 		"public class Test {\n" + 
 		"	Class<Class>[] foo;\n" + 
@@ -4092,7 +4092,7 @@ public void testBug100695a() throws CoreException {
 }
 public void testBug100695b() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100695/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100695/Test.js",
 		"package b100695;\n" + 
 		"public class Test {\n" + 
 		"	Class<Class> foo;\n" + 
@@ -4112,7 +4112,7 @@ public void testBug100695b() throws CoreException {
 }
 public void testBug100695c() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100695/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100695/Test.js",
 		"package b100695;\n" + 
 		"public class Test {\n" + 
 		"	Class[] foo;\n" + 
@@ -4132,7 +4132,7 @@ public void testBug100695c() throws CoreException {
 }
 public void testBug100695d() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100695/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100695/Test.js",
 		"package b100695;\n" + 
 		"public class Test {\n" + 
 		"	  public Class<Class>[] foo(Class<Class>[] a) {\n" + 
@@ -4152,7 +4152,7 @@ public void testBug100695d() throws CoreException {
 }
 public void testBug100695e() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100695/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100695/Test.js",
 		"package b100695;\n" + 
 		"public class Test {\n" + 
 		"	  public Class<Class> foo(Class<Class> a) {\n" + 
@@ -4172,7 +4172,7 @@ public void testBug100695e() throws CoreException {
 }
 public void testBug100695f() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100695/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100695/Test.js",
 		"package b100695;\n" + 
 		"public class Test {\n" + 
 		"	  public Class[] foo(Class[] a) {\n" + 
@@ -4197,7 +4197,7 @@ public void testBug100695f() throws CoreException {
  */
 private void setUpBug100772_HierarchyScope_ClassAndSubclass() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100772/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100772/Test.js",
 		"package b100772;\n" + 
 		"class Test<T> {\n" + 
 		"    public void foo(T t) {}\n" + 
@@ -4259,7 +4259,7 @@ public void testBug100772_HierarchyScope_ClassAndSubclass05() throws CoreExcepti
 }
 private void setUpBug100772_HierarchyScope_InterfacesAndClass() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100772/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100772/Test.js",
 		"package b100772;\n" + 
 		"interface Test<T> {\n" + 
 		"    public void foo(T t);\n" + 
@@ -4358,7 +4358,7 @@ public void testBug100772_HierarchyScope_InterfacesAndClass08() throws CoreExcep
 }
 private void setUpBug100772_HierarchyScope_Complex() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100772/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100772/Test.js",
 		"package b100772;\n" + 
 		"public class X<T> implements IX<T> {\n" + 
 		"	public void foo(T t) {}\n" + 
@@ -4431,14 +4431,14 @@ public void testBug100772_HierarchyScope_Complex04() throws CoreException {
 }
 private void setUpBug100772_ProjectScope_ClassAndSubclass() throws CoreException {
 	workingCopies = new ICompilationUnit[2];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100772/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100772/Test.js",
 		"package b100772;\n" + 
 		"class Test<T> {\n" + 
 		"    public void foo(T t) {}\n" + 
 		"    public void foo(Class c) {}\n" + 
 		"}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b100772/Sub.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b100772/Sub.js",
 		"package b100772;\n" + 
 		"class Sub extends Test<String> {\n" + 
 		"    public void foo(String str) {}\n" + 
@@ -4496,21 +4496,21 @@ public void testBug100772_ProjectScope_ClassAndSubclass05() throws CoreException
 }
 private void setUpBug100772_ProjectScope_InterfacesAndClass() throws CoreException {
 	workingCopies = new ICompilationUnit[3];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100772/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100772/Test.js",
 		"package b100772;\n" + 
 		"interface Test<T> {\n" + 
 		"    public void foo(T t);\n" + 
 		"    public void foo(Class c);\n" + 
 		"}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b100772/Sub.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b100772/Sub.js",
 		"package b100772;\n" + 
 		"interface Sub extends Test<String> {\n" + 
 		"    public void foo(String str);\n" + 
 		"    public void foo(Exception e);\n" + 
 		"}\n"
 	);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b100772/X.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b100772/X.js",
 		"package b100772;\n" + 
 		"class X implements Test<String> {\n" + 
 		"    public void foo(String str) {}\n" + 
@@ -4605,39 +4605,39 @@ public void testBug100772_ProjectScope_InterfacesAndClass08() throws CoreExcepti
 }
 private void setUpBug100772_ProjectScope_Complex() throws CoreException {
 	workingCopies = new ICompilationUnit[6];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100772/X.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b100772/X.js",
 		"package b100772;\n" + 
 		"public class X<T> implements IX<T> {\n" + 
 		"	public void foo(T t) {}\n" + 
 		"}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b100772/XX.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b100772/XX.js",
 		"package b100772;\n" + 
 		"class XX extends X<String> {\n" + 
 		"	public void foo(String s) {}\n" + 
 		"	public void foo(Exception e) {}\n" + 
 		"}\n"
 	);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b100772/IX.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b100772/IX.js",
 		"package b100772;\n" + 
 		"interface IX<U> {\n" + 
 		"	public void foo(U u);\n" + 
 		"}\n"
 	);
-	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/b100772/Y.java",
+	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/b100772/Y.js",
 		"package b100772;\n" + 
 		"class Y implements IX<String> {\n" + 
 		"	public void foo(String s) {}\n" + 
 		"	public void foo(Exception e) {}\n" + 
 		"}\n"
 	);
-	workingCopies[4] = getWorkingCopy("/JavaSearchBugs/src/b100772/IXX.java",
+	workingCopies[4] = getWorkingCopy("/JavaSearchBugs/src/b100772/IXX.js",
 		"package b100772;\n" + 
 		"interface IXX<V extends Exception> {\n" + 
 		"	public void foo(V v);\n" + 
 		"}\n"
 	);
-	workingCopies[5] = getWorkingCopy("/JavaSearchBugs/src/b100772/Z.java",
+	workingCopies[5] = getWorkingCopy("/JavaSearchBugs/src/b100772/Z.js",
 		"package b100772;\n" + 
 		"class Z extends Y implements IXX<Exception> {\n" + 
 		"	public void foo(String s) {}\n" + 
@@ -4699,7 +4699,7 @@ public void testBug100772_ProjectScope_Complex04() throws CoreException {
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=108088"
  */
 public void testBug108088() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearchBugs", "src", "b108088", "Test108088.java");
+	ICompilationUnit unit = getCompilationUnit("JavaSearchBugs", "src", "b108088", "Test108088.js");
 	IType type = unit.getType("A108088");
 	IMethod method = type.getMethod("subroutine", new String[] { "F" });
 	SearchPattern pattern = SearchPattern.createPattern(method, REFERENCES, EXACT_RULE);
@@ -4720,27 +4720,27 @@ public void testBug108088() throws CoreException {
 // Types search
 private void setUpBug110060_TypePattern() throws CoreException {
 	workingCopies = new ICompilationUnit[5];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110060/AA.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110060/AA.js",
 		"package b110060;\n" + 
 		"public class AA {\n" +
 		"}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b110060/AAxx.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b110060/AAxx.js",
 		"package b110060;\n" + 
 		"public class AAxx {\n" +
 		"}\n"
 	);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b110060/AxxAyy.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b110060/AxxAyy.js",
 		"package b110060;\n" + 
 		"public class AxxAyy {\n" +
 		"}\n"
 	);
-	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/b110060/AxA.java",
+	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/b110060/AxA.js",
 		"package b110060;\n" + 
 		"public class AxA {\n" +
 		"}\n"
 	);
-	workingCopies[4] = getWorkingCopy("/JavaSearchBugs/src/b110060/Test.java",
+	workingCopies[4] = getWorkingCopy("/JavaSearchBugs/src/b110060/Test.js",
 		"package b110060;\n" + 
 		"public class Test {\n" +
 		"	AA aa;\n" + 
@@ -5177,31 +5177,31 @@ public void testBug110060_AllTypeNames14() throws CoreException {
 // Constructor search
 private void setUpBug110060_ConstructorPattern() throws CoreException {
 	workingCopies = new ICompilationUnit[5];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110060/AA.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110060/AA.js",
 		"package b110060;\n" + 
 		"public class AA {\n" +
 		"	AA() {}\n" +
 		"}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b110060/AAxx.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b110060/AAxx.js",
 		"package b110060;\n" + 
 		"public class AAxx {\n" +
 		"	AAxx() {}\n" +
 		"}\n"
 	);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b110060/AxxAyy.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b110060/AxxAyy.js",
 		"package b110060;\n" + 
 		"public class AxxAyy {\n" +
 		"	AxxAyy() {}\n" +
 		"}\n"
 	);
-	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/b110060/AxA.java",
+	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/b110060/AxA.js",
 		"package b110060;\n" + 
 		"public class AxA {\n" +
 		"	AxA() {}\n" +
 		"}\n"
 	);
-	workingCopies[4] = getWorkingCopy("/JavaSearchBugs/src/b110060/Test.java",
+	workingCopies[4] = getWorkingCopy("/JavaSearchBugs/src/b110060/Test.js",
 		"package b110060;\n" + 
 		"public class Test {\n" +
 		"	AA aa = new AA();\n" + 
@@ -5284,7 +5284,7 @@ public void testBug110060_ConstructorPattern06() throws CoreException {
 // Methods search
 private void setUpBug110060_MethodPattern() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110060/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110060/Test.js",
 		"package b110060;\n" + 
 		"public class Test {\n" +
 		"	void aMethodWithNothingSpecial() {}\n" + 
@@ -5401,7 +5401,7 @@ public void testBug110060_MethodPattern09() throws CoreException {
 // Fields search
 private void setUpBug110060_FieldPattern() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110060/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110060/Test.js",
 		"package b110060;\n" + 
 		"public class Test {\n" +
 		"	Object aFieldWithNothingSpecial;\n" + 
@@ -5470,7 +5470,7 @@ public void testBug110060_FieldPattern05() throws CoreException {
  */
 public void testBug110291() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110291/Test110291XX.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110291/Test110291XX.js",
 		"package b110291;\n" + 
 		"public class Test110291XX {\n" + 
 		"	class Test110291YY {}" +
@@ -5488,7 +5488,7 @@ public void testBug110291() throws CoreException {
  */
 public void testBug110336a() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110336/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110336/Test.js",
 		"package b110336;\n" + 
 		"public class Test {\n" + 
 		"	<TP extends Test> void method(Class<Test> clazz) {\n" + 
@@ -5513,7 +5513,7 @@ public void testBug110336a() throws CoreException {
 }
 public void testBug110336b() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110336/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110336/Test.js",
 		"package b110336;\n" + 
 		"public class Test {\n" + 
 		"	void method1(Test methodParam) {\n" + 
@@ -5542,7 +5542,7 @@ public void testBug110336b() throws CoreException {
 }
 public void testBug110336c() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110336/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110336/Test.js",
 		"package b110336;\n" + 
 		"public class Test<TP extends X> {\n" + 
 		"	X x;\n" + 
@@ -5561,7 +5561,7 @@ public void testBug110336c() throws CoreException {
 }
 public void testBug110336d() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110336/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110336/Test.js",
 		"package b110336;\n" + 
 		"public class Test {\n" + 
 		"	Test a1Test = null, b1Test = new Test(), c1Test;\n" + 
@@ -5584,7 +5584,7 @@ public void testBug110336d() throws CoreException {
 }
 public void testBug110336e() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110336/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110336/Test.js",
 		"package b110336;\n" + 
 		"public class Test {\n" + 
 		"	void foo() {\n" + 
@@ -5609,7 +5609,7 @@ public void testBug110336e() throws CoreException {
 }
 public void testBug110336f() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110336/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110336/Test.js",
 		"package b110336;\n" + 
 		"public class Test extends Exception {\n" + 
 		"        void foo(Test test1) { // <- no local element\n" + 
@@ -5638,7 +5638,7 @@ public void testBug110336f() throws CoreException {
 }
 public void testBug110336g() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110336/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110336/Test.js",
 		"package b110336;\n" + 
 		"public class Test {\n" + 
 		"	{\n" + 
@@ -5663,7 +5663,7 @@ public void testBug110336g() throws CoreException {
 }
 public void testBug110336h() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110336/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b110336/Test.js",
 		"package b110336;\n" + 
 		"public class Test {\n" + 
 		"	static {\n" + 
@@ -5745,13 +5745,13 @@ public void testBug113671() throws CoreException {
  */
 public void testBug114539() throws CoreException {
 	workingCopies = new ICompilationUnit[2];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b114539/Foo.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b114539/Foo.js",
 		"package b114539;\n" + 
 		"public class Foo {\n" + 
 		"	int bar=Bar.FOO;\n" + 
 		"}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b114539/Bar.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b114539/Bar.js",
 		"package b114539;\n" + 
 		"public class Bar {\n" + 
 		"	private static final int FOO=0;\n" + 
@@ -5770,7 +5770,7 @@ public void testBug114539() throws CoreException {
  */
 public void testBug116459() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/p1/X.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/p1/X.js",
 		"package p1;\n" + 
 		"class X<T> {\n" + 
 		"	X<T> gen;\n" + 
@@ -5794,7 +5794,7 @@ public void testBug116459() throws CoreException {
  */
 public void testBug119545() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b119545/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b119545/Test.js",
 		"package b119545;\n" + 
 		"class Test {\n" + 
 		"	void foo(Object o1, Object o2){\n" + 
@@ -5816,13 +5816,13 @@ public void testBug119545() throws CoreException {
  */
 public void testBug120816a() throws CoreException {
 	workingCopies = new ICompilationUnit[2];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b120816/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b120816/Test.js",
 		"package b120816;\n" + 
 		"public class Test<E> {\n" + 
 		"	String foo(E e) { return \"\"; }\n" + 
 		"}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b120816/Sub.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b120816/Sub.js",
 		"package b120816;\n" + 
 		"public class Sub extends Test<Exception> {\n" +
 		"	String foo(RuntimeException e) { return \"\"; }\n" + 
@@ -5838,7 +5838,7 @@ public void testBug120816a() throws CoreException {
 }
 public void testBug120816b() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b120816/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b120816/Test.js",
 		"package b120816;\n" + 
 		"public class Test<E> {\n" + 
 		"	String foo(E e) { return \"\"; }\n" + 
@@ -5862,15 +5862,15 @@ public void testBug120816b() throws CoreException {
  */
 private void setUpBug122442a() throws CoreException {
 	workingCopies = new ICompilationUnit[3];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b122442/I.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b122442/I.js",
 		"package b122442;\n" + 
 		"public interface I {}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b122442/II.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b122442/II.js",
 		"package b122442;\n" + 
 		"public interface II extends I {}\n"
 	);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b122442/X.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b122442/X.js",
 		"package b122442;\n" + 
 		"public class X implements I {}\n"
 	);
@@ -5899,7 +5899,7 @@ public void testBug122442c() throws CoreException {
 }
 private void setUpBug122442d() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b122442/User.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b122442/User.js",
 		"class Klass {}\n" + 
 		"interface Interface {}\n" + 
 		"class User {\n" + 
@@ -5973,7 +5973,7 @@ public void testBug123679() throws CoreException {
 	);
 }
 public void testBug123679_cu() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearchBugs", "src", "b123679.pack", "I123679.java");
+	ICompilationUnit unit = getCompilationUnit("JavaSearchBugs", "src", "b123679.pack", "I123679.js");
 	IType type = unit.getType("I123679");
 	search(type, REFERENCES);
 	assertSearchResults(
@@ -5987,12 +5987,12 @@ public void testBug123679_cu() throws CoreException {
 }
 public void testBug123679_wc() throws CoreException {
 	workingCopies = new ICompilationUnit[2];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/pack/I122679.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/pack/I122679.js",
 		"package pack;\n" + 
 		"public interface I123679 {\n" + 
 		"}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/test/Test.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/test/Test.js",
 		"package test;\n" + 
 		"import pack.I123679;\n" + 
 		"public class Test {\n" + 
@@ -6219,10 +6219,10 @@ public void testBug124469n() throws CoreException {
  */
 public void testBug124489() throws CoreException {
 	workingCopies = new ICompilationUnit[2];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/Foo.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/Foo.js",
 		"public class Foo<T> {}"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/Bar.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/Bar.js",
 		"public class Bar {\n" + 
 		"    Foo<String> f = new Foo<String>();\n" + 
 		"    Foo f2 = new Foo();\n" + 
@@ -6300,7 +6300,7 @@ public void testBug125178() throws CoreException {
 	// Need a working copy as anonymous are not indexed...
 	ProblemRequestor problemRequestor = new ProblemRequestor();
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b125178/X.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b125178/X.js",
 		"package b125178;\n" + 
 		"import pack.age.Test;\n" + 
 		"public class X {\n" + 
@@ -6418,22 +6418,22 @@ public void testBug128877c() throws CoreException {
  */
 private void setUpBug130390() throws CoreException {
 	workingCopies = new ICompilationUnit[4];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b130390/TZ.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b130390/TZ.js",
 		"package b130390;\n" + 
 		"public class TZ {\n" +
 		"}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b130390/TimeZone.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b130390/TimeZone.js",
 		"package b130390;\n" + 
 		"public class TimeZone{\n" +
 		"}\n"
 	);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b130390/Npe.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b130390/Npe.js",
 		"package b130390;\n" + 
 		"public class Npe {\n" +
 		"}\n"
 	);
-	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/b130390/NullPointerException.java",
+	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/b130390/NullPointerException.js",
 		"package b130390;\n" + 
 		"public class NullPointerException {\n" +
 		"}\n"
@@ -6760,7 +6760,7 @@ public void testBug137984_jar() throws CoreException {
 	);
 }
 public void testBug137984_cu() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearchBugs", "src", "b137984", "C.java");
+	ICompilationUnit unit = getCompilationUnit("JavaSearchBugs", "src", "b137984", "C.js");
 	IField field = unit.getType("C").getField("c3");
 	search(field, REFERENCES);
 	assertSearchResults(
@@ -6769,7 +6769,7 @@ public void testBug137984_cu() throws CoreException {
 }
 public void testBug137984_wc() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/CW.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/CW.js",
 		"public class CW {\n" + 
 		"	CW2 c2;\n" + 
 		"	CW2.CW3 c3;\n" + 
@@ -6812,7 +6812,7 @@ public void testBug140156() throws CoreException {
  */
 public void testBug144044() throws CoreException {
 	workingCopies = new ICompilationUnit[2];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/test1/p/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/test1/p/Test.js",
 		"package test1.p;\n" + 
 		"import test1.q.X;\n" + 
 		"public class Test {\n" + 
@@ -6821,7 +6821,7 @@ public void testBug144044() throws CoreException {
 		"	}\n" + 
 		"}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/test1/q/X.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/test1/q/X.js",
 		"package test1.q;\n" + 
 		"public class X {\n" + 
 		"	String str;\n" + 
@@ -6836,7 +6836,7 @@ public void testBug144044() throws CoreException {
 }
 public void testBug144044b() throws CoreException {
 	workingCopies = new ICompilationUnit[4];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/test2/p/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/test2/p/Test.js",
 		"package test2.p;\n" + 
 		"import test2.q.X;\n" + 
 		"public class Test {\n" + 
@@ -6845,19 +6845,19 @@ public void testBug144044b() throws CoreException {
 		"	}\n" + 
 		"}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/test2/q/X.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/test2/q/X.js",
 		"package test2.q;\n" + 
 		"public class X {\n" + 
 		"	public static Y y_field;\n" + 
 		"}\n"
 	);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/test2/q/Y.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/test2/q/Y.js",
 		"package test2.q;\n" + 
 		"public class Y {\n" + 
 		"	public static Z z_field;\n" + 
 		"}\n"
 	);
-	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/test2/q/Z.java",
+	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/test2/q/Z.js",
 		"package test2.q;\n" + 
 		"public class Z {\n" + 
 		"	static X x_field;\n" + 
@@ -6932,19 +6932,19 @@ public void testBug148215_Fields() throws CoreException {
 public void testBug148380_SearchAllTypes_wc() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[4];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b148380/I.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b148380/I.js",
 		"package b148380;\n" + 
 		"public interface I {}\n"
 	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b148380/X.java",
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b148380/X.js",
 		"package b148380;\n" + 
 		"public class X {}\n"
 	);
-	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b148380/Sub.java",
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b148380/Sub.js",
 		"package b148380;\n" + 
 		"public class Sub extends X {}\n"
 	);
-	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/b148380/Y.java",
+	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/b148380/Y.js",
 		"package b148380;\n" + 
 		"public class Y {}\n"
 	);
@@ -7057,7 +7057,7 @@ public void testBug156340() throws CoreException {
 public void testBug156177() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b156177/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b156177/Test.js",
 		"package b156177;\n" + 
 		"interface B156177_I {}\n" + 
 		"enum B156177_E {}\n" + 
@@ -7090,7 +7090,7 @@ public void testBug156177() throws CoreException {
 public void testBug156491() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/pack/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/pack/Test.js",
 		"package pack;\n" + 
 		"public class Test {\n" + 
 		"	void noMatch(Y y) {\n" + 
@@ -7134,7 +7134,7 @@ public void testBug156491() throws CoreException {
 }
 private void setUpBug156491() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/other/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/other/Test.js",
 		"package other;\n" + 
 		"public class Test {\n" + 
 		"	void testInterface(I i) {\n" + 
@@ -7191,7 +7191,7 @@ public void testBug156491b() throws CoreException {
 public void testBug160301() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/Test.js",
 		"public class Test {\n" + 
 		"	class A {\n" + 
 		"		void foo() {}\n" + 
@@ -7221,7 +7221,7 @@ public void testBug160301() throws CoreException {
 public void testBug160301b() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/test/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/test/Test.js",
 		"package test;\n" + 
 		"public class Test {\n" + 
 		"	class A {\n" + 
@@ -7257,7 +7257,7 @@ public void testBug160301b() throws CoreException {
 public void testBug160301_Interface() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/Test.js",
 		"public class Test {\n" + 
 		"	interface I {\n" + 
 		"		void foo();\n" + 
@@ -7311,7 +7311,7 @@ public void testBug160301_Interface() throws CoreException {
 public void testBug160301_Abstract() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/Test.js",
 		"public class Test {\n" + 
 		"	abstract class Abstract {\n" + 
 		"		abstract void foo();\n" + 
@@ -7358,7 +7358,7 @@ public void testBug160301_Abstract() throws CoreException {
 public void testBug160301_Abstract2() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/Test.js",
 		"public class Test {\n" + 
 		"	abstract class Abstract {\n" + 
 		"		public abstract void foo();\n" + 
@@ -7393,7 +7393,7 @@ public void testBug160301_Abstract2() throws CoreException {
 public void testBug160301_Abstract3() throws CoreException {
 	resultCollector.showRule = true;
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/Test.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/Test.js",
 		"public class Test {\n" + 
 		"	abstract class Abstract {\n" + 
 		"		public abstract void foo();\n" + 
@@ -7734,7 +7734,7 @@ public void testBug163984() throws CoreException {
  */
 private void setUpBug164121() throws CoreException {
 	workingCopies = new ICompilationUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/A.java",
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/A.js",
 		"class A {\n" + 
 		"     int x(int param) {\n" + 
 		"         param = 2 + 2;\n" + 

@@ -115,11 +115,12 @@ public class AbstractJavaSearchTests extends AbstractJavaModelTests implements I
 					if (parent instanceof IInitializer) {
 						IInitializer initializer = (IInitializer)parent;
 						append(initializer);
-					} else { // IMethod
+						line.append(".");
+					} else if (parent instanceof IMethod){ // IMethod
 						IMethod method = (IMethod)parent;
 						append(method);
+						line.append(".");
 					}
-					line.append(".");
 					line.append(localVar.getElementName());
 					unit = (ICompilationUnit)localVar.getAncestor(IJavaElement.COMPILATION_UNIT);
 				} else if (element instanceof ITypeParameter) {
@@ -246,13 +247,16 @@ public class AbstractJavaSearchTests extends AbstractJavaModelTests implements I
 			line.append("{}");
 		}
 		private void append(IMethod method) throws JavaModelException {
-			if (!method.isConstructor()) {
+			if (!method.isConstructor() && method.getReturnType()!=null) {
 				line.append(Signature.toString(method.getReturnType()));
 				line.append(" ");
 			}
-			append(method.getDeclaringType());
-			if (!method.isConstructor()) {
+			if (method.getDeclaringType()!=null)
+			{
+				append(method.getDeclaringType());
 				line.append(".");
+			}
+			if (!method.isConstructor()) {
 				line.append(method.getElementName());
 			}
 			line.append("(");
@@ -514,7 +518,7 @@ protected JavaSearchResultCollector resultCollector;
 		}
 	}
 	IJavaSearchScope getJavaSearchScope() {
-		return SearchEngine.createJavaSearchScope(new IJavaProject[] {getJavaProject("JavaSearch")});
+		return SearchEngine.createJavaSearchScope(new IJavaProject[] {getJavaProject("JSSearch")});
 	}
 	IJavaSearchScope getJavaSearchScope15() {
 		return SearchEngine.createJavaSearchScope(new IJavaProject[] {getJavaProject("JavaSearch15")});

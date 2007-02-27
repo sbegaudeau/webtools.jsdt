@@ -69,7 +69,7 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		buf.append("{//comment Y\n");
 		buf.append("}//comment Y");	
 		String contents= buf.toString();
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", contents, false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", contents, false, null);
 		
 		CompilationUnit astRoot= createAST3(cu);
 		
@@ -139,7 +139,7 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		buf.append("} // comment Y");
 		String content= buf.toString();
 		
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", content, false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", content, false, null);
 		CompilationUnit astRoot= createAST(cu);
 		
 		LineCommentEndOffsets offsets= new LineCommentEndOffsets(astRoot.getCommentList());
@@ -190,7 +190,7 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		buf.append("} // comment Y");
 		String content= buf.toString();
 		
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", content, false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", content, false, null);
 		CompilationUnit astRoot= createAST(cu);
 		
 		LineCommentEndOffsets offsets= new LineCommentEndOffsets(astRoot.getCommentList());
@@ -226,7 +226,7 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		buf.append("public class E implements A //comment\n");
 		buf.append("{\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -259,7 +259,7 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		buf.append("public class E //comment\n");
 		buf.append("{\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -292,7 +292,7 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		buf.append("public class E //implements List\n");
 		buf.append("{\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -331,7 +331,7 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		buf.append("    );\n");
 		buf.append("  }\n");	
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -375,7 +375,7 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		buf.append("    // comment\n");	
 		buf.append("  }\n");	
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -425,7 +425,7 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		buf.append("      return;\n");
 		buf.append("  }\n");	
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -466,7 +466,7 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		buf.append("    }\n");
 		buf.append("  }\n");	
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -505,7 +505,7 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		buf.append("public class E \n");
 		buf.append("{\n");
 		buf.append("}//comment");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.java", buf.toString(), false, null);
+		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		CompilationUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
