@@ -1287,6 +1287,23 @@ public class Scribe {
 		}
 	}
 
+
+	public void printOptionalNextToken(int expectedTokenType, boolean considerSpaceIfAny){
+		printComment();
+		try {
+			int tokenStart=this.scanner.currentPosition;
+			this.currentToken = this.scanner.getNextToken();
+			char[] currentTokenSource = this.scanner.getRawTokenSource();
+			if (expectedTokenType != this.currentToken) {
+				this.scanner.resetTo(tokenStart, this.scannerEndPosition - 1);
+			}
+			else
+				this.print(currentTokenSource, considerSpaceIfAny);
+		} catch (InvalidInputException e) {
+			throw new AbortFormatting(e);
+		}
+	}
+
 	public void printArrayQualifiedReference(int numberOfTokens, int sourceEnd) {
 		int currentTokenStartPosition = this.scanner.currentPosition;
 		int numberOfIdentifiers = 0;

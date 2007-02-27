@@ -40,6 +40,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.InstanceOfExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
+import org.eclipse.wst.jsdt.internal.compiler.ast.RegExLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteralConcatenation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NullLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.OR_OR_Expression;
@@ -406,6 +407,12 @@ class BinaryExpressionFragmentBuilder
 		this.addRealFragment(prefixExpression);
 		return false;
 	}
+
+	public boolean visit(RegExLiteral regexLiteral, BlockScope scope) {
+		this.addSmallFragment(regexLiteral);
+		return false;
+	}
+
 
 	public boolean visit(
 		QualifiedAllocationExpression qualifiedAllocationExpression,

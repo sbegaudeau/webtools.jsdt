@@ -40,7 +40,7 @@ class CascadingMethodInvocationFragmentBuilder
 	 */
 	public boolean visit(MessageSend messageSend, BlockScope scope) {
 		if ((messageSend.receiver.bits & ASTNode.ParenthesizedMASK) >> ASTNode.ParenthesizedSHIFT == 0) {
-			if (messageSend.receiver instanceof MessageSend) {
+			if (messageSend.receiver!=null &&messageSend.receiver instanceof MessageSend) {
 				this.fragmentsList.add(0, messageSend);
 				messageSend.receiver.traverse(this, scope);
 				return false;

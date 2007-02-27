@@ -73,6 +73,8 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NormalAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedSingleTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.RegExLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleMemberAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteralConcatenation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NullLiteral;
@@ -101,6 +103,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.UndefinedLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.WhileStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -111,6 +114,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
 import org.eclipse.wst.jsdt.internal.compiler.parser.TerminalTokens;
 import org.eclipse.wst.jsdt.internal.core.util.CodeSnippetParsingUtil;
@@ -530,7 +534,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		methodDeclaration.traverse(this, scope);
 	}
 
-	private void format(FieldDeclaration fieldDeclaration, ASTVisitor visitor, MethodScope scope, boolean isChunkStart, boolean isFirstClassBodyDeclaration) {
+	private void format(AbstractVariableDeclaration fieldDeclaration, ASTVisitor visitor, MethodScope scope, boolean isChunkStart, boolean isFirstClassBodyDeclaration) {
 		
 		if (isFirstClassBodyDeclaration) {
 			int newLinesBeforeFirstClassBodyDeclaration = this.preferences.blank_lines_before_first_class_body_declaration;
@@ -552,10 +556,14 @@ public class CodeFormatterVisitor extends ASTVisitor {
         this.scribe.printComment();
 		this.scribe.printModifiers(fieldDeclaration.annotations, this);
 		this.scribe.space();
+
+		this.scribe.printNextToken(TerminalTokens.TokenNamevar, true);
+
+		
 		/*
 		 * Field type
 		 */
-		fieldDeclaration.type.traverse(this, scope);
+//		fieldDeclaration.type.traverse(this, scope);
 		
 		/*
 		 * Field name
@@ -1276,7 +1284,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		MessageSend[] fragments = builder.fragments();
 		Expression fragment = fragments[0].receiver;
 		int startingPositionInCascade = 1;
-		if (!fragment.isImplicitThis()) {
+		if (fragment!=null &&!fragment.isImplicitThis()) {
 			fragment.traverse(this, scope);
 		} else {
 			MessageSend currentMessageSend = fragments[1];
@@ -1483,6 +1491,9 @@ public class CodeFormatterVisitor extends ASTVisitor {
 							FieldDeclaration field = (FieldDeclaration) member;
 							format(field, this, null, isChunkStart, i == 0);
 						}
+					} else if (member instanceof LocalDeclaration) {
+						LocalDeclaration field = (LocalDeclaration) member;
+						format(field, this, null, isChunkStart, i == 0);
 					} else if (member instanceof AbstractMethodDeclaration) {
 						isChunkStart = memberAlignment.checkChunkStart(METHOD, i, this.scribe.scanner.currentPosition);
 						format((AbstractMethodDeclaration) member, null, isChunkStart, i == 0);
@@ -1554,7 +1565,9 @@ public class CodeFormatterVisitor extends ASTVisitor {
 				this.scribe.printModifiers(localDeclaration.annotations, this);
 				this.scribe.space();
 			}
-	
+
+			this.scribe.printNextToken(TerminalTokens.TokenNamevar, true); 
+
 			/*
 			 * Argument type 
 			 */		
@@ -1839,7 +1852,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 			}
 			statement.traverse(this, scope);
 			if (statement instanceof Expression) {
-				this.scribe.printNextToken(TerminalTokens.TokenNameSEMICOLON, this.preferences.insert_space_before_semicolon);
+				this.scribe.printOptionalNextToken(TerminalTokens.TokenNameSEMICOLON, this.preferences.insert_space_before_semicolon);
 				this.scribe.printTrailingComment();
 				if (i != statementsLength - 1) {
 					if (!(statement instanceof EmptyStatement) && !(statements[i + 1] instanceof EmptyStatement)) {
@@ -1868,7 +1881,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 							}
 						}
 					} else {
-						this.scribe.printNextToken(TerminalTokens.TokenNameSEMICOLON, this.preferences.insert_space_before_semicolon);
+						this.scribe.printOptionalNextToken(TerminalTokens.TokenNameSEMICOLON, this.preferences.insert_space_before_semicolon);
 						this.scribe.printTrailingComment();
 						if (i != statementsLength - 1) {
 							if (!(statement instanceof EmptyStatement) && !(statements[i + 1] instanceof EmptyStatement)) {
@@ -1898,6 +1911,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 			}
 		}
 	}
+	
 	
 	private void formatThrowsClause(
 		AbstractMethodDeclaration methodDeclaration,
@@ -2274,7 +2288,10 @@ public class CodeFormatterVisitor extends ASTVisitor {
 			this.scribe.space();
 		}
 
-		allocationExpression.type.traverse(this, scope);
+		if (allocationExpression.type!=null)
+			allocationExpression.type.traverse(this, scope);
+			else 
+				allocationExpression.member.traverse(this, scope);
 		
 		this.scribe.printNextToken(TerminalTokens.TokenNameLPAREN, this.preferences.insert_space_before_opening_paren_in_method_invocation);
 
@@ -2395,18 +2412,18 @@ public class CodeFormatterVisitor extends ASTVisitor {
 			argument.type.traverse(this, scope);
 		}
 		
-		if (argument.isVarArgs()) {
-			this.scribe.printNextToken(TerminalTokens.TokenNameELLIPSIS, this.preferences.insert_space_before_ellipsis);
-			if (this.preferences.insert_space_after_ellipsis) {
-				this.scribe.space();
-			}
-			this.scribe.printNextToken(TerminalTokens.TokenNameIdentifier, false);
-		} else {
+//		if (argument.isVarArgs()) {
+//			this.scribe.printNextToken(TerminalTokens.TokenNameELLIPSIS, this.preferences.insert_space_before_ellipsis);
+//			if (this.preferences.insert_space_after_ellipsis) {
+//				this.scribe.space();
+//			}
+//			this.scribe.printNextToken(TerminalTokens.TokenNameIdentifier, false);
+//		} else {
 			/*
 			 * Print the argument name
 			 */	
 			this.scribe.printNextToken(TerminalTokens.TokenNameIdentifier, true);
-		}
+//		}
 
 
 		/*
@@ -2418,7 +2435,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 			 	this.scribe.printNextToken(TerminalTokens.TokenNameLBRACKET);
 			 	this.scribe.printNextToken(TerminalTokens.TokenNameRBRACKET);
 			 }
-		}
+		} 
 		
 		return false;
 	}
@@ -2718,23 +2735,23 @@ public class CodeFormatterVisitor extends ASTVisitor {
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#visit(org.eclipse.wst.jsdt.internal.compiler.ast.AssertStatement, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)
 	 */
-	public boolean visit(AssertStatement assertStatement, BlockScope scope) {
-		
-		this.scribe.printNextToken(TerminalTokens.TokenNameassert);
-		this.scribe.space();
-		assertStatement.assertExpression.traverse(this, scope);
-		
-		if (assertStatement.exceptionArgument != null) {
-			this.scribe.printNextToken(TerminalTokens.TokenNameCOLON, this.preferences.insert_space_before_colon_in_assert);
-			if (this.preferences.insert_space_after_colon_in_assert) {
-				this.scribe.space();
-			}
-			assertStatement.exceptionArgument.traverse(this, scope);
-		}
-		this.scribe.printNextToken(TerminalTokens.TokenNameSEMICOLON, this.preferences.insert_space_before_semicolon);		
-		this.scribe.printTrailingComment();
-		return false;
-	}
+//	public boolean visit(AssertStatement assertStatement, BlockScope scope) {
+//		
+//		this.scribe.printNextToken(TerminalTokens.TokenNameassert);
+//		this.scribe.space();
+//		assertStatement.assertExpression.traverse(this, scope);
+//		
+//		if (assertStatement.exceptionArgument != null) {
+//			this.scribe.printNextToken(TerminalTokens.TokenNameCOLON, this.preferences.insert_space_before_colon_in_assert);
+//			if (this.preferences.insert_space_after_colon_in_assert) {
+//				this.scribe.space();
+//			}
+//			assertStatement.exceptionArgument.traverse(this, scope);
+//		}
+//		this.scribe.printNextToken(TerminalTokens.TokenNameSEMICOLON, this.preferences.insert_space_before_semicolon);		
+//		this.scribe.printTrailingComment();
+//		return false;
+//	}
 	
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#visit(org.eclipse.wst.jsdt.internal.compiler.ast.Assignment, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)
@@ -2807,6 +2824,10 @@ public class CodeFormatterVisitor extends ASTVisitor {
 				return dumpBinaryExpression(binaryExpression, TerminalTokens.TokenNameUNSIGNED_RIGHT_SHIFT, scope);
 			case OperatorIds.XOR :
 				return dumpBinaryExpression(binaryExpression, TerminalTokens.TokenNameXOR, scope);
+			case OperatorIds.INSTANCEOF :
+				return dumpBinaryExpression(binaryExpression, TerminalTokens.TokenNameinstanceof, scope);
+			case OperatorIds.IN :
+				return dumpBinaryExpression(binaryExpression, TerminalTokens.TokenNamein, scope);
 			default:
 				throw new IllegalStateException();
 		}
@@ -2998,14 +3019,29 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		formatEmptyTypeDeclaration(true);
 		
 		int blankLineBetweenTypeDeclarations = this.preferences.blank_lines_between_type_declarations;
-		/*
-		 * Type declarations
-		 */
-		final TypeDeclaration[] types = compilationUnitDeclaration.types;
-		if (types != null) {
-			int typesLength = types.length;
-			for (int i = 0; i < typesLength - 1; i++) {
-				types[i].traverse(this, scope);
+//		/*
+//		 * Type declarations
+//		 */
+//		final TypeDeclaration[] types = compilationUnitDeclaration.types;
+//		if (types != null) {
+//			int typesLength = types.length;
+//			for (int i = 0; i < typesLength - 1; i++) {
+//				types[i].traverse(this, scope);
+//				formatEmptyTypeDeclaration(false);
+//				if (blankLineBetweenTypeDeclarations != 0) {
+//					this.scribe.printEmptyLines(blankLineBetweenTypeDeclarations);
+//				} else {
+//					this.scribe.printNewLine();
+//				}
+//			}
+//			types[typesLength - 1].traverse(this, scope);
+//		}
+//
+		final ProgramElement[] statements = compilationUnitDeclaration.statements;
+		if (statements != null) {
+			int statementsLength = statements.length;
+			for (int i = 0; i < statementsLength - 1; i++) {
+				statements[i].traverse(this, scope);
 				formatEmptyTypeDeclaration(false);
 				if (blankLineBetweenTypeDeclarations != 0) {
 					this.scribe.printEmptyLines(blankLineBetweenTypeDeclarations);
@@ -3013,8 +3049,10 @@ public class CodeFormatterVisitor extends ASTVisitor {
 					this.scribe.printNewLine();
 				}
 			}
-			types[typesLength - 1].traverse(this, scope);
+			statements[statementsLength - 1].traverse(this, scope);
 		}
+
+		
 		this.scribe.printEndOfCompilationUnit();
 		return false;
 	}
@@ -4004,7 +4042,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 			formatCascadingMessageSends(builder, scope);
 		} else {
 			Alignment messageAlignment = null;
-			if (!messageSend.receiver.isImplicitThis()) {
+			if (messageSend.receiver!=null && !messageSend.receiver.isImplicitThis()) {
 				messageSend.receiver.traverse(this, scope);
 				messageAlignment = this.scribe.createAlignment(
 						"messageAlignment", //$NON-NLS-1$
@@ -4037,7 +4075,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 	 */
 	public boolean visit(
 		MethodDeclaration methodDeclaration,
-		ClassScope scope) {
+		Scope scope) {
 
 		if (methodDeclaration.ignoreFurtherInvestigation) {
 			this.scribe.printComment();
@@ -4109,6 +4147,8 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		/*
 		 * Print the method name
 		 */
+		this.scribe.printNextToken(TerminalTokens.TokenNamefunction);
+		
 		this.scribe.printNextToken(TerminalTokens.TokenNameIdentifier, true); 
 
 		formatMethodArguments(
@@ -4470,6 +4510,21 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		return false;
 	}
 	
+	public boolean visit(RegExLiteral regexLiteral, BlockScope scope) {
+
+		final int numberOfParens = (regexLiteral.bits & ASTNode.ParenthesizedMASK) >> ASTNode.ParenthesizedSHIFT;
+		if (numberOfParens > 0) {
+			manageOpeningParenthesizedExpression(regexLiteral, numberOfParens);
+		}
+		this.scribe.printNextToken(TerminalTokens.TokenNameRegExLiteral);
+
+		if (numberOfParens > 0) {
+			manageClosingParenthesizedExpression(regexLiteral, numberOfParens);
+		}
+		return false;
+	}
+
+
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#visit(org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)
 	 */
@@ -5214,6 +5269,12 @@ public class CodeFormatterVisitor extends ASTVisitor {
 			case OperatorIds.TWIDDLE:
 				operator = TerminalTokens.TokenNameTWIDDLE;
 				break;
+			case OperatorIds.DELETE:
+				operator = TerminalTokens.TokenNamedelete;
+				break;
+			case OperatorIds.VOID:
+				operator = TerminalTokens.TokenNamevoid;
+				break;
 			default:
 				operator = TerminalTokens.TokenNameNOT;
 		}
@@ -5229,6 +5290,22 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		}
 		return false;
 	}
+	
+	public boolean visit(UndefinedLiteral undefinedLiteral, BlockScope scope) {
+
+		final int numberOfParens = (undefinedLiteral.bits & ASTNode.ParenthesizedMASK) >> ASTNode.ParenthesizedSHIFT;
+		if (numberOfParens > 0) {
+			manageOpeningParenthesizedExpression(undefinedLiteral, numberOfParens);
+		}
+		this.scribe.printNextToken(TerminalTokens.TokenNameundefined);
+
+		if (numberOfParens > 0) {
+			manageClosingParenthesizedExpression(undefinedLiteral, numberOfParens);
+		}
+		return false;
+	}
+
+
 
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#visit(org.eclipse.wst.jsdt.internal.compiler.ast.WhileStatement, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)

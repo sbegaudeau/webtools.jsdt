@@ -65,6 +65,7 @@ public class DefaultCodeFormatterOptions {
 	public int alignment_for_superinterfaces_in_type_declaration;
 	public int alignment_for_throws_clause_in_constructor_declaration;
 	public int alignment_for_throws_clause_in_method_declaration;
+	public int alignment_for_fields_in_object_literal;
 	
 	public boolean align_type_members_on_columns;
 	
