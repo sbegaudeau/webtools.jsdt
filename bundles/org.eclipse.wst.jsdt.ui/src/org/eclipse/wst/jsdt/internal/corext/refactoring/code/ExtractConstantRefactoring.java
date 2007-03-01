@@ -351,6 +351,8 @@ public class ExtractConstantRefactoring extends ScriptableRefactoring {
 			case ASTNode.CHARACTER_LITERAL :
 			case ASTNode.NULL_LITERAL :
 			case ASTNode.NUMBER_LITERAL :
+			case ASTNode.UNDEFINED_LITERAL :
+			case ASTNode.REGULAR_EXPRESSION_LITERAL :
 				return true;
 			
 			default :

@@ -415,7 +415,7 @@ public class StubUtility {
 		if (retTypeSig != null) {
 			context.setVariable(CodeTemplateContextType.RETURN_TYPE, Signature.toString(retTypeSig));
 		}
-		if (target != null) {
+		if (target != null && target.getDeclaringType()!=null) {
 			String targetTypeName= target.getDeclaringType().getFullyQualifiedName('.');
 			String[] targetParamTypeNames= getParameterTypeNamesForSeeTag(target);
 			if (delegate)
@@ -1153,6 +1153,11 @@ public class StubUtility {
 			// ignore
 		}
 		return null;
+	}
+	
+	public static String[] getArgumentNameSuggestions(IType type,ICompilationUnit compUnit, String[] excluded) {
+		String baseName= (type!=null)?JavaModelUtil.getFullyQualifiedName(type) : compUnit.getElementName();
+		return getVariableNameSuggestions(PARAMETER, compUnit.getJavaProject(),baseName, 0, new ExcludedCollection(excluded), true);
 	}
 	
 	public static String[] getArgumentNameSuggestions(IType type, String[] excluded) {

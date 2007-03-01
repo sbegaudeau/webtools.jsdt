@@ -33,7 +33,9 @@ import org.eclipse.wst.jsdt.core.dom.EmptyStatement;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
+import org.eclipse.wst.jsdt.core.dom.FunctionExpression;
 import org.eclipse.wst.jsdt.core.dom.IfStatement;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
@@ -45,12 +47,15 @@ import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
 import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
+import org.eclipse.wst.jsdt.core.dom.ObjectLiteral;
+import org.eclipse.wst.jsdt.core.dom.ObjectLiteralField;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
+import org.eclipse.wst.jsdt.core.dom.RegularExpressionLiteral;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SimpleType;
@@ -68,6 +73,7 @@ import org.eclipse.wst.jsdt.core.dom.TryStatement;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.TypeLiteral;
+import org.eclipse.wst.jsdt.core.dom.UndefinedLiteral;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
@@ -172,6 +178,10 @@ public class ConstraintCreator {
 		return EMPTY_ARRAY;
 	}
 
+	public ITypeConstraint[] create(RegularExpressionLiteral node) {
+		return EMPTY_ARRAY;
+	}
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation)
 	 */
@@ -248,6 +258,18 @@ public class ConstraintCreator {
 	public ITypeConstraint[] create(ForStatement node) {
 		return EMPTY_ARRAY;
 	}
+	public ITypeConstraint[] create(ForInStatement node) {
+		return EMPTY_ARRAY;
+	}
+	public ITypeConstraint[] create(FunctionExpression node) {
+		return EMPTY_ARRAY;
+	}
+	public ITypeConstraint[] create(ObjectLiteral node) {
+		return EMPTY_ARRAY;
+	}
+	public ITypeConstraint[] create(ObjectLiteralField node) {
+		return EMPTY_ARRAY;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.IfStatement)
@@ -316,6 +338,10 @@ public class ConstraintCreator {
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.NullLiteral)
 	 */
 	public ITypeConstraint[] create(NullLiteral node) {
+		return EMPTY_ARRAY;
+	}
+
+	public ITypeConstraint[] create(UndefinedLiteral node) {
 		return EMPTY_ARRAY;
 	}
 

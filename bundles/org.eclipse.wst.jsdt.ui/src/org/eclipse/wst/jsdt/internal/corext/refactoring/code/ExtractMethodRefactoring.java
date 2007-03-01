@@ -264,7 +264,8 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 		if (result.hasFatalError())
 			return result;
 		if (fVisibility == -1) {
-			setVisibility(Modifier.PRIVATE);
+//			setVisibility(Modifier.PRIVATE);
+			fVisibility=0;
 		}
 		initializeParameterInfos();
 		initializeUsedNames();
@@ -460,12 +461,12 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 		final JDTRefactoringDescriptorComment comment= new JDTRefactoringDescriptorComment(project, this, header);
 		comment.addSetting(Messages.format(RefactoringCoreMessages.ExtractMethodRefactoring_name_pattern, fMethodName));
 		comment.addSetting(Messages.format(RefactoringCoreMessages.ExtractMethodRefactoring_destination_pattern, BindingLabelProvider.getBindingLabel(type, JavaElementLabels.ALL_FULLY_QUALIFIED)));
-		String visibility= JdtFlags.getVisibilityString(fVisibility);
-		if ("".equals(visibility)) //$NON-NLS-1$
-			visibility= RefactoringCoreMessages.ExtractMethodRefactoring_default_visibility;
-		comment.addSetting(Messages.format(RefactoringCoreMessages.ExtractMethodRefactoring_visibility_pattern, visibility));
-		if (fThrowRuntimeExceptions)
-			comment.addSetting(RefactoringCoreMessages.ExtractMethodRefactoring_declare_thrown_exceptions);
+//		String visibility= JdtFlags.getVisibilityString(fVisibility);
+//		if ("".equals(visibility)) //$NON-NLS-1$
+//			visibility= RefactoringCoreMessages.ExtractMethodRefactoring_default_visibility;
+//		comment.addSetting(Messages.format(RefactoringCoreMessages.ExtractMethodRefactoring_visibility_pattern, visibility));
+//		if (fThrowRuntimeExceptions)
+//			comment.addSetting(RefactoringCoreMessages.ExtractMethodRefactoring_declare_thrown_exceptions);
 		if (fReplaceDuplicates)
 			comment.addSetting(RefactoringCoreMessages.ExtractMethodRefactoring_replace_occurrences);
 		if (fGenerateJavadoc)
@@ -474,9 +475,9 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 		arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_INPUT, descriptor.elementToHandle(fCUnit));
 		arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_NAME, fMethodName);
 		arguments.put(JDTRefactoringDescriptor.ATTRIBUTE_SELECTION, new Integer(fSelectionStart).toString() + " " + new Integer(fSelectionLength).toString()); //$NON-NLS-1$
-		arguments.put(ATTRIBUTE_VISIBILITY, new Integer(fVisibility).toString());
+//		arguments.put(ATTRIBUTE_VISIBILITY, new Integer(fVisibility).toString());
 		arguments.put(ATTRIBUTE_DESTINATION, new Integer(fDestinationIndex).toString());
-		arguments.put(ATTRIBUTE_EXCEPTIONS, Boolean.valueOf(fThrowRuntimeExceptions).toString());
+//		arguments.put(ATTRIBUTE_EXCEPTIONS, Boolean.valueOf(fThrowRuntimeExceptions).toString());
 		arguments.put(ATTRIBUTE_COMMENTS, Boolean.valueOf(fGenerateJavadoc).toString());
 		arguments.put(ATTRIBUTE_REPLACE, Boolean.valueOf(fReplaceDuplicates).toString());
 		final CompilationUnitChange result= new CompilationUnitChange(RefactoringCoreMessages.ExtractMethodRefactoring_change_name, fCUnit);
@@ -639,7 +640,9 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 	
 	private void initializeDuplicates() {
 		ASTNode start= fAnalyzer.getEnclosingBodyDeclaration();
-		while(!(start instanceof AbstractTypeDeclaration) && !(start instanceof AnonymousClassDeclaration)) {
+		while(!(start instanceof CompilationUnit) &&
+				!(start instanceof AbstractTypeDeclaration) &&
+				!(start instanceof AnonymousClassDeclaration)) {
 			start= start.getParent();
 		}
 		
@@ -669,7 +672,8 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 	private ASTNode getNextParent(ASTNode node) {
 		do {
 			node= node.getParent();
-		} while (node != null && !((node instanceof AbstractTypeDeclaration) || (node instanceof AnonymousClassDeclaration)));
+		} while (node != null && !(
+				(node instanceof CompilationUnit) ||(node instanceof AbstractTypeDeclaration) || (node instanceof AnonymousClassDeclaration)));
 		return node;
 	}
 		

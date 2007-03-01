@@ -59,6 +59,7 @@ import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
+import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
@@ -276,6 +277,19 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 					List initializers= forStmt.initializers();
 					if (initializers.size() == 1 && initializers.get(0) instanceof VariableDeclarationExpression) {
 						List forInitializerVariables= getForInitializedVariables((VariableDeclarationExpression) initializers.get(0));
+						ForStatementChecker checker= new ForStatementChecker(forInitializerVariables);
+						expression.accept(checker);
+						if (checker.isReferringToForVariable())
+							return true;
+					}
+				}
+			}
+			else if (parent instanceof ForInStatement) {
+				ForInStatement forInStmt= (ForInStatement) parent;
+				if (forInStmt.getIterationVariable().equals(current)  || forInStmt.getCollection() == current) {
+					if (forInStmt.getIterationVariable() instanceof VariableDeclarationStatement) {
+						List forInitializerVariables= new ArrayList(1);
+						forInitializerVariables.add(  ((VariableDeclarationStatement) forInStmt.getIterationVariable()).resolveBinding());
 						ForStatementChecker checker= new ForStatementChecker(forInitializerVariables);
 						expression.accept(checker);
 						if (checker.isReferringToForVariable())
@@ -650,10 +664,10 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 		vdf.setInitializer(initializer);
 		
 		VariableDeclarationStatement vds= ast.newVariableDeclarationStatement(vdf);
-		if (fDeclareFinal) {
-			vds.modifiers().add(ast.newModifier(ModifierKeyword.FINAL_KEYWORD));
-		}
-		vds.setType(createTempType());
+//		if (fDeclareFinal) {
+//			vds.modifiers().add(ast.newModifier(ModifierKeyword.FINAL_KEYWORD));
+//		}
+//		vds.setType(createTempType());
 		
 		if (fLinkedProposalModel != null) {
 			ASTRewrite rewrite= fCURewrite.getASTRewrite();
@@ -681,6 +695,7 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 			if (locationInParent == IfStatement.THEN_STATEMENT_PROPERTY
 					|| locationInParent == IfStatement.ELSE_STATEMENT_PROPERTY
 					|| locationInParent == ForStatement.BODY_PROPERTY
+					|| locationInParent == ForInStatement.BODY_PROPERTY
 					|| locationInParent == EnhancedForStatement.BODY_PROPERTY
 					|| locationInParent == DoStatement.BODY_PROPERTY
 					|| locationInParent == WhileStatement.BODY_PROPERTY) {
@@ -897,6 +912,8 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 			case ASTNode.CHARACTER_LITERAL:
 			case ASTNode.NULL_LITERAL:
 			case ASTNode.NUMBER_LITERAL:
+			case ASTNode.REGULAR_EXPRESSION_LITERAL:
+			case ASTNode.UNDEFINED_LITERAL:
 				return true;
 
 			default:

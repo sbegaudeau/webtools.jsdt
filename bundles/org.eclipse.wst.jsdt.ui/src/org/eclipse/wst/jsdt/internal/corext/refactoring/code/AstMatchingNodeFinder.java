@@ -13,6 +13,8 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.code;
 import java.util.ArrayList;
 import java.util.Collection;
 
+
+import org.eclipse.wst.jsdt.internal.corext.dom.*;
 import org.eclipse.wst.jsdt.core.dom.ASTMatcher;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
@@ -45,7 +47,9 @@ import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
+import org.eclipse.wst.jsdt.core.dom.FunctionExpression;
 import org.eclipse.wst.jsdt.core.dom.IfStatement;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
@@ -65,6 +69,8 @@ import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.NormalAnnotation;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
+import org.eclipse.wst.jsdt.core.dom.ObjectLiteral;
+import org.eclipse.wst.jsdt.core.dom.ObjectLiteralField;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
@@ -73,6 +79,7 @@ import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.QualifiedType;
+import org.eclipse.wst.jsdt.core.dom.RegularExpressionLiteral;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SimpleType;
@@ -94,13 +101,12 @@ import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.TypeLiteral;
 import org.eclipse.wst.jsdt.core.dom.TypeParameter;
+import org.eclipse.wst.jsdt.core.dom.UndefinedLiteral;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
 import org.eclipse.wst.jsdt.core.dom.WildcardType;
-
-import org.eclipse.wst.jsdt.internal.corext.dom.*;
 
 class AstMatchingNodeFinder {
 	
@@ -200,6 +206,24 @@ class AstMatchingNodeFinder {
 			return super.visit(node);
 		}
 
+		public boolean visit(FunctionExpression node) {
+			if (node.subtreeMatch(fMatcher, fNodeToMatch))
+				return matches(node);
+			return super.visit(node);
+		}
+
+		public boolean visit(ObjectLiteral node) {
+			if (node.subtreeMatch(fMatcher, fNodeToMatch))
+				return matches(node);
+			return super.visit(node);
+		}
+
+		public boolean visit(ObjectLiteralField node) {
+			if (node.subtreeMatch(fMatcher, fNodeToMatch))
+				return matches(node);
+			return super.visit(node);
+		}
+ 
 		public boolean visit(CatchClause node) {
 			if (node.subtreeMatch(fMatcher, fNodeToMatch))
 				return matches(node);
@@ -207,6 +231,11 @@ class AstMatchingNodeFinder {
 		}
 
 		public boolean visit(CharacterLiteral node) {
+			if (node.subtreeMatch(fMatcher, fNodeToMatch))
+				return matches(node);
+			return super.visit(node);
+		}
+		public boolean visit(RegularExpressionLiteral node) {
 			if (node.subtreeMatch(fMatcher, fNodeToMatch))
 				return matches(node);
 			return super.visit(node);
@@ -278,6 +307,12 @@ class AstMatchingNodeFinder {
 			return super.visit(node);
 		}
 
+		public boolean visit(ForInStatement node) {
+			if (node.subtreeMatch(fMatcher, fNodeToMatch))
+				return matches(node);
+			return super.visit(node);
+		}
+
 		public boolean visit(IfStatement node) {
 			if (node.subtreeMatch(fMatcher, fNodeToMatch))
 				return matches(node);
@@ -332,7 +367,14 @@ class AstMatchingNodeFinder {
 			return super.visit(node);
 		}
 
+
 		public boolean visit(NullLiteral node) {
+			if (node.subtreeMatch(fMatcher, fNodeToMatch))
+				return matches(node);
+			return super.visit(node);
+		}
+
+		public boolean visit(UndefinedLiteral node) {
 			if (node.subtreeMatch(fMatcher, fNodeToMatch))
 				return matches(node);
 			return super.visit(node);

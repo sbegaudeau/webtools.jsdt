@@ -158,6 +158,8 @@ public class OverrideIndicatorLabelDecorator implements ILabelDecorator, ILightw
 		}
 		
 		IType type= method.getDeclaringType();
+		if (type==null)
+			return 0;
 		
 		MethodOverrideTester methodOverrideTester= SuperTypeHierarchyCache.getMethodOverrideTester(type);
 		IMethod defining= methodOverrideTester.findOverriddenMethod(method, true);

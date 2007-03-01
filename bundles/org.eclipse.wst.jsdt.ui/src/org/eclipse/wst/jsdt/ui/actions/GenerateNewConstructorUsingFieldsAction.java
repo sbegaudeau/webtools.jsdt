@@ -174,7 +174,7 @@ public class GenerateNewConstructorUsingFieldsAction extends SelectionDispatchAc
 					}
 					try {
 						final IType declaringType= field.getDeclaringType();
-						if (declaringType.isInterface() || declaringType.isAnnotation())
+						if (declaringType==null || declaringType.isInterface() || declaringType.isAnnotation())
 							return null;
 					} catch (JavaModelException exception) {
 						JavaPlugin.log(exception);

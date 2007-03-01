@@ -49,6 +49,8 @@ public class MethodChecks {
 			return false;
 		if (JdtFlags.isStatic(method))	
 			return false;
+		if (method.getDeclaringType()==null)
+			return false;
 		return true;	
 	}	
 	
@@ -148,6 +150,8 @@ public class MethodChecks {
 		ITypeHierarchy hierarchy= typeHierarchy;
 		IMethod topmostMethod= null;
 		final IType declaringType= method.getDeclaringType();
+		if (declaringType==null)
+			return method;
 		if (!declaringType.isInterface()) {
 			if ((hierarchy == null) || !declaringType.equals(hierarchy.getType()))
 				hierarchy= declaringType.newTypeHierarchy(monitor);

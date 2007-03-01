@@ -56,6 +56,7 @@ import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
@@ -827,6 +828,9 @@ public class CallInliner {
 						break;
 					case ASTNode.FOR_STATEMENT:
 						currentStatement= ((ForStatement)container).getBody();
+						break;
+					case ASTNode.FOR_IN_STATEMENT:
+						currentStatement= ((ForInStatement)container).getBody(); 
 						break;
 					case ASTNode.ENHANCED_FOR_STATEMENT:
 						currentStatement= ((EnhancedForStatement)container).getBody();

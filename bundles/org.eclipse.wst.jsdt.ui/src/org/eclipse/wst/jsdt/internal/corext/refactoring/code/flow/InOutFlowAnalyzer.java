@@ -17,6 +17,7 @@ import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
+import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
@@ -72,6 +73,11 @@ public class InOutFlowAnalyzer extends FlowAnalyzer {
 		super.endVisit(node);
 		clearAccessMode(accessFlowInfo(node), node.initializers());
 	}
+	public void endVisit(ForInStatement node) {
+		super.endVisit(node);
+		if (node.getIterationVariable() instanceof VariableDeclarationStatement)
+			clearAccessMode(accessFlowInfo(node), (VariableDeclarationStatement)node.getIterationVariable());
+	}
 	
 	public void endVisit(MethodDeclaration node) {
 		super.endVisit(node);
@@ -82,6 +88,11 @@ public class InOutFlowAnalyzer extends FlowAnalyzer {
 	}
 
 	private void clearAccessMode(FlowInfo info, SingleVariableDeclaration decl) {
+		IVariableBinding binding= decl.resolveBinding();
+		if (binding != null && !binding.isField())
+			info.clearAccessMode(binding, fFlowContext);
+	}
+	private void clearAccessMode(FlowInfo info, VariableDeclarationStatement decl) {
 		IVariableBinding binding= decl.resolveBinding();
 		if (binding != null && !binding.isField())
 			info.clearAccessMode(binding, fFlowContext);

@@ -24,6 +24,7 @@ import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
+import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
@@ -147,7 +148,7 @@ import org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor;
 	}
 	
 	public static Match[] perform(ASTNode start, ASTNode[] snippet) {
-		Assert.isTrue(start instanceof AbstractTypeDeclaration || start instanceof AnonymousClassDeclaration);
+		Assert.isTrue(start instanceof CompilationUnit || start instanceof AbstractTypeDeclaration || start instanceof AnonymousClassDeclaration);
 		SnippetFinder finder= new SnippetFinder(snippet);
 		start.accept(finder);
 		for (Iterator iter = finder.fResult.iterator(); iter.hasNext();) {

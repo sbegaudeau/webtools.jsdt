@@ -405,6 +405,8 @@ public class JavaDocAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy
 	 */
 	private static IMethod getInheritedMethod(IMethod method) throws JavaModelException {
 		IType declaringType= method.getDeclaringType();
+		if (declaringType==null)
+			return null;
 		MethodOverrideTester tester= SuperTypeHierarchyCache.getMethodOverrideTester(declaringType);
 		return tester.findOverriddenMethod(method, true);
 	}

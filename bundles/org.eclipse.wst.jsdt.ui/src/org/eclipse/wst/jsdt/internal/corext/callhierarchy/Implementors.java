@@ -63,7 +63,7 @@ public class Implementors {
                     IMember member = (IMember) element;
                     IType type = member.getDeclaringType();
 
-                    if (type.isInterface()) {
+                    if (type!=null && type.isInterface()) {
                         IType[] implementingTypes = findImplementingTypes(type,
                                 progressMonitor);
 

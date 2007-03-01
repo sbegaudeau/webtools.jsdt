@@ -433,7 +433,7 @@ public class AddDelegateMethodsAction extends SelectionDispatchAction {
 					}
 					try {
 						final IType type= field.getDeclaringType();
-						if (type.isInterface()) {
+						if (type!=null && type.isInterface()) {
 							return null;
 						}
 					} catch (JavaModelException exception) {

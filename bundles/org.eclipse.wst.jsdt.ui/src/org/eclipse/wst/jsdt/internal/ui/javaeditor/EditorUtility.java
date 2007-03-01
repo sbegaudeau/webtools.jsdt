@@ -334,6 +334,8 @@ public class EditorUtility {
 		IEditorDescriptor editorDescriptor;
 		if (input instanceof IFileEditorInput)
 			editorDescriptor= IDE.getEditorDescriptor(((IFileEditorInput)input).getFile());
+		else if (input instanceof InternalClassFileEditorInput )
+			return JavaUI.ID_CF_EDITOR;
 		else {
 			String name= input.getName();
 			if (name == null)

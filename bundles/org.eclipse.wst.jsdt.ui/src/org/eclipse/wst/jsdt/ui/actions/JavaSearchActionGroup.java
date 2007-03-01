@@ -48,7 +48,7 @@ public class JavaSearchActionGroup extends ActionGroup {
 	private ReadReferencesSearchGroup fReadAccessGroup;
 	private WriteReferencesSearchGroup fWriteAccessGroup;
 	private DeclarationsSearchGroup fDeclarationsGroup;
-	private ImplementorsSearchGroup fImplementorsGroup;
+//	private ImplementorsSearchGroup fImplementorsGroup;
 	private OccurrencesSearchGroup fOccurrencesGroup;
 	
 	
@@ -86,7 +86,7 @@ public class JavaSearchActionGroup extends ActionGroup {
 		fReadAccessGroup= new ReadReferencesSearchGroup(fEditor);
 		fWriteAccessGroup= new WriteReferencesSearchGroup(fEditor);
 		fDeclarationsGroup= new DeclarationsSearchGroup(fEditor);
-		fImplementorsGroup= new ImplementorsSearchGroup(fEditor);
+//		fImplementorsGroup= new ImplementorsSearchGroup(fEditor);
 		fOccurrencesGroup= new OccurrencesSearchGroup(fEditor);
 	}
 
@@ -95,7 +95,7 @@ public class JavaSearchActionGroup extends ActionGroup {
 		fReadAccessGroup= new ReadReferencesSearchGroup(site);
 		fWriteAccessGroup= new WriteReferencesSearchGroup(site);
 		fDeclarationsGroup= new DeclarationsSearchGroup(site);
-		fImplementorsGroup= new ImplementorsSearchGroup(site);
+//		fImplementorsGroup= new ImplementorsSearchGroup(site);
 		fOccurrencesGroup= new OccurrencesSearchGroup(site);
 	}
 
@@ -105,7 +105,7 @@ public class JavaSearchActionGroup extends ActionGroup {
 	public void setContext(ActionContext context) {
 		fReferencesGroup.setContext(context);
 		fDeclarationsGroup.setContext(context);
-		fImplementorsGroup.setContext(context);
+//		fImplementorsGroup.setContext(context);
 		fReadAccessGroup.setContext(context);
 		fWriteAccessGroup.setContext(context);
 		fOccurrencesGroup.setContext(context);
@@ -118,7 +118,7 @@ public class JavaSearchActionGroup extends ActionGroup {
 		super.fillActionBars(actionBar);
 		fReferencesGroup.fillActionBars(actionBar);
 		fDeclarationsGroup.fillActionBars(actionBar);
-		fImplementorsGroup.fillActionBars(actionBar);
+//		fImplementorsGroup.fillActionBars(actionBar);
 		fReadAccessGroup.fillActionBars(actionBar);
 		fWriteAccessGroup.fillActionBars(actionBar);
 		fOccurrencesGroup.fillActionBars(actionBar);
@@ -135,7 +135,7 @@ public class JavaSearchActionGroup extends ActionGroup {
 			fDeclarationsGroup.fillContextMenu(menu);
 
 			if (fEditor == null) {
-				fImplementorsGroup.fillContextMenu(menu);
+//				fImplementorsGroup.fillContextMenu(menu);
 				fReadAccessGroup.fillContextMenu(menu);
 				fWriteAccessGroup.fillContextMenu(menu);
 			}
@@ -151,7 +151,7 @@ public class JavaSearchActionGroup extends ActionGroup {
 			
 			fReferencesGroup.fillContextMenu(target);
 			fDeclarationsGroup.fillContextMenu(target);
-			fImplementorsGroup.fillContextMenu(target);
+//			fImplementorsGroup.fillContextMenu(target);
 			fReadAccessGroup.fillContextMenu(target);
 			fWriteAccessGroup.fillContextMenu(target);
 			
@@ -173,7 +173,7 @@ public class JavaSearchActionGroup extends ActionGroup {
 	public void dispose() {
 		fReferencesGroup.dispose();
 		fDeclarationsGroup.dispose();
-		fImplementorsGroup.dispose();
+//		fImplementorsGroup.dispose();
 		fReadAccessGroup.dispose();
 		fWriteAccessGroup.dispose();
 		fOccurrencesGroup.dispose();

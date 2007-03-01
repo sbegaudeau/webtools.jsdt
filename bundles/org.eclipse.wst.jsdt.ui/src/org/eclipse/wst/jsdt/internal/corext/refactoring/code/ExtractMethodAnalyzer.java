@@ -35,6 +35,7 @@ import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.Expression;
+import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
@@ -261,6 +262,8 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 			case ASTNode.CHARACTER_LITERAL :
 			case ASTNode.NULL_LITERAL :
 			case ASTNode.NUMBER_LITERAL :
+			case ASTNode.UNDEFINED_LITERAL :
+			case ASTNode.REGULAR_EXPRESSION_LITERAL :
 				return true;
 			
 			default :
@@ -661,6 +664,18 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 		}
 		return superResult;
 	}
+	
+	public void endVisit(ForInStatement node) {
+		if (getSelection().getEndVisitSelectionMode(node) == Selection.AFTER) {
+			if (node.getIterationVariable().equals(getFirstSelectedNode())) {
+				invalidSelection(RefactoringCoreMessages.ExtractMethodAnalyzer_cannot_extract_for_initializer, JavaStatusContext.create(fCUnit, getSelection())); 
+//			} else if (node.updaters().contains(getLastSelectedNode())) {
+//				invalidSelection(RefactoringCoreMessages.ExtractMethodAnalyzer_cannot_extract_for_updater, JavaStatusContext.create(fCUnit, getSelection())); 
+			}
+		}
+		super.endVisit(node);
+	}		
+	 
 	
 	public boolean visit(VariableDeclarationFragment node) {
 		boolean result= super.visit(node);

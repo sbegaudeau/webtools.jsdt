@@ -41,7 +41,7 @@ public class RenameMethodUserInterfaceStarter extends RenameUserInterfaceStarter
 				IMethod method= processor.getMethod();
 				if (!method.equals(processor.getOriginalMethod())) {
 					String message= null;
-					if (method.getDeclaringType().isInterface()) {
+					if (method.getDeclaringType()!=null && method.getDeclaringType().isInterface()) {
 						message= Messages.format(
 							RefactoringCoreMessages.MethodChecks_implements, 
 							new String[]{

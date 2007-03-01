@@ -116,8 +116,8 @@ import org.eclipse.wst.jsdt.launching.IVMInstall;
 import org.eclipse.wst.jsdt.launching.IVMInstall2;
 import org.eclipse.wst.jsdt.launching.IVMInstallType;
 import org.eclipse.wst.jsdt.launching.JavaRuntime;
-import org.eclipse.wst.jsdt.launching.environments.IExecutionEnvironment;
-import org.eclipse.wst.jsdt.launching.environments.IExecutionEnvironmentsManager;
+//import org.eclipse.wst.jsdt.launching.environments.IExecutionEnvironment;
+//import org.eclipse.wst.jsdt.launching.environments.IExecutionEnvironmentsManager;
 
 import org.eclipse.wst.jsdt.ui.JavaUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
@@ -634,46 +634,46 @@ public class PasteAction extends SelectionDispatchAction{
 				}
 
 				private void computeLatestVM() {
-					IVMInstall bestVM= JavaRuntime.getDefaultVMInstall();
-					String bestVersion= getVMVersion(bestVM);
-					
-					IExecutionEnvironmentsManager eeManager= JavaRuntime.getExecutionEnvironmentsManager();
-					IExecutionEnvironment bestEE= null;
-					
-					IExecutionEnvironment[] ees= eeManager.getExecutionEnvironments();
-					for (int j= 0; j < ees.length; j++) {
-						IExecutionEnvironment ee= ees[j];
-						IVMInstall vm= ee.getDefaultVM();
-						String ver= getVMVersion(vm);
-						if (ver != null && (bestVersion == null || JavaModelUtil.isVersionLessThan(bestVersion, ver))) {
-							bestVersion= ver;
-							bestEE= ee;
-						}
-					}
-					
-					IVMInstallType[] vmTypes= JavaRuntime.getVMInstallTypes();
-					for (int i= 0; i < vmTypes.length; i++) {
-						IVMInstall[] vms= vmTypes[i].getVMInstalls();
-						for (int j= 0; j < vms.length; j++) {
-							IVMInstall vm= vms[j];
-							String ver= getVMVersion(vm);
-							if (ver != null && (bestVersion == null || JavaModelUtil.isVersionLessThan(bestVersion, ver))) {
-								bestVersion= ver;
-								bestVM= vm;
-								bestEE= null;
-							}
-						}
-					}
-					
-					if (bestEE != null) {
-						fVMPath= JavaRuntime.newJREContainerPath(bestEE);
-						fCompilerCompliance= bestVersion;
-					} else if (bestVM != null) {
-						fVMPath= JavaRuntime.newJREContainerPath(bestVM);
-						fCompilerCompliance= bestVersion;
-					} else {
-						fVMPath= JavaRuntime.newDefaultJREContainerPath();
-					}
+//					IVMInstall bestVM= JavaRuntime.getDefaultVMInstall();
+//					String bestVersion= getVMVersion(bestVM);
+//					
+//					IExecutionEnvironmentsManager eeManager= JavaRuntime.getExecutionEnvironmentsManager();
+//					IExecutionEnvironment bestEE= null;
+//					
+//					IExecutionEnvironment[] ees= eeManager.getExecutionEnvironments();
+//					for (int j= 0; j < ees.length; j++) {
+//						IExecutionEnvironment ee= ees[j];
+//						IVMInstall vm= ee.getDefaultVM();
+//						String ver= getVMVersion(vm);
+//						if (ver != null && (bestVersion == null || JavaModelUtil.isVersionLessThan(bestVersion, ver))) {
+//							bestVersion= ver;
+//							bestEE= ee;
+//						}
+//					}
+//					
+//					IVMInstallType[] vmTypes= JavaRuntime.getVMInstallTypes();
+//					for (int i= 0; i < vmTypes.length; i++) {
+//						IVMInstall[] vms= vmTypes[i].getVMInstalls();
+//						for (int j= 0; j < vms.length; j++) {
+//							IVMInstall vm= vms[j];
+//							String ver= getVMVersion(vm);
+//							if (ver != null && (bestVersion == null || JavaModelUtil.isVersionLessThan(bestVersion, ver))) {
+//								bestVersion= ver;
+//								bestVM= vm;
+//								bestEE= null;
+//							}
+//						}
+//					}
+//					
+//					if (bestEE != null) {
+//						fVMPath= JavaRuntime.newJREContainerPath(bestEE);
+//						fCompilerCompliance= bestVersion;
+//					} else if (bestVM != null) {
+//						fVMPath= JavaRuntime.newJREContainerPath(bestVM);
+//						fCompilerCompliance= bestVersion;
+//					} else {
+//						fVMPath= JavaRuntime.newDefaultJREContainerPath();
+//					}
 				}
 
 				private String getVMVersion(IVMInstall vm) {

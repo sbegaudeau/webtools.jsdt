@@ -192,8 +192,8 @@ public class JavaElementImageProvider {
 					IMethod method= (IMethod) element;
 					IType declType= method.getDeclaringType();
 					int flags= method.getFlags();
-					if (declType.isEnum() && isDefaultFlag(flags) && method.isConstructor())
-						return JavaPluginImages.DESC_MISC_PRIVATE;
+//					if (declType.isEnum() && isDefaultFlag(flags) && method.isConstructor())
+//						return JavaPluginImages.DESC_MISC_PRIVATE;
 					return getMethodImageDescriptor(JavaModelUtil.isInterfaceOrAnnotation(declType), flags);				
 				}
 				case IJavaElement.FIELD: {
@@ -372,26 +372,26 @@ public class JavaElementImageProvider {
 	
 	private static boolean isInterfaceOrAnnotationField(IMember element) throws JavaModelException {
 		// always show the final symbol on interface fields
-		if (element.getElementType() == IJavaElement.FIELD) {
-			return JavaModelUtil.isInterfaceOrAnnotation(element.getDeclaringType());
-		}
+//		if (element.getElementType() == IJavaElement.FIELD) {
+//			return JavaModelUtil.isInterfaceOrAnnotation(element.getDeclaringType());
+//		}
 		return false;
 	}	
 	
 	private static boolean isInterfaceOrAnnotationFieldOrType(IMember element) throws JavaModelException {
 		// always show the static symbol on interface fields and types
-		if (element.getElementType() == IJavaElement.FIELD) {
-			return JavaModelUtil.isInterfaceOrAnnotation(element.getDeclaringType());
-		} else if (element.getElementType() == IJavaElement.TYPE && element.getDeclaringType() != null) {
-			return JavaModelUtil.isInterfaceOrAnnotation(element.getDeclaringType());
-		}
+//		if (element.getElementType() == IJavaElement.FIELD) {
+//			return JavaModelUtil.isInterfaceOrAnnotation(element.getDeclaringType());
+//		} else if (element.getElementType() == IJavaElement.TYPE && element.getDeclaringType() != null) {
+//			return JavaModelUtil.isInterfaceOrAnnotation(element.getDeclaringType());
+//		}
 		return false;
 	}	
 	
 	private static boolean isEnumConstant(IMember element, int modifiers) throws JavaModelException {
-		if (element.getElementType() == IJavaElement.FIELD) {
-			return Flags.isEnum(modifiers);
-		}
+//		if (element.getElementType() == IJavaElement.FIELD) {
+//			return Flags.isEnum(modifiers);
+//		}
 		return false;
 	}
 

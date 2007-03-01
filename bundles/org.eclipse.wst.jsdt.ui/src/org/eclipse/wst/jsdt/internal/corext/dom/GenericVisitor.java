@@ -72,10 +72,22 @@ public class GenericVisitor extends ASTVisitor {
 	public boolean visit(CastExpression node) {
 		return visitNode(node);
 	}
+	public boolean visit(FunctionExpression node) {
+		return visitNode(node);
+	}
+	public boolean visit(ObjectLiteral node) {
+		return visitNode(node);
+	}
+	public boolean visit(ObjectLiteralField node) {
+		return visitNode(node);
+	}
 	public boolean visit(CatchClause node) {
 		return visitNode(node);
 	}
 	public boolean visit(CharacterLiteral node) {
+		return visitNode(node);
+	}
+	public boolean visit(RegularExpressionLiteral node) {
 		return visitNode(node);
 	}
 	public boolean visit(ClassInstanceCreation node) {
@@ -111,6 +123,9 @@ public class GenericVisitor extends ASTVisitor {
 	public boolean visit(ForStatement node) {
 		return visitNode(node);
 	}
+	public boolean visit(ForInStatement node) {
+		return visitNode(node);
+	}
 	public boolean visit(IfStatement node) {
 		return visitNode(node);
 	}
@@ -142,6 +157,9 @@ public class GenericVisitor extends ASTVisitor {
 		return visitNode(node);
 	}
 	public boolean visit(NullLiteral node) {
+		return visitNode(node);
+	}
+	public boolean visit(UndefinedLiteral node) {
 		return visitNode(node);
 	}
 	public boolean visit(NumberLiteral node) {
@@ -389,10 +407,23 @@ public class GenericVisitor extends ASTVisitor {
 	public void endVisit(CastExpression node) {
 		endVisitNode(node);
 	}
+	public void endVisit(FunctionExpression node) {
+		endVisitNode(node);
+	}
+	public void endVisit(ObjectLiteral node) {
+		endVisitNode(node);
+	}
+	public void endVisit(ObjectLiteralField node) {
+		endVisitNode(node);
+	}
+
 	public void endVisit(CatchClause node) {
 		endVisitNode(node);
 	}
 	public void endVisit(CharacterLiteral node) {
+		endVisitNode(node);
+	}
+	public void endVisit(RegularExpressionLiteral node) {
 		endVisitNode(node);
 	}
 	public void endVisit(ClassInstanceCreation node) {
@@ -428,6 +459,9 @@ public class GenericVisitor extends ASTVisitor {
 	public void endVisit(ForStatement node) {
 		endVisitNode(node);
 	}
+	public void endVisit(ForInStatement node) {
+		endVisitNode(node);
+	}
 	public void endVisit(IfStatement node) {
 		endVisitNode(node);
 	}
@@ -456,6 +490,9 @@ public class GenericVisitor extends ASTVisitor {
 		endVisitNode(node);
 	}
 	public void endVisit(NullLiteral node) {
+		endVisitNode(node);
+	}
+	public void endVisit(UndefinedLiteral node) {
 		endVisitNode(node);
 	}
 	public void endVisit(NumberLiteral node) {

@@ -186,6 +186,8 @@ public class OpenSuperImplementationAction extends SelectionDispatchAction {
 			int flags= method.getFlags();
 			if (!Flags.isStatic(flags) && !Flags.isPrivate(flags)) {
 				IType declaringType= method.getDeclaringType();
+				if (declaringType==null)
+					return false;
 				if (SuperTypeHierarchyCache.hasInCache(declaringType)) {
 					if (findSuperImplementation(method) == null) {
 						return false;

@@ -51,6 +51,7 @@ import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
+import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
@@ -642,6 +643,8 @@ public class SourceProvider {
 			return !(((ForStatement)statement).getBody() instanceof Block);
 		} else if (nodeType == ASTNode.WHILE_STATEMENT) {
 			return !(((WhileStatement)statement).getBody() instanceof Block);
+		} else if (nodeType == ASTNode.FOR_IN_STATEMENT) {
+			return !(((ForInStatement)statement).getBody() instanceof Block);
 		}
 		return false;
 	}

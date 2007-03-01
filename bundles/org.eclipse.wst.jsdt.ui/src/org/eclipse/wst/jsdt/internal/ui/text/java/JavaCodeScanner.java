@@ -200,167 +200,167 @@ public final class JavaCodeScanner extends AbstractJavaScanner {
 	 *
 	 * @since 3.1
 	 */
-	private static class AnnotationRule implements IRule, ISourceVersionDependent {
-		/**
-		 * A resettable scanner supports marking a position in a scanner and
-		 * unreading back to the marked position.
-		 */
-		private static final class ResettableScanner implements ICharacterScanner {
-			private final ICharacterScanner fDelegate;
-			private int fReadCount;
-
-			/**
-			 * Creates a new resettable scanner that will forward calls
-			 * to <code>scanner</code>, but store a marked position.
-			 *
-			 * @param scanner the delegate scanner
-			 */
-			public ResettableScanner(final ICharacterScanner scanner) {
-				Assert.isNotNull(scanner);
-				fDelegate= scanner;
-				mark();
-			}
-
-			/*
-			 * @see org.eclipse.jface.text.rules.ICharacterScanner#getColumn()
-			 */
-			public int getColumn() {
-				return fDelegate.getColumn();
-			}
-
-			/*
-			 * @see org.eclipse.jface.text.rules.ICharacterScanner#getLegalLineDelimiters()
-			 */
-			public char[][] getLegalLineDelimiters() {
-				return fDelegate.getLegalLineDelimiters();
-			}
-
-			/*
-			 * @see org.eclipse.jface.text.rules.ICharacterScanner#read()
-			 */
-			public int read() {
-				int ch= fDelegate.read();
-				if (ch != ICharacterScanner.EOF)
-					fReadCount++;
-				return ch;
-			}
-
-			/*
-			 * @see org.eclipse.jface.text.rules.ICharacterScanner#unread()
-			 */
-			public void unread() {
-				if (fReadCount > 0)
-					fReadCount--;
-				fDelegate.unread();
-			}
-
-			/**
-			 * Marks an offset in the scanned content.
-			 */
-			public void mark() {
-				fReadCount= 0;
-			}
-
-			/**
-			 * Resets the scanner to the marked position.
-			 */
-			public void reset() {
-				while (fReadCount > 0)
-					unread();
-
-				while (fReadCount < 0)
-					read();
-			}
-		}
-
-		private final IWhitespaceDetector fWhitespaceDetector= new JavaWhitespaceDetector();
-		private final IWordDetector fWordDetector= new JavaWordDetector();
-		private final IToken fInterfaceToken;
-		private final IToken fAtToken;
-		private final String fVersion;
-		private boolean fIsVersionMatch;
-
-		/**
-		 * Creates a new rule.
-		 *
-		 * @param interfaceToken the token to return if
-		 *        <code>'@\s*interface'</code> is matched
-		 * @param atToken the token to return if <code>'@'</code>
-		 *        is matched, but not <code>'@\s*interface'</code>
-		 * @param version the lowest <code>JavaCore.COMPILER_SOURCE</code>
-		 *        version that this rule is enabled
-		 * @param currentVersion the current
-		 *        <code>JavaCore.COMPILER_SOURCE</code> version
-		 */
-		public AnnotationRule(IToken interfaceToken, Token atToken, String version, String currentVersion) {
-			fInterfaceToken= interfaceToken;
-			fAtToken= atToken;
-			fVersion= version;
-			setSourceVersion(currentVersion);
-		}
-
-		/*
-		 * @see org.eclipse.jface.text.rules.IRule#evaluate(org.eclipse.jface.text.rules.ICharacterScanner)
-		 */
-		public IToken evaluate(ICharacterScanner scanner) {
-			if (!fIsVersionMatch)
-				return Token.UNDEFINED;
-
-			ResettableScanner resettable= new ResettableScanner(scanner);
-			if (resettable.read() == '@')
-				return readAnnotation(resettable);
-
-			resettable.reset();
-			return Token.UNDEFINED;
-		}
-
-		private IToken readAnnotation(ResettableScanner scanner) {
-			scanner.mark();
-			skipWhitespace(scanner);
-			if (readInterface(scanner)) {
-				return fInterfaceToken;
-			} else {
-				scanner.reset();
-				return fAtToken;
-			}
-		}
-
-		private boolean readInterface(ICharacterScanner scanner) {
-			int ch= scanner.read();
-			int i= 0;
-			while (i < INTERFACE.length() && INTERFACE.charAt(i) == ch) {
-				i++;
-				ch= scanner.read();
-			}
-			if (i < INTERFACE.length())
-				return false;
-			
-			if (fWordDetector.isWordPart((char) ch))
-				return false;
-			
-			if (ch != ICharacterScanner.EOF)
-				scanner.unread();
-			
-			return true;
-		}
-
-		private boolean skipWhitespace(ICharacterScanner scanner) {
-			while (fWhitespaceDetector.isWhitespace((char) scanner.read())) {
-				// do nothing
-			}
-
-			scanner.unread();
-			return true;
-		}
-
-		/*
-		 * @see org.eclipse.wst.jsdt.internal.ui.text.ISourceVersionDependent#setSourceVersion(java.lang.String)
-		 */
-		public void setSourceVersion(String version) {
-			fIsVersionMatch= fVersion.compareTo(version) <= 0; 
-		}
-
-	}
+//	private static class AnnotationRule implements IRule, ISourceVersionDependent {
+//		/**
+//		 * A resettable scanner supports marking a position in a scanner and
+//		 * unreading back to the marked position.
+//		 */
+//		private static final class ResettableScanner implements ICharacterScanner {
+//			private final ICharacterScanner fDelegate;
+//			private int fReadCount;
+//
+//			/**
+//			 * Creates a new resettable scanner that will forward calls
+//			 * to <code>scanner</code>, but store a marked position.
+//			 *
+//			 * @param scanner the delegate scanner
+//			 */
+//			public ResettableScanner(final ICharacterScanner scanner) {
+//				Assert.isNotNull(scanner);
+//				fDelegate= scanner;
+//				mark();
+//			}
+//
+//			/*
+//			 * @see org.eclipse.jface.text.rules.ICharacterScanner#getColumn()
+//			 */
+//			public int getColumn() {
+//				return fDelegate.getColumn();
+//			}
+//
+//			/*
+//			 * @see org.eclipse.jface.text.rules.ICharacterScanner#getLegalLineDelimiters()
+//			 */
+//			public char[][] getLegalLineDelimiters() {
+//				return fDelegate.getLegalLineDelimiters();
+//			}
+//
+//			/*
+//			 * @see org.eclipse.jface.text.rules.ICharacterScanner#read()
+//			 */
+//			public int read() {
+//				int ch= fDelegate.read();
+//				if (ch != ICharacterScanner.EOF)
+//					fReadCount++;
+//				return ch;
+//			}
+//
+//			/*
+//			 * @see org.eclipse.jface.text.rules.ICharacterScanner#unread()
+//			 */
+//			public void unread() {
+//				if (fReadCount > 0)
+//					fReadCount--;
+//				fDelegate.unread();
+//			}
+//
+//			/**
+//			 * Marks an offset in the scanned content.
+//			 */
+//			public void mark() {
+//				fReadCount= 0;
+//			}
+//
+//			/**
+//			 * Resets the scanner to the marked position.
+//			 */
+//			public void reset() {
+//				while (fReadCount > 0)
+//					unread();
+//
+//				while (fReadCount < 0)
+//					read();
+//			}
+//		}
+//
+//		private final IWhitespaceDetector fWhitespaceDetector= new JavaWhitespaceDetector();
+//		private final IWordDetector fWordDetector= new JavaWordDetector();
+//		private final IToken fInterfaceToken;
+//		private final IToken fAtToken;
+//		private final String fVersion;
+//		private boolean fIsVersionMatch;
+//
+//		/**
+//		 * Creates a new rule.
+//		 *
+//		 * @param interfaceToken the token to return if
+//		 *        <code>'@\s*interface'</code> is matched
+//		 * @param atToken the token to return if <code>'@'</code>
+//		 *        is matched, but not <code>'@\s*interface'</code>
+//		 * @param version the lowest <code>JavaCore.COMPILER_SOURCE</code>
+//		 *        version that this rule is enabled
+//		 * @param currentVersion the current
+//		 *        <code>JavaCore.COMPILER_SOURCE</code> version
+//		 */
+//		public AnnotationRule(IToken interfaceToken, Token atToken, String version, String currentVersion) {
+//			fInterfaceToken= interfaceToken;
+//			fAtToken= atToken;
+//			fVersion= version;
+//			setSourceVersion(currentVersion);
+//		}
+//
+//		/*
+//		 * @see org.eclipse.jface.text.rules.IRule#evaluate(org.eclipse.jface.text.rules.ICharacterScanner)
+//		 */
+//		public IToken evaluate(ICharacterScanner scanner) {
+//			if (!fIsVersionMatch)
+//				return Token.UNDEFINED;
+//
+//			ResettableScanner resettable= new ResettableScanner(scanner);
+//			if (resettable.read() == '@')
+//				return readAnnotation(resettable);
+//
+//			resettable.reset();
+//			return Token.UNDEFINED;
+//		}
+//
+//		private IToken readAnnotation(ResettableScanner scanner) {
+//			scanner.mark();
+//			skipWhitespace(scanner);
+//			if (readInterface(scanner)) {
+//				return fInterfaceToken;
+//			} else {
+//				scanner.reset();
+//				return fAtToken;
+//			}
+//		}
+//
+//		private boolean readInterface(ICharacterScanner scanner) {
+//			int ch= scanner.read();
+//			int i= 0;
+//			while (i < INTERFACE.length() && INTERFACE.charAt(i) == ch) {
+//				i++;
+//				ch= scanner.read();
+//			}
+//			if (i < INTERFACE.length())
+//				return false;
+//			
+//			if (fWordDetector.isWordPart((char) ch))
+//				return false;
+//			
+//			if (ch != ICharacterScanner.EOF)
+//				scanner.unread();
+//			
+//			return true;
+//		}
+//
+//		private boolean skipWhitespace(ICharacterScanner scanner) {
+//			while (fWhitespaceDetector.isWhitespace((char) scanner.read())) {
+//				// do nothing
+//			}
+//
+//			scanner.unread();
+//			return true;
+//		}
+//
+//		/*
+//		 * @see org.eclipse.wst.jsdt.internal.ui.text.ISourceVersionDependent#setSourceVersion(java.lang.String)
+//		 */
+//		public void setSourceVersion(String version) {
+//			fIsVersionMatch= fVersion.compareTo(version) <= 0; 
+//		}
+//
+//	}
 
 	private static final String SOURCE_VERSION= JavaCore.COMPILER_SOURCE;
 
@@ -368,27 +368,27 @@ public final class JavaCodeScanner extends AbstractJavaScanner {
 		"abstract", //$NON-NLS-1$
 		"break", //$NON-NLS-1$
 		"case", "catch", "class", "const", "continue", //$NON-NLS-5$ //$NON-NLS-4$ //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
-		"default", "do", //$NON-NLS-2$ //$NON-NLS-1$
-		"else", "extends", //$NON-NLS-2$ //$NON-NLS-1$
-		"final", "finally", "for", //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
+		"default", "delete", "debugger", "do", //$NON-NLS-2$ //$NON-NLS-1$
+		"else", "export", "extends", //$NON-NLS-2$ //$NON-NLS-1$
+		"final", "finally", "for",  "function",//$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
 		"goto", //$NON-NLS-1$
-		"if", "implements", "import", "instanceof", "interface", //$NON-NLS-5$ //$NON-NLS-4$ //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
-		"native", "new", //$NON-NLS-2$ //$NON-NLS-1$
+		"if", "implements", "in", "instanceof", "interface", //$NON-NLS-5$ //$NON-NLS-4$ //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
+		  "new", //$NON-NLS-2$ //$NON-NLS-1$
 		"package", "private", "protected", "public", //$NON-NLS-4$ //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
 		"static", "super", "switch", "synchronized", //$NON-NLS-4$ //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
-		"this", "throw", "throws", "transient", "try", //$NON-NLS-5$ //$NON-NLS-4$ //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
-		"volatile", //$NON-NLS-1$
+		"this", "throw", "throws", "transient", "try","typeof",  //$NON-NLS-5$ //$NON-NLS-4$ //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
+		"var", "volatile", //$NON-NLS-1$
 		"while" //$NON-NLS-1$
 	};
 
 	private static final String INTERFACE= "interface";  //$NON-NLS-1$
 	private static final String RETURN= "return"; //$NON-NLS-1$
-	private static String[] fgJava14Keywords= { "assert" }; //$NON-NLS-1$
+	private static String[] fgJava14Keywords= { /*"assert"*/ }; //$NON-NLS-1$
 	private static String[] fgJava15Keywords= { "enum" }; //$NON-NLS-1$
 
-	private static String[] fgTypes= { "void", "boolean", "char", "byte", "short", "strictfp", "int", "long", "float", "double" }; //$NON-NLS-1$ //$NON-NLS-5$ //$NON-NLS-7$ //$NON-NLS-6$ //$NON-NLS-8$ //$NON-NLS-9$  //$NON-NLS-10$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-2$
+	private static String[] fgTypes= {/* "void", "boolean", "char", "byte", "short", "strictfp", "int", "long", "float", "double" */}; //$NON-NLS-1$ //$NON-NLS-5$ //$NON-NLS-7$ //$NON-NLS-6$ //$NON-NLS-8$ //$NON-NLS-9$  //$NON-NLS-10$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-2$
 
-	private static String[] fgConstants= { "false", "null", "true" }; //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
+	private static String[] fgConstants= { "false", "null", "true" , "undefined"}; //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
 
 	private static final String ANNOTATION_BASE_KEY= PreferenceConstants.EDITOR_SEMANTIC_HIGHLIGHTING_PREFIX + SemanticHighlightings.ANNOTATION;
 	private static final String ANNOTATION_COLOR_KEY= ANNOTATION_BASE_KEY + PreferenceConstants.EDITOR_SEMANTIC_HIGHLIGHTING_COLOR_SUFFIX;
@@ -409,7 +409,7 @@ public final class JavaCodeScanner extends AbstractJavaScanner {
 	 * Creates a Java code scanner
 	 *
 	 * @param manager	the color manager
-	 * @param store		the preference store
+	 * @param store		the preference store 
 	 */
 	public JavaCodeScanner(IColorManager manager, IPreferenceStore store) {
 		super(manager, store);
@@ -441,10 +441,10 @@ public final class JavaCodeScanner extends AbstractJavaScanner {
 		String version= getPreferenceStore().getString(SOURCE_VERSION);
 
 		// Add JLS3 rule for /@\s*interface/ and /@\s*\w+/
-		token= getToken(ANNOTATION_COLOR_KEY);
-		AnnotationRule atInterfaceRule= new AnnotationRule(getToken(IJavaColorConstants.JAVA_KEYWORD), token, JavaCore.VERSION_1_5, version);
-		rules.add(atInterfaceRule);
-		fVersionDependentRules.add(atInterfaceRule);
+//		token= getToken(ANNOTATION_COLOR_KEY);
+//		AnnotationRule atInterfaceRule= new AnnotationRule(getToken(IJavaColorConstants.JAVA_KEYWORD), token, JavaCore.VERSION_1_5, version);
+//		rules.add(atInterfaceRule);
+//		fVersionDependentRules.add(atInterfaceRule);
 
 		// Add word rule for new keywords, 4077
 		JavaWordDetector wordDetector= new JavaWordDetector();

@@ -16,7 +16,6 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.code.flow;
 import org.eclipse.core.runtime.Assert;
 
 import org.eclipse.jface.text.IRegion;
-
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
@@ -24,12 +23,14 @@ import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
 import org.eclipse.wst.jsdt.core.dom.Expression;
+import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IfStatement;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.core.dom.Statement;
 import org.eclipse.wst.jsdt.core.dom.SwitchStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
+
 
 import org.eclipse.wst.jsdt.internal.corext.dom.Selection;
 
@@ -70,6 +71,28 @@ public class InputFlowAnalyzer extends FlowAnalyzer {
 			// No need to merge the condition. It was already considered by the InputFlowAnalyzer.
 			info.removeLabel(null);	
 		}
+		public void endVisit(ForInStatement node) {
+			if (skipNode(node))
+				return;
+			FlowInfo paramInfo= getFlowInfo(node.getIterationVariable());
+			FlowInfo expressionInfo= getFlowInfo(node.getCollection());
+			FlowInfo actionInfo= getFlowInfo(node.getBody());
+			EnhancedForFlowInfo forInfo= createEnhancedFor();
+			setFlowInfo(node, forInfo);
+			// If the for statement is the outermost loop then we only have to consider
+			// the action. The parameter and expression are only evaluated once.
+			if (node == fLoopNode) {
+				forInfo.mergeAction(actionInfo, fFlowContext);
+			} else {
+				// Inner for loops are evaluated in the sequence expression, parameter,
+				// action.
+				forInfo.mergeExpression(expressionInfo, fFlowContext);
+				forInfo.mergeParameter(paramInfo, fFlowContext);
+				forInfo.mergeAction(actionInfo, fFlowContext);
+			}
+			forInfo.removeLabel(null);
+		}
+
 		public void endVisit(EnhancedForStatement node) {
 			if (skipNode(node))
 				return;
@@ -91,6 +114,7 @@ public class InputFlowAnalyzer extends FlowAnalyzer {
 			}
 			forInfo.removeLabel(null);
 		}
+
 		public void endVisit(ForStatement node) {
 			if (skipNode(node))
 				return;
@@ -166,6 +190,11 @@ public class InputFlowAnalyzer extends FlowAnalyzer {
 		return super.visit(node);			
 	}
 	
+	public boolean visit(ForInStatement node) {
+		createLoopReentranceVisitor(node);
+		return super.visit(node);			
+	}
+	
 	public boolean visit(WhileStatement node) {
 		createLoopReentranceVisitor(node);
 		return super.visit(node);			
@@ -217,6 +246,10 @@ public class InputFlowAnalyzer extends FlowAnalyzer {
 	}
 	
 	public void endVisit(ForStatement node) {
+		super.endVisit(node);
+		handleLoopReentrance(node);
+	}
+	public void endVisit(ForInStatement node) {
 		super.endVisit(node);
 		handleLoopReentrance(node);
 	}

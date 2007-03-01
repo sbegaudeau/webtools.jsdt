@@ -684,7 +684,7 @@ public class AddGetterSetterAction extends SelectionDispatchAction {
 					}
 					try {
 						final IType declaringType= fld.getDeclaringType();
-						if (declaringType.isInterface())
+						if (declaringType==null || declaringType.isInterface())
 							return null;
 					} catch (JavaModelException e) {
 						JavaPlugin.log(e);

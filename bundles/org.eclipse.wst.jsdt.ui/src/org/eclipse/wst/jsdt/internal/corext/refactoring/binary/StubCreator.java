@@ -134,7 +134,7 @@ public class StubCreator {
 				} else if (child instanceof IMethod) {
 					final IMethod method= (IMethod) child;
 					final String name= method.getElementName();
-					if (method.getDeclaringType().isEnum()) {
+					if (method.getDeclaringType()!=null && method.getDeclaringType().isEnum()) {
 						final int count= method.getNumberOfParameters();
 						if (count == 0 && "values".equals(name)) //$NON-NLS-1$
 							continue;

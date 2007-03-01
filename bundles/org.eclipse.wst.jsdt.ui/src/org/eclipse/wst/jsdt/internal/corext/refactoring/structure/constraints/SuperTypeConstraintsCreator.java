@@ -58,6 +58,7 @@ import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.ThisExpression;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeLiteral;
+import org.eclipse.wst.jsdt.core.dom.UndefinedLiteral;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
@@ -546,6 +547,9 @@ public final class SuperTypeConstraintsCreator extends HierarchicalASTVisitor {
 	 * @see org.eclipse.wst.jsdt.internal.corext.dom.HierarchicalASTVisitor#endVisit(org.eclipse.wst.jsdt.core.dom.NullLiteral)
 	 */
 	public final void endVisit(final NullLiteral node) {
+		node.setProperty(PROPERTY_CONSTRAINT_VARIABLE, fModel.createImmutableTypeVariable(node.resolveTypeBinding()));
+	}
+	public final void endVisit(final UndefinedLiteral node) {
 		node.setProperty(PROPERTY_CONSTRAINT_VARIABLE, fModel.createImmutableTypeVariable(node.resolveTypeBinding()));
 	}
 

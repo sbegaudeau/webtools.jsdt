@@ -26,6 +26,7 @@ import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
+import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
@@ -713,6 +714,14 @@ public class ScopeAnalyzer {
 			return false;
 		}	
 	
+		public boolean visit(ForInStatement node) {
+			if (isInside(node)) {
+				node.getBody().accept(this);
+				node.getIterationVariable().accept(this);
+			}
+			return false;
+		}	
+
 		public boolean visit(TypeDeclarationStatement node) {
 			if (hasFlag(TYPES, fFlags) && node.getStartPosition() + node.getLength() < fPosition) {
 				if (node.getAST().apiLevel() == AST.JLS2) {

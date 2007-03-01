@@ -95,13 +95,14 @@ public final class SerialVersionHashOperation extends AbstractSerialVersionOpera
 	}
 	
 	public static long[] calculateSerialVersionIds(String[] qualifiedNames, IJavaProject project, final IProgressMonitor monitor) throws CoreException, IOException {
-		final String[] entries= computeUserAndBootClasspath(project);
-		final IRuntimeClasspathEntry[] classpath= new IRuntimeClasspathEntry[entries.length + 2];
-		classpath[0]= JavaRuntime.newRuntimeContainerClasspathEntry(new Path(JavaRuntime.JRE_CONTAINER), IRuntimeClasspathEntry.STANDARD_CLASSES, project);
-		classpath[1]= JavaRuntime.newArchiveRuntimeClasspathEntry(Path.fromOSString(FileLocator.toFileURL(JavaPlugin.getDefault().getBundle().getEntry(SERIAL_SUPPORT_JAR)).getFile()));
-		for (int index= 2; index < classpath.length; index++)
-			classpath[index]= JavaRuntime.newArchiveRuntimeClasspathEntry(Path.fromOSString(entries[index - 2]));
-		return SerialVersionComputationHelper.computeSerialIDs(classpath, project, qualifiedNames, monitor);
+//		final String[] entries= computeUserAndBootClasspath(project);
+//		final IRuntimeClasspathEntry[] classpath= new IRuntimeClasspathEntry[entries.length + 2];
+//		classpath[0]= JavaRuntime.newRuntimeContainerClasspathEntry(new Path(JavaRuntime.JRE_CONTAINER), IRuntimeClasspathEntry.STANDARD_CLASSES, project);
+//		classpath[1]= JavaRuntime.newArchiveRuntimeClasspathEntry(Path.fromOSString(FileLocator.toFileURL(JavaPlugin.getDefault().getBundle().getEntry(SERIAL_SUPPORT_JAR)).getFile()));
+//		for (int index= 2; index < classpath.length; index++)
+//			classpath[index]= JavaRuntime.newArchiveRuntimeClasspathEntry(Path.fromOSString(entries[index - 2]));
+//		return SerialVersionComputationHelper.computeSerialIDs(classpath, project, qualifiedNames, monitor);
+		return null;
 	}
 	
 

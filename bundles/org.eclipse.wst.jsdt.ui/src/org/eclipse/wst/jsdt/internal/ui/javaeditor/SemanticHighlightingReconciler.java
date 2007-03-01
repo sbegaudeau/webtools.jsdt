@@ -37,6 +37,7 @@ import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
+import org.eclipse.wst.jsdt.core.dom.RegularExpressionLiteral;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 
 import org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor;
@@ -87,6 +88,10 @@ public class SemanticHighlightingReconciler implements IJavaReconcilingListener,
 			return visitLiteral(node);
 		}
 		
+		public boolean visit(RegularExpressionLiteral node) {
+			return visitLiteral(node);
+		}
+
 		/*
 		 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.NumberLiteral)
 		 */

@@ -40,6 +40,7 @@ import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
+import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
@@ -361,7 +362,7 @@ public class AdvancedQuickAssistProcessor implements IQuickAssistProcessor {
 			ifParentStructure = ifParentStructure.getParent();
 		}
 		// check that control structure is loop and 'if' statement if last statement
-		if (!(ifParentStructure instanceof ForStatement) && !(ifParentStructure instanceof WhileStatement)) {
+		if (!(ifParentStructure instanceof ForStatement) && !(ifParentStructure instanceof WhileStatement)&& !(ifParentStructure instanceof ForInStatement)) {
 			return false;
 		}
 		if ((ifParentBlock != null) && (ifParentBlock.statements().indexOf(ifStatement) != ifParentBlock.statements().size() - 1)) {
@@ -666,8 +667,9 @@ public class AdvancedQuickAssistProcessor implements IQuickAssistProcessor {
 				|| (operator == InfixExpression.Operator.GREATER_EQUALS)) {
 			return 6;
 		}
-		if ((operator == InfixExpression.Operator.EQUALS) || (operator == InfixExpression.Operator.NOT_EQUALS)) {
-			return 7;
+		if ((operator == InfixExpression.Operator.EQUALS) || (operator == InfixExpression.Operator.NOT_EQUALS) 
+			||(operator == InfixExpression.Operator.EQUAL_EQUAL_EQUAL) || (operator == InfixExpression.Operator.NOT_EQUAL_EQUAL)
+			||(operator == InfixExpression.Operator.INSTANCEOF)) {			return 7;
 		}
 		if (operator == InfixExpression.Operator.AND) {
 			return 8;

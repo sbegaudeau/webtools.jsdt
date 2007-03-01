@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui.text.java;
 
+import java.util.Arrays;
+
 import org.eclipse.core.runtime.Assert;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -215,7 +217,8 @@ public class CompletionProposalLabelProvider {
 					buffer.append(',');
 					buffer.append(' ');
 				}
-				buffer.append(parameterTypes[i]);
+				if (!Arrays.equals(Signature.ANY, parameterTypes[i]))
+					buffer.append(parameterTypes[i]);
 				if (parameterNames != null && parameterNames[i] != null) {
 					buffer.append(' ');
 					buffer.append(parameterNames[i]);
@@ -260,14 +263,17 @@ public class CompletionProposalLabelProvider {
 		if (!methodProposal.isConstructor()) {
 			// TODO remove SignatureUtil.fix83600 call when bugs are fixed
 			char[] returnType= createTypeDisplayName(SignatureUtil.getUpperBound(Signature.getReturnType(SignatureUtil.fix83600(methodProposal.getSignature()))));
-			nameBuffer.append("  "); //$NON-NLS-1$
-			nameBuffer.append(returnType);
+			if (!Arrays.equals(Signature.ANY,returnType))
+			{
+				nameBuffer.append("  "); //$NON-NLS-1$
+				nameBuffer.append(returnType);
+			}
 		}
 
 		// declaring type
 		nameBuffer.append(" - "); //$NON-NLS-1$
 		String declaringType= extractDeclaringTypeFQN(methodProposal);
-		declaringType= Signature.getSimpleName(declaringType);
+//		declaringType= Signature.getSimpleName(declaringType);
 		nameBuffer.append(declaringType);
 
 		return nameBuffer.toString();
@@ -450,7 +456,7 @@ public class CompletionProposalLabelProvider {
 		StringBuffer buf= new StringBuffer();
 		buf.append(name);
 		char[] typeName= Signature.getSignatureSimpleName(proposal.getSignature());
-		if (typeName.length > 0) {
+		if (typeName.length > 0&& !(Arrays.equals(Signature.ANY, typeName))) {
 			buf.append("    "); //$NON-NLS-1$
 			buf.append(typeName);
 		}

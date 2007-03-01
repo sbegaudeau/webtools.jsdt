@@ -45,6 +45,7 @@ import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
@@ -490,6 +491,7 @@ abstract class FlowAnalyzer extends GenericVisitor {
 		GenericSequentialFlowInfo info= processSequential(node, node.getExpression());
 		process(info, node.getType());
 		process(info, node.arguments());
+		process(info, node.getMember());
 		process(info, node.getAnonymousClassDeclaration());
 	}
 	
@@ -596,7 +598,18 @@ abstract class FlowAnalyzer extends GenericVisitor {
 		forInfo.mergeIncrement(createSequential(node.updaters()), fFlowContext);
 		forInfo.removeLabel(null);
 	}
-	
+	public void endVisit(ForInStatement node) {
+		if (skipNode(node))
+			return;
+		EnhancedForFlowInfo forInfo= createEnhancedFor();
+		setFlowInfo(node, forInfo);
+		forInfo.mergeParameter(getFlowInfo(node.getIterationVariable()), fFlowContext);
+		forInfo.mergeExpression(getFlowInfo(node.getCollection()), fFlowContext);
+		forInfo.mergeAction(getFlowInfo(node.getBody()), fFlowContext);
+		forInfo.removeLabel(null);
+	}
+
+
 	public void endVisit(IfStatement node) {
 		if (skipNode(node))
 			return;

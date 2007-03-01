@@ -289,6 +289,8 @@ public class JavaElementLabels {
 	 */
 	public final static long T_CATEGORY= 1L << 51;
 	
+	
+	public final static long SHOW_TYPE= 1L << 52;
 	/**
 	 * Show category for all elements.
 	 * @since 3.2
@@ -510,10 +512,20 @@ public class JavaElementLabels {
 			}
 			
 			// qualification
+			IType declaringType = method.getDeclaringType();
 			if (getFlag(flags, M_FULLY_QUALIFIED)) {
-				getTypeLabel(method.getDeclaringType(), T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), buf);
-				buf.append('.');
+				if (declaringType!=null)
+				{
+					getTypeLabel(method.getDeclaringType(), T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), buf);
+					buf.append('.');
+				} else	{
+						buf.append('[');
+						getFileLabel(method, T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), buf);
+						buf.append(']');
+				}
+
 			}
+		 
 				
 			buf.append(method.getElementName());
 			
@@ -523,7 +535,7 @@ public class JavaElementLabels {
 				String[] types= null;
 				int nParams= 0;
 				boolean renderVarargs= false;
-				if (getFlag(flags, M_PARAMETER_TYPES)) {
+				if (getFlag(flags, M_PARAMETER_TYPES)&& getFlag(flags,SHOW_TYPE)) {
 					if (resolvedSig != null) {
 						types= Signature.getParameterTypes(resolvedSig);
 					} else {
@@ -628,9 +640,12 @@ public class JavaElementLabels {
 			}
 			
 			if (getFlag(flags, M_APP_RETURNTYPE) && method.exists() && !method.isConstructor()) {
-				buf.append(DECL_STRING);
-				String returnTypeSig= resolvedSig != null ? Signature.getReturnType(resolvedSig) : method.getReturnType();
-				getTypeSignatureLabel(returnTypeSig, flags, buf);
+				if (method.getReturnType()!=null)
+				{
+					buf.append(DECL_STRING);
+					String returnTypeSig= resolvedSig != null ? Signature.getReturnType(resolvedSig) : method.getReturnType();
+					getTypeSignatureLabel(returnTypeSig, flags, buf);
+				}
 			}			
 
 			// category
@@ -640,7 +655,10 @@ public class JavaElementLabels {
 			// post qualification
 			if (getFlag(flags, M_POST_QUALIFIED)) {
 				buf.append(CONCAT_STRING);
-				getTypeLabel(method.getDeclaringType(), T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), buf);
+				if (declaringType!=null)
+					getTypeLabel(method.getDeclaringType(), T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), buf);
+				else
+					getFileLabel(method, T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), buf);
 			}
 			
 		} catch (JavaModelException e) {
@@ -694,18 +712,25 @@ public class JavaElementLabels {
 			}
 			
 			// qualification
+			IType declaringType = field.getDeclaringType();
 			if (getFlag(flags, F_FULLY_QUALIFIED)) {
-				getTypeLabel(field.getDeclaringType(), T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), buf);
+				if (declaringType!=null)
+					getTypeLabel(declaringType, T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), buf);
+				else
+					getFileLabel(field, T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), buf);
 				buf.append('.');
 			}
 			buf.append(field.getElementName());
 			
 			if (getFlag(flags, F_APP_TYPE_SIGNATURE) && field.exists() && !Flags.isEnum(field.getFlags())) {
-				buf.append(DECL_STRING);
-				if (getFlag(flags, USE_RESOLVED) && field.isResolved()) {
-					getTypeSignatureLabel(new BindingKey(field.getKey()).toSignature(), flags, buf);
-				} else {
-					getTypeSignatureLabel(field.getTypeSignature(), flags, buf);
+				if (field.getTypeSignature()!=null)
+				{
+					buf.append(DECL_STRING);
+					if (getFlag(flags, USE_RESOLVED) && field.isResolved()) {
+						getTypeSignatureLabel(new BindingKey(field.getKey()).toSignature(), flags, buf);
+					} else {
+						getTypeSignatureLabel(field.getTypeSignature(), flags, buf);
+					}
 				}
 			}
 
@@ -716,7 +741,10 @@ public class JavaElementLabels {
 			// post qualification
 			if (getFlag(flags, F_POST_QUALIFIED)) {
 				buf.append(CONCAT_STRING);
-				getTypeLabel(field.getDeclaringType(), T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), buf);
+				if (declaringType!=null)
+					getTypeLabel(declaringType, T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), buf);
+				else
+					getFileLabel(field, T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), buf);
 			}
 
 		} catch (JavaModelException e) {
@@ -780,7 +808,8 @@ public class JavaElementLabels {
 		int sigKind= Signature.getTypeSignatureKind(typeSig);
 		switch (sigKind) {
 			case Signature.BASE_TYPE_SIGNATURE:
-				buf.append(Signature.toString(typeSig));
+				if (getFlag(flags,SHOW_TYPE))
+					buf.append(Signature.toString(typeSig));
 				break;
 			case Signature.ARRAY_TYPE_SIGNATURE:
 				getTypeSignatureLabel(Signature.getElementType(typeSig), flags, buf);
@@ -1014,6 +1043,17 @@ public class JavaElementLabels {
 		}		
 	}
 
+	public static void getFileLabel(IMember member, long flags, StringBuffer buf) {
+		ICompilationUnit compUnit=member.getCompilationUnit();
+		if (compUnit!=null)
+			getCompilationUnitLabel(compUnit, flags, buf);
+		else {
+			IClassFile classFile = member.getClassFile();
+			if (classFile!=null)
+			 getClassFileLabel(classFile, flags, buf);
+		}
+
+	}
 	/**
 	 * Appends the label for a package fragment to a {@link StringBuffer}. Considers the P_* flags.
 	 * 	@param pack The element to render.

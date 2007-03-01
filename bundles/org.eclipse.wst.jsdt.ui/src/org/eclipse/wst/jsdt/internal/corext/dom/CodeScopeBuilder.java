@@ -220,4 +220,14 @@ public class CodeScopeBuilder extends ASTVisitor {
 			((ASTNode)list.get(i)).accept(this);
 		}
 	}
+	public boolean visit(ForInStatement node) {
+		fScopes.add(fScope);
+		fScope= new Scope(fScope, node.getStartPosition(), node.getLength());
+		return true;
+	}
+	
+	public void endVisit(ForInStatement node) {
+		fScope= (Scope)fScopes.remove(fScopes.size() - 1);
+	}
+	
 }

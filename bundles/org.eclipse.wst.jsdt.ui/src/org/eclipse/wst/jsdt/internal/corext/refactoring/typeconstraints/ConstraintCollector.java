@@ -40,7 +40,9 @@ import org.eclipse.wst.jsdt.core.dom.EmptyStatement;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
+import org.eclipse.wst.jsdt.core.dom.FunctionExpression;
 import org.eclipse.wst.jsdt.core.dom.IfStatement;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
@@ -52,12 +54,15 @@ import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
 import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
+import org.eclipse.wst.jsdt.core.dom.ObjectLiteral;
+import org.eclipse.wst.jsdt.core.dom.ObjectLiteralField;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
+import org.eclipse.wst.jsdt.core.dom.RegularExpressionLiteral;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SimpleType;
@@ -79,6 +84,7 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.UndefinedLiteral;
 
 
 public final class ConstraintCollector extends ASTVisitor {
@@ -209,7 +215,7 @@ public final class ConstraintCollector extends ASTVisitor {
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.CharacterLiteral)
 	 */
-	public boolean visit(CharacterLiteral node) {
+	public boolean visit(RegularExpressionLiteral node) {
 		add(fCreator.create(node));
 		return true;
 	}
@@ -301,6 +307,22 @@ public final class ConstraintCollector extends ASTVisitor {
 		add(fCreator.create(node));
 		return true;
 	}
+	public boolean visit(FunctionExpression node) {
+		add(fCreator.create(node));
+		return true;
+	}
+	public boolean visit(ObjectLiteral node) {
+		add(fCreator.create(node));
+		return true;
+	}
+	public boolean visit(ObjectLiteralField node) {
+		add(fCreator.create(node));
+		return true;
+	}
+	public boolean visit(ForInStatement node) {
+		add(fCreator.create(node));
+		return true;
+	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.IfStatement)
@@ -378,6 +400,11 @@ public final class ConstraintCollector extends ASTVisitor {
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.NullLiteral)
 	 */
 	public boolean visit(NullLiteral node) {
+		add(fCreator.create(node));
+		return true;
+	}
+	
+	public boolean visit(UndefinedLiteral node) {
 		add(fCreator.create(node));
 		return true;
 	}

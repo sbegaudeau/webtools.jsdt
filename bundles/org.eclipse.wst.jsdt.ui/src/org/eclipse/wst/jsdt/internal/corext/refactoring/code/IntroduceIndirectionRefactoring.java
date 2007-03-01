@@ -412,8 +412,8 @@ public class IntroduceIndirectionRefactoring extends ScriptableRefactoring {
 			} else {
 				// (2) invoked on an IMethod: Source may not be available
 
-				if (fTargetMethod.getDeclaringType().isAnnotation())
-					return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.IntroduceIndirectionRefactoring_not_available_on_annotation);
+//				if (fTargetMethod.getDeclaringType().isAnnotation())
+//					return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.IntroduceIndirectionRefactoring_not_available_on_annotation);
 
 				if (fTargetMethod.getCompilationUnit() != null) {
 					// source method
@@ -432,8 +432,8 @@ public class IntroduceIndirectionRefactoring extends ScriptableRefactoring {
 			if (fTargetMethod == null || fTargetMethodBinding == null || (!RefactoringAvailabilityTester.isIntroduceIndirectionAvailable(fTargetMethod)))
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.IntroduceIndirectionRefactoring_not_available_on_this_selection);
 
-			if (fTargetMethod.getDeclaringType().isLocal() || fTargetMethod.getDeclaringType().isAnonymous())
-				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.IntroduceIndirectionRefactoring_not_available_for_local_or_anonymous_types);
+//			if (fTargetMethod.getDeclaringType().isLocal() || fTargetMethod.getDeclaringType().isAnonymous())
+//				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.IntroduceIndirectionRefactoring_not_available_for_local_or_anonymous_types);
 
 			if (fTargetMethod.isConstructor())
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.IntroduceIndirectionRefactoring_not_available_for_constructors);
@@ -525,7 +525,7 @@ public class IntroduceIndirectionRefactoring extends ScriptableRefactoring {
 		// The target type and method may have changed - update them
 
 		IType actualTargetType= (IType) fIntermediaryFirstParameterType.getJavaElement();
-		if (!fTargetMethod.getDeclaringType().equals(actualTargetType)) {
+		if (fTargetMethod.getDeclaringType()==null || !fTargetMethod.getDeclaringType().equals(actualTargetType)) {
 			IMethod actualTargetMethod= new MethodOverrideTester(actualTargetType, actualTargetType.newSupertypeHierarchy(null)).findOverriddenMethodInHierarchy(actualTargetType, fTargetMethod);
 			fTargetMethod= actualTargetMethod;
 			fTargetMethodBinding= findMethodBindingInHierarchy(fIntermediaryFirstParameterType, actualTargetMethod);
@@ -572,18 +572,25 @@ public class IntroduceIndirectionRefactoring extends ScriptableRefactoring {
 			if (result.hasError())
 				return result; // binary
 
-			// Need to adjust the overridden methods of the target method.
-			ITypeHierarchy hierarchy= fTargetMethod.getDeclaringType().newTypeHierarchy(null);
-			MethodOverrideTester tester= new MethodOverrideTester(fTargetMethod.getDeclaringType(), hierarchy);
-			IType[] subtypes= hierarchy.getAllSubtypes(fTargetMethod.getDeclaringType());
-			for (int i= 0; i < subtypes.length; i++) {
-				IMethod method= tester.findOverridingMethodInType(subtypes[i], fTargetMethod);
-				if (method != null && method.exists()) {
-					result.merge(adjustVisibility(method, neededVisibility, monitor));
-					if (result.hasError())
-						return result; // binary
+			if (fTargetMethod.getDeclaringType()!=null) {
+				// Need to adjust the overridden methods of the target method.
+				ITypeHierarchy hierarchy = fTargetMethod.getDeclaringType()
+						.newTypeHierarchy(null);
+				MethodOverrideTester tester = new MethodOverrideTester(
+						fTargetMethod.getDeclaringType(), hierarchy);
+				IType[] subtypes = hierarchy.getAllSubtypes(fTargetMethod
+						.getDeclaringType());
+				for (int i = 0; i < subtypes.length; i++) {
+					IMethod method = tester.findOverridingMethodInType(
+							subtypes[i], fTargetMethod);
+					if (method != null && method.exists()) {
+						result.merge(adjustVisibility(method, neededVisibility,
+								monitor));
+						if (result.hasError())
+							return result; // binary
+					}
 				}
-			}
+			}			
 		}
 
 		return result;

@@ -42,6 +42,7 @@ import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Statement;
 import org.eclipse.wst.jsdt.core.dom.ThisExpression;
+import org.eclipse.wst.jsdt.core.dom.UndefinedLiteral;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
@@ -479,7 +480,7 @@ public final class ConvertIterableLoopOperation extends ConvertLoopOperation {
 							} else {
 								return visit(invocation);
 							}
-						} else if (right instanceof NullLiteral)
+						} else if (right instanceof NullLiteral || right instanceof UndefinedLiteral)
 							return visit(left);
 						return true;
 					}

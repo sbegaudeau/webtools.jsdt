@@ -47,6 +47,7 @@ import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
+import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
@@ -877,6 +878,7 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 			case ASTNode.IF_STATEMENT:
 			case ASTNode.WHILE_STATEMENT:
 			case ASTNode.FOR_STATEMENT:
+			case ASTNode.FOR_IN_STATEMENT:
 			case ASTNode.DO_STATEMENT:
 				return true;
 			default:
@@ -964,6 +966,13 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 				if (!(forBody instanceof Block)) {
 					childProperty= ForStatement.BODY_PROPERTY;
 					child= forBody;
+				}
+				break;
+			case ASTNode.FOR_IN_STATEMENT:
+				ASTNode forInBody= ((ForInStatement) statement).getBody();
+				if (!(forInBody instanceof Block)) {
+					childProperty= ForInStatement.BODY_PROPERTY;
+					child= forInBody;
 				}
 				break;
 			case ASTNode.DO_STATEMENT:

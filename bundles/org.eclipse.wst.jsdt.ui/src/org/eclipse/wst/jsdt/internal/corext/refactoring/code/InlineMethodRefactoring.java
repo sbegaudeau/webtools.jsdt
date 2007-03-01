@@ -475,6 +475,10 @@ public class InlineMethodRefactoring extends ScriptableRefactoring {
 			return;
 		}
 		IType type= method.getDeclaringType();
+		if (type==null) {
+			pm.worked(8);
+			return;
+		}
 		ITypeHierarchy hierarchy= type.newTypeHierarchy(new SubProgressMonitor(pm, 6));
 		checkSubTypes(status, method, hierarchy.getAllSubtypes(type), new SubProgressMonitor(pm, 1));
 		checkSuperClasses(status, method, hierarchy.getAllSuperclasses(type), new SubProgressMonitor(pm, 1));

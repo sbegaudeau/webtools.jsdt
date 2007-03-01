@@ -27,6 +27,7 @@ import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
+import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.SwitchCase;
 import org.eclipse.wst.jsdt.core.dom.SwitchStatement;
@@ -148,6 +149,19 @@ public class StatementAnalyzer extends SelectionAnalyzer {
 			} else if (containsExpression && containsUpdaters) {
 				invalidSelection(RefactoringCoreMessages.StatementAnalyzer_for_expression_updater); 
 			} else if (containsUpdaters && contains(selectedNodes, node.getBody())) {
+				invalidSelection(RefactoringCoreMessages.StatementAnalyzer_for_updater_body); 
+			}
+		}
+		super.endVisit(node);
+	}
+	public void endVisit(ForInStatement node) {
+		ASTNode[] selectedNodes= getSelectedNodes();
+		if (doAfterValidation(node, selectedNodes)) {
+			boolean containsVar= contains(selectedNodes, node.getIterationVariable());
+			boolean containsCollection= contains(selectedNodes, node.getCollection());
+			  if (containsVar && containsCollection) {
+				invalidSelection(RefactoringCoreMessages.StatementAnalyzer_for_expression_updater); 
+			} else if (containsCollection && contains(selectedNodes, node.getBody())) {
 				invalidSelection(RefactoringCoreMessages.StatementAnalyzer_for_updater_body); 
 			}
 		}

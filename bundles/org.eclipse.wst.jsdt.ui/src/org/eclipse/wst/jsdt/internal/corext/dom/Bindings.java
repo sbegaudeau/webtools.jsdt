@@ -33,6 +33,7 @@ import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
+import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
@@ -341,6 +342,8 @@ public class Bindings {
 	 * @return the method binding representing the method
 	 */
 	public static IMethodBinding findMethodInHierarchy(ITypeBinding type, String methodName, ITypeBinding[] parameters) {
+		if (type==null)
+			return null;
 		IMethodBinding method= findMethodInType(type, methodName, parameters);
 		if (method != null)
 			return method;
@@ -990,6 +993,8 @@ public class Bindings {
 				return ((AbstractTypeDeclaration) node).resolveBinding();
 			} else if (node instanceof AnonymousClassDeclaration) {
 				return ((AnonymousClassDeclaration) node).resolveBinding();
+			} else if (node instanceof CompilationUnit) {
+				return ((CompilationUnit) node).resolveBinding();
 			}
 			node= node.getParent();
 		}

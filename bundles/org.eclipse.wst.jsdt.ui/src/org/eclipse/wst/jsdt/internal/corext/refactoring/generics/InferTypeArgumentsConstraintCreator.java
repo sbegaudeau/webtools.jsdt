@@ -45,6 +45,7 @@ import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
+import org.eclipse.wst.jsdt.core.dom.RegularExpressionLiteral;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
@@ -348,6 +349,11 @@ public class InferTypeArgumentsConstraintCreator extends HierarchicalASTVisitor 
 		setConstraintVariable(node, cv);
 	}
 	
+	public void endVisit(RegularExpressionLiteral node) {
+		ITypeBinding typeBinding= node.resolveTypeBinding();
+		ImmutableTypeVariable2 cv= fTCModel.makeImmutableTypeVariable(typeBinding, node);
+		setConstraintVariable(node, cv);
+	}
 	public void endVisit(ThisExpression node) {
 		ITypeBinding typeBinding= node.resolveTypeBinding();
 		ImmutableTypeVariable2 cv= fTCModel.makeImmutableTypeVariable(typeBinding, /*no boxing*/null);

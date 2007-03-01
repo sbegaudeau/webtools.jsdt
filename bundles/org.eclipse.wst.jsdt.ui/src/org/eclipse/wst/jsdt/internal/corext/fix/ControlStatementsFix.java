@@ -23,6 +23,7 @@ import org.eclipse.wst.jsdt.core.dom.ChildPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
+import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IfStatement;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
@@ -422,6 +423,11 @@ public class ControlStatementsFix extends AbstractFix {
 		} else if (statement instanceof ForStatement) {
 			if (RemoveBlockOperation.satisfiesQuickAssistPrecondition(statement, ForStatement.BODY_PROPERTY)) {
 				RemoveBlockOperation op= new RemoveBlockOperation(statement, ForStatement.BODY_PROPERTY);
+				return new IFix[] {new ControlStatementsFix(FixMessages.ControlStatementsFix_removeBrackets_proposalDescription, compilationUnit, new IFixRewriteOperation[] {op})};
+			}
+		} else if (statement instanceof ForInStatement) {
+			if (RemoveBlockOperation.satisfiesQuickAssistPrecondition(statement, ForInStatement.BODY_PROPERTY)) {
+				RemoveBlockOperation op= new RemoveBlockOperation(statement, ForInStatement.BODY_PROPERTY);
 				return new IFix[] {new ControlStatementsFix(FixMessages.ControlStatementsFix_removeBrackets_proposalDescription, compilationUnit, new IFixRewriteOperation[] {op})};
 			}
 		} else if (statement instanceof EnhancedForStatement) {

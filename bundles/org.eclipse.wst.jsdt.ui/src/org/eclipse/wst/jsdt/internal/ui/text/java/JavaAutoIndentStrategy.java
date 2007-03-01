@@ -45,6 +45,7 @@ import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.Expression;
+import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IfStatement;
 import org.eclipse.wst.jsdt.core.dom.Statement;
@@ -567,7 +568,18 @@ public class JavaAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 					return body != null;
 			}
 			break;
+			case ASTNode.FOR_IN_STATEMENT:
+			{
+				Expression collection= ((ForInStatement) node).getCollection() ;
+				IRegion collectionRegion= createRegion(collection, info.delta);
+				Statement body= ((ForInStatement) node).getBody();
+				IRegion bodyRegion= createRegion(body, info.delta);
 
+				// between expression and body statement
+				if (collectionRegion.getOffset() + collectionRegion.getLength() <= offset && offset + length <= bodyRegion.getOffset())
+					return body != null;
+			}
+			break;
 			case ASTNode.DO_STATEMENT:
 			{
 				DoStatement doStatement= (DoStatement) node;

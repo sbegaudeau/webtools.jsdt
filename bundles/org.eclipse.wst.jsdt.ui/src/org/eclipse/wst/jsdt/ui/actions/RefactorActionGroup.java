@@ -141,14 +141,14 @@ public class RefactorActionGroup extends ActionGroup {
  	private SelectionDispatchAction fMoveAction;
 	private SelectionDispatchAction fRenameAction;
 	private SelectionDispatchAction fModifyParametersAction;
-	private SelectionDispatchAction fConvertAnonymousToNestedAction;
-	private SelectionDispatchAction fConvertNestedToTopAction;
+//	private SelectionDispatchAction fConvertAnonymousToNestedAction;
+//	private SelectionDispatchAction fConvertNestedToTopAction;
 	
 	private SelectionDispatchAction fPullUpAction;
 	private SelectionDispatchAction fPushDownAction;
-	private SelectionDispatchAction fExtractInterfaceAction;
+//	private SelectionDispatchAction fExtractInterfaceAction;
 	private SelectionDispatchAction fExtractSupertypeAction;
-	private SelectionDispatchAction fChangeTypeAction;
+//	private SelectionDispatchAction fChangeTypeAction;
 	private SelectionDispatchAction fUseSupertypeAction;
 	private SelectionDispatchAction fInferTypeArgumentsAction;
 	
@@ -247,13 +247,13 @@ public class RefactorActionGroup extends ActionGroup {
 			initAction(fModifyParametersAction, selection, IJavaEditorActionDefinitionIds.MODIFY_METHOD_PARAMETERS);
 			editor.setAction("ModifyParameters", fModifyParametersAction); //$NON-NLS-1$
 	
-			fConvertAnonymousToNestedAction= new ConvertAnonymousToNestedAction(editor);
-			initUpdatingAction(fConvertAnonymousToNestedAction, provider, selection, IJavaEditorActionDefinitionIds.CONVERT_ANONYMOUS_TO_NESTED);
-			editor.setAction("ConvertAnonymousToNested", fConvertAnonymousToNestedAction); //$NON-NLS-1$
-	
-			fConvertNestedToTopAction= new ConvertNestedToTopAction(editor);
-			initAction(fConvertNestedToTopAction, selection, IJavaEditorActionDefinitionIds.MOVE_INNER_TO_TOP);
-			editor.setAction("MoveInnerToTop", fConvertNestedToTopAction); //$NON-NLS-1$
+//			fConvertAnonymousToNestedAction= new ConvertAnonymousToNestedAction(editor);
+//			initUpdatingAction(fConvertAnonymousToNestedAction, provider, selection, IJavaEditorActionDefinitionIds.CONVERT_ANONYMOUS_TO_NESTED);
+//			editor.setAction("ConvertAnonymousToNested", fConvertAnonymousToNestedAction); //$NON-NLS-1$
+//	
+//			fConvertNestedToTopAction= new ConvertNestedToTopAction(editor);
+//			initAction(fConvertNestedToTopAction, selection, IJavaEditorActionDefinitionIds.MOVE_INNER_TO_TOP);
+//			editor.setAction("MoveInnerToTop", fConvertNestedToTopAction); //$NON-NLS-1$
 
 			fPullUpAction= new PullUpAction(editor);
 			initAction(fPullUpAction, selection, IJavaEditorActionDefinitionIds.PULL_UP);
@@ -267,13 +267,13 @@ public class RefactorActionGroup extends ActionGroup {
 			initAction(fExtractSupertypeAction, selection, ExtractSuperClassAction.EXTRACT_SUPERTYPE);
 			editor.setAction("ExtractSupertype", fExtractSupertypeAction); //$NON-NLS-1$
 	
-			fExtractInterfaceAction= new ExtractInterfaceAction(editor);
-			initAction(fExtractInterfaceAction, selection, IJavaEditorActionDefinitionIds.EXTRACT_INTERFACE);
-			editor.setAction("ExtractInterface", fExtractInterfaceAction); //$NON-NLS-1$
+//			fExtractInterfaceAction= new ExtractInterfaceAction(editor);
+//			initAction(fExtractInterfaceAction, selection, IJavaEditorActionDefinitionIds.EXTRACT_INTERFACE);
+//			editor.setAction("ExtractInterface", fExtractInterfaceAction); //$NON-NLS-1$
 	
-			fChangeTypeAction= new ChangeTypeAction(editor);
-			initUpdatingAction(fChangeTypeAction, provider, selection, IJavaEditorActionDefinitionIds.CHANGE_TYPE);
-			editor.setAction("ChangeType", fChangeTypeAction); //$NON-NLS-1$
+//			fChangeTypeAction= new ChangeTypeAction(editor);
+//			initUpdatingAction(fChangeTypeAction, provider, selection, IJavaEditorActionDefinitionIds.CHANGE_TYPE);
+//			editor.setAction("ChangeType", fChangeTypeAction); //$NON-NLS-1$
 	
 			fInferTypeArgumentsAction= new InferTypeArgumentsAction(editor);
 			initAction(fInferTypeArgumentsAction, selection, IJavaEditorActionDefinitionIds.INFER_TYPE_ARGUMENTS_ACTION);
@@ -356,14 +356,14 @@ public class RefactorActionGroup extends ActionGroup {
 			fExtractSupertypeAction= new ExtractSuperClassAction(fSite);
 			initUpdatingAction(fExtractSupertypeAction, provider, selection, ExtractSuperClassAction.EXTRACT_SUPERTYPE);
 	
-			fExtractInterfaceAction= new ExtractInterfaceAction(fSite);
-			initUpdatingAction(fExtractInterfaceAction, provider, selection, IJavaEditorActionDefinitionIds.EXTRACT_INTERFACE);
-	
-			fChangeTypeAction= new ChangeTypeAction(fSite);
-			initUpdatingAction(fChangeTypeAction, provider, selection, IJavaEditorActionDefinitionIds.CHANGE_TYPE);
-	
-			fConvertNestedToTopAction= new ConvertNestedToTopAction(fSite);
-			initUpdatingAction(fConvertNestedToTopAction, provider, selection, IJavaEditorActionDefinitionIds.MOVE_INNER_TO_TOP);
+//			fExtractInterfaceAction= new ExtractInterfaceAction(fSite);
+//			initUpdatingAction(fExtractInterfaceAction, provider, selection, IJavaEditorActionDefinitionIds.EXTRACT_INTERFACE);
+//	
+//			fChangeTypeAction= new ChangeTypeAction(fSite);
+//			initUpdatingAction(fChangeTypeAction, provider, selection, IJavaEditorActionDefinitionIds.CHANGE_TYPE);
+//	
+//			fConvertNestedToTopAction= new ConvertNestedToTopAction(fSite);
+//			initUpdatingAction(fConvertNestedToTopAction, provider, selection, IJavaEditorActionDefinitionIds.MOVE_INNER_TO_TOP);
 	
 			fInferTypeArgumentsAction= new InferTypeArgumentsAction(fSite);
 			initUpdatingAction(fInferTypeArgumentsAction, provider, selection, IJavaEditorActionDefinitionIds.INFER_TYPE_ARGUMENTS_ACTION);
@@ -371,8 +371,8 @@ public class RefactorActionGroup extends ActionGroup {
 			fIntroduceFactoryAction= new IntroduceFactoryAction(fSite);
 			initUpdatingAction(fIntroduceFactoryAction, provider, selection, IJavaEditorActionDefinitionIds.INTRODUCE_FACTORY);
 	
-			fConvertAnonymousToNestedAction= new ConvertAnonymousToNestedAction(fSite);
-			initUpdatingAction(fConvertAnonymousToNestedAction, provider, selection, IJavaEditorActionDefinitionIds.CONVERT_ANONYMOUS_TO_NESTED);
+//			fConvertAnonymousToNestedAction= new ConvertAnonymousToNestedAction(fSite);
+//			initUpdatingAction(fConvertAnonymousToNestedAction, provider, selection, IJavaEditorActionDefinitionIds.CONVERT_ANONYMOUS_TO_NESTED);
 		}		
 		fInlineAction= new InlineAction(fSite);
 		initUpdatingAction(fInlineAction, provider, selection, IJavaEditorActionDefinitionIds.INLINE);
@@ -435,13 +435,13 @@ public class RefactorActionGroup extends ActionGroup {
 			actionBars.setGlobalActionHandler(JdtActionConstants.INTRODUCE_FACTORY, fIntroduceFactoryAction);
 			actionBars.setGlobalActionHandler(JdtActionConstants.EXTRACT_METHOD, fExtractMethodAction);
 			//	actionBars.setGlobalActionHandler(JdtActionConstants.REPLACE_INVOCATIONS, fReplaceInvocationsAction);
-			actionBars.setGlobalActionHandler(JdtActionConstants.EXTRACT_INTERFACE, fExtractInterfaceAction);
+//			actionBars.setGlobalActionHandler(JdtActionConstants.EXTRACT_INTERFACE, fExtractInterfaceAction);
 			actionBars.setGlobalActionHandler(ExtractSuperClassAction.EXTRACT_SUPERTYPES, fExtractSupertypeAction);
-			actionBars.setGlobalActionHandler(JdtActionConstants.CHANGE_TYPE, fChangeTypeAction);
-			actionBars.setGlobalActionHandler(JdtActionConstants.CONVERT_NESTED_TO_TOP, fConvertNestedToTopAction);
+//			actionBars.setGlobalActionHandler(JdtActionConstants.CHANGE_TYPE, fChangeTypeAction);
+//			actionBars.setGlobalActionHandler(JdtActionConstants.CONVERT_NESTED_TO_TOP, fConvertNestedToTopAction);
 			actionBars.setGlobalActionHandler(JdtActionConstants.INFER_TYPE_ARGUMENTS, fInferTypeArgumentsAction);
 			actionBars.setGlobalActionHandler(JdtActionConstants.CONVERT_LOCAL_TO_FIELD, fConvertLocalToFieldAction);
-			actionBars.setGlobalActionHandler(JdtActionConstants.CONVERT_ANONYMOUS_TO_NESTED, fConvertAnonymousToNestedAction);
+//			actionBars.setGlobalActionHandler(JdtActionConstants.CONVERT_ANONYMOUS_TO_NESTED, fConvertAnonymousToNestedAction);
 		}
 		actionBars.setGlobalActionHandler(JdtActionConstants.INLINE, fInlineAction);
 		actionBars.setGlobalActionHandler(JdtActionConstants.USE_SUPERTYPE, fUseSupertypeAction);
@@ -487,13 +487,13 @@ public class RefactorActionGroup extends ActionGroup {
 			disposeAction(fIntroduceFactoryAction, provider);
 			disposeAction(fExtractMethodAction, provider);
 			//	disposeAction(fReplaceInvocationsAction, provider);
-			disposeAction(fExtractInterfaceAction, provider);
+//			disposeAction(fExtractInterfaceAction, provider);
 			disposeAction(fExtractSupertypeAction, provider);
-			disposeAction(fChangeTypeAction, provider);
-			disposeAction(fConvertNestedToTopAction, provider);
+//			disposeAction(fChangeTypeAction, provider);
+//			disposeAction(fConvertNestedToTopAction, provider);
 			disposeAction(fInferTypeArgumentsAction, provider);
 			disposeAction(fConvertLocalToFieldAction, provider);
-			disposeAction(fConvertAnonymousToNestedAction, provider);
+//			disposeAction(fConvertAnonymousToNestedAction, provider);
 		}
 		disposeAction(fIntroduceIndirectionAction, provider);
 		disposeAction(fInlineAction, provider);
@@ -551,11 +551,11 @@ public class RefactorActionGroup extends ActionGroup {
 		added+= addAction(refactorSubmenu, fExtractConstantAction);
 		added+= addAction(refactorSubmenu, fInlineAction);
 		refactorSubmenu.add(new Separator(GROUP_REORG2));
-		added+= addAction(refactorSubmenu, fConvertAnonymousToNestedAction);
-		added+= addAction(refactorSubmenu, fConvertNestedToTopAction);
+//		added+= addAction(refactorSubmenu, fConvertAnonymousToNestedAction);
+//		added+= addAction(refactorSubmenu, fConvertNestedToTopAction);
 		added+= addAction(refactorSubmenu, fConvertLocalToFieldAction);
 		refactorSubmenu.add(new Separator(GROUP_TYPE));
-		added+= addAction(refactorSubmenu, fExtractInterfaceAction);
+//		added+= addAction(refactorSubmenu, fExtractInterfaceAction);
 		added+= addAction(refactorSubmenu, fExtractSupertypeAction);
 		added+= addAction(refactorSubmenu, fUseSupertypeAction);
 		added+= addAction(refactorSubmenu, fPullUpAction);
@@ -567,7 +567,7 @@ public class RefactorActionGroup extends ActionGroup {
 		added+= addAction(refactorSubmenu, fSelfEncapsulateField);
 //		added+= addAction(refactorSubmenu, fReplaceInvocationsAction);
 		refactorSubmenu.add(new Separator(GROUP_TYPE2));
-		added+= addAction(refactorSubmenu, fChangeTypeAction);
+//		added+= addAction(refactorSubmenu, fChangeTypeAction);
 		added+= addAction(refactorSubmenu, fInferTypeArgumentsAction);
 		return added;
 	}

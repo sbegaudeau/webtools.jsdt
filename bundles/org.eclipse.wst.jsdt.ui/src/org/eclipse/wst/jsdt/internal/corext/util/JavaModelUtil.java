@@ -494,7 +494,8 @@ public final class JavaModelUtil {
 	 * @return <code>true</code> iff the type is an interface or an annotation
 	 */
 	public static boolean isInterfaceOrAnnotation(IType type) throws JavaModelException {
-		return type.isInterface();
+//		return type.isInterface();
+		return false;
 	}
 		
 	/**
@@ -571,7 +572,7 @@ public final class JavaModelUtil {
 		}
 		try{
 			//use the workaround only if needed	
-			if (! method.getElementName().equals(method.getDeclaringType().getElementName()))
+			if (method.getDeclaringType()==null || ! method.getElementName().equals(method.getDeclaringType().getElementName()))
 				return (IMethod) method.getPrimaryElement();
 			
 			IType originalType = (IType) toOriginal(method.getDeclaringType());

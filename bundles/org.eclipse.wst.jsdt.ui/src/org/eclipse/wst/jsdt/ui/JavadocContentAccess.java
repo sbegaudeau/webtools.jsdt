@@ -145,6 +145,8 @@ public class JavadocContentAccess {
 
 	private static Reader findDocInHierarchy(IMethod method) throws JavaModelException {
 		IType type= method.getDeclaringType();
+		if (type==null)
+			return null;
 		ITypeHierarchy hierarchy= type.newSupertypeHierarchy(null);
 		
 		MethodOverrideTester tester= new MethodOverrideTester(type, hierarchy);

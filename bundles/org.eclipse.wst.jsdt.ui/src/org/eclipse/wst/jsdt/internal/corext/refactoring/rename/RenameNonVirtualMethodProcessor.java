@@ -24,16 +24,6 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatusContext;
 import org.eclipse.ltk.core.refactoring.TextChange;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IMethod;
-import org.eclipse.wst.jsdt.core.ISourceRange;
-import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.MethodDeclarationMatch;
-import org.eclipse.wst.jsdt.core.search.SearchEngine;
-import org.eclipse.wst.jsdt.core.search.SearchMatch;
-import org.eclipse.wst.jsdt.core.search.SearchPattern;
 
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
@@ -49,6 +39,16 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.TextChangeManager;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.SearchUtils;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.ISourceRange;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
+import org.eclipse.wst.jsdt.core.search.MethodDeclarationMatch;
+import org.eclipse.wst.jsdt.core.search.SearchEngine;
+import org.eclipse.wst.jsdt.core.search.SearchMatch;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
 
 public class RenameNonVirtualMethodProcessor extends RenameMethodProcessor {
 
@@ -91,10 +91,12 @@ public class RenameNonVirtualMethodProcessor extends RenameMethodProcessor {
 			final IMethod method= getMethod();
 			final IType declaring= method.getDeclaringType();
 			final String name= getNewElementName();
-			IMethod[] hierarchyMethods= hierarchyDeclaresMethodName(
+			if (declaring!=null)
+			{
+			  IMethod[] hierarchyMethods= hierarchyDeclaresMethodName(
 				new SubProgressMonitor(pm, 1), declaring.newTypeHierarchy(new SubProgressMonitor(pm, 1)), method, name);
 			
-			for (int i= 0; i < hierarchyMethods.length; i++) {
+			  for (int i= 0; i < hierarchyMethods.length; i++) {
 				IMethod hierarchyMethod= hierarchyMethods[i];
 				RefactoringStatusContext context= JavaStatusContext.create(hierarchyMethod);
 				if (Checks.compareParamTypes(method.getParameterTypes(), hierarchyMethod.getParameterTypes())) {
@@ -110,6 +112,7 @@ public class RenameNonVirtualMethodProcessor extends RenameMethodProcessor {
 							declaring), name});
 					result.addWarning(message, context);				
 				}
+			}
 			}
 			return result;
 		} finally{

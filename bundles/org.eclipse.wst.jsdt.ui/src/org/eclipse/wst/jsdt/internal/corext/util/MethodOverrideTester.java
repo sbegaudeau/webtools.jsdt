@@ -122,6 +122,8 @@ public class MethodOverrideTester {
 		}
 		
 		IType type= overriding.getDeclaringType();
+		if (type==null)
+			return null;
 		IType superClass= fHierarchy.getSuperclass(type);
 		if (superClass != null) {
 			IMethod res= findOverriddenMethodInHierarchy(superClass, overriding);

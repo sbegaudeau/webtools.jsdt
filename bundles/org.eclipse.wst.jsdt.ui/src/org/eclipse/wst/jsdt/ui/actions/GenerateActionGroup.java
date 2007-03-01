@@ -123,12 +123,12 @@ public class GenerateActionGroup extends ActionGroup {
 	private String fGroupName= IContextMenuConstants.GROUP_REORGANIZE;
 	private List fRegisteredSelectionListeners;
 	
-	private AddImportOnSelectionAction fAddImport;
+//	private AddImportOnSelectionAction fAddImport;
 	private OverrideMethodsAction fOverrideMethods;
-	private GenerateHashCodeEqualsAction fHashCodeEquals;
+//	private GenerateHashCodeEqualsAction fHashCodeEquals;
 	private AddGetterSetterAction fAddGetterSetter;
 	private AddDelegateMethodsAction fAddDelegateMethods;
-	private AddUnimplementedConstructorsAction fAddUnimplementedConstructors;
+//	private AddUnimplementedConstructorsAction fAddUnimplementedConstructors;
 	private GenerateNewConstructorUsingFieldsAction fGenerateConstructorUsingFields;
 	private AddJavaDocStubAction fAddJavaDocStub;
 	private AddBookmarkAction fAddBookmark;
@@ -137,10 +137,10 @@ public class GenerateActionGroup extends ActionGroup {
 	private CleanUpAction fCleanUp;	
 	private FindBrokenNLSKeysAction fFindNLSProblems;
 	
-	private OrganizeImportsAction fOrganizeImports;
+//	private OrganizeImportsAction fOrganizeImports;
 	private SortMembersAction fSortMembers;
 	private FormatAllAction fFormatAll;
-	private CopyQualifiedNameAction fCopyQualifiedNameAction;
+//	private CopyQualifiedNameAction fCopyQualifiedNameAction;
 	
 	private static final String QUICK_MENU_ID= "org.eclipse.wst.jsdt.ui.edit.text.java.source.quickMenu"; //$NON-NLS-1$
 	
@@ -167,23 +167,23 @@ public class GenerateActionGroup extends ActionGroup {
 		fEditor= editor;
 		fGroupName= groupName;
 				
-		fAddImport= new AddImportOnSelectionAction(editor);
-		fAddImport.setActionDefinitionId(IJavaEditorActionDefinitionIds.ADD_IMPORT);
-		fAddImport.update();
-		editor.setAction("AddImport", fAddImport); //$NON-NLS-1$
-		
-		fOrganizeImports= new OrganizeImportsAction(editor);
-		fOrganizeImports.setActionDefinitionId(IJavaEditorActionDefinitionIds.ORGANIZE_IMPORTS);
-		editor.setAction("OrganizeImports", fOrganizeImports); //$NON-NLS-1$
+//		fAddImport= new AddImportOnSelectionAction(editor);
+//		fAddImport.setActionDefinitionId(IJavaEditorActionDefinitionIds.ADD_IMPORT);
+//		fAddImport.update();
+//		editor.setAction("AddImport", fAddImport); //$NON-NLS-1$
+//		
+//		fOrganizeImports= new OrganizeImportsAction(editor);
+//		fOrganizeImports.setActionDefinitionId(IJavaEditorActionDefinitionIds.ORGANIZE_IMPORTS);
+//		editor.setAction("OrganizeImports", fOrganizeImports); //$NON-NLS-1$
 
 		fSortMembers= new SortMembersAction(editor);
 		fSortMembers.setActionDefinitionId(IJavaEditorActionDefinitionIds.SORT_MEMBERS);
 		editor.setAction("SortMembers", fSortMembers); //$NON-NLS-1$
 		
-		IAction pastAction= editor.getAction(ITextEditorActionConstants.PASTE);//IWorkbenchActionDefinitionIds.PASTE);
-		fCopyQualifiedNameAction= new CopyQualifiedNameAction(editor, null, pastAction);
-		fCopyQualifiedNameAction.setActionDefinitionId(CopyQualifiedNameAction.JAVA_EDITOR_ACTION_DEFINITIONS_ID);
-		editor.setAction("CopyQualifiedName", fCopyQualifiedNameAction); //$NON-NLS-1$
+//		IAction pastAction= editor.getAction(ITextEditorActionConstants.PASTE);//IWorkbenchActionDefinitionIds.PASTE);
+//		fCopyQualifiedNameAction= new CopyQualifiedNameAction(editor, null, pastAction);
+//		fCopyQualifiedNameAction.setActionDefinitionId(CopyQualifiedNameAction.JAVA_EDITOR_ACTION_DEFINITIONS_ID);
+//		editor.setAction("CopyQualifiedName", fCopyQualifiedNameAction); //$NON-NLS-1$
 
 		fOverrideMethods= new OverrideMethodsAction(editor);
 		fOverrideMethods.setActionDefinitionId(IJavaEditorActionDefinitionIds.OVERRIDE_METHODS);
@@ -197,17 +197,17 @@ public class GenerateActionGroup extends ActionGroup {
 		fAddDelegateMethods.setActionDefinitionId(IJavaEditorActionDefinitionIds.CREATE_DELEGATE_METHODS);
 		editor.setAction("AddDelegateMethods", fAddDelegateMethods); //$NON-NLS-1$
 			
-		fAddUnimplementedConstructors= new AddUnimplementedConstructorsAction(editor);
-		fAddUnimplementedConstructors.setActionDefinitionId(IJavaEditorActionDefinitionIds.ADD_UNIMPLEMENTED_CONTRUCTORS);
-		editor.setAction("AddUnimplementedConstructors", fAddUnimplementedConstructors); //$NON-NLS-1$		
+//		fAddUnimplementedConstructors= new AddUnimplementedConstructorsAction(editor);
+//		fAddUnimplementedConstructors.setActionDefinitionId(IJavaEditorActionDefinitionIds.ADD_UNIMPLEMENTED_CONTRUCTORS);
+//		editor.setAction("AddUnimplementedConstructors", fAddUnimplementedConstructors); //$NON-NLS-1$		
 
 		fGenerateConstructorUsingFields= new GenerateNewConstructorUsingFieldsAction(editor);
 		fGenerateConstructorUsingFields.setActionDefinitionId(IJavaEditorActionDefinitionIds.GENERATE_CONSTRUCTOR_USING_FIELDS);
 		editor.setAction("GenerateConstructorUsingFields", fGenerateConstructorUsingFields); //$NON-NLS-1$		
 
-		fHashCodeEquals= new GenerateHashCodeEqualsAction(editor);
-		fHashCodeEquals.setActionDefinitionId(IJavaEditorActionDefinitionIds.GENERATE_HASHCODE_EQUALS);
-		editor.setAction("GenerateHashCodeEquals", fHashCodeEquals); //$NON-NLS-1$
+//		fHashCodeEquals= new GenerateHashCodeEqualsAction(editor);
+//		fHashCodeEquals.setActionDefinitionId(IJavaEditorActionDefinitionIds.GENERATE_HASHCODE_EQUALS);
+//		editor.setAction("GenerateHashCodeEquals", fHashCodeEquals); //$NON-NLS-1$
 
 		fAddJavaDocStub= new AddJavaDocStubAction(editor);
 		fAddJavaDocStub.setActionDefinitionId(IJavaEditorActionDefinitionIds.ADD_JAVADOC_COMMENT);
@@ -260,14 +260,14 @@ public class GenerateActionGroup extends ActionGroup {
 		fAddDelegateMethods= new AddDelegateMethodsAction(site);
 		fAddDelegateMethods.setActionDefinitionId(IJavaEditorActionDefinitionIds.CREATE_DELEGATE_METHODS);
 		
-		fAddUnimplementedConstructors= new AddUnimplementedConstructorsAction(site);
-		fAddUnimplementedConstructors.setActionDefinitionId(IJavaEditorActionDefinitionIds.ADD_UNIMPLEMENTED_CONTRUCTORS);
+//		fAddUnimplementedConstructors= new AddUnimplementedConstructorsAction(site);
+//		fAddUnimplementedConstructors.setActionDefinitionId(IJavaEditorActionDefinitionIds.ADD_UNIMPLEMENTED_CONTRUCTORS);
 		
 		fGenerateConstructorUsingFields= new GenerateNewConstructorUsingFieldsAction(site);
 		fGenerateConstructorUsingFields.setActionDefinitionId(IJavaEditorActionDefinitionIds.GENERATE_CONSTRUCTOR_USING_FIELDS);
 
-		fHashCodeEquals= new GenerateHashCodeEqualsAction(site);
-		fHashCodeEquals.setActionDefinitionId(IJavaEditorActionDefinitionIds.GENERATE_HASHCODE_EQUALS);
+//		fHashCodeEquals= new GenerateHashCodeEqualsAction(site);
+//		fHashCodeEquals.setActionDefinitionId(IJavaEditorActionDefinitionIds.GENERATE_HASHCODE_EQUALS);
 
 		fAddJavaDocStub= new AddJavaDocStubAction(site);
 		fAddJavaDocStub.setActionDefinitionId(IJavaEditorActionDefinitionIds.ADD_JAVADOC_COMMENT);
@@ -286,8 +286,8 @@ public class GenerateActionGroup extends ActionGroup {
 		fFindNLSProblems= new FindBrokenNLSKeysAction(site);
 		fFindNLSProblems.setActionDefinitionId(FindBrokenNLSKeysAction.FIND_BROKEN_NLS_KEYS_ACTION_ID);
 		
-		fOrganizeImports= new OrganizeImportsAction(site);
-		fOrganizeImports.setActionDefinitionId(IJavaEditorActionDefinitionIds.ORGANIZE_IMPORTS);
+//		fOrganizeImports= new OrganizeImportsAction(site);
+//		fOrganizeImports.setActionDefinitionId(IJavaEditorActionDefinitionIds.ORGANIZE_IMPORTS);
 		
 		fSortMembers= new SortMembersAction(site);
 		fSortMembers.setActionDefinitionId(IJavaEditorActionDefinitionIds.SORT_MEMBERS);
@@ -302,15 +302,15 @@ public class GenerateActionGroup extends ActionGroup {
 		fOverrideMethods.update(selection);
 		fAddGetterSetter.update(selection);
 		fAddDelegateMethods.update(selection);
-		fAddUnimplementedConstructors.update(selection);	
+//		fAddUnimplementedConstructors.update(selection);	
 		fGenerateConstructorUsingFields.update(selection);
-		fHashCodeEquals.update(selection);
+//		fHashCodeEquals.update(selection);
 		fAddJavaDocStub.update(selection);
 		fExternalizeStrings.update(selection);
 		fFindNLSProblems.update(selection);
 		fCleanUp.update(selection);
 		fAddTaskAction.update(selection);
-		fOrganizeImports.update(selection);
+//		fOrganizeImports.update(selection);
 		fSortMembers.update(selection);
 		fFormatAll.update(selection);
 		if (selection instanceof IStructuredSelection) {
@@ -323,14 +323,14 @@ public class GenerateActionGroup extends ActionGroup {
 		registerSelectionListener(provider, fOverrideMethods);
 		registerSelectionListener(provider, fAddGetterSetter);
 		registerSelectionListener(provider, fAddDelegateMethods);
-		registerSelectionListener(provider, fAddUnimplementedConstructors);
+//		registerSelectionListener(provider, fAddUnimplementedConstructors);
 		registerSelectionListener(provider, fGenerateConstructorUsingFields);
-		registerSelectionListener(provider, fHashCodeEquals);
+//		registerSelectionListener(provider, fHashCodeEquals);
 		registerSelectionListener(provider, fAddJavaDocStub);
 		registerSelectionListener(provider, fAddBookmark);
 		registerSelectionListener(provider, fExternalizeStrings);
 		registerSelectionListener(provider, fFindNLSProblems);
-		registerSelectionListener(provider, fOrganizeImports);
+//		registerSelectionListener(provider, fOrganizeImports);
 		registerSelectionListener(provider, fFormatAll);
 		registerSelectionListener(provider, fSortMembers);
 		registerSelectionListener(provider, fAddTaskAction);
@@ -413,17 +413,17 @@ public class GenerateActionGroup extends ActionGroup {
 		added+= addEditorAction(source, "Indent"); //$NON-NLS-1$
 		added+= addEditorAction(source, "Format"); //$NON-NLS-1$
 		source.add(new Separator(GROUP_IMPORT));
-		added+= addAction(source, fAddImport);
-		added+= addAction(source, fOrganizeImports);
+//		added+= addAction(source, fAddImport);
+//		added+= addAction(source, fOrganizeImports);
 		added+= addAction(source, fSortMembers);
 		added+= addAction(source, fCleanUp);
 		source.add(new Separator(GROUP_GENERATE));
 		added+= addAction(source, fOverrideMethods);
 		added+= addAction(source, fAddGetterSetter);
 		added+= addAction(source, fAddDelegateMethods);
-		added+= addAction(source, fHashCodeEquals);
+//		added+= addAction(source, fHashCodeEquals);
 		added+= addAction(source, fGenerateConstructorUsingFields);
-		added+= addAction(source, fAddUnimplementedConstructors);
+//		added+= addAction(source, fAddUnimplementedConstructors);
 		source.add(new Separator(GROUP_CODE));
 		source.add(new Separator(GROUP_EXTERNALIZE));
 		added+= addAction(source, fExternalizeStrings);
@@ -437,17 +437,17 @@ public class GenerateActionGroup extends ActionGroup {
 		source.add(new Separator(GROUP_EDIT));
 		added+= addAction(source, fFormatAll);
 		source.add(new Separator(GROUP_IMPORT));
-		added+= addAction(source, fAddImport);
-		added+= addAction(source, fOrganizeImports);
+//		added+= addAction(source, fAddImport);
+//		added+= addAction(source, fOrganizeImports);
 		added+= addAction(source, fSortMembers);
 		added+= addAction(source, fCleanUp);
 		source.add(new Separator(GROUP_GENERATE));
 		added+= addAction(source, fOverrideMethods);
 		added+= addAction(source, fAddGetterSetter);
 		added+= addAction(source, fAddDelegateMethods);
-		added+= addAction(source, fHashCodeEquals);
+//		added+= addAction(source, fHashCodeEquals);
 		added+= addAction(source, fGenerateConstructorUsingFields);
-		added+= addAction(source, fAddUnimplementedConstructors);
+//		added+= addAction(source, fAddUnimplementedConstructors);
 		source.add(new Separator(GROUP_CODE));
 		source.add(new Separator(GROUP_EXTERNALIZE));
 		added+= addAction(source, fExternalizeStrings);
@@ -475,18 +475,18 @@ public class GenerateActionGroup extends ActionGroup {
 	}
 	
 	private void setGlobalActionHandlers(IActionBars actionBar) {
-		actionBar.setGlobalActionHandler(JdtActionConstants.ADD_IMPORT, fAddImport);
+//		actionBar.setGlobalActionHandler(JdtActionConstants.ADD_IMPORT, fAddImport);
 		actionBar.setGlobalActionHandler(JdtActionConstants.OVERRIDE_METHODS, fOverrideMethods);
 		actionBar.setGlobalActionHandler(JdtActionConstants.GENERATE_GETTER_SETTER, fAddGetterSetter);
 		actionBar.setGlobalActionHandler(JdtActionConstants.GENERATE_DELEGATE_METHODS, fAddDelegateMethods);
-		actionBar.setGlobalActionHandler(JdtActionConstants.ADD_CONSTRUCTOR_FROM_SUPERCLASS, fAddUnimplementedConstructors);		
+//		actionBar.setGlobalActionHandler(JdtActionConstants.ADD_CONSTRUCTOR_FROM_SUPERCLASS, fAddUnimplementedConstructors);		
 		actionBar.setGlobalActionHandler(JdtActionConstants.GENERATE_CONSTRUCTOR_USING_FIELDS, fGenerateConstructorUsingFields);
-		actionBar.setGlobalActionHandler(JdtActionConstants.GENERATE_HASHCODE_EQUALS, fHashCodeEquals);
+//		actionBar.setGlobalActionHandler(JdtActionConstants.GENERATE_HASHCODE_EQUALS, fHashCodeEquals);
 		actionBar.setGlobalActionHandler(JdtActionConstants.ADD_JAVA_DOC_COMMENT, fAddJavaDocStub);
 		actionBar.setGlobalActionHandler(JdtActionConstants.EXTERNALIZE_STRINGS, fExternalizeStrings);
 		actionBar.setGlobalActionHandler(JdtActionConstants.CLEAN_UP, fCleanUp);
 		actionBar.setGlobalActionHandler(FindBrokenNLSKeysAction.ACTION_HANDLER_ID, fFindNLSProblems);
-		actionBar.setGlobalActionHandler(JdtActionConstants.ORGANIZE_IMPORTS, fOrganizeImports);
+//		actionBar.setGlobalActionHandler(JdtActionConstants.ORGANIZE_IMPORTS, fOrganizeImports);
 		actionBar.setGlobalActionHandler(JdtActionConstants.SORT_MEMBERS, fSortMembers);
 		if (!isEditorOwner()) {
 			// editor provides its own implementation of these actions.
@@ -494,7 +494,7 @@ public class GenerateActionGroup extends ActionGroup {
 			actionBar.setGlobalActionHandler(IDEActionFactory.ADD_TASK.getId(), fAddTaskAction);
 			actionBar.setGlobalActionHandler(JdtActionConstants.FORMAT, fFormatAll);
 		} else {
-			actionBar.setGlobalActionHandler(CopyQualifiedNameAction.ACTION_HANDLER_ID, fCopyQualifiedNameAction);
+//			actionBar.setGlobalActionHandler(CopyQualifiedNameAction.ACTION_HANDLER_ID, fCopyQualifiedNameAction);
 		}
 	}
 	

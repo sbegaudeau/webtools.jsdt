@@ -1408,10 +1408,10 @@ public final class MoveInstanceMethodProcessor extends MoveProcessor implements 
 			if (fMethod.isConstructor())
 				status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.MoveInstanceMethodProcessor_no_constructors, JavaStatusContext.create(fMethod)));
 			monitor.worked(1);
-			if (fMethod.getDeclaringType().isAnnotation())
-				status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.MoveInstanceMethodProcessor_no_annotation, JavaStatusContext.create(fMethod)));
-			else if (fMethod.getDeclaringType().isInterface())
-				status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.MoveInstanceMethodProcessor_no_interface, JavaStatusContext.create(fMethod)));
+//			if (fMethod.getDeclaringType().isAnnotation())
+//				status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.MoveInstanceMethodProcessor_no_annotation, JavaStatusContext.create(fMethod)));
+//			else if (fMethod.getDeclaringType().isInterface())
+//				status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.MoveInstanceMethodProcessor_no_interface, JavaStatusContext.create(fMethod)));
 			monitor.worked(1);
 		} finally {
 			monitor.done();
@@ -3052,7 +3052,8 @@ public final class MoveInstanceMethodProcessor extends MoveProcessor implements 
 	 */
 	protected String suggestTargetName() {
 		try {
-			final String[] candidates= StubUtility.getArgumentNameSuggestions(fMethod.getDeclaringType(), computeReservedIdentifiers());
+
+			final String[] candidates= StubUtility.getArgumentNameSuggestions(fMethod.getDeclaringType(),fMethod.getCompilationUnit(), computeReservedIdentifiers());
 			if (candidates.length > 0) {
 				if (candidates[0].indexOf('$') < 0)
 					return candidates[0];

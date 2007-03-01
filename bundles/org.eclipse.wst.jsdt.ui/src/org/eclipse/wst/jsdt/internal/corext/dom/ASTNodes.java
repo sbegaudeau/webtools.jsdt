@@ -47,6 +47,7 @@ import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
 import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
@@ -261,7 +262,9 @@ public class ASTNodes {
 	public static boolean isLiteral(Expression expression) {
 		int type= expression.getNodeType();
 		return type == ASTNode.BOOLEAN_LITERAL || type == ASTNode.CHARACTER_LITERAL || type == ASTNode.NULL_LITERAL || 
-			type == ASTNode.NUMBER_LITERAL || type == ASTNode.STRING_LITERAL || type == ASTNode.TYPE_LITERAL;
+			type == ASTNode.NUMBER_LITERAL || type == ASTNode.STRING_LITERAL || type == ASTNode.TYPE_LITERAL||
+			type == ASTNode.UNDEFINED_LITERAL || type == ASTNode.OBJECT_LITERAL || type == ASTNode.REGULAR_EXPRESSION_LITERAL;
+
 	}
 	
 	public static boolean isLabel(SimpleName name) {
@@ -369,6 +372,7 @@ public class ASTNodes {
 		return locationInParent == IfStatement.THEN_STATEMENT_PROPERTY
 			|| locationInParent == IfStatement.ELSE_STATEMENT_PROPERTY
 			|| locationInParent == ForStatement.BODY_PROPERTY
+			|| locationInParent == ForInStatement.BODY_PROPERTY
 			|| locationInParent == EnhancedForStatement.BODY_PROPERTY
 			|| locationInParent == WhileStatement.BODY_PROPERTY
 			|| locationInParent == DoStatement.BODY_PROPERTY;
@@ -531,6 +535,8 @@ public class ASTNodes {
 				return ((AbstractTypeDeclaration)node).resolveBinding();
 			} else if (node instanceof AnonymousClassDeclaration) {
 				return ((AnonymousClassDeclaration)node).resolveBinding();
+			}  else if (node instanceof CompilationUnit) {
+				return ((CompilationUnit)node).resolveBinding();
 			}
 			node= node.getParent();
 		}

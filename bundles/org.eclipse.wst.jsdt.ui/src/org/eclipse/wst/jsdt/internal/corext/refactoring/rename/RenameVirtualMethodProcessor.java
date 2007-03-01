@@ -102,7 +102,7 @@ public class RenameVirtualMethodProcessor extends RenameMethodProcessor {
 				
 				ITypeHierarchy hierarchy= null;
 				IType declaringType= method.getDeclaringType();
-				if (!declaringType.isInterface())
+				if (declaringType!=null && !declaringType.isInterface())
 					hierarchy= getCachedHierarchy(declaringType, new SubProgressMonitor(monitor, 1));
 
 				IMethod topmost= getMethod();

@@ -276,6 +276,28 @@ public void endVisit(Expression node) {
 		endVisit((Expression) node);
 	}
 	
+ 
+	public boolean visit(FunctionExpression node) {
+		return visit((Expression) node);
+	}
+	public void endVisit(FunctionExpression node) {
+		endVisit((Expression) node);
+	}
+	
+	public boolean visit(ObjectLiteral node) {
+		return visit((Expression) node);
+	}
+	public void endVisit(ObjectLiteral node) {
+		endVisit((Expression) node);
+	}
+	
+	public boolean visit(ObjectLiteralField node) {
+		return visit((Expression) node);
+	}
+	public void endVisit(ObjectLiteralField node) {
+		endVisit((Expression) node);
+	}
+	
 	public boolean visit(CastExpression node) {
 		return visit((Expression) node);
 	}
@@ -286,7 +308,16 @@ public void endVisit(Expression node) {
 	public boolean visit(CharacterLiteral node) {
 		return visit((Expression) node);
 	}
+	
 	public void endVisit(CharacterLiteral node) {
+		endVisit((Expression) node);
+	}
+	
+	public boolean visit(RegularExpressionLiteral node) {
+		return visit((Expression) node);
+	}
+	
+	public void endVisit(RegularExpressionLiteral node) {
 		endVisit((Expression) node);
 	}
 	
@@ -356,13 +387,19 @@ public void endVisit(Expression node) {
 		
 	//---- End Name Hierarchy ------------------------------------
 
-	public boolean visit(NullLiteral node) {
-		return visit((Expression) node);
-	}
-	public void endVisit(NullLiteral node) {
-		endVisit((Expression) node);
-	}
-	
+		public boolean visit(NullLiteral node) {
+			return visit((Expression) node);
+		}
+		public void endVisit(NullLiteral node) {
+			endVisit((Expression) node);
+		}
+		public boolean visit(UndefinedLiteral node) {
+			return visit((Expression) node);
+		}
+		public void endVisit(UndefinedLiteral node) {
+			endVisit((Expression) node);
+		}
+		
 	public boolean visit(NumberLiteral node) {
 		return visit((Expression) node);
 	}
@@ -560,6 +597,13 @@ public void endVisit(Statement node) {
 		return visit((Statement) node);
 	}
 	public void endVisit(ForStatement node) {
+		endVisit((Statement) node);
+	}
+	
+	public boolean visit(ForInStatement node) {
+		return visit((Statement) node);
+	}
+	public void endVisit(ForInStatement node) {
 		endVisit((Statement) node);
 	}
 	

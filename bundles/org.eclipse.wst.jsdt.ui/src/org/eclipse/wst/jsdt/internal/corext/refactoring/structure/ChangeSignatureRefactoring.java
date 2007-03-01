@@ -278,12 +278,12 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 	 * @see JdtFlags
 	 */	
 	public int[] getAvailableVisibilities() throws JavaModelException{
-		if (fTopMethod.getDeclaringType().isInterface())
-			return new int[]{Modifier.PUBLIC};
-		else if (fTopMethod.getDeclaringType().isEnum() && fTopMethod.isConstructor())
-			return new int[]{	Modifier.NONE,
-								Modifier.PRIVATE};
-		else
+//		if (fTopMethod.getDeclaringType().isInterface())
+//			return new int[]{Modifier.PUBLIC};
+//		else if (fTopMethod.getDeclaringType().isEnum() && fTopMethod.isConstructor())
+//			return new int[]{	Modifier.NONE,
+//								Modifier.PRIVATE};
+//		else
 			return new int[]{	Modifier.PUBLIC,
 								Modifier.PROTECTED,
 								Modifier.NONE,
@@ -689,10 +689,11 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 				String message= Messages.format(RefactoringCoreMessages.ChangeSignatureRefactoring_method_deleted, getCu().getElementName());
 				return RefactoringStatus.createFatalErrorStatus(message);
 			}
-			if (fMethod.getDeclaringType().isInterface()) {
-				fTopMethod= MethodChecks.overridesAnotherMethod(fMethod, fMethod.getDeclaringType().newSupertypeHierarchy(new SubProgressMonitor(monitor, 1)));
-				monitor.worked(1);
-			} else if (MethodChecks.isVirtual(fMethod)) {
+//			if (fMethod.getDeclaringType().isInterface()) {
+//				fTopMethod= MethodChecks.overridesAnotherMethod(fMethod, fMethod.getDeclaringType().newSupertypeHierarchy(new SubProgressMonitor(monitor, 1)));
+//				monitor.worked(1);
+//			} else 
+			if (MethodChecks.isVirtual(fMethod)) {
 				ITypeHierarchy hierarchy= getCachedTypeHierarchy(new SubProgressMonitor(monitor, 1));
 				fTopMethod= MethodChecks.isDeclaredInInterface(fMethod, hierarchy, new SubProgressMonitor(monitor, 1));
 				if (fTopMethod == null)

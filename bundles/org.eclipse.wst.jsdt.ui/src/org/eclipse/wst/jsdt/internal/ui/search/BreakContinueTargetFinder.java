@@ -15,6 +15,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+
+import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
+import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
+
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.JavaModelException;
@@ -30,6 +35,7 @@ import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
+import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
@@ -37,11 +43,6 @@ import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SwitchStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
-
-import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
-import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 /**
  * Class used to find the target for a break or continue statement according 
@@ -58,8 +59,8 @@ public class BreakContinueTargetFinder extends ASTVisitor {
 	private SimpleName fLabel;
 	private String fContents;//contents are used for scanning to select the right extent of the keyword
 	private static final Class[] STOPPERS=        {MethodDeclaration.class, Initializer.class};
-	private static final Class[] BREAKTARGETS=    {ForStatement.class, EnhancedForStatement.class, WhileStatement.class, DoStatement.class, SwitchStatement.class};
-	private static final Class[] CONTINUETARGETS= {ForStatement.class, EnhancedForStatement.class, WhileStatement.class, DoStatement.class};
+	private static final Class[] BREAKTARGETS=    {ForStatement.class, ForInStatement.class, EnhancedForStatement.class, WhileStatement.class, DoStatement.class, SwitchStatement.class};
+	private static final Class[] CONTINUETARGETS= {ForStatement.class, ForInStatement.class, EnhancedForStatement.class, WhileStatement.class, DoStatement.class};
 	private static final int BRACE_LENGTH= 1;
 
 	/*
@@ -200,6 +201,11 @@ public class BreakContinueTargetFinder extends ASTVisitor {
 		final ASTNode[] maybeBlock= new ASTNode[1];
 		targetNode.accept(new ASTVisitor(){
 			public boolean visit(ForStatement node) {
+				if (node.getBody() instanceof Block)
+					maybeBlock[0]= node.getBody(); 
+				return false;
+			}
+			public boolean visit(ForInStatement node) {
 				if (node.getBody() instanceof Block)
 					maybeBlock[0]= node.getBody(); 
 				return false;

@@ -222,7 +222,9 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 	}
 	
 	public Object getNewElement() {
-		return fMethod.getDeclaringType().getMethod(getNewElementName(), fMethod.getParameterTypes());
+		if (fMethod.getDeclaringType()!=null)
+			return fMethod.getDeclaringType().getMethod(getNewElementName(), fMethod.getParameterTypes());
+		return fMethod.getCompilationUnit().getMethod(getNewElementName(), fMethod.getParameterTypes());
 	}
 	
 	public final IMethod getMethod() {
@@ -465,9 +467,11 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 		for (Iterator iter= fMethodsToRename.iterator(); iter.hasNext(); ) {
 			IMethod method= (IMethod)iter.next();
 			
-			result.merge(Checks.checkIfConstructorName(method, getNewElementName(), method.getDeclaringType().getElementName()));
+			if (method.getDeclaringType()!=null)
+			  result.merge(Checks.checkIfConstructorName(method, getNewElementName(), method.getDeclaringType().getElementName()));
 			
-			String[] msgData= new String[]{method.getElementName(), JavaModelUtil.getFullyQualifiedName(method.getDeclaringType())};
+			String[] msgData= new String[]{method.getElementName(), method.getCompilationUnit().getElementName()};
+//			String[] msgData= new String[]{method.getElementName(), JavaModelUtil.getFullyQualifiedName(method.getDeclaringType())};
 			if (! method.exists()){
 				result.addFatalError(Messages.format(RefactoringCoreMessages.RenameMethodRefactoring_not_in_model, msgData)); 
 				continue;
@@ -697,7 +701,7 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 			}
 			final IType declaring= fMethod.getDeclaringType();
 			try {
-				if (declaring.isAnonymous() || declaring.isLocal())
+				if (declaring!=null && (declaring.isAnonymous() || declaring.isLocal()))
 					flags|= JavaRefactoringDescriptor.JAR_SOURCE_ATTACHMENT;
 			} catch (JavaModelException exception) {
 				JavaPlugin.log(exception);
