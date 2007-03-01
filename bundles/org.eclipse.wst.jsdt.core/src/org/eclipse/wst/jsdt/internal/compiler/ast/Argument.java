@@ -114,7 +114,7 @@ public class Argument extends LocalDeclaration {
 			scope.problemReporter().variableTypeCannotBeVoidArray(this);
 			return null;
 		}
-		if (exceptionType.findSuperTypeErasingTo(TypeIds.T_JavaLangThrowable, true) == null) {
+		if (exceptionType!=TypeBinding.ANY && exceptionType.findSuperTypeErasingTo(TypeIds.T_JavaLangThrowable, true) == null) {
 			scope.problemReporter().cannotThrowType(this.type, exceptionType);
 			// fall thru to create the variable - avoids additional errors because the variable is missing
 		}

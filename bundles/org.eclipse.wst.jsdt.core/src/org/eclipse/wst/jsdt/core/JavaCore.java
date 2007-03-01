@@ -162,7 +162,7 @@ public final class JavaCore extends Plugin {
 	 *
 	 * @see org.eclipse.core.resources.IProject#hasNature(java.lang.String)
 	 */
-	public static final String NATURE_ID = PLUGIN_ID + ".jsnature" ; //$NON-NLS-1$
+	public static final String NATURE_ID = PLUGIN_ID + ".jsNature" ; //$NON-NLS-1$
 
 	/**
 	 * Name of the handle id attribute in a Java marker.
