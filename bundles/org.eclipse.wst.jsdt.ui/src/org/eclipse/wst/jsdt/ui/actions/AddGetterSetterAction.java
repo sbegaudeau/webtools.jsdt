@@ -810,7 +810,10 @@ public class AddGetterSetterAction extends SelectionDispatchAction {
 		 */
 		public Object getParent(Object element) {
 			if (element instanceof IMember)
-				return ((IMember) element).getDeclaringType();
+			{ IMember member=(IMember) element;
+				return  member.getDeclaringType()!=null ? 
+						member.getDeclaringType() :member.getCompilationUnit();
+			}
 			if (element instanceof GetterSetterEntry)
 				return ((GetterSetterEntry) element).field;
 			return null;

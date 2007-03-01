@@ -31,7 +31,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.MultiVariabl
  */
 public class JavaContextType extends CompilationUnitContextType {
 
-	public static final String NAME= "java"; //$NON-NLS-1$
+	public static final String NAME= "javaScript"; //$NON-NLS-1$
 
 	protected static abstract class AbstractIterable extends TemplateVariableResolver {
 		public AbstractIterable(String type, String description) {

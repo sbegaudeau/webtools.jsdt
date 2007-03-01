@@ -22,7 +22,7 @@ import org.eclipse.wst.jsdt.core.ICompilationUnit;
  */
 public class JavaDocContextType extends CompilationUnitContextType {
 
-	public static final String NAME= "javadoc"; //$NON-NLS-1$
+	public static final String NAME= "jsdoc"; //$NON-NLS-1$
 
 	/**
 	 * Creates a java context type.

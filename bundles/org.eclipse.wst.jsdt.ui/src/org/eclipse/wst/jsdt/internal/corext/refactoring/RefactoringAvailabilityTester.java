@@ -156,7 +156,7 @@ public final class RefactoringAvailabilityTester {
 	}
 
 	public static boolean isChangeSignatureAvailable(final IMethod method) throws JavaModelException {
-		return Checks.isAvailable(method) && !Flags.isAnnotation(method.getDeclaringType().getFlags());
+		return Checks.isAvailable(method) && (method.getDeclaringType()==null || !Flags.isAnnotation(method.getDeclaringType().getFlags()));
 	}
 
 	public static boolean isChangeSignatureAvailable(final IStructuredSelection selection) throws JavaModelException {
@@ -665,7 +665,7 @@ public final class RefactoringAvailabilityTester {
 			return false;
 		if (method.isConstructor())
 			return false;
-		if (method.getDeclaringType().isAnnotation())
+		if (method.getDeclaringType()!=null && method.getDeclaringType().isAnnotation())
 			return false;
 
 		return true;
@@ -749,7 +749,7 @@ public final class RefactoringAvailabilityTester {
 	}
 
 	public static boolean isMoveMethodAvailable(final IMethod method) throws JavaModelException {
-		return method.exists() && !method.isConstructor() && !method.isBinary() && !method.getDeclaringType().isAnnotation() && !method.isReadOnly() && !JdtFlags.isStatic(method);
+		return method.exists() && !method.isConstructor() && !method.isBinary() && (method.getDeclaringType()==null || !method.getDeclaringType().isAnnotation()) && !method.isReadOnly() && !JdtFlags.isStatic(method);
 	}
 
 	public static boolean isMoveMethodAvailable(final IStructuredSelection selection) throws JavaModelException {

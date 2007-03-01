@@ -463,7 +463,7 @@ public class TypeHierarchyViewPart extends ViewPart implements ITypeHierarchyVie
 					element= memberToSelect.getDeclaringType();
 					
 				}
-				if (!element.exists()) {
+				if (element == null || !element.exists()) {
 					MessageDialog.openError(getSite().getShell(), TypeHierarchyMessages.TypeHierarchyViewPart_error_title, TypeHierarchyMessages.TypeHierarchyViewPart_error_message); 
 					return;
 				}

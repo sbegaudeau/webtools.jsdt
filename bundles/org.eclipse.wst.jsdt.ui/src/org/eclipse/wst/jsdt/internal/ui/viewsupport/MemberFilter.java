@@ -110,8 +110,9 @@ public class MemberFilter extends ViewerFilter {
 	}	
 	
 	private boolean isTopLevelType(IMember member) {
-		IType parent= member.getDeclaringType();
-		return parent == null;
+//		IType parent= member.getDeclaringType();
+//		return parent == null;
+		return true;
 	}
 	
 	private boolean isEnumConstant(IMember member) throws JavaModelException {

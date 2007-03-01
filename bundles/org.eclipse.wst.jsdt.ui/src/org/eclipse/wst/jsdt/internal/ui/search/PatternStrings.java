@@ -38,12 +38,15 @@ public class PatternStrings {
 	
 	public static String getMethodSignature(IMethod method) {
 		StringBuffer buffer= new StringBuffer();
-		buffer.append(JavaElementLabels.getElementLabel(
+		if (method.getDeclaringType()!=null)
+		{
+			buffer.append(JavaElementLabels.getElementLabel(
 			method.getDeclaringType(), 
 			JavaElementLabels.T_FULLY_QUALIFIED | JavaElementLabels.USE_RESOLVED));
-		boolean isConstructor= method.getElementName().equals(method.getDeclaringType().getElementName());
-		if (!isConstructor) {
-			buffer.append('.');
+			boolean isConstructor= method.getElementName().equals(method.getDeclaringType().getElementName());
+			if (!isConstructor) {
+				buffer.append('.');
+			}
 		}
 		buffer.append(getUnqualifiedMethodSignature(method, !isConstructor));
 		
