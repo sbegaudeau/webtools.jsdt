@@ -802,9 +802,10 @@ public class ASTParser {
 							}
 							PackageFragment packageFragment = (PackageFragment) this.typeRoot.getParent();
 							BinaryType type = (BinaryType) this.typeRoot.findPrimaryType();
-							IBinaryType binaryType = (IBinaryType) type.getElementInfo();
-							// file name is used to recreate the Java element, so it has to be the toplevel .class file name
-							char[] fileName = type.getElementName().toCharArray();
+							char[] fileName =this.typeRoot.getElementName().toCharArray();
+//							IBinaryType binaryType = (IBinaryType) type.getElementInfo();
+//							// file name is used to recreate the Java element, so it has to be the toplevel .class file name
+//							char[] fileName = type.getElementName().toCharArray();
 //							int firstDollar = CharOperation.indexOf('$', fileName);
 //							if (firstDollar != -1) {
 //								char[] suffix = SuffixConstants.SUFFIX_class;

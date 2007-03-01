@@ -39,7 +39,8 @@ class CascadingMethodInvocationFragmentBuilder
 	 * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#visit(org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)
 	 */
 	public boolean visit(MessageSend messageSend, BlockScope scope) {
-		if ((messageSend.receiver.bits & ASTNode.ParenthesizedMASK) >> ASTNode.ParenthesizedSHIFT == 0) {
+		if ( messageSend.receiver==null || (messageSend.receiver.bits & ASTNode.ParenthesizedMASK) >> ASTNode.ParenthesizedSHIFT == 0) {
+			
 			if (messageSend.receiver!=null &&messageSend.receiver instanceof MessageSend) {
 				this.fragmentsList.add(0, messageSend);
 				messageSend.receiver.traverse(this, scope);

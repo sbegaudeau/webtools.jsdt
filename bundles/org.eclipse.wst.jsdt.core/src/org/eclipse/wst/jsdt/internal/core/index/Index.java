@@ -99,7 +99,7 @@ public String containerRelativePath(String documentPath) {
 	int index = documentPath.indexOf(IJavaSearchScope.JAR_FILE_ENTRY_SEPARATOR);
 	if (index == -1) {
 		index = this.containerPath.length();
-		if (documentPath.length() <= index)
+		if (documentPath.length() <  index)
 			throw new IllegalArgumentException("Document path " + documentPath + " must be relative to " + this.containerPath); //$NON-NLS-1$ //$NON-NLS-2$
 		else if (documentPath.length()==index)
 			index--;

@@ -111,7 +111,7 @@ private Object[] computeNonJavaResources(IJavaProject project, IResource underly
 	try {
 		// the underlying resource may be a folder or a project (in the case that the project folder
 		// is actually the package fragment root)
-		if (underlyingResource!=null && (underlyingResource.getType() == IResource.FOLDER || underlyingResource.getType() == IResource.PROJECT) {
+		if (underlyingResource!=null && (underlyingResource.getType() == IResource.FOLDER || underlyingResource.getType() == IResource.PROJECT)) {
 			nonJavaResources = 
 				computeFolderNonJavaResources(
 					(JavaProject)project, 
