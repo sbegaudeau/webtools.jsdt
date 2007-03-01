@@ -82,7 +82,7 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 	public void setUpJCLClasspathVariables(String compliance) throws JavaModelException, IOException {
 		if ("1.5".equals(compliance)) {
 			if (JavaCore.getClasspathVariable("CONVERTER_JCL15_LIB") == null) {
-				setupExternalJCL("converterJclMin1.5");
+//				setupExternalJCL("converterJclMin1.5");
 				JavaCore.setClasspathVariables(
 					new String[] {"CONVERTER_JCL15_LIB", "CONVERTER_JCL15_SRC", "CONVERTER_JCL15_SRCROOT"},
 					new IPath[] {getConverterJCLPath(compliance), getConverterJCLSourcePath(compliance), getConverterJCLRootSourcePath()},
@@ -90,7 +90,7 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 			} 
 		} else {
 			if (JavaCore.getClasspathVariable("CONVERTER_JCL_LIB") == null) {
-				setupExternalJCL("converterJclMin");
+//				setupExternalJCL("converterJclMin");
 				JavaCore.setClasspathVariables(
 					new String[] {"CONVERTER_JCL_LIB", "CONVERTER_JCL_SRC", "CONVERTER_JCL_SRCROOT"},
 					new IPath[] {getConverterJCLPath(), getConverterJCLSourcePath(), getConverterJCLRootSourcePath()},

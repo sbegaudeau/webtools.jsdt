@@ -2133,7 +2133,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	public void setUpJCLClasspathVariables(String compliance) throws JavaModelException, IOException {
 		if ("1.5".equals(compliance)) {
 			if (JavaCore.getClasspathVariable("JCL15_LIB") == null) {
-				setupExternalJCL("jclMin1.5");
+//				setupExternalJCL("jclMin1.5");
 				JavaCore.setClasspathVariables(
 					new String[] {"JCL15_LIB", "JCL15_SRC", "JCL_SRCROOT"},
 					new IPath[] {getExternalJCLPath(compliance), getExternalJCLSourcePath(compliance), getExternalJCLRootSourcePath()},
@@ -2141,7 +2141,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 			} 
 		} else {
 			if (JavaCore.getClasspathVariable("JCL_LIB") == null) {
-				setupExternalJCL("jclMin");
+//				setupExternalJCL("jclMin");
 				JavaCore.setClasspathVariables(
 					new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 					new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},

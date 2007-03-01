@@ -132,18 +132,16 @@ public void testBug164311_2() throws JavaModelException {
 public void testBug96213() throws JavaModelException {
     this.wc = getWorkingCopy(
             "/Completion/src/test/Test.js",
-            "package test;\n" +
-            "public class Test{\n"+
-            "  Test toto(Object o) {\n"+
+            "  function toto( o) {\n"+
             "    return null;\n"+
             "  }\n"+
-            "  void titi(int removed) {\n"+
+            "  function titi( removed) {\n"+
             "  }\n"+
-            "  void foo() {\n"+
-            "    int removed = 0;\n"+
-            "    toto(Test.this).titi(removed);\n"+
+            "  function foo() {\n"+
+            "    var removed = 0;\n"+
+            "    toto(Test.vv).titi(removed);\n"+
             "  }\n"+
-            "}");
+            "");
     
     
     CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true);
@@ -153,7 +151,7 @@ public void testBug96213() throws JavaModelException {
     this.wc.codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-            "removed[LOCAL_VARIABLE_REF]{removed, null, I, removed, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_EXACT_EXPECTED_TYPE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
+            "removed[LOCAL_VARIABLE_REF]{removed, null, Lsystem.js.Number;, removed, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME +  R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
             requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=99811

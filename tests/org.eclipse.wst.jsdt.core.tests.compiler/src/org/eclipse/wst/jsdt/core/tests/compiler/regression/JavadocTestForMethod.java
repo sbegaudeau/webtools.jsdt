@@ -57,26 +57,21 @@ public class JavadocTestForMethod extends JavadocTest {
 		this.runNegativeTest(
 			new String[] {
 				"X.java",
-				"public class X {\n"
-					+ "	\n"
-					+ "	{\n"
-					+ "		new Z().foo();\n"
-					+ "	}\n"
-					+ "}\n",
-				"Z.java",
-				"public class Z {\n"
+					  "	foo();\n"
+//				"Z.java",
+//				"public class Z {\n"
 					+ "  /** \n"
 					+ "   * \n"
 					+ "   * **   ** ** ** @deprecated */\n"
-					+ "	public void foo() { \n"
+					+ "	function foo() { \n"
 					+ "	}\n"
-					+ "}\n",
+					+ "",
 				},
 			"----------\n"
-				+ "1. WARNING in X.java (at line 4)\n"
-				+ "	new Z().foo();\n"
-				+ "	^^^^^^^^^^^^^\n"
-				+ "The method foo() from the type Z is deprecated\n"
+				+ "1. WARNING in X.java (at line 1)\n"
+				+ "	foo();\n"
+				+ "	^^^^^\n"
+				+ "The function foo() from the type X.java is deprecated\n"
 				+ "----------\n");
 	}
 
@@ -143,15 +138,10 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test003() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
-				"public class X {\n"
-					+ "	\n"
-					+ "	{\n"
-					+ "		new Z().foo(2);\n"
-					+ "	}\n"
-					+ "}\n",
-				"Z.java",
-				"public class Z {\n"
+				"X.js",
+					"		foo(2);\n"
+//				"Z.java",
+//				"public class Z {\n"
 					+ "  /** \n"
 					+ "   * Valid tags with deprecation at end\n"
 					+ "   *\n"
@@ -162,16 +152,16 @@ public class JavadocTestForMethod extends JavadocTest {
 					+ "   * @see X Valid see tag\n"
 					+ "   * @deprecated\n"
 					+ "   */\n"
-					+ "	public String foo(int x) { \n"
+					+ "	function foo( x) { \n"
 					+ "		return \"\";\n"
 					+ "	}\n"
-					+ "}\n",
+					+ "",
 				},
 		"----------\n" + 
-		"1. WARNING in X.java (at line 4)\n" + 
-		"	new Z().foo(2);\n" + 
-		"	^^^^^^^^^^^^^^\n" + 
-		"The method foo(int) from the type Z is deprecated\n" + 
+		"1. WARNING in X.js (at line 1)\n" + 
+		"	foo(2);\n" + 
+		"	^^^^^^\n" + 
+		"The function foo(any) from the type X.js is deprecated\n" + 
 		"----------\n"
 				);
 	}
@@ -179,14 +169,14 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test004() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	\n"
 					+ "	{\n"
 					+ "		new Z().foo(2);\n"
 					+ "	}\n"
 					+ "}\n",
-				"Z.java",
+				"Z.js",
 				"public class Z {\n"
 					+ "  /** \n"
 					+ "   * Invalid javadoc tags with valid deprecation at end\n"
@@ -247,14 +237,14 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test005() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	\n"
 					+ "	{\n"
 					+ "		new Z().foo(2);\n"
 					+ "	}\n"
 					+ "}\n",
-				"Z.java",
+				"Z.js",
 				"public class Z {\n"
 					+ "  /** \n"
 					+ "   * Valid tags with deprecation at beginning\n"
@@ -283,14 +273,14 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test006() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	\n"
 					+ "	{\n"
 					+ "		new Z().foo(2);\n"
 					+ "	}\n"
 					+ "}\n",
-				"Z.java",
+				"Z.js",
 				"public class Z {\n"
 					+ "  /** \n"
 					+ "   * Invalid javadoc tags with valid deprecation at beginning\n"
@@ -352,14 +342,14 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test007() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	\n"
 					+ "	{\n"
 					+ "		new Z().foo(2);\n"
 					+ "	}\n"
 					+ "}\n",
-				"Z.java",
+				"Z.js",
 				"public class Z {\n"
 					+ "  /** \n"
 					+ "   * Valid tags with deprecation in the middle\n"
@@ -388,14 +378,14 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test008() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	\n"
 					+ "	{\n"
 					+ "		new Z().foo(2);\n"
 					+ "	}\n"
 					+ "}\n",
-				"Z.java",
+				"Z.js",
 				"public class Z {\n"
 					+ "  /** \n"
 					+ "   * Invalid javadoc tags with valid deprecation in the middle\n"
@@ -454,7 +444,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test011() {
 		this.runConformTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Valid @param: no tags, no args\n"
@@ -468,7 +458,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test012() {
 		this.runConformTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	public void p_foo() {\n"
 					+ "	}\n"
@@ -478,7 +468,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test013() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid @param declaration: no arguments, 2 declared tags\n"
@@ -505,7 +495,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test014() {
 		this.runConformTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	\n"
 					+ "	/**\n"
@@ -522,7 +512,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test015() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid @param declaration: 3 arguments, 3 correct tags in right order + 2 additional\n"
@@ -551,7 +541,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test016() {
 		this.runConformTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Valid @param declaration: 3 arguments, 3 tags in wrong order\n"
@@ -567,7 +557,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test017() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid @param declaration: 3 arguments, 3 correct tags in wrong order + 1 duplicate tag + 1 additional\n"
@@ -596,7 +586,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test020() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid @param: all arguments are not documented\n"
@@ -625,7 +615,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test021() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid @param: b and c arguments are not documented\n"
@@ -650,7 +640,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test022() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid @param: a and c arguments are not documented\n"
@@ -675,7 +665,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test023() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid @param: a and b arguments are not documented\n"
@@ -700,7 +690,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test024() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid @param: c argument is not documented\n"
@@ -721,7 +711,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test025() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid @param: a argument is not documented + b and c are not well placed\n"
@@ -742,7 +732,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test026() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid @param: b argument is not documented + a and c are not well placed\n"
@@ -763,7 +753,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test030() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid @param: mix of all possible errors (missing a, not argument tag and duplicated)\n"
@@ -796,7 +786,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test031() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid @param: missing parameter name\n"
@@ -821,7 +811,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test032() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid @param: missing parameter name + valid param \n"
@@ -842,7 +832,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test033() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid @param: missing parameter names + valid params \n"
@@ -880,7 +870,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test034() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid @param: missing parameter name + valid param \n"
@@ -913,7 +903,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test035() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Valid @param but compiler errors\n"
@@ -935,7 +925,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test036() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid @param + compiler errors\n"
@@ -967,7 +957,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test037() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid @param: class reference instead of param name\n"
@@ -994,7 +984,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test038() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"import java.util.Hashtable;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -1023,7 +1013,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test050() {
 		this.runConformTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Valid @throws tags: documented exception are unchecked\n"
@@ -1040,7 +1030,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test051() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * @throws IllegalArgumenException.. Invalid exception: invalid class name\n"
@@ -1065,7 +1055,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test052() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * @throws java.awt.AWTexception Invalid exception: unknown type\n"
@@ -1090,7 +1080,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test053() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"import java.io.FileNotFoundException;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -1116,7 +1106,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test055() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Valid @throws tags: documented exception are unchecked but method throws an unknown exception\n"
@@ -1139,7 +1129,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test056() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * @throws IllegalArgumenException._ Invalid exception: invalid class name\n"
@@ -1169,7 +1159,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test057() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * @throws java.awt.AWTexception Invalid exception: unknown type\n"
@@ -1199,7 +1189,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test058() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"import java.io.FileNotFoundException;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -1230,7 +1220,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test060() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid @throws tags: documented exception are unchecked but thrown exception is not documented\n"
@@ -1253,7 +1243,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test061() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * @throws /IllegalArgumenException.. Invalid exception: invalid class name\n"
@@ -1283,7 +1273,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test062() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * @throws java.awt.AWTexception Invalid exception: unknown type\n"
@@ -1313,7 +1303,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test063() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"import java.io.FileNotFoundException;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -1350,7 +1340,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test065() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid @throws tags: documented exception are unchecked but some thrown exception are invalid\n"
@@ -1383,7 +1373,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test066() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * @throws %IllegalArgumenException Invalid exception: invalid class name\n"
@@ -1438,7 +1428,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test067() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * @throws java.awt.AWTexception Invalid exception: unknown type\n"
@@ -1487,7 +1477,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test068() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"import java.io.FileNotFoundException;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -1537,7 +1527,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test069() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"import java.io.FileNotFoundException;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -1596,7 +1586,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test070() {
 		this.runConformTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Valid return declaration\n"
@@ -1612,7 +1602,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test071() {
 		this.runConformTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Valid empty return declaration\n"
@@ -1628,7 +1618,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test072() {
 		this.runConformTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Valid return declaration\n"
@@ -1644,7 +1634,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test073() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Missing return declaration\n"
@@ -1664,7 +1654,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test074() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid return declaration\n"
@@ -1687,7 +1677,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test075() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid return declaration\n"
@@ -1708,7 +1698,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test076() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid return declaration\n"
@@ -1745,7 +1735,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test080() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid string references \n"
@@ -1784,7 +1774,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test081() {
 		this.runConformTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Valid string references \n"
@@ -1801,7 +1791,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test085() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid URL link references \n"
@@ -1900,7 +1890,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test086() {
 		this.runConformTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Valid URL references \n"
@@ -1917,7 +1907,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test087() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid URL references \n"
@@ -1951,7 +1941,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test090() {
 		this.runConformReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -1972,7 +1962,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test091() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -2018,7 +2008,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test092() {
 		runConformReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n" +
 				"import test.copy.*;\n" +
 				"public class X {\n" +
@@ -2038,7 +2028,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test093() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "import test.copy.*;\n"
 					+ "public class X {\n"
@@ -2079,7 +2069,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test094() {
 		this.runConformReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n" +
 				"public class X {\n" +
 				"	/**\n" +
@@ -2098,7 +2088,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test095() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -2139,7 +2129,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test100() {
 		this.runConformReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	int x;\n"
@@ -2158,7 +2148,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test101() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -2216,7 +2206,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test102() {
 		this.runConformReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -2233,7 +2223,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test103() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -2273,7 +2263,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test104() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "import test.copy.*;\n"
 					+ "public class X {\n"
@@ -2344,7 +2334,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test105() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -2414,7 +2404,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test106() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -2484,7 +2474,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test107() {
 		runConformReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n" +
 				"import test.copy.*;\n" +
 				"public class X {\n" +
@@ -2504,7 +2494,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test108() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n" +
 				"import test.copy.*;\n" +
 				"public class X {\n" +
@@ -2565,7 +2555,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test109() {
 		this.runConformReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n" +
 				"public class X {\n" +
 				"	/**\n" +
@@ -2584,7 +2574,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test110() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n" +
 				"public class X {\n" +
 				"	/**\n" +
@@ -2644,7 +2634,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test115() {
 		this.runConformTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"import java.util.Vector;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -2666,7 +2656,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test116() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"import java.util.Vector;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -2806,7 +2796,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test117() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"import java.util.Vector;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -2886,7 +2876,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test118() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"import java.util.Vector;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -2965,7 +2955,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test120() {
 		this.runConformTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"import java.util.Vector;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -3007,7 +2997,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test121() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid local methods references\n"
@@ -3044,7 +3034,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test122() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid local methods references\n"
@@ -3105,7 +3095,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test123() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid local methods references\n"
@@ -3148,7 +3138,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test124() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid local methods references\n"
@@ -3197,7 +3187,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test125() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid local methods references\n"
@@ -3264,7 +3254,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test126() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid local methods references\n"
@@ -3307,7 +3297,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test127() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"import java.util.Vector;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -3375,7 +3365,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test130() {
 		this.runConformTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"import java.util.Vector;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -3417,7 +3407,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test131() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"public class X {\n"
 					+ "	/**\n"
 					+ "	 * Invalid local methods references\n"
@@ -3454,7 +3444,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test132() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"import java.util.Vector;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -3510,7 +3500,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test133() {
 		this.runNegativeTest(
 			new String[] {
-				"X.java",
+				"X.js",
 				"import java.util.Vector;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -3558,7 +3548,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test135() {
 		this.runConformTest(
 			new String[] {
-				"test/deep/qualified/name/p/X.java",
+				"test/deep/qualified/name/p/X.js",
 				"package test.deep.qualified.name.p;\n"
 					+ "import java.util.Vector;\n"
 					+ "public class X {\n"
@@ -3601,7 +3591,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test136() {
 		this.runNegativeTest(
 			new String[] {
-				"test/deep/qualified/name/p/X.java",
+				"test/deep/qualified/name/p/X.js",
 				"package test.deep.qualified.name.p;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -3639,7 +3629,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test137() {
 		this.runNegativeTest(
 			new String[] {
-				"test/deep/qualified/name/p/X.java",
+				"test/deep/qualified/name/p/X.js",
 				"package test.deep.qualified.name.p;\n"
 					+ "import java.util.Vector;\n"
 					+ "public class X {\n"
@@ -3696,7 +3686,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test138() {
 		this.runNegativeTest(
 			new String[] {
-				"test/deep/qualified/name/p/X.java",
+				"test/deep/qualified/name/p/X.js",
 				"package test.deep.qualified.name.p;\n"
 					+ "import java.util.Vector;\n"
 					+ "public class X {\n"
@@ -3745,7 +3735,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test140() {
 		this.runConformReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -3764,7 +3754,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test141() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -3804,7 +3794,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test142() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -3862,7 +3852,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test143() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -3902,7 +3892,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test144() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -3954,7 +3944,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test145() {
 		this.runConformReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -3973,7 +3963,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test146() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -4031,7 +4021,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test147() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -4071,7 +4061,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test148() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -4123,7 +4113,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test150() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "import test.copy.*;\n"
 					+ "public class X {\n"
@@ -4230,7 +4220,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test151() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "import test.copy.VisibilityPackage;\n"
 					+ "public class X {\n"
@@ -4288,7 +4278,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test152() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -4394,7 +4384,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test153() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -4446,7 +4436,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test154() {
 		runConformReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n" +
 				"import test.copy.VisibilityPublic;\n" +
 				"public class X {\n" +
@@ -4466,7 +4456,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test155() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "import test.copy.VisibilityPublic;\n"
 					+ "public class X {\n"
@@ -4495,7 +4485,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test156() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "import test.copy.VisibilityPublic;\n"
 					+ "public class X {\n"
@@ -4555,7 +4545,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test157() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "import test.copy.VisibilityPublic;\n"
 					+ "public class X {\n"
@@ -4596,7 +4586,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test158() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "import test.copy.VisibilityPublic;\n"
 					+ "public class X {\n"
@@ -4649,7 +4639,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test159() {
 		this.runConformReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -4666,7 +4656,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test160() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -4694,7 +4684,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test161() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -4753,7 +4743,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test162() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "public class X {\n"
 					+ "	/**\n"
@@ -4793,7 +4783,7 @@ public class JavadocTestForMethod extends JavadocTest {
 	public void test163() {
 		this.runNegativeReferenceTest(
 			new String[] {
-				"test/X.java",
+				"test/X.js",
 				"package test;\n"
 					+ "import test.copy.VisibilityPublic;\n"
 					+ "public class X {\n"

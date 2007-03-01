@@ -41,69 +41,18 @@ public class ASTConverterTest extends ConverterTestSetup {
 	}
 
 	public void test00() throws JavaModelException {
-		ICompilationUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0166", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		ICompilationUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0243", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		char[] source = sourceUnit.getSource().toCharArray();
 		ASTNode result = runConversion(sourceUnit, true);
+		assertNotNull("No compilation unit", result); //$NON-NLS-1$
+		assertTrue("result is not a compilation unit", result instanceof CompilationUnit); //$NON-NLS-1$
 		ASTNode node = getASTNode((CompilationUnit) result, 0, 0, 0);
-		assertTrue("Not a VariableDeclarationStatement", node instanceof VariableDeclarationStatement); //$NON-NLS-1$
-		VariableDeclarationStatement variableDeclarationStatement = (VariableDeclarationStatement) node;
-		List fragments = variableDeclarationStatement.fragments();
-		assertTrue("Fragment list is not 4 ", fragments.size() == 4); //$NON-NLS-1$
-		VariableDeclarationFragment fragment1 = (VariableDeclarationFragment) fragments.get(0);
-		IVariableBinding binding1 = fragment1.resolveBinding();
-		assertNotNull("Binding is null", binding1); //$NON-NLS-1$
-		assertEquals("wrong name for binding1", "x", binding1.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals("wrong modifier for binding1", 0, binding1.getModifiers()); //$NON-NLS-1$
-		assertTrue("a field", !binding1.isField()); //$NON-NLS-1$
-//		assertNull("declaring class is not null", binding1.getDeclaringClass()); //$NON-NLS-1$
-		ITypeBinding typeBinding1 = binding1.getType();
-		assertNotNull("typeBinding1 is null", typeBinding1); //$NON-NLS-1$
-//		assertTrue("typeBinding1 is not a primitive type", typeBinding1.isPrimitive()); //$NON-NLS-1$
-//		assertTrue("typeBinding1 is not canonical", typeBinding1 == binding1.getType()); //$NON-NLS-1$
-		VariableDeclarationFragment fragment2 = (VariableDeclarationFragment) fragments.get(1);
-		IVariableBinding binding2 = fragment2.resolveBinding();
-		assertNotNull("Binding is null", binding2); //$NON-NLS-1$
-		assertEquals("wrong name for binding2", "z", binding2.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals("wrong modifier for binding2", 0, binding2.getModifiers()); //$NON-NLS-1$
-		assertTrue("a field", !binding2.isField()); //$NON-NLS-1$
-//		assertNull("declaring class is not null", binding2.getDeclaringClass()); //$NON-NLS-1$
-		ITypeBinding typeBinding2 = binding2.getType();
-		assertNotNull("typeBinding2 is null", typeBinding2); //$NON-NLS-1$
-//		assertTrue("typeBinding2 is not an array type", typeBinding2.isArray()); //$NON-NLS-1$
-//		assertTrue("typeBinding2 is not canonical", typeBinding2 == binding2.getType()); //$NON-NLS-1$
-//		assertTrue("primitive type is not canonical", typeBinding1 == typeBinding2.getElementType()); //$NON-NLS-1$
-//		assertEquals("dimension is 1", 1, typeBinding2.getDimensions()); //$NON-NLS-1$
-//		assertEquals("it is not int[]", "int[]", typeBinding2.getName());		 //$NON-NLS-1$ //$NON-NLS-2$
-		VariableDeclarationFragment fragment3 = (VariableDeclarationFragment) fragments.get(2);
-		IVariableBinding binding3 = fragment3.resolveBinding();
-		assertNotNull("Binding is null", binding3); //$NON-NLS-1$
-		assertEquals("wrong name for binding3", "i", binding3.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals("wrong modifier for binding3", 0, binding3.getModifiers()); //$NON-NLS-1$
-		assertTrue("a field", !binding3.isField()); //$NON-NLS-1$
-//		assertNull("declaring class is not null", binding3.getDeclaringClass()); //$NON-NLS-1$
-		ITypeBinding typeBinding3 = binding3.getType();
-		assertNotNull("typeBinding3 is null", typeBinding3); //$NON-NLS-1$
-//		assertTrue("typeBinding3 is not an primitive type", typeBinding3.isPrimitive()); //$NON-NLS-1$
-//		assertTrue("typeBinding3 is not canonical", typeBinding3 == binding3.getType()); //$NON-NLS-1$
-//		assertTrue("primitive type is not canonical", typeBinding1 == typeBinding3); //$NON-NLS-1$
-		assertEquals("dimension is 0", 0, typeBinding3.getDimensions()); //$NON-NLS-1$
-		assertEquals("it is not the primitive type any", "any", typeBinding3.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-		VariableDeclarationFragment fragment4 = (VariableDeclarationFragment) fragments.get(3);
-		IVariableBinding binding4 = fragment4.resolveBinding();
-		assertNotNull("Binding is null", binding4); //$NON-NLS-1$
-		assertEquals("wrong name for binding4", "j", binding4.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals("wrong modifier for binding4", 0, binding4.getModifiers()); //$NON-NLS-1$
-		assertTrue("a field", !binding4.isField()); //$NON-NLS-1$
-		assertNull("declaring class is not null", binding4.getDeclaringClass()); //$NON-NLS-1$
-		ITypeBinding typeBinding4 = binding4.getType();
-		assertNotNull("typeBinding4 is null", typeBinding4); //$NON-NLS-1$
-//		assertTrue("typeBinding4 is not an array type", typeBinding4.isArray()); //$NON-NLS-1$
-//		assertTrue("typeBinding4 is not canonical", typeBinding4 == binding4.getType()); //$NON-NLS-1$
-//		assertTrue("primitive type is not canonical", typeBinding1 == typeBinding4.getElementType()); //$NON-NLS-1$
-//		assertEquals("dimension is 2", 2, typeBinding4.getDimensions()); //$NON-NLS-1$
-//		assertEquals("it is not int[][]", "int[][]", typeBinding4.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("ids in the wrong order", binding1.getVariableId() < binding2.getVariableId()); //$NON-NLS-1$
-		assertTrue("ids in the wrong order", binding2.getVariableId() < binding3.getVariableId()); //$NON-NLS-1$
-		assertTrue("ids in the wrong order", binding3.getVariableId() < binding4.getVariableId()); //$NON-NLS-1$
+		assertTrue("Not a try statement", node instanceof TryStatement); //$NON-NLS-1$
+		TryStatement tryStatement = (TryStatement) node;
+		List catchClauses = tryStatement.catchClauses();
+		assertEquals("wrong size", 1, catchClauses.size()); //$NON-NLS-1$
+		CatchClause catchClause = (CatchClause) catchClauses.get(0);
+		checkSourceRange(catchClause, "catch (e){m();}", source); //$NON-NLS-1$
 	}
 	
 	/** @deprecated using deprecated code */

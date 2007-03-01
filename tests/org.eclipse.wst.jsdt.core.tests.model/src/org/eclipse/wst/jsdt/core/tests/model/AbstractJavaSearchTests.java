@@ -367,7 +367,7 @@ public class AbstractJavaSearchTests extends AbstractJavaModelTests implements I
 		}
 		protected char[] getSource(IResource resource, IJavaElement element, ICompilationUnit unit) throws CoreException {
 			char[] contents = CharOperation.NO_CHAR;
-			if ("java".equals(resource.getFileExtension())) {
+			if ("js".equals(resource.getFileExtension())) {
 				ICompilationUnit cu = (ICompilationUnit)element.getAncestor(IJavaElement.COMPILATION_UNIT);
 				if (cu != null && cu.isWorkingCopy()) {
 					// working copy
