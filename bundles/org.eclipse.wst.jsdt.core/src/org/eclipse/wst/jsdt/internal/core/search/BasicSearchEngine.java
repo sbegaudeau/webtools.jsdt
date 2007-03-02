@@ -770,7 +770,7 @@ public class BasicSearchEngine {
 							}
 						} else {
 							Parser basicParser = getParser();
-							org.eclipse.jsdt.internal.compiler.env.ICompilationUnit unit = (org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit) workingCopy;
+							org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit unit = (org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit) workingCopy;
 							CompilationResult compilationUnitResult = new CompilationResult(unit, 0, 0, this.compilerOptions.maxProblemsPerUnit);
 							CompilationUnitDeclaration parsedUnit = basicParser.dietParse(unit, compilationUnitResult);
 							if (parsedUnit != null) {
