@@ -135,6 +135,8 @@ public final class ImportRewrite {
 	
 	private boolean filterImplicitImports;
 	
+	private boolean writeImports=false;
+	
 	/**
 	 * Creates a {@link ImportRewrite} from a {@link ICompilationUnit}. If <code>restoreExistingImports</code>
 	 * is <code>true</code>, all existing imports are kept, and new imports will be inserted at best matching locations. If
@@ -1073,6 +1075,8 @@ public final class ImportRewrite {
 	 * @return boolean returns if any changes to imports have been recorded.
 	 */
 	public boolean hasRecordedChanges() {
+		if (!writeImports)
+			return false;
 		return !this.restoreExistingImports ||
 			(this.addedImports != null && !this.addedImports.isEmpty()) ||
 			(this.removedImports != null && !this.removedImports.isEmpty());
