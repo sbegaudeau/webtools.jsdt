@@ -1436,6 +1436,7 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest implem
 			// set specific javadoc parser
 			if (useSourceJavadocParser) {
 				this.javadocParser = new SourceJavadocParser(this);
+				
 			}
 		}
 
@@ -1484,6 +1485,37 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest implem
 						true/*optimize string literals*/,
 						false); 
 
+				ICompilationUnit sourceUnit = new CompilationUnit(source, testName, null);
+
+				CompilationUnitDeclaration compUnit= parser.parseCompilationUnit(sourceUnit, true);
+				if (expected!=null)
+				{
+					String result=compUnit.toString();
+					assertEquals(expected, result);
+				}
+				return compUnit;
+			// javac part
+			} catch (AssertionFailedError e) {
+				throw e;
+			} finally {
+			}
+		}
+
+	protected CompilationUnitDeclaration runJSDocParseTest(
+			String s, String testName,String expected
+			) {
+			// Non-javac part
+			try {
+		
+				char[] source = s.toCharArray();
+				TestParser parser = 
+					new TestParser(
+					  new DefaultProblemFactory(Locale.getDefault()), 
+						new CompilerOptions(getCompilerOptions()),
+						true/*optimize string literals*/,
+						false); 
+
+				parser.javadocParser.checkDocComment=true;
 				ICompilationUnit sourceUnit = new CompilationUnit(source, testName, null);
 
 				CompilationUnitDeclaration compUnit= parser.parseCompilationUnit(sourceUnit, true);
