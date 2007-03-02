@@ -37,7 +37,7 @@ public interface IBuffer {
  * Adds the given listener for changes to this buffer.
  * Has no effect if an identical listener is already registered or if the buffer
  * is closed.
- *
+ * 
  * @param listener the listener of buffer changes
  */
 public void addBufferChangedListener(IBufferChangedListener listener);
@@ -223,7 +223,7 @@ public void replace(int position, int length, String text);
  *
  * @exception JavaModelException if an error occurs writing the buffer
  *	to the underlying resource
- *
+ * 
  * @see org.eclipse.core.resources.IFile#setContents(java.io.InputStream, boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)
  */
 public void save(IProgressMonitor progress, boolean force) throws JavaModelException;

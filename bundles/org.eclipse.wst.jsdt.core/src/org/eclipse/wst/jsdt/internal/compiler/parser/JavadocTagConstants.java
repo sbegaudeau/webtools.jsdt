@@ -40,6 +40,24 @@ public interface JavadocTagConstants {
 	public static final char[] TAG_VERSION = "version".toCharArray(); //$NON-NLS-1$
 	public static final char[] TAG_CATEGORY = "category".toCharArray(); //$NON-NLS-1$
 
+	public static final char[] TAG_ADDON = "addon".toCharArray(); //$NON-NLS-1$
+	public static final char[] TAG_ALIAS = "alias".toCharArray(); //$NON-NLS-1$
+	public static final char[] TAG_BASE = "base".toCharArray(); //$NON-NLS-1$
+	public static final char[] TAG_CLASSDECRIPTION = "classDescription".toCharArray(); //$NON-NLS-1$
+	public static final char[] TAG_CONSTRUCTOR = "constructor".toCharArray(); //$NON-NLS-1$
+	public static final char[] TAG_EXEC = "exec".toCharArray(); //$NON-NLS-1$
+	public static final char[] TAG_FILEOVERVIEW = "fileoverview".toCharArray(); //$NON-NLS-1$
+	public static final char[] TAG_ID = "id".toCharArray(); //$NON-NLS-1$
+	public static final char[] TAG_IGNORE = "ignore".toCharArray(); //$NON-NLS-1$
+	public static final char[] TAG_MEMBER = "member".toCharArray(); //$NON-NLS-1$
+	public static final char[] TAG_MEMBEROF = "memberOf".toCharArray(); //$NON-NLS-1$
+	public static final char[] TAG_NAMESPACE = "namespace".toCharArray(); //$NON-NLS-1$
+	public static final char[] TAG_PROJECT_DESCRIPTION = "@projectDescription".toCharArray(); //$NON-NLS-1$
+	public static final char[] TAG_SDOC = "sdoc".toCharArray(); //$NON-NLS-1$
+	public static final char[] TAG_TYPE = "type".toCharArray(); //$NON-NLS-1$
+	public static final char[] TAG_ARGUMENT = "argument".toCharArray(); //$NON-NLS-1$
+	public static final char[] TAG_RETURNS = "returns".toCharArray(); //$NON-NLS-1$
+	
 	// tags lengthes
 	public static final int TAG_DEPRECATED_LENGTH = TAG_DEPRECATED.length;
 	public static final int TAG_PARAM_LENGTH = TAG_PARAM.length;
@@ -53,6 +71,23 @@ public interface JavadocTagConstants {
 	public static final int TAG_VALUE_LENGTH = TAG_VALUE.length;
 	public static final int TAG_CATEGORY_LENGTH = TAG_CATEGORY.length;
 
+	public static final int TAG_ADDON_LENGTH = TAG_ADDON.length;
+	public static final int TAG_ALIAS_LENGTH = TAG_ALIAS.length;
+	public static final int TAG_BASE_LENGTH = TAG_BASE.length;
+	public static final int TAG_CLASSDECRIPTION_LENGTH = TAG_CLASSDECRIPTION.length;
+	public static final int TAG_CONSTRUCTOR_LENGTH = TAG_CONSTRUCTOR.length;
+	public static final int TAG_EXEC_LENGTH = TAG_EXEC.length;
+	public static final int TAG_FILEOVERVIEW_LENGTH = TAG_FILEOVERVIEW.length;
+	public static final int TAG_ID_LENGTH = TAG_ID.length;
+	public static final int TAG_IGNORE_LENGTH = TAG_IGNORE.length;
+	public static final int TAG_MEMBER_LENGTH = TAG_MEMBER.length;
+	public static final int TAG_MEMBEROF_LENGTH = TAG_MEMBEROF.length;
+	public static final int TAG_NAMESPACE_LENGTH = TAG_NAMESPACE.length;
+	public static final int TAG_PROJECT_DESCRIPTION_LENGTH = TAG_PROJECT_DESCRIPTION.length;
+	public static final int TAG_SDOC_LENGTH = TAG_SDOC.length;
+	public static final int TAG_TYPE_LENGTH = TAG_TYPE.length;
+	public static final int TAG_ARGUMENT_LENGTH = TAG_ARGUMENT.length;
+	public static final int TAG_RETURNS_LENGTH = TAG_RETURNS.length;
 
 	// tags value
 	public static final int NO_TAG_VALUE = 0;
@@ -67,6 +102,33 @@ public interface JavadocTagConstants {
 	public static final int TAG_INHERITDOC_VALUE = 9;
 	public static final int TAG_VALUE_VALUE = 10;
 	public static final int TAG_CATEGORY_VALUE = 11;
+
+	public static final int TAG_ADDON_VALUE = 12;
+	public static final int TAG_ALIAS_VALUE = 13;
+	public static final int TAG_BASE_VALUE = 14;
+	public static final int TAG_CLASSDECRIPTION_VALUE = 15;
+	public static final int TAG_CONSTRUCTOR_VALUE = 16;
+	public static final int TAG_EXEC_VALUE = 17;
+	public static final int TAG_FILEOVERVIEW_VALUE = 18;
+	public static final int TAG_ID_VALUE = 19;
+	public static final int TAG_IGNORE_VALUE = 20;
+	public static final int TAG_MEMBER_VALUE = 21;
+	public static final int TAG_MEMBEROF_VALUE = 22;
+	public static final int TAG_NAMESPACE_VALUE = 23;
+	public static final int TAG_PROJECT_DESCRIPTION_VALUE = 24;
+	public static final int TAG_SDOC_VALUE = 25;
+	public static final int TAG_TYPE_VALUE = 26;
+	
+	public static final int TAG_CLASS_VALUE = 27;
+	public static final int TAG_EXTENDS_VALUE = 28;
+	public static final int TAG_PRIVATE_VALUE = 29;
+	public static final int TAG_FINAL_VALUE = 30;
+	public static final int TAG_ARGUMENT_VALUE = 31;
+	public static final int TAG_RETURNS_VALUE = 32;
+	
+	
+	
+	
 	public static final int TAG_OTHERS_VALUE = 100;
 	
 	// tags expected positions
@@ -86,7 +148,8 @@ public interface JavadocTagConstants {
 	 */
 	public static final char[][][] BLOCK_TAGS = {
 		// since 1.0
-		{ TAG_AUTHOR, TAG_DEPRECATED, TAG_EXCEPTION, TAG_PARAM, TAG_RETURN, TAG_SEE, TAG_VERSION, TAG_CATEGORY /* 1.6 tag but put here as we support it for all compliances */ },
+		{ TAG_AUTHOR, TAG_DEPRECATED, TAG_EXCEPTION, TAG_PARAM, TAG_RETURN, TAG_SEE, TAG_VERSION, TAG_CATEGORY,
+			TAG_CLASSDECRIPTION,TAG_FILEOVERVIEW,TAG_PROJECT_DESCRIPTION/* 1.6 tag but put here as we support it for all compliances */ },
 		// since 1.1
 		{ TAG_SINCE },
 		// since 1.2
@@ -134,6 +197,7 @@ public interface JavadocTagConstants {
 		TAG_LINKPLAIN,
 		TAG_DOC_ROOT,
 		TAG_VALUE,
+		TAG_CLASSDECRIPTION,TAG_FILEOVERVIEW,TAG_PROJECT_DESCRIPTION
 	};
 	public static final char[][] CLASS_TAGS = {
 		TAG_SEE,
@@ -149,7 +213,8 @@ public interface JavadocTagConstants {
 		TAG_DOC_ROOT,
 		TAG_VALUE,
 		TAG_CODE,
-		TAG_LITERAL
+		TAG_LITERAL,
+		TAG_CLASSDECRIPTION,TAG_NAMESPACE
 	};
 	public static final char[][] FIELD_TAGS = {
 		TAG_SEE,
@@ -163,7 +228,7 @@ public interface JavadocTagConstants {
 		TAG_DOC_ROOT,
 		TAG_VALUE,
 		TAG_CODE,
-		TAG_LITERAL
+		TAG_LITERAL, TAG_MEMBER, TAG_MEMBEROF
 	};
 	public static final char[][] METHOD_TAGS = {
 		TAG_SEE,
@@ -181,6 +246,6 @@ public interface JavadocTagConstants {
 		TAG_DOC_ROOT,
 		TAG_VALUE,
 		TAG_CODE,
-		TAG_LITERAL
+		TAG_LITERAL, TAG_MEMBER, TAG_ADDON,TAG_CONSTRUCTOR,TAG_TYPE
 	};
 }

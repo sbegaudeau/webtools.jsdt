@@ -33,6 +33,7 @@ public class Javadoc extends ASTNode {
 	// bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=153399
 	// Store value tag positions
 	public long valuePositions = -1;
+	public int modifiers=0;
 
 	public Javadoc(int sourceStart, int sourceEnd) {
 		this.sourceStart = sourceStart;
