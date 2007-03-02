@@ -63,39 +63,39 @@ public class ASTRewriteFlattener extends ASTVisitor {
 	 * @param buf The <code>StringBuffer</code> to write the result to.
 	 */
 	public static void printModifiers(int modifiers, StringBuffer buf) {
-		if (Modifier.isPublic(modifiers)) {
-			buf.append("public "); //$NON-NLS-1$
-		}
-		if (Modifier.isProtected(modifiers)) {
-			buf.append("protected "); //$NON-NLS-1$
-		}
-		if (Modifier.isPrivate(modifiers)) {
-			buf.append("private "); //$NON-NLS-1$
-		}
-		if (Modifier.isStatic(modifiers)) {
-			buf.append("static "); //$NON-NLS-1$
-		}
-		if (Modifier.isAbstract(modifiers)) {
-			buf.append("abstract "); //$NON-NLS-1$
-		}
-		if (Modifier.isFinal(modifiers)) {
-			buf.append("final "); //$NON-NLS-1$
-		}
-		if (Modifier.isSynchronized(modifiers)) {
-			buf.append("synchronized "); //$NON-NLS-1$
-		}
-		if (Modifier.isVolatile(modifiers)) {
-			buf.append("volatile "); //$NON-NLS-1$
-		}
-		if (Modifier.isNative(modifiers)) {
-			buf.append("native "); //$NON-NLS-1$
-		}
-		if (Modifier.isStrictfp(modifiers)) {
-			buf.append("strictfp "); //$NON-NLS-1$
-		}
-		if (Modifier.isTransient(modifiers)) {
-			buf.append("transient "); //$NON-NLS-1$
-		}
+//		if (Modifier.isPublic(modifiers)) {
+//			buf.append("public "); //$NON-NLS-1$
+//		}
+//		if (Modifier.isProtected(modifiers)) {
+//			buf.append("protected "); //$NON-NLS-1$
+//		}
+//		if (Modifier.isPrivate(modifiers)) {
+//			buf.append("private "); //$NON-NLS-1$
+//		}
+//		if (Modifier.isStatic(modifiers)) {
+//			buf.append("static "); //$NON-NLS-1$
+//		}
+//		if (Modifier.isAbstract(modifiers)) {
+//			buf.append("abstract "); //$NON-NLS-1$
+//		}
+//		if (Modifier.isFinal(modifiers)) {
+//			buf.append("final "); //$NON-NLS-1$
+//		}
+//		if (Modifier.isSynchronized(modifiers)) {
+//			buf.append("synchronized "); //$NON-NLS-1$
+//		}
+//		if (Modifier.isVolatile(modifiers)) {
+//			buf.append("volatile "); //$NON-NLS-1$
+//		}
+//		if (Modifier.isNative(modifiers)) {
+//			buf.append("native "); //$NON-NLS-1$
+//		}
+//		if (Modifier.isStrictfp(modifiers)) {
+//			buf.append("strictfp "); //$NON-NLS-1$
+//		}
+//		if (Modifier.isTransient(modifiers)) {
+//			buf.append("transient "); //$NON-NLS-1$
+//		}
 	}
 		
 	protected List getChildList(ASTNode parent, StructuralPropertyDescriptor childProperty) {
@@ -631,8 +631,8 @@ public class ASTRewriteFlattener extends ASTVisitor {
 		if (node.getAST().apiLevel() == JLS2_INTERNAL) {
 			printModifiers(getIntAttribute(node, MethodDeclaration.MODIFIERS_PROPERTY), this.result);
 		} else {
-			visitList(node, MethodDeclaration.MODIFIERS2_PROPERTY, String.valueOf(' '), Util.EMPTY_STRING, String.valueOf(' '));
-			visitList(node, MethodDeclaration.TYPE_PARAMETERS_PROPERTY, String.valueOf(','), String.valueOf('<'), String.valueOf('>'));
+//			visitList(node, MethodDeclaration.MODIFIERS2_PROPERTY, String.valueOf(' '), Util.EMPTY_STRING, String.valueOf(' '));
+//			visitList(node, MethodDeclaration.TYPE_PARAMETERS_PROPERTY, String.valueOf(','), String.valueOf('<'), String.valueOf('>'));
 		}
 				
 		this.result.append("function ");

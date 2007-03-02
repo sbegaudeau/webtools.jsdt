@@ -642,6 +642,7 @@ public class ASTResolving {
 		StructuralPropertyDescriptor lastLocation= null;
 
 		while (node != null) {
+			
 			if (node instanceof AbstractTypeDeclaration) {
 				AbstractTypeDeclaration decl= (AbstractTypeDeclaration) node;
 				if (!treatModifiersOutside || lastLocation != decl.getModifiersProperty()) {
@@ -658,6 +659,24 @@ public class ASTResolving {
 	
 	public static ASTNode findParentType(ASTNode node) {
 		return findParentType(node, false);
+	}
+
+	
+	public static ASTNode findParent(ASTNode node) {
+		while (node != null) {
+			
+		 if (node instanceof CompilationUnit) {
+			return node;
+		}
+		 else	if (node instanceof AbstractTypeDeclaration) {
+				return node;
+	 
+			} else if (node instanceof AnonymousClassDeclaration) {
+				return node;
+			}
+			node= node.getParent();
+		}
+		return null;
 	}
 
 	/**
@@ -897,9 +916,11 @@ public class ASTResolving {
 				return targetCU;
 			}
 			return null;
-		} else if (node instanceof AbstractTypeDeclaration || node instanceof AnonymousClassDeclaration) {
+		} else if (node instanceof CompilationUnit || node instanceof AbstractTypeDeclaration || node instanceof AnonymousClassDeclaration) {
 			return cu;
 		}
+
+		
 		return null;
 	}
 

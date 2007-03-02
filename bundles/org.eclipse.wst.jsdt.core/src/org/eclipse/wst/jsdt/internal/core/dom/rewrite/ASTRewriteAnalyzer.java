@@ -1088,65 +1088,65 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 	
 
 	private void rewriteModifiers(ASTNode parent, StructuralPropertyDescriptor property, int offset) {
-		RewriteEvent event= getEvent(parent, property);
-		if (event == null || event.getChangeKind() != RewriteEvent.REPLACED) {
-			return;
-		}
-		try {
-			int oldModifiers= ((Integer) event.getOriginalValue()).intValue();
-			int newModifiers= ((Integer) event.getNewValue()).intValue();
-			TextEditGroup editGroup= getEditGroup(event);
-		
-			TokenScanner scanner= getScanner();
-
-			int tok= scanner.readNext(offset, false);
-			int startPos= scanner.getCurrentStartOffset();
-			int nextStart= startPos;
-			loop: while (true) {
-				if (TokenScanner.isComment(tok)) {
-					tok= scanner.readNext(true); // next non-comment token
-				}
-				boolean keep= true;
-				switch (tok) {
-					case ITerminalSymbols.TokenNamepublic: keep= Modifier.isPublic(newModifiers); break;
-					case ITerminalSymbols.TokenNameprotected: keep= Modifier.isProtected(newModifiers); break;
-					case ITerminalSymbols.TokenNameprivate: keep= Modifier.isPrivate(newModifiers); break;
-					case ITerminalSymbols.TokenNamestatic: keep= Modifier.isStatic(newModifiers); break;
-					case ITerminalSymbols.TokenNamefinal: keep= Modifier.isFinal(newModifiers); break;
-					case ITerminalSymbols.TokenNameabstract: keep= Modifier.isAbstract(newModifiers); break;
-					case ITerminalSymbols.TokenNamenative: keep= Modifier.isNative(newModifiers); break;
-					case ITerminalSymbols.TokenNamevolatile: keep= Modifier.isVolatile(newModifiers); break;
-					case ITerminalSymbols.TokenNamestrictfp: keep= Modifier.isStrictfp(newModifiers); break;
-					case ITerminalSymbols.TokenNametransient: keep= Modifier.isTransient(newModifiers); break;
-					case ITerminalSymbols.TokenNamesynchronized: keep= Modifier.isSynchronized(newModifiers); break;
-					default:
-						break loop;
-				}
-				tok= getScanner().readNext(false); // include comments
-				int currPos= nextStart;
-				nextStart= getScanner().getCurrentStartOffset();
-				if (!keep) {
-					doTextRemove(currPos, nextStart - currPos, editGroup);
-				}
-			} 
-			int addedModifiers= newModifiers & ~oldModifiers;
-			if (addedModifiers != 0) {
-				if (startPos != nextStart) {
-					int visibilityModifiers= addedModifiers & (Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED);
-					if (visibilityModifiers != 0) {
-						StringBuffer buf= new StringBuffer();
-						ASTRewriteFlattener.printModifiers(visibilityModifiers, buf);
-						doTextInsert(startPos, buf.toString(), editGroup);
-						addedModifiers &= ~visibilityModifiers;
-					}
-				}
-				StringBuffer buf= new StringBuffer();
-				ASTRewriteFlattener.printModifiers(addedModifiers, buf);
-				doTextInsert(nextStart, buf.toString(), editGroup);
-			}
-		} catch (CoreException e) {
-			handleException(e);
-		}
+//		RewriteEvent event= getEvent(parent, property);
+//		if (event == null || event.getChangeKind() != RewriteEvent.REPLACED) {
+//			return;
+//		}
+//		try {
+//			int oldModifiers= ((Integer) event.getOriginalValue()).intValue();
+//			int newModifiers= ((Integer) event.getNewValue()).intValue();
+//			TextEditGroup editGroup= getEditGroup(event);
+//		
+//			TokenScanner scanner= getScanner();
+//
+//			int tok= scanner.readNext(offset, false);
+//			int startPos= scanner.getCurrentStartOffset();
+//			int nextStart= startPos;
+//			loop: while (true) {
+//				if (TokenScanner.isComment(tok)) {
+//					tok= scanner.readNext(true); // next non-comment token
+//				}
+//				boolean keep= true;
+//				switch (tok) {
+//					case ITerminalSymbols.TokenNamepublic: keep= Modifier.isPublic(newModifiers); break;
+//					case ITerminalSymbols.TokenNameprotected: keep= Modifier.isProtected(newModifiers); break;
+//					case ITerminalSymbols.TokenNameprivate: keep= Modifier.isPrivate(newModifiers); break;
+//					case ITerminalSymbols.TokenNamestatic: keep= Modifier.isStatic(newModifiers); break;
+//					case ITerminalSymbols.TokenNamefinal: keep= Modifier.isFinal(newModifiers); break;
+//					case ITerminalSymbols.TokenNameabstract: keep= Modifier.isAbstract(newModifiers); break;
+//					case ITerminalSymbols.TokenNamenative: keep= Modifier.isNative(newModifiers); break;
+//					case ITerminalSymbols.TokenNamevolatile: keep= Modifier.isVolatile(newModifiers); break;
+//					case ITerminalSymbols.TokenNamestrictfp: keep= Modifier.isStrictfp(newModifiers); break;
+//					case ITerminalSymbols.TokenNametransient: keep= Modifier.isTransient(newModifiers); break;
+//					case ITerminalSymbols.TokenNamesynchronized: keep= Modifier.isSynchronized(newModifiers); break;
+//					default:
+//						break loop;
+//				}
+//				tok= getScanner().readNext(false); // include comments
+//				int currPos= nextStart;
+//				nextStart= getScanner().getCurrentStartOffset();
+//				if (!keep) {
+//					doTextRemove(currPos, nextStart - currPos, editGroup);
+//				}
+//			} 
+//			int addedModifiers= newModifiers & ~oldModifiers;
+//			if (addedModifiers != 0) {
+//				if (startPos != nextStart) {
+//					int visibilityModifiers= addedModifiers & (Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED);
+//					if (visibilityModifiers != 0) {
+//						StringBuffer buf= new StringBuffer();
+//						ASTRewriteFlattener.printModifiers(visibilityModifiers, buf);
+//						doTextInsert(startPos, buf.toString(), editGroup);
+//						addedModifiers &= ~visibilityModifiers;
+//					}
+//				}
+//				StringBuffer buf= new StringBuffer();
+//				ASTRewriteFlattener.printModifiers(addedModifiers, buf);
+//				doTextInsert(nextStart, buf.toString(), editGroup);
+//			}
+//		} catch (CoreException e) {
+//			handleException(e);
+//		}
 	}
 	
 	class ModifierRewriter extends ListRewriter {
@@ -1171,46 +1171,46 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 	
 	
 	private int rewriteModifiers2(ASTNode node, ChildListPropertyDescriptor property, int pos) {
-		RewriteEvent event= getEvent(node, property);
-		if (event == null || event.getChangeKind() == RewriteEvent.UNCHANGED) {
+//		RewriteEvent event= getEvent(node, property);
+//		if (event == null || event.getChangeKind() == RewriteEvent.UNCHANGED) {
 			return doVisit(node, property, pos);
-		}
-		RewriteEvent[] children= event.getChildren();
-		boolean isAllInsert= isAllOfKind(children, RewriteEvent.INSERTED);
-		boolean isAllRemove= isAllOfKind(children, RewriteEvent.REMOVED);
-		if (isAllInsert || isAllRemove) {
-			// update pos
-			try {
-				pos= getScanner().getNextStartOffset(pos, false);
-			} catch (CoreException e) {
-				handleException(e);
-			}
-		}
-		
-		int endPos= new ModifierRewriter(this.formatter.ANNOTATION_SEPARATION).rewriteList(node, property, pos, "", " "); //$NON-NLS-1$ //$NON-NLS-2$
-		
-		try {
-			int nextPos= getScanner().getNextStartOffset(endPos, false);
-			
-			boolean lastUnchanged= children[children.length - 1].getChangeKind() != RewriteEvent.UNCHANGED;
-			
-			if (isAllRemove) {
-				doTextRemove(endPos, nextPos - endPos, getEditGroup(children[children.length - 1]));
-				return nextPos;
-			} else if (isAllInsert || (nextPos == endPos && lastUnchanged)) { // see bug 165654
-				RewriteEvent lastChild= children[children.length - 1];
-				String separator;
-				if (lastChild.getNewValue() instanceof Annotation) {
-					separator= this.formatter.ANNOTATION_SEPARATION.getPrefix(getIndent(pos));
-				} else {
-					separator= String.valueOf(' ');
-				}
-				doTextInsert(endPos, separator, getEditGroup(lastChild));
-			}
-		} catch (CoreException e) {
-			handleException(e);
-		}
-		return endPos;
+//		}
+//		RewriteEvent[] children= event.getChildren();
+//		boolean isAllInsert= isAllOfKind(children, RewriteEvent.INSERTED);
+//		boolean isAllRemove= isAllOfKind(children, RewriteEvent.REMOVED);
+//		if (isAllInsert || isAllRemove) {
+//			// update pos
+//			try {
+//				pos= getScanner().getNextStartOffset(pos, false);
+//			} catch (CoreException e) {
+//				handleException(e);
+//			}
+//		}
+//		
+//		int endPos= new ModifierRewriter(this.formatter.ANNOTATION_SEPARATION).rewriteList(node, property, pos, "", " "); //$NON-NLS-1$ //$NON-NLS-2$
+//		
+//		try {
+//			int nextPos= getScanner().getNextStartOffset(endPos, false);
+//			
+//			boolean lastUnchanged= children[children.length - 1].getChangeKind() != RewriteEvent.UNCHANGED;
+//			
+//			if (isAllRemove) {
+//				doTextRemove(endPos, nextPos - endPos, getEditGroup(children[children.length - 1]));
+//				return nextPos;
+//			} else if (isAllInsert || (nextPos == endPos && lastUnchanged)) { // see bug 165654
+//				RewriteEvent lastChild= children[children.length - 1];
+//				String separator;
+//				if (lastChild.getNewValue() instanceof Annotation) {
+//					separator= this.formatter.ANNOTATION_SEPARATION.getPrefix(getIndent(pos));
+//				} else {
+//					separator= String.valueOf(' ');
+//				}
+//				doTextInsert(endPos, separator, getEditGroup(lastChild));
+//			}
+//		} catch (CoreException e) {
+//			handleException(e);
+//		}
+//		return endPos;
 	}
 	
 	
@@ -1463,12 +1463,12 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 			return doVisitUnchangedChildren(node);
 		}
 		int pos= rewriteJavadoc(node, MethodDeclaration.JAVADOC_PROPERTY);
-		if (node.getAST().apiLevel() == JLS2_INTERNAL) {
-			rewriteModifiers(node, MethodDeclaration.MODIFIERS_PROPERTY, pos);
-		} else {
-			pos= rewriteModifiers2(node, MethodDeclaration.MODIFIERS2_PROPERTY, pos);
-			pos= rewriteOptionalTypeParameters(node, MethodDeclaration.TYPE_PARAMETERS_PROPERTY, pos, " ", true, pos != node.getStartPosition()); //$NON-NLS-1$
-		}
+//		if (node.getAST().apiLevel() == JLS2_INTERNAL) {
+//			rewriteModifiers(node, MethodDeclaration.MODIFIERS_PROPERTY, pos);
+//		} else {
+//			pos= rewriteModifiers2(node, MethodDeclaration.MODIFIERS2_PROPERTY, pos);
+//			pos= rewriteOptionalTypeParameters(node, MethodDeclaration.TYPE_PARAMETERS_PROPERTY, pos, " ", true, pos != node.getStartPosition()); //$NON-NLS-1$
+//		}
 		
 		boolean isConstructorChange= isChanged(node, MethodDeclaration.CONSTRUCTOR_PROPERTY);
 		boolean isConstructor= ((Boolean) getOriginalValue(node, MethodDeclaration.CONSTRUCTOR_PROPERTY)).booleanValue();

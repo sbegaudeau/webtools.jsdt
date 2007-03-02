@@ -289,11 +289,14 @@ public class ASTNodes {
 	}
 	
 	public static ChildListPropertyDescriptor getBodyDeclarationsProperty(ASTNode node) {
-		if (node instanceof AbstractTypeDeclaration) {
-			return ((AbstractTypeDeclaration)node).getBodyDeclarationsProperty();
+		if (node instanceof CompilationUnit) {
+			return CompilationUnit.STATEMENTS_PROPERTY;
+		} else if (node instanceof AbstractTypeDeclaration) {
+				return ((AbstractTypeDeclaration)node).getBodyDeclarationsProperty();
 		} else if (node instanceof AnonymousClassDeclaration) {
 			return AnonymousClassDeclaration.BODY_DECLARATIONS_PROPERTY;
 		}
+		
 		// should not happen.
 		Assert.isTrue(false); 
 		return null;

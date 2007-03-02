@@ -111,41 +111,41 @@ public class ModifierRewrite {
 		// remove modifiers
 		int newModifiers= modfiers & consideredFlags;
 		
-		List originalList= fModifierRewrite.getOriginalList();
-		for (int i= 0; i < originalList.size(); i++) {
-			ASTNode curr= (ASTNode) originalList.get(i);
-			if (curr instanceof Modifier) {
-				int flag= ((Modifier)curr).getKeyword().toFlagValue();
-				if ((consideredFlags & flag) != 0) {
-					if ((newModifiers & flag) == 0) {
-						fModifierRewrite.remove(curr, editGroup);
-					}
-					newModifiers &= ~flag;
-				}
-			}
-		}
-		
-		// find last annotation
-		IExtendedModifier lastAnnotation= null;
-		List extendedList= fModifierRewrite.getRewrittenList();
-		for (int i= 0; i < extendedList.size(); i++) {
-			IExtendedModifier curr= (IExtendedModifier) extendedList.get(i);
-			if (curr.isAnnotation())
-				lastAnnotation= curr;
-		}
-		
-		// add modifiers
-		List newNodes= ASTNodeFactory.newModifiers(fAst, newModifiers);
-		for (int i= 0; i < newNodes.size(); i++) {
-			Modifier curr= (Modifier) newNodes.get(i);
-			if ((curr.getKeyword().toFlagValue() & VISIBILITY_MODIFIERS) != 0) {
-				if (lastAnnotation != null)
-					fModifierRewrite.insertAfter(curr, (ASTNode) lastAnnotation, editGroup);
-				else
-					fModifierRewrite.insertFirst(curr, editGroup);
-			} else {
-				fModifierRewrite.insertLast(curr, editGroup);
-			}
-		}
-	}
+//		List originalList= fModifierRewrite.getOriginalList();
+//		for (int i= 0; i < originalList.size(); i++) {
+//			ASTNode curr= (ASTNode) originalList.get(i);
+//			if (curr instanceof Modifier) {
+//				int flag= ((Modifier)curr).getKeyword().toFlagValue();
+//				if ((consideredFlags & flag) != 0) {
+//					if ((newModifiers & flag) == 0) {
+//						fModifierRewrite.remove(curr, editGroup);
+//					}
+//					newModifiers &= ~flag;
+//				}
+//			}
+//		}
+//		
+//		// find last annotation
+//		IExtendedModifier lastAnnotation= null;
+//		List extendedList= fModifierRewrite.getRewrittenList();
+//		for (int i= 0; i < extendedList.size(); i++) {
+//			IExtendedModifier curr= (IExtendedModifier) extendedList.get(i);
+//			if (curr.isAnnotation())
+//				lastAnnotation= curr;
+//		}
+//		
+//		// add modifiers
+//		List newNodes= ASTNodeFactory.newModifiers(fAst, newModifiers);
+//		for (int i= 0; i < newNodes.size(); i++) {
+//			Modifier curr= (Modifier) newNodes.get(i);
+//			if ((curr.getKeyword().toFlagValue() & VISIBILITY_MODIFIERS) != 0) {
+//				if (lastAnnotation != null)
+//					fModifierRewrite.insertAfter(curr, (ASTNode) lastAnnotation, editGroup);
+//				else
+//					fModifierRewrite.insertFirst(curr, editGroup);
+//			} else {
+//				fModifierRewrite.insertLast(curr, editGroup);
+//			}
+//		}
+//	}
 }

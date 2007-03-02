@@ -80,11 +80,11 @@ class NaiveASTFlattener extends ASTVisitor {
 	 * (element type: <code>IExtendedModifiers</code>)
 	 */
 	void printModifiers(List ext) {
-		for (Iterator it = ext.iterator(); it.hasNext(); ) {
-			ASTNode p = (ASTNode) it.next();
-			p.accept(this);
-			this.buffer.append(" ");//$NON-NLS-1$
-		}
+//		for (Iterator it = ext.iterator(); it.hasNext(); ) {
+//			ASTNode p = (ASTNode) it.next();
+//			p.accept(this);
+//			this.buffer.append(" ");//$NON-NLS-1$
+//		}
 	}		
 	
 	/**
@@ -94,39 +94,39 @@ class NaiveASTFlattener extends ASTVisitor {
 	 * @param modifiers the modifier flags
 	 */
 	void printModifiers(int modifiers) {
-		if (Modifier.isPublic(modifiers)) {
-			this.buffer.append("public ");//$NON-NLS-1$
-		}
-		if (Modifier.isProtected(modifiers)) {
-			this.buffer.append("protected ");//$NON-NLS-1$
-		}
-		if (Modifier.isPrivate(modifiers)) {
-			this.buffer.append("private ");//$NON-NLS-1$
-		}
-		if (Modifier.isStatic(modifiers)) {
-			this.buffer.append("static ");//$NON-NLS-1$
-		}
-		if (Modifier.isAbstract(modifiers)) {
-			this.buffer.append("abstract ");//$NON-NLS-1$
-		}
-		if (Modifier.isFinal(modifiers)) {
-			this.buffer.append("final ");//$NON-NLS-1$
-		}
-		if (Modifier.isSynchronized(modifiers)) {
-			this.buffer.append("synchronized ");//$NON-NLS-1$
-		}
-		if (Modifier.isVolatile(modifiers)) {
-			this.buffer.append("volatile ");//$NON-NLS-1$
-		}
-		if (Modifier.isNative(modifiers)) {
-			this.buffer.append("native ");//$NON-NLS-1$
-		}
-		if (Modifier.isStrictfp(modifiers)) {
-			this.buffer.append("strictfp ");//$NON-NLS-1$
-		}
-		if (Modifier.isTransient(modifiers)) {
-			this.buffer.append("transient ");//$NON-NLS-1$
-		}
+//		if (Modifier.isPublic(modifiers)) {
+//			this.buffer.append("public ");//$NON-NLS-1$
+//		}
+//		if (Modifier.isProtected(modifiers)) {
+//			this.buffer.append("protected ");//$NON-NLS-1$
+//		}
+//		if (Modifier.isPrivate(modifiers)) {
+//			this.buffer.append("private ");//$NON-NLS-1$
+//		}
+//		if (Modifier.isStatic(modifiers)) {
+//			this.buffer.append("static ");//$NON-NLS-1$
+//		}
+//		if (Modifier.isAbstract(modifiers)) {
+//			this.buffer.append("abstract ");//$NON-NLS-1$
+//		}
+//		if (Modifier.isFinal(modifiers)) {
+//			this.buffer.append("final ");//$NON-NLS-1$
+//		}
+//		if (Modifier.isSynchronized(modifiers)) {
+//			this.buffer.append("synchronized ");//$NON-NLS-1$
+//		}
+//		if (Modifier.isVolatile(modifiers)) {
+//			this.buffer.append("volatile ");//$NON-NLS-1$
+//		}
+//		if (Modifier.isNative(modifiers)) {
+//			this.buffer.append("native ");//$NON-NLS-1$
+//		}
+//		if (Modifier.isStrictfp(modifiers)) {
+//			this.buffer.append("strictfp ");//$NON-NLS-1$
+//		}
+//		if (Modifier.isTransient(modifiers)) {
+//			this.buffer.append("transient ");//$NON-NLS-1$
+//		}
 	}		
 	
 	/*

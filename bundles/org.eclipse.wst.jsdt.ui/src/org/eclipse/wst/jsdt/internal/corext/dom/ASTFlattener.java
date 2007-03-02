@@ -83,39 +83,39 @@ public class ASTFlattener extends GenericVisitor {
 	 * @param modifiers the modifier flags
 	 */
 	private void printModifiers(int modifiers) {
-		if (Modifier.isPublic(modifiers)) {
-			this.fBuffer.append("public ");//$NON-NLS-1$
-		}
-		if (Modifier.isProtected(modifiers)) {
-			this.fBuffer.append("protected ");//$NON-NLS-1$
-		}
-		if (Modifier.isPrivate(modifiers)) {
-			this.fBuffer.append("private ");//$NON-NLS-1$
-		}
-		if (Modifier.isStatic(modifiers)) {
-			this.fBuffer.append("static ");//$NON-NLS-1$
-		}
-		if (Modifier.isAbstract(modifiers)) {
-			this.fBuffer.append("abstract ");//$NON-NLS-1$
-		}
-		if (Modifier.isFinal(modifiers)) {
-			this.fBuffer.append("final ");//$NON-NLS-1$
-		}
-		if (Modifier.isSynchronized(modifiers)) {
-			this.fBuffer.append("synchronized ");//$NON-NLS-1$
-		}
-		if (Modifier.isVolatile(modifiers)) {
-			this.fBuffer.append("volatile ");//$NON-NLS-1$
-		}
-		if (Modifier.isNative(modifiers)) {
-			this.fBuffer.append("native ");//$NON-NLS-1$
-		}
-		if (Modifier.isStrictfp(modifiers)) {
-			this.fBuffer.append("strictfp ");//$NON-NLS-1$
-		}
-		if (Modifier.isTransient(modifiers)) {
-			this.fBuffer.append("transient ");//$NON-NLS-1$
-		}
+//		if (Modifier.isPublic(modifiers)) {
+//			this.fBuffer.append("public ");//$NON-NLS-1$
+//		}
+//		if (Modifier.isProtected(modifiers)) {
+//			this.fBuffer.append("protected ");//$NON-NLS-1$
+//		}
+//		if (Modifier.isPrivate(modifiers)) {
+//			this.fBuffer.append("private ");//$NON-NLS-1$
+//		}
+//		if (Modifier.isStatic(modifiers)) {
+//			this.fBuffer.append("static ");//$NON-NLS-1$
+//		}
+//		if (Modifier.isAbstract(modifiers)) {
+//			this.fBuffer.append("abstract ");//$NON-NLS-1$
+//		}
+//		if (Modifier.isFinal(modifiers)) {
+//			this.fBuffer.append("final ");//$NON-NLS-1$
+//		}
+//		if (Modifier.isSynchronized(modifiers)) {
+//			this.fBuffer.append("synchronized ");//$NON-NLS-1$
+//		}
+//		if (Modifier.isVolatile(modifiers)) {
+//			this.fBuffer.append("volatile ");//$NON-NLS-1$
+//		}
+//		if (Modifier.isNative(modifiers)) {
+//			this.fBuffer.append("native ");//$NON-NLS-1$
+//		}
+//		if (Modifier.isStrictfp(modifiers)) {
+//			this.fBuffer.append("strictfp ");//$NON-NLS-1$
+//		}
+//		if (Modifier.isTransient(modifiers)) {
+//			this.fBuffer.append("transient ");//$NON-NLS-1$
+//		}
 	}
 
 	/*

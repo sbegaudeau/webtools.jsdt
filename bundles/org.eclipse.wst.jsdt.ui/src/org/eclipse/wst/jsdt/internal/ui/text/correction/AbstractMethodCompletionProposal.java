@@ -83,7 +83,7 @@ public abstract class AbstractMethodCompletionProposal extends LinkedCorrectionP
 			astRoot= ASTResolving.createQuickFixAST(getCompilationUnit(), null);
 			newTypeDecl= astRoot.findDeclaringNode(fSenderBinding.getKey());
 		}
-		createImportRewrite(astRoot);
+ 		createImportRewrite(astRoot);
 		
 		if (newTypeDecl != null) {
 			ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
