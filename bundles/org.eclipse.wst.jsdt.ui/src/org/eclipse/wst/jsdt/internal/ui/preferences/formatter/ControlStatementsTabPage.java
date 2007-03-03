@@ -45,32 +45,35 @@ public class ControlStatementsTabPage extends ModifyDialogTabPage {
 	
 	private final String PREVIEW=
 	createPreviewHeader(FormatterMessages.ControlStatementsTabPage_preview_header) + 
-	"class Example {" +	//$NON-NLS-1$	
-	"  void bar() {" +	//$NON-NLS-1$
-	"    do {} while (true);" +	//$NON-NLS-1$
-	"    try {} catch (Exception e) { } finally { }" +	//$NON-NLS-1$
-	"  }" +	//$NON-NLS-1$
-	"  void foo2() {" +	//$NON-NLS-1$
-	"    if (true) { " + //$NON-NLS-1$
-	"      return;" + //$NON-NLS-1$
-	"    }" + //$NON-NLS-1$
-	"    if (true) {" + //$NON-NLS-1$
-	"      return;" + //$NON-NLS-1$
-	"    } else if (false) {" +	//$NON-NLS-1$
-	"      return; " + //$NON-NLS-1$
-	"    } else {" + //$NON-NLS-1$
-	"      return;" + //$NON-NLS-1$
-	"    }" + //$NON-NLS-1$
-	"  }" + //$NON-NLS-1$
-	"  void foo(int state) {" + //$NON-NLS-1$
-	"    if (true) return;" + //$NON-NLS-1$
-	"    if (true) " + //$NON-NLS-1$
-	"      return;" + //$NON-NLS-1$
-	"    else if (false)" + //$NON-NLS-1$
-	"      return;" + //$NON-NLS-1$
-	"    else return;" + //$NON-NLS-1$
-	"  }" + //$NON-NLS-1$
-	"}"; //$NON-NLS-1$
+	"function bar() {\n" +	//$NON-NLS-1$
+	"  do {} while (true);\n" +	//$NON-NLS-1$
+	"}\n" +	//$NON-NLS-1$
+	"function foo2() {\n" +	//$NON-NLS-1$
+	"  if (true) {\n" + //$NON-NLS-1$
+	"    return;\n" + //$NON-NLS-1$
+	"  }\n" + //$NON-NLS-1$
+	"  if (true) {\n" + //$NON-NLS-1$
+	"    return;\n" + //$NON-NLS-1$
+	"  } else if (false) {\n" +	//$NON-NLS-1$
+	"    return;\n" + //$NON-NLS-1$
+	"  } else {\n" + //$NON-NLS-1$
+	"    return;\n" + //$NON-NLS-1$
+	"  }\n" + //$NON-NLS-1$
+	"}\n" + //$NON-NLS-1$
+	"function foo(state) {\n" + //$NON-NLS-1$
+	"  if (true) return;\n" + //$NON-NLS-1$
+	"  if (true)\n" + //$NON-NLS-1$
+	"    return;\n" + //$NON-NLS-1$
+	"  else if (false)\n" + //$NON-NLS-1$
+	"    return;\n" + //$NON-NLS-1$
+	"  else return;\n" + //$NON-NLS-1$
+	"}\n" + //$NON-NLS-1$
+	"function foo4(n) {\n" + //$NON-NLS-1$
+	"  if ( n < 0 ) {" + //$NON-NLS-1$
+	"    throw myException;\n" + //$NON-NLS-1$
+	"  }\n" + //$NON-NLS-1$
+	"}\n" + //$NON-NLS-1$
+	"try { a = foo3(b); } catch (e) { a = \"ERROR\"; } finally { c = a; }"; //$NON-NLS-1$
 	
 	
 	

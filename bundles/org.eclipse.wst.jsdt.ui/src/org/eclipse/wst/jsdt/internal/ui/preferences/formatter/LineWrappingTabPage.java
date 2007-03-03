@@ -354,74 +354,77 @@ public class LineWrappingTabPage extends ModifyDialogTabPage {
 
 	private final Category fCompactIfCategory= new Category(
 	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_COMPACT_IF,
-	    "class Example {" + //$NON-NLS-1$
-	    "int foo(int argument) {" + //$NON-NLS-1$
-	    "  if (argument==0) return 0;" + //$NON-NLS-1$
-	    "  if (argument==1) return 42; else return 43;" + //$NON-NLS-1$	
-	    "}}", //$NON-NLS-1$
+	    "function foo(int argument) {\n" + //$NON-NLS-1$
+	    "  if (argument==0)\n" + //$NON-NLS-1$
+	    "    return 0;\n" + //$NON-NLS-1$
+	    "  if (argument==1)\n" + //$NON-NLS-1$
+	    "    return 42;\n" + //$NON-NLS-1$
+	    "  else\n" + //$NON-NLS-1$
+	    "    return 43;\n" + //$NON-NLS-1$	
+	    "}", //$NON-NLS-1$
 	    FormatterMessages.LineWrappingTabPage_compact_if_else
 	);
 	
 
-	private final Category fTypeDeclarationSuperclassCategory= new Category(
-	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_SUPERCLASS_IN_TYPE_DECLARATION,
-	    "class Example extends OtherClass {}", //$NON-NLS-1$
-	    FormatterMessages.LineWrappingTabPage_extends_clause
-	);
+//	private final Category fTypeDeclarationSuperclassCategory= new Category(
+//	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_SUPERCLASS_IN_TYPE_DECLARATION,
+//	    "class Example extends OtherClass {}", //$NON-NLS-1$
+//	    FormatterMessages.LineWrappingTabPage_extends_clause
+//	);
+//	
+//
+//	private final Category fTypeDeclarationSuperinterfacesCategory= new Category(
+//	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_SUPERINTERFACES_IN_TYPE_DECLARATION,
+//	    "class Example implements I1, I2, I3 {}", //$NON-NLS-1$
+//	    FormatterMessages.LineWrappingTabPage_implements_clause
+//	);
 	
-
-	private final Category fTypeDeclarationSuperinterfacesCategory= new Category(
-	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_SUPERINTERFACES_IN_TYPE_DECLARATION,
-	    "class Example implements I1, I2, I3 {}", //$NON-NLS-1$
-	    FormatterMessages.LineWrappingTabPage_implements_clause
-	);
 	
-	
-	private final Category fConstructorDeclarationsParametersCategory= new Category(
-	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_PARAMETERS_IN_CONSTRUCTOR_DECLARATION,
-	    "class Example {Example(int arg1, int arg2, int arg3, int arg4, int arg5, int arg6) { this();}" + //$NON-NLS-1$
-	    "Example() {}}", //$NON-NLS-1$
-	    FormatterMessages.LineWrappingTabPage_parameters
-	); 
+//	private final Category fConstructorDeclarationsParametersCategory= new Category(
+//	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_PARAMETERS_IN_CONSTRUCTOR_DECLARATION,
+//	    "class Example {Example(int arg1, int arg2, int arg3, int arg4, int arg5, int arg6) { this();}" + //$NON-NLS-1$
+//	    "Example() {}}", //$NON-NLS-1$
+//	    FormatterMessages.LineWrappingTabPage_parameters
+//	); 
 
 	private final Category fMethodDeclarationsParametersCategory= new Category(
 	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_PARAMETERS_IN_METHOD_DECLARATION,
-	    "class Example {void foo(int arg1, int arg2, int arg3, int arg4, int arg5, int arg6) {}}", //$NON-NLS-1$
+	    "function foo(arg1, arg2, arg3, arg4, arg5, arg6) {}}", //$NON-NLS-1$
 	    FormatterMessages.LineWrappingTabPage_parameters
 	); 
 	
 	private final Category fMessageSendArgumentsCategory= new Category(
 	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_ARGUMENTS_IN_METHOD_INVOCATION,
-	    "class Example {void foo() {Other.bar( 100, 200, 300, 400, 500, 600, 700, 800, 900 );}}", //$NON-NLS-1$
+	    "function foo() {Other.bar( 100, 200, 300, 400, 500, 600, 700, 800, 900 );}", //$NON-NLS-1$
 	    FormatterMessages.LineWrappingTabPage_arguments
 	); 
 
 	private final Category fMessageSendSelectorCategory= new Category(
 	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_SELECTOR_IN_METHOD_INVOCATION,
-	    "class Example {int foo(Some a) {return a.getFirst();}}", //$NON-NLS-1$
+	    "function foofoofoofoofoo(aLongParmName) {return aLongParmName.getFirstSomething();}", //$NON-NLS-1$
 	    FormatterMessages.LineWrappingTabPage_qualified_invocations
 	);
 	
-	private final Category fMethodThrowsClauseCategory= new Category(
-	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_THROWS_CLAUSE_IN_METHOD_DECLARATION, 
-	    "class Example {" + //$NON-NLS-1$
-	    "int foo() throws FirstException, SecondException, ThirdException {" + //$NON-NLS-1$
-	    "  return Other.doSomething();}}", //$NON-NLS-1$
-	    FormatterMessages.LineWrappingTabPage_throws_clause
-	);
+//	private final Category fMethodThrowsClauseCategory= new Category(
+//	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_THROWS_CLAUSE_IN_METHOD_DECLARATION, 
+//	    "class Example {" + //$NON-NLS-1$
+//	    "int foo() throws FirstException, SecondException, ThirdException {" + //$NON-NLS-1$
+//	    "  return Other.doSomething();}}", //$NON-NLS-1$
+//	    FormatterMessages.LineWrappingTabPage_throws_clause
+//	);
 
-	private final Category fConstructorThrowsClauseCategory= new Category(
-	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_THROWS_CLAUSE_IN_CONSTRUCTOR_DECLARATION, 
-	    "class Example {" + //$NON-NLS-1$
-	    "Example() throws FirstException, SecondException, ThirdException {" + //$NON-NLS-1$
-	    "  return Other.doSomething();}}", //$NON-NLS-1$
-	    FormatterMessages.LineWrappingTabPage_throws_clause
-	);
+//	private final Category fConstructorThrowsClauseCategory= new Category(
+//	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_THROWS_CLAUSE_IN_CONSTRUCTOR_DECLARATION, 
+//	    "class Example {" + //$NON-NLS-1$
+//	    "Example() throws FirstException, SecondException, ThirdException {" + //$NON-NLS-1$
+//	    "  return Other.doSomething();}}", //$NON-NLS-1$
+//	    FormatterMessages.LineWrappingTabPage_throws_clause
+//	);
 
 	
 	private final Category fAllocationExpressionArgumentsCategory= new Category(
 	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_ARGUMENTS_IN_ALLOCATION_EXPRESSION,
-	    "class Example {SomeClass foo() {return new SomeClass(100, 200, 300, 400, 500, 600, 700, 800, 900 );}}", //$NON-NLS-1$
+	    "function foo() {return new SomeClass(100, 200, 300, 400, 500, 600, 700, 800, 900 );}", //$NON-NLS-1$
 	    FormatterMessages.LineWrappingTabPage_object_allocation
 	);
 	
@@ -433,65 +436,71 @@ public class LineWrappingTabPage extends ModifyDialogTabPage {
 	
 	private final Category fArrayInitializerExpressionsCategory= new Category(
 	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_EXPRESSIONS_IN_ARRAY_INITIALIZER,
-	    "class Example {int [] fArray= {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};}", //$NON-NLS-1$
+	    "function foo() { fArray= [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];}", //$NON-NLS-1$
 	    FormatterMessages.LineWrappingTabPage_array_init
 	);
 	
-	private final Category fExplicitConstructorArgumentsCategory= new Category(
-	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_ARGUMENTS_IN_EXPLICIT_CONSTRUCTOR_CALL,
-	    "class Example extends AnotherClass {Example() {super(100, 200, 300, 400, 500, 600, 700);}}", //$NON-NLS-1$
-	    FormatterMessages.LineWrappingTabPage_explicit_constructor_invocations
-	);
+	private final Category fObjectInitializerExpressionsCategory= new Category(
+		    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_EXPRESSIONS_IN_ARRAY_INITIALIZER,
+		    "anObject = { color:'red', wheels:4, engine:{ cylinders:4, size:2.2 } };", //$NON-NLS-1$
+		    FormatterMessages.LineWrappingTabPage_object_init
+		);
+	
+//	private final Category fExplicitConstructorArgumentsCategory= new Category(
+//	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_ARGUMENTS_IN_EXPLICIT_CONSTRUCTOR_CALL,
+//	    "class Example extends AnotherClass {Example() {super(100, 200, 300, 400, 500, 600, 700);}}", //$NON-NLS-1$
+//	    FormatterMessages.LineWrappingTabPage_explicit_constructor_invocations
+//	);
 
 	private final Category fConditionalExpressionCategory= new Category(
 	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_CONDITIONAL_EXPRESSION,
-	    "class Example extends AnotherClass {int Example(boolean Argument) {return argument ? 100000 : 200000;}}", //$NON-NLS-1$
+	    "function exampleFunction( anArgument) {return anArgument ? 100000 : 200000;}", //$NON-NLS-1$
 	    FormatterMessages.LineWrappingTabPage_conditionals
 	);
 
 	private final Category fBinaryExpressionCategory= new Category(
 	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_BINARY_EXPRESSION,
-	    "class Example extends AnotherClass {" + //$NON-NLS-1$
-	    "int foo() {" + //$NON-NLS-1$
-	    "  int sum= 100 + 200 + 300 + 400 + 500 + 600 + 700 + 800;" + //$NON-NLS-1$
-	    "  int product= 1 * 2 * 3 * 4 * 5 * 6 * 7 * 8 * 9 * 10;" + //$NON-NLS-1$
-	    "  boolean val= true && false && true && false && true;" +  //$NON-NLS-1$
-	    "  return product / sum;}}", //$NON-NLS-1$
+	    "function foo() {" + //$NON-NLS-1$
+	    "  var sum= 100 + 200 + 300 + 400 + 500 + 600 + 700 + 800;" + //$NON-NLS-1$
+	    "  var product= 1 * 2 * 3 * 4 * 5 * 6 * 7 * 8 * 9 * 10;" + //$NON-NLS-1$
+	    "  var val= true && false && true && false && true;" +  //$NON-NLS-1$
+	    "  return product / sum;}", //$NON-NLS-1$
 	    FormatterMessages.LineWrappingTabPage_binary_exprs
 	);
 	
-	private final Category fEnumConstArgumentsCategory= new Category(
-	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_ARGUMENTS_IN_ENUM_CONSTANT,
-	    "enum Example {" + //$NON-NLS-1$
-	    "GREEN(0, 255, 0), RED(255, 0, 0)  }", //$NON-NLS-1$
-	    FormatterMessages.LineWrappingTabPage_enum_constant_arguments
-	);
+//	private final Category fEnumConstArgumentsCategory= new Category(
+//	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_ARGUMENTS_IN_ENUM_CONSTANT,
+//	    "enum Example {" + //$NON-NLS-1$
+//	    "GREEN(0, 255, 0), RED(255, 0, 0)  }", //$NON-NLS-1$
+//	    FormatterMessages.LineWrappingTabPage_enum_constant_arguments
+//	);
 	
-	private final Category fEnumDeclInterfacesCategory= new Category(
-	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_SUPERINTERFACES_IN_ENUM_DECLARATION,
-	    "enum Example implements A, B, C {" + //$NON-NLS-1$
-	    "}", //$NON-NLS-1$
-	    FormatterMessages.LineWrappingTabPage_enum_superinterfaces
-	);
-	
-	private final Category fEnumConstantsCategory= new Category(
-	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_ENUM_CONSTANTS,
-	    "enum Example {" + //$NON-NLS-1$
-	    "CANCELLED, RUNNING, WAITING, FINISHED }" + //$NON-NLS-1$
-	    "enum Example {" + //$NON-NLS-1$
-	    "GREEN(0, 255, 0), RED(255, 0, 0)  }", //$NON-NLS-1$
-	    FormatterMessages.LineWrappingTabPage_enum_constants
-	);
+//	private final Category fEnumDeclInterfacesCategory= new Category(
+//	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_SUPERINTERFACES_IN_ENUM_DECLARATION,
+//	    "enum Example implements A, B, C {" + //$NON-NLS-1$
+//	    "}", //$NON-NLS-1$
+//	    FormatterMessages.LineWrappingTabPage_enum_superinterfaces
+//	);
+//	
+//	private final Category fEnumConstantsCategory= new Category(
+//	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_ENUM_CONSTANTS,
+//	    "enum Example {" + //$NON-NLS-1$
+//	    "CANCELLED, RUNNING, WAITING, FINISHED }" + //$NON-NLS-1$
+//	    "enum Example {" + //$NON-NLS-1$
+//	    "GREEN(0, 255, 0), RED(255, 0, 0)  }", //$NON-NLS-1$
+//	    FormatterMessages.LineWrappingTabPage_enum_constants
+//	);
 	
 	private final Category fAssignmentCategory= new Category(
 		    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_ASSIGNMENT,
-		    "class Example {" + //$NON-NLS-1$
-		    "private static final String string = \"TextTextText\";" + //$NON-NLS-1$
-		    "void foo() {" + //$NON-NLS-1$
-		    "for (int i = 0; i < 10; i++) {}" + //$NON-NLS-1$
-		    "String s;" + //$NON-NLS-1$
-		    "s = \"TextTextText\";}}", //$NON-NLS-1$
-	        FormatterMessages.LineWrappingTabPage_assignment_alignment
+		    "var string = \"TextTextText\";\n" + //$NON-NLS-1$
+		    "function foo() {\n" + //$NON-NLS-1$
+		    "    for (int i = 0; i < 10; i++) {\n" + //$NON-NLS-1$
+		    "    }\n" + //$NON-NLS-1$
+		    "    var s;\n" + //$NON-NLS-1$
+		    "    s = \"TextTextText\";\n" + //$NON-NLS-1$
+		    "}\n", //$NON-NLS-1$
+		    FormatterMessages.LineWrappingTabPage_assignment_alignment
 		);
 	
 	/**
@@ -575,27 +584,27 @@ public class LineWrappingTabPage extends ModifyDialogTabPage {
 	 */
 	protected List createCategories() {
 
-		final Category classDeclarations= new Category(FormatterMessages.LineWrappingTabPage_class_decls); 
-		classDeclarations.children.add(fTypeDeclarationSuperclassCategory);
-		classDeclarations.children.add(fTypeDeclarationSuperinterfacesCategory);
+//		final Category classDeclarations= new Category(FormatterMessages.LineWrappingTabPage_class_decls); 
+//		classDeclarations.children.add(fTypeDeclarationSuperclassCategory);
+//		classDeclarations.children.add(fTypeDeclarationSuperinterfacesCategory);
 		
-		final Category constructorDeclarations= new Category(null, null, FormatterMessages.LineWrappingTabPage_constructor_decls); 
-		constructorDeclarations.children.add(fConstructorDeclarationsParametersCategory);
-		constructorDeclarations.children.add(fConstructorThrowsClauseCategory);
+//		final Category constructorDeclarations= new Category(null, null, FormatterMessages.LineWrappingTabPage_constructor_decls); 
+//		constructorDeclarations.children.add(fConstructorDeclarationsParametersCategory);
+//		constructorDeclarations.children.add(fConstructorThrowsClauseCategory);
 
 		final Category methodDeclarations= new Category(null, null, FormatterMessages.LineWrappingTabPage_method_decls); 
 		methodDeclarations.children.add(fMethodDeclarationsParametersCategory);
-		methodDeclarations.children.add(fMethodThrowsClauseCategory);
+//		methodDeclarations.children.add(fMethodThrowsClauseCategory);
 
-		final Category enumDeclarations= new Category(FormatterMessages.LineWrappingTabPage_enum_decls); 
-		enumDeclarations.children.add(fEnumConstantsCategory);
-		enumDeclarations.children.add(fEnumDeclInterfacesCategory);
-		enumDeclarations.children.add(fEnumConstArgumentsCategory);
+//		final Category enumDeclarations= new Category(FormatterMessages.LineWrappingTabPage_enum_decls); 
+//		enumDeclarations.children.add(fEnumConstantsCategory);
+//		enumDeclarations.children.add(fEnumDeclInterfacesCategory);
+//		enumDeclarations.children.add(fEnumConstArgumentsCategory);
 		
 		final Category functionCalls= new Category(FormatterMessages.LineWrappingTabPage_function_calls); 
 		functionCalls.children.add(fMessageSendArgumentsCategory);
 		functionCalls.children.add(fMessageSendSelectorCategory);
-		functionCalls.children.add(fExplicitConstructorArgumentsCategory);
+//		functionCalls.children.add(fExplicitConstructorArgumentsCategory);
 		functionCalls.children.add(fAllocationExpressionArgumentsCategory);
 		functionCalls.children.add(fQualifiedAllocationExpressionCategory);
 		
@@ -603,16 +612,17 @@ public class LineWrappingTabPage extends ModifyDialogTabPage {
 		expressions.children.add(fBinaryExpressionCategory);
 		expressions.children.add(fConditionalExpressionCategory);
 		expressions.children.add(fArrayInitializerExpressionsCategory);
+		expressions.children.add(fObjectInitializerExpressionsCategory);
 		expressions.children.add(fAssignmentCategory);
 		
 		final Category statements= new Category(FormatterMessages.LineWrappingTabPage_statements); 
 		statements.children.add(fCompactIfCategory);
 		
 		final List root= new ArrayList();
-		root.add(classDeclarations);
-		root.add(constructorDeclarations);
+//		root.add(classDeclarations);
+//		root.add(constructorDeclarations);
 		root.add(methodDeclarations);
-		root.add(enumDeclarations);
+//		root.add(enumDeclarations);
 		root.add(functionCalls);
 		root.add(expressions);
 		root.add(statements);

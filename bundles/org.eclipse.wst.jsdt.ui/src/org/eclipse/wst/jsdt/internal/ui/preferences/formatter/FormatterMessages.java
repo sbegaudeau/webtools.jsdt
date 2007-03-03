@@ -257,6 +257,8 @@ final class FormatterMessages extends NLS {
 	public static String WhiteSpaceOptions_after_ellipsis;
 	public static String WhiteSpaceOptions_return_with_parenthesized_expression;
 	public static String WhiteSpaceOptions_throw_with_parenthesized_expression;
+
+	// ===[ LineWrapping ]====================================================
 	public static String LineWrappingTabPage_compact_if_else;
 	public static String LineWrappingTabPage_extends_clause;
 	public static String LineWrappingTabPage_enum_constant_arguments;
@@ -304,7 +306,9 @@ final class FormatterMessages extends NLS {
 	public static String LineWrappingTabPage_error_invalid_value;
 	public static String LineWrappingTabPage_enum_superinterfaces;
 	public static String LineWrappingTabPage_assignment_alignment;
-	
+	public static String LineWrappingTabPage_function_decls;
+	public static String LineWrappingTabPage_object_init;
+
 	public static String BlankLinesTabPage_preview_header;
 	public static String BlankLinesTabPage_compilation_unit_group_title;
 	public static String BlankLinesTabPage_compilation_unit_option_before_package;
@@ -322,6 +326,13 @@ final class FormatterMessages extends NLS {
 	public static String BlankLinesTabPage_class_option_at_beginning_of_method_body;
 	public static String BlankLinesTabPage_blank_lines_group_title;
 	public static String BlankLinesTabPage_blank_lines_option_empty_lines_to_preserve;
+	public static String BlankLinesTabPage_function_group_title;
+	public static String BlankLinesTabPage_function_option_before_first_decl;
+	public static String BlankLinesTabPage_function_option_before_decls_of_same_kind;
+	public static String BlankLinesTabPage_function_option_before_field_decls;
+	public static String BlankLinesTabPage_function_option_before_function_decls;
+	public static String BlankLinesTabPage_function_option_at_beginning_of_function_body;
+
 	public static String BracesTabPage_preview_header;
 	public static String BracesTabPage_position_same_line;
 	public static String BracesTabPage_position_next_line;
@@ -340,9 +351,15 @@ final class FormatterMessages extends NLS {
 	public static String BracesTabPage_option_enum_declaration;
 	public static String BracesTabPage_option_enumconst_declaration;
 	public static String BracesTabPage_option_annotation_type_declaration;
-	
+	public static String BracesTabPage_option_function_declaration;
+	public static String BracesTabPage_option_object_initializer;
+	public static String BracesTabPage_option_keep_empty_object_initializer_on_one_line;
+
+
 	public static String CodingStyleConfigurationBlock_preview_title;
 	
+
+	// ===[ Comments ]========================================================
 	public static String CommentsTabPage_group1_title;
 	public static String commentsTabPage_enable_javadoc_comment_formatting;
 	public static String CommentsTabPage_enable_line_comment_formatting;
@@ -421,6 +438,11 @@ final class FormatterMessages extends NLS {
 	public static String NewLinesTabPage_array_group_option_before_closing_brace_of_array_initializer;
 	public static String NewLinesTabPage_annotations_group_title;
 	public static String NewLinesTabPage_annotations_group_option_after_annotation;
+	public static String NewLinesTabPage_newlines_group_option_empty_function_body;
+	public static String NewLinesTabPage_objectInitializer_group_title;
+	public static String NewLinesTabPage_object_group_option_after_opening_brace_of_object_initializer;
+	public static String NewLinesTabPage_object_group_option_before_closing_brace_of_object_initializer;
+
 	public static String ProfileManager_default_profile_name;
 	public static String ProfileManager_eclipse_profile_name;
 	public static String ProfileManager_java_conventions_profile_name;
