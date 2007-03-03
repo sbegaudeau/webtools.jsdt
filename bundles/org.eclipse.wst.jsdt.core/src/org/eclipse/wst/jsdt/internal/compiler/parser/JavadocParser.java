@@ -675,6 +675,31 @@ public class JavadocParser extends AbstractCommentParser {
 		return valid;
 	}
 
+	private boolean parseExtends() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	private boolean parseType() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	private boolean parseNamespace() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	private boolean parseMember() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	private boolean parseBase() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	/*
 	 * Push a param name in ast node stack.
 	 */
