@@ -15,6 +15,8 @@ import java.util.List;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 
 /**
@@ -699,6 +701,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 		int end = this.tagSourceEnd;
 		boolean tokenWhiteSpace = this.scanner.tokenizeWhiteSpace;
 		this.scanner.tokenizeWhiteSpace = true;
+		TypeReference []typeReference=null;
 		
 		// Verify that there are whitespaces after tag
 		boolean isCompletionParser = (this.kind & COMPLETION_PARSER) != 0;
@@ -778,6 +781,14 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 					this.currentTokenType = -1;
 					this.scanner.tokenizeWhiteSpace = tokenWhiteSpace;
 					return false;
+				case TerminalTokens.TokenNameLBRACE:
+					this.scanner.tokenizeWhiteSpace = false;
+					  typeReference=parseTypeReference();
+						this.identifierPtr = -1;
+						this.identifierLengthPtr = -1;
+						this.scanner.tokenizeWhiteSpace = true;
+					break;
+					
 			}
 		}
 		
@@ -847,6 +858,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 						this.currentTokenType = -1;
 						this.scanner.tokenizeWhiteSpace = tokenWhiteSpace;
 						return false;
+
 					case TerminalTokens.TokenNameGREATER:
 						end = hasMultiLines ? this.lineEnd: this.scanner.getCurrentTokenEndPosition();
 						if (valid) {
@@ -862,7 +874,8 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 				}
 			}
 		}
-		
+
+
 		// Verify that tag name is well followed by white spaces
 		if (valid) {
 			this.currentTokenType = -1;
@@ -876,10 +889,14 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 				this.scanner.currentPosition = restart;
 				this.index = restart;
 				this.scanner.tokenizeWhiteSpace = tokenWhiteSpace;
-				return pushParamName(isTypeParam);
+				valid= pushParamName(isTypeParam);
+				  JavadocSingleNameReference nameRef=(JavadocSingleNameReference)this.astStack[this.astPtr];
+				  nameRef.types=typeReference;
+				  return valid;
 			}
 		}
-		
+
+
 		// Report problem
 		this.currentTokenType = -1;
 		if (isCompletionParser) return false;
@@ -898,6 +915,116 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 		this.currentTokenType = -1;
 		this.scanner.tokenizeWhiteSpace = tokenWhiteSpace;
 		return false;
+	}
+
+	private TypeReference [] parseTypeReference() {
+		int currentPosition = this.scanner.currentPosition;
+		try {
+			ArrayList  typeRefs = new ArrayList();
+			Object reference = null;
+			int previousPosition = -1;
+			int typeRefStartPosition = -1;
+			boolean expectingRef=true;
+			
+			// Get reference tokens
+			nextToken : while (this.index < this.scanner.eofPosition ) {
+				previousPosition = this.index;
+				int token = readTokenSafely();
+				switch (token) {
+				case TerminalTokens.TokenNameRBRACE :  
+						// If typeRef != null we may raise a warning here to let user know there's an unused reference...
+						// Currently as javadoc 1.4.2 ignore it, we do the same (see bug 69302)
+						consumeToken();
+						 break nextToken;
+
+				case TerminalTokens.TokenNameLBRACE :  
+					// If typeRef != null we may raise a warning here to let user know there's an unused reference...
+					// Currently as javadoc 1.4.2 ignore it, we do the same (see bug 69302)
+					consumeToken();
+					 break ;
+
+				case TerminalTokens.TokenNameLESS : // @see "<a href="URL#Value">label</a>
+						// If typeRef != null we may raise a warning here to let user know there's an unused reference...
+						// Currently as javadoc 1.4.2 ignore it, we do the same (see bug 69302)
+//						if (typeRef != null) break nextToken;
+					     if (!expectingRef)
+					    	 return null;
+						consumeToken();
+						int start = this.scanner.getCurrentTokenStartPosition();
+						if (parseHref()) {
+							consumeToken();
+							if (this.tagValue == TAG_VALUE_VALUE) {
+								// String reference are not allowed for @value tag
+								if (this.reportProblems) this.sourceParser.problemReporter().javadocInvalidValueReference(start, getIndexPosition(), this.sourceParser.modifiers);
+								return null;
+							}
+							// verify end line
+//							if (verifyEndLine(previousPosition)) 
+//								return true;
+//							if (this.reportProblems) this.sourceParser.problemReporter().javadocUnexpectedText(this.scanner.currentPosition, this.lineEnd);
+						}
+						else if (this.tagValue == TAG_VALUE_VALUE) {
+							if (this.reportProblems) this.sourceParser.problemReporter().javadocInvalidValueReference(start, getIndexPosition(), this.sourceParser.modifiers);
+						}
+						expectingRef=false;
+						break;
+					case TerminalTokens.TokenNameERROR :
+						consumeToken();
+						char[] currentError = this.scanner.getCurrentIdentifierSource();
+						if (currentError.length>0 && currentError[0] == '"') {
+							if (this.reportProblems) this.sourceParser.problemReporter().javadocInvalidReference(this.scanner.getCurrentTokenStartPosition(), getTokenEndPosition());
+							return null;
+						}
+						break nextToken;
+					case TerminalTokens.TokenNameIdentifier :
+						     if (!expectingRef)
+						    	 return null;
+							typeRefStartPosition = this.scanner.getCurrentTokenStartPosition();
+							TypeReference ref = (TypeReference)parseQualifiedName(true);
+							if (ref!=null)
+								typeRefs.add(ref);
+							expectingRef=false;
+							if (this.abort) return null; // May be aborted by specialized parser
+							break;
+					case TerminalTokens.TokenNameOR :
+					     if (expectingRef)
+					    	 return null;
+					     consumeToken();
+					     expectingRef=true;
+					     break;
+					default :
+						break nextToken;
+				}
+			}
+
+			if (typeRefs.isEmpty()) {
+				this.index = this.tokenPreviousPosition;
+				this.scanner.currentPosition = this.tokenPreviousPosition;
+				this.currentTokenType = -1;
+				if (this.reportProblems) {
+					this.sourceParser.problemReporter().javadocMissingReference(this.tagSourceStart, this.tagSourceEnd, this.sourceParser.modifiers);
+				}
+				return null;
+			}
+
+
+			this.currentTokenType = -1;
+
+
+
+
+			TypeReference[] typeReferences=(TypeReference[])typeRefs.toArray(new TypeReference[typeRefs.size()]);
+			return typeReferences;
+		}
+		catch (InvalidInputException ex) {
+			if (this.reportProblems) this.sourceParser.problemReporter().javadocInvalidReference(currentPosition, getTokenEndPosition());
+		}
+		// Reset position to avoid missing tokens when new line was encountered
+		this.index = this.tokenPreviousPosition;
+		this.scanner.currentPosition = this.tokenPreviousPosition;
+		this.currentTokenType = -1;
+		return null;
+
 	}
 
 	/*

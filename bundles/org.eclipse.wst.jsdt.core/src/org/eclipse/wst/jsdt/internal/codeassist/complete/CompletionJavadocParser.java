@@ -384,13 +384,14 @@ public class CompletionJavadocParser extends JavadocParser {
 					consumeToken();
 					dimPositions[dim++] = (((long) dimStart) << 32) + this.scanner.getCurrentTokenEndPosition();
 				}
-			} else if (readToken() == TerminalTokens.TokenNameELLIPSIS) {
-				// ellipsis declaration
-				int dimStart = this.scanner.getCurrentTokenStartPosition();
-				dimPositions[dim++] = (((long) dimStart) << 32) + this.scanner.getCurrentTokenEndPosition();
-				consumeToken();
-				isVarargs = true;
 			}
+//			else if (readToken() == TerminalTokens.TokenNameELLIPSIS) {
+//				// ellipsis declaration
+//				int dimStart = this.scanner.getCurrentTokenStartPosition();
+//				dimPositions[dim++] = (((long) dimStart) << 32) + this.scanner.getCurrentTokenEndPosition();
+//				consumeToken();
+//				isVarargs = true;
+//			}
 
 			// Read argument name
 			argNamePos = -1;
@@ -459,6 +460,9 @@ public class CompletionJavadocParser extends JavadocParser {
 			if (this.identifierPtr > 2) return valid;
 			// See if expression is concerned by completion
 			char[] name = null;
+			
+//TODO: implement types
+			TypeReference[]types=null;
 			CompletionScanner completionScanner = (CompletionScanner) this.scanner;
 			boolean isTypeParam = false;
 			if (this.identifierPtr >= 0) {

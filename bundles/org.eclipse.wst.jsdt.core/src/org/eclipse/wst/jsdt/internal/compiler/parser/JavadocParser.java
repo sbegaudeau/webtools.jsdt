@@ -36,6 +36,14 @@ public class JavadocParser extends AbstractCommentParser {
 
 	private int flags=0;
 	
+	private TypeReference namespace=null;
+	private TypeReference memberOf=null;
+	private TypeReference returnType=null;
+	private TypeReference extendsType=null;
+
+	private boolean isConstructor;
+	
+	
 	public JavadocParser(Parser sourceParser) {
 		super(sourceParser);
 		this.kind = COMPIL_PARSER | TEXT_VERIF;
@@ -485,7 +493,7 @@ public class JavadocParser extends AbstractCommentParser {
 				case 'b':
 					if (length == TAG_BASE_LENGTH && CharOperation.equals(TAG_BASE, tagName)) {
 						this.tagValue = TAG_BASE_VALUE;
-						valid=parseBase();
+						valid=parseExtends();
 					} 
 				break;
 					case 'c':
@@ -499,6 +507,7 @@ public class JavadocParser extends AbstractCommentParser {
 							} else
 								if (length == TAG_CONSTRUCTOR_LENGTH && CharOperation.equals(TAG_CONSTRUCTOR, tagName)) {
 									this.tagValue = TAG_CONSTRUCTOR_VALUE;
+									this.isConstructor=true;
 									valid =true;
 								} 
 					break;
@@ -675,29 +684,24 @@ public class JavadocParser extends AbstractCommentParser {
 		return valid;
 	}
 
-	private boolean parseExtends() {
-		// TODO Auto-generated method stub
-		return false;
+	private boolean parseExtends() throws InvalidInputException {
+		this.extendsType=(TypeReference)parseQualifiedName(true);
+		return this.namespace!=null;
 	}
 
-	private boolean parseType() {
-		// TODO Auto-generated method stub
-		return false;
+	private boolean parseType() throws InvalidInputException {
+		this.returnType=(TypeReference)parseQualifiedName(true);
+		return this.namespace!=null;
 	}
 
-	private boolean parseNamespace() {
-		// TODO Auto-generated method stub
-		return false;
+	private boolean parseNamespace() throws InvalidInputException {
+		this.namespace=(TypeReference) parseQualifiedName(true);
+		return this.namespace!=null;
 	}
 
-	private boolean parseMember() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	private boolean parseBase() {
-		// TODO Auto-generated method stub
-		return false;
+	private boolean parseMember() throws InvalidInputException {
+		this.memberOf=(TypeReference) parseQualifiedName(true);
+		return this.memberOf!=null;
 	}
 
 	/*
@@ -842,6 +846,14 @@ public class JavadocParser extends AbstractCommentParser {
 
 		this.docComment.modifiers=this.flags;
 		
+		
+		this.docComment.namespace=this.namespace;
+		this.docComment.memberOf=this.memberOf;
+		this.docComment.returnType=this.returnType;
+		this.docComment.extendsType=this.extendsType;
+
+		this.docComment.isConstructor=this.isConstructor;
+
 		// Set positions
 		this.docComment.inheritedPositions = this.inheritedPositions;
 		this.docComment.valuePositions = this.validValuePositions != -1 ? this.validValuePositions : this.invalidValuePositions;

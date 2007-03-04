@@ -6095,6 +6095,9 @@ private void consumeFieldNameSimple() {
 
 private void consumeLiteralField() {
 	// MemberValuePair ::= SimpleName '=' MemberValue
+	this.modifiersSourceStart=-1;
+	this.checkComment();
+	
 	Expression value = this.expressionStack[this.expressionPtr--];
 	this.expressionLengthPtr--;
 	 
@@ -6105,7 +6108,14 @@ private void consumeLiteralField() {
 	
 	ObjectLiteralField literalField = new ObjectLiteralField(field, value, start, end);
 	pushOnExpressionStack(literalField);
-
+	
+	literalField.javaDoc = this.javadoc;
+	this.javadoc = null;
+	
+	// discard obsolete comments while inside methods or fields initializer (see bug 74369)
+	if (!(this.diet && this.dietInt==0) && this.scanner.commentPtr >= 0) {
+		flushCommentsDefinedPriorTo(literalField.sourceEnd);
+	}
 }
 
 private void consumeFieldList() {

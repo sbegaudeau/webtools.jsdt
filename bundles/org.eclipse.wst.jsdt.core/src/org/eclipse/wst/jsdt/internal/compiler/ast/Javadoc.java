@@ -34,6 +34,14 @@ public class Javadoc extends ASTNode {
 	// Store value tag positions
 	public long valuePositions = -1;
 	public int modifiers=0;
+	
+	public TypeReference namespace=null;
+	public TypeReference memberOf=null;
+	public TypeReference returnType=null;
+	public TypeReference extendsType=null;
+
+	public boolean isConstructor;
+
 
 	public Javadoc(int sourceStart, int sourceEnd) {
 		this.sourceStart = sourceStart;
@@ -176,6 +184,33 @@ public class Javadoc extends ASTNode {
 				this.seeReferences[i].print(indent, output).append('\n');
 			}
 		}
+
+		if (this.returnType!=null)
+		{
+			printIndent(indent + 1, output).append(" * @type "); //$NON-NLS-1$		
+			this.returnType.print(indent, output).append('\n');
+			
+		}
+		if (this.memberOf!=null)
+		{
+			printIndent(indent + 1, output).append(" * @member "); //$NON-NLS-1$		
+			this.memberOf.print(indent, output).append('\n');
+			
+		}
+		if (this.extendsType!=null)
+		{
+			printIndent(indent + 1, output).append(" * @extends "); //$NON-NLS-1$		
+			this.extendsType.print(indent, output).append('\n');
+			
+		}
+		if (this.isConstructor)
+			printIndent(indent + 1, output).append(" * @constructor\n"); //$NON-NLS-1$		
+		if ((this.modifiers & ClassFileConstants.AccPrivate) != 0)
+			printIndent(indent + 1, output).append(" * @private\n"); //$NON-NLS-1$		
+		if ((this.modifiers & ClassFileConstants.AccFinal) != 0)
+			printIndent(indent + 1, output).append(" * @final\n"); //$NON-NLS-1$		
+
+		
 		printIndent(indent, output).append(" */\n"); //$NON-NLS-1$
 		return output;
 	}

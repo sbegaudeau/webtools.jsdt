@@ -16,6 +16,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
 public class JavadocSingleNameReference extends SingleNameReference {
 
 	public int tagSourceStart, tagSourceEnd;
+	public TypeReference []types;
 
 	public JavadocSingleNameReference(char[] source, long pos, int tagStart, int tagEnd) {
 		super(source, pos);
@@ -64,5 +65,21 @@ public class JavadocSingleNameReference extends SingleNameReference {
 	public void traverse(ASTVisitor visitor, ClassScope scope) {
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);
+	}
+	
+	public StringBuffer printExpression(int indent, StringBuffer output){
+		
+		if (types!=null && types.length>0)
+		{
+			output.append("{");
+			for (int i = 0; i < types.length; i++) {
+				if (i>0)
+					output.append('|');
+				types[i].printExpression(indent, output);
+			}
+			output.append("} ");
+		}
+		output=super.printExpression(indent, output);
+		return output;
 	}
 }
