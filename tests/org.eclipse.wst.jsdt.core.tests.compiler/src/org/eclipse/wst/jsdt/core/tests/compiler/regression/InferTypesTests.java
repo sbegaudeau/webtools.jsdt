@@ -36,7 +36,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 			"var myClassObj = new MyClass();\n"+
 			"\n",
 			"X.js",
-			"class MyClass extends Object{\n  String  url;\n  MyClass()\n  void activate()\n}\n",
+			"class MyClass extends Object{\n  String url;\n  MyClass()\n  void activate()\n}\n",
 			getDefaultOptions()
 			
 		 );
@@ -102,7 +102,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 			"this.activate = function(){}\n"+
 			"}\n",
 			"X.js",
-			"class org.brcp.Bundle extends Object{\n  String  url;\n  void activate()\n}\n",
+			"class org.brcp.Bundle extends Object{\n  String url;\n  void activate()\n}\n",
 			getDojoOptions()
 			
 		 );
@@ -117,7 +117,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 			      "}\n" +
 			      "Bob.prototype.name = function () {return this.Fistname + this.Lastname;};\n",
 			"X.js",
-			"class Bob extends Object{\n  String  Firstname;\n  String  Firstname;\n  Bob()\n}\n",
+			"class Bob extends Object{\n  String Firstname;\n  String Firstname;\n  Bob()\n}\n",
 			getDefaultOptions()
 			
 		 );
@@ -133,7 +133,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 				+ "X.prototype.foo=X_foo;\n"
 				+ "",
 				"X.js",
-			"class X extends Object{\n  Number  h;\n  Array  i;\n  void foo()\n  X()\n}\n",
+			"class X extends Object{\n  Number h;\n  Array i;\n  void foo()\n  X()\n}\n",
 			getDefaultOptions()
 			
 		 );
@@ -152,7 +152,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 				+ "}\n"
 				+ "P.prototype.mm=m;\n",
 				"X.js",
-			"class P extends Object{\n  Number  f;\n  void mm()\n  P()\n}\n",
+			"class P extends Object{\n  Number f;\n  void mm()\n  P()\n}\n",
 			getDefaultOptions()
 			
 		 );
@@ -164,7 +164,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 					+ "Test.x=1;\n"
 					+ "",
 					"X.js",
-				"class Test extends Object{\n  static Number  x;\n}\n",
+				"class Test extends Object{\n  static Number x;\n}\n",
 				getDefaultOptions()
 				
 			 );
@@ -179,10 +179,60 @@ public class InferTypesTests extends AbstractRegressionTest {
 				"var myClassObj = new MyClass();\n"+
 				"\n",
 				"X.js",
-				"class MyClass extends Object{\n  Array(Number)  arr;\n  MyClass()\n}\n",
+				"class MyClass extends Object{\n  Array(Number) arr;\n  MyClass()\n}\n",
 				getDefaultOptions()
 				
 			 );
 		}
+
+		public void test020() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+					 "/**\n"
+					+ " * @constructor \n"
+					+ " */\n"
+				+"function MyClass(){}"   
+				+ "/**\n"
+				+ " * @memberOf MyClass \n"
+				+ " * @type String \n"
+				+ " */\n"
+			+"var s;"   
+			+ "/**\n"
+			+ " * @memberOf MyClass \n"
+			+ " * @type Number \n"
+			+ " */\n"
+			+"function numValue(){};"   
+			+"\n",
+				"X.js",
+				"class MyClass extends Object{\n  String s;\n  MyClass()\n  Number numValue()\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		
+		
+
+
+
+		public void test021() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+					" i= { \n"+
+					"/**\n" +
+					"   * @memberOf MyClass\n" +
+					"   * @type Number\n" +
+					" */\n" +
+					" a: 2 ,\n"+
+					"/**\n" +
+					"   * @memberOf MyClass\n" +
+					"   * @type String\n" +
+					" */\n" +
+					" b: function(){}};" + 
+					"\n",
+					"X.js",
+				"class MyClass extends Object{\n  Number a;\n  String b()\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		
 
 }

@@ -1548,6 +1548,8 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest implem
 						true/*optimize string literals*/,
 						false); 
 
+				parser.javadocParser.checkDocComment=true;
+
 				ICompilationUnit sourceUnit = new CompilationUnit(source, testName, null);
 
 				CompilationUnitDeclaration compUnit= parser.parseCompilationUnit(sourceUnit, true);
