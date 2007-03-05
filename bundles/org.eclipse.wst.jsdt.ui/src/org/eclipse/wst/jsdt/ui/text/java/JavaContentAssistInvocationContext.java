@@ -62,7 +62,7 @@ public class JavaContentAssistInvocationContext extends ContentAssistInvocationC
 	 */
 	public JavaContentAssistInvocationContext(ITextViewer viewer, int offset, IEditorPart editor) {
 		super(viewer, offset);
-		Assert.isNotNull(editor);
+		
 		fEditor= editor;
 	}
 	
@@ -251,7 +251,7 @@ public class JavaContentAssistInvocationContext extends ContentAssistInvocationC
 	 * 
 	 * @param collector the collector
 	 */
-	void setCollector(CompletionProposalCollector collector) {
+	protected void setCollector(CompletionProposalCollector collector) {
 		fCollector= collector;
 	}
 	
