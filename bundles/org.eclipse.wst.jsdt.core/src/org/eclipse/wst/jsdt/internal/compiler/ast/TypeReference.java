@@ -106,6 +106,12 @@ protected abstract TypeBinding getTypeBinding(Scope scope);
  * @return char[][]
  */
 public abstract char [][] getTypeName() ;
+
+public char[] getSimpleTypeName()
+{
+	char[][] typeName = getTypeName();
+	return typeName[typeName.length-1];
+}
 public boolean isTypeReference() {
 	return true;
 }

@@ -934,4 +934,14 @@ public abstract class ASTVisitor {
 	public boolean visit(Wildcard wildcard, ClassScope scope) {
 		return true; // do nothing by default, keep traversing
 	}
+	public boolean visit(ObjectLiteral literal, BlockScope scope) {
+		return true; // do nothing by default, keep traversing
+	}
+	public void endVisit(ObjectLiteral literal, BlockScope scope) {
+	}
+	public boolean visit(ObjectLiteralField field, BlockScope scope) {
+		return true; // do nothing by default, keep traversing
+	}
+	public void endVisit(ObjectLiteralField field, BlockScope scope) {
+	}
 }

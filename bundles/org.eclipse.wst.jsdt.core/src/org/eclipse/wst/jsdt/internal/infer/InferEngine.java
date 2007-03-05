@@ -13,10 +13,12 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NumberLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteralField;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ReturnStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
@@ -25,6 +27,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
+import org.eclipse.wst.jsdt.internal.formatter.comment.JavaDocLine;
 public class InferEngine extends ASTVisitor {
 
 	InferOptions inferOptions;
@@ -88,7 +91,27 @@ public class InferEngine extends ASTVisitor {
 	}
 
 	public boolean visit(LocalDeclaration localDeclaration, BlockScope scope) {
-		if (localDeclaration.initialization!=null)
+		if (localDeclaration.javadoc!=null)
+		{
+			Javadoc javadoc = localDeclaration.javadoc;
+			InferredAttribute attribute = null;
+			if (javadoc.memberOf!=null)
+			{
+				InferredType type = this.addType(javadoc.memberOf.getSimpleTypeName());
+				 attribute = type.addAttribute(localDeclaration.name, localDeclaration);
+				attribute.type=type;
+			}
+			
+			if (javadoc.returnType!=null)
+			{
+			   InferredType type = this.addType(javadoc.returnType.getSimpleTypeName());
+			   localDeclaration.inferredType=type;
+			   if (attribute!=null)
+				   attribute.type=type;
+			}
+		}
+
+		if (localDeclaration.inferredType==null && localDeclaration.initialization!=null)
 		{
 			localDeclaration.inferredType= getTypeOf(localDeclaration.initialization);
 		}
@@ -312,10 +335,36 @@ public class InferEngine extends ASTVisitor {
 	public boolean visit(MethodDeclaration methodDeclaration, Scope scope) {
 		pushContext();
 		if (passNumber==1)
+		{
 			buildDefinedMembers(methodDeclaration.statements);
+			if (methodDeclaration.javadoc!=null)
+			{
+				InferredMethod method=null;
+				Javadoc javadoc = methodDeclaration.javadoc;
+				if (javadoc.isConstructor)
+				{
+					InferredType type = this.addType(methodDeclaration.selector);
+					type.isDefinition=true;
+					method = type.addMethod(methodDeclaration.selector, methodDeclaration);
+					method.isConstructor=true;
+				}
+				else if (javadoc.memberOf!=null)
+				{
+					InferredType type = this.addType(javadoc.memberOf.getSimpleTypeName());
+					method=type.addMethod(methodDeclaration.selector, methodDeclaration);
+				}
+				
+				if (javadoc.returnType!=null)
+				{
+				   InferredType type = this.addType(javadoc.returnType.getSimpleTypeName());
+				   methodDeclaration.inferredType=type;
+				}
+			}
+		}
 		// check if this is a constructor
 		if (passNumber==2)
 		{
+			
 			InferredType type = compUnit.findInferredType(methodDeclaration.selector);
 			if (type!=null)
 			{
@@ -326,8 +375,60 @@ public class InferEngine extends ASTVisitor {
 			}
 		}
 		this.currentContext.currentMethod=methodDeclaration;
-		methodDeclaration.inferredType=VoidType;
+		if (methodDeclaration.inferredType==null)
+			methodDeclaration.inferredType=VoidType;
 		return true;
+	}
+	
+	
+	
+
+ 
+	public void endVisit(ObjectLiteralField field, BlockScope scope) {
+		if (field.javaDoc!=null)
+		{
+			Javadoc javaDoc = field.javaDoc;
+			InferredType inClass=null;
+			char [] name=null;
+			InferredType returnType=null;
+//			boolean isFunction=field.initializer instanceof FunctionExpression;
+ 			if (field.fieldName instanceof SingleNameReference)
+ 			{
+ 				name=((SingleNameReference)field.fieldName).token;
+ 			}
+			if (javaDoc.memberOf!=null)
+			{
+				inClass= this.addType(javaDoc.memberOf.getSimpleTypeName());
+				inClass.isDefinition=true;
+			}
+			if (javaDoc.returnType!=null)
+			{
+				returnType=this.addType(javaDoc.returnType.getSimpleTypeName());
+			}
+			
+			if (inClass!=null)
+			{
+				if (field.initializer instanceof FunctionExpression) {
+					FunctionExpression functionExpression = (FunctionExpression) field.initializer;
+				    InferredMethod method = inClass.addMethod(name, functionExpression.methodDeclaration);
+				    functionExpression.methodDeclaration.modifiers=javaDoc.modifiers;
+				    if (returnType!=null)
+				    {
+				    	functionExpression.methodDeclaration.inferredType=returnType;
+				    	method.inferredType=returnType;
+				    }
+				    else
+				    	method.inferredType=functionExpression.methodDeclaration.inferredType;
+				}	
+				else	//attribute
+				{
+					InferredAttribute attribute = inClass.addAttribute(name, field.fieldName);
+					if (returnType!=null)
+						attribute.type=returnType;
+				}
+			}
+			
+		}
 	}
 
 	protected boolean isMatch(Expression expr,String [] names, int index)

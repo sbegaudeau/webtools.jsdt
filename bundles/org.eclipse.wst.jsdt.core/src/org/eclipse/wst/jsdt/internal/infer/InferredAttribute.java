@@ -27,7 +27,7 @@ public class InferredAttribute  extends ASTNode{
 		   type.dumpReference(output);
 	   else
 		   output.append("??");
-	   output.append("  ").append(name);	
+	   output.append(" ").append(name);	
 	   return output;
 	 }
 	

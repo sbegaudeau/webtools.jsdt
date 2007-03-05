@@ -1,5 +1,8 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+
 public class ObjectLiteralField extends Expression {
 
 	public Expression fieldName;
@@ -20,6 +23,19 @@ public class ObjectLiteralField extends Expression {
 		output.append(" : ");
 		initializer.printExpression(indent, output) ;
 		return output;
+	}
+
+	public void traverse(ASTVisitor visitor, BlockScope scope) {
+		if (visitor.visit(this, scope)) {
+			
+			if (javaDoc!=null)
+				javaDoc.traverse(visitor, scope);
+			if (fieldName!=null)
+				fieldName.traverse(visitor, scope);
+			if (initializer!=null)
+				initializer.traverse(visitor, scope);
+		}
+		visitor.endVisit(this, scope);
 	}
 
 }

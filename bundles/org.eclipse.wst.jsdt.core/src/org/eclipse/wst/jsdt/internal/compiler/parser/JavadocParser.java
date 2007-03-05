@@ -44,6 +44,21 @@ public class JavadocParser extends AbstractCommentParser {
 	private boolean isConstructor;
 	
 	
+
+	protected boolean commentParse() {
+		// TODO Auto-generated method stub
+		boolean result= super.commentParse();
+		this.isConstructor=false;
+		this.namespace=null;
+		this.flags=0;
+		
+		this.namespace=null;
+		this.memberOf=null;
+		this.returnType=null;
+		this.extendsType=null;
+	return result;
+	}
+
 	public JavadocParser(Parser sourceParser) {
 		super(sourceParser);
 		this.kind = COMPIL_PARSER | TEXT_VERIF;

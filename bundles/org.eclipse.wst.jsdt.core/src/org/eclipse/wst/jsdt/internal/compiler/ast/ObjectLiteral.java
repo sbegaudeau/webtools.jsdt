@@ -1,5 +1,8 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+
 
 public class ObjectLiteral extends Expression {
 
@@ -28,5 +31,13 @@ public class ObjectLiteral extends Expression {
 		}
 		return output;
 	}
-
+	public void traverse(ASTVisitor visitor, BlockScope scope) {
+		if (visitor.visit(this, scope)) {
+			if (fields!=null)
+				for (int i = 0; i < fields.length; i++) {
+					fields[i].traverse(visitor, scope);
+				} 
+		}
+		visitor.endVisit(this, scope);
+	}
 }

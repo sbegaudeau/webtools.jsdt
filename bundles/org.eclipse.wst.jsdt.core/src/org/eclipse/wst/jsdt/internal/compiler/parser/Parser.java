@@ -1165,10 +1165,10 @@ public void checkComment() {
 	
 	int lastComment = this.scanner.commentPtr;
 	
-	if (this.modifiersSourceStart >= 0) {
-		// eliminate comments located after modifierSourceStart if positionned
-		while (lastComment >= 0 && this.scanner.commentStarts[lastComment] > this.modifiersSourceStart) lastComment--;
-	}
+//	if (this.modifiersSourceStart >= 0) {
+//		// eliminate comments located after modifierSourceStart if positionned
+//		while (lastComment >= 0 && this.scanner.commentStarts[lastComment] > this.modifiersSourceStart) lastComment--;
+//	}
 	if (lastComment >= 0) {
 		// consider all remaining leading comments to be part of current declaration
 		this.modifiersSourceStart = this.scanner.commentStarts[0]; 
@@ -3025,6 +3025,7 @@ protected void consumeEnterMemberValue() {
 protected void consumeEnterVariable() {
 	// EnterVariable ::= $empty
 	// do nothing by default
+	checkComment();
 
 	char[] identifierName = this.identifierStack[this.identifierPtr];
 	long namePosition = this.identifierPositionStack[this.identifierPtr];
@@ -6109,7 +6110,14 @@ private void consumeLiteralField() {
 	ObjectLiteralField literalField = new ObjectLiteralField(field, value, start, end);
 	pushOnExpressionStack(literalField);
 	
-	literalField.javaDoc = this.javadoc;
+	if (this.javadoc!=null)
+		literalField.javaDoc = this.javadoc;
+	else if (value instanceof FunctionExpression)
+	{
+		MethodDeclaration methodDeclaration = ((FunctionExpression)value).methodDeclaration;
+		literalField.javaDoc=methodDeclaration.javadoc;
+		methodDeclaration.javadoc=null;
+	}
 	this.javadoc = null;
 	
 	// discard obsolete comments while inside methods or fields initializer (see bug 74369)
