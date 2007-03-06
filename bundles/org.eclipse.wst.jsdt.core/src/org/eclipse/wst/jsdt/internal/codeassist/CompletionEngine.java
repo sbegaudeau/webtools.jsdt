@@ -710,6 +710,8 @@ public final class CompletionEngine
 			char[][] enclosingTypeNames = acceptedType.enclosingTypeNames;
 			int modifiers = acceptedType.modifiers;
 			int accessibility = acceptedType.accessibility;
+			if (packageName==null)
+				packageName=new char[0];
 		
 			
 			Binding binding1 = this.unitScope.getBinding(packageName, Binding.PACKAGE,  FakeInvocationSite, false);

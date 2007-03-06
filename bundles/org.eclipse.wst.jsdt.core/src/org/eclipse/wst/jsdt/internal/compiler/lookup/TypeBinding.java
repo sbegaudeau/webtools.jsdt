@@ -442,6 +442,10 @@ public final boolean isMemberType() {
 public final boolean isNestedType() {
 	return (this.tagBits & TagBits.IsNestedType) != 0;
 }
+public final boolean isAnyType()
+{
+	return id==TypeIds.T_any;
+}
 
 public final boolean isNumericType() {
 	switch (id) {
