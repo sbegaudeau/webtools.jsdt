@@ -46,13 +46,14 @@ public class CodeFormatterConfigurationBlock extends ProfileConfigurationBlock {
     protected final String PREVIEW= "/**\n* " + //$NON-NLS-1$
     		FormatterMessages.CodingStyleConfigurationBlock_preview_title + 
     		"\n*/\n\n" + //$NON-NLS-1$
-    		"package mypackage; import java.util.LinkedList; public class MyIntStack {" + //$NON-NLS-1$
-    		"private final LinkedList fStack;" + //$NON-NLS-1$
-    		"public MyIntStack(){fStack= new LinkedList();}" + //$NON-NLS-1$
-    		"public int pop(){return ((Integer)fStack.removeFirst()).intValue();}" + //$NON-NLS-1$
-    		"public void push(int elem){fStack.addFirst(new Integer(elem));}" + //$NON-NLS-1$
-    		"public boolean isEmpty() {return fStack.isEmpty();}" + //$NON-NLS-1$
-    		"}"; //$NON-NLS-1$
+    		"" + //$NON-NLS-1$
+    		"var index=0;" + //$NON-NLS-1$
+    		"var arr=[];" + //$NON-NLS-1$
+    		"function foo(){var1= new Object();}" + //$NON-NLS-1$
+    		"function pop(){return arr[index--];}" + //$NON-NLS-1$
+    		"function push( elem){arr[index++]=elem;}" + //$NON-NLS-1$
+    		"function isEmpty() {return index==0;}" + //$NON-NLS-1$
+    		""; //$NON-NLS-1$
     
 	private class PreviewController implements Observer {
 
