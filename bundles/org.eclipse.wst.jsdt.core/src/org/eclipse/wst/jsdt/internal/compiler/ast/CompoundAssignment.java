@@ -127,7 +127,7 @@ public int nullStatus(FlowInfo flowInfo) {
 			}
 		}
 		
-		if (restrainUsageToNumericTypes() && !lhsType.isNumericType()) {
+		if (restrainUsageToNumericTypes() && !lhsType.isNumericType() && !lhsType.isAnyType()) {
 			scope.problemReporter().operatorOnlyValidOnNumericType(this, lhsType, expressionType);
 			return null;
 		}
