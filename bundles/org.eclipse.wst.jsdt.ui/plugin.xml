@@ -1213,6 +1213,7 @@
             id="org.eclipse.wst.jsdt.ui.preferences.CodeStylePreferencePage">
             <keywordReference id="org.eclipse.wst.jsdt.ui.codestyle"/>
       </page>
+<!--      
       <page
             name="%organizeImportsPrefName"
             category="org.eclipse.wst.jsdt.ui.preferences.CodeStylePreferencePage"
@@ -1220,6 +1221,7 @@
             id="org.eclipse.wst.jsdt.ui.preferences.ImportOrganizePreferencePage">
             <keywordReference id="org.eclipse.wst.jsdt.ui.organizeimports"/>
       </page>
+-->      
       <page
             name="%typeFilterPrefName"
             category="org.eclipse.wst.jsdt.ui.preferences.AppearancePreferencePage"
@@ -1298,6 +1300,7 @@
             id="org.eclipse.wst.jsdt.ui.preferences.JavadocProblemsPreferencePage">
             <keywordReference id="org.eclipse.wst.jsdt.ui.javadocproblems"/>
       </page>
+<!--      
       <page
             name="%javaBuildPrefName"
             category="org.eclipse.wst.jsdt.ui.preferences.CompliancePreferencePage"
@@ -1305,6 +1308,7 @@
             id="org.eclipse.wst.jsdt.ui.preferences.JavaBuildPreferencePage">
             <keywordReference id="org.eclipse.wst.jsdt.ui.building"/>
       </page>
+-->    
       <page
             name="%todoTaskPrefName"
             category="org.eclipse.wst.jsdt.ui.preferences.CompliancePreferencePage"
