@@ -44,5 +44,10 @@ function Date(s){}
 
 
 var window;
-function alert(){}
+/**
+ * Displays an <b>Alert</b> dialog box with the
+ * desired message and <b>OK<b> button
+ * @param message the message to display
+ */
+function alert(message){}
 function eval(s){}
