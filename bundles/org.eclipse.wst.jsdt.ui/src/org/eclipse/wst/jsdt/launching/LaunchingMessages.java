@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.launching;
 import org.eclipse.osgi.util.NLS;
 
 public class LaunchingMessages extends NLS {
-	private static final String BUNDLE_NAME = "org.eclipse.wst.jsdt.internal.launching.LaunchingMessages";//$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.eclipse.wst.jsdt.launching.LaunchingMessages";//$NON-NLS-1$
 
 	public static String AbstractJavaLaunchConfigurationDelegate_Java_project_not_specified_9;
 	public static String AbstractJavaLaunchConfigurationDelegate_JRE_home_directory_for__0__does_not_exist___1__6;
