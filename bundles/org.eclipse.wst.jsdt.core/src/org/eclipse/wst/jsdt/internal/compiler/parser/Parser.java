@@ -5036,6 +5036,8 @@ private void consumeFunctionExpression() {
 	MethodDeclaration md = (MethodDeclaration) this.astStack[this.astPtr--];
    this.astLengthPtr--;
     FunctionExpression funcExpr=new FunctionExpression(md);
+    funcExpr.sourceEnd=md.sourceEnd;
+    funcExpr.sourceStart=md.sourceStart;
     pushOnExpressionStack(funcExpr);
 }
 

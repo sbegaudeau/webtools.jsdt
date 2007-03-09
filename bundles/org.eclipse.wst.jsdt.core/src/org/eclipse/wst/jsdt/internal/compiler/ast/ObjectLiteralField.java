@@ -13,8 +13,8 @@ public class ObjectLiteralField extends Expression {
 		
 		this.fieldName=field;
 		this.initializer=value;
-		this.sourceEnd=start;
-		this.sourceStart=end;
+		this.sourceEnd=end;
+		this.sourceStart=start;
 	}
 	public StringBuffer printExpression(int indent, StringBuffer output) {
 		if (this.javaDoc!=null)
