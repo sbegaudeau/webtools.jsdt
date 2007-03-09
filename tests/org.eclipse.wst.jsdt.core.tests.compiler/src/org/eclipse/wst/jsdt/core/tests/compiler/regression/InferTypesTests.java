@@ -235,4 +235,31 @@ public class InferTypesTests extends AbstractRegressionTest {
 		}
 		
 
+		public void test022() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+					 "/**\n"
+					+ " * @constructor \n"
+					+ " * @extends String \n"
+					+ " */\n"
+				+"function MyClass(){}"   
+
+				+" var box= { \n"+
+					"/**\n" +
+					"   * @memberOf MyClass\n" +
+					"   * @type Number\n" +
+					" */\n" +
+					" a: 2 ,\n"+
+					"/**\n" +
+					"   * @memberOf MyClass\n" +
+					"   * @type String\n" +
+					" */\n" +
+					" b: function(){}};" + 
+					"\n",
+					"X.js",
+				"class MyClass extends String{\n  Number a;\n  MyClass()\n  String b()\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+	
 }
