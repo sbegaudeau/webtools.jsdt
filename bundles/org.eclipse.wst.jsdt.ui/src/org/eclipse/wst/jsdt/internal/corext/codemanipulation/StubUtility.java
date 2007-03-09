@@ -591,6 +591,8 @@ public class StubUtility {
 	 * @see org.eclipse.wst.jsdt.ui.CodeGeneration#getMethodComment(ICompilationUnit, String, MethodDeclaration, boolean, String, String[], String)
 	 */
 	public static String getMethodComment(ICompilationUnit cu, String typeName, MethodDeclaration decl, boolean isDeprecated, String targetName, String targetMethodDeclaringTypeName, String[] targetMethodParameterTypeNames, boolean delegate, String lineDelimiter) throws CoreException {
+		if (typeName==null)
+			typeName="";
 		boolean needsTarget= targetMethodDeclaringTypeName != null && targetMethodParameterTypeNames != null;
 		String templateName= CodeTemplateContextType.METHODCOMMENT_ID;
 		if (decl.isConstructor()) {
@@ -609,7 +611,7 @@ public class StubUtility {
 		context.setCompilationUnitVariables(cu);
 		context.setVariable(CodeTemplateContextType.ENCLOSING_TYPE, typeName);
 		context.setVariable(CodeTemplateContextType.ENCLOSING_METHOD, decl.getName().getIdentifier());
-		if (!decl.isConstructor()) {
+		if (!decl.isConstructor() &&getReturnType(decl)!=null) {
 			context.setVariable(CodeTemplateContextType.RETURN_TYPE, ASTNodes.asString(getReturnType(decl)));
 		}
 		if (needsTarget) {

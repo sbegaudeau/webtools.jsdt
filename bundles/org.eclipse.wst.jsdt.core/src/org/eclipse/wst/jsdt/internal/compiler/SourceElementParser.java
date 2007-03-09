@@ -1664,6 +1664,7 @@ public CompilationUnitDeclaration parseCompilationUnit(
 			this.getMethodBodies(parsedUnit);
 		}
 		this.scanner.resetTo(initialStart, initialEnd);
+		inferTypes(parsedUnit, this.options);
 		notifySourceElementRequestor(parsedUnit);
 		return parsedUnit;
 	} catch (AbortCompilation e) {

@@ -239,7 +239,7 @@ public final boolean atEnd() {
 	// This code is not relevant if source is 
 	// Only a part of the real stream input
 
-	return this.eofPosition == this.currentPosition;
+	return this.eofPosition <= this.currentPosition;
 }
 
 // chech presence of task: tags

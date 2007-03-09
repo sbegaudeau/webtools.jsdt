@@ -432,6 +432,8 @@ public class BasicSearchEngine {
 	}
 
 	boolean match(char patternTypeSuffix, char[] patternPkg, char[] patternTypeName, int matchRule, int typeKind, char[] pkg, char[] typeName) {
+		if (typeName==null)
+			typeName=CharOperation.NO_CHAR;
 		switch(patternTypeSuffix) {
 			case IIndexConstants.CLASS_SUFFIX :
 				if (typeKind != TypeDeclaration.CLASS_DECL) return false;

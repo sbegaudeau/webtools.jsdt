@@ -38,7 +38,7 @@ public class SourceTypeBinding extends ReferenceBinding {
 	public ReferenceBinding[] superInterfaces= Binding.NO_SUPERINTERFACES;
 	private FieldBinding[] fields;
 	private MethodBinding[] methods;
-	public ReferenceBinding[] memberTypes;
+	public ReferenceBinding[] memberTypes=Binding.NO_MEMBER_TYPES;
     public TypeVariableBinding[] typeVariables=Binding.NO_TYPE_VARIABLES;
 
 	public Scope scope;

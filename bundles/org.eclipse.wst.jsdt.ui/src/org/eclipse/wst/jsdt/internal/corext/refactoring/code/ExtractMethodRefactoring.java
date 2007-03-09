@@ -822,7 +822,9 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 			if (fGenerateJavadoc) {
 				AbstractTypeDeclaration enclosingType= 
 					(AbstractTypeDeclaration)ASTNodes.getParent(fAnalyzer.getEnclosingBodyDeclaration(), AbstractTypeDeclaration.class);
-				String string= CodeGeneration.getMethodComment(fCUnit, enclosingType.getName().getIdentifier(), result, null, lineDelimiter);
+
+				String typeName = (enclosingType!=null)?enclosingType.getName().getIdentifier():null;
+				String string= CodeGeneration.getMethodComment(fCUnit, typeName, result, null, lineDelimiter);
 				if (string != null) {
 					Javadoc javadoc= (Javadoc)fRewriter.createStringPlaceholder(string, ASTNode.JAVADOC);
 					result.setJavadoc(javadoc);

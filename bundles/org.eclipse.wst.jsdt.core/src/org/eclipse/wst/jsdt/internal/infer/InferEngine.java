@@ -347,6 +347,12 @@ public class InferEngine extends ASTVisitor {
 					type.isDefinition=true;
 					method = type.addMethod(methodDeclaration.selector, methodDeclaration);
 					method.isConstructor=true;
+					
+					if (javadoc.extendsType!=null)
+					{
+						InferredType superType=this.addType(javadoc.extendsType.getSimpleTypeName());
+						type.superClass=superType;
+					}
 				}
 				else if (javadoc.memberOf!=null)
 				{
@@ -455,9 +461,12 @@ public class InferEngine extends ASTVisitor {
 	public void doInfer()
 	{
 		BlockScope scope=null;
+		boolean ignoreFurtherInvestigation = compUnit.ignoreFurtherInvestigation;
+		compUnit.ignoreFurtherInvestigation=false;
 		compUnit.traverse(this, compUnit.scope);
 		passNumber=2;
 		compUnit.traverse(this, compUnit.scope);
+		compUnit.ignoreFurtherInvestigation=ignoreFurtherInvestigation;
 }
 	
 
