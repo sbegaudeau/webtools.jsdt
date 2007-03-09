@@ -1651,24 +1651,24 @@ public class SemanticHighlightings {
 			fgSemanticHighlightings= new SemanticHighlighting[] {
 				new DeprecatedMemberHighlighting(),
 				new AutoboxHighlighting(),
-				new StaticFinalFieldHighlighting(),
-				new StaticFieldHighlighting(),
+//				new StaticFinalFieldHighlighting(),
+//				new StaticFieldHighlighting(),
 				new FieldHighlighting(),
 				new MethodDeclarationHighlighting(),
-				new StaticMethodInvocationHighlighting(),
-				new AbstractMethodInvocationHighlighting(),
-				new AnnotationElementReferenceHighlighting(),
-				new InheritedMethodInvocationHighlighting(),
+//				new StaticMethodInvocationHighlighting(),
+//				new AbstractMethodInvocationHighlighting(),
+//				new AnnotationElementReferenceHighlighting(),
+//				new InheritedMethodInvocationHighlighting(),
 				new ParameterVariableHighlighting(),
 				new LocalVariableDeclarationHighlighting(),
 				new LocalVariableHighlighting(),
-				new TypeVariableHighlighting(), // before type arguments!
+//				new TypeVariableHighlighting(), // before type arguments!
 				new MethodHighlighting(), // before types to get ctors
-				new TypeArgumentHighlighting(), // before other types
-				new ClassHighlighting(),
-				new EnumHighlighting(),
-				new AnnotationHighlighting(), // before interfaces
-				new InterfaceHighlighting(),
+//				new TypeArgumentHighlighting(), // before other types
+//				new ClassHighlighting(),
+//				new EnumHighlighting(),
+//				new AnnotationHighlighting(), // before interfaces
+//				new InterfaceHighlighting(),
 			};
 		return fgSemanticHighlightings;
 	}

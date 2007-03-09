@@ -74,6 +74,8 @@ import org.eclipse.wst.jsdt.internal.ui.util.TableLayoutComposite;
  */
 public class ChangeParametersControl extends Composite {
 	
+	
+	static final boolean SHOW_TYPES=false;
 	public static class Mode {
 		private final String fName;
 		private Mode(String name) {
@@ -287,16 +289,26 @@ public class ChangeParametersControl extends Composite {
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		TableColumn tc;
-		tc= new TableColumn(table, SWT.NONE, TYPE_PROP);
-		tc.setResizable(true);
-		tc.setText(RefactoringMessages.ChangeParametersControl_table_type); 
 		
-		tc= new TableColumn(table, SWT.NONE, NEWNAME_PROP);
+//		if (SHOW_TYPES)
+//		{
+			tc= new TableColumn(table, SWT.NONE, TYPE_PROP);
+			tc.setResizable(true);
+			tc.setText(SHOW_TYPES?RefactoringMessages.ChangeParametersControl_table_type:"");
+//		}
+		
+		int index= NEWNAME_PROP;
+//		if (!SHOW_TYPES)
+//			index--;
+		tc= new TableColumn(table, SWT.NONE,index);
 		tc.setResizable(true);
 		tc.setText(RefactoringMessages.ChangeParametersControl_table_name); 
 
 		if (fMode.canChangeDefault()){
-			tc= new TableColumn(table, SWT.NONE, DEFAULT_PROP);
+			 index= DEFAULT_PROP;
+//			if (!SHOW_TYPES)
+//				index--;
+			tc= new TableColumn(table, SWT.NONE, index);
 			tc.setResizable(true);
 			tc.setText(RefactoringMessages.ChangeParametersControl_table_defaultValue); 
 		}	
@@ -375,10 +387,15 @@ public class ChangeParametersControl extends Composite {
 			layouter.addColumnData(new ColumnWeightData(33, true));
 			layouter.addColumnData(new ColumnWeightData(33, true));
 			layouter.addColumnData(new ColumnWeightData(34, true));
-		} else {
+		} else if (SHOW_TYPES){
 			layouter.addColumnData(new ColumnWeightData(50, true));
 			layouter.addColumnData(new ColumnWeightData(50, true));
 		}	
+		else
+		{
+			layouter.addColumnData(new ColumnWeightData(1, true));
+			layouter.addColumnData(new ColumnWeightData(99, true));
+		}
 	}
 
 	private ParameterInfo[] getSelectedElements() {

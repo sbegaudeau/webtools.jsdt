@@ -133,36 +133,36 @@ public class ExtractMethodInputPage extends UserInputWizardPage {
 			});
 		}
 		
-		label= new Label(result, SWT.NONE);
-		label.setText(RefactoringMessages.ExtractMethodInputPage_access_Modifiers); 
-		
-		Composite group= new Composite(result, SWT.NONE);
-		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		layout= new GridLayout();
-		layout.numColumns= 4; layout.marginWidth= 0;
-		group.setLayout(layout);
-		
-		String[] labels= new String[] {
-			RefactoringMessages.ExtractMethodInputPage_public,  
-			RefactoringMessages.ExtractMethodInputPage_protected, 
-			RefactoringMessages.ExtractMethodInputPage_default, 
-			RefactoringMessages.ExtractMethodInputPage_private
-		};
-		Integer[] data= new Integer[] {new Integer(Modifier.PUBLIC), new Integer(Modifier.PROTECTED), new Integer(Modifier.NONE), new Integer(Modifier.PRIVATE)};
-		Integer visibility= new Integer(fRefactoring.getVisibility());
-		for (int i= 0; i < labels.length; i++) {
-			Button radio= new Button(group, SWT.RADIO);
-			radio.setText(labels[i]);
-			radio.setData(data[i]);
-			if (data[i].equals(visibility))
-				radio.setSelection(true);
-			radio.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent event) {
-					setVisibility((Integer)event.widget.getData());
-				}
-			});
-		}
-		layouter.perform(label, group, 1);
+//		label= new Label(result, SWT.NONE);
+//		label.setText(RefactoringMessages.ExtractMethodInputPage_access_Modifiers); 
+//		
+//		Composite group= new Composite(result, SWT.NONE);
+//		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+//		layout= new GridLayout();
+//		layout.numColumns= 4; layout.marginWidth= 0;
+//		group.setLayout(layout);
+//		
+//		String[] labels= new String[] {
+//			RefactoringMessages.ExtractMethodInputPage_public,  
+//			RefactoringMessages.ExtractMethodInputPage_protected, 
+//			RefactoringMessages.ExtractMethodInputPage_default, 
+//			RefactoringMessages.ExtractMethodInputPage_private
+//		};
+//		Integer[] data= new Integer[] {new Integer(Modifier.PUBLIC), new Integer(Modifier.PROTECTED), new Integer(Modifier.NONE), new Integer(Modifier.PRIVATE)};
+//		Integer visibility= new Integer(fRefactoring.getVisibility());
+//		for (int i= 0; i < labels.length; i++) {
+//			Button radio= new Button(group, SWT.RADIO);
+//			radio.setText(labels[i]);
+//			radio.setData(data[i]);
+//			if (data[i].equals(visibility))
+//				radio.setSelection(true);
+//			radio.addSelectionListener(new SelectionAdapter() {
+//				public void widgetSelected(SelectionEvent event) {
+//					setVisibility((Integer)event.widget.getData());
+//				}
+//			});
+//		}
+//		layouter.perform(label, group, 1);
 		
 		if (!fRefactoring.getParameterInfos().isEmpty()) {
 			ChangeParametersControl cp= new ChangeParametersControl(result, SWT.NONE, 
@@ -184,17 +184,17 @@ public class ExtractMethodInputPage extends UserInputWizardPage {
 			cp.setInput(fRefactoring.getParameterInfos());
 		}
 		
+//		Button checkBox= new Button(result, SWT.CHECK);
+//		checkBox.setText(RefactoringMessages.ExtractMethodInputPage_throwRuntimeExceptions); 
+//		checkBox.setSelection(fSettings.getBoolean(THROW_RUNTIME_EXCEPTIONS));
+//		checkBox.addSelectionListener(new SelectionAdapter() {
+//			public void widgetSelected(SelectionEvent e) {
+//				setRethrowRuntimeException(((Button)e.widget).getSelection());
+//			}
+//		});
+//		layouter.perform(checkBox);
+//		
 		Button checkBox= new Button(result, SWT.CHECK);
-		checkBox.setText(RefactoringMessages.ExtractMethodInputPage_throwRuntimeExceptions); 
-		checkBox.setSelection(fSettings.getBoolean(THROW_RUNTIME_EXCEPTIONS));
-		checkBox.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				setRethrowRuntimeException(((Button)e.widget).getSelection());
-			}
-		});
-		layouter.perform(checkBox);
-		
-		checkBox= new Button(result, SWT.CHECK);
 		checkBox.setText(RefactoringMessages.ExtractMethodInputPage_generateJavadocComment); 
 		boolean generate= computeGenerateJavadoc();
 		setGenerateJavadoc(generate);
