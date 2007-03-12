@@ -719,6 +719,8 @@ public final class CompletionEngine
 			if (binding1 instanceof PackageBinding) {
 				PackageBinding packageBinding = (PackageBinding) binding1;
 				binding2 = packageBinding.getBinding(bindingName, acceptedType.bindingType);
+				if (binding2==null)
+					return;
 			}
 			
 			switch (acceptedType.bindingType)

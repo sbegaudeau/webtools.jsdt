@@ -723,6 +723,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 		boolean isTypeParam = false;
 		boolean valid = true, empty = true;
 		boolean mayBeGeneric = this.sourceLevel >= ClassFileConstants.JDK1_5;
+		boolean isParmType=false;
 		int token = -1;
 		nextToken: while (true) {
 			this.currentTokenType = -1;
@@ -784,6 +785,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 				case TerminalTokens.TokenNameLBRACE:
 					this.scanner.tokenizeWhiteSpace = false;
 					  typeReference=parseTypeReference();
+					  isParmType=true;
 						this.identifierPtr = -1;
 						this.identifierLengthPtr = -1;
 						this.scanner.tokenizeWhiteSpace = true;
@@ -890,8 +892,11 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 				this.index = restart;
 				this.scanner.tokenizeWhiteSpace = tokenWhiteSpace;
 				valid= pushParamName(isTypeParam);
-				  JavadocSingleNameReference nameRef=(JavadocSingleNameReference)this.astStack[this.astPtr];
-				  nameRef.types=typeReference;
+				if (isParmType)
+				{
+					  JavadocSingleNameReference nameRef=(JavadocSingleNameReference)this.astStack[this.astPtr];
+					  nameRef.types=typeReference;
+				}
 				  return valid;
 			}
 		}
