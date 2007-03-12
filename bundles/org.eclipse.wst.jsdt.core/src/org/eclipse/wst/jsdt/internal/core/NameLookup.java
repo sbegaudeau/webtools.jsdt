@@ -35,6 +35,7 @@ import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
+import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.util.HashtableOfArrayToObject;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
@@ -188,11 +189,15 @@ public class NameLookup implements SuffixConstants {
 				ICompilationUnit workingCopy = workingCopies[i];
 				PackageFragment pkg = (PackageFragment) workingCopy.getParent();
 				HashMap typeMap = (HashMap) this.typesInWorkingCopies.get(pkg);
-				HashMap bindingsMap = (HashMap) this.bindingsInWorkingCopies.get(pkg);
+				HashMap[] bindingsMap = (HashMap[]) this.bindingsInWorkingCopies.get(pkg);
 				if (typeMap == null) {
 					typeMap = new HashMap();
 					this.typesInWorkingCopies.put(pkg, typeMap);
-					bindingsMap = new HashMap();
+
+					bindingsMap = new HashMap[Binding.NUMBER_BASIC_BINDING];
+					for (int j = 0; j <Binding.NUMBER_BASIC_BINDING; j++) {
+						bindingsMap[j] = new HashMap();
+					}
 					this.bindingsInWorkingCopies.put(pkg, bindingsMap);
 				}
 				try {
@@ -220,8 +225,10 @@ public class NameLookup implements SuffixConstants {
 						}
 					}
 					
-					addWorkingCopyBindings(workingCopy.getFields(), bindingsMap);
-					addWorkingCopyBindings(workingCopy.getMethods(), bindingsMap);
+					addWorkingCopyBindings(workingCopy.getFields(), bindingsMap[Binding.VARIABLE]);
+					addWorkingCopyBindings(workingCopy.getFields(), bindingsMap[Binding.LOCAL]);
+					addWorkingCopyBindings(workingCopy.getFields(), bindingsMap[Binding.LOCAL|Binding.VARIABLE]);
+					addWorkingCopyBindings(workingCopy.getMethods(), bindingsMap[Binding.METHOD]);
 					
 				} catch (JavaModelException e) {
 					// working copy doesn't exist -> ignore
@@ -1530,6 +1537,8 @@ public class NameLookup implements SuffixConstants {
 						if (requestor.isCanceled())
 							return;
 						IJavaElement cu = compilationUnits[i];
+						if (cu instanceof ICompilationUnit && ((ICompilationUnit)cu).isWorkingCopy())
+							continue;
 						
 						switch (bindingType) {
 						case Binding.TYPE:
@@ -1734,9 +1743,9 @@ public class NameLookup implements SuffixConstants {
 			IJavaElementRequestor requestor) {
 
 		if (!partialMatch) {
-			HashMap bindingsMap = (HashMap) (this.bindingsInWorkingCopies == null ? null : this.bindingsInWorkingCopies.get(pkg));
+			HashMap []bindingsMap = (HashMap[]) (this.bindingsInWorkingCopies == null ? null : this.bindingsInWorkingCopies.get(pkg));
 			if (bindingsMap != null) {
-				Object object = bindingsMap.get(topLevelTypeName);
+				Object object = bindingsMap[bindingType].get(topLevelTypeName);
 				if (object instanceof IJavaElement) {
 					if (doAcceptBinding((IJavaElement)object, bindingType , true/*a source type*/,requestor)) {
 						return true; // don't continue with compilation unit
@@ -1754,9 +1763,9 @@ public class NameLookup implements SuffixConstants {
 				}
 			}
 		} else {
-			HashMap bindingsMap = (HashMap) (this.bindingsInWorkingCopies == null ? null : this.bindingsInWorkingCopies.get(pkg));
+			HashMap[] bindingsMap = (HashMap[]) (this.bindingsInWorkingCopies == null ? null : this.bindingsInWorkingCopies.get(pkg));
 			if (bindingsMap != null) {
-				Iterator iterator = bindingsMap.values().iterator();
+				Iterator iterator = bindingsMap[bindingType].values().iterator();
 				while (iterator.hasNext()) {
 					if (requestor.isCanceled())
 						return false;
