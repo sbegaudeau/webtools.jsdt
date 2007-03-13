@@ -27,7 +27,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
  * Comparable Java elements are represented as JavaNodes.
  * Extends the DocumentRangeNode with method signature information.
  */
-class JavaNode extends DocumentRangeNode implements ITypedElement {
+public class JavaNode extends DocumentRangeNode implements ITypedElement {
 	
 	public static final int CU= 0;
 	public static final int PACKAGE= 1;

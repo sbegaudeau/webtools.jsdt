@@ -307,7 +307,7 @@ public class CompletionProposalCollector extends CompletionRequestor {
 	 *
 	 * @return the unsorted list of received keyword proposals
 	 */
-	public final IJavaCompletionProposal[] getKeywordCompletionProposals() {
+	public final JavaCompletionProposal[] getKeywordCompletionProposals() {
 		return (JavaCompletionProposal[]) fKeywords.toArray(new JavaCompletionProposal[fKeywords.size()]);
 	}
 
