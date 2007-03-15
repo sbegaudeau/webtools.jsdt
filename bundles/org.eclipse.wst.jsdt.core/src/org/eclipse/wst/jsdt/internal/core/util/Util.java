@@ -27,6 +27,7 @@ import org.eclipse.wst.jsdt.core.*;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
+import org.eclipse.wst.jsdt.core.dom.InferredType;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.QualifiedType;
@@ -1129,6 +1130,9 @@ public class Util {
 				break;
 			case ASTNode.SIMPLE_TYPE:
 				buffer.append(((SimpleType) type).getName().getFullyQualifiedName());
+				break;
+			case ASTNode.INFERRED_TYPE:
+				buffer.append(((InferredType) type).getType());
 				break;
 			case ASTNode.WILDCARD_TYPE:
 				buffer.append('?');

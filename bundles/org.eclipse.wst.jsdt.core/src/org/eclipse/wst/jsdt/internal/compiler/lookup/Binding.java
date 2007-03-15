@@ -31,7 +31,8 @@ public abstract class Binding {
 	public static final int TYPE_PARAMETER = TYPE | ASTNode.Bit13;
 	public static final int COMPILATION_UNIT = ASTNode.Bit14;
 	
-	public static final int NUMBER_BASIC_BINDING=METHOD+1;
+	public static final int BASIC_BINDINGS_MASK= METHOD|TYPE|VARIABLE;
+	public static final int NUMBER_BASIC_BINDING= (METHOD+TYPE+VARIABLE)+1;
 
 	// Shared binding collections
 	public static final TypeBinding[] NO_TYPES = new TypeBinding[0];

@@ -17,6 +17,7 @@ import java.util.Iterator;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -226,11 +227,21 @@ class MethodBinding implements IMethodBinding {
 	}
 
 	private JavaElement getUnresolvedJavaElement() {
-		IType declaringType = (IType) getDeclaringClass().getJavaElement();
-		if (declaringType == null) return null;
+		IJavaElement declaringElement = (IJavaElement) getDeclaringClass().getJavaElement();
+		if (declaringElement == null) return null;
 		if (!(this.resolver instanceof DefaultBindingResolver)) return null;
 		ASTNode node = (ASTNode) ((DefaultBindingResolver) this.resolver).bindingsToAstNodes.get(this);
-		if (node != null && declaringType.getParent().getElementType() != IJavaElement.CLASS_FILE) {
+		ITypeRoot typeRoot=null;
+		IType  declaringType=null;
+		if (declaringElement instanceof ITypeRoot)
+		{
+			typeRoot=(ITypeRoot)declaringElement;
+			
+		}
+		else if (declaringElement instanceof IType )
+			declaringType=(IType)declaringElement;
+//		IType declaringType=(IType)declaringElement;
+		if (node != null && declaringElement.getParent().getElementType() != IJavaElement.CLASS_FILE) {
 			if (node instanceof MethodDeclaration) {
 				MethodDeclaration methodDeclaration = (MethodDeclaration) node;
 				ArrayList parameterSignatures = new ArrayList();
@@ -251,7 +262,10 @@ class MethodBinding implements IMethodBinding {
 				int parameterCount = parameterSignatures.size();
 				String[] parameters = new String[parameterCount];
 				parameterSignatures.toArray(parameters);
-				return (JavaElement) declaringType.getMethod(getName(), parameters);
+				if (typeRoot!=null)
+					return (JavaElement) typeRoot.getMethod(getName(), parameters);
+				else
+					return (JavaElement) declaringType.getMethod(getName(), parameters);
 			} else {
 				// annotation type member declaration
 				AnnotationTypeMemberDeclaration typeMemberDeclaration = (AnnotationTypeMemberDeclaration) node;

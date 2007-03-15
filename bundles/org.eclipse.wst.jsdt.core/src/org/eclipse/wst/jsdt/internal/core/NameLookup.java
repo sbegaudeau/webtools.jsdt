@@ -1742,6 +1742,7 @@ public class NameLookup implements SuffixConstants {
 			int acceptFlags,
 			IJavaElementRequestor requestor) {
 
+		bindingType=bindingType & Binding.BASIC_BINDINGS_MASK;
 		if (!partialMatch) {
 			HashMap []bindingsMap = (HashMap[]) (this.bindingsInWorkingCopies == null ? null : this.bindingsInWorkingCopies.get(pkg));
 			if (bindingsMap != null) {

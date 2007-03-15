@@ -46,6 +46,7 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ElementValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
@@ -287,11 +288,14 @@ class DefaultBindingResolver extends BindingResolver {
 			}
 			return null;
 		} else {
-			TypeBinding binding = (TypeBinding) this.bindingTables.compilerBindingsToASTBindings.get(referenceBinding);
+			ITypeBinding binding = (ITypeBinding) this.bindingTables.compilerBindingsToASTBindings.get(referenceBinding);
 			if (binding != null) {
 				return binding;
 			}
-			binding = new TypeBinding(this, referenceBinding);
+			if (referenceBinding instanceof CompilationUnitBinding)
+				binding = new org.eclipse.wst.jsdt.core.dom.CompilationUnitBinding(this, referenceBinding);
+			else
+				binding = new TypeBinding(this, referenceBinding);
 			this.bindingTables.compilerBindingsToASTBindings.put(referenceBinding, binding);
 			return binding;
 		}

@@ -910,4 +910,6 @@ public interface ITypeBinding extends IBinding {
 	 * @see #isUpperbound()
 	 */
 	public boolean isWildcardType();
+	
+	public boolean isCompilationUnit();
 }

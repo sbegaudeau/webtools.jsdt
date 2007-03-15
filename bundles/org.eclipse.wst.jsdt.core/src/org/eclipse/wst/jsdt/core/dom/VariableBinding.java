@@ -16,7 +16,9 @@ import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.util.IModifierConstants;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
@@ -311,6 +313,10 @@ class VariableBinding implements IVariableBinding {
 		return this.binding instanceof FieldBinding;
 	}
 
+	public boolean isGlobal()
+	{
+		return this.binding instanceof LocalVariableBinding && ((LocalVariableBinding)this.binding).declaringScope instanceof CompilationUnitScope;
+	}
 	/*
 	 * @see IBinding#isSynthetic()
 	 */
