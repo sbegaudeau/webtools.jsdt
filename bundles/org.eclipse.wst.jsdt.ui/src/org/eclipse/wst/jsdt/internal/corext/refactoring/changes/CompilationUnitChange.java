@@ -49,7 +49,7 @@ public class CompilationUnitChange extends TextFileChange {
 		super(name, getFile(cunit));
 		Assert.isNotNull(cunit);
 		fCUnit= cunit;
-		setTextType("java"); //$NON-NLS-1$
+		setTextType("js"); //$NON-NLS-1$
 	}
 	
 	private static IFile getFile(ICompilationUnit cunit) {

@@ -43,7 +43,7 @@ public final class MultiStateCompilationUnitChange extends MultiStateTextFileCha
 
 		fUnit= unit;
 
-		setTextType("java"); //$NON-NLS-1$
+		setTextType("js"); //$NON-NLS-1$
 	}
 
 	/*
