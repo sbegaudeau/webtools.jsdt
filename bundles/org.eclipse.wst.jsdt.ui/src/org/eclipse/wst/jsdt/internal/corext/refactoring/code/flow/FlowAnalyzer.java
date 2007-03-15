@@ -772,7 +772,7 @@ abstract class FlowAnalyzer extends GenericVisitor {
 		IBinding binding= node.resolveBinding();
 		if (binding instanceof IVariableBinding) {
 			IVariableBinding variable= (IVariableBinding)binding;
-			if (!variable.isField()) {
+			if (!variable.isField() && !variable.isGlobal()) {
 				setFlowInfo(node, new LocalFlowInfo(
 					variable,
 					FlowInfo.READ,
