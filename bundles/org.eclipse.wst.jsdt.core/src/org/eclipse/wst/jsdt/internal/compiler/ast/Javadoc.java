@@ -859,4 +859,14 @@ public class Javadoc extends ASTNode {
 		}
 		visitor.endVisit(this, scope);
 	}
+	
+	public JavadocSingleNameReference findParam(char [] name)
+	{
+		if (this.paramReferences!=null)
+			for (int i = 0; i < this.paramReferences.length; i++) {
+				if (CharOperation.equals(name, this.paramReferences[i].token))
+					return this.paramReferences[i];
+			}
+		return null;
+	}
 }

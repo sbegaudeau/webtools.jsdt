@@ -14,6 +14,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
@@ -24,6 +25,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ReturnStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
@@ -364,6 +366,22 @@ public class InferEngine extends ASTVisitor {
 				{
 				   InferredType type = this.addType(javadoc.returnType.getSimpleTypeName());
 				   methodDeclaration.inferredType=type;
+				}
+				
+				if (methodDeclaration.arguments!=null)
+				for (int i = 0; i < methodDeclaration.arguments.length; i++) {
+					JavadocSingleNameReference param = javadoc.findParam(methodDeclaration.arguments[i].name);
+					if (param!=null)
+					{
+						if (param.types!=null)
+							for (int j = 0; j < param.types.length; j++) {
+								TypeReference reference = param.types[j];
+								InferredType paramType=this.addType(reference.getSimpleTypeName());
+								methodDeclaration.arguments[i].inferredType=paramType;
+//TODO: what to do when more than one type?
+								break;
+							}
+					}
 				}
 			}
 		}
