@@ -4698,8 +4698,11 @@ class ASTConverter {
 				}
 				break;
 			case AST.JLS3 :
-				this.scanner.resetTo(methodDeclaration.declarationSourceStart, methodDeclaration.sourceStart);
-				this.setModifiers(methodDecl, methodDeclaration.annotations);
+				if (methodDeclaration.sourceStart>methodDeclaration.declarationSourceStart)
+				{
+				  this.scanner.resetTo(methodDeclaration.declarationSourceStart, methodDeclaration.sourceStart);
+				  this.setModifiers(methodDecl, methodDeclaration.annotations);
+				}
 		}
 	}
 

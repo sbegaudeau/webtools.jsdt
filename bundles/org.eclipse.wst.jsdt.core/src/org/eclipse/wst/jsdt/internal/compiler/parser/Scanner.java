@@ -4155,7 +4155,9 @@ public void pushBack() {
 protected boolean checkIfDivide(int previousToken){
 	
 	if (previousToken == TokenNameIdentifier || previousToken == TokenNameStringLiteral ||
-			previousToken == TokenNameCharacterLiteral || previousToken == TokenNameRPAREN ||
+			previousToken == TokenNameCharacterLiteral ||
+			previousToken == TokenNameIntegerLiteral ||
+			previousToken == TokenNameRPAREN ||
 			previousToken == TokenNameRBRACKET) {
 		
 		return true;
