@@ -1149,7 +1149,7 @@ public void notifySourceElementRequestor(CompilationUnitDeclaration parsedUnit) 
 			InferredMethod method = (InferredMethod) iterator.next();
 			
 			ISourceElementRequestor.MethodInfo methodInfo = new ISourceElementRequestor.MethodInfo();
-			methodInfo.isConstructor = false;
+			methodInfo.isConstructor = method.isConstructor;
 			MethodDeclaration methodDeclaration=method.methodDeclaration;
 			
 			char[][] argumentTypes = null;
@@ -1185,7 +1185,7 @@ public void notifySourceElementRequestor(CompilationUnitDeclaration parsedUnit) 
 		}
 		
 		
-		requestor.exitType(-1);
+		requestor.exitType(type.sourceEnd);
 	}
 	
 	if (sourceType == null){
