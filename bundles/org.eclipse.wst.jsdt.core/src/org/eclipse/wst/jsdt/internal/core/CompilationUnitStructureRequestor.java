@@ -314,7 +314,10 @@ public void enterMethod(MethodInfo methodInfo) {
 			|| parentHandle.getElementType() == IJavaElement.COMPILATION_UNIT
 			|| parentHandle.getElementType() == IJavaElement.CLASS_FILE
 			) {
-		String selector = JavaModelManager.getJavaModelManager().intern(new String(methodInfo.name));
+		
+		char[] cs = methodInfo.name!=null ? methodInfo.name: CharOperation.NO_CHAR;
+		
+		String selector = JavaModelManager.getJavaModelManager().intern(new String(cs));
 		handle = new SourceMethod(parentHandle, selector, parameterTypeSigs);
 	}
 	else {

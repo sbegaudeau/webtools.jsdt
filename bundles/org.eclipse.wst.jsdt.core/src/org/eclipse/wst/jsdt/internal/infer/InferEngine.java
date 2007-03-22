@@ -135,7 +135,12 @@ public class InferEngine extends ASTVisitor {
 				if (this.inferOptions.useInitMethod)
 				{
 					this.currentContext.currentType=type;
+					this.currentContext.currentType=type;
+					type.isDefinition=true;
+					InferredMethod method = type.addMethod(type.name, functionExpression.methodDeclaration);
+					method.isConstructor=true;
 				}
+				
 			}
 			else	// could be method
 			{

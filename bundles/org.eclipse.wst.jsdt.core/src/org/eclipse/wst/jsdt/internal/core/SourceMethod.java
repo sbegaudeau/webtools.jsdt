@@ -31,7 +31,7 @@ public class SourceMethod extends NamedMember implements IMethod {
 
 protected SourceMethod(JavaElement parent, String name, String[] parameterTypes) {
 	super(parent, name);
-	Assert.isTrue(name.indexOf('.') == -1);
+//	Assert.isTrue(name.indexOf('.') == -1);
 	if (parameterTypes == null) {
 		this.parameterTypes= CharOperation.NO_STRINGS;
 	} else {

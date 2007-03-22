@@ -34,6 +34,7 @@ public class InferOptions {
 	 */
 	public InferOptions(){
 		// use default options
+		setDefaultOptions();
 	}
 
 	/** 
@@ -46,6 +47,11 @@ public class InferOptions {
 		set(settings);		
 	}
 	
+	public void setDefaultOptions()
+	{
+		this.useAssignments=true;
+		this.useInitMethod=true;
+	}
  
 	public Map getMap() {
 		Map optionsMap = new HashMap(30);
