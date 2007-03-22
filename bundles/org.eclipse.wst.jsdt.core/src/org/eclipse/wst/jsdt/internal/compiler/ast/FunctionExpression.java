@@ -2,6 +2,8 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class FunctionExpression extends Expression {
@@ -24,6 +26,8 @@ public class FunctionExpression extends Expression {
 	
 
 	public TypeBinding resolveType(BlockScope scope) {
+		this.methodDeclaration.scope=new MethodScope(scope,this.methodDeclaration,false);
+		this.methodDeclaration.resolve(scope);
 		return scope.getJavaLangFunction();
 	}
 }
