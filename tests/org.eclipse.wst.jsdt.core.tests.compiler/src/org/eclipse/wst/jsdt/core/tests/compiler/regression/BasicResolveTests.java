@@ -370,4 +370,18 @@ public class BasicResolveTests extends AbstractRegressionTest {
 
 		}
 		
+		public void test0032()	{
+			this.runNegativeTest(
+					new String[] {
+							"X.js",
+							"var foo;\n" +
+							" foo.onMouseDown = function () { return 1; };\n" +
+							" foo.onMouseDown();\n" +
+							"" 
+					},
+					""
+				);
+
+		}
+		
 }

@@ -2533,4 +2533,47 @@ public void test56() {
 		expectedReplacedSource,
 		testName);
 }
+
+
+
+public void test57() {
+
+	String str ="YAHOO.widget.Slider = function (sElementId, sGroup, oThumb, sType) {\n"+
+				"if (sElementId) {\n"+
+				"}\n"+
+				"};\n";
+		
+	String startString = "sElementId)";
+	String selection = "sElementId";
+	
+	String expectedCompletionNodeToString = "<SelectOnName:sElementId>";
+	
+	String completionIdentifier = "sElementId";
+	String expectedUnitDisplayString  =
+		  "YAHOO.widget.Slider = function (sElementId, sGroup, oThumb, sType) {\n"+
+			"  if (<SelectOnName:sElementId>)\n      {\n"+
+			"      }\n"+
+			"};\n";
+	
+	
+	String expectedReplacedSource = "sElementId";
+	String testName = "<select>";
+
+	int selectionStart = str.indexOf(startString);
+	int selectionEnd = selectionStart + selection.length() - 1;
+		
+	this.checkMethodParse(
+		str.toCharArray(), 
+		selectionStart,
+		selectionEnd,
+		expectedCompletionNodeToString,
+		expectedUnitDisplayString,
+		completionIdentifier,
+		expectedReplacedSource,
+		testName);
+}
+
+
+
+
 }

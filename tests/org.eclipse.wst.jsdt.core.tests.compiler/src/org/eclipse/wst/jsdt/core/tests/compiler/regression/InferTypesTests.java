@@ -13,8 +13,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 	private InferOptions getDefaultOptions()
 	{
 		InferOptions inferOptions=new InferOptions();
-		inferOptions.useAssignments=true;
-		inferOptions.useInitMethod=true;
+		inferOptions.setDefaultOptions();
 		return inferOptions;
 	}
 	
@@ -185,7 +184,23 @@ public class InferTypesTests extends AbstractRegressionTest {
 			 );
 		}
 
+		
+
 		public void test020() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+				"var foo;\n"+
+				"  foo.onMouseDown = function () { return 1; };\n"+
+				"\n",
+				"X.js",
+				"class ___foo0 extends Object{\n  Number onMouseDown()\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+
+				
+		
+		public void test040() {
 			CompilationUnitDeclaration declaration = this.runInferTest(
 					 "/**\n"
 					+ " * @constructor \n"
@@ -213,7 +228,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 
 
 
-		public void test021() {
+		public void test041() {
 			CompilationUnitDeclaration declaration = this.runInferTest(
 					" i= { \n"+
 					"/**\n" +
@@ -235,7 +250,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 		}
 		
 
-		public void test022() {
+		public void test042() {
 			CompilationUnitDeclaration declaration = this.runInferTest(
 					 "/**\n"
 					+ " * @constructor \n"
@@ -263,7 +278,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 		}
 		
 
-		public void test023() {
+		public void test043() {
 			CompilationUnitDeclaration declaration = this.runInferTest(
 					 "/**\n"
 					+ " * @constructor \n"
