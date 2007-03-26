@@ -6,7 +6,9 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
@@ -39,6 +41,8 @@ public class InferEngine extends ASTVisitor {
     Context currentContext=new Context();
     int passNumber=1;
 
+    int anonymousCount=0;
+    
     boolean isStaticClassReference;
     
 	
@@ -79,7 +83,7 @@ public class InferEngine extends ASTVisitor {
 	
 	public void setCompilationUnit(CompilationUnitDeclaration compilationUnit) {
 		this.compUnit = compilationUnit;
-		buildDefinedMembers(compilationUnit.statements);
+		buildDefinedMembers(compilationUnit.statements,null);
 	}
 
 
@@ -153,6 +157,16 @@ public class InferEngine extends ASTVisitor {
 						receiverType.addMethod(fieldReference.token,functionExpression.methodDeclaration);
 						receiverType.updatePositions(assignment.sourceStart, assignment.sourceEnd);
 					}
+					else if (this.passNumber==2)	// create anonymous class
+					{
+						AbstractVariableDeclaration var=getVariable(fieldReference.receiver);
+						if (var!=null)
+						{
+							receiverType=createAnonymousType(var);
+							receiverType.addMethod(fieldReference.token,functionExpression.methodDeclaration);
+							receiverType.updatePositions(assignment.sourceStart, assignment.sourceEnd);
+						}
+					}
 				}
 			}
 		}
@@ -175,6 +189,20 @@ public class InferEngine extends ASTVisitor {
 			}
 		}
 		return true; // do nothing by default, keep traversing
+	}
+
+	private InferredType createAnonymousType(AbstractVariableDeclaration var) {
+		
+		InferredType currentType = var.inferredType;
+		
+		char[] cs = String.valueOf(this.anonymousCount++).toCharArray();
+		char []name = CharOperation.concat(InferredType.ANONYMOUS_PREFIX,var.name,cs);
+		InferredType type = addType(name);
+		type.isDefinition=true;
+		if (currentType!=null && !currentType.isAnonymous)
+		  type.superClass=currentType;
+		var.inferredType=type;
+		return type;
 	}
 
 	protected boolean handlePrototype(Assignment assignment) {
@@ -343,7 +371,7 @@ public class InferEngine extends ASTVisitor {
 		pushContext();
 		if (passNumber==1)
 		{
-			buildDefinedMembers(methodDeclaration.statements);
+			buildDefinedMembers(methodDeclaration.statements,methodDeclaration.arguments);
 			if (methodDeclaration.javadoc!=null)
 			{
 				InferredMethod method=null;
@@ -551,8 +579,31 @@ public class InferEngine extends ASTVisitor {
 		return name;
 	}
 	
-	private void buildDefinedMembers(ProgramElement[] statements) {
-		this.currentContext.definedMembers=new HashtableOfObject();
+	protected AbstractVariableDeclaration getVariable(Expression expression)
+	{
+		char [] name=null;
+		
+		if (expression instanceof SingleNameReference)
+			name=((SingleNameReference)expression).token;
+		if (name!=null)
+		{
+			Object var=this.currentContext.definedMembers.get(name);
+			if (var instanceof AbstractVariableDeclaration)
+				return (AbstractVariableDeclaration)var;
+		}
+		return null;
+		
+	}
+	
+	private void buildDefinedMembers(ProgramElement[] statements, Argument[] arguments) {
+		if (this.currentContext.definedMembers==null)
+			this.currentContext.definedMembers=new HashtableOfObject();
+		if (arguments!=null)
+		{
+			for (int i = 0; i < arguments.length; i++) {
+				this.currentContext.definedMembers.put(arguments[i].name, arguments[i]);
+			}
+		}
 		if (statements!=null)
 		{
 			for (int i = 0; i < statements.length; i++) {
