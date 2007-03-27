@@ -9700,6 +9700,7 @@ public void recoveryTokenCheck() {
 protected boolean shouldInsertSemicolon(int prevpos, int prevtoken) {
 	if ( this.currentToken == TokenNameRBRACE ||
 		 scanner.getLineNumber(scanner.currentPosition) > scanner.getLineNumber(prevpos)
+		 || this.currentToken==TokenNameEOF
 		)
 		return true;
 	return false;
