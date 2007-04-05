@@ -43,7 +43,7 @@ public class CompletionScanner extends Scanner {
 
 	public boolean record = false;
 	public char[] prefix;
-	public int currentToken;
+	public int currentCompletionToken;
 	public int currentTokenStart;
 	public int potentialVariableNamesPtr; 
 	public char[][] potentialVariableNames;
@@ -136,7 +136,7 @@ public int getNextToken() throws InvalidInputException {
 	if (this.record) {
 		switch (nextToken) {
 			case TokenNameIdentifier:
-				if (this.currentToken != TokenNameDOT) {
+				if (this.currentCompletionToken != TokenNameDOT) {
 					char[] identifier = this.getCurrentIdentifierSource();
 					if (!Character.isUpperCase(identifier[0]) && 
 							CharOperation.prefixEquals(this.prefix, identifier, true)) {
@@ -146,14 +146,14 @@ public int getNextToken() throws InvalidInputException {
 				break;
 			case TokenNameLPAREN :
 			case TokenNameLBRACE :
-				if (this.currentToken == TokenNameIdentifier) {
+				if (this.currentCompletionToken == TokenNameIdentifier) {
 					this.removePotentialNamesAt(this.currentTokenStart);
 					
 				}
 				break;
 		}
 	}
-	this.currentToken = nextToken;
+	this.currentCompletionToken = nextToken;
 	this.currentTokenStart = this.startPosition;
 	return nextToken;
 
@@ -801,7 +801,7 @@ public void removePotentialNamesAt(int position) {
 }
 public void resetTo(int begin, int end) {
 	if (this.record) {
-		this.currentToken = -1;
+		this.currentCompletionToken = -1;
 		this.currentTokenStart = 0;
 	}
 	super.resetTo(begin, end);
@@ -858,4 +858,5 @@ public void startRecordingIdentifiers() {
 public void stopRecordingIdentifiers() {
 	this.record = true;
 }
+
 }
