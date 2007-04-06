@@ -250,7 +250,10 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 				this.javadoc.resolve(classScope);
 			}
 			*/
-			this.javadoc.resolve(scope.enclosingMethodScope());
+			if (scope.enclosingMethodScope()!=null)
+				this.javadoc.resolve(scope.enclosingMethodScope());
+			else
+				this.javadoc.resolve(scope.compilationUnitScope());
 		}  
 		
 		// only resolve annotation at the end, for constant to be positionned before (96991)
