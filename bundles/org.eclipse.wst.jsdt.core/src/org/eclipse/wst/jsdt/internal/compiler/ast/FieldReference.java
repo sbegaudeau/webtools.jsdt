@@ -528,7 +528,7 @@ public TypeBinding resolveType(BlockScope scope) {
 //		constant = Constant.NotAConstant;
 //		scope.problemReporter().invalidField(this, this.receiverType);
 //		return null;
-		return TypeBinding.ANY;
+		return this.resolvedType=TypeBinding.ANY;
 	}
 	TypeBinding receiverErasure = this.receiverType.erasure();
 	if (receiverErasure instanceof ReferenceBinding) {
