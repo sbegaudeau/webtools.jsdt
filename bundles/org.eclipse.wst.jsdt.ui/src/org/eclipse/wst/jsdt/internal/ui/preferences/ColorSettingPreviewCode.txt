@@ -1,21 +1,28 @@
 /**
- * This is about <code>ClassName</code>.
- * {@link com.yourCompany.aPackage.Interface}
+ * This is about <code>Example.js</code>.
+ * {@link com.yourCompany.aPackage.aFile}
  * @author author
- * @deprecated use <code>OtherClass</code>
+ * @deprecated use <code>BetterExample.js</code>
  */
-public class ClassName<E> implements Interface<String> {
-	enum Color { RED, GREEN, BLUE };
-	/* This comment may span multiple lines. */
-	static Object staticField;
-	// This comment may span only this line
-	private E field;
-	// TASK: refactor
-	@SuppressWarnings(value="all")
-	public int foo(Integer parameter) {
-		abstractMethod();
-		int local= 42*hashCode();
-		staticMethod();
-		return bar(local) + parameter;
-	}
+var index = 0;
+var arr = [];
+
+function foo() {
+    /* This comment may span multiple lines. */
+    var1 = new Object();
+    clear(var1);
+}
+
+function pop() {
+    return arr[index--];
+}
+
+function push(elem) {
+    // This comment may span only this line
+    arr[index++] = elem;
+}
+
+function isEmpty() {
+    // TASK: refactor
+    return index == 0;
 }
