@@ -312,6 +312,96 @@ public void test0002() {
 		expectedFullWithStatementRecoveryUnitToString,
 		testName);
 }
+
+public void test0002a() {
+
+	String s = 
+		  "    System.out.print1();					\n"
+		 + "    #                    					\n"
+		+ "    System.out.print2();					\n"
+		+ "											\n"; 	
+
+	String expectedDietUnitToString = 
+   	    "System.out.print1();\n"+
+   	    "System.out.print2();\n"+
+ 		"";
+	
+	String expectedDietWithStatementRecoveryUnitToString =
+		expectedDietUnitToString;
+	
+	String expectedDietPlusBodyUnitToString = 
+   	    "  System.out.println();\n"+
+		"\n";
+
+	String expectedDietPlusBodyWithStatementRecoveryUnitToString = 
+   	    "System.out.print1();\n"+
+   	    "System.out.print2();\n"+
+ 		"";
+	
+	String expectedFullUnitToString =
+		expectedDietUnitToString;
+	
+	String expectedFullWithStatementRecoveryUnitToString =
+		expectedDietUnitToString;
+	
+	String testName = "<test>";
+	checkParse(
+		s.toCharArray(),
+		expectedDietUnitToString,
+		expectedDietWithStatementRecoveryUnitToString,
+		expectedDietPlusBodyUnitToString,
+		expectedDietPlusBodyWithStatementRecoveryUnitToString,
+		expectedFullUnitToString,
+		expectedFullWithStatementRecoveryUnitToString,
+		testName);
+}
+
+public void test0002b() {
+
+	String s = 
+		"  foo = function () {								\n"
+		+ "    #                    					\n"
+		+ "    System.out.println();					\n"
+		+ "}											\n"; 	
+
+	String expectedDietUnitToString = 
+		"foo = function () {\n" + 
+   	    "  System.out.println();\n"+
+		"};\n";
+	
+	String expectedDietWithStatementRecoveryUnitToString =
+		expectedDietUnitToString;
+	
+	String expectedDietPlusBodyUnitToString = 
+		"foo = function () {\n" + 
+   	    "  System.out.println();\n"+
+		"}\n";
+
+	String expectedDietPlusBodyWithStatementRecoveryUnitToString = 
+		"foo = function () {\n" + 
+   	    "  System.out.println();\n"+
+		"};\n";
+	
+	String expectedFullUnitToString =
+		expectedDietUnitToString;
+	
+	String expectedFullWithStatementRecoveryUnitToString =
+		expectedDietUnitToString;
+	
+	String testName = "<test>";
+	checkParse(
+		s.toCharArray(),
+		expectedDietUnitToString,
+		expectedDietWithStatementRecoveryUnitToString,
+		expectedDietPlusBodyUnitToString,
+		expectedDietPlusBodyWithStatementRecoveryUnitToString,
+		expectedFullUnitToString,
+		expectedFullWithStatementRecoveryUnitToString,
+		testName);
+}
+
+
+
 public void test0003() {
 
 	String s = 
