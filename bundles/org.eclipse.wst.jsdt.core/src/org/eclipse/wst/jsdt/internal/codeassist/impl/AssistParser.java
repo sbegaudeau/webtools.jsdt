@@ -99,7 +99,11 @@ public int bodyEnd(Initializer initializer){
 public RecoveredElement buildInitialRecoveryState(){
 	/* recovery in unit structure */
 	if (referenceContext instanceof CompilationUnitDeclaration){
+		boolean oldStatementRecoveryActivated = this.statementRecoveryActivated;
+		if (!DO_DIET_PARSE)
+			this.statementRecoveryActivated=true;
 		RecoveredElement element = super.buildInitialRecoveryState();
+		this.statementRecoveryActivated=oldStatementRecoveryActivated;
 		flushAssistState();
 		flushElementStack();
 		if (element instanceof RecoveredMethod)
