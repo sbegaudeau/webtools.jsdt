@@ -245,14 +245,14 @@ public CompilationUnitDeclaration updatedCompilationUnitDeclaration(){
 				stmts[actualCount++] = updatedASTNode;
 //			}
 		}
-		if (actualCount != this.statementCount){
-			System.arraycopy(
-					stmts, 
-				0, 
-				stmts = new ProgramElement[existingCount+actualCount], 
-				0, 
-				existingCount+actualCount);
-		}
+//		if (actualCount != this.statementCount){
+//			System.arraycopy(
+//					stmts, 
+//				0, 
+//				stmts = new ProgramElement[existingCount+actualCount], 
+//				0, 
+//				existingCount+actualCount);
+//		}
 		this.unitDeclaration.statements = stmts;
 	}
 	else if (this.unitDeclaration.statements==null)
