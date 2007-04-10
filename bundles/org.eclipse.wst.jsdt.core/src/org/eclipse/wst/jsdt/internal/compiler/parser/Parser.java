@@ -53,7 +53,7 @@ public class Parser implements  ParserBasicInformation, TerminalTokens, Operator
     
 	public static short check_table[] = null;
 	public static final int CurlyBracket = 2;
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 	private static final boolean DEBUG_AUTOMATON = false;
 	private static final String EOF_TOKEN = "$eof" ; //$NON-NLS-1$
 	private static final String ERROR_TOKEN = "$error" ; //$NON-NLS-1$
@@ -208,6 +208,8 @@ public class Parser implements  ParserBasicInformation, TerminalTokens, Operator
 	public JavadocParser javadocParser;
 	// used for recovery
 	protected int lastJavadocEnd;
+
+	private boolean enteredRecoverStatements;
 
 	
 	
@@ -971,7 +973,7 @@ public RecoveredElement buildInitialRecoveryState(){
 		if (!DO_DIET_PARSE)
 		{
 			this.methodRecoveryActivated=true;
-			this.statementRecoveryActivated=true;
+//			this.statementRecoveryActivated=true;
 		}
 		element = new RecoveredUnit(this.compilationUnit, 0, this);
 		
@@ -992,8 +994,8 @@ public RecoveredElement buildInitialRecoveryState(){
 		else
 		{
 			this.currentToken = 0;
-			if (this.astPtr<0&&this.compilationUnit.sourceEnd>0)
-				this.lastCheckPoint = this.compilationUnit.sourceEnd;
+//			if (this.astPtr<0&&this.compilationUnit.sourceEnd>0)
+//				this.lastCheckPoint = this.compilationUnit.sourceEnd;
 
 		}
 
@@ -1032,6 +1034,28 @@ public RecoveredElement buildInitialRecoveryState(){
 
 	if (element == null) return element;
 	
+	element = recoverAST(element);
+	if (this.statementRecoveryActivated) {
+		if (this.pendingRecoveredType != null &&
+				this.scanner.startPosition - 1 <= this.pendingRecoveredType.declarationSourceEnd) {
+			// Add the pending type to the AST if this type isn't already added in the AST.
+			element = element.add(this.pendingRecoveredType, 0);				
+			this.lastCheckPoint = this.pendingRecoveredType.declarationSourceEnd + 1;
+			this.pendingRecoveredType = null;
+		}
+	}
+	ProgramElement[] compUnitStatments = this.compilationUnit.statements;
+	if (compUnitStatments!=null && compUnitStatments.length>0 &&
+			this.lastCheckPoint<compUnitStatments[compUnitStatments.length-1].sourceEnd)
+	{
+		ProgramElement programElement = compUnitStatments[compUnitStatments.length-1];
+
+		this.lastCheckPoint=((programElement instanceof Expression) ? ((Expression)programElement).statementEnd : programElement.sourceEnd)+1;
+	}
+	return element;
+}
+
+private RecoveredElement recoverAST(RecoveredElement element) {
 	for(int i = 0; i <= this.astPtr; i++){
 		ASTNode node = this.astStack[i];
 		if (node instanceof AbstractMethodDeclaration){
@@ -1082,17 +1106,17 @@ public RecoveredElement buildInitialRecoveryState(){
 			}
 			continue;
 		}
-//		if (node instanceof Statement){
-//			Statement statement = (Statement) node;
-//			if (statement.sourceEnd == 0){
-//				element = element.add(statement, 1);
-//				this.lastCheckPoint = statement.sourceStart;				
-//			} else {
-//				element = element.add(statement, 0);
-//				this.lastCheckPoint = statement.sourceEnd + 1;
-//			}
-//			continue;
-//		}		
+		if (node instanceof Statement){
+			Statement statement = (Statement) node;
+			if (statement.sourceEnd == 0){
+				element = element.add(statement, 1);
+				this.lastCheckPoint = statement.sourceStart;				
+			} else {
+				element = element.add(statement, 0);
+				this.lastCheckPoint = statement.sourceEnd + 1;
+			}
+			continue;
+		}		
 		if (node instanceof ImportReference){
 			ImportReference importRef = (ImportReference) node;
 			element = element.add(importRef, 0);
@@ -1127,15 +1151,6 @@ public RecoveredElement buildInitialRecoveryState(){
 				element = element.add(statement, 0);
 				this.lastCheckPoint = statement.sourceEnd + 1;
 			}
-		}
-	}
-	if (this.statementRecoveryActivated) {
-		if (this.pendingRecoveredType != null &&
-				this.scanner.startPosition - 1 <= this.pendingRecoveredType.declarationSourceEnd) {
-			// Add the pending type to the AST if this type isn't already added in the AST.
-			element = element.add(this.pendingRecoveredType, 0);				
-			this.lastCheckPoint = this.pendingRecoveredType.declarationSourceEnd + 1;
-			this.pendingRecoveredType = null;
 		}
 	}
 	return element;
@@ -7653,7 +7668,7 @@ protected CompilationUnitDeclaration endParse(int act) {
 
 	this.lastAct = act;
 
-	if(this.statementRecoveryActivated && Parser.DO_DIET_PARSE) {
+	if(this.statementRecoveryActivated ) {
 		RecoveredElement recoveredElement = this.buildInitialRecoveryState();
 		recoveredElement.topElement().updateParseTree();
 		if(this.hasError) this.resetStacks();
@@ -7664,6 +7679,7 @@ protected CompilationUnitDeclaration endParse(int act) {
 			System.out.println(this.compilationUnit);		
 			System.out.println("----------------------------------"); //$NON-NLS-1$
 		}
+		recoverAST(this.currentElement);
 		this.currentElement.topElement().updateParseTree();
 	} else {
 		if (this.diet & VERBOSE_RECOVERY){
@@ -8813,8 +8829,9 @@ protected void parse() {
 					this.recoveryScanner.getData();
 			}
 			
-			if (this.methodRecoveryActivated && this.options.performStatementsRecovery) {
+			if (this.methodRecoveryActivated && this.options.performStatementsRecovery && !this.enteredRecoverStatements) {
 				this.methodRecoveryActivated = false;
+				this.enteredRecoverStatements=true;
 				this.recoverStatements();
 				this.methodRecoveryActivated = true;
 
@@ -9218,7 +9235,10 @@ public void parseStatements(ReferenceContext rc, int start, int end, TypeDeclara
 	
 	initialize();
 	
-	goForBlockStatementsopt();
+	if (rc instanceof CompilationUnitDeclaration)
+		goForCompilationUnit();
+	else
+		goForBlockStatementsopt();
 	this.nestedMethod[this.nestedType]++;
 	pushOnRealBlockStack(0);
 	
@@ -9600,6 +9620,8 @@ protected void recoverStatements() {
 		}
 	}
 	
+	if (false)
+	{
 	MethodVisitor methodVisitor = new MethodVisitor();
 	TypeVisitor typeVisitor = new TypeVisitor();
 	methodVisitor.typeVisitor = typeVisitor;
@@ -9628,6 +9650,26 @@ protected void recoverStatements() {
 			}
 		}
 	}
+	}
+	else
+	{
+		CompilationUnitDeclaration compilationUnitDeclaration=(CompilationUnitDeclaration)this.referenceContext;
+
+		ReferenceContext oldContext = Parser.this.referenceContext;
+		Parser.this.recoveryScanner.resetTo(compilationUnitDeclaration.sourceStart, compilationUnitDeclaration.sourceEnd);
+		Scanner oldScanner = Parser.this.scanner;
+		Parser.this.scanner = Parser.this.recoveryScanner;
+		Parser.this.parseStatements(
+				compilationUnitDeclaration,
+				compilationUnitDeclaration.sourceStart,
+				compilationUnitDeclaration.sourceEnd,
+				null,
+				compilationUnit);
+		Parser.this.scanner = oldScanner;
+		Parser.this.referenceContext = oldContext;
+	}
+	
+	
 }
 
 public void recoveryExitFromVariable() {
@@ -9841,7 +9883,7 @@ protected boolean resumeAfterRecovery() {
 		
 		// does not know how to restart
 		return false;
-	} else if(!this.statementRecoveryActivated) {
+	} else if(!this.statementRecoveryActivated || !DO_DIET_PARSE) {
 		
 		// reset internal stacks 
 		this.resetStacks();
