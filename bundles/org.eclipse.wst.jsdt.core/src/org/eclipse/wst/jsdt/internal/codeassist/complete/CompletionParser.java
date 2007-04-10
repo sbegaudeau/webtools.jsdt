@@ -3806,7 +3806,7 @@ public MethodDeclaration parseStatementsAfterCompletion(int start, int end, Comp
 protected boolean moveRecoveryCheckpoint() {
 	CompletionScanner completionScanner = (CompletionScanner) this.scanner;
 	if (completionScanner.record) {
-		completionScanner.currentToken = -1;
+		completionScanner.currentCompletionToken = -1;
 		completionScanner.currentTokenStart = 0;
 	}
 	return super.moveRecoveryCheckpoint();
