@@ -15,15 +15,19 @@ import junit.framework.Test;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.*;
 
 public class CompletionParserTest extends AbstractCompletionTest {
+	
 public CompletionParserTest(String testName) {
 	super(testName);
 }
+
 static {
 //	TESTS_NAMES = new String[] { "testXA_1FGGUQF_1FHSL8H_1" };
 }
+
 public static Test suite() {
 	return buildAllCompliancesTestSuite(CompletionParserTest.class);
 }
+
 public void testA() {
 	String str =
 		"	function foo(){\n" + 
@@ -36,9 +40,9 @@ public void testA() {
 
 	String testName = "<complete on methods/fields>";
 	String completeBehind = "s.";
-	String expectedCompletionNodeToString = "<CompleteOnName:s.>";
+	String expectedCompletionNodeToString = "<CompleteOnMemberAccess:s.>";
 	String completionIdentifier = "";
-	String expectedReplacedSource = "s.";
+	String expectedReplacedSource = "";
 	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
 	String expectedUnitDisplayString =
 		"function foo() {\n" + 
@@ -47,7 +51,7 @@ public void testA() {
 		"      {\n" + 
 		"      }\n" + 
 		"  var s = \"hello\";\n" + 
-		"  <CompleteOnName:s.>;\n" + 
+		"  <CompleteOnMemberAccess:s.>;\n" + 
 		"}" + 
 		"\n";
 
@@ -771,14 +775,14 @@ public void testBC_1FJ4GSG_3() {
 
 	String testName = "<complete on method/field>";
 	String completeBehind = "v.";
-	String expectedCompletionNodeToString = "<CompleteOnName:v.>";
+	String expectedCompletionNodeToString = "<CompleteOnMemberAccess:v.>";
 	String completionIdentifier = "";
-	String expectedReplacedSource = "v.";
+	String expectedReplacedSource = "";
 	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
 	String expectedUnitDisplayString =
 		"function foo() {\n" + 
 		"  var v = new   Vector();\n" + 
-		"  var ans = <CompleteOnName:v.>;\n" + 
+		"  var ans = <CompleteOnMemberAccess:v.>;\n" + 
 		"}" + 
 		"\n";
 
@@ -824,16 +828,16 @@ public void testCA_1FGPJQZ() {
 	String str = 
 			"	function moo() {\n" + 
 			"		unknownField.}\n" + 
-			"}\n";
+			"\n";
 
 	String testName = "<complete on method/field>";
 	String completeBehind = "unknownField.";
-	String expectedCompletionNodeToString = "<CompleteOnName:unknownField.>";
+	String expectedCompletionNodeToString = "<CompleteOnMemberAccess:unknownField.>";
 	String completionIdentifier = "";
-	String expectedReplacedSource = "unknownField.";
+	String expectedReplacedSource = "";
 	String expectedUnitDisplayString =
 		"function moo() {\n" + 
-		"  <CompleteOnName:unknownField.>;\n" + 
+		"  <CompleteOnMemberAccess:unknownField.>;\n" + 
 		"}\n";
 
 	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
@@ -1042,7 +1046,7 @@ public void testD_2() {
 
 	String testName = "<complete on method/field>";
 	String completeBehind = "string.";
-	String expectedCompletionNodeToString = "<CompleteOnName:string.>";
+	String expectedCompletionNodeToString = "<CompleteOnMemberAccess:string.>";
 	String completionIdentifier = "";
 	String expectedReplacedSource = "string.";
 	String expectedUnitDisplayString =
@@ -1053,7 +1057,7 @@ public void testD_2() {
 		"  var string;\n" + 
 		"  var soso;\n" + 
 		"  var f;\n" + 
-		"  <CompleteOnName:string.>;\n" + 
+		"  <CompleteOnMemberAccess:string.>;\n" + 
 		"}\n";
 
 	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
