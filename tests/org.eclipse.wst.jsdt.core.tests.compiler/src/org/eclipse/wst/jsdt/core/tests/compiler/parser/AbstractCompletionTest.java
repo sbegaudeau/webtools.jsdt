@@ -170,6 +170,7 @@ public void checkMethodParse(
 		String[] expectedLabels,
 		String testName) {
 
+	assertTrue("bad cursor location",cursorLocation>=0);
 	CompilerOptions options = new CompilerOptions(getCompilerOptions());
 	CompletionParser parser = 
 		new CompletionParser(
