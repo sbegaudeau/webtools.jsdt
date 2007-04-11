@@ -89,6 +89,14 @@ public abstract class AbstractMethodDeclaration
 				}
 				return;
 			}
+			if (this.arguments.length>0 && this.binding.parameters.length==0)  // types not set yet
+			{
+				ReferenceBinding declaringClass = this.binding.declaringClass;
+				if (declaringClass instanceof CompilationUnitBinding) {
+					CompilationUnitBinding compilationUnitBinding = (CompilationUnitBinding) declaringClass;
+					compilationUnitBinding.resolveTypesFor(this.binding);
+				}
+			}
 			boolean used = this.binding.isAbstract() || this.binding.isNative();
 			AnnotationBinding[][] paramAnnotations = null;
 			for (int i = 0, length = this.arguments.length; i < length; i++) {

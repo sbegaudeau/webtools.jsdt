@@ -1425,7 +1425,7 @@ private FieldBinding resolveTypeFor(FieldBinding field) {
 //	}
 //	return null; // should never reach this point
 }
-private MethodBinding resolveTypesFor(MethodBinding method) {
+public MethodBinding resolveTypesFor(MethodBinding method) {
 	if ((method.modifiers & ExtraCompilerModifiers.AccUnresolved) == 0)
 		return method;
 

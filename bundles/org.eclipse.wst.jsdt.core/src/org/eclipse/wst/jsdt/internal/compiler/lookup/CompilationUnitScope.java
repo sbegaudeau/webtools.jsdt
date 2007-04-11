@@ -190,7 +190,7 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 	ArrayList stmts=new ArrayList();
 	for (int i = 0; i < this.referenceContext.statements.length; i++) {
 		ProgramElement element = this.referenceContext.statements[i];
-		if (element instanceof MethodDeclaration && ((MethodDeclaration)element).selector!=null) {
+		if (element instanceof MethodDeclaration /* && ((MethodDeclaration)element).selector!=null */) {
 			methods.add(element);
 		}
 		else if (element instanceof LocalDeclaration) {
@@ -248,9 +248,10 @@ private void buildMethods(ArrayList methods) {
 		AbstractMethodDeclaration method = (AbstractMethodDeclaration) iter.next();
 			MethodScope scope = new MethodScope(this,method, false);
 			MethodBinding methodBinding = scope.createMethod(method,method.selector,(SourceTypeBinding)referenceContext.compilationUnitBinding,false);
-			if (methodBinding != null) // is null if binding could not be created
+			if (methodBinding != null && methodBinding.selector!=null) // is null if binding could not be created
 				methodBindings[count++] = methodBinding;
-			fPackage.addBinding(methodBinding, methodBinding.selector,Binding.METHOD);
+			if (methodBinding.selector!=null)
+				fPackage.addBinding(methodBinding, methodBinding.selector,Binding.METHOD);
 			method.binding=methodBinding;
 	}
 	if (count != methodBindings.length)
