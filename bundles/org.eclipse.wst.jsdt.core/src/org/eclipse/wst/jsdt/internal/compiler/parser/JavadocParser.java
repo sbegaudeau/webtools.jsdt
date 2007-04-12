@@ -946,4 +946,15 @@ public class JavadocParser extends AbstractCommentParser {
 			System.arraycopy(this.docComment.paramTypeParameters, paramTypeParamPtr, this.docComment.paramTypeParameters = new JavadocSingleTypeReference[size - paramTypeParamPtr], 0, size - paramTypeParamPtr);
 		}
 	}
+
+	protected void createParamType(Object[] typeReference) {
+		  JavadocSingleNameReference nameRef=(JavadocSingleNameReference)this.astStack[this.astPtr];
+		  TypeReference [] refs=null;
+		  if (typeReference!=null)
+		  {
+			  refs = new TypeReference[typeReference.length];
+			  System.arraycopy(typeReference, 0, refs, 0, typeReference.length);
+		  }
+		  nameRef.types=refs;		
+	}
 }

@@ -725,4 +725,17 @@ class DocCommentParser extends AbstractCommentParser {
 			this.docComment.tags().add(this.astStack[idx]);
 		}
 	}
+
+ 
+	protected void createParamType(Object[] typeReference) {
+		  TagElement nameRef=(TagElement)this.astStack[this.astPtr];
+		  Name [] refs=null;
+		  if (typeReference!=null)
+		  {
+			  refs = new Name[typeReference.length];
+			  System.arraycopy(typeReference, 0, refs, 0, typeReference.length);
+		 	  nameRef.fragments().add(refs[0]);
+		  }
+		
+	}
 }

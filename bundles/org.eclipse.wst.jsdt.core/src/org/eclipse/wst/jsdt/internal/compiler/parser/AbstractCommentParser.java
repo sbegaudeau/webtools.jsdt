@@ -701,7 +701,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 		int end = this.tagSourceEnd;
 		boolean tokenWhiteSpace = this.scanner.tokenizeWhiteSpace;
 		this.scanner.tokenizeWhiteSpace = true;
-		TypeReference []typeReference=null;
+		Object []typeReference=null;
 		
 		// Verify that there are whitespaces after tag
 		boolean isCompletionParser = (this.kind & COMPLETION_PARSER) != 0;
@@ -894,8 +894,8 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 				valid= pushParamName(isTypeParam);
 				if (isParmType)
 				{
-					  JavadocSingleNameReference nameRef=(JavadocSingleNameReference)this.astStack[this.astPtr];
-					  nameRef.types=typeReference;
+					createParamType(typeReference);
+
 				}
 				  return valid;
 			}
@@ -922,7 +922,10 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 		return false;
 	}
 
-	private TypeReference [] parseTypeReference() {
+	protected abstract void createParamType(Object[] typeReference) ;
+	
+
+	private Object [] parseTypeReference() {
 		int currentPosition = this.scanner.currentPosition;
 		try {
 			ArrayList  typeRefs = new ArrayList();
@@ -985,7 +988,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 						     if (!expectingRef)
 						    	 return null;
 							typeRefStartPosition = this.scanner.getCurrentTokenStartPosition();
-							TypeReference ref = (TypeReference)parseQualifiedName(true);
+							Object ref =  parseQualifiedName(true);
 							if (ref!=null)
 								typeRefs.add(ref);
 							expectingRef=false;
@@ -1018,7 +1021,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 
 
 
-			TypeReference[] typeReferences=(TypeReference[])typeRefs.toArray(new TypeReference[typeRefs.size()]);
+			Object[] typeReferences=typeRefs.toArray();
 			return typeReferences;
 		}
 		catch (InvalidInputException ex) {
