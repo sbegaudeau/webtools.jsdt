@@ -1378,7 +1378,7 @@ class ASTConverter {
 
 				
 				if (type == null) {
-					compilationUnit.setFlags(compilationUnit.getFlags() | ASTNode.MALFORMED);
+//					compilationUnit.setFlags(compilationUnit.getFlags() | ASTNode.MALFORMED);
 				} else {
 					compilationUnit.statements().add(type);
 				}
