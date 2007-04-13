@@ -866,21 +866,24 @@ class JavaEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 	 */
 	private SemanticHighlightingManager.HighlightedRange[][] createPreviewerRanges() {
 		return new SemanticHighlightingManager.HighlightedRange[][] {
-//TODO: fix up here
-// Added next 13 lines (04/09/2007 STP)
-// Function Declaration
-{ createHighlightedRange( 9, 9, 3,SemanticHighlightings.METHOD_DECLARATION) },
-{ createHighlightedRange(15, 9, 3,SemanticHighlightings.METHOD_DECLARATION) },
-{ createHighlightedRange(19, 9, 4,SemanticHighlightings.METHOD_DECLARATION) },
-{ createHighlightedRange(24, 9, 7,SemanticHighlightings.METHOD_DECLARATION) },
-// Function
-{ createHighlightedRange(12, 4, 5,SemanticHighlightings.METHOD) },
-// Local Variable Declaration
-{ createHighlightedRange(11, 4, 4,SemanticHighlightings.LOCAL_VARIABLE_DECLARATION) },
-// Local Variable
-{ createHighlightedRange(12,10, 4,SemanticHighlightings.LOCAL_VARIABLE) },
-// Parameter Variable
-{ createHighlightedRange(19,14, 4,SemanticHighlightings.PARAMETER_VARIABLE) },
+				// Function Declaration
+				{ createHighlightedRange( 9, 9, 3,SemanticHighlightings.METHOD_DECLARATION) },
+				{ createHighlightedRange(17, 9, 3,SemanticHighlightings.METHOD_DECLARATION) },
+				{ createHighlightedRange(21, 9, 4,SemanticHighlightings.METHOD_DECLARATION) },
+				{ createHighlightedRange(26, 9, 7,SemanticHighlightings.METHOD_DECLARATION) },
+				// Function
+				{ createHighlightedRange(11,19, 6,SemanticHighlightings.METHOD) },
+				{ createHighlightedRange(14, 4, 5,SemanticHighlightings.METHOD) },
+				// Local Variable Declaration
+				{ createHighlightedRange(11, 8, 4,SemanticHighlightings.LOCAL_VARIABLE_DECLARATION) },
+				{ createHighlightedRange(12, 8, 3,SemanticHighlightings.LOCAL_VARIABLE_DECLARATION) },
+				{ createHighlightedRange(13, 8, 1,SemanticHighlightings.LOCAL_VARIABLE_DECLARATION) },
+				// Local Variable
+				{ createHighlightedRange(14,10, 4,SemanticHighlightings.LOCAL_VARIABLE) },
+				// Object Initializer
+				{ createHighlightedRange(12,14,47,SemanticHighlightings.OBJECT_INITIALIZER) },
+				// Parameter Variable
+				{ createHighlightedRange(20,16, 4,SemanticHighlightings.PARAMETER_VARIABLE) },
 //			{ createHighlightedRange( 6, 13,  9, SemanticHighlightings.DEPRECATED_MEMBER), createHighlightedRange( 6, 13,  9, SemanticHighlightings.CLASS),  },
 //			{ createHighlightedRange( 6, 23,  1, SemanticHighlightings.TYPE_VARIABLE), createHighlightedRange( 6, 23,  1, SemanticHighlightings.TYPE_ARGUMENT), },
 //			{ createHighlightedRange( 6, 37,  9, SemanticHighlightings.INTERFACE) },

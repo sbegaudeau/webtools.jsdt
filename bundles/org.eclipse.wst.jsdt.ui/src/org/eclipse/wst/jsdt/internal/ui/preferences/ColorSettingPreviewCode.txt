@@ -9,7 +9,9 @@ var arr = [];
 
 function foo() {
     /* This comment may span multiple lines. */
-    var1 = new Object();
+    var var1 = new Object();
+    var obj = [ make: "Toyota", model: "Celica", year: 2000 ];
+    var s = "abc123";
     clear(var1);
 }
 
@@ -26,3 +28,4 @@ function isEmpty() {
     // TASK: refactor
     return index == 0;
 }
+

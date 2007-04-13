@@ -33,6 +33,8 @@ import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.MemberValuePair;
 import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
+import org.eclipse.wst.jsdt.core.dom.ObjectLiteral;
+import org.eclipse.wst.jsdt.core.dom.ObjectLiteralField;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
@@ -348,32 +350,15 @@ public class SemanticHighlightings {
 		/*
 		 * @see org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlighting#consumes(org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticToken)
 		 */
-/*
-		public boolean consumes(SemanticToken token) {
-			IBinding binding= token.getBinding();
-boolean rcode = binding != null && binding.getKind() == IBinding.VARIABLE && ((IVariableBinding)binding).isField();
-return rcode;
-			//return binding != null && binding.getKind() == IBinding.VARIABLE && ((IVariableBinding)binding).isField();
-		}
-*/
-		public boolean consumes(SemanticToken token) {
-			
-			// 1: match types
-			SimpleName name= token.getNode();
-			ASTNode node= name.getParent();
-			int nodeType= node.getNodeType();
-			if (nodeType != ASTNode.SIMPLE_TYPE && nodeType != ASTNode.QUALIFIED_TYPE && nodeType != ASTNode.QUALIFIED_NAME && nodeType != ASTNode.QUALIFIED_NAME && nodeType != ASTNode.ENUM_DECLARATION)
-				return false;
-			while (nodeType == ASTNode.QUALIFIED_NAME) {
-				node= node.getParent();
-				nodeType= node.getNodeType();
-				if (nodeType == ASTNode.IMPORT_DECLARATION)
-					return false;
-			}
 
-			// 2: match enums
-			IBinding binding= token.getBinding();
-			return binding instanceof ITypeBinding && ((ITypeBinding) binding).isEnum();
+		public boolean consumes(SemanticToken token) {
+			SimpleName node= token.getNode();
+			StructuralPropertyDescriptor location= node.getLocationInParent();
+			if (location == ObjectLiteralField.FIELD_NAME_PROPERTY ) {
+				ASTNode parent= node.getParent();
+				return (parent != null && parent instanceof ObjectLiteral);
+			}
+			return false;			
 		}
 	}
 
