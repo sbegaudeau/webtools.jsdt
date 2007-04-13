@@ -26,8 +26,8 @@ public class BasicResolveTests extends AbstractRegressionTest {
 		this.runNegativeTest(
 				new String[] {
 					"X.js",
-					"	function foo(){\n" +
-					"	  foo(); \n" +
+					"	function foo(a){\n" +
+					"	  foo(a); \n" +
 					"}\n"
 				},
 				""

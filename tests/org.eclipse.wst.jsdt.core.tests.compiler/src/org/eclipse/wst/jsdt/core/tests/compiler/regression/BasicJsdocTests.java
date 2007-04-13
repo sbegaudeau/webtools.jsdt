@@ -43,6 +43,24 @@ public class BasicJsdocTests extends AbstractRegressionTest {
 			
 		 );
 	}
+	
+	public void test002b() {
+		CompilationUnitDeclaration declaration = this.runJSDocParseTest(
+			 "/**\n"
+				+ " * Valid class javadoc\n"
+				+ " * @param {String} p1 param def\n"
+				+ " */\n"
+			+"function foo(p1){}" + 
+			"\n",
+			"X.js",
+			"/**\n" +
+			"   * @param {String*} p1\n" +
+			" */\n" +
+			"function foo(p1) {\n}" + 
+			"\n"
+			
+		 );
+	}
 	public void test003() {
 		CompilationUnitDeclaration declaration = this.runJSDocParseTest(
 			 "/**\n"

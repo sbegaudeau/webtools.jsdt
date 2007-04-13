@@ -802,14 +802,20 @@ public class BasicParserTests extends AbstractRegressionTest {
 		);
 	}
 
-	public void test0050() {
-		// test recovery  
+
+	public void test0044() {
+		// check a unicode " in string. The expected " is escaped 
+		// because of the way the test framework works. It converts 
+		// special characters to a character representation before
+		// doing the compare. 
 		this.runParseTest(
-				"Foo=function(){ i=1; ++; j=2;}",
+				"ptr[i]();",
 			"X.js",
-				"Foo = function () {\n  i = 1;\n  j = 2;\n}\n"			
+				"ptr[i]();;\n"			
 		);
 	}
+
+  
 
 
 }
