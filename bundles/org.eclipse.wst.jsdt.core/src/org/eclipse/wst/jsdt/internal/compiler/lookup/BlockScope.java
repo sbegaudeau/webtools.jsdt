@@ -866,7 +866,10 @@ public int maxShiftedOffset() {
  * to abort.
  */
 public ProblemReporter problemReporter() {
-	return outerMostMethodScope().problemReporter();
+	Scope scope = outerMostMethodScope();
+	if (scope==null)
+		scope=compilationUnitScope();
+	return scope.problemReporter();
 }
 
 /*
