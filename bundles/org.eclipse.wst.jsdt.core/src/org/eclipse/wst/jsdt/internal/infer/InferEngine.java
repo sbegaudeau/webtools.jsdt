@@ -214,8 +214,12 @@ public class InferEngine extends ASTVisitor {
 			{
 				if (assignment.expression instanceof AllocationExpression)
 				{
+					char[] typeName = getTypeName(fieldReference.receiver);
+					Object object = currentContext.definedMembers.get(typeName);
+					if (object instanceof Argument)
+						return false;
 					AllocationExpression allocationExpression =(AllocationExpression)assignment.expression;
-					InferredType newType = addType(getTypeName(fieldReference.receiver));
+					InferredType newType = addType(typeName);
 					newType.isDefinition=true;
 					InferredType superClass=addType(getTypeName(allocationExpression.member));
 					newType.superClass=superClass;
