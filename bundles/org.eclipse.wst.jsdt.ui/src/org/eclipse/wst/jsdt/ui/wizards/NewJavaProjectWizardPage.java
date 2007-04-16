@@ -237,7 +237,7 @@ public class NewJavaProjectWizardPage extends NewElementWizardPage {
 	 * @since 2.0
 	 */
 	protected void initBuildPaths() {
-		fBuildPathsBlock.init(getNewJavaProject(), fOutputLocation, fClasspathEntries);
+		fBuildPathsBlock.init(getNewJavaProject(), fClasspathEntries);
 	} 
 
 	/**

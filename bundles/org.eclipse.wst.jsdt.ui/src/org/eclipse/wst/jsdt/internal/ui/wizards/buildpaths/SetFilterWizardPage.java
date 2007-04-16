@@ -199,8 +199,14 @@ public class SetFilterWizardPage extends NewElementWizardPage {
 	}
 	
 	private void updateStatus() {
-		fCurrElement.setAttribute(CPListElement.INCLUSION, getInclusionPattern());
-		fCurrElement.setAttribute(CPListElement.EXCLUSION, getExclusionPattern());
+//		fCurrElement.setAttribute(CPListElement.INCLUSION, getInclusionPattern());
+//		fCurrElement.setAttribute(CPListElement.EXCLUSION, getExclusionPattern());
+//		StatusInfo statusInfo= new StatusInfo();
+//		statusInfo.setOK();
+//		updateStatus(statusInfo);
+		
+//		fCurrElement.setAttribute(CPListElement.INCLUSION, getInclusionPattern());
+//		fCurrElement.setAttribute(CPListElement.EXCLUSION, getExclusionPattern());
 		IJavaModelStatus status= JavaConventions.validateClasspath(fCurrElement.getJavaProject(), CPListElement.convertToClasspathEntries(fExistingEntries), fOutputLocation);
 		if (!status.isOK()) {
 			StatusInfo statusInfo= new StatusInfo();

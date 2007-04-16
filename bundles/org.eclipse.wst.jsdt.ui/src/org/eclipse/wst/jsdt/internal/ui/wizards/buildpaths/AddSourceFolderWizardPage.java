@@ -290,15 +290,15 @@ public class AddSourceFolderWizardPage extends NewElementWizardPage {
 		
 		fAddExclusionPatterns= new SelectionButtonDialogField(buttonStyle);
 		fAddExclusionPatterns.setLabelText(NewWizardMessages.NewSourceFolderWizardPage_exclude_label); 
-		fAddExclusionPatterns.setSelection(!fCanCommitConflictingBuildpath && !fAllowRemoveProjectFolder);
+		fAddExclusionPatterns.setSelection(true);
 		
 		fRemoveProjectFolder= new SelectionButtonDialogField(buttonStyle);
 		fRemoveProjectFolder.setLabelText(NewWizardMessages.NewSourceFolderWizardPage_ReplaceExistingSourceFolder_label); 
-		fRemoveProjectFolder.setSelection(!fCanCommitConflictingBuildpath && fAllowRemoveProjectFolder);
+		fRemoveProjectFolder.setSelection(false);
 		
 		fIgnoreConflicts= new SelectionButtonDialogField(buttonStyle);
 		fIgnoreConflicts.setLabelText(NewWizardMessages.AddSourceFolderWizardPage_ignoreNestingConflicts);
-		fIgnoreConflicts.setSelection(fCanCommitConflictingBuildpath);
+		fIgnoreConflicts.setSelection(false);
 		
 		fLinkFields= new LinkFields();
 		if (fNewElement.getLinkTarget() != null) {

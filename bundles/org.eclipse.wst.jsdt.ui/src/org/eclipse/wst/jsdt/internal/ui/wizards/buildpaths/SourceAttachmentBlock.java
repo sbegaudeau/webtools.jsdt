@@ -479,7 +479,7 @@ public class SourceAttachmentBlock {
 	
 		FileDialog dialog= new FileDialog(getShell());
 		dialog.setText(NewWizardMessages.SourceAttachmentBlock_extjardialog_text); 
-		dialog.setFilterExtensions(new String[] {"*.jar;*.zip"}); //$NON-NLS-1$
+		dialog.setFilterExtensions(new String[] {"*.jar;*.zip;*.js"}); //$NON-NLS-1$
 		dialog.setFilterPath(currPath.toOSString());
 		String res= dialog.open();
 		if (res != null) {

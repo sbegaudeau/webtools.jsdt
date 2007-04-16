@@ -58,7 +58,7 @@ public abstract class BuildPathWizard extends NewElementWizard {
 		if (fDoFlushChange) {
 			IJavaProject javaProject= getEntryToEdit().getJavaProject();
 			
-			BuildPathsBlock.flush(getExistingEntries(), getOutputLocation(), javaProject, monitor);
+			BuildPathsBlock.flush(getExistingEntries(),  javaProject, monitor);
 			
 			IProject project= javaProject.getProject();
 			IPath path= getEntryToEdit().getPath();

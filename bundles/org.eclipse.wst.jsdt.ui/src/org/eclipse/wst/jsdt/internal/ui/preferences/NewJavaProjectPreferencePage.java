@@ -220,7 +220,7 @@ public class NewJavaProjectPreferencePage extends PreferencePage implements IWor
 	private SelectionListener fSelectionListener;
 	private ModifyListener fModifyListener;
 	
-	private Text fBinFolderNameText;
+	//private Text fBinFolderNameText;
 	private Text fSrcFolderNameText;
 
 	private Combo fJRECombo;
@@ -229,7 +229,7 @@ public class NewJavaProjectPreferencePage extends PreferencePage implements IWor
 	private Button fFoldersAsSourceFolder;
 
 	private Label fSrcFolderNameLabel;
-	private Label fBinFolderNameLabel;
+	//private Label fBinFolderNameLabel;
 
 	public NewJavaProjectPreferencePage() {
 		super();
@@ -260,9 +260,9 @@ public class NewJavaProjectPreferencePage extends PreferencePage implements IWor
 	}
 
 	public static void initDefaults(IPreferenceStore store) {
-		store.setDefault(SRCBIN_FOLDERS_IN_NEWPROJ, true);
-		store.setDefault(SRCBIN_SRCNAME, "src"); //$NON-NLS-1$
-		store.setDefault(SRCBIN_BINNAME, "bin"); //$NON-NLS-1$
+		store.setDefault(SRCBIN_FOLDERS_IN_NEWPROJ, false);
+		store.setDefault(SRCBIN_SRCNAME, "script"); //$NON-NLS-1$
+		store.setDefault(SRCBIN_BINNAME, ""); //$NON-NLS-1$
 		
 		store.setDefault(CLASSPATH_JRELIBRARY_LIST, getDefaultJRELibraries());
 		store.setDefault(CLASSPATH_JRELIBRARY_INDEX, 0); 
@@ -374,23 +374,23 @@ public class NewJavaProjectPreferencePage extends PreferencePage implements IWor
 		fSrcFolderNameText= addTextControl(sourceFolderGroup, fSrcFolderNameLabel, SRCBIN_SRCNAME, indent); 
 		fSrcFolderNameText.addModifyListener(fModifyListener);
 
-		fBinFolderNameLabel= new Label(sourceFolderGroup, SWT.NONE);
-		fBinFolderNameLabel.setText(PreferencesMessages.NewJavaProjectPreferencePage_folders_bin); 
-		fBinFolderNameText= addTextControl(sourceFolderGroup, fBinFolderNameLabel, SRCBIN_BINNAME, indent); 
-		fBinFolderNameText.addModifyListener(fModifyListener);
+		//fBinFolderNameLabel= new Label(sourceFolderGroup, SWT.NONE);
+		//fBinFolderNameLabel.setText(PreferencesMessages.NewJavaProjectPreferencePage_folders_bin); 
+		//fBinFolderNameText= addTextControl(sourceFolderGroup, fBinFolderNameLabel, SRCBIN_BINNAME, indent); 
+		//fBinFolderNameText.addModifyListener(fModifyListener);
 
-		String[] jreNames= getJRENames();
-		if (jreNames.length > 0) {
-			Label jreSelectionLabel= new Label(result, SWT.NONE);
-			jreSelectionLabel.setText(PreferencesMessages.NewJavaProjectPreferencePage_jrelibrary_label); 
-			jreSelectionLabel.setLayoutData(new GridData());
-		
-			int index= getPreferenceStore().getInt(CLASSPATH_JRELIBRARY_INDEX);
-			fJRECombo= new Combo(result, SWT.READ_ONLY);
-			fJRECombo.setItems(jreNames);
-			fJRECombo.select(index);
-			fJRECombo.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
-		}
+//		String[] jreNames= getJRENames();
+//		if (jreNames.length > 0) {
+//			Label jreSelectionLabel= new Label(result, SWT.NONE);
+//			jreSelectionLabel.setText(PreferencesMessages.NewJavaProjectPreferencePage_jrelibrary_label); 
+//			jreSelectionLabel.setLayoutData(new GridData());
+//		
+//			int index= getPreferenceStore().getInt(CLASSPATH_JRELIBRARY_INDEX);
+//			fJRECombo= new Combo(result, SWT.READ_ONLY);
+//			fJRECombo.setItems(jreNames);
+//			fJRECombo.select(index);
+//			fJRECombo.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
+//		}
 					
 		validateFolders();
 	
@@ -402,12 +402,12 @@ public class NewJavaProjectPreferencePage extends PreferencePage implements IWor
 		boolean useFolders= fFoldersAsSourceFolder.getSelection();
 		
 		fSrcFolderNameText.setEnabled(useFolders);
-		fBinFolderNameText.setEnabled(useFolders);
+		//fBinFolderNameText.setEnabled(useFolders);
 		fSrcFolderNameLabel.setEnabled(useFolders);
-		fBinFolderNameLabel.setEnabled(useFolders);		
+		//fBinFolderNameLabel.setEnabled(useFolders);		
 		if (useFolders) {
 			String srcName= fSrcFolderNameText.getText();
-			String binName= fBinFolderNameText.getText();
+			String binName= "";
 			if (srcName.length() + binName.length() == 0) {
 				updateStatus(new StatusInfo(IStatus.ERROR,  PreferencesMessages.NewJavaProjectPreferencePage_folders_error_namesempty)); 
 				return;
@@ -457,7 +457,7 @@ public class NewJavaProjectPreferencePage extends PreferencePage implements IWor
 	}
 	
 	private void controlModified(Widget widget) {
-		if (widget == fSrcFolderNameText || widget == fBinFolderNameText) {
+		if (widget == fSrcFolderNameText ) {
 			validateFolders();
 		}
 	}	

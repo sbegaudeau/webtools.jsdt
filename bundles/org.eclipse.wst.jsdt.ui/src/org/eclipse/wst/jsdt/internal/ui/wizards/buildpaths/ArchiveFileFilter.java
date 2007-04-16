@@ -32,10 +32,10 @@ import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
  */
 public class ArchiveFileFilter extends ViewerFilter {
 
-	public static final String[] FILTER_EXTENSIONS= new String[] {"*.jar;*.zip"}; //$NON-NLS-1$
-
-	private static final String[] fgArchiveExtensions= { "jar", "zip" }; //$NON-NLS-1$ //$NON-NLS-2$
-
+	//public static final String[] FILTER_EXTENSIONS= new String[] {"*.jar;*.zip"}; //$NON-NLS-1$
+	public static final String[] FILTER_EXTENSIONS= new String[] {"*.js"}; //$NON-NLS-1$
+	private static final String[] fgArchiveExtensions= { "js"}; //$NON-NLS-1$ //$NON-NLS-2$
+	//private static final String[] fgArchiveExtensions= {"*jar","zip"}; //$NON-NLS-1$ //$NON-NLS-2$
 	private List fExcludes;
 	private boolean fRecursive;
 	

@@ -323,204 +323,204 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 		public void widgetDefaultSelected(SelectionEvent e) {
 			String id= NewJavaProjectPreferencePage.ID;
 			PreferencesUtil.createPreferenceDialogOn(getShell(), id, new String[] { id }, null).open();
-			fDetectGroup.handlePossibleJVMChange();
-			fJREGroup.handlePossibleJVMChange();
+			//fDetectGroup.handlePossibleJVMChange();
+			//fJREGroup.handlePossibleJVMChange();
 		}
 	}
 	
-	private final class JREGroup implements Observer, SelectionListener, IDialogFieldListener {
-
-		private final SelectionButtonDialogField fUseDefaultJRE, fUseProjectJRE;
-		private final ComboDialogField fJRECombo;
-		private final Group fGroup;
-		private String[] fComplianceLabels;
-		private String[] fComplianceData;
-		private final Link fPreferenceLink;
-		private IVMInstall[] fInstalledJVMs;
-		
-		public JREGroup(Composite composite) {
-			fGroup= new Group(composite, SWT.NONE);
-			fGroup.setFont(composite.getFont());
-			fGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-			fGroup.setLayout(initGridLayout(new GridLayout(3, false), true));
-			fGroup.setText(NewWizardMessages.JavaProjectWizardFirstPage_JREGroup_title); 
-						
-			fUseDefaultJRE= new SelectionButtonDialogField(SWT.RADIO);
-			fUseDefaultJRE.setLabelText(getDefaultJVMLabel());
-			fUseDefaultJRE.doFillIntoGrid(fGroup, 2);
-			
-			fPreferenceLink= new Link(fGroup, SWT.NONE);
-			fPreferenceLink.setFont(fGroup.getFont());
-			fPreferenceLink.setText(NewWizardMessages.JavaProjectWizardFirstPage_JREGroup_link_description);
-			fPreferenceLink.setLayoutData(new GridData(GridData.END, GridData.CENTER, false, false));
-			fPreferenceLink.addSelectionListener(this);
-		
-			fUseProjectJRE= new SelectionButtonDialogField(SWT.RADIO);
-			fUseProjectJRE.setLabelText(NewWizardMessages.JavaProjectWizardFirstPage_JREGroup_specific_compliance);
-			fUseProjectJRE.doFillIntoGrid(fGroup, 1);
-			fUseProjectJRE.setDialogFieldListener(this);
-						
-			fJRECombo= new ComboDialogField(SWT.READ_ONLY);
-			fillInstalledJREs(fJRECombo);
-			fJRECombo.setDialogFieldListener(this);
-
-			Combo comboControl= fJRECombo.getComboControl(fGroup);
-			comboControl.setLayoutData(new GridData(GridData.BEGINNING, GridData.CENTER, true, false)); // make sure column 2 is grabing (but no fill)
-			comboControl.setVisibleItemCount(20);
-			
-			DialogField.createEmptySpace(fGroup);
-			
-			fUseDefaultJRE.setSelection(true);
-			fJRECombo.setEnabled(fUseProjectJRE.isSelected());
-		}
-
-		private void fillInstalledJREs(ComboDialogField comboField) {
-			String selectedItem= null;
-			int selectionIndex= -1;
-			if (fUseProjectJRE.isSelected()) {
-				selectionIndex= comboField.getSelectionIndex();
-				if (selectionIndex != -1) {//paranoia
-					selectedItem= comboField.getItems()[selectionIndex];
-				}
-			}
-			
-			fInstalledJVMs= getWorkspaceJREs();
-			Arrays.sort(fInstalledJVMs, new Comparator() {
-
-				public int compare(Object arg0, Object arg1) {
-					IVMInstall i0= (IVMInstall)arg0;
-					IVMInstall i1= (IVMInstall)arg1;
-					if (i1 instanceof IVMInstall2 && i0 instanceof IVMInstall2) {
-						String cc0= JavaModelUtil.getCompilerCompliance((IVMInstall2) i0, JavaCore.VERSION_1_4);
-						String cc1= JavaModelUtil.getCompilerCompliance((IVMInstall2) i1, JavaCore.VERSION_1_4);
-						int result= cc1.compareTo(cc0);
-						if (result == 0)
-							result= i0.getName().compareTo(i1.getName());
-						return result;
-					} else {
-						return i0.getName().compareTo(i1.getName());
-					}
-				}
-				
-			});
-			selectionIndex= -1;//find new index
-			fComplianceLabels= new String[fInstalledJVMs.length];
-			fComplianceData= new String[fInstalledJVMs.length];
-			for (int i= 0; i < fInstalledJVMs.length; i++) {
-				fComplianceLabels[i]= fInstalledJVMs[i].getName();
-				if (selectedItem != null && fComplianceLabels[i].equals(selectedItem)) {
-					selectionIndex= i;
-				}
-				if (fInstalledJVMs[i] instanceof IVMInstall2) {
-					fComplianceData[i]= JavaModelUtil.getCompilerCompliance((IVMInstall2) fInstalledJVMs[i], JavaCore.VERSION_1_4);
-				} else {
-					fComplianceData[i]= JavaCore.VERSION_1_4;
-				}
-			}
-			comboField.setItems(fComplianceLabels);
-			if (selectionIndex == -1) {
-				fJRECombo.selectItem(getDefaultJVMName());
-			} else {
-				fJRECombo.selectItem(selectedItem);
-			}
-		}
-		
-		private IVMInstall[] getWorkspaceJREs() {
-			List standins = new ArrayList();
-			IVMInstallType[] types = JavaRuntime.getVMInstallTypes();
-			for (int i = 0; i < types.length; i++) {
-				IVMInstallType type = types[i];
-				IVMInstall[] installs = type.getVMInstalls();
-				for (int j = 0; j < installs.length; j++) {
-					IVMInstall install = installs[j];
-					standins.add(new VMStandin(install));
-				}
-			}
-			return ((IVMInstall[])standins.toArray(new IVMInstall[standins.size()]));	
-		}
-
-		private String getDefaultJVMName() {
-			return JavaRuntime.getDefaultVMInstall().getName();
-		}
-
-		private String getDefaultJVMLabel() {
-			return Messages.format(NewWizardMessages.JavaProjectWizardFirstPage_JREGroup_default_compliance, getDefaultJVMName());
-		}
-
-		public void update(Observable o, Object arg) {
-			updateEnableState();
-		}
-
-		private void updateEnableState() {
-			final boolean detect= fDetectGroup.mustDetect();
-			fUseDefaultJRE.setEnabled(!detect);
-			fUseProjectJRE.setEnabled(!detect);
-			fJRECombo.setEnabled(!detect && fUseProjectJRE.isSelected());
-			fPreferenceLink.setEnabled(!detect);
-			fGroup.setEnabled(!detect);
-		}
-		
-		/* (non-Javadoc)
-		 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-		 */
-		public void widgetSelected(SelectionEvent e) {
-			widgetDefaultSelected(e);
-		}
-
-		/* (non-Javadoc)
-		 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-		 */
-		public void widgetDefaultSelected(SelectionEvent e) {
-			String jreID= BuildPathSupport.JRE_PREF_PAGE_ID;
-			String complianceId= CompliancePreferencePage.PREF_ID;
-			Map data= new HashMap();
-			data.put(PropertyAndPreferencePage.DATA_NO_LINK, Boolean.TRUE);
-			PreferencesUtil.createPreferenceDialogOn(getShell(), jreID, new String[] { jreID, complianceId  }, data).open();
-			
-			handlePossibleJVMChange();
-			fDetectGroup.handlePossibleJVMChange();
-		}
-		
-		public void handlePossibleJVMChange() {
-			fUseDefaultJRE.setLabelText(getDefaultJVMLabel());
-			fillInstalledJREs(fJRECombo);
-		}
-		
-
-		/* (non-Javadoc)
-		 * @see org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener#dialogFieldChanged(org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField)
-		 */
-		public void dialogFieldChanged(DialogField field) {
-			updateEnableState();
-			fDetectGroup.handlePossibleJVMChange();
-		}
-		
-		public boolean isUseSpecific() {
-			return fUseProjectJRE.isSelected();
-		}
-		
-		public IVMInstall getSelectedJVM() {
-			if (fUseProjectJRE.isSelected()) {
-				int index= fJRECombo.getSelectionIndex();
-				if (index >= 0 && index < fComplianceData.length) { // paranoia
-					return fInstalledJVMs[index];
-				}
-			}
-			return null;
-		}
-		
-		public String getSelectedCompilerCompliance() {
-			if (fUseProjectJRE.isSelected()) {
-				int index= fJRECombo.getSelectionIndex();
-				if (index >= 0 && index < fComplianceData.length) { // paranoia
-					return fComplianceData[index];
-				}
-			}
-			return null;
-		}
-	}
-
-	
+//	private final class JREGroup implements Observer, SelectionListener, IDialogFieldListener {
+//
+//		private final SelectionButtonDialogField fUseDefaultJRE, fUseProjectJRE;
+//		private final ComboDialogField fJRECombo;
+//		private final Group fGroup;
+//		private String[] fComplianceLabels;
+//		private String[] fComplianceData;
+//		private final Link fPreferenceLink;
+//		private IVMInstall[] fInstalledJVMs;
+//		
+//		public JREGroup(Composite composite) {
+//			fGroup= new Group(composite, SWT.NONE);
+//			fGroup.setFont(composite.getFont());
+//			fGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+//			fGroup.setLayout(initGridLayout(new GridLayout(3, false), true));
+//			fGroup.setText(NewWizardMessages.JavaProjectWizardFirstPage_JREGroup_title); 
+//						
+//			fUseDefaultJRE= new SelectionButtonDialogField(SWT.RADIO);
+//			fUseDefaultJRE.setLabelText(getDefaultJVMLabel());
+//			fUseDefaultJRE.doFillIntoGrid(fGroup, 2);
+//			
+//			fPreferenceLink= new Link(fGroup, SWT.NONE);
+//			fPreferenceLink.setFont(fGroup.getFont());
+//			fPreferenceLink.setText(NewWizardMessages.JavaProjectWizardFirstPage_JREGroup_link_description);
+//			fPreferenceLink.setLayoutData(new GridData(GridData.END, GridData.CENTER, false, false));
+//			fPreferenceLink.addSelectionListener(this);
+//		
+//			fUseProjectJRE= new SelectionButtonDialogField(SWT.RADIO);
+//			fUseProjectJRE.setLabelText(NewWizardMessages.JavaProjectWizardFirstPage_JREGroup_specific_compliance);
+//			fUseProjectJRE.doFillIntoGrid(fGroup, 1);
+//			fUseProjectJRE.setDialogFieldListener(this);
+//						
+//			fJRECombo= new ComboDialogField(SWT.READ_ONLY);
+//			fillInstalledJREs(fJRECombo);
+//			fJRECombo.setDialogFieldListener(this);
+//
+//			Combo comboControl= fJRECombo.getComboControl(fGroup);
+//			comboControl.setLayoutData(new GridData(GridData.BEGINNING, GridData.CENTER, true, false)); // make sure column 2 is grabing (but no fill)
+//			comboControl.setVisibleItemCount(20);
+//			
+//			DialogField.createEmptySpace(fGroup);
+//			
+//			fUseDefaultJRE.setSelection(true);
+//			fJRECombo.setEnabled(fUseProjectJRE.isSelected());
+//		}
+//
+//		private void fillInstalledJREs(ComboDialogField comboField) {
+//			String selectedItem= null;
+//			int selectionIndex= -1;
+//			if (fUseProjectJRE.isSelected()) {
+//				selectionIndex= comboField.getSelectionIndex();
+//				if (selectionIndex != -1) {//paranoia
+//					selectedItem= comboField.getItems()[selectionIndex];
+//				}
+//			}
+//			
+//			fInstalledJVMs= getWorkspaceJREs();
+//			Arrays.sort(fInstalledJVMs, new Comparator() {
+//
+//				public int compare(Object arg0, Object arg1) {
+//					IVMInstall i0= (IVMInstall)arg0;
+//					IVMInstall i1= (IVMInstall)arg1;
+//					if (i1 instanceof IVMInstall2 && i0 instanceof IVMInstall2) {
+//						String cc0= JavaModelUtil.getCompilerCompliance((IVMInstall2) i0, JavaCore.VERSION_1_4);
+//						String cc1= JavaModelUtil.getCompilerCompliance((IVMInstall2) i1, JavaCore.VERSION_1_4);
+//						int result= cc1.compareTo(cc0);
+//						if (result == 0)
+//							result= i0.getName().compareTo(i1.getName());
+//						return result;
+//					} else {
+//						return i0.getName().compareTo(i1.getName());
+//					}
+//				}
+//				
+//			});
+//			selectionIndex= -1;//find new index
+//			fComplianceLabels= new String[fInstalledJVMs.length];
+//			fComplianceData= new String[fInstalledJVMs.length];
+//			for (int i= 0; i < fInstalledJVMs.length; i++) {
+//				fComplianceLabels[i]= fInstalledJVMs[i].getName();
+//				if (selectedItem != null && fComplianceLabels[i].equals(selectedItem)) {
+//					selectionIndex= i;
+//				}
+//				if (fInstalledJVMs[i] instanceof IVMInstall2) {
+//					fComplianceData[i]= JavaModelUtil.getCompilerCompliance((IVMInstall2) fInstalledJVMs[i], JavaCore.VERSION_1_4);
+//				} else {
+//					fComplianceData[i]= JavaCore.VERSION_1_4;
+//				}
+//			}
+//			comboField.setItems(fComplianceLabels);
+//			if (selectionIndex == -1) {
+//				fJRECombo.selectItem(getDefaultJVMName());
+//			} else {
+//				fJRECombo.selectItem(selectedItem);
+//			}
+//		}
+//		
+//		private IVMInstall[] getWorkspaceJREs() {
+//			List standins = new ArrayList();
+//			IVMInstallType[] types = JavaRuntime.getVMInstallTypes();
+//			for (int i = 0; i < types.length; i++) {
+//				IVMInstallType type = types[i];
+//				IVMInstall[] installs = type.getVMInstalls();
+//				for (int j = 0; j < installs.length; j++) {
+//					IVMInstall install = installs[j];
+//					standins.add(new VMStandin(install));
+//				}
+//			}
+//			return ((IVMInstall[])standins.toArray(new IVMInstall[standins.size()]));	
+//		}
+//
+//		private String getDefaultJVMName() {
+//			return JavaRuntime.getDefaultVMInstall().getName();
+//		}
+//
+//		private String getDefaultJVMLabel() {
+//			return Messages.format(NewWizardMessages.JavaProjectWizardFirstPage_JREGroup_default_compliance, getDefaultJVMName());
+//		}
+//
+//		public void update(Observable o, Object arg) {
+//			updateEnableState();
+//		}
+//
+//		private void updateEnableState() {
+//			final boolean detect= fDetectGroup.mustDetect();
+//			fUseDefaultJRE.setEnabled(!detect);
+//			fUseProjectJRE.setEnabled(!detect);
+//			fJRECombo.setEnabled(!detect && fUseProjectJRE.isSelected());
+//			fPreferenceLink.setEnabled(!detect);
+//			fGroup.setEnabled(!detect);
+//		}
+//		
+//		/* (non-Javadoc)
+//		 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+//		 */
+//		public void widgetSelected(SelectionEvent e) {
+//			widgetDefaultSelected(e);
+//		}
+//
+//		/* (non-Javadoc)
+//		 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+//		 */
+//		public void widgetDefaultSelected(SelectionEvent e) {
+//			String jreID= BuildPathSupport.JRE_PREF_PAGE_ID;
+//			String complianceId= CompliancePreferencePage.PREF_ID;
+//			Map data= new HashMap();
+//			data.put(PropertyAndPreferencePage.DATA_NO_LINK, Boolean.TRUE);
+//			PreferencesUtil.createPreferenceDialogOn(getShell(), jreID, new String[] { jreID, complianceId  }, data).open();
+//			
+//			handlePossibleJVMChange();
+//			fDetectGroup.handlePossibleJVMChange();
+//		}
+//		
+//		public void handlePossibleJVMChange() {
+//			fUseDefaultJRE.setLabelText(getDefaultJVMLabel());
+//			fillInstalledJREs(fJRECombo);
+//		}
+//		
+//
+//		/* (non-Javadoc)
+//		 * @see org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener#dialogFieldChanged(org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField)
+//		 */
+//		public void dialogFieldChanged(DialogField field) {
+//			updateEnableState();
+//			fDetectGroup.handlePossibleJVMChange();
+//		}
+//		
+//		public boolean isUseSpecific() {
+//			return fUseProjectJRE.isSelected();
+//		}
+//		
+//		public IVMInstall getSelectedJVM() {
+//			if (fUseProjectJRE.isSelected()) {
+//				int index= fJRECombo.getSelectionIndex();
+//				if (index >= 0 && index < fComplianceData.length) { // paranoia
+//					return fInstalledJVMs[index];
+//				}
+//			}
+//			return null;
+//		}
+//		
+//		public String getSelectedCompilerCompliance() {
+//			if (fUseProjectJRE.isSelected()) {
+//				int index= fJRECombo.getSelectionIndex();
+//				if (index >= 0 && index < fComplianceData.length) { // paranoia
+//					return fComplianceData[index];
+//				}
+//			}
+//			return null;
+//		}
+//	}
+//
+//	
 	/**
 	 * Show a warning when the project location contains files.
 	 */
@@ -539,34 +539,34 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 			jre50Text.setLayoutData(gridData);
 			fHintText= jre50Text;
 			
-			handlePossibleJVMChange();
+			//handlePossibleJVMChange();
 		}
 		
-		public void handlePossibleJVMChange() {
-			String selectedCompliance= fJREGroup.getSelectedCompilerCompliance();
-			if (selectedCompliance == null) {
-				selectedCompliance= JavaCore.getOption(JavaCore.COMPILER_COMPLIANCE);
-			}
-			IVMInstall selectedJVM= fJREGroup.getSelectedJVM();
-			if (selectedJVM == null) {
-				selectedJVM= JavaRuntime.getDefaultVMInstall();
-			}
-			String jvmCompliance= JavaCore.VERSION_1_4;
-			if (selectedJVM instanceof IVMInstall2) {
-				jvmCompliance= JavaModelUtil.getCompilerCompliance((IVMInstall2) selectedJVM, JavaCore.VERSION_1_4);
-			}
-			if (!selectedCompliance.equals(jvmCompliance) && (JavaModelUtil.is50OrHigher(selectedCompliance) || JavaModelUtil.is50OrHigher(jvmCompliance))) {
-				if (selectedCompliance.equals(JavaCore.VERSION_1_5))
-					selectedCompliance= "5.0"; //$NON-NLS-1$
-				else if (selectedCompliance.equals(JavaCore.VERSION_1_6))
-					selectedCompliance= "6.0"; //$NON-NLS-1$
-				
-				fHintText.setText(Messages.format(NewWizardMessages.JavaProjectWizardFirstPage_DetectGroup_jre_message, new String[] {selectedCompliance, jvmCompliance}));
-				fHintText.setVisible(true);
-			} else {
-				fHintText.setVisible(false);
-			}
-		}
+//		public void handlePossibleJVMChange() {
+//			String selectedCompliance= fJREGroup.getSelectedCompilerCompliance();
+//			if (selectedCompliance == null) {
+//				selectedCompliance= JavaCore.getOption(JavaCore.COMPILER_COMPLIANCE);
+//			}
+//			IVMInstall selectedJVM= fJREGroup.getSelectedJVM();
+//			if (selectedJVM == null) {
+//				selectedJVM= JavaRuntime.getDefaultVMInstall();
+//			}
+//			String jvmCompliance= JavaCore.VERSION_1_4;
+//			if (selectedJVM instanceof IVMInstall2) {
+//				jvmCompliance= JavaModelUtil.getCompilerCompliance((IVMInstall2) selectedJVM, JavaCore.VERSION_1_4);
+//			}
+//			if (!selectedCompliance.equals(jvmCompliance) && (JavaModelUtil.is50OrHigher(selectedCompliance) || JavaModelUtil.is50OrHigher(jvmCompliance))) {
+//				if (selectedCompliance.equals(JavaCore.VERSION_1_5))
+//					selectedCompliance= "5.0"; //$NON-NLS-1$
+//				else if (selectedCompliance.equals(JavaCore.VERSION_1_6))
+//					selectedCompliance= "6.0"; //$NON-NLS-1$
+//				
+//				fHintText.setText(Messages.format(NewWizardMessages.JavaProjectWizardFirstPage_DetectGroup_jre_message, new String[] {selectedCompliance, jvmCompliance}));
+//				fHintText.setVisible(true);
+//			} else {
+//				fHintText.setVisible(false);
+//			}
+//		}
 		
 		public void update(Observable o, Object arg) {
 			if (o instanceof LocationGroup) {
@@ -592,7 +592,7 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 						fHintText.setVisible(true);
 						fHintText.setText(NewWizardMessages.JavaProjectWizardFirstPage_DetectGroup_message);
 					} else {
-						handlePossibleJVMChange();
+					//	handlePossibleJVMChange();
 					}
 				}
 			}
@@ -619,8 +619,8 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 			data.put(PropertyAndPreferencePage.DATA_NO_LINK, Boolean.TRUE);
 			PreferencesUtil.createPreferenceDialogOn(getShell(), complianceId, new String[] { jreID, complianceId  }, data).open();
 			
-			fJREGroup.handlePossibleJVMChange();
-			handlePossibleJVMChange();
+//			fJREGroup.handlePossibleJVMChange();
+//			handlePossibleJVMChange();
 		}
 	}
 
@@ -706,7 +706,7 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 	private NameGroup fNameGroup;
 	private LocationGroup fLocationGroup;
 	private LayoutGroup fLayoutGroup;
-	private JREGroup fJREGroup;
+	//private JREGroup fJREGroup;
 	private DetectGroup fDetectGroup;
 	private Validator fValidator;
 
@@ -748,14 +748,14 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 		// create UI elements
 		fNameGroup= new NameGroup(composite, fInitialName);
 		fLocationGroup= new LocationGroup(composite);
-		fJREGroup= new JREGroup(composite);
+		//fJREGroup= new JREGroup(composite);
 		fLayoutGroup= new LayoutGroup(composite);
 		fDetectGroup= new DetectGroup(composite);
 		
 		// establish connections
 		fNameGroup.addObserver(fLocationGroup);
 		fDetectGroup.addObserver(fLayoutGroup);
-		fDetectGroup.addObserver(fJREGroup);
+		//fDetectGroup.addObserver(fJREGroup);
 		fLocationGroup.addObserver(fDetectGroup);
 
 		// initialize all elements
@@ -824,14 +824,14 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 	 * @return the selected JVM, or <code>null</code> iff the default JVM should be used
 	 */
 	public IVMInstall getJVM() {
-		return fJREGroup.getSelectedJVM();
+		return null; //fJREGroup.getSelectedJVM();
 	}
 	
 	/**
 	 * @return the selected Compiler Compliance, or <code>null</code> iff the default Compiler Compliance should be used
 	 */
 	public String getCompilerCompliance() {
-		return fJREGroup.getSelectedCompilerCompliance();
+		return null; //fJREGroup.getSelectedCompilerCompliance();
 	}
 	
 	/*

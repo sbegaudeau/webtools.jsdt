@@ -299,6 +299,7 @@ public final class NewWizardMessages extends NLS {
 	public static String LibrariesWorkbookPage_exclusion_added_title;
 	public static String LibrariesWorkbookPage_exclusion_added_message;
 	
+	public static String BuildPathsBlock_tab_scriptimport;
 	public static String BuildPathDialogAccess_ExistingSourceFolderDialog_new_title;
 	public static String BuildPathDialogAccess_ExistingSourceFolderDialog_new_description;
 	public static String BuildPathDialogAccess_ExistingClassFolderDialog_new_title;

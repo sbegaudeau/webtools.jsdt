@@ -104,7 +104,7 @@ public class BuildPathsPropertyPage extends PropertyPage implements IStatusChang
 		IDialogSettings pageSettings= javaSettings.getSection(PAGE_SETTINGS);
 		if (pageSettings == null) {
 			pageSettings= javaSettings.addNewSection(PAGE_SETTINGS);
-			pageSettings.put(INDEX, 3);
+			pageSettings.put(INDEX, 0);
 		}
 		return pageSettings;
 	}
@@ -128,14 +128,14 @@ public class BuildPathsPropertyPage extends PropertyPage implements IStatusChang
 					if (res == 0) {
 						performOk();
 					} else if (res == 1) {
-						fBuildPathsBlock.init(JavaCore.create(getProject()), null, null);
+						fBuildPathsBlock.init(JavaCore.create(getProject()), null);
 					} else {
 						// keep unsaved
 					}
 				}
 			} else {
 				if (!fBuildPathsBlock.hasChangesInDialog() && fBuildPathsBlock.hasChangesInClasspathFile()) {
-					fBuildPathsBlock.init(JavaCore.create(getProject()), null, null);
+					fBuildPathsBlock.init(JavaCore.create(getProject()), null);
 				}
 			}
 		}
@@ -154,7 +154,7 @@ public class BuildPathsPropertyPage extends PropertyPage implements IStatusChang
 		}
 		
 		fBuildPathsBlock= new BuildPathsBlock(new BusyIndicatorRunnableContext(), this, getSettings().getInt(INDEX), false, pageContainer);
-		fBuildPathsBlock.init(JavaCore.create(project), null, null);
+		fBuildPathsBlock.init(JavaCore.create(project), null);
 		return fBuildPathsBlock.createControl(parent);
 	}
 

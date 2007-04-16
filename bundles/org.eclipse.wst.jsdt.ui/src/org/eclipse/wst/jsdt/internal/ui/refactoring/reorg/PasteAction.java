@@ -627,9 +627,9 @@ public class PasteAction extends SelectionDispatchAction{
 					}
 					IClasspathEntry srcEntry= JavaCore.newSourceEntry(srcFolder.getFullPath());
 					IClasspathEntry jreEntry= JavaCore.newContainerEntry(fVMPath);
-					IPath outputLocation= BuildPathsBlock.getDefaultOutputLocation(javaProject);
+					//IPath outputLocation= BuildPathsBlock.getDefaultOutputLocation(javaProject);
 					IClasspathEntry[] cpes= new IClasspathEntry[] { srcEntry, jreEntry };
-					javaProject.setRawClasspath(cpes, outputLocation, new SubProgressMonitor(pm, 1));
+					javaProject.setRawClasspath(cpes, null, new SubProgressMonitor(pm, 1));
 					return javaProject.getPackageFragmentRoot(srcFolder);
 				}
 

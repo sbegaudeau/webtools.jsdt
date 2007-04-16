@@ -236,7 +236,7 @@ public class JavaProjectWizardSecondPage extends JavaCapabilityConfigurationPage
 				throw new OperationCanceledException();
 			}
 			
-            init(JavaCore.create(fCurrProject), outputLocation, entries, false);
+            init(JavaCore.create(fCurrProject),  entries, false);
 			configureJavaProject(new SubProgressMonitor(monitor, 3)); // create the Java project to allow the use of the new source folder page
 		} finally {
 			monitor.done();

@@ -54,7 +54,7 @@ import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaModel;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraries;
+import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -2461,7 +2461,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 					fgVMTypes=new IVMInstallType[]{new StandardVMType()};
 					defaultVM = new StandardVM(fgVMTypes[0],"defaultVM");
 					fgDefaultVMId=defaultVM.getId();
-					defaultVM.setInstallLocation(SystemLibraries.getLocation());
+					defaultVM.setInstallLocation(SystemLibraryLocation.getInstance().getLocation());
 					
 //					// 1. load VM type extensions
 //					initializeVMTypeExtensions();
