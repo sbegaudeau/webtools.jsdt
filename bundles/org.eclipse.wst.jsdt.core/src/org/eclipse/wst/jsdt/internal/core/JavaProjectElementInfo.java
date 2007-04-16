@@ -224,7 +224,11 @@ class JavaProjectElementInfo extends OpenableElementInfo {
 						JarPackageFragmentRootInfo info = new JarPackageFragmentRootInfo();
 						((JarPackageFragmentRoot) root).computeChildren(info, new HashMap());
 						frags = info.children;
-					} else 
+					} else if (root instanceof PackageFragmentRoot) {
+						PackageFragmentRootInfo info = new PackageFragmentRootInfo();
+						((PackageFragmentRoot) root).computeChildren(info, new HashMap());
+						frags = info.children;
+					}else
 						frags = root.getChildren();
 				} catch (JavaModelException e) {
 					// root doesn't exist: ignore
@@ -232,6 +236,8 @@ class JavaProjectElementInfo extends OpenableElementInfo {
 				}
 				for (int j = 0, length2 = frags.length; j < length2; j++) {
 					PackageFragment fragment= (PackageFragment) frags[j];
+					/* Keep folders off the classpath */
+					if(fragment.getPath().getFileExtension()==null || !fragment.getPath().getFileExtension().equals(".js")) continue;
 					String[] pkgName = fragment.names;
 					Object existing = fragmentsCache.get(pkgName);
 					if (existing == null) {

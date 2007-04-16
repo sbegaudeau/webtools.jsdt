@@ -18,6 +18,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
@@ -142,9 +143,10 @@ public IClassFile getClassFile(String classFileName) {
 	}
 	
 	IPath path = getLibraryFragmentRoot().getPath();
-	if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(path.lastSegment().toCharArray())
-			&& path.lastSegment().equalsIgnoreCase(classFileName))
-	{
+//	if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(path.lastSegment().toCharArray())
+//			&& path.lastSegment().equalsIgnoreCase(classFileName))
+//	{
+	if(path.isPrefixOf(new Path(classFileName))) {
 		return new ClassFile(this, path.toOSString());
 		
 	}

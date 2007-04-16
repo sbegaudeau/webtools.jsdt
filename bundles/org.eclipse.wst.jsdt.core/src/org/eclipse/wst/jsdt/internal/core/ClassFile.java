@@ -930,7 +930,8 @@ public IType[] getTypes() throws JavaModelException {
 		return new char[][] {getParent().getElementName().toCharArray()};
 	}
 	public char[] getFileName() {
-		return getElementName().toCharArray();
+		//return getElementName().toCharArray();
+		return this.filePath!=null?this.filePath.toString().toCharArray():getElementName().toCharArray();
 	}
 
 

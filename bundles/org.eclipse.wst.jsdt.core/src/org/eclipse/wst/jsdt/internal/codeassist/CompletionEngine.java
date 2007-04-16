@@ -419,7 +419,7 @@ public final class CompletionEngine
 			if((modifiers & ClassFileConstants.AccPublic) == 0) {
 				if((modifiers & ClassFileConstants.AccPrivate) != 0) return;
 				
-				char[] currentPackage = CharOperation.concatWith(this.unitScope.fPackage.compoundName, '.');
+				char[] currentPackage = CharOperation.concatWith(this.unitScope.getDefaultPackage().compoundName, '.');
 				if(!CharOperation.equals(packageName, currentPackage)) return;
 			}
 		}
@@ -464,7 +464,7 @@ public final class CompletionEngine
 				if((modifiers & ClassFileConstants.AccPublic) == 0) {
 					if((modifiers & ClassFileConstants.AccPrivate) != 0) return;
 					
-					char[] currentPackage = CharOperation.concatWith(this.unitScope.fPackage.compoundName, '.');
+					char[] currentPackage = CharOperation.concatWith(this.unitScope.getDefaultPackage().compoundName, '.');
 					if(!CharOperation.equals(packageName, currentPackage)) return;
 				}
 			}
@@ -1010,7 +1010,7 @@ public final class CompletionEngine
 		char[] completionName = fullyQualifiedName;
 		if(isQualified) {
 			if (packageName == null || packageName.length == 0)
-				if (this.unitScope != null && this.unitScope.fPackage.compoundName != CharOperation.NO_CHAR_CHAR)
+				if (this.unitScope != null && this.unitScope.getDefaultPackage().compoundName != CharOperation.NO_CHAR_CHAR)
 					return; // ignore types from the default package from outside it
 		} else {
 			completionName = simpleTypeName;
@@ -2672,7 +2672,7 @@ public final class CompletionEngine
 		if (this.options.checkVisibility) {
 			if (invocationType != null && !exceptionType.canBeSeenBy(receiverType, invocationType)) {
 				return;
-			} else if(invocationType == null && !exceptionType.canBeSeenBy(this.unitScope.fPackage)) {
+			} else if(invocationType == null && !exceptionType.canBeSeenBy(this.unitScope.getDefaultPackage())) {
 				return;
 			}
 		}
@@ -2773,7 +2773,7 @@ public final class CompletionEngine
 			
 			if (isQualified && mustQualifyType(memberPackageName, memberTypeName, memberEnclosingTypeNames, exceptionType.modifiers)) {
 				if (memberPackageName == null || memberPackageName.length == 0)
-					if (this.unitScope != null && this.unitScope.fPackage.compoundName != CharOperation.NO_CHAR_CHAR)
+					if (this.unitScope != null && this.unitScope.getDefaultPackage().compoundName != CharOperation.NO_CHAR_CHAR)
 						return; // ignore types from the default package from outside it
 			} else {
 				isQualified = false;
@@ -4094,7 +4094,7 @@ public final class CompletionEngine
 			if (this.options.checkDeprecation && memberType.isViewedAsDeprecated()) continue next;
 			
 			if (this.options.checkVisibility
-				&& !memberType.canBeSeenBy(this.unitScope.fPackage))
+				&& !memberType.canBeSeenBy(this.unitScope.getDefaultPackage()))
 				continue next;
 			
 			char[] completionName = CharOperation.concat(
@@ -4146,7 +4146,7 @@ public final class CompletionEngine
 			if (this.options.checkDeprecation && field.isViewedAsDeprecated()) continue next;
 			
 			if (this.options.checkVisibility
-				&& !field.canBeSeenBy(this.unitScope.fPackage))
+				&& !field.canBeSeenBy(this.unitScope.getDefaultPackage()))
 				continue next;
 			
 			char[] completionName = CharOperation.concat(
@@ -4203,7 +4203,7 @@ public final class CompletionEngine
 			if (this.options.checkDeprecation && method.isViewedAsDeprecated()) continue next;
 			
 			if (this.options.checkVisibility
-				&& !method.canBeSeenBy(this.unitScope.fPackage)) continue next;
+				&& !method.canBeSeenBy(this.unitScope.getDefaultPackage())) continue next;
 			
 			if (methodLength > method.selector.length)
 				continue next;
@@ -4530,7 +4530,7 @@ public final class CompletionEngine
 			if (this.options.checkVisibility) {
 				if (invocationType != null && !memberType.canBeSeenBy(receiverType, invocationType)) {
 					continue next;
-				} else if(invocationType == null && !memberType.canBeSeenBy(this.unitScope.fPackage)) {
+				} else if(invocationType == null && !memberType.canBeSeenBy(this.unitScope.getDefaultPackage())) {
 					continue next;
 				}
 			}
@@ -4579,7 +4579,7 @@ public final class CompletionEngine
 				char[] memberEnclosingTypeNames = memberType.enclosingType().qualifiedSourceName();
 				if (mustQualifyType(memberPackageName, memberTypeName, memberEnclosingTypeNames, memberType.modifiers)) {
 					if (memberPackageName == null || memberPackageName.length == 0)
-						if (this.unitScope != null && this.unitScope.fPackage.compoundName != CharOperation.NO_CHAR_CHAR)
+						if (this.unitScope != null && this.unitScope.getDefaultPackage().compoundName != CharOperation.NO_CHAR_CHAR)
 							break next; // ignore types from the default package from outside it
 					isQualified = true;
 					completionName =
@@ -4831,7 +4831,7 @@ public final class CompletionEngine
 			if (this.options.checkVisibility) {
 				if (typeInvocation != null && !memberTypes[i].canBeSeenBy(receiverType, typeInvocation)) {
 					continue next;
-				} else if(typeInvocation == null && !memberTypes[i].canBeSeenBy(this.unitScope.fPackage)) {
+				} else if(typeInvocation == null && !memberTypes[i].canBeSeenBy(this.unitScope.getDefaultPackage())) {
 					continue next;
 				}
 			}
@@ -6835,7 +6835,7 @@ public final class CompletionEngine
 							if (!this.insideQualifiedReference && !refBinding.isMemberType()) {
 								if (mustQualifyType(packageName, typeName, null, refBinding.modifiers)) {
 									if (packageName == null || packageName.length == 0)
-										if (this.unitScope != null && this.unitScope.fPackage.compoundName != CharOperation.NO_CHAR_CHAR)
+										if (this.unitScope != null && this.unitScope.getDefaultPackage().compoundName != CharOperation.NO_CHAR_CHAR)
 											continue next; // ignore types from the default package from outside it
 									completionName = CharOperation.concat(packageName, typeName, '.');
 									isQualified = true;

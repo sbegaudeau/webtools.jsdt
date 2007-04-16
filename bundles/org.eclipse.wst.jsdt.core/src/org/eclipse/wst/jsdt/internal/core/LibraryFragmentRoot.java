@@ -98,6 +98,7 @@ public class LibraryFragmentRoot extends PackageFragmentRoot {
 		return false;
 	}
 	public String getElementName() {
+		//return "";
 		return this.libraryPath.lastSegment();
 	}
 	

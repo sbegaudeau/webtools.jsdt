@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraries;
+import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.*;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
@@ -24,12 +24,14 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.util.*;
 import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
+import sun.misc.FpUtils;
+
 public class CompilationUnitScope extends BlockScope {
 	
 public LookupEnvironment environment;
 public CompilationUnitDeclaration referenceContext;
 public char[][] currentPackageName;
-public PackageBinding fPackage;
+//public PackageBinding fPackage;
 public ImportBinding[] imports;
 public HashtableOfObject typeOrPackageCache; // used in Scope.getTypeOrPackage()
 
@@ -63,6 +65,8 @@ public CompilationUnitScope(CompilationUnitDeclaration unit, LookupEnvironment e
 		this.referencedSuperTypes = null;
 	}
 }
+
+
 void buildFieldsAndMethods() {
 	for (int i = 0, length = topLevelTypes.length; i < length; i++)
 		topLevelTypes[i].buildFieldsAndMethods();
@@ -70,43 +74,43 @@ void buildFieldsAndMethods() {
 void buildTypeBindings(AccessRestriction accessRestriction) {
 	topLevelTypes = new SourceTypeBinding[0]; // want it initialized if the package cannot be resolved
 	boolean firstIsSynthetic = false;
-	if (referenceContext.compilationResult.compilationUnit != null) {
-		char[][] expectedPackageName = referenceContext.compilationResult.compilationUnit.getPackageName();
-		if (expectedPackageName != null 
-				&& !CharOperation.equals(currentPackageName, expectedPackageName)) {
-
-			// only report if the unit isn't structurally empty
-			if (referenceContext.currentPackage != null 
-					|| referenceContext.types != null 
-					|| referenceContext.imports != null) {
-				problemReporter().packageIsNotExpectedPackage(referenceContext);
-			}
-			currentPackageName = expectedPackageName.length == 0 ? CharOperation.NO_CHAR_CHAR : expectedPackageName;
-		}
-	}
-	if (currentPackageName == CharOperation.NO_CHAR_CHAR) {
-		if ((fPackage = environment.defaultPackage) == null) {
-			problemReporter().mustSpecifyPackage(referenceContext);
-			return;
-		}
-	} else {
-		if ((fPackage = environment.createPackage(currentPackageName)) == null) {
-			problemReporter().packageCollidesWithType(referenceContext);
-			return;
-		} else if (referenceContext.isPackageInfo() && referenceContext.currentPackage.annotations != null) {
-			// resolve package annotations now if this is "package-info.js".				
-			if (referenceContext.types == null || referenceContext.types.length == 0) {
-				referenceContext.types = new TypeDeclaration[1];
-				TypeDeclaration declaration = new TypeDeclaration(referenceContext.compilationResult);
-				referenceContext.types[0] = declaration;
-				declaration.name = TypeConstants.PACKAGE_INFO_NAME;
-				declaration.modifiers = ClassFileConstants.AccDefault | ClassFileConstants.AccInterface;
-				firstIsSynthetic = true;
-			}
-		}
-		recordQualifiedReference(currentPackageName); // always dependent on your own package
-	}
-
+//	if (referenceContext.compilationResult.compilationUnit != null) {
+//		char[][] expectedPackageName = referenceContext.compilationResult.compilationUnit.getPackageName();
+//		if (expectedPackageName != null 
+//				&& !CharOperation.equals(currentPackageName, expectedPackageName)) {
+//
+//			// only report if the unit isn't structurally empty
+//			if (referenceContext.currentPackage != null 
+//					|| referenceContext.types != null 
+//					|| referenceContext.imports != null) {
+//				problemReporter().packageIsNotExpectedPackage(referenceContext);
+//			}
+//			currentPackageName = expectedPackageName.length == 0 ? CharOperation.NO_CHAR_CHAR : expectedPackageName;
+//		}
+//	}
+//	if (currentPackageName == CharOperation.NO_CHAR_CHAR) {
+//		if ((fPackage = environment.defaultPackage) == null) {
+//			problemReporter().mustSpecifyPackage(referenceContext);
+//			return;
+//		}
+//	} else {
+//		if ((fPackage = environment.createPackage(currentPackageName)) == null) {
+//			problemReporter().packageCollidesWithType(referenceContext);
+//			return;
+//		} else if (referenceContext.isPackageInfo() && referenceContext.currentPackage.annotations != null) {
+//			// resolve package annotations now if this is "package-info.js".				
+//			if (referenceContext.types == null || referenceContext.types.length == 0) {
+//				referenceContext.types = new TypeDeclaration[1];
+//				TypeDeclaration declaration = new TypeDeclaration(referenceContext.compilationResult);
+//				referenceContext.types[0] = declaration;
+//				declaration.name = TypeConstants.PACKAGE_INFO_NAME;
+//				declaration.modifiers = ClassFileConstants.AccDefault | ClassFileConstants.AccInterface;
+//				firstIsSynthetic = true;
+//			}
+//		}
+//		recordQualifiedReference(currentPackageName); // always dependent on your own package
+//	}
+	
 //	// Skip typeDeclarations which know of previously reported errors
 //	TypeDeclaration[] types = referenceContext.types;
 //	int typeLength = (types == null) ? 0 : types.length;
@@ -158,7 +162,7 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 	nextType: for (int i = 0; i < typeLength; i++) {
 		InferredType typeDecl = (InferredType)referenceContext.inferredTypes.get(i);
 		if (typeDecl.isDefinition) {
-			ReferenceBinding typeBinding = fPackage
+			ReferenceBinding typeBinding = environment.defaultPackage
 					.getType0(typeDecl.getName());
 			recordSimpleReference(typeDecl.getName()); // needed to detect collision cases
 			if (typeBinding != null
@@ -169,7 +173,7 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 				continue nextType;
 			}
 			ClassScope child = new ClassScope(this, typeDecl);
-			SourceTypeBinding type = child.buildInferredType(null, fPackage,
+			SourceTypeBinding type = child.buildInferredType(null, environment.defaultPackage,
 					accessRestriction);
 			//		SourceTypeBinding type = buildType(typeDecl,null, fPackage, accessRestriction);
 			if (type != null)
@@ -184,7 +188,7 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 
 	
 	
-	referenceContext.compilationUnitBinding=new CompilationUnitBinding(this,fPackage);
+	referenceContext.compilationUnitBinding=new CompilationUnitBinding(this,environment.defaultPackage);
 	ArrayList methods=new ArrayList();
 	ArrayList vars=new ArrayList();
 	ArrayList stmts=new ArrayList();
@@ -251,7 +255,7 @@ private void buildMethods(ArrayList methods) {
 			if (methodBinding != null && methodBinding.selector!=null) // is null if binding could not be created
 				methodBindings[count++] = methodBinding;
 			if (methodBinding.selector!=null)
-				fPackage.addBinding(methodBinding, methodBinding.selector,Binding.METHOD);
+				environment.defaultPackage.addBinding(methodBinding, methodBinding.selector,Binding.METHOD);
 			method.binding=methodBinding;
 	}
 	if (count != methodBindings.length)
@@ -260,9 +264,13 @@ private void buildMethods(ArrayList methods) {
 }
 
 
+public PackageBinding getDefaultPackage() {
+		return environment.defaultPackage;
+}
+
 public  void addLocalVariable(LocalVariableBinding binding) {
 	super.addLocalVariable(binding);
-	fPackage.addBinding(binding, binding.name, Binding.VARIABLE);
+	environment.defaultPackage.addBinding(binding, binding.name, Binding.VARIABLE);
 }
 
 void checkAndSetImports() {
@@ -602,7 +610,7 @@ private Binding findImport(char[][] compoundName, int length) {
 
 	while (i < length) {
 		type = (ReferenceBinding)environment.convertToRawType(type); // type imports are necessarily raw for all except last
-		if (!type.canBeSeenBy(fPackage))
+		if (!type.canBeSeenBy(environment.defaultPackage))
 			return new ProblemReferenceBinding(CharOperation.subarray(compoundName, 0, i), type, ProblemReasons.NotVisible);
 
 		char[] name = compoundName[i++];
@@ -611,7 +619,7 @@ private Binding findImport(char[][] compoundName, int length) {
 		if (type == null)
 			return new ProblemReferenceBinding(CharOperation.subarray(compoundName, 0, i), null, ProblemReasons.NotFound);
 	}
-	if (!type.canBeSeenBy(fPackage))
+	if (!type.canBeSeenBy(environment.defaultPackage))
 		return new ProblemReferenceBinding(compoundName, type, ProblemReasons.NotVisible);
 	return type;
 }
@@ -621,7 +629,7 @@ private Binding findSingleImport(char[][] compoundName, boolean findStaticImport
 		// the name cannot be a package
 		if (environment.defaultPackage == null || compilerOptions().complianceLevel >= ClassFileConstants.JDK1_4)
 			return new ProblemReferenceBinding(compoundName, null, ProblemReasons.NotFound);
-		ReferenceBinding typeBinding = findType(compoundName[0], environment.defaultPackage, fPackage);
+		ReferenceBinding typeBinding = findType(compoundName[0], environment.defaultPackage, environment.defaultPackage);
 		if (typeBinding == null)
 			return new ProblemReferenceBinding(compoundName, null, ProblemReasons.NotFound);
 		return typeBinding;
@@ -659,7 +667,7 @@ private Binding findSingleStaticImport(char[][] compoundName) {
 			return field;
 		return new ProblemReferenceBinding(compoundName, type, ProblemReasons.NotFound);
 	}
-	if (!type.canBeSeenBy(fPackage))
+	if (!type.canBeSeenBy(environment.defaultPackage))
 		return new ProblemReferenceBinding(compoundName, type, ProblemReasons.NotVisible);
 	return type;
 }
@@ -672,7 +680,7 @@ MethodBinding findStaticMethod(ReferenceBinding currentType, char[] selector) {
 		if (methods != Binding.NO_METHODS) {
 			for (int i = methods.length; --i >= 0;) {
 				MethodBinding method = methods[i];
-				if (method.isStatic() && method.canBeSeenBy(fPackage))
+				if (method.isStatic() && method.canBeSeenBy(environment.defaultPackage))
 					return method;
 			}
 		}
@@ -685,7 +693,7 @@ ImportBinding[] getDefaultImports() {
 	// initialize the default imports if necessary... share the default java.lang.* import
 	if (environment.defaultImports != null) return environment.defaultImports;
  
-	Binding importBinding = environment.getTopLevelPackage(SystemLibraries.SYSTEM_LIBARAY_NAME);
+	Binding importBinding = environment.getTopLevelPackage(SystemLibraryLocation.getInstance().getLibraryFileName());
 //	if (importBinding != null)
 //		importBinding = ((PackageBinding) importBinding).getTypeOrPackage(JAVA_LANG[1]);
 
@@ -695,7 +703,7 @@ ImportBinding[] getDefaultImports() {
 		BinaryTypeBinding missingObject = environment.cacheMissingBinaryType(JAVA_LANG_OBJECT, this.referenceContext);
 		importBinding = missingObject.fPackage;
 	}
-	return environment.defaultImports = new ImportBinding[] {new ImportBinding(new char[][]{SystemLibraries.SYSTEM_LIBARAY_NAME}, true, importBinding, (ImportReference)null)};
+	return environment.defaultImports = new ImportBinding[] {new ImportBinding(new char[][]{SystemLibraryLocation.getInstance().getLibraryFileName()}, true, importBinding, (ImportReference)null)};
 }
 // NOT Public API
 public final Binding getImport(char[][] compoundName, boolean onDemand, boolean isStaticImport) {

@@ -166,16 +166,16 @@ public final class JavaConventions {
 		// JSR-175 metadata strongly recommends "package-info.js" as the
 		// file in which to store package annotations and
 		// the package-level spec (replaces package.html)
-		if (!identifier.equals(PACKAGE_INFO)) {
-			IStatus status = validateIdentifier(identifier, sourceLevel, complianceLevel);
-			if (!status.isOK()) {
-				return status;
-			}
-		}
-		IStatus status = ResourcesPlugin.getWorkspace().validateName(name, IResource.FILE);
-		if (!status.isOK()) {
-			return status;
-		}
+//		if (!identifier.equals(PACKAGE_INFO)) {
+//			IStatus status = validateIdentifier(identifier, sourceLevel, complianceLevel);
+//			if (!status.isOK()) {
+//				return status;
+//			}
+//		}
+//		IStatus status = ResourcesPlugin.getWorkspace().validateName(name, IResource.FILE);
+//		if (!status.isOK()) {
+//			return status;
+//		}
 		return JavaModelStatus.VERIFIED_OK;
 	}
 

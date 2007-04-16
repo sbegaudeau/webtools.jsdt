@@ -14,6 +14,8 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 
+import com.sun.corba.se.impl.logging.UtilSystemException;
+
 public class CompilationUnitBinding  extends SourceTypeBinding {
 //	public char[] sourceName;
 //	
@@ -533,6 +535,6 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 	}
 
 	public char[] qualifiedSourceName() {
-		return shortName;
+		return CharOperation.concatWith(compoundName, '.');
 	}
 }

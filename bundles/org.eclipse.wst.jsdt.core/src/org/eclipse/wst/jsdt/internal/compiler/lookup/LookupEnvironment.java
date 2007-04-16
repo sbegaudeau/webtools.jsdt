@@ -41,7 +41,7 @@ public class LookupEnvironment implements ProblemReasons, TypeConstants {
 	ImportBinding[] defaultImports;
 
 	PackageBinding defaultPackage;
-	HashtableOfPackage knownPackages;
+	//HashtableOfPackage knownPackages;
 	private int lastCompletedUnitIndex = -1;
 	private int lastUnitIndex = -1;
 
@@ -76,7 +76,7 @@ public LookupEnvironment(ITypeRequestor typeRequestor, CompilerOptions globalOpt
 	this.defaultPackage = new PackageBinding(this); // assume the default package always exists
 	this.defaultImports = null;
 	this.nameEnvironment = nameEnvironment;
-	this.knownPackages = new HashtableOfPackage();
+	//this.knownPackages = new HashtableOfPackage();
 	this.uniqueArrayBindings = new ArrayBinding[5][];
 	this.uniqueArrayBindings[0] = new ArrayBinding[50]; // start off the most common 1 dimension array @ 50
 	this.uniqueParameterizedTypeBindings = new SimpleLookupTable(3);
@@ -376,23 +376,25 @@ public TypeBinding computeBoxingType(TypeBinding type) {
 	return type;
 }	
 private PackageBinding computePackageFrom(char[][] constantPoolName) {
-	if (constantPoolName.length == 1)
-		return defaultPackage;
-
-	PackageBinding packageBinding = getPackage0(constantPoolName[0]);
-	if (packageBinding == null || packageBinding == TheNotFoundPackage) {
-		packageBinding = new PackageBinding(constantPoolName[0], this);
-		knownPackages.put(constantPoolName[0], packageBinding);
-	}
-
-	for (int i = 1, length = constantPoolName.length - 1; i < length; i++) {
-		PackageBinding parent = packageBinding;
-		if ((packageBinding = parent.getPackage0(constantPoolName[i])) == null || packageBinding == TheNotFoundPackage) {
-			packageBinding = new PackageBinding(CharOperation.subarray(constantPoolName, 0, i + 1), parent, this);
-			parent.addPackage(packageBinding);
-		}
-	}
-	return packageBinding;
+	return defaultPackage;
+//	if (constantPoolName.length == 1)
+//		return defaultPackage;
+//
+//	PackageBinding packageBinding = getPackage0(constantPoolName[0]);
+//	if (packageBinding == null || packageBinding == TheNotFoundPackage) {
+//		packageBinding = new PackageBinding(constantPoolName[0], this);
+//		knownPackages.put(constantPoolName[0], packageBinding);
+//		
+//	}
+//
+//	for (int i = 1, length = constantPoolName.length - 1; i < length; i++) {
+//		PackageBinding parent = packageBinding;
+//		if ((packageBinding = parent.getPackage0(constantPoolName[i])) == null || packageBinding == TheNotFoundPackage) {
+//			packageBinding = new PackageBinding(CharOperation.subarray(constantPoolName, 0, i + 1), parent, this);
+//			parent.addPackage(packageBinding);
+//		}
+//	}
+//	return packageBinding;
 }
 
 /**
@@ -610,7 +612,9 @@ PackageBinding createPackage(char[][] compoundName) {
 	PackageBinding packageBinding = getPackage0(compoundName[0]);
 	if (packageBinding == null || packageBinding == TheNotFoundPackage) {
 		packageBinding = new PackageBinding(compoundName[0], this);
-		knownPackages.put(compoundName[0], packageBinding);
+		//knownPackages.put(compoundName[0], packageBinding);
+		
+		
 	}
 
 	for (int i = 1, length = compoundName.length; i < length; i++) {
@@ -875,7 +879,10 @@ public ReferenceBinding getCachedType(char[][] compoundName) {
 */
 
 PackageBinding getPackage0(char[] name) {
-	return knownPackages.get(name);
+	return defaultPackage;
+	
+	
+	//return knownPackages.get(name);
 }
 /* Answer the type corresponding to the compoundName.
 * Ask the name environment for the type if its not in the cache.
@@ -896,21 +903,24 @@ public ReferenceBinding getResolvedType(char[][] compoundName, Scope scope) {
 */
 
 PackageBinding getTopLevelPackage(char[] name) {
-	PackageBinding packageBinding = getPackage0(name);
-	if (packageBinding != null) {
-		if (packageBinding == TheNotFoundPackage)
-			return null;
-		return packageBinding;
-	}
-
-	if (nameEnvironment.isPackage(null, name)) {
-		knownPackages.put(name, packageBinding = new PackageBinding(name, this));
-		return packageBinding;
-	}
-
-	knownPackages.put(name, TheNotFoundPackage); // saves asking the oracle next time
-	return null;
+	return defaultPackage;
 }
+//	PackageBinding packageBinding = getPackage0(name);
+//	if (packageBinding != null) {
+//		if (packageBinding == TheNotFoundPackage)
+//			return null;
+//		return packageBinding;
+//	}
+//
+//	if (nameEnvironment.isPackage(null, name)) {
+//		
+//		defaultPackage.addPackage(packageBinding);
+//		return packageBinding;
+//	}
+//
+//	knownPackages.put(name, TheNotFoundPackage); // saves asking the oracle next time
+//	return null;
+//}
 /* Answer the type corresponding to the compoundName.
 * Ask the name environment for the type if its not in the cache.
 * Answer null if the type cannot be found.
@@ -1173,7 +1183,7 @@ public MethodVerifier methodVerifier() {
 public void reset() {
 	this.defaultPackage = new PackageBinding(this); // assume the default package always exists
 	this.defaultImports = null;
-	this.knownPackages = new HashtableOfPackage();
+	//this.knownPackages = new HashtableOfPackage();
 	this.accessRestrictions = new HashMap(3);
 
 	this.verifier = null;

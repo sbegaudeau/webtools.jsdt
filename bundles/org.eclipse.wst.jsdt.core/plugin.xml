@@ -200,5 +200,11 @@
       point="org.eclipse.core.runtime.preferences">
    <modifier class="org.eclipse.wst.jsdt.internal.core.JavaCorePreferenceModifyListener"/>
 </extension>
-
+ <extension
+      point="org.eclipse.wst.jsdt.core.classpathContainerInitializer">
+      <classpathContainerInitializer
+            class="org.eclipse.wst.jsdt.core.compiler.libraries.BasicBrowserLibraryClassPathContainerInitializer"
+            id="org.eclipse.wst.jsdt.launching.baseBrowserLibrary">
+      </classpathContainerInitializer>
+   </extension>
 </plugin>

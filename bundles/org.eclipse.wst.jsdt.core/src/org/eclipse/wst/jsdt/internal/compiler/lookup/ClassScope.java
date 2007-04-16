@@ -88,7 +88,8 @@ public class ClassScope extends Scope {
 				if (getReferenceBinding().isInterface())
 					problemReporter().interfaceCannotHaveInitializers(getReferenceBinding(), field);
 			} else {
-				FieldBinding fieldBinding = new FieldBinding(field, null, field.modifiers | ExtraCompilerModifiers.AccUnresolved, getReferenceBinding());
+				//FieldBinding fieldBinding = new FieldBinding(field.name, null, field.modifiers | ExtraCompilerModifiers.AccUnresolved, getReferenceBinding());
+				FieldBinding fieldBinding = new FieldBinding(field.binding,  (ReferenceBinding)getReferenceBinding());
 				fieldBinding.id = count;
 				// field's type will be resolved when needed for top level types
 				checkAndSetModifiersForField(fieldBinding, field);
@@ -987,13 +988,13 @@ public class ClassScope extends Scope {
 		SourceTypeBinding sourceType = getReferenceBinding();
 		if ((sourceType.tagBits & TagBits.BeginHierarchyCheck) == 0) {
 			sourceType.tagBits |= TagBits.BeginHierarchyCheck;
-			boolean noProblems = connectSuperclass();
-			noProblems &= connectSuperInterfaces();
+			//boolean noProblems; // = connectSuperclass();
+			//noProblems &= connectSuperInterfaces();
 			sourceType.tagBits |= TagBits.EndHierarchyCheck;
 //			noProblems &= connectTypeVariables(referenceContext.typeParameters, false);
 			sourceType.tagBits |= TagBits.TypeVariablesAreConnected;
-			if (noProblems && sourceType.isHierarchyInconsistent())
-				problemReporter().hierarchyHasProblems(sourceType);
+//			if (noProblems && sourceType.isHierarchyInconsistent())
+//				problemReporter().hierarchyHasProblems(sourceType);
 		}
 		connectMemberTypes();
 		LookupEnvironment env = environment();

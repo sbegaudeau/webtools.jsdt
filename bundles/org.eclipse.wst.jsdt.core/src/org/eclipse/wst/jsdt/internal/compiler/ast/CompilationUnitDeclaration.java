@@ -28,6 +28,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ImportBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.parser.NLSTag;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilationUnit;
@@ -81,6 +82,8 @@ public class CompilationUnitDeclaration
 	public NLSTag[] nlsTags;
 	private StringLiteral[] stringLiterals;
 	private int stringLiteralsPtr;
+	
+
 	
 	public CompilationUnitDeclaration(
 		ProblemReporter problemReporter,
@@ -374,7 +377,7 @@ public class CompilationUnitDeclaration
 			syntheticTypeDeclaration.resolve(this.scope);
 			// resolve annotations if any
 			if (this.currentPackage.annotations != null) {
-				resolveAnnotations(syntheticTypeDeclaration.staticInitializerScope, this.currentPackage.annotations, this.scope.fPackage);
+				resolveAnnotations(syntheticTypeDeclaration.staticInitializerScope, this.currentPackage.annotations, this.scope.getDefaultPackage());
 			}
 			// resolve javadoc package if any
 			if (this.javadoc != null) {

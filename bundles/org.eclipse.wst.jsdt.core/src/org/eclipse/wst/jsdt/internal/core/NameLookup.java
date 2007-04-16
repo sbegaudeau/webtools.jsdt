@@ -581,67 +581,81 @@ public class NameLookup implements SuffixConstants {
 	 *	only exact name matches qualify when <code>false</code>
 	 */
 	public IPackageFragment[] findPackageFragments(String name, boolean partialMatch) {
-		if (partialMatch) {
-			String[] splittedName = Util.splitOn('.', name, 0, name.length());
-			IPackageFragment[] oneFragment = null;
-			ArrayList pkgs = null;
-			Object[][] keys = this.packageFragments.keyTable;
-			for (int i = 0, length = keys.length; i < length; i++) {
-				String[] pkgName = (String[]) keys[i];
-				if (pkgName != null && Util.startsWithIgnoreCase(pkgName, splittedName)) {
-					Object value = this.packageFragments.valueTable[i];
-					if (value instanceof PackageFragmentRoot) {
-						IPackageFragment pkg = ((PackageFragmentRoot) value).getPackageFragment(pkgName);
-						if (oneFragment == null) {
-							oneFragment = new IPackageFragment[] {pkg};
-						} else {
-							if (pkgs == null) {
-								pkgs = new ArrayList();
-								pkgs.add(oneFragment[0]);
-							}
-							pkgs.add(pkg);
-						}
-					} else {
-						IPackageFragmentRoot[] roots = (IPackageFragmentRoot[]) value;
-						for (int j = 0, length2 = roots.length; j < length2; j++) {
-							PackageFragmentRoot root = (PackageFragmentRoot) roots[j];
-							IPackageFragment pkg = root.getPackageFragment(pkgName);
-							if (oneFragment == null) {
-								oneFragment = new IPackageFragment[] {pkg};
-							} else {
-								if (pkgs == null) {
-									pkgs = new ArrayList();
-									pkgs.add(oneFragment[0]);
-								}
-								pkgs.add(pkg);
-							}
-						}
-					}
+		
+		ArrayList fragRootChildren = new ArrayList();
+		for (int i = 0; i < this.packageFragmentRoots.length; i++) {
+			IJavaElement[] children;
+			try {
+				children = packageFragmentRoots[i].getChildren();
+				for (int j = 0; j < children.length; j++) {
+					if((IPackageFragment)children[j]!=null) fragRootChildren.add(((IPackageFragment)children[j]));
 				}
-			}
-			if (pkgs == null) return oneFragment;
-			int resultLength = pkgs.size();
-			IPackageFragment[] result = new IPackageFragment[resultLength];
-			pkgs.toArray(result);
-			return result;
-		} else {
-			String[] splittedName = (name.length()>0)? new String[]{name}: new String[0];//Util.splitOn('.', name, 0, name.length());
-			Object value = this.packageFragments.get(splittedName);
-			if (value==null)
-				value=this.packageFragments.get(new String[]{name});
-			if (value == null)
-				return null;
-			if (value instanceof PackageFragmentRoot) {
-				return new IPackageFragment[] {((PackageFragmentRoot) value).getPackageFragment(splittedName)};
-			} else {
-				IPackageFragmentRoot[] roots = (IPackageFragmentRoot[]) value;
-				IPackageFragment[] result = new IPackageFragment[roots.length];
-				for (int i= 0; i < roots.length; i++) {
-					result[i] = ((PackageFragmentRoot) roots[i]).getPackageFragment(splittedName);
-				}
-				return result;
-			}
-		}
+			} catch (JavaModelException e) {}
+				
+		}	
+
+		return (IPackageFragment[])fragRootChildren.toArray(new IPackageFragment[fragRootChildren.size()]);
+		//		if (partialMatch) {
+//			String[] splittedName = Util.splitOn('.', name, 0, name.length());
+//			IPackageFragment[] oneFragment = null;
+//			ArrayList pkgs = null;
+//			Object[][] keys = this.packageFragments.keyTable;
+//			for (int i = 0, length = keys.length; i < length; i++) {
+//				String[] pkgName = (String[]) keys[i];
+//				if (pkgName != null && Util.startsWithIgnoreCase(pkgName, splittedName)) {
+//					Object value = this.packageFragments.valueTable[i];
+//					if (value instanceof PackageFragmentRoot) {
+//						IPackageFragment pkg = ((PackageFragmentRoot) value).getPackageFragment(pkgName);
+//						if (oneFragment == null) {
+//							oneFragment = new IPackageFragment[] {pkg};
+//						} else {
+//							if (pkgs == null) {
+//								pkgs = new ArrayList();
+//								pkgs.add(oneFragment[0]);
+//							}
+//							pkgs.add(pkg);
+//						}
+//					} else {
+//						IPackageFragmentRoot[] roots = (IPackageFragmentRoot[]) value;
+//						for (int j = 0, length2 = roots.length; j < length2; j++) {
+//							PackageFragmentRoot root = (PackageFragmentRoot) roots[j];
+//							IPackageFragment pkg = root.getPackageFragment(pkgName);
+//							if (oneFragment == null) {
+//								oneFragment = new IPackageFragment[] {pkg};
+//							} else {
+//								if (pkgs == null) {
+//									pkgs = new ArrayList();
+//									pkgs.add(oneFragment[0]);
+//								}
+//								pkgs.add(pkg);
+//							}
+//						}
+//					}
+//				}
+//			}
+//			if (pkgs == null) return oneFragment;
+//			int resultLength = pkgs.size();
+//			IPackageFragment[] result = new IPackageFragment[resultLength];
+//			pkgs.toArray(result);
+//			return result;
+//		} else {
+//			String[] splittedName = (name.length()>0)? new String[]{name}: new String[0];//Util.splitOn('.', name, 0, name.length());
+//			Object value = this.packageFragments.get(splittedName);
+//			if (value==null)
+//				value=this.packageFragments.get(new String[]{name});
+//			if (value == null)
+//				return null;
+//			if (value instanceof PackageFragmentRoot) {
+//				return new IPackageFragment[] {((PackageFragmentRoot) value).getPackageFragment(splittedName)};
+//			} else {
+//				IPackageFragmentRoot[] roots = (IPackageFragmentRoot[]) value;
+//				IPackageFragment[] result = new IPackageFragment[roots.length];
+//				for (int i= 0; i < roots.length; i++) {
+//					result[i] = ((PackageFragmentRoot) roots[i]).getPackageFragment(splittedName);
+//				}
+//				return result;
+//			}
+//		}
 	}
 
 	/*
@@ -1098,62 +1112,78 @@ public class NameLookup implements SuffixConstants {
 			Util.verbose(" -> name: " + name);  //$NON-NLS-1$
 			Util.verbose(" -> partial match:" + partialMatch);  //$NON-NLS-1$
 		}
-*/		if (partialMatch) {
-			String[] splittedName = splitPackageName(name);
-			Object[][] keys = this.packageFragments.keyTable;
-			for (int i = 0, length = keys.length; i < length; i++) {
-				if (requestor.isCanceled())
-					return;
-				String[] pkgName = (String[]) keys[i];
-				if (pkgName != null && Util.startsWithIgnoreCase(pkgName, splittedName)) {
-					Object value = this.packageFragments.valueTable[i];
-					if (value instanceof PackageFragmentRoot) {
-						PackageFragmentRoot root = (PackageFragmentRoot) value;
-						requestor.acceptPackageFragment(root.getPackageFragment(pkgName));				
-					} else {
-						IPackageFragmentRoot[] roots = (IPackageFragmentRoot[]) value;
-						for (int j = 0, length2 = roots.length; j < length2; j++) {
-							if (requestor.isCanceled())
-								return;
-							PackageFragmentRoot root = (PackageFragmentRoot) roots[j];
-							requestor.acceptPackageFragment(root.getPackageFragment(pkgName));					
-						}
-					}
+		*/
+		for (int i = 0; i < this.packageFragmentRoots.length; i++) {
+		
+		
+			IJavaElement[] children;
+			try {
+				children = packageFragmentRoots[i].getChildren();
+				for (int j = 0; j < children.length; j++) {
+					requestor.acceptPackageFragment((IPackageFragment)children[j]);
 				}
-			}
-		} else {
-			String[] splittedName = splitPackageName(name);
-			Object value = this.packageFragments.get(splittedName);
-			if (value instanceof PackageFragmentRoot) {
-				requestor.acceptPackageFragment(((PackageFragmentRoot) value).getPackageFragment(splittedName));
-			} else {
-				IPackageFragmentRoot[] roots = (IPackageFragmentRoot[]) value;
-				if (roots != null) {
-					for (int i = 0, length = roots.length; i < length; i++) {
-						if (requestor.isCanceled())
-							return;
-						PackageFragmentRoot root = (PackageFragmentRoot) roots[i];
-						requestor.acceptPackageFragment(root.getPackageFragment(splittedName));
-					}
-				}
-			}
-		}
-		if (name==null || name.equals(IPackageFragment.DEFAULT_PACKAGE_NAME))
-		{
-			for (int i = 0; i < this.packageFragmentRoots.length; i++) {
-				if (packageFragmentRoots[i] instanceof LibraryFragmentRoot)
-				{
-					IJavaElement[] children;
-					try {
-						children = packageFragmentRoots[i].getChildren();
-						for (int j = 0; j < children.length; j++) {
-							requestor.acceptPackageFragment((IPackageFragment)children[j]);
-						}
-					} catch (JavaModelException e) {
-					}
-				}
-			}
-		}
+			} catch (JavaModelException e) {}
+				
+		}	
+		
+		
+
+//		if (partialMatch) {
+//			String[] splittedName = splitPackageName(name);
+//			Object[][] keys = this.packageFragments.keyTable;
+//			for (int i = 0, length = keys.length; i < length; i++) {
+//				if (requestor.isCanceled())
+//					return;
+//				String[] pkgName = (String[]) keys[i];
+//				if (pkgName != null && Util.startsWithIgnoreCase(pkgName, splittedName)) {
+//					Object value = this.packageFragments.valueTable[i];
+//					if (value instanceof PackageFragmentRoot) {
+//						PackageFragmentRoot root = (PackageFragmentRoot) value;
+//						requestor.acceptPackageFragment(root.getPackageFragment(pkgName));				
+//					} else {
+//						IPackageFragmentRoot[] roots = (IPackageFragmentRoot[]) value;
+//						for (int j = 0, length2 = roots.length; j < length2; j++) {
+//							if (requestor.isCanceled())
+//								return;
+//							PackageFragmentRoot root = (PackageFragmentRoot) roots[j];
+//							requestor.acceptPackageFragment(root.getPackageFragment(pkgName));					
+//						}
+//					}
+//				}
+//			}
+//		} else {
+//			String[] splittedName = splitPackageName(name);
+//			Object value = this.packageFragments.get(splittedName);
+//			if (value instanceof PackageFragmentRoot) {
+//				requestor.acceptPackageFragment(((PackageFragmentRoot) value).getPackageFragment(splittedName));
+//			} else {
+//				IPackageFragmentRoot[] roots = (IPackageFragmentRoot[]) value;
+//				if (roots != null) {
+//					for (int i = 0, length = roots.length; i < length; i++) {
+//						if (requestor.isCanceled())
+//							return;
+//						PackageFragmentRoot root = (PackageFragmentRoot) roots[i];
+//						requestor.acceptPackageFragment(root.getPackageFragment(splittedName));
+//					}
+//				}
+//			}
+//		}
+//		if (name==null || name.equals(IPackageFragment.DEFAULT_PACKAGE_NAME))
+//		{
+//			for (int i = 0; i < this.packageFragmentRoots.length; i++) {
+//				if (packageFragmentRoots[i] instanceof LibraryFragmentRoot)
+//				{
+//					IJavaElement[] children;
+//					try {
+//						children = packageFragmentRoots[i].getChildren();
+//						for (int j = 0; j < children.length; j++) {
+//							requestor.acceptPackageFragment((IPackageFragment)children[j]);
+//						}
+//					} catch (JavaModelException e) {
+//					}
+//				}
+//			}
+//		}
 	}
 
 	private String [] splitPackageName(String name)

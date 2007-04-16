@@ -1288,16 +1288,16 @@ public class ClasspathEntry implements IClasspathEntry {
 		String projectName = javaProject.getElementName();
 	
 		/* validate output location */
-		if (projectOutputLocation == null) {
-			return new JavaModelStatus(IJavaModelStatusConstants.NULL_PATH);
-		}
-		if (projectOutputLocation.isAbsolute()) {
-			if (!projectPath.isPrefixOf(projectOutputLocation)) {
-				return new JavaModelStatus(IJavaModelStatusConstants.PATH_OUTSIDE_PROJECT, javaProject, projectOutputLocation.toString());
-			}
-		} else {
-			return new JavaModelStatus(IJavaModelStatusConstants.RELATIVE_PATH, projectOutputLocation);
-		}
+//		if (projectOutputLocation == null) {
+//			return new JavaModelStatus(IJavaModelStatusConstants.NULL_PATH);
+//		}
+//		if (projectOutputLocation.isAbsolute()) {
+//			if (!projectPath.isPrefixOf(projectOutputLocation)) {
+//				return new JavaModelStatus(IJavaModelStatusConstants.PATH_OUTSIDE_PROJECT, javaProject, projectOutputLocation.toString());
+//			}
+//		} else {
+//			return new JavaModelStatus(IJavaModelStatusConstants.RELATIVE_PATH, projectOutputLocation);
+//		}
 	
 		boolean hasSource = false;
 		boolean hasLibFolder = false;
@@ -1487,13 +1487,13 @@ public class ClasspathEntry implements IClasspathEntry {
 		    }
 
 		    // prevent nesting entry inside output location - when distinct from project or a source folder
-		    for (int j = 0; j < outputCount; j++){
-		        if (allowNestingInOutputLocations[j]) continue;
-		        IPath currentOutput = outputLocations[j];
-				if (currentOutput.isPrefixOf(entryPath)) {
-					return new JavaModelStatus(IJavaModelStatusConstants.INVALID_CLASSPATH, Messages.bind(Messages.classpath_cannotNestEntryInOutput, new String[] {entryPath.makeRelative().toString(), currentOutput.makeRelative().toString()})); 
-				}
-		    }			
+//		    for (int j = 0; j < outputCount; j++){
+//		        if (allowNestingInOutputLocations[j]) continue;
+//		        IPath currentOutput = outputLocations[j];
+//				if (currentOutput.isPrefixOf(entryPath)) {
+//					return new JavaModelStatus(IJavaModelStatusConstants.INVALID_CLASSPATH, Messages.bind(Messages.classpath_cannotNestEntryInOutput, new String[] {entryPath.makeRelative().toString(), currentOutput.makeRelative().toString()})); 
+//				}
+//		    }			
 		}
 		// ensure that no specific output is coincidating with another source folder (only allowed if matching current source folder)
 		// 36465 - for 2.0 backward compatibility, only check specific output locations (the default can still coincidate)

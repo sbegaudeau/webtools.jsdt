@@ -219,6 +219,23 @@ public ICompilationUnit getCompilationUnit(String cuName) {
 	if (!org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(cuName)) {
 		throw new IllegalArgumentException(Messages.convention_unit_notJavaName); 
 	}
+	// If parent specified in filename remove it 
+	String parentName = new String();
+	try {
+		IResource parentNameR = this.parent.getResource();
+		parentName = parentNameR==null?null:parentNameR.getName() + "/";
+		//String parentString = parentName.getProjectRelativePath().toString();
+	} catch (Exception ex) {
+		
+		ex.printStackTrace();
+	}
+	if(parentName!=null) {
+		int pi = cuName.indexOf(parentName);
+		if( pi>-1 && pi<2  ) {
+			String newCp = "/" + cuName.substring(pi+parentName.length(),cuName.length());
+			return new CompilationUnit(this, newCp, DefaultWorkingCopyOwner.PRIMARY);
+		}
+	}
 	return new CompilationUnit(this, cuName, DefaultWorkingCopyOwner.PRIMARY);
 }
 /**
@@ -255,8 +272,8 @@ public ICompilationUnit[] getCompilationUnits(WorkingCopyOwner owner) {
 	return result;
 }
 public String getElementName() {
-	if (this.names.length == 0)
-		return DEFAULT_PACKAGE_NAME;
+	//if (this.names.length == 0)
+		//return DEFAULT_PACKAGE_NAME;
 	return Util.concatWith(this.names, '.');
 }
 /**

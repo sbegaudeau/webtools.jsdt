@@ -568,7 +568,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		if (typeParameters == null || compilerOptions().sourceLevel < ClassFileConstants.JDK1_5)
 			return Binding.NO_TYPE_VARIABLES;
 
-		PackageBinding unitPackage = compilationUnitScope().fPackage;
+		PackageBinding unitPackage = compilationUnitScope().getDefaultPackage();
 		int length = typeParameters.length;
 		TypeVariableBinding[] typeVariableBindings = new TypeVariableBinding[length];
 		int count = 0;
@@ -1739,7 +1739,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		Scope scope, unitScope = this;
 		while ((scope = unitScope.parent) != null)
 			unitScope = scope;
-		return ((CompilationUnitScope) unitScope).fPackage;
+		return ((CompilationUnitScope) unitScope).getDefaultPackage();
 	}
 
 	/**
@@ -2040,7 +2040,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 								MethodBinding compatibleMethod = computeCompatibleMethod(possible, argumentTypes, invocationSite);
 								if (compatibleMethod != null) {
 									if (compatibleMethod.isValidBinding()) {
-										if (compatibleMethod.canBeSeenBy(unitScope.fPackage)) {
+										if (compatibleMethod.canBeSeenBy(unitScope.getDefaultPackage())) {
 											if (visible == null || !visible.contains(compatibleMethod)) {
 												ImportReference importReference = importBinding.reference;
 												if (importReference != null) importReference.used = true;
@@ -2525,7 +2525,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			}
 
 			// check if the name is in the current package, skip it if its a sub-package
-			PackageBinding currentPackage = unitScope.fPackage; 
+			PackageBinding currentPackage = unitScope.getDefaultPackage(); 
 			unitScope.recordReference(currentPackage.compoundName, name);
 			Binding binding = currentPackage.getTypeOrPackage(name, mask);
 			if ( (binding instanceof ReferenceBinding || binding instanceof MethodBinding)

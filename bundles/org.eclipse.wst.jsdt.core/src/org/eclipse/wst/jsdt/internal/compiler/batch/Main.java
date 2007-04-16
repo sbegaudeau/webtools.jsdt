@@ -44,7 +44,7 @@ import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
-import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraries;
+import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 import org.eclipse.wst.jsdt.internal.compiler.AbstractAnnotationProcessorManager;
 import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
@@ -1716,7 +1716,7 @@ protected ArrayList handleBootclasspath(ArrayList bootclasspaths, String customE
 			return null;
 		 }
 
-		 bootclasspaths.add(FileSystem.getClasspath(SystemLibraries.getLibraryPath(new String(SystemLibraries.SYSTEM_LIBARAY_NAME)), null, null));
+		 bootclasspaths.add(FileSystem.getClasspath(SystemLibraryLocation.getInstance().getLibraryPath(new String(SystemLibraryLocation.SYSTEM_LIBARAY_NAME)), null, null));
 //	 	/*
 //	 	 * Handle >= JDK 1.2.2 settings: retrieve rt.jar
 //	 	 */
