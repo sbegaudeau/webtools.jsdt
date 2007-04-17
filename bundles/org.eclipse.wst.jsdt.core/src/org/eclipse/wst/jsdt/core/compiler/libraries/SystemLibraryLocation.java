@@ -20,15 +20,11 @@ public class SystemLibraryLocation implements LibraryLocation {
 
 	public static final char[] SYSTEM_LIBARAY_NAME= {'s','y','s','t','e','m','.','j','s'};
 	public static final char[] LIBRARY_RUNTIME_DIRECTORY={'l','i','b','r','a','r','i','e','s'};
+	public static final char[] LIBRARY_PLUGIN_DIRECTORY={'l','i','b','r','a','r','i','e','s'};
 	
 	private static SystemLibraryLocation fInstance;
 	
-	static{
-		IPath libraryRuntimePath = Platform.getStateLocation(Platform.getBundle(JavaCore.PLUGIN_ID)).append( new String(LIBRARY_RUNTIME_DIRECTORY));
-		if(!libraryRuntimePath.toFile().exists()) {
-			libraryRuntimePath.toFile().mkdir();
-		}
-	}
+
 	
 	public static LibraryLocation getInstance() {
 		if(fInstance==null)
@@ -36,7 +32,7 @@ public class SystemLibraryLocation implements LibraryLocation {
 		return fInstance;
 	}
 	
-	protected IPath getLibraryPathInPlugin() {
+	public IPath getLibraryPathInPlugin() {
 		return new Path("libraries");
 	}
 	
@@ -50,23 +46,27 @@ public class SystemLibraryLocation implements LibraryLocation {
 	
 	
 	protected SystemLibraryLocation(){
-		IPath workingLibLocation = Platform.getStateLocation(Platform.getBundle(JavaCore.PLUGIN_ID)).append( new String(LIBRARY_RUNTIME_DIRECTORY)).append(new String(getLibraryFileName()));
-		File library = workingLibLocation.toFile();
-		if(!library.exists()) {
-			URL url = null;
-			InputStream is = null;
-			
-			try {
+		try {
+			IPath libraryRuntimePath = Platform.getStateLocation(Platform.getBundle(JavaCore.PLUGIN_ID)).append( new String(LIBRARY_RUNTIME_DIRECTORY));
+			if(!libraryRuntimePath.toFile().exists()) {
+				libraryRuntimePath.toFile().mkdir();
+			}
+		
+			IPath workingLibLocation = Platform.getStateLocation(Platform.getBundle(JavaCore.PLUGIN_ID)).append( new String(LIBRARY_RUNTIME_DIRECTORY)).append(new String(getLibraryFileName()));
+			File library = workingLibLocation.toFile();
+		
+		
+			if(!library.exists()) {
+				URL url = null;
+				InputStream is = null;
+					
 				is	 = FileLocator.openStream(Platform.getBundle(getPluginId()),getLibraryPathInPlugin().append(new String(getLibraryFileName())), false);				
 				copyFile(is,library);
-			}catch(IOException ex) {
-				ex.printStackTrace();
-			}finally {
-				try {
-					if(is!=null) is.close();
-				} catch (IOException ex) {}
+					
+					
 			}
-		}
+		}catch(Exception ex) {}
+		
 	}
 	
 

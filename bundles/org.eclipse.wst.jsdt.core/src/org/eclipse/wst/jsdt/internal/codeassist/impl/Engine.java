@@ -99,7 +99,7 @@ public abstract class Engine implements ITypeRequestor {
 		ImportBinding[] importBindings = this.unitScope.imports;
 		int length = importBindings == null ? 0 : importBindings.length;
 		
-		this.currentPackageName = CharOperation.concatWith(unitScope.fPackage.compoundName, '.');
+		this.currentPackageName = CharOperation.concatWith(new char[][] {}, '.');
 		
 		for (int i = 0; i < length; i++) {
 			ImportBinding importBinding = importBindings[i];

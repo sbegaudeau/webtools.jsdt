@@ -357,10 +357,12 @@ public char[] computeGenericTypeSignature(TypeVariableBinding[] typeVariables) {
 public void computeId() {
 	
 	switch (this.compoundName.length) {
-
+		
+		case 1 :
 		case 2 :
-			if (!CharOperation.equals(TypeConstants.SYSTEMJS, this.compoundName[0]))
-				return;
+			if (!CharOperation.endsWith(fileName, TypeConstants.SYSTEMJS))	return;
+//			if (!CharOperation.equals(TypeConstants.SYSTEMJS, this.compoundName[0]))
+//				return;
 			
 //			// remaining types MUST be in java.*.*
 //			if (!CharOperation.equals(TypeConstants.LANG, this.compoundName[1])) {
@@ -383,7 +385,7 @@ public void computeId() {
 //			}
 		
 			// remaining types MUST be in java.lang.*
-			char[] typeName = this.compoundName[1];
+			char[] typeName = this.compoundName[0];
 			if (typeName.length == 0) return; // just to be safe
 			switch (typeName[0]) {
 //				case 'A' :

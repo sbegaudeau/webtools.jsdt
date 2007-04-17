@@ -693,7 +693,7 @@ ImportBinding[] getDefaultImports() {
 	// initialize the default imports if necessary... share the default java.lang.* import
 	if (environment.defaultImports != null) return environment.defaultImports;
  
-	Binding importBinding = environment.getTopLevelPackage(SystemLibraryLocation.getInstance().getLibraryFileName());
+	Binding importBinding = environment.defaultPackage;
 //	if (importBinding != null)
 //		importBinding = ((PackageBinding) importBinding).getTypeOrPackage(JAVA_LANG[1]);
 

@@ -51,8 +51,8 @@ public ClasspathFile(File file, String encoding,
 }
 
 public NameEnvironmentAnswer findBinding(char[] typeName, String qualifiedPackageName, int type, ITypeRequestor requestor) {
-	if (!qualifiedPackageName.equals(this.packageName))
-		return null;
+//	if (!qualifiedPackageName.equals(this.packageName))
+	//	return null;
 	if (foundAnswer==null)
 	{
 		parseFile(requestor);
