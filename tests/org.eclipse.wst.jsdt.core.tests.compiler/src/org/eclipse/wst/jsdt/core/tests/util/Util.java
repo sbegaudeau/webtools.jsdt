@@ -12,14 +12,20 @@ package org.eclipse.wst.jsdt.core.tests.util;
 
 import java.io.*;
 import java.net.ServerSocket;
+import java.net.URL;
 import java.util.*;
 import java.util.zip.*;
 
+import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
-import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraries;
+import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 import org.eclipse.wst.jsdt.core.tests.compiler.regression.Requestor;
 import org.eclipse.wst.jsdt.internal.compiler.Compiler;
 import org.eclipse.wst.jsdt.internal.compiler.IErrorHandlingPolicy;
@@ -31,6 +37,7 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblem;
 import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblemFactory;
 public class Util {
+	private static String TARGET_PLUGIN="org.eclipse.wst.jsdt.core";
 	// Trace for delete operation
 	/*
 	 * Maximum time wasted repeating delete operations while running JDT/Core tests.
@@ -638,9 +645,18 @@ public static int getFreePort() {
  * Example of use: [org.eclipse.wst.jsdt.core.tests.util.Util.getJavaClassLib()]
 */
 public static String[] getJavaClassLibs() {
+	
+	IPath targetRoot =  (new Path(System.getProperty("user.dir"))).removeLastSegments(1);
+	IPath pluginDir = targetRoot.append(new Path(TARGET_PLUGIN));
+	IPath libDir = pluginDir.append(new Path(new String(SystemLibraryLocation.LIBRARY_PLUGIN_DIRECTORY)));
+	IPath fullDir = libDir.append(new Path(new String(SystemLibraryLocation.SYSTEM_LIBARAY_NAME)));
+	
+	
+	
+	
 	return new String[]
 	                  {
-			SystemLibraries.getLibraryPath("system.js")
+			fullDir.toOSString()
 	                  };
 //	String jreDir = getJREDirectory();
 //	final String osName = System.getProperty("os.name");

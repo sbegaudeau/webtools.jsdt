@@ -8,14 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.jsdt.core.tests.compiler.regression;
+package org.eclipse.wst.jsdt.core.tests.compiler.parser;
 
-import org.eclipse.jsdt.internal.compiler.batch.CompilationUnit;
-import org.eclipse.jsdt.internal.compiler.env.*;
-import org.eclipse.jsdt.internal.compiler.impl.ITypeRequestor;
-import org.eclipse.jsdt.internal.compiler.lookup.Binding;
-import org.eclipse.jsdt.core.compiler.CharOperation;
-import org.eclipse.jsdt.internal.compiler.util.HashtableOfObject;
+import org.eclipse.wst.jsdt.internal.compiler.batch.CompilationUnit;
+import org.eclipse.wst.jsdt.internal.compiler.env.*;
+import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 
 public class InMemoryNameEnvironment implements INameEnvironment {
 	INameEnvironment[] classLibs;
