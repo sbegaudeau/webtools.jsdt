@@ -230,7 +230,11 @@ public class InferEngine extends ASTVisitor {
 			else if (fieldReference.receiver.isPrototype())
 			{
 				FieldReference prototype = (FieldReference) fieldReference.receiver;
-				InferredType newType = addType(getTypeName(prototype.receiver));
+				char[] typeName = getTypeName(prototype.receiver);
+				Object receiverDef = currentContext.definedMembers.get(typeName);
+				if (receiverDef instanceof Argument)
+					return false;
+				InferredType newType = addType(typeName);
 				newType.isDefinition=true;
 				newType.updatePositions(assignment.sourceStart, assignment.sourceEnd);
 				char[] memberName = fieldReference.token;
