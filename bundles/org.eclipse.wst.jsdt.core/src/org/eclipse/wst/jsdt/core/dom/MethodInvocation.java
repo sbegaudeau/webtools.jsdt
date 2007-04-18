@@ -52,7 +52,7 @@ public class MethodInvocation extends Expression {
 	 * @since 3.0
 	 */
 	public static final ChildPropertyDescriptor NAME_PROPERTY = 
-		new ChildPropertyDescriptor(MethodInvocation.class, "name", SimpleName.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
+		new ChildPropertyDescriptor(MethodInvocation.class, "name", SimpleName.class, OPTIONAL, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "arguments" structural property of this node type.
@@ -211,7 +211,8 @@ public class MethodInvocation extends Expression {
 	ASTNode clone0(AST target) {
 		MethodInvocation result = new MethodInvocation(target);
 		result.setSourceRange(this.getStartPosition(), this.getLength());
-		result.setName((SimpleName) getName().clone(target));
+		if (getName()!=null)
+			result.setName((SimpleName) getName().clone(target));
 		result.setExpression(
 			(Expression) ASTNode.copySubtree(target, getExpression()));
 		if (this.ast.apiLevel >= AST.JLS3) {
@@ -240,7 +241,8 @@ public class MethodInvocation extends Expression {
 			if (this.ast.apiLevel >= AST.JLS3) {
 				acceptChildren(visitor, this.typeArguments);
 			}
-			acceptChild(visitor, getName());
+			if (getName()!=null)
+				acceptChild(visitor, getName());
 			acceptChildren(visitor, this.arguments);
 		}
 		visitor.endVisit(this);
@@ -300,14 +302,14 @@ public class MethodInvocation extends Expression {
 	 */ 
 	public SimpleName getName() {
 		if (this.methodName == null) {
-			// lazy init must be thread-safe for readers
-			synchronized (this) {
-				if (this.methodName == null) {
-					preLazyInit();
-					this.methodName = new SimpleName(this.ast);
-					postLazyInit(this.methodName, NAME_PROPERTY);
-				}
-			}
+//			// lazy init must be thread-safe for readers
+//			synchronized (this) {
+//				if (this.methodName == null) {
+//					preLazyInit();
+//					this.methodName = new SimpleName(this.ast);
+//					postLazyInit(this.methodName, NAME_PROPERTY);
+//				}
+//			}
 		}
 		return this.methodName;
 	}
@@ -324,9 +326,9 @@ public class MethodInvocation extends Expression {
 	 * </ul>
 	 */ 
 	public void setName(SimpleName name) {
-		if (name == null) {
-			throw new IllegalArgumentException();
-		}
+//		if (name == null) {
+//			throw new IllegalArgumentException();
+//		}
 		ASTNode oldChild = this.methodName;
 		preReplaceChild(oldChild, name, NAME_PROPERTY);
 		this.methodName = name;

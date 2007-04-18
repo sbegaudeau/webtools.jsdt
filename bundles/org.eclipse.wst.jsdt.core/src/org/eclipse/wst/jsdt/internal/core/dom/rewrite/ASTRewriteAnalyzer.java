@@ -2397,7 +2397,7 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 			pos= rewriteOptionalTypeParameters(node, MethodInvocation.TYPE_ARGUMENTS_PROPERTY, pos, "", false, false); //$NON-NLS-1$
 		}
 
-		pos= rewriteRequiredNode(node, MethodInvocation.NAME_PROPERTY);
+		pos= rewriteOptionalQualifier(node, MethodInvocation.NAME_PROPERTY,pos);
 		
 		if (isChanged(node, MethodInvocation.ARGUMENTS_PROPERTY)) {
 			// eval position after opening parent

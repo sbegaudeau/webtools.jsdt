@@ -958,7 +958,8 @@ class NaiveASTFlattener extends ASTVisitor {
 	public boolean visit(MethodInvocation node) {
 		if (node.getExpression() != null) {
 			node.getExpression().accept(this);
-			this.buffer.append(".");//$NON-NLS-1$
+			if (node.getName()!=null)
+				this.buffer.append(".");//$NON-NLS-1$
 		}
 		if (node.getAST().apiLevel() >= AST.JLS3) {
 			if (!node.typeArguments().isEmpty()) {
@@ -973,7 +974,8 @@ class NaiveASTFlattener extends ASTVisitor {
 				this.buffer.append(">");//$NON-NLS-1$
 			}
 		}
-		node.getName().accept(this);
+		if (node.getName()!=null)
+			node.getName().accept(this);
 		this.buffer.append("(");//$NON-NLS-1$
 		for (Iterator it = node.arguments().iterator(); it.hasNext(); ) {
 			Expression e = (Expression) it.next();

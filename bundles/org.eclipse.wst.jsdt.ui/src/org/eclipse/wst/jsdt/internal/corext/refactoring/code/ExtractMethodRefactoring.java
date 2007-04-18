@@ -176,12 +176,17 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 		}
 		public boolean visit(MethodInvocation node) {
 			Expression exp= node.getExpression();
-			if (exp != null)
-				fIgnore.add(node.getName());
+			if (exp != null) {
+				SimpleName name = node.getName();
+				if (name!=null)
+					fIgnore.add(name);
+			}
 			return true;
 		}
 		public void endVisit(MethodInvocation node) {
-			fIgnore.remove(node.getName());
+			SimpleName name = node.getName();
+			if (name!=null)
+				fIgnore.remove(name);
 		}
 		public boolean visit(QualifiedName node) {
 			fIgnore.add(node.getName());

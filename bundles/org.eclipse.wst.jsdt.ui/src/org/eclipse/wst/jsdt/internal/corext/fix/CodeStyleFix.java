@@ -129,11 +129,15 @@ public class CodeStyleFix extends AbstractFix {
 			if (node.getExpression() != null)
 				return true;
 			
-			IBinding binding= node.getName().resolveBinding();
-			if (!(binding instanceof IMethodBinding))
-				return true;
+			SimpleName name = node.getName();
+			if (name!=null)
+			{
+				IBinding binding= name.resolveBinding();
+				if (!(binding instanceof IMethodBinding))
+					return true;
+			}
 			
-			handleMethod(node.getName(), (IMethodBinding)binding);
+			handleMethod(name, (IMethodBinding)binding);
 			return true;
 		}
 
@@ -272,7 +276,7 @@ public class CodeStyleFix extends AbstractFix {
 				return true;
 			
 			final SimpleName name= node.getName();
-			if (name.resolveBinding() == null)
+			if (name!=null && name.resolveBinding() == null)
 				return true;
 			
 			if (hasConflict(expression.getStartPosition(), name, ScopeAnalyzer.METHODS))
@@ -594,7 +598,9 @@ public class CodeStyleFix extends AbstractFix {
         } else if (selectedNode instanceof MethodInvocation) {
         	MethodInvocation methodInvocation= (MethodInvocation) selectedNode;
         	qualifier= methodInvocation.getExpression();
-        	accessBinding= methodInvocation.getName().resolveBinding();
+        	SimpleName name = methodInvocation.getName();
+        	if (name!=null)
+        		accessBinding= name.resolveBinding();
         } else if (selectedNode instanceof FieldAccess) {
 			FieldAccess fieldAccess= (FieldAccess) selectedNode;
 			qualifier= fieldAccess.getExpression();

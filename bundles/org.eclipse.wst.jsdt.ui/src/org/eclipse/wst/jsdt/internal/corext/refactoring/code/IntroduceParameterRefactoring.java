@@ -416,7 +416,12 @@ public class IntroduceParameterRefactoring extends ScriptableRefactoring impleme
 	}
 	
 	private List/*<String>*/ guessTempNamesFromMethodInvocation(MethodInvocation selectedMethodInvocation, String[] excludedVariableNames) {
-		String methodName= selectedMethodInvocation.getName().getIdentifier();
+		SimpleName name = selectedMethodInvocation.getName();
+		
+		String methodName;
+		if (name!=null)
+		{
+			methodName= name.getIdentifier();
 		for (int i= 0; i < KNOWN_METHOD_NAME_PREFIXES.length; i++) {
 			String prefix= KNOWN_METHOD_NAME_PREFIXES[i];
 			if (! methodName.startsWith(prefix))
@@ -431,6 +436,9 @@ public class IntroduceParameterRefactoring extends ScriptableRefactoring impleme
 			methodName= proposal;
 			break;
 		}
+		}
+		else
+			methodName="indirectFunctionCall";
 		String[] proposals= StubUtility.getLocalNameSuggestions(fSourceCU.getJavaProject(), methodName, 0, excludedVariableNames);
 		return Arrays.asList(proposals);
 	}

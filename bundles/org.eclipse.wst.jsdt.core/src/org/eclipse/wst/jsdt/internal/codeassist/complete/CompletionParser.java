@@ -4069,8 +4069,13 @@ protected MessageSend newMessageSend() {
 	// '(' ArgumentListopt ')'
 	// the arguments are on the expression stack
 
-	char[] selector = identifierStack[identifierPtr];
-	if (selector != this.assistIdentifier()){
+	int numArgs=expressionLengthStack[expressionLengthPtr];
+	Expression receiver = expressionStack[expressionPtr-numArgs];
+	
+//	char[] selector = identifierStack[identifierPtr];
+//	if (selector != this.assistIdentifier()){
+	if (!(receiver instanceof CompletionOnMemberAccess || receiver instanceof CompletionOnSingleNameReference))
+	{
 		return super.newMessageSend();
 	}	
 	MessageSend messageSend = new CompletionOnMessageSend();

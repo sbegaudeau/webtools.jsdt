@@ -945,7 +945,9 @@ public class ASTFlattener extends GenericVisitor {
 				this.fBuffer.append(">");//$NON-NLS-1$
 			}
 		}
-		node.getName().accept(this);
+		SimpleName name = node.getName();
+		if (name!=null)
+			name.accept(this);
 		this.fBuffer.append("(");//$NON-NLS-1$
 		for (Iterator it= node.arguments().iterator(); it.hasNext();) {
 			Expression e= (Expression) it.next();

@@ -2171,14 +2171,18 @@ class ASTConverter {
 			if (this.resolveBindings) {
 				recordNodes(methodInvocation, expression);
 			}
-			final SimpleName name = new SimpleName(this.ast);
-			name.internalSetIdentifier(new String(expression.selector));
-			int nameSourceStart =  (int) (expression.nameSourcePosition >>> 32);
-			int nameSourceLength = ((int) expression.nameSourcePosition) - nameSourceStart + 1;
-			name.setSourceRange(nameSourceStart, nameSourceLength);
-			methodInvocation.setName(name);
-			if (this.resolveBindings) {
-				recordNodes(name, expression);
+			if (expression.selector!=null)
+			{
+				final SimpleName name = new SimpleName(this.ast);
+				name.internalSetIdentifier(new String(expression.selector));
+				int nameSourceStart =  (int) (expression.nameSourcePosition >>> 32);
+				int nameSourceLength = ((int) expression.nameSourcePosition) - nameSourceStart + 1;
+				name.setSourceRange(nameSourceStart, nameSourceLength);
+				methodInvocation.setName(name);
+				if (this.resolveBindings) {
+					recordNodes(name, expression);
+				}
+				
 			}
 			org.eclipse.wst.jsdt.internal.compiler.ast.Expression[] arguments = expression.arguments;
 			if (arguments != null) {

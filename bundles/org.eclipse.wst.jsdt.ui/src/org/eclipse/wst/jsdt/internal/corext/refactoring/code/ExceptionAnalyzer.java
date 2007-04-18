@@ -17,6 +17,7 @@ import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
 import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.ThrowStatement;
 
@@ -43,7 +44,11 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.AbstractExceptionAn
 	}
 	
 	public boolean visit(MethodInvocation node) {
-		return handleExceptions((IMethodBinding)node.getName().resolveBinding());
+		SimpleName name = node.getName();
+		if (name!=null)
+			return handleExceptions((IMethodBinding)name.resolveBinding());
+		else
+			return true;
 	}
 	
 	public boolean visit(SuperMethodInvocation node) {

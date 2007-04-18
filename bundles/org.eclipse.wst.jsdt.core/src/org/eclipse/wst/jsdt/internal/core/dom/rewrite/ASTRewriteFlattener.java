@@ -676,15 +676,18 @@ public class ASTRewriteFlattener extends ASTVisitor {
 	 */
 	public boolean visit(MethodInvocation node) {
 		ASTNode expression= getChildNode(node, MethodInvocation.EXPRESSION_PROPERTY);
+		ASTNode nameNode = getChildNode(node, MethodInvocation.NAME_PROPERTY);
 		if (expression != null) {
 			expression.accept(this);
-			this.result.append('.');
+			if (nameNode!=null)
+				this.result.append('.');
 		}
 		if (node.getAST().apiLevel() >= AST.JLS3) {
 			visitList(node, MethodInvocation.TYPE_ARGUMENTS_PROPERTY, String.valueOf(','), String.valueOf('<'), String.valueOf('>'));
 		}
 
-		getChildNode(node, MethodInvocation.NAME_PROPERTY).accept(this);
+		if (nameNode!=null)
+			nameNode.accept(this);
 		this.result.append('(');
 		visitList(node, MethodInvocation.ARGUMENTS_PROPERTY, String.valueOf(','));
 		this.result.append(')');

@@ -1637,7 +1637,8 @@ public class CodeFormatterVisitor extends ASTVisitor {
 
 		if (messageAlignment != null) {
 			this.scribe.alignFragment(messageAlignment, 0);
-			this.scribe.printNextToken(TerminalTokens.TokenNameDOT);
+			if (messageSend.selector!=null)
+				this.scribe.printNextToken(TerminalTokens.TokenNameDOT);
 		}
 		TypeReference[] typeArguments = messageSend.typeArguments;
 		if (typeArguments != null) {
@@ -1661,7 +1662,8 @@ public class CodeFormatterVisitor extends ASTVisitor {
 					this.scribe.space();
 				}
 		}
-		this.scribe.printNextToken(TerminalTokens.TokenNameIdentifier); // selector
+		if (messageSend.selector!=null)
+			this.scribe.printNextToken(TerminalTokens.TokenNameIdentifier); // selector
 		this.scribe.printNextToken(TerminalTokens.TokenNameLPAREN, this.preferences.insert_space_before_opening_paren_in_method_invocation);
 
 		final Expression[] arguments = messageSend.arguments;

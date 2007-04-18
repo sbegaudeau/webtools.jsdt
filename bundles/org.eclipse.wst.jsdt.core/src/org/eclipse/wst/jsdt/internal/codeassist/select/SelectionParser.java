@@ -22,6 +22,8 @@ package org.eclipse.wst.jsdt.internal.codeassist.select;
  
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnMemberAccess;
+import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnSingleNameReference;
 import org.eclipse.wst.jsdt.internal.codeassist.impl.*;
 import org.eclipse.wst.jsdt.internal.compiler.*;
 import org.eclipse.wst.jsdt.internal.compiler.ast.*;
@@ -725,56 +727,58 @@ protected void consumeMethodInvocationName() {
 	this.lastCheckPoint = constructorCall.sourceEnd + 1;
 	this.isOrphanCompletionNode = true;
 }
-protected void consumeMethodInvocationPrimary() {
-	//optimize the push/pop
-	//MethodInvocation ::= Primary '.' 'Identifier' '(' ArgumentListopt ')'
 
-	char[] selector = identifierStack[identifierPtr];
-	int accessMode;
-	if(selector == this.assistIdentifier()) {
-		if(CharOperation.equals(selector, SUPER)) {
-			accessMode = ExplicitConstructorCall.Super;
-		} else if(CharOperation.equals(selector, THIS)) {
-			accessMode = ExplicitConstructorCall.This;
-		} else {
-			super.consumeMethodInvocationPrimary();
-			return;
-		}
-	} else {
-		super.consumeMethodInvocationPrimary();
-		return;
-	}
-	
-	final ExplicitConstructorCall constructorCall = new SelectionOnExplicitConstructorCall(accessMode);
-	constructorCall.sourceEnd = rParenPos;
-	int length;
-	if ((length = expressionLengthStack[expressionLengthPtr--]) != 0) {
-		expressionPtr -= length;
-		System.arraycopy(expressionStack, expressionPtr + 1, constructorCall.arguments = new Expression[length], 0, length);
-	}
-	constructorCall.qualification = expressionStack[expressionPtr--];
-	constructorCall.sourceStart = constructorCall.qualification.sourceStart;
-	
-	if (!diet){
-		pushOnAstStack(constructorCall);
-		this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
-		this.lastIgnoredToken = -1;
-	} else {
-		pushOnExpressionStack(new Expression(){
-			public TypeBinding resolveType(BlockScope scope) {
-				constructorCall.resolve(scope);
-				return null;
-			}
-			public StringBuffer printExpression(int indent, StringBuffer output) {
-				return output; 
-			}
-		});
-	}
-	
-	this.assistNode = constructorCall;
-	this.lastCheckPoint = constructorCall.sourceEnd + 1;
-	this.isOrphanCompletionNode = true;
-}
+//  Nothing here applicable to javascript
+//protected void consumeMethodInvocationPrimary() {
+//	//optimize the push/pop
+//	//MethodInvocation ::= Primary '.' 'Identifier' '(' ArgumentListopt ')'
+//
+//	char[] selector = identifierStack[identifierPtr];
+//	int accessMode;
+//	if(selector == this.assistIdentifier()) {
+//		if(CharOperation.equals(selector, SUPER)) {
+//			accessMode = ExplicitConstructorCall.Super;
+//		} else if(CharOperation.equals(selector, THIS)) {
+//			accessMode = ExplicitConstructorCall.This;
+//		} else {
+//			super.consumeMethodInvocationPrimary();
+//			return;
+//		}
+//	} else {
+//		super.consumeMethodInvocationPrimary();
+//		return;
+//	}
+//	
+//	final ExplicitConstructorCall constructorCall = new SelectionOnExplicitConstructorCall(accessMode);
+//	constructorCall.sourceEnd = rParenPos;
+//	int length;
+//	if ((length = expressionLengthStack[expressionLengthPtr--]) != 0) {
+//		expressionPtr -= length;
+//		System.arraycopy(expressionStack, expressionPtr + 1, constructorCall.arguments = new Expression[length], 0, length);
+//	}
+//	constructorCall.qualification = expressionStack[expressionPtr--];
+//	constructorCall.sourceStart = constructorCall.qualification.sourceStart;
+//	
+//	if (!diet){
+//		pushOnAstStack(constructorCall);
+//		this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
+//		this.lastIgnoredToken = -1;
+//	} else {
+//		pushOnExpressionStack(new Expression(){
+//			public TypeBinding resolveType(BlockScope scope) {
+//				constructorCall.resolve(scope);
+//				return null;
+//			}
+//			public StringBuffer printExpression(int indent, StringBuffer output) {
+//				return output; 
+//			}
+//		});
+//	}
+//	
+//	this.assistNode = constructorCall;
+//	this.lastCheckPoint = constructorCall.sourceEnd + 1;
+//	this.isOrphanCompletionNode = true;
+//}
 protected void consumeNormalAnnotation() {
 	int index;
 	
@@ -1148,8 +1152,15 @@ protected MessageSend newMessageSend() {
 	// '(' ArgumentListopt ')'
 	// the arguments are on the expression stack
 
-	char[] selector = identifierStack[identifierPtr];
-	if (selector != this.assistIdentifier()){
+
+	
+	int numArgs=expressionLengthStack[expressionLengthPtr];
+	Expression receiver = expressionStack[expressionPtr-numArgs];
+//	char[] selector = identifierStack[identifierPtr];
+//	if (selector != this.assistIdentifier()){
+	
+	if (!(receiver instanceof SelectionOnSingleNameReference || receiver instanceof SelectionOnFieldReference))
+	{
 		return super.newMessageSend();
 	}	
 	MessageSend messageSend = new SelectionOnMessageSend();

@@ -86,6 +86,7 @@ import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
+import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.StringLiteral;
 import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
@@ -1058,7 +1059,9 @@ public class StubUtility {
 			
 			return ASTNodes.getSimpleNameIdentifier(simpleNode);
 		} else if (assignedExpression instanceof MethodInvocation) {
-			name= ((MethodInvocation) assignedExpression).getName().getIdentifier();
+			SimpleName name2 = ((MethodInvocation) assignedExpression).getName();
+			if (name2!=null)
+				name= name2.getIdentifier();
 		} else if (assignedExpression instanceof SuperMethodInvocation) {
 			name= ((SuperMethodInvocation) assignedExpression).getName().getIdentifier();
 		} else if (assignedExpression instanceof FieldAccess) {

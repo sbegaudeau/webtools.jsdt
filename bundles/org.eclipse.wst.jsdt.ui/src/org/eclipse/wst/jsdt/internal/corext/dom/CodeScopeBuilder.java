@@ -174,7 +174,7 @@ public class CodeScopeBuilder extends ASTVisitor {
 		Expression receiver= node.getExpression();
 		if (receiver == null) {
 			SimpleName name= node.getName();
-			if (fIgnoreBinding == null || !Bindings.equals(fIgnoreBinding, name.resolveBinding()))
+			if (fIgnoreBinding == null || (name!=null && !Bindings.equals(fIgnoreBinding, name.resolveBinding())) )
 				node.getName().accept(this);
 		} else {
 			receiver.accept(this);

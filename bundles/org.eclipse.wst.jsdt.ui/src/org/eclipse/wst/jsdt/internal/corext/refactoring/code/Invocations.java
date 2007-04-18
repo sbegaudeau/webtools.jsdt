@@ -22,6 +22,7 @@ import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
 import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 
 public class Invocations {
@@ -62,7 +63,11 @@ public class Invocations {
 	public static IMethodBinding resolveBinding(ASTNode invocation) {
 		switch(invocation.getNodeType()) {
 			case ASTNode.METHOD_INVOCATION:
-				return (IMethodBinding)((MethodInvocation)invocation).getName().resolveBinding();
+				SimpleName name = ((MethodInvocation)invocation).getName();
+				if (name!=null)
+				return (IMethodBinding)name.resolveBinding();
+				else
+					return ((MethodInvocation)invocation).resolveMethodBinding();
 			case ASTNode.SUPER_METHOD_INVOCATION:
 				return (IMethodBinding)((SuperMethodInvocation)invocation).getName().resolveBinding();
 			case ASTNode.CONSTRUCTOR_INVOCATION:

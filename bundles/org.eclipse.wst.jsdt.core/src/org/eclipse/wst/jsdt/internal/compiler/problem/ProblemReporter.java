@@ -3237,9 +3237,10 @@ public void invalidMethod(MessageSend messageSend, MethodBinding method) {
 
 	String shortName="";
 	String readableName="";
+	String methodName=(shownMethod.selector!=null)? new String(shownMethod.selector):"";
 	if (method.declaringClass!=null)
 	{
-		shortName=new String(shownMethod.selector);
+		shortName=methodName;
 		readableName=new String(method.declaringClass.readableName());
 		
 	}
@@ -3250,7 +3251,7 @@ public void invalidMethod(MessageSend messageSend, MethodBinding method) {
 				shortName, typesAsString(shownMethod.isVarargs(), shownMethod.parameters, false)},
 		new String[] {
 				shortName,
-			new String(shownMethod.selector), typesAsString(shownMethod.isVarargs(), shownMethod.parameters, true)},
+				methodName, typesAsString(shownMethod.isVarargs(), shownMethod.parameters, true)},
 		(int) (messageSend.nameSourcePosition >>> 32),
 		(int) messageSend.nameSourcePosition);
 }

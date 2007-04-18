@@ -460,26 +460,26 @@ public final class ConvertIterableLoopOperation extends ConvertLoopOperation {
 						if (right instanceof MethodInvocation) {
 							final MethodInvocation invocation= (MethodInvocation)right;
 							final IMethodBinding binding= invocation.resolveMethodBinding();
-							if (binding != null && (binding.getName().equals("next") || binding.getName().equals("nextElement"))) { //$NON-NLS-1$ //$NON-NLS-2$
-								final Expression expression= invocation.getExpression();
-								if (expression instanceof Name) {
-									final Name qualifier= (Name)expression;
-									final IBinding result= qualifier.resolveBinding();
-									if (result != null && result.equals(fIterator)) {
-										nextInvocationCount[0]++;
-										return visit(left);
-									}
-								} else if (expression instanceof FieldAccess) {
-									final FieldAccess qualifier= (FieldAccess)expression;
-									final IBinding result= qualifier.resolveFieldBinding();
-									if (result != null && result.equals(fIterator)) {
-										nextInvocationCount[0]++;
-										return visit(left);
-									}
-								}
-							} else {
-								return visit(invocation);
-							}
+//							if (binding != null && (binding.getName().equals("next") || binding.getName().equals("nextElement"))) { //$NON-NLS-1$ //$NON-NLS-2$
+//								final Expression expression= invocation.getExpression();
+//								if (expression instanceof Name) {
+//									final Name qualifier= (Name)expression;
+//									final IBinding result= qualifier.resolveBinding();
+//									if (result != null && result.equals(fIterator)) {
+//										nextInvocationCount[0]++;
+//										return visit(left);
+//									}
+//								} else if (expression instanceof FieldAccess) {
+//									final FieldAccess qualifier= (FieldAccess)expression;
+//									final IBinding result= qualifier.resolveFieldBinding();
+//									if (result != null && result.equals(fIterator)) {
+//										nextInvocationCount[0]++;
+//										return visit(left);
+//									}
+//								}
+//							} else {
+//								return visit(invocation);
+//							}
 						} else if (right instanceof NullLiteral || right instanceof UndefinedLiteral)
 							return visit(left);
 						return true;
@@ -496,21 +496,21 @@ public final class ConvertIterableLoopOperation extends ConvertLoopOperation {
 								final Name qualifier= (Name)expression;
 								final IBinding result= qualifier.resolveBinding();
 								if (result != null && result.equals(fIterator)) {
-									if (!binding.getName().equals("next") && !binding.getName().equals("nextElement")) { //$NON-NLS-1$ //$NON-NLS-2$
-										otherInvocationThenNext[0]= true;
-									} else {
-										nextInvocationCount[0]++;
-									}
+//									if (!binding.getName().equals("next") && !binding.getName().equals("nextElement")) { //$NON-NLS-1$ //$NON-NLS-2$
+//										otherInvocationThenNext[0]= true;
+//									} else {
+//										nextInvocationCount[0]++;
+//									}
 								}
 							} else if (expression instanceof FieldAccess) {
 								final FieldAccess qualifier= (FieldAccess)expression;
 								final IBinding result= qualifier.resolveFieldBinding();
 								if (result != null && result.equals(fIterator)) {
-									if (!binding.getName().equals("next") && !binding.getName().equals("nextElement")) { //$NON-NLS-1$ //$NON-NLS-2$
-										otherInvocationThenNext[0]= true;
-									} else {
-										nextInvocationCount[0]++;
-									}
+//									if (!binding.getName().equals("next") && !binding.getName().equals("nextElement")) { //$NON-NLS-1$ //$NON-NLS-2$
+//										otherInvocationThenNext[0]= true;
+//									} else {
+//										nextInvocationCount[0]++;
+//									}
 								}
 							}
 						}
@@ -568,16 +568,16 @@ public final class ConvertIterableLoopOperation extends ConvertLoopOperation {
 			return new StatusInfo(IStatus.ERROR, ""); //$NON-NLS-1$
 			
 		String qualifiedName= declaringClass.getQualifiedName();
-		String methodName= invoc.getName().getIdentifier();
-		if (qualifiedName.startsWith("java.util.Enumeration")) { //$NON-NLS-1$
-			if (!methodName.equals("hasMoreElements")) //$NON-NLS-1$
-				return new StatusInfo(IStatus.WARNING, warningLable);
-		} else if (qualifiedName.startsWith("java.util.Iterator")) { //$NON-NLS-1$
-			if (!methodName.equals("hasNext")) //$NON-NLS-1$
-				return new StatusInfo(IStatus.WARNING, warningLable);
-		} else {
-			return new StatusInfo(IStatus.WARNING, warningLable);
-		}
+//		String methodName= invoc.getName().getIdentifier();
+//		if (qualifiedName.startsWith("java.util.Enumeration")) { //$NON-NLS-1$
+//			if (!methodName.equals("hasMoreElements")) //$NON-NLS-1$
+//				return new StatusInfo(IStatus.WARNING, warningLable);
+//		} else if (qualifiedName.startsWith("java.util.Iterator")) { //$NON-NLS-1$
+//			if (!methodName.equals("hasNext")) //$NON-NLS-1$
+//				return new StatusInfo(IStatus.WARNING, warningLable);
+//		} else {
+//			return new StatusInfo(IStatus.WARNING, warningLable);
+//		}
 		
 		return StatusInfo.OK_STATUS;
 	}

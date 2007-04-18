@@ -1432,10 +1432,10 @@ FieldAccess ::= Primary '.' 'Identifier'
 -- MethodInvocation ::= 'super' '.' 'Identifier' '(' ArgumentListopt ')'
 -- /.$putCase consumeMethodInvocationSuper(); $break ./
 
-MethodInvocation ::= SimpleName '(' ArgumentListopt ')'
-/.$putCase consumeMethodInvocationName(); $break ./
+-- MethodInvocation ::= SimpleName '(' ArgumentListopt ')'
+-- /.$putCase consumeMethodInvocationName(); $break ./
 
-MethodInvocation ::= FullPostfixExpression '.' SimpleName '(' ArgumentListopt ')'
+MethodInvocation ::= FullPostfixExpression '(' ArgumentListopt ')'
 /.$putCase consumeMethodInvocationPrimary(); $break ./
 /:$readableName MethodInvocation:/
 
@@ -1826,10 +1826,10 @@ ShortNewSubexpressionStmt -> FullNewSubexpressionStmt
 ShortNewSubexpressionStmt -> ShortNewExpressionStmt
 /:$readableName ShortNewSubexpression:/
 	
-MethodInvocationStmt ::= SimpleName '(' ArgumentListopt ')'
-/.$putCase consumeMethodInvocationName(); $break ./
+--MethodInvocationStmt ::= SimpleName '(' ArgumentListopt ')'
+--/.$putCase consumeMethodInvocationName(); $break ./
 
-MethodInvocationStmt ::= FullPostfixExpressionStmt '.' SimpleName '(' ArgumentListopt ')'
+MethodInvocationStmt ::= FullPostfixExpressionStmt '(' ArgumentListopt ')'
 /.$putCase consumeMethodInvocationPrimary(); $break ./
 /:$readableName MethodInvocation:/
 

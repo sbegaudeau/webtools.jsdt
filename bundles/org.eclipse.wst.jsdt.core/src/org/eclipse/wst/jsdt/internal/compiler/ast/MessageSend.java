@@ -284,18 +284,15 @@ public TypeBinding postConversionType(Scope scope) {
 	
 public StringBuffer printExpression(int indent, StringBuffer output){
 	
-	if (receiver!=null && !receiver.isImplicitThis()) receiver.printExpression(0, output).append('.');
-	if (this.typeArguments != null) {
-		output.append('<');
-		int max = typeArguments.length - 1;
-		for (int j = 0; j < max; j++) {
-			typeArguments[j].print(0, output);
-			output.append(", ");//$NON-NLS-1$
-		}
-		typeArguments[max].print(0, output);
-		output.append('>');
+	if (receiver!=null && !receiver.isImplicitThis()) 
+	{
+		receiver.printExpression(0, output);
+		if (selector!=null)
+			output.append('.');
 	}
-	output.append(selector).append('(') ;
+	if (selector!=null)
+		output.append(selector);
+	output.append('(') ;
 	if (arguments != null) {
 		for (int i = 0; i < arguments.length ; i ++) {	
 			if (i > 0) output.append(", "); //$NON-NLS-1$
@@ -390,10 +387,13 @@ public TypeBinding resolveType(BlockScope scope) {
 		scope.problemReporter().errorNoMethodFor(this, this.actualReceiverType, argumentTypes);
 		return null;
 	}
-	this.binding = 
-		receiver==null || receiver.isImplicitThis()
-			? scope.getImplicitMethod(selector, argumentTypes, this)
-			: scope.getMethod(this.actualReceiverType, selector, argumentTypes, this); 
+	if (selector==null)  
+		this.binding=new IndirectMethodBinding(0,this.actualReceiverType,argumentTypes,scope.compilationUnitScope().referenceContext.compilationUnitBinding);
+	else
+		this.binding = 
+			receiver==null || receiver.isImplicitThis()
+				? scope.getImplicitMethod(selector, argumentTypes, this)
+						: scope.getMethod(this.actualReceiverType, selector, argumentTypes, this); 
 	if (!binding.isValidBinding()) {
 		if (binding.declaringClass == null) {
 			if (this.actualReceiverType==null || this.actualReceiverType instanceof ReferenceBinding) {
