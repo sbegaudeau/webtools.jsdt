@@ -41,18 +41,25 @@ public class ASTConverterTest extends ConverterTestSetup {
 	}
 
 	public void test00() throws JavaModelException {
-		ICompilationUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0243", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		ICompilationUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0005", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		char[] source = sourceUnit.getSource().toCharArray();
-		ASTNode result = runConversion(sourceUnit, true);
-		assertNotNull("No compilation unit", result); //$NON-NLS-1$
-		assertTrue("result is not a compilation unit", result instanceof CompilationUnit); //$NON-NLS-1$
-		ASTNode node = getASTNode((CompilationUnit) result, 0, 0, 0);
-		assertTrue("Not a try statement", node instanceof TryStatement); //$NON-NLS-1$
-		TryStatement tryStatement = (TryStatement) node;
-		List catchClauses = tryStatement.catchClauses();
-		assertEquals("wrong size", 1, catchClauses.size()); //$NON-NLS-1$
-		CatchClause catchClause = (CatchClause) catchClauses.get(0);
-		checkSourceRange(catchClause, "catch (e){m();}", source); //$NON-NLS-1$
+		ASTNode result = runConversion(sourceUnit, false);
+		ExpressionStatement statement = (ExpressionStatement) getASTNode((CompilationUnit) result, 0, 0, 0);
+		ASTNode expression=statement.getExpression();
+		assertNotNull("Expression should not be null", expression); //$NON-NLS-1$
+
+		MethodInvocation methodInvocation = this.ast.newMethodInvocation();
+		ArrayAccess arrayAccess = this.ast.newArrayAccess();
+		arrayAccess.setArray(this.ast.newSimpleName("arr"));
+		arrayAccess.setIndex(this.ast.newNumberLiteral("5"));
+		methodInvocation.setExpression(arrayAccess);
+		
+		NumberLiteral literal = this.ast.newNumberLiteral("1");
+		methodInvocation.arguments().add(literal);
+		
+		
+		assertTrue("Both AST trees should be identical", methodInvocation.subtreeMatch(new ASTMatcher(), expression));		//$NON-NLS-1$
+		checkSourceRange(expression, "arr[5](1)", source); //$NON-NLS-1$
 	}
 	
 	/** @deprecated using deprecated code */
@@ -189,33 +196,28 @@ public class ASTConverterTest extends ConverterTestSetup {
 		checkSourceRange(expression, "new java.lang.Exception(\"ERROR\")", source); //$NON-NLS-1$
 	}
 
-//	/**
-//	 * Test allocation expression: new java.lang.Object() {} ==> ClassInstanceCreation
-//	 * @deprecated using deprecated code
-//	 */
-//	public void test0005() throws JavaModelException {
-//		ICompilationUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0005", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-//		char[] source = sourceUnit.getSource().toCharArray();
-//		ASTNode result = runConversion(sourceUnit, false);
-//		ASTNode expression = getASTNodeToCompare((CompilationUnit) result);
-//		assertNotNull("Expression should not be null", expression); //$NON-NLS-1$
-//		ClassInstanceCreation classInstanceCreation = this.ast.newClassInstanceCreation();
-//		QualifiedName name = 
-//			this.ast.newQualifiedName(
-//				this.ast.newQualifiedName(
-//					this.ast.newSimpleName("java"), //$NON-NLS-1$
-//					this.ast.newSimpleName("lang")), //$NON-NLS-1$
-//				this.ast.newSimpleName("Object"));//$NON-NLS-1$
-//		classInstanceCreation.setName(name);
-//		AnonymousClassDeclaration anonymousClassDeclaration = this.ast.newAnonymousClassDeclaration();
-//		classInstanceCreation.setAnonymousClassDeclaration(anonymousClassDeclaration);
-//		assertTrue("Both AST trees should be identical", classInstanceCreation.subtreeMatch(new ASTMatcher(), expression));		//$NON-NLS-1$
-//		checkSourceRange(expression, "new java.lang.Object() {}", source); //$NON-NLS-1$
-//		ClassInstanceCreation classInstanceCreation2 = (ClassInstanceCreation) expression;
-//		Name name2 = classInstanceCreation2.getName();
-//		checkSourceRange(name2, "java.lang.Object", source); //$NON-NLS-1$
-//	}
-//	
+	public void test0005() throws JavaModelException {
+		ICompilationUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0005", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		char[] source = sourceUnit.getSource().toCharArray();
+		ASTNode result = runConversion(sourceUnit, false);
+		ExpressionStatement statement = (ExpressionStatement) getASTNode((CompilationUnit) result, 0, 0, 0);
+		ASTNode expression=statement.getExpression();
+		assertNotNull("Expression should not be null", expression); //$NON-NLS-1$
+
+		MethodInvocation methodInvocation = this.ast.newMethodInvocation();
+		ArrayAccess arrayAccess = this.ast.newArrayAccess();
+		arrayAccess.setArray(this.ast.newSimpleName("arr"));
+		arrayAccess.setIndex(this.ast.newNumberLiteral("5"));
+		methodInvocation.setExpression(arrayAccess);
+		
+		NumberLiteral literal = this.ast.newNumberLiteral("1");
+		methodInvocation.arguments().add(literal);
+		
+		
+		assertTrue("Both AST trees should be identical", methodInvocation.subtreeMatch(new ASTMatcher(), expression));		//$NON-NLS-1$
+		checkSourceRange(expression, "arr[5](1)", source); //$NON-NLS-1$
+	}
+	
 				
 //	/**
 //	 * Test allocation expression: new java.lang.Runnable() { public void run() {}} ==> ClassInstanceCreation

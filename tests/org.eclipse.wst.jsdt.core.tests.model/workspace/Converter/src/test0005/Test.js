@@ -1,3 +1,3 @@
-//	public static void main(String[] args) {
-//		System.out.println(new java.lang.Object() {});
-//	}
+function main( args) {
+	arr[5](1);
+}

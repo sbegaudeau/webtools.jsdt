@@ -733,6 +733,34 @@ public void testMsgSend2() {
 		testName); 
 }
 
+
+public void testMsgSend2b() {
+	String str = 
+		"     titi(1,2);\n"+
+		"";
+
+	String testName = "<complete on method call 2>";
+	String completeBehind = "titi";
+	String expectedCompletionNodeToString = "<CompleteOnMessageSend:titi(1, 2)>";
+	String completionIdentifier = "titi";
+	String expectedReplacedSource = "titi(1,2)";
+	int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length() - 1;
+	String expectedUnitDisplayString =
+		"<CompleteOnMessageSend:titi(1, 2)>;" + 
+		"\n";
+
+	checkMethodParse(
+		str.toCharArray(), 
+		cursorLocation, 
+		expectedCompletionNodeToString,
+		expectedUnitDisplayString,
+		completionIdentifier,
+		expectedReplacedSource,
+		testName); 
+}
+
+
+
 public void testMsgSend3() {
 	String str = 
 		"  function foo() {\n"+
