@@ -6797,11 +6797,11 @@ protected void consumeToken(int type) {
 			pushOnExpressionStackLengthStack(0);
 			break;
 			//==============================
-		case TokenNamevoid :
-			pushIdentifier(-T_void);
-			pushOnIntStack(this.scanner.currentPosition - 1);				
-			pushOnIntStack(this.scanner.startPosition);
-			break;
+//		case TokenNamevoid :
+//			pushIdentifier(-T_void);
+//			pushOnIntStack(this.scanner.currentPosition - 1);				
+//			pushOnIntStack(this.scanner.startPosition);
+//			break;
 			//push a default dimension while void is not part of the primitive
 			//declaration baseType and so takes the place of a type without getting into
 			//regular type parsing that generates a dimension on this.intStack
@@ -6943,7 +6943,6 @@ protected void consumeToken(int type) {
 		case TokenNamecontinue :
 		case TokenNamereturn :
 		case TokenNamecase :
-		case TokenNamedelete :
 		case TokenNamedebugger :
 		case TokenNameexport :
 		case TokenNamefunction :
@@ -6984,6 +6983,9 @@ protected void consumeToken(int type) {
 		case TokenNameMINUS :
 		case TokenNameNOT :
 		case TokenNameTWIDDLE :
+		case TokenNamedelete :
+		case TokenNamevoid :
+		case TokenNametypeof :
 			this.endPosition = this.scanner.startPosition;
 			break;
 		case TokenNamePLUS_PLUS :
