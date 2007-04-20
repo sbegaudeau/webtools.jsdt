@@ -205,11 +205,20 @@ public FlowInfo analyseCode(
 		return this.expression.printExpression(0, output);
 	} 
 	
+	protected final int getOperator()
+	{
+		return (bits & OperatorMASK) >> OperatorSHIFT;
+	}
+	
 	public TypeBinding resolveType(BlockScope scope) {
 		
 		boolean expressionIsCast;
 		if ((expressionIsCast = this.expression instanceof CastExpression) == true) this.expression.bits |= DisableUnnecessaryCastCheck; // will check later on
-		TypeBinding expressionType = this.expression.resolveType(scope);
+		TypeBinding expressionType = null;
+		if (getOperator()==TYPEOF && (this.expression instanceof SingleNameReference))
+			expressionType=BaseTypeBinding.ANY;
+		else
+			expressionType = this.expression.resolveType(scope);
 		if (expressionType == null) {
 			this.constant = Constant.NotAConstant;
 			return null;
