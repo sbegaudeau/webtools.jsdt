@@ -588,7 +588,9 @@ public class NameLookup implements SuffixConstants {
 			try {
 				children = packageFragmentRoots[i].getChildren();
 				for (int j = 0; j < children.length; j++) {
-					if((IPackageFragment)children[j]!=null) fragRootChildren.add(((IPackageFragment)children[j]));
+					IPackageFragment packageFragment = (IPackageFragment)children[j];
+					if(packageFragment!=null && packageFragment.getElementName().equals(name))
+						fragRootChildren.add((packageFragment));
 				}
 			} catch (JavaModelException e) {}
 				

@@ -51,8 +51,12 @@ public CompilationUnitScope(CompilationUnitDeclaration unit, LookupEnvironment e
 	this.environment = environment;
 	this.referenceContext = unit;
 	unit.scope = this;
-	this.currentPackageName = unit.currentPackage == null ? CharOperation.NO_CHAR_CHAR : unit.currentPackage.tokens;
-
+	
+	char [][]pkgName= unit.currentPackage == null ? unit.compilationResult.compilationUnit.getPackageName() : unit.currentPackage.tokens;
+	
+	this.currentPackageName = pkgName == null ? CharOperation.NO_CHAR_CHAR : pkgName;
+ 
+	
 	if (compilerOptions().produceReferenceInfo) {
 		this.qualifiedReferences = new CompoundNameVector();
 		this.simpleNameReferences = new SimpleNameVector();
@@ -187,8 +191,8 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 	
 
 	
-	
-	referenceContext.compilationUnitBinding=new CompilationUnitBinding(this,environment.defaultPackage);
+	char [] path=CharOperation.concatWith(this.currentPackageName, '/');
+	referenceContext.compilationUnitBinding=new CompilationUnitBinding(this,environment.defaultPackage,path);
 	ArrayList methods=new ArrayList();
 	ArrayList vars=new ArrayList();
 	ArrayList stmts=new ArrayList();

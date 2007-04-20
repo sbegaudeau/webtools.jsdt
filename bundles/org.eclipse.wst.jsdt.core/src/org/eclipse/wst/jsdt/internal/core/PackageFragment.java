@@ -274,7 +274,7 @@ public ICompilationUnit[] getCompilationUnits(WorkingCopyOwner owner) {
 public String getElementName() {
 	//if (this.names.length == 0)
 		//return DEFAULT_PACKAGE_NAME;
-	return Util.concatWith(this.names, '.');
+	return Util.concatWith(this.names, '/');
 }
 /**
  * @see IJavaElement

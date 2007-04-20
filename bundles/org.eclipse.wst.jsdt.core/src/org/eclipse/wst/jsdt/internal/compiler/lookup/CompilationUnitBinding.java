@@ -14,7 +14,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 
-import com.sun.corba.se.impl.logging.UtilSystemException;
 
 public class CompilationUnitBinding  extends SourceTypeBinding {
 //	public char[] sourceName;
@@ -26,9 +25,10 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 	CompilationUnitScope compilationUnitScope;
 	private char[]shortName;
 	
+	char [] path;
 	
 	
-	public CompilationUnitBinding(CompilationUnitScope scope,PackageBinding fPackage) {
+	public CompilationUnitBinding(CompilationUnitScope scope,PackageBinding fPackage,char [] path) {
 		super(new char [][]{scope.referenceContext.getFileName()}, fPackage, scope);
 		this.compilationUnitScope=scope;
 		this.superInterfaces=Binding.NO_SUPERINTERFACES;
@@ -36,6 +36,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 		this.typeVariables=Binding.NO_TYPE_VARIABLES;
 		this.sourceName=this.fileName;
 		setShortName(this.fileName);
+		this.path=path;
 	}
 
 	private void setShortName(char[] fileName) {
@@ -536,5 +537,9 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 
 	public char[] qualifiedSourceName() {
 		return CharOperation.concatWith(compoundName, '.');
+	}
+
+	public char[] qualifiedPackageName() {
+		return this.path;
 	}
 }

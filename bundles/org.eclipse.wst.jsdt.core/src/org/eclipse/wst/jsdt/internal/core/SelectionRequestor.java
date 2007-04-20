@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.internal.core;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
@@ -923,9 +924,13 @@ protected IType resolveType(char[] packageName, char[] typeName, int acceptFlags
 protected IJavaElement resolveCompilationUnit(char[] packageName, char[] compilationUnitName) {
 
 	ICompilationUnit compilationUnit= null;
-	
+
+	String fullCUName=new String(compilationUnitName);
+	Path cuPath = new Path(fullCUName);
+	String cuName=cuPath.lastSegment();
+
 	if (this.openable instanceof CompilationUnit || this.openable instanceof ClassFile) {
-		if (new String(compilationUnitName).equals(this.openable.getElementName()) &&
+		if (cuName.equals(this.openable.getElementName()) &&
 				new String(packageName).equals(this.openable.getParent().getElementName()))
 		{
 			return this.openable;
@@ -936,12 +941,11 @@ protected IJavaElement resolveCompilationUnit(char[] packageName, char[] compila
 			(packageName == null || packageName.length == 0) ? IPackageFragment.DEFAULT_PACKAGE_NAME : new String(packageName), 
 			false);
 		// iterate type lookup in each package fragment
-		String name=new String(compilationUnitName);
 		for (int i = 0, length = pkgs == null ? 0 : pkgs.length; i < length; i++) {
-			ICompilationUnit compUnit=pkgs[i].getCompilationUnit(name);
+			ICompilationUnit compUnit=pkgs[i].getCompilationUnit(cuName);
 			if (compUnit.exists())
 				return compUnit;
-			IClassFile classFile=pkgs[i].getClassFile(name);
+			IClassFile classFile=pkgs[i].getClassFile(cuName);
 			if (classFile.exists())
 				return classFile;
 		}
