@@ -1036,7 +1036,7 @@ public void notifySourceElementRequestor(CompilationUnitDeclaration parsedUnit) 
 		if (isInRange) {
 			requestor.enterCompilationUnit();
 		}
-		char[][] packageName = parsedUnit.compilationResult.compilationUnit.getPackageName();
+		char[][] packageName = parsedUnit.compilationResult.getPackageName();
 		requestor.acceptPackage(
 				-1, 
 				-1, 

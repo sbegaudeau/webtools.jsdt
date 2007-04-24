@@ -313,4 +313,8 @@ protected void setSuperInterfaceNames(char[][] superInterfaceNames) {
 public String toString() {
 	return "Info for " + this.handle.toString(); //$NON-NLS-1$
 }
+
+public char[][] getPackageName() {
+	return getEnclosingType().getPackageName();
+}
 }

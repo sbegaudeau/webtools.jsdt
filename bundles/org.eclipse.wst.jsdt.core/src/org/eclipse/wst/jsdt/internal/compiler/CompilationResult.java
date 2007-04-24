@@ -84,9 +84,9 @@ private static final Comparator PROBLEM_COMPARATOR = new Comparator() {
 
 public CompilationResult(
 		char[] fileName,
-		int unitIndex, 
-		int totalUnitsKnown,
-		int maxProblemPerUnit){
+		char[][] packageName, 
+		int unitIndex,
+		int totalUnitsKnown, int maxProblemPerUnit){
 
 	this.fileName = fileName;
 	this.unitIndex = unitIndex;
@@ -268,6 +268,13 @@ public CategorizedProblem[] getErrors() {
  */
 public char[] getFileName(){
 	return this.fileName;
+}
+
+public char [][] getPackageName()
+{
+	if (this.compilationUnit!=null)
+		return this.compilationUnit.getPackageName();
+	return this.packageName;
 }
 
 public int[] getLineSeparatorPositions() {

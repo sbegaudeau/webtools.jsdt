@@ -52,7 +52,7 @@ public CompilationUnitScope(CompilationUnitDeclaration unit, LookupEnvironment e
 	this.referenceContext = unit;
 	unit.scope = this;
 	
-	char [][]pkgName= unit.currentPackage == null ? unit.compilationResult.compilationUnit.getPackageName() : unit.currentPackage.tokens;
+	char [][]pkgName= unit.currentPackage == null ? unit.compilationResult.getPackageName() : unit.currentPackage.tokens;
 	
 	this.currentPackageName = pkgName == null ? CharOperation.NO_CHAR_CHAR : pkgName;
  

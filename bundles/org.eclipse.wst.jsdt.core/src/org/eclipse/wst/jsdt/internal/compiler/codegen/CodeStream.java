@@ -40,7 +40,7 @@ public class CodeStream {
 	static BranchLabel[] noLabels = new BranchLabel[LABELS_INCREMENT];
 	static LocalVariableBinding[] noLocals = new LocalVariableBinding[LOCALS_INCREMENT];
 	static LocalVariableBinding[] noVisibleLocals = new LocalVariableBinding[LOCALS_INCREMENT];
-	public static final CompilationResult RESTART_IN_WIDE_MODE = new CompilationResult((char[])null, 0, 0, 0);
+	public static final CompilationResult RESTART_IN_WIDE_MODE = new CompilationResult((char[])null, null, 0, 0, 0);
 	/**
 	 * This methods searches for an existing entry inside the pcToSourceMap table with a pc equals to @pc.
 	 * If there is an existing entry it returns -1 (no insertion required).

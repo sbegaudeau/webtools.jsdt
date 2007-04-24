@@ -153,7 +153,7 @@ public void accept(ISourceType[] sourceTypes, PackageBinding packageBinding, Acc
 		sourceType = sourceType.getEnclosingType();
 	
 	// build corresponding compilation unit
-	CompilationResult result = new CompilationResult(sourceType.getFileName(), 1, 1, this.options.maxProblemsPerUnit);
+	CompilationResult result = new CompilationResult(sourceType.getFileName(), sourceType.getPackageName(), 1, 1, this.options.maxProblemsPerUnit);
 	CompilationUnitDeclaration unit =
 		SourceTypeConverter.buildCompilationUnit(
 			new ISourceType[] {sourceType}, // ignore secondary types, to improve laziness
@@ -692,7 +692,7 @@ public void resolve(Openable[] openables, HashSet localTypes, IProgressMonitor m
 				CompilationUnitDeclaration parsedUnit = null;
 				if (cu.isOpen()) {
 					// create parsed unit from source element infos
-					CompilationResult result = new CompilationResult(((ICompilationUnit)cu).getFileName(), i, openablesLength, this.options.maxProblemsPerUnit);
+					CompilationResult result = new CompilationResult(((ICompilationUnit)cu).getFileName(), ((ICompilationUnit)cu).getPackageName(), i, openablesLength, this.options.maxProblemsPerUnit);
 					SourceTypeElementInfo[] typeInfos = null;
 					try {
 						IType[] topLevelTypes = cu.getTypes();

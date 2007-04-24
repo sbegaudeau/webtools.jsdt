@@ -402,7 +402,7 @@ public void accept(ISourceType[] sourceTypes, PackageBinding packageBinding, Acc
 		ICompilationUnit sourceUnit = (ICompilationUnit) type.getCompilationUnit();
 		accept(sourceUnit, accessRestriction);
 	} else {
-		CompilationResult result = new CompilationResult(sourceType.getFileName(), 1, 1, 0);
+		CompilationResult result = new CompilationResult(sourceType.getFileName(), sourceType.getPackageName(), 1, 1, 0);
 		CompilationUnitDeclaration unit =
 			SourceTypeConverter.buildCompilationUnit(
 				sourceTypes,

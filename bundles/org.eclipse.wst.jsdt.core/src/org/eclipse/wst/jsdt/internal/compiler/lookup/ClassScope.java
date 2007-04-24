@@ -985,16 +985,16 @@ public class ClassScope extends Scope {
 	
 	
 	void connectTypeHierarchy() {
-		SourceTypeBinding sourceType = getReferenceBinding();
+ 		SourceTypeBinding sourceType = getReferenceBinding();
 		if ((sourceType.tagBits & TagBits.BeginHierarchyCheck) == 0) {
 			sourceType.tagBits |= TagBits.BeginHierarchyCheck;
-			//boolean noProblems; // = connectSuperclass();
+			 boolean noProblems  = connectSuperclass();
 			//noProblems &= connectSuperInterfaces();
 			sourceType.tagBits |= TagBits.EndHierarchyCheck;
 //			noProblems &= connectTypeVariables(referenceContext.typeParameters, false);
 			sourceType.tagBits |= TagBits.TypeVariablesAreConnected;
-//			if (noProblems && sourceType.isHierarchyInconsistent())
-//				problemReporter().hierarchyHasProblems(sourceType);
+			if (noProblems && sourceType.isHierarchyInconsistent())
+				problemReporter().hierarchyHasProblems(sourceType);
 		}
 		connectMemberTypes();
 		LookupEnvironment env = environment();

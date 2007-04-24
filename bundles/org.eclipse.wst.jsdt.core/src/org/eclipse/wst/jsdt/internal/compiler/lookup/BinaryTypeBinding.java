@@ -150,12 +150,12 @@ protected BinaryTypeBinding() {
  */
 public BinaryTypeBinding(PackageBinding packageBinding, ISourceType binaryType, LookupEnvironment environment) {
 	this.compoundName = CharOperation.splitOn('/', binaryType.getName());
+	this.fileName = binaryType.getFileName();
 	computeId();
 
 	this.tagBits |= TagBits.IsBinaryBinding;
 	this.environment = environment;
 	this.fPackage = packageBinding;
-	this.fileName = binaryType.getFileName();
 
 //	char[] typeSignature = environment.globalOptions.sourceLevel >= ClassFileConstants.JDK1_5 ? binaryType.getGenericSignature() : null;
 //	this.typeVariables = typeSignature != null && typeSignature.length > 0 && typeSignature[0] == '<'

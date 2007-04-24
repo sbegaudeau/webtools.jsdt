@@ -87,4 +87,6 @@ char[][][] getTypeParameterBounds();
  * Answer the names of the receiver's type parameters.
  */
 char[][] getTypeParameterNames();
+
+char [][]getPackageName();
 }

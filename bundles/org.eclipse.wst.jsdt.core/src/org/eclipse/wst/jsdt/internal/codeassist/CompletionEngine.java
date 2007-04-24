@@ -281,6 +281,7 @@ public final class CompletionEngine
 	boolean noProposal = true;
 	CategorizedProblem problem = null;
 	char[] fileName = null;
+	char [][]packageName;
 	int startPosition, actualCompletionPosition, endPosition, offset;
 	int javadocTagPosition; // Position of previous tag while completing in javadoc
 	HashtableOfObject knownPkgs = new HashtableOfObject(10);
@@ -2043,7 +2044,7 @@ public final class CompletionEngine
 		}
 		
 		this.fileName = topLevelType.getParent().getElementName().toCharArray();
-		CompilationResult compilationResult = new CompilationResult(this.fileName, 1, 1, this.compilerOptions.maxProblemsPerUnit);
+		CompilationResult compilationResult = new CompilationResult(this.fileName, this.packageName, 1, 1, this.compilerOptions.maxProblemsPerUnit);
 	
 		CompilationUnitDeclaration compilationUnit = null;
 	
@@ -2213,6 +2214,7 @@ public final class CompletionEngine
 		boolean contextAccepted = false;
 		try {
 			this.fileName = sourceUnit.getFileName();
+			this.packageName=sourceUnit.getPackageName();
 			this.actualCompletionPosition = completionPosition - 1;
 			this.offset = pos;
 			// for now until we can change the UI.

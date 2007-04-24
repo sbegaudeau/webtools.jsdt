@@ -97,7 +97,7 @@ public class CompilationUnitProblemFinder extends Compiler {
 //			sourceTypes[0] = sourceTypes[0].getEnclosingType();
 
 		CompilationResult result =
-			new CompilationResult(sourceTypes[0].getFileName(), 1, 1, this.options.maxProblemsPerUnit);
+			new CompilationResult(sourceTypes[0].getFileName(), sourceTypes[0].getPackageName(), 1, 1, this.options.maxProblemsPerUnit);
 
 		// need to hold onto this
 		CompilationUnitDeclaration unit =

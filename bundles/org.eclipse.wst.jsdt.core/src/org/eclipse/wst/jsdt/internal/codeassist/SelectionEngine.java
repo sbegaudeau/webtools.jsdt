@@ -1194,7 +1194,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 				parent = parent.getEnclosingType();
 			}
 			// compute parse tree for this most outer type
-			CompilationResult result = new CompilationResult(outerType.getFileName(), 1, 1, this.compilerOptions.maxProblemsPerUnit);
+			CompilationResult result = new CompilationResult(outerType.getFileName(), outerType.getPackageName(), 1, 1, this.compilerOptions.maxProblemsPerUnit);
 			if (!(sourceType instanceof SourceTypeElementInfo)) return;
 			SourceType typeHandle = (SourceType) ((SourceTypeElementInfo)sourceType).getHandle();
 			int flags = SourceTypeConverter.FIELD_AND_METHOD | SourceTypeConverter.MEMBER_TYPE;

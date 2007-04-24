@@ -5071,7 +5071,7 @@ public void packageCollidesWithType(CompilationUnitDeclaration compUnitDecl) {
 }
 public void packageIsNotExpectedPackage(CompilationUnitDeclaration compUnitDecl) {
 	String[] arguments = new String[] {
-		CharOperation.toString(compUnitDecl.compilationResult.compilationUnit.getPackageName()),
+		CharOperation.toString(compUnitDecl.compilationResult.getPackageName()),
 		compUnitDecl.currentPackage == null ? "" : CharOperation.toString(compUnitDecl.currentPackage.tokens), //$NON-NLS-1$
 	};
 	this.handle(
