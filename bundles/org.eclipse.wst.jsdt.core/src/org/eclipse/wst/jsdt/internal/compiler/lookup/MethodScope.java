@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.*;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
@@ -49,6 +50,12 @@ public class MethodScope extends BlockScope {
 	
 	// inner-emulation
 	public SyntheticArgumentBinding[] extraSyntheticArguments;
+	
+	
+	public static final char [] ARGUMENTS_NAME={'a','r','g','u','m','e','n','t','s'};
+	
+	LocalVariableBinding argumentsBinding = new LocalVariableBinding(ARGUMENTS_NAME,TypeBinding.ANY,0,true);
+	
 	
 	public MethodScope(Scope parent, ReferenceContext context, boolean isStatic) {
 
@@ -505,4 +512,12 @@ public class MethodScope extends BlockScope {
 		return s;
 	}
 
+	public LocalVariableBinding findVariable(char[] variableName) {
+		LocalVariableBinding binding = super.findVariable(variableName);
+		if (binding==null && CharOperation.equals(variableName,ARGUMENTS_NAME))
+			binding=this.argumentsBinding;
+		return binding;
+	}
+	
+	
 }
