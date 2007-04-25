@@ -180,7 +180,11 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 			modifiers |= ExtraCompilerModifiers.AccBlankFinal;
 		}
 		this.binding = new LocalVariableBinding(this, variableType, modifiers, false);
-		scope.addLocalVariable(binding);
+		MethodScope methodScope = scope.methodScope();
+		if (methodScope!=null)
+			methodScope.addLocalVariable(binding);
+		else
+			scope.compilationUnitScope().addLocalVariable(binding);
 		this.binding.setConstant(Constant.NotAConstant);
 		// allow to recursivelly target the binding....
 		// the correct constant is harmed if correctly computed at the end of this method
