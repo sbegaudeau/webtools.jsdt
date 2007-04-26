@@ -181,7 +181,7 @@ DOMException.INVALID_ACCESS_ERR=15;
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-DOMException.prototype.code=0;
+DOMException.prototype.code=new Number();
 
 
 /**
@@ -193,7 +193,7 @@ DOMException.prototype.code=0;
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-function DOMImplementation(){};
+function DOMImplementation();
 DOMImplementation.prototype = new Object();
 
 /**
@@ -209,7 +209,7 @@ DOMImplementation.prototype = new Object();
 
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-DOMImplementation.prototype.hasFeature = function(feature, version){};
+DOMImplementation.prototype.hasFeature = new function(feature, version);
 
 /**
   * function createDocumentType()
@@ -399,7 +399,7 @@ Node.NOTATION_NODE=12;
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-Node.prototype.nodeName = ""; 
+Node.prototype.nodeName = new String(); 
 /**
   * Property nodeName
   * @type String
@@ -411,7 +411,7 @@ Node.prototype.nodeName = "";
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-Node.prototype.nodeValue = ""; 
+Node.prototype.nodeValue = new String(); 
 /**
   * Property nodeType
   * @type Number
@@ -423,7 +423,7 @@ Node.prototype.nodeValue = "";
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
-Node.prototype.nodeType = 0; 
+Node.prototype.nodeType = new Number(); 
 /**
   * Property parentNode 
   * @type Node
@@ -530,7 +530,7 @@ Node.prototype.ownerDocument = new Document();
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-Node.prototype.namespaceURI=""; 
+Node.prototype.namespaceURI=new String(); 
 /**
   * Property prefix   
   * @type String
@@ -542,7 +542,7 @@ Node.prototype.namespaceURI="";
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-Node.prototype.prefix = ""; 
+Node.prototype.prefix = new String(); 
 /**
   * Property localName   
   * @type String
@@ -553,7 +553,7 @@ Node.prototype.prefix = "";
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-Node.prototype.localName= "";
+Node.prototype.localName= new String();
 /**
   * function insertBefore(newChild, refChild)   
   * @type Method
@@ -568,7 +568,7 @@ Node.prototype.localName= "";
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
-Node.prototype.insertBefore = function(newChild, refChild){}; 
+Node.prototype.insertBefore = new function(newChild, refChild){}; 
 /**
   * function replaceChild(newChild, oldChild) 
   * @type Method
@@ -697,7 +697,7 @@ NodeList.prototype = new Object();
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
 
-NodeList.prototype.length=0; 
+NodeList.prototype.length=new Number(); 
  /**
   * function item(index) 
   *     Note: This object can also be dereferenced using square bracket notation (e.g. obj[1]). Dereferencing with an integer index is equivalent to invoking the item method with that index 
@@ -1002,7 +1002,7 @@ NamedNodeMap.prototype = new Object();
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-NamedNodeMap.prototype.length=0; 
+NamedNodeMap.prototype.length=new Number(); 
 /**
   * function getNamedItem(name) 
   * @type Method
@@ -1133,7 +1133,7 @@ CharacterData.prototype=new Node();
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-CharacterData.prototype.data=""; 
+CharacterData.prototype.data=new String(); 
 /**
   * property length
   * @type   Number
@@ -1144,7 +1144,7 @@ CharacterData.prototype.data="";
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-CharacterData.prototype.length=0; 
+CharacterData.prototype.length=new Number(); 
 /**
   * function substringData(offset, count)   
   * @type Method
@@ -1241,7 +1241,7 @@ Attr.prototype=new Node();
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-Attr.prototype.name=""; 
+Attr.prototype.name=new String(); 
 /**
   * property specified
   * @type   Boolean
@@ -1253,7 +1253,7 @@ Attr.prototype.name="";
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-Attr.prototype.specified=false(); 
+Attr.prototype.specified=new Boolean(); 
 /**
   * property value 
   * @type   Boolean
@@ -1265,7 +1265,7 @@ Attr.prototype.specified=false();
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-Attr.prototype.value="";
+Attr.prototype.value=new String();
 /**
   * property ownerElement 
   * @type   Element
@@ -1304,7 +1304,7 @@ Element.prototype=new Node();
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Element.prototype.tagName="";
+Element.prototype.tagName=new String();
 /**
   * function getAttribute(name) 
   * @type Method
@@ -1606,7 +1606,7 @@ DocumentType.prototype = new Node();
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-DocumentType.prototype.name=""; 
+DocumentType.prototype.name=new String(); 
 /**
   * read-only Property entities
   * @type NamedNodeMap
@@ -1641,7 +1641,7 @@ DocumentType.prototype.notations=new NamedNodeMap();
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-DocumentType.prototype.publicId=""; 
+DocumentType.prototype.publicId=new String(); 
 /**
   * Read-Only Property systemId  
   * @type String
@@ -1652,7 +1652,7 @@ DocumentType.prototype.publicId="";
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-DocumentType.prototype.systemId=""; 
+DocumentType.prototype.systemId=new String(); 
 /**
   * Read-Only Property internalSubset 
   * @type String
@@ -1663,7 +1663,7 @@ DocumentType.prototype.systemId="";
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-DocumentType.prototype.internalSubset="";
+DocumentType.prototype.internalSubset=new String();
 /**
   * Object Notation()
   * Notation inherits all of the methods and properties from Node.
@@ -1688,7 +1688,7 @@ Notation.prototype=new Node();
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
-Notation.prototype.publicId=""; 
+Notation.prototype.publicId=new String(); 
 /**
   * Read-Only Property systemId 
   * @type String
@@ -1699,7 +1699,7 @@ Notation.prototype.publicId="";
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Notation.prototype.systemId="";
+Notation.prototype.systemId=new String();
 /**
   * Object Entity()
   * Entity inherits all of the methods and properties from Node.
@@ -1724,7 +1724,7 @@ Entity.prototype=new Node();
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Entity.prototype.publicId="";
+Entity.prototype.publicId=new String();
  /**
   * Read-Only Property systemId 
   * @type String
@@ -1735,7 +1735,7 @@ Entity.prototype.publicId="";
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Entity.prototype.systemId=""; 
+Entity.prototype.systemId=new String(); 
  /**
   * Read-Only Property notationName 
   * @type String
@@ -1746,7 +1746,7 @@ Entity.prototype.systemId="";
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-Entity.prototype.notationName=""; 
+Entity.prototype.notationName=new String(); 
 /**
   * Object EntityReference()
   * EntityReference inherits all of the methods and properties from Node.
@@ -1786,7 +1786,7 @@ ProcessingInstruction.prototype=new Node();
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-ProcessingInstruction.prototype.target="";
+ProcessingInstruction.prototype.target=new String();
  /**
   * Read-Only Property target  
   * @type String
@@ -1798,4 +1798,8 @@ ProcessingInstruction.prototype.target="";
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-ProcessingInstruction.prototype.data=""; 
+ProcessingInstruction.prototype.data=new String(); 
+
+
+
+

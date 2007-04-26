@@ -90,7 +90,8 @@ function buildClasses(){
 			if(isObject(value)){
 		
 				try{
-					ea[ea.length] = classObjectName + "." + name + ".prototype=new " + getObjectSuperType(value) + "();";
+					var superType = getObjectSuperType(value);
+					ea[ea.length] = classObjectName + ".prototype." + name + "= new " + superType + "();";
 			 	}catch(exception){
 					continue;
 		 			//ea[ea.length] = classObjectName + "." + name + ".prototype=new " + name + "();";
@@ -101,13 +102,13 @@ function buildClasses(){
 					argString += "arg" + (t+1) + ((t+1)<value.length?",":"");
 				}
 				
-				ea[ea.length] = classObjectName + "." + name + ".prototype=function("+argString+"){};";
+				ea[ea.length] = classObjectName + ".prototype." + name + "=function("+argString+"){};";
 			}else if(typeof value=="string"){
-				ea[ea.length] = classObjectName + "." + name + ".prototype=new String();";
+				ea[ea.length] = classObjectName + ".prototype." + name + "=\"\";";
 		  	}else if(typeof value =="boolean"){
-				ea[ea.length] = classObjectName + "." + name + ".prototype=new Boolean();";
+				ea[ea.length] = classObjectName + ".prototype." + name + "=false;";
 			}else if(typeof value =="number"){
-				ea[ea.length] = classObjectName + "." + name + ".prototype=new Number();";
+				ea[ea.length] = classObjectName + ".prototype." + name + "=0;";
 			}
 		
 	  }
