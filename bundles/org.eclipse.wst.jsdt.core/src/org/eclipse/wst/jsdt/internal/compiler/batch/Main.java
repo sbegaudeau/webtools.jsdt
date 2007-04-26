@@ -938,7 +938,10 @@ public class Main implements ProblemSeverities, SuffixConstants {
 						this.log.println("# " + dateFormat.format(date));//$NON-NLS-1$
 					}
 				} else {
-					this.log = new PrintWriter(new FileOutputStream(logFileName, false));
+					if (logFileName.equals("con"))
+						this.log=new PrintWriter(System.out);
+					else
+						this.log = new PrintWriter(new FileOutputStream(logFileName, false));
 					this.log.println("# " + dateFormat.format(date));//$NON-NLS-1$
 				}
 			} catch (FileNotFoundException e) {
@@ -1716,7 +1719,9 @@ protected ArrayList handleBootclasspath(ArrayList bootclasspaths, String customE
 			return null;
 		 }
 
-		 bootclasspaths.add(FileSystem.getClasspath(SystemLibraryLocation.getInstance().getLibraryPath(new String(SystemLibraryLocation.SYSTEM_LIBARAY_NAME)), null, null));
+		 String libraryPath = SystemLibraryLocation.getInstance().getLibraryPath(new String(SystemLibraryLocation.SYSTEM_LIBARAY_NAME));
+		 if (libraryPath!=null)
+			 bootclasspaths.add(FileSystem.getClasspath(libraryPath, null, null));
 //	 	/*
 //	 	 * Handle >= JDK 1.2.2 settings: retrieve rt.jar
 //	 	 */
