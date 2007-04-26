@@ -43,13 +43,13 @@ public class ThisReference extends Reference {
 	public boolean checkAccess(MethodScope methodScope) {
 	
 		// this/super cannot be used in constructor call
-		if (methodScope.isConstructorCall) {
+		if (methodScope!=null && methodScope.isConstructorCall) {
 			methodScope.problemReporter().fieldsOrThisBeforeConstructorInvocation(this);
 			return false;
 		}
 	
 		// static may not refer to this/super
-		if (methodScope.isStatic) {
+		if (methodScope!=null && methodScope.isStatic) {
 			methodScope.problemReporter().errorThisSuperInStatic(this);
 			return false;
 		}
