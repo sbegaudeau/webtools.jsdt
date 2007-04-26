@@ -31,11 +31,13 @@ String.prototype.length =1;
 
 
 Number.prototype = new Object();
+function Number(){}
 
 Boolean.prototype = new Object();
 
 Array.prototype = new Object();
 Array.prototype.length = 1;
+function Array(){}
 
 Function.prototype = new Object();
 

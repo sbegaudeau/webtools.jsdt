@@ -91,7 +91,11 @@ public class SystemLibraryLocation implements LibraryLocation {
 	 */
 	public String getLibraryPath(String name){
 		
-		return  Platform.getStateLocation(Platform.getBundle(JavaCore.PLUGIN_ID)).append( new String(LIBRARY_RUNTIME_DIRECTORY) ).append( name).toString();
+		try {
+			return  Platform.getStateLocation(Platform.getBundle(JavaCore.PLUGIN_ID)).append( new String(LIBRARY_RUNTIME_DIRECTORY) ).append( name).toString();
+		}
+		catch (Exception ex)
+		{return null;}
 	
 	}
 	public static void copyFile(InputStream src, File dst) throws IOException {
