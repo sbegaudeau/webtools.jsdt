@@ -637,14 +637,11 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			}
 			else if (scope instanceof CompilationUnitScope) {
 				CompilationUnitScope compilationUnitScope = (CompilationUnitScope) scope;
-				if (compilationUnitScope.referenceContext.inferredTypes!=null)
+				for (int i=0;i<compilationUnitScope.referenceContext.numberInferredTypes;i++)
 				{
-					for (int i=0;i<compilationUnitScope.referenceContext.inferredTypes.size();i++)
-					{
-						InferredType type=(InferredType)compilationUnitScope.referenceContext.inferredTypes.get(i);
-						if (type.containsMethod(inMethod))
-							return (ReferenceBinding)compilationUnitScope.getTypeOrPackage(type.getName(),Binding.TYPE);
-					}
+					InferredType type= compilationUnitScope.referenceContext.inferredTypes[i];
+					if (type.containsMethod(inMethod))
+						return (ReferenceBinding)compilationUnitScope.getTypeOrPackage(type.getName(),Binding.TYPE);
 				}
 			}
 			if (scope instanceof ClassScope) {

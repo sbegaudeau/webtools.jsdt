@@ -1108,9 +1108,8 @@ public void notifySourceElementRequestor(CompilationUnitDeclaration parsedUnit) 
 		}
 	}
 	
-	if (parsedUnit.inferredTypes!=null)
-		for (Iterator iter = parsedUnit.inferredTypes.iterator(); iter.hasNext();) {
-		InferredType type = (InferredType) iter.next();
+	for (int inx=0;inx<parsedUnit.numberInferredTypes;inx++) {
+			InferredType type = parsedUnit.inferredTypes[inx];
 		if (!type.isDefinition)
 			continue;
 		ISourceElementRequestor.TypeInfo typeInfo = new ISourceElementRequestor.TypeInfo();

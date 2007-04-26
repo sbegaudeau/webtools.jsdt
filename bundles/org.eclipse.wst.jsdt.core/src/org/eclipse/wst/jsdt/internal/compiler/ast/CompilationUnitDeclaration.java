@@ -60,7 +60,8 @@ public class CompilationUnitDeclaration
 	public int[][] comments;
 
 
-	public ArrayList inferredTypes;
+	public InferredType [] inferredTypes = new InferredType[10];
+	public int numberInferredTypes=0;
 	
 	public boolean ignoreFurtherInvestigation = false;	// once pointless to investigate due to errors
 	public boolean ignoreMethodBodies = false;
@@ -571,51 +572,46 @@ public class CompilationUnitDeclaration
 	}
 
 	public void traverseInferredTypes(ASTVisitor visitor,BlockScope unitScope) {
-		if (this.inferredTypes!=null)
-		{
-			boolean continueVisiting=true;
-			for (Iterator iter = this.inferredTypes.iterator();  continueVisiting && iter.hasNext();) {
-				InferredType inferredType = (InferredType) iter.next();
-				continueVisiting=visitor.visit(inferredType, scope);
-				if (inferredType.attributes!=null)
-					for (Iterator iterator = inferredType.attributes.iterator(); continueVisiting && iterator
-							.hasNext();) {
-						InferredAttribute inferredAttribute = (InferredAttribute) iterator.next();
-						visitor.visit(inferredAttribute, scope);
-					}
-				if (inferredType.methods!=null)
-					for (Iterator iterator = inferredType.methods.iterator();  continueVisiting && iterator
-							.hasNext();) {
-						InferredMethod inferredMethod = (InferredMethod) iterator.next();
-						visitor.visit(inferredMethod, scope);
-					}
-				visitor.endVisit(inferredType, scope);
-			}
+		boolean continueVisiting=true;
+		for (int i=0;i<this.numberInferredTypes;i++) {
+			InferredType inferredType = this.inferredTypes[i];
+			continueVisiting=visitor.visit(inferredType, scope);
+			if (inferredType.attributes!=null)
+				for (Iterator iterator = inferredType.attributes.iterator(); continueVisiting && iterator
+						.hasNext();) {
+					InferredAttribute inferredAttribute = (InferredAttribute) iterator.next();
+					visitor.visit(inferredAttribute, scope);
+				}
+			if (inferredType.methods!=null)
+				for (Iterator iterator = inferredType.methods.iterator();  continueVisiting && iterator
+						.hasNext();) {
+					InferredMethod inferredMethod = (InferredMethod) iterator.next();
+					visitor.visit(inferredMethod, scope);
+				}
+			visitor.endVisit(inferredType, scope);
 		}
 	}
 	
 	public InferredType findInferredType(char [] name)
 	{
-		if (inferredTypes!=null)
-		 for (Iterator iter = inferredTypes.iterator(); iter.hasNext();) {
-			InferredType type = (InferredType) iter.next();
-			if (CharOperation.equals(name,type.getName()))
-					return type; 
+		for (int i=0;i<this.numberInferredTypes;i++) {
+			InferredType inferredType = this.inferredTypes[i];
+			if (CharOperation.equals(name,inferredType.getName()))
+					return inferredType; 
 		}
 		return null;
 	}
 	
 	public void printInferredTypes(StringBuffer sb)
 	{
-		if (inferredTypes!=null)
-			 for (Iterator iter = inferredTypes.iterator(); iter.hasNext();) {
-				InferredType type = (InferredType) iter.next();
-				if (type.isDefinition)
+		for (int i=0;i<this.numberInferredTypes;i++) {
+			InferredType inferredType = this.inferredTypes[i];
+				if (inferredType.isDefinition)
 				{
-					type.print(0,sb);
+					inferredType.print(0,sb);
 					sb.append("\n");
 				}
-			}
+		}
 		
 	}
 }

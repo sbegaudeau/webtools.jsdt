@@ -2303,15 +2303,13 @@ protected void reportMatching(CompilationUnitDeclaration unit, boolean mustResol
 			
 		}
 	}
-	ArrayList inferredTypes= unit.inferredTypes;
-	if (inferredTypes!=null)
-		for (Iterator iter = inferredTypes.iterator(); iter.hasNext();) {
+	for (int i=0;i<unit.numberInferredTypes;i++) {
+		InferredType inferredType = unit.inferredTypes[i];
 			IJavaElement enclosingElement = this.currentPossibleMatch.openable;
 			if (enclosingElement == null) return;
 			boolean typeInHierarchy = true;
 			boolean matchedClassContainer=true;
 
-			InferredType inferredType = (InferredType) iter.next();
 			Integer level = (Integer) nodeSet.matchingNodes.removeKey(inferredType);
 			int accuracy = (level != null && matchedClassContainer) ? level.intValue() : -1;
 			reportMatching(inferredType, null, accuracy, nodeSet, 1);

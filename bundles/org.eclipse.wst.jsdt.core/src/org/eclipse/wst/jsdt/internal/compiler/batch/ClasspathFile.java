@@ -106,13 +106,10 @@ private void parseFile(ITypeRequestor requestor) {
 				
 			}
 		}
-		if (declaration.inferredTypes!=null)
-		{
-			for (Iterator iter = declaration.inferredTypes.iterator(); iter.hasNext();) {
-				InferredType inferredType = (InferredType) iter.next();
-				if (inferredType.isDefinition)
-					definedItems[Binding.TYPE].put(inferredType.getName(), foundAnswer);
-			}
+		for (int inx=0;inx<declaration.numberInferredTypes;inx++) {
+			InferredType inferredType = declaration.inferredTypes[inx];
+			if (inferredType.isDefinition)
+				definedItems[Binding.TYPE].put(inferredType.getName(), foundAnswer);
 		}
 		
 	}

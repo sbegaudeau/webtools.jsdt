@@ -160,11 +160,11 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 
 	
 	// Skip typeDeclarations which know of previously reported errors
-	int typeLength = (referenceContext.inferredTypes!=null) ? referenceContext.inferredTypes.size() : 0;
+	int typeLength = referenceContext.numberInferredTypes;
 	topLevelTypes = new SourceTypeBinding[typeLength];
 	int count = 0;
 	nextType: for (int i = 0; i < typeLength; i++) {
-		InferredType typeDecl = (InferredType)referenceContext.inferredTypes.get(i);
+		InferredType typeDecl =  referenceContext.inferredTypes[i];
 		if (typeDecl.isDefinition) {
 			ReferenceBinding typeBinding = environment.defaultPackage
 					.getType0(typeDecl.getName());
@@ -420,10 +420,8 @@ public char[] computeConstantPoolName(LocalTypeBinding localType) {
 }
 
 void connectTypeHierarchy() {
-	ArrayList inferredTypes = referenceContext.inferredTypes;
-	if (inferredTypes!=null)
-		for (Iterator iter = inferredTypes.iterator(); iter.hasNext();) {
-			InferredType inferredType = (InferredType) iter.next();
+		for (int i=0;i<referenceContext.numberInferredTypes;i++) {
+			InferredType inferredType = referenceContext.inferredTypes[i];
 			if (inferredType.binding!=null)
  			  inferredType.binding.classScope.connectTypeHierarchy();
 			

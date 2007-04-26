@@ -492,12 +492,11 @@ private void rememberAllTypes(CompilationUnitDeclaration parsedUnit, Object cont
 			rememberWithMemberTypes(type, typeHandle);
 		}
 	}
-	if (parsedUnit.inferredTypes!=null)
-		for (Iterator iter = parsedUnit.inferredTypes.iterator(); iter.hasNext();) {
-			InferredType inferredType = (InferredType) iter.next();
+	for (int i=0;i<parsedUnit.numberInferredTypes;i++) {
+		InferredType inferredType = parsedUnit.inferredTypes[i];
 			IType typeHandle= (cu!=null) ? cu.getType(new String(inferredType.getName())) : classFile.getType(new String(inferredType.getName()));
 			rememberInferredType(inferredType,typeHandle,inferredType.binding);
-		}
+	}
 //	if (includeLocalTypes && parsedUnit.localTypes != null) {
 //		HandleFactory factory = new HandleFactory();
 //		HashSet existingElements = new HashSet(parsedUnit.localTypeCount);

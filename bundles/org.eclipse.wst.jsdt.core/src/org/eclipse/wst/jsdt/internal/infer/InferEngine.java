@@ -1,7 +1,6 @@
 package org.eclipse.wst.jsdt.internal.infer;
 
-import java.util.ArrayList;
-
+ 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
@@ -29,6 +28,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.formatter.comment.JavaDocLine;
@@ -532,12 +532,20 @@ public class InferEngine extends ASTVisitor {
 	protected InferredType addType(char[] className) {
 		
 		InferredType type = compUnit.findInferredType(className);
+
+		
 		if (type==null)
 		{
-			type=new InferredType(className);
-			if (compUnit.inferredTypes==null)
-				compUnit.inferredTypes=new ArrayList();
-			compUnit.inferredTypes.add(type);
+			if (compUnit.numberInferredTypes == compUnit.inferredTypes.length)
+				
+				System.arraycopy(
+						compUnit.inferredTypes,
+						0,
+						(compUnit.inferredTypes = new InferredType[compUnit.numberInferredTypes  * 2]),
+						0,
+						compUnit.numberInferredTypes );
+			type=compUnit.inferredTypes[compUnit.numberInferredTypes ++] = new InferredType(className);
+				
 		}
 		return type;
 	}
