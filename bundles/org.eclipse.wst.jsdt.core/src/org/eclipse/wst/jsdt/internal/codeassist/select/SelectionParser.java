@@ -455,7 +455,8 @@ protected void consumeExitVariableWithInitialization() {
 	int end =  variable.initialization.sourceEnd;
 	if ((selectionStart < start) &&  (selectionEnd < start) ||
 			(selectionStart > end) && (selectionEnd > end)) {
-		variable.initialization = null;
+		if (STOP_AT_CURSOR)
+			variable.initialization = null;
 	}
 
 }
