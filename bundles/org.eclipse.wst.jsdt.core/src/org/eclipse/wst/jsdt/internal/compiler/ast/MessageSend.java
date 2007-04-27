@@ -383,10 +383,10 @@ public TypeBinding resolveType(BlockScope scope) {
 //		return null;
 //	}
 	// base type cannot receive any message
-	if (this.actualReceiverType!=null && this.actualReceiverType.isBaseType()) {
-		scope.problemReporter().errorNoMethodFor(this, this.actualReceiverType, argumentTypes);
-		return null;
-	}
+//	if (this.actualReceiverType!=null && this.actualReceiverType.isBaseType()) {
+//		scope.problemReporter().errorNoMethodFor(this, this.actualReceiverType, argumentTypes);
+//		return null;
+//	}
 	if (selector==null)  
 		this.binding=new IndirectMethodBinding(0,this.actualReceiverType,argumentTypes,scope.compilationUnitScope().referenceContext.compilationUnitBinding);
 	else
