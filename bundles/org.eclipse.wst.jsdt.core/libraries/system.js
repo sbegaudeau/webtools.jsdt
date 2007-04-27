@@ -25,6 +25,7 @@ String.prototype.toLowerCase = function( ){return "";};
 String.prototype.toLocaleLowerCase = function( ){return "";};
 String.prototype.toUpperCase= function ( ){return "";};
 String.prototype.toLocaleUpperCase = function( ){return "";};
+
 function String(){}
 
 String.prototype.length =1;
