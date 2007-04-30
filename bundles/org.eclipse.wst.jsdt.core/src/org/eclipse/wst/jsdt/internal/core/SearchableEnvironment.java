@@ -40,7 +40,9 @@ public class SearchableEnvironment implements INameEnvironment,
 
 	protected org.eclipse.wst.jsdt.core.ICompilationUnit[] workingCopies;
 
-	protected JavaProject project;
+	protected IJavaElement resScope;
+	
+	protected JavaProject javaProject;
 
 	protected IJavaSearchScope searchScope;
 
@@ -50,26 +52,33 @@ public class SearchableEnvironment implements INameEnvironment,
 	 * Creates a SearchableEnvironment on the given project
 	 */
 	public SearchableEnvironment(JavaProject project,
+			IJavaElement resolutionScope,
 			org.eclipse.wst.jsdt.core.ICompilationUnit[] workingCopies)
 			throws JavaModelException {
-		this.project = project;
+		this.resScope = resolutionScope;
+		this.javaProject = project;
 		this.checkAccessRestrictions = !JavaCore.IGNORE.equals(project
 				.getOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
 				|| !JavaCore.IGNORE.equals(project.getOption(
 						JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE, true));
 		this.workingCopies = workingCopies;
-		this.nameLookup = project.newNameLookup(workingCopies);
+		this.nameLookup = resScope.newNameLookup(workingCopies);
 
 		// Create search scope with visible entry on the project's classpath
 		if (this.checkAccessRestrictions) {
 			this.searchScope = BasicSearchEngine
-					.createJavaSearchScope(new IJavaElement[] { project });
+					.createJavaSearchScope(new IJavaElement[] { resolutionScope });
 		} else {
 			this.searchScope = BasicSearchEngine
 					.createJavaSearchScope(this.nameLookup.packageFragmentRoots);
 		}
 	}
-
+	public SearchableEnvironment(JavaProject project,
+			
+			org.eclipse.wst.jsdt.core.ICompilationUnit[] workingCopies)
+			throws JavaModelException {
+		this(project,project,workingCopies);
+	}
 	/**
 	 * Creates a SearchableEnvironment on the given project
 	 */
@@ -80,7 +89,12 @@ public class SearchableEnvironment implements INameEnvironment,
 				.getWorkingCopies(owner, true/* add primary WCs */));
 	}
 
-
+	public SearchableEnvironment(JavaProject project, IJavaElement resolutionScope,WorkingCopyOwner owner)
+	throws JavaModelException {
+		this(project, resolutionScope, owner == null ? null : JavaModelManager
+		.getJavaModelManager()
+		.getWorkingCopies(owner, true/* add primary WCs */));
+}
 	private static int convertSearchFilterToModelFilter(int searchFilter) {
 		switch (searchFilter) {
 			case IJavaSearchConstants.CLASS:
@@ -313,7 +327,7 @@ public class SearchableEnvironment implements INameEnvironment,
 	 */
 	private void findExactTypes(String name, ISearchRequestor storage, int type) {
 		SearchableEnvironmentRequestor requestor =
-			new SearchableEnvironmentRequestor(storage, this.unitToSkip, this.project, this.nameLookup);
+			new SearchableEnvironmentRequestor(storage, this.unitToSkip, this.javaProject, this.nameLookup);
 		this.nameLookup.seekTypes(name, null, false, type, requestor);
 	}
 	
@@ -622,7 +636,7 @@ public class SearchableEnvironment implements INameEnvironment,
 	private void findTypes(String prefix, ISearchRequestor storage, int type) {
 		// TODO (david) should add camel case support
 		SearchableEnvironmentRequestor requestor = new SearchableEnvironmentRequestor(
-				storage, this.unitToSkip, this.project, this.nameLookup);
+				storage, this.unitToSkip, this.javaProject, this.nameLookup);
 		int index = prefix.lastIndexOf('.');
 		if (index == -1) {
 			this.nameLookup.seekTypes(prefix, null, true, type, requestor);
@@ -645,7 +659,7 @@ public class SearchableEnvironment implements INameEnvironment,
 
 	private void findBindings(String prefix, int bindingType, ISearchRequestor storage, int type) {
 		SearchableEnvironmentRequestor requestor = new SearchableEnvironmentRequestor(
-				storage, this.unitToSkip, this.project, this.nameLookup);
+				storage, this.unitToSkip, this.javaProject, this.nameLookup);
 		int index = prefix.lastIndexOf('.');
 		if (index == -1) {
 			this.nameLookup.seekBindings(prefix, bindingType,null, true, type, requestor);

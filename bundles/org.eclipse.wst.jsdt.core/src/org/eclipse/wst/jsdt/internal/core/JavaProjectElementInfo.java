@@ -34,8 +34,8 @@ import org.eclipse.wst.jsdt.internal.core.util.HashtableOfArrayToObject;
 /* package */
 class JavaProjectElementInfo extends OpenableElementInfo {
 
-	static class ProjectCache {
-		ProjectCache(IPackageFragmentRoot[] allPkgFragmentRootsCache, HashtableOfArrayToObject allPkgFragmentsCache, HashtableOfArrayToObject isPackageCache, Map rootToResolvedEntries) {
+	static class LookupCache {
+		LookupCache(IPackageFragmentRoot[] allPkgFragmentRootsCache, HashtableOfArrayToObject allPkgFragmentsCache, HashtableOfArrayToObject isPackageCache, Map rootToResolvedEntries) {
 			this.allPkgFragmentRootsCache = allPkgFragmentRootsCache;
 			this.allPkgFragmentsCache = allPkgFragmentsCache;
 			this.isPackageCache = isPackageCache;
@@ -66,7 +66,7 @@ class JavaProjectElementInfo extends OpenableElementInfo {
 	 */
 	private Object[] nonJavaResources;
 	
-	ProjectCache projectCache;
+	LookupCache projectCache;
 	
 	/*
 	 * Adds the given name and its super names to the given set
@@ -198,8 +198,8 @@ class JavaProjectElementInfo extends OpenableElementInfo {
 		return resources;
 	}
 	
-	ProjectCache getProjectCache(JavaProject project) {
-		ProjectCache cache = this.projectCache;
+	LookupCache getProjectCache(JavaProject project) {
+		LookupCache cache = this.projectCache;
 		if (cache == null) {
 			IPackageFragmentRoot[] roots;
 			Map reverseMap = new HashMap(3);
@@ -258,7 +258,7 @@ class JavaProjectElementInfo extends OpenableElementInfo {
 					}
 				}
 			}
-			cache = new ProjectCache(roots, fragmentsCache, isPackageCache, reverseMap);
+			cache = new LookupCache(roots, fragmentsCache, isPackageCache, reverseMap);
 			this.projectCache = cache;
 		}
 		return cache;
@@ -299,7 +299,7 @@ class JavaProjectElementInfo extends OpenableElementInfo {
 	 * This name lookup first looks in the given working copies.
 	 */
 	NameLookup newNameLookup(JavaProject project, ICompilationUnit[] workingCopies) {
-		ProjectCache cache = getProjectCache(project);
+		LookupCache cache = getProjectCache(project);
 		return new NameLookup(cache.allPkgFragmentRootsCache, cache.allPkgFragmentsCache, cache.isPackageCache, workingCopies, cache.rootToResolvedEntries);
 	}
 	

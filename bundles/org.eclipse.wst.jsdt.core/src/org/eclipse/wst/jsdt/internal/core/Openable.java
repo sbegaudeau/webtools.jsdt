@@ -113,7 +113,7 @@ protected void codeComplete(org.eclipse.wst.jsdt.internal.compiler.env.ICompilat
 		throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INDEX_OUT_OF_BOUNDS));
 	}
 	JavaProject project = (JavaProject) getJavaProject();
-	SearchableEnvironment environment = project.newSearchableNameEnvironment(owner);
+	SearchableEnvironment environment = newSearchableNameEnvironment(owner);
 
 	// set unit to skip
 	environment.unitToSkip = unitToSkip;
@@ -138,7 +138,7 @@ protected IJavaElement[] codeSelect(org.eclipse.wst.jsdt.internal.compiler.env.I
 	}
 	
 	JavaProject project = (JavaProject)getJavaProject();
-	SearchableEnvironment environment = project.newSearchableNameEnvironment(owner);
+	SearchableEnvironment environment = newSearchableNameEnvironment(owner);
 	
 	SelectionRequestor requestor= new SelectionRequestor(environment.nameLookup, this);
 	IBuffer buffer = getBuffer();

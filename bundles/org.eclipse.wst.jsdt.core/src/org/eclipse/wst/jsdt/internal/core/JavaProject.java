@@ -416,7 +416,7 @@ public class JavaProject
 	 */
 	public void computeChildren(JavaProjectElementInfo info) throws JavaModelException {
 		IClasspathEntry[] classpath = getResolvedClasspath();
-		JavaProjectElementInfo.ProjectCache projectCache = info.projectCache;
+		JavaProjectElementInfo.LookupCache projectCache = info.projectCache;
 		if (projectCache != null) {
 			IPackageFragmentRoot[] newRoots = computePackageFragmentRoots(classpath, true, null /*no reverse map*/);
 			checkIdentical: { // compare all pkg fragment root lists

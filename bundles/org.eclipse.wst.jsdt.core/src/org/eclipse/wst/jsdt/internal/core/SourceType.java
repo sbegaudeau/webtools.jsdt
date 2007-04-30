@@ -83,7 +83,7 @@ public void codeComplete(char[] snippet,int insertion,int position,char[][] loca
 	}
 	
 	JavaProject project = (JavaProject) getJavaProject();
-	SearchableEnvironment environment = project.newSearchableNameEnvironment(owner);
+	SearchableEnvironment environment = newSearchableNameEnvironment(owner);
 	CompletionEngine engine = new CompletionEngine(environment, requestor, project.getOptions(true), project);
 
 	String source = getCompilationUnit().getSource();
@@ -802,7 +802,7 @@ public String[][] resolveType(String typeName) throws JavaModelException {
 public String[][] resolveType(String typeName, WorkingCopyOwner owner) throws JavaModelException {
 	ISourceType info = (ISourceType) getElementInfo();
 	JavaProject project = (JavaProject) getJavaProject();
-	SearchableEnvironment environment = project.newSearchableNameEnvironment(owner);
+	SearchableEnvironment environment = newSearchableNameEnvironment(owner);
 
 	class TypeResolveRequestor implements ISelectionRequestor {
 		String[][] answers = null;

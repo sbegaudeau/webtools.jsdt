@@ -15,6 +15,8 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.wst.jsdt.internal.core.NameLookup;
+import org.eclipse.wst.jsdt.internal.core.SearchableEnvironment;
 
 /**
  * Common protocol for all elements provided by the Java model.
@@ -32,7 +34,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
  * This interface is not intended to be implemented by clients.
  * </p>
  */
-public interface IJavaElement extends IAdaptable {
+public interface IJavaElement extends IAdaptable, ILookupScope{
 
 	/**
 	 * Constant representing a Java model (workspace level object).
@@ -364,4 +366,6 @@ public interface IJavaElement extends IAdaptable {
 	 *		exception occurs while accessing its corresponding resource
 	 */// TODO (philippe) predicate shouldn't throw an exception
 	boolean isStructureKnown() throws JavaModelException;
+	
+	
 }

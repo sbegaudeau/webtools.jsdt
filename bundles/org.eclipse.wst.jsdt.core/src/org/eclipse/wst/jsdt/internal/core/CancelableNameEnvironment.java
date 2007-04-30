@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.internal.codeassist.ISearchRequestor;
@@ -27,7 +28,10 @@ public class CancelableNameEnvironment extends SearchableEnvironment {
 		super(project, owner);
 		this.monitor = monitor;
 	}
-
+	public CancelableNameEnvironment(JavaProject project, IJavaElement scope, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException {
+		super(project,scope, owner);
+		this.monitor = monitor;
+	}
 	private void checkCanceled() {
 		if (this.monitor != null && this.monitor.isCanceled()) {
 			if (NameLookup.VERBOSE)

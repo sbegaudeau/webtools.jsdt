@@ -11,6 +11,7 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 
 public class LibraryFragmentRoot extends PackageFragmentRoot {
@@ -132,8 +133,7 @@ protected boolean resourceExists() {
 	}
 }
 
-public ClassFile getLibraryClassFile()
-{
+private ClassFile getLibraryClassFile(){
 	try {
 		ArrayList childrenOfType = getChildrenOfType(IJavaElement.PACKAGE_FRAGMENT);
 		if (!childrenOfType.isEmpty())
@@ -150,11 +150,12 @@ public ClassFile getLibraryClassFile()
 	return null;
 }
 
-protected void toStringAncestors(StringBuffer buffer) {
-	if (isExternal())
-		// don't show project as it is irrelevant for external jar files.
-		// also see https://bugs.eclipse.org/bugs/show_bug.cgi?id=146615
-		return;
-	super.toStringAncestors(buffer);
-}
+	protected void toStringAncestors(StringBuffer buffer) {
+		if (isExternal())
+			// don't show project as it is irrelevant for external jar files.
+			// also see https://bugs.eclipse.org/bugs/show_bug.cgi?id=146615
+			return;
+		super.toStringAncestors(buffer);
+	}
+
 } 

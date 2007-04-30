@@ -1253,7 +1253,7 @@ Attr.prototype.name="";
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-Attr.prototype.specified=false(); 
+Attr.prototype.specified=false; 
 /**
   * property value 
   * @type   Boolean

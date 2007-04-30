@@ -205,7 +205,7 @@ public class CompilationUnitProblemFinder extends Compiler {
 		CancelableProblemFactory problemFactory = null;
 		CompilationUnitProblemFinder problemFinder = null;
 		try {
-			environment = new CancelableNameEnvironment(project, workingCopyOwner, monitor);
+			environment = new CancelableNameEnvironment(project,unitElement, workingCopyOwner, monitor);
 			problemFactory = new CancelableProblemFactory(monitor);
 			problemFinder = new CompilationUnitProblemFinder(
 				environment,

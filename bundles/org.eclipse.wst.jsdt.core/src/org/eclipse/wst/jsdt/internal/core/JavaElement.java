@@ -802,4 +802,35 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 		}
 		return null;
 	}
+	
+	/*
+	 * Returns a new name lookup. This name lookup first looks in the given working copies.
+	 */
+	public NameLookup newNameLookup(ICompilationUnit[] workingCopies) throws JavaModelException {
+		return parent!=null?parent.newNameLookup(workingCopies):getJavaProject().newNameLookup(workingCopies);
+	}
+
+	/*
+	 * Returns a new name lookup. This name lookup first looks in the working copies of the given owner.
+	 */
+	public NameLookup newNameLookup(WorkingCopyOwner owner) throws JavaModelException {
+		
+		return parent!=null?parent.newNameLookup(owner):getJavaProject().newNameLookup(owner);
+	}
+
+	/*
+	 * Returns a new search name environment for this project. This name environment first looks in the given working copies.
+	 */
+	public SearchableEnvironment newSearchableNameEnvironment(ICompilationUnit[] workingCopies) throws JavaModelException {
+		return parent!=null?parent.newSearchableNameEnvironment(workingCopies):getJavaProject().newSearchableNameEnvironment(workingCopies);
+	}
+
+	/*
+	 * Returns a new search name environment for this project. This name environment first looks in the working copies
+	 * of the given owner.
+	 */
+	public SearchableEnvironment newSearchableNameEnvironment(WorkingCopyOwner owner) throws JavaModelException {
+		return parent!=null?parent.newSearchableNameEnvironment(owner):getJavaProject().newSearchableNameEnvironment(owner);
+	}
+	
 }

@@ -126,7 +126,7 @@ public class HandleFactory {
 				IPackageFragmentRoot root= this.getPkgFragmentRoot(resourcePath);
 				if (root instanceof LibraryFragmentRoot)
 				{
-					return ((LibraryFragmentRoot)root).getLibraryClassFile();
+					return (Openable)((LibraryFragmentRoot)root).getPackageFragment(resourcePath).getClassFile(resourcePath);
 				}
 				if (root == null)
 					return null; // match is outside classpath
