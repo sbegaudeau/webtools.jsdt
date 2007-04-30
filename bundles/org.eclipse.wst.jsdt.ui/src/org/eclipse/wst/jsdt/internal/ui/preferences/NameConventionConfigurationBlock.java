@@ -296,7 +296,8 @@ public class NameConventionConfigurationBlock extends OptionsConfigurationBlock 
 	private SelectionButtonDialogField fUseIsForBooleanGettersBox;
 	
 	private StringDialogField fExceptionName;
-	private SelectionButtonDialogField fUseOverrideAnnotation;
+// Commented out next 1 line (STP 20070430)
+//	private SelectionButtonDialogField fUseOverrideAnnotation;
 	private SelectionButtonDialogField fGenerateComments;
 
 	
@@ -342,9 +343,10 @@ public class NameConventionConfigurationBlock extends OptionsConfigurationBlock 
 		fUseIsForBooleanGettersBox.setDialogFieldListener(adapter);
 		fUseIsForBooleanGettersBox.setLabelText(PreferencesMessages.NameConventionConfigurationBlock_isforbooleangetters_label); 
 		
-		fUseOverrideAnnotation= new SelectionButtonDialogField(SWT.CHECK | SWT.WRAP);
-		fUseOverrideAnnotation.setDialogFieldListener(adapter);
-		fUseOverrideAnnotation.setLabelText(PreferencesMessages.NameConventionConfigurationBlock_use_override_annotation_label); 
+// Commented out next 3 lines (STP 20070430)
+//		fUseOverrideAnnotation= new SelectionButtonDialogField(SWT.CHECK | SWT.WRAP);
+//		fUseOverrideAnnotation.setDialogFieldListener(adapter);
+//		fUseOverrideAnnotation.setLabelText(PreferencesMessages.NameConventionConfigurationBlock_use_override_annotation_label); 
 
 		fGenerateComments= new SelectionButtonDialogField(SWT.CHECK | SWT.WRAP);
 		fGenerateComments.setDialogFieldListener(adapter);
@@ -391,7 +393,8 @@ public class NameConventionConfigurationBlock extends OptionsConfigurationBlock 
 		DialogField.createEmptySpace(composite, 3);
 
 		fGenerateComments.doFillIntoGrid(composite, 3);
-		fUseOverrideAnnotation.doFillIntoGrid(composite, 3);
+// Commented out next 1 line (STP 20070430)
+//		fUseOverrideAnnotation.doFillIntoGrid(composite, 3);
 		DialogField.createEmptySpace(composite, 3);
 		
 		fExceptionName.doFillIntoGrid(composite, 2);
@@ -429,8 +432,9 @@ public class NameConventionConfigurationBlock extends OptionsConfigurationBlock 
 			setValue(PREF_KEYWORD_THIS, fUseKeywordThisBox.isSelected());
 		} else if (field == fUseIsForBooleanGettersBox) {
 			setValue(PREF_IS_FOR_GETTERS, fUseIsForBooleanGettersBox.isSelected());
-		} else if (field == fUseOverrideAnnotation) {
-			setValue(PREF_USE_OVERRIDE_ANNOT, fUseOverrideAnnotation.isSelected());
+// Commented out next 2 lines (STP 20070430)
+//		} else if (field == fUseOverrideAnnotation) {
+//			setValue(PREF_USE_OVERRIDE_ANNOT, fUseOverrideAnnotation.isSelected());
 		} else if (field == fGenerateComments) {
 			setValue(PREF_GENERATE_COMMENTS, fGenerateComments.isSelected());
 		}
@@ -441,9 +445,12 @@ public class NameConventionConfigurationBlock extends OptionsConfigurationBlock 
 	 * @see org.eclipse.wst.jsdt.internal.ui.preferences.OptionsConfigurationBlock#updateControls()
 	 */
 	protected void updateControls() {
-		ArrayList list= new ArrayList(4);
-		createEntry(list, PREF_FIELD_PREFIXES, PREF_FIELD_SUFFIXES, FIELD);
-		createEntry(list, PREF_STATIC_FIELD_PREFIXES, PREF_STATIC_FIELD_SUFFIXES, STATIC);
+// Added next 1 line (STP 20070430)
+		ArrayList list= new ArrayList(2);
+// Commented out next 3 lines (STP 20070430)
+//		ArrayList list= new ArrayList(4);
+//		createEntry(list, PREF_FIELD_PREFIXES, PREF_FIELD_SUFFIXES, FIELD);
+//		createEntry(list, PREF_STATIC_FIELD_PREFIXES, PREF_STATIC_FIELD_SUFFIXES, STATIC);
 		createEntry(list, PREF_ARGUMENT_PREFIXES, PREF_ARGUMENT_SUFFIXES, ARGUMENT);
 		createEntry(list, PREF_LOCAL_PREFIXES, PREF_LOCAL_SUFFIXES, LOCAL);
 		fNameConventionList.setElements(list);
@@ -451,7 +458,8 @@ public class NameConventionConfigurationBlock extends OptionsConfigurationBlock 
 		fExceptionName.setText(getValue(PREF_EXCEPTION_NAME));
 		fUseKeywordThisBox.setSelection(getBooleanValue(PREF_KEYWORD_THIS));
 		fUseIsForBooleanGettersBox.setSelection(getBooleanValue(PREF_IS_FOR_GETTERS));
-		fUseOverrideAnnotation.setSelection(getBooleanValue(PREF_USE_OVERRIDE_ANNOT));
+// Commented out next 1 line (STP 20070430)
+//		fUseOverrideAnnotation.setSelection(getBooleanValue(PREF_USE_OVERRIDE_ANNOT));
 		fGenerateComments.setSelection(getBooleanValue(PREF_GENERATE_COMMENTS));
 	}	
 		
