@@ -430,14 +430,17 @@ public class InferEngine extends ASTVisitor {
 		if (passNumber==2)
 		{
 			
-			InferredType type = compUnit.findInferredType(methodDeclaration.selector);
-			if (type!=null)
-			{
-				this.currentContext.currentType=type;
-				type.isDefinition=true;
-				InferredMethod method = type.addMethod(methodDeclaration.selector, methodDeclaration);
-				method.isConstructor=true;
-			}
+			if (methodDeclaration.selector!=null) {
+				InferredType type = compUnit
+						.findInferredType(methodDeclaration.selector);
+				if (type != null) {
+					this.currentContext.currentType = type;
+					type.isDefinition = true;
+					InferredMethod method = type.addMethod(
+							methodDeclaration.selector, methodDeclaration);
+					method.isConstructor = true;
+				}
+			}			
 		}
 		this.currentContext.currentMethod=methodDeclaration;
 		if (methodDeclaration.inferredType==null)
@@ -545,6 +548,7 @@ public class InferEngine extends ASTVisitor {
 						0,
 						compUnit.numberInferredTypes );
 			type=compUnit.inferredTypes[compUnit.numberInferredTypes ++] = new InferredType(className);
+			compUnit.inferredTypesHash.put(className,type);
 				
 		}
 		return type;

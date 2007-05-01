@@ -2314,11 +2314,8 @@ protected void reportMatching(CompilationUnitDeclaration unit, boolean mustResol
 			int accuracy = (level != null && matchedClassContainer) ? level.intValue() : -1;
 			reportMatching(inferredType, null, accuracy, nodeSet, 1);
 
-			ArrayList attributes = inferredType.attributes;
-			if (attributes!=null)
-				for (Iterator iterator = attributes.iterator(); iterator
-						.hasNext();) {
-					InferredAttribute attribute = (InferredAttribute) iterator.next();
+			  for (int attributeInx=0; attributeInx<inferredType.numberAttributes; attributeInx++) {
+					InferredAttribute attribute = inferredType.attributes[attributeInx];
 					 level = (Integer) nodeSet.matchingNodes.removeKey(attribute);
 					 accuracy = (level != null && matchedClassContainer) ? level.intValue() : -1;
 						reportMatching(attribute, inferredType, enclosingElement, accuracy, typeInHierarchy, nodeSet);

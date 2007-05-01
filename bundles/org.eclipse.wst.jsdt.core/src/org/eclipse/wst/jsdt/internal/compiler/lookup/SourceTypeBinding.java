@@ -92,7 +92,7 @@ void buildFieldsAndMethods() {
 
 private void buildFields() {
 	FieldBinding prototype = new FieldBinding(TypeConstants.PROTOTYPE, BaseTypeBinding.ANY, modifiers | ExtraCompilerModifiers.AccUnresolved, this,null);
-	int size = (inferredType.attributes!=null)? inferredType.attributes.size():0;
+	int size = inferredType.numberAttributes;
 	if (size == 0) {
 		 setFields(new FieldBinding[]{prototype});
 		return;
@@ -104,7 +104,7 @@ private void buildFields() {
 	boolean duplicate = false;
 	int count = 0;
 	for (int i = 0; i < size; i++) {
-		InferredAttribute field = (InferredAttribute)inferredType.attributes.get(i);
+		InferredAttribute field = inferredType.attributes[i];
 		int modifiers=0;
 		if (field.isStatic)
 			modifiers|=ClassFileConstants.AccStatic;
@@ -119,7 +119,7 @@ private void buildFields() {
 				FieldBinding previousBinding = (FieldBinding) knownFieldNames.get(field.name);
 				if (previousBinding != null) {
 					for (int f = 0; f < i; f++) {
-						InferredAttribute previousField = (InferredAttribute)inferredType.attributes.get(f);
+						InferredAttribute previousField = (InferredAttribute)inferredType.attributes[f];
 						if (previousField.binding == previousBinding) {
 							scope.problemReporter().duplicateFieldInType(this, previousField);
 							previousField.binding = null;

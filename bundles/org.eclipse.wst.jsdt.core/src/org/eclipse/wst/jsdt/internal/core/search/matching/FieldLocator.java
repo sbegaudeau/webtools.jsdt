@@ -328,8 +328,8 @@ protected void reportDeclaration(FieldBinding fieldBinding, MatchLocator locator
 			} else if (scope.inferredType!=null)
 			{
 				InferredAttribute attribute=null;
-				for (Iterator iter = scope.inferredType.attributes.iterator(); iter.hasNext();) {
-					InferredAttribute element = (InferredAttribute) iter.next();
+			  for (int attributeInx=0; attributeInx<scope.inferredType.numberAttributes; attributeInx++) {
+					InferredAttribute element = scope.inferredType.attributes[attributeInx];
 					if (CharOperation.equals(bindingName, element.name)) {
 						attribute =element;
 						break;

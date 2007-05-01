@@ -36,6 +36,7 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.AbortMethod;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortType;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
+import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
 import org.eclipse.wst.jsdt.internal.infer.InferredMethod;
 import org.eclipse.wst.jsdt.internal.infer.InferredType;
@@ -62,6 +63,7 @@ public class CompilationUnitDeclaration
 
 	public InferredType [] inferredTypes = new InferredType[10];
 	public int numberInferredTypes=0;
+	public HashtableOfObject inferredTypesHash=new HashtableOfObject();
 	
 	public boolean ignoreFurtherInvestigation = false;	// once pointless to investigate due to errors
 	public boolean ignoreMethodBodies = false;
@@ -576,11 +578,8 @@ public class CompilationUnitDeclaration
 		for (int i=0;i<this.numberInferredTypes;i++) {
 			InferredType inferredType = this.inferredTypes[i];
 			continueVisiting=visitor.visit(inferredType, scope);
-			if (inferredType.attributes!=null)
-				for (Iterator iterator = inferredType.attributes.iterator(); continueVisiting && iterator
-						.hasNext();) {
-					InferredAttribute inferredAttribute = (InferredAttribute) iterator.next();
-					visitor.visit(inferredAttribute, scope);
+			  for (int attributeInx=0; attributeInx<inferredType.numberAttributes; attributeInx++) {
+					visitor.visit(inferredType.attributes[attributeInx], scope);
 				}
 			if (inferredType.methods!=null)
 				for (Iterator iterator = inferredType.methods.iterator();  continueVisiting && iterator
@@ -594,13 +593,16 @@ public class CompilationUnitDeclaration
 	
 	public InferredType findInferredType(char [] name)
 	{
-		for (int i=0;i<this.numberInferredTypes;i++) {
-			InferredType inferredType = this.inferredTypes[i];
-			if (CharOperation.equals(name,inferredType.getName()))
-					return inferredType; 
-		}
-		return null;
+		return (InferredType)inferredTypesHash.get(name);
+//		for (int i=0;i<this.numberInferredTypes;i++) {
+//			InferredType inferredType = this.inferredTypes[i];
+//			if (CharOperation.equals(name,inferredType.getName()))
+//					return inferredType; 
+//		}
+//		return null;
 	}
+	
+	
 	
 	public void printInferredTypes(StringBuffer sb)
 	{

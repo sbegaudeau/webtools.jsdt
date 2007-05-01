@@ -1126,9 +1126,8 @@ public void notifySourceElementRequestor(CompilationUnitDeclaration parsedUnit) 
 		typeInfo.secondary = false;
 		requestor.enterType(typeInfo);
 		
-		if (type.attributes!=null)
-		  for (Iterator iterator = type.attributes.iterator(); iterator.hasNext();) {
-			InferredAttribute field = (InferredAttribute) iterator.next();
+		  for (int attributeInx=0; attributeInx<type.numberAttributes; attributeInx++) {
+			InferredAttribute field = type.attributes[attributeInx];
 			ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
 			fieldInfo.declarationStart = -1;
 			fieldInfo.name = field.name;

@@ -19,12 +19,15 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
+import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 
 public class InferredType extends ASTNode {
   
 	char [] name;
 	public ArrayList methods;
-	public ArrayList attributes;
+	public InferredAttribute[] attributes=new InferredAttribute[5];
+	public int numberAttributes=0;
+	HashtableOfObject attributesHash = new HashtableOfObject();
 	public InferredType superClass;
 	
 	public InferredType referenceClass;
@@ -63,9 +66,19 @@ public class InferredType extends ASTNode {
 		if (attribute==null) 
 		{
 			attribute=new InferredAttribute(name,null,definer.sourceStart,definer.sourceEnd);
-			if (attributes==null)
-				attributes=new ArrayList();
-			attributes.add(attribute);
+ 
+			if (this.numberAttributes == this.attributes.length)
+				
+				System.arraycopy(
+						this.attributes,
+						0,
+						this.attributes = new InferredAttribute[this.numberAttributes  * 2],
+						0,
+						this.numberAttributes );
+						this.attributes [this.numberAttributes  ++] = attribute;
+			
+			
+			attributesHash.put(name, attribute);
 			this.updatePositions(definer.sourceStart, definer.sourceEnd);
 		}
 		return attribute;
@@ -73,13 +86,14 @@ public class InferredType extends ASTNode {
 	
 	public InferredAttribute findAttribute(char [] name)
 	{
-		if (attributes!=null)
-		for (Iterator attrIterator = attributes.iterator(); attrIterator.hasNext();) {
-			InferredAttribute attribute = (InferredAttribute) attrIterator.next();
-			if (CharOperation.equals(name,attribute.name))
-				return attribute;
-		}
-		return null;
+		return (InferredAttribute)attributesHash.get(name);
+//		if (attributes!=null)
+//		for (Iterator attrIterator = attributes.iterator(); attrIterator.hasNext();) {
+//			InferredAttribute attribute = (InferredAttribute) attrIterator.next();
+//			if (CharOperation.equals(name,attribute.name))
+//				return attribute;
+//		}
+//		return null;
 	}
 
 
@@ -183,10 +197,8 @@ public class InferredType extends ASTNode {
 		printIndent(indent, output); //$NON-NLS-1$
 		char[] superName= getSuperClassName();
 		output.append("class ").append(name).append(" extends ").append(superName).append("{\n");
-		if (attributes!=null)
-			for (Iterator attrIterator = attributes.iterator(); attrIterator.hasNext();) {
-				InferredAttribute attribute = (InferredAttribute) attrIterator.next();
-				attribute.print(indent+1,output);
+		for (int i=0;i<this.numberAttributes;i++) {
+				this.attributes[i].print(indent+1,output);
 				output.append(";\n");
 			}		
 		if (methods!=null)
