@@ -96,6 +96,7 @@ public class JavaElementAdapterFactory implements IAdapterFactory, IContributorR
 		} if (IPersistableElement.class.equals(key)) {
 			return new PersistableJavaElementFactory(java);
 		} if (IContributorResourceAdapter.class.equals(key)) {
+			if (getResource(java)!=null)
 			return this;
 		} if (IContributorResourceAdapter2.class.equals(key)) {
 			return this;
