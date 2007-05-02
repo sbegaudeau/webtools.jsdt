@@ -12,6 +12,7 @@ public class InferredMethod extends ASTNode{
 	public InferredType inferredType;
 	public boolean isConstructor;
 	public MethodBinding methodBinding;
+	public int nameStart;
 
 	public InferredMethod(char [] name, MethodDeclaration methodDeclaration, InferredType inClass)
 	{

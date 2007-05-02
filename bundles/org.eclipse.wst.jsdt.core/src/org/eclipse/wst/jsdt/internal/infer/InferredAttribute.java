@@ -9,6 +9,8 @@ public class InferredAttribute  extends ASTNode{
 	public InferredType type;
 	public FieldBinding binding;
 	public boolean isStatic;
+	public int nameStart;
+	public int initializationStart=-1;
 	
 	public InferredAttribute(char [] name, InferredType type, int start, int end)
 	{

@@ -1129,17 +1129,18 @@ public void notifySourceElementRequestor(CompilationUnitDeclaration parsedUnit) 
 		  for (int attributeInx=0; attributeInx<type.numberAttributes; attributeInx++) {
 			InferredAttribute field = type.attributes[attributeInx];
 			ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
-			fieldInfo.declarationStart = -1;
+			fieldInfo.declarationStart = field.sourceStart();
 			fieldInfo.name = field.name;
 			fieldInfo.modifiers = 0;
 			fieldInfo.type = field.type!=null ? field.type.getName():null;
-			fieldInfo.nameSourceStart = -1;
-			fieldInfo.nameSourceEnd = -1;
+			fieldInfo.nameSourceStart = field.nameStart;
+			fieldInfo.nameSourceEnd = field.nameStart+field.name.length-1;
 //			fieldInfo.annotationPositions = collectAnnotationPositions(fieldDeclaration.annotations);
 //			fieldInfo.categories = (char[][]) this.nodesToCategories.get(fieldDeclaration);
 			requestor.enterField(fieldInfo);
 
-			requestor.exitField(-1, -1, -1);
+			int initializationStart=field.initializationStart;
+			requestor.exitField(initializationStart,field.sourceEnd(),field.sourceEnd());
 		}
 		
 		if (type.methods!=null)
@@ -1168,8 +1169,8 @@ public void notifySourceElementRequestor(CompilationUnitDeclaration parsedUnit) 
 			methodInfo.declarationStart = methodDeclaration.declarationSourceStart;
 			methodInfo.modifiers = 0;
 			methodInfo.name =method.name;
-			methodInfo.nameSourceStart = methodDeclaration.sourceStart;
-			methodInfo.nameSourceEnd = selectorSourceEnd;
+			methodInfo.nameSourceStart = method.nameStart;
+			methodInfo.nameSourceEnd = method.nameStart+method.name.length-1;
 			methodInfo.parameterTypes = argumentTypes;
 			methodInfo.parameterNames = argumentNames;
 			methodInfo.exceptionTypes = null;
