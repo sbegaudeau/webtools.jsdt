@@ -63,13 +63,20 @@ public class IndexAllProject extends IndexRequest {
 			// Do not create marker while getting raw classpath (see bug 41859)
 			IClasspathEntry[] entries = javaProject.getRawClasspath();
 			int length = entries.length;
-			IClasspathEntry[] sourceEntries = new IClasspathEntry[length];
+			IClasspathEntry[] sourceEntries = new IClasspathEntry[length+1];
 			int sourceEntriesNumber = 0;
+			
+			IClasspathEntry projectRoot = JavaCore.newSourceEntry( javaProject.getPath());
+			
+			
 			for (int i = 0; i < length; i++) {
 				IClasspathEntry entry = entries[i];
-				if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE)
+				if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE && (! projectRoot.getPath().isPrefixOf(entry.getPath())|| ! JavaProject.hasJavaNature(project) ))
 					sourceEntries[sourceEntriesNumber++] = entry;
 			}
+			
+			if(JavaProject.hasJavaNature(project)) sourceEntries[sourceEntriesNumber++] = projectRoot;
+			
 			if (sourceEntriesNumber == 0) {
 				IPath projectPath = javaProject.getPath();
 				for (int i = 0; i < length; i++) {

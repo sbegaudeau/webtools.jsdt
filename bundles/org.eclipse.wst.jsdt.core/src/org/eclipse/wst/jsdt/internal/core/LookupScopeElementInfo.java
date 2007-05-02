@@ -15,6 +15,7 @@ public class LookupScopeElementInfo extends PackageFragmentRootInfo {
 	private JavaProject javaProject;
 	private IPackageFragmentRoot[] rootsInScope;
 	private LookupCache cache;
+	
 	static class LookupCache {
 		LookupCache(IPackageFragmentRoot[] allPkgFragmentRootsCache, HashtableOfArrayToObject allPkgFragmentsCache, HashtableOfArrayToObject isPackageCache, Map rootToResolvedEntries) {
 			this.allPkgFragmentRootsCache = allPkgFragmentRootsCache;
@@ -41,9 +42,20 @@ public class LookupScopeElementInfo extends PackageFragmentRootInfo {
 	
 		public Map rootToResolvedEntries;		
 	}
-	public LookupScopeElementInfo(JavaProject project,IPackageFragmentRoot[] rootsInScope){
-		this.javaProject = project;
-
+	
+	public String[] getRawImportsFromCache() {
+		
+		String[] rawImports = null;
+		
+		for(int i = 0;i<cache.allPkgFragmentRootsCache.length;i++) {
+			if(cache.allPkgFragmentRootsCache[i] instanceof DocumentContextFragmentRoot) {
+				return ((DocumentContextFragmentRoot)cache.allPkgFragmentRootsCache[i]).getRawImports();
+			}
+		}
+		return new String[0];
+	}
+	
+	public IPackageFragmentRoot[] getAllRoots() {
 		IPackageFragmentRoot[] projectRoots;
 		try {
 			projectRoots = javaProject.getPackageFragmentRoots();
@@ -53,12 +65,18 @@ public class LookupScopeElementInfo extends PackageFragmentRootInfo {
 		IPackageFragmentRoot[] allRoots = new IPackageFragmentRoot[rootsInScope.length + projectRoots.length ];
 		System.arraycopy(rootsInScope, 0, allRoots, 0, rootsInScope.length);
 		System.arraycopy(projectRoots, 0, allRoots, rootsInScope.length, projectRoots.length);
-		this.rootsInScope = allRoots;
+		return allRoots;
+	}
+	
+	public LookupScopeElementInfo(JavaProject project,IPackageFragmentRoot[] rootsInScope){
+		this.javaProject = project;
+		this.rootsInScope = rootsInScope;
+		
 
 	}
 	
 	NameLookup newNameLookup(ICompilationUnit[] workingCopies) {
-		BuildLookupScopeCache(rootsInScope);
+		BuildLookupScopeCache(getAllRoots());
 
 		return new NameLookup(cache.allPkgFragmentRootsCache, cache.allPkgFragmentsCache, cache.isPackageCache, workingCopies, cache.rootToResolvedEntries);
 	}

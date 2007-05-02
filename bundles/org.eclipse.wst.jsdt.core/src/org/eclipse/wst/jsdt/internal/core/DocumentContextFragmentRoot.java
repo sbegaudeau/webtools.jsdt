@@ -1,9 +1,16 @@
 package org.eclipse.wst.jsdt.internal.core;
 
+import java.io.File;
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -43,19 +50,29 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	private IFile fTargetScope;
 	private LookupScopeElementInfo fLookupScope;
 	
+	
 
 	public DocumentContextFragmentRoot(IJavaProject project,IFile targetScope) {
 		super(getFileRootPath(project.getProject(),targetScope), (JavaProject)project);
 		fTargetScope = targetScope  ;
 		filesInScope = new ArrayList();
 		//filesInScope.add(targetScope.getFullPath().toOSString());
+	
+	}
+	
+	public String[] getRawImports() {
+		return (String[])filesInScope.toArray(new String[filesInScope.size()]);
 	}
 	
 	public void addFileToScope(String fileName) {
-		if(fileName!=null && !filesInScope.contains(fileName)) filesInScope.add(fileName);
+		if(fileName!=null && !fileName.equals("") && !filesInScope.contains(fileName) && isValidImport(fileName)) filesInScope.add(fileName);
 	}
 	
-	public void addFilesToScope(String[] fileNames) {
+	public void removeFileInScope(String fileName) {
+		if(fileName!=null && !filesInScope.contains(fileName)) filesInScope.remove(fileName);
+	}
+	
+	public void setScope(String[] fileNames) {
 		for(int i = 0;i<fileNames.length;i++) {
 			addFileToScope(fileNames[i]);
 		}
@@ -204,18 +221,45 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	
 	public LookupScopeElementInfo getElementInfo() {
 		 try {
-
-				JavaModelManager manager = JavaModelManager.getJavaModelManager();
-				Object info = manager.getInfo(this);
-				if (info != null) return (LookupScopeElementInfo)info;
-				return (LookupScopeElementInfo)openWhenClosed(createElementInfo(),new NullProgressMonitor());
+			LookupScopeElementInfo cachedInfo;
+			 
+			JavaModelManager manager = JavaModelManager.getJavaModelManager();
+			Object info = manager.getInfo(this);
+			if (info != null) {
+				cachedInfo = (LookupScopeElementInfo)info;
+				String[] rawImports = cachedInfo.getRawImportsFromCache();
+				String[] currentImports = getRawImports();
+				if(stringArraysEqual(rawImports,currentImports )) {
+					fLookupScope = cachedInfo;
+				}else {
+					fLookupScope = (LookupScopeElementInfo)openWhenClosed(createElementInfo(),new NullProgressMonitor());
+				}
+				
+			}else {
+				fLookupScope = (LookupScopeElementInfo)openWhenClosed(createElementInfo(),new NullProgressMonitor());
+			}
 		} catch (JavaModelException ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
-		return null;
+		return fLookupScope;
 	}
 	
+	public boolean isValidImport(String importName) {
+		File file = resolveChildPath(importName).toFile();
+		return file.isFile();
+	}
+	
+	public static boolean stringArraysEqual(String[] a1, String[] a2) {
+		if(a1.length!=a2.length) return false;
+//		String[] t1=null, t2=null;
+//		System.arraycopy(a1, 0, t1, 0, a1.length);
+//		System.arraycopy(a2, 0, t2, 0, a2.length);
+//		java.util.Arrays.sort(t1, Collator.getInstance(Locale.ENGLISH));
+//		java.util.Arrays.sort(t2, Collator.getInstance(Locale.ENGLISH));
+	
+		return Arrays.asList(a1).containsAll(Arrays.asList(a1));
+	}
 	
 	protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource) throws JavaModelException {
 	

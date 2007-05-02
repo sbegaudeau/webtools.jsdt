@@ -529,14 +529,14 @@ public class BasicSearchEngine {
 			}
 
 			// Return on invalid combination of package and type names
-			if (packageName == null || packageName.length == 0) {
-				if (bindingName != null && bindingName.length == 0) {
-					if (VERBOSE) {
-						Util.verbose("	=> return no result due to invalid empty values for package and type names!"); //$NON-NLS-1$
-					}
-					return;
-				}
-			}
+//			if (packageName == null || packageName.length == 0) {
+//				if (bindingName != null && bindingName.length == 0) {
+//					if (VERBOSE) {
+//						Util.verbose("	=> return no result due to invalid empty values for package and type names!"); //$NON-NLS-1$
+//					}
+//					return;
+//				}
+//			}
 
 			IndexManager indexManager = JavaModelManager.getJavaModelManager().getIndexManager();
 			JavaSearchPattern searchPattern=null;
