@@ -123,14 +123,14 @@ private String getSourceFileName() {
 	if (this.sourceFileName != null) return this.sourceFileName;
 
 	this.sourceFileName = NO_SOURCE_FILE_NAME; 
-	if (this.openable.getSourceMapper() != null) {
-		BinaryType type = (BinaryType) ((ClassFile) this.openable).getType();
-		ClassFileReader reader = MatchLocator.classFileReader(type);
-		if (reader != null) {
-			String fileName = type.sourceFileName(reader);
-			this.sourceFileName = fileName == null ? NO_SOURCE_FILE_NAME : fileName;
-		}
-	}
+//	if (this.openable.getSourceMapper() != null) {
+//		BinaryType type = (BinaryType) ((ClassFile) this.openable).getType();
+//		ClassFileReader reader = MatchLocator.classFileReader(type);
+//		if (reader != null) {
+//			String fileName = type.sourceFileName(reader);
+//			this.sourceFileName = fileName == null ? NO_SOURCE_FILE_NAME : fileName;
+//		}
+//	}
 	return this.sourceFileName;
 }	
 public int hashCode() {
