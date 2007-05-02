@@ -93,8 +93,8 @@ public class ActionUtil {
             return true;
 		IJavaProject project= element.getJavaProject();
 		try {
-			if (!project.isOnClasspath(element))
-				return false;
+			//if (!project.isOnClasspath(element))
+			//	return false;
 			IProject resourceProject= project.getProject();
 			if (resourceProject == null)
 				return false;

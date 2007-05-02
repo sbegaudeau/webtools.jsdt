@@ -532,7 +532,7 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 			 *            call is issued from inside a reporting sequence
 			 */
 			private void internalBeginReporting(boolean insideReportingSequence) {
-				if (fCompilationUnit != null && fCompilationUnit.getJavaProject().isOnClasspath(fCompilationUnit)) {
+				if (fCompilationUnit != null /*&& fCompilationUnit.getJavaProject().isOnClasspath(fCompilationUnit)*/) {
 					ProblemRequestorState state= new ProblemRequestorState();
 					state.fInsideReportingSequence= insideReportingSequence;
 					state.fReportedProblems= new ArrayList();
