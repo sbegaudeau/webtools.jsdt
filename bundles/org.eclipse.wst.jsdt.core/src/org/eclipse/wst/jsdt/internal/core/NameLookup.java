@@ -1053,7 +1053,7 @@ public class NameLookup implements SuffixConstants {
 			//int start = dot+1;
 		//	dot = name.indexOf('.', start);
 		//	String typeName = name.substring(start, dot == -1 ? name.length() : dot);
-			type = type.getType(name);
+		//	type = type.getType(name);
 		//}
 		return type;
 	}
@@ -1512,7 +1512,7 @@ public class NameLookup implements SuffixConstants {
 						//if(topLevelTypeName!=null && !topLevelTypeName.equals(cuName))
 						//	continue;
 						IType type = ((ICompilationUnit) cu).getType(name);
-						type = getMemberType(type, name, firstDot);
+						//type = getMemberType(type, name, firstDot);
 						if (acceptType(type, acceptFlags, true/*a source type*/)) { // accept type checks for existence
 							requestor.acceptType(type);
 							break;  // since an exact match was requested, no other matching type can exist

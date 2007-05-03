@@ -27,6 +27,8 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 public class DocumentContextFragment extends LibraryPackageFragment{
 	
 	private String[] filesInScope;
+	
+	
 
 	protected DocumentContextFragment(PackageFragmentRoot root, String[] names) {
 		super(root, new String[0]);
@@ -36,14 +38,12 @@ public class DocumentContextFragment extends LibraryPackageFragment{
 	public IPath resolveRelativePath(String path) {
 		IResource member = getRelativeAsResource(path);
 		if(member!=null) return member.getLocation();
-		return new Path(path).makeAbsolute();
+		return ((DocumentContextFragmentRoot)parent).resolveRelativePath(path);
 	}
 	
 	public IResource getRelativeAsResource(String path) {
-		IPath absolute = ((DocumentContextFragmentRoot)parent).resolveChildPath(path);
-		IResource member = ((IContainer)parent.getResource()).findMember(absolute);
 		
-		return member;
+		return ((DocumentContextFragmentRoot)parent).getRelativeAsResource(path);
 	}
 	
 	/* (non-Javadoc)
@@ -87,7 +87,7 @@ public class DocumentContextFragment extends LibraryPackageFragment{
 	
 	public IJavaElement getJavaElement(String resource) {
 		/* if resource exists in project, return compunit, else return class */
-		if(true) return getClassFile(resolveRelativePath(resource).makeAbsolute().toOSString());
+		if(!DocumentContextFragmentRoot.RETURN_CU) return getClassFile(resolveRelativePath(resource).makeAbsolute().toOSString());
 		IPath workspacePath = getPackageFragmentRoot().getJavaProject().getProject().getWorkspace().getRoot().getLocation();
 		/* remove the file part of the path */
 		IPath resourcePath = new Path(resource);
@@ -96,9 +96,9 @@ public class DocumentContextFragment extends LibraryPackageFragment{
 			try {
 				//return createCompilationUnit(resource, null, true, new NullProgressMonitor());
 				ICompilationUnit unit = getCompilationUnit(resource);
-				((CompilationUnit)unit).buildStructure(new CompilationUnitElementInfo(), new NullProgressMonitor(), new HashMap(), ((IContainer)getParent().getResource()).findMember(resource));
+				//((CompilationUnit)unit).buildStructure(new CompilationUnitElementInfo(), new NullProgressMonitor(), new HashMap(), ((IContainer)getParent().getResource()).findMember(resource));
 				//unit.makeConsistent(new NullProgressMonitor());
-				((JavaElement)unit).openWhenClosed(new CompilationUnitElementInfo(), new NullProgressMonitor());
+				//((JavaElement)unit).openWhenClosed(new CompilationUnitElementInfo(), new NullProgressMonitor());
 				return unit;
 			} catch (Exception ex) {
 				// TODO Auto-generated catch block
@@ -128,9 +128,16 @@ public class DocumentContextFragment extends LibraryPackageFragment{
 	 * @see org.eclipse.wst.jsdt.internal.core.PackageFragment#getKind()
 	 */
 	public int getKind() throws JavaModelException {
-		// TODO Auto-generated method stub
-		System.out.println("Unimplemented method:DocumentContextFragment.getKind");
+		if(hasSource()) return IPackageFragmentRoot.K_SOURCE;
 		return super.getKind();
+	}
+	
+	public boolean hasSource() {
+		if(DocumentContextFragmentRoot.RETURN_CU && filesInScope.length>0) {
+			IResource file = getRelativeAsResource(filesInScope[0]);
+			if(file!=null && file.exists()) return true;
+		}
+		return false;
 	}
 
 	/* (non-Javadoc)

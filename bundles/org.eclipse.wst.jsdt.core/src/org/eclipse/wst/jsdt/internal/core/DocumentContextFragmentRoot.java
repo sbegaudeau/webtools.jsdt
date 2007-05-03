@@ -51,7 +51,7 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	private IFile fTargetScope;
 	private LookupScopeElementInfo fLookupScope;
 	
-	
+	public static final Boolean RETURN_CU = true;
 
 	public DocumentContextFragmentRoot(IJavaProject project,IFile targetScope) {
 		super(getFileRootPath(project.getProject(),targetScope), (JavaProject)project);
@@ -105,6 +105,20 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 		}
 		return location;
 	}
+	
+	public IPath resolveRelativePath(String path) {
+		IResource member = getRelativeAsResource(path);
+		if(member!=null) return member.getLocation();
+		return new Path(path).makeAbsolute();
+	}
+	
+	public IResource getRelativeAsResource(String path) {
+		IPath absolute =    resolveChildPath(path);
+		IResource member = ((IContainer)getResource()).findMember(absolute);
+		
+		return member;
+	}
+	
 	protected Object createElementInfo() {
 		return new LookupScopeElementInfo((JavaProject)getJavaProject(), new IPackageFragmentRoot[]{this});
 	}
@@ -197,13 +211,19 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 
 
 	protected int determineKind(IResource underlyingResource) {
-		IPath rootPath = getFileRootPath(getJavaProject().getProject(), fTargetScope);
-		IPath rPath = getFileRootPath(getJavaProject().getProject(), underlyingResource.getLocation());
 		
-		if(rootPath.equals(rPath)) {
+//		IPath rootPath = getFileRootPath(getJavaProject().getProject(), fTargetScope);
+//		IPath rPath = getFileRootPath(getJavaProject().getProject(), underlyingResource.getLocation());
+//		
+//		if(rootPath.equals(rPath)) {
+//			return IPackageFragmentRoot.K_SOURCE;
+//		}
+//		return IPackageFragmentRoot.K_BINARY;
+
+		if(getJavaProject().getProject().getLocation().isPrefixOf( underlyingResource.getLocation())) {
 			return IPackageFragmentRoot.K_SOURCE;
-		}
-		return IPackageFragmentRoot.K_BINARY;
+		}else
+			return IPackageFragmentRoot.K_BINARY;
 	}
 
 	public SearchableEnvironment newSearchableNameEnvironment(WorkingCopyOwner owner) throws JavaModelException {
@@ -293,7 +313,10 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 //	}
 	
 	public int getKind() throws JavaModelException {
-		return IPackageFragmentRoot.K_BINARY;
+		if(DocumentContextFragmentRoot.RETURN_CU)
+			return IPackageFragmentRoot.K_SOURCE;
+		else 
+			return IPackageFragmentRoot.K_BINARY;
 	}
 	
 	public IResource getResource() {
