@@ -11,6 +11,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Vector;
 
 
 import org.eclipse.core.resources.IContainer;
@@ -47,71 +48,55 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	
-	private ArrayList filesInScope;
-	private IFile fTargetScope;
-	private LookupScopeElementInfo fLookupScope;
+	private Vector includedFiles;
+	private IFile fRelativeFile;
+	private boolean dirty;
+	private IResource absolutePath;
 	
 	public static final Boolean RETURN_CU = true;
+	
 
-	public DocumentContextFragmentRoot(IJavaProject project,IFile targetScope) {
-		super(getFileRootPath(project.getProject(),targetScope), (JavaProject)project);
-		fTargetScope = targetScope  ;
-		filesInScope = new ArrayList();
+	public DocumentContextFragmentRoot(IJavaProject project,
+									   IFile resourceRelativeFile,
+									   IResource resourceAbsolutePath) {
+		
+		super(resourceAbsolutePath.getLocation(), (JavaProject)project);
+		
+		fRelativeFile = resourceRelativeFile ;
+		this.includedFiles = new Vector();
+		dirty = true;
+		absolutePath = resourceAbsolutePath;
 	}
+	
+	public DocumentContextFragmentRoot(IJavaProject project,
+			   						   IFile resourceRelativeFile) {
+		
+			this(project,resourceRelativeFile, project.getResource());
+	}
+	
 	
 	public String[] getRawImports() {
-		return (String[])filesInScope.toArray(new String[filesInScope.size()]);
+		return (String[])includedFiles.toArray(new String[includedFiles.size()]);
 	}
 	
-	public void addFileToScope(String fileName) {
-		if(fileName!=null && !fileName.equals("") && !filesInScope.contains(fileName) && isValidImport(fileName)) filesInScope.add(fileName);
+	public void addFile(String fileName) {
+		if(fileName!=null && !fileName.equals("") && !includedFiles.contains(fileName) && isValidImport(fileName)) includedFiles.add(fileName);
+		dirty=true;
 	}
 	
-	public void removeFileInScope(String fileName) {
-		if(fileName!=null && !filesInScope.contains(fileName)) filesInScope.remove(fileName);
+	public void removeFile(String fileName) {
+		if(fileName!=null && !includedFiles.contains(fileName)) includedFiles.remove(fileName);
+		dirty=true;
 	}
 	
-	public void setScope(String[] fileNames) {
-		filesInScope.clear();
+	public void setIncludedFiles(String[] fileNames) {
+		includedFiles.clear();
+		dirty=true;
 		for(int i = 0;i<fileNames.length;i++) {
-			addFileToScope(fileNames[i]);
+			addFile(fileNames[i]);
 		}
 	}
 
-	public static IPath getFileWorkLocation(IProject targetProject, IFile targetFile) {
-		IPath workingRoot = targetProject.getProject().getWorkingLocation(JavaCore.PLUGIN_ID);
-		if(workingRoot!=null && !workingRoot.toFile().exists())
-			workingRoot.toFile().mkdir();
-		IPath destination = workingRoot.append(targetFile.getProjectRelativePath().toString());
-		if(destination!=null && !destination.toFile().exists()) {
-			destination.toFile().mkdirs();
-			
-		}
-		
-		return destination;
-	}
-	
-	public static IPath getFileRootPath(IProject targetProject, IFile targetFile) {
-		
-		return getFileRootPath(targetProject,targetFile.getLocation());
-	}
-	
-	public static IPath getFileRootPath(IProject targetProject, IPath targetPath) {
-		IPath location;
-		if(targetPath.toFile().isFile()) {
-			location = targetPath.removeLastSegments(1);
-		}else {
-			location = targetPath;
-		}
-		return location;
-	}
-	
-	public IPath resolveRelativePath(String path) {
-		IResource member = getRelativeAsResource(path);
-		if(member!=null) return member.getLocation();
-		return new Path(path).makeAbsolute();
-	}
-	
 	public IResource getRelativeAsResource(String path) {
 		IPath absolute =    resolveChildPath(path);
 		IResource member = ((IContainer)getResource()).findMember(absolute);
@@ -131,9 +116,10 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	 * @see org.eclipse.wst.jsdt.internal.core.LibraryFragmentRoot#computeChildren(org.eclipse.wst.jsdt.internal.core.OpenableElementInfo, java.util.Map)
 	 */
 	protected boolean computeChildren(OpenableElementInfo info, Map newElements) throws JavaModelException {
-		IJavaElement[] children = new IJavaElement[filesInScope.size()];
-		for(int i = 0;i<filesInScope.size();i++) {
-			DocumentContextFragment packFrag=  new DocumentContextFragment(this, new String[] {(String)filesInScope.get(i)});
+		IJavaElement[] children = new IJavaElement[includedFiles.size()];
+		for(int i = 0;i<includedFiles.size();i++) {
+			String includeName = resolveChildPath((String)includedFiles.get(i)).toString();
+			DocumentContextFragment packFrag=  new DocumentContextFragment(this, new String[] {includeName});
 			LibraryPackageFragmentInfo fragInfo= new LibraryPackageFragmentInfo();
 			packFrag.computeChildren(fragInfo);
 			newElements.put(packFrag, fragInfo);
@@ -146,22 +132,58 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	public IPath resolveChildPath(String childPathString) {
 		/* relative paths:
 		 * ./testfile.js  are relative to file scope
-		 * absolute paths: /scripts/file.js are relative to web context root, and must be made relative to this resource
+		 * absolute paths: /scripts/file.js are relative to absolutePath, and must be made relative to this resource
 		 * if the file does not exist in context root, the path is the absolute path on the filesystem.
 		 */
-		IPath childPath = new Path(childPathString);
-		
-		if(childPath.isAbsolute()) {
-			return childPath;
+		if(childPathString==null) return null;
+		if(childPathString.length()==0) return new Path("");
+		IPath resolvedPath = null;
+		IResource member;
+		switch(childPathString.charAt(0)) {
+			
+			
+			case '/':
+			case '\\':
+				member = ((IContainer)getResource()).findMember(new Path(childPathString));
+				if(member.exists()) return new Path(childPathString);
+				
+				resolvedPath = new Path(childPathString).makeAbsolute();
+				break;
+			default:
+				resolvedPath = new Path(childPathString).makeAbsolute();
+				if(resolvedPath.toFile()!=null && resolvedPath.toFile().exists()) break;
+				
+				member = ((IContainer)getResource()).findMember(new Path(childPathString));
+
+				if(member!=null && member.exists()) break;
+			case '.':
+				/* returns a new relative path thats relative to the resource */
+				IPath relative = fRelativeFile.getProjectRelativePath().removeLastSegments(1);
+				IPath relRes = getResource().getProjectRelativePath();
+				if(relRes.isPrefixOf(relative)) {
+					IPath amended = relative.removeFirstSegments(relRes.matchingFirstSegments(relative));
+					resolvedPath = amended.append(childPathString);
+				}
+				break;		
+			
+			
 		}
-		IPath newPath = getPath().append(childPath);
 		
-		return newPath;
+		return resolvedPath;
+		
+//		IPath childPath = new Path(childPathString);
+//		
+//		if(childPath.isAbsolute()) {
+//			return childPath;
+//		}
+//		IPath newPath = getPath().append(childPath);
+//		
+//		return newPath;
 		
 	}
 	
 	public IPath getPath() {
-		return fTargetScope.getProjectRelativePath().removeLastSegments(1);
+		return fRelativeFile.getProjectRelativePath().removeLastSegments(1);
 	}
 	
 	public PackageFragment getPackageFragment(String[] filesInFragment) {
@@ -177,18 +199,18 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 			return true;
 		if (o instanceof DocumentContextFragmentRoot) {
 			DocumentContextFragmentRoot other= (DocumentContextFragmentRoot) o;
-			return this.fTargetScope.equals(other.fTargetScope);
+			return this.fRelativeFile.equals(other.fRelativeFile);
 		}
 		return false;
 	}
 	
 	public String getElementName() {
-		return this.fTargetScope.getName();
+		return this.fRelativeFile.getName();
 	}
 	
 	
 	public int hashCode() {
-		return this.fTargetScope.hashCode();
+		return this.fRelativeFile.hashCode();
 	}
 	
 	public boolean isExternal() {
@@ -211,15 +233,6 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 
 
 	protected int determineKind(IResource underlyingResource) {
-		
-//		IPath rootPath = getFileRootPath(getJavaProject().getProject(), fTargetScope);
-//		IPath rPath = getFileRootPath(getJavaProject().getProject(), underlyingResource.getLocation());
-//		
-//		if(rootPath.equals(rPath)) {
-//			return IPackageFragmentRoot.K_SOURCE;
-//		}
-//		return IPackageFragmentRoot.K_BINARY;
-
 		if(getJavaProject().getProject().getLocation().isPrefixOf( underlyingResource.getLocation())) {
 			return IPackageFragmentRoot.K_SOURCE;
 		}else
@@ -248,29 +261,33 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	}
 	
 	public LookupScopeElementInfo getElementInfo() {
-		 try {
+		LookupScopeElementInfo fScopeElementInfo = null;
+		
+		try {
 			LookupScopeElementInfo cachedInfo;
 			 
 			JavaModelManager manager = JavaModelManager.getJavaModelManager();
 			Object info = manager.getInfo(this);
-			if (info != null) {
-				cachedInfo = (LookupScopeElementInfo)info;
-				String[] rawImports = cachedInfo.getRawImportsFromCache();
-				String[] currentImports = getRawImports();
-				if(stringArraysEqual(rawImports,currentImports )) {
-					fLookupScope = cachedInfo;
-				}else {
-					fLookupScope = (LookupScopeElementInfo)openWhenClosed(createElementInfo(),new NullProgressMonitor());
-				}
-				
+			if (info != null && !dirty) {
+				fScopeElementInfo = (LookupScopeElementInfo)info;
+//				cachedInfo = (LookupScopeElementInfo)info;
+//				String[] rawImports = cachedInfo.getRawImportsFromCache();
+//				String[] currentImports = getRawImports();
+//				if(stringArraysEqual(rawImports,currentImports )) {
+//					fScopeElementInfo = cachedInfo;
+//				}else {
+//					fScopeElementInfo = (LookupScopeElementInfo)openWhenClosed(createElementInfo(),new NullProgressMonitor());
+//				}
+//				
 			}else {
-				fLookupScope = (LookupScopeElementInfo)openWhenClosed(createElementInfo(),new NullProgressMonitor());
+				fScopeElementInfo = (LookupScopeElementInfo)openWhenClosed(createElementInfo(),new NullProgressMonitor());
 			}
 		} catch (JavaModelException ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
-		return fLookupScope;
+		dirty = false;
+		return fScopeElementInfo;
 	}
 	
 	public boolean isValidImport(String importName) {
@@ -284,33 +301,12 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 		}
 	}
 	
-	public static boolean stringArraysEqual(String[] a1, String[] a2) {
-		if(a1.length!=a2.length) return false;
-		return Arrays.asList(a1).containsAll(Arrays.asList(a1));
-	}
 	protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource) throws JavaModelException {
-		
-//		// check whether this pkg fragment root can be opened
-//		IStatus status = validateOnClasspath();
-//		if (!status.isOK()) throw newJavaModelException(status);
-//		if (!resourceExists()) throw newNotPresentException();
 
 		((PackageFragmentRootInfo) info).setRootKind(determineKind(underlyingResource));
 		return computeChildren(info, newElements);
 	}
-//	protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource) throws JavaModelException {
-//	//	Hashtable myChildren = new Hashtable();
-//		computeChildren(info,  newElements);
-//	//	Enumeration children = myChildren.keys();
-//	//	while(children.hasMoreElements()){
-//		//	Object obj = children.nextElement();
-////			if(obj instanceof Openable) {
-////				((Openable)obj).buildStructure((OpenableElementInfo)myChildren.get(obj), pm, newElements, null);
-////			}
-//			//info.addChild((IJavaElement)obj);
-//		//}
-//		return true;
-//	}
+
 	
 	public int getKind() throws JavaModelException {
 		if(DocumentContextFragmentRoot.RETURN_CU)
@@ -320,10 +316,6 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	}
 	
 	public IResource getResource() {
-		/* resource relative to the scope */
-		//IPath myPath =fTargetScope.getProjectRelativePath().removeLastSegments(1);
-		//IResource myResource = getJavaProject().getProject().findMember(myPath);
-		
-		return getJavaProject().getResource();
+		return absolutePath;
 	}
 }

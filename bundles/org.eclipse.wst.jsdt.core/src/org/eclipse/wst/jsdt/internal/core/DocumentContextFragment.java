@@ -7,6 +7,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -27,24 +28,24 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 public class DocumentContextFragment extends LibraryPackageFragment{
 	
 	private String[] filesInScope;
-	
+	private IResource me;
 	
 
 	protected DocumentContextFragment(PackageFragmentRoot root, String[] names) {
-		super(root, new String[0]);
+		super(root, names);
 		filesInScope = names;
 	}
-	
-	public IPath resolveRelativePath(String path) {
-		IResource member = getRelativeAsResource(path);
-		if(member!=null) return member.getLocation();
-		return ((DocumentContextFragmentRoot)parent).resolveRelativePath(path);
-	}
-	
-	public IResource getRelativeAsResource(String path) {
-		
-		return ((DocumentContextFragmentRoot)parent).getRelativeAsResource(path);
-	}
+//	
+//	public IPath resolveRelativePath(String path) {
+//		IResource member = getRelativeAsResource(path);
+//		if(member!=null) return member.getLocation();
+//		return ((DocumentContextFragmentRoot)parent).resolveRelativePath(path);
+//	}
+//	
+//	public IResource getRelativeAsResource(String path) {
+//		
+//		return ((DocumentContextFragmentRoot)parent).getRelativeAsResource(path);
+//	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.core.PackageFragment#buildStructure(org.eclipse.wst.jsdt.internal.core.OpenableElementInfo, org.eclipse.core.runtime.IProgressMonitor, java.util.Map, org.eclipse.core.resources.IResource)
@@ -87,7 +88,7 @@ public class DocumentContextFragment extends LibraryPackageFragment{
 	
 	public IJavaElement getJavaElement(String resource) {
 		/* if resource exists in project, return compunit, else return class */
-		if(!DocumentContextFragmentRoot.RETURN_CU) return getClassFile(resolveRelativePath(resource).makeAbsolute().toOSString());
+		if(!DocumentContextFragmentRoot.RETURN_CU) return getClassFile(resource);
 		IPath workspacePath = getPackageFragmentRoot().getJavaProject().getProject().getWorkspace().getRoot().getLocation();
 		/* remove the file part of the path */
 		IPath resourcePath = new Path(resource);
@@ -99,6 +100,7 @@ public class DocumentContextFragment extends LibraryPackageFragment{
 				//((CompilationUnit)unit).buildStructure(new CompilationUnitElementInfo(), new NullProgressMonitor(), new HashMap(), ((IContainer)getParent().getResource()).findMember(resource));
 				//unit.makeConsistent(new NullProgressMonitor());
 				//((JavaElement)unit).openWhenClosed(new CompilationUnitElementInfo(), new NullProgressMonitor());
+				boolean unitExists = unit.exists();
 				return unit;
 			} catch (Exception ex) {
 				// TODO Auto-generated catch block
@@ -115,7 +117,7 @@ public class DocumentContextFragment extends LibraryPackageFragment{
 	public IClassFile[] getClassFiles() throws JavaModelException {
 		IClassFile[] classFiles = new IClassFile[filesInScope.length];
 		for(int i = 0;i<filesInScope.length;i++) {
-			ClassFile classFile = new ClassFile(this,resolveRelativePath(filesInScope[i]).toOSString());
+			ClassFile classFile = new ClassFile(this,filesInScope[i]);
 			classFiles[i] = classFile;
 			
 		}
@@ -134,7 +136,7 @@ public class DocumentContextFragment extends LibraryPackageFragment{
 	
 	public boolean hasSource() {
 		if(DocumentContextFragmentRoot.RETURN_CU && filesInScope.length>0) {
-			IResource file = getRelativeAsResource(filesInScope[0]);
+			IResource file = ((IContainer)parent.getResource()).findMember(filesInScope[0]);
 			if(file!=null && file.exists()) return true;
 		}
 		return false;
@@ -144,10 +146,23 @@ public class DocumentContextFragment extends LibraryPackageFragment{
 	 * @see org.eclipse.wst.jsdt.internal.core.PackageFragment#getResource()
 	 */
 	public IResource getResource() {
-		if(filesInScope.length==0 ) return null;
-		if(filesInScope.length!=1 )
-			return parent.getResource();
-		return getRelativeAsResource(new Path(filesInScope[0]).removeLastSegments(1).toString());
+//		if(me!=null) return me;
+//		
+//		if(filesInScope.length==0 ) return null;
+//		if(filesInScope.length!=1 )
+//			return parent.getResource();
+//		IPath myPath = ((DocumentContextFragmentRoot)parent).resolveChildPath(filesInScope[0]);
+//		
+//		IResource resource = ((IContainer)parent.getResource()).findMember(myPath.removeLastSegments(1));
+//		
+//		if(resource!=null) {
+//			me = resource;
+//		}else {
+//			me = parent.getResource();
+//		}
+//		
+//		return me;
+		return parent.getResource();
 	}
 
 	public IClassFile getClassFile(String classFileName) {
@@ -168,10 +183,10 @@ public class DocumentContextFragment extends LibraryPackageFragment{
 	}
 	
 	public String getElementName() {
-		if (this.names.length == 0)
+		//if (this.names.length == 0)
 			return DEFAULT_PACKAGE_NAME;
 		
-		return names[0];
+		//return names[0];
 		//return Util.concatWith(this.names, '/');
 	}
 	
