@@ -310,18 +310,21 @@ public TypeBinding resolveType(BlockScope scope) {
 		scope.problemReporter().cannotInstantiate(type, this.resolvedType);
 		return this.resolvedType;
 	}
-	ReferenceBinding allocationType = (ReferenceBinding) this.resolvedType;
-	if (!(binding = scope.getConstructor(allocationType, argumentTypes, this)).isValidBinding()) {
-		if (binding.declaringClass == null)
-			binding.declaringClass = allocationType;
-		scope.problemReporter().invalidConstructor(this, binding);
-		return this.resolvedType;
+	if (this.resolvedType instanceof ReferenceBinding)
+	{
+		ReferenceBinding allocationType = (ReferenceBinding) this.resolvedType;
+		if (!(binding = scope.getConstructor(allocationType, argumentTypes, this)).isValidBinding()) {
+			if (binding.declaringClass == null)
+				binding.declaringClass = allocationType;
+			scope.problemReporter().invalidConstructor(this, binding);
+			return this.resolvedType;
+		}
+		if (isMethodUseDeprecated(binding, scope, true))
+			scope.problemReporter().deprecatedMethod(binding, this);
+		checkInvocationArguments(scope, null, allocationType, this.binding, this.arguments, argumentTypes, argsContainCast, this);
 	}
-	if (isMethodUseDeprecated(binding, scope, true))
-		scope.problemReporter().deprecatedMethod(binding, this);
-	checkInvocationArguments(scope, null, allocationType, this.binding, this.arguments, argumentTypes, argsContainCast, this);
 
-	return allocationType;
+	return this.resolvedType;
 }
 
 public void setActualReceiverType(ReferenceBinding receiverType) {
