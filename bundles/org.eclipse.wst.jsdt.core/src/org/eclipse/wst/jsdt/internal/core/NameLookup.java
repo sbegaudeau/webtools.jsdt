@@ -1049,12 +1049,12 @@ public class NameLookup implements SuffixConstants {
 	}
 
 	private IType getMemberType(IType type, String name, int dot) {
-		while (dot != -1) {
-			int start = dot+1;
-			dot = name.indexOf('.', start);
-			String typeName = name.substring(start, dot == -1 ? name.length() : dot);
-			type = type.getType(typeName);
-		}
+		//while (dot != -1) {
+			//int start = dot+1;
+		//	dot = name.indexOf('.', start);
+		//	String typeName = name.substring(start, dot == -1 ? name.length() : dot);
+			type = type.getType(name);
+		//}
 		return type;
 	}
 	
@@ -1239,13 +1239,13 @@ public class NameLookup implements SuffixConstants {
 
 			// look in working copies first
 			int firstDot = -1;
-			String topLevelTypeName = null;
+			String topLevelTypeName = matchName;
 			int packageFlavor= root.getKind();
-			if (this.typesInWorkingCopies != null || packageFlavor == IPackageFragmentRoot.K_SOURCE) {
-				firstDot = matchName.indexOf('.');
-				if (!partialMatch)
-					topLevelTypeName = firstDot == -1 ? matchName : matchName.substring(0, firstDot);
-			}
+//			if (this.typesInWorkingCopies != null || packageFlavor == IPackageFragmentRoot.K_SOURCE) {
+//				firstDot = matchName.indexOf('.');
+//				if (!partialMatch)
+//					topLevelTypeName = firstDot == -1 ? matchName : matchName.substring(0, firstDot);
+//			}
 			if (this.typesInWorkingCopies != null) {
 				if (seekTypesInWorkingCopies(matchName, pkg, firstDot, partialMatch, topLevelTypeName, acceptFlags, requestor))
 					return;
@@ -1507,10 +1507,11 @@ public class NameLookup implements SuffixConstants {
 							return;
 						IJavaElement cu = compilationUnits[i];
 						String cuName = cu.getElementName();
-						int lastDot = cuName.lastIndexOf('.');
-						if (lastDot != topLevelTypeName.length() || !topLevelTypeName.regionMatches(0, cuName, 0, lastDot)) 
-							continue;
-						IType type = ((ICompilationUnit) cu).getType(topLevelTypeName);
+						//int lastDot = cuName.lastIndexOf('.');
+						//if (lastDot != topLevelTypeName.length() || !topLevelTypeName.regionMatches(0, cuName, 0, lastDot)) \
+						//if(topLevelTypeName!=null && !topLevelTypeName.equals(cuName))
+						//	continue;
+						IType type = ((ICompilationUnit) cu).getType(name);
 						type = getMemberType(type, name, firstDot);
 						if (acceptType(type, acceptFlags, true/*a source type*/)) { // accept type checks for existence
 							requestor.acceptType(type);
