@@ -1500,8 +1500,9 @@ public class CodeFormatterVisitor extends ASTVisitor {
 						isChunkStart = memberAlignment.checkChunkStart(METHOD, i, this.scribe.scanner.currentPosition);
 						format((AbstractMethodDeclaration) member, null, isChunkStart, i == 0);
 					} else {
-						isChunkStart = memberAlignment.checkChunkStart(TYPE, i, this.scribe.scanner.currentPosition);
-						format((TypeDeclaration)member, null, isChunkStart, i == 0);
+//						isChunkStart = memberAlignment.checkChunkStart(TYPE, i, this.scribe.scanner.currentPosition);
+//						format((TypeDeclaration)member, null, isChunkStart, i == 0);
+						member.traverse(this, null);
 					}
 					if (isNextToken(TerminalTokens.TokenNameSEMICOLON)) {
 						this.scribe.printNextToken(TerminalTokens.TokenNameSEMICOLON, this.preferences.insert_space_before_semicolon);
@@ -4285,7 +4286,8 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		 */
 		this.scribe.printNextToken(TerminalTokens.TokenNamefunction);
 		
-		this.scribe.printNextToken(TerminalTokens.TokenNameIdentifier, true); 
+		if (methodDeclaration.selector!=null)
+			this.scribe.printNextToken(TerminalTokens.TokenNameIdentifier, true); 
 
 		formatMethodArguments(
 			methodDeclaration, 
