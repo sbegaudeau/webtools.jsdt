@@ -54,12 +54,12 @@ public class AppearancePreferencePage extends PreferencePage implements IWorkben
 
 	private SelectionButtonDialogField fShowMethodReturnType;
 	private SelectionButtonDialogField fShowCategory;
-	private SelectionButtonDialogField fCompressPackageNames;
-	private SelectionButtonDialogField fStackBrowsingViewsVertically;
+//	private SelectionButtonDialogField fCompressPackageNames;
+//	private SelectionButtonDialogField fStackBrowsingViewsVertically;
 	private SelectionButtonDialogField fShowMembersInPackageView;
-	private StringDialogField fPackageNamePattern;
+//	private StringDialogField fPackageNamePattern;
 	private SelectionButtonDialogField fFoldPackagesInPackageExplorer;
-	private SelectionButtonDialogField fShowMethodTypeParameters;
+//	private SelectionButtonDialogField fShowMethodTypeParameters;
 
 	
 	public AppearancePreferencePage() {
@@ -74,12 +74,13 @@ public class AppearancePreferencePage extends PreferencePage implements IWorkben
 	
 		fShowMethodReturnType= new SelectionButtonDialogField(SWT.CHECK);
 		fShowMethodReturnType.setDialogFieldListener(listener);
-		fShowMethodReturnType.setLabelText(PreferencesMessages.AppearancePreferencePage_methodreturntype_label); 
+//		fShowMethodReturnType.setLabelText(PreferencesMessages.AppearancePreferencePage_methodreturntype_label); 
+		fShowMethodReturnType.setLabelText(PreferencesMessages.AppearancePreferencePage_inferredmethodreturntype_label); 
 
-		fShowMethodTypeParameters= new SelectionButtonDialogField(SWT.CHECK);
-		fShowMethodTypeParameters.setDialogFieldListener(listener);
-		fShowMethodTypeParameters.setLabelText(PreferencesMessages.AppearancePreferencePage_methodtypeparams_label); 
-
+//		fShowMethodTypeParameters= new SelectionButtonDialogField(SWT.CHECK);
+//		fShowMethodTypeParameters.setDialogFieldListener(listener);
+//		fShowMethodTypeParameters.setLabelText(PreferencesMessages.AppearancePreferencePage_methodtypeparams_label); 
+		
 		fShowCategory= new SelectionButtonDialogField(SWT.CHECK);
 		fShowCategory.setDialogFieldListener(listener);
 		fShowCategory.setLabelText(PreferencesMessages.AppearancePreferencePage_showCategory_label); 
@@ -88,33 +89,34 @@ public class AppearancePreferencePage extends PreferencePage implements IWorkben
 		fShowMembersInPackageView.setDialogFieldListener(listener);
 		fShowMembersInPackageView.setLabelText(PreferencesMessages.AppearancePreferencePage_showMembersInPackagesView); 
 
-		fStackBrowsingViewsVertically= new SelectionButtonDialogField(SWT.CHECK);
-		fStackBrowsingViewsVertically.setDialogFieldListener(listener);
-		fStackBrowsingViewsVertically.setLabelText(PreferencesMessages.AppearancePreferencePage_stackViewsVerticallyInTheJavaBrowsingPerspective); 
-
+//		fStackBrowsingViewsVertically= new SelectionButtonDialogField(SWT.CHECK);
+//		fStackBrowsingViewsVertically.setDialogFieldListener(listener);
+//		fStackBrowsingViewsVertically.setLabelText(PreferencesMessages.AppearancePreferencePage_stackViewsVerticallyInTheJavaBrowsingPerspective); 
+		
 		fFoldPackagesInPackageExplorer= new SelectionButtonDialogField(SWT.CHECK);
 		fFoldPackagesInPackageExplorer.setDialogFieldListener(listener);
-		fFoldPackagesInPackageExplorer.setLabelText(PreferencesMessages.AppearancePreferencePage_foldEmptyPackages); 
+//		fFoldPackagesInPackageExplorer.setLabelText(PreferencesMessages.AppearancePreferencePage_foldEmptyPackages); 
+		fFoldPackagesInPackageExplorer.setLabelText(PreferencesMessages.AppearancePreferencePage_foldEmptySourceFolders); 
 
-		fCompressPackageNames= new SelectionButtonDialogField(SWT.CHECK);
-		fCompressPackageNames.setDialogFieldListener(listener);
-		fCompressPackageNames.setLabelText(PreferencesMessages.AppearancePreferencePage_pkgNamePatternEnable_label); 
+//		fCompressPackageNames= new SelectionButtonDialogField(SWT.CHECK);
+//		fCompressPackageNames.setDialogFieldListener(listener);
+//		fCompressPackageNames.setLabelText(PreferencesMessages.AppearancePreferencePage_pkgNamePatternEnable_label); 
 
-		fPackageNamePattern= new StringDialogField();
-		fPackageNamePattern.setDialogFieldListener(listener);
-		fPackageNamePattern.setLabelText(PreferencesMessages.AppearancePreferencePage_pkgNamePattern_label); 
+//		fPackageNamePattern= new StringDialogField();
+//		fPackageNamePattern.setDialogFieldListener(listener);
+//		fPackageNamePattern.setLabelText(PreferencesMessages.AppearancePreferencePage_pkgNamePattern_label);
 	}	
 
 	private void initFields() {
 		IPreferenceStore prefs= getPreferenceStore();
 		fShowMethodReturnType.setSelection(prefs.getBoolean(PREF_METHOD_RETURNTYPE));
-		fShowMethodTypeParameters.setSelection(prefs.getBoolean(PREF_METHOD_TYPEPARAMETERS));
+//		fShowMethodTypeParameters.setSelection(prefs.getBoolean(PREF_METHOD_TYPEPARAMETERS));
 		fShowMembersInPackageView.setSelection(prefs.getBoolean(SHOW_CU_CHILDREN));
 		fShowCategory.setSelection(prefs.getBoolean(PREF_CATEGORY));
-		fStackBrowsingViewsVertically.setSelection(prefs.getBoolean(STACK_BROWSING_VIEWS_VERTICALLY));
-		fPackageNamePattern.setText(prefs.getString(PREF_PKG_NAME_PATTERN_FOR_PKG_VIEW));
-		fCompressPackageNames.setSelection(prefs.getBoolean(PREF_COMPRESS_PACKAGE_NAMES));
-		fPackageNamePattern.setEnabled(fCompressPackageNames.isSelected());
+//		fStackBrowsingViewsVertically.setSelection(prefs.getBoolean(STACK_BROWSING_VIEWS_VERTICALLY));
+//		fPackageNamePattern.setText(prefs.getString(PREF_PKG_NAME_PATTERN_FOR_PKG_VIEW));
+//		fCompressPackageNames.setSelection(prefs.getBoolean(PREF_COMPRESS_PACKAGE_NAMES));
+//		fPackageNamePattern.setEnabled(fCompressPackageNames.isSelected());
 		fFoldPackagesInPackageExplorer.setSelection(prefs.getBoolean(PREF_FOLD_PACKAGES_IN_PACKAGE_EXPLORER));
 	}
 	
@@ -143,27 +145,27 @@ public class AppearancePreferencePage extends PreferencePage implements IWorkben
 		result.setLayout(layout);
 				
 		fShowMethodReturnType.doFillIntoGrid(result, nColumns);
-		fShowMethodTypeParameters.doFillIntoGrid(result, nColumns);
+//		fShowMethodTypeParameters.doFillIntoGrid(result, nColumns);
 		fShowCategory.doFillIntoGrid(result, nColumns);
 		fShowMembersInPackageView.doFillIntoGrid(result, nColumns);				
 		fFoldPackagesInPackageExplorer.doFillIntoGrid(result, nColumns);
 
-		new Separator().doFillIntoGrid(result, nColumns);
+//		new Separator().doFillIntoGrid(result, nColumns);
 		
-		fCompressPackageNames.doFillIntoGrid(result, nColumns);
-		fPackageNamePattern.doFillIntoGrid(result, 2);
-		LayoutUtil.setHorizontalGrabbing(fPackageNamePattern.getTextControl(null));
-		LayoutUtil.setWidthHint(fPackageNamePattern.getLabelControl(null), convertWidthInCharsToPixels(65));
+//		fCompressPackageNames.doFillIntoGrid(result, nColumns);
+//		fPackageNamePattern.doFillIntoGrid(result, 2);
+//		LayoutUtil.setHorizontalGrabbing(fPackageNamePattern.getTextControl(null));
+//		LayoutUtil.setWidthHint(fPackageNamePattern.getLabelControl(null), convertWidthInCharsToPixels(65));
 		
-		new Separator().doFillIntoGrid(result, nColumns);
-		fStackBrowsingViewsVertically.doFillIntoGrid(result, nColumns);
+//		new Separator().doFillIntoGrid(result, nColumns);
+//		fStackBrowsingViewsVertically.doFillIntoGrid(result, nColumns);
 		
-		String noteTitle= PreferencesMessages.AppearancePreferencePage_note; 
-		String noteMessage= PreferencesMessages.AppearancePreferencePage_preferenceOnlyEffectiveForNewPerspectives; 
-		Composite noteControl= createNoteComposite(JFaceResources.getDialogFont(), result, noteTitle, noteMessage);
-		GridData gd= new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-		gd.horizontalSpan= 2;
-		noteControl.setLayoutData(gd);
+//		String noteTitle= PreferencesMessages.AppearancePreferencePage_note; 
+//		String noteMessage= PreferencesMessages.AppearancePreferencePage_preferenceOnlyEffectiveForNewPerspectives; 
+//		Composite noteControl= createNoteComposite(JFaceResources.getDialogFont(), result, noteTitle, noteMessage);
+//		GridData gd= new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+//		gd.horizontalSpan= 2;
+//		noteControl.setLayoutData(gd);
 		
 		initFields();
 		
@@ -172,16 +174,16 @@ public class AppearancePreferencePage extends PreferencePage implements IWorkben
 	}
 	
 	private void doDialogFieldChanged(DialogField field) {
-		if (field == fCompressPackageNames)
-			fPackageNamePattern.setEnabled(fCompressPackageNames.isSelected());
+//		if (field == fCompressPackageNames)
+//			fPackageNamePattern.setEnabled(fCompressPackageNames.isSelected());
 	
 		updateStatus(getValidationStatus());
 	}
 	
 	private IStatus getValidationStatus(){
-		if (fCompressPackageNames.isSelected() && fPackageNamePattern.getText().equals("")) //$NON-NLS-1$
-			return new StatusInfo(IStatus.ERROR, PreferencesMessages.AppearancePreferencePage_packageNameCompressionPattern_error_isEmpty); 
-		else	
+//		if (fCompressPackageNames.isSelected() && fPackageNamePattern.getText().equals("")) //$NON-NLS-1$
+//			return new StatusInfo(IStatus.ERROR, PreferencesMessages.AppearancePreferencePage_packageNameCompressionPattern_error_isEmpty); 
+//		else	
 			return new StatusInfo();
 	}
 	
@@ -202,12 +204,12 @@ public class AppearancePreferencePage extends PreferencePage implements IWorkben
 	public boolean performOk() {
 		IPreferenceStore prefs= getPreferenceStore();
 		prefs.setValue(PREF_METHOD_RETURNTYPE, fShowMethodReturnType.isSelected());
-		prefs.setValue(PREF_METHOD_TYPEPARAMETERS, fShowMethodTypeParameters.isSelected());
+//		prefs.setValue(PREF_METHOD_TYPEPARAMETERS, fShowMethodTypeParameters.isSelected());
 		prefs.setValue(PREF_CATEGORY, fShowCategory.isSelected());
 		prefs.setValue(SHOW_CU_CHILDREN, fShowMembersInPackageView.isSelected());
-		prefs.setValue(STACK_BROWSING_VIEWS_VERTICALLY, fStackBrowsingViewsVertically.isSelected());
-		prefs.setValue(PREF_PKG_NAME_PATTERN_FOR_PKG_VIEW, fPackageNamePattern.getText());
-		prefs.setValue(PREF_COMPRESS_PACKAGE_NAMES, fCompressPackageNames.isSelected());
+//		prefs.setValue(STACK_BROWSING_VIEWS_VERTICALLY, fStackBrowsingViewsVertically.isSelected());
+//		prefs.setValue(PREF_PKG_NAME_PATTERN_FOR_PKG_VIEW, fPackageNamePattern.getText());
+//		prefs.setValue(PREF_COMPRESS_PACKAGE_NAMES, fCompressPackageNames.isSelected());
 		prefs.setValue(PREF_FOLD_PACKAGES_IN_PACKAGE_EXPLORER, fFoldPackagesInPackageExplorer.isSelected());
 		JavaPlugin.getDefault().savePluginPreferences();
 		return super.performOk();
@@ -219,12 +221,12 @@ public class AppearancePreferencePage extends PreferencePage implements IWorkben
 	protected void performDefaults() {
 		IPreferenceStore prefs= getPreferenceStore();
 		fShowMethodReturnType.setSelection(prefs.getDefaultBoolean(PREF_METHOD_RETURNTYPE));
-		fShowMethodTypeParameters.setSelection(prefs.getDefaultBoolean(PREF_METHOD_TYPEPARAMETERS));
+//		fShowMethodTypeParameters.setSelection(prefs.getDefaultBoolean(PREF_METHOD_TYPEPARAMETERS));
 		fShowCategory.setSelection(prefs.getDefaultBoolean(PREF_CATEGORY));
 		fShowMembersInPackageView.setSelection(prefs.getDefaultBoolean(SHOW_CU_CHILDREN));
-		fStackBrowsingViewsVertically.setSelection(prefs.getDefaultBoolean(STACK_BROWSING_VIEWS_VERTICALLY));
-		fPackageNamePattern.setText(prefs.getDefaultString(PREF_PKG_NAME_PATTERN_FOR_PKG_VIEW));
-		fCompressPackageNames.setSelection(prefs.getDefaultBoolean(PREF_COMPRESS_PACKAGE_NAMES));
+//		fStackBrowsingViewsVertically.setSelection(prefs.getDefaultBoolean(STACK_BROWSING_VIEWS_VERTICALLY));
+//		fPackageNamePattern.setText(prefs.getDefaultString(PREF_PKG_NAME_PATTERN_FOR_PKG_VIEW));
+//		fCompressPackageNames.setSelection(prefs.getDefaultBoolean(PREF_COMPRESS_PACKAGE_NAMES));
 		fFoldPackagesInPackageExplorer.setSelection(prefs.getDefaultBoolean(PREF_FOLD_PACKAGES_IN_PACKAGE_EXPLORER));
 		super.performDefaults();
 	}
