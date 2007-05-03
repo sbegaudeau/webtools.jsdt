@@ -1222,6 +1222,7 @@
             <keywordReference id="org.eclipse.wst.jsdt.ui.organizeimports"/>
       </page>
 -->      
+<!--
       <page
             name="%typeFilterPrefName"
             category="org.eclipse.wst.jsdt.ui.preferences.AppearancePreferencePage"
@@ -1229,6 +1230,7 @@
             id="org.eclipse.wst.jsdt.ui.preferences.TypeFilterPreferencePage">
             <keywordReference id="org.eclipse.wst.jsdt.ui.typefilter"/>
       </page>
+-->
       <page
             name="%codeFormatterPrefName"
             category="org.eclipse.wst.jsdt.ui.preferences.CodeStylePreferencePage"
