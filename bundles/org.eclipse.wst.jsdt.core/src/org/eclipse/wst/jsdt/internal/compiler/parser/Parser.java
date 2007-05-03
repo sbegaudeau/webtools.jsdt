@@ -9180,7 +9180,7 @@ public ASTNode[] parseClassBodyDeclarations(char[] source, int offset, int lengt
 		this.lastAct = ERROR_ACTION;
 	}
 
-	if (this.lastAct == ERROR_ACTION) {
+	if (this.lastAct == ERROR_ACTION || this.hasError) {
 		return null;
 	}
 	int astLength;
