@@ -508,7 +508,8 @@ public final class PreferencesMessages extends NLS {
 	public static String MembersOrderPreferencePage_visibility_button_up;
 	public static String MembersOrderPreferencePage_visibility_button_down;
 	public static String MembersOrderPreferencePage_label_description;
-	public static String MembersOrderPreferencePage_fields_label;
+//	public static String MembersOrderPreferencePage_fields_label;
+	public static String MembersOrderPreferencePage_vars_label;
 	public static String MembersOrderPreferencePage_constructors_label;
 	public static String MembersOrderPreferencePage_methods_label;
 	public static String MembersOrderPreferencePage_staticfields_label;

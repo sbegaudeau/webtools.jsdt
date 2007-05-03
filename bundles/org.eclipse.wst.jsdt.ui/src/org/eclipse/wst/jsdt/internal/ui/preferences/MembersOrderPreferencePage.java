@@ -51,19 +51,21 @@ public class MembersOrderPreferencePage extends PreferencePage implements IWorkb
 	
 	public static final String PREF_ID= "org.eclipse.wst.jsdt.ui.preferences.MembersOrderPreferencePage"; //$NON-NLS-1$
 	
-	private static final String ALL_SORTMEMBER_ENTRIES= "T,SI,SF,SM,I,F,C,M"; //$NON-NLS-1$
+//	private static final String ALL_SORTMEMBER_ENTRIES= "T,SI,SF,SM,I,F,C,M"; //$NON-NLS-1$
+	private static final String ALL_SORTMEMBER_ENTRIES= "T,F,C,M"; //$NON-NLS-1$
 	private static final String ALL_VISIBILITY_ENTRIES= "B,V,R,D"; //$NON-NLS-1$
 	private static final String PREF_OUTLINE_SORT_OPTION= PreferenceConstants.APPEARANCE_MEMBER_SORT_ORDER;
 	private static final String PREF_VISIBILITY_SORT_OPTION= PreferenceConstants.APPEARANCE_VISIBILITY_SORT_ORDER;
 	private static final String PREF_USE_VISIBILITY_SORT_OPTION= PreferenceConstants.APPEARANCE_ENABLE_VISIBILITY_SORT_ORDER;
 		
 	public static final String CONSTRUCTORS= "C"; //$NON-NLS-1$
-	public static final String FIELDS= "F"; //$NON-NLS-1$
+//	public static final String FIELDS= "F"; //$NON-NLS-1$
+	public static final String VARS= "F"; //$NON-NLS-1$
 	public static final String METHODS= "M"; //$NON-NLS-1$
-	public static final String STATIC_METHODS= "SM"; //$NON-NLS-1$
-	public static final String STATIC_FIELDS= "SF"; //$NON-NLS-1$
+//	public static final String STATIC_METHODS= "SM"; //$NON-NLS-1$
+//	public static final String STATIC_FIELDS= "SF"; //$NON-NLS-1$
 	public static final String INIT= "I"; //$NON-NLS-1$
-	public static final String STATIC_INIT= "SI"; //$NON-NLS-1$
+//	public static final String STATIC_INIT= "SI"; //$NON-NLS-1$
 	public static final String TYPES= "T"; //$NON-NLS-1$
 	
 	public static final String PUBLIC= "B";  //$NON-NLS-1$
@@ -93,7 +95,8 @@ public class MembersOrderPreferencePage extends PreferencePage implements IWorkb
 		
 		setDescription(PreferencesMessages.MembersOrderPreferencePage_label_description); 
 
-		String memberSortString= getPreferenceStore().getString(PREF_OUTLINE_SORT_OPTION);
+//		String memberSortString= getPreferenceStore().getString(PREF_OUTLINE_SORT_OPTION);
+		String memberSortString = ALL_SORTMEMBER_ENTRIES;
 		
 		String upLabel= PreferencesMessages.MembersOrderPreferencePage_category_button_up; 
 		String downLabel= PreferencesMessages.MembersOrderPreferencePage_category_button_down; 
@@ -287,7 +290,8 @@ public class MembersOrderPreferencePage extends PreferencePage implements IWorkb
 			if (element instanceof String) {
 				int visibility= Flags.AccPublic;
 				String s= (String) element;
-				if (s.equals(FIELDS)) {
+//				if (s.equals(FIELDS)) {
+				if (s.equals(VARS)) {
 					//0 will give the default field image	
 					descriptor= JavaElementImageProvider.getFieldImageDescriptor(false, visibility);
 				} else if (s.equals(CONSTRUCTORS)) {
@@ -296,19 +300,19 @@ public class MembersOrderPreferencePage extends PreferencePage implements IWorkb
 					descriptor= new JavaElementImageDescriptor(descriptor, JavaElementImageDescriptor.CONSTRUCTOR, JavaElementImageProvider.SMALL_SIZE);
 				} else if (s.equals(METHODS)) {
 					descriptor= JavaElementImageProvider.getMethodImageDescriptor(false, visibility);
-				} else if (s.equals(STATIC_FIELDS)) {
-					descriptor= JavaElementImageProvider.getFieldImageDescriptor(false, visibility);
+//				} else if (s.equals(STATIC_FIELDS)) {
+//					descriptor= JavaElementImageProvider.getFieldImageDescriptor(false, visibility);
 					//add a static fields adornment to the image descriptor
-					descriptor= new JavaElementImageDescriptor(descriptor, JavaElementImageDescriptor.STATIC, JavaElementImageProvider.SMALL_SIZE);
-				} else if (s.equals(STATIC_METHODS)) {
-					descriptor= JavaElementImageProvider.getMethodImageDescriptor(false, visibility);
+//					descriptor= new JavaElementImageDescriptor(descriptor, JavaElementImageDescriptor.STATIC, JavaElementImageProvider.SMALL_SIZE);
+//				} else if (s.equals(STATIC_METHODS)) {
+//					descriptor= JavaElementImageProvider.getMethodImageDescriptor(false, visibility);
 					//add a static methods adornment to the image descriptor
-					descriptor= new JavaElementImageDescriptor(descriptor, JavaElementImageDescriptor.STATIC, JavaElementImageProvider.SMALL_SIZE);
+//					descriptor= new JavaElementImageDescriptor(descriptor, JavaElementImageDescriptor.STATIC, JavaElementImageProvider.SMALL_SIZE);
 				} else if (s.equals(INIT)) {
 					descriptor= JavaElementImageProvider.getMethodImageDescriptor(false, visibility);
-				} else if (s.equals(STATIC_INIT)) {
-					descriptor= JavaElementImageProvider.getMethodImageDescriptor(false, visibility);
-					descriptor= new JavaElementImageDescriptor(descriptor, JavaElementImageDescriptor.STATIC, JavaElementImageProvider.SMALL_SIZE);
+//				} else if (s.equals(STATIC_INIT)) {
+//					descriptor= JavaElementImageProvider.getMethodImageDescriptor(false, visibility);
+//					descriptor= new JavaElementImageDescriptor(descriptor, JavaElementImageDescriptor.STATIC, JavaElementImageProvider.SMALL_SIZE);
 				} else if (s.equals(TYPES)) {
 					descriptor= JavaElementImageProvider.getTypeImageDescriptor(true, false, Flags.AccPublic, false);
 				} else {
@@ -326,20 +330,22 @@ public class MembersOrderPreferencePage extends PreferencePage implements IWorkb
 
 			if (element instanceof String) {
 				String s= (String) element;
-				if (s.equals(FIELDS)) {
-					return PreferencesMessages.MembersOrderPreferencePage_fields_label; 
+//				if (s.equals(FIELDS)) {
+				if (s.equals(VARS)) {
+//					return PreferencesMessages.MembersOrderPreferencePage_fields_label; 
+					return PreferencesMessages.MembersOrderPreferencePage_vars_label; 
 				} else if (s.equals(METHODS)) {
 					return PreferencesMessages.MembersOrderPreferencePage_methods_label; 
-				} else if (s.equals(STATIC_FIELDS)) {
-					return PreferencesMessages.MembersOrderPreferencePage_staticfields_label; 
-				} else if (s.equals(STATIC_METHODS)) {
-					return PreferencesMessages.MembersOrderPreferencePage_staticmethods_label; 
+//				} else if (s.equals(STATIC_FIELDS)) {
+//					return PreferencesMessages.MembersOrderPreferencePage_staticfields_label; 
+//				} else if (s.equals(STATIC_METHODS)) {
+//					return PreferencesMessages.MembersOrderPreferencePage_staticmethods_label; 
 				} else if (s.equals(CONSTRUCTORS)) {
 					return PreferencesMessages.MembersOrderPreferencePage_constructors_label; 
 				} else if (s.equals(INIT)) {
 					return PreferencesMessages.MembersOrderPreferencePage_initialisers_label; 
-				} else if (s.equals(STATIC_INIT)) {
-					return PreferencesMessages.MembersOrderPreferencePage_staticinitialisers_label; 
+//				} else if (s.equals(STATIC_INIT)) {
+//					return PreferencesMessages.MembersOrderPreferencePage_staticinitialisers_label; 
 				} else if (s.equals(TYPES)) {
 					return PreferencesMessages.MembersOrderPreferencePage_types_label; 
 				}
