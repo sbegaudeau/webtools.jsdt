@@ -344,7 +344,7 @@ public IPath getPath() {
  */
 public IResource getResource() {
 	PackageFragmentRoot root = this.getPackageFragmentRoot();
-	if (root.isArchive() || root instanceof LibraryFragmentRoot) {
+	if (root.isArchive() /*|| root instanceof LibraryFragmentRoot*/) {
 		return root.getResource();
 	} else {
 		int length = this.names.length;
