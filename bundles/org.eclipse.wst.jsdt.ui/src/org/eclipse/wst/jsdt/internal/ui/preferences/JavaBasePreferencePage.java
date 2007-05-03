@@ -37,6 +37,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
+import org.eclipse.wst.jsdt.internal.ui.IUIConstants;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.OptionalMessageDialog;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSavePreferences;
@@ -150,16 +151,18 @@ public class JavaBasePreferencePage extends PreferencePage implements IWorkbench
 		addRadioButton(typeHierarchyGroup, PreferencesMessages.JavaBasePreferencePage_inPerspective, OPEN_TYPE_HIERARCHY, OPEN_TYPE_HIERARCHY_IN_PERSPECTIVE);  
 		addRadioButton(typeHierarchyGroup, PreferencesMessages.JavaBasePreferencePage_inView, OPEN_TYPE_HIERARCHY, OPEN_TYPE_HIERARCHY_IN_VIEW_PART); 
 
-		Group refactoringGroup= new Group(result, SWT.NONE);
-		refactoringGroup.setLayout(new GridLayout());		
-		refactoringGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		refactoringGroup.setText(PreferencesMessages.JavaBasePreferencePage_refactoring_title); 
-		addCheckBox(refactoringGroup, 
-			PreferencesMessages.JavaBasePreferencePage_refactoring_auto_save, 
-			RefactoringSavePreferences.PREF_SAVE_ALL_EDITORS);
-		addCheckBox(refactoringGroup, 
-				PreferencesMessages.JavaBasePreferencePage_refactoring_lightweight, 
-				PreferenceConstants.REFACTOR_LIGHTWEIGHT);
+		if ( IUIConstants.SUPPORT_REFACTORING ) {
+			Group refactoringGroup= new Group(result, SWT.NONE);
+			refactoringGroup.setLayout(new GridLayout());		
+			refactoringGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			refactoringGroup.setText(PreferencesMessages.JavaBasePreferencePage_refactoring_title); 
+			addCheckBox(refactoringGroup, 
+					PreferencesMessages.JavaBasePreferencePage_refactoring_auto_save, 
+					RefactoringSavePreferences.PREF_SAVE_ALL_EDITORS);
+			addCheckBox(refactoringGroup, 
+					PreferencesMessages.JavaBasePreferencePage_refactoring_lightweight, 
+					PreferenceConstants.REFACTOR_LIGHTWEIGHT);
+		}
 
 		Group group= new Group(result, SWT.NONE);
 		group.setLayout(new GridLayout());
