@@ -5,6 +5,7 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -56,8 +57,6 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 		super(getFileRootPath(project.getProject(),targetScope), (JavaProject)project);
 		fTargetScope = targetScope  ;
 		filesInScope = new ArrayList();
-		//filesInScope.add(targetScope.getFullPath().toOSString());
-	
 	}
 	
 	public String[] getRawImports() {
@@ -73,6 +72,7 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	}
 	
 	public void setScope(String[] fileNames) {
+		filesInScope.clear();
 		for(int i = 0;i<fileNames.length;i++) {
 			addFileToScope(fileNames[i]);
 		}
@@ -117,36 +117,45 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	 * @see org.eclipse.wst.jsdt.internal.core.LibraryFragmentRoot#computeChildren(org.eclipse.wst.jsdt.internal.core.OpenableElementInfo, java.util.Map)
 	 */
 	protected boolean computeChildren(OpenableElementInfo info, Map newElements) throws JavaModelException {
-		
-		DocumentContextFragment packFrag=  new DocumentContextFragment(this, (String[])filesInScope.toArray(new String[filesInScope.size()]));
-		LibraryPackageFragmentInfo fragInfo= new LibraryPackageFragmentInfo();
-		packFrag.computeChildren(fragInfo);
-		newElements.put(packFrag, fragInfo);
-		IJavaElement[] children= new IJavaElement[]{packFrag};
+		IJavaElement[] children = new IJavaElement[filesInScope.size()];
+		for(int i = 0;i<filesInScope.size();i++) {
+			DocumentContextFragment packFrag=  new DocumentContextFragment(this, new String[] {(String)filesInScope.get(i)});
+			LibraryPackageFragmentInfo fragInfo= new LibraryPackageFragmentInfo();
+			packFrag.computeChildren(fragInfo);
+			newElements.put(packFrag, fragInfo);
+			children[i] = packFrag;
+		}
 		info.setChildren(children);
 		return true;
 	}
 	
-	public IPath resolveChildPath(String childPath) {
+	public IPath resolveChildPath(String childPathString) {
+		/* relative paths:
+		 * ./testfile.js  are relative to file scope
+		 * absolute paths: /scripts/file.js are relative to web context root, and must be made relative to this resource
+		 * if the file does not exist in context root, the path is the absolute path on the filesystem.
+		 */
+		IPath childPath = new Path(childPathString);
 		
-		IPath myPath = this.libraryPath;
-		IPath newPath = myPath.append(childPath);
-		IPath resolvedPath = newPath.makeAbsolute();
-		return resolvedPath;
+		if(childPath.isAbsolute()) {
+			return childPath;
+		}
+		IPath newPath = getPath().append(childPath);
+		
+		return newPath;
 		
 	}
 	
 	public IPath getPath() {
-		return new Path("");
-		//return getFileRootPath(getJavaProject().getProject(),fTargetScope.getFullPath());
+		return fTargetScope.getProjectRelativePath().removeLastSegments(1);
 	}
 	
 	public PackageFragment getPackageFragment(String[] filesInFragment) {
-		return  new DocumentContextFragment(this, filesInFragment);
+		return new DocumentContextFragment(this, filesInFragment);
 	}
 	
 	public PackageFragment getDefaultPackageFragment() {
-		return  new DocumentContextFragment(this, (String[])filesInScope.toArray(new String[filesInScope.size()]));
+		return  new DocumentContextFragment(this, (new String[0]));
 	}
 	
 	public boolean equals(Object o) {
@@ -160,7 +169,6 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	}
 	
 	public String getElementName() {
-		//return "";
 		return this.fTargetScope.getName();
 	}
 	
@@ -247,31 +255,52 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	
 	public boolean isValidImport(String importName) {
 		File file = resolveChildPath(importName).toFile();
-		return file.isFile();
+		if(file.isFile()) {
+			return true;
+		}else {
+			IFile resolved =  ((IContainer)getResource()).getFile(new Path(file.getPath()));
+			boolean exists =  resolved.exists();
+			return exists;
+		}
 	}
 	
 	public static boolean stringArraysEqual(String[] a1, String[] a2) {
 		if(a1.length!=a2.length) return false;
-//		String[] t1=null, t2=null;
-//		System.arraycopy(a1, 0, t1, 0, a1.length);
-//		System.arraycopy(a2, 0, t2, 0, a2.length);
-//		java.util.Arrays.sort(t1, Collator.getInstance(Locale.ENGLISH));
-//		java.util.Arrays.sort(t2, Collator.getInstance(Locale.ENGLISH));
-	
 		return Arrays.asList(a1).containsAll(Arrays.asList(a1));
 	}
-	
 	protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource) throws JavaModelException {
-	
-		//((PackageFragmentRootInfo) info).setRootKind(IPackageFragmentRoot.K_BINARY);
+		
+//		// check whether this pkg fragment root can be opened
+//		IStatus status = validateOnClasspath();
+//		if (!status.isOK()) throw newJavaModelException(status);
+//		if (!resourceExists()) throw newNotPresentException();
+
+		((PackageFragmentRootInfo) info).setRootKind(determineKind(underlyingResource));
 		return computeChildren(info, newElements);
 	}
+//	protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource) throws JavaModelException {
+//	//	Hashtable myChildren = new Hashtable();
+//		computeChildren(info,  newElements);
+//	//	Enumeration children = myChildren.keys();
+//	//	while(children.hasMoreElements()){
+//		//	Object obj = children.nextElement();
+////			if(obj instanceof Openable) {
+////				((Openable)obj).buildStructure((OpenableElementInfo)myChildren.get(obj), pm, newElements, null);
+////			}
+//			//info.addChild((IJavaElement)obj);
+//		//}
+//		return true;
+//	}
 	
 	public int getKind() throws JavaModelException {
 		return IPackageFragmentRoot.K_BINARY;
 	}
 	
 	public IResource getResource() {
-		return (IResource)JavaModel.getTarget(ResourcesPlugin.getWorkspace().getRoot(), fTargetScope.getProjectRelativePath().removeLastSegments(1), false);
+		/* resource relative to the scope */
+		//IPath myPath =fTargetScope.getProjectRelativePath().removeLastSegments(1);
+		//IResource myResource = getJavaProject().getProject().findMember(myPath);
+		
+		return getJavaProject().getResource();
 	}
 }

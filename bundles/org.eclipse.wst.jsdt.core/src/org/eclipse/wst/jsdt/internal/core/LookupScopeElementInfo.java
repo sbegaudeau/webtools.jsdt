@@ -1,5 +1,6 @@
 package org.eclipse.wst.jsdt.internal.core;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +16,8 @@ public class LookupScopeElementInfo extends PackageFragmentRootInfo {
 	private JavaProject javaProject;
 	private IPackageFragmentRoot[] rootsInScope;
 	private LookupCache cache;
+	/* system libraries always go first if present in project*/
+	public static final String[] SYSTEM_LIBRARIES = {"system.js"};
 	
 	static class LookupCache {
 		LookupCache(IPackageFragmentRoot[] allPkgFragmentRootsCache, HashtableOfArrayToObject allPkgFragmentsCache, HashtableOfArrayToObject isPackageCache, Map rootToResolvedEntries) {
@@ -62,10 +65,29 @@ public class LookupScopeElementInfo extends PackageFragmentRootInfo {
 		} catch (JavaModelException ex) {
 			projectRoots = new IPackageFragmentRoot[0];
 		}
-		IPackageFragmentRoot[] allRoots = new IPackageFragmentRoot[rootsInScope.length + projectRoots.length ];
-		System.arraycopy(rootsInScope, 0, allRoots, 0, rootsInScope.length);
-		System.arraycopy(projectRoots, 0, allRoots, rootsInScope.length, projectRoots.length);
-		return allRoots;
+		
+		ArrayList allRoots = new ArrayList();
+		//IPackageFragmentRoot[] allRoots = new IPackageFragmentRoot[rootsInScope.length + projectRoots.length ];
+		for(int i = 0;i<SYSTEM_LIBRARIES.length;i++) {
+			for(int k=0;k<projectRoots.length;k++) {
+				if(projectRoots[k].getElementName().equalsIgnoreCase(SYSTEM_LIBRARIES[i]));
+						allRoots.add(projectRoots[k]);
+			}
+		}
+		
+		for(int i=0;i<projectRoots.length;i++) {
+			if(!allRoots.contains(projectRoots[i])) allRoots.add(projectRoots[i]);
+		}
+		
+		for(int i=0;i<rootsInScope.length;i++) {
+			if(!allRoots.contains(rootsInScope[i])) allRoots.add(rootsInScope[i]);
+		}
+		
+		for(int i=0;i<projectRoots.length;i++) {
+			if(!allRoots.contains(projectRoots[i])) allRoots.add(projectRoots[i]);
+		}
+		
+		return (IPackageFragmentRoot[])allRoots.toArray(new IPackageFragmentRoot[allRoots.size()]);
 	}
 	
 	public LookupScopeElementInfo(JavaProject project,IPackageFragmentRoot[] rootsInScope){
