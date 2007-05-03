@@ -2,6 +2,7 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 
 public class ObjectLiteral extends Expression {
@@ -39,5 +40,14 @@ public class ObjectLiteral extends Expression {
 				} 
 		}
 		visitor.endVisit(this, scope);
+	}
+	
+
+	public TypeBinding resolveType(BlockScope scope) {
+		if (this.fields!=null)
+			for (int i = 0; i < this.fields.length; i++) {
+				this.fields[i].resolveType(scope);
+			}
+		return null;
 	}
 }

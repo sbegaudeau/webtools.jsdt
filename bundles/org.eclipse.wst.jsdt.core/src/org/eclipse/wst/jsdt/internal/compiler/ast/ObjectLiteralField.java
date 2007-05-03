@@ -2,6 +2,7 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class ObjectLiteralField extends Expression {
 
@@ -36,6 +37,11 @@ public class ObjectLiteralField extends Expression {
 				initializer.traverse(visitor, scope);
 		}
 		visitor.endVisit(this, scope);
+	}
+
+
+	public TypeBinding resolveType(BlockScope scope) {
+		return initializer.resolveType(scope);
 	}
 
 }
