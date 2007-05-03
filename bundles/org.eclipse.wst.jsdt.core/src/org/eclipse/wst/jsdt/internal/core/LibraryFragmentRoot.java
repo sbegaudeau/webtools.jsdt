@@ -157,5 +157,11 @@ private ClassFile getLibraryClassFile(){
 			return;
 		super.toStringAncestors(buffer);
 	}
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.internal.core.PackageFragmentRoot#isArchive()
+	 */
+	public boolean isArchive() {
+		return true;
+	}
 
 } 
