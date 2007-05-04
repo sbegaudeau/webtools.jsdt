@@ -53,4 +53,10 @@ var window;
  * @param message the message to display
  */
 function alert(message){}
+
 function eval(s){}
+
+function isFinite (number){}
+function isNaN (number){}
+function parseFloat (string){}
+function parseInt (string , radix){}
