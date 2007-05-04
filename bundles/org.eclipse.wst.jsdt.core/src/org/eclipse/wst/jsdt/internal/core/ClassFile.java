@@ -568,7 +568,7 @@ public IPath getPath() {
  */
 public IResource getResource() {
 	PackageFragmentRoot root = this.getPackageFragmentRoot();
-	if (root.isResourceContainer()) {
+	if (!root.isResourceContainer()) {
 		return root.getResource();
 	} else {
 		return ((IContainer)this.getParent().getResource()).getFile(new Path(this.getElementName()));
