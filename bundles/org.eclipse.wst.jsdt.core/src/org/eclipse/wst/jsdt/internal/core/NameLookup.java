@@ -1432,7 +1432,7 @@ public class NameLookup implements SuffixConstants {
 					  {
 							if ((Binding.TYPE & bindingType)!=0)
 							{
-								IType thisType = classFile.getType();
+								IType thisType = classFile.getType(name);
 								if (acceptType(thisType, acceptFlags, false/*not a source type*/)) {
 									requestor.acceptType(thisType);
 								}
@@ -1446,6 +1446,7 @@ public class NameLookup implements SuffixConstants {
 							if ((Binding.VARIABLE & bindingType)!=0)
 							{
 							   field = classFile.getField(name);
+								if (field!=null && field.exists())
 								  requestor.acceptField(field);
 							}
 					  }
