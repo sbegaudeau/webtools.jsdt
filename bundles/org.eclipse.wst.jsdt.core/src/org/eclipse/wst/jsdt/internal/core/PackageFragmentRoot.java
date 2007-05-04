@@ -767,6 +767,12 @@ public boolean isArchive() {
 	return false;
 }
 
+
+public boolean isResourceContainer()
+{
+	return !isArchive();
+}
+
 /**
  * @see IPackageFragmentRoot
  */

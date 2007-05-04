@@ -108,10 +108,13 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 		return new LookupScopeElementInfo((JavaProject)getJavaProject(), new IPackageFragmentRoot[]{this});
 	}
 	
-	public boolean isArchive() {
-		return  false;
-	}
+ 
 	
+ 
+	public boolean isResourceContainer() {
+ 		return true;
+	}
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.core.LibraryFragmentRoot#computeChildren(org.eclipse.wst.jsdt.internal.core.OpenableElementInfo, java.util.Map)
 	 */
