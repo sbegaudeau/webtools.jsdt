@@ -190,10 +190,10 @@ public int nullStatus(FlowInfo flowInfo) {
 	public TypeBinding resolveType(BlockScope scope) {
 
 		constant = Constant.NotAConstant;
-		if (receiver instanceof CastExpression	// no cast check for ((type[])null)[0]
-				&& ((CastExpression)receiver).innermostCastedExpression() instanceof NullLiteral) {
-			this.receiver.bits |= DisableUnnecessaryCastCheck; // will check later on
-		}		
+//		if (receiver instanceof CastExpression	// no cast check for ((type[])null)[0]
+//				&& ((CastExpression)receiver).innermostCastedExpression() instanceof NullLiteral) {
+//			this.receiver.bits |= DisableUnnecessaryCastCheck; // will check later on
+//		}		
 		TypeBinding arrayType = receiver.resolveType(scope);
 		if (arrayType != null) {
 			receiver.computeConversion(scope, arrayType, arrayType);
@@ -201,13 +201,14 @@ public int nullStatus(FlowInfo flowInfo) {
 				TypeBinding elementType = ((ArrayBinding) arrayType).elementsType();
 				this.resolvedType = ((this.bits & IsStrictlyAssigned) == 0) ? elementType.capture(scope, this.sourceEnd) : elementType;
 			} else {
-				scope.problemReporter().referenceMustBeArrayTypeAt(arrayType, this);
+//				scope.problemReporter().referenceMustBeArrayTypeAt(arrayType, this);
+				this.resolvedType=TypeBinding.ANY;
 			}
 		}
-		TypeBinding positionType = position.resolveTypeExpecting(scope, TypeBinding.INT);
-		if (positionType != null) {
-			position.computeConversion(scope, TypeBinding.INT, positionType);
-		}
+		TypeBinding positionType = position.resolveTypeExpecting(scope, new TypeBinding[] {scope.getJavaLangNumber(),scope.getJavaLangString()});
+//		if (positionType != null) {
+//			position.computeConversion(scope, TypeBinding.INT, positionType);
+//		}
 		return this.resolvedType;
 	}
 

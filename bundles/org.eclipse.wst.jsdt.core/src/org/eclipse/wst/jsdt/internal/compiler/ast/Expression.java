@@ -529,55 +529,55 @@ public boolean checkUnsafeCast(Scope scope, TypeBinding castType, TypeBinding ex
 	 * Also check unsafe type operations.
 	 */ 
 	public void computeConversion(Scope scope, TypeBinding runtimeType, TypeBinding compileTimeType) {
-
-		if (runtimeType == null || compileTimeType == null)
-			return;
-		if (this.implicitConversion != 0) return; // already set independantly
-		
-		// it is possible for a Byte to be unboxed to a byte & then converted to an int
-		// but it is not possible for a byte to become Byte & then assigned to an Integer,
-		// or to become an int before boxed into an Integer
-		if (runtimeType != TypeBinding.NULL && runtimeType.isBaseType()) {
-			if (!compileTimeType.isBaseType()) {
-				TypeBinding unboxedType = scope.environment().computeBoxingType(compileTimeType);
-				this.implicitConversion = UNBOXING;
-				scope.problemReporter().autoboxing(this, compileTimeType, runtimeType);
-				compileTimeType = unboxedType;
-			}
-		} else if (compileTimeType != TypeBinding.NULL && compileTimeType.isBaseType()) {
-			TypeBinding boxedType = scope.environment().computeBoxingType(runtimeType);
-			if (boxedType == runtimeType) // Object o = 12;
-				boxedType = compileTimeType; 
-			this.implicitConversion = BOXING | (boxedType.id << 4) + compileTimeType.id;
-			scope.problemReporter().autoboxing(this, compileTimeType, scope.environment().computeBoxingType(boxedType));
-			return;
-		} else if (this.constant != Constant.NotAConstant && this.constant.typeID() != T_JavaLangString) {
-			this.implicitConversion = BOXING;
-			return;
-		}
-		int compileTimeTypeID, runtimeTypeID;
-		if ((compileTimeTypeID = compileTimeType.id) == NoId) { // e.g. ? extends String  ==> String (103227)
-			compileTimeTypeID = compileTimeType.erasure().id == T_JavaLangString ? T_JavaLangString : T_JavaLangObject;
-		}		
-		switch (runtimeTypeID = runtimeType.id) {
-			case T_byte :
-			case T_short :
-			case T_char :
-				this.implicitConversion |= (T_int << 4) + compileTimeTypeID;
-				break;
-			case T_JavaLangString :
-			case T_float :
-			case T_boolean :
-			case T_double :
-			case T_int : //implicitConversion may result in i2i which will result in NO code gen
-			case T_long :
-				this.implicitConversion |= (runtimeTypeID << 4) + compileTimeTypeID;
-				break;
-			default : // regular object ref
-//				if (compileTimeType.isRawType() && runtimeTimeType.isBoundParameterizedType()) {
-//				    scope.problemReporter().unsafeRawExpression(this, compileTimeType, runtimeTimeType);
-//				}		
-		}
+//
+//		if (runtimeType == null || compileTimeType == null)
+//			return;
+//		if (this.implicitConversion != 0) return; // already set independantly
+//		
+//		// it is possible for a Byte to be unboxed to a byte & then converted to an int
+//		// but it is not possible for a byte to become Byte & then assigned to an Integer,
+//		// or to become an int before boxed into an Integer
+//		if (runtimeType != TypeBinding.NULL && runtimeType.isBaseType()) {
+//			if (!compileTimeType.isBaseType()) {
+//				TypeBinding unboxedType = scope.environment().computeBoxingType(compileTimeType);
+//				this.implicitConversion = UNBOXING;
+//				scope.problemReporter().autoboxing(this, compileTimeType, runtimeType);
+//				compileTimeType = unboxedType;
+//			}
+//		} else if (compileTimeType != TypeBinding.NULL && compileTimeType.isBaseType()) {
+//			TypeBinding boxedType = scope.environment().computeBoxingType(runtimeType);
+//			if (boxedType == runtimeType) // Object o = 12;
+//				boxedType = compileTimeType; 
+//			this.implicitConversion = BOXING | (boxedType.id << 4) + compileTimeType.id;
+//			scope.problemReporter().autoboxing(this, compileTimeType, scope.environment().computeBoxingType(boxedType));
+//			return;
+//		} else if (this.constant != Constant.NotAConstant && this.constant.typeID() != T_JavaLangString) {
+//			this.implicitConversion = BOXING;
+//			return;
+//		}
+//		int compileTimeTypeID, runtimeTypeID;
+//		if ((compileTimeTypeID = compileTimeType.id) == NoId) { // e.g. ? extends String  ==> String (103227)
+//			compileTimeTypeID = compileTimeType.erasure().id == T_JavaLangString ? T_JavaLangString : T_JavaLangObject;
+//		}		
+//		switch (runtimeTypeID = runtimeType.id) {
+//			case T_byte :
+//			case T_short :
+//			case T_char :
+//				this.implicitConversion |= (T_int << 4) + compileTimeTypeID;
+//				break;
+//			case T_JavaLangString :
+//			case T_float :
+//			case T_boolean :
+//			case T_double :
+//			case T_int : //implicitConversion may result in i2i which will result in NO code gen
+//			case T_long :
+//				this.implicitConversion |= (runtimeTypeID << 4) + compileTimeTypeID;
+//				break;
+//			default : // regular object ref
+////				if (compileTimeType.isRawType() && runtimeTimeType.isBoundParameterizedType()) {
+////				    scope.problemReporter().unsafeRawExpression(this, compileTimeType, runtimeTimeType);
+////				}		
+//		}
 	}
 
 	/**
@@ -932,6 +932,30 @@ public void markAsNonNull() {
 			}
 		}
 		return expressionType;
+	}
+
+
+	public TypeBinding resolveTypeExpecting(
+		BlockScope scope,
+		TypeBinding [] expectedTypes) {
+
+		this.setExpectedType(expectedTypes[0]); // needed in case of generic method invocation
+		TypeBinding expressionType = this.resolveType(scope);
+		if (expressionType == null) return null;
+	
+		for (int i = 0; i < expectedTypes.length; i++) {
+			if (expressionType == expectedTypes[i]) return expressionType;
+			
+			if (expressionType.isCompatibleWith(expectedTypes[i])) {
+//				if (scope.isBoxingCompatibleWith(expressionType, expectedType)) {
+//					this.computeConversion(scope, expectedType, expressionType);
+//				} else {
+//				}
+					return expressionType;
+			}
+		}
+		scope.problemReporter().typeMismatchError(expressionType, expectedTypes[0], this);
+		return null;
 	}
 
 	/**

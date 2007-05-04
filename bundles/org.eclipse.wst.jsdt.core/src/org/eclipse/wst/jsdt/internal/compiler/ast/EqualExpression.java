@@ -753,6 +753,7 @@ public class EqualExpression extends BinaryExpression {
 	}
 	public TypeBinding resolveType(BlockScope scope) {
 	
+		constant = Constant.NotAConstant;
 			boolean leftIsCast, rightIsCast;
 			if ((leftIsCast = left instanceof CastExpression) == true) left.bits |= DisableUnnecessaryCastCheck; // will check later on
 			TypeBinding originalLeftType = left.resolveType(scope);
@@ -781,6 +782,10 @@ public class EqualExpression extends BinaryExpression {
 			}
 		}
 		// both base type
+		if (leftType.isAnyType() || rightType.isAnyType())
+		{
+		  return  TypeBinding.BOOLEAN;
+		}
 		if ( leftType.isBasicType() && rightType.isBasicType()) {
 			int leftTypeID = leftType.id;
 			int rightTypeID = rightType.id;

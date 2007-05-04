@@ -307,37 +307,37 @@ public TypeBinding resolveType(BlockScope scope) {
 	// Base type promotion
 
 	constant = Constant.NotAConstant;
-	boolean receiverCast = false, argsContainCast = false; 
-	if (this.receiver instanceof CastExpression) {
-		this.receiver.bits |= DisableUnnecessaryCastCheck; // will check later on
-		receiverCast = true;
-	}
+//	boolean receiverCast = false, argsContainCast = false; 
+//	if (this.receiver instanceof CastExpression) {
+//		this.receiver.bits |= DisableUnnecessaryCastCheck; // will check later on
+//		receiverCast = true;
+//	}
 	this.actualReceiverType = (receiver!=null) ?receiver.resolveType(scope):null; 
 	boolean receiverIsType = receiver instanceof NameReference && (((NameReference) receiver).bits & Binding.TYPE) != 0;
-	if (receiverCast && this.actualReceiverType != null) {
-		 // due to change of declaring class with receiver type, only identity cast should be notified
-		if (((CastExpression)this.receiver).expression.resolvedType == this.actualReceiverType) { 
-			scope.problemReporter().unnecessaryCast((CastExpression)this.receiver);		
-		}
-	}
-	// resolve type arguments (for generic constructor call)
-	if (this.typeArguments != null) {
-		int length = this.typeArguments.length;
-		boolean argHasError = false; // typeChecks all arguments
-		this.genericTypeArguments = new TypeBinding[length];
-		for (int i = 0; i < length; i++) {
-			TypeReference typeReference = this.typeArguments[i];
-			if ((this.genericTypeArguments[i] = typeReference.resolveType(scope, true /* check bounds*/)) == null) {
-				argHasError = true;
-			}
-			if (argHasError && typeReference instanceof Wildcard) {
-				scope.problemReporter().illegalUsageOfWildcard(typeReference);
-			}
-		}
-		if (argHasError) {
-			return null;
-		}
-	}	
+//	if (receiverCast && this.actualReceiverType != null) {
+//		 // due to change of declaring class with receiver type, only identity cast should be notified
+//		if (((CastExpression)this.receiver).expression.resolvedType == this.actualReceiverType) { 
+//			scope.problemReporter().unnecessaryCast((CastExpression)this.receiver);		
+//		}
+//	}
+//	// resolve type arguments (for generic constructor call)
+//	if (this.typeArguments != null) {
+//		int length = this.typeArguments.length;
+//		boolean argHasError = false; // typeChecks all arguments
+//		this.genericTypeArguments = new TypeBinding[length];
+//		for (int i = 0; i < length; i++) {
+//			TypeReference typeReference = this.typeArguments[i];
+//			if ((this.genericTypeArguments[i] = typeReference.resolveType(scope, true /* check bounds*/)) == null) {
+//				argHasError = true;
+//			}
+//			if (argHasError && typeReference instanceof Wildcard) {
+//				scope.problemReporter().illegalUsageOfWildcard(typeReference);
+//			}
+//		}
+//		if (argHasError) {
+//			return null;
+//		}
+//	}	
 	// will check for null after args are resolved
 	TypeBinding[] argumentTypes = Binding.NO_PARAMETERS;
 	if (arguments != null) {
@@ -346,10 +346,10 @@ public TypeBinding resolveType(BlockScope scope) {
 		argumentTypes = new TypeBinding[length];
 		for (int i = 0; i < length; i++){
 			Expression argument = arguments[i];
-			if (argument instanceof CastExpression) {
-				argument.bits |= DisableUnnecessaryCastCheck; // will check later on
-				argsContainCast = true;
-			}
+//			if (argument instanceof CastExpression) {
+//				argument.bits |= DisableUnnecessaryCastCheck; // will check later on
+//				argsContainCast = true;
+//			}
 			if ((argumentTypes[i] = argument.resolveType(scope)) == null){
 				argHasError = true;
 			}
@@ -394,7 +394,7 @@ public TypeBinding resolveType(BlockScope scope) {
 			receiver==null || receiver.isImplicitThis()
 				? scope.getImplicitMethod(selector, argumentTypes, this)
 						: scope.getMethod(this.actualReceiverType, selector, argumentTypes, this); 
-	if (!binding.isValidBinding()) {
+	if (!binding.isValidBinding() && this.actualReceiverType!=TypeBinding.ANY) {
 		if (binding.declaringClass == null) {
 			if (this.actualReceiverType==null || this.actualReceiverType instanceof ReferenceBinding) {
 				binding.declaringClass = (ReferenceBinding) this.actualReceiverType;
@@ -477,7 +477,10 @@ public TypeBinding resolveType(BlockScope scope) {
 		this.resolvedType = actualReceiverType;
 	} else {
 		TypeBinding returnType = this.binding.returnType;
-		if (returnType != null) returnType = returnType.capture(scope, this.sourceEnd);
+		if (returnType != null) 
+			returnType = returnType.capture(scope, this.sourceEnd);
+		else 
+			returnType=TypeBinding.ANY;
 		this.resolvedType = returnType;
 	}
 	if (receiver!=null && receiver.isSuper() && compilerOptions.getSeverity(CompilerOptions.OverridingMethodWithoutSuperInvocation) != ProblemSeverities.Ignore) {

@@ -212,25 +212,25 @@ public class SingleNameReference extends NameReference implements OperatorIds {
 	 * @see org.eclipse.wst.jsdt.internal.compiler.ast.Expression#computeConversion(org.eclipse.wst.jsdt.internal.compiler.lookup.Scope, org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding, org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding)
 	 */
 	public void computeConversion(Scope scope, TypeBinding runtimeTimeType, TypeBinding compileTimeType) {
-		if (runtimeTimeType == null || compileTimeType == null)
-			return;				
-		if ((bits & Binding.FIELD) != 0 && this.binding != null && this.binding.isValidBinding()) {
-			// set the generic cast after the fact, once the type expectation is fully known (no need for strict cast)
-			FieldBinding field = (FieldBinding) this.binding;
-			FieldBinding originalBinding = field.original();
-			TypeBinding originalType = originalBinding.type;
-		    // extra cast needed if method return type is type variable
-			if (originalBinding != field 
-					&& originalType != field.type
-					&& runtimeTimeType.id != T_JavaLangObject
-					&& (originalType.tagBits & TagBits.HasTypeVariable) != 0) {
-		    	TypeBinding targetType = (!compileTimeType.isBaseType() && runtimeTimeType.isBaseType()) 
-		    		? compileTimeType  // unboxing: checkcast before conversion
-		    		: runtimeTimeType;
-		        this.genericCast = originalType.genericCast(scope.boxing(targetType));
-			} 	
-		}
-		super.computeConversion(scope, runtimeTimeType, compileTimeType);
+//		if (runtimeTimeType == null || compileTimeType == null)
+//			return;				
+//		if ((bits & Binding.FIELD) != 0 && this.binding != null && this.binding.isValidBinding()) {
+//			// set the generic cast after the fact, once the type expectation is fully known (no need for strict cast)
+//			FieldBinding field = (FieldBinding) this.binding;
+//			FieldBinding originalBinding = field.original();
+//			TypeBinding originalType = originalBinding.type;
+//		    // extra cast needed if method return type is type variable
+//			if (originalBinding != field 
+//					&& originalType != field.type
+//					&& runtimeTimeType.id != T_JavaLangObject
+//					&& (originalType.tagBits & TagBits.HasTypeVariable) != 0) {
+//		    	TypeBinding targetType = (!compileTimeType.isBaseType() && runtimeTimeType.isBaseType()) 
+//		    		? compileTimeType  // unboxing: checkcast before conversion
+//		    		: runtimeTimeType;
+//		        this.genericCast = originalType.genericCast(scope.boxing(targetType));
+//			} 	
+//		}
+//		super.computeConversion(scope, runtimeTimeType, compileTimeType);
 	}	
 
 	public void generateAssignment(BlockScope currentScope, CodeStream codeStream, Assignment assignment, boolean valueRequired) {
