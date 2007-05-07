@@ -763,12 +763,12 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 					return;
 			}
 
-			if (sourceViewer instanceof ISourceViewerExtension3) {
+//			if (sourceViewer instanceof ISourceViewerExtension3) {
 				// does an annotation hover exist?
-				IAnnotationHover annotationHover= ((ISourceViewerExtension3) sourceViewer).getCurrentAnnotationHover();
-				if (annotationHover != null && makeAnnotationHoverFocusable(sourceViewer, annotationHover))
-					return;
-			}
+//				IAnnotationHover annotationHover= ((ISourceViewerExtension3) sourceViewer).getCurrentAnnotationHover();
+//				if (annotationHover != null && makeAnnotationHoverFocusable(sourceViewer, annotationHover))
+//					return;
+//			}
 			
 			// otherwise, just run the action
 			fTextOperationAction.run();

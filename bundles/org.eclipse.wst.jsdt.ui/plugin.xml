@@ -395,12 +395,14 @@
             class="org.eclipse.wst.jsdt.internal.ui.text.java.hover.JavaSourceHover"
             id="org.eclipse.wst.jsdt.ui.JavaSourceHover">
       </hover>
+<!--
       <hover
             label="%annotationHover"
             description="%annotationHoverDescription"
             class="org.eclipse.wst.jsdt.internal.ui.text.java.hover.AnnotationHover"
             id="org.eclipse.wst.jsdt.ui.AnnotationHover">
       </hover>
+-->
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
