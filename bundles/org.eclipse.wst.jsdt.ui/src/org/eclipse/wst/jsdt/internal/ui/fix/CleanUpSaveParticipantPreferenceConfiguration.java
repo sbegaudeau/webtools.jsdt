@@ -67,10 +67,10 @@ public class CleanUpSaveParticipantPreferenceConfiguration extends AbstractSaveP
 	private Map fSettings;
 	private Text fSelectedActionsText;
 	private Button fFormatCodeButton;
-	private Button fOrganizeImportsButton;
+//	private Button fOrganizeImportsButton;
 	private Shell fShell;
 	private Link fFormatConfigLink;
-	private Link fOrganizeImportsConfigLink;
+//	private Link fOrganizeImportsConfigLink;
 	private IPreferencePageContainer fContainer;
 	private Button fAdditionalActionButton;
 	private Composite fAdvancedComposite;
@@ -114,24 +114,24 @@ public class CleanUpSaveParticipantPreferenceConfiguration extends AbstractSaveP
 		gridData2.minimumHeight= heightOneHalf;
 		fFormatConfigLink.setLayoutData(gridData2);
 		
-		fOrganizeImportsButton= new Button(composite, SWT.CHECK);
-		fOrganizeImportsButton.setText(SaveParticipantMessages.CleanUpSaveParticipantPreferenceConfiguration_SaveActionPreferencePage_OrganizeImports_Checkbox);
-		fOrganizeImportsButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		fOrganizeImportsButton.addSelectionListener(new SelectionAdapter() {
-			/**
-			 * {@inheritDoc}
-			 */
-			public void widgetSelected(SelectionEvent e) {
-				changeSettingsValue(CleanUpConstants.ORGANIZE_IMPORTS, fOrganizeImportsButton.getSelection());
-			}
-		});
+//		fOrganizeImportsButton= new Button(composite, SWT.CHECK);
+//		fOrganizeImportsButton.setText(SaveParticipantMessages.CleanUpSaveParticipantPreferenceConfiguration_SaveActionPreferencePage_OrganizeImports_Checkbox);
+//		fOrganizeImportsButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+//		fOrganizeImportsButton.addSelectionListener(new SelectionAdapter() {
+//			/**
+//			 * {@inheritDoc}
+//			 */
+//			public void widgetSelected(SelectionEvent e) {
+//				changeSettingsValue(CleanUpConstants.ORGANIZE_IMPORTS, fOrganizeImportsButton.getSelection());
+//			}
+//		});
 		
-		fOrganizeImportsConfigLink= new Link(composite, SWT.NONE);
-		fOrganizeImportsConfigLink.setText(SaveParticipantMessages.CleanUpSaveParticipantPreferenceConfiguration_ConfigureImports_Link);
-		GridData gridData3= new GridData(SWT.LEFT, SWT.TOP, false, true);
-		gridData3.horizontalIndent= 20;
-		gridData3.minimumHeight= heightOneHalf;
-		fOrganizeImportsConfigLink.setLayoutData(gridData3);
+//		fOrganizeImportsConfigLink= new Link(composite, SWT.NONE);
+//		fOrganizeImportsConfigLink.setText(SaveParticipantMessages.CleanUpSaveParticipantPreferenceConfiguration_ConfigureImports_Link);
+//		GridData gridData3= new GridData(SWT.LEFT, SWT.TOP, false, true);
+//		gridData3.horizontalIndent= 20;
+//		gridData3.minimumHeight= heightOneHalf;
+//		fOrganizeImportsConfigLink.setLayoutData(gridData3);
 		
 		fAdditionalActionButton= new Button(composite, SWT.CHECK);
 		fAdditionalActionButton.setText(SaveParticipantMessages.CleanUpSaveParticipantPreferenceConfiguration_AdditionalActions_Checkbox);
@@ -199,7 +199,7 @@ public class CleanUpSaveParticipantPreferenceConfiguration extends AbstractSaveP
 		}
 		
 		configurePreferenceLink(fFormatConfigLink, javaProject, CodeFormatterPreferencePage.PREF_ID, CodeFormatterPreferencePage.PROP_ID);
-		configurePreferenceLink(fOrganizeImportsConfigLink, javaProject, ImportOrganizePreferencePage.PREF_ID, ImportOrganizePreferencePage.PROP_ID);
+//		configurePreferenceLink(fOrganizeImportsConfigLink, javaProject, ImportOrganizePreferencePage.PREF_ID, ImportOrganizePreferencePage.PROP_ID);
 		
 		super.initialize(context, element);
 	}
@@ -280,7 +280,7 @@ public class CleanUpSaveParticipantPreferenceConfiguration extends AbstractSaveP
 	
 	private void settingsChanged() {
 		fFormatCodeButton.setSelection(CleanUpConstants.TRUE.equals(fSettings.get(CleanUpConstants.FORMAT_SOURCE_CODE)));
-		fOrganizeImportsButton.setSelection(CleanUpConstants.TRUE.equals(fSettings.get(CleanUpConstants.ORGANIZE_IMPORTS)));
+//		fOrganizeImportsButton.setSelection(CleanUpConstants.TRUE.equals(fSettings.get(CleanUpConstants.ORGANIZE_IMPORTS)));
 		fAdditionalActionButton.setSelection(CleanUpConstants.TRUE.equals(fSettings.get(CleanUpConstants.CLEANUP_ON_SAVE_ADDITIONAL_OPTIONS)));
 		
 		updateAdvancedEnableState();
