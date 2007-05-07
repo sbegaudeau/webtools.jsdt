@@ -232,14 +232,14 @@ public final class PreferencesMessages extends NLS {
 	public static String JavaEditorHoverConfigurationBlock_showAffordance;
 	public static String MarkOccurrencesConfigurationBlock_title;
 	public static String MarkOccurrencesConfigurationBlock_markOccurrences;
-	public static String MarkOccurrencesConfigurationBlock_markTypeOccurrences;
+//	public static String MarkOccurrencesConfigurationBlock_markTypeOccurrences;
 	public static String MarkOccurrencesConfigurationBlock_markMethodOccurrences;
 	public static String MarkOccurrencesConfigurationBlock_markConstantOccurrences;
-	public static String MarkOccurrencesConfigurationBlock_markFieldOccurrences;
+//	public static String MarkOccurrencesConfigurationBlock_markFieldOccurrences;
 	public static String MarkOccurrencesConfigurationBlock_markLocalVariableOccurrences;
-	public static String MarkOccurrencesConfigurationBlock_markExceptionOccurrences;
+//	public static String MarkOccurrencesConfigurationBlock_markExceptionOccurrences;
 	public static String MarkOccurrencesConfigurationBlock_markMethodExitPoints;
-	public static String MarkOccurrencesConfigurationBlock_markImplementors;
+//	public static String MarkOccurrencesConfigurationBlock_markImplementors;
 	public static String MarkOccurrencesConfigurationBlock_markBreakContinueTargets;
 	public static String MarkOccurrencesConfigurationBlock_stickyOccurrences;
 	public static String JavaElementInfoPage_binary;
