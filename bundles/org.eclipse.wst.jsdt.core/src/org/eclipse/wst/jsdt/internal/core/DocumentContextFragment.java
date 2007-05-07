@@ -91,9 +91,13 @@ public class DocumentContextFragment extends LibraryPackageFragment{
 		if(!DocumentContextFragmentRoot.RETURN_CU) return getClassFile(resource);
 		IPath workspacePath = getPackageFragmentRoot().getJavaProject().getProject().getWorkspace().getRoot().getLocation();
 		/* remove the file part of the path */
-		IPath resourcePath = new Path(resource);
+		IResource elementResource=null;
+		if(getResource() instanceof IContainer) {
+			elementResource = ((IContainer)getResource()).findMember(resource);
+		}
 		//if(true) return getClassFile(resource);
-		if(!resourcePath.isAbsolute() || workspacePath.isPrefixOf(resourcePath.removeLastSegments(1))) {
+		
+		if(elementResource!=null && elementResource.exists()) {
 			try {
 				//return createCompilationUnit(resource, null, true, new NullProgressMonitor());
 				ICompilationUnit unit = getCompilationUnit(resource);

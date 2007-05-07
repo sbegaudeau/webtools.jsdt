@@ -52,26 +52,29 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	private IFile fRelativeFile;
 	private boolean dirty;
 	private IResource absolutePath;
+	private IPath webContext;
 	
 	public static final Boolean RETURN_CU = true;
 	
 
 	public DocumentContextFragmentRoot(IJavaProject project,
 									   IFile resourceRelativeFile,
-									   IResource resourceAbsolutePath) {
+									   IPath resourceAbsolutePath,
+									   IPath webContext) {
 		
-		super(resourceAbsolutePath.getLocation(), (JavaProject)project);
+		super(resourceAbsolutePath, (JavaProject)project);
 		
 		fRelativeFile = resourceRelativeFile ;
 		this.includedFiles = new Vector();
 		dirty = true;
-		absolutePath = resourceAbsolutePath;
+		this.absolutePath = ((IContainer)project.getResource()).findMember(resourceAbsolutePath);
+		this.webContext=webContext;
 	}
 	
 	public DocumentContextFragmentRoot(IJavaProject project,
 			   						   IFile resourceRelativeFile) {
 		
-			this(project,resourceRelativeFile, project.getResource());
+			this(project,resourceRelativeFile, new Path(""), new Path(""));
 	}
 	
 	
@@ -79,22 +82,38 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 		return (String[])includedFiles.toArray(new String[includedFiles.size()]);
 	}
 	
-	public void addFile(String fileName) {
-		if(fileName!=null && !fileName.equals("") && !includedFiles.contains(fileName) && isValidImport(fileName)) includedFiles.add(fileName);
-		dirty=true;
+	public boolean addFile(String fileName) {
+		if(fileName!=null && !fileName.equals("") && !includedFiles.contains(fileName) && isValidImport(fileName)) {
+			includedFiles.add(fileName);
+			return dirty = true;
+		}
+		return false;
 	}
 	
 	public void removeFile(String fileName) {
-		if(fileName!=null && !includedFiles.contains(fileName)) includedFiles.remove(fileName);
-		dirty=true;
+		if(fileName!=null && !includedFiles.contains(fileName)) { includedFiles.remove(fileName);
+			dirty=true;
+		}
 	}
 	
 	public void setIncludedFiles(String[] fileNames) {
-		includedFiles.clear();
-		dirty=true;
-		for(int i = 0;i<fileNames.length;i++) {
+	
+		
+		boolean updated = includedFiles.size()!=fileNames.length;
+		
+		for(int i = 0;!updated && i<fileNames.length;i++) {
+			if(addFile(fileNames[i])) {
+				updated = true;
+				
+			}
+		}
+		
+		if(updated) includedFiles.clear();
+		
+		for(int i = 0;updated && i<fileNames.length;i++) {
 			addFile(fileNames[i]);
 		}
+		
 	}
 
 	public IResource getRelativeAsResource(String path) {
@@ -147,10 +166,14 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 			
 			case '/':
 			case '\\':
-				member = ((IContainer)getResource()).findMember(new Path(childPathString));
+				IPath childPath = new Path(childPathString);
+				
+				IPath newPath = childPath.removeFirstSegments(childPath.matchingFirstSegments(webContext));
+				
+				member = ((IContainer)getResource()).findMember(newPath);
 				if(member.exists()) return new Path(childPathString);
 				
-				resolvedPath = new Path(childPathString).makeAbsolute();
+				resolvedPath = childPath;
 				break;
 			default:
 				resolvedPath = new Path(childPathString).makeAbsolute();
