@@ -99,15 +99,8 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	public void setIncludedFiles(String[] fileNames) {
 	
 		
-		boolean updated = includedFiles.size()!=fileNames.length;
-		
-		for(int i = 0;!updated && i<fileNames.length;i++) {
-			if(addFile(fileNames[i])) {
-				updated = true;
+		boolean updated = !(includedFiles.containsAll(Arrays.asList(fileNames)) && (includedFiles.size() == fileNames.length));
 				
-			}
-		}
-		
 		if(updated) includedFiles.clear();
 		
 		for(int i = 0;updated && i<fileNames.length;i++) {
@@ -163,7 +156,13 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 		IResource member;
 		switch(childPathString.charAt(0)) {
 			
+			default:
+				resolvedPath = new Path(childPathString);
+			//if(resolvedPath.toFile()!=null && resolvedPath.toFile().exists()) break;
 			
+			member = ((IContainer)getResource()).findMember(resolvedPath);
+
+			if(member!=null && member.exists()) break;
 			case '/':
 			case '\\':
 				IPath childPath = new Path(childPathString);
@@ -171,17 +170,10 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 				IPath newPath = childPath.removeFirstSegments(childPath.matchingFirstSegments(webContext));
 				
 				member = ((IContainer)getResource()).findMember(newPath);
-				if(member.exists()) return new Path(childPathString);
+				//if(member.exists()) return new Path(newPath);
 				
-				resolvedPath = childPath;
-				break;
-			default:
-				resolvedPath = new Path(childPathString).makeAbsolute();
-				if(resolvedPath.toFile()!=null && resolvedPath.toFile().exists()) break;
-				
-				member = ((IContainer)getResource()).findMember(new Path(childPathString));
-
-				if(member!=null && member.exists()) break;
+				resolvedPath = newPath;
+				break;				
 			case '.':
 				/* returns a new relative path thats relative to the resource */
 				IPath relative = fRelativeFile.getProjectRelativePath().removeLastSegments(1);
@@ -317,12 +309,20 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	}
 	
 	public boolean isValidImport(String importName) {
+			
 		File file = resolveChildPath(importName).toFile();
 		if(file.isFile()) {
 			return true;
 		}else {
+			IPath childPath = new Path(importName);
 			IFile resolved =  ((IContainer)getResource()).getFile(new Path(file.getPath()));
+			
 			boolean exists =  resolved.exists();
+			/* Special case for absolute paths specified with \ and / */
+			if( importName.charAt(0)=='\\' || importName.charAt(0)=='/'){
+				int seg = childPath.matchingFirstSegments(webContext); 
+				exists = exists && (webContext!=new Path("") && seg >0);
+			}
 			return exists;
 		}
 	}

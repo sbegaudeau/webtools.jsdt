@@ -16,8 +16,11 @@ public class LookupScopeElementInfo extends PackageFragmentRootInfo {
 	private JavaProject javaProject;
 	private IPackageFragmentRoot[] rootsInScope;
 	private LookupCache cache;
-	/* system libraries always go first if present in project*/
-	public static final String[] SYSTEM_LIBRARIES = {"system.js"};
+
+	//public static final String[] SYSTEM_LIBRARIES = {"system.js"};
+	
+	/* places imports in the document scope before the classpath entries */
+	private static final Boolean LOOKUP_LOCAL_SCOPE_FIRST = false;
 	
 	static class LookupCache {
 		LookupCache(IPackageFragmentRoot[] allPkgFragmentRootsCache, HashtableOfArrayToObject allPkgFragmentsCache, HashtableOfArrayToObject isPackageCache, Map rootToResolvedEntries) {
@@ -57,37 +60,41 @@ public class LookupScopeElementInfo extends PackageFragmentRootInfo {
 		}
 		return new String[0];
 	}
-	
+
 	public IPackageFragmentRoot[] getAllRoots() {
-		IPackageFragmentRoot[] projectRoots;
+		if(LOOKUP_LOCAL_SCOPE_FIRST) return getAllRootsLocalFirst();
+		
+		return getAllRootsGlobalFirst();
+	}
+
+	private IPackageFragmentRoot[] getAllRootsGlobalFirst() {
+		IPackageFragmentRoot[] projectRoots = new IPackageFragmentRoot[0];
 		try {
 			projectRoots = javaProject.getPackageFragmentRoots();
 		} catch (JavaModelException ex) {
 			projectRoots = new IPackageFragmentRoot[0];
 		}
 		
-		ArrayList allRoots = new ArrayList();
-		//IPackageFragmentRoot[] allRoots = new IPackageFragmentRoot[rootsInScope.length + projectRoots.length ];
-		for(int i = 0;i<SYSTEM_LIBRARIES.length;i++) {
-			for(int k=0;k<projectRoots.length;k++) {
-				if(projectRoots[k].getElementName().equalsIgnoreCase(SYSTEM_LIBRARIES[i]));
-						allRoots.add(projectRoots[k]);
-			}
+		IPackageFragmentRoot[]  allRoots = new IPackageFragmentRoot[projectRoots.length + rootsInScope.length ]; 
+		
+		System.arraycopy(projectRoots, 0, allRoots, 0, projectRoots.length);
+		System.arraycopy(rootsInScope, 0, allRoots, projectRoots.length, rootsInScope.length);
+		return allRoots;
+	}
+	
+	private IPackageFragmentRoot[] getAllRootsLocalFirst() {
+		IPackageFragmentRoot[] projectRoots = new IPackageFragmentRoot[0];
+		try {
+			projectRoots = javaProject.getPackageFragmentRoots();
+		} catch (JavaModelException ex) {
+			projectRoots = new IPackageFragmentRoot[0];
 		}
 		
-		for(int i=0;i<projectRoots.length;i++) {
-			if(!allRoots.contains(projectRoots[i])) allRoots.add(projectRoots[i]);
-		}
+		IPackageFragmentRoot[]  allRoots = new IPackageFragmentRoot[projectRoots.length + rootsInScope.length ]; 
 		
-		for(int i=0;i<rootsInScope.length;i++) {
-			if(!allRoots.contains(rootsInScope[i])) allRoots.add(rootsInScope[i]);
-		}
-		
-		for(int i=0;i<projectRoots.length;i++) {
-			if(!allRoots.contains(projectRoots[i])) allRoots.add(projectRoots[i]);
-		}
-		
-		return (IPackageFragmentRoot[])allRoots.toArray(new IPackageFragmentRoot[allRoots.size()]);
+		System.arraycopy(rootsInScope, 0, allRoots, 0, rootsInScope.length);
+		System.arraycopy(projectRoots, 0, allRoots, rootsInScope.length, projectRoots.length);
+		return allRoots;
 	}
 	
 	public LookupScopeElementInfo(JavaProject project,IPackageFragmentRoot[] rootsInScope){
