@@ -31,7 +31,8 @@ public interface TerminalTokens {
 	int TokenNameWHITESPACE = 1000,
 		TokenNameCOMMENT_LINE = 1001,
 		TokenNameCOMMENT_BLOCK = 1002,
-		TokenNameCOMMENT_JAVADOC = 1003;
+		TokenNameCOMMENT_JAVADOC = 1003,
+		TokenNameUNKNOWN=1004;
 
 	int
     TokenNameIdentifier = 32,

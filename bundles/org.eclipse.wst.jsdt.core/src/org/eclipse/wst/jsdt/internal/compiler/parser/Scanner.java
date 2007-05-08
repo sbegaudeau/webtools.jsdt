@@ -4158,7 +4158,8 @@ protected boolean checkIfDivide(int previousToken){
 			previousToken == TokenNameCharacterLiteral ||
 			previousToken == TokenNameIntegerLiteral ||
 			previousToken == TokenNameRPAREN ||
-			previousToken == TokenNameRBRACKET) {
+			previousToken == TokenNameRBRACKET ||
+			previousToken == TokenNameUNKNOWN) {
 		
 		return true;
 	}

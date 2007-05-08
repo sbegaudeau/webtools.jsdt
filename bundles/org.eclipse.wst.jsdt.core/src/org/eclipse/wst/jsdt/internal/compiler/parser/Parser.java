@@ -8384,6 +8384,7 @@ protected boolean moveRecoveryCheckpoint() {
 	/* reset this.scanner, and move checkpoint by one token */
 	this.scanner.startPosition = pos;
 	this.scanner.currentPosition = pos;
+	this.scanner.currentToken=TokenNameUNKNOWN;
 	this.scanner.diet = false; // quit jumping over method bodies
 	
 	/* if about to restart, then no need to shift token */
@@ -8419,6 +8420,7 @@ protected boolean moveRecoveryCheckpoint() {
 	/* reset this.scanner again to previous checkpoint location*/
 	this.scanner.startPosition = pos;
 	this.scanner.currentPosition = pos;
+	this.scanner.currentToken=TokenNameUNKNOWN;
 	this.scanner.commentPtr = -1;
 	this.scanner.foundTaskCount = 0;
 	return true;
@@ -9736,7 +9738,8 @@ public void recoveryTokenCheck() {
 			break;
 		case TokenNameSEMICOLON :
 			this.endStatementPosition = this.scanner.currentPosition - 1;
-			this.endPosition = this.scanner.startPosition - 1; 
+			this.endPosition = this.scanner.startPosition - 1;
+			this.lastCheckPoint=this.scanner.currentPosition;
 //			RecoveredType currentType = this.currentRecoveryType();
 //			if(currentType != null) {
 //				currentType.insideEnumConstantPart = false;
