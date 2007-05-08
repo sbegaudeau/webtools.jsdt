@@ -1341,6 +1341,7 @@
             id="org.eclipse.wst.jsdt.ui.preferences.CodeAssistPreferenceAdvanced">
             <keywordReference id="org.eclipse.wst.jsdt.ui.contentassist"/>
       </page>
+<!--
       <page
             name="%contentAssistFavoritesName"
             category="org.eclipse.wst.jsdt.ui.preferences.CodeAssistPreferencePage"
@@ -1348,6 +1349,7 @@
             id="org.eclipse.wst.jsdt.ui.preferences.CodeAssistPreferenceFavorites">
             <keywordReference id="org.eclipse.wst.jsdt.ui.contentassist"/>
       </page>
+-->
       <page
             name="%editorHoversPageName"
             category="org.eclipse.wst.jsdt.ui.preferences.JavaEditorPreferencePage"
