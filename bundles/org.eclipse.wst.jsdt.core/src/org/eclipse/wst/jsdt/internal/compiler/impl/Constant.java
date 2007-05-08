@@ -21,7 +21,8 @@ public abstract class Constant implements TypeIds, OperatorIds {
 
 	public boolean booleanValue() {
 
-		throw new ShouldNotImplement(Messages.bind(Messages.constant_cannotCastedInto, new String[] { typeName(), "boolean" })); //$NON-NLS-1$
+		return false;
+//		throw new ShouldNotImplement(Messages.bind(Messages.constant_cannotCastedInto, new String[] { typeName(), "boolean" })); //$NON-NLS-1$
 	}
 
 	public byte byteValue() {

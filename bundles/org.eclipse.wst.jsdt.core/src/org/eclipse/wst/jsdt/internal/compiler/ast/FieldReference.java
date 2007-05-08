@@ -525,7 +525,7 @@ public TypeBinding resolveType(BlockScope scope) {
 	// the case receiverType.isArrayType and token = 'length' is handled by the scope API
 	FieldBinding fieldBinding = this.codegenBinding = this.binding = scope.getField(this.receiverType, token, this);
 	if (!fieldBinding.isValidBinding()) {
-//		constant = Constant.NotAConstant;
+		constant = Constant.NotAConstant;
 //		scope.problemReporter().invalidField(this, this.receiverType);
 //		return null;
 		return this.resolvedType=TypeBinding.ANY;
