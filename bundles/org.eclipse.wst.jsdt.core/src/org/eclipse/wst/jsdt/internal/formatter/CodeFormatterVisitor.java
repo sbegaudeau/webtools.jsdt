@@ -3558,7 +3558,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		if (this.preferences.put_empty_statement_on_new_line) {
 			this.scribe.printNewLine();
 		}
-		this.scribe.printNextToken(TerminalTokens.TokenNameSEMICOLON, this.preferences.insert_space_before_semicolon);
+		this.scribe.printOptionalNextToken(TerminalTokens.TokenNameSEMICOLON, this.preferences.insert_space_before_semicolon);
 		this.scribe.printTrailingComment();
 		return false;	
 	}
@@ -5412,6 +5412,9 @@ public class CodeFormatterVisitor extends ASTVisitor {
 				break;
 			case OperatorIds.VOID:
 				operator = TerminalTokens.TokenNamevoid;
+				break;
+			case OperatorIds.TYPEOF:
+				operator = TerminalTokens.TokenNametypeof;
 				break;
 			default:
 				operator = TerminalTokens.TokenNameNOT;
