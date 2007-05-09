@@ -430,7 +430,7 @@ public TypeBinding resolveType(BlockScope scope) {
 	final CompilerOptions compilerOptions = scope.compilerOptions();
 	if (!binding.isStatic()) {
 		// the "receiver" must not be a type, in other words, a NameReference that the TC has bound to a Type
-		if (receiverIsType) {
+		if (receiverIsType && binding.isValidBinding()) {
 			scope.problemReporter().mustUseAStaticMethod(this, binding);
 			if (this.actualReceiverType.isRawType() 
 					&& (this.receiver.bits & IgnoreRawTypeCheck) == 0 
