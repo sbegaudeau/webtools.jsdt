@@ -399,11 +399,11 @@ public class LineWrappingTabPage extends ModifyDialogTabPage {
 	    FormatterMessages.LineWrappingTabPage_arguments
 	); 
 
-	private final Category fMessageSendSelectorCategory= new Category(
-	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_SELECTOR_IN_METHOD_INVOCATION,
-	    "function foofoofoofoofoo(aLongParmName) {return aLongParmName.getFirstSomething();}", //$NON-NLS-1$
-	    FormatterMessages.LineWrappingTabPage_qualified_invocations
-	);
+//	private final Category fMessageSendSelectorCategory= new Category(
+//	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_SELECTOR_IN_METHOD_INVOCATION,
+//	    "function foofoofoofoofoo(aLongParmName) {return aLongParmName.getFirstSomething();}", //$NON-NLS-1$
+//	    FormatterMessages.LineWrappingTabPage_qualified_invocations
+//	);
 	
 //	private final Category fMethodThrowsClauseCategory= new Category(
 //	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_THROWS_CLAUSE_IN_METHOD_DECLARATION, 
@@ -603,7 +603,7 @@ public class LineWrappingTabPage extends ModifyDialogTabPage {
 		
 		final Category functionCalls= new Category(FormatterMessages.LineWrappingTabPage_function_calls); 
 		functionCalls.children.add(fMessageSendArgumentsCategory);
-		functionCalls.children.add(fMessageSendSelectorCategory);
+//		functionCalls.children.add(fMessageSendSelectorCategory);
 //		functionCalls.children.add(fExplicitConstructorArgumentsCategory);
 		functionCalls.children.add(fAllocationExpressionArgumentsCategory);
 		functionCalls.children.add(fQualifiedAllocationExpressionCategory);
