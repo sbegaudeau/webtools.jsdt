@@ -47,6 +47,14 @@ public class NewLinesTabPage extends ModifyDialogTabPage {
 	"\n" + //$NON-NLS-1$
 	"    var abc = 1;\n" + //$NON-NLS-1$
 	"    var xyz = 'one';\n" + //$NON-NLS-1$
+	"    var arr1 = ['123',function() {return 5},'abc'];\n" + //$NON-NLS-1$
+	"    var obj1 = [ make: 'Ford', model: 'Thunderbird', year: 1967 ];\n" + //$NON-NLS-1$
+	"\n" + //$NON-NLS-1$
+	"    if (data>5) {\n" + //$NON-NLS-1$
+	"	     data = 5;\n" + //$NON-NLS-1$
+	"    } else {\n" + //$NON-NLS-1$
+	"	     data--;\n" + //$NON-NLS-1$
+	"    }\n" + //$NON-NLS-1$
 	"\n" + //$NON-NLS-1$
 	"    switch (data) {\n" + //$NON-NLS-1$
 	"\n" + //$NON-NLS-1$
