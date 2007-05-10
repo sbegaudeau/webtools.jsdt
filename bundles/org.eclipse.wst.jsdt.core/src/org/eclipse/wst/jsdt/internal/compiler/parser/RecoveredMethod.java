@@ -457,7 +457,10 @@ public RecoveredElement updateOnClosingBrace(int braceStart, int braceEnd){
 			}
 		}
 	}
-	return super.updateOnClosingBrace(braceStart, braceEnd);
+	RecoveredElement recoveredElement = super.updateOnClosingBrace(braceStart, braceEnd);
+	if (recoveredElement!=this)
+		this.parser().recoverAST(this);
+	return recoveredElement;
 }
 /*
  * An opening brace got consumed, might be the expected opening one of the current element,

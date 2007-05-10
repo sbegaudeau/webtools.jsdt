@@ -14,15 +14,21 @@ package org.eclipse.wst.jsdt.internal.compiler.parser;
  * Internal statement structure for parsing recovery 
  */
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
 
 public class RecoveredStatement extends RecoveredElement {
 
 	public Statement statement;
-public RecoveredStatement(Statement statement, RecoveredElement parent, int bracketBalance){
+
+	public RecoveredElement[] childStatements;
+	public int childCount;
+	
+	public RecoveredStatement(Statement statement, RecoveredElement parent, int bracketBalance){
 	super(parent, bracketBalance);
 	this.statement = statement;
+
 }
 /* 
  * Answer the associated parsed structure
@@ -40,6 +46,9 @@ public String toString(int tab){
 	return tabString(tab) + "Recovered statement:\n" + statement.print(tab + 1, new StringBuffer(10)); //$NON-NLS-1$
 }
 public Statement updatedStatement(){
+	for (int i = 0; i < childCount ; i++) {
+		childStatements[i].updatedASTNode();
+	}
 	return statement;
 }
 public void updateParseTree(){
@@ -54,5 +63,41 @@ public void updateSourceEndIfNecessary(int bodyStart, int bodyEnd){
 }
 public ProgramElement updatedASTNode() {
 	return updatedStatement();
+}
+
+
+public RecoveredElement add(AbstractMethodDeclaration methodDeclaration, int bracketBalanceValue) {
+
+
+	RecoveredMethod element = new RecoveredMethod(methodDeclaration, this, bracketBalanceValue, this.recoveringParser);
+	addChild(element);
+
+	
+	/* consider that if the opening brace was not found, it is there */
+	if (!foundOpeningBrace){
+		foundOpeningBrace = true;
+		this.bracketBalance++;
+	}
+	/* if method not finished, then method becomes current */
+	if (methodDeclaration.declarationSourceEnd == 0) return element;
+	return this;
+}
+
+private void addChild(RecoveredElement statement)
+{
+	if (this.childStatements == null) {
+		this.childStatements = new RecoveredElement[5];
+		this.childCount = 0;
+	} else {
+		if (this.childCount == this.childStatements.length) {
+			System.arraycopy(
+				this.childStatements, 
+				0, 
+				(this.childStatements = new RecoveredElement[2 * this.childCount]), 
+				0, 
+				this.childCount); 
+		}
+	}
+	this.childStatements[this.childCount++] = statement;
 }
 }

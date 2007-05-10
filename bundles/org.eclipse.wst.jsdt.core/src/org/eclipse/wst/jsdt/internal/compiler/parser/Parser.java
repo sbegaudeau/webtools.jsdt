@@ -53,7 +53,7 @@ public class Parser implements  ParserBasicInformation, TerminalTokens, Operator
     
 	public static short check_table[] = null;
 	public static final int CurlyBracket = 2;
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 	private static final boolean DEBUG_AUTOMATON = false;
 	private static final String EOF_TOKEN = "$eof" ; //$NON-NLS-1$
 	private static final String ERROR_TOKEN = "$error" ; //$NON-NLS-1$
@@ -1055,18 +1055,23 @@ public RecoveredElement buildInitialRecoveryState(){
 	return element;
 }
 
-private RecoveredElement recoverAST(RecoveredElement element) {
+public RecoveredElement recoverAST(RecoveredElement element) {
 	for(int i = 0; i <= this.astPtr; i++){
 		ASTNode node = this.astStack[i];
 		if (node instanceof AbstractMethodDeclaration){
 			AbstractMethodDeclaration method = (AbstractMethodDeclaration) node;
-			if (method.declarationSourceEnd == 0){
-				element = element.add(method, 0);
-				this.lastCheckPoint = method.bodyStart;
-			} else {
-				element = element.add(method, 0);
-				this.lastCheckPoint = method.declarationSourceEnd + 1;
+			if (method.selector!=null)
+			{
+				if (method.declarationSourceEnd == 0){
+					element = element.add(method, 0);
+					this.lastCheckPoint = method.bodyStart;
+				} else {
+					element = element.add(method, 0);
+					this.lastCheckPoint = method.declarationSourceEnd + 1;
+				}
 			}
+			else
+				element = recoverFunctionExpression(element,method);
 			continue;
 		}
 		if (node instanceof Initializer){
@@ -1156,6 +1161,37 @@ private RecoveredElement recoverAST(RecoveredElement element) {
 	return element;
 }
 
+protected RecoveredElement recoverFunctionExpression(RecoveredElement element, AbstractMethodDeclaration method) {
+	int start = 0;
+	int end=this.expressionPtr;
+	boolean isAssignment=true;
+	Statement expression=null;
+	
+    FunctionExpression funcExpr=new FunctionExpression((MethodDeclaration)method);
+    funcExpr.sourceEnd=method.declarationSourceEnd;
+    funcExpr.sourceStart=method.sourceStart;
+
+	
+	if (isAssignment)
+	{
+		expression=new Assignment(this.expressionStack[start],funcExpr,method.declarationSourceEnd);
+	}
+	if (expression!=null)
+	{
+		element = element.add((Statement)expression, 1);
+		if (method.declarationSourceEnd == 0){
+			element = element.add(method, 0);
+			this.lastCheckPoint = method.bodyStart;
+		} else {
+			element = element.add(method, 0);
+			this.lastCheckPoint = method.declarationSourceEnd + 1;
+		}
+		if (element instanceof RecoveredMethod)
+			element.add(new Block(0), 0);
+	}
+	
+	return element;
+}
 protected void checkAndSetModifiers(int flag){
 	/*modify the current modifiers buffer.
 	When the startPosition of the modifiers is 0
