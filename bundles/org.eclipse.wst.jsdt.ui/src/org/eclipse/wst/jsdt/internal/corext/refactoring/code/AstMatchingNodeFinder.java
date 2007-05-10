@@ -107,6 +107,7 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
 import org.eclipse.wst.jsdt.core.dom.WildcardType;
+import org.eclipse.wst.jsdt.core.dom.WithStatement;
 
 class AstMatchingNodeFinder {
 	
@@ -543,6 +544,13 @@ class AstMatchingNodeFinder {
 		}
 
 		public boolean visit(WhileStatement node) {
+			if (node.subtreeMatch(fMatcher, fNodeToMatch))
+				return matches(node);
+			return super.visit(node);
+		}
+
+
+		public boolean visit(WithStatement node) {
 			if (node.subtreeMatch(fMatcher, fNodeToMatch))
 				return matches(node);
 			return super.visit(node);

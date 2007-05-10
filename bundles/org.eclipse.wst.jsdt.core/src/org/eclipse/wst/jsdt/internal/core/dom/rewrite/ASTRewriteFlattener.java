@@ -1098,6 +1098,14 @@ public class ASTRewriteFlattener extends ASTVisitor {
 		return false;
 	}
 	
+	public boolean visit(WithStatement node) {
+		this.result.append("with ("); //$NON-NLS-1$
+		getChildNode(node, WithStatement.EXPRESSION_PROPERTY).accept(this);
+		this.result.append(')');
+		getChildNode(node, WithStatement.BODY_PROPERTY).accept(this);
+		return false;
+	}
+	
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.BlockComment)

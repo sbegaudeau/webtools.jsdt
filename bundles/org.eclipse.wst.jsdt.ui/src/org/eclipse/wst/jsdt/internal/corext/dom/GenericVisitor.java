@@ -246,6 +246,9 @@ public class GenericVisitor extends ASTVisitor {
 	public boolean visit(WhileStatement node) {
 		return visitNode(node);
 	}
+	public boolean visit(WithStatement node) {
+		return visitNode(node);
+	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration)
@@ -577,6 +580,10 @@ public class GenericVisitor extends ASTVisitor {
 		endVisitNode(node);
 	}
 	public void endVisit(WhileStatement node) {
+		endVisitNode(node);
+	}
+
+	public void endVisit(WithStatement node) {
 		endVisitNode(node);
 	}
 

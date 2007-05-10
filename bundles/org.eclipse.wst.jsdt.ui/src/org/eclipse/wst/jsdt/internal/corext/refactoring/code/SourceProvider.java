@@ -68,6 +68,7 @@ import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Statement;
 import org.eclipse.wst.jsdt.core.dom.ThisExpression;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
+import org.eclipse.wst.jsdt.core.dom.WithStatement;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 
@@ -643,6 +644,8 @@ public class SourceProvider {
 			return !(((ForStatement)statement).getBody() instanceof Block);
 		} else if (nodeType == ASTNode.WHILE_STATEMENT) {
 			return !(((WhileStatement)statement).getBody() instanceof Block);
+		} else if (nodeType == ASTNode.WITH_STATEMENT) {
+			return !(((WithStatement)statement).getBody() instanceof Block);
 		} else if (nodeType == ASTNode.FOR_IN_STATEMENT) {
 			return !(((ForInStatement)statement).getBody() instanceof Block);
 		}

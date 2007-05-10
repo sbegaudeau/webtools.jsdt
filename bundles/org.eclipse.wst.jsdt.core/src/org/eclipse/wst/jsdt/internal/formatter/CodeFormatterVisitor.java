@@ -108,6 +108,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UndefinedLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.WhileStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
+import org.eclipse.wst.jsdt.internal.compiler.ast.WithStatement;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
@@ -5492,6 +5493,53 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		}
 		return false;
 	}
+
+
+	/**
+	 * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#visit(org.eclipse.wst.jsdt.internal.compiler.ast.WhileStatement, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)
+	 */
+	public boolean visit(WithStatement withStatement, BlockScope scope) {
+
+		this.scribe.printNextToken(TerminalTokens.TokenNamewith);
+		final int line = this.scribe.line;
+		this.scribe.printNextToken(TerminalTokens.TokenNameLPAREN, this.preferences.insert_space_before_opening_paren_in_while);
+		
+		if (this.preferences.insert_space_after_opening_paren_in_while) {
+			this.scribe.space();
+		}
+		withStatement.condition.traverse(this, scope);
+		
+		this.scribe.printNextToken(TerminalTokens.TokenNameRPAREN, this.preferences.insert_space_before_closing_paren_in_while);
+		
+		final Statement action = withStatement.action;
+		if (action != null) {
+			if (action instanceof Block) {
+                formatLeftCurlyBrace(line, this.preferences.brace_position_for_block);
+				action.traverse(this, scope);
+			} else if (action instanceof EmptyStatement) {
+				/*
+				 * This is an empty statement
+				 */
+				formatNecessaryEmptyStatement();
+			} else {
+				this.scribe.printNewLine();
+				this.scribe.indent();
+				action.traverse(this, scope);
+				if (action instanceof Expression) {
+					this.scribe.printNextToken(TerminalTokens.TokenNameSEMICOLON, this.preferences.insert_space_before_semicolon);
+					this.scribe.printTrailingComment();
+				}
+				this.scribe.unIndent();
+			}
+		} else {
+			/*
+			 * This is an empty statement
+			 */
+			formatNecessaryEmptyStatement();
+		}
+		return false;
+	}
+
 	public boolean visit(Wildcard wildcard, BlockScope scope) {
 		this.scribe.printNextToken(TerminalTokens.TokenNameQUESTION, this.preferences.insert_space_before_question_in_wilcard);
 		switch(wildcard.kind) {

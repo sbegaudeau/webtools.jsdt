@@ -78,6 +78,7 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
+import org.eclipse.wst.jsdt.core.dom.WithStatement;
 
 /**
  * Empty implementation of a creator - provided to allow subclasses to override only a subset of methods.
@@ -540,6 +541,10 @@ public class ConstraintCreator {
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.WhileStatement)
 	 */
 	public ITypeConstraint[] create(WhileStatement node) {
+		return EMPTY_ARRAY;
+	}
+
+	public ITypeConstraint[] create(WithStatement node) {
 		return EMPTY_ARRAY;
 	}
 

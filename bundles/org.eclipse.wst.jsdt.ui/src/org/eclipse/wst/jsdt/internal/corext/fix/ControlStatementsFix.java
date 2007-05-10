@@ -30,6 +30,7 @@ import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.core.dom.Statement;
 import org.eclipse.wst.jsdt.core.dom.ThrowStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
+import org.eclipse.wst.jsdt.core.dom.WithStatement;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 
 import org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor;
@@ -146,6 +147,19 @@ public class ControlStatementsFix extends AbstractFix {
 			} else if (fRemoveUnnecessaryBlocks || fRemoveUnnecessaryBlocksOnlyWhenReturnOrThrow) {
 				if (RemoveBlockOperation.satisfiesCleanUpPrecondition(node, WhileStatement.BODY_PROPERTY, fRemoveUnnecessaryBlocksOnlyWhenReturnOrThrow))
 					fResult.add(new RemoveBlockOperation(node, WhileStatement.BODY_PROPERTY));
+			}
+			return super.visit(node);
+		}
+
+		public boolean visit(WithStatement node) {
+			if (fFindControlStatementsWithoutBlock) {
+				Statement withBody= node.getBody();
+				if (!(withBody instanceof Block)) {
+					fResult.add(new AddBlockOperation(WithStatement.BODY_PROPERTY, withBody, node));
+				}
+			} else if (fRemoveUnnecessaryBlocks || fRemoveUnnecessaryBlocksOnlyWhenReturnOrThrow) {
+				if (RemoveBlockOperation.satisfiesCleanUpPrecondition(node, WithStatement.BODY_PROPERTY, fRemoveUnnecessaryBlocksOnlyWhenReturnOrThrow))
+					fResult.add(new RemoveBlockOperation(node, WithStatement.BODY_PROPERTY));
 			}
 			return super.visit(node);
 		}
@@ -312,6 +326,8 @@ public class ControlStatementsFix extends AbstractFix {
         					return false;
         			} else if (parent instanceof WhileStatement) {
         				body= ((WhileStatement)parent).getBody();
+        			} else if (parent instanceof WithStatement) {
+        				body= ((WithStatement)parent).getBody();
         			} else if (parent instanceof DoStatement) {
         				body= ((DoStatement)parent).getBody();
         			} else if (parent instanceof ForStatement) {
@@ -339,6 +355,8 @@ public class ControlStatementsFix extends AbstractFix {
 	        		ChildPropertyDescriptor childD= null;
 	        		if (p instanceof WhileStatement) {
 	        			childD= WhileStatement.BODY_PROPERTY;
+	        		} else if (p instanceof WithStatement) {
+		        			childD= WithStatement.BODY_PROPERTY;
 	        		} else if (p instanceof ForStatement) {
 	        			childD= ForStatement.BODY_PROPERTY;
 	        		} else if (p instanceof EnhancedForStatement) {

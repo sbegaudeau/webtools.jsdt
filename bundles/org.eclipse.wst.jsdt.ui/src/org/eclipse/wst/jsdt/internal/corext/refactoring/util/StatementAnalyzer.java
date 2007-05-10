@@ -34,6 +34,7 @@ import org.eclipse.wst.jsdt.core.dom.SwitchStatement;
 import org.eclipse.wst.jsdt.core.dom.SynchronizedStatement;
 import org.eclipse.wst.jsdt.core.dom.TryStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
+import org.eclipse.wst.jsdt.core.dom.WithStatement;
 
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
@@ -235,6 +236,17 @@ public class StatementAnalyzer extends SelectionAnalyzer {
 		super.endVisit(node);
 	}	
 	
+	public void endVisit(WithStatement node) {
+		ASTNode[] selectedNodes= getSelectedNodes();
+		if (doAfterValidation(node, selectedNodes)) {
+			if (contains(selectedNodes, node.getExpression()) && contains(selectedNodes, node.getBody())) {
+				invalidSelection(RefactoringCoreMessages.StatementAnalyzer_while_expression_body); 
+			}
+		}
+		super.endVisit(node);
+	}	
+	
+
 	private boolean doAfterValidation(ASTNode node, ASTNode[] selectedNodes) {
 		return selectedNodes.length > 0 && node == selectedNodes[0].getParent() && getSelection().getEndVisitSelectionMode(node) == Selection.AFTER;
 	}

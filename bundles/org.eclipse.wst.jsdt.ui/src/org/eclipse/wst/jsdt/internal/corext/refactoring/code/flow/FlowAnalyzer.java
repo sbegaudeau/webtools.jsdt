@@ -99,6 +99,7 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
 import org.eclipse.wst.jsdt.core.dom.WildcardType;
+import org.eclipse.wst.jsdt.core.dom.WithStatement;
 
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
@@ -196,6 +197,9 @@ abstract class FlowAnalyzer extends GenericVisitor {
 	
 	protected WhileFlowInfo createWhile() {
 		return new WhileFlowInfo();
+	}
+	protected WithFlowInfo createWith() {
+		return new WithFlowInfo();
 	}
 	
 	protected IfFlowInfo createIf() {
@@ -939,6 +943,15 @@ abstract class FlowAnalyzer extends GenericVisitor {
 		if (skipNode(node))
 			return;
 		WhileFlowInfo info= createWhile();
+		setFlowInfo(node, info);
+		info.mergeCondition(getFlowInfo(node.getExpression()), fFlowContext);
+		info.mergeAction(getFlowInfo(node.getBody()), fFlowContext);
+		info.removeLabel(null);
+	}
+	public void endVisit(WithStatement node) {
+		if (skipNode(node))
+			return;
+		WithFlowInfo info= createWith();
 		setFlowInfo(node, info);
 		info.mergeCondition(getFlowInfo(node.getExpression()), fFlowContext);
 		info.mergeAction(getFlowInfo(node.getBody()), fFlowContext);

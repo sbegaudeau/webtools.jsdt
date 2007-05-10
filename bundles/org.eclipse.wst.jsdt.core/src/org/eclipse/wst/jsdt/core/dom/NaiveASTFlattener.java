@@ -1672,4 +1672,13 @@ class NaiveASTFlattener extends ASTVisitor {
 		return false;
 	}
 
+	public boolean visit(WithStatement node) {
+		printIndent();
+		this.buffer.append("with (");//$NON-NLS-1$
+		node.getExpression().accept(this);
+		this.buffer.append(") ");//$NON-NLS-1$
+		node.getBody().accept(this);
+		return false;
+	}
+
 }

@@ -85,6 +85,7 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
+import org.eclipse.wst.jsdt.core.dom.WithStatement;
 import org.eclipse.wst.jsdt.core.dom.Modifier.ModifierKeyword;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
@@ -698,7 +699,9 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 					|| locationInParent == ForInStatement.BODY_PROPERTY
 					|| locationInParent == EnhancedForStatement.BODY_PROPERTY
 					|| locationInParent == DoStatement.BODY_PROPERTY
-					|| locationInParent == WhileStatement.BODY_PROPERTY) {
+					|| locationInParent == WhileStatement.BODY_PROPERTY
+					|| locationInParent == WithStatement.BODY_PROPERTY
+					) {
 				Block replacement= rewrite.getAST().newBlock();
 				ListRewrite replacementRewrite= rewrite.getListRewrite(replacement, Block.STATEMENTS_PROPERTY);
 				replacementRewrite.insertFirst(declaration, null);

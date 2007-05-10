@@ -691,6 +691,14 @@ public void endVisit(Statement node) {
 		endVisit((Statement) node);
 	}
 	
+	
+	public boolean visit(WithStatement node) {
+		return visit((Statement) node);
+	}
+	public void endVisit(WithStatement node) {
+		endVisit((Statement) node);
+	}
+
 //---- End Statement Hierarchy ----------------------------------  
 
 public boolean visit(TagElement node) {

@@ -756,6 +756,7 @@ public abstract class ASTNode {
 	public static final int UNDEFINED_LITERAL = 87;
 	public static final int REGULAR_EXPRESSION_LITERAL = 88;
 	public static final int INFERRED_TYPE = 89;
+	public static final int WITH_STATEMENT = 90;
 
 	
 	
@@ -767,7 +768,7 @@ public abstract class ASTNode {
 	 * @see Modifier
 	 * @since 3.1
 	 */
-	public static final int MODIFIER = 89;
+	public static final int MODIFIER = 100;
 	
 	/**
 	 * Returns the node class for the corresponding node type.
@@ -949,6 +950,8 @@ public abstract class ASTNode {
 				return VariableDeclarationStatement.class;
 			case WHILE_STATEMENT :
 				return WhileStatement.class;
+			case WITH_STATEMENT :
+				return WithStatement.class;
 			case WILDCARD_TYPE :
 				return WildcardType.class;
 			case OBJECT_LITERAL :

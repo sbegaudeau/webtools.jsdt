@@ -250,6 +250,9 @@ class DefaultASTVisitor extends ASTVisitor {
 	public boolean visit(WhileStatement node) {
 		return visitNode(node);
 	}
+	public boolean visit(WithStatement node) {
+		return visitNode(node);
+	}
 
 	/* since 3.0 */
 	public boolean visit(BlockComment node) {
@@ -485,6 +488,10 @@ class DefaultASTVisitor extends ASTVisitor {
 		endVisitNode(node);
 	}
 	public void endVisit(WhileStatement node) {
+		endVisitNode(node);
+	}
+	
+	public void endVisit(WithStatement node) {
 		endVisitNode(node);
 	}
 	

@@ -2925,6 +2925,28 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 		return false;
 	}
 	
+
+	public boolean visit(WithStatement node) {
+		if (!hasChildrenChanges(node)) {
+			return doVisitUnchangedChildren(node);
+		}
+		
+		int pos= rewriteRequiredNode(node, WithStatement.EXPRESSION_PROPERTY);
+		
+		try {
+			if (isChanged(node, WithStatement.BODY_PROPERTY)) {
+				int startOffset= getScanner().getTokenEndOffset(ITerminalSymbols.TokenNameRPAREN, pos);
+				rewriteBodyNode(node, WithStatement.BODY_PROPERTY, startOffset, -1, getIndent(node.getStartPosition()), this.formatter.WHILE_BLOCK); // body
+			} else {
+				voidVisit(node, WithStatement.BODY_PROPERTY);
+			}
+		} catch (CoreException e) {
+			handleException(e);
+		}
+		return false;
+	}
+	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.MemberRef)
 	 */

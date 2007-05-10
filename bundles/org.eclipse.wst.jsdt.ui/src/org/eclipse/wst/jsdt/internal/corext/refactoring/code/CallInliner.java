@@ -79,6 +79,7 @@ import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
+import org.eclipse.wst.jsdt.core.dom.WithStatement;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
@@ -837,6 +838,9 @@ public class CallInliner {
 						break;
 					case ASTNode.WHILE_STATEMENT:
 						currentStatement= ((WhileStatement)container).getBody();
+						break;
+					case ASTNode.WITH_STATEMENT:
+						currentStatement= ((WithStatement)container).getBody();
 						break;
 					case ASTNode.DO_STATEMENT:
 						currentStatement= ((DoStatement)container).getBody();

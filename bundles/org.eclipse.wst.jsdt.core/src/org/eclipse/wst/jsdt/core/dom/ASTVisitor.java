@@ -1545,6 +1545,10 @@ public abstract class ASTVisitor {
 		return true;
 	}
 	
+	public boolean visit(WithStatement node) {
+		return true;
+	}
+	
 	/**
 	 * Visits the given type-specific AST node.
 	 * <p>
@@ -2598,6 +2602,10 @@ public abstract class ASTVisitor {
 	 * @param node the node to visit
 	 */
 	public void endVisit(WhileStatement node) {
+		// default implementation: do nothing
+	}
+
+	public void endVisit(WithStatement node) {
 		// default implementation: do nothing
 	}
 	

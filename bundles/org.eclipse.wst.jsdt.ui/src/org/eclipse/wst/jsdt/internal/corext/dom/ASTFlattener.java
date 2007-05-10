@@ -1608,4 +1608,12 @@ public class ASTFlattener extends GenericVisitor {
 		return false;
 	}
 
+	public boolean visit(WithStatement node) {
+		this.fBuffer.append("with (");//$NON-NLS-1$
+		node.getExpression().accept(this);
+		this.fBuffer.append(") ");//$NON-NLS-1$
+		node.getBody().accept(this);
+		return false;
+	}
+
 }

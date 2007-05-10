@@ -2386,6 +2386,16 @@ public class ASTMatcher {
 				&& safeSubtreeMatch(node.getBody(), o.getBody()));
 	}
 
+	public boolean match(WithStatement node, Object other) {
+		if (!(other instanceof WithStatement)) {
+			return false;
+		}
+		WithStatement o = (WithStatement) other;
+		return (
+			safeSubtreeMatch(node.getExpression(), o.getExpression())
+				&& safeSubtreeMatch(node.getBody(), o.getBody()));
+	}
+
 	/**
 	 * Returns whether the given node and the other object match.
 	 * <p>

@@ -2684,6 +2684,9 @@ class ASTConverter {
 		if (statement instanceof org.eclipse.wst.jsdt.internal.compiler.ast.WhileStatement) {
 			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.WhileStatement) statement);
 		}
+		if (statement instanceof org.eclipse.wst.jsdt.internal.compiler.ast.WithStatement) {
+			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.WithStatement) statement);
+		}
 		if (statement instanceof org.eclipse.wst.jsdt.internal.compiler.ast.Expression) {
 			final Expression expr = convert((org.eclipse.wst.jsdt.internal.compiler.ast.Expression) statement);
 			final ExpressionStatement stmt = new ExpressionStatement(this.ast);
@@ -2965,6 +2968,17 @@ class ASTConverter {
 		if (action == null) return null;
 		whileStatement.setBody(action);
 		return whileStatement;
+	}
+	
+	
+	public WithStatement convert(org.eclipse.wst.jsdt.internal.compiler.ast.WithStatement statement) {
+		final WithStatement withStatement = new WithStatement(this.ast);
+		withStatement.setSourceRange(statement.sourceStart, statement.sourceEnd - statement.sourceStart + 1);
+		withStatement.setExpression(convert(statement.condition));
+		final Statement action = convert(statement.action);
+		if (action == null) return null;
+		withStatement.setBody(action);
+		return withStatement;
 	}
 	
 	public ImportDeclaration convertImport(org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference importReference) {

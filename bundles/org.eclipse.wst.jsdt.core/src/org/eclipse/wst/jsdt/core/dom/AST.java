@@ -2114,6 +2114,10 @@ public final class AST {
 		return new WhileStatement(this);
 	}
 
+	public WithStatement newWithStatement() {
+		return new WithStatement(this);
+	}
+
 	/**
 	 * Creates a new unparented do statement node owned by this AST.
 	 * By default, the expression is unspecified (but legal), and

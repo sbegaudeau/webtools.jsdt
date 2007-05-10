@@ -472,6 +472,10 @@ public abstract class ASTVisitor {
 	public void endVisit(WhileStatement whileStatement, BlockScope scope) {
 		// do nothing by default
 	}
+	public void endVisit(WithStatement whileStatement, BlockScope scope) {
+		// do nothing by default
+	}
+
 	public void endVisit(Wildcard wildcard, BlockScope scope) {
 		// do nothing by default
 	}
@@ -926,6 +930,9 @@ public abstract class ASTVisitor {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(WhileStatement whileStatement, BlockScope scope) {
+		return true; // do nothing by default, keep traversing
+	}
+	public boolean visit(WithStatement whileStatement, BlockScope scope) {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(Wildcard wildcard, BlockScope scope) {

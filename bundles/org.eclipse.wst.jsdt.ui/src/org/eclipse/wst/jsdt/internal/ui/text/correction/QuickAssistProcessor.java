@@ -76,6 +76,7 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
+import org.eclipse.wst.jsdt.core.dom.WithStatement;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
@@ -959,6 +960,13 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 				if (!(whileBody instanceof Block)) {
 					childProperty= WhileStatement.BODY_PROPERTY;
 					child= whileBody;
+				}
+				break;
+			case ASTNode.WITH_STATEMENT:
+				ASTNode withBody= ((WithStatement) statement).getBody();
+				if (!(withBody instanceof Block)) {
+					childProperty= WithStatement.BODY_PROPERTY;
+					child= withBody;
 				}
 				break;
 			case ASTNode.FOR_STATEMENT:

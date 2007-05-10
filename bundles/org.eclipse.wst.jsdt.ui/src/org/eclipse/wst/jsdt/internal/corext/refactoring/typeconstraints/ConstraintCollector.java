@@ -84,6 +84,7 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
+import org.eclipse.wst.jsdt.core.dom.WithStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UndefinedLiteral;
 
 
@@ -631,6 +632,11 @@ public final class ConstraintCollector extends ASTVisitor {
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.WhileStatement)
 	 */
 	public boolean visit(WhileStatement node) {
+		add(fCreator.create(node));
+		return true;
+	}	
+	
+	public boolean visit(WithStatement node) {
 		add(fCreator.create(node));
 		return true;
 	}
