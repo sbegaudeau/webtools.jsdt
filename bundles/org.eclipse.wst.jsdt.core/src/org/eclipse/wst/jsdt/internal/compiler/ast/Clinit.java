@@ -17,6 +17,7 @@ import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.ConstantPool;
 import org.eclipse.wst.jsdt.internal.compiler.flow.ExceptionHandlingFlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.flow.InitializationFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
@@ -24,6 +25,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
@@ -40,13 +42,14 @@ public class Clinit extends AbstractMethodDeclaration {
 		selector = TypeConstants.CLINIT;
 	}
 
-	public void analyseCode(
-		ClassScope classScope,
-		InitializationFlowContext staticInitializerFlowContext,
+	public FlowInfo analyseCode(
+		Scope classScope,
+		FlowContext flowContext,
 		FlowInfo flowInfo) {
 
+		InitializationFlowContext staticInitializerFlowContext =(InitializationFlowContext)flowContext;
 		if (ignoreFurtherInvestigation)
-			return;
+			return flowInfo;
 		try {
 			ExceptionHandlingFlowContext clinitContext =
 				new ExceptionHandlingFlowContext(
@@ -82,6 +85,7 @@ public class Clinit extends AbstractMethodDeclaration {
 		} catch (AbortMethod e) {
 			this.ignoreFurtherInvestigation = true;
 		}
+		return flowInfo;
 	}
 
 	/**

@@ -14,6 +14,7 @@ import org.eclipse.wst.jsdt.core.compiler.*;
 import org.eclipse.wst.jsdt.internal.compiler.*;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.flow.InitializationFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.impl.*;
@@ -23,7 +24,7 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.*;
 import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 public abstract class AbstractMethodDeclaration
-	extends ProgramElement
+	extends Statement
 	implements ProblemSeverities, ReferenceContext {
 		
 	public MethodScope scope;
@@ -74,7 +75,11 @@ public abstract class AbstractMethodDeclaration
 		}
 	}
 
-	public abstract void analyseCode(ClassScope classScope, InitializationFlowContext initializationContext, FlowInfo info);
+	public FlowInfo analyseCode(BlockScope classScope, FlowContext initializationContext, FlowInfo info)
+	{
+	 return this.analyseCode((Scope)classScope, initializationContext, info);	
+	}
+	public abstract FlowInfo analyseCode(Scope classScope, FlowContext initializationContext, FlowInfo info);
 
 		/**
 	 * Bind and add argument's binding into the scope of the method
@@ -468,4 +473,15 @@ public abstract class AbstractMethodDeclaration
 	public TypeParameter[] typeParameters() {
 	    return null;
 	}
+
+
+
+	public void generateCode(BlockScope currentScope, CodeStream codeStream) {
+		
+	}
+
+	public void resolve(BlockScope scope) {
+		this.resolve((Scope)scope);
+	}		
+
 }

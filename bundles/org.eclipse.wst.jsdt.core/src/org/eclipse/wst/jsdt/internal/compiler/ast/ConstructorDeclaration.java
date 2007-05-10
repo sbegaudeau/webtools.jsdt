@@ -40,6 +40,11 @@ public void analyseCode(ClassScope classScope, InitializationFlowContext initial
 	analyseCode(classScope, initializerFlowContext, flowInfo, FlowInfo.REACHABLE);
 }
 
+
+public FlowInfo analyseCode(Scope classScope, FlowContext initializationContext, FlowInfo flowInfo) {
+	analyseCode((ClassScope)classScope, (InitializationFlowContext)initializationContext, flowInfo, FlowInfo.REACHABLE);
+	return flowInfo;
+}		
 /**
  * The flowInfo corresponds to non-static field initialization infos. It may be unreachable (155423), but still the explicit constructor call must be
  * analysed as reachable, since it will be generated in the end.
@@ -490,5 +495,6 @@ public void traverse(ASTVisitor visitor,	ClassScope classScope) {
 }
 public TypeParameter[] typeParameters() {
     return this.typeParameters;
-}		
+}
+
 }

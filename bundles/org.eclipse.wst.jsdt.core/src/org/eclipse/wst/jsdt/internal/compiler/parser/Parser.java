@@ -53,7 +53,7 @@ public class Parser implements  ParserBasicInformation, TerminalTokens, Operator
     
 	public static short check_table[] = null;
 	public static final int CurlyBracket = 2;
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 	private static final boolean DEBUG_AUTOMATON = false;
 	private static final String EOF_TOKEN = "$eof" ; //$NON-NLS-1$
 	private static final String ERROR_TOKEN = "$error" ; //$NON-NLS-1$
@@ -5277,7 +5277,7 @@ protected void consumeRule(int act) {
 		    consumeProgramElements() ;  
 			break;
  
-    case 89 : if (DEBUG) { System.out.println("BlockStatements ::= BlockStatements BlockStatement"); }  //$NON-NLS-1$
+    case 88 : if (DEBUG) { System.out.println("BlockStatements ::= BlockStatements BlockStatement"); }  //$NON-NLS-1$
 		    consumeBlockStatements() ;  
 			break;
  
@@ -6091,8 +6091,6 @@ protected void consumeRule(int act) {
  
 	}
 }
-
-
 
 private void comsumeArrayLiteralList() {
 	concatExpressionLists();

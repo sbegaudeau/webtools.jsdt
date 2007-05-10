@@ -15,6 +15,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.ExceptionHandlingFlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.flow.InitializationFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
@@ -41,17 +42,17 @@ public class MethodDeclaration extends AbstractMethodDeclaration {
 		super(compilationResult);
 	}
 
-	public void analyseCode(
-		ClassScope classScope,
-		InitializationFlowContext initializationContext,
+	public FlowInfo analyseCode(
+		Scope classScope,
+		FlowContext initializationContext,
 		FlowInfo flowInfo) {
 
 		// starting of the code analysis for methods
 		if (ignoreFurtherInvestigation)
-			return;
+			return flowInfo;
 		try {
 			if (binding == null)
-				return;
+				return flowInfo;
 				
 			if (!this.binding.isUsed() && 
 					(this.binding.isPrivate() 
@@ -63,11 +64,11 @@ public class MethodDeclaration extends AbstractMethodDeclaration {
 				
 			// skip enum implicit methods
 			if (binding.declaringClass.isEnum() && (this.selector == TypeConstants.VALUES || this.selector == TypeConstants.VALUEOF))
-				return;
+				return flowInfo;
 
 			// may be in a non necessary <clinit> for innerclass with static final constant fields
 			if (binding.isAbstract() || binding.isNative())
-				return;
+				return flowInfo;
 			
 			ExceptionHandlingFlowContext methodContext =
 				new ExceptionHandlingFlowContext(
@@ -110,6 +111,7 @@ public class MethodDeclaration extends AbstractMethodDeclaration {
 		} catch (AbortMethod e) {
 			this.ignoreFurtherInvestigation = true;
 		}
+		return flowInfo;
 	}
 
 	public boolean isMethod() {
