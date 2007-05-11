@@ -316,6 +316,17 @@ public class BasicParserTests extends AbstractRegressionTest {
 		 );
 		 
 }
+	
+	public void test005h1a() {	// expressions
+		this.runParseTest(
+				"i= { 'a': 2 , 'b': 3+4};" + 
+				"\n",
+			"X.js",
+			"i = {\n  'a' : 2,\n  'b' : (3 + 4)\n};" + 
+			"\n"
+		 );
+		 
+}
 
 	public void test005h2() {	// expressions
 		this.runParseTest(
@@ -468,6 +479,18 @@ public class BasicParserTests extends AbstractRegressionTest {
 		 );
 	}
 
+
+	public void test0011() {	// for in
+		this.runParseTest(
+				"with (foo)\n" +
+				"  bar;" +
+				"\n",
+			"X.js",
+			"with (foo)\n"+	
+			"  bar;\n"
+		 );
+	}
+
 	public void test0010a() {	// for in
 		this.runParseTest(
 				"for (a in this.vars)\n" +
@@ -480,7 +503,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 	}
 
 
-	public void test0011() {	// missing semicolon
+	public void test0015() {	// missing semicolon
 		this.runParseTest(
 				"  function bar() \n{\n" +
 				"    System.out.println()\n" +
@@ -492,7 +515,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		 );
 	}
 	
-	public void test0011a() {	// missing semicolon
+	public void test0015a() {	// missing semicolon
 		this.runParseTest(
 			"function bar() {\n"+	
 			"  System.out\n" +
@@ -583,15 +606,16 @@ public class BasicParserTests extends AbstractRegressionTest {
 	
 	public void test0028() {
 		this.runParseTest(
-				" if(typeof dojo==\"undefined\"){ \n" +
+				" if (typeof dojo==\"undefined\"){ \n" +
 				"	function dj_undef(){ \n" +
 				"	} \n" +
 				"}",
 			"X.js",
-				" if(typeof dojo==\"undefined\"){ \n" +
-				"	function dj_undef(){ \n" +
-				"	} \n" +
-				"}"			
+				"if (((typeof dojo) == \"undefined\"))\n" +
+				"    {\n" +
+				"      function dj_undef() {\n" +
+				"      }\n" +
+				"    }\n"			
 		);
 	}
 	
@@ -791,10 +815,6 @@ public class BasicParserTests extends AbstractRegressionTest {
 	
 
 	public void test0043() {
-		// check a unicode " in string. The expected " is escaped 
-		// because of the way the test framework works. It converts 
-		// special characters to a character representation before
-		// doing the compare. 
 		this.runParseTest(
 				"Foo=function(){}\nbar=function(){}",
 			"X.js",
@@ -804,14 +824,21 @@ public class BasicParserTests extends AbstractRegressionTest {
 
 
 	public void test0044() {
-		// check a unicode " in string. The expected " is escaped 
-		// because of the way the test framework works. It converts 
-		// special characters to a character representation before
-		// doing the compare. 
 		this.runParseTest(
 				"ptr[i]();",
 			"X.js",
 				"ptr[i]();\n"			
+		);
+	}
+
+  
+
+	public void test0045() {
+		// make sure divide not seen as regex 
+		this.runParseTest(
+				"((weight + 1)/2)",
+			"X.js",
+				"((weight + 1)/2)"			
 		);
 	}
 

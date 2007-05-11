@@ -402,6 +402,105 @@ public void test0002b() {
 
 
 
+
+public void test0002c() {
+
+	String s = 
+		"  obj ={								\n"
+		+"   p1 : 2,							\n"
+		+" meth: function () {								\n"
+		+ "    #                    					\n"
+		+ "    FOO();					\n"
+		+ "}											\n" 	
+		+ "}											\n"; 	
+
+	String expectedDietUnitToString = 
+		"foo = function () {\n" + 
+   	    "  System.out.println();\n"+
+		"};\n";
+	
+	String expectedDietWithStatementRecoveryUnitToString =
+		expectedDietUnitToString;
+	
+	String expectedDietPlusBodyUnitToString = 
+		"foo = function () {\n" + 
+   	    "  System.out.println();\n"+
+		"}\n";
+
+	String expectedDietPlusBodyWithStatementRecoveryUnitToString = 
+		"foo = function () {\n" + 
+   	    "  System.out.println();\n"+
+		"};\n";
+	
+	String expectedFullUnitToString =
+		expectedDietUnitToString;
+	
+	String expectedFullWithStatementRecoveryUnitToString =
+		expectedDietUnitToString;
+	
+	String testName = "<test>";
+	checkParse(
+		s.toCharArray(),
+		expectedDietUnitToString,
+		expectedDietWithStatementRecoveryUnitToString,
+		expectedDietPlusBodyUnitToString,
+		expectedDietPlusBodyWithStatementRecoveryUnitToString,
+		expectedFullUnitToString,
+		expectedFullWithStatementRecoveryUnitToString,
+		testName);
+}
+
+
+
+public void test0002d() {
+
+	String s = 
+		" a= foo{								\n"
+		+"  function () {								\n"
+		+ "    #                    					\n"
+		+ "    bar();					\n"
+		+ "}											\n" 	
+		+ ");											\n"; 	
+
+	String expectedDietUnitToString = 
+		"foo = function () {\n" + 
+   	    "  System.out.println();\n"+
+		"};\n";
+	
+	String expectedDietWithStatementRecoveryUnitToString =
+		expectedDietUnitToString;
+	
+	String expectedDietPlusBodyUnitToString = 
+		"foo = function () {\n" + 
+   	    "  System.out.println();\n"+
+		"}\n";
+
+	String expectedDietPlusBodyWithStatementRecoveryUnitToString = 
+		"foo = function () {\n" + 
+   	    "  System.out.println();\n"+
+		"};\n";
+	
+	String expectedFullUnitToString =
+		expectedDietUnitToString;
+	
+	String expectedFullWithStatementRecoveryUnitToString =
+		expectedDietUnitToString;
+	
+	String testName = "<test>";
+	checkParse(
+		s.toCharArray(),
+		expectedDietUnitToString,
+		expectedDietWithStatementRecoveryUnitToString,
+		expectedDietPlusBodyUnitToString,
+		expectedDietPlusBodyWithStatementRecoveryUnitToString,
+		expectedFullUnitToString,
+		expectedFullWithStatementRecoveryUnitToString,
+		testName);
+}
+
+
+
+
 public void test0003() {
 
 	String s = 
@@ -445,6 +544,60 @@ public void test0003() {
 		expectedFullWithStatementRecoveryUnitToString,
 		testName);
 }
+
+
+public void test0003b() {
+
+	String s = 
+		"  function foo1() {								\n"
+		+ "    var i;					\n"
+		+ "}											\n" 	
+		+ "  function foo2() {								\n"
+		+ "    #                    					\n"
+		+ "    a=1;					\n"
+		+ "}											\n" 	
+		+ "  function foo3() {								\n"
+		+ "    var k;					\n"
+		+ "}											\n"; 	
+
+	String expectedDietUnitToString = 
+		"function foo() {\n" + 
+   	    "  System.out.println();\n"+
+		"}\n";
+	
+	String expectedDietWithStatementRecoveryUnitToString =
+		expectedDietUnitToString;
+	
+	String expectedDietPlusBodyUnitToString = 
+		"function foo() {\n" + 
+   	    "  System.out.println();\n"+
+		"}\n";
+
+	String expectedDietPlusBodyWithStatementRecoveryUnitToString = 
+		"function foo() {\n" + 
+   	    "  System.out.println();\n"+
+		"}\n";
+	
+	String expectedFullUnitToString =
+		expectedDietUnitToString;
+	
+	String expectedFullWithStatementRecoveryUnitToString =
+		expectedDietUnitToString;
+	
+	String testName = "<test>";
+	checkParse(
+		s.toCharArray(),
+		expectedDietUnitToString,
+		expectedDietWithStatementRecoveryUnitToString,
+		expectedDietPlusBodyUnitToString,
+		expectedDietPlusBodyWithStatementRecoveryUnitToString,
+		expectedFullUnitToString,
+		expectedFullWithStatementRecoveryUnitToString,
+		testName);
+}
+
+
+
 public void test0004() {
 
 	String s = 
