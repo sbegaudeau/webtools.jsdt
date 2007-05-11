@@ -610,17 +610,17 @@ VariableInitializerNoIn -> ExpressionNoIn
 FunctionExpression ::= FunctionExpressionHeader MethodBody 
 /.$putCase // set to true to consume a method with a body
   consumeFunctionExpression();  $break ./
-/:$readableName MethodDeclaration:/
+/:$readableName FunctionExpression:/
 
 FunctionExpressionHeader ::= FunctionExpressionHeaderName FormalParameterListopt MethodHeaderRightParen  
 /.$putCase consumeMethodHeader(); $break ./
-/:$readableName MethodDeclaration:/
+/:$readableName FunctionExpressionHeader :/
 
 FunctionExpressionHeaderName ::= Modifiersopt 'function' 'Identifier' '('
 /.$putCase consumeMethodHeaderName(false); $break ./
 FunctionExpressionHeaderName ::= Modifiersopt 'function'   '('
 /.$putCase consumeMethodHeaderName(true); $break ./
-/:$readableName MethodHeaderName:/
+/:$readableName FunctionExpressionHeaderName :/
 
 
 MethodDeclaration -> AbstractMethodDeclaration
@@ -867,9 +867,9 @@ ProgramElements ::= ProgramElements ProgramElement
 /.$putCase consumeProgramElements() ; $break ./
 /:$readableName ProgramElements:/
 
-ProgramElement -> MethodDeclaration
+-- ProgramElement -> MethodDeclaration
 ProgramElement -> BlockStatement
-/:$readableName BlockStatement:/
+/:$readableName ProgramElement:/
 
 
 BlockStatements -> BlockStatement
@@ -878,6 +878,7 @@ BlockStatements ::= BlockStatements BlockStatement
 /:$readableName BlockStatements:/
 
 BlockStatement -> LocalVariableDeclarationStatement
+BlockStatement -> MethodDeclaration
 BlockStatement -> Statement
 --1.1 feature
 -- BlockStatement -> ClassDeclaration
@@ -926,6 +927,7 @@ Statement -> LabeledStatement
 Statement -> IfThenStatement
 Statement -> IfThenElseStatement
 Statement -> WhileStatement
+Statement -> WithStatement
 Statement -> ForStatement
 -----------------------------------------------
 -- 1.5 feature
@@ -938,6 +940,7 @@ StatementNoShortIf -> StatementWithoutTrailingSubstatement
 StatementNoShortIf -> LabeledStatementNoShortIf
 StatementNoShortIf -> IfThenElseStatementNoShortIf
 StatementNoShortIf -> WhileStatementNoShortIf
+StatementNoShortIf -> WithStatementNoShortIf
 StatementNoShortIf -> ForStatementNoShortIf
 -----------------------------------------------
 -- 1.5 feature
