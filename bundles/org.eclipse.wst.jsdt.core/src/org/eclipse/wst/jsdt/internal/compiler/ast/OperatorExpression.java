@@ -44,6 +44,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		OperatorSignatures[RIGHT_SHIFT] = get_RIGHT_SHIFT();
 		OperatorSignatures[UNSIGNED_RIGHT_SHIFT] = get_UNSIGNED_RIGHT_SHIFT();
 		OperatorSignatures[XOR] = get_XOR();
+		OperatorSignatures[IN] = get_EQUAL_EQUAL();
 		OperatorSignatures[EQUAL_EQUAL_EQUAL] = get_EQUAL_EQUAL();
 		OperatorSignatures[NOT_EQUAL_EQUAL] = get_EQUAL_EQUAL();
 		OperatorSignatures[INSTANCEOF] = get_EQUAL_EQUAL();
