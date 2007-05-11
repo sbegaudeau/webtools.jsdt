@@ -76,7 +76,7 @@ void addType(ReferenceBinding element) {
 	knownBindings[Binding.TYPE].put(element.compoundName[element.compoundName.length - 1], element);
 }
 
-void addBinding(Binding element, char[] name, int mask) {
+public void addBinding(Binding element, char[] name, int mask) {
 	if (knownBindings[mask] == null)
 		knownBindings[mask] = new HashtableOfBinding(25);
 	knownBindings[mask].put(name, element);

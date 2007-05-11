@@ -1771,4 +1771,13 @@ public AbstractMethodDeclaration sourceMethod(MethodBinding binding) {
 //			return methods[i];
 	return null;
 }
+
+public void addMethod(MethodBinding binding)
+{
+	int length=this.methods.length;
+	System.arraycopy(this.methods, 0, this.methods=new MethodBinding[length+1], 0, length);
+	this.methods[length]=binding;
+	
+}
+
 }

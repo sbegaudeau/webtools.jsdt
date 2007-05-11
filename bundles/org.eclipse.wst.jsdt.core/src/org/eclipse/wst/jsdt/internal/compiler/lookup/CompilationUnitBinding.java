@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
@@ -532,7 +533,25 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 			if (statements[i] instanceof AbstractMethodDeclaration && ((AbstractMethodDeclaration)statements[i]).binding==binding)
 				return (AbstractMethodDeclaration)statements[i];
 		  }
-		return null;
+
+		  class  MethodFinder extends ASTVisitor
+		  {
+			  MethodBinding binding;
+			  MethodDeclaration method;
+			  MethodFinder(MethodBinding binding)
+			  {this.binding=binding;}
+				public boolean visit(MethodDeclaration methodDeclaration, Scope scope) {
+					if (methodDeclaration.binding==this.binding)
+					{
+						method=methodDeclaration;
+						return false;
+					}
+					return true;
+				}
+		  }
+		  MethodFinder visitor=new MethodFinder(binding);
+		  compilationUnitScope.referenceContext.traverse(visitor, compilationUnitScope,true);
+		  return visitor.method;
 	}
 
 	public char[] qualifiedSourceName() {

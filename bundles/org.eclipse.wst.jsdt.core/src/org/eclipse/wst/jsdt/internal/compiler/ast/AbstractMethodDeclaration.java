@@ -414,7 +414,25 @@ public abstract class AbstractMethodDeclaration
 
 	public void resolve(Scope upperScope) {
 
+		
+		if (this.scope==null &&  this.selector!=null)
+		{
+			this.scope = new MethodScope(upperScope,this, false);
+			SourceTypeBinding compilationUnitBinding=upperScope.enclosingCompilationUnit();
+			MethodBinding methodBinding = scope.createMethod(this,this.selector,compilationUnitBinding,false);
+			if (methodBinding != null) {
+				this.binding=methodBinding;
+				methodBinding=compilationUnitBinding.resolveTypesFor(methodBinding);
+				if (methodBinding != null) 
+					compilationUnitBinding.addMethod(methodBinding);
+			}
+			upperScope.environment().defaultPackage.addBinding(methodBinding, methodBinding.selector,Binding.METHOD);
+
+		}
+
 		if (this.binding == null) {
+			
+			
 			this.ignoreFurtherInvestigation = true;
 		}
 

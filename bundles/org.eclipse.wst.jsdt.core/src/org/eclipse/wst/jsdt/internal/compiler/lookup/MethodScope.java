@@ -292,7 +292,7 @@ public class MethodScope extends BlockScope {
 		return createMethod(inferredMethod.methodDeclaration,inferredMethod.name,inferredMethod.inferredType.binding, inferredMethod.isConstructor);
 	}
 	
-	MethodBinding createMethod(AbstractMethodDeclaration method,char[] name,SourceTypeBinding declaringClass, boolean isConstructor) {
+	public MethodBinding createMethod(AbstractMethodDeclaration method,char[] name,SourceTypeBinding declaringClass, boolean isConstructor) {
 
 		MethodBinding methodBinding=null;
 		// is necessary to ensure error reporting
