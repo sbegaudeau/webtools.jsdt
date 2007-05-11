@@ -764,18 +764,18 @@ public void resolve(BlockScope upperScope) {
 			MethodScope methodScope = this.scope.methodScope();
 
 			// the type does not matter as long as it is not a base type
-			if (!upperScope.compilerOptions().inlineJsrBytecode) {
-				this.returnAddressVariable =
-					new LocalVariableBinding(TryStatement.SECRET_RETURN_ADDRESS_NAME, upperScope.getJavaLangObject(), ClassFileConstants.AccDefault, false);
-				finallyScope.addLocalVariable(this.returnAddressVariable);
-				this.returnAddressVariable.setConstant(Constant.NotAConstant); // not inlinable
-			}
+//			if (!upperScope.compilerOptions().inlineJsrBytecode) {
+//				this.returnAddressVariable =
+//					new LocalVariableBinding(TryStatement.SECRET_RETURN_ADDRESS_NAME, upperScope.getJavaLangObject(), ClassFileConstants.AccDefault, false);
+//				finallyScope.addLocalVariable(this.returnAddressVariable);
+//				this.returnAddressVariable.setConstant(Constant.NotAConstant); // not inlinable
+//			}
 			this.subRoutineStartLabel = new BranchLabel();
 
-			this.anyExceptionVariable =
-				new LocalVariableBinding(TryStatement.SECRET_ANY_HANDLER_NAME, this.scope.getJavaLangThrowable(), ClassFileConstants.AccDefault, false);
-			finallyScope.addLocalVariable(this.anyExceptionVariable);
-			this.anyExceptionVariable.setConstant(Constant.NotAConstant); // not inlinable
+//			this.anyExceptionVariable =
+//				new LocalVariableBinding(TryStatement.SECRET_ANY_HANDLER_NAME, this.scope.getJavaLangThrowable(), ClassFileConstants.AccDefault, false);
+//			finallyScope.addLocalVariable(this.anyExceptionVariable);
+//			this.anyExceptionVariable.setConstant(Constant.NotAConstant); // not inlinable
 
 			if (!methodScope.isInsideInitializer()) {
 				MethodBinding methodBinding =
@@ -783,14 +783,14 @@ public void resolve(BlockScope upperScope) {
 				if (methodBinding != null) {
 					TypeBinding methodReturnType = methodBinding.returnType;
 					if (methodReturnType.id != TypeIds.T_void) {
-						this.secretReturnValue =
-							new LocalVariableBinding(
-								TryStatement.SECRET_RETURN_VALUE_NAME,
-								methodReturnType,
-								ClassFileConstants.AccDefault,
-								false);
-						finallyScope.addLocalVariable(this.secretReturnValue);
-						this.secretReturnValue.setConstant(Constant.NotAConstant); // not inlinable
+//						this.secretReturnValue =
+//							new LocalVariableBinding(
+//								TryStatement.SECRET_RETURN_VALUE_NAME,
+//								methodReturnType,
+//								ClassFileConstants.AccDefault,
+//								false);
+//						finallyScope.addLocalVariable(this.secretReturnValue);
+//						this.secretReturnValue.setConstant(Constant.NotAConstant); // not inlinable
 					}
 				}
 			}
