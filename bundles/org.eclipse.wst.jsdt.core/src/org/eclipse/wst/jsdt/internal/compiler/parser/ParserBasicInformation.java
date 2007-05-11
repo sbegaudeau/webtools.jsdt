@@ -20,6 +20,7 @@ public interface ParserBasicInformation {
 
 
 
+
     ERROR_SYMBOL      = 121,
     MAX_NAME_LENGTH   = 36,
     NUM_STATES        = 585,
@@ -27,15 +28,16 @@ public interface ParserBasicInformation {
     NT_OFFSET         = 121,
     SCOPE_UBOUND      = 51,
     SCOPE_SIZE        = 52,
-    LA_STATE_OFFSET   = 6932,
+    LA_STATE_OFFSET   = 6933,
     MAX_LA            = 1,
-    NUM_RULES         = 427,
+    NUM_RULES         = 428,
     NUM_TERMINALS     = 121,
     NUM_NON_TERMINALS = 197,
     NUM_SYMBOLS       = 318,
-    START_STATE       = 514,
+    START_STATE       = 515,
     EOFT_SYMBOL       = 55,
     EOLT_SYMBOL       = 55,
-    ACCEPT_ACTION     = 6931,
-    ERROR_ACTION      = 6932;
+    ACCEPT_ACTION     = 6932,
+    ERROR_ACTION      = 6933;
+	
 }
