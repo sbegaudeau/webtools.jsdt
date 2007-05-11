@@ -1596,4 +1596,18 @@ public abstract class Constant implements TypeIds, OperatorIds {
 			default: return "unknown"; //$NON-NLS-1$
 		}
 	}
+ 
+	public boolean equals(Object obj) {
+		if (obj instanceof Constant)
+		{
+			Constant other = (Constant)obj;
+			if ( typeID()==other.typeID())
+			{
+				return stringValue().equals(other.stringValue());
+			}
+		}
+		return false;
+	}
+	
+	
 }
