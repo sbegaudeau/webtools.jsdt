@@ -346,7 +346,9 @@ public void traverse(ASTVisitor visitor, BlockScope scope) {
 				this.typeArguments[i].traverse(visitor, scope);
 			}
 		}
-		if (this.type != null) { // enum constant scenario
+		if (this.member!=null)
+			this.member.traverse(visitor, scope);
+		else if (this.type != null) { // enum constant scenario
 			this.type.traverse(visitor, scope);
 		}
 		if (this.arguments != null) {
