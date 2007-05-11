@@ -518,11 +518,19 @@ public class CompilationUnitDeclaration
 		ignoreFurtherInvestigation = true;
 	}
 
+	
+	
+	public void traverse(
+			ASTVisitor visitor,
+			CompilationUnitScope unitScope) {
+		traverse(visitor, scope,false);
+	}
+	
 	public void traverse(
 		ASTVisitor visitor,
-		CompilationUnitScope unitScope) {
+		CompilationUnitScope unitScope, boolean ignoreErrors) {
 
-		if (ignoreFurtherInvestigation)
+		if (ignoreFurtherInvestigation && !ignoreErrors)
 			return;
 		try {
 			if (visitor.visit(this, this.scope)) {

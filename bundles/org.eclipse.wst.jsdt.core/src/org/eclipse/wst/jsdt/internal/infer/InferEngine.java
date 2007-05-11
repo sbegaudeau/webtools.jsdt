@@ -539,12 +539,9 @@ public class InferEngine extends ASTVisitor {
 	public void doInfer()
 	{
 		BlockScope scope=null;
-		boolean ignoreFurtherInvestigation = compUnit.ignoreFurtherInvestigation;
-		compUnit.ignoreFurtherInvestigation=false;
-		compUnit.traverse(this, compUnit.scope);
+		compUnit.traverse(this, compUnit.scope,true);
 		passNumber=2;
-		compUnit.traverse(this, compUnit.scope);
-		compUnit.ignoreFurtherInvestigation=ignoreFurtherInvestigation;
+		compUnit.traverse(this, compUnit.scope,true);
 }
 	
 
