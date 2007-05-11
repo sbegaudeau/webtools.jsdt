@@ -4588,13 +4588,13 @@ protected void consumeMethodInvocationPrimary() {
 	{
 		SingleNameReference singleNameReference = (SingleNameReference)receiver;
 		m.selector=singleNameReference.token;
-		 m.nameSourcePosition = singleNameReference.sourceStart; 
+		 m.nameSourcePosition = (((long) singleNameReference.sourceStart) << 32)+(singleNameReference.sourceStart+m.selector.length-1); 
 		 receiver=null;
 		
 	} else if (receiver instanceof FieldReference) {
 		FieldReference fieldReference = (FieldReference) receiver;
 		m.selector=fieldReference.token;
-		m.nameSourcePosition=fieldReference.nameSourcePosition;
+		m.nameSourcePosition= (((long) fieldReference.sourceStart) << 32)+(fieldReference.sourceStart+m.selector.length-1);
 		receiver=fieldReference.receiver;
 	}
 
