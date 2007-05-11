@@ -112,6 +112,8 @@ boolean areTypesEqual(TypeBinding one, TypeBinding two) {
 		return ((UnresolvedReferenceBinding) one).resolvedType == two;
 	if (two instanceof UnresolvedReferenceBinding)
 		return ((UnresolvedReferenceBinding) two).resolvedType == one;
+	if (one==TypeBinding.ANY || two==TypeBinding.ANY)
+		return true;
 	return false; // all other type bindings are identical
 }
 boolean canSkipInheritedMethods() {
