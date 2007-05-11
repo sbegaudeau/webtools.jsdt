@@ -2395,7 +2395,7 @@ public void incompatibleReturnType(MethodBinding currentMethod, MethodBinding in
 			sourceStart = sourceTypeBinding.sourceStart();
 			sourceEnd = sourceTypeBinding.sourceEnd();
 		}
-	} else if (method.isConstructor()){
+	} else if (method.isConstructor() || ((MethodDeclaration) method).returnType==null){
 		sourceStart = method.sourceStart;
 		sourceEnd = method.sourceEnd;
 	} else {
