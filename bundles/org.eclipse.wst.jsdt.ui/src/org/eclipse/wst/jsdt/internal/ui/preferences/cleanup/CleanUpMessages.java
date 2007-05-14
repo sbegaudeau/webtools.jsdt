@@ -32,13 +32,13 @@ public class CleanUpMessages extends NLS {
 	public static String CodeFormatingTabPage_CheckboxName_FormatSourceCode;
 	public static String CodeFormatingTabPage_FormatterSettings_Description;
 	public static String CodeFormatingTabPage_GroupName_Formatter;
-	public static String CodeFormatingTabPage_Imports_GroupName;
-	public static String CodeFormatingTabPage_OrganizeImports_CheckBoxLable;
-	public static String CodeFormatingTabPage_OrganizeImportsSettings_Description;
+//	public static String CodeFormatingTabPage_Imports_GroupName;
+//	public static String CodeFormatingTabPage_OrganizeImports_CheckBoxLable;
+//	public static String CodeFormatingTabPage_OrganizeImportsSettings_Description;
 	public static String CodeFormatingTabPage_SortMembers_GroupName;
 	public static String CodeFormatingTabPage_SortMembers_CheckBoxLabel;
 	public static String CodeFormatingTabPage_SortMembers_Description;
-	public static String CodeFormatingTabPage_SortMembersFields_CheckBoxLabel;
+//	public static String CodeFormatingTabPage_SortMembersFields_CheckBoxLabel;
 
 	public static String CodeFormatingTabPage_RemoveTrailingWhitespace_all_radio;
 

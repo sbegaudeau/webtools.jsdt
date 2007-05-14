@@ -94,24 +94,24 @@ public final class CodeFormatingTabPage extends ModifyDialogTabPage {
 		if (!fIsSaveParticipantConfiguration) {
 			createLabel(CleanUpMessages.CodeFormatingTabPage_FormatterSettings_Description, group, numColumns, pixelConverter).setFont(composite.getFont());
 		
-			Group importsGroup= createGroup(numColumns, composite, CleanUpMessages.CodeFormatingTabPage_Imports_GroupName);
-			createCheckboxPref(importsGroup, numColumns, CleanUpMessages.CodeFormatingTabPage_OrganizeImports_CheckBoxLable, CleanUpConstants.ORGANIZE_IMPORTS, CleanUpModifyDialog.FALSE_TRUE);
-			
-			createLabel(CleanUpMessages.CodeFormatingTabPage_OrganizeImportsSettings_Description, importsGroup, numColumns, pixelConverter).setFont(composite.getFont());
+//			Group importsGroup= createGroup(numColumns, composite, CleanUpMessages.CodeFormatingTabPage_Imports_GroupName);
+//			createCheckboxPref(importsGroup, numColumns, CleanUpMessages.CodeFormatingTabPage_OrganizeImports_CheckBoxLable, CleanUpConstants.ORGANIZE_IMPORTS, CleanUpModifyDialog.FALSE_TRUE);
+//			
+//			createLabel(CleanUpMessages.CodeFormatingTabPage_OrganizeImportsSettings_Description, importsGroup, numColumns, pixelConverter).setFont(composite.getFont());
 		}
 		
 		Group sortMembersGroup = createGroup(numColumns, composite, CleanUpMessages.CodeFormatingTabPage_SortMembers_GroupName);
 		final CheckboxPreference sortMembersPref = createCheckboxPref(sortMembersGroup, numColumns, CleanUpMessages.CodeFormatingTabPage_SortMembers_CheckBoxLabel, CleanUpConstants.SORT_MEMBERS, CleanUpModifyDialog.FALSE_TRUE);
 		
-		indent(sortMembersGroup);
-		final CheckboxPreference sortMembersFieldsPref = createCheckboxPref(sortMembersGroup, numColumns - 1, CleanUpMessages.CodeFormatingTabPage_SortMembersFields_CheckBoxLabel, CleanUpConstants.SORT_MEMBERS_ALL, CleanUpModifyDialog.FALSE_TRUE);
+//		indent(sortMembersGroup);
+//		final CheckboxPreference sortMembersFieldsPref = createCheckboxPref(sortMembersGroup, numColumns - 1, CleanUpMessages.CodeFormatingTabPage_SortMembersFields_CheckBoxLabel, CleanUpConstants.SORT_MEMBERS_ALL, CleanUpModifyDialog.FALSE_TRUE);
 		
-		sortMembersPref.addObserver( new Observer() {
-			public void update(Observable o, Object arg) {
-				sortMembersFieldsPref.setEnabled(sortMembersPref.getChecked());
-			}	    		
-		});
-		sortMembersFieldsPref.setEnabled(sortMembersPref.getChecked());
+//		sortMembersPref.addObserver( new Observer() {
+//			public void update(Observable o, Object arg) {
+//				sortMembersFieldsPref.setEnabled(sortMembersPref.getChecked());
+//			}	    		
+//		});
+//		sortMembersFieldsPref.setEnabled(sortMembersPref.getChecked());
 		
 		createLabel(CleanUpMessages.CodeFormatingTabPage_SortMembers_Description, sortMembersGroup, numColumns, pixelConverter).setFont(composite.getFont());
     }
