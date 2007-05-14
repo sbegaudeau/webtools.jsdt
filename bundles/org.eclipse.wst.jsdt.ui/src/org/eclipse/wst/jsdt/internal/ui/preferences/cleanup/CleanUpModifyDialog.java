@@ -40,9 +40,9 @@ public class CleanUpModifyDialog extends ModifyDialog {
 	 */
 	protected void addPages(final Map values) {
 		addTabPage(CleanUpMessages.CleanUpModifyDialog_TabPageName_CodeStyle, new CodeStyleTabPage(this, values));
-		addTabPage(CleanUpMessages.CleanUpModifyDialog_TabPageName_MemberAccesses, new MemberAccessesTabPage(this, values));
-		addTabPage(CleanUpMessages.CleanUpModifyDialog_TabPageName_UnnecessaryCode, new UnnecessaryCodeTabPage(this, values));
-		addTabPage(CleanUpMessages.CleanUpModifyDialog_TabPageName_MissingCode, new MissingCodeTabPage(this, values));
+//		addTabPage(CleanUpMessages.CleanUpModifyDialog_TabPageName_MemberAccesses, new MemberAccessesTabPage(this, values));
+//		addTabPage(CleanUpMessages.CleanUpModifyDialog_TabPageName_UnnecessaryCode, new UnnecessaryCodeTabPage(this, values));
+//		addTabPage(CleanUpMessages.CleanUpModifyDialog_TabPageName_MissingCode, new MissingCodeTabPage(this, values));
 		addTabPage(CleanUpMessages.CleanUpModifyDialog_TabPageName_CodeFormating, new CodeFormatingTabPage(this, values));
 	}
 }
