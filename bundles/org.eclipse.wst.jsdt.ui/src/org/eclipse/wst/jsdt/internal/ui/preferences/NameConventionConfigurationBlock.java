@@ -292,7 +292,7 @@ public class NameConventionConfigurationBlock extends OptionsConfigurationBlock 
 	}
 		
 	private ListDialogField fNameConventionList;
-	private SelectionButtonDialogField fUseKeywordThisBox;
+//	private SelectionButtonDialogField fUseKeywordThisBox;
 	private SelectionButtonDialogField fUseIsForBooleanGettersBox;
 	
 	private StringDialogField fExceptionName;
@@ -335,9 +335,9 @@ public class NameConventionConfigurationBlock extends OptionsConfigurationBlock 
 		fExceptionName.setDialogFieldListener(adapter);
 		fExceptionName.setLabelText(PreferencesMessages.NameConventionConfigurationBlock_exceptionname_label); 
 		
-		fUseKeywordThisBox= new SelectionButtonDialogField(SWT.CHECK | SWT.WRAP);
-		fUseKeywordThisBox.setDialogFieldListener(adapter);
-		fUseKeywordThisBox.setLabelText(PreferencesMessages.NameConventionConfigurationBlock_keywordthis_label); 
+//		fUseKeywordThisBox= new SelectionButtonDialogField(SWT.CHECK | SWT.WRAP);
+//		fUseKeywordThisBox.setDialogFieldListener(adapter);
+//		fUseKeywordThisBox.setLabelText(PreferencesMessages.NameConventionConfigurationBlock_keywordthis_label); 
 		
 		fUseIsForBooleanGettersBox= new SelectionButtonDialogField(SWT.CHECK | SWT.WRAP);
 		fUseIsForBooleanGettersBox.setDialogFieldListener(adapter);
@@ -388,7 +388,7 @@ public class NameConventionConfigurationBlock extends OptionsConfigurationBlock 
 		data.grabExcessVerticalSpace= false;
 		data.verticalAlignment= GridData.BEGINNING;
 
-		fUseKeywordThisBox.doFillIntoGrid(composite, 3);
+//		fUseKeywordThisBox.doFillIntoGrid(composite, 3);
 		fUseIsForBooleanGettersBox.doFillIntoGrid(composite, 3);
 		DialogField.createEmptySpace(composite, 3);
 
@@ -428,8 +428,8 @@ public class NameConventionConfigurationBlock extends OptionsConfigurationBlock 
 			} else {
 				fContext.statusChanged(new StatusInfo());
 			}
-		} else if (field == fUseKeywordThisBox) {
-			setValue(PREF_KEYWORD_THIS, fUseKeywordThisBox.isSelected());
+//		} else if (field == fUseKeywordThisBox) {
+//			setValue(PREF_KEYWORD_THIS, fUseKeywordThisBox.isSelected());
 		} else if (field == fUseIsForBooleanGettersBox) {
 			setValue(PREF_IS_FOR_GETTERS, fUseIsForBooleanGettersBox.isSelected());
 // Commented out next 2 lines (STP 20070430)
@@ -456,7 +456,7 @@ public class NameConventionConfigurationBlock extends OptionsConfigurationBlock 
 		fNameConventionList.setElements(list);
 		
 		fExceptionName.setText(getValue(PREF_EXCEPTION_NAME));
-		fUseKeywordThisBox.setSelection(getBooleanValue(PREF_KEYWORD_THIS));
+//		fUseKeywordThisBox.setSelection(getBooleanValue(PREF_KEYWORD_THIS));
 		fUseIsForBooleanGettersBox.setSelection(getBooleanValue(PREF_IS_FOR_GETTERS));
 // Commented out next 1 line (STP 20070430)
 //		fUseOverrideAnnotation.setSelection(getBooleanValue(PREF_USE_OVERRIDE_ANNOT));

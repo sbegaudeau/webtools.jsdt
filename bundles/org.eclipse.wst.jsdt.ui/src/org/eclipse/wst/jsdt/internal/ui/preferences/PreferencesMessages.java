@@ -481,7 +481,7 @@ public final class PreferencesMessages extends NLS {
 	public static String NameConventionConfigurationBlock_static_label;
 	public static String NameConventionConfigurationBlock_arg_label;
 	public static String NameConventionConfigurationBlock_local_label;
-	public static String NameConventionConfigurationBlock_keywordthis_label;
+//	public static String NameConventionConfigurationBlock_keywordthis_label;
 	public static String NameConventionConfigurationBlock_isforbooleangetters_label;
 	public static String NameConventionConfigurationBlock_dialog_prefix;
 	public static String NameConventionConfigurationBlock_dialog_suffix;
