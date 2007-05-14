@@ -102,27 +102,27 @@ public final class CodeStyleTabPage extends ModifyDialogTabPage {
 		useParenthesesAlwaysPref.setEnabled(useParenthesesPref.getChecked());
 		useParenthesesNeverPref.setEnabled(useParenthesesPref.getChecked());
 
-		Group variableGroup= createGroup(numColumns, composite, CleanUpMessages.CodeStyleTabPage_GroupName_VariableDeclarations);
-    	final CheckboxPreference useFinalPref= createCheckboxPref(variableGroup, numColumns, CleanUpMessages.CodeStyleTabPage_CheckboxName_UseFinal, CleanUpConstants.VARIABLE_DECLARATIONS_USE_FINAL, CleanUpModifyDialog.FALSE_TRUE);
-    	
-		intent(variableGroup);
-		final CheckboxPreference useFinalFieldsPref= createCheckboxPref(variableGroup, 1, CleanUpMessages.CodeStyleTabPage_CheckboxName_UseFinalForFields, CleanUpConstants.VARIABLE_DECLARATIONS_USE_FINAL_PRIVATE_FIELDS, CleanUpModifyDialog.FALSE_TRUE);
-		final CheckboxPreference useFinalParametersPref= createCheckboxPref(variableGroup, 1, CleanUpMessages.CodeStyleTabPage_CheckboxName_UseFinalForParameters, CleanUpConstants.VARIABLE_DECLARATIONS_USE_FINAL_PARAMETERS, CleanUpModifyDialog.FALSE_TRUE);
-		final CheckboxPreference useFinalVariablesPref= createCheckboxPref(variableGroup, 1, CleanUpMessages.CodeStyleTabPage_CheckboxName_UseFinalForLocals, CleanUpConstants.VARIABLE_DECLARATIONS_USE_FINAL_LOCAL_VARIABLES, CleanUpModifyDialog.FALSE_TRUE);
-    	
-    	useFinalPref.addObserver( new Observer() {
-    		public void update(Observable o, Object arg) {
-    			useFinalFieldsPref.setEnabled(useFinalPref.getChecked());
-    			useFinalParametersPref.setEnabled(useFinalPref.getChecked());
-    			useFinalVariablesPref.setEnabled(useFinalPref.getChecked());
-    		}
-    		
-    	});
-
-		useFinalFieldsPref.setEnabled(useFinalPref.getChecked());
-		useFinalParametersPref.setEnabled(useFinalPref.getChecked());
-		useFinalVariablesPref.setEnabled(useFinalPref.getChecked());
-    }
+//		Group variableGroup= createGroup(numColumns, composite, CleanUpMessages.CodeStyleTabPage_GroupName_VariableDeclarations);
+//    	final CheckboxPreference useFinalPref= createCheckboxPref(variableGroup, numColumns, CleanUpMessages.CodeStyleTabPage_CheckboxName_UseFinal, CleanUpConstants.VARIABLE_DECLARATIONS_USE_FINAL, CleanUpModifyDialog.FALSE_TRUE);
+//    	
+//		intent(variableGroup);
+//		final CheckboxPreference useFinalFieldsPref= createCheckboxPref(variableGroup, 1, CleanUpMessages.CodeStyleTabPage_CheckboxName_UseFinalForFields, CleanUpConstants.VARIABLE_DECLARATIONS_USE_FINAL_PRIVATE_FIELDS, CleanUpModifyDialog.FALSE_TRUE);
+//		final CheckboxPreference useFinalParametersPref= createCheckboxPref(variableGroup, 1, CleanUpMessages.CodeStyleTabPage_CheckboxName_UseFinalForParameters, CleanUpConstants.VARIABLE_DECLARATIONS_USE_FINAL_PARAMETERS, CleanUpModifyDialog.FALSE_TRUE);
+//		final CheckboxPreference useFinalVariablesPref= createCheckboxPref(variableGroup, 1, CleanUpMessages.CodeStyleTabPage_CheckboxName_UseFinalForLocals, CleanUpConstants.VARIABLE_DECLARATIONS_USE_FINAL_LOCAL_VARIABLES, CleanUpModifyDialog.FALSE_TRUE);
+//    	
+//    	useFinalPref.addObserver( new Observer() {
+//    		public void update(Observable o, Object arg) {
+//    			useFinalFieldsPref.setEnabled(useFinalPref.getChecked());
+//    			useFinalParametersPref.setEnabled(useFinalPref.getChecked());
+//    			useFinalVariablesPref.setEnabled(useFinalPref.getChecked());
+//    		}
+//    		
+//    	});
+//
+//		useFinalFieldsPref.setEnabled(useFinalPref.getChecked());
+//		useFinalParametersPref.setEnabled(useFinalPref.getChecked());
+//		useFinalVariablesPref.setEnabled(useFinalPref.getChecked());
+		}
 
     private void intent(Composite group) {
         Label l= new Label(group, SWT.NONE);

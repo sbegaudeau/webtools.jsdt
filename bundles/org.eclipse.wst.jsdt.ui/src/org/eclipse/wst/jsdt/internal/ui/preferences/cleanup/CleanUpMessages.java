@@ -48,14 +48,14 @@ public class CleanUpMessages extends NLS {
 
 	public static String CodeStyleTabPage_CheckboxName_ConvertForLoopToEnhanced;
 	public static String CodeStyleTabPage_CheckboxName_UseBlocks;
-	public static String CodeStyleTabPage_CheckboxName_UseFinal;
-	public static String CodeStyleTabPage_CheckboxName_UseFinalForFields;
-	public static String CodeStyleTabPage_CheckboxName_UseFinalForLocals;
-	public static String CodeStyleTabPage_CheckboxName_UseFinalForParameters;
+//	public static String CodeStyleTabPage_CheckboxName_UseFinal;
+//	public static String CodeStyleTabPage_CheckboxName_UseFinalForFields;
+//	public static String CodeStyleTabPage_CheckboxName_UseFinalForLocals;
+//	public static String CodeStyleTabPage_CheckboxName_UseFinalForParameters;
 	public static String CodeStyleTabPage_CheckboxName_UseParentheses;
 	public static String CodeStyleTabPage_GroupName_ControlStatments;
 	public static String CodeStyleTabPage_GroupName_Expressions;
-	public static String CodeStyleTabPage_GroupName_VariableDeclarations;
+//	public static String CodeStyleTabPage_GroupName_VariableDeclarations;
 	public static String CodeStyleTabPage_RadioName_AlwaysUseBlocks;
 	public static String CodeStyleTabPage_RadioName_AlwaysUseParantheses;
 	public static String CodeStyleTabPage_RadioName_NeverUseBlocks;
