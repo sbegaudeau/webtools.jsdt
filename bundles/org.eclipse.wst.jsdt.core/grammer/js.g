@@ -1248,6 +1248,7 @@ LiteralField ::=	FieldName ':' AssignmentExpression
 FieldName	::= SimpleName
 /.$putCase consumeFieldNameSimple(); $break ./
 FieldName	-> StringLiteral
+FieldName	-> CharacterLiteral
 FieldName	-> IntegerLiteral
 /:$readableName FieldName:/
 	
