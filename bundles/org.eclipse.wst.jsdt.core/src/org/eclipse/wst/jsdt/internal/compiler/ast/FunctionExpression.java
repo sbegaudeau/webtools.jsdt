@@ -21,7 +21,8 @@ public class FunctionExpression extends Expression {
 	}
 
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
-		methodDeclaration.traverse(visitor, scope);
+		if (visitor.visit(this, scope))
+			methodDeclaration.traverse(visitor, scope);
 	}
 	
 

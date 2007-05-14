@@ -172,6 +172,9 @@ public abstract class ASTVisitor {
 		// do nothing by default
 	}
 
+	public void endVisit(FunctionExpression functionExpression, BlockScope scope) {
+	}
+
 	public void endVisit(IfStatement ifStatement, BlockScope scope) {
 		// do nothing by default
 	}
@@ -623,6 +626,9 @@ public abstract class ASTVisitor {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(ForStatement forStatement, BlockScope scope) {
+		return true; // do nothing by default, keep traversing
+	}
+	public boolean visit(FunctionExpression functionExpression, BlockScope scope) {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(IfStatement ifStatement, BlockScope scope) {
