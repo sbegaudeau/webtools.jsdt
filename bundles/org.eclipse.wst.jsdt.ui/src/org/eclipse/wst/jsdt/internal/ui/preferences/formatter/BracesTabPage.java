@@ -36,6 +36,7 @@ public class BracesTabPage extends ModifyDialogTabPage {
 	"\n" + //$NON-NLS-1$
 	"    var abc = 1;\n" + //$NON-NLS-1$
 	"    var xyz = 'one';\n" + //$NON-NLS-1$
+	"    var arr = [ '1', '2', '3', '4' ];\n" + //$NON-NLS-1$
 	"    var car = { carMake: 'Toyota', carModel: 'Celica', carYear: 2000 };\n" + //$NON-NLS-1$
 	"\n" + //$NON-NLS-1$
 	"    switch (data) {\n" + //$NON-NLS-1$
@@ -49,7 +50,16 @@ public class BracesTabPage extends ModifyDialogTabPage {
 	"            abc = -1;\n" + //$NON-NLS-1$
 	"            xyz = 'unknown';\n" + //$NON-NLS-1$
 	"\n" + //$NON-NLS-1$
-	"     }\n" + //$NON-NLS-1$
+	"     }\n\n" + //$NON-NLS-1$
+	"    if ( document.form1.year.value > 2000 ) {\n" + //$NON-NLS-1$
+	"        abc += 27;\n" + //$NON-NLS-1$
+	"    }\n" + //$NON-NLS-1$
+	"    else if ( document.form1.year.value > 1900 ) {\n" + //$NON-NLS-1$
+	"        abc += 19;\n" + //$NON-NLS-1$
+	"    }\n" + //$NON-NLS-1$
+	"    else {\n" + //$NON-NLS-1$
+	"        abc = 0;\n" + //$NON-NLS-1$
+	"    }\n" + //$NON-NLS-1$
 	"\n" + //$NON-NLS-1$
 	"}"; //$NON-NLS-1$
 
