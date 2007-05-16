@@ -197,7 +197,7 @@ class CompilationUnitBinding implements ITypeBinding {
 				for (int i = 0; i < length; i++) {
 					org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding methodBinding = methods[i];
 //					if (!shouldBeRemoved(methodBinding)) { 
-//						newMethods[removeSyntheticsCounter++] = this.resolver.getMethodBinding(methodBinding);
+						newMethods[i] = this.resolver.getMethodBinding(methodBinding);
 //					}
 				}
 //				if (removeSyntheticsCounter != length) {
