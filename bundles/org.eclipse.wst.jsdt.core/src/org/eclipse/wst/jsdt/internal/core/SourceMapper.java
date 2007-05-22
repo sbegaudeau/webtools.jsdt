@@ -43,6 +43,7 @@ import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.ISourceRange;
+import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaConventions;
@@ -1055,6 +1056,13 @@ public class SourceMapper
 	 * {-1, -1} if no source range is known for the element.
 	 */
 	public SourceRange getSourceRange(IJavaElement element) {
+		if (!this.areRootPathsComputed && element instanceof ISourceReference)
+			try {
+				return (SourceRange)((ISourceReference)element).getSourceRange();
+			} catch (JavaModelException e) {
+				org.eclipse.wst.jsdt.internal.core.util.Util.log(e, "error getting source range");
+				return UNKNOWN_RANGE;
+			}
 		switch(element.getElementType()) {
 			case IJavaElement.METHOD :
 				if (((IMember) element).isBinary()) {
