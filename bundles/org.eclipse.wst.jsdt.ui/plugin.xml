@@ -2905,7 +2905,7 @@
    <extension
          point="org.eclipse.ui.popupMenus">
       <viewerContribution
-            targetID="#CompilationUnitRulerContext"
+            targetID="#JavaScriptRulerContext"
             id="org.eclipse.wst.jsdt.ui.CompilationUnitEditorPopupActions">
          <action
                label="%AddTask.label"
@@ -2975,7 +2975,7 @@
    <extension
          point="org.eclipse.ui.popupMenus">
       <viewerContribution
-            targetID="#CompilationUnitRulerContext"
+            targetID="#JavaScriptRulerContext"
             id="org.eclipse.wst.jsdt.internal.ui.javaeditor.QuickFixRulerMenuAction">
          <action
                label="%Dummy.label"

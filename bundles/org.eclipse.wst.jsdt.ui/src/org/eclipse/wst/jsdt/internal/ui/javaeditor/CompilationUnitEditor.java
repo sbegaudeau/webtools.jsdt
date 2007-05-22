@@ -1149,9 +1149,9 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 	public CompilationUnitEditor() {
 		super();
 		setDocumentProvider(JavaPlugin.getDefault().getCompilationUnitDocumentProvider());
-		setEditorContextMenuId("#CompilationUnitEditorContext"); //$NON-NLS-1$
-		setRulerContextMenuId("#CompilationUnitRulerContext"); //$NON-NLS-1$
-		setOutlinerContextMenuId("#CompilationUnitOutlinerContext"); //$NON-NLS-1$
+		setEditorContextMenuId("#JavaScriptEditorContext"); //$NON-NLS-1$
+		setRulerContextMenuId("#JavaScriptRulerContext"); //$NON-NLS-1$
+		setOutlinerContextMenuId("#JavaScriptOutlinerContext"); //$NON-NLS-1$
 		// don't set help contextId, we install our own help context
 		fSavePolicy= null;
 

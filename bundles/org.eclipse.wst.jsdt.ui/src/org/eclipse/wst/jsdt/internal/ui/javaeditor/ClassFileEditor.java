@@ -487,7 +487,7 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 		super();
 		setDocumentProvider(JavaPlugin.getDefault().getClassFileDocumentProvider());
 		setEditorContextMenuId("#ClassFileEditorContext"); //$NON-NLS-1$
-		setRulerContextMenuId("#ClassFileRulerContext"); //$NON-NLS-1$
+		setRulerContextMenuId("#ReadOnlyJavaScriptRulerContext"); //$NON-NLS-1$
 		setOutlinerContextMenuId("#ClassFileOutlinerContext"); //$NON-NLS-1$
 		// don't set help contextId, we install our own help context
 	}
