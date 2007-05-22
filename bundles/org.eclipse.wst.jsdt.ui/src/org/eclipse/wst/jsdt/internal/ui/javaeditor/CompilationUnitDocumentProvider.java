@@ -42,6 +42,7 @@ import org.eclipse.core.resources.IFileState;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IStorage;
+import org.eclipse.core.resources.ResourcesPlugin;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
@@ -1082,7 +1083,13 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 			info= new CompilationUnitInfo();
 			info.fCopy= cu;
 			info.fElement= element;
-			info.fModel= new AnnotationModel();
+			if (element instanceof IStorageEditorInput)
+			{
+				IStorage storage = ((IStorageEditorInput)element).getStorage();
+				info.fModel=new StorageMarkerAnnotationModel(ResourcesPlugin.getWorkspace().getRoot(),storage.getName());
+			}
+			else
+				info.fModel= new AnnotationModel();
 			fFakeCUMapForMissingInfo.put(element, info);
 		}
 		info.fCount++;
