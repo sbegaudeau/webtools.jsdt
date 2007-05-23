@@ -32,31 +32,31 @@ public class IndexingParser extends SourceElementParser {
 				optimizeStringLiterals, useSourceJavadocParser);
 	}
 	
-	protected ImportReference newImportReference(char[][] tokens, long[] sourcePositions, boolean onDemand, int mod) {
-		ImportReference ref = this.importReference;
-		ref.tokens = tokens;
-		ref.sourcePositions = sourcePositions;
-		ref.onDemand = onDemand;
-		ref.sourceEnd = (int) (sourcePositions[sourcePositions.length-1] & 0x00000000FFFFFFFF);
-		ref.sourceStart = (int) (sourcePositions[0] >>> 32);
-		ref.modifiers = modifiers;
-		return ref;
-	}
-
-	protected SingleNameReference newSingleNameReference(char[] source, long positions) {
-		SingleNameReference ref = this.singleNameReference;
-		ref.token = source;
-		ref.sourceStart = (int) (positions >>> 32);
-		ref.sourceEnd = (int) positions;
-		return ref;
-	}
-	
-	protected QualifiedNameReference newQualifiedNameReference(char[][] tokens, long[] positions, int sourceStart, int sourceEnd) {
-		QualifiedNameReference ref = this.qualifiedNameReference;
-		ref.tokens = tokens;
-		ref.sourcePositions = positions;
-		ref.sourceStart = sourceStart;
-		ref.sourceEnd = sourceEnd;
-		return ref;
-	}
+//	protected ImportReference newImportReference(char[][] tokens, long[] sourcePositions, boolean onDemand, int mod) {
+//		ImportReference ref = this.importReference;
+//		ref.tokens = tokens;
+//		ref.sourcePositions = sourcePositions;
+//		ref.onDemand = onDemand;
+//		ref.sourceEnd = (int) (sourcePositions[sourcePositions.length-1] & 0x00000000FFFFFFFF);
+//		ref.sourceStart = (int) (sourcePositions[0] >>> 32);
+//		ref.modifiers = modifiers;
+//		return ref;
+//	}
+//
+//	protected SingleNameReference newSingleNameReference(char[] source, long positions) {
+//		SingleNameReference ref = this.singleNameReference;
+//		ref.token = source;
+//		ref.sourceStart = (int) (positions >>> 32);
+//		ref.sourceEnd = (int) positions;
+//		return ref;
+//	}
+//	
+//	protected QualifiedNameReference newQualifiedNameReference(char[][] tokens, long[] positions, int sourceStart, int sourceEnd) {
+//		QualifiedNameReference ref = this.qualifiedNameReference;
+//		ref.tokens = tokens;
+//		ref.sourcePositions = positions;
+//		ref.sourceStart = sourceStart;
+//		ref.sourceEnd = sourceEnd;
+//		return ref;
+//	}
 }

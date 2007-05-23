@@ -882,7 +882,7 @@ public class DeltaProcessor {
 									// first remove the index so that it is forced to be re-indexed
 									this.manager.indexManager.removeIndex(entryPath);
 									// then index the jar
-									this.manager.indexManager.indexLibrary(entryPath, project.getProject());
+									this.manager.indexManager.indexLibrary(entries[j], project.getProject());
 								} else {
 									externalArchivesStatus.put(entryPath, EXTERNAL_JAR_UNCHANGED);
 								}
@@ -893,7 +893,7 @@ public class DeltaProcessor {
 									externalArchivesStatus.put(entryPath, EXTERNAL_JAR_ADDED);
 									this.state.getExternalLibTimeStamps().put(entryPath, new Long(newTimeStamp));
 									// index the new jar
-									this.manager.indexManager.indexLibrary(entryPath, project.getProject());
+									this.manager.indexManager.indexLibrary(entries[j], project.getProject());
 								}
 							}
 						} else { // internal JAR
@@ -2379,20 +2379,20 @@ public class DeltaProcessor {
 				}
 				break;
 			case IJavaElement.PACKAGE_FRAGMENT_ROOT :
-				if (element instanceof JarPackageFragmentRoot) {
+				if (element instanceof LibraryFragmentRoot) {
 					JarPackageFragmentRoot root = (JarPackageFragmentRoot)element;
 					// index jar file only once (if the root is in its declaring project)
 					IPath jarPath = root.getPath();
 					switch (delta.getKind()) {
 						case IResourceDelta.ADDED:
 							// index the new jar
-							indexManager.indexLibrary(jarPath, root.getJavaProject().getProject());
+							indexManager.indexLibrary((LibraryFragmentRoot)element, root.getJavaProject().getProject());
 							break;
 						case IResourceDelta.CHANGED:
 							// first remove the index so that it is forced to be re-indexed
 							indexManager.removeIndex(jarPath);
 							// then index the jar
-							indexManager.indexLibrary(jarPath, root.getJavaProject().getProject());
+							indexManager.indexLibrary((LibraryFragmentRoot)element, root.getJavaProject().getProject());
 							break;
 						case IResourceDelta.REMOVED:
 							// the jar was physically removed: remove the index

@@ -57,10 +57,13 @@ void addIndexEntry(char[] category, char[] key, String documentName) {
 	}
 
 	SimpleWordSet existingWords = (SimpleWordSet) referenceTable.get(category);
-	if (existingWords == null)
-		referenceTable.put(category, existingWords = new SimpleWordSet(1));
-
+	if (existingWords == null) {
+		existingWords = new SimpleWordSet(1);
+	}
 	existingWords.add(this.allWords.add(key));
+	referenceTable.put(category,existingWords);
+
+	
 }
 HashtableOfObject addQueryResults(char[][] categories, char[] key, int matchRule, HashtableOfObject results) {
 	// assumed the disk index already skipped over documents which have been added/changed/deleted

@@ -483,7 +483,7 @@ public class ClasspathChange {
 							}
 						}
 						if (pathHasChanged) {
-							indexManager.indexLibrary(newPath, this.project.getProject());
+							indexManager.indexLibrary(newResolvedClasspath[i], this.project.getProject());
 						}
 						break;
 					case IClasspathEntry.CPE_SOURCE:

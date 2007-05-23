@@ -332,7 +332,7 @@ public void indexAll(IProject project) {
 		for (int i = 0; i < entries.length; i++) {
 			IClasspathEntry entry= entries[i];
 			if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY)
-				this.indexLibrary(entry.getPath(), project);
+				this.indexLibrary(entry, project);
 		}
 	} catch(JavaModelException e){ // cannot retrieve classpath info
 	}
@@ -346,31 +346,47 @@ public void indexAll(IProject project) {
  * Trigger addition of a library to an index
  * Note: the actual operation is performed in background
  */
-public void indexLibrary(IPath path, IProject requestingProject) {
+public void indexLibrary(IClasspathEntry entry, IProject requestingProject) {
 	// requestingProject is no longer used to cancel jobs but leave it here just in case
 	if (JavaCore.getPlugin() == null) return;
-
-	Object target = JavaModel.getTarget(ResourcesPlugin.getWorkspace().getRoot(), path, true);
 	IndexRequest request = null;
-	if (target instanceof IFile) {
-		request = new AddLibraryFileToIndex((IFile) target, this);
-//		request = new AddJarFileToIndex((IFile) target, this);
-	} else if (target instanceof File) {
-		if (((File) target).isFile()) {
-			request = new AddJarFileToIndex(path, this);
-		} else {
-			return;
-		}
-	} else if (target instanceof IContainer) {
-		request = new IndexBinaryFolder((IContainer) target, this);
-	} else {
-		return;
-	}
-
-	// check if the same request is not already in the queue
+	
+	request = new AddLibraryFileToIndex(entry.getPath(), this);
+	
 	if (!isJobWaiting(request))
 		this.request(request);
+	
+//	Object target = JavaModel.getTarget(ResourcesPlugin.getWorkspace().getRoot(), path, true);
+//	IndexRequest request = null;
+//	if (target instanceof IFile) {
+//		request = new AddLibraryFileToIndex((IFile) target, this);
+////		request = new AddJarFileToIndex((IFile) target, this);
+//	} else if (target instanceof File) {
+//		if (((File) target).isFile()) {
+//			request = new AddJarFileToIndex(path, this);
+//		} else {
+//			return;
+//		}
+//	} else if (target instanceof IContainer) {
+//		request = new IndexBinaryFolder((IContainer) target, this);
+//	} else {
+//		return;
+//	}
+//
+//	// check if the same request is not already in the queue
+//	if (!isJobWaiting(request))
+//		this.request(request);
 }
+
+	public void indexLibrary(LibraryFragmentRoot entry, IProject requestingProject) {
+		try {
+			indexLibrary(entry.getRawClasspathEntry(), requestingProject);
+		} catch (JavaModelException ex) {
+			
+			ex.printStackTrace();
+		}
+		
+	}
 /**
  * Index the content of the given source folder.
  */

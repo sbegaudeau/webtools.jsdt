@@ -35,12 +35,12 @@ class AddJarFileToIndex extends IndexRequest {
 	IFile resource;
 
 	public AddJarFileToIndex(IFile resource, IndexManager manager) {
-		super(resource.getFullPath(), manager);
+		super(resource.getFullPath().removeLastSegments(1), manager);
 		this.resource = resource;
 	}
 	public AddJarFileToIndex(IPath jarPath, IndexManager manager) {
 		// external JAR scenario - no resource
-		super(jarPath, manager);
+		super(jarPath.removeLastSegments(1), manager);
 	}
 	public boolean equals(Object o) {
 		if (o instanceof AddJarFileToIndex) {

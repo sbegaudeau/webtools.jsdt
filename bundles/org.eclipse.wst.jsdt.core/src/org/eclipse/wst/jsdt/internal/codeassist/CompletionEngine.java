@@ -418,10 +418,11 @@ public final class CompletionEngine
 		
 		if (this.options.checkVisibility) {
 			if((modifiers & ClassFileConstants.AccPublic) == 0) {
-				if((modifiers & ClassFileConstants.AccPrivate) != 0) return;
+				if((modifiers & ClassFileConstants.AccPrivate) != 0) 
+					return;
 				
-				char[] currentPackage = CharOperation.concatWith(this.unitScope.getDefaultPackage().compoundName, '.');
-				if(!CharOperation.equals(packageName, currentPackage)) return;
+				//char[] currentPackage = CharOperation.concatWith(this.unitScope.getDefaultPackage().compoundName, '.');
+				//if(!CharOperation.equals(packageName, currentPackage)) return;
 			}
 		}
 		
@@ -579,7 +580,7 @@ public final class CompletionEngine
 				}
 				
 				
-				if ((enclosingTypeNames == null || enclosingTypeNames.length == 0 ) && CharOperation.equals(this.currentPackageName, packageName)) {
+				//if ((enclosingTypeNames == null || enclosingTypeNames.length == 0 ) && CharOperation.equals(this.currentPackageName, packageName)) {
 					proposeType(
 							packageName,
 							simpleTypeName,
@@ -589,90 +590,91 @@ public final class CompletionEngine
 							fullyQualifiedName,
 							false);
 					continue next;
-				} else {
-					char[] fullyQualifiedEnclosingTypeOrPackageName = null;
-			
-					AcceptedBinding foundType = null;
-					if((foundType = (AcceptedBinding)onDemandFound.get(simpleTypeName)) == null) {
-						for (int j = 0; j < this.onDemandImportCacheCount; j++) {
-							ImportBinding importBinding = this.onDemandImportsCache[j];
-
-							char[][] importName = importBinding.compoundName;
-							char[] importFlatName = CharOperation.concatWith(importName, '.');
-						
-							if(fullyQualifiedEnclosingTypeOrPackageName == null) {
-								if(enclosingTypeNames != null && enclosingTypeNames.length != 0) {
-									fullyQualifiedEnclosingTypeOrPackageName =
-										CharOperation.concat(
-												packageName,
-												flatEnclosingTypeNames,
-												'.');
-								} else {
-									fullyQualifiedEnclosingTypeOrPackageName =
-										packageName;
-								}
-							}
-							if(CharOperation.equals(fullyQualifiedEnclosingTypeOrPackageName, importFlatName)) {
-								if(importBinding.isStatic()) {
-									if((modifiers & ClassFileConstants.AccStatic) != 0) {
-										acceptedType.qualifiedTypeName = typeName;
-										acceptedType.fullyQualifiedName = fullyQualifiedName;
-										onDemandFound.put(
-												simpleTypeName,
-												acceptedType);
-										continue next;
-									}
-								} else {
-									acceptedType.qualifiedTypeName = typeName;
-									acceptedType.fullyQualifiedName = fullyQualifiedName;
-									onDemandFound.put(
-											simpleTypeName,
-											acceptedType);
-									continue next;
-								}
-							}
-						}
-					} else if(!foundType.mustBeQualified){
-						done : for (int j = 0; j < this.onDemandImportCacheCount; j++) {
-							ImportBinding importBinding = this.onDemandImportsCache[j];
-
-							char[][] importName = importBinding.compoundName;
-							char[] importFlatName = CharOperation.concatWith(importName, '.');
-						
-							if(fullyQualifiedEnclosingTypeOrPackageName == null) {
-								if(enclosingTypeNames != null && enclosingTypeNames.length != 0) {
-									fullyQualifiedEnclosingTypeOrPackageName =
-										CharOperation.concat(
-												packageName,
-												flatEnclosingTypeNames,
-												'.');
-								} else {
-									fullyQualifiedEnclosingTypeOrPackageName =
-										packageName;
-								}
-							}
-							if(CharOperation.equals(fullyQualifiedEnclosingTypeOrPackageName, importFlatName)) {
-								if(importBinding.isStatic()) {
-									if((modifiers & ClassFileConstants.AccStatic) != 0) {
-										foundType.mustBeQualified = true;
-										break done;
-									}
-								} else {
-									foundType.mustBeQualified = true;
-									break done;
-								}
-							}
-						}
-					}
-					proposeType(
-							packageName,
-							simpleTypeName,
-							modifiers,
-							accessibility,
-							typeName,
-							fullyQualifiedName,
-							true);
-				}
+				
+//				} else {
+//					char[] fullyQualifiedEnclosingTypeOrPackageName = null;
+//			
+//					AcceptedBinding foundType = null;
+//					if((foundType = (AcceptedBinding)onDemandFound.get(simpleTypeName)) == null) {
+//						for (int j = 0; j < this.onDemandImportCacheCount; j++) {
+//							ImportBinding importBinding = this.onDemandImportsCache[j];
+//
+//							char[][] importName = importBinding.compoundName;
+//							char[] importFlatName = CharOperation.concatWith(importName, '.');
+//						
+//							if(fullyQualifiedEnclosingTypeOrPackageName == null) {
+//								if(enclosingTypeNames != null && enclosingTypeNames.length != 0) {
+//									fullyQualifiedEnclosingTypeOrPackageName =
+//										CharOperation.concat(
+//												packageName,
+//												flatEnclosingTypeNames,
+//												'.');
+//								} else {
+//									fullyQualifiedEnclosingTypeOrPackageName =
+//										packageName;
+//								}
+//							}
+//							if(CharOperation.equals(fullyQualifiedEnclosingTypeOrPackageName, importFlatName)) {
+//								if(importBinding.isStatic()) {
+//									if((modifiers & ClassFileConstants.AccStatic) != 0) {
+//										acceptedType.qualifiedTypeName = typeName;
+//										acceptedType.fullyQualifiedName = fullyQualifiedName;
+//										onDemandFound.put(
+//												simpleTypeName,
+//												acceptedType);
+//										continue next;
+//									}
+//								} else {
+//									acceptedType.qualifiedTypeName = typeName;
+//									acceptedType.fullyQualifiedName = fullyQualifiedName;
+//									onDemandFound.put(
+//											simpleTypeName,
+//											acceptedType);
+//									continue next;
+//								}
+//							}
+//						}
+//					} else if(!foundType.mustBeQualified){
+//						done : for (int j = 0; j < this.onDemandImportCacheCount; j++) {
+//							ImportBinding importBinding = this.onDemandImportsCache[j];
+//
+//							char[][] importName = importBinding.compoundName;
+//							char[] importFlatName = CharOperation.concatWith(importName, '.');
+//						
+//							if(fullyQualifiedEnclosingTypeOrPackageName == null) {
+//								if(enclosingTypeNames != null && enclosingTypeNames.length != 0) {
+//									fullyQualifiedEnclosingTypeOrPackageName =
+//										CharOperation.concat(
+//												packageName,
+//												flatEnclosingTypeNames,
+//												'.');
+//								} else {
+//									fullyQualifiedEnclosingTypeOrPackageName =
+//										packageName;
+//								}
+//							}
+//							if(CharOperation.equals(fullyQualifiedEnclosingTypeOrPackageName, importFlatName)) {
+//								if(importBinding.isStatic()) {
+//									if((modifiers & ClassFileConstants.AccStatic) != 0) {
+//										foundType.mustBeQualified = true;
+//										break done;
+//									}
+//								} else {
+//									foundType.mustBeQualified = true;
+//									break done;
+//								}
+//							}
+//						}
+//					}
+//					proposeType(
+//							packageName,
+//							simpleTypeName,
+//							modifiers,
+//							accessibility,
+//							typeName,
+//							fullyQualifiedName,
+//							true);
+//				}
 			}
 		}
 		char[][] keys = onDemandFound.keyTable;

@@ -712,7 +712,7 @@ class CompilationUnitBinding implements ITypeBinding {
 	 * @see ITypeBinding#isLocal()
 	 */
 	public boolean isLocal() {
-		return false;
+		return true;
 	}
 
 	/*

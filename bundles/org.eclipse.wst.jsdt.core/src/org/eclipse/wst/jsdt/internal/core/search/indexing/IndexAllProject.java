@@ -84,7 +84,7 @@ public class IndexAllProject extends IndexRequest {
 					if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY && entry.getPath().equals(projectPath)) {
 						// the project is also a library folder (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=89815)
 						// ensure a job exists to index it as a binary folder
-						this.manager.indexLibrary(projectPath, this.project);
+						this.manager.indexLibrary(entry, this.project);
 						return true;
 					}
 				}

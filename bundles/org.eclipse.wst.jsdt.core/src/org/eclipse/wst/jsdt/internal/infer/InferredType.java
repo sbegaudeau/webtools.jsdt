@@ -13,6 +13,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LookupEnvironment;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
@@ -137,9 +138,11 @@ public class InferredType extends ASTNode {
 			this.resolvedType=new ArrayBinding(memberType, 1, scope.compilationUnitScope().environment) ;
 
 		}
-		else
+		else {
 			this.resolvedType = scope.getType(name);
-     
+			/* the inferred type isn't valid, so don't assign it to the variable */
+			if(!this.resolvedType.isValidBinding()) this.resolvedType = null;
+		}
 		
 		
 		if (this.resolvedType == null)

@@ -12,6 +12,8 @@ package org.eclipse.wst.jsdt.internal.core.index;
 
 import java.io.*;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.*;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
@@ -98,6 +100,14 @@ public void addIndexEntry(char[] category, char[] key, String containerRelativeP
 public String containerRelativePath(String documentPath) {
 	int index = documentPath.indexOf(IJavaSearchScope.JAR_FILE_ENTRY_SEPARATOR);
 	if (index == -1) {
+		
+		IPath containerPath = new Path(this.containerPath);
+		IPath docPath = new Path(documentPath);
+		
+		if(containerPath.makeAbsolute().equals(docPath.makeAbsolute())) {
+			return documentPath;
+		}
+		
 		index = this.containerPath.length();
 		if (documentPath.length() <  index)
 			throw new IllegalArgumentException("Document path " + documentPath + " must be relative to " + this.containerPath); //$NON-NLS-1$ //$NON-NLS-2$
