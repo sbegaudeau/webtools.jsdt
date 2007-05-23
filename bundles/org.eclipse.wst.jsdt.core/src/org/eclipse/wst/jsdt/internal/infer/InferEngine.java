@@ -175,7 +175,19 @@ public class InferEngine extends ASTVisitor {
 				}
 			}
 		}
-		else  // 
+		else   if (assignment.expression instanceof SingleNameReference  && this.currentContext.currentType !=null &&
+				isThis(assignment.lhs))
+		{
+			SingleNameReference snr=(SingleNameReference)assignment.expression;
+			Object object = this.currentContext.definedMembers.get(snr.token);
+			if (object instanceof MethodDeclaration)
+			{
+				FieldReference fieldReference=(FieldReference)assignment.lhs;
+				MethodDeclaration method=(MethodDeclaration)object;
+				this.currentContext.currentType.addMethod(fieldReference.token, method);
+			}
+		}
+		else   
 		{
 			if (this.inferOptions.useAssignments)
 			{
@@ -281,6 +293,7 @@ public class InferEngine extends ASTVisitor {
 			{
 				attribute = type.addAttribute(fieldReference.token,definer);
 				attribute.isStatic=isStaticClassReference;
+				attribute.nameStart=fieldReference.sourceEnd-fieldReference.token.length+1;
 			}
 		}
 		return attribute;
@@ -664,5 +677,11 @@ public class InferEngine extends ASTVisitor {
 		}
 	}
 
+	private static boolean isThis(Expression expression)
+	{
+		if (expression instanceof FieldReference && ((FieldReference)expression).receiver.isThis())
+			return true;
+		return false;
+	}
 
 }
