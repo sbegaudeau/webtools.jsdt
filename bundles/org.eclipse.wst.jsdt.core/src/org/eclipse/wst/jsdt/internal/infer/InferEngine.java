@@ -366,6 +366,9 @@ public class InferEngine extends ASTVisitor {
 	}
 
 
+	
+	
+	
 	public void endVisit(ReturnStatement returnStatement, BlockScope scope) {
 		if (currentContext.currentMethod!=null)
 		{
@@ -461,7 +464,15 @@ public class InferEngine extends ASTVisitor {
 	
 	
 	
-
+	public boolean visit(
+    		AllocationExpression allocationExpression,
+    		BlockScope scope) {
+		
+		addType(getTypeName(allocationExpression.member));
+		
+		return true;
+	}
+	
  
 	public void endVisit(ObjectLiteralField field, BlockScope scope) {
 		if (field.javaDoc!=null)
