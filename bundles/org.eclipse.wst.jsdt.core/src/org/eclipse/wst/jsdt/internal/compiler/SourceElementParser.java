@@ -1396,6 +1396,8 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 				boolean deprecated = (currentModifiers & ClassFileConstants.AccDeprecated) != 0 || hasDeprecatedAnnotation(fieldDeclaration.annotations);	
 			
 				char[] typeName = null;
+				if (fieldDeclaration.inferredType!=null)
+					typeName=fieldDeclaration.inferredType.getName();
 //				if (fieldDeclaration.type == null) {
 //					// enum constant
 //					typeName = declaringType.name;
