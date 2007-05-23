@@ -85,7 +85,7 @@ public final class JavaModelUtil {
 	 * @see JavaCore#removeJavaLikeExtension(String)
 	 * @see #getRenamedCUName(ICompilationUnit, String)
 	 */
-	public static final String DEFAULT_CU_SUFFIX= ".java"; //$NON-NLS-1$
+	public static final String DEFAULT_CU_SUFFIX= ".js"; //$NON-NLS-1$
 	
 	/** 
 	 * Finds a type by its qualified type name (dot separated).
