@@ -143,6 +143,7 @@ public class BindingKeyParser {
 			while (this.index <= length) {
 				char currentChar = this.index == length ? Character.MIN_VALUE : this.source[this.index];
 				switch (currentChar) {
+					case 'A':
 					case 'B':
 					case 'C':
 					case 'D':
