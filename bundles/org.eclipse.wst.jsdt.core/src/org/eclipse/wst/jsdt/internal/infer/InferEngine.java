@@ -145,6 +145,7 @@ public class InferEngine extends ASTVisitor {
 					type.isDefinition=true;
 					InferredMethod method = type.addMethod(type.name, functionExpression.methodDeclaration);
 					method.isConstructor=true;
+					method.nameStart=assignment.lhs.sourceStart;
 				}
 				
 			}
@@ -184,7 +185,8 @@ public class InferEngine extends ASTVisitor {
 			{
 				FieldReference fieldReference=(FieldReference)assignment.lhs;
 				MethodDeclaration method=(MethodDeclaration)object;
-				this.currentContext.currentType.addMethod(fieldReference.token, method);
+				InferredMethod inferredMethod = this.currentContext.currentType.addMethod(fieldReference.token, method);
+				inferredMethod.nameStart=fieldReference.sourceEnd-fieldReference.token.length+1;
 			}
 		}
 		else   
@@ -267,11 +269,6 @@ public class InferEngine extends ASTVisitor {
 					methodDecl=((FunctionExpression)assignment.expression).methodDeclaration;
 				if (methodDecl!=null)
 				{
-					
-					/* Not sure if this is correct place to set selector */
-					if(methodDecl.selector==null) {
-						methodDecl.selector = memberName;
-					}
 					InferredMethod method = newType.addMethod(memberName, methodDecl);
 					method.nameStart=nameStart;
 				}
