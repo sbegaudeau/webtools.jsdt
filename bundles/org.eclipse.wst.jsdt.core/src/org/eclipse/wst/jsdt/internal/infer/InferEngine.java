@@ -267,6 +267,11 @@ public class InferEngine extends ASTVisitor {
 					methodDecl=((FunctionExpression)assignment.expression).methodDeclaration;
 				if (methodDecl!=null)
 				{
+					
+					/* Not sure if this is correct place to set selector */
+					if(methodDecl.selector==null) {
+						methodDecl.selector = memberName;
+					}
 					InferredMethod method = newType.addMethod(memberName, methodDecl);
 					method.nameStart=nameStart;
 				}
