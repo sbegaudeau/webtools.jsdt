@@ -21,6 +21,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ImportBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.VariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.WildcardBinding;
@@ -116,12 +117,30 @@ class BindingComparator {
 			return methodBinding2 == null;
 		}
 		if (methodBinding2 == null) return false;
-		return CharOperation.equals(methodBinding.selector, methodBinding2.selector)
+		if ( CharOperation.equals(methodBinding.selector, methodBinding2.selector)
 				&& isEqual(methodBinding.returnType, methodBinding2.returnType, visitedTypes) 
-				&& isEqual(methodBinding.thrownExceptions, methodBinding2.thrownExceptions, visitedTypes)
+//				&& isEqual(methodBinding.thrownExceptions, methodBinding2.thrownExceptions, visitedTypes)
 				&& isEqual(methodBinding.declaringClass, methodBinding2.declaringClass, visitedTypes)
-				&& isEqual(methodBinding.typeVariables, methodBinding2.typeVariables, visitedTypes)
-				&& isEqual(methodBinding.parameters, methodBinding2.parameters, visitedTypes);
+//				&& isEqual(methodBinding.typeVariables, methodBinding2.typeVariables, visitedTypes)
+				&& isEqual(methodBinding.parameters, methodBinding2.parameters, visitedTypes))
+			 return true;
+		org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding constructorBinding =null;
+		org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding methBinding =null;
+		 if (methodBinding.selector==TypeConstants.INIT)
+		 {
+			 constructorBinding=methodBinding;
+			 methBinding=methodBinding2;
+		 }
+		 else if (methodBinding2.selector==TypeConstants.INIT)
+		 {
+			 constructorBinding=methodBinding2;
+			 methBinding=methodBinding;
+			 
+		 }
+		 return (constructorBinding!=null && 
+				 CharOperation.equals(methBinding.selector,constructorBinding.declaringClass.sourceName)
+					&& isEqual(methBinding.parameters, constructorBinding.parameters, visitedTypes));
+				 
 	}
 
 	static boolean isEqual(VariableBinding variableBinding, VariableBinding variableBinding2) {
