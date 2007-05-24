@@ -189,15 +189,29 @@ public class OccurrencesFinder extends ASTVisitor implements IOccurrencesFinder 
 	public boolean visit(ClassInstanceCreation node) {
 		// match with the constructor and the type.
 		Type type= node.getType();
-		if (type instanceof ParameterizedType) {
-			type= ((ParameterizedType) type).getType();
+		if (type!=null)
+		{
+			if (type instanceof ParameterizedType) {
+				type= ((ParameterizedType) type).getType();
+			}
+			if (type instanceof SimpleType) {
+				Name name= ((SimpleType) type).getName();
+				if (name instanceof QualifiedName)
+					name= ((QualifiedName)name).getName();
+				match(name, fUsages, node.resolveConstructorBinding());
+			}
+			
 		}
-		if (type instanceof SimpleType) {
-			Name name= ((SimpleType) type).getName();
-			if (name instanceof QualifiedName)
-				name= ((QualifiedName)name).getName();
-			match(name, fUsages, node.resolveConstructorBinding());
+		else
+		{
+			Expression member = node.getMember();
+			if (member instanceof SimpleName)
+			{
+				SimpleName name=(SimpleName)member;
+				match(name,fUsages,node.resolveConstructorBinding());
+			}
 		}
+		
 		return super.visit(node);
 	}
 	
