@@ -903,7 +903,9 @@ public ReferenceBinding getResolvedType(char[][] compoundName, Scope scope) {
 */
 
 PackageBinding getTopLevelPackage(char[] name) {
-	return defaultPackage;
+	if (CharOperation.equals(name, defaultPackage.readableName()))
+		return defaultPackage;
+	return null;
 }
 //	PackageBinding packageBinding = getPackage0(name);
 //	if (packageBinding != null) {
