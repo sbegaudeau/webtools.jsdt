@@ -48,11 +48,11 @@ public final class BaseTypeBinding extends TypeBinding {
 
 		if (this == right)
 			return true;
+		if (this.id==TypeIds.T_any)
+			return true;
 		if (!right.isBasicType())
 			return this == TypeBinding.NULL;
 
-		if (this.id==TypeIds.T_any)
-			return true;
 		switch (right.id) {
 			case TypeIds.T_boolean :
 			case TypeIds.T_byte :
