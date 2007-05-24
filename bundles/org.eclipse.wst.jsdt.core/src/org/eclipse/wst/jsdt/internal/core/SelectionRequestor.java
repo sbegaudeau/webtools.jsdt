@@ -420,6 +420,8 @@ public void acceptLocalMethodTypeParameter(TypeVariableBinding typeVariableBindi
 }
 public void acceptLocalVariable(LocalVariableBinding binding) {
 	LocalDeclaration local = binding.declaration;
+	if (local==null)
+		return;
 	IJavaElement parent =null;
 	if (binding.declaringScope instanceof CompilationUnitScope) {
 		CompilationUnitScope compilationUnitScope = (CompilationUnitScope) binding.declaringScope;
