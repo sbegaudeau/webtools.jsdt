@@ -50,7 +50,7 @@ public TypeBinding resolveType(BlockScope scope) {
 		}
 	} 
 	// it can be a package, type, member type, local variable or field
-	binding = scope.getBinding(token, Binding.VARIABLE | Binding.TYPE | Binding.PACKAGE, this, true /*resolve*/);
+	binding = scope.getBinding(token, Binding.VARIABLE | Binding.METHOD, this, true /*resolve*/);
 	if (!binding.isValidBinding()) {
 		if (binding instanceof ProblemFieldBinding) {
 			// tolerate some error cases
