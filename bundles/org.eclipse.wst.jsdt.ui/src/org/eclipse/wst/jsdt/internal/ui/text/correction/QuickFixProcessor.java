@@ -36,19 +36,19 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 	public boolean hasCorrections(ICompilationUnit cu, int problemId) {
 		switch (problemId) {
 			case IProblem.UnterminatedString:
-			case IProblem.UnusedImport:
-			case IProblem.DuplicateImport:
-			case IProblem.CannotImportPackage:
-			case IProblem.ConflictingImport:
-			case IProblem.ImportNotFound:
-			case IProblem.UndefinedMethod:
+//			case IProblem.UnusedImport:
+//			case IProblem.DuplicateImport:
+//			case IProblem.CannotImportPackage:
+//			case IProblem.ConflictingImport:
+//			case IProblem.ImportNotFound:
+//			case IProblem.UndefinedMethod:
 			case IProblem.UndefinedConstructor:
 			case IProblem.ParameterMismatch:
 			case IProblem.MethodButWithConstructorName:
 			case IProblem.UndefinedField:
 			case IProblem.UndefinedName:
-			case IProblem.PublicClassMustMatchFileName:
-			case IProblem.PackageIsNotExpectedPackage:
+			//case IProblem.PublicClassMustMatchFileName:
+			//case IProblem.PackageIsNotExpectedPackage:
 			case IProblem.UndefinedType:
 			case IProblem.TypeMismatch:
 			case IProblem.UnhandledException:
@@ -57,7 +57,7 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.VoidMethodReturnsValue:
 			case IProblem.ShouldReturnValue:
 			case IProblem.MissingReturnType:
-			case IProblem.NonExternalizedStringLiteral:
+			//case IProblem.NonExternalizedStringLiteral:
 			case IProblem.NonStaticAccessToStaticField:
 			case IProblem.NonStaticAccessToStaticMethod:
 			case IProblem.StaticMethodRequested:
@@ -68,18 +68,18 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.NotVisibleConstructor:
 			case IProblem.NotVisibleType:
 			case IProblem.NotVisibleField:
-			case IProblem.BodyForAbstractMethod:
-			case IProblem.AbstractMethodInAbstractClass:
-			case IProblem.AbstractMethodMustBeImplemented:
+			//case IProblem.BodyForAbstractMethod:
+			//case IProblem.AbstractMethodInAbstractClass:
+			//case IProblem.AbstractMethodMustBeImplemented:
 			case IProblem.BodyForNativeMethod:
-			case IProblem.OuterLocalMustBeFinal:
+			//case IProblem.OuterLocalMustBeFinal:
 			case IProblem.UninitializedLocalVariable:
 			case IProblem.UndefinedConstructorInDefaultConstructor:
 			case IProblem.UnhandledExceptionInDefaultConstructor:
-			case IProblem.NotVisibleConstructorInDefaultConstructor:
+			//case IProblem.NotVisibleConstructorInDefaultConstructor:
 			case IProblem.AmbiguousType:
 			case IProblem.UnusedPrivateMethod:
-			case IProblem.UnusedPrivateConstructor:
+			//case IProblem.UnusedPrivateConstructor:
 			case IProblem.UnusedPrivateField:
 			case IProblem.UnusedPrivateType:
 			case IProblem.LocalVariableIsNeverUsed:
@@ -112,16 +112,16 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.JavadocInvalidParamName:
 			case IProblem.JavadocUnexpectedTag:
 			case IProblem.JavadocInvalidTag:
-			case IProblem.NonBlankFinalLocalAssignment:
+			//case IProblem.NonBlankFinalLocalAssignment:
 			case IProblem.DuplicateFinalLocalInitialization:
 			case IProblem.FinalFieldAssignment:
 			case IProblem.DuplicateBlankFinalFieldInitialization:
-			case IProblem.AnonymousClassCannotExtendFinalClass:
-			case IProblem.ClassExtendFinalClass:
+			//case IProblem.AnonymousClassCannotExtendFinalClass:
+			//case IProblem.ClassExtendFinalClass:
 			case IProblem.FinalMethodCannotBeOverridden:
 			case IProblem.InheritedMethodReducesVisibility:
 			case IProblem.MethodReducesVisibility:
-			case IProblem.OverridingNonVisibleMethod:
+			//case IProblem.OverridingNonVisibleMethod:
 			case IProblem.CannotOverrideAStaticMethodWithAnInstanceMethod:
 			case IProblem.CannotHideAnInstanceMethodWithAStaticMethod:
 			case IProblem.UnexpectedStaticModifierForMethod:

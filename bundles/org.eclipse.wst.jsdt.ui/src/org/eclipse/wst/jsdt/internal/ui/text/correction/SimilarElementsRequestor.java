@@ -57,11 +57,11 @@ public class SimilarElementsRequestor extends CompletionRequestor {
 		ICompilationUnit preparedCU= null;
 
 		try {
-			if (name.isQualifiedName()) {
-				pos= ((QualifiedName) name).getName().getStartPosition();
-			} else {
+//			if (name.isQualifiedName()) {
+//				pos= ((QualifiedName) name).getName().getStartPosition();
+//			} else {
 				pos= name.getStartPosition() + 1; // first letter must be included, other
-			}
+		//	}
 			Javadoc javadoc=  (Javadoc) ASTNodes.getParent(name, ASTNode.JAVADOC);
 			if (javadoc != null) {
 				preparedCU= createPreparedCU(cu, javadoc, name.getStartPosition());
@@ -69,6 +69,7 @@ public class SimilarElementsRequestor extends CompletionRequestor {
 			}
 
 			SimilarElementsRequestor requestor= new SimilarElementsRequestor(identifier, kind, nArguments, returnType);
+			/* ORIGINAL -------- BC */
 			requestor.setIgnored(CompletionProposal.ANONYMOUS_CLASS_DECLARATION, true);
 			requestor.setIgnored(CompletionProposal.KEYWORD, true);
 			requestor.setIgnored(CompletionProposal.LABEL_REF, true);
@@ -82,6 +83,36 @@ public class SimilarElementsRequestor extends CompletionRequestor {
 			requestor.setIgnored(CompletionProposal.VARIABLE_DECLARATION, true);
 			requestor.setIgnored(CompletionProposal.POTENTIAL_METHOD_DECLARATION, true);
 			requestor.setIgnored(CompletionProposal.METHOD_NAME_REFERENCE, true);
+			
+//			
+//
+//			requestor.setIgnored(CompletionProposal.ANNOTATION_ATTRIBUTE_REF, false);
+//			requestor.setIgnored(CompletionProposal.ANONYMOUS_CLASS_DECLARATION, false);
+//			requestor.setIgnored(CompletionProposal.FIELD_REF, false);
+//			requestor.setIgnored(CompletionProposal.KEYWORD, false);
+//			requestor.setIgnored(CompletionProposal.LABEL_REF, false);
+//			requestor.setIgnored(CompletionProposal.LOCAL_VARIABLE_REF, false);
+//			requestor.setIgnored(CompletionProposal.METHOD_DECLARATION, false);
+//			requestor.setIgnored(CompletionProposal.METHOD_NAME_REFERENCE, false);
+//			requestor.setIgnored(CompletionProposal.METHOD_REF, false);
+//			requestor.setIgnored(CompletionProposal.PACKAGE_REF, false);
+//			requestor.setIgnored(CompletionProposal.POTENTIAL_METHOD_DECLARATION, false);
+//			requestor.setIgnored(CompletionProposal.VARIABLE_DECLARATION, false);
+//			
+//			requestor.setIgnored(CompletionProposal.JAVADOC_BLOCK_TAG, true);
+//			requestor.setIgnored(CompletionProposal.JAVADOC_FIELD_REF, true);
+//			requestor.setIgnored(CompletionProposal.JAVADOC_INLINE_TAG, true);
+//			requestor.setIgnored(CompletionProposal.JAVADOC_METHOD_REF, true);
+//			requestor.setIgnored(CompletionProposal.JAVADOC_PARAM_REF, true);
+//			requestor.setIgnored(CompletionProposal.JAVADOC_TYPE_REF, true);
+//			requestor.setIgnored(CompletionProposal.JAVADOC_VALUE_REF, true);
+//			
+//			requestor.setIgnored(CompletionProposal.TYPE_REF, true);
+//			
+			
+			
+			
+			
 			return requestor.process(cu, pos);
 		} finally {
 			if (preparedCU != null) {

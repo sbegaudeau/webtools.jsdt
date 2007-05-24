@@ -113,10 +113,12 @@ public class UnresolvedElementsSubProcessor {
 
 		// type that defines the variable
 		ITypeBinding binding= null;
+		
+		/* Commented out BC rev 1. quickfixing case 'var k = new <undefinedType>' */
 		ITypeBinding declaringTypeBinding= Bindings.getBindingOfParentTypeContext(selectedNode);
-		if (declaringTypeBinding == null) {
-			return;
-		}
+//		if (declaringTypeBinding == null) {
+//			return;
+//		}
 
 		// possible type kind of the node
 		boolean suggestVariableProposals= true;
@@ -144,7 +146,7 @@ public class UnresolvedElementsSubProcessor {
 							node= null;
 						}
 					}
-				} else if (parent instanceof SimpleType) {
+				} else if (parent instanceof SimpleType || parent instanceof ClassInstanceCreation) {
 					suggestVariableProposals= false;
 					typeKind= SimilarElementsRequestor.REF_TYPES_AND_VAR;
 				} else if (parent instanceof QualifiedName) {
@@ -290,7 +292,7 @@ public class UnresolvedElementsSubProcessor {
 			targetCU= cu;
 		}
 
-		if (!senderDeclBinding.isFromSource() || targetCU == null) {
+		if (senderDeclBinding==null || !senderDeclBinding.isFromSource() || targetCU == null) {
 			return;
 		}
 		
@@ -436,7 +438,11 @@ public class UnresolvedElementsSubProcessor {
 
 					if (relevance > 0) {
 						String label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_changevariable_description, currName);
-						proposals.add(new RenameNodeCompletionProposal(label, cu, node.getStartPosition(), node.getLength(), currName, relevance));
+						if(node.getParent() instanceof ClassInstanceCreation) {
+							proposals.add(new RenameNodeCompletionProposal(label, cu, node.getParent().getStartPosition(), node.getParent().getLength(), currName, relevance));
+						}else {
+							proposals.add(new RenameNodeCompletionProposal(label, cu, node.getStartPosition(), node.getLength(), currName, relevance));
+						}
 					}
 				} else if (varOrMeth instanceof IMethodBinding) {
 					IMethodBinding curr= (IMethodBinding) varOrMeth;
@@ -716,15 +722,15 @@ public class UnresolvedElementsSubProcessor {
 					if ((kind & SimilarElementsRequestor.CLASSES) != 0) {
 			            proposals.add(new NewCUCompletionUsingWizardProposal(cu, node, NewCUCompletionUsingWizardProposal.K_CLASS, enclosing, rel+3));
 					}
-					if ((kind & SimilarElementsRequestor.INTERFACES) != 0) {
-			            proposals.add(new NewCUCompletionUsingWizardProposal(cu, node, NewCUCompletionUsingWizardProposal.K_INTERFACE, enclosing, rel+2));
-					}
-					if ((kind & SimilarElementsRequestor.ENUMS) != 0) {
-			            proposals.add(new NewCUCompletionUsingWizardProposal(cu, node, NewCUCompletionUsingWizardProposal.K_ENUM, enclosing, rel));
-					}
-					if ((kind & SimilarElementsRequestor.ANNOTATIONS) != 0) {
-						proposals.add(new NewCUCompletionUsingWizardProposal(cu, node, NewCUCompletionUsingWizardProposal.K_ANNOTATION, enclosing, rel + 1));
-					}
+//					if ((kind & SimilarElementsRequestor.INTERFACES) != 0) {
+//			            proposals.add(new NewCUCompletionUsingWizardProposal(cu, node, NewCUCompletionUsingWizardProposal.K_INTERFACE, enclosing, rel+2));
+//					}
+//					if ((kind & SimilarElementsRequestor.ENUMS) != 0) {
+//			            proposals.add(new NewCUCompletionUsingWizardProposal(cu, node, NewCUCompletionUsingWizardProposal.K_ENUM, enclosing, rel));
+//					}
+//					if ((kind & SimilarElementsRequestor.ANNOTATIONS) != 0) {
+//						proposals.add(new NewCUCompletionUsingWizardProposal(cu, node, NewCUCompletionUsingWizardProposal.K_ANNOTATION, enclosing, rel + 1));
+//					}
 				}
 			}
 			node= qualifier;

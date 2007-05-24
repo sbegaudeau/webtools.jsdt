@@ -15,6 +15,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
@@ -50,6 +53,8 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 
+
+import org.eclipse.wst.jsdt.internal.core.SearchableEnvironment;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ASTResolving;
 
 /**
@@ -284,6 +289,26 @@ public class ScopeAnalyzer {
 					return true;
 			}
 			
+		}else if (node instanceof CompilationUnit) {
+			addLocalDeclarations(node, flags, requestor);
+			ITypeBinding parentTypeBinding= Bindings.getBindingOfParentType(node.getParent());
+			if (parentTypeBinding != null) {
+				if (addTypeDeclarations(parentTypeBinding, flags, requestor))
+					return true;
+			}
+			
+			IJavaElement element = ((CompilationUnit) node).getJavaElement();
+			try {
+				SearchableEnvironment env = element.newSearchableNameEnvironment(new ICompilationUnit[]{});
+				if(env!=null) {
+					//SearchRequestor searchReq = new SearchRequestor(localBinding,);
+					//env.findTypes(new char[] {}, true, false,flags, );
+				}
+				} catch (JavaModelException ex) {
+				// TODO Auto-generated catch block
+				ex.printStackTrace();
+			}
+				return true;
 		}
 		return false;
 	}
