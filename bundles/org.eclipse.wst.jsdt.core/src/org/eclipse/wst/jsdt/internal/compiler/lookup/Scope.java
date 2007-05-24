@@ -1643,6 +1643,12 @@ public abstract class Scope implements TypeConstants, TypeIds {
 				}
 			}
 
+			if ( (mask&Binding.METHOD)!=0)
+			{
+				MethodBinding methodBinding = findMethod(null, name, TypeBinding.NO_PARAMETERS, invocationSite);
+				if (methodBinding!=null && methodBinding.isValidBinding())
+					return methodBinding;
+			}
 			// We did not find a local or instance variable.
 			if ((mask & Binding.TYPE|Binding.VARIABLE|Binding.METHOD) != 0) {
 				if ((mask & Binding.TYPE) != 0 && (binding = getBaseType(name)) != null)
