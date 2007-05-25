@@ -58,19 +58,24 @@ public final class MethodProposalInfo extends MemberProposalInfo {
 	 */
 	protected IMember resolveMember() throws JavaModelException {
 		char[] declarationSignature= fProposal.getDeclarationSignature();
-		String typeName= SignatureUtil.stripSignatureToFQN(String.valueOf(declarationSignature));
-		IType type= fJavaProject.findType(typeName);
-		if (type != null) {
-			String name= String.valueOf(fProposal.getName());
-			String[] parameters= Signature.getParameterTypes(String.valueOf(SignatureUtil.fix83600(fProposal.getSignature())));
-			for (int i= 0; i < parameters.length; i++) {
-				parameters[i]= SignatureUtil.getLowerBound(parameters[i]);
+		
+		if (declarationSignature!=null) {
+			String typeName = SignatureUtil.stripSignatureToFQN(String
+					.valueOf(declarationSignature));
+			IType type = fJavaProject.findType(typeName);
+			if (type != null) {
+				String name = String.valueOf(fProposal.getName());
+				String[] parameters = Signature.getParameterTypes(String
+						.valueOf(SignatureUtil.fix83600(fProposal
+								.getSignature())));
+				for (int i = 0; i < parameters.length; i++) {
+					parameters[i] = SignatureUtil.getLowerBound(parameters[i]);
+				}
+				boolean isConstructor = fProposal.isConstructor();
+
+				return findMethod(name, parameters, isConstructor, type);
 			}
-			boolean isConstructor= fProposal.isConstructor();
-
-			return findMethod(name, parameters, isConstructor, type);
-		}
-
+		}		
 		return null;
 	}
 
