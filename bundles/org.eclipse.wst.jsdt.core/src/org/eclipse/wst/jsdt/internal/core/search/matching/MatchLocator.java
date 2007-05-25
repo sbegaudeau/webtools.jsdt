@@ -356,7 +356,9 @@ public MatchLocator(
  * Add an additional binary type
  */
 public void accept(IBinaryType binaryType, PackageBinding packageBinding, AccessRestriction accessRestriction) {
-	this.lookupEnvironment.createBinaryTypeFrom(binaryType, packageBinding, accessRestriction);
+	/* commented out below is the original code with a compilation error */
+	System.out.println("Bad call to method-- IMPLEMENT MatchLocator. accept(IBinaryType binaryType, PackageBinding packageBinding, AccessRestriction accessRestriction) ");
+	//this.lookupEnvironment.createBinaryTypeFrom(binaryType., packageBinding, accessRestriction);
 }
 /**
  * Add an additional compilation unit into the loop
@@ -448,7 +450,8 @@ protected BinaryTypeBinding cacheBinaryType(IType type, IBinaryType binaryType) 
 			}
 		}
 	}
-	BinaryTypeBinding binding = this.lookupEnvironment.cacheBinaryType(binaryType, null /*no access restriction*/);
+	
+	BinaryTypeBinding binding = this.lookupEnvironment.cacheBinaryType((ISourceType)type, (AccessRestriction)null /*no access restriction*/);
 	if (binding == null) { // it was already cached as a result of a previous query
 		char[][] compoundName = CharOperation.splitOn('.', type.getFullyQualifiedName().toCharArray());
 		ReferenceBinding referenceBinding = this.lookupEnvironment.getCachedType(compoundName);

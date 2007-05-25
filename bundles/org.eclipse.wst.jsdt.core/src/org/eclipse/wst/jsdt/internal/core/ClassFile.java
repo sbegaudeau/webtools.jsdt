@@ -22,6 +22,8 @@ import java.util.zip.ZipFile;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -552,9 +554,25 @@ public IJavaElement getHandleFromMemento(String token, MementoTokenizer memento,
 protected char getHandleMementoDelimiter() {
 	return JavaElement.JEM_CLASSFILE;
 }
+
+protected void getHandleMemento(StringBuffer buff) {
+	((JavaElement)getParent()).getHandleMemento(buff);
+	buff.append(getHandleMementoDelimiter());
+	escapeMementoName(buff, getPath().toPortableString());
+}
 /*
  * @see IJavaElement
  */
+
+protected boolean resourceExists() {
+	IWorkspace workspace = ResourcesPlugin.getWorkspace();
+	if (workspace == null) return false; // workaround for http://bugs.eclipse.org/bugs/show_bug.cgi?id=34069
+	Object me = JavaModel.getTarget(workspace.getRoot(), this.getPath(), true) != null;
+	if(me!=null) return true;
+	me = JavaModel.getTarget(workspace.getRoot(), this.getPath().makeRelative(), true) != null;
+	return (me!=null); 
+	
+}
 public IPath getPath() {
 	PackageFragmentRoot root = getPackageFragmentRoot();
 	if (root.isArchive() || (root instanceof LibraryFragmentRoot && root.getPath().lastSegment().equalsIgnoreCase(getElementName()))) {
