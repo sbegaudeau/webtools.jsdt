@@ -227,7 +227,6 @@ public class NameLookup implements SuffixConstants {
 					
 					addWorkingCopyBindings(workingCopy.getFields(), bindingsMap[Binding.VARIABLE]);
 					addWorkingCopyBindings(workingCopy.getFields(), bindingsMap[Binding.LOCAL]);
-					addWorkingCopyBindings(workingCopy.getFields(), bindingsMap[Binding.LOCAL|Binding.VARIABLE]);
 					addWorkingCopyBindings(workingCopy.getMethods(), bindingsMap[Binding.METHOD]);
 					
 				} catch (JavaModelException e) {
@@ -349,6 +348,7 @@ public class NameLookup implements SuffixConstants {
 			  }
 			  return false;
 		  case Binding.FIELD:
+		  case Binding.VARIABLE:
 			  if (element instanceof IField)
 			  {
 				  requestor.acceptField( (IField)element);
