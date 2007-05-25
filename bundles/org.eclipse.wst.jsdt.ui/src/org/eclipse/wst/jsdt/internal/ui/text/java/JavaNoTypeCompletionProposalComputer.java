@@ -31,7 +31,7 @@ public class JavaNoTypeCompletionProposalComputer extends JavaCompletionProposal
 	 */
 	protected CompletionProposalCollector createCollector(JavaContentAssistInvocationContext context) {
 		CompletionProposalCollector collector= super.createCollector(context);
-		collector.setIgnored(CompletionProposal.ANNOTATION_ATTRIBUTE_REF, false);
+		collector.setIgnored(CompletionProposal.ANNOTATION_ATTRIBUTE_REF, true);
 		collector.setIgnored(CompletionProposal.ANONYMOUS_CLASS_DECLARATION, false);
 		collector.setIgnored(CompletionProposal.FIELD_REF, false);
 		collector.setIgnored(CompletionProposal.KEYWORD, false);
@@ -40,7 +40,7 @@ public class JavaNoTypeCompletionProposalComputer extends JavaCompletionProposal
 		collector.setIgnored(CompletionProposal.METHOD_DECLARATION, false);
 		collector.setIgnored(CompletionProposal.METHOD_NAME_REFERENCE, false);
 		collector.setIgnored(CompletionProposal.METHOD_REF, false);
-		collector.setIgnored(CompletionProposal.PACKAGE_REF, false);
+		collector.setIgnored(CompletionProposal.PACKAGE_REF, true);
 		collector.setIgnored(CompletionProposal.POTENTIAL_METHOD_DECLARATION, false);
 		collector.setIgnored(CompletionProposal.VARIABLE_DECLARATION, false);
 		
