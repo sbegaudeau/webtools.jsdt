@@ -567,9 +567,9 @@ protected void getHandleMemento(StringBuffer buff) {
 protected boolean resourceExists() {
 	IWorkspace workspace = ResourcesPlugin.getWorkspace();
 	if (workspace == null) return false; // workaround for http://bugs.eclipse.org/bugs/show_bug.cgi?id=34069
-	Object me = JavaModel.getTarget(workspace.getRoot(), this.getPath(), true) != null;
+	Object me = JavaModel.getTarget(workspace.getRoot(), this.getPath(), true) ;
 	if(me!=null) return true;
-	me = JavaModel.getTarget(workspace.getRoot(), this.getPath().makeRelative(), true) != null;
+	me = JavaModel.getTarget(workspace.getRoot(), this.getPath().makeRelative(), true);
 	return (me!=null); 
 	
 }
