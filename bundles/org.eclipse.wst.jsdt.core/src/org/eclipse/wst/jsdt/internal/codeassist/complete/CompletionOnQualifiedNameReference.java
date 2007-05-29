@@ -75,4 +75,10 @@ public TypeBinding resolveType(BlockScope scope) {
 	
 	throw new CompletionNodeFound(this, binding, scope);
 }
+
+
+public boolean isSpecialNode()
+{
+	return true;
+}
 }

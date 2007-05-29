@@ -63,4 +63,9 @@ public class CompletionOnSingleNameReference extends SingleNameReference {
 		}
 		throw new CompletionNodeFound(this, scope);
 	}
+	
+	public boolean isSpecialNode()
+	{
+		return true;
+	}
 }

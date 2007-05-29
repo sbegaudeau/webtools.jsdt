@@ -1018,4 +1018,10 @@ public void markAsNonNull() {
 		return false;
 	}
 
+	// is completion or selection node
+	public boolean isSpecialNode()
+	{
+		return false;
+	}
+	
 }

@@ -167,7 +167,7 @@ protected void classInstanceCreation(boolean hasClassBody, boolean isShort) {
 
 		
 //		int index;
-		int argsLength= expressionLengthStack[expressionLengthPtr];
+		int argsLength= isShort ? 0 : expressionLengthStack[expressionLengthPtr];
 		if (!(this.expressionStack[this.expressionPtr-argsLength] instanceof SelectionOnSingleNameReference))
 		{
 //				
@@ -186,16 +186,21 @@ protected void classInstanceCreation(boolean hasClassBody, boolean isShort) {
 		alloc = new SelectionOnQualifiedAllocationExpression();
 		alloc.sourceEnd = endPosition; //the position has been stored explicitly
 
-		int length;
-		if ((length = expressionLengthStack[expressionLengthPtr--]) != 0) {
-			expressionPtr -= length;
-			System.arraycopy(
-				expressionStack, 
-				expressionPtr + 1, 
-				alloc.arguments = new Expression[length], 
-				0, 
-				length); 
+		if (!isShort)
+		{
+			int length;
+			if ((length = expressionLengthStack[expressionLengthPtr--]) != 0) {
+				expressionPtr -= length;
+				System.arraycopy(
+						expressionStack, 
+						expressionPtr + 1, 
+						alloc.arguments = new Expression[length], 
+						0, 
+						length); 
+			}
 		}
+		else 
+			alloc.arguments=new Expression[0];
 		// trick to avoid creating a selection on type reference
 		char [] oldIdent = this.assistIdentifier();
 		this.setAssistIdentifier(null);
@@ -1298,5 +1303,9 @@ public  String toString() {
 }
 public int getCursorLocation() {
 	return this.selectionStart;
+}
+
+public void createAssistTypeForAllocation(AllocationExpression expression) {
+	
 }
 }

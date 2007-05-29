@@ -4082,7 +4082,7 @@ protected MessageSend newMessageSend() {
 	int length;
 	if ((length = expressionLengthStack[expressionLengthPtr--]) != 0) {
 		expressionPtr -= length;
-		System.arraycopy(
+		System.arraycopy( 
 			expressionStack, 
 			expressionPtr + 1, 
 			messageSend.arguments = new Expression[length], 
@@ -4097,6 +4097,20 @@ protected MessageSend newMessageSend() {
 	
 	this.isOrphanCompletionNode = true;
 	return messageSend;
+}
+
+public void createAssistTypeForAllocation(AllocationExpression expression) {
+	Expression member = expression.member;
+	if (member instanceof SingleNameReference) {
+		SingleNameReference snr = (SingleNameReference) member;
+		long position =  (((long)snr.sourceStart)<<32)+snr.sourceEnd;
+		expression.member= new CompletionOnSingleTypeName(snr.token,position); 
+	}
+	else
+		if (member instanceof CompletionOnQualifiedNameReference) {
+			CompletionOnQualifiedNameReference qnr = (CompletionOnQualifiedNameReference) member;
+			expression.member=new CompletionOnQualifiedType(qnr.tokens,qnr.completionIdentifier, qnr.sourcePositions);
+		}
 }
 
 }

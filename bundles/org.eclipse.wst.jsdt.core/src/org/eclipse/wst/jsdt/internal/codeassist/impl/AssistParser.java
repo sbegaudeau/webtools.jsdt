@@ -15,6 +15,8 @@ package org.eclipse.wst.jsdt.internal.codeassist.impl;
  *
  */
 
+import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnQualifiedNameReference;
+import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnSingleNameReference;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionScanner;
 import org.eclipse.wst.jsdt.internal.compiler.ast.*;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -798,6 +800,7 @@ public abstract TypeReference createParameterizedQualifiedAssistTypeReference(ch
 public abstract NameReference createSingleAssistNameReference(char[] assistName, long position);
 public abstract TypeReference createSingleAssistTypeReference(char[] assistName, long position);
 public abstract TypeReference createParameterizedSingleAssistTypeReference(TypeReference[] typeArguments, char[] assistName, long position);
+public abstract void createAssistTypeForAllocation(AllocationExpression expression);
 /*
  * Flush parser/scanner state regarding to code assist
  */
@@ -1705,6 +1708,12 @@ protected void consumePropertyOperator() {
 protected void classInstanceCreation(boolean isQualified, boolean isShort) {
 	popElement(K_SELECTOR);
 	super.classInstanceCreation(isQualified, isShort);
+	AllocationExpression expression = (AllocationExpression)this.expressionStack[this.expressionPtr];
+	Expression member = expression.member;
+	if (member.isSpecialNode())
+	{
+	    this.createAssistTypeForAllocation(expression);
+	}
 }
 
 }

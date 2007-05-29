@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.swing.ScrollPaneLayout;
+
 import org.eclipse.wst.jsdt.core.CompletionContext;
 import org.eclipse.wst.jsdt.core.CompletionFlags;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
@@ -1306,7 +1308,34 @@ public final class CompletionEngine
 					null,
 					new ObjectVector());
 			}
-		} else if (astNode instanceof CompletionOnQualifiedNameReference) {
+		} else if (astNode instanceof CompletionOnSingleTypeName) {
+
+			CompletionOnSingleTypeName singleRef = (CompletionOnSingleTypeName) astNode;
+			this.completionToken = singleRef.token;
+
+			this.assistNodeIsClass = true;
+			this.assistNodeIsConstructor = true;
+
+			// can be the start of a qualified type name
+			if (qualifiedBinding == null) {
+					ObjectVector typesFound = new ObjectVector();
+					findTypesAndPackages(this.completionToken, scope, typesFound);
+			} else if (!this.requestor.isIgnored(CompletionProposal.TYPE_REF)) {
+				findMemberTypes(
+					this.completionToken,
+					(ReferenceBinding) qualifiedBinding,
+					scope,
+					scope.enclosingSourceType(),
+					false,
+					false,
+					false,
+					false,
+					!this.assistNodeIsConstructor,
+					null,
+					new ObjectVector());
+			}
+		}
+		else if (astNode instanceof CompletionOnQualifiedNameReference) {
 
 			this.insideQualifiedReference = true;
 			CompletionOnQualifiedNameReference ref =
@@ -1500,6 +1529,36 @@ public final class CompletionEngine
 				// replace to the end of the completion identifier
 				findTypesAndSubpackages(this.completionToken, (PackageBinding) qualifiedBinding, scope);
 			}
+		} else if (astNode instanceof CompletionOnQualifiedType) {
+
+			this.insideQualifiedReference = true;
+			
+			CompletionOnQualifiedType ref =
+				(CompletionOnQualifiedType) astNode;
+			
+			this.assistNodeIsClass = true;
+			
+			this.completionToken = ref.completionIdentifier;
+			long completionPosition = ref.sourcePositions[ref.tokens.length];
+
+			// get the source positions of the completion identifier
+			if (qualifiedBinding instanceof ReferenceBinding && !(qualifiedBinding instanceof TypeVariableBinding)) {
+				if (!this.requestor.isIgnored(CompletionProposal.TYPE_REF)) {
+					setSourceRange((int) (completionPosition >>> 32), (int) completionPosition);
+					
+					ObjectVector typesFound = new ObjectVector();
+					 
+					
+					findMemberTypes(
+						this.completionToken,
+						(ReferenceBinding) qualifiedBinding,
+						scope,
+						scope.enclosingSourceType(),
+						false,
+						false,
+						typesFound);
+				}
+			}  
 		} else if (astNode instanceof CompletionOnMemberAccess) {
 			this.insideQualifiedReference = true;
 			CompletionOnMemberAccess access = (CompletionOnMemberAccess) astNode;
