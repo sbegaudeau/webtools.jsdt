@@ -393,14 +393,15 @@ public class CompletionProposalLabelProvider {
 	String createTypeProposalLabel(char[] fullName) {
 		// only display innermost type name as type name, using any
 		// enclosing types as qualification
-		int qIndex= findSimpleNameStart(fullName);
-
+//		int qIndex= findSimpleNameStart(fullName);
+//
 		StringBuffer buf= new StringBuffer();
-		buf.append(fullName, qIndex, fullName.length - qIndex);
-		if (qIndex > 0) {
-			buf.append(JavaElementLabels.CONCAT_STRING);
-			buf.append(fullName, 0, qIndex - 1);
-		}
+//		buf.append(fullName, qIndex, fullName.length - qIndex);
+//		if (qIndex > 0) {
+//			buf.append(JavaElementLabels.CONCAT_STRING);
+//			buf.append(fullName, 0, qIndex - 1);
+//		}
+		buf.append(fullName);
 		return buf.toString();
 	}
 	
