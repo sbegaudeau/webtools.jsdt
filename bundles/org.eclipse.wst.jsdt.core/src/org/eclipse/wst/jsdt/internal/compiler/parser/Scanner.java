@@ -176,7 +176,7 @@ public class Scanner implements TerminalTokens {
 		newEntry6 = 0;
 	public boolean insideRecovery = false;
 	
-	protected int currentToken;
+	public int currentToken;
 	protected boolean pushedBack=false;
 
 	public static final int RoundBracket = 0;
@@ -1745,6 +1745,14 @@ public int getNextToken() throws InvalidInputException {
 						if (checkIfRegExp()) {
 							currentToken = TokenNameRegExLiteral;
 							return currentToken;
+						} else {
+							if (getNextChar('='))
+							{
+								currentToken=TokenNameDIVIDE_EQUAL;
+								return currentToken;
+							}
+							currentToken=TokenNameDIVIDE;
+							return currentToken;
 						}
 					}
 				case '\u001a' :
@@ -2691,6 +2699,10 @@ public void recordComment(int token) {
  * @param end the given end position
  */
 public void resetTo(int begin, int end) {
+	resetTo(begin, end,this.currentToken);
+}
+
+public void resetTo(int begin, int end, int currentToken) {
 	//reset the scanner to a given position where it may rescan again
 
 	this.diet = false;
@@ -2702,6 +2714,7 @@ public void resetTo(int begin, int end) {
 	}
 	this.commentPtr = -1; // reset comment stack
 	this.foundTaskCount = 0;
+	this.currentToken=currentToken;
 }
 
 public final void scanEscapeCharacter() throws InvalidInputException {
@@ -4178,9 +4191,8 @@ public static final String UNEXP_REGEXP = "Unexpected_Error_Processing_Regular_E
 protected boolean checkIfRegExp() throws IndexOutOfBoundsException, InvalidInputException {
 	// Try to process as regular expression
 	
-/*	int regExpPosition = this.currentPosition;
-	char regexpCharacter = this.currentCharacter;
-	char orginalCharaceter = this.currentCharacter; */
+	int regExpPosition = this.currentPosition;
+	char orginalCharacter = this.currentCharacter; 
 	char previousCharacter = this.currentCharacter;
 	int previousPosition = this.currentPosition;
 	int previousUnicodePtr = this.withoutUnicodePtr;
@@ -4285,7 +4297,9 @@ protected boolean checkIfRegExp() throws IndexOutOfBoundsException, InvalidInput
 	}
 		
 	if (regExp == false){
-		throw new InvalidInputException(NON_TERM_REGEXP);
+		this.currentCharacter=orginalCharacter;
+		this.currentPosition=regExpPosition;
+		return false;
 	}
 		// Back up one character 
 	this.currentCharacter = previousCharacter;
