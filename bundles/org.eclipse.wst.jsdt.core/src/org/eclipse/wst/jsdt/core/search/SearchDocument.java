@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.search;
 
+import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.InternalSearchDocument;
 
 /**
@@ -126,5 +127,14 @@ public abstract class SearchDocument extends InternalSearchDocument {
 	 */
 	public void removeAllIndexEntries() {
 		super.removeAllIndexEntries();
+	}
+	
+	public boolean isVirtual() {
+		return false;
+	
+	}
+	public IJavaElement getJavaElement() {
+		return null;
+	
 	}
 }

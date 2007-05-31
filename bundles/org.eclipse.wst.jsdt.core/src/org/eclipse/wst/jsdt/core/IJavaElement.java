@@ -367,5 +367,5 @@ public interface IJavaElement extends IAdaptable, ILookupScope{
 	 */// TODO (philippe) predicate shouldn't throw an exception
 	boolean isStructureKnown() throws JavaModelException;
 	
-	
+	String getDisplayName();
 }

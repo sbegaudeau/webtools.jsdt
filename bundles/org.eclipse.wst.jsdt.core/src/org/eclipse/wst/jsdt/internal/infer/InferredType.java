@@ -108,6 +108,7 @@ public class InferredType extends ASTNode {
 			methods.add(method);
 			this.updatePositions(methodDeclaration.sourceStart, methodDeclaration.sourceEnd);
 		}
+		methodDeclaration.inferredMethod = method;
 		return method;
 	}
 

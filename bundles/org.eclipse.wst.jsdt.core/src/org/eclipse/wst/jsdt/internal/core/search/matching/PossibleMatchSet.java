@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.internal.compiler.util.ObjectVector;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
@@ -22,9 +23,15 @@ public class PossibleMatchSet {
 
 private SimpleLookupTable rootsToPossibleMatches = new SimpleLookupTable(5);
 private int elementCount = 0;
+private static final IPath VIRTUAL_RESOURCE = new Path("****&&VIRTUALRESOURCE&&*****");
 
 public void add(PossibleMatch possibleMatch) {
-	IPath path = possibleMatch.openable.getPackageFragmentRoot().getPath();
+	IPath path = null;
+	if(possibleMatch.document.isVirtual()) {
+		path = VIRTUAL_RESOURCE; // workspace root
+	}else {
+		path = possibleMatch.openable.getPackageFragmentRoot().getPath();
+	}
 	ObjectVector possibleMatches = (ObjectVector) this.rootsToPossibleMatches.get(path);
 	if (possibleMatches != null) {
 		if (possibleMatches.contains(possibleMatch)) return;
@@ -38,15 +45,30 @@ public void add(PossibleMatch possibleMatch) {
 public PossibleMatch[] getPossibleMatches(IPackageFragmentRoot[] roots) {
 	PossibleMatch[] result = new PossibleMatch[this.elementCount];
 	int index = 0;
+	// Virtual entries
+	ObjectVector virtualEntries = (ObjectVector) this.rootsToPossibleMatches.get(VIRTUAL_RESOURCE);
+	
+	if (virtualEntries != null) {
+		virtualEntries.copyInto(result, index);
+		index += virtualEntries.size();
+	}
+	
+	
 	for (int i = 0, length = roots.length; i < length; i++) {
+		
+		if(roots[i].getPath()!=null && roots[i].getPath().isEmpty()) continue;
+		
 		ObjectVector possibleMatches = (ObjectVector) this.rootsToPossibleMatches.get(roots[i].getPath());
 		if (possibleMatches != null) {
 			possibleMatches.copyInto(result, index);
 			index += possibleMatches.size();
 		}
 	}
-	if (index < this.elementCount)
+	if (index < this.elementCount) {
+	
 		System.arraycopy(result, 0, result = new PossibleMatch[index], 0, index);
+		
+	}
 	return result;
 }
 public void reset() {

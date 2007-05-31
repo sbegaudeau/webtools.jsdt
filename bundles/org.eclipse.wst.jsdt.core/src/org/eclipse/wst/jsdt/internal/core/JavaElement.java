@@ -833,4 +833,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 		return parent!=null?parent.newSearchableNameEnvironment(owner):getJavaProject().newSearchableNameEnvironment(owner);
 	}
 	
+	public String getDisplayName() {
+		return getElementName();
+	}
 }

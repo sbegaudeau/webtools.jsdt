@@ -952,6 +952,19 @@ public IType[] getTypes() throws JavaModelException {
 		return this.filePath!=null?this.filePath.toString().toCharArray():getElementName().toCharArray();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.internal.core.JavaElement#getDisplayName()
+	 */
+	public String getDisplayName() {
+		if(parent instanceof LibraryPackageFragment) {
+			
+			ClasspathContainerInitializer init = ((LibraryPackageFragment)parent).getContainerInitializer();
+			if(init==null) return super.getDisplayName();
+			return init.getDescription(new Path(getElementName()), getJavaProject());
+		}
+		return super.getDisplayName();
+	}
+
 
 
 }

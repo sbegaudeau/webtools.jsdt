@@ -18,10 +18,16 @@ import org.eclipse.wst.jsdt.core.JavaCore;
 
 public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathContainerInitializer {
 
-	private static final String ContainerDescription = "Base Browser Support Library";
+	private static final String LibraryDescription = "ECMA 3 Browser Support Library";
+	private static final String ContainerDescription = "ECMA 3 Browser Support";
 	private static final char[] LIBRARY_FILE_NAME = {'b','a','s','e','B','r','o','w','s','e','r','L','i','b','r','a','r','y','.','j','s'};
 	private static final String CONTAINER_ID="org.eclipse.wst.jsdt.launching.baseBrowserLibrary";
+	private static final String FILE_DESCRIPTION = "ECMA 3 Browser Elements";
+	
 	public String getDescription(IPath containerPath, IJavaProject project) {
+		if(containerPath.equals(new Path(new String(LIBRARY_FILE_NAME)))) {
+			return FILE_DESCRIPTION;
+		}
 		return ContainerDescription;
 	}
 	
@@ -39,7 +45,7 @@ public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathC
 
 		public String getDescription() {
 			
-			return ContainerDescription;
+			return LibraryDescription;
 		}
 
 		public int getKind() {	

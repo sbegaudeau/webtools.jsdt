@@ -6,23 +6,28 @@ import java.util.Map;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
 import org.eclipse.wst.jsdt.core.IClassFile;
+import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
+
 
 
 public class LibraryFragmentRoot extends PackageFragmentRoot {
 
 	protected final IPath libraryPath;
 
- 
 	protected LibraryFragmentRoot(IPath jarPath, JavaProject project) {
 		super(null, project);
 		this.libraryPath = jarPath;
 	}
+	
 	/**
 	 * Constructs a package fragment root which is the root of the Java package directory hierarchy 
 	 * based on a JAR file.
@@ -160,6 +165,29 @@ private ClassFile getLibraryClassFile(){
 
 	public boolean isResourceContainer() {
 		return false;
+	}
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.internal.core.JavaElement#getDisplayName()
+	 */
+	public String getDisplayName() {
+		
+		ClasspathContainerInitializer containerInitializer = getContainerInitializer();
+		if(containerInitializer!=null) return containerInitializer.getDescription(getPath(), getJavaProject());
+		return super.getDisplayName();
+		
+	}
+	
+	public ClasspathContainerInitializer getContainerInitializer() {
+		IClasspathEntry fClassPathEntry=null;
+		try {
+			fClassPathEntry = ((JavaProject)getJavaProject()).getRawClasspathEntryFor(getPath());
+		} catch (JavaModelException ex) {}
+		
+		if(fClassPathEntry==null) return null;
+		
+		
+		return  JavaCore.getClasspathContainerInitializer(fClassPathEntry.getPath().segment(0));
+
 	}
 
 } 

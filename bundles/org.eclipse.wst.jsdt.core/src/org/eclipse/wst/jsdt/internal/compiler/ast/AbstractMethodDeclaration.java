@@ -21,6 +21,7 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.*;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
 import org.eclipse.wst.jsdt.internal.compiler.parser.*;
 import org.eclipse.wst.jsdt.internal.compiler.problem.*;
+import org.eclipse.wst.jsdt.internal.infer.InferredMethod;
 import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 public abstract class AbstractMethodDeclaration
@@ -51,6 +52,7 @@ public abstract class AbstractMethodDeclaration
 	public CompilationResult compilationResult;
 
 	public InferredType inferredType;
+	public InferredMethod inferredMethod;
 
 	public boolean errorInSignature = false; 
 	
@@ -500,6 +502,13 @@ public abstract class AbstractMethodDeclaration
 
 	public void resolve(BlockScope scope) {
 		this.resolve((Scope)scope);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode#isInferred()
+	 */
+	public boolean isInferred() {
+		return this.inferredMethod!=null;
 	}		
 
 }

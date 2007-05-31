@@ -359,10 +359,10 @@ public class JavaProject
 	/**
 	 * Adds a builder to the build spec for the given project.
 	 */
-	protected void addToBuildSpec(String builderID) throws CoreException {
+	public void addToBuildSpec(String builderID) throws CoreException {
 
 		IProjectDescription description = this.project.getDescription();
-		int javaCommandIndex = getJavaCommandIndex(description.getBuildSpec());
+		int javaCommandIndex = getJavaCommandIndex(description.getBuildSpec(), builderID);
 
 		if (javaCommandIndex == -1) {
 
@@ -570,7 +570,8 @@ public class JavaProject
 						if (JavaModel.isFile(target))
 						{
 							 if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isJavaFileName(entryPath.lastSegment())) {
-									root = new LibraryFragmentRoot(entryPath, this);
+								 root = new LibraryFragmentRoot(entryPath, this);
+									
 							 }
 							 else
 							 {
@@ -1367,6 +1368,23 @@ public class JavaProject
 		return null;
 	}
 	
+	/**
+	 * Returns the classpath entry that refers to the given path
+	 * or <code>null</code> if there is no reference to the path.
+	 * @param path IPath
+	 * @return IClasspathEntry
+	 * @throws JavaModelException
+	 */
+	public IClasspathEntry getRawClasspathEntryFor(IPath path)
+		throws JavaModelException {
+
+		JavaModelManager.PerProjectInfo perProjectInfo = getPerProjectInfo();
+		IClasspathEntry[] classpath = perProjectInfo.rawClasspath;
+		Object rawEntry = perProjectInfo.resolvedPathToRawEntries.get(path);
+		if(rawEntry!=null) return (IClasspathEntry)rawEntry;
+		return null;
+	}
+	
 	/*
 	 * Returns the cycle marker associated with this project or null if none.
 	 */
@@ -1508,16 +1526,19 @@ public class JavaProject
 	 * Find the specific Java command amongst the given build spec
 	 * and return its index or -1 if not found.
 	 */
-	private int getJavaCommandIndex(ICommand[] buildSpec) {
+	private int getJavaCommandIndex(ICommand[] buildSpec, String builder_ID) {
 
 		for (int i = 0; i < buildSpec.length; ++i) {
-			if (buildSpec[i].getBuilderName().equals(JavaCore.BUILDER_ID)) {
+			if (buildSpec[i].getBuilderName().equals(builder_ID)) {
 				return i;
 			}
 		}
 		return -1;
 	}
-	
+	private int getJavaCommandIndex(ICommand[] buildSpec) {
+		return getJavaCommandIndex(buildSpec, JavaCore.BUILDER_ID);
+		
+	}
 	/**
 	 * Convenience method that returns the specific type of info for a Java project.
 	 */
@@ -2434,7 +2455,7 @@ public class JavaProject
 	/**
 	 * Removes the given builder from the build spec for the given project.
 	 */
-	protected void removeFromBuildSpec(String builderID) throws CoreException {
+	public void removeFromBuildSpec(String builderID) throws CoreException {
 
 		IProjectDescription description = this.project.getDescription();
 		ICommand[] commands = description.getBuildSpec();
@@ -2644,7 +2665,7 @@ public class JavaProject
 		throws CoreException {
 
 		ICommand[] oldBuildSpec = description.getBuildSpec();
-		int oldJavaCommandIndex = getJavaCommandIndex(oldBuildSpec);
+		int oldJavaCommandIndex = getJavaCommandIndex(oldBuildSpec, newCommand.getBuilderName());
 		ICommand[] newCommands;
 
 		if (oldJavaCommandIndex == -1) {

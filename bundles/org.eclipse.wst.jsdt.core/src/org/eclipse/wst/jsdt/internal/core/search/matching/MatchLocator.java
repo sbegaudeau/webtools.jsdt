@@ -543,8 +543,8 @@ protected IJavaElement createHandle(AbstractMethodDeclaration method, IJavaEleme
 			parameterTypeSignatures[i] = Signature.createTypeSignature(typeName, false);
 		}
 	}
-
-	return createMethodHandle(parent, new String(method.selector), parameterTypeSignatures);
+	
+	return createMethodHandle(parent, new String(method.isInferred()?method.inferredMethod.name:method.selector), parameterTypeSignatures);
 }
 /*
  * Create binary method handle
@@ -1200,7 +1200,9 @@ public void locateMatches(SearchDocument[] searchDocuments) throws CoreException
 			if (searchDocument instanceof WorkingCopyDocument) {
 				workingCopy = ((WorkingCopyDocument)searchDocument).workingCopy;
 				openable = (Openable) workingCopy;
-			} else {
+			} else if(searchDocument.isVirtual()) {
+				openable = (Openable)searchDocument.getJavaElement();
+			}else{
 				openable = this.handleFactory.createOpenable(pathString, this.scope);
 			}
 			if (openable == null) {
