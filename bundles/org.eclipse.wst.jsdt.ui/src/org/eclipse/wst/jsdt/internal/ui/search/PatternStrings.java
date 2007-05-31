@@ -48,13 +48,11 @@ public class PatternStrings {
 			if (!isConstructor) {
 				buffer.append('.');
 			}
+			
+			buffer.append(getUnqualifiedMethodSignature(method, !isConstructor));
+			
 		}
-		try {
-			buffer.append(getUnqualifiedMethodSignature(method, !method.isConstructor()));
-		} catch (JavaModelException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		}
+		
 		
 		return buffer.toString();
 	}
