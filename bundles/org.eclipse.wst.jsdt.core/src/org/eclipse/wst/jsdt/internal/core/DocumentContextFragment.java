@@ -139,7 +139,7 @@ public class DocumentContextFragment extends LibraryPackageFragment{
 	}
 	
 	public boolean hasSource() {
-		if(DocumentContextFragmentRoot.RETURN_CU && filesInScope.length>0) {
+		if(DocumentContextFragmentRoot.RETURN_CU /*&& filesInScope.length>0*/) {
 			IResource file = ((IContainer)parent.getResource()).findMember(filesInScope[0]);
 			if(file!=null && file.exists()) return true;
 		}

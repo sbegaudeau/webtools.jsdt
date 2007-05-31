@@ -179,8 +179,9 @@ private ClassFile getLibraryClassFile(){
 	
 	public ClasspathContainerInitializer getContainerInitializer() {
 		IClasspathEntry fClassPathEntry=null;
+
 		try {
-			fClassPathEntry = ((JavaProject)getJavaProject()).getRawClasspathEntryFor(getPath());
+			fClassPathEntry =  getRawClasspathEntry();
 		} catch (JavaModelException ex) {}
 		
 		if(fClassPathEntry==null) return null;
