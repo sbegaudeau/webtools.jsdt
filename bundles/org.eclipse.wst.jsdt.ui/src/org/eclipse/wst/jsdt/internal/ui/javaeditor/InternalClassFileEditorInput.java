@@ -71,7 +71,7 @@ public class InternalClassFileEditorInput implements IClassFileEditorInput, IPer
 	 * @see IEditorInput#getName()
 	 */
 	public String getName() {
-		return fClassFile.getElementName();
+		return fClassFile.getDisplayName();
 	}
 
 	/*
@@ -82,7 +82,7 @@ public class InternalClassFileEditorInput implements IClassFileEditorInput, IPer
 			return fClassFile.getType().getFullyQualifiedName();
 		} catch (JavaModelException e) {
 		}
-		return fClassFile.getElementName();
+		return fClassFile.getDisplayName();
 	}
 
 	/*

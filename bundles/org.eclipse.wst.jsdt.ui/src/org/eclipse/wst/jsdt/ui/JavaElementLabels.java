@@ -456,10 +456,10 @@ public class JavaElementLabels {
 				break;
 			case IJavaElement.JAVA_PROJECT:
 			case IJavaElement.JAVA_MODEL:
-				buf.append(element.getElementName());
+				buf.append(element.getDisplayName());
 				break;
 			default:
-				buf.append(element.getElementName());
+				buf.append(element.getDisplayName());
 		}
 		
 		if (root != null && getFlag(flags, APPEND_ROOT_PATH)) {
@@ -527,7 +527,7 @@ public class JavaElementLabels {
 			}
 		 
 				
-			buf.append(method.getElementName());
+			buf.append(method.getDisplayName());
 			
 			// parameters
 			buf.append('(');
@@ -687,7 +687,7 @@ public class JavaElementLabels {
 				if (i > 0) {
 					buf.append(COMMA_STRING);
 				}
-				buf.append(typeParameters[i].getElementName());
+				buf.append(typeParameters[i].getDisplayName());
 			}
 			buf.append('>');
 		}
@@ -720,7 +720,7 @@ public class JavaElementLabels {
 					getFileLabel(field, T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), buf);
 				buf.append('.');
 			}
-			buf.append(field.getElementName());
+			buf.append(field.getDisplayName());
 			
 			if (getFlag(flags, F_APP_TYPE_SIGNATURE) && field.exists() && !Flags.isEnum(field.getFlags())) {
 				if (field.getTypeSignature()!=null)
@@ -769,7 +769,7 @@ public class JavaElementLabels {
 			buf.append('.');
 		}
 		
-		buf.append(localVariable.getElementName());
+		buf.append(localVariable.getDisplayName());
 		
 		if (getFlag(flags, F_APP_TYPE_SIGNATURE)) {
 			buf.append(DECL_STRING);
@@ -904,7 +904,7 @@ public class JavaElementLabels {
 			}
 		}
 		
-		String typeName= type.getElementName();
+		String typeName= type.getDisplayName();
 		if (typeName.length() == 0) { // anonymous
 			try {
 				if (type.getParent() instanceof IField && type.isEnum()) {
@@ -987,7 +987,7 @@ public class JavaElementLabels {
 		if (declaration.getElementType() == IJavaElement.IMPORT_CONTAINER) {
 			buf.append(JavaUIMessages.JavaElementLabels_import_container); 
 		} else {
-			buf.append(declaration.getElementName());
+			buf.append(declaration.getDisplayName());
 		}
 		// post qualification
 		if (getFlag(flags, D_POST_QUALIFIED)) {
@@ -1013,7 +1013,7 @@ public class JavaElementLabels {
 				buf.append('.');
 			}
 		}
-		buf.append(classFile.getElementName());
+		buf.append(classFile.getDisplayName());
 		
 		if (getFlag(flags, CF_POST_QUALIFIED)) {
 			buf.append(CONCAT_STRING);
@@ -1035,7 +1035,7 @@ public class JavaElementLabels {
 				buf.append('.');
 			}
 		}
-		buf.append(cu.getElementName());
+		buf.append(cu.getDisplayName());
 		
 		if (getFlag(flags, CU_POST_QUALIFIED)) {
 			buf.append(CONCAT_STRING);
@@ -1069,7 +1069,7 @@ public class JavaElementLabels {
 		if (pack.isDefaultPackage()) {
 			buf.append(DEFAULT_PACKAGE);
 		} else if (getFlag(flags, P_COMPRESSED) && fgPkgNameLength >= 0) {
-				String name= pack.getElementName();
+				String name= pack.getDisplayName();
 				int start= 0;
 				int dot= name.indexOf('.', start);
 				while (dot > 0) {
@@ -1085,7 +1085,7 @@ public class JavaElementLabels {
 				}
 				buf.append(name.substring(start));
 		} else {
-			buf.append(pack.getElementName());
+			buf.append(pack.getDisplayName());
 		}
 		if (getFlag(flags, P_POST_QUALIFIED)) {
 			buf.append(CONCAT_STRING);
@@ -1174,7 +1174,7 @@ public class JavaElementLabels {
 		if (rootQualified) {
 			buf.append(root.getPath().makeRelative().toString());
 		} else {
-			buf.append(root.getElementName());
+			buf.append(root.getDisplayName());
 			if (referencedQualified) {
 				buf.append(CONCAT_STRING);
 				buf.append(resource.getParent().getFullPath().makeRelative().toString());
@@ -1201,13 +1201,13 @@ public class JavaElementLabels {
 					buf.append(projectRelativePath.toString());
 				}
 			} else
-				buf.append(root.getElementName());
+				buf.append(root.getDisplayName());
 			if (referencedQualified) {
 				buf.append(CONCAT_STRING);
 				buf.append(resource.getProject().getName());
 			} else if (getFlag(flags, ROOT_POST_QUALIFIED)) {
 				buf.append(CONCAT_STRING);
-				buf.append(root.getParent().getElementName());
+				buf.append(root.getParent().getDisplayName());
 			}
 		}
 	}

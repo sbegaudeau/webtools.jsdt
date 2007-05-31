@@ -45,7 +45,7 @@ public class JavaElementProperties implements IPropertySource {
 	
 	public Object getPropertyValue(Object name) {
 		if (name.equals(IBasicPropertyConstants.P_TEXT)) {
-			return fSource.getElementName();
+			return fSource.getDisplayName();
 		}
 		return null;
 	}

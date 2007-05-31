@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.internal.ui.packageview;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -327,7 +328,17 @@ public class PackageExplorerContentProvider extends StandardJavaElementContentPr
 	}
 
 	private Object[] getContainerPackageFragmentRoots(PackageFragmentRootContainer container) {
-		return container.getChildren();
+		Object[] children = container.getChildren();
+		if(children==null) return null;
+		ArrayList allChildren = new ArrayList();
+		for(int i=0;i<children.length;i++) {
+			try {
+				allChildren.addAll(Arrays.asList(((IPackageFragmentRoot)children[i]).getChildren()));
+			} catch (JavaModelException ex) {
+				
+			}
+		}
+		return allChildren.toArray();
 	}
 
 	private Object[] getNonJavaProjects(IJavaModel model) throws JavaModelException {

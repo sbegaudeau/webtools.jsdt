@@ -208,7 +208,7 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 			IPath containerPath= null;
 
 			if (entry == null || root.getKind() != IPackageFragmentRoot.K_BINARY) {
-				createLabel(composite, Messages.format(JavaEditorMessages.SourceAttachmentForm_message_noSource, fFile.getElementName()));
+				createLabel(composite, Messages.format(JavaEditorMessages.SourceAttachmentForm_message_noSource, fFile.getDisplayName()));
 				return;
 			}
 
@@ -237,7 +237,7 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 				button= createButton(composite, JavaEditorMessages.SourceAttachmentForm_button_attachSource);
 
 			} else {
-				createLabel(composite, Messages.format(JavaEditorMessages.SourceAttachmentForm_message_noSourceInAttachment, fFile.getElementName()));
+				createLabel(composite, Messages.format(JavaEditorMessages.SourceAttachmentForm_message_noSourceInAttachment, fFile.getDisplayName()));
 				createLabel(composite, JavaEditorMessages.SourceAttachmentForm_message_pressButtonToChange);
 				createLabel(composite, null);
 
