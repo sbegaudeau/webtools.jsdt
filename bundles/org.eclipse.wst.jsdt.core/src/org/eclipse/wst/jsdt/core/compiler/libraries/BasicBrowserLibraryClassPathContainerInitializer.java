@@ -22,7 +22,7 @@ public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathC
 	private static final String ContainerDescription = "ECMA 3 Browser Support";
 	private static final char[] LIBRARY_FILE_NAME = {'b','a','s','e','B','r','o','w','s','e','r','L','i','b','r','a','r','y','.','j','s'};
 	private static final String CONTAINER_ID="org.eclipse.wst.jsdt.launching.baseBrowserLibrary";
-	private static final String FILE_DESCRIPTION = "ECMA 3 Browser Elements";
+	private static final String FILE_DESCRIPTION = "ECMA 3 Compatible Browser";
 	
 	public String getDescription(IPath containerPath, IJavaProject project) {
 		if(containerPath.equals(new Path(new String(LIBRARY_FILE_NAME)))) {
