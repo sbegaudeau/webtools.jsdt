@@ -596,7 +596,8 @@ public IClasspathEntry getRawClasspathEntry() throws JavaModelException {
 	}
 	if(rawEntry!=null) return rawEntry;
 	/* no raw entry, so this must be a packagefragmentroot of a project with undefined source folder */
-	return JavaCore.newProjectEntry(project.getPath(), false);
+	
+	return JavaCore.newLibraryEntry(getPath().makeAbsolute(), getPath().makeAbsolute(), getPath().makeAbsolute());
 }
 
 /*
