@@ -214,14 +214,18 @@ public class InferEngine extends ASTVisitor {
 		
 		InferredType currentType = var.inferredType;
 		
-		char[] cs = String.valueOf(this.anonymousCount++).toCharArray();
-		char []name = CharOperation.concat(InferredType.ANONYMOUS_PREFIX,var.name,cs);
-		InferredType type = addType(name);
-		type.isDefinition=true;
-		if (currentType!=null && !currentType.isAnonymous)
-		  type.superClass=currentType;
-		var.inferredType=type;
-		return type;
+		if (currentType==null || !currentType.isAnonymous)
+		{
+			char[] cs = String.valueOf(this.anonymousCount++).toCharArray();
+			char []name = CharOperation.concat(InferredType.ANONYMOUS_PREFIX,var.name,cs);
+			InferredType type = addType(name);
+			type.isDefinition=true;
+			type.isAnonymous=true;
+			if (currentType!=null)
+				type.superClass=currentType;
+			var.inferredType=type;
+		}
+		return var.inferredType;
 	}
 
 	protected boolean handlePrototype(Assignment assignment) {
