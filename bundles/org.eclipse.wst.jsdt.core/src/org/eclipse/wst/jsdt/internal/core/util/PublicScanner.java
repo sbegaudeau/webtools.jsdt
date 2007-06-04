@@ -1568,6 +1568,14 @@ public int getNextToken() throws InvalidInputException {
 						if (checkIfRegExp()) {
 							currentToken = TokenNameRegExLiteral;
 							return currentToken;
+						} else {
+							if (getNextChar('='))
+							{
+								currentToken=TokenNameDIVIDE_EQUAL;
+								return currentToken;
+							}
+							currentToken=TokenNameDIVIDE;
+							return currentToken;
 						}
 					}
 				case '\u001a' :
@@ -3972,9 +3980,9 @@ public static final String UNEXP_REGEXP = "Unexpected_Error_Processing_Regular_E
 protected boolean checkIfRegExp() throws IndexOutOfBoundsException, InvalidInputException {
 	// Try to process as regular expression
 	
-/*	int regExpPosition = this.currentPosition;
+ 	int regExpPosition = this.currentPosition;
 	char regexpCharacter = this.currentCharacter;
-	char orginalCharaceter = this.currentCharacter; */
+	char orginalCharacter = this.currentCharacter; 
 	char previousCharacter = this.currentCharacter;
 	int previousPosition = this.currentPosition;
 	int previousUnicodePtr = this.withoutUnicodePtr;
@@ -4079,7 +4087,9 @@ protected boolean checkIfRegExp() throws IndexOutOfBoundsException, InvalidInput
 	}
 		
 	if (regExp == false){
-		throw new InvalidInputException(NON_TERM_REGEXP);
+		this.currentCharacter=orginalCharacter;
+		this.currentPosition=regExpPosition;
+		return false;
 	}
 		// Back up one character 
 	this.currentCharacter = previousCharacter;
