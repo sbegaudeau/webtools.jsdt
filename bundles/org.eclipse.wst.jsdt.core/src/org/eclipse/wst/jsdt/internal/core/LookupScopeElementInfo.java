@@ -49,17 +49,6 @@ public class LookupScopeElementInfo extends PackageFragmentRootInfo {
 		public Map rootToResolvedEntries;		
 	}
 	
-	public String[] getRawImportsFromCache() {
-		
-		String[] rawImports = null;
-		
-		for(int i = 0;i<cache.allPkgFragmentRootsCache.length;i++) {
-			if(cache.allPkgFragmentRootsCache[i] instanceof DocumentContextFragmentRoot) {
-				return ((DocumentContextFragmentRoot)cache.allPkgFragmentRootsCache[i]).getRawImports();
-			}
-		}
-		return new String[0];
-	}
 
 	public IPackageFragmentRoot[] getAllRoots() {
 		if(LOOKUP_LOCAL_SCOPE_FIRST) return getAllRootsLocalFirst();

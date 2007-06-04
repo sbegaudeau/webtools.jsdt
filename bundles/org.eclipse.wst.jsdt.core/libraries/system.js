@@ -1,6 +1,6 @@
 /**
   * Object Object()
-  * @type  constructor
+  * @constructor
   * @class Object
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
@@ -9,7 +9,7 @@
 function Object(){}
  /**
   * function toString() 
-  * @type    Method
+  * @type    String
   * @class   Object
   * @return  String
   * @throws  DOMException
@@ -21,7 +21,7 @@ function Object(){}
 Object.prototype.toString = function( ){return "";};
  /**
   * function toLocaleString() 
-  * @type    Method
+  * @type    String
   * @class   Object
   * @return  String
   * @throws  DOMException
@@ -33,7 +33,7 @@ Object.prototype.toString = function( ){return "";};
 Object.prototype.toLocaleString  = function( ){return "";};
  /**
   * function valueOf() 
-  * @type    Method
+  * @type    String
   * @class   Object
   * @return  String
   * @throws  DOMException
@@ -45,7 +45,7 @@ Object.prototype.toLocaleString  = function( ){return "";};
 Object.prototype.valueOf = function( ){return "";};
  /**
   * function hasOwnProperty(V) 
-  * @type    Method
+  * @type    Boolean
   * @class   Object
   * @param   V Object
   * @return  Boolean
@@ -58,7 +58,7 @@ Object.prototype.valueOf = function( ){return "";};
 Object.prototype.hasOwnProperty  = function (V){return true;};
  /**
   * function isPrototypeOf(V) 
-  * @type    Method
+  * @type    Boolean
   * @class   Object
   * @param   V Object
   * @return  Boolean
@@ -71,7 +71,7 @@ Object.prototype.hasOwnProperty  = function (V){return true;};
 Object.prototype.isPrototypeOf  = function (V){return true;};
  /**
   * function propertyIsEnumerable(V) 
-  * @type    Method
+  * @type    String
   * @class   Object
   * @param   V Object
   * @return  String
@@ -106,7 +106,7 @@ String.prototype = new Object();
 String.prototype.length =1;
  /**
   * function charAt(pos) 
-  * @type    Method
+  * @type    String
   * @class   String
   * @param   pos Number
   * @return  String
@@ -119,7 +119,7 @@ String.prototype.length =1;
 String.prototype.charAt = function(pos){return "";};
  /**
   * function charCodeAt(pos) 
-  * @type    Method
+  * @type    String
   * @class   String
   * @param   pos Number
   * @return  String
@@ -132,7 +132,7 @@ String.prototype.charAt = function(pos){return "";};
 String.prototype.charCodeAt= function(pos){return "";};
  /**
   * function concat() 
-  * @type    Method
+  * @type    String
   * @class   String
   * @return  String
   * @throws  DOMException
@@ -144,7 +144,7 @@ String.prototype.charCodeAt= function(pos){return "";};
 String.prototype.concat= function(){return "";};
  /**
   * function indexOf(searchString, position) 
-  * @type    Method
+  * @type    Number
   * @class   String
   * @param   searchString String
   * @param   position Number
@@ -158,7 +158,7 @@ String.prototype.concat= function(){return "";};
 String.prototype.indexOf = function(searchString, position){return 1;};
  /**
   * function lastIndexOf(pos) 
-  * @type    Method
+  * @type    Number
   * @class   String
   * @param   searchString String
   * @param   position Number
@@ -172,7 +172,7 @@ String.prototype.indexOf = function(searchString, position){return 1;};
 String.prototype.lastIndexOf = function(searchString, position){return 1;};
  /**
   * function localeCompare(that) 
-  * @type    Method
+  * @type    Boolean
   * @class   String
   * @param   that String
   * @return  Boolean
@@ -185,7 +185,7 @@ String.prototype.lastIndexOf = function(searchString, position){return 1;};
 String.prototype.localeCompare = function(that){return true;};
  /**
   * function match(regexp) 
-  * @type    Method
+  * @type    Boolean
   * @class   String
   * @param   regexp String
   * @return  Boolean
@@ -198,7 +198,7 @@ String.prototype.localeCompare = function(that){return true;};
 String.prototype.match = function(regexp){return true;};
  /**
   * function replace(searchValue, replaceValue) 
-  * @type    Method
+  * @type    String
   * @class   String
   * @param   searchValue String
   * @param   replaceValue String
@@ -212,7 +212,7 @@ String.prototype.match = function(regexp){return true;};
 String.prototype.replace = function(searchValue, replaceValue){return "";};
  /**
   * function search(regexp) 
-  * @type    Method
+  * @type    Boolean
   * @class   String
   * @param   regexp String
   * @return  Boolean
@@ -225,7 +225,7 @@ String.prototype.replace = function(searchValue, replaceValue){return "";};
 String.prototype.search = function(regexp){return true;};
  /**
   * function slice(start, end) 
-  * @type    Method
+  * @type    String
   * @class   String
   * @param   start String
   * @param   end String
@@ -239,7 +239,7 @@ String.prototype.search = function(regexp){return true;};
 String.prototype.slice = function(start, end){return "";};
  /**
   * function split(separator, limit) 
-  * @type    Method
+  * @type    String
   * @class   String
   * @param   separator String
   * @param   limit String
@@ -253,7 +253,7 @@ String.prototype.slice = function(start, end){return "";};
 String.prototype.split = function(separator, limit){return "";};
  /**
   * function substring(start, end) 
-  * @type    Method
+  * @type    String
   * @class   String
   * @param   start String
   * @param   end String
@@ -267,7 +267,7 @@ String.prototype.split = function(separator, limit){return "";};
 String.prototype.substring = function(start, end){return "";};
  /**
   * function toLowerCase() 
-  * @type    Method
+  * @type    String
   * @class   String
   * @return  String
   * @throws  DOMException
@@ -279,7 +279,7 @@ String.prototype.substring = function(start, end){return "";};
 String.prototype.toLowerCase = function( ){return "";};
  /**
   * function toLocaleLowerCase() 
-  * @type    Method
+  * @type    String
   * @class   String
   * @return  String
   * @throws  DOMException
@@ -291,7 +291,7 @@ String.prototype.toLowerCase = function( ){return "";};
 String.prototype.toLocaleLowerCase = function( ){return "";};
  /**
   * function toUpperCase() 
-  * @type    Method
+  * @type    String
   * @class   String
   * @return  String
   * @throws  DOMException
@@ -303,7 +303,7 @@ String.prototype.toLocaleLowerCase = function( ){return "";};
 String.prototype.toUpperCase= function ( ){return "";};
  /**
   * function toLocaleUpperCase() 
-  * @type    Method
+  * @type    String
   * @class   String
   * @return  String
   * @throws  DOMException
@@ -317,7 +317,7 @@ String.prototype.toLocaleUpperCase = function( ){return "";};
 /**
   * Object Number()
   * @super Object
-  * @type  constructor
+  * @constructor
   * @class Number
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
@@ -329,7 +329,7 @@ function Number(){}
 /**
   * Object Boolean()
   * @super Object
-  * @type  constructor
+  * @constructor
   * @class Boolean
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
@@ -340,7 +340,7 @@ Boolean.prototype = new Object();
 /**
   * Object Array()
   * @super Object
-  * @type  constructor
+  * @constructor
   * @class Array
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
@@ -362,7 +362,7 @@ Array.prototype.length = 1;
 /**
   * Object Function()
   * @super Object
-  * @type  constructor
+  * @constructor
   * @class Function
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
@@ -373,7 +373,7 @@ Function.prototype = new Object();
 /**
   * Object Date(s)
   * @super Object
-  * @type  constructor
+  * @constructor
   * @class Date
   * @param s String
   * @since Standard ECMA-262 3rd. Edition

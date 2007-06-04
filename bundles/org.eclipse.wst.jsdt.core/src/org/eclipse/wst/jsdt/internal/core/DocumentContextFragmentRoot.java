@@ -48,14 +48,17 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	
-	private Vector includedFiles;
+	private Object[] includedFiles;
+	private Object[] timeStamps;
+	
 	private IFile fRelativeFile;
-	private boolean dirty;
+	
 	private IResource absolutePath;
 	private IPath webContext;
 	
 	public static final Boolean RETURN_CU = true;
 	
+	private boolean isDirty = true;
 
 	public DocumentContextFragmentRoot(IJavaProject project,
 									   IFile resourceRelativeFile,
@@ -65,10 +68,10 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 		super(resourceAbsolutePath, (JavaProject)project);
 		
 		fRelativeFile = resourceRelativeFile ;
-		this.includedFiles = new Vector();
-		dirty = true;
+		this.includedFiles = timeStamps = new Object[0];
 		this.absolutePath = ((IContainer)project.getResource()).findMember(resourceAbsolutePath);
 		this.webContext=webContext;
+		isDirty = true;
 	}
 	
 	public DocumentContextFragmentRoot(IJavaProject project,
@@ -77,35 +80,36 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 			this(project,resourceRelativeFile, new Path(""), new Path(""));
 	}
 	
-	
-	public String[] getRawImports() {
-		return (String[])includedFiles.toArray(new String[includedFiles.size()]);
-	}
-	
-	public boolean addFile(String fileName) {
-		if(fileName!=null && !fileName.equals("") && !includedFiles.contains(fileName) && isValidImport(fileName)) {
-			includedFiles.add(fileName);
-			return dirty = true;
-		}
-		return false;
-	}
-	
 	public void removeFile(String fileName) {
-		if(fileName!=null && !includedFiles.contains(fileName)) { includedFiles.remove(fileName);
-			dirty=true;
-		}
+		//includedFiles.remove(resolveChildPath(fileName));
 	}
 	
 	public void setIncludedFiles(String[] fileNames) {
-	
-		
-		boolean updated = !(includedFiles.containsAll(Arrays.asList(fileNames)) && (includedFiles.size() == fileNames.length));
-				
-		if(updated) includedFiles.clear();
-		
-		for(int i = 0;updated && i<fileNames.length;i++) {
-			addFile(fileNames[i]);
+		Object[] includedFiles = new Object[fileNames.length];
+		Object[] timeStamps = new Object[fileNames.length];
+		int arrayLength = 0;
+		for(int i = 0; i<fileNames.length;i++) {
+			File importFile = isValidImport(fileNames[i]);
+			if(importFile==null) continue;
+			IPath importPath = resolveChildPath(fileNames[i]);	
+			includedFiles[arrayLength] = importPath;
+			timeStamps[arrayLength++] = new Long(importFile.lastModified());		
 		}
+		this.includedFiles = new Object[arrayLength];
+		this.timeStamps = new Object[arrayLength];
+		
+		System.arraycopy(includedFiles, 0, this.includedFiles, 0, arrayLength);
+		System.arraycopy(timeStamps, 0, this.timeStamps, 0, arrayLength);
+		
+		boolean localDirty = false;
+		
+		for(int i = 0;(!localDirty && i<includedFiles.length);i++) {
+			IPath fileImport = (IPath)includedFiles[i];
+			Long modified = (Long)timeStamps[i];
+			localDirty = (modified != (new Long(fileImport.toFile().lastModified())));
+		}
+		
+		isDirty = localDirty;
 		
 	}
 
@@ -131,9 +135,21 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	 * @see org.eclipse.wst.jsdt.internal.core.LibraryFragmentRoot#computeChildren(org.eclipse.wst.jsdt.internal.core.OpenableElementInfo, java.util.Map)
 	 */
 	protected boolean computeChildren(OpenableElementInfo info, Map newElements) throws JavaModelException {
-		IJavaElement[] children = new IJavaElement[includedFiles.size()];
-		for(int i = 0;i<includedFiles.size();i++) {
-			String includeName = resolveChildPath((String)includedFiles.get(i)).toString();
+		
+		//Enumeration files = includedFiles.keys();
+//		IJavaElement[] children = new IJavaElement[includedFiles.size()];
+//		for(int i=0; files.hasMoreElements(); i++ ) {
+//			IPath fileImport = (IPath)files.nextElement();
+//			String includeName = fileImport.toString();
+//			DocumentContextFragment packFrag=  new DocumentContextFragment(this, new String[] {includeName});
+//			LibraryPackageFragmentInfo fragInfo= new LibraryPackageFragmentInfo();
+//			packFrag.computeChildren(fragInfo);
+//			newElements.put(packFrag, fragInfo);
+//			children[i] = packFrag;
+//		}
+		IJavaElement[] children = new IJavaElement[includedFiles.length];
+		for(int i = 0;i<includedFiles.length;i++) {
+			String includeName = ((IPath)includedFiles[i]).toString();
 			DocumentContextFragment packFrag=  new DocumentContextFragment(this, new String[] {includeName});
 			LibraryPackageFragmentInfo fragInfo= new LibraryPackageFragmentInfo();
 			packFrag.computeChildren(fragInfo);
@@ -286,7 +302,7 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 			 
 			JavaModelManager manager = JavaModelManager.getJavaModelManager();
 			Object info = manager.getInfo(this);
-			if (info != null && !dirty) {
+			if (info != null && !isDirty()) {
 				fScopeElementInfo = (LookupScopeElementInfo)info;
 //				cachedInfo = (LookupScopeElementInfo)info;
 //				String[] rawImports = cachedInfo.getRawImportsFromCache();
@@ -304,15 +320,19 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
-		dirty = false;
+		isDirty = false;
 		return fScopeElementInfo;
 	}
 	
-	public boolean isValidImport(String importName) {
+	public boolean isDirty() {
+		return isDirty;
+	}
+	
+	public File isValidImport(String importName) {
 			
 		File file = resolveChildPath(importName).toFile();
 		if(file.isFile()) {
-			return true;
+			return file;
 		}else {
 			IPath childPath = new Path(importName);
 			IFile resolved =  ((IContainer)getResource()).getFile(new Path(file.getPath()));
@@ -323,14 +343,17 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 				int seg = childPath.matchingFirstSegments(webContext); 
 				exists = exists && (webContext!=new Path("") && seg >0);
 			}
-			return exists;
+			if(exists) return new File(resolved.getFullPath().makeAbsolute().toString());
 		}
+		return null;
 	}
 	
 	protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource) throws JavaModelException {
 
 		((PackageFragmentRootInfo) info).setRootKind(determineKind(underlyingResource));
-		return computeChildren(info, newElements);
+		boolean known =  computeChildren(info, newElements);
+		if(isDirty()) JavaModelManager.getJavaModelManager().putInfos(this, newElements);
+		return known;
 	}
 
 	
