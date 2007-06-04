@@ -421,6 +421,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		int operator,
 		BlockScope scope) {
 
+		boolean addSpace= operator==TerminalTokens.TokenNamein || operator==TerminalTokens.TokenNameinstanceof; 
 		final int numberOfParens = (binaryExpression.bits & ASTNode.ParenthesizedMASK) >> ASTNode.ParenthesizedSHIFT;
 
 		if (numberOfParens > 0) {
@@ -447,12 +448,12 @@ public class CodeFormatterVisitor extends ASTVisitor {
 							this.scribe.indentationLevel = binaryExpressionAlignment.breakIndentationLevel;
 						}
 						this.scribe.alignFragment(binaryExpressionAlignment, i);
-						this.scribe.printNextToken(operators[i], this.preferences.insert_space_before_binary_operator);
+						this.scribe.printNextToken(operators[i], this.preferences.insert_space_before_binary_operator | addSpace);
 						if (operators[i] == TerminalTokens.TokenNameMINUS && isNextToken(TerminalTokens.TokenNameMINUS)) {
 							// the next character is a minus (unary operator)
 							this.scribe.space();
 						}
-						if (this.preferences.insert_space_after_binary_operator) {
+						if (this.preferences.insert_space_after_binary_operator || addSpace) {
 							this.scribe.space();
 						}
 					}
@@ -5468,6 +5469,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		 * Print the operator
 		 */
 		int operator;
+		boolean addSpace=false;
 		switch((unaryExpression.bits & ASTNode.OperatorMASK) >> ASTNode.OperatorSHIFT) {
 			case OperatorIds.PLUS:
 				operator = TerminalTokens.TokenNamePLUS;
@@ -5480,19 +5482,22 @@ public class CodeFormatterVisitor extends ASTVisitor {
 				break;
 			case OperatorIds.DELETE:
 				operator = TerminalTokens.TokenNamedelete;
+				addSpace=true;
 				break;
 			case OperatorIds.VOID:
 				operator = TerminalTokens.TokenNamevoid;
+				addSpace=true;
 				break;
 			case OperatorIds.TYPEOF:
 				operator = TerminalTokens.TokenNametypeof;
+				addSpace=true;
 				break;
 			default:
 				operator = TerminalTokens.TokenNameNOT;
 		}
 
 		this.scribe.printNextToken(operator, this.preferences.insert_space_before_unary_operator);
-		if (this.preferences.insert_space_after_unary_operator) {
+		if (this.preferences.insert_space_after_unary_operator || addSpace) {
 			this.scribe.space();
 		}
 		unaryExpression.expression.traverse(this, scope);
