@@ -26,6 +26,7 @@ public class Location {
 	public int nlsTagCounter;
 	public int lastLocalDeclarationSourceStart;
 	public int numberOfIndentations;
+	public  int inputToken;
 
 	// chunk management
 	public int lastNumberOfNewLines;
@@ -42,6 +43,7 @@ public class Location {
 		this.outputColumn = scribe.column;
 		this.outputLine = scribe.line;
 		this.inputOffset = sourceRestart;
+		this.inputToken=scribe.scanner.currentToken;
 		this.outputIndentationLevel = scribe.indentationLevel;
 		this.lastNumberOfNewLines = scribe.lastNumberOfNewLines;
 		this.needSpace = scribe.needSpace;

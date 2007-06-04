@@ -1587,7 +1587,7 @@ public class Scribe {
 		} 
 		// reset scribe/scanner to restart at this given location
 		this.resetAt(this.currentAlignment.location);
-		this.scanner.resetTo(this.currentAlignment.location.inputOffset, this.scanner.eofPosition);
+		this.scanner.resetTo(this.currentAlignment.location.inputOffset, this.scanner.eofPosition,this.currentAlignment.location.inputToken);
 		// clean alignment chunkKind so it will think it is a new chunk again
 		this.currentAlignment.chunkKind = 0;
 	}
@@ -1595,7 +1595,7 @@ public class Scribe {
 	void redoMemberAlignment(AlignmentException e){
 		// reset scribe/scanner to restart at this given location
 		this.resetAt(this.memberAlignment.location);
-		this.scanner.resetTo(this.memberAlignment.location.inputOffset, this.scanner.eofPosition);
+		this.scanner.resetTo(this.memberAlignment.location.inputOffset, this.scanner.eofPosition,this.memberAlignment.location.inputToken);
 		// clean alignment chunkKind so it will think it is a new chunk again
 		this.memberAlignment.chunkKind = 0;
 	}
