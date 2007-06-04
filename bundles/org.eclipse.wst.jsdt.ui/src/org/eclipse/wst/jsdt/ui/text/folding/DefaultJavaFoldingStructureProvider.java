@@ -1168,7 +1168,10 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 		try {
 			boolean foundComment= false;
 			int terminal= scanner.getNextToken();
-			while (terminal != ITerminalSymbols.TokenNameEOF && !(terminal == ITerminalSymbols.TokenNameclass || terminal == ITerminalSymbols.TokenNameinterface || terminal == ITerminalSymbols.TokenNameenum || (foundComment && (terminal == ITerminalSymbols.TokenNameimport || terminal == ITerminalSymbols.TokenNamepackage)))) {
+			while (terminal == ITerminalSymbols.TokenNameCOMMENT_JAVADOC || terminal== ITerminalSymbols.TokenNameWHITESPACE || 
+					terminal == ITerminalSymbols.TokenNameCOMMENT_LINE || terminal == ITerminalSymbols.TokenNameCOMMENT_BLOCK)
+ 
+				{
 
 				if (terminal == ITerminalSymbols.TokenNameCOMMENT_JAVADOC || terminal == ITerminalSymbols.TokenNameCOMMENT_BLOCK || terminal == ITerminalSymbols.TokenNameCOMMENT_LINE) {
 					if (!foundComment)
