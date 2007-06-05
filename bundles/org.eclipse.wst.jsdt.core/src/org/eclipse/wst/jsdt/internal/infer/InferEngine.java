@@ -487,7 +487,9 @@ public class InferEngine extends ASTVisitor {
     		AllocationExpression allocationExpression,
     		BlockScope scope) {
 		
-		addType(getTypeName(allocationExpression.member));
+		char[] typeName = getTypeName(allocationExpression.member);
+		if (typeName!=EMPTY_NAME)
+			addType(typeName);
 		
 		return true;
 	}
