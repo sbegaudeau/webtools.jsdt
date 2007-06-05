@@ -371,13 +371,22 @@ public class CompletionProposalLabelProvider {
 	 * @return the display label for the given type proposal
 	 */
 	String createTypeProposalLabel(CompletionProposal typeProposal) {
-		char[] signature;
-		if (fContext != null && fContext.isInJavadoc())
-			signature= Signature.getTypeErasure(typeProposal.getSignature());
-		else
-			signature= typeProposal.getSignature();
-		char[] fullName= Signature.toCharArray(signature);
-		return createTypeProposalLabel(fullName);
+		StringBuffer buf= new StringBuffer();
+		buf.append(typeProposal.getCompletion());
+		char[] declarationSignature = typeProposal.getDeclarationSignature();
+		if (declarationSignature!=null && declarationSignature.length>0)
+		{
+			buf.append(JavaElementLabels.CONCAT_STRING);
+			buf.append(declarationSignature);
+		}
+		return buf.toString();
+//		char[] signature;
+//		if (fContext != null && fContext.isInJavadoc())
+//			signature= Signature.getTypeErasure(typeProposal.getSignature());
+//		else
+//			signature= typeProposal.getSignature();
+//		char[] fullName= Signature.toCharArray(signature);
+//		return createTypeProposalLabel(fullName);
 	}
 	
 	String createJavadocTypeProposalLabel(CompletionProposal typeProposal) {

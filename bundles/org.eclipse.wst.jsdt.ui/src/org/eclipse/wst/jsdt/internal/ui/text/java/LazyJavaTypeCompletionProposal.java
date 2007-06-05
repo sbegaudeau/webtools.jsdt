@@ -83,16 +83,16 @@ public class LazyJavaTypeCompletionProposal extends LazyJavaCompletionProposal {
 	protected String computeReplacementString() {
 		String replacement= super.computeReplacementString();
 
-		/* No import rewriting ever from within the import section. */
-		if (isImportCompletion())
+//		/* No import rewriting ever from within the import section. */
+//		if (isImportCompletion())
 	        return replacement;
 		
-		/* Always use the simple name for non-formal javadoc references to types. */
-		// TODO fix
-		 if (fProposal.getKind() == CompletionProposal.TYPE_REF &&  fInvocationContext.getCoreContext().isInJavadocText())
-			 return getSimpleTypeName();
-		
-		String qualifiedTypeName= getQualifiedTypeName();
+//		/* Always use the simple name for non-formal javadoc references to types. */
+//		// TODO fix
+//		 if (fProposal.getKind() == CompletionProposal.TYPE_REF &&  fInvocationContext.getCoreContext().isInJavadocText())
+//			 return getSimpleTypeName();
+//		
+//		String qualifiedTypeName= getQualifiedTypeName();
 // 		if (qualifiedTypeName.indexOf('.') == -1)
 // 			// default package - no imports needed 
 // 			return qualifiedTypeName;
@@ -134,7 +134,7 @@ public class LazyJavaTypeCompletionProposal extends LazyJavaCompletionProposal {
 //		}
 //		
 		/* Default: use the fully qualified type name. */
-		return qualifiedTypeName;
+//		return qualifiedTypeName;
 	}
 
 	protected final boolean isImportCompletion() {
