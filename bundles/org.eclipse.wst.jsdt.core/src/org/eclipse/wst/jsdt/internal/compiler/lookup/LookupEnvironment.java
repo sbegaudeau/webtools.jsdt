@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.internal.compiler.lookup;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ClassFilePool;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
@@ -421,9 +422,11 @@ public ReferenceBinding convertToParameterizedType(ReferenceBinding originalType
 }
 
 public TypeBinding convertToRawType(TypeBinding type) {
-	int dimension;
-	TypeBinding originalType;
-	switch(type.kind()) {
+	if (JavaCore.IS_EMCASCRIPT4)
+	{
+		int dimension;
+		TypeBinding originalType;
+		switch(type.kind()) {
 		case Binding.BASE_TYPE :
 		case Binding.TYPE_PARAMETER:
 		case Binding.WILDCARD_TYPE:
@@ -478,6 +481,7 @@ public TypeBinding convertToRawType(TypeBinding type) {
 	}
 	if (originalType != convertedType) {
 		return dimension > 0 ? (TypeBinding)createArrayType(convertedType, dimension) : convertedType;
+	}
 	}
 	return type;
 }

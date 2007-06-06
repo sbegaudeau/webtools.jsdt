@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.*;
@@ -506,22 +507,22 @@ public TypeBinding resolveType(BlockScope scope) {
 	// and initialized with a (compile time) constant 
 
 	//always ignore receiver cast, since may affect constant pool reference
-	boolean receiverCast = false;
-	if (this.receiver instanceof CastExpression) {
-		this.receiver.bits |= DisableUnnecessaryCastCheck; // will check later on
-		receiverCast = true;
-	}
+//	boolean receiverCast = false;
+//	if (this.receiver instanceof CastExpression) {
+//		this.receiver.bits |= DisableUnnecessaryCastCheck; // will check later on
+//		receiverCast = true;
+//	}
 	this.receiverType = receiver.resolveType(scope);
 	if (this.receiverType == null) {
 		constant = Constant.NotAConstant;
 		return null;
 	}
-	if (receiverCast) {
-		 // due to change of declaring class with receiver type, only identity cast should be notified
-		if (((CastExpression)this.receiver).expression.resolvedType == this.receiverType) { 
-				scope.problemReporter().unnecessaryCast((CastExpression)this.receiver);		
-		}
-	}		
+//	if (receiverCast) {
+//		 // due to change of declaring class with receiver type, only identity cast should be notified
+//		if (((CastExpression)this.receiver).expression.resolvedType == this.receiverType) { 
+//				scope.problemReporter().unnecessaryCast((CastExpression)this.receiver);		
+//		}
+//	}		
 	// the case receiverType.isArrayType and token = 'length' is handled by the scope API
 	FieldBinding fieldBinding = this.codegenBinding = this.binding = scope.getField(this.receiverType, token, this);
 	if (!fieldBinding.isValidBinding()) {
@@ -530,10 +531,13 @@ public TypeBinding resolveType(BlockScope scope) {
 //		return null;
 		return this.resolvedType=TypeBinding.ANY;
 	}
-	TypeBinding receiverErasure = this.receiverType.erasure();
-	if (receiverErasure instanceof ReferenceBinding) {
-		if (receiverErasure.findSuperTypeWithSameErasure(fieldBinding.declaringClass) == null) {
-			this.receiverType = fieldBinding.declaringClass; // handle indirect inheritance thru variable secondary bound
+	if (JavaCore.IS_EMCASCRIPT4)
+	{
+		TypeBinding receiverErasure = this.receiverType.erasure();
+		if (receiverErasure instanceof ReferenceBinding) {
+			if (receiverErasure.findSuperTypeWithSameErasure(fieldBinding.declaringClass) == null) {
+				this.receiverType = fieldBinding.declaringClass; // handle indirect inheritance thru variable secondary bound
+			}
 		}
 	}
 	this.receiver.computeConversion(scope, this.receiverType, this.receiverType);

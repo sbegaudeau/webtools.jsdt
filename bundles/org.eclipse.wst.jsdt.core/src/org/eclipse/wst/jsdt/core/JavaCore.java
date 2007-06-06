@@ -135,6 +135,9 @@ import org.osgi.framework.BundleContext;
  */
 public final class JavaCore extends Plugin {
 
+	public static final boolean IS_EMCASCRIPT4=false;
+	
+	
 	private static Plugin JAVA_CORE_PLUGIN = null; 
 	/**
 	 * The plug-in identifier of the Java core support
