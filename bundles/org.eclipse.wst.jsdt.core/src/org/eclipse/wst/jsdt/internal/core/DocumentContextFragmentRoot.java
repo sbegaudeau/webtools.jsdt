@@ -58,8 +58,6 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	
 	public static final Boolean RETURN_CU = true;
 	
-	private boolean isDirty = true;
-
 	public DocumentContextFragmentRoot(IJavaProject project,
 									   IFile resourceRelativeFile,
 									   IPath resourceAbsolutePath,
@@ -71,7 +69,7 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 		this.includedFiles = timeStamps = new Object[0];
 		this.absolutePath = ((IContainer)project.getResource()).findMember(resourceAbsolutePath);
 		this.webContext=webContext;
-		isDirty = true;
+		
 	}
 	
 	public DocumentContextFragmentRoot(IJavaProject project,
@@ -85,31 +83,43 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	}
 	
 	public void setIncludedFiles(String[] fileNames) {
-		Object[] includedFiles = new Object[fileNames.length];
-		Object[] timeStamps = new Object[fileNames.length];
+		
+		Object[] newImports = new Object[fileNames.length];
+		Object[] newTimestamps = new Object[fileNames.length];
 		int arrayLength = 0;
+		
+		//boolean isLocalDirty = includedFiles.length>fileNames.length;
+		
 		for(int i = 0; i<fileNames.length;i++) {
 			File importFile = isValidImport(fileNames[i]);
 			if(importFile==null) continue;
 			IPath importPath = resolveChildPath(fileNames[i]);	
-			includedFiles[arrayLength] = importPath;
-			timeStamps[arrayLength++] = new Long(importFile.lastModified());		
+			newImports[arrayLength] = importPath;
+			newTimestamps[arrayLength] = new Long(importFile.lastModified());	
+//			if(includedFiles.length<=arrayLength) {
+//				isLocalDirty=true;
+//			}else {
+//				isLocalDirty = isLocalDirty || !(includedFiles[arrayLength]==newImports[arrayLength] && newTimestamps[arrayLength]==timeStamps[arrayLength]);
+//			}
+			arrayLength++;
 		}
 		this.includedFiles = new Object[arrayLength];
 		this.timeStamps = new Object[arrayLength];
 		
-		System.arraycopy(includedFiles, 0, this.includedFiles, 0, arrayLength);
-		System.arraycopy(timeStamps, 0, this.timeStamps, 0, arrayLength);
+		System.arraycopy(newImports, 0, this.includedFiles, 0, arrayLength);
+		System.arraycopy(newTimestamps, 0, this.timeStamps, 0, arrayLength);
 		
-		boolean localDirty = false;
-		
-		for(int i = 0;(!localDirty && i<includedFiles.length);i++) {
-			IPath fileImport = (IPath)includedFiles[i];
-			Long modified = (Long)timeStamps[i];
-			localDirty = (modified != (new Long(fileImport.toFile().lastModified())));
-		}
-		
-		isDirty = localDirty;
+		//isDirty = isLocalDirty;
+//		boolean localDirty = !(this.includedFiles.length==newImports.length);
+//		
+//		for(int i = 0;(!localDirty && i<this.includedFiles.length);i++) {
+//			IPath fileImport = (IPath)this.includedFiles[i];
+//			IPath oldImport = (IPath)newImports[i];
+//			Long modified = (Long)this.timeStamps[i];
+//			localDirty = (modified != (new Long(fileImport.toFile().lastModified()))) && fileImport.equals(oldImport);
+//		}
+//		
+//		isDirty = localDirty;
 		
 	}
 
@@ -229,11 +239,13 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	}
 	
 	public boolean equals(Object o) {
-		if (this == o)
-			return true;
+//		if (this == o)
+//			return true;
 		if (o instanceof DocumentContextFragmentRoot) {
 			DocumentContextFragmentRoot other= (DocumentContextFragmentRoot) o;
-			return this.fRelativeFile.equals(other.fRelativeFile);
+			return (this.fRelativeFile.equals(other.fRelativeFile)) &&
+					this.includedFiles.equals(other.includedFiles) && 
+					this.timeStamps.equals(other.timeStamps);
 		}
 		return false;
 	}
@@ -300,10 +312,11 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 		try {
 			LookupScopeElementInfo cachedInfo;
 			 
-			JavaModelManager manager = JavaModelManager.getJavaModelManager();
-			Object info = manager.getInfo(this);
-			if (info != null && !isDirty()) {
-				fScopeElementInfo = (LookupScopeElementInfo)info;
+			
+			if (!isDirty()) {
+				JavaModelManager manager = JavaModelManager.getJavaModelManager();
+				fScopeElementInfo = (LookupScopeElementInfo)manager.getInfo(this);
+				//fScopeElementInfo = (LookupScopeElementInfo)info;
 //				cachedInfo = (LookupScopeElementInfo)info;
 //				String[] rawImports = cachedInfo.getRawImportsFromCache();
 //				String[] currentImports = getRawImports();
@@ -320,12 +333,23 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
-		isDirty = false;
 		return fScopeElementInfo;
 	}
 	
 	public boolean isDirty() {
-		return isDirty;
+		JavaModelManager manager = JavaModelManager.getJavaModelManager();
+		Object info = manager.getInfo(this);
+		if(info==null) return true;
+		LookupScopeElementInfo myInfo = ((LookupScopeElementInfo)info);
+		
+		/* should only be one */
+		IPackageFragmentRoot[] roots = myInfo.getAllRoots();
+		
+		for(int i = 0;i<roots.length;i++) {
+			if(roots[i]==this) return false;
+		}
+		return true;
+		
 	}
 	
 	public File isValidImport(String importName) {
@@ -340,10 +364,11 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 			boolean exists =  resolved.exists();
 			/* Special case for absolute paths specified with \ and / */
 			if( importName.charAt(0)=='\\' || importName.charAt(0)=='/'){
-				int seg = childPath.matchingFirstSegments(webContext); 
+				int seg  = resolved.getFullPath().matchingFirstSegments(webContext); 
+				
 				exists = exists && (webContext!=new Path("") && seg >0);
 			}
-			if(exists) return new File(resolved.getFullPath().makeAbsolute().toString());
+			if(exists) return new File(resolved.getLocation().toString());
 		}
 		return null;
 	}
@@ -367,4 +392,6 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	public IResource getResource() {
 		return absolutePath;
 	}
+
+	
 }
