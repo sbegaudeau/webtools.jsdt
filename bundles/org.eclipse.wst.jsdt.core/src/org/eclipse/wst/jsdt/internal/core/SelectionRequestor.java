@@ -23,6 +23,7 @@ import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
+import org.eclipse.wst.jsdt.core.JavaConventions;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.*;
@@ -480,6 +481,8 @@ public void acceptMethod(
 	int previousElementIndex = this.elementIndex;
 	this.elements = JavaElement.NO_ELEMENTS;
 	this.elementIndex = -1;
+	boolean isFileName= isFileName(declaringTypeName);
+	
 	
 	if(isDeclaration) {
 		IType type = resolveTypeByLocation(declaringTypePackageName, declaringTypeName,
@@ -490,10 +493,10 @@ public void acceptMethod(
 			this.acceptMethodDeclaration(type, selector, start, end);
 //		}
 	} else {
-		IJavaElement parent = resolveType(declaringTypePackageName, declaringTypeName,
-			NameLookup.ACCEPT_ALL);
-		if (parent==null)
-			parent=resolveCompilationUnit(declaringTypePackageName, declaringTypeName);		// fix for 1FWFT6Q
+		IJavaElement parent = (!isFileName) ? 
+				resolveType(declaringTypePackageName, declaringTypeName,NameLookup.ACCEPT_ALL)
+			:
+				resolveCompilationUnit(declaringTypePackageName, declaringTypeName);		// fix for 1FWFT6Q
 //		if (type != null) {
 //			if (type.isBinary()) {
 //				
@@ -533,6 +536,12 @@ public void acceptMethod(
 		System.arraycopy(previousElement, 0, this.elements, this.elementIndex + 1, previousElementIndex + 1);
 		this.elementIndex += previousElementIndex + 1;
 	}
+}
+
+private static final char [] js={'.','j','s'};
+private static boolean isFileName(char [] name)
+{
+	return  (CharOperation.endsWith(name, js) && CharOperation.contains('/', name)); 
 }
 /**
  * Resolve the package

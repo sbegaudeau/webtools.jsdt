@@ -360,7 +360,7 @@ public void computeId() {
 		
 		case 1 :
 		case 2 :
-			if (!CharOperation.endsWith(fileName, TypeConstants.SYSTEMJS))	return;
+//			if (!CharOperation.endsWith(fileName, TypeConstants.SYSTEMJS))	return;
 //			if (!CharOperation.equals(TypeConstants.SYSTEMJS, this.compoundName[0]))
 //				return;
 			
