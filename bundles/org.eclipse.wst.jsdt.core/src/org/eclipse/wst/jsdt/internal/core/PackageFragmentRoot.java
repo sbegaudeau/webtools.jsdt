@@ -33,6 +33,13 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  */
 public class PackageFragmentRoot extends Openable implements IPackageFragmentRoot {
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.internal.core.JavaElement#isVirtual()
+	 */
+	public boolean isVirtual() {
+		return false;
+	}
+
 	/**
 	 * The delimiter between the source path and root path in the
 	 * attachment server property.

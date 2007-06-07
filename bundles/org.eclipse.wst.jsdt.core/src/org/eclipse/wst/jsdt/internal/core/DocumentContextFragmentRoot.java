@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IClassFile;
+import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -50,18 +51,18 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	
 	private Object[] includedFiles;
 	private Object[] timeStamps;
-	
 	private IFile fRelativeFile;
-	
 	private IResource absolutePath;
 	private IPath webContext;
+	private IClasspathEntry rawClassPathEntry;
 	
 	public static final Boolean RETURN_CU = true;
 	
 	public DocumentContextFragmentRoot(IJavaProject project,
 									   IFile resourceRelativeFile,
 									   IPath resourceAbsolutePath,
-									   IPath webContext) {
+									   IPath webContext, 
+									   IClasspathEntry rawClassPath) {
 		
 		super(resourceAbsolutePath, (JavaProject)project);
 		
@@ -69,7 +70,27 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 		this.includedFiles = timeStamps = new Object[0];
 		this.absolutePath = ((IContainer)project.getResource()).findMember(resourceAbsolutePath);
 		this.webContext=webContext;
+		this.rawClassPathEntry = rawClassPath;
 		
+	}
+	
+	
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.internal.core.PackageFragmentRoot#getRawClasspathEntry()
+	 */
+	public IClasspathEntry getRawClasspathEntry() throws JavaModelException {
+		if(rawClassPathEntry!=null) return rawClassPathEntry;
+		return super.getRawClasspathEntry();
+	}
+
+
+
+	public DocumentContextFragmentRoot(IJavaProject project,
+			   IFile resourceRelativeFile,
+			   IPath resourceAbsolutePath,
+			   IPath webContext) {
+		this(project,resourceRelativeFile,resourceAbsolutePath,webContext,null);
 	}
 	
 	public DocumentContextFragmentRoot(IJavaProject project,

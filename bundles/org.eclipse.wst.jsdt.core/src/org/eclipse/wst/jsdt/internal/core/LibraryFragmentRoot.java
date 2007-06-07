@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 
 
-public class LibraryFragmentRoot extends PackageFragmentRoot {
+public class LibraryFragmentRoot extends PackageFragmentRoot implements IVirtualParent {
 
 	protected final IPath libraryPath;
 
@@ -189,6 +189,13 @@ private ClassFile getLibraryClassFile(){
 		
 		return  JavaCore.getClasspathContainerInitializer(fClassPathEntry.getPath().segment(0));
 
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.internal.core.JavaElement#isVirtual()
+	 */
+	public boolean isVirtual() {
+		return true;
 	}
 
 } 

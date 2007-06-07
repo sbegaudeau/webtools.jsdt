@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core;
 
+import java.net.URI;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
@@ -366,6 +368,24 @@ public interface IJavaElement extends IAdaptable, ILookupScope{
 	 *		exception occurs while accessing its corresponding resource
 	 */// TODO (philippe) predicate shouldn't throw an exception
 	boolean isStructureKnown() throws JavaModelException;
-	
+	/**
+	 * Returns a readable (non mangled) name.  In virtual elements this is derived from a ClassPathContainerInitializer
+	 *
+	 * @return a human friendly element name.
+	 */
 	String getDisplayName();
+	/**
+	 * Returns if this is a virtual element (ie actually exists in the model or filesystem).
+	 *
+	 * @return if this is a virtual element.
+	 */
+	boolean isVirtual();
+	
+	/**
+	 * If a resource is virtual, then return a real host path for the element.  (Query the container initializer).
+	 *
+	 * @return if this is a virtual element.
+	 */
+	URI getHostPath();
+	
 }

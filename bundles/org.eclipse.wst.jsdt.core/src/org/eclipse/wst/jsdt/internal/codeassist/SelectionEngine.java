@@ -1327,7 +1327,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 			   AbstractMethodDeclaration  method  = (AbstractMethodDeclaration)statements[i];
 			
 				if (method.selector == assistIdentifier){
-					char[] qualifiedSourceName = null;
+					char[] qualifiedSourceName = compilationUnit.getFileName();
 					
 					this.requestor.acceptMethod(
 						packageName,

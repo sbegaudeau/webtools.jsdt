@@ -34,7 +34,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  *
  * @see org.eclipse.wst.jsdt.core.IPackageFragment
  */
-class LibraryPackageFragment extends PackageFragment implements SuffixConstants {
+class LibraryPackageFragment extends PackageFragment implements SuffixConstants, IVirtualParent {
 /**
  * Constructs a package fragment that is contained within a jar or a zip.
  */

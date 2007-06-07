@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.internal.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -956,15 +957,21 @@ public IType[] getTypes() throws JavaModelException {
 	 * @see org.eclipse.wst.jsdt.internal.core.JavaElement#getDisplayName()
 	 */
 	public String getDisplayName() {
-		if(parent instanceof LibraryPackageFragment) {
+		if(isVirtual()) {
 			
-			ClasspathContainerInitializer init = ((LibraryPackageFragment)parent).getContainerInitializer();
+			ClasspathContainerInitializer init = ((IVirtualParent)parent).getContainerInitializer();
 			if(init==null) return super.getDisplayName();
 			return init.getDescription(new Path(getElementName()), getJavaProject());
 		}
 		return super.getDisplayName();
 	}
 
-
+	public URI getHostPath() {
+		if(isVirtual()) {
+			ClasspathContainerInitializer init = ((IVirtualParent)parent).getContainerInitializer();
+			if(init!=null) return init.getHostPath(new Path(getElementName()), getJavaProject());
+		}
+		return null;
+	}
 
 }

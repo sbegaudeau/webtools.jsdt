@@ -18,6 +18,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -836,4 +837,14 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	public String getDisplayName() {
 		return getElementName();
 	}
+	
+	public boolean isVirtual() {
+		return parent.isVirtual();
+	}
+	
+	public URI getHostPath() {
+		if(isVirtual()) return parent.getHostPath();
+		return null;
+	}
+	
 }

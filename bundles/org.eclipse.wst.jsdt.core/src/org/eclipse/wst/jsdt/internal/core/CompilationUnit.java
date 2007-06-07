@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
+import java.net.URI;
 import java.util.*;
 
 import org.eclipse.core.resources.*;
@@ -1282,6 +1283,26 @@ public IMethod createMethod(String contents, IJavaElement sibling, boolean force
 	op.runOperation(monitor);
 	return (IMethod) op.getResultElements()[0];
 }
+
+public String getDisplayName() {
+	if(isVirtual()) {
+		
+		ClasspathContainerInitializer init = ((IVirtualParent)parent).getContainerInitializer();
+		if(init==null) return super.getDisplayName();
+		return init.getDescription(new Path(getElementName()), getJavaProject());
+	}
+	return super.getDisplayName();
+}
+
+
+public URI getHostPath() {
+	if(isVirtual()) {
+		ClasspathContainerInitializer init = ((IVirtualParent)parent).getContainerInitializer();
+		if(init!=null) return init.getHostPath(new Path(getElementName()), getJavaProject());
+	}
+	return null;
+}
+
 
 
 }
