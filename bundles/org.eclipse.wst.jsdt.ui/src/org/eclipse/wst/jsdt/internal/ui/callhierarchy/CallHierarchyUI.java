@@ -138,13 +138,19 @@ public class CallHierarchyUI {
 				selectionLength= callLocation.getEnd() - selectionStart;
 	        } else if (element instanceof MethodWrapper) {
 	        	enclosingMember= ((MethodWrapper) element).getMember();
-	        	ISourceRange selectionRange= enclosingMember.getNameRange();
-	        	if (selectionRange == null)
-	        		selectionRange= enclosingMember.getSourceRange();
-	        	if (selectionRange == null)
-	        		return true;
-	        	selectionStart= selectionRange.getOffset();
-	        	selectionLength= selectionRange.getLength();
+	        	if(enclosingMember.isVirtual()) {
+	        		selectionStart = 0;
+	        		selectionLength = 0;
+	        		
+	        	}else {
+		        	ISourceRange selectionRange= enclosingMember.getNameRange();
+		        	if (selectionRange == null)
+		        		selectionRange= enclosingMember.getSourceRange();
+		        	if (selectionRange == null)
+		        		return true;
+		        	selectionStart= selectionRange.getOffset();
+		        	selectionLength= selectionRange.getLength();
+	        	}
 	        } else {
 	            return true;
 	        }

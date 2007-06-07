@@ -13,15 +13,19 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
 
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 
 import org.eclipse.core.resources.IFile;
@@ -136,6 +140,22 @@ public class EditorUtility {
 
 		if (inputElement instanceof IFile)
 			return openInEditor((IFile) inputElement, activate);
+		
+		if(inputElement instanceof IJavaElement && ((IJavaElement)inputElement).isVirtual()) {
+			
+			URI hostElementPath = ((IJavaElement)inputElement).getHostPath(); 
+			
+			if(hostElementPath!=null) {
+				/* See if we can resolve the URI on the workspace */
+				IResource realFile = ((IJavaElement)inputElement).getJavaProject().getProject().getWorkspace().getRoot().getFileForLocation(new Path(hostElementPath.getPath()));
+				if(realFile==null || !realFile.exists()) {
+					realFile = ((IJavaElement)inputElement).getJavaProject().getProject().getWorkspace().getRoot().findMember(hostElementPath.getPath());
+				}
+				if(realFile!=null) return openInEditor((IFile)realFile, activate);
+				return openInEditor(hostElementPath, activate);
+			}
+			
+		}
 
 		/*
 		 * Support to navigate inside non-primary working copy.
@@ -283,6 +303,24 @@ public class EditorUtility {
 			throwPartInitException(JavaEditorMessages.EditorUtility_no_active_WorkbenchPage);
 		
 		IEditorPart editorPart= IDE.openEditor(p, file, activate);
+		initializeHighlightRange(editorPart);
+		return editorPart;
+	}
+	
+	private static IEditorPart openInEditor(URI file, boolean activate) throws PartInitException{
+		if (file == null)
+			throwPartInitException(JavaEditorMessages.EditorUtility_file_must_not_be_null);
+		
+		IWorkbenchPage p= JavaPlugin.getActivePage();
+		if (p == null)
+			throwPartInitException(JavaEditorMessages.EditorUtility_no_active_WorkbenchPage);
+		
+		   IEditorDescriptor desc = PlatformUI.getWorkbench().
+		      getEditorRegistry().getDefaultEditor(file.getPath());
+		if(desc==null) {
+			throwPartInitException("Can't find Editor for file: " + file.toString());
+		}
+		IEditorPart editorPart= IDE.openEditor(p, file, desc.getId(), activate);
 		initializeHighlightRange(editorPart);
 		return editorPart;
 	}
