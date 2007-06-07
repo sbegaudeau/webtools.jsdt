@@ -472,6 +472,7 @@ public class InferEngine extends ASTVisitor {
 							methodDeclaration.selector, methodDeclaration);
 					method.nameStart=methodDeclaration.sourceStart;
 					method.isConstructor = true;
+					methodDeclaration.inferredType=type;
 				}
 			}			
 		}
