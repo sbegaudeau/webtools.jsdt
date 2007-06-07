@@ -725,7 +725,7 @@ public final class CompletionEngine
 				PackageBinding packageBinding = (PackageBinding) binding1;
 				binding2 = packageBinding.getBinding(bindingName, acceptedType.bindingType);
 				if (binding2==null)
-					return;
+					continue;
 			}
 			
 			switch (acceptedType.bindingType)
@@ -966,6 +966,7 @@ public final class CompletionEngine
 					}
 				}
 				} else {
+					if (binding2!=null)
 					//TODO: implement
 					throw new UnimplementedException();
 				}
