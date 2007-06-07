@@ -371,7 +371,7 @@ public class CompilationUnitDeclaration
 
 	public void resolve() {
 		int startingTypeIndex = 0;
-		boolean isPackageInfo = isPackageInfo();
+		boolean isPackageInfo =  false;//isPackageInfo();
 		if (this.types != null && isPackageInfo) {
             // resolve synthetic type declaration
 			final TypeDeclaration syntheticTypeDeclaration = types[0];

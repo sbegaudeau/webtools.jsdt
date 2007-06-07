@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
@@ -57,7 +58,8 @@ public class Argument extends LocalDeclaration {
 		scope.addLocalVariable(
 			this.binding =
 				new LocalVariableBinding(this, typeBinding, modifierFlag, true));
-		resolveAnnotations(scope, this.annotations, this.binding);		
+		if (JavaCore.IS_EMCASCRIPT4)
+			resolveAnnotations(scope, this.annotations, this.binding);		
 		//true stand for argument instead of just local
 		this.binding.declaration = this;
 		this.binding.useFlag = used ? LocalVariableBinding.USED : LocalVariableBinding.UNUSED;

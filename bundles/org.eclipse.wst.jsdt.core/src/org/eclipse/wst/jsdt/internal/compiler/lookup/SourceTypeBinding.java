@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 
+import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
@@ -1442,36 +1443,39 @@ public MethodBinding resolveTypesFor(MethodBinding method) {
 	if (methodDecl == null) return null; // method could not be resolved in previous iteration
 
 	TypeParameter[] typeParameters = methodDecl.typeParameters();
-	if (typeParameters != null) {
-		methodDecl.scope.connectTypeVariables(typeParameters, true);
-		// Perform deferred bound checks for type variables (only done after type variable hierarchy is connected)
-		for (int i = 0, paramLength = typeParameters.length; i < paramLength; i++)
-			typeParameters[i].checkBounds(methodDecl.scope);
-	}
-	TypeReference[] exceptionTypes = methodDecl.thrownExceptions;
-	if (exceptionTypes != null) {
-		int size = exceptionTypes.length;
-		method.thrownExceptions = new ReferenceBinding[size];
-		int count = 0;
-		ReferenceBinding resolvedExceptionType;
-		for (int i = 0; i < size; i++) {
-			resolvedExceptionType = (ReferenceBinding) exceptionTypes[i].resolveType(methodDecl.scope, true /* check bounds*/);
-			if (resolvedExceptionType == null)
-				continue;
-			if (resolvedExceptionType.isBoundParameterizedType()) {
-				methodDecl.scope.problemReporter().invalidParameterizedExceptionType(resolvedExceptionType, exceptionTypes[i]);
-				continue;
-			}
-			if (resolvedExceptionType.findSuperTypeErasingTo(TypeIds.T_JavaLangThrowable, true) == null) {
-				methodDecl.scope.problemReporter().cannotThrowType(exceptionTypes[i], resolvedExceptionType);
-				continue;
-			}
-		    if ((resolvedExceptionType.modifiers & ExtraCompilerModifiers.AccGenericSignature) != 0)
-				method.modifiers |= ExtraCompilerModifiers.AccGenericSignature;
-			method.thrownExceptions[count++] = resolvedExceptionType;
+	if (JavaCore.IS_EMCASCRIPT4)
+	{
+		if (typeParameters != null) {
+			methodDecl.scope.connectTypeVariables(typeParameters, true);
+		// 	Perform deferred bound checks for type variables (only done after type variable hierarchy is connected)
+			for (int i = 0, paramLength = typeParameters.length; i < paramLength; i++)
+				typeParameters[i].checkBounds(methodDecl.scope);
 		}
-		if (count < size)
-			System.arraycopy(method.thrownExceptions, 0, method.thrownExceptions = new ReferenceBinding[count], 0, count);
+		TypeReference[] exceptionTypes = methodDecl.thrownExceptions;
+		if (exceptionTypes != null) {
+			int size = exceptionTypes.length;
+			method.thrownExceptions = new ReferenceBinding[size];
+			int count = 0;
+			ReferenceBinding resolvedExceptionType;
+			for (int i = 0; i < size; i++) {
+				resolvedExceptionType = (ReferenceBinding) exceptionTypes[i].resolveType(methodDecl.scope, true /* check bounds*/);
+				if (resolvedExceptionType == null)
+					continue;
+				if (resolvedExceptionType.isBoundParameterizedType()) {
+					methodDecl.scope.problemReporter().invalidParameterizedExceptionType(resolvedExceptionType, exceptionTypes[i]);
+					continue;
+				}
+				if (resolvedExceptionType.findSuperTypeErasingTo(TypeIds.T_JavaLangThrowable, true) == null) {
+					methodDecl.scope.problemReporter().cannotThrowType(exceptionTypes[i], resolvedExceptionType);
+					continue;
+				}
+				if ((resolvedExceptionType.modifiers & ExtraCompilerModifiers.AccGenericSignature) != 0)
+					method.modifiers |= ExtraCompilerModifiers.AccGenericSignature;
+				method.thrownExceptions[count++] = resolvedExceptionType;
+			}
+			if (count < size)
+				System.arraycopy(method.thrownExceptions, 0, method.thrownExceptions = new ReferenceBinding[count], 0, count);
+		}
 	}
 
 	boolean foundArgProblem = false;
@@ -1534,9 +1538,12 @@ public MethodBinding resolveTypesFor(MethodBinding method) {
 		method.parameters = Binding.NO_PARAMETERS; // see 107004
 		// nullify type parameter bindings as well as they have a backpointer to the method binding
 		// (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=81134)
-		if (typeParameters != null)
-			for (int i = 0, length = typeParameters.length; i < length; i++)
-				typeParameters[i].binding = null;
+		if (JavaCore.IS_EMCASCRIPT4)
+		{
+			if (typeParameters != null)
+				for (int i = 0, length = typeParameters.length; i < length; i++)
+					typeParameters[i].binding = null;
+		}
 		return null;
 	}
 	if (foundReturnTypeProblem)

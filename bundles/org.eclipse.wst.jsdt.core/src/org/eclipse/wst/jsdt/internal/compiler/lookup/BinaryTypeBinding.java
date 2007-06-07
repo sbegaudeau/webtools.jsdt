@@ -12,6 +12,8 @@ package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import java.util.ArrayList;
 
+import org.eclipse.wst.jsdt.core.JavaConventions;
+import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.*;
@@ -97,10 +99,13 @@ public static AnnotationBinding[] createAnnotations(IBinaryAnnotation[] annotati
 public static ReferenceBinding resolveType(ReferenceBinding type, LookupEnvironment environment, boolean convertGenericToRawType) {
 	if (type instanceof UnresolvedReferenceBinding)
 		return ((UnresolvedReferenceBinding) type).resolve(environment, convertGenericToRawType);
-	if (type.isParameterizedType())
-		return ((ParameterizedTypeBinding) type).resolve();
-	if (type.isWildcard())
-		return ((WildcardBinding) type).resolve();
+	if (JavaCore.IS_EMCASCRIPT4)
+	{
+		if (type.isParameterizedType())
+			return ((ParameterizedTypeBinding) type).resolve();
+		if (type.isWildcard())
+			return ((WildcardBinding) type).resolve();
+	}
 
 	if (convertGenericToRawType) // raw reference to generic ?
 		return (ReferenceBinding) environment.convertUnresolvedBinaryToRawType(type);

@@ -850,7 +850,10 @@ public int nullStatus(FlowInfo flowInfo) {
 					bits &= ~RestrictiveFlagMASK;  // clear bits
 					bits |= Binding.TYPE;
 					if (binding instanceof MethodBinding)
+					{
+						MethodBinding methodBinding=(MethodBinding)binding;
 						return BaseTypeBinding.ANY;
+					}
 
 				case Binding.TYPE : //========only type==============
 					constant = Constant.NotAConstant;

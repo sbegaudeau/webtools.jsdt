@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.*;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -261,6 +262,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 		}  
 		
 		// only resolve annotation at the end, for constant to be positionned before (96991)
+		if (JavaCore.IS_EMCASCRIPT4)
 		resolveAnnotations(scope, this.annotations, this.binding);
 	}
 	public StringBuffer printStatement(int indent, StringBuffer output) {

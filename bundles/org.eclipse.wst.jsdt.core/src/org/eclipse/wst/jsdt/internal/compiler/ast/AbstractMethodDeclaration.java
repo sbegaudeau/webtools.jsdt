@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.*;
 import org.eclipse.wst.jsdt.internal.compiler.*;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -440,9 +441,11 @@ public abstract class AbstractMethodDeclaration
 
 		try {
 			bindArguments(); 
-			bindThrownExceptions();
+			if (JavaCore.IS_EMCASCRIPT4)
+				bindThrownExceptions();
 			resolveJavadoc();
-			resolveAnnotations(scope, this.annotations, this.binding);
+			if (JavaCore.IS_EMCASCRIPT4)
+				resolveAnnotations(scope, this.annotations, this.binding);
 			resolveStatements();
 			// check @Deprecated annotation presence
 			if (this.binding != null

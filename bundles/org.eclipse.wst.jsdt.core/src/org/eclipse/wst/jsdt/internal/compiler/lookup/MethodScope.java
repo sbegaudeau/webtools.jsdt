@@ -307,12 +307,12 @@ public class MethodScope extends BlockScope {
 		} else {
 //			if (declaringClass.isInterface()) // interface or annotation type
 //				modifiers |= ClassFileConstants.AccPublic | ClassFileConstants.AccAbstract;
-//			TypeBinding returnType =
-//				 (method.inferredType!=null)?method.inferredType.resolveType(this,method):TypeBinding.ANY;
+			TypeBinding returnType =
+				 (method.inferredType!=null)?method.inferredType.resolveType(this,method):TypeBinding.ANY;
 //			TypeBinding returnType =
 //			 (method instanceof MethodDeclaration && ((MethodDeclaration)method).returnType!=null && method.inferredMethod!=null)?method.inferredType.resolveType(this,((MethodDeclaration)method).returnType):TypeBinding.ANY;
 			methodBinding =
-				new MethodBinding(modifiers, name, TypeBinding.ANY, null, null, declaringClass);
+				new MethodBinding(modifiers, name,returnType, null, null, declaringClass);
 			checkAndSetModifiersForMethod(methodBinding);
 		}
 		this.isStatic =methodBinding.isStatic();
