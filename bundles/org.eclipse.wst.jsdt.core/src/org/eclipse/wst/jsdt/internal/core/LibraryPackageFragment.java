@@ -34,7 +34,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  *
  * @see org.eclipse.wst.jsdt.core.IPackageFragment
  */
-class LibraryPackageFragment extends PackageFragment implements SuffixConstants, IVirtualParent {
+public class LibraryPackageFragment extends PackageFragment implements SuffixConstants, IVirtualParent {
 /**
  * Constructs a package fragment that is contained within a jar or a zip.
  */
@@ -147,7 +147,7 @@ public IClassFile getClassFile(String classFileName) {
 //	if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(path.lastSegment().toCharArray())
 //			&& path.lastSegment().equalsIgnoreCase(classFileName))
 //	{
-	if(path.isPrefixOf(new Path(classFileName))) {
+	if(path.toOSString().endsWith(classFileName)) {
 		return new ClassFile(this, path.toOSString());
 		
 	}
