@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
@@ -590,6 +591,10 @@ public IPackageFragmentRoot packageFragmentRoot(String resourcePathString) {
 			if (target instanceof IResource) {
 				IJavaElement element = JavaCore.create((IResource)target);
 				return (IPackageFragmentRoot) element.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+			}
+			if (target instanceof File)
+			{
+				return project.getPackageFragmentRoot(this.containerPaths[index]);
 			}
 		}
 	}

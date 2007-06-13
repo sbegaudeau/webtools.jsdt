@@ -25,6 +25,7 @@ import org.eclipse.wst.jsdt.core.search.TypeNameRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.core.Openable;
 import org.eclipse.wst.jsdt.internal.core.PackageFragmentRoot;
+import org.eclipse.wst.jsdt.internal.core.LibraryPackageFragment;
 import org.eclipse.wst.jsdt.internal.core.util.HandleFactory;
 import org.eclipse.wst.jsdt.internal.core.util.HashtableOfArrayToObject;
 
@@ -174,8 +175,8 @@ private IType createTypeFromPath(String resourcePath, String simpleTypeName, cha
 		pkgFragment= ((PackageFragmentRoot) this.lastPkgFragmentRoot).getPackageFragment(pkgName);
 		this.packageHandles.put(pkgName, pkgFragment);
 	}
-	String simpleName= simpleNames[length];
-	if (org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(simpleName)) {
+	String simpleName= simpleNames[length]; 
+	if (org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(simpleName) && !(pkgFragment instanceof LibraryPackageFragment)) {
 		ICompilationUnit unit= pkgFragment.getCompilationUnit(simpleName);
 		int etnLength = enclosingTypeNames == null ? 0 : enclosingTypeNames.length;
 		IType type = (etnLength == 0) ? unit.getType(simpleTypeName) : unit.getType(new String(enclosingTypeNames[0]));
@@ -188,7 +189,7 @@ private IType createTypeFromPath(String resourcePath, String simpleTypeName, cha
 		return type;
 	} else {
 		IClassFile classFile= pkgFragment.getClassFile(simpleName);
-		return classFile.getType();
+		return classFile.getType(simpleTypeName);
 	}
 }	
 }
