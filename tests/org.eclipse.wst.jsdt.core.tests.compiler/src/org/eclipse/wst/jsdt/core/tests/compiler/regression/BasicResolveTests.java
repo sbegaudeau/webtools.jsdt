@@ -115,8 +115,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 					"function MyClass(){}"+
 					"function MyClass_someMethod(){}"+
 					"var myClassObj = new MyClass();\n"+
-					"myClassObj.someMethod();\n",
-					"\n"
+					"myClassObj.someMethod();\n"
 				},
 				""
 			);
