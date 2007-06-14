@@ -115,16 +115,27 @@ public class AddJavaDocStubOperation implements IWorkspaceRunnable {
 			monitor.done();
 		}
 	}
+	/* moved this so we this can be re-used in web component */
+	
+	protected IDocument getDocument(ICompilationUnit cu, IProgressMonitor monitor) throws CoreException  {
+		ITextFileBufferManager manager= FileBuffers.getTextFileBufferManager();
+		IPath path= cu.getPath();
+		try {
+			manager.connect(path, new SubProgressMonitor(monitor, 1));
+			return manager.getTextFileBuffer(path).getDocument();
 		
+			
+		}finally {
+			manager.disconnect(path, new SubProgressMonitor(monitor, 1));
+		}
+	}
+	
 	private void addJavadocComments(IProgressMonitor monitor) throws CoreException {
 		ICompilationUnit cu= fMembers[0].getCompilationUnit();
 		
-		ITextFileBufferManager manager= FileBuffers.getTextFileBufferManager();
-		IPath path= cu.getPath();
 		
-		manager.connect(path, new SubProgressMonitor(monitor, 1));
 		try {
-			IDocument document= manager.getTextFileBuffer(path).getDocument();
+			IDocument document= getDocument(cu,monitor);
 			
 			String lineDelim= TextUtilities.getDefaultLineDelimiter(document);
 			MultiTextEdit edit= new MultiTextEdit();
@@ -173,7 +184,7 @@ public class AddJavaDocStubOperation implements IWorkspaceRunnable {
 		} catch (BadLocationException e) {
 			throw new CoreException(JavaUIStatus.createError(IStatus.ERROR, e));
 		} finally {
-			manager.disconnect(path, new SubProgressMonitor(monitor, 1));
+			
 		}
 	}
 
