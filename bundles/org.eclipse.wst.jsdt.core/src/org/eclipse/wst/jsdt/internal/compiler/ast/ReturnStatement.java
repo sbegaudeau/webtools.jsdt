@@ -82,7 +82,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 				}
 			}
 		} else if (traversedContext instanceof InitializationFlowContext) {
-				currentScope.problemReporter().cannotReturnInInitializer(this);
+				currentScope.problemReporter().cannotReturnOutsideFunction(this);
 				return FlowInfo.DEAD_END;
 		}
 	} while ((traversedContext = traversedContext.parent) != null);
@@ -194,6 +194,13 @@ public StringBuffer printStatement(int tab, StringBuffer output){
 
 public void resolve(BlockScope scope) {
 	MethodScope methodScope = scope.methodScope();
+	
+	if(methodScope==null) {
+		/* return statement outside of a method */
+		scope.problemReporter().cannotReturnOutsideFunction(this);
+		return;
+	}
+	
 	MethodBinding methodBinding;
 	TypeBinding methodType =
 		(methodScope.referenceContext instanceof AbstractMethodDeclaration)

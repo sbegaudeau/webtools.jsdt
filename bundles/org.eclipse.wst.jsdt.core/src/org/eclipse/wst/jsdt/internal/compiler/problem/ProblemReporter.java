@@ -900,9 +900,9 @@ public void cannotReferToNonFinalOuterLocal(LocalVariableBinding local, ASTNode 
 		nodeSourceStart(local, location),
 		nodeSourceEnd(local, location));
 }
-public void cannotReturnInInitializer(ASTNode location) {
+public void cannotReturnOutsideFunction(ASTNode location) {
 	this.handle(
-		IProblem.CannotReturnInInitializer,
+		IProblem.CannotReturnOutsideFunction,
 		NoArgument,
 		NoArgument,
 		location.sourceStart,

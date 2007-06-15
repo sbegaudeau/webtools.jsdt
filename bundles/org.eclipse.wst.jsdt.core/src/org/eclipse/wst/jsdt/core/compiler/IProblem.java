@@ -421,7 +421,7 @@ void setSourceStart(int sourceStart);
 	int InvalidOperator = Internal + 160;
 	// statements
 	int CodeCannotBeReached = Internal + 161;
-	int CannotReturnInInitializer = Internal + 162;
+	int CannotReturnOutsideFunction = Internal + 162;
 	int InitializerMustCompleteNormally = Internal + 163;
 	// assert
 	int InvalidVoidExpression = Internal + 164;
