@@ -4363,6 +4363,11 @@ protected void consumeMethodHeaderName(boolean isAnonymous) {
 	   selectorSource = this.identifierPositionStack[this.identifierPtr--];
 	  this.identifierLengthPtr--;
 	}
+	
+	
+	if (this.nestedType>0)
+		markEnclosingMemberWithLocalType();
+	
 	//type
 //	md.returnType = getTypeReference(this.intStack[this.intPtr--]);
 	//modifiers
@@ -4393,6 +4398,9 @@ protected void consumeMethodHeaderName(boolean isAnonymous) {
 	md.sourceEnd = this.lParenPos;
 	md.bodyStart = this.lParenPos+1;
 	this.listLength = 0; // initialize this.listLength before reading parameters/throws
+	
+
+	
 	
 	incrementNestedType();
 	

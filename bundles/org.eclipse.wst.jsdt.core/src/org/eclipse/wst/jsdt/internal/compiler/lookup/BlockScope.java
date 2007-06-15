@@ -112,16 +112,20 @@ public  void addLocalVariable(LocalVariableBinding binding) {
 
 		MethodBinding methodBinding=
 			new MethodBinding(0, binding.name, TypeBinding.ANY, null, null,this.enclosingTypeBinding());
-		if (this.numberMethods == this.methods.length)
-			System.arraycopy(
-				this.methods,
-				0,
-				(this.methods = new MethodBinding[this.numberMethods * 2]),
-				0,
-				this.numberMethods);
-		this.methods[this.numberMethods++] = methodBinding;
+		addLocalMethod(methodBinding);
 
 	}
+}
+
+public void addLocalMethod(MethodBinding methodBinding) {
+	if (this.numberMethods == this.methods.length)
+		System.arraycopy(
+			this.methods,
+			0,
+			(this.methods = new MethodBinding[this.numberMethods * 2]),
+			0,
+			this.numberMethods);
+	this.methods[this.numberMethods++] = methodBinding;
 }
 
 

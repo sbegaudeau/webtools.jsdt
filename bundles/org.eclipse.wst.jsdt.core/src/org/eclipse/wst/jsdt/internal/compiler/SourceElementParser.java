@@ -89,6 +89,11 @@ public class LocalDeclarationVisitor extends ASTVisitor {
 	public boolean visit(TypeDeclaration typeDeclaration, ClassScope scope) {
 		notifySourceElementRequestor(typeDeclaration, sourceType == null, peekDeclaringType());
 		return false; // don't visit members as this was done during notifySourceElementRequestor(...)
+	}
+ 
+	public boolean visit(MethodDeclaration methodDeclaration, Scope scope) {
+		notifySourceElementRequestor(methodDeclaration);
+		return false;
 	}	
 }
 

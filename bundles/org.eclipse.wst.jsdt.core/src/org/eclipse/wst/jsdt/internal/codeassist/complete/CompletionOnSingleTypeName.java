@@ -25,7 +25,6 @@ public class CompletionOnSingleTypeName extends SingleNameReference  {
 		return true;
 	}
 
-	@Override
 	public TypeBinding resolveType(BlockScope scope) {
 		throw new CompletionNodeFound(this, scope);
 	}

@@ -313,6 +313,7 @@ public void enterMethod(MethodInfo methodInfo) {
 	if (parentHandle.getElementType() == IJavaElement.TYPE 
 			|| parentHandle.getElementType() == IJavaElement.COMPILATION_UNIT
 			|| parentHandle.getElementType() == IJavaElement.CLASS_FILE
+			|| parentHandle.getElementType() == IJavaElement.METHOD
 			) {
 		
 		char[] cs = methodInfo.name!=null ? methodInfo.name: CharOperation.NO_CHAR;

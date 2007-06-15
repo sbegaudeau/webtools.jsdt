@@ -426,10 +426,18 @@ public abstract class AbstractMethodDeclaration
 			if (methodBinding != null) {
 				this.binding=methodBinding;
 				methodBinding=compilationUnitBinding.resolveTypesFor(methodBinding);
-				if (methodBinding != null) 
-					compilationUnitBinding.addMethod(methodBinding);
+				if (methodBinding != null)
+				{
+					MethodScope enclosingMethodScope = upperScope.enclosingMethodScope();
+					if (enclosingMethodScope!=null)
+						enclosingMethodScope.addLocalMethod(methodBinding);
+					else
+					{
+						compilationUnitBinding.addMethod(methodBinding);
+						upperScope.environment().defaultPackage.addBinding(methodBinding, methodBinding.selector,Binding.METHOD);
+					}
+				}
 			}
-			upperScope.environment().defaultPackage.addBinding(methodBinding, methodBinding.selector,Binding.METHOD);
 
 		}
 

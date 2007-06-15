@@ -147,7 +147,8 @@ public IClassFile getClassFile(String classFileName) {
 //	if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(path.lastSegment().toCharArray())
 //			&& path.lastSegment().equalsIgnoreCase(classFileName))
 //	{
-	if(path.isPrefixOf(new Path(classFileName))) {
+	if(path.toOSString().endsWith(classFileName)
+ 		|| path.isPrefixOf(new Path(classFileName))) {
 		return new ClassFile(this, path.toOSString());
 		
 	}

@@ -314,4 +314,11 @@ protected void toStringName(StringBuffer buffer, int flags) {
 		buffer.append(this.occurrenceCount);
 	}
 }
+
+public IMethod getMethod(String selector, String[] parameterTypeSignatures) 
+{
+	return new SourceMethod(this, selector, parameterTypeSignatures);
+
+}
+
 }

@@ -246,4 +246,5 @@ boolean isResolved();
  * @since 2.0
  */
 boolean isSimilar(IMethod method);
+public IMethod getMethod(String selector, String[] parameterTypeSignatures) ;
 }

@@ -43,6 +43,7 @@ public class CompilationUnit extends Openable implements ICompilationUnit, org.e
 	
 	private static final IImportDeclaration[] NO_IMPORTS = new IImportDeclaration[0];
 	
+	 
 	protected String name;
 	public WorkingCopyOwner owner;
 
@@ -515,8 +516,10 @@ public IJavaElement[] findElements(IJavaElement element) {
 			case IJavaElement.METHOD:
 				if (currentElement instanceof CompilationUnit)
 					currentElement = ((CompilationUnit)currentElement).getMethod(child.getElementName(), ((IMethod)child).getParameterTypes());
+				else if (currentElement instanceof SourceMethod)
+						currentElement = ((SourceMethod)currentElement).getMethod(child.getElementName(), ((IMethod)child).getParameterTypes());
 				else
-				currentElement = ((IType)currentElement).getMethod(child.getElementName(), ((IMethod)child).getParameterTypes());
+					currentElement = ((IType)currentElement).getMethod(child.getElementName(), ((IMethod)child).getParameterTypes());
 				break;
 		}
 		
