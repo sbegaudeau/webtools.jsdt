@@ -4957,6 +4957,7 @@ public final class CompletionEngine
 							typeArgTypes,
 							argTypes,
 							methods,
+							methods.length,
 							scope,
 							methodsFound,
 							onlyStaticMethods,
@@ -5051,6 +5052,7 @@ public final class CompletionEngine
 		TypeBinding[] typeArgTypes,
 		TypeBinding[] argTypes,
 		MethodBinding[] methods,
+		int numberMethods,
 		Scope scope,
 		ObjectVector methodsFound,
 		boolean onlyStaticMethods,
@@ -5074,7 +5076,7 @@ public final class CompletionEngine
 		int minTypeArgLength = typeArgTypes == null ? 0 : typeArgTypes.length;
 		int minArgLength = argTypes == null ? 0 : argTypes.length;
 
-		next : for (int f = methods.length; --f >= 0;) {
+		next : for (int f = numberMethods; --f >= 0;) {
 			MethodBinding method = methods[f];
 
 			if (method.isSynthetic()) continue next;
@@ -5163,15 +5165,15 @@ public final class CompletionEngine
 
 			newMethodsFound.add(new Object[]{method, receiverType});
 			
-			ReferenceBinding superTypeWithSameErasure = (ReferenceBinding)receiverType.findSuperTypeWithSameErasure(method.declaringClass);
-			if (method.declaringClass != superTypeWithSameErasure) {
-				MethodBinding[] otherMethods = superTypeWithSameErasure.getMethods(method.selector);
-				for (int i = 0; i < otherMethods.length; i++) {
-					if(otherMethods[i].original() == method.original()) {
-						method = otherMethods[i];
-					}
-				}
-			}
+//			ReferenceBinding superTypeWithSameErasure = (ReferenceBinding)receiverType.findSuperTypeWithSameErasure(method.declaringClass);
+//			if (method.declaringClass != superTypeWithSameErasure) {
+//				MethodBinding[] otherMethods = superTypeWithSameErasure.getMethods(method.selector);
+//				for (int i = 0; i < otherMethods.length; i++) {
+//					if(otherMethods[i].original() == method.original()) {
+//						method = otherMethods[i];
+//					}
+//				}
+//			}
 			
 			int length = method.parameters.length;
 			char[][] parameterPackageNames = new char[length][];
@@ -6397,6 +6399,7 @@ public final class CompletionEngine
 						typeArgTypes,
 						argTypes,
 						methods,
+						methods.length,
 						scope,
 						methodsFound,
 						onlyStaticMethods,
@@ -7312,6 +7315,31 @@ public final class CompletionEngine
 						// handle the error case inside an explicit constructor call (see MethodScope>>findField)
 						MethodScope methodScope = (MethodScope) currentScope;
 						staticsOnly |= methodScope.isStatic | methodScope.isConstructorCall;
+						if (proposeMethod && methodScope.numberMethods>0)
+						{
+							findLocalMethods(
+									token,
+									null,
+									null,
+									methodScope.methods,
+									methodScope.numberMethods,
+									currentScope,
+									methodsFound,
+									false,
+									false,
+									null,
+									invocationSite,
+									invocationScope,
+									true,
+									false,
+									true,
+									null,
+									null,
+									null,
+									false);
+
+
+						}
 						break;
 //					case Scope.CLASS_SCOPE :
 					case Scope.COMPILATION_UNIT_SCOPE :
