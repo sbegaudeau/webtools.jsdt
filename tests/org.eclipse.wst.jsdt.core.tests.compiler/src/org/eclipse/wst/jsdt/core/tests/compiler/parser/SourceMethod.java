@@ -26,8 +26,11 @@ public class SourceMethod implements ISourceMethod {
 	private char[][] exceptionTypeNames;
 	private char[] source;
 	private String explicitConstructorCall;
+	private int numberOfMemberMethods;
+	private SourceMethod[] memberMethods;
 	char[][] typeParameterNames;
 	char[][][] typeParameterBounds;
+	SourceMethod parent;
 	
 public SourceMethod(
 	int declarationStart,
@@ -77,6 +80,29 @@ public String displayModifiers() {
 		return null;
 	return buffer.toString().trim();
 }
+protected void addMemberMethod(SourceMethod sourceMemberMethod) {
+	if(memberMethods == null) {
+		memberMethods = new SourceMethod[4];
+	}
+
+	if(numberOfMemberMethods == memberMethods.length) {
+		System.arraycopy(memberMethods, 0, memberMethods = new SourceMethod[numberOfMemberMethods * 2], 0, numberOfMemberMethods);
+	}
+	memberMethods[numberOfMemberMethods++] = sourceMemberMethod;
+}
+
+public SourceMethod[] getMemberMethods() {
+	if (memberMethods != null && memberMethods.length != numberOfMemberMethods) {
+		System.arraycopy(
+				memberMethods, 
+			0, 
+			memberMethods = new SourceMethod[numberOfMemberMethods], 
+			0, 
+			numberOfMemberMethods); 
+	}
+	return memberMethods;
+}
+
 public String getActualName() {
 	StringBuffer buffer = new StringBuffer();
 	buffer.append(source, nameSourceStart, nameSourceEnd - nameSourceStart + 1);
@@ -163,11 +189,18 @@ public String toString(int tab) {
 			buffer.append(exceptionTypeNames[i]).append(", ");
 		}
 	}
+	buffer.append("{");
 	if (explicitConstructorCall != null) {
-		buffer.append("{\n").append(tabString(tab+1)).append(explicitConstructorCall).append(tabString(tab)).append("}");
-	} else {
-		buffer.append("{}");
+		buffer.append("\n").append(tabString(tab+1)).append(explicitConstructorCall).append(tabString(tab)).append("}");
 	}
+	if (this.numberOfMemberMethods>0)
+	{
+		for (int i = 0; i < numberOfMemberMethods; i++) {
+			buffer.append("\n").append(memberMethods[i].toString(tab+1));
+		}
+		buffer.append("\n").append(tabString(tab));
+	}
+	buffer.append("}");
 	return buffer.toString();
 }
 }

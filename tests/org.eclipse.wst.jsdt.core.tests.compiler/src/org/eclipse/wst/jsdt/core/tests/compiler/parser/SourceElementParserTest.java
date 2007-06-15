@@ -274,7 +274,27 @@ public void enterMethod(MethodInfo methodInfo) {
 	enterAbtractMethod(methodInfo);
 }
 protected void enterAbtractMethod(MethodInfo methodInfo) {
-	if (currentType!=null)
+	if (currentMethod!=null)
+	{
+		SourceMethod memberMethod;
+		currentMethod.addMemberMethod(
+				memberMethod = 
+					new SourceMethod(
+							methodInfo.declarationStart, 
+							methodInfo.modifiers, 
+							methodInfo.returnType, 
+							methodInfo.name, // null for constructors
+							methodInfo.nameSourceStart, 
+							methodInfo.nameSourceEnd, 
+							methodInfo.parameterTypes, 
+							methodInfo.parameterNames, 
+							methodInfo.exceptionTypes,
+							source)); 
+		memberMethod.parent = currentMethod;
+		currentMethod = memberMethod; 
+
+	}
+	else if (currentType!=null)
 	{
 		currentType.addMethod(
 				currentMethod = 
@@ -346,6 +366,7 @@ public void exitMethod(int declarationEnd, int defaultValueStart, int defaultVal
 }
 protected void exitAbstractMethod(int declarationEnd) {
 	currentMethod.setDeclarationSourceEnd(declarationEnd);
+	currentMethod=currentMethod.parent;
 }
 public void fullParse(String s, String testName) {
 	this.fullParse(s, testName, false);
@@ -5354,6 +5375,40 @@ public void _test80() {
 		"Invalid source " + testName, 
 		expectedUnitToString, 
 		currentType.toString()); 
+}
+
+
+public void testInnerMethod01() {
+
+	String s =
+			"function ss() {\n"
+			+ "function ins() {}\n"
+			+ "}\n" 
+			+ "\n"; 
+
+	String expectedUnitToString = 
+		"\tfunction ss() {\n"
+		+ "\t\tfunction ins() {}\n"
+		+ "\t}" 
+			+ "\n"; 
+
+	String testName = "testInnerMethod01";
+	fullParse(s,testName,true);
+
+	assertEquals(
+		"Invalid class declarationSourceStart ", 
+		0, 
+		currentUnit.getDeclarationSourceStart()); 
+
+//	assertEquals(
+//		"Invalid class declarationSourceEnd ", 
+//		40, 
+//		currentUnit.getDeclarationSourceEnd());
+
+	assertEquals(
+		"Invalid source " + testName, 
+		expectedUnitToString, 
+		currentUnit.toString()); 
 }
 
 }
