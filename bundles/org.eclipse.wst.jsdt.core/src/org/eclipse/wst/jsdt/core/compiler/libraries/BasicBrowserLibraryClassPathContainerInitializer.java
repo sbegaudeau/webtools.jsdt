@@ -17,6 +17,7 @@ public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathC
 	private static final String FILE_DESCRIPTION = "ECMA 3 Compatible Browser";
 	private static final char[] LIBRARY_FILE_NAME = { 'b', 'a', 's', 'e', 'B', 'r', 'o', 'w', 's', 'e', 'r', 'L', 'i', 'b', 'r', 'a', 'r', 'y', '.', 'j', 's' };
 	private static final String LibraryDescription = "ECMA 3 Browser Support Library";
+	
 	class BasicLibLocation extends SystemLibraryLocation {
 		BasicLibLocation() {
 			super();
