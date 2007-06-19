@@ -36,8 +36,8 @@ public class SystemLibraryLocation implements LibraryLocation {
 		return new Path("libraries");
 	}
 	
-	public char[] getLibraryFileName() {
-		return SYSTEM_LIBARAY_NAME;
+	public char[][] getLibraryFileNames() {
+		return new char[][] {SYSTEM_LIBARAY_NAME};
 	}
 	
 	protected String getPluginId() {
@@ -52,37 +52,30 @@ public class SystemLibraryLocation implements LibraryLocation {
 				libraryRuntimePath.toFile().mkdir();
 			}
 		
-			IPath workingLibLocation = Platform.getStateLocation(Platform.getBundle(JavaCore.PLUGIN_ID)).append( new String(LIBRARY_RUNTIME_DIRECTORY)).append(new String(getLibraryFileName()));
-			File library = workingLibLocation.toFile();
-		
-		
-			if(!library.exists()) {
-				URL url = null;
-				InputStream is = null;
-					
-				is	 = FileLocator.openStream(Platform.getBundle(getPluginId()),getLibraryPathInPlugin().append(new String(getLibraryFileName())), false);				
-				copyFile(is,library);
-					
-					
+			char[][] libFiles = getLibraryFileNames();
+			for(int i = 0;i<libFiles.length;i++) {
+				IPath workingLibLocation = Platform.getStateLocation(Platform.getBundle(JavaCore.PLUGIN_ID)).append( new String(LIBRARY_RUNTIME_DIRECTORY)).append(new String(libFiles[i]));
+				File library = workingLibLocation.toFile();
+			
+			
+				if(!library.exists()) {
+					URL url = null;
+					InputStream is = null;
+						
+					is	 = FileLocator.openStream(Platform.getBundle(getPluginId()),getLibraryPathInPlugin().append(new String(getLibraryFileNames()[0])), false);				
+					copyFile(is,library);
+						
+						
+				}
 			}
 		}catch(Exception ex) {}
 		
 	}
 	
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation#getLocation()
-	 */
-	public File getLocation(){
-		
-		String path=getLibraryPath(getLibraryFileName().toString());
-		File file = new File(path);
-		return file.getParentFile();
-	}
 	
 	public IPath getWorkingLibPath(){
 		
-		return new Path(getLibraryPath(new String(getLibraryFileName())));
+		return new Path(getLibraryPath(""));
 		
 	}
 	
@@ -98,7 +91,11 @@ public class SystemLibraryLocation implements LibraryLocation {
 		{return null;}
 	
 	}
-	public static void copyFile(InputStream src, File dst) throws IOException {
+	public String getLibraryPath(char[] name){
+		return getLibraryPath(new String(name));
+		
+	}
+	protected static void copyFile(InputStream src, File dst) throws IOException {
 		InputStream in=null;
 		OutputStream out=null;
 		try {

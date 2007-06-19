@@ -705,7 +705,7 @@ ImportBinding[] getDefaultImports() {
 		BinaryTypeBinding missingObject = environment.cacheMissingBinaryType(JAVA_LANG_OBJECT, this.referenceContext);
 		importBinding = missingObject.fPackage;
 	}
-	return environment.defaultImports = new ImportBinding[] {new ImportBinding(new char[][]{SystemLibraryLocation.getInstance().getLibraryFileName()}, true, importBinding, (ImportReference)null)};
+	return environment.defaultImports = new ImportBinding[] {new ImportBinding(new char[][] {SystemLibraryLocation.SYSTEM_LIBARAY_NAME}, true, importBinding, (ImportReference)null)};
 }
 // NOT Public API
 public final Binding getImport(char[][] compoundName, boolean onDemand, boolean isStaticImport) {

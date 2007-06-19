@@ -7,6 +7,7 @@ import java.net.URI;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 
 /**
  * @author childsb
@@ -156,4 +157,6 @@ public interface IClasspathContainerInitialzer {
 	public abstract Object getComparisonID(IPath containerPath, IJavaProject project);
 	
 	public abstract URI getHostPath(IPath path, IJavaProject project);
+	
+	SystemLibraryLocation getLibraryLocation();
 }

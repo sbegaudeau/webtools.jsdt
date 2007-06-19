@@ -38,6 +38,7 @@ import org.eclipse.wst.jsdt.core.*;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.CompilationParticipant;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
+import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.wst.jsdt.internal.codeassist.CompletionEngine;
 import org.eclipse.wst.jsdt.internal.codeassist.SelectionEngine;
@@ -1423,6 +1424,10 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 					container = (new ClasspathContainerInitializer() {
 						public void initialize(IPath path, IJavaProject javaProject) throws CoreException {
 							// not used
+						}
+
+						public SystemLibraryLocation getLibraryLocation() {
+							return null;
 						}
 					}).getFailureContainer(containerPath, project);
 				} else {
