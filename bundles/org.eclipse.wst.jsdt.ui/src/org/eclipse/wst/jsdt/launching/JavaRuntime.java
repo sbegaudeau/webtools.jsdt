@@ -2461,7 +2461,8 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 					fgVMTypes=new IVMInstallType[]{new StandardVMType()};
 					defaultVM = new StandardVM(fgVMTypes[0],"defaultVM");
 					fgDefaultVMId=defaultVM.getId();
-					defaultVM.setInstallLocation(SystemLibraryLocation.getInstance().getLocation());
+					File location = SystemLibraryLocation.getInstance().getWorkingLibPath().toFile();
+					defaultVM.setInstallLocation(location);
 					
 //					// 1. load VM type extensions
 //					initializeVMTypeExtensions();
