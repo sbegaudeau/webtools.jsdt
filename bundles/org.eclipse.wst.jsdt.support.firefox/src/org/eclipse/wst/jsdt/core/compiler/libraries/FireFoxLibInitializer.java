@@ -22,12 +22,12 @@ public class FireFoxLibInitializer extends BasicBrowserLibraryClassPathContainer
 			super();
 		}
 		
-		@Override
+		
 		public char[][] getLibraryFileNames() {
 			return new char[][] { FireFoxLibInitializer.LIBRARY_FILE_NAMES[0] };
 		}
 		
-		@Override
+		
 		protected String getPluginId() {
 			return FireFoxLibInitializer.PLUGIN_ID;
 		}
@@ -37,7 +37,7 @@ public class FireFoxLibInitializer extends BasicBrowserLibraryClassPathContainer
 		return new FireFoxLibLocation();
 	}
 
-	@Override
+	
 	public String getDescription(IPath containerPath, IJavaProject project) {
 		return FireFoxLibInitializer.ContainerDescription;
 	}
