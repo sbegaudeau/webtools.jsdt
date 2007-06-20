@@ -29,6 +29,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.parser.NLSTag;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilationUnit;
@@ -142,6 +143,8 @@ public class CompilationUnitDeclaration
 	 * to compiler structures.
 	 */
 	public void cleanUp() {
+		if (this.compilationUnitBinding!=null)
+			this.compilationUnitBinding.scope=null;
 		if (this.types != null) {
 			for (int i = 0, max = this.types.length; i < max; i++) {
 				cleanUp(this.types[i]);
@@ -154,6 +157,11 @@ public class CompilationUnitDeclaration
 			}
 		}
 		
+		for (int i = 0; i < this.numberInferredTypes; i++) {
+			SourceTypeBinding binding = this.inferredTypes[i].binding;
+			if (binding!=null)
+				binding.scope=null;
+		}
 		compilationResult.recoveryScannerData = null; // recovery is already done
 		
 		ClassFile[] classFiles = compilationResult.getClassFiles();
