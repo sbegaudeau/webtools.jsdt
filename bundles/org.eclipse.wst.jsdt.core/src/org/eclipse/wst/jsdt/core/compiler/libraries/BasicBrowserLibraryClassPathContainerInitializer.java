@@ -23,7 +23,6 @@ public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathC
 			super();
 		}
 		
-		@Override
 		public char[][] getLibraryFileNames() {
 			return new char[][] { BasicBrowserLibraryClassPathContainerInitializer.LIBRARY_FILE_NAME };
 		}
@@ -52,7 +51,6 @@ public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathC
 		return BasicBrowserLibraryClassPathContainerInitializer.LibraryDescription;
 	}
 	
-	@Override
 	public String getDescription(IPath containerPath, IJavaProject project) {
 		if (containerPath.equals(new Path(new String(BasicBrowserLibraryClassPathContainerInitializer.LIBRARY_FILE_NAME)))) {
 			return BasicBrowserLibraryClassPathContainerInitializer.FILE_DESCRIPTION;
@@ -68,7 +66,6 @@ public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathC
 		return new Path(BasicBrowserLibraryClassPathContainerInitializer.CONTAINER_ID);
 	}
 	
-	@Override
 	public void initialize(IPath containerPath, IJavaProject project) throws CoreException {
 		JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { project }, new IClasspathContainer[] { getContainer(containerPath, project) }, null);
 	}

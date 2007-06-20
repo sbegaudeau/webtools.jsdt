@@ -1010,7 +1010,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 					}
 					
 					ReferenceBinding declaringClass = methodBinding.declaringClass;
-					if (	( ( methodBinding instanceof LocalFunctionBinding && isLocal(declaringClass))
+					if (	( ( methodBinding instanceof LocalFunctionBinding || isLocal(declaringClass))
 									&& this.requestor instanceof SelectionRequestor)
 							|| declaringClass.qualifiedSourceName()==null) {
 						((SelectionRequestor)this.requestor).acceptLocalMethod(methodBinding);
