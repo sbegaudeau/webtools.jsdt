@@ -20,7 +20,7 @@ public class LookupScopeElementInfo extends PackageFragmentRootInfo {
 	//public static final String[] SYSTEM_LIBRARIES = {"system.js"};
 	
 	/* places imports in the document scope before the classpath entries */
-	private static final Boolean LOOKUP_LOCAL_SCOPE_FIRST = false;
+	private static final boolean LOOKUP_LOCAL_SCOPE_FIRST = false;
 	
 	static class LookupCache {
 		LookupCache(IPackageFragmentRoot[] allPkgFragmentRootsCache, HashtableOfArrayToObject allPkgFragmentsCache, HashtableOfArrayToObject isPackageCache, Map rootToResolvedEntries) {

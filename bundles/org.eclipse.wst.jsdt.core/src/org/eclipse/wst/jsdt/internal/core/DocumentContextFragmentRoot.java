@@ -56,7 +56,7 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	private IPath webContext;
 	private IClasspathEntry rawClassPathEntry;
 	
-	public static final Boolean RETURN_CU = true;
+	public static final boolean RETURN_CU = true;
 	
 	public DocumentContextFragmentRoot(IJavaProject project,
 									   IFile resourceRelativeFile,
@@ -314,7 +314,7 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	 * Returns a new name lookup. This name lookup first looks in the given working copies.
 	 */
 	public NameLookup newNameLookup(ICompilationUnit[] workingCopies) throws JavaModelException {
-		return getElementInfo().newNameLookup( workingCopies);
+		return ((LookupScopeElementInfo)getElementInfo()).newNameLookup( workingCopies);
 	}
 
 	/*
@@ -327,7 +327,7 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 		return newNameLookup(workingCopies);
 	}
 	
-	public LookupScopeElementInfo getElementInfo() {
+	public Object getElementInfo() {
 		LookupScopeElementInfo fScopeElementInfo = null;
 		
 		try {
