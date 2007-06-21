@@ -52,7 +52,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 				"return this.area;"+ 
 				"}",
 			"X.js",
-			"class Shape extends Object{\n  ?? GetArea()\n  Shape()\n}\n",
+			"class Shape extends Object{\n  Number area;\n  Number GetArea()\n  Shape()\n}\n",
 			getDefaultOptions()
 			
 		 );
@@ -297,5 +297,19 @@ public class InferTypesTests extends AbstractRegressionTest {
 			 );
 		}
 		
+		public void test060() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+					"Shape.prototype.GetArea = Shape_GetArea;"+ 
+					"function Shape_GetArea()"+
+					"{"+
+					" var str=\"\";"+ 
+					"return str;"+ 
+					"}",
+				"X.js",
+				"class Shape extends Object{\n  String GetArea()\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
 	
 }
