@@ -9,7 +9,7 @@ public class InferredMethod extends ASTNode{
   
 	public MethodDeclaration methodDeclaration;
 	public char [] name;
-	public InferredType inferredType;
+	public InferredType inType;
 	public boolean isConstructor;
 	public MethodBinding methodBinding;
 	public int nameStart;
@@ -18,7 +18,7 @@ public class InferredMethod extends ASTNode{
 	{
 		this.methodDeclaration=methodDeclaration;
 		this.name=name;
-		inferredType=inClass;
+		inType=inClass;
 		this.sourceStart=methodDeclaration.sourceStart;
 		this.sourceEnd=methodDeclaration.sourceEnd;
 	}

@@ -12,6 +12,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FalseLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
@@ -26,12 +27,12 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ReturnStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TrueLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.impl.BooleanConstant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
-import org.eclipse.wst.jsdt.internal.formatter.comment.JavaDocLine;
 public class InferEngine extends ASTVisitor {
 
 	InferOptions inferOptions;
@@ -345,6 +346,24 @@ public class InferEngine extends ASTVisitor {
 			char [] typeName=getTypeName(allocationExpression.member);
 			return addType(typeName);
 		}
+		else if (expression instanceof SingleNameReference)
+		{
+			SingleNameReference singleNameReference=(SingleNameReference)expression;
+			Object definedMember = currentContext.definedMembers.get(singleNameReference.token);
+			if (definedMember instanceof AbstractVariableDeclaration)
+				return ((AbstractVariableDeclaration)definedMember).inferredType;
+			
+		}
+		else if (expression instanceof FieldReference)
+		{
+			FieldReference fieldReference=(FieldReference)expression;
+			if (fieldReference.receiver.isThis() && currentContext.currentType!=null)
+			{
+				InferredAttribute attribute = currentContext.currentType.findAttribute(fieldReference.token);
+				if (attribute!=null)
+					return attribute.type;
+			}
+		}
 		else if (expression instanceof ArrayInitializer)
 		{
 			ArrayInitializer arrayInitializer = (ArrayInitializer)expression;
@@ -372,6 +391,8 @@ public class InferEngine extends ASTVisitor {
 			}
 			else
 			return ArrayType;
+		}	else if (expression instanceof TrueLiteral || expression instanceof FalseLiteral) {
+			return BooleanType;
 		}
 		return null;
 	}
@@ -477,6 +498,8 @@ public class InferEngine extends ASTVisitor {
 			}			
 		}
 		this.currentContext.currentMethod=methodDeclaration;
+		if (methodDeclaration.inferredMethod!=null && methodDeclaration.inferredMethod.inType!=null)
+			this.currentContext.currentType=methodDeclaration.inferredMethod.inType;
 		if (methodDeclaration.inferredType==null)
 			methodDeclaration.inferredType=VoidType;
 		return true;
@@ -531,10 +554,9 @@ public class InferEngine extends ASTVisitor {
 				    if (returnType!=null)
 				    {
 				    	functionExpression.methodDeclaration.inferredType=returnType;
-				    	method.inferredType=returnType;
 				    }
-				    else
-				    	method.inferredType=functionExpression.methodDeclaration.inferredType;
+//				    else
+//				    	method.inferredType=functionExpression.methodDeclaration.inferredType;
 				}	
 				else	//attribute
 				{
