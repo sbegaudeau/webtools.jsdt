@@ -418,11 +418,11 @@ public abstract class AbstractMethodDeclaration
 	public void resolve(Scope upperScope) {
 
 		
-		if (this.scope==null &&  this.selector!=null)
+		if (this.scope==null &&  this.selector!=null) 
 		{
 			this.scope = new MethodScope(upperScope,this, false);
 			SourceTypeBinding compilationUnitBinding=upperScope.enclosingCompilationUnit();
-			MethodBinding methodBinding = scope.createMethod(this,this.selector,compilationUnitBinding,false);
+			MethodBinding methodBinding = scope.createMethod(this,this.selector,compilationUnitBinding,false,true);
 			if (methodBinding != null) {
 				this.binding=methodBinding;
 				methodBinding=compilationUnitBinding.resolveTypesFor(methodBinding);

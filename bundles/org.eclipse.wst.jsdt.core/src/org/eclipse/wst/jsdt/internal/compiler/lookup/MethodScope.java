@@ -289,10 +289,10 @@ public class MethodScope extends BlockScope {
 	
 	MethodBinding createMethod(InferredMethod inferredMethod) {
 		
-		return createMethod(inferredMethod.methodDeclaration,inferredMethod.name,inferredMethod.inferredType.binding, inferredMethod.isConstructor);
+		return createMethod(inferredMethod.methodDeclaration,inferredMethod.name,inferredMethod.inType.binding, inferredMethod.isConstructor,false);
 	}
 	
-	public MethodBinding createMethod(AbstractMethodDeclaration method,char[] name,SourceTypeBinding declaringClass, boolean isConstructor) {
+	public MethodBinding createMethod(AbstractMethodDeclaration method,char[] name,SourceTypeBinding declaringClass, boolean isConstructor, boolean isLocal) {
 
 		MethodBinding methodBinding=null;
 		// is necessary to ensure error reporting
@@ -312,8 +312,7 @@ public class MethodScope extends BlockScope {
 //			TypeBinding returnType =
 //			 (method instanceof MethodDeclaration && ((MethodDeclaration)method).returnType!=null && method.inferredMethod!=null)?method.inferredType.resolveType(this,((MethodDeclaration)method).returnType):TypeBinding.ANY;
 				 
-			MethodScope parentMethodScope = this.methodScope();
-			if (parentMethodScope!=null && method.selector!=null)
+			if (isLocal && method.selector!=null)
 			{
 				methodBinding =
 					new LocalFunctionBinding(modifiers, name,returnType, null, null, declaringClass);

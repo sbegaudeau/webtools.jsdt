@@ -255,7 +255,7 @@ private void buildMethods(ArrayList methods) {
 	for (Iterator iter = methods.iterator(); iter.hasNext();) {
 		AbstractMethodDeclaration method = (AbstractMethodDeclaration) iter.next();
 			MethodScope scope = new MethodScope(this,method, false);
-			MethodBinding methodBinding = scope.createMethod(method,method.selector,(SourceTypeBinding)referenceContext.compilationUnitBinding,false);
+			MethodBinding methodBinding = scope.createMethod(method,method.selector,(SourceTypeBinding)referenceContext.compilationUnitBinding,false,false);
 			if (methodBinding != null && methodBinding.selector!=null) // is null if binding could not be created
 				methodBindings[count++] = methodBinding;
 			if (methodBinding.selector!=null)
