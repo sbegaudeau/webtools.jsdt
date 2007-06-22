@@ -199,6 +199,8 @@ protected boolean buildStructure(OpenableElementInfo info, final IProgressMonito
 	} finally {
 	    if (compilationUnitDeclaration != null) {
 	        compilationUnitDeclaration.cleanUp();
+	        if (compilationUnitDeclaration.scope!=null)
+	        	compilationUnitDeclaration.scope.cleanup();
 	    }
 	}
 	

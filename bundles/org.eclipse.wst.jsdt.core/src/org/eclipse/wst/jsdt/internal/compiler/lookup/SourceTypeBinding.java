@@ -45,7 +45,6 @@ public class SourceTypeBinding extends ReferenceBinding {
 	public Scope scope;
 	public ClassScope  classScope;
 
-	public InferredType inferredType;
 	
 	// Synthetics are separated into 5 categories: methods, super methods, fields, class literals, changed declaring type bindings and bridge methods
 	public final static int METHOD_EMUL = 0;
@@ -93,6 +92,7 @@ void buildFieldsAndMethods() {
 
 private void buildFields() {
 	FieldBinding prototype = new FieldBinding(TypeConstants.PROTOTYPE, BaseTypeBinding.ANY, modifiers | ExtraCompilerModifiers.AccUnresolved, this,null);
+	InferredType inferredType=this.classScope.inferredType;
 	int size = inferredType.numberAttributes;
 	if (size == 0) {
 		 setFields(new FieldBinding[]{prototype});
@@ -161,6 +161,7 @@ private void buildFields() {
 
 
 private void buildMethods() {
+	InferredType inferredType=this.classScope.inferredType;
 	int size = (inferredType.methods!=null)?inferredType.methods.size() :0;
 
 	if (size==0 ) {
@@ -1365,7 +1366,7 @@ public MethodBinding[] methods() {
 		}
 
 		// handle forward references to potential default abstract methods
-		addDefaultAbstractMethods();
+//		addDefaultAbstractMethods();
 		this.tagBits |= TagBits.AreMethodsComplete;
 	}		
 	return this.methods;
@@ -1769,6 +1770,7 @@ void verifyMethods(MethodVerifier verifier) {
 }
 
 public AbstractMethodDeclaration sourceMethod(MethodBinding binding) {
+	InferredType inferredType=this.classScope.inferredType;
 	InferredMethod inferredMethod = inferredType.findMethod(binding.selector, null);
 	if (inferredMethod!=null)
 		return inferredMethod.methodDeclaration;

@@ -1223,7 +1223,6 @@ public class ClassScope extends Scope {
 		}
 
 		SourceTypeBinding sourceType = inferredType.binding;
-		sourceType.inferredType=inferredType;
 		environment().setAccessRestriction(sourceType, accessRestriction);		
 		sourceType.fPackage.addType(sourceType);
 		return sourceType;

@@ -871,6 +871,8 @@ public class ASTParser {
 				} finally {
 					if (compilationUnitDeclaration != null && this.resolveBindings) {
 						compilationUnitDeclaration.cleanUp();
+						if (compilationUnitDeclaration.scope!=null)
+							compilationUnitDeclaration.scope.cleanup();
 					}
 				}					
 		}

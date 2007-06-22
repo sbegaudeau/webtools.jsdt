@@ -57,15 +57,15 @@ public CompilationUnitScope(CompilationUnitDeclaration unit, LookupEnvironment e
 	this.currentPackageName = pkgName == null ? CharOperation.NO_CHAR_CHAR : pkgName;
  
 	
+	this.referencedTypes = new ObjectVector();
 	if (compilerOptions().produceReferenceInfo) {
 		this.qualifiedReferences = new CompoundNameVector();
 		this.simpleNameReferences = new SimpleNameVector();
-		this.referencedTypes = new ObjectVector();
 		this.referencedSuperTypes = new ObjectVector();
 	} else {
 		this.qualifiedReferences = null; // used to test if dependencies should be recorded
 		this.simpleNameReferences = null;
-		this.referencedTypes = null;
+//		this.referencedTypes = null;
 		this.referencedSuperTypes = null;
 	}
 }
@@ -225,7 +225,6 @@ SourceTypeBinding buildType(InferredType inferredType, SourceTypeBinding enclosi
 	}
 
 	SourceTypeBinding sourceType = inferredType.binding;
-	sourceType.inferredType=inferredType;
 	environment().setAccessRestriction(sourceType, accessRestriction);		
 	sourceType.fPackage.addType(sourceType);
 	return sourceType;
@@ -915,4 +914,19 @@ public void verifyMethods(MethodVerifier verifier) {
 	for (int i = 0, length = topLevelTypes.length; i < length; i++)
 		topLevelTypes[i].verifyMethods(verifier);
  }
+
+public void cleanup()
+{
+
+	if (this.referencedTypes!=null)
+	  for (int i = 0, l = referencedTypes.size; i < l; i++) {
+		Object obj=referencedTypes.elementAt(i);
+		if (obj instanceof SourceTypeBinding)
+		{
+			SourceTypeBinding type = (SourceTypeBinding) obj;
+			type.classScope=null;
+			type.scope=null;
+		}
+	}
+}
 }

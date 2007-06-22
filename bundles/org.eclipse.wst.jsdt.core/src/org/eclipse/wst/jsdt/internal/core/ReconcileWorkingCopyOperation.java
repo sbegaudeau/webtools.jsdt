@@ -199,6 +199,8 @@ public class ReconcileWorkingCopyOperation extends JavaModelOperation {
 			    } finally {
 			        if (unit != null) {
 			            unit.cleanUp();
+			            if (unit.scope!=null)
+			            	unit.scope.cleanup();
 			        }
 			    }
 			} // else working copy not in a Java project
