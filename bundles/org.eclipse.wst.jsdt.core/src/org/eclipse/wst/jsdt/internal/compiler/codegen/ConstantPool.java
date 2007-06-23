@@ -267,7 +267,7 @@ public int literalIndex(byte[] utf8encoding, char[] stringCharArray) {
 	if ((index = UTF8Cache.putIfAbsent(stringCharArray, this.currentIndex)) < 0) {
 		// The entry doesn't exit yet
 		if ((index = -index)> 0xFFFF) {
-			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.scope.referenceType());
+			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.classScope.referenceType());
 		}
 		currentIndex++;
 		// Write the tag first
@@ -339,10 +339,10 @@ public int literalIndex(char[] utf8Constant) {
 		}
 		if (length >= 65535) {
 			currentOffset = savedCurrentOffset - 1;
-			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceForConstant(this.classFile.referenceBinding.scope.referenceType());
+			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceForConstant(this.classFile.referenceBinding.classScope.referenceType());
 		}
 		if (index > 0xFFFF){
-			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.scope.referenceType());
+			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.classScope.referenceType());
 		}
 		currentIndex++;     
 		// Now we know the length that we have to write in the constant pool
@@ -358,7 +358,7 @@ public int literalIndex(char[] stringCharArray, byte[] utf8encoding) {
 		// The entry doesn't exit yet
 		this.currentIndex++;
 		if ((index = -index) > 0xFFFF){
-			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.scope.referenceType());
+			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.classScope.referenceType());
 		}
 		// Write the tag first
 		writeU1(StringTag);
@@ -395,7 +395,7 @@ public int literalIndex(double key) {
 	}
 	if ((index = doubleCache.putIfAbsent(key, this.currentIndex)) < 0) {
 		if ((index = -index)> 0xFFFF){
-			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.scope.referenceType());
+			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.classScope.referenceType());
 		}
 		this.currentIndex += 2; // a double needs an extra place into the constant pool
 		// Write the double into the constant pool
@@ -436,7 +436,7 @@ public int literalIndex(float key) {
 	}
 	if ((index = floatCache.putIfAbsent(key, this.currentIndex)) < 0) {
 		if ((index = -index) > 0xFFFF){
-			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.scope.referenceType());
+			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.classScope.referenceType());
 		}
 		this.currentIndex++;
 		// Write the float constant entry into the constant pool
@@ -473,7 +473,7 @@ public int literalIndex(int key) {
 	if ((index = intCache.putIfAbsent(key, this.currentIndex)) < 0) {
 		this.currentIndex++;
 		if ((index = -index) > 0xFFFF){
-			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.scope.referenceType());
+			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.classScope.referenceType());
 		}
 	// Write the integer constant entry into the constant pool
 		// First add the tag
@@ -509,7 +509,7 @@ public int literalIndex(long key) {
 	}
 	if ((index = longCache.putIfAbsent(key, this.currentIndex)) < 0) {
 		if ((index = -index) > 0xFFFF){
-			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.scope.referenceType());
+			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.classScope.referenceType());
 		}
 		this.currentIndex+= 2; // long value need an extra place into thwe constant pool
 		// Write the long into the constant pool
@@ -543,7 +543,7 @@ public int literalIndex(String stringConstant) {
 		// The entry doesn't exit yet
 		currentIndex++;
 		if ((index  = -index)> 0xFFFF){
-			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.scope.referenceType());
+			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.classScope.referenceType());
 		}
 		// Write the tag first
 		writeU1(StringTag);
@@ -565,7 +565,7 @@ public int literalIndexForType(final char[] constantPoolName) {
 		// The entry doesn't exit yet
 		this.currentIndex++;
 		if ((index = -index) > 0xFFFF){
-			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.scope.referenceType());
+			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.classScope.referenceType());
 		}
 		writeU1(ClassTag);
 
@@ -599,7 +599,7 @@ public int literalIndexForMethod(char[] declaringClass, char[] selector, char[] 
 		// it doesn't exist yet
 		this.currentIndex++;
 		if ((index = -index) > 0xFFFF){
-			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.scope.referenceType());
+			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.classScope.referenceType());
 		}
 		// Write the interface method ref constant into the constant pool
 		// First add the tag
@@ -633,7 +633,7 @@ public int literalIndexForNameAndType(char[] name, char[] signature) {
 		// The entry doesn't exit yet
 		currentIndex++;
 		if ((index = -index) > 0xFFFF){
-			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.scope.referenceType());
+			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.classScope.referenceType());
 		}
 		writeU1(NameAndTypeTag);
 		int nameIndexOffset = this.currentOffset;
@@ -657,7 +657,7 @@ public int literalIndexForField(char[] declaringClass, char[] name, char[] signa
 		this.currentIndex++;
 		// doesn't exist yet
 		if ((index = -index) > 0xFFFF){
-			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.scope.referenceType());
+			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.classScope.referenceType());
 		}
 		// Write the interface method ref constant into the constant pool
 		// First add the tag
@@ -764,7 +764,7 @@ public int literalIndexForLdc(char[] stringCharArray) {
 			stringIndex = -stringIndex;
 		}
 		if ((index = -index) > 0xFFFF){
-			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.scope.referenceType());
+			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.classScope.referenceType());
 		}
 		poolContent[stringIndexOffset++] = (byte) (stringIndex >> 8);
 		poolContent[stringIndexOffset] = (byte) stringIndex;

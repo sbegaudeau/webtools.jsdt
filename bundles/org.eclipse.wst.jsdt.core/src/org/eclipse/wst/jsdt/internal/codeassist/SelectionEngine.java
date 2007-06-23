@@ -246,18 +246,10 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 	}
 
 	public void acceptBinding(char[] packageName, char[] simpleTypeName, int bindingType, int modifiers, AccessRestriction accessRestriction) {
-		char[] typeName = enclosingTypeNames == null ?
-				simpleTypeName :
-					CharOperation.concat(
-						CharOperation.concatWith(enclosingTypeNames, '.'),
-						simpleTypeName,
-						'.');
+		char[] typeName = 		simpleTypeName ; 
 		
 		if (CharOperation.equals(simpleTypeName, this.selectedIdentifier)) {
-			char[] flatEnclosingTypeNames =
-				enclosingTypeNames == null || enclosingTypeNames.length == 0 ?
-						null :
-							CharOperation.concatWith(enclosingTypeNames, '.');
+			char[] flatEnclosingTypeNames = null;
 			if(mustQualifyType(packageName, simpleTypeName, flatEnclosingTypeNames, modifiers)) {
 				int length = 0;
 				int kind = modifiers & (ClassFileConstants.AccInterface | ClassFileConstants.AccEnum | ClassFileConstants.AccAnnotation);

@@ -299,7 +299,7 @@ public class ClassScope extends Scope {
 		for (int i = 0; i < size; i++) {
 			if (i != clinitIndex) {
 				MethodScope scope = new MethodScope(this, methods[i], false);
-				MethodBinding methodBinding = scope.createMethod(methods[i]);
+				MethodBinding methodBinding = scope.createMethod(methods[i],methods[i].selector,sourceType,false,false);
 				if (methodBinding != null) // is null if binding could not be created
 					methodBindings[count++] = methodBinding;
 			}

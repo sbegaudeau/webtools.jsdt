@@ -2375,7 +2375,7 @@ public void generateSyntheticBodyForEnumValueOf(SyntheticMethodBinding methodBin
 // return result;
 //}
 public void generateSyntheticBodyForEnumValues(SyntheticMethodBinding methodBinding) {
-	ClassScope scope = ((SourceTypeBinding)methodBinding.declaringClass).scope;
+	ClassScope scope = ((SourceTypeBinding)methodBinding.declaringClass).classScope;
 	FieldBinding enumValuesSyntheticfield = scope.referenceContext.enumValuesSyntheticfield;
 	initializeMaxLocals(methodBinding);
 	TypeBinding enumArray = methodBinding.returnType;
@@ -2518,7 +2518,7 @@ public void generateSyntheticBodyForMethodAccess(SyntheticMethodBinding accessMe
 	}
 }
 public void generateSyntheticBodyForSwitchTable(SyntheticMethodBinding methodBinding) {
-	ClassScope scope = ((SourceTypeBinding)methodBinding.declaringClass).scope;
+	ClassScope scope = ((SourceTypeBinding)methodBinding.declaringClass).classScope;
 	initializeMaxLocals(methodBinding);
 	final BranchLabel nullLabel = new BranchLabel(this);
 	FieldBinding syntheticFieldBinding = methodBinding.targetReadField;

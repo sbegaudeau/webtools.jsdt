@@ -45,9 +45,9 @@ public class CancelableNameEnvironment extends SearchableEnvironment {
 		super.findPackages(prefix, requestor);
 	}
 
-	public NameEnvironmentAnswer findType(char[] name, char[][] packageName) {
+	public NameEnvironmentAnswer findType(char[] name, char[][] packageName,  ITypeRequestor requestor) {
 		checkCanceled();
-		return super.findType(name, packageName);
+		return super.findType(name, packageName, requestor);
 	}
 
 	public NameEnvironmentAnswer findBinding(char[] typeName, char[][] packageName, int type, ITypeRequestor requestor) {

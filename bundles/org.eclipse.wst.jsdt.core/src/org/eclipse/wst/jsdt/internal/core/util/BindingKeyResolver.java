@@ -141,42 +141,42 @@ public class BindingKeyResolver extends BindingKeyParser {
 				}
 				return false;
 			}
-			public boolean visit(SingleNameReference singleNameReference, Scope blockScope) {
+			public boolean visit(SingleNameReference singleNameReference, BlockScope blockScope) {
 				if (checkType(singleNameReference.resolvedType)) 
 					return false;
 				return super.visit(singleNameReference, blockScope);
 			}
-			public boolean visit(QualifiedNameReference qualifiedNameReference, Scope blockScope) {
+			public boolean visit(QualifiedNameReference qualifiedNameReference, BlockScope blockScope) {
 				if (checkType(qualifiedNameReference.resolvedType))
 					return false;
 				return super.visit(qualifiedNameReference, blockScope);
 			}
-			public boolean visit(MessageSend messageSend, Scope blockScope) {
+			public boolean visit(MessageSend messageSend, BlockScope blockScope) {
 				if (checkType(messageSend.resolvedType))
 					return false;
 				return super.visit(messageSend, blockScope);
 			}
-			public boolean visit(FieldReference fieldReference, Scope blockScope) {
+			public boolean visit(FieldReference fieldReference, BlockScope blockScope) {
 				if (checkType(fieldReference.resolvedType))
 					return false;
 				return super.visit(fieldReference, blockScope);
 			}
-			public boolean visit(ConditionalExpression conditionalExpression, Scope blockScope) {
+			public boolean visit(ConditionalExpression conditionalExpression, BlockScope blockScope) {
 				if (checkType(conditionalExpression.resolvedType))
 					return false;
 				return super.visit(conditionalExpression, blockScope);
 			}
-			public boolean visit(CastExpression castExpression, Scope blockScope) {
+			public boolean visit(CastExpression castExpression, BlockScope blockScope) {
 				if (checkType(castExpression.resolvedType))
 					return false;
 				return super.visit(castExpression, blockScope);
 			}
-			public boolean visit(Assignment assignment, Scope blockScope) {
+			public boolean visit(Assignment assignment, BlockScope blockScope) {
 				if (checkType(assignment.resolvedType))
 					return false;
 				return super.visit(assignment, blockScope);
 			}
-			public boolean visit(ArrayReference arrayReference, Scope blockScope) {
+			public boolean visit(ArrayReference arrayReference, BlockScope blockScope) {
 				if (checkType(arrayReference.resolvedType))
 					return false;
 				return super.visit(arrayReference, blockScope);

@@ -148,7 +148,7 @@ Compiler getCompiler(ICompilerRequestor compilerRequestor) {
 	// Initialize the compiler's lookup environment with the already compiled super class
 	IBinaryType binaryType = this.context.getRootCodeSnippetBinary();
 	if (binaryType != null) {
-		compiler.lookupEnvironment.cacheBinaryType(binaryType, null /*no access restriction*/);
+//		compiler.lookupEnvironment.cacheBinaryType(binaryType, null /*no access restriction*/);
 	}
 
 	// and the installed global variable classes
@@ -163,7 +163,7 @@ Compiler getCompiler(ICompilerRequestor compilerRequestor) {
 			} catch (ClassFormatException e) {
 				e.printStackTrace(); // Should never happen since we compiled this type
 			}
-			compiler.lookupEnvironment.cacheBinaryType(binary, null /*no access restriction*/);
+//			compiler.lookupEnvironment.cacheBinaryType(binary, null /*no access restriction*/);
 		}
 	}
 	

@@ -266,13 +266,13 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 	 * Add an additional binary type
 	 */
 	public void accept(IBinaryType binaryType, PackageBinding packageBinding, AccessRestriction accessRestriction) {
-		if (this.options.verbose) {
-			this.out.println(
-				Messages.bind(Messages.compilation_loadBinary, new String(binaryType.getName())));
-//			new Exception("TRACE BINARY").printStackTrace(System.out);
-//		    System.out.println();
-		}
-		lookupEnvironment.createBinaryTypeFrom(binaryType, packageBinding, accessRestriction);
+//		if (this.options.verbose) {
+//			this.out.println(
+//				Messages.bind(Messages.compilation_loadBinary, new String(binaryType.getName())));
+////			new Exception("TRACE BINARY").printStackTrace(System.out);
+////		    System.out.println();
+//		}
+//		lookupEnvironment.createBinaryTypeFrom(binaryType, packageBinding, accessRestriction);
 	}
 
 	/**

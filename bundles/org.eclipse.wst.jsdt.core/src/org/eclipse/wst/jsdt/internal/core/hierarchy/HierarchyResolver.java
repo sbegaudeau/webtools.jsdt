@@ -95,15 +95,15 @@ public HierarchyResolver(LookupEnvironment lookupEnvironment, HierarchyBuilder b
  * @param packageBinding
  */
 public void accept(IBinaryType binaryType, PackageBinding packageBinding, AccessRestriction accessRestriction) {
-	IProgressMonitor progressMonitor = this.builder.hierarchy.progressMonitor;
-	if (progressMonitor != null && progressMonitor.isCanceled())
-		throw new OperationCanceledException();
-	BinaryTypeBinding typeBinding = this.lookupEnvironment.createBinaryTypeFrom(binaryType, packageBinding, accessRestriction);
-	try {
-		this.remember(binaryType, typeBinding);
-	} catch (AbortCompilation e) {
-		// ignore
-	}
+//	IProgressMonitor progressMonitor = this.builder.hierarchy.progressMonitor;
+//	if (progressMonitor != null && progressMonitor.isCanceled())
+//		throw new OperationCanceledException();
+//	BinaryTypeBinding typeBinding = this.lookupEnvironment.createBinaryTypeFrom(binaryType, packageBinding, accessRestriction);
+//	try {
+//		this.remember(binaryType, typeBinding);
+//	} catch (AbortCompilation e) {
+//		// ignore
+//	}
 }
 
 /**

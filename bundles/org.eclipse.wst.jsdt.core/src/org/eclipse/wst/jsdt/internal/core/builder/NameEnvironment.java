@@ -321,21 +321,22 @@ public NameEnvironmentAnswer findBinding(char[] bindingName, char[][] packageNam
 //
 	// NOTE: the output folders are added at the beginning of the binaryLocations
 	NameEnvironmentAnswer suggestedAnswer = null;
-	for (int i = 0, l = binaryLocations.length; i < l; i++) {
-		NameEnvironmentAnswer answer = binaryLocations[i].findClass(binaryFileName, qPackageName, qBinaryFileName);
-		if (answer != null) {
-			if (!answer.ignoreIfBetter()) {
-				if (answer.isBetter(suggestedAnswer))
-					return answer;
-			} else if (answer.isBetter(suggestedAnswer))
-				// remember suggestion and keep looking
-				suggestedAnswer = answer;
-		}
-	}
-	if (suggestedAnswer != null)
-		// no better answer was found
-		return suggestedAnswer;
-	return null;
+	throw new UnimplementedException("fix compile error here");
+//	for (int i = 0, l = binaryLocations.length; i < l; i++) {
+//		NameEnvironmentAnswer answer = binaryLocations[i].findClass(binaryFileName, qPackageName, qBinaryFileName);
+//		if (answer != null) {
+//			if (!answer.ignoreIfBetter()) {
+//				if (answer.isBetter(suggestedAnswer))
+//					return answer;
+//			} else if (answer.isBetter(suggestedAnswer))
+//				// remember suggestion and keep looking
+//				suggestedAnswer = answer;
+//		}
+//	}
+//	if (suggestedAnswer != null)
+//		// no better answer was found
+//		return suggestedAnswer;
+//	return null;
 }
 
 public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName, ITypeRequestor requestor) {

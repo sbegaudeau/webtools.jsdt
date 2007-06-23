@@ -57,7 +57,7 @@ public abstract class Engine implements ITypeRequestor {
 	 * Add an additional binary type
 	 */
 	public void accept(IBinaryType binaryType, PackageBinding packageBinding, AccessRestriction accessRestriction) {
-		lookupEnvironment.createBinaryTypeFrom(binaryType, packageBinding, accessRestriction);
+//		lookupEnvironment.createBinaryTypeFrom(binaryType, packageBinding, accessRestriction);
 	}
 
 	public abstract CompilationUnitDeclaration doParse(ICompilationUnit unit, AccessRestriction accessRestriction) ;

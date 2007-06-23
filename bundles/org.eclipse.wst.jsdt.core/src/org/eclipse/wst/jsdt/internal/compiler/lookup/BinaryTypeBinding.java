@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import org.eclipse.wst.jsdt.core.JavaConventions;
 import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.UnimplementedException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.*;
@@ -385,131 +386,132 @@ private MethodBinding createMethod(ISourceMethod method, long sourceLevel) {
 	AnnotationBinding[][] paramAnnotations = null; 
 	TypeBinding returnType = null;
 
-	final boolean use15specifics = sourceLevel >= ClassFileConstants.JDK1_5;
-	char[] methodSignature = use15specifics ? method.getGenericSignature() : null;
-	if (methodSignature == null) { // no generics
-		char[] methodDescriptor = method.getMethodDescriptor();   // of the form (I[Ljava/jang/String;)V
-		int numOfParams = 0;
-		char nextChar;
-		int index = 0;   // first character is always '(' so skip it
-		while ((nextChar = methodDescriptor[++index]) != ')') {
-			if (nextChar != '[') {
-				numOfParams++;
-				if (nextChar == 'L')
-					while ((nextChar = methodDescriptor[++index]) != ';'){/*empty*/}
-			}
-		}
-
-		// Ignore synthetic argument for member types.
-		int startIndex = (method.isConstructor() && isMemberType() && !isStatic()) ? 1 : 0;
-		int size = numOfParams - startIndex;
-		if (size > 0) {
-			parameters = new TypeBinding[size];
-			if (this.environment.globalOptions.storeAnnotations)
-				paramAnnotations = new AnnotationBinding[size][];
-			index = 1;
-			int end = 0;   // first character is always '(' so skip it
-			for (int i = 0; i < numOfParams; i++) {
-				while ((nextChar = methodDescriptor[++end]) == '['){/*empty*/}
-				if (nextChar == 'L')
-					while ((nextChar = methodDescriptor[++end]) != ';'){/*empty*/}
-
-				if (i >= startIndex) {   // skip the synthetic arg if necessary
-					parameters[i - startIndex] = environment.getTypeFromSignature(methodDescriptor, index, end, false, this);
-					// 'paramAnnotations' line up with 'parameters'
-					// int parameter to method.getParameterAnnotations() include the synthetic arg
-					if (paramAnnotations != null)
-						paramAnnotations[i - startIndex] = createAnnotations(method.getParameterAnnotations(i), this.environment);
-				}
-				index = end + 1;
-			}
-		}
-
-		char[][] exceptionTypes = method.getExceptionTypeNames();
-		if (exceptionTypes != null) {
-			size = exceptionTypes.length;
-			if (size > 0) {
-				exceptions = new ReferenceBinding[size];
-				for (int i = 0; i < size; i++)
-					exceptions[i] = environment.getTypeFromConstantPoolName(exceptionTypes[i], 0, -1, false);
-			}
-		}
-
-		if (!method.isConstructor())
-			returnType = environment.getTypeFromSignature(methodDescriptor, index + 1, -1, false, this);   // index is currently pointing at the ')'
-	} else {
-		methodModifiers |= ExtraCompilerModifiers.AccGenericSignature;
-		// MethodTypeSignature = ParameterPart(optional) '(' TypeSignatures ')' return_typeSignature ['^' TypeSignature (optional)]
-		SignatureWrapper wrapper = new SignatureWrapper(methodSignature);
-		if (wrapper.signature[wrapper.start] == '<') {
-			// <A::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TA;>;)TA;
-			// ParameterPart = '<' ParameterSignature(s) '>'
-			wrapper.start++; // skip '<'
-			typeVars = createTypeVariables(wrapper, false);
-			wrapper.start++; // skip '>'
-		}
-
-		if (wrapper.signature[wrapper.start] == '(') {
-			wrapper.start++; // skip '('
-			if (wrapper.signature[wrapper.start] == ')') {
-				wrapper.start++; // skip ')'
-			} else {
-				java.util.ArrayList types = new java.util.ArrayList(2);
-				while (wrapper.signature[wrapper.start] != ')')
-					types.add(environment.getTypeFromTypeSignature(wrapper, typeVars, this));
-				wrapper.start++; // skip ')'
-				int numParam = types.size();
-				parameters = new TypeBinding[numParam];
-				types.toArray(parameters);
-				if (this.environment.globalOptions.storeAnnotations) {
-					paramAnnotations = new AnnotationBinding[numParam][];
-					for (int i = 0; i < numParam; i++)
-						paramAnnotations[i] = createAnnotations(method.getParameterAnnotations(i), this.environment);
-				}
-			}
-		}
-
-		if (!method.isConstructor())
-			returnType = environment.getTypeFromTypeSignature(wrapper, typeVars, this);
-
-		if (!wrapper.atEnd() && wrapper.signature[wrapper.start] == '^') {
-			// attempt to find each superinterface if it exists in the cache (otherwise - resolve it when requested)
-			java.util.ArrayList types = new java.util.ArrayList(2);
-			do {
-				wrapper.start++; // skip '^'
-				types.add(environment.getTypeFromTypeSignature(wrapper, typeVars, this));
-			} while (!wrapper.atEnd() && wrapper.signature[wrapper.start] == '^');
-			exceptions = new ReferenceBinding[types.size()];
-			types.toArray(exceptions);
-		} else { // get the exceptions the old way
-			char[][] exceptionTypes = method.getExceptionTypeNames();
-			if (exceptionTypes != null) {
-				int size = exceptionTypes.length;
-				if (size > 0) {
-					exceptions = new ReferenceBinding[size];
-					for (int i = 0; i < size; i++)
-						exceptions[i] = environment.getTypeFromConstantPoolName(exceptionTypes[i], 0, -1, false);
-				}
-			}
-		}
-	}
-
-	MethodBinding result = method.isConstructor()
-		? new MethodBinding(methodModifiers, parameters, exceptions, this)
-		: new MethodBinding(methodModifiers, method.getSelector(), returnType, parameters, exceptions, this);
-	if (this.environment.globalOptions.storeAnnotations)
-		result.setAnnotations(
-			createAnnotations(method.getAnnotations(), this.environment),
-			paramAnnotations,
-			isAnnotationType() ? convertMemberValue(method.getDefaultValue(), this.environment) : null);
-
-	if (use15specifics)
-		result.tagBits |= method.getTagBits();
-	result.typeVariables = typeVars;
-	// fixup the declaring element of the type variable
-	for (int i = 0, length = typeVars.length; i < length; i++)
-		typeVars[i].declaringElement = result;
-	return result;
+	throw new UnimplementedException("fix compile errors for this code");
+//	final boolean use15specifics = sourceLevel >= ClassFileConstants.JDK1_5;
+//	char[] methodSignature = use15specifics ? method.getGenericSignature() : null;
+//	if (methodSignature == null) { // no generics
+//		char[] methodDescriptor = method.getMethodDescriptor();   // of the form (I[Ljava/jang/String;)V
+//		int numOfParams = 0;
+//		char nextChar;
+//		int index = 0;   // first character is always '(' so skip it
+//		while ((nextChar = methodDescriptor[++index]) != ')') {
+//			if (nextChar != '[') {
+//				numOfParams++;
+//				if (nextChar == 'L')
+//					while ((nextChar = methodDescriptor[++index]) != ';'){/*empty*/}
+//			}
+//		}
+//
+//		// Ignore synthetic argument for member types.
+//		int startIndex = (method.isConstructor() && isMemberType() && !isStatic()) ? 1 : 0;
+//		int size = numOfParams - startIndex;
+//		if (size > 0) {
+//			parameters = new TypeBinding[size];
+//			if (this.environment.globalOptions.storeAnnotations)
+//				paramAnnotations = new AnnotationBinding[size][];
+//			index = 1;
+//			int end = 0;   // first character is always '(' so skip it
+//			for (int i = 0; i < numOfParams; i++) {
+//				while ((nextChar = methodDescriptor[++end]) == '['){/*empty*/}
+//				if (nextChar == 'L')
+//					while ((nextChar = methodDescriptor[++end]) != ';'){/*empty*/}
+//
+//				if (i >= startIndex) {   // skip the synthetic arg if necessary
+//					parameters[i - startIndex] = environment.getTypeFromSignature(methodDescriptor, index, end, false, this);
+//					// 'paramAnnotations' line up with 'parameters'
+//					// int parameter to method.getParameterAnnotations() include the synthetic arg
+//					if (paramAnnotations != null)
+//						paramAnnotations[i - startIndex] = createAnnotations(method.getParameterAnnotations(i), this.environment);
+//				}
+//				index = end + 1;
+//			}
+//		}
+//
+//		char[][] exceptionTypes = method.getExceptionTypeNames();
+//		if (exceptionTypes != null) {
+//			size = exceptionTypes.length;
+//			if (size > 0) {
+//				exceptions = new ReferenceBinding[size];
+//				for (int i = 0; i < size; i++)
+//					exceptions[i] = environment.getTypeFromConstantPoolName(exceptionTypes[i], 0, -1, false);
+//			}
+//		}
+//
+//		if (!method.isConstructor())
+//			returnType = environment.getTypeFromSignature(methodDescriptor, index + 1, -1, false, this);   // index is currently pointing at the ')'
+//	} else {
+//		methodModifiers |= ExtraCompilerModifiers.AccGenericSignature;
+//		// MethodTypeSignature = ParameterPart(optional) '(' TypeSignatures ')' return_typeSignature ['^' TypeSignature (optional)]
+//		SignatureWrapper wrapper = new SignatureWrapper(methodSignature);
+//		if (wrapper.signature[wrapper.start] == '<') {
+//			// <A::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TA;>;)TA;
+//			// ParameterPart = '<' ParameterSignature(s) '>'
+//			wrapper.start++; // skip '<'
+//			typeVars = createTypeVariables(wrapper, false);
+//			wrapper.start++; // skip '>'
+//		}
+//
+//		if (wrapper.signature[wrapper.start] == '(') {
+//			wrapper.start++; // skip '('
+//			if (wrapper.signature[wrapper.start] == ')') {
+//				wrapper.start++; // skip ')'
+//			} else {
+//				java.util.ArrayList types = new java.util.ArrayList(2);
+//				while (wrapper.signature[wrapper.start] != ')')
+//					types.add(environment.getTypeFromTypeSignature(wrapper, typeVars, this));
+//				wrapper.start++; // skip ')'
+//				int numParam = types.size();
+//				parameters = new TypeBinding[numParam];
+//				types.toArray(parameters);
+//				if (this.environment.globalOptions.storeAnnotations) {
+//					paramAnnotations = new AnnotationBinding[numParam][];
+//					for (int i = 0; i < numParam; i++)
+//						paramAnnotations[i] = createAnnotations(method.getParameterAnnotations(i), this.environment);
+//				}
+//			}
+//		}
+//
+//		if (!method.isConstructor())
+//			returnType = environment.getTypeFromTypeSignature(wrapper, typeVars, this);
+//
+//		if (!wrapper.atEnd() && wrapper.signature[wrapper.start] == '^') {
+//			// attempt to find each superinterface if it exists in the cache (otherwise - resolve it when requested)
+//			java.util.ArrayList types = new java.util.ArrayList(2);
+//			do {
+//				wrapper.start++; // skip '^'
+//				types.add(environment.getTypeFromTypeSignature(wrapper, typeVars, this));
+//			} while (!wrapper.atEnd() && wrapper.signature[wrapper.start] == '^');
+//			exceptions = new ReferenceBinding[types.size()];
+//			types.toArray(exceptions);
+//		} else { // get the exceptions the old way
+//			char[][] exceptionTypes = method.getExceptionTypeNames();
+//			if (exceptionTypes != null) {
+//				int size = exceptionTypes.length;
+//				if (size > 0) {
+//					exceptions = new ReferenceBinding[size];
+//					for (int i = 0; i < size; i++)
+//						exceptions[i] = environment.getTypeFromConstantPoolName(exceptionTypes[i], 0, -1, false);
+//				}
+//			}
+//		}
+//	}
+//
+//	MethodBinding result = method.isConstructor()
+//		? new MethodBinding(methodModifiers, parameters, exceptions, this)
+//		: new MethodBinding(methodModifiers, method.getSelector(), returnType, parameters, exceptions, this);
+//	if (this.environment.globalOptions.storeAnnotations)
+//		result.setAnnotations(
+//			createAnnotations(method.getAnnotations(), this.environment),
+//			paramAnnotations,
+//			isAnnotationType() ? convertMemberValue(method.getDefaultValue(), this.environment) : null);
+//
+//	if (use15specifics)
+//		result.tagBits |= method.getTagBits();
+//	result.typeVariables = typeVars;
+//	// fixup the declaring element of the type variable
+//	for (int i = 0, length = typeVars.length; i < length; i++)
+//		typeVars[i].declaringElement = result;
+//	return result;
 }
 /**
  * Create method bindings for binary type, filtering out <clinit> and synthetics

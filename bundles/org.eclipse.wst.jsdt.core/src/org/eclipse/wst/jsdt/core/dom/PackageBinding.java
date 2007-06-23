@@ -94,26 +94,28 @@ class PackageBinding implements IPackageBinding {
 						}
 						break;
 					case IPackageFragmentRoot.K_BINARY:		
-						NameEnvironmentAnswer answer = 
-							nameEnvironment.findType(TypeConstants.PACKAGE_INFO_NAME, this.binding.compoundName);
-						if (answer != null && answer.isBinaryType()) {
-							IBinaryType type = answer.getBinaryType();
-							IBinaryAnnotation[] binaryAnnotations = type.getAnnotations();
-							org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding[] binaryInstances =
-								BinaryTypeBinding.createAnnotations(binaryAnnotations, this.binding.environment);
-							org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding[] allInstances =
-								org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding.addStandardAnnotations(binaryInstances, type.getTagBits(), this.binding.environment);
-							int total = allInstances.length;
-							IAnnotationBinding[] domInstances = new AnnotationBinding[total];
-							for (int a = 0; a < total; a++) {
-								final IAnnotationBinding annotationInstance = this.resolver.getAnnotationInstance(allInstances[a]);
-								if (annotationInstance == null) {// not resolving binding
-									return AnnotationBinding.NoAnnotations; 
-								}
-								domInstances[a] = annotationInstance;
-							}
-							return domInstances;
-						}
+						
+// unused code						
+//						NameEnvironmentAnswer answer = 
+//							nameEnvironment.findType(TypeConstants.PACKAGE_INFO_NAME, this.binding.compoundName);
+//						if (answer != null && answer.isBinaryType()) {
+//							IBinaryType type = answer.getBinaryType();
+//							IBinaryAnnotation[] binaryAnnotations = type.getAnnotations();
+//							org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding[] binaryInstances =
+//								BinaryTypeBinding.createAnnotations(binaryAnnotations, this.binding.environment);
+//							org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding[] allInstances =
+//								org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding.addStandardAnnotations(binaryInstances, type.getTagBits(), this.binding.environment);
+//							int total = allInstances.length;
+//							IAnnotationBinding[] domInstances = new AnnotationBinding[total];
+//							for (int a = 0; a < total; a++) {
+//								final IAnnotationBinding annotationInstance = this.resolver.getAnnotationInstance(allInstances[a]);
+//								if (annotationInstance == null) {// not resolving binding
+//									return AnnotationBinding.NoAnnotations; 
+//								}
+//								domInstances[a] = annotationInstance;
+//							}
+//							return domInstances;
+//						}
 				}	
 			}		
 		} catch(JavaModelException e) {

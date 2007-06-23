@@ -441,228 +441,228 @@ public class ClassFile
 	 * - deprecated attribute
 	 */
 	public void addAttributes() {
-		// update the method count
-		contents[methodCountOffset++] = (byte) (methodCount >> 8);
-		contents[methodCountOffset] = (byte) methodCount;
-
-		int attributeNumber = 0;
-		// leave two bytes for the number of attributes and store the current offset
-		int attributeOffset = contentsOffset;
-		contentsOffset += 2;
-
-		// source attribute
-		if ((produceAttributes & ClassFileConstants.ATTR_SOURCE) != 0) {
-			String fullFileName =
-				new String(referenceBinding.scope.referenceCompilationUnit().getFileName());
-			fullFileName = fullFileName.replace('\\', '/');
-			int lastIndex = fullFileName.lastIndexOf('/');
-			if (lastIndex != -1) {
-				fullFileName = fullFileName.substring(lastIndex + 1, fullFileName.length());
-			}
-			// check that there is enough space to write all the bytes for the field info corresponding
-			// to the @fieldBinding
-			if (contentsOffset + 8 >= contents.length) {
-				resizeContents(8);
-			}
-			int sourceAttributeNameIndex =
-				constantPool.literalIndex(AttributeNamesConstants.SourceName);
-			contents[contentsOffset++] = (byte) (sourceAttributeNameIndex >> 8);
-			contents[contentsOffset++] = (byte) sourceAttributeNameIndex;
-			// The length of a source file attribute is 2. This is a fixed-length
-			// attribute
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 2;
-			// write the source file name
-			int fileNameIndex = constantPool.literalIndex(fullFileName.toCharArray());
-			contents[contentsOffset++] = (byte) (fileNameIndex >> 8);
-			contents[contentsOffset++] = (byte) fileNameIndex;
-			attributeNumber++;
-		}
-		// Deprecated attribute
-		if (referenceBinding.isDeprecated()) {
-			// check that there is enough space to write all the bytes for the field info corresponding
-			// to the @fieldBinding
-			if (contentsOffset + 6 >= contents.length) {
-				resizeContents(6);
-			}
-			int deprecatedAttributeNameIndex =
-				constantPool.literalIndex(AttributeNamesConstants.DeprecatedName);
-			contents[contentsOffset++] = (byte) (deprecatedAttributeNameIndex >> 8);
-			contents[contentsOffset++] = (byte) deprecatedAttributeNameIndex;
-			// the length of a deprecated attribute is equals to 0
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 0;
-			attributeNumber++;
-		}
-		// add signature attribute
-		char[] genericSignature = referenceBinding.genericSignature();
-		if (genericSignature != null) {
-			// check that there is enough space to write all the bytes for the field info corresponding
-			// to the @fieldBinding
-			if (contentsOffset + 8 >= contents.length) {
-				resizeContents(8);
-			}
-			int signatureAttributeNameIndex =
-				constantPool.literalIndex(AttributeNamesConstants.SignatureName);
-			contents[contentsOffset++] = (byte) (signatureAttributeNameIndex >> 8);
-			contents[contentsOffset++] = (byte) signatureAttributeNameIndex;
-			// the length of a signature attribute is equals to 2
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 2;
-			int signatureIndex =
-				constantPool.literalIndex(genericSignature);
-			contents[contentsOffset++] = (byte) (signatureIndex >> 8);
-			contents[contentsOffset++] = (byte) signatureIndex;
-			attributeNumber++;
-		}
-		if (targetJDK >= ClassFileConstants.JDK1_5
-				&& this.referenceBinding.isNestedType()
-				&& !this.referenceBinding.isMemberType()) {
-			// add enclosing method attribute (1.5 mode only)
-			if (contentsOffset + 10 >= contents.length) {
-				resizeContents(10);
-			}
-			int enclosingMethodAttributeNameIndex =
-				constantPool.literalIndex(AttributeNamesConstants.EnclosingMethodName);
-			contents[contentsOffset++] = (byte) (enclosingMethodAttributeNameIndex >> 8);
-			contents[contentsOffset++] = (byte) enclosingMethodAttributeNameIndex;
-			// the length of a signature attribute is equals to 2
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 4;
-			
-			int enclosingTypeIndex = constantPool.literalIndexForType(this.referenceBinding.enclosingType().constantPoolName());
-			contents[contentsOffset++] = (byte) (enclosingTypeIndex >> 8);
-			contents[contentsOffset++] = (byte) enclosingTypeIndex;
-			byte methodIndexByte1 = 0;
-			byte methodIndexByte2 = 0;
-			if (this.referenceBinding instanceof LocalTypeBinding) {
-				MethodBinding methodBinding = ((LocalTypeBinding) this.referenceBinding).enclosingMethod;
-				if (methodBinding != null) {
-					int enclosingMethodIndex = constantPool.literalIndexForNameAndType(methodBinding.selector, methodBinding.signature(this));
-					methodIndexByte1 = (byte) (enclosingMethodIndex >> 8);
-					methodIndexByte2 = (byte) enclosingMethodIndex;
-				}
-			}
-			contents[contentsOffset++] = methodIndexByte1;
-			contents[contentsOffset++] = methodIndexByte2;
-			attributeNumber++;			
-		}
-		if (this.targetJDK >= ClassFileConstants.JDK1_5 && !this.creatingProblemType) {
-			TypeDeclaration typeDeclaration = referenceBinding.scope.referenceContext;
-			if (typeDeclaration != null) {
-				final Annotation[] annotations = typeDeclaration.annotations;
-				if (annotations != null) {
-					attributeNumber += generateRuntimeAnnotations(annotations);
-				}
-			}
-		}
-		
-		if (this.referenceBinding.isHierarchyInconsistent()) {
-			// add an attribute for inconsistent hierarchy
-			if (contentsOffset + 6 >= contents.length) {
-				resizeContents(6);
-			}
-			int inconsistentHierarchyNameIndex =
-				constantPool.literalIndex(AttributeNamesConstants.InconsistentHierarchy);
-			contents[contentsOffset++] = (byte) (inconsistentHierarchyNameIndex >> 8);
-			contents[contentsOffset++] = (byte) inconsistentHierarchyNameIndex;
-			// the length of an inconsistent hierarchy attribute is equals to 0
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 0;
-			attributeNumber++;
-		}
-		// Inner class attribute
-		int numberOfInnerClasses = this.innerClassesBindings == null ? 0 : this.innerClassesBindings.size();
-		if (numberOfInnerClasses != 0) {
-			ReferenceBinding[] innerClasses = new ReferenceBinding[numberOfInnerClasses];
-			this.innerClassesBindings.toArray(innerClasses);
-			Arrays.sort(innerClasses, new Comparator() {
-				public int compare(Object o1, Object o2) {
-					TypeBinding binding1 = (TypeBinding) o1;
-					TypeBinding binding2 = (TypeBinding) o2;
-					return CharOperation.compareTo(binding1.constantPoolName(), binding2.constantPoolName());
-				}
-			});
-			// Generate the inner class attribute
-			int exSize = 8 * numberOfInnerClasses + 8;
-			if (exSize + contentsOffset >= this.contents.length) {
-				resizeContents(exSize);
-			}
-			// Now we now the size of the attribute and the number of entries
-			// attribute name
-			int attributeNameIndex =
-				constantPool.literalIndex(AttributeNamesConstants.InnerClassName);
-			contents[contentsOffset++] = (byte) (attributeNameIndex >> 8);
-			contents[contentsOffset++] = (byte) attributeNameIndex;
-			int value = (numberOfInnerClasses << 3) + 2;
-			contents[contentsOffset++] = (byte) (value >> 24);
-			contents[contentsOffset++] = (byte) (value >> 16);
-			contents[contentsOffset++] = (byte) (value >> 8);
-			contents[contentsOffset++] = (byte) value;
-			contents[contentsOffset++] = (byte) (numberOfInnerClasses >> 8);
-			contents[contentsOffset++] = (byte) numberOfInnerClasses;
-			for (int i = 0; i < numberOfInnerClasses; i++) {
-				ReferenceBinding innerClass = innerClasses[i];
-				int accessFlags = innerClass.getAccessFlags();
-				int innerClassIndex = constantPool.literalIndexForType(innerClass.constantPoolName());
-				// inner class index
-				contents[contentsOffset++] = (byte) (innerClassIndex >> 8);
-				contents[contentsOffset++] = (byte) innerClassIndex;
-				// outer class index: anonymous and local have no outer class index
-				if (innerClass.isMemberType()) {
-					// member or member of local
-					int outerClassIndex = constantPool.literalIndexForType(innerClass.enclosingType().constantPoolName());
-					contents[contentsOffset++] = (byte) (outerClassIndex >> 8);
-					contents[contentsOffset++] = (byte) outerClassIndex;
-				} else {
-					// equals to 0 if the innerClass is not a member type
-					contents[contentsOffset++] = 0;
-					contents[contentsOffset++] = 0;
-				}
-				// name index
-				if (!innerClass.isAnonymousType()) {
-					int nameIndex = constantPool.literalIndex(innerClass.sourceName());
-					contents[contentsOffset++] = (byte) (nameIndex >> 8);
-					contents[contentsOffset++] = (byte) nameIndex;
-				} else {
-					// equals to 0 if the innerClass is an anonymous type
-					contents[contentsOffset++] = 0;
-					contents[contentsOffset++] = 0;
-				}
-				// access flag
-				if (innerClass.isAnonymousType()) {
-					accessFlags &= ~ClassFileConstants.AccFinal;
-				} else if (innerClass.isMemberType() && innerClass.isInterface()) {
-					accessFlags |= ClassFileConstants.AccStatic; // implicitely static
-				}
-				contents[contentsOffset++] = (byte) (accessFlags >> 8);
-				contents[contentsOffset++] = (byte) accessFlags;
-			}
-			attributeNumber++;
-		}
-		// update the number of attributes
-		if (attributeOffset + 2 >= this.contents.length) {
-			resizeContents(2);
-		}
-		contents[attributeOffset++] = (byte) (attributeNumber >> 8);
-		contents[attributeOffset] = (byte) attributeNumber;
-
-		// resynchronize all offsets of the classfile
-		header = constantPool.poolContent;
-		headerOffset = constantPool.currentOffset;
-		int constantPoolCount = constantPool.currentIndex;
-		header[constantPoolOffset++] = (byte) (constantPoolCount >> 8);
-		header[constantPoolOffset] = (byte) constantPoolCount;
+//		// update the method count
+//		contents[methodCountOffset++] = (byte) (methodCount >> 8);
+//		contents[methodCountOffset] = (byte) methodCount;
+//
+//		int attributeNumber = 0;
+//		// leave two bytes for the number of attributes and store the current offset
+//		int attributeOffset = contentsOffset;
+//		contentsOffset += 2;
+//
+//		// source attribute
+//		if ((produceAttributes & ClassFileConstants.ATTR_SOURCE) != 0) {
+//			String fullFileName =
+//				new String(referenceBinding.scope.referenceCompilationUnit().getFileName());
+//			fullFileName = fullFileName.replace('\\', '/');
+//			int lastIndex = fullFileName.lastIndexOf('/');
+//			if (lastIndex != -1) {
+//				fullFileName = fullFileName.substring(lastIndex + 1, fullFileName.length());
+//			}
+//			// check that there is enough space to write all the bytes for the field info corresponding
+//			// to the @fieldBinding
+//			if (contentsOffset + 8 >= contents.length) {
+//				resizeContents(8);
+//			}
+//			int sourceAttributeNameIndex =
+//				constantPool.literalIndex(AttributeNamesConstants.SourceName);
+//			contents[contentsOffset++] = (byte) (sourceAttributeNameIndex >> 8);
+//			contents[contentsOffset++] = (byte) sourceAttributeNameIndex;
+//			// The length of a source file attribute is 2. This is a fixed-length
+//			// attribute
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 2;
+//			// write the source file name
+//			int fileNameIndex = constantPool.literalIndex(fullFileName.toCharArray());
+//			contents[contentsOffset++] = (byte) (fileNameIndex >> 8);
+//			contents[contentsOffset++] = (byte) fileNameIndex;
+//			attributeNumber++;
+//		}
+//		// Deprecated attribute
+//		if (referenceBinding.isDeprecated()) {
+//			// check that there is enough space to write all the bytes for the field info corresponding
+//			// to the @fieldBinding
+//			if (contentsOffset + 6 >= contents.length) {
+//				resizeContents(6);
+//			}
+//			int deprecatedAttributeNameIndex =
+//				constantPool.literalIndex(AttributeNamesConstants.DeprecatedName);
+//			contents[contentsOffset++] = (byte) (deprecatedAttributeNameIndex >> 8);
+//			contents[contentsOffset++] = (byte) deprecatedAttributeNameIndex;
+//			// the length of a deprecated attribute is equals to 0
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 0;
+//			attributeNumber++;
+//		}
+//		// add signature attribute
+//		char[] genericSignature = referenceBinding.genericSignature();
+//		if (genericSignature != null) {
+//			// check that there is enough space to write all the bytes for the field info corresponding
+//			// to the @fieldBinding
+//			if (contentsOffset + 8 >= contents.length) {
+//				resizeContents(8);
+//			}
+//			int signatureAttributeNameIndex =
+//				constantPool.literalIndex(AttributeNamesConstants.SignatureName);
+//			contents[contentsOffset++] = (byte) (signatureAttributeNameIndex >> 8);
+//			contents[contentsOffset++] = (byte) signatureAttributeNameIndex;
+//			// the length of a signature attribute is equals to 2
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 2;
+//			int signatureIndex =
+//				constantPool.literalIndex(genericSignature);
+//			contents[contentsOffset++] = (byte) (signatureIndex >> 8);
+//			contents[contentsOffset++] = (byte) signatureIndex;
+//			attributeNumber++;
+//		}
+//		if (targetJDK >= ClassFileConstants.JDK1_5
+//				&& this.referenceBinding.isNestedType()
+//				&& !this.referenceBinding.isMemberType()) {
+//			// add enclosing method attribute (1.5 mode only)
+//			if (contentsOffset + 10 >= contents.length) {
+//				resizeContents(10);
+//			}
+//			int enclosingMethodAttributeNameIndex =
+//				constantPool.literalIndex(AttributeNamesConstants.EnclosingMethodName);
+//			contents[contentsOffset++] = (byte) (enclosingMethodAttributeNameIndex >> 8);
+//			contents[contentsOffset++] = (byte) enclosingMethodAttributeNameIndex;
+//			// the length of a signature attribute is equals to 2
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 4;
+//			
+//			int enclosingTypeIndex = constantPool.literalIndexForType(this.referenceBinding.enclosingType().constantPoolName());
+//			contents[contentsOffset++] = (byte) (enclosingTypeIndex >> 8);
+//			contents[contentsOffset++] = (byte) enclosingTypeIndex;
+//			byte methodIndexByte1 = 0;
+//			byte methodIndexByte2 = 0;
+//			if (this.referenceBinding instanceof LocalTypeBinding) {
+//				MethodBinding methodBinding = ((LocalTypeBinding) this.referenceBinding).enclosingMethod;
+//				if (methodBinding != null) {
+//					int enclosingMethodIndex = constantPool.literalIndexForNameAndType(methodBinding.selector, methodBinding.signature(this));
+//					methodIndexByte1 = (byte) (enclosingMethodIndex >> 8);
+//					methodIndexByte2 = (byte) enclosingMethodIndex;
+//				}
+//			}
+//			contents[contentsOffset++] = methodIndexByte1;
+//			contents[contentsOffset++] = methodIndexByte2;
+//			attributeNumber++;			
+//		}
+//		if (this.targetJDK >= ClassFileConstants.JDK1_5 && !this.creatingProblemType) {
+//			TypeDeclaration typeDeclaration = referenceBinding.scope.referenceContext;
+//			if (typeDeclaration != null) {
+//				final Annotation[] annotations = typeDeclaration.annotations;
+//				if (annotations != null) {
+//					attributeNumber += generateRuntimeAnnotations(annotations);
+//				}
+//			}
+//		}
+//		
+//		if (this.referenceBinding.isHierarchyInconsistent()) {
+//			// add an attribute for inconsistent hierarchy
+//			if (contentsOffset + 6 >= contents.length) {
+//				resizeContents(6);
+//			}
+//			int inconsistentHierarchyNameIndex =
+//				constantPool.literalIndex(AttributeNamesConstants.InconsistentHierarchy);
+//			contents[contentsOffset++] = (byte) (inconsistentHierarchyNameIndex >> 8);
+//			contents[contentsOffset++] = (byte) inconsistentHierarchyNameIndex;
+//			// the length of an inconsistent hierarchy attribute is equals to 0
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 0;
+//			attributeNumber++;
+//		}
+//		// Inner class attribute
+//		int numberOfInnerClasses = this.innerClassesBindings == null ? 0 : this.innerClassesBindings.size();
+//		if (numberOfInnerClasses != 0) {
+//			ReferenceBinding[] innerClasses = new ReferenceBinding[numberOfInnerClasses];
+//			this.innerClassesBindings.toArray(innerClasses);
+//			Arrays.sort(innerClasses, new Comparator() {
+//				public int compare(Object o1, Object o2) {
+//					TypeBinding binding1 = (TypeBinding) o1;
+//					TypeBinding binding2 = (TypeBinding) o2;
+//					return CharOperation.compareTo(binding1.constantPoolName(), binding2.constantPoolName());
+//				}
+//			});
+//			// Generate the inner class attribute
+//			int exSize = 8 * numberOfInnerClasses + 8;
+//			if (exSize + contentsOffset >= this.contents.length) {
+//				resizeContents(exSize);
+//			}
+//			// Now we now the size of the attribute and the number of entries
+//			// attribute name
+//			int attributeNameIndex =
+//				constantPool.literalIndex(AttributeNamesConstants.InnerClassName);
+//			contents[contentsOffset++] = (byte) (attributeNameIndex >> 8);
+//			contents[contentsOffset++] = (byte) attributeNameIndex;
+//			int value = (numberOfInnerClasses << 3) + 2;
+//			contents[contentsOffset++] = (byte) (value >> 24);
+//			contents[contentsOffset++] = (byte) (value >> 16);
+//			contents[contentsOffset++] = (byte) (value >> 8);
+//			contents[contentsOffset++] = (byte) value;
+//			contents[contentsOffset++] = (byte) (numberOfInnerClasses >> 8);
+//			contents[contentsOffset++] = (byte) numberOfInnerClasses;
+//			for (int i = 0; i < numberOfInnerClasses; i++) {
+//				ReferenceBinding innerClass = innerClasses[i];
+//				int accessFlags = innerClass.getAccessFlags();
+//				int innerClassIndex = constantPool.literalIndexForType(innerClass.constantPoolName());
+//				// inner class index
+//				contents[contentsOffset++] = (byte) (innerClassIndex >> 8);
+//				contents[contentsOffset++] = (byte) innerClassIndex;
+//				// outer class index: anonymous and local have no outer class index
+//				if (innerClass.isMemberType()) {
+//					// member or member of local
+//					int outerClassIndex = constantPool.literalIndexForType(innerClass.enclosingType().constantPoolName());
+//					contents[contentsOffset++] = (byte) (outerClassIndex >> 8);
+//					contents[contentsOffset++] = (byte) outerClassIndex;
+//				} else {
+//					// equals to 0 if the innerClass is not a member type
+//					contents[contentsOffset++] = 0;
+//					contents[contentsOffset++] = 0;
+//				}
+//				// name index
+//				if (!innerClass.isAnonymousType()) {
+//					int nameIndex = constantPool.literalIndex(innerClass.sourceName());
+//					contents[contentsOffset++] = (byte) (nameIndex >> 8);
+//					contents[contentsOffset++] = (byte) nameIndex;
+//				} else {
+//					// equals to 0 if the innerClass is an anonymous type
+//					contents[contentsOffset++] = 0;
+//					contents[contentsOffset++] = 0;
+//				}
+//				// access flag
+//				if (innerClass.isAnonymousType()) {
+//					accessFlags &= ~ClassFileConstants.AccFinal;
+//				} else if (innerClass.isMemberType() && innerClass.isInterface()) {
+//					accessFlags |= ClassFileConstants.AccStatic; // implicitely static
+//				}
+//				contents[contentsOffset++] = (byte) (accessFlags >> 8);
+//				contents[contentsOffset++] = (byte) accessFlags;
+//			}
+//			attributeNumber++;
+//		}
+//		// update the number of attributes
+//		if (attributeOffset + 2 >= this.contents.length) {
+//			resizeContents(2);
+//		}
+//		contents[attributeOffset++] = (byte) (attributeNumber >> 8);
+//		contents[attributeOffset] = (byte) attributeNumber;
+//
+//		// resynchronize all offsets of the classfile
+//		header = constantPool.poolContent;
+//		headerOffset = constantPool.currentOffset;
+//		int constantPoolCount = constantPool.currentIndex;
+//		header[constantPoolOffset++] = (byte) (constantPoolCount >> 8);
+//		header[constantPoolOffset] = (byte) constantPoolCount;
 	}
 
 	/**
@@ -682,149 +682,150 @@ public class ClassFile
 	}
 	
 	private int addFieldAttributes(FieldBinding fieldBinding, int fieldAttributeOffset) {
-		int attributesNumber = 0;
-		// 4.7.2 only static constant fields get a ConstantAttribute
-		// Generate the constantValueAttribute
-		Constant fieldConstant = fieldBinding.constant();
-		if (fieldConstant != Constant.NotAConstant){
-			if (contentsOffset + 8 >= contents.length) {
-				resizeContents(8);
-			}
-			// Now we generate the constant attribute corresponding to the fieldBinding
-			int constantValueNameIndex =
-				constantPool.literalIndex(AttributeNamesConstants.ConstantValueName);
-			contents[contentsOffset++] = (byte) (constantValueNameIndex >> 8);
-			contents[contentsOffset++] = (byte) constantValueNameIndex;
-			// The attribute length = 2 in case of a constantValue attribute
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 2;
-			attributesNumber++;
-			// Need to add the constant_value_index
-			switch (fieldConstant.typeID()) {
-				case T_boolean :
-					int booleanValueIndex =
-						constantPool.literalIndex(fieldConstant.booleanValue() ? 1 : 0);
-					contents[contentsOffset++] = (byte) (booleanValueIndex >> 8);
-					contents[contentsOffset++] = (byte) booleanValueIndex;
-					break;
-				case T_byte :
-				case T_char :
-				case T_int :
-				case T_short :
-					int integerValueIndex =
-						constantPool.literalIndex(fieldConstant.intValue());
-					contents[contentsOffset++] = (byte) (integerValueIndex >> 8);
-					contents[contentsOffset++] = (byte) integerValueIndex;
-					break;
-				case T_float :
-					int floatValueIndex =
-						constantPool.literalIndex(fieldConstant.floatValue());
-					contents[contentsOffset++] = (byte) (floatValueIndex >> 8);
-					contents[contentsOffset++] = (byte) floatValueIndex;
-					break;
-				case T_double :
-					int doubleValueIndex =
-						constantPool.literalIndex(fieldConstant.doubleValue());
-					contents[contentsOffset++] = (byte) (doubleValueIndex >> 8);
-					contents[contentsOffset++] = (byte) doubleValueIndex;
-					break;
-				case T_long :
-					int longValueIndex =
-						constantPool.literalIndex(fieldConstant.longValue());
-					contents[contentsOffset++] = (byte) (longValueIndex >> 8);
-					contents[contentsOffset++] = (byte) longValueIndex;
-					break;
-				case T_JavaLangString :
-					int stringValueIndex =
-						constantPool.literalIndex(
-							((StringConstant) fieldConstant).stringValue());
-					if (stringValueIndex == -1) {
-						if (!creatingProblemType) {
-							// report an error and abort: will lead to a problem type classfile creation
-							TypeDeclaration typeDeclaration = referenceBinding.scope.referenceContext;
-							FieldDeclaration[] fieldDecls = typeDeclaration.fields;
-							for (int i = 0, max = fieldDecls.length; i < max; i++) {
-								if (fieldDecls[i].binding == fieldBinding) {
-									// problem should abort
-									typeDeclaration.scope.problemReporter().stringConstantIsExceedingUtf8Limit(
-										fieldDecls[i]);
-								}
-							}
-						} else {
-							// already inside a problem type creation : no constant for this field
-							contentsOffset = fieldAttributeOffset;
-						}
-					} else {
-						contents[contentsOffset++] = (byte) (stringValueIndex >> 8);
-						contents[contentsOffset++] = (byte) stringValueIndex;
-					}
-			}
-		}
-		if (this.targetJDK < ClassFileConstants.JDK1_5 && fieldBinding.isSynthetic()) {
-			if (contentsOffset + 6 >= contents.length) {
-				resizeContents(6);
-			}
-			int syntheticAttributeNameIndex =
-				constantPool.literalIndex(AttributeNamesConstants.SyntheticName);
-			contents[contentsOffset++] = (byte) (syntheticAttributeNameIndex >> 8);
-			contents[contentsOffset++] = (byte) syntheticAttributeNameIndex;
-			// the length of a synthetic attribute is equals to 0
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 0;
-			attributesNumber++;
-		}
-		if (fieldBinding.isDeprecated()) {
-			if (contentsOffset + 6 >= contents.length) {
-				resizeContents(6);
-			}
-			int deprecatedAttributeNameIndex =
-				constantPool.literalIndex(AttributeNamesConstants.DeprecatedName);
-			contents[contentsOffset++] = (byte) (deprecatedAttributeNameIndex >> 8);
-			contents[contentsOffset++] = (byte) deprecatedAttributeNameIndex;
-			// the length of a deprecated attribute is equals to 0
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 0;
-			attributesNumber++;
-		}
-		// add signature attribute
-		char[] genericSignature = fieldBinding.genericSignature();
-		if (genericSignature != null) {
-			// check that there is enough space to write all the bytes for the field info corresponding
-			// to the @fieldBinding
-			if (contentsOffset + 8 >= contents.length) {
-				resizeContents(8);
-			}
-			int signatureAttributeNameIndex =
-				constantPool.literalIndex(AttributeNamesConstants.SignatureName);
-			contents[contentsOffset++] = (byte) (signatureAttributeNameIndex >> 8);
-			contents[contentsOffset++] = (byte) signatureAttributeNameIndex;
-			// the length of a signature attribute is equals to 2
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 0;
-			contents[contentsOffset++] = 2;
-			int signatureIndex =
-				constantPool.literalIndex(genericSignature);
-			contents[contentsOffset++] = (byte) (signatureIndex >> 8);
-			contents[contentsOffset++] = (byte) signatureIndex;
-			attributesNumber++;
-		}
-		if (this.targetJDK >= ClassFileConstants.JDK1_5 && !this.creatingProblemType) {
-			FieldDeclaration fieldDeclaration = fieldBinding.sourceField();
-			if (fieldDeclaration != null) {
-				Annotation[] annotations = fieldDeclaration.annotations;
-				if (annotations != null) {
-					attributesNumber += generateRuntimeAnnotations(annotations);
-				}
-			}
-		}
-		return attributesNumber;
+		return 0;
+//		int attributesNumber = 0;
+//		// 4.7.2 only static constant fields get a ConstantAttribute
+//		// Generate the constantValueAttribute
+//		Constant fieldConstant = fieldBinding.constant();
+//		if (fieldConstant != Constant.NotAConstant){
+//			if (contentsOffset + 8 >= contents.length) {
+//				resizeContents(8);
+//			}
+//			// Now we generate the constant attribute corresponding to the fieldBinding
+//			int constantValueNameIndex =
+//				constantPool.literalIndex(AttributeNamesConstants.ConstantValueName);
+//			contents[contentsOffset++] = (byte) (constantValueNameIndex >> 8);
+//			contents[contentsOffset++] = (byte) constantValueNameIndex;
+//			// The attribute length = 2 in case of a constantValue attribute
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 2;
+//			attributesNumber++;
+//			// Need to add the constant_value_index
+//			switch (fieldConstant.typeID()) {
+//				case T_boolean :
+//					int booleanValueIndex =
+//						constantPool.literalIndex(fieldConstant.booleanValue() ? 1 : 0);
+//					contents[contentsOffset++] = (byte) (booleanValueIndex >> 8);
+//					contents[contentsOffset++] = (byte) booleanValueIndex;
+//					break;
+//				case T_byte :
+//				case T_char :
+//				case T_int :
+//				case T_short :
+//					int integerValueIndex =
+//						constantPool.literalIndex(fieldConstant.intValue());
+//					contents[contentsOffset++] = (byte) (integerValueIndex >> 8);
+//					contents[contentsOffset++] = (byte) integerValueIndex;
+//					break;
+//				case T_float :
+//					int floatValueIndex =
+//						constantPool.literalIndex(fieldConstant.floatValue());
+//					contents[contentsOffset++] = (byte) (floatValueIndex >> 8);
+//					contents[contentsOffset++] = (byte) floatValueIndex;
+//					break;
+//				case T_double :
+//					int doubleValueIndex =
+//						constantPool.literalIndex(fieldConstant.doubleValue());
+//					contents[contentsOffset++] = (byte) (doubleValueIndex >> 8);
+//					contents[contentsOffset++] = (byte) doubleValueIndex;
+//					break;
+//				case T_long :
+//					int longValueIndex =
+//						constantPool.literalIndex(fieldConstant.longValue());
+//					contents[contentsOffset++] = (byte) (longValueIndex >> 8);
+//					contents[contentsOffset++] = (byte) longValueIndex;
+//					break;
+//				case T_JavaLangString :
+//					int stringValueIndex =
+//						constantPool.literalIndex(
+//							((StringConstant) fieldConstant).stringValue());
+//					if (stringValueIndex == -1) {
+//						if (!creatingProblemType) {
+//							// report an error and abort: will lead to a problem type classfile creation
+//							TypeDeclaration typeDeclaration = referenceBinding.scope.referenceContext;
+//							FieldDeclaration[] fieldDecls = typeDeclaration.fields;
+//							for (int i = 0, max = fieldDecls.length; i < max; i++) {
+//								if (fieldDecls[i].binding == fieldBinding) {
+//									// problem should abort
+//									typeDeclaration.scope.problemReporter().stringConstantIsExceedingUtf8Limit(
+//										fieldDecls[i]);
+//								}
+//							}
+//						} else {
+//							// already inside a problem type creation : no constant for this field
+//							contentsOffset = fieldAttributeOffset;
+//						}
+//					} else {
+//						contents[contentsOffset++] = (byte) (stringValueIndex >> 8);
+//						contents[contentsOffset++] = (byte) stringValueIndex;
+//					}
+//			}
+//		}
+//		if (this.targetJDK < ClassFileConstants.JDK1_5 && fieldBinding.isSynthetic()) {
+//			if (contentsOffset + 6 >= contents.length) {
+//				resizeContents(6);
+//			}
+//			int syntheticAttributeNameIndex =
+//				constantPool.literalIndex(AttributeNamesConstants.SyntheticName);
+//			contents[contentsOffset++] = (byte) (syntheticAttributeNameIndex >> 8);
+//			contents[contentsOffset++] = (byte) syntheticAttributeNameIndex;
+//			// the length of a synthetic attribute is equals to 0
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 0;
+//			attributesNumber++;
+//		}
+//		if (fieldBinding.isDeprecated()) {
+//			if (contentsOffset + 6 >= contents.length) {
+//				resizeContents(6);
+//			}
+//			int deprecatedAttributeNameIndex =
+//				constantPool.literalIndex(AttributeNamesConstants.DeprecatedName);
+//			contents[contentsOffset++] = (byte) (deprecatedAttributeNameIndex >> 8);
+//			contents[contentsOffset++] = (byte) deprecatedAttributeNameIndex;
+//			// the length of a deprecated attribute is equals to 0
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 0;
+//			attributesNumber++;
+//		}
+//		// add signature attribute
+//		char[] genericSignature = fieldBinding.genericSignature();
+//		if (genericSignature != null) {
+//			// check that there is enough space to write all the bytes for the field info corresponding
+//			// to the @fieldBinding
+//			if (contentsOffset + 8 >= contents.length) {
+//				resizeContents(8);
+//			}
+//			int signatureAttributeNameIndex =
+//				constantPool.literalIndex(AttributeNamesConstants.SignatureName);
+//			contents[contentsOffset++] = (byte) (signatureAttributeNameIndex >> 8);
+//			contents[contentsOffset++] = (byte) signatureAttributeNameIndex;
+//			// the length of a signature attribute is equals to 2
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 0;
+//			contents[contentsOffset++] = 2;
+//			int signatureIndex =
+//				constantPool.literalIndex(genericSignature);
+//			contents[contentsOffset++] = (byte) (signatureIndex >> 8);
+//			contents[contentsOffset++] = (byte) signatureIndex;
+//			attributesNumber++;
+//		}
+//		if (this.targetJDK >= ClassFileConstants.JDK1_5 && !this.creatingProblemType) {
+//			FieldDeclaration fieldDeclaration = fieldBinding.sourceField();
+//			if (fieldDeclaration != null) {
+//				Annotation[] annotations = fieldDeclaration.annotations;
+//				if (annotations != null) {
+//					attributesNumber += generateRuntimeAnnotations(annotations);
+//				}
+//			}
+//		}
+//		return attributesNumber;
 	}
 
 	/**
@@ -881,32 +882,32 @@ public class ClassFile
 	 * - a field info for each synthetic field (e.g. this$0)
 	 */
 	public void addFieldInfos() {
-		SourceTypeBinding currentBinding = referenceBinding;
-		FieldBinding[] syntheticFields = currentBinding.syntheticFields();
-		int fieldCount =
-			currentBinding.fieldCount()
-				+ (syntheticFields == null ? 0 : syntheticFields.length);
-
-		// write the number of fields
-		if (fieldCount > 0xFFFF) {
-			referenceBinding.scope.problemReporter().tooManyFields(referenceBinding.scope.referenceType());
-		}
-		contents[contentsOffset++] = (byte) (fieldCount >> 8);
-		contents[contentsOffset++] = (byte) fieldCount;
-
-		FieldDeclaration[] fieldDecls = currentBinding.scope.referenceContext.fields;
-		for (int i = 0, max = fieldDecls == null ? 0 : fieldDecls.length; i < max; i++) {
-			FieldDeclaration fieldDecl = fieldDecls[i];
-			if (fieldDecl.binding != null) {
-				addFieldInfo(fieldDecl.binding);
-			}
-		}
-
-		if (syntheticFields != null) {
-			for (int i = 0, max = syntheticFields.length; i < max; i++) {
-				addFieldInfo(syntheticFields[i]);
-			}
-		}
+//		SourceTypeBinding currentBinding = referenceBinding;
+//		FieldBinding[] syntheticFields = currentBinding.syntheticFields();
+//		int fieldCount =
+//			currentBinding.fieldCount()
+//				+ (syntheticFields == null ? 0 : syntheticFields.length);
+//
+//		// write the number of fields
+//		if (fieldCount > 0xFFFF) {
+//			referenceBinding.scope.problemReporter().tooManyFields(referenceBinding.scope.referenceType());
+//		}
+//		contents[contentsOffset++] = (byte) (fieldCount >> 8);
+//		contents[contentsOffset++] = (byte) fieldCount;
+//
+//		FieldDeclaration[] fieldDecls = currentBinding.scope.referenceContext.fields;
+//		for (int i = 0, max = fieldDecls == null ? 0 : fieldDecls.length; i < max; i++) {
+//			FieldDeclaration fieldDecl = fieldDecls[i];
+//			if (fieldDecl.binding != null) {
+//				addFieldInfo(fieldDecl.binding);
+//			}
+//		}
+//
+//		if (syntheticFields != null) {
+//			for (int i = 0, max = syntheticFields.length; i < max; i++) {
+//				addFieldInfo(syntheticFields[i]);
+//			}
+//		}
 	}
 	private void addMissingAbstractProblemMethod(MethodDeclaration methodDeclaration, MethodBinding methodBinding, CategorizedProblem problem, CompilationResult compilationResult) {
 		// always clear the strictfp/native/abstract bit for a problem method
@@ -1176,59 +1177,59 @@ public class ClassFile
 	 * - default abstract methods
 	 */
 	public void addSpecialMethods() {
-	    
-		// add all methods (default abstract methods and synthetic)
-
-		// default abstract methods
-		generateMissingAbstractMethods(referenceBinding.scope.referenceType().missingAbstractMethods, referenceBinding.scope.referenceCompilationUnit().compilationResult);
-
-		MethodBinding[] defaultAbstractMethods = this.referenceBinding.getDefaultAbstractMethods();
-		for (int i = 0, max = defaultAbstractMethods.length; i < max; i++) {
-			generateMethodInfoHeader(defaultAbstractMethods[i]);
-			int methodAttributeOffset = contentsOffset;
-			int attributeNumber = generateMethodInfoAttribute(defaultAbstractMethods[i]);
-			completeMethodInfo(methodAttributeOffset, attributeNumber);
-		}
-		// add synthetic methods infos
-		SyntheticMethodBinding[] syntheticMethods = this.referenceBinding.syntheticMethods();
-		if (syntheticMethods != null) {
-			for (int i = 0, max = syntheticMethods.length; i < max; i++) {
-				SyntheticMethodBinding syntheticMethod = syntheticMethods[i];
-				switch (syntheticMethod.kind) {
-					case SyntheticMethodBinding.FieldReadAccess :
-						// generate a method info to emulate an reading access to
-						// a non-accessible field
-						addSyntheticFieldReadAccessMethod(syntheticMethod);
-						break;
-					case SyntheticMethodBinding.FieldWriteAccess :
-						// generate a method info to emulate an writing access to
-						// a non-accessible field
-						addSyntheticFieldWriteAccessMethod(syntheticMethod);
-						break;
-					case SyntheticMethodBinding.MethodAccess :
-					case SyntheticMethodBinding.SuperMethodAccess :
-					case SyntheticMethodBinding.BridgeMethod :
-						// generate a method info to emulate an access to a non-accessible method / super-method or bridge method
-						addSyntheticMethodAccessMethod(syntheticMethod);
-						break;
-					case SyntheticMethodBinding.ConstructorAccess :
-						// generate a method info to emulate an access to a non-accessible constructor
-						addSyntheticConstructorAccessMethod(syntheticMethod);
-						break;
-					case SyntheticMethodBinding.EnumValues :
-						// generate a method info to define <enum>#values()
-						addSyntheticEnumValuesMethod(syntheticMethod);
-						break;
-					case SyntheticMethodBinding.EnumValueOf :
-						// generate a method info to define <enum>#valueOf(String)
-						addSyntheticEnumValueOfMethod(syntheticMethod);
-						break;
-					case SyntheticMethodBinding.SwitchTable :
-						// generate a method info to define the switch table synthetic method
-						addSyntheticSwitchTable(syntheticMethod);
-				}
-			}
-		}
+//	    
+//		// add all methods (default abstract methods and synthetic)
+//
+//		// default abstract methods
+//		generateMissingAbstractMethods(referenceBinding.scope.referenceType().missingAbstractMethods, referenceBinding.scope.referenceCompilationUnit().compilationResult);
+//
+//		MethodBinding[] defaultAbstractMethods = this.referenceBinding.getDefaultAbstractMethods();
+//		for (int i = 0, max = defaultAbstractMethods.length; i < max; i++) {
+//			generateMethodInfoHeader(defaultAbstractMethods[i]);
+//			int methodAttributeOffset = contentsOffset;
+//			int attributeNumber = generateMethodInfoAttribute(defaultAbstractMethods[i]);
+//			completeMethodInfo(methodAttributeOffset, attributeNumber);
+//		}
+//		// add synthetic methods infos
+//		SyntheticMethodBinding[] syntheticMethods = this.referenceBinding.syntheticMethods();
+//		if (syntheticMethods != null) {
+//			for (int i = 0, max = syntheticMethods.length; i < max; i++) {
+//				SyntheticMethodBinding syntheticMethod = syntheticMethods[i];
+//				switch (syntheticMethod.kind) {
+//					case SyntheticMethodBinding.FieldReadAccess :
+//						// generate a method info to emulate an reading access to
+//						// a non-accessible field
+//						addSyntheticFieldReadAccessMethod(syntheticMethod);
+//						break;
+//					case SyntheticMethodBinding.FieldWriteAccess :
+//						// generate a method info to emulate an writing access to
+//						// a non-accessible field
+//						addSyntheticFieldWriteAccessMethod(syntheticMethod);
+//						break;
+//					case SyntheticMethodBinding.MethodAccess :
+//					case SyntheticMethodBinding.SuperMethodAccess :
+//					case SyntheticMethodBinding.BridgeMethod :
+//						// generate a method info to emulate an access to a non-accessible method / super-method or bridge method
+//						addSyntheticMethodAccessMethod(syntheticMethod);
+//						break;
+//					case SyntheticMethodBinding.ConstructorAccess :
+//						// generate a method info to emulate an access to a non-accessible constructor
+//						addSyntheticConstructorAccessMethod(syntheticMethod);
+//						break;
+//					case SyntheticMethodBinding.EnumValues :
+//						// generate a method info to define <enum>#values()
+//						addSyntheticEnumValuesMethod(syntheticMethod);
+//						break;
+//					case SyntheticMethodBinding.EnumValueOf :
+//						// generate a method info to define <enum>#valueOf(String)
+//						addSyntheticEnumValueOfMethod(syntheticMethod);
+//						break;
+//					case SyntheticMethodBinding.SwitchTable :
+//						// generate a method info to define the switch table synthetic method
+//						addSyntheticSwitchTable(syntheticMethod);
+//				}
+//			}
+//		}
 	}
 
 	/**
@@ -5089,84 +5090,84 @@ public class ClassFile
 	 * @param attributeOffset
 	 */
 	private void generateElementValue(int attributeOffset, Expression defaultValue, Constant constant, TypeBinding binding) {
-		if (contentsOffset + 3 >= this.contents.length) {
-			resizeContents(3);
-		}
-		switch (binding.id) {
-			case T_boolean :
-				contents[contentsOffset++] = (byte) 'Z';
-				int booleanValueIndex =
-					constantPool.literalIndex(constant.booleanValue() ? 1 : 0);
-				contents[contentsOffset++] = (byte) (booleanValueIndex >> 8);
-				contents[contentsOffset++] = (byte) booleanValueIndex;
-				break;
-			case T_byte :
-				contents[contentsOffset++] = (byte) 'B';
-				int integerValueIndex =
-					constantPool.literalIndex(constant.intValue());
-				contents[contentsOffset++] = (byte) (integerValueIndex >> 8);
-				contents[contentsOffset++] = (byte) integerValueIndex;
-				break;
-			case T_char :
-				contents[contentsOffset++] = (byte) 'C';
-				integerValueIndex =
-					constantPool.literalIndex(constant.intValue());
-				contents[contentsOffset++] = (byte) (integerValueIndex >> 8);
-				contents[contentsOffset++] = (byte) integerValueIndex;
-				break;
-			case T_int :
-				contents[contentsOffset++] = (byte) 'I';
-				integerValueIndex =
-					constantPool.literalIndex(constant.intValue());
-				contents[contentsOffset++] = (byte) (integerValueIndex >> 8);
-				contents[contentsOffset++] = (byte) integerValueIndex;
-				break;
-			case T_short :
-				contents[contentsOffset++] = (byte) 'S';
-				integerValueIndex =
-					constantPool.literalIndex(constant.intValue());
-				contents[contentsOffset++] = (byte) (integerValueIndex >> 8);
-				contents[contentsOffset++] = (byte) integerValueIndex;
-				break;
-			case T_float :
-				contents[contentsOffset++] = (byte) 'F';
-				int floatValueIndex =
-					constantPool.literalIndex(constant.floatValue());
-				contents[contentsOffset++] = (byte) (floatValueIndex >> 8);
-				contents[contentsOffset++] = (byte) floatValueIndex;
-				break;
-			case T_double :
-				contents[contentsOffset++] = (byte) 'D';
-				int doubleValueIndex =
-					constantPool.literalIndex(constant.doubleValue());
-				contents[contentsOffset++] = (byte) (doubleValueIndex >> 8);
-				contents[contentsOffset++] = (byte) doubleValueIndex;
-				break;
-			case T_long :
-				contents[contentsOffset++] = (byte) 'J';
-				int longValueIndex =
-					constantPool.literalIndex(constant.longValue());
-				contents[contentsOffset++] = (byte) (longValueIndex >> 8);
-				contents[contentsOffset++] = (byte) longValueIndex;
-				break;
-			case T_JavaLangString :
-				contents[contentsOffset++] = (byte) 's';
-				int stringValueIndex =
-					constantPool.literalIndex(((StringConstant) constant).stringValue().toCharArray());
-				if (stringValueIndex == -1) {
-					if (!creatingProblemType) {
-						// report an error and abort: will lead to a problem type classfile creation
-						TypeDeclaration typeDeclaration = referenceBinding.scope.referenceContext;
-						typeDeclaration.scope.problemReporter().stringConstantIsExceedingUtf8Limit(defaultValue);
-					} else {
-						// already inside a problem type creation : no attribute
-						contentsOffset = attributeOffset;
-					}
-				} else {
-					contents[contentsOffset++] = (byte) (stringValueIndex >> 8);
-					contents[contentsOffset++] = (byte) stringValueIndex;
-				}
-		}
+//		if (contentsOffset + 3 >= this.contents.length) {
+//			resizeContents(3);
+//		}
+//		switch (binding.id) {
+//			case T_boolean :
+//				contents[contentsOffset++] = (byte) 'Z';
+//				int booleanValueIndex =
+//					constantPool.literalIndex(constant.booleanValue() ? 1 : 0);
+//				contents[contentsOffset++] = (byte) (booleanValueIndex >> 8);
+//				contents[contentsOffset++] = (byte) booleanValueIndex;
+//				break;
+//			case T_byte :
+//				contents[contentsOffset++] = (byte) 'B';
+//				int integerValueIndex =
+//					constantPool.literalIndex(constant.intValue());
+//				contents[contentsOffset++] = (byte) (integerValueIndex >> 8);
+//				contents[contentsOffset++] = (byte) integerValueIndex;
+//				break;
+//			case T_char :
+//				contents[contentsOffset++] = (byte) 'C';
+//				integerValueIndex =
+//					constantPool.literalIndex(constant.intValue());
+//				contents[contentsOffset++] = (byte) (integerValueIndex >> 8);
+//				contents[contentsOffset++] = (byte) integerValueIndex;
+//				break;
+//			case T_int :
+//				contents[contentsOffset++] = (byte) 'I';
+//				integerValueIndex =
+//					constantPool.literalIndex(constant.intValue());
+//				contents[contentsOffset++] = (byte) (integerValueIndex >> 8);
+//				contents[contentsOffset++] = (byte) integerValueIndex;
+//				break;
+//			case T_short :
+//				contents[contentsOffset++] = (byte) 'S';
+//				integerValueIndex =
+//					constantPool.literalIndex(constant.intValue());
+//				contents[contentsOffset++] = (byte) (integerValueIndex >> 8);
+//				contents[contentsOffset++] = (byte) integerValueIndex;
+//				break;
+//			case T_float :
+//				contents[contentsOffset++] = (byte) 'F';
+//				int floatValueIndex =
+//					constantPool.literalIndex(constant.floatValue());
+//				contents[contentsOffset++] = (byte) (floatValueIndex >> 8);
+//				contents[contentsOffset++] = (byte) floatValueIndex;
+//				break;
+//			case T_double :
+//				contents[contentsOffset++] = (byte) 'D';
+//				int doubleValueIndex =
+//					constantPool.literalIndex(constant.doubleValue());
+//				contents[contentsOffset++] = (byte) (doubleValueIndex >> 8);
+//				contents[contentsOffset++] = (byte) doubleValueIndex;
+//				break;
+//			case T_long :
+//				contents[contentsOffset++] = (byte) 'J';
+//				int longValueIndex =
+//					constantPool.literalIndex(constant.longValue());
+//				contents[contentsOffset++] = (byte) (longValueIndex >> 8);
+//				contents[contentsOffset++] = (byte) longValueIndex;
+//				break;
+//			case T_JavaLangString :
+//				contents[contentsOffset++] = (byte) 's';
+//				int stringValueIndex =
+//					constantPool.literalIndex(((StringConstant) constant).stringValue().toCharArray());
+//				if (stringValueIndex == -1) {
+//					if (!creatingProblemType) {
+//						// report an error and abort: will lead to a problem type classfile creation
+//						TypeDeclaration typeDeclaration = referenceBinding.scope.referenceContext;
+//						typeDeclaration.scope.problemReporter().stringConstantIsExceedingUtf8Limit(defaultValue);
+//					} else {
+//						// already inside a problem type creation : no attribute
+//						contentsOffset = attributeOffset;
+//					}
+//				} else {
+//					contents[contentsOffset++] = (byte) (stringValueIndex >> 8);
+//					contents[contentsOffset++] = (byte) stringValueIndex;
+//				}
+//		}
 	}
 
 	private void generateElementValueForNonConstantExpression(Expression defaultValue, int attributeOffset, TypeBinding defaultValueBinding) {
@@ -5485,29 +5486,29 @@ public class ClassFile
 	 * @param methodDeclarations Array of all missing abstract methods
 	 */
 	public void generateMissingAbstractMethods(MethodDeclaration[] methodDeclarations, CompilationResult compilationResult) {
-		if (methodDeclarations != null) {
-			TypeDeclaration currentDeclaration = this.referenceBinding.scope.referenceContext;
-			int typeDeclarationSourceStart = currentDeclaration.sourceStart();
-			int typeDeclarationSourceEnd = currentDeclaration.sourceEnd();
-			for (int i = 0, max = methodDeclarations.length; i < max; i++) {
-				MethodDeclaration methodDeclaration = methodDeclarations[i];
-				MethodBinding methodBinding = methodDeclaration.binding;
-		 		String readableName = new String(methodBinding.readableName());
-		 		CategorizedProblem[] problems = compilationResult.problems;
-		 		int problemsCount = compilationResult.problemCount;
-				for (int j = 0; j < problemsCount; j++) {
-					CategorizedProblem problem = problems[j];
-					if (problem != null
-    						&& problem.getID() == IProblem.AbstractMethodMustBeImplemented
-    						&& problem.getMessage().indexOf(readableName) != -1
-    						&& problem.getSourceStart() >= typeDeclarationSourceStart
-    						&& problem.getSourceEnd() <= typeDeclarationSourceEnd) {
-						// we found a match
-						addMissingAbstractProblemMethod(methodDeclaration, methodBinding, problem, compilationResult);
-					}
-				}
-			}
-		}
+//		if (methodDeclarations != null) {
+//			TypeDeclaration currentDeclaration = this.referenceBinding.scope.referenceContext;
+//			int typeDeclarationSourceStart = currentDeclaration.sourceStart();
+//			int typeDeclarationSourceEnd = currentDeclaration.sourceEnd();
+//			for (int i = 0, max = methodDeclarations.length; i < max; i++) {
+//				MethodDeclaration methodDeclaration = methodDeclarations[i];
+//				MethodBinding methodBinding = methodDeclaration.binding;
+//		 		String readableName = new String(methodBinding.readableName());
+//		 		CategorizedProblem[] problems = compilationResult.problems;
+//		 		int problemsCount = compilationResult.problemCount;
+//				for (int j = 0; j < problemsCount; j++) {
+//					CategorizedProblem problem = problems[j];
+//					if (problem != null
+//    						&& problem.getID() == IProblem.AbstractMethodMustBeImplemented
+//    						&& problem.getMessage().indexOf(readableName) != -1
+//    						&& problem.getSourceStart() >= typeDeclarationSourceStart
+//    						&& problem.getSourceEnd() <= typeDeclarationSourceEnd) {
+//						// we found a match
+//						addMissingAbstractProblemMethod(methodDeclaration, methodBinding, problem, compilationResult);
+//					}
+//				}
+//			}
+//		}
 	}
 
 	/**
@@ -5775,81 +5776,81 @@ public class ClassFile
 	}
 
 	public void initialize(SourceTypeBinding aType, ClassFile parentClassFile, boolean createProblemType) {
-		// generate the magic numbers inside the header
-		header[headerOffset++] = (byte) (0xCAFEBABEL >> 24);
-		header[headerOffset++] = (byte) (0xCAFEBABEL >> 16);
-		header[headerOffset++] = (byte) (0xCAFEBABEL >> 8);
-		header[headerOffset++] = (byte) (0xCAFEBABEL >> 0);
-		
-		header[headerOffset++] = (byte) (this.targetJDK >> 8); // minor high
-		header[headerOffset++] = (byte) (this.targetJDK >> 0); // minor low
-		header[headerOffset++] = (byte) (this.targetJDK >> 24); // major high
-		header[headerOffset++] = (byte) (this.targetJDK >> 16); // major low
-
-		constantPoolOffset = headerOffset;
-		headerOffset += 2;
-		this.constantPool.initialize(this);
-		
-		// Modifier manipulations for classfile
-		int accessFlags = aType.getAccessFlags();
-		if (aType.isPrivate()) { // rewrite private to non-public
-			accessFlags &= ~ClassFileConstants.AccPublic;
-		}
-		if (aType.isProtected()) { // rewrite protected into public
-			accessFlags |= ClassFileConstants.AccPublic;
-		}
-		// clear all bits that are illegal for a class or an interface
-		accessFlags
-			&= ~(
-				ClassFileConstants.AccStrictfp
-					| ClassFileConstants.AccProtected
-					| ClassFileConstants.AccPrivate
-					| ClassFileConstants.AccStatic
-					| ClassFileConstants.AccSynchronized
-					| ClassFileConstants.AccNative);
-					
-		// set the AccSuper flag (has to be done after clearing AccSynchronized - since same value)
-		if (!aType.isInterface()) { // class or enum
-			accessFlags |= ClassFileConstants.AccSuper;
-		}
-		
-		this.enclosingClassFile = parentClassFile;
-		// innerclasses get their names computed at code gen time
-
-		// now we continue to generate the bytes inside the contents array
-		contents[contentsOffset++] = (byte) (accessFlags >> 8);
-		contents[contentsOffset++] = (byte) accessFlags;
-		int classNameIndex = constantPool.literalIndexForType(aType);
-		contents[contentsOffset++] = (byte) (classNameIndex >> 8);
-		contents[contentsOffset++] = (byte) classNameIndex;
-		int superclassNameIndex;
-		if (aType.isInterface()) {
-			superclassNameIndex = constantPool.literalIndexForType(ConstantPool.JavaLangObjectConstantPoolName);
-		} else {
-			superclassNameIndex =
-				(aType.superclass == null ? 0 : constantPool.literalIndexForType(aType.superclass));
-		}
-		contents[contentsOffset++] = (byte) (superclassNameIndex >> 8);
-		contents[contentsOffset++] = (byte) superclassNameIndex;
-		ReferenceBinding[] superInterfacesBinding = aType.superInterfaces();
-		int interfacesCount = superInterfacesBinding.length;
-		contents[contentsOffset++] = (byte) (interfacesCount >> 8);
-		contents[contentsOffset++] = (byte) interfacesCount;
-		for (int i = 0; i < interfacesCount; i++) {
-			int interfaceIndex = constantPool.literalIndexForType(superInterfacesBinding[i]);
-			contents[contentsOffset++] = (byte) (interfaceIndex >> 8);
-			contents[contentsOffset++] = (byte) interfaceIndex;
-		}
-		this.creatingProblemType = createProblemType;
-
-		// retrieve the enclosing one guaranteed to be the one matching the propagated flow info
-		// 1FF9ZBU: LFCOM:ALL - Local variable attributes busted (Sanity check)
-		if (this.enclosingClassFile == null) {
-			this.codeStream.maxFieldCount = aType.scope.referenceType().maxFieldCount;
-		} else {
-			ClassFile outermostClassFile = this.outerMostEnclosingClassFile();
-			this.codeStream.maxFieldCount = outermostClassFile.codeStream.maxFieldCount;
-		}
+//		// generate the magic numbers inside the header
+//		header[headerOffset++] = (byte) (0xCAFEBABEL >> 24);
+//		header[headerOffset++] = (byte) (0xCAFEBABEL >> 16);
+//		header[headerOffset++] = (byte) (0xCAFEBABEL >> 8);
+//		header[headerOffset++] = (byte) (0xCAFEBABEL >> 0);
+//		
+//		header[headerOffset++] = (byte) (this.targetJDK >> 8); // minor high
+//		header[headerOffset++] = (byte) (this.targetJDK >> 0); // minor low
+//		header[headerOffset++] = (byte) (this.targetJDK >> 24); // major high
+//		header[headerOffset++] = (byte) (this.targetJDK >> 16); // major low
+//
+//		constantPoolOffset = headerOffset;
+//		headerOffset += 2;
+//		this.constantPool.initialize(this);
+//		
+//		// Modifier manipulations for classfile
+//		int accessFlags = aType.getAccessFlags();
+//		if (aType.isPrivate()) { // rewrite private to non-public
+//			accessFlags &= ~ClassFileConstants.AccPublic;
+//		}
+//		if (aType.isProtected()) { // rewrite protected into public
+//			accessFlags |= ClassFileConstants.AccPublic;
+//		}
+//		// clear all bits that are illegal for a class or an interface
+//		accessFlags
+//			&= ~(
+//				ClassFileConstants.AccStrictfp
+//					| ClassFileConstants.AccProtected
+//					| ClassFileConstants.AccPrivate
+//					| ClassFileConstants.AccStatic
+//					| ClassFileConstants.AccSynchronized
+//					| ClassFileConstants.AccNative);
+//					
+//		// set the AccSuper flag (has to be done after clearing AccSynchronized - since same value)
+//		if (!aType.isInterface()) { // class or enum
+//			accessFlags |= ClassFileConstants.AccSuper;
+//		}
+//		
+//		this.enclosingClassFile = parentClassFile;
+//		// innerclasses get their names computed at code gen time
+//
+//		// now we continue to generate the bytes inside the contents array
+//		contents[contentsOffset++] = (byte) (accessFlags >> 8);
+//		contents[contentsOffset++] = (byte) accessFlags;
+//		int classNameIndex = constantPool.literalIndexForType(aType);
+//		contents[contentsOffset++] = (byte) (classNameIndex >> 8);
+//		contents[contentsOffset++] = (byte) classNameIndex;
+//		int superclassNameIndex;
+//		if (aType.isInterface()) {
+//			superclassNameIndex = constantPool.literalIndexForType(ConstantPool.JavaLangObjectConstantPoolName);
+//		} else {
+//			superclassNameIndex =
+//				(aType.superclass == null ? 0 : constantPool.literalIndexForType(aType.superclass));
+//		}
+//		contents[contentsOffset++] = (byte) (superclassNameIndex >> 8);
+//		contents[contentsOffset++] = (byte) superclassNameIndex;
+//		ReferenceBinding[] superInterfacesBinding = aType.superInterfaces();
+//		int interfacesCount = superInterfacesBinding.length;
+//		contents[contentsOffset++] = (byte) (interfacesCount >> 8);
+//		contents[contentsOffset++] = (byte) interfacesCount;
+//		for (int i = 0; i < interfacesCount; i++) {
+//			int interfaceIndex = constantPool.literalIndexForType(superInterfacesBinding[i]);
+//			contents[contentsOffset++] = (byte) (interfaceIndex >> 8);
+//			contents[contentsOffset++] = (byte) interfaceIndex;
+//		}
+//		this.creatingProblemType = createProblemType;
+//
+//		// retrieve the enclosing one guaranteed to be the one matching the propagated flow info
+//		// 1FF9ZBU: LFCOM:ALL - Local variable attributes busted (Sanity check)
+//		if (this.enclosingClassFile == null) {
+//			this.codeStream.maxFieldCount = aType.scope.referenceType().maxFieldCount;
+//		} else {
+//			ClassFile outermostClassFile = this.outerMostEnclosingClassFile();
+//			this.codeStream.maxFieldCount = outermostClassFile.codeStream.maxFieldCount;
+//		}
 	}
 
 	

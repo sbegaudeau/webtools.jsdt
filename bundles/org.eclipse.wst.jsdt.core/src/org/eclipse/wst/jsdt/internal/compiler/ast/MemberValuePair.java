@@ -63,7 +63,7 @@ public class MemberValuePair extends ASTNode {
 		if (requiredType == null) {
 			// fault tolerance: keep resolving
 			if (this.value instanceof ArrayInitializer) {
-				this.value.resolveTypeExpecting(scope, null);
+				this.value.resolveTypeExpecting(scope,(TypeBinding) null);
 			} else {
 				this.value.resolveType(scope);
 			}

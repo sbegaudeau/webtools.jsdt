@@ -316,7 +316,7 @@ public abstract class Annotation extends Expression {
 						SourceTypeBinding sourceType = (SourceTypeBinding) this.recipient;
 						sourceType.tagBits |= tagBits;
 						if ((tagBits & TagBits.AnnotationSuppressWarnings) != 0) {
-							TypeDeclaration typeDeclaration =  sourceType.scope.referenceContext;
+							TypeDeclaration typeDeclaration =  sourceType.classScope.referenceContext;
 							int start;
 							if (scope.referenceCompilationUnit().types[0] == typeDeclaration) {
 								start = 0;
@@ -331,7 +331,7 @@ public abstract class Annotation extends Expression {
 						sourceMethod.tagBits |= tagBits;
 						if ((tagBits & TagBits.AnnotationSuppressWarnings) != 0) {
 							sourceType = (SourceTypeBinding) sourceMethod.declaringClass;
-							AbstractMethodDeclaration methodDeclaration = sourceType.scope.referenceContext.declarationOf(sourceMethod);
+							AbstractMethodDeclaration methodDeclaration = sourceType.classScope.referenceContext.declarationOf(sourceMethod);
 							recordSuppressWarnings(scope, methodDeclaration.declarationSourceStart, methodDeclaration.declarationSourceEnd, scope.compilerOptions().suppressWarnings);
 						}
 						break;
@@ -340,7 +340,7 @@ public abstract class Annotation extends Expression {
 						sourceField.tagBits |= tagBits;
 						if ((tagBits & TagBits.AnnotationSuppressWarnings) != 0) {
 							sourceType = (SourceTypeBinding) sourceField.declaringClass;
-							FieldDeclaration fieldDeclaration = sourceType.scope.referenceContext.declarationOf(sourceField);
+							FieldDeclaration fieldDeclaration = sourceType.classScope.referenceContext.declarationOf(sourceField);
 							recordSuppressWarnings(scope, fieldDeclaration.declarationSourceStart, fieldDeclaration.declarationSourceEnd, scope.compilerOptions().suppressWarnings);
 						}						
 						break;

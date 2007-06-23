@@ -185,7 +185,7 @@ public class AssertStatement extends Statement {
     		this.assertionSyntheticFieldBinding = outerMostClass.addSyntheticFieldForAssert(currentScope);
     
     		// find <clinit> and enable assertion support
-    		TypeDeclaration typeDeclaration = outerMostClass.scope.referenceType();
+    		TypeDeclaration typeDeclaration = outerMostClass.classScope.referenceType();
     		AbstractMethodDeclaration[] methods = typeDeclaration.methods;
     		for (int i = 0, max = methods.length; i < max; i++) {
     			AbstractMethodDeclaration method = methods[i];

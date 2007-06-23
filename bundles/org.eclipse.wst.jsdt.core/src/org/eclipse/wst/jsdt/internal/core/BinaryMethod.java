@@ -617,4 +617,8 @@ private String extractJavadoc(IType declaringType, String contents) throws JavaM
 	if (indexOfNextMethod == -1) throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.UNKNOWN_JAVADOC_FORMAT, this));
 	return contents.substring(indexOfEndLink + JavadocConstants.ANCHOR_SUFFIX_LENGTH, indexOfNextMethod);
 }
+public IMethod getMethod(String selector, String[] parameterTypeSignatures) {
+	// TODO Auto-generated method stub
+	return null;
+}
 }

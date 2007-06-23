@@ -477,6 +477,10 @@ public class MissingTypesGuesser extends ASTVisitor {
 				char[][] compoundName = CharOperation.splitOn('.', fullyQualifiedName);
 				results.add(compoundName);
 			}
+			public void acceptBinding(char[] packageName, char[] bindingName, int bindingType, int modifiers, AccessRestriction accessRestriction) {
+				// TODO Auto-generated method stub
+				
+			}
 		
 		};
 		nameEnvironment.findExactTypes(missingSimpleName, true, IJavaSearchConstants.TYPE, storage);

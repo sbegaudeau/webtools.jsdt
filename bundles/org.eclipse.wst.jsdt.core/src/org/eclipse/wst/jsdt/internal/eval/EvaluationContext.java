@@ -149,7 +149,7 @@ public void complete(char[] codeSnippet, int completionPosition, SearchableEnvir
 	if (this.installedVars != null) {
 		IBinaryType binaryType = this.getRootCodeSnippetBinary();
 		if (binaryType != null) {
-			engine.lookupEnvironment.cacheBinaryType(binaryType, null /*no access restriction*/);
+//			engine.lookupEnvironment.cacheBinaryType(binaryType, null /*no access restriction*/);
 		}
 		
 		ClassFile[] classFiles = installedVars.classFiles;
@@ -161,7 +161,7 @@ public void complete(char[] codeSnippet, int completionPosition, SearchableEnvir
 			} catch (ClassFormatException e) {
 				e.printStackTrace(); // Should never happen since we compiled this type
 			}
-			engine.lookupEnvironment.cacheBinaryType(binary, null /*no access restriction*/);
+//			engine.lookupEnvironment.cacheBinaryType(binary, null /*no access restriction*/);
 		}
 	}
 	
@@ -342,10 +342,10 @@ public void evaluateImports(INameEnvironment environment, IRequestor requestor, 
 					problems[0] = problemFactory.createProblem(importDeclaration, IProblem.ImportNotFound, arguments, arguments, ProblemSeverities.Warning, 0, importDeclaration.length - 1, i, 0);
 				}
 			} else {
-				if (environment.findType(splitDeclaration) == null) {
-					String[] arguments = new String[] {new String(importDeclaration)};
-					problems[0] = problemFactory.createProblem(importDeclaration, IProblem.ImportNotFound, arguments, arguments, ProblemSeverities.Warning, 0, importDeclaration.length - 1, i, 0);
-				}
+//				if (environment.findType(splitDeclaration) == null) {
+//					String[] arguments = new String[] {new String(importDeclaration)};
+//					problems[0] = problemFactory.createProblem(importDeclaration, IProblem.ImportNotFound, arguments, arguments, ProblemSeverities.Warning, 0, importDeclaration.length - 1, i, 0);
+//				}
 			}
 		} else {
 			String[] arguments = new String[] {new String(importDeclaration)};
