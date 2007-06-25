@@ -73,6 +73,7 @@ import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaConventions;
 import org.eclipse.wst.jsdt.core.JavaCore;
 
+import org.eclipse.wst.jsdt.internal.core.JavaProject;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
@@ -308,7 +309,7 @@ public class BuildPathsBlock {
 		boolean projectExists= false;
 		List newClassPath= null;
 		IProject project= fCurrJProject.getProject();
-		projectExists= (project.exists() && project.getFile(".classpath").exists()); //$NON-NLS-1$
+		projectExists= (project.exists() && project.getFile(JavaProject.CLASSPATH_FILENAME).exists()); //$NON-NLS-1$
 		if  (projectExists) {
 //			if (outputLocation == null) {
 //				outputLocation=  fCurrJProject.readOutputLocation();
@@ -400,16 +401,16 @@ public class BuildPathsBlock {
 	}
 	
 	public boolean hasChangesInClasspathFile() {
-		IFile file= fCurrJProject.getProject().getFile(".classpath"); //$NON-NLS-1$
+		IFile file= fCurrJProject.getProject().getFile(JavaProject.CLASSPATH_FILENAME); //$NON-NLS-1$
 		return fFileTimeStamp != file.getModificationStamp();
 	}
 	
 	public boolean isClassfileMissing() {
-		return !fCurrJProject.getProject().getFile(".classpath").exists(); //$NON-NLS-1$
+		return !fCurrJProject.getProject().getFile(JavaProject.CLASSPATH_FILENAME).exists(); //$NON-NLS-1$
 	}
 	
 	public void initializeTimeStamps() {
-		IFile file= fCurrJProject.getProject().getFile(".classpath"); //$NON-NLS-1$
+		IFile file= fCurrJProject.getProject().getFile(JavaProject.CLASSPATH_FILENAME); //$NON-NLS-1$
 		fFileTimeStamp= file.getModificationStamp();
 		fUserSettingsTimeStamp= getEncodedSettings();
 	}

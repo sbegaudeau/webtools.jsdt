@@ -53,6 +53,7 @@ import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 
+import org.eclipse.wst.jsdt.internal.core.JavaProject;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 
@@ -74,7 +75,7 @@ import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 public class JavaProjectWizardSecondPage extends JavaCapabilityConfigurationPage {
 
 	private static final String FILENAME_PROJECT= ".project"; //$NON-NLS-1$
-	private static final String FILENAME_CLASSPATH= ".classpath"; //$NON-NLS-1$
+//	private static final String FILENAME_CLASSPATH = JavaProject.CLASSPATH_FILENAME; //$NON-NLS-1$
 
 	private final JavaProjectWizardFirstPage fFirstPage;
 
@@ -186,7 +187,7 @@ public class JavaProjectWizardSecondPage extends JavaCapabilityConfigurationPage
 			IPath outputLocation= null;
 	
 			if (fFirstPage.getDetect()) {
-				if (!fCurrProject.getFile(FILENAME_CLASSPATH).exists()) { 
+				if (!fCurrProject.getFile(JavaProject.CLASSPATH_FILENAME).exists()) { 
 					final ClassPathDetector detector= new ClassPathDetector(fCurrProject, new SubProgressMonitor(monitor, 2));
 					entries= detector.getClasspath();
                     outputLocation= detector.getOutputLocation();
@@ -276,7 +277,7 @@ public class JavaProjectWizardSecondPage extends JavaCapabilityConfigurationPage
 			if (projectFile.fetchInfo().exists()) {
 				fDotProjectBackup= createBackup(projectFile, "project-desc"); //$NON-NLS-1$ 
 			}
-			IFileStore classpathFile= file.getChild(FILENAME_CLASSPATH);
+			IFileStore classpathFile= file.getChild(JavaProject.CLASSPATH_FILENAME);
 			if (classpathFile.fetchInfo().exists()) {
 				fDotClasspathBackup= createBackup(classpathFile, "classpath-desc"); //$NON-NLS-1$ 
 			}
@@ -298,7 +299,7 @@ public class JavaProjectWizardSecondPage extends JavaCapabilityConfigurationPage
 		}
 		try {
 			if (fDotClasspathBackup != null) {
-				IFileStore classpathFile= EFS.getStore(projectLocation).getChild(FILENAME_CLASSPATH);
+				IFileStore classpathFile= EFS.getStore(projectLocation).getChild(JavaProject.CLASSPATH_FILENAME);
 				classpathFile.delete(EFS.NONE, new SubProgressMonitor(monitor, 1));
 				copyFile(fDotClasspathBackup, classpathFile, new SubProgressMonitor(monitor, 1));
 			}

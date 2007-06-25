@@ -39,6 +39,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 
+import org.eclipse.wst.jsdt.internal.core.JavaProject;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.util.BusyIndicatorRunnableContext;
 import org.eclipse.wst.jsdt.internal.ui.wizards.IStatusChangeListener;
@@ -138,7 +139,7 @@ public class JavaCapabilityConfigurationPage extends NewElementWizardPage {
 	 * the given default classpath and output location is only used if no '.classpath' exists.
 	 */
 	public void init(IJavaProject jproject,  IClasspathEntry[] defaultEntries, boolean defaultsOverrideExistingClasspath) {
-		if (!defaultsOverrideExistingClasspath && jproject.exists() && jproject.getProject().getFile(".classpath").exists()) { //$NON-NLS-1$
+		if (!defaultsOverrideExistingClasspath && jproject.exists() && jproject.getProject().getFile(JavaProject.CLASSPATH_FILENAME).exists()) { //$NON-NLS-1$
 			
 			defaultEntries= null;
 		}

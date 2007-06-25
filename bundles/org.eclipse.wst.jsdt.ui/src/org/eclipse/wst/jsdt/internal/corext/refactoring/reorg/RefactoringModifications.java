@@ -30,6 +30,7 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 
+import org.eclipse.wst.jsdt.internal.core.JavaProject;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.participants.ResourceModifications;
 
 public abstract class RefactoringModifications {
@@ -87,7 +88,7 @@ public abstract class RefactoringModifications {
 		IProject project= resource.getProject();
 		if (project == null)
 			return null;
-		IResource result= project.findMember(".classpath"); //$NON-NLS-1$
+		IResource result= project.findMember(JavaProject.CLASSPATH_FILENAME); //$NON-NLS-1$
 		if (result instanceof IFile)
 			return (IFile)result;
 		return null;

@@ -56,6 +56,7 @@ import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 
+import org.eclipse.wst.jsdt.internal.core.JavaProject;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.ClasspathModifier;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 
@@ -268,7 +269,7 @@ public class DialogPackageExplorer implements IMenuListener, ISelectionProvider,
             try {
                 if (element instanceof IFile) {
                     IFile file= (IFile) element;
-                    if (file.getName().equals(".classpath") || file.getName().equals(".project")) //$NON-NLS-1$//$NON-NLS-2$
+                    if (file.getName().equals(JavaProject.CLASSPATH_FILENAME) || file.getName().equals(".project")) //$NON-NLS-1$//$NON-NLS-2$
                         return false;
                 }
                 if (element instanceof IPackageFragmentRoot) {

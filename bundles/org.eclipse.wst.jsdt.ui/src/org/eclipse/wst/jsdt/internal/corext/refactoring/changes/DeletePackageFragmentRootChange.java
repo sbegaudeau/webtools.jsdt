@@ -48,6 +48,7 @@ import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 
+import org.eclipse.wst.jsdt.internal.core.JavaProject;
 import org.eclipse.wst.jsdt.internal.corext.Corext;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.IPackageFragmentRootManipulationQuery;
@@ -112,7 +113,7 @@ public class DeletePackageFragmentRootChange extends AbstractDeleteChange {
 		HashMap/*<IFile, String>*/ classpathFilesContents= new HashMap();
 		for (int i= 0; i < referencingProjects.length; i++) {
 			IJavaProject javaProject= referencingProjects[i];
-			IFile classpathFile= javaProject.getProject().getFile(".classpath"); //$NON-NLS-1$
+			IFile classpathFile= javaProject.getProject().getFile(JavaProject.CLASSPATH_FILENAME); //$NON-NLS-1$
 			if (classpathFile.exists()) {
 				classpathFilesContents.put(classpathFile, getFileContents(classpathFile));
 			}

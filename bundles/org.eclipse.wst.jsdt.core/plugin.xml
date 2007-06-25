@@ -163,10 +163,10 @@
 <!-- =================================================================================== -->
 <extension point="org.eclipse.core.runtime.contentTypes">
 
-	<!-- Associates .classpath to the XML content type -->
+	<!-- Associates .jsdtscope to the XML content type -->
 	<file-association 
 		content-type="org.eclipse.core.runtime.xml" 
-		file-names=".classpath"/>  
+		file-names=".jsdtscope"/>  
 	<!-- declares a content type for Java Source files -->
 	<content-type id="jsSource" name="%jsSourceName" 
 		base-type="org.eclipse.core.runtime.text"

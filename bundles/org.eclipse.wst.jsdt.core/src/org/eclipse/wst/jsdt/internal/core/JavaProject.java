@@ -103,7 +103,7 @@ public class JavaProject
 	/**
 	 * Name of file containing project classpath
 	 */
-	public static final String CLASSPATH_FILENAME = ".classpath";  //$NON-NLS-1$
+	public static final String CLASSPATH_FILENAME = ".jsdtscope";  //$NON-NLS-1$
 	
 	/**
 	 * Value of the project's raw classpath if the .classpath file contains invalid entries.
@@ -1950,7 +1950,7 @@ public class JavaProject
 			try {
 				property = new String(bytes, org.eclipse.wst.jsdt.internal.compiler.util.Util.UTF_8); // .classpath always encoded with UTF-8
 			} catch (UnsupportedEncodingException e) {
-				Util.log(e, "Could not read .classpath with UTF-8 encoding"); //$NON-NLS-1$
+				Util.log(e, "Could not read .jsdtscope with UTF-8 encoding"); //$NON-NLS-1$
 				// fallback to default
 				property = new String(bytes);
 			}
@@ -1971,7 +1971,7 @@ public class JavaProject
 					try {
 						property = new String(bytes, org.eclipse.wst.jsdt.internal.compiler.util.Util.UTF_8); // .classpath always encoded with UTF-8
 					} catch (UnsupportedEncodingException e) {
-						Util.log(e, "Could not read .classpath with UTF-8 encoding"); //$NON-NLS-1$
+						Util.log(e, "Could not read .jsdtscope with UTF-8 encoding"); //$NON-NLS-1$
 						// fallback to default
 						property = new String(bytes);
 					}
@@ -2358,7 +2358,7 @@ public class JavaProject
 			try {
 				xmlClasspath = new String(bytes, org.eclipse.wst.jsdt.internal.compiler.util.Util.UTF_8); // .classpath always encoded with UTF-8
 			} catch (UnsupportedEncodingException e) {
-				Util.log(e, "Could not read .classpath with UTF-8 encoding"); //$NON-NLS-1$
+				Util.log(e, "Could not read .jsdtscope with UTF-8 encoding"); //$NON-NLS-1$
 				// fallback to default
 				xmlClasspath = new String(bytes);
 			}
@@ -2383,7 +2383,7 @@ public class JavaProject
 			try {
 				xmlClasspath = new String(bytes, org.eclipse.wst.jsdt.internal.compiler.util.Util.UTF_8); // .classpath always encoded with UTF-8
 			} catch (UnsupportedEncodingException e) {
-				Util.log(e, "Could not read .classpath with UTF-8 encoding"); //$NON-NLS-1$
+				Util.log(e, "Could not read .jsdtscope with UTF-8 encoding"); //$NON-NLS-1$
 				// fallback to default
 				xmlClasspath = new String(bytes);
 			}
@@ -2872,7 +2872,7 @@ public class JavaProject
 		try {
 			bytes = value.getBytes(org.eclipse.wst.jsdt.internal.compiler.util.Util.UTF_8); // .classpath always encoded with UTF-8
 		} catch (UnsupportedEncodingException e) {
-			Util.log(e, "Could not write .classpath with UTF-8 encoding "); //$NON-NLS-1$
+			Util.log(e, "Could not write .jsdtscope with UTF-8 encoding "); //$NON-NLS-1$
 			// fallback to default
 			bytes = value.getBytes();
 		}
