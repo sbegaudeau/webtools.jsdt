@@ -206,7 +206,9 @@ public class RenameJavaElementAction extends SelectionDispatchAction {
 			case IJavaElement.COMPILATION_UNIT:
 				return RefactoringAvailabilityTester.isRenameAvailable((ICompilationUnit) element);
 			case IJavaElement.TYPE:
-				return RefactoringAvailabilityTester.isRenameAvailable((IType) element);
+				/* disable renaming TYPES becuase it explodes */
+				return false;
+				//return RefactoringAvailabilityTester.isRenameAvailable((IType) element);
 			case IJavaElement.METHOD:
 				final IMethod method= (IMethod) element;
 				if (method.isConstructor())
