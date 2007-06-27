@@ -84,6 +84,10 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 		if(DEBUG) System.out.println("Creating instance of DocuContexFrag for total of:" + instances);
 	}
 	
+	public void setDirty(boolean dirty) {
+		this.dirty = dirty;
+	}
+	
 	public void finalize() {
 		if(DEBUG) System.out.println("Destroying instance of DocuContexFrag for total of:" + instances);
 	}
