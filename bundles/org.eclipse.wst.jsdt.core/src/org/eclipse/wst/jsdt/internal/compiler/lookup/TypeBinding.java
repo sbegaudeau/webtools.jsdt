@@ -65,6 +65,8 @@ abstract public class TypeBinding extends Binding {
 
 	public final static BaseTypeBinding ANY = new BaseTypeBinding(
 			TypeIds.T_any, TypeConstants.ANY, new char[] { 'A' });
+	public final static BaseTypeBinding UNKNOWN = new BaseTypeBinding(
+			TypeIds.T_any, TypeConstants.ANY, new char[] { 'A' });
 
 
 /**

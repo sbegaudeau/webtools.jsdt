@@ -899,7 +899,7 @@ public void markAsNonNull() {
 		return;
 	}
 
-	public TypeBinding resolveType(BlockScope scope, boolean define) {
+	public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding useType) {
 		return resolveType(scope);
 	}
 

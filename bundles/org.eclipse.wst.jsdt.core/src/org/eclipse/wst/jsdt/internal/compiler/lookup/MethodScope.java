@@ -54,7 +54,7 @@ public class MethodScope extends BlockScope {
 	
 	public static final char [] ARGUMENTS_NAME={'a','r','g','u','m','e','n','t','s'};
 	
-	LocalVariableBinding argumentsBinding = new LocalVariableBinding(ARGUMENTS_NAME,TypeBinding.ANY,0,true);
+	LocalVariableBinding argumentsBinding = new LocalVariableBinding(ARGUMENTS_NAME,TypeBinding.UNKNOWN,0,true);
 	
 	
 	public MethodScope(Scope parent, ReferenceContext context, boolean isStatic) {
@@ -308,7 +308,7 @@ public class MethodScope extends BlockScope {
 //			if (declaringClass.isInterface()) // interface or annotation type
 //				modifiers |= ClassFileConstants.AccPublic | ClassFileConstants.AccAbstract;
 			TypeBinding returnType =
-				 (method.inferredType!=null)?method.inferredType.resolveType(this,method):TypeBinding.ANY;
+				 (method.inferredType!=null)?method.inferredType.resolveType(this,method):TypeBinding.UNKNOWN;
 //			TypeBinding returnType =
 //			 (method instanceof MethodDeclaration && ((MethodDeclaration)method).returnType!=null && method.inferredMethod!=null)?method.inferredType.resolveType(this,((MethodDeclaration)method).returnType):TypeBinding.ANY;
 				 

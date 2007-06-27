@@ -1877,7 +1877,7 @@ public TypeBinding resolveType(BlockScope scope) {
 			this.resolvedType = scope.getJavaLangString();
 			break;
 		case T_any:
-			this.resolvedType = TypeBinding.ANY;
+			this.resolvedType = TypeBinding.UNKNOWN;
 			break;
 		default : //error........
 			this.constant = Constant.NotAConstant;

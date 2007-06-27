@@ -36,23 +36,25 @@ public class Argument extends LocalDeclaration {
 		int modifierFlag = this.modifiers;
 
 		Binding existingVariable = scope.getBinding(name, Binding.VARIABLE, this, false /*do not resolve hidden field*/);
-		if (existingVariable != null && existingVariable.isValidBinding()){
-			if (existingVariable instanceof LocalVariableBinding && this.hiddenVariableDepth == 0) {
-				scope.problemReporter().redefineArgument(this);
-			} else {
-				boolean isSpecialArgument = false;
-				if (existingVariable instanceof FieldBinding) {
-					if (scope.isInsideConstructor()) {
-						isSpecialArgument = true; // constructor argument
-					} else {
-						AbstractMethodDeclaration methodDecl = scope.referenceMethod();
-						if (methodDecl != null && CharOperation.prefixEquals(SET, methodDecl.selector)) {
-							isSpecialArgument = true; // setter argument
-						}
-					}
-				}
-				scope.problemReporter().localVariableHiding(this, existingVariable, isSpecialArgument);
-			}
+		if (existingVariable != null && existingVariable.isValidBinding() && existingVariable instanceof LocalVariableBinding ){
+			LocalVariableBinding localVariableBinding=(LocalVariableBinding)existingVariable;
+//			if (existingVariable instanceof LocalVariableBinding && this.hiddenVariableDepth == 0) {
+//				scope.problemReporter().redefineArgument(this);
+//			} else {
+//				boolean isSpecialArgument = false;
+//				if (existingVariable instanceof FieldBinding) {
+//					if (scope.isInsideConstructor()) {
+//						isSpecialArgument = true; // constructor argument
+//					} else {
+//						AbstractMethodDeclaration methodDecl = scope.referenceMethod();
+//						if (methodDecl != null && CharOperation.prefixEquals(SET, methodDecl.selector)) {
+//							isSpecialArgument = true; // setter argument
+//						}
+//					}
+//				}
+				if (localVariableBinding.declaringScope.compilationUnitScope()==scope.compilationUnitScope())
+					scope.problemReporter().localVariableHiding(this, existingVariable, false);
+//			}
 		}
 
 		scope.addLocalVariable(
@@ -102,7 +104,7 @@ public class Argument extends LocalDeclaration {
 		// that represents the argument. The type must be from JavaThrowable
 
 		TypeBinding exceptionType = this.type!=null ? 
-			this.type.resolveType(scope, true /* check bounds*/) : TypeBinding.ANY;
+			this.type.resolveType(scope, true /* check bounds*/) : TypeBinding.UNKNOWN;
 		if (exceptionType == null) return null;
 		if (exceptionType.isBoundParameterizedType()) {
 			scope.problemReporter().invalidParameterizedExceptionType(exceptionType, this);
@@ -116,7 +118,7 @@ public class Argument extends LocalDeclaration {
 			scope.problemReporter().variableTypeCannotBeVoidArray(this);
 			return null;
 		}
-		if (exceptionType!=TypeBinding.ANY && exceptionType.findSuperTypeErasingTo(TypeIds.T_JavaLangThrowable, true) == null) {
+		if ( !(exceptionType==TypeBinding.ANY || exceptionType==TypeBinding.UNKNOWN) && exceptionType.findSuperTypeErasingTo(TypeIds.T_JavaLangThrowable, true) == null) {
 			scope.problemReporter().cannotThrowType(this.type, exceptionType);
 			// fall thru to create the variable - avoids additional errors because the variable is missing
 		}

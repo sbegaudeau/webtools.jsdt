@@ -720,7 +720,7 @@ public int resolveLevel(Binding binding) {
  */
 protected int resolveLevelForType(char[] simpleNamePattern, char[] qualificationPattern, TypeBinding binding) {
 //	return resolveLevelForType(qualifiedPattern(simpleNamePattern, qualificationPattern), type);
-	if (binding==TypeBinding.ANY)
+	if (binding==TypeBinding.ANY || binding==TypeBinding.UNKNOWN)
 		return ACCURATE_MATCH;
 	if (Arrays.equals(Signature.ANY, simpleNamePattern))
 		return ACCURATE_MATCH;

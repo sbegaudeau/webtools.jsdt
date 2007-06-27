@@ -143,7 +143,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 				if (inferredType!=null)
 				  variableType=inferredType.resolveType(scope,this);
 				else
-					variableType=TypeBinding.ANY;
+					variableType=TypeBinding.UNKNOWN;
 			}
  
 
@@ -208,29 +208,31 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 			    this.initialization.setExpectedType(variableType);
 				TypeBinding initializationType = this.initialization.resolveType(scope);
 				if (initializationType != null) {
-					if (variableType != initializationType) // must call before computeConversion() and typeMismatchError()
-						scope.compilationUnitScope().recordTypeConversion(variableType, initializationType);
-					if (initialization.isConstantValueOfTypeAssignableToType(initializationType, variableType)
+//					if (variableType != initializationType) // must call before computeConversion() and typeMismatchError()
+//						scope.compilationUnitScope().recordTypeConversion(variableType, initializationType);
+					if (variableType==TypeBinding.UNKNOWN)
+						this.binding.type=initializationType;
+					else if (initialization.isConstantValueOfTypeAssignableToType(initializationType, variableType)
 						|| (variableType.isBaseType() && BaseTypeBinding.isWidening(variableType.id, initializationType.id))
 						|| initializationType.isCompatibleWith(variableType)) {
-						this.initialization.computeConversion(scope, variableType, initializationType);
-						if (initializationType.needsUncheckedConversion(variableType)) {
-						    scope.problemReporter().unsafeTypeConversion(this.initialization, initializationType, variableType);
-						}						
-						if (this.initialization instanceof CastExpression 
-								&& (this.initialization.bits & ASTNode.UnnecessaryCast) == 0) {
-							CastExpression.checkNeedForAssignedCast(scope, variableType, (CastExpression) this.initialization);
-						}	
-					} else if (scope.isBoxingCompatibleWith(initializationType, variableType) 
-										|| (initializationType.isBaseType()  // narrowing then boxing ?
-												&& scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5 // autoboxing
-												&& !variableType.isBaseType()
-												&& initialization.isConstantValueOfTypeAssignableToType(initializationType, scope.environment().computeBoxingType(variableType)))) {
-						this.initialization.computeConversion(scope, variableType, initializationType);
-						if (this.initialization instanceof CastExpression 
-								&& (this.initialization.bits & ASTNode.UnnecessaryCast) == 0) {
-							CastExpression.checkNeedForAssignedCast(scope, variableType, (CastExpression) this.initialization);
-						}	
+//						this.initialization.computeConversion(scope, variableType, initializationType);
+//						if (initializationType.needsUncheckedConversion(variableType)) {
+//						    scope.problemReporter().unsafeTypeConversion(this.initialization, initializationType, variableType);
+//						}						
+//						if (this.initialization instanceof CastExpression 
+//								&& (this.initialization.bits & ASTNode.UnnecessaryCast) == 0) {
+//							CastExpression.checkNeedForAssignedCast(scope, variableType, (CastExpression) this.initialization);
+//						}	
+//					} else if (scope.isBoxingCompatibleWith(initializationType, variableType) 
+//										|| (initializationType.isBaseType()  // narrowing then boxing ?
+//												&& scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5 // autoboxing
+//												&& !variableType.isBaseType()
+//												&& initialization.isConstantValueOfTypeAssignableToType(initializationType, scope.environment().computeBoxingType(variableType)))) {
+//						this.initialization.computeConversion(scope, variableType, initializationType);
+//						if (this.initialization instanceof CastExpression 
+//								&& (this.initialization.bits & ASTNode.UnnecessaryCast) == 0) {
+//							CastExpression.checkNeedForAssignedCast(scope, variableType, (CastExpression) this.initialization);
+//						}	
 					} else {
 						scope.problemReporter().typeMismatchError(initializationType, variableType, this.initialization);
 					}

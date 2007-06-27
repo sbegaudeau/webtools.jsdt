@@ -188,7 +188,7 @@ public class ArrayInitializer extends Expression {
 		TypeBinding leafElementType = null;
 		int dim = 1;
 		if (this.expressions == null) {
-			leafElementType = TypeBinding.ANY;
+			leafElementType = TypeBinding.UNKNOWN;
 		} else {
 			Expression expression = this.expressions[0];
 			while(expression != null && expression instanceof ArrayInitializer) {

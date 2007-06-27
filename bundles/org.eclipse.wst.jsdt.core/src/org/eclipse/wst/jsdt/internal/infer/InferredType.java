@@ -135,7 +135,7 @@ public class InferredType extends ASTNode {
 		{
 			TypeBinding memberType = (referenceClass!=null)?referenceClass.resolveType(scope,node):null;
 			if (memberType==null)
-				memberType=TypeBinding.ANY;
+				memberType=TypeBinding.UNKNOWN;
 			this.resolvedType=new ArrayBinding(memberType, 1, scope.compilationUnitScope().environment) ;
 
 		}

@@ -789,10 +789,10 @@ public int nullStatus(FlowInfo flowInfo) {
 	}
 		
 	public TypeBinding resolveType(BlockScope scope) {
-		return resolveType(scope,false);
+		return resolveType(scope,false,null);
 	}
 	
-	public TypeBinding resolveType(BlockScope scope, boolean define) {
+	public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding useType) {
 
 		// for code gen, harm the restrictiveFlag 	
 	
@@ -805,7 +805,7 @@ public int nullStatus(FlowInfo flowInfo) {
 		if (define && this.binding instanceof ProblemBinding)
 		{
 			LocalDeclaration localDeclaration = new LocalDeclaration(this.token,this.sourceEnd,this.sourceEnd);
-			LocalVariableBinding localBinding=new LocalVariableBinding(localDeclaration,TypeBinding.ANY,0,false);
+			LocalVariableBinding localBinding=new LocalVariableBinding(localDeclaration,TypeBinding.UNKNOWN,0,false);
 		    scope.compilationUnitScope().addLocalVariable(localBinding);
 			this.binding=localBinding;
 		}
@@ -820,10 +820,17 @@ public int nullStatus(FlowInfo flowInfo) {
 						if (binding instanceof LocalVariableBinding) {
 							bits &= ~RestrictiveFlagMASK;  // clear bits
 							bits |= Binding.LOCAL;
-							if (!variable.isFinal() && (bits & DepthMASK) != 0) {
-								scope.problemReporter().cannotReferToNonFinalOuterLocal((LocalVariableBinding)variable, this);
-							}
+//							if (!variable.isFinal() && (bits & DepthMASK) != 0) {
+//								scope.problemReporter().cannotReferToNonFinalOuterLocal((LocalVariableBinding)variable, this);
+//							}
 							TypeBinding fieldType = variable.type;
+							if (useType!=null)
+							{
+								if (fieldType==TypeBinding.UNKNOWN)
+									fieldType=variable.type=useType;
+								else if (!fieldType.isCompatibleWith(useType))
+									fieldType=variable.type=TypeBinding.ANY;
+							}
 							if ((this.bits & IsStrictlyAssigned) == 0) {
 								constant = variable.constant();
 								if (fieldType != null) 
@@ -831,6 +838,7 @@ public int nullStatus(FlowInfo flowInfo) {
 							} else {
 								constant = Constant.NotAConstant;
 							}
+							
 							return this.resolvedType = fieldType;
 						}
 						// a field
@@ -852,7 +860,7 @@ public int nullStatus(FlowInfo flowInfo) {
 					if (binding instanceof MethodBinding)
 					{
 						MethodBinding methodBinding=(MethodBinding)binding;
-						return BaseTypeBinding.ANY;
+						return BaseTypeBinding.UNKNOWN;
 					}
 
 				case Binding.TYPE : //========only type==============

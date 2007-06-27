@@ -5,7 +5,7 @@ public class IndirectMethodBinding extends MethodBinding {
 	
 	public IndirectMethodBinding(int modifiers, TypeBinding receiverType, TypeBinding[] parameters,ReferenceBinding declaringClass) 
 	{
-		super(modifiers,null,TypeBinding.ANY,parameters,ReferenceBinding.NO_EXCEPTIONS,declaringClass);
+		super(modifiers,null,TypeBinding.UNKNOWN,parameters,ReferenceBinding.NO_EXCEPTIONS,declaringClass);
 		this.receiverType=receiverType;
 	}
 	

@@ -49,7 +49,7 @@ public MethodBinding(int modifiers, char[] selector, TypeBinding returnType, Typ
 	}
 }
 public MethodBinding(int modifiers, TypeBinding[] parameters, ReferenceBinding[] thrownExceptions, ReferenceBinding declaringClass) {
-	this(modifiers, TypeConstants.INIT, TypeBinding.ANY, parameters, thrownExceptions, declaringClass);
+	this(modifiers, TypeConstants.INIT, TypeBinding.UNKNOWN, parameters, thrownExceptions, declaringClass);
 }
 // special API used to change method declaring class for runtime visibility check
 public MethodBinding(MethodBinding initialMethodBinding, ReferenceBinding declaringClass) {

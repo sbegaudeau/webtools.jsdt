@@ -69,31 +69,31 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
  * @see org.eclipse.wst.jsdt.internal.compiler.ast.Expression#computeConversion(org.eclipse.wst.jsdt.internal.compiler.lookup.Scope, org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding, org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding)
  */
 public void computeConversion(Scope scope, TypeBinding runtimeTimeType, TypeBinding compileTimeType) {
-	if (runtimeTimeType == null || compileTimeType == null)
-		return;
-	// set the generic cast after the fact, once the type expectation is fully known (no need for strict cast)
-	if (this.binding != null && this.binding.isValidBinding()) {
-		MethodBinding originalBinding = this.binding.original();
-		TypeBinding originalType = originalBinding.returnType;
-	    // extra cast needed if method return type is type variable
-		if (originalBinding != this.binding 
-				&& originalType != this.binding.returnType
-				&& runtimeTimeType.id != T_JavaLangObject
-				&& (originalType.tagBits & TagBits.HasTypeVariable) != 0) {
-	    	TypeBinding targetType = (!compileTimeType.isBaseType() && runtimeTimeType.isBaseType()) 
-	    		? compileTimeType  // unboxing: checkcast before conversion
-	    		: runtimeTimeType;
-	        this.valueCast = originalType.genericCast(targetType); 
-		} 	else if (this.actualReceiverType!=null && this.actualReceiverType.isArrayType() 
-						&& runtimeTimeType.id != T_JavaLangObject
-						&& this.binding.parameters == Binding.NO_PARAMETERS 
-						&& scope.compilerOptions().complianceLevel >= ClassFileConstants.JDK1_5 
-						&& CharOperation.equals(this.binding.selector, CLONE)) {
-					// from 1.5 compliant mode on, array#clone() resolves to array type, but codegen to #clone()Object - thus require extra inserted cast
-			this.valueCast = runtimeTimeType;			
-		}
-	}
-	super.computeConversion(scope, runtimeTimeType, compileTimeType);
+//	if (runtimeTimeType == null || compileTimeType == null)
+//		return;
+//	// set the generic cast after the fact, once the type expectation is fully known (no need for strict cast)
+//	if (this.binding != null && this.binding.isValidBinding()) {
+//		MethodBinding originalBinding = this.binding.original();
+//		TypeBinding originalType = originalBinding.returnType;
+//	    // extra cast needed if method return type is type variable
+//		if (originalBinding != this.binding 
+//				&& originalType != this.binding.returnType
+//				&& runtimeTimeType.id != T_JavaLangObject
+//				&& (originalType.tagBits & TagBits.HasTypeVariable) != 0) {
+//	    	TypeBinding targetType = (!compileTimeType.isBaseType() && runtimeTimeType.isBaseType()) 
+//	    		? compileTimeType  // unboxing: checkcast before conversion
+//	    		: runtimeTimeType;
+//	        this.valueCast = originalType.genericCast(targetType); 
+//		} 	else if (this.actualReceiverType!=null && this.actualReceiverType.isArrayType() 
+//						&& runtimeTimeType.id != T_JavaLangObject
+//						&& this.binding.parameters == Binding.NO_PARAMETERS 
+//						&& scope.compilerOptions().complianceLevel >= ClassFileConstants.JDK1_5 
+//						&& CharOperation.equals(this.binding.selector, CLONE)) {
+//					// from 1.5 compliant mode on, array#clone() resolves to array type, but codegen to #clone()Object - thus require extra inserted cast
+//			this.valueCast = runtimeTimeType;			
+//		}
+//	}
+//	super.computeConversion(scope, runtimeTimeType, compileTimeType);
 }
 
 /**
@@ -394,7 +394,7 @@ public TypeBinding resolveType(BlockScope scope) {
 			receiver==null || receiver.isImplicitThis()
 				? scope.getImplicitMethod(selector, argumentTypes, this)
 						: scope.getMethod(this.actualReceiverType, selector, argumentTypes, this); 
-	if (!binding.isValidBinding() && this.actualReceiverType!=TypeBinding.ANY) {
+	if (!binding.isValidBinding() && !(this.actualReceiverType==TypeBinding.ANY || this.actualReceiverType==TypeBinding.UNKNOWN)) {
 		if (binding.declaringClass == null) {
 			if (this.actualReceiverType==null || this.actualReceiverType instanceof ReferenceBinding) {
 				binding.declaringClass = (ReferenceBinding) this.actualReceiverType;
@@ -480,7 +480,7 @@ public TypeBinding resolveType(BlockScope scope) {
 		if (returnType != null) 
 			returnType = returnType.capture(scope, this.sourceEnd);
 		else 
-			returnType=TypeBinding.ANY;
+			returnType=TypeBinding.UNKNOWN;
 		this.resolvedType = returnType;
 	}
 	if (receiver!=null && receiver.isSuper() && compilerOptions.getSeverity(CompilerOptions.OverridingMethodWithoutSuperInvocation) != ProblemSeverities.Ignore) {

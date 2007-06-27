@@ -111,7 +111,7 @@ public  void addLocalVariable(LocalVariableBinding binding) {
 		FunctionExpression functionExpr = (FunctionExpression) binding.declaration.initialization;
 
 		MethodBinding methodBinding=
-			new MethodBinding(0, binding.name, TypeBinding.ANY, null, null,this.enclosingTypeBinding());
+			new MethodBinding(0, binding.name, TypeBinding.UNKNOWN, null, null,this.enclosingTypeBinding());
 		addLocalMethod(methodBinding);
 
 	}

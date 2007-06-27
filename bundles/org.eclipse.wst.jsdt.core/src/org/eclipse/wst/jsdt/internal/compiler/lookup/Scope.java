@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import java.util.*;
 
+import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.*;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -643,7 +644,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 					if (type.containsMethod(inMethod))
 						return (ReferenceBinding)compilationUnitScope.getTypeOrPackage(type.getName(),Binding.TYPE);
 				}
-				
 			}
 			if (scope instanceof ClassScope) {
 				ClassScope classScope=(ClassScope)scope;
@@ -888,26 +888,30 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		FieldBinding notVisibleField = null;
 		// we could hold onto the not visible field for extra error reporting
 		while (keepLooking) {
-			ReferenceBinding[] itsInterfaces = currentType.superInterfaces();
-			if (itsInterfaces == null) { // needed for statically imported types which don't know their hierarchy yet
-				((SourceTypeBinding) currentType).classScope.connectTypeHierarchy();
-				itsInterfaces = currentType.superInterfaces();
-			}
-			if (itsInterfaces != null && itsInterfaces != Binding.NO_SUPERINTERFACES) {
-				if (interfacesToVisit == null) {
-					interfacesToVisit = itsInterfaces;
-					nextPosition = interfacesToVisit.length;
-				} else {
-					int itsLength = itsInterfaces.length;
-					if (nextPosition + itsLength >= interfacesToVisit.length)
-						System.arraycopy(interfacesToVisit, 0, interfacesToVisit = new ReferenceBinding[nextPosition + itsLength + 5], 0, nextPosition);
-					nextInterface : for (int a = 0; a < itsLength; a++) {
-						ReferenceBinding next = itsInterfaces[a];
-						for (int b = 0; b < nextPosition; b++)
-							if (next == interfacesToVisit[b]) continue nextInterface;
-						interfacesToVisit[nextPosition++] = next;
+			if (JavaCore.IS_EMCASCRIPT4)
+			{
+				ReferenceBinding[] itsInterfaces = currentType.superInterfaces();
+				if (itsInterfaces == null) { // needed for statically imported types which don't know their hierarchy yet
+					((SourceTypeBinding) currentType).classScope.connectTypeHierarchy();
+					itsInterfaces = currentType.superInterfaces();
+				}
+				if (itsInterfaces != null && itsInterfaces != Binding.NO_SUPERINTERFACES) {
+					if (interfacesToVisit == null) {
+						interfacesToVisit = itsInterfaces;
+						nextPosition = interfacesToVisit.length;
+					} else {
+						int itsLength = itsInterfaces.length;
+						if (nextPosition + itsLength >= interfacesToVisit.length)
+							System.arraycopy(interfacesToVisit, 0, interfacesToVisit = new ReferenceBinding[nextPosition + itsLength + 5], 0, nextPosition);
+						nextInterface : for (int a = 0; a < itsLength; a++) {
+							ReferenceBinding next = itsInterfaces[a];
+							for (int b = 0; b < nextPosition; b++)
+								if (next == interfacesToVisit[b]) continue nextInterface;
+							interfacesToVisit[nextPosition++] = next;
+						}
 					}
 				}
+				
 			}
 			if ((currentType = currentType.superclass()) == null)
 				break;
@@ -928,7 +932,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		}
 
 		// walk all visible interfaces to find ambiguous references
-		if (interfacesToVisit != null) {
+		if (JavaCore.IS_EMCASCRIPT4 && interfacesToVisit != null) {
 			ProblemFieldBinding ambiguous = null;
 			done : for (int i = 0; i < nextPosition; i++) {
 				ReferenceBinding anInterface = interfacesToVisit[i];
@@ -1574,7 +1578,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 									//if(bind==null) break done;
 									foundField = scope.findField(unitScope.superBinding, name, invocationSite, true);
 									if(foundField!=null && foundField.isValidBinding()) return foundField;
-								}
+					}
 								
 								
 								

@@ -202,7 +202,7 @@ public int nullStatus(FlowInfo flowInfo) {
 				this.resolvedType = ((this.bits & IsStrictlyAssigned) == 0) ? elementType.capture(scope, this.sourceEnd) : elementType;
 			} else {
 //				scope.problemReporter().referenceMustBeArrayTypeAt(arrayType, this);
-				this.resolvedType=TypeBinding.ANY;
+				this.resolvedType=TypeBinding.UNKNOWN;
 			}
 		}
 		TypeBinding positionType = position.resolveTypeExpecting(scope, new TypeBinding[] {scope.getJavaLangNumber(),scope.getJavaLangString()});

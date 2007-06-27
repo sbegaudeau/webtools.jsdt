@@ -112,7 +112,7 @@ boolean areTypesEqual(TypeBinding one, TypeBinding two) {
 		return ((UnresolvedReferenceBinding) one).resolvedType == two;
 	if (two instanceof UnresolvedReferenceBinding)
 		return ((UnresolvedReferenceBinding) two).resolvedType == one;
-	if (one==TypeBinding.ANY || two==TypeBinding.ANY)
+	if ( (one!=null && one.id==TypeIds.T_any) || (two!=null && two.id==TypeIds.T_any))
 		return true;
 	return false; // all other type bindings are identical
 }

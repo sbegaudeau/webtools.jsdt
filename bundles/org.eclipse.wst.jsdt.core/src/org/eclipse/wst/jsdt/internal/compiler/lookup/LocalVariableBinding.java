@@ -46,7 +46,7 @@ public class LocalVariableBinding extends VariableBinding {
 	// regular local variable or argument
 	public LocalVariableBinding(LocalDeclaration declaration, TypeBinding type, int modifiers, boolean isArgument) {
 
-		this(declaration.name, type!=null ? type : BaseTypeBinding.ANY, modifiers, isArgument);
+		this(declaration.name, type!=null ? type : BaseTypeBinding.UNKNOWN, modifiers, isArgument);
 		this.declaration = declaration;
 	}
 

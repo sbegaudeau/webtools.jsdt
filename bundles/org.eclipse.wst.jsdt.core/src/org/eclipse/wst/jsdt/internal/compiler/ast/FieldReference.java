@@ -529,7 +529,7 @@ public TypeBinding resolveType(BlockScope scope) {
 		constant = Constant.NotAConstant;
 //		scope.problemReporter().invalidField(this, this.receiverType);
 //		return null;
-		return this.resolvedType=TypeBinding.ANY;
+		return this.resolvedType=TypeBinding.UNKNOWN;
 	}
 	if (JavaCore.IS_EMCASCRIPT4)
 	{

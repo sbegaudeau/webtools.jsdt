@@ -216,7 +216,7 @@ public FlowInfo analyseCode(
 		if ((expressionIsCast = this.expression instanceof CastExpression) == true) this.expression.bits |= DisableUnnecessaryCastCheck; // will check later on
 		TypeBinding expressionType = null;
 		if (getOperator()==TYPEOF && (this.expression instanceof SingleNameReference))
-			expressionType=BaseTypeBinding.ANY;
+			expressionType=BaseTypeBinding.UNKNOWN;
 		else
 			expressionType = this.expression.resolveType(scope);
 		if (expressionType == null) {
@@ -279,7 +279,7 @@ public FlowInfo analyseCode(
 				this.resolvedType = TypeBinding.LONG;
 				break;
 			case T_any :
-				this.resolvedType = TypeBinding.ANY;
+				this.resolvedType = TypeBinding.UNKNOWN;
 				break;
 			default : //error........
 				this.constant = Constant.NotAConstant;

@@ -76,12 +76,13 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 }
 
 void checkAssignment(BlockScope scope, TypeBinding lhsType, TypeBinding rhsType) {
-	FieldBinding leftField = getLastField(this.lhs);
-	if (leftField != null &&  rhsType != TypeBinding.NULL && lhsType.isWildcard() && ((WildcardBinding)lhsType).boundKind != Wildcard.SUPER) {
-	    scope.problemReporter().wildcardAssignment(lhsType, rhsType, this.expression);
-	} else if (leftField != null && !leftField.isStatic() && leftField.declaringClass != null /*length pseudo field*/&& leftField.declaringClass.isRawType()) {
-	    scope.problemReporter().unsafeRawFieldAssignment(leftField, rhsType, this.lhs);
-	} else if (rhsType.needsUncheckedConversion(lhsType)) {
+//	FieldBinding leftField = getLastField(this.lhs);
+//	if (leftField != null &&  rhsType != TypeBinding.NULL && lhsType.isWildcard() && ((WildcardBinding)lhsType).boundKind != Wildcard.SUPER) {
+//	    scope.problemReporter().wildcardAssignment(lhsType, rhsType, this.expression);
+//	} else if (leftField != null && !leftField.isStatic() && leftField.declaringClass != null /*length pseudo field*/&& leftField.declaringClass.isRawType()) {
+//	    scope.problemReporter().unsafeRawFieldAssignment(leftField, rhsType, this.lhs);
+//	} else 
+		if (rhsType.needsUncheckedConversion(lhsType)) {
 	    scope.problemReporter().unsafeTypeConversion(this.expression, rhsType, lhsType);
 	}		
 }
@@ -177,11 +178,11 @@ public TypeBinding resolveType(BlockScope scope) {
 		scope.problemReporter().expressionShouldBeAVariable(this.lhs);
 		return null;
 	}
-	TypeBinding lhsType = lhs.resolveType(scope,true);
-	this.expression.setExpectedType(lhsType); // needed in case of generic method invocation
+	TypeBinding rhsType = this.expression.resolveType(scope);
+	TypeBinding lhsType = lhs.resolveType(scope,true,rhsType);
+//	this.expression.setExpectedType(lhsType); // needed in case of generic method invocation
 	if (lhsType != null) 
 		this.resolvedType = lhsType.capture(scope, this.sourceEnd);
-	TypeBinding rhsType = this.expression.resolveType(scope);
 	if (lhsType == null || rhsType == null) {
 		return null;
 	}
@@ -194,12 +195,14 @@ public TypeBinding resolveType(BlockScope scope) {
 
 	// Compile-time conversion of base-types : implicit narrowing integer into byte/short/character
 	// may require to widen the rhs expression at runtime
-	if (lhsType != rhsType) // must call before computeConversion() and typeMismatchError()
-		scope.compilationUnitScope().recordTypeConversion(lhsType, rhsType);
+//	if (lhsType != rhsType) // must call before computeConversion() and typeMismatchError()
+//		scope.compilationUnitScope().recordTypeConversion(lhsType, rhsType);
+ 
+	
 	if ((this.expression.isConstantValueOfTypeAssignableToType(rhsType, lhsType)
 			|| (lhsType.isBaseType() && BaseTypeBinding.isWidening(lhsType.id, rhsType.id)))
 			|| rhsType.isCompatibleWith(lhsType)) {
-		this.expression.computeConversion(scope, lhsType, rhsType);
+//		this.expression.computeConversion(scope, lhsType, rhsType);
 		checkAssignment(scope, lhsType, rhsType);
 		if (this.expression instanceof CastExpression 
 				&& (this.expression.bits & ASTNode.UnnecessaryCast) == 0) {

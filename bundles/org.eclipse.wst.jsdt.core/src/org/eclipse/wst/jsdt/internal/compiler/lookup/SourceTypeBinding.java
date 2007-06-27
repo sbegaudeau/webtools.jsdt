@@ -91,7 +91,7 @@ void buildFieldsAndMethods() {
 }
 
 private void buildFields() {
-	FieldBinding prototype = new FieldBinding(TypeConstants.PROTOTYPE, BaseTypeBinding.ANY, modifiers | ExtraCompilerModifiers.AccUnresolved, this,null);
+	FieldBinding prototype = new FieldBinding(TypeConstants.PROTOTYPE, BaseTypeBinding.UNKNOWN, modifiers | ExtraCompilerModifiers.AccUnresolved, this,null);
 	InferredType inferredType=this.classScope.inferredType;
 	int size = inferredType.numberAttributes;
 	if (size == 0) {
@@ -110,7 +110,7 @@ private void buildFields() {
 		if (field.isStatic)
 			modifiers|=ClassFileConstants.AccStatic;
 		
-			FieldBinding fieldBinding = new FieldBinding(field, BaseTypeBinding.ANY, modifiers | ExtraCompilerModifiers.AccUnresolved, this);
+			FieldBinding fieldBinding = new FieldBinding(field, BaseTypeBinding.UNKNOWN, modifiers | ExtraCompilerModifiers.AccUnresolved, this);
 			fieldBinding.id = count;
 			// field's type will be resolved when needed for top level types
 //			checkAndSetModifiersForField(fieldBinding, field);
@@ -885,16 +885,17 @@ public MethodBinding getExactMethod(char[] selector, TypeBinding[] argumentTypes
 			nextMethod: for (int imethod = (int)range, end = (int)(range >> 32); imethod <= end; imethod++) {
 				MethodBinding method = this.methods[imethod];
 				foundNothing = false; // inner type lookups must know that a method with this name exists
-				if (method.parameters.length == argCount) {
-					TypeBinding[] toMatch = method.parameters;
-					for (int iarg = 0; iarg < argCount; iarg++)
-						if (toMatch[iarg] != argumentTypes[iarg])
-						{
-						if (toMatch[iarg]!=BaseTypeBinding.ANY && argumentTypes[iarg]!=BaseTypeBinding.ANY)
-						continue nextMethod;
-					}
-					return method;
-				}
+//				if (method.parameters.length == argCount) {
+//					TypeBinding[] toMatch = method.parameters;
+//					for (int iarg = 0; iarg < argCount; iarg++)
+//						if (toMatch[iarg] != argumentTypes[iarg])
+//						{
+//						if (toMatch[iarg].id!=TypeIds.T_any && argumentTypes[iarg].id!=TypeIds.T_any)
+//						continue nextMethod;
+//					}
+//					return method;
+//				}
+				return method;
 			}
 		}
 	} else {
@@ -932,21 +933,22 @@ public MethodBinding getExactMethod(char[] selector, TypeBinding[] argumentTypes
 					}
 				}
 			}
-			nextMethod: for (int imethod = start; imethod <= end; imethod++) {
-				MethodBinding method = this.methods[imethod];						
-				TypeBinding[] toMatch = method.parameters;
-				if (toMatch.length == argCount) {
-					for (int iarg = 0; iarg < argCount; iarg++)
-						if (toMatch[iarg] != argumentTypes[iarg])
-							continue nextMethod;
-					return method;
-				}
-			}				
+			return this.methods[start];
+//			nextMethod: for (int imethod = start; imethod <= end; imethod++) {
+//				MethodBinding method = this.methods[imethod];						
+//				TypeBinding[] toMatch = method.parameters;
+//				if (toMatch.length == argCount) {
+//					for (int iarg = 0; iarg < argCount; iarg++)
+//						if (toMatch[iarg] != argumentTypes[iarg])
+//							continue nextMethod;
+//					return method;
+//				}
+//			}				
 		}
 	}
 
 	if (foundNothing) {
-		if (isInterface()) {
+		if (JavaCore.IS_EMCASCRIPT4 && isInterface()) {
 			 if (this.superInterfaces.length == 1) {
 				if (refScope != null)
 					refScope.recordTypeReference(this.superInterfaces[0]);
@@ -1487,7 +1489,7 @@ public MethodBinding resolveTypesFor(MethodBinding method) {
 		TypeBinding[] newParameters = new TypeBinding[size];
 		for (int i = 0; i < size; i++) {
 			Argument arg = arguments[i];
-			TypeBinding parameterType = (arg.type!=null)?arg.type.resolveType(methodDecl.scope, true /* check bounds*/):   TypeBinding.ANY;
+			TypeBinding parameterType = (arg.type!=null)?arg.type.resolveType(methodDecl.scope, true /* check bounds*/):   TypeBinding.UNKNOWN;
 			if (parameterType == null) {
 				foundArgProblem = true;
 			} else if (parameterType == TypeBinding.VOID) {
@@ -1520,7 +1522,7 @@ public MethodBinding resolveTypesFor(MethodBinding method) {
 		} else {
 		    TypeBinding methodType = (returnType!=null )? returnType.resolveType(methodDecl.scope, true /* check bounds*/) : null;
 		    if (methodType==null)
-		    	methodType=(methodDecl.inferredType!=null)?methodDecl.inferredType.resolveType(methodDecl.scope, methodDecl):TypeBinding.ANY;
+		    	methodType=(methodDecl.inferredType!=null)?methodDecl.inferredType.resolveType(methodDecl.scope, methodDecl):TypeBinding.UNKNOWN;
 			if (methodType == null) {
 				foundReturnTypeProblem = true;
 			} else if (methodType.isArrayType() && ((ArrayBinding) methodType).leafComponentType == TypeBinding.VOID) {
