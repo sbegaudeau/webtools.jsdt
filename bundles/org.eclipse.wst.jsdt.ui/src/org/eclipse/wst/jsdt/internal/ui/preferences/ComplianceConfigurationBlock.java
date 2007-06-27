@@ -182,12 +182,12 @@ public class ComplianceConfigurationBlock extends OptionsConfigurationBlock {
 	private Composite createComplianceTabContent(Composite folder) {
 
 
-		String[] values3456= new String[] { VERSION_1_3, VERSION_1_4, VERSION_1_5, VERSION_1_6 };
+		String[] values3456= new String[] {   VERSION_1_4, VERSION_1_5};
 		String[] values3456Labels= new String[] {
-			PreferencesMessages.ComplianceConfigurationBlock_version13,  
+//			PreferencesMessages.ComplianceConfigurationBlock_version13,  
 			PreferencesMessages.ComplianceConfigurationBlock_version14, 
-			PreferencesMessages.ComplianceConfigurationBlock_version15,
-			PreferencesMessages.ComplianceConfigurationBlock_version16
+			PreferencesMessages.ComplianceConfigurationBlock_version15
+//			PreferencesMessages.ComplianceConfigurationBlock_version16
 		};
 
 		final ScrolledPageContent sc1 = new ScrolledPageContent(folder);
@@ -219,97 +219,98 @@ public class ComplianceConfigurationBlock extends OptionsConfigurationBlock {
 		group.setLayout(layout);
 	
 		String label= PreferencesMessages.ComplianceConfigurationBlock_compiler_compliance_label; 
-		addComboBox(group, label, PREF_COMPLIANCE, values3456, values3456Labels, 0);
+		Combo combo = addComboBox(group, label, PREF_COMPLIANCE, values3456, values3456Labels, 0);
+		combo.setEnabled(false);
 
-		label= PreferencesMessages.ComplianceConfigurationBlock_default_settings_label; 
-		addCheckBox(group, label, INTR_DEFAULT_COMPLIANCE, new String[] { DEFAULT_CONF, USER_CONF }, 0);	
-
-		int indent= fPixelConverter.convertWidthInCharsToPixels(2);
-		Control[] otherChildren= group.getChildren();	
-				
-		String[] versions= new String[] { VERSION_1_1, VERSION_1_2, VERSION_1_3, VERSION_1_4, VERSION_1_5, VERSION_1_6 };
-		String[] versionsLabels= new String[] {
-			PreferencesMessages.ComplianceConfigurationBlock_version11,  
-			PreferencesMessages.ComplianceConfigurationBlock_version12, 
-			PreferencesMessages.ComplianceConfigurationBlock_version13, 
-			PreferencesMessages.ComplianceConfigurationBlock_version14,
-			PreferencesMessages.ComplianceConfigurationBlock_version15, 
-			PreferencesMessages.ComplianceConfigurationBlock_version16
-		};
-		
-		label= PreferencesMessages.ComplianceConfigurationBlock_codegen_targetplatform_label; 
-		addComboBox(group, label, PREF_CODEGEN_TARGET_PLATFORM, versions, versionsLabels, indent);	
-
-		label= PreferencesMessages.ComplianceConfigurationBlock_source_compatibility_label; 
-		addComboBox(group, label, PREF_SOURCE_COMPATIBILITY, values3456, values3456Labels, indent);	
-
-		String[] errorWarningIgnore= new String[] { ERROR, WARNING, IGNORE };
-		
-		String[] errorWarningIgnoreLabels= new String[] {
-			PreferencesMessages.ComplianceConfigurationBlock_error,  
-			PreferencesMessages.ComplianceConfigurationBlock_warning, 
-			PreferencesMessages.ComplianceConfigurationBlock_ignore
-		};
-
-		label= PreferencesMessages.ComplianceConfigurationBlock_pb_assert_as_identifier_label; 
-		addComboBox(group, label, PREF_PB_ASSERT_AS_IDENTIFIER, errorWarningIgnore, errorWarningIgnoreLabels, indent);		
-
-		label= PreferencesMessages.ComplianceConfigurationBlock_pb_enum_as_identifier_label; 
-		addComboBox(group, label, PREF_PB_ENUM_AS_IDENTIFIER, errorWarningIgnore, errorWarningIgnoreLabels, indent);		
-
-		
-		Control[] allChildren= group.getChildren();
-		fComplianceControls.addAll(Arrays.asList(allChildren));
-		fComplianceControls.removeAll(Arrays.asList(otherChildren));
-
-		layout= new GridLayout();
-		layout.numColumns= nColumns;
-
-		group= new Group(fControlsComposite, SWT.NONE);
-		group.setFont(fControlsComposite.getFont());
-		group.setText(PreferencesMessages.ComplianceConfigurationBlock_classfiles_group_label); 
-		group.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
-		group.setLayout(layout);
-
-		String[] generateValues= new String[] { GENERATE, DO_NOT_GENERATE };
-		String[] enableDisableValues= new String[] { ENABLED, DISABLED };
-
-		label= PreferencesMessages.ComplianceConfigurationBlock_variable_attr_label; 
-		addCheckBox(group, label, PREF_LOCAL_VARIABLE_ATTR, generateValues, 0);
-		
-		label= PreferencesMessages.ComplianceConfigurationBlock_line_number_attr_label; 
-		addCheckBox(group, label, PREF_LINE_NUMBER_ATTR, generateValues, 0);		
-
-		label= PreferencesMessages.ComplianceConfigurationBlock_source_file_attr_label; 
-		addCheckBox(group, label, PREF_SOURCE_FILE_ATTR, generateValues, 0);		
-
-		label= PreferencesMessages.ComplianceConfigurationBlock_codegen_unused_local_label; 
-		addCheckBox(group, label, PREF_CODEGEN_UNUSED_LOCAL, new String[] { PRESERVE, OPTIMIZE_OUT }, 0);	
-
-		label= PreferencesMessages.ComplianceConfigurationBlock_codegen_inline_jsr_bytecode_label; 
-		addCheckBox(group, label, PREF_CODEGEN_INLINE_JSR_BYTECODE, enableDisableValues, 0);	
-		
-		fJRE50InfoText= new Link(composite, SWT.WRAP);
-		fJRE50InfoText.setFont(composite.getFont());
-		// set a text: not the real one, just for layouting
-		fJRE50InfoText.setText(Messages.format(PreferencesMessages.ComplianceConfigurationBlock_jrecompliance_info_project, new String[] { VERSION_1_3, VERSION_1_3 }));
-		fJRE50InfoText.setVisible(false);
-		fJRE50InfoText.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(SelectionEvent e) {
-				if ("1".equals(e.text)) { //$NON-NLS-1$
-					openJREInstallPreferencePage();
-				} else {
-					openBuildPathPropertyPage();
-				}
-			}
-			public void widgetSelected(SelectionEvent e) {
-				widgetDefaultSelected(e);
-			}
-		});
-		GridData gd= new GridData(GridData.FILL, GridData.FILL, true, true);
-		gd.widthHint= fPixelConverter.convertWidthInCharsToPixels(50);
-		fJRE50InfoText.setLayoutData(gd);
-		validateJRE50Status();
+//		label= PreferencesMessages.ComplianceConfigurationBlock_default_settings_label; 
+//		addCheckBox(group, label, INTR_DEFAULT_COMPLIANCE, new String[] { DEFAULT_CONF, USER_CONF }, 0);	
+//
+//		int indent= fPixelConverter.convertWidthInCharsToPixels(2);
+//		Control[] otherChildren= group.getChildren();	
+//				
+//		String[] versions= new String[] { VERSION_1_1, VERSION_1_2, VERSION_1_3, VERSION_1_4, VERSION_1_5, VERSION_1_6 };
+//		String[] versionsLabels= new String[] {
+//			PreferencesMessages.ComplianceConfigurationBlock_version11,  
+//			PreferencesMessages.ComplianceConfigurationBlock_version12, 
+//			PreferencesMessages.ComplianceConfigurationBlock_version13, 
+//			PreferencesMessages.ComplianceConfigurationBlock_version14,
+//			PreferencesMessages.ComplianceConfigurationBlock_version15, 
+//			PreferencesMessages.ComplianceConfigurationBlock_version16
+//		};
+//		
+//		label= PreferencesMessages.ComplianceConfigurationBlock_codegen_targetplatform_label; 
+//		addComboBox(group, label, PREF_CODEGEN_TARGET_PLATFORM, versions, versionsLabels, indent);	
+//
+//		label= PreferencesMessages.ComplianceConfigurationBlock_source_compatibility_label; 
+//		addComboBox(group, label, PREF_SOURCE_COMPATIBILITY, values3456, values3456Labels, indent);	
+//
+//		String[] errorWarningIgnore= new String[] { ERROR, WARNING, IGNORE };
+//		
+//		String[] errorWarningIgnoreLabels= new String[] {
+//			PreferencesMessages.ComplianceConfigurationBlock_error,  
+//			PreferencesMessages.ComplianceConfigurationBlock_warning, 
+//			PreferencesMessages.ComplianceConfigurationBlock_ignore
+//		};
+//
+//		label= PreferencesMessages.ComplianceConfigurationBlock_pb_assert_as_identifier_label; 
+//		addComboBox(group, label, PREF_PB_ASSERT_AS_IDENTIFIER, errorWarningIgnore, errorWarningIgnoreLabels, indent);		
+//
+//		label= PreferencesMessages.ComplianceConfigurationBlock_pb_enum_as_identifier_label; 
+//		addComboBox(group, label, PREF_PB_ENUM_AS_IDENTIFIER, errorWarningIgnore, errorWarningIgnoreLabels, indent);		
+//
+//		
+//		Control[] allChildren= group.getChildren();
+//		fComplianceControls.addAll(Arrays.asList(allChildren));
+//		fComplianceControls.removeAll(Arrays.asList(otherChildren));
+//
+//		layout= new GridLayout();
+//		layout.numColumns= nColumns;
+//
+//		group= new Group(fControlsComposite, SWT.NONE);
+//		group.setFont(fControlsComposite.getFont());
+//		group.setText(PreferencesMessages.ComplianceConfigurationBlock_classfiles_group_label); 
+//		group.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
+//		group.setLayout(layout);
+//
+//		String[] generateValues= new String[] { GENERATE, DO_NOT_GENERATE };
+//		String[] enableDisableValues= new String[] { ENABLED, DISABLED };
+//
+//		label= PreferencesMessages.ComplianceConfigurationBlock_variable_attr_label; 
+//		addCheckBox(group, label, PREF_LOCAL_VARIABLE_ATTR, generateValues, 0);
+//		
+//		label= PreferencesMessages.ComplianceConfigurationBlock_line_number_attr_label; 
+//		addCheckBox(group, label, PREF_LINE_NUMBER_ATTR, generateValues, 0);		
+//
+//		label= PreferencesMessages.ComplianceConfigurationBlock_source_file_attr_label; 
+//		addCheckBox(group, label, PREF_SOURCE_FILE_ATTR, generateValues, 0);		
+//
+//		label= PreferencesMessages.ComplianceConfigurationBlock_codegen_unused_local_label; 
+//		addCheckBox(group, label, PREF_CODEGEN_UNUSED_LOCAL, new String[] { PRESERVE, OPTIMIZE_OUT }, 0);	
+//
+//		label= PreferencesMessages.ComplianceConfigurationBlock_codegen_inline_jsr_bytecode_label; 
+//		addCheckBox(group, label, PREF_CODEGEN_INLINE_JSR_BYTECODE, enableDisableValues, 0);	
+//		
+//		fJRE50InfoText= new Link(composite, SWT.WRAP);
+//		fJRE50InfoText.setFont(composite.getFont());
+//		// set a text: not the real one, just for layouting
+//		fJRE50InfoText.setText(Messages.format(PreferencesMessages.ComplianceConfigurationBlock_jrecompliance_info_project, new String[] { VERSION_1_3, VERSION_1_3 }));
+//		fJRE50InfoText.setVisible(false);
+//		fJRE50InfoText.addSelectionListener(new SelectionListener() {
+//			public void widgetDefaultSelected(SelectionEvent e) {
+//				if ("1".equals(e.text)) { //$NON-NLS-1$
+//					openJREInstallPreferencePage();
+//				} else {
+//					openBuildPathPropertyPage();
+//				}
+//			}
+//			public void widgetSelected(SelectionEvent e) {
+//				widgetDefaultSelected(e);
+//			}
+//		});
+//		GridData gd= new GridData(GridData.FILL, GridData.FILL, true, true);
+//		gd.widthHint= fPixelConverter.convertWidthInCharsToPixels(50);
+//		fJRE50InfoText.setLayoutData(gd);
+//		validateJRE50Status();
 		
 		return sc1;
 	}
@@ -350,7 +351,7 @@ public class ComplianceConfigurationBlock extends OptionsConfigurationBlock {
 			    // set compliance settings to default
 			    Object oldDefault= setValue(INTR_DEFAULT_COMPLIANCE, DEFAULT_CONF);
 			    updateComplianceEnableState();
-				updateComplianceDefaultSettings(USER_CONF.equals(oldDefault), oldValue);
+//				updateComplianceDefaultSettings(USER_CONF.equals(oldDefault), oldValue);
 				fComplianceStatus= validateCompliance();
 				validateJRE50Status();
 			} else if (PREF_SOURCE_COMPATIBILITY.equals(changedKey)) {
@@ -366,11 +367,11 @@ public class ComplianceConfigurationBlock extends OptionsConfigurationBlock {
 				return;
 			}
 		} else {
-			updateComplianceEnableState();
-			updateAssertEnumAsIdentifierEnableState();
-			updateInlineJSREnableState();
+//			updateComplianceEnableState();
+//			updateAssertEnumAsIdentifierEnableState();
+//			updateInlineJSREnableState();
 			fComplianceStatus= validateCompliance();
-			validateJRE50Status();
+//			validateJRE50Status();
 		}		
 		fContext.statusChanged(fComplianceStatus);
 	}
