@@ -891,7 +891,7 @@ public class NameLookup implements SuffixConstants {
 
 	private AccessRestriction getViolatedRestriction(String typeName, String packageName, Object element, AccessRestriction accessRestriction) {
 //TODO: implement 
-		System.out.println("implement NameLookup.getViolatedRestriction");
+//		System.out.println("implement NameLookup.getViolatedRestriction");
 //		PackageFragmentRoot root = (PackageFragmentRoot) type.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
 //		ClasspathEntry entry = (ClasspathEntry) this.rootToResolvedEntries.get(root);
 //		if (entry != null) { // reverse map always contains resolved CP entry
