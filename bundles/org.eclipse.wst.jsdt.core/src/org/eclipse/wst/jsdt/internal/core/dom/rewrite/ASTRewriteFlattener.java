@@ -822,7 +822,7 @@ public class ASTRewriteFlattener extends ASTVisitor {
 //				this.result.append("...");//$NON-NLS-1$
 //			}
 //		}
-		if (node.getParent().getNodeType()!=ASTNode.METHOD_DECLARATION)
+		if (node.getParent()!=null && node.getParent().getNodeType()!=ASTNode.METHOD_DECLARATION)
 			this.result.append("var ");
 		getChildNode(node, SingleVariableDeclaration.NAME_PROPERTY).accept(this);
 		int extraDimensions= getIntAttribute(node, SingleVariableDeclaration.EXTRA_DIMENSIONS_PROPERTY);
