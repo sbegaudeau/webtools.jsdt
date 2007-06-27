@@ -643,6 +643,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 					if (type.containsMethod(inMethod))
 						return (ReferenceBinding)compilationUnitScope.getTypeOrPackage(type.getName(),Binding.TYPE);
 				}
+				
 			}
 			if (scope instanceof ClassScope) {
 				ClassScope classScope=(ClassScope)scope;
@@ -1567,7 +1568,18 @@ public abstract class Scope implements TypeConstants, TypeIds {
 										invocationSite.setDepth(depth);
 									return variableBinding;
 								}
-							}							break done;
+								
+								if(unitScope.superBinding!=null) {
+									//ReferenceBinding bind = env.getType(new char[][]{unitScope.superTypeName});
+									//if(bind==null) break done;
+									foundField = scope.findField(unitScope.superBinding, name, invocationSite, true);
+									if(foundField!=null && foundField.isValidBinding()) return foundField;
+								}
+								
+								
+								
+							}							
+							break done;
 					}
 					scope = scope.parent;
 				}
@@ -3103,7 +3115,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		return commonDim == 0 ? intersectionType : environment().createArrayType(intersectionType, commonDim);
 	}
 	
-	public final MethodScope methodScope() {
+	public MethodScope methodScope() {
 		Scope scope = this;
 		do {
 			if (scope instanceof MethodScope)

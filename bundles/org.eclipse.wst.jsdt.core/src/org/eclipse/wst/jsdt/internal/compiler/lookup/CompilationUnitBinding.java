@@ -28,8 +28,11 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 	
 	char [] path;
 	
-	
 	public CompilationUnitBinding(CompilationUnitScope scope,PackageBinding fPackage,char [] path) {
+		this(scope,fPackage,path,null);
+	}
+	
+	public CompilationUnitBinding(CompilationUnitScope scope,PackageBinding fPackage,char [] path,ReferenceBinding superType ) {
 		super(new char [][]{scope.referenceContext.getFileName()}, fPackage, scope);
 		this.compilationUnitScope=scope;
 		this.superInterfaces=Binding.NO_SUPERINTERFACES;
@@ -38,6 +41,9 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 		this.sourceName=this.fileName;
 		setShortName(this.fileName);
 		this.path=path;
+		/* bc - allows super type of 'Window' (and other types) for a compilation unit */
+		this.superclass = superType;
+		
 	}
 
 	private void setShortName(char[] fileName) {

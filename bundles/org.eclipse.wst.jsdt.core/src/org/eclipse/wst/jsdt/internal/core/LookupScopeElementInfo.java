@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
@@ -103,6 +104,27 @@ public class LookupScopeElementInfo extends PackageFragmentRootInfo {
 		
 		
 		Map reverseMap = new HashMap(3);
+//		IPackageFragmentRoot[] roots=null;
+//		
+//		for(int i = 0;i<rootsInScope.length;i++) {
+//			try {
+//				
+//				IClasspathEntry entry = javaProject.getClasspathEntryFor(rootsInScope[i].getPath());
+//				reverseMap.put(rootsInScope[i],entry);
+//			} catch (JavaModelException ex) {
+//				// TODO Auto-generated catch block
+//				ex.printStackTrace();
+//			}
+//			
+//		}
+		
+//		try {
+//			roots = javaProject.getAllPackageFragmentRoots(reverseMap);
+//		} catch (JavaModelException e) {
+//			// project does not exist: cannot happen since this is the info of the project
+//			roots = new IPackageFragmentRoot[0];
+//			reverseMap.clear();
+//		}
 		HashtableOfArrayToObject fragmentsCache = new HashtableOfArrayToObject();
 		HashtableOfArrayToObject isPackageCache = new HashtableOfArrayToObject();
 			for (int i = 0, length = rootsInScope.length; i < length; i++) {

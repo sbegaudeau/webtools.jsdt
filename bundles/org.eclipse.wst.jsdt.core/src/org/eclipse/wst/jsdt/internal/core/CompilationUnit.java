@@ -42,20 +42,26 @@ public class CompilationUnit extends Openable implements ICompilationUnit, org.e
 	/*package*/ static final int JLS2_INTERNAL = AST.JLS2;
 	
 	private static final IImportDeclaration[] NO_IMPORTS = new IImportDeclaration[0];
-	
-	 
 	protected String name;
 	public WorkingCopyOwner owner;
-
+	public String superTypeName;
+	
 /**
  * Constructs a handle to a compilation unit with the given name in the
  * specified package for the specified owner
  */
-public CompilationUnit(PackageFragment parent, String name, WorkingCopyOwner owner) {
+public CompilationUnit(PackageFragment parent, String name,String superTypeName, WorkingCopyOwner owner) {
 	super(parent);
 	this.name = name;
 	this.owner = owner;
+	this.superTypeName = superTypeName;
 }
+
+public CompilationUnit(PackageFragment parent, String name, WorkingCopyOwner owner) {
+	this(parent,name,null,owner);
+}
+
+
 /*
  * @see ICompilationUnit#becomeWorkingCopy(IProblemRequestor, IProgressMonitor)
  */
@@ -70,6 +76,7 @@ public void becomeWorkingCopy(IProblemRequestor problemRequestor, IProgressMonit
 		operation.runOperation(monitor);
 	}
 }
+
 protected boolean buildStructure(OpenableElementInfo info, final IProgressMonitor pm, Map newElements, IResource underlyingResource) throws JavaModelException {
 
 	// check if this compilation unit can be opened
@@ -741,6 +748,8 @@ public ITypeRoot getTypeRoot() {
  * @see org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit#getMainTypeName()
  */
 public char[] getMainTypeName(){
+	if(superTypeName!=null) return superTypeName.toCharArray();
+	
 	return Util.getNameWithoutJavaLikeExtension(getElementName()).toCharArray();
 }
 /**
@@ -925,7 +934,7 @@ public ICompilationUnit getWorkingCopy(WorkingCopyOwner workingCopyOwner, IProbl
 	
 	JavaModelManager manager = JavaModelManager.getJavaModelManager();
 	
-	CompilationUnit workingCopy = new CompilationUnit((PackageFragment)getParent(), getElementName(), workingCopyOwner);
+	CompilationUnit workingCopy = new CompilationUnit((PackageFragment)getParent(), getElementName(),superTypeName, workingCopyOwner);
 	JavaModelManager.PerWorkingCopyInfo perWorkingCopyInfo = 
 		manager.getPerWorkingCopyInfo(workingCopy, false/*don't create*/, true/*record usage*/, null/*not used since don't create*/);
 	if (perWorkingCopyInfo != null) {

@@ -384,11 +384,6 @@ Date.prototype = new Object();
 function Date(s){}
 
 /**
- * The handle to the window.
- */
-var window;
-
-/**
  * Displays an <b>Alert</b> dialog box with the
  * desired message and <b>OK<b> button
  * @param message the message to display

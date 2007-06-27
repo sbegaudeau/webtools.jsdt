@@ -215,7 +215,7 @@ public IClassFile[] getClassFiles() throws JavaModelException {
  * @see IPackageFragment#getCompilationUnit(String)
  * @exception IllegalArgumentException if the name does not end with ".js"
  */
-public ICompilationUnit getCompilationUnit(String cuName) {
+public ICompilationUnit getCompilationUnit(String cuName, String superTypeName) {
 	if (!org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(cuName)) {
 		throw new IllegalArgumentException(Messages.convention_unit_notJavaName); 
 	}
@@ -233,10 +233,14 @@ public ICompilationUnit getCompilationUnit(String cuName) {
 		int pi = cuName.indexOf(parentName);
 		if( pi>-1 && pi<2  ) {
 			String newCp = "/" + cuName.substring(pi+parentName.length(),cuName.length());
-			return new CompilationUnit(this, newCp, DefaultWorkingCopyOwner.PRIMARY);
+			return new CompilationUnit(this, newCp,superTypeName, DefaultWorkingCopyOwner.PRIMARY);
 		}
 	}
-	return new CompilationUnit(this, cuName, DefaultWorkingCopyOwner.PRIMARY);
+	return new CompilationUnit(this, cuName,superTypeName, DefaultWorkingCopyOwner.PRIMARY);
+}
+
+public ICompilationUnit getCompilationUnit(String cuName) {
+	return getCompilationUnit(cuName,null);
 }
 /**
  * @see IPackageFragment#getCompilationUnits()

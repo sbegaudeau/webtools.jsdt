@@ -53,7 +53,16 @@ public BasicCompilationUnit(char[] contents, char[][] packageName, String fileNa
 
 public BasicCompilationUnit(char[] contents, char[][] packageName, String fileName, IJavaElement javaElement) {
 	this(contents, packageName, fileName);
+	if(javaElement instanceof ICompilationUnit) {
+		mainTypeName = ((ICompilationUnit)javaElement).getMainTypeName();
+	}
 	initEncoding(javaElement);
+}
+
+public BasicCompilationUnit(char[] contents, char[][] packageName, String fileName, IJavaElement javaElement, String mainTypeName) {
+	this(contents, packageName, fileName);
+	initEncoding(javaElement);
+	if(mainTypeName!=null) this.mainTypeName = mainTypeName.toCharArray();
 }
 
 /*

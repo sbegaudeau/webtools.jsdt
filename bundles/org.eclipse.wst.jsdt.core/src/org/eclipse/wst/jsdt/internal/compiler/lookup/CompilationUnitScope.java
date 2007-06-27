@@ -46,8 +46,17 @@ HashtableOfType constantPoolNameUsage;
 public int analysisIndex;
 private int captureID = 1;
 
+/* Allows a compilation unit to inherit fields from a superType */
+public ReferenceBinding superBinding;
+private MethodScope methodScope;
+
+
+
+
+
 public CompilationUnitScope(CompilationUnitDeclaration unit, LookupEnvironment environment) {
 	super(COMPILATION_UNIT_SCOPE, null);
+
 	this.environment = environment;
 	this.referenceContext = unit;
 	unit.scope = this;
@@ -68,9 +77,16 @@ public CompilationUnitScope(CompilationUnitDeclaration unit, LookupEnvironment e
 //		this.referencedTypes = null;
 		this.referencedSuperTypes = null;
 	}
+	
 }
 
-
+public MethodScope methodScope() {
+	if(superBinding!=null && methodScope==null) {
+		methodScope = new MethodScope(null,referenceContext(),false);
+	}
+	
+	return methodScope;
+}
 void buildFieldsAndMethods() {
 	for (int i = 0, length = topLevelTypes.length; i < length; i++)
 		topLevelTypes[i].buildFieldsAndMethods();
@@ -161,8 +177,47 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 	
 	// Skip typeDeclarations which know of previously reported errors
 	int typeLength = referenceContext.numberInferredTypes;
+	
+	/* Include super type whild building */
+//	if(superTypeName!=null) {
+//		superType = environment.askForType(new char[][] {superTypeName});
+//	}
+
+//			//((SourceTypeBinding)superType).classScope.buildInferredType(null, environment.defaultPackage,accessRestriction);
+//			//((SourceTypeBinding)superType).classScope.connectTypeHierarchy();
+//			//FieldBinding[] fields = superType.fields();
+//			//addSubscope(((SourceTypeBinding)superType).classScope);
+//			
+//			
+//		//	this.parent = ((SourceTypeBinding)superType).classScope;
+//			
+//			
+//		}
+//	
+//		
+//	}
+	char[] superTypeName = this.referenceContext.compilationResult.compilationUnit.getMainTypeName();
+	
+	if(superTypeName!=null && superTypeName.length==0) {
+		superTypeName=null;
+	}
+	
+	
+	if(superTypeName!=null) {
+		superBinding  =  environment.askForType(new char[][] {superTypeName});
+		if(superBinding==null || !superBinding.isValidBinding()) {
+			superTypeName = null;
+		}
+		recordSuperTypeReference(superBinding);
+		environment().setAccessRestriction(superBinding, accessRestriction);	
+	}
+	
+	
 	topLevelTypes = new SourceTypeBinding[typeLength];
+	
 	int count = 0;
+	
+	
 	nextType: for (int i = 0; i < typeLength; i++) {
 		InferredType typeDecl =  referenceContext.inferredTypes[i];
 		if (typeDecl.isDefinition) {
@@ -192,7 +247,8 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 
 	
 	char [] path=CharOperation.concatWith(this.currentPackageName, '/');
-	referenceContext.compilationUnitBinding=new CompilationUnitBinding(this,environment.defaultPackage,path);
+	referenceContext.compilationUnitBinding=new CompilationUnitBinding(this,environment.defaultPackage,path, superBinding);
+	
 	ArrayList methods=new ArrayList();
 	ArrayList vars=new ArrayList();
 	ArrayList stmts=new ArrayList();
@@ -419,6 +475,26 @@ public char[] computeConstantPoolName(LocalTypeBinding localType) {
 }
 
 void connectTypeHierarchy() {
+	
+	
+	//	if(superType!=null) {
+//			if(superType instanceof SourceTypeBinding) {
+//				((SourceTypeBinding)superType).classScope.buildFieldsAndMethods();
+//				((SourceTypeBinding)superType).classScope.connectTypeHierarchy();
+//				
+//			}
+//			ReferenceBinding[] memberTypes = superType.memberTypes();
+//			ReferenceBinding[] memberFields = superType.typeVariables();
+//			MethodBinding[] memberMethods = superType.availableMethods();
+//			for(int i=0;i<memberTypes.length;i++) {
+//				recordReference(memberTypes[i], memberTypes[i].sourceName);
+//			}
+//		}
+	
+//	if(superTypeName!=null) {
+//		ReferenceBinding binding = environment.askForType(new char[][] {superTypeName});
+//		this.recordSuperTypeReference(binding);
+//	}
 		for (int i=0;i<referenceContext.numberInferredTypes;i++) {
 			InferredType inferredType = referenceContext.inferredTypes[i];
 			if (inferredType.binding!=null)
