@@ -62,7 +62,7 @@ public class SystemLibraryLocation implements LibraryLocation {
 					URL url = null;
 					InputStream is = null;
 						
-					is	 = FileLocator.openStream(Platform.getBundle(getPluginId()),getLibraryPathInPlugin().append(new String(getLibraryFileNames()[0])), false);				
+					is	 = FileLocator.openStream(Platform.getBundle(getPluginId()),getLibraryPathInPlugin().append(new String(libFiles[i])), false);				
 					copyFile(is,library);
 						
 						

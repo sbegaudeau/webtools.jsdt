@@ -14,8 +14,12 @@ import org.eclipse.wst.jsdt.core.JavaCore;
 public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathContainerInitializer implements IClasspathContainer {
 	private static final String CONTAINER_ID = "org.eclipse.wst.jsdt.launching.baseBrowserLibrary";
 	private static final String ContainerDescription = "ECMA 3 Browser Support";
-	private static final String FILE_DESCRIPTION = "ECMA 3 Compatible Browser";
-	private static final char[] LIBRARY_FILE_NAME = { 'b', 'a', 's', 'e', 'B', 'r', 'o', 'w', 's', 'e', 'r', 'L', 'i', 'b', 'r', 'a', 'r', 'y', '.', 'j', 's' };
+	private static final String FILE_DESCRIPTION0 = "ECMA 3 Compatible DOM";
+	private static final String FILE_DESCRIPTION1 = "Typical Web Browser Window";
+	private static final char[][] LIBRARY_FILE_NAME = {
+														{ 'b', 'a', 's', 'e', 'B', 'r', 'o', 'w', 's', 'e', 'r', 'L', 'i', 'b', 'r', 'a', 'r', 'y', '.', 'j', 's' },
+														{'b','r','o','w','s','e','r','W','i','n','d','o','w','.','j','s'}
+													  };
 	private static final String LibraryDescription = "ECMA 3 Browser Support Library";
 	
 	class BasicLibLocation extends SystemLibraryLocation {
@@ -24,7 +28,7 @@ public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathC
 		}
 		
 		public char[][] getLibraryFileNames() {
-			return new char[][] { BasicBrowserLibraryClassPathContainerInitializer.LIBRARY_FILE_NAME };
+			return  BasicBrowserLibraryClassPathContainerInitializer.LIBRARY_FILE_NAME ;
 		}
 	}
 	
@@ -52,8 +56,10 @@ public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathC
 	}
 	
 	public String getDescription(IPath containerPath, IJavaProject project) {
-		if (containerPath.equals(new Path(new String(BasicBrowserLibraryClassPathContainerInitializer.LIBRARY_FILE_NAME)))) {
-			return BasicBrowserLibraryClassPathContainerInitializer.FILE_DESCRIPTION;
+		if (containerPath.equals(new Path(new String(BasicBrowserLibraryClassPathContainerInitializer.LIBRARY_FILE_NAME[0])))) {
+			return BasicBrowserLibraryClassPathContainerInitializer.FILE_DESCRIPTION0;
+		}else if (containerPath.equals(new Path(new String(BasicBrowserLibraryClassPathContainerInitializer.LIBRARY_FILE_NAME[1])))) {
+			return BasicBrowserLibraryClassPathContainerInitializer.FILE_DESCRIPTION1;
 		}
 		return BasicBrowserLibraryClassPathContainerInitializer.ContainerDescription;
 	}

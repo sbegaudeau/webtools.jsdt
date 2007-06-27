@@ -196,7 +196,10 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 //	
 //		
 //	}
-	char[] superTypeName = this.referenceContext.compilationResult.compilationUnit.getMainTypeName();
+	char[] superTypeName = null;
+	if(this.referenceContext.compilationResult!=null && this.referenceContext.compilationResult.compilationUnit!=null) {
+		superTypeName = this.referenceContext.compilationResult.compilationUnit.getMainTypeName();
+	}
 	
 	if(superTypeName!=null && superTypeName.length==0) {
 		superTypeName=null;
