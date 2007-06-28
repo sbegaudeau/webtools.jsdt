@@ -211,8 +211,10 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 		if(superBinding==null || !superBinding.isValidBinding()) {
 			superTypeName = null;
 		}
-		recordSuperTypeReference(superBinding);
-		environment().setAccessRestriction(superBinding, accessRestriction);	
+		if(superBinding!=null) {
+			recordSuperTypeReference(superBinding);
+			environment().setAccessRestriction(superBinding, accessRestriction);	
+		}
 	}
 	
 	
