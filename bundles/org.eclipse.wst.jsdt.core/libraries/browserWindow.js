@@ -34,6 +34,7 @@ Window.prototype.prompt=function(){};
 Window.prototype.open=function(){};
 Window.prototype.openDialog=function(){};
 Window.prototype.frames= new Window();
+Window.prototype.window= new Window();
 Window.prototype.find=function(){};
 Window.prototype.self= new Window();
 Window.prototype.history= new Array();
