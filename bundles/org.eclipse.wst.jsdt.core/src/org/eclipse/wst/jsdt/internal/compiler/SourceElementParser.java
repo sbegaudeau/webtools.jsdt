@@ -23,6 +23,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
 import org.eclipse.wst.jsdt.internal.compiler.parser.*;
 import org.eclipse.wst.jsdt.internal.compiler.problem.*;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObjectToInt;
+import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 import org.eclipse.wst.jsdt.internal.core.LocalVariable;
 import org.eclipse.wst.jsdt.internal.core.util.CommentRecorderParser;
 import org.eclipse.wst.jsdt.internal.infer.InferEngine;
@@ -260,13 +261,15 @@ protected void classInstanceCreation(boolean alwaysQualified, boolean isShort) {
 		AllocationExpression alloc = (AllocationExpression)expressionStack[expressionPtr];
 		TypeReference typeRef = alloc.type;
 		char [] name={};
-		if (alloc.member instanceof SingleNameReference)
-			name=((SingleNameReference) alloc.member).token;
+		if (alloc.member instanceof Expression)
+		{
+			name=Util.getTypeName((Expression) alloc.member);
+		}
 		else if (alloc.type!=null)
 			name= CharOperation.concatWith(alloc.type.getParameterizedTypeName(), '.');
-		else 
-			System.out.println("UNIMPLEMENTED in SOURCEELEMENTPARESER.classInstanceCreatation");
-		requestor.acceptConstructorReference(name,
+
+		if (name!=null && name.length>0)
+			requestor.acceptConstructorReference(name,
 //			typeRef instanceof SingleTypeReference 
 //				? ((SingleTypeReference) typeRef).token
 //				: CharOperation.concatWith(alloc.type.getParameterizedTypeName(), '.'),

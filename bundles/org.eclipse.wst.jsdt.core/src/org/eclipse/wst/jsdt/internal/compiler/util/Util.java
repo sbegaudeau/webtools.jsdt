@@ -20,6 +20,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 
 public class Util implements SuffixConstants {
 
@@ -486,4 +489,20 @@ public class Util implements SuffixConstants {
 		}
 		return buffer.toString();
 	}
+	
+	final static char[] EMPTY_NAME=new char[0];
+	public  final static char [] getTypeName(Expression expression)
+	{
+		char [] name = EMPTY_NAME;
+		if (expression instanceof FieldReference) {
+			FieldReference fieldRef = (FieldReference) expression;
+			return CharOperation.concat(getTypeName(fieldRef.receiver), fieldRef.token,'.');
+		}
+		else if (expression instanceof SingleNameReference) {
+			SingleNameReference singleNameReference = (SingleNameReference) expression;
+			return singleNameReference.token;
+		}
+		return name;
+	}
+	
 }
