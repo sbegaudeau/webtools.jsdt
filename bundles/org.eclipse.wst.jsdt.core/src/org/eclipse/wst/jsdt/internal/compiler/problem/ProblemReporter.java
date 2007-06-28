@@ -6555,11 +6555,11 @@ public void unusedPrivateType(TypeDeclaration typeDecl) {
 		typeDecl.sourceStart,
 		typeDecl.sourceEnd);
 }
-public void useAssertAsAnIdentifier(int sourceStart, int sourceEnd) {
+public void useAssertAsAnIdentifier(char [] keyword, int sourceStart, int sourceEnd) {
 	this.handle(
 		IProblem.UseAssertAsAnIdentifier,
-		NoArgument,
-		NoArgument,
+		new String[]{new String(keyword)},
+		new String[]{new String(keyword)},
 		sourceStart,
 		sourceEnd);	
 }

@@ -6787,7 +6787,8 @@ protected void consumeToken(int type) {
 			if (this.scanner.useAssertAsAnIndentifier  &&
 					this.lastErrorEndPositionBeforeRecovery < this.scanner.currentPosition) {
 				long positions = this.identifierPositionStack[this.identifierPtr];
-				if(!this.statementRecoveryActivated) problemReporter().useAssertAsAnIdentifier((int) (positions >>> 32), (int) positions);
+				if(!this.statementRecoveryActivated) 
+					problemReporter().useAssertAsAnIdentifier(this.identifierStack[this.identifierPtr],(int) (positions >>> 32), (int) positions);
 			}
 			if (this.scanner.useEnumAsAnIndentifier  &&
 					this.lastErrorEndPositionBeforeRecovery < this.scanner.currentPosition) {

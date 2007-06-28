@@ -2724,622 +2724,766 @@ public int scanIdentifierOrKeyword() {
 }
 
 private int internalScanIdentifierOrKeyword(int index, int length, char[] data) {
+
 	switch (data[index]) {
 
-	case 'a' : 
-		switch(length) {
-			case 8: //abstract
-				if ((data[++index] == 'b')
-					&& (data[++index] == 's')
-					&& (data[++index] == 't')
-					&& (data[++index] == 'r')
-					&& (data[++index] == 'a')
-					&& (data[++index] == 'c')
-					&& (data[++index] == 't')) {
-						return TokenNameabstract;
-					} else {
-						return TokenNameIdentifier;
-					}
-//			case 6: // assert
-//				if ((data[++index] == 's')
-//					&& (data[++index] == 's')
-//					&& (data[++index] == 'e')
-//					&& (data[++index] == 'r')
-//					&& (data[++index] == 't')) {
-//						if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
-//							this.containsAssertKeyword = true;
-//							return TokenNameassert;
-//						} else {
-//							this.useAssertAsAnIndentifier = true;
-//							return TokenNameIdentifier;								
-//						}
-//					} else {
-//						return TokenNameIdentifier;
-//					}
-			default: 
-				return TokenNameIdentifier;
-		}
-	case 'b' : //boolean break byte
-		switch (length) {
-			case 4 :
-				if ((data[++index] == 'y') && (data[++index] == 't') && (data[++index] == 'e'))
-					return TokenNamebyte;
-				else
-					return TokenNameIdentifier;
-			case 5 :
-				if ((data[++index] == 'r')
-					&& (data[++index] == 'e')
-					&& (data[++index] == 'a')
-					&& (data[++index] == 'k'))
-					return TokenNamebreak;
-				else
-					return TokenNameIdentifier;
-			case 7 :
-				if ((data[++index] == 'o')
-					&& (data[++index] == 'o')
-					&& (data[++index] == 'l')
-					&& (data[++index] == 'e')
-					&& (data[++index] == 'a')
-					&& (data[++index] == 'n'))
-					return TokenNameboolean;
-				else
-					return TokenNameIdentifier;
-			default :
-				return TokenNameIdentifier;
-		}
-
-	case 'c' : //case char catch const class continue
-		switch (length) {
-			case 4 :
-				if (data[++index] == 'a')
-					if ((data[++index] == 's') && (data[++index] == 'e'))
-						return TokenNamecase;
-					else
-						return TokenNameIdentifier;
-				else
-					if ((data[index] == 'h') && (data[++index] == 'a') && (data[++index] == 'r'))
-						return TokenNamechar;
-					else
-						return TokenNameIdentifier;
-			case 5 :
-				if (data[++index] == 'a')
-					if ((data[++index] == 't') && (data[++index] == 'c') && (data[++index] == 'h'))
-						return TokenNamecatch;
-					else
-						return TokenNameIdentifier;
-				else
-					if (data[index] == 'l')
-						if ((data[++index] == 'a')
-							&& (data[++index] == 's')
-							&& (data[++index] == 's'))
-							return TokenNameclass;
-						else
-							return TokenNameIdentifier;
-					else if ((data[index] == 'o')
-						&& (data[++index] == 'n')
+		case 'a' :
+			if (length==8) {
+				  //abstract
+					if ((data[++index] == 'b')
 						&& (data[++index] == 's')
-						&& (data[++index] == 't'))
-						return TokenNameconst; //const is not used in java ???????
-					else
-						return TokenNameIdentifier;
-			case 8 :
-				if ((data[++index] == 'o')
-					&& (data[++index] == 'n')
-					&& (data[++index] == 't')
-					&& (data[++index] == 'i')
-					&& (data[++index] == 'n')
-					&& (data[++index] == 'u')
-					&& (data[++index] == 'e'))
-					return TokenNamecontinue;
-				else
-					return TokenNameIdentifier;
-			default :
-				return TokenNameIdentifier;
-		}
-
-	case 'd' : //default do double
-		switch (length) {
-			case 2 :
-				if ((data[++index] == 'o'))
-					return TokenNamedo;
-				else
-					return TokenNameIdentifier;
-			case 6 :
-				if (data[++index] == 'o')
-				{
-					if ( (data[++index] == 'u')
-					&& (data[++index] == 'b')
-					&& (data[++index] == 'l')
-					&& (data[++index] == 'e'))
-					return TokenNamedouble;
-				} else if (data[index] == 'e')
-				{
-					if ( (data[++index] == 'l')
-							&& (data[++index] == 'e')
-							&& (data[++index] == 't')
-							&& (data[++index] == 'e'))
-							return TokenNamedelete;
-				}
-				else
-					return TokenNameIdentifier;
-			case 7 :
-				if ((data[++index] == 'e')
-					&& (data[++index] == 'f')
-					&& (data[++index] == 'a')
-					&& (data[++index] == 'u')
-					&& (data[++index] == 'l')
-					&& (data[++index] == 't'))
-					return TokenNamedefault;
-				else
-					return TokenNameIdentifier;
-			case 8 :
-				if ((data[++index] == 'e')
-					&& (data[++index] == 'b')
-					&& (data[++index] == 'u')
-					&& (data[++index] == 'g')
-					&& (data[++index] == 'g')
-					&& (data[++index] == 'e')
-					&& (data[++index] == 'r'))
-					return TokenNamedebugger;
-				else
-					return TokenNameIdentifier;				default :
-				return TokenNameIdentifier;
-		}
-	case 'e' : //else extends
-		switch (length) {
-			case 4 :
-				if ((data[++index] == 'l') && (data[++index] == 's') && (data[++index] == 'e'))
-					return TokenNameelse;
-				else if ((data[index] == 'n')
-					&& (data[++index] == 'u')
-					&& (data[++index] == 'm')) {
-						if (this.sourceLevel >= ClassFileConstants.JDK1_5) {
-							return TokenNameenum;
+						&& (data[++index] == 't')
+						&& (data[++index] == 'r')
+						&& (data[++index] == 'a')
+						&& (data[++index] == 'c')
+						&& (data[++index] == 't')) {
+							if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+								this.containsAssertKeyword = true;
+								return TokenNameabstract;
+							} else {
+								this.useAssertAsAnIndentifier = true;
+								return TokenNameIdentifier;								
+							}
 						} else {
-							this.useEnumAsAnIndentifier = true;
+							return TokenNameIdentifier;
+						}
+			}
+			else 
+				return TokenNameIdentifier;
+		case 'b' : //boolean break byte
+			switch (length) {
+				case 4 :
+					if ((data[++index] == 'y') && (data[++index] == 't') && (data[++index] == 'e'))
+						if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+							return TokenNamebyte;
+						} else {
+							this.useAssertAsAnIndentifier = true;
 							return TokenNameIdentifier;								
 						}
-					} else {
-						return TokenNameIdentifier;
-					}
-			case 7 :
-				if ((data[++index] == 'x')
-					&& (data[++index] == 't')
-					&& (data[++index] == 'e')
-					&& (data[++index] == 'n')
-					&& (data[++index] == 'd')
-					&& (data[++index] == 's'))
-					return TokenNameextends;
-				else
-					return TokenNameIdentifier;
-			case 6 :
-				if ((data[++index] == 'x')
-					&& (data[++index] == 'p')
-					&& (data[++index] == 'o')
-					&& (data[++index] == 'r')
-					&& (data[++index] == 't'))
-					return TokenNameexport;
-				else
-					return TokenNameIdentifier;
-			default :
-				return TokenNameIdentifier;
-		}
-
-	case 'f' : //final finally float for false
-		switch (length) {
-			case 3 :
-				if ((data[++index] == 'o') && (data[++index] == 'r'))
-					return TokenNamefor;
-				else
-					return TokenNameIdentifier;
-			case 5 :
-				if (data[++index] == 'i')
-					if ((data[++index] == 'n')
-						&& (data[++index] == 'a')
-						&& (data[++index] == 'l')) {
-						return TokenNamefinal;
-					} else
-						return TokenNameIdentifier;
-				else
-					if (data[index] == 'l')
-						if ((data[++index] == 'o')
-							&& (data[++index] == 'a')
-							&& (data[++index] == 't'))
-							return TokenNamefloat;
-						else
-							return TokenNameIdentifier;
 					else
-						if ((data[index] == 'a')
-							&& (data[++index] == 'l')
-							&& (data[++index] == 's')
-							&& (data[++index] == 'e'))
-							return TokenNamefalse;
-						else
-							return TokenNameIdentifier;
-			case 7 :
-				if ((data[++index] == 'i')
-					&& (data[++index] == 'n')
-					&& (data[++index] == 'a')
-					&& (data[++index] == 'l')
-					&& (data[++index] == 'l')
-					&& (data[++index] == 'y'))
-					return TokenNamefinally;
-				else
-					return TokenNameIdentifier;
-
-			case 8 :
-				if ((data[++index] == 'u')
-					&& (data[++index] == 'n')
-					&& (data[++index] == 'c')
-					&& (data[++index] == 't')
-					&& (data[++index] == 'i')
-					&& (data[++index] == 'o')
-					&& (data[++index] == 'n'))
-					return TokenNamefunction;
-				else
-					return TokenNameIdentifier;
-
-			default :
-				return TokenNameIdentifier;
-		}
-	case 'g' : //goto
-		if (length == 4) {
-			if ((data[++index] == 'o')
-				&& (data[++index] == 't')
-				&& (data[++index] == 'o')) {
-				return TokenNamegoto;
-			}
-		} //no goto in java are allowed, so why java removes this keyword ???
-		return TokenNameIdentifier;
-
-	case 'i' : //if implements import instanceof int interface
-		switch (length) {
-			case 2 :
-				if (data[++index] == 'f')
-					return TokenNameif;
-				else if (data[index] == 'n')
-					return TokenNamein;
-				else
-					return TokenNameIdentifier;
-			case 3 :
-				if ((data[++index] == 'n') && (data[++index] == 't'))
-					return TokenNameint;
-				else
-					return TokenNameIdentifier;
-			case 6 :
-				if ((data[++index] == 'm')
-					&& (data[++index] == 'p')
-					&& (data[++index] == 'o')
-					&& (data[++index] == 'r')
-					&& (data[++index] == 't'))
-					return TokenNameimport;
-				else
-					return TokenNameIdentifier;
-			case 8 :
-				if ((data[++index] == 'n')
-					&& (data[++index] == 'f')
-					&& (data[++index] == 'i')
-					&& (data[++index] == 'n')
-					&& (data[++index] == 'i')
-					&& (data[++index] == 't')
-					&& (data[++index] == 'y'))
-					return TokenNameinfinity;
-				else
-					return TokenNameIdentifier;
-			case 9 :
-				if ((data[++index] == 'n')
-					&& (data[++index] == 't')
-					&& (data[++index] == 'e')
-					&& (data[++index] == 'r')
-					&& (data[++index] == 'f')
-					&& (data[++index] == 'a')
-					&& (data[++index] == 'c')
-					&& (data[++index] == 'e'))
-					return TokenNameinterface;
-				else
-					return TokenNameIdentifier;
-			case 10 :
-				if (data[++index] == 'm')
-					if ((data[++index] == 'p')
+						return TokenNameIdentifier;
+				case 5 :
+					if ((data[++index] == 'r')
+						&& (data[++index] == 'e')
+						&& (data[++index] == 'a')
+						&& (data[++index] == 'k'))
+						return TokenNamebreak;
+					else
+						return TokenNameIdentifier;
+				case 7 :
+					if ((data[++index] == 'o')
+						&& (data[++index] == 'o')
 						&& (data[++index] == 'l')
 						&& (data[++index] == 'e')
-						&& (data[++index] == 'm')
-						&& (data[++index] == 'e')
-						&& (data[++index] == 'n')
-						&& (data[++index] == 't')
-						&& (data[++index] == 's'))
-						return TokenNameimplements;
-					else
-						return TokenNameIdentifier;
-				else
-					if ((data[index] == 'n')
-						&& (data[++index] == 's')
-						&& (data[++index] == 't')
 						&& (data[++index] == 'a')
-						&& (data[++index] == 'n')
-						&& (data[++index] == 'c')
-						&& (data[++index] == 'e')
-						&& (data[++index] == 'o')
-						&& (data[++index] == 'f'))
-						return TokenNameinstanceof;
+						&& (data[++index] == 'n'))
+						if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+							return TokenNameboolean;
+						} else {
+							this.useAssertAsAnIndentifier = true;
+							return TokenNameIdentifier;								
+						}
+
 					else
 						return TokenNameIdentifier;
-
-			default :
-				return TokenNameIdentifier;
-		}
-
-	case 'l' : //long
-		if (length == 4) {
-			if ((data[++index] == 'o')
-				&& (data[++index] == 'n')
-				&& (data[++index] == 'g')) {
-				return TokenNamelong;
+				default :
+					return TokenNameIdentifier;
 			}
-		}
-		return TokenNameIdentifier;
 
-	case 'n' : //native new null
-		switch (length) {
-			case 3 :
-				if ((data[++index] == 'e') && (data[++index] == 'w'))
-					return TokenNamenew;
-				else
-					return TokenNameIdentifier;
-			case 4 :
-				if ((data[++index] == 'u') && (data[++index] == 'l') && (data[++index] == 'l'))
-					return TokenNamenull;
-				else
-					return TokenNameIdentifier;
-			case 6 :
-				if ((data[++index] == 'a')
-					&& (data[++index] == 't')
-					&& (data[++index] == 'i')
-					&& (data[++index] == 'v')
-					&& (data[++index] == 'e')) {
-					return TokenNamenative;
-				} else
-					return TokenNameIdentifier;
-			default :
-				return TokenNameIdentifier;
-		}
-
-	case 'p' : //package private protected public
-		switch (length) {
-			case 6 :
-				if ((data[++index] == 'u')
-					&& (data[++index] == 'b')
-					&& (data[++index] == 'l')
-					&& (data[++index] == 'i')
-					&& (data[++index] == 'c')) {
-					return TokenNamepublic;
-				} else
-					return TokenNameIdentifier;
-			case 7 :
-				if (data[++index] == 'a')
-					if ((data[++index] == 'c')
-						&& (data[++index] == 'k')
-						&& (data[++index] == 'a')
-						&& (data[++index] == 'g')
-						&& (data[++index] == 'e'))
-						return TokenNamepackage;
+		case 'c' : //case char catch const class continue
+			switch (length) {
+				case 4 :
+					if (data[++index] == 'a')
+						if ((data[++index] == 's') && (data[++index] == 'e'))
+							return TokenNamecase;
+						else
+							return TokenNameIdentifier;
 					else
-						return TokenNameIdentifier;
-				else
-					if ((data[index] == 'r')
+						if ((data[index] == 'h') && (data[++index] == 'a') && (data[++index] == 'r'))
+							if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+								return TokenNamechar;
+							} else {
+								this.useAssertAsAnIndentifier = true;
+								return TokenNameIdentifier;								
+							}
+						else
+							return TokenNameIdentifier;
+				case 5 :
+					if (data[++index] == 'a')
+						if ((data[++index] == 't') && (data[++index] == 'c') && (data[++index] == 'h'))
+							return TokenNamecatch;
+						else
+							return TokenNameIdentifier;
+					else
+						if (data[index] == 'l')
+							if ((data[++index] == 'a')
+								&& (data[++index] == 's')
+								&& (data[++index] == 's'))
+								if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+									return TokenNameclass;
+								} else {
+									this.useAssertAsAnIndentifier = true;
+									return TokenNameIdentifier;								
+								}
+							else
+								return TokenNameIdentifier;
+						else if ((data[index] == 'o')
+							&& (data[++index] == 'n')
+							&& (data[++index] == 's')
+							&& (data[++index] == 't'))
+							if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+								return TokenNameconst;
+							} else {
+								this.useAssertAsAnIndentifier = true;
+								return TokenNameIdentifier;								
+							}
+						else
+							return TokenNameIdentifier;
+				case 8 :
+					if ((data[++index] == 'o')
+						&& (data[++index] == 'n')
+						&& (data[++index] == 't')
 						&& (data[++index] == 'i')
-						&& (data[++index] == 'v')
-						&& (data[++index] == 'a')
-						&& (data[++index] == 't')
-						&& (data[++index] == 'e')) {
-						return TokenNameprivate;
-					} else
-						return TokenNameIdentifier;
-			case 9 :
-				if ((data[++index] == 'r')
-					&& (data[++index] == 'o')
-					&& (data[++index] == 't')
-					&& (data[++index] == 'e')
-					&& (data[++index] == 'c')
-					&& (data[++index] == 't')
-					&& (data[++index] == 'e')
-					&& (data[++index] == 'd')) {
-					return TokenNameprotected;
-				} else
-					return TokenNameIdentifier;
-
-			default :
-				return TokenNameIdentifier;
-		}
-
-	case 'r' : //return
-		if (length == 6) {
-			if ((data[++index] == 'e')
-				&& (data[++index] == 't')
-				&& (data[++index] == 'u')
-				&& (data[++index] == 'r')
-				&& (data[++index] == 'n')) {
-				return TokenNamereturn;
-			}
-		}
-		return TokenNameIdentifier;
-
-	case 's' : //short static super switch synchronized strictfp
-		switch (length) {
-			case 5 :
-				if (data[++index] == 'h')
-					if ((data[++index] == 'o') && (data[++index] == 'r') && (data[++index] == 't'))
-						return TokenNameshort;
+						&& (data[++index] == 'n')
+						&& (data[++index] == 'u')
+						&& (data[++index] == 'e'))
+						return TokenNamecontinue;
 					else
 						return TokenNameIdentifier;
-				else
-					if ((data[index] == 'u')
-						&& (data[++index] == 'p')
+				default :
+					return TokenNameIdentifier;
+			}
+
+		case 'd' : //default do double
+			switch (length) {
+				case 2 :
+					if ((data[++index] == 'o'))
+						return TokenNamedo;
+					else
+						return TokenNameIdentifier;
+				case 6 :
+					if (data[++index] == 'o')
+					{		
+						if ((data[++index] == 'u')
+						&& (data[++index] == 'b')
+						&& (data[++index] == 'l')
+						&& (data[++index] == 'e'))
+							if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+								return TokenNamedouble;
+							} else {
+								this.useAssertAsAnIndentifier = true;
+								return TokenNameIdentifier;								
+							}
+					else
+						return TokenNameIdentifier;
+					}
+					else if (data[index]=='e')
+					{
+						if ((data[++index] == 'l')
+								&& (data[++index] == 'e')
+								&& (data[++index] == 't')
+								&& (data[++index] == 'e'))
+								return TokenNamedelete;
+							else
+								return TokenNameIdentifier;
+						
+					}
+					else
+						return TokenNameIdentifier;
+				case 7 :
+					if ((data[++index] == 'e')
+						&& (data[++index] == 'f')
+						&& (data[++index] == 'a')
+						&& (data[++index] == 'u')
+						&& (data[++index] == 'l')
+						&& (data[++index] == 't'))
+						return TokenNamedefault;
+					else
+						return TokenNameIdentifier;
+				case 8 :
+					if ((data[++index] == 'e')
+						&& (data[++index] == 'b')
+						&& (data[++index] == 'u')
+						&& (data[++index] == 'g')
+						&& (data[++index] == 'g')
 						&& (data[++index] == 'e')
 						&& (data[++index] == 'r'))
-						return TokenNamesuper;
+						return TokenNamedebugger;
+					else
+						return TokenNameIdentifier;
+				default :
+					return TokenNameIdentifier;
+			}
+		case 'e' : //else extends
+			switch (length) {
+				case 4 :
+					if ((data[++index] == 'l') && (data[++index] == 's') && (data[++index] == 'e'))
+						return TokenNameelse;
+					else if ((data[index] == 'n')
+						&& (data[++index] == 'u')
+						&& (data[++index] == 'm')) {
+							if (this.sourceLevel >= ClassFileConstants.JDK1_5) {
+								if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+									return TokenNameenum;
+								} else {
+									this.useAssertAsAnIndentifier = true;
+									return TokenNameIdentifier;								
+								}
+							} else {
+								this.useEnumAsAnIndentifier = true;
+								return TokenNameIdentifier;								
+							}
+						} else {
+							return TokenNameIdentifier;
+						}
+				case 6 :
+					if ((data[++index] == 'x')
+						&& (data[++index] == 'p')
+						&& (data[++index] == 'o')
+						&& (data[++index] == 'r')
+						&& (data[++index] == 't'))
+						if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+							return TokenNameexport;
+						} else {
+							this.useAssertAsAnIndentifier = true;
+							return TokenNameIdentifier;								
+						}
+					else
+						return TokenNameIdentifier;
+				case 7 :
+					if ((data[++index] == 'x')
+						&& (data[++index] == 't')
+						&& (data[++index] == 'e')
+						&& (data[++index] == 'n')
+						&& (data[++index] == 'd')
+						&& (data[++index] == 's'))
+						if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+							return TokenNameextends;
+						} else {
+							this.useAssertAsAnIndentifier = true;
+							return TokenNameIdentifier;								
+						}
+					else
+						return TokenNameIdentifier;
+				default :
+					return TokenNameIdentifier;
+			}
+
+		case 'f' : //final finally float for false
+			switch (length) {
+				case 3 :
+					if ((data[++index] == 'o') && (data[++index] == 'r'))
+						return TokenNamefor;
+					else
+						return TokenNameIdentifier;
+				case 5 :
+					if (data[++index] == 'i')
+						if ((data[++index] == 'n')
+							&& (data[++index] == 'a')
+							&& (data[++index] == 'l')) {
+							if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+								return TokenNamefinal;
+							} else {
+								this.useAssertAsAnIndentifier = true;
+								return TokenNameIdentifier;								
+							}
+						} else
+							return TokenNameIdentifier;
+					else
+						if (data[index] == 'l')
+							if ((data[++index] == 'o')
+								&& (data[++index] == 'a')
+								&& (data[++index] == 't'))
+								if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+									return TokenNamefloat;
+								} else {
+									this.useAssertAsAnIndentifier = true;
+									return TokenNameIdentifier;								
+								}
+							else
+								return TokenNameIdentifier;
+						else
+							if ((data[index] == 'a')
+								&& (data[++index] == 'l')
+								&& (data[++index] == 's')
+								&& (data[++index] == 'e'))
+								return TokenNamefalse;
+							else
+								return TokenNameIdentifier;
+				case 7 :
+					if ((data[++index] == 'i')
+						&& (data[++index] == 'n')
+						&& (data[++index] == 'a')
+						&& (data[++index] == 'l')
+						&& (data[++index] == 'l')
+						&& (data[++index] == 'y'))
+						return TokenNamefinally;
 					else
 						return TokenNameIdentifier;
 
-			case 6 :
-				if (data[++index] == 't')
+				case 8 :
+					if ((data[++index] == 'u')
+						&& (data[++index] == 'n')
+						&& (data[++index] == 'c')
+						&& (data[++index] == 't')
+						&& (data[++index] == 'i')
+						&& (data[++index] == 'o')
+						&& (data[++index] == 'n'))
+						return TokenNamefunction;
+					else
+						return TokenNameIdentifier;
+
+				default :
+					return TokenNameIdentifier;
+			}
+		case 'g' : //goto
+			if (length == 4) {
+				if ((data[++index] == 'o')
+					&& (data[++index] == 't')
+					&& (data[++index] == 'o')) {
+					return TokenNamegoto;
+				}
+			} //no goto in java are allowed, so why java removes this keyword ???
+			return TokenNameIdentifier;
+
+		case 'i' : //if implements import instanceof int interface
+			switch (length) {
+				case 2 :
+					if (data[++index] == 'f')
+						return TokenNameif;
+					else if (data[index] == 'n')
+						return TokenNamein;
+					else
+						return TokenNameIdentifier;
+				case 3 :
+					if ((data[++index] == 'n') && (data[++index] == 't'))
+						if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+							return TokenNameint;
+						} else {
+							this.useAssertAsAnIndentifier = true;
+							return TokenNameIdentifier;								
+						}
+					else
+						return TokenNameIdentifier;
+				case 6 :
+					if ((data[++index] == 'm')
+						&& (data[++index] == 'p')
+						&& (data[++index] == 'o')
+						&& (data[++index] == 'r')
+						&& (data[++index] == 't'))
+						if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+							return TokenNameimport;
+						} else {
+							this.useAssertAsAnIndentifier = true;
+							return TokenNameIdentifier;								
+						}
+					else
+						return TokenNameIdentifier;
+				case 8 :
+					if ((data[++index] == 'n')
+						&& (data[++index] == 'f')
+						&& (data[++index] == 'i')
+						&& (data[++index] == 'n')
+						&& (data[++index] == 'i')
+						&& (data[++index] == 't')
+						&& (data[++index] == 'y'))
+						return TokenNameinfinity;
+					else
+						return TokenNameIdentifier;
+				case 9 :
+					if ((data[++index] == 'n')
+						&& (data[++index] == 't')
+						&& (data[++index] == 'e')
+						&& (data[++index] == 'r')
+						&& (data[++index] == 'f')
+						&& (data[++index] == 'a')
+						&& (data[++index] == 'c')
+						&& (data[++index] == 'e'))
+						if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+							return TokenNameinterface;
+						} else {
+							this.useAssertAsAnIndentifier = true;
+							return TokenNameIdentifier;								
+						}
+					else
+						return TokenNameIdentifier;
+				case 10 :
+					if (data[++index] == 'm')
+						if ((data[++index] == 'p')
+							&& (data[++index] == 'l')
+							&& (data[++index] == 'e')
+							&& (data[++index] == 'm')
+							&& (data[++index] == 'e')
+							&& (data[++index] == 'n')
+							&& (data[++index] == 't')
+							&& (data[++index] == 's'))
+							if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+								return TokenNameimplements;
+							} else {
+								this.useAssertAsAnIndentifier = true;
+								return TokenNameIdentifier;								
+							}
+						else
+							return TokenNameIdentifier;
+					else
+						if ((data[index] == 'n')
+							&& (data[++index] == 's')
+							&& (data[++index] == 't')
+							&& (data[++index] == 'a')
+							&& (data[++index] == 'n')
+							&& (data[++index] == 'c')
+							&& (data[++index] == 'e')
+							&& (data[++index] == 'o')
+							&& (data[++index] == 'f'))
+							return TokenNameinstanceof;
+						else
+							return TokenNameIdentifier;
+
+				default :
+					return TokenNameIdentifier;
+			}
+
+		case 'l' : //long
+			if (length == 4) {
+				if ((data[++index] == 'o')
+					&& (data[++index] == 'n')
+					&& (data[++index] == 'g')) {
+					if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+						return TokenNamelong;
+					} else {
+						this.useAssertAsAnIndentifier = true;
+						return TokenNameIdentifier;								
+					}
+				}
+			}
+			return TokenNameIdentifier;
+
+		case 'n' : //native new null
+			switch (length) {
+				case 3 :
+					if ((data[++index] == 'e') && (data[++index] == 'w'))
+						return TokenNamenew;
+					else
+						return TokenNameIdentifier;
+				case 4 :
+					if ((data[++index] == 'u') && (data[++index] == 'l') && (data[++index] == 'l'))
+						return TokenNamenull;
+					else
+						return TokenNameIdentifier;
+				case 6 :
 					if ((data[++index] == 'a')
 						&& (data[++index] == 't')
 						&& (data[++index] == 'i')
-						&& (data[++index] == 'c')) {
-						return TokenNamestatic;
+						&& (data[++index] == 'v')
+						&& (data[++index] == 'e')) {
+						if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+							return TokenNamenative;
+						} else {
+							this.useAssertAsAnIndentifier = true;
+							return TokenNameIdentifier;								
+						}
 					} else
 						return TokenNameIdentifier;
-				else
-					if ((data[index] == 'w')
+				default :
+					return TokenNameIdentifier;
+			}
+
+		case 'p' : //package private protected public
+			switch (length) {
+				case 6 :
+					if ((data[++index] == 'u')
+						&& (data[++index] == 'b')
+						&& (data[++index] == 'l')
 						&& (data[++index] == 'i')
+						&& (data[++index] == 'c')) {
+						if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+							return TokenNamepublic;
+						} else {
+							this.useAssertAsAnIndentifier = true;
+							return TokenNameIdentifier;								
+						}
+					} else
+						return TokenNameIdentifier;
+				case 7 :
+					if (data[++index] == 'a')
+						if ((data[++index] == 'c')
+							&& (data[++index] == 'k')
+							&& (data[++index] == 'a')
+							&& (data[++index] == 'g')
+							&& (data[++index] == 'e'))
+							if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+								return TokenNamepackage;
+							} else {
+								this.useAssertAsAnIndentifier = true;
+								return TokenNameIdentifier;								
+							}
+						else
+							return TokenNameIdentifier;
+					else
+						if ((data[index] == 'r')
+							&& (data[++index] == 'i')
+							&& (data[++index] == 'v')
+							&& (data[++index] == 'a')
+							&& (data[++index] == 't')
+							&& (data[++index] == 'e')) {
+							if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+								return TokenNameprivate;
+							} else {
+								this.useAssertAsAnIndentifier = true;
+								return TokenNameIdentifier;								
+							}
+						} else
+							return TokenNameIdentifier;
+				case 9 :
+					if ((data[++index] == 'r')
+						&& (data[++index] == 'o')
 						&& (data[++index] == 't')
+						&& (data[++index] == 'e')
 						&& (data[++index] == 'c')
-						&& (data[++index] == 'h'))
-						return TokenNameswitch;
+						&& (data[++index] == 't')
+						&& (data[++index] == 'e')
+						&& (data[++index] == 'd')) {
+						if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+							return TokenNameprotected;
+						} else {
+							this.useAssertAsAnIndentifier = true;
+							return TokenNameIdentifier;								
+						}
+					} else
+						return TokenNameIdentifier;
+
+				default :
+					return TokenNameIdentifier;
+			}
+
+		case 'r' : //return
+			if (length == 6) {
+				if ((data[++index] == 'e')
+					&& (data[++index] == 't')
+					&& (data[++index] == 'u')
+					&& (data[++index] == 'r')
+					&& (data[++index] == 'n')) {
+					return TokenNamereturn;
+				}
+			}
+			return TokenNameIdentifier;
+
+		case 's' : //short static super switch synchronized strictfp
+			switch (length) {
+				case 5 :
+					if (data[++index] == 'h')
+						if ((data[++index] == 'o') && (data[++index] == 'r') && (data[++index] == 't'))
+							if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+								return TokenNameshort;
+							} else {
+								this.useAssertAsAnIndentifier = true;
+								return TokenNameIdentifier;								
+							}
+						else
+							return TokenNameIdentifier;
+					else
+						if ((data[index] == 'u')
+							&& (data[++index] == 'p')
+							&& (data[++index] == 'e')
+							&& (data[++index] == 'r'))
+							if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+								return TokenNamesuper;
+							} else {
+								this.useAssertAsAnIndentifier = true;
+								return TokenNameIdentifier;								
+							}
+						else
+							return TokenNameIdentifier;
+
+				case 6 :
+					if (data[++index] == 't')
+						if ((data[++index] == 'a')
+							&& (data[++index] == 't')
+							&& (data[++index] == 'i')
+							&& (data[++index] == 'c')) {
+							if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+								return TokenNamestatic;
+							} else {
+								this.useAssertAsAnIndentifier = true;
+								return TokenNameIdentifier;								
+							}
+						} else
+							return TokenNameIdentifier;
+					else
+						if ((data[index] == 'w')
+							&& (data[++index] == 'i')
+							&& (data[++index] == 't')
+							&& (data[++index] == 'c')
+							&& (data[++index] == 'h'))
+							return TokenNameswitch;
+						else
+							return TokenNameIdentifier;
+				case 8 :
+					if ((data[++index] == 't')
+						&& (data[++index] == 'r')
+						&& (data[++index] == 'i')
+						&& (data[++index] == 'c')
+						&& (data[++index] == 't')
+						&& (data[++index] == 'f')
+						&& (data[++index] == 'p'))
+						if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+							return TokenNamestrictfp;
+						} else {
+							this.useAssertAsAnIndentifier = true;
+							return TokenNameIdentifier;								
+						}
 					else
 						return TokenNameIdentifier;
-			case 8 :
-				if ((data[++index] == 't')
-					&& (data[++index] == 'r')
-					&& (data[++index] == 'i')
-					&& (data[++index] == 'c')
-					&& (data[++index] == 't')
-					&& (data[++index] == 'f')
-					&& (data[++index] == 'p'))
-					return TokenNamestrictfp;
-				else
+				case 12 :
+					if ((data[++index] == 'y')
+						&& (data[++index] == 'n')
+						&& (data[++index] == 'c')
+						&& (data[++index] == 'h')
+						&& (data[++index] == 'r')
+						&& (data[++index] == 'o')
+						&& (data[++index] == 'n')
+						&& (data[++index] == 'i')
+						&& (data[++index] == 'z')
+						&& (data[++index] == 'e')
+						&& (data[++index] == 'd')) {
+						if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+							return TokenNamesynchronized;
+						} else {
+							this.useAssertAsAnIndentifier = true;
+							return TokenNameIdentifier;								
+						}
+					} else
+						return TokenNameIdentifier;
+				default :
 					return TokenNameIdentifier;
-			case 12 :
-				if ((data[++index] == 'y')
-					&& (data[++index] == 'n')
-					&& (data[++index] == 'c')
-					&& (data[++index] == 'h')
-					&& (data[++index] == 'r')
-					&& (data[++index] == 'o')
-					&& (data[++index] == 'n')
+			}
+
+		case 't' : //try throw throws transient this true
+			switch (length) {
+				case 3 :
+					if ((data[++index] == 'r') && (data[++index] == 'y'))
+						return TokenNametry;
+					else
+						return TokenNameIdentifier;
+				case 4 :
+					if (data[++index] == 'h') 
+						if ((data[++index] == 'i') && (data[++index] == 's'))
+							return TokenNamethis;
+						else
+							return TokenNameIdentifier;
+					else
+						if ((data[index] == 'r') && (data[++index] == 'u') && (data[++index] == 'e'))
+							return TokenNametrue;
+						else
+							return TokenNameIdentifier;
+				case 5 :
+					if ((data[++index] == 'h')
+						&& (data[++index] == 'r')
+						&& (data[++index] == 'o')
+						&& (data[++index] == 'w'))
+						return TokenNamethrow;
+					else
+						return TokenNameIdentifier;
+				case 6 :
+					if ((data[++index] == 'h')
+						&& (data[++index] == 'r')
+						&& (data[++index] == 'o')
+						&& (data[++index] == 'w')
+						&& (data[++index] == 's'))
+						if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+							return TokenNamethrows;
+						} else {
+							this.useAssertAsAnIndentifier = true;
+							return TokenNameIdentifier;								
+						}
+					else  
+						if ((data[index] == 'y')
+								&& (data[++index] == 'p')
+								&& (data[++index] == 'e')
+								&& (data[++index] == 'o')
+								&& (data[++index] == 'f'))
+								return TokenNametypeof;
+					else
+						return TokenNameIdentifier;
+				case 9 :
+					if ((data[++index] == 'r')
+						&& (data[++index] == 'a')
+						&& (data[++index] == 'n')
+						&& (data[++index] == 's')
+						&& (data[++index] == 'i')
+						&& (data[++index] == 'e')
+						&& (data[++index] == 'n')
+						&& (data[++index] == 't')) {
+						if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+							return TokenNametransient;
+						} else {
+							this.useAssertAsAnIndentifier = true;
+							return TokenNameIdentifier;								
+						}
+					} else
+						return TokenNameIdentifier;
+
+				default :
+					return TokenNameIdentifier;
+			}
+
+		case 'u' : //goto
+			if (length == 9) {
+				if ((data[++index] == 'n')
+					&& (data[++index] == 'd')
+					&& (data[++index] == 'e')
+					&& (data[++index] == 'f')
 					&& (data[++index] == 'i')
-					&& (data[++index] == 'z')
+					&& (data[++index] == 'n')
 					&& (data[++index] == 'e')
 					&& (data[++index] == 'd')) {
-					return TokenNamesynchronized;
-				} else
-					return TokenNameIdentifier;
-			default :
-				return TokenNameIdentifier;
-		}
+					return TokenNameundefined;
+				}
+			} //no goto in java are allowed, so why java removes this keyword ???
+			return TokenNameIdentifier;
 
-	case 't' : //try throw throws transient this true
-		switch (length) {
+		case 'v' : //void volatile
+			switch (length) {
 			case 3 :
-				if ((data[++index] == 'r') && (data[++index] == 'y'))
-					return TokenNametry;
+				if ((data[++index] == 'a')  && (data[++index] == 'r'))
+					return TokenNamevar;
 				else
 					return TokenNameIdentifier;
-			case 4 :
-				if (data[++index] == 'h') 
-					if ((data[++index] == 'i') && (data[++index] == 's'))
-						return TokenNamethis;
-					else
-						return TokenNameIdentifier;
-				else
-					if ((data[index] == 'r') && (data[++index] == 'u') && (data[++index] == 'e'))
-						return TokenNametrue;
-					else
-						return TokenNameIdentifier;
-			case 5 :
-				if ((data[++index] == 'h')
-					&& (data[++index] == 'r')
-					&& (data[++index] == 'o')
-					&& (data[++index] == 'w'))
-					return TokenNamethrow;
-				else
-					return TokenNameIdentifier;
-			case 6 :
-				if ((data[++index] == 'h')
-					&& (data[++index] == 'r')
-					&& (data[++index] == 'o')
-					&& (data[++index] == 'w')
-					&& (data[++index] == 's'))
-					return TokenNamethrows;
-				if ((data[index] == 'y')
-						&& (data[++index] == 'p')
-						&& (data[++index] == 'e')
-						&& (data[++index] == 'o')
-						&& (data[++index] == 'f'))
-						return TokenNametypeof;
-				else
-					return TokenNameIdentifier;
-			case 9 :
-				if ((data[++index] == 'r')
-					&& (data[++index] == 'a')
-					&& (data[++index] == 'n')
-					&& (data[++index] == 's')
-					&& (data[++index] == 'i')
-					&& (data[++index] == 'e')
-					&& (data[++index] == 'n')
-					&& (data[++index] == 't')) {
-					return TokenNametransient;
-				} else
-					return TokenNameIdentifier;
-
-			default :
-				return TokenNameIdentifier;
-		}
-
-	case 'u' : //goto
-		if (length == 9) {
-			if ((data[++index] == 'n')
-				&& (data[++index] == 'd')
-				&& (data[++index] == 'e')
-				&& (data[++index] == 'f')
-				&& (data[++index] == 'i')
-				&& (data[++index] == 'n')
-				&& (data[++index] == 'e')
-				&& (data[++index] == 'd')) {
-				return TokenNameundefined;
-			}
-		} 
-		return TokenNameIdentifier;
-
-
-	case 'v' : //void volatile
-		switch (length) {
-		case 3 :
-			if ((data[++index] == 'a')  && (data[++index] == 'r'))
-				return TokenNamevar;
-			else
-				return TokenNameIdentifier;
 			case 4 :
 				if ((data[++index] == 'o') && (data[++index] == 'i') && (data[++index] == 'd'))
 					return TokenNamevoid;
 				else
 					return TokenNameIdentifier;
-			case 8 :
-				if ((data[++index] == 'o')
-					&& (data[++index] == 'l')
-					&& (data[++index] == 'a')
-					&& (data[++index] == 't')
-					&& (data[++index] == 'i')
-					&& (data[++index] == 'l')
-					&& (data[++index] == 'e')) {
-					return TokenNamevolatile;
-				} else
+				case 8 :
+					if ((data[++index] == 'o')
+						&& (data[++index] == 'l')
+						&& (data[++index] == 'a')
+						&& (data[++index] == 't')
+						&& (data[++index] == 'i')
+						&& (data[++index] == 'l')
+						&& (data[++index] == 'e')) {
+						if (this.sourceLevel >= ClassFileConstants.JDK1_4) {
+							return TokenNamevolatile;
+						} else {
+							this.useAssertAsAnIndentifier = true;
+							return TokenNameIdentifier;								
+						}
+					} else
+						return TokenNameIdentifier;
+
+				default :
 					return TokenNameIdentifier;
+			}
 
-			default :
-				return TokenNameIdentifier;
-		}
-
-	case 'w' : //while widefp
-		switch (length) {
-		case 4 :
-			if ((data[++index] == 'i')
-				&& (data[++index] == 't')
-				&& (data[++index] == 'h'))
-				return TokenNamewith;
-			else
-				return TokenNameIdentifier;
+		case 'w' : //while widefp
+			switch (length) {
+			case 4 :
+				if ((data[++index] == 'i')
+					&& (data[++index] == 't')
+					&& (data[++index] == 'h'))
+					return TokenNamewith;
+				else
+					return TokenNameIdentifier;
 			case 5 :
 				if ((data[++index] == 'h')
 					&& (data[++index] == 'i')
@@ -3348,17 +3492,17 @@ private int internalScanIdentifierOrKeyword(int index, int length, char[] data) 
 					return TokenNamewhile;
 				else
 					return TokenNameIdentifier;
-				//case 6:if ( (data[++index] =='i') && (data[++index]=='d') && (data[++index]=='e') && (data[++index]=='f')&& (data[++index]=='p'))
-				//return TokenNamewidefp ;
-				//else
-				//return TokenNameIdentifier;
-			default :
-				return TokenNameIdentifier;
-		}
+					//case 6:if ( (data[++index] =='i') && (data[++index]=='d') && (data[++index]=='e') && (data[++index]=='f')&& (data[++index]=='p'))
+					//return TokenNamewidefp ;
+					//else
+					//return TokenNameIdentifier;
+				default :
+					return TokenNameIdentifier;
+			}
 
-	default :
-		return TokenNameIdentifier;
-}
+		default :
+			return TokenNameIdentifier;
+	}
 }
 
 
