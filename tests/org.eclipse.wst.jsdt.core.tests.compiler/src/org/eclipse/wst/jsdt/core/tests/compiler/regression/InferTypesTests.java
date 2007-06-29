@@ -92,7 +92,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 	}
 	
 	
-	
+	/*
 	public void test005() {
 		CompilationUnitDeclaration declaration = this.runInferTest(
 			"dojo.provide(\"org.brcp.Bundle\");\n"+
@@ -106,17 +106,17 @@ public class InferTypesTests extends AbstractRegressionTest {
 			
 		 );
 	}
-	
+	*/
 	
 	public void test010() {
 		CompilationUnitDeclaration declaration = this.runInferTest(
 			      "function Bob(firstname, lastname) {\n" +
-			      "   var Firstname = firstname;\n" +
-			      "   var Lastname = lastname;\n" +
+			      "   this.Firstname = firstname;\n" +
+			      "   this.Lastname = lastname;\n" +
 			      "}\n" +
-			      "Bob.prototype.name = function () {return this.Fistname + this.Lastname;};\n",
+			      "Bob.prototype.name = function () {return this.Firstname + this.Lastname;};\n",
 			"X.js",
-			"class Bob extends Object{\n  String Firstname;\n  String Firstname;\n  Bob()\n}\n",
+			"class Bob extends Object{\n  String Firstname;\n  String Lastname;\n  String name()\n  Bob(firstname, lastname)\n}\n",
 			getDefaultOptions()
 			
 		 );
@@ -258,7 +258,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 					+ " */\n"
 				+"function MyClass(){}"   
 
-				+" var box= { \n"+
+				+"MyClass.prototype = { \n"+
 					"/**\n" +
 					"   * @memberOf MyClass\n" +
 					"   * @type Number\n" +
@@ -311,5 +311,192 @@ public class InferTypesTests extends AbstractRegressionTest {
 				
 			 );
 		}
-	
+		
+		/**
+		 * Test Object literal local variable declaration
+		 */
+		public void test061() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+					"var foo = {"+ 
+					"  bar: \"bar\","+
+					"  bar2: function(){}"+
+					"}",
+				"X.js",
+				"class ___anonymous0 extends Object{\n  String bar;\n  void bar2()\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		
+		/**
+		 * Test Object literal assignment
+		 */
+		public void test062() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+					"var foo;"+
+					"foo = {"+ 
+					"  bar: \"bar\","+
+					"  bar2: function(){}"+
+					"}",
+				"X.js",
+				"class ___anonymous0 extends Object{\n  String bar;\n  void bar2()\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		
+		/**
+		 * Test nested Object literals
+		 */
+		public void test063() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+					"var foo = {"+ 
+					"  bar: \"bar\","+
+					"  bar2: {" +
+					"    bar3: \"bar3\"" +
+					"  }"+
+					"}",
+				"X.js",
+				"class ___anonymous0 extends Object{\n  String bar;\n  ___anonymous1 bar2;\n}\n"+
+				"class ___anonymous1 extends Object{\n  String bar3;\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		
+		/**
+		 * Runtime simple member assignment to Object literal
+		 */
+		public void test064() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+					"var ns = {};" + 
+					"ns.foo = \"\";" +
+					"ns.bar = function(){" +
+					"  return \"\";" +
+					"}",
+				"X.js",
+				"class ___anonymous0 extends Object{\n  String foo;\n  String bar()\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		
+		/**
+		 * Runtime complex member (setting to an Object literal) asignment to Object literal 
+		 */
+		public void test065() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+					"var ns = {};"+ 
+					"ns.foo = {" +
+					"  bar: \"\""+
+					"};",
+				"X.js",
+				"class ___anonymous0 extends Object{\n  ___anonymous1 foo;\n}\n"+
+				"class ___anonymous1 extends Object{\n  String bar;\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		
+		/**
+		 * Assign Object Literal to prototype
+		 */
+		public void test066() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+					"function foo(){"+
+					"};"+
+					"foo.prototype = {"+
+					"  bar: \"\""+ 
+					"}",
+				"X.js",
+				"class foo extends Object{\n  String bar;\n  foo()\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		
+		/**
+		 * Assign Object Literal to a prototype member
+		 */
+		public void test067() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+					"function foo(){"+
+					"};"+
+					"foo.prototype.bar = {"+
+					"  bar2: \"\""+ 
+					"}",
+				"X.js",
+				"class foo extends Object{\n  ___anonymous0 bar;\n  foo()\n}\n"+
+				"class ___anonymous0 extends Object{\n  String bar2;\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		
+		/**
+		 * namespaced type (new "class" nested inside an Object Literal)
+		 */
+		public void test068() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+					"var ns = {};"+ 
+					"ns.foo = function(){" +
+					"};" +
+					"ns.foo.prototype.bar = \"\";" +
+					"ns.foo.prototype.bar2 = function(){" +
+					"  return \"\";" +
+					"}",
+				"X.js",
+				"class ___anonymous0 extends Object{\n  ns.foo foo()\n}\n"+
+				"class foo extends Object{\n  String bar;\n  String bar2();\n  foo()\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		
+		/**
+		 * namespaced type (new "class" nested inside an Object Literal)
+		 */
+		public void test069() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+					"var ns1 = {" +
+					"  ns2: {}" +
+					"};"+ 
+					"ns1.ns2.foo = function(){" +
+					"};" +
+					"ns1.ns2.foo.prototype.bar = \"\";" +
+					"ns1.ns2.foo.prototype.bar2 = function(){" +
+					"  return \"\";" +
+					"}",
+				"X.js",
+				"class ___anonymous0 extends Object{\n  _anonymous1 n2;\n}\n"+
+				"class ___anonymous1 extends Object{\n  ns1.ns2.foo foo()\n}\n"+
+				"class foo extends Object{\n  String bar;\n  String bar2();\n  foo()\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		
+		/*
+		 * 
+		 */
+		public void test070() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+					"var foo = {" +
+					"  a: \"\"," +
+					"  b: function(){" +
+					"    return \"\";" +
+					"  }"+
+					"};" +
+					"foo.c = \"\";" +
+					"foo.d = function(x, y, z) {" +
+					"  return { x : \"\", y : \"\", z : \"\" };" +
+					"};",
+				"X.js",
+				"class ___anonymous0 extends Object{\n  String a;\n  String c;\n  String b()\n  ___anonymous1 d(x, y, z)\n}\n"+
+				"class ___anonymous1 extends Object{\n  String x;\n  String y;\n  String z;\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		
 }
