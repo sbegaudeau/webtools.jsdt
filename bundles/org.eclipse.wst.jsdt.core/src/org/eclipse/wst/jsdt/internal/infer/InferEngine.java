@@ -403,6 +403,9 @@ public class InferEngine extends ASTVisitor {
 				char [] possibleTypeName = constructTypeName( fieldReference.receiver );
 				if( possibleTypeName != null )
 					newType = compUnit.findInferredType( possibleTypeName );
+				else
+					return true; //no type created
+				
 				
 				//create the new type if not found
 				if( newType == null ){
@@ -431,14 +434,15 @@ public class InferEngine extends ASTVisitor {
 					
 					InferredType superType = null;
 					char [] possibleSuperTypeName = constructTypeName( allocationExpression.member );
-					if( possibleSuperTypeName != null )
+					if( possibleSuperTypeName != null ){
 						superType = compUnit.findInferredType( possibleSuperTypeName );
 					
-					if( superType == null )
-						superType = addType( possibleSuperTypeName );
-					
-					//InferredType superClass=addType(getTypeName(allocationExpression.member));
-					newType.superClass = superType;
+						if( superType == null )
+							superType = addType( possibleSuperTypeName );
+						
+						//InferredType superClass=addType(getTypeName(allocationExpression.member));
+						newType.superClass = superType;
+					}
 					
 					return true;
 				}
@@ -466,6 +470,8 @@ public class InferEngine extends ASTVisitor {
 				char[] possibleTypeName = constructTypeName( prototype.receiver );
 				if( possibleTypeName != null )
 					newType = compUnit.findInferredType( possibleTypeName );
+				else
+					return true; //no type created
 				
 				//create the new type if not found
 				if( newType == null ){
@@ -533,13 +539,14 @@ public class InferEngine extends ASTVisitor {
 			
 			InferredType type = null;
 			char [] possibleTypeName = constructTypeName( allocationExpression.member );
-			if( possibleTypeName != null )
+			if( possibleTypeName != null ){
 				type = compUnit.findInferredType( possibleTypeName );
 			
-			if( type == null )
-				type = addType( possibleTypeName );
-			
-			return type;
+				if( type == null )
+					type = addType( possibleTypeName );
+				
+				return type;
+			}
 		}
 		else if (expression instanceof SingleNameReference)
 		{
@@ -757,16 +764,12 @@ public class InferEngine extends ASTVisitor {
 		
 		InferredType type = null;
 		char [] possibleTypeName = constructTypeName( allocationExpression.member );
-		if( possibleTypeName != null )
+		if( possibleTypeName != null ){
 			type = compUnit.findInferredType( possibleTypeName );
 		
-		if( type == null )
-			type = addType( possibleTypeName );
-		
-//		char[] typeName = getTypeName(allocationExpression.member);
-//		if (typeName!=EMPTY_NAME)
-//			addType(typeName);
-		
+			if( type == null  )
+				type = addType( possibleTypeName ); //creating type
+		}
 		return true;
 	}
 	
