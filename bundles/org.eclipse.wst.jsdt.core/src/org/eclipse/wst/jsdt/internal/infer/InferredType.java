@@ -7,19 +7,13 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
-import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.LookupEnvironment;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
-import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 
 public class InferredType extends ASTNode {
@@ -66,7 +60,7 @@ public class InferredType extends ASTNode {
 		InferredAttribute attribute = findAttribute(name);
 		if (attribute==null) 
 		{
-			attribute=new InferredAttribute(name,null,definer.sourceStart,definer.sourceEnd);
+			attribute=new InferredAttribute(name, this ,definer.sourceStart,definer.sourceEnd);
  
 			if (this.numberAttributes == this.attributes.length)
 				

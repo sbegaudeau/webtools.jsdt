@@ -21,6 +21,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NumberLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteralField;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ReturnStatement;
@@ -29,7 +30,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TrueLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.impl.BooleanConstant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
@@ -43,9 +43,7 @@ public class InferEngine extends ASTVisitor {
     int passNumber=1;
 
     int anonymousCount=0;
-    
-    boolean isStaticClassReference;
-    
+    int anonymousCount2=0; //@GINO
 	
 	public  InferredType StringType=new InferredType(new char[]{'S','t','r','i','n','g'});
 	public  InferredType NumberType=new InferredType(new char[]{'N','u','m','b','e','r'});
@@ -56,6 +54,7 @@ public class InferEngine extends ASTVisitor {
 
     
 	static final char[] CONSTRUCTOR_ID={'c','o','n','s','t','r','u','c','t','o','r'};
+	static final char[] ANONYMOUS_CLASS_ID={'a','n','o','n','y','m','o','u','s'};
     
 	static class Context 
 	{
@@ -136,7 +135,13 @@ public class InferEngine extends ASTVisitor {
 		else if (assignment.expression instanceof FunctionExpression)
 		{
 			FunctionExpression functionExpression=(FunctionExpression)assignment.expression;
-			InferredType type = compUnit.findInferredType(getTypeName(assignment.lhs));
+			
+			char [] possibleTypeName = constructTypeName( assignment.lhs );
+			
+			InferredType type = null;
+			if( possibleTypeName != null )
+				type = compUnit.findInferredType( possibleTypeName );
+			
 			if (type!=null)	// isConstructor
 			{
 				if (this.inferOptions.useInitMethod)
@@ -156,12 +161,38 @@ public class InferEngine extends ASTVisitor {
 				{
 					FieldReference fieldReference=(FieldReference)assignment.lhs;
 					int nameStart=(int)(fieldReference.nameSourcePosition>>>32);
-					InferredType receiverType = getReceiverInferredType(fieldReference.receiver);
-					if (receiverType!=null)
-					{
-						InferredMethod method = receiverType.addMethod(fieldReference.token,functionExpression.methodDeclaration);
-						receiverType.updatePositions(assignment.sourceStart, assignment.sourceEnd);
-						method.nameStart=nameStart;
+					
+					InferredType receiverType = getInferredType( fieldReference.receiver );
+					
+					if( receiverType != null ){
+						
+						//check if there is a member method already created
+						InferredMethod method = receiverType.findMethod( fieldReference.token, functionExpression.methodDeclaration );
+						
+						if( method == null ){
+							//create member method if it does not exist
+							
+							method = receiverType.addMethod( fieldReference.token, functionExpression.methodDeclaration );
+							receiverType.updatePositions(assignment.sourceStart, assignment.sourceEnd); // @GINO: not sure if necessary
+							method.nameStart = nameStart;
+							
+							/*
+							 * determine if static
+							 * 
+							 * check if the receiver is a type
+							 */
+							char [] possibleInTypeName = constructTypeName( fieldReference.receiver );
+							
+							if( possibleInTypeName != null && compUnit.findInferredType( possibleInTypeName ) != null )
+								method.isStatic = true;
+							else
+								method.isStatic = false;
+							
+							return true; //keep visiting to get return type
+						}
+						else
+							return false; //no need to visit again
+						
 					}
 					else if (this.passNumber==2)	// create anonymous class
 					{
@@ -177,7 +208,7 @@ public class InferEngine extends ASTVisitor {
 				}
 			}
 		}
-		else   if (assignment.expression instanceof SingleNameReference  && this.currentContext.currentType !=null &&
+		else if (assignment.expression instanceof SingleNameReference  && this.currentContext.currentType !=null &&
 				isThis(assignment.lhs))
 		{
 			SingleNameReference snr=(SingleNameReference)assignment.expression;
@@ -186,26 +217,132 @@ public class InferEngine extends ASTVisitor {
 			{
 				FieldReference fieldReference=(FieldReference)assignment.lhs;
 				MethodDeclaration method=(MethodDeclaration)object;
-				InferredMethod inferredMethod = this.currentContext.currentType.addMethod(fieldReference.token, method);
+				InferredMember inferredMethod = this.currentContext.currentType.addMethod(fieldReference.token, method);
 				inferredMethod.nameStart=fieldReference.sourceEnd-fieldReference.token.length+1;
 			}
 		}
+		
+		/*
+		 *	foo = {}; 
+		 */
+		else if ( assignment.expression instanceof ObjectLiteral && assignment.lhs instanceof SingleNameReference ){
+			
+			AbstractVariableDeclaration varDecl = getVariable( (SingleNameReference)assignment.lhs );
+			
+			if( varDecl != null ){
+				InferredType type = varDecl.inferredType;
+				
+				if( type == null ){
+					//create an annonymous type based on the ObjectLiteral
+					type = getTypeOf( assignment.expression );
+					
+					varDecl.inferredType = type;
+					
+					return true;
+				}
+				else
+					return false; // 
+				
+			}
+			
+		}
+		/*
+		 * foo.bar = {};
+		 * 
+		 */
+		else if ( assignment.expression instanceof ObjectLiteral && assignment.lhs instanceof FieldReference ){
+			
+			if (this.inferOptions.useAssignments && passNumber == 2 )
+			{
+				
+				FieldReference fRef = (FieldReference)assignment.lhs;
+				
+				InferredType receiverType = getInferredType( fRef.receiver );
+				
+				if( receiverType != null ){
+					//check if there is an attribute already created
+					
+					InferredAttribute attr = receiverType.findAttribute( fRef.token );
+					
+					//ignore if the attribute exists and has a type
+					if( !(attr != null && attr.type != null) ){
+						
+						attr = receiverType.addAttribute( fRef.token, assignment );
+						attr.type = getTypeOf( assignment.expression );
+						
+						/*
+						 * determine if static
+						 * 
+						 * check if the receiver is a type
+						 */
+						char [] possibleTypeName = constructTypeName( fRef.receiver );
+						
+						if( possibleTypeName != null && compUnit.findInferredType( possibleTypeName ) != null )
+							attr.isStatic = true;
+						else
+							attr.isStatic = false;
+						
+						return false; //done with this
+					}
+					
+				}				
+			}			
+		}	
 		else   
 		{
+			/*
+			 * foo.bar = ?  //? is not {} and not a function
+			 */
 			if (this.inferOptions.useAssignments)
 			{
-				// determine field
-				// 
-				InferredAttribute attribute = getAttribute(assignment.lhs,true,assignment);
-				if (attribute!=null)
-				{
-					// determine type
-					// 
-					InferredType type = getTypeOf(assignment.expression);
-					attribute.type=type;
-					return false;	// done with expr
+				if( assignment.lhs instanceof FieldReference ){
+					FieldReference fRef = (FieldReference)assignment.lhs;
+					
+					InferredType receiverType = getInferredType( fRef.receiver );
+					
+					if( receiverType != null ){
+						//check if there is an attribute already created
+						
+						InferredAttribute attr = receiverType.findAttribute( fRef.token );
+						
+						//ignore if the attribute exists and has a type
+						if( !(attr != null && attr.type != null) ){
+							
+							attr = receiverType.addAttribute( fRef.token, assignment );
+							attr.type = getTypeOf( assignment.expression );
+							
+							/*
+							 * determine if static
+							 * 
+							 * check if the receiver is a type
+							 */
+							char [] possibleTypeName = constructTypeName( fRef.receiver );
+							
+							if( possibleTypeName != null && compUnit.findInferredType( possibleTypeName ) != null )
+								attr.isStatic = true;
+							else
+								attr.isStatic = false;
+							
+							return false; //done with this
+						}
+						
+						
+					}
 				}
 				
+//				else{
+//					// determine field
+//					// 
+//					InferredAttribute attribute = getAttribute(assignment.lhs,true,assignment);
+//					if (attribute!=null)
+//					{
+//						// determine type
+//						// 
+//						InferredType type = getTypeOf(assignment.expression);
+//						attribute.type=type;
+//						return false;	// done with expr
+//					}
+//				}
 			}
 		}
 		return true; // do nothing by default, keep traversing
@@ -228,43 +365,134 @@ public class InferEngine extends ASTVisitor {
 		}
 		return var.inferredType;
 	}
+	
+	/*
+	 * Each anonymous type has a unique name
+	 */
+	private InferredType createAnonymousType() {
+		
+		char[] cs = String.valueOf(this.anonymousCount2++).toCharArray();
+		char []name = CharOperation.concat( InferredType.ANONYMOUS_PREFIX, ANONYMOUS_CLASS_ID, cs );
+		
+		InferredType anonType = addType(name);
+		anonType.isDefinition=true;
+		anonType.isAnonymous=true;
+		anonType.superClass = ObjectType;
+		
+		return anonType;
+	}
 
 	protected boolean handlePrototype(Assignment assignment) {
 		
 		Expression lhs = assignment.lhs;
 		if (lhs instanceof FieldReference) {
 			FieldReference fieldReference = (FieldReference) lhs;
+			
+			/*
+			 * foo.prototype = ?
+			 */
 			if (fieldReference.isPrototype())
 			{
+				/*
+				 * When encountering a prototype, we are going to assume that the
+				 * receiver is a type.
+				 * 
+				 * If the type had not been inferred, it will be added at this point
+				 */
+				InferredType newType = null;
+				char [] possibleTypeName = constructTypeName( fieldReference.receiver );
+				if( possibleTypeName != null )
+					newType = compUnit.findInferredType( possibleTypeName );
+				
+				//create the new type if not found
+				if( newType == null ){
+					newType = addType( possibleTypeName );
+					newType.isDefinition = true;
+				}
+				
+//				char[] typeName = getTypeName(fieldReference.receiver);
+//				Object object = currentContext.definedMembers.get(typeName);
+//				
+//				if (object instanceof Argument)
+//					return false;
+//				
+//				InferredType newType = addType(typeName);
+//				newType.isDefinition=true;
+				
+				newType.updatePositions(assignment.sourceStart, assignment.sourceEnd);
+				
+				/*
+				 * foo.prototype = new ...
+				 */
 				if (assignment.expression instanceof AllocationExpression)
 				{
-					char[] typeName = getTypeName(fieldReference.receiver);
-					Object object = currentContext.definedMembers.get(typeName);
-					if (object instanceof Argument)
-						return false;
+					//setting the super type
 					AllocationExpression allocationExpression =(AllocationExpression)assignment.expression;
-					InferredType newType = addType(typeName);
-					newType.isDefinition=true;
-					InferredType superClass=addType(getTypeName(allocationExpression.member));
-					newType.superClass=superClass;
-					newType.updatePositions(assignment.sourceStart, assignment.sourceEnd);
+					
+					InferredType superType = null;
+					char [] possibleSuperTypeName = constructTypeName( allocationExpression.member );
+					if( possibleSuperTypeName != null )
+						superType = compUnit.findInferredType( possibleSuperTypeName );
+					
+					if( superType == null )
+						superType = addType( possibleSuperTypeName );
+					
+					//InferredType superClass=addType(getTypeName(allocationExpression.member));
+					newType.superClass = superType;
+					
+					return true;
+				}
+				/*
+				 * foo.prototype = {...}
+				 */
+				else if( assignment.expression instanceof ObjectLiteral ){
+					//rather than creating an anonymous type, is better just to set the members directly
+					//on newType
+					populateType( newType, (ObjectLiteral)assignment.expression );
+					newType.superClass = ObjectType;
+					
 					return true;
 				}
 			}
-			else if (fieldReference.receiver.isPrototype())
+			/*
+			 * foo.prototype.bar = ?
+			 */
+			else if ( fieldReference.receiver.isPrototype() )
 			{
+								
 				FieldReference prototype = (FieldReference) fieldReference.receiver;
-				char[] typeName = getTypeName(prototype.receiver);
-				Object receiverDef = currentContext.definedMembers.get(typeName);
-				if (receiverDef instanceof Argument)
-					return false;
-				InferredType newType = addType(typeName);
-				newType.isDefinition=true;
+				
+				InferredType newType = null;
+				char[] possibleTypeName = constructTypeName( prototype.receiver );
+				if( possibleTypeName != null )
+					newType = compUnit.findInferredType( possibleTypeName );
+				
+				//create the new type if not found
+				if( newType == null ){
+					newType = addType( possibleTypeName );
+					newType.isDefinition = true;
+				}
+				
+//				char[] typeName = getTypeName(prototype.receiver);
+//				Object receiverDef = currentContext.definedMembers.get(typeName);
+//				if (receiverDef instanceof Argument)
+//					return false;
+//				InferredType newType = addType(typeName);
+//				newType.isDefinition=true;				
+				
 				newType.updatePositions(assignment.sourceStart, assignment.sourceEnd);
+				
+				//prevent Object literal based anonymous types from being created more than once
+				if( passNumber == 1 && assignment.expression instanceof ObjectLiteral ){
+					return false;
+				}
+				
 				char[] memberName = fieldReference.token;
 				int nameStart= (int)(fieldReference.nameSourcePosition >>> 32);
+							
 				InferredType typeOf = getTypeOf(assignment.expression);
 				MethodDeclaration methodDecl=null;
+				
 				if (typeOf==null && assignment.expression instanceof SingleNameReference)
 				{
 					Object object = this.currentContext.definedMembers.get(((SingleNameReference)assignment.expression).token);
@@ -272,9 +500,10 @@ public class InferEngine extends ASTVisitor {
 						methodDecl=(MethodDeclaration)object;
 				} else if (assignment.expression instanceof FunctionExpression)
 					methodDecl=((FunctionExpression)assignment.expression).methodDeclaration;
+				
 				if (methodDecl!=null)
 				{
-					InferredMethod method = newType.addMethod(memberName, methodDecl);
+					InferredMember method = newType.addMethod(memberName, methodDecl);
 					method.nameStart=nameStart;
 				}
 				else if (!CharOperation.equals(CONSTRUCTOR_ID, memberName))
@@ -290,48 +519,6 @@ public class InferEngine extends ASTVisitor {
 		}
 		return false;
 	}
-
-	protected InferredAttribute getAttribute(Expression lhs,boolean create, ASTNode definer) {
-		InferredAttribute attribute=null;
-		if (lhs instanceof FieldReference) {
-			FieldReference fieldReference = (FieldReference) lhs;
-			InferredType type = getReceiverInferredType(fieldReference.receiver);
-			if (type!=null)
-			{
-				attribute = type.addAttribute(fieldReference.token,definer);
-				attribute.isStatic=isStaticClassReference;
-				attribute.nameStart=fieldReference.sourceEnd-fieldReference.token.length+1;
-			}
-		}
-		return attribute;
-	}
-
-	protected InferredType getReceiverInferredType(Expression expression)
-	{
-		isStaticClassReference=false;
-		if (expression instanceof ThisReference)
-		{
-			if (this.currentContext.currentType==null)
-			{
-//				if (isInNamedMethod())	// in constructor?
-//				{
-//					this.currentContext.currentType=addType(this.currentContext.currentMethod.selector);	
-//					this.currentContext.currentType.isDefinition=true;
-//				}
-				
-			}
-			return this.currentContext.currentType;
-		}
-		else {
-			InferredType type=findType(expression);
-			if (type!=null)
-			{
-				isStaticClassReference=true;
-				return type;
-			}
-		}
-		return null;
-	}
 	
 	protected InferredType getTypeOf(Expression expression) {
 		if (expression instanceof StringLiteral) {
@@ -343,15 +530,22 @@ public class InferEngine extends ASTVisitor {
 		else if (expression instanceof AllocationExpression)
 		{
 			AllocationExpression allocationExpression=(AllocationExpression)expression;
-			char [] typeName=getTypeName(allocationExpression.member);
-			return addType(typeName);
+			
+			InferredType type = null;
+			char [] possibleTypeName = constructTypeName( allocationExpression.member );
+			if( possibleTypeName != null )
+				type = compUnit.findInferredType( possibleTypeName );
+			
+			if( type == null )
+				type = addType( possibleTypeName );
+			
+			return type;
 		}
 		else if (expression instanceof SingleNameReference)
 		{
-			SingleNameReference singleNameReference=(SingleNameReference)expression;
-			Object definedMember = currentContext.definedMembers.get(singleNameReference.token);
-			if (definedMember instanceof AbstractVariableDeclaration)
-				return ((AbstractVariableDeclaration)definedMember).inferredType;
+			AbstractVariableDeclaration varDecl = getVariable( (SingleNameReference)expression );
+			if( varDecl != null )
+				return varDecl.inferredType;
 			
 		}
 		else if (expression instanceof FieldReference)
@@ -394,7 +588,61 @@ public class InferEngine extends ASTVisitor {
 		}	else if (expression instanceof TrueLiteral || expression instanceof FalseLiteral) {
 			return BooleanType;
 		}
+		else if ( expression instanceof ObjectLiteral ){
+			
+			//create an annonymous type based on the ObjectLiteral
+			InferredType type = createAnonymousType();
+			
+			ObjectLiteral objLit = (ObjectLiteral)expression;
+			
+			populateType(type, objLit);
+			
+			//set the start and end
+			type.sourceStart = expression.sourceStart;
+			type.sourceEnd = expression.sourceEnd;
+			
+			return type;
+		
+			
+		}
 		return null;
+	}
+
+	private void populateType(InferredType type, ObjectLiteral objLit) {
+		if( objLit.fields != null ){
+			for (int i = 0; i < objLit.fields.length; i++) {
+				ObjectLiteralField field = objLit.fields[i];
+				
+				char [] name=null;
+				int nameStart=-1;
+
+
+				if (field.fieldName instanceof SingleNameReference)
+				{
+					SingleNameReference singleNameReference=(SingleNameReference)field.fieldName;
+					name=singleNameReference.token;
+					nameStart=singleNameReference.sourceStart;
+				}
+				else
+					continue; //not supporting this case right now
+				
+				//need to build the members of the annonymous inferred type
+				if (field.initializer instanceof FunctionExpression) {
+					FunctionExpression functionExpression = (FunctionExpression) field.initializer;
+				    InferredMember method = type.addMethod(name, functionExpression.methodDeclaration);
+				    method.nameStart = nameStart;
+				    
+				}	
+				else	//attribute
+				{
+					InferredAttribute attribute = type.addAttribute(name, field.fieldName);
+					attribute.nameStart = nameStart;
+					
+					//@GINO: recursion might not be the best idea
+					attribute.type = getTypeOf( field.initializer );
+				}
+			}
+		}
 	}
 
 	public void endVisit(Assignment assignment, BlockScope scope) {
@@ -403,11 +651,7 @@ public class InferEngine extends ASTVisitor {
 
 	protected boolean handleFunctionCall(MessageSend messageSend) {
 		return true;
-	}
-
-
-	
-	
+	}	
 	
 	public void endVisit(ReturnStatement returnStatement, BlockScope scope) {
 		if (currentContext.currentMethod!=null)
@@ -511,9 +755,17 @@ public class InferEngine extends ASTVisitor {
     		AllocationExpression allocationExpression,
     		BlockScope scope) {
 		
-		char[] typeName = getTypeName(allocationExpression.member);
-		if (typeName!=EMPTY_NAME)
-			addType(typeName);
+		InferredType type = null;
+		char [] possibleTypeName = constructTypeName( allocationExpression.member );
+		if( possibleTypeName != null )
+			type = compUnit.findInferredType( possibleTypeName );
+		
+		if( type == null )
+			type = addType( possibleTypeName );
+		
+//		char[] typeName = getTypeName(allocationExpression.member);
+//		if (typeName!=EMPTY_NAME)
+//			addType(typeName);
 		
 		return true;
 	}
@@ -548,7 +800,7 @@ public class InferEngine extends ASTVisitor {
 			{
 				if (field.initializer instanceof FunctionExpression) {
 					FunctionExpression functionExpression = (FunctionExpression) field.initializer;
-				    InferredMethod method = inClass.addMethod(name, functionExpression.methodDeclaration);
+				    InferredMember method = inClass.addMethod(name, functionExpression.methodDeclaration);
 				    method.nameStart=nameStart;
 				    functionExpression.methodDeclaration.modifiers=javaDoc.modifiers;
 				    if (returnType!=null)
@@ -566,6 +818,15 @@ public class InferEngine extends ASTVisitor {
 						attribute.type=returnType;
 				}
 			}
+			
+		}
+		//no jsdoc
+		else{
+			
+			if( field.initializer instanceof ObjectLiteral ){
+				
+			}
+			
 			
 		}
 	}
@@ -640,33 +901,12 @@ public class InferEngine extends ASTVisitor {
 		return this.currentContext.currentMethod!=null && this.currentContext.currentMethod.selector!=null;
 	}
 
-
-	protected InferredType findType(Expression expression)
-	{
-		char []typeName=getTypeName(expression);
-		InferredType type = null;
-		if (typeName!=EMPTY_NAME)
-		{
-			 type = compUnit.findInferredType(typeName);
-		}
-		return type;
-	}
 	
-	final static char[] EMPTY_NAME=new char[0];
-	protected final char [] getTypeName(Expression expression)
-	{
-		char [] name = EMPTY_NAME;
-		if (expression instanceof FieldReference) {
-			FieldReference fieldRef = (FieldReference) expression;
-			return CharOperation.concat(getTypeName(fieldRef.receiver), fieldRef.token,'.');
-		}
-		else if (expression instanceof SingleNameReference) {
-			SingleNameReference singleNameReference = (SingleNameReference) expression;
-			return singleNameReference.token;
-		}
-		return name;
-	}
-	
+	/*
+	 * Finds a Var Declaration on the context from the name represented with the expression
+	 * 
+	 * Currently, only SNR are supported
+	 */
 	protected AbstractVariableDeclaration getVariable(Expression expression)
 	{
 		char [] name=null;
@@ -713,6 +953,116 @@ public class InferEngine extends ASTVisitor {
 		if (expression instanceof FieldReference && ((FieldReference)expression).receiver.isThis())
 			return true;
 		return false;
+	}
+
+	/*
+	 * This method is used to determined the inferred type of a LHS Expression.
+	 * 
+	 * It could return null.
+	 * 
+	 * a.b.c
+	 */
+	private InferredType getInferredType( Expression expression ){
+		
+		InferredType type = null;
+		
+		/*
+		 * this
+		 */
+		if( expression instanceof ThisReference ){
+			
+			type = this.currentContext.currentType;
+		}
+		/*
+		 * foo (could be a Type name or a reference to a variable)
+		 */
+		else if( expression instanceof SingleNameReference ){
+			char [] possibleTypeName = constructTypeName( expression );
+			
+			if( possibleTypeName != null ){
+				//search the defined types in the context
+				type = compUnit.findInferredType( possibleTypeName );
+				
+				/*
+				 * There is no match for a type with the name, check if the name refers to
+				 * var decl and return its type
+				 */
+				if( type == null ){
+					
+					AbstractVariableDeclaration varDecl = getVariable( ((SingleNameReference)expression) );
+					
+					if( varDecl != null ){
+						type = varDecl.inferredType; //could be null					
+					}
+					
+				}
+			}
+		}
+		/*
+		 * foo.bar.xxx...
+		 */
+		else if( expression instanceof FieldReference ){
+			char [] possibleTypeName = constructTypeName( expression );
+			
+			if( possibleTypeName != null ){
+				//search the defined types in the context
+				type = compUnit.findInferredType( possibleTypeName );
+				
+				/*
+				 * Continue the search by trying to resolve further down the name
+				 * because this token of the field reference could be a member of
+				 * a type or instance of a type
+				 */
+				if( type == null ){
+					FieldReference fRef = (FieldReference)expression;
+					
+					//this
+					InferredType parentType = getInferredType( fRef.receiver );
+					
+					if( parentType != null ){
+						//check the members and return type
+						InferredAttribute typeAttribute = parentType.findAttribute( fRef.token );
+						
+						if( typeAttribute != null )
+							type = typeAttribute.type;
+					}
+				}
+			}
+		}
+		
+		return type;
+	}
+	
+	/*
+	 * For SNR it returns the name
+	 * For FR it construct a Qualified name separated by '.'
+	 * 
+	 * If at any point it hits a portion of the Field reference that is
+	 * not supported (such as a function call, a prototype, or this )
+	 */
+	private final char [] constructTypeName( Expression expression ){
+		
+		char [] name = null;
+		
+		if (expression instanceof FieldReference) {
+			
+			FieldReference fieldRef = (FieldReference) expression;
+			
+			if( !fieldRef.isPrototype() ){
+				//a prototype on the Field Reference will put a stop to constructing the name
+			
+				char [] receiverName = constructTypeName( fieldRef.receiver );
+				
+				if( receiverName != null )
+					name = CharOperation.concat( receiverName, fieldRef.token,'.');
+			}
+		}
+		else if (expression instanceof SingleNameReference) {
+			SingleNameReference singleNameReference = (SingleNameReference) expression;
+			name = singleNameReference.token;
+		}
+		
+		return name;
 	}
 
 }

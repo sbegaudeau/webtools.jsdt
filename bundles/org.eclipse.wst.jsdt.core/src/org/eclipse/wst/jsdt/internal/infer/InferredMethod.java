@@ -1,24 +1,19 @@
 package org.eclipse.wst.jsdt.internal.infer;
 
-import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 
-public class InferredMethod extends ASTNode{
+public class InferredMethod extends InferredMember{
   
 	public MethodDeclaration methodDeclaration;
-	public char [] name;
-	public InferredType inType;
+	
 	public boolean isConstructor;
 	public MethodBinding methodBinding;
-	public int nameStart;
-
-	public InferredMethod(char [] name, MethodDeclaration methodDeclaration, InferredType inClass)
+	public InferredMethod(char [] name, MethodDeclaration methodDeclaration, InferredType inType )
 	{
 		this.methodDeclaration=methodDeclaration;
 		this.name=name;
-		inType=inClass;
+		this.inType = inType;
 		this.sourceStart=methodDeclaration.sourceStart;
 		this.sourceEnd=methodDeclaration.sourceEnd;
 	}
@@ -52,10 +47,4 @@ public class InferredMethod extends ASTNode{
 
 		   return output;
 	}
-	
-	public boolean isInferred()
-	{
-		return true;
-	}
-
 }
