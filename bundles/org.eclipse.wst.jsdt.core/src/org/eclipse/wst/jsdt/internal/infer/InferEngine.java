@@ -282,6 +282,8 @@ public class InferEngine extends ASTVisitor {
 						else
 							attr.isStatic = false;
 						
+						attr.nameStart = (int)(fRef.nameSourcePosition>>>32);
+						
 						return false; //done with this
 					}
 					
@@ -323,26 +325,14 @@ public class InferEngine extends ASTVisitor {
 							else
 								attr.isStatic = false;
 							
+							attr.nameStart = (int)(fRef.nameSourcePosition>>>32);
+							
 							return false; //done with this
 						}
 						
 						
 					}
 				}
-				
-//				else{
-//					// determine field
-//					// 
-//					InferredAttribute attribute = getAttribute(assignment.lhs,true,assignment);
-//					if (attribute!=null)
-//					{
-//						// determine type
-//						// 
-//						InferredType type = getTypeOf(assignment.expression);
-//						attribute.type=type;
-//						return false;	// done with expr
-//					}
-//				}
 			}
 		}
 		return true; // do nothing by default, keep traversing
@@ -422,7 +412,7 @@ public class InferEngine extends ASTVisitor {
 //				InferredType newType = addType(typeName);
 //				newType.isDefinition=true;
 				
-				newType.updatePositions(assignment.sourceStart, assignment.sourceEnd);
+				newType.updatePositions(assignment.sourceStart, assignment.sourceEnd);				
 				
 				/*
 				 * foo.prototype = new ...
