@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
@@ -290,7 +291,7 @@ public class SwitchStatement extends Statement {
 				}
 			}
 			if (statements != null) {
-				scope = /*explicitDeclarations == 0 ? upperScope : */new BlockScope(upperScope);
+				scope = !JavaCore.IS_EMCASCRIPT4 ? upperScope :  new BlockScope(upperScope);
 				int length;
 				// collection of cases is too big but we will only iterate until caseCount
 				cases = new CaseStatement[length = statements.length];

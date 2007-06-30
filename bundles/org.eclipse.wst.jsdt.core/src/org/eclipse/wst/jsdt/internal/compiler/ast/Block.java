@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
 import org.eclipse.wst.jsdt.internal.compiler.flow.*;
@@ -94,7 +95,7 @@ public class Block extends Statement {
 		}
 		if (statements != null) {
 			scope =
-				explicitDeclarations == 0
+				(!JavaCore.IS_EMCASCRIPT4 || explicitDeclarations == 0)
 					? upperScope
 					: new BlockScope(upperScope, explicitDeclarations);
 			for (int i = 0, length = statements.length; i < length; i++) {
