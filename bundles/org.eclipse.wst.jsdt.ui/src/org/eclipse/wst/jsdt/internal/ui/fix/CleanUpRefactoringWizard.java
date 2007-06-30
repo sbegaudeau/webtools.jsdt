@@ -72,7 +72,6 @@ import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CleanUpProfileVersio
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CodeFormatingTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CodeStyleTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.MemberAccessesTabPage;
-import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.MissingCodeTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.UnnecessaryCodeTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ModifyDialogTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager;
@@ -345,7 +344,7 @@ public class CleanUpRefactoringWizard extends RefactoringWizard {
 			addTabPage(tabFolder, MultiFixMessages.CleanUpRefactoringWizard_code_style_tab, new CodeStyleTabPage(this, settings, false));
 			addTabPage(tabFolder, MultiFixMessages.CleanUpRefactoringWizard_member_accesses_tab, new MemberAccessesTabPage(this, settings, false));
 			addTabPage(tabFolder, MultiFixMessages.CleanUpRefactoringWizard_unnecessary_code_tab, new UnnecessaryCodeTabPage(this, settings, false));
-			addTabPage(tabFolder, MultiFixMessages.CleanUpRefactoringWizard_missing_code_tab, new MissingCodeTabPage(this, settings, false));
+//			addTabPage(tabFolder, MultiFixMessages.CleanUpRefactoringWizard_missing_code_tab, new MissingCodeTabPage(this, settings, false));
 			addTabPage(tabFolder, MultiFixMessages.CleanUpRefactoringWizard_code_organizing_tab, new CodeFormatingTabPage(this, settings, false));
 			
 			try {

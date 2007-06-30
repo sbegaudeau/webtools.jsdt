@@ -79,7 +79,6 @@ import org.eclipse.wst.jsdt.internal.ui.fix.ExpressionsCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.ICleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.ImportsCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.Java50CleanUp;
-import org.eclipse.wst.jsdt.internal.ui.fix.PotentialProgrammingProblemsCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.SortMembersCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.StringCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.UnnecessaryCodeCleanUp;
@@ -1023,7 +1022,6 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 				new ExpressionsCleanUp(), 
 				new UnusedCodeCleanUp(), 
 				new Java50CleanUp(), 
-				new PotentialProgrammingProblemsCleanUp(), 
 				new UnnecessaryCodeCleanUp(), 
 				new StringCleanUp(), 
 				new SortMembersCleanUp(), 
@@ -1041,7 +1039,6 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 				new ExpressionsCleanUp(settings), 
 				new UnusedCodeCleanUp(settings), 
 				new Java50CleanUp(settings), 
-				new PotentialProgrammingProblemsCleanUp(settings), 
 				new UnnecessaryCodeCleanUp(settings), 
 				new StringCleanUp(settings),
 				new SortMembersCleanUp(settings), 

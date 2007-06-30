@@ -42,7 +42,6 @@ import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CodeFormatingTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CodeStyleTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.MemberAccessesTabPage;
-import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.MissingCodeTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.UnnecessaryCodeTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ModifyDialogTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ModifyDialogTabPage.IModificationListener;
@@ -104,7 +103,6 @@ public class CleanUpSaveParticipantConfigurationModifyDialog extends StatusDialo
 		addTabPage(SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_CodeStyle_TabPage, new CodeStyleTabPage(this, fWorkingValues, true));
 		addTabPage(SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_MemberAccesses_TabPage, new MemberAccessesTabPage(this, fWorkingValues, true));
 		addTabPage(SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_UnnecessaryCode_TabPage, new UnnecessaryCodeTabPage(this, fWorkingValues, true));
-		addTabPage(SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_MissingCode_TabPage, new MissingCodeTabPage(this, fWorkingValues, true));
 		addTabPage(SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_CodeOrganizing_TabPage, new CodeFormatingTabPage(this, fWorkingValues, true));
 		
 		applyDialogFont(composite);

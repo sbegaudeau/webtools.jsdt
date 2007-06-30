@@ -147,5 +147,5 @@ public class ModifierRewrite {
 //				fModifierRewrite.insertLast(curr, editGroup);
 //			}
 //		}
-//	}
+	}
 }

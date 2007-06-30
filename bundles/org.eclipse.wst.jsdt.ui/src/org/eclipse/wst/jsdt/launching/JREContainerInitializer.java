@@ -26,6 +26,7 @@ import org.eclipse.wst.jsdt.core.IClasspathContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 import com.ibm.icu.text.MessageFormat;
@@ -258,5 +259,10 @@ public class JREContainerInitializer extends ClasspathContainerInitializer {
 			return MessageFormat.format(LaunchingMessages.JREContainer_JRE_System_Library_1, new String[]{tag});
 		} 
 		return LaunchingMessages.JREContainerInitializer_Default_System_Library_1; 
+	}
+
+	public SystemLibraryLocation getLibraryLocation() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

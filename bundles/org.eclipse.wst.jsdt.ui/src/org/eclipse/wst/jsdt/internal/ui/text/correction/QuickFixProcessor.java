@@ -475,9 +475,9 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.InvalidOperator:
 				LocalCorrectionsSubProcessor.getInvalidOperatorProposals(context, problem, proposals);
 				break;
-			case IProblem.MissingSerialVersion:
-			    SerialVersionSubProcessor.getSerialVersionProposals(context, problem, proposals);
-				break;
+//			case IProblem.MissingSerialVersion:
+//			    SerialVersionSubProcessor.getSerialVersionProposals(context, problem, proposals);
+//				break;
 			case IProblem.UnnecessaryElse:
 				LocalCorrectionsSubProcessor.getUnnecessaryElseProposals(context, problem, proposals);
 				break;

@@ -238,7 +238,7 @@ public abstract class JavaRefactoringDescriptor extends RefactoringDescriptor {
 		if (check && element instanceof IMethod) {
 			final IMethod method= (IMethod) element;
 			final IMethod[] methods= (method.getDeclaringType()!=null) ? method.getDeclaringType().findMethods(method)
-					:  method.getCompilationUnit().findMethods(method);
+					: new IMethod[]{ method.getCompilationUnit().getMethod(method.getElementName(), method.getParameterTypes())};
 			if (methods != null && methods.length > 0)
 				element= methods[0];
 		}

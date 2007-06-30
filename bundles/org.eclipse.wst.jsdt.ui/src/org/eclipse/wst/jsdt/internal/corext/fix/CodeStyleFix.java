@@ -135,9 +135,9 @@ public class CodeStyleFix extends AbstractFix {
 				IBinding binding= name.resolveBinding();
 				if (!(binding instanceof IMethodBinding))
 					return true;
+				handleMethod(name, (IMethodBinding)binding);
 			}
 			
-			handleMethod(name, (IMethodBinding)binding);
 			return true;
 		}
 
