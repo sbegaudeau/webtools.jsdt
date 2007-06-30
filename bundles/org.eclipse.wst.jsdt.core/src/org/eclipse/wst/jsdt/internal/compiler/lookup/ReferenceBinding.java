@@ -383,9 +383,11 @@ public void computeId() {
 //				}
 //				return;
 //			}
+			
 		
 			// remaining types MUST be in java.lang.*
-			char[] typeName = this.compoundName[0];
+			char[] typeName = (compoundName.length>1&&CharOperation.equals(compoundName[0], TypeConstants.SYSTEMJS)) 
+					? this.compoundName[1] : this.compoundName[0];
 			if (typeName.length == 0) return; // just to be safe
 			switch (typeName[0]) {
 //				case 'A' :
