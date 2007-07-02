@@ -1151,10 +1151,12 @@
          point="org.eclipse.core.filebuffers.documentSetup">
       <participant
             contentTypeId="org.eclipse.wst.jsdt.core.jsSource"
+            extensions="js"
             class="org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaDocumentSetupParticipant">
       </participant>
    </extension>
    
+   <!--
    <extension
          id="PropertiesFileDocumentSetupParticipant"
          name="%propertiesFileDocumentSetupParticipant"
@@ -1164,6 +1166,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.PropertiesFileDocumentSetupParticipant">
       </participant>
    </extension>
+   -->
 
    <extension
          point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">
@@ -1743,6 +1746,8 @@
             contentViewerId="org.eclipse.wst.jsdt.internal.ui.compare.JavaTextViewerCreator">
 	  </contentTypeBinding>
    </extension>
+   
+   <!--
    <extension
          point="org.eclipse.compare.contentViewers">
       <viewer
@@ -1755,6 +1760,8 @@
             contentViewerId="org.eclipse.wst.jsdt.internal.ui.compare.PropertiesFileViewerCreator">
 	  </contentTypeBinding>
    </extension>
+   -->
+   
    <extension
          point="org.eclipse.compare.contentMergeViewers">
       <viewer
@@ -1767,6 +1774,8 @@
             contentMergeViewerId="org.eclipse.wst.jsdt.internal.ui.compare.JavaContentViewerCreator">
 	  </contentTypeBinding>
    </extension>
+   
+   <!--
    <extension
          point="org.eclipse.compare.contentMergeViewers">
       <viewer
@@ -1779,6 +1788,8 @@
             contentMergeViewerId="org.eclipse.wst.jsdt.internal.ui.compare.PropertiesFileMergeViewerCreator">
 	  </contentTypeBinding>
    </extension>
+   -->
+   
    <extension
          point="org.eclipse.compare.structureMergeViewers">
       <viewer
