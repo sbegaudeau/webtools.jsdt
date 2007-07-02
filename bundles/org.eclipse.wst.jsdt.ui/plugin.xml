@@ -537,6 +537,7 @@
             %NewJavaPackage.description
          </description>
       </wizard>
+<!--      
       <wizard
             name="%NewJavaClass.label"
             icon="$nl$/icons/full/etool16/newclass_wiz.gif"
@@ -561,6 +562,7 @@
             %NewJavaInterface.description
          </description>
       </wizard>
+ -->
       <wizard
             name="%NewSourceFolderCreationWizard.label"
             icon="$nl$/icons/full/etool16/newpackfolder_wiz.gif"
@@ -571,6 +573,7 @@
             %NewSourceFolderCreationWizard.description
          </description>
       </wizard>
+<!--      
       <wizard
             name="%NewEnumType.label"
             icon="$nl$/icons/full/etool16/newenum_wiz.gif"
@@ -595,6 +598,7 @@
             %NewAnnotationType.description
          </description>
       </wizard>
+ -->
    </extension>
    <extension
          point="org.eclipse.ui.propertyPages">
@@ -851,6 +855,7 @@
                contentTypeId="org.eclipse.wst.jsdt.core.javaClass"
             /> 
       </editor>
+<!--      
       <editor
             name="%PropertiesFileEditorName"
             icon="$nl$/icons/full/obj16/file_obj.gif"
@@ -871,6 +876,7 @@
             class="org.eclipse.ui.editors.text.TextEditor"
             id="org.eclipse.wst.jsdt.ui.JARDescEditor">
       </editor>
+-->      
    </extension>
    
    <extension
@@ -1807,6 +1813,7 @@
 <!-- =========================================================================== -->
 <!-- JAR Packager                                                                -->
 <!-- =========================================================================== -->
+<!--
    <extension
          point="org.eclipse.ui.exportWizards">
       <wizard
@@ -1823,6 +1830,7 @@
          </selection>
       </wizard>
    </extension>
+-->
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
