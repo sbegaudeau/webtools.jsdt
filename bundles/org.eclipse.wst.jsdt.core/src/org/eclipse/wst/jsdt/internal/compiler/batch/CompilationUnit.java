@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.internal.compiler.batch;
 import java.io.File;
 import java.io.IOException;
 
+import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilationUnit;
@@ -89,5 +90,13 @@ public char[][] getPackageName() {
 }
 public String toString() {
 	return "CompilationUnit[" + new String(this.fileName) + "]";  //$NON-NLS-2$ //$NON-NLS-1$
+}
+/* (non-Javadoc)
+ * @see org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit#getCommonSuperType()
+ */
+public LibrarySuperType getCommonSuperType() {
+	// TODO Auto-generated method stub
+	System.out.println("Unimplemented method:CompilationUnit.getCommonSuperType");
+	return null;
 }
 }

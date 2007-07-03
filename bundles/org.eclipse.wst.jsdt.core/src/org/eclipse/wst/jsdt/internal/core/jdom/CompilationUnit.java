@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.jdom;
 
+import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 
 /**
@@ -59,5 +60,11 @@ public char[][] getPackageName() {
 }
 public String toString() {
 	return "CompilationUnit[" + new String(fFileName) + "]";  //$NON-NLS-2$ //$NON-NLS-1$
+}
+/* (non-Javadoc)
+ * @see org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit#getCommonSuperType()
+ */
+public LibrarySuperType getCommonSuperType() {
+	return null;
 }
 }

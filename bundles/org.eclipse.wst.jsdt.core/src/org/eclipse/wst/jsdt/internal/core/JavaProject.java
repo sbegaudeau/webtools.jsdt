@@ -38,6 +38,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.QualifiedName;
@@ -58,6 +59,7 @@ import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -71,6 +73,7 @@ import org.eclipse.wst.jsdt.internal.core.util.MementoTokenizer;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 import org.eclipse.wst.jsdt.internal.eval.EvaluationContext;
+
 import org.osgi.service.prefs.BackingStoreException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -133,6 +136,8 @@ public class JavaProject
 	 * Value of project's resolved classpath while it is being resolved
 	 */
 	private static final IClasspathEntry[] RESOLUTION_IN_PROGRESS = new IClasspathEntry[0];
+	
+	private static final String SHARED_PROPERTIES_DIRECTORY = ".settings";
 
 	/**
 	 * The platform project this <code>IJavaProject</code> is based on
@@ -1942,9 +1947,10 @@ public class JavaProject
 	 * @throws CoreException
 	 */
 	public String getSharedProperty(String key) throws CoreException {
-
-		String property = null;
+		
 		IFile rscFile = this.project.getFile(key);
+		String property = null;
+		//IFile rscFile = this.project.getFile(key);
 		if (rscFile.exists()) {
 			byte[] bytes = Util.getResourceContentsAsByteArray(rscFile);
 			try {
@@ -2866,7 +2872,8 @@ public class JavaProject
 	 * @throws CoreException
 	 */
 	public void setSharedProperty(String key, String value) throws CoreException {
-
+		
+		//IFile rscFile = this.project.getFile(key);
 		IFile rscFile = this.project.getFile(key);
 		byte[] bytes = null;
 		try {
@@ -2982,4 +2989,45 @@ public class JavaProject
 			}
 		}
 	 }
+		public LibrarySuperType getCommonSuperType() {
+			String superTypeName = null;
+			String superTypeContainer = null;
+			
+
+			
+			try {
+				IFolder rscPath = this.project.getFolder(JavaProject.SHARED_PROPERTIES_DIRECTORY);
+				if(!rscPath.exists()) rscPath.create(true, true, new NullProgressMonitor());
+				
+				IPath fullPath = new Path(JavaProject.SHARED_PROPERTIES_DIRECTORY);//.append(LibrarySuperType.SUPER_TYPE_NAME);
+				
+				superTypeName = getSharedProperty(fullPath.append(LibrarySuperType.SUPER_TYPE_NAME).toString());
+				superTypeContainer = getSharedProperty(fullPath.append(LibrarySuperType.SUPER_TYPE_CONTAINER).toString());
+			} catch (CoreException ex) {
+				// TODO Auto-generated catch block
+				ex.printStackTrace();
+			}
+			return new LibrarySuperType(new Path(superTypeContainer),this,superTypeName);
+			
+		}
+		
+		public void setCommonSuperType(LibrarySuperType newSuperType) {
+			String superTypeName = newSuperType.getSuperTypeName();
+			String superTypeContainer = newSuperType.getRawContainerPath().toString();	
+			
+			try {
+				IFolder rscPath = this.project.getFolder(JavaProject.SHARED_PROPERTIES_DIRECTORY);
+				if(!rscPath.exists()) rscPath.create(true, true, new NullProgressMonitor());
+				
+				IPath fullPath = new Path(JavaProject.SHARED_PROPERTIES_DIRECTORY);
+				//.append(LibrarySuperType.SUPER_TYPE_NAME);
+				
+				setSharedProperty(fullPath.append(LibrarySuperType.SUPER_TYPE_NAME).toString(), superTypeName);
+				setSharedProperty(fullPath.append(LibrarySuperType.SUPER_TYPE_CONTAINER).toString(), superTypeContainer);
+			} catch (CoreException ex) {
+				// TODO Auto-generated catch block
+				ex.printStackTrace();
+			}
+			
+		}
 }

@@ -361,7 +361,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		return type;
 	}
 
-	public final ClassScope classScope() {
+	public ClassScope classScope() {
 		Scope scope = this;
 		do {
 			if (scope instanceof ClassScope)
@@ -1573,16 +1573,24 @@ public abstract class Scope implements TypeConstants, TypeIds {
 									return variableBinding;
 								}
 								
-								if(unitScope.superBinding!=null) {
+								if(unitScope.classScope()!=null) {
 									//ReferenceBinding bind = env.getType(new char[][]{unitScope.superTypeName});
 									//if(bind==null) break done;
-									foundField = scope.findField(unitScope.superBinding, name, invocationSite, true);
-									if(foundField!=null && foundField.isValidBinding()) return foundField;
-					}
+									foundField = (unitScope.classScope()).findField(unitScope.superBinding, name, invocationSite, true);
+									if(foundField!=null && foundField.isValidBinding()) {
+										
+										return foundField;
+									}
+								}
 								
 								
 								
-							}							
+							}else if  ( (mask & (Binding.METHOD)) >0){
+								MethodBinding methodBinding = (unitScope.classScope()).findMethod(unitScope.superBinding, name, new TypeBinding[0], invocationSite);
+								if(methodBinding!=null && methodBinding.isValidBinding()) return methodBinding;
+								
+							}
+														
 							break done;
 					}
 					scope = scope.parent;

@@ -107,7 +107,7 @@ public  void addLocalVariable(LocalVariableBinding binding) {
 	binding.id = (outerMostMethodScope!=null)? outerMostMethodScope.analysisIndex++ : this.compilationUnitScope().analysisIndex++;
 	// share the outermost method scope analysisIndex
 
-	if (binding.declaration.initialization instanceof FunctionExpression) {
+	if (binding.declaration!=null && binding.declaration.initialization instanceof FunctionExpression) {
 		FunctionExpression functionExpr = (FunctionExpression) binding.declaration.initialization;
 
 		MethodBinding methodBinding=

@@ -812,6 +812,7 @@ public int nullStatus(FlowInfo flowInfo) {
 		this.codegenBinding = this.binding;
 		if (this.binding.isValidBinding()) {
 			switch (bits & RestrictiveFlagMASK) {
+				case Binding.FIELD:
 				case Binding.LOCAL : // =========only variable============
 				case Binding.VARIABLE : // =========only variable============
 				case Binding.VARIABLE | Binding.TYPE : //====both variable and type============

@@ -213,8 +213,10 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 					if (variableType==TypeBinding.UNKNOWN)
 						this.binding.type=initializationType;
 					else if (initialization.isConstantValueOfTypeAssignableToType(initializationType, variableType)
-						|| (variableType.isBaseType() && BaseTypeBinding.isWidening(variableType.id, initializationType.id))
+						|| variableType.isBaseType() /* && BaseTypeBinding.isWidening(variableType.id, initializationType.id)) */
 						|| initializationType.isCompatibleWith(variableType)) {
+						
+						
 //						this.initialization.computeConversion(scope, variableType, initializationType);
 //						if (initializationType.needsUncheckedConversion(variableType)) {
 //						    scope.problemReporter().unsafeTypeConversion(this.initialization, initializationType, variableType);

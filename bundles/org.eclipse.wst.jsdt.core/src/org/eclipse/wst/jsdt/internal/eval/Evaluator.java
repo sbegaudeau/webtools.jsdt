@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.core.compiler.*;
 import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
@@ -139,6 +140,11 @@ ClassFile[] getClasses() {
 			return Evaluator.this.getClassName();
 		}
 		public char[][] getPackageName() {
+			return null;
+		}
+		public LibrarySuperType getCommonSuperType() {
+			// TODO Auto-generated method stub
+			System.out.println("Unimplemented method:.getCommonSuperType");
 			return null;
 		}
 	}});

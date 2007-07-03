@@ -144,4 +144,10 @@ public int hashCode() {
 public String toString() {
 	return this.openable == null ? "Fake PossibleMatch" : this.openable.toString(); //$NON-NLS-1$
 }
+/* (non-Javadoc)
+ * @see org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit#getCommonSuperType()
+ */
+public LibrarySuperType getCommonSuperType() {
+	return openable.getCommonSuperType();
+}
 }

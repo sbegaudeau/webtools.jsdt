@@ -129,5 +129,11 @@ public abstract class ClasspathContainerInitializer implements IClasspathContain
 	public URI getHostPath(IPath path, IJavaProject project) {
 		return null;
 	}
+	
+	public boolean allowAttachJsDoc() { return true; };
+	/*
+	 * returns a String of all SuperTypes provided by this library.
+	 */
+	public String[] containerSuperTypes() {return new String[0];};
 }
 

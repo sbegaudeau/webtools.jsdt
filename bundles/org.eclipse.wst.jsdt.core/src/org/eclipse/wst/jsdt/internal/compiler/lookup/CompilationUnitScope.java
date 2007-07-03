@@ -14,14 +14,25 @@ package org.eclipse.wst.jsdt.internal.compiler.lookup;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
+import org.eclipse.wst.jsdt.core.IClasspathEntry;
+import org.eclipse.wst.jsdt.core.IPackageFragment;
+import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
+import org.eclipse.wst.jsdt.core.dom.AST;
+import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.internal.compiler.ast.*;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.util.*;
+import org.eclipse.wst.jsdt.internal.core.JavaProject;
+import org.eclipse.wst.jsdt.internal.core.PackageFragment;
+import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
+import org.eclipse.wst.jsdt.internal.infer.InferredMethod;
 import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 import sun.misc.FpUtils;
@@ -49,6 +60,7 @@ private int captureID = 1;
 /* Allows a compilation unit to inherit fields from a superType */
 public ReferenceBinding superBinding;
 private MethodScope methodScope;
+private ClassScope classScope;
 
 
 
@@ -82,11 +94,17 @@ public CompilationUnitScope(CompilationUnitDeclaration unit, LookupEnvironment e
 
 public MethodScope methodScope() {
 	if(superBinding!=null && methodScope==null) {
-		methodScope = new MethodScope(null,referenceContext(),false);
+		methodScope = new MethodScope(classScope,referenceContext(),false);
 	}
 	
 	return methodScope;
 }
+
+public ClassScope classScope() {
+	if (this.classScope!=null) return this.classScope;
+	return super.classScope();
+}
+
 void buildFieldsAndMethods() {
 	for (int i = 0, length = topLevelTypes.length; i < length; i++)
 		topLevelTypes[i].buildFieldsAndMethods();
@@ -196,27 +214,24 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 //	
 //		
 //	}
-	char[] superTypeName = null;
-	if(this.referenceContext.compilationResult!=null && this.referenceContext.compilationResult.compilationUnit!=null) {
-		superTypeName = this.referenceContext.compilationResult.compilationUnit.getMainTypeName();
-	}
 	
-	if(superTypeName!=null && superTypeName.length==0) {
-		superTypeName=null;
-	}
+	/* may need to get the actual binding here */
+//	if(libSuperType!=null) {
+//		//ClasspathContainerInitializer cinit = libSuperType.getContainerInitializer();
+//		//IClasspathEntry[] entries = libSuperType.getClasspathEntries();
+//		IPackageFragment[] fragments = libSuperType.getPackageFragments();
+//		for(int i = 0;i<fragments.length;i++) {
+//			String packageName = fragments[i].getElementName();
+//			PackageBinding binding = environment.getPackage0(packageName.toCharArray());
+//			superBinding  = binding.getType(libSuperType.getSuperTypeName().toCharArray());
+//			if(superBinding!=null) break;
+//			
+//		}
+//		
+//	}else 
+		
 	
-	
-	if(superTypeName!=null) {
-		superBinding  =  environment.askForType(new char[][] {superTypeName});
-		if(superBinding==null || !superBinding.isValidBinding()) {
-			superTypeName = null;
-		}
-		if(superBinding!=null) {
-			recordSuperTypeReference(superBinding);
-			environment().setAccessRestriction(superBinding, accessRestriction);	
-		}
-	}
-	
+	 buildSuperType();
 	
 	topLevelTypes = new SourceTypeBinding[typeLength];
 	
@@ -272,6 +287,99 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 	buildVars(vars);
 }
 
+public void buildSuperType() {
+	
+	char[] superTypeName = null;
+	LibrarySuperType libSuperType = null;
+	if(this.referenceContext.compilationResult!=null && this.referenceContext.compilationResult.compilationUnit!=null) {
+		libSuperType = this.referenceContext.compilationResult.compilationUnit.getCommonSuperType();
+		if(libSuperType==null) {
+			superTypeName = null;
+			return;
+		}else
+			superTypeName = libSuperType.getSuperTypeName().toCharArray();
+	}
+	
+		superBinding  =  environment.askForType(new char[][] {superTypeName});
+	
+		if(superBinding==null || !superBinding.isValidBinding()) {
+			superTypeName = null;
+			return ;
+		}
+		
+	
+		/* build methods */
+		if(superBinding!=null) {
+			InferredType te = superBinding.getInferredType();
+			classScope = new ClassScope(this, te);
+			
+			SourceTypeBinding sourceType = null;
+			
+			if(superBinding instanceof SourceTypeBinding) {
+				sourceType = (SourceTypeBinding)superBinding;
+			}
+			classScope.buildInferredType(sourceType, environment.defaultPackage, null);
+			
+			
+			recordTypeReference(superBinding);
+			recordSuperTypeReference(superBinding);
+			environment().setAccessRestriction(superBinding, null);	
+		}
+		
+		
+		
+		
+		
+	
+	
+	if(superTypeName!=null && superTypeName.length==0) {
+		superTypeName=null;
+	}
+}
+public TypeVariableBinding[] createTypeVariables(TypeParameter[] typeParameters, Binding declaringElement) {
+	// do not construct type variables if source < 1.5
+	if (typeParameters == null || compilerOptions().sourceLevel < ClassFileConstants.JDK1_5)
+		return Binding.NO_TYPE_VARIABLES;
+
+	PackageBinding unitPackage = compilationUnitScope().getDefaultPackage();
+	int length = typeParameters.length;
+	TypeVariableBinding[] typeVariableBindings = new TypeVariableBinding[length];
+	int count = 0;
+	for (int i = 0; i < length; i++) {
+		TypeParameter typeParameter = typeParameters[i];
+		TypeVariableBinding parameterBinding = new TypeVariableBinding(typeParameter.name, declaringElement, i);
+		parameterBinding.fPackage = unitPackage;
+		typeParameter.binding = parameterBinding;
+
+		// detect duplicates, but keep each variable to reduce secondary errors with instantiating this generic type (assume number of variables is correct)
+		for (int j = 0; j < count; j++) {
+			TypeVariableBinding knownVar = typeVariableBindings[j];
+			if (CharOperation.equals(knownVar.sourceName, typeParameter.name))
+				problemReporter().duplicateTypeParameterInType(typeParameter);
+		}
+		typeVariableBindings[count++] = parameterBinding;
+//			TODO should offer warnings to inform about hiding declaring, enclosing or member types				
+//			ReferenceBinding type = sourceType;
+//			// check that the member does not conflict with an enclosing type
+//			do {
+//				if (CharOperation.equals(type.sourceName, memberContext.name)) {
+//					problemReporter().hidingEnclosingType(memberContext);
+//					continue nextParameter;
+//				}
+//				type = type.enclosingType();
+//			} while (type != null);
+//			// check that the member type does not conflict with another sibling member type
+//			for (int j = 0; j < i; j++) {
+//				if (CharOperation.equals(referenceContext.memberTypes[j].name, memberContext.name)) {
+//					problemReporter().duplicateNestedType(memberContext);
+//					continue nextParameter;
+//				}
+//			}
+	}
+	if (count != length)
+		System.arraycopy(typeVariableBindings, 0, typeVariableBindings = new TypeVariableBinding[count], 0, count);
+	return typeVariableBindings;
+}
 SourceTypeBinding buildType(InferredType inferredType, SourceTypeBinding enclosingType, PackageBinding packageBinding, AccessRestriction accessRestriction) {
 	// provide the typeDeclaration with needed scopes
 
@@ -480,7 +588,7 @@ public char[] computeConstantPoolName(LocalTypeBinding localType) {
 }
 
 void connectTypeHierarchy() {
-	
+
 	
 	//	if(superType!=null) {
 //			if(superType instanceof SourceTypeBinding) {
@@ -500,6 +608,7 @@ void connectTypeHierarchy() {
 //		ReferenceBinding binding = environment.askForType(new char[][] {superTypeName});
 //		this.recordSuperTypeReference(binding);
 //	}
+	if(classScope!=null) classScope.connectTypeHierarchy();
 		for (int i=0;i<referenceContext.numberInferredTypes;i++) {
 			InferredType inferredType = referenceContext.inferredTypes[i];
 			if (inferredType.binding!=null)

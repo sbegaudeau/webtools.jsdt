@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
 import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.core.compiler.*;
 import org.eclipse.wst.jsdt.internal.codeassist.CompletionEngine;
 import org.eclipse.wst.jsdt.internal.codeassist.ISelectionRequestor;
@@ -140,6 +141,11 @@ public void complete(char[] codeSnippet, int completionPosition, SearchableEnvir
 			return className;
 		}
 		public char[][] getPackageName() {
+			return null;
+		}
+		public LibrarySuperType getCommonSuperType() {
+			// TODO Auto-generated method stub
+			System.out.println("Unimplemented method:.getCommonSuperType");
 			return null;
 		}
 	};
@@ -582,6 +588,11 @@ public void select(
 			return className;
 		}
 		public char[][] getPackageName() {
+			return null;
+		}
+		public LibrarySuperType getCommonSuperType() {
+			// TODO Auto-generated method stub
+			System.out.println("Unimplemented method:.getCommonSuperType");
 			return null;
 		}
 	};

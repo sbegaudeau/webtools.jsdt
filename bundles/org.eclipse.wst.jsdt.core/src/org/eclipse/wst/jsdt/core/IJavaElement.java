@@ -388,4 +388,6 @@ public interface IJavaElement extends IAdaptable, ILookupScope{
 	 */
 	URI getHostPath();
 	
+	LibrarySuperType getCommonSuperType();
+	
 }

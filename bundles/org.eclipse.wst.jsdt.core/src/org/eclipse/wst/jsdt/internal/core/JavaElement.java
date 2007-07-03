@@ -846,5 +846,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 		if(isVirtual()) return parent.getHostPath();
 		return null;
 	}
-	
+	public LibrarySuperType getCommonSuperType() {
+		return null;
+	}
 }

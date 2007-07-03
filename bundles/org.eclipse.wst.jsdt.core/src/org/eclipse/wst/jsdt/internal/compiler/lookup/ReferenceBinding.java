@@ -18,6 +18,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.IDependent;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
+import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 /*
 Not all fields defined by this type (& its subclasses) are initialized when it is created.
@@ -833,6 +834,7 @@ public boolean isClass() {
  * since per nature, the compatibility check is recursive through parameterized type arguments (122775)
  */
 public boolean isCompatibleWith(TypeBinding otherType) {
+	
 	if (otherType == this)
 		return true;
 	if (otherType.id == TypeIds.T_JavaLangObject || otherType.id == TypeIds.T_any)
@@ -899,6 +901,11 @@ private boolean isCompatibleWith0(TypeBinding otherType) {
 			if (this.isInterface())  // Explicit conversion from an interface
 										// to a class is not allowed
 				return false;
+			if(Arrays.equals(this.compoundName,otherReferenceType.compoundName) && Arrays.equals(this.fileName, otherReferenceType.fileName)) {
+				return true;
+			}
+			
+			
 			return otherReferenceType.isSuperclassOf(this);
 		default :
 			return false;
@@ -1186,6 +1193,10 @@ public ReferenceBinding[] syntheticEnclosingInstanceTypes() {
 }
 public SyntheticArgumentBinding[] syntheticOuterLocalVariables() {
 	return null;		// is null if no enclosing instances are required
+}
+public InferredType getInferredType() {
+	
+	return null;
 }
 
 MethodBinding[] unResolvedMethods() { // for the MethodVerifier so it doesn't resolve types

@@ -161,6 +161,9 @@ protected boolean buildStructure(OpenableElementInfo info, final IProgressMonito
 			public char[] getFileName() {
 				return CompilationUnit.this.getFileName();
 			}
+			public LibrarySuperType getCommonSuperType() {
+				return CompilationUnit.this.getCommonSuperType();
+			}
 		}, 
 		true /*full parse to find local elements*/);
 	
@@ -748,8 +751,6 @@ public ITypeRoot getTypeRoot() {
  * @see org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit#getMainTypeName()
  */
 public char[] getMainTypeName(){
-	if(superTypeName!=null) return superTypeName.toCharArray();
-	
 	return Util.getNameWithoutJavaLikeExtension(getElementName()).toCharArray();
 }
 /**
@@ -1317,6 +1318,11 @@ public URI getHostPath() {
 	return null;
 }
 
+public LibrarySuperType getCommonSuperType() {
+	IJavaProject javaProject = getJavaProject();
+	if(javaProject!=null) return javaProject.getCommonSuperType();
+	return null;
+}
 
 
 }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.env;
 
+import org.eclipse.wst.jsdt.core.LibrarySuperType;
+
 /**
  * This interface denotes a compilation unit, providing its name and content.
  */
@@ -35,4 +37,5 @@ char[] getMainTypeName();
  * For example, {java, lang}.
  */
 char[][] getPackageName();
+LibrarySuperType getCommonSuperType();
 }

@@ -45,7 +45,7 @@ public class SystemLibraryLocation implements LibraryLocation {
 	}
 	
 	
-	protected SystemLibraryLocation(){
+	public SystemLibraryLocation(){
 		try {
 			IPath libraryRuntimePath = Platform.getStateLocation(Platform.getBundle(JavaCore.PLUGIN_ID)).append( new String(LIBRARY_RUNTIME_DIRECTORY));
 			if(!libraryRuntimePath.toFile().exists()) {

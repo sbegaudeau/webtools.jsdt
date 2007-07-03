@@ -973,5 +973,8 @@ public IType[] getTypes() throws JavaModelException {
 		}
 		return null;
 	}
-
+	public LibrarySuperType getCommonSuperType() {
+		return null;
+		//return getJavaProject().getCommonSuperType();
+	}
 }

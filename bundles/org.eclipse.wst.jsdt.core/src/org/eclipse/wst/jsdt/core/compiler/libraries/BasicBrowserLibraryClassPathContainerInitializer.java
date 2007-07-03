@@ -32,12 +32,12 @@ public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathC
 		}
 	}
 	
-	public SystemLibraryLocation getLibraryLocation() {
+	public LibraryLocation getLibraryLocation() {
 		return new BasicLibLocation();
 	}
 	
 	public IClasspathEntry[] getClasspathEntries() {
-		SystemLibraryLocation libLocation =  getLibraryLocation();
+		LibraryLocation libLocation =  getLibraryLocation();
 		char[][] filesInLibs = libLocation.getLibraryFileNames();
 		IClasspathEntry[] entries = new IClasspathEntry[filesInLibs.length];
 		for (int i = 0; i < entries.length; i++) {
@@ -47,6 +47,13 @@ public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathC
 		return entries;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.core.ClasspathContainerInitializer#canUpdateClasspathContainer(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
+	 */
+	public boolean canUpdateClasspathContainer(IPath containerPath, IJavaProject project) {
+		return true;
+	}
+
 	protected IClasspathContainer getContainer(IPath containerPath, IJavaProject project) {
 		return this;
 	}
@@ -56,9 +63,15 @@ public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathC
 	}
 	
 	public String getDescription(IPath containerPath, IJavaProject project) {
-		if (containerPath.equals(new Path(new String(BasicBrowserLibraryClassPathContainerInitializer.LIBRARY_FILE_NAME[0])))) {
+		
+		if(containerPath==null) return null;
+		
+		IPath p1 = new Path(new String(BasicBrowserLibraryClassPathContainerInitializer.LIBRARY_FILE_NAME[0]));
+		IPath p2 = new Path(new String(BasicBrowserLibraryClassPathContainerInitializer.LIBRARY_FILE_NAME[1]));
+		IPath requestedContainerPath = new Path(containerPath.lastSegment());
+		if (requestedContainerPath.equals(p1)) {
 			return BasicBrowserLibraryClassPathContainerInitializer.FILE_DESCRIPTION0;
-		}else if (containerPath.equals(new Path(new String(BasicBrowserLibraryClassPathContainerInitializer.LIBRARY_FILE_NAME[1])))) {
+		}else if (requestedContainerPath.equals(p2)) {
 			return BasicBrowserLibraryClassPathContainerInitializer.FILE_DESCRIPTION1;
 		}
 		return BasicBrowserLibraryClassPathContainerInitializer.ContainerDescription;
@@ -75,4 +88,12 @@ public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathC
 	public void initialize(IPath containerPath, IJavaProject project) throws CoreException {
 		JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { project }, new IClasspathContainer[] { getContainer(containerPath, project) }, null);
 	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.core.ClasspathContainerInitializer#containerSuperTypes()
+	 */
+	public String[] containerSuperTypes() {
+		return new String[] {"Window","Document"};
+	}
+	
 }

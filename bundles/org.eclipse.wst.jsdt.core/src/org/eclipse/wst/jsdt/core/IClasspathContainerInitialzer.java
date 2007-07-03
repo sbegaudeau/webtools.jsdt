@@ -7,6 +7,7 @@ import java.net.URI;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 
 /**
@@ -158,5 +159,13 @@ public interface IClasspathContainerInitialzer {
 	
 	public abstract URI getHostPath(IPath path, IJavaProject project);
 	
-	SystemLibraryLocation getLibraryLocation();
+	LibraryLocation getLibraryLocation();
+	/*
+	 * Returns if this library allows attachment of external JsDoc 
+	 */
+	boolean allowAttachJsDoc();
+	/*
+	 * returns a String of all SuperTypes provided by this library.
+	 */
+	String[] containerSuperTypes();
 }

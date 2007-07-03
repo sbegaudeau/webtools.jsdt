@@ -17,6 +17,7 @@ import org.eclipse.wst.jsdt.core.IClasspathContainer;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.UnimplementedException;
+import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 
 /**
@@ -82,7 +83,7 @@ public class UserLibraryClasspathContainerInitializer extends ClasspathContainer
 		return containerPath;
 	}
 
-	public SystemLibraryLocation getLibraryLocation() {
+	public LibraryLocation getLibraryLocation() {
 throw new UnimplementedException();
 	}
 }

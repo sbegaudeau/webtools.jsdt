@@ -90,6 +90,11 @@ void buildFieldsAndMethods() {
 
 }
 
+public InferredType getInferredType() {
+	ClassScope classScope = scope.classScope();
+	return classScope.inferredType;
+}
+
 private void buildFields() {
 	FieldBinding prototype = new FieldBinding(TypeConstants.PROTOTYPE, BaseTypeBinding.UNKNOWN, modifiers | ExtraCompilerModifiers.AccUnresolved, this,null);
 	InferredType inferredType=this.classScope.inferredType;
@@ -109,8 +114,15 @@ private void buildFields() {
 		int modifiers=0;
 		if (field.isStatic)
 			modifiers|=ClassFileConstants.AccStatic;
-		
-			FieldBinding fieldBinding = new FieldBinding(field, BaseTypeBinding.UNKNOWN, modifiers | ExtraCompilerModifiers.AccUnresolved, this);
+			InferredType fieldType = field.type;
+			TypeBinding fieldTypeBinding;
+			if(fieldType!=null) {
+				//fieldTypeBinding = BaseTypeBinding.UNKNOWN;
+				fieldTypeBinding = scope.getType(fieldType.getName());
+			}else {
+				fieldTypeBinding = BaseTypeBinding.UNKNOWN;
+			}
+			FieldBinding fieldBinding = new FieldBinding(field, fieldTypeBinding, modifiers | ExtraCompilerModifiers.AccUnresolved, this);
 			fieldBinding.id = count;
 			// field's type will be resolved when needed for top level types
 //			checkAndSetModifiersForField(fieldBinding, field);

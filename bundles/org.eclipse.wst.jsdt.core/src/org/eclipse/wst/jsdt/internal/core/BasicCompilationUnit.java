@@ -18,6 +18,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
@@ -39,6 +40,7 @@ public class BasicCompilationUnit implements ICompilationUnit {
 	protected char[][] packageName;
 	protected char[] mainTypeName;
 	protected String encoding;
+	protected LibrarySuperType superType;
 
 public BasicCompilationUnit(char[] contents, char[][] packageName, String fileName) {
 	this.contents = contents;
@@ -54,7 +56,8 @@ public BasicCompilationUnit(char[] contents, char[][] packageName, String fileNa
 public BasicCompilationUnit(char[] contents, char[][] packageName, String fileName, IJavaElement javaElement) {
 	this(contents, packageName, fileName);
 	if(javaElement instanceof ICompilationUnit) {
-		mainTypeName = ((ICompilationUnit)javaElement).getMainTypeName();
+		superType = ((ICompilationUnit)javaElement).getCommonSuperType();
+		//mainTypeName = ((ICompilationUnit)javaElement).getMainTypeName();
 	}
 	initEncoding(javaElement);
 }
@@ -143,5 +146,12 @@ public char[][] getPackageName() {
 }
 public String toString(){
 	return "CompilationUnit: "+new String(this.fileName); //$NON-NLS-1$
+}
+
+/* (non-Javadoc)
+ * @see org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit#getCommonSuperType()
+ */
+public LibrarySuperType getCommonSuperType() {
+	return superType;
 }
 }
