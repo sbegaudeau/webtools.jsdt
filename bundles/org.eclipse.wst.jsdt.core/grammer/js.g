@@ -586,12 +586,12 @@ VariableDeclaratorId ::= 'Identifier'
 /:$readableName VariableDeclaratorId:/
 /:$recovery_template Identifier:/
 
-VariableInitializer -> Expression
+VariableInitializer -> AssignmentExpression
 -- VariableInitializer -> ArrayInitializer
 /:$readableName VariableInitializer:/
 /:$recovery_template Identifier:/
 
-VariableInitializerNoIn -> ExpressionNoIn
+VariableInitializerNoIn -> AssignmentExpressionNoIn
 /:$readableName VariableInitializer:/
 /:$recovery_template Identifier:/
 
@@ -984,7 +984,7 @@ ExpressionStatement ::= StatementExpression ';'
 -- /:$readableName Statement:/
 
 --StatementExpression ::= AssignmentStmt
-StatementExpression ::= AssignmentExpressionStmt
+StatementExpression ::= ListExpressionStmt
 --StatementExpression ::= PreIncrementExpression
 --StatementExpression ::= PreDecrementExpression
 --StatementExpression ::= PostIncrementExpressionStmt
@@ -994,6 +994,7 @@ StatementExpression ::= AssignmentExpressionStmt
 /:$readableName Expression:/
 
 
+StatementExpressionNoIn ::= ListExpressionStmtNoIn
 StatementExpressionNoIn ::= AssignmentStmtNoIn
 StatementExpressionNoIn ::= PreIncrementExpression
 StatementExpressionNoIn ::= PreDecrementExpression
@@ -1100,13 +1101,13 @@ ForInit -> LocalVariableDeclarationNoIn
 ForUpdate -> StatementExpressionList
 /:$readableName ForUpdate:/
 
-StatementExpressionList -> StatementExpression
-StatementExpressionList ::= StatementExpressionList ',' StatementExpression
+StatementExpressionList -> AssignmentExpression
+StatementExpressionList ::= StatementExpressionList ',' AssignmentExpression
 /.$putCase consumeStatementExpressionList() ; $break ./
 /:$readableName StatementExpressionList:/
 
-StatementExpressionListNoIn -> StatementExpressionNoIn
-StatementExpressionListNoIn ::= StatementExpressionListNoIn ',' StatementExpressionNoIn
+StatementExpressionListNoIn -> AssignmentExpressionNoIn
+StatementExpressionListNoIn ::= StatementExpressionListNoIn ',' AssignmentExpressionNoIn
 /.$putCase consumeStatementExpressionList() ; $break ./
 /:$readableName StatementExpressionList:/
 
@@ -1320,8 +1321,25 @@ Brackets ::= '[' Expression ']'
 
 ListExpression -> AssignmentExpression
 ListExpression ::= ListExpression ',' AssignmentExpression
-/.$putCase consumeArgumentList(); $break ./
+/.$putCase consumeListExpression(); $break ./
 /:$readableName ListExpression:/
+
+ListExpressionNoIn -> AssignmentExpressionNoIn
+ListExpressionNoIn ::= ListExpressionNoIn ',' AssignmentExpressionNoIn
+/.$putCase consumeListExpression(); $break ./
+/:$readableName ListExpression:/
+
+ListExpressionStmt -> AssignmentExpressionStmt
+ListExpressionStmt ::= ListExpressionStmt ',' AssignmentExpressionStmt
+/.$putCase consumeListExpression(); $break ./
+/:$readableName ListExpression:/
+
+
+ListExpressionStmtNoIn -> AssignmentStmtNoIn
+ListExpressionStmtNoIn ::= ListExpressionStmtNoIn ',' AssignmentStmtNoIn
+/.$putCase consumeListExpression(); $break ./
+/:$readableName ListExpression:/
+
 
 
 -- AllocationHeader ::= 'new' ClassType '(' ArgumentListopt ')'
@@ -1364,8 +1382,8 @@ ListExpression ::= ListExpression ',' AssignmentExpression
 -- /.$putCase consumeEnterAnonymousClassBody(); $break ./
 -- /:$readableName EnterAnonymousClassBody:/
 
-ArgumentList ::= Expression
-ArgumentList ::= ArgumentList ',' Expression
+ArgumentList ::= AssignmentExpression
+ArgumentList ::= ArgumentList ',' AssignmentExpression
 /.$putCase consumeArgumentList(); $break ./
 /:$readableName ArgumentList:/
 
@@ -1700,12 +1718,12 @@ ConditionalOrExpressionNoIn ::= ConditionalOrExpressionNoIn '||' ConditionalAndE
 --ConditionalExpression 
 --
 ConditionalExpression -> ConditionalOrExpression
-ConditionalExpression ::= ConditionalOrExpression '?' Expression ':' ConditionalExpression
+ConditionalExpression ::= ConditionalOrExpression '?' AssignmentExpression ':' AssignmentExpression 
 /.$putCase consumeConditionalExpression(OperatorIds.QUESTIONCOLON) ; $break ./
 /:$readableName Expression:/
 
 ConditionalExpressionNoIn -> ConditionalOrExpressionNoIn
-ConditionalExpressionNoIn ::= ConditionalOrExpressionNoIn '?' Expression ':' ConditionalExpressionNoIn
+ConditionalExpressionNoIn ::= ConditionalOrExpressionNoIn '?' AssignmentExpressionNoIn ':' AssignmentExpressionNoIn 
 /.$putCase consumeConditionalExpression(OperatorIds.QUESTIONCOLON) ; $break ./
 /:$readableName Expression:/
 
@@ -1768,11 +1786,13 @@ AssignmentOperator ::= '|='
 /:$readableName AssignmentOperator:/
 /:$recovery_template =:/
 
-Expression -> AssignmentExpression
+-- Expression -> AssignmentExpression
+Expression -> ListExpression
 /:$readableName Expression:/
 /:$recovery_template Identifier:/
 
-ExpressionNoIn -> AssignmentExpressionNoIn
+-- ExpressionNoIn -> AssignmentExpressionNoIn
+ExpressionNoIn -> ListExpressionNoIn
 /:$readableName Expression:/
 /:$recovery_template Identifier:/
 
@@ -1974,7 +1994,7 @@ ConditionalOrExpressionStmt ::= ConditionalOrExpressionStmt '||' ConditionalAndE
 /:$readableName Expression:/
 
 ConditionalExpressionStmt -> ConditionalOrExpressionStmt
-ConditionalExpressionStmt ::= ConditionalOrExpressionStmt '?' Expression ':' ConditionalExpression
+ConditionalExpressionStmt ::= ConditionalOrExpressionStmt '?' AssignmentExpressionStmt ':' AssignmentExpressionStmt
 /.$putCase consumeConditionalExpression(OperatorIds.QUESTIONCOLON) ; $break ./
 /:$readableName Expression:/
 
