@@ -157,6 +157,9 @@ public class NameLookup implements SuffixConstants {
 	public long timeSpentInSeekTypesInSourcePackage = 0;
 	public long timeSpentInSeekTypesInBinaryPackage = 0;
 
+	protected HashSet acceptedCUs=new HashSet();
+	
+	
 	public NameLookup(
 			IPackageFragmentRoot[] packageFragmentRoots, 
 			HashtableOfArrayToObject packageFragments, 
@@ -338,6 +341,7 @@ public class NameLookup implements SuffixConstants {
 		  case Binding.FIELD | Binding.METHOD:
 			  if (element instanceof IMethod)
 			  {
+				  
 				  requestor.acceptMethod((IMethod)element);
 				  return true;
 			  }
@@ -1389,11 +1393,14 @@ public class NameLookup implements SuffixConstants {
 			if (!partialMatch) {
 				for (int i = 0; i < length; i++) {
 					ClassFile classFile=(ClassFile)classFiles[i];
+					if (this.acceptedCUs.contains(classFile))
+						continue;
 					switch (bindingType) {
 					case Binding.TYPE:
 					case Binding.TYPE | Binding.PACKAGE:
 						IType type = classFile.getType(name);
 						if (acceptType(type, acceptFlags, false/*not a source type*/)) {
+							acceptedCUs.add(classFile);
 							requestor.acceptType(type);
 						}
 						
@@ -1404,8 +1411,10 @@ public class NameLookup implements SuffixConstants {
 //						if (lastDot != topLevelTypeName.length() || !topLevelTypeName.regionMatches(0, cuName, 0, lastDot)) 
 //							continue;
 						IField field = classFile.getField(name);
-						if (field.exists())
+						if (field.exists()) {
+							acceptedCUs.add(classFile);
 							requestor.acceptField(field);
+						}
 						
 						break;
 
@@ -1415,17 +1424,26 @@ public class NameLookup implements SuffixConstants {
 //						if (lastDot != topLevelTypeName.length() || !topLevelTypeName.regionMatches(0, cuName, 0, lastDot)) 
 //							continue;
 						IMethod method = classFile.getMethod(name, null);
-						if (method.exists())
+						if (method.exists()) {
+							acceptedCUs.add(classFile);
 							requestor.acceptMethod(method);
+						}
 						break;
 					case Binding.METHOD | Binding.VARIABLE:
 						 method = classFile.getMethod(name, null);
-						if (method!=null && method.exists())
+						if (method!=null
+							&& method.exists()) {
+								acceptedCUs.add(classFile);
 							requestor.acceptMethod(method);
-						else
+						} else
 						{
 						   field = classFile.getField(name);
-						  requestor.acceptField(field);
+						   if (field!=null && field.exists())
+						   {
+								acceptedCUs.add(classFile);
+								  requestor.acceptField(field);
+							   
+						   }
 						}
 						break;
 					  default:
@@ -1434,20 +1452,25 @@ public class NameLookup implements SuffixConstants {
 							{
 								IType thisType = classFile.getType(name);
 								if (acceptType(thisType, acceptFlags, false/*not a source type*/)) {
+									acceptedCUs.add(classFile);
 									requestor.acceptType(thisType);
 								}
 							}
 							if ((Binding.METHOD & bindingType)!=0)
 							{
 								 method = classFile.getMethod(name, null);
-									if (method!=null && method.exists())
+									if (method!=null && method.exists()) {
+										acceptedCUs.add(classFile);
 										requestor.acceptMethod(method);
+									}
 							}
 							if ((Binding.VARIABLE & bindingType)!=0)
 							{
 							   field = classFile.getField(name);
-								if (field!=null && field.exists())
-								  requestor.acceptField(field);
+								if (field!=null && field.exists()) {
+									acceptedCUs.add(classFile);
+									requestor.acceptField(field);
+								}
 							}
 					  }
 					}
@@ -1573,6 +1596,8 @@ public class NameLookup implements SuffixConstants {
 						IJavaElement cu = compilationUnits[i];
 						if (cu instanceof ICompilationUnit && ((ICompilationUnit)cu).isWorkingCopy())
 							continue;
+						if (this.acceptedCUs.contains(cu))
+							continue;
 						
 						switch (bindingType) {
 						case Binding.TYPE:
@@ -1583,6 +1608,7 @@ public class NameLookup implements SuffixConstants {
 							IType type = ((ICompilationUnit) cu).getType(topLevelTypeName);
 							type = getMemberType(type, name, firstDot);
 							if (acceptType(type, acceptFlags, true/*a source type*/)) { // accept type checks for existence
+								acceptedCUs.add(cu);
 								requestor.acceptType(type);
 								break;  // since an exact match was requested, no other matching type can exist
 							}
@@ -1594,7 +1620,10 @@ public class NameLookup implements SuffixConstants {
 //							if (lastDot != topLevelTypeName.length() || !topLevelTypeName.regionMatches(0, cuName, 0, lastDot)) 
 //								continue;
 							IField field = ((ICompilationUnit) cu).getField(name);
-							requestor.acceptField(field);
+							if (field.exists()) {
+								acceptedCUs.add(cu);
+								requestor.acceptField(field);
+							}
 							
 							break;
 
@@ -1604,17 +1633,24 @@ public class NameLookup implements SuffixConstants {
 //							if (lastDot != topLevelTypeName.length() || !topLevelTypeName.regionMatches(0, cuName, 0, lastDot)) 
 //								continue;
 							IMethod method = ((ICompilationUnit) cu).getMethod(name, null);
-							if (method.exists())
+							if (method.exists()) {
+								acceptedCUs.add(cu);
 								requestor.acceptMethod(method);
+							}
 							break;
 						case Binding.METHOD | Binding.VARIABLE:
 							 method = ((ICompilationUnit) cu).getMethod(name, null);
 							if (method!=null)
-								requestor.acceptMethod(method);
-							else
+								if  (method.exists()) {
+									acceptedCUs.add(cu);
+									requestor.acceptMethod(method);
+								} else
 							{
 							   field = ((ICompilationUnit) cu).getField(name);
-							  requestor.acceptField(field);
+								if  (field.exists()) {
+									acceptedCUs.add(cu);
+									requestor.acceptField(field);
+								}
 							}
 							break;
 							
