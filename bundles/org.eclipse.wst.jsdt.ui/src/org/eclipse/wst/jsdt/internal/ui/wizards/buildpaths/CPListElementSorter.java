@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ContentViewer;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -18,6 +20,8 @@ import org.eclipse.jface.viewers.ViewerComparator;
 
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
+import org.eclipse.wst.jsdt.internal.core.JavaProject;
+import org.eclipse.wst.jsdt.launching.JavaRuntime;
 
 public class CPListElementSorter extends ViewerComparator {
 	
@@ -29,7 +33,8 @@ public class CPListElementSorter extends ViewerComparator {
 	
 	private static final int ATTRIBUTE= 5;
 	private static final int CONTAINER_ENTRY= 6;
-	
+	private static final int JRE_ENTRY = -2;
+	private static final int REQUIRED_ENTRY = -1;
 	private static final int OTHER= 7;
 	
 	/*
@@ -41,6 +46,18 @@ public class CPListElementSorter extends ViewerComparator {
 			if (element.getParentContainer() != null) {
 				return CONTAINER_ENTRY;
 			}
+			
+
+			IPath containerPath = element.getPath();
+			IPath JREPath = new Path(JavaRuntime.JRE_CONTAINER);
+			
+			if(element.isJRE()) {
+				return JRE_ENTRY;
+			}
+			
+			if(element.isInNonModifiableContainer()) {
+				return REQUIRED_ENTRY;
+			}			
 			switch (element.getEntryKind()) {
 			case IClasspathEntry.CPE_LIBRARY:
 				return LIBRARY;

@@ -156,6 +156,12 @@ public final class JavaRuntime {
 	 */
 	public static final String JRE_CONTAINER ="org.eclipse.wst.jsdt.launching.JRE_CONTAINER"; //$NON-NLS-1$
 	
+	/*
+	 * Default supertype for compilation units
+	 */
+	public static final String DEFAULT_SUPER_TYPE ="Object"; //$NON-NLS-1$
+	
+	public static final String DEFAULT_SUPER_TYPE_LIBRARY = JRE_CONTAINER; //$NON-NLS-1$
 	/**
 	 * A status code indicating that a JRE could not be resolved for a project.
 	 * When a JRE cannot be resolved for a project by this plug-in's container

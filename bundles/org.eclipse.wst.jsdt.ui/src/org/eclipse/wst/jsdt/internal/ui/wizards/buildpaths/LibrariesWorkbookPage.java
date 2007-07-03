@@ -439,9 +439,10 @@ public class LibrariesWorkbookPage extends BuildPathBasePage {
 				}
 			} else if (elem instanceof CPListElement) {
 				CPListElement curr= (CPListElement) elem;
-				if (curr.getParentContainer() != null) {
-					return false;
-				}
+				return !curr.isInNonModifiableContainer();
+//				if (curr.getParentContainer() != null) {
+//					return false;
+//				}
 			} else { // unknown element
 				return false;
 			}
@@ -595,16 +596,24 @@ public class LibrariesWorkbookPage extends BuildPathBasePage {
 		Object elem= selElements.get(0);
 		if (elem instanceof CPListElement) {
 			CPListElement curr= (CPListElement) elem;
-			return !(curr.getResource() instanceof IFolder) && curr.getParentContainer() == null;
+			return !curr.isInNonModifiableContainer();
+			//return !(curr.getResource() instanceof IFolder) && curr.getParentContainer() == null;
 		}
 		if (elem instanceof CPListElementAttribute) {
 			CPListElementAttribute attrib= (CPListElementAttribute) elem;
-			if (attrib.isInNonModifiableContainer()) {
-				return false;
-			}
-			if (attrib.getParent().isInContainer(JavaRuntime.JRE_CONTAINER) && CPListElement.ACCESSRULES.equals(attrib.getKey())) {
-				return false; // workaround for 166519 until we have full story
-			}
+//			if (attrib.isInNonModifiableContainer()) {
+//				return false;
+//			}
+			
+			
+//			if (attrib.getParent().isInContainer(JavaRuntime.JRE_CONTAINER) && CPListElement.ACCESSRULES.equals(attrib.getKey())) {
+//				return false; // workaround for 166519 until we have full story
+//			}
+//			
+//			if(CPListElement.ACCESSRULES.equals(attrib.getKey()){
+//				return true;
+//			}
+			
 			if (!attrib.isBuiltIn()) {
 				return canEditCustomAttribute(attrib);
 			}

@@ -26,6 +26,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.LibrarySuperType;
 
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewElementWizard;
@@ -58,7 +59,7 @@ public abstract class BuildPathWizard extends NewElementWizard {
 		if (fDoFlushChange) {
 			IJavaProject javaProject= getEntryToEdit().getJavaProject();
 			
-			BuildPathsBlock.flush(getExistingEntries(),  javaProject, monitor);
+			BuildPathsBlock.flush(getExistingEntries(),  javaProject,  getSuperType(), monitor);
 			
 			IProject project= javaProject.getProject();
 			IPath path= getEntryToEdit().getPath();
@@ -67,7 +68,10 @@ public abstract class BuildPathWizard extends NewElementWizard {
 			fPackageFragmentRoot= javaProject.getPackageFragmentRoot(folder);
 		}
 	}
-
+	public LibrarySuperType getSuperType() {
+		return null;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

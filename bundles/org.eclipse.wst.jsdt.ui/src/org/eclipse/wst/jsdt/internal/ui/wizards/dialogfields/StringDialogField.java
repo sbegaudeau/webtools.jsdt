@@ -123,6 +123,10 @@ public class StringDialogField extends DialogField {
 		return fTextControl;
 	}
 	
+	public void setTextFieldEditable(boolean editable) {
+		fTextControl.setEditable(editable);
+	}
+	
 	private void doModifyText(ModifyEvent e) {
 		if (isOkToUse(fTextControl)) {
 			fText= fTextControl.getText();

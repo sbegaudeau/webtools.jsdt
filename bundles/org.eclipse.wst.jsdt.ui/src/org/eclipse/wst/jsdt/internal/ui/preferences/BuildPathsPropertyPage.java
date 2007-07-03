@@ -115,6 +115,7 @@ public class BuildPathsPropertyPage extends PropertyPage implements IStatusChang
 	public void setVisible(boolean visible) {
 		if (fBuildPathsBlock != null) {
 			if (!visible) {
+				fBuildPathsBlock.aboutToDispose();
 				if (fBuildPathsBlock.hasChangesInDialog()) {
 					String title= PreferencesMessages.BuildPathsPropertyPage_unsavedchanges_title; 
 					String message= PreferencesMessages.BuildPathsPropertyPage_unsavedchanges_message; 
@@ -134,6 +135,7 @@ public class BuildPathsPropertyPage extends PropertyPage implements IStatusChang
 					}
 				}
 			} else {
+				fBuildPathsBlock.aboutToShow();
 				if (!fBuildPathsBlock.hasChangesInDialog() && fBuildPathsBlock.hasChangesInClasspathFile()) {
 					fBuildPathsBlock.init(JavaCore.create(getProject()), null);
 				}
@@ -207,8 +209,9 @@ public class BuildPathsPropertyPage extends PropertyPage implements IStatusChang
 	 */
 	public boolean performOk() {
 		if (fBuildPathsBlock != null) {
+			fBuildPathsBlock.aboutToDispose();
 			getSettings().put(INDEX, fBuildPathsBlock.getPageIndex());
-			if (fBuildPathsBlock.hasChangesInDialog() || fBuildPathsBlock.isClassfileMissing()) {
+			if (fBuildPathsBlock.hasChangesInDialog() || fBuildPathsBlock.isClassfileMissing() || fBuildPathsBlock.hasChangesInSuper()) {
 				IWorkspaceRunnable runnable= new IWorkspaceRunnable() {
 					public void run(IProgressMonitor monitor)	throws CoreException, OperationCanceledException {
 						fBuildPathsBlock.configureJavaProject(monitor);

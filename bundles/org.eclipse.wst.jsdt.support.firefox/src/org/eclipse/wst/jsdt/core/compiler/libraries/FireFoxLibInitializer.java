@@ -33,7 +33,7 @@ public class FireFoxLibInitializer extends BasicBrowserLibraryClassPathContainer
 		}
 	}
 	
-	public SystemLibraryLocation getLibraryLocation() {
+	public LibraryLocation getLibraryLocation() {
 		return new FireFoxLibLocation();
 	}
 

@@ -44,6 +44,7 @@ public class CPListElement {
 	public static final String OUTPUT= "output"; //$NON-NLS-1$
 	public static final String EXCLUSION= "exclusion"; //$NON-NLS-1$
 	public static final String INCLUSION= "inclusion"; //$NON-NLS-1$
+	public static final String SUPER_TYPE= "supertype"; //$NON-NLS-1$
 	
 	public static final String ACCESSRULES= "accessrules"; //$NON-NLS-1$
 	public static final String COMBINE_ACCESSRULES= "combineaccessrules"; //$NON-NLS-1$
@@ -95,27 +96,35 @@ public class CPListElement {
 		fCachedEntry= null;
 		fParentContainer= parent;
 		
+		ClasspathContainerInitializer init = getContainerInitializer();
+		
+		boolean allowJsDoc = true;
+		
+		if(init!=null) {
+			allowJsDoc = init.allowAttachJsDoc();
+		}
+		
 		switch (entryKind) {
 			case IClasspathEntry.CPE_SOURCE:
-				createAttributeElement(OUTPUT, null, true);
+				//createAttributeElement(OUTPUT, null, true);
 				createAttributeElement(INCLUSION, new Path[0], true);
 				createAttributeElement(EXCLUSION, new Path[0], true);
-				createAttributeElement(NATIVE_LIB_PATH, null, false);
+				//createAttributeElement(NATIVE_LIB_PATH, null, false);
 				break;
 			case IClasspathEntry.CPE_LIBRARY:
 			case IClasspathEntry.CPE_VARIABLE:
-				createAttributeElement(SOURCEATTACHMENT, null, true);
-				createAttributeElement(JAVADOC, null, false);
-				createAttributeElement(NATIVE_LIB_PATH, null, false);
-				createAttributeElement(ACCESSRULES, new IAccessRule[0], true);
+				//createAttributeElement(SOURCEATTACHMENT, null, true);
+				if(allowJsDoc) createAttributeElement(JAVADOC, null, false);
+				//createAttributeElement(NATIVE_LIB_PATH, null, false);
+				//createAttributeElement(ACCESSRULES, new IAccessRule[0], true);
 				break;
 			case IClasspathEntry.CPE_PROJECT:
-				createAttributeElement(ACCESSRULES, new IAccessRule[0], true);
+				//createAttributeElement(ACCESSRULES, new IAccessRule[0], true);
 				createAttributeElement(COMBINE_ACCESSRULES, Boolean.FALSE, true); // not rendered
-				createAttributeElement(NATIVE_LIB_PATH, null, false);
+				//createAttributeElement(NATIVE_LIB_PATH, null, false);
 				break;
 			case IClasspathEntry.CPE_CONTAINER:
-				createAttributeElement(ACCESSRULES, new IAccessRule[0], true);
+				//createAttributeElement(ACCESSRULES, new IAccessRule[0], true);
 				try {
 					IClasspathContainer container= JavaCore.getClasspathContainer(fPath, fProject);
 					if (container != null) {
@@ -124,6 +133,11 @@ public class CPListElement {
 							for (int i= 0; i < entries.length; i++) {
 								IClasspathEntry entry= entries[i];
 								if (entry != null) {
+									if(init!=null) {
+										String displayText = init.getDescription(entry.getPath(), project);
+										if(displayText==null) continue;
+									}
+									
 									CPListElement curr= createFromExisting(this, entry, fProject);
 									fChildren.add(curr);
 								} else {
@@ -136,7 +150,7 @@ public class CPListElement {
 					}
 				} catch (JavaModelException e) {
 				}			
-				createAttributeElement(NATIVE_LIB_PATH, null, false);
+				//createAttributeElement(NATIVE_LIB_PATH, null, false);
 				break;
 			default:
 		}
@@ -227,6 +241,7 @@ public class CPListElement {
 		CPListElementAttribute attribute= findAttributeElement(key);
 		if (attribute == null) {
 			return null;
+			//createAttributeElement(key, value, false);
 		}
 		if (key.equals(EXCLUSION) || key.equals(INCLUSION)) {
 			Assert.isTrue(value != null || fEntryKind != IClasspathEntry.CPE_SOURCE);
@@ -382,10 +397,23 @@ public class CPListElement {
 	protected void attributeChanged(String key) {
 		fCachedEntry= null;
 	}
+	/* return ClasspathContainerInitializer (if it exists)
+	 * 
+	 */
+	public ClasspathContainerInitializer getContainerInitializer() {
+		if (fEntryKind == IClasspathEntry.CPE_CONTAINER && fProject != null) {
+			ClasspathContainerInitializer initializer= JavaCore.getClasspathContainerInitializer(fPath.segment(0));
+			return initializer ;
+		}else if(fParentContainer !=null && fParentContainer instanceof CPListElement) {
+			return ((CPListElement)fParentContainer).getContainerInitializer();
+		}
+		return null;
+	}
 	
 	private boolean canUpdateContainer() {
 		if (fEntryKind == IClasspathEntry.CPE_CONTAINER && fProject != null) {
-			ClasspathContainerInitializer initializer= JavaCore.getClasspathContainerInitializer(fPath.segment(0));
+			//ClasspathContainerInitializer initializer= JavaCore.getClasspathContainerInitializer(fPath.segment(0));
+			ClasspathContainerInitializer initializer=getContainerInitializer();
 			return (initializer != null && initializer.canUpdateClasspathContainer(fPath, fProject));
 		}
 		return false;
@@ -393,9 +421,19 @@ public class CPListElement {
 	
 	public boolean isInNonModifiableContainer() {
 		if (fParentContainer instanceof CPListElement) {
-			return !((CPListElement) fParentContainer).canUpdateContainer();
+			return  !((CPListElement) fParentContainer).canUpdateContainer();
+		}else if(fEntryKind == IClasspathEntry.CPE_CONTAINER) {
+			return !canUpdateContainer();
 		}
 		return false;
+		
+	}
+	
+	public boolean isJRE() {
+		IPath containerPath = getPath();
+		IPath JREPath = new Path(JavaRuntime.JRE_CONTAINER);
+		
+		return (containerPath!=null && containerPath.equals(JREPath));
 	}
 	
 	public boolean isInContainer(String containerName) {

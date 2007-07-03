@@ -39,9 +39,11 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+//import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -72,6 +74,7 @@ import org.eclipse.wst.jsdt.core.IJavaModelStatus;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaConventions;
 import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.LibrarySuperType;
 
 import org.eclipse.wst.jsdt.internal.core.JavaProject;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
@@ -90,12 +93,17 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.TypedElementSelectionValidator;
 import org.eclipse.wst.jsdt.internal.ui.wizards.TypedViewerFilter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.newsourcepage.NewSourceContainerWorkbookPage;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.CheckedListDialogField;
+import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ComboDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IListAdapter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IStringButtonAdapter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ListDialogField;
+import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ObjectStringStatusButtonDialogField;
+import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.Separator;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonDialogField;
+import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonStatusDialogField;
+import org.eclipse.wst.jsdt.launching.JavaRuntime;
 
 public class BuildPathsBlock {
 
@@ -116,7 +124,7 @@ public class BuildPathsBlock {
 	private IWorkspaceRoot fWorkspaceRoot;
 
 	private CheckedListDialogField fClassPathList;
-	//private StringButtonDialogField fBuildPathDialogField;
+	private StringButtonDialogField fBuildPathDialogField;
 	
 	private StatusInfo fClassPathStatus;
 	private StatusInfo fOutputFolderStatus;	
@@ -129,6 +137,7 @@ public class BuildPathsBlock {
 	private IStatusChangeListener fContext;
 	private Control fSWTWidget;	
 	private TabFolder fTabFolder;
+//	private ObjectStringStatusButtonDialogField superField;
 	
 	private int fPageIndex;
 	
@@ -143,6 +152,7 @@ public class BuildPathsBlock {
     
     private IRunnableContext fRunnableContext;
     private boolean fUseNewPage;
+    private ClasspathOrderingWorkbookPage ordpage;
 
 	private final IWorkbenchPreferenceContainer fPageContainer; // null when invoked from a non-property page context
 	
@@ -189,16 +199,15 @@ public class BuildPathsBlock {
 		fClassPathList.setCheckAllButtonIndex(IDX_SELECT_ALL);
 		fClassPathList.setUncheckAllButtonIndex(IDX_UNSELECT_ALL);	
 		
-//		fBuildPathDialogField= new StringButtonDialogField(adapter);
-//		fBuildPathDialogField.setButtonLabel(NewWizardMessages.BuildPathsBlock_buildpath_button); 
-//		fBuildPathDialogField.setDialogFieldListener(adapter);
-//		fBuildPathDialogField.setLabelText(NewWizardMessages.BuildPathsBlock_buildpath_label); 
-
+		
+		//fBuildPathDialogField.setEnabled(false);
 		fBuildPathStatus= new StatusInfo();
 		fClassPathStatus= new StatusInfo();
 		fOutputFolderStatus= new StatusInfo();
 		
 		fCurrJProject= null;
+		
+		
 	}
 	
 	// -------- UI creation ---------
@@ -220,6 +229,10 @@ public class BuildPathsBlock {
 		folder.setFont(composite.getFont());
 		
 		TabItem item;
+		
+		
+
+		
         item= new TabItem(folder, SWT.NONE);
 
         fLibrariesPage= new LibrariesWorkbookPage(fClassPathList, fPageContainer);		
@@ -228,7 +241,23 @@ public class BuildPathsBlock {
 		item.setImage(JavaPluginImages.get(JavaPluginImages.IMG_OBJS_LIBRARY));
 		item.setData(fLibrariesPage);
 		item.setControl(fLibrariesPage.getControl(folder));
-        
+		/* ----START---------- CP ORdering Page ------------- */
+		Image cpoImage= JavaPluginImages.DESC_TOOL_CLASSPATH_ORDER.createImage();
+		composite.addDisposeListener(new ImageDisposer(cpoImage));	
+		
+		ordpage= new ClasspathOrderingWorkbookPage(fClassPathList);
+		
+		/* init super type field with either default or the one defined for the project */
+		ordpage.getSuperField().setValue(getProjectSuperType(fCurrJProject));
+		
+		
+		item= new TabItem(folder, SWT.NONE);
+		item.setText("Global Order/SuperType"); 
+		item.setImage(cpoImage);
+		item.setData(ordpage);
+		item.setControl(ordpage.getControl(folder));
+		/* ----END---------- CP ORdering Page ------------- */		
+		
 		
 		item= new TabItem(folder, SWT.NONE);
         item.setText(NewWizardMessages.BuildPathsBlock_tab_source); 
@@ -256,20 +285,14 @@ public class BuildPathsBlock {
 		
 		
 		 //a non shared image
-		Image cpoImage= JavaPluginImages.DESC_TOOL_CLASSPATH_ORDER.createImage();
-		composite.addDisposeListener(new ImageDisposer(cpoImage));	
 		
-		ClasspathOrderingWorkbookPage ordpage= new ClasspathOrderingWorkbookPage(fClassPathList);		
-		item= new TabItem(folder, SWT.NONE);
-		item.setText(NewWizardMessages.BuildPathsBlock_tab_order); 
-		item.setImage(cpoImage);
-		item.setData(ordpage);
-		item.setControl(ordpage.getControl(folder));
-				
+		
 		if (fCurrJProject != null) {
 			fSourceContainerPage.init(fCurrJProject);
 			fLibrariesPage.init(fCurrJProject);
 			fProjectsPage.init(fCurrJProject);
+			ordpage.init(fCurrJProject);
+			
 		}
 		
 		folder.setSelection(fPageIndex);
@@ -395,11 +418,30 @@ public class BuildPathsBlock {
 		return buf.toString();
 	}
 	
+	public boolean hasChangesInSuper() {
+		LibrarySuperType savedSuperType = getProjectSuperType(fCurrJProject);
+		
+		Object o = ordpage.getSuperField().getValue();
+		
+		if(o!=null && !o.equals(savedSuperType)) return true;
+		return false;
+	}
+	
 	public boolean hasChangesInDialog() {
+		
+		
+		
 		String currSettings= getEncodedSettings();
 		return !currSettings.equals(fUserSettingsTimeStamp);
 	}
 	
+	public void aboutToDispose() {
+		if(fCurrPage!=null) fCurrPage.aboutToDispose();
+	}
+	
+	public void aboutToShow() {
+		if(fCurrPage!=null) fCurrPage.aboutToShow();
+	}
 	public boolean hasChangesInClasspathFile() {
 		IFile file= fCurrJProject.getProject().getFile(JavaProject.CLASSPATH_FILENAME); //$NON-NLS-1$
 		return fFileTimeStamp != file.getModificationStamp();
@@ -499,7 +541,35 @@ public class BuildPathsBlock {
 //		return list;
 //	}
 //	
-//	public static IPath getDefaultOutputLocation(IJavaProject jproj) {
+	
+	public static LibrarySuperType getProjectSuperType(IJavaProject jproj) {
+		if(jproj==null) {
+			return getDefaultSuperType(jproj);
+		}
+		JavaProject javaProject = ((JavaProject)jproj);
+		
+		//String superTypeName =null;
+		//String superTypeContainer =null;	
+		LibrarySuperType projectSuperType = null;
+	//	try {
+			projectSuperType = javaProject.getCommonSuperType();
+			//superTypeName = javaProject.getSharedProperty(LibrarySuperType.SUPER_TYPE_NAME);
+			//superTypeContainer = javaProject.getSharedProperty(LibrarySuperType.SUPER_TYPE_CONTAINER);
+	//	} catch (CoreException ex) {
+			// TODO Auto-generated catch block
+		//	ex.printStackTrace();
+		//}
+//	/	IPreferenceStore store= PreferenceConstants.getPreferenceStore();
+//		String superTypeContainerPath= store.getString(PreferenceConstants.SUPER_TYPE_CONTAINER);
+//		String superTypeName= store.getString(PreferenceConstants.SUPER_TYPE_NAME);
+		//if(superTypeName==null || superTypeContainer==null || superTypeName.equals("") ) {
+		if(projectSuperType==null) {
+			LibrarySuperType defaultSt =getDefaultSuperType(jproj); 
+			setProjectSuperType(jproj, defaultSt);
+			return defaultSt;
+		}
+		return projectSuperType;
+		//return new LibrarySuperType(new Path(superTypeContainer),jproj, superTypeName);
 //		IPreferenceStore store= PreferenceConstants.getPreferenceStore();
 //		if (store.getBoolean(PreferenceConstants.SRCBIN_FOLDERS_IN_NEWPROJ)) {
 //			String outputLocationName= store.getString(PreferenceConstants.SRCBIN_BINNAME);
@@ -507,8 +577,49 @@ public class BuildPathsBlock {
 //		} else {
 //			return jproj.getProject().getFullPath();
 //		}
-//	}	
+	}	
+	
+	public static LibrarySuperType getDefaultSuperType(IJavaProject jproj) {
+		IPath JREPath = new Path(JavaRuntime.DEFAULT_SUPER_TYPE_LIBRARY);
+		String superTypeName = JavaRuntime.DEFAULT_SUPER_TYPE;
 		
+		return new LibrarySuperType(JREPath, jproj, superTypeName);
+	}	
+	
+	public static void setProjectSuperType(IJavaProject jproj, LibrarySuperType superType) {
+		
+		JavaProject javaProject = ((JavaProject)jproj);
+		
+		javaProject.setCommonSuperType(superType);
+		
+		
+		
+		
+		
+	
+//		String superTypeName = superType.getSuperTypeName();
+//		String superTypeContainer = superType.getRawContainerPath().toString();	
+//		
+//		try {
+//			javaProject.setSharedProperty(LibrarySuperType.SUPER_TYPE_NAME, superTypeName);
+//			javaProject.setSharedProperty(LibrarySuperType.SUPER_TYPE_CONTAINER, superTypeContainer);
+//		} catch (CoreException ex) {
+//			// TODO Auto-generated catch block
+//			ex.printStackTrace();
+//		}
+//		IPreferenceStore store= PreferenceConstants.getPreferenceStore();
+//		String superTypeName = superType.getSuperTypeName();
+//		String superTypeContainer = superType.getRawContainerPath().toString();	
+//		store.setValue(PreferenceConstants.SUPER_TYPE_CONTAINER, superTypeContainer);
+//		store.setValue(PreferenceConstants.SUPER_TYPE_NAME, superTypeName);
+		
+		
+		//String superTypeContainerPath= store.getString(PreferenceConstants.SUPER_TYPE_CONTAINER);
+		//String superTypeName= store.getString(PreferenceConstants.SUPER_TYPE_NAME);
+		
+	}	
+
+	
 	private class BuildPathAdapter implements IStringButtonAdapter, IDialogFieldListener, IListAdapter {
 
 		// -------- IStringButtonAdapter --------
@@ -749,19 +860,30 @@ public class BuildPathsBlock {
 	public void configureJavaProject(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
 		
 		//flush(fClassPathList.getElements(), getOutputLocation(), getJavaProject(), monitor);
-		flush(fClassPathList.getElements(),  getJavaProject(), monitor);
+		flush(fClassPathList.getElements(),  getJavaProject(), getSuperType(), monitor);
 		initializeTimeStamps();
 		
 		updateUI();
 	}
-    	
+    
+	public LibrarySuperType getSuperType() {
+
+		Object o = ordpage.getSuperField().getValue();
+		
+		return (LibrarySuperType)o;
+	}
+	
 	/*
 	 * Creates the Java project and sets the configured build path and output location.
 	 * If the project already exists only build paths are updated.
 	 */
 	//public static void flush(List classPathEntries, IPath outputLocation, IJavaProject javaProject, IProgressMonitor monitor) throws CoreException, OperationCanceledException {		
-	public static void flush(List classPathEntries,  IJavaProject javaProject, IProgressMonitor monitor) throws CoreException, OperationCanceledException {
-	if (monitor == null) {
+	public static void flush(List classPathEntries,  IJavaProject javaProject, LibrarySuperType superType, IProgressMonitor monitor) throws CoreException, OperationCanceledException {
+		if(superType==null) {
+			System.out.println("---------------------------------- NULL SUPER TYPE -------------------------");
+		}
+		setProjectSuperType(javaProject, superType);
+		if (monitor == null) {
 			monitor= new NullProgressMonitor();
 		}
 		monitor.setTaskName(NewWizardMessages.BuildPathsBlock_operationdesc_java); 
@@ -1011,7 +1133,10 @@ public class BuildPathsBlock {
 				if (!selection.isEmpty()) {
 					newPage.setSelection(selection, false);
 				}
+				fCurrPage.aboutToDispose();
+				newPage.aboutToShow();
 			}
+			
 			fCurrPage= newPage;
 			fPageIndex= tabItem.getParent().getSelectionIndex();
 		}

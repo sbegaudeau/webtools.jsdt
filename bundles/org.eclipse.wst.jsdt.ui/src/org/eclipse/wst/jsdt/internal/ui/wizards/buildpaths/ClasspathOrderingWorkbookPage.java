@@ -10,28 +10,83 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Shell;
 
 import org.eclipse.jface.viewers.StructuredSelection;
 
+import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.LibrarySuperType;
 
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
+import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ComboDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
+import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
+import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IStringButtonAdapter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ListDialogField;
+import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ObjectStringStatusButtonDialogField;
+import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.Separator;
+import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonDialogField;
+import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonStatusDialogField;
+import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringDialogField;
+import org.eclipse.wst.jsdt.ui.wizards.BuildPathDialogAccess;
 
 
 public class ClasspathOrderingWorkbookPage extends BuildPathBasePage {
 	
 	private ListDialogField fClassPathList;
 	
+	private List allCpElements;
+	
+	private static final boolean HIDE_ALL_READONLY_CONTAINERS = true;
+	private ObjectStringStatusButtonDialogField superTypeField;
+	private IJavaProject fJavaProject;
+	private Control fSWTControl;
+	
+	
 	public ClasspathOrderingWorkbookPage(ListDialogField classPathList) {
 		fClassPathList= classPathList;
+		superTypeField = new ObjectStringStatusButtonDialogField(new OrderingWorkbookPageAdapter());
+		
+	}
+	
+	public ObjectStringStatusButtonDialogField getSuperField() {
+		return superTypeField;
+	}
+	class OrderingWorkbookPageAdapter implements IStringButtonAdapter{
+		public void changeControlPressed(DialogField field) {
+			if(field==superTypeField) {
+				CPListElement elements[] = (CPListElement[])allCpElements.toArray(new CPListElement[allCpElements.size()]);
+				Object prevSuperTypeObject = superTypeField.getValue();
+				LibrarySuperType oldSuper = null;
+				
+				if(prevSuperTypeObject!=null) {
+					oldSuper = (LibrarySuperType)prevSuperTypeObject;
+				}
+				
+				
+				LibrarySuperType superType = openSuperTypeSelectionDialog(elements,oldSuper);
+				
+				if(superType!=null) {
+					superTypeField.setValue(superType);
+				}
+			}
+			
+		}
+		
+	}
+	
+	private String[] popupFieldSelectionDialog() {
+		return new String[] {"Window","Basic Browser Library"};
 	}
 	
 	public Control getControl(Composite parent) {
@@ -39,13 +94,18 @@ public class ClasspathOrderingWorkbookPage extends BuildPathBasePage {
 		
 		Composite composite= new Composite(parent, SWT.NONE);
 		composite.setFont(parent.getFont());
+		superTypeField.setButtonLabel("Select && Re-order Libraries"); 
+		//superTypeField.setDialogFieldListener(null);
 		
-		LayoutUtil.doDefaultLayout(composite, new DialogField[] { fClassPathList }, true, SWT.DEFAULT, SWT.DEFAULT);
-		LayoutUtil.setHorizontalGrabbing(fClassPathList.getListControl(null));
+		superTypeField.setLabelText("JavaScript file 'SuperType'  ---\n  [Every (.js) file will inherit the 'SuperType' fields/methods]:"); 
 
+		LayoutUtil.doDefaultLayout(composite, new DialogField[] { fClassPathList, superTypeField }, true, SWT.DEFAULT, SWT.DEFAULT);
+		LayoutUtil.setHorizontalGrabbing(fClassPathList.getListControl(null));
+		//superTypeField.setTextFieldEditable(false);
+		
 		int buttonBarWidth= converter.convertWidthInCharsToPixels(24);
 		fClassPathList.setButtonsMinWidth(buttonBarWidth);
-			
+		fSWTControl = composite;
 		return composite;
 	}
 	
@@ -62,6 +122,26 @@ public class ClasspathOrderingWorkbookPage extends BuildPathBasePage {
 	public void setSelection(List selElements, boolean expand) {
 		fClassPathList.selectElements(new StructuredSelection(selElements));
 	}
+	
+	private List filterNodes(List elements) {
+		ArrayList filter = new ArrayList();
+		
+		Iterator itt = elements.iterator();
+		
+		while(itt.hasNext()) {
+			Object next = itt.next();
+			if(((next instanceof CPListElement) && ((CPListElement)next).isJRE() )) {
+				// dont add
+			}else if(HIDE_ALL_READONLY_CONTAINERS && (next instanceof CPListElement) && ((CPListElement)next).isInNonModifiableContainer()) {
+				// dont add
+			}else {
+				filter.add(next);
+			}
+		}
+		
+		return filter;
+		
+	}
 		
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathBasePage#isEntryKind(int)
@@ -74,13 +154,63 @@ public class ClasspathOrderingWorkbookPage extends BuildPathBasePage {
 	 * @see org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathBasePage#init(org.eclipse.wst.jsdt.core.IJavaProject)
 	 */
 	public void init(IJavaProject javaProject) {
+		fJavaProject = javaProject;
 	}
 
 	/**
      * {@inheritDoc}
      */
     public void setFocus() {
+    	
     	fClassPathList.setFocus();
     }
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathBasePage#aboutToDispose()
+	 */
+	public void aboutToDispose() {
+		fClassPathList.setElements(allCpElements);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathBasePage#aboutToShow()
+	 */
+	public void aboutToShow() {
+		allCpElements = fClassPathList.getElements();
+		fClassPathList.setElements(filterNodes( fClassPathList.getElements()));
+	}
+	
+	private LibrarySuperType openSuperTypeSelectionDialog(CPListElement[] existingCp, LibrarySuperType existingSuper) {
+		LibrarySuperType newLib = BuildPathDialogAccess.chooseSuperType(getShell(), existingCp, existingSuper, fJavaProject);
+		return newLib;
+	}
+	
+//	private CPListElement[] openContainerSelectionDialog(CPListElement existing) {
+//		if (existing == null) {
+//			IClasspathEntry[] created= BuildPathDialogAccess.chooseContainerEntries(getShell(), fCurrJProject, getRawClasspath());
+//			if (created != null) {
+//				CPListElement[] res= new CPListElement[created.length];
+//				for (int i= 0; i < res.length; i++) {
+//					//res[i]= new CPListElement(fCurrJProject, IClasspathEntry.CPE_CONTAINER, created[i].getPath(), null);
+//					res[i]= new CPListElement(fCurrJProject, created[i].getEntryKind(), created[i].getPath(), null);
+//				}
+//				return res;
+//			}
+//		} else {
+//			IClasspathEntry created= BuildPathDialogAccess.configureContainerEntry(getShell(), existing.getClasspathEntry(), fCurrJProject, getRawClasspath());
+//			if (created != null) {
+//				//CPListElement elem= new CPListElement(fCurrJProject, IClasspathEntry.CPE_CONTAINER, created.getPath(), null);
+//				CPListElement elem= new CPListElement(fCurrJProject, created.getEntryKind(), created.getPath(), null);
+//				return new CPListElement[] { elem };
+//			}
+//		}		
+//		return null;
+//	}
+
+	private Shell getShell() {
+		if (fSWTControl != null) {
+			return fSWTControl.getShell();
+		}
+		return JavaPlugin.getActiveWorkbenchShell();
+	}
 }

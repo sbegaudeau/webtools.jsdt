@@ -12,9 +12,12 @@ package org.eclipse.wst.jsdt.ui.wizards;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -25,12 +28,18 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
 
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
+import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
@@ -38,11 +47,15 @@ import org.eclipse.ui.views.navigator.ResourceComparator;
 
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.LibrarySuperType;
+import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
 
 import org.eclipse.wst.jsdt.ui.JavaUI;
 
+import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IUIConstants;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.TypedElementSelectionValidator;
 import org.eclipse.wst.jsdt.internal.ui.wizards.TypedViewerFilter;
@@ -376,6 +389,128 @@ public final class BuildPathDialogAccess {
 		}
 		return null;
 	}
+	
+	
+	
+	
+	public static LibrarySuperType chooseSuperType(Shell shell, CPListElement[] cpEntries, LibrarySuperType initialSelection, IJavaProject project) {
+		if (cpEntries == null) {
+			throw new IllegalArgumentException();
+		}
+		
+//		Class[] acceptedClasses= new Class[] { IFile.class };
+//		TypedElementSelectionValidator validator= new TypedElementSelectionValidator(acceptedClasses, true);
+//		ArrayList usedJars= new ArrayList(usedEntries.length);
+//		IWorkspaceRoot root= ResourcesPlugin.getWorkspace().getRoot();
+//		for (int i= 0; i < usedEntries.length; i++) {
+//			IResource resource= root.findMember(usedEntries[i]);
+//			if (resource instanceof IFile) {
+//				usedJars.add(resource);
+//			}
+//		}
+//		IResource focus= initialSelection != null ? root.findMember(initialSelection) : null;
+		ArrayList allLibsSuper = new ArrayList();
+		
+		for(int i = 0;i<cpEntries.length;i++) {
+			LibrarySuperType libSuperParent = new LibrarySuperType(cpEntries[i].getPath(), cpEntries[i].getJavaProject());
+			if(libSuperParent.hasChildren()) {
+				allLibsSuper.add(libSuperParent);
+			}
+			//allLibsSuper.addAll(Arrays.asList(libSupers));
+		}
+		
+		boolean currentIsValid = initialSelection!=null && allLibsSuper.contains(initialSelection.getParent());
+		
+		LibrarySuperType[] libSupers = (LibrarySuperType[])allLibsSuper.toArray(new LibrarySuperType[allLibsSuper.size()]);
+		
+		
+		
+		class LibrarySuperTypeContentProvider implements ITreeContentProvider, 
+														  ILabelProvider,
+														  ISelectionStatusValidator{
+			public Object[] getChildren(Object parentElement) {
+				if(parentElement==null) return null;
+				return ((LibrarySuperType)parentElement).getChildren();
+			
+			}
+			public Object getParent(Object element) {
+				if(element==null) return null;
+				return ((LibrarySuperType)element).getParent();
+			}
+			
+			public boolean hasChildren(Object element) {
+				if(element==null) return false;
+				return ((LibrarySuperType)element).hasChildren();
+			}
+			public Object[] getElements(Object inputElement) {
+				if(inputElement instanceof Object[]) return (Object[])inputElement;
+				return new Object[] {inputElement}	;
+			}
+			public void dispose() {}
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
+			public Image getImage(Object element) {
+				return null;
+//				if(element==null) return null;
+//				return ((LibrarySuperType)element).toImage();
+			}
+			
+			public String getText(Object element) {
+				if(element==null) return null;
+				
+				String superTypeName = ((LibrarySuperType)element).getSuperTypeName();
+				String libraryName = ((LibrarySuperType)element).getLibraryName();
+				if(superTypeName!=null) return superTypeName;
+				return libraryName;
+			}
+			
+			public void addListener(ILabelProviderListener listener) {}
+			public boolean isLabelProperty(Object element, String property) {return false;}
+			public void removeListener(ILabelProviderListener listener) {}
+			
+			public IStatus validate(Object[] selection) {
+				if(selection==null || selection.length!=1) { 
+					return new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.ERROR, null, null);
+				}else if( ! (selection[0]  instanceof LibrarySuperType)     ){
+					return new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.ERROR,null, null);
+				}else if(((LibrarySuperType)selection[0]).isParent()) {
+					return new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.ERROR, null, null);
+				}
+				return new Status(IStatus.OK, JavaPlugin.getPluginId(), IStatus.OK, "", null);
+			}
+			
+		}
+		LibrarySuperTypeContentProvider libValidator = new LibrarySuperTypeContentProvider();
+		ElementTreeSelectionDialog dialog =  new ElementTreeSelectionDialog(shell,libValidator , libValidator);
+		dialog.setAllowMultiple(false);
+		
+		dialog.setHelpAvailable(false);
+		dialog.setInput(libSupers);
+		dialog.setValidator(libValidator);
+		dialog.setTitle("JavaScript Sourcefile SuperType Selection"); 
+		dialog.setMessage("Select a class from the installed libraries to use as \nthe SuperType for all JavaScript Source Files:"); 
+		//dialog.addFilter(new ArchiveFileFilter(usedJars, true));
+		if(currentIsValid) dialog.setInitialSelection(initialSelection);
+	//	dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));
+		//dialog.setInitialSelection(focus);
+
+		if (dialog.open() == Window.OK) {
+			Object[] elements= dialog.getResult();
+			if(elements==null || elements.length==0 || !(elements[0] instanceof LibrarySuperType) ) return null;
+			return (LibrarySuperType)elements[0];
+			                
+//			IPath[] res= new IPath[elements.length];
+//			for (int i= 0; i < res.length; i++) {
+//				IResource elem= (IResource)elements[i];
+//				res[i]= elem.getFullPath();
+//			}
+//			return res;
+		}
+		return null;
+	}
+	
+	
+	
+	
 	
 	/**
 	 * Shows the UI to configure an external JAR or ZIP archive.

@@ -79,9 +79,9 @@ public class CPListLabelProvider extends LabelProvider {
 		} else if (element instanceof CPListElementAttribute) {
 			CPListElementAttribute attribute= (CPListElementAttribute) element;
 			String text= getCPListElementAttributeText(attribute);
-			if (attribute.isInNonModifiableContainer()) {
-				return Messages.format(NewWizardMessages.CPListLabelProvider_non_modifiable_attribute, text); 
-			}
+//			if (attribute.isInNonModifiableContainer()) {
+//				return Messages.format(NewWizardMessages.CPListLabelProvider_non_modifiable_attribute, text); 
+//			}
 			return text;
 		} else if (element instanceof CPUserLibraryElement) {
 			return getCPUserLibraryText((CPUserLibraryElement) element);
@@ -224,6 +224,14 @@ public class CPListLabelProvider extends LabelProvider {
 		IPath path= cpentry.getPath();
 		switch (cpentry.getEntryKind()) {
 			case IClasspathEntry.CPE_LIBRARY: {
+				
+				ClasspathContainerInitializer cpinit = cpentry.getContainerInitializer();
+				if(cpinit!=null) {
+					String displayText = cpinit.getDescription(cpentry.getPath(), cpentry.getJavaProject());
+					if(displayText!=null)
+						return displayText;
+				}
+				
 				IResource resource= cpentry.getResource();
 				if (resource instanceof IContainer) {
 					StringBuffer buf= new StringBuffer(path.makeRelative().toString());
@@ -257,7 +265,10 @@ public class CPListLabelProvider extends LabelProvider {
 			case IClasspathEntry.CPE_CONTAINER:
 				try {
 					IClasspathContainer container= JavaCore.getClasspathContainer(path, cpentry.getJavaProject());
+					
 					if (container != null) {
+						
+						
 						return container.getDescription();
 					}
 					ClasspathContainerInitializer initializer= JavaCore.getClasspathContainerInitializer(path.segment(0));

@@ -146,14 +146,14 @@ public class JREContainer implements IClasspathContainer {
 	 * @see IClasspathContainer#getDescription()
 	 */
 	public String getDescription() {
-		String environmentId = JavaRuntime.getExecutionEnvironmentId(getPath());
-		String tag = null;
-		if (environmentId == null) {
-			tag = fVMInstall.getName();
-		} else {
-			tag = environmentId;
-		}
-		return MessageFormat.format(LaunchingMessages.JREContainer_JRE_System_Library_1, new String[]{tag});
+//		String environmentId = JavaRuntime.getExecutionEnvironmentId(getPath());
+//		String tag = null;
+//		if (environmentId == null) {
+//			tag = fVMInstall.getName();
+//		} else {
+//			tag = environmentId;
+//		}
+		return MessageFormat.format(LaunchingMessages.JREContainer_JRE_System_Library_1, new String[]{});
 	}
 
 	/**

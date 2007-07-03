@@ -166,4 +166,7 @@ public abstract class BuildPathBasePage {
 	
 	public abstract void setFocus();
 	
+	public void aboutToShow() {};
+	public void aboutToDispose() {};
+	
 }

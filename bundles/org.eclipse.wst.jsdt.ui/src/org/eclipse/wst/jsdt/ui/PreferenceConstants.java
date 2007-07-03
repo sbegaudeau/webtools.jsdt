@@ -412,6 +412,10 @@ public class PreferenceConstants {
 	public static final String LINK_BROWSING_PACKAGES_TO_EDITOR= "org.eclipse.wst.jsdt.ui.browsing.packagestoeditor"; //$NON-NLS-1$
 
 
+	/* supertype preferences */
+	public static final String SUPER_TYPE_CONTAINER= "org.eclipse.wst.jsdt.ui.superType.container";
+	public static final String SUPER_TYPE_NAME= "org.eclipse.wst.jsdt.ui.superType.name";
+	
 
 	/**
 	 * A named preference that controls whether the types view's selection is
