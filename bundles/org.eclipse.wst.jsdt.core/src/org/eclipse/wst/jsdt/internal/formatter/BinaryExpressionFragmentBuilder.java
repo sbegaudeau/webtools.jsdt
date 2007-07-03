@@ -38,6 +38,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FloatLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.InstanceOfExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.RegExLiteral;
@@ -355,6 +356,12 @@ class BinaryExpressionFragmentBuilder
 		return false;
 	}
 
+	public boolean visit(
+		ListExpression listExpression,
+		BlockScope scope) {
+			this.addRealFragment(listExpression);
+			return false;
+	}
 	public boolean visit(LongLiteral longLiteral, BlockScope scope) {
 		this.addSmallFragment(longLiteral);
 		return false;

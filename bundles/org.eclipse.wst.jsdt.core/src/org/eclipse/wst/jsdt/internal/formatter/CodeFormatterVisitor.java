@@ -66,6 +66,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.InstanceOfExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LabeledStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MarkerAnnotation;
@@ -5653,6 +5654,37 @@ public class CodeFormatterVisitor extends ASTVisitor {
 					this.scribe.space();
 				}
 		}
+		return false;
+	}
+
+	public boolean visit(ListExpression listExpression, BlockScope scope) {
+		int expressionsLength=listExpression.expressions.length;
+		Alignment argumentsAlignment = this.scribe.createAlignment(
+				"messageArguments", //$NON-NLS-1$
+				this.preferences.alignment_for_arguments_in_method_invocation,
+				expressionsLength,
+				this.scribe.scanner.currentPosition);
+		this.scribe.enterAlignment(argumentsAlignment);
+		boolean ok = false;
+		do {
+			try {
+				for (int i = 0; i < expressionsLength; i++) {
+					if (i > 0) {
+						this.scribe.printNextToken(TerminalTokens.TokenNameCOMMA, this.preferences.insert_space_before_comma_in_method_invocation_arguments);
+						this.scribe.printTrailingComment();
+					}
+					this.scribe.alignFragment(argumentsAlignment, i);
+					if (i > 0 && this.preferences.insert_space_after_comma_in_method_invocation_arguments) {
+						this.scribe.space();
+					}
+					listExpression.expressions[i].traverse(this, scope);
+				}
+				ok = true;
+			} catch (AlignmentException e) {
+				this.scribe.redoAlignment(e);
+			}
+		} while (!ok);
+		this.scribe.exitAlignment(argumentsAlignment, true);
 		return false;
 	}
 }

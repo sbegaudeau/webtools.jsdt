@@ -95,6 +95,9 @@ public class CompletionNodeDetector extends ASTVisitor {
 	public void endVisit(MessageSend messageSend, BlockScope scope) {
 		endVisit(messageSend);
 	}
+	public void endVisit(ListExpression listExpression, BlockScope scope) {
+		endVisit(listExpression);
+	}
 	public void endVisit(OR_OR_Expression or_or_Expression, BlockScope scope) {
 		endVisit(or_or_Expression);
 	}
@@ -208,6 +211,9 @@ public class CompletionNodeDetector extends ASTVisitor {
 	}
 	public boolean visit(FieldReference fieldReference, BlockScope scope) {
 		return this.visit(fieldReference);
+	}
+	public boolean visit(ListExpression listExpression, BlockScope scope) {
+		return this.visit(listExpression);
 	}
 	public boolean visit(InstanceOfExpression instanceOfExpression, BlockScope scope) {
 		return this.visit(instanceOfExpression);

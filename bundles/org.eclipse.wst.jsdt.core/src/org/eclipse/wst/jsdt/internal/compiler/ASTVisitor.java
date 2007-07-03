@@ -274,6 +274,9 @@ public abstract class ASTVisitor {
 	public void endVisit(LocalDeclaration localDeclaration, BlockScope scope) {
 		// do nothing by default
 	}
+	public void endVisit(ListExpression listDeclaration, BlockScope scope) {
+		// do nothing by default
+	}
 	public void endVisit(LongLiteral longLiteral, BlockScope scope) {
 		// do nothing by default
 	}
@@ -736,6 +739,9 @@ public abstract class ASTVisitor {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(LocalDeclaration localDeclaration, BlockScope scope) {
+		return true; // do nothing by default, keep traversing
+	}
+	public boolean visit(ListExpression listDeclaration, BlockScope scope) {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(LongLiteral longLiteral, BlockScope scope) {
