@@ -1383,6 +1383,7 @@ public class NameLookup implements SuffixConstants {
 		if (VERBOSE)
 			start = System.currentTimeMillis();
 		try {
+			this.acceptedCUs.clear();
 			IJavaElement[] classFiles= null;
 			try {
 				classFiles= pkg.getChildren();
