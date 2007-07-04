@@ -58,6 +58,7 @@ import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
 import org.eclipse.wst.jsdt.core.dom.Javadoc;
 import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
 import org.eclipse.wst.jsdt.core.dom.LineComment;
+import org.eclipse.wst.jsdt.core.dom.ListExpression;
 import org.eclipse.wst.jsdt.core.dom.MarkerAnnotation;
 import org.eclipse.wst.jsdt.core.dom.MemberRef;
 import org.eclipse.wst.jsdt.core.dom.MemberValuePair;
@@ -356,6 +357,12 @@ class AstMatchingNodeFinder {
 			return super.visit(node);
 		}
 
+
+		public boolean visit(ListExpression node) {
+			if (node.subtreeMatch(fMatcher, fNodeToMatch))
+				return matches(node);
+			return super.visit(node);
+		}
 		public boolean visit(MethodDeclaration node) {
 			if (node.subtreeMatch(fMatcher, fNodeToMatch))
 				return matches(node);

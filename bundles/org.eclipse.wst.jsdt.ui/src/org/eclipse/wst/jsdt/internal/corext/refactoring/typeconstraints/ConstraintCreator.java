@@ -43,6 +43,7 @@ import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
 import org.eclipse.wst.jsdt.core.dom.Javadoc;
 import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
+import org.eclipse.wst.jsdt.core.dom.ListExpression;
 import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
 import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
@@ -304,6 +305,10 @@ public class ConstraintCreator {
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.InstanceofExpression)
 	 */
 	public ITypeConstraint[] create(InstanceofExpression node) {
+		return EMPTY_ARRAY;
+	}
+
+	public ITypeConstraint[] create(ListExpression node) {
 		return EMPTY_ARRAY;
 	}
 

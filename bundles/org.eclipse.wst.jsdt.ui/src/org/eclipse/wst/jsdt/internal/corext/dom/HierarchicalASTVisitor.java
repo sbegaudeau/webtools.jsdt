@@ -193,6 +193,9 @@ public void endVisit(Comment node) {
 		endVisit((Comment) node);
 	}
 	
+	public boolean visit(ListExpression node) {
+		return visit((Expression) node);
+	}
 //---- End Comment Hierarchy -----------------------------
 
 public boolean visit(CompilationUnit node) {
@@ -355,8 +358,10 @@ public void endVisit(Expression node) {
 	public void endVisit(InstanceofExpression node) {
 		endVisit((Expression) node);
 	}
-	
-	public boolean visit(MethodInvocation node) {
+	public void endVisit(ListExpression node) {
+		endVisit((Expression) node);
+	}
+		public boolean visit(MethodInvocation node) {
 		return visit((Expression) node);
 	}
 	public void endVisit(MethodInvocation node) {

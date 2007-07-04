@@ -771,6 +771,18 @@ public class ASTFlattener extends GenericVisitor {
 		return false;
 	}
 
+	public boolean visit(ListExpression node) {
+		for (Iterator it= node.expressions().iterator(); it.hasNext();) {
+			Expression e= (Expression) it.next();
+			e.accept(this);
+			if (it.hasNext()) {
+				this.fBuffer.append(",");//$NON-NLS-1$
+			}
+		}
+		return false;
+	}
+
+	
 	/*
 	 * @see ASTVisitor#visit(LineComment)
 	 * @since 3.0

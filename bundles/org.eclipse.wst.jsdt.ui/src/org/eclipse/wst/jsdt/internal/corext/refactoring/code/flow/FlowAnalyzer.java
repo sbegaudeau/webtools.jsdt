@@ -58,6 +58,7 @@ import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
 import org.eclipse.wst.jsdt.core.dom.Javadoc;
 import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
+import org.eclipse.wst.jsdt.core.dom.ListExpression;
 import org.eclipse.wst.jsdt.core.dom.MarkerAnnotation;
 import org.eclipse.wst.jsdt.core.dom.MemberValuePair;
 import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
@@ -658,6 +659,12 @@ abstract class FlowAnalyzer extends GenericVisitor {
 		FlowInfo info= assignFlowInfo(node, node.getBody());
 		if (info != null)
 			info.removeLabel(node.getLabel());
+	}
+	
+	public void endVisit(ListExpression node) {
+		if (skipNode(node))
+			return;
+		processSequential(node, node.expressions());
 	}
 	
 	public void endVisit(MarkerAnnotation node) {

@@ -154,6 +154,11 @@ class DefaultASTVisitor extends ASTVisitor {
 	public boolean visit(LabeledStatement node) {
 		return visitNode(node);
 	}
+
+	public boolean visit(ListExpression node) {
+		return visitNode(node);
+	}
+
 	public boolean visit(MethodDeclaration node) {
 		return visitNode(node);
 	}
@@ -386,6 +391,9 @@ class DefaultASTVisitor extends ASTVisitor {
 		endVisitNode(node);
 	}
 	public void endVisit(LabeledStatement node) {
+		endVisitNode(node);
+	}
+	public void endVisit(ListExpression node) {
 		endVisitNode(node);
 	}
 	public void endVisit(MethodDeclaration node) {

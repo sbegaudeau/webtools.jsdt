@@ -810,7 +810,11 @@ public abstract class ASTVisitor {
 		return true;
 	}
 
-	
+
+	public boolean visit(ListExpression node) {
+		return true;
+	}
+
 	/**
 	 * Visits the given type-specific AST node.
 	 * <p>
@@ -2057,6 +2061,11 @@ public abstract class ASTVisitor {
 	 * @since 3.0
 	 */
 	public void endVisit(LineComment node) {
+		// default implementation: do nothing
+	}
+	
+	
+	public void endVisit(ListExpression node) {
 		// default implementation: do nothing
 	}
 	

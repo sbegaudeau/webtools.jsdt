@@ -1777,6 +1777,9 @@ class ASTConverter {
 		if (expression instanceof org.eclipse.wst.jsdt.internal.compiler.ast.RegExLiteral) {
 			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.RegExLiteral) expression);
 		}
+		if (expression instanceof org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression) {
+			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression) expression);
+		}
 		return null;
 	}
 
@@ -2082,6 +2085,27 @@ class ASTConverter {
 		labeledStatement.setLabel(name);
 		return labeledStatement;
 	}
+
+	public ListExpression convert(org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression expression) {
+		ListExpression listExpression = new ListExpression(this.ast);
+		if (this.resolveBindings) {
+			recordNodes(listExpression, expression);
+		}
+		listExpression.setSourceRange(expression.sourceStart, expression.sourceEnd - expression.sourceStart + 1);
+		org.eclipse.wst.jsdt.internal.compiler.ast.Expression[] expressions = expression.expressions;
+		if (expressions != null) {
+			int length = expressions.length;
+			for (int i = 0; i < length; i++) {
+				Expression expr = convert(expressions[i]);
+				if (this.resolveBindings) {
+					recordNodes(expr, expressions[i]);
+				}
+				listExpression.expressions().add(expr);
+			}
+		}
+		return listExpression;
+	}
+
 
 	public NumberLiteral convert(org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteral expression) {
 		int length = expression.sourceEnd - expression.sourceStart + 1;	

@@ -1119,6 +1119,13 @@ public class ASTRewriteFlattener extends ASTVisitor {
 	public boolean visit(LineComment node) {
 		return false; // cant flatten, needs source
 	}
+	
+	public boolean visit(ListExpression node) {
+		visitList(node, ArrayInitializer.EXPRESSIONS_PROPERTY, String.valueOf(','));
+		return false;
+	}
+
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.MemberRef)
 	 */

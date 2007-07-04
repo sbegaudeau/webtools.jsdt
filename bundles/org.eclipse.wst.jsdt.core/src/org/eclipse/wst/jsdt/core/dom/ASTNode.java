@@ -757,6 +757,7 @@ public abstract class ASTNode {
 	public static final int REGULAR_EXPRESSION_LITERAL = 88;
 	public static final int INFERRED_TYPE = 89;
 	public static final int WITH_STATEMENT = 90;
+	public static final int LIST_EXPRESSION = 91;
 
 	
 	
@@ -962,6 +963,8 @@ public abstract class ASTNode {
 				return FunctionExpression.class;
 			case REGULAR_EXPRESSION_LITERAL :
 				return RegularExpressionLiteral.class;
+			case LIST_EXPRESSION :
+				return ListExpression.class;
 		}
 		throw new IllegalArgumentException();
 	}

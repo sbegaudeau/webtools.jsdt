@@ -1849,6 +1849,11 @@ public final class AST {
 		return result;
 	}
 	
+	public ListExpression newListExpression() {
+		ListExpression result = new ListExpression(this);
+		return result;
+	}
+
 	/**
 	 * Creates and returns a new doc comment node.
 	 * Initially the new node has an empty list of tag elements

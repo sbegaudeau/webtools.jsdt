@@ -50,6 +50,7 @@ import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
 import org.eclipse.wst.jsdt.core.dom.Javadoc;
 import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
+import org.eclipse.wst.jsdt.core.dom.ListExpression;
 import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
 import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
@@ -377,6 +378,11 @@ public final class ConstraintCollector extends ASTVisitor {
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.LabeledStatement)
 	 */
 	public boolean visit(LabeledStatement node) {
+		add(fCreator.create(node));
+		return true;
+	}
+	
+	public boolean visit(ListExpression node) {
 		add(fCreator.create(node));
 		return true;
 	}

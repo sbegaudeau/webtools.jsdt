@@ -1211,6 +1211,14 @@ public class ASTMatcher {
 		return true;
 	}
 	
+	public boolean match(ListExpression node, Object other) {
+		if (!(other instanceof ListExpression)) {
+			return false;
+		}
+		ListExpression o = (ListExpression) other;
+		return safeSubtreeListMatch(node.expressions(), o.expressions());
+	}
+	
 	/**
 	 * Returns whether the given node and the other object match.
 	 * <p>

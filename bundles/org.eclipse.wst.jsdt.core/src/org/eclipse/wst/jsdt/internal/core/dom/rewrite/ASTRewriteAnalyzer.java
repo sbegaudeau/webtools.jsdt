@@ -3255,6 +3255,17 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 		rewriteParagraphList(node, EnumDeclaration.BODY_DECLARATIONS_PROPERTY, pos, indent, -1, 2);
 		return false;
 	}
+	
+	public boolean visit(ListExpression node) {
+		if (!hasChildrenChanges(node)) {
+			return doVisitUnchangedChildren(node);
+		}
+
+		int startPos= node.getStartPosition();
+		rewriteNodeList(node, ListExpression.EXPRESSIONS_PROPERTY, startPos, "", ", "); //$NON-NLS-1$ //$NON-NLS-2$
+		return false;
+	}
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.MarkerAnnotation)
 	 */

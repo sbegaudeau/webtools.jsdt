@@ -805,6 +805,17 @@ class NaiveASTFlattener extends ASTVisitor {
 		return false;
 	}
 
+	public boolean visit(ListExpression node) {
+		for (Iterator it = node.expressions().iterator(); it.hasNext(); ) {
+			Expression e = (Expression) it.next();
+			e.accept(this);
+			if (it.hasNext()) {
+				this.buffer.append(",");//$NON-NLS-1$
+			}
+		}
+		return false;
+	}
+	
 	/*
 	 * @see ASTVisitor#visit(MarkerAnnotation)
 	 * @since 3.1
