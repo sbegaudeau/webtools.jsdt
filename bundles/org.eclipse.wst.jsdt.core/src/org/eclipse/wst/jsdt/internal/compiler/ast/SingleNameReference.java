@@ -185,7 +185,7 @@ public class SingleNameReference extends NameReference implements OperatorIds {
 		boolean isStatic = fieldBinding.isStatic();
 		if (!isStatic) {
 			// must check for the static status....
-			if (methodScope.isStatic) {
+			if (methodScope!=null && methodScope.isStatic) {
 				scope.problemReporter().staticFieldAccessToNonStaticVariable(this, fieldBinding);
 				this.constant = Constant.NotAConstant;
 				return fieldBinding.type;
@@ -196,14 +196,14 @@ public class SingleNameReference extends NameReference implements OperatorIds {
 		if (isFieldUseDeprecated(fieldBinding, scope, (this.bits & IsStrictlyAssigned) !=0))
 			scope.problemReporter().deprecatedField(fieldBinding, this);
 	
-		if ((this.bits & IsStrictlyAssigned) == 0
-				&& methodScope.enclosingSourceType() == fieldBinding.original().declaringClass
-				&& methodScope.lastVisibleFieldID >= 0
-				&& fieldBinding.id >= methodScope.lastVisibleFieldID
-				&& (!fieldBinding.isStatic() || methodScope.isStatic)) {
-			scope.problemReporter().forwardReference(this, 0, methodScope.enclosingSourceType());
-			this.bits |= ASTNode.IgnoreNoEffectAssignCheck;
-		}
+//		if ((this.bits & IsStrictlyAssigned) == 0
+//				&& methodScope.enclosingSourceType() == fieldBinding.original().declaringClass
+//				&& methodScope.lastVisibleFieldID >= 0
+//				&& fieldBinding.id >= methodScope.lastVisibleFieldID
+//				&& (!fieldBinding.isStatic() || methodScope.isStatic)) {
+//			scope.problemReporter().forwardReference(this, 0, methodScope.enclosingSourceType());
+//			this.bits |= ASTNode.IgnoreNoEffectAssignCheck;
+//		}
 		return fieldBinding.type;
 	
 	}

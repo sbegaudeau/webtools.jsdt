@@ -32,6 +32,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 	public final static int CLASS_SCOPE = 3;
 	public final static int COMPILATION_UNIT_SCOPE = 4;
 	public final static int METHOD_SCOPE = 2;
+	public final static int WITH_SCOPE = 5;
 
 	/* Argument Compatibilities */
 	public final static int NOT_COMPATIBLE = -1;
@@ -1556,7 +1557,20 @@ public abstract class Scope implements TypeConstants, TypeIds {
 							MethodScope enclosingMethodScope = scope.methodScope();
 							insideConstructorCall = enclosingMethodScope == null ? false : enclosingMethodScope.isConstructorCall;
 							break;
-						case COMPILATION_UNIT_SCOPE :
+						case WITH_SCOPE :
+							WithScope withScope = (WithScope) scope;
+							TypeBinding withType = withScope.referenceContext;
+							FieldBinding fieldBinding = withScope.findField(withType, name, invocationSite, needResolve);
+							// Use next line instead if willing to enable protected access accross inner types
+							// FieldBinding fieldBinding = findField(enclosingType, name, invocationSite);
+							
+							if (fieldBinding != null) { // skip it if we did not find anything
+								if (fieldBinding.isValidBinding()) {
+									return fieldBinding;
+								}
+							}
+							break;
+							case COMPILATION_UNIT_SCOPE :
 							if ( (mask & (Binding.FIELD|Binding.VARIABLE)) >0)
 							{
 								variableBinding = scope.findVariable(name);
@@ -1858,6 +1872,20 @@ public abstract class Scope implements TypeConstants, TypeIds {
 					MethodBinding binding = methodScope.findMethod(selector,argumentTypes);
 					if (binding!=null)
 						return binding;
+					break;
+				case WITH_SCOPE :
+					WithScope withScope = (WithScope) scope;
+					ReferenceBinding withType = withScope.referenceContext;
+					// retrieve an exact visible match (if possible)
+					// compilationUnitScope().recordTypeReference(receiverType);   not needed since receiver is the source type
+					MethodBinding methBinding = withScope.findExactMethod(withType, selector, argumentTypes, invocationSite);
+					if (methBinding == null)
+						methBinding = withScope.findMethod(withType, selector, argumentTypes, invocationSite);
+					if (methBinding != null) { // skip it if we did not find anything
+							if (methBinding.isValidBinding()) {
+									return methBinding;
+								}
+					}
 					break;
 				case CLASS_SCOPE :
 					ClassScope classScope = (ClassScope) scope;

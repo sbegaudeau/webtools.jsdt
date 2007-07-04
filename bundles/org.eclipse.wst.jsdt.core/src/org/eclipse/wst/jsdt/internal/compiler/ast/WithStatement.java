@@ -50,10 +50,11 @@ public class WithStatement extends Statement {
 
 	}
 
-	public void resolve(BlockScope scope) {
+	public void resolve(BlockScope parentScope) {
 
-		TypeBinding type = condition.resolveTypeExpecting(scope, TypeBinding.BOOLEAN);
-		condition.computeConversion(scope, type, type);
+		TypeBinding type = condition.resolveTypeExpecting(parentScope, TypeBinding.ANY);
+        BlockScope scope = (type instanceof ReferenceBinding)?
+        		new WithScope(parentScope,(ReferenceBinding)type) : parentScope; 
 		if (action != null)
 			action.resolve(scope);
 	}
