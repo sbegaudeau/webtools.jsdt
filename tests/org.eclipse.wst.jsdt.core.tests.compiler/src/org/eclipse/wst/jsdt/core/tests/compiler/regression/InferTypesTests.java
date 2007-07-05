@@ -108,6 +108,12 @@ public class InferTypesTests extends AbstractRegressionTest {
 	}
 	*/
 	
+	/*
+	 * This test setting members using the this.
+	 * 
+	 * The InferEngine will no be able to tell the types of the members... there is no information
+	 * provided.
+	 */
 	public void test010() {
 		CompilationUnitDeclaration declaration = this.runInferTest(
 			      "function Bob(firstname, lastname) {\n" +
@@ -116,7 +122,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 			      "}\n" +
 			      "Bob.prototype.name = function () {return this.Firstname + this.Lastname;};\n",
 			"X.js",
-			"class Bob extends Object{\n  String Firstname;\n  String Lastname;\n  String name()\n  Bob(firstname, lastname)\n}\n",
+			"class Bob extends Object{\n  ?? Firstname;\n  ?? Lastname;\n  ?? name()\n  Bob(firstname, lastname)\n}\n",
 			getDefaultOptions()
 			
 		 );
@@ -477,7 +483,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 		}
 		
 		/*
-		 * 
+		 * Test a potential problem with anonymous and members when returning an {} from a member
 		 */
 		public void test070() {
 			CompilationUnitDeclaration declaration = this.runInferTest(
@@ -494,6 +500,18 @@ public class InferTypesTests extends AbstractRegressionTest {
 				"X.js",
 				"class ___anonymous0 extends Object{\n  String a;\n  String c;\n  String b()\n  ___anonymous1 d(x, y, z)\n}\n"+
 				"class ___anonymous1 extends Object{\n  String x;\n  String y;\n  String z;\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		
+		public void test071() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+					"if( true ){" +
+					"  var dojo = {};" +
+					"}",
+				"X.js",
+				"class ___anonymous0 extends Object{\n}\n",
 				getDefaultOptions()
 				
 			 );
