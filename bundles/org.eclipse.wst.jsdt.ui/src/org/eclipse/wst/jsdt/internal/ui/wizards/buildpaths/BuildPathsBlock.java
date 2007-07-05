@@ -641,8 +641,46 @@ public class BuildPathsBlock {
 		}
 
 		public void selectionChanged(ListDialogField field) {
+			List selected = field.getSelectedElements();
+			if(selected==null) {
+				 enableButtons();
+				return;
+			}
+			
+			if(selected.size()!=1 ) {
+				disableButtons();
+				return;
+			}
+			
+			Object selection = selected.get(0);
+			int selctedIndext = field.getIndexOfElement(selection);
+			
+			if(selctedIndext == 0) {
+				disableButtons();
+				return;
+			}else {
+				enableButtons();
+			}
+			
+			
 			updateTopButtonEnablement();
 		}
+	}
+	
+	public void disableButtons() {
+		fClassPathList.enableButton(IDX_BOTTOM, false);
+		fClassPathList.enableButton(IDX_TOP, false);
+		fClassPathList.enableButton(IDX_UP, false);
+		fClassPathList.enableButton(IDX_DOWN, false);
+	
+	}
+	
+	public void enableButtons() {
+		fClassPathList.enableButton(IDX_BOTTOM, fClassPathList.canMoveDown());
+		fClassPathList.enableButton(IDX_TOP, fClassPathList.canMoveUp());
+		fClassPathList.enableButton(IDX_UP, true);
+		fClassPathList.enableButton(IDX_DOWN, true);
+		
 	}
 	
 	private void buildPathChangeControlPressed(DialogField field) {
@@ -657,6 +695,7 @@ public class BuildPathsBlock {
 	public void updateTopButtonEnablement() {
 		fClassPathList.enableButton(IDX_BOTTOM, fClassPathList.canMoveDown());
 		fClassPathList.enableButton(IDX_TOP, fClassPathList.canMoveUp());
+		
 	}
 
 	public void buildPathCustomButtonPressed(ListDialogField field, int index) {

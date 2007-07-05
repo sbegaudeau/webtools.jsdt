@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.StructuredSelection;
 
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
@@ -76,8 +77,31 @@ public class ClasspathOrderingWorkbookPage extends BuildPathBasePage {
 				
 				LibrarySuperType superType = openSuperTypeSelectionDialog(elements,oldSuper);
 				
-				if(superType!=null) {
+				if(superType!=null && superType!=oldSuper) {
 					superTypeField.setValue(superType);
+					//List reOrder = fClassPathList.getElements();
+					IPath cpEntryPath = superType.getRawContainerPath();
+					
+					Iterator listItt = allCpElements.iterator();
+					CPListElement found = null;;
+					int foundIndex = -1;
+					
+					while(listItt.hasNext()) {
+						foundIndex++;
+						CPListElement o = (CPListElement)listItt.next();
+						if(o.getPath().equals(cpEntryPath)) {
+							found = o;
+							break;
+						}
+					}
+					
+					if(found!=null) {
+						allCpElements.add(0,allCpElements.remove(foundIndex));
+					}
+					
+					
+					fClassPathList.setElements(filterNodes( allCpElements));
+					
 				}
 			}
 			
