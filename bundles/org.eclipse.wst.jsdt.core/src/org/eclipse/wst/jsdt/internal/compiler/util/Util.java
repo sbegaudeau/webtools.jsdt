@@ -490,18 +490,35 @@ public class Util implements SuffixConstants {
 		return buffer.toString();
 	}
 	
-	final static char[] EMPTY_NAME=new char[0];
-	public  final static char [] getTypeName(Expression expression)
-	{
-		char [] name = EMPTY_NAME;
+	/*
+	 * For SNR it returns the name
+	 * For FR it construct a Qualified name separated by '.'
+	 * 
+	 * If at any point it hits a portion of the Field reference that is
+	 * not supported (such as a function call, a prototype, or this )
+	 */
+	public final static char [] getTypeName( Expression expression ){
+		
+		char [] name = null;
+		
 		if (expression instanceof FieldReference) {
+			
 			FieldReference fieldRef = (FieldReference) expression;
-			return CharOperation.concat(getTypeName(fieldRef.receiver), fieldRef.token,'.');
+			
+			if( !fieldRef.isPrototype() ){
+				//a prototype on the Field Reference will put a stop to constructing the name
+			
+				char [] receiverName = getTypeName( fieldRef.receiver );
+				
+				if( receiverName != null )
+					name = CharOperation.concat( receiverName, fieldRef.token,'.');
+			}
 		}
 		else if (expression instanceof SingleNameReference) {
 			SingleNameReference singleNameReference = (SingleNameReference) expression;
-			return singleNameReference.token;
+			name = singleNameReference.token;
 		}
+		
 		return name;
 	}
 	

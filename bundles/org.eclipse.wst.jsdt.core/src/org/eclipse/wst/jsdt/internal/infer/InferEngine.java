@@ -3,7 +3,6 @@ package org.eclipse.wst.jsdt.internal.infer;
  
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
@@ -33,6 +32,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
+import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 public class InferEngine extends ASTVisitor {
 
 	InferOptions inferOptions;
@@ -213,12 +213,35 @@ public class InferEngine extends ASTVisitor {
 		{
 			SingleNameReference snr=(SingleNameReference)assignment.expression;
 			Object object = this.currentContext.definedMembers.get(snr.token);
-			if (object instanceof MethodDeclaration)
-			{
-				FieldReference fieldReference=(FieldReference)assignment.lhs;
+			
+			
+			FieldReference fieldReference=(FieldReference)assignment.lhs;
+			char [] memberName = fieldReference.token;
+			InferredMember member = null;
+			
+			/*
+			 * this.foo = bar //bar is a function
+			 */
+			if( object instanceof MethodDeclaration ){
+				
 				MethodDeclaration method=(MethodDeclaration)object;
-				InferredMember inferredMethod = this.currentContext.currentType.addMethod(fieldReference.token, method);
-				inferredMethod.nameStart=fieldReference.sourceEnd-fieldReference.token.length+1;
+				member = this.currentContext.currentType.addMethod( memberName, method );
+				
+			}
+			/*
+			 * this.foo = bar //assume that bar is not a function and create a new attribute in teh current type
+			 */
+			else{
+			
+				member = this.currentContext.currentType.addAttribute( memberName, assignment );
+				((InferredAttribute)member).type = getTypeOf( assignment.expression );
+				
+			}
+			
+			//setting location
+			if( member != null ){
+				member.isStatic = false; //this is a not static member because it is being set on the this
+				member.nameStart = fieldReference.sourceEnd - memberName.length+1;
 			}
 		}
 		
@@ -1035,27 +1058,7 @@ public class InferEngine extends ASTVisitor {
 	 */
 	private final char [] constructTypeName( Expression expression ){
 		
-		char [] name = null;
-		
-		if (expression instanceof FieldReference) {
-			
-			FieldReference fieldRef = (FieldReference) expression;
-			
-			if( !fieldRef.isPrototype() ){
-				//a prototype on the Field Reference will put a stop to constructing the name
-			
-				char [] receiverName = constructTypeName( fieldRef.receiver );
-				
-				if( receiverName != null )
-					name = CharOperation.concat( receiverName, fieldRef.token,'.');
-			}
-		}
-		else if (expression instanceof SingleNameReference) {
-			SingleNameReference singleNameReference = (SingleNameReference) expression;
-			name = singleNameReference.token;
-		}
-		
-		return name;
+		return Util.getTypeName( expression );
 	}
 
 }
