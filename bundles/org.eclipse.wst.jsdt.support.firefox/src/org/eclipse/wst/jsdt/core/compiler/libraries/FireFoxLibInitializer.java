@@ -53,7 +53,12 @@ public class FireFoxLibInitializer extends ClasspathContainerInitializer impleme
 	
 	public ImageDescriptor getImage(IPath containerPath, String element, IJavaProject project) {
 		
-		if(containerPath==null || !(containerPath.toString()).equals(CONTAINER_ID)) return null;
+		if(containerPath==null) return null;
+		/* Dont use the rino image for the individual files */
+		String requestedContainerPath = new Path(element).lastSegment();
+		if (element!=null && requestedContainerPath.equals(new String(LIBRARY_FILE_NAMES[0]))) {
+			return null;
+		}
 		
 		return ImageDescriptor.createFromFile(this.getClass(),"FireFoxSmall.gif");
 	//	System.out.println("Unimplemented method:BasicBrowserLibraryClassPathContainerInitializer.getImage");
@@ -75,8 +80,7 @@ public class FireFoxLibInitializer extends ClasspathContainerInitializer impleme
 
 
 	public boolean canUpdateClasspathContainer(IPath containerPath, IJavaProject project) {
-		LibrarySuperType superType = project.getCommonSuperType();
-    	return superType!=null && superType.getRawContainerPath().equals(getPath());
+		return true;
 		
 		
 	}

@@ -580,7 +580,10 @@ public class CompletionProposalLabelProvider {
 		char[] propType = proposal.getName();
 		IJavaProject project = proposal.getJavaProject();
 		
-		ClasspathContainerInitializer init = JSDScopeUtil.findLibraryInitializer(new Path(new String(compUnit)),project);
+		ClasspathContainerInitializer init=null;
+		if(compUnit!=null && propType!=null)
+			init = JSDScopeUtil.findLibraryInitializer(new Path(new String(compUnit)),project);
+		
 		if(init!=null && init instanceof IClasspathContainerInitialzerExtension) {
 			ImageDescriptor description = ((IClasspathContainerInitialzerExtension)init).getImage(new Path(new String(compUnit)),new String(propType), project);
 			if( description!=null) return description;

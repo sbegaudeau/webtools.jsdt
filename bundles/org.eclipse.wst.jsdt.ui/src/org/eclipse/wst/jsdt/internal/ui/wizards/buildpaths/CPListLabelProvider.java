@@ -335,7 +335,7 @@ public class CPListLabelProvider extends LabelProvider {
 		
 		if(init!=null && init instanceof IClasspathContainerInitialzerExtension) {
 			IPath entPath = cpentry.getPath();
-			ImageDescriptor image = ((IClasspathContainerInitialzerExtension)init).getImage(entPath, cpentry.toString(), cpentry.getJavaProject());
+			ImageDescriptor image = ((IClasspathContainerInitialzerExtension)init).getImage(init.getPath(), entPath.toString(), cpentry.getJavaProject());
 			if(image!=null) return image;
 		}
 		

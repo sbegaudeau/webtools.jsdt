@@ -11,6 +11,7 @@ import org.eclipse.wst.jsdt.core.IClasspathContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 import org.eclipse.wst.jsdt.internal.ui.IClasspathContainerInitialzerExtension;
@@ -18,8 +19,8 @@ import org.eclipse.wst.jsdt.internal.ui.IClasspathContainerInitialzerExtension;
 public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathContainerInitializer implements IClasspathContainer, IClasspathContainerInitialzerExtension {
 	private static final String CONTAINER_ID = "org.eclipse.wst.jsdt.launching.baseBrowserLibrary";
 	private static final String ContainerDescription = "ECMA 3 Browser Support";
-	private static final String FILE_DESCRIPTION0 = "ECMA 3 Compatible DOM";
-	private static final String FILE_DESCRIPTION1 = "Typical Web Browser Window";
+	private static final String FILE_DESCRIPTION0 = "ECMA 3 DOM";
+	private static final String FILE_DESCRIPTION1 = "Common Web Browser";
 	private static final char[][] LIBRARY_FILE_NAME = {
 														{ 'b', 'a', 's', 'e', 'B', 'r', 'o', 'w', 's', 'e', 'r', 'L', 'i', 'b', 'r', 'a', 'r', 'y', '.', 'j', 's' },
 														{'b','r','o','w','s','e','r','W','i','n','d','o','w','.','j','s'}
@@ -56,6 +57,8 @@ public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathC
 	 */
 	public boolean canUpdateClasspathContainer(IPath containerPath, IJavaProject project) {
 		return true;
+		
+		
 	}
 
 	protected IClasspathContainer getContainer(IPath containerPath, IJavaProject project) {
@@ -104,9 +107,20 @@ public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathC
 	 * @see org.eclipse.wst.jsdt.internal.ui.IClasspathContainerInitialzerExtension#getImage(org.eclipse.core.runtime.IPath, java.lang.String, org.eclipse.wst.jsdt.core.IJavaProject)
 	 */
 	public ImageDescriptor getImage(IPath containerPath, String element, IJavaProject project) {
-		if(containerPath==null || !(containerPath.toString()).equals(CONTAINER_ID)) {
+		if(containerPath==null ) {
 			return null;
 		}
+		/* Dont use the rino image for the individual files */
+	//	IPath libFileName1 = new Path(new String(LIBRARY_FILE_NAME[0]));
+	//	IPath libFileName2 = new Path(new String(LIBRARY_FILE_NAME[1]));
+		
+		String requestedContainerPath = new Path(element).lastSegment();
+		if (element!=null && requestedContainerPath.equals(new String(LIBRARY_FILE_NAME[0]))) {
+			return null;
+		}else if (element!=null && requestedContainerPath.equals(new String(LIBRARY_FILE_NAME[1]))) {
+			return null;
+		}
+		
 		return ImageDescriptor.createFromFile(this.getClass(),"rino.jpg");
 	//	System.out.println("Unimplemented method:BasicBrowserLibraryClassPathContainerInitializer.getImage");
 		//return null;
