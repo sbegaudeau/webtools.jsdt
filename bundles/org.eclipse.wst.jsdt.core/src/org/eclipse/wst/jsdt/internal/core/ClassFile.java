@@ -51,7 +51,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  * @see IClassFile
  */
 
-public class ClassFile extends Openable implements IClassFile, SuffixConstants, org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit {
+public class ClassFile extends Openable implements IClassFile, SuffixConstants, org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit, IVirtualParent {
 
 	protected String name;
 	protected IPath filePath;
@@ -976,5 +976,9 @@ public IType[] getTypes() throws JavaModelException {
 	public LibrarySuperType getCommonSuperType() {
 		return null;
 		//return getJavaProject().getCommonSuperType();
+	}
+	public ClasspathContainerInitializer getContainerInitializer() {
+		ClasspathContainerInitializer init = ((IVirtualParent)parent).getContainerInitializer();
+		return init;
 	}
 }

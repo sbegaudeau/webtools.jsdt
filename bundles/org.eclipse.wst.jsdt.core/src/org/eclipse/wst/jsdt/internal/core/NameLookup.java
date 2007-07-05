@@ -16,6 +16,7 @@ import java.util.*;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IField;
@@ -723,6 +724,63 @@ public class NameLookup implements SuffixConstants {
 			false/* do NOT wait for indexes */,
 			checkRestrictions,
 			null);
+	}
+	
+	/* return all CUs defining a type */
+	/**
+	 * Returns all compilationUnits containing a specific type
+	 * 
+	 * NOT FULLY IMPLEMENTED YET.
+	 * 
+	 * @param typeName
+	 * @param waitForIndexes
+	 * @return all found compilationUnits containg [typeName]
+	 */
+	public ICompilationUnit[] findTypeSources(String typeName, boolean waitForIndexes) {
+
+		// Look for concerned package fragments
+		JavaElementRequestor elementRequestor = new JavaElementRequestor();
+		seekPackageFragments(IPackageFragment.DEFAULT_PACKAGE_NAME, false, elementRequestor);
+		IPackageFragment[] packages= elementRequestor.getPackageFragments();
+		
+		IType type = null;
+		int length= packages.length;
+		HashSet projects = null;
+		IJavaProject javaProject = null;
+		Answer suggestedAnswer = null;
+		ArrayList found = new ArrayList();
+		
+		for (int i= 0; i < length; i++) {
+			type = findType(typeName, packages[i], false, NameLookup.ACCEPT_ALL);
+			if (type != null && type.exists()) {
+				found.add(type);
+			}
+			if (javaProject == null) {
+				javaProject = packages[i].getJavaProject();
+			} else if (projects == null)  {
+				if (!javaProject.equals(packages[i].getJavaProject())) {
+					projects = new HashSet(3);
+					projects.add(javaProject);
+					projects.add(packages[i].getJavaProject());
+				}
+			} else {
+				projects.add(packages[i].getJavaProject());
+			}
+		
+		}
+		
+		// If type was not found, try to find it as secondary in source folders
+		if (javaProject != null) {
+			if (projects == null) {
+				type = findSecondaryType(IPackageFragment.DEFAULT_PACKAGE_NAME, typeName, javaProject, waitForIndexes, new NullProgressMonitor());
+			} else {
+				Iterator allProjects = projects.iterator();
+				while (type == null && allProjects.hasNext()) {
+					type = findSecondaryType(IPackageFragment.DEFAULT_PACKAGE_NAME, typeName, (IJavaProject) allProjects.next(), waitForIndexes, new NullProgressMonitor());
+				}
+			}
+		}
+		return null;
 	}
 
 	/**

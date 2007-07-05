@@ -144,7 +144,8 @@ public class ClasspathOrderingWorkbookPage extends BuildPathBasePage {
 	 * @see BuildPathBasePage#setSelection
 	 */	
 	public void setSelection(List selElements, boolean expand) {
-		fClassPathList.selectElements(new StructuredSelection(selElements));
+		allCpElements = selElements;
+		fClassPathList.selectElements(new StructuredSelection(allCpElements));
 	}
 	
 	private List filterNodes(List elements) {

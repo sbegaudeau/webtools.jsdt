@@ -41,6 +41,7 @@ import org.eclipse.wst.jsdt.ui.JavaUI;
 import org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration;
 import org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration.ClasspathAttributeAccess;
 
+import org.eclipse.wst.jsdt.internal.ui.IClasspathContainerInitialzerExtension;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageDescriptorRegistry;
@@ -329,6 +330,15 @@ public class CPListLabelProvider extends LabelProvider {
 	}
 	
 	private ImageDescriptor getCPListElementBaseImage(CPListElement cpentry) {
+		
+		ClasspathContainerInitializer init = cpentry.getContainerInitializer();
+		
+		if(init!=null && init instanceof IClasspathContainerInitialzerExtension) {
+			IPath entPath = cpentry.getPath();
+			ImageDescriptor image = ((IClasspathContainerInitialzerExtension)init).getImage(entPath, cpentry.toString(), cpentry.getJavaProject());
+			if(image!=null) return image;
+		}
+		
 		switch (cpentry.getEntryKind()) {
 			case IClasspathEntry.CPE_SOURCE:
 				if (cpentry.getPath().segmentCount() == 1) {

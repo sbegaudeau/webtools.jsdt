@@ -33,7 +33,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 /**
  * @see ICompilationUnit
  */
-public class CompilationUnit extends Openable implements ICompilationUnit, org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit, SuffixConstants {
+public class CompilationUnit extends Openable implements ICompilationUnit, org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit, SuffixConstants, IVirtualParent {
 	/**
 	 * Internal synonynm for deprecated constant AST.JSL2
 	 * to alleviate deprecation warnings.
@@ -1316,6 +1316,11 @@ public URI getHostPath() {
 		if(init!=null) return init.getHostPath(new Path(getElementName()), getJavaProject());
 	}
 	return null;
+}
+
+public ClasspathContainerInitializer getContainerInitializer() {
+	ClasspathContainerInitializer init = ((IVirtualParent)parent).getContainerInitializer();
+	return init;
 }
 
 public LibrarySuperType getCommonSuperType() {

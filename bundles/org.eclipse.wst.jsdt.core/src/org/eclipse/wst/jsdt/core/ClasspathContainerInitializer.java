@@ -22,6 +22,8 @@ import java.net.URISyntaxException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
 
 /**
  * Abstract base implementation of all classpath container initializer.
@@ -44,7 +46,7 @@ import org.eclipse.core.runtime.IPath;
  * @see IClasspathContainer
  * @since 2.0
  */
-public abstract class ClasspathContainerInitializer implements IClasspathContainerInitialzer {
+public abstract class ClasspathContainerInitializer implements IClasspathContainerInitialzer,  IClasspathContainer {
 	
    /**
      * Creates a new classpath container initializer.
@@ -53,18 +55,20 @@ public abstract class ClasspathContainerInitializer implements IClasspathContain
     	// a classpath container initializer must have a public 0-argument constructor
     }
 
-    /* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.IClasspathContainerInitialzer#initialize(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
-	 */
-    public abstract void initialize(IPath containerPath, IJavaProject project) throws CoreException;
-    
+	public void initialize(IPath containerPath, IJavaProject project) throws CoreException {
+		JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { project }, new IClasspathContainer[] { getContainer(containerPath, project) }, null);
+	}
+	
+	protected IClasspathContainer getContainer(IPath containerPath, IJavaProject project) {
+		return this;
+	}
     /* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.IClasspathContainerInitialzer#canUpdateClasspathContainer(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
 	 */
     public boolean canUpdateClasspathContainer(IPath containerPath, IJavaProject project) {
-    	
-		// By default, classpath container initializers do not accept updating containers
-    	return false; 
+    	if(project==null || containerPath==null) return true;
+    	LibrarySuperType superType = project.getCommonSuperType();
+    	return superType!=null && superType.getRawContainerPath().equals(getPath());
     }
 
 	/* (non-Javadoc)
@@ -135,5 +139,31 @@ public abstract class ClasspathContainerInitializer implements IClasspathContain
 	 * returns a String of all SuperTypes provided by this library.
 	 */
 	public String[] containerSuperTypes() {return new String[0];};
+	
+	public IClasspathEntry[] getClasspathEntries() {
+		LibraryLocation libLocation =  getLibraryLocation();
+		char[][] filesInLibs = libLocation.getLibraryFileNames();
+		IClasspathEntry[] entries = new IClasspathEntry[filesInLibs.length];
+		for (int i = 0; i < entries.length; i++) {
+			IPath workingLibPath = new Path(libLocation.getLibraryPath(filesInLibs[i]));
+			entries[i] = JavaCore.newLibraryEntry(workingLibPath.makeAbsolute(), null, null, new IAccessRule[0], new IClasspathAttribute[0], true);
+		}
+		return entries;
+	}
+
+	public String getDescription() {		
+		return null;
+	}
+
+	public int getKind() {
+		
+		return 0;
+	}
+
+	public IPath getPath() {
+		
+		return null;
+	}
+	
 }
 

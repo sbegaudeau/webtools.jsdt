@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.eclipse.wst.jsdt.core.compiler.libraries;
+package org.eclipse.wst.jsdt.libraries;
 
 /**
  * @author childsb

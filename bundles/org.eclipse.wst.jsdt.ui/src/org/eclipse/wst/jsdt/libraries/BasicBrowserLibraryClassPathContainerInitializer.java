@@ -1,8 +1,9 @@
-package org.eclipse.wst.jsdt.core.compiler.libraries;
+package org.eclipse.wst.jsdt.libraries;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IClasspathAttribute;
@@ -10,8 +11,11 @@ import org.eclipse.wst.jsdt.core.IClasspathContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
+import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
+import org.eclipse.wst.jsdt.internal.ui.IClasspathContainerInitialzerExtension;
 
-public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathContainerInitializer implements IClasspathContainer {
+public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathContainerInitializer implements IClasspathContainer, IClasspathContainerInitialzerExtension {
 	private static final String CONTAINER_ID = "org.eclipse.wst.jsdt.launching.baseBrowserLibrary";
 	private static final String ContainerDescription = "ECMA 3 Browser Support";
 	private static final String FILE_DESCRIPTION0 = "ECMA 3 Compatible DOM";
@@ -94,6 +98,18 @@ public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathC
 	 */
 	public String[] containerSuperTypes() {
 		return new String[] {"Window","Document"};
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.internal.ui.IClasspathContainerInitialzerExtension#getImage(org.eclipse.core.runtime.IPath, java.lang.String, org.eclipse.wst.jsdt.core.IJavaProject)
+	 */
+	public ImageDescriptor getImage(IPath containerPath, String element, IJavaProject project) {
+		if(containerPath==null || !(containerPath.toString()).equals(CONTAINER_ID)) {
+			return null;
+		}
+		return ImageDescriptor.createFromFile(this.getClass(),"rino.jpg");
+	//	System.out.println("Unimplemented method:BasicBrowserLibraryClassPathContainerInitializer.getImage");
+		//return null;
 	}
 	
 }

@@ -13,21 +13,29 @@ package org.eclipse.wst.jsdt.ui.text.java;
 import java.util.Arrays;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.Path;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 
 
+import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
 import org.eclipse.wst.jsdt.core.CompletionContext;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.Flags;
+import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.JSDScopeUtil;
 import org.eclipse.wst.jsdt.core.Signature;
 
+import org.eclipse.wst.jsdt.internal.core.NameLookup;
 import org.eclipse.wst.jsdt.internal.corext.template.java.SignatureUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 
 import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
 import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
+import org.eclipse.wst.jsdt.internal.ui.IClasspathContainerInitialzerExtension;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
 
@@ -347,6 +355,15 @@ public class CompletionProposalLabelProvider {
 	 */
 	private String extractDeclaringTypeFQN(CompletionProposal methodProposal) {
 		char[] declaringTypeSignature= methodProposal.getDeclarationSignature();
+		char[] compUnit = methodProposal.getDeclarationTypeName();
+		IJavaProject project = methodProposal.getJavaProject();
+		ClasspathContainerInitializer init = JSDScopeUtil.findLibraryInitializer(new Path(new String(compUnit)),project);
+		if(init!=null) {
+			String description = init.getDescription(new Path(new String(compUnit)),project);
+			if( description!=null) return  "[" +  description + "]";
+			
+		}
+		
 		// special methods may not have a declaring type: methods defined on arrays etc.
 		// TODO remove when bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=84690 gets fixed
 		if (declaringTypeSignature == null)
@@ -559,6 +576,17 @@ public class CompletionProposalLabelProvider {
 	 * @return the created image descriptor, or <code>null</code> if no image is available
 	 */
 	public ImageDescriptor createImageDescriptor(CompletionProposal proposal) {
+		char[] compUnit = proposal.getDeclarationTypeName();
+		char[] propType = proposal.getName();
+		IJavaProject project = proposal.getJavaProject();
+		
+		ClasspathContainerInitializer init = JSDScopeUtil.findLibraryInitializer(new Path(new String(compUnit)),project);
+		if(init!=null && init instanceof IClasspathContainerInitialzerExtension) {
+			ImageDescriptor description = ((IClasspathContainerInitialzerExtension)init).getImage(new Path(new String(compUnit)),new String(propType), project);
+			if( description!=null) return description;
+			
+		}
+		
 		final int flags= proposal.getFlags();
 
 		ImageDescriptor descriptor;
@@ -617,6 +645,15 @@ public class CompletionProposalLabelProvider {
 	}
 
 	ImageDescriptor createMethodImageDescriptor(CompletionProposal proposal) {
+		char[] compUnit = proposal.getDeclarationTypeName();
+		char[] propType = proposal.getName();
+		IJavaProject project = proposal.getJavaProject();
+		ClasspathContainerInitializer init = JSDScopeUtil.findLibraryInitializer(new Path(new String(compUnit)),project);
+		if(init!=null && init instanceof IClasspathContainerInitialzerExtension) {
+			ImageDescriptor description = ((IClasspathContainerInitialzerExtension)init).getImage(new Path(new String(compUnit)),new String(propType), project);
+			if( description!=null) return description;
+			
+		}
 		final int flags= proposal.getFlags();
 		return decorateImageDescriptor(JavaElementImageProvider.getMethodImageDescriptor(false, flags), proposal);
 	}
@@ -628,6 +665,20 @@ public class CompletionProposalLabelProvider {
 	}
 
 	ImageDescriptor createFieldImageDescriptor(CompletionProposal proposal) {
+		char[] compUnit = proposal.getDeclarationTypeName();
+		char[] propType = proposal.getName();
+		IJavaProject project = proposal.getJavaProject();
+		NameLookup lookup = proposal.getNameLookup();
+		ICompilationUnit[] sources = lookup.findTypeSources(new String(propType),true);
+		
+		
+		ClasspathContainerInitializer init = JSDScopeUtil.findLibraryInitializer(new Path(new String(compUnit)),project);
+		if(init!=null && init instanceof IClasspathContainerInitialzerExtension) {
+			ImageDescriptor description = ((IClasspathContainerInitialzerExtension)init).getImage(new Path(new String(compUnit)),new String(propType), project);
+			if( description!=null) return description;
+			
+		}
+		
 		final int flags= proposal.getFlags();
 		return decorateImageDescriptor(JavaElementImageProvider.getFieldImageDescriptor(false, flags), proposal);
 	}

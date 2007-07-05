@@ -1492,9 +1492,9 @@ public final class CompletionProposal extends InternalCompletionProposal {
 //	 * 
 //	 * @since 3.1
 //	 */
-//	public char[] getDeclarationTypeName() {
-//		return this.declarationTypeName;
-//	}
+	public char[] getDeclarationTypeName() {
+		return this.declarationTypeName;
+	}
 //	
 //	/**
 //	 * Returns the package name of the method or type

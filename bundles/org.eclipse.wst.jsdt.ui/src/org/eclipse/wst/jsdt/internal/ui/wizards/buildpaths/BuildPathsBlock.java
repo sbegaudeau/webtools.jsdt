@@ -897,7 +897,7 @@ public class BuildPathsBlock {
 	}
 	
 	public void configureJavaProject(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
-		
+		aboutToDispose();
 		//flush(fClassPathList.getElements(), getOutputLocation(), getJavaProject(), monitor);
 		flush(fClassPathList.getElements(),  getJavaProject(), getSuperType(), monitor);
 		initializeTimeStamps();

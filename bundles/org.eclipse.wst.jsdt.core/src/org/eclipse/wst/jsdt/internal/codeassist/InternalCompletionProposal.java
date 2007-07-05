@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.internal.codeassist;
 
 import org.eclipse.wst.jsdt.core.IAccessRule;
+import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaModelException;
@@ -192,5 +193,13 @@ public class InternalCompletionProposal {
 	}
 	public void setOriginalSignature(char[] originalSignature) {
 		this.originalSignature = originalSignature;
+	}
+	
+	public IJavaProject getJavaProject() {
+		return completionEngine.javaProject;	
+	}
+	
+	public NameLookup getNameLookup() {
+		return nameLookup;
 	}
 }

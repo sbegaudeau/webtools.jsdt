@@ -34,11 +34,13 @@ import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.JSDScopeUtil;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 
+import org.eclipse.wst.jsdt.internal.ui.IClasspathContainerInitialzerExtension;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 
@@ -157,6 +159,12 @@ public class ClassPathContainer extends PackageFragmentRootContainer {
 	}
 
 	public ImageDescriptor getImageDescriptor() {
+		ClasspathContainerInitializer init = JSDScopeUtil.getContainerInitializer(fClassPathEntry.getPath());
+		if(init!=null && init instanceof IClasspathContainerInitialzerExtension) {
+			IPath entPath = fClassPathEntry.getPath();
+			ImageDescriptor image = ((IClasspathContainerInitialzerExtension)init).getImage(entPath, fClassPathEntry.toString(), super.getJavaProject());
+			if(image!=null) return image;
+		}
 		return JavaPluginImages.DESC_OBJS_LIBRARY;
 	}
 
