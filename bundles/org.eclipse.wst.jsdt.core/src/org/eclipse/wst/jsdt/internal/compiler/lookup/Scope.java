@@ -1855,8 +1855,13 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			//first look for field
 			FieldBinding field = findField(receiverType, fieldName, invocationSite, true /*resolve*/);
 			if (field != null) return field;
-	
-			MethodBinding method = findMethod( (ReferenceBinding)receiverType, fieldName, new TypeBinding[0], invocationSite );
+			
+			if(receiverType instanceof BaseTypeBinding) {
+				
+			}
+				
+			/* not sure if this fix is correct, but reciever type is [sometimes] coming in as "BaseTypeBinding" and causing a classcastexception */
+			MethodBinding method = findMethod( receiverType instanceof BaseTypeBinding?(ReferenceBinding)receiverType:null, fieldName, new TypeBinding[0], invocationSite );
 			if( method != null )
 				return method;
 				
