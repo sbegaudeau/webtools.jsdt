@@ -604,6 +604,14 @@ public class BasicParserTests extends AbstractRegressionTest {
 		);
 	}
 	
+	public void test0027b() {
+		this.runParseTest(
+				"  (!options) ? '' : options = {};",
+			"X.js",
+				"((! options) ? '' : (options = {}));\n"			
+		);
+	}
+	
 	public void test0028() {
 		this.runParseTest(
 				" if (typeof dojo==\"undefined\"){ \n" +
@@ -839,6 +847,24 @@ public class BasicParserTests extends AbstractRegressionTest {
 				"((weight + 1)/2)",
 			"X.js",
 				"((weight + 1)/2)"			
+		);
+	}
+
+	public void test0046() {
+		// make sure divide not seen as regex 
+		this.runParseTest(
+				"a=1,b=2",
+			"X.js",
+				"(a = 1), (b = 2);\n"			
+		);
+	}
+
+	public void test0046b() {
+		// make sure divide not seen as regex 
+		this.runParseTest(
+				"a=1,funcall(0),5",
+			"X.js",
+				"(a = 1), funcall(0), 5;\n"			
 		);
 	}
 
