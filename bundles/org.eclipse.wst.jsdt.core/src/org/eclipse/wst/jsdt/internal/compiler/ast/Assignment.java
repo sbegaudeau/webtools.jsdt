@@ -187,6 +187,10 @@ public TypeBinding resolveType(BlockScope scope) {
 		return null;
 	}
 	
+	//check if the lhs is prototype, in which case we are done
+	if( lhs instanceof FieldReference && ((FieldReference)lhs).isPrototype() )
+		return this.resolvedType;
+	
 	// check for assignment with no effect
 	Binding left = getDirectBinding(this.lhs);
 	if (left != null && left == getDirectBinding(this.expression)) {

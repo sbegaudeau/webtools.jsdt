@@ -10,11 +10,24 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CaseStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
@@ -1835,6 +1848,30 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		}
 	}
 	
+	public Binding getFieldOrMethod( TypeBinding receiverType, char[] fieldName, InvocationSite invocationSite ) {
+		LookupEnvironment env = environment();
+		try {
+			env.missingClassFileLocation = invocationSite;
+			//first look for field
+			FieldBinding field = findField(receiverType, fieldName, invocationSite, true /*resolve*/);
+			if (field != null) return field;
+	
+			MethodBinding method = findMethod( (ReferenceBinding)receiverType, fieldName, new TypeBinding[0], invocationSite );
+			if( method != null )
+				return method;
+				
+			return new ProblemFieldBinding(
+				receiverType instanceof ReferenceBinding ? (ReferenceBinding) receiverType : null,
+				fieldName,
+				ProblemReasons.NotFound);
+		} catch (AbortCompilation e) {
+			e.updateContext(invocationSite, referenceCompilationUnit().compilationResult);
+			throw e;
+		} finally {
+			env.missingClassFileLocation = null;
+		}
+	}
+	
 	/* API
 	 *	
 	 *	Answer the method binding that corresponds to selector, argumentTypes.
@@ -1872,20 +1909,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 					MethodBinding binding = methodScope.findMethod(selector,argumentTypes);
 					if (binding!=null)
 						return binding;
-					break;
-				case WITH_SCOPE :
-					WithScope withScope = (WithScope) scope;
-					ReferenceBinding withType = withScope.referenceContext;
-					// retrieve an exact visible match (if possible)
-					// compilationUnitScope().recordTypeReference(receiverType);   not needed since receiver is the source type
-					MethodBinding methBinding = withScope.findExactMethod(withType, selector, argumentTypes, invocationSite);
-					if (methBinding == null)
-						methBinding = withScope.findMethod(withType, selector, argumentTypes, invocationSite);
-					if (methBinding != null) { // skip it if we did not find anything
-							if (methBinding.isValidBinding()) {
-									return methBinding;
-								}
-					}
 					break;
 				case CLASS_SCOPE :
 					ClassScope classScope = (ClassScope) scope;

@@ -13,11 +13,24 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.impl.*;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
+import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
+import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 public class FieldReference extends Reference implements InvocationSite {
 
@@ -512,6 +525,34 @@ public TypeBinding resolveType(BlockScope scope) {
 //		this.receiver.bits |= DisableUnnecessaryCastCheck; // will check later on
 //		receiverCast = true;
 //	}
+	
+	
+	/*
+	 * Handle if this is a reference to the prototype of a type
+	 * 
+	 * By default, the prototype is of type Object, but if there is an InferredType
+	 * for the receiver, it should yeild the receiver type.
+	 */
+	if( this.isPrototype() ){
+		
+		//construc the name of the type based on the receiver
+		char [] possibleTypeName = Util.getTypeName( receiver );
+		TypeBinding typeBinding = scope.getJavaLangObject();
+		if( possibleTypeName != null ){
+			Binding possibleTypeBinding = scope.getBinding( possibleTypeName, Binding.TYPE  & RestrictiveFlagMASK, this, true /*resolve*/);
+			
+			if( possibleTypeBinding.isValidBinding() ){
+				//get the super class
+//				TypeBinding superTypeBinding = ((ReferenceBinding)possibleTypeBinding).superclass();
+//				if( superTypeBinding != null )
+//					typeBinding = superTypeBinding;
+				typeBinding = (TypeBinding)possibleTypeBinding;
+			}
+		}
+		
+		return this.resolvedType = typeBinding;
+	}	
+	
 	this.receiverType = receiver.resolveType(scope);
 	if (this.receiverType == null) {
 		constant = Constant.NotAConstant;
@@ -524,46 +565,62 @@ public TypeBinding resolveType(BlockScope scope) {
 //		}
 //	}		
 	// the case receiverType.isArrayType and token = 'length' is handled by the scope API
-	FieldBinding fieldBinding = this.codegenBinding = this.binding = scope.getField(this.receiverType, token, this);
-	if (!fieldBinding.isValidBinding()) {
-		constant = Constant.NotAConstant;
-//		scope.problemReporter().invalidField(this, this.receiverType);
-//		return null;
-		return this.resolvedType=TypeBinding.UNKNOWN;
-	}
-	if (JavaCore.IS_EMCASCRIPT4)
-	{
-		TypeBinding receiverErasure = this.receiverType.erasure();
-		if (receiverErasure instanceof ReferenceBinding) {
-			if (receiverErasure.findSuperTypeWithSameErasure(fieldBinding.declaringClass) == null) {
-				this.receiverType = fieldBinding.declaringClass; // handle indirect inheritance thru variable secondary bound
+	
+	/*
+	 * Need to look in the fields and method for a match... In JS there is no distinction between member functions
+	 * or field. We are trying to mimic that property below (Java does have a distinction) 
+	 */
+	Binding memberBinding = scope.getFieldOrMethod(this.receiverType, token, this);
+	//FieldBinding fieldBinding = this.codegenBinding = this.binding = scope.getField(this.receiverType, token, this);
+	
+	if( memberBinding instanceof FieldBinding ){
+		FieldBinding fieldBinding = this.codegenBinding = this.binding = (FieldBinding)memberBinding;
+		if (!fieldBinding.isValidBinding()) {
+			constant = Constant.NotAConstant;
+			scope.problemReporter().invalidField(this, this.receiverType);
+			return null;
+	//		return this.resolvedType=TypeBinding.UNKNOWN;
+		}
+		if (JavaCore.IS_EMCASCRIPT4)
+		{
+			TypeBinding receiverErasure = this.receiverType.erasure();
+			if (receiverErasure instanceof ReferenceBinding) {
+				if (receiverErasure.findSuperTypeWithSameErasure(fieldBinding.declaringClass) == null) {
+					this.receiverType = fieldBinding.declaringClass; // handle indirect inheritance thru variable secondary bound
+				}
 			}
 		}
-	}
-	this.receiver.computeConversion(scope, this.receiverType, this.receiverType);
-	if (isFieldUseDeprecated(fieldBinding, scope, (this.bits & IsStrictlyAssigned) !=0)) {
-		scope.problemReporter().deprecatedField(fieldBinding, this);
-	}
-	boolean isImplicitThisRcv = receiver.isImplicitThis();
-	constant = isImplicitThisRcv ? fieldBinding.constant() : Constant.NotAConstant;
-	if (fieldBinding.isStatic()) {
-		// static field accessed through receiver? legal but unoptimal (optional warning)
-		if (!(isImplicitThisRcv
-				|| (receiver instanceof NameReference 
-					&& (((NameReference) receiver).bits & Binding.TYPE) != 0))) {
-			scope.problemReporter().nonStaticAccessToStaticField(this, fieldBinding);
+		this.receiver.computeConversion(scope, this.receiverType, this.receiverType);
+		if (isFieldUseDeprecated(fieldBinding, scope, (this.bits & IsStrictlyAssigned) !=0)) {
+			scope.problemReporter().deprecatedField(fieldBinding, this);
 		}
-		if (!isImplicitThisRcv
-				&& fieldBinding.declaringClass != receiverType
-				&& fieldBinding.declaringClass.canBeSeenBy(scope)) {
-			scope.problemReporter().indirectAccessToStaticField(this, fieldBinding);
+		boolean isImplicitThisRcv = receiver.isImplicitThis();
+		constant = isImplicitThisRcv ? fieldBinding.constant() : Constant.NotAConstant;
+		if (fieldBinding.isStatic()) {
+			// static field accessed through receiver? legal but unoptimal (optional warning)
+			if (!(isImplicitThisRcv
+					|| (receiver instanceof NameReference 
+						&& (((NameReference) receiver).bits & Binding.TYPE) != 0))) {
+				scope.problemReporter().nonStaticAccessToStaticField(this, fieldBinding);
+			}
+			if (!isImplicitThisRcv
+					&& fieldBinding.declaringClass != receiverType
+					&& fieldBinding.declaringClass.canBeSeenBy(scope)) {
+				scope.problemReporter().indirectAccessToStaticField(this, fieldBinding);
+			}
 		}
+		// perform capture conversion if read access
+		return this.resolvedType = 
+			(((this.bits & IsStrictlyAssigned) == 0) 
+				? fieldBinding.type.capture(scope, this.sourceEnd)
+				: fieldBinding.type);
 	}
-	// perform capture conversion if read access
-	return this.resolvedType = 
-		(((this.bits & IsStrictlyAssigned) == 0) 
-			? fieldBinding.type.capture(scope, this.sourceEnd)
-			: fieldBinding.type);
+	else if( memberBinding instanceof MethodBinding ){
+		return this.resolvedType = scope.getJavaLangFunction();
+	}
+	else{
+		return null;
+	}
 }
 
 public void setActualReceiverType(ReferenceBinding receiverType) {
