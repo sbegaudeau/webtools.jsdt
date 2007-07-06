@@ -33,7 +33,14 @@ public class DocumentContextFragment extends LibraryPackageFragment{
 
 	protected DocumentContextFragment(PackageFragmentRoot root, String[] names) {
 		super(root, names);
+		this.names = names;
 		filesInScope = names;
+	}
+	protected DocumentContextFragment(PackageFragmentRoot root, IResource you, String[] names) {
+		super(root, new String[0]);
+		filesInScope = names;
+		this.names = names;
+		me = you;
 	}
 //	
 //	public IPath resolveRelativePath(String path) {
@@ -150,22 +157,7 @@ public class DocumentContextFragment extends LibraryPackageFragment{
 	 * @see org.eclipse.wst.jsdt.internal.core.PackageFragment#getResource()
 	 */
 	public IResource getResource() {
-//		if(me!=null) return me;
-//		
-//		if(filesInScope.length==0 ) return null;
-//		if(filesInScope.length!=1 )
-//			return parent.getResource();
-//		IPath myPath = ((DocumentContextFragmentRoot)parent).resolveChildPath(filesInScope[0]);
-//		
-//		IResource resource = ((IContainer)parent.getResource()).findMember(myPath.removeLastSegments(1));
-//		
-//		if(resource!=null) {
-//			me = resource;
-//		}else {
-//			me = parent.getResource();
-//		}
-//		
-//		return me;
+		if(me!=null) return me;
 		return parent.getResource();
 	}
 
@@ -177,6 +169,7 @@ public class DocumentContextFragment extends LibraryPackageFragment{
 	 * @see org.eclipse.wst.jsdt.internal.core.PackageFragment#getCompilationUnit(java.lang.String)
 	 */
 	public ICompilationUnit getCompilationUnit(String cuName) {
+
 		return  new CompilationUnit(this, cuName, DefaultWorkingCopyOwner.PRIMARY);	
 	}
 
@@ -187,11 +180,7 @@ public class DocumentContextFragment extends LibraryPackageFragment{
 	}
 	
 	public String getElementName() {
-		//if (this.names.length == 0)
-			return DEFAULT_PACKAGE_NAME;
-		
-		//return names[0];
-		//return Util.concatWith(this.names, '/');
+		return DEFAULT_PACKAGE_NAME;
 	}
 	
 	public boolean isDefaultPackage() {

@@ -959,6 +959,12 @@ protected IJavaElement resolveCompilationUnit(char[] packageName, char[] compila
 			IClassFile classFile=pkgs[i].getClassFile(cuName);
 			if (classFile.exists())
 				return classFile;
+			//compUnit = pkgs[i].getCompilationUnit(fullCUName);
+			//if(compUnit.exists()) return compUnit;
+			//classFile=pkgs[i].getClassFile(fullCUName);
+			//if (classFile.exists())
+			//	return classFile;
+			
 		}
 //		if (type == null) {
 //			String pName= IPackageFragment.DEFAULT_PACKAGE_NAME;

@@ -203,8 +203,13 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 //		}
 		IJavaElement[] children = new IJavaElement[includedFiles.length];
 		for(int i = 0;i<includedFiles.length;i++) {
-			String includeName = ((IPath)includedFiles[i]).toString();
-			DocumentContextFragment packFrag=  new DocumentContextFragment(this, new String[] {includeName});
+			IPath includePath = (IPath)includedFiles[i];
+			String includeName = includePath.toString();
+			String fileName = includePath.lastSegment();
+			IPath pathToFile = includePath.removeLastSegments(1);
+			IResource you = ((IContainer)getResource()).findMember(pathToFile);
+			
+			DocumentContextFragment packFrag=  new DocumentContextFragment(this, you, new String[] {fileName});
 			LibraryPackageFragmentInfo fragInfo= new LibraryPackageFragmentInfo();
 			packFrag.computeChildren(fragInfo);
 			newElements.put(packFrag, fragInfo);
@@ -243,7 +248,8 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 				//if(member.exists()) return new Path(newPath);
 				
 				resolvedPath = newPath;
-				break;				
+				if(member!=null && member.exists()) break;
+							
 			case '.':
 				/* returns a new relative path thats relative to the resource */
 				IPath relative = fRelativeFile.getProjectRelativePath().removeLastSegments(1);
