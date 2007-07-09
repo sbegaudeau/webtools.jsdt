@@ -100,7 +100,7 @@ public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathC
 	 * @see org.eclipse.wst.jsdt.core.ClasspathContainerInitializer#containerSuperTypes()
 	 */
 	public String[] containerSuperTypes() {
-		return new String[] {"Window","Document"};
+		return new String[] {"Window"};
 	}
 
 	/* (non-Javadoc)
