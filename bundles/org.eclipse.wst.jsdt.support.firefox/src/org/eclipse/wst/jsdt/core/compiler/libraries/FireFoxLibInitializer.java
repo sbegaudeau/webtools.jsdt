@@ -84,6 +84,8 @@ public class FireFoxLibInitializer extends ClasspathContainerInitializer impleme
 		
 		
 	}
-	
+	public String[] containerSuperTypes() {
+		return new String[] {"window"};
+	}
 	
 }
