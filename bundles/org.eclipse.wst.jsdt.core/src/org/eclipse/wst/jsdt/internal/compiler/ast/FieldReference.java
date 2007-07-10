@@ -616,11 +616,11 @@ public TypeBinding resolveType(BlockScope scope) {
 				: fieldBinding.type);
 	}
 	else if( memberBinding instanceof MethodBinding ){
-		return this.resolvedType = scope.getJavaLangFunction();
+		if( memberBinding.isValidBinding() )
+			return this.resolvedType = scope.getJavaLangFunction();
 	}
-	else{
-		return null;
-	}
+	
+	return null;
 }
 
 public void setActualReceiverType(ReferenceBinding receiverType) {
