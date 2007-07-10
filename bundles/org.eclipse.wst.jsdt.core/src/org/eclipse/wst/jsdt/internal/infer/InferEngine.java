@@ -43,7 +43,7 @@ public class InferEngine extends ASTVisitor {
     int passNumber=1;
 
     int anonymousCount=0;
-    int anonymousCount2=0; //@GINO
+    //int anonymousCount2=0; //@GINO
 	
 	public  InferredType StringType=new InferredType(new char[]{'S','t','r','i','n','g'});
 	public  InferredType NumberType=new InferredType(new char[]{'N','u','m','b','e','r'});
@@ -60,17 +60,58 @@ public class InferEngine extends ASTVisitor {
 	{
 		InferredType currentType;
 		MethodDeclaration currentMethod;
-		HashtableOfObject definedMembers;
+				
+		private HashtableOfObject definedMembers;
 		
+		/*
+		 * Parent context to provide chaining when searching
+		 * for members in scope.
+		 */
+		private Context parent = null;
+		
+		/*
+		 * Root context
+		 */
 		Context(){}
 		
-		Context(Context from)
+		/*
+		 * Nested context
+		 */
+		Context( Context parent )
 		{
-			currentType=from.currentType;
-			currentMethod=from.currentMethod;
-			definedMembers=from.definedMembers;
+			this.parent = parent;
+			
+			currentType = parent.currentType;
+			currentMethod = parent.currentMethod;
 		}
+		
+		public Object getMember( char [] key ){
+			
+			Object value = null;
+			if( definedMembers != null ){
+				value = definedMembers.get( key );				
+			}
+			
+			//chain lookup
+			if( value == null && parent != null ){
+				value = parent.getMember( key );
+			}
+			
+			return value;
+		}
+		
+		public void addMember( char [] key, Object member ){
+			
+			if( definedMembers == null ){
+				definedMembers = new HashtableOfObject();
+			}
+			
+			definedMembers.put( key, member );
+		}
+		
+		
 	}
+	
 	public InferEngine(InferOptions inferOptions)
 	{
 		this.inferOptions=inferOptions;
@@ -97,6 +138,10 @@ public class InferEngine extends ASTVisitor {
 	}
 
 	public boolean visit(LocalDeclaration localDeclaration, BlockScope scope) {
+		
+		//add as a member of the current context
+		currentContext.addMember( localDeclaration.name, localDeclaration );
+		
 		if (localDeclaration.javadoc!=null)
 		{
 			Javadoc javadoc = localDeclaration.javadoc;
@@ -212,7 +257,7 @@ public class InferEngine extends ASTVisitor {
 				isThis(assignment.lhs))
 		{
 			SingleNameReference snr=(SingleNameReference)assignment.expression;
-			Object object = this.currentContext.definedMembers.get(snr.token);
+			Object object = this.currentContext.getMember( snr.token );
 			
 			
 			FieldReference fieldReference=(FieldReference)assignment.lhs;
@@ -380,12 +425,14 @@ public class InferEngine extends ASTVisitor {
 	}
 	
 	/*
-	 * Each anonymous type has a unique name
+	 * Creates an anonymous type based in the location in the document. This information is used
+	 * to avoid creating duplicates because of the 2-pass nature of this engine.
 	 */
-	private InferredType createAnonymousType() {
+	private InferredType createAnonymousType( ObjectLiteral objLit ) {
 		
-		char[] cs = String.valueOf(this.anonymousCount2++).toCharArray();
-		char []name = CharOperation.concat( InferredType.ANONYMOUS_PREFIX, ANONYMOUS_CLASS_ID, cs );
+		//char[] cs = String.valueOf(this.anonymousCount2++).toCharArray();
+		char [] loc = (String.valueOf( objLit.sourceStart ) + '_' + String.valueOf( objLit.sourceEnd )).toCharArray();
+		char []name = CharOperation.concat( InferredType.ANONYMOUS_PREFIX, ANONYMOUS_CLASS_ID, loc );
 		
 		InferredType anonType = addType(name);
 		anonType.isDefinition=true;
@@ -453,8 +500,9 @@ public class InferEngine extends ASTVisitor {
 						if( superType == null )
 							superType = addType( possibleSuperTypeName );
 						
-						//InferredType superClass=addType(getTypeName(allocationExpression.member));
-						newType.superClass = superType;
+						//check if it is set already because it might be set by jsdocs
+						if( newType.superClass == null )
+							newType.superClass = superType;
 					}
 					
 					return true;
@@ -466,7 +514,10 @@ public class InferEngine extends ASTVisitor {
 					//rather than creating an anonymous type, is better just to set the members directly
 					//on newType
 					populateType( newType, (ObjectLiteral)assignment.expression );
-					newType.superClass = ObjectType;
+					
+					//check if it is set already because it might be set by jsdocs
+					if( newType.superClass == null )
+						newType.superClass = ObjectType;
 					
 					return true;
 				}
@@ -514,7 +565,7 @@ public class InferEngine extends ASTVisitor {
 				
 				if (typeOf==null && assignment.expression instanceof SingleNameReference)
 				{
-					Object object = this.currentContext.definedMembers.get(((SingleNameReference)assignment.expression).token);
+					Object object = this.currentContext.getMember( ((SingleNameReference)assignment.expression).token );
 					if (object instanceof AbstractMethodDeclaration)
 						methodDecl=(MethodDeclaration)object;
 				} else if (assignment.expression instanceof FunctionExpression)
@@ -611,7 +662,7 @@ public class InferEngine extends ASTVisitor {
 		else if ( expression instanceof ObjectLiteral ){
 			
 			//create an annonymous type based on the ObjectLiteral
-			InferredType type = createAnonymousType();
+			InferredType type = createAnonymousType( (ObjectLiteral)expression );
 			
 			ObjectLiteral objLit = (ObjectLiteral)expression;
 			
@@ -674,17 +725,21 @@ public class InferEngine extends ASTVisitor {
 	}	
 	
 	public void endVisit(ReturnStatement returnStatement, BlockScope scope) {
-		if (currentContext.currentMethod!=null)
-		{
-			if (returnStatement.expression!=null)
+		
+			if (currentContext.currentMethod!=null)
 			{
-				InferredType type = getTypeOf(returnStatement.expression);
-				if (currentContext.currentMethod.inferredType==VoidType)
-					currentContext.currentMethod.inferredType=type;
-				else if (type==null || !type.equals(currentContext.currentMethod.inferredType))
-					currentContext.currentMethod.inferredType=null;
+				if (returnStatement.expression!=null)
+				{
+					
+					InferredType type = getTypeOf(returnStatement.expression);
+					
+					if (currentContext.currentMethod.inferredType==VoidType)
+						currentContext.currentMethod.inferredType=type;
+					else if (type==null || !type.equals(currentContext.currentMethod.inferredType))
+						currentContext.currentMethod.inferredType=null;
+				}
 			}
-		}
+		
 	}
 
 	public void endVisit(MethodDeclaration methodDeclaration, Scope scope) {
@@ -901,15 +956,16 @@ public class InferEngine extends ASTVisitor {
 	
 	protected final void pushContext()
 	{
-		Context newContext=new Context(currentContext);
-		contexts[++contextPtr]=currentContext;
-		currentContext=newContext;
+		Context newContext = new Context( currentContext  );
+		contexts[++contextPtr] = currentContext;
+		currentContext = newContext;
 		
 	}
 	
 	protected final void popContext()
 	{
-		currentContext=contexts[contextPtr--];
+		currentContext = contexts[contextPtr];
+		contexts[contextPtr--] = null;
 	}
 	
 	protected final boolean isInNamedMethod()
@@ -931,7 +987,7 @@ public class InferEngine extends ASTVisitor {
 			name=((SingleNameReference)expression).token;
 		if (name!=null)
 		{
-			Object var=this.currentContext.definedMembers.get(name);
+			Object var = this.currentContext.getMember( name );
 			if (var instanceof AbstractVariableDeclaration)
 				return (AbstractVariableDeclaration)var;
 		}
@@ -940,12 +996,11 @@ public class InferEngine extends ASTVisitor {
 	}
 	
 	private void buildDefinedMembers(ProgramElement[] statements, Argument[] arguments) {
-		if (this.currentContext.definedMembers==null)
-			this.currentContext.definedMembers=new HashtableOfObject();
+		
 		if (arguments!=null)
 		{
 			for (int i = 0; i < arguments.length; i++) {
-				this.currentContext.definedMembers.put(arguments[i].name, arguments[i]);
+				this.currentContext.addMember( arguments[i].name, arguments[i] );
 			}
 		}
 		if (statements!=null)
@@ -953,12 +1008,12 @@ public class InferEngine extends ASTVisitor {
 			for (int i = 0; i < statements.length; i++) {
 				if (statements[i] instanceof LocalDeclaration) {
 					LocalDeclaration local = (LocalDeclaration) statements[i];
-					this.currentContext.definedMembers.put(local.name, local);
+					this.currentContext.addMember( local.name, local );
 				}
 				else if (statements[i] instanceof AbstractMethodDeclaration) {
 					AbstractMethodDeclaration method = (AbstractMethodDeclaration) statements[i];
 					if (method.selector!=null)
-						this.currentContext.definedMembers.put(method.selector, method);
+						this.currentContext.addMember( method.selector, method );
 				}
 			}
 		}
