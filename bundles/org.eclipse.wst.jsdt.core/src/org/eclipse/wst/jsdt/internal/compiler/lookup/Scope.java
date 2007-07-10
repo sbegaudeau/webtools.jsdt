@@ -1855,13 +1855,9 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			//first look for field
 			FieldBinding field = findField(receiverType, fieldName, invocationSite, true /*resolve*/);
 			if (field != null) return field;
-			
-			if(receiverType instanceof BaseTypeBinding) {
-				
-			}
 				
 			/* not sure if this fix is correct, but reciever type is [sometimes] coming in as "BaseTypeBinding" and causing a classcastexception */
-			MethodBinding method = findMethod( receiverType instanceof BaseTypeBinding?(ReferenceBinding)receiverType:null, fieldName, new TypeBinding[0], invocationSite );
+			MethodBinding method = findMethod( receiverType instanceof ReferenceBinding?(ReferenceBinding)receiverType:null, fieldName, new TypeBinding[0], invocationSite );
 			if( method != null )
 				return method;
 				
@@ -1914,6 +1910,20 @@ public abstract class Scope implements TypeConstants, TypeIds {
 					MethodBinding binding = methodScope.findMethod(selector,argumentTypes);
 					if (binding!=null)
 						return binding;
+					break;
+				case WITH_SCOPE :
+					WithScope withScope = (WithScope) scope;
+					ReferenceBinding withType = withScope.referenceContext;
+					// retrieve an exact visible match (if possible)
+					// compilationUnitScope().recordTypeReference(receiverType);   not needed since receiver is the source type
+					MethodBinding methBinding = withScope.findExactMethod(withType, selector, argumentTypes, invocationSite);
+					if (methBinding == null)
+						methBinding = withScope.findMethod(withType, selector, argumentTypes, invocationSite);
+					if (methBinding != null) { // skip it if we did not find anything
+							if (methBinding.isValidBinding()) {
+									return methBinding;
+								}
+					}
 					break;
 				case CLASS_SCOPE :
 					ClassScope classScope = (ClassScope) scope;
