@@ -260,7 +260,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 			CompilationUnitDeclaration declaration = this.runInferTest(
 					 "/**\n"
 					+ " * @constructor \n"
-					+ " * @extends String \n"
+					+ " * @super String \n"
 					+ " */\n"
 				+"function MyClass(){}"   
 
@@ -328,7 +328,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"  bar2: function(){}"+
 					"}",
 				"X.js",
-				"class ___anonymous0 extends Object{\n  String bar;\n  void bar2()\n}\n",
+				"class ___anonymous10_44 extends Object{\n  String bar;\n  void bar2()\n}\n",
 				getDefaultOptions()
 				
 			 );
@@ -345,7 +345,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"  bar2: function(){}"+
 					"}",
 				"X.js",
-				"class ___anonymous0 extends Object{\n  String bar;\n  void bar2()\n}\n",
+				"class ___anonymous14_48 extends Object{\n  String bar;\n  void bar2()\n}\n",
 				getDefaultOptions()
 				
 			 );
@@ -363,8 +363,8 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"  }"+
 					"}",
 				"X.js",
-				"class ___anonymous0 extends Object{\n  String bar;\n  ___anonymous1 bar2;\n}\n"+
-				"class ___anonymous1 extends Object{\n  String bar3;\n}\n",
+				"class ___anonymous10_52 extends Object{\n  String bar;\n  ___anonymous32_51 bar2;\n}\n"+
+				"class ___anonymous32_51 extends Object{\n  String bar3;\n}\n",
 				getDefaultOptions()
 				
 			 );
@@ -381,7 +381,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"  return \"\";" +
 					"}",
 				"X.js",
-				"class ___anonymous0 extends Object{\n  String foo;\n  String bar()\n}\n",
+				"class ___anonymous9_10 extends Object{\n  String foo;\n  String bar()\n}\n",
 				getDefaultOptions()
 				
 			 );
@@ -397,8 +397,8 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"  bar: \"\""+
 					"};",
 				"X.js",
-				"class ___anonymous0 extends Object{\n  ___anonymous1 foo;\n}\n"+
-				"class ___anonymous1 extends Object{\n  String bar;\n}\n",
+				"class ___anonymous9_10 extends Object{\n  ___anonymous21_31 foo;\n}\n"+
+				"class ___anonymous21_31 extends Object{\n  String bar;\n}\n",
 				getDefaultOptions()
 				
 			 );
@@ -432,8 +432,8 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"  bar2: \"\""+ 
 					"}",
 				"X.js",
-				"class foo extends Object{\n  ___anonymous0 bar;\n  foo()\n}\n"+
-				"class ___anonymous0 extends Object{\n  String bar2;\n}\n",
+				"class foo extends Object{\n  ___anonymous37_48 bar;\n  foo()\n}\n"+
+				"class ___anonymous37_48 extends Object{\n  String bar2;\n}\n",
 				getDefaultOptions()
 				
 			 );
@@ -452,7 +452,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"  return \"\";" +
 					"}",
 				"X.js",
-				"class ___anonymous0 extends Object{\n  ns.foo foo()\n}\n"+
+				"class ___anonymous9_10 extends Object{\n  ns.foo foo()\n}\n"+
 				"class foo extends Object{\n  String bar;\n  String bar2();\n  foo()\n}\n",
 				getDefaultOptions()
 				
@@ -474,8 +474,8 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"  return \"\";" +
 					"}",
 				"X.js",
-				"class ___anonymous0 extends Object{\n  _anonymous1 n2;\n}\n"+
-				"class ___anonymous1 extends Object{\n  ns1.ns2.foo foo()\n}\n"+
+				"class ___anonymous10_20 extends Object{\n  ___anonymous18_19 ns2;\n}\n"+
+				"class ___anonymous18_19 extends Object{\n  ns1.ns2.foo foo()\n}\n"+
 				"class foo extends Object{\n  String bar;\n  String bar2();\n  foo()\n}\n",
 				getDefaultOptions()
 				
@@ -498,8 +498,8 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"  return { x : \"\", y : \"\", z : \"\" };" +
 					"};",
 				"X.js",
-				"class ___anonymous0 extends Object{\n  String a;\n  String c;\n  String b()\n  ___anonymous1 d(x, y, z)\n}\n"+
-				"class ___anonymous1 extends Object{\n  String x;\n  String y;\n  String z;\n}\n",
+				"class ___anonymous10_52 extends Object{\n  String a;\n  String c;\n  String b()\n  ___anonymous101_126 d(x, y, z)\n}\n"+
+				"class ___anonymous101_126 extends Object{\n  String x;\n  String y;\n  String z;\n}\n",
 				getDefaultOptions()
 				
 			 );
@@ -508,13 +508,93 @@ public class InferTypesTests extends AbstractRegressionTest {
 		public void test071() {
 			CompilationUnitDeclaration declaration = this.runInferTest(
 					"if( true ){" +
-					"  var dojo = {};" +
-					"}",
+					"  var foo = {};" +
+					"}" +
+					"foo.bar = \"\"",
 				"X.js",
-				"class ___anonymous0 extends Object{\n}\n",
+				"class ___anonymous23_24 extends Object{\n  String bar;\n}\n",
 				getDefaultOptions()
 				
 			 );
 		}
 		
+		/*
+		 * Object literal within a function as return (need to prevent duplicates)
+		 */
+		public void test072() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+					"var foo = function(){" +
+					"	return {" +
+					"		x: \"\"," +
+					"		y: \"\"" +
+					"	}" +
+					"};",
+				"X.js",
+				"class ___anonymous29_46 extends Object{\n  String x;\n  String y;\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		
+		/*
+		 * Object literal within a function (not a return
+		 */
+		public void test073() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+					"var foo = function(){" +
+					"	var bar = {" +
+					"		x: \"\"," +
+					"		y: \"\"" +
+					"	}" +
+					"};",
+				"X.js",
+				"class ___anonymous32_49 extends Object{\n  String x;\n  String y;\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		
+		public void test074() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+				"/**\n" +
+				"  * Object Node()\n" +
+				"  * @super Object\n" +
+				"  * @constructor\n" +
+				"  * @class Node\n" +
+				"  * @since Standard ECMA-262 3rd. Edition\n" +
+				"  * @since Level 2 Document Object Model Core Definition.\n" +
+				"  * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html\n" +
+				" */\n" +
+				"function Node(){};\n" +
+				"/**\n" +
+				"  * Property firstChild\n" + 
+				"  * @type Node\n" +
+				"  * @class Node\n" +
+				"  * @see Node\n" +
+				"\n" + 
+				"  * @since Standard ECMA-262 3rd. Edition\n" + 
+				"  * @since Level 2 Document Object Model Core Definition.\n" +
+				"  * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html\n" +     
+				" */\n" +
+				"Node.prototype.firstChild=new Node();\n" + 
+				"/**\n" +
+				"  * function insertBefore(newChild, refChild)\n" +   
+				"  * @type Node\n" +
+				"  * @class Node\n" +
+				"  * @param newChilds Node\n" +
+				"  * @param refChild Node\n" +
+				"  * @return Node\n" +
+				"  * @throws DOMException\n" +
+				"  * @see Node\n" +
+				"  * @since Standard ECMA-262 3rd. Edition\n" + 
+				"  * @since Level 2 Document Object Model Core Definition.\n" +
+				"  * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html\n" +     
+				" */\n" +
+				"Node.prototype.insertBefore = function(newChild, refChild){};\n",
+				"X.js",
+				"class Node extends Object{\n  Node firstChild;\n  Node()\n  Node insertBefore(newChild, refChild)\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
 }
