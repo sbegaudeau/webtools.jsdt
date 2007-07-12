@@ -1535,7 +1535,7 @@ Element.prototype.hasAttributeNS=function(namespaceURI, localName){};
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
 function Text(){};
-Text.prototype = new ChracterData();
+Text.prototype = new CharacterData();
  /**
   * function splitText(offset)     
   * @type Text
@@ -1566,7 +1566,7 @@ Text.prototype.splitText=function(offset){};
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
 function Comment(){};
-Comment.prototype = new ChracterData();
+Comment.prototype = new CharacterData();
 /**
   * Object CDATASection()
   * Comment inherits all of the methods and properties from Text.
