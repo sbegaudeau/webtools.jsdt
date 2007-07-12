@@ -1,0 +1,1 @@
+/**  * Object onbeforepaste()  * @type constructor  * @super Object  * @class onbeforepaste  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536905.aspx*/function onbeforepaste(){};onbeforepaste.prototype= new Object();

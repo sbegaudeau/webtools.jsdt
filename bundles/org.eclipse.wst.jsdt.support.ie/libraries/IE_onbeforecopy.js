@@ -1,0 +1,1 @@
+/**  * Object onbeforecopy()  * @type constructor  * @super Object  * @class onbeforecopy  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536901.aspx*/function onbeforecopy(){};onbeforecopy.prototype= new Object();

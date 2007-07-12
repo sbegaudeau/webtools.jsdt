@@ -1,0 +1,1 @@
+/**  * Object onreset()  * @type constructor  * @super Object  * @class onreset  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536958.aspx*/function onreset(){};onreset.prototype= new Object();

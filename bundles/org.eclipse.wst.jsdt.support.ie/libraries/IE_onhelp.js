@@ -1,0 +1,1 @@
+/**  * Object onhelp()  * @type constructor  * @super Object  * @class onhelp  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536937.aspx*/function onhelp(){};onhelp.prototype= new Object();

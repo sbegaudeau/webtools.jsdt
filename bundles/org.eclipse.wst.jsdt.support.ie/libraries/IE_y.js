@@ -1,0 +1,1 @@
+/**  * Object y()  * @type constructor  * @super Object  * @class y  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms535164.aspx*/function y(){};y.prototype= new Object();

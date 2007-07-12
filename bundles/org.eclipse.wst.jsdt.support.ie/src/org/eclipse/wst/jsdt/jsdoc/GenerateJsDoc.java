@@ -41,12 +41,12 @@ public class GenerateJsDoc {
 		ElementInfo tempElement = new ElementInfo(null,null);
 		
 		ElementInfo[] tops = source.getTopObjects();
-		ArrayList allFoundNodes;
+		ArrayList allFoundNodes= new ArrayList();
 		
 		boolean workDone = true;
 		while(workDone) {
 			workDone = false;
-			allFoundNodes = new ArrayList();
+			//allFoundNodes = new ArrayList();
 			for(int i = 0;i<tops.length;i++) {
 				String fileName = getOutFile(JS_PREFIX + tops[i].getName().toLowerCase().trim() + ".js");
 				File theFile = new File(fileName);

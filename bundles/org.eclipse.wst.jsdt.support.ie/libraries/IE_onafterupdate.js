@@ -1,0 +1,1 @@
+/**  * Object onafterupdate()  * @type constructor  * @super Object  * @class onafterupdate  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536790.aspx*/function onafterupdate(){};onafterupdate.prototype= new Object();

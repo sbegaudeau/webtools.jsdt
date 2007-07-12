@@ -89,11 +89,11 @@ public class ElementInfo {
 		ElementInfo[] children = getChildren();
 	
 		//found.add(this);
-		for(int i = 0;i<nodes.size();i++) {
-			ElementInfo elm = (ElementInfo)nodes.get(i);
-			if(elm.getType() == COLLECTION || elm.getType()==EVENT) {
-				elm.clearVisit();
-				found.add(elm);
+		for(int i = 0;i<children.length;i++) {
+			
+			if(children[i].getType() == COLLECTION || children[i].getType()==EVENT) {
+				children[i].clearVisit();
+				found.add(children[i]);
 			}
 		}
 		

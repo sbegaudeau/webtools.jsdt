@@ -1,0 +1,1 @@
+/**  * Object shiftKey()  * @type constructor  * @super Object  * @class shiftKey  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms534629.aspx*/function shiftKey(){};shiftKey.prototype= new Object();

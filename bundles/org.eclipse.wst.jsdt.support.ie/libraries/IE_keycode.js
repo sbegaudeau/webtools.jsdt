@@ -1,0 +1,1 @@
+/**  * Object keyCode()  * @type constructor  * @super Object  * @class keyCode  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms533927.aspx*/function keyCode(){};keyCode.prototype= new Object();

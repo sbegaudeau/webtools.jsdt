@@ -1,0 +1,1 @@
+/**  * Object onbeforedeactivate()  * @type constructor  * @super Object  * @class onbeforedeactivate  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536903.aspx*/function onbeforedeactivate(){};onbeforedeactivate.prototype= new Object();

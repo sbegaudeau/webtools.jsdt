@@ -1,0 +1,1 @@
+/**  * Object onbeforeupdate()  * @type constructor  * @super Object  * @class onbeforeupdate  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536908.aspx*/function onbeforeupdate(){};onbeforeupdate.prototype= new Object();

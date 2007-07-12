@@ -1,0 +1,1 @@
+/**  * Object onchange()  * @type constructor  * @super Object  * @class onchange  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536912.aspx*/function onchange(){};onchange.prototype= new Object();

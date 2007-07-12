@@ -1,0 +1,1 @@
+/**  * Object ondragstart()  * @type constructor  * @super Object  * @class ondragstart  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536928.aspx*/function ondragstart(){};ondragstart.prototype= new Object();

@@ -1,0 +1,1 @@
+/**  * Object toElement()  * @type constructor  * @super Object  * @class toElement  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms534684.aspx*/function toElement(){};toElement.prototype= new Object();

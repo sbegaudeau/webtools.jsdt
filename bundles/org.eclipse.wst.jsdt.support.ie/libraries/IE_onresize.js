@@ -1,0 +1,1 @@
+/**  * Object onresize()  * @type constructor  * @super Object  * @class onresize  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536959.aspx*/function onresize(){};onresize.prototype= new Object();

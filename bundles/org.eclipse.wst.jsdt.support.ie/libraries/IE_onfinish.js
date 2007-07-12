@@ -1,0 +1,1 @@
+/**  * Object onfinish()  * @type constructor  * @super Object  * @class onfinish  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536933.aspx*/function onfinish(){};onfinish.prototype= new Object();

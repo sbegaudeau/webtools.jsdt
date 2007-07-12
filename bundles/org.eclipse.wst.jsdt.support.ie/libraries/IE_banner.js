@@ -1,0 +1,1 @@
+/**  * Object Banner()  * @type constructor  * @super Object  * @class Banner  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms533136.aspx*/function Banner(){};Banner.prototype= new Object();

@@ -1,0 +1,1 @@
+/**  * Object onunload()  * @type constructor  * @super Object  * @class onunload  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536973.aspx*/function onunload(){};onunload.prototype= new Object();
