@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension point="org.eclipse.wst.jsdt.ui.classpathContainerPage">
+  	  <classpathContainerPage
+            name="Internet Explorer Library"
+            class="org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.InternetExplorerLibraryWizardPage"
+            id="org.eclipse.wst.jsdt.support.ie">
+      </classpathContainerPage>
+   </extension>
+   <extension
+      point="org.eclipse.wst.jsdt.core.classpathContainerInitializer">
+      <classpathContainerInitializer
+            class="org.eclipse.wst.jsdt.core.compiler.libraries.InternetExplorerLibInitializer"
+            id="org.eclipse.wst.jsdt.launching.InternetExplorer">
+      </classpathContainerInitializer>
+	</extension>
+</plugin>
