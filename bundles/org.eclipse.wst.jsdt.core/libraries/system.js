@@ -82,7 +82,15 @@ Object.prototype.isPrototypeOf  = function (V){return true;};
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
 Object.prototype.propertyIsEnumerable  = function(V){return "";};
-
+/**
+  * Property constructor
+  * @type  String
+  * @class Object
+  * @since Standard ECMA-262 3rd. Edition
+  * @since Level 2 Document Object Model Core Definition.
+  * @link  http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
+ */ 
+Object.prototype.constructor="";
 /**
   * Object String()
   * @super Object
@@ -92,6 +100,7 @@ Object.prototype.propertyIsEnumerable  = function(V){return "";};
   * @since Level 2 Document Object Model Core Definition.
   * @link  http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
+
 function String(){}
 String.prototype = new Object();
 /**
