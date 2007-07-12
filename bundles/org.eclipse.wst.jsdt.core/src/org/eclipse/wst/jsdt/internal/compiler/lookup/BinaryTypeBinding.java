@@ -171,6 +171,8 @@ public BinaryTypeBinding(PackageBinding packageBinding, ISourceType binaryType, 
 	this.sourceName = binaryType.getFileName();
 	this.modifiers = binaryType.getModifiers();
 		
+//	if ((binaryType.getTagBits() & TagBits.HasInconsistentHierarchy) != 0)
+//		this.tagBits |= TagBits.HierarchyHasProblems;
 //	if (binaryType.isAnonymous()) {
 //		this.tagBits |= TagBits.AnonymousTypeMask;
 //	} else if (binaryType.isLocal()) {

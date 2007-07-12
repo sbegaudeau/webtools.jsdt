@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -175,8 +175,6 @@ public interface IJavaElement extends IAdaptable, ILookupScope{
 	 * <p>The html is extracted from the attached javadoc and provided as is. No
 	 * transformation or validation is done.</p>
 	 *
-	 * <p>NOTE: This API is subject to change before the 3.2 release.</p>
-	 * 
 	 * @param monitor the given progress monitor
 	 * @exception JavaModelException if:<ul>
 	 *  <li>this element does not exist</li>

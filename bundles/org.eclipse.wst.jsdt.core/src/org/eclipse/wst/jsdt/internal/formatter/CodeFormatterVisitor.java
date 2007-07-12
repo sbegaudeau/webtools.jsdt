@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2006 IBM Corporation and others.
+ * Copyright (c) 2002, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -448,13 +448,18 @@ public class CodeFormatterVisitor extends ASTVisitor {
 							// a new line has been inserted by printTrailingComment()
 							this.scribe.indentationLevel = binaryExpressionAlignment.breakIndentationLevel;
 						}
-						this.scribe.alignFragment(binaryExpressionAlignment, i);
-						this.scribe.printNextToken(operators[i], this.preferences.insert_space_before_binary_operator | addSpace);
+						if (this.preferences.wrap_before_binary_operator) {
+							this.scribe.alignFragment(binaryExpressionAlignment, i);
+							this.scribe.printNextToken(operators[i], this.preferences.insert_space_before_binary_operator);
+						} else {
+							this.scribe.printNextToken(operators[i], this.preferences.insert_space_before_binary_operator);
+							this.scribe.alignFragment(binaryExpressionAlignment, i);
+						}
 						if (operators[i] == TerminalTokens.TokenNameMINUS && isNextToken(TerminalTokens.TokenNameMINUS)) {
 							// the next character is a minus (unary operator)
 							this.scribe.space();
 						}
-						if (this.preferences.insert_space_after_binary_operator || addSpace) {
+						if (this.preferences.insert_space_after_binary_operator) {
 							this.scribe.space();
 						}
 					}
@@ -634,7 +639,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 			this.scribe.printNextToken(TerminalTokens.TokenNamestatic);
 			this.scribe.space();
 		}
-		if (importRef.onDemand) {
+		if ((importRef.bits & ASTNode.OnDemand) != 0) {
 			this.scribe.printQualifiedReference(importRef.sourceEnd);
 			this.scribe.printNextToken(TerminalTokens.TokenNameDOT);
 			this.scribe.printNextToken(TerminalTokens.TokenNameMULTIPLY);			
@@ -3337,7 +3342,9 @@ public class CodeFormatterVisitor extends ASTVisitor {
 			
 		if (constructorDeclaration.ignoreFurtherInvestigation) {
 			this.scribe.printComment();
-			this.scribe.printIndentationIfNecessary();
+			if (this.scribe.indentationLevel != 0) {
+				this.scribe.printIndentationIfNecessary();
+			}
 			this.scribe.scanner.resetTo(constructorDeclaration.declarationSourceEnd + 1, this.scribe.scannerEndPosition - 1);
 			this.scribe.printTrailingComment();
 			switch(this.scribe.scanner.source[this.scribe.scanner.currentPosition]) {
@@ -4012,7 +4019,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 					 */
 					 formatGuardClauseBlock((Block) thenStatement, scope);
 				} else {
-                    formatLeftCurlyBrace(line, this.preferences.brace_position_for_block);
+					formatLeftCurlyBrace(line, this.preferences.brace_position_for_block);
 					thenStatement.traverse(this, scope);
 					if (elseStatement != null && (this.preferences.insert_new_line_before_else_in_if_statement)) {
 						this.scribe.printNewLine();
@@ -4043,7 +4050,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 						this.scribe.redoAlignment(e);
 					}
 				} while (!ok);
-				this.scribe.exitAlignment(compactIfAlignment, true);				
+				this.scribe.exitAlignment(compactIfAlignment, true);
 			} else if (this.preferences.keep_then_statement_on_same_line) {
 				this.scribe.space();
 				thenStatement.traverse(this, scope);
@@ -4083,7 +4090,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 					this.scribe.printNewLine();
 					this.scribe.indent();
 				}
-				this.scribe.space();				
+				this.scribe.space();
 				elseStatement.traverse(this, scope);
 				if (!this.preferences.compact_else_if) {
 					this.scribe.unIndent();
@@ -4289,7 +4296,9 @@ public class CodeFormatterVisitor extends ASTVisitor {
 
 		if (methodDeclaration.ignoreFurtherInvestigation) {
 			this.scribe.printComment();
-			this.scribe.printIndentationIfNecessary();
+			if (this.scribe.indentationLevel != 0) {
+				this.scribe.printIndentationIfNecessary();
+			}
 			this.scribe.scanner.resetTo(methodDeclaration.declarationSourceEnd + 1, this.scribe.scannerEndPosition - 1);
 			this.scribe.printTrailingComment();
 			switch(this.scribe.scanner.source[this.scribe.scanner.currentPosition]) {
@@ -5471,7 +5480,8 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		 */
 		int operator;
 		boolean addSpace=false;
-		switch((unaryExpression.bits & ASTNode.OperatorMASK) >> ASTNode.OperatorSHIFT) {
+		int operatorValue = (unaryExpression.bits & ASTNode.OperatorMASK) >> ASTNode.OperatorSHIFT;
+		switch(operatorValue) {
 			case OperatorIds.PLUS:
 				operator = TerminalTokens.TokenNamePLUS;
 				break;
@@ -5501,14 +5511,36 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		if (this.preferences.insert_space_after_unary_operator || addSpace) {
 			this.scribe.space();
 		}
-		unaryExpression.expression.traverse(this, scope);
+		Expression expression = unaryExpression.expression;
+
+		if (expression instanceof PrefixExpression) {
+			PrefixExpression prefixExpression = (PrefixExpression) expression;
+			final int numberOfParensForExpression = (prefixExpression.bits & ASTNode.ParenthesizedMASK) >> ASTNode.ParenthesizedSHIFT;
+			if (numberOfParensForExpression == 0) {
+				switch(operatorValue) {
+					case OperatorIds.PLUS:
+						if (prefixExpression.operator == OperatorIds.PLUS) {
+							this.scribe.space();
+						}						
+						break;
+					case OperatorIds.MINUS:
+						if (prefixExpression.operator == OperatorIds.MINUS) {
+							this.scribe.space();
+						}						
+						break;
+				}
+			}
+			expression.traverse(this, scope);
+		} else {
+			expression.traverse(this, scope);
+		}
 
 		if (numberOfParens > 0) {
 			manageClosingParenthesizedExpression(unaryExpression, numberOfParens);
 		}
 		return false;
 	}
-	
+
 	public boolean visit(UndefinedLiteral undefinedLiteral, BlockScope scope) {
 
 		final int numberOfParens = (undefinedLiteral.bits & ASTNode.ParenthesizedMASK) >> ASTNode.ParenthesizedSHIFT;

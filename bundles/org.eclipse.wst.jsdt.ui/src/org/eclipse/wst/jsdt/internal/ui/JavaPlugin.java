@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import org.eclipse.jface.action.GroupMarker;
@@ -52,10 +53,14 @@ import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.texteditor.ConfigurationElementSorter;
 import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.eclipse.ui.themes.IThemeManager;
 
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.templates.ContributionContextTypeRegistry;
 import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
+
+import org.eclipse.ui.forms.FormColors;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
@@ -235,6 +240,13 @@ public class JavaPlugin extends AbstractUIPlugin {
 	 */
 	private ClasspathAttributeConfigurationDescriptors fClasspathAttributeConfigurationDescriptors;
 	
+	private FormToolkit fDialogsFormToolkit;
+	
+	/**
+	 * Theme listener.
+	 * @since 3.3
+	 */
+	private IPropertyChangeListener fThemeListener;
 
 	public static JavaPlugin getDefault() {
 		return fgJavaPlugin;
@@ -345,13 +357,24 @@ public class JavaPlugin extends AbstractUIPlugin {
 		});
 
 		ensurePreferenceStoreBackwardsCompatibility();
+		
 		// Initialize AST provider
 		getASTProvider();
+		
 		new InitializeAfterLoadJob().schedule();
 		
 		// make sure is loaded too for org.eclipse.wst.jsdt.core.manipulation
 		// can be removed if JavaElementPropertyTester is moved down to jdt.core (bug 127085)
 		JavaManipulation.class.toString();
+		
+		fThemeListener= new IPropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent event) {
+				if (IThemeManager.CHANGE_CURRENT_THEME.equals(event.getProperty()))
+					new JavaUIPreferenceInitializer().initializeDefaultPreferences();
+			}
+		};
+		PlatformUI.getWorkbench().getThemeManager().addPropertyChangeListener(fThemeListener);
+		
 	}
 
 	/* package */ static void initializeAfterLoad(IProgressMonitor monitor) {
@@ -554,6 +577,16 @@ public class JavaPlugin extends AbstractUIPlugin {
 				fSaveParticipantRegistry= null;
 			}
 			
+			if (fDialogsFormToolkit != null) {
+				fDialogsFormToolkit.dispose();
+				fDialogsFormToolkit= null;
+			}
+			
+			if (fThemeListener != null) {
+				PlatformUI.getWorkbench().getThemeManager().removePropertyChangeListener(fThemeListener);
+				fThemeListener= null;
+			}
+			
 			SpellCheckEngine.shutdownInstance();
 			
 			QualifiedTypeNameHistory.getDefault().save();
@@ -651,6 +684,16 @@ public class JavaPlugin extends AbstractUIPlugin {
 			fTypeFilter= new TypeFilter();
 		return fTypeFilter;
 	}	
+	
+	public FormToolkit getDialogsFormToolkit() {
+		if (fDialogsFormToolkit == null) {
+			FormColors colors= new FormColors(Display.getCurrent());
+			colors.setBackground(null);
+			colors.setForeground(null);	
+			fDialogsFormToolkit= new FormToolkit(colors);
+		}
+		return fDialogsFormToolkit;
+	}
 
 	/**
 	 * Returns all Java editor text hovers contributed to the workbench.

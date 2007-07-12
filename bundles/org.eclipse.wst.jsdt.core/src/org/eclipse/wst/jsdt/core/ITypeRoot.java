@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,7 +79,9 @@ IJavaElement getElementAt(int position) throws JavaModelException;
  * In particular, such a working copy can then be committed in order to create
  * the corresponding compilation unit.
  * </p><p>
- * Note that possible problems of this working copy are not reported using this method.
+ * Note that possible problems of this working copy are reported using this method. only
+ * if the given working copy owner returns a problem requestor for this working copy
+ * (see {@link WorkingCopyOwner#getProblemRequestor(ICompilationUnit)}).
  * </p>
  * 
  * @param owner the working copy owner that creates a buffer that is used to get the content 

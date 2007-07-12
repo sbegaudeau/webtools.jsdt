@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,11 +66,15 @@ public class NLSStringHover extends AbstractJavaEditorTextHover {
 			return null;
 
 		ASTNode node= NodeFinder.perform(ast, offset, 1);
-		if (!(node instanceof StringLiteral))
-			return null;
-		StringLiteral stringLiteral= (StringLiteral)node;
+		if (node instanceof StringLiteral) {
+			StringLiteral stringLiteral= (StringLiteral)node;
+			return new Region(stringLiteral.getStartPosition(), stringLiteral.getLength());
+		} else if (node instanceof SimpleName) {
+			SimpleName simpleName= (SimpleName)node;
+			return new Region(simpleName.getStartPosition(), simpleName.getLength());
+		}
 
-		return new Region(stringLiteral.getStartPosition(), stringLiteral.getLength());
+		return null;
 	}
 
 	/*

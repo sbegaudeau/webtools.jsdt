@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,19 +25,28 @@ public final class CorrectionMessages extends NLS {
 
 	public static String FixCorrectionProposal_WarningAdditionalProposalInfo;
 	public static String LocalCorrectionsSubProcessor_renaming_duplicate_method;
+	public static String LocalCorrectionsSubProcessor_replacefieldaccesswithmethod_description;
 	public static String ModifierCorrectionSubProcessor_addstatictoparenttype_description;
 	public static String ModifierCorrectionSubProcessor_changefieldmodifiertononstatic_description;
 	public static String ModifierCorrectionSubProcessor_changemodifiertostaticfinal_description;
+	public static String ModifierCorrectionSubProcessor_creategetterunsingencapsulatefield_description;
+	public static String ModifierCorrectionSubProcessor_createsetterusingencapsulatefield_description;
+	public static String ModifierCorrectionSubProcessor_encapsulate_field_error_message;
+	public static String ModifierCorrectionSubProcessor_encapsulate_field_error_title;
 	public static String ModifierCorrectionSubProcessor_overrides_deprecated_description;
 	public static String ModifierCorrectionSubProcessor_remove_override;
 	public static String ModifierCorrectionSubProcessor_removefinal_description;
 	public static String ModifierCorrectionSubProcessor_removevolatile_description;
+	public static String ModifierCorrectionSubProcessor_replacewithgetter_description;
+	public static String ModifierCorrectionSubProcessor_replacewithsetter_description;
 	public static String QuickAssistProcessor_convert_anonym_to_nested;
 	public static String QuickAssistProcessor_convert_local_to_field_description;
 	public static String QuickAssistProcessor_extract_to_constant_description;
 	public static String QuickAssistProcessor_inline_local_description;
 	public static String QuickAssistProcessor_name_extension_from_class;
 	public static String QuickAssistProcessor_name_extension_from_interface;
+	public static String SelfEncapsulateFieldAction_dialog_cannot_perform;
+	public static String SelfEncapsulateFieldAction_dialog_title;
 	public static String SerialVersionSubProcessor_createdefault_description;
 	public static String SerialVersionSubProcessor_createhashed_description;
 	public static String SerialVersionLaunchConfigurationDelegate_setting_up;
@@ -147,6 +156,7 @@ public final class CorrectionMessages extends NLS {
 	public static String ReturnTypeSubProcessor_changetovoid_description;
 	public static String MissingReturnTypeCorrectionProposal_addreturnstatement_description;
 	public static String MissingReturnTypeCorrectionProposal_changereturnstatement_description;
+	public static String TypeParameterMismatchSubProcessor_removeTypeParameter;
 	public static String UnresolvedElementsSubProcessor_swaparguments_description;
 	public static String UnresolvedElementsSubProcessor_addargumentcast_description;
 	public static String UnresolvedElementsSubProcessor_changemethod_description;

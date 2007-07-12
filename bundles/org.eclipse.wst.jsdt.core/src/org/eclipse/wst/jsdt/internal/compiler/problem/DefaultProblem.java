@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,12 +12,10 @@ package org.eclipse.wst.jsdt.internal.compiler.problem;
 
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
-import org.eclipse.wst.jsdt.internal.compiler.batch.Main;
 import org.eclipse.wst.jsdt.internal.compiler.util.Messages;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 public class DefaultProblem extends CategorizedProblem {
-	
 	private char[] fileName;
 	private int id;
 	private int startPosition, endPosition, line, column;
@@ -54,9 +52,6 @@ public DefaultProblem(
 }
 
 public String errorReportSource(char[] unitSource) {
-	return errorReportSource(unitSource, 0);
-}
-public String errorReportSource(char[] unitSource, int tagBits) {
 	//extra from the source the innacurate     token
 	//and "highlight" it using some underneath ^^^^^
 	//put some context around too.
@@ -70,10 +65,8 @@ public String errorReportSource(char[] unitSource, int tagBits) {
 		return Messages.problem_noSourceInformation; 
 
 	StringBuffer errorBuffer = new StringBuffer();
-	if ((tagBits & Main.Logger.EMACS) == 0) {
-		errorBuffer.append(' ').append(Messages.bind(Messages.problem_atLine, String.valueOf(this.line))); 
-		errorBuffer.append(Util.LINE_SEPARATOR);
-	}
+	errorBuffer.append(' ').append(Messages.bind(Messages.problem_atLine, String.valueOf(this.line))); 
+	errorBuffer.append(Util.LINE_SEPARATOR);
 	errorBuffer.append('\t');
 	
 	char c;

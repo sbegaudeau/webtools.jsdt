@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -196,7 +196,7 @@ public class CompilationUnitProblemFinder extends Compiler {
 		WorkingCopyOwner workingCopyOwner,
 		HashMap problems,
 		boolean creatingAST,
-		boolean statementsRecovery,
+		int reconcileFlags,
 		IProgressMonitor monitor)
 		throws JavaModelException {
 
@@ -210,7 +210,7 @@ public class CompilationUnitProblemFinder extends Compiler {
 			problemFinder = new CompilationUnitProblemFinder(
 				environment,
 				getHandlingPolicy(),
-				getCompilerOptions(project.getOptions(true), creatingAST, statementsRecovery),
+				getCompilerOptions(project.getOptions(true), creatingAST, ((reconcileFlags & ICompilationUnit.ENABLE_STATEMENTS_RECOVERY) != 0)),
 				getRequestor(),
 				problemFactory);
 			if (parser != null) {
@@ -290,11 +290,11 @@ public class CompilationUnitProblemFinder extends Compiler {
 		WorkingCopyOwner workingCopyOwner,
 		HashMap problems,
 		boolean creatingAST,
-		boolean statementsRecovery,
+		int reconcileFlags,
 		IProgressMonitor monitor)
 		throws JavaModelException {
 			
-		return process(null/*no CompilationUnitDeclaration*/, unitElement, contents, null/*use default Parser*/, workingCopyOwner, problems, creatingAST, statementsRecovery, monitor);
+		return process(null/*no CompilationUnitDeclaration*/, unitElement, contents, null/*use default Parser*/, workingCopyOwner, problems, creatingAST, reconcileFlags, monitor);
 	}
 
 	/* (non-Javadoc)

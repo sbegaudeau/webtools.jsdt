@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 
 import org.eclipse.core.filebuffers.FileBuffers;
 import org.eclipse.core.filebuffers.ITextFileBufferManager;
+import org.eclipse.core.filebuffers.LocationKind;
 
 import org.eclipse.core.resources.IFile;
 
@@ -495,8 +496,8 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 		IPath path= ((IFile)fCUnit.getPrimary().getResource()).getFullPath();
 		ITextFileBufferManager bufferManager= FileBuffers.getTextFileBufferManager();
 		try {
-			bufferManager.connect(path, new SubProgressMonitor(pm, 1));
-			fDocument= bufferManager.getTextFileBuffer(path).getDocument();
+			bufferManager.connect(path, LocationKind.IFILE, new SubProgressMonitor(pm, 1));
+			fDocument= bufferManager.getTextFileBuffer(path, LocationKind.IFILE).getDocument();
 			
 			ASTNode[] selectedNodes= fAnalyzer.getSelectedNodes();
 			fRewriter.setTargetSourceRangeComputer(new SelectionAwareSourceRangeComputer(selectedNodes,
@@ -534,7 +535,7 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 			throw new CoreException(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.ERROR,
 				e.getMessage(), e));
 		} finally {
-			bufferManager.disconnect(path, new SubProgressMonitor(pm, 1));
+			bufferManager.disconnect(path, LocationKind.IFILE, new SubProgressMonitor(pm, 1));
 			pm.done();
 		}
 		return result;

@@ -140,6 +140,10 @@ public IPath computeIndexLocation(IPath containerPath) {
 	}
 	return indexLocation;
 }
+public void deleteIndexFiles() {
+	this.savedIndexNamesFile.delete(); // forget saved indexes & delete each index file
+	deleteIndexFiles(null);
+}
 private void deleteIndexFiles(SimpleSet pathsToKeep) {
 	File[] indexesFiles = getSavedIndexesDirectory().listFiles();
 	if (indexesFiles == null) return;
@@ -291,8 +295,7 @@ private SimpleLookupTable getIndexStates() {
 			}
 		}
 	} else {
-		this.savedIndexNamesFile.delete(); // forget saved indexes & delete each index file
-		deleteIndexFiles(null);
+		deleteIndexFiles();
 	}
 	return this.indexStates;
 }
@@ -732,6 +735,9 @@ private synchronized void removeIndexesState(IPath[] locations) {
 	writeSavedIndexNamesFile();
 }
 private synchronized void updateIndexState(IPath indexLocation, Integer indexState) {
+	if (indexLocation.isEmpty())
+		throw new IllegalArgumentException();
+
 	getIndexStates(); // ensure the states are initialized
 	if (indexState != null) {
 		if (indexState.equals(indexStates.get(indexLocation))) return; // not changed
@@ -763,8 +769,9 @@ private void writeSavedIndexNamesFile() {
 		Object[] keys = indexStates.keyTable;
 		Object[] states = indexStates.valueTable;
 		for (int i = 0, l = states.length; i < l; i++) {
-			if (states[i] == SAVED_STATE) {
-				writer.write(((IPath) keys[i]).lastSegment());
+			IPath key = (IPath) keys[i];
+			if (key != null && !key.isEmpty() && states[i] == SAVED_STATE) {
+				writer.write(key.lastSegment());
 				writer.write('\n');
 			}
 		}

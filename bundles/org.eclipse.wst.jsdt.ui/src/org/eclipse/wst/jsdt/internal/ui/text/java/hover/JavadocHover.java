@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,21 +20,28 @@ import org.eclipse.jface.internal.text.html.BrowserInformationControl;
 import org.eclipse.jface.internal.text.html.HTMLPrinter;
 import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 
+import org.eclipse.jface.text.AbstractReusableInformationControlCreator;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
+import org.eclipse.jface.text.IInformationControlExtension4;
 import org.eclipse.jface.text.ITextHoverExtension;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
 
+import org.eclipse.ui.editors.text.EditorsUI;
+
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
+import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
+
+import org.eclipse.wst.jsdt.internal.corext.javadoc.JavaDocLocations;
 
 import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 import org.eclipse.wst.jsdt.ui.JavadocContentAccess;
 
-import org.eclipse.wst.jsdt.internal.ui.text.IInformationControlExtension4;
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 /**
  * Provides Javadoc as hover info for Java elements.
@@ -75,20 +82,22 @@ public class JavadocHover extends AbstractJavaEditorTextHover implements IInform
 		 */
 		public IInformationControl doCreateInformationControl(Shell parent) {
 			if (BrowserInformationControl.isAvailable(parent))
-				return new BrowserInformationControl(parent, SWT.TOOL | SWT.NO_TRIM, SWT.NONE, getTooltipAffordanceString());
+				return new BrowserInformationControl(parent, SWT.TOOL | SWT.NO_TRIM, SWT.NONE, EditorsUI.getTooltipAffordanceString());
 			else
-				return new DefaultInformationControl(parent, SWT.NONE, new HTMLTextPresenter(true), getTooltipAffordanceString());
+				return new DefaultInformationControl(parent, SWT.NONE, new HTMLTextPresenter(true), EditorsUI.getTooltipAffordanceString());
 		}
 
 		/*
 		 * @see org.eclipse.wst.jsdt.internal.ui.text.java.hover.AbstractReusableInformationControlCreator#canReuse(org.eclipse.jface.text.IInformationControl)
 		 */
 		public boolean canReuse(IInformationControl control) {
-			boolean canReuse= super.canReuse(control);
-			if (canReuse && control instanceof IInformationControlExtension4)
-				((IInformationControlExtension4)control).setStatusText(getTooltipAffordanceString());
-			return canReuse;
-				
+			if (!super.canReuse(control))
+				return false;
+			
+			if (control instanceof IInformationControlExtension4)
+				((IInformationControlExtension4)control).setStatusText(EditorsUI.getTooltipAffordanceString());
+			
+			return true;
 		}
 	}
 
@@ -168,13 +177,25 @@ public class JavadocHover extends AbstractJavaEditorTextHover implements IInform
 					
 					// Provide hint why there's no Javadoc
 					if (reader == null && member.isBinary()) {
+						boolean hasAttachedJavadoc= JavaDocLocations.getJavadocBaseLocation(member) != null;
 						IPackageFragmentRoot root= (IPackageFragmentRoot)member.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
-						if (root != null && root.getSourceAttachmentPath() == null && root.getAttachedJavadoc(null) == null)
-							reader= new StringReader(JavaHoverMessages.JavadocHover_noAttachedInformation);
+						boolean hasAttachedSource= root != null && root.getSourceAttachmentPath() != null;
+						IOpenable openable= member.getOpenable();
+						boolean hasSource= openable.getBuffer() != null;
+
+						if (!hasAttachedSource && !hasAttachedJavadoc)
+							reader= new StringReader(JavaHoverMessages.JavadocHover_noAttachments);
+						else if (!hasAttachedJavadoc && !hasSource)
+							reader= new StringReader(JavaHoverMessages.JavadocHover_noAttachedJavadoc);
+						else if (!hasAttachedSource)
+							reader= new StringReader(JavaHoverMessages.JavadocHover_noAttachedSource);
+						else if (!hasSource)
+							reader= new StringReader(JavaHoverMessages.JavadocHover_noInformation);
 					}
 					
 				} catch (JavaModelException ex) {
-					return null;
+					reader= new StringReader(JavaHoverMessages.JavadocHover_error_gettingJavadoc);
+					JavaPlugin.log(ex.getStatus());
 				}
 				
 				if (reader != null) {

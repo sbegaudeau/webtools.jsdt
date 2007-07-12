@@ -1,4 +1,13 @@
- 
+/*******************************************************************************
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.parser;
 
 import java.io.*;
@@ -471,6 +480,8 @@ private final static void buildFileForTable(String filename, byte[] bytes) {
 			stream = new java.io.FileOutputStream(filename);
 			stream.write(bytes);
 		} catch(IOException e) {
+		// ignore
+	} finally {
 			if (stream != null) {
 				try {
 					stream.close();
@@ -493,6 +504,8 @@ private final static void buildFileForTable(String filename, byte[] bytes) {
 			stream = new java.io.FileOutputStream(filename);
 			stream.write(bytes);
 		} catch(IOException e) {
+		// ignore
+	} finally {
 			if (stream != null) {
 				try {
 					stream.close();
@@ -930,7 +943,7 @@ public Parser(ProblemReporter problemReporter, boolean optimizeStringLiterals) {
 	this.variablesCounter = new int[30];
 	
 	// javadoc support
-	this.javadocParser = new JavadocParser(this);
+	this.javadocParser = createJavadocParser();
 }
 protected void annotationRecoveryCheckPoint(int start, int end) {
 	if(this.lastCheckPoint > start && this.lastCheckPoint < end) {
@@ -2886,6 +2899,15 @@ protected void consumeEmptyInterfaceMemberDeclarationsopt() {
 protected void consumeEmptyInternalCompilationUnit() {
 	// InternalCompilationUnit ::= $empty
 	// nothing to do by default
+	if (this.compilationUnit.isPackageInfo()) {
+		this.compilationUnit.types = new TypeDeclaration[1];
+		// create a fake interface declaration
+		TypeDeclaration declaration = new TypeDeclaration(compilationUnit.compilationResult);
+		declaration.name = TypeConstants.PACKAGE_INFO_NAME;
+		declaration.modifiers = ClassFileConstants.AccDefault | ClassFileConstants.AccInterface;
+		this.compilationUnit.types[0] = declaration;
+		declaration.javadoc = this.compilationUnit.javadoc;
+	}
 }
 protected void consumeEmptyMemberValuePairsopt() {
 	// MemberValuePairsopt ::= $empty
@@ -3069,7 +3091,11 @@ protected void consumeEnterCompilationUnit() {
 }
 protected void consumeEnterMemberValue() {
 	// EnterMemberValue ::= $empty
-	if(this.currentElement != null && this.currentToken == TokenNameLBRACE) {
+	// do nothing by default
+}
+protected void consumeEnterMemberValueArrayInitializer() {
+	// EnterMemberValueArrayInitializer ::= $empty
+	if(this.currentElement != null) {
 		this.ignoreNextOpeningBrace = true;
 		this.currentElement.bracketBalance++; 
 	}
@@ -3170,8 +3196,8 @@ protected void consumeEnterVariable() {
 		if (!(this.currentElement instanceof RecoveredUnit)
 			&& (this.currentToken == TokenNameDOT
 				//|| declaration.modifiers != 0
-				|| (this.scanner.getLineNumber(declaration.sourceStart)
-						!= this.scanner.getLineNumber((int) (namePosition >>> 32))))){
+				|| (Util.getLineNumber(declaration.sourceStart, this.scanner.lineEnds, 0, this.scanner.linePtr)
+						!= Util.getLineNumber((int) (namePosition >>> 32), this.scanner.lineEnds, 0, this.scanner.linePtr)))){
 			this.lastCheckPoint = (int) (namePosition >>> 32);
 			this.restartRecovery = true;
 			return;
@@ -3555,7 +3581,7 @@ protected void consumeExplicitConstructorInvocation(int flag, int recFlag) {
 			break;
 	}
 	pushOnAstStack(ecc);
-	ecc.sourceEnd = this.endPosition;
+	ecc.sourceEnd = this.endStatementPosition;
 }
 protected void consumeExplicitConstructorInvocationWithTypeArguments(int flag, int recFlag) {
 
@@ -3596,7 +3622,7 @@ protected void consumeExplicitConstructorInvocationWithTypeArguments(int flag, i
 	}
 	
 	pushOnAstStack(ecc);
-	ecc.sourceEnd = this.endPosition;
+	ecc.sourceEnd = this.endStatementPosition;
 }
 protected void consumeExpressionStatement() {
 	// ExpressionStatement ::= StatementExpression ';'
@@ -6377,7 +6403,7 @@ protected void consumeStatementBreak() {
 	// BreakStatement ::= 'break' ';'
 	// break pushs a position on this.intStack in case there is no label
 
-	pushOnAstStack(new BreakStatement(null, this.intStack[this.intPtr--], this.endPosition));
+	pushOnAstStack(new BreakStatement(null, this.intStack[this.intPtr--], this.endStatementPosition));
 	if (this.pendingRecoveredType != null) {
 		// Used only in statements recovery.
 		// This is not a real break statement but a placeholder for an existing local type.
@@ -6399,7 +6425,7 @@ protected void consumeStatementBreakWithLabel() {
 		new BreakStatement(
 			this.identifierStack[this.identifierPtr--],
 			this.intStack[this.intPtr--],
-			this.endPosition)); 
+			this.endStatementPosition)); 
 	this.identifierLengthPtr--;
 }
 protected void consumeStatementCatch() {
@@ -6422,7 +6448,7 @@ protected void consumeStatementContinue() {
 		new ContinueStatement(
 			null,
 			this.intStack[this.intPtr--],
-			this.endPosition));
+			this.endStatementPosition));
 }
 protected void consumeStatementContinueWithLabel() {
 	// ContinueStatement ::= 'continue' Identifier ';'
@@ -6432,7 +6458,7 @@ protected void consumeStatementContinueWithLabel() {
 		new ContinueStatement(
 			this.identifierStack[this.identifierPtr--], 
 			this.intStack[this.intPtr--], 
-			this.endPosition)); 
+			this.endStatementPosition)); 
 	this.identifierLengthPtr--;
 }
 protected void consumeStatementDo() {
@@ -6448,7 +6474,7 @@ protected void consumeStatementDo() {
 			this.expressionStack[this.expressionPtr--], 
 			statement, 
 			this.intStack[this.intPtr--], 
-			this.endPosition); 
+			this.endStatementPosition); 
 }
 protected void consumeStatementExpressionList() {
 	// StatementExpressionList ::= StatementExpressionList ',' StatementExpression
@@ -6572,10 +6598,10 @@ protected void consumeStatementReturn() {
 			new ReturnStatement(
 				this.expressionStack[this.expressionPtr--], 
 				this.intStack[this.intPtr--], 
-				this.endPosition)
+				this.endStatementPosition)
 		);
 	} else {
-		pushOnAstStack(new ReturnStatement(null, this.intStack[this.intPtr--], this.endPosition));
+		pushOnAstStack(new ReturnStatement(null, this.intStack[this.intPtr--], this.endStatementPosition));
 	}
 }
 protected void consumeStatementSwitch() {
@@ -6634,7 +6660,7 @@ protected void consumeStatementSynchronized() {
 protected void consumeStatementThrow() {
 	// ThrowStatement ::= 'throw' Expression ';'
 	this.expressionLengthPtr--;
-	pushOnAstStack(new ThrowStatement(this.expressionStack[this.expressionPtr--], this.intStack[this.intPtr--]));
+	pushOnAstStack(new ThrowStatement(this.expressionStack[this.expressionPtr--], this.intStack[this.intPtr--], this.endStatementPosition));
 }
 protected void consumeStatementTry(boolean withFinally) {
 	//TryStatement ::= 'try'  Block Catches
@@ -6971,7 +6997,7 @@ protected void consumeToken(int type) {
 					this.scanner.getCurrentTokenSourceString(), 
 					this.scanner.startPosition, 
 					this.scanner.currentPosition - 1,
-					this.scanner.getLineNumber(this.scanner.startPosition));
+					Util.getLineNumber(this.scanner.startPosition, this.scanner.lineEnds, 0, this.scanner.linePtr));
 				this.compilationUnit.recordStringLiteral(stringLiteral);
 			} else {
 				stringLiteral = this.createStringLiteral(
@@ -7540,7 +7566,9 @@ protected TypeReference copyDims(TypeReference typeRef, int dim) {
 protected FieldDeclaration createFieldDeclaration(char[] fieldDeclarationName, int sourceStart, int sourceEnd) {
 	return new FieldDeclaration(fieldDeclarationName, sourceStart, sourceEnd);
 }
-
+protected JavadocParser createJavadocParser() {
+	return new JavadocParser(this);
+}
 protected LocalDeclaration createLocalDeclaration(char[] localDeclarationName, int sourceStart, int sourceEnd) {
 	return new LocalDeclaration(localDeclarationName, sourceStart, sourceEnd);
 }
@@ -7827,7 +7855,8 @@ public int flushCommentsDefinedPriorTo(int position) {
 		if (immediateCommentEnd > 0){ // only tolerating non-javadoc comments
 			// is there any line break until the end of the immediate comment ? (thus only tolerating line comment)
 			immediateCommentEnd--; // comment end in one char too far
-			if (this.scanner.getLineNumber(position) == this.scanner.getLineNumber(immediateCommentEnd)){
+			if (Util.getLineNumber(position, this.scanner.lineEnds, 0, this.scanner.linePtr) 
+					== Util.getLineNumber(immediateCommentEnd, this.scanner.lineEnds, 0, this.scanner.linePtr)){
 				position = immediateCommentEnd;
 				validCount--; // flush this comment
 				index++;

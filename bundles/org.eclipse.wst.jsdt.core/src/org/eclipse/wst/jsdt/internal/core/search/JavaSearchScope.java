@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -130,9 +130,9 @@ void add(JavaProject javaProject, IPath pathToAdd, int includeMask, HashSet visi
 		switch (entry.getEntryKind()) {
 			case IClasspathEntry.CPE_LIBRARY:
 				IClasspathEntry rawEntry = null;
-				Map resolvedPathToRawEntries = perProjectInfo.resolvedPathToRawEntries;
-				if (resolvedPathToRawEntries != null) {
-					rawEntry = (IClasspathEntry) resolvedPathToRawEntries.get(entry.getPath());
+				Map rootPathToRawEntries = perProjectInfo.rootPathToRawEntries;
+				if (rootPathToRawEntries != null) {
+					rawEntry = (IClasspathEntry) rootPathToRawEntries.get(entry.getPath());
 				}
 				if (rawEntry == null) break;
 				switch (rawEntry.getEntryKind()) {

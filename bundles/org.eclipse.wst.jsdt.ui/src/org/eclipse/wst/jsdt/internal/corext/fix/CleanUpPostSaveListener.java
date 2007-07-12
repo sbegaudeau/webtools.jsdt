@@ -35,14 +35,22 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.filebuffers.FileBuffers;
 import org.eclipse.core.filebuffers.ITextFileBuffer;
 import org.eclipse.core.filebuffers.ITextFileBufferManager;
+import org.eclipse.core.filebuffers.LocationKind;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 
+import org.eclipse.swt.widgets.Shell;
+
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.window.Window;
+
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension4;
+
+import org.eclipse.ui.PlatformUI;
 
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.CompositeChange;
@@ -51,6 +59,7 @@ import org.eclipse.ltk.core.refactoring.IUndoManager;
 import org.eclipse.ltk.core.refactoring.NullChange;
 import org.eclipse.ltk.core.refactoring.PerformChangeOperation;
 import org.eclipse.ltk.core.refactoring.RefactoringCore;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.TextFileChange;
 import org.eclipse.ltk.ui.refactoring.RefactoringUI;
 
@@ -107,8 +116,8 @@ public class CleanUpPostSaveListener implements IPostSaveListener {
 			pm.beginTask("", 2); //$NON-NLS-1$
 			ITextFileBuffer buffer= null;
 			try {
-				manager.connect(fFile.getFullPath(), new SubProgressMonitor(pm, 1));
-				buffer= manager.getTextFileBuffer(fFile.getFullPath());
+				manager.connect(fFile.getFullPath(), LocationKind.IFILE, new SubProgressMonitor(pm, 1));
+				buffer= manager.getTextFileBuffer(fFile.getFullPath(), LocationKind.IFILE);
 				IDocument document= buffer.getDocument();
 				
 				long oldFileValue= fFile.getModificationStamp();
@@ -154,7 +163,7 @@ public class CleanUpPostSaveListener implements IPostSaveListener {
 				throw new CoreException(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, IRefactoringCoreStatusCodes.BAD_LOCATION, message, e));
 			} finally {
 				if (buffer != null)
-					manager.disconnect(fFile.getFullPath(), new SubProgressMonitor(pm, 1));
+					manager.disconnect(fFile.getFullPath(), LocationKind.IFILE, new SubProgressMonitor(pm, 1));
 			}
 		}
 	}
@@ -209,9 +218,13 @@ public class CleanUpPostSaveListener implements IPostSaveListener {
     			manager.aboutToPerformChange(result);
     			
     			do {
+    				RefactoringStatus preCondition= new RefactoringStatus();
     				for (int i= 0; i < cleanUps.length; i++) {
-    					cleanUps[i].checkPreConditions(unit.getJavaProject(), new ICompilationUnit[] {unit}, new SubProgressMonitor(monitor, 5));
+    					RefactoringStatus conditions= cleanUps[i].checkPreConditions(unit.getJavaProject(), new ICompilationUnit[] {unit}, new SubProgressMonitor(monitor, 5));
+    					preCondition.merge(conditions);
     				}
+    				if (showStatus(preCondition) != Window.OK)
+    					return;
     				
     				Map options= new HashMap();
     				for (int i= 0; i < cleanUps.length; i++) {
@@ -228,6 +241,15 @@ public class CleanUpPostSaveListener implements IPostSaveListener {
     				
     				List undoneCleanUps= new ArrayList();
     				CleanUpChange change= CleanUpRefactoring.calculateChange(ast, unit, cleanUps, undoneCleanUps);
+    				
+    				RefactoringStatus postCondition= new RefactoringStatus();
+    				for (int i= 0; i < cleanUps.length; i++) {
+    					RefactoringStatus conditions= cleanUps[i].checkPostConditions(new SubProgressMonitor(monitor, 1));
+    					postCondition.merge(conditions);
+    				}
+    				if (showStatus(postCondition) != Window.OK)
+    					return;
+    				
     				if (change != null) {
     					result.add(change);
     					
@@ -241,10 +263,6 @@ public class CleanUpPostSaveListener implements IPostSaveListener {
     					
     					performChangeOperation.getUndoChange();
     					undoEdits.addFirst(change.getUndoEdit());
-    				}
-    				
-    				for (int i= 0; i < cleanUps.length; i++) {
-    					cleanUps[i].checkPostConditions(new SubProgressMonitor(monitor, 1));
     				}
     				
     				cleanUps= (ICleanUp[])undoneCleanUps.toArray(new ICleanUp[undoneCleanUps.size()]);
@@ -264,6 +282,16 @@ public class CleanUpPostSaveListener implements IPostSaveListener {
 		}
 	}
 
+	private int showStatus(RefactoringStatus status) {
+		if (!status.hasError())
+			return Window.OK;
+
+		Shell shell= PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+		
+		Dialog dialog= RefactoringUI.createRefactoringStatusDialog(status, shell, "", false); //$NON-NLS-1$
+		return dialog.open(); 
+    }
+
 	private long getDocumentStamp(IFile file, IProgressMonitor monitor) throws CoreException {
 	    final ITextFileBufferManager manager= FileBuffers.getTextFileBufferManager();
 	    final IPath path= file.getFullPath();
@@ -272,8 +300,8 @@ public class CleanUpPostSaveListener implements IPostSaveListener {
 	    
 	    ITextFileBuffer buffer= null;
 	    try {
-	    	manager.connect(path, new SubProgressMonitor(monitor, 1));
-		    buffer= manager.getTextFileBuffer(path);
+	    	manager.connect(path, LocationKind.IFILE, new SubProgressMonitor(monitor, 1));
+		    buffer= manager.getTextFileBuffer(path, LocationKind.IFILE);
     	    IDocument document= buffer.getDocument();
     	    
     	    if (document instanceof IDocumentExtension4) {
@@ -283,7 +311,7 @@ public class CleanUpPostSaveListener implements IPostSaveListener {
     		}
 	    } finally {
 	    	if (buffer != null)
-	    		manager.disconnect(path, new SubProgressMonitor(monitor, 1));
+	    		manager.disconnect(path, LocationKind.IFILE, new SubProgressMonitor(monitor, 1));
 	    	monitor.done();
 	    }
     }

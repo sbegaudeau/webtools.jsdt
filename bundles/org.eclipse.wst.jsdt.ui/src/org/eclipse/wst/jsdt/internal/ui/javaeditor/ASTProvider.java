@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
 
-
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbenchPart;
@@ -33,7 +32,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.ISourceReference;
+import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
@@ -247,6 +246,7 @@ public final class ASTProvider {
 
 	public static final int SHARED_AST_LEVEL= AST.JLS3;
 	public static final boolean SHARED_AST_STATEMENT_RECOVERY= true;
+	public static final boolean SHARED_BINDING_RECOVERY= true;
 
 	private static final String DEBUG_PREFIX= "ASTProvider > "; //$NON-NLS-1$
 
@@ -512,15 +512,16 @@ public final class ASTProvider {
 		CompilationUnit ast= null;
 		try {
 			ast= createAST(je, progressMonitor);
-			if (progressMonitor != null && progressMonitor.isCanceled())
+			if (progressMonitor != null && progressMonitor.isCanceled()) {
 				ast= null;
-			else if (DEBUG && ast != null)
-				System.err.println(getThreadName() + " - " + DEBUG_PREFIX + "created AST for: " + je.getElementName()); //$NON-NLS-1$ //$NON-NLS-2$
+				if (DEBUG)
+					System.out.println(getThreadName() + " - " + DEBUG_PREFIX + "Ignore created AST for: " + je.getElementName() + " - operation has been cancelled"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			}
 		} finally {
 			if (isActiveElement) {
 				if (fAST != null) {
 					if (DEBUG)
-						System.out.println(getThreadName() + " - " + DEBUG_PREFIX + "Ignore created AST for " + je.getElementName() + "- AST from reconciler is newer"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+						System.out.println(getThreadName() + " - " + DEBUG_PREFIX + "Ignore created AST for " + je.getElementName() + " - AST from reconciler is newer"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					reconciled(fAST, je, null);
 				} else
 					reconciled(ast, je, null);
@@ -573,7 +574,7 @@ public final class ASTProvider {
 	 * @param progressMonitor the progress monitor
 	 * @return AST
 	 */
-	private CompilationUnit createAST(IJavaElement je, final IProgressMonitor progressMonitor) {
+	private CompilationUnit createAST(final IJavaElement je, final IProgressMonitor progressMonitor) {
 		if (!hasSource(je))
 			return null;
 		
@@ -583,6 +584,7 @@ public final class ASTProvider {
 		final ASTParser parser = ASTParser.newParser(SHARED_AST_LEVEL);
 		parser.setResolveBindings(true);
 		parser.setStatementsRecovery(SHARED_AST_STATEMENT_RECOVERY);
+		parser.setBindingsRecovery(SHARED_BINDING_RECOVERY);
 
 		if (progressMonitor != null && progressMonitor.isCanceled())
 			return null;
@@ -601,10 +603,12 @@ public final class ASTProvider {
 			public void run() {
 				try {
 					if (progressMonitor != null && progressMonitor.isCanceled())
-						root[0]= null;
+						return;
+					if (DEBUG)
+						System.err.println(getThreadName() + " - " + DEBUG_PREFIX + "creating AST for: " + je.getElementName()); //$NON-NLS-1$ //$NON-NLS-2$
 					root[0]= (CompilationUnit)parser.createAST(progressMonitor);
 				} catch (OperationCanceledException ex) {
-					root[0]= null;
+					return;
 				}
 			}
 			public void handleException(Throwable ex) {
@@ -632,7 +636,7 @@ public final class ASTProvider {
 			return false;
 		
 		try {
-			return je instanceof ISourceReference && ((ISourceReference)je).getSource() != null;
+			return je instanceof ITypeRoot && ((ITypeRoot)je).getBuffer() != null;
 		} catch (JavaModelException ex) {
 			IStatus status= new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, IStatus.OK, "Error in JDT Core during AST creation", ex);  //$NON-NLS-1$
 			JavaPlugin.getDefault().getLog().log(status);

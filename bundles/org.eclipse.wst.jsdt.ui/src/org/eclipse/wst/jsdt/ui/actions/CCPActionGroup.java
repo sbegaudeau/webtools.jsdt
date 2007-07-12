@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -84,13 +84,13 @@ public class CCPActionGroup extends ActionGroup {
 		fPasteAction= new PasteAction(fSite, fClipboard);
 		fPasteAction.setActionDefinitionId(IWorkbenchActionDefinitionIds.PASTE);
 		
-		fCopyAction= new CopyToClipboardAction(fSite, fClipboard, fPasteAction);
+		fCopyAction= new CopyToClipboardAction(fSite, fClipboard);
 		fCopyAction.setActionDefinitionId(IWorkbenchActionDefinitionIds.COPY);
 		
-		fCopyQualifiedNameAction= new CopyQualifiedNameAction(fSite, fClipboard, fPasteAction);
-		fCopyQualifiedNameAction.setActionDefinitionId(CopyQualifiedNameAction.JAVA_EDITOR_ACTION_DEFINITIONS_ID);
+		fCopyQualifiedNameAction= new CopyQualifiedNameAction(fSite);
+		fCopyQualifiedNameAction.setActionDefinitionId(CopyQualifiedNameAction.ACTION_DEFINITION_ID);
 		
-		fCutAction= new CutAction(fSite, fClipboard, fPasteAction);
+		fCutAction= new CutAction(fSite, fClipboard);
 		fCutAction.setActionDefinitionId(IWorkbenchActionDefinitionIds.CUT);
 		
 		fDeleteAction= new DeleteAction(fSite);

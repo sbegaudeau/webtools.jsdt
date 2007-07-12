@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,6 @@ public class TypeDeclaration extends Statement implements ProblemSeverities, Ref
 	public int declarationSourceEnd;
 	public int bodyStart;
 	public int bodyEnd; // doesn't include the trailing comment if any.
-	protected boolean hasBeenGenerated = false;
 	public CompilationResult compilationResult;
 	public MethodDeclaration[] missingAbstractMethods;
 	public Javadoc javadoc;	
@@ -308,7 +307,7 @@ public ConstructorDeclaration createDefaultConstructor(	boolean needExplicitCons
 
 	//the constructor
 	ConstructorDeclaration constructor = new ConstructorDeclaration(this.compilationResult);
-	constructor.isDefaultConstructor = true;
+	constructor.bits |= ASTNode.IsDefaultConstructor;
 	constructor.selector = this.name;
 	constructor.modifiers = this.modifiers & ExtraCompilerModifiers.AccVisibilityMASK;
 
@@ -361,7 +360,7 @@ public MethodBinding createDefaultConstructorWithBinding(MethodBinding inherited
 		newModifiers |= ClassFileConstants.AccVarargs;
 	}
 	constructor.modifiers = newModifiers;
-	constructor.isDefaultConstructor = true;
+	constructor.bits |= ASTNode.IsDefaultConstructor;
 
 	if (argumentsLength > 0) {
 		Argument[] arguments = (constructor.arguments = new Argument[argumentsLength]);
@@ -399,6 +398,8 @@ public MethodBinding createDefaultConstructorWithBinding(MethodBinding inherited
 			argumentsLength == 0 ? Binding.NO_PARAMETERS : argumentTypes, //arguments bindings
 			inheritedConstructorBinding.thrownExceptions, //exceptions
 			sourceType); //declaringClass
+	
+	constructor.binding.modifiers |= ExtraCompilerModifiers.AccIsDefaultConstructor;
 			
 	constructor.scope = new MethodScope(this.scope, constructor, true);
 	constructor.bindArguments();
@@ -489,9 +490,9 @@ public TypeDeclaration declarationOfType(char[][] typeName) {
  * Generic bytecode generation for type
  */
 public void generateCode(ClassFile enclosingClassFile) {
-	if (this.hasBeenGenerated)
+	if ((this.bits & ASTNode.HasBeenGenerated) != 0)
 		return;
-	this.hasBeenGenerated = true;
+	this.bits |= ASTNode.HasBeenGenerated;
 	if (this.ignoreFurtherInvestigation) {
 		if (this.binding == null)
 			return;
@@ -556,7 +557,7 @@ public void generateCode(BlockScope blockScope, CodeStream codeStream) {
 	if ((this.bits & ASTNode.IsReachable) == 0) {
 		return;
 	}		
-	if (this.hasBeenGenerated) return;
+	if ((this.bits & ASTNode.HasBeenGenerated) != 0) return;
 	int pc = codeStream.position;
 	if (this.binding != null) ((NestedTypeBinding) this.binding).computeSyntheticArgumentSlotSizes();
 	generateCode(codeStream.classFile);
@@ -567,7 +568,7 @@ public void generateCode(BlockScope blockScope, CodeStream codeStream) {
  * Bytecode generation for a member inner type
  */
 public void generateCode(ClassScope classScope, ClassFile enclosingClassFile) {
-	if (this.hasBeenGenerated) return;
+	if ((this.bits & ASTNode.HasBeenGenerated) != 0) return;
 	if (this.binding != null) ((NestedTypeBinding) this.binding).computeSyntheticArgumentSlotSizes();
 	generateCode(enclosingClassFile);
 }
@@ -1086,7 +1087,8 @@ public void resolve() {
 		}
 		// Resolve javadoc
 		if (this.javadoc != null) {
-			if (this.scope != null) {
+			if (this.scope != null && (this.name != TypeConstants.PACKAGE_INFO_NAME)) {
+				// if the type is package-info, the javadoc was resolved as part of the compilation unit javadoc
 				this.javadoc.resolve(this.scope);
 			}
 		} else if (sourceType != null && !sourceType.isLocalType()) {

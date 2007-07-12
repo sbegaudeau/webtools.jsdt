@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
 public class ParameterizedQualifiedTypeReference extends ArrayQualifiedTypeReference {
 
 	public TypeReference[][] typeArguments;
-	public boolean didResolve = false;
 
 	/**
 	 * @param tokens
@@ -49,7 +48,7 @@ public class ParameterizedQualifiedTypeReference extends ArrayQualifiedTypeRefer
 		}
 		if (type.isParameterizedType()) {
 			ParameterizedTypeBinding parameterizedType = (ParameterizedTypeBinding) type;
-			ReferenceBinding currentType = parameterizedType.type;
+			ReferenceBinding currentType = parameterizedType.genericType();
 			TypeVariableBinding[] typeVariables = currentType.typeVariables();
 			TypeBinding[] argTypes = parameterizedType.arguments;
 			if (argTypes != null && typeVariables != null) { // argTypes may be null in error cases
@@ -112,39 +111,39 @@ public class ParameterizedQualifiedTypeReference extends ArrayQualifiedTypeRefer
 
 		// handle the error here
 		this.constant = Constant.NotAConstant;
-		if (this.didResolve) { // is a shared type reference which was already resolved
+		if ((this.bits & ASTNode.DidResolve) != 0) { // is a shared type reference which was already resolved
 			if (this.resolvedType != null && !this.resolvedType.isValidBinding())
 				return null; // already reported error
 			return this.resolvedType;
 		} 
-	    this.didResolve = true;
-	    boolean isClassScope = scope.kind == Scope.CLASS_SCOPE;
-	    Binding binding = scope.getPackage(this.tokens);
-	    if (binding != null && !binding.isValidBinding()) {
-	    	this.resolvedType = (ReferenceBinding) binding;
+		this.bits |= ASTNode.DidResolve;
+		boolean isClassScope = scope.kind == Scope.CLASS_SCOPE;
+		Binding binding = scope.getPackage(this.tokens);
+		if (binding != null && !binding.isValidBinding()) {
+			this.resolvedType = (ReferenceBinding) binding;
 			reportInvalidType(scope);
 			// be resilient, still attempt resolving arguments
 			for (int i = 0, max = this.tokens.length; i < max; i++) {
-			    TypeReference[] args = this.typeArguments[i];
-			    if (args != null) {
+				TypeReference[] args = this.typeArguments[i];
+				if (args != null) {
 					int argLength = args.length;
 					for (int j = 0; j < argLength; j++) {
-					    TypeReference typeArgument = args[j];
-					    if (isClassScope) {
-					    	typeArgument.resolveType((ClassScope) scope);
-					    } else {
-					    	typeArgument.resolveType((BlockScope) scope, checkBounds);
-					    }
+						TypeReference typeArgument = args[j];
+						if (isClassScope) {
+							typeArgument.resolveType((ClassScope) scope);
+						} else {
+							typeArgument.resolveType((BlockScope) scope, checkBounds);
+						}
 					}
-			    }				
+				}
 			}
 			return null;
 		}
 
-	    PackageBinding packageBinding = binding == null ? null : (PackageBinding) binding;
+		PackageBinding packageBinding = binding == null ? null : (PackageBinding) binding;
 		boolean typeIsConsistent = true;
 		ReferenceBinding qualifiedType = null;
-	    for (int i = packageBinding == null ? 0 : packageBinding.compoundName.length, max = this.tokens.length; i < max; i++) {
+		for (int i = packageBinding == null ? 0 : packageBinding.compoundName.length, max = this.tokens.length; i < max; i++) {
 			findNextTypeBinding(i, scope, packageBinding);
 			if (!(this.resolvedType.isValidBinding())) {
 				reportInvalidType(scope);
@@ -205,7 +204,7 @@ public class ParameterizedQualifiedTypeReference extends ArrayQualifiedTypeRefer
 				}
 				if (isClassScope) {
 					((ClassScope) scope).superTypeReference = keep;
-					if (((ClassScope) scope).detectHierarchyCycle(currentType, this, argTypes))
+					if (((ClassScope) scope).detectHierarchyCycle(currentType, this))
 						return null;
 				}
 
@@ -218,11 +217,14 @@ public class ParameterizedQualifiedTypeReference extends ArrayQualifiedTypeRefer
 					return null;
 				}
 				// check parameterizing non-static member type of raw type
-				if (typeIsConsistent && !currentType.isStatic() && qualifiedType != null && qualifiedType.isRawType()) {
-					scope.problemReporter().rawMemberTypeCannotBeParameterized(
-							this, scope.environment().createRawType((ReferenceBinding)currentType.erasure(), qualifiedType), argTypes);
-					typeIsConsistent = false;				
-				}
+				if (typeIsConsistent && !currentType.isStatic()) {
+					ReferenceBinding actualEnclosing = currentType.enclosingType();
+					if (actualEnclosing != null && actualEnclosing.isRawType()) {
+						scope.problemReporter().rawMemberTypeCannotBeParameterized(
+								this, scope.environment().createRawType((ReferenceBinding)currentType.erasure(), actualEnclosing), argTypes);
+						typeIsConsistent = false;				
+					}
+				}				
 				ParameterizedTypeBinding parameterizedType = scope.environment().createParameterizedType((ReferenceBinding)currentType.erasure(), argTypes, qualifiedType);
 				// check argument type compatibility
 				if (checkBounds) // otherwise will do it in Scope.connectTypeVariables() or generic method resolution
@@ -230,7 +232,7 @@ public class ParameterizedQualifiedTypeReference extends ArrayQualifiedTypeRefer
 				qualifiedType = parameterizedType;
 		    } else {
 				if (isClassScope)
-					if (((ClassScope) scope).detectHierarchyCycle(currentType, this, null))
+					if (((ClassScope) scope).detectHierarchyCycle(currentType, this))
 						return null;
 				ReferenceBinding currentErasure = (ReferenceBinding)currentType.erasure();
 				if (currentErasure.isGenericType()) {
@@ -247,8 +249,9 @@ public class ParameterizedQualifiedTypeReference extends ArrayQualifiedTypeRefer
 			}
 			if (isTypeUseDeprecated(qualifiedType, scope))
 				reportDeprecatedType(qualifiedType, scope);		    
+			this.resolvedType = qualifiedType;
 		}
-		this.resolvedType = qualifiedType;
+//		this.resolvedType = qualifiedType;
 		// array type ?
 		if (this.dimensions > 0) {
 			if (dimensions > 255)

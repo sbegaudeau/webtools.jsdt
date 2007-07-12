@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ public class SynchronizedStatement extends SubRoutineStatement {
 	public Expression expression;
 	public Block block;
 	public BlockScope scope;
-	boolean blockExit;
 	public LocalVariableBinding synchroVariable;
 	static final char[] SecretLocalDeclarationName = " syncValue".toCharArray(); //$NON-NLS-1$
 
@@ -65,7 +64,9 @@ public FlowInfo analyseCode(
 		currentScope.methodScope().recordInitializationStates(flowInfo);
 
 	// optimizing code gen
-	this.blockExit = (flowInfo.tagBits & FlowInfo.UNREACHABLE) != 0;
+	if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) != 0) {
+		this.bits |= ASTNode.BlockExit;
+	}
 
 	return flowInfo;
 }
@@ -119,7 +120,7 @@ public void generateCode(BlockScope currentScope, CodeStream codeStream) {
 		}
 
 		BranchLabel endLabel = new BranchLabel(codeStream);
-		if (!blockExit) {
+		if ((this.bits & ASTNode.BlockExit) == 0) {
 			codeStream.load(synchroVariable);
 			codeStream.monitorexit();
 			this.exitAnyExceptionHandler();
@@ -144,7 +145,7 @@ public void generateCode(BlockScope currentScope, CodeStream codeStream) {
 		if (scope != currentScope) {
 			codeStream.removeVariable(this.synchroVariable);
 		}
-		if (!blockExit) {
+		if ((this.bits & ASTNode.BlockExit) == 0) {
 			endLabel.place();
 		}
 	}

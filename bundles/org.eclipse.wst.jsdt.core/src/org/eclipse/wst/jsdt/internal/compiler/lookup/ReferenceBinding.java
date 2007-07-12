@@ -751,7 +751,7 @@ public boolean implementsInterface(ReferenceBinding anInterface, boolean searchH
 	ReferenceBinding currentType = this;
 	do {
 		ReferenceBinding[] itsInterfaces = currentType.superInterfaces();
-		if (itsInterfaces != null && itsInterfaces != Binding.NO_SUPERINTERFACES && itsInterfaces != null) { // in code assist cases when source types are added late, may not be finished connecting hierarchy
+		if (itsInterfaces != null && itsInterfaces != Binding.NO_SUPERINTERFACES) { // in code assist cases when source types are added late, may not be finished connecting hierarchy
 			if (interfacesToVisit == null) {
 				interfacesToVisit = itsInterfaces;
 				nextPosition = interfacesToVisit.length;
@@ -1049,7 +1049,8 @@ public final boolean isUsed() {
 /* Answer true if the receiver is deprecated (or any of its enclosing types)
 */
 public final boolean isViewedAsDeprecated() {
-	return (this.modifiers & (ClassFileConstants.AccDeprecated | ExtraCompilerModifiers.AccDeprecatedImplicitly)) != 0;
+	return (this.modifiers & (ClassFileConstants.AccDeprecated | ExtraCompilerModifiers.AccDeprecatedImplicitly)) != 0 
+	|| (this.getPackage().tagBits & TagBits.AnnotationDeprecated) != 0;
 }
 public ReferenceBinding[] memberTypes() {
 	return Binding.NO_MEMBER_TYPES;
@@ -1105,7 +1106,7 @@ public char[] readableName() /*java.lang.Object,  p.X<T> */ {
 	return readableName;
 }
 
-AnnotationHolder retrieveAnnotationHolder(Binding binding, boolean forceInitialization) {
+public AnnotationHolder retrieveAnnotationHolder(Binding binding, boolean forceInitialization) {
 	SimpleLookupTable store = storedAnnotations(false);
 	return store == null ? null : (AnnotationHolder) store.get(binding);
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,13 +14,19 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.URIUtil;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
@@ -37,6 +43,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
+import org.eclipse.core.resources.IEncodedStorage;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFileState;
 import org.eclipse.core.resources.IMarker;
@@ -73,6 +80,7 @@ import org.eclipse.jface.text.source.ImageUtilities;
 
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IStorageEditorInput;
+import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.texteditor.AbstractMarkerAnnotationModel;
 import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.AnnotationPreferenceLookup;
@@ -472,6 +480,7 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 			private ReverseMap fReverseMap= new ReverseMap();
 			private List fPreviouslyOverlaid= null;
 			private List fCurrentlyOverlaid= new ArrayList();
+			private Thread fActiveThread;
 
 
 			public CompilationUnitAnnotationModel(IResource resource) {
@@ -587,6 +596,8 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 
 			/**
 			 * Signals the end of problem reporting.
+			 * 
+			 * @param reportedProblems the problems to report 
 			 */
 			private void reportProblems(List reportedProblems) {
 				if (fProgressMonitor != null && fProgressMonitor.isCanceled())
@@ -657,6 +668,8 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 
 			/**
 			 * Overlays value with problem annotation.
+			 * 
+			 * @param value the value 
 			 * @param problemAnnotation
 			 */
 			private void setOverlay(Object value, ProblemAnnotation problemAnnotation) {
@@ -701,8 +714,8 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 			/*
 			 * @see IProblemRequestor#isActive()
 			 */
-			public boolean isActive() {
-				return fIsActive;
+			public synchronized boolean isActive() {
+				return fIsActive && fActiveThread == Thread.currentThread();
 			}
 
 			/*
@@ -715,8 +728,13 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 			/*
 			 * @see IProblemRequestorExtension#setIsActive(boolean)
 			 */
-			public void setIsActive(boolean isActive) {
+			public synchronized void setIsActive(boolean isActive) {
+				Assert.isLegal(!isActive || Display.getCurrent() == null); // must not be enabled from UI threads
 				fIsActive= isActive;
+				if (fIsActive)
+					fActiveThread= Thread.currentThread();
+				else
+					fActiveThread= null;
 			}
 
 			/*
@@ -877,6 +895,7 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 	 * Creates a compilation unit from the given file.
 	 *
 	 * @param file the file from which to create the compilation unit
+	 * @return the fake compilation unit
 	 */
 	protected ICompilationUnit createCompilationUnit(IFile file) {
 		Object element= JavaCore.create(file);
@@ -950,16 +969,28 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 	 *
 	 * @param element the element
 	 * @param setContents tells whether to read and set the contents to the new CU
+	 * @return the fake compilation unit
 	 * @since 3.2
 	 */
 	private ICompilationUnit createFakeCompiltationUnit(Object element, boolean setContents) {
-		if (!(element instanceof IStorageEditorInput))
-			return null;
-		
-		final IStorageEditorInput sei= (IStorageEditorInput)element;
-		
+		if (element instanceof IStorageEditorInput)
+			return createFakeCompiltationUnit((IStorageEditorInput)element, setContents); 
+		else if (element instanceof IURIEditorInput)
+			return createFakeCompiltationUnit((IURIEditorInput)element); 
+		return null;
+	}
+	
+	/**
+	 * Creates a fake compilation unit.
+	 *
+	 * @param editorInput the storage editor input
+	 * @param setContents tells whether to read and set the contents to the new CU
+	 * @return the fake compilation unit
+	 * @since 3.2
+	 */
+	private ICompilationUnit createFakeCompiltationUnit(IStorageEditorInput editorInput, boolean setContents) {
 		try {
-			final IStorage storage= sei.getStorage();
+			final IStorage storage= editorInput.getStorage();
 			final IPath storagePath= storage.getFullPath();
 			if (storage.getName() == null || storagePath == null)
 				return null;
@@ -988,29 +1019,92 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 			if (cpEntries == null || cpEntries.length == 0)
 				cpEntries= new IClasspathEntry[] { JavaRuntime.getDefaultJREContainerEntry() };
 
-			final ICompilationUnit cu= woc.newWorkingCopy(storage.getName(), cpEntries, null, getProgressMonitor());
+			final ICompilationUnit cu= woc.newWorkingCopy(storage.getName(), cpEntries, getProgressMonitor());
 			if (setContents) {
 				int READER_CHUNK_SIZE= 2048;
 				int BUFFER_SIZE= 8 * READER_CHUNK_SIZE;
-				Reader in= new BufferedReader(new InputStreamReader(storage.getContents()));
-				StringBuffer buffer= new StringBuffer(BUFFER_SIZE);
-				char[] readBuffer= new char[READER_CHUNK_SIZE];
-				int n;
+				
+				String charsetName= null;
+				if (storage instanceof IEncodedStorage)
+					charsetName= ((IEncodedStorage)storage).getCharset();
+				if (charsetName == null)
+					charsetName= getDefaultEncoding();
+				
+				Reader in= null;
+				InputStream contents= storage.getContents();
 				try {
+					in= new BufferedReader(new InputStreamReader(contents, charsetName));
+					StringBuffer buffer= new StringBuffer(BUFFER_SIZE);
+					char[] readBuffer= new char[READER_CHUNK_SIZE];
+					int n;
 					n= in.read(readBuffer);
 					while (n > 0) {
 						buffer.append(readBuffer, 0, n);
 						n= in.read(readBuffer);
 					}
+					cu.getBuffer().setContents(buffer.toString());
 				} catch (IOException e) {
 					JavaPlugin.log(e);
+					return null;
+				} finally {
+					try {
+						if (in != null)
+							in.close();
+						else
+							contents.close();
+					} catch (IOException x) {
+					}
 				}
-				cu.getBuffer().setContents(buffer.toString());
 			}
 			
-			if (!isModifiable(element))
+			if (!isModifiable(editorInput))
 				JavaModelUtil.reconcile(cu);
 			
+			return cu;
+		} catch (CoreException ex) {
+			JavaPlugin.log(ex.getStatus());
+			return null;
+		}
+	}
+
+	/**
+	 * Creates a fake compilation unit.
+	 *
+	 * @param editorInput the URI editor input
+	 * @return the fake compilation unit
+	 * @since 3.3
+	 */
+	private ICompilationUnit createFakeCompiltationUnit(IURIEditorInput editorInput) {
+		try {
+			final URI uri= editorInput.getURI();
+			final IFileStore fileStore= EFS.getStore(uri);
+			final IPath path= URIUtil.toPath(uri);
+			if (fileStore.getName() == null || path == null)
+				return null;
+			
+			WorkingCopyOwner woc= new WorkingCopyOwner() {
+				/*
+				 * @see org.eclipse.wst.jsdt.core.WorkingCopyOwner#createBuffer(org.eclipse.wst.jsdt.core.ICompilationUnit)
+				 * @since 3.2
+				 */
+				public IBuffer createBuffer(ICompilationUnit workingCopy) {
+					return new DocumentAdapter(workingCopy, path);
+				}
+			};
+			
+			IClasspathEntry[] cpEntries= null;
+			IJavaProject jp= findJavaProject(path);
+			if (jp != null)
+				cpEntries= jp.getResolvedClasspath(true);
+			
+			if (cpEntries == null || cpEntries.length == 0)
+				cpEntries= new IClasspathEntry[] { JavaRuntime.getDefaultJREContainerEntry() };
+			
+			final ICompilationUnit cu= woc.newWorkingCopy(fileStore.getName(), cpEntries, getProgressMonitor());
+			
+			if (!isModifiable(editorInput))
+				JavaModelUtil.reconcile(cu);
+
 			return cu;
 		} catch (CoreException ex) {
 			return null;
@@ -1292,61 +1386,13 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 			};
 		}
 		
-		// XXX: Work in progress 'Save As' case
-//		return new DocumentProviderOperation() {
-//
-//			protected void execute(IProgressMonitor monitor) throws CoreException {
-//				if (monitor == null)
-//					monitor= new NullProgressMonitor();
-//				
-//				monitor.beginTask("", 120); //$NON-NLS-1$
-//				
-//				try {
-//					getParentProvider().saveDocument(getSubProgressMonitor(monitor, 100), element, document, overwrite);
-//					
-//					if (!(element instanceof IFileEditorInput))
-//						return;
-//					
-//					ICompilationUnit unit= createCompilationUnit(((IFileEditorInput)element).getFile());
-//					if (unit == null)
-//						return;
-//					
-//					//Can't open non Java Project?
-////					if (!unit.isOpen())
-////						unit.open(getProgressMonitor());
-//		
-////					//Pkgexpl not correctly updated...
-//					boolean primary= JavaModelUtil.isPrimary(unit);
-//					try {
-//						if (primary)
-//							unit.becomeWorkingCopy(null, getProgressMonitor());
-//					
-//						notifyPostSaveListeners(unit, null, getSubProgressMonitor(monitor, 20));
-//					} finally {
-//						if (primary)
-//							unit.commitWorkingCopy(true, null);
-//					}
-//				} finally {
-//					monitor.done();
-//				}
-//            }
-//			
-//			/*
-//			 * @see org.eclipse.ui.editors.text.TextFileDocumentProvider.DocumentProviderOperation#getSchedulingRule()
-//			 */
-//			public ISchedulingRule getSchedulingRule() {
-//				if (element instanceof IFileEditorInput) {
-//					IFile file= ((IFileEditorInput) element).getFile();
-//					return computeSchedulingRule(file);
-//				} else
-//					return null;
-//			}
-//		};
 		return null;
 	}
 
 	/**
 	 * Returns the preference whether handling temporary problems is enabled.
+	 * 
+	 * @return <code>true</code> if temporary problems are handled 
 	 */
 	protected boolean isHandlingTemporaryProblems() {
 		IPreferenceStore store= JavaPlugin.getDefault().getPreferenceStore();
@@ -1439,7 +1485,11 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
      * called in the UI thread i.e. if they open a dialog they
      * must ensure it ends up in the UI thread.
      * </p>
-     *
+     * 
+     * @param unit the compilation unit
+     * @param info compilation unit info
+     * @param monitor the progress monitor
+     * @throws CoreException 
      * @see IPostSaveListener
      * @since 3.3
      */

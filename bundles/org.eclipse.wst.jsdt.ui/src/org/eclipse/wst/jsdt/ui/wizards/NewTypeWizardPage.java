@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1951,12 +1951,13 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 				// create a working copy with a new owner
 				
 				needsSave= true;
-				parentCU.becomeWorkingCopy(null, new SubProgressMonitor(monitor, 1)); // cu is now a (primary) working copy
+				parentCU.becomeWorkingCopy(new SubProgressMonitor(monitor, 1)); // cu is now a (primary) working copy
 				connectedCU= parentCU;
 				
 				IBuffer buffer= parentCU.getBuffer();
 				
-				String cuContent= constructCUContent(parentCU, constructSimpleTypeStub(), lineDelimiter);
+				String simpleTypeStub= constructSimpleTypeStub();
+				String cuContent= constructCUContent(parentCU, simpleTypeStub, lineDelimiter);
 				buffer.setContents(cuContent);
 				
 				CompilationUnit astRoot= createASTForImports(parentCU);
@@ -1968,11 +1969,15 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 				
 				String typeContent= constructTypeStub(parentCU, imports, lineDelimiter);
 				
-				AbstractTypeDeclaration typeNode= (AbstractTypeDeclaration) astRoot.types().get(0);
-				int start= ((ASTNode) typeNode.modifiers().get(0)).getStartPosition();
-				int end= typeNode.getStartPosition() + typeNode.getLength();
-				
-				buffer.replace(start, end - start, typeContent);
+				int index= cuContent.lastIndexOf(simpleTypeStub);
+				if (index == -1) {
+					AbstractTypeDeclaration typeNode= (AbstractTypeDeclaration) astRoot.types().get(0);
+					int start= ((ASTNode) typeNode.modifiers().get(0)).getStartPosition();
+					int end= typeNode.getStartPosition() + typeNode.getLength();
+					buffer.replace(start, end - start, typeContent);
+				} else {
+					buffer.replace(index, simpleTypeStub.length(), typeContent);
+				}
 				
 				createdType= parentCU.getType(typeName);
 			} else {
@@ -1981,7 +1986,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 				ICompilationUnit parentCU= enclosingType.getCompilationUnit();
 				
 				needsSave= !parentCU.isWorkingCopy();
-				parentCU.becomeWorkingCopy(null, new SubProgressMonitor(monitor, 1)); // cu is now for sure (primary) a working copy
+				parentCU.becomeWorkingCopy(new SubProgressMonitor(monitor, 1)); // cu is now for sure (primary) a working copy
 				connectedCU= parentCU;
 				
 				CompilationUnit astRoot= createASTForImports(parentCU);
@@ -2319,6 +2324,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 * @param newType the new type created via <code>createType</code>
 	 * @param imports an import manager which can be used to add new imports
 	 * @param monitor a progress monitor to report progress. Must not be <code>null</code>
+	 * @throws CoreException thrown when creation of the type members failed
 	 * 
 	 * @see #createType(IProgressMonitor)
 	 */		
@@ -2332,6 +2338,8 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	
 		
 	/**
+	 * @param parentCU the current compilation unit
+	 * @return returns the file template or <code>null</code>
 	 * @deprecated Instead of file templates, the new type code template
 	 * specifies the stub for a compilation unit.
 	 */		
@@ -2407,6 +2415,8 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	}
 
 	/**
+	 * @param parentCU the current compilation unit
+	 * @return returns the template or <code>null</code>
 	 * @deprecated Use getTypeComment(ICompilationUnit, String)
 	 */
 	protected String getTypeComment(ICompilationUnit parentCU) {
@@ -2416,6 +2426,9 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	}
 
 	/**
+	 * @param name the name of the template
+	 * @param parentCU the current compilation unit
+	 * @return returns the template or <code>null</code>
 	 * @deprecated Use getTemplate(String,ICompilationUnit,int)
 	 */
 	protected String getTemplate(String name, ICompilationUnit parentCU) {
@@ -2434,6 +2447,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 * @param parentCU the templates evaluation context
 	 * @param pos a source offset into the parent compilation unit. The
 	 * template is evaluated at the given source offset
+	 * @return return the template with the given name or <code>null</code> if the template could not be found.
 	 */
 	protected String getTemplate(String name, ICompilationUnit parentCU, int pos) {
 		try {

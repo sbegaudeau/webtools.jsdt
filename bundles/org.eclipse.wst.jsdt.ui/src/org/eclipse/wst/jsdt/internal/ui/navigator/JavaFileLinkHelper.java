@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,16 +18,17 @@ import org.eclipse.jface.viewers.StructuredSelection;
 
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.navigator.ILinkHelper;
+
+import org.eclipse.ui.ide.ResourceUtil;
 
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaCore;
 
+import org.eclipse.wst.jsdt.ui.JavaUI;
+
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
-import org.eclipse.wst.jsdt.internal.ui.javaeditor.IClassFileEditorInput;
-import org.eclipse.wst.jsdt.internal.ui.javaeditor.JarEntryEditorInput;
 
 public class JavaFileLinkHelper implements ILinkHelper {
 
@@ -45,16 +46,14 @@ public class JavaFileLinkHelper implements ILinkHelper {
 	}
 
 	public IStructuredSelection findSelection(IEditorInput input) {
-		Object javaElement= null;
-		if (input instanceof IClassFileEditorInput)
-			javaElement= ((IClassFileEditorInput) input).getClassFile();
-		else if (input instanceof IFileEditorInput) {
-			IFile file= ((IFileEditorInput) input).getFile();
-			javaElement= JavaCore.create(file);
-		} else if (input instanceof JarEntryEditorInput)
-			javaElement= ((JarEntryEditorInput) input).getStorage();
-
-		return (javaElement != null) ? new StructuredSelection(javaElement) : StructuredSelection.EMPTY;
+		IJavaElement element= JavaUI.getEditorInputJavaElement(input);
+		if (element == null) {
+			IFile file = ResourceUtil.getFile(input);
+			if (file != null) {
+				element= JavaCore.create(file);
+			}
+		}
+		return (element != null) ? new StructuredSelection(element) : StructuredSelection.EMPTY;
 	}
 
 }

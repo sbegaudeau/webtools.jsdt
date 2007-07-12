@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -37,8 +38,13 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.StatusDialog;
 
+import org.eclipse.wst.jsdt.internal.corext.util.Messages;
+
+import org.eclipse.wst.jsdt.ui.JavaUI;
+
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
+import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CleanUpTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CodeFormatingTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CodeStyleTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.MemberAccessesTabPage;
@@ -62,6 +68,8 @@ public class CleanUpSaveParticipantConfigurationModifyDialog extends StatusDialo
 	private final IDialogSettings fDialogSettings;
 	private TabFolder fTabFolder;
 	private Button fApplyButton;
+	private CleanUpTabPage[] fPages;
+	private Label fCountLabel;
 	
 	public CleanUpSaveParticipantConfigurationModifyDialog(Shell parentShell, Map settings, String title) {
 		super(parentShell);
@@ -100,10 +108,11 @@ public class CleanUpSaveParticipantConfigurationModifyDialog extends StatusDialo
 		fTabFolder.setFont(composite.getFont());
 		fTabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
-		addTabPage(SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_CodeStyle_TabPage, new CodeStyleTabPage(this, fWorkingValues, true));
-		addTabPage(SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_MemberAccesses_TabPage, new MemberAccessesTabPage(this, fWorkingValues, true));
-		addTabPage(SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_UnnecessaryCode_TabPage, new UnnecessaryCodeTabPage(this, fWorkingValues, true));
-		addTabPage(SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_CodeOrganizing_TabPage, new CodeFormatingTabPage(this, fWorkingValues, true));
+		fPages= createTabPages(fWorkingValues);
+		
+		fCountLabel= new Label(composite, SWT.NONE);
+		fCountLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+		updateCountLabel();
 		
 		applyDialogFont(composite);
 		
@@ -122,12 +131,37 @@ public class CleanUpSaveParticipantConfigurationModifyDialog extends StatusDialo
 		
 		return composite;
 	}
+
+	protected CleanUpTabPage[] createTabPages(Map workingValues) {
+		CleanUpTabPage[] result= new CleanUpTabPage[4];
+		result[0]= new CodeStyleTabPage(this, workingValues, true);
+		result[1]= new MemberAccessesTabPage(this, workingValues, true);
+		result[2]= new UnnecessaryCodeTabPage(this, workingValues, true);
+//		result[3]= new MissingCodeTabPage(this, workingValues, true);
+		result[3]= new CodeFormatingTabPage(this, workingValues, true);
+		
+		addTabPage(SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_CodeStyle_TabPage, result[0]);
+		addTabPage(SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_MemberAccesses_TabPage, result[1]);
+		addTabPage(SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_UnnecessaryCode_TabPage, result[2]);
+//		addTabPage(SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_MissingCode_TabPage, result[3]);
+		addTabPage(SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_CodeOrganizing_TabPage, result[3]);
+		
+		return result;
+	}
 	
 	public void updateStatus(IStatus status) {
-		if (status == null) {
-			super.updateStatus(StatusInfo.OK_STATUS);
+		int count= 0;
+		for (int i= 0; i < fPages.length; i++) { 
+			count+= fPages[i].getSelectedCleanUpCount();
+		}
+		if (count == 0) {
+			super.updateStatus(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_SelectAnAction_Error));
 		} else {
-			super.updateStatus(status);
+			if (status == null) {
+				super.updateStatus(StatusInfo.OK_STATUS);
+			} else {
+				super.updateStatus(status);
+			}
 		}
 	}
 	
@@ -241,6 +275,17 @@ public class CleanUpSaveParticipantConfigurationModifyDialog extends StatusDialo
 	 * {@inheritDoc}
 	 */
 	public void valuesModified() {
+		updateCountLabel();
 		updateStatus(StatusInfo.OK_STATUS);
+	}
+	
+	private void updateCountLabel() {
+		int size= 0, count= 0;
+		for (int i= 0; i < fPages.length; i++) {
+			size+= fPages[i].getCleanUpCount();
+			count+= fPages[i].getSelectedCleanUpCount();
+		}
+		
+		fCountLabel.setText(Messages.format(SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_XofYSelected_Label, new Object[] {new Integer(count), new Integer(size)}));
 	}
 }

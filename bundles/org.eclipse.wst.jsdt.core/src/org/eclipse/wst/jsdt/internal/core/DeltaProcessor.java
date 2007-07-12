@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -232,7 +232,7 @@ public class DeltaProcessor {
 	private final ModelUpdater modelUpdater = new ModelUpdater();
 
 	/* A set of IJavaProject whose caches need to be reset */
-	private HashSet projectCachesToReset = new HashSet();  
+	public HashSet projectCachesToReset = new HashSet();  
 
 	/*
 	 * A list of IJavaElement used as a scope for external archives refresh during POST_CHANGE.
@@ -334,7 +334,11 @@ public class DeltaProcessor {
 	 * Also triggers index updates
 	 */
 	public void checkExternalArchiveChanges(IJavaElement[] elementsToRefresh, IProgressMonitor monitor) throws JavaModelException {
+		if (monitor != null && monitor.isCanceled()) 
+			throw new OperationCanceledException(); 
 		try {
+			if (monitor != null) monitor.beginTask("", 1); //$NON-NLS-1$
+
 			for (int i = 0, length = elementsToRefresh.length; i < length; i++) {
 				this.addForRefresh(elementsToRefresh[i]);
 			}
@@ -419,19 +423,9 @@ public class DeltaProcessor {
 						// workaround for bug 15168 circular errors not reported 
 						if (JavaProject.hasJavaNature(project)) {
 							addToParentInfo(javaProject);
-							
-							try {
-								// force to (re)read the .classpath file
-								javaProject.getPerProjectInfo().readAndCacheClasspath(javaProject);
-							} catch (JavaModelException e) {	
-								if (VERBOSE) {
-									e.printStackTrace();
-								}
-							}
-							
+							readRawClasspath(javaProject);
 							// ensure project references are updated (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=121569)
-							ClasspathChange change = (ClasspathChange) this.classpathChanges.get(project);
-							this.state.addProjectReferenceChange(javaProject, change == null ? null : change.oldResolvedClasspath);
+							checkProjectReferenceChange(project, javaProject);
 						}
 						
 						this.state.rootsAreStale = true; 
@@ -448,6 +442,9 @@ public class DeltaProcessor {
 								if (project.isOpen()) {
 									if (JavaProject.hasJavaNature(project)) {
 										addToParentInfo(javaProject);
+										readRawClasspath(javaProject);
+										// ensure project references are updated
+										checkProjectReferenceChange(project, javaProject);
 									}
 								} else {
 									try {
@@ -472,6 +469,9 @@ public class DeltaProcessor {
 									// workaround for bug 15168 circular errors not reported 
 									if (isJavaProject) {
 										this.addToParentInfo(javaProject);
+										readRawClasspath(javaProject);
+										// ensure project references are updated (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=172666)
+										checkProjectReferenceChange(project, javaProject);
 									} else {
 										// remove classpath cache so that initializeRoots() will not consider the project has a classpath
 										this.manager.removePerProjectInfo(javaProject);
@@ -553,6 +553,22 @@ public class DeltaProcessor {
 		if (children != null) {
 			for (int i = 0; i < children.length; i++) {
 				checkProjectsBeingAddedOrRemoved(children[i]);
+			}
+		}
+	}
+
+	private void checkProjectReferenceChange(IProject project, JavaProject javaProject) {
+		ClasspathChange change = (ClasspathChange) this.classpathChanges.get(project);
+		this.state.addProjectReferenceChange(javaProject, change == null ? null : change.oldResolvedClasspath);
+	}
+
+	private void readRawClasspath(JavaProject javaProject) {
+		try {
+			// force to (re)read the .classpath file
+			javaProject.getPerProjectInfo().readAndCacheClasspath(javaProject);
+		} catch (JavaModelException e) {	
+			if (VERBOSE) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -909,6 +925,7 @@ public class DeltaProcessor {
 								System.out.println("- External JAR ADDED, affecting root: "+root.getElementName()); //$NON-NLS-1$
 							} 
 							elementAdded(root, null, null);
+							this.state.addClasspathValidation(javaProject); // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=185733
 							hasDelta = true;
 						} else if (status == EXTERNAL_JAR_CHANGED) {
 							PackageFragmentRoot root = (PackageFragmentRoot) javaProject.getPackageFragmentRoot(entryPath.toString());
@@ -923,6 +940,7 @@ public class DeltaProcessor {
 								System.out.println("- External JAR REMOVED, affecting root: "+root.getElementName()); //$NON-NLS-1$
 							}
 							elementRemoved(root, null, null);
+							this.state.addClasspathValidation(javaProject); // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=185733
 							hasDelta = true;
 						}
 					}
@@ -1248,7 +1266,8 @@ public class DeltaProcessor {
 					return IJavaElement.COMPILATION_UNIT;
 				} else if (Util.isValidClassFileName(fileName, sourceLevel, complianceLevel)) {
 					return IJavaElement.CLASS_FILE;
-				} else if (this.rootInfo(res.getFullPath(), kind) != null) {
+				} else if ((rootInfo = this.rootInfo(res.getFullPath(), kind)) != null 
+						&& rootInfo.project.getProject().getFullPath().isPrefixOf(res.getFullPath()) /*ensure root is a root of its project (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=185310) */) {
 					// case of proj=src=bin and resource is a jar file on the classpath
 					return IJavaElement.PACKAGE_FRAGMENT_ROOT;
 				} else {
@@ -1352,6 +1371,9 @@ public class DeltaProcessor {
 		if (deltaToNotify != null) {
 			// flush now so as to keep listener reactions to post their own deltas for subsequent iteration
 			this.flush();
+			
+			// mark the operation stack has not modifying resources since resource deltas are being fired
+			JavaModelOperation.setAttribute(JavaModelOperation.HAS_MODIFIED_RESOURCE_ATTR, null);
 			
 			notifyListeners(deltaToNotify, ElementChangedEvent.POST_CHANGE, listeners, listenerMask, listenerCount);
 		} 
@@ -1760,7 +1782,7 @@ public class DeltaProcessor {
 	 * Traverse the set of projects which have changed namespace, and reset their 
 	 * caches and their dependents
 	 */
-	private void resetProjectCaches() {
+	public void resetProjectCaches() {
 		if (this.projectCachesToReset.size() == 0)
 			return;
 		
@@ -2178,9 +2200,10 @@ public class DeltaProcessor {
 				}
 				break;
 			case IResource.FILE :
-				/* check classpath file change */
+				/* check classpath or prefs files change */
 				IFile file = (IFile) resource;
-				if (file.getName().equals(JavaProject.CLASSPATH_FILENAME)) {
+				String fileName = file.getName();
+				if (fileName.equals(JavaProject.CLASSPATH_FILENAME)) {
 					JavaProject javaProject = (JavaProject)JavaCore.create(file.getProject());
 					this.state.addClasspathValidation(javaProject);
 					affectedProjects.add(file.getProject().getFullPath());

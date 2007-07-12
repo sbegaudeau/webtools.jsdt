@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,7 @@ import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
+import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
 import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
@@ -211,6 +212,13 @@ class AccessAnalyzer extends ASTVisitor {
 			createInvocation(node.getAST(), node.getOperand(), node.getOperator().toString()), 
 			createGroupDescription(POSTFIX_ACCESS));
 		return false;
+	}
+	
+	public boolean visit(MethodDeclaration node) {
+		String name= node.getName().getIdentifier();
+		if (name.equals(fGetter) || name.equals(fSetter))
+			return false;
+		return true;
 	}
 	
 	public void endVisit(CompilationUnit node) {

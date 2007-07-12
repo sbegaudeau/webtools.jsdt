@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 20067 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -96,6 +96,7 @@ public class ForeachStatement extends Statement {
 				continueLabel, scope);
 		UnconditionalFlowInfo actionInfo = 
 			condInfo.nullInfoLessUnconditionalCopy();
+		actionInfo.markAsDefinitelyUnknown(this.elementVariable.binding);
 		FlowInfo exitBranch;
 		if (!(action == null || (action.isEmptyBlock() 
 		        	&& currentScope.compilerOptions().complianceLevel <= ClassFileConstants.JDK1_3))) {
@@ -133,8 +134,10 @@ public class ForeachStatement extends Statement {
 				if (!hasEmptyAction
 						|| this.elementVariable.binding.resolvedPosition != -1) {				
 					this.collectionVariable.useFlag = LocalVariableBinding.USED;
+					if (this.continueLabel != null) {
 					this.indexVariable.useFlag = LocalVariableBinding.USED;
 					this.maxVariable.useFlag = LocalVariableBinding.USED;
+					}
 				}
 				break;
 			case RAW_ITERABLE :

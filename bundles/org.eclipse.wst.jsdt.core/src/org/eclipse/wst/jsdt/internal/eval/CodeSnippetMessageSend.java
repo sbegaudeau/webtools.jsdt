@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 
 public class CodeSnippetMessageSend extends MessageSend implements ProblemReasons, EvaluationConstants {
@@ -70,6 +71,9 @@ public void generateCode(
 			}
 		} else {
 			this.receiver.generateCode(currentScope, codeStream, !isStatic);
+			if (this.receiverGenericCast != null) 
+				codeStream.checkcast(this.receiverGenericCast);
+			codeStream.recordPositionsFrom(pc, this.sourceStart);			
 		}
 		// generate arguments
 		generateArguments(binding, arguments, currentScope, codeStream);
@@ -97,6 +101,9 @@ public void generateCode(
 			currentScope.problemReporter().needImplementation();
 		} else {
 			this.receiver.generateCode(currentScope, codeStream, !isStatic);
+			if (this.receiverGenericCast != null) 
+				codeStream.checkcast(this.receiverGenericCast);
+			codeStream.recordPositionsFrom(pc, this.sourceStart);			
 		}
 		if (isStatic) {
 			// we need an object on the stack which is ignored for the method invocation
@@ -139,25 +146,26 @@ public void generateCode(
 			codeStream.checkcast(this.codegenBinding.returnType);
 		}
 	}
-	// operation on the returned value
+	// required cast must occur even if no value is required
+	if (this.valueCast != null) codeStream.checkcast(this.valueCast);
 	if (valueRequired){
 		// implicit conversion if necessary
-		if (this.valueCast != null) 
-			codeStream.checkcast(this.valueCast);
 		codeStream.generateImplicitConversion(implicitConversion);
 	} else {
-		// pop return value if any
-		switch(binding.returnType.id){
+		boolean isUnboxing = (implicitConversion & TypeIds.UNBOXING) != 0;
+		// conversion only generated if unboxing
+		if (isUnboxing) codeStream.generateImplicitConversion(implicitConversion);
+		switch (isUnboxing ? postConversionType(currentScope).id : this.codegenBinding.returnType.id) {
 			case T_long :
 			case T_double :
 				codeStream.pop2();
 				break;
 			case T_void :
 				break;
-			default:
+			default :
 				codeStream.pop();
 		}
-	}
+	}	
 	codeStream.recordPositionsFrom(pc, (int)(this.nameSourcePosition >>> 32)); // highlight selector
 }
 public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FlowInfo flowInfo) {

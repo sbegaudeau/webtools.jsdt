@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,17 +35,20 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.util.Policy;
 import org.eclipse.jface.wizard.WizardPage;
 
+import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
@@ -77,6 +80,8 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.SelectionButtonDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringDialogField;
+import org.eclipse.wst.jsdt.internal.ui.workingsets.JavaWorkingSetUpdater;
+import org.eclipse.wst.jsdt.internal.ui.workingsets.WorkingSetConfigurationBlock;
 
 /**
  * The first page of the <code>SimpleProjectWizard</code>.
@@ -521,23 +526,59 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 //	}
 //
 //	
+	private final class WorkingSetGroup {
+		
+		private WorkingSetConfigurationBlock fWorkingSetBlock;
+
+		public WorkingSetGroup(Composite composite, IWorkingSet[] initialWorkingSets) {
+			Group workingSetGroup= new Group(composite, SWT.NONE);
+			workingSetGroup.setFont(composite.getFont());
+			workingSetGroup.setText(NewWizardMessages.JavaProjectWizardFirstPage_WorkingSets_group);
+			workingSetGroup.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+			workingSetGroup.setLayout(new GridLayout(1, false));
+			
+			String[] workingSetIds= new String[] {JavaWorkingSetUpdater.ID, "org.eclipse.ui.resourceWorkingSetPage"}; //$NON-NLS-1$
+			fWorkingSetBlock= new WorkingSetConfigurationBlock(workingSetIds, NewWizardMessages.JavaProjectWizardFirstPage_EnableWorkingSet_button, JavaPlugin.getDefault().getDialogSettings());
+			fWorkingSetBlock.setDialogMessage(NewWizardMessages.JavaProjectWizardFirstPage_WorkingSetSelection_message);
+			fWorkingSetBlock.setSelection(initialWorkingSets);
+			fWorkingSetBlock.createContent(workingSetGroup);
+		}
+
+		public IWorkingSet[] getSelectedWorkingSets() {
+			return fWorkingSetBlock.getSelectedWorkingSets();
+		}
+	}
+
+
 	/**
 	 * Show a warning when the project location contains files.
 	 */
 	private final class DetectGroup extends Observable implements Observer, SelectionListener {
 
 		private final Link fHintText;
+		private Label fIcon;
 		private boolean fDetect;
 		
-		public DetectGroup(Composite composite) {
+		public DetectGroup(Composite parent) {
 			
-			Link jre50Text= new Link(composite, SWT.WRAP);
-			jre50Text.setFont(composite.getFont());
-			jre50Text.addSelectionListener(this);
-			GridData gridData= new GridData(GridData.FILL, SWT.FILL, true, true);
+			Composite composite= new Composite(parent, SWT.NONE);
+			composite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+			GridLayout layout= new GridLayout(2, false);
+			layout.horizontalSpacing= 10;
+			composite.setLayout(layout);
+			
+			fIcon= new Label(composite, SWT.LEFT);
+			fIcon.setImage(Dialog.getImage(Dialog.DLG_IMG_MESSAGE_WARNING));
+			GridData gridData= new GridData(SWT.LEFT, SWT.CENTER, false, false);
+			fIcon.setLayoutData(gridData);
+			
+			fHintText= new Link(composite, SWT.WRAP);
+			fHintText.setFont(composite.getFont());
+			fHintText.addSelectionListener(this);
+			gridData= new GridData(GridData.FILL, SWT.FILL, true, true);
 			gridData.widthHint= convertWidthInCharsToPixels(50);
-			jre50Text.setLayoutData(gridData);
-			fHintText= jre50Text;
+			gridData.heightHint= convertHeightInCharsToPixels(3);
+			fHintText.setLayoutData(gridData);
 			
 			//handlePossibleJVMChange();
 		}
@@ -572,13 +613,7 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 			if (o instanceof LocationGroup) {
 				boolean oldDetectState= fDetect;
 				if (fLocationGroup.isInWorkspace()) {
-					String name= getProjectName();
-					if (name.length() == 0 || JavaPlugin.getWorkspace().getRoot().findMember(name) != null) {
-						fDetect= false;
-					} else {
-						final File directory= fLocationGroup.getLocation().append(getProjectName()).toFile();
-						fDetect= directory.isDirectory();
-					}
+					fDetect= false;
 				} else {
 					final File directory= fLocationGroup.getLocation().toFile();
 					fDetect= directory.isDirectory();
@@ -591,6 +626,8 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 					if (fDetect) {
 						fHintText.setVisible(true);
 						fHintText.setText(NewWizardMessages.JavaProjectWizardFirstPage_DetectGroup_message);
+						fIcon.setImage(Dialog.getImage(Dialog.DLG_IMG_MESSAGE_INFO));
+						fIcon.setVisible(true);
 					} else {
 					//	handlePossibleJVMChange();
 					}
@@ -617,7 +654,8 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 			String complianceId= CompliancePreferencePage.PREF_ID;
 			Map data= new HashMap();
 			data.put(PropertyAndPreferencePage.DATA_NO_LINK, Boolean.TRUE);
-			PreferencesUtil.createPreferenceDialogOn(getShell(), complianceId, new String[] { jreID, complianceId  }, data).open();
+			String id= "JRE".equals(e.text) ? jreID : complianceId; //$NON-NLS-1$
+			PreferencesUtil.createPreferenceDialogOn(getShell(), id, new String[] { jreID, complianceId  }, data).open();
 			
 //			fJREGroup.handlePossibleJVMChange();
 //			handlePossibleJVMChange();
@@ -676,20 +714,48 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 				return;
 			}
 
-			// check whether the location has the workspace as prefix
 			IPath projectPath= Path.fromOSString(location);
-			if (!fLocationGroup.isInWorkspace() && Platform.getLocation().isPrefixOf(projectPath)) {
-				setErrorMessage(NewWizardMessages.JavaProjectWizardFirstPage_Message_cannotCreateInWorkspace); 
-				setPageComplete(false);
-				return;
-			}
+			// check external location
+			if (!fLocationGroup.isInWorkspace()) {				
+				if (!canCreate(projectPath.toFile())) {
+					setErrorMessage(NewWizardMessages.JavaProjectWizardFirstPage_Message_cannotCreateAtExternalLocation); 
+					setPageComplete(false);
+					return;
+				}
 
-			// If we do not place the contents in the workspace validate the
-			// location.
-			if (!fLocationGroup.isInWorkspace()) {
-				final IStatus locationStatus= workspace.validateProjectLocation(handle, projectPath);
-				if (!locationStatus.isOK()) {
-					setErrorMessage(locationStatus.getMessage());
+				if (!Platform.getLocation().equals(projectPath) && Platform.getLocation().isPrefixOf(projectPath)) {
+					if (!Platform.getLocation().equals(projectPath.removeLastSegments(1))) {
+						setErrorMessage(NewWizardMessages.JavaProjectWizardFirstPage_Message_notOnWorkspaceRoot);
+						setPageComplete(false);
+						return;
+					}
+					
+					if (!projectPath.toFile().exists()) {
+						setErrorMessage(NewWizardMessages.JavaProjectWizardFirstPage_Message_notExisingProjectOnWorkspaceRoot);
+						setPageComplete(false);
+						return;
+					}
+					
+					String existingName= projectPath.lastSegment();
+					if (!existingName.equals(fNameGroup.getName())) {
+						setErrorMessage(Messages.format(NewWizardMessages.JavaProjectWizardFirstPage_Message_invalidProjectNameForWorkspaceRoot, existingName));
+						setPageComplete(false);
+						return;
+					}
+				} else {
+					// If we do not place the contents in the workspace validate the
+					// location.
+					final IStatus locationStatus= workspace.validateProjectLocation(handle, projectPath);
+					if (!locationStatus.isOK()) {
+						setErrorMessage(locationStatus.getMessage());
+						setPageComplete(false);
+						return;
+					}
+				}
+			} else {
+				IPath projectFolder= projectPath.append(fNameGroup.getName());
+				if (projectFolder.toFile().exists()) {
+					setErrorMessage(NewWizardMessages.JavaProjectWizardFirstPage_Message_existingFolderInWorkspace); 
 					setPageComplete(false);
 					return;
 				}
@@ -699,6 +765,16 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 
 			setErrorMessage(null);
 			setMessage(null);
+		}
+
+		private boolean canCreate(File file) {
+			while (!file.exists()) {
+				file= file.getParentFile();
+				if (file == null)
+					return false;
+			}
+			
+			return file.canWrite();
 		}
 
 	}
@@ -712,7 +788,9 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 
 	private String fInitialName;
 	
-	private static final String PAGE_NAME= NewWizardMessages.JavaProjectWizardFirstPage_page_pageName; 
+	private static final String PAGE_NAME= NewWizardMessages.JavaProjectWizardFirstPage_page_pageName;
+	private WorkingSetGroup fWorkingSetGroup;
+	private IWorkingSet[] fInitWorkingSets; 
 
 	/**
 	 * Create a new <code>SimpleProjectFirstPage</code>.
@@ -750,6 +828,7 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 		fLocationGroup= new LocationGroup(composite);
 		//fJREGroup= new JREGroup(composite);
 		fLayoutGroup= new LayoutGroup(composite);
+		fWorkingSetGroup= new WorkingSetGroup(composite, fInitWorkingSets);
 		fDetectGroup= new DetectGroup(composite);
 		
 		// establish connections
@@ -805,7 +884,9 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 	}
 	
 	public boolean isInWorkspace() {
-		return fLocationGroup.isInWorkspace();
+		final String location= fLocationGroup.getLocation().toOSString();
+		IPath projectPath= Path.fromOSString(location);
+		return Platform.getLocation().isPrefixOf(projectPath);
 	}
 	
 	public String getProjectName() {
@@ -821,10 +902,12 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 	}
 	
 	/**
-	 * @return the selected JVM, or <code>null</code> iff the default JVM should be used
+	 * Returns the path of the classpath container selected, or <code>null</code> if the default JRE was selected
+	 * @return the path to the selected JRE
 	 */
-	public IVMInstall getJVM() {
-		return null; //fJREGroup.getSelectedJVM();
+	public IPath getJREContainerPath() {
+//		return fJREGroup.getJREContainerPath();
+		return null;
 	}
 	
 	/**
@@ -846,6 +929,9 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 		
 	/**
 	 * Initialize a grid layout with the default Dialog settings.
+	 * @param layout the layout to initialize
+	 * @param margins true if margins should be used
+	 * @return the initialized layout
 	 */
 	protected GridLayout initGridLayout(GridLayout layout, boolean margins) {
 		layout.horizontalSpacing= convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
@@ -859,11 +945,18 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 		}
 		return layout;
 	}
-	
+
 	/**
-	 * Set the layout data for a button.
+	 * @param workingSets the initial selected working sets or <b>null</b>
 	 */
-	protected GridData setButtonLayoutData(Button button) {
-		return super.setButtonLayoutData(button);
+	public void setWorkingSets(IWorkingSet[] workingSets) {
+		fInitWorkingSets= workingSets;
+	}
+
+	/**
+	 * @return the selected working sets, not <b>null</b>
+	 */
+	public IWorkingSet[] getWorkingSets() {
+		return fWorkingSetGroup.getSelectedWorkingSets();
 	}
 }

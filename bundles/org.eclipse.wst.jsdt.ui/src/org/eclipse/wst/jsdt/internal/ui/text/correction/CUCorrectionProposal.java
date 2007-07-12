@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -176,8 +176,8 @@ public class CUCorrectionProposal extends ChangeCorrectionProposal  {
 			 * here in order to prevent loading of the Compare plug-in at load
 			 * time of this class.
 			 */
-			Object leftSide= new JavaTokenComparator(previewContent.get(), true);
-			Object rightSide= new JavaTokenComparator(currentConentString, true);
+			Object leftSide= new JavaTokenComparator(previewContent.get());
+			Object rightSide= new JavaTokenComparator(currentConentString);
 
 			RangeDifference[] differences= RangeDifferencer.findRanges((IRangeComparator)leftSide, (IRangeComparator)rightSide);
 			for (int i= 0; i < differences.length; i++) {
@@ -403,7 +403,7 @@ public class CUCorrectionProposal extends ChangeCorrectionProposal  {
 	 */
 	protected TextChange createTextChange() throws CoreException {
 		ICompilationUnit cu= getCompilationUnit();
-		String name= getDisplayString();
+		String name= getName();
 		TextChange change;
 		if (!cu.getResource().exists()) {
 			String source;

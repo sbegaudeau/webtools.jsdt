@@ -22,8 +22,11 @@ import java.net.URISyntaxException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
+import org.eclipse.wst.jsdt.internal.core.JavaModelStatus;
 
 /**
  * Abstract base implementation of all classpath container initializer.
@@ -48,6 +51,28 @@ import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
  */
 public abstract class ClasspathContainerInitializer implements IClasspathContainerInitialzer,  IClasspathContainer {
 	
+	/**
+	 * Status code indicating that an attribute is not supported.
+	 *
+	 * @see #getAccessRulesStatus(IPath, IJavaProject)
+	 * @see #getAttributeStatus(IPath, IJavaProject, String)
+	 * @see #getSourceAttachmentStatus(IPath, IJavaProject)
+	 *
+	 * @since 3.3
+	 */
+	public static final int ATTRIBUTE_NOT_SUPPORTED = 1;
+
+	/**
+	 * Status code indicating that an attribute is not modifiable.
+	 *
+	 * @see #getAccessRulesStatus(IPath, IJavaProject)
+	 * @see #getAttributeStatus(IPath, IJavaProject, String)
+	 * @see #getSourceAttachmentStatus(IPath, IJavaProject)
+	 *
+	 * @since 3.3
+	 */
+	public static final int ATTRIBUTE_READ_ONLY = 2;
+
    /**
      * Creates a new classpath container initializer.
      */
@@ -164,6 +189,115 @@ public abstract class ClasspathContainerInitializer implements IClasspathContain
 		
 		return null;
 	}
-	
+	/**
+	 * Returns the access rules attribute status according to this initializer.
+	 * <p>
+	 * The returned {@link IStatus status} can have one of the following severities:
+	 * <ul>
+	 * <li>{@link IStatus#OK OK}: means that the attribute is supported
+	 * 	<strong>and</strong> is modifiable</li>
+	 * <li>{@link IStatus#ERROR ERROR}: means that either the attribute
+	 * 	is not supported or is not modifiable.<br>
+	 * 	In this case, the {@link IStatus#getCode() code}will have
+	 * 	respectively the {@link #ATTRIBUTE_NOT_SUPPORTED} value
+	 * 	or the {@link #ATTRIBUTE_READ_ONLY} value.</li>
+	 * </ul>
+	 * </p><p>
+	 * The status message can contain more information.
+	 * </p><p>
+	 * If the subclass does not override this method, then the default behavior is
+	 * to return {@link IStatus#OK OK} if and only if the classpath container can
+	 * be updated (see {@link #canUpdateClasspathContainer(IPath, IJavaProject)}).
+	 * </p>
+	 *
+	 * @param containerPath the path of the container which requires to be
+	 * 	updated
+	 * @param project the project for which the container is to be updated
+	 * @return returns the access rules attribute status
+	 *
+	 * @since 3.3
+	 */
+	public IStatus getAccessRulesStatus(IPath containerPath, IJavaProject project) {
+
+		if (canUpdateClasspathContainer(containerPath, project)) {
+			return Status.OK_STATUS;
+		}
+		return new JavaModelStatus(ATTRIBUTE_READ_ONLY);
+	}
+
+	/**
+	 * Returns the extra attribute status according to this initializer.
+	 * <p>
+	 * The returned {@link IStatus status} can have one of the following severities:
+	 * <ul>
+	 * <li>{@link IStatus#OK OK}: means that the attribute is supported
+	 * 	<strong>and</strong> is modifiable</li>
+	 * <li>{@link IStatus#ERROR ERROR}: means that either the attribute
+	 * 	is not supported or is not modifiable.<br>
+	 * 	In this case, the {@link IStatus#getCode() code}will have
+	 * 	respectively the {@link #ATTRIBUTE_NOT_SUPPORTED} value
+	 * 	or the {@link #ATTRIBUTE_READ_ONLY} value.</li>
+	 * </ul>
+	 * </p><p>
+	 * The status message can contain more information.
+	 * </p><p>
+	 * If the subclass does not override this method, then the default behavior is
+	 * to return {@link IStatus#OK OK} if and only if the classpath container can
+	 * be updated (see {@link #canUpdateClasspathContainer(IPath, IJavaProject)}).
+	 * </p>
+	 *
+	 * @param containerPath the path of the container which requires to be
+	 * 	updated
+	 * @param project the project for which the container is to be updated
+	 * @param attributeKey the key of the extra attribute
+	 * @return returns the extra attribute status
+	 * @see IClasspathAttribute
+	 *
+	 * @since 3.3
+	 */
+	public IStatus getAttributeStatus(IPath containerPath, IJavaProject project, String attributeKey) {
+
+		if (canUpdateClasspathContainer(containerPath, project)) {
+			return Status.OK_STATUS;
+		}
+		return new JavaModelStatus(ATTRIBUTE_READ_ONLY);
+	}
+
+	/**
+	 * Returns the source attachment attribute status according to this initializer.
+	 * <p>
+	 * The returned {@link IStatus status} can have one of the following severities:
+	 * <ul>
+	 * <li>{@link IStatus#OK OK}: means that the attribute is supported
+	 * 	<strong>and</strong> is modifiable</li>
+	 * <li>{@link IStatus#ERROR ERROR}: means that either the attribute
+	 * 	is not supported or is not modifiable.<br>
+	 * 	In this case, the {@link IStatus#getCode() code}will have
+	 * 	respectively the {@link #ATTRIBUTE_NOT_SUPPORTED} value
+	 * 	or the {@link #ATTRIBUTE_READ_ONLY} value.</li>
+	 * </ul>
+	 * </p><p>
+	 * The status message can contain more information.
+	 * </p><p>
+	 * If the subclass does not override this method, then the default behavior is
+	 * to return {@link IStatus#OK OK} if and only if the classpath container can
+	 * be updated (see {@link #canUpdateClasspathContainer(IPath, IJavaProject)}).
+	 * </p>
+	 *
+	 * @param containerPath the path of the container which requires to be
+	 * 	updated
+	 * @param project the project for which the container is to be updated
+	 * @return returns the source attachment attribute status
+	 *
+	 * @since 3.3
+	 */
+	public IStatus getSourceAttachmentStatus(IPath containerPath, IJavaProject project) {
+
+		if (canUpdateClasspathContainer(containerPath, project)) {
+			return Status.OK_STATUS;
+		}
+		return new JavaModelStatus(ATTRIBUTE_READ_ONLY);
+	}
+
 }
 

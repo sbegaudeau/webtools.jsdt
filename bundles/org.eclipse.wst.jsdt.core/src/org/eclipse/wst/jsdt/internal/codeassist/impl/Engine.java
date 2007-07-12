@@ -140,26 +140,23 @@ public abstract class Engine implements ITypeRequestor {
 			this.initializeImportCaches();
 		}
 		
-		char[] fullyQualifiedTypeName = null;
 		
 		for (int i = 0; i < this.importCacheCount; i++) {
 			char[][] importName = this.importsCache[i];
 			if(CharOperation.equals(typeName, importName[0])) {
-				if (fullyQualifiedTypeName == null) {
-					fullyQualifiedTypeName =
-						enclosingTypeNames == null || enclosingTypeNames.length == 0
-								? CharOperation.concat(
+				char[] fullyQualifiedTypeName =
+					enclosingTypeNames == null || enclosingTypeNames.length == 0
+							? CharOperation.concat(
+									packageName,
+									typeName,
+									'.')
+							: CharOperation.concat(
+									CharOperation.concat(
 										packageName,
-										typeName,
-										'.')
-								: CharOperation.concat(
-										CharOperation.concat(
-											packageName,
-											enclosingTypeNames,
-											'.'),
-										typeName,
-										'.');
-				}
+										enclosingTypeNames,
+										'.'),
+									typeName,
+									'.');
 				return !CharOperation.equals(fullyQualifiedTypeName, importName[1]);
 			}
 		}

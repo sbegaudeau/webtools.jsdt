@@ -11,6 +11,7 @@
 
 package org.eclipse.wst.jsdt.internal.ui.text.spelling;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -24,6 +25,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.eclipse.core.runtime.FileLocator;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -35,6 +38,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.DefaultSpellChecker
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellCheckEngine;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellChecker;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellDictionary;
+import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.LocaleSensitiveSpellDictionary;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.PersistentSpellDictionary;
 
 /**
@@ -49,7 +53,15 @@ public class SpellCheckEngine implements ISpellCheckEngine, IPropertyChangeListe
 
 	/** The singleton engine instance */
 	private static ISpellCheckEngine fgEngine= null;
+	
+	/**
+	 * Caches the locales of installed dictionaries.
+	 * 
+	 * @since 3.3
+	 */
+	private static Set fgLocalesWithInstalledDictionaries;
 
+	
 	/**
 	 * Returns the locales for which this
 	 * spell check engine has dictionaries.
@@ -57,44 +69,51 @@ public class SpellCheckEngine implements ISpellCheckEngine, IPropertyChangeListe
 	 * @return The available locales for this engine
 	 */
 	public static Set getLocalesWithInstalledDictionaries() {
-
-		URL url= null;
-		Locale locale= null;
-		InputStream stream= null;
-
-		final Set result= new HashSet();
+		if (fgLocalesWithInstalledDictionaries != null)
+			return fgLocalesWithInstalledDictionaries;
+		
+		URL location;
 		try {
-
-			final URL location= getDictionaryLocation();
-
+			location= getDictionaryLocation();
 			if (location == null)
-				return Collections.EMPTY_SET;
-
-			final Locale[] locales= Locale.getAvailableLocales();
-
-			for (int index= 0; index < locales.length; index++) {
-
-				locale= locales[index];
-				url= new URL(location, locale.toString().toLowerCase() + ".dictionary"); //$NON-NLS-1$
-
-				try {
-					stream= url.openStream();
-					if (stream != null) {
-						try {
-							result.add(locale);
-						} finally {
-							stream.close();
-						}
-					}
-				} catch (IOException exception) {
-					// Do nothing
-				}
+				return fgLocalesWithInstalledDictionaries= Collections.EMPTY_SET;
+		} catch (MalformedURLException ex) {
+			JavaPlugin.log(ex);
+			return fgLocalesWithInstalledDictionaries= Collections.EMPTY_SET;
+		}
+		
+		String[] fileNames;
+		try {
+			URL url= FileLocator.toFileURL(location);
+			File file= new File(url.getFile());
+			if (!file.isDirectory())
+				return fgLocalesWithInstalledDictionaries= Collections.EMPTY_SET;
+			fileNames= file.list();
+			if (fileNames == null)
+				return fgLocalesWithInstalledDictionaries= Collections.EMPTY_SET;
+		} catch (IOException ex) {
+			JavaPlugin.log(ex);
+			return fgLocalesWithInstalledDictionaries= Collections.EMPTY_SET;
+		}
+		
+		fgLocalesWithInstalledDictionaries= new HashSet();
+		int fileNameCount= fileNames.length;
+		for (int i= 0; i < fileNameCount; i++) {
+			String fileName= fileNames[i];
+			int localeEnd= fileName.indexOf(".dictionary"); //$NON-NLS-1$ 
+			if (localeEnd > 1) {
+				String localeName= fileName.substring(0, localeEnd);
+				int languageEnd=localeName.indexOf('_');
+				if (languageEnd == -1)
+					fgLocalesWithInstalledDictionaries.add(new Locale(localeName));
+				else if (languageEnd == 2 && localeName.length() == 5)
+					fgLocalesWithInstalledDictionaries.add(new Locale(localeName.substring(0, 2), localeName.substring(3)));
+				else if (localeName.length() > 6 && localeName.charAt(5) == '_')
+					fgLocalesWithInstalledDictionaries.add(new Locale(localeName.substring(0, 2), localeName.substring(3, 5), localeName.substring(6)));
 			}
-		} catch (MalformedURLException exception) {
-			// Do nothing
 		}
 
-		return result;
+		return fgLocalesWithInstalledDictionaries;
 	}
 
 	/**
@@ -109,6 +128,7 @@ public class SpellCheckEngine implements ISpellCheckEngine, IPropertyChangeListe
 	/**
 	 * Returns the dictionary closest to the given locale.
 	 *
+	 * @param locale the locale
 	 * @return the dictionary or <code>null</code> if none is suitable
 	 * @since 3.3
 	 */
@@ -135,6 +155,9 @@ public class SpellCheckEngine implements ISpellCheckEngine, IPropertyChangeListe
 	 * @since 3.3
 	 */
 	public static Locale findClosestLocale(Locale locale) {
+		if (locale == null || locale.toString().length() == 0)
+			return locale;
+		
 		if (getLocalesWithInstalledDictionaries().contains(locale))
 			return locale;
 
@@ -146,6 +169,11 @@ public class SpellCheckEngine implements ISpellCheckEngine, IPropertyChangeListe
 			if (dictLocale.getLanguage().equals(language))
 				return dictLocale;
 		}
+		
+		// Try whether American English is present
+		Locale defaultLocale= Locale.US;
+		if (getLocalesWithInstalledDictionaries().contains(defaultLocale))
+			return defaultLocale;
 		
 		return null;
 	}
@@ -222,7 +250,7 @@ public class SpellCheckEngine implements ISpellCheckEngine, IPropertyChangeListe
 			for (final Iterator iterator= getLocalesWithInstalledDictionaries().iterator(); iterator.hasNext();) {
 
 				locale= (Locale)iterator.next();
-				fLocaleDictionaries.put(locale, new SpellReconcileDictionary(locale, location));
+				fLocaleDictionaries.put(locale, new LocaleSensitiveSpellDictionary(locale, location));
 			}
 
 		} catch (MalformedURLException exception) {
@@ -241,6 +269,8 @@ public class SpellCheckEngine implements ISpellCheckEngine, IPropertyChangeListe
 		
 		IPreferenceStore store= JavaPlugin.getDefault().getPreferenceStore();
 		Locale locale= getCurrentLocale(store);
+		if (fUserDictionary == null && "".equals(locale.toString())) //$NON-NLS-1$
+			return null;
 		
 		if (fChecker != null && fChecker.getLocale().equals(locale))
 			return fChecker;
@@ -265,6 +295,7 @@ public class SpellCheckEngine implements ISpellCheckEngine, IPropertyChangeListe
 	/**
 	 * Returns the current locale of the spelling preferences.
 	 *
+	 * @param store the preference store
 	 * @return The current locale of the spelling preferences
 	 */
 	private Locale getCurrentLocale(IPreferenceStore store) {
@@ -327,10 +358,14 @@ public class SpellCheckEngine implements ISpellCheckEngine, IPropertyChangeListe
 		}
 
 		IPreferenceStore store= JavaPlugin.getDefault().getPreferenceStore();
-		final String file= store.getString(PreferenceConstants.SPELLING_USER_DICTIONARY);
-		if (file.length() > 0) {
+		final String filePath= store.getString(PreferenceConstants.SPELLING_USER_DICTIONARY);
+		if (filePath.length() > 0) {
 			try {
-				final URL url= new URL("file", null, file); //$NON-NLS-1$
+				File file= new File(filePath);
+				if (!file.exists() && !file.createNewFile())
+					return;
+				
+				final URL url= new URL("file", null, filePath); //$NON-NLS-1$
 				InputStream stream= url.openStream();
 				if (stream != null) {
 					try {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,14 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.util;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.util.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.AttributeNamesConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 
 /**
@@ -266,14 +270,32 @@ public class Disassembler extends ClassFileBytesDisassembler {
 	 * @see org.eclipse.wst.jsdt.core.util.ClassFileBytesDisassembler#disassemble(byte[], java.lang.String)
 	 */
 	public String disassemble(byte[] classFileBytes, String lineSeparator) throws ClassFormatException {
-		return disassemble(new ClassFileReader(classFileBytes, IClassFileReader.ALL), lineSeparator, ClassFileBytesDisassembler.DEFAULT);
+		try {
+			return disassemble(new ClassFileReader(classFileBytes, IClassFileReader.ALL), lineSeparator, ClassFileBytesDisassembler.DEFAULT);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			StringWriter stringWriter = new StringWriter();
+			PrintWriter writer = new PrintWriter(stringWriter);
+			e.printStackTrace(writer);
+			writer.flush();
+			writer.close();
+			throw new ClassFormatException(String.valueOf(stringWriter.getBuffer()));
+		}
 	}
 
 	/**
 	 * @see org.eclipse.wst.jsdt.core.util.ClassFileBytesDisassembler#disassemble(byte[], java.lang.String, int)
 	 */
 	public String disassemble(byte[] classFileBytes, String lineSeparator, int mode) throws ClassFormatException {
-		return disassemble(new ClassFileReader(classFileBytes, IClassFileReader.ALL), lineSeparator, mode);
+		try {
+			return disassemble(new ClassFileReader(classFileBytes, IClassFileReader.ALL), lineSeparator, mode);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			StringWriter stringWriter = new StringWriter();
+			PrintWriter writer = new PrintWriter(stringWriter);
+			e.printStackTrace(writer);
+			writer.flush();
+			writer.close();
+			throw new ClassFormatException(String.valueOf(stringWriter.getBuffer()));
+		}
 	}
 
 	private void disassemble(IAnnotation annotation, StringBuffer buffer, String lineSeparator, int tabNumber) {
@@ -539,7 +561,7 @@ public class Disassembler extends ClassFileBytesDisassembler {
 			buffer.append(Messages.disassembler_space); 
 		}
 		CharOperation.replace(methodDescriptor, '/', '.');
-		final boolean isVarArgs = (accessFlags & IModifierConstants.ACC_VARARGS) != 0;
+		final boolean isVarArgs = isVarArgs(methodInfo);
 		if (methodInfo.isConstructor()) {
 			if (checkMode(mode, WORKING_COPY) && signatureAttribute != null) {
 				final char[] signature = signatureAttribute.getSignature();
@@ -598,7 +620,7 @@ public class Disassembler extends ClassFileBytesDisassembler {
 				if (returnType.length == 1) {
 					switch(returnType[0]) {
 						case 'V' :
-							writeNewLine(buffer, lineSeparator, tabNumber);							
+							writeNewLine(buffer, lineSeparator, tabNumber);
 							break;
 						case 'I' :
 						case 'B' :
@@ -609,19 +631,19 @@ public class Disassembler extends ClassFileBytesDisassembler {
 						case 'C' :
 							writeNewLine(buffer, lineSeparator, tabNumber + 1);
 							buffer.append("return 0;"); //$NON-NLS-1$
-							writeNewLine(buffer, lineSeparator, tabNumber);							
+							writeNewLine(buffer, lineSeparator, tabNumber);
 							break;
 						default :
 							// boolean
 							writeNewLine(buffer, lineSeparator, tabNumber + 1);
 							buffer.append("return false;"); //$NON-NLS-1$
-							writeNewLine(buffer, lineSeparator, tabNumber);							
+							writeNewLine(buffer, lineSeparator, tabNumber);
 					}
 				} else {
 					// object
 					writeNewLine(buffer, lineSeparator, tabNumber + 1);
 					buffer.append("return null;"); //$NON-NLS-1$
-					writeNewLine(buffer, lineSeparator, tabNumber);							
+					writeNewLine(buffer, lineSeparator, tabNumber);
 				}
 				buffer.append('}');
 			} else {
@@ -700,7 +722,7 @@ public class Disassembler extends ClassFileBytesDisassembler {
 			// incomplete initialization. We cannot go further.
 			return org.eclipse.wst.jsdt.internal.compiler.util.Util.EMPTY_STRING;
 		}
-		CharOperation.replace(className, '/', '.');
+		className= CharOperation.replaceOnCopy(className, '/', '.');
 		final int classNameLength = className.length;
 		final int accessFlags = classFileReader.getAccessFlags();
 		final boolean isEnum = (accessFlags & IModifierConstants.ACC_ENUM) != 0;
@@ -959,6 +981,13 @@ public class Disassembler extends ClassFileBytesDisassembler {
 		return CharOperation.equals(TypeConstants.JAVA_LANG_OBJECT, CharOperation.splitOn('.', className));
 	}
 	
+	private boolean isVarArgs(IMethodInfo methodInfo) {
+//		int accessFlags = methodInfo.getAccessFlags();
+//		if ((accessFlags & IModifierConstants.ACC_VARARGS) != 0) return true;
+//		// check the presence of the unspecified Varargs attribute
+//		return Util.getAttribute(methodInfo, AttributeNamesConstants.VarargsName) != null;
+		return false;
+	}
 	private void disassemble(ICodeAttribute codeAttribute, StringBuffer buffer, String lineSeparator, int tabNumber, int mode) {
 		writeNewLine(buffer, lineSeparator, tabNumber - 1);
 		DefaultBytecodeVisitor visitor = new DefaultBytecodeVisitor(codeAttribute, buffer, lineSeparator, tabNumber, mode);

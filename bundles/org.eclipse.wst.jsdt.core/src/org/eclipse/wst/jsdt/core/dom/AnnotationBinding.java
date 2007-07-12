@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005 BEA Systems, Inc.
+ * Copyright (c) 2005, 2007 BEA Systems, Inc.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,7 +57,7 @@ class AnnotationBinding implements IAnnotationBinding {
 		IMemberValuePairBinding[] pairs = getDeclaredMemberValuePairs();
 		ReferenceBinding typeBinding = this.internalAnnotation.getAnnotationType();
 		if (typeBinding == null) return pairs;
-		MethodBinding[] methods = typeBinding.methods();
+		MethodBinding[] methods = typeBinding.availableMethods(); // resilience
 		int methodLength = methods == null ? 0 : methods.length;
 		if (methodLength == 0) return pairs;
 
@@ -95,19 +95,22 @@ class AnnotationBinding implements IAnnotationBinding {
 	}
 
 	public int getModifiers() {
-		return -1;
+		return Modifier.NONE;
 	}
 
 	public String getName() {
 		ITypeBinding annotationType = getAnnotationType();
-		if (annotationType == null)
+		if (annotationType == null) {
 			return new String(this.internalAnnotation.getAnnotationType().sourceName());
-		else
+		} else {
 			return annotationType.getName();
+		}
 	}
 	
 	public boolean isDeprecated() {
-		return false;
+		ReferenceBinding typeBinding = this.internalAnnotation.getAnnotationType();
+		if (typeBinding == null) return false;
+		return typeBinding.isDeprecated();
 	}
 	
 	public boolean isEqualTo(IBinding binding) {
@@ -128,7 +131,15 @@ class AnnotationBinding implements IAnnotationBinding {
 		}
 		return true;
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.core.dom.IBinding#isRecovered()
+	 */
+	public boolean isRecovered() {
+		return false;
+	}
+
 	public boolean isSynthetic() {
 		return false;
 	}

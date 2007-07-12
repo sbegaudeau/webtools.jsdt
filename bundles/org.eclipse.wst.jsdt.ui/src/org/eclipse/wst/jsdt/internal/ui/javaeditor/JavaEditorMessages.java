@@ -49,6 +49,9 @@ final class JavaEditorMessages extends NLS {
 	public static String ClassFileEditor_error_invalid_input_message;
 	public static String ClassFileEditor_error_title;
 	public static String ClassFileEditor_error_message;
+	public static String ClassFileEditor_SourceAttachmentForm_cannotconfigure;
+	public static String ClassFileEditor_SourceAttachmentForm_notsupported;
+	public static String ClassFileEditor_SourceAttachmentForm_readonly;
 	public static String ClassFileMarkerAnnotationModel_error_isAcceptable;
 	public static String ClassFileMarkerAnnotationModel_error_isAffected;
 	public static String ClassFileMarkerAnnotationModel_error_resourceChanged;
@@ -76,7 +79,6 @@ final class JavaEditorMessages extends NLS {
 	public static String ToggleComment_error_title;
 	public static String ToggleComment_error_message;
 	public static String ContentAssistProposal_label;
-	public static String ShowJavaDoc_label;
 	public static String Editor_FoldingMenu_name;
 	public static String CompilationUnitDocumentProvider_saveAsTargetOpenInEditor;
 	public static String ClassFileDocumentProvider_error_createElementInfo;

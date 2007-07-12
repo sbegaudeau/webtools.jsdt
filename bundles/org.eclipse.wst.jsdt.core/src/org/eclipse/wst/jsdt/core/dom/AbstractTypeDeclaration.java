@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2005 IBM Corporation and others.
+ * Copyright (c) 2004, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,9 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.dom;
-
-import java.util.List;
-
+ 
+import java.util.List; 
+  
 /**
  * Abstract subclass for type declaration, enum declaration,
  * and annotation type declaration AST node types.
@@ -25,6 +25,7 @@ import java.util.List;
  * @since 3.0
  */
 public abstract class AbstractTypeDeclaration extends BodyDeclaration {
+	
 	
 	/**
 	 * The type name; lazily initialized; defaults to a unspecified,
@@ -95,7 +96,7 @@ public abstract class AbstractTypeDeclaration extends BodyDeclaration {
 	 * @return the property descriptor
 	 */
 	static final ChildPropertyDescriptor internalNamePropertyFactory(Class nodeClass) {
-		return new ChildPropertyDescriptor(nodeClass, "name", Name.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
+		return new ChildPropertyDescriptor(nodeClass, "name", SimpleName.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
 	}
 	
 	/**

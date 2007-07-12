@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,8 +18,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 
 import org.eclipse.core.resources.IFile;
 
@@ -65,6 +70,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
 
+import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IClasspathContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
@@ -75,9 +81,9 @@ import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.ToolFactory;
+import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.util.ClassFileBytesDisassembler;
-import org.eclipse.wst.jsdt.core.util.IClassFileDisassembler;
-import org.eclipse.wst.jsdt.core.util.IClassFileReader;
+import org.eclipse.wst.jsdt.core.util.ClassFormatException;
 
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
@@ -89,6 +95,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIStatus;
 import org.eclipse.wst.jsdt.internal.ui.actions.CompositeActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
+import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.SourceAttachmentBlock;
 
 /**
@@ -113,6 +120,8 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 
 		/**
 		 * Creates a source attachment form for a class file.
+		 * 
+		 * @param file the class file
 		 */
 		public SourceAttachmentForm(IClassFile file) {
 			fFile= file;
@@ -120,6 +129,9 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 
 		/**
 		 * Returns the package fragment root of this file.
+		 * 
+		 * @param file the class file 
+		 * @return the package fragment root of the given class file
 		 */
 		private IPackageFragmentRoot getPackageFragmentRoot(IClassFile file) {
 
@@ -132,6 +144,9 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 
 		/**
 		 * Creates the control of the source attachment form.
+		 * 
+		 * @param parent the parent composite 
+		 * @return the creates source attachment form
 		 */
 		public Control createControl(Composite parent) {
 
@@ -215,14 +230,24 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 			IJavaProject jproject= root.getJavaProject();
 			if (entry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
 				containerPath= entry.getPath();
-				IClasspathEntry entry2= JavaModelUtil.getClasspathEntryToEdit(jproject, containerPath, root.getPath());
-				if (entry2 == null) {
-					IClasspathContainer container= JavaCore.getClasspathContainer(entry.getPath(), root.getJavaProject());
-					String containerName= container == null ? entry.getPath().toString() : container.getDescription();
-					createLabel(composite, Messages.format(JavaEditorMessages.SourceAttachmentForm_message_containerEntry, containerName));
+				ClasspathContainerInitializer initializer= JavaCore.getClasspathContainerInitializer(containerPath.segment(0));
+				IClasspathContainer container= JavaCore.getClasspathContainer(containerPath, jproject);
+				if (initializer == null || container == null) {
+					createLabel(composite, Messages.format(JavaEditorMessages.ClassFileEditor_SourceAttachmentForm_cannotconfigure, containerPath.toString())); 
 					return;
 				}
-				entry= entry2;
+				String containerName= container.getDescription();
+				IStatus status= initializer.getSourceAttachmentStatus(containerPath, jproject);
+				if (status.getCode() == ClasspathContainerInitializer.ATTRIBUTE_NOT_SUPPORTED) {
+					createLabel(composite, Messages.format(JavaEditorMessages.ClassFileEditor_SourceAttachmentForm_notsupported, containerName));  
+					return;
+				}
+				if (status.getCode() == ClasspathContainerInitializer.ATTRIBUTE_READ_ONLY) {
+					createLabel(composite, Messages.format(JavaEditorMessages.ClassFileEditor_SourceAttachmentForm_readonly, containerName));  
+					return;
+				}
+				entry= JavaModelUtil.findEntryInContainer(container, root.getPath());
+				Assert.isNotNull(entry);
 			}
 
 
@@ -331,11 +356,14 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 		}
 
 		private Label createLabel(Composite parent, String text) {
-			Label label = new Label(parent, SWT.NONE);
+			Label label= new Label(parent, SWT.WRAP);
 			if (text != null)
 				label.setText(text);
 			label.setBackground(fBackgroundColor);
 			label.setForeground(fForegroundColor);
+			GridData gd= new GridData();
+			gd.widthHint= new PixelConverter(label).convertWidthInCharsToPixels(80);
+			label.setLayoutData(gd);
 			return label;
 		}
 
@@ -372,11 +400,13 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 
 		private void updateCodeView(StyledText styledText, IClassFile classFile) {
 			String content= null;
-			int flags= IClassFileReader.FIELD_INFOS | IClassFileReader.METHOD_INFOS | IClassFileReader.SUPER_INTERFACES | IClassFileReader.METHOD_BODIES;
-			IClassFileReader classFileReader= ToolFactory.createDefaultClassFileReader(classFile, flags);
-			if (classFileReader != null) {
-				IClassFileDisassembler disassembler= ToolFactory.createDefaultClassFileDisassembler();
-				content= disassembler.disassemble(classFileReader, "\n", ClassFileBytesDisassembler.DETAILED); //$NON-NLS-1$
+			ClassFileBytesDisassembler disassembler= ToolFactory.createDefaultClassFileBytesDisassembler();
+			try {
+				content= disassembler.disassemble(classFile.getBytes(), "\n", ClassFileBytesDisassembler.DETAILED); //$NON-NLS-1$
+			} catch (JavaModelException ex) {
+				JavaPlugin.log(ex.getStatus());
+			} catch (ClassFormatException ex) {
+				JavaPlugin.log(ex);
 			}
 			styledText.setText(content == null ? "" : content); //$NON-NLS-1$
 		}
@@ -602,6 +632,7 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 	 * @see AbstractTextEditor#doSetInput(IEditorInput)
 	 */
 	protected void doSetInput(IEditorInput input) throws CoreException {
+		uninstallOccurrencesFinder();
 
 		input= transformEditorInput(input);
 		if (!(input instanceof IClassFileEditorInput))
@@ -636,16 +667,33 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 			((ClassFileDocumentProvider) documentProvider).addInputChangeListener(this);
 
 		verifyInput(getEditorInput());
-	}
+		
+		final IJavaElement inputElement= getInputJavaElement();
 
-	/*
-	 * @see org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor#installOverrideIndicator(boolean)
-	 * @since 3.0
-	 */
-	protected void installOverrideIndicator(boolean provideAST) {
-		super.installOverrideIndicator(true);
+		Job job= new Job(JavaEditorMessages.OverrideIndicatorManager_intallJob) {
+			/*
+			 * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
+			 * @since 3.0
+			 */
+			protected IStatus run(IProgressMonitor monitor) {
+				CompilationUnit ast= JavaPlugin.getDefault().getASTProvider().getAST(inputElement, ASTProvider.WAIT_YES, null);
+				if (fOverrideIndicatorManager != null)
+					fOverrideIndicatorManager.reconciled(ast, true, monitor);
+				if (fSemanticManager != null) {
+					SemanticHighlightingReconciler reconciler= fSemanticManager.getReconciler();
+					if (reconciler != null)
+						reconciler.reconciled(ast, false, monitor);
+				}
+				if (isMarkingOccurrences())
+					installOccurrencesFinder(false);
+				return Status.OK_STATUS;
+			}
+		};
+		job.setPriority(Job.DECORATE);
+		job.setSystem(true);
+		job.schedule();
+		
 	}
-
 
 	/*
 	 * @see IWorkbenchPart#createPartControl(Composite)
@@ -691,14 +739,19 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 
 	/**
 	 * Checks if the class file input has no source attached. If so, a source attachment form is shown.
+	 * 
+	 * @param input the editor input 
+	 * @throws JavaModelException if an exception occurs while accessing its corresponding resource 
 	 */
-	private void verifyInput(IEditorInput input) throws CoreException {
+	private void verifyInput(IEditorInput input) throws JavaModelException {
 
 		if (fParent == null || input == null)
 			return;
 
 		IClassFileEditorInput classFileEditorInput= (IClassFileEditorInput) input;
 		IClassFile file= classFileEditorInput.getClassFile();
+		
+		IAction copyQualifiedName= getAction(IJavaEditorActionConstants.COPY_QUALIFIED_NAME);
 		
 		boolean wasUsingSourceCopyAction= fSourceCopyAction == getAction(ITextEditorActionConstants.COPY);
 
@@ -743,6 +796,9 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 				selectAllAction.setActionDefinitionId(IWorkbenchActionDefinitionIds.SELECT_ALL);
 				setAction(ITextEditorActionConstants.SELECT_ALL, selectAllAction);
 				copyAction.setEnabled(fNoSourceTextWidget.getSelectionText().length() > 0);
+				copyQualifiedName.setEnabled(false);
+				
+				
 			}
 
 		} else { // show source viewer
@@ -757,6 +813,7 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 
 			setAction(ITextEditorActionConstants.COPY, fSourceCopyAction);
 			setAction(ITextEditorActionConstants.SELECT_ALL, fSelectAllAction);
+			copyQualifiedName.setEnabled(true);
 
 		}
 		

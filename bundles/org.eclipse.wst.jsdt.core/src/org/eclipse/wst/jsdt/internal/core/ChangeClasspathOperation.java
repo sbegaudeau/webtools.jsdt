@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaModelException;
@@ -43,6 +44,11 @@ public abstract class ChangeClasspathOperation extends JavaModelOperation {
 		DeltaProcessor deltaProcessor = state.getDeltaProcessor();
 		ClasspathChange change = (ClasspathChange) deltaProcessor.classpathChanges.get(project.getProject());
 		if (this.canChangeResources) {
+			// workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=177922
+			if (isTopLevelOperation() && !ResourcesPlugin.getWorkspace().isTreeLocked()) {
+				new ClasspathValidation(project).validate();
+			}
+				
 			// delta, indexing and classpath markers are going to be created by the delta processor 
 			// while handling the .classpath file change
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -201,7 +201,7 @@ protected void addAffectedSourceFiles(StringSet qualifiedSet, StringSet simpleSe
 			ReferenceCollection refs = (ReferenceCollection) valueTable[i];
 			if (refs.includes(internedQualifiedNames, internedSimpleNames)) {
 				IFile file = javaBuilder.currentProject.getFile(typeLocator);
-				SourceFile sourceFile = findSourceFile(file);
+				SourceFile sourceFile = findSourceFile(file, true);
 				if (sourceFile == null) continue next;
 				if (sourceFiles.contains(sourceFile)) continue next;
 				if (compiledAllAtOnce && previousSourceFiles != null && previousSourceFiles.contains(sourceFile))
@@ -306,16 +306,19 @@ protected void deleteGeneratedFiles(IFile[] deletedGeneratedFiles) {
 	// delete generated files and recompile any affected source files
 	try {
 		for (int j = deletedGeneratedFiles.length; --j >= 0;) {
-			SourceFile sourceFile = findSourceFile(deletedGeneratedFiles[j]);
-			if (sourceFile == null) continue;
+			IFile deletedFile = deletedGeneratedFiles[j];
+			if (deletedFile.exists()) continue; // only delete .class files for source files that were actually deleted
+
+			SourceFile sourceFile = findSourceFile(deletedFile, false);
 			String typeLocator = sourceFile.typeLocator();
 			int mdSegmentCount = sourceFile.sourceLocation.sourceFolder.getFullPath().segmentCount();
 			IPath typePath = sourceFile.resource.getFullPath().removeFirstSegments(mdSegmentCount).removeFileExtension();
+			addDependentsOf(typePath, true); // add dependents of the source file since its now deleted
+			previousSourceFiles = null; // existing source files did not see it as deleted since they were compiled before it was
 			char[][] definedTypeNames = newState.getDefinedTypeNamesFor(typeLocator);
 			if (definedTypeNames == null) { // defined a single type matching typePath
 				removeClassFile(typePath, sourceFile.sourceLocation.binaryFolder);
 			} else {
-				addDependentsOf(typePath, true); // add dependents of the source file since it may be involved in a name collision
 				if (definedTypeNames.length > 0) { // skip it if it failed to successfully define a type
 					IPath packagePath = typePath.removeLastSegments(1);
 					for (int d = 0, l = definedTypeNames.length; d < l; d++)
@@ -692,7 +695,7 @@ protected void processAnnotationResults(CompilationParticipantResult[] results) 
 		IFile[] addedGeneratedFiles = result.addedFiles;
 		if (addedGeneratedFiles != null) {
 			for (int j = addedGeneratedFiles.length; --j >= 0;) {
-				SourceFile sourceFile = findSourceFile(addedGeneratedFiles[j]);
+				SourceFile sourceFile = findSourceFile(addedGeneratedFiles[j], true);
 				if (sourceFile != null && !sourceFiles.contains(sourceFile))
 					this.sourceFiles.add(sourceFile);
 			}
@@ -731,8 +734,8 @@ protected void removeSecondaryTypes() throws CoreException {
 			}
 		}
 		this.secondaryTypesToRemove = null;
-		if (previousSourceFiles != null && previousSourceFiles.size() > 1)
-			this.previousSourceFiles = null; // cannot optimize recompile case when a secondary type is deleted
+		if (previousSourceFiles != null)
+			this.previousSourceFiles = null; // cannot optimize recompile case when a secondary type is deleted, see 181269
 	}
 }
 
@@ -773,11 +776,11 @@ protected void updateTasksFor(SourceFile sourceFile, CompilationResult result) t
 	storeTasksFor(sourceFile, tasks);
 }
 
-protected void writeClassFileBytes(byte[] bytes, IFile file, String qualifiedFileName, boolean isTopLevelType, boolean updateClassFile) throws CoreException {
+protected void writeClassFileBytes(byte[] bytes, IFile file, String qualifiedFileName, boolean isTopLevelType, SourceFile compilationUnit) throws CoreException {
 	// Before writing out the class file, compare it to the previous file
-	// If structural changes occured then add dependent source files
+	// If structural changes occurred then add dependent source files
 	if (file.exists()) {
-		if (writeClassFileCheck(file, qualifiedFileName, bytes) || updateClassFile) { // see 46093
+		if (writeClassFileCheck(file, qualifiedFileName, bytes) || compilationUnit.updateClassFile) { // see 46093
 			if (JavaBuilder.DEBUG)
 				System.out.println("Writing changed class file " + file.getName());//$NON-NLS-1$
 			if (!file.isDerived())
@@ -794,9 +797,40 @@ protected void writeClassFileBytes(byte[] bytes, IFile file, String qualifiedFil
 		try {
 			file.create(new ByteArrayInputStream(bytes), IResource.FORCE | IResource.DERIVED, null);
 		} catch (CoreException e) {
-			if (e.getStatus().getCode() == IResourceStatus.CASE_VARIANT_EXISTS)
-				// catch the case that a nested type has been renamed and collides on disk with an as-yet-to-be-deleted type
+			if (e.getStatus().getCode() == IResourceStatus.CASE_VARIANT_EXISTS) {
+				IStatus status = e.getStatus();
+				if (status instanceof IResourceStatus) {
+					IPath oldFilePath = ((IResourceStatus) status).getPath();
+					char[] oldTypeName = oldFilePath.removeFileExtension().lastSegment().toCharArray();
+					char[][] previousTypeNames = newState.getDefinedTypeNamesFor(compilationUnit.typeLocator());
+					boolean fromSameFile = false;
+					if (previousTypeNames == null) {
+						fromSameFile = CharOperation.equals(compilationUnit.getMainTypeName(), oldTypeName);
+					} else {
+						for (int i = 0, l = previousTypeNames.length; i < l; i++) {
+							if (CharOperation.equals(previousTypeNames[i], oldTypeName)) {
+								fromSameFile = true;
+								break;
+							}
+						}
+					}
+					if (fromSameFile) {
+						// file is defined by the same compilationUnit, but won't be deleted until later so do it now
+						IFile collision = file.getParent().getFile(new Path(oldFilePath.lastSegment()));
+						collision.delete(true, false, null);
+						boolean success = false;
+						try {
+							file.create(new ByteArrayInputStream(bytes), IResource.FORCE | IResource.DERIVED, null);
+							success = true;
+						} catch (CoreException ignored) {
+							// ignore the second exception
+						}
+						if (success) return;
+					}
+				}
+				// catch the case that a type has been renamed and collides on disk with an as-yet-to-be-deleted type
 				throw new AbortCompilation(true, new AbortIncrementalBuildException(qualifiedFileName));
+			}
 			throw e; // rethrow
 		}
 	}

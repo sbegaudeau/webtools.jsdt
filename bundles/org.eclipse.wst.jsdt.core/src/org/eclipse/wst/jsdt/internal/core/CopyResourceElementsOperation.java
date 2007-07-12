@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -95,7 +95,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 	}
 	/**
 	 * Returns the children of <code>source</code> which are affected by this operation.
-	 * If <code>source</code> is a <code>K_SOURCE</code>, these are the <code>.js</code>
+	 * If <code>source</code> is a <code>K_SOURCE</code>, these are the <code>.java</code>
 	 * files, if it is a <code>K_BINARY</code>, they are the <code>.class</code> files.
 	 */
 	private IResource[] collectResourcesOfInterest(IPackageFragment source) throws JavaModelException {
@@ -268,7 +268,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 						if (rewrite != null) flags |= IResource.KEEP_HISTORY;
 						sourceResource.copy(destFile.getFullPath(), flags, getSubProgressMonitor(1));
 					}
-					this.setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE); 
+					setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE); 
 				} else {
 					destCU.getBuffer().setContents(source.getBuffer().getContents());
 				}
@@ -404,7 +404,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 				if (sourceIsReadOnly) {
 					Util.setReadOnly(srcFolder, true);
 				}
-				this.setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE); 
+				setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE); 
 			} else {
 				// process the leaf resources
 				if (resources.length > 0) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui;
+
+import java.util.Locale;
 
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -21,7 +23,9 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.jface.resource.ColorRegistry;
 
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 
@@ -33,12 +37,14 @@ import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 
 import org.eclipse.wst.jsdt.ui.text.IJavaColorConstants;
 
+import org.eclipse.wst.jsdt.internal.ui.IJavaThemeConstants;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightings;
 import org.eclipse.wst.jsdt.internal.ui.preferences.NewJavaProjectPreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.WorkInProgressPreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.FormatterProfileManager;
 import org.eclipse.wst.jsdt.internal.ui.text.java.ProposalSorterRegistry;
+import org.eclipse.wst.jsdt.internal.ui.text.spelling.JavaSpellingEngine;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.SpellCheckEngine;
 
 /**
@@ -596,6 +602,7 @@ public class PreferenceConstants {
 	 *
 	 * @see JavaUI
 	 * @since 3.0
+	 * @deprecated As of 3.3, replaced by {@link AbstractDecoratedTextEditorPreferenceConstants#EDITOR_SHOW_TEXT_HOVER_AFFORDANCE}
 	 */
 	public static final String EDITOR_SHOW_TEXT_HOVER_AFFORDANCE= "PreferenceConstants.EDITOR_SHOW_TEXT_HOVER_AFFORDANCE"; //$NON-NLS-1$
 
@@ -1099,7 +1106,7 @@ public class PreferenceConstants {
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
 	 * @since 2.1
-	 * @deprecated as of 3.3 replaced by {@link org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants}
+	 * @deprecated as of 3.3 replaced by {@link org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants#EDITOR_SMART_HOME_END}
 	 */
 	public final static String EDITOR_SMART_HOME_END= AbstractTextEditor.PREFERENCE_NAVIGATION_SMART_HOME_END;
 
@@ -3066,7 +3073,7 @@ public class PreferenceConstants {
 	 *
 	 * @since 3.0
 	 */	
-	public static final String FORMATTER_PROFILE = "formatter_profile"; //$NON-NLS-1$
+	public static final String FORMATTER_PROFILE= "formatter_profile"; //$NON-NLS-1$
 	
 	/**
 	 * A named preference that controls whether annotation roll over is used or not.
@@ -3480,6 +3487,33 @@ public class PreferenceConstants {
 	public static final String CODEASSIST_SORTER= "content_assist_sorter"; //$NON-NLS-1$
 
 	/**
+	 * A named preference that holds the source hover background color.
+	 * <p>
+	 * Value is of type <code>String</code>. A RGB color value encoded as a string
+	 * using class <code>PreferenceConverter</code>
+	 * </p>
+	 *
+	 * @see org.eclipse.jface.resource.StringConverter
+	 * @see org.eclipse.jface.preference.PreferenceConverter
+	 * @since 3.3
+	 */
+	public final static String EDITOR_SOURCE_HOVER_BACKGROUND_COLOR= "sourceHoverBackgroundColor"; //$NON-NLS-1$
+	
+	/**
+	 * A named preference that tells whether to use the system
+	 * default color ({@link SWT#COLOR_INFO_BACKGROUND}) for
+	 * the source hover background color.
+	 * <p>
+	 * Value is of type <code>Boolean</code>.
+	 * </p>
+	 *
+	 * @see org.eclipse.jface.resource.StringConverter
+	 * @see org.eclipse.jface.preference.PreferenceConverter
+	 * @since 3.3
+	 */
+	public final static String EDITOR_SOURCE_HOVER_BACKGROUND_COLOR_SYSTEM_DEFAULT= "sourceHoverBackgroundColor.SystemDefault"; //$NON-NLS-1$
+	
+	/**
 	 * Initializes the given preference store with the default values.
 	 * 
 	 * @param store the preference store to be initialized
@@ -3487,6 +3521,7 @@ public class PreferenceConstants {
 	 * @since 2.1
 	 */
 	public static void initializeDefaultValues(IPreferenceStore store) {
+		ColorRegistry registry= PlatformUI.getWorkbench().getThemeManager().getCurrentTheme().getColorRegistry();
 		store.setDefault(PreferenceConstants.EDITOR_SHOW_SEGMENTS, false);
 
 		// JavaBasePreferencePage
@@ -3566,7 +3601,10 @@ public class PreferenceConstants {
 
 		// JavaEditorPreferencePage
 		store.setDefault(PreferenceConstants.EDITOR_MATCHING_BRACKETS, true);
-		PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_MATCHING_BRACKETS_COLOR, new RGB(192, 192,192));
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.EDITOR_MATCHING_BRACKETS_COLOR, 
+				findRGB(registry, IJavaThemeConstants.EDITOR_MATCHING_BRACKETS_COLOR, new RGB(192, 192,192)));
 
 		store.setDefault(PreferenceConstants.EDITOR_CORRECTION_INDICATION, true);
 		store.setDefault(PreferenceConstants.EDITOR_SYNC_OUTLINE_ON_CURSOR_MOVE, true);
@@ -3578,15 +3616,26 @@ public class PreferenceConstants {
 		store.setDefault(PreferenceConstants.EDITOR_TAB_WIDTH, 4);
 		store.setDefault(PreferenceConstants.EDITOR_SPACES_FOR_TABS, false);
 
-		PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_MULTI_LINE_COMMENT_COLOR, new RGB(63, 127, 95));
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.EDITOR_MULTI_LINE_COMMENT_COLOR, 
+				findRGB(registry, IJavaThemeConstants.EDITOR_MULTI_LINE_COMMENT_COLOR, new RGB(63, 127, 95)));
+		
 		store.setDefault(PreferenceConstants.EDITOR_MULTI_LINE_COMMENT_BOLD, false);
 		store.setDefault(PreferenceConstants.EDITOR_MULTI_LINE_COMMENT_ITALIC, false);
 
-		PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_SINGLE_LINE_COMMENT_COLOR, new RGB(63, 127, 95));
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.EDITOR_SINGLE_LINE_COMMENT_COLOR, 
+				findRGB(registry, IJavaThemeConstants.EDITOR_SINGLE_LINE_COMMENT_COLOR, new RGB(63, 127, 95)));
+		
 		store.setDefault(PreferenceConstants.EDITOR_SINGLE_LINE_COMMENT_BOLD, false);
 		store.setDefault(PreferenceConstants.EDITOR_SINGLE_LINE_COMMENT_ITALIC, false);
 
-		PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_JAVA_KEYWORD_COLOR, new RGB(127, 0, 85));
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.EDITOR_JAVA_KEYWORD_COLOR, 
+				findRGB(registry, IJavaThemeConstants.EDITOR_JAVA_KEYWORD_COLOR, new RGB(127, 0, 85)));
 		store.setDefault(PreferenceConstants.EDITOR_JAVA_KEYWORD_BOLD, true);
 		store.setDefault(PreferenceConstants.EDITOR_JAVA_KEYWORD_ITALIC, false);
 
@@ -3594,47 +3643,78 @@ public class PreferenceConstants {
 		store.setDefault(PreferenceConstants.EDITOR_JAVA_ANNOTATION_BOLD, false);
 		store.setDefault(PreferenceConstants.EDITOR_JAVA_ANNOTATION_ITALIC, false);
 
-		PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_STRING_COLOR, new RGB(42, 0, 255));
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.EDITOR_STRING_COLOR, 
+				findRGB(registry, IJavaThemeConstants.EDITOR_STRING_COLOR, new RGB(42, 0, 255)));
+		
 		store.setDefault(PreferenceConstants.EDITOR_STRING_BOLD, false);
 		store.setDefault(PreferenceConstants.EDITOR_STRING_ITALIC, false);
 
-		PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_JAVA_DEFAULT_COLOR, new RGB(0, 0, 0));
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.EDITOR_JAVA_DEFAULT_COLOR, 
+				findRGB(registry, IJavaThemeConstants.EDITOR_JAVA_DEFAULT_COLOR, new RGB(0, 0, 0)));
 		store.setDefault(PreferenceConstants.EDITOR_JAVA_DEFAULT_BOLD, false);
 		store.setDefault(PreferenceConstants.EDITOR_JAVA_DEFAULT_ITALIC, false);
 
-		PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_JAVA_METHOD_NAME_COLOR, new RGB(0, 0, 0));
+		setDefaultAndFireEvent(store, PreferenceConstants.EDITOR_JAVA_METHOD_NAME_COLOR, new RGB(0, 0, 0));
 		store.setDefault(PreferenceConstants.EDITOR_JAVA_METHOD_NAME_BOLD, false);
 		store.setDefault(PreferenceConstants.EDITOR_JAVA_METHOD_NAME_ITALIC, false);
 
-		PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_JAVA_KEYWORD_RETURN_COLOR, new RGB(127, 0, 85));
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.EDITOR_JAVA_KEYWORD_RETURN_COLOR, 
+				findRGB(registry, IJavaThemeConstants.EDITOR_JAVA_KEYWORD_RETURN_COLOR, new RGB(127, 0, 85)));
 		store.setDefault(PreferenceConstants.EDITOR_JAVA_KEYWORD_RETURN_BOLD, true);
 		store.setDefault(PreferenceConstants.EDITOR_JAVA_KEYWORD_RETURN_ITALIC, false);
 
-		PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_JAVA_OPERATOR_COLOR, new RGB(0, 0, 0));
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.EDITOR_JAVA_OPERATOR_COLOR, 
+				findRGB(registry, IJavaThemeConstants.EDITOR_JAVA_OPERATOR_COLOR, new RGB(0, 0, 0)));
 		store.setDefault(PreferenceConstants.EDITOR_JAVA_OPERATOR_BOLD, false);
 		store.setDefault(PreferenceConstants.EDITOR_JAVA_OPERATOR_ITALIC, false);
 
-		PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_JAVA_BRACKET_COLOR, new RGB(0, 0, 0));
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.EDITOR_JAVA_BRACKET_COLOR, 
+				findRGB(registry, IJavaThemeConstants.EDITOR_JAVA_BRACKET_COLOR, new RGB(0, 0, 0)));
 		store.setDefault(PreferenceConstants.EDITOR_JAVA_BRACKET_BOLD, false);
 		store.setDefault(PreferenceConstants.EDITOR_JAVA_BRACKET_ITALIC, false);
 
-		PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_TASK_TAG_COLOR, new RGB(127, 159, 191));
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.EDITOR_TASK_TAG_COLOR, 
+				findRGB(registry, IJavaThemeConstants.EDITOR_TASK_TAG_COLOR, new RGB(127, 159, 191)));
 		store.setDefault(PreferenceConstants.EDITOR_TASK_TAG_BOLD, true);
 		store.setDefault(PreferenceConstants.EDITOR_TASK_TAG_ITALIC, false);
 
-		PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_JAVADOC_KEYWORD_COLOR, new RGB(127, 159, 191));
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.EDITOR_JAVADOC_KEYWORD_COLOR, 
+				findRGB(registry, IJavaThemeConstants.EDITOR_JAVADOC_KEYWORD_COLOR, new RGB(127, 159, 191)));
 		store.setDefault(PreferenceConstants.EDITOR_JAVADOC_KEYWORD_BOLD, true);
 		store.setDefault(PreferenceConstants.EDITOR_JAVADOC_KEYWORD_ITALIC, false);
 
-		PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_JAVADOC_TAG_COLOR, new RGB(127, 127, 159));
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.EDITOR_JAVADOC_TAG_COLOR, 
+				findRGB(registry, IJavaThemeConstants.EDITOR_JAVADOC_TAG_COLOR, new RGB(127, 127, 159)));
 		store.setDefault(PreferenceConstants.EDITOR_JAVADOC_TAG_BOLD, false);
 		store.setDefault(PreferenceConstants.EDITOR_JAVADOC_TAG_ITALIC, false);
 
-		PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_JAVADOC_LINKS_COLOR, new RGB(63, 63, 191));
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.EDITOR_JAVADOC_LINKS_COLOR, 
+				findRGB(registry, IJavaThemeConstants.EDITOR_JAVADOC_LINKS_COLOR, new RGB(63, 63, 191)));
 		store.setDefault(PreferenceConstants.EDITOR_JAVADOC_LINKS_BOLD, false);
 		store.setDefault(PreferenceConstants.EDITOR_JAVADOC_LINKS_ITALIC, false);
 
-		PreferenceConverter.setDefault(store, PreferenceConstants.EDITOR_JAVADOC_DEFAULT_COLOR, new RGB(63, 95, 191));
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.EDITOR_JAVADOC_DEFAULT_COLOR, 
+				findRGB(registry, IJavaThemeConstants.EDITOR_JAVADOC_DEFAULT_COLOR, new RGB(63, 95, 191)));
 		store.setDefault(PreferenceConstants.EDITOR_JAVADOC_DEFAULT_BOLD, false);
 		store.setDefault(PreferenceConstants.EDITOR_JAVADOC_DEFAULT_ITALIC, false);
 
@@ -3642,12 +3722,30 @@ public class PreferenceConstants {
 		store.setDefault(PreferenceConstants.CODEASSIST_AUTOACTIVATION_DELAY, 200);
 
 		store.setDefault(PreferenceConstants.CODEASSIST_AUTOINSERT, true);
-		PreferenceConverter.setDefault(store, PreferenceConstants.CODEASSIST_PROPOSALS_BACKGROUND, new RGB(255, 255, 255));
-		PreferenceConverter.setDefault(store, PreferenceConstants.CODEASSIST_PROPOSALS_FOREGROUND, new RGB(0, 0, 0));
-		PreferenceConverter.setDefault(store, PreferenceConstants.CODEASSIST_PARAMETERS_BACKGROUND, new RGB(255, 255, 255));
-		PreferenceConverter.setDefault(store, PreferenceConstants.CODEASSIST_PARAMETERS_FOREGROUND, new RGB(0, 0, 0));
-		PreferenceConverter.setDefault(store, PreferenceConstants.CODEASSIST_REPLACEMENT_BACKGROUND, new RGB(255, 255, 0));
-		PreferenceConverter.setDefault(store, PreferenceConstants.CODEASSIST_REPLACEMENT_FOREGROUND, new RGB(255, 0, 0));
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.CODEASSIST_PROPOSALS_BACKGROUND, 
+				findRGB(registry, IJavaThemeConstants.CODEASSIST_PROPOSALS_BACKGROUND, new RGB(255, 255, 255)));
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.CODEASSIST_PROPOSALS_FOREGROUND, 
+				findRGB(registry, IJavaThemeConstants.CODEASSIST_PROPOSALS_FOREGROUND, new RGB(0, 0, 0)));
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.CODEASSIST_PARAMETERS_BACKGROUND, 
+				findRGB(registry, IJavaThemeConstants.CODEASSIST_PARAMETERS_BACKGROUND, new RGB(255, 255, 255)));
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.CODEASSIST_PARAMETERS_FOREGROUND, 
+				findRGB(registry, IJavaThemeConstants.CODEASSIST_PARAMETERS_FOREGROUND, new RGB(0, 0, 0)));
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.CODEASSIST_REPLACEMENT_BACKGROUND, 
+				findRGB(registry, IJavaThemeConstants.CODEASSIST_REPLACEMENT_BACKGROUND, new RGB(255, 255, 0)));
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.CODEASSIST_REPLACEMENT_FOREGROUND, 
+				findRGB(registry, IJavaThemeConstants.CODEASSIST_REPLACEMENT_FOREGROUND, new RGB(255, 0, 0)));
 		store.setDefault(PreferenceConstants.CODEASSIST_AUTOACTIVATION_TRIGGERS_JAVA, "."); //$NON-NLS-1$
 		store.setDefault(PreferenceConstants.CODEASSIST_AUTOACTIVATION_TRIGGERS_JAVADOC, "@#"); //$NON-NLS-1$
 		store.setDefault(PreferenceConstants.CODEASSIST_SHOW_VISIBLE_PROPOSALS, true);
@@ -3677,13 +3775,16 @@ public class PreferenceConstants {
 		
 		int sourceHoverModifier= SWT.MOD2;
 		String sourceHoverModifierName= Action.findModifierString(sourceHoverModifier);	// Shift
-		store.setDefault(PreferenceConstants.EDITOR_TEXT_HOVER_MODIFIERS, "org.eclipse.wst.jsdt.ui.BestMatchHover;0;org.eclipse.wst.jsdt.ui.JavaSourceHover;" + sourceHoverModifierName); //$NON-NLS-1$
-		store.setDefault(PreferenceConstants.EDITOR_TEXT_HOVER_MODIFIER_MASKS, "org.eclipse.wst.jsdt.ui.BestMatchHover;0;org.eclipse.wst.jsdt.ui.JavaSourceHover;" + sourceHoverModifier); //$NON-NLS-1$
-		store.setDefault(PreferenceConstants.EDITOR_SHOW_TEXT_HOVER_AFFORDANCE, true);
+		int nlsHoverModifier= SWT.MOD1 + SWT.MOD3;
+		String nlsHoverModifierName= Action.findModifierString(SWT.MOD1) + "+" + Action.findModifierString(SWT.MOD3);	// Ctrl + Alt //$NON-NLS-1$
+		store.setDefault(PreferenceConstants.EDITOR_TEXT_HOVER_MODIFIERS, "org.eclipse.wst.jsdt.ui.BestMatchHover;0;org.eclipse.wst.jsdt.ui.JavaSourceHover;" + sourceHoverModifierName + ";org.eclipse.wst.jsdt.ui.NLSStringHover;" + nlsHoverModifierName); //$NON-NLS-1$ //$NON-NLS-2$
+		store.setDefault(PreferenceConstants.EDITOR_TEXT_HOVER_MODIFIER_MASKS, "org.eclipse.wst.jsdt.ui.BestMatchHover;0;org.eclipse.wst.jsdt.ui.JavaSourceHover;" + sourceHoverModifier + ";org.eclipse.wst.jsdt.ui.NLSStringHover;" + nlsHoverModifier); //$NON-NLS-1$ //$NON-NLS-2$
 		
 		store.setDefault(PreferenceConstants.EDITOR_SMART_TAB, true);
 		store.setDefault(PreferenceConstants.EDITOR_SMART_BACKSPACE, true);
 		store.setDefault(PreferenceConstants.EDITOR_ANNOTATION_ROLL_OVER, false);
+		
+		store.setDefault(EDITOR_SOURCE_HOVER_BACKGROUND_COLOR_SYSTEM_DEFAULT, true);
 		
 		store.setDefault(PreferenceConstants.FORMATTER_PROFILE, FormatterProfileManager.DEFAULT_PROFILE);
 		
@@ -3702,8 +3803,15 @@ public class PreferenceConstants {
 		
 		
 		// spell checking
-		store.setDefault(PreferenceConstants.SPELLING_LOCALE, SpellCheckEngine.getDefaultLocale().toString());
-		store.setToDefault(PreferenceConstants.SPELLING_LOCALE);
+		store.setDefault(PreferenceConstants.SPELLING_LOCALE, "en_US"); //$NON-NLS-1$
+		String isInitializedKey= "spelling_locale_initialized"; //$NON-NLS-1$
+		if (!store.getBoolean(isInitializedKey)) {
+			store.setValue(isInitializedKey, true);
+			Locale locale= SpellCheckEngine.getDefaultLocale();
+			locale= SpellCheckEngine.findClosestLocale(locale);
+			if (locale != null)
+				store.setValue(PreferenceConstants.SPELLING_LOCALE, locale.toString());
+		}
 		store.setDefault(PreferenceConstants.SPELLING_IGNORE_DIGITS, true);
 		store.setDefault(PreferenceConstants.SPELLING_IGNORE_MIXED, true);
 		store.setDefault(PreferenceConstants.SPELLING_IGNORE_SENTENCE, true);
@@ -3711,6 +3819,7 @@ public class PreferenceConstants {
 		store.setDefault(PreferenceConstants.SPELLING_IGNORE_URLS, true);
 		store.setDefault(PreferenceConstants.SPELLING_IGNORE_SINGLE_LETTERS, true);
 		store.setDefault(PreferenceConstants.SPELLING_IGNORE_AMPERSAND_IN_PROPERTIES, true);
+		store.setDefault(JavaSpellingEngine.SPELLING_IGNORE_JAVA_STRINGS, true);
 		store.setDefault(PreferenceConstants.SPELLING_IGNORE_NON_LETTERS, true);
 		store.setDefault(PreferenceConstants.SPELLING_USER_DICTIONARY, ""); //$NON-NLS-1$
 		
@@ -3735,19 +3844,38 @@ public class PreferenceConstants {
 		store.setDefault(PreferenceConstants.EDITOR_FOLDING_HEADERS, true);
 		
 		// properties file editor
-		PreferenceConverter.setDefault(store, PreferenceConstants.PROPERTIES_FILE_COLORING_KEY, new RGB(0, 0, 0));
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.PROPERTIES_FILE_COLORING_KEY, 
+				findRGB(registry, IJavaThemeConstants.PROPERTIES_FILE_COLORING_KEY, new RGB(0, 0, 0)));
 		store.setDefault(PreferenceConstants.PROPERTIES_FILE_COLORING_KEY_BOLD, false);
 		store.setDefault(PreferenceConstants.PROPERTIES_FILE_COLORING_KEY_ITALIC, false);
-		PreferenceConverter.setDefault(store, PreferenceConstants.PROPERTIES_FILE_COLORING_VALUE, new RGB(42, 0, 255));
+		
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.PROPERTIES_FILE_COLORING_VALUE, 
+				findRGB(registry, IJavaThemeConstants.PROPERTIES_FILE_COLORING_VALUE, new RGB(42, 0, 255)));
 		store.setDefault(PreferenceConstants.PROPERTIES_FILE_COLORING_VALUE_BOLD, false);
 		store.setDefault(PreferenceConstants.PROPERTIES_FILE_COLORING_VALUE_ITALIC, false);
-		PreferenceConverter.setDefault(store, PreferenceConstants.PROPERTIES_FILE_COLORING_ASSIGNMENT, new RGB(0, 0, 0));
+		
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.PROPERTIES_FILE_COLORING_ASSIGNMENT, 
+				findRGB(registry, IJavaThemeConstants.PROPERTIES_FILE_COLORING_ASSIGNMENT, new RGB(0, 0, 0)));
 		store.setDefault(PreferenceConstants.PROPERTIES_FILE_COLORING_ASSIGNMENT_BOLD, false);
 		store.setDefault(PreferenceConstants.PROPERTIES_FILE_COLORING_ASSIGNMENT_ITALIC, false);
-		PreferenceConverter.setDefault(store, PreferenceConstants.PROPERTIES_FILE_COLORING_ARGUMENT, new RGB(127, 0, 85));
+		
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.PROPERTIES_FILE_COLORING_ARGUMENT, 
+				findRGB(registry, IJavaThemeConstants.PROPERTIES_FILE_COLORING_ARGUMENT, new RGB(127, 0, 85)));
 		store.setDefault(PreferenceConstants.PROPERTIES_FILE_COLORING_ARGUMENT_BOLD, true);
 		store.setDefault(PreferenceConstants.PROPERTIES_FILE_COLORING_ARGUMENT_ITALIC, false);
-		PreferenceConverter.setDefault(store, PreferenceConstants.PROPERTIES_FILE_COLORING_COMMENT,  new RGB(63, 127, 95));
+		
+		setDefaultAndFireEvent(
+				store, 
+				PreferenceConstants.PROPERTIES_FILE_COLORING_COMMENT,  
+				findRGB(registry, IJavaThemeConstants.PROPERTIES_FILE_COLORING_COMMENT, new RGB(63, 127, 95)));
 		store.setDefault(PreferenceConstants.PROPERTIES_FILE_COLORING_COMMENT_BOLD, false);
 		store.setDefault(PreferenceConstants.PROPERTIES_FILE_COLORING_COMMENT_ITALIC, false);
 		
@@ -3756,9 +3884,6 @@ public class PreferenceConstants {
 
 		// do more complicated stuff
 		NewJavaProjectPreferencePage.initDefaults(store);
-		
-		// work in progress
-		WorkInProgressPreferencePage.initDefaults(store);
 
 		// reset preferences that are not settable by editor any longer
 		// see AbstractDecoratedTextEditorPreferenceConstants
@@ -3786,6 +3911,9 @@ public class PreferenceConstants {
 		store.setToDefault(PreferenceConstants.EDITOR_DISABLE_OVERWRITE_MODE); // global
 		
 		store.setToDefault(PreferenceConstants.EDITOR_SEMANTIC_HIGHLIGHTING_ENABLED); // removed
+		
+		store.setToDefault(PreferenceConstants.EDITOR_SHOW_TEXT_HOVER_AFFORDANCE); // global
+
 		
 		//Code Clean Up
 		CleanUpConstants.initDefaults(store);
@@ -3872,5 +4000,42 @@ public class PreferenceConstants {
 		}
 		return new DefaultScope().getNode(JavaUI.ID_PLUGIN).get(key, null);
 	}
+
+	/**
+	 * Sets the default value and fires a property
+	 * change event if necessary.
+	 * 
+	 * @param store	the preference store
+	 * @param key the preference key
+	 * @param newValue the new value
+	 * @since 3.3
+	 */
+	private static void setDefaultAndFireEvent(IPreferenceStore store, String key, RGB newValue) {
+		RGB oldValue= null;
+		if (store.isDefault(key))
+			oldValue= PreferenceConverter.getDefaultColor(store, key);
+		
+		PreferenceConverter.setDefault(store, key, newValue);
+		
+		if (oldValue != null && !oldValue.equals(newValue))
+			store.firePropertyChangeEvent(key, oldValue, newValue);
+	}
+
+	/**
+	 * Returns the RGB for the given key in the given color registry.
+	 * 
+	 * @param registry the color registry
+	 * @param key the key for the constant in the registry
+	 * @param defaultRGB the default RGB if no entry is found
+	 * @return RGB the RGB
+	 * @since 3.3
+	 */
+	private static RGB findRGB(ColorRegistry registry, String key, RGB defaultRGB) {
+		RGB rgb= registry.getRGB(key);
+		if (rgb != null)
+			return rgb;
+		return defaultRGB;
+	}
+
 }
 

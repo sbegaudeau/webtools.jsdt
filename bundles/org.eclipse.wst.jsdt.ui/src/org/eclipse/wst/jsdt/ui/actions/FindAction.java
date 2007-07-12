@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -131,7 +131,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 				else
 					return findType((ICompilationUnit)o, silent);
 			case IJavaElement.CLASS_FILE:
-				return findType((IClassFile)o);
+				return ((IClassFile)o).getType();
 			default:
 				return o;				
 		}
@@ -194,18 +194,6 @@ public abstract class FindAction extends SelectionDispatchAction {
 			return RETURN_WITHOUT_BEEP;
 	}
 
-	private IType findType(IClassFile cf) {
-		IType mainType;
-		try {					
-			mainType= cf.getType();
-		} catch (JavaModelException ex) {
-			if (JavaModelUtil.isExceptionToBeLogged(ex))
-				ExceptionHandler.log(ex, SearchMessages.JavaElementAction_error_open_message); 
-			return null;
-		}
-		return mainType;
-	}
-	
 	/* 
 	 * Method declared on SelectionChangedAction.
 	 */
@@ -277,10 +265,12 @@ public abstract class FindAction extends SelectionDispatchAction {
 			performNewSearch(element);
 		} catch (JavaModelException ex) {
 			ExceptionHandler.handle(ex, getShell(), SearchMessages.Search_Error_search_notsuccessful_title, SearchMessages.Search_Error_search_notsuccessful_message); 
+		} catch (InterruptedException e) {
+			// cancelled
 		}
 	}
 
-	private void performNewSearch(IJavaElement element) throws JavaModelException {
+	private void performNewSearch(IJavaElement element) throws JavaModelException, InterruptedException {
 		JavaSearchQuery query= new JavaSearchQuery(createQuery(element));
 		if (query.canRunInBackground()) {
 			/*
@@ -305,7 +295,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		}
 	}
 	
-	QuerySpecification createQuery(IJavaElement element) throws JavaModelException {
+	QuerySpecification createQuery(IJavaElement element) throws JavaModelException, InterruptedException {
 		JavaSearchScopeFactory factory= JavaSearchScopeFactory.getInstance();
 		IJavaSearchScope scope= factory.createWorkspaceScope(true);
 		String description= factory.getWorkspaceScopeDescription(true);

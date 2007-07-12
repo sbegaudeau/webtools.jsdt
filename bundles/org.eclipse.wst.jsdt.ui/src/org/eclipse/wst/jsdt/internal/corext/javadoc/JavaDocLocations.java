@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -84,7 +84,7 @@ import org.xml.sax.SAXException;
 
 public class JavaDocLocations {
 	
-	public static final String ARCHIVE_PREFIX= "jar:file:/"; //$NON-NLS-1$
+	public static final String ARCHIVE_PREFIX= "jar:"; //$NON-NLS-1$
 	private static final String PREF_JAVADOCLOCATIONS= "org.eclipse.wst.jsdt.ui.javadoclocations"; //$NON-NLS-1$
 	public static final String PREF_JAVADOCLOCATIONS_MIGRATED= "org.eclipse.wst.jsdt.ui.javadoclocations.migrated"; //$NON-NLS-1$
 

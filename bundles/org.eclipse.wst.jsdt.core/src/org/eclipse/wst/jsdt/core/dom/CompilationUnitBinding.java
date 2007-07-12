@@ -827,5 +827,8 @@ class CompilationUnitBinding implements ITypeBinding {
 		return pkg.getClassFile(new String(fileName, start = pkgEnd + 1, fileName.length - start));
 	}
 	
+	public boolean isRecovered() {
+		return false;
+	}
 
 }

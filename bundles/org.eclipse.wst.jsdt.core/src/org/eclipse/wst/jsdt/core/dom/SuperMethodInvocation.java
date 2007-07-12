@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -274,6 +274,20 @@ public class SuperMethodInvocation extends Expression {
 		postReplaceChild(oldChild, name, QUALIFIER_PROPERTY);
 	}
 	
+	
+	/**
+	 * Returns true if the resolved return type has been inferred from the assignment context (JLS3 15.12.2.8), false otherwise.
+	 * <p>
+	 * This information is available only when bindings are requested when the AST is being built
+	 * </p>.
+	 *
+	 * @return true if the resolved return type has been inferred from the assignment context (JLS3 15.12.2.8), false otherwise
+	 * @since 3.3
+	 */
+	public boolean isResolvedTypeInferredFromExpectedType() {
+		return this.ast.getBindingResolver().isResolvedTypeInferredFromExpectedType(this);
+	}
+
 	/**
 	 * Returns the live ordered list of type arguments of this method
 	 * invocation (added in JLS3 API).

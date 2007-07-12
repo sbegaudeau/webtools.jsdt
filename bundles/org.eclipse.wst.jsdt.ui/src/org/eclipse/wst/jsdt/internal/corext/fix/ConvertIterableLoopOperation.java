@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -231,8 +231,7 @@ public final class ConvertIterableLoopOperation extends ConvertLoopOperation {
 		final AST ast= cuRewrite.getAST();
 		final ASTRewrite astRewrite= cuRewrite.getASTRewrite();
 		final ImportRewrite importRewrite= cuRewrite.getImportRewrite();
-		
-		final ImportRemover remover= new ImportRemover(getJavaProject(), (CompilationUnit)getForStatement().getRoot());
+		final ImportRemover remover= cuRewrite.getImportRemover();
 		
 		fEnhancedForLoop= ast.newEnhancedForStatement();
 		String[] names= getVariableNameProposals();
@@ -313,7 +312,6 @@ public final class ConvertIterableLoopOperation extends ConvertLoopOperation {
 		pg.addPosition(astRewrite.track(simple), true);
 		declaration.setName(simple);
 		final ITypeBinding iterable= getIterableType(fIterator.getType());
-		final ImportRewrite imports= importRewrite;
 		declaration.setType(importType(iterable, getForStatement(), importRewrite, getRoot()));
 		if (fMakeFinal) {
 			ModifierRewrite.create(astRewrite, declaration).setModifiers(Modifier.FINAL, 0, group);
@@ -321,8 +319,16 @@ public final class ConvertIterableLoopOperation extends ConvertLoopOperation {
 		remover.registerAddedImport(iterable.getQualifiedName());
 		fEnhancedForLoop.setParameter(declaration);
 		fEnhancedForLoop.setExpression(getExpression(astRewrite));
-		remover.registerRemovedNode(getForStatement());
-		remover.applyRemoves(imports);
+		
+		remover.registerRemovedNode(getForStatement().getExpression());
+		for (Iterator iterator= getForStatement().initializers().iterator(); iterator.hasNext();) {
+			ASTNode node= (ASTNode)iterator.next();
+			remover.registerRemovedNode(node);			
+		}
+		for (Iterator iterator= getForStatement().updaters().iterator(); iterator.hasNext();) {
+			ASTNode node= (ASTNode)iterator.next();
+			remover.registerRemovedNode(node);						
+		}
 		
 		return fEnhancedForLoop;
 	}
@@ -351,8 +357,11 @@ public final class ConvertIterableLoopOperation extends ConvertLoopOperation {
 				final Expression initializer= (Expression)outer.next();
 				if (initializer instanceof VariableDeclarationExpression) {
 					final VariableDeclarationExpression declaration= (VariableDeclarationExpression)initializer;
-					for (Iterator inner= declaration.fragments().iterator(); inner.hasNext();) {
-						final VariableDeclarationFragment fragment= (VariableDeclarationFragment)inner.next();
+					List fragments= declaration.fragments();
+					if (fragments.size() != 1) {
+						return new StatusInfo(IStatus.ERROR, ""); //$NON-NLS-1$
+					} else {
+						final VariableDeclarationFragment fragment= (VariableDeclarationFragment)fragments.get(0);
 						fragment.accept(new ASTVisitor() {
 							
 							public final boolean visit(final MethodInvocation node) {

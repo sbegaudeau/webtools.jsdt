@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -104,12 +104,10 @@ public CodeSnippetClassFile(
 	int interfacesCount = superInterfacesBinding.length;
 	this.contents[this.contentsOffset++] = (byte) (interfacesCount >> 8);
 	this.contents[this.contentsOffset++] = (byte) interfacesCount;
-	if (superInterfacesBinding != null) {
-		for (int i = 0; i < interfacesCount; i++) {
-			int interfaceIndex = this.constantPool.literalIndexForType(superInterfacesBinding[i]);
-			this.contents[this.contentsOffset++] = (byte) (interfaceIndex >> 8);
-			this.contents[this.contentsOffset++] = (byte) interfaceIndex;
-		}
+	for (int i = 0; i < interfacesCount; i++) {
+		int interfaceIndex = this.constantPool.literalIndexForType(superInterfacesBinding[i]);
+		this.contents[this.contentsOffset++] = (byte) (interfaceIndex >> 8);
+		this.contents[this.contentsOffset++] = (byte) interfaceIndex;
 	}
 	this.produceAttributes = this.referenceBinding.scope.compilerOptions().produceDebugAttributes;
 	this.creatingProblemType = creatingProblemType;

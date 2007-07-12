@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
@@ -31,9 +32,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 
-import org.eclipse.jface.dialogs.ControlEnableState;
 import org.eclipse.jface.preference.IPreferencePageContainer;
 
 import org.eclipse.ui.dialogs.PreferencesUtil;
@@ -50,6 +49,7 @@ import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpRefactoring;
 import org.eclipse.wst.jsdt.ui.JavaUI;
 
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.saveparticipant.AbstractSaveParticipantPreferenceConfiguration;
+import org.eclipse.wst.jsdt.internal.ui.preferences.BulletListBlock;
 import org.eclipse.wst.jsdt.internal.ui.preferences.CodeFormatterPreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.ImportOrganizePreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
@@ -65,7 +65,7 @@ public class CleanUpSaveParticipantPreferenceConfiguration extends AbstractSaveP
 	
 	private IScopeContext fContext;
 	private Map fSettings;
-	private Text fSelectedActionsText;
+	private BulletListBlock fSelectedActionsText;
 	private Button fFormatCodeButton;
 //	private Button fOrganizeImportsButton;
 	private Shell fShell;
@@ -73,8 +73,7 @@ public class CleanUpSaveParticipantPreferenceConfiguration extends AbstractSaveP
 //	private Link fOrganizeImportsConfigLink;
 	private IPreferencePageContainer fContainer;
 	private Button fAdditionalActionButton;
-	private Composite fAdvancedComposite;
-	private ControlEnableState fAdvancedCompositeEnableState;
+	private Button fConfigureButton;
 	
 	/**
 	 * {@inheritDoc}
@@ -136,7 +135,7 @@ public class CleanUpSaveParticipantPreferenceConfiguration extends AbstractSaveP
 		fAdditionalActionButton= new Button(composite, SWT.CHECK);
 		fAdditionalActionButton.setText(SaveParticipantMessages.CleanUpSaveParticipantPreferenceConfiguration_AdditionalActions_Checkbox);
 		
-		fAdvancedComposite= createAdvancedComposite(composite);
+		createAdvancedComposite(composite);
 		fAdditionalActionButton.addSelectionListener(new SelectionAdapter() {
 			/**
 			 * {@inheritDoc}
@@ -154,17 +153,19 @@ public class CleanUpSaveParticipantPreferenceConfiguration extends AbstractSaveP
 		GridData gridData= new GridData(SWT.FILL, SWT.FILL, true, true);
 		gridData.horizontalIndent= INDENT;
 		composite.setLayoutData(gridData);
-		composite.setLayout(new GridLayout(2, false));
+		GridLayout layout= new GridLayout(2, false);
+		layout.marginHeight= 0;
+		layout.marginWidth= 0;
+		composite.setLayout(layout);
 		
-		fSelectedActionsText= new Text(composite, SWT.BORDER | SWT.FLAT | SWT.MULTI | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL);
-		final GridData data= new GridData(GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL);
+		fSelectedActionsText= new BulletListBlock();
+		final GridData data= (GridData)fSelectedActionsText.createControl(composite).getLayoutData();
 		data.heightHint= new PixelConverter(composite).convertHeightInCharsToPixels(8);
-		fSelectedActionsText.setLayoutData(data);
 		
-		Button configureButton= new Button(composite, SWT.NONE);
-		configureButton.setText(SaveParticipantMessages.CleanUpSaveParticipantPreferenceConfiguration_Configure_Button);
-		configureButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
-		configureButton.addSelectionListener(new SelectionAdapter() {
+		fConfigureButton= new Button(composite, SWT.NONE);
+		fConfigureButton.setText(SaveParticipantMessages.CleanUpSaveParticipantPreferenceConfiguration_Configure_Button);
+		fConfigureButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
+		fConfigureButton.addSelectionListener(new SelectionAdapter() {
 			/**
 			 * {@inheritDoc}
 			 */
@@ -215,10 +216,8 @@ public class CleanUpSaveParticipantPreferenceConfiguration extends AbstractSaveP
 	 * {@inheritDoc}
 	 */
 	public void performDefaults() {
-		fSettings= CleanUpConstants.getSaveParticipantSettings();
+		fSettings= CleanUpPreferenceUtil.loadSaveParticipantOptions(new InstanceScope());
 		settingsChanged();
-		
-		super.performDefaults();
 	}
 	
 	/**
@@ -238,6 +237,8 @@ public class CleanUpSaveParticipantPreferenceConfiguration extends AbstractSaveP
 		super.enableProjectSettings();
 		
 		CleanUpPreferenceUtil.saveSaveParticipantOptions(fContext, fSettings);
+		
+		updateAdvancedEnableState();
 	}
 	
 	/**
@@ -253,6 +254,8 @@ public class CleanUpSaveParticipantPreferenceConfiguration extends AbstractSaveP
 			String key= (String)iterator.next();
 			node.remove(CleanUpPreferenceUtil.SAVE_PARTICIPANT_KEY_PREFIX + key);
 		}
+		
+		updateAdvancedEnableState();
 	}
 	
 	/**
@@ -291,34 +294,34 @@ public class CleanUpSaveParticipantPreferenceConfiguration extends AbstractSaveP
 		
 		final ICleanUp[] cleanUps= CleanUpRefactoring.createCleanUps(settings);
 		
-		boolean hasCleanUp= false;
-		StringBuffer buf= new StringBuffer();
-		for (int i= 0; i < cleanUps.length; i++) {
-			String[] descriptions= cleanUps[i].getDescriptions();
-			if (descriptions != null) {
-				for (int j= 0; j < descriptions.length; j++) {
-					buf.append('-').append(' ').append(descriptions[j]).append('\n');
-					hasCleanUp= true;
-				}
-			}
+		if (cleanUps.length == 0) {			
+			fSelectedActionsText.setText(SaveParticipantMessages.CleanUpSaveParticipantPreferenceConfiguration_NoActionEnabled_Info);
+		} else {
+			StringBuffer buf= new StringBuffer();
+			
+			boolean first= true;
+	    	for (int i= 0; i < cleanUps.length; i++) {
+		        String[] descriptions= cleanUps[i].getDescriptions();
+		        if (descriptions != null) {
+	    	        for (int j= 0; j < descriptions.length; j++) {
+	    	        	if (first) {
+	    	        		first= false;
+	    	        	} else {
+	    	        		buf.append('\n');	    	        		
+	    	        	}
+	    	            buf.append(descriptions[j]);
+	                }
+		        }
+	        }
+	    	fSelectedActionsText.setText(buf.toString());
 		}
-		if (!hasCleanUp) {
-			buf.append(SaveParticipantMessages.CleanUpSaveParticipantPreferenceConfiguration_NoActionEnabled_Info);
-		}
-		fSelectedActionsText.setText(buf.toString());
 	}
 	
 	private void updateAdvancedEnableState() {
-		boolean additionalEnabled= CleanUpConstants.TRUE.equals(fSettings.get(CleanUpConstants.CLEANUP_ON_SAVE_ADDITIONAL_OPTIONS));
-		if (additionalEnabled) {
-			if (fAdvancedCompositeEnableState != null) {
-				fAdvancedCompositeEnableState.restore();
-				fAdvancedCompositeEnableState= null;
-			}
-		} else {
-			if (fAdvancedComposite.isEnabled())
-				fAdvancedCompositeEnableState= ControlEnableState.disable(fAdvancedComposite);
-		}
+		boolean additionalOptionEnabled= isEnabled(fContext) && CleanUpConstants.TRUE.equals(fSettings.get(CleanUpConstants.CLEANUP_ON_SAVE_ADDITIONAL_OPTIONS));
+		boolean additionalEnabled= additionalOptionEnabled && (!ProjectScope.SCOPE.equals(fContext.getName()) || hasSettingsInScope(fContext));
+		fSelectedActionsText.setEnabled(additionalEnabled);
+		fConfigureButton.setEnabled(additionalEnabled);
 	}
 	
 	private void configurePreferenceLink(Link link, final IJavaProject javaProject, final String preferenceId, final String propertyId) {

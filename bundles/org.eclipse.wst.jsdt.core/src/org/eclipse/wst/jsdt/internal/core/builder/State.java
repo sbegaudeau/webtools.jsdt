@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,7 @@ ClasspathLocation[] binaryLocations;
 // keyed by the project relative path of the type (ie. "src1/p1/p2/A.js"), value is a ReferenceCollection or an AdditionalTypeCollection
 SimpleLookupTable references;
 // keyed by qualified type name "p1/p2/A", value is the project relative path which defines this type "src1/p1/p2/A.js"
-SimpleLookupTable typeLocators;
+public SimpleLookupTable typeLocators;
 
 int buildNumber;
 long lastStructuralBuildTime;
@@ -66,8 +66,15 @@ protected State(JavaBuilder javaBuilder) {
 	this.typeLocators = new SimpleLookupTable(7);
 
 	this.buildNumber = 0; // indicates a full build
-	this.lastStructuralBuildTime = System.currentTimeMillis();
+	this.lastStructuralBuildTime = computeStructuralBuildTime(javaBuilder.lastState == null ? 0 : javaBuilder.lastState.lastStructuralBuildTime);
 	this.structuralBuildTimes = new SimpleLookupTable(3);
+}
+
+long computeStructuralBuildTime(long previousTime) {
+	long newTime = System.currentTimeMillis();
+	if (newTime <= previousTime)
+		newTime = previousTime + 1;
+	return newTime;
 }
 
 void copyFrom(State lastState) {
@@ -97,8 +104,7 @@ void copyFrom(State lastState) {
 				this.typeLocators.put(keyTable[i], valueTable[i]);
 	}
 }
-
-char[][] getDefinedTypeNamesFor(String typeLocator) {
+public char[][] getDefinedTypeNamesFor(String typeLocator) {
 	Object c = references.get(typeLocator);
 	if (c instanceof AdditionalTypeCollection)
 		return ((AdditionalTypeCollection) c).definedTypeNames;
@@ -321,7 +327,7 @@ private static char[] readName(DataInputStream in) throws IOException {
 private static char[][] readNames(DataInputStream in) throws IOException {
 	int length = in.readInt();
 	char[][] names = new char[length][];
-	for (int i = 0; i < length; i++) 
+	for (int i = 0; i < length; i++)
 		names[i] = readName(in);
 	return names;
 }
@@ -355,7 +361,7 @@ boolean wasNoopBuild() {
 void tagAsStructurallyChanged() {
 	this.previousStructuralBuildTime = this.lastStructuralBuildTime;
 	this.structurallyChangedTypes = new StringSet(7);
-	this.lastStructuralBuildTime = System.currentTimeMillis();
+	this.lastStructuralBuildTime = computeStructuralBuildTime(this.previousStructuralBuildTime);
 }
 
 boolean wasStructurallyChanged(IProject prereqProject, State prereqState) {
@@ -627,7 +633,7 @@ private void writeRestriction(AccessRuleSet accessRuleSet, DataOutputStream out)
 		AccessRule[] accessRules = accessRuleSet.getAccessRules();
 		int length = accessRules.length;
 		out.writeInt(length);
-		if (length != 0) { 
+		if (length != 0) {
 			for (int i = 0; i < length; i++) {
 				AccessRule accessRule = accessRules[i];
 				writeName(accessRule.pattern, out);

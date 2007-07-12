@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,7 +42,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 	if (local != null && (local.type.tagBits & TagBits.IsBaseType) == 0) {
 		if (nullStatus == FlowInfo.NULL) {
 			flowContext.recordUsingNullReference(currentScope, local, this.lhs, 
-				FlowContext.CAN_ONLY_NULL, flowInfo);
+				FlowContext.CAN_ONLY_NULL| FlowContext.IN_ASSIGNMENT, flowInfo);
 		}
 	}
 	flowInfo = ((Reference) lhs)

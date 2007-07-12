@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,25 +18,52 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ltk.core.refactoring.CategorizedTextEditGroup;
 import org.eclipse.ltk.core.refactoring.GroupCategory;
 import org.eclipse.ltk.core.refactoring.GroupCategorySet;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.TextChange;
 
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
 
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.CodeGenerationSettings;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.OrganizeImportsOperation;
+import org.eclipse.wst.jsdt.internal.corext.codemanipulation.OrganizeImportsOperation.IChooseImportQuery;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitChange;
+import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 
+import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 
 public class ImportsFix extends AbstractFix {
 	
-	public static IFix createCleanUp(final CompilationUnit cu, CodeGenerationSettings settings, boolean organizeImports) throws CoreException {
+	private static final class AmbiguousImportException extends RuntimeException {
+		private static final long serialVersionUID= 1L;
+	}
+
+	public static IFix createCleanUp(final CompilationUnit cu, CodeGenerationSettings settings, boolean organizeImports, RefactoringStatus status) throws CoreException {
 		if (!organizeImports)
 			return null;
 		
-		OrganizeImportsOperation op= new OrganizeImportsOperation((ICompilationUnit)cu.getJavaElement(), cu, settings.importIgnoreLowercase, false, false, null);
-		final TextEdit edit= op.createTextEdit(null);
+		IChooseImportQuery query= new IChooseImportQuery() {
+			public TypeNameMatch[] chooseImports(TypeNameMatch[][] openChoices, ISourceRange[] ranges) {
+				throw new AmbiguousImportException();
+			}
+		};
+		OrganizeImportsOperation op= new OrganizeImportsOperation((ICompilationUnit)cu.getJavaElement(), cu, settings.importIgnoreLowercase, false, false, query);
+		final TextEdit edit;
+		try {
+			edit= op.createTextEdit(null);
+		} catch (AmbiguousImportException e) {
+			status.addInfo(Messages.format(ActionMessages.OrganizeImportsAction_multi_error_unresolvable, getLocationString(cu)));
+			return null;
+		}
+		
+		if (op.getParseError() != null) {
+			status.addInfo(Messages.format(ActionMessages.OrganizeImportsAction_multi_error_parse, getLocationString(cu)));
+			return null;
+		}
+		
 		if (edit == null)
 			return null;
 		
@@ -66,6 +93,10 @@ public class ImportsFix extends AbstractFix {
          	  }
     	};
     }
+
+	private static String getLocationString(final CompilationUnit cu) {
+		return cu.getJavaElement().getPath().makeRelative().toString();
+	}
 	
 	protected ImportsFix(String name, CompilationUnit compilationUnit, IFixRewriteOperation[] fixRewriteOperations) {
 	    super(name, compilationUnit, fixRewriteOperations);

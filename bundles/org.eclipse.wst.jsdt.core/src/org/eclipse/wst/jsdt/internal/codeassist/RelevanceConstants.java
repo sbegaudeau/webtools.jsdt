@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,4 +41,6 @@ public interface RelevanceConstants {
 	int R_VALUE_TAG = 31;
 	int R_NON_INHERITED = 2;
 	int R_NO_PROBLEMS = 1;
+	int R_RESOLVED = 1;
+	int R_TARGET = 5;
 }

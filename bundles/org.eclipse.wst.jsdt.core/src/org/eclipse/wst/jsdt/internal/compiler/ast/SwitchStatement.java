@@ -304,6 +304,8 @@ public class SwitchStatement extends Statement {
 					final Statement statement = statements[i];
 					if ((constant = statement.resolveCase(scope, expressionType, this)) != Constant.NotAConstant) {
 						Constant key = constant;
+						if (constant==null)
+							continue;
 						//----check for duplicate case statement------------
 						for (int j = 0; j < counter; j++) {
 							if (this.constants[j].equals(key)) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,11 +20,12 @@ import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.NamingConventions;
 import org.eclipse.wst.jsdt.core.Signature;
-
-import org.eclipse.wst.jsdt.ui.CodeGeneration;
+import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
+
+import org.eclipse.wst.jsdt.ui.CodeGeneration;
 
 public class GetterSetterUtil {
 	
@@ -44,12 +45,21 @@ public class GetterSetterUtil {
 			excludedNames= EMPTY;
 		}
 		return getGetterName(field.getJavaProject(), field.getElementName(), field.getFlags(), useIsForBoolGetters && JavaModelUtil.isBoolean(field), excludedNames);
-	}	
+	}
+	
+	public static String getGetterName(IVariableBinding variableType, IJavaProject project, String[] excludedNames, boolean isBoolean) {
+		boolean useIs= StubUtility.useIsForBooleanGetters(project) && isBoolean;
+		return getGetterName(project, variableType.getName(), variableType.getModifiers(), useIs, excludedNames);
+	}
 	
 	public static String getGetterName(IJavaProject project, String fieldName, int flags, boolean isBoolean, String[] excludedNames){
 		return NamingConventions.suggestGetterName(project, fieldName, flags, isBoolean, excludedNames);	
 	}
 
+	public static String getSetterName(IVariableBinding variableType, IJavaProject project, String[] excludedNames, boolean isBoolean) {
+		return getSetterName(project, variableType.getName(), variableType.getModifiers(), isBoolean, excludedNames);
+	}
+	
 	public static String getSetterName(IJavaProject project, String fieldName, int flags, boolean isBoolean, String[] excludedNames){
 		return NamingConventions.suggestSetterName(project, fieldName, flags, isBoolean, excludedNames);	
 	}
@@ -205,5 +215,6 @@ public class GetterSetterUtil {
 		buf.append(lineDelim);
 		return buf.toString(); 
 	}
+
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -298,13 +298,16 @@ public class NLSSourceModifier {
 			String text= Messages.format(NLSMessages.NLSSourceModifier_externalize, args); 
 
 			String resourceGetter= createResourceGetter(sub.getKey(), accessorName);
-			TextChangeCompatibility.addTextEdit(change, text, new ReplaceEdit(position.getOffset(), position.getLength(), resourceGetter));
-			if (fIsEclipseNLS) {
+			
+			TextEdit edit= new ReplaceEdit(position.getOffset(), position.getLength(), resourceGetter);
+			if (fIsEclipseNLS && element.getTagPosition() != null) {
+				MultiTextEdit multiEdit= new MultiTextEdit();
+				multiEdit.addChild(edit);
 				Region tagPosition= element.getTagPosition();
-				if (tagPosition != null) {
-					TextChangeCompatibility.addTextEdit(change, text, new DeleteEdit(tagPosition.getOffset(), tagPosition.getLength()));
-				}
+				multiEdit.addChild(new DeleteEdit(tagPosition.getOffset(), tagPosition.getLength()));
+				edit= multiEdit;
 			}
+			TextChangeCompatibility.addTextEdit(change, text, edit);
 		}
 	}
 

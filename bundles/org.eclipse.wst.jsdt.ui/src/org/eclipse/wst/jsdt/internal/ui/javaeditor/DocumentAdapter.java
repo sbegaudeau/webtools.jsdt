@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,6 @@
 package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -32,6 +29,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.filebuffers.FileBuffers;
 import org.eclipse.core.filebuffers.ITextFileBuffer;
 import org.eclipse.core.filebuffers.ITextFileBufferManager;
+import org.eclipse.core.filebuffers.LocationKind;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -65,81 +63,98 @@ import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
  */
 public class DocumentAdapter implements IBuffer, IDocumentListener {
 
-		/**
-		 * Internal implementation of a NULL instanceof IBuffer.
-		 */
-		static private class NullBuffer implements IBuffer {
-			public void addBufferChangedListener(IBufferChangedListener listener) {}
-			public void append(char[] text) {}
-			public void append(String text) {}
-			public void close() {}
-			public char getChar(int position) { return 0; }
-			public char[] getCharacters() { return null; }
-			public String getContents() { return null; }
-			public int getLength() { return 0; }
-			public IOpenable getOwner() { return null; }
-			public String getText(int offset, int length) { return null; }
-			public IResource getUnderlyingResource() { return null; }
-			public boolean hasUnsavedChanges() { return false; }
-			public boolean isClosed() { return false; }
-			public boolean isReadOnly() { return true; }
-			public void removeBufferChangedListener(IBufferChangedListener listener) {}
-			public void replace(int position, int length, char[] text) {}
-			public void replace(int position, int length, String text) {}
-			public void save(IProgressMonitor progress, boolean force) throws JavaModelException {}
-			public void setContents(char[] contents) {}
-			public void setContents(String contents) {}
+	/**
+	 * Internal implementation of a NULL instanceof IBuffer.
+	 */
+	static private class NullBuffer implements IBuffer {
+		public void addBufferChangedListener(IBufferChangedListener listener) {}
+		public void append(char[] text) {}
+		public void append(String text) {}
+		public void close() {}
+		public char getChar(int position) { return 0; }
+		public char[] getCharacters() { return null; }
+		public String getContents() { return null; }
+		public int getLength() { return 0; }
+		public IOpenable getOwner() { return null; }
+		public String getText(int offset, int length) { return null; }
+		public IResource getUnderlyingResource() { return null; }
+		public boolean hasUnsavedChanges() { return false; }
+		public boolean isClosed() { return false; }
+		public boolean isReadOnly() { return true; }
+		public void removeBufferChangedListener(IBufferChangedListener listener) {}
+		public void replace(int position, int length, char[] text) {}
+		public void replace(int position, int length, String text) {}
+		public void save(IProgressMonitor progress, boolean force) throws JavaModelException {}
+		public void setContents(char[] contents) {}
+		public void setContents(String contents) {}
+	}
+
+
+	/** NULL implementing <code>IBuffer</code> */
+	public final static IBuffer NULL= new NullBuffer();
+
+
+	/**
+	 * Run the given runnable in the UI thread.
+	 * 
+	 * @param runnable the runnable
+	 * @since 3.3
+	 */
+	private static final void run(Runnable runnable) {
+		Display currentDisplay= Display.getCurrent();
+		if (currentDisplay != null)
+			runnable.run();
+		else
+			Display.getDefault().syncExec(runnable);
+	}
+
+
+	/**
+	 *  Executes a document set content call in the UI thread.
+	 */
+	protected class DocumentSetCommand implements Runnable {
+
+		private String fContents;
+
+		public void run() {
+			if (!isClosed())
+				fDocument.set(fContents);
 		}
 
+		public void set(String contents) {
+			fContents= contents;
+			DocumentAdapter.run(this);
+		}
+	}
 
-		/** NULL implementing <code>IBuffer</code> */
-		public final static IBuffer NULL= new NullBuffer();
 
+	/**
+	 * Executes a document replace call in the UI thread.
+	 */
+	protected class DocumentReplaceCommand implements Runnable {
 
-		/**
-		 *  Executes a document set content call in the UI thread.
-		 */
-		protected class DocumentSetCommand implements Runnable {
+		private int fOffset;
+		private int fLength;
+		private String fText;
 
-			private String fContents;
-
-			public void run() {
+		public void run() {
+			try {
 				if (!isClosed())
-					fDocument.set(fContents);
-			}
-
-			public void set(String contents) {
-				fContents= contents;
-				Display.getDefault().syncExec(this);
+					fDocument.replace(fOffset, fLength, fText);
+			} catch (BadLocationException x) {
+				// ignore
 			}
 		}
 
-		/**
-		 * Executes a document replace call in the UI thread.
-		 */
-		protected class DocumentReplaceCommand implements Runnable {
-
-			private int fOffset;
-			private int fLength;
-			private String fText;
-
-			public void run() {
-				try {
-					if (!isClosed())
-						fDocument.replace(fOffset, fLength, fText);
-				} catch (BadLocationException x) {
-					// ignore
-				}
-			}
-
-			public void replace(int offset, int length, String text) {
-				fOffset= offset;
-				fLength= length;
-				fText= text;
-				Display.getDefault().syncExec(this);
-			}
+		public void replace(int offset, int length, String text) {
+			fOffset= offset;
+			fLength= length;
+			fText= text;
+			DocumentAdapter.run(this);
 		}
+	}
 
+		
 	private static final boolean DEBUG_LINE_DELIMITERS= true;
 
 	private IOpenable fOwner;
@@ -159,11 +174,18 @@ public class DocumentAdapter implements IBuffer, IDocumentListener {
 	 * @since 3.2
 	 */
 	private IPath fPath;
+	
+	/*
+	 * @since 3.3
+	 */
+	private LocationKind fLocationKind;
 
 
 	/**
 	 * Constructs a new document adapter.
-	 *
+	 * 
+	 * @param owner the owner of this buffer
+	 * @param path the path of the file that backs the buffer
 	 * @since 3.2
 	 */
 	public DocumentAdapter(IOpenable owner, IPath path) {
@@ -171,18 +193,23 @@ public class DocumentAdapter implements IBuffer, IDocumentListener {
 		
 		fOwner= owner;
 		fPath= path;
+		fLocationKind= LocationKind.NORMALIZE;
 		
 		initialize();
 	}
 	
 	/**
 	 * Constructs a new document adapter.
+	 * 
+	 * @param owner the owner of this buffer 
+	 * @param file the <code>IFile</code> that backs the buffer
 	 */
 	public DocumentAdapter(IOpenable owner, IFile file) {
 
 		fOwner= owner;
 		fFile= file;
 		fPath= fFile.getFullPath();
+		fLocationKind= LocationKind.IFILE;
 
 		initialize();
 	}
@@ -190,12 +217,12 @@ public class DocumentAdapter implements IBuffer, IDocumentListener {
 	private void initialize() {
 		ITextFileBufferManager manager= FileBuffers.getTextFileBufferManager();
 		try {
-			manager.connect(fPath, new NullProgressMonitor());
-			fTextFileBuffer= manager.getTextFileBuffer(fPath);
+			manager.connect(fPath, fLocationKind, new NullProgressMonitor());
+			fTextFileBuffer= manager.getTextFileBuffer(fPath, fLocationKind);
 			fDocument= fTextFileBuffer.getDocument();
 		} catch (CoreException x) {
 			fStatus= x.getStatus();
-			fDocument= manager.createEmptyDocument(fPath);
+			fDocument= manager.createEmptyDocument(fPath, fLocationKind);
 			if (fDocument instanceof ISynchronizable)
 				((ISynchronizable)fDocument).setLockObject(new Object());
 		}
@@ -204,6 +231,8 @@ public class DocumentAdapter implements IBuffer, IDocumentListener {
 
 	/**
 	 * Returns the status of this document adapter.
+	 * 
+	 * @return the status 
 	 */
 	public IStatus getStatus() {
 		if (fStatus != null)
@@ -271,7 +300,7 @@ public class DocumentAdapter implements IBuffer, IDocumentListener {
 		if (fTextFileBuffer != null) {
 			ITextFileBufferManager manager= FileBuffers.getTextFileBufferManager();
 			try {
-				manager.disconnect(fTextFileBuffer.getLocation(), new NullProgressMonitor());
+				manager.disconnect(fPath, fLocationKind, new NullProgressMonitor());
 			} catch (CoreException x) {
 				// ignore
 			}
@@ -391,67 +420,11 @@ public class DocumentAdapter implements IBuffer, IDocumentListener {
 	 */
 	public void save(IProgressMonitor progress, boolean force) throws JavaModelException {
 		try {
-			if (fTextFileBuffer != null) {
-				if (fFile != null && !fFile.exists())
-					saveNewFile(progress, force);
-				else
-					fTextFileBuffer.commit(progress, force);
-			}
+			if (fTextFileBuffer != null)
+				fTextFileBuffer.commit(progress, force);
 		} catch (CoreException e) {
 			throw new JavaModelException(e);
 		}
-	}
-
-	/**
-	 * Saves a new workspace file.
-	 * 
-	 * @param progress the progress monitor
-	 * @param force a <code> boolean </code> flag indicating how to deal with resource
-	 *			inconsistencies. 
-	 * @since 3.3
-	 */
-	private void saveNewFile(IProgressMonitor progress, boolean force) throws JavaModelException {
-		String oldContent= getContents();
-		
-		// Disconnect the old buffer
-		IDocument d= fDocument;
-		fDocument= null;
-		d.removePrenotifiedDocumentListener(this);
-		ITextFileBufferManager manager= FileBuffers.getTextFileBufferManager();
-		try {
-			manager.disconnect(fPath, progress);
-		} catch (CoreException ex) {
-			fStatus= ex.getStatus();
-		}
-
-		// Create the file in the workspace
-		InputStream stream= new ByteArrayInputStream(new byte[0]);
-		try {
-			fFile.create(stream, force, progress);
-		} catch (CoreException e) {
-		} finally {
-			try {
-				stream.close();
-			} catch (IOException e) {
-				// ignore
-			}
-		}
-
-		try {
-			manager.connect(fPath, progress);
-			fTextFileBuffer= manager.getTextFileBuffer(fPath);
-			fDocument= fTextFileBuffer.getDocument();
-		} catch (CoreException x) {
-			fStatus= x.getStatus();
-			fDocument= manager.createEmptyDocument(fPath);
-			if (fDocument instanceof ISynchronizable)
-				((ISynchronizable)fDocument).setLockObject(new Object());
-		}
-		
-		fDocument.set(oldContent);
-		fDocument.addPrenotifiedDocumentListener(this);
-		
-		save(progress, force);
 	}
 
 	/*

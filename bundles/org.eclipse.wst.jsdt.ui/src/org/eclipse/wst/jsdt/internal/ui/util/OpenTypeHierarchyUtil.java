@@ -111,7 +111,7 @@ public class OpenTypeHierarchyUtil {
 		if (input instanceof IMember) {
 			if (input.getElementType() != IJavaElement.TYPE) {
 				IMember member=(IMember)input;
-				perspectiveInput= member.getDeclaringType()!=null ? member.getDeclaringType() : member.getCompilationUnit();
+				perspectiveInput= member.getDeclaringType()!=null ? member.getDeclaringType() : (IJavaElement)member.getCompilationUnit();
 			} else {
 				perspectiveInput= input;
 			}

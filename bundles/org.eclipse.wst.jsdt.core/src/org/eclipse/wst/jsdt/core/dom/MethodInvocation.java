@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -256,6 +256,21 @@ public class MethodInvocation extends Expression {
 	 */ 
 	public Expression getExpression() {
 		return this.optionalExpression;
+	}
+	
+	/**
+	 * Returns <code>true</code> if the resolved return type has been inferred
+	 * from the assignment context (JLS3 15.12.2.8), <code>false</code> otherwise.
+	 * <p>
+	 * This information is available only when bindings are requested when the AST is being built
+	 * </p>.
+	 *
+	 * @return <code>true</code> if the resolved return type has been inferred
+	 * 	from the assignment context (JLS3 15.12.2.8), <code>false</code> otherwise
+	 * @since 3.3
+	 */
+	public boolean isResolvedTypeInferredFromExpectedType() {
+		return this.ast.getBindingResolver().isResolvedTypeInferredFromExpectedType(this);
 	}
 	
 	/**

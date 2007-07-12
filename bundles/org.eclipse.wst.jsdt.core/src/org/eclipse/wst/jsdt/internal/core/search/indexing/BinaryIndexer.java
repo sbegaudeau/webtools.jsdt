@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryElementValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
+import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 public class BinaryIndexer extends AbstractIndexer implements SuffixConstants {
 	private static final char[] BYTE = "byte".toCharArray(); //$NON-NLS-1$
@@ -743,11 +744,18 @@ public class BinaryIndexer extends AbstractIndexer implements SuffixConstants {
 					}
 				}
 			}
-	
 			// record all references found inside the .class file
 			extractReferenceFromConstantPool(contents, reader);
 		} catch (ClassFormatException e) {
 			// ignore
+			this.document.removeAllIndexEntries();
+			Util.log(e, "ClassFormatException in " + this.document.getPath() + ". Please report this issue to JDT/Core including the problematic document"); //$NON-NLS-1$ //$NON-NLS-2$
+		} catch (RuntimeException e) {
+			// https://bugs.eclipse.org/bugs/show_bug.cgi?id=182154
+			// logging the entry that could not be indexed and continue with the next one
+			// we remove all entries relative to the boggus document
+			this.document.removeAllIndexEntries();
+			Util.log(e, "Indexer crashed on document " + this.document.getPath() + ". Please report this issue to JDT/Core including the problematic document"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 	/*

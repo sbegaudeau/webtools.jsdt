@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import org.eclipse.wst.jsdt.core.dom.MarkerAnnotation;
 import org.eclipse.wst.jsdt.core.dom.MemberValuePair;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.NormalAnnotation;
+import org.eclipse.wst.jsdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
 
@@ -79,7 +80,7 @@ public class MissingAnnotationAttributesProposal extends LinkedCorrectionProposa
 				MemberValuePair curr= (MemberValuePair) list.get(i);
 				implementedAttribs.add(curr.getName().getIdentifier());
 			}
-		} else {
+		} else if (fAnnotation instanceof SingleMemberAnnotation){
 			implementedAttribs.add("value"); //$NON-NLS-1$
 		}
 		ASTRewrite rewriter= listRewriter.getASTRewrite();

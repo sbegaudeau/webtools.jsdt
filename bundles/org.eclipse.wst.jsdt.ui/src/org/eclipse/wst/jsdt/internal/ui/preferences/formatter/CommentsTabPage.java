@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 /**
  * Tab page for the comment formatter settings.
  */
-public class CommentsTabPage extends ModifyDialogTabPage {
+public class CommentsTabPage extends FormatterTabPage {
 	
 	/**
 	 * Constant array for boolean selection 
@@ -37,7 +37,7 @@ public class CommentsTabPage extends ModifyDialogTabPage {
 	private static String[] FALSE_TRUE = {
 		DefaultCodeFormatterConstants.FALSE,
 		DefaultCodeFormatterConstants.TRUE
-	};	
+	};
 	
     /**
      * Constant array for insert / not_insert. 
@@ -139,7 +139,9 @@ public class CommentsTabPage extends ModifyDialogTabPage {
 		final CheckboxPreference javadoc= createPrefTrueFalse(globalGroup, numColumns, FormatterMessages.commentsTabPage_enable_javadoc_comment_formatting, DefaultCodeFormatterConstants.FORMATTER_COMMENT_FORMAT_JAVADOC_COMMENT); 
 		final CheckboxPreference blockComment= createPrefTrueFalse(globalGroup, numColumns, FormatterMessages.CommentsTabPage_enable_block_comment_formatting, DefaultCodeFormatterConstants.FORMATTER_COMMENT_FORMAT_BLOCK_COMMENT);
 		final CheckboxPreference singleLineComments= createPrefTrueFalse(globalGroup, numColumns, FormatterMessages.CommentsTabPage_enable_line_comment_formatting, DefaultCodeFormatterConstants.FORMATTER_COMMENT_FORMAT_LINE_COMMENT); 
-		final CheckboxPreference header= createPrefTrueFalse(globalGroup, numColumns, FormatterMessages.CommentsTabPage_format_header, DefaultCodeFormatterConstants.FORMATTER_COMMENT_FORMAT_HEADER); 
+		final CheckboxPreference header= createPrefTrueFalse(globalGroup, numColumns, FormatterMessages.CommentsTabPage_format_header, DefaultCodeFormatterConstants.FORMATTER_COMMENT_FORMAT_HEADER);
+		createPrefTrueFalse(globalGroup, numColumns, FormatterMessages.CommentsTabPage_never_indent_block_comments_on_first_column, DefaultCodeFormatterConstants.FORMATTER_NEVER_INDENT_BLOCK_COMMENTS_ON_FIRST_COLUMN);
+		createPrefTrueFalse(globalGroup, numColumns, FormatterMessages.CommentsTabPage_never_indent_line_comments_on_first_column, DefaultCodeFormatterConstants.FORMATTER_NEVER_INDENT_LINE_COMMENTS_ON_FIRST_COLUMN);
 
 		// javadoc comment formatting settings
 		final Group settingsGroup= createGroup(numColumns, composite, FormatterMessages.CommentsTabPage_group2_title); 
@@ -152,7 +154,7 @@ public class CommentsTabPage extends ModifyDialogTabPage {
 		final CheckboxPreference nlParam= createPrefInsert(settingsGroup, numColumns, FormatterMessages.CommentsTabPage_new_line_after_param_tags, DefaultCodeFormatterConstants.FORMATTER_COMMENT_INSERT_NEW_LINE_FOR_PARAMETER); 
 		final CheckboxPreference blankLinesJavadoc= createPrefTrueFalse(settingsGroup, numColumns, FormatterMessages.CommentsTabPage_clear_blank_lines, DefaultCodeFormatterConstants.FORMATTER_COMMENT_CLEAR_BLANK_LINES_IN_JAVADOC_COMMENT); 
 		
-		// javadoc and block comment settings
+		// block comment settings
 		final Group blockSettingsGroup= createGroup(numColumns, composite, FormatterMessages.CommentsTabPage_group4_title);
 		final CheckboxPreference blankLinesBlock= createPrefTrueFalse(blockSettingsGroup, numColumns, FormatterMessages.CommentsTabPage_remove_blank_block_comment_lines, DefaultCodeFormatterConstants.FORMATTER_COMMENT_CLEAR_BLANK_LINES_IN_BLOCK_COMMENT);
 		
@@ -227,6 +229,7 @@ public class CommentsTabPage extends ModifyDialogTabPage {
      * @see org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ModifyDialogTabPage#doUpdatePreview()
      */
     protected void doUpdatePreview() {
+    	super.doUpdatePreview();
         fPreview.update();
     }
 	

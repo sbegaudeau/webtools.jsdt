@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -147,11 +147,13 @@ public class RenameSupport {
 			starter= RenameUserInterfaceManager.getDefault().getStarter(fRefactoring);
 		} else {
 			starter= new RenameUserInterfaceStarter();
-			starter.initialize(new RenameRefactoringWizard(fRefactoring, fRefactoring.getName(), null, null, null) {
+			RenameRefactoringWizard wizard= new RenameRefactoringWizard(fRefactoring, fRefactoring.getName(), null, null, null) {
 				protected void addUserInputPages() {
 					// nothing to add
 				}
-			});
+			};
+			wizard.setForcePreviewReview(showPreviewOnly);
+			starter.initialize(wizard);
 		}
 		return starter.activate(fRefactoring, parent, getJavaRenameProcessor().getSaveMode());
 	}

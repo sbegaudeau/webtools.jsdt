@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.internal.compiler.batch;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.zip.ZipEntry;
@@ -40,17 +41,54 @@ public ClasspathJar(File file, boolean closeZipFileAtEnd,
 	this.closeZipFileAtEnd = closeZipFileAtEnd;
 }
 public NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageName, String qualifiedBinaryFileName) {
+	return findClass(typeName, qualifiedPackageName, qualifiedBinaryFileName, false);
+}
+public NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageName, String qualifiedBinaryFileName, boolean asBinaryOnly) {
 	if (!isPackage(qualifiedPackageName)) 
 		return null; // most common case
 
 	try {
 		ClassFileReader reader = ClassFileReader.read(this.zipFile, qualifiedBinaryFileName);
-		if (reader != null) return new NameEnvironmentAnswer(reader, 
-				fetchAccessRestriction(qualifiedBinaryFileName));
+		if (reader != null)
+			return new NameEnvironmentAnswer(reader, fetchAccessRestriction(qualifiedBinaryFileName));
 	} catch(ClassFormatException e) {
 		// treat as if class file is missing
 	} catch (IOException e) {
 		// treat as if class file is missing
+	}
+	return null;
+}
+public char[][][] findTypeNames(String qualifiedPackageName) {
+	if (!isPackage(qualifiedPackageName)) 
+		return null; // most common case
+
+	ArrayList answers = new ArrayList();
+	nextEntry : for (Enumeration e = this.zipFile.entries(); e.hasMoreElements(); ) {
+		String fileName = ((ZipEntry) e.nextElement()).getName();
+
+		// add the package name & all of its parent packages
+		int last = fileName.lastIndexOf('/');
+		while (last > 0) {
+			// extract the package name
+			String packageName = fileName.substring(0, last);
+			if (!qualifiedPackageName.equals(packageName))
+				continue nextEntry;
+			int indexOfDot = fileName.lastIndexOf('.');
+			if (indexOfDot != -1) {
+				String typeName = fileName.substring(last + 1, indexOfDot);
+				char[] packageArray = packageName.toCharArray();
+				answers.add(
+					CharOperation.arrayConcat(
+						CharOperation.splitOn('/', packageArray),
+						typeName.toCharArray()));
+			}
+		}
+	}
+	int size = answers.size();
+	if (size != 0) {
+		char[][][] result = new char[size][][];
+		answers.toArray(result);
+		return null;
 	}
 	return null;
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -369,10 +369,13 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.UnexpectedStaticModifierForMethod:
 				ModifierCorrectionSubProcessor.addRemoveInvalidModfiersProposal(context, problem, proposals, 5);
 				break;
+			case IProblem.NotVisibleField:
+				ModifierCorrectionSubProcessor.addGetterSetterProposal(context,problem,proposals, 15);
+				ModifierCorrectionSubProcessor.addNonAccessibleReferenceProposal(context, problem, proposals, ModifierCorrectionSubProcessor.TO_VISIBLE, 10);
+				break;
 			case IProblem.NotVisibleMethod:
 			case IProblem.NotVisibleConstructor:
 			case IProblem.NotVisibleType:
-			case IProblem.NotVisibleField:
 			case IProblem.JavadocNotVisibleType:
 				ModifierCorrectionSubProcessor.addNonAccessibleReferenceProposal(context, problem, proposals, ModifierCorrectionSubProcessor.TO_VISIBLE, 10);
 				break;
@@ -431,6 +434,7 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 				LocalCorrectionsSubProcessor.addUnnecessaryThrownExceptionProposal(context, problem, proposals);
 				break;
 			case IProblem.UnqualifiedFieldAccess:
+				ModifierCorrectionSubProcessor.addGetterSetterProposal(context, problem, proposals, 15);
 				LocalCorrectionsSubProcessor.addUnqualifiedFieldAccessProposal(context, problem, proposals);
 				break;
 			case IProblem.Task:
@@ -498,7 +502,7 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 				ReorgCorrectionsSubProcessor.getNeed50ComplianceProposals(context, problem, proposals);
 				break;
 			case IProblem.NonGenericType:
-				TypeParameterMismatchSubProcessor.getTypeParameterMismatchProposals(context, problem, proposals);
+				TypeParameterMismatchSubProcessor.removeMismatchedParameters(context, problem, proposals);
 				break;
 			case IProblem.MissingOverrideAnnotation:
 				ModifierCorrectionSubProcessor.addOverrideAnnotationProposal(context, problem, proposals);
@@ -528,6 +532,7 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.UnsafeTypeConversion:
 			case IProblem.RawTypeReference:
 			case IProblem.UnsafeRawMethodInvocation:
+				LocalCorrectionsSubProcessor.addDeprecatedFieldsToMethodsProposals(context, problem, proposals);
 				LocalCorrectionsSubProcessor.addTypePrametersToRawTypeReference(context, problem, proposals);
 				break;
 			case IProblem.FallthroughCase:

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,6 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.RetargetAction;
 import org.eclipse.ui.texteditor.BasicTextEditorActionContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -34,8 +33,8 @@ import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.RetargetTextEditorAction;
 
 import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
-import org.eclipse.wst.jsdt.ui.actions.JdtActionConstants;
 
+import org.eclipse.wst.jsdt.internal.ui.actions.CopyQualifiedNameAction;
 import org.eclipse.wst.jsdt.internal.ui.actions.FoldingActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.selectionactions.GoToNextPreviousMemberAction;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.selectionactions.StructureSelectionAction;
@@ -55,8 +54,7 @@ public class BasicJavaEditorActionContributor extends BasicTextEditorActionContr
 	private RetargetTextEditorAction fOpenStructure;
 	private RetargetTextEditorAction fOpenHierarchy;
 
-	private RetargetAction fRetargetShowJavaDoc;
-	private RetargetTextEditorAction fShowJavaDoc;
+	private RetargetTextEditorAction fRetargetShowInformationAction;
 
 	private RetargetTextEditorAction fStructureSelectEnclosingAction;
 	private RetargetTextEditorAction fStructureSelectNextAction;
@@ -73,9 +71,8 @@ public class BasicJavaEditorActionContributor extends BasicTextEditorActionContr
 
 		ResourceBundle b= JavaEditorMessages.getBundleForConstructedKeys();
 
-		fRetargetShowJavaDoc= new RetargetAction(JdtActionConstants.SHOW_JAVA_DOC, JavaEditorMessages.ShowJavaDoc_label);
-		fRetargetShowJavaDoc.setActionDefinitionId(IJavaEditorActionDefinitionIds.SHOW_JAVADOC);
-		markAsPartListener(fRetargetShowJavaDoc);
+		fRetargetShowInformationAction= new RetargetTextEditorAction(b, "Editor.ShowInformation."); //$NON-NLS-1$
+		fRetargetShowInformationAction.setActionDefinitionId(ITextEditorActionDefinitionIds.SHOW_INFORMATION);
 
 		// actions that are "contributed" to editors, they are considered belonging to the active editor
 		fTogglePresentation= new TogglePresentationAction();
@@ -84,9 +81,6 @@ public class BasicJavaEditorActionContributor extends BasicTextEditorActionContr
 
 		fGotoMatchingBracket= new RetargetTextEditorAction(b, "GotoMatchingBracket."); //$NON-NLS-1$
 		fGotoMatchingBracket.setActionDefinitionId(IJavaEditorActionDefinitionIds.GOTO_MATCHING_BRACKET);
-
-		fShowJavaDoc= new RetargetTextEditorAction(b, "ShowJavaDoc."); //$NON-NLS-1$
-		fShowJavaDoc.setActionDefinitionId(IJavaEditorActionDefinitionIds.SHOW_JAVADOC);
 
 		fShowOutline= new RetargetTextEditorAction(JavaEditorMessages.getBundleForConstructedKeys(), "ShowOutline."); //$NON-NLS-1$
 		fShowOutline.setActionDefinitionId(IJavaEditorActionDefinitionIds.SHOW_OUTLINE);
@@ -132,7 +126,6 @@ public class BasicJavaEditorActionContributor extends BasicTextEditorActionContr
 		bars.setGlobalActionHandler(ITextEditorActionDefinitionIds.TOGGLE_SHOW_SELECTED_ELEMENT_ONLY, fTogglePresentation);
 		bars.setGlobalActionHandler(IJavaEditorActionDefinitionIds.TOGGLE_MARK_OCCURRENCES, fToggleMarkOccurrencesAction);
 
-		bars.setGlobalActionHandler(JdtActionConstants.SHOW_JAVA_DOC, fShowJavaDoc);
 	}
 
 	/*
@@ -146,13 +139,13 @@ public class BasicJavaEditorActionContributor extends BasicTextEditorActionContr
 		if (editMenu != null) {
 
 			MenuManager structureSelection= new MenuManager(JavaEditorMessages.ExpandSelectionMenu_label, "expandSelection"); //$NON-NLS-1$
-			editMenu.insertAfter(ActionFactory.SELECT_ALL.getId(), structureSelection);
+			editMenu.insertAfter(ITextEditorActionConstants.SELECT_ALL, structureSelection);
 			structureSelection.add(fStructureSelectEnclosingAction);
 			structureSelection.add(fStructureSelectNextAction);
 			structureSelection.add(fStructureSelectPreviousAction);
 			structureSelection.add(fStructureSelectHistoryAction);
 
-			editMenu.appendToGroup(ITextEditorActionConstants.GROUP_INFORMATION, fRetargetShowJavaDoc);
+			editMenu.appendToGroup(ITextEditorActionConstants.GROUP_INFORMATION, fRetargetShowInformationAction);
 		}
 
 		IMenuManager navigateMenu= menu.findMenuUsingPath(IWorkbenchActionConstants.M_NAVIGATE);
@@ -185,7 +178,6 @@ public class BasicJavaEditorActionContributor extends BasicTextEditorActionContr
 		fToggleMarkOccurrencesAction.setEditor(textEditor);
 
 		fGotoMatchingBracket.setAction(getAction(textEditor, GotoMatchingBracketAction.GOTO_MATCHING_BRACKET));
-		fShowJavaDoc.setAction(getAction(textEditor, "ShowJavaDoc")); //$NON-NLS-1$
 		fShowOutline.setAction(getAction(textEditor, IJavaEditorActionDefinitionIds.SHOW_OUTLINE));
 		fOpenHierarchy.setAction(getAction(textEditor, IJavaEditorActionDefinitionIds.OPEN_HIERARCHY));
 		fOpenStructure.setAction(getAction(textEditor, IJavaEditorActionDefinitionIds.OPEN_STRUCTURE));
@@ -199,6 +191,7 @@ public class BasicJavaEditorActionContributor extends BasicTextEditorActionContr
 		fGotoPreviousMemberAction.setAction(getAction(textEditor, GoToNextPreviousMemberAction.PREVIOUS_MEMBER));
 
 		fRemoveOccurrenceAnnotationsAction.setAction(getAction(textEditor, "RemoveOccurrenceAnnotations")); //$NON-NLS-1$
+		fRetargetShowInformationAction.setAction(getAction(textEditor, ITextEditorActionConstants.SHOW_INFORMATION));		
 
 		if (part instanceof JavaEditor) {
 			JavaEditor javaEditor= (JavaEditor) part;
@@ -220,6 +213,8 @@ public class BasicJavaEditorActionContributor extends BasicTextEditorActionContr
 		action= getAction(textEditor, ITextEditorActionConstants.PREVIOUS);
 		actionBars.setGlobalActionHandler(ITextEditorActionDefinitionIds.GOTO_PREVIOUS_ANNOTATION, action);
 		actionBars.setGlobalActionHandler(ITextEditorActionConstants.PREVIOUS, action);
+		action= getAction(textEditor, IJavaEditorActionConstants.COPY_QUALIFIED_NAME);
+		actionBars.setGlobalActionHandler(CopyQualifiedNameAction.ACTION_HANDLER_ID, action);		
 	}
 
 	/*
@@ -232,11 +227,6 @@ public class BasicJavaEditorActionContributor extends BasicTextEditorActionContr
 			getPage().removePartListener((RetargetAction) e.next());
 		fPartListeners.clear();
 
-		if (fRetargetShowJavaDoc != null) {
-			fRetargetShowJavaDoc.dispose();
-			fRetargetShowJavaDoc= null;
-		}
-		
 		setActiveEditor(null);
 		super.dispose();
 	}

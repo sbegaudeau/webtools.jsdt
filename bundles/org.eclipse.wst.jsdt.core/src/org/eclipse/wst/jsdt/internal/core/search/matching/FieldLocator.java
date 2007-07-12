@@ -41,7 +41,7 @@ public int match(ASTNode node, MatchingNodeSet nodeSet) {
 			// With static import, we can have static field reference in import reference
 			ImportReference importRef = (ImportReference) node;
 			int length = importRef.tokens.length-1;
-			if (importRef.isStatic() && !importRef.onDemand && matchesName(this.pattern.name, importRef.tokens[length])) {
+			if (importRef.isStatic() && ((importRef.bits &ASTNode.OnDemand)==0) && matchesName(this.pattern.name, importRef.tokens[length])) {
 				char[][] compoundName = new char[length][];
 				System.arraycopy(importRef.tokens, 0, compoundName, 0, length);
 				FieldPattern fieldPattern = (FieldPattern) this.pattern;
@@ -303,7 +303,7 @@ protected void reportDeclaration(FieldBinding fieldBinding, MatchLocator locator
 		locator.reportBinaryMemberDeclaration(resource, field, fieldBinding, info, SearchMatch.A_ACCURATE);
 	} else {
 		if (declaringClass instanceof ParameterizedTypeBinding)
-			declaringClass = ((ParameterizedTypeBinding) declaringClass).type;
+			declaringClass = ((ParameterizedTypeBinding) declaringClass).genericType();
 		Scope scp = ((SourceTypeBinding) declaringClass).scope;
 		if (scp instanceof ClassScope) {
 			ClassScope scope=(ClassScope)scp;

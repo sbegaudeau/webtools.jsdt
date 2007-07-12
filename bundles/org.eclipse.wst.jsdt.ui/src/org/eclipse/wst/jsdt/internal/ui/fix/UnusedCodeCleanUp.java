@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -187,7 +187,7 @@ public class UnusedCodeCleanUp extends AbstractCleanUp {
 				isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_MEMBERS) && isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_FELDS) ||
 				isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_LOCAL_VARIABLES)) 
 		{
-			UnusedCodeFix fix= UnusedCodeFix.createUnusedMemberFix(compilationUnit, problem);
+			UnusedCodeFix fix= UnusedCodeFix.createUnusedMemberFix(compilationUnit, problem, false);
 			if (fix != null)
 				return true;
 		}

@@ -48,6 +48,8 @@ import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;
  * See PreferenceConstants to access or change these values through public API.
  */
 public class JavaBasePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+	
+	public static final String JAVA_BASE_PREF_PAGE_ID= "org.eclipse.wst.jsdt.ui.preferences.JavaBasePreferencePage"; //$NON-NLS-1$
 
 	private static final String OPEN_TYPE_HIERARCHY= PreferenceConstants.OPEN_TYPE_HIERARCHY;
 	private static final String OPEN_TYPE_HIERARCHY_IN_PERSPECTIVE= PreferenceConstants.OPEN_TYPE_HIERARCHY_IN_PERSPECTIVE;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.operation.IRunnableContext;
+import org.eclipse.jface.viewers.IStructuredSelection;
 
 import org.eclipse.ui.PlatformUI;
 
@@ -56,6 +57,8 @@ public class DialogPackageExplorerActionGroup extends CompositeActionGroup {
      * @param provider a information provider to pass necessary information 
      * to the operations
      * @param context 
+     * @param dialogPackageExplorer the package explorer for which to contribute the actions to
+     * @param page the page showing the package explorer
      */
     public DialogPackageExplorerActionGroup(HintTextGroup provider, IRunnableContext context, DialogPackageExplorer dialogPackageExplorer, final NewSourceContainerWorkbookPage page) {
         super();
@@ -123,16 +126,46 @@ public class DialogPackageExplorerActionGroup extends CompositeActionGroup {
         		page.commitDefaultOutputFolder();
         	    super.run();
         	}
+        	
+        	/**
+        	 * {@inheritDoc}
+        	 */
+        	protected List getSelectedElements() {
+        		ArrayList result= new ArrayList();
+        		result.add(page.getJavaProject());
+        		return result;
+        	}
+
+        	/**
+        	 * {@inheritDoc}
+        	 */
+        	protected boolean canHandle(IStructuredSelection selection) {
+        		return true;
+        	}
         };
-		fDialogPackageExplorer.addSelectionChangedListener(fCreateLinkedSourceFolderAction);
         
         fCreateSourceFolderAction= new CreateSourceFolderAction2(provider, context, fDialogPackageExplorer) {
         	public void run() {
         		page.commitDefaultOutputFolder();
         	    super.run();
         	}
+        	
+        	/**
+        	 * {@inheritDoc}
+        	 */
+        	protected List getSelectedElements() {
+        		ArrayList result= new ArrayList();
+        		result.add(page.getJavaProject());
+        		return result;
+        	}
+
+        	/**
+        	 * {@inheritDoc}
+        	 */
+        	protected boolean canHandle(IStructuredSelection selection) {
+        		return true;
+        	}
         };
-		fDialogPackageExplorer.addSelectionChangedListener(fCreateSourceFolderAction);
 		
 		fResetAllAction= new ResetAllAction(provider, context, fDialogPackageExplorer);
 
@@ -158,8 +191,6 @@ public class DialogPackageExplorerActionGroup extends CompositeActionGroup {
 		fDialogPackageExplorer.removeSelectionChangedListener(fEditFilterAction);
 		fDialogPackageExplorer.removeSelectionChangedListener(fEditOutputFolderAction);
 		fDialogPackageExplorer.removePostSelectionChangedListener(fDropDownAction);
-        fDialogPackageExplorer.removeSelectionChangedListener(fCreateLinkedSourceFolderAction);
-        fDialogPackageExplorer.removeSelectionChangedListener(fCreateSourceFolderAction);
         fDialogPackageExplorer= null;
     }
     

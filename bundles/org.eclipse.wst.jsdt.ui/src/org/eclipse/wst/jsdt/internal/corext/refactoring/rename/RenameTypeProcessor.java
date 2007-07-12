@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -397,7 +397,7 @@ public class RenameTypeProcessor extends JavaRenameProcessor implements ITextUpd
 	}
 
 	/**
-	 * Returns the similar elements of the type, i.e. IFields, IMethods, and
+	 * @return the similar elements of the type, i.e. IFields, IMethods, and
 	 * ILocalVariables. Returns <code>null</code> iff similar declaration updating
 	 * is not requested.
 	 */
@@ -556,7 +556,8 @@ public class RenameTypeProcessor extends JavaRenameProcessor implements ITextUpd
 	 * fields.
 	 * 
 	 * May be called from the UI.
-	 * 
+	 * @param monitor 
+	 * @return initialization status 
 	 * @throws JavaModelException some fundamental error with the underlying model
 	 * @throws OperationCanceledException if user canceled the task
 	 * 
@@ -580,8 +581,13 @@ public class RenameTypeProcessor extends JavaRenameProcessor implements ITextUpd
 
 		
 		try {
-			fReferences= RefactoringSearchEngine.search(SearchPattern.createPattern(fType, IJavaSearchConstants.REFERENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE), RefactoringScopeFactory
-					.create(fType), monitor, fCachedRefactoringStatus);
+			SearchPattern pattern= SearchPattern.createPattern(fType, IJavaSearchConstants.REFERENCES, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
+			fReferences= RefactoringSearchEngine.search(
+					pattern,
+					RefactoringScopeFactory.create(fType),
+					new TypeOccurrenceCollector(fType),
+					monitor,
+					fCachedRefactoringStatus);
 			fReferences= Checks.excludeCompilationUnits(fReferences, fCachedRefactoringStatus);
 
 			fPreloadedElementToName= new LinkedHashMap();
@@ -646,7 +652,7 @@ public class RenameTypeProcessor extends JavaRenameProcessor implements ITextUpd
 								final ILocalVariable currentLocal= (ILocalVariable) element;
 								final boolean isParameter;
 								
-								if (isParameter(currentLocal)) {
+								if (JavaModelUtil.isParameter(currentLocal)) {
 									addMethodRename(unQualifiedTypeName, sugg, (IMethod) currentLocal.getParent());
 									isParameter= true;
 								} else
@@ -680,30 +686,13 @@ public class RenameTypeProcessor extends JavaRenameProcessor implements ITextUpd
 	}
 
 	/**
-	 * Returns true iff the given local variable is a parameter of its
-	 * declaring method.
-	 * 
-	 * TODO replace this method with new API when available: 
-	 * 		https://bugs.eclipse.org/bugs/show_bug.cgi?id=48420
-	 */
-	private boolean isParameter(ILocalVariable currentLocal) throws JavaModelException {
-
-		final IJavaElement parent= currentLocal.getParent();
-		if (parent instanceof IMethod) {
-			final String[] params= ((IMethod) parent).getParameterNames();
-			for (int i= 0; i < params.length; i++) {
-				if (params[i].equals(currentLocal.getElementName()))
-					return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Returns true iff the given search match offset (must be a match of a type
+	 * @param matchOffset 
+	 * @param parentElement 
+	 * @return true iff the given search match offset (must be a match of a type
 	 * reference) lies before the element name of its enclosing java element,
 	 * false if not. In other words: If this method returns true, the match is
 	 * the declared type (or return type) of the enclosing element.
+	 * @throws JavaModelException 
 	 * 
 	 */
 	private boolean isInDeclaredType(int matchOffset, IJavaElement parentElement) throws JavaModelException {
@@ -1155,9 +1144,8 @@ public class RenameTypeProcessor extends JavaRenameProcessor implements ITextUpd
 
 			for (int j= 0; j < results.length; j++){
 				SearchMatch match= results[j];
-				String oldName= fType.getElementName();
-				int offset= match.getOffset() + match.getLength() - oldName.length(); // reference may be qualified
-				TextChangeCompatibility.addTextEdit(manager.get(cu), name, new ReplaceEdit(offset, oldName.length(), getNewElementName()), CATEGORY_TYPE_RENAME);
+				ReplaceEdit replaceEdit= new ReplaceEdit(match.getOffset(), match.getLength(), getNewElementName());
+				TextChangeCompatibility.addTextEdit(manager.get(cu), name, replaceEdit, CATEGORY_TYPE_RENAME);
 			}
 			pm.worked(1);
 		}
@@ -1230,6 +1218,10 @@ public class RenameTypeProcessor extends JavaRenameProcessor implements ITextUpd
 
 	/**
 	 * Creates and initializes the refactoring processors for similarly named elements
+	 * @param progressMonitor 
+	 * @param context 
+	 * @return status
+	 * @throws CoreException 
 	 */
 	private RefactoringStatus initializeSimilarElementsRenameProcessors(IProgressMonitor progressMonitor, CheckConditionsContext context) throws CoreException {
 
@@ -1424,6 +1416,9 @@ public class RenameTypeProcessor extends JavaRenameProcessor implements ITextUpd
 	 * Checks whether one of the given methods, which will all be renamed to
 	 * "newName", shares a type with another already registered method which is
 	 * renamed to the same new name and shares the same parameters.
+	 * @param methods 
+	 * @param newName 
+	 * @return status
 	 * 
 	 * @see #checkForConflictingRename(IField, String)
 	 */
@@ -1476,6 +1471,9 @@ public class RenameTypeProcessor extends JavaRenameProcessor implements ITextUpd
 	 * 
 	 * Rename "FooBarThing" to "DifferentHunk". Suggestion for both fields is
 	 * "fDifferentHunk" (and rightly so).
+	 * @param currentField 
+	 * @param newName 
+	 * @return status
 	 */
 	private RefactoringStatus checkForConflictingRename(IField currentField, String newName) {
 		RefactoringStatus status= new RefactoringStatus();
@@ -1625,7 +1623,9 @@ public class RenameTypeProcessor extends JavaRenameProcessor implements ITextUpd
 	 * field names, but non-qualified field names only iff there are no fields
 	 * which have the same original, but a different new name. Don't add java
 	 * references; duplicate edits may be created but do not matter.
-	 * 
+	 * @param manager 
+	 * @param monitor 
+	 * @throws CoreException 
 	 */
 	private void addSimilarElementsTextualUpdates(TextChangeManager manager, IProgressMonitor monitor) throws CoreException {
 
@@ -1662,7 +1662,7 @@ public class RenameTypeProcessor extends JavaRenameProcessor implements ITextUpd
 	// ------ UI interaction
 
 	/**
-	 * Returns the map of similarly named elements (IJavaElement -> String with new name)
+	 * @return the map of similarly named elements (IJavaElement -> String with new name)
 	 * This map is live. Callers may change the new names of the elements; they
 	 * may not change the key set.
 	 */
@@ -1671,7 +1671,7 @@ public class RenameTypeProcessor extends JavaRenameProcessor implements ITextUpd
 	}
 
 	/**
-	 * Returns the map of similarly named elements (IJavaElement -> Boolean if selected) This
+	 * @return the map of similarly named elements (IJavaElement -> Boolean if selected) This
 	 * map is live. Callers may change the selection status of the elements;
 	 * they may not change the key set.
 	 */
@@ -1684,7 +1684,6 @@ public class RenameTypeProcessor extends JavaRenameProcessor implements ITextUpd
 	 * maps returned in {@link #getSimilarElementsToNewNames() } and
 	 * {@link #getSimilarElementsToSelection() }. All new names are reset to
 	 * the calculated ones and every element gets selected.
-	 * 
 	 */
 	public void resetSelectedSimilarElements() {
 		Assert.isNotNull(fPreloadedElementToName);
@@ -1696,9 +1695,8 @@ public class RenameTypeProcessor extends JavaRenameProcessor implements ITextUpd
 	}
 
 	/**
-	 * Returns true iff the "update similarly named elements" flag is set AND the
+	 * @return true iff the "update similarly named elements" flag is set AND the
 	 * search yielded some elements to be renamed.
-	 * 
 	 */
 	public boolean hasSimilarElementsToRename() {
 		if (!fUpdateSimilarElements)

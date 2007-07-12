@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,8 +76,11 @@ import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
+import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
+
+import org.eclipse.wst.jsdt.internal.corext.javadoc.JavaDocLocations;
 
 import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 import org.eclipse.wst.jsdt.ui.JavadocContentAccess;
@@ -498,11 +501,7 @@ public class JavadocView extends AbstractInfoView {
 				}
 				break;
 			case IJavaElement.CLASS_FILE:
-				try {
-					javadocHtml= getJavadocHtml(new IJavaElement[] {((IClassFile)je).getType()});
-				} catch (JavaModelException ex) {
-					javadocHtml= null;
-				}
+				javadocHtml= getJavadocHtml(new IJavaElement[] {((IClassFile)je).getType()});
 				break;
 			default:
 				javadocHtml= getJavadocHtml(new IJavaElement[] { je });
@@ -580,13 +579,25 @@ public class JavadocView extends AbstractInfoView {
 					
 					// Provide hint why there's no Javadoc
 					if (reader == null && member.isBinary()) {
+						boolean hasAttachedJavadoc= JavaDocLocations.getJavadocBaseLocation(member) != null;
 						IPackageFragmentRoot root= (IPackageFragmentRoot)member.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
-						if (root != null && root.getSourceAttachmentPath() == null && root.getAttachedJavadoc(null) == null)
-							reader= new StringReader(InfoViewMessages.JavadocView_noAttachedInformation);
+						boolean hasAttachedSource= root != null && root.getSourceAttachmentPath() != null;
+						IOpenable openable= member.getOpenable();
+						boolean hasSource= openable.getBuffer() != null;
+						
+						if (!hasAttachedSource && !hasAttachedJavadoc)
+							reader= new StringReader(InfoViewMessages.JavadocView_noAttachments);
+						else if (!hasAttachedJavadoc && !hasSource)
+							reader= new StringReader(InfoViewMessages.JavadocView_noAttachedJavadoc);
+						else if (!hasAttachedSource)
+							reader= new StringReader(InfoViewMessages.JavadocView_noAttachedSource);
+						else if (!hasSource)
+							reader= new StringReader(InfoViewMessages.JavadocView_noInformation);
 					}
 					
 				} catch (JavaModelException ex) {
-					return null;
+					reader= new StringReader(InfoViewMessages.JavadocView_error_gettingJavadoc);
+					JavaPlugin.log(ex.getStatus());
 				}
 				if (reader != null) {
 					HTMLPrinter.addParagraph(buffer, reader);

@@ -24,6 +24,12 @@ public final class WorkingSetMessages extends NLS {
 	public static String AbstractWorkingSetPage_warning_nameMustNotBeEmpty;
 	public static String AbstractWorkingSetPage_warning_workingSetExists;
 	public static String AbstractWorkingSetPage_warning_nameWhitespace;
+	public static String ConfigureWorkingSetAssignementAction_DialogMessage_multi;
+	public static String ConfigureWorkingSetAssignementAction_DialogMessage_specific;
+	public static String ConfigureWorkingSetAssignementAction_OnlyShowVisible_link;
+	public static String ConfigureWorkingSetAssignementAction_WorkingSetAssignments_title;
+	public static String ConfigureWorkingSetAssignementAction_WorkingSets_actionLabel;
+	public static String ConfigureWorkingSetAssignementAction_XofY_label;
 	
 	public static String JavaWorkingSetPage_title;
 	public static String JavaWorkingSetPage_workingSet_name;
@@ -39,6 +45,7 @@ public final class WorkingSetMessages extends NLS {
 	public static String JavaWorkingSetPage_selectAll_toolTip;
 	public static String JavaWorkingSetPage_deselectAll_label;
 	public static String JavaWorkingSetPage_deselectAll_toolTip;
+	public static String OpenCloseWorkingSetAction_error_details;
 	
 	public static String SelectWorkingSetAction_text;
 	public static String SelectWorkingSetAction_toolTip;
@@ -52,9 +59,15 @@ public final class WorkingSetMessages extends NLS {
 	public static String ClearWorkingSetAction_toolTip;
 	
 	public static String ConfigureWorkingSetAction_label;
+	public static String SimpleWorkingSetSelectionDialog_DeselectAll_button;
+	public static String SimpleWorkingSetSelectionDialog_New_button;
+	public static String SimpleWorkingSetSelectionDialog_SelectAll_button;
+	public static String SimpleWorkingSetSelectionDialog_SimpleSelectWorkingSetDialog_title;
 	public static String ViewActionGroup_show_label;
 	public static String ViewActionGroup_projects_label;
 	public static String ViewActionGroup_workingSets_label;
+	public static String WorkingSetConfigurationBlock_SelectWorkingSet_button;
+	public static String WorkingSetConfigurationBlock_WorkingSetText_name;
 	
 	public static String WorkingSetModel_histroy_name;
 	public static String WorkingSetModel_others_name;

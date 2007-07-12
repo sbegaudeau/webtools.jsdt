@@ -96,7 +96,7 @@ public int match(ASTNode node, MatchingNodeSet nodeSet) {
 			// With static import, we can have static method reference in import reference
 			ImportReference importRef = (ImportReference) node;
 			int length = importRef.tokens.length-1;
-			if (importRef.isStatic() && !importRef.onDemand && matchesName(this.pattern.selector, importRef.tokens[length])) {
+			if (importRef.isStatic() && ((importRef.bits & ASTNode.OnDemand) == 0) && matchesName(this.pattern.selector, importRef.tokens[length])) {
 				char[][] compoundName = new char[length][];
 				System.arraycopy(importRef.tokens, 0, compoundName, 0, length);
 				char[] declaringType = CharOperation.concat(pattern.declaringQualification, pattern.declaringSimpleName, '.');
@@ -528,7 +528,7 @@ protected void reportDeclaration(MethodBinding methodBinding, MatchLocator locat
 		locator.reportBinaryMemberDeclaration(resource, method, methodBinding, info, SearchMatch.A_ACCURATE);
 	} else {
 		if (declaringClass instanceof ParameterizedTypeBinding)
-			declaringClass = ((ParameterizedTypeBinding) declaringClass).type;
+			declaringClass = ((ParameterizedTypeBinding) declaringClass).genericType();
 		ClassScope scope = (ClassScope)((SourceTypeBinding) declaringClass).scope;
 		if (scope != null) {
 			TypeDeclaration typeDecl = scope.referenceContext;

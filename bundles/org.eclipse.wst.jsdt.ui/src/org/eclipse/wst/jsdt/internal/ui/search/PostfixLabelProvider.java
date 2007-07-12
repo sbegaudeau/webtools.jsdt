@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,9 @@ import org.eclipse.wst.jsdt.core.IType;
 
 import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredJavaElementLabels;
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredString;
+
 public class PostfixLabelProvider extends SearchLabelProvider {
 	private ITreeContentProvider fContentProvider;
 	
@@ -38,8 +41,11 @@ public class PostfixLabelProvider extends SearchLabelProvider {
 	
 	public String getText(Object element) {
 		String labelWithCounts= getLabelWithCounts(element, internalGetText(element));
-		
-		StringBuffer res= new StringBuffer(labelWithCounts);
+		return labelWithCounts + getQualification(element);
+	}
+	
+	private String getQualification(Object element) {
+		StringBuffer res= new StringBuffer();
 		
 		ITreeContentProvider provider= (ITreeContentProvider) fPage.getViewer().getContentProvider();
 		Object visibleParent= provider.getParent(element);
@@ -54,7 +60,6 @@ public class PostfixLabelProvider extends SearchLabelProvider {
 		}
 		return res.toString();
 	}
-	
 
 	protected boolean hasChildren(Object element) {
 		ITreeContentProvider contentProvider= (ITreeContentProvider) fPage.getViewer().getContentProvider();
@@ -80,6 +85,15 @@ public class PostfixLabelProvider extends SearchLabelProvider {
 			}
 		}
 		return false;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.internal.ui.viewsupport.IRichLabelProvider#getRichTextLabel(java.lang.Object)
+	 */
+	public ColoredString getRichTextLabel(Object element) {
+		ColoredString coloredString= getColoredLabelWithCounts(element, super.getRichTextLabel(element));
+		coloredString.append(getQualification(element), ColoredJavaElementLabels.QUALIFIER_STYLE);
+		return coloredString;
 	}
 
 }

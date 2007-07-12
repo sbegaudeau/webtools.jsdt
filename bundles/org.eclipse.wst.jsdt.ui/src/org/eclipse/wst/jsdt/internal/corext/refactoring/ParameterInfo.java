@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,8 +21,8 @@ public class ParameterInfo {
 	public static final int INDEX_FOR_ADDED= -1;
 	public static final String ELLIPSIS= "..."; //$NON-NLS-1$
 	
-	private final IVariableBinding fOldBinding;
-	private final ITypeBinding fOldTypeBinding;
+	private IVariableBinding fOldBinding;
+	private ITypeBinding fOldTypeBinding;
 	private final String fOldName;
 	private final String fOldTypeName;
 	private final int fOldIndex;
@@ -32,6 +32,9 @@ public class ParameterInfo {
 	private String fDefaultValue;
 	private String fNewName;
 	private boolean fIsDeleted;
+	private boolean fCreateField=true;
+	private boolean fInlined;
+	private boolean fResolve= true;
 	
 	public ParameterInfo(String type, String name, int index) {
 		this(null, null, type, name, index);
@@ -52,6 +55,25 @@ public class ParameterInfo {
 		fOldIndex= index;
 		fDefaultValue= ""; //$NON-NLS-1$
 		fIsDeleted= false;
+	}
+
+	
+	/**
+	 * Creates a new ParameterInfo. Parameter is marked as added and not resolvable
+	 * @param type the fullyqualified type
+	 * @param name the name
+	 * @return the parameter info object
+	 */
+	public static ParameterInfo createInfoForAddedParameter(String type, String name) {
+		ParameterInfo info= new ParameterInfo("", "", INDEX_FOR_ADDED); //$NON-NLS-1$ //$NON-NLS-2$
+		info.setNewTypeName(type);
+		info.setNewName(name);
+		info.setResolve(false);
+		return info;
+	}
+	
+	private void setResolve(boolean resolve) {
+		fResolve= resolve;
 	}
 
 	public static ParameterInfo createInfoForAddedParameter(String type, String name, String defaultValue) {
@@ -121,7 +143,10 @@ public class ParameterInfo {
 	}
 	
 	public void setNewTypeBinding(ITypeBinding typeBinding){
-		fNewTypeBinding= typeBinding;
+		//TODO: TypeContextChecker should not resolve such a parameter at all.
+		// That would also make IProblemVerifier obsolete.
+		if (fResolve)
+			fNewTypeBinding= typeBinding;
 	}
 
 	public boolean isOldVarargs() {
@@ -174,4 +199,29 @@ public class ParameterInfo {
 	public ITypeBinding getOldTypeBinding() {
 		return fOldTypeBinding;
 	}
+
+	public boolean isCreateField() {
+		return fCreateField;
+	}
+
+	public void setCreateField(boolean createField) {
+		fIsDeleted= createField;
+		fCreateField= createField;
+	}
+
+	public void setOldBinding(IVariableBinding binding) {
+		//TODO: remove setter again ( https://bugs.eclipse.org/bugs/show_bug.cgi?id=102287 )
+		fOldBinding=binding;
+		fOldTypeBinding=binding.getType();
+		fNewTypeBinding=binding.getType();
+	}
+
+	public void setInlined(boolean inlined) {
+		fInlined=inlined;
+	}
+	
+	public boolean isInlined() {
+		return fInlined;
+	}
+
 }

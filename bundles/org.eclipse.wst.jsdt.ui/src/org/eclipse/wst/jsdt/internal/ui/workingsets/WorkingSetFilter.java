@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,16 +26,13 @@ import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer;
+import org.eclipse.wst.jsdt.internal.ui.packageview.ClassPathContainer.RequiredProjectWrapper;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaViewerFilter;
 
 /**
  * Working set filter for Java viewers.
  */
 public class WorkingSetFilter extends JavaViewerFilter {
-
-	private IWorkingSet fWorkingSet= null;
-	
-	private WorkingSetCompareEntry[] fCachedCompareEntries;
 	
 	private static class WorkingSetCompareEntry {
 		private IPath fResourcePath;
@@ -46,6 +43,13 @@ public class WorkingSetFilter extends JavaViewerFilter {
 				init((IJavaElement) a);
 			} else if (a instanceof IResource) {
 				init((IResource) a);
+			} else if (a instanceof RequiredProjectWrapper) {
+				RequiredProjectWrapper wrapper= (RequiredProjectWrapper) a;
+				IJavaProject proj= wrapper.getParentClassPathContainer().getJavaProject();
+				// the project reference is treated like an internal JAR.
+				// that means it will only appear if the parent container project is in the working set
+				IResource fakeInternal= proj.getProject().getFile(wrapper.getProject().getElementName() + "-fake-jar.jar"); //$NON-NLS-1$
+				init(proj.getPackageFragmentRoot(fakeInternal));
 			} else {
 				IJavaElement je= (IJavaElement) a.getAdapter(IJavaElement.class);
 				if (je != null) {
@@ -112,6 +116,15 @@ public class WorkingSetFilter extends JavaViewerFilter {
 		}
 	}
 	
+	private IWorkingSet fWorkingSet;
+	
+	private WorkingSetCompareEntry[] fCachedCompareEntries;
+	
+	public WorkingSetFilter() {
+		fWorkingSet= null;
+		fCachedCompareEntries= null;
+	}
+	
 	/**
 	 * Returns the working set which is used by this filter.
 	 * 
@@ -127,26 +140,38 @@ public class WorkingSetFilter extends JavaViewerFilter {
 	 * @param workingSet the working set
 	 */
 	public void setWorkingSet(IWorkingSet workingSet) {
-		fWorkingSet= workingSet;
+		if (fWorkingSet != workingSet) {
+			fWorkingSet= workingSet;
+			notifyWorkingSetContentChange();
+		}
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.internal.ui.filters.JavaViewerFilter#filteringStart()
+	 * @see org.eclipse.wst.jsdt.internal.ui.filters.JavaViewerFilter#initFilter()
 	 */
-	public void filteringStart() {
+	protected void initFilter() {
+		notifyWorkingSetContentChange();
+	}
+
+	/**
+	 * Invoke when the content of the current working set changed. Clients are responsible to listen to changes and call this method. 
+	 */
+	public final void notifyWorkingSetContentChange() {
 		if (fWorkingSet != null) {
 			IAdaptable[] elements= fWorkingSet.getElements();
 			fCachedCompareEntries= new WorkingSetCompareEntry[elements.length];
 			for (int i= 0; i < elements.length; i++) {
 				fCachedCompareEntries[i]= new WorkingSetCompareEntry(elements[i]);
 			}
+		} else {
+			fCachedCompareEntries= null;
 		}
 	}
-
+	
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.internal.ui.filters.JavaViewerFilter#filteringEnd()
+	 * @see org.eclipse.wst.jsdt.internal.ui.filters.JavaViewerFilter#freeFilter()
 	 */
-	public void filteringEnd() {
+	protected void freeFilter() {
 		fCachedCompareEntries= null;
 	}
 	
@@ -157,12 +182,13 @@ public class WorkingSetFilter extends JavaViewerFilter {
 		if (fWorkingSet == null || (fWorkingSet.isAggregateWorkingSet() && fWorkingSet.isEmpty()))
 			return true;
 
-		if (element instanceof IAdaptable)
-			return isEnclosing((IAdaptable)element);
-
 		if (element instanceof PackageFragmentRootContainer) {
 			return isEnclosing((PackageFragmentRootContainer)element);
 		}
+		
+		if (element instanceof IAdaptable)
+			return isEnclosing((IAdaptable)element);
+
 		return true;
 	}
 
@@ -189,7 +215,7 @@ public class WorkingSetFilter extends JavaViewerFilter {
 	
 	private boolean isEnclosing(PackageFragmentRootContainer container) {
 		// check whether the containing package fragment roots are enclosed
-		IPackageFragmentRoot[] roots= container.getPackageFragmentRoots();
+		IAdaptable[] roots= container.getChildren();
 		for (int i= 0; i < roots.length; i++) {
 			if (isEnclosing(roots[i])) {
 				return true;

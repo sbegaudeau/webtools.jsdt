@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,7 +41,8 @@ public class UserLibraryManager {
 	public final static String CP_USERLIBRARY_PREFERENCES_PREFIX = JavaCore.PLUGIN_ID+".userLibrary."; //$NON-NLS-1$
 	public final static String CP_ENTRY_IGNORE = "##<cp entry ignore>##"; //$NON-NLS-1$
 
-	private static Map userLibraries;
+	private static Map UserLibraries;
+	private static ThreadLocal InitializingLibraries = new ThreadLocal();
 	private static final boolean logProblems= false;
 	private static IEclipsePreferences.IPreferenceChangeListener listener= new IEclipsePreferences.IPreferenceChangeListener() {
 
@@ -98,8 +99,8 @@ public class UserLibraryManager {
 			monitor= new NullProgressMonitor();
 		}
 		
-		monitor.beginTask("Configure user libraries...", newNames.length);	//$NON-NLS-1$
 		try {
+			monitor.beginTask("", newNames.length);	//$NON-NLS-1$
 			int last= newNames.length - 1;
 			for (int i= 0; i < newLibs.length; i++) {
 				internalSetUserLibrary(newNames[i], newLibs[i], i == last, true, new SubProgressMonitor(monitor, 1));
@@ -122,32 +123,40 @@ public class UserLibraryManager {
 	}
 	
 	static Map getLibraryMap() {
-		if (userLibraries == null) {
-			userLibraries= new HashMap();
-			// load variables and containers from preferences into cache
-			IEclipsePreferences instancePreferences = JavaModelManager.getJavaModelManager().getInstancePreferences();
-			instancePreferences.addPreferenceChangeListener(listener);
-
-			// only get variable from preferences not set to their default
+		if (UserLibraries == null) {
+			HashMap libraries = (HashMap) InitializingLibraries.get();
+			if (libraries != null)
+				return libraries;
 			try {
-				String[] propertyNames = instancePreferences.keys();
-				for (int i = 0; i < propertyNames.length; i++) {
-					String propertyName = propertyNames[i];
-					if (propertyName.startsWith(CP_USERLIBRARY_PREFERENCES_PREFIX)) {
-						try {
-							String propertyValue = instancePreferences.get(propertyName, null);
-							if (propertyValue != null)
-								recreatePersistedUserLibraryEntry(propertyName,propertyValue, false, false);
-						} catch (JavaModelException e) {
-							// won't happen: no rebinding
+				InitializingLibraries.set(libraries = new HashMap());
+				// load variables and containers from preferences into cache
+				IEclipsePreferences instancePreferences = JavaModelManager.getJavaModelManager().getInstancePreferences();
+				instancePreferences.addPreferenceChangeListener(listener);
+	
+				// only get variable from preferences not set to their default
+				try {
+					String[] propertyNames = instancePreferences.keys();
+					for (int i = 0; i < propertyNames.length; i++) {
+						String propertyName = propertyNames[i];
+						if (propertyName.startsWith(CP_USERLIBRARY_PREFERENCES_PREFIX)) {
+							try {
+								String propertyValue = instancePreferences.get(propertyName, null);
+								if (propertyValue != null)
+									recreatePersistedUserLibraryEntry(propertyName,propertyValue, false, false);
+							} catch (JavaModelException e) {
+								// won't happen: no rebinding
+							}
 						}
 					}
+				} catch (BackingStoreException e) {
+					// nothing to do in this case
 				}
-			} catch (BackingStoreException e) {
-				// nothing to do in this case
+				UserLibraries = libraries;
+			} finally {
+				InitializingLibraries.set(null);
 			}
 		}
-		return userLibraries;
+		return UserLibraries;
 	}
 	
 	static void recreatePersistedUserLibraryEntry(String propertyName, String savedString, boolean save, boolean rebind) throws JavaModelException {
@@ -213,43 +222,48 @@ public class UserLibraryManager {
 	}
 
 	private static void rebindClasspathEntries(String name, boolean remove, IProgressMonitor monitor) throws JavaModelException {
-		IWorkspaceRoot root= ResourcesPlugin.getWorkspace().getRoot();
-		IJavaProject[] projects= JavaCore.create(root).getJavaProjects();
-		IPath containerPath= new Path(JavaCore.USER_LIBRARY_CONTAINER_ID).append(name);
-		
-		ArrayList affectedProjects= new ArrayList();
-		
-		for (int i= 0; i < projects.length; i++) {
-			IJavaProject project= projects[i];
-			IClasspathEntry[] entries= project.getRawClasspath();
-			for (int k= 0; k < entries.length; k++) {
-				IClasspathEntry curr= entries[k];
-				if (curr.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
-					if (containerPath.equals(curr.getPath())) {
-						affectedProjects.add(project);
-						break;
-					}				
+		try {
+			if (monitor != null) {
+				monitor.beginTask("", 1); //$NON-NLS-1$
+			}
+			IWorkspaceRoot root= ResourcesPlugin.getWorkspace().getRoot();
+			IJavaProject[] projects= JavaCore.create(root).getJavaProjects();
+			IPath containerPath= new Path(JavaCore.USER_LIBRARY_CONTAINER_ID).append(name);
+			
+			ArrayList affectedProjects= new ArrayList();
+			
+			for (int i= 0; i < projects.length; i++) {
+				IJavaProject project= projects[i];
+				IClasspathEntry[] entries= project.getRawClasspath();
+				for (int k= 0; k < entries.length; k++) {
+					IClasspathEntry curr= entries[k];
+					if (curr.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
+						if (containerPath.equals(curr.getPath())) {
+							affectedProjects.add(project);
+							break;
+						}				
+					}
 				}
 			}
-		}
-		if (!affectedProjects.isEmpty()) {
-			IJavaProject[] affected= (IJavaProject[]) affectedProjects.toArray(new IJavaProject[affectedProjects.size()]);
-			IClasspathContainer[] containers= new IClasspathContainer[affected.length];
-			if (!remove) {
-				// Previously, containers array only contained a null value. Then, user library classpath entry was first removed
-				// and then added a while after when post change delta event on .classpath file was fired...
-				// Unfortunately, in some cases, this event was fired a little bit too late and missed the refresh of Package Explorer
-				// (see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=61872)
-				// So now, instanciate a new user library classpath container instead which allow to refresh its content immediately
-				// as there's no classpath entry removal...
-				// Note that it works because equals(Object) method is not overridden for UserLibraryClasspathContainer.
-				// If it was, the update wouldn't happen while setting classpath container
-				// @see javaCore.setClasspathContainer(IPath, IJavaProject[], IClasspathContainer[], IProgressMonitor)
-				UserLibraryClasspathContainer container= new UserLibraryClasspathContainer(name);
-				containers[0] = container;
-			}
-			JavaCore.setClasspathContainer(containerPath, affected, containers, monitor);
-		} else {
+			if (!affectedProjects.isEmpty()) {
+				IJavaProject[] affected= (IJavaProject[]) affectedProjects.toArray(new IJavaProject[affectedProjects.size()]);
+				IClasspathContainer[] containers= new IClasspathContainer[affected.length];
+				if (!remove) {
+					// Previously, containers array only contained a null value. Then, user library classpath entry was first removed
+					// and then added a while after when post change delta event on .classpath file was fired...
+					// Unfortunately, in some cases, this event was fired a little bit too late and missed the refresh of Package Explorer
+					// (see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=61872)
+					// So now, instanciate a new user library classpath container instead which allow to refresh its content immediately
+					// as there's no classpath entry removal...
+					// Note that it works because equals(Object) method is not overridden for UserLibraryClasspathContainer.
+					// If it was, the update wouldn't happen while setting classpath container
+					// @see javaCore.setClasspathContainer(IPath, IJavaProject[], IClasspathContainer[], IProgressMonitor)
+					UserLibraryClasspathContainer container= new UserLibraryClasspathContainer(name);
+					containers[0] = container;
+				}
+				JavaCore.setClasspathContainer(containerPath, affected, containers, monitor == null ? null : new SubProgressMonitor(monitor, 1));
+			} 
+		} finally {
 			if (monitor != null) {
 				monitor.done();
 			}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -133,6 +133,8 @@ import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.SelectionUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathsBlock;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.OthersWorkingSetUpdater;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+
 
 public class PasteAction extends SelectionDispatchAction{
 
@@ -285,16 +287,31 @@ public class PasteAction extends SelectionDispatchAction{
 		/**
 		 * Used to be called on selection change, but is only called on execution now
 		 * (before {@link #canPasteOn(IJavaElement[], IResource[], IWorkingSet[])}).
+		 * @param availableTypes transfer types
+		 * @return whether the paste action can be enabled
+		 * @throws JavaModelException 
 		 */
 		public abstract boolean canEnable(TransferData[] availableTypes)  throws JavaModelException;
 		
 		/**
 		 * Only called if {@link #canEnable(TransferData[])} returns <code>true</code>.
+		 * @param selectedJavaElements 
+		 * @param selectedResources 
+		 * @param selectedWorkingSets 
+		 * @return whether the paste action can be enabled
+		 * @throws JavaModelException 
 		 */
 		public abstract boolean canPasteOn(IJavaElement[] selectedJavaElements, IResource[] selectedResources, IWorkingSet[] selectedWorkingSets)  throws JavaModelException;
 		
 		/**
 		 * only called if {@link #canPasteOn(IJavaElement[], IResource[], IWorkingSet[])} returns <code>true</code>
+		 * @param selectedJavaElements 
+		 * @param selectedResources 
+		 * @param selectedWorkingSets 
+		 * @param availableTypes 
+		 * @throws JavaModelException 
+		 * @throws InterruptedException 
+		 * @throws InvocationTargetException 
 		 */
 		public abstract void paste(IJavaElement[] selectedJavaElements, IResource[] selectedResources, IWorkingSet[] selectedWorkingSets, TransferData[] availableTypes) throws JavaModelException, InterruptedException, InvocationTargetException;
 	}
@@ -509,30 +526,35 @@ public class PasteAction extends SelectionDispatchAction{
 				private IPath fVMPath;
 				private String fCompilerCompliance;
 
-				public void run(IProgressMonitor pm) throws InvocationTargetException {
-					pm.beginTask("", 1 + fParsedCus.length); //$NON-NLS-1$
-					
-					ArrayList cus= new ArrayList();
+				public void run(IProgressMonitor monitor) throws InvocationTargetException {
+					final ArrayList cus= new ArrayList();
 					try {
-						if (fDestination == null) {
-							fDestination= createNewProject(new SubProgressMonitor(pm, 1));
-						} else {
-							pm.worked(1);
-						}
-						IConfirmQuery confirmQuery= new ReorgQueries(getShell()).createYesYesToAllNoNoToAllQuery(ReorgMessages.PasteAction_TextPaster_confirmOverwriting, true, IReorgQueries.CONFIRM_OVERWRITING);
-						for (int i= 0; i < fParsedCus.length; i++) {
-							if (pm.isCanceled())
-								break;
-							ICompilationUnit cu= pasteCU(fParsedCus[i], new SubProgressMonitor(pm, 1), confirmQuery);
-							if (cu != null)
-								cus.add(cu);
-						}
+						JavaCore.run(new IWorkspaceRunnable() {
+							public void run(IProgressMonitor pm) throws CoreException {
+								pm.beginTask("", 1 + fParsedCus.length); //$NON-NLS-1$
+					
+								if (fDestination == null) {
+									fDestination= createNewProject(new SubProgressMonitor(pm, 1));
+								} else {
+									pm.worked(1);
+								}
+								IConfirmQuery confirmQuery= new ReorgQueries(getShell()).createYesYesToAllNoNoToAllQuery(ReorgMessages.PasteAction_TextPaster_confirmOverwriting, true, IReorgQueries.CONFIRM_OVERWRITING);
+								for (int i= 0; i < fParsedCus.length; i++) {
+									if (pm.isCanceled())
+										break;
+									ICompilationUnit cu= pasteCU(fParsedCus[i], new SubProgressMonitor(pm, 1), confirmQuery);
+									if (cu != null)
+										cus.add(cu);
+								}
+						
+							}
+						}, monitor);
 					} catch (OperationCanceledException e) {
 						// cancelling is fine
 					} catch (CoreException e) {
 						throw new InvocationTargetException(e);
 					} finally {
-						pm.done();
+						monitor.done();
 					}
 					IResource[] cuResources= ResourceUtil.getFiles((ICompilationUnit[]) cus.toArray(new ICompilationUnit[cus.size()]));
 					SelectionUtil.selectAndReveal(cuResources, PlatformUI.getWorkbench().getActiveWorkbenchWindow());

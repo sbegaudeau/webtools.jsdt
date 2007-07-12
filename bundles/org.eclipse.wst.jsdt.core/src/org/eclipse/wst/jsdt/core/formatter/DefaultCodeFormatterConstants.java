@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.core.formatter;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.internal.formatter.DefaultCodeFormatterOptions;
 import org.eclipse.wst.jsdt.internal.formatter.align.Alignment;
 
@@ -21,7 +22,7 @@ import org.eclipse.wst.jsdt.internal.formatter.align.Alignment;
  * <p>
  * This class is not intended to be instantiated or subclassed by clients.
  * </p>
- * 
+ *
  * @since 3.0
  */
 public class DefaultCodeFormatterConstants {
@@ -632,7 +633,7 @@ public class DefaultCodeFormatterConstants {
 
 	/**
 	 * <pre>
-	 * FORMATTER / Option to control whether multiple comments are formatted
+	 * FORMATTER / Option to control whether multiple lines comments are formatted
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.comment.format_block_comments"
 	 *     - possible values:   { TRUE, FALSE }
 	 *     - default:           TRUE
@@ -3030,7 +3031,34 @@ public class DefaultCodeFormatterConstants {
 	 * @since 3.0
 	 */
 	public static final String FORMATTER_LINE_SPLIT = JavaCore.PLUGIN_ID + ".formatter.lineSplit"; //$NON-NLS-1$
-
+	/**
+	 * <pre>
+	 * FORMATTER / Option to indent block comments that start on the first column
+	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.formatter.never_indent_block_comments_on_first_column"
+	 *     - possible values:   { TRUE, FALSE }
+	 *     - default:           FALSE
+	 * </pre>
+	 * Note that this option is ignored if the formatter is created with the mode {@link ToolFactory#M_FORMAT_NEW}.
+	 * @see #TRUE
+	 * @see #FALSE
+	 * @see ToolFactory#createCodeFormatter(Map, int)
+	 * @since 3.3
+	 */
+	public static final String FORMATTER_NEVER_INDENT_BLOCK_COMMENTS_ON_FIRST_COLUMN = JavaCore.PLUGIN_ID + ".formatter.never_indent_block_comments_on_first_column"; //$NON-NLS-1$	
+	/**
+	 * <pre>
+	 * FORMATTER / Option to indent line comments that start on the first column
+	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.formatter.never_indent_line_comments_on_first_column"
+	 *     - possible values:   { TRUE, FALSE }
+	 *     - default:           FALSE
+	 * </pre>
+	 * Note that this option is ignored if the formatter is created with the mode {@link ToolFactory#M_FORMAT_NEW}.
+	 * @see #TRUE
+	 * @see #FALSE
+	 * @see ToolFactory#createCodeFormatter(Map, int)
+	 * @since 3.3
+	 */
+	public static final String FORMATTER_NEVER_INDENT_LINE_COMMENTS_ON_FIRST_COLUMN = JavaCore.PLUGIN_ID + ".formatter.never_indent_line_comments_on_first_column"; //$NON-NLS-1$	
 	/**
 	 * <pre>
 	 * FORMATTER / Option to specify the number of empty lines to preserve
@@ -3091,7 +3119,19 @@ public class DefaultCodeFormatterConstants {
 	 * @since 3.1
 	 */
 	public static final String FORMATTER_USE_TABS_ONLY_FOR_LEADING_INDENTATIONS = JavaCore.PLUGIN_ID + ".formatter.use_tabs_only_for_leading_indentations"; //$NON-NLS-1$
-
+	/**
+	 * <pre>
+	 * FORMATTER / Option to wrap before the binary operator
+	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.wrap_before_binary_operator"
+	 *     - possible values:   { TRUE, FALSE }
+	 *     - default:           TRUE
+	 * </pre>
+	 * This option is used only if the option {@link #FORMATTER_ALIGNMENT_FOR_BINARY_EXPRESSION} is set.
+	 * @see #TRUE
+	 * @see #FALSE
+	 * @since 3.3
+	 */
+	public static final String FORMATTER_WRAP_BEFORE_BINARY_OPERATOR = JavaCore.PLUGIN_ID + ".formatter.wrap_before_binary_operator"; //$NON-NLS-1$
 	/**
 	 * <pre>
 	 * FORMATTER / The wrapping is done by indenting by one compare to the current indentation.

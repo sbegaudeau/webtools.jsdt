@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,6 +66,7 @@ import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
 import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
@@ -99,6 +100,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitC
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.NLSRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.surround.ExceptionAnalyzer;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.surround.SurroundWithTryCatchRefactoring;
+import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 
 import org.eclipse.wst.jsdt.ui.actions.InferTypeArgumentsAction;
@@ -471,7 +473,20 @@ public class LocalCorrectionsSubProcessor {
 	}
 
 	public static void addUnusedMemberProposal(IInvocationContext context, IProblemLocation problem,  Collection proposals) {
-		UnusedCodeFix fix= UnusedCodeFix.createUnusedMemberFix(context.getASTRoot(), problem);
+		int problemId = problem.getProblemId();
+		UnusedCodeFix fix= UnusedCodeFix.createUnusedMemberFix(context.getASTRoot(), problem, false);
+		if (fix != null) {
+			addProposal(context, proposals, fix);
+		}
+		
+		if (problemId==IProblem.LocalVariableIsNeverUsed){
+			fix= UnusedCodeFix.createUnusedMemberFix(context.getASTRoot(), problem, true);
+			addProposal(context, proposals, fix);
+		}
+		
+	}
+
+	private static void addProposal(IInvocationContext context, Collection proposals, final UnusedCodeFix fix) {
 		if (fix != null) {
 			Image image= JavaPlugin.getDefault().getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_DELETE);
 			FixCorrectionProposal proposal= new FixCorrectionProposal(fix, fix.getCleanUp(), 10, image, context);
@@ -964,5 +979,48 @@ public class LocalCorrectionsSubProcessor {
 			ASTRewriteCorrectionProposal proposal= new ASTRewriteCorrectionProposal(label, context.getCompilationUnit(), rewrite, 5, image);
 			proposals.add(proposal);
 		}
+	}
+	
+	public static void addDeprecatedFieldsToMethodsProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) {
+		ASTNode selectedNode= problem.getCoveringNode(context.getASTRoot());
+		if (selectedNode instanceof Name) {
+			IBinding binding= ((Name) selectedNode).resolveBinding();
+			if (binding instanceof IVariableBinding) {
+				IVariableBinding variableBinding= (IVariableBinding) binding;
+				if (variableBinding.isField()) {
+					String qualifiedName= variableBinding.getDeclaringClass().getTypeDeclaration().getQualifiedName();
+					String fieldName= variableBinding.getName();
+					String[] methodName= getMethod(JavaModelUtil.concatenateName(qualifiedName, fieldName));
+					if (methodName != null) {
+						AST ast= selectedNode.getAST();
+						ASTRewrite astRewrite= ASTRewrite.create(ast);
+						ImportRewrite importRewrite= StubUtility.createImportRewrite(context.getASTRoot(), true);
+
+						MethodInvocation method= ast.newMethodInvocation();
+						String qfn= importRewrite.addImport(methodName[0]);
+						method.setExpression(ast.newName(qfn));
+						method.setName(ast.newSimpleName(methodName[1]));
+						astRewrite.replace(selectedNode, method, null);
+
+						String label= Messages.format(CorrectionMessages.LocalCorrectionsSubProcessor_replacefieldaccesswithmethod_description, method);
+						Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE);
+						ASTRewriteCorrectionProposal proposal= new ASTRewriteCorrectionProposal(label, context.getCompilationUnit(), astRewrite, 10, image);
+						proposal.setImportRewrite(importRewrite);
+						proposals.add(proposal);
+					}
+				}
+			}
+		}
+	}
+	
+	private static Map/*<String,String[]>*/ resolveMap; 
+	private static String[] getMethod(String fieldName) {
+		if (resolveMap==null){
+			resolveMap=new HashMap();
+			resolveMap.put("java.util.Collections.EMPTY_MAP", new String[]{"java.util.Collections","emptyMap"});   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+			resolveMap.put("java.util.Collections.EMPTY_SET", new String[]{"java.util.Collections","emptySet"});  //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+			resolveMap.put("java.util.Collections.EMPTY_LIST", new String[]{"java.util.Collections","emptyList"});//$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+		}
+		return (String[]) resolveMap.get(fieldName);
 	}
 }

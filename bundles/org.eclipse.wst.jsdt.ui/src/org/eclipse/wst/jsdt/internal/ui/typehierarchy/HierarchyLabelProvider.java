@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Display;
 
 import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ViewerFilter;
 
 import org.eclipse.wst.jsdt.core.Flags;
@@ -33,11 +34,12 @@ import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
 
 /**
  * Label provider for the hierarchy viewers. Types in the hierarchy that are not belonging to the
- * input scope are rendered differntly.
+ * input scope are rendered differently.
   */
 public class HierarchyLabelProvider extends AppearanceAwareLabelProvider {
 
@@ -71,7 +73,6 @@ public class HierarchyLabelProvider extends AppearanceAwareLabelProvider {
 		}		
 	}
 
-	private Color fGrayedColor;
 	private Color fSpecialColor;
 
 	private ViewerFilter fFilter;
@@ -119,16 +120,7 @@ public class HierarchyLabelProvider extends AppearanceAwareLabelProvider {
 		}
 		return true;
 	}
-	
-	/* (non-Javadoc)
-	 * @see ILabelProvider#getText
-	 */ 	
-	public String getText(Object element) {
-		String text= super.getText(element);
-		return decorateText(text, element);
-	}	
-	
-	
+		
 	/* (non-Javadoc)
 	 * @see ILabelProvider#getImage
 	 */ 
@@ -188,10 +180,7 @@ public class HierarchyLabelProvider extends AppearanceAwareLabelProvider {
 			}
 			return fSpecialColor;
 		} else if (element instanceof IType && isDifferentScope((IType) element)) {
-			if (fGrayedColor == null) {
-				fGrayedColor= Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GRAY);
-			}
-			return fGrayedColor;
+			return JFaceResources.getColorRegistry().get(ColoredViewersManager.QUALIFIER_COLOR_NAME);
 		}
 		return null;
 	}	

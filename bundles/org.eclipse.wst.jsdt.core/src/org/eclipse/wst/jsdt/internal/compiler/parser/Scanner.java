@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -3947,28 +3947,7 @@ public int scanNumber(boolean dotPrefix) throws InvalidInputException {
  * @return int
  */
 public final int getLineNumber(int position) {
-
-	if (this.lineEnds == null)
-		return 1;
-	int length = this.linePtr+1;
-	if (length == 0)
-		return 1;
-	int g = 0, d = length - 1;
-	int m = 0;
-	while (g <= d) {
-		m = g + (d - g) /2;
-		if (position < this.lineEnds[m]) {
-			d = m-1;
-		} else if (position > this.lineEnds[m]) {
-			g = m+1; 
-		} else {
-			return m + 1;
-		}
-	}
-	if (position < this.lineEnds[m]) {
-		return m+1;
-	}
-	return m+2;
+	return Util.getLineNumber(position, this.lineEnds, 0, this.linePtr);
 }
 public  void setSource(char[] sourceString){
 	//the source-buffer is set to sourceString

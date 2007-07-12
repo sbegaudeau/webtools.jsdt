@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 
@@ -227,27 +228,33 @@ public final class RefactoringExecutionStarter {
 		new RefactoringStarter().activate(refactoring, new ChangeTypeWizard(refactoring), shell, RefactoringMessages.ChangeTypeAction_dialog_title, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
 	}
 	
-	public static void startCleanupRefactoring(ICompilationUnit[] cus, boolean showWizard, Shell shell) throws InvocationTargetException, JavaModelException {
-		final CleanUpRefactoring refactoring= new CleanUpRefactoring();
+	public static void startCleanupRefactoring(ICompilationUnit[] cus, ICleanUp[] cleanUps, Shell shell, boolean showWizard, String actionName) throws InvocationTargetException, JavaModelException {
+		final CleanUpRefactoring refactoring= new CleanUpRefactoring(actionName);
 		for (int i= 0; i < cus.length; i++) {
 			refactoring.addCompilationUnit(cus[i]);
 		}
 		
 		if (!showWizard) {
-			ICleanUp[] cleanUps= CleanUpRefactoring.createCleanUps();
 			for (int i= 0; i < cleanUps.length; i++) {
-	            refactoring.addCleanUp(cleanUps[i]);
-            }
+				refactoring.addCleanUp(cleanUps[i]);
+			}
 			
-    		RefactoringExecutionHelper helper= new RefactoringExecutionHelper(refactoring, IStatus.ERROR, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES, shell, PlatformUI.getWorkbench().getActiveWorkbenchWindow());
-    		try {
-    	        helper.perform(true, true);
-            } catch (InterruptedException e) {
-            }
+			IRunnableContext context;
+			if (refactoring.getCompilationUnits().length > 1) {
+				context= new ProgressMonitorDialog(shell);
+			} else {
+				context= PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+			}
+			
+			RefactoringExecutionHelper helper= new RefactoringExecutionHelper(refactoring, IStatus.INFO, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES, shell, context);
+			try {
+				helper.perform(true, true);
+			} catch (InterruptedException e) {
+			}
 		} else {
 			CleanUpRefactoringWizard refactoringWizard= new CleanUpRefactoringWizard(refactoring, RefactoringWizard.WIZARD_BASED_USER_INTERFACE);
 			RefactoringStarter starter= new RefactoringStarter();
-			starter.activate(refactoring, refactoringWizard, shell, RefactoringMessages.CleanUpAction_dialog_title, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
+			starter.activate(refactoring, refactoringWizard, shell, actionName, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);			
 		}
 	}
 
@@ -306,35 +313,28 @@ public final class RefactoringExecutionStarter {
 		}
 	}
 
-	public static boolean startInlineConstantRefactoring(final ICompilationUnit unit, final CompilationUnit node, final int offset, final int length, final Shell shell, final boolean activate) throws JavaModelException {
+	public static boolean startInlineConstantRefactoring(final ICompilationUnit unit, final CompilationUnit node, final int offset, final int length, final Shell shell) throws JavaModelException {
 		final InlineConstantRefactoring refactoring= new InlineConstantRefactoring(unit, node, offset, length);
-		if (refactoring.checkStaticFinalConstantNameSelected().hasFatalError()) {
-			if (activate)
-				MessageDialog.openInformation(shell, RefactoringMessages.InlineConstantAction_dialog_title, RefactoringMessages.InlineConstantAction_no_constant_reference_or_declaration);
-			return false;
-		}
-		if (activate)
+		if (! refactoring.checkStaticFinalConstantNameSelected().hasFatalError()) {
 			new RefactoringStarter().activate(refactoring, new InlineConstantWizard(refactoring), shell, RefactoringMessages.InlineConstantAction_dialog_title, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
-		return true;
-	}
-
-	public static boolean startInlineMethodRefactoring(final ITypeRoot typeRoot, final CompilationUnit node, final int offset, final int length, final Shell shell, final boolean activate) throws JavaModelException {
-		final InlineMethodRefactoring refactoring= InlineMethodRefactoring.create(typeRoot, node, offset, length);
-		if (refactoring == null) {
-			if (activate)
-				MessageDialog.openInformation(shell, RefactoringMessages.InlineMethodAction_dialog_title, RefactoringMessages.InlineMethodAction_no_method_invocation_or_declaration_selected);
-			return false;
+			return true;
 		}
-		if (activate)
-			new RefactoringStarter().activate(refactoring, new InlineMethodWizard(refactoring), shell, RefactoringMessages.InlineMethodAction_dialog_title, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
-		return true;
+		return false;
 	}
 
-	public static boolean startInlineTempRefactoring(final ICompilationUnit unit, final CompilationUnit node, final ITextSelection selection, final Shell shell, final boolean activate) throws JavaModelException {
-		final InlineTempRefactoring refactoring= new InlineTempRefactoring(unit, selection.getOffset(), selection.getLength());
-		if (!refactoring.checkIfTempSelected().hasFatalError()) {
-			if (activate)
-				new RefactoringStarter().activate(refactoring, new InlineTempWizard(refactoring), shell, RefactoringMessages.InlineTempAction_inline_temp, RefactoringSaveHelper.SAVE_NOTHING);
+	public static boolean startInlineMethodRefactoring(final ITypeRoot typeRoot, final CompilationUnit node, final int offset, final int length, final Shell shell) throws JavaModelException {
+		final InlineMethodRefactoring refactoring= InlineMethodRefactoring.create(typeRoot, node, offset, length);
+		if (refactoring != null) {
+			new RefactoringStarter().activate(refactoring, new InlineMethodWizard(refactoring), shell, RefactoringMessages.InlineMethodAction_dialog_title, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean startInlineTempRefactoring(final ICompilationUnit unit, CompilationUnit node, final ITextSelection selection, final Shell shell) throws JavaModelException {
+		final InlineTempRefactoring refactoring= new InlineTempRefactoring(unit, node, selection.getOffset(), selection.getLength());
+		if (! refactoring.checkIfTempSelected().hasFatalError()) {
+			new RefactoringStarter().activate(refactoring, new InlineTempWizard(refactoring), shell, RefactoringMessages.InlineTempAction_inline_temp, RefactoringSaveHelper.SAVE_NOTHING);
 			return true;
 		}
 		return false;
@@ -459,4 +459,43 @@ public final class RefactoringExecutionStarter {
 	private RefactoringExecutionStarter() {
 		// Not for instantiation
 	}
+	
+//	public static void startIntroduceParameterObject(ICompilationUnit unit, int offset, int length, Shell shell) throws CoreException {
+//		IJavaElement javaElement= unit.getElementAt(offset);
+//		if (javaElement instanceof IMethod) {
+//			IMethod method= (IMethod) javaElement;
+//			startIntroduceParameterObject(method, shell);
+//		}
+//	}
+//
+//	public static void startIntroduceParameterObject(IMethod method, Shell shell) throws CoreException {
+//		RefactoringStatus availability= Checks.checkAvailability(method);
+//		if (availability.hasError()){
+//			MessageDialog.openError(shell, RefactoringMessages.RefactoringExecutionStarter_IntroduceParameterObject_problem_title, RefactoringMessages.RefactoringExecutionStarter_IntroduceParameterObject_problem_description);
+//			return;
+//		}
+//		IntroduceParameterObjectRefactoring refactoring= new IntroduceParameterObjectRefactoring(method);
+//		final RefactoringStatus status= refactoring.checkInitialConditions(new NullProgressMonitor());
+//		if (status.hasFatalError()) {
+//			final RefactoringStatusEntry entry= status.getEntryMatchingSeverity(RefactoringStatus.FATAL);
+//			if (entry.getCode() == RefactoringStatusCodes.OVERRIDES_ANOTHER_METHOD || entry.getCode() == RefactoringStatusCodes.METHOD_DECLARED_IN_INTERFACE) {
+//
+//				String message= entry.getMessage();
+//				final Object element= entry.getData();
+//				IMethod superMethod= (IMethod) element;
+//				availability= Checks.checkAvailability(superMethod);
+//				if (availability.hasError()){
+//					MessageDialog.openError(shell, RefactoringMessages.RefactoringExecutionStarter_IntroduceParameterObject_problem_title, RefactoringMessages.RefactoringExecutionStarter_IntroduceParameterObject_problem_description);
+//					return;
+//				}
+//				message= message + RefactoringMessages.RefactoringErrorDialogUtil_okToPerformQuestion;
+//				if (element != null && MessageDialog.openQuestion(shell, RefactoringMessages.OpenRefactoringWizardAction_refactoring, message)) {
+//					refactoring=new IntroduceParameterObjectRefactoring(superMethod);
+//				}
+//				else refactoring=null;
+//			}
+//		}
+//		if (refactoring!=null)
+//			new RefactoringStarter().activate(refactoring, new IntroduceParameterObjectWizard(refactoring), shell, RefactoringMessages.OpenRefactoringWizardAction_refactoring, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
+//	}
 }

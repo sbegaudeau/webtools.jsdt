@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1082,6 +1082,43 @@ public class Util {
 	}
 	
 	/*
+	 * Returns the source attachment property for this package fragment root's path
+	 */
+	public static String getSourceAttachmentProperty(IPath path) throws JavaModelException {
+		Map rootPathToAttachments = JavaModelManager.getJavaModelManager().rootPathToAttachments;
+		String property = (String) rootPathToAttachments.get(path);
+		if (property == null) {
+			try {
+				property = ResourcesPlugin.getWorkspace().getRoot().getPersistentProperty(getSourceAttachmentPropertyName(path));
+				if (property == null) {
+					rootPathToAttachments.put(path, PackageFragmentRoot.NO_SOURCE_ATTACHMENT);
+					return null;
+				}
+				rootPathToAttachments.put(path, property);
+				return property;
+			} catch (CoreException e)  {
+				throw new JavaModelException(e);
+			}
+		} else if (property.equals(PackageFragmentRoot.NO_SOURCE_ATTACHMENT)) {
+			return null;
+		} else
+			return property;
+	}
+	
+	private static QualifiedName getSourceAttachmentPropertyName(IPath path) {
+		return new QualifiedName(JavaCore.PLUGIN_ID, "sourceattachment: " + path.toOSString()); //$NON-NLS-1$
+	}
+
+	public static void setSourceAttachmentProperty(IPath path, String property) {
+		JavaModelManager.getJavaModelManager().rootPathToAttachments.put(path, property);
+		try {
+			ResourcesPlugin.getWorkspace().getRoot().setPersistentProperty(getSourceAttachmentPropertyName(path), property);
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/*
 	 * Returns the declaring type signature of the element represented by the given binding key.
 	 * Returns the signature of the element if it is a type.
 	 * 
@@ -1693,83 +1730,6 @@ public class Util {
 	}
 
 	/**
-	 * Reads in a string from the specified data input stream. The 
-	 * string has been encoded using a modified UTF-8 format. 
-	 * <p>
-	 * The first two bytes are read as if by 
-	 * <code>readUnsignedShort</code>. This value gives the number of 
-	 * following bytes that are in the encoded string, not
-	 * the length of the resulting string. The following bytes are then 
-	 * interpreted as bytes encoding characters in the UTF-8 format 
-	 * and are converted into characters. 
-	 * <p>
-	 * This method blocks until all the bytes are read, the end of the 
-	 * stream is detected, or an exception is thrown. 
-	 *
-	 * @param      in   a data input stream.
-	 * @return     a Unicode string.
-	 * @exception  EOFException            if the input stream reaches the end
-	 *               before all the bytes.
-	 * @exception  IOException             if an I/O error occurs.
-	 * @exception  UTFDataFormatException  if the bytes do not represent a
-	 *               valid UTF-8 encoding of a Unicode string.
-	 * @see        java.io.DataInputStream#readUnsignedShort()
-	 */
-	public final static char[] readUTF(DataInput in) throws IOException {
-		int utflen= in.readUnsignedShort();
-		char str[]= new char[utflen];
-		int count= 0;
-		int strlen= 0;
-		while (count < utflen) {
-			int c= in.readUnsignedByte();
-			int char2, char3;
-			switch (c >> 4) {
-				case 0 :
-				case 1 :
-				case 2 :
-				case 3 :
-				case 4 :
-				case 5 :
-				case 6 :
-				case 7 :
-					// 0xxxxxxx
-					count++;
-					str[strlen++]= (char) c;
-					break;
-				case 12 :
-				case 13 :
-					// 110x xxxx   10xx xxxx
-					count += 2;
-					if (count > utflen)
-						throw new UTFDataFormatException();
-					char2= in.readUnsignedByte();
-					if ((char2 & 0xC0) != 0x80)
-						throw new UTFDataFormatException();
-					str[strlen++]= (char) (((c & 0x1F) << 6) | (char2 & 0x3F));
-					break;
-				case 14 :
-					// 1110 xxxx  10xx xxxx  10xx xxxx
-					count += 3;
-					if (count > utflen)
-						throw new UTFDataFormatException();
-					char2= in.readUnsignedByte();
-					char3= in.readUnsignedByte();
-					if (((char2 & 0xC0) != 0x80) || ((char3 & 0xC0) != 0x80))
-						throw new UTFDataFormatException();
-					str[strlen++]= (char) (((c & 0x0F) << 12) | ((char2 & 0x3F) << 6) | ((char3 & 0x3F) << 0));
-					break;
-				default :
-					// 10xx xxxx,  1111 xxxx
-					throw new UTFDataFormatException();
-			}
-		}
-		if (strlen < utflen) {
-			System.arraycopy(str, 0, str= new char[strlen], 0, strlen);
-		}
-		return str;
-	}
-
-	/**
 	 * Returns the toString() of the given full path minus the first given number of segments.
 	 * The returned string is always a relative path (it has no leading slash)
 	 */
@@ -1987,6 +1947,30 @@ public class Util {
 				return false;
 		}
 		return compoundName[prefixLength-1].toLowerCase().startsWith(prefix[prefixLength-1].toLowerCase());
+	}
+
+	/*
+	 * Returns whether the given compound name matches the given pattern.
+	 */
+	public static boolean matchesWithIgnoreCase(String[] compoundName, String pattern) {
+		if (pattern.equals("*")) return true; //$NON-NLS-1$
+		int nameLength = compoundName.length;
+		if (pattern.length() == 0) return nameLength == 0;
+		if (nameLength == 0) return false;
+		int length = nameLength-1;
+		for (int i=0; i<nameLength; i++) {
+			length += compoundName[i].length();
+		}
+		char[] compoundChars = new char[length];
+		int pos = 0;
+		for (int i=0; i<nameLength; i++) {
+			if (pos > 0) compoundChars[pos++] = '.';
+			char[] array = compoundName[i].toCharArray();
+			int size = array.length;
+			System.arraycopy(array, 0, compoundChars, pos, size);
+			pos += size;
+		}
+		return CharOperation.match(pattern.toCharArray(), compoundChars, false);
 	}
 
 	/**
@@ -2296,59 +2280,6 @@ public class Util {
 			start = end+1;
 		} while (start != 0);
 		printStream.println();
-	}
-	/**
-	 * Writes a string to the given output stream using UTF-8 
-	 * encoding in a machine-independent manner. 
-	 * <p>
-	 * First, two bytes are written to the output stream as if by the 
-	 * <code>writeShort</code> method giving the number of bytes to 
-	 * follow. This value is the number of bytes actually written out, 
-	 * not the length of the string. Following the length, each character 
-	 * of the string is output, in sequence, using the UTF-8 encoding 
-	 * for the character. 
-	 *
-	 * @param      str   a string to be written.
-	 * @return     the number of bytes written to the stream.
-	 * @exception  IOException  if an I/O error occurs.
-	 * @since      JDK1.0
-	 */
-	public static int writeUTF(OutputStream out, char[] str) throws IOException {
-		int strlen= str.length;
-		int utflen= 0;
-		for (int i= 0; i < strlen; i++) {
-			int c= str[i];
-			if ((c >= 0x0001) && (c <= 0x007F)) {
-				utflen++;
-			} else if (c > 0x07FF) {
-				utflen += 3;
-			} else {
-				utflen += 2;
-			}
-		}
-		if (utflen > 65535)
-			throw new UTFDataFormatException();
-		out.write((utflen >>> 8) & 0xFF);
-		out.write((utflen >>> 0) & 0xFF);
-		if (strlen == utflen) {
-			for (int i= 0; i < strlen; i++)
-				out.write(str[i]);
-		} else {
-			for (int i= 0; i < strlen; i++) {
-				int c= str[i];
-				if ((c >= 0x0001) && (c <= 0x007F)) {
-					out.write(c);
-				} else if (c > 0x07FF) {
-					out.write(0xE0 | ((c >> 12) & 0x0F));
-					out.write(0x80 | ((c >> 6) & 0x3F));
-					out.write(0x80 | ((c >> 0) & 0x3F));
-				} else {
-					out.write(0xC0 | ((c >> 6) & 0x1F));
-					out.write(0x80 | ((c >> 0) & 0x3F));
-				}
-			}
-		}
-		return utflen + 2; // the number of bytes written to the stream
 	}
 
 	/**

@@ -62,7 +62,10 @@ public class WorkingSetShowActionGroup extends ActionGroup implements IWorkingSe
 	
 	public void cleanViewMenu(IMenuManager menuManager) {
 		for (Iterator iter= fContributions.iterator(); iter.hasNext();) {
-			menuManager.remove((IContributionItem)iter.next());
+			IContributionItem removed= menuManager.remove((IContributionItem) iter.next());
+			if (removed != null) {
+				removed.dispose();
+			}
 		}
 		fContributions.clear();
 	}

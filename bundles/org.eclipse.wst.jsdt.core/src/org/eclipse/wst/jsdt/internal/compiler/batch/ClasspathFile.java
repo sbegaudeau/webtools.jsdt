@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.eclipse.wst.jsdt.core.UnimplementedException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
@@ -120,7 +121,11 @@ private void parseFile(ITypeRequestor requestor) {
 }
 
 public NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageName, String qualifiedBinaryFileName) {
-	//TODO: implement
+	return findClass(typeName,qualifiedPackageName,qualifiedBinaryFileName,false);
+}
+public NameEnvironmentAnswer findClass(char[] typeName,
+			String qualifiedPackageName, String qualifiedBinaryFileName,
+			boolean asBinaryOnly) {
 	if (!isPackage(qualifiedPackageName)) 
 		return null; // most common case
 	throw new org.eclipse.wst.jsdt.core.UnimplementedException();
@@ -151,5 +156,9 @@ public char[] normalizedPath() {
 }
 public String getPath(){
 	return this.file.getPath();
+}
+
+public char[][][] findTypeNames(String qualifiedPackageName) {
+	throw new UnimplementedException("implement");
 }
 }

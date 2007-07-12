@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.IProblemFactory;
 import org.eclipse.wst.jsdt.internal.compiler.ISourceElementRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.SourceElementParser;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
@@ -36,7 +37,9 @@ public class IndexingParser extends SourceElementParser {
 //		ImportReference ref = this.importReference;
 //		ref.tokens = tokens;
 //		ref.sourcePositions = sourcePositions;
-//		ref.onDemand = onDemand;
+//		if (onDemand) {
+//			ref.bits |= ASTNode.OnDemand;
+//		}
 //		ref.sourceEnd = (int) (sourcePositions[sourcePositions.length-1] & 0x00000000FFFFFFFF);
 //		ref.sourceStart = (int) (sourcePositions[0] >>> 32);
 //		ref.modifiers = modifiers;

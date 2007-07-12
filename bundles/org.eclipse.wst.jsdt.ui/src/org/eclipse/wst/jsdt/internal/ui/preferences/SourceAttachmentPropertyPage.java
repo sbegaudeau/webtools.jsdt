@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.internal.ui.preferences;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
@@ -20,13 +21,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -40,6 +34,14 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PropertyPage;
+
+import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
+import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IClasspathEntry;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.JavaCore;
 
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
@@ -100,12 +102,22 @@ public class SourceAttachmentPropertyPage extends PropertyPage implements IStatu
 			} else {
 				if (entry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
 					containerPath= entry.getPath();
-					entry= JavaModelUtil.getClasspathEntryToEdit(jproject, containerPath, fRoot.getPath());
-					if (entry == null) {
-						IClasspathContainer container= JavaCore.getClasspathContainer(containerPath, jproject);
-						String containerName= container != null ? container.getDescription() : containerPath.toString();
-						return createMessageContent(composite, Messages.format(PreferencesMessages.SourceAttachmentPropertyPage_containerentry_message, containerName));  
+					ClasspathContainerInitializer initializer= JavaCore.getClasspathContainerInitializer(containerPath.segment(0));
+					IClasspathContainer container= JavaCore.getClasspathContainer(containerPath, jproject);
+					if (initializer == null || container == null) {
+						return createMessageContent(composite, Messages.format(PreferencesMessages.SourceAttachmentPropertyPage_invalid_container, containerPath.toString()));  
 					}
+					String containerName= container.getDescription();
+
+					IStatus status= initializer.getSourceAttachmentStatus(containerPath, jproject);
+					if (status.getCode() == ClasspathContainerInitializer.ATTRIBUTE_NOT_SUPPORTED) {
+						return createMessageContent(composite, Messages.format(PreferencesMessages.SourceAttachmentPropertyPage_not_supported, containerName));  
+					}
+					if (status.getCode() == ClasspathContainerInitializer.ATTRIBUTE_READ_ONLY) {
+						return createMessageContent(composite, Messages.format(PreferencesMessages.SourceAttachmentPropertyPage_read_only, containerName));  
+					}
+					entry= JavaModelUtil.findEntryInContainer(container, fRoot.getPath());
+					Assert.isNotNull(entry);
 				}
 			}
 			fContainerPath= containerPath;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -70,6 +70,7 @@ public class UserLibraryWizardPage extends NewElementWizardPage implements IClas
 	private Set fUsedPaths;
 	private boolean fIsEditMode;
 	private IJavaProject fProject;
+	private boolean fIsExported;
 	
 	public UserLibraryWizardPage() {
 		super("UserLibraryWizardPage"); //$NON-NLS-1$
@@ -247,7 +248,7 @@ public class UserLibraryWizardPage extends NewElementWizardPage implements IClas
 	 */
 	public IClasspathEntry getSelection() {
 		if (fEditResult != null) {
-			return JavaCore.newContainerEntry(fEditResult.getPath());
+			return JavaCore.newContainerEntry(fEditResult.getPath(), fIsExported);
 		}
 		return null;
 	}
@@ -260,7 +261,7 @@ public class UserLibraryWizardPage extends NewElementWizardPage implements IClas
 		IClasspathEntry[] res= new IClasspathEntry[selected.size()];
 		for (int i= 0; i < res.length; i++) {
 			CPUserLibraryElement curr= (CPUserLibraryElement) selected.get(i);
-			res[i]= JavaCore.newContainerEntry(curr.getPath());
+			res[i]= JavaCore.newContainerEntry(curr.getPath(), fIsExported);
 		}
 		return res;
 	}
@@ -269,6 +270,8 @@ public class UserLibraryWizardPage extends NewElementWizardPage implements IClas
 	 * @see org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPage#setSelection(org.eclipse.wst.jsdt.core.IClasspathEntry)
 	 */
 	public void setSelection(IClasspathEntry containerEntry) {
+		fIsExported= containerEntry != null && containerEntry.isExported();
+		
 		updateDescription(containerEntry);
 		fIsEditMode= (containerEntry != null);
 		if (containerEntry != null) {

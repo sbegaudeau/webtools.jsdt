@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,6 +46,7 @@ import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.editors.text.EditorsUI;
 
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.compare.JavaTokenComparator.ITokenComparatorFactory;
 import org.eclipse.wst.jsdt.internal.ui.text.PreferencesAdapter;
 
 
@@ -184,6 +185,9 @@ public class JavaMergeViewer extends TextMergeViewer {
 	/**
 	 * Creates a color from the information stored in the given preference store.
 	 * Returns <code>null</code> if there is no such information available.
+	 * @param store preference store
+	 * @param key preference key
+	 * @return the color or <code>null</code>
 	 */
 	private static RGB createColor(IPreferenceStore store, String key) {
 		if (!store.contains(key))
@@ -197,8 +201,12 @@ public class JavaMergeViewer extends TextMergeViewer {
 		return CompareMessages.JavaMergeViewer_title; 
 	}
 
-	protected ITokenComparator createTokenComparator(String s) {
-		return new JavaTokenComparator(s, true);
+	public ITokenComparator createTokenComparator(String s) {
+		return new JavaTokenComparator(s, new ITokenComparatorFactory() {
+			public ITokenComparator createTokenComparator(String text) {
+				return JavaMergeViewer.super.createTokenComparator(text);
+			}
+		});
 	}
 	
 	protected IDocumentPartitioner getDocumentPartitioner() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,7 @@ import org.eclipse.wst.jsdt.core.search.SearchEngine;
 
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.internal.ui.dialogs.OpenTypeSelectionDialog2;
+import org.eclipse.wst.jsdt.internal.ui.dialogs.OpenTypeSelectionDialog;
 import org.eclipse.wst.jsdt.internal.ui.util.OpenTypeHierarchyUtil;
 
 public class OpenTypeInHierarchyAction extends Action implements IWorkbenchWindowActionDelegate {
@@ -44,7 +44,7 @@ public class OpenTypeInHierarchyAction extends Action implements IWorkbenchWindo
 
 	public void run() {
 		Shell parent= JavaPlugin.getActiveWorkbenchShell();
-		OpenTypeSelectionDialog2 dialog= new OpenTypeSelectionDialog2(parent, false, 
+		OpenTypeSelectionDialog dialog= new OpenTypeSelectionDialog(parent, false, 
 			PlatformUI.getWorkbench().getProgressService(), 
 			SearchEngine.createWorkspaceScope(), IJavaSearchConstants.TYPE);
 		

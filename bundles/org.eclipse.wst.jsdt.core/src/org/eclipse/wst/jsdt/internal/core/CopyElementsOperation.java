@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -111,11 +111,11 @@ protected JavaModelOperation getNestedOperation(IJavaElement element) {
 			case IJavaElement.METHOD :
 				String source = getSourceFor(element);
 				String lineSeparator = org.eclipse.wst.jsdt.internal.core.util.Util.getLineSeparator(source, element.getJavaProject());
-				return new CreateMethodOperation((IJavaElement) dest, source + lineSeparator, this.force);
+				return new CreateMethodOperation((IType) dest, source + lineSeparator, this.force);
 			case IJavaElement.FIELD :
 				source = getSourceFor(element);
 				lineSeparator = org.eclipse.wst.jsdt.internal.core.util.Util.getLineSeparator(source, element.getJavaProject());
-				return new CreateFieldOperation((IJavaElement) dest, source + lineSeparator, this.force);
+				return new CreateFieldOperation((IType) dest, source + lineSeparator, this.force);
 			case IJavaElement.INITIALIZER :
 				source = getSourceFor(element);
 				lineSeparator = org.eclipse.wst.jsdt.internal.core.util.Util.getLineSeparator(source, element.getJavaProject());

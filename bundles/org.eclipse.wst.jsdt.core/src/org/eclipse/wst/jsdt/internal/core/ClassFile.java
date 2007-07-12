@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -121,18 +121,18 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 
 	boolean createAST;
 	boolean resolveBindings;
-	boolean statementsRecovery;
+	int reconcileFlags;
 	HashMap problems;
 	if (info instanceof ASTHolderCUInfo) {
 		ASTHolderCUInfo astHolder = (ASTHolderCUInfo) info;
-		createAST = astHolder.astLevel != CompilationUnit.NO_AST;
+		createAST = astHolder.astLevel != ICompilationUnit.NO_AST;
 		resolveBindings = astHolder.resolveBindings;
-		statementsRecovery = astHolder.statementsRecovery;
+		reconcileFlags = astHolder.reconcileFlags;
 		problems = astHolder.problems;
 	} else {
 		createAST = false;
 		resolveBindings = false;
-		statementsRecovery = false;
+		reconcileFlags = 0;
 		problems = null;
 	}
 	
@@ -150,7 +150,7 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 		true/*report local declarations*/,
 		!createAST /*optimize string literals only if not creating a DOM AST*/);
 	parser.reportOnlyOneSyntaxError = !computeProblems;
-	parser.setStatementsRecovery(statementsRecovery);
+	parser.setStatementsRecovery((reconcileFlags & ICompilationUnit.ENABLE_STATEMENTS_RECOVERY) != 0);
 	
 	if (!computeProblems && !resolveBindings && !createAST) // disable javadoc parsing if not computing problems, not resolving and not creating ast
 		parser.javadocParser.checkDocComment = false;
@@ -296,6 +296,7 @@ public boolean existsUsingJarTypeCache() {
 			return false;
 		else if (info != null)
 			return true;
+		// info is null
 		JavaElementInfo parentInfo = (JavaElementInfo) manager.getInfo(getParent());
 		if (parentInfo != null) {
 			// if parent is open, this class file must be in its children
@@ -309,11 +310,11 @@ public boolean existsUsingJarTypeCache() {
 		try {
 			info = getJarBinaryTypeInfo((PackageFragment) getParent());
 		} catch (CoreException e) {
-			info = null;
+			// leave info null
 		} catch (IOException e) {
-			info = null;
+			// leave info null
 		} catch (ClassFormatException e) {
-			info = null;
+			// leave info null
 		}
 		manager.putJarTypeInfo(type, info == null ? JavaModelCache.NON_EXISTING_JAR_TYPE_INFO : info);
 		return info != null;
@@ -406,6 +407,36 @@ public IBinaryType getBinaryTypeInfo(IFile file) throws JavaModelException {
 		}
 	}
 }
+
+public byte[] getBytes() throws JavaModelException {
+	JavaElement pkg = (JavaElement) getParent();
+	if (pkg instanceof JarPackageFragment) {
+		JarPackageFragmentRoot root = (JarPackageFragmentRoot) pkg.getParent();
+		ZipFile zip = null;
+		try {
+			zip = root.getJar();
+			String entryName = Util.concatWith(((PackageFragment) pkg).names, getElementName(), '/');
+			ZipEntry ze = zip.getEntry(entryName);
+			if (ze != null) {
+				return org.eclipse.wst.jsdt.internal.compiler.util.Util.getZipEntryByteContent(ze, zip);
+			}
+			throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.ELEMENT_DOES_NOT_EXIST, this));
+		} catch (IOException ioe) {
+			throw new JavaModelException(ioe, IJavaModelStatusConstants.IO_EXCEPTION);
+		} catch (CoreException e) {
+			if (e instanceof JavaModelException) {
+				throw (JavaModelException)e;
+			} else {
+				throw new JavaModelException(e);
+			}
+		} finally {
+			JavaModelManager.getJavaModelManager().closeZipFile(zip);
+		}
+	} else {
+		IFile file = (IFile) getResource();
+		return Util.getResourceContentsAsByteArray(file);
+	}
+}
 private IBinaryType getJarBinaryTypeInfo(PackageFragment pkg) throws CoreException, IOException, ClassFormatException {
 	JarPackageFragmentRoot root = (JarPackageFragmentRoot) pkg.getParent();
 	ZipFile zip = null;
@@ -431,7 +462,7 @@ public IBuffer getBuffer() throws JavaModelException {
 		// .class file not on classpath, create a new buffer to be nice (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=41444)
 		Object info = ((ClassFile) getClassFile()).getBinaryTypeInfo((IFile) getResource());
 		IBuffer buffer = openBuffer(null, info);
-		if (buffer != null)
+		if (buffer != null && !(buffer instanceof NullBuffer))
 			return buffer;
 		if (status.getCode() == IJavaModelStatusConstants.ELEMENT_NOT_ON_CLASSPATH)
 			return null; // don't throw a JavaModelException to be able to open .class file outside the classpath (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=138507)
@@ -726,7 +757,7 @@ private IBuffer mapSource(SourceMapper mapper, IBinaryType info) {
 	//mapper.findSource(getType(), info);
 	if (contents != null) {
 		// create buffer
-		IBuffer buffer = getBufferManager().createBuffer(this);
+		IBuffer buffer = BufferManager.createBuffer(this);
 		if (buffer == null) return null;
 		BufferManager bufManager = getBufferManager();
 		bufManager.addBuffer(buffer);
@@ -737,14 +768,23 @@ private IBuffer mapSource(SourceMapper mapper, IBinaryType info) {
 		}
 		
 		// listen to buffer changes
-		buffer.addBufferChangedListener(this);	
+		buffer.addBufferChangedListener(this);
 				
 		// do the source mapping
 //		mapper.mapSource(getType(), contents, info);
 		
 		return buffer;
+	} else {
+		// create buffer
+		IBuffer buffer = BufferManager.createNullBuffer(this);
+		if (buffer == null) return null;
+		BufferManager bufManager = getBufferManager();
+		bufManager.addBuffer(buffer);
+
+		// listen to buffer changes
+		buffer.addBufferChangedListener(this);
+		return buffer;
 	}
-	return null;
 }
 /* package */ static String simpleName(char[] className) {
 	if (className == null)

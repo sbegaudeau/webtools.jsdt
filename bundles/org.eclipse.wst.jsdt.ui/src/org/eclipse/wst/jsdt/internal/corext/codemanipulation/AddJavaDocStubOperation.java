@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 import org.eclipse.core.filebuffers.FileBuffers;
 import org.eclipse.core.filebuffers.ITextFileBufferManager;
+import org.eclipse.core.filebuffers.LocationKind;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -121,12 +122,12 @@ public class AddJavaDocStubOperation implements IWorkspaceRunnable {
 		ITextFileBufferManager manager= FileBuffers.getTextFileBufferManager();
 		IPath path= cu.getPath();
 		try {
-			manager.connect(path, new SubProgressMonitor(monitor, 1));
+		manager.connect(path, LocationKind.IFILE, new SubProgressMonitor(monitor, 1));
 			return manager.getTextFileBuffer(path).getDocument();
 		
 			
 		}finally {
-			manager.disconnect(path, new SubProgressMonitor(monitor, 1));
+			manager.disconnect(path, LocationKind.IFILE,new SubProgressMonitor(monitor, 1));
 		}
 	}
 	

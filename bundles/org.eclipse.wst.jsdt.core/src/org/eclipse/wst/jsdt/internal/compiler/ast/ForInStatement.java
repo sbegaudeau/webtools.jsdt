@@ -61,7 +61,7 @@ public class ForInStatement extends Statement {
 		breakLabel = new BranchLabel();
 		continueLabel = new BranchLabel();
 
-//TODO: implement
+//TODO: implement  COPY FROM FOREACH
 throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //		// process the initializations
 //		if (initializations != null) {

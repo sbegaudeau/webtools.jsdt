@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.swt.widgets.Shell;
 
 import org.eclipse.jface.operation.IRunnableContext;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
@@ -92,10 +93,8 @@ public class CreateSourceFolderAction extends BuildpathModifierAction {
 			wizard.init(PlatformUI.getWorkbench(), new StructuredSelection(javaProject));
 			
 			WizardDialog dialog= new WizardDialog(shell, wizard);
-			if (shell != null) {
-				PixelConverter converter= new PixelConverter(shell);
-				dialog.setMinimumPageSize(converter.convertWidthInCharsToPixels(70), converter.convertHeightInCharsToPixels(20));
-			}
+			PixelConverter converter= new PixelConverter(JFaceResources.getDialogFont());
+			dialog.setMinimumPageSize(converter.convertWidthInCharsToPixels(70), converter.convertHeightInCharsToPixels(20));
 			dialog.create();
 			int res= dialog.open();
 			if (res == Window.OK) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,18 +40,14 @@ public class SetVariablesOperation extends ChangeClasspathOperation {
 	}
 
 	protected void executeOperation() throws JavaModelException {
-		if (isCanceled()) 
-			return;
+		checkCanceled();
 		try {
-			if (JavaModelManager.CP_RESOLVE_VERBOSE){
-				Util.verbose(
-					"CPVariable SET  - setting variables\n" + //$NON-NLS-1$
-					"	variables: " + org.eclipse.wst.jsdt.internal.compiler.util.Util.toString(this.variableNames) + '\n' +//$NON-NLS-1$
-					"	values: " + org.eclipse.wst.jsdt.internal.compiler.util.Util.toString(this.variablePaths)); //$NON-NLS-1$
-			}
+			beginTask("", 1); //$NON-NLS-1$
+			if (JavaModelManager.CP_RESOLVE_VERBOSE)
+				verbose_set_variables();
 			
 			JavaModelManager manager = JavaModelManager.getJavaModelManager();
-			if (variablePutIfInitializingWithSameValue(manager))
+			if (manager.variablePutIfInitializingWithSameValue(this.variableNames, this.variablePaths))
 				return;
 	
 			int varLength = this.variableNames.length;
@@ -142,13 +138,9 @@ public class SetVariablesOperation extends ChangeClasspathOperation {
 	
 						JavaProject affectedProject = (JavaProject) projectsToUpdate.next();
 	
-						if (JavaModelManager.CP_RESOLVE_VERBOSE){
-							Util.verbose(
-								"CPVariable SET  - updating affected project due to setting variables\n" + //$NON-NLS-1$
-								"	project: " + affectedProject.getElementName() + '\n' + //$NON-NLS-1$
-								"	variables: " + org.eclipse.wst.jsdt.internal.compiler.util.Util.toString(dbgVariableNames)); //$NON-NLS-1$
-						}
 						// force resolved classpath to be recomputed
+						if (JavaModelManager.CP_RESOLVE_VERBOSE_ADVANCED)
+							verbose_update_project(dbgVariableNames, affectedProject);
 						affectedProject.getPerProjectInfo().resetResolvedClasspath();
 						
 						// if needed, generate delta, update project ref, create markers, ...
@@ -161,10 +153,7 @@ public class SetVariablesOperation extends ChangeClasspathOperation {
 					}
 				} catch (CoreException e) {
 					if (JavaModelManager.CP_RESOLVE_VERBOSE){
-						Util.verbose(
-							"CPVariable SET  - FAILED DUE TO EXCEPTION\n" + //$NON-NLS-1$
-							"	variables: " + org.eclipse.wst.jsdt.internal.compiler.util.Util.toString(dbgVariableNames), //$NON-NLS-1$
-							System.err); 
+						verbose_failure(dbgVariableNames); 
 						e.printStackTrace();
 					}
 					if (e instanceof JavaModelException) {
@@ -179,21 +168,26 @@ public class SetVariablesOperation extends ChangeClasspathOperation {
 		}
 	}
 
-	/*
-	 * Optimize startup case where 1 variable is initialized at a time with the same value as on shutdown.
-	 */
-	private boolean variablePutIfInitializingWithSameValue(JavaModelManager manager) {
-		if (this.variableNames.length != 1)
-			return false;
-		String variableName = this.variableNames[0];
-		IPath oldPath = manager.getPreviousSessionVariable(variableName);
-		if (oldPath == null)
-			return false;
-		IPath newPath = this.variablePaths[0];
-		if (!oldPath.equals(newPath))
-			return false;
-		manager.variablePut(variableName, newPath);
-		return true;
+	private void verbose_failure(String[] dbgVariableNames) {
+		Util.verbose(
+			"CPVariable SET  - FAILED DUE TO EXCEPTION\n" + //$NON-NLS-1$
+			"	variables: " + org.eclipse.wst.jsdt.internal.compiler.util.Util.toString(dbgVariableNames), //$NON-NLS-1$
+			System.err);
+	}
+
+	private void verbose_update_project(String[] dbgVariableNames,
+			JavaProject affectedProject) {
+		Util.verbose(
+			"CPVariable SET  - updating affected project due to setting variables\n" + //$NON-NLS-1$
+			"	project: " + affectedProject.getElementName() + '\n' + //$NON-NLS-1$
+			"	variables: " + org.eclipse.wst.jsdt.internal.compiler.util.Util.toString(dbgVariableNames)); //$NON-NLS-1$
+	}
+
+	private void verbose_set_variables() {
+		Util.verbose(
+			"CPVariable SET  - setting variables\n" + //$NON-NLS-1$
+			"	variables: " + org.eclipse.wst.jsdt.internal.compiler.util.Util.toString(this.variableNames) + '\n' +//$NON-NLS-1$
+			"	values: " + org.eclipse.wst.jsdt.internal.compiler.util.Util.toString(this.variablePaths)); //$NON-NLS-1$
 	}
 
 }

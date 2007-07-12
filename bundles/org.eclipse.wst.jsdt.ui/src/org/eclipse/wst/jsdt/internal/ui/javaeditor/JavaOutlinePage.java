@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -96,6 +96,7 @@ import org.eclipse.wst.jsdt.core.IParent;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 
@@ -110,7 +111,6 @@ import org.eclipse.wst.jsdt.ui.actions.CCPActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.CustomFiltersActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.GenerateActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.JavaSearchActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.JdtActionConstants;
 import org.eclipse.wst.jsdt.ui.actions.MemberFilterActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.OpenViewActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.RefactorActionGroup;
@@ -127,6 +127,7 @@ import org.eclipse.wst.jsdt.internal.ui.packageview.SelectionTransferDragAdapter
 import org.eclipse.wst.jsdt.internal.ui.packageview.SelectionTransferDropAdapter;
 import org.eclipse.wst.jsdt.internal.ui.preferences.MembersOrderPreferenceCache;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.DecoratingJavaLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.SourcePositionComparator;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.StatusBarUpdater;
@@ -160,7 +161,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 								ICompilationUnit cu= (ICompilationUnit) fInput;
 								IJavaElement base= cu;
 								if (fTopLevelTypeOnly) {
-									base= getMainType(cu);
+									base= cu.findPrimaryType();
 									if (base == null) {
 										if (fOutlineViewer != null)
 											fOutlineViewer.refresh(true);
@@ -300,16 +301,9 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 
 				public Object[] getElements(Object parent) {
 					if (fTopLevelTypeOnly) {
-						if (parent instanceof ICompilationUnit) {
+						if (parent instanceof ITypeRoot) {
 							try {
-								IType type= getMainType((ICompilationUnit) parent);
-								return type != null ? type.getChildren() : NO_CLASS;
-							} catch (JavaModelException e) {
-								JavaPlugin.log(e);
-							}
-						} else if (parent instanceof IClassFile) {
-							try {
-								IType type= getMainType((IClassFile) parent);
+								IType type= ((ITypeRoot) parent).findPrimaryType();
 								return type != null ? type.getChildren() : NO_CLASS;
 							} catch (JavaModelException e) {
 								JavaPlugin.log(e);
@@ -940,43 +934,6 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 		JavaPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(fPropertyChangeListener);
 	}
 
-	/**
-	 * Returns the primary type of a compilation unit (has the same
-	 * name as the compilation unit).
-	 *
-	 * @param compilationUnit the compilation unit
-	 * @return returns the primary type of the compilation unit, or
-	 * <code>null</code> if is does not have one
-	 */
-	protected IType getMainType(ICompilationUnit compilationUnit) {
-
-		if (compilationUnit == null)
-			return null;
-
-		String name= compilationUnit.getElementName();
-		int index= name.indexOf('.');
-		if (index != -1)
-			name= name.substring(0, index);
-		IType type= compilationUnit.getType(name);
-		return type.exists() ? type : null;
-	}
-
-	/**
-	 * Returns the primary type of a class file.
-	 *
-	 * @param classFile the class file
-	 * @return returns the primary type of the class file, or <code>null</code>
-	 * if is does not have one
-	 */
-	protected IType getMainType(IClassFile classFile) {
-		try {
-			IType type= classFile.getType();
-			return type != null && type.exists() ? type : null;
-		} catch (JavaModelException e) {
-			return null;
-		}
-	}
-
 	/* (non-Javadoc)
 	 * Method declared on Page
 	 */
@@ -1082,6 +1039,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 		);
 
 		fOutlineViewer= new JavaOutlineViewer(tree);
+		ColoredViewersManager.install(fOutlineViewer);
 		initDragAndDrop();
 		fOutlineViewer.setContentProvider(new ChildrenProvider());
 		fOutlineViewer.setLabelProvider(new DecoratingJavaLabelProvider(lprovider));
@@ -1133,7 +1091,6 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 		actionBars.setGlobalActionHandler(ITextEditorActionDefinitionIds.GOTO_PREVIOUS_ANNOTATION, action);
 		actionBars.setGlobalActionHandler(ITextEditorActionConstants.PREVIOUS, action);
 		
-		actionBars.setGlobalActionHandler(JdtActionConstants.SHOW_JAVA_DOC, fEditor.getAction("ShowJavaDoc")); //$NON-NLS-1$
 		actionBars.setGlobalActionHandler(ITextEditorActionDefinitionIds.TOGGLE_SHOW_SELECTED_ELEMENT_ONLY, fTogglePresentation);
 
 		fActionGroups.fillActionBars(actionBars);

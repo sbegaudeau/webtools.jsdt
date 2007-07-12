@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 BEA Systems, Inc.
+ * Copyright (c) 2005, 2007 BEA Systems, Inc.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ package org.eclipse.wst.jsdt.core.dom;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ElementValuePair;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 
 /**
@@ -27,13 +28,31 @@ class MemberValuePairBinding implements IMemberValuePairBinding {
 	private static final Object[] EmptyArray = new Object[0];
 
 	private ElementValuePair internalPair;
-	private Object value = null;
-	private BindingResolver bindingResolver;
+	protected Object value = null;
+	protected BindingResolver bindingResolver;
+
+	static void appendValue(Object value, StringBuffer buffer) {
+		if (value instanceof Object[]) {
+			Object[] values = (Object[]) value;
+			buffer.append('{');
+			for (int i = 0, l = values.length; i < l; i++) {
+				if (i != 0)
+					buffer.append(", "); //$NON-NLS-1$
+				appendValue(values[i], buffer);
+			}
+			buffer.append('}');
+		} else if (value instanceof ITypeBinding) {
+			buffer.append(((ITypeBinding) value).getName());
+			buffer.append(".class"); //$NON-NLS-1$
+		} else {
+			buffer.append(value);
+		}
+	}
 
 	static Object buildDOMValue(final Object internalObject, BindingResolver resolver) {
 		if (internalObject == null)
 			return null;
-	
+
 		if (internalObject instanceof Constant) {
 			Constant constant = (Constant) internalObject;
 			switch (constant.typeID()) {
@@ -72,12 +91,12 @@ class MemberValuePairBinding implements IMemberValuePairBinding {
 		}
 		return null;
 	}
-	
+
 	MemberValuePairBinding(ElementValuePair pair, BindingResolver resolver) {
 		this.internalPair = pair;
 		this.bindingResolver = resolver;
 	}
-	
+
 	public IAnnotationBinding[] getAnnotations() {
 		return AnnotationBinding.NoAnnotations;
 	}
@@ -85,7 +104,7 @@ class MemberValuePairBinding implements IMemberValuePairBinding {
 	public IJavaElement getJavaElement() {
 		return null;
 	}
-		
+
 	public String getKey() {
 		// TODO when implementing, update spec in IBinding
 		return null;
@@ -98,9 +117,9 @@ class MemberValuePairBinding implements IMemberValuePairBinding {
 	public IMethodBinding getMethodBinding() {
 		return this.bindingResolver.getMethodBinding(this.internalPair.getMethodBinding());
 	}
-	
+
 	public int getModifiers() {
-		return -1;
+		return Modifier.NONE;
 	}
 
 	public String getName() {
@@ -109,29 +128,39 @@ class MemberValuePairBinding implements IMemberValuePairBinding {
 		final char[] membername = this.internalPair.getName();
 		return membername == null ? null : new String(membername);
 	}
-	
+
 	public Object getValue() {
 		if (value == null)
 			init();
 		return value == NoValue ? null : this.value;
 	}
-	
+
 	private void init() {
 		this.value = buildDOMValue(this.internalPair.getValue(), this.bindingResolver);
 		if (this.value == null)
 			this.value = NoValue;
 	}
-	
+
 	char[] internalName() {
 		return this.internalPair == null ? null : this.internalPair.getName();
 	}
-	
+
 	public boolean isDefault() {
-		return false;
+		Object value2 = getValue();
+		Object defaultValue = getMethodBinding().getDefaultValue();
+		if (value2 instanceof IBinding) {
+			if (defaultValue instanceof IBinding) {
+				return ((IBinding) value2).isEqualTo((IBinding) defaultValue);
+			}
+			return false;
+		}
+		if (defaultValue == null) return false;
+		return defaultValue.equals(value2);
 	}
-	
+
 	public boolean isDeprecated() {
-		return false;
+		MethodBinding methodBinding = this.internalPair.getMethodBinding();
+		return methodBinding == null ? false : methodBinding.isDeprecated();
 	}
 
 	public boolean isEqualTo(IBinding binding) {
@@ -140,11 +169,29 @@ class MemberValuePairBinding implements IMemberValuePairBinding {
 		if (binding.getKind() != IBinding.MEMBER_VALUE_PAIR)
 			return false;
 		IMemberValuePairBinding other = (IMemberValuePairBinding) binding;
-		if (!getMethodBinding().isEqualTo(other.getMethodBinding()))
+		if (!getMethodBinding().isEqualTo(other.getMethodBinding())) {
 			return false;
-		if (this.value == null)
-			return other.getValue() == null;
-		return this.value.equals(other.getValue());
+		}
+		Object otherValue = other.getValue();
+		Object currentValue = getValue();
+		if (currentValue == null) {
+			return otherValue == null;
+		}
+		if (currentValue instanceof IBinding) {
+			if (otherValue instanceof IBinding) {
+				return ((IBinding) currentValue).isEqualTo((IBinding) otherValue);
+			}
+			return false;
+		}
+		return currentValue.equals(otherValue);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.core.dom.IBinding#isRecovered()
+	 */
+	public boolean isRecovered() {
+		return false;
 	}
 
 	public boolean isSynthetic() {
@@ -153,13 +200,9 @@ class MemberValuePairBinding implements IMemberValuePairBinding {
 
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		toString(buffer);
-		return buffer.toString();
-	}
-	
-	public void toString(StringBuffer buffer) {
 		buffer.append(getName());
-		buffer.append(" = "); //$NON-NLS-1$		
-		DefaultValuePairBinding.appendValue(getValue(), buffer);
+		buffer.append(" = "); //$NON-NLS-1$
+		appendValue(getValue(), buffer);
+		return buffer.toString();
 	}
 }

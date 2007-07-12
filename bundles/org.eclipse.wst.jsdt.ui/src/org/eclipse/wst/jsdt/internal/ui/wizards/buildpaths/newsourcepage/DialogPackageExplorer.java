@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,6 +53,7 @@ import org.eclipse.ui.part.ISetSelectionTarget;
 
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 
@@ -260,8 +261,11 @@ public class DialogPackageExplorer implements IMenuListener, ISelectionProvider,
     }
     
     /**
-     * A extended filter for the package explorer which filters libraries and
-     * files if their name is either ".classpath" or ".project".
+     * An extended filter for the package explorer which filters
+     * libraries,
+     * files named ".classpath" or ".project",
+     * the default package, and
+     * hidden folders.
      */
     private final class PackageFilter extends LibraryFilter {
         private OutputFolderFilter fOutputFolderFilter= new OutputFolderFilter();
@@ -271,12 +275,19 @@ public class DialogPackageExplorer implements IMenuListener, ISelectionProvider,
                     IFile file= (IFile) element;
                     if (file.getName().equals(JavaProject.CLASSPATH_FILENAME) || file.getName().equals(".project")) //$NON-NLS-1$//$NON-NLS-2$
                         return false;
-                }
-                if (element instanceof IPackageFragmentRoot) {
+                } else if (element instanceof IPackageFragmentRoot) {
                     IClasspathEntry cpe= ((IPackageFragmentRoot)element).getRawClasspathEntry();
                     if (cpe == null || cpe.getEntryKind() == IClasspathEntry.CPE_CONTAINER || cpe.getEntryKind() == IClasspathEntry.CPE_LIBRARY || cpe.getEntryKind() == IClasspathEntry.CPE_VARIABLE)
                         return false;
                 } else if (element instanceof PackageFragmentRootContainer) {
+                	return false;
+                } else if (element instanceof IPackageFragment) {
+					IPackageFragment fragment= (IPackageFragment)element;
+                	if (fragment.isDefaultPackage() && !fragment.hasChildren())
+                		return false;
+                } else if (element instanceof IFolder) {
+                	IFolder folder= (IFolder)element;
+                	if (folder.getName().startsWith(".")) //$NON-NLS-1$
                 	return false;
                 }
             } catch (JavaModelException e) {

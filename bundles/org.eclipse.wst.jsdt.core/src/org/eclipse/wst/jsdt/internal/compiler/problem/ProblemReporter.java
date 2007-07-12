@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -266,10 +266,19 @@ public static long getIrritant(int problemID) {
 		case IProblem.ConstructorVarargsArgumentNeedCast :
 			return CompilerOptions.VarargsArgumentNeedCast;
 
-		case IProblem.LocalVariableCannotBeNull :
-		case IProblem.LocalVariableCanOnlyBeNull :
-		case IProblem.LocalVariableMayBeNull :
+		case IProblem.NullLocalVariableReference:
 			return CompilerOptions.NullReference;
+
+		case IProblem.PotentialNullLocalVariableReference:
+			return CompilerOptions.PotentialNullReference;
+			
+		case IProblem.RedundantLocalVariableNullAssignment:
+		case IProblem.RedundantNullCheckOnNonNullLocalVariable:
+		case IProblem.RedundantNullCheckOnNullLocalVariable:
+		case IProblem.NonNullLocalVariableComparisonYieldsFalse:
+		case IProblem.NullLocalVariableComparisonYieldsFalse:
+		case IProblem.NullLocalVariableInstanceofYieldsFalse:
+			return CompilerOptions.RedundantNullCheck;
 			
 		case IProblem.BoxingConversion :
 		case IProblem.UnboxingConversion :
@@ -452,6 +461,8 @@ public static int getProblemCategory(int severity, int problemID) {
 				case (int)(CompilerOptions.MissingSerialVersion >>> 32):
 				case (int)(CompilerOptions.VarargsArgumentNeedCast >>> 32):
 				case (int)(CompilerOptions.NullReference >>> 32):
+				case (int)(CompilerOptions.PotentialNullReference >>> 32):				
+				case (int)(CompilerOptions.RedundantNullCheck >>> 32):
 				case (int)(CompilerOptions.IncompleteEnumSwitch >>> 32):
 				case (int)(CompilerOptions.FallthroughCase >>> 32):
 				case (int)(CompilerOptions.OverridingMethodWithoutSuperInvocation >>> 32):
@@ -2001,6 +2012,8 @@ public void illegalInstanceOfGenericType(TypeBinding checkedType, ASTNode locati
 		location.sourceEnd);
 }
 public void illegalLocalTypeDeclaration(TypeDeclaration typeDeclaration) {
+	if (isRecoveredName(typeDeclaration.name)) return;
+	
 	int problemID = 0;
 	if ((typeDeclaration.modifiers & ClassFileConstants.AccEnum) != 0) {
 		problemID = IProblem.CannotDefineEnumInLocalType;
@@ -2340,26 +2353,29 @@ public void importProblem(ImportReference importRef, Binding expectedImport) {
 	if (expectedImport instanceof FieldBinding) {
 		int id = IProblem.UndefinedField;
 		FieldBinding field = (FieldBinding) expectedImport;
+		String[] readableArguments = null;
+		String[] shortArguments = null;
 		switch (expectedImport.problemId()) {
 			case ProblemReasons.NotVisible :
-				this.handle(
-					IProblem.NotVisibleField,
-					new String[] {CharOperation.toString(importRef.tokens), new String(field.declaringClass.readableName())},
-					new String[] {CharOperation.toString(importRef.tokens), new String(field.declaringClass.shortReadableName())},
-					nodeSourceStart(field, importRef),
-					nodeSourceEnd(field, importRef));			
-				return;
+				id = IProblem.NotVisibleField;
+				readableArguments = new String[] {CharOperation.toString(importRef.tokens), new String(field.declaringClass.readableName())};
+				shortArguments = new String[] {CharOperation.toString(importRef.tokens), new String(field.declaringClass.shortReadableName())};
+				break;
 			case ProblemReasons.Ambiguous :
 				id = IProblem.AmbiguousField;
+				readableArguments = new String[] {new String(field.readableName())};
+				shortArguments = new String[] {new String(field.readableName())};
 				break;
 			case ProblemReasons.ReceiverTypeNotVisible :
 				id = IProblem.NotVisibleType;
+				readableArguments = new String[] {new String(field.declaringClass.leafComponentType().readableName())};
+				shortArguments = new String[] {new String(field.declaringClass.leafComponentType().shortReadableName())};
 				break;
 		}
 		this.handle(
-			id, 
-			new String[] {new String(field.declaringClass.leafComponentType().readableName())},
-			new String[] {new String(field.declaringClass.leafComponentType().shortReadableName())},
+			id,
+			readableArguments,
+			shortArguments,
 			nodeSourceStart(field, importRef),
 			nodeSourceEnd(field, importRef));
 		return;
@@ -2518,7 +2534,7 @@ public void incorrectArityForParameterizedType(ASTNode location, TypeBinding typ
 			new String[] {new String(type.shortReadableName()), typesAsString(false, argumentTypes, true)},
 			ProblemSeverities.AbortCompilation | ProblemSeverities.Error | ProblemSeverities.Fatal,
 			0,
-			1);
+			0);
 		return; // not reached since aborted above
     }
 	this.handle(
@@ -2971,7 +2987,7 @@ public void invalidField(FieldReference fieldRef, TypeBinding searchedType) {
 				new String[] {new String(fieldRef.token), new String(field.declaringClass.readableName())},
 				new String[] {new String(fieldRef.token), new String(field.declaringClass.shortReadableName())},
 				nodeSourceStart(field, fieldRef),
-				nodeSourceEnd(field, fieldRef));			
+				nodeSourceEnd(field, fieldRef));
 			return;
 		case ProblemReasons.Ambiguous :
 			id = IProblem.AmbiguousField;
@@ -3029,7 +3045,7 @@ public void invalidField(NameReference nameRef, FieldBinding field) {
 				new String[] {new String(name), new String(field.declaringClass.readableName())},
 				new String[] {new String(name), new String(field.declaringClass.shortReadableName())},
 				nodeSourceStart(field, nameRef),
-				nodeSourceEnd(field, nameRef));				
+				nodeSourceEnd(field, nameRef));
 			return;
 		case ProblemReasons.Ambiguous :
 			id = IProblem.AmbiguousField;
@@ -3107,7 +3123,7 @@ public void invalidField(QualifiedNameReference nameRef, FieldBinding field, int
 				new String[] {fieldName, new String(field.declaringClass.readableName())},
 				new String[] {fieldName, new String(field.declaringClass.shortReadableName())},
 				nodeSourceStart(field, nameRef), 
-				nodeSourceEnd(field, nameRef));				
+				nodeSourceEnd(field, nameRef));
 			return;
 		case ProblemReasons.Ambiguous :
 			id = IProblem.AmbiguousField;
@@ -3416,6 +3432,16 @@ public void invalidParenthesizedExpression(ASTNode reference) {
 		reference.sourceEnd);
 }
 public void invalidType(ASTNode location, TypeBinding type) {
+	if (type instanceof ReferenceBinding) {
+		if (isRecoveredName(((ReferenceBinding)type).compoundName)) return;
+	}
+	else if (type instanceof ArrayBinding) {
+		TypeBinding leafType = ((ArrayBinding)type).leafComponentType;
+		if (leafType instanceof ReferenceBinding) {
+			if (isRecoveredName(((ReferenceBinding)leafType).compoundName)) return;
+		}
+	}
+	
 	int id = IProblem.UndefinedType; // default
 	switch (type.problemId()) {
 		case ProblemReasons.NotFound :
@@ -4499,30 +4525,6 @@ private String javadocVisibilityArgument(int visibility, int modifiers) {
 	}
 	return argument;
 }
-public void localVariableCannotBeNull(LocalVariableBinding local, ASTNode location) {
-	int severity = computeSeverity(IProblem.LocalVariableCannotBeNull);
-	if (severity == ProblemSeverities.Ignore) return;
-	String[] arguments = new String[] {new String(local.name)  };
-	this.handle(
-		IProblem.LocalVariableCannotBeNull,
-		arguments,
-		arguments,
-		severity,
-		nodeSourceStart(local, location),
-		nodeSourceEnd(local, location));
-}
-public void localVariableCanOnlyBeNull(LocalVariableBinding local, ASTNode location) {
-	int severity = computeSeverity(IProblem.LocalVariableCanOnlyBeNull);
-	if (severity == ProblemSeverities.Ignore) return;
-	String[] arguments = new String[] {new String(local.name)  };
-	this.handle(
-		IProblem.LocalVariableCanOnlyBeNull,
-		arguments,
-		arguments,
-		severity,
-		nodeSourceStart(local, location),
-		nodeSourceEnd(local, location));
-}
 public void localVariableHiding(LocalDeclaration local, Binding hiddenVariable, boolean  isSpecialArgHidingField) {
 	if (hiddenVariable instanceof LocalVariableBinding) {
 		int id = (local instanceof Argument) 
@@ -4557,12 +4559,96 @@ public void localVariableHiding(LocalDeclaration local, Binding hiddenVariable, 
 			local.sourceEnd);
 	}
 }
-public void localVariableMayBeNull(LocalVariableBinding local, ASTNode location) {
-	int severity = computeSeverity(IProblem.LocalVariableMayBeNull);
+public void localVariableNonNullComparedToNull(LocalVariableBinding local, ASTNode location) {
+	int severity = computeSeverity(IProblem.NonNullLocalVariableComparisonYieldsFalse);
+	if (severity == ProblemSeverities.Ignore) return;
+	String[] arguments = new String[] {new String(local.name)  };
+	this.handle(
+		IProblem.NonNullLocalVariableComparisonYieldsFalse,
+		arguments,
+		arguments,
+		severity,
+		nodeSourceStart(local, location),
+		nodeSourceEnd(local, location));
+}
+public void localVariableNullComparedToNonNull(LocalVariableBinding local, ASTNode location) {
+	int severity = computeSeverity(IProblem.NullLocalVariableComparisonYieldsFalse);
+	if (severity == ProblemSeverities.Ignore) return;
+	String[] arguments = new String[] {new String(local.name)  };
+	this.handle(
+		IProblem.NullLocalVariableComparisonYieldsFalse,
+		arguments,
+		arguments,
+		severity,
+		nodeSourceStart(local, location),
+		nodeSourceEnd(local, location));
+}
+public void localVariableNullInstanceof(LocalVariableBinding local, ASTNode location) {
+	int severity = computeSeverity(IProblem.NullLocalVariableInstanceofYieldsFalse);
+	if (severity == ProblemSeverities.Ignore) return;
+	String[] arguments = new String[] {new String(local.name)  };
+	this.handle(
+		IProblem.NullLocalVariableInstanceofYieldsFalse,
+		arguments,
+		arguments,
+		severity,
+		nodeSourceStart(local, location),
+		nodeSourceEnd(local, location));
+}
+public void localVariableNullReference(LocalVariableBinding local, ASTNode location) {
+	int severity = computeSeverity(IProblem.NullLocalVariableReference);
+	if (severity == ProblemSeverities.Ignore) return;
+	String[] arguments = new String[] {new String(local.name)  };
+	this.handle(
+		IProblem.NullLocalVariableReference,
+		arguments,
+		arguments,
+		severity,
+		nodeSourceStart(local, location),
+		nodeSourceEnd(local, location));
+}
+public void localVariablePotentialNullReference(LocalVariableBinding local, ASTNode location) {
+	int severity = computeSeverity(IProblem.PotentialNullLocalVariableReference);
 	if (severity == ProblemSeverities.Ignore) return;
 	String[] arguments = new String[] {new String(local.name)};
 	this.handle(
-		IProblem.LocalVariableMayBeNull,
+		IProblem.PotentialNullLocalVariableReference,
+		arguments,
+		arguments,
+		severity,
+		nodeSourceStart(local, location),
+		nodeSourceEnd(local, location));
+}
+public void localVariableRedundantCheckOnNonNull(LocalVariableBinding local, ASTNode location) {
+	int severity = computeSeverity(IProblem.RedundantNullCheckOnNonNullLocalVariable);
+	if (severity == ProblemSeverities.Ignore) return;
+	String[] arguments = new String[] {new String(local.name)  };
+	this.handle(
+		IProblem.RedundantNullCheckOnNonNullLocalVariable,
+		arguments,
+		arguments,
+		severity,
+		nodeSourceStart(local, location),
+		nodeSourceEnd(local, location));
+}
+public void localVariableRedundantCheckOnNull(LocalVariableBinding local, ASTNode location) {
+	int severity = computeSeverity(IProblem.RedundantNullCheckOnNullLocalVariable);
+	if (severity == ProblemSeverities.Ignore) return;
+	String[] arguments = new String[] {new String(local.name)  };
+	this.handle(
+		IProblem.RedundantNullCheckOnNullLocalVariable,
+		arguments,
+		arguments,
+		severity,
+		nodeSourceStart(local, location),
+		nodeSourceEnd(local, location));
+}
+public void localVariableRedundantNullAssignment(LocalVariableBinding local, ASTNode location) {
+	int severity = computeSeverity(IProblem.RedundantLocalVariableNullAssignment);
+	if (severity == ProblemSeverities.Ignore) return;
+	String[] arguments = new String[] {new String(local.name)  };
+	this.handle(
+		IProblem.RedundantLocalVariableNullAssignment,
 		arguments,
 		arguments,
 		severity,
@@ -4829,7 +4915,7 @@ private int nodeSourceEnd(Binding field, ASTNode node, int index) {
 		}
 		FieldBinding[] otherFields = ref.otherBindings;
 		if (otherFields != null) {
-			int offset = ref.indexOfFirstFieldBinding == 1 ? 1 : ref.indexOfFirstFieldBinding - 1;
+			int offset = ref.indexOfFirstFieldBinding;
 			for (int i = 0, length = otherFields.length; i < length; i++) {
 				if (otherFields[i] == field)
 					return (int) (ref.sourcePositions[i + offset]);
@@ -4858,7 +4944,7 @@ private int nodeSourceStart(Binding field, ASTNode node) {
 		}
 		FieldBinding[] otherFields = ref.otherBindings;
 		if (otherFields != null) {
-			int offset = ref.indexOfFirstFieldBinding == 1 ? 1 : ref.indexOfFirstFieldBinding - 1;
+			int offset = ref.indexOfFirstFieldBinding;
 			for (int i = 0, length = otherFields.length; i < length; i++) {
 				if (otherFields[i] == field)
 					return (int) (ref.sourcePositions[i + offset] >> 32);
@@ -4932,7 +5018,7 @@ public void nonGenericTypeCannotBeParameterized(int index, ASTNode location, Typ
 			new String[] {new String(type.shortReadableName()), typesAsString(false, argumentTypes, true)},
 			ProblemSeverities.AbortCompilation | ProblemSeverities.Error | ProblemSeverities.Fatal,
 			0,
-			1);
+			0);
 	    return;
 	}
     this.handle(
@@ -5202,7 +5288,7 @@ public void parameterizedMemberTypeMissingArguments(ASTNode location, TypeBindin
 			new String[] {new String(type.shortReadableName())},
 			ProblemSeverities.AbortCompilation | ProblemSeverities.Error | ProblemSeverities.Fatal,
 			0,
-			1);
+			0);
 	    return;
 	}
     this.handle(
@@ -5524,7 +5610,7 @@ public void rawMemberTypeCannotBeParameterized(ASTNode location, ReferenceBindin
 			new String[] {new String(type.shortReadableName()), typesAsString(false, argumentTypes, true), new String(type.enclosingType().shortReadableName())},
 			ProblemSeverities.AbortCompilation | ProblemSeverities.Error | ProblemSeverities.Fatal,
 			0,
-			1);
+			0);
 	    return;
 	}
     this.handle(
@@ -5625,6 +5711,66 @@ private int retrieveClosingAngleBracketPosition(int start) {
 		// ignore
 	}
 	return end;
+}
+private int retrieveEndingPositionAfterOpeningParenthesis(int sourceStart, int sourceEnd, int numberOfParen) {
+	if (this.referenceContext == null) return sourceEnd;
+	CompilationResult compilationResult = this.referenceContext.compilationResult();
+	if (compilationResult == null) return sourceEnd;
+	ICompilationUnit compilationUnit = compilationResult.getCompilationUnit();
+	if (compilationUnit == null) return sourceEnd;
+	char[] contents = compilationUnit.getContents();
+	if (contents.length == 0) return sourceEnd;
+	if (this.positionScanner == null) {
+		this.positionScanner = new Scanner(false, false, false, this.options.sourceLevel, this.options.complianceLevel, null, null, false);
+	}
+	this.positionScanner.setSource(contents);
+	this.positionScanner.resetTo(sourceStart, sourceEnd);
+	try {
+		int token;
+		int previousSourceEnd = sourceEnd;
+		while ((token = this.positionScanner.getNextToken()) != TerminalTokens.TokenNameEOF) {
+			switch(token) {
+				case TerminalTokens.TokenNameRPAREN:
+					return previousSourceEnd;
+				default :
+					previousSourceEnd = this.positionScanner.currentPosition - 1;
+			}
+		}
+	} catch(InvalidInputException e) {
+		// ignore
+	}
+	return sourceEnd;
+}
+private int retrieveStartingPositionAfterOpeningParenthesis(int sourceStart, int sourceEnd, int numberOfParen) {
+	if (this.referenceContext == null) return sourceStart;
+	CompilationResult compilationResult = this.referenceContext.compilationResult();
+	if (compilationResult == null) return sourceStart;
+	ICompilationUnit compilationUnit = compilationResult.getCompilationUnit();
+	if (compilationUnit == null) return sourceStart;
+	char[] contents = compilationUnit.getContents();
+	if (contents.length == 0) return sourceStart;
+	if (this.positionScanner == null) {
+		this.positionScanner = new Scanner(false, false, false, this.options.sourceLevel, this.options.complianceLevel, null, null, false);
+	}
+	this.positionScanner.setSource(contents);
+	this.positionScanner.resetTo(sourceStart, sourceEnd);
+	int count = 0;
+	try {
+		int token;
+		while ((token = this.positionScanner.getNextToken()) != TerminalTokens.TokenNameEOF) {
+			switch(token) {
+				case TerminalTokens.TokenNameLPAREN:
+					count++;
+					if (count == numberOfParen) {
+						this.positionScanner.getNextToken();
+						return this.positionScanner.startPosition;
+					}
+			}
+		}
+	} catch(InvalidInputException e) {
+		// ignore
+	}
+	return sourceStart;
 }
 public void returnTypeCannotBeVoidArray(MethodDeclaration methodDecl) {
 	this.handle(
@@ -5766,7 +5912,7 @@ public void staticMemberOfParameterizedType(ASTNode location, ReferenceBinding t
 			new String[] {new String(type.shortReadableName()), new String(type.enclosingType().shortReadableName()), },
 			ProblemSeverities.AbortCompilation | ProblemSeverities.Error | ProblemSeverities.Fatal,
 			0,
-			1);
+			0);
 	    return;
 	}
 	int end = location.sourceEnd;
@@ -6020,7 +6166,7 @@ public void typeMismatchError(TypeBinding typeArgument, TypeVariableBinding type
 			new String[] { new String(typeArgument.shortReadableName()), new String(genericType.shortReadableName()), new String(typeParameter.sourceName), parameterBoundAsString(typeParameter, true) },
 			ProblemSeverities.AbortCompilation | ProblemSeverities.Error | ProblemSeverities.Fatal,
 			0,
-			1);
+			0);
         return;
     }
 	this.handle(
@@ -6071,7 +6217,7 @@ public void undefinedTypeVariableSignature(char[] variableName, ReferenceBinding
 		new String[] {new String(variableName), new String(binaryType.shortReadableName())},
 		ProblemSeverities.AbortCompilation | ProblemSeverities.Error | ProblemSeverities.Fatal,
 		0,
-		1);
+		0);
 }
 public void undocumentedEmptyBlock(int blockStart, int blockEnd) {
 	this.handle(
@@ -6205,12 +6351,27 @@ public void unnecessaryNLSTags(int sourceStart, int sourceEnd) {
 		sourceEnd);
 }
 public void unqualifiedFieldAccess(NameReference reference, FieldBinding field) {
+	int sourceStart = reference.sourceStart;
+	int sourceEnd = reference.sourceEnd;
+	if (reference instanceof SingleNameReference) {
+		int numberOfParens = (reference.bits & ASTNode.ParenthesizedMASK) >> ASTNode.ParenthesizedSHIFT;
+		if (numberOfParens != 0) {
+			sourceStart = retrieveStartingPositionAfterOpeningParenthesis(sourceStart, sourceEnd, numberOfParens);
+			sourceEnd = retrieveEndingPositionAfterOpeningParenthesis(sourceStart, sourceEnd, numberOfParens);
+		} else {
+			sourceStart = nodeSourceStart(field, reference);
+			sourceEnd = nodeSourceEnd(field, reference);
+		}
+	} else {
+		sourceStart = nodeSourceStart(field, reference);
+		sourceEnd = nodeSourceEnd(field, reference);
+	}
 	this.handle(
 		IProblem.UnqualifiedFieldAccess,
 		new String[] {new String(field.declaringClass.readableName()), new String(field.name)},
 		new String[] {new String(field.declaringClass.shortReadableName()), new String(field.name)},
-		nodeSourceStart(field, reference),
-		nodeSourceEnd(field, reference));
+		sourceStart,
+		sourceEnd);
 }
 public void unreachableCatchBlock(ReferenceBinding exceptionType, ASTNode location) {
 	this.handle(
@@ -6225,12 +6386,22 @@ public void unreachableCatchBlock(ReferenceBinding exceptionType, ASTNode locati
 		location.sourceEnd);
 }
 public void unreachableCode(Statement statement) {
+	int sourceStart = statement.sourceStart;
+	int sourceEnd = statement.sourceEnd;
+	if (statement instanceof LocalDeclaration) {
+		LocalDeclaration declaration = (LocalDeclaration) statement;
+		sourceStart = declaration.declarationSourceStart;
+		sourceEnd = declaration.declarationSourceEnd;
+	} else if (statement instanceof Expression) {
+		int statemendEnd = ((Expression) statement).statementEnd;
+		if (statemendEnd != -1) sourceEnd = statemendEnd;
+	}
 	this.handle(
 		IProblem.CodeCannotBeReached,
 		NoArgument,
 		NoArgument,
-		statement.sourceStart,
-		statement.sourceEnd);
+		sourceStart,
+		sourceEnd);
 }
 public void unresolvableReference(NameReference nameRef, Binding binding) {
 /* also need to check that the searchedType is the receiver type

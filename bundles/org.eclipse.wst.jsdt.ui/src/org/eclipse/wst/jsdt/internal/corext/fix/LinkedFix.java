@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,7 +44,7 @@ public class LinkedFix extends AbstractFix {
 	private final LinkedProposalModel fLinkedProposalModel;
 
 	protected LinkedFix(String name, CompilationUnit compilationUnit, IFixRewriteOperation[] fixRewrites) {
-		super(name, compilationUnit, null);
+		super(name, compilationUnit, fixRewrites);
 		fCompilationUnit= compilationUnit;
 		fFixRewrites= fixRewrites;
 		fLinkedProposalModel= new LinkedProposalModel();

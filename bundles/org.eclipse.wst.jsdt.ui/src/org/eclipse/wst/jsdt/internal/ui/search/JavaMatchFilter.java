@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaModelException;
@@ -206,10 +207,12 @@ class ImportFilter extends JavaMatchFilter {
 		QuerySpecification spec= query.getSpecification();
 		if (spec instanceof ElementQuerySpecification) {
 			ElementQuerySpecification elementSpec= (ElementQuerySpecification) spec;
-			return elementSpec.getElement() instanceof IType;
+			IJavaElement element= elementSpec.getElement();
+			return element instanceof IType || element instanceof IPackageFragment;
 		} else if (spec instanceof PatternQuerySpecification) {
 			PatternQuerySpecification patternSpec= (PatternQuerySpecification) spec;
-			return patternSpec.getSearchFor() == IJavaSearchConstants.TYPE;
+			int searchFor= patternSpec.getSearchFor();
+			return searchFor == IJavaSearchConstants.TYPE || searchFor == IJavaSearchConstants.PACKAGE;
 		}
 		return false;
 	}

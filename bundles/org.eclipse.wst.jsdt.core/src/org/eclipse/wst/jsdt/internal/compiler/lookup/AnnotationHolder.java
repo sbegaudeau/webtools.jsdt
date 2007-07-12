@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
-class AnnotationHolder {
+public class AnnotationHolder {
 	AnnotationBinding[] annotations;
 
 static AnnotationHolder storeAnnotations(AnnotationBinding[] annotations, AnnotationBinding[][] parameterAnnotations, Object defaultValue) {
@@ -36,7 +36,7 @@ AnnotationBinding[] getAnnotations() {
 Object getDefaultValue() {
 	return null;
 }
-AnnotationBinding[][] getParameterAnnotations() {
+public AnnotationBinding[][] getParameterAnnotations() {
 	return null;
 }
 AnnotationBinding[] getParameterAnnotations(int paramIndex) {
@@ -58,7 +58,7 @@ MethodHolder(AnnotationBinding[] annotations, AnnotationBinding[][] parameterAnn
 	setAnnotations(annotations);
 	this.parameterAnnotations = parameterAnnotations;
 }
-AnnotationBinding[][] getParameterAnnotations() {
+public AnnotationBinding[][] getParameterAnnotations() {
 	return this.parameterAnnotations;
 }
 AnnotationBinding[] getParameterAnnotations(int paramIndex) {

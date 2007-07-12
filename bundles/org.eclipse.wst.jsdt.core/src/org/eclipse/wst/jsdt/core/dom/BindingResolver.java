@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 
 package org.eclipse.wst.jsdt.core.dom;
 
+import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ElementValuePair;
@@ -180,6 +181,52 @@ class BindingResolver {
 		return null;
 	}
 	
+	
+	/**
+	 * Returns the new type binding corresponding to the given variableDeclaration.
+	 * This is used for recovered binding only.
+	 * <p>
+	 * The default implementation of this method returns <code>null</code>.
+	 * Subclasses may reimplement.
+	 * </p>
+	 *
+	 * @param variableDeclaration the given variable declaration
+	 * @return the new type binding
+	 */
+	ITypeBinding getTypeBinding(VariableDeclaration variableDeclaration) {
+		return null;
+	}
+
+	/**
+	 * Returns the new type binding corresponding to the given type. This is used for recovered binding
+	 * only.
+	 * <p>
+	 * The default implementation of this method returns <code>null</code>.
+	 * Subclasses may reimplement.
+	 * </p>
+	 *
+	 * @param type the given type
+	 * @return the new type binding
+	 */
+	ITypeBinding getTypeBinding(Type type) {
+		return null;
+	}
+
+	/**
+	 * Returns the new type binding corresponding to the given recovered type binding.
+	 * <p>
+	 * The default implementation of this method returns <code>null</code>.
+	 * Subclasses may reimplement.
+	 * </p>
+	 *
+	 * @param recoveredTypeBinding the recovered type binding
+	 * @param dimensions the dimensions to add the to given type binding dimensions
+	 * @return the new type binding
+	 */
+	ITypeBinding getTypeBinding(RecoveredTypeBinding recoveredTypeBinding, int dimensions) {
+		return null;
+	}
+	
 	/**
 	 * Returns the new variable binding corresponding to the given old variable binding.
 	 * <p>
@@ -194,6 +241,19 @@ class BindingResolver {
 		return null;
 	}
 	
+	
+	/**
+	 * Return the working copy owner for the receiver.
+	 * <p>
+	 * The default implementation of this method returns <code>null</code>.
+	 * Subclasses may reimplement.
+	 * </p>
+	 * @return the working copy owner for the receiver
+	 */
+	public WorkingCopyOwner getWorkingCopyOwner() {
+		return null;
+	}
+
 	/**
 	 * Return the new annotation corresponding to the given old annotation
 	 * <p>
@@ -206,6 +266,14 @@ class BindingResolver {
 	 */
 	IAnnotationBinding getAnnotationInstance(org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding instance) {
 		return null;
+	}
+
+	boolean isResolvedTypeInferredFromExpectedType(MethodInvocation methodInvocation) {
+		return false;
+	}
+
+	boolean isResolvedTypeInferredFromExpectedType(SuperMethodInvocation methodInvocation) {
+		return false;
 	}
 
 	/**

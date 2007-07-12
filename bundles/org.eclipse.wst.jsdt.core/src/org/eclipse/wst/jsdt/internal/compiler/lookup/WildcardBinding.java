@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,9 +44,9 @@ public class WildcardBinding extends ReferenceBinding {
 		initialize(genericType, bound, otherBounds);
 
 		if (genericType instanceof UnresolvedReferenceBinding)
-			((UnresolvedReferenceBinding) genericType).addWrapper(this);
+			((UnresolvedReferenceBinding) genericType).addWrapper(this, environment);
 		if (bound instanceof UnresolvedReferenceBinding)
-			((UnresolvedReferenceBinding) bound).addWrapper(this);
+			((UnresolvedReferenceBinding) bound).addWrapper(this, environment);
 		this.tagBits |=  TagBits.HasUnresolvedTypeVariables; // cleared in resolve()
 	}
 
@@ -55,7 +55,7 @@ public class WildcardBinding extends ReferenceBinding {
 	}	
 		
 	/**
-	 * Returns true if the argument type satisfies all bounds of the type parameter
+	 * Returns true if the argument type satisfies the wildcard bound(s)
 	 */
 	public boolean boundCheck(TypeBinding argumentType) {
 	    switch (this.boundKind) {
@@ -85,9 +85,9 @@ public class WildcardBinding extends ReferenceBinding {
 	 * Collect the substitutes into a map for certain type variables inside the receiver type
 	 * e.g.   Collection<T>.collectSubstitutes(Collection<List<X>>, Map), will populate Map with: T --> List<X>
 	 * Constraints:
-	 *   A << F   corresponds to:   F.collectSubstitutes(..., A, ..., 1)
-	 *   A = F   corresponds to:      F.collectSubstitutes(..., A, ..., 0)
-	 *   A >> F   corresponds to:   F.collectSubstitutes(..., A, ..., 2)
+	 *   A << F   corresponds to:   F.collectSubstitutes(..., A, ..., CONSTRAINT_EXTENDS (1))
+	 *   A = F   corresponds to:      F.collectSubstitutes(..., A, ..., CONSTRAINT_EQUAL (0))
+	 *   A >> F   corresponds to:   F.collectSubstitutes(..., A, ..., CONSTRAINT_SUPER (2))
 	 */
 	public void collectSubstitutes(Scope scope, TypeBinding actualType, InferenceContext inferenceContext, int constraint) {
 

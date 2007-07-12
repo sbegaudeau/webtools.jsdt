@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -231,6 +231,17 @@ public class CodeFormatterUtil {
 	
 	public static TextEdit format2(int kind, String string, int indentationLevel, String lineSeparator, Map options) {
 		return format2(kind, string, 0, string.length(), indentationLevel, lineSeparator, options);
+	}
+	
+	public static TextEdit reformat(int kind, String string, int offset, int length, int indentationLevel, String lineSeparator, Map options) {
+		if (offset < 0 || length < 0 || offset + length > string.length()) {
+			throw new IllegalArgumentException("offset or length outside of string. offset: " + offset + ", length: " + length + ", string size: " + string.length());   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+		}
+		return ToolFactory.createCodeFormatter(options, ToolFactory.M_FORMAT_EXISTING).format(kind, string, offset, length, indentationLevel, lineSeparator);
+	}
+	
+	public static TextEdit reformat(int kind, String string, int indentationLevel, String lineSeparator, Map options) {
+		return reformat(kind, string, 0, string.length(), indentationLevel, lineSeparator, options);
 	}
 	
 	/**

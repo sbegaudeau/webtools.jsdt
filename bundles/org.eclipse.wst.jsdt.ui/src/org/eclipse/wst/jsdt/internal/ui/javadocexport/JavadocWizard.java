@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -109,10 +110,9 @@ public class JavadocWizard extends Wizard implements IExportWizard {
 
 	public static void openJavadocWizard(JavadocWizard wizard, Shell shell, IStructuredSelection selection ) {
 		wizard.init(PlatformUI.getWorkbench(), selection);
-		
-		PixelConverter converter= new PixelConverter(shell);
-		
+
 		WizardDialog dialog= new WizardDialog(shell, wizard);
+		PixelConverter converter= new PixelConverter(JFaceResources.getDialogFont());
 		dialog.setMinimumPageSize(converter.convertWidthInCharsToPixels(100), converter.convertHeightInCharsToPixels(20));
 		dialog.open();
 	}

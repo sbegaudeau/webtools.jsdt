@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
 public class ParameterizedSingleTypeReference extends ArrayTypeReference {
 
 	public TypeReference[] typeArguments;
-	public boolean didResolve = false;
 	
 	public ParameterizedSingleTypeReference(char[] name, TypeReference[] typeArguments, int dim, long pos){
 		super(name, dim, pos);
@@ -34,7 +33,7 @@ public class ParameterizedSingleTypeReference extends ArrayTypeReference {
 
 		if (this.resolvedType.leafComponentType() instanceof ParameterizedTypeBinding) {
 			ParameterizedTypeBinding parameterizedType = (ParameterizedTypeBinding) this.resolvedType.leafComponentType();
-			ReferenceBinding currentType = parameterizedType.type;
+			ReferenceBinding currentType = parameterizedType.genericType();
 			TypeVariableBinding[] typeVariables = currentType.typeVariables();
 			TypeBinding[] argTypes = parameterizedType.arguments;
 			if (argTypes != null && typeVariables != null) { // may be null in error cases
@@ -89,27 +88,27 @@ public class ParameterizedSingleTypeReference extends ArrayTypeReference {
 
 		// handle the error here
 		this.constant = Constant.NotAConstant;
-		if (this.didResolve) { // is a shared type reference which was already resolved
+		if ((this.bits & ASTNode.DidResolve) != 0) { // is a shared type reference which was already resolved
 			if (this.resolvedType != null && !this.resolvedType.isValidBinding())
 				return null; // already reported error
 			return this.resolvedType;
 		} 
-	    this.didResolve = true;
+		this.bits |= ASTNode.DidResolve;
 		if (enclosingType == null) {
 			this.resolvedType = scope.getType(token);
 			if (!(this.resolvedType.isValidBinding())) {
 				reportInvalidType(scope);
 				// be resilient, still attempt resolving arguments
-			    boolean isClassScope = scope.kind == Scope.CLASS_SCOPE;
+				boolean isClassScope = scope.kind == Scope.CLASS_SCOPE;
 				int argLength = this.typeArguments.length;
 				for (int i = 0; i < argLength; i++) {
-				    TypeReference typeArgument = this.typeArguments[i];
-				    if (isClassScope) {
-				    	typeArgument.resolveType((ClassScope) scope);
-				    } else {
-				    	typeArgument.resolveType((BlockScope) scope, checkBounds);
-				    }
-				}				
+					TypeReference typeArgument = this.typeArguments[i];
+					if (isClassScope) {
+						typeArgument.resolveType((ClassScope) scope);
+					} else {
+						typeArgument.resolveType((BlockScope) scope, checkBounds);
+					}
+				}
 				return null;
 			}
 			enclosingType = this.resolvedType.enclosingType(); // if member type
@@ -120,7 +119,7 @@ public class ParameterizedSingleTypeReference extends ArrayTypeReference {
 					: scope.environment().convertToParameterizedType(enclosingType);
 			}
 		} else { // resolving member type (relatively to enclosingType)
-			this.resolvedType = scope.getMemberType(token, (ReferenceBinding)enclosingType.erasure());		    
+			this.resolvedType = scope.getMemberType(token, enclosingType);
 			if (!this.resolvedType.isValidBinding()) {
 				scope.problemReporter().invalidEnclosingType(this, this.resolvedType, enclosingType);
 				return null;
@@ -154,7 +153,7 @@ public class ParameterizedSingleTypeReference extends ArrayTypeReference {
 		if (argHasError) return null;
 		if (isClassScope) {
 	    	((ClassScope) scope).superTypeReference = keep;
-			if (((ClassScope) scope).detectHierarchyCycle(currentType, this, argTypes))
+			if (((ClassScope) scope).detectHierarchyCycle(currentType, this))
 				return null;
 		}
 
@@ -165,10 +164,13 @@ public class ParameterizedSingleTypeReference extends ArrayTypeReference {
 		} else if (argLength != typeVariables.length) { // check arity
 			scope.problemReporter().incorrectArityForParameterizedType(this, currentType, argTypes);
 			return null;
-		} else if (!currentType.isStatic() && enclosingType != null && enclosingType.isRawType()){
-			scope.problemReporter().rawMemberTypeCannotBeParameterized(
-					this, scope.environment().createRawType((ReferenceBinding)currentType.erasure(), enclosingType), argTypes);
-			return null;
+		} else if (!currentType.isStatic()) {
+			ReferenceBinding actualEnclosing = currentType.enclosingType();
+			if (actualEnclosing != null && actualEnclosing.isRawType()){
+				scope.problemReporter().rawMemberTypeCannotBeParameterized(
+						this, scope.environment().createRawType((ReferenceBinding)currentType.erasure(), actualEnclosing), argTypes);
+				return null;
+			}
 		}
 
     	ParameterizedTypeBinding parameterizedType = scope.environment().createParameterizedType((ReferenceBinding)currentType.erasure(), argTypes, enclosingType);

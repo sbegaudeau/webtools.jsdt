@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -396,6 +396,8 @@ public final class RefactoringCoreMessages extends NLS {
 
 	public static String ExtractConstantRefactoring_another_variable;
 
+	public static String ExtractConstantRefactoring_change_name;
+
 	public static String ExtractConstantRefactoring_checking_preconditions;
 
 	public static String ExtractConstantRefactoring_constant_expression_pattern;
@@ -595,6 +597,8 @@ public final class RefactoringCoreMessages extends NLS {
 	public static String ExtractTempRefactoring_assigned_to;
 
 	public static String ExtractTempRefactoring_assignment;
+
+	public static String ExtractTempRefactoring_change_name;
 
 	public static String ExtractTempRefactoring_checking_preconditions;
 
@@ -2213,6 +2217,14 @@ public final class RefactoringCoreMessages extends NLS {
 	public static String SelfEncapsulateField_visibility_pattern;
 
 	public static String SelfEncapsulateFieldRefactoring_descriptor_description;
+
+	public static String SelfEncapsulateFieldRefactoring_methoddoesnotexist_status_fatalError;
+
+	public static String SelfEncapsulateFieldRefactoring_nonstatic_method_but_static_field;
+
+	public static String SelfEncapsulateFieldRefactoring_nosuchmethod_status_fatalError;
+
+	public static String SelfEncapsulateFieldRefactoring_static_method_but_nonstatic_field;
 
 	public static String SourceCreationOperation_creating_source_folder;
 

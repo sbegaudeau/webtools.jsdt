@@ -21,6 +21,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Properties;
 
 import org.eclipse.equinox.app.IApplication;
@@ -158,7 +159,7 @@ public class CodeFormatterApplication implements IApplication {
 
 	private String configName;
 
-	private Properties options = null;
+	private Map options = null;
 
 	private static final String PDE_LAUNCH = "-pdelaunch"; //$NON-NLS-1$
 
@@ -373,8 +374,8 @@ public class CodeFormatterApplication implements IApplication {
 			System.out.println(Messages.bind(Messages.CommandLineStart));
 		}
 
-		// format the list of files and/or directories
 		final CodeFormatter codeFormatter = ToolFactory.createCodeFormatter(this.options);
+		// format the list of files and/or directories
 		for (int i = 0, max = filesToFormat.length; i < max; i++) {
 			final File file = filesToFormat[i];
 			if (file.isDirectory()) {

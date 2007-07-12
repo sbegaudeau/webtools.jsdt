@@ -112,7 +112,8 @@ public class ThrownExceptionFinder extends ASTVisitor {
 		}
 		
 		Block[] catchBlocks = tryStatement.catchBlocks;
-		for (int i = 0; i < catchBlocks.length; i++) {
+		int length = catchBlocks == null ? 0 : catchBlocks.length;
+		for (int i = 0; i < length; i++) {
 			catchBlocks[i].traverse(this, scope);
 		}
 		return false;
@@ -120,10 +121,24 @@ public class ThrownExceptionFinder extends ASTVisitor {
 	
 	private void removeCaughtExceptions(TryStatement tryStatement) {
 		Argument[] catchArguments = tryStatement.catchArguments;
-		for (int i = 0; i < catchArguments.length; i++) {
+		int length = catchArguments == null ? 0 : catchArguments.length;
+		for (int i = 0; i < length; i++) {
 			TypeBinding exception = catchArguments[i].type.resolvedType;
 			if (exception != null && exception.isValidBinding()) {
-				this.thrownExceptions.remove(exception);
+				this.removeCaughtException((ReferenceBinding)exception);
+				
+			}
+		}
+	}
+
+	private void removeCaughtException(ReferenceBinding caughtException) {
+		Object[] exceptions = this.thrownExceptions.values;
+		for (int i = 0; i < exceptions.length; i++) {
+			ReferenceBinding exception = (ReferenceBinding)exceptions[i];
+			if (exception != null) {
+				if (exception == caughtException || caughtException.isSuperclassOf(exception)) {
+					this.thrownExceptions.remove(exception);
+				}
 			}
 		}
 	}

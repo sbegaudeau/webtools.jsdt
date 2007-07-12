@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
+import java.util.ArrayList;
+
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.internal.core.util.LRUCache;
 
@@ -17,6 +19,8 @@ import org.eclipse.wst.jsdt.internal.core.util.LRUCache;
  * An LRU cache of <code>IBuffers</code>.
  */
 public class BufferCache extends OverflowingLRUCache {
+	
+	private ThreadLocal buffersToClose = new ThreadLocal();
 /**
  * Constructs a new buffer cache of the given size.
  */
@@ -44,8 +48,23 @@ protected boolean close(LRUCacheEntry entry) {
 	if (!((Openable)buffer.getOwner()).canBufferBeRemovedFromCache(buffer)) {
 		return false;
 	} else {
-		buffer.close();
+		ArrayList buffers = (ArrayList) this.buffersToClose.get();
+		if (buffers == null) {
+			buffers = new ArrayList();
+			this.buffersToClose.set(buffers);
+		}
+		buffers.add(buffer);
 		return true;
+	}
+}
+
+void closeBuffers() {
+	ArrayList buffers = (ArrayList) this.buffersToClose.get();
+	if (buffers == null)
+		return;
+	this.buffersToClose.set(null);
+	for (int i = 0, length = buffers.size(); i < length; i++) {
+		((IBuffer) buffers.get(i)).close();
 	}
 }
 	/**

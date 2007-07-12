@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -93,6 +93,7 @@ public void acceptType(int modifiers, char[] packageName, char[] simpleTypeName,
 						for (int j=1, l=enclosingTypeNames.length; j<l; j++) {
 							type = type.getType(new String(enclosingTypeNames[j]));
 						}
+						type = type.getType(new String(simpleTypeName));
 					} else {
 						type = cu.getType(new String(simpleTypeName));
 					}

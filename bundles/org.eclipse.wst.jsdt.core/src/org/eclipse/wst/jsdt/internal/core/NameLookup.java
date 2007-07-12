@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -136,12 +136,6 @@ public class NameLookup implements SuffixConstants {
 	 */
 	protected HashtableOfArrayToObject packageFragments;
 	
-	/*
-	 * A set of names (String[]) that are known to be package names.
-	 * Value is not null for known package.
-	 */
-	protected HashtableOfArrayToObject isPackageCache;
-
 	/**
 	 * Reverse map from root path to corresponding resolved CP entry
 	 * (so as to be able to figure inclusion/exclusion rules)
@@ -164,7 +158,6 @@ public class NameLookup implements SuffixConstants {
 	public NameLookup(
 			IPackageFragmentRoot[] packageFragmentRoots, 
 			HashtableOfArrayToObject packageFragments, 
-			HashtableOfArrayToObject isPackage, 
 			ICompilationUnit[] workingCopies, 
 			Map rootToResolvedEntries) {
 		long start = -1;
@@ -178,12 +171,10 @@ public class NameLookup implements SuffixConstants {
 		this.packageFragmentRoots = packageFragmentRoots;
 		if (workingCopies == null) {
 			this.packageFragments = packageFragments;
-			this.isPackageCache = isPackage;
 		} else {
 			// clone tables as we're adding packages from working copies
 			try {
 				this.packageFragments = (HashtableOfArrayToObject) packageFragments.clone();
-				this.isPackageCache = (HashtableOfArrayToObject) isPackage.clone();
 			} catch (CloneNotSupportedException e1) {
 				// ignore (implementation of HashtableOfArrayToObject supports cloning)
 			}
@@ -241,11 +232,11 @@ public class NameLookup implements SuffixConstants {
 				IPackageFragmentRoot root = (IPackageFragmentRoot) pkg.getParent();
 				String[] pkgName = pkg.names;
 				Object existing = this.packageFragments.get(pkgName);
-				if (existing == null) {
+				if (existing == null || existing == JavaProjectElementInfo.NO_ROOTS) {
 					this.packageFragments.put(pkgName, root);
-					// cache whether each package and its including packages (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=119161)
-					// are actual packages
-					JavaProjectElementInfo.addNames(pkgName, this.isPackageCache);
+					// ensure super packages (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=119161)
+					// are also in the map
+					JavaProjectElementInfo.addSuperPackageNames(pkgName, this.packageFragments);
 				} else {
 					if (existing instanceof PackageFragmentRoot) {
 						if (!existing.equals(root))
@@ -580,13 +571,32 @@ public class NameLookup implements SuffixConstants {
 	 * (qualified) name, or <code>null</code> if none exist.
 	 *
 	 * The name can be:
-	 *	- empty: ""
-	 *	- qualified: "pack.pack1.pack2"
+	 * <ul>
+	 *		<li>empty: ""</li>
+	 *		<li>qualified: "pack.pack1.pack2"</li>
+	 * </ul>
 	 * @param partialMatch partial name matches qualify when <code>true</code>,
 	 *	only exact name matches qualify when <code>false</code>
 	 */
 	public IPackageFragment[] findPackageFragments(String name, boolean partialMatch) {
-		
+		return findPackageFragments(name, partialMatch, false);
+	}
+
+	/**
+	 * Returns the package fragments whose name matches the given
+	 * (qualified) name or pattern, or <code>null</code> if none exist.
+	 *
+	 * The name can be:
+	 * <ul>
+	 *		<li>empty: ""</li>
+	 *		<li>qualified: "pack.pack1.pack2"</li>
+	 * 	<li>a pattern: "pack.*.util"</li>
+	 * </ul>
+	 * @param partialMatch partial name matches qualify when <code>true</code>,
+	 * @param patternMatch <code>true</code> when the given name might be a pattern,
+	 *		<code>false</code> otherwise.
+	 */
+	public IPackageFragment[] findPackageFragments(String name, boolean partialMatch, boolean patternMatch) {
 		ArrayList fragRootChildren = new ArrayList();
 		for (int i = 0; i < this.packageFragmentRoots.length; i++) {
 			IJavaElement[] children;
@@ -1121,7 +1131,7 @@ public class NameLookup implements SuffixConstants {
 	}
 	
 	public boolean isPackage(String[] pkgName) {
-		return this.isPackageCache.get(pkgName) != null;
+		return this.packageFragments.get(pkgName) != null;
 	}
 
 	/**

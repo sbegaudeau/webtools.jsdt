@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,8 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 	public int parseThreshold = -1;
 	
 	public AbstractAnnotationProcessorManager annotationProcessorManager;
+	public ReferenceBinding[] referenceBindings;
+
 
 	// number of initial units parsed at once (-1: none)
 
@@ -524,6 +526,9 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 		}
 	}
 
+	public void setBinaryTypes(ReferenceBinding[] binaryTypes) {
+		this.referenceBindings = binaryTypes;
+	}
 	/*
 	 * Compiler recovery in case of internal AbortCompilation event
 	 */
@@ -620,8 +625,8 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 				
 				parser.inferTypes(parsedUnit,this.options);
 				// initial type binding creation
-				lookupEnvironment.buildTypeBindings(parsedUnit, null /*no access restriction*/);
 				this.addCompilationUnit(sourceUnits[i], parsedUnit);
+				lookupEnvironment.buildTypeBindings(parsedUnit, null /*no access restriction*/);
 				ImportReference currentPackage = parsedUnit.currentPackage;
 				if (currentPackage != null) {
 					unitResult.recordPackageName(currentPackage.tokens);
@@ -673,12 +678,15 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 
 	protected void processAnnotations() {
 		int newUnitSize = 0;
+		int newClassFilesSize = 0;
 		int bottom = 0;
 		int top = this.unitsToProcess.length;
-		if (top == 0) return;
+		ReferenceBinding[] binaryTypeBindingsTemp = this.referenceBindings;
+		if (top == 0 && binaryTypeBindingsTemp == null) return;
+		this.referenceBindings = null;
 		do {
 			// extract units to process
-			int length = top - bottom + 1;
+			int length = top - bottom;
 			CompilationUnitDeclaration[] currentUnits = new CompilationUnitDeclaration[length];
 			int index = 0;
 			for (int i = bottom; i < top; i++) {
@@ -690,20 +698,26 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 			if (index != length) {
 				System.arraycopy(currentUnits, 0, (currentUnits = new CompilationUnitDeclaration[index]), 0, index);
 			}
-			this.annotationProcessorManager.processAnnotations(currentUnits, false);
+			this.annotationProcessorManager.processAnnotations(currentUnits, binaryTypeBindingsTemp, false);
 			ICompilationUnit[] newUnits = this.annotationProcessorManager.getNewUnits();
 			newUnitSize = newUnits.length;
+			ReferenceBinding[] newClassFiles = this.annotationProcessorManager.getNewClassFiles();
+			binaryTypeBindingsTemp = newClassFiles;
+			newClassFilesSize = newClassFiles.length;
 			if (newUnitSize != 0) {
 				// we reset the compiler in order to restart with the new units
 				internalBeginToCompile(newUnits, newUnitSize);
-				bottom = top + 1;
+				bottom = top;
 				top = this.unitsToProcess.length;
-				this.annotationProcessorManager.reset();
+			} else {
+				bottom = top;
 			}
-		} while (newUnitSize != 0);
+			this.annotationProcessorManager.reset();
+		} while (newUnitSize != 0 || newClassFilesSize != 0);
 		// one more loop to create possible resources
 		// this loop cannot create any java source files
-		this.annotationProcessorManager.processAnnotations(unitsToProcess, true);
+		// TODO (olivier) we should check if we should pass any unit at all for the last round
+		this.annotationProcessorManager.processAnnotations(null, null, true);
 		// TODO we might want to check if this loop created new units
 	}
 
@@ -771,8 +785,10 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 			this.handleInternalException(e, unit, null);
 			throw e; // rethrow
 		} finally {
-			this.lookupEnvironment.unitBeingCompleted = null;
-			// No reset is performed there anymore since,
+//			this.lookupEnvironment.unitBeingCompleted = null;
+			// leave this.lookupEnvironment.unitBeingCompleted set to the unit, until another unit is resolved
+			// other calls to dom can cause classpath errors to be detected, resulting in AbortCompilation exceptions			// No reset is performed there anymore since,
+
 			// within the CodeAssist (or related tools),
 			// the compiler may be called *after* a call
 			// to this resolve(...) method. And such a call

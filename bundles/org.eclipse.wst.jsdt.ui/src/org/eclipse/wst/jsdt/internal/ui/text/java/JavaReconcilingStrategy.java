@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -94,7 +94,11 @@ public class JavaReconcilingStrategy implements IReconcilingStrategy, IReconcili
 								boolean isASTNeeded= initialReconcile || JavaPlugin.getDefault().getASTProvider().isActive(unit);
 								// reconcile
 								if (fIsJavaReconcilingListener && isASTNeeded) {
-									ast[0]= unit.reconcile(ASTProvider.SHARED_AST_LEVEL, true, ASTProvider.SHARED_AST_STATEMENT_RECOVERY, null, fProgressMonitor);
+									int reconcileFlags= ICompilationUnit.FORCE_PROBLEM_DETECTION 
+										| (ASTProvider.SHARED_AST_STATEMENT_RECOVERY ? ICompilationUnit.ENABLE_STATEMENTS_RECOVERY : 0)
+										| (ASTProvider.SHARED_BINDING_RECOVERY ? ICompilationUnit.ENABLE_BINDINGS_RECOVERY : 0);
+											
+									ast[0]= unit.reconcile(ASTProvider.SHARED_AST_LEVEL, reconcileFlags, null, fProgressMonitor);
 									if (ast[0] != null) {
 										// mark as unmodifiable
 										ASTNodes.setFlagsToAST(ast[0], ASTNode.PROTECT);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,8 +61,6 @@ public class ClasspathChange {
 				} catch (JavaModelException e) {
 					// ignore
 				}
-				// force detach source on jar package fragment roots (source will be lazily computed when needed)
-				((PackageFragmentRoot) root).setSourceAttachmentProperty(null);// loose info - will be recomputed
 			}
 		}
 	}
@@ -335,7 +333,6 @@ public class ClasspathChange {
 							} catch (JavaModelException e) {
 								// ignore
 							}
-							((PackageFragmentRoot) root).setSourceAttachmentProperty(null);// loose info - will be recomputed
 						}
 					}
 				}
@@ -496,5 +493,9 @@ public class ClasspathChange {
 				}
 			}
 		}
+	}
+	
+	public String toString() {
+		return "ClasspathChange: " + this.project.getElementName(); //$NON-NLS-1$
 	}
 }

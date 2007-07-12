@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -101,9 +102,9 @@ import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.dom.ModifierRewrite;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.JavaRefactoringArguments;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptorComment;
+import org.eclipse.wst.jsdt.internal.corext.refactoring.JavaRefactoringArguments;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JavaStatusContext;
@@ -159,6 +160,9 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 		/** Are we in a type declaration statement? */
 		private boolean fTypeDeclarationStatement= false;
 
+		/** The binding of the enclosing method */
+		private final IMethodBinding fEnclosingMethod;
+
 		/**
 		 * Creates a new pull up ast node mapper.
 		 * 
@@ -172,14 +176,16 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 		 *            the super reference type
 		 * @param mapping
 		 *            the type variable mapping
+		 * @param enclosing the binding of the enclosing method
 		 */
-		public PullUpAstNodeMapper(final CompilationUnitRewrite sourceRewriter, final CompilationUnitRewrite targetRewriter, final ASTRewrite rewrite, final IType type, final TypeVariableMaplet[] mapping) {
+		public PullUpAstNodeMapper(final CompilationUnitRewrite sourceRewriter, final CompilationUnitRewrite targetRewriter, final ASTRewrite rewrite, final IType type, final TypeVariableMaplet[] mapping, final IMethodBinding enclosing) {
 			super(rewrite, mapping);
 			Assert.isNotNull(rewrite);
 			Assert.isNotNull(type);
 			fSourceRewriter= sourceRewriter;
 			fTargetRewriter= targetRewriter;
 			fSuperReferenceType= type;
+			fEnclosingMethod= enclosing;
 		}
 
 		public final void endVisit(final AnonymousClassDeclaration node) {
@@ -213,11 +219,14 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 
 		public final boolean visit(final SuperMethodInvocation node) {
 			if (!fAnonymousClassDeclaration && !fTypeDeclarationStatement) {
-				final IBinding name= node.getName().resolveBinding();
-				if (name != null && name.getKind() == IBinding.METHOD) {
-					final ITypeBinding binding= ((IMethodBinding) name).getDeclaringClass();
-					if (binding != null) {
-						final IType type= (IType) binding.getJavaElement();
+				final IBinding superBinding= node.getName().resolveBinding();
+				if (superBinding instanceof IMethodBinding) {
+					final IMethodBinding extended= (IMethodBinding) superBinding;
+					if (fEnclosingMethod != null && fEnclosingMethod.overrides(extended))
+						return true;
+					final ITypeBinding declaringBinding= extended.getDeclaringClass();
+					if (declaringBinding != null) {
+						final IType type= (IType) declaringBinding.getJavaElement();
 						if (!fSuperReferenceType.equals(type))
 							return true;
 					}
@@ -285,10 +294,23 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 	}
 
 	private static Set getEffectedSubTypes(final ITypeHierarchy hierarchy, final IType type) throws JavaModelException {
-		final IType[] types= hierarchy.getSubclasses(type);
+		 IType[] types= null;
+		 final boolean isInterface= type.isInterface();
+		if (isInterface) {
+			 final Collection remove= new ArrayList();
+			 final List list= new ArrayList(Arrays.asList(hierarchy.getSubtypes(type)));
+			 for (final Iterator iterator= list.iterator(); iterator.hasNext();) {
+	            final IType element= (IType) iterator.next();
+	            if (element.isInterface())
+	            	remove.add(element);
+            }
+			 list.removeAll(remove);
+			 types= (IType[]) list.toArray(new IType[list.size()]);
+		 } else
+			 types= hierarchy.getSubclasses(type);
 		final Set result= new HashSet();
 		for (int index= 0; index < types.length; index++) {
-			if (JdtFlags.isAbstract(types[index]))
+			if (!isInterface && JdtFlags.isAbstract(types[index]))
 				result.addAll(getEffectedSubTypes(hierarchy, types[index]));
 			else
 				result.add(types[index]);
@@ -900,22 +922,23 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 			if (members[i].getElementType() != IJavaElement.METHOD)
 				continue;
 			final IMethod method= (IMethod) members[i];
-			final String returnType= Signature.toString(Signature.getReturnType(method.getSignature()).toString());
-			Assert.isTrue(mapping.containsKey(method));
-			final Set set= (Set) mapping.get(method);
-			if (set != null) {
-				for (final Iterator iter= set.iterator(); iter.hasNext();) {
-					final IMethod matchingMethod= (IMethod) iter.next();
-					if (method.equals(matchingMethod))
-						continue;
-					if (!notDeletedMembersInSubtypes.contains(matchingMethod))
-						continue;
-					if (returnType.equals(Signature.toString(Signature.getReturnType(matchingMethod.getSignature()).toString())))
-						continue;
-					final String[] keys= { JavaElementLabels.getTextLabel(matchingMethod, JavaElementLabels.ALL_FULLY_QUALIFIED), JavaElementLabels.getTextLabel(matchingMethod.getDeclaringType(), JavaElementLabels.ALL_FULLY_QUALIFIED)};
-					final String message= Messages.format(RefactoringCoreMessages.PullUpRefactoring_different_method_return_type, keys);
-					final RefactoringStatusContext context= JavaStatusContext.create(matchingMethod.getCompilationUnit(), matchingMethod.getNameRange());
-					status.addError(message, context);
+			if (mapping.containsKey(method)) {
+				final Set set= (Set) mapping.get(method);
+				if (set != null) {
+					final String returnType= Signature.toString(Signature.getReturnType(method.getSignature()).toString());
+					for (final Iterator iter= set.iterator(); iter.hasNext();) {
+						final IMethod matchingMethod= (IMethod) iter.next();
+						if (method.equals(matchingMethod))
+							continue;
+						if (!notDeletedMembersInSubtypes.contains(matchingMethod))
+							continue;
+						if (returnType.equals(Signature.toString(Signature.getReturnType(matchingMethod.getSignature()).toString())))
+							continue;
+						final String[] keys= { JavaElementLabels.getTextLabel(matchingMethod, JavaElementLabels.ALL_FULLY_QUALIFIED), JavaElementLabels.getTextLabel(matchingMethod.getDeclaringType(), JavaElementLabels.ALL_FULLY_QUALIFIED)};
+						final String message= Messages.format(RefactoringCoreMessages.PullUpRefactoring_different_method_return_type, keys);
+						final RefactoringStatusContext context= JavaStatusContext.create(matchingMethod.getCompilationUnit(), matchingMethod.getNameRange());
+						status.addError(message, context);
+					}
 				}
 			}
 		}
@@ -938,7 +961,7 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 			final IDocument document= new Document(method.getCompilationUnit().getBuffer().getContents());
 			final ASTRewrite rewrite= ASTRewrite.create(body.getAST());
 			final ITrackedNodePosition position= rewrite.track(body);
-			body.accept(new PullUpAstNodeMapper(sourceRewrite, targetRewrite, rewrite, getDeclaringSuperTypeHierarchy(monitor).getSuperclass(getDeclaringType()), mapping));
+			body.accept(new PullUpAstNodeMapper(sourceRewrite, targetRewrite, rewrite, getDeclaringSuperTypeHierarchy(monitor).getSuperclass(getDeclaringType()), mapping, oldMethod.resolveBinding()));
 			rewrite.rewriteAST(document, method.getJavaProject().getOptions(true)).apply(document, TextEdit.NONE);
 			String content= document.get(position.getStartPosition(), position.getLength());
 			final String[] lines= Strings.convertIntoLines(content);
@@ -1153,7 +1176,8 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 				adjustor.rewriteVisibility(new SubProgressMonitor(monitor, 1));
 			final TextEditBasedChangeManager manager= new TextEditBasedChangeManager();
 			if (fReplace) {
-				for (final Iterator iterator= fCompilationUnitRewrites.keySet().iterator(); iterator.hasNext();) {
+				final Set set= fCompilationUnitRewrites.keySet();
+				for (final Iterator iterator= set.iterator(); iterator.hasNext();) {
 					unit= (ICompilationUnit) iterator.next();
 					rewrite= (CompilationUnitRewrite) fCompilationUnitRewrites.get(unit);
 					if (rewrite != null) {
@@ -1167,8 +1191,8 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 				final Map workingcopies= new HashMap();
 				final IProgressMonitor subMonitor= new SubProgressMonitor(monitor, 1);
 				try {
-					subMonitor.beginTask(RefactoringCoreMessages.PullUpRefactoring_checking, fCompilationUnitRewrites.keySet().size());
-					for (final Iterator iterator= fCompilationUnitRewrites.keySet().iterator(); iterator.hasNext();) {
+					subMonitor.beginTask(RefactoringCoreMessages.PullUpRefactoring_checking, set.size());
+					for (final Iterator iterator= set.iterator(); iterator.hasNext();) {
 						unit= (ICompilationUnit) iterator.next();
 						change= manager.get(unit);
 						if (change instanceof TextChange) {
@@ -1326,7 +1350,10 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 	private IMethod[] getAbstractMethods() throws JavaModelException {
 		final IMethod[] toDeclareAbstract= fAbstractMethods;
 		final IMethod[] abstractPulledUp= getAbstractMethodsToPullUp();
-		final List result= new ArrayList(toDeclareAbstract.length + abstractPulledUp.length);
+		final Set result= new LinkedHashSet(toDeclareAbstract.length + abstractPulledUp.length + fMembersToMove.length);
+		if (fDestinationType.isInterface()) {
+			result.addAll(Arrays.asList(fMembersToMove));
+		}
 		result.addAll(Arrays.asList(toDeclareAbstract));
 		result.addAll(Arrays.asList(abstractPulledUp));
 		return (IMethod[]) result.toArray(new IMethod[result.size()]);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,6 @@ import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaModelException;
 
 public class GenericRefactoringHandleTransplanter {
 
@@ -117,11 +116,7 @@ public class GenericRefactoringHandleTransplanter {
 			case IJavaElement.COMPILATION_UNIT:
 				return ((ICompilationUnit) parent).getType(element.getElementName());
 			case IJavaElement.CLASS_FILE:
-				try {
-					return ((IClassFile) parent).getType();
-				} catch (JavaModelException e) {
-					return element; // JME never thrown
-				}
+				return ((IClassFile) parent).getType();
 			case IJavaElement.METHOD:
 				return ((IMethod) parent).getType(element.getElementName(), element.getOccurrenceCount());
 			case IJavaElement.FIELD:

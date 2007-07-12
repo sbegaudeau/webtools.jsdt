@@ -38,6 +38,29 @@ public interface ICompilationUnit extends ITypeRoot, IWorkingCopy, ISourceManipu
 public static final int NO_AST = 0;
 
 /**
+ * Constant indicating that a reconcile operation should recompute the problems
+ * even if the source hasn't changed.
+ * @since 3.3
+ */
+public static final int FORCE_PROBLEM_DETECTION = 0x01;
+
+/**
+ * Constant indicating that a reconcile operation should enable the statements recovery.
+ * @see ASTParser#setStatementsRecovery(boolean)
+ * @since 3.3
+ */
+public static final int ENABLE_STATEMENTS_RECOVERY = 0x02;
+
+/**
+ * Constant indicating that a reconcile operation should enable the bindings recovery
+ * @see ASTParser#setBindingsRecovery(boolean)
+ * @see IBinding#isRecovered()
+ * @since 3.3
+ */
+public static final int ENABLE_BINDINGS_RECOVERY = 0x04;
+
+
+/**
  * Changes this compilation unit handle into a working copy. A new {@link IBuffer} is
  * created using this compilation unit handle's owner. Uses the primary owner is none was
  * specified when this compilation unit handle was created.
@@ -67,8 +90,37 @@ public static final int NO_AST = 0;
  * @throws JavaModelException if this compilation unit could not become a working copy.
  * @see #discardWorkingCopy()
  * @since 3.0
- */
+  *
+ * @deprecated Use {@link #becomeWorkingCopy(IProgressMonitor)} instead.
+ * 	Note that if this deprecated method is used, problems will be reported to the given problem requestor
+ * 	as well as the problem requestor returned by the working copy owner (if not null).
+*/
 void becomeWorkingCopy(IProblemRequestor problemRequestor, IProgressMonitor monitor) throws JavaModelException;
+/**
+ * Changes this compilation unit handle into a working copy. A new {@link IBuffer} is
+ * created using this compilation unit handle's owner. Uses the primary owner if none was
+ * specified when this compilation unit handle was created.
+ * <p>
+ * When switching to working copy mode, problems are reported to the {@link IProblemRequestor
+ * problem requestor} of the {@link WorkingCopyOwner working copy owner}.
+ * </p><p>
+ * Once in working copy mode, changes to this compilation unit or its children are done in memory.
+ * Only the new buffer is affected. Using {@link #commitWorkingCopy(boolean, IProgressMonitor)}
+ * will bring the underlying resource in sync with this compilation unit.
+ * </p><p>
+ * If this compilation unit was already in working copy mode, an internal counter is incremented and no
+ * other action is taken on this compilation unit. To bring this compilation unit back into the original mode
+ * (where it reflects the underlying resource), {@link #discardWorkingCopy} must be call as many
+ * times as {@link #becomeWorkingCopy(IProblemRequestor, IProgressMonitor)}.
+ * </p>
+ *
+ * @param monitor a progress monitor used to report progress while opening this compilation unit
+ * 	or <code>null</code> if no progress should be reported
+ * @throws JavaModelException if this compilation unit could not become a working copy.
+ * @see #discardWorkingCopy()
+ * @since 3.3
+ */
+void becomeWorkingCopy(IProgressMonitor monitor) throws JavaModelException;
 /**
  * Commits the contents of this working copy to its underlying resource.
  *
@@ -432,7 +484,10 @@ ICompilationUnit getWorkingCopy(IProgressMonitor monitor) throws JavaModelExcept
  * @return a new working copy of this element using the given factory to create
  * the buffer, or this element if this element is already a working copy
  * @since 3.0
- */
+  * @deprecated Use {@link ITypeRoot#getWorkingCopy(WorkingCopyOwner, IProgressMonitor)} instead.
+ * 	Note that if this deprecated method is used, problems will be reported on the passed problem requester
+ * 	as well as on the problem requestor returned by the working copy owner (if not null).
+*/
 ICompilationUnit getWorkingCopy(WorkingCopyOwner owner, IProblemRequestor problemRequestor, IProgressMonitor monitor) throws JavaModelException;
 /**
  * Returns whether the resource of this working copy has changed since the
@@ -578,6 +633,81 @@ CompilationUnit reconcile(int astLevel, boolean forceProblemDetection, WorkingCo
  * @since 3.2
  */
 CompilationUnit reconcile(int astLevel, boolean forceProblemDetection, boolean enableStatementsRecovery, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException;
+
+/**
+ * Reconciles the contents of this working copy, sends out a Java delta
+ * notification indicating the nature of the change of the working copy since
+ * the last time it was either reconciled or made consistent
+ * ({@link IOpenable#makeConsistent(IProgressMonitor)}), and returns a
+ * compilation unit AST if requested.
+ *
+ * <p>
+ * If the problem detection is forced by passing the {@link #FORCE_PROBLEM_DETECTION} bit in the given reconcile flag,
+ * problem detection is run even if the working copy is already consistent.
+ * </p>
+ *
+ * <p>
+ * It performs the reconciliation by locally caching the contents of
+ * the working copy, updating the contents, then creating a delta
+ * over the cached contents and the new contents, and finally firing
+ * this delta.</p>
+ *
+ * <p>
+ * This functionality allows to specify a working copy owner which is used
+ * during problem detection. All references contained in the working copy are
+ * resolved against other units; for which corresponding owned working copies
+ * are going to take precedence over their original compilation units. If
+ * <code>null</code> is passed in, then the primary working copy owner is used.
+ * </p>
+ * <p>
+ * Compilation problems found in the new contents are notified through the
+ * {@link IProblemRequestor} interface which was passed at
+ * creation, and no longer as transient markers.
+ * </p>
+ * <p>
+ * Note: Since 3.0, added/removed/changed inner types generate change deltas.
+ * </p>
+ * <p>
+ * If requested, a DOM AST representing the compilation unit is returned.
+ * Its bindings are computed only if the problem requestor is active, or if the
+ * problem detection is forced. This method returns <code>null</code> if the
+ * creation of the DOM AST was not requested, or if the requested level of AST
+ * API is not supported, or if the working copy was already consistent.
+ * </p>
+ *
+ * <p>
+ * If statements recovery is enabled by passing the {@link #ENABLE_STATEMENTS_RECOVERY} bit in the given reconcile flag
+ * then this method tries to rebuild statements with syntax error. Otherwise statements with syntax error won't be
+ * present in the returning DOM AST.</p>
+ * <p>
+ * If bindings recovery is enabled by passing the {@link #ENABLE_BINDINGS_RECOVERY} bit in the given reconcile flag
+ * then this method tries to resolve bindings even if the type resolution contains errors.</p>
+ * <p>
+ * The given reconcile flags is a bit-mask of the different constants ({@link #ENABLE_BINDINGS_RECOVERY},
+ * {@link #ENABLE_STATEMENTS_RECOVERY}, {@link #FORCE_PROBLEM_DETECTION}). Unspecified values are left for future use.
+ * </p>
+ *
+ * @param astLevel either {@link #NO_AST} if no AST is wanted,
+ * or the {@linkplain AST#newAST(int) AST API level} of the AST if one is wanted
+ * @param reconcileFlags the given reconcile flags
+ * @param owner the owner of working copies that take precedence over the
+ *   original compilation units, or <code>null</code> if the primary working
+ *   copy owner should be used
+ * @param monitor a progress monitor
+ * @return the compilation unit AST or <code>null</code> if not requested,
+ *    or if the requested level of AST API is not supported,
+ *    or if the working copy was consistent
+ * @throws JavaModelException if the contents of the original element
+ *		cannot be accessed. Reasons include:
+ * <ul>
+ * <li> The original Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
+ * </ul>
+ * @see #FORCE_PROBLEM_DETECTION
+ * @see #ENABLE_BINDINGS_RECOVERY
+ * @see #ENABLE_STATEMENTS_RECOVERY
+ * @since 3.3
+ */
+CompilationUnit reconcile(int astLevel, int reconcileFlags, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException;
 
 /**
  * Restores the contents of this working copy to the current contents of

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ final class FormatterMessages extends NLS {
 	}
 
 	public static String CommentsTabPage_remove_blank_block_comment_lines;
+	public static String FormatterTabPage_ShowInvisibleCharacters_label;
 	public static String ModifyDialog_BuiltIn_Status;
 	public static String ModifyDialog_Duplicate_Status;
 	public static String ModifyDialog_EmptyName_Status;
@@ -306,6 +307,8 @@ final class FormatterMessages extends NLS {
 	public static String LineWrappingTabPage_error_invalid_value;
 	public static String LineWrappingTabPage_enum_superinterfaces;
 	public static String LineWrappingTabPage_assignment_alignment;
+	public static String LineWrappingTabPage_binary_expression_wrap_operator;
+	public static String LineWrappingTabPage_binary_expression;
 	public static String LineWrappingTabPage_function_decls;
 	public static String LineWrappingTabPage_object_init;
 
@@ -375,7 +378,10 @@ final class FormatterMessages extends NLS {
 	public static String CommentsTabPage_new_line_after_param_tags;
 	public static String CommentsTabPage_group3_title;
 	public static String CommentsTabPage_group4_title;
+	public static String CommentsTabPage_group5_title;
 	public static String CommentsTabPage_line_width;
+	public static String CommentsTabPage_never_indent_block_comments_on_first_column;
+	public static String CommentsTabPage_never_indent_line_comments_on_first_column;
 	public static String ControlStatementsTabPage_preview_header;
 	public static String ControlStatementsTabPage_general_group_title;
 	public static String ControlStatementsTabPage_general_group_insert_new_line_before_else_statements;

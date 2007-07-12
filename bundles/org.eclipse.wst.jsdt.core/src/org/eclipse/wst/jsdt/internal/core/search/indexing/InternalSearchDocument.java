@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2006 IBM Corporation and others.
+ * Copyright (c) 2004, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.core.search.indexing;
 
 import org.eclipse.wst.jsdt.internal.compiler.SourceElementParser;
-import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.index.Index;
 
 /**
@@ -25,17 +24,8 @@ public class InternalSearchDocument {
 	 * Hidden by API SearchDocument subclass
 	 */
 	public void addIndexEntry(char[] category, char[] key) {
-		if (this.index != null) {
+		if (this.index != null)
 			index.addIndexEntry(category, key, getContainerRelativePath());
-			if (category == IIndexConstants.TYPE_DECL && key != null) {
-				int length = key.length;
-				if (length > 1 && key[length-2] == IIndexConstants.SEPARATOR && key[length-1] == IIndexConstants.SECONDARY_SUFFIX ) {
-					// This is a key of a secondary type => reset java model manager secondary types cache for document path project
-					JavaModelManager manager = JavaModelManager.getJavaModelManager();
-					manager.secondaryTypeAdding(getPath(), key);
-				}
-			}
-		}
 	}
 	private String getContainerRelativePath() {
 		if (this.containerRelativePath == null)

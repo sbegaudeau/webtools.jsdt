@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,17 +15,18 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 
+import org.eclipse.swt.widgets.Composite;
 
-import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TableViewer;
 
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IPageLayout;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.IShowInTargetList;
 
 import org.eclipse.wst.jsdt.core.IClassFile;
@@ -34,17 +35,19 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectAllAction;
 import org.eclipse.wst.jsdt.internal.ui.filters.NonJavaElementFilter;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.DecoratingJavaLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaUILabelProvider;
 
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.JavaUI;
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 public class TypesView extends JavaBrowsingPart {
 
 	private SelectAllAction fSelectAllAction;
@@ -61,8 +64,15 @@ public class TypesView extends JavaBrowsingPart {
 						AppearanceAwareLabelProvider.DEFAULT_IMAGEFLAGS);
 	}
 
-	/**
-	 * Answer the property defined by key.
+	protected StructuredViewer createViewer(Composite parent) {
+		StructuredViewer viewer= super.createViewer(parent);
+		ColoredViewersManager.install(viewer);
+		return viewer;
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.internal.ui.browsing.JavaBrowsingPart#getAdapter(java.lang.Class)
 	 */
 	public Object getAdapter(Class key) {
 		if (key == IShowInTargetList.class) {
@@ -116,6 +126,7 @@ public class TypesView extends JavaBrowsingPart {
 	 * Finds the element which has to be selected in this part.
 	 *
 	 * @param je	the Java element which has the focus
+	 * @return the element to select
 	 */
 	protected IJavaElement findElementToSelect(IJavaElement je) {
 		if (je == null)
@@ -126,15 +137,11 @@ public class TypesView extends JavaBrowsingPart {
 				IType type= ((IType)je).getDeclaringType();
 				if (type == null)
 					type= (IType)je;
-				return getSuitableJavaElement(type);
+				return type;
 			case IJavaElement.COMPILATION_UNIT:
 				return getTypeForCU((ICompilationUnit)je);
 			case IJavaElement.CLASS_FILE:
-				try {
-					return findElementToSelect(((IClassFile)je).getType());
-				} catch (JavaModelException ex) {
-					return null;
-				}
+				return findElementToSelect(((IClassFile)je).getType());
 			case IJavaElement.IMPORT_CONTAINER:
 			case IJavaElement.IMPORT_DECLARATION:
 			case IJavaElement.PACKAGE_DECLARATION:
@@ -169,7 +176,7 @@ public class TypesView extends JavaBrowsingPart {
 		super.fillActionBars(actionBars);
 
 		// Add selectAll action handlers.
-		actionBars.setGlobalActionHandler(IWorkbenchActionConstants.SELECT_ALL, fSelectAllAction);
+		actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(), fSelectAllAction);
 	}
 
 	/**
@@ -210,8 +217,8 @@ public class TypesView extends JavaBrowsingPart {
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.browsing.JavaBrowsingPart#createDecoratingLabelProvider(org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaUILabelProvider)
 	 */
-	protected DecoratingLabelProvider createDecoratingLabelProvider(JavaUILabelProvider provider) {
-		DecoratingLabelProvider decoratingLabelProvider= super.createDecoratingLabelProvider(provider);
+	protected DecoratingJavaLabelProvider createDecoratingLabelProvider(JavaUILabelProvider provider) {
+		DecoratingJavaLabelProvider decoratingLabelProvider= super.createDecoratingLabelProvider(provider);
 		provider.addLabelDecorator(new TopLevelTypeProblemsLabelDecorator(null));
 		return decoratingLabelProvider;
 	}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IPath;
 
 import org.eclipse.core.filebuffers.FileBuffers;
 import org.eclipse.core.filebuffers.ITextFileBufferManager;
+import org.eclipse.core.filebuffers.LocationKind;
 
 import org.eclipse.jface.internal.text.html.HTMLPrinter;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -114,7 +115,7 @@ public abstract class AbstractAnnotationHover extends AbstractJavaEditorTextHove
 			try {
 				if (path != null) {
 					ITextFileBufferManager manager= FileBuffers.getTextFileBufferManager();
-					manager.disconnect(path, null);
+					manager.disconnect(path, LocationKind.NORMALIZE, null);
 				}
 			} catch (CoreException ex) {
 				JavaPlugin.log(ex.getStatus());
@@ -145,7 +146,7 @@ public abstract class AbstractAnnotationHover extends AbstractJavaEditorTextHove
 
 		ITextFileBufferManager manager= FileBuffers.getTextFileBufferManager();
 		try {
-			manager.connect(path, null);
+			manager.connect(path, LocationKind.NORMALIZE, null);
 		} catch (CoreException ex) {
 			JavaPlugin.log(ex.getStatus());
 			return null;
@@ -153,12 +154,12 @@ public abstract class AbstractAnnotationHover extends AbstractJavaEditorTextHove
 
 		IAnnotationModel model= null;
 		try {
-			model= manager.getTextFileBuffer(path).getAnnotationModel();
+			model= manager.getTextFileBuffer(path, LocationKind.NORMALIZE).getAnnotationModel();
 			return model;
 		} finally {
 			if (model == null) {
 				try {
-					manager.disconnect(path, null);
+					manager.disconnect(path, LocationKind.NORMALIZE, null);
 				} catch (CoreException ex) {
 					JavaPlugin.log(ex.getStatus());
 				}

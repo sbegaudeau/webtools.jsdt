@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,8 +23,6 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.keys.IBindingService;
-
-import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 
 import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.wst.jsdt.ui.actions.JdtActionConstants;
@@ -69,8 +67,7 @@ public class SurroundWithActionGroup extends ActionGroup {
 				
 		String shortcutString= getShortcutString();
 		if (shortcutString != null) {
-			String[] args= new String[] { menuText, shortcutString};
-			menuText= Messages.format(ActionMessages.QuickMenuAction_menuTextWithShortcut, args); 
+			menuText= menuText + '\t' + shortcutString;
 		}
 		
 		MenuManager subMenu = new MenuManager(menuText, SurroundWithTemplateMenuAction.SURROUND_WITH_QUICK_MENU_ACTION_ID);	

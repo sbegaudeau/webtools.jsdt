@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -195,7 +195,7 @@ public class IntroduceParameterWizard extends RefactoringWizard {
 				fSignaturePreviewDocument.set(getIntroduceParameterRefactoring().getMethodSignaturePreview()); 
 				fSignaturePreview.getTextWidget().setTopPixel(top);
 			} catch (JavaModelException e){
-				ExceptionHandler.handle(e, RefactoringMessages.ChangeSignatureRefactoring_modify_Parameters, RefactoringMessages.ChangeSignatureInputPage_exception); 
+				ExceptionHandler.handle(e, RefactoringMessages.IntroduceParameterWizard_defaultPageTitle, RefactoringMessages.ChangeSignatureInputPage_exception); 
 			}	
 		}
 	

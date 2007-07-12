@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,7 @@ import org.eclipse.wst.jsdt.core.IJavaProject;
 
 /**
  * A compilation participant is notified of events occuring during the compilation process.
- * The compilation process not only involves generating .class files (i.e. building), it also involve
+ * The compilation process not only involves generating .class files (i.e. building), it also involves
  * cleaning the output directory, reconciling a working copy, etc.
  * So the notified events are the result of a build action, a clean action, a reconcile operation 
  * (for a working copy), etc.
@@ -43,7 +43,8 @@ public static int NEEDS_FULL_BUILD = 2;
 
 /**
  * Notifies this participant that a build is about to start and provides it the opportunity to
- * create missing source folders for generated source files.
+ * create missing source folders for generated source files. Additional source folders
+ * should be marked as optional so the project can be built when the folders do not exist.
  * Only sent to participants interested in the project.
  * <p>
  * Default is to return <code>READY_FOR_BUILD</code>.

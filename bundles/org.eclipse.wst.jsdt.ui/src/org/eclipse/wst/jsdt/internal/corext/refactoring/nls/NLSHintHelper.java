@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.filebuffers.FileBuffers;
 import org.eclipse.core.filebuffers.ITextFileBuffer;
 import org.eclipse.core.filebuffers.ITextFileBufferManager;
+import org.eclipse.core.filebuffers.LocationKind;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IStorage;
@@ -62,6 +63,7 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
+import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
@@ -362,7 +364,7 @@ public class NLSHintHelper {
 			Object[] resources= packageFragment.isDefaultPackage() ? root.getNonJavaResources() : packageFragment.getNonJavaResources();
 			for (int j= 0; j < resources.length; j++) {
 				Object object= resources[j];
-				if (object instanceof IStorage) {
+				if (JavaModelUtil.isOpenableStorage(object)) {
 					IStorage storage= (IStorage)object;
 					if (storage.getName().equals(resourceName)) {
 						return storage;
@@ -425,7 +427,7 @@ public class NLSHintHelper {
 		ITextFileBufferManager manager= FileBuffers.getTextFileBufferManager();
 		try {
 			if (manager != null) {
-				ITextFileBuffer buffer= manager.getTextFileBuffer(storage.getFullPath());
+				ITextFileBuffer buffer= manager.getTextFileBuffer(storage.getFullPath(), LocationKind.NORMALIZE);
 				if (buffer != null) {
 					IDocument document= buffer.getDocument();
 					is= new ByteArrayInputStream(document.get().getBytes());

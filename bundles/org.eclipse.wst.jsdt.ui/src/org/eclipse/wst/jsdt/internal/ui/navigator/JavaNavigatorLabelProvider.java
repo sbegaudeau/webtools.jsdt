@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,8 +33,6 @@ import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 import org.eclipse.wst.jsdt.internal.ui.navigator.IExtensionStateConstants.Values;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageExplorerContentProvider;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageExplorerLabelProvider;
-import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
-import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
 
 /**
  * Provides the labels for the Project Explorer.
@@ -63,6 +61,8 @@ public class JavaNavigatorLabelProvider implements ICommonLabelProvider {
 
 	private IExtensionStateModel fStateModel;
 
+	private IPropertyChangeListener fLayoutPropertyListener;
+
 	public JavaNavigatorLabelProvider() {
 
 	}
@@ -73,7 +73,7 @@ public class JavaNavigatorLabelProvider implements ICommonLabelProvider {
 
 		delegeteLabelProvider.setIsFlatLayout(fStateModel
 				.getBooleanProperty(Values.IS_LAYOUT_FLAT));
-		fStateModel.addPropertyChangeListener(new IPropertyChangeListener() {
+		fLayoutPropertyListener = new IPropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent event) {
 				if (Values.IS_LAYOUT_FLAT.equals(event.getProperty())) {
 					if (event.getNewValue() != null) {
@@ -84,7 +84,8 @@ public class JavaNavigatorLabelProvider implements ICommonLabelProvider {
 				}
 
 			}
-		});
+		};
+		fStateModel.addPropertyChangeListener(fLayoutPropertyListener);
 	}
 
 	public String getDescription(Object element) {
@@ -92,18 +93,12 @@ public class JavaNavigatorLabelProvider implements ICommonLabelProvider {
 	}
 
 	private PackageExplorerLabelProvider createLabelProvider() {
-
-		return new PackageExplorerLabelProvider(
-				AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS
-						| JavaElementLabels.P_COMPRESSED,
-				AppearanceAwareLabelProvider.DEFAULT_IMAGEFLAGS
-						| JavaElementImageProvider.SMALL_ICONS,
-				fContentProvider);
-
+		return new PackageExplorerLabelProvider(fContentProvider);
 	}
 
-	public void dispose() {
+	public void dispose() { 
 		delegeteLabelProvider.dispose();
+		fStateModel.removePropertyChangeListener(fLayoutPropertyListener);
 	}
 
 	public void propertyChange(PropertyChangeEvent event) {
@@ -160,7 +155,7 @@ public class JavaNavigatorLabelProvider implements ICommonLabelProvider {
 
 	// Taken from StatusBarUpdater
 
-	protected String formatMessage(Object element) {
+	private String formatMessage(Object element) {
 		if (element instanceof IJavaElement) {
 			return formatJavaElementMessage((IJavaElement) element);
 		} else if (element instanceof IResource) {
@@ -181,12 +176,13 @@ public class JavaNavigatorLabelProvider implements ICommonLabelProvider {
 		else
 			return element.getName();
 	}
-
-	public void restoreState(IMemento memento) {
-
+	
+	public void restoreState(IMemento memento) { 
+		
 	}
-
-	public void saveState(IMemento memento) {
-
+	
+	public void saveState(IMemento memento) { 
+		
 	}
+ 
 }

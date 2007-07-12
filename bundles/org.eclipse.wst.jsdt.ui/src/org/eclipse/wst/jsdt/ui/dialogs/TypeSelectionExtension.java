@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,8 @@ import org.eclipse.wst.jsdt.core.IType;
  * The class should be subclassed by clients wishing to extend the type
  * selection dialog. 
  * </p>
+ * 
+ * @see org.eclipse.wst.jsdt.ui.JavaUI#createTypeDialog(org.eclipse.swt.widgets.Shell, org.eclipse.jface.operation.IRunnableContext, org.eclipse.wst.jsdt.core.search.IJavaSearchScope, int, boolean, String, TypeSelectionExtension)
  * @since 3.2
  */
 public abstract class TypeSelectionExtension {

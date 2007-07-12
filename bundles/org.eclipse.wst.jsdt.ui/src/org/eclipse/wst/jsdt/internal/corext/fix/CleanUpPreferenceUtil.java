@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,6 +69,9 @@ public class CleanUpPreferenceUtil {
             if (id.equals(profile.getID()))
             	return profile.getSettings();
         }
+    	
+    	if (id.equals(CleanUpConstants.SAVE_PARTICIPANT_PROFILE))
+    		return CleanUpConstants.getSaveParticipantSettings();
 		
     	CleanUpProfileVersioner versioner= new CleanUpProfileVersioner();
         ProfileStore profileStore= new ProfileStore(CleanUpConstants.CLEANUP_PROFILES, versioner);
@@ -209,9 +212,6 @@ public class CleanUpPreferenceUtil {
     	
     	final Profile eclipseProfile= new BuiltInProfile(CleanUpConstants.ECLIPSE_PROFILE, CleanUpMessages.CleanUpProfileManager_ProfileName_EclipseBuildIn, CleanUpConstants.getEclipseDefaultSettings(), 2, CleanUpProfileVersioner.CURRENT_VERSION, CleanUpProfileVersioner.PROFILE_KIND);
     	result.add(eclipseProfile);
-    	
-    	final Profile saveParticipantProfile= new BuiltInProfile(CleanUpConstants.SAVE_PARTICIPANT_PROFILE, CleanUpMessages.CleanUpProfileManager_save_participant_profileName, CleanUpConstants.getSaveParticipantSettings(), 1, CleanUpProfileVersioner.CURRENT_VERSION, CleanUpProfileVersioner.PROFILE_KIND);
-    	result.add(saveParticipantProfile);
     	
     	return result;
     }

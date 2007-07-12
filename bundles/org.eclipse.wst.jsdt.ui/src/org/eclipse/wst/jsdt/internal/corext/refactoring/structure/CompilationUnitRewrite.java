@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,8 +62,10 @@ public class CompilationUnitRewrite {
 	private ImportRemover fImportRemover; // lazily initialized
 	private boolean fResolveBindings= true;
 	private boolean fStatementsRecovery= false;
+	private boolean fBindingsRecovery= false;
 	private final WorkingCopyOwner fOwner;
 	private IDocument fRememberContent= null;
+
 	
 	public CompilationUnitRewrite(ICompilationUnit cu) {
 		this(null, cu, null);
@@ -124,6 +126,23 @@ public class CompilationUnitRewrite {
 	 */
 	public void setStatementsRecovery(boolean statementsRecovery) {
 		fStatementsRecovery= statementsRecovery;
+	}
+	
+	/**
+	 * Requests that the compiler should perform bindings recovery.
+	 * To be effective, this method must be called before any
+	 * of {@link #getRoot()},{@link #getASTRewrite()},
+	 * {@link #getImportRemover()}. This method has no effect if the target object
+	 * has been created with {@link #CompilationUnitRewrite(ICompilationUnit, CompilationUnit)}.
+	 * <p>
+	 * Defaults to <b><code>false</code></b> (do not perform bindings recovery).
+	 * </p>
+	 * 
+	 * @param bindingsRecovery whether bindings recovery should be performed
+	 * @see org.eclipse.wst.jsdt.core.dom.ASTParser#setBindingsRecovery(boolean)
+	 */
+	public void setBindingRecovery(boolean bindingsRecovery) {
+		fBindingsRecovery= bindingsRecovery;
 	}
 	
 	public void clearASTRewrite() {
@@ -261,7 +280,7 @@ public class CompilationUnitRewrite {
 
 	public CompilationUnit getRoot() {
 		if (fRoot == null)
-			fRoot= new RefactoringASTParser(AST.JLS3).parse(fCu, fOwner, fResolveBindings, fStatementsRecovery, null);
+			fRoot= new RefactoringASTParser(AST.JLS3).parse(fCu, fOwner, fResolveBindings, fStatementsRecovery, fBindingsRecovery, null);
 		return fRoot;
 	}
 	

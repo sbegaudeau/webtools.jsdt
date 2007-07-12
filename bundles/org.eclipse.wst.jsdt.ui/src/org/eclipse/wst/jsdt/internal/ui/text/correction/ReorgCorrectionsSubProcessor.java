@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
@@ -48,7 +49,6 @@ import org.eclipse.ui.progress.IProgressService;
 
 import org.eclipse.ltk.core.refactoring.CompositeChange;
 
-import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
@@ -62,9 +62,13 @@ import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
+import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
+import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
+import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
+import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
@@ -113,25 +117,50 @@ public class ReorgCorrectionsSubProcessor {
 		String sourceLevel= javaProject.getOption(JavaCore.COMPILER_SOURCE, true);
 		String compliance= javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
 		
-		IBuffer buffer= cu.getBuffer();
-		if (buffer == null) {
+		CompilationUnit root= context.getASTRoot();
+		
+		ASTNode coveredNode= problem.getCoveredNode(root);
+		if (!(coveredNode instanceof SimpleName))
+			return;		
+		
+		ASTNode parentType= coveredNode.getParent();
+		if (!(parentType instanceof AbstractTypeDeclaration))
 			return;
-		}
-			
-		String currTypeName= buffer.getText(problem.getOffset(), problem.getLength());
+		
+		String currTypeName= ((SimpleName) coveredNode).getIdentifier();
 		String newTypeName= JavaCore.removeJavaLikeExtension(cu.getElementName());
+				
+		boolean hasOtherPublicTypeBefore= false;
+		
+		boolean found= false;
+		List types= root.types();
+		for (int i= 0; i < types.size(); i++) {
+			 AbstractTypeDeclaration curr= (AbstractTypeDeclaration) types.get(i);
+			 if (parentType != curr) {
+				 if (newTypeName.equals(curr.getName().getIdentifier())) {
+					 return;
+				 }
+				 if (!found && Modifier.isPublic(curr.getModifiers())) {
+					 hasOtherPublicTypeBefore= true;
+				 }
+			 } else {
+				 found= true;
+			 }
+		 }
 		if (!JavaConventions.validateJavaTypeName(newTypeName, sourceLevel, compliance).matches(IStatus.ERROR)) {
 			proposals.add(new CorrectMainTypeNameProposal(cu, context, currTypeName, newTypeName, 5));
-		}			
-
-		String newCUName= JavaModelUtil.getRenamedCUName(cu, currTypeName);
-		ICompilationUnit newCU= ((IPackageFragment) (cu.getParent())).getCompilationUnit(newCUName);
-		if (!newCU.exists() && !isLinked && !JavaConventions.validateCompilationUnitName(newCUName, sourceLevel, compliance).matches(IStatus.ERROR)) {
-			RenameCompilationUnitChange change= new RenameCompilationUnitChange(cu, newCUName);
-
-			// rename CU
-			String label= Messages.format(CorrectionMessages.ReorgCorrectionsSubProcessor_renamecu_description, newCUName);
-			proposals.add(new ChangeCorrectionProposal(label, change, 6, JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_RENAME)));
+		}
+		
+		if (!hasOtherPublicTypeBefore) {
+			String newCUName= JavaModelUtil.getRenamedCUName(cu, currTypeName);
+			ICompilationUnit newCU= ((IPackageFragment) (cu.getParent())).getCompilationUnit(newCUName);
+			if (!newCU.exists() && !isLinked && !JavaConventions.validateCompilationUnitName(newCUName, sourceLevel, compliance).matches(IStatus.ERROR)) {
+				RenameCompilationUnitChange change= new RenameCompilationUnitChange(cu, newCUName);
+	
+				// rename CU
+				String label= Messages.format(CorrectionMessages.ReorgCorrectionsSubProcessor_renamecu_description, newCUName);
+				proposals.add(new ChangeCorrectionProposal(label, change, 6, JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_RENAME)));
+			}
 		}
 	}
 

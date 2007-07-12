@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -709,7 +709,7 @@ protected boolean createHierarchyResolver(IType focusType, PossibleMatch[] possi
  */
 protected IJavaElement createImportHandle(ImportReference importRef) {
 	char[] importName = CharOperation.concatWith(importRef.getImportName(), '.');
-	if (importRef.onDemand)
+	if ((importRef.bits & ASTNode.OnDemand) != 0)
 		importName = CharOperation.concat(importName, ".*" .toCharArray()); //$NON-NLS-1$
 	Openable openable = this.currentPossibleMatch.openable;
 	if (openable instanceof CompilationUnit)
@@ -748,15 +748,10 @@ protected IType createTypeHandle(String simpleTypeName) {
 //	if (simpleTypeName.equals(binaryTypeQualifiedName))
 		return binaryType; // answer only top-level types, sometimes the classFile is for a member/local type
 
-//	try {
 //		// type name may be null for anonymous (see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=164791)
 //		String classFileName = simpleTypeName.length() == 0 ? binaryTypeQualifiedName : simpleTypeName;
 //		IClassFile classFile = binaryType.getPackageFragment().getClassFile(classFileName + SuffixConstants.SUFFIX_STRING_class);
 //		return classFile.getType();
-//	} catch (JavaModelException e) {
-//		// ignore as implementation of getType() cannot throw this exception
-//	}
-//	return null;
 }
 protected boolean encloses(IJavaElement element) {
 	return element != null && this.scope.encloses(element);
@@ -1245,9 +1240,9 @@ public void locateMatches(SearchDocument[] searchDocuments) throws CoreException
 			}
 		} 
 
+	} finally {
 		if (this.progressMonitor != null)
 			this.progressMonitor.done();
-	} finally {
 		if (this.nameEnvironment != null)
 			this.nameEnvironment.cleanup();
 		manager.flushZipFiles();
@@ -1278,47 +1273,52 @@ protected void locatePackageDeclarations(SearchPattern searchPattern, SearchPart
 			return;
 		}
 		PackageDeclarationPattern pkgPattern = (PackageDeclarationPattern) searchPattern;
+		boolean isWorkspaceScope = this.scope == JavaModelManager.getJavaModelManager().getWorkspaceScope();
+		IPath[] scopeProjectsAndJars =  isWorkspaceScope ? null : this.scope.enclosingProjectsAndJars();
+		int scopeLength = isWorkspaceScope ? 0 : scopeProjectsAndJars.length;
 		IJavaProject[] projects = JavaModelManager.getJavaModelManager().getJavaModel().getJavaProjects();
+		SimpleSet packages = new SimpleSet();
 		for (int i = 0, length = projects.length; i < length; i++) {
 			IJavaProject javaProject = projects[i];
-			IPackageFragmentRoot[] roots = null;
-			try {
-				roots = javaProject.getPackageFragmentRoots();
-			} catch (JavaModelException e) {
-				// java project doesn't exist -> continue with next project (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=75561)
-				continue;
-			}
-			for (int j = 0, rootsLength = roots.length; j < rootsLength; j++) {
-				IJavaElement[] pkgs = null;
-				try {
-					pkgs = roots[j].getChildren();
-				} catch (JavaModelException e) {
-					// pkg fragment root doesn't exist -> continue with next root (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=75561)
-					continue;
+			// Verify that project belongs to the scope
+			if (!isWorkspaceScope) {
+				boolean found = false;
+				for (int j=0; j<scopeLength; j++) {
+					if (javaProject.getPath().equals(scopeProjectsAndJars[j])) {
+						found = true;
+						break;
+					}
 				}
-				for (int k = 0, pksLength = pkgs.length; k < pksLength; k++) {
-					IPackageFragment pkg = (IPackageFragment) pkgs[k];
-					if (!pkg.exists()) continue; // package doesn't exist -> continue with next package (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=75561)
-					if (pkgPattern.matchesName(pkgPattern.pkgName, pkg.getElementName().toCharArray())) {
-						IResource resource = pkg.getResource();
-						if (resource == null) // case of a file in an external jar
-							resource = javaProject.getProject();
-						try {
-							if (encloses(pkg)) {
-								SearchMatch match = new PackageDeclarationMatch(pkg, SearchMatch.A_ACCURATE, -1, -1, participant, resource);
-								report(match);
-							}
-						} catch (JavaModelException e) {
-							throw e;
-						} catch (CoreException e) {
-							throw new JavaModelException(e);
+				if (!found) continue;
+			}
+			// Get all project package fragment names
+			this.nameLookup = ((JavaProject) projects[i]).newNameLookup(this.workingCopies);
+			IPackageFragment[] packageFragments = this.nameLookup.findPackageFragments(new String(pkgPattern.pkgName), true, true);
+			int pLength = packageFragments == null ? 0 : packageFragments.length;
+			// Report matches avoiding duplicate names
+			for (int p=0; p<pLength; p++) {
+				IPackageFragment fragment = packageFragments[p];
+				if (packages.addIfNotIncluded(fragment) == null) continue;
+				if (encloses(fragment)) {
+					IResource resource = fragment.getResource();
+					if (resource == null) // case of a file in an external jar
+						resource = javaProject.getProject();
+					try {
+						if (encloses(fragment)) {
+							SearchMatch match = new PackageDeclarationMatch(fragment, SearchMatch.A_ACCURATE, -1, -1, participant, resource);
+							report(match);
 						}
+					} catch (JavaModelException e) {
+						throw e;
+					} catch (CoreException e) {
+						throw new JavaModelException(e);
 					}
 				}
 			}
 		}
 	}
 }
+//*/
 protected IType lookupType(ReferenceBinding typeBinding) {
 	if (typeBinding == null) return null;
 
@@ -1581,6 +1581,7 @@ protected void process(PossibleMatch possibleMatch, boolean bindingsWereCreated)
 				if (BasicSearchEngine.VERBOSE)
 					System.out.println("Resolving " + this.currentPossibleMatch.openable.toStringWithAncestors()); //$NON-NLS-1$
 	
+				this.lookupEnvironment.unitBeingCompleted = unit;
 				reduceParseTree(unit);
 	
 				if (unit.scope != null) {
@@ -1603,6 +1604,7 @@ protected void process(PossibleMatch possibleMatch, boolean bindingsWereCreated)
 			throw e;
 		}
 	} finally {
+		this.lookupEnvironment.unitBeingCompleted = null;
 		this.currentPossibleMatch = null;
 	}
 }
@@ -2192,7 +2194,7 @@ protected void reportMatching(CompilationUnitDeclaration unit, boolean mustResol
 				if (this.hierarchyResolver != null) continue;
 
 				ImportReference importRef = (ImportReference) node;
-				Binding binding = importRef.onDemand
+				Binding binding = (importRef.bits & ASTNode.OnDemand) != 0
 					? unitScope.getImport(CharOperation.subarray(importRef.tokens, 0, importRef.tokens.length), true, importRef.isStatic())
 					: unitScope.getImport(importRef.tokens, false, importRef.isStatic());
 				this.patternLocator.matchLevelAndReportImportRef(importRef, binding, this);

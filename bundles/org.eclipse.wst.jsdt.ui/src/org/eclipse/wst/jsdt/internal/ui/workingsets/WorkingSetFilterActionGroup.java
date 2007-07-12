@@ -273,7 +273,10 @@ public class WorkingSetFilterActionGroup extends ActionGroup implements IWorking
 		for (int i= 1; i < fLRUMenuCount; i++) {
 			String id= WorkingSetMenuContributionItem.getId(i);
 			IContributionItem item= mm.remove(id);
-			fContributions.remove(item);
+			if (item != null) {
+				item.dispose();
+				fContributions.remove(item);
+			}
 		}
 	}
 
@@ -303,7 +306,10 @@ public class WorkingSetFilterActionGroup extends ActionGroup implements IWorking
 	
 	public void cleanViewMenu(IMenuManager menuManager) {
 		for (Iterator iter= fContributions.iterator(); iter.hasNext();) {
-			menuManager.remove((IContributionItem)iter.next());
+			IContributionItem removed= menuManager.remove((IContributionItem) iter.next());
+			if (removed != null) {
+				removed.dispose();
+			}
 		}
 		fContributions.clear();
 		fMenuManager.removeMenuListener(fMenuListener);
@@ -343,6 +349,9 @@ public class WorkingSetFilterActionGroup extends ActionGroup implements IWorking
 		} else if  (IWorkingSetManager.CHANGE_WORKING_SET_CONTENT_CHANGE.equals(property)) {
 			IWorkingSet newWorkingSet= (IWorkingSet) event.getNewValue();
 			if (newWorkingSet.equals(fWorkingSet)) {
+				if (fWorkingSetFilter != null) {
+					fWorkingSetFilter.notifyWorkingSetContentChange(); // first refresh the filter
+				}
 				fChangeListener.propertyChange(event);
 			}
 		}

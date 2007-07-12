@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -123,19 +123,6 @@ public class MethodReferenceMatch extends SearchMatch {
 	 * a super-type of the searched method declaring class, <code>false </code> otherwise
 	 */
 	public boolean isSuperInvocation() {
-		return this.superInvocation;
-	}
-
-	/**
-	 * Returns whether the reference is on a polymorphic method or not.
-	 * Note that this field is only used for method reference. This happens when the reference
-	 * is not implemented on the declaring class pattern but only on one of its super or sub type.
-	 * 
-	 * @return <code>true</code> if the reference is a polymorphic method or not,
-	 * <code>false </code> otherwise
-	 * @deprecated Will be removed soon...
-	 */
-	public boolean isPolymorphic() {
 		return this.superInvocation;
 	}
 }

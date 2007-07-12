@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,9 @@ package org.eclipse.wst.jsdt.internal.compiler.batch;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -24,13 +26,13 @@ import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 public class FileSystem implements INameEnvironment, SuffixConstants {
-	Classpath[] classpaths;
-	Set knownFileNames;
 
 	public interface Classpath {
+		char[][][] findTypeNames(String qualifiedPackageName);
 		NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageName, String qualifiedBinaryFileName);
 		boolean isPackage(String qualifiedPackageName); 
 		NameEnvironmentAnswer findBinding(char[] typeName, String qualifiedPackageName, int type, ITypeRequestor requestor);
+		NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageName, String qualifiedBinaryFileName, boolean asBinaryOnly);
 		/**
 		 * This method resets the environment. The resulting state is equivalent to
 		 * a new name environment without creating a new object.
@@ -55,6 +57,37 @@ public class FileSystem implements INameEnvironment, SuffixConstants {
 		 */
 		void initialize() throws IOException;
 	}
+	/**
+	 * This class is defined how to normalize the classpath entries.
+	 * It removes duplicate entries.
+	 */
+	public static class ClasspathNormalizer {
+		/**
+		 * Returns the normalized classpath entries (no duplicate).
+		 * <p>The given classpath entries are FileSystem.Classpath. We check the getPath() in order to find
+		 * duplicate entries.</p>
+		 *
+		 * @param classpaths the given classpath entries
+		 * @return the normalized classpath entries
+		 */
+		public static ArrayList normalize(ArrayList classpaths) {
+			ArrayList normalizedClasspath = new ArrayList();
+			HashSet cache = new HashSet();
+			for (Iterator iterator = classpaths.iterator(); iterator.hasNext(); ) {
+				FileSystem.Classpath classpath = (FileSystem.Classpath) iterator.next();
+				String path = classpath.getPath();
+				if (!cache.contains(path)) {
+					normalizedClasspath.add(classpath);
+					cache.add(path);
+				}
+			}
+			return normalizedClasspath;
+		}
+	}
+
+	Classpath[] classpaths;
+	Set knownFileNames;
+
 /*
 	classPathNames is a collection is Strings representing the full path of each class path
 	initialFileNames is a collection is Strings, the trailing '.js' will be removed if its not already.
@@ -127,9 +160,7 @@ static Classpath getClasspath(String classpathName, String encoding,
 						convertPathSeparators(destinationPath));
 			} else {
 				// class file only mode
-				if (destinationPath != null) {
-					result = null; // [-d dir] not allowed for binaries only jar
-				} else {
+				if (destinationPath == null) {
 					result = new ClasspathJar(file, true, accessRuleSet, null);
 				}
 			}
@@ -144,6 +175,10 @@ static Classpath getClasspath(String classpathName, String encoding,
 	return result;
 }
 private void initializeKnownFileNames(String[] initialFileNames) {
+	if (initialFileNames == null) {
+		this.knownFileNames = new HashSet(0);
+		return;
+	}
 	this.knownFileNames = new HashSet(initialFileNames.length * 2);
 	for (int i = initialFileNames.length; --i >= 0;) {
 		char[] fileName = initialFileNames[i].toCharArray();
@@ -179,7 +214,7 @@ private static String convertPathSeparators(String path) {
 		? path.replace('\\', '/')
 		 : path.replace('/', '\\');
 }
-private NameEnvironmentAnswer findClass(String qualifiedTypeName, char[] typeName){
+private NameEnvironmentAnswer findClass(String qualifiedTypeName, char[] typeName, boolean asBinaryOnly){
 	if (this.knownFileNames.contains(qualifiedTypeName)) return null; // looking for a file which we know was provided at the beginning of the compilation
 
 	String qualifiedBinaryFileName = qualifiedTypeName + SUFFIX_STRING_class;
@@ -191,7 +226,7 @@ private NameEnvironmentAnswer findClass(String qualifiedTypeName, char[] typeNam
 	NameEnvironmentAnswer suggestedAnswer = null;
 	if (qualifiedPackageName == qp2) {
 		for (int i = 0, length = this.classpaths.length; i < length; i++) {
-			NameEnvironmentAnswer answer = this.classpaths[i].findClass(typeName, qualifiedPackageName, qualifiedBinaryFileName);
+			NameEnvironmentAnswer answer = this.classpaths[i].findClass(typeName, qualifiedPackageName, qualifiedBinaryFileName, asBinaryOnly);
 			if (answer != null) {
 				if (!answer.ignoreIfBetter()) {
 					if (answer.isBetter(suggestedAnswer))
@@ -206,8 +241,8 @@ private NameEnvironmentAnswer findClass(String qualifiedTypeName, char[] typeNam
 		for (int i = 0, length = this.classpaths.length; i < length; i++) {
 			Classpath p = this.classpaths[i];
 			NameEnvironmentAnswer answer = (p instanceof ClasspathJar)
-				? p.findClass(typeName, qualifiedPackageName, qualifiedBinaryFileName)
-				: p.findClass(typeName, qp2, qb2);
+				? p.findClass(typeName, qualifiedPackageName, qualifiedBinaryFileName, asBinaryOnly)
+				: p.findClass(typeName, qp2, qb2, asBinaryOnly);
 			if (answer != null) {
 				if (!answer.ignoreIfBetter()) {
 					if (answer.isBetter(suggestedAnswer))
@@ -262,14 +297,65 @@ public NameEnvironmentAnswer findType(char[][] compoundName, ITypeRequestor requ
 	if (compoundName != null)
 		return findClass(
 			new String(CharOperation.concatWith(compoundName, '/')),
-			compoundName[compoundName.length - 1]);
+			compoundName[compoundName.length - 1],false);
 	return null;
 }
+public char[][][] findTypeNames(char[][] packageName) {
+	char[][][] result = null;
+	if (packageName != null) {
+		String qualifiedPackageName = new String(CharOperation.concatWith(packageName, '/'));
+		String qualifiedPackageName2 = File.separatorChar == '/' ? qualifiedPackageName : qualifiedPackageName.replace('/', File.separatorChar);
+		if (qualifiedPackageName == qualifiedPackageName2) {
+			for (int i = 0, length = this.classpaths.length; i < length; i++) {
+				char[][][] answers = this.classpaths[i].findTypeNames(qualifiedPackageName);
+				if (answers != null) {
+					// concat with previous answers
+					if (result == null) {
+						result = answers;
+					} else {
+						int resultLength = result.length;
+						int answersLength = answers.length;
+						System.arraycopy(result, 0, (result = new char[answersLength + resultLength][][]), 0, resultLength);
+						System.arraycopy(answers, 0, result, resultLength, answersLength);
+					}
+				}
+			}
+		} else {
+			for (int i = 0, length = this.classpaths.length; i < length; i++) {
+				Classpath p = this.classpaths[i];
+				char[][][] answers = (p instanceof ClasspathJar)
+					? p.findTypeNames(qualifiedPackageName)
+					: p.findTypeNames(qualifiedPackageName2);
+				if (answers != null) {
+					// concat with previous answers
+					if (result == null) {
+						result = answers;
+					} else {
+						int resultLength = result.length;
+						int answersLength = answers.length;
+						System.arraycopy(result, 0, (result = new char[answersLength + resultLength][][]), 0, resultLength);
+						System.arraycopy(answers, 0, result, resultLength, answersLength);
+					}
+				}
+			}
+		}
+	}
+	return result;
+}
+public NameEnvironmentAnswer findType(char[][] compoundName, boolean asBinaryOnly) {
+	if (compoundName != null)
+		return findClass(
+			new String(CharOperation.concatWith(compoundName, '/')),
+			compoundName[compoundName.length - 1],
+			asBinaryOnly);
+	return null;
+}
+
 public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName, ITypeRequestor requestor) {
 	if (typeName != null)
 		return findClass(
 			new String(CharOperation.concatWith(packageName, typeName, '/')),
-			typeName);
+			typeName,false);
 	return null;
 }
 public boolean isPackage(char[][] compoundName, char[] packageName) {

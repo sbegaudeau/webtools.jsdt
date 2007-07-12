@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,16 +37,19 @@ import org.eclipse.wst.jsdt.internal.ui.text.comment.CommentFormattingContext;
 public class CleanUpPreview extends JavaPreview {
 
 	private ICleanUp[] fPreviewCleanUps;
-	private final boolean fFormat;
-
-	public CleanUpPreview(Composite parent, ICleanUp[] cleanUps, boolean formatted) {
+	private boolean fFormat;
+	public CleanUpPreview(Composite parent, ICleanUp[] cleanUps) {
 		super(JavaCore.getDefaultOptions(), parent);
 		fPreviewCleanUps= cleanUps;
-		fFormat= formatted;
+		fFormat= false;
 	}
 	
 	public void setCleanUps(ICleanUp[] fCleanUps) {
 		fPreviewCleanUps= fCleanUps;
+	}
+	
+	public void setFormat(boolean enable) {
+		fFormat= enable;
 	}
 
 	/**
@@ -62,7 +65,7 @@ public class CleanUpPreview extends JavaPreview {
 		format(buf.toString());
 	}
 	
-	private void format(String text) {
+	private void format(String text) {		
         if (text == null) {
             fPreviewDocument.set(""); //$NON-NLS-1$
             return;
@@ -78,7 +81,7 @@ public class CleanUpPreview extends JavaPreview {
 			final IContentFormatter formatter =	fViewerConfiguration.getContentFormatter(fSourceViewer);
 			if (formatter instanceof IContentFormatterExtension) {
 				final IContentFormatterExtension extension = (IContentFormatterExtension) formatter;
-				context.setProperty(FormattingContextProperties.CONTEXT_PREFERENCES, fWorkingValues);
+				context.setProperty(FormattingContextProperties.CONTEXT_PREFERENCES, JavaCore.getOptions());
 				context.setProperty(FormattingContextProperties.CONTEXT_DOCUMENT, Boolean.valueOf(true));
 				extension.format(fPreviewDocument, context);
 			} else

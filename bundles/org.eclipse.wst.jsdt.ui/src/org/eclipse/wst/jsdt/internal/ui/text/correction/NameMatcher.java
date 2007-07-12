@@ -53,11 +53,7 @@ public class NameMatcher {
 		if (nMatched == name2len) {
 			return 200;
 		}
-		
-		if (nMatched == name1len) {
-			return name1len;
-		}
-		
+
 		if (name2len - nMatched > nMatched) {
 			return -1;
 		}

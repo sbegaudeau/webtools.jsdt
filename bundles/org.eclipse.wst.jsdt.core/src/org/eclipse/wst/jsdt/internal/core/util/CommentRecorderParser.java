@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -164,7 +164,8 @@ public class CommentRecorderParser extends Parser {
 			while (index<lastCommentIndex && (immediateCommentEnd = -this.scanner.commentStops[index+1])  > 0){ // only tolerating non-javadoc comments (non-javadoc comment end positions are negative)
 				// is there any line break until the end of the immediate comment ? (thus only tolerating line comment)
 				immediateCommentEnd--; // comment end in one char too far
-				if (this.scanner.getLineNumber(position) != this.scanner.getLineNumber(immediateCommentEnd)) break;
+				if (org.eclipse.wst.jsdt.internal.compiler.util.Util.getLineNumber(position, this.scanner.lineEnds, 0, this.scanner.linePtr) 
+						!= org.eclipse.wst.jsdt.internal.compiler.util.Util.getLineNumber(immediateCommentEnd, this.scanner.lineEnds, 0, this.scanner.linePtr)) break;
 				position = immediateCommentEnd;
 				validCount--; // flush this comment
 				index++;

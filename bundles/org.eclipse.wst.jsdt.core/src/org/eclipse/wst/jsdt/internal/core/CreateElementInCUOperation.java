@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -142,7 +142,7 @@ public abstract class CreateElementInCUOperation extends JavaModelOperation {
 				unit.save(null, false);
 				boolean isWorkingCopy = unit.isWorkingCopy();
 				if (!isWorkingCopy)
-					this.setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
+					setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
 				worked(1);
 				resultElements = generateResultHandles();
 				if (!isWorkingCopy // if unit is working copy, then save will have already fired the delta

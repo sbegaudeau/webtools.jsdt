@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,7 +54,6 @@ public class SelectionParser extends AssistParser {
 	
 public SelectionParser(ProblemReporter problemReporter) {
 	super(problemReporter);
-	this.javadocParser = new SelectionJavadocParser(this);
 	this.javadocParser.checkDocComment = true;
 }
 public char[] assistIdentifier(){
@@ -917,7 +916,7 @@ protected void consumeStaticImportOnDemandDeclarationName() {
 
 	/* build specific assist node on import statement */
 	ImportReference reference = this.createAssistImportReference(subset, positions, ClassFileConstants.AccStatic);
-	reference.onDemand = true;
+	reference.bits |= ASTNode.OnDemand;
 	assistNode = reference;
 	this.lastCheckPoint = reference.sourceEnd + 1;
 	
@@ -986,7 +985,7 @@ protected void consumeTypeImportOnDemandDeclarationName() {
 
 	/* build specific assist node on import statement */
 	ImportReference reference = this.createAssistImportReference(subset, positions, ClassFileConstants.AccDefault);
-	reference.onDemand = true;
+	reference.bits |= ASTNode.OnDemand;
 	assistNode = reference;
 	this.lastCheckPoint = reference.sourceEnd + 1;
 	
@@ -1015,6 +1014,9 @@ public ImportReference createAssistImportReference(char[][] tokens, long[] posit
 }
 public ImportReference createAssistPackageReference(char[][] tokens, long[] positions){
 	return new SelectionOnPackageReference(tokens, positions);
+}
+protected JavadocParser createJavadocParser() {
+	return new SelectionJavadocParser(this);
 }
 protected LocalDeclaration createLocalDeclaration(char[] assistName,int sourceStart,int sourceEnd) {
 	if (this.indexOfAssistIdentifier() < 0) {

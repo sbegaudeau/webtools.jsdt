@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,11 +74,14 @@ import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
+import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
+import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
 import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaRefactoringDescriptor;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
@@ -242,8 +245,29 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 		
 			private void perform(Expression initializer) {
 				initializer.accept(this);
+				if (initializer instanceof MethodInvocation || initializer instanceof SuperMethodInvocation) {
+					addExplicitTypeArgumentsIfNecessary(initializer);
+				}
 			}
-		
+			
+			private void addExplicitTypeArgumentsIfNecessary(Expression invocation) {
+				if (Invocations.isResolvedTypeInferredFromExpectedType(invocation)) {
+					ASTNode referenceContext= fNewLocation.getParent();
+					if (! (referenceContext instanceof VariableDeclarationFragment
+							|| referenceContext instanceof SingleVariableDeclaration
+							|| referenceContext instanceof Assignment)) {
+						IMethodBinding methodBinding= Invocations.resolveBinding(invocation);
+						ITypeBinding[] typeArguments= methodBinding.getTypeArguments();
+						ListRewrite typeArgsRewrite= fInitializerRewrite.getListRewrite(invocation, Invocations.getTypeArgumentsProperty(invocation));
+						for (int i= 0; i < typeArguments.length; i++) {
+							Type typeArgument= fNewLocationCuRewrite.getImportRewrite().addImport(typeArguments[i], fNewLocationCuRewrite.getAST());
+							fNewLocationCuRewrite.getImportRemover().registerAddedImports(typeArgument);
+							typeArgsRewrite.insertLast(typeArgument, null);
+						}
+					}
+				}
+			}
+			
 			public boolean visit(FieldAccess fieldAccess) {
 				fieldAccess.getExpression().accept(this);
 				return false;

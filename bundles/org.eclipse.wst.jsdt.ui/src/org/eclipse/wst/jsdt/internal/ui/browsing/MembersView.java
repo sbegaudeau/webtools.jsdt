@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,9 +43,11 @@ import org.eclipse.wst.jsdt.ui.actions.MemberFilterActionGroup;
 
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.internal.ui.actions.*;
+import org.eclipse.wst.jsdt.internal.ui.actions.CategoryFilterActionGroup;
+import org.eclipse.wst.jsdt.internal.ui.actions.LexicalSortingAction;
 import org.eclipse.wst.jsdt.internal.ui.preferences.MembersOrderPreferenceCache;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaUILabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ProblemTreeViewer;
 
@@ -65,8 +67,8 @@ public class MembersView extends JavaBrowsingPart implements IPropertyChangeList
 		JavaPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(this);
 	}
 
-	/**
-	 * Answer the property defined by key.
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.internal.ui.browsing.JavaBrowsingPart#getAdapter(java.lang.Class)
 	 */
 	public Object getAdapter(Class key) {
 		if (key == IShowInTargetList.class) {
@@ -106,13 +108,12 @@ public class MembersView extends JavaBrowsingPart implements IPropertyChangeList
 		return PreferenceConstants.LINK_BROWSING_MEMBERS_TO_EDITOR;
 	}
 
-	/**
-	 * Creates the viewer of this part.
-	 *
-	 * @param parent	the parent for the viewer
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.internal.ui.browsing.JavaBrowsingPart#createViewer(org.eclipse.swt.widgets.Composite)
 	 */
 	protected StructuredViewer createViewer(Composite parent) {
 		ProblemTreeViewer viewer= new ProblemTreeViewer(parent, SWT.MULTI);
+		ColoredViewersManager.install(viewer);
 		fMemberFilterActionGroup= new MemberFilterActionGroup(viewer, JavaUI.ID_MEMBERS_VIEW);
 		return viewer;
 	}
@@ -198,6 +199,7 @@ public class MembersView extends JavaBrowsingPart implements IPropertyChangeList
 	 * Finds the element which has to be selected in this part.
 	 *
 	 * @param je	the Java element which has the focus
+	 * @return the element to select
 	 */
 	protected IJavaElement findElementToSelect(IJavaElement je) {
 		if (je == null)
@@ -207,43 +209,35 @@ public class MembersView extends JavaBrowsingPart implements IPropertyChangeList
 			case IJavaElement.TYPE:
 				if (((IType)je).getDeclaringType() == null)
 					return null;
-				// fall through
+				return je;
 			case IJavaElement.METHOD:
-				// fall through
 			case IJavaElement.INITIALIZER:
-				// fall through
 			case IJavaElement.FIELD:
-				// fall through
 			case IJavaElement.PACKAGE_DECLARATION:
-				// fall through
 			case IJavaElement.IMPORT_CONTAINER:
-				return getSuitableJavaElement(je);
+				return je;
 			case IJavaElement.IMPORT_DECLARATION:
-				je= getSuitableJavaElement(je);
-				if (je != null) {
-					ICompilationUnit cu= (ICompilationUnit)je.getParent().getParent();
-					try {
-						if (cu.getImports()[0].equals(je)) {
-							Object selectedElement= getSingleElementFromSelection(getViewer().getSelection());
-							if (selectedElement instanceof IImportContainer)
-								return (IImportContainer)selectedElement;
-						}
-					} catch (JavaModelException ex) {
-						// return je;
+				ICompilationUnit cu= (ICompilationUnit)je.getParent().getParent();
+				try {
+					if (cu.getImports()[0].equals(je)) {
+						Object selectedElement= getSingleElementFromSelection(getViewer().getSelection());
+						if (selectedElement instanceof IImportContainer)
+							return (IImportContainer)selectedElement;
 					}
-					return je;
+				} catch (JavaModelException ex) {
+					// return je;
 				}
-				break;
+				return je;
 		}
 		return null;
 	}
 
 	/**
 	 * Finds the closest Java element which can be used as input for
-	 * this part and has the given Java element as child
+	 * this part and has the given Java element as child.
 	 *
 	 * @param 	je 	the Java element for which to search the closest input
-	 * @return	the closest Java element used as input for this part
+	 * @return	the closest Java element used as input for this part, or <code>null</code>
 	 */
 	protected IJavaElement findInputForJavaElement(IJavaElement je) {
 		if (je == null || !je.exists() || (je.getJavaProject() != null && !je.getJavaProject().isOnClasspath(je)))
@@ -259,11 +253,7 @@ public class MembersView extends JavaBrowsingPart implements IPropertyChangeList
 			case IJavaElement.COMPILATION_UNIT:
 				return getTypeForCU((ICompilationUnit)je);
 			case IJavaElement.CLASS_FILE:
-				try {
-					return findInputForJavaElement(((IClassFile)je).getType());
-				} catch (JavaModelException ex) {
-					return null;
-				}
+				return findInputForJavaElement(((IClassFile)je).getType());
 			case IJavaElement.IMPORT_DECLARATION:
 				return findInputForJavaElement(je.getParent());
 			case IJavaElement.PACKAGE_DECLARATION:
@@ -274,6 +264,7 @@ public class MembersView extends JavaBrowsingPart implements IPropertyChangeList
 				}
 				else if (parent instanceof IClassFile)
 					return findInputForJavaElement(parent);
+				return null;
 			default:
 				if (je instanceof IMember)
 					return findInputForJavaElement(((IMember)je).getDeclaringType());

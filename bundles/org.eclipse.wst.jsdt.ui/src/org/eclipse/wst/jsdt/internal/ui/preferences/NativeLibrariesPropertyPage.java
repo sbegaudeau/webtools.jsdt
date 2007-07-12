@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.internal.ui.preferences;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
@@ -33,7 +34,9 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PropertyPage;
 
+import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
 import org.eclipse.wst.jsdt.core.IClasspathAttribute;
+import org.eclipse.wst.jsdt.core.IClasspathContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -42,6 +45,7 @@ import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
+import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 
 import org.eclipse.wst.jsdt.launching.JavaRuntime;
 
@@ -72,10 +76,11 @@ public class NativeLibrariesPropertyPage extends PropertyPage implements IStatus
 				IClasspathEntry entry= root.getRawClasspathEntry();
 				if (entry == null) {
 					fIsValidElement= false;
+					setDescription(PreferencesMessages.NativeLibrariesPropertyPage_invalidElementSelection_desription); 
 				} else {
 					if (entry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
 						fContainerPath= entry.getPath();
-						fEntry= JavaModelUtil.getClasspathEntryToEdit(elem.getJavaProject(), fContainerPath, root.getPath());
+						fEntry= handleContainerEntry(fContainerPath, elem.getJavaProject(), root.getPath());
 						fIsValidElement= fEntry != null;
 					} else {
 						fContainerPath= null;
@@ -85,14 +90,35 @@ public class NativeLibrariesPropertyPage extends PropertyPage implements IStatus
 				}
 			} else {
 				fIsValidElement= false;
+				setDescription(PreferencesMessages.NativeLibrariesPropertyPage_invalidElementSelection_desription); 
 			}
 		} catch (JavaModelException e) {
 			fIsValidElement= false;
-		}
-		if (!fIsValidElement) {
 			setDescription(PreferencesMessages.NativeLibrariesPropertyPage_invalidElementSelection_desription); 
 		}
 		super.createControl(parent);
+	}
+	
+	private IClasspathEntry handleContainerEntry(IPath containerPath, IJavaProject jproject, IPath jarPath) throws JavaModelException {
+		ClasspathContainerInitializer initializer= JavaCore.getClasspathContainerInitializer(containerPath.segment(0));
+		IClasspathContainer container= JavaCore.getClasspathContainer(containerPath, jproject);
+		if (initializer == null || container == null) {
+			setDescription(Messages.format(PreferencesMessages.NativeLibrariesPropertyPage_invalid_container, containerPath.toString()));
+			return null;
+		}
+		String containerName= container.getDescription();
+		IStatus status= initializer.getAttributeStatus(containerPath, jproject, JavaRuntime.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY);
+		if (status.getCode() == ClasspathContainerInitializer.ATTRIBUTE_NOT_SUPPORTED) {
+			setDescription(Messages.format(PreferencesMessages.NativeLibrariesPropertyPage_not_supported, containerName));
+			return null;
+		}
+		if (status.getCode() == ClasspathContainerInitializer.ATTRIBUTE_READ_ONLY) {
+			setDescription(Messages.format(PreferencesMessages.NativeLibrariesPropertyPage_read_only, containerName));
+			return null;
+		}
+		IClasspathEntry entry= JavaModelUtil.findEntryInContainer(container, jarPath);
+		Assert.isNotNull(entry);
+		return entry;
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import org.eclipse.core.commands.operations.IOperationApprover;
 import org.eclipse.core.commands.operations.IUndoContext;
@@ -52,7 +51,6 @@ import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -66,9 +64,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 
-import org.eclipse.jface.text.AbstractInformationControlManager;
 import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension4;
@@ -84,33 +80,24 @@ import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.ITextViewerExtension2;
-import org.eclipse.jface.text.ITextViewerExtension4;
 import org.eclipse.jface.text.ITextViewerExtension5;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TextUtilities;
-import org.eclipse.jface.text.information.IInformationProvider;
-import org.eclipse.jface.text.information.IInformationProviderExtension;
-import org.eclipse.jface.text.information.IInformationProviderExtension2;
-import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.link.LinkedModeModel;
+import org.eclipse.jface.text.link.LinkedPosition;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.AnnotationRulerColumn;
 import org.eclipse.jface.text.source.CompositeRuler;
-import org.eclipse.jface.text.source.IAnnotationHover;
-import org.eclipse.jface.text.source.IAnnotationHoverExtension;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelExtension;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
-import org.eclipse.jface.text.source.ILineRange;
 import org.eclipse.jface.text.source.IOverviewRuler;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.ISourceViewerExtension2;
-import org.eclipse.jface.text.source.ISourceViewerExtension3;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.IVerticalRulerColumn;
-import org.eclipse.jface.text.source.IVerticalRulerInfo;
 import org.eclipse.jface.text.source.LineChangeHover;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.text.source.projection.ProjectionSupport;
@@ -144,9 +131,7 @@ import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.IUpdate;
 import org.eclipse.ui.texteditor.MarkerAnnotation;
-import org.eclipse.ui.texteditor.ResourceAction;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
-import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.ui.texteditor.TextNavigationAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
 
@@ -198,6 +183,7 @@ import org.eclipse.wst.jsdt.ui.text.folding.IJavaFoldingStructureProviderExtensi
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.CompositeActionGroup;
+import org.eclipse.wst.jsdt.internal.ui.actions.CopyQualifiedNameAction;
 import org.eclipse.wst.jsdt.internal.ui.actions.FoldingActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.selectionactions.GoToNextPreviousMemberAction;
@@ -349,7 +335,8 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 		/**
 		 * Initialize with the node to wrap
 		 *
-		 * @param context The context to access
+		 * @param context the context to access
+		 * @param qualifier the qualifier
 		 */
 		public EclipsePreferencesAdapter(IScopeContext context, String qualifier) {
 			fContext= context;
@@ -672,250 +659,6 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	}
 
 	/**
-	 * Information provider used to present focusable information shells.
-	 *
-	 * @since 3.2
-	 */
-	private static final class InformationProvider implements IInformationProvider, IInformationProviderExtension, IInformationProviderExtension2 {
-		
-		private IRegion fHoverRegion;
-		private Object fHoverInfo;
-		private IInformationControlCreator fControlCreator;
-		
-		InformationProvider(IRegion hoverRegion, Object hoverInfo, IInformationControlCreator controlCreator) {
-			fHoverRegion= hoverRegion;
-			fHoverInfo= hoverInfo;
-			fControlCreator= controlCreator;
-		}
-		/*
-		 * @see org.eclipse.jface.text.information.IInformationProvider#getSubject(org.eclipse.jface.text.ITextViewer, int)
-		 */
-		public IRegion getSubject(ITextViewer textViewer, int invocationOffset) {
-			return fHoverRegion;
-		}
-		/*
-		 * @see org.eclipse.jface.text.information.IInformationProvider#getInformation(org.eclipse.jface.text.ITextViewer, org.eclipse.jface.text.IRegion)
-		 */
-		public String getInformation(ITextViewer textViewer, IRegion subject) {
-			return fHoverInfo.toString();
-		}
-		/*
-		 * @see org.eclipse.jface.text.information.IInformationProviderExtension#getInformation2(org.eclipse.jface.text.ITextViewer, org.eclipse.jface.text.IRegion)
-		 * @since 3.2
-		 */
-		public Object getInformation2(ITextViewer textViewer, IRegion subject) {
-			return fHoverInfo;
-		}
-		/*
-		 * @see org.eclipse.jface.text.information.IInformationProviderExtension2#getInformationPresenterControlCreator()
-		 */
-		public IInformationControlCreator getInformationPresenterControlCreator() {
-			return fControlCreator;
-		}
-	}
-	
-	/**
-	 * This action behaves in two different ways: If there is no current text
-	 * hover, the javadoc is displayed using information presenter. If there is
-	 * a current text hover, it is converted into a information presenter in
-	 * order to make it sticky.
-	 */
-	class InformationDispatchAction extends TextEditorAction {
-
-		/** The wrapped text operation action. */
-		private final TextOperationAction fTextOperationAction;
-
-		/**
-		 * Creates a dispatch action.
-		 *
-		 * @param resourceBundle the resource bundle
-		 * @param prefix the prefix
-		 * @param textOperationAction the text operation action
-		 */
-		public InformationDispatchAction(ResourceBundle resourceBundle, String prefix, final TextOperationAction textOperationAction) {
-			super(resourceBundle, prefix, JavaEditor.this);
-			if (textOperationAction == null)
-				throw new IllegalArgumentException();
-			fTextOperationAction= textOperationAction;
-		}
-
-		/*
-		 * @see org.eclipse.jface.action.IAction#run()
-		 */
-		public void run() {
-
-			ISourceViewer sourceViewer= getSourceViewer();
-			if (sourceViewer == null) {
-				fTextOperationAction.run();
-				return;
-			}
-
-			if (sourceViewer instanceof ITextViewerExtension4)  {
-				ITextViewerExtension4 extension4= (ITextViewerExtension4) sourceViewer;
-				if (extension4.moveFocusToWidgetToken())
-					return;
-			}
-
-			if (sourceViewer instanceof ITextViewerExtension2) {
-				// does a text hover exist?
-				ITextHover textHover= ((ITextViewerExtension2) sourceViewer).getCurrentTextHover();
-				if (textHover != null && makeTextHoverFocusable(sourceViewer, textHover))
-					return;
-			}
-
-//			if (sourceViewer instanceof ISourceViewerExtension3) {
-				// does an annotation hover exist?
-//				IAnnotationHover annotationHover= ((ISourceViewerExtension3) sourceViewer).getCurrentAnnotationHover();
-//				if (annotationHover != null && makeAnnotationHoverFocusable(sourceViewer, annotationHover))
-//					return;
-//			}
-			
-			// otherwise, just run the action
-			fTextOperationAction.run();
-		}
-
-		/**
-		 * Tries to make a text hover focusable (or "sticky").
-		 * 
-		 * @param sourceViewer the source viewer to display the hover over
-		 * @param textHover the hover to make focusable
-		 * @return <code>true</code> if successful, <code>false</code> otherwise
-		 * @since 3.2
-		 */
-		private boolean makeTextHoverFocusable(ISourceViewer sourceViewer, ITextHover textHover) {
-			Point hoverEventLocation= ((ITextViewerExtension2) sourceViewer).getHoverEventLocation();
-			int offset= computeOffsetAtLocation(sourceViewer, hoverEventLocation.x, hoverEventLocation.y);
-			if (offset == -1)
-				return false;
-			
-			try {
-				IRegion hoverRegion= textHover.getHoverRegion(sourceViewer, offset);
-				if (hoverRegion == null)
-					return false;
-
-				String hoverInfo= textHover.getHoverInfo(sourceViewer, hoverRegion);
-
-				IInformationControlCreator controlCreator= null;
-				if (textHover instanceof IInformationProviderExtension2)
-					controlCreator= ((IInformationProviderExtension2)textHover).getInformationPresenterControlCreator();
-
-				IInformationProvider informationProvider= new InformationProvider(hoverRegion, hoverInfo, controlCreator);
-
-				fInformationPresenter.setOffset(offset);
-				fInformationPresenter.setAnchor(AbstractInformationControlManager.ANCHOR_BOTTOM);
-				fInformationPresenter.setMargins(6, 6); // default values from AbstractInformationControlManager
-				String contentType= TextUtilities.getContentType(sourceViewer.getDocument(), IJavaPartitions.JAVA_PARTITIONING, offset, true);
-				fInformationPresenter.setInformationProvider(informationProvider, contentType);
-				fInformationPresenter.showInformation();
-
-				return true;
-
-			} catch (BadLocationException e) {
-				return false;
-			}
-		}
-
-		/**
-		 * Tries to make an annotation hover focusable (or "sticky").
-		 * 
-		 * @param sourceViewer the source viewer to display the hover over
-		 * @param annotationHover the hover to make focusable
-		 * @return <code>true</code> if successful, <code>false</code> otherwise
-		 * @since 3.2
-		 */
-		private boolean makeAnnotationHoverFocusable(ISourceViewer sourceViewer, IAnnotationHover annotationHover) {
-			IVerticalRulerInfo info= getVerticalRuler();
-			int line= info.getLineOfLastMouseButtonActivity();
-			if (line == -1)
-				return false;
-
-			try {
-
-				// compute the hover information
-				Object hoverInfo;
-				if (annotationHover instanceof IAnnotationHoverExtension) {
-					IAnnotationHoverExtension extension= (IAnnotationHoverExtension) annotationHover;
-					ILineRange hoverLineRange= extension.getHoverLineRange(sourceViewer, line);
-					if (hoverLineRange == null)
-						return false;
-					final int maxVisibleLines= Integer.MAX_VALUE; // allow any number of lines being displayed, as we support scrolling
-					hoverInfo= extension.getHoverInfo(sourceViewer, hoverLineRange, maxVisibleLines);
-				} else {
-					hoverInfo= annotationHover.getHoverInfo(sourceViewer, line);
-				}
-				
-				// hover region: the beginning of the concerned line to place the control right over the line
-				IDocument document= sourceViewer.getDocument();
-				int offset= document.getLineOffset(line);
-				String contentType= TextUtilities.getContentType(document, IJavaPartitions.JAVA_PARTITIONING, offset, true);
-
-				IInformationControlCreator controlCreator= null;
-				
-				/* 
-				 * XXX: This is a hack to avoid API changes at the end of 3.2,
-				 * and should be fixed for 3.3, see: https://bugs.eclipse.org/bugs/show_bug.cgi?id=137967
-				 */
-				if ("org.eclipse.jface.text.source.projection.ProjectionAnnotationHover".equals(annotationHover.getClass().getName())) { //$NON-NLS-1$
-					controlCreator= new IInformationControlCreator() {
-						public IInformationControl createInformationControl(Shell shell) {
-							int shellStyle= SWT.RESIZE | SWT.TOOL | getOrientation();
-							int style= SWT.V_SCROLL | SWT.H_SCROLL;
-							return new SourceViewerInformationControl(shell, shellStyle, style);
-						}
-					};
-					
-				} else {
-					if (annotationHover instanceof IInformationProviderExtension2)
-						controlCreator= ((IInformationProviderExtension2) annotationHover).getInformationPresenterControlCreator();
-					else if (annotationHover instanceof IAnnotationHoverExtension)
-						controlCreator= ((IAnnotationHoverExtension) annotationHover).getHoverControlCreator();
-				}
-				
-				IInformationProvider informationProvider= new InformationProvider(new Region(offset, 0), hoverInfo, controlCreator);
-
-				fInformationPresenter.setOffset(offset);
-				fInformationPresenter.setAnchor(AbstractInformationControlManager.ANCHOR_RIGHT);
-				fInformationPresenter.setMargins(4, 0); // AnnotationBarHoverManager sets (5,0), minus SourceViewer.GAP_SIZE_1
-				fInformationPresenter.setInformationProvider(informationProvider, contentType);
-				fInformationPresenter.showInformation();
-
-				return true;
-
-			} catch (BadLocationException e) {
-				return false;
-			}
-        }
-
-		// modified version from TextViewer
-		private int computeOffsetAtLocation(ITextViewer textViewer, int x, int y) {
-
-			StyledText styledText= textViewer.getTextWidget();
-			IDocument document= textViewer.getDocument();
-
-			if (document == null)
-				return -1;
-
-			try {
-				int widgetOffset= styledText.getOffsetAtLocation(new Point(x, y));
-				Point p= styledText.getLocationAtOffset(widgetOffset);
-				if (p.x > x)
-					widgetOffset--;
-				
-				if (textViewer instanceof ITextViewerExtension5) {
-					ITextViewerExtension5 extension= (ITextViewerExtension5) textViewer;
-					return extension.widgetOffset2ModelOffset(widgetOffset);
-				} else {
-					IRegion visibleRegion= textViewer.getVisibleRegion();
-					return widgetOffset + visibleRegion.getOffset();
-				}
-			} catch (IllegalArgumentException e) {
-				return -1;
-			}
-
-		}
-	}
-
-	/**
 	 * This action implements smart home.
 	 *
 	 * Instead of going to the start of a line it does the following:
@@ -1023,12 +766,32 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 		protected int findNextPosition(int position) {
 			ISourceViewer viewer= getSourceViewer();
 			int widget= -1;
-			while (position != BreakIterator.DONE && widget == -1) { // TODO: optimize
-				position= fIterator.following(position);
-				if (position != BreakIterator.DONE)
-					widget= modelOffset2WidgetOffset(viewer, position);
+			int next= position;
+			while (next != BreakIterator.DONE && widget == -1) { // TODO: optimize
+				next= fIterator.following(next);
+				if (next != BreakIterator.DONE)
+					widget= modelOffset2WidgetOffset(viewer, next);
 			}
-			return position;
+			
+			IDocument document= viewer.getDocument();
+			LinkedModeModel model= LinkedModeModel.getModel(document, position);
+			if (model != null) {
+				LinkedPosition linkedPosition= model.findPosition(new LinkedPosition(document, position, 0));
+				if (linkedPosition != null) {
+					int linkedPositionEnd= linkedPosition.getOffset() + linkedPosition.getLength();
+					if (position != linkedPositionEnd && linkedPositionEnd < next)
+						next= linkedPositionEnd;
+				} else {
+					LinkedPosition nextLinkedPosition= model.findPosition(new LinkedPosition(document, next, 0));
+					if (nextLinkedPosition != null) {
+						int nextLinkedPositionOffset= nextLinkedPosition.getOffset();
+						if (position != nextLinkedPositionOffset && nextLinkedPositionOffset < next)
+							next= nextLinkedPositionOffset;
+					}
+				}
+			}
+			
+			return next;
 		}
 
 		/**
@@ -1098,13 +861,6 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 			} catch (BadLocationException exception) {
 				// Should not happen
 			}
-		}
-
-		/*
-		 * @see org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor.NextSubWordAction#findNextPosition(int)
-		 */
-		protected int findNextPosition(int position) {
-			return fIterator.following(position);
 		}
 
 		/*
@@ -1204,12 +960,32 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 		protected int findPreviousPosition(int position) {
 			ISourceViewer viewer= getSourceViewer();
 			int widget= -1;
-			while (position != BreakIterator.DONE && widget == -1) { // TODO: optimize
-				position= fIterator.preceding(position);
-				if (position != BreakIterator.DONE)
-					widget= modelOffset2WidgetOffset(viewer, position);
+			int previous= position;
+			while (previous != BreakIterator.DONE && widget == -1) { // TODO: optimize
+				previous= fIterator.preceding(previous);
+				if (previous != BreakIterator.DONE)
+					widget= modelOffset2WidgetOffset(viewer, previous);
 			}
-			return position;
+			
+			IDocument document= viewer.getDocument();
+			LinkedModeModel model= LinkedModeModel.getModel(document, position);
+			if (model != null) {
+				LinkedPosition linkedPosition= model.findPosition(new LinkedPosition(document, position, 0));
+				if (linkedPosition != null) {
+					int linkedPositionOffset= linkedPosition.getOffset();
+					if (position != linkedPositionOffset && previous < linkedPositionOffset)
+						previous= linkedPositionOffset;
+				} else {
+					LinkedPosition previousLinkedPosition= model.findPosition(new LinkedPosition(document, previous, 0));
+					if (previousLinkedPosition != null) {
+						int previousLinkedPositionEnd= previousLinkedPosition.getOffset() + previousLinkedPosition.getLength();
+						if (position != previousLinkedPositionEnd && previous < previousLinkedPositionEnd)
+							previous= previousLinkedPositionEnd;
+					}
+				}
+			}
+			
+			return previous;
 		}
 
 		/**
@@ -1278,13 +1054,6 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 			} catch (BadLocationException exception) {
 				// Should not happen
 			}
-		}
-
-		/*
-		 * @see org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor.PreviousSubWordAction#findPreviousPosition(int)
-		 */
-		protected int findPreviousPosition(int position) {
-			return fIterator.preceding(position);
 		}
 
 		/*
@@ -1575,8 +1344,6 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	protected JavaPairMatcher fBracketMatcher= new JavaPairMatcher(BRACKETS);
 	/** This editor's encoding support */
 	private DefaultEncodingSupport fEncodingSupport;
-	/** The information presenter. */
-	private InformationPresenter fInformationPresenter;
 	/** History for structure select action */
 	private SelectionHistory fSelectionHistory;
 	protected CompositeActionGroup fActionGroups;
@@ -1710,9 +1477,9 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	protected OverrideIndicatorManager fOverrideIndicatorManager;
 	/**
 	 * Semantic highlighting manager
-	 * @since 3.0
+	 * @since 3.0, protected as of 3.3
 	 */
-	private SemanticHighlightingManager fSemanticManager;
+	protected SemanticHighlightingManager fSemanticManager;
 	/**
 	 * The folding runner.
 	 * @since 3.1
@@ -1841,7 +1608,14 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 		fProjectionSupport.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.warning"); //$NON-NLS-1$
 		fProjectionSupport.setHoverControlCreator(new IInformationControlCreator() {
 			public IInformationControl createInformationControl(Shell shell) {
-				return new SourceViewerInformationControl(shell, SWT.TOOL | SWT.NO_TRIM | getOrientation(), SWT.NONE);
+				return new SourceViewerInformationControl(shell, SWT.TOOL | SWT.NO_TRIM | getOrientation(), SWT.NONE, EditorsUI.getTooltipAffordanceString());
+			}
+		});
+		fProjectionSupport.setInformationPresenterControlCreator(new IInformationControlCreator() {
+			public IInformationControl createInformationControl(Shell shell) {
+				int shellStyle= SWT.RESIZE | SWT.TOOL | getOrientation();
+				int style= SWT.V_SCROLL | SWT.H_SCROLL;
+				return new SourceViewerInformationControl(shell, shellStyle, style);
 			}
 		});
 		fProjectionSupport.install();
@@ -2016,22 +1790,27 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 		}
 
 		if (required == IShowInSource.class) {
-			IJavaElement je= null;
-			try {
-				je= SelectionConverter.getElementAtOffset(this);
-			} catch (JavaModelException ex) {
-				je= null;
-			}
-			if (je != null) { 
-				final ISelection selection= new StructuredSelection(je);
-				return new IShowInSource() {
-					public ShowInContext getShowInContext() {
-						return new ShowInContext(getEditorInput(), selection);
-					}
-				};
-			}
+			return new IShowInSource() {
+				public ShowInContext getShowInContext() {
+					return new ShowInContext(getEditorInput(), null) {
+						/*
+						 * @see org.eclipse.ui.part.ShowInContext#getSelection()
+						 * @since 3.3
+						 */
+						public ISelection getSelection() {
+							IJavaElement je= null;
+							try {
+								je= SelectionConverter.getElementAtOffset(JavaEditor.this);
+								return new StructuredSelection(je);
+							} catch (JavaModelException ex) {
+								return null;
+							}
+						}
+					};
+				}
+			};
 		}
-		
+
 		if (required == IJavaFoldingStructureProvider.class)
 			return fProjectionModelUpdater;
 
@@ -2255,7 +2034,7 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 
 		try {
 
-			IJavaElement element= getElementAt(offset);
+			IJavaElement element= getElementAt(offset, false);
 			while (element instanceof ISourceReference) {
 				ISourceRange range= ((ISourceReference) element).getSourceRange();
 				if (range != null && offset < range.getOffset() + range.getLength() && range.getOffset() < offset + length) {
@@ -2483,12 +2262,6 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 
 		fFoldingGroup= new FoldingActionGroup(this, getViewer());
 
-		ResourceAction resAction= new TextOperationAction(JavaEditorMessages.getBundleForConstructedKeys(), "ShowJavaDoc.", this, ISourceViewer.INFORMATION, true); //$NON-NLS-1$
-		resAction= new InformationDispatchAction(JavaEditorMessages.getBundleForConstructedKeys(), "ShowJavaDoc.", (TextOperationAction) resAction); //$NON-NLS-1$
-		resAction.setActionDefinitionId(IJavaEditorActionDefinitionIds.SHOW_JAVADOC);
-		setAction("ShowJavaDoc", resAction); //$NON-NLS-1$
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(resAction, IJavaHelpContextIds.SHOW_JAVADOC_ACTION);
-
 		Action action= new GotoMatchingBracketAction(this);
 		action.setActionDefinitionId(IJavaEditorActionDefinitionIds.GOTO_MATCHING_BRACKET);
 		setAction(GotoMatchingBracketAction.GOTO_MATCHING_BRACKET, action);
@@ -2563,6 +2336,9 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 
 		action= new ClipboardOperationAction(JavaEditorMessages.getBundleForConstructedKeys(), "Editor.Paste.", this, ITextOperationTarget.PASTE); //$NON-NLS-1$
 		setAction(ITextEditorActionConstants.PASTE, action);
+		
+		action= new CopyQualifiedNameAction(this);
+		setAction(IJavaEditorActionConstants.COPY_QUALIFIED_NAME, action);
 	}
 	
 	/**
@@ -2835,24 +2611,8 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
 
-		IInformationControlCreator informationControlCreator= new IInformationControlCreator() {
-			public IInformationControl createInformationControl(Shell shell) {
-				boolean cutDown= false;
-				int style= cutDown ? SWT.NONE : (SWT.V_SCROLL | SWT.H_SCROLL);
-				return new DefaultInformationControl(shell, SWT.RESIZE | SWT.TOOL, style, new HTMLTextPresenter(cutDown));
-			}
-		};
-
-		fInformationPresenter= new InformationPresenter(informationControlCreator);
-		fInformationPresenter.setSizeConstraints(60, 10, true, true);
-		fInformationPresenter.install(getSourceViewer());
-		fInformationPresenter.setDocumentPartitioning(IJavaPartitions.JAVA_PARTITIONING);
-
 		fEditorSelectionChangedListener= new EditorSelectionChangedListener();
 		fEditorSelectionChangedListener.install(getSelectionProvider());
-
-		if (fMarkOccurrenceAnnotations)
-			installOccurrencesFinder(false);
 
 		if (isSemanticHighlightingEnabled())
 			installSemanticHighlighting();
@@ -3167,7 +2927,8 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 	}
 
 	protected boolean isMarkingOccurrences() {
-		return fMarkOccurrenceAnnotations;
+		IPreferenceStore store= getPreferenceStore();
+		return store != null && store.getBoolean(PreferenceConstants.EDITOR_MARK_OCCURRENCES);
 	}
 
 	boolean markOccurrencesOfType(IBinding binding) {
@@ -3239,23 +3000,10 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 			return;
 
 		fOverrideIndicatorManager= new OverrideIndicatorManager(model, inputElement, null);
-
+		
 		if (provideAST) {
-			Job job= new Job(JavaEditorMessages.OverrideIndicatorManager_intallJob) {
-				/*
-				 * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-				 * @since 3.0
-				 */
-				protected IStatus run(IProgressMonitor monitor) {
-					CompilationUnit ast= JavaPlugin.getDefault().getASTProvider().getAST(inputElement, ASTProvider.WAIT_YES, null);
-					if (fOverrideIndicatorManager != null) // editor might have been closed in the meanwhile
-						fOverrideIndicatorManager.reconciled(ast, true, monitor);
-					return Status.OK_STATUS;
-				}
-			};
-			job.setPriority(Job.DECORATE);
-			job.setSystem(true);
-			job.schedule();
+			CompilationUnit ast= JavaPlugin.getDefault().getASTProvider().getAST(inputElement, ASTProvider.WAIT_ACTIVE_ONLY, getProgressMonitor());
+			fOverrideIndicatorManager.reconciled(ast, true, getProgressMonitor());
 		}
 	}
 

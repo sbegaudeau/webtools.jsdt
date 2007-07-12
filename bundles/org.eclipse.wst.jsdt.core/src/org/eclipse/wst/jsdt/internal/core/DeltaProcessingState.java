@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -235,12 +235,11 @@ public class DeltaProcessingState implements IResourceChangeListener {
 						
 						// source attachment path
 						if (entry.getEntryKind() != IClasspathEntry.CPE_LIBRARY) continue;
-						QualifiedName qName = new QualifiedName(JavaCore.PLUGIN_ID, "sourceattachment: " + path.toOSString()); //$NON-NLS-1$;
 						String propertyString = null;
 						try {
-							propertyString = ResourcesPlugin.getWorkspace().getRoot().getPersistentProperty(qName);
-						} catch (CoreException e) {
-							continue;
+							propertyString = Util.getSourceAttachmentProperty(path);
+						} catch (JavaModelException e) {
+							e.printStackTrace();
 						}
 						IPath sourceAttachmentPath;
 						if (propertyString != null) {
@@ -485,16 +484,19 @@ public class DeltaProcessingState implements IResourceChangeListener {
 			updatedRoots = this.roots;
 			otherUpdatedRoots = this.otherRoots;
 		}
+		int containerSegmentCount = containerPath.segmentCount();
+		boolean containerIsProject = containerSegmentCount == 1;
 		Iterator iterator = updatedRoots.entrySet().iterator();
 		while (iterator.hasNext()) {
 			Map.Entry entry = (Map.Entry) iterator.next();
 			IPath path = (IPath) entry.getKey();
 			if (containerPath.isPrefixOf(path) && !containerPath.equals(path)) {
-				IResourceDelta rootDelta = containerDelta.findMember(path.removeFirstSegments(1));
+				IResourceDelta rootDelta = containerDelta.findMember(path.removeFirstSegments(containerSegmentCount));
 				if (rootDelta == null) continue;
 				DeltaProcessor.RootInfo rootInfo = (DeltaProcessor.RootInfo) entry.getValue();
 	
-				if (!rootInfo.project.getPath().isPrefixOf(path)) { // only consider roots that are not included in the container
+				if (!containerIsProject 
+						|| !rootInfo.project.getPath().isPrefixOf(path)) { // only consider folder roots that are not included in the container
 					deltaProcessor.updateCurrentDeltaAndIndex(rootDelta, IJavaElement.PACKAGE_FRAGMENT_ROOT, rootInfo);
 				}
 				
@@ -503,7 +505,8 @@ public class DeltaProcessingState implements IResourceChangeListener {
 					Iterator otherProjects = rootList.iterator();
 					while (otherProjects.hasNext()) {
 						rootInfo = (DeltaProcessor.RootInfo)otherProjects.next();
-						if (!rootInfo.project.getPath().isPrefixOf(path)) { // only consider roots that are not included in the container
+						if (!containerIsProject 
+								|| !rootInfo.project.getPath().isPrefixOf(path)) { // only consider folder roots that are not included in the container
 							deltaProcessor.updateCurrentDeltaAndIndex(rootDelta, IJavaElement.PACKAGE_FRAGMENT_ROOT, rootInfo);
 						}
 					}

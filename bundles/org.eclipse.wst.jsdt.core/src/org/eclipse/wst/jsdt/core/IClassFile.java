@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,18 +76,31 @@ public interface IClassFile extends ITypeRoot {
  * @throws JavaModelException if this compilation unit could not become a working copy.
  * @see ICompilationUnit#discardWorkingCopy()
  * @since 3.2
+ * @deprecated Use {@link ITypeRoot#getWorkingCopy(WorkingCopyOwner, IProgressMonitor)} instead.
+ * 	Note that if this deprecated method is used, problems will be reported to the given problem requestor
+ * 	as well as the problem requestor returned by the working copy owner (if not null).
  */
 ICompilationUnit becomeWorkingCopy(IProblemRequestor problemRequestor, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException;
 
 /**
- * Returns the type contained in this class file.
+ * Returns the bytes contained in this class file.
  *
- * @return the type contained in this class file
+ * @return the bytes contained in this class file
  *
  * @exception JavaModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource
+ * @since 3.3
  */
-IType getType() throws JavaModelException;
+byte[] getBytes() throws JavaModelException;
+
+/**
+ * Returns the type contained in this class file.
+ * This is a handle-only method. The type may or may not exist.
+ *
+ * @return the type contained in this class file
+ *
+ */
+IType getType();
 public IType[] getTypes() throws JavaModelException ;
 
 

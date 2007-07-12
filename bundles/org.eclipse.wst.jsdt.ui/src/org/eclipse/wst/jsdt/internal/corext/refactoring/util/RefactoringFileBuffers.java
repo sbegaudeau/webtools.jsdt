@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.eclipse.core.resources.IResource;
 
 import org.eclipse.core.filebuffers.FileBuffers;
 import org.eclipse.core.filebuffers.ITextFileBuffer;
+import org.eclipse.core.filebuffers.LocationKind;
 
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 
@@ -44,8 +45,8 @@ public final class RefactoringFileBuffers {
 		final IResource resource= unit.getResource();
 		if (resource != null && resource.getType() == IResource.FILE) {
 			final IPath path= resource.getFullPath();
-			FileBuffers.getTextFileBufferManager().connect(path, new NullProgressMonitor());
-			return FileBuffers.getTextFileBufferManager().getTextFileBuffer(path);
+			FileBuffers.getTextFileBufferManager().connect(path, LocationKind.IFILE, new NullProgressMonitor());
+			return FileBuffers.getTextFileBufferManager().getTextFileBuffer(path, LocationKind.IFILE);
 		}
 		return null;
 	}
@@ -61,7 +62,7 @@ public final class RefactoringFileBuffers {
 		final IResource resource= unit.getResource();
 		if (resource == null || resource.getType() != IResource.FILE)
 			return null;
-		return FileBuffers.getTextFileBufferManager().getTextFileBuffer(resource.getFullPath());
+		return FileBuffers.getTextFileBufferManager().getTextFileBuffer(resource.getFullPath(), LocationKind.IFILE);
 	}
 
 	/**
@@ -74,7 +75,7 @@ public final class RefactoringFileBuffers {
 		Assert.isNotNull(unit);
 		final IResource resource= unit.getResource();
 		if (resource != null && resource.getType() == IResource.FILE)
-			FileBuffers.getTextFileBufferManager().disconnect(resource.getFullPath(), new NullProgressMonitor());
+			FileBuffers.getTextFileBufferManager().disconnect(resource.getFullPath(), LocationKind.IFILE, new NullProgressMonitor());
 	}
 
 	private RefactoringFileBuffers() {

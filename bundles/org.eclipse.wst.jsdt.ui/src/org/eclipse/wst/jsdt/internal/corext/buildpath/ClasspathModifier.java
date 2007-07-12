@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -373,7 +373,7 @@ public class ClasspathModifier {
 	 * @param resource the resource to get the fragment root from
 	 * @param project the Java project
 	 * @param monitor progress monitor, can be <code>null</code>
-	 * @return resolved fragment root
+	 * @return resolved fragment root, or <code>null</code> the resource is not (in) a source folder
 	 * @throws JavaModelException
 	 */
 	public static IPackageFragmentRoot getFragmentRoot(IResource resource, IJavaProject project, IProgressMonitor monitor) throws JavaModelException {
@@ -394,8 +394,11 @@ public class ClasspathModifier {
 			if (container == null)
 				return null;
 		} while (javaElem == null || !(javaElem instanceof IPackageFragmentRoot));
-		if (javaElem instanceof IJavaProject)
+		if (javaElem instanceof IJavaProject) {
+			if (!isSourceFolder((IJavaProject)javaElem))
+				return null;
 			javaElem= project.getPackageFragmentRoot(project.getResource());
+		}
 		return (IPackageFragmentRoot) javaElem;
 	}
 

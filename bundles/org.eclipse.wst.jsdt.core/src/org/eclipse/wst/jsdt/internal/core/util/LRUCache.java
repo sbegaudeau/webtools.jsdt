@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -174,7 +174,6 @@ public class LRUCache implements Cloneable {
 		fEntryTable = new Hashtable();  // Clear it out
 		fEntryQueue = fEntryQueueTail = null;  
 		while (entry != null) {  // send deletion notifications in LRU order
-			privateNotifyDeletionFromCache(entry);
 			entry = entry._fPrevious;
 		}
 	}
@@ -343,7 +342,6 @@ public class LRUCache implements Cloneable {
 		fEntryQueue = entry;
 	}
 	/**
-	 * An entry has been removed from the cache, for example because it has 
 	 * fallen off the bottom of the LRU queue.  
 	 * Subclasses could over-ride this to implement a persistent cache below the LRU cache.
 	 */
@@ -365,7 +363,6 @@ public class LRUCache implements Cloneable {
 		if (!shuffle) {
 			fEntryTable.remove(entry._fKey);
 			fCurrentSpace -= entry._fSpace;
-			privateNotifyDeletionFromCache(entry);
 		}
 
 		/* if this was the first entry */

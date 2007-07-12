@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,6 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 	public final static int This = 3;
 
 	public VariableBinding[][] implicitArguments;
-	boolean discardEnclosingInstance;
 	
 	// TODO Remove once DOMParser is activated
 	public int typeArgumentsSourceStart;
@@ -117,7 +116,7 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 				codeStream.generateSyntheticEnclosingInstanceValues(
 					currentScope,
 					targetType,
-					discardEnclosingInstance ? null : qualification,
+					(this.bits & ASTNode.DiscardEnclosingInstance) != 0 ? null : qualification,
 					this);
 			}
 			// generate arguments
@@ -256,6 +255,20 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 					|| !methodDeclaration.isConstructor()
 					|| ((ConstructorDeclaration) methodDeclaration).constructorCall != this) {
 				scope.problemReporter().invalidExplicitConstructorCall(this);
+				// fault-tolerance
+				if (this.qualification != null) {
+					this.qualification.resolveType(scope);
+				}
+				if (this.typeArguments != null) {
+					for (int i = 0, max = this.typeArguments.length; i < max; i++) {
+						this.typeArguments[i].resolveType(scope, true /* check bounds*/);
+					}
+				}
+				if (this.arguments != null) {
+					for (int i = 0, max = this.arguments.length; i < max; i++) {
+						this.arguments[i].resolveType(scope);
+					}
+				}
 				return;
 			}
 			methodScope.isConstructorCall = true;
@@ -282,7 +295,7 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 					scope.problemReporter().unnecessaryEnclosingInstanceSpecification(
 						qualification,
 						receiverType);
-					discardEnclosingInstance = true;
+					this.bits |= ASTNode.DiscardEnclosingInstance;
 				} else {
 					TypeBinding qTb = qualification.resolveTypeExpecting(scope, enclosingType);
 					qualification.computeConversion(scope, qTb, qTb);
@@ -294,8 +307,12 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 				boolean argHasError = false; // typeChecks all arguments
 				this.genericTypeArguments = new TypeBinding[length];
 				for (int i = 0; i < length; i++) {
-					if ((this.genericTypeArguments[i] = this.typeArguments[i].resolveType(scope, true /* check bounds*/)) == null) {
+					TypeReference typeReference = this.typeArguments[i];
+					if ((this.genericTypeArguments[i] = typeReference.resolveType(scope, true /* check bounds*/)) == null) {
 						argHasError = true;
+					}
+					if (argHasError && typeReference instanceof Wildcard) {
+						scope.problemReporter().illegalUsageOfWildcard(typeReference);
 					}
 				}
 				if (argHasError) {
@@ -323,9 +340,26 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 				if (argHasError) {
 					// record a best guess, for clients who need hint about possible contructor match
 					TypeBinding[] pseudoArgs = new TypeBinding[length];
-					for (int i = length; --i >= 0;)
-						pseudoArgs[i] = argumentTypes[i] == null ? receiverType : argumentTypes[i]; // replace args with errors with receiver
+					for (int i = length; --i >= 0;) {
+						pseudoArgs[i] = argumentTypes[i] == null ? TypeBinding.NULL : argumentTypes[i]; // replace args with errors with null type
+					}
 					this.binding = scope.findMethod(receiverType, TypeConstants.INIT, pseudoArgs, this);
+					if (this.binding != null && !this.binding.isValidBinding()) {
+						MethodBinding closestMatch = ((ProblemMethodBinding)this.binding).closestMatch;
+						// record the closest match, for clients who may still need hint about possible method match
+						if (closestMatch != null) {
+							if (closestMatch.original().typeVariables != Binding.NO_TYPE_VARIABLES) { // generic method
+								// shouldn't return generic method outside its context, rather convert it to raw method (175409)
+								closestMatch = scope.environment().createParameterizedGenericMethod(closestMatch.original(), (RawTypeBinding)null);
+							}
+							this.binding = closestMatch;
+							MethodBinding closestMatchOriginal = closestMatch.original();
+							if ((closestMatchOriginal.isPrivate() || closestMatchOriginal.declaringClass.isLocalType()) && !scope.isDefinedInMethod(closestMatchOriginal)) {
+								// ignore cases where method is used from within inside itself (e.g. direct recursions)
+								closestMatchOriginal.modifiers |= ExtraCompilerModifiers.AccLocallyUsed;
+							}
+						}
+					}
 					return;
 				}
 			} else if (receiverType.erasure().id == T_JavaLangEnum) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Philippe Ombredanne - bug 149382
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui.actions;
 
@@ -812,7 +813,7 @@ public class AddGetterSetterAction extends SelectionDispatchAction {
 			if (element instanceof IMember)
 			{ IMember member=(IMember) element;
 				return  member.getDeclaringType()!=null ? 
-						member.getDeclaringType() :member.getCompilationUnit();
+						member.getDeclaringType() :(Object)member.getCompilationUnit();
 			}
 			if (element instanceof GetterSetterEntry)
 				return ((GetterSetterEntry) element).field;
@@ -884,11 +885,14 @@ public class AddGetterSetterAction extends SelectionDispatchAction {
 
 		private boolean fSortOrder;
 		private boolean fAllowSettersForFinals;
+		
+		private ArrayList fPreviousSelectedFinals;
 
 
 		public GetterSetterTreeSelectionDialog(Shell parent, ILabelProvider labelProvider, AddGetterSetterContentProvider contentProvider, CompilationUnitEditor editor, IType type) throws JavaModelException {
 			super(parent, labelProvider, contentProvider, editor, type, false);
 			fContentProvider= contentProvider;
+			fPreviousSelectedFinals= new ArrayList();
 
 			// http://bugs.eclipse.org/bugs/show_bug.cgi?id=19253
 			IDialogSettings dialogSettings= JavaPlugin.getDefault().getDialogSettings();
@@ -927,12 +931,30 @@ public class AddGetterSetterAction extends SelectionDispatchAction {
 			if (fAllowSettersForFinals != allowSettersForFinals) {
 				fAllowSettersForFinals= allowSettersForFinals;
 				fSettings.put(ALLOW_SETTERS_FOR_FINALS, allowSettersForFinals);
-				if (getTreeViewer() != null) {
+				CheckboxTreeViewer treeViewer= getTreeViewer();
+				if (treeViewer != null) {
+					ArrayList newChecked= new ArrayList();
 					if (allowSettersForFinals) {
-						getTreeViewer().removeFilter(fSettersForFinalFieldsFilter);
-					} else {
-						getTreeViewer().addFilter(fSettersForFinalFieldsFilter);
+						newChecked.addAll(fPreviousSelectedFinals);
 					}
+					fPreviousSelectedFinals.clear();
+					Object[] checkedElements= treeViewer.getCheckedElements();
+					for (int i= 0; i < checkedElements.length; i++) {
+						if (checkedElements[i] instanceof GetterSetterEntry) {
+							GetterSetterEntry entry= (GetterSetterEntry) checkedElements[i];
+							if (allowSettersForFinals || entry.isGetter || !entry.isFinal) {
+								newChecked.add(entry);
+							} else {
+								fPreviousSelectedFinals.add(entry);
+							}
+						}
+					}
+					if (allowSettersForFinals) {
+						treeViewer.removeFilter(fSettersForFinalFieldsFilter);
+					} else {
+						treeViewer.addFilter(fSettersForFinalFieldsFilter);
+					}
+					treeViewer.setCheckedElements(newChecked.toArray());
 				}
 				updateOKStatus();
 			}

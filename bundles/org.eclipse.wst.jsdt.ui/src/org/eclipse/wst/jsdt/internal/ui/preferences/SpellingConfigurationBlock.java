@@ -55,6 +55,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusUtil;
+import org.eclipse.wst.jsdt.internal.ui.text.spelling.JavaSpellingEngine;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.SpellCheckEngine;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;
@@ -82,6 +83,7 @@ public class SpellingConfigurationBlock extends OptionsConfigurationBlock {
 	private static final Key PREF_SPELLING_IGNORE_MIXED= getJDTUIKey(PreferenceConstants.SPELLING_IGNORE_MIXED);
 	private static final Key PREF_SPELLING_IGNORE_SENTENCE= getJDTUIKey(PreferenceConstants.SPELLING_IGNORE_SENTENCE);
 	private static final Key PREF_SPELLING_IGNORE_UPPER= getJDTUIKey(PreferenceConstants.SPELLING_IGNORE_UPPER);
+	private static final Key PREF_SPELLING_IGNORE_JAVA_STRINGS= getJDTUIKey(JavaSpellingEngine.SPELLING_IGNORE_JAVA_STRINGS);
 	private static final Key PREF_SPELLING_IGNORE_SINGLE_LETTERS= getJDTUIKey(PreferenceConstants.SPELLING_IGNORE_SINGLE_LETTERS);
 	private static final Key PREF_SPELLING_IGNORE_NON_LETTERS= getJDTUIKey(PreferenceConstants.SPELLING_IGNORE_NON_LETTERS);
 	private static final Key PREF_SPELLING_IGNORE_URLS= getJDTUIKey(PreferenceConstants.SPELLING_IGNORE_URLS);
@@ -181,8 +183,10 @@ public class SpellingConfigurationBlock extends OptionsConfigurationBlock {
 		if (path.length() > 0) {
 
 			final File file= new File(path);
-			if (!file.isFile() || !file.isAbsolute() || !file.exists() || !file.canRead() || !file.canWrite())
-				status.setError(PreferencesMessages.SpellingPreferencePage_dictionary_error); 
+			if (!file.exists() && (!file.isAbsolute() || !file.getParentFile().canWrite()))
+				status.setError(PreferencesMessages.SpellingPreferencePage_dictionary_error);
+			else if (file.exists() && (!file.isFile() || !file.isAbsolute() || !file.canRead() || !file.canWrite()))
+				status.setError(PreferencesMessages.SpellingPreferencePage_dictionary_error);
 
 		}
 		return status;
@@ -263,10 +267,9 @@ public class SpellingConfigurationBlock extends OptionsConfigurationBlock {
 	/**
 	 * Creates a new spelling configuration block.
 	 * 
-	 * @param context
-	 *                   The status change listener
-	 * @param project
-	 *                   The Java project
+	 * @param context the status change listener
+	 * @param project the Java project
+	 * @param container the preference container
 	 */
 	public SpellingConfigurationBlock(final IStatusChangeListener context, final IProject project, IWorkbenchPreferenceContainer container) {
 		super(context, project, getAllKeys(), container);
@@ -360,6 +363,10 @@ public class SpellingConfigurationBlock extends OptionsConfigurationBlock {
 		slave= addCheckBox(user, label, PREF_SPELLING_IGNORE_SINGLE_LETTERS, trueFalse, 0);
 		allControls.add(slave);
 		
+		label= PreferencesMessages.SpellingPreferencePage_ignore_java_strings_label; 
+		slave= addCheckBox(user, label, PREF_SPELLING_IGNORE_JAVA_STRINGS, trueFalse, 0);
+		allControls.add(slave);
+		
 		label= PreferencesMessages.SpellingPreferencePage_ignore_ampersand_in_properties_label; 
 		slave= addCheckBox(user, label, PREF_SPELLING_IGNORE_AMPERSAND_IN_PROPERTIES, trueFalse, 0);
 		allControls.add(slave);
@@ -441,7 +448,7 @@ public class SpellingConfigurationBlock extends OptionsConfigurationBlock {
 
 		fAllControls= (Control[]) allControls.toArray(new Control[allControls.size()]);
 		
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IJavaHelpContextIds.JAVA_EDITOR_PREFERENCE_PAGE);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IJavaHelpContextIds.SPELLING_CONFIGURATION_BLOCK);
 		return composite;
 	}
 
@@ -449,6 +456,7 @@ public class SpellingConfigurationBlock extends OptionsConfigurationBlock {
 	 * Creates the encoding field editor.
 	 * 
 	 * @param composite the parent composite
+	 * @param allControls list with all controls
 	 * @since 3.3
 	 */
 	private void createEncodingFieldEditor(Composite composite, List allControls) {
@@ -505,9 +513,9 @@ public class SpellingConfigurationBlock extends OptionsConfigurationBlock {
 
 	private static Key[] getAllKeys() {
 		if (SUPPORT_CONTENT_ASSIST_PROPOSALS)
-			return new Key[] { PREF_SPELLING_USER_DICTIONARY, PREF_SPELLING_USER_DICTIONARY_ENCODING, PREF_SPELLING_IGNORE_DIGITS, PREF_SPELLING_IGNORE_MIXED, PREF_SPELLING_IGNORE_SENTENCE, PREF_SPELLING_IGNORE_UPPER, PREF_SPELLING_IGNORE_URLS, PREF_SPELLING_IGNORE_AMPERSAND_IN_PROPERTIES, PREF_SPELLING_IGNORE_NON_LETTERS, PREF_SPELLING_IGNORE_SINGLE_LETTERS, PREF_SPELLING_LOCALE, PREF_SPELLING_PROPOSAL_THRESHOLD, PREF_SPELLING_ENABLE_CONTENTASSIST };
+			return new Key[] { PREF_SPELLING_USER_DICTIONARY, PREF_SPELLING_USER_DICTIONARY_ENCODING, PREF_SPELLING_IGNORE_DIGITS, PREF_SPELLING_IGNORE_MIXED, PREF_SPELLING_IGNORE_SENTENCE, PREF_SPELLING_IGNORE_UPPER, PREF_SPELLING_IGNORE_URLS, PREF_SPELLING_IGNORE_AMPERSAND_IN_PROPERTIES, PREF_SPELLING_IGNORE_NON_LETTERS, PREF_SPELLING_IGNORE_SINGLE_LETTERS, PREF_SPELLING_LOCALE, PREF_SPELLING_PROPOSAL_THRESHOLD, PREF_SPELLING_ENABLE_CONTENTASSIST, PREF_SPELLING_IGNORE_JAVA_STRINGS };
 		else
-			return new Key[] { PREF_SPELLING_USER_DICTIONARY, PREF_SPELLING_USER_DICTIONARY_ENCODING, PREF_SPELLING_IGNORE_DIGITS, PREF_SPELLING_IGNORE_MIXED, PREF_SPELLING_IGNORE_SENTENCE, PREF_SPELLING_IGNORE_UPPER, PREF_SPELLING_IGNORE_URLS, PREF_SPELLING_IGNORE_AMPERSAND_IN_PROPERTIES, PREF_SPELLING_IGNORE_NON_LETTERS, PREF_SPELLING_IGNORE_SINGLE_LETTERS, PREF_SPELLING_LOCALE, PREF_SPELLING_PROPOSAL_THRESHOLD };
+			return new Key[] { PREF_SPELLING_USER_DICTIONARY, PREF_SPELLING_USER_DICTIONARY_ENCODING, PREF_SPELLING_IGNORE_DIGITS, PREF_SPELLING_IGNORE_MIXED, PREF_SPELLING_IGNORE_SENTENCE, PREF_SPELLING_IGNORE_UPPER, PREF_SPELLING_IGNORE_URLS, PREF_SPELLING_IGNORE_AMPERSAND_IN_PROPERTIES, PREF_SPELLING_IGNORE_NON_LETTERS, PREF_SPELLING_IGNORE_SINGLE_LETTERS, PREF_SPELLING_LOCALE, PREF_SPELLING_PROPOSAL_THRESHOLD, PREF_SPELLING_IGNORE_JAVA_STRINGS };
 	}
 
 	/*
@@ -599,6 +607,9 @@ public class SpellingConfigurationBlock extends OptionsConfigurationBlock {
 	}
 	
 	/**
+	 * Sets the enabled state.
+	 * 
+	 * @param enabled the new state
 	 * @since 3.1
 	 */
 	protected void setEnabled(boolean enabled) {

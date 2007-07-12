@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -257,13 +257,21 @@ public final class AST {
 		Map options,
 		boolean isResolved,
 		org.eclipse.wst.jsdt.internal.core.CompilationUnit workingCopy,
+		int reconcileFlags,
 		IProgressMonitor monitor) {
 		
 		ASTConverter converter = new ASTConverter(options, isResolved, monitor);
 		AST ast = AST.newAST(level);
 		int savedDefaultNodeFlag = ast.getDefaultNodeFlag();
 		ast.setDefaultNodeFlag(ASTNode.ORIGINAL);
-		BindingResolver resolver = isResolved ? new DefaultBindingResolver(compilationUnitDeclaration.scope, workingCopy.owner, new DefaultBindingResolver.BindingTables()) : new BindingResolver();
+		BindingResolver resolver = null;
+		if (isResolved) {
+			resolver = new DefaultBindingResolver(compilationUnitDeclaration.scope, workingCopy.owner, new DefaultBindingResolver.BindingTables(), false);
+			ast.setFlag(AST.RESOLVED_BINDINGS);
+		} else {
+			resolver = new BindingResolver();
+		}
+		ast.setFlag(reconcileFlags);
 		ast.setBindingResolver(resolver);
 		converter.setAST(ast);
 	
@@ -1175,6 +1183,16 @@ public final class AST {
 	 */
 	private final Object[] THIS_AST= new Object[] {this};
 	
+	/*
+	 * Must not collide with a value for ICompilationUnit constants
+	 */
+	static final int RESOLVED_BINDINGS = 0x80000000;
+
+	/**
+	 * Tag bit value. This represents internal state of the tree.
+	 */
+	private int bits;
+
 	/**
 	 * Creates an unparented node of the given node class
 	 * (non-abstract subclass of {@link ASTNode}). 
@@ -2857,5 +2875,39 @@ public final class AST {
 		}
 		return this.rewriter.rewriteAST(document, options);
 	}
+	/**
+	 * Returns true if the ast tree was created with bindings, false otherwise
+	 *
+	 * @return true if the ast tree was created with bindings, false otherwise
+	 * @since 3.3
+	 */
+	public boolean hasResolvedBindings() {
+		return (this.bits & RESOLVED_BINDINGS) != 0;
+	}
+
+	/**
+	 * Returns true if the ast tree was created with statements recovery, false otherwise
+	 *
+	 * @return true if the ast tree was created with statements recovery, false otherwise
+	 * @since 3.3
+	 */
+	public boolean hasStatementsRecovery() {
+		return (this.bits & ICompilationUnit.ENABLE_STATEMENTS_RECOVERY) != 0;
+	}
+
+	/**
+	 * Returns true if the ast tree was created with bindings recovery, false otherwise
+	 *
+	 * @return true if the ast tree was created with bindings recovery, false otherwise
+	 * @since 3.3
+	 */
+	public boolean hasBindingsRecovery() {
+		return (this.bits & ICompilationUnit.ENABLE_BINDINGS_RECOVERY) != 0;
+	}
+
+	void setFlag(int newValue) {
+		this.bits |= newValue;
+	}
+	
 }
 

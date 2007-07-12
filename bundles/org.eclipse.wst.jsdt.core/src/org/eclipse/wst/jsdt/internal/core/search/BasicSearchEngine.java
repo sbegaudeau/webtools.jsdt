@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -173,41 +173,39 @@ public class BasicSearchEngine {
 	 */
 	void findMatches(SearchPattern pattern, SearchParticipant[] participants, IJavaSearchScope scope, SearchRequestor requestor, IProgressMonitor monitor) throws CoreException {
 		if (monitor != null && monitor.isCanceled()) throw new OperationCanceledException();
-	
-		/* initialize progress monitor */
-		if (monitor != null)
-			monitor.beginTask(Messages.engine_searching, 100); 
-		if (VERBOSE) {
-			Util.verbose("Searching for pattern: " + pattern.toString()); //$NON-NLS-1$
-			Util.verbose(scope.toString());
-		}
-		if (participants == null) {
-			if (VERBOSE) Util.verbose("No participants => do nothing!"); //$NON-NLS-1$
-			return;
-		}
-	
-		IndexManager indexManager = JavaModelManager.getJavaModelManager().getIndexManager();
 		try {
+			if (VERBOSE) {
+				Util.verbose("Searching for pattern: " + pattern.toString()); //$NON-NLS-1$
+				Util.verbose(scope.toString());
+			}
+			if (participants == null) {
+				if (VERBOSE) Util.verbose("No participants => do nothing!"); //$NON-NLS-1$
+				return;
+			}
+	
+			/* initialize progress monitor */
+			int length = participants.length;
+			if (monitor != null)
+				monitor.beginTask(Messages.engine_searching, 100 * length); 
+			IndexManager indexManager = JavaModelManager.getJavaModelManager().getIndexManager();
 			requestor.beginReporting();
-			for (int i = 0, l = participants.length; i < l; i++) {
+			for (int i = 0; i < length; i++) {
 				if (monitor != null && monitor.isCanceled()) throw new OperationCanceledException();
 	
 				SearchParticipant participant = participants[i];
-				SubProgressMonitor subMonitor= monitor==null ? null : new SubProgressMonitor(monitor, 1000);
-				if (subMonitor != null) subMonitor.beginTask("", 1000); //$NON-NLS-1$
 				try {
-					if (subMonitor != null) subMonitor.subTask(Messages.bind(Messages.engine_searching_indexing, new String[] {participant.getDescription()})); 
+					if (monitor != null) monitor.subTask(Messages.bind(Messages.engine_searching_indexing, new String[] {participant.getDescription()})); 
 					participant.beginSearching();
 					requestor.enterParticipant(participant);
 					PathCollector pathCollector = new PathCollector();
 					indexManager.performConcurrentJob(
 						new PatternSearchJob(pattern, participant, scope, pathCollector),
 						IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
-						subMonitor);
+						monitor==null ? null : new SubProgressMonitor(monitor, 50));
 					if (monitor != null && monitor.isCanceled()) throw new OperationCanceledException();
 	
 					// locate index matches if any (note that all search matches could have been issued during index querying)
-					if (subMonitor != null) subMonitor.subTask(Messages.bind(Messages.engine_searching_matching, new String[] {participant.getDescription()})); 
+					if (monitor != null) monitor.subTask(Messages.bind(Messages.engine_searching_matching, new String[] {participant.getDescription()})); 
 					String[] indexMatchPaths = pathCollector.getPaths();
 					if (indexMatchPaths != null) {
 						pathCollector = null; // release
@@ -217,7 +215,7 @@ public class BasicSearchEngine {
 							indexMatches[j] = participant.getDocument(indexMatchPaths[j]);
 						}
 						SearchDocument[] matches = MatchLocator.addWorkingCopies(pattern, indexMatches, getWorkingCopies(), participant);
-						participant.locateMatches(matches, pattern, scope, requestor, subMonitor);
+						participant.locateMatches(matches, pattern, scope, requestor, monitor==null ? null : new SubProgressMonitor(monitor, 50));
 					}
 				} finally {		
 					requestor.exitParticipant(participant);
@@ -939,10 +937,10 @@ public class BasicSearchEngine {
 		};
 
 		// add type names from indexes
-		if (progressMonitor != null) {
-			progressMonitor.beginTask(Messages.engine_searching, 100); 
-		}
 		try {
+			if (progressMonitor != null) {
+				progressMonitor.beginTask(Messages.engine_searching, 100); 
+			}
 			indexManager.performConcurrentJob(
 				new PatternSearchJob(
 					pattern, 
@@ -953,9 +951,12 @@ public class BasicSearchEngine {
 					? IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH
 					: IJavaSearchConstants.FORCE_IMMEDIATE_SEARCH,
 				progressMonitor == null ? null : new SubProgressMonitor(progressMonitor, 100));
-		}
-		catch (OperationCanceledException oce) {
+		} catch (OperationCanceledException oce) {
 			// do nothing
+		} finally {
+			if (progressMonitor != null) {
+				progressMonitor.done();
+			}
 		}
 	}
 

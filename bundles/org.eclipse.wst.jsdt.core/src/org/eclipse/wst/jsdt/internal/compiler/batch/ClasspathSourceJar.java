@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,7 @@ public class ClasspathSourceJar extends ClasspathJar {
 		this.encoding = encoding;
 	}
 
-	public NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageName, String qualifiedBinaryFileName) {
+	public NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageName, String qualifiedBinaryFileName, boolean asBinaryOnly) {
 		if (!isPackage(qualifiedPackageName)) 
 			return null; // most common case
 
@@ -47,5 +47,8 @@ public class ClasspathSourceJar extends ClasspathJar {
 			}
 		}
 		return null;
+	}
+	public NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageName, String qualifiedBinaryFileName) {
+		return findClass(typeName, qualifiedPackageName, qualifiedBinaryFileName, false);
 	}
 }

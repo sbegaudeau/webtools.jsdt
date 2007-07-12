@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials 
- * are made available under the terms of the Common Public License v1.0
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -15,14 +15,29 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
 /**
- * 
+ * filter with a live cycle
  */
 public abstract class JavaViewerFilter extends ViewerFilter {
 
-	public void filteringStart() {
+	private int fCount= 0;
+	
+	/**
+	 * To be overridden by implement
+	 */
+	protected abstract void initFilter();
+	
+	protected abstract void freeFilter();
+	
+	public final void filteringStart() {
+		if (fCount == 0)
+			initFilter();
+		fCount++;
 	}
 	
-	public void filteringEnd() {
+	public final void filteringEnd() {
+		fCount--;
+		if (fCount == 0)
+			freeFilter();
 	}
 	
 	/*

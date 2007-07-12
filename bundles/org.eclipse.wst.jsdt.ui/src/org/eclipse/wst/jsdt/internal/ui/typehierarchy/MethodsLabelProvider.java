@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.typehierarchy;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.widgets.Display;
+
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
@@ -26,24 +29,32 @@ import org.eclipse.wst.jsdt.internal.corext.util.MethodOverrideTester;
 import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredString;
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
 
 /**
  * Label provider for the hierarchy method viewers. 
  */
 public class MethodsLabelProvider extends AppearanceAwareLabelProvider {
-
-	private Color fResolvedBackground;
 	
 	private boolean fShowDefiningType;
 	private TypeHierarchyLifeCycle fHierarchy;
 	private MethodsViewer fMethodsViewer;
+	private IPropertyChangeListener fColorRegistryListener;
 
 	public MethodsLabelProvider(TypeHierarchyLifeCycle lifeCycle, MethodsViewer methodsViewer) {
 		super(DEFAULT_TEXTFLAGS, DEFAULT_IMAGEFLAGS);
 		fHierarchy= lifeCycle;
 		fShowDefiningType= false;
 		fMethodsViewer= methodsViewer;
-		fResolvedBackground= null;
+		fColorRegistryListener= new IPropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent event) {
+				if (event.getProperty().equals(ColoredViewersManager.INHERITED_COLOR_NAME)) {
+					fireLabelProviderChanged(new LabelProviderChangedEvent(MethodsLabelProvider.this, null));
+				}
+			}
+		};
+		JFaceResources.getColorRegistry().addListener(fColorRegistryListener);
 	}
 	
 	public void setShowDefiningType(boolean showDefiningType) {
@@ -83,21 +94,40 @@ public class MethodsLabelProvider extends AppearanceAwareLabelProvider {
 	 */ 	
 	public String getText(Object element) {
 		String text= super.getText(element);
+		String qualifier= getQualifier(element);
+		if (qualifier != null) {
+			return qualifier + text;
+		}
+		return text;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaUILabelProvider#getRichTextLabel(java.lang.Object)
+	 */
+	public ColoredString getRichTextLabel(Object element) {
+		ColoredString text= super.getRichTextLabel(element);
+		String qualifier= getQualifier(element);
+		if (qualifier != null) {
+			return new ColoredString(qualifier).append(text);
+		}
+		return text;
+		
+	}
+	
+	private String getQualifier(Object element) {
 		if (fShowDefiningType) {
 			try {
 				IType type= getDefiningType(element);
 				if (type != null) {
-					StringBuffer buf= new StringBuffer(super.getText(type));
-					buf.append(JavaElementLabels.CONCAT_STRING);
-					buf.append(text);
-					return buf.toString();			
+					return super.getText(type) + JavaElementLabels.CONCAT_STRING;
 				}
 			} catch (JavaModelException e) {
 			}
 		}
-		return text;
+		return null;
 	}
-
+	
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.IColorProvider#getForeground(java.lang.Object)
 	 */
@@ -106,15 +136,17 @@ public class MethodsLabelProvider extends AppearanceAwareLabelProvider {
 			IMethod curr= (IMethod) element;
 			IMember declaringType= curr.getDeclaringType();
 			
-			if (declaringType!=null && declaringType.equals(fMethodsViewer.getInput())) {
-				if (fResolvedBackground == null) {
-					Display display= Display.getCurrent();
-					fResolvedBackground= display.getSystemColor(SWT.COLOR_DARK_BLUE);
-				}
-				return fResolvedBackground;
+			if (declaringType==null || !declaringType.equals(fMethodsViewer.getInput())) {
+				return JFaceResources.getColorRegistry().get(ColoredViewersManager.INHERITED_COLOR_NAME);
 			}
 		}
 		return null;
+	}
+	
+	public void dispose() {
+		JFaceResources.getColorRegistry().removeListener(fColorRegistryListener);
+		fColorRegistryListener= null;
+		super.dispose();
 	}
 	
 }

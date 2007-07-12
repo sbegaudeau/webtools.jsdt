@@ -381,7 +381,7 @@
             label="%nlsStringHover"
             description="%nlsStringHoverDescription"
             class="org.eclipse.wst.jsdt.internal.ui.text.java.hover.NLSStringHover"
-            id="org.eclipse.wst.jsdt.ui.NLStringHover">
+            id="org.eclipse.wst.jsdt.ui.NLS">
       </hover>
       <hover
             label="%javadocHover"
@@ -927,7 +927,43 @@
             %DeclarationViewBackgroundColor.description
          </description>
       </colorDefinition>
-   </extension>
+     <colorDefinition
+            label="%coloredLabels.qualifier.label"
+            categoryId="org.eclipse.wst.jsdt.ui.presentation"
+            value="COLOR_DARK_GRAY"
+            id="org.eclipse.wst.jsdt.ui.ColoredLabels.qualifier">
+         <description>
+            %coloredLabels.qualifier.description
+         </description>
+      </colorDefinition>
+      <colorDefinition
+            label="%coloredLabels.decorations.label"
+            categoryId="org.eclipse.wst.jsdt.ui.presentation"
+            value="149,125,71"
+            id="org.eclipse.wst.jsdt.ui.ColoredLabels.decorations">
+         <description>
+            %coloredLabels.decorations.description
+         </description>
+      </colorDefinition>      
+      <colorDefinition
+            label="%coloredLabels.counter.label"
+            categoryId="org.eclipse.wst.jsdt.ui.presentation"
+            value="0,127,174"
+            id="org.eclipse.wst.jsdt.ui.ColoredLabels.counter">
+         <description>
+            %coloredLabels.counter.description
+         </description>
+      </colorDefinition>
+      <colorDefinition
+            label="%coloredLabels.inherited.label"
+            categoryId="org.eclipse.wst.jsdt.ui.presentation"
+            value="COLOR_DARK_BLUE"
+            id="org.eclipse.wst.jsdt.ui.ColoredLabels.inherited">
+         <description>
+            %coloredLabels.inherited.description
+         </description>
+      </colorDefinition>
+    </extension>
    
    
    <extension
@@ -1188,6 +1224,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.javaeditor.NLSKeyHyperlinkDetector"
             id="org.eclipse.wst.jsdt.internal.ui.javaeditor.NLSKeyHyperlinkDetector"
             name="%NLSHyperlinkDetector"
+            modifierKeys="M1+M3"
             targetId="org.eclipse.wst.jsdt.ui.javaCode">
       </hyperlinkDetector>
       <hyperlinkDetector
@@ -1200,6 +1237,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.PropertyKeyHyperlinkDetector"
             id="org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.PropertyKeyHyperlinkDetector"
             name="%PropertyKeyHyperlinkDetector"
+            modifierKeys="M1+M3"
             targetId="org.eclipse.wst.jsdt.ui.PropertiesFileEditor">
       </hyperlinkDetector>
    </extension>
@@ -2950,7 +2988,7 @@
          point="org.eclipse.ui.editorActions">
       <editorContribution
             targetID="org.eclipse.wst.jsdt.ui.CompilationUnitEditor"
-            id="org.eclipse.ui.texteditor.ruler.actions">
+            id="org.eclipse.wst.jsdt.internal.ui.CompilationUnitEditor.ruler.actions">
          <action
                label="%BookmarkRulerAction.label"
                helpContextId="org.eclipse.ui.bookmark_action_context"
@@ -2967,7 +3005,7 @@
       </editorContribution>
       <editorContribution
             targetID="org.eclipse.wst.jsdt.ui.ClassFileEditor"
-            id="org.eclipse.ui.texteditor.ruler.actions">
+            id="org.eclipse.wst.jsdt.internal.ui.ClassFileEditor.ruler.actions">
          <action
                label="%JavaSelectRulerAction.label"
                class="org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaSelectRulerAction"
@@ -2977,7 +3015,7 @@
       </editorContribution>
       <editorContribution
             targetID="org.eclipse.wst.jsdt.ui.PropertiesFileEditor"
-            id="org.eclipse.ui.texteditor.ruler.actions">
+            id="org.eclipse.wst.jsdt.internal.ui.PropertiesFileEditor.ruler.actions">
          <action
                label="%BookmarkRulerAction.label"
                helpContextId="org.eclipse.ui.bookmark_action_context"
@@ -3017,7 +3055,7 @@
             name="%JavaWorkingSetPage.name"
             pageClass="org.eclipse.wst.jsdt.internal.ui.workingsets.JavaWorkingSetPage"
             updaterClass="org.eclipse.wst.jsdt.internal.ui.workingsets.JavaWorkingSetUpdater"
-            elementAdapterClass="org.eclipse.ui.BasicWorkingSetElementAdapter:org.eclipse.wst.jsdt.core.IJavaElement;adapt=true"
+            elementAdapterClass="org.eclipse.wst.jsdt.internal.ui.workingsets.JavaWorkingSetElementAdapter"
             icon="$nl$/icons/full/obj16/jworkingSet_obj.gif"
             id="org.eclipse.wst.jsdt.ui.JavaWorkingSetPage">
       </workingSet>
@@ -3084,12 +3122,6 @@
             description="%ActionDefinition.selectLast.description"
             categoryId="org.eclipse.ui.category.edit"
             id="org.eclipse.wst.jsdt.ui.edit.text.java.select.last">
-      </command>
-      <command
-            name="%ActionDefinition.showJavadoc.name"
-            description="%ActionDefinition.showJavadoc.description"
-            categoryId="org.eclipse.ui.category.edit"
-            id="org.eclipse.wst.jsdt.ui.edit.text.java.show.javadoc">
       </command>
       <command
             name="%ActionDefinition.showInPackageView.name"
@@ -3936,10 +3968,18 @@
             contextId="org.eclipse.wst.jsdt.ui.javaEditorScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.select.last"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+
       <key
-            sequence="F2"
+            platform="carbon"
+            sequence="M2+M3+ARROW_DOWN"
             contextId="org.eclipse.wst.jsdt.ui.javaEditorScope"
-            commandId="org.eclipse.wst.jsdt.ui.edit.text.java.show.javadoc"
+            commandId=""
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+      <key
+            platform="carbon"
+            sequence="CTRL+SHIFT+ARROW_DOWN"
+            contextId="org.eclipse.wst.jsdt.ui.javaEditorScope"
+            commandId="org.eclipse.wst.jsdt.ui.edit.text.java.select.last"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
 
 <!-- source -->
@@ -4476,7 +4516,8 @@
             name="%HideInnerClassFiles.label"
             enabled="true"
             description="%HideInnerClassFiles.description"
-            pattern="*$*.class">
+            class="org.eclipse.wst.jsdt.internal.ui.filters.InnerClassFilesFilter"
+            id="org.eclipse.wst.jsdt.internal.ui.PackageExplorer.HideInnerClassFilesFilter">
       </filter>
       <filter
             targetId="org.eclipse.wst.jsdt.ui.PackageExplorer"
@@ -5175,6 +5216,9 @@
       </viewerContentBinding>
    </extension>
    
+       <!-- CommonNavigator -->
+   
+   
    <extension
          point="org.eclipse.ui.navigator.navigatorContent">
       <navigatorContent
@@ -5224,9 +5268,6 @@
          </actionProvider>
       </navigatorContent>
    </extension>
-
-
-    <!-- CommonNavigator -->
 	
 	<extension
 			point="org.eclipse.ui.navigator.viewer">
@@ -5235,12 +5276,9 @@
 				<contentExtension pattern="org.eclipse.wst.jsdt.java.ui.javaContent" />
 				<contentExtension pattern="org.eclipse.wst.jsdt.java.ui.filters.*" />	
 				<contentExtension pattern="org.eclipse.wst.jsdt.java.ui.javaLinkHelper" />	
-							
 			</includes>
 		</viewerContentBinding>
 	</extension>
-	
-
 	
 	<extension
 			point="org.eclipse.ui.navigator.navigatorContent">
@@ -5254,98 +5292,76 @@
 				priority="high">
 			<triggerPoints>
 				<or>
-					<adapt
-							type="org.eclipse.core.resources.IProject" >
-						<test
-							property="org.eclipse.core.resources.projectNature"
-							value="org.eclipse.wst.jsdt.core.jsNature" />
+					<adapt type="org.eclipse.core.resources.IProject" >
+						<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
 					</adapt>
-					<instanceof
-							value="org.eclipse.core.resources.IWorkspaceRoot" />
-					<instanceof
-							value="org.eclipse.core.resources.IFolder" />
-					<instanceof
-							value="org.eclipse.core.resources.IFile" />
-					<instanceof
-							value="org.eclipse.core.resources.IStorage" />
-					<instanceof
-							value="org.eclipse.wst.jsdt.core.IJavaProject" />
-					<instanceof
-							value="org.eclipse.wst.jsdt.core.IJavaElement" />
-					<instanceof
-							value="org.eclipse.wst.jsdt.internal.core.JarEntryFile" />
-					<instanceof
-							value="org.eclipse.wst.jsdt.core.IClassFile" />
-					<instanceof
-							value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" />
-<!--
-					<instanceof
-							value="org.eclipse.wst.jsdt.internal.ui.workingsets.WorkingSetModel" />
--->
-				</or>
+					<instanceof	value="org.eclipse.core.resources.IResource" />
+					<instanceof value="org.eclipse.wst.jsdt.core.IJavaElement" />
+					<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" />
+					<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" />
+ 				</or>
 			</triggerPoints>
 			<possibleChildren>
 				<or>
-					<adapt
-							type="org.eclipse.core.resources.IProject" >
-					</adapt>
-					<instanceof
-							value="org.eclipse.core.resources.IWorkspaceRoot" />
-					<instanceof
-							value="org.eclipse.core.resources.IFolder" />
-					<instanceof
-							value="org.eclipse.core.resources.IFile" />
-					<instanceof
-							value="org.eclipse.core.resources.IStorage" />
-					<instanceof
-							value="org.eclipse.wst.jsdt.core.IJavaProject" />
-					<instanceof
-							value="org.eclipse.wst.jsdt.core.IJavaElement" />
-					<instanceof
-							value="org.eclipse.wst.jsdt.internal.core.JarEntryFile" />
-					<instanceof
-							value="org.eclipse.wst.jsdt.core.IClassFile" />
-					<instanceof
-							value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" />
+					<instanceof	value="org.eclipse.core.resources.IResource" />
+					<instanceof value="org.eclipse.wst.jsdt.core.IJavaElement" />
+					<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" />
 				</or>
-			</possibleChildren>
+			</possibleChildren> 
 			<actionProvider
-					class="org.eclipse.wst.jsdt.internal.ui.navigator.PackageExplorerActionProvider"
-					id="org.eclipse.wst.jsdt.internal.ui.navigator.PackageExplorerActionProvider"
+					class="org.eclipse.wst.jsdt.internal.ui.navigator.JavaNavigatorViewActionProvider"
+					id="org.eclipse.wst.jsdt.ui.navigator.actions.ViewActions"> 
+				<enablement>
+					<or>  
+						<instanceof value="org.eclipse.core.resources.IWorkspaceRoot" /> 
+						<adapt type="java.util.Collection"> 
+							<count value="0" />
+						</adapt>		
+					</or>
+				</enablement>
+			</actionProvider>				
+			<actionProvider
+					class="org.eclipse.wst.jsdt.internal.ui.navigator.JavaNavigatorActionProvider"
+					id="org.eclipse.wst.jsdt.ui.navigator.actions.StandardActions"
+					overrides="org.eclipse.ui.navigator.resources.actions.EditActions"> 
+				<enablement>
+					<or>   
+						<and>
+							<instanceof value="org.eclipse.core.resources.IProject" />
+          					<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature" />
+						</and>
+						<instanceof value="org.eclipse.wst.jsdt.core.IJavaElement" />
+						<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" /> 
+						<instanceof	value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" /> 
+						<adapt type="java.util.Collection"> 
+							<count value="0" />
+						</adapt>
+					</or>
+				</enablement>
+			</actionProvider> 
+			
+			<actionProvider
+					class="org.eclipse.wst.jsdt.internal.ui.navigator.JavaNavigatorRefactorActionProvider"
+					id="org.eclipse.wst.jsdt.ui.navigator.actions.RefactorActions"
 					overrides="org.eclipse.ui.navigator.resources.actions.RefactorActions"> 
 				<enablement>
 					<or>
-					<adapt
-							type="org.eclipse.core.resources.IProject" >
-					</adapt>
-					<instanceof
-							value="org.eclipse.core.resources.IWorkspaceRoot" />
-					<instanceof
-							value="org.eclipse.core.resources.IFolder" />
-					<instanceof
-							value="org.eclipse.core.resources.IFile" />
-					<instanceof
-							value="org.eclipse.core.resources.IStorage" />
-					<instanceof
-							value="org.eclipse.wst.jsdt.core.IJavaProject" />
-					<instanceof
-							value="org.eclipse.wst.jsdt.core.IJavaElement" />
-					<instanceof
-							value="org.eclipse.wst.jsdt.internal.core.JarEntryFile" />
-					<instanceof
-							value="org.eclipse.wst.jsdt.core.IClassFile" />
-					<instanceof
-							value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" /> 
-					<adapt type="java.util.Collection"> 
-						<count value="0" />
-					</adapt>				
-				</or>
+						<and>
+							<instanceof value="org.eclipse.core.resources.IProject" />
+          					<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature" />
+						</and>
+						<instanceof value="org.eclipse.wst.jsdt.core.IJavaElement" />
+						<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" /> 
+						<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" /> 
+						<adapt type="java.util.Collection"> 
+							<count value="0" />
+						</adapt>				
+					</or>
 				</enablement>
 			</actionProvider>
-			
 		   <actionProvider
 		         class="org.eclipse.wst.jsdt.internal.ui.navigator.PackageExplorerOpenActionProvider"
-		         id="org.eclipse.wst.jsdt.internal.ui.navigator.PackageExplorerOpenActionProvider"
+		         id="org.eclipse.wst.jsdt.ui.navigator.actions.OpenActions"
 		         overrides="org.eclipse.ui.navigator.resources.OpenActions"> 
 		   </actionProvider> 
 		   
@@ -5366,9 +5382,7 @@
 		           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragmentRoot"/>
 		           <instanceof value="org.eclipse.wst.jsdt.core.ICompilationUnit"/>
 		           <adapt type="org.eclipse.core.resources.IProject">
-		              <test
-		                    property="org.eclipse.core.resources.projectNature"
-		                    value="org.eclipse.wst.jsdt.core.jsNature"/>
+		              <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
 		           </adapt>
 		        </or>
 		     </enablement>
@@ -5383,9 +5397,7 @@
 		           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragmentRoot"/>
 		           <instanceof value="org.eclipse.wst.jsdt.core.ICompilationUnit"/>
 		           <adapt type="org.eclipse.core.resources.IProject">
-		              <test
-		                    property="org.eclipse.core.resources.projectNature"
-		                    value="org.eclipse.wst.jsdt.core.jsNature"/>
+		              <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
 		           </adapt>
 		        </or>
 		     </enablement>
@@ -5401,9 +5413,7 @@
 		           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragmentRoot"/>
 		           <instanceof value="org.eclipse.wst.jsdt.core.ICompilationUnit"/>
 		           <adapt type="org.eclipse.core.resources.IProject">
-		              <test
-		                    property="org.eclipse.core.resources.projectNature"
-		                    value="org.eclipse.wst.jsdt.core.jsNature"/>
+		              <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
 		           </adapt>
 		        </or>
 		     </enablement>
@@ -5418,46 +5428,40 @@
 		           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragmentRoot"/>
 		           <instanceof value="org.eclipse.wst.jsdt.core.ICompilationUnit"/>
 		           <adapt type="org.eclipse.core.resources.IProject">
-		              <test
-		                    property="org.eclipse.core.resources.projectNature"
-		                    value="org.eclipse.wst.jsdt.core.jsNature"/>
+		              <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
 		           </adapt>
 		        </or>
 		     </enablement>
 		  </commonWizard>
 
 		    <commonWizard
-		          menuGroupId="org.eclipse.wst.jsdt.ui.java"
+				  menuGroupId="org.eclipse.wst.jsdt.ui.java"
 		          type="new"
 		          wizardId="org.eclipse.wst.jsdt.ui.wizards.NewEnumCreationWizard">
-				     <enablement>
-				        <or>
-				           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragment"/>
-				           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragmentRoot"/>
-				           <instanceof value="org.eclipse.wst.jsdt.core.ICompilationUnit"/>
-				           <adapt type="org.eclipse.core.resources.IProject">
-				              <test
-				                    property="org.eclipse.core.resources.projectNature"
-				                    value="org.eclipse.wst.jsdt.core.jsNature"/>
-				           </adapt>
-				        </or>
-				     </enablement>
+				<enablement>
+					<or>
+						<instanceof value="org.eclipse.wst.jsdt.core.IPackageFragment"/>
+						<instanceof value="org.eclipse.wst.jsdt.core.IPackageFragmentRoot"/>
+						<instanceof value="org.eclipse.wst.jsdt.core.ICompilationUnit"/>
+						<adapt type="org.eclipse.core.resources.IProject">
+							<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
+						</adapt>
+					</or>
+				 </enablement>
 		    </commonWizard>	 
 		    <commonWizard
 		          menuGroupId="org.eclipse.wst.jsdt.ui.java"
 		          type="new"
 		          wizardId="org.eclipse.wst.jsdt.ui.wizards.NewSourceFolderCreationWizard">
-				     <enablement>
-				        <or> 
-				           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragmentRoot"/> 
-				           <adapt type="org.eclipse.core.resources.IProject">
-				              <test
-				                    property="org.eclipse.core.resources.projectNature"
-				                    value="org.eclipse.wst.jsdt.core.jsNature"/>
-				           </adapt>
-				        </or>
-				     </enablement>
-			 </commonWizard>
+				<enablement>
+					<or> 
+						<instanceof value="org.eclipse.wst.jsdt.core.IPackageFragmentRoot"/> 
+						<adapt type="org.eclipse.core.resources.IProject">
+							<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
+						</adapt>
+					</or>
+				</enablement>
+			</commonWizard>
   			<dropAssistant
     			class="org.eclipse.wst.jsdt.internal.ui.navigator.JavaDropAdapterAssistant"
    				id="org.eclipse.wst.jsdt.ui.dropAssistant">
@@ -5509,16 +5513,10 @@
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideImportDeclaration"/> 
   		<commonFilter
 		        activeByDefault="true"
+		        class="org.eclipse.wst.jsdt.internal.ui.filters.InnerClassFilesFilter"
 		        name="%HideInnerClassFiles.label"
 		        description="%HideInnerClassFiles.description"
-		        id="org.eclipse.wst.jsdt.java.ui.filters.HideInnerClassFiles"> 
-	         <filterExpression>
-	         	<and>
-		            <instanceof value="org.eclipse.core.resources.IFile"/>
-	            	<test property="org.eclipse.core.resources.name" value="*$*.class"/>	            
-		        </and>
-	         </filterExpression>		        
-		</commonFilter>		 
+		        id="org.eclipse.wst.jsdt.java.ui.filters.HideInnerClassFiles"/>
   		<commonFilter 
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.JavaFileFilter"
 		        name="%HideJavaFiles.label"
@@ -5528,7 +5526,7 @@
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.LocalTypesFilter"
 		        name="%HideLocalTypes.label"
 		        description="%HideLocalTypes.description"
-		        id="org.eclipse.wst.jsdt.java.ui.filters.HideLocalTypes"/>    		 
+		        id="org.eclipse.wst.jsdt.java.ui.filters.HideLocalTypes"/>
   		<commonFilter 
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.NonJavaElementFilter"
 		        name="%HideNonJavaElements.label"
@@ -5571,49 +5569,522 @@
 		        name="%HideSyntheticMembers.label"
 		        description="%HideSyntheticMembers.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideSyntheticMembers"/>
-	</extension>
-	<extension
+   </extension>
+   <extension
        point="org.eclipse.ui.navigator.linkHelper">
 		<linkHelper
 	          class="org.eclipse.wst.jsdt.internal.ui.navigator.JavaFileLinkHelper"
 	          id="org.eclipse.wst.jsdt.java.ui.javaLinkHelper">          
 	         <editorInputEnablement>
 		         <or> 
-		         	<instanceof
-							value="org.eclipse.ui.IFileEditorInput" />
-		         	<instanceof
-							value="org.eclipse.wst.jsdt.internal.ui.javaeditor.IClassFileEditorInput" />
-		         	<instanceof
-							value="org.eclipse.wst.jsdt.internal.ui.javaeditor.JarEntryEditorInput" />
+		         	<instanceof value="org.eclipse.ui.IFileEditorInput" />
+		         	<instanceof value="org.eclipse.wst.jsdt.internal.ui.javaeditor.IClassFileEditorInput" />
+		         	<instanceof value="org.eclipse.wst.jsdt.internal.ui.javaeditor.JarEntryEditorInput" />
 		         </or>
 	         </editorInputEnablement>
 	         <selectionEnablement>
 	         	<or>
-					<adapt
-							type="org.eclipse.core.resources.IProject" >
+					<adapt type="org.eclipse.core.resources.IProject" >
+						<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
 					</adapt>
-					<instanceof
-							value="org.eclipse.core.resources.IWorkspaceRoot" />
-					<instanceof
-							value="org.eclipse.core.resources.IFolder" />
-					<instanceof
-							value="org.eclipse.core.resources.IFile" />
-					<instanceof
-							value="org.eclipse.core.resources.IStorage" />
-					<instanceof
-							value="org.eclipse.wst.jsdt.core.IJavaProject" />
-					<instanceof
-							value="org.eclipse.wst.jsdt.core.IJavaElement" />
-					<instanceof
-							value="org.eclipse.wst.jsdt.internal.core.JarEntryFile" />
-					<instanceof
-							value="org.eclipse.wst.jsdt.core.IClassFile" />
-					<instanceof
-							value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" />
+					<instanceof value="org.eclipse.core.resources.IResource" />
+					<instanceof value="org.eclipse.wst.jsdt.core.IJavaElement" />
+					<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" /> 
+					<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" />
 				</or>
 	         </selectionEnablement>
-      	</linkHelper>          
- </extension>
+      </linkHelper>          
+   </extension>
+   
+      <extension
+      point="org.eclipse.ui.themes">
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.matchingBracketsColor"
+         isEditable="false"
+         label="%Dummy.label"
+         value="192,192,192">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.java_multi_line_comment"
+         isEditable="false"
+         label="%Dummy.label"
+         value="63,127,95">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.java_keyword"
+         isEditable="false"
+         label="%Dummy.label"
+         value="127,0,85">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.java_keyword_return"
+         isEditable="false"
+         label="%Dummy.label"
+         value="127,0,85">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.java_string"
+         isEditable="false"
+         label="%Dummy.label"
+         value="42,0,255">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.java_default"
+         isEditable="false"
+         label="%Dummy.label"
+         value="0,0,0">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.java_single_line_comment"
+         isEditable="false"
+         label="%Dummy.label"
+         value="63,127,95">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.java_operator"
+         isEditable="false"
+         label="%Dummy.label"
+         value="0,0,0">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.java_doc_keyword"
+         isEditable="false"
+         label="%Dummy.label"
+         value="127,159,191">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.java_doc_tag"
+         isEditable="false"
+         label="%Dummy.label"
+         value="127,127,159">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.java_bracket"
+         isEditable="false"
+         label="%Dummy.label"
+         value="0,0,0">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.java_comment_task_tag"
+         isEditable="false"
+         label="%Dummy.label"
+         value="127,159,191">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.java_doc_link"
+         isEditable="false"
+         label="%Dummy.label"
+         value="63,63,191">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.java_doc_default"
+         isEditable="false"
+         label="%Dummy.label"
+         value="63,95,191">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.content_assist_proposals_background"
+         isEditable="false"
+         label="%Dummy.label"
+         value="255,255,255">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.content_assist_proposals_foreground"
+         isEditable="false"
+         label="%Dummy.label"
+         value="0,0,0">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.content_assist_parameters_background"
+         isEditable="false"
+         label="%Dummy.label"
+         value="255,255,255">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.content_assist_parameters_foreground"
+         isEditable="false"
+         label="%Dummy.label"
+         value="0,0,0">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.content_assist_completion_replacement_background"
+         isEditable="false"
+         label="%Dummy.label"
+         value="255,255,0">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.content_assist_completion_replacement_foreground"
+         isEditable="false"
+         label="%Dummy.label"
+         value="255,0,0">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.pf_coloring_value"
+         isEditable="false"
+         label="%Dummy.label"
+         value="42,0,255">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.pf_coloring_key"
+         isEditable="false"
+         label="%Dummy.label"
+         value="0,0,0">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.pf_coloring_argument"
+         isEditable="false"
+         label="%Dummy.label"
+         value="127,0,85">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.pf_coloring_assignment"
+         isEditable="false"
+         label="%Dummy.label"
+         value="0,0,0">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.pf_coloring_comment"
+         isEditable="false"
+         label="%Dummy.label"
+         value="63,127,95">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.staticFieldHighlighting"
+         isEditable="false"
+         label="%Dummy.label"
+         value="0,0,192">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.staticFinalFieldHighlighting"
+         isEditable="false"
+         label="%Dummy.label"
+         value="0,0,0">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.fieldHighlighting"
+         isEditable="false"
+         label="%Dummy.label"
+         value="0,0,192">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.autoboxingHighlighting"
+         isEditable="false"
+         label="%Dummy.label"
+         value="171,48,0">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.methodDeclarationNameHighlighting"
+         isEditable="false"
+         label="%Dummy.label"
+         value="0,0,0">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.annotationElementReferenceHighlighting"
+         isEditable="false"
+         label="%Dummy.label"
+         value="0,0,0">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.staticMethodInvocationHighlighting"
+         isEditable="false"
+         label="%Dummy.label"
+         value="0,0,0">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.abstractMethodInvocationHighlighting"
+         isEditable="false"
+         label="%Dummy.label"
+         value="0,0,0">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.inheritedMethodInvocationHighlighting"
+         isEditable="false"
+         label="%Dummy.label"
+         value="0,0,0">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.methodHighlighting"
+         isEditable="false"
+         label="%Dummy.label"
+         value="0,0,0">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.localVariableDeclarationHighlighting"
+         isEditable="false"
+         label="%Dummy.label"
+         value="0,0,0">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.localVariableHighlighting"
+         isEditable="false"
+         label="%Dummy.label"
+         value="0,0,0">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.parameterVariableHighlighting"
+         isEditable="false"
+         label="%Dummy.label"
+         value="0,0,0">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.deprecatedMemberHighlighting"
+         isEditable="false"
+         label="%Dummy.label"
+         value="0,0,0">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.typeVariableDeclarationHighlighting"
+         isEditable="false"
+         label="%Dummy.label"
+         value="100,70,50">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.classHighlighting"
+         isEditable="false"
+         label="%Dummy.label"
+         value="0,80,50">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.enumHighlighting"
+         isEditable="false"
+         label="%Dummy.label"
+         value="100,70,50">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.interfaceHighlighting"
+         isEditable="false"
+         label="%Dummy.label"
+         value="50,63,112">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.annotationHighlighting"
+         isEditable="false"
+         label="%Dummy.label"
+         value="100,100,100">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.typeArgumentHighlighting"
+         isEditable="false"
+         label="%Dummy.label"
+         value="13,100,0">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.typeParameterHighlighting"
+         isEditable="false"
+         label="%Dummy.label"
+         value="100,70,50">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.methodDeclarationHighlighting"
+         isEditable="false"
+         label="%Dummy.label"
+         value="0,0,0">
+      </colorDefinition>
+      <colorDefinition
+         id="org.eclipse.wst.jsdt.ui.methodDeclarationHighlighting"
+         isEditable="false"
+         label="%Dummy.label"
+         value="0,0,0">
+      </colorDefinition>
+     
+      <theme
+         id="org.eclipse.ui.ide.systemDefault">
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.matchingBracketsColor"
+            value="COLOR_WIDGET_NORMAL_SHADOW">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.java_multi_line_comment"
+            value="COLOR_LIST_SELECTION">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.java_keyword"
+            value="COLOR_LIST_FOREGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.java_keyword_return"
+            value="COLOR_LIST_FOREGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.java_string"
+            value="COLOR_LIST_FOREGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.java_single_line_comment"
+            value="COLOR_LIST_SELECTION">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.java_operator"
+            value="COLOR_LIST_FOREGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.java_doc_keyword"
+            value="COLOR_LIST_SELECTION">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.java_doc_tag"
+            value="COLOR_WIDGET_NORMAL_SHADOW">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.java_bracket"
+            value="COLOR_LIST_FOREGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.java_comment_task_tag"
+            value="COLOR_WIDGET_NORMAL_SHADOW">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.java_default"
+            value="COLOR_LIST_FOREGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.java_doc_link"
+            value="COLOR_LIST_SELECTION">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.java_doc_default"
+            value="COLOR_LIST_SELECTION">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.content_assist_proposals_background"
+            value="COLOR_LIST_BACKGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.content_assist_proposals_foreground"
+            value="COLOR_LIST_FOREGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.content_assist_parameters_background"
+            value="COLOR_LIST_BACKGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.content_assist_parameters_foreground"
+            value="COLOR_LIST_FOREGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.content_assist_completion_replacement_background"
+            value="COLOR_INFO_BACKGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.content_assist_completion_replacement_foreground"
+            value="COLOR_INFO_FOREGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.pf_coloring_value"
+            value="COLOR_LIST_FOREGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.pf_coloring_key"
+            value="COLOR_LIST_FOREGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.pf_coloring_argument"
+            value="COLOR_LIST_SELECTION">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.pf_coloring_assignment"
+            value="COLOR_LIST_FOREGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.pf_coloring_comment"
+            value="COLOR_LIST_SELECTION">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.staticFieldHighlighting"
+            value="COLOR_LIST_SELECTION">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.staticFinalFieldHighlighting"
+            value="COLOR_LIST_FOREGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.fieldHighlighting"
+            value="COLOR_LIST_SELECTION">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.autoboxHighlighting"
+            value="COLOR_WIDGET_DARK_SHADOW">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.abstractMethodDeclarationNameHighlighting"
+            value="COLOR_LIST_FOREGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.annotationElementReferenceHighlighting"
+            value="COLOR_LIST_FOREGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.staticMethodInvocationHighlighting"
+            value="COLOR_LIST_FOREGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.abstractMethodInvocationHighlighting"
+            value="COLOR_LIST_FOREGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.inheritedMethodInvocationHighlighting"
+            value="COLOR_LIST_SELECTION">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.methodHighlighting"
+            value="COLOR_LIST_FOREGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.localVariableDeclarationHighlighting"
+            value="COLOR_LIST_FOREGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.localVariableHighlighting"
+            value="COLOR_LIST_FOREGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.parameterVariableHighlighting"
+            value="COLOR_LIST_FOREGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.deprecatedMemberHighlighting"
+            value="COLOR_LIST_FOREGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.typeVariableDeclarationHighlighting"
+            value="COLOR_WIDGET_DARK_SHADOW">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.classHighlighting"
+            value="COLOR_WIDGET_DARK_SHADOW">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.enumHighlighting"
+            value="COLOR_WIDGET_DARK_SHADOW">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.interfaceHighlighting"
+            value="COLOR_LIST_SELECTION">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.annotationHighlighting"
+            value="COLOR_WIDGET_DARK_SHADOW">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.typeArgumentHighlighting"
+            value="COLOR_WIDGET_DARK_SHADOW">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.typeParameterHighlighting"
+            value="COLOR_WIDGET_DARK_SHADOW">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.methodDeclarationNameHighlighting"
+            value="COLOR_LIST_FOREGROUND">
+         </colorOverride>
+         <colorOverride
+            id="org.eclipse.wst.jsdt.ui.staticMethodDeclarationHighlighting"
+            value="COLOR_LIST_FOREGROUND">
+         </colorOverride>
+      </theme>
+   </extension>
+
+   
    <!--
    From Launching
    -->

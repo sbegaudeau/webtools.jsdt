@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,27 +35,32 @@ public class EqualExpression extends BinaryExpression {
 	}
 	private void checkVariableComparison(BlockScope scope, FlowContext flowContext, FlowInfo flowInfo, FlowInfo initsWhenTrue, FlowInfo initsWhenFalse, LocalVariableBinding local, int nullStatus, Expression reference) {
 		switch (nullStatus) {
-			case FlowInfo.NULL :
+		case FlowInfo.NULL :
+			if (((this.bits & OperatorMASK) >> OperatorSHIFT) == EQUAL_EQUAL) {
 				flowContext.recordUsingNullReference(scope, local, reference, 
-					FlowContext.CAN_ONLY_NULL_NON_NULL, flowInfo);
-				if (((this.bits & OperatorMASK) >> OperatorSHIFT) == EQUAL_EQUAL) {
-					initsWhenTrue.markAsComparedEqualToNull(local); // from thereon it is set
-					initsWhenFalse.markAsComparedEqualToNonNull(local); // from thereon it is set
-				} else {
-					initsWhenTrue.markAsComparedEqualToNonNull(local); // from thereon it is set
-					initsWhenFalse.markAsComparedEqualToNull(local); // from thereon it is set
-				}
-				break;
-			case FlowInfo.NON_NULL :
+						FlowContext.CAN_ONLY_NULL_NON_NULL | FlowContext.IN_COMPARISON_NULL, flowInfo);
+				initsWhenTrue.markAsComparedEqualToNull(local); // from thereon it is set
+				initsWhenFalse.markAsComparedEqualToNonNull(local); // from thereon it is set
+			} else {
 				flowContext.recordUsingNullReference(scope, local, reference, 
-					FlowContext.CAN_ONLY_NULL, flowInfo);
-				if (((this.bits & OperatorMASK) >> OperatorSHIFT) == EQUAL_EQUAL) {
-					initsWhenTrue.markAsComparedEqualToNonNull(local); // from thereon it is set
-				}
-				break;
-		}	
-		// we do not impact enclosing try context because this kind of protection
-		// does not preclude the variable from being null in an enclosing scope
+						FlowContext.CAN_ONLY_NULL_NON_NULL | FlowContext.IN_COMPARISON_NON_NULL, flowInfo);
+				initsWhenTrue.markAsComparedEqualToNonNull(local); // from thereon it is set
+				initsWhenFalse.markAsComparedEqualToNull(local); // from thereon it is set
+			}
+			break;
+		case FlowInfo.NON_NULL :
+			if (((this.bits & OperatorMASK) >> OperatorSHIFT) == EQUAL_EQUAL) {
+				flowContext.recordUsingNullReference(scope, local, reference, 
+						FlowContext.CAN_ONLY_NULL | FlowContext.IN_COMPARISON_NON_NULL, flowInfo);
+				initsWhenTrue.markAsComparedEqualToNonNull(local); // from thereon it is set
+			} else {
+				flowContext.recordUsingNullReference(scope, local, reference, 
+						FlowContext.CAN_ONLY_NULL | FlowContext.IN_COMPARISON_NULL, flowInfo);
+			}
+			break;
+	}	
+	// we do not impact enclosing try context because this kind of protection
+	// does not preclude the variable from being null in an enclosing scope
 	}
 	
 	public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {

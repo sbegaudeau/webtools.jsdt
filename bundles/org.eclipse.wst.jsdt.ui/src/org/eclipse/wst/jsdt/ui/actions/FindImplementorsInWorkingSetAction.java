@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -92,14 +92,14 @@ public class FindImplementorsInWorkingSetAction extends FindImplementorsAction {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJavaHelpContextIds.FIND_IMPLEMENTORS_IN_WORKING_SET_ACTION);
 	}
 
-	QuerySpecification createQuery(IJavaElement element) throws JavaModelException {
+	QuerySpecification createQuery(IJavaElement element) throws JavaModelException, InterruptedException {
 		JavaSearchScopeFactory factory= JavaSearchScopeFactory.getInstance();
 		
 		IWorkingSet[] workingSets= fWorkingSets;
 		if (fWorkingSets == null) {
 			workingSets= factory.queryWorkingSets();
 			if (workingSets == null)
-				return null;
+				return super.createQuery(element); // workspace
 		}
 		SearchUtil.updateLRUWorkingSets(workingSets);
 		IJavaSearchScope scope= factory.createJavaSearchScope(workingSets, true);

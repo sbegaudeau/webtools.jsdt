@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
  */
 public class ParameterizedTypeBinding extends ReferenceBinding implements Substitution {
 
-	public ReferenceBinding type; 
+	private ReferenceBinding type; // must ensure the type is resolved 
 	public TypeBinding[] arguments;
 	public LookupEnvironment environment; 
 	public char[] genericTypeSignature;
@@ -41,15 +41,23 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 //		}
 		initialize(type, arguments);
 		if (type instanceof UnresolvedReferenceBinding)
-			((UnresolvedReferenceBinding) type).addWrapper(this);
+			((UnresolvedReferenceBinding) type).addWrapper(this, environment);
 		if (arguments != null) {
 			for (int i = 0, l = arguments.length; i < l; i++)
 				if (arguments[i] instanceof UnresolvedReferenceBinding)
-					((UnresolvedReferenceBinding) arguments[i]).addWrapper(this);
+					((UnresolvedReferenceBinding) arguments[i]).addWrapper(this, environment);
 		}
 		this.tagBits |=  TagBits.HasUnresolvedTypeVariables; // cleared in resolve()
 	}
 
+	/**
+	 * May return an UnresolvedReferenceBinding.
+	 * @see ParameterizedTypeBinding#genericType()
+	 */
+	protected ReferenceBinding actualType() {
+		return this.type; 
+	}
+	
 	/**
 	 * Iterate type arguments, and validate them according to corresponding variable bounds.
 	 */
@@ -68,15 +76,11 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 			if (!hasErrors) this.tagBits |= TagBits.PassedBoundCheck; // no need to recheck it in the future
 		}
 	}
-	
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding#canBeInstantiated()
 	 */
 	public boolean canBeInstantiated() {
 		return ((this.tagBits & TagBits.HasDirectWildcard) == 0) && super.canBeInstantiated(); // cannot instantiate param type with wildcard arguments
-	}
-	public int kind() {
-		return PARAMETERIZED_TYPE;
 	}	
 	/**
 	 * Perform capture conversion for a parameterized type with wildcard arguments
@@ -115,9 +119,9 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 	 * Collect the substitutes into a map for certain type variables inside the receiver type
 	 * e.g.   Collection<T>.collectSubstitutes(Collection<List<X>>, Map), will populate Map with: T --> List<X>
 	 * Constraints:
-	 *   A << F   corresponds to:   F.collectSubstitutes(..., A, ..., 1)
-	 *   A = F   corresponds to:      F.collectSubstitutes(..., A, ..., 0)
-	 *   A >> F   corresponds to:   F.collectSubstitutes(..., A, ..., 2)
+	 *   A << F   corresponds to:   F.collectSubstitutes(..., A, ..., CONSTRAINT_EXTENDS (1))
+	 *   A = F   corresponds to:      F.collectSubstitutes(..., A, ..., CONSTRAINT_EQUAL (0))
+	 *   A >> F   corresponds to:   F.collectSubstitutes(..., A, ..., CONSTRAINT_SUPER (2))
 	 */
 	public void collectSubstitutes(Scope scope, TypeBinding actualType, InferenceContext inferenceContext, int constraint) {
 		
@@ -343,6 +347,17 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 	}
 
 	/**
+	 * Return the original generic type from which the parameterized type got instantiated from.
+	 * This will perform lazy resolution automatically if needed.
+	 * @see ParameterizedTypeBinding#actualType() if no resolution is required (unlikely)
+	 */
+	public ReferenceBinding genericType() {
+		if (this.type instanceof UnresolvedReferenceBinding)
+			((UnresolvedReferenceBinding) this.type).resolve(this.environment, false);
+		return this.type;
+	}	
+
+	/**
 	 * Ltype<param1 ... paramN>;
 	 * LY<TT;>;
 	 */
@@ -370,20 +385,21 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 			sig.getChars(0, sigLength, this.genericTypeSignature, 0);			
 	    }
 		return this.genericTypeSignature;	    
-	}	
-
+	}
+	
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding#getAnnotationTagBits()
 	 */
 	public long getAnnotationTagBits() {
 		return this.type.getAnnotationTagBits();
 	}
-	
+
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding#getExactConstructor(TypeBinding[])
 	 */
 	public MethodBinding getExactConstructor(TypeBinding[] argumentTypes) {
 		int argCount = argumentTypes.length;
+		MethodBinding match = null;
 
 		if ((tagBits & TagBits.AreMethodsComplete) != 0) { // have resolved all arg types & return type of the methods
 			long range;
@@ -395,7 +411,8 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 						for (int iarg = 0; iarg < argCount; iarg++)
 							if (toMatch[iarg] != argumentTypes[iarg])
 								continue nextMethod;
-						return method;
+						if (match != null) return null; // collision case
+						match = method;
 					}
 				}
 			}
@@ -408,11 +425,12 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 					for (int p = 0; p < argCount; p++)
 						if (toMatch[p] != argumentTypes[p])
 							continue nextMethod;
-						return method;
+						if (match != null) return null; // collision case
+						match = method;
 				}
 			}
 		}
-		return null;
+		return match;
 	}
 
 	/**
@@ -599,11 +617,11 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 		this.tagBits |= someType.tagBits & (TagBits.IsLocalType| TagBits.IsMemberType | TagBits.IsNestedType);
 		this.tagBits &= ~(TagBits.AreFieldsComplete|TagBits.AreMethodsComplete);
 	}
-
+	
 	protected void initializeArguments() {
 	    // do nothing for true parameterized types (only for raw types)
 	}
-	
+
 	public boolean isEquivalentTo(TypeBinding otherType) {
 		if (this == otherType) 
 		    return true;
@@ -647,7 +665,7 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 	    }
         return false;
 	}
-
+	
 	public boolean isIntersectingWith(TypeBinding otherType) {
 		if (this == otherType) 
 		    return true;
@@ -728,7 +746,11 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 	public boolean isRawSubstitution() {
 		return isRawType();
 	}
-	
+
+	public int kind() {
+		return PARAMETERIZED_TYPE;
+	}
+
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding#memberTypes()
 	 */
@@ -778,7 +800,14 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 		}		
 		return this.methods;
 	}
-	
+
+	/**
+	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding#qualifiedPackageName()
+	 */
+	public char[] qualifiedPackageName() {
+		return this.type.qualifiedPackageName();
+	}
+
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding#qualifiedSourceName()
 	 */
@@ -879,7 +908,7 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 	 */
 	public char[] sourceName() {
 		return this.type.sourceName();
-	}
+	}	
 
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.Substitution#substitute(org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding)
@@ -906,7 +935,7 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 			currentType = (ParameterizedTypeBinding) enclosing;
 		}
 		return originalVariable;
-	}	
+	}
 
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding#superclass()
@@ -967,13 +996,6 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 	 */
 	public SyntheticArgumentBinding[] syntheticOuterLocalVariables() {
 		return this.type.syntheticOuterLocalVariables();
-	}
-
-	/**
-	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding#qualifiedPackageName()
-	 */
-	public char[] qualifiedPackageName() {
-		return this.type.qualifiedPackageName();
 	}
 
 	/**

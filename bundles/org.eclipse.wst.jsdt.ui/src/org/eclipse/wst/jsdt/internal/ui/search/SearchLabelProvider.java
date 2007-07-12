@@ -43,6 +43,8 @@ import org.eclipse.wst.jsdt.ui.search.IMatchPresentation;
 
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredJavaElementLabels;
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredString;
 
 public abstract class SearchLabelProvider extends AppearanceAwareLabelProvider {
 	
@@ -65,7 +67,7 @@ public abstract class SearchLabelProvider extends AppearanceAwareLabelProvider {
 
 	public SearchLabelProvider(JavaSearchResultPage page) {
 		super(DEFAULT_SEARCH_TEXTFLAGS, DEFAULT_SEARCH_IMAGEFLAGS);
-		addLabelDecorator(new ProblemsLabelDecorator());
+		addLabelDecorator(new ProblemsLabelDecorator(null));
 		
 		fPage= page;
 		fLabelProviderMap= new HashMap(5);
@@ -120,6 +122,15 @@ public abstract class SearchLabelProvider extends AppearanceAwareLabelProvider {
 		return res;
 	}
 		
+	protected final ColoredString getColoredLabelWithCounts(Object element, ColoredString coloredName) {
+		String name= coloredName.getString();
+		String decorated= getLabelWithCounts(element, name);
+		if (decorated.length() > name.length()) {
+			ColoredJavaElementLabels.decorateColoredString(coloredName, decorated, ColoredJavaElementLabels.COUNTER_STYLE);
+		}
+		return coloredName;
+	}
+	
 	protected final String getLabelWithCounts(Object element, String elementName) {
 		int matchCount= fPage.getDisplayedMatchCount(element);
 		int potentialCount= getNumberOfPotentialMatches(element);

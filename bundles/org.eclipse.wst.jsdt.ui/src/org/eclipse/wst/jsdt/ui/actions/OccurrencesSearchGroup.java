@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,11 +26,8 @@ import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 
-import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
 import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 
-import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.search.SearchMessages;
 
@@ -131,8 +128,7 @@ public class OccurrencesSearchGroup extends ActionGroup  {
 		String menuText= SearchMessages.group_occurrences;
 		String shortcut= getShortcutString();
 		if (shortcut != null) {
-			String[] args= new String[] { menuText, shortcut};
-			menuText= Messages.format(ActionMessages.QuickMenuAction_menuTextWithShortcut, args); 
+			menuText= menuText + '\t' + shortcut;
 		}
 
 		MenuManager javaSearchMM= new MenuManager(menuText, IContextMenuConstants.GROUP_SEARCH);

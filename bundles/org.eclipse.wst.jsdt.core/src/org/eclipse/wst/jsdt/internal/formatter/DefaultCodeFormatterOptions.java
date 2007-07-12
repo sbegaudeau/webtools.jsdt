@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -298,6 +298,8 @@ public class DefaultCodeFormatterOptions {
 	public boolean keep_empty_array_initializer_on_one_line;
 	public boolean keep_simple_if_on_one_line;
 	public boolean keep_then_statement_on_same_line;
+	public boolean never_indent_block_comments_on_first_column;
+	public boolean never_indent_line_comments_on_first_column;
 	public int number_of_empty_lines_to_preserve;
 	public boolean put_empty_statement_on_new_line;
 	public int tab_size;
@@ -305,6 +307,7 @@ public class DefaultCodeFormatterOptions {
 	public int page_width;
 	public int tab_char;
 	public boolean use_tabs_only_for_leading_indentations;
+	public boolean wrap_before_binary_operator;
 	
 	public int initial_indentation_level;
 	public String line_separator;
@@ -570,6 +573,8 @@ public class DefaultCodeFormatterOptions {
 		options.put(DefaultCodeFormatterConstants.FORMATTER_KEEP_EMPTY_ARRAY_INITIALIZER_ON_ONE_LINE, this.keep_empty_array_initializer_on_one_line ? DefaultCodeFormatterConstants.TRUE : DefaultCodeFormatterConstants.FALSE);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_KEEP_SIMPLE_IF_ON_ONE_LINE, this.keep_simple_if_on_one_line ? DefaultCodeFormatterConstants.TRUE : DefaultCodeFormatterConstants.FALSE);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_KEEP_THEN_STATEMENT_ON_SAME_LINE, this.keep_then_statement_on_same_line ? DefaultCodeFormatterConstants.TRUE : DefaultCodeFormatterConstants.FALSE);
+		options.put(DefaultCodeFormatterConstants.FORMATTER_NEVER_INDENT_BLOCK_COMMENTS_ON_FIRST_COLUMN, this.never_indent_block_comments_on_first_column ? DefaultCodeFormatterConstants.TRUE : DefaultCodeFormatterConstants.FALSE);
+		options.put(DefaultCodeFormatterConstants.FORMATTER_NEVER_INDENT_LINE_COMMENTS_ON_FIRST_COLUMN, this.never_indent_line_comments_on_first_column ? DefaultCodeFormatterConstants.TRUE : DefaultCodeFormatterConstants.FALSE);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_NUMBER_OF_EMPTY_LINES_TO_PRESERVE, Integer.toString(this.number_of_empty_lines_to_preserve));
 		options.put(DefaultCodeFormatterConstants.FORMATTER_PUT_EMPTY_STATEMENT_ON_NEW_LINE, this.put_empty_statement_on_new_line ? DefaultCodeFormatterConstants.TRUE : DefaultCodeFormatterConstants.FALSE);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_LINE_SPLIT, Integer.toString(this.page_width));
@@ -586,6 +591,7 @@ public class DefaultCodeFormatterOptions {
 		}
 		options.put(DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE, Integer.toString(this.tab_size));
 		options.put(DefaultCodeFormatterConstants.FORMATTER_USE_TABS_ONLY_FOR_LEADING_INDENTATIONS, this.use_tabs_only_for_leading_indentations ?  DefaultCodeFormatterConstants.TRUE : DefaultCodeFormatterConstants.FALSE);
+		options.put(DefaultCodeFormatterConstants.FORMATTER_WRAP_BEFORE_BINARY_OPERATOR, this.wrap_before_binary_operator ? DefaultCodeFormatterConstants.TRUE : DefaultCodeFormatterConstants.FALSE);
 		return options;
 	}
 
@@ -1823,6 +1829,14 @@ public class DefaultCodeFormatterOptions {
 		if (keepThenStatementOnSameLineOption != null) {
 			this.keep_then_statement_on_same_line = DefaultCodeFormatterConstants.TRUE.equals(keepThenStatementOnSameLineOption);
 		}
+		final Object neverIndentBlockCommentOnFirstColumnOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_NEVER_INDENT_BLOCK_COMMENTS_ON_FIRST_COLUMN);
+		if (neverIndentBlockCommentOnFirstColumnOption != null) {
+			this.never_indent_block_comments_on_first_column = DefaultCodeFormatterConstants.TRUE.equals(neverIndentBlockCommentOnFirstColumnOption);
+		}
+		final Object neverIndentLineCommentOnFirstColumnOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_NEVER_INDENT_LINE_COMMENTS_ON_FIRST_COLUMN);
+		if (neverIndentLineCommentOnFirstColumnOption != null) {
+			this.never_indent_line_comments_on_first_column = DefaultCodeFormatterConstants.TRUE.equals(neverIndentLineCommentOnFirstColumnOption);
+		}
 		final Object numberOfEmptyLinesToPreserveOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_NUMBER_OF_EMPTY_LINES_TO_PRESERVE);
 		if (numberOfEmptyLinesToPreserveOption != null) {
 			try {
@@ -1870,6 +1884,10 @@ public class DefaultCodeFormatterOptions {
 			} else {
 				this.tab_char = MIXED;
 			}
+		}
+		final Object wrapBeforeBinaryOperatorOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_WRAP_BEFORE_BINARY_OPERATOR);
+		if (wrapBeforeBinaryOperatorOption != null) {
+			this.wrap_before_binary_operator = DefaultCodeFormatterConstants.TRUE.equals(wrapBeforeBinaryOperatorOption);
 		}
 	}
 
@@ -2140,12 +2158,15 @@ public class DefaultCodeFormatterOptions {
 		this.keep_empty_array_initializer_on_one_line = false;
 		this.keep_simple_if_on_one_line = false;
 		this.keep_then_statement_on_same_line = false;
+		this.never_indent_block_comments_on_first_column = false;
+		this.never_indent_line_comments_on_first_column = false;
 		this.number_of_empty_lines_to_preserve = 1;
 		this.put_empty_statement_on_new_line = false;
 		this.tab_size = 4;
 		this.page_width = 80;
 		this.tab_char = TAB; // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=49081
 		this.use_tabs_only_for_leading_indentations = false;
+		this.wrap_before_binary_operator = true;
 	}
 	
 	public void setEclipseDefaultSettings() {
@@ -2399,11 +2420,14 @@ public class DefaultCodeFormatterOptions {
 		this.keep_empty_array_initializer_on_one_line = false;
 		this.keep_simple_if_on_one_line = false;
 		this.keep_then_statement_on_same_line = false;
+		this.never_indent_block_comments_on_first_column = false;
+		this.never_indent_line_comments_on_first_column = false;
 		this.number_of_empty_lines_to_preserve = 1;
 		this.put_empty_statement_on_new_line = true;
 		this.tab_size = 8;
 		this.page_width = 80;
 		this.tab_char = MIXED;
 		this.use_tabs_only_for_leading_indentations = false;
+		this.wrap_before_binary_operator = true;
 	}
 }

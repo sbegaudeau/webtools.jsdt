@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -441,7 +441,6 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 		return RefactoringScopeFactory.create(method);
 	}
 	
-	/** */
 	SearchPattern createOccurrenceSearchPattern() {
 		HashSet methods= new HashSet(fMethodsToRename);
 		methods.add(fMethod);
@@ -586,11 +585,11 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 			// Note that except these ocurrences, the delegate bodies are empty 
 			// (as they were created this way).
 			requestor= new MethodOccurenceCollector(getNewElementName()) {
-				public void acceptSearchMatch(SearchMatch match) throws CoreException {
+				public void acceptSearchMatch(ICompilationUnit unit, SearchMatch match) throws CoreException {
 					for (int i= 0; i < wcOldMethods.length; i++) 
 						if (wcOldMethods[i].equals(match.getElement()))
 							return;
-					super.acceptSearchMatch(match);
+					super.acceptSearchMatch(unit, match);
 				}
 			};
 		} else

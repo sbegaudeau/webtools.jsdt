@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,30 +11,17 @@
 package org.eclipse.wst.jsdt.internal.ui.fix;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
-
-import org.eclipse.text.edits.MalformedTreeException;
-import org.eclipse.text.edits.TextEdit;
 
 import org.eclipse.core.runtime.CoreException;
 
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.IDocument;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
 
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.corext.fix.IFix;
-import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
 
 import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 public class CodeFormatCleanUp extends AbstractCleanUp {
 	
@@ -103,32 +90,23 @@ public class CodeFormatCleanUp extends AbstractCleanUp {
 	
 	public String getPreview() {
 		StringBuffer buf= new StringBuffer();
-		buf.append("package org.model;\n"); //$NON-NLS-1$
 		buf.append("public class Engine {\n"); //$NON-NLS-1$
 		buf.append("  public void start() {}\n"); //$NON-NLS-1$
-		buf.append("    public \n"); //$NON-NLS-1$
+		if (isEnabled(CleanUpConstants.FORMAT_REMOVE_TRAILING_WHITESPACES) && isEnabled(CleanUpConstants.FORMAT_REMOVE_TRAILING_WHITESPACES_ALL)) {
+			buf.append("\n"); //$NON-NLS-1$
+		} else {
+			buf.append("    \n"); //$NON-NLS-1$
+		}
+		if (isEnabled(CleanUpConstants.FORMAT_REMOVE_TRAILING_WHITESPACES)) {
+			buf.append("    public\n"); //$NON-NLS-1$
+		} else {
+			buf.append("    public \n"); //$NON-NLS-1$
+		}
 		buf.append("        void stop() {\n"); //$NON-NLS-1$
 		buf.append("    }\n"); //$NON-NLS-1$
 		buf.append("}\n"); //$NON-NLS-1$
 		
-		String original= buf.toString();
-		if (!isEnabled(CleanUpConstants.FORMAT_SOURCE_CODE))
-			return original;
-		
-		HashMap preferences= new HashMap(JavaCore.getOptions());
-		TextEdit edit= CodeFormatterUtil.format2(CodeFormatter.K_COMPILATION_UNIT, original, 0, original.length(), 0, "\n", preferences); //$NON-NLS-1$
-		if (edit == null)
-			return original;
-		
-		IDocument doc= new Document(original);
-		try {
-			edit.apply(doc);
-		} catch (MalformedTreeException e) {
-			JavaPlugin.log(e);
-		} catch (BadLocationException e) {
-			JavaPlugin.log(e);
-		}
-		return doc.get();
+		return buf.toString();
 	}
 	
 	/**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,8 +29,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpPreferenceUtil;
@@ -40,6 +40,7 @@ import org.eclipse.wst.jsdt.ui.JavaUI;
 
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.fix.ICleanUp;
+import org.eclipse.wst.jsdt.internal.ui.preferences.BulletListBlock;
 import org.eclipse.wst.jsdt.internal.ui.preferences.PreferencesAccess;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.IProfileVersioner;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ModifyDialog;
@@ -65,6 +66,7 @@ public class CleanUpConfigurationBlock extends ProfileConfigurationBlock {
 	private SelectionButtonDialogField fShowCleanUpWizardDialogField;
 	private CleanUpProfileManager fProfileManager;
 	private ProfileStore fProfileStore;
+	private BulletListBlock fBrowserBlock;
     
     public CleanUpConfigurationBlock(IProject project, PreferencesAccess access) {
 	    super(project, access, DIALOGSTORE_LASTSAVELOADPATH);
@@ -103,11 +105,10 @@ public class CleanUpConfigurationBlock extends ProfileConfigurationBlock {
 		
 		createLabel(composite, CleanUpMessages.CleanUpConfigurationBlock_SelectedCleanUps_label, numColumns);
 		
-		final Text detailField= new Text(composite, SWT.BORDER | SWT.FLAT | SWT.MULTI | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL);
-		detailField.setText(getSelectedCleanUpsInfo(cleanUps));
-		final GridData data= new GridData(GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL);
-		data.horizontalSpan= numColumns;
-		detailField.setLayoutData(data);
+		fBrowserBlock= new BulletListBlock();
+		Control control= fBrowserBlock.createControl(composite);
+		((GridData)control.getLayoutData()).horizontalSpan= numColumns;
+		fBrowserBlock.setText(getSelectedCleanUpsInfo(cleanUps));
 		
 		profileManager.addObserver(new Observer() {
 
@@ -119,7 +120,7 @@ public class CleanUpConfigurationBlock extends ProfileConfigurationBlock {
 				case ProfileManager.SELECTION_CHANGED_EVENT:
 				case ProfileManager.SETTINGS_CHANGED_EVENT:
 					fill(profileManager.getSelected().getSettings(), sharedSettings);
-					detailField.setText(getSelectedCleanUpsInfo(cleanUps));
+					fBrowserBlock.setText(getSelectedCleanUpsInfo(cleanUps));
 				}
             }
 			
@@ -127,15 +128,26 @@ public class CleanUpConfigurationBlock extends ProfileConfigurationBlock {
     }
 
     private String getSelectedCleanUpsInfo(ICleanUp[] cleanUps) {
+    	if (cleanUps.length == 0)
+    		return ""; //$NON-NLS-1$
+    	
     	StringBuffer buf= new StringBuffer();
+    	
+    	boolean first= true;
     	for (int i= 0; i < cleanUps.length; i++) {
 	        String[] descriptions= cleanUps[i].getDescriptions();
 	        if (descriptions != null) {
     	        for (int j= 0; j < descriptions.length; j++) {
-    	            buf.append('-').append(' ').append(descriptions[j]).append('\n');
+    	        	if (first) {
+    	        		first= false;
+    	        	} else {
+    	        		buf.append('\n');
+    	        	}
+    	            buf.append(descriptions[j]);
                 }
 	        }
         }
+    	
     	return buf.toString();
     }
 
@@ -254,5 +266,9 @@ public class CleanUpConfigurationBlock extends ProfileConfigurationBlock {
 				}
 			}
 		}
+	}
+	
+	public void enableProjectSpecificSettings(boolean useProjectSpecificSettings) {
+		fBrowserBlock.setEnabled(useProjectSpecificSettings);
 	}
 }

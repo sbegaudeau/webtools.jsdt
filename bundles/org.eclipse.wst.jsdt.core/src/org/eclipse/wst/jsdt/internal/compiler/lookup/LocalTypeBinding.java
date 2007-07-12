@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -91,9 +91,9 @@ public char[] constantPoolName() /* java/lang/Object */ {
 	return constantPoolName;
 }
 
-ArrayBinding createArrayType(int dimensionCount) {
+ArrayBinding createArrayType(int dimensionCount, LookupEnvironment lookupEnvironment) {
 	if (localArrayBindings == null) {
-		localArrayBindings = new ArrayBinding[] {new ArrayBinding(this, dimensionCount, scope.environment())};
+		localArrayBindings = new ArrayBinding[] {new ArrayBinding(this, dimensionCount, lookupEnvironment)};
 		return localArrayBindings[0];
 	}
 
@@ -105,7 +105,7 @@ ArrayBinding createArrayType(int dimensionCount) {
 
 	// no matching array
 	System.arraycopy(localArrayBindings, 0, localArrayBindings = new ArrayBinding[length + 1], 0, length); 
-	return localArrayBindings[length] = new ArrayBinding(this, dimensionCount, scope.environment());
+	return localArrayBindings[length] = new ArrayBinding(this, dimensionCount, lookupEnvironment);
 }
 
 /*

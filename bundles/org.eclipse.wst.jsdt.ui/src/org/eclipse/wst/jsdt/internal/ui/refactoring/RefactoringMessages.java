@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,22 @@ import org.eclipse.osgi.util.NLS;
 public final class RefactoringMessages extends NLS {
 
 	private static final String BUNDLE_NAME= "org.eclipse.wst.jsdt.internal.ui.refactoring.refactoringui";//$NON-NLS-1$
+
+	public static String ChangeExceptionHandler_abort_button;
+
+	public static String ChangeExceptionHandler_dialog_message;
+
+	public static String ChangeExceptionHandler_dialog_title;
+
+	public static String ChangeExceptionHandler_message;
+
+	public static String ChangeExceptionHandler_status_without_detail;
+
+	public static String ChangeExceptionHandler_undo_button;
+
+	public static String ChangeExceptionHandler_undo_dialog_message;
+
+	public static String ChangeExceptionHandler_undo_dialog_title;
 
 	public static String ChangeExceptionsControl_buttons_add;
 
@@ -97,8 +113,6 @@ public final class RefactoringMessages extends NLS {
 	public static String ChangeTypeWizard_title;
 
 	public static String ChangeTypeWizard_with_itself;
-
-	public static String CleanUpAction_dialog_title;
 
 	public static String ConvertAnonymousToNestedAction_Convert_Anonymous;
 
@@ -381,6 +395,8 @@ public final class RefactoringMessages extends NLS {
 	public static String InlineTempInputPage_message_multi;
 
 	public static String InlineTempInputPage_message_one;
+
+	public static String InlineTempInputPage_message_zero;
 
 	public static String InlineTempWizard_defaultPageTitle;
 
@@ -688,6 +704,10 @@ public final class RefactoringMessages extends NLS {
 
 	public static String RefactoringExecutionHelper_cannot_execute;
 
+	public static String RefactoringExecutionStarter_IntroduceParameterObject_problem_description;
+
+	public static String RefactoringExecutionStarter_IntroduceParameterObject_problem_title;
+
 	public static String RefactoringGroup_modify_Parameters_label;
 
 	public static String RefactoringGroup_move_label;
@@ -868,6 +888,10 @@ public final class RefactoringMessages extends NLS {
 
 	public static String SelfEncapsulateFieldInputPage_setter_name;
 
+	public static String SelfEncapsulateFieldInputPage_usenewgetter_label;
+
+	public static String SelfEncapsulateFieldInputPage_usenewsetter_label;
+
 	public static String SurroundWithTryCatchAction_dialog_title;
 
 	public static String SurroundWithTryCatchAction_exception;
@@ -913,6 +937,11 @@ public final class RefactoringMessages extends NLS {
 	public static String VisibilityControlUtil_final;
 
 	public static String VisibilityControlUtil_synchronized;
+
+	public static String SelfEncapsulateFieldInputPage_useexistingsetter_label;
+
+	public static String SelfEncapsulateFieldInputPage_useexistinggetter_label;
+	
 
 	static {
 		reloadMessages();

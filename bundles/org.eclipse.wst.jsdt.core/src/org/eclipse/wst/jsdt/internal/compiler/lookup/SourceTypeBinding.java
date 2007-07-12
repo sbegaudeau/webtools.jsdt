@@ -1147,7 +1147,7 @@ public boolean isEquivalentTo(TypeBinding otherType) {
 			if ((otherType.tagBits & TagBits.HasDirectWildcard) == 0 && (!this.isMemberType() || !otherType.isMemberType())) 
 				return false; // should have been identical
 			ParameterizedTypeBinding otherParamType = (ParameterizedTypeBinding) otherType;
-			if (this != otherParamType.type) 
+			if (this != otherParamType.genericType()) 
 				return false;
 			if (!isStatic()) { // static member types do not compare their enclosing
             	ReferenceBinding enclosing = enclosingType();
@@ -1507,14 +1507,12 @@ public MethodBinding resolveTypesFor(MethodBinding method) {
 			} else if (parameterType == TypeBinding.VOID) {
 				methodDecl.scope.problemReporter().argumentTypeCannotBeVoid(this, methodDecl, arg);
 				foundArgProblem = true;
-			} else if (parameterType.isArrayType() && ((ArrayBinding) parameterType).leafComponentType == TypeBinding.VOID) {
-				methodDecl.scope.problemReporter().argumentTypeCannotBeVoidArray(arg);
-				foundArgProblem = true;
 			} else {
 				TypeBinding leafType = parameterType.leafComponentType();
 			    if (leafType instanceof ReferenceBinding && (((ReferenceBinding) leafType).modifiers & ExtraCompilerModifiers.AccGenericSignature) != 0)
 					method.modifiers |= ExtraCompilerModifiers.AccGenericSignature;
 				newParameters[i] = parameterType;
+				arg.binding = new LocalVariableBinding(arg, parameterType, arg.modifiers, true);
 			}
 		}
 		// only assign parameters if no problems are found
@@ -1567,7 +1565,7 @@ public MethodBinding resolveTypesFor(MethodBinding method) {
 	method.modifiers &= ~ExtraCompilerModifiers.AccUnresolved;
 	return method;
 }
-AnnotationHolder retrieveAnnotationHolder(Binding binding, boolean forceInitialization) {
+public AnnotationHolder retrieveAnnotationHolder(Binding binding, boolean forceInitialization) {
 	if (forceInitialization)
 		binding.getAnnotationTagBits(); // ensure annotations are up to date
 	return super.retrieveAnnotationHolder(binding, false);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,15 +19,17 @@ public class CleanUpMessages extends NLS {
 	public static String CleanUpConfigurationBlock_SelectedCleanUps_label;
 	public static String CleanUpConfigurationBlock_ShowCleanUpWizard_checkBoxLabel;
 
+	public static String CleanUpModifyDialog_SelectOne_Error;
+
 	public static String CleanUpModifyDialog_TabPageName_CodeFormating;
 	public static String CleanUpModifyDialog_TabPageName_CodeStyle;
 	public static String CleanUpModifyDialog_TabPageName_MemberAccesses;
 	public static String CleanUpModifyDialog_TabPageName_MissingCode;
 	public static String CleanUpModifyDialog_TabPageName_UnnecessaryCode;
+
+	public static String CleanUpModifyDialog_XofYSelected_Label;
 	
 	public static String CleanUpProfileManager_ProfileName_EclipseBuildIn;
-
-	public static String CleanUpProfileManager_save_participant_profileName;
 
 	public static String CodeFormatingTabPage_CheckboxName_FormatSourceCode;
 	public static String CodeFormatingTabPage_FormatterSettings_Description;
@@ -38,6 +40,7 @@ public class CleanUpMessages extends NLS {
 	public static String CodeFormatingTabPage_SortMembers_GroupName;
 	public static String CodeFormatingTabPage_SortMembers_CheckBoxLabel;
 	public static String CodeFormatingTabPage_SortMembers_Description;
+	public static String CodeFormatingTabPage_SortMembersExclusive_radio0;
 //	public static String CodeFormatingTabPage_SortMembersFields_CheckBoxLabel;
 
 	public static String CodeFormatingTabPage_RemoveTrailingWhitespace_all_radio;
@@ -45,6 +48,8 @@ public class CleanUpMessages extends NLS {
 	public static String CodeFormatingTabPage_RemoveTrailingWhitespace_checkbox_text;
 
 	public static String CodeFormatingTabPage_RemoveTrailingWhitespace_ignoreEmpty_radio;
+
+	public static String CodeFormatingTabPage_SortMembersSemanticChange_warning;
 
 	public static String CodeStyleTabPage_CheckboxName_ConvertForLoopToEnhanced;
 	public static String CodeStyleTabPage_CheckboxName_UseBlocks;

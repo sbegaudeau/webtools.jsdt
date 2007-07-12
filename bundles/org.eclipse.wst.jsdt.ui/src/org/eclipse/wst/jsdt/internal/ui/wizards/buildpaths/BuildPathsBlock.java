@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -112,11 +112,12 @@ public class BuildPathsBlock {
 		/**
 		 * Do the callback. Returns <code>true</code> if .class files should be removed from the
 		 * old output location.
+		 * @param removeLocation true if the folder at oldOutputLocation should be removed, false if only its content
 		 * @param oldOutputLocation The old output location
 		 * @return Returns true if .class files should be removed.
 		 * @throws OperationCanceledException
 		 */
-		boolean doQuery(IPath oldOutputLocation) throws OperationCanceledException;
+		boolean doQuery(boolean removeLocation, IPath oldOutputLocation) throws OperationCanceledException;
 		
 	}
 
@@ -1000,7 +1001,7 @@ public class BuildPathsBlock {
 					IPath folderOutput= (IPath) entry.getAttribute(CPListElement.OUTPUT);
 					if (folderOutput != null && folderOutput.segmentCount() > 1) {
 						IFolder folder= fWorkspaceRoot.getFolder(folderOutput);
-						CoreUtility.createFolder(folder, true, true, new SubProgressMonitor(monitor, 1));
+						CoreUtility.createDerivedFolder(folder, true, true, new SubProgressMonitor(monitor, 1));
 					} else {
 						monitor.worked(1);
 					}
@@ -1101,13 +1102,18 @@ public class BuildPathsBlock {
 	
 	public static IRemoveOldBinariesQuery getRemoveOldBinariesQuery(final Shell shell) {
 		return new IRemoveOldBinariesQuery() {
-			public boolean doQuery(final IPath oldOutputLocation) throws OperationCanceledException {
+			public boolean doQuery(final boolean removeFolder, final IPath oldOutputLocation) throws OperationCanceledException {
 				final int[] res= new int[] { 1 };
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
 						Shell sh= shell != null ? shell : JavaPlugin.getActiveWorkbenchShell();
 						String title= NewWizardMessages.BuildPathsBlock_RemoveBinariesDialog_title; 
-						String message= Messages.format(NewWizardMessages.BuildPathsBlock_RemoveBinariesDialog_description, oldOutputLocation.toString()); 
+						String message;
+						if (removeFolder) {
+							message= Messages.format(NewWizardMessages.BuildPathsBlock_RemoveOldOutputFolder_description, oldOutputLocation.makeRelative().toOSString());
+						} else {
+							message= Messages.format(NewWizardMessages.BuildPathsBlock_RemoveBinariesDialog_description, oldOutputLocation.makeRelative().toOSString());
+						}
 						MessageDialog dialog= new MessageDialog(sh, title, null, message, MessageDialog.QUESTION, new String[] { IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL, IDialogConstants.CANCEL_LABEL }, 0);
 						res[0]= dialog.open();
 					}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,8 @@ public class MultiFixMessages extends NLS {
 	public static String CleanUpRefactoringWizard_code_organizing_tab;
 	public static String CleanUpRefactoringWizard_code_style_tab;
 	public static String CleanUpRefactoringWizard_Configure_Button;
+	public static String CleanUpRefactoringWizard_ConfigureCustomProfile_button;
+	public static String CleanUpRefactoringWizard_CustomCleanUpsDialog_title;
 	public static String CleanUpRefactoringWizard_HideWizard_Link;
 	public static String CleanUpRefactoringWizard_member_accesses_tab;
 	public static String CleanUpRefactoringWizard_missing_code_tab;
@@ -45,6 +47,7 @@ public class MultiFixMessages extends NLS {
 	public static String ImportsCleanUp_OrganizeImports_Description;
 	public static String SortMembersCleanUp_AllMembers_description;
 	public static String SortMembersCleanUp_Excluding_description;
+	public static String SortMembersCleanUp_RemoveMarkersWarning0;
 	public static String StringMultiFix_AddMissingNonNls_description;
 	public static String StringMultiFix_RemoveUnnecessaryNonNls_description;
 	

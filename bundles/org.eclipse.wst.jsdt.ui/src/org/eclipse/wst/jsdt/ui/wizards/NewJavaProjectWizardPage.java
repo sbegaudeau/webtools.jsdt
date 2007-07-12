@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -103,8 +103,9 @@ public class NewJavaProjectWizardPage extends NewElementWizardPage {
 		fClasspathEntries= null;
 	}		
 	
-    /**
-     * {@inheritDoc}
+    /*
+     * @see org.eclipse.jface.dialogs.DialogPage#dispose()
+     * @since 3.3
      */
     public void dispose() {
     	try {

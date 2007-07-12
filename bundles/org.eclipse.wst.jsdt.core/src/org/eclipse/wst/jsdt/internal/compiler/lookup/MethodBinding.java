@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -93,6 +93,12 @@ public final boolean areParametersEqual(MethodBinding method) {
 			return false;
 	return true;
 }
+/*
+ * Returns true if given parameters are compatible with this method parameters.
+ * Callers to this method should first check that the number of TypeBindings
+ * passed as argument matches this MethodBinding number of parameters
+ */
+
 public final boolean areParametersCompatibleWith(TypeBinding[] arguments) {
 	int paramLength = this.parameters.length;
 	int argLength = arguments.length;
@@ -294,18 +300,20 @@ public final boolean canBeSeenBy(TypeBinding receiverType, InvocationSite invoca
 	return false;
 }
 MethodBinding computeSubstitutedMethod(MethodBinding method, LookupEnvironment env) {
-	TypeVariableBinding[] vars = this.typeVariables;
-	TypeVariableBinding[] vars2 = method.typeVariables;
-	if (vars.length != vars2.length)
+	int length = this.typeVariables.length;
+	TypeVariableBinding[] vars = method.typeVariables;
+	if (length != vars.length)
 		return null;
-	for (int v = vars.length; --v >= 0;)
-		if (!vars[v].isInterchangeableWith(env, vars2[v]))
-			return null;
 
 	// must substitute to detect cases like:
 	//   <T1 extends X<T1>> void dup() {}
 	//   <T2 extends X<T2>> Object dup() {return null;}
-	return env.createParameterizedGenericMethod(method, vars);
+	ParameterizedGenericMethodBinding substitute =
+		env.createParameterizedGenericMethod(method, this.typeVariables);
+	for (int i = 0; i < length; i++)
+		if (!this.typeVariables[i].isInterchangeableWith(vars[i], substitute))
+			return null;
+	return substitute;
 }
 /*
  * declaringUniqueKey dot selector genericSignature
@@ -471,7 +479,7 @@ public Object getDefaultValue() {
 			SourceTypeBinding sourceType = (SourceTypeBinding) originalMethod.declaringClass;
 			if (sourceType.scope != null) {
 				AbstractMethodDeclaration methodDeclaration = originalMethod.sourceMethod();
-				if (methodDeclaration != null)
+				if (methodDeclaration != null  && methodDeclaration.isAnnotationMethod())
 					methodDeclaration.resolve(sourceType.scope);
 			}
 		}

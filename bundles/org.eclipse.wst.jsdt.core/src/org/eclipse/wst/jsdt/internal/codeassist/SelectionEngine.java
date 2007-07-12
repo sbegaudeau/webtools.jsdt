@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -444,6 +444,8 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 		
 		if(selectionStart > selectionEnd){
 			
+			// compute end position of the selection
+			int end = selectionEnd + 1 == source.length ? selectionEnd : selectionEnd + 1;
 			// compute start position of current line
 			int currentPosition = selectionStart - 1;
 			int nextCharacterPosition = selectionStart;
@@ -457,6 +459,15 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 						while (source[pos] == 'u') {
 							pos++;
 						}
+						int endOfUnicode = pos + 3;
+						if (end < endOfUnicode) {
+							if (endOfUnicode < source.length) {
+								end = endOfUnicode;
+							} else {
+								return false; // not enough characters to decode an unicode
+							}
+						}
+
 						if ((c1 = ScannerHelper.getNumericValue(source[pos++])) > 15
 							|| c1 < 0
 							|| (c2 = ScannerHelper.getNumericValue(source[pos++])) > 15
@@ -490,7 +501,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 			}
 			
 			// compute start and end of the last token
-			scanner.resetTo(nextCharacterPosition, selectionEnd + 1 == source.length ? selectionEnd : selectionEnd + 1);
+			scanner.resetTo(nextCharacterPosition, end);
 			do {
 				try {
 					token = scanner.getNextToken();
@@ -650,7 +661,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 	 */
 	private boolean isLocal(ReferenceBinding binding) {
 		if(binding instanceof ParameterizedTypeBinding) {
-			return isLocal(((ParameterizedTypeBinding)binding).type);
+			return isLocal(((ParameterizedTypeBinding)binding).genericType());
 		}
 		if (!(binding instanceof SourceTypeBinding)) return false;
 		if (binding instanceof LocalTypeBinding) return true;

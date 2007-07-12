@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -93,10 +93,12 @@ public org.eclipse.wst.jsdt.core.dom.CompilationUnit getAST3() throws JavaModelE
 		parser.setCompilerOptions(workingCopy.getJavaProject().getOptions(true));
 		if (JavaProject.hasJavaNature(workingCopy.getJavaProject().getProject()))
 			parser.setResolveBindings(true);
+		parser.setStatementsRecovery((this.operation.reconcileFlags & ICompilationUnit.ENABLE_STATEMENTS_RECOVERY) != 0);
+		parser.setBindingsRecovery((this.operation.reconcileFlags & ICompilationUnit.ENABLE_BINDINGS_RECOVERY) != 0);
 		parser.setSource(workingCopy);
 		return (org.eclipse.wst.jsdt.core.dom.CompilationUnit) parser.createAST(this.operation.progressMonitor);		
 	}
-	return this.operation.makeConsistent(this.workingCopy, null/*don't report problems to the working copy's problem requestor*/);
+	return this.operation.makeConsistent(this.workingCopy);
 }
 
 /**

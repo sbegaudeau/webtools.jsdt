@@ -97,7 +97,7 @@ public class LookupScopeElementInfo extends PackageFragmentRootInfo {
 	NameLookup newNameLookup(ICompilationUnit[] workingCopies) {
 		BuildLookupScopeCache(getAllRoots());
 
-		return new NameLookup(cache.allPkgFragmentRootsCache, cache.allPkgFragmentsCache, cache.isPackageCache, workingCopies, cache.rootToResolvedEntries);
+		return new NameLookup(cache.allPkgFragmentRootsCache, cache.allPkgFragmentsCache, workingCopies, cache.rootToResolvedEntries);
 	}
 	
 	public LookupCache BuildLookupScopeCache(IPackageFragmentRoot[] rootsInScope) {

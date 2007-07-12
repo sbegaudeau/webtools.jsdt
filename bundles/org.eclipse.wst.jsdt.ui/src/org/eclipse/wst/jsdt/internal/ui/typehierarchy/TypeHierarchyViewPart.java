@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -95,12 +95,11 @@ import org.eclipse.ui.part.ViewPart;
 
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
 
-import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
+import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 
@@ -508,12 +507,13 @@ public class TypeHierarchyViewPart extends ViewPart implements ITypeHierarchyVie
 		// Make sure the UI got repainted before we execute a long running
 		// operation. This can be removed if we refresh the hierarchy in a 
 		// separate thread.
-		// Work-araound for http://dev.eclipse.org/bugs/show_bug.cgi?id=30881
+		// Work-around for http://dev.eclipse.org/bugs/show_bug.cgi?id=30881
 		processOutstandingEvents();
 		if (inputElement == null) {	
 			clearInput();
 		} else {
 			fInputElement= inputElement;
+			fNoHierarchyShownLabel.setText(Messages.format(TypeHierarchyMessages.TypeHierarchyViewPart_createinput, inputElement.getElementName())); 
 			try {
 				fHierarchyLifeCycle.ensureRefreshedTypeHierarchy(inputElement, JavaPlugin.getActiveWorkbenchWindow());
 				// fHierarchyLifeCycle.ensureRefreshedTypeHierarchy(inputElement, getSite().getWorkbenchWindow());
@@ -522,6 +522,7 @@ public class TypeHierarchyViewPart extends ViewPart implements ITypeHierarchyVie
 				clearInput();
 				return;
 			} catch (InterruptedException e) {
+				fNoHierarchyShownLabel.setText(TypeHierarchyMessages.TypeHierarchyViewPart_empty); 
 				return;				
 			}
 				
@@ -927,6 +928,11 @@ public class TypeHierarchyViewPart extends ViewPart implements ITypeHierarchyVie
 							if (fParent != null && !fParent.isDisposed()) {
 								Point size= fParent.getSize();
 								if (size.x != 0 && size.y != 0) {
+									// bug 185397 - Hierarchy View flips orientation multiple times on resize
+									Control viewFormToolbar= fTypeViewerViewForm.getTopLeft();
+									if (viewFormToolbar != null && !viewFormToolbar.isDisposed() && viewFormToolbar.isVisible()) {
+										size.y -= viewFormToolbar.getSize().y;
+									}
 									horizontal= size.x > size.y;
 								}
 							}
@@ -1504,16 +1510,18 @@ public class TypeHierarchyViewPart extends ViewPart implements ITypeHierarchyVie
 	
 	private void doRestoreInBackground(final IMemento memento, final IJavaElement hierarchyInput, IProgressMonitor monitor) throws JavaModelException {
 		fHierarchyLifeCycle.doHierarchyRefresh(hierarchyInput, monitor);	
-		if (!monitor.isCanceled()) {
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					// running async: check first if view still exists
-					if (fPagebook != null && !fPagebook.isDisposed()) {
+		final boolean doRestore= !monitor.isCanceled();
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				// running async: check first if view still exists
+				if (fPagebook != null && !fPagebook.isDisposed()) {
+					if (doRestore)
 						doRestoreState(memento, hierarchyInput);
-					}
+					else
+						fNoHierarchyShownLabel.setText(TypeHierarchyMessages.TypeHierarchyViewPart_empty); 
 				}
-			});
-		}
+			}
+		});
 	}
 	
 		
@@ -1590,13 +1598,8 @@ public class TypeHierarchyViewPart extends ViewPart implements ITypeHierarchyVie
 		}
 		
 		IJavaElement elem= (IJavaElement)editor.getEditorInput().getAdapter(IJavaElement.class);
-		try {
-			IType type= null;
-			if (elem instanceof IClassFile) {
-				type= ((IClassFile) elem).getType();
-			} else if (elem instanceof ICompilationUnit) {
-				type= ((ICompilationUnit) elem).findPrimaryType();
-			}
+		if (elem instanceof ITypeRoot) {
+			IType type= ((ITypeRoot) elem).findPrimaryType();
 			if (type != null) {
 				internalSelectType(type, true);
 				if (getCurrentViewer().getSelection().isEmpty()) {
@@ -1605,8 +1608,6 @@ public class TypeHierarchyViewPart extends ViewPart implements ITypeHierarchyVie
 					updateMethodViewer(type);
 				}
 			}	
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e);
 		}
 		
 	}

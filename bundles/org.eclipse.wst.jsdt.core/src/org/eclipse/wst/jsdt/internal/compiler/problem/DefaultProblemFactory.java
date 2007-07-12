@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -124,7 +124,7 @@ public final String getLocalizedMessage(int id, String[] problemArguments) {
 	int end = length;
 	StringBuffer output = null;
 	if ((id & IProblem.Javadoc) != 0) {
-		if (output == null) output = new StringBuffer(10+length+problemArguments.length*20);
+		output = new StringBuffer(10+length+problemArguments.length*20);
 		output.append((String) this.messageTemplates.get(keyFromID(IProblem.JavadocMessagePrefix & IProblem.IgnoreCategoriesMask)));
 	}
 	while (true) {

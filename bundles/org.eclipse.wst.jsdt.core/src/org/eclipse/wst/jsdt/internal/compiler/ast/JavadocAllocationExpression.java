@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ public class JavadocAllocationExpression extends AllocationExpression {
 
 	public int tagSourceStart, tagSourceEnd;
 	public int tagValue, memberStart;
-	public boolean superAccess = false;
 	public char[][] qualification;
 
 	public JavadocAllocationExpression(int start, int end) {
@@ -74,7 +73,9 @@ public class JavadocAllocationExpression extends AllocationExpression {
 		}
 		this.resolvedType = scope.environment().convertToRawType(this.type.resolvedType);
 		SourceTypeBinding enclosingType = scope.enclosingSourceType();
-		this.superAccess = enclosingType==null ? false : enclosingType.isCompatibleWith(this.resolvedType);
+		if (enclosingType == null ? false : enclosingType.isCompatibleWith(this.resolvedType)) {
+			this.bits |= ASTNode.SuperAccess;
+		}
 	
 		ReferenceBinding allocationType = (ReferenceBinding) this.resolvedType;
 		this.binding = scope.getConstructor(allocationType, argumentTypes, this);
@@ -147,7 +148,7 @@ public class JavadocAllocationExpression extends AllocationExpression {
 	}
 
 	public boolean isSuperAccess() {
-		return this.superAccess;
+		return (this.bits & ASTNode.SuperAccess) != 0;
 	}
 
 	public TypeBinding resolveType(BlockScope scope) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,9 +29,11 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 
 import org.eclipse.core.filebuffers.FileBuffers;
 import org.eclipse.core.filebuffers.ITextFileBufferManager;
+import org.eclipse.core.filebuffers.LocationKind;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IStorage;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -44,8 +46,10 @@ import org.eclipse.wst.jsdt.core.IClasspathContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IJarEntryResource;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
@@ -709,18 +713,31 @@ public final class JavaModelUtil {
 	 * @param libPath The path of the library to be found
 	 * @return IClasspathEntry A classpath entry from the container of
 	 * <code>null</code> if the container can not be modified.
+	 * @throws JavaModelException thrown if accessing the container failed
 	 */
 	public static IClasspathEntry getClasspathEntryToEdit(IJavaProject jproject, IPath containerPath, IPath libPath) throws JavaModelException {
 		IClasspathContainer container= JavaCore.getClasspathContainer(containerPath, jproject);
 		ClasspathContainerInitializer initializer= JavaCore.getClasspathContainerInitializer(containerPath.segment(0));
 		if (container != null && initializer != null && initializer.canUpdateClasspathContainer(containerPath, jproject)) {
-			IClasspathEntry[] entries= container.getClasspathEntries();
-			for (int i= 0; i < entries.length; i++) {
-				IClasspathEntry curr= entries[i];
-				IClasspathEntry resolved= JavaCore.getResolvedClasspathEntry(curr);
-				if (resolved != null && libPath.equals(resolved.getPath())) {
-					return curr; // return the real entry
-				}
+			return findEntryInContainer(container, libPath);
+		}
+		return null; // attachment not possible
+	}
+	
+	/**
+	 * Finds an entry in a container. <code>null</code> is returned if the entry can not be found
+	 * @param container The container
+	 * @param libPath The path of the library to be found
+	 * @return IClasspathEntry A classpath entry from the container of
+	 * <code>null</code> if the container can not be modified.
+	 */
+	public static IClasspathEntry findEntryInContainer(IClasspathContainer container, IPath libPath) {
+		IClasspathEntry[] entries= container.getClasspathEntries();
+		for (int i= 0; i < entries.length; i++) {
+			IClasspathEntry curr= entries[i];
+			IClasspathEntry resolved= JavaCore.getResolvedClasspathEntry(curr);
+			if (resolved != null && libPath.equals(resolved.getPath())) {
+				return curr; // return the real entry
 			}
 		}
 		return null; // attachment not possible
@@ -865,6 +882,18 @@ public final class JavaModelUtil {
 		}
 		return defaultCompliance;
 	}
+	
+//	public static String getExecutionEnvironmentCompliance(IExecutionEnvironment executionEnvironment) {
+//		String desc= executionEnvironment.getId();
+//		if (desc.indexOf("1.6") != -1) { //$NON-NLS-1$
+//			return JavaCore.VERSION_1_6;
+//		} else if (desc.indexOf("1.5") != -1) { //$NON-NLS-1$
+//			return JavaCore.VERSION_1_5;
+//		} else if (desc.indexOf("1.4") != -1) { //$NON-NLS-1$
+//			return JavaCore.VERSION_1_4;
+//		}
+//		return JavaCore.VERSION_1_3;
+//	}
 
 	/**
 	 * Compute a new name for a compilation unit, given the name of the new main type.
@@ -924,8 +953,8 @@ public final class JavaModelUtil {
 			if (file.exists()) {
 				ITextFileBufferManager bufferManager= FileBuffers.getTextFileBufferManager();
 				IPath path= cu.getPath();
-				bufferManager.connect(path, monitor);
-				return bufferManager.getTextFileBuffer(path).getDocument();
+				bufferManager.connect(path, LocationKind.IFILE, monitor);
+				return bufferManager.getTextFileBuffer(path, LocationKind.IFILE).getDocument();
 			}
 		}
 		monitor.done();
@@ -943,7 +972,7 @@ public final class JavaModelUtil {
 				new RewriteSessionEditProcessor(document, edit, TextEdit.UPDATE_REGIONS).performEdits(); // apply after file is commitable
 				
 				ITextFileBufferManager bufferManager= FileBuffers.getTextFileBufferManager();
-				bufferManager.getTextFileBuffer(file.getFullPath()).commit(monitor, true);
+				bufferManager.getTextFileBuffer(file.getFullPath(), LocationKind.IFILE).commit(monitor, true);
 				return;
 			}
 		}
@@ -957,7 +986,7 @@ public final class JavaModelUtil {
 			IFile file= (IFile) cu.getResource();
 			if (file.exists()) {
 				ITextFileBufferManager bufferManager= FileBuffers.getTextFileBufferManager();
-				bufferManager.disconnect(file.getFullPath(), monitor);
+				bufferManager.disconnect(file.getFullPath(), LocationKind.IFILE, monitor);
 				return;
 			}
 		}
@@ -976,6 +1005,38 @@ public final class JavaModelUtil {
 		String typeName= JavaCore.removeJavaLikeExtension(cu.getElementName());
 		String mainTypeName= JavaModelUtil.concatenateName(packageName, typeName);
 		return qualifier.equals(mainTypeName);
+	}
+
+	public static boolean isOpenableStorage(Object storage) {
+		if (storage instanceof IJarEntryResource) {
+			return ((IJarEntryResource) storage).isFile();
+		} else {
+			return storage instanceof IStorage;
+		}
+	}
+	
+	/**
+	 * Returns true iff the given local variable is a parameter of its
+	 * declaring method.
+	 * 
+	 * TODO replace this method with new API when available: 
+	 * 		https://bugs.eclipse.org/bugs/show_bug.cgi?id=48420
+	 * @param currentLocal the local variable to test
+	 * 
+	 * @return returns true if the variable is a parameter
+	 * @throws JavaModelException 
+	 */
+	public static boolean isParameter(ILocalVariable currentLocal) throws JavaModelException {
+
+		final IJavaElement parent= currentLocal.getParent();
+		if (parent instanceof IMethod) {
+			final String[] params= ((IMethod) parent).getParameterNames();
+			for (int i= 0; i < params.length; i++) {
+				if (params[i].equals(currentLocal.getElementName()))
+					return true;
+			}
+		}
+		return false;
 	}
 	
 }

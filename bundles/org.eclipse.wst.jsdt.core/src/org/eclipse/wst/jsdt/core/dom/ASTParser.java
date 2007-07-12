@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2006 IBM Corporation and others.
+ * Copyright (c) 2004, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -144,6 +144,12 @@ public class ASTParser {
 	private boolean statementsRecovery;
 	
 	/**
+     * Request for a bindings recovery. Defaults to <code>false</code>.
+     */
+    private boolean bindingsRecovery;
+
+
+	/**
 	 * The focal point for a partial AST request.
      * Only used when <code>partial</code> is <code>true</code>.
      */
@@ -227,6 +233,25 @@ public class ASTParser {
 		this.compilerOptions = options;
 	}
 	   
+    /**
+     * Requests that the compiler should perform bindings recovery.
+     * When bindings recovery is enabled the compiler returns incomplete bindings.
+     * <p>
+     * Default to <code>false</code>.
+     * </p>
+     * <p>This should be set to true only if bindings are resolved. It has no effect if there is no binding
+     * resolution.</p>
+     *
+     * @param enabled <code>true</code> if incomplete bindings are expected,
+     *   and <code>false</code> if only complete bindings are expected.
+     *
+     * @see IBinding#isRecovered()
+     * @since 3.3
+     */
+    public void setBindingsRecovery(boolean enabled) {
+        this.bindingsRecovery = enabled;
+    }
+
 	/**
 	 * Sets the compiler options to be used when parsing.
 	 * <p>
@@ -699,12 +724,15 @@ public class ASTParser {
      */
 	public void createASTs(ICompilationUnit[] compilationUnits, String[] bindingKeys, ASTRequestor requestor, IProgressMonitor monitor) {
 		try {
+			int flags = 0;
+			if (this.statementsRecovery) flags |= ICompilationUnit.ENABLE_STATEMENTS_RECOVERY;
 			if (this.resolveBindings) {
 				if (this.project == null)
 					throw new IllegalStateException("project not specified"); //$NON-NLS-1$
-				CompilationUnitResolver.resolve(compilationUnits, bindingKeys, requestor, this.apiLevel, this.compilerOptions, this.project, this.workingCopyOwner, this.statementsRecovery, monitor);
+				if (this.bindingsRecovery) flags |= ICompilationUnit.ENABLE_BINDINGS_RECOVERY;
+				CompilationUnitResolver.resolve(compilationUnits, bindingKeys, requestor, this.apiLevel, this.compilerOptions, this.project, this.workingCopyOwner, flags, monitor);
 			} else {
-				CompilationUnitResolver.parse(compilationUnits, requestor, this.apiLevel, this.compilerOptions, monitor);
+				CompilationUnitResolver.parse(compilationUnits, requestor, this.apiLevel, this.compilerOptions, flags, monitor);
 			}
 		} finally {
 	   	   // re-init defaults to allow reuse (and avoid leaking)
@@ -755,7 +783,10 @@ public class ASTParser {
 		try {
 			if (this.project == null)
 				throw new IllegalStateException("project not specified"); //$NON-NLS-1$
-			return CompilationUnitResolver.resolve(elements, this.apiLevel, this.compilerOptions, this.project, this.workingCopyOwner, this.statementsRecovery, monitor);
+			int flags = 0;
+			if (this.statementsRecovery) flags |= ICompilationUnit.ENABLE_STATEMENTS_RECOVERY;
+			if (this.bindingsRecovery)  flags |= ICompilationUnit.ENABLE_BINDINGS_RECOVERY;
+			return CompilationUnitResolver.resolve(elements, this.apiLevel, this.compilerOptions, this.project, this.workingCopyOwner,flags, monitor);
 		} finally {
 	   	   // re-init defaults to allow reuse (and avoid leaking)
 	   	   initializeDefaults();
@@ -829,7 +860,10 @@ public class ASTParser {
 					if (this.partial) {
 						searcher = new NodeSearcher(this.focalPointPosition);
 					}
+					int flags = 0;
+					if (this.statementsRecovery) flags |= ICompilationUnit.ENABLE_STATEMENTS_RECOVERY;
 					if (needToResolveBindings) {
+						if (this.bindingsRecovery) flags |= ICompilationUnit.ENABLE_BINDINGS_RECOVERY;
 						try {
 							// parse and resolve
 							compilationUnitDeclaration = 
@@ -839,14 +873,15 @@ public class ASTParser {
 									searcher,
 									this.compilerOptions,
 									this.workingCopyOwner,
-									this.statementsRecovery,
+									flags,
 									monitor);
 						} catch (JavaModelException e) {
+							flags &= ~ICompilationUnit.ENABLE_BINDINGS_RECOVERY;
 							compilationUnitDeclaration = CompilationUnitResolver.parse(
 									sourceUnit,
 									searcher,
 									this.compilerOptions,
-									this.statementsRecovery);
+									flags);
 							needToResolveBindings = false;
 						}
 					} else {
@@ -854,7 +889,7 @@ public class ASTParser {
 								sourceUnit,
 								searcher,
 								this.compilerOptions,
-								this.statementsRecovery);
+								flags);
 						needToResolveBindings = false;
 					}
 					CompilationUnit result = CompilationUnitResolver.convert(
@@ -865,6 +900,7 @@ public class ASTParser {
 						needToResolveBindings,
 						wcOwner,
 						needToResolveBindings ? new DefaultBindingResolver.BindingTables() : null, 
+						flags,
 						monitor);
 					result.setTypeRoot(this.typeRoot);
 					return result;
@@ -958,6 +994,9 @@ public class ASTParser {
 		AST ast = AST.newAST(this.apiLevel);
 		ast.setDefaultNodeFlag(ASTNode.ORIGINAL);
 		ast.setBindingResolver(new BindingResolver());
+		if (this.statementsRecovery) {
+			ast.setFlag(ICompilationUnit.ENABLE_STATEMENTS_RECOVERY);
+		}
 		converter.setAST(ast);
 		CodeSnippetParsingUtil codeSnippetParsingUtil = new CodeSnippetParsingUtil();
 		CompilationUnit compilationUnit = ast.newCompilationUnit();
@@ -980,7 +1019,6 @@ public class ASTParser {
 					converter.buildCommentsTable(compilationUnit, comments);
 				}
 				compilationUnit.setLineEndTable(recordedParsingInformation.lineEnds);
-				if (constructorDeclaration != null) {
 					Block block = ast.newBlock();
 					block.setSourceRange(this.sourceOffset, this.sourceOffset + this.sourceLength);
 					org.eclipse.wst.jsdt.internal.compiler.ast.Statement[] statements = constructorDeclaration.statements;
@@ -1001,15 +1039,6 @@ public class ASTParser {
 					ast.setDefaultNodeFlag(0);
 					ast.setOriginalModificationCount(ast.modificationCount());
 					return block;
-				} else {
-					CategorizedProblem[] problems = recordedParsingInformation.problems;
-					if (problems != null) {
-						compilationUnit.setProblems(problems);
-					}
-					ast.setDefaultNodeFlag(0);
-					ast.setOriginalModificationCount(ast.modificationCount());
-					return compilationUnit;
-				}
 			case K_EXPRESSION :
 				org.eclipse.wst.jsdt.internal.compiler.ast.Expression expression = codeSnippetParsingUtil.parseExpression(this.rawSource, this.sourceOffset, this.sourceLength, this.compilerOptions, true);
 				recordedParsingInformation = codeSnippetParsingUtil.recordedParsingInformation;

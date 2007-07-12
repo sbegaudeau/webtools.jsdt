@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,9 +43,11 @@ public final class ApplyRefactoringScriptAction implements IWorkbenchWindowActio
 	/**
 	 * {@inheritDoc}
 	 */
-	public void run(final IAction action) {
+	public void run(final IAction a) {
 		if (fWindow != null) {
-			org.eclipse.ltk.internal.ui.refactoring.actions.ApplyRefactoringScriptAction.showApplyScriptWizard(fWindow);
+			org.eclipse.ltk.ui.refactoring.actions.ApplyRefactoringScriptAction action= new org.eclipse.ltk.ui.refactoring.actions.ApplyRefactoringScriptAction();
+			action.init(fWindow);
+			action.run(a);
 		}
 	}
 

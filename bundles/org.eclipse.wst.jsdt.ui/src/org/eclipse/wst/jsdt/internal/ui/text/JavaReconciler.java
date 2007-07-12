@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,9 @@ package org.eclipse.wst.jsdt.internal.ui.text;
 
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
 
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -27,6 +29,9 @@ import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
@@ -39,6 +44,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.ui.texteditor.spelling.SpellingService;
 
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
@@ -177,8 +183,17 @@ public class JavaReconciler extends MonoReconciler {
 				IResourceDelta child= delta.findMember(resource.getFullPath());
 				if (child != null) {
 					IMarkerDelta[] deltas= child.getMarkerDeltas();
-					if (deltas.length > 0)
-						forceReconciling();
+					int i= deltas.length;
+					while (--i >= 0) {
+						try {
+							if (deltas[i].getMarker().isSubtypeOf(IMarker.PROBLEM)) {
+								forceReconciling();
+								return;
+							}
+						} catch (CoreException e1) {
+							// ignore and try next one
+						}
+					}
 				}
 			}
 		}
@@ -216,6 +231,11 @@ public class JavaReconciler extends MonoReconciler {
 	 */
 	private IResourceChangeListener fResourceChangeListener;
 	/**
+	 * The property change listener.
+	 * @since 3.3
+	 */
+	private IPropertyChangeListener fPropertyChangeListener;
+	/**
 	 * Tells whether a reconcile is in progress.
 	 * @since 3.1
 	 */
@@ -225,6 +245,10 @@ public class JavaReconciler extends MonoReconciler {
 
 	/**
 	 * Creates a new reconciler.
+	 * 
+	 * @param editor the editor 
+	 * @param strategy the reconcile strategy
+	 * @param isIncremental <code>true</code> if this is an incremental reconciler
 	 */
 	public JavaReconciler(ITextEditor editor, JavaCompositeReconcilingStrategy strategy, boolean isIncremental) {
 		super(strategy, isIncremental);
@@ -267,6 +291,14 @@ public class JavaReconciler extends MonoReconciler {
 		fResourceChangeListener= new ResourceChangeListener();
 		IWorkspace workspace= JavaPlugin.getWorkspace();
 		workspace.addResourceChangeListener(fResourceChangeListener);
+		
+		fPropertyChangeListener= new IPropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent event) {
+				if (SpellingService.PREFERENCE_SPELLING_ENABLED.equals(event.getProperty()) || SpellingService.PREFERENCE_SPELLING_ENGINE.equals(event.getProperty()))
+					forceReconciling();
+			}
+		};
+		JavaPlugin.getDefault().getCombinedPreferenceStore().addPropertyChangeListener(fPropertyChangeListener);
 	}
 
 	/*
@@ -290,6 +322,9 @@ public class JavaReconciler extends MonoReconciler {
 		IWorkspace workspace= JavaPlugin.getWorkspace();
 		workspace.removeResourceChangeListener(fResourceChangeListener);
 		fResourceChangeListener= null;
+		
+		JavaPlugin.getDefault().getCombinedPreferenceStore().removePropertyChangeListener(fPropertyChangeListener);
+		fPropertyChangeListener= null;
 
 		super.uninstall();
 	}

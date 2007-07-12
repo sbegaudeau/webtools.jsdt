@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,13 +13,13 @@ package org.eclipse.wst.jsdt.core.search;
 import org.eclipse.wst.jsdt.core.*;
 
 /**
- * A match collected while searching for {@link SearchEngine}
+ * A match collected while {@link SearchEngine searching} for 
  * all type names methods using a {@link TypeNameRequestor requestor}.
  * <p>
- * User can get type from this match using {@link #getType()} method.
+ * The type of this match is available from {@link #getType()}.
  * </p>
  * <p>
- * This class is intented to be overridden by clients.
+ * This class is not intended to be overridden by clients.
  * </p>
  * 
  * @see TypeNameMatchRequestor
@@ -30,7 +30,7 @@ import org.eclipse.wst.jsdt.core.*;
 public abstract class TypeNameMatch {
 
 /**
- * Returns the matched type fully qualified name using '.' character
+ * Returns the matched type's fully qualified name using '.' character
  * as separator (e.g. package name + '.' enclosing type names + '.' simple name).
  * 
  * @see #getType()
@@ -114,7 +114,7 @@ public abstract IType getType();
  * @see IMember#getDeclaringType()
  * 
  * @throws NullPointerException if matched type is <code> null</code>
- * @return Name of the type container
+ * @return name of the type container
  */
 public String getTypeContainerName() {
 	IType outerType = getType().getDeclaringType();
@@ -126,14 +126,14 @@ public String getTypeContainerName() {
 }
 
 /**
- * Returns the matched type qualified name using '.' character
+ * Returns the matched type's type qualified name using '.' character
  * as separator (e.g. enclosing type names + '.' + simple name).
  * 
  * @see #getType()
  * @see IType#getTypeQualifiedName(char)
  * 
  * @throws NullPointerException if matched type is <code> null</code>
- * @return Fully qualified type name of the type
+ * @return fully qualified type name of the type
  */
 public String getTypeQualifiedName() {
 	return getType().getTypeQualifiedName('.');

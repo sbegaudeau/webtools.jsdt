@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -207,10 +207,10 @@ protected void matchReportImportRef(ImportReference importRef, Binding binding, 
 		typeBinding = (ReferenceBinding) binding;
 	} else if (binding instanceof FieldBinding) { // may happen for static import
 		typeBinding = ((FieldBinding)binding).declaringClass;
-		lastButOne = importRef.isStatic() && !importRef.onDemand;
+		lastButOne = importRef.isStatic() && ((importRef.bits & ASTNode.OnDemand) == 0);
 	} else if (binding instanceof MethodBinding) { // may happen for static import
 		typeBinding = ((MethodBinding)binding).declaringClass;
-		lastButOne = importRef.isStatic() && !importRef.onDemand;
+		lastButOne = importRef.isStatic() && ((importRef.bits & ASTNode.OnDemand) == 0);
 	}
 	if (typeBinding != null) {
 		int lastIndex = importRef.tokens.length - 1;
@@ -600,7 +600,7 @@ protected void reportDeclaration(ReferenceBinding typeBinding, int maxType, Matc
 				locator.reportBinaryMemberDeclaration(resource, type, typeBinding, info, SearchMatch.A_ACCURATE);
 			} else {
 				if (typeBinding instanceof ParameterizedTypeBinding)
-					typeBinding = ((ParameterizedTypeBinding) typeBinding).type;
+					typeBinding = ((ParameterizedTypeBinding) typeBinding).genericType();
 				ClassScope scope = (ClassScope)((SourceTypeBinding) typeBinding).scope;
 				if (scope != null) {
 					TypeDeclaration typeDecl = scope.referenceContext;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -162,7 +162,7 @@ class PackageBinding implements IPackageBinding {
 	 * @see IBinding#getModifiers()
 	 */
 	public int getModifiers() {
-		return -1;
+		return Modifier.NONE;
 	}
 
 	/*
@@ -172,6 +172,13 @@ class PackageBinding implements IPackageBinding {
 		return false;
 	}
 
+	/**
+	 * @see IBinding#isRecovered()
+	 */
+	public boolean isRecovered() {
+		return false;
+	}
+	
 	/**
 	 * @see IBinding#isSynthetic()
 	 */

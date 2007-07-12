@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.internal.eval;
 
 import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortType;
 
@@ -25,8 +26,8 @@ public CodeSnippetTypeDeclaration(CompilationResult compilationResult){
  * Generic bytecode generation for type
  */
 public void generateCode(ClassFile enclosingClassFile) {
-	if (this.hasBeenGenerated) return;
-	this.hasBeenGenerated = true;
+	if ((this.bits & ASTNode.HasBeenGenerated) != 0) return;
+	this.bits |= ASTNode.HasBeenGenerated;
 	
 	if (this.ignoreFurtherInvestigation) {
 		if (this.binding == null)

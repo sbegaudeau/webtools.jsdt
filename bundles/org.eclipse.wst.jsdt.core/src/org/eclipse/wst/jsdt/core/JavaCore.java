@@ -68,6 +68,7 @@ package org.eclipse.wst.jsdt.core;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -137,6 +138,8 @@ public final class JavaCore extends Plugin {
 
 	public static final boolean IS_EMCASCRIPT4=false;
 	
+	private static final IResource[] NO_GENERATED_RESOURCES = new IResource[0];
+
 	
 	private static Plugin JAVA_CORE_PLUGIN = null; 
 	/**
@@ -284,6 +287,12 @@ public final class JavaCore extends Plugin {
 	 * @since 2.1
 	 */
 	public static final String COMPILER_PB_UNUSED_PARAMETER_WHEN_OVERRIDING_CONCRETE = PLUGIN_ID + ".compiler.problem.unusedParameterWhenOverridingConcrete"; //$NON-NLS-1$
+	/**
+	 * Possible  configurable option ID.
+	 * @see #getDefaultOptions()
+	 * @since 3.3
+	 */
+	public static final String COMPILER_PB_UNUSED_PARAMETER_INCLUDE_DOC_COMMENT_REFERENCE = PLUGIN_ID + ".compiler.problem.unusedParameterIncludeDocCommentReference"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
@@ -680,6 +689,18 @@ public final class JavaCore extends Plugin {
 	 * @since 3.2
 	 */
 	public static final String COMPILER_PB_NULL_REFERENCE = PLUGIN_ID + ".compiler.problem.nullReference"; //$NON-NLS-1$
+	/**
+	 * Possible  configurable option ID.
+	 * @see #getDefaultOptions()
+	 * @since 3.3
+	 */
+	public static final String COMPILER_PB_POTENTIAL_NULL_REFERENCE = PLUGIN_ID + ".compiler.problem.potentialNullReference"; //$NON-NLS-1$
+	/**
+	 * Possible  configurable option ID.
+	 * @see #getDefaultOptions()
+	 * @since 3.3
+	 */
+	public static final String COMPILER_PB_REDUNDANT_NULL_CHECK = PLUGIN_ID + ".compiler.problem.redundantNullCheck"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
@@ -1224,6 +1245,35 @@ public final class JavaCore extends Plugin {
 			attributes.put(ATT_HANDLE_ID, element.getHandleIdentifier());
 	}
 	
+	private static void addNonJavaResources(Object[] nonJavaResources,
+			IContainer container,
+			int rootPathSegmentCounts,
+			ArrayList collector) {
+		for (int i = 0, max = nonJavaResources.length; i < max; i++) {
+			Object nonJavaResource = nonJavaResources[i];
+			if (nonJavaResource instanceof IFile) {
+				IFile file = (IFile) nonJavaResource;
+				IPath path = file.getFullPath().removeFirstSegments(rootPathSegmentCounts);
+				IResource member = container.findMember(path);
+				if (member != null && member.exists()) {
+					collector.add(member);
+				}
+			} else if (nonJavaResource instanceof IFolder) {
+				IFolder folder = (IFolder) nonJavaResource;
+				IResource[] members = null;
+				try {
+					members = folder.members();
+				} catch (CoreException e) {
+					// ignore
+				}
+				if (members != null) {
+					addNonJavaResources(members, container, rootPathSegmentCounts, collector);
+				}
+			}
+		}
+	}
+
+	
 	/**
 	 * Adds the given listener for POST_CHANGE resource change events to the Java core. 
 	 * The listener is guaranteed to be notified of the POST_CHANGE resource change event before
@@ -1561,35 +1611,43 @@ public final class JavaCore extends Plugin {
 			for(int i = 0; i < extensions.length; i++){
 				IConfigurationElement [] configElements = extensions[i].getConfigurationElements();
 				for(int j = 0; j < configElements.length; j++){
-					String initializerID = configElements[j].getAttribute("id"); //$NON-NLS-1$
+					IConfigurationElement configurationElement = configElements[j];
+					String initializerID = configurationElement.getAttribute("id"); //$NON-NLS-1$
 					if (initializerID != null && initializerID.equals(containerID)){
-						if (JavaModelManager.CP_RESOLVE_VERBOSE) {
-							Util.verbose(
-								"CPContainer INIT - found initializer\n" + //$NON-NLS-1$
-								"	container ID: " + containerID + '\n' + //$NON-NLS-1$
-								"	class: " + configElements[j].getAttribute("class")); //$NON-NLS-1$ //$NON-NLS-2$
-						}						
+						if (JavaModelManager.CP_RESOLVE_VERBOSE_ADVANCED)
+							verbose_found_container_initializer(containerID, configurationElement);
 						try {
-							Object execExt = configElements[j].createExecutableExtension("class"); //$NON-NLS-1$
+							Object execExt = configurationElement.createExecutableExtension("class"); //$NON-NLS-1$
 							if (execExt instanceof ClasspathContainerInitializer){
 								return (ClasspathContainerInitializer)execExt;
 							}
 						} catch(CoreException e) {
 							// executable extension could not be created: ignore this initializer
 							if (JavaModelManager.CP_RESOLVE_VERBOSE) {
-								Util.verbose(
-									"CPContainer INIT - failed to instanciate initializer\n" + //$NON-NLS-1$
-									"	container ID: " + containerID + '\n' + //$NON-NLS-1$
-									"	class: " + configElements[j].getAttribute("class"), //$NON-NLS-1$ //$NON-NLS-2$
-									System.err); 
+								verbose_failed_to_instanciate_container_initializer(containerID, configurationElement);
 								e.printStackTrace();
-							}						
+							}
 						}
 					}
 				}
-			}	
+			}
 		}
 		return null;
+	}
+
+	private static void verbose_failed_to_instanciate_container_initializer(String containerID, IConfigurationElement configurationElement) {
+		Util.verbose(
+			"CPContainer INIT - failed to instanciate initializer\n" + //$NON-NLS-1$
+			"	container ID: " + containerID + '\n' + //$NON-NLS-1$
+			"	class: " + configurationElement.getAttribute("class"), //$NON-NLS-1$ //$NON-NLS-2$
+			System.err);
+	}
+
+	private static void verbose_found_container_initializer(String containerID, IConfigurationElement configurationElement) {
+		Util.verbose(
+			"CPContainer INIT - found initializer\n" + //$NON-NLS-1$
+			"	container ID: " + containerID + '\n' + //$NON-NLS-1$
+			"	class: " + configurationElement.getAttribute("class")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -1609,6 +1667,23 @@ public final class JavaCore extends Plugin {
 	 * @return the path, or <code>null</code> if none 
 	 * @see #setClasspathVariable(String, IPath)
 	 */
+	/**
+	 * Returns the path held in the given classpath variable.
+	 * Returns <code>null</code> if unable to bind.
+	 * <p>
+	 * Classpath variable values are persisted locally to the workspace, and
+	 * are preserved from session to session.
+	 * <p>
+	 * Note that classpath variables can be contributed registered initializers for,
+	 * using the extension point "org.eclipse.wst.jsdt.core.classpathVariableInitializer".
+	 * If an initializer is registered for a variable, its persisted value will be ignored:
+	 * its initializer will thus get the opportunity to rebind the variable differently on
+	 * each session.
+	 *
+	 * @param variableName the name of the classpath variable
+	 * @return the path, or <code>null</code> if none
+	 * @see #setClasspathVariable(String, IPath)
+	 */
 	public static IPath getClasspathVariable(final String variableName) {
 
 	    JavaModelManager manager = JavaModelManager.getJavaModelManager();
@@ -1616,7 +1691,7 @@ public final class JavaCore extends Plugin {
 		if (variablePath == JavaModelManager.VARIABLE_INITIALIZATION_IN_PROGRESS){
 		    return manager.getPreviousSessionVariable(variableName);
 		}
-		
+
 		if (variablePath != null) {
 			if (variablePath == JavaModelManager.CP_ENTRY_IGNORE_PATH)
 				return null;
@@ -1626,53 +1701,68 @@ public final class JavaCore extends Plugin {
 		// even if persisted value exists, initializer is given priority, only if no initializer is found the persisted value is reused
 		final ClasspathVariableInitializer initializer = JavaCore.getClasspathVariableInitializer(variableName);
 		if (initializer != null){
-			if (JavaModelManager.CP_RESOLVE_VERBOSE){
-				Util.verbose(
-					"CPVariable INIT - triggering initialization\n" + //$NON-NLS-1$
-					"	variable: " + variableName + '\n' + //$NON-NLS-1$
-					"	initializer: " + initializer + '\n' + //$NON-NLS-1$
-					"	invocation stack trace:"); //$NON-NLS-1$
-				new Exception("<Fake exception>").printStackTrace(System.out); //$NON-NLS-1$
-			}
+			if (JavaModelManager.CP_RESOLVE_VERBOSE)
+				verbose_triggering_variable_initialization(variableName, initializer);
+			if (JavaModelManager.CP_RESOLVE_VERBOSE_ADVANCED)
+				verbose_triggering_variable_initialization_invocation_trace();
 			manager.variablePut(variableName, JavaModelManager.VARIABLE_INITIALIZATION_IN_PROGRESS); // avoid initialization cycles
 			boolean ok = false;
 			try {
 				// let OperationCanceledException go through
 				// (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=59363)
 				initializer.initialize(variableName);
-				
+
 				variablePath = manager.variableGet(variableName); // initializer should have performed side-effect
 				if (variablePath == JavaModelManager.VARIABLE_INITIALIZATION_IN_PROGRESS) return null; // break cycle (initializer did not init or reentering call)
-				if (JavaModelManager.CP_RESOLVE_VERBOSE){
-					Util.verbose(
-						"CPVariable INIT - after initialization\n" + //$NON-NLS-1$
-						"	variable: " + variableName +'\n' + //$NON-NLS-1$
-						"	variable path: " + variablePath); //$NON-NLS-1$
-				}
+				if (JavaModelManager.CP_RESOLVE_VERBOSE_ADVANCED)
+					verbose_variable_value_after_initialization(variableName, variablePath);
 				manager.variablesWithInitializer.add(variableName);
 				ok = true;
 			} catch (RuntimeException e) {
-				if (JavaModelManager.CP_RESOLVE_VERBOSE) {
+				if (JavaModelManager.CP_RESOLVE_VERBOSE)
 					e.printStackTrace();
-				}
 				throw e;
 			} catch (Error e) {
-				if (JavaModelManager.CP_RESOLVE_VERBOSE) {
+				if (JavaModelManager.CP_RESOLVE_VERBOSE)
 					e.printStackTrace();
-				}
 				throw e;
 			} finally {
 				if (!ok) JavaModelManager.getJavaModelManager().variablePut(variableName, null); // flush cache
 			}
 		} else {
-			if (JavaModelManager.CP_RESOLVE_VERBOSE){
-				Util.verbose(
-					"CPVariable INIT - no initializer found\n" + //$NON-NLS-1$
-					"	variable: " + variableName); //$NON-NLS-1$
-			}
+			if (JavaModelManager.CP_RESOLVE_VERBOSE_ADVANCED)
+				verbose_no_variable_initializer_found(variableName);
 		}
 		return variablePath;
 	}
+
+	private static void verbose_no_variable_initializer_found(String variableName) {
+		Util.verbose(
+			"CPVariable INIT - no initializer found\n" + //$NON-NLS-1$
+			"	variable: " + variableName); //$NON-NLS-1$
+	}
+
+	private static void verbose_variable_value_after_initialization(String variableName, IPath variablePath) {
+		Util.verbose(
+			"CPVariable INIT - after initialization\n" + //$NON-NLS-1$
+			"	variable: " + variableName +'\n' + //$NON-NLS-1$
+			"	variable path: " + variablePath); //$NON-NLS-1$
+	}
+
+	private static void verbose_triggering_variable_initialization(String variableName, ClasspathVariableInitializer initializer) {
+		Util.verbose(
+			"CPVariable INIT - triggering initialization\n" + //$NON-NLS-1$
+			"	variable: " + variableName + '\n' + //$NON-NLS-1$
+			"	initializer: " + initializer); //$NON-NLS-1$
+	}
+
+	private static void verbose_triggering_variable_initialization_invocation_trace() {
+		Util.verbose(
+			"CPVariable INIT - triggering initialization\n" + //$NON-NLS-1$
+			"	invocation trace:"); //$NON-NLS-1$
+		new Exception("<Fake exception>").printStackTrace(System.out); //$NON-NLS-1$
+	}
+
 
 	/**
 	 * Returns deprecation message of a given classpath variable.
@@ -1696,7 +1786,7 @@ public final class JavaCore extends Plugin {
 	 * @since 2.1
  	 */
 	public static ClasspathVariableInitializer getClasspathVariableInitializer(String variable){
-		
+
 		Plugin jdtCorePlugin = JavaCore.getPlugin();
 		if (jdtCorePlugin == null) return null;
 
@@ -1706,17 +1796,13 @@ public final class JavaCore extends Plugin {
 			for(int i = 0; i < extensions.length; i++){
 				IConfigurationElement [] configElements = extensions[i].getConfigurationElements();
 				for(int j = 0; j < configElements.length; j++){
+					IConfigurationElement configElement = configElements[j];
 					try {
-						IConfigurationElement configElement = configElements[j];
 						String varAttribute = configElement.getAttribute("variable"); //$NON-NLS-1$
 						if (variable.equals(varAttribute)) {
-							if (JavaModelManager.CP_RESOLVE_VERBOSE) {
-								Util.verbose(
-									"CPVariable INIT - found initializer\n" + //$NON-NLS-1$
-									"	variable: " + variable + '\n' + //$NON-NLS-1$
-									"	class: " + configElements[j].getAttribute("class")); //$NON-NLS-1$ //$NON-NLS-2$
-							}						
-							Object execExt = configElements[j].createExecutableExtension("class"); //$NON-NLS-1$
+							if (JavaModelManager.CP_RESOLVE_VERBOSE_ADVANCED)
+								verbose_found_variable_initializer(variable, configElement);
+							Object execExt = configElement.createExecutableExtension("class"); //$NON-NLS-1$
 							if (execExt instanceof ClasspathVariableInitializer){
 								ClasspathVariableInitializer initializer = (ClasspathVariableInitializer)execExt;
 								String deprecatedAttribute = configElement.getAttribute("deprecated"); //$NON-NLS-1$
@@ -1733,19 +1819,30 @@ public final class JavaCore extends Plugin {
 					} catch(CoreException e){
 						// executable extension could not be created: ignore this initializer
 						if (JavaModelManager.CP_RESOLVE_VERBOSE) {
-							Util.verbose(
-								"CPContainer INIT - failed to instanciate initializer\n" + //$NON-NLS-1$
-								"	variable: " + variable + '\n' + //$NON-NLS-1$
-								"	class: " + configElements[j].getAttribute("class"), //$NON-NLS-1$ //$NON-NLS-2$
-								System.err); 
+							verbose_failed_to_instanciate_variable_initializer(variable, configElement);
 							e.printStackTrace();
-						}						
+						}
 					}
 				}
-			}	
+			}
 		}
 		return null;
-	}	
+	}
+
+	private static void verbose_failed_to_instanciate_variable_initializer(String variable, IConfigurationElement configElement) {
+		Util.verbose(
+			"CPContainer INIT - failed to instanciate initializer\n" + //$NON-NLS-1$
+			"	variable: " + variable + '\n' + //$NON-NLS-1$
+			"	class: " + configElement.getAttribute("class"), //$NON-NLS-1$ //$NON-NLS-2$
+			System.err);
+	}
+
+	private static void verbose_found_variable_initializer(String variable, IConfigurationElement configElement) {
+		Util.verbose(
+			"CPVariable INIT - found initializer\n" + //$NON-NLS-1$
+			"	variable: " + variable + '\n' + //$NON-NLS-1$
+			"	class: " + configElement.getAttribute("class")); //$NON-NLS-1$ //$NON-NLS-2$
+	}
 	
 	/**
 	 * Returns the names of all known classpath variables.
@@ -1766,21 +1863,21 @@ public final class JavaCore extends Plugin {
 	 * These options allow to configure the behaviour of the underlying components.
 	 * The client may safely use the result as a template that they can modify and
 	 * then pass to <code>setOptions</code>.
-	 * 
-	 * Helper constants have been defined on JavaCore for each of the option ID and 
+	 *
+	 * Helper constants have been defined on JavaCore for each of the option ID and
 	 * their possible constant values.
-	 * 
+	 *
 	 * Note: more options might be added in further releases.
 	 * <pre>
 	 * RECOGNIZED OPTIONS:
-	 * 
+	 *
 	 * COMPILER / Setting Compliance Level
 	 *    Select the compliance level for the compiler. In "1.3" mode, source and target settings
 	 *    should not go beyond "1.3" level.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.compliance"
 	 *     - possible values:   { "1.3", "1.4", "1.5", "1.6", "1.7" }
 	 *     - default:           "1.4"
-	 * 
+	 *
 	 * COMPILER / Setting Source Compatibility Mode
 	 *    Specify whether which source level compatibility is used. From 1.4 on, 'assert' is a keyword
 	 *    reserved for assertion support. Also note, than when toggling to 1.4 mode, the target VM
@@ -1790,12 +1887,12 @@ public final class JavaCore extends Plugin {
 	 *   and the compliance mode should be "1.5".
 	 *   Source level 1.6 is necessary to enable the computation of stack map tables. Once toggled, the target
 	 *   VM level should be set to "1.6" and the compliance mode should be "1.6".
-	 *   Once the source level 1.7 is toggled, the target VM level should be set to "1.7" and the compliance mode 
+	 *   Once the source level 1.7 is toggled, the target VM level should be set to "1.7" and the compliance mode
 	 *   should be "1.7".
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.source"
 	 *     - possible values:   { "1.3", "1.4", "1.5", "1.6", "1.7" }
 	 *     - default:           "1.3"
-	 * 
+	 *
 	 * COMPILER / Defining Target Java Platform
 	 *    For binary compatibility reason, .class files can be tagged to with certain VM versions and later.
 	 *    Note that "1.4" target requires to toggle compliance mode to "1.4", "1.5" target requires
@@ -1806,45 +1903,45 @@ public final class JavaCore extends Plugin {
 	 *     - default:           "1.2"
 	 *
 	 * COMPILER / Generating Local Variable Debug Attribute
- 	 *    When generated, this attribute will enable local variable names 
-	 *    to be displayed in debugger, only in place where variables are 
+ 	 *    When generated, this attribute will enable local variable names
+	 *    to be displayed in debugger, only in place where variables are
 	 *    definitely assigned (.class file is then bigger)
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.debug.localVariable"
 	 *     - possible values:   { "generate", "do not generate" }
 	 *     - default:           "generate"
 	 *
-	 * COMPILER / Generating Line Number Debug Attribute 
-	 *    When generated, this attribute will enable source code highlighting in debugger 
+	 * COMPILER / Generating Line Number Debug Attribute
+	 *    When generated, this attribute will enable source code highlighting in debugger
 	 *    (.class file is then bigger).
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.debug.lineNumber"
 	 *     - possible values:   { "generate", "do not generate" }
 	 *     - default:           "generate"
-	 *    
-	 * COMPILER / Generating Source Debug Attribute 
-	 *    When generated, this attribute will enable the debugger to present the 
+	 *
+	 * COMPILER / Generating Source Debug Attribute
+	 *    When generated, this attribute will enable the debugger to present the
 	 *    corresponding source code.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.debug.sourceFile"
 	 *     - possible values:   { "generate", "do not generate" }
 	 *     - default:           "generate"
-	 *    
+	 *
 	 * COMPILER / Preserving Unused Local Variables
-	 *    Unless requested to preserve unused local variables (that is, never read), the 
+	 *    Unless requested to preserve unused local variables (that is, never read), the
 	 *    compiler will optimize them out, potentially altering debugging
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.codegen.unusedLocal"
 	 *     - possible values:   { "preserve", "optimize out" }
 	 *     - default:           "preserve"
-	 * 
+	 *
 	 * COMPILER / Inline JSR Bytecode Instruction
 	 *    When enabled, the compiler will no longer generate JSR instructions, but rather inline corresponding
 	 *   subroutine code sequences (mostly corresponding to try finally blocks). The generated code will thus
-	 *   get bigger, but will load faster on virtual machines since the verification process is then much simpler. 
+	 *   get bigger, but will load faster on virtual machines since the verification process is then much simpler.
 	 *  This mode is anticipating support for the Java Specification Request 202.
 	 *  Note that JSR inlining is optional only for target platform lesser than 1.5. From 1.5 on, the JSR
 	 *  inlining is mandatory (also see related setting "org.eclipse.wst.jsdt.core.compiler.codegen.targetPlatform").
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.codegen.inlineJsrBytecode"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "disabled"
-	 * 
+	 *
 	 * COMPILER / Javadoc Comment Support
 	 *    When this support is disabled, the compiler will ignore all javadoc problems options settings
 	 *    and will not report any javadoc problem. It will also not find any reference in javadoc comment and
@@ -1854,23 +1951,23 @@ public final class JavaCore extends Plugin {
 	 *     - default:           "enabled"
 	 *
 	 * COMPILER / Reporting Attempt to Override Package-Default Method
-	 *    A package default method is not visible in a different package, and thus 
-	 *    cannot be overridden. When enabling this option, the compiler will signal 
+	 *    A package default method is not visible in a different package, and thus
+	 *    cannot be overridden. When enabling this option, the compiler will signal
 	 *    such scenarii either as an error or a warning.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.overridingPackageDefaultMethod"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
 	 *
 	 * COMPILER / Reporting Method With Constructor Name
-	 *    Naming a method with a constructor name is generally considered poor 
-	 *    style programming. When enabling this option, the compiler will signal such 
+	 *    Naming a method with a constructor name is generally considered poor
+	 *    style programming. When enabling this option, the compiler will signal such
 	 *    scenarii either as an error or a warning.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.methodWithConstructorName"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
 	 *
 	 * COMPILER / Reporting Deprecation
-	 *    When enabled, the compiler will signal use of deprecated API either as an 
+	 *    When enabled, the compiler will signal use of deprecated API either as an
 	 *    error or a warning.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.deprecation"
 	 *     - possible values:   { "error", "warning", "ignore" }
@@ -1894,22 +1991,22 @@ public final class JavaCore extends Plugin {
 	 *    Locally to a try statement, some catch blocks may hide others . For example,
 	 *      try {  throw new java.io.CharConversionException();
 	 *      } catch (java.io.CharConversionException e) {
-	 *      } catch (java.io.IOException e) {}. 
-	 *    When enabling this option, the compiler will issue an error or a warning for hidden 
+	 *      } catch (java.io.IOException e) {}.
+	 *    When enabling this option, the compiler will issue an error or a warning for hidden
 	 *    catch blocks corresponding to checked exceptions
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.hiddenCatchBlock"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
 	 *
 	 * COMPILER / Reporting Unused Local
-	 *    When enabled, the compiler will issue an error or a warning for unused local 
+	 *    When enabled, the compiler will issue an error or a warning for unused local
 	 *    variables (that is, variables never read from)
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.unusedLocal"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
 	 *
 	 * COMPILER / Reporting Unused Parameter
-	 *    When enabled, the compiler will issue an error or a warning for unused method 
+	 *    When enabled, the compiler will issue an error or a warning for unused method
 	 *    parameters (that is, parameters never read from)
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.unusedParameter"
 	 *     - possible values:   { "error", "warning", "ignore" }
@@ -1929,15 +2026,25 @@ public final class JavaCore extends Plugin {
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "disabled"
 	 *
+	 * COMPILER / Consider Reference in Doc Comment for Unused Parameter Check
+	 *    When enabled, the compiler will consider doc comment references to parameters (i.e. @param clauses) for the unused
+	 *    parameter check. Thus, documented parameters will be considered as mandated as per doc contract.
+	 *    The severity of the unused parameter problem is controlled with option "org.eclipse.wst.jsdt.core.compiler.problem.unusedParameter".
+	 *    Note: this option has no effect until the doc comment support is enabled according to the 
+	 *    option "org.eclipse.wst.jsdt.core.compiler.doc.comment.support".
+	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.unusedParameterIncludeDocReference"
+	 *     - possible values:   { "enabled", "disabled" }
+	 *     - default:           "enabled"
+	 *
 	 * COMPILER / Reporting Unused Import
-	 *    When enabled, the compiler will issue an error or a warning for unused import 
-	 *    reference 
+	 *    When enabled, the compiler will issue an error or a warning for unused import
+	 *    reference
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.unusedImport"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
 	 *
 	 * COMPILER / Reporting Unused Private Members
-	 *    When enabled, the compiler will issue an error or a warning whenever a private 
+	 *    When enabled, the compiler will issue an error or a warning whenever a private
 	 *    method or field is declared but never used within the same unit.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.unusedPrivateMember"
 	 *     - possible values:   { "error", "warning", "ignore" }
@@ -1949,30 +2056,30 @@ public final class JavaCore extends Plugin {
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.noEffectAssignment"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
-	 * 
+	 *
 	 * COMPILER / Reporting Empty Statements and Unnecessary Semicolons
 	 *    When enabled, the compiler will issue an error or a warning if an empty statement or a
 	 *    unnecessary semicolon is encountered.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.emptyStatement"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
-	 * 
+	 *
 	 * COMPILER / Reporting Unnecessary Type Check
-	 *    When enabled, the compiler will issue an error or a warning when a cast or an instanceof operation 
+	 *    When enabled, the compiler will issue an error or a warning when a cast or an instanceof operation
 	 *    is unnecessary.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.unnecessaryTypeCheck"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
-	 * 
+	 *
 	 * COMPILER / Reporting Unnecessary Else
 	 *    When enabled, the compiler will issue an error or a warning when a statement is unnecessarily
 	 *    nested within an else clause (in situation where then clause is not completing normally).
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.unnecessaryElse"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
-	 * 
+	 *
 	 * COMPILER / Reporting Synthetic Access Emulation
-	 *    When enabled, the compiler will issue an error or a warning whenever it emulates 
+	 *    When enabled, the compiler will issue an error or a warning whenever it emulates
 	 *    access to a non-accessible member of an enclosing type. Such access can have
 	 *    performance implications.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.syntheticAccessEmulation"
@@ -1980,26 +2087,26 @@ public final class JavaCore extends Plugin {
 	 *     - default:           "ignore"
 	 *
 	 * COMPILER / Reporting Non-Externalized String Literal
-	 *    When enabled, the compiler will issue an error or a warning for non externalized 
-	 *    String literal (that is, not tagged with //$NON-NLS-&lt;n&gt;$). 
+	 *    When enabled, the compiler will issue an error or a warning for non externalized
+	 *    String literal (that is, not tagged with //$NON-NLS-&lt;n&gt;$).
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.nonExternalizedStringLiteral"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
-	 * 
+	 *
 	 * COMPILER / Reporting Usage of 'assert' Identifier
-	 *    When enabled, the compiler will issue an error or a warning whenever 'assert' is 
+	 *    When enabled, the compiler will issue an error or a warning whenever 'assert' is
 	 *    used as an identifier (reserved keyword in 1.4)
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.assertIdentifier"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
-	 * 
+	 *
 	 * COMPILER / Reporting Usage of 'enum' Identifier
-	 *    When enabled, the compiler will issue an error or a warning whenever 'enum' is 
+	 *    When enabled, the compiler will issue an error or a warning whenever 'enum' is
 	 *    used as an identifier (reserved keyword in 1.5)
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.enumIdentifier"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
-	 * 
+	 *
 	 * COMPILER / Reporting Non-Static Reference to a Static Member
 	 *    When enabled, the compiler will issue an error or a warning whenever a static field
 	 *    or method is accessed with an expression receiver. A reference to a static member should
@@ -2007,7 +2114,7 @@ public final class JavaCore extends Plugin {
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.staticAccessReceiver"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
-	 * 
+	 *
 	 * COMPILER / Reporting Indirect Reference to a Static Member
 	 *    When enabled, the compiler will issue an error or a warning whenever a static field
 	 *    or method is accessed in an indirect way. A reference to a static member should
@@ -2015,18 +2122,18 @@ public final class JavaCore extends Plugin {
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.indirectStaticAccess"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
-	 * 
+	 *
 	 * COMPILER / Reporting Interface Method not Compatible with non-Inherited Methods
 	 *    When enabled, the compiler will issue an error or a warning whenever an interface
 	 *    defines a method incompatible with a non-inherited Object method. Until this conflict
-	 *    is resolved, such an interface cannot be implemented, For example, 
-	 *      interface I { 
+	 *    is resolved, such an interface cannot be implemented, For example,
+	 *      interface I {
 	 *         int clone();
-	 *      } 
+	 *      }
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.incompatibleNonInheritedInterfaceMethod"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
-	 * 
+	 *
 	 * COMPILER / Reporting Usage of char[] Expressions in String Concatenations
 	 *    When enabled, the compiler will issue an error or a warning whenever a char[] expression
 	 *    is used in String concatenations (for example, "hello" + new char[]{'w','o','r','l','d'}).
@@ -2049,13 +2156,13 @@ public final class JavaCore extends Plugin {
 	 *     - default:           "ignore"
 	 *
 	 * COMPILER / Reporting Special Parameter Hiding another Field
-	 *    When enabled, the compiler will signal cases where a constructor or setter method parameter declaration 
+	 *    When enabled, the compiler will signal cases where a constructor or setter method parameter declaration
 	 *    is hiding some field (either locally, inherited or defined in enclosing type).
 	 *    The severity of the problem is controlled with option "org.eclipse.wst.jsdt.core.compiler.problem.localVariableHiding".
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.specialParameterHidingField"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "disabled"
-	 * 
+	 *
 	 * COMPILER / Reporting Type Declaration Hiding another Type
 	 *    When enabled, the compiler will issue an error or a warning in situations where a type parameter
 	 *    declaration is hiding some type, when a nested type is hiding some type parameter, or when
@@ -2070,7 +2177,7 @@ public final class JavaCore extends Plugin {
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.possibleAccidentalBooleanAssignment"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
-	 * 
+	 *
 	 * COMPILER / Reporting Undocumented Empty Block
 	 *    When enabled, the compiler will issue an error or a warning when an empty block is detected and it is not
 	 *    documented with any comment.
@@ -2099,7 +2206,7 @@ public final class JavaCore extends Plugin {
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.unusedDeclaredThrownExceptionWhenOverriding"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "disabled"
-	 * 
+	 *
 	 * COMPILER / Reporting Unqualified Access to Field
 	 *    When enabled, the compiler will issue an error or a warning when a field is access without any qualification.
 	 *    In order to improve code readability, it should be qualified, e.g. 'x' should rather be written 'this.x'.
@@ -2113,84 +2220,101 @@ public final class JavaCore extends Plugin {
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.uncheckedTypeOperation"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
-	 *     
+	 *
 	 * COMPILER / Reporting Raw Type Reference
-	 *    When enabled, the compiler will issue an error or a warning when detecting references to raw types. Raw types are 
-	 *    discouraged, and are intended to help interfacing with legacy code. In the future, the language specification may 
+	 *    When enabled, the compiler will issue an error or a warning when detecting references to raw types. Raw types are
+	 *    discouraged, and are intended to help interfacing with legacy code. In the future, the language specification may
 	 *    reject raw references to generic types.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.rawTypeReference"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
-	 * 
+	 *
 	 * COMPILER / Reporting final Bound for Type Parameter
-	 *    When enabled, the compiler will issue an error or a warning whenever a generic type parameter is associated with a 
+	 *    When enabled, the compiler will issue an error or a warning whenever a generic type parameter is associated with a
 	 *    bound corresponding to a final type; since final types cannot be further extended, the parameter is pretty useless.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.finalParameterBound"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
-	 * 
+	 *
 	 * COMPILER / Reporting Missing Declaration of serialVersionUID Field on Serializable Class
-	 *    When enabled, the compiler will issue an error or a warning whenever a serializable class is missing a local declaration 
+	 *    When enabled, the compiler will issue an error or a warning whenever a serializable class is missing a local declaration
 	 *    of a serialVersionUID field. This field must be declared as static final and be of type long.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.missingSerialVersion"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
-	 * 
+	 *
 	 * COMPILER / Reporting Varargs Argument Needing a Cast in Method/Constructor Invocation
 	 *    When enabled, the compiler will issue an error or a warning whenever a varargs arguments should be cast
-	 *    when passed to a method/constructor invocation. (e.g. Class.getMethod(String name, Class ... args )  
+	 *    when passed to a method/constructor invocation. (e.g. Class.getMethod(String name, Class ... args )
 	 *    invoked with arguments ("foo", null)).
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.varargsArgumentNeedCast"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
-	 * 
-	 * COMPILER / Reporting Null Reference or Dereference
-	 *    When enabled, the compiler will issue an error or a warning whenever an assumption is made on a variable
-	 *    with respect to holding null/non-null values, but the assumption is not followed in a consistent manner.
-	 *    Situations include:
-	 *         - if variable was assumed to be null and further used to access field or methods
-	 *         - if variable was assumed to be null or non-null and further tested for null cases.
-	 *         
+	 *
+	 * COMPILER / Reporting Null Dereference
+	 *    When enabled, the compiler will issue an error or a warning whenever a
+	 *    variable that is statically known to hold a null value is used to
+	 *    access a field or method.
+	 *
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.nullReference"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
-	 * 
+	 *
+	 * COMPILER / Reporting Potential Null Dereference
+	 *    When enabled, the compiler will issue an error or a warning whenever a
+	 *    variable that has formerly been tested against null but is not (no more)
+	 *    statically known to hold a non-null value is used to access a field or
+	 *    method.
+	 *
+	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.potentialNullReference"
+	 *     - possible values:   { "error", "warning", "ignore" }
+	 *     - default:           "ignore"
+	 *
+	 * COMPILER / Reporting Redundant Null Check
+	 *    When enabled, the compiler will issue an error or a warning whenever a
+	 *    variable that is statically known to hold a null or a non-null value
+	 *    is tested against null.
+	 *
+	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.redundantNullCheck"
+	 *     - possible values:   { "error", "warning", "ignore" }
+	 *     - default:           "ignore"
+	 *
 	 * COMPILER / Reporting Use of Annotation Type as Super Interface
 	 *    When enabled, the compiler will issue an error or a warning whenever an annotation type is used
 	 *    as a super-interface. Though legal, this is discouraged.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.annotationSuperInterface"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "warning"
-	 * 
+	 *
 	 * COMPILER / Reporting Missing @Override Annotation
 	 *    When enabled, the compiler will issue an error or a warning whenever encountering a method
 	 *    declaration which overrides a superclass method but has no @Override annotation.
 	 *     - option id:        "org.eclipse.wst.jsdt.core.compiler.problem.missingOverrideAnnotation"
 	 *     - possible values:   { "error", "warning", "ignore" }
-	 *     - default:           "ignore"                               
-	 * 
+	 *     - default:           "ignore"
+	 *
 	 * COMPILER / Reporting Missing @Deprecated Annotation
 	 *    When enabled, the compiler will issue an error or a warning whenever encountering a declaration
 	 *    carrying a @deprecated doc tag but having no corresponding @Deprecated annotation.
 	 *     - option id:        "org.eclipse.wst.jsdt.core.compiler.problem.missingDeprecatedAnnotation"
 	 *     - possible values:   { "error", "warning", "ignore" }
-	 *     - default:           "ignore"                               
-	 * 
+	 *     - default:           "ignore"
+	 *
 	 * COMPILER / Reporting Incomplete Enum Switch
 	 *    When enabled, the compiler will issue an error or a warning whenever
-	 *    an enum constant has no corresponding case label in an enum switch 
+	 *    an enum constant has no corresponding case label in an enum switch
 	 *    statement.
 	 *     - option id:        "org.eclipse.wst.jsdt.core.compiler.problem.incompleteEnumSwitch"
 	 *     - possible values:   { "error", "warning", "ignore" }
-	 *     - default:           "ignore"                               
-	 * 	
+	 *     - default:           "ignore"
+	 *
 	 * COMPILER / Reporting Boxing/Unboxing Conversion
 	 *    When enabled, the compiler will issue an error or a warning whenever a boxing or an unboxing
 	 *    conversion is performed.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.autoboxing"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
-	 * 
+	 *
 	 * COMPILER / Reporting Invalid Javadoc Comment
 	 *    This is the generic control for the severity of Javadoc problems.
 	 *    When enabled, the compiler will issue an error or a warning for a problem in Javadoc.
@@ -2203,7 +2327,7 @@ public final class JavaCore extends Plugin {
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.invalidJavadocTagsVisibility"
 	 *     - possible values:   { "public", "protected", "default", "private" }
 	 *     - default:           "public"
-	 * 
+	 *
 	 * COMPILER / Reporting Invalid Javadoc Tags
 	 *    When enabled, the compiler will signal unbound or unexpected reference tags in Javadoc.
 	 *    A 'throws' tag referencing an undeclared exception would be considered as unexpected.
@@ -2214,7 +2338,7 @@ public final class JavaCore extends Plugin {
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.invalidJavadocTags"
 	 *     - possible values:   { "disabled", "enabled" }
 	 *     - default:           "disabled"
-	 * 
+	 *
 	 * COMPILER / Reporting Invalid Javadoc Tags with Deprecated References
 	 *    Specify whether the compiler will report deprecated references used in Javadoc tags.
 	 *    <br>Note that this diagnosis can be enabled based on the visibility of the construct associated with the Javadoc;
@@ -2222,7 +2346,7 @@ public final class JavaCore extends Plugin {
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.invalidJavadocTagsDeprecatedRef"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "disabled"
-	 * 
+	 *
 	 * COMPILER / Reporting Invalid Javadoc Tags with Not Visible References
 	 *    Specify whether the compiler will report non-visible references used in Javadoc tags.
 	 *    <br>Note that this diagnosis can be enabled based on the visibility of the construct associated with the Javadoc;
@@ -2230,7 +2354,7 @@ public final class JavaCore extends Plugin {
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.invalidJavadocTagsNotVisibleRef"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "disabled"
-	 * 
+	 *
 	 * COMPILER / Reporting Missing Javadoc Tags
 	 *    This is the generic control for the severity of Javadoc missing tag problems.
 	 *    When enabled, the compiler will issue an error or a warning when tags are missing in Javadoc comments.
@@ -2240,19 +2364,19 @@ public final class JavaCore extends Plugin {
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.missingJavadocTags"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
-	 * 
+	 *
 	 * COMPILER / Visibility Level For Missing Javadoc Tags
 	 *    Set the minimum visibility level for Javadoc missing tag problems. Below this level problems will be ignored.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.missingJavadocTagsVisibility"
 	 *     - possible values:   { "public", "protected", "default", "private" }
 	 *     - default:           "public"
-	 * 
+	 *
 	 * COMPILER / Reporting Missing Javadoc Tags on Overriding Methods
 	 *    Specify whether the compiler will verify overriding methods in order to report Javadoc missing tag problems.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.missingJavadocTagsOverriding"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "disabled"
-	 * 
+	 *
 	 * COMPILER / Reporting Missing Javadoc Comments
 	 *    This is the generic control for the severity of missing Javadoc comment problems.
 	 *    When enabled, the compiler will issue an error or a warning when Javadoc comments are missing.
@@ -2262,25 +2386,25 @@ public final class JavaCore extends Plugin {
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.missingJavadocComments"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
-	 * 
+	 *
 	 * COMPILER / Visibility Level For Missing Javadoc Comments
 	 *    Set the minimum visibility level for missing Javadoc problems. Below this level problems will be ignored.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.missingJavadocCommentsVisibility"
 	 *     - possible values:   { "public", "protected", "default", "private" }
 	 *     - default:           "public"
-	 * 
+	 *
 	 * COMPILER / Reporting Missing Javadoc Comments on Overriding Methods
 	 *    Specify whether the compiler will verify overriding methods in order to report missing Javadoc comment problems.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.missingJavadocCommentsOverriding"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "disabled"
-	 * 
+	 *
 	 * COMPILER / Maximum Number of Problems Reported per Compilation Unit
 	 *    Specify the maximum number of problems reported on each compilation unit.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.maxProblemPerUnit"
 	 *     - possible values:	"&lt;n&gt;" where &lt;n&gt; is zero or a positive integer (if zero then all problems are reported).
 	 *     - default:           "100"
-	 * 
+	 *
 	 * COMPILER / Treating Optional Error as Fatal
 	 *    When enabled, optional errors (i.e. optional problems which severity is set to "error") will be treated as standard
 	 *    compiler errors, yielding problem methods/types preventing from running offending code until the issue got resolved.
@@ -2289,14 +2413,14 @@ public final class JavaCore extends Plugin {
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.fatalOptionalError"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "enabled"
-	 * 
+	 *
 	 * COMPILER / Defining the Automatic Task Tags
 	 *    When the tag list is not empty, the compiler will issue a task marker whenever it encounters
 	 *    one of the corresponding tags inside any comment in Java source code.
-	 *    Generated task messages will start with the tag, and range until the next line separator, 
+	 *    Generated task messages will start with the tag, and range until the next line separator,
 	 *    comment ending, or tag.
 	 *    When a given line of code bears multiple tags, each tag will be reported separately.
-	 *    Moreover, a tag immediately followed by another tag will be reported using the contents of the 
+	 *    Moreover, a tag immediately followed by another tag will be reported using the contents of the
 	 *    next non-empty tag of the line, if any.
 	 *    Note that tasks messages are trimmed. If a tag is starting with a letter or digit, then it cannot be leaded by
 	 *    another letter or digit to be recognized ("fooToDo" will not be recognized as a task for tag "ToDo", but "foo#ToDo"
@@ -2304,9 +2428,9 @@ public final class JavaCore extends Plugin {
 	 *    by a letter or digit to be recognized ("ToDofoo" will not be recognized as a task for tag "ToDo", but "ToDo:foo" will
 	 *    be detected either for tag "ToDo" or "ToDo:").
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.taskTags"
-	 *     - possible values:   { "&lt;tag&gt;[,&lt;tag&gt;]*" } where &lt;tag&gt; is a String without any wild-card or leading/trailing spaces 
+	 *     - possible values:   { "&lt;tag&gt;[,&lt;tag&gt;]*" } where &lt;tag&gt; is a String without any wild-card or leading/trailing spaces
 	 *     - default:           "TODO,FIXME,XXX"
-	 * 
+	 *
 	 * COMPILER / Defining the Automatic Task Priorities
 	 *    In parallel with the Automatic Task Tags, this list defines the priorities (high, normal or low)
 	 *    of the task markers issued by the compiler.
@@ -2314,7 +2438,7 @@ public final class JavaCore extends Plugin {
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.taskPriorities"
 	 *     - possible values:   { "&lt;priority&gt;[,&lt;priority&gt;]*" } where &lt;priority&gt; is one of "HIGH", "NORMAL" or "LOW"
 	 *     - default:           "NORMAL,HIGH,NORMAL"
-	 * 
+	 *
 	 * COMPILER / Determining whether task tags are case-sensitive
 	 *    When enabled, task tags are considered in a case-sensitive way.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.taskCaseSensitive"
@@ -2336,7 +2460,7 @@ public final class JavaCore extends Plugin {
 	 *     - default:           "warning"
 	 *
 	 * COMPILER / Determining Effect of @SuppressWarnings
-	 *    When enabled, the @SuppressWarnings annotation can be used to suppress some compiler warnings. 
+	 *    When enabled, the @SuppressWarnings annotation can be used to suppress some compiler warnings.
 	 *    When disabled, all @SupressWarnings annotations are ignored; i.e., warnings are reported.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.suppressWarnings"
 	 *     - possible values:   { "enabled", "disabled" }
@@ -2363,41 +2487,41 @@ public final class JavaCore extends Plugin {
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.parameterAssignment"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
-	 * 
+	 *
 	 * COMPILER / Reporting Switch Fall-Through Case
 	 *    When enabled, the compiler will issue an error or a warning if a case may be
 	 *    entered by falling through previous case. Empty cases are allowed.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.fallthroughCase"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
-	 * 
+	 *
 	 * COMPILER / Reporting Overriding method that doesn't call the super method invocation
 	 *    When enabled, the compiler will issue an error or a warning if a method is overriding a method without calling
 	 *    the super invocation.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.compiler.problem.overridingMethodWithoutSuperInvocation"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
-	 * 
+	 *
 	 * BUILDER / Specifying Filters for Resource Copying Control
 	 *    Allow to specify some filters to control the resource copy process.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.builder.resourceCopyExclusionFilter"
 	 *     - possible values:   { "&lt;name&gt;[,&lt;name&gt;]* } where &lt;name&gt; is a file name pattern (* and ? wild-cards allowed)
 	 *       or the name of a folder which ends with '/'
 	 *     - default:           ""
-	 * 
+	 *
 	 * BUILDER / Abort if Invalid Classpath
 	 *    Allow to toggle the builder to abort if the classpath is invalid
 	 *     - option id:         "org.eclipse.wst.jsdt.core.builder.invalidClasspath"
 	 *     - possible values:   { "abort", "ignore" }
 	 *     - default:           "abort"
-	 * 
+	 *
 	 * BUILDER / Cleaning Output Folder(s)
 	 *    Indicate whether the JavaBuilder is allowed to clean the output folders
 	 *    when performing full build operations.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.builder.cleanOutputFolder"
 	 *     - possible values:   { "clean", "ignore" }
 	 *     - default:           "clean"
-	 * 
+	 *
 	 * BUILDER / Recreate Modified class files in Output Folder
 	 *    Indicate whether the JavaBuilder should check for any changes to .class files
 	 *    in the output folders while performing incremental build operations. If changes
@@ -2407,239 +2531,239 @@ public final class JavaCore extends Plugin {
 	 *     - option id:         "org.eclipse.wst.jsdt.core.builder.recreateModifiedClassFileInOutputFolder"
 	 *     - possible values:   { "enabled", "ignore" }
 	 *     - default:           "ignore"
-	 * 
+	 *
 	 * BUILDER / Reporting Duplicate Resources
 	 *    Indicate the severity of the problem reported when more than one occurrence
 	 *    of a resource is to be copied into the output location.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.builder.duplicateResourceTask"
 	 *     - possible values:   { "error", "warning" }
 	 *     - default:           "warning"
-	 * 
+	 *
 	 * JAVACORE / Computing Project Build Order
 	 *    Indicate whether JavaCore should enforce the project build order to be based on
 	 *    the classpath prerequisite chain. When requesting to compute, this takes over
 	 *    the platform default order (based on project references).
 	 *     - option id:         "org.eclipse.wst.jsdt.core.computeJavaBuildOrder"
 	 *     - possible values:   { "compute", "ignore" }
-	 *     - default:           "ignore"	 
-	 * 
+	 *     - default:           "ignore"
+	 *
 	 * JAVACORE / Default Source Encoding Format
 	 *    Get the default encoding format of source files. This value is
-	 *    immutable and preset to the result of ResourcesPlugin.getEncoding(). 
+	 *    immutable and preset to the result of ResourcesPlugin.getEncoding().
 	 *    It is offered as a convenience shortcut only.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.encoding"
 	 *     - value:           &lt;immutable, platform default value&gt;
-	 * 
+	 *
 	 * JAVACORE / Reporting Incomplete Classpath
-	 *    Indicate the severity of the problem reported when an entry on the classpath does not exist, 
+	 *    Indicate the severity of the problem reported when an entry on the classpath does not exist,
 	 *    is not legite or is not visible (for example, a referenced project is closed).
 	 *     - option id:         "org.eclipse.wst.jsdt.core.incompleteClasspath"
 	 *     - possible values:   { "error", "warning"}
 	 *     - default:           "error"
-	 * 
+	 *
 	 * JAVACORE / Reporting Classpath Cycle
 	 *    Indicate the severity of the problem reported when a project is involved in a cycle.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.circularClasspath"
 	 *     - possible values:   { "error", "warning" }
 	 *     - default:           "error"
-	 * 
+	 *
 	 * JAVACORE / Reporting Incompatible JDK Level for Required Binaries
-	 *    Indicate the severity of the problem reported when a project prerequisites another project 
+	 *    Indicate the severity of the problem reported when a project prerequisites another project
 	 *    or library with an incompatible target JDK level (e.g. project targeting 1.1 vm, but compiled against 1.4 libraries).
 	 *     - option id:         "org.eclipse.wst.jsdt.core.incompatibleJDKLevel"
 	 *     - possible values:   { "error", "warning", "ignore" }
 	 *     - default:           "ignore"
-	 * 
+	 *
 	 * JAVACORE / Enabling Usage of Classpath Exclusion Patterns
 	 *    When disabled, no entry on a project classpath can be associated with
 	 *    an exclusion pattern.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.classpath.exclusionPatterns"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "enabled"
-	 * 
+	 *
 	 * JAVACORE / Enabling Usage of Classpath Multiple Output Locations
 	 *    When disabled, no entry on a project classpath can be associated with
 	 *    a specific output location, preventing thus usage of multiple output locations.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.classpath.multipleOutputLocations"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "enabled"
-	 * 
+	 *
 	 * JAVACORE / Set the timeout value for retrieving the method's parameter names from javadoc
 	 *    Timeout in milliseconds to retrieve the method's parameter names from javadoc.
 	 *    If the value is 0, the parameter names are not fetched and the raw names are returned.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.timeoutForParameterNameFromAttachedJavadoc"
 	 *     - possible values:	"&lt;n&gt;", where n is an integer greater than or equal to 0
 	 *     - default:           "50"
-	 * 
+	 *
 	 * DEPRECATED SEE DefaultCodeFormatterOptions: FORMATTER / Inserting New Line Before Opening Brace
 	 *    When Insert, a new line is inserted before an opening brace, otherwise nothing
 	 *    is inserted
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.newline.openingBrace"
 	 *     - possible values:   { "insert", "do not insert" }
 	 *     - default:           "do not insert"
-	 * 
+	 *
 	 * DEPRECATED SEE DefaultCodeFormatterOptions: FORMATTER / Inserting New Line Inside Control Statement
 	 *    When Insert, a new line is inserted between } and following else, catch, finally
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.newline.controlStatement"
 	 *     - possible values:   { "insert", "do not insert" }
 	 *     - default:           "do not insert"
-	 * 
+	 *
 	 * DEPRECATED SEE DefaultCodeFormatterOptions: Clearing Blank Lines
 	 *    When Clear all, all blank lines are removed. When Preserve one, only one is kept
 	 *    and all others removed.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.newline.clearAll"
 	 *     - possible values:   { "clear all", "preserve one" }
 	 *     - default:           "preserve one"
-	 * 
-	 * DEPRECATED SEE DefaultCodeFormatterOptions: Inserting New Line Between Else/If 
-	 *    When Insert, a blank line is inserted between an else and an if when they are 
+	 *
+	 * DEPRECATED SEE DefaultCodeFormatterOptions: Inserting New Line Between Else/If
+	 *    When Insert, a blank line is inserted between an else and an if when they are
 	 *    contiguous. When choosing to not insert, else-if will be kept on the same
 	 *    line when possible.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.newline.elseIf"
 	 *     - possible values:   { "insert", "do not insert" }
 	 *     - default:           "do not insert"
-	 * 
+	 *
 	 * DEPRECATED SEE DefaultCodeFormatterOptions: Inserting New Line In Empty Block
 	 *    When insert, a line break is inserted between contiguous { and }, if } is not followed
 	 *    by a keyword.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.newline.emptyBlock"
 	 *     - possible values:   { "insert", "do not insert" }
 	 *     - default:           "insert"
-	 * 
+	 *
 	 * DEPRECATED SEE DefaultCodeFormatterOptions: Splitting Lines Exceeding Length
 	 *    Enable splitting of long lines (exceeding the configurable length). Length of 0 will
 	 *    disable line splitting
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.lineSplit"
 	 *     - possible values:	"&lt;n&gt;", where n is zero or a positive integer
 	 *     - default:           "80"
-	 * 
+	 *
 	 * DEPRECATED SEE DefaultCodeFormatterOptions: Compacting Assignment
 	 *    Assignments can be formatted asymmetrically, for example 'int x= 2;', when Normal, a space
 	 *    is inserted before the assignment operator
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.style.assignment"
 	 *     - possible values:   { "compact", "normal" }
 	 *     - default:           "normal"
-	 * 
+	 *
 	 * DEPRECATED SEE DefaultCodeFormatterOptions: Defining Indentation Character
 	 *    Either choose to indent with tab characters or spaces
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.tabulation.char"
 	 *     - possible values:   { "tab", "space" }
 	 *     - default:           "tab"
-	 * 
+	 *
 	 * DEPRECATED SEE DefaultCodeFormatterOptions: Defining Space Indentation Length
-	 *    When using spaces, set the amount of space characters to use for each 
+	 *    When using spaces, set the amount of space characters to use for each
 	 *    indentation mark.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.tabulation.size"
 	 *     - possible values:	"&lt;n&gt;", where n is a positive integer
 	 *     - default:           "4"
-	 * 
+	 *
 	 * DEPRECATED SEE DefaultCodeFormatterOptions: Inserting space in cast expression
 	 *    When Insert, a space is added between the type and the expression in a cast expression.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.space.castexpression"
 	 *     - possible values:   { "insert", "do not insert" }
 	 *     - default:           "insert"
-	 * 
+	 *
 	 * CODEASSIST / Activate Visibility Sensitive Completion
 	 *    When active, completion doesn't show that you can not see
 	 *    (for example, you can not see private methods of a super class).
 	 *     - option id:         "org.eclipse.wst.jsdt.core.codeComplete.visibilityCheck"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "disabled"
-	 * 
+	 *
 	 * CODEASSIST / Activate Deprecation Sensitive Completion
 	 *    When enabled, completion doesn't propose deprecated members and types.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.codeComplete.deprecationCheck"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "disabled"
-	 * 
+	 *
 	 * CODEASSIST / Automatic Qualification of Implicit Members
 	 *    When active, completion automatically qualifies completion on implicit
 	 *    field references and message expressions.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.codeComplete.forceImplicitQualification"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "disabled"
-	 * 
+	 *
 	 * CODEASSIST / Define the Prefixes for Field Name
 	 *    When the prefixes is non empty, completion for field name will begin with
 	 *    one of the proposed prefixes.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.codeComplete.fieldPrefixes"
-	 *     - possible values:   { "&lt;prefix&gt;[,&lt;prefix&gt;]*" } where &lt;prefix&gt; is a String without any wild-card 
+	 *     - possible values:   { "&lt;prefix&gt;[,&lt;prefix&gt;]*" } where &lt;prefix&gt; is a String without any wild-card
 	 *     - default:           ""
-	 * 
+	 *
 	 * CODEASSIST / Define the Prefixes for Static Field Name
 	 *    When the prefixes is non empty, completion for static field name will begin with
 	 *    one of the proposed prefixes.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.codeComplete.staticFieldPrefixes"
-	 *     - possible values:   { "&lt;prefix&gt;[,&lt;prefix&gt;]*" } where &lt;prefix&gt; is a String without any wild-card 
+	 *     - possible values:   { "&lt;prefix&gt;[,&lt;prefix&gt;]*" } where &lt;prefix&gt; is a String without any wild-card
 	 *     - default:           ""
-	 * 
+	 *
 	 * CODEASSIST / Define the Prefixes for Local Variable Name
 	 *    When the prefixes is non empty, completion for local variable name will begin with
 	 *    one of the proposed prefixes.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.codeComplete.localPrefixes"
-	 *     - possible values:   { "&lt;prefix&gt;[,&lt;prefix&gt;]*" } where &lt;prefix&gt; is a String without any wild-card 
+	 *     - possible values:   { "&lt;prefix&gt;[,&lt;prefix&gt;]*" } where &lt;prefix&gt; is a String without any wild-card
 	 *     - default:           ""
-	 * 
+	 *
 	 * CODEASSIST / Define the Prefixes for Argument Name
 	 *    When the prefixes is non empty, completion for argument name will begin with
 	 *    one of the proposed prefixes.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.codeComplete.argumentPrefixes"
-	 *     - possible values:   { "&lt;prefix&gt;[,&lt;prefix&gt;]*" } where &lt;prefix&gt; is a String without any wild-card 
+	 *     - possible values:   { "&lt;prefix&gt;[,&lt;prefix&gt;]*" } where &lt;prefix&gt; is a String without any wild-card
 	 *     - default:           ""
-	 * 
+	 *
 	 * CODEASSIST / Define the Suffixes for Field Name
 	 *    When the suffixes is non empty, completion for field name will end with
 	 *    one of the proposed suffixes.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.codeComplete.fieldSuffixes"
-	 *     - possible values:   { "&lt;suffix&gt;[,&lt;suffix&gt;]*" } where &lt;suffix&gt; is a String without any wild-card 
+	 *     - possible values:   { "&lt;suffix&gt;[,&lt;suffix&gt;]*" } where &lt;suffix&gt; is a String without any wild-card
 	 *     - default:           ""
-	 * 
+	 *
 	 * CODEASSIST / Define the Suffixes for Static Field Name
 	 *    When the suffixes is non empty, completion for static field name will end with
 	 *    one of the proposed suffixes.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.codeComplete.staticFieldSuffixes"
-	 *     - possible values:   { "&lt;suffix&gt;[,&lt;suffix&gt;]*" } where &lt;suffix&gt; is a String without any wild-card 
+	 *     - possible values:   { "&lt;suffix&gt;[,&lt;suffix&gt;]*" } where &lt;suffix&gt; is a String without any wild-card
 	 *     - default:           ""
-	 * 
+	 *
 	 * CODEASSIST / Define the Suffixes for Local Variable Name
 	 *    When the suffixes is non empty, completion for local variable name will end with
 	 *    one of the proposed suffixes.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.codeComplete.localSuffixes"
-	 *     - possible values:   { "&lt;suffix&gt;[,&lt;suffix&gt;]*" } where &lt;suffix&gt; is a String without any wild-card 
+	 *     - possible values:   { "&lt;suffix&gt;[,&lt;suffix&gt;]*" } where &lt;suffix&gt; is a String without any wild-card
 	 *     - default:           ""
-	 * 
+	 *
 	 * CODEASSIST / Define the Suffixes for Argument Name
 	 *    When the suffixes is non empty, completion for argument name will end with
 	 *    one of the proposed suffixes.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.codeComplete.argumentSuffixes"
-	 *     - possible values:   { "&lt;suffix&gt;[,&lt;suffix&gt;]*" } where &lt;suffix&gt; is a String without any wild-card 
+	 *     - possible values:   { "&lt;suffix&gt;[,&lt;suffix&gt;]*" } where &lt;suffix&gt; is a String without any wild-card
 	 *     - default:           ""
-	 * 
+	 *
 	 * CODEASSIST / Activate Forbidden Reference Sensitive Completion
 	 *    When enabled, completion doesn't propose elements which match a
   	 *    forbidden reference rule.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.codeComplete.forbiddenReferenceCheck"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "enabled"
-	 * 
+	 *
 	 * CODEASSIST / Activate Discouraged Reference Sensitive Completion
 	 *    When enabled, completion doesn't propose elements which match a
   	 *    discouraged reference rule.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.codeComplete.discouragedReferenceCheck"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "disabled"
-	 *     
+	 *
 	 * CODEASSIST / Activate Camel Case Sensitive Completion
-	 *    When enabled, completion shows proposals whose name match the CamelCase 
+	 *    When enabled, completion shows proposals whose name match the CamelCase
 	 *    pattern.
 	 *     - option id:         "org.eclipse.wst.jsdt.core.codeComplete.camelCaseMatch"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "enabled"
-	 *     
+	 *
 	 * CODEASSIST / Activate Suggestion of Static Import
 	 *    When enabled, completion proposals can contain static import
 	 *    pattern.
-	 *     - option id:         "org.eclipse.wst.jsdt.core.codeComplete.suggestStaticImport"
+	 *     - option id:         "org.eclipse.wst.jsdt.core.codeComplete.suggestStaticImports"
 	 *     - possible values:   { "enabled", "disabled" }
 	 *     - default:           "enabled"
 	 * </pre>
@@ -2668,6 +2792,197 @@ public final class JavaCore extends Plugin {
 		}
 		return ResourcesPlugin.getEncoding();
 	}
+
+	/**
+	 * Returns an array that contains the resources generated by the Java builder when building the
+	 * compilation units contained in the given region.
+	 * <p>The contents of the array is accurate only if the elements of the given region have been built.</p>
+	 * <p>The given region can contain instances of:</p>
+	 * <ul>
+	 * <li><code>org.eclipse.wst.jsdt.core.ICompilationUnit</code></li>
+	 * <li><code>org.eclipse.wst.jsdt.core.IPackageFragment</code></li>
+	 * <li><code>org.eclipse.wst.jsdt.core.IPackageFragmentRoot</code></li>
+	 * <li><code>org.eclipse.wst.jsdt.core.IJavaProject</code></li>
+	 * </ul>
+	 * <p>All other types of <code>org.eclipse.wst.jsdt.core.IJavaElement</code> are ignored.</p>
+	 *
+	 * @param region the given region
+	 * @param includesNonJavaResources a flag that indicates if non-java resources should be included
+	 *
+	 * @return an array that contains the resources generated by the Java builder when building the
+	 * compilation units contained in the given region, an empty array if none
+	 * @exception IllegalArgumentException if the given region is <code>null</code>
+	 * @since 3.3
+	 */
+	public static IResource[] getGeneratedResources(IRegion region, boolean includesNonJavaResources) {
+		if (region == null) throw new IllegalArgumentException("region cannot be null"); //$NON-NLS-1$
+		IJavaElement[] elements = region.getElements();
+		HashMap projectsStates = new HashMap();
+		ArrayList collector = new ArrayList();
+		for (int i = 0, max = elements.length; i < max; i++) {
+			// collect all the java project
+			IJavaElement element = elements[i];
+			IJavaProject javaProject = element.getJavaProject();
+			IProject project = javaProject.getProject();
+			State state = null;
+			State currentState = (State) projectsStates.get(project);
+			if (currentState != null) {
+				state = currentState;
+			} else {
+				state = (State) JavaModelManager.getJavaModelManager().getLastBuiltState(project, null);
+				if (state != null) {
+					projectsStates.put(project, state);
+				}
+			}
+			if (state == null) continue;
+			if (element.getElementType() == IJavaElement.JAVA_PROJECT) {
+				IPackageFragmentRoot[] roots = null;
+				try {
+					roots = javaProject.getPackageFragmentRoots();
+				} catch (JavaModelException e) {
+					// ignore
+				}
+				if (roots == null) continue;
+				IRegion region2 = JavaCore.newRegion();
+				for (int j = 0; j < roots.length; j++) {
+					region2.add(roots[j]);
+				}
+				IResource[] res = getGeneratedResources(region2, includesNonJavaResources);
+				for (int j = 0, max2 = res.length; j < max2; j++) {
+					collector.add(res[j]);
+				}
+				continue;
+			}
+			IPath outputLocation = null;
+			try {
+				outputLocation = javaProject.getOutputLocation();
+			} catch (JavaModelException e) {
+				// ignore
+			}
+			IJavaElement root = element;
+			while (root != null && root.getElementType() != IJavaElement.PACKAGE_FRAGMENT_ROOT) {
+				root = root.getParent();
+			}
+			if (root == null) continue;
+			IPackageFragmentRoot packageFragmentRoot = (IPackageFragmentRoot) root;
+			int rootPathSegmentCounts = packageFragmentRoot.getPath().segmentCount();
+			try {
+				IClasspathEntry entry = packageFragmentRoot.getRawClasspathEntry();
+				IPath entryOutputLocation = entry.getOutputLocation();
+				if (entryOutputLocation != null) {
+					outputLocation = entryOutputLocation;
+				}
+			} catch (JavaModelException e) {
+				e.printStackTrace();
+			}
+			if (outputLocation == null) continue;
+			IContainer container = (IContainer) project.getWorkspace().getRoot().findMember(outputLocation);
+			switch(element.getElementType()) {
+				case IJavaElement.COMPILATION_UNIT :
+					// get the .class files generated when this element was built
+					ICompilationUnit unit = (ICompilationUnit) element;
+					getGeneratedResource(unit, container, state, rootPathSegmentCounts, collector);
+					break;
+				case IJavaElement.PACKAGE_FRAGMENT :
+					// collect all the .class files generated when all the units in this package were built
+					IPackageFragment fragment = (IPackageFragment) element;
+					ICompilationUnit[] compilationUnits = null;
+					try {
+						compilationUnits = fragment.getCompilationUnits();
+					} catch (JavaModelException e) {
+						// ignore
+					}
+					if (compilationUnits == null) continue;
+					for (int j = 0, max2 = compilationUnits.length; j < max2; j++) {
+						getGeneratedResource(compilationUnits[j], container, state, rootPathSegmentCounts, collector);
+					}
+					if (includesNonJavaResources) {
+						// retrieve all non-java resources from the output location using the package fragment path
+						Object[] nonJavaResources = null;
+						try {
+							nonJavaResources = fragment.getNonJavaResources();
+						} catch (JavaModelException e) {
+							// ignore
+						}
+						if (nonJavaResources != null) {
+							addNonJavaResources(nonJavaResources, container, rootPathSegmentCounts, collector);
+						}
+					}
+					break;
+				case IJavaElement.PACKAGE_FRAGMENT_ROOT :
+					// collect all the .class files generated when all the units in this package were built
+					IPackageFragmentRoot fragmentRoot = (IPackageFragmentRoot) element;
+					if (fragmentRoot.isArchive()) continue;
+					IJavaElement[] children = null;
+					try {
+						children = fragmentRoot.getChildren();
+					} catch (JavaModelException e) {
+						// ignore
+					}
+					if (children == null) continue;
+					for (int j = 0, max2 = children.length; j < max2; j++) {
+						fragment = (IPackageFragment) children[j];
+						ICompilationUnit[] units = null;
+						try {
+							units = fragment.getCompilationUnits();
+						} catch (JavaModelException e) {
+							// ignore
+						}
+						if (units == null) continue;
+						for (int n = 0, max3 = units.length; n < max3; n++) {
+							getGeneratedResource(units[n], container, state, rootPathSegmentCounts, collector);
+						}
+						if (includesNonJavaResources) {
+							// retrieve all non-java resources from the output location using the package fragment path
+							Object[] nonJavaResources = null;
+							try {
+								nonJavaResources = fragment.getNonJavaResources();
+							} catch (JavaModelException e) {
+								// ignore
+							}
+							if (nonJavaResources != null) {
+								addNonJavaResources(nonJavaResources, container, rootPathSegmentCounts, collector);
+							}
+						}
+					}
+					break;
+			}
+		}
+		int size = collector.size();
+		if (size != 0) {
+			IResource[] result = new IResource[size];
+			collector.toArray(result);
+			return result;
+		}
+		return NO_GENERATED_RESOURCES;
+	}
+
+	private static void getGeneratedResource(ICompilationUnit unit,
+			IContainer container,
+			State state,
+			int rootPathSegmentCounts,
+			ArrayList collector) {
+		IResource resource = unit.getResource();
+		char[][] typeNames = state.getDefinedTypeNamesFor(resource.getProjectRelativePath().toString());
+		if (typeNames != null) {
+			IPath path = unit.getPath().removeFirstSegments(rootPathSegmentCounts).removeLastSegments(1);
+			for (int j = 0, max2 = typeNames.length; j < max2; j++) {
+				IPath localPath = path.append(new String(typeNames[j]) + ".class"); //$NON-NLS-1$
+				IResource member = container.findMember(localPath);
+				if (member != null && member.exists()) {
+					collector.add(member);
+				}
+			}
+		} else {
+			IPath path = unit.getPath().removeFirstSegments(rootPathSegmentCounts).removeLastSegments(1);
+			path = path.append(Util.getNameWithoutJavaLikeExtension(unit.getElementName()) + ".class"); //$NON-NLS-1$
+			IResource member = container.findMember(path);
+			if (member != null && member.exists()) {
+				collector.add(member);
+			}
+		}
+	}
+
 
 	/**
 	 * Returns the single instance of the Java core plug-in runtime class.
@@ -2944,19 +3259,59 @@ public final class JavaCore extends Plugin {
 	 */
 	public static void initializeAfterLoad(IProgressMonitor monitor) throws CoreException {
 		try {
-			if (monitor != null) monitor.beginTask(Messages.javamodel_initialization, 100);
-			// dummy query for waiting until the indexes are ready and classpath containers/variables are initialized
-			SearchEngine engine = new SearchEngine();
-			JavaModelManager.getJavaModelManager().deltaState.initializeRoots(); // initialize all containers and variables
-			IJavaSearchScope scope = SearchEngine.createWorkspaceScope(); // initialize all containers and variables
+			if (monitor != null) 	monitor.beginTask(Messages.javamodel_initialization, 100);
+
+			// initialize all containers and variables
+			JavaModelManager manager = JavaModelManager.getJavaModelManager();
 			try {
+				if (monitor != null) {
+					monitor.subTask(Messages.javamodel_configuring_classpath_containers);
+					manager.batchContainerInitializationsProgress.set(new SubProgressMonitor(monitor, 50)); // 50% of the time is spent in initializing containers and variables
+				}
+				
+				// all classpaths in the workspace are going to be resolved, ensure that containers are initialized in one batch
+				manager.batchContainerInitializations = true; 
+				
+				// avoid leaking source attachment properties (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=183413)
+				IJavaProject[] projects = manager.getJavaModel().getJavaProjects();
+				for (int i = 0, length = projects.length; i < length; i++) {
+					IClasspathEntry[] classpath;
+					try {
+						classpath = ((JavaProject) projects[i]).getResolvedClasspath();
+					} catch (JavaModelException e) {
+						// project no longer exist: ignore
+						continue;
+					}
+					if (classpath != null) {
+						for (int j = 0, length2 = classpath.length; j < length2; j++) {
+							IClasspathEntry entry = classpath[j];
+							if (entry.getSourceAttachmentPath() != null)
+								Util.setSourceAttachmentProperty(entry.getPath(), null);
+							// else source might have been attached by IPackageFragmentRoot#attachSource(...), we keep it
+						}
+					}
+				}
+				
+				// initialize delta state
+				manager.deltaState.rootsAreStale = true; // in case it was already initialized before we cleaned up the source attachment proprties
+				manager.deltaState.initializeRoots();
+			} finally {
+				manager.batchContainerInitializationsProgress.set(null);
+			}
+
+			// dummy query for waiting until the indexes are ready
+			SearchEngine engine = new SearchEngine();
+			IJavaSearchScope scope = SearchEngine.createWorkspaceScope();
+			try {
+				if (monitor != null)
+					monitor.subTask(Messages.javamodel_configuring_searchengine);
 				engine.searchAllTypeNames(
 					null,
 					SearchPattern.R_EXACT_MATCH,
 					"!@$#!@".toCharArray(), //$NON-NLS-1$
 					SearchPattern.R_PATTERN_MATCH | SearchPattern.R_CASE_SENSITIVE,
 					IJavaSearchConstants.CLASS,
-					scope, 
+					scope,
 					new TypeNameRequestor() {
 						public void acceptType(
 							int modifiers,
@@ -2970,8 +3325,8 @@ public final class JavaCore extends Plugin {
 					// will not activate index query caches if indexes are not ready, since it would take to long
 					// to wait until indexes are fully rebuild
 					IJavaSearchConstants.CANCEL_IF_NOT_READY_TO_SEARCH,
-					monitor == null ? null : new SubProgressMonitor(monitor, 99) // 99% of the time is spent in the dummy search
-				); 
+					monitor == null ? null : new SubProgressMonitor(monitor, 49) // 49% of the time is spent in the dummy search
+				);
 			} catch (JavaModelException e) {
 				// /search failed: ignore
 			} catch (OperationCanceledException e) {
@@ -2979,9 +3334,11 @@ public final class JavaCore extends Plugin {
 					throw e;
 				// else indexes were not ready: catch the exception so that jars are still refreshed
 			}
-			
+
 			// check if the build state version number has changed since last session
 			// (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=98969)
+			if (monitor != null)
+				monitor.subTask(Messages.javamodel_getting_build_state_number);
 			QualifiedName qName = new QualifiedName(JavaCore.PLUGIN_ID, "stateVersionNumber"); //$NON-NLS-1$
 			IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 			String versionNumber = null;
@@ -2990,7 +3347,7 @@ public final class JavaCore extends Plugin {
 			} catch (CoreException e) {
 				// could not read version number: consider it is new
 			}
-			final JavaModel model = JavaModelManager.getJavaModelManager().getJavaModel();
+			final JavaModel model = manager.getJavaModel();
 			String newVersionNumber = Byte.toString(State.VERSION);
 			if (!newVersionNumber.equals(versionNumber)) {
 				// build state version number has changed: touch every projects to force a rebuild
@@ -3018,6 +3375,8 @@ public final class JavaCore extends Plugin {
 						}
 					}
 				};
+				if (monitor != null)
+					monitor.subTask(Messages.javamodel_building_after_upgrade);
 				try {
 					ResourcesPlugin.getWorkspace().run(runnable, monitor);
 				} catch (CoreException e) {
@@ -3029,21 +3388,23 @@ public final class JavaCore extends Plugin {
 					Util.log(e, "Could not persist build state version number"); //$NON-NLS-1$
 				}
 			}
-			
+
 			// ensure external jars are refreshed (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=93668)
 			try {
+				if (monitor != null)
+					monitor.subTask(Messages.javamodel_refreshing_external_jars);
 				model.refreshExternalArchives(
-					null/*refresh all projects*/, 
+					null/*refresh all projects*/,
 					monitor == null ? null : new SubProgressMonitor(monitor, 1) // 1% of the time is spent in jar refresh
 				);
 			} catch (JavaModelException e) {
 				// refreshing failed: ignore
 			}
+			
 		} finally {
 			if (monitor != null) monitor.done();
 		}
 	}
-
 	/**
 	 * Returns whether a given classpath variable is read-only or not.
 	 *
@@ -4290,7 +4651,7 @@ public final class JavaCore extends Plugin {
 	 * @param compliance the given compliance
 	 * @param options the given options map
 	 */
-	public static void setCompilanceOptions(String compliance, Map options) {
+	public static void setComplianceOptions(String compliance, Map options) {
 		switch((int) (CompilerOptions.versionToJdkLevel(compliance) >>> 16)) {
 			case ClassFileConstants.MAJOR_VERSION_1_3:
 				options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_3);

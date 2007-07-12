@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,7 @@ public class ExternalJavaProject extends JavaProject {
 	public ExternalJavaProject(IClasspathEntry[] rawClasspath) {
 		super(ResourcesPlugin.getWorkspace().getRoot().getProject(EXTERNAL_PROJECT_NAME), JavaModelManager.getJavaModelManager().getJavaModel());
 		try {
-			getPerProjectInfo().setClasspath(rawClasspath, defaultOutputLocation(), JavaModelStatus.VERIFIED_OK/*no .classpath format problem*/, null/*no resolved claspath*/, null/*no reverse map*/, null/*no resolved status*/);
+			getPerProjectInfo().setClasspath(rawClasspath, defaultOutputLocation(), JavaModelStatus.VERIFIED_OK/*no .classpath format problem*/, null/*no resolved claspath*/, null/*no reverse map*/, null/*no resolve entry map*/, null/*no resolved status*/);
 		} catch (JavaModelException e) {
 			// getPerProjectInfo() never throws JavaModelException for an ExternalJavaProject
 		}

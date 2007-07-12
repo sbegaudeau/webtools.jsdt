@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 
 import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
-public class JavaUILabelProvider implements ILabelProvider, IColorProvider {
+public class JavaUILabelProvider implements ILabelProvider, IColorProvider, IRichLabelProvider {
 	
 	protected ListenerList fListeners = new ListenerList();
 	
@@ -63,6 +63,7 @@ public class JavaUILabelProvider implements ILabelProvider, IColorProvider {
 	
 	/**
 	 * Adds a decorator to the label provider
+	 * @param decorator the decorator to add
 	 */
 	public void addLabelDecorator(ILabelDecorator decorator) {
 		if (fLabelDecorators == null) {
@@ -107,6 +108,7 @@ public class JavaUILabelProvider implements ILabelProvider, IColorProvider {
 	/**
 	 * Evaluates the image flags for a element.
 	 * Can be overwritten by super classes.
+	 * @param element the element to compute the image flags for
 	 * @return Returns a int
 	 */
 	protected int evaluateImageFlags(Object element) {
@@ -115,6 +117,7 @@ public class JavaUILabelProvider implements ILabelProvider, IColorProvider {
 
 	/**
 	 * Evaluates the text flags for a element. Can be overwritten by super classes.
+	 * @param element the element to compute the text flags for
 	 * @return Returns a int
 	 */
 	protected long evaluateTextFlags(Object element) {
@@ -147,7 +150,10 @@ public class JavaUILabelProvider implements ILabelProvider, IColorProvider {
 		if (fLabelDecorators != null && text.length() > 0) {
 			for (int i= 0; i < fLabelDecorators.size(); i++) {
 				ILabelDecorator decorator= (ILabelDecorator) fLabelDecorators.get(i);
-				text= decorator.decorateText(text, element);
+				String decorated= decorator.decorateText(text, element);
+				if (decorated != null) {
+					text= decorated;
+				}
 			}
 		}	
 		return text;
@@ -162,10 +168,21 @@ public class JavaUILabelProvider implements ILabelProvider, IColorProvider {
 		if (result.length() == 0 && (element instanceof IStorage)) {
 			result= fStorageLabelProvider.getText(element);
 		}
-		
 		return decorateText(result, element);
 	}
-
+	
+	public ColoredString getRichTextLabel(Object element) {
+		ColoredString string= ColoredJavaElementLabels.getTextLabel(element, evaluateTextFlags(element) | ColoredJavaElementLabels.COLORIZE);
+		if (string.length() == 0 && (element instanceof IStorage)) {
+			string= new ColoredString(fStorageLabelProvider.getText(element));
+		}
+		String decorated= decorateText(string.getString(), element);
+		if (decorated != null) {
+			return ColoredJavaElementLabels.decorateColoredString(string, decorated, ColoredJavaElementLabels.DECORATIONS_STYLE);
+		}
+		return string;
+	}
+	
 	/* (non-Javadoc)
 	 * @see IBaseLabelProvider#dispose
 	 */

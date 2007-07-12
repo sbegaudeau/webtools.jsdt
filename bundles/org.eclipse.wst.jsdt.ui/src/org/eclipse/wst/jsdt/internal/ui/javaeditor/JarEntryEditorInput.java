@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@
 package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
 
+import org.eclipse.core.runtime.IPath;
+
 import org.eclipse.core.resources.IStorage;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -20,6 +22,9 @@ import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.PlatformUI;
+
+import org.eclipse.wst.jsdt.core.IJarEntryResource;
+import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 
 
 /**
@@ -59,13 +64,6 @@ public class JarEntryEditorInput implements IStorageEditorInput {
 	}
 
 	/*
-	 * @see IEditorInput#getFullPath()
-	 */
-	public String getFullPath() {
-		return fJarEntryFile.getFullPath().toString();
-	}
-
-	/*
 	 * @see IEditorInput#getContentType()
 	 */
 	public String getContentType() {
@@ -76,7 +74,20 @@ public class JarEntryEditorInput implements IStorageEditorInput {
 	 * @see IEditorInput#getToolTipText()
 	 */
 	public String getToolTipText() {
-		return fJarEntryFile.getFullPath().toString();
+		if (fJarEntryFile instanceof IJarEntryResource) {
+			IJarEntryResource jarEntry= (IJarEntryResource)fJarEntryFile;
+			IPackageFragmentRoot root= jarEntry.getPackageFragmentRoot();
+			IPath fullPath= root.getPath().append(fJarEntryFile.getFullPath());
+			if (root.isExternal())
+				return fullPath.toOSString();
+			return fullPath.toString();
+			
+		}
+		
+		IPath fullPath= fJarEntryFile.getFullPath();
+		if (fullPath == null)
+			return null;
+		return fullPath.toString();
 	}
 
 	/*
@@ -84,7 +95,7 @@ public class JarEntryEditorInput implements IStorageEditorInput {
 	 */
 	public ImageDescriptor getImageDescriptor() {
 		IEditorRegistry registry= PlatformUI.getWorkbench().getEditorRegistry();
-		return registry.getImageDescriptor(fJarEntryFile.getFullPath().getFileExtension());
+		return registry.getImageDescriptor(getContentType());
 	}
 
 	/*

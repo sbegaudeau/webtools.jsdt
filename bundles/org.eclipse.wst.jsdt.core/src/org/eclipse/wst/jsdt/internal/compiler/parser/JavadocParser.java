@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.internal.compiler.ast.*;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
+import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 /**
  * Parser specialized for decoding javadoc comments
@@ -107,8 +108,9 @@ public class JavadocParser extends AbstractCommentParser {
 			} else {
 				
 				// Parse comment
-				int firstLineNumber = this.sourceParser.scanner.getLineNumber(javadocStart);
-				int lastLineNumber = this.sourceParser.scanner.getLineNumber(javadocEnd);
+				Scanner sourceScanner = this.sourceParser.scanner;
+				int firstLineNumber = Util.getLineNumber(javadocStart, sourceScanner.lineEnds, 0, sourceScanner.linePtr);
+				int lastLineNumber = Util.getLineNumber(javadocEnd, sourceScanner.lineEnds, 0, sourceScanner.linePtr);
 				this.index = javadocStart +3;
 	
 				// scan line per line, since tags must be at beginning of lines only
@@ -843,7 +845,7 @@ public class JavadocParser extends AbstractCommentParser {
 	 * Refresh return statement
 	 */
 	protected void refreshReturnStatement() {
-		((JavadocReturnStatement) this.returnStatement).empty = false;
+		((JavadocReturnStatement) this.returnStatement).bits &= ~ASTNode.Empty;
 	}
 
 	public String toString() {

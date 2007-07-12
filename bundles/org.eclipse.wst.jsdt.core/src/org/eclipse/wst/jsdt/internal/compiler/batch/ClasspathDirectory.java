@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.internal.compiler.batch;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Hashtable;
 
@@ -47,7 +48,7 @@ String[] directoryList(String qualifiedPackageName) {
 	if (dirList != null) return dirList;
 
 	File dir = new File(this.path + qualifiedPackageName);
-	notFound : if (dir != null && dir.isDirectory()) {
+	notFound : if (dir.isDirectory()) {
 		// must protect against a case insensitive File call
 		// walk the qualifiedPackageName backwards looking for an uppercase character before the '/'
 		int index = qualifiedPackageName.length();
@@ -82,12 +83,15 @@ boolean doesFileExist(String fileName, String qualifiedPackageName) {
 	return false;
 }
 public NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageName, String qualifiedBinaryFileName) {
+	return findClass(typeName, qualifiedPackageName, qualifiedBinaryFileName, false);
+}
+public NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageName, String qualifiedBinaryFileName, boolean asBinaryOnly) {
 	if (!isPackage(qualifiedPackageName)) return null; // most common case
 
 	String fileName = new String(typeName);
 	boolean binaryExists = ((this.mode & BINARY) != 0) && doesFileExist(fileName + SUFFIX_STRING_class, qualifiedPackageName);
 	boolean sourceExists = ((this.mode & SOURCE) != 0) && doesFileExist(fileName + SUFFIX_STRING_java, qualifiedPackageName);
-	if (sourceExists) {
+	if (sourceExists && !asBinaryOnly) {
 		String fullSourcePath = this.path + qualifiedBinaryFileName.substring(0, qualifiedBinaryFileName.length() - 6)  + SUFFIX_STRING_java;
 		if (!binaryExists)
 			return new NameEnvironmentAnswer(new CompilationUnit(null,
@@ -114,6 +118,34 @@ public NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageN
 	}
 	return null;
 }
+public char[][][] findTypeNames(String qualifiedPackageName) {
+	if (!isPackage(qualifiedPackageName)) {
+		return null; // most common case
+	}
+	File dir = new File(this.path + qualifiedPackageName);
+	if (!dir.exists() || !dir.isDirectory()) {
+		return null;
+	}
+	String[] listFiles = dir.list(new FilenameFilter() {
+		public boolean accept(File directory, String name) {
+			String fileName = name.toLowerCase();
+			return fileName.endsWith(".class") || fileName.endsWith(".java"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
+	});
+	int length;
+	if (listFiles == null || (length = listFiles.length) == 0) {
+		return null;
+	}
+	char[][][] result = new char[length][][];
+	char[][] packageName = CharOperation.splitOn(File.separatorChar, qualifiedPackageName.toCharArray());
+	for (int i = 0; i < length; i++) {
+		String fileName = listFiles[i];
+		int indexOfLastDot = fileName.indexOf('.');
+		result[i] = CharOperation.arrayConcat(packageName, fileName.substring(0, indexOfLastDot).toCharArray());
+	}
+	return result;
+}
+
 public void initialize() throws IOException {
 	// nothing to do
 }

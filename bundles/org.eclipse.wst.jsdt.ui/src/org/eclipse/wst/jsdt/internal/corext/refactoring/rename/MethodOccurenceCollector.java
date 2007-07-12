@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,62 +13,65 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.rename;
 import org.eclipse.core.runtime.CoreException;
 
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
+import org.eclipse.wst.jsdt.core.compiler.IScanner;
+import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
+import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.core.search.MethodReferenceMatch;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 
-import org.eclipse.wst.jsdt.internal.corext.refactoring.CollectingSearchRequestor;
-import org.eclipse.wst.jsdt.internal.corext.util.SearchUtils;
+import org.eclipse.wst.jsdt.internal.corext.refactoring.CuCollectingSearchRequestor;
 
-class MethodOccurenceCollector extends CollectingSearchRequestor {
+class MethodOccurenceCollector extends CuCollectingSearchRequestor {
 
-		private final int fNameLength;
+	private final String fName;
 
-		public MethodOccurenceCollector(String methodName) {
-			fNameLength= methodName.length();
+	public MethodOccurenceCollector(String methodName) {
+		fName= methodName;
+	}
+
+	public void acceptSearchMatch(ICompilationUnit unit, SearchMatch match) throws CoreException {
+		if (match instanceof MethodReferenceMatch
+				&& ((MethodReferenceMatch) match).isSuperInvocation()
+				&& match.getAccuracy() == SearchMatch.A_INACCURATE) {
+			return; // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=156491
 		}
 		
-		/* (non-Javadoc)
-		 * @see org.eclipse.wst.jsdt.internal.corext.refactoring.CollectingSearchRequestor#acceptSearchMatch(org.eclipse.wst.jsdt.core.search.SearchMatch)
-		 */
-		public void acceptSearchMatch(SearchMatch match) throws CoreException {
-			ICompilationUnit unit= SearchUtils.getCompilationUnit(match);
-			if (unit == null)
-				return;
-			
-			if (match instanceof MethodReferenceMatch
-					&& ((MethodReferenceMatch) match).isSuperInvocation()
-					&& match.getAccuracy() == SearchMatch.A_INACCURATE) {
-				return; // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=156491
-			}
-			
-			int start= match.getOffset();
-			int length= match.getLength();
-			if (match.isImplicit()) { // see bug 94062
-				super.acceptSearchMatch(match);
-				return;
-			}
-			
-			String matchText= unit.getBuffer().getText(start, length);
-			//TODO: use Scanner
-			int leftBracketIndex= matchText.indexOf("("); //$NON-NLS-1$
-			if (leftBracketIndex != -1) {
-				// reference in code includes arguments; reference in javadoc doesn't; constructors ?
-				matchText= matchText.substring(0, leftBracketIndex);
-			}
+		if (match.isImplicit()) { // see bug 94062
+			collectMatch(match);
+			return;
+		}
 		
-			int theDotIndex= matchText.lastIndexOf("."); //$NON-NLS-1$
-			if (theDotIndex == -1) {
-				match.setLength(fNameLength);
-				super.acceptSearchMatch(match);
-			} else {
-				start= start + theDotIndex + 1;
-				for (int i= theDotIndex + 1; i < matchText.length() && IndentManipulation.isIndentChar(matchText.charAt(i)); i++) {
-					start++;
+		int start= match.getOffset();
+		int length= match.getLength();
+		String matchText= unit.getBuffer().getText(start, length);
+		
+		//direct match:
+		if (fName.equals(matchText)) {
+			collectMatch(match);
+			return;
+		}
+					
+		//Not a standard reference -- use scanner to find last identifier token before left parenthesis:
+		IScanner scanner= getScanner(unit);
+		scanner.setSource(matchText.toCharArray());
+		int simpleNameStart= -1;
+		int simpleNameEnd= -1;
+		try {
+			int token = scanner.getNextToken();
+			while (token != ITerminalSymbols.TokenNameEOF && token != ITerminalSymbols.TokenNameLPAREN) { // reference in code includes arguments in parentheses
+				if (token == ITerminalSymbols.TokenNameIdentifier) {
+					simpleNameStart= scanner.getCurrentTokenStartPosition();
+					simpleNameEnd= scanner.getCurrentTokenEndPosition();
 				}
-				match.setOffset(start);
-				match.setLength(fNameLength);
-				super.acceptSearchMatch(match);
+				token = scanner.getNextToken();
 			}
+		} catch (InvalidInputException e){
+			//ignore
 		}	
-	}
+		if (simpleNameStart != -1) {
+			match.setOffset(start + simpleNameStart);
+			match.setLength(simpleNameEnd + 1 - simpleNameStart);
+		}
+		collectMatch(match);
+	}	
+}

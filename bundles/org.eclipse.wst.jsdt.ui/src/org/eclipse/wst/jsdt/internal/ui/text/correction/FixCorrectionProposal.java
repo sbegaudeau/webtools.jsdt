@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import org.eclipse.ltk.core.refactoring.TextFileChange;
 
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 
+import org.eclipse.wst.jsdt.internal.corext.fix.AbstractFix;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.fix.IFix;
 import org.eclipse.wst.jsdt.internal.corext.fix.LinkedFix;
@@ -107,6 +108,17 @@ public class FixCorrectionProposal extends LinkedCorrectionProposal implements I
 	    	buf.append(result);
 	    	return buf.toString();
 	    } else {
+	    	if (fFix instanceof AbstractFix) {
+				AbstractFix af = (AbstractFix) fFix;
+				String info = af.getAdditionalInfo();
+				if (info != null) {
+					StringBuffer sb=new StringBuffer();
+					sb.append(info);
+					sb.append("<br>"); //$NON-NLS-1$
+					sb.append(result);
+					return sb.toString();
+				}
+			}
 	    	return result;
 	    }
 	}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -141,58 +141,35 @@ public class NewSourceFolderWizardPage extends NewElementWizardPage {
 	// -------- Initialization ---------
 		
 	public void init(IStructuredSelection selection) {
-		if (selection == null || selection.isEmpty()) {
-			setDefaultAttributes();
-			return;
+		String projPath= getProjectPath(selection);		
+		if (projPath != null) {
+			fProjectField.setText(projPath);
 		}
-		
-		Object selectedElement= selection.getFirstElement();
-		if (selectedElement == null) {
+		fRootDialogField.setText(""); //$NON-NLS-1$
+	}
+
+	private String getProjectPath(IStructuredSelection selection) {
+		Object selectedElement= null;
+		if (selection == null || selection.isEmpty()) {
 			selectedElement= EditorUtility.getActiveEditorJavaInput();
-		}				
-		
-		String projPath= null;
+		} else if (selection.size() == 1) {
+			selectedElement= selection.getFirstElement();
+		}
 		
 		if (selectedElement instanceof IResource) {
 			IProject proj= ((IResource)selectedElement).getProject();
 			if (proj != null) {
-				projPath= proj.getFullPath().makeRelative().toString();
+				return proj.getFullPath().makeRelative().toString();
 			}	
 		} else if (selectedElement instanceof IJavaElement) {
 			IJavaProject jproject= ((IJavaElement)selectedElement).getJavaProject();
 			if (jproject != null) {
-				projPath= jproject.getProject().getFullPath().makeRelative().toString();
+				return jproject.getProject().getFullPath().makeRelative().toString();
 			}
 		}	
-		
-		if (projPath != null) {
-			fProjectField.setText(projPath);
-			fRootDialogField.setText(""); //$NON-NLS-1$
-		} else {
-			setDefaultAttributes();
-		}
+
+		return null;
 	}
-	
-	private void setDefaultAttributes() {
-		String projPath= ""; //$NON-NLS-1$
-		
-		try {
-			// find the first java project
-			IProject[] projects= fWorkspaceRoot.getProjects();
-			for (int i= 0; i < projects.length; i++) {
-				IProject proj= projects[i];
-				if (proj.hasNature(JavaCore.NATURE_ID)) {
-					projPath= proj.getFullPath().makeRelative().toString();
-					break;
-				}
-			}					
-		} catch (CoreException e) {
-			// ignore here
-		}
-		fProjectField.setText(projPath);
-		fRootDialogField.setText("");		 //$NON-NLS-1$
-	}
-	
 
 	// -------- UI Creation ---------
 
@@ -296,6 +273,10 @@ public class NewSourceFolderWizardPage extends NewElementWizardPage {
 		if (!project.exists()) {
 			fProjectStatus.setError(NewWizardMessages.NewSourceFolderWizardPage_error_ProjectNotExists); 
 			return;
+		}
+		if (!project.isOpen()) {
+			fProjectStatus.setError(NewWizardMessages.NewSourceFolderWizardPage_error_ProjectNotOpen); 
+			return;	
 		}
 		try {
 			if (project.hasNature(JavaCore.NATURE_ID)) {
@@ -487,7 +468,7 @@ public class NewSourceFolderWizardPage extends NewElementWizardPage {
 			IPath projPath= fCurrJProject.getProject().getFullPath();
 			if (fOutputLocation.equals(projPath) && !fNewOutputLocation.equals(projPath)) {
 				if (BuildPathsBlock.hasClassfiles(fCurrJProject.getProject())) {
-					if (BuildPathsBlock.getRemoveOldBinariesQuery(getShell()).doQuery(projPath)) {
+					if (BuildPathsBlock.getRemoveOldBinariesQuery(getShell()).doQuery(false, projPath)) {
 						BuildPathsBlock.removeOldClassfiles(fCurrJProject.getProject());
 					}
 				}

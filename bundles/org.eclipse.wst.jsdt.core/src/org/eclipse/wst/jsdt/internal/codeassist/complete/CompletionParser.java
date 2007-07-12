@@ -29,6 +29,7 @@ import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.*;
 import org.eclipse.wst.jsdt.internal.compiler.parser.*;
 import org.eclipse.wst.jsdt.internal.compiler.problem.*;
+import org.eclipse.wst.jsdt.internal.compiler.util.Util;
  
 public class CompletionParser extends AssistParser {
 	// OWNER
@@ -72,7 +73,8 @@ public class CompletionParser extends AssistParser {
 	protected static final int K_INSIDE_BREAK_STATEMENT = COMPLETION_PARSER + 34;
 	protected static final int K_INSIDE_CONTINUE_STATEMENT = COMPLETION_PARSER + 35;
 	protected static final int K_LABEL = COMPLETION_PARSER + 36;
-	
+	protected static final int K_MEMBER_VALUE_ARRAY_INITIALIZER = COMPLETION_PARSER + 37;
+
 	public final static char[] FAKE_TYPE_NAME = new char[]{' '};
 	public final static char[] FAKE_METHOD_NAME = new char[]{' '};
 	public final static char[] FAKE_ARGUMENT_NAME = new char[]{' '};
@@ -111,7 +113,8 @@ public class CompletionParser extends AssistParser {
 	// K_BETWEEN_ANNOTATION_NAME_AND_RPAREN arguments
 	static final int LPAREN_NOT_CONSUMED = 1;
 	static final int LPAREN_CONSUMED = 2;
-	
+	static final int ANNOTATION_NAME_COMPLETION = 4;
+
 	// K_PARAMETERIZED_METHOD_INVOCATION arguments
 	static final int INSIDE_NAME = 1;
 
@@ -139,12 +142,65 @@ public class CompletionParser extends AssistParser {
 	int labelPtr = -1;
 	
 	boolean isAlreadyAttached;
+	public boolean record = false;
+	public boolean skipRecord = false;
+	public int recordFrom;
+	public int recordTo;
+	public int potentialVariableNamesPtr; 
+	public char[][] potentialVariableNames;
+	public int[] potentialVariableNameStarts;
+	public int[] potentialVariableNameEnds;
+	
+	CompletionOnAnnotationOfType pendingAnnotation;
+	
+
 public CompletionParser(ProblemReporter problemReporter) {
 	super(problemReporter);
 	this.reportSyntaxErrorIsRequired = false;
-	this.javadocParser = new CompletionJavadocParser(this);
 	this.javadocParser.checkDocComment = true;
 }
+private void addPotentialName(char[] potentialVariableName, int start, int end) {
+	int length = this.potentialVariableNames.length;
+	if (this.potentialVariableNamesPtr >= length - 1) {
+		System.arraycopy(
+				this.potentialVariableNames, 
+				0,
+				this.potentialVariableNames = new char[length * 2][],
+				0,
+				length);
+		System.arraycopy(
+				this.potentialVariableNameStarts,
+				0,
+				this.potentialVariableNameStarts = new int[length * 2],
+				0,
+				length);
+		System.arraycopy(
+				this.potentialVariableNameEnds,
+				0,
+				this.potentialVariableNameEnds = new int[length * 2],
+				0,
+				length);
+	}
+	this.potentialVariableNames[++this.potentialVariableNamesPtr] = potentialVariableName;
+	this.potentialVariableNameStarts[this.potentialVariableNamesPtr] = start;
+	this.potentialVariableNameEnds[this.potentialVariableNamesPtr] = end;
+}
+public void startRecordingIdentifiers(int from, int to) {
+	this.record = true;
+	this.skipRecord = false;
+	this.recordFrom = from;
+	this.recordTo = to;
+	
+	this.potentialVariableNamesPtr = -1; 
+	this.potentialVariableNames = new char[10][];
+	this.potentialVariableNameStarts = new int[10];
+	this.potentialVariableNameEnds = new int[10];
+}
+public void stopRecordingIdentifiers() {
+	this.record = true;
+	this.skipRecord = false;
+}
+
 public char[] assistIdentifier(){
 	return ((CompletionScanner)scanner).completionIdentifier;
 }
@@ -214,12 +270,13 @@ protected void attachOrphanCompletionNode(){
 					return;
 				}
 				if(orphan instanceof Annotation) {
-					TypeDeclaration fakeType =
+					CompletionOnAnnotationOfType fakeType =
 						new CompletionOnAnnotationOfType(
 								FAKE_TYPE_NAME, 
 								this.compilationUnit.compilationResult(),
 								(Annotation)orphan);
 					currentElement.parent.add(fakeType, 0);
+					this.pendingAnnotation = fakeType;
 					return;
 			}
 			}
@@ -231,12 +288,17 @@ protected void attachOrphanCompletionNode(){
 		}
 		
 		if(orphan instanceof Annotation) {
-				TypeDeclaration fakeType =
+			popUntilCompletedAnnotationIfNecessary();
+			
+			CompletionOnAnnotationOfType fakeType =
 					new CompletionOnAnnotationOfType(
 							FAKE_TYPE_NAME, 
 							this.compilationUnit.compilationResult(),
 							(Annotation)orphan);
 				currentElement.add(fakeType, 0);
+				if (!isInsideAnnotation()) {
+					this.pendingAnnotation = fakeType;
+				}
 				return;
 		}
 		if ((topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_BETWEEN_CATCH_AND_RIGHT_PAREN)) {
@@ -262,7 +324,8 @@ protected void attachOrphanCompletionNode(){
 			if (method != null){
 				AbstractMethodDeclaration methodDecl = method.methodDeclaration;
 				if ((methodDecl.bodyStart == methodDecl.sourceEnd+1) // was missing opening brace
-					&& (scanner.getLineNumber(orphan.sourceStart) == scanner.getLineNumber(methodDecl.sourceEnd))){
+						&& (Util.getLineNumber(orphan.sourceStart, scanner.lineEnds, 0, scanner.linePtr) 
+								== Util.getLineNumber(methodDecl.sourceEnd, scanner.lineEnds, 0, scanner.linePtr))){
 					return;
 				}
 			}
@@ -278,7 +341,14 @@ protected void attachOrphanCompletionNode(){
 		if (this.expressionPtr > -1) {
 			expression = this.expressionStack[this.expressionPtr];
 			if(expression == assistNode) {
-				if(this.topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_BETWEEN_ANNOTATION_NAME_AND_RPAREN) {
+				if (this.topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_MEMBER_VALUE_ARRAY_INITIALIZER ) {
+					ArrayInitializer arrayInitializer = new ArrayInitializer();
+					arrayInitializer.expressions = new Expression[]{expression};
+				
+					MemberValuePair valuePair =
+							new MemberValuePair(VALUE, expression.sourceStart, expression.sourceEnd, arrayInitializer);
+						buildMoreAnnotationCompletionContext(valuePair);
+				} else if(this.topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_BETWEEN_ANNOTATION_NAME_AND_RPAREN) {
 					if (expression instanceof SingleNameReference) {
 						SingleNameReference nameReference = (SingleNameReference) expression;
 						CompletionOnMemberValueName memberValueName = new CompletionOnMemberValueName(nameReference.token, nameReference.sourceStart, nameReference.sourceEnd);
@@ -431,7 +501,8 @@ protected void attachOrphanCompletionNode(){
 			if (method != null){
 				AbstractMethodDeclaration methodDecl = method.methodDeclaration;
 				if ((methodDecl.bodyStart == methodDecl.sourceEnd+1) // was missing opening brace
-					&& (this.scanner.getLineNumber(node.sourceStart) == this.scanner.getLineNumber(methodDecl.sourceEnd))){
+						&& (Util.getLineNumber(node.sourceStart, this.scanner.lineEnds, 0, this.scanner.linePtr) 
+								== Util.getLineNumber(methodDecl.sourceEnd, this.scanner.lineEnds, 0, this.scanner.linePtr))){
 					return;
 				}
 			}
@@ -454,7 +525,8 @@ protected void attachOrphanCompletionNode(){
 			if (method != null){
 				AbstractMethodDeclaration methodDecl = method.methodDeclaration;
 				if ((methodDecl.bodyStart == methodDecl.sourceEnd+1) // was missing opening brace
-					&& (scanner.getLineNumber(expression.sourceStart) == scanner.getLineNumber(methodDecl.sourceEnd))){
+						&& (Util.getLineNumber(expression.sourceStart, scanner.lineEnds, 0, scanner.linePtr) 
+								== Util.getLineNumber(methodDecl.sourceEnd, scanner.lineEnds, 0, scanner.linePtr))){
 					return;
 				}
 			}
@@ -535,14 +607,16 @@ private void buildMoreAnnotationCompletionContext(MemberValuePair memberValuePai
 		annotation.memberValuePairs = memberValuePairs;
 					
 	}
-	TypeDeclaration fakeType =
+	CompletionOnAnnotationOfType fakeType =
 		new CompletionOnAnnotationOfType(
 				FAKE_TYPE_NAME, 
 				this.compilationUnit.compilationResult(),
 				annotation);
 	
 	currentElement.add(fakeType, 0);
+	this.pendingAnnotation = fakeType;
 }
+ 
 private void buildMoreCompletionContext(Expression expression) {
 	Statement statement = expression;
 	int kind = topKnownElementKind(COMPLETION_OR_ASSIST_PARSER);
@@ -686,9 +760,7 @@ private void buildMoreCompletionContext(Expression expression) {
 							operatorExpression = new UnaryExpression(expression, info);
 							break;
 					}
-					if(operatorExpression != null) {
-						assistNodeParent = operatorExpression;
-					}
+					assistNodeParent = operatorExpression;
 				}
 				break nextElement;
 			case K_BINARY_OPERATOR :
@@ -1550,8 +1622,8 @@ private boolean checkRecoveredMethod() {
 		/* check if on line with an error already - to avoid completing inside 
 			illegal type names e.g.  int[<cursor> */
 		if (lastErrorEndPosition <= cursorLocation+1
-			&& scanner.getLineNumber(lastErrorEndPosition) 
-				== scanner.getLineNumber(((CompletionScanner)scanner).completedIdentifierStart)){
+				&& Util.getLineNumber(lastErrorEndPosition, scanner.lineEnds, 0, scanner.linePtr)
+				== Util.getLineNumber(((CompletionScanner)scanner).completedIdentifierStart, scanner.lineEnds, 0, scanner.linePtr)){
 			return false;
 		}		
  		RecoveredMethod recoveredMethod = (RecoveredMethod)currentElement;
@@ -1603,8 +1675,8 @@ private boolean checkRecoveredType() {
 		/* check if on line with an error already - to avoid completing inside 
 			illegal type names e.g.  int[<cursor> */
 		if ((lastErrorEndPosition <= cursorLocation+1)
-			&& scanner.getLineNumber(lastErrorEndPosition) 
-				== scanner.getLineNumber(((CompletionScanner)scanner).completedIdentifierStart)){
+				&& Util.getLineNumber(lastErrorEndPosition, scanner.lineEnds, 0, scanner.linePtr)
+				== Util.getLineNumber(((CompletionScanner)scanner).completedIdentifierStart, scanner.lineEnds, 0, scanner.linePtr)){
 			return false;
 		}
 		RecoveredType recoveredType = (RecoveredType)currentElement;
@@ -1849,6 +1921,7 @@ protected void consumeCastExpressionLL1() {
 protected void consumeClassBodyDeclaration() {
 	popElement(K_BLOCK_DELIMITER);
 	super.consumeClassBodyDeclaration();
+	this.pendingAnnotation = null; // the pending annotation cannot be attached to next nodes
 }
 protected void consumeClassBodyopt() {
 	popElement(K_SELECTOR_QUALIFIER);
@@ -1878,6 +1951,10 @@ protected void consumeClassDeclaration() {
 protected void consumeClassHeaderName1() {
 	super.consumeClassHeaderName1();
 
+	if (this.pendingAnnotation != null) {
+		this.pendingAnnotation.potentialAnnotatedNode = this.astStack[this.astPtr];
+		this.pendingAnnotation = null;
+	}
 	classHeaderExtendsOrImplements(false);
 }
 
@@ -1960,10 +2037,17 @@ protected void consumeConstructorHeaderName() {
 
 	/* no need to take action if not inside assist identifiers */
 	if (indexOfAssistIdentifier() < 0) {
+		/* recovering - might be an empty message send */
+		if (this.currentElement != null && this.lastIgnoredToken == TokenNamenew){ // was an allocation expression
 		super.consumeConstructorHeaderName();
 		return;
-	}
-		
+	} else {
+			super.consumeConstructorHeaderName();
+			if (this.pendingAnnotation != null) {
+				this.pendingAnnotation.potentialAnnotatedNode = this.astStack[this.astPtr];
+				this.pendingAnnotation = null;
+			}
+	}		
 	/* force to start recovering in order to get fake field behavior */
 	if (currentElement == null){
 		this.hasReportedError = true; // do not report any error
@@ -1971,8 +2055,21 @@ protected void consumeConstructorHeaderName() {
 	pushOnGenericsIdentifiersLengthStack(this.identifierLengthStack[this.identifierLengthPtr]);
 	pushOnGenericsLengthStack(0); // handle type arguments
 	this.restartRecovery = AssistParser.STOP_AT_CURSOR;
+	}
 }
-protected void consumeDefaultLabel() {
+	protected void consumeConstructorHeaderNameWithTypeParameters() {
+		if (this.currentElement != null && this.lastIgnoredToken == TokenNamenew){ // was an allocation expression
+			super.consumeConstructorHeaderNameWithTypeParameters();
+		} else {
+			super.consumeConstructorHeaderNameWithTypeParameters();
+			if (this.pendingAnnotation != null) {
+				this.pendingAnnotation.potentialAnnotatedNode = this.astStack[this.astPtr];
+				this.pendingAnnotation = null;
+			}
+		}
+	}
+	
+	protected void consumeDefaultLabel() {
 	super.consumeDefaultLabel();
 	if(topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_SWITCH_LABEL) {
 		popElement(K_SWITCH_LABEL);
@@ -1983,6 +2080,14 @@ protected void consumeDimWithOrWithOutExpr() {
 	// DimWithOrWithOutExpr ::= '[' ']'
 	pushOnExpressionStack(null);
 }
+protected void consumeEnhancedForStatementHeaderInit(boolean hasModifiers) {
+	super.consumeEnhancedForStatementHeaderInit(hasModifiers);
+	if (this.pendingAnnotation != null) {
+		this.pendingAnnotation.potentialAnnotatedNode = this.astStack[this.astPtr];
+		this.pendingAnnotation = null;
+	}
+}
+
 protected void consumeEnterAnonymousClassBody() {
 	popElement(K_SELECTOR_QUALIFIER);
 	popElement(K_SELECTOR_INVOCATION_TYPE);
@@ -2003,32 +2108,6 @@ protected void consumeEnterVariable() {
 	} else {
 		restartRecovery = AssistParser.STOP_AT_CURSOR;
 		
-//		private boolean checkKeyword() {
-//			if (currentElement instanceof RecoveredUnit) {
-//				RecoveredUnit unit = (RecoveredUnit) currentElement;
-//				int index = -1;
-//				if ((index = this.indexOfAssistIdentifier()) > -1) {
-//					if(unit.typeCount == 0
-//						&& CharOperation.prefixEquals(identifierStack[index], Keywords.IMPORT)) {
-//						CompletionOnKeyword2 completionOnImportKeyword = new CompletionOnKeyword2(Keywords.IMPORT, identifierPositionStack[index]);
-//						this.assistNode = completionOnImportKeyword;
-//						this.lastCheckPoint = completionOnImportKeyword.sourceEnd + 1;
-//						this.isOrphanCompletionNode = true;
-//						return true;
-//					} else if(unit.typeCount == 0
-//						&& unit.importCount == 0
-//						&& CharOperation.prefixEquals(identifierStack[index], Keywords.PACKAGE)) {
-//						CompletionOnKeyword2 completionOnImportKeyword = new CompletionOnKeyword2(Keywords.PACKAGE, identifierPositionStack[index]);
-//						this.assistNode = completionOnImportKeyword;
-//						this.lastCheckPoint = completionOnImportKeyword.sourceEnd + 1;
-//						this.isOrphanCompletionNode = true;
-//						return true;
-//					}
-//				}
-//			}
-//			return false;
-//		}
-		
 		// recovery
 		if (currentElement != null) {
 			if(!checkKeyword() && !(currentElement instanceof RecoveredUnit && ((RecoveredUnit)currentElement).statementCount == 0)) {
@@ -2041,8 +2120,8 @@ protected void consumeEnterVariable() {
 				
 				if (!(currentElement instanceof RecoveredType)
 					&& (currentToken == TokenNameDOT
-						|| (scanner.getLineNumber(type.sourceStart)
-								!= scanner.getLineNumber(nameSourceStart)))){
+							|| (Util.getLineNumber(type.sourceStart, scanner.lineEnds, 0, scanner.linePtr)
+									!= Util.getLineNumber(nameSourceStart, scanner.lineEnds, 0, scanner.linePtr)))){
 					lastCheckPoint = nameSourceStart;
 					restartRecovery = true;
 					return;
@@ -2056,6 +2135,13 @@ protected void consumeEnterVariable() {
 				lastIgnoredToken = -1;
 			}
 		}
+	}
+}
+protected void consumeEnumHeaderName() {
+	super.consumeEnumHeaderName();
+	if (this.pendingAnnotation != null) {
+		this.pendingAnnotation.potentialAnnotatedNode = this.astStack[this.astPtr];
+		this.pendingAnnotation = null;
 	}
 }
 protected void consumeEqualityExpression(int op) {
@@ -2212,7 +2298,23 @@ protected void consumeInsideCastExpressionLL1() {
 	if(topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_PARAMETERIZED_CAST) {
 		popElement(K_PARAMETERIZED_CAST);
 	}
-	super.consumeInsideCastExpressionLL1();
+	if (!this.record) {
+		super.consumeInsideCastExpressionLL1();
+		} else {
+			boolean temp = this.skipRecord;
+			try {
+				this.skipRecord = true;
+				super.consumeInsideCastExpressionLL1();
+				if (this.record) {
+					Expression typeReference = this.expressionStack[this.expressionPtr];
+					if (!isAlreadyPotentialName(typeReference.sourceStart)) {
+						this.addPotentialName(null, typeReference.sourceStart, typeReference.sourceEnd);
+					}
+				}
+			} finally {
+				this.skipRecord = temp;
+			}
+		}
 	pushOnElementStack(K_CAST_STATEMENT);
 }
 protected void consumeInsideCastExpressionWithQualifiedGenerics() {
@@ -2319,7 +2421,8 @@ protected void consumeMethodHeaderName(boolean isAnnotationMethod) {
 				int declarationSourceStart = intStack[intPtr--];
 				int mod = intStack[intPtr--];
 				
-//				if(scanner.getLineNumber(type.sourceStart) != scanner.getLineNumber((int) (selectorSource >>> 32))) {
+//				if(Util.getLineNumber(type.sourceStart, scanner.lineEnds, 0, scanner.linePtr) 
+//						!= Util.getLineNumber((int) (selectorSource >>> 32), scanner.lineEnds, 0, scanner.linePtr)) {
 //					FieldDeclaration completionFieldDecl = new CompletionOnFieldType(type, false);
 //					// consume annotations
 //					int length;
@@ -2404,8 +2507,8 @@ protected void consumeMethodHeaderName(boolean isAnnotationMethod) {
 		if (currentElement != null){
 			if (currentElement instanceof RecoveredType 
 				//|| md.modifiers != 0
-				|| (scanner.getLineNumber(md.returnType.sourceStart)
-						== scanner.getLineNumber(md.sourceStart))){
+					|| (Util.getLineNumber(md.returnType.sourceStart, scanner.lineEnds, 0, scanner.linePtr)
+							== Util.getLineNumber(md.sourceStart, scanner.lineEnds, 0, scanner.linePtr))){
 				lastCheckPoint = md.bodyStart;
 				currentElement = currentElement.add(md, 0);
 				lastIgnoredToken = -1;
@@ -2414,6 +2517,13 @@ protected void consumeMethodHeaderName(boolean isAnnotationMethod) {
 				restartRecovery = AssistParser.STOP_AT_CURSOR;
 			}
 		}
+	}
+}
+protected void consumeMethodHeaderNameWithTypeParameters( boolean isAnnotationMethod) {
+	super.consumeMethodHeaderNameWithTypeParameters(isAnnotationMethod);
+	if (this.pendingAnnotation != null) {
+		this.pendingAnnotation.potentialAnnotatedNode = this.astStack[this.astPtr];
+		this.pendingAnnotation = null;
 	}
 }
 protected void consumeMethodHeaderRightParen() {
@@ -2533,14 +2643,27 @@ protected void consumeAnnotationName() {
 	
 	this.lastCheckPoint = markerAnnotation.sourceEnd + 1;
 }
+protected void consumeAnnotationTypeDeclarationHeaderName() {
+	super.consumeAnnotationTypeDeclarationHeaderName();
+	if (this.pendingAnnotation != null) {
+		this.pendingAnnotation.potentialAnnotatedNode = this.astStack[this.astPtr];
+		this.pendingAnnotation = null;
+	}
+}
 protected void consumeLabel() {
 	super.consumeLabel();
 	this.pushOnLabelStack(this.identifierStack[this.identifierPtr]);
 	this.pushOnElementStack(K_LABEL, this.labelPtr);
 }
 protected void consumeMarkerAnnotation() {
+	if (this.topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_BETWEEN_ANNOTATION_NAME_AND_RPAREN &&
+			(this.topKnownElementInfo(COMPLETION_OR_ASSIST_PARSER) & ANNOTATION_NAME_COMPLETION) != 0 ) {
 	this.popElement(K_BETWEEN_ANNOTATION_NAME_AND_RPAREN);
+		this.restartRecovery = true;
+	} else {
+		this.popElement(K_BETWEEN_ANNOTATION_NAME_AND_RPAREN);
 	super.consumeMarkerAnnotation();
+	}
 }
 protected void consumeMemberValuePair() {
 	/* check if current awaiting identifier is the completion identifier */
@@ -2609,9 +2732,34 @@ protected void consumeRestoreDiet() {
 	}
 }
 protected void consumeSingleMemberAnnotation() {
+	if (this.topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_BETWEEN_ANNOTATION_NAME_AND_RPAREN &&
+			(this.topKnownElementInfo(COMPLETION_OR_ASSIST_PARSER) & ANNOTATION_NAME_COMPLETION) != 0 ) {
 	this.popElement(K_BETWEEN_ANNOTATION_NAME_AND_RPAREN);
+		this.restartRecovery = true;
+	} else {
+		this.popElement(K_BETWEEN_ANNOTATION_NAME_AND_RPAREN);
 	super.consumeSingleMemberAnnotation();
+	}
 }
+protected void consumeSingleStaticImportDeclarationName() {
+	super.consumeSingleStaticImportDeclarationName();
+	this.pendingAnnotation = null; // the pending annotation cannot be attached to next nodes
+}
+protected void consumeSingleTypeImportDeclarationName() {
+	super.consumeSingleTypeImportDeclarationName();
+	this.pendingAnnotation = null; // the pending annotation cannot be attached to next nodes
+}
+protected void consumeStatementBreakWithLabel() {
+	super.consumeStatementBreakWithLabel();
+	if (this.record) {
+		ASTNode breakStatement = this.astStack[this.astPtr];
+		if (!isAlreadyPotentialName(breakStatement.sourceStart)) {
+			this.addPotentialName(null, breakStatement.sourceStart, breakStatement.sourceEnd);
+		}
+	}
+	
+}
+
 protected void consumeStatementLabel() {
 	this.popElement(K_LABEL);
 	super.consumeStatementLabel();
@@ -2623,13 +2771,41 @@ protected void consumeStatementSwitch() {
 		popElement(K_BLOCK_DELIMITER);
 	}
 }
+protected void consumeStaticImportOnDemandDeclarationName() {
+	super.consumeStaticImportOnDemandDeclarationName();
+	this.pendingAnnotation = null; // the pending annotation cannot be attached to next nodes
+}
+protected void consumeStaticInitializer() {
+	super.consumeStaticInitializer();
+	this.pendingAnnotation = null; // the pending annotation cannot be attached to next nodes
+}
 protected void consumeNestedMethod() {
 	super.consumeNestedMethod();
 	if(!(topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_BLOCK_DELIMITER)) pushOnElementStack(K_BLOCK_DELIMITER);
 }
 protected void consumeNormalAnnotation() {
+	if (this.topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_BETWEEN_ANNOTATION_NAME_AND_RPAREN &&
+			(this.topKnownElementInfo(COMPLETION_OR_ASSIST_PARSER) & ANNOTATION_NAME_COMPLETION) != 0 ) {
 	this.popElement(K_BETWEEN_ANNOTATION_NAME_AND_RPAREN);
+		this.restartRecovery = true;
+	} else {
+		this.popElement(K_BETWEEN_ANNOTATION_NAME_AND_RPAREN);
 	super.consumeNormalAnnotation();
+	}
+}
+protected void consumePackageDeclarationName() {
+	super.consumePackageDeclarationName();
+	if (this.pendingAnnotation != null) {
+		this.pendingAnnotation.potentialAnnotatedNode = this.compilationUnit.currentPackage;
+		this.pendingAnnotation = null;
+	}
+}
+protected void consumePackageDeclarationNameWithModifiers() {
+	super.consumePackageDeclarationNameWithModifiers();
+	if (this.pendingAnnotation != null) {
+		this.pendingAnnotation.potentialAnnotatedNode = this.compilationUnit.currentPackage;
+		this.pendingAnnotation = null;
+	}
 }
 protected void consumePrimaryNoNewArrayName() {
 	// this is class literal access, so reset potential receiver
@@ -2694,10 +2870,17 @@ protected void consumeToken(int token) {
 				}
 				break;
 			case TokenNameRBRACE:
-				if(topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_BLOCK_DELIMITER) {
-					popElement(K_BLOCK_DELIMITER);
-				} else {
-					popElement(K_ARRAY_INITIALIZER);	
+				int kind = topKnownElementKind(COMPLETION_OR_ASSIST_PARSER);
+				switch (kind) {
+					case K_BLOCK_DELIMITER:
+						popElement(K_BLOCK_DELIMITER);
+						break;
+					case K_MEMBER_VALUE_ARRAY_INITIALIZER:
+						popElement(K_MEMBER_VALUE_ARRAY_INITIALIZER);
+						break;
+					default:
+						popElement(K_ARRAY_INITIALIZER);
+						break;
 				}
 				break;
 			case TokenNameRBRACKET:
@@ -2785,12 +2968,16 @@ protected void consumeToken(int token) {
 				switch (previous) {
 					case TokenNameIdentifier: // eg. fred[(]) or foo.fred[(])
 						if (topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_SELECTOR) {
+							int info = 0;
 							if(topKnownElementKind(COMPLETION_OR_ASSIST_PARSER,1) == K_BETWEEN_ANNOTATION_NAME_AND_RPAREN &&
-									topKnownElementInfo(COMPLETION_OR_ASSIST_PARSER,1) == LPAREN_NOT_CONSUMED) {
+									(info=topKnownElementInfo(COMPLETION_OR_ASSIST_PARSER,1) & LPAREN_NOT_CONSUMED) != 0) {
 								this.popElement(K_SELECTOR);
 								this.popElement(K_BETWEEN_ANNOTATION_NAME_AND_RPAREN);
+								if ((info & ANNOTATION_NAME_COMPLETION) != 0) {
+									this.pushOnElementStack(K_BETWEEN_ANNOTATION_NAME_AND_RPAREN, LPAREN_CONSUMED | ANNOTATION_NAME_COMPLETION);
+								} else {
 								this.pushOnElementStack(K_BETWEEN_ANNOTATION_NAME_AND_RPAREN, LPAREN_CONSUMED);
-							} else {
+								}							} else {
 								this.pushOnElementStack(K_SELECTOR_INVOCATION_TYPE, this.invocationType);
 								int selectorQualifier=(this.invocationType==ALLOCATION)?this.expressionPtr:this.qualifier;
 								this.pushOnElementStack(K_SELECTOR_QUALIFIER, selectorQualifier);
@@ -2835,11 +3022,13 @@ protected void consumeToken(int token) {
 				break;
 			case TokenNameLBRACE:
 				this.bracketDepth++;
-				int kind;
-				if((kind = topKnownElementKind(COMPLETION_OR_ASSIST_PARSER)) == K_FIELD_INITIALIZER_DELIMITER
+				int kind = topKnownElementKind(COMPLETION_OR_ASSIST_PARSER);
+				if(kind == K_FIELD_INITIALIZER_DELIMITER
 					|| kind == K_LOCAL_INITIALIZER_DELIMITER
 					|| kind == K_ARRAY_CREATION) {
 					pushOnElementStack(K_ARRAY_INITIALIZER, endPosition);
+				} else if (kind == K_BETWEEN_ANNOTATION_NAME_AND_RPAREN) {
+					pushOnElementStack(K_MEMBER_VALUE_ARRAY_INITIALIZER, endPosition);
 				} else {
 					switch(previous) {
 						case TokenNameRPAREN :
@@ -3197,6 +3386,10 @@ protected void consumeTypeParameterHeader() {
 	this.assistNode = typeParameter.type;
 	this.lastCheckPoint = typeParameter.type.sourceEnd + 1;
 }
+protected void consumeTypeImportOnDemandDeclarationName() {
+	super.consumeTypeImportOnDemandDeclarationName();
+	this.pendingAnnotation = null; // the pending annotation cannot be attached to next nodes
+}
 protected void consumeTypeParameter1() {
 	super.consumeTypeParameter1();
 	popElement(K_BINARY_OPERATOR);
@@ -3462,7 +3655,20 @@ public NameReference createSingleAssistNameReference(char[] assistName, long pos
 					}
 					keywords[count++]= Keywords.BREAK;
 					keywords[count++]= Keywords.CASE;
-				}
+					keywords[count++]= Keywords.DO;
+					keywords[count++]= Keywords.FOR;
+					keywords[count++]= Keywords.IF;
+					keywords[count++]= Keywords.RETURN;
+					keywords[count++]= Keywords.SWITCH;
+//					keywords[count++]= Keywords.SYNCHRONIZED;
+					keywords[count++]= Keywords.THROW;
+					keywords[count++]= Keywords.TRY;
+					keywords[count++]= Keywords.WHILE;
+					keywords[count++]= Keywords.VAR;
+					keywords[count++]= Keywords.FUNCTION;
+					if(isInsideLoop()) {
+						keywords[count++]= Keywords.CONTINUE;
+				}							}
 			}
 			System.arraycopy(keywords, 0 , keywords = new char[count][], 0, count);
 			
@@ -3607,13 +3813,33 @@ protected TypeReference getTypeReferenceForGenericType(int dim,	int identifierLe
 	
 	return ref;
 }
+protected NameReference getUnspecifiedReference() {
+	NameReference nameReference = super.getUnspecifiedReference();
+	if (this.record) {
+		recordReference(nameReference);
+	}
+	return nameReference;
+}
 protected NameReference getUnspecifiedReferenceOptimized() {
 	if (this.identifierLengthStack[this.identifierLengthPtr] > 1) { // reducing a qualified name
 		// potential receiver is being poped, so reset potential receiver
 		this.invocationType = NO_RECEIVER;
 		this.qualifier = -1;
 	}
-	return super.getUnspecifiedReferenceOptimized();
+	NameReference nameReference = super.getUnspecifiedReferenceOptimized();
+	if (this.record) {
+		recordReference(nameReference);
+	}
+	return nameReference;
+}
+private boolean isAlreadyPotentialName(int identifierStart) {
+	if (this.potentialVariableNamesPtr < 0) return false;
+	
+	return identifierStart <= this.potentialVariableNameEnds[this.potentialVariableNamesPtr];
+}
+protected int indexOfAssistIdentifier(boolean useGenericsStack) {
+	if (this.record) return -1; // when names are recorded there is no assist identifier
+	return super.indexOfAssistIdentifier(useGenericsStack);
 }
 public void initialize() {
 	super.initialize();
@@ -3760,7 +3986,7 @@ public void parseBlockStatements(
 	canBeExplicitConstructor = 1;
 	super.parseBlockStatements(cd, unit);
 }
-public MethodDeclaration parseStatementsAfterCompletion(int start, int end, CompilationUnitDeclaration unit) {
+public MethodDeclaration parseSomeStatements(int start, int end, int fakeBlocksCount, CompilationUnitDeclaration unit) {
 	this.methodRecoveryActivated = true;
 	
 	initialize();
@@ -3779,9 +4005,15 @@ public MethodDeclaration parseStatementsAfterCompletion(int start, int end, Comp
 	
 	referenceContext = fakeMethod;
 	compilationUnit = unit;
-	
+	this.diet = false;
+	this.restartRecovery = true;
+
+
 	scanner.resetTo(start, end);
 	consumeNestedMethod();
+	for (int i = 0; i < fakeBlocksCount; i++) {
+		consumeOpenFakeBlock();
+	}
 	try {
 		parse();
 	} catch (AbortCompilation ex) {
@@ -3803,14 +4035,23 @@ public MethodDeclaration parseStatementsAfterCompletion(int start, int end, Comp
 	
 	return fakeMethod;
 }
-protected boolean moveRecoveryCheckpoint() {
-	CompletionScanner completionScanner = (CompletionScanner) this.scanner;
-	if (completionScanner.record) {
-		completionScanner.currentCompletionToken = -1;
-		completionScanner.currentTokenStart = 0;
+protected void popUntilCompletedAnnotationIfNecessary() {
+	if(elementPtr < 0) return;
+	
+	int i = elementPtr;
+	while(i > -1 &&
+			(elementKindStack[i] != K_BETWEEN_ANNOTATION_NAME_AND_RPAREN ||
+					(elementInfoStack[i] & ANNOTATION_NAME_COMPLETION) == 0)) {
+		i--;
 	}
-	return super.moveRecoveryCheckpoint();
+	
+	if(i >= 0) {
+		previousKind = elementKindStack[i];
+		previousInfo = elementInfoStack[i];
+		elementPtr = i - 1;	
+	}
 }
+ 
 /*
  * Prepares the state of the parser to go for BlockStatements.
  */
@@ -3871,6 +4112,25 @@ public void recordCompletionOnReference(){
 	if (!diet) return; // only record references attached to types
 
 }
+private void recordReference(NameReference nameReference) {
+	if (!this.skipRecord &&
+			this.recordFrom <= nameReference.sourceStart &&
+			nameReference.sourceEnd <= this.recordTo &&
+			!isAlreadyPotentialName(nameReference.sourceStart)) {
+		char[] token;
+		if (nameReference instanceof SingleNameReference) {
+			token = ((SingleNameReference) nameReference).token;
+		} else {
+			token = ((QualifiedNameReference) nameReference).tokens[0];
+		}
+		
+		// Most of the time a name which start with an uppercase is a type name.
+		// As we don't want to resolve names to avoid to slow down performances then this name will be ignored
+		if (Character.isUpperCase(token[0])) return;
+		
+		addPotentialName(token, nameReference.sourceStart, nameReference.sourceEnd);
+	}
+}
 public void recoveryExitFromVariable() {
 	if(currentElement != null && currentElement instanceof RecoveredLocalVariable) {
 		RecoveredElement oldElement = currentElement;
@@ -3885,6 +4145,12 @@ public void recoveryExitFromVariable() {
 public void recoveryTokenCheck() {
 	RecoveredElement oldElement = currentElement;
 	switch (currentToken) {
+		case TokenNameLBRACE :
+			if(!this.ignoreNextOpeningBrace) {
+				this.pendingAnnotation = null; // the pending annotation cannot be attached to next nodes
+			}
+			super.recoveryTokenCheck();
+			break;
 		case TokenNameRBRACE :
 			super.recoveryTokenCheck();
 			if(currentElement != oldElement && oldElement instanceof RecoveredBlock) {
@@ -3972,6 +4238,7 @@ protected boolean resumeAfterRecovery() {
 			/* restart in diet mode for finding sibling constructs */
 			if (currentElement instanceof RecoveredType
 				|| currentElement.enclosingType() != null){
+				this.pendingAnnotation = null;
 					
 				if(lastCheckPoint <= this.assistNode.sourceEnd) {
 					lastCheckPoint = this.assistNode.sourceEnd+1;
@@ -4097,6 +4364,10 @@ protected MessageSend newMessageSend() {
 	
 	this.isOrphanCompletionNode = true;
 	return messageSend;
+}
+
+protected JavadocParser createJavadocParser() {
+	return new CompletionJavadocParser(this);
 }
 
 public void createAssistTypeForAllocation(AllocationExpression expression) {

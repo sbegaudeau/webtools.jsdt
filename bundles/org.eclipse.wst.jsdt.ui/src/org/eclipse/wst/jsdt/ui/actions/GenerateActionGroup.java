@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,6 @@ import org.eclipse.ui.actions.AddBookmarkAction;
 import org.eclipse.ui.handlers.IHandlerActivation;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.Page;
-import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.IUpdate;
 import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
 
@@ -44,10 +43,10 @@ import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.AddTaskAction;
-import org.eclipse.wst.jsdt.internal.ui.actions.CleanUpAction;
-import org.eclipse.wst.jsdt.internal.ui.actions.CopyQualifiedNameAction;
+import org.eclipse.wst.jsdt.internal.ui.actions.AllCleanUpsAction;
 import org.eclipse.wst.jsdt.internal.ui.actions.FindBrokenNLSKeysAction;
 import org.eclipse.wst.jsdt.internal.ui.actions.JDTQuickMenuAction;
+import org.eclipse.wst.jsdt.internal.ui.actions.MultiSortMembersAction;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.AddImportOnSelectionAction;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitEditor;
 
@@ -134,13 +133,12 @@ public class GenerateActionGroup extends ActionGroup {
 	private AddBookmarkAction fAddBookmark;
 	private AddTaskAction fAddTaskAction;
 	private ExternalizeStringsAction fExternalizeStrings;
-	private CleanUpAction fCleanUp;	
+	private AllCleanUpsAction fCleanUp;	
 	private FindBrokenNLSKeysAction fFindNLSProblems;
 	
 //	private OrganizeImportsAction fOrganizeImports;
-	private SortMembersAction fSortMembers;
+	private MultiSortMembersAction fSortMembers;
 	private FormatAllAction fFormatAll;
-//	private CopyQualifiedNameAction fCopyQualifiedNameAction;
 	
 	private static final String QUICK_MENU_ID= "org.eclipse.wst.jsdt.ui.edit.text.java.source.quickMenu"; //$NON-NLS-1$
 	
@@ -176,7 +174,7 @@ public class GenerateActionGroup extends ActionGroup {
 //		fOrganizeImports.setActionDefinitionId(IJavaEditorActionDefinitionIds.ORGANIZE_IMPORTS);
 //		editor.setAction("OrganizeImports", fOrganizeImports); //$NON-NLS-1$
 
-		fSortMembers= new SortMembersAction(editor);
+		fSortMembers= new MultiSortMembersAction(editor);
 		fSortMembers.setActionDefinitionId(IJavaEditorActionDefinitionIds.SORT_MEMBERS);
 		editor.setAction("SortMembers", fSortMembers); //$NON-NLS-1$
 		
@@ -213,7 +211,7 @@ public class GenerateActionGroup extends ActionGroup {
 		fAddJavaDocStub.setActionDefinitionId(IJavaEditorActionDefinitionIds.ADD_JAVADOC_COMMENT);
 		editor.setAction("AddJavadocComment", fAddJavaDocStub); //$NON-NLS-1$
 		
-		fCleanUp= new CleanUpAction(editor);
+		fCleanUp= new AllCleanUpsAction(editor);
 		fCleanUp.setActionDefinitionId(IJavaEditorActionDefinitionIds.CLEAN_UP);
 		editor.setAction("CleanUp", fCleanUp); //$NON-NLS-1$
 		
@@ -289,13 +287,13 @@ public class GenerateActionGroup extends ActionGroup {
 //		fOrganizeImports= new OrganizeImportsAction(site);
 //		fOrganizeImports.setActionDefinitionId(IJavaEditorActionDefinitionIds.ORGANIZE_IMPORTS);
 		
-		fSortMembers= new SortMembersAction(site);
+		fSortMembers= new MultiSortMembersAction(site);
 		fSortMembers.setActionDefinitionId(IJavaEditorActionDefinitionIds.SORT_MEMBERS);
 		
 		fFormatAll= new FormatAllAction(site);
 		fFormatAll.setActionDefinitionId(IJavaEditorActionDefinitionIds.FORMAT);
 		
-		fCleanUp= new CleanUpAction(site);
+		fCleanUp= new AllCleanUpsAction(site);
 		fCleanUp.setActionDefinitionId(IJavaEditorActionDefinitionIds.CLEAN_UP);
 
 		
@@ -493,8 +491,6 @@ public class GenerateActionGroup extends ActionGroup {
 			actionBar.setGlobalActionHandler(IDEActionFactory.BOOKMARK.getId(), fAddBookmark);
 			actionBar.setGlobalActionHandler(IDEActionFactory.ADD_TASK.getId(), fAddTaskAction);
 			actionBar.setGlobalActionHandler(JdtActionConstants.FORMAT, fFormatAll);
-		} else {
-//			actionBar.setGlobalActionHandler(CopyQualifiedNameAction.ACTION_HANDLER_ID, fCopyQualifiedNameAction);
 		}
 	}
 	

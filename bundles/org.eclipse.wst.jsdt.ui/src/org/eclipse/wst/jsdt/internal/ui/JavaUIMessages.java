@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ public final class JavaUIMessages extends NLS {
 		// Do not instantiate
 	}
 
+	public static String FilteredTypesSelectionDialog_TypeFiltersPreferencesAction_label;
 	public static String GenerateHashCodeEqualsDialog_instanceof_button;
 	public static String JavaPlugin_internal_error;
 	public static String JavaPlugin_initializing_ui;
@@ -37,6 +38,8 @@ public final class JavaUIMessages extends NLS {
 	public static String JavaUI_defaultDialogMessage;
 	
 	public static String MultiElementListSelectionDialog_pageInfoMessage;
+	public static String PackageSelectionDialog_progress_findEmpty;
+	public static String PackageSelectionDialog_progress_search;
 	
 	public static String TypeSelectionDialog_errorMessage;
 	public static String TypeSelectionDialog_dialogMessage;
@@ -108,13 +111,17 @@ public final class JavaUIMessages extends NLS {
 	public static String ResourceTransferDragAdapter_moving_resource;
 	public static String ResourceTransferDragAdapter_cannot_delete_files;
 	
-	public static String Spelling_dictionary_file_extension;
 	public static String Spelling_error_label;
 	public static String Spelling_correct_label;
 	public static String Spelling_add_info;
 	public static String Spelling_add_label;
+	public static String Spelling_add_askToConfigure_title;
+	public static String Spelling_add_askToConfigure_question;
+	public static String Spelling_add_askToConfigure_ignoreMessage;
 	public static String Spelling_ignore_info;
 	public static String Spelling_ignore_label;
+	public static String Spelling_disable_label;
+	public static String Spelling_disable_info;
 	public static String Spelling_case_label;
 	public static String Spelling_error_case_label;
 	public static String AbstractSpellingDictionary_encodingError;

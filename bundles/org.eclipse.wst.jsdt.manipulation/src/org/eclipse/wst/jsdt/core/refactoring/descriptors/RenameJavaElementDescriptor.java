@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2007  IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -539,16 +539,11 @@ public final class RenameJavaElementDescriptor extends JavaRefactoringDescriptor
 				if (type != IJavaElement.FIELD)
 					status.merge(RefactoringStatus.createFatalErrorStatus(DescriptorMessages.RenameJavaElementDescriptor_accessor_constraint));
 			}
-			if (fQualified || fPatterns != null) {
+			if (fQualified) {
 				switch (type) {
 					case IJavaElement.PACKAGE_FRAGMENT:
-					case IJavaElement.TYPE: {
-						if (!(fPatterns == null || !"".equals(fPatterns))) //$NON-NLS-1$
-							status.merge(RefactoringStatus.createFatalErrorStatus(DescriptorMessages.RenameJavaElementDescriptor_patterns_constraint));
-						if (!(!fQualified || (fPatterns != null && !"".equals(fPatterns)))) //$NON-NLS-1$
-							status.merge(RefactoringStatus.createFatalErrorStatus(DescriptorMessages.RenameJavaElementDescriptor_patterns_qualified_constraint));
+					case IJavaElement.TYPE: 
 						break;
-					}
 					default:
 						status.merge(RefactoringStatus.createFatalErrorStatus(DescriptorMessages.RenameJavaElementDescriptor_qualified_constraint));
 				}

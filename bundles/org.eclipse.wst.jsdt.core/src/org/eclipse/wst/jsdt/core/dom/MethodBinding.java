@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,7 +53,9 @@ class MethodBinding implements IMethodBinding {
 	private String key;
 	private ITypeBinding[] typeParameters;
 	private ITypeBinding[] typeArguments;
-	
+	private IAnnotationBinding[] annotations;
+	private IAnnotationBinding[] parameterAnnotations;
+
 	MethodBinding(BindingResolver resolver, org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding binding) {
 		this.resolver = resolver;
 		this.binding = binding;
@@ -69,7 +71,7 @@ class MethodBinding implements IMethodBinding {
 	public boolean isConstructor() {
 		return this.binding.isConstructor();
 	}
-	
+
 	/**
 	 * @see IMethodBinding#isDefaultConstructor()
 	 * @since 3.0
@@ -78,7 +80,7 @@ class MethodBinding implements IMethodBinding {
 		final ReferenceBinding declaringClassBinding = this.binding.declaringClass;
 		if (declaringClassBinding.isRawType()) {
 			RawTypeBinding rawTypeBinding = (RawTypeBinding) declaringClassBinding;
-			if (rawTypeBinding.type.isBinaryBinding()) {
+			if (rawTypeBinding.genericType().isBinaryBinding()) {
 				return false;
 			}
 			return (this.binding.modifiers & ExtraCompilerModifiers.AccIsDefaultConstructor) != 0;
@@ -87,7 +89,7 @@ class MethodBinding implements IMethodBinding {
 			return false;
 		}
 		return (this.binding.modifiers & ExtraCompilerModifiers.AccIsDefaultConstructor) != 0;
-	}	
+	}
 
 	/**
 	 * @see IBinding#getName()
@@ -103,20 +105,24 @@ class MethodBinding implements IMethodBinding {
 		return name;
 	}
 
-	public IAnnotationBinding[] getAnnotations() { 
-		org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding[] annotations = this.binding.getAnnotations();
-		int length;
-		if (annotations == null || (length = annotations.length) == 0)
-			return AnnotationBinding.NoAnnotations;
+	public IAnnotationBinding[] getAnnotations() {
+		if (this.annotations != null) {
+			return this.annotations;
+		}
+		org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding[] annots = this.binding.getAnnotations();
+		int length = annots == null ? 0 : annots.length;
+		if (length == 0) {
+			return this.annotations = AnnotationBinding.NoAnnotations;
+		}
 		IAnnotationBinding[] domInstances = new AnnotationBinding[length];
 		for (int i = 0; i < length; i++) {
-			final IAnnotationBinding annotationInstance = this.resolver.getAnnotationInstance(annotations[i]);
+			final IAnnotationBinding annotationInstance = this.resolver.getAnnotationInstance(annots[i]);
 			if (annotationInstance == null) {
-				return AnnotationBinding.NoAnnotations;
+				return this.annotations = AnnotationBinding.NoAnnotations;
 			}
 			domInstances[i] = annotationInstance;
 		}
-		return domInstances; 
+		return this.annotations = domInstances;
 	}
 
 	/**
@@ -130,19 +136,23 @@ class MethodBinding implements IMethodBinding {
 	}
 
 	public IAnnotationBinding[] getParameterAnnotations(int index) {
-		org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding[] annotations = this.binding.getParameterAnnotations(index);
-		int length;
-		if (annotations == null || (length = annotations.length) == 0)
-			return AnnotationBinding.NoAnnotations;
+		if (this.parameterAnnotations != null) {
+			return this.parameterAnnotations;
+		}
+		org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding[] annots = this.binding.getParameterAnnotations(index);
+		int length = annots == null ? 0 : annots.length;
+		if (length == 0) {
+			return this.parameterAnnotations = AnnotationBinding.NoAnnotations;
+		}
 		IAnnotationBinding[] domInstances =new AnnotationBinding[length];
 		for (int i = 0; i < length; i++) {
-			final IAnnotationBinding annotationInstance = this.resolver.getAnnotationInstance(annotations[i]);
+			final IAnnotationBinding annotationInstance = this.resolver.getAnnotationInstance(annots[i]);
 			if (annotationInstance == null) {
-				return AnnotationBinding.NoAnnotations;
+				return this.parameterAnnotations = AnnotationBinding.NoAnnotations;
 			}
 			domInstances[i] = annotationInstance;
 		}
-		return domInstances; 
+		return this.parameterAnnotations = domInstances;
 	}
 
 	/**
@@ -153,11 +163,11 @@ class MethodBinding implements IMethodBinding {
 			return parameterTypes;
 		}
 		org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding[] parameters = this.binding.parameters;
-		int length = parameters.length;
+		int length = parameters == null ? 0 : parameters.length;
 		if (length == 0) {
-			this.parameterTypes = NO_TYPE_BINDINGS;
+			return this.parameterTypes = NO_TYPE_BINDINGS;
 		} else {
-			this.parameterTypes = new ITypeBinding[length];
+			ITypeBinding[] paramTypes = new ITypeBinding[length];
 			for (int i = 0; i < length; i++) {
 				final TypeBinding parameterBinding = parameters[i];
 				if (parameterBinding != null) {
@@ -165,7 +175,7 @@ class MethodBinding implements IMethodBinding {
 					if (typeBinding == null) {
 						return this.parameterTypes = NO_TYPE_BINDINGS;
 					}
-					this.parameterTypes[i] = typeBinding;
+					paramTypes[i] = typeBinding;
 				} else {
 					// log error
 					StringBuffer message = new StringBuffer("Report method binding where a parameter is null:\n");  //$NON-NLS-1$
@@ -175,8 +185,8 @@ class MethodBinding implements IMethodBinding {
 					return this.parameterTypes = NO_TYPE_BINDINGS;
 				}
 			}
+			return this.parameterTypes = paramTypes;
 		}
-		return this.parameterTypes;
 	}
 
 	/**
@@ -203,22 +213,21 @@ class MethodBinding implements IMethodBinding {
 			return exceptionTypes;
 		}
 		org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding[] exceptions = this.binding.thrownExceptions;
-		int length = exceptions.length;
+		int length = exceptions == null ? 0 : exceptions.length;
 		if (length == 0) {
-			this.exceptionTypes = NO_TYPE_BINDINGS;
-		} else {
-			this.exceptionTypes = new ITypeBinding[length];
-			for (int i = 0; i < length; i++) {
-				ITypeBinding typeBinding = this.resolver.getTypeBinding(exceptions[i]);
-				if (typeBinding == null) {
-					return this.exceptionTypes = NO_TYPE_BINDINGS;
-				}
-				this.exceptionTypes[i] = typeBinding;
-			}
+			return this.exceptionTypes = NO_TYPE_BINDINGS;
 		}
-		return this.exceptionTypes;
+		ITypeBinding[] exTypes = new ITypeBinding[length];
+		for (int i = 0; i < length; i++) {
+			ITypeBinding typeBinding = this.resolver.getTypeBinding(exceptions[i]);
+			if (typeBinding == null) {
+				return this.exceptionTypes = NO_TYPE_BINDINGS;
+			}
+			exTypes[i] = typeBinding;
+		}
+		return this.exceptionTypes = exTypes;
 	}
-	
+
 	public IJavaElement getJavaElement() {
 		JavaElement element = getUnresolvedJavaElement();
 		if (element == null)
@@ -303,7 +312,6 @@ class MethodBinding implements IMethodBinding {
 			return (JavaElement) candidates[0];
 		}
 	}
-	
 	/**
 	 * @see IBinding#getKind()
 	 */
@@ -323,6 +331,13 @@ class MethodBinding implements IMethodBinding {
 	 */
 	public boolean isDeprecated() {
 		return this.binding.isDeprecated();
+	}
+
+	/**
+	 * @see IBinding#isRecovered()
+	 */
+	public boolean isRecovered() {
+		return false;
 	}
 
 	/**
@@ -349,7 +364,7 @@ class MethodBinding implements IMethodBinding {
 		}
 		return this.key;
 	}
-	
+
 	/**
 	 * @see IBinding#isEqualTo(IBinding)
 	 * @since 3.1
@@ -369,7 +384,7 @@ class MethodBinding implements IMethodBinding {
 		org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding otherBinding = ((MethodBinding) other).binding;
 		return BindingComparator.isEqual(this.binding, otherBinding);
 	}
-	
+
 	/**
 	 * @see org.eclipse.wst.jsdt.core.dom.IMethodBinding#getTypeParameters()
 	 */
@@ -378,24 +393,19 @@ class MethodBinding implements IMethodBinding {
 			return this.typeParameters;
 		}
 		TypeVariableBinding[] typeVariableBindings = this.binding.typeVariables();
-		if (typeVariableBindings != null) {
-			int typeVariableBindingsLength = typeVariableBindings.length;
-			if (typeVariableBindingsLength != 0) {
-				this.typeParameters = new ITypeBinding[typeVariableBindingsLength];
-				for (int i = 0; i < typeVariableBindingsLength; i++) {
-					ITypeBinding typeBinding = this.resolver.getTypeBinding(typeVariableBindings[i]);
-					if (typeBinding == null) {
-						return this.typeParameters = NO_TYPE_BINDINGS;
-					}
-					typeParameters[i] = typeBinding;
-				}
-			} else {
-				this.typeParameters = NO_TYPE_BINDINGS;
-			}
-		} else {
-			this.typeParameters = NO_TYPE_BINDINGS;
+		int typeVariableBindingsLength = typeVariableBindings == null ? 0 : typeVariableBindings.length;
+		if (typeVariableBindingsLength == 0) {
+			return this.typeParameters = NO_TYPE_BINDINGS;
 		}
-		return this.typeParameters;
+		ITypeBinding[] tParameters = new ITypeBinding[typeVariableBindingsLength];
+		for (int i = 0; i < typeVariableBindingsLength; i++) {
+			ITypeBinding typeBinding = this.resolver.getTypeBinding(typeVariableBindings[i]);
+			if (typeBinding == null) {
+				return this.typeParameters = NO_TYPE_BINDINGS;
+			}
+			tParameters[i] = typeBinding;
+		}
+		return this.typeParameters = tParameters;
 	}
 
 	/**
@@ -410,7 +420,7 @@ class MethodBinding implements IMethodBinding {
 		TypeVariableBinding[] typeVariableBindings = this.binding.typeVariables();
 		return (typeVariableBindings != null && typeVariableBindings.length > 0);
 	}
-	
+
 	/**
 	 * @see org.eclipse.wst.jsdt.core.dom.IMethodBinding#getTypeArguments()
 	 */
@@ -422,27 +432,20 @@ class MethodBinding implements IMethodBinding {
 		if (this.binding instanceof ParameterizedGenericMethodBinding) {
 			ParameterizedGenericMethodBinding genericMethodBinding = (ParameterizedGenericMethodBinding) this.binding;
 			org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding[] typeArgumentsBindings = genericMethodBinding.typeArguments;
-			if (typeArgumentsBindings != null) {
-				int typeArgumentsLength = typeArgumentsBindings.length;
-				if (typeArgumentsLength != 0) {
-					this.typeArguments = new ITypeBinding[typeArgumentsLength];
-					for (int i = 0; i < typeArgumentsLength; i++) {
-						ITypeBinding typeBinding = this.resolver.getTypeBinding(typeArgumentsBindings[i]);
-						if (typeBinding == null) {
-							return this.typeArguments = NO_TYPE_BINDINGS;
-						}
-						this.typeArguments[i] = typeBinding;
+			int typeArgumentsLength = typeArgumentsBindings == null ? 0 : typeArgumentsBindings.length;
+			if (typeArgumentsLength != 0) {
+				ITypeBinding[] tArguments = new ITypeBinding[typeArgumentsLength];
+				for (int i = 0; i < typeArgumentsLength; i++) {
+					ITypeBinding typeBinding = this.resolver.getTypeBinding(typeArgumentsBindings[i]);
+					if (typeBinding == null) {
+						return this.typeArguments = NO_TYPE_BINDINGS;
 					}
-				} else {
-					this.typeArguments = NO_TYPE_BINDINGS;
+					tArguments[i] = typeBinding;
 				}
-			} else {
-				this.typeArguments = NO_TYPE_BINDINGS;
+				return this.typeArguments = tArguments;
 			}
-		} else {
-			this.typeArguments = NO_TYPE_BINDINGS;
 		}
-		return this.typeArguments;
+		return this.typeArguments = NO_TYPE_BINDINGS;
 	}
 
 	/**
@@ -460,7 +463,7 @@ class MethodBinding implements IMethodBinding {
 		return (this.binding instanceof ParameterizedGenericMethodBinding)
 			&& ((ParameterizedGenericMethodBinding) this.binding).isRaw;
 	}
-	
+
 	public boolean isSubsignature(IMethodBinding otherMethod) {
 		try {
 			org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding other = ((MethodBinding) otherMethod).binding;
@@ -480,21 +483,21 @@ class MethodBinding implements IMethodBinding {
 	public IMethodBinding getMethodDeclaration() {
 		return this.resolver.getMethodBinding(this.binding.original());
 	}
-	
+
 	/**
 	 * @see IMethodBinding#overrides(IMethodBinding)
 	 */
 	public boolean overrides(IMethodBinding overridenMethod) {
 		try {
 			org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding overridenCompilerBinding = ((MethodBinding) overridenMethod).binding;
-			if (this.binding == overridenCompilerBinding) 
+			if (this.binding == overridenCompilerBinding)
 				return false;
 			char[] selector = this.binding.selector;
 			if (!CharOperation.equals(selector, overridenCompilerBinding.selector))
 				return false;
 			TypeBinding match = this.binding.declaringClass.findSuperTypeWithSameErasure(overridenCompilerBinding.declaringClass);
 			if (!(match instanceof ReferenceBinding)) return false;
-			
+
 			org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding[] superMethods = ((ReferenceBinding)match).getMethods(selector);
 			for (int i = 0, length = superMethods.length; i < length; i++) {
 				if (superMethods[i].original() == overridenCompilerBinding) {
@@ -502,7 +505,7 @@ class MethodBinding implements IMethodBinding {
 					if (lookupEnvironment == null) return false;
 					MethodVerifier methodVerifier = lookupEnvironment.methodVerifier();
 					org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding superMethod = superMethods[i];
-					return !superMethod.isPrivate() 
+					return !superMethod.isPrivate()
 						&& !(superMethod.isDefault() && (superMethod.declaringClass.getPackage()) != this.binding.declaringClass.getPackage())
 						&& methodVerifier.doesMethodOverride(this.binding, superMethod);
 				}

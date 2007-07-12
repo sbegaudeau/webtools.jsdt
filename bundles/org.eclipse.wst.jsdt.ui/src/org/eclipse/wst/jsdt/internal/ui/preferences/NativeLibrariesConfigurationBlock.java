@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,8 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
+
+import org.eclipse.ui.views.navigator.ResourceComparator;
 
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 
@@ -223,6 +225,7 @@ public class NativeLibrariesConfigurationBlock {
 		dialog.setAllowMultiple(false);
 		dialog.setValidator(validator);
 		dialog.addFilter(filter);
+		dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));
 		dialog.setTitle(NewWizardMessages.NativeLibrariesDialog_intfiledialog_title); 
 		dialog.setMessage(NewWizardMessages.NativeLibrariesDialog_intfiledialog_message); 
 		dialog.setInput(root);

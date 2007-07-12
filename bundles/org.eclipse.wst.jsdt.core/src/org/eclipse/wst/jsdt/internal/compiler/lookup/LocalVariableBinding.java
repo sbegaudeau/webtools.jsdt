@@ -67,7 +67,9 @@ public class LocalVariableBinding extends VariableBinding {
 		
 		// declaring method or type
  		BlockScope scope = this.declaringScope;
-		
+		if (scope != null) {
+			// the scope can be null. See https://bugs.eclipse.org/bugs/show_bug.cgi?id=185129
+
 		if (scope instanceof CompilationUnitScope) {
 			CompilationUnitScope compilationUnitScope = (CompilationUnitScope) scope;
 			buffer.append(compilationUnitScope.referenceContext.compilationUnitBinding.computeUniqueKey(false));
@@ -99,7 +101,7 @@ public class LocalVariableBinding extends VariableBinding {
 				}
 			}
 		}
-
+		}
 		// scope index
 		getScopeKey(scope, buffer);
 
@@ -114,8 +116,29 @@ public class LocalVariableBinding extends VariableBinding {
 	}
 
 	public AnnotationBinding[] getAnnotations() {
+		if (this.declaringScope == null) {
+			if ((this.tagBits & TagBits.AnnotationResolved) != 0) {
+				// annotation are already resolved
 		if (this.declaringScope == null)
+				if (this.declaration == null) {
 			return Binding.NO_ANNOTATIONS;
+				}
+				Annotation[] annotations = this.declaration.annotations;
+				if (annotations != null) {
+					int length = annotations.length;
+					AnnotationBinding[] annotationBindings = new AnnotationBinding[length];
+					for (int i = 0; i < length; i++) {
+						AnnotationBinding compilerAnnotation = annotations[i].getCompilerAnnotation();
+						if (compilerAnnotation == null) {
+							return Binding.NO_ANNOTATIONS;
+						}
+						annotationBindings[i] = compilerAnnotation;
+					}
+					return annotationBindings;
+				}
+			}
+			return Binding.NO_ANNOTATIONS;
+		}
 		SourceTypeBinding sourceType = this.declaringScope.enclosingSourceType();
 		if (sourceType == null)
 			return Binding.NO_ANNOTATIONS;

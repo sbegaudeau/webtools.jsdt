@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,12 +59,12 @@ public class MissingTypesGuesser extends ASTVisitor {
 		
 		private void cleanUp(ParameterizedSingleTypeReference typeReference) {
 			this.cleanUp((TypeReference)typeReference);
-			typeReference.didResolve = false;
+			typeReference.bits &= ~ASTNode.DidResolve;
 		}
 		
 		private void cleanUp(ParameterizedQualifiedTypeReference typeReference) {
 			this.cleanUp((TypeReference)typeReference);
-			typeReference.didResolve = false;
+			typeReference.bits &= ~ASTNode.DidResolve;
 		}
 		
 		public void cleanUp(TypeReference convertedType, BlockScope scope) {

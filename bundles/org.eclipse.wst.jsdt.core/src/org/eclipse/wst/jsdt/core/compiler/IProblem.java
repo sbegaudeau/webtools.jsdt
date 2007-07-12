@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -99,6 +99,15 @@
  *                                 TypeHidingTypeParameterFromType
  *                                 TypeHidingTypeParameterFromMethod
  *                                 TypeHidingType
+ *     IBM Corporation - added the following constants
+ *								   NullLocalVariableReference
+ *								   PotentialNullLocalVariableReference
+ *								   RedundantNullCheckOnNullLocalVariable
+ * 								   NullLocalVariableComparisonYieldsFalse
+ * 								   RedundantLocalVariableNullAssignment
+ * 								   NullLocalVariableInstanceofYieldsFalse
+ * 								   RedundantNullCheckOnNonNullLocalVariable
+ * 								   NonNullLocalVariableComparisonYieldsFalse
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.compiler;
  
@@ -718,11 +727,11 @@ void setSourceStart(int sourceStart);
 	// local variable related problems
 	int DuplicateModifierForVariable = MethodRelated + 395;
 	int IllegalModifierForVariable = MethodRelated + 396;
-	/** @since 3.1 */
-	int LocalVariableCannotBeNull = Internal + 397;
-	/** @since 3.1 */
-	int LocalVariableCanOnlyBeNull = Internal + 398;
-	/** @since 3.2 */
+	/** @deprecated - problem is no longer generated, use {@link #RedundantNullCheckOnNonNullLocalVariable} instead */
+	int LocalVariableCannotBeNull = Internal + 397; // since 3.3: semantics are LocalVariableRedundantCheckOnNonNull
+	/** @deprecated - problem is no longer generated, use {@link #NullLocalVariableReference}, {@link #RedundantNullCheckOnNullLocalVariable} or {@link #RedundantLocalVariableNullAssignment} instead */
+	int LocalVariableCanOnlyBeNull = Internal + 398; // since 3.3: split with LocalVariableRedundantCheckOnNull depending on context
+	/** @deprecated - problem is no longer generated, use {@link #PotentialNullLocalVariableReference} instead */
 	int LocalVariableMayBeNull = Internal + 399;
 
 	// method verifier problems
@@ -777,6 +786,25 @@ void setSourceStart(int sourceStart);
 	/** @since 2.1 */
 	int Task = Internal + 450;
 	
+	// local variables related problems, cont'd
+	/** @since 3.3 */
+	int NullLocalVariableReference = Internal + 451;
+	/** @since 3.3 */
+	int PotentialNullLocalVariableReference = Internal + 452;
+	/** @since 3.3 */
+	int RedundantNullCheckOnNullLocalVariable = Internal + 453;
+	/** @since 3.3 */
+	int NullLocalVariableComparisonYieldsFalse = Internal + 454;
+	/** @since 3.3 */
+	int RedundantLocalVariableNullAssignment = Internal + 455;
+	/** @since 3.3 */
+	int NullLocalVariableInstanceofYieldsFalse = Internal + 456;
+	/** @since 3.3 */
+	int RedundantNullCheckOnNonNullLocalVariable = Internal + 457;
+	/** @since 3.3 */
+	int NonNullLocalVariableComparisonYieldsFalse = Internal + 458;
+
+
 	// block
 	/** @since 3.0 */
 	int UndocumentedEmptyBlock = Internal + 460;

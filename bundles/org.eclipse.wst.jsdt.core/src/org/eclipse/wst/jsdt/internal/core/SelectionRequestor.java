@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -285,7 +285,7 @@ public void acceptField(char[] declaringTypePackageName, char[] declaringTypeNam
 public void acceptLocalField(FieldBinding fieldBinding) {
 	IJavaElement res;
 	if(fieldBinding.declaringClass instanceof ParameterizedTypeBinding) {
-		LocalTypeBinding localTypeBinding = (LocalTypeBinding)((ParameterizedTypeBinding)fieldBinding.declaringClass).type;
+		LocalTypeBinding localTypeBinding = (LocalTypeBinding)((ParameterizedTypeBinding)fieldBinding.declaringClass).genericType();
 		res = findLocalElement(localTypeBinding.sourceStart());
 	} else {
 		SourceTypeBinding typeBinding = (SourceTypeBinding)fieldBinding.declaringClass;
@@ -365,7 +365,7 @@ public void acceptLocalMethod(MethodBinding methodBinding) {
 public void acceptLocalType(TypeBinding typeBinding) {
 	IJavaElement res =  null;
 	if(typeBinding instanceof ParameterizedTypeBinding) {
-		LocalTypeBinding localTypeBinding = (LocalTypeBinding)((ParameterizedTypeBinding)typeBinding).type;
+		LocalTypeBinding localTypeBinding = (LocalTypeBinding)((ParameterizedTypeBinding)typeBinding).genericType();
 		res = findLocalElement(localTypeBinding.sourceStart());
 	} else if(typeBinding instanceof SourceTypeBinding) {
 		res = findLocalElement(((SourceTypeBinding)typeBinding).sourceStart());
@@ -383,7 +383,7 @@ public void acceptLocalType(TypeBinding typeBinding) {
 public void acceptLocalTypeParameter(TypeVariableBinding typeVariableBinding) {
 	IJavaElement res;
 	if(typeVariableBinding.declaringElement instanceof ParameterizedTypeBinding) {
-		LocalTypeBinding localTypeBinding = (LocalTypeBinding)((ParameterizedTypeBinding)typeVariableBinding.declaringElement).type;
+		LocalTypeBinding localTypeBinding = (LocalTypeBinding)((ParameterizedTypeBinding)typeVariableBinding.declaringElement).genericType();
 		res = findLocalElement(localTypeBinding.sourceStart());
 	} else {
 		SourceTypeBinding typeBinding = (SourceTypeBinding)typeVariableBinding.declaringElement;
@@ -890,13 +890,13 @@ protected IType resolveType(char[] packageName, char[] typeName, int acceptFlags
 				}
 			}
 		}catch (JavaModelException e) {
-			type = null;
+			// type is null
 		}
 	}
 
 	if(type == null) {
 		IPackageFragment[] pkgs = this.nameLookup.findPackageFragments(
-			(packageName == null || packageName.length == 0) ? IPackageFragment.DEFAULT_PACKAGE_NAME : new String(packageName), 
+			(packageName == null || packageName.length == 0) ? IPackageFragment.DEFAULT_PACKAGE_NAME : new String(packageName),
 			false);
 		// iterate type lookup in each package fragment
 		for (int i = 0, length = pkgs == null ? 0 : pkgs.length; i < length; i++) {
@@ -1034,13 +1034,13 @@ protected IType resolveTypeByLocation(char[] packageName, char[] typeName, int a
 				}
 			}
 		}catch (JavaModelException e) {
-			type = null;
+			// type is null
 		}
 	}
 
 	if(type == null&& typeName!=null) {
 		IPackageFragment[] pkgs = this.nameLookup.findPackageFragments(
-			(packageName == null || packageName.length == 0) ? IPackageFragment.DEFAULT_PACKAGE_NAME : new String(packageName), 
+			(packageName == null || packageName.length == 0) ? IPackageFragment.DEFAULT_PACKAGE_NAME : new String(packageName),
 			false);
 		// iterate type lookup in each package fragment
 		for (int i = 0, length = pkgs == null ? 0 : pkgs.length; i < length; i++) {

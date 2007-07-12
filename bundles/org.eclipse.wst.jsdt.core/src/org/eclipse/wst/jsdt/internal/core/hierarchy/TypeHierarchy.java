@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -930,12 +930,9 @@ private boolean isAffectedByPackageFragmentRoot(IJavaElementDelta delta, IJavaEl
 					for (int i = 0; i < elements.length; i++) {
 						JavaProject javaProject = (JavaProject)elements[i];
 						try {
-							IClasspathEntry[] classpath = javaProject.getResolvedClasspath();
-							for (int j = 0; j < classpath.length; j++) {
-								IClasspathEntry entry = classpath[j];
-								if (entry.getPath().equals(rootPath)) {
-									return true;
-								}
+							IClasspathEntry entry = javaProject.getClasspathEntryFor(rootPath);
+							if (entry != null) {
+								return true;
 							}
 						} catch (JavaModelException e) {
 							// igmore this project
@@ -1215,11 +1212,11 @@ public synchronized void refresh(IProgressMonitor monitor) throws JavaModelExcep
 	try {
 		this.progressMonitor = monitor;
 		if (monitor != null) {
-			if (this.focusType != null) {
-				monitor.beginTask(Messages.bind(Messages.hierarchy_creatingOnType, this.focusType.getFullyQualifiedName()), 100); 
-			} else {
-				monitor.beginTask(Messages.hierarchy_creating, 100); 
-			}
+			monitor.beginTask(
+					this.focusType != null ? 
+							Messages.bind(Messages.hierarchy_creatingOnType, this.focusType.getFullyQualifiedName()) : 
+							Messages.hierarchy_creating, 
+					100); 
 		}
 		long start = -1;
 		if (DEBUG) {

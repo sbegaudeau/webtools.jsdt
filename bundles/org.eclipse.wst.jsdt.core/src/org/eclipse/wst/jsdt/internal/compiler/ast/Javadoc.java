@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -292,44 +292,38 @@ public class Javadoc extends ASTNode {
 			// Resolve reference
 			resolveReference(this.seeReferences[i], methScope);
 			
-			// see whether we can have a super reference
-			try {
-				if (methDecl != null && (methDecl.isConstructor() || overriding) && !superRef) {
-					if (this.seeReferences[i] instanceof JavadocMessageSend) {
-						JavadocMessageSend messageSend = (JavadocMessageSend) this.seeReferences[i];
-						// if binding is valid then look if we have a reference to an overriden method/constructor
-						if (messageSend.binding != null && messageSend.binding.isValidBinding() && messageSend.actualReceiverType instanceof ReferenceBinding) {
-							ReferenceBinding methodReceiverType = (ReferenceBinding) messageSend.actualReceiverType;
-							if ((methodReceiverType.isSuperclassOf(methDecl.binding.declaringClass) || (methodReceiverType.isInterface() && methDecl.binding.declaringClass.implementsInterface(methodReceiverType, true))) &&
-								CharOperation.equals(messageSend.selector, methDecl.selector) &&
-								(methDecl.binding.returnType.isCompatibleWith(messageSend.binding.returnType))) {
-								if (messageSend.arguments == null && methDecl.arguments == null) {
-									superRef = true;
-								}
-								else if (messageSend.arguments != null && methDecl.arguments != null) {
-									superRef = methDecl.binding.areParameterErasuresEqual(messageSend.binding);
-								}
+			if (methDecl != null && (methDecl.isConstructor() || overriding) && !superRef) {
+				if (this.seeReferences[i] instanceof JavadocMessageSend) {
+					JavadocMessageSend messageSend = (JavadocMessageSend) this.seeReferences[i];
+					// if binding is valid then look if we have a reference to an overriden method/constructor
+					if (messageSend.binding != null && messageSend.binding.isValidBinding() && messageSend.actualReceiverType instanceof ReferenceBinding) {
+						ReferenceBinding methodReceiverType = (ReferenceBinding) messageSend.actualReceiverType;
+						if ((methodReceiverType.isSuperclassOf(methDecl.binding.declaringClass) || (methodReceiverType.isInterface() && methDecl.binding.declaringClass.implementsInterface(methodReceiverType, true))) &&
+							CharOperation.equals(messageSend.selector, methDecl.selector) &&
+							(methDecl.binding.returnType.isCompatibleWith(messageSend.binding.returnType))) {
+							if (messageSend.arguments == null && methDecl.arguments == null) {
+								superRef = true;
 							}
-						}
-					}
-					else if (this.seeReferences[i] instanceof JavadocAllocationExpression) {
-						JavadocAllocationExpression allocationExpr = (JavadocAllocationExpression) this.seeReferences[i];
-						// if binding is valid then look if we have a reference to an overriden method/constructor
-						if (allocationExpr.binding != null && allocationExpr.binding.isValidBinding()) {
-							if (methDecl.binding.declaringClass.isCompatibleWith(allocationExpr.resolvedType)) {
-								if (allocationExpr.arguments == null && methDecl.arguments == null) {
-									superRef = true;
-								}
-								else if (allocationExpr.arguments != null && methDecl.arguments != null) {
-									superRef = methDecl.binding.areParametersCompatibleWith(allocationExpr.binding.parameters);
-								}
+							else if (messageSend.arguments != null && methDecl.arguments != null) {
+								superRef = methDecl.binding.areParameterErasuresEqual(messageSend.binding);
 							}
 						}
 					}
 				}
-			}
-			catch (Exception e) {
-				// Something wrong happen, forget super ref...
+				else if (this.seeReferences[i] instanceof JavadocAllocationExpression) {
+					JavadocAllocationExpression allocationExpr = (JavadocAllocationExpression) this.seeReferences[i];
+					// if binding is valid then look if we have a reference to an overriden method/constructor
+					if (allocationExpr.binding != null && allocationExpr.binding.isValidBinding()) {
+						if (methDecl.binding.declaringClass.isCompatibleWith(allocationExpr.resolvedType)) {
+							if (allocationExpr.arguments == null && methDecl.arguments == null) {
+								superRef = true;
+							}
+							else if (allocationExpr.arguments != null && methDecl.arguments != null) {
+								superRef = methDecl.binding.areParametersCompatibleWith(allocationExpr.binding.parameters);
+							}
+						}
+					}
+				}
 			}
 		}
 		
@@ -350,7 +344,8 @@ public class Javadoc extends ASTNode {
 		}
 
 		// @param tags
-		resolveParamTags(methScope, reportMissing);
+		boolean considerParamRefAsUsage = methScope.compilerOptions().reportUnusedParameterIncludeDocCommentReference;
+		resolveParamTags(methScope, reportMissing,considerParamRefAsUsage);
 		resolveTypeParameterTags(methScope, reportMissing);
 
 		// @return tags
@@ -380,7 +375,7 @@ public class Javadoc extends ASTNode {
 		// Resolve param tags with invalid syntax
 		int length = this.invalidParameters == null ? 0 : this.invalidParameters.length;
 		for (int i = 0; i < length; i++) {
-			this.invalidParameters[i].resolve(methScope, false);
+			this.invalidParameters[i].resolve(methScope, false, false);
 		}
 	}
 	
@@ -413,7 +408,9 @@ public class Javadoc extends ASTNode {
 					scope.problemReporter().javadocInvalidValueReference(fieldRef.sourceStart, fieldRef.sourceEnd, scopeModifiers);
 				}
 				else if (fieldRef.receiverType != null) {
-					fieldRef.superAccess = scope.enclosingSourceType().isCompatibleWith(fieldRef.receiverType);
+					if (scope.enclosingSourceType().isCompatibleWith(fieldRef.receiverType)) {
+							fieldRef.bits |= ASTNode.SuperAccess;
+						}		
 					fieldRef.methodBinding = scope.findMethod((ReferenceBinding)fieldRef.receiverType, fieldRef.token, new TypeBinding[0], fieldRef);
 				}
 			}
@@ -486,26 +483,26 @@ public class Javadoc extends ASTNode {
 	/*
 	 * Resolve @param tags while method scope
 	 */
-	private void resolveParamTags(MethodScope methScope, boolean reportMissing) {
-		AbstractMethodDeclaration md = methScope.referenceMethod();
+	private void resolveParamTags(MethodScope scope, boolean reportMissing, boolean considerParamRefAsUsage) {
+		AbstractMethodDeclaration methodDecl = scope.referenceMethod();
 		int paramTagsSize = this.paramReferences == null ? 0 : this.paramReferences.length;
 
 		// If no referenced method (field initializer for example) then report a problem for each param tag
-		if (md == null) {
+		if (methodDecl == null) {
 			for (int i = 0; i < paramTagsSize; i++) {
 				JavadocSingleNameReference param = this.paramReferences[i];
-				methScope.problemReporter().javadocUnexpectedTag(param.tagSourceStart, param.tagSourceEnd);
+				scope.problemReporter().javadocUnexpectedTag(param.tagSourceStart, param.tagSourceEnd);
 			}
 			return;
 		}
 		
 		// If no param tags then report a problem for each method argument
-		int argumentsSize = md.arguments == null ? 0 : md.arguments.length;
+		int argumentsSize = methodDecl.arguments == null ? 0 : methodDecl.arguments.length;
 		if (paramTagsSize == 0) {
 			if (reportMissing) {
 				for (int i = 0; i < argumentsSize; i++) {
-					Argument arg = md.arguments[i];
-					methScope.problemReporter().javadocMissingParamTag(arg.name, arg.sourceStart, arg.sourceEnd, md.binding.modifiers);
+					Argument arg = methodDecl.arguments[i];
+					scope.problemReporter().javadocMissingParamTag(arg.name, arg.sourceStart, arg.sourceEnd, methodDecl.binding.modifiers);
 				}
 			}
 		} else {
@@ -515,13 +512,13 @@ public class Javadoc extends ASTNode {
 			// Scan all @param tags
 			for (int i = 0; i < paramTagsSize; i++) {
 				JavadocSingleNameReference param = this.paramReferences[i];
-				param.resolve(methScope);
+				param.resolve(scope, true, considerParamRefAsUsage);
 				if (param.binding != null && param.binding.isValidBinding()) {
 					// Verify duplicated tags
 					boolean found = false;
 					for (int j = 0; j < maxBindings && !found; j++) {
 						if (bindings[j] == param.binding) {
-							methScope.problemReporter().javadocDuplicatedParamTag(param.token, param.sourceStart, param.sourceEnd, md.binding.modifiers);
+							scope.problemReporter().javadocDuplicatedParamTag(param.token, param.sourceStart, param.sourceEnd, methodDecl.binding.modifiers);
 							found = true;
 						}
 					}
@@ -534,7 +531,7 @@ public class Javadoc extends ASTNode {
 			// Look for undocumented arguments
 			if (reportMissing) {
 				for (int i = 0; i < argumentsSize; i++) {
-					Argument arg = md.arguments[i];
+					Argument arg = methodDecl.arguments[i];
 					boolean found = false;
 					for (int j = 0; j < maxBindings && !found; j++) {
 						LocalVariableBinding binding = bindings[j];
@@ -543,7 +540,7 @@ public class Javadoc extends ASTNode {
 						}
 					}
 					if (!found) {
-						methScope.problemReporter().javadocMissingParamTag(arg.name, arg.sourceStart, arg.sourceEnd, md.binding.modifiers);
+						scope.problemReporter().javadocMissingParamTag(arg.name, arg.sourceStart, arg.sourceEnd, methodDecl.binding.modifiers);
 					}
 				}
 			}
@@ -776,15 +773,26 @@ public class Javadoc extends ASTNode {
 					return;
 				}
 			}
-
+			
 			// member types
 			if (resolvedType.isMemberType()) {
 				ReferenceBinding topLevelType = resolvedType;
-				int depth = 0;
+				// rebuild and store (in reverse order) compound name to handle embedded inner class
+				int packageLength = topLevelType.fPackage.compoundName.length;
+				int depth = resolvedType.depth();
+				int idx = depth + packageLength;
+				char[][] computedCompoundName = new char[idx+1][];
+				computedCompoundName[idx] = topLevelType.sourceName;
 				while (topLevelType.enclosingType() != null) {
 					topLevelType = topLevelType.enclosingType();
-					depth++;
+					computedCompoundName[--idx] = topLevelType.sourceName;
 				}
+				
+				// add package information
+				for (int i = packageLength; --i >= 0;) {
+					computedCompoundName[--idx] = topLevelType.fPackage.compoundName[i];
+				}
+										
 				ClassScope topLevelScope = scope.classScope();
 				// when scope is not on compilation unit type, then inner class may not be visible...
 				if (topLevelScope.parent.kind != Scope.COMPILATION_UNIT_SCOPE ||
@@ -793,16 +801,45 @@ public class Javadoc extends ASTNode {
 					if (typeReference instanceof JavadocSingleTypeReference) {
 						// inner class single reference can only be done in same unit
 						if ((!source15 && depth == 1) || topLevelType != topLevelScope.referenceContext.binding) {
-							if (scopeModifiers == -1) scopeModifiers = scope.getDeclarationModifiers();
-							scope.problemReporter().javadocInvalidMemberTypeQualification(typeReference.sourceStart, typeReference.sourceEnd, scopeModifiers);
-							return;
+							// search for corresponding import
+							boolean hasValidImport = false;
+							if (source15) {
+								CompilationUnitScope unitScope = topLevelScope.compilationUnitScope();
+								ImportBinding[] imports = unitScope.imports;
+								int length = imports == null ? 0 : imports.length;
+								mainLoop: for (int i=0; i<length; i++) {
+									char[][] compoundName = imports[i].compoundName;
+									int compoundNameLength = compoundName.length;
+									if ((imports[i].onDemand && compoundNameLength == computedCompoundName.length-1) ||
+										(compoundNameLength == computedCompoundName.length))
+									{
+										for (int j = compoundNameLength; --j >= 0;) {
+											if (CharOperation.equals(imports[i].compoundName[j], computedCompoundName[j])) {
+												if (j == 0) {
+													hasValidImport = true;
+													break mainLoop;
+												}
+											} else {
+												break;	
+											}
+										}
+									}
+								}
+								if (!hasValidImport) {
+									if (scopeModifiers == -1) scopeModifiers = scope.getDeclarationModifiers();
+									scope.problemReporter().javadocInvalidMemberTypeQualification(typeReference.sourceStart, typeReference.sourceEnd, scopeModifiers);
+								}
+							} else {
+								if (scopeModifiers == -1) scopeModifiers = scope.getDeclarationModifiers();
+								scope.problemReporter().javadocInvalidMemberTypeQualification(typeReference.sourceStart, typeReference.sourceEnd, scopeModifiers);
+								return;
+							}
 						}
 					}
 				}
 			}
 		}
 	}
-
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
 		if (visitor.visit(this, scope)) {
 			if (this.paramReferences != null) {

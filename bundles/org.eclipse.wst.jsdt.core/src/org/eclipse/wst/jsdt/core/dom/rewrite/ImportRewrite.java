@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -211,7 +211,7 @@ public final class ImportRewrite {
 		
 	private ImportRewrite(ICompilationUnit cu, CompilationUnit astRoot, List existingImports) {
 		this.compilationUnit= cu;
-		this.astRoot= null; // might be null
+		this.astRoot= astRoot; // might be null
 		if (existingImports != null) {
 			this.existingImports= existingImports;
 			this.restoreExistingImports= !existingImports.isEmpty();
@@ -636,7 +636,7 @@ public final class ImportRewrite {
 	 * when an import could be added or was already known. It is fully qualified, if an import conflict prevented the import.
 	 */
 	public Type addImport(ITypeBinding binding, AST ast, ImportRewriteContext context) {
-		if (binding.isPrimitive()) {
+		if (binding.isPrimitive() || binding.isRecovered()) {
 			return ast.newPrimitiveType(PrimitiveType.toCode(binding.getName()));
 		}
 		
@@ -965,8 +965,8 @@ public final class ImportRewrite {
 			monitor= new NullProgressMonitor();
 		}
 		
-		monitor.beginTask(Messages.bind(Messages.importRewrite_processDescription), 2);
 		try {
+			monitor.beginTask(Messages.bind(Messages.importRewrite_processDescription), 2);
 			if (!hasRecordedChanges()) {
 				this.createdImports= CharOperation.NO_STRINGS;
 				this.createdStaticImports= CharOperation.NO_STRINGS;

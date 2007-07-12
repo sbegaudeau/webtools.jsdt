@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -566,7 +566,7 @@ public abstract class TType {
 	/**
 	 * Computes a plain pretty signature. For type with bounds (e.g
 	 * type variables and wildcards) the plain signature is different
-	 * than the full pretty signture.
+	 * than the full pretty signature.
 	 * 
 	 * @return a plain pretty signature for this type
 	 */

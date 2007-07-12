@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     John Kaplan, johnkaplantech@gmail.com - 108071 [code templates] template for body of newly created class
+ *     Sebastian Davids, sdavids@gmx.de - 187316 [preferences] Mark Occurences Pref Page; Link to
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.preferences;
 
@@ -21,6 +22,7 @@ public final class PreferencesMessages extends NLS {
 		// Do not instantiate
 	}
 
+	public static String AppearancePreferencePage_coloredlabels_label;
 	public static String BuildPathDialog_error_title;
 	public static String BuildPathDialog_error_message;
 	public static String BuildPathsPropertyPage_error_message;
@@ -107,7 +109,18 @@ public final class PreferencesMessages extends NLS {
 	public static String JavaBasePreferencePage_search;
 	public static String JavaBasePreferencePage_search_small_menu;
 	public static String JavaBuildConfigurationBlock_build_recreate_modified;
+	public static String JavadocConfigurationBlock_error_archive_not_found_in_workspace;
+	public static String JavadocConfigurationBlock_external_radio;
+	public static String JavadocConfigurationBlock_workspace_archive_selection_dialog_description;
+	public static String JavadocConfigurationBlock_workspace_archive_selection_dialog_title;
+	public static String JavadocConfigurationBlock_workspace_radio;
+	public static String JavadocConfigurationPropertyPage_invalid_container;
+	public static String JavadocConfigurationPropertyPage_not_supported;
+	public static String JavadocConfigurationPropertyPage_read_only;
 	public static String JavaEditorPropertyPage_SaveActionLink_Text;
+	public static String NativeLibrariesPropertyPage_invalid_container;
+	public static String NativeLibrariesPropertyPage_not_supported;
+	public static String NativeLibrariesPropertyPage_read_only;
 	public static String NewJavaProjectPreferencePage_title;
 	public static String NewJavaProjectPreferencePage_description;
 	public static String NewJavaProjectPreferencePage_sourcefolder_label;
@@ -179,6 +192,7 @@ public final class PreferencesMessages extends NLS {
 	public static String JavaEditorPreferencePage_foregroundForMethodParameters;
 	public static String JavaEditorPreferencePage_backgroundForCompletionReplacement;
 	public static String JavaEditorPreferencePage_foregroundForCompletionReplacement;
+	public static String JavaEditorPreferencePage_sourceHoverBackgroundColor;
 	public static String JavaEditorPreferencePage_general;
 	public static String JavaEditorPreferencePage_colors;
 	public static String JavaEditorPreferencePage_empty_input;
@@ -229,8 +243,9 @@ public final class PreferencesMessages extends NLS {
 	public static String JavaEditorHoverConfigurationBlock_insertDelimiterAndModifierAndDelimiter;
 	public static String JavaEditorHoverConfigurationBlock_insertModifierAndDelimiter;
 	public static String JavaEditorHoverConfigurationBlock_insertDelimiterAndModifier;
-	public static String JavaEditorHoverConfigurationBlock_showAffordance;
 	public static String MarkOccurrencesConfigurationBlock_title;
+	public static String MarkOccurrencesConfigurationBlock_link;
+	public static String MarkOccurrencesConfigurationBlock_link_tooltip;
 	public static String MarkOccurrencesConfigurationBlock_markOccurrences;
 //	public static String MarkOccurrencesConfigurationBlock_markTypeOccurrences;
 	public static String MarkOccurrencesConfigurationBlock_markMethodOccurrences;
@@ -260,7 +275,6 @@ public final class PreferencesMessages extends NLS {
 	public static String JavadocConfigurationPropertyPage_IsJavaProject_description;
 	public static String JavadocConfigurationBlock_browse_folder_button;
 	public static String JavadocConfigurationBlock_error_notafolder;
-	public static String JavadocConfigurationBlock_warning_packagelistnotfound;
 	public static String JavadocConfigurationBlock_javadocFolderDialog_label;
 	public static String JavadocConfigurationBlock_javadocFolderDialog_message;
 	public static String JavadocConfigurationBlock_MalformedURL_error;
@@ -282,9 +296,12 @@ public final class PreferencesMessages extends NLS {
 	public static String JavadocConfigurationBlock_error_archivepathnotabsolute;
 	public static String JavadocConfigurationBlock_browse_archive_button;
 	public static String JavadocConfigurationBlock_browse_archive_path_button;
+	public static String ProblemSeveritiesConfigurationBlock_ignore_documented_unused_parameters;
+	public static String ProblemSeveritiesConfigurationBlock_pb_redundant_null_check;
 	public static String ProblemSeveritiesConfigurationBlock_treat_optional_as_fatal;
 	public static String SourceAttachmentPropertyPage_error_title;
 	public static String SourceAttachmentPropertyPage_error_message;
+	public static String SourceAttachmentPropertyPage_invalid_container;
 	public static String SourceAttachmentPropertyPage_noarchive_message;
 	public static String SourceAttachmentPropertyPage_containerentry_message;
 	public static String NativeLibrariesPropertyPage_invalidElementSelection_desription;
@@ -306,6 +323,8 @@ public final class PreferencesMessages extends NLS {
 	public static String AppearancePreferencePage_foldEmptySourceFolders;
 	public static String CodeFormatterPreferencePage_title;
 	public static String CodeFormatterPreferencePage_description;
+	public static String SourceAttachmentPropertyPage_not_supported;
+	public static String SourceAttachmentPropertyPage_read_only;
 	public static String TodoTaskPreferencePage_title;
 	public static String TodoTaskPreferencePage_description;
 	public static String TodoTaskConfigurationBlock_markers_tasks_high_priority;
@@ -595,6 +614,7 @@ public final class PreferencesMessages extends NLS {
 	public static String SpellingPreferencePage_ignore_url_label;
 	public static String SpellingPreferencePage_ignore_non_letters_label;
 	public static String SpellingPreferencePage_ignore_single_letters_label;
+	public static String SpellingPreferencePage_ignore_java_strings_label;
 	public static String SpellingPreferencePage_ignore_ampersand_in_properties_label;
 	public static String SpellingPreferencePage_proposals_threshold;
 	public static String SpellingPreferencePage_dictionary_label;
@@ -752,6 +772,7 @@ public final class PreferencesMessages extends NLS {
 	public static String ComplianceConfigurationBlock_classfile_greater_source;
 	public static String ProblemSeveritiesConfigurationBlock_pb_parameter_assignment;
 	public static String ProblemSeveritiesConfigurationBlock_pb_null_reference;
+	public static String ProblemSeveritiesConfigurationBlock_pb_potential_null_reference;
 	public static String ProblemSeveritiesConfigurationBlock_pb_fall_through_case;
 	public static String CodeAssistConfigurationBlock_hideDeprecated_label;
 	

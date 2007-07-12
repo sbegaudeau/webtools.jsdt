@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -273,7 +273,6 @@ protected void privateRemoveEntry(LRUCacheEntry entry, boolean shuffle, boolean 
 		if (external) {
 			fEntryTable.remove(entry._fKey);			
 			fCurrentSpace -= entry._fSpace;
-			privateNotifyDeletionFromCache(entry);
 		} else {
 			if (!close(entry)) return;
 			// buffer close will recursively call #privateRemoveEntry with external==true
@@ -284,7 +283,6 @@ protected void privateRemoveEntry(LRUCacheEntry entry, boolean shuffle, boolean 
 				// basic removal
 				fEntryTable.remove(entry._fKey);			
 				fCurrentSpace -= entry._fSpace;
-				privateNotifyDeletionFromCache(entry);
 			}
 		}
 	}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2563,6 +2563,8 @@ private static int appendClassTypeSignature(char[] string, int start, boolean fu
 	}
 	int p = start + 1;
 	int checkpoint = buffer.length();
+	int innerTypeStart = -1;
+	boolean inAnonymousType = false;
 	while (true) {
 		if (p >= string.length) {
 			throw new IllegalArgumentException();
@@ -2595,6 +2597,8 @@ private static int appendClassTypeSignature(char[] string, int start, boolean fu
 				}
 				break;
 			 case C_DOLLAR :
+			 	innerTypeStart = buffer.length();
+			 	inAnonymousType = false;
 			 	if (resolved) {
 					// once we hit "$" there are no more package prefixes
 					removePackageQualifiers = false;
@@ -2608,7 +2612,15 @@ private static int appendClassTypeSignature(char[] string, int start, boolean fu
 			 	}
 			 	break;
 			 default :
-				buffer.append(c);
+				if (innerTypeStart != -1 && !inAnonymousType && Character.isDigit(c)) {
+					inAnonymousType = true;
+					buffer.setLength(innerTypeStart); // remove '.'
+					buffer.insert(checkpoint, "new "); //$NON-NLS-1$
+					buffer.append("(){}"); //$NON-NLS-1$
+				}
+			 	if (!inAnonymousType)
+					buffer.append(c);
+				innerTypeStart = -1;
 		}
 		p++;
 	}

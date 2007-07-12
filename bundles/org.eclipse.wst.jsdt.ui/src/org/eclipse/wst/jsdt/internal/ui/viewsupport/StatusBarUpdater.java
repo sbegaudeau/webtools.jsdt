@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.internal.ui.viewsupport;
 
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
@@ -24,6 +25,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
+import org.eclipse.wst.jsdt.core.IJarEntryResource;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
@@ -74,6 +76,17 @@ public class StatusBarUpdater implements ISelectionChangedListener {
 				} else if (elem instanceof PackageFragmentRootContainer) {
 					PackageFragmentRootContainer container= (PackageFragmentRootContainer) elem;
 					return container.getLabel() + JavaElementLabels.CONCAT_STRING + container.getJavaProject().getElementName();
+				} else if (elem instanceof IJarEntryResource) {
+					IJarEntryResource jarEntryResource= (IJarEntryResource) elem;
+					StringBuffer buf= new StringBuffer(jarEntryResource.getName());
+					buf.append(JavaElementLabels.CONCAT_STRING);
+					IPath fullPath= jarEntryResource.getFullPath();
+					if (fullPath.segmentCount() > 1) {
+						buf.append(fullPath.removeLastSegments(1).makeRelative());
+						buf.append(JavaElementLabels.CONCAT_STRING);
+					}
+					JavaElementLabels.getPackageFragmentRootLabel(jarEntryResource.getPackageFragmentRoot(), JavaElementLabels.ROOT_POST_QUALIFIED, buf);
+					return buf.toString();
 				} else if (elem instanceof IAdaptable) {
 					IWorkbenchAdapter wbadapter= (IWorkbenchAdapter) ((IAdaptable)elem).getAdapter(IWorkbenchAdapter.class);
 					if (wbadapter != null) {

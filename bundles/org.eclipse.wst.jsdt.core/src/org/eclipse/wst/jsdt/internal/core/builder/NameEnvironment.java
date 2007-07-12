@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,12 +31,14 @@ public class NameEnvironment implements INameEnvironment, SuffixConstants {
 boolean isIncrementalBuild;
 ClasspathMultiDirectory[] sourceLocations;
 ClasspathLocation[] binaryLocations;
-	
+BuildNotifier notifier;
+
 SimpleSet initialTypeNames; // assumed that each name is of the form "a/b/ClassName"
 SimpleLookupTable additionalUnits;
 
-NameEnvironment(IWorkspaceRoot root, JavaProject javaProject, SimpleLookupTable binaryLocationsPerProject) throws CoreException {
+NameEnvironment(IWorkspaceRoot root, JavaProject javaProject, SimpleLookupTable binaryLocationsPerProject, BuildNotifier notifier) throws CoreException {
 	this.isIncrementalBuild = false;
+	this.notifier = notifier;
 	computeClasspathLocations(root, javaProject, binaryLocationsPerProject);
 	setNames(null, null);
 }
@@ -85,7 +87,7 @@ private void computeClasspathLocations(
 		int severity = JavaCore.ERROR.equals(javaProject.getOption(JavaCore.CORE_CIRCULAR_CLASSPATH, true))
 			? IMarker.SEVERITY_ERROR
 			: IMarker.SEVERITY_WARNING;
-		if (severity != ((Integer) cycleMarker.getAttribute(IMarker.SEVERITY)).intValue())
+		if (severity != cycleMarker.getAttribute(IMarker.SEVERITY, severity))
 			cycleMarker.setAttribute(IMarker.SEVERITY, severity);
 	}
 
@@ -110,7 +112,7 @@ private void computeClasspathLocations(
 				} else {
 					outputFolder = root.getFolder(outputPath);
 					if (!outputFolder.exists())
-						createFolder(outputFolder);
+						createOutputFolder(outputFolder);
 				}
 				sLocations.add(
 					ClasspathLocation.forSourceFolder((IContainer) target, outputFolder, entry.fullInclusionPatternChars(), entry.fullExclusionPatternChars()));
@@ -247,14 +249,22 @@ public void cleanup() {
 		binaryLocations[i].cleanup();
 }
 
-private void createFolder(IContainer folder) throws CoreException {
-	if (!folder.exists()) {
-		createFolder(folder.getParent());
-		((IFolder) folder).create(true, true, null);
+private void createOutputFolder(IContainer outputFolder) throws CoreException {
+	createParentFolder(outputFolder.getParent());
+	((IFolder) outputFolder).create(IResource.FORCE | IResource.DERIVED, true, null);
+}
+
+private void createParentFolder(IContainer parent) throws CoreException {
+	if (!parent.exists()) {
+		createParentFolder(parent.getParent());
+		((IFolder) parent).create(true, true, null);
 	}
 }
 
 private NameEnvironmentAnswer findClass(String qualifiedTypeName, char[] typeName) {
+	if (this.notifier != null)
+		this.notifier.checkCancelWithinCompiler();
+
 	if (this.initialTypeNames != null && this.initialTypeNames.includes(qualifiedTypeName)) {
 		if (isIncrementalBuild)
 			// catch the case that a type inside a source file has been renamed but other class files are looking for it

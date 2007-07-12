@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ public class JavadocMessageSend extends MessageSend {
 
 	public int tagSourceStart, tagSourceEnd;
 	public int tagValue;
-	public boolean superAccess = false;
 
 	public JavadocMessageSend(char[] name, long pos) {
 		this.selector = name;
@@ -81,8 +80,9 @@ public class JavadocMessageSend extends MessageSend {
 		}
 		this.actualReceiverType =(this.receiver!=null)? scope.environment().convertToRawType(this.receiver.resolvedType):null;
 		SourceTypeBinding enclosingType = scope.enclosingSourceType();
-		this.superAccess = enclosingType==null ? false : enclosingType.isCompatibleWith(this.actualReceiverType);
-
+		if (enclosingType==null ? false : enclosingType.isCompatibleWith(this.actualReceiverType)) {
+			this.bits |= ASTNode.SuperAccess;
+		}
 		// base type cannot receive any message
 		if (this.actualReceiverType.isBaseType()) {
 			scope.problemReporter().javadocErrorNoMethodFor(this, this.actualReceiverType, argumentTypes, scope.getDeclarationModifiers());
@@ -173,7 +173,7 @@ public class JavadocMessageSend extends MessageSend {
 	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite#isSuperAccess()
 	 */
 	public boolean isSuperAccess() {
-		return this.superAccess;
+		return (this.bits & ASTNode.SuperAccess) != 0;
 	}
 
 	public StringBuffer printExpression(int indent, StringBuffer output){

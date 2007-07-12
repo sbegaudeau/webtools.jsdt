@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,7 @@ public final class NewWizardMessages extends NLS {
 	public static String AddSourceFolderWizardPage_conflictWarning;
 	public static String AddSourceFolderWizardPage_ignoreNestingConflicts;
 	public static String AddSourceFolderWizardPage_replaceSourceFolderInfo;
+	public static String BuildPathsBlock_RemoveOldOutputFolder_description;
 	public static String BuildPathSupport_deprecated;
 	public static String CPListLabelProvider_attribute_label;
 	public static String CPVariableElementLabelProvider_appendix;
@@ -55,6 +56,18 @@ public final class NewWizardMessages extends NLS {
 	public static String ExcludeFromBuildathAction_ErrorTitle;
 	
 	public static String IncludeToBuildpathAction_ErrorTitle;
+	public static String JavaProjectWizardFirstPage_DetectGroup_differendWorkspaceCC_message;
+	public static String JavaProjectWizardFirstPage_EnableWorkingSet_button;
+	public static String JavaProjectWizardFirstPage_JREGroup_specific_EE;
+	public static String JavaProjectWizardFirstPage_Message_existingFolderInWorkspace;
+	public static String JavaProjectWizardFirstPage_Message_invalidProjectNameForWorkspaceRoot;
+	public static String JavaProjectWizardFirstPage_Message_notExisingProjectOnWorkspaceRoot;
+	public static String JavaProjectWizardFirstPage_Message_notOnWorkspaceRoot;
+	public static String JavaProjectWizardFirstPage_NoJREFound_link;
+	public static String JavaProjectWizardFirstPage_UnknownDefaultJRE_name;
+	public static String JavaProjectWizardFirstPage_WorkingSets_group;
+	public static String JavaProjectWizardFirstPage_WorkingSetSelection_message;
+	public static String JavaProjectWizardSecondPage_DeleteCorruptProjectFile_message;
 	
 	public static String NewElementWizard_op_error_title;
 	public static String NewElementWizard_op_error_message;
@@ -87,6 +100,7 @@ public final class NewWizardMessages extends NLS {
 	public static String NewPackageWizardPage_title;
 	public static String NewPackageWizardPage_description;
 	public static String NewPackageWizardPage_info;
+	public static String NewSourceFolderWizardPage_error_ProjectNotOpen;
 	
 	public static String NewTypeWizardPage_package_label;
 	public static String NewTypeWizardPage_package_button;
@@ -524,7 +538,7 @@ public final class NewWizardMessages extends NLS {
 	public static String JavaProjectWizardFirstPage_Message_projectAlreadyExists;
 	public static String JavaProjectWizardFirstPage_Message_enterLocation;
 	public static String JavaProjectWizardFirstPage_Message_invalidDirectory;
-	public static String JavaProjectWizardFirstPage_Message_cannotCreateInWorkspace;
+	public static String JavaProjectWizardFirstPage_Message_cannotCreateAtExternalLocation;
 	public static String JavaProjectWizardFirstPage_page_pageName;
 	public static String JavaProjectWizardFirstPage_page_title;
 	public static String JavaProjectWizardFirstPage_page_description;

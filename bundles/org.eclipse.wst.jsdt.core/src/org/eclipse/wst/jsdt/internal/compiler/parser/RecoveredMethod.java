@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 /**
  * Internal method structure for parsing recovery 
@@ -85,43 +86,41 @@ public RecoveredElement add(Block nestedBlockDeclaration, int bracketBalanceValu
  */
 public RecoveredElement add(FieldDeclaration fieldDeclaration, int bracketBalanceValue) {
 
-	throw new org.eclipse.wst.jsdt.core.UnimplementedException("SHOULD NOT BE CALLED");
-			
-		/* local variables inside method can only be final and non void */
-//		char[][] fieldTypeName; 
-//		if ((fieldDeclaration.modifiers & ~ClassFileConstants.AccFinal) != 0 // local var can only be final 
-//			|| (fieldDeclaration.type == null) // initializer
-//			|| ((fieldTypeName = fieldDeclaration.type.getTypeName()).length == 1 // non void
-//				&& CharOperation.equals(fieldTypeName[0], TypeBinding.VOID.sourceName()))){ 
-	//
-//			if (this.parent == null){
-//				return this; // ignore
-//			} else {
-//				this.updateSourceEndIfNecessary(this.previousAvailableLineEnd(fieldDeclaration.declarationSourceStart - 1));
-//				return this.parent.add(fieldDeclaration, bracketBalanceValue);
-//			}
-//		}
-//		/* default behavior is to delegate recording to parent if any,
-//		do not consider elements passed the known end (if set)
-//		it must be belonging to an enclosing element 
-//		*/
-//		if (methodDeclaration.declarationSourceEnd > 0
-//			&& fieldDeclaration.declarationSourceStart
-//				> methodDeclaration.declarationSourceEnd){
-//			if (this.parent == null){
-//				return this; // ignore
-//			} else {
-//				return this.parent.add(fieldDeclaration, bracketBalanceValue);
-//			}
-//		}
-//		/* consider that if the opening brace was not found, it is there */
-//		if (!foundOpeningBrace){
-//			foundOpeningBrace = true;
-//			this.bracketBalance++;
-//		}
-//		// still inside method, treat as local variable
-//		return this; // ignore
+	/* local variables inside method can only be final and non void */
+	char[][] fieldTypeName; 
+	if ((fieldDeclaration.modifiers & ~ClassFileConstants.AccFinal) != 0 // local var can only be final 
+		|| (fieldDeclaration.type == null) // initializer
+		|| ((fieldTypeName = fieldDeclaration.type.getTypeName()).length == 1 // non void
+			&& CharOperation.equals(fieldTypeName[0], TypeBinding.VOID.sourceName()))){ 
+
+		if (this.parent == null){
+			return this; // ignore
+		} else {
+			this.updateSourceEndIfNecessary(this.previousAvailableLineEnd(fieldDeclaration.declarationSourceStart - 1));
+			return this.parent.add(fieldDeclaration, bracketBalanceValue);
+		}
 	}
+	/* default behavior is to delegate recording to parent if any,
+	do not consider elements passed the known end (if set)
+	it must be belonging to an enclosing element 
+	*/
+	if (methodDeclaration.declarationSourceEnd > 0
+		&& fieldDeclaration.declarationSourceStart
+			> methodDeclaration.declarationSourceEnd){
+		if (this.parent == null){
+			return this; // ignore
+		} else {
+			return this.parent.add(fieldDeclaration, bracketBalanceValue);
+		}
+	}
+	/* consider that if the opening brace was not found, it is there */
+	if (!foundOpeningBrace){
+		foundOpeningBrace = true;
+		this.bracketBalance++;
+	}
+	// still inside method, treat as local variable
+	return this; // ignore
+}
 /*
  * Record a local declaration - regular method should have been created a block body
  */
@@ -385,7 +384,7 @@ public void updateFromParserState(){
 					if(aNode instanceof Argument) {
 						Argument argument = (Argument)aNode;
 						/* cannot be an argument if non final */
-						char[][] argTypeName = (argument.type!=null)?argument.type.getTypeName():new char[][]{};
+						char[][] argTypeName =  (argument.type!=null)?argument.type.getTypeName():new char[][]{};
 						if ((argument.modifiers & ~ClassFileConstants.AccFinal) != 0
 							|| (argTypeName.length == 1
 								&& CharOperation.equals(argTypeName[0], TypeBinding.VOID.sourceName()))){
@@ -460,8 +459,7 @@ public RecoveredElement updateOnClosingBrace(int braceStart, int braceEnd){
 	RecoveredElement recoveredElement = super.updateOnClosingBrace(braceStart, braceEnd);
 	if (recoveredElement!=this)
 		this.parser().recoverAST(this);
-	return recoveredElement;
-}
+	return recoveredElement;}
 /*
  * An opening brace got consumed, might be the expected opening one of the current element,
  * in which case the bodyStart is updated.
@@ -508,8 +506,9 @@ void attach(TypeParameter[] parameters, int startPos) {
 	int lastParameterEnd = parameters[parameters.length - 1].sourceEnd;
 	
 	Parser parser = this.parser();
-	if(parser.scanner.getLineNumber(methodDeclaration.declarationSourceStart)
-			!= parser.scanner.getLineNumber(lastParameterEnd)) return;
+	Scanner scanner = parser.scanner;
+	if(Util.getLineNumber(methodDeclaration.declarationSourceStart, scanner.lineEnds, 0, scanner.linePtr)
+			!= Util.getLineNumber(lastParameterEnd, scanner.lineEnds, 0, scanner.linePtr)) return;
 	
 	if(parser.modifiersSourceStart > lastParameterEnd
 			&& parser.modifiersSourceStart < methodDeclaration.declarationSourceStart) return;
@@ -525,5 +524,4 @@ void attach(TypeParameter[] parameters, int startPos) {
 public ProgramElement updatedASTNode() {
 	return updatedMethodDeclaration();
 }
-
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -360,17 +360,13 @@ public IJavaElement getHandleFromMemento(String token, MementoTokenizer memento,
 			String[] parameters = new String[params.size()];
 			params.toArray(parameters);
 			JavaElement method = (JavaElement)getMethod(selector, parameters);
-			if (token != null) {
-				switch (token.charAt(0)) {
-					case JEM_TYPE:
-					case JEM_TYPE_PARAMETER:
-					case JEM_LOCALVARIABLE:
-						return method.getHandleFromMemento(token, memento, workingCopyOwner);
-					default:
-						return method;
-				}
-			} else {
-				return method;
+			switch (token.charAt(0)) {
+				case JEM_TYPE:
+				case JEM_TYPE_PARAMETER:
+				case JEM_LOCALVARIABLE:
+					return method.getHandleFromMemento(token, memento, workingCopyOwner);
+				default:
+					return method;
 			}
 		case JEM_TYPE:
 			String typeName;

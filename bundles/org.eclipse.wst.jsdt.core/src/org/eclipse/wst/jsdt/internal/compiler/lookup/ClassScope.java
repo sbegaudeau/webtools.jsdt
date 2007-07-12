@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -113,8 +113,7 @@ public class ClassScope extends Scope {
 				} else {
 					knownFieldNames.put(field.name, fieldBinding);
 					// remember that we have seen a field with this name
-					if (fieldBinding != null)
-						fieldBindings[count++] = fieldBinding;
+					fieldBindings[count++] = fieldBinding;
 				}
 			}
 		}
@@ -324,6 +323,10 @@ public class ClassScope extends Scope {
 			char[][] className = CharOperation.deepCopy(enclosingType.compoundName);
 			className[className.length - 1] =
 				CharOperation.concat(className[className.length - 1], referenceContext.name, '$');
+			ReferenceBinding existingType = packageBinding.getType0(className[className.length - 1]);
+			if (existingType != null)
+				// report the error against the parent - its still safe to answer the member type
+				this.parent.problemReporter().duplicateNestedType(referenceContext);
 			referenceContext.binding = new MemberTypeBinding(className, this, enclosingType);
 		}
 
@@ -1034,7 +1037,7 @@ public class ClassScope extends Scope {
 			problemReporter().hierarchyHasProblems(sourceType);
 	}
 
-	public boolean detectHierarchyCycle(TypeBinding superType, TypeReference reference, TypeBinding[] argTypes) {
+	public boolean detectHierarchyCycle(TypeBinding superType, TypeReference reference) {
 		if (!(superType instanceof ReferenceBinding)) return false;
 
 		if (reference == this.superTypeReference) { // see findSuperType()
@@ -1043,7 +1046,7 @@ public class ClassScope extends Scope {
 			// abstract class X<K,V> implements java.util.Map<K,V>
 			//    static abstract class M<K,V> implements Entry<K,V>
 			if (superType.isParameterizedType())
-				superType = ((ParameterizedTypeBinding) superType).type;
+				superType = ((ParameterizedTypeBinding) superType).genericType();
 			compilationUnitScope().recordSuperTypeReference(superType); // to record supertypes
 			return detectHierarchyCycle(getReferenceBinding(), (ReferenceBinding) superType, reference);
 		}
@@ -1057,7 +1060,7 @@ public class ClassScope extends Scope {
 	// Answer whether a cycle was found between the sourceType & the superType
 	private boolean detectHierarchyCycle(SourceTypeBinding sourceType, ReferenceBinding superType, TypeReference reference) {
 		if (superType.isRawType())
-			superType = ((RawTypeBinding) superType).type;
+			superType = ((RawTypeBinding) superType).genericType();
 		// by this point the superType must be a binary or source type
 
 		if (sourceType == superType) {
@@ -1066,18 +1069,17 @@ public class ClassScope extends Scope {
 			return true;
 		}
 
-// No longer believe this code is necessary, since we changed supertype lookup to use TypeReference resolution
-//		if (superType.isMemberType()) {
-//			ReferenceBinding current = superType.enclosingType();
-//			do {
-//				if (current.isHierarchyBeingConnected()) {
-//					problemReporter().hierarchyCircularity(sourceType, current, reference);
-//					sourceType.tagBits |= TagBits.HierarchyHasProblems;
-//					current.tagBits |= TagBits.HierarchyHasProblems;
-//					return true;
-//				}
-//			} while ((current = current.enclosingType()) != null);
-//		}
+		if (superType.isMemberType()) {
+			ReferenceBinding current = superType.enclosingType();
+			do {
+				if (current.isHierarchyBeingConnected() && current == sourceType) {
+					problemReporter().hierarchyCircularity(sourceType, current, reference);
+					sourceType.tagBits |= TagBits.HierarchyHasProblems;
+					current.tagBits |= TagBits.HierarchyHasProblems;
+					return true;
+				}
+			} while ((current = current.enclosingType()) != null);
+		}
 
 		if (superType.isBinaryBinding()) {
 			// force its superclass & superinterfaces to be found... 2 possibilities exist - the source type is included in the hierarchy of:
@@ -1093,7 +1095,7 @@ public class ClassScope extends Scope {
 					return true;
 				}
 				if (parentType.isParameterizedType())
-					parentType = ((ParameterizedTypeBinding) parentType).type;
+					parentType = ((ParameterizedTypeBinding) parentType).genericType();
 				hasCycle |= detectHierarchyCycle(sourceType, parentType, reference);
 				if ((parentType.tagBits & TagBits.HierarchyHasProblems) != 0) {
 					sourceType.tagBits |= TagBits.HierarchyHasProblems;
@@ -1112,7 +1114,7 @@ public class ClassScope extends Scope {
 						return true;
 					}
 					if (anInterface.isParameterizedType())
-						anInterface = ((ParameterizedTypeBinding) anInterface).type;
+						anInterface = ((ParameterizedTypeBinding) anInterface).genericType();
 					hasCycle |= detectHierarchyCycle(sourceType, anInterface, reference);
 					if ((anInterface.tagBits & TagBits.HierarchyHasProblems) != 0) {
 						sourceType.tagBits |= TagBits.HierarchyHasProblems;

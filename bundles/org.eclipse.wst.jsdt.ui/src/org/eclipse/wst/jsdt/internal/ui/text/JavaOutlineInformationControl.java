@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -48,13 +49,13 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.keys.KeySequence;
 import org.eclipse.ui.keys.SWTKeySupport;
 
-import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
+import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
@@ -74,6 +75,7 @@ import org.eclipse.wst.jsdt.internal.ui.actions.CategoryFilterActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.typehierarchy.AbstractHierarchyViewerSorter;
 import org.eclipse.wst.jsdt.internal.ui.util.StringMatcher;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.MemberFilter;
 
 /**
@@ -90,7 +92,6 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 	private OutlineSorter fOutlineSorter;
 
 	private OutlineLabelProvider fInnerLabelProvider;
-	protected Color fForegroundColor;
 
 	private boolean fShowOnlyMainType;
 	private LexicalSortingAction fLexicalSortingAction;
@@ -148,7 +149,7 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 						return null;
 					}
 				}
-				return fForegroundColor;
+				return JFaceResources.getColorRegistry().get(ColoredViewersManager.INHERITED_COLOR_NAME);
 			}
 			return null;
 		}
@@ -192,6 +193,7 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 
 		private OutlineTreeViewer(Tree tree) {
 			super(tree);
+			
 		}
 
 		/**
@@ -283,10 +285,8 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 		 */
 		public Object[] getChildren(Object element) {
 			if (fShowOnlyMainType) {
-				if (element instanceof ICompilationUnit) {
-					element= getMainType((ICompilationUnit)element);
-				} else if (element instanceof IClassFile) {
-					element= getMainType((IClassFile)element);
+				if (element instanceof ITypeRoot) {
+					element= ((ITypeRoot)element).findPrimaryType();
 				}
 
 				if (element == null)
@@ -551,12 +551,11 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 		tree.setLayoutData(gd);
 
 		final TreeViewer treeViewer= new OutlineTreeViewer(tree);
+		ColoredViewersManager.install(treeViewer);
 
 		// Hard-coded filters
 		treeViewer.addFilter(new NamePatternFilter());
 		treeViewer.addFilter(new MemberFilter());
-
-		fForegroundColor= parent.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY);
 
 		fInnerLabelProvider= new OutlineLabelProvider();
 		fInnerLabelProvider.addLabelDecorator(new ProblemsLabelDecorator(null));
@@ -707,10 +706,8 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 		
 		if (fOutlineContentProvider.isShowingInheritedMembers()) {
 			IJavaElement p= fInput;
-			if (p instanceof ICompilationUnit) {
-				p= getMainType((ICompilationUnit)p);
-			} else if (p instanceof IClassFile) {
-				p= getMainType((IClassFile)p);
+			if (p instanceof ITypeRoot) {
+				p= ((ITypeRoot)p).findPrimaryType();
 			}
 			while (p != null && !(p instanceof IType)) {
 				p= p.getParent();
@@ -759,35 +756,4 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 		return editor.getEditorSite().getActionBars().getStatusLineManager().getProgressMonitor();
 	}
 	
-	/**
-	 * Returns the primary type of a compilation unit (has the same
-	 * name as the compilation unit).
-	 *
-	 * @param compilationUnit the compilation unit
-	 * @return returns the primary type of the compilation unit, or
-	 * <code>null</code> if is does not have one
-	 */
-	private IType getMainType(ICompilationUnit compilationUnit) {
-
-		if (compilationUnit == null)
-			return null;
-
-		return compilationUnit.findPrimaryType();
-	}
-
-	/**
-	 * Returns the primary type of a class file.
-	 *
-	 * @param classFile the class file
-	 * @return returns the primary type of the class file, or <code>null</code>
-	 * if is does not have one
-	 */
-	private IType getMainType(IClassFile classFile) {
-		try {
-			IType type= classFile.getType();
-			return type != null && type.exists() ? type : null;
-		} catch (JavaModelException e) {
-			return null;
-		}
-	}
 }

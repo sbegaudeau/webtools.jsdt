@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,12 +14,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.eclipse.text.edits.MalformedTreeException;
+import org.eclipse.text.edits.RangeMarker;
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.TextEditGroup;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
+
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.TextUtilities;
 
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringChangeDescriptor;
@@ -44,14 +53,21 @@ import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
+import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
+import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
 
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
@@ -70,9 +86,11 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.CompilationUni
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParser;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.ResourceUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
+import org.eclipse.wst.jsdt.internal.corext.util.Strings;
 
 import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
 
 public class InlineTempRefactoring extends ScriptableRefactoring {
@@ -89,18 +107,29 @@ public class InlineTempRefactoring extends ScriptableRefactoring {
 	/**
 	 * Creates a new inline constant refactoring.
 	 * @param unit the compilation unit, or <code>null</code> if invoked by scripting
+	 * @param node compilation unit node, or <code>null</code>
 	 * @param selectionStart
 	 * @param selectionLength
 	 */
-	public InlineTempRefactoring(ICompilationUnit unit, int selectionStart, int selectionLength) {
+	public InlineTempRefactoring(ICompilationUnit unit, CompilationUnit node, int selectionStart, int selectionLength) {
 		Assert.isTrue(selectionStart >= 0);
 		Assert.isTrue(selectionLength >= 0);
 		fSelectionStart= selectionStart;
 		fSelectionLength= selectionLength;
 		fCu= unit;
 		
-		fASTRoot= null;
+		fASTRoot= node;
 		fVariableDeclaration= null;
+	}
+	
+	/**
+	 * Creates a new inline constant refactoring.
+	 * @param unit the compilation unit, or <code>null</code> if invoked by scripting
+	 * @param selectionStart
+	 * @param selectionLength
+	 */
+	public InlineTempRefactoring(ICompilationUnit unit, int selectionStart, int selectionLength) {
+		this(unit, null, selectionStart, selectionLength);
 	}
 	
 	public InlineTempRefactoring(VariableDeclaration decl) {
@@ -265,7 +294,6 @@ public class InlineTempRefactoring extends ScriptableRefactoring {
 	}
 
 	private void inlineTemp(CompilationUnitRewrite cuRewrite) throws JavaModelException {
-		VariableDeclaration variableDeclaration= getVariableDeclaration();
 		SimpleName[] references= getReferences();
 
 		TextEditGroup groupDesc= cuRewrite.createGroupDescription(RefactoringCoreMessages.InlineTempRefactoring_inline_edit_name);
@@ -273,7 +301,7 @@ public class InlineTempRefactoring extends ScriptableRefactoring {
 
 		for (int i= 0; i < references.length; i++){
 			SimpleName curr= references[i];
-			ASTNode initializerCopy= getInitializerSource(cuRewrite, needsBrackets(curr, variableDeclaration));
+			ASTNode initializerCopy= getInitializerSource(cuRewrite, curr);
 			rewrite.replace(curr, initializerCopy, groupDesc);
 		}
 	}
@@ -299,8 +327,9 @@ public class InlineTempRefactoring extends ScriptableRefactoring {
 		}
 	}
 	
-	private Expression getInitializerSource(CompilationUnitRewrite rewrite, boolean brackets) throws JavaModelException {
-		Expression copy= getModifiedInitializerSource(rewrite);
+	private Expression getInitializerSource(CompilationUnitRewrite rewrite, SimpleName reference) throws JavaModelException {
+		Expression copy= getModifiedInitializerSource(rewrite, reference);
+		boolean brackets= needsBrackets(reference, getVariableDeclaration());
 		if (brackets) {
 			ParenthesizedExpression parentExpr= rewrite.getAST().newParenthesizedExpression();
 			parentExpr.setExpression(copy);
@@ -309,11 +338,30 @@ public class InlineTempRefactoring extends ScriptableRefactoring {
 		return copy;
 	}
 	
-	private Expression getModifiedInitializerSource(CompilationUnitRewrite rewrite) throws JavaModelException {
+	private Expression getModifiedInitializerSource(CompilationUnitRewrite rewrite, SimpleName reference) throws JavaModelException {
 		VariableDeclaration varDecl= getVariableDeclaration();
+		Expression initializer= varDecl.getInitializer();
 		
-		Expression copy= (Expression) rewrite.getASTRewrite().createCopyTarget(varDecl.getInitializer());
-		if (copy instanceof ArrayInitializer && ASTNodes.getDimensions(varDecl) > 0) {
+		ASTNode referenceContext= reference.getParent();
+		if (isInvocation(initializer)) {
+			if (Invocations.isResolvedTypeInferredFromExpectedType(initializer)) {
+				if (! (referenceContext instanceof VariableDeclarationFragment
+						|| referenceContext instanceof SingleVariableDeclaration
+						|| referenceContext instanceof Assignment)) {
+					IMethodBinding methodBinding= Invocations.resolveBinding(initializer);
+					ITypeBinding[] typeArguments= methodBinding.getTypeArguments();
+					Type[] typeArgumentNodes= new Type[typeArguments.length];
+					for (int i= 0; i < typeArguments.length; i++) {
+						typeArgumentNodes[i]= rewrite.getImportRewrite().addImport(typeArguments[i], rewrite.getAST());
+					}
+					String newSource= createParameterizedInvocation(initializer, typeArgumentNodes);
+					return (Expression) rewrite.getASTRewrite().createStringPlaceholder(newSource, initializer.getNodeType());
+				}
+			}
+		}
+		
+		Expression copy= (Expression) rewrite.getASTRewrite().createCopyTarget(initializer);
+		if (initializer instanceof ArrayInitializer && ASTNodes.getDimensions(varDecl) > 0) {
 			ArrayType newType= (ArrayType) ASTNodeFactory.newType(rewrite.getAST(), varDecl);
 			
 			ArrayCreation newArrayCreation= rewrite.getAST().newArrayCreation();
@@ -322,6 +370,37 @@ public class InlineTempRefactoring extends ScriptableRefactoring {
 			return newArrayCreation;
 		}
 		return copy;
+	}
+
+	private String createParameterizedInvocation(Expression invocation, Type[] typeArgumentNodes) throws JavaModelException {
+		ASTRewrite rewrite= ASTRewrite.create(invocation.getAST());
+		ListRewrite typeArgsRewrite= rewrite.getListRewrite(invocation, Invocations.getTypeArgumentsProperty(invocation));
+		for (int i= 0; i < typeArgumentNodes.length; i++) {
+			typeArgsRewrite.insertLast(typeArgumentNodes[i], null);
+		}
+		
+		IDocument document= new Document(fCu.getBuffer().getContents());
+		final RangeMarker marker= new RangeMarker(invocation.getStartPosition(), invocation.getLength());
+		IJavaProject project= fCu.getJavaProject();
+		TextEdit[] rewriteEdits= rewrite.rewriteAST(document, project.getOptions(true)).removeChildren();
+		marker.addChildren(rewriteEdits);
+		try {
+			marker.apply(document, TextEdit.UPDATE_REGIONS);
+			String rewrittenInitializer= document.get(marker.getOffset(), marker.getLength());
+			IRegion region= document.getLineInformation(document.getLineOfOffset(marker.getOffset()));
+			int oldIndent= Strings.computeIndentUnits(document.get(region.getOffset(), region.getLength()), project);
+			return Strings.changeIndent(rewrittenInitializer, oldIndent, project, "", TextUtilities.getDefaultLineDelimiter(document)); //$NON-NLS-1$
+		} catch (MalformedTreeException e) {
+			JavaPlugin.log(e);
+		} catch (BadLocationException e) {
+			JavaPlugin.log(e);
+		}
+		//fallback:
+		return fCu.getBuffer().getText(invocation.getStartPosition(), invocation.getLength());
+	}
+	
+	private static boolean isInvocation(Expression node) {
+		return node instanceof MethodInvocation || node instanceof SuperMethodInvocation;
 	}
 
 	public SimpleName[] getReferences() {

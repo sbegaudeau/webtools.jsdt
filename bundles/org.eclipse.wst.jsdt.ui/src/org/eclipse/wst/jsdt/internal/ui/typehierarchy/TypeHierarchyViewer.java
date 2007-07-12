@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,13 +31,14 @@ import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IType;
 
-import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.util.JavaUIHelp;
-import org.eclipse.wst.jsdt.internal.ui.viewsupport.DecoratingJavaLabelProvider;
-import org.eclipse.wst.jsdt.internal.ui.viewsupport.ProblemTreeViewer;
-
 import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 import org.eclipse.wst.jsdt.ui.actions.OpenAction;
+
+import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
+import org.eclipse.wst.jsdt.internal.ui.util.JavaUIHelp;
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.DecoratingJavaLabelProvider;
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.ProblemTreeViewer;
  
 public abstract class TypeHierarchyViewer extends ProblemTreeViewer {
 	
@@ -62,6 +63,8 @@ public abstract class TypeHierarchyViewer extends ProblemTreeViewer {
 			}
 		});
 		
+		ColoredViewersManager.install(this);
+		
 		JavaUIHelp.setHelp(this, IJavaHelpContextIds.TYPE_HIERARCHY_VIEW);
 	}
 	
@@ -76,6 +79,9 @@ public abstract class TypeHierarchyViewer extends ProblemTreeViewer {
 	
 	/**
 	 * Attaches a contextmenu listener to the tree
+	 * @param menuListener the menu listener
+	 * @param popupId the popup id
+	 * @param viewSite the view site
 	 */
 	public void initContextMenu(IMenuListener menuListener, String popupId, IWorkbenchPartSite viewSite) {
 		MenuManager menuMgr= new MenuManager();
@@ -89,12 +95,14 @@ public abstract class TypeHierarchyViewer extends ProblemTreeViewer {
 	/**
 	 * Fills up the context menu with items for the hierarchy viewer
 	 * Should be called by the creator of the context menu
+	 * @param menu the menu manager
 	 */	
 	public void contributeToContextMenu(IMenuManager menu) {
 	}
 
 	/**
 	 * Set the member filter
+	 * @param memberFilter the member filters to set
 	 */
 	public void setMemberFilter(IMember[] memberFilter) {
 		TypeHierarchyContentProvider contentProvider= getHierarchyContentProvider();
@@ -105,6 +113,7 @@ public abstract class TypeHierarchyViewer extends ProblemTreeViewer {
 
 	/**
 	 * Returns if method filtering is enabled.
+	 * @return <code>true</code>if method filtering is enabled.
 	 */	
 	public boolean isMethodFiltering() {
 		TypeHierarchyContentProvider contentProvider= getHierarchyContentProvider();
@@ -125,6 +134,7 @@ public abstract class TypeHierarchyViewer extends ProblemTreeViewer {
 	/**
 	 * Returns true if the hierarchy contains elements. Returns one of them
 	 * With member filtering it is possible that no elements are visible
+	 * @return one of the elements contained
 	 */ 
 	public Object containsElements() {
 		TypeHierarchyContentProvider contentProvider= getHierarchyContentProvider();
@@ -140,6 +150,7 @@ public abstract class TypeHierarchyViewer extends ProblemTreeViewer {
 	/**
 	 * Returns true if the hierarchy contains elements. Returns one of them
 	 * With member filtering it is possible that no elements are visible
+	 * @return the tree root
 	 */ 
 	public IType getTreeRootType() {
 		TypeHierarchyContentProvider contentProvider= getHierarchyContentProvider();
@@ -154,6 +165,8 @@ public abstract class TypeHierarchyViewer extends ProblemTreeViewer {
 			
 	/**
 	 * Returns true if the hierarchy contains element the element.
+	 * @param element the element
+	 * @return <code>true</code> if element is shown
 	 */ 
 	public boolean isElementShown(Object element) {
 		return findItem(element) != null;
@@ -161,11 +174,13 @@ public abstract class TypeHierarchyViewer extends ProblemTreeViewer {
 	
 	/**
 	 * Updates the content of this viewer: refresh and expanding the tree in the way wanted.
+	 * @param doExpand if set, update should expand
 	 */
 	public abstract void updateContent(boolean doExpand);	
 	
 	/**
 	 * Returns the title for the current view
+	 * @return the title
 	 */
 	public abstract String getTitle();
 	

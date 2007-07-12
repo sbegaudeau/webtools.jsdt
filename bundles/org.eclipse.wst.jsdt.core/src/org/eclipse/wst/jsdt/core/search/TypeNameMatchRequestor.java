@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,8 +25,10 @@ package org.eclipse.wst.jsdt.core.search;
  * 	org.eclipse.core.runtime.IProgressMonitor monitor)} method.
  * Only top-level and member types are reported. Local types are not reported.
  * <p>
- * Although {@link TypeNameRequestor} only reports type names information (e.g. package, enclosing types, simple name, modifiers, etc.),
- * this one reports {@link TypeNameMatch} objects instead which stored these information.
+ * While {@link TypeNameRequestor} only reports type names information (e.g. package, enclosing types, simple name, modifiers, etc.),
+ * this class reports {@link TypeNameMatch} objects instead, which store this information and can return
+ * an {@link org.eclipse.wst.jsdt.core.IType} handle.
+ * </p>
  * <p>
  * This class may be subclassed by clients.
  * </p>
@@ -39,12 +41,8 @@ public abstract class TypeNameMatchRequestor {
 	/**
 	 * Accepts a type name match ({@link TypeNameMatch}) which contains top-level or a member type
 	 * information as package name, enclosing types names, simple type name, modifiers, etc.
-	 * <p>
-	 * The default implementation of this method does nothing.
-	 * Subclasses should override.
-	 * </p>
 	 *
-	 * @param match the match which contains all type information.
+	 * @param match the match which contains all type information
 	 */
 	public abstract void acceptTypeNameMatch(TypeNameMatch match);
 }

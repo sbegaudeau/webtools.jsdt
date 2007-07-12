@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -341,9 +341,6 @@ public class JavaPluginImages {
     public static final ImageDescriptor DESC_DLCL_COPY_QUALIFIED_NAME= createUnManaged(T_DLCL, "cpyqual_menu.gif"); //$NON-NLS-1$
     public static final ImageDescriptor DESC_ELCL_COPY_QUALIFIED_NAME= createUnManaged(T_ELCL, "cpyqual_menu.gif"); //$NON-NLS-1$
     
-    public static final ImageDescriptor DESC_ELCL_THIN_MINIMIZE_VIEW= createUnManaged(T_ELCL, "thin_min_view.gif"); //$NON-NLS-1$
-    public static final ImageDescriptor DESC_ELCL_THIN_RESTORE_VIEW= createUnManaged(T_ELCL, "thin_restore_view.gif"); //$NON-NLS-1$
-    
 	public static final ImageDescriptor DESC_OBJ_OVERRIDES= createUnManaged(T_OBJ, "over_co.gif");  					//$NON-NLS-1$
 	public static final ImageDescriptor DESC_OBJ_IMPLEMENTS= createUnManaged(T_OBJ, "implm_co.gif");  				//$NON-NLS-1$
 	
@@ -351,6 +348,9 @@ public class JavaPluginImages {
 	public static final ImageDescriptor DESC_OVR_FINAL= createUnManagedCached(T_OVR, "final_co.gif"); 						//$NON-NLS-1$
 	public static final ImageDescriptor DESC_OVR_ABSTRACT= createUnManagedCached(T_OVR, "abstract_co.gif"); 					//$NON-NLS-1$
 	public static final ImageDescriptor DESC_OVR_SYNCH= createUnManagedCached(T_OVR, "synch_co.gif"); 						//$NON-NLS-1$
+	public static final ImageDescriptor DESC_OVR_VOLATILE= createUnManagedCached(T_OVR, "volatile_co.gif"); 						//$NON-NLS-1$
+	public static final ImageDescriptor DESC_OVR_TRANSIENT= createUnManagedCached(T_OVR, "transient_co.gif"); 						//$NON-NLS-1$
+
 	public static final ImageDescriptor DESC_OVR_RUN= createUnManagedCached(T_OVR, "run_co.gif"); 							//$NON-NLS-1$
 	public static final ImageDescriptor DESC_OVR_WARNING= createUnManagedCached(T_OVR, "warning_co.gif"); 					//$NON-NLS-1$
 	public static final ImageDescriptor DESC_OVR_ERROR= createUnManagedCached(T_OVR, "error_co.gif"); 						//$NON-NLS-1$
@@ -422,6 +422,7 @@ public class JavaPluginImages {
 	public static final String IMG_CORRECTION_CHANGE= NAME_PREFIX + "correction_change.gif"; //$NON-NLS-1$
 	public static final String IMG_CORRECTION_MOVE= NAME_PREFIX + "correction_move.gif"; //$NON-NLS-1$
 	public static final String IMG_CORRECTION_RENAME= NAME_PREFIX + "correction_rename.gif"; //$NON-NLS-1$
+	public static final String IMG_CORRECTION_LINKED_RENAME= NAME_PREFIX + "correction_linked_rename.gif"; //$NON-NLS-1$
 	public static final String IMG_CORRECTION_DELETE_IMPORT= NAME_PREFIX + "correction_delete_import.gif"; //$NON-NLS-1$
 	public static final String IMG_CORRECTION_LOCAL= NAME_PREFIX + "localvariable_obj.gif"; //$NON-NLS-1$
 	public static final String IMG_CORRECTION_REMOVE= NAME_PREFIX + "remove_correction.gif"; //$NON-NLS-1$
@@ -432,6 +433,7 @@ public class JavaPluginImages {
 		createManagedFromKey(T_OBJ, IMG_CORRECTION_CHANGE);
 		createManagedFromKey(T_OBJ, IMG_CORRECTION_MOVE);
 		createManagedFromKey(T_OBJ, IMG_CORRECTION_RENAME);
+		createManagedFromKey(T_OBJ, IMG_CORRECTION_LINKED_RENAME);
 		createManagedFromKey(T_OBJ, IMG_CORRECTION_DELETE_IMPORT);
 		createManagedFromKey(T_OBJ, IMG_CORRECTION_LOCAL);
 		createManagedFromKey(T_OBJ, IMG_CORRECTION_REMOVE);

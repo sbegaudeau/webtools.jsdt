@@ -81,7 +81,9 @@ public class CompletionOnParameterizedQualifiedTypeReference extends Parameteriz
 		super.resolveType(scope);
 		throw new CompletionNodeFound(this, this.resolvedType, scope);
 	}
-	
+	public boolean isSuperType(){
+		return this.kind == K_CLASS || this.kind == K_INTERFACE;
+	}
 	public StringBuffer printExpression(int indent, StringBuffer output) {
 		switch (this.kind) {
 			case K_CLASS :

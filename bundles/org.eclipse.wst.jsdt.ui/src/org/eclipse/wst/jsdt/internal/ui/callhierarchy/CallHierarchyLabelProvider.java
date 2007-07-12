@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,17 +14,20 @@ package org.eclipse.wst.jsdt.internal.ui.callhierarchy;
 import java.util.Collection;
 
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.model.IWorkbenchAdapter;
 
 import org.eclipse.jface.viewers.ILabelDecorator;
 
-import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
-import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
+import org.eclipse.ui.model.IWorkbenchAdapter;
 
 import org.eclipse.wst.jsdt.internal.corext.callhierarchy.MethodWrapper;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 
 import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredJavaElementLabels;
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredString;
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
 
 class CallHierarchyLabelProvider extends AppearanceAwareLabelProvider {
     private static final long TEXTFLAGS= DEFAULT_TEXTFLAGS | JavaElementLabels.ALL_POST_QUALIFIED | JavaElementLabels.P_COMPRESSED;
@@ -36,7 +39,7 @@ class CallHierarchyLabelProvider extends AppearanceAwareLabelProvider {
         super(TEXTFLAGS, IMAGEFLAGS);
         fDecorator= new CallHierarchyLabelDecorator();
     }
-    /**
+    /*
      * @see org.eclipse.jface.viewers.LabelProvider#getImage(java.lang.Object)
      */
     public Image getImage(Object element) {
@@ -60,26 +63,40 @@ class CallHierarchyLabelProvider extends AppearanceAwareLabelProvider {
      * @see ILabelProvider#getText(Object)
      */
     public String getText(Object element) {
-        if (element instanceof MethodWrapper) {
-            MethodWrapper methodWrapper = (MethodWrapper) element;
-
-            if (methodWrapper.getMember() != null) {
-                return getElementLabel(methodWrapper);
-            } else {
-                return CallHierarchyMessages.CallHierarchyLabelProvider_root; 
-            }
-        } else if (element == TreeTermination.SEARCH_CANCELED) {
+        if (element instanceof MethodWrapper && ((MethodWrapper) element).getMember() != null) {
+        	return getElementLabel((MethodWrapper) element);
+        }
+        return getSpecialLabel(element);
+    }
+    
+    /* (non-Javadoc)
+     * @see org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaUILabelProvider#getRichTextLabel(java.lang.Object)
+     */
+    public ColoredString getRichTextLabel(Object element) {
+        if (element instanceof MethodWrapper && ((MethodWrapper) element).getMember() != null) {
+        	MethodWrapper wrapper= (MethodWrapper) element;
+        	String decorated= getElementLabel(wrapper);
+        	ColoredString text= super.getRichTextLabel(wrapper.getMember());
+        	return ColoredJavaElementLabels.decorateColoredString(text, decorated, ColoredJavaElementLabels.COUNTER_STYLE);
+        }
+        return new ColoredString(getSpecialLabel(element));
+    }
+    
+    private String getSpecialLabel(Object element) {
+    	if (element instanceof MethodWrapper) {
+    		return CallHierarchyMessages.CallHierarchyLabelProvider_root; 
+    	} else if (element == TreeTermination.SEARCH_CANCELED) {
             return CallHierarchyMessages.CallHierarchyLabelProvider_searchCanceled; 
         } else if (isPendingUpdate(element)) {
             return CallHierarchyMessages.CallHierarchyLabelProvider_updatePending; 
         }
-
         return CallHierarchyMessages.CallHierarchyLabelProvider_noMethodSelected; 
     }
-
+    
     private boolean isPendingUpdate(Object element) {
         return element instanceof IWorkbenchAdapter;
     }
+    
     private String getElementLabel(MethodWrapper methodWrapper) {
         String label = super.getText(methodWrapper.getMember());
 

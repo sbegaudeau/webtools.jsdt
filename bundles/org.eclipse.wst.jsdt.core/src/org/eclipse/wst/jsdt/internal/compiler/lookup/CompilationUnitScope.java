@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -135,7 +135,7 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 //		if ((fPackage = environment.createPackage(currentPackageName)) == null) {
 //			problemReporter().packageCollidesWithType(referenceContext);
 //			return;
-//		} else if (referenceContext.isPackageInfo() && referenceContext.currentPackage.annotations != null) {
+//		} else if (referenceContext.isPackageInfo()) {
 //			// resolve package annotations now if this is "package-info.js".				
 //			if (referenceContext.types == null || referenceContext.types.length == 0) {
 //				referenceContext.types = new TypeDeclaration[1];
@@ -299,6 +299,8 @@ public void buildSuperType() {
 		}else
 			superTypeName = libSuperType.getSuperTypeName().toCharArray();
 	}
+	if (superTypeName==null)
+		return;
 	
 		superBinding  =  environment.askForType(new char[][] {superTypeName});
 	
@@ -456,7 +458,7 @@ void checkAndSetImports() {
 	int numberOfImports = numberOfStatements + 1;
 	for (int i = 0; i < numberOfStatements; i++) {
 		ImportReference importReference = referenceContext.imports[i];
-		if (importReference.onDemand && CharOperation.equals(JAVA_LANG, importReference.tokens) && !importReference.isStatic()) {
+		if (((importReference.bits & ASTNode.OnDemand) != 0) && CharOperation.equals(JAVA_LANG, importReference.tokens) && !importReference.isStatic()) {
 			numberOfImports--;
 			break;
 		}
@@ -472,12 +474,12 @@ void checkAndSetImports() {
 		// skip duplicates or imports of the current package
 		for (int j = 0; j < index; j++) {
 			ImportBinding resolved = resolvedImports[j];
-			if (resolved.onDemand == importReference.onDemand && resolved.isStatic() == importReference.isStatic())
+			if (resolved.onDemand == ((importReference.bits & ASTNode.OnDemand) != 0) && resolved.isStatic() == importReference.isStatic())
 				if (CharOperation.equals(compoundName, resolvedImports[j].compoundName))
 					continue nextImport;
 		}
 
-		if (importReference.onDemand) {
+		if ((importReference.bits & ASTNode.OnDemand) != 0) {
 			if (CharOperation.equals(compoundName, currentPackageName))
 				continue nextImport;
 
@@ -617,6 +619,8 @@ void connectTypeHierarchy() {
 		}
 }
 void faultInImports() {
+	if (this.typeOrPackageCache != null)
+		return; // can be called when a field constant is resolved before static imports
 	if (referenceContext.imports == null) {
 		this.typeOrPackageCache = new HashtableOfObject(1);
 		return;
@@ -626,7 +630,7 @@ void faultInImports() {
 	int numberOfStatements = referenceContext.imports.length;
 	HashtableOfType typesBySimpleNames = null;
 	for (int i = 0; i < numberOfStatements; i++) {
-		if (!referenceContext.imports[i].onDemand) {
+		if ((referenceContext.imports[i].bits & ASTNode.OnDemand) == 0) {
 			typesBySimpleNames = new HashtableOfType(topLevelTypes.length + numberOfStatements);
 			for (int j = 0, length = topLevelTypes.length; j < length; j++)
 				typesBySimpleNames.put(topLevelTypes[j].sourceName, topLevelTypes[j]);
@@ -638,7 +642,7 @@ void faultInImports() {
 	int numberOfImports = numberOfStatements + 1;
 	for (int i = 0; i < numberOfStatements; i++) {
 		ImportReference importReference = referenceContext.imports[i];
-		if (importReference.onDemand && CharOperation.equals(JAVA_LANG, importReference.tokens) && !importReference.isStatic()) {
+		if (((importReference.bits & ASTNode.OnDemand) != 0) && CharOperation.equals(JAVA_LANG, importReference.tokens) && !importReference.isStatic()) {
 			numberOfImports--;
 			break;
 		}
@@ -657,14 +661,14 @@ void faultInImports() {
 		// skip duplicates or imports of the current package
 		for (int j = 0; j < index; j++) {
 			ImportBinding resolved = resolvedImports[j];
-			if (resolved.onDemand == importReference.onDemand && resolved.isStatic() == importReference.isStatic()) {
+			if (resolved.onDemand == ((importReference.bits & ASTNode.OnDemand) != 0) && resolved.isStatic() == importReference.isStatic()) {
 				if (CharOperation.equals(compoundName, resolved.compoundName)) {
 					problemReporter().unusedImport(importReference); // since skipped, must be reported now
 					continue nextImport;
 				}
 			}
 		}
-		if (importReference.onDemand) {
+		if ((importReference.bits & ASTNode.OnDemand) != 0) {
 			if (CharOperation.equals(compoundName, currentPackageName)) {
 				problemReporter().unusedImport(importReference); // since skipped, must be reported now
 				continue nextImport;

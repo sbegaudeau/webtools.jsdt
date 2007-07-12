@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -299,10 +299,6 @@ public class NewVariableCompletionProposal extends LinkedCorrectionProposal {
 			Arrays.sort(names, new Comparator() {
 				public int compare(Object o1, Object o2) {
 					return ((SimpleName) o1).getStartPosition() - ((SimpleName) o2).getStartPosition();
-				}
-
-				public boolean equals(Object obj) {
-					return false;
 				}
 			});
 		}

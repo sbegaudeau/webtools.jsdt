@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -221,7 +221,7 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 	
 	final private String getIndentOfLine(int pos) {
 		int line= getLineInformation().getLineOfOffset(pos);
-		if (pos >= 0) {
+		if (line >= 0) {
 			char[] cont= getContent();
 			int lineStart= getLineInformation().getLineOffset(line);
 		    int i= lineStart;
@@ -1061,6 +1061,9 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 					TextEdit sourceEdit= getCopySourceEdit(copySource);
 					doTextCopy(sourceEdit, insertOffset, srcIndentLevel, destIndentString, editGroup);
 					currPos= offset + curr.length; // continue to insert after the replaced string
+					if (needsNewLineForLineComment(copySource.getNode(), formatted, currPos)) {
+						doTextInsert(insertOffset, getLineDelimiter(), editGroup);
+					}
 				} else if (data instanceof StringPlaceholderData) { // replace with a placeholder
 					String code= ((StringPlaceholderData) data).code;
 					String str= this.formatter.changeIndent(code, 0, destIndentString); 
@@ -1074,6 +1077,14 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 			String insertStr= formatted.substring(currPos);
 			doTextInsert(insertOffset, insertStr, editGroup);
 		}
+	}
+	
+	private boolean needsNewLineForLineComment(ASTNode node, String formatted, int offset) {
+		if (!this.lineCommentEndOffsets.isEndOfLineComment(getExtendedEnd(node), this.content)) {
+			return false;
+		}
+		// copied code ends with a line comment, but doesn't contain the new line
+		return offset < formatted.length() && !IndentManipulation.isLineDelimiterChar(formatted.charAt(offset));
 	}
 	
 	private String getCurrentLine(String str, int pos) {
@@ -2205,17 +2216,17 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 		if (node.getAST().apiLevel() >= AST.JLS3) {
 			RewriteEvent event= getEvent(node, ImportDeclaration.STATIC_PROPERTY);
 			if (event != null && event.getChangeKind() != RewriteEvent.UNCHANGED) {
-				boolean wasStatic= ((Boolean) event.getOriginalValue()).booleanValue();
-				int pos= node.getStartPosition();
-				if (wasStatic) {
-					try {
-						int endPos= getScanner().getTokenStartOffset(ITerminalSymbols.TokenNameimport, pos);
+				try {
+					int pos= getScanner().getTokenEndOffset(ITerminalSymbols.TokenNameimport, node.getStartPosition());
+					boolean wasStatic= ((Boolean) event.getOriginalValue()).booleanValue();
+					if (wasStatic) {
+						int endPos= getScanner().getTokenEndOffset(ITerminalSymbols.TokenNamestatic, pos);
 						doTextRemove(pos, endPos - pos, getEditGroup(event));
-					} catch (CoreException e) {
-						handleException(e);
+					} else {
+						doTextInsert(pos, " static", getEditGroup(event)); //$NON-NLS-1$
 					}
-				} else {
-					doTextInsert(pos, "static ", getEditGroup(event)); //$NON-NLS-1$
+				} catch (CoreException e) {
+					handleException(e);
 				}
 			}
 		}

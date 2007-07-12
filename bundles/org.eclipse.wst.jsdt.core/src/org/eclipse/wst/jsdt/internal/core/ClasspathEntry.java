@@ -1115,7 +1115,7 @@ public class ClasspathEntry implements IClasspathEntry {
 	 */
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(getPath().toString());
+		buffer.append(String.valueOf(getPath()));
 		buffer.append('[');
 		switch (getEntryKind()) {
 			case IClasspathEntry.CPE_LIBRARY :

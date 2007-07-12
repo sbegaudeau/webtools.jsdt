@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -359,7 +359,7 @@ public TypeBinding resolveType(BlockScope scope) {
 				//  record a best guess, for clients who need hint about possible method match
 				TypeBinding[] pseudoArgs = new TypeBinding[length];
 				for (int i = length; --i >= 0;)
-					pseudoArgs[i] = argumentTypes[i] == null ? actualReceiverType : argumentTypes[i]; // replace args with errors with receiver
+					pseudoArgs[i] = argumentTypes[i] == null ? TypeBinding.NULL  : argumentTypes[i]; // replace args with errors with receiver
 				this.binding = 
 					receiver.isImplicitThis()
 						? scope.getImplicitMethod(selector, pseudoArgs, this)
@@ -368,10 +368,15 @@ public TypeBinding resolveType(BlockScope scope) {
 					MethodBinding closestMatch = ((ProblemMethodBinding)binding).closestMatch;
 					// record the closest match, for clients who may still need hint about possible method match
 					if (closestMatch != null) {
+						if (closestMatch.original().typeVariables != Binding.NO_TYPE_VARIABLES) { // generic method
+							// shouldn't return generic method outside its context, rather convert it to raw method (175409)
+							closestMatch = scope.environment().createParameterizedGenericMethod(closestMatch.original(), (RawTypeBinding)null);
+						}
 						this.binding = closestMatch;
-						if ((closestMatch.isPrivate() || closestMatch.declaringClass.isLocalType()) && !scope.isDefinedInMethod(closestMatch)) {
+						MethodBinding closestMatchOriginal = closestMatch.original();
+						if ((closestMatchOriginal.isPrivate() || closestMatchOriginal.declaringClass.isLocalType()) && !scope.isDefinedInMethod(closestMatchOriginal)) {
 							// ignore cases where method is used from within inside itself (e.g. direct recursions)
-							closestMatch.original().modifiers |= ExtraCompilerModifiers.AccLocallyUsed;
+							closestMatchOriginal.original().modifiers |= ExtraCompilerModifiers.AccLocallyUsed;
 						}
 					}
 				}
@@ -420,9 +425,10 @@ public TypeBinding resolveType(BlockScope scope) {
 		// record the closest match, for clients who may still need hint about possible method match
 		if (closestMatch != null) {
 			this.binding = closestMatch;
-			if ((closestMatch.isPrivate() || closestMatch.declaringClass.isLocalType()) && !scope.isDefinedInMethod(closestMatch)) {
+			MethodBinding closestMatchOriginal = closestMatch.original();			
+			if ((closestMatchOriginal.isPrivate() || closestMatchOriginal.declaringClass.isLocalType()) && !scope.isDefinedInMethod(closestMatchOriginal)) {
 				// ignore cases where method is used from within inside itself (e.g. direct recursions)
-				closestMatch.original().modifiers |= ExtraCompilerModifiers.AccLocallyUsed;
+				closestMatchOriginal.original().modifiers |= ExtraCompilerModifiers.AccLocallyUsed;
 			}
 		}
 		return this.resolvedType;

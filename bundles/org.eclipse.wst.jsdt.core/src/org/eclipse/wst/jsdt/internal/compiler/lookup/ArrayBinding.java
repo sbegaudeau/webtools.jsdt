@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ public ArrayBinding(TypeBinding type, int dimensions, LookupEnvironment environm
 	this.dimensions = dimensions;
 	this.environment = environment;
 	if (type instanceof UnresolvedReferenceBinding)
-		((UnresolvedReferenceBinding) type).addWrapper(this);
+		((UnresolvedReferenceBinding) type).addWrapper(this, environment);
 	else
     	this.tagBits |= type.tagBits & (TagBits.HasTypeVariable | TagBits.HasDirectWildcard);
 }
@@ -40,9 +40,9 @@ public ArrayBinding(TypeBinding type, int dimensions, LookupEnvironment environm
  * Collect the substitutes into a map for certain type variables inside the receiver type
  * e.g.   Collection<T>.collectSubstitutes(Collection<List<X>>, Map), will populate Map with: T --> List<X>
  * Constraints:
- *   A << F   corresponds to:   F.collectSubstitutes(..., A, ..., 1)
- *   A = F   corresponds to:      F.collectSubstitutes(..., A, ..., 0)
- *   A >> F   corresponds to:   F.collectSubstitutes(..., A, ..., 2)
+ *   A << F   corresponds to:   F.collectSubstitutes(..., A, ..., CONSTRAINT_EXTENDS (1))
+ *   A = F   corresponds to:      F.collectSubstitutes(..., A, ..., CONSTRAINT_EQUAL (0))
+ *   A >> F   corresponds to:   F.collectSubstitutes(..., A, ..., CONSTRAINT_SUPER (2))
 */
 public void collectSubstitutes(Scope scope, TypeBinding actualType, InferenceContext inferenceContext, int constraint) {
 	

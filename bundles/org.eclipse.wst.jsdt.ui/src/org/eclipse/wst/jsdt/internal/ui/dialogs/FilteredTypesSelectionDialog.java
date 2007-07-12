@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,11 +13,11 @@ package org.eclipse.wst.jsdt.internal.ui.dialogs;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -26,19 +26,29 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.Job;
 
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.Text;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableContext;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -57,6 +67,7 @@ import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.SearchPattern;
 
 import org.eclipse.wst.jsdt.core.Flags;
@@ -71,6 +82,7 @@ import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatchRequestor;
+import org.eclipse.wst.jsdt.core.search.TypeNameRequestor;
 
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.OpenTypeHistory;
@@ -84,29 +96,39 @@ import org.eclipse.wst.jsdt.launching.JavaRuntime;
 import org.eclipse.wst.jsdt.launching.LibraryLocation;
 
 import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaUI;
 import org.eclipse.wst.jsdt.ui.dialogs.ITypeInfoFilterExtension;
 import org.eclipse.wst.jsdt.ui.dialogs.ITypeInfoImageProvider;
+import org.eclipse.wst.jsdt.ui.dialogs.ITypeSelectionComponent;
 import org.eclipse.wst.jsdt.ui.dialogs.TypeSelectionExtension;
 
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
+import org.eclipse.wst.jsdt.internal.ui.preferences.TypeFilterPreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.search.JavaSearchScopeFactory;
+import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.TypeNameMatchLabelProvider;
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredJavaElementLabels;
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredString;
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.OwnerDrawSupport;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.WorkingSetFilterActionGroup;
 
 /**
- * Shows a list of resources to the user with a text entry field for a string
- * pattern used to filter the list of resources.
- * 
- * <strong>EXPERIMENTAL</strong> This class or interface has been added as part
- * of a work in progress. This API may change at any given time. Please do not
- * use this API without consulting with the Platform/UI team.
+ * Shows a list of Java types to the user with a text entry field for a string
+ * pattern used to filter the list of types.
  * 
  * @since 3.3
  */
-public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
+public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog implements ITypeSelectionComponent {
+	
+	/**
+	 * Disabled "Show Container for Duplicates because of
+	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=184693 .
+	 */
+	private static final boolean BUG_184693= true;
 
 	private static final String DIALOG_SETTINGS= "org.eclipse.wst.jsdt.internal.ui.dialogs.FilteredTypesSelectionDialog"; //$NON-NLS-1$
 
@@ -116,23 +138,31 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 
 	private WorkingSetFilterActionGroup fFilterActionGroup;
 
-	private TypeItemLabelProvider fTypeInfoLabelProvider;
+	private final TypeItemLabelProvider fTypeInfoLabelProvider;
 
 	private String fTitle;
 
 	private ShowContainerForDuplicatesAction fShowContainerForDuplicatesAction;
 
 	private IJavaSearchScope fSearchScope;
+	
+	private boolean fAllowScopeSwitching;
 
-	private int fElementKinds;
+	private final int fElementKinds;
 
-	private ITypeInfoFilterExtension fFilterExtension;
+	private final ITypeInfoFilterExtension fFilterExtension;
 
-	private TypeSelectionExtension fExtension;
+	private final TypeSelectionExtension fExtension;
 
 	private ISelectionStatusValidator fValidator;
 
-	private TypeInfoUtil fTypeInfoUtil;
+	private final TypeInfoUtil fTypeInfoUtil;
+	
+	private static boolean fgFirstTime= true;
+
+	private final TypeItemsComparator fTypeItemsComparator; 
+	
+	private int fTypeFilterVersion= 0;
 
 	/**
 	 * Creates new FilteredTypesSelectionDialog instance
@@ -162,7 +192,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 	}
 
 	/**
-	 * Creates new FilteredTypesSelectionDialog instance
+	 * Creates new FilteredTypesSelectionDialog instance.
 	 * 
 	 * @param shell
 	 *            shell to parent the dialog on
@@ -172,7 +202,9 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 	 *            context used to execute long-running operations associated
 	 *            with this dialog
 	 * @param scope
-	 *            scope used when searching for types
+	 *            scope used when searching for types. If the scope is <code>null</code>,
+	 *            then workspace is scope is used as default, and the user can
+	 *            choose a working set as scope. 
 	 * @param elementKinds
 	 *            flags defining nature of searched elements; the only valid
 	 *            values are: <code>IJavaSearchConstants.TYPE</code>
@@ -189,10 +221,11 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 	 */
 	public FilteredTypesSelectionDialog(Shell shell, boolean multi, IRunnableContext context, IJavaSearchScope scope, int elementKinds, TypeSelectionExtension extension) {
 		super(shell, multi);
-
+		
 		setSelectionHistory(new TypeSelectionHistory());
 
 		if (scope == null) {
+			fAllowScopeSwitching= true;
 			scope= SearchEngine.createWorkspaceScope();
 		}
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(shell, IJavaHelpContextIds.TYPE_SELECTION_DIALOG2);
@@ -213,7 +246,8 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 		setListLabelProvider(fTypeInfoLabelProvider);
 		setListSelectionLabelDecorator(fTypeInfoLabelProvider);
 		setDetailsLabelProvider(new TypeItemDetailsLabelProvider(fTypeInfoUtil));
-
+		
+		fTypeItemsComparator= new TypeItemsComparator();
 	}
 
 	/*
@@ -263,7 +297,9 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 	protected void storeDialog(IDialogSettings settings) {
 		super.storeDialog(settings);
 
-		settings.put(SHOW_CONTAINER_FOR_DUPLICATES, fShowContainerForDuplicatesAction.isChecked());
+		if (! BUG_184693) {
+			settings.put(SHOW_CONTAINER_FOR_DUPLICATES, fShowContainerForDuplicatesAction.isChecked());
+		}
 
 		if (fFilterActionGroup != null) {
 			XMLMemento memento= XMLMemento.createWriteRoot("workingSet"); //$NON-NLS-1$
@@ -288,28 +324,33 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 	protected void restoreDialog(IDialogSettings settings) {
 		super.restoreDialog(settings);
 
-		boolean showContainer= settings.getBoolean(SHOW_CONTAINER_FOR_DUPLICATES);
-		fShowContainerForDuplicatesAction.setChecked(showContainer);
-		fTypeInfoLabelProvider.setContainerInfo(showContainer);
-
-		String setting= settings.get(WORKINGS_SET_SETTINGS);
-		if (setting != null) {
-			try {
-				IMemento memento= XMLMemento.createReadRoot(new StringReader(setting));
-				fFilterActionGroup.restoreState(memento);
-			} catch (WorkbenchException e) {
-				// don't do anything. Simply don't restore the settings
-				JavaPlugin.log(e);
-			}
-		}
-
-		IWorkingSet ws= fFilterActionGroup.getWorkingSet();
-		if (ws == null || (ws.isAggregateWorkingSet() && ws.isEmpty())) {
-			setSearchScope(SearchEngine.createWorkspaceScope());
-			setSubtitle(null);
+		if (! BUG_184693) {
+			boolean showContainer= settings.getBoolean(SHOW_CONTAINER_FOR_DUPLICATES);
+			fShowContainerForDuplicatesAction.setChecked(showContainer);
+			fTypeInfoLabelProvider.setContainerInfo(showContainer);
 		} else {
-			setSearchScope(JavaSearchScopeFactory.getInstance().createJavaSearchScope(ws, true));
-			setSubtitle(ws.getLabel());
+			fTypeInfoLabelProvider.setContainerInfo(true);
+		}
+		
+		if (fAllowScopeSwitching) {
+			String setting= settings.get(WORKINGS_SET_SETTINGS);
+			if (setting != null) {
+				try {
+					IMemento memento= XMLMemento.createReadRoot(new StringReader(setting));
+					fFilterActionGroup.restoreState(memento);
+				} catch (WorkbenchException e) {
+					// don't do anything. Simply don't restore the settings
+					JavaPlugin.log(e);
+				}
+			}
+			IWorkingSet ws= fFilterActionGroup.getWorkingSet();
+			if (ws == null || (ws.isAggregateWorkingSet() && ws.isEmpty())) {
+				setSearchScope(SearchEngine.createWorkspaceScope());
+				setSubtitle(null);
+			} else {
+				setSearchScope(JavaSearchScopeFactory.getInstance().createJavaSearchScope(ws, true));
+				setSubtitle(ws.getLabel());
+			}
 		}
 
 		// TypeNameMatch[] types = OpenTypeHistory.getInstance().getTypeInfos();
@@ -328,24 +369,30 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 	protected void fillViewMenu(IMenuManager menuManager) {
 		super.fillViewMenu(menuManager);
 
-		fShowContainerForDuplicatesAction= new ShowContainerForDuplicatesAction();
-		menuManager.add(fShowContainerForDuplicatesAction);
-
-		fFilterActionGroup= new WorkingSetFilterActionGroup(getShell(), JavaPlugin.getActivePage(), new IPropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent event) {
-				IWorkingSet ws= (IWorkingSet) event.getNewValue();
-				if (ws == null || (ws.isAggregateWorkingSet() && ws.isEmpty())) {
-					setSearchScope(SearchEngine.createWorkspaceScope());
-					setSubtitle(null);
-				} else {
-					setSearchScope(JavaSearchScopeFactory.getInstance().createJavaSearchScope(ws, true));
-					setSubtitle(ws.getLabel());
+		if (! BUG_184693) {
+			fShowContainerForDuplicatesAction= new ShowContainerForDuplicatesAction();
+			menuManager.add(fShowContainerForDuplicatesAction);
+		}
+		if (fAllowScopeSwitching) {
+			fFilterActionGroup= new WorkingSetFilterActionGroup(getShell(), JavaPlugin.getActivePage(), new IPropertyChangeListener() {
+				public void propertyChange(PropertyChangeEvent event) {
+					IWorkingSet ws= (IWorkingSet) event.getNewValue();
+					if (ws == null || (ws.isAggregateWorkingSet() && ws.isEmpty())) {
+						setSearchScope(SearchEngine.createWorkspaceScope());
+						setSubtitle(null);
+					} else {
+						setSearchScope(JavaSearchScopeFactory.getInstance().createJavaSearchScope(ws, true));
+						setSubtitle(ws.getLabel());
+					}
+	
+					applyFilter();
 				}
-
-				applyFilter();
-			}
-		});
-		fFilterActionGroup.fillViewMenu(menuManager);
+			});
+			fFilterActionGroup.fillViewMenu(menuManager);
+		}
+		
+		menuManager.add(new Separator());
+		menuManager.add(new TypeFiltersPreferencesAction());
 	}
 
 	/*
@@ -354,7 +401,6 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 	 * @see org.eclipse.ui.dialogs.FilteredItemsSelectionDialog#createExtendedContentArea(org.eclipse.swt.widgets.Composite)
 	 */
 	protected Control createExtendedContentArea(Composite parent) {
-
 		Control addition= null;
 
 		if (fExtension != null) {
@@ -366,6 +412,8 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 				addition.setLayoutData(gd);
 
 			}
+			
+			fExtension.initialize(this);
 		}
 
 		return addition;
@@ -403,6 +451,17 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 	}
 
 	/*
+	 * @see org.eclipse.ui.dialogs.FilteredItemsSelectionDialog#create()
+	 */
+	public void create() {
+		super.create();
+		Control patternControl= getPatternControl();
+		if (patternControl instanceof Text) {
+			TextFieldNavigationHandler.install((Text) patternControl);
+		}
+	}
+	
+	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.jface.window.Window#open()
@@ -427,7 +486,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 	}
 
 	/**
-	 * Sets a new validator
+	 * Sets a new validator.
 	 * 
 	 * @param validator
 	 *            the new validator
@@ -444,6 +503,55 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 	protected ItemsFilter createFilter() {
 		return new TypeItemsFilter(fSearchScope, fElementKinds, fFilterExtension);
 	}
+	
+	protected Control createContents(Composite parent) {
+		Control contents= super.createContents(parent);
+		if (ColoredViewersManager.showColoredLabels()) {
+			if (contents instanceof Composite) {
+				Table listControl= findTableControl((Composite) contents);
+				if (listControl != null) {
+					installOwnerDraw(listControl);
+				}
+			}
+		}
+		return contents;
+	}
+	
+	private void installOwnerDraw(Table tableControl) {
+		new OwnerDrawSupport(tableControl) { // installs the owner draw listeners
+			public ColoredString getColoredLabel(Item item) {
+				String text= item.getText();
+				ColoredString str= new ColoredString(text);
+				int index= text.indexOf('-');
+				if (index != -1) {
+					str.colorize(index, str.length() - index, ColoredJavaElementLabels.QUALIFIER_STYLE);
+				}
+				return str;
+			}
+
+			public Color getColor(String foregroundColorName, Display display) {
+				return PlatformUI.getWorkbench().getThemeManager().getCurrentTheme().getColorRegistry().get(foregroundColorName);
+			}
+		};
+	}
+
+	private Table findTableControl(Composite composite) {
+		Control[] children= composite.getChildren();
+		for (int i= 0; i < children.length; i++) {
+			Control curr= children[i];
+			if (curr instanceof Table) {
+				return (Table) curr;
+			} else if (curr instanceof Composite) {
+				Table res= findTableControl((Composite) curr);
+				if (res != null) {
+					return res;
+				}
+			}
+		}
+		return null;
+	}
+	
+	
 
 	/*
 	 * (non-Javadoc)
@@ -452,19 +560,45 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 	 *      org.eclipse.ui.dialogs.FilteredItemsSelectionDialog.ItemsFilter,
 	 *      org.eclipse.core.runtime.IProgressMonitor)
 	 */
-	protected void fillContentProvider(AbstractContentProvider contentProvider, ItemsFilter itemsFilter, IProgressMonitor progressMonitor) throws CoreException {
+	protected void fillContentProvider(AbstractContentProvider provider, ItemsFilter itemsFilter, IProgressMonitor progressMonitor) throws CoreException {
 		TypeItemsFilter typeSearchFilter= (TypeItemsFilter) itemsFilter;
-		TypeSearchRequestor requestor= new TypeSearchRequestor(contentProvider, typeSearchFilter);
+		TypeSearchRequestor requestor= new TypeSearchRequestor(provider, typeSearchFilter);
 		SearchEngine engine= new SearchEngine((WorkingCopyOwner) null);
 		String packPattern= typeSearchFilter.getPackagePattern();
 		progressMonitor.setTaskName(JavaUIMessages.FilteredTypesSelectionDialog_searchJob_taskName);
+		
 		/*
-		 * Setting the filter into match everything mode avoids filtering twice by the same pattern
-		 * (the search engine only provides filtered matches).
+		 * Setting the filter into match everything mode avoids filtering twice
+		 * by the same pattern (the search engine only provides filtered
+		 * matches). For the case when the pattern is a camel case pattern with
+		 * a terminator, the filter is not set to match everything mode because
+		 * jdt.core's SearchPattern does not support that case.
 		 */ 
-		typeSearchFilter.setMatchEverythingMode(true);
+		String typePattern= itemsFilter.getPattern();
+		int matchRule= typeSearchFilter.getMatchRule();
+		if (matchRule == SearchPattern.RULE_CAMELCASE_MATCH) {
+			 // If the pattern is empty, the RULE_BLANK_MATCH will be chosen, so we don't have to check the pattern length
+			char lastChar= typePattern.charAt(typePattern.length() - 1);
+
+			if (lastChar == '<' || lastChar == ' ') {
+				typePattern= typePattern.substring(0, typePattern.length() - 1);
+			} else {
+				typeSearchFilter.setMatchEverythingMode(true);
+			}
+		} else {
+			typeSearchFilter.setMatchEverythingMode(true);
+		}
+
 		try {
-			engine.searchAllTypeNames(packPattern == null ? null : packPattern.toCharArray(), typeSearchFilter.getPackageFlags(), typeSearchFilter.getPattern().toCharArray(), typeSearchFilter.getMatchRule(), typeSearchFilter.getElementKind(), typeSearchFilter.getSearchScope(), requestor, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, progressMonitor);
+			engine.searchAllTypeNames(packPattern == null ? null : packPattern.toCharArray(),
+					typeSearchFilter.getPackageFlags(), //TODO: https://bugs.eclipse.org/bugs/show_bug.cgi?id=176017
+					typePattern.toCharArray(),
+					matchRule, //TODO: https://bugs.eclipse.org/bugs/show_bug.cgi?id=176017
+					typeSearchFilter.getElementKind(),
+					typeSearchFilter.getSearchScope(),
+					requestor,
+					IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+					progressMonitor);
 		} finally {
 			typeSearchFilter.setMatchEverythingMode(false);
 		}
@@ -476,7 +610,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 	 * @see org.eclipse.ui.dialogs.FilteredItemsSelectionDialog#getItemsComparator()
 	 */
 	protected Comparator getItemsComparator() {
-		return new TypeItemsComparator();
+		return fTypeItemsComparator;
 	}
 
 	/*
@@ -510,13 +644,97 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 	}
 
 	/**
-	 * Sets search scope used when searching for types
+	 * Sets search scope used when searching for types.
 	 * 
 	 * @param scope
-	 *            the enw scope
+	 *            the new scope
 	 */
 	private void setSearchScope(IJavaSearchScope scope) {
 		fSearchScope= scope;
+	}
+	
+	/*
+	 * We only have to ensure history consistency here since the search engine
+	 * takes care of working copies.
+	 */
+	private static class ConsistencyRunnable implements IRunnableWithProgress {
+		public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+			if (fgFirstTime) {
+				// Join the initialize after load job.
+				IJobManager manager= Job.getJobManager();
+				manager.join(JavaUI.ID_PLUGIN, monitor);
+			}
+			OpenTypeHistory history= OpenTypeHistory.getInstance();
+			if (fgFirstTime || history.isEmpty()) {
+				if (history.needConsistencyCheck()) {
+					monitor.beginTask(JavaUIMessages.TypeSelectionDialog_progress_consistency, 100);
+					refreshSearchIndices(new SubProgressMonitor(monitor, 90));
+					history.checkConsistency(new SubProgressMonitor(monitor, 10));
+				} else {
+					refreshSearchIndices(monitor);
+				}
+				monitor.done();
+				fgFirstTime= false;
+			} else {
+				history.checkConsistency(monitor);
+			}
+		}
+		public static boolean needsExecution() {
+			OpenTypeHistory history= OpenTypeHistory.getInstance();
+			return fgFirstTime || history.isEmpty() || history.needConsistencyCheck(); 
+		}
+		private void refreshSearchIndices(IProgressMonitor monitor) throws InvocationTargetException {
+			try {
+				new SearchEngine().searchAllTypeNames(
+						null,
+						0,
+						// make sure we search a concrete name. This is faster according to Kent  
+						"_______________".toCharArray(), //$NON-NLS-1$
+						SearchPattern.RULE_EXACT_MATCH | SearchPattern.RULE_CASE_SENSITIVE, 
+						IJavaSearchConstants.ENUM,
+						SearchEngine.createWorkspaceScope(), 
+						new TypeNameRequestor() {}, 
+						IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, 
+						monitor);
+			} catch (JavaModelException e) {
+				throw new InvocationTargetException(e);
+			}
+		}
+	}
+	
+	/*
+	 * @see org.eclipse.ui.dialogs.FilteredItemsSelectionDialog#reloadCache(boolean, org.eclipse.core.runtime.IProgressMonitor)
+	 */
+	public void reloadCache(boolean checkDuplicates, IProgressMonitor monitor) {
+		IProgressMonitor remainingMonitor;
+		if (ConsistencyRunnable.needsExecution()) {
+			monitor.beginTask(JavaUIMessages.TypeSelectionDialog_progress_consistency, 10);
+			try {
+				ConsistencyRunnable runnable= new ConsistencyRunnable();
+				runnable.run(new SubProgressMonitor(monitor, 1));
+			} catch (InvocationTargetException e) {
+				ExceptionHandler.handle(e, JavaUIMessages.TypeSelectionDialog_error3Title, JavaUIMessages.TypeSelectionDialog_error3Message); 
+				close();
+				return;
+			} catch (InterruptedException e) {
+				// cancelled by user
+				close();
+				return;
+			}
+			remainingMonitor= new SubProgressMonitor(monitor, 9);
+		} else {
+			remainingMonitor= monitor;
+		}
+		super.reloadCache(checkDuplicates, remainingMonitor);
+		monitor.done();
+	}
+
+	/*
+	 * @see org.eclipse.wst.jsdt.ui.dialogs.ITypeSelectionComponent#triggerSearch()
+	 */
+	public void triggerSearch() {
+		fTypeFilterVersion++;
+		applyFilter();
 	}
 
 	/**
@@ -541,6 +759,24 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 			fTypeInfoLabelProvider.setContainerInfo(isChecked());
 		}
 	}
+	
+	private class TypeFiltersPreferencesAction extends Action {
+		
+		public TypeFiltersPreferencesAction() {
+			super(JavaUIMessages.FilteredTypesSelectionDialog_TypeFiltersPreferencesAction_label);
+		}
+		
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see org.eclipse.jface.action.Action#run()
+		 */
+		public void run() {
+			String typeFilterID= TypeFilterPreferencePage.TYPE_FILTER_PREF_PAGE_ID;
+			PreferencesUtil.createPreferenceDialogOn(getShell(), typeFilterID, new String[] { typeFilterID }, null).open();
+			triggerSearch();
+		}
+	}
 
 	/**
 	 * A <code>LabelProvider</code> for (the table of) types.
@@ -549,7 +785,6 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 
 		private boolean fContainerInfo;
 
-		private ImageManager fImageManager= new ImageManager();
 
 		/**
 		 * Construct a new <code>TypeItemLabelProvider</code>. F
@@ -580,8 +815,8 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 			TypeNameMatch type= (TypeNameMatch) element;
 
 			ImageDescriptor iD= JavaElementImageProvider.getTypeImageDescriptor(isInnerType(type), false, type.getModifiers(), false);
-
-			return fImageManager.get(iD);
+			
+			return JavaPlugin.getImageDescriptorRegistry().get(iD);
 		}
 
 		/*
@@ -640,9 +875,9 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 	 */
 	private static class TypeItemDetailsLabelProvider extends LabelProvider {
 
-		private TypeNameMatchLabelProvider fLabelProvider= new TypeNameMatchLabelProvider(TypeNameMatchLabelProvider.SHOW_TYPE_CONTAINER_ONLY + TypeNameMatchLabelProvider.SHOW_ROOT_POSTFIX);
+		private final TypeNameMatchLabelProvider fLabelProvider= new TypeNameMatchLabelProvider(TypeNameMatchLabelProvider.SHOW_TYPE_CONTAINER_ONLY + TypeNameMatchLabelProvider.SHOW_ROOT_POSTFIX);
 
-		private TypeInfoUtil fTypeInfoUtil;
+		private final TypeInfoUtil fTypeInfoUtil;
 
 		public TypeItemDetailsLabelProvider(TypeInfoUtil typeInfoUtil) {
 			fTypeInfoUtil= typeInfoUtil;
@@ -677,15 +912,15 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 
 	private static class TypeInfoUtil {
 
-		private ITypeInfoImageProvider fProviderExtension;
+		private final ITypeInfoImageProvider fProviderExtension;
 
-		private TypeInfoRequestorAdapter fAdapter= new TypeInfoRequestorAdapter();
+		private final TypeInfoRequestorAdapter fAdapter= new TypeInfoRequestorAdapter();
 
-		private Map fLib2Name= new HashMap();
+		private final Map fLib2Name= new HashMap();
 
-		private String[] fInstallLocations;
+		private final String[] fInstallLocations;
 
-		private String[] fVMNames;
+		private final String[] fVMNames;
 
 		private boolean fFullyQualifyDuplicates;
 
@@ -869,31 +1104,6 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 		}
 	}
 
-	private static class ImageManager {
-		private Map fImages= new HashMap(20);
-
-		public Image get(ImageDescriptor descriptor) {
-			if (descriptor == null)
-				descriptor= ImageDescriptor.getMissingImageDescriptor();
-
-			Image result= (Image) fImages.get(descriptor);
-			if (result != null)
-				return result;
-			result= descriptor.createImage();
-			if (result != null)
-				fImages.put(descriptor, result);
-			return result;
-		}
-
-		public void dispose() {
-			for (Iterator iter= fImages.values().iterator(); iter.hasNext();) {
-				Image image= (Image) iter.next();
-				image.dispose();
-			}
-			fImages.clear();
-		}
-	}
-
 	/**
 	 * Filters types using pattern, scope, element kind and filter extension.
 	 */
@@ -901,19 +1111,21 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 
 		private static final int TYPE_MODIFIERS= Flags.AccEnum | Flags.AccAnnotation | Flags.AccInterface;
 
-		private IJavaSearchScope fScope;
+		private final IJavaSearchScope fScope;
 
-		private boolean fIsWorkspaceScope;
+		private final boolean fIsWorkspaceScope;
 
-		private int fElemKind;
+		private final int fElemKind;
 
-		private ITypeInfoFilterExtension fFilterExt;
+		private final ITypeInfoFilterExtension fFilterExt;
 
-		private TypeInfoRequestorAdapter fAdapter= new TypeInfoRequestorAdapter();
+		private final TypeInfoRequestorAdapter fAdapter= new TypeInfoRequestorAdapter();
 
 		private SearchPattern fPackageMatcher;
 		
 		private boolean fMatchEverything= false;
+		
+		private final int fMyTypeFilterVersion= fTypeFilterVersion;
 
 		/**
 		 * Creates instance of TypeItemsFilter
@@ -948,16 +1160,20 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 			TypeItemsFilter typeItemsFilter= (TypeItemsFilter) filter;
 			if (fScope != typeItemsFilter.getSearchScope())
 				return false;
+			if (fMyTypeFilterVersion != typeItemsFilter.getMyTypeFilterVersion())
+				return false;
 			return getPattern().indexOf('.', filter.getPattern().length()) == -1;
 		}
 
 		public boolean equalsFilter(ItemsFilter iFilter) {
-			if (!super.equals(iFilter))
+			if (!super.equalsFilter(iFilter))
 				return false;
 			if (!(iFilter instanceof TypeItemsFilter))
 				return false;
 			TypeItemsFilter typeItemsFilter= (TypeItemsFilter) iFilter;
 			if (fScope != typeItemsFilter.getSearchScope())
+				return false;
+			if (fMyTypeFilterVersion != typeItemsFilter.getMyTypeFilterVersion())
 				return false;
 			return true;
 		}
@@ -974,6 +1190,10 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 			return fScope;
 		}
 
+		public int getMyTypeFilterVersion() {
+			return fMyTypeFilterVersion;
+		}
+		
 		public String getPackagePattern() {
 			if (fPackageMatcher == null)
 				return null;
@@ -1190,9 +1410,9 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 	private static class TypeSearchRequestor extends TypeNameMatchRequestor {
 		private volatile boolean fStop;
 
-		private AbstractContentProvider fContentProvider;
+		private final AbstractContentProvider fContentProvider;
 
-		private TypeItemsFilter fTypeItemsFilter;
+		private final TypeItemsFilter fTypeItemsFilter;
 
 		public TypeSearchRequestor(AbstractContentProvider contentProvider, TypeItemsFilter typeItemsFilter) {
 			super();
@@ -1225,11 +1445,11 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog {
 	 */
 	private static class TypeItemsComparator implements Comparator {
 
-		private Map fLib2Name= new HashMap();
+		private final Map fLib2Name= new HashMap();
 
-		private String[] fInstallLocations;
+		private final String[] fInstallLocations;
 
-		private String[] fVMNames;
+		private final String[] fVMNames;
 
 		/**
 		 * Creates new instance of TypeItemsComparator

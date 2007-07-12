@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -394,6 +394,7 @@ public class SearchEngine {
 	 * @param type The java model handle of the type
 	 * @param modifiers Modifiers of the type
 	 * @return A non-null match on the given type.
+	 * @since 3.3
 	 */
 	public static TypeNameMatch createTypeNameMatch(IType type, int modifiers) {
 		return BasicSearchEngine.createTypeNameMatch(type, modifiers);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,13 +41,6 @@ public class CompletionScanner extends Scanner {
 	public int completedIdentifierEnd = -1;
 	public int unicodeCharSize;
 
-	public boolean record = false;
-	public char[] prefix;
-	public int currentCompletionToken;
-	public int currentTokenStart;
-	public int potentialVariableNamesPtr; 
-	public char[][] potentialVariableNames;
-	public int[] potentialVariableNameStarts;
 
 	public static final char[] EmptyCompletionIdentifier = {};
 	
@@ -61,25 +54,7 @@ public CompletionScanner(long sourceLevel) {
 		null/*taskPriorities*/,
 		true/*taskCaseSensitive*/);
 }
-private void addPotentialName(char[] name, int start) {
-	int length = this.potentialVariableNames.length;
-	if (this.potentialVariableNamesPtr >= length - 1) {
-		System.arraycopy(
-				this.potentialVariableNames, 
-				0,
-				this.potentialVariableNames = new char[length * 2][],
-				0,
-				length);
-		System.arraycopy(
-				this.potentialVariableNameStarts,
-				0,
-				this.potentialVariableNameStarts = new int[length * 2],
-				0,
-				length);
-	}
-	this.potentialVariableNames[++this.potentialVariableNamesPtr] = name;
-	this.potentialVariableNameStarts[this.potentialVariableNamesPtr] = start;
-}
+
 /* 
  * Truncate the current identifier if it is containing the cursor location. Since completion is performed
  * on an identifier prefix.
@@ -132,33 +107,6 @@ public char[] getCurrentTokenSourceString() {
 	return super.getCurrentTokenSourceString();
 }
 public int getNextToken() throws InvalidInputException {
-	int nextToken = this.getNextToken0();
-	if (this.record) {
-		switch (nextToken) {
-			case TokenNameIdentifier:
-				if (this.currentCompletionToken != TokenNameDOT) {
-					char[] identifier = this.getCurrentIdentifierSource();
-					if (!Character.isUpperCase(identifier[0]) && 
-							CharOperation.prefixEquals(this.prefix, identifier, true)) {
-						this.addPotentialName(identifier, this.startPosition);
-					}
-				}
-				break;
-			case TokenNameLPAREN :
-			case TokenNameLBRACE :
-				if (this.currentCompletionToken == TokenNameIdentifier) {
-					this.removePotentialNamesAt(this.currentTokenStart);
-					
-				}
-				break;
-		}
-	}
-	this.currentCompletionToken = nextToken;
-	this.currentTokenStart = this.startPosition;
-	return nextToken;
-
-}
-private int getNextToken0() throws InvalidInputException {
 	if ( pushedBack ) {
 		pushedBack = false;
 		return currentToken;
@@ -791,21 +739,7 @@ public final void getNextUnicodeChar() throws InvalidInputException {
 public final void jumpOverBlock() {
 	this.jumpOverMethodBody();
 }
-public void removePotentialNamesAt(int position) {
-	for (int i = 0; i <= this.potentialVariableNamesPtr; i++) {
-		int namePosition = this.potentialVariableNameStarts[i];
-		if (namePosition == position) {
-			this.potentialVariableNames[i] = null;
-		}
-	}
-}
-public void resetTo(int begin, int end) {
-	if (this.record) {
-		this.currentCompletionToken = -1;
-		this.currentTokenStart = 0;
-	}
-	super.resetTo(begin, end);
-}
+
 
 ///*
 // * In case we actually read a keyword, but the cursor is located inside,
@@ -847,16 +781,6 @@ public void setSource(char[] sourceString) {
 	super.setSource(sourceString);
 	if (!Parser.DO_DIET_PARSE && AssistParser.STOP_AT_CURSOR)
 		this.eofPosition=this.cursorLocation+1;
-}
-public void startRecordingIdentifiers() {
-	this.record = true;
-	
-	this.potentialVariableNamesPtr = -1; 
-	this.potentialVariableNames = new char[10][];
-	this.potentialVariableNameStarts = new int[10];
-}
-public void stopRecordingIdentifiers() {
-	this.record = true;
 }
 
 }

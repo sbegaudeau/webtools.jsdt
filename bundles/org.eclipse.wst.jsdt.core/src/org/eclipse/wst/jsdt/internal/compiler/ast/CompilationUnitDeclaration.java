@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -193,7 +193,7 @@ public class CompilationUnitDeclaration
 			for (int i = 0, max = this.scope.imports.length; i < max; i++){
 				ImportBinding importBinding = this.scope.imports[i];
 				ImportReference importReference = importBinding.reference;
-				if (importReference != null && !importReference.used){
+				if (importReference != null && ((importReference.bits & ASTNode.Used) == 0)){
 					scope.problemReporter().unusedImport(importReference);
 				}
 			}
@@ -295,9 +295,7 @@ public class CompilationUnitDeclaration
 	}
 
 	public boolean isPackageInfo() {
-		return CharOperation.equals(this.getMainTypeName(), TypeConstants.PACKAGE_INFO_NAME)
-			&& this.currentPackage != null
-			&& (this.currentPackage.annotations != null || this.javadoc != null);
+		return CharOperation.equals(this.getMainTypeName(), TypeConstants.PACKAGE_INFO_NAME);
 	}
 	
 	public boolean hasErrors() {
@@ -313,7 +311,11 @@ public class CompilationUnitDeclaration
 		if (imports != null)
 			for (int i = 0; i < imports.length; i++) {
 				printIndent(indent, output).append("import "); //$NON-NLS-1$
-				imports[i].print(0, output).append(";\n"); //$NON-NLS-1$ 
+				ImportReference currentImport = imports[i];
+				if (currentImport.isStatic()) {
+					output.append("static "); //$NON-NLS-1$
+				}
+				currentImport.print(0, output).append(";\n"); //$NON-NLS-1$
 			}
 
 		if (types != null) {
@@ -384,10 +386,12 @@ public class CompilationUnitDeclaration
             // resolve synthetic type declaration
 			final TypeDeclaration syntheticTypeDeclaration = types[0];
 			// set empty javadoc to avoid missing warning (see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=95286)
-			syntheticTypeDeclaration.javadoc = new Javadoc(syntheticTypeDeclaration.declarationSourceStart, syntheticTypeDeclaration.declarationSourceStart);
+			if (syntheticTypeDeclaration.javadoc == null) {
+				syntheticTypeDeclaration.javadoc = new Javadoc(syntheticTypeDeclaration.declarationSourceStart, syntheticTypeDeclaration.declarationSourceStart);
+			}
 			syntheticTypeDeclaration.resolve(this.scope);
 			// resolve annotations if any
-			if (this.currentPackage.annotations != null) {
+			if (this.currentPackage!= null && this.currentPackage.annotations != null) {
 				resolveAnnotations(syntheticTypeDeclaration.staticInitializerScope, this.currentPackage.annotations, this.scope.getDefaultPackage());
 			}
 			// resolve javadoc package if any
@@ -542,8 +546,7 @@ public class CompilationUnitDeclaration
 			return;
 		try {
 			if (visitor.visit(this, this.scope)) {
-				boolean isPackageInfo = isPackageInfo();
-				if (this.types != null && isPackageInfo) {
+				if (this.types != null && isPackageInfo()) {
 		            // resolve synthetic type declaration
 					final TypeDeclaration syntheticTypeDeclaration = types[0];
 					// resolve javadoc package if any
@@ -551,12 +554,14 @@ public class CompilationUnitDeclaration
 					if (this.javadoc != null) {
 						this.javadoc.traverse(visitor, methodScope);
 					}
+					if (this.currentPackage != null) {
 					final Annotation[] annotations = this.currentPackage.annotations;
 					if (annotations != null) {
 						int annotationsLength = annotations.length;
 						for (int i = 0; i < annotationsLength; i++) {
 							annotations[i].traverse(visitor, methodScope);
 						}
+					}
 					}
 				}
 				

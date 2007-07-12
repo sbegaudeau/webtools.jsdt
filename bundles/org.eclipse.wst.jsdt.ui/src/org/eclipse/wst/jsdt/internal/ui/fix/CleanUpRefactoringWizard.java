@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,13 +35,15 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.Table;
 
 import org.eclipse.jface.dialogs.ControlEnableState;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ColumnLayoutData;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -67,18 +69,20 @@ import org.eclipse.wst.jsdt.ui.JavaUI;
 
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.internal.ui.preferences.BulletListBlock;
 import org.eclipse.wst.jsdt.internal.ui.preferences.CleanUpPreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CleanUpProfileVersioner;
+import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CleanUpTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CodeFormatingTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CodeStyleTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.MemberAccessesTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.UnnecessaryCodeTabPage;
-import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ModifyDialogTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileStore;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ModifyDialogTabPage.IModificationListener;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.CustomProfile;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.Profile;
+import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IListAdapter;
@@ -91,7 +95,6 @@ public class CleanUpRefactoringWizard extends RefactoringWizard {
 	
 	private static final String USE_CUSTOM_PROFILE_KEY= "org.eclipse.wst.jsdt.ui.cleanup.use_dialog_profile"; //$NON-NLS-1$
 	private static final String CUSTOM_PROFILE_KEY= "org.eclipse.wst.jsdt.ui.cleanup.custom_profile"; //$NON-NLS-1$
-	private static final String LAST_SELECTED_TAB_PAGE_INDEX= "org.eclipse.wst.jsdt.ui.cleanup.selected_tab_page"; //$NON-NLS-1$
 	
 	private static class ProjectProfileLableProvider extends LabelProvider implements ITableLabelProvider {
 
@@ -210,7 +213,7 @@ public class CleanUpRefactoringWizard extends RefactoringWizard {
 		private final CleanUpRefactoring fCleanUpRefactoring;
 		private Map fCustomSettings;
 		private SelectionButtonDialogField fUseCustomField;
-
+		
 		private ControlEnableState fEnableState;
 
 		public CleanUpConfigurationPage(CleanUpRefactoring refactoring) {
@@ -236,6 +239,7 @@ public class CleanUpRefactoringWizard extends RefactoringWizard {
         	final Composite composite= new Composite(parent, SWT.NONE);
 			composite.setLayout(new GridLayout(2, false));
 			composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+			composite.setFont(parent.getFont());
 			
 			SelectionButtonDialogField useProfile= new SelectionButtonDialogField(SWT.RADIO);
 			useProfile.setLabelText(MultiFixMessages.CleanUpRefactoringWizard_use_configured_radio);
@@ -261,10 +265,19 @@ public class CleanUpRefactoringWizard extends RefactoringWizard {
 			settingsField.setViewerComparator(new ViewerComparator());
 			
 			settingsField.doFillIntoGrid(composite, 3);
+			
+			Table table= settingsField.getTableViewer().getTable();			
 			GridData data= (GridData)settingsField.getListControl(null).getLayoutData();
 			data.horizontalIndent= 15;
+			data.grabExcessVerticalSpace= false;
+			data.heightHint= SWTUtil.getTableHeightHint(table, Math.min(5, fCleanUpRefactoring.getProjects().length + 1));
 			data.grabExcessHorizontalSpace= true;
+			data.verticalAlignment= GridData.BEGINNING;
 			
+			data= (GridData)settingsField.getButtonBox(null).getLayoutData();
+			data.grabExcessVerticalSpace= false;
+			data.verticalAlignment= GridData.BEGINNING;
+
 			data= (GridData)settingsField.getLabelControl(null).getLayoutData();
 			data.exclude= true;
 						
@@ -288,35 +301,59 @@ public class CleanUpRefactoringWizard extends RefactoringWizard {
                 }
 			}
 			
-			final TabFolder tabFolder= createTabFolder(composite, fCustomSettings);
-			tabFolder.addSelectionListener(new SelectionAdapter() {
+			final BulletListBlock bulletListBlock= new BulletListBlock();
+			Control bulletList= bulletListBlock.createControl(composite);
+			GridData layoutData= (GridData)bulletList.getLayoutData();
+			(layoutData).horizontalIndent= 15;
+			layoutData.grabExcessVerticalSpace= true;
+			
+			final Button configure= new Button(composite, SWT.NONE);
+			configure.setText(MultiFixMessages.CleanUpRefactoringWizard_ConfigureCustomProfile_button);
+			
+			data= new GridData(SWT.TOP, SWT.LEAD, false, false);
+			data.widthHint= SWTUtil.getButtonWidthHint(configure);
+			configure.setLayoutData(data);
+			
+			showCustomSettings(bulletListBlock);
+			configure.addSelectionListener(new SelectionAdapter() {
+				/**
+				 * {@inheritDoc}
+				 */
 				public void widgetSelected(SelectionEvent e) {
-					getDialogSettings().put(LAST_SELECTED_TAB_PAGE_INDEX, tabFolder.getSelectionIndex());
+					CleanUpSaveParticipantConfigurationModifyDialog dialog= new CleanUpSaveParticipantConfigurationModifyDialog(getShell(), fCustomSettings, MultiFixMessages.CleanUpRefactoringWizard_CustomCleanUpsDialog_title) {
+						protected CleanUpTabPage[] createTabPages(Map workingValues) {
+							CleanUpTabPage[] result= new CleanUpTabPage[4];
+							result[0]= new CodeStyleTabPage(this, workingValues, false);
+							result[1]= new MemberAccessesTabPage(this, workingValues, false);
+							result[2]= new UnnecessaryCodeTabPage(this, workingValues, false);
+//							result[3]= new MissingCodeTabPage(this, workingValues, false);
+							result[3]= new CodeFormatingTabPage(this, workingValues, false);
+							
+							addTabPage(MultiFixMessages.CleanUpRefactoringWizard_code_style_tab, result[0]);
+							addTabPage(MultiFixMessages.CleanUpRefactoringWizard_member_accesses_tab, result[1]);
+							addTabPage(MultiFixMessages.CleanUpRefactoringWizard_unnecessary_code_tab, result[2]);
+//							addTabPage(MultiFixMessages.CleanUpRefactoringWizard_missing_code_tab, result[3]);
+							addTabPage(MultiFixMessages.CleanUpRefactoringWizard_code_organizing_tab, result[3]);
+							
+							return result;
+						}
+					};
+					dialog.open();
+					showCustomSettings(bulletListBlock);
 				}
 			});
 			
-			settingsField.getListControl(null).setEnabled(!isCustom);
-			if (isCustom) {
-				fEnableState= ControlEnableState.disable(settingsField.getButtonBox(null));
-			} else {
-				fEnableState= ControlEnableState.disable(tabFolder);
-			}
+			updateEnableState(isCustom, settingsField, configure, bulletListBlock);
 			
 			fUseCustomField.setDialogFieldListener(new IDialogFieldListener() {
 				public void dialogFieldChanged(DialogField field) {
-					fEnableState.restore();
-					boolean isCustomSelected= fUseCustomField.isSelected();
-					settingsField.getListControl(null).setEnabled(!isCustomSelected);
-					if (isCustomSelected) {
-						fEnableState= ControlEnableState.disable(settingsField.getButtonBox(null));
-					} else {
-						fEnableState= ControlEnableState.disable(tabFolder);
-					}
+					updateEnableState(fUseCustomField.isSelected(), settingsField, configure, bulletListBlock);
                 }				
 			});
 			
 			Link preferencePageLink= new Link(composite, SWT.WRAP);
 			preferencePageLink.setText(MultiFixMessages.CleanUpRefactoringWizard_HideWizard_Link);
+			preferencePageLink.setFont(parent.getFont());
 			GridData gridData= new GridData(SWT.FILL, SWT.FILL, true, false);
 			gridData.widthHint= convertWidthInCharsToPixels(300);
 			gridData.horizontalSpan= 2;
@@ -331,37 +368,39 @@ public class CleanUpRefactoringWizard extends RefactoringWizard {
 			});
 			
 			setControl(composite);
+			
+			Dialog.applyDialogFont(composite);
         }
 
-		private TabFolder createTabFolder(Composite composite, Map settings) {
-	        final TabFolder tabFolder = new TabFolder(composite, SWT.NONE);
-			tabFolder.setFont(composite.getFont());
-			GridData gridData= new GridData(SWT.FILL, SWT.TOP, true, false);
-			gridData.horizontalIndent= 15;
-			gridData.horizontalSpan= 2;
-			tabFolder.setLayoutData(gridData);
+		private void updateEnableState(boolean isCustom, final ListDialogField settingsField, Button configureCustom, BulletListBlock bulletListBlock) {
+			settingsField.getListControl(null).setEnabled(!isCustom);
+			if (isCustom) {				
+				fEnableState= ControlEnableState.disable(settingsField.getButtonBox(null));
+			} else if (fEnableState != null) {
+				fEnableState.restore();
+				fEnableState= null;
+			}
+			bulletListBlock.setEnabled(isCustom);
+			configureCustom.setEnabled(isCustom);
+		}
+        
+        private void showCustomSettings(BulletListBlock bulletListBlock) {
+			StringBuffer buf= new StringBuffer();
 			
-			addTabPage(tabFolder, MultiFixMessages.CleanUpRefactoringWizard_code_style_tab, new CodeStyleTabPage(this, settings, false));
-			addTabPage(tabFolder, MultiFixMessages.CleanUpRefactoringWizard_member_accesses_tab, new MemberAccessesTabPage(this, settings, false));
-			addTabPage(tabFolder, MultiFixMessages.CleanUpRefactoringWizard_unnecessary_code_tab, new UnnecessaryCodeTabPage(this, settings, false));
-//			addTabPage(tabFolder, MultiFixMessages.CleanUpRefactoringWizard_missing_code_tab, new MissingCodeTabPage(this, settings, false));
-			addTabPage(tabFolder, MultiFixMessages.CleanUpRefactoringWizard_code_organizing_tab, new CodeFormatingTabPage(this, settings, false));
-			
-			try {
-	            int lastTabIndex= getDialogSettings().getInt(LAST_SELECTED_TAB_PAGE_INDEX);
-	            tabFolder.setSelection(lastTabIndex);
-            } catch (NumberFormatException e1) {
-            }
-            
-	        return tabFolder;
+			final ICleanUp[] cleanUps= CleanUpRefactoring.createCleanUps(fCustomSettings);
+	    	for (int i= 0; i < cleanUps.length; i++) {
+		        String[] descriptions= cleanUps[i].getDescriptions();
+		        if (descriptions != null) {
+	    	        for (int j= 0; j < descriptions.length; j++) {
+	    	        	if (buf.length() > 0) {
+	    	        		buf.append('\n');	    	        		
+	    	        	}
+	    	            buf.append(descriptions[j]);
+	                }
+		        }
+	        }
+	    	bulletListBlock.setText(buf.toString());
         }
-
-		protected final void addTabPage(TabFolder tabFolder, String title, ModifyDialogTabPage tabPage) {
-    		final TabItem tabItem= new TabItem(tabFolder, SWT.NONE);
-    		tabItem.setText(title);
-    		tabItem.setData(tabPage);
-    		tabItem.setControl(tabPage.createContents(tabFolder));
-    	}
 		
         protected boolean performFinish() {
 			initializeRefactoring();

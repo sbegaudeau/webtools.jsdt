@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,6 +46,7 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.ltk.core.refactoring.participants.RenameArguments;
 
 import org.eclipse.wst.jsdt.core.Flags;
+import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
 import org.eclipse.wst.jsdt.core.IJavaElement;
@@ -836,7 +837,7 @@ public class RenamePackageProcessor extends JavaRenameProcessor implements
 		private IPackageFragment[] getNamesakePackages(IJavaSearchScope scope, IProgressMonitor pm) throws CoreException {
 			SearchPattern pattern= SearchPattern.createPattern(fPackage.getElementName(), IJavaSearchConstants.PACKAGE, IJavaSearchConstants.DECLARATIONS, SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE);
 			
-			final List packageFragments= new ArrayList();
+			final HashSet packageFragments= new HashSet();
 			SearchRequestor requestor= new SearchRequestor() {
 				public void acceptSearchMatch(SearchMatch match) throws CoreException {
 					IJavaElement enclosingElement= SearchUtils.getEnclosingJavaElement(match);
@@ -867,6 +868,8 @@ public class RenamePackageProcessor extends JavaRenameProcessor implements
 				IJavaElement child= children[c];
 				if (child instanceof ICompilationUnit) {
 					typesCollector.addAll(Arrays.asList(((ICompilationUnit) child).getTypes()));
+				} else if (child instanceof IClassFile) {
+					typesCollector.add(((IClassFile) child).getType());
 				}
 			}
 		}

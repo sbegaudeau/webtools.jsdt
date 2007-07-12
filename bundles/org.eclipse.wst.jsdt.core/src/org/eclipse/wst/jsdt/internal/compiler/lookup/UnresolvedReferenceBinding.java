@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,13 @@ UnresolvedReferenceBinding(char[][] compoundName, PackageBinding packageBinding)
 	this.fPackage = packageBinding;
 	this.wrappers = null;
 }
-void addWrapper(TypeBinding wrapper) {
+void addWrapper(TypeBinding wrapper, LookupEnvironment environment) {
+	if (this.resolvedType != null) {
+		// the type reference B<B<T>.M> means a signature of <T:Ljava/lang/Object;>LB<LB<TT;>.M;>;
+		// when the ParameterizedType for Unresolved B is created with args B<T>.M, the Unresolved B is resolved before the wrapper is added
+		wrapper.swapUnresolved(this, this.resolvedType, environment);
+		return;
+	}
 	if (this.wrappers == null) {
 		this.wrappers = new TypeBinding[] {wrapper};
 	} else {

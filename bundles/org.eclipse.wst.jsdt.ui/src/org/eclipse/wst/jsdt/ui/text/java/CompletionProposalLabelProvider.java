@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005 IBM Corporation and others.
+ * Copyright (c) 2005, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -213,10 +213,10 @@ public class CompletionProposalLabelProvider {
 	 * Creates a display string of a parameter list (without the parentheses)
 	 * for the given parameter types and names.
 	 *
+	 * @param buffer the string buffer 
 	 * @param parameterTypes the parameter types
 	 * @param parameterNames the parameter names
-	 * @return the display string of the parameter list defined by the passed
-	 *         arguments
+	 * @return the display string of the parameter list defined by the passed arguments
 	 */
 	private final StringBuffer appendParameterSignature(StringBuffer buffer, char[][] parameterTypes, char[][] parameterNames) {
 		if (parameterTypes != null) {
@@ -470,6 +470,13 @@ public class CompletionProposalLabelProvider {
 		return buf.toString();
 	}
 
+	/**
+	 * Returns whether the given string starts with "this.".
+	 * 
+	 * @param string 
+	 * @return <code>true</code> if the given string starts with "this."
+	 * @since 3.3
+	 */
 	private boolean isThisPrefix(char[] string) {
 		if (string == null || string.length < 5)
 			return false;

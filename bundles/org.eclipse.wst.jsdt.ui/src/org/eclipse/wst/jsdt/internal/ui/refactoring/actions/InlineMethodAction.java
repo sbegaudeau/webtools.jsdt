@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.Assert;
 
 import org.eclipse.swt.widgets.Shell;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
 import org.eclipse.jface.text.ITextSelection;
@@ -25,7 +26,6 @@ import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
@@ -109,6 +109,7 @@ public class InlineMethodAction extends SelectionDispatchAction {
 	
 	/**
 	 * Note: This method is for internal use only. Clients should not call this method.
+	 * @param selection 
 	 */
 	public void selectionChanged(JavaTextSelection selection) {
 		try {
@@ -134,9 +135,10 @@ public class InlineMethodAction extends SelectionDispatchAction {
 		if (!ActionUtil.isEditable(fEditor, getShell(), typeRoot))
 			return;
 		try {
-			RefactoringASTParser parser= new RefactoringASTParser(AST.JLS3);
-			CompilationUnit compilationUnit= parser.parse(typeRoot, true);
-			RefactoringExecutionStarter.startInlineMethodRefactoring(typeRoot, compilationUnit, offset, length, getShell(), true);
+			CompilationUnit compilationUnit= RefactoringASTParser.parseWithASTProvider(typeRoot, true, null);
+			if (! RefactoringExecutionStarter.startInlineMethodRefactoring(typeRoot, compilationUnit, offset, length, getShell())) {
+				MessageDialog.openInformation(getShell(), RefactoringMessages.InlineMethodAction_dialog_title, RefactoringMessages.InlineMethodAction_no_method_invocation_or_declaration_selected);
+			}
 		} catch (JavaModelException e) {
 			ExceptionHandler.handle(e, getShell(), RefactoringMessages.InlineMethodAction_dialog_title, RefactoringMessages.InlineMethodAction_unexpected_exception); 
 		}
@@ -144,8 +146,7 @@ public class InlineMethodAction extends SelectionDispatchAction {
 
 	public boolean tryInlineMethod(ITypeRoot typeRoot, CompilationUnit node, ITextSelection selection, Shell shell) {
 		try {
-			if (RefactoringExecutionStarter.startInlineMethodRefactoring(typeRoot, node, selection.getOffset(), selection.getLength(), shell, false)) {
-				run(selection);
+			if (RefactoringExecutionStarter.startInlineMethodRefactoring(typeRoot, node, selection.getOffset(), selection.getLength(), shell)) {
 				return true;
 			}
 		} catch (JavaModelException exception) {

@@ -1,17 +1,35 @@
+/*******************************************************************************
+ * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.refactoring.reorg;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -29,8 +47,8 @@ import org.eclipse.jface.text.link.LinkedModeUI;
 import org.eclipse.jface.text.link.LinkedPosition;
 import org.eclipse.jface.text.link.LinkedPositionGroup;
 import org.eclipse.jface.text.link.LinkedModeUI.ExitFlags;
-import org.eclipse.jface.text.link.LinkedModeUI.IExitPolicy;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.SourceViewer;
 
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
 
@@ -38,6 +56,7 @@ import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizardPage;
 
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IMethod;
@@ -63,6 +82,7 @@ import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorHighlightingSynchronizer;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.DelegateUIHelper;
+import org.eclipse.wst.jsdt.internal.ui.text.correction.LinkedNamesAssistProposal.DeleteBlockingExitPolicy;
 
 public class RenameLinkedMode {
 
@@ -70,11 +90,15 @@ public class RenameLinkedMode {
 		public boolean ownsFocusShell() {
 			if (fInfoPopup == null)
 				return false;
-			Shell popup= fInfoPopup.getShell();
-			if (popup == null || popup.isDisposed())
-				return false;
-			Shell activeShell= popup.getDisplay().getActiveShell();
-			return popup == activeShell;
+			if (fInfoPopup.ownsFocusShell()) {
+				return true;
+			}
+			
+			Shell editorShell= fEditor.getSite().getShell();
+			Shell activeShell= editorShell.getDisplay().getActiveShell();
+			if (editorShell == activeShell)
+				return true;
+			return false;
 		}
 
 		public boolean isOriginator(DocumentEvent event, IRegion subjectRegion) {
@@ -97,21 +121,26 @@ public class RenameLinkedMode {
 		}
 	}
 	
-	private class ExitPolicy implements IExitPolicy {
+	private class ExitPolicy extends DeleteBlockingExitPolicy {
+		public ExitPolicy(IDocument document) {
+			super(document);
+		}
+
 		public ExitFlags doExit(LinkedModeModel model, VerifyEvent event, int offset, int length) {
-			fShowPreview= (event.stateMask & SWT.CTRL) != 0;
-			return null; // don't change behavior; do actions in EditorSynchronizer
+			fShowPreview|= (event.stateMask & SWT.CTRL) != 0;
+			return super.doExit(model, event, offset, length);
 		}
 	}
 	
 	
 	private static RenameLinkedMode fgActiveLinkedMode;
 	
-	private CompilationUnitEditor fEditor;
-	private IJavaElement fJavaElement;
+	private final CompilationUnitEditor fEditor;
+	private final IJavaElement fJavaElement;
 
 	private RenameInformationPopup fInfoPopup;
 	
+	private boolean fOriginalSaved;
 	private Point fOriginalSelection;
 	private String fOriginalName;
 
@@ -121,22 +150,38 @@ public class RenameLinkedMode {
 	private final FocusEditingSupport fFocusEditingSupport;
 	private boolean fShowPreview;
 
+
 	public RenameLinkedMode(IJavaElement element, CompilationUnitEditor editor) {
+		Assert.isNotNull(element);
+		Assert.isNotNull(editor);
 		fEditor= editor;
 		fJavaElement= element;
 		fFocusEditingSupport= new FocusEditingSupport();
 	}
 	
 	public static RenameLinkedMode getActiveLinkedMode() {
-		return fgActiveLinkedMode;
+		if (fgActiveLinkedMode != null) {
+			ISourceViewer viewer= fgActiveLinkedMode.fEditor.getViewer();
+			if (viewer != null) {
+				StyledText textWidget= viewer.getTextWidget();
+				if (textWidget != null && ! textWidget.isDisposed()) {
+					return fgActiveLinkedMode;
+				}
+			}
+			// make sure we don't hold onto the active linked mode if anything went wrong with canceling:
+			fgActiveLinkedMode= null;
+		}
+		return null;
 	}
 	
 	public void start() {
-		if (fgActiveLinkedMode != null) {
+		if (getActiveLinkedMode() != null) {
 			// for safety; should already be handled in RenameJavaElementAction
 			fgActiveLinkedMode.startFullDialog();
 			return;
 		}
+		
+		fOriginalSaved= ! fEditor.isDirty();
 		
 		ISourceViewer viewer= fEditor.getViewer();
 		IDocument document= viewer.getDocument();
@@ -194,23 +239,23 @@ public class RenameLinkedMode {
             
 			LinkedModeUI ui= new EditorLinkedModeUI(fLinkedModeModel, viewer);
 			ui.setExitPosition(viewer, offset, 0, Integer.MAX_VALUE);
-			ui.setExitPolicy(new ExitPolicy());
+			ui.setExitPolicy(new ExitPolicy(document));
 			ui.enter();
 			
 			viewer.setSelectedRange(fOriginalSelection.x, fOriginalSelection.y); // by default, full word is selected; restore original selection
 			
+			if (viewer instanceof IEditingSupportRegistry) {
+				IEditingSupportRegistry registry= (IEditingSupportRegistry) viewer;
+				registry.register(fFocusEditingSupport);
+			}
+			
+			openSecondaryPopup();
+//			startAnimation();
+			fgActiveLinkedMode= this;
+			
 		} catch (BadLocationException e) {
 			JavaPlugin.log(e);
 		}
-		
-		if (viewer instanceof IEditingSupportRegistry) {
-			IEditingSupportRegistry registry= (IEditingSupportRegistry) viewer;
-			registry.register(fFocusEditingSupport);
-		}
-
-		openSecondaryPopup();
-//		startAnimation();
-		fgActiveLinkedMode= this;
 	}
 	
 //	private void startAnimation() {
@@ -242,8 +287,43 @@ public class RenameLinkedMode {
 	void doRename(boolean showPreview) {
 		cancel();
 		
+		Image image= null;
+		Label label= null;
+		
+		fShowPreview|= showPreview;
 		try {
-			fEditor.getViewer().getTextWidget().setRedraw(false);
+			ISourceViewer viewer= fEditor.getViewer();
+			if (viewer instanceof SourceViewer) {
+				SourceViewer sourceViewer= (SourceViewer) viewer;
+				Control viewerControl= sourceViewer.getControl();
+				if (viewerControl instanceof Composite) {
+					Composite composite= (Composite) viewerControl;
+					Display display= composite.getDisplay();
+					
+					// Flush pending redraw requests:
+					while (! display.isDisposed() && display.readAndDispatch()) {
+					}
+					
+					// Copy editor area:
+					GC gc= new GC(composite);
+					Point size;
+					try {
+						size= composite.getSize();
+						image= new Image(gc.getDevice(), size.x, size.y);
+						gc.copyArea(image, 0, 0);
+					} finally {
+						gc.dispose();
+						gc= null;
+					}
+					
+					// Persist editor area while executing refactoring:
+					label= new Label(composite, SWT.NONE);
+					label.setImage(image);
+					label.setBounds(0, 0, size.x, size.y);
+					label.moveAbove(null);
+				}
+			}
+			
 			String newName= fNamePosition.getContent();
 			if (fOriginalName.equals(newName))
 				return;
@@ -253,7 +333,7 @@ public class RenameLinkedMode {
 			
 			Shell shell= fEditor.getSite().getShell();
 			boolean executed;
-			if (showPreview) {
+			if (fShowPreview) { // could have been updated by undoAndCreateRenameSupport(..)
 				executed= renameSupport.openDialog(shell, true);
 			} else {
 				renameSupport.perform(shell, fEditor.getSite().getWorkbenchWindow());
@@ -272,12 +352,17 @@ public class RenameLinkedMode {
 		} catch (BadLocationException e) {
 			JavaPlugin.log(e);
 		} finally {
-			fEditor.getViewer().getTextWidget().setRedraw(true);
+			if (label != null)
+				label.dispose();
+			if (image != null)
+				image.dispose();
 		}
 	}
 
 	public void cancel() {
-		fLinkedModeModel.exit(ILinkedModeListener.NONE);
+		if (fLinkedModeModel != null) {
+			fLinkedModeModel.exit(ILinkedModeListener.NONE);
+		}
 		linkedModeLeft();
 	}
 	
@@ -322,6 +407,9 @@ public class RenameLinkedMode {
 							} catch (BadLocationException e) {
 								throw new InvocationTargetException(e);
 							}
+						}
+						if (fOriginalSaved) {
+							fEditor.doSave(monitor); // started saved -> end saved
 						}
 					}
 				});
@@ -395,7 +483,11 @@ public class RenameLinkedMode {
 					contributionId= IJavaRefactorings.RENAME_METHOD;
 				break;
 			case IJavaElement.FIELD:
-				contributionId= IJavaRefactorings.RENAME_FIELD;
+				IField field= (IField) javaElement;
+				if (field.isEnumConstant())
+					contributionId= IJavaRefactorings.RENAME_ENUM_CONSTANT;
+				else
+					contributionId= IJavaRefactorings.RENAME_FIELD;
 				break;
 			case IJavaElement.TYPE_PARAMETER:
 				contributionId= IJavaRefactorings.RENAME_TYPE_PARAMETER;
@@ -447,14 +539,18 @@ public class RenameLinkedMode {
 				String fileNamePatterns= refactoringSettings.get(RenameRefactoringWizard.QUALIFIED_NAMES_PATTERNS);
 				if (fileNamePatterns != null && fileNamePatterns.length() != 0) {
 					descriptor.setFileNamePatterns(fileNamePatterns);
-					descriptor.setUpdateQualifiedNames(refactoringSettings.getBoolean(RenameRefactoringWizard.UPDATE_QUALIFIED_NAMES));
+					boolean updateQualifiedNames= refactoringSettings.getBoolean(RenameRefactoringWizard.UPDATE_QUALIFIED_NAMES);
+					descriptor.setUpdateQualifiedNames(updateQualifiedNames);
+					fShowPreview|= updateQualifiedNames;
 				}
 		}
 		switch (elementType) {
 			case IJavaElement.PACKAGE_FRAGMENT:
 			case IJavaElement.TYPE:
 			case IJavaElement.FIELD:
-				descriptor.setUpdateTextualOccurrences(refactoringSettings.getBoolean(RenameRefactoringWizard.UPDATE_TEXTUAL_MATCHES));
+				boolean updateTextualOccurrences= refactoringSettings.getBoolean(RenameRefactoringWizard.UPDATE_TEXTUAL_MATCHES);
+				descriptor.setUpdateTextualOccurrences(updateTextualOccurrences);
+				fShowPreview|= updateTextualOccurrences;
 		}
 		switch (elementType) {
 			case IJavaElement.FIELD:
@@ -466,7 +562,9 @@ public class RenameLinkedMode {
 
 	private void linkedModeLeft() {
 		fgActiveLinkedMode= null;
-		fInfoPopup.close();
+		if (fInfoPopup != null) {
+			fInfoPopup.close();
+		}
 		
 		ISourceViewer viewer= fEditor.getViewer();
 		if (viewer instanceof IEditingSupportRegistry) {
@@ -491,7 +589,7 @@ public class RenameLinkedMode {
 		LinkedPosition[] positions= fLinkedPositionGroup.getPositions();
 		for (int i= 0; i < positions.length; i++) {
 			LinkedPosition position= positions[i];
-			if (position.includes(start) || position.includes(end))
+			if (position.includes(start) && position.includes(end))
 				return position;
 		}
 		return null;

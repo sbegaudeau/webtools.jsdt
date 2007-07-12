@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,11 +47,10 @@ public class SetClasspathOperation extends ChangeClasspathOperation {
 	 * Sets the classpath of the pre-specified project.
 	 */
 	protected void executeOperation() throws JavaModelException {
-		if (isCanceled()) 
-			return;
+		checkCanceled();
 		try {
 			// set raw classpath and null out resolved info
-			this.project.getPerProjectInfo().setClasspath(this.newRawClasspath, this.newOutputLocation, JavaModelStatus.VERIFIED_OK/*format is ok*/, null, null, null);
+			this.project.getPerProjectInfo().setClasspath(this.newRawClasspath, this.newOutputLocation, JavaModelStatus.VERIFIED_OK/*format is ok*/, null, null, null, null);
 			
 			// if needed, generate delta, update project ref, create markers, ...
 			classpathChanged(this.project);

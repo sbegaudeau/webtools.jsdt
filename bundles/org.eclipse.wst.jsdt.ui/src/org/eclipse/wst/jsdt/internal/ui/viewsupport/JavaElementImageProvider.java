@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -349,12 +349,19 @@ public class JavaElementImageProvider {
 				
 				if (Flags.isDeprecated(modifiers))
 					flags |= JavaElementImageDescriptor.DEPRECATED;
-				
 				if (member.getElementType() == IJavaElement.TYPE) {
 					if (JavaModelUtil.hasMainMethod((IType) member)) {
 						flags |= JavaElementImageDescriptor.RUNNABLE;
 					}
 				}
+				if (member.getElementType() == IJavaElement.FIELD) {
+					if (Flags.isVolatile(modifiers))
+						flags |= JavaElementImageDescriptor.VOLATILE;
+					if (Flags.isTransient(modifiers))
+						flags |= JavaElementImageDescriptor.TRANSIENT;
+				}
+				
+				
 			} catch (JavaModelException e) {
 				// do nothing. Can't compute runnable adornment or get flags
 			}

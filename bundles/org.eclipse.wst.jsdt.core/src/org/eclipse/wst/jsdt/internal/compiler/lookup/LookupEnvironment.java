@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,7 +63,8 @@ public class LookupEnvironment implements ProblemReasons, TypeConstants {
 	private SimpleLookupTable uniqueRawTypeBindings;
 	private SimpleLookupTable uniqueWildcardBindings;
 	private SimpleLookupTable uniqueParameterizedGenericMethodBindings;
-	
+	private SimpleLookupTable uniqueAnnotationBindings;
+
 	public CompilationUnitDeclaration unitBeingCompleted = null; // only set while completing units
 	public Object missingClassFileLocation = null; // only set when resolving certain references, to help locating problems
 
@@ -84,6 +85,7 @@ public LookupEnvironment(ITypeRequestor typeRequestor, CompilerOptions globalOpt
 	this.uniqueRawTypeBindings = new SimpleLookupTable(3);
 	this.uniqueWildcardBindings = new SimpleLookupTable(3);
 	this.uniqueParameterizedGenericMethodBindings = new SimpleLookupTable(3);
+	this.uniqueAnnotationBindings = new SimpleLookupTable(3);
 	this.accessRestrictions = new HashMap(3);
 	this.classFilePool = ClassFilePool.newInstance();
 }
@@ -451,7 +453,7 @@ public TypeBinding convertToRawType(TypeBinding type) {
 			break;
 		case Binding.PARAMETERIZED_TYPE :
 			ParameterizedTypeBinding paramType = (ParameterizedTypeBinding) originalType;
-			needToConvert = paramType.type.isGenericType(); // only recursive call to enclosing type can find parameterizedType with arguments
+			needToConvert = paramType.genericType().isGenericType(); // only recursive call to enclosing type can find parameterizedType with arguments
 			break;
 		default :
 			needToConvert = false;
@@ -515,7 +517,7 @@ public TypeBinding convertUnresolvedBinaryToRawType(TypeBinding type) {
 			break;
 		case Binding.PARAMETERIZED_TYPE :
 			ParameterizedTypeBinding paramType = (ParameterizedTypeBinding) originalType;
-			needToConvert = paramType.type.isGenericType(); // only recursive call to enclosing type can find parameterizedType with arguments
+			needToConvert = paramType.genericType().isGenericType(); // only recursive call to enclosing type can find parameterizedType with arguments
 			break;
 		default :
 			needToConvert = false;
@@ -544,11 +546,74 @@ public TypeBinding convertUnresolvedBinaryToRawType(TypeBinding type) {
 	return type;
 }
 
+/*
+ *  Used to guarantee annotation identity.
+ */
+public AnnotationBinding createAnnotation(ReferenceBinding annotationType, ElementValuePair[] pairs) {
+	// cached info is array of already created annotation binding for this type
+	AnnotationBinding[] cachedInfo = (AnnotationBinding[])this.uniqueAnnotationBindings.get(annotationType);
+	boolean needToGrow = false;
+	int index = 0;
+	if (pairs.length != 0) {
+		AnnotationBinding.setMethodBindings(annotationType, pairs);
+	}
+	if (cachedInfo != null){
+		nextCachedType : 
+			// iterate existing parameterized for reusing one with same type arguments if any
+			for (int max = cachedInfo.length; index < max; index++){
+				AnnotationBinding cachedType = cachedInfo[index];
+				if (cachedType == null) break nextCachedType;
+				ElementValuePair[] elementValuePairs = cachedType.pairs;
+				int length2 = pairs.length;
+				if (length2 != elementValuePairs.length) continue nextCachedType;
+				loop: for (int i = 0; i < length2; i++) {
+					ElementValuePair pair = elementValuePairs[i];
+					// loop on the given pair to make sure one will match
+					for (int j = 0; j < length2; j++) {
+						ElementValuePair pair2 = pairs[j];
+						if (pair.binding == pair2.binding) {
+							if (pair.value == null) {
+								if (pair2.value == null) {
+									continue loop;
+								}
+								continue nextCachedType;
+							} else {
+								if (pair2.value == null
+										|| !pair2.value.equals(pair.value)) {
+									continue nextCachedType;
+								}
+							}
+							continue loop;
+						}
+					}
+					// no match found for pair so we create a new annotation binding
+					continue nextCachedType;
+				}
+				// cached type match, reuse current
+				return cachedType;
+		}
+		needToGrow = true;
+	} else {
+		cachedInfo = new AnnotationBinding[1];
+		this.uniqueAnnotationBindings.put(annotationType, cachedInfo);
+	}
+	// grow cache ?
+	int length = cachedInfo.length;
+	if (needToGrow && index == length){
+		System.arraycopy(cachedInfo, 0, cachedInfo = new AnnotationBinding[length*2], 0, length);
+		this.uniqueAnnotationBindings.put(annotationType, cachedInfo);
+	}
+	// add new binding
+	AnnotationBinding annotationBinding = new AnnotationBinding(annotationType, pairs);
+	cachedInfo[index] = annotationBinding;
+	return annotationBinding;
+}
+
 /* Used to guarantee array type identity.
 */
 public ArrayBinding createArrayType(TypeBinding leafComponentType, int dimensionCount) {
 	if (leafComponentType instanceof LocalTypeBinding) // cache local type arrays with the local type itself
-		return ((LocalTypeBinding) leafComponentType).createArrayType(dimensionCount);
+		return ((LocalTypeBinding) leafComponentType).createArrayType(dimensionCount,this);
 
 	// find the array binding cache for this dimension
 	int dimIndex = dimensionCount - 1;
@@ -612,7 +677,7 @@ public BinaryTypeBinding createBinaryTypeFrom(ISourceType binaryType, PackageBin
 /* Used to create packages from the package statement.
 */
 
-PackageBinding createPackage(char[][] compoundName) {
+public PackageBinding createPackage(char[][] compoundName) {
 	PackageBinding packageBinding = getPackage0(compoundName[0]);
 	if (packageBinding == null || packageBinding == TheNotFoundPackage) {
 		packageBinding = new PackageBinding(compoundName[0], this);
@@ -734,7 +799,7 @@ public ParameterizedTypeBinding createParameterizedType(ReferenceBinding generic
 			for (int max = cachedInfo.length; index < max; index++){
 			    ParameterizedTypeBinding cachedType = cachedInfo[index];
 			    if (cachedType == null) break nextCachedType;
-			    if (cachedType.type != genericType) continue nextCachedType; // remain of unresolved type
+			    if (cachedType.actualType() != genericType) continue nextCachedType; // remain of unresolved type
 			    if (cachedType.enclosingType() != enclosingType) continue nextCachedType;
 				TypeBinding[] cachedArguments = cachedType.arguments;
 				int cachedArgLength = cachedArguments == null ? 0 : cachedArguments.length;
@@ -773,7 +838,7 @@ public RawTypeBinding createRawType(ReferenceBinding genericType, ReferenceBindi
 			for (int max = cachedInfo.length; index < max; index++){
 			    RawTypeBinding cachedType = cachedInfo[index];
 			    if (cachedType == null) break nextCachedType;
-			    if (cachedType.type != genericType) continue nextCachedType; // remain of unresolved type
+			    if (cachedType.actualType() != genericType) continue nextCachedType; // remain of unresolved type
 			    if (cachedType.enclosingType() != enclosingType) continue nextCachedType;
 				// all enclosing type match, reuse current
 				return cachedType;
@@ -1128,7 +1193,7 @@ TypeBinding getTypeFromTypeSignature(SignatureWrapper wrapper, TypeVariableBindi
 		wrapper.start++; // skip '.'
 		char[] memberName = wrapper.nextWord();
 		BinaryTypeBinding.resolveType(parameterizedType, this, false);
-		ReferenceBinding memberType = parameterizedType.type.getMemberType(memberName);
+		ReferenceBinding memberType = parameterizedType.genericType().getMemberType(memberName);
 		if (wrapper.signature[wrapper.start] == '<') {
 			wrapper.start++; // skip '<'
 			typeArguments = getTypeArgumentsFromSignature(wrapper, staticVariables, enclosingType, memberType);
@@ -1203,7 +1268,8 @@ public void reset() {
 	this.uniqueRawTypeBindings = new SimpleLookupTable(3);
 	this.uniqueWildcardBindings = new SimpleLookupTable(3);
 	this.uniqueParameterizedGenericMethodBindings = new SimpleLookupTable(3);
-	
+	this.uniqueAnnotationBindings = new SimpleLookupTable(3);
+
 	for (int i = this.units.length; --i >= 0;)
 		this.units[i] = null;
 	this.lastUnitIndex = -1;
