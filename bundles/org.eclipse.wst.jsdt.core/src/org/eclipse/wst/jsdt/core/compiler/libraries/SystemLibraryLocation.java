@@ -46,14 +46,16 @@ public class SystemLibraryLocation implements LibraryLocation {
 		return JavaCore.PLUGIN_ID;
 	}
 	public char[][] getAllFilesInPluginDirectory(String directory){
-		InputStream is = null;
+		//InputStream is = null;
 		//URL[] entries = FileLocator.findEntries(Platform.getBundle(getPluginId()), new Path("./" + directory ));
 		Enumeration entries = (Platform.getBundle(getPluginId()).getEntryPaths(directory));
 		ArrayList allEntries = new ArrayList();
 		while(entries.hasMoreElements()) {
-			char[] value = new Path((String)entries.nextElement()).lastSegment().toCharArray();
-			
-			allEntries.add(value);
+			Path value = new Path((String)entries.nextElement());
+			String extension = value.getFileExtension();
+			if(extension!=null && extension.equalsIgnoreCase("js")) {
+				allEntries.add(value.lastSegment().toCharArray());
+			}
 		}
 		char[][] fileNames = new char[allEntries.size()][];
 		
