@@ -43,7 +43,6 @@ public class InferEngine extends ASTVisitor {
     int passNumber=1;
 
     int anonymousCount=0;
-    //int anonymousCount2=0; //@GINO
 	
 	public  InferredType StringType=new InferredType(new char[]{'S','t','r','i','n','g'});
 	public  InferredType NumberType=new InferredType(new char[]{'N','u','m','b','e','r'});
@@ -439,6 +438,11 @@ public class InferEngine extends ASTVisitor {
 		anonType.isAnonymous=true;
 		anonType.superClass = ObjectType;
 		
+		anonType.sourceStart = objLit.sourceStart;
+		anonType.sourceEnd = objLit.sourceEnd;
+		
+		populateType( anonType, objLit );
+		
 		return anonType;
 	}
 
@@ -663,10 +667,6 @@ public class InferEngine extends ASTVisitor {
 			
 			//create an annonymous type based on the ObjectLiteral
 			InferredType type = createAnonymousType( (ObjectLiteral)expression );
-			
-			ObjectLiteral objLit = (ObjectLiteral)expression;
-			
-			populateType(type, objLit);
 			
 			//set the start and end
 			type.sourceStart = expression.sourceStart;
