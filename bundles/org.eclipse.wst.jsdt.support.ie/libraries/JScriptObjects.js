@@ -12,7 +12,20 @@
 
 function Variant(){};
 Variant.prototype=new Object();
+ 
+  /**
+  * Object DABoolean()
+  *
+  * Temp Definition of DABoolean Type as found in MSDN Pages
+  *
+  * @super Object
+  * @type  constructor
+  * @class DABoolean
+  * @since JScript 5.6   
+ */
 
+function DABoolean(){};
+DABoolean.prototype=new Object();
 
   /* Object arguments()
   * @super Array
