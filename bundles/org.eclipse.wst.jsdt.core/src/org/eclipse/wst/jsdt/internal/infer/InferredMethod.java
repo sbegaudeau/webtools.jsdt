@@ -21,7 +21,8 @@ public class InferredMethod extends InferredMember{
 	
 	public StringBuffer print(int indent, StringBuffer output)  
 	{
-		printIndent(indent, output);
+		String modifier=(isStatic)? "static ":"";
+		printIndent(indent, output).append(modifier);
 		if (!isConstructor)
 		{
 		 if (methodDeclaration.inferredType!=null)
