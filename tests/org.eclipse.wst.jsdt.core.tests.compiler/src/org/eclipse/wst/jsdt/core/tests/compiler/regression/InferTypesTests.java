@@ -597,4 +597,54 @@ public class InferTypesTests extends AbstractRegressionTest {
 				
 			 );
 		}
+		
+		/*
+		 * Static member check
+		 */
+		public void test075() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+				"var x = function(){};" +
+				"x.prototype = {};" +
+				"x.foo = \"\";" +
+				"x.bar = function(){" +
+				"  return \"\";" +
+				"}",
+				"X.js",
+				"class x extends Object{\n  static String foo;\n  static String bar()\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		
+//		/*
+//		 * Static member on built-in
+//		 */
+//		public void test076() {
+//			CompilationUnitDeclaration declaration = this.runInferTest(
+//				"Object.foo = \"\";" +
+//				"Object.bar = function(){" +
+//				"  return \"\";" +
+//				"}",
+//				"X.js",
+//				"",
+//				getDefaultOptions()
+//				
+//			 );
+//		}
+//		
+//		/*
+//		 * Dynamic extend built-in through prototype
+//		 */
+//		public void test077() {
+//			CompilationUnitDeclaration declaration = this.runInferTest(
+//				"Object.prototype.foo = \"\";" +
+//				"Object.prototype.bar = function(){" +
+//				"  return \"\";" +
+//				"}",
+//				"X.js",
+//				"",
+//				getDefaultOptions()
+//				
+//			 );
+//		}
 }
