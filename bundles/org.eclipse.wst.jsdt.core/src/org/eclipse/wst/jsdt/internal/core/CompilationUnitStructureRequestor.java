@@ -228,7 +228,8 @@ public void enterField(FieldInfo fieldInfo) {
 	SourceField handle = null;
 	if (parentHandle.getElementType() == IJavaElement.TYPE 
 			|| parentHandle.getElementType() == IJavaElement.COMPILATION_UNIT 
-			|| parentHandle.getElementType() == IJavaElement.CLASS_FILE 
+			|| parentHandle.getElementType() == IJavaElement.CLASS_FILE
+			|| parentHandle.getElementType() == IJavaElement.METHOD
 			) {
 		String fieldName = JavaModelManager.getJavaModelManager().intern(new String(fieldInfo.name));
 		handle = new SourceField(parentHandle, fieldName);
@@ -375,18 +376,21 @@ public void enterType(TypeInfo typeInfo) {
 	JavaElementInfo parentInfo = (JavaElementInfo) this.infoStack.peek();
 	JavaElement parentHandle= (JavaElement) this.handleStack.peek();
 	String nameString= new String(typeInfo.name);
-	SourceType handle = new SourceType(parentHandle, nameString); //NB: occurenceCount is computed in resolveDuplicates
+	
+	SourceType handle = typeInfo.anonymousMember ? 
+			new SourceType(parentHandle, ""):
+			new SourceType(parentHandle, nameString); //NB: occurenceCount is computed in resolveDuplicates
+	
 	resolveDuplicates(handle);
 	
-	 
 	SourceTypeElementInfo info =
-//		typeInfo.anonymousMember ? 
-//				new SourceTypeElementInfo() {
-//					public boolean isAnonymousMember() {
-//						return true;
-//					}
-//				} : 
-			new SourceTypeElementInfo(parentHandle instanceof ClassFile);
+		typeInfo.anonymousMember ? 
+				new SourceTypeElementInfo( parentHandle instanceof ClassFile ) {
+					public boolean isAnonymousMember() {
+						return true;
+					}
+				} : 
+			new SourceTypeElementInfo( parentHandle instanceof ClassFile );
 	info.setHandle(handle);
 	info.setSourceRangeStart(typeInfo.declarationStart);
 	info.setFlags(typeInfo.modifiers);

@@ -98,6 +98,33 @@ public class LocalDeclarationVisitor extends ASTVisitor {
 	}	
 }
 
+
+	/*
+	 * Visitor for current context declaration.
+	 * 
+	 * A context is defined by either the top level or a closure (function)
+	 */
+	protected ASTVisitor contextDeclarationNotifier = new ASTVisitor(){
+		
+		public boolean visit(LocalDeclaration localDeclaration, BlockScope scope) {
+			notifySourceElementRequestor( localDeclaration, null );
+			return true;
+		}
+	
+	
+		/*
+		 * Stop visiting here because the method opens a new context
+		 */
+		public boolean visit(MethodDeclaration methodDeclaration, Scope scope) {
+			
+			//only functions with names are notified
+			if( methodDeclaration.selector != null && methodDeclaration.selector.length > 0 )
+				notifySourceElementRequestor( methodDeclaration );
+			return false;
+		}
+	
+	};
+
 public SourceElementParser(
 		final ISourceElementRequestor requestor, 
 		IProblemFactory problemFactory,
@@ -1081,118 +1108,61 @@ public void notifySourceElementRequestor(CompilationUnitDeclaration parsedUnit) 
 //			}
 //		}
 	}
-	length=(parsedUnit.statements!=null)? parsedUnit.statements.length : 0;
-	nodes = new ASTNode[length];
 	
-	// notify the nodes in the syntactical order
-	if (nodes != null && length > 0) {
-		System.arraycopy(parsedUnit.statements, 0, nodes, 0, length);
-		quickSort(nodes, 0, length-1);
-		for (int i=0;i<length;i++) {
-			ASTNode node = nodes[i];
-			if (node instanceof LocalDeclaration) {
-				LocalDeclaration var = (LocalDeclaration) node;
-				notifySourceElementRequestor(var, null);
-				
-			}
-			else if (node instanceof AbstractMethodDeclaration) {
-				AbstractMethodDeclaration methodDeclaration = (AbstractMethodDeclaration) node;
-				notifySourceElementRequestor(methodDeclaration);
-			} 
-			else
-			{
-				notifySourceStatment(node);
-			}
-//			if (node instanceof ImportReference) {
-//				ImportReference importRef = (ImportReference)node;
-//				if (node == parsedUnit.currentPackage) {
-//					notifySourceElementRequestor(importRef, true);
-//				} else {
-//					notifySourceElementRequestor(importRef, false);
-//				}
-//			} else { // instanceof TypeDeclaration
-//				notifySourceElementRequestor((TypeDeclaration)node, sourceType == null, null);
-//			}
+	//visit each statement to notify context declarations
+	if( parsedUnit.statements != null ){
+		
+		for( int i=0; i<parsedUnit.statements.length; i++ ){
+			parsedUnit.statements[i].traverse( contextDeclarationNotifier, parsedUnit.scope );
+			
 		}
+		
 	}
+	
+//	length=(parsedUnit.statements!=null)? parsedUnit.statements.length : 0;
+//	nodes = new ASTNode[length];
+//	
+//	// notify the nodes in the syntactical order
+//	if (nodes != null && length > 0) {
+//		System.arraycopy(parsedUnit.statements, 0, nodes, 0, length);
+//		quickSort(nodes, 0, length-1);
+//		for (int i=0;i<length;i++) {
+//			ASTNode node = nodes[i];
+//			if (node instanceof LocalDeclaration) {
+//				LocalDeclaration var = (LocalDeclaration) node;
+//				notifySourceElementRequestor(var, null);
+//				
+//			}
+//			else if (node instanceof AbstractMethodDeclaration) {
+//				AbstractMethodDeclaration methodDeclaration = (AbstractMethodDeclaration) node;
+//				notifySourceElementRequestor(methodDeclaration);
+//			} 
+//			else
+//			{
+//				notifySourceStatment(node);
+//			}
+////			if (node instanceof ImportReference) {
+////				ImportReference importRef = (ImportReference)node;
+////				if (node == parsedUnit.currentPackage) {
+////					notifySourceElementRequestor(importRef, true);
+////				} else {
+////					notifySourceElementRequestor(importRef, false);
+////				}
+////			} else { // instanceof TypeDeclaration
+////				notifySourceElementRequestor((TypeDeclaration)node, sourceType == null, null);
+////			}
+//		}
+//	}
 	
 	for (int inx=0;inx<parsedUnit.numberInferredTypes;inx++) {
 			InferredType type = parsedUnit.inferredTypes[inx];
-		if (!type.isDefinition)
+		
+		//skip anonymouse here because they are from Object Literals and they are represented under
+		//their assign reference
+		if( type.isAnonymous )
 			continue;
-		ISourceElementRequestor.TypeInfo typeInfo = new ISourceElementRequestor.TypeInfo();
-		typeInfo.declarationStart = type.sourceStart;
-		typeInfo.modifiers = 0;
-		typeInfo.name = type.getName();
-		typeInfo.nameSourceStart = type.sourceStart;
-		typeInfo.nameSourceEnd = -1;
-		typeInfo.superclass = type.getSuperClassName();
-		typeInfo.superinterfaces = null;
-//		typeInfo.typeParameters = getTypeParameterInfos(typeDeclaration.typeParameters);
-//		typeInfo.annotationPositions = collectAnnotationPositions(typeDeclaration.annotations);
-//		typeInfo.categories = (char[][]) this.nodesToCategories.get(typeDeclaration);
-		typeInfo.secondary = false;
-		requestor.enterType(typeInfo);
 		
-		  for (int attributeInx=0; attributeInx<type.numberAttributes; attributeInx++) {
-			InferredAttribute field = type.attributes[attributeInx];
-			ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
-			fieldInfo.declarationStart = field.sourceStart();
-			fieldInfo.name = field.name;
-			fieldInfo.modifiers = 0;
-			fieldInfo.type = field.type!=null ? field.type.getName():null;
-			fieldInfo.nameSourceStart = field.nameStart;
-			fieldInfo.nameSourceEnd = field.nameStart+field.name.length-1;
-//			fieldInfo.annotationPositions = collectAnnotationPositions(fieldDeclaration.annotations);
-//			fieldInfo.categories = (char[][]) this.nodesToCategories.get(fieldDeclaration);
-			requestor.enterField(fieldInfo);
-
-			int initializationStart=field.initializationStart;
-			requestor.exitField(initializationStart,field.sourceEnd(),field.sourceEnd());
-		}
-		
-		if (type.methods!=null)
-		  for (Iterator iterator = type.methods.iterator(); iterator.hasNext();) {
-			InferredMethod method = (InferredMethod) iterator.next();
-			
-			ISourceElementRequestor.MethodInfo methodInfo = new ISourceElementRequestor.MethodInfo();
-			methodInfo.isConstructor = method.isConstructor;
-			MethodDeclaration methodDeclaration=method.methodDeclaration;
-			
-			char[][] argumentTypes = null;
-			char[][] argumentNames = null;
-			Argument[] arguments = methodDeclaration.arguments;
-			if (arguments != null) {
-				int argumentLength = arguments.length;
-				argumentTypes = new char[argumentLength][];
-				argumentNames = new char[argumentLength][];
-				for (int i = 0; i < argumentLength; i++) {
-					if (arguments[i].type!=null)
-						argumentTypes[i] = CharOperation.concatWith(arguments[i].type.getParameterizedTypeName(), '.');
-					argumentNames[i] = arguments[i].name;
-				}
-			}			
-			int selectorSourceEnd = this.sourceEnds.get(methodDeclaration);
-			
-			methodInfo.declarationStart = methodDeclaration.declarationSourceStart;
-			methodInfo.modifiers = 0;
-			methodInfo.name =method.name;
-			methodInfo.nameSourceStart = method.nameStart;
-			methodInfo.nameSourceEnd = method.nameStart+method.name.length-1;
-			methodInfo.parameterTypes = argumentTypes;
-			methodInfo.parameterNames = argumentNames;
-			methodInfo.exceptionTypes = null;
-			methodInfo.typeParameters = getTypeParameterInfos(methodDeclaration.typeParameters());
-			methodInfo.annotationPositions = collectAnnotationPositions(methodDeclaration.annotations);
-			methodInfo.categories = (char[][]) this.nodesToCategories.get(methodDeclaration);
-			requestor.enterMethod(methodInfo);
-			
-			requestor.exitMethod(methodDeclaration.declarationSourceEnd, -1, -1);
-
-		}
-		
-		
-		requestor.exitType(type.sourceEnd);
+		notifySourceElementRequestor(type);
 	}
 	
 	if (sourceType == null){
@@ -1200,6 +1170,118 @@ public void notifySourceElementRequestor(CompilationUnitDeclaration parsedUnit) 
 			requestor.exitCompilationUnit(parsedUnit.sourceEnd);
 		}
 	}
+}
+
+public void notifySourceElementRequestor( InferredType type ) {
+	
+	if ( !type.isDefinition)
+		return;
+
+	
+	ISourceElementRequestor.TypeInfo typeInfo = new ISourceElementRequestor.TypeInfo();
+	typeInfo.declarationStart = type.sourceStart;
+	typeInfo.modifiers = 0;
+	typeInfo.name = type.getName();
+	typeInfo.nameSourceStart = type.sourceStart;
+	typeInfo.nameSourceEnd = -1;
+	typeInfo.superclass = type.getSuperClassName();
+	typeInfo.superinterfaces = null;
+//		typeInfo.typeParameters = getTypeParameterInfos(typeDeclaration.typeParameters);
+//		typeInfo.annotationPositions = collectAnnotationPositions(typeDeclaration.annotations);
+//		typeInfo.categories = (char[][]) this.nodesToCategories.get(typeDeclaration);
+	typeInfo.secondary = false;
+	
+	typeInfo.anonymousMember = type.isAnonymous;
+	
+	requestor.enterType(typeInfo);
+	
+	  for (int attributeInx=0; attributeInx<type.numberAttributes; attributeInx++) {
+		InferredAttribute field = type.attributes[attributeInx];
+		ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
+		fieldInfo.declarationStart = field.sourceStart();
+		fieldInfo.name = field.name;
+		fieldInfo.modifiers = 0;
+		
+		fieldInfo.nameSourceStart = field.nameStart;
+		fieldInfo.nameSourceEnd = field.nameStart+field.name.length-1;
+		
+		fieldInfo.type = getTypeName( field.type );
+		
+//			fieldInfo.annotationPositions = collectAnnotationPositions(fieldDeclaration.annotations);
+//			fieldInfo.categories = (char[][]) this.nodesToCategories.get(fieldDeclaration);
+		requestor.enterField(fieldInfo);
+
+		//If this field is of an anonymous type, need to notify so that it shows as a child
+		if( field.type != null && field.type.isAnonymous  ){
+			notifySourceElementRequestor( field.type );
+		}
+		
+		int initializationStart=field.initializationStart;
+		requestor.exitField(initializationStart,field.sourceEnd(),field.sourceEnd());
+	}
+	
+	if (type.methods!=null)
+	  for (Iterator iterator = type.methods.iterator(); iterator.hasNext();) {
+		InferredMethod method = (InferredMethod) iterator.next();
+		
+		ISourceElementRequestor.MethodInfo methodInfo = new ISourceElementRequestor.MethodInfo();
+		methodInfo.isConstructor = method.isConstructor;
+		MethodDeclaration methodDeclaration=method.methodDeclaration;
+		
+		char[][] argumentTypes = null;
+		char[][] argumentNames = null;
+		Argument[] arguments = methodDeclaration.arguments;
+		if (arguments != null) {
+			int argumentLength = arguments.length;
+			argumentTypes = new char[argumentLength][];
+			argumentNames = new char[argumentLength][];
+			for (int i = 0; i < argumentLength; i++) {
+				if (arguments[i].type!=null)
+					argumentTypes[i] = CharOperation.concatWith(arguments[i].type.getParameterizedTypeName(), '.');
+				argumentNames[i] = arguments[i].name;
+			}
+		}			
+		int selectorSourceEnd = this.sourceEnds.get(methodDeclaration);
+		
+		methodInfo.declarationStart = methodDeclaration.declarationSourceStart;
+		methodInfo.modifiers = 0;
+		methodInfo.name =method.name;
+		methodInfo.nameSourceStart = method.nameStart;
+		methodInfo.nameSourceEnd = method.nameStart+method.name.length-1;
+		methodInfo.parameterTypes = argumentTypes;
+		methodInfo.parameterNames = argumentNames;
+		methodInfo.exceptionTypes = null;
+		methodInfo.typeParameters = getTypeParameterInfos(methodDeclaration.typeParameters());
+		methodInfo.annotationPositions = collectAnnotationPositions(methodDeclaration.annotations);
+		methodInfo.categories = (char[][]) this.nodesToCategories.get(methodDeclaration);
+		requestor.enterMethod(methodInfo);
+		
+		requestor.exitMethod(methodDeclaration.declarationSourceEnd, -1, -1);
+
+	}
+	
+	
+	requestor.exitType(type.sourceEnd);
+	
+}
+
+private char[] getTypeName( InferredType type ){
+	
+	char [] typeName = null;
+	//check the inferred type
+	if( type != null ){
+		
+		if( type.isAnonymous ){
+			//if the inferred type is anonymous, will set type as Object
+			typeName = InferredType.OBJECT_NAME;
+			
+		}
+		else{
+			typeName = type.getName();
+		}					
+	}
+	
+	return typeName;
 }
 
 private void notifySourceStatment(ASTNode node) {
@@ -1403,9 +1485,7 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 				// remember deprecation so as to not lose it below
 				boolean deprecated = (currentModifiers & ClassFileConstants.AccDeprecated) != 0 || hasDeprecatedAnnotation(fieldDeclaration.annotations);	
 			
-				char[] typeName = null;
-				if (fieldDeclaration.inferredType!=null)
-					typeName=fieldDeclaration.inferredType.getName();
+				
 //				if (fieldDeclaration.type == null) {
 //					// enum constant
 //					typeName = declaringType.name;
@@ -1418,12 +1498,18 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 				fieldInfo.declarationStart = fieldDeclaration.declarationSourceStart;
 				fieldInfo.name = fieldDeclaration.name;
 				fieldInfo.modifiers = deprecated ? (currentModifiers & ExtraCompilerModifiers.AccJustFlag) | ClassFileConstants.AccDeprecated : currentModifiers & ExtraCompilerModifiers.AccJustFlag;
-				fieldInfo.type = typeName;
+				fieldInfo.type = getTypeName( fieldDeclaration.inferredType );
 				fieldInfo.nameSourceStart = fieldDeclaration.sourceStart;
 				fieldInfo.nameSourceEnd = fieldDeclaration.sourceEnd;
 				fieldInfo.annotationPositions = collectAnnotationPositions(fieldDeclaration.annotations);
 				fieldInfo.categories = (char[][]) this.nodesToCategories.get(fieldDeclaration);
 				requestor.enterField(fieldInfo);
+				
+				//If this field is of an anonymous type, need to notify so that it shows as a child
+				if( fieldDeclaration.inferredType != null && fieldDeclaration.inferredType.isAnonymous  ){
+					notifySourceElementRequestor( fieldDeclaration.inferredType );
+				}
+				
 			}
 			this.visitIfNeeded(fieldDeclaration, declaringType);
 			if (isInRange){
@@ -1673,7 +1759,7 @@ public CompilationUnitDeclaration parseCompilationUnit(
 			this.getMethodBodies(parsedUnit);
 		}
 		this.scanner.resetTo(initialStart, initialEnd);
-		inferTypes(parsedUnit, this.options);
+		
 		notifySourceElementRequestor(parsedUnit);
 		return parsedUnit;
 	} catch (AbortCompilation e) {
@@ -1832,7 +1918,8 @@ private int sourceEnd(TypeDeclaration typeDeclaration) {
 }
 private void visitIfNeeded(AbstractMethodDeclaration method) {
 	if (this.localDeclarationVisitor != null 
-		&& (method.bits & ASTNode.HasLocalType) != 0) {
+		//&& (method.bits & ASTNode.HasLocalType) != 0) {
+		){
 			if (method instanceof ConstructorDeclaration) {
 				ConstructorDeclaration constructorDeclaration = (ConstructorDeclaration) method;
 				if (constructorDeclaration.constructorCall != null) {
@@ -1842,7 +1929,8 @@ private void visitIfNeeded(AbstractMethodDeclaration method) {
 			if (method.statements != null) {
 				int statementsLength = method.statements.length;
 				for (int i = 0; i < statementsLength; i++)
-					method.statements[i].traverse(this.localDeclarationVisitor, method.scope);
+					//method.statements[i].traverse(this.localDeclarationVisitor, method.scope);
+					method.statements[i].traverse( contextDeclarationNotifier, method.scope );
 			}
 	}
 }
