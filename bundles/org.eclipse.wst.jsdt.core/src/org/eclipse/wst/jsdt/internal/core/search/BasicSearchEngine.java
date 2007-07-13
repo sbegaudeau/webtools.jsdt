@@ -537,7 +537,7 @@ public class BasicSearchEngine {
 //			}
 
 			IndexManager indexManager = JavaModelManager.getJavaModelManager().getIndexManager();
-			JavaSearchPattern searchPattern=null;
+			SearchPattern searchPattern=null;
 			char suffix=0;
 			switch(bindingType){
 			
@@ -571,8 +571,43 @@ public class BasicSearchEngine {
 					 
 				}
 				break;
+				default: // some combination
+				{
+					if ((bindingType & Binding.METHOD) >0)
+					{
+						searchPattern = new MethodPattern(
+								true,false,
+								bindingName,
+								null,null,null,null,
+								null,null,null,
+								matchRule);
+						
+					}
+					if ((bindingType & (Binding.VARIABLE |Binding.LOCAL |Binding.FIELD )) >0)
+					{
+						LocalVariablePattern localVariablePattern = new   LocalVariablePattern(true, false, false,bindingName,   matchRule);
+						if (searchPattern==null)
+							searchPattern=localVariablePattern;
+						else
+							searchPattern=new OrPattern(searchPattern,localVariablePattern);
+					}
+					if ((bindingType & Binding.TYPE) >0)
+					{
+						suffix = IIndexConstants.CLASS_SUFFIX;
+						TypeDeclarationPattern typeDeclarationPattern = new TypeDeclarationPattern(
+								packageName,
+								null, // do find member types
+								bindingName,
+								suffix,
+								matchRule);			
+							if (searchPattern==null)
+								searchPattern=typeDeclarationPattern;
+							else
+								searchPattern=new OrPattern(searchPattern,typeDeclarationPattern);
+					}
+				}
 			}
-			final JavaSearchPattern pattern =searchPattern;
+			final SearchPattern pattern =searchPattern;
 			final char typeSuffix=suffix;
 
 			// Get working copy path(s). Store in a single string in case of only one to optimize comparison in requestor

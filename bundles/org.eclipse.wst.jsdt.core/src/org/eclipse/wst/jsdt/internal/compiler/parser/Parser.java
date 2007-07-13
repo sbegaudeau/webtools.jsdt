@@ -9130,6 +9130,8 @@ public CompilationUnitDeclaration parse(
 			}
 		}
 		/* run automaton */
+if (true)
+	System.out.println("parsing "+new String(sourceUnit.getFileName()));
 		parse();
 	} finally {
 		unit = this.compilationUnit;

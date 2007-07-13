@@ -1039,14 +1039,15 @@ protected IType resolveTypeByLocation(char[] packageName, char[] typeName, int a
 	}
 
 	if(type == null&& typeName!=null) {
-		IPackageFragment[] pkgs = this.nameLookup.findPackageFragments(
-			(packageName == null || packageName.length == 0) ? IPackageFragment.DEFAULT_PACKAGE_NAME : new String(packageName),
-			false);
-		// iterate type lookup in each package fragment
-		for (int i = 0, length = pkgs == null ? 0 : pkgs.length; i < length; i++) {
-			type= this.nameLookup.findType(new String(typeName), pkgs[i], false, acceptFlags, true/*consider secondary types*/);
-			if (type != null) break;	
-		}
+//		IPackageFragment[] pkgs = this.nameLookup.findPackageFragments(
+//			(packageName == null || packageName.length == 0) ? IPackageFragment.DEFAULT_PACKAGE_NAME : new String(packageName),
+//			false);
+//		// iterate type lookup in each package fragment
+//		for (int i = 0, length = pkgs == null ? 0 : pkgs.length; i < length; i++) {
+//			type= this.nameLookup.findType(new String(typeName), pkgs[i], false, acceptFlags, true/*consider secondary types*/);
+//			if (type != null) break;	
+//		}
+		type=this.nameLookup.findType(new String(typeName),false,acceptFlags);
 		if (type == null) {
 			String pName= IPackageFragment.DEFAULT_PACKAGE_NAME;
 			if (packageName != null) {

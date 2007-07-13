@@ -23,9 +23,13 @@ import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceType;
 import org.eclipse.wst.jsdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.core.search.BasicSearchEngine;
 import org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessTypeRequestor;
 import org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessBindingRequestor;
+import org.eclipse.wst.jsdt.internal.core.util.HandleFactory;
+import org.eclipse.wst.jsdt.internal.core.util.Util;
+import org.eclipse.wst.jsdt.internal.eval.Evaluator;
 
 /**
  * This class provides a <code>SearchableBuilderEnvironment</code> for code
@@ -65,13 +69,14 @@ public class SearchableEnvironment implements INameEnvironment,
 		this.nameLookup = resScope.newNameLookup(workingCopies);
 
 		// Create search scope with visible entry on the project's classpath
-		if (this.checkAccessRestrictions) {
+		if (false){//this.checkAccessRestrictions) {
 			this.searchScope = BasicSearchEngine
 					.createJavaSearchScope(new IJavaElement[] { resolutionScope });
-		} else {
+				} else {
 			this.searchScope = BasicSearchEngine
 					.createJavaSearchScope(this.nameLookup.packageFragmentRoots);
 		}
+		this.nameLookup.searchScope=this.searchScope;
 	}
 	public SearchableEnvironment(JavaProject project,
 			

@@ -17,27 +17,37 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
+import org.eclipse.wst.jsdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
+import org.eclipse.wst.jsdt.internal.core.search.BasicSearchEngine;
+import org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessBindingRequestor;
+import org.eclipse.wst.jsdt.internal.core.util.HandleFactory;
 import org.eclipse.wst.jsdt.internal.core.util.HashtableOfArrayToObject;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
@@ -153,6 +163,7 @@ public class NameLookup implements SuffixConstants {
 	public long timeSpentInSeekTypesInBinaryPackage = 0;
 
 	protected HashSet acceptedCUs=new HashSet();
+	private ICompilationUnit[] workingCopies;
 	
 	
 	public NameLookup(
@@ -180,6 +191,7 @@ public class NameLookup implements SuffixConstants {
 			}
 			this.typesInWorkingCopies = new HashMap();
 			this.bindingsInWorkingCopies = new HashMap();
+			this.workingCopies=workingCopies;
 			for (int i = 0, length = workingCopies.length; i < length; i++) {
 				ICompilationUnit workingCopy = workingCopies[i];
 				PackageFragment pkg = (PackageFragment) workingCopy.getParent();
@@ -714,6 +726,18 @@ public class NameLookup implements SuffixConstants {
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=118789"
 	 */
 	public Answer findType(String typeName, String packageName, boolean partialMatch, int acceptFlags, boolean checkRestrictions) {
+		
+		if (USE_BINDING_SEARCH)
+		{
+			Answer answer =findBindingSearch(typeName, packageName, Binding.TYPE, partialMatch, acceptFlags, true, true, checkRestrictions, null);
+			if (answer.type==null && answer.element instanceof ITypeRoot)
+			{
+				ITypeRoot typeroot=(ITypeRoot)answer.element;
+				answer.type=typeroot.getType(typeName);
+			}
+			return answer;
+		}
+		
 		return findType(typeName,
 			packageName,
 			partialMatch,
@@ -725,7 +749,8 @@ public class NameLookup implements SuffixConstants {
 	}
 	
 	public Answer findBinding(String typeName, String packageName,int type, boolean partialMatch, int acceptFlags, boolean checkRestrictions) {
-		return findBinding(typeName,
+		if (USE_BINDING_SEARCH)
+		return findBindingSearch(typeName,
 			packageName,
 			type,
 			partialMatch,
@@ -734,6 +759,15 @@ public class NameLookup implements SuffixConstants {
 			false/* do NOT wait for indexes */,
 			checkRestrictions,
 			null);
+		return findBinding(typeName,
+				packageName,
+				type,
+				partialMatch,
+				acceptFlags,
+				true/* consider secondary types */,
+				false/* do NOT wait for indexes */,
+				checkRestrictions,
+				null);
 	}
 	
 	/* return all CUs defining a type */
@@ -887,6 +921,8 @@ public class NameLookup implements SuffixConstants {
 			if (findPackageFragments(packageName + "." + bindingName, false) != null) return null; //$NON-NLS-1$
 		}
 
+		if (VERBOSE)
+			System.out.println("find binding: "+bindingName);
 		// Look for concerned package fragments
 		JavaElementRequestor elementRequestor = new JavaElementRequestor();
 		seekPackageFragments(packageName, false, elementRequestor);
@@ -1923,4 +1959,75 @@ public class NameLookup implements SuffixConstants {
 		return false;
 	}
 	
+	   public static final boolean USE_BINDING_SEARCH=true;
+	   private HandleFactory handleFactory;
+		protected IJavaSearchScope searchScope;
+		public Answer findBindingSearch(
+				String bindingName, 
+				String packageName,
+				int bindingType,
+				boolean partialMatch, 
+				int acceptFlags, 
+				boolean considerSecondaryTypes, 
+				boolean waitForIndexes, 
+				boolean checkRestrictions,
+				IProgressMonitor progressMonitor) {
+
+
+			/*
+			 * if (true){ findTypes(new String(prefix), storage,
+			 * NameLookup.ACCEPT_CLASSES | NameLookup.ACCEPT_INTERFACES); return; }
+			 */
+			try {
+				final String excludePath;
+					excludePath = null;
+
+
+				class MyBindingRequestor implements IRestrictedAccessBindingRequestor {
+					String foundPath=null;
+					public void acceptBinding(int type,int modifiers, char[] packageName,
+							char[] simpleTypeName, 
+							String path, AccessRestriction access) {
+						if (excludePath != null && excludePath.equals(path))
+							return;
+						for (int i = 0; i < workingCopies.length; i++) {
+							if (workingCopies[i].getPath().toString().equals(path))
+								return;
+						}
+						this.foundPath=path;
+					}
+				}
+				final MyBindingRequestor bindingRequestor = new MyBindingRequestor() ;
+				try {
+					int matchRule = SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE;
+					new BasicSearchEngine(this.workingCopies).searchAllBindingNames(
+							null,
+							bindingName.toCharArray(),
+							bindingType,
+							matchRule, // not case sensitive
+							/*IJavaSearchConstants.TYPE,*/ this.searchScope,
+							bindingRequestor, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+							progressMonitor);
+					if (bindingRequestor.foundPath!=null)
+					{
+						if (this.handleFactory == null)
+							this.handleFactory = new HandleFactory();
+						IOpenable openable = this.handleFactory.createOpenable(bindingRequestor.foundPath, this.searchScope);
+
+						return new Answer(openable, null);
+					}
+						
+				} catch (OperationCanceledException e) {
+					return findBinding( bindingName,packageName,bindingType,partialMatch,acceptFlags,considerSecondaryTypes,waitForIndexes,
+							checkRestrictions,progressMonitor);
+				}
+			} catch (JavaModelException e) {
+				return findBinding( bindingName,packageName,bindingType,partialMatch,acceptFlags,considerSecondaryTypes,waitForIndexes,
+						checkRestrictions,progressMonitor);
+				}
+			return null;
+		}
+
+
+
 }
