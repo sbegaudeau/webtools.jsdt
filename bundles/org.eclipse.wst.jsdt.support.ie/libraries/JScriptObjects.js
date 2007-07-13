@@ -1722,7 +1722,7 @@ VBArray.prototype=new Array();
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
  */
-VBArray.prototype.dimensions=function();
+VBArray.prototype.dimensions=function(){};
 /**
   * function getItem(dims);
   * @type  Object
@@ -1732,7 +1732,7 @@ VBArray.prototype.dimensions=function();
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
  */
-VBArray.prototype.getItem=function(dims);
+VBArray.prototype.getItem=function(dims){};
 /**
   * function lbound(dims);
   * @type  Object
@@ -1742,7 +1742,7 @@ VBArray.prototype.getItem=function(dims);
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
  */
-VBArray.prototype.lbound=function(dims);
+VBArray.prototype.lbound=function(dims){};
 /**
   * function toArray()
   * @type  Array
@@ -1751,7 +1751,7 @@ VBArray.prototype.lbound=function(dims);
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
  */
-VBArray.prototype.toArray=function();
+VBArray.prototype.toArray=function(){};
 /**
   * function ubound(dims);
   * @type  Object
@@ -1761,7 +1761,7 @@ VBArray.prototype.toArray=function();
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
  */
-VBArray.prototype.ubound=function(number);
+VBArray.prototype.ubound=function(number){};
 
 
 /**
@@ -1818,7 +1818,7 @@ function ScriptEngineMajorVersion(){};
   * @since JScript 5.6
   * @link   http://msdn2.microsoft.com/en-us/library/wzaz8hhz.aspx    
  */
-function ScriptEngineMinorVersion(){}
+function ScriptEngineMinorVersion(){};
 
 
 
