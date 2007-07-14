@@ -682,11 +682,13 @@ public class CompletionProposalLabelProvider {
 		ICompilationUnit[] sources = lookup.findTypeSources(new String(propType),true);
 		
 		
-		ClasspathContainerInitializer init = JSDScopeUtil.findLibraryInitializer(new Path(new String(compUnit)),project);
-		if(init!=null && init instanceof IClasspathContainerInitialzerExtension) {
-			ImageDescriptor description = ((IClasspathContainerInitialzerExtension)init).getImage(new Path(new String(compUnit)),new String(propType), project);
-			if( description!=null) return description;
-			
+		if (compUnit!=null && compUnit.length>0)
+		{
+			ClasspathContainerInitializer init = JSDScopeUtil.findLibraryInitializer(new Path(new String(compUnit)),project);
+			if(init!=null && init instanceof IClasspathContainerInitialzerExtension) {
+				ImageDescriptor description = ((IClasspathContainerInitialzerExtension)init).getImage(new Path(new String(compUnit)),new String(propType), project);
+				if( description!=null) return description;
+			}
 		}
 		
 		final int flags= proposal.getFlags();
