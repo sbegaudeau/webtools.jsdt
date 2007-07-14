@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IInitializer;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IMethod;
@@ -1973,7 +1974,52 @@ public class NameLookup implements SuffixConstants {
 				boolean checkRestrictions,
 				IProgressMonitor progressMonitor) {
 
+			
+			class MyRequestor implements IJavaElementRequestor
+			{
+				IJavaElement element;
+				public void acceptField(IField field) {
+					element=field;
+				}
 
+				public void acceptInitializer(IInitializer initializer) {
+				}
+
+				public void acceptMemberType(IType type) {
+					element=type;
+				}
+
+				public void acceptMethod(IMethod method) {
+					element=method;
+					
+				}
+
+				public void acceptPackageFragment(
+						IPackageFragment packageFragment) {
+				}
+
+				public void acceptType(IType type) {
+					element=type;
+				}
+
+				public boolean isCanceled() {
+					return false;
+				}
+				
+			}
+			MyRequestor requestor=new MyRequestor();
+			JavaElementRequestor elementRequestor = new JavaElementRequestor();
+			seekPackageFragments(packageName, false, elementRequestor);
+			IPackageFragment[] packages= elementRequestor.getPackageFragments();
+			for (int i = 0; i < packages.length; i++) {
+				seekBindingsInWorkingCopies(bindingName, bindingType,
+						packages[i], -1, partialMatch,
+						bindingName, acceptFlags, requestor);
+				if (requestor.element != null) {
+					return new Answer(requestor.element.getOpenable(), null);
+
+				}
+			}
 			/*
 			 * if (true){ findTypes(new String(prefix), storage,
 			 * NameLookup.ACCEPT_CLASSES | NameLookup.ACCEPT_INTERFACES); return; }
