@@ -396,19 +396,28 @@ public class PackageExplorerContentProvider extends StandardJavaElementContentPr
 	 */
 	private void getHierarchicalPackageChildren(IPackageFragmentRoot parent, IPackageFragment fragment, Collection result) throws JavaModelException {
 		IJavaElement[] children= parent.getChildren();
-		String prefix= fragment != null ? fragment.getElementName() + '.' : ""; //$NON-NLS-1$
+		String prefix= fragment != null ? fragment.getElementName() + '/' : ""; //$NON-NLS-1$
+		if (prefix.length()==1)
+			prefix="";
 		int prefixLen= prefix.length();
 		for (int i= 0; i < children.length; i++) {
 			IPackageFragment curr= (IPackageFragment) children[i];
-			String name= curr.getElementName();
-			if (name.startsWith(prefix) && name.length() > prefixLen && name.indexOf('.', prefixLen) == -1) {
-				if (fFoldPackages) {
-					curr= getFolded(children, curr);
-				}
-				result.add(curr);
-			} else if (fragment == null && curr.isDefaultPackage()) {
-				result.add(curr);
+			if (fragment==null)
+			{
+				if (curr.isDefaultPackage()) 
+					result.add(curr);
 			}
+			else
+			{
+				String name= curr.getElementName();
+				if (name.startsWith(prefix) && name.length() > prefixLen && name.indexOf('/', prefixLen) == -1) {
+					if (fFoldPackages) {
+						curr= getFolded(children, curr);
+					}
+					result.add(curr);
+				}
+			}
+
 		}
 	}
 	
@@ -440,7 +449,7 @@ public class PackageExplorerContentProvider extends StandardJavaElementContentPr
 	public Object getHierarchicalPackageParent(IPackageFragment child) {
 		String name= child.getElementName();
 		IPackageFragmentRoot parent= (IPackageFragmentRoot) child.getParent();
-		int index= name.lastIndexOf('.');
+		int index= name.lastIndexOf('/');
 		if (index != -1) {
 			String realParentName= name.substring(0, index);
 			IPackageFragment element= parent.getPackageFragment(realParentName);
@@ -482,13 +491,13 @@ public class PackageExplorerContentProvider extends StandardJavaElementContentPr
 	}
 	
 	private static IPackageFragment findSinglePackageChild(IPackageFragment fragment, IJavaElement[] children) {
-		String prefix= fragment.getElementName() + '.';
+		String prefix= fragment.getElementName() + '/';
 		int prefixLen= prefix.length();
 		IPackageFragment found= null;
 		for (int i= 0; i < children.length; i++) {
 			IJavaElement element= children[i];
 			String name= element.getElementName();
-			if (name.startsWith(prefix) && name.length() > prefixLen && name.indexOf('.', prefixLen) == -1) {
+			if (name.startsWith(prefix) && name.length() > prefixLen && name.indexOf('/', prefixLen) == -1) {
 				if (found == null) {
 					found= (IPackageFragment) element;
 				} else {

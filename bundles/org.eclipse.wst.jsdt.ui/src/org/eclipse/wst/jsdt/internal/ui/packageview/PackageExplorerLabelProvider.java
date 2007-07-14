@@ -94,7 +94,7 @@ public class PackageExplorerLabelProvider extends AppearanceAwareLabelProvider {
 	}
 	
 	private String getNameDelta(IPackageFragment parent, IPackageFragment fragment) {
-		String prefix= parent.getElementName() + '.';
+		String prefix= parent.getElementName() + '/';
 		String fullName= fragment.getElementName();
 		if (fullName.startsWith(prefix)) {
 			return fullName.substring(prefix.length());

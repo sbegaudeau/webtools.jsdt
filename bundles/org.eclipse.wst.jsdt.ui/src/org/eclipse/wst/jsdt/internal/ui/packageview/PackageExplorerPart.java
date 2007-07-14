@@ -184,7 +184,7 @@ public class PackageExplorerPart extends ViewPart
 	private static final String TAG_LINK_EDITOR= "linkWithEditor"; //$NON-NLS-1$
 	private static final String TAG_MEMENTO= "memento"; //$NON-NLS-1$
 	
-	private boolean fIsCurrentLayoutFlat; // true means flat, false means hierarchical
+	private boolean fIsCurrentLayoutFlat = false; // true means flat, false means hierarchical
 	private boolean fShowLibrariesNode;
 	private boolean fLinkingEnabled;
 	
@@ -453,7 +453,7 @@ public class PackageExplorerPart extends ViewPart
 		try {
 			fIsCurrentLayoutFlat= fDialogSettings.getInt(TAG_LAYOUT) == FLAT_LAYOUT;
 		} catch (NumberFormatException e) {
-			fIsCurrentLayoutFlat= true;
+			fIsCurrentLayoutFlat= false;
 		}
 		
 		try {

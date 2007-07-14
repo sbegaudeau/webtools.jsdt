@@ -123,7 +123,7 @@ public class JavaNavigatorViewActionProvider extends CommonActionProvider {
 	}
 
 	public void restoreState(IMemento memento) {
-		boolean isCurrentLayoutFlat= true;
+		boolean isCurrentLayoutFlat= false;
 		Integer state= null;
 		if (memento != null)
 			state= memento.getInteger(TAG_LAYOUT);
