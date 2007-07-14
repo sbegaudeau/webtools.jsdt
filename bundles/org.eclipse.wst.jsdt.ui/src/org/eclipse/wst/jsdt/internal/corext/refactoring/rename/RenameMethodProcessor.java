@@ -429,7 +429,7 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 		}
 		stringPattern.append(')');
 		
-		return SearchPattern.createPattern(stringPattern.toString(), IJavaSearchConstants.METHOD,
+		return SearchPattern.createPattern(stringPattern.toString(), IJavaSearchConstants.FUNCTION,
 				IJavaSearchConstants.DECLARATIONS, SearchUtils.GENERICS_AGNOSTIC_MATCH_RULE);
 	}
 	

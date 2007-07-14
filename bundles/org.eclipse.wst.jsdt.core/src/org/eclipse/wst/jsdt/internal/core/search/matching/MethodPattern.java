@@ -36,6 +36,7 @@ public char[][] parameterSimpleNames;
 public int parameterCount;
 public boolean varargs = false;
 
+protected boolean isFunction;
 // extra reference info
 protected IType declaringType;
 
@@ -50,6 +51,8 @@ char[][] methodArguments;
 protected static char[][] REF_CATEGORIES = { METHOD_REF };
 protected static char[][] REF_AND_DECL_CATEGORIES = { METHOD_REF, METHOD_DECL };
 protected static char[][] DECL_CATEGORIES = { METHOD_DECL };
+protected static char[][] FUNCTION_REF_AND_DECL_CATEGORIES = { METHOD_REF, FUNCTION_DECL };
+protected static char[][] FUNCTION_DECL_CATEGORIES = { FUNCTION_DECL };
 
 /**
  * Method entries are encoded as selector '/' Arity:
@@ -62,12 +65,14 @@ public static char[] createIndexKey(char[] selector, int argCount) {
 	return CharOperation.concat(selector, countChars);
 }
 
-MethodPattern(int matchRule) {
+MethodPattern(int matchRule, boolean isFunction) {
 	super(METHOD_PATTERN, matchRule);
+	this.isFunction=isFunction;
 }
 public MethodPattern(
 	boolean findDeclarations,
 	boolean findReferences,
+	boolean isFunction,
 	char[] selector, 
 	char[] declaringQualification,
 	char[] declaringSimpleName,	
@@ -78,7 +83,7 @@ public MethodPattern(
 	IType declaringType,
 	int matchRule) {
 
-	this(matchRule);
+	this(matchRule,isFunction);
 
 	this.findDeclarations = findDeclarations;
 	this.findReferences = findReferences;
@@ -108,6 +113,7 @@ public MethodPattern(
 public MethodPattern(
 	boolean findDeclarations,
 	boolean findReferences,
+	boolean isFunction,
 	char[] selector, 
 	char[] declaringQualification,
 	char[] declaringSimpleName,	
@@ -122,6 +128,7 @@ public MethodPattern(
 
 	this(findDeclarations,
 		findReferences,
+		isFunction,
 		selector, 
 		declaringQualification,
 		declaringSimpleName,	
@@ -188,6 +195,7 @@ public MethodPattern(
 public MethodPattern(
 	boolean findDeclarations,
 	boolean findReferences,
+	boolean isFunction,
 	char[] selector, 
 	char[] declaringQualification,
 	char[] declaringSimpleName,	
@@ -203,6 +211,7 @@ public MethodPattern(
 
 	this(findDeclarations,
 		findReferences,
+		isFunction,
 		selector, 
 		declaringQualification,
 		declaringSimpleName,	
@@ -261,13 +270,15 @@ public void decodeIndexKey(char[] key) {
 	}
 }
 public SearchPattern getBlankPattern() {
-	return new MethodPattern(R_EXACT_MATCH | R_CASE_SENSITIVE);
+	return new MethodPattern(R_EXACT_MATCH | R_CASE_SENSITIVE,isFunction);
 }
 public char[][] getIndexCategories() {
 	if (this.findReferences)
-		return this.findDeclarations ? REF_AND_DECL_CATEGORIES : REF_CATEGORIES;
+		return this.findDeclarations ? 
+				(isFunction ? FUNCTION_REF_AND_DECL_CATEGORIES : REF_AND_DECL_CATEGORIES)
+				: REF_CATEGORIES;
 	if (this.findDeclarations)
-		return DECL_CATEGORIES;
+		return isFunction ? FUNCTION_DECL_CATEGORIES : DECL_CATEGORIES;
 	return CharOperation.NO_CHAR_CHAR;
 }
 boolean hasMethodArguments() {

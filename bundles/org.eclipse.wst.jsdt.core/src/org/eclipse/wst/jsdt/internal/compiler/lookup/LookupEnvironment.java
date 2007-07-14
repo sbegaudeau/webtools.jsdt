@@ -126,6 +126,8 @@ Binding askForBinding(PackageBinding packageBinding, char[] name, int mask) {
 			return null;
 		packageBinding = defaultPackage;
 	}
+	if (mask==Binding.PACKAGE && (name==null || name.length==0)&& this.defaultPackage.compoundName.length==0)
+		return this.defaultPackage;
 	NameEnvironmentAnswer answer = nameEnvironment.findBinding(name, packageBinding.compoundName,mask,this.typeRequestor);
 	if (answer == null)
 		return null;

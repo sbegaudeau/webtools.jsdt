@@ -29,6 +29,9 @@ protected char[] typeSimpleName;
 protected static char[][] REF_CATEGORIES = { REF };
 protected static char[][] REF_AND_DECL_CATEGORIES = { REF, FIELD_DECL };
 protected static char[][] DECL_CATEGORIES = { FIELD_DECL };
+protected static char[][] VAR_REF_AND_DECL_CATEGORIES = { REF, VAR_DECL };
+protected static char[][] VAR_DECL_CATEGORIES = { VAR_DECL };
+protected boolean isVar;
 
 public static char[] createIndexKey(char[] fieldName) {
 	return fieldName;
@@ -38,6 +41,7 @@ public FieldPattern(
 	boolean findDeclarations,
 	boolean readAccess,
 	boolean writeAccess,
+	boolean isVar,
 	char[] name, 
 	char[] declaringQualification,
 	char[] declaringSimpleName,	
@@ -61,6 +65,7 @@ public FieldPattern(
 	boolean findDeclarations,
 	boolean readAccess,
 	boolean writeAccess,
+	boolean isVar,
 	char[] name, 
 	char[] declaringQualification,
 	char[] declaringSimpleName,	
@@ -69,7 +74,7 @@ public FieldPattern(
 	String typeSignature,
 	int matchRule, IField field) {
 
-	this(findDeclarations, readAccess, writeAccess, name, declaringQualification, declaringSimpleName, typeQualification, typeSimpleName, matchRule,field);
+	this(findDeclarations, readAccess, writeAccess, isVar, name, declaringQualification, declaringSimpleName, typeQualification, typeSimpleName, matchRule,field);
 
 	// store type signatures and arguments
 	if (typeSignature != null) {
@@ -81,16 +86,28 @@ public void decodeIndexKey(char[] key) {
 	this.name = key;
 }
 public SearchPattern getBlankPattern() {
-	return new FieldPattern(false, false, false, null, null, null, null, null, R_EXACT_MATCH | R_CASE_SENSITIVE,null);
+	return new FieldPattern(false, false, false, isVar, null, null, null, null, null, R_EXACT_MATCH | R_CASE_SENSITIVE,null);
 }
 public char[] getIndexKey() {
 	return this.name; 
 }
 public char[][] getIndexCategories() {
-	if (this.findReferences)
-		return this.findDeclarations || this.writeAccess ? REF_AND_DECL_CATEGORIES : REF_CATEGORIES;
-	if (this.findDeclarations)
-		return DECL_CATEGORIES;
+	
+	if (this.isVar) {
+		if (this.findReferences)
+			return this.findDeclarations || this.writeAccess ? VAR_REF_AND_DECL_CATEGORIES
+					: REF_CATEGORIES;
+		if (this.findDeclarations)
+			return VAR_DECL_CATEGORIES;
+	}
+	else {
+		if (this.findReferences)
+			return this.findDeclarations || this.writeAccess ? REF_AND_DECL_CATEGORIES
+					: REF_CATEGORIES;
+		if (this.findDeclarations)
+			return DECL_CATEGORIES;
+		
+	}
 	return CharOperation.NO_CHAR_CHAR;
 }
 public boolean matchesDecodedKey(SearchPattern decodedPattern) {

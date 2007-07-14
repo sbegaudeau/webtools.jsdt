@@ -31,6 +31,7 @@ import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.*;
@@ -608,6 +609,10 @@ private IJavaElement createMethodHandle(IJavaElement parent, String methodName, 
 	return methodHandle;
 }
 protected IJavaElement createHandle(InferredAttribute fieldDeclaration, InferredType typeDeclaration, IJavaElement parent) {
+	if (parent instanceof ITypeRoot) {
+		ITypeRoot typeRoot = (ITypeRoot) parent;
+		parent=typeRoot.getType(new String(typeDeclaration.getName()));
+	}
 	if (!(parent instanceof IType)) return parent;
 
 	return ((IType) parent).getField(new String(fieldDeclaration.name));

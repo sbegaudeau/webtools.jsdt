@@ -700,6 +700,7 @@ public class BinaryIndexer extends AbstractIndexer implements SuffixConstants {
 				addBinaryStandardAnnotations(tagBits);
 			}
 
+			boolean isFunction=true;
 			// first reference all methods declarations and field declarations
 			MethodInfo[] methods = (MethodInfo[]) reader.getMethods();
 			if (methods != null) {
@@ -714,7 +715,7 @@ public class BinaryIndexer extends AbstractIndexer implements SuffixConstants {
 						addConstructorDeclaration(className, parameterTypes, exceptionTypes);
 					} else {
 						if (!method.isClinit()) {
-							addMethodDeclaration(method.getSelector(), parameterTypes, returnType, exceptionTypes);
+							addMethodDeclaration(method.getSelector(), parameterTypes, returnType, exceptionTypes,isFunction);
 						}
 					}
 					// look for references in method annotations
@@ -733,7 +734,7 @@ public class BinaryIndexer extends AbstractIndexer implements SuffixConstants {
 					FieldInfo field = fields[i];
 					char[] fieldName = field.getName();
 					char[] fieldType = decodeFieldType(replace('/', '.', field.getTypeName()));
-					addFieldDeclaration(fieldType, fieldName);
+					addFieldDeclaration(fieldType, fieldName,false);
 					// look for references in field annotations
 					annotations = field.getAnnotations();
 					if (annotations != null) {

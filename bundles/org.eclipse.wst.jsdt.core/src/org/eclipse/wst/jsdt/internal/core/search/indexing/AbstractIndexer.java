@@ -106,8 +106,9 @@ public abstract class AbstractIndexer implements IIndexConstants {
 			}
 		}
 	}	
-	public void addFieldDeclaration(char[] typeName, char[] fieldName) {
-		addIndexEntry(FIELD_DECL, FieldPattern.createIndexKey(fieldName));
+	public void addFieldDeclaration(char[] typeName, char[] fieldName, boolean isVar) {
+		char [] key = isVar ? VAR_DECL:FIELD_DECL;
+		addIndexEntry(key, FieldPattern.createIndexKey(fieldName));
 		if (typeName!=null)
 		addTypeReference(typeName);
 	}
@@ -131,9 +132,10 @@ public abstract class AbstractIndexer implements IIndexConstants {
 			}
 		}
 	}
-	public void addMethodDeclaration(char[] methodName, char[][] parameterTypes, char[] returnType, char[][] exceptionTypes) {
+	public void addMethodDeclaration(char[] methodName, char[][] parameterTypes, 
+				char[] returnType, char[][] exceptionTypes,boolean isFunction) {
 		int argCount = parameterTypes == null ? 0 : parameterTypes.length;
-		addIndexEntry(METHOD_DECL, MethodPattern.createIndexKey(methodName, argCount));
+		addIndexEntry(isFunction ? FUNCTION_DECL : METHOD_DECL, MethodPattern.createIndexKey(methodName, argCount));
 	
 		if (parameterTypes != null) {
 			for (int i = 0; i < argCount; i++)

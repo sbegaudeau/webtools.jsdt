@@ -81,8 +81,8 @@ public void findIndexMatches(Index index, IndexQueryRequestor requestor, SearchP
 
 
 protected static char[][] REF_CATEGORIES = { REF };
-protected static char[][] REF_AND_DECL_CATEGORIES = { REF, FIELD_DECL };
-protected static char[][] DECL_CATEGORIES = { FIELD_DECL };
+protected static char[][] REF_AND_DECL_CATEGORIES = { REF, VAR_DECL };
+protected static char[][] DECL_CATEGORIES = { VAR_DECL };
 
 public char[][] getIndexCategories() {
 	if (this.findReferences)

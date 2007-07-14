@@ -104,6 +104,12 @@ public interface IJavaSearchConstants {
 	 */
 	int INTERFACE_AND_ANNOTATION= 11;
 
+	/**
+	 * The searched element is a field.
+	 */
+	int VAR= 12;
+	int FUNCTION= 13;
+
 	/* Nature of match */
 
 	/**

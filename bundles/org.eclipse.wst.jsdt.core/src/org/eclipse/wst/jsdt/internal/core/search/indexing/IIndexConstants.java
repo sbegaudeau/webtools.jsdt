@@ -21,8 +21,10 @@ public interface IIndexConstants {
 	char[] SUPER_REF = "superRef".toCharArray(); //$NON-NLS-1$
 	char[] TYPE_DECL = "typeDecl".toCharArray(); //$NON-NLS-1$
 	char[] METHOD_DECL= "methodDecl".toCharArray(); //$NON-NLS-1$
+	char[] FUNCTION_DECL= "functionDecl".toCharArray(); //$NON-NLS-1$
 	char[] CONSTRUCTOR_DECL= "constructorDecl".toCharArray(); //$NON-NLS-1$
 	char[] FIELD_DECL= "fieldDecl".toCharArray(); //$NON-NLS-1$
+	char[] VAR_DECL= "varDecl".toCharArray(); //$NON-NLS-1$
 	char[] OBJECT = "Object".toCharArray(); //$NON-NLS-1$
 	char[][] COUNTS= 
 		new char[][] { new char[] {'/', '0'}, new char[] {'/', '1'}, new char[] {'/', '2'}, new char[] {'/', '3'}, new char[] {'/', '4'},

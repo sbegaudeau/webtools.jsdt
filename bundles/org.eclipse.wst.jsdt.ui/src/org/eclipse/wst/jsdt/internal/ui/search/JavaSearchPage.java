@@ -215,6 +215,8 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 	private final static int PACKAGE= IJavaSearchConstants.PACKAGE;
 	private final static int CONSTRUCTOR= IJavaSearchConstants.CONSTRUCTOR;
 	private final static int FIELD= IJavaSearchConstants.FIELD;
+	private final static int VAR= IJavaSearchConstants.VAR;
+	private final static int FUNCTION= IJavaSearchConstants.FUNCTION;
 	
 	// limit to
 	private final static int DECLARATIONS= IJavaSearchConstants.DECLARATIONS;

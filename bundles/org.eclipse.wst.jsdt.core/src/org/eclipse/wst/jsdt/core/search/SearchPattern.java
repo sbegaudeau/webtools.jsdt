@@ -442,7 +442,7 @@ public static SearchPattern createAndPattern(SearchPattern leftPattern, SearchPa
  * e.g. java.lang.String.serialVersionUID long
  *		field*
  */
-private static SearchPattern createFieldPattern(String patternString, int limitTo, int matchRule) {
+private static SearchPattern createFieldPattern(String patternString, int limitTo, int matchRule,boolean isVar) {
 	
 	Scanner scanner = new Scanner(false /*comment*/, true /*whitespace*/, false /*nls*/, ClassFileConstants.JDK1_3/*sourceLevel*/, null /*taskTags*/, null/*taskPriorities*/, true/*taskCaseSensitive*/); 
 	scanner.setSource(patternString.toCharArray());
@@ -575,6 +575,7 @@ private static SearchPattern createFieldPattern(String patternString, int limitT
 			findDeclarations,
 			readAccess,
 			writeAccess,
+			isVar,
 			fieldNameChars,
 			declaringTypeQualification,
 			declaringTypeSimpleName,
@@ -601,7 +602,7 @@ private static SearchPattern createFieldPattern(String patternString, int limitT
  * Type arguments have the same pattern that for type patterns
  * @see #createTypePattern(String,int,int,char)
  */
-private static SearchPattern createMethodOrConstructorPattern(String patternString, int limitTo, int matchRule, boolean isConstructor) {
+private static SearchPattern createMethodOrConstructorPattern(String patternString, int limitTo, int matchRule, boolean isConstructor, boolean isFunction) {
 	
 	Scanner scanner = new Scanner(false /*comment*/, true /*whitespace*/, false /*nls*/, ClassFileConstants.JDK1_3/*sourceLevel*/, null /*taskTags*/, null/*taskPriorities*/, true/*taskCaseSensitive*/); 
 	scanner.setSource(patternString.toCharArray());
@@ -967,6 +968,7 @@ private static SearchPattern createMethodOrConstructorPattern(String patternStri
 		return new MethodPattern(
 				findDeclarations,
 				findReferences,
+				isFunction,
 				selectorChars,
 				declaringTypeQualification,
 				declaringTypeSimpleName,
@@ -1096,12 +1098,16 @@ public static SearchPattern createPattern(String stringPattern, int searchFor, i
 			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.ANNOTATION_TYPE_SUFFIX);
 		case IJavaSearchConstants.TYPE:
 			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.TYPE_SUFFIX);
+		case IJavaSearchConstants.FUNCTION:
+			return createMethodOrConstructorPattern(stringPattern, limitTo, matchRule, false/*not a constructor*/,true);
 		case IJavaSearchConstants.METHOD:
-			return createMethodOrConstructorPattern(stringPattern, limitTo, matchRule, false/*not a constructor*/);
+			return createMethodOrConstructorPattern(stringPattern, limitTo, matchRule, false/*not a constructor*/,false);
 		case IJavaSearchConstants.CONSTRUCTOR:
-			return createMethodOrConstructorPattern(stringPattern, limitTo, matchRule, true/*constructor*/);
+			return createMethodOrConstructorPattern(stringPattern, limitTo, matchRule, true/*constructor*/,false);
 		case IJavaSearchConstants.FIELD:
-			return createFieldPattern(stringPattern, limitTo, matchRule);
+			return createFieldPattern(stringPattern, limitTo, matchRule,false);
+		case IJavaSearchConstants.VAR:
+			return createFieldPattern(stringPattern, limitTo, matchRule,true);
 		case IJavaSearchConstants.PACKAGE:
 			return createPackagePattern(stringPattern, limitTo, matchRule);
 	}
@@ -1227,6 +1233,8 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 	}
 	char[] declaringSimpleName = null;
 	char[] declaringQualification = null;
+	boolean isVar=false;
+	boolean isFunction=false;
 	switch (element.getElementType()) {
 		case IJavaElement.FIELD :
 			IField field = (IField) element; 
@@ -1241,6 +1249,8 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 						declaringQualification = CharOperation.concat(declaringQualification, CharOperation.concatWith(enclosingNames, '.'), '.');
 					}
 				}
+				else
+					isVar=true;
 			}
 			char[] name = field.getElementName().toCharArray();
 			char[] typeSimpleName = null;
@@ -1295,6 +1305,7 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 					findDeclarations,
 					readAccess,
 					writeAccess,
+					isVar,
 					name, 
 					declaringQualification, 
 					declaringSimpleName, 
@@ -1402,7 +1413,9 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 										.concatWith(enclosingNames, '.'), '.');
 					}
 				}
-			}			
+			}
+			else 
+				isFunction=true;
 			char[] selector = method.getElementName().toCharArray();
 			char[] returnSimpleName = null;
 			char[] returnQualification = null;
@@ -1480,6 +1493,7 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 					new MethodPattern(
 						findMethodDeclarations,
 						findMethodReferences,
+						isFunction,
 						selector, 
 						declaringQualification, 
 						declaringSimpleName, 

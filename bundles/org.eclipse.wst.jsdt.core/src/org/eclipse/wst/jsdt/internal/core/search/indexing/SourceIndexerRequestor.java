@@ -206,7 +206,11 @@ private void enterEnum(TypeInfo typeInfo) {
  * @see ISourceElementRequestor#enterField(FieldInfo)
  */
 public void enterField(FieldInfo fieldInfo) {
-	this.indexer.addFieldDeclaration(fieldInfo.type, fieldInfo.name);
+	if (depth>0 || this.methodDepth==0)
+	{
+		boolean isVar=depth==0;
+		this.indexer.addFieldDeclaration(fieldInfo.type, fieldInfo.name,isVar);
+	}
 	this.methodDepth++;
 }
 /**
@@ -244,7 +248,8 @@ private void enterInterface(TypeInfo typeInfo) {
  * @see ISourceElementRequestor#enterMethod(MethodInfo)
  */
 public void enterMethod(MethodInfo methodInfo) {
-	this.indexer.addMethodDeclaration(methodInfo.name, methodInfo.parameterTypes, methodInfo.returnType, methodInfo.exceptionTypes);
+	boolean isFunction=this.depth==0;
+	this.indexer.addMethodDeclaration(methodInfo.name, methodInfo.parameterTypes, methodInfo.returnType, methodInfo.exceptionTypes,isFunction);
 	this.methodDepth++;
 }
 /**

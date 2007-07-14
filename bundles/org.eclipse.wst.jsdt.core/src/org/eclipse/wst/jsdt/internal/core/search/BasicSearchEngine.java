@@ -311,6 +311,10 @@ public class BasicSearchEngine {
 				return ("CLASS_AND_INTERFACE"); //$NON-NLS-1$
 			case IJavaSearchConstants.INTERFACE_AND_ANNOTATION:
 				return ("INTERFACE_AND_ANNOTATION"); //$NON-NLS-1$
+			case IJavaSearchConstants.VAR:
+				return ("VAR"); //$NON-NLS-1$
+			case IJavaSearchConstants.FUNCTION:
+				return ("FUNCTION"); //$NON-NLS-1$
 		}
 		return "UNKNOWN"; //$NON-NLS-1$
 	}
@@ -563,7 +567,7 @@ public class BasicSearchEngine {
 				case Binding.METHOD:
 				{
 					searchPattern = new MethodPattern(
-							true,false,
+							true,false,true,
 							bindingName,
 							null,null,null,null,
 							null,null,null,
@@ -576,7 +580,7 @@ public class BasicSearchEngine {
 					if ((bindingType & Binding.METHOD) >0)
 					{
 						searchPattern = new MethodPattern(
-								true,false,
+								true,false,true,
 								bindingName,
 								null,null,null,null,
 								null,null,null,
