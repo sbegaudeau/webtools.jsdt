@@ -212,7 +212,7 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 	// search for
 	private final static int TYPE= IJavaSearchConstants.TYPE;
 	private final static int METHOD= IJavaSearchConstants.METHOD;
-	private final static int PACKAGE= IJavaSearchConstants.PACKAGE;
+//	private final static int PACKAGE= IJavaSearchConstants.PACKAGE;
 	private final static int CONSTRUCTOR= IJavaSearchConstants.CONSTRUCTOR;
 	private final static int FIELD= IJavaSearchConstants.FIELD;
 	private final static int VAR= IJavaSearchConstants.VAR;
@@ -220,7 +220,7 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 	
 	// limit to
 	private final static int DECLARATIONS= IJavaSearchConstants.DECLARATIONS;
-	private final static int IMPLEMENTORS= IJavaSearchConstants.IMPLEMENTORS;
+//	private final static int IMPLEMENTORS= IJavaSearchConstants.IMPLEMENTORS;
 	private final static int REFERENCES= IJavaSearchConstants.REFERENCES;
 	private final static int ALL_OCCURRENCES= IJavaSearchConstants.ALL_OCCURRENCES;
 	private final static int READ_ACCESSES= IJavaSearchConstants.READ_ACCESSES;
@@ -336,11 +336,11 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 	}
 
 	private int setLimitTo(int searchFor, int limitTo) {
-		if (searchFor != TYPE && limitTo == IMPLEMENTORS) {
-			limitTo= REFERENCES;
-		}
+//		if (searchFor != TYPE && limitTo == IMPLEMENTORS) {
+//			limitTo= REFERENCES;
+//		}
 
-		if (searchFor != FIELD && (limitTo == READ_ACCESSES || limitTo == WRITE_ACCESSES)) {
+		if ( searchFor != FIELD && searchFor != VAR && (limitTo == READ_ACCESSES || limitTo == WRITE_ACCESSES)) {
 			limitTo= REFERENCES;
 		}
 		
@@ -355,12 +355,12 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 				case ALL_OCCURRENCES:
 					button.setEnabled(true);
 					break;
-				case IMPLEMENTORS:
-					button.setEnabled(searchFor == TYPE);
-					break;
+//				case IMPLEMENTORS:
+//					button.setEnabled(searchFor == TYPE);
+//					break;
 				case READ_ACCESSES:
 				case WRITE_ACCESSES:
-					button.setEnabled(searchFor == FIELD);
+					button.setEnabled(searchFor == FIELD || searchFor==VAR);
 					break;					
 			}
 		}
@@ -674,11 +674,13 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 		result.setLayout(new GridLayout(2, true));
 
 		fSearchFor= new Button[] {
-			createButton(result, SWT.RADIO, SearchMessages.SearchPage_searchFor_type, TYPE, true),
+			createButton(result, SWT.RADIO, SearchMessages.SearchPage_searchFor_function, FUNCTION, false),
+			createButton(result, SWT.RADIO, SearchMessages.SearchPage_searchFor_var, VAR, false),
 			createButton(result, SWT.RADIO, SearchMessages.SearchPage_searchFor_method, METHOD, false),
-			createButton(result, SWT.RADIO, SearchMessages.SearchPage_searchFor_package, PACKAGE, false),
-			createButton(result, SWT.RADIO, SearchMessages.SearchPage_searchFor_constructor, CONSTRUCTOR, false),
-			createButton(result, SWT.RADIO, SearchMessages.SearchPage_searchFor_field, FIELD, false)
+			createButton(result, SWT.RADIO, SearchMessages.SearchPage_searchFor_field, FIELD, false),
+			createButton(result, SWT.RADIO, SearchMessages.SearchPage_searchFor_type, TYPE, true),
+//			createButton(result, SWT.RADIO, SearchMessages.SearchPage_searchFor_package, PACKAGE, false),
+			createButton(result, SWT.RADIO, SearchMessages.SearchPage_searchFor_constructor, CONSTRUCTOR, false)
 		};
 			
 		// Fill with dummy radio buttons
@@ -696,7 +698,7 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 
 		fLimitTo= new Button[] {
 			createButton(result, SWT.RADIO, SearchMessages.SearchPage_limitTo_declarations, DECLARATIONS, false),
-			createButton(result, SWT.RADIO, SearchMessages.SearchPage_limitTo_implementors, IMPLEMENTORS, false),
+//			createButton(result, SWT.RADIO, SearchMessages.SearchPage_limitTo_implementors, IMPLEMENTORS, false),
 			createButton(result, SWT.RADIO, SearchMessages.SearchPage_limitTo_references, REFERENCES, true),
 			createButton(result, SWT.RADIO, SearchMessages.SearchPage_limitTo_allOccurrences, ALL_OCCURRENCES, false),
 			createButton(result, SWT.RADIO, SearchMessages.SearchPage_limitTo_readReferences, READ_ACCESSES, false),
@@ -780,7 +782,7 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 	}
 
 	private static boolean forceIncludeAll(int limitTo, IJavaElement elem) {
-		return elem != null && (limitTo == DECLARATIONS || limitTo == IMPLEMENTORS);
+		return elem != null && (limitTo == DECLARATIONS /*|| limitTo == IMPLEMENTORS*/);
 	}
 
 	private SearchPatternData tryStructuredSelection(IStructuredSelection selection) {
@@ -791,9 +793,9 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 		SearchPatternData res= null;
 		if (o instanceof IJavaElement) {
 			res= determineInitValuesFrom((IJavaElement) o);
-		} else if (o instanceof LogicalPackage) {
-			LogicalPackage lp= (LogicalPackage)o;
-			return new SearchPatternData(PACKAGE, REFERENCES, fIsCaseSensitive, lp.getElementName(), null, getLastIncludeMask());
+//		} else if (o instanceof LogicalPackage) {
+//			LogicalPackage lp= (LogicalPackage)o;
+//			return new SearchPatternData(PACKAGE, REFERENCES, fIsCaseSensitive, lp.getElementName(), null, getLastIncludeMask());
 		} else if (o instanceof IAdaptable) {
 			IJavaElement element= (IJavaElement) ((IAdaptable) o).getAdapter(IJavaElement.class);
 			if (element != null) {
@@ -829,17 +831,17 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 			int includeMask= getLastIncludeMask();
 			
 			switch (element.getElementType()) {
-				case IJavaElement.PACKAGE_FRAGMENT:
-				case IJavaElement.PACKAGE_DECLARATION:
-					return new SearchPatternData(PACKAGE, REFERENCES, true, element.getElementName(), element, includeMask);
-				case IJavaElement.IMPORT_DECLARATION: {
-					IImportDeclaration declaration= (IImportDeclaration) element;
-					if (declaration.isOnDemand()) {
-						String name= Signature.getQualifier(declaration.getElementName());
-						return new SearchPatternData(PACKAGE, DECLARATIONS, true, name, element, JavaSearchScopeFactory.ALL);
-					}
-					return new SearchPatternData(TYPE, DECLARATIONS, true, element.getElementName(), element, JavaSearchScopeFactory.ALL);
-				}
+//				case IJavaElement.PACKAGE_FRAGMENT:
+//				case IJavaElement.PACKAGE_DECLARATION:
+//					return new SearchPatternData(PACKAGE, REFERENCES, true, element.getElementName(), element, includeMask);
+//				case IJavaElement.IMPORT_DECLARATION: {
+//					IImportDeclaration declaration= (IImportDeclaration) element;
+//					if (declaration.isOnDemand()) {
+//						String name= Signature.getQualifier(declaration.getElementName());
+//						return new SearchPatternData(PACKAGE, DECLARATIONS, true, name, element, JavaSearchScopeFactory.ALL);
+//					}
+//					return new SearchPatternData(TYPE, DECLARATIONS, true, element.getElementName(), element, JavaSearchScopeFactory.ALL);
+//				}
 				case IJavaElement.TYPE:
 					return new SearchPatternData(TYPE, REFERENCES, true, PatternStrings.getTypeSignature((IType) element), element, includeMask);
 				case IJavaElement.COMPILATION_UNIT: {
@@ -857,10 +859,14 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 					break;
 				}
 				case IJavaElement.FIELD:
-					return new SearchPatternData(FIELD, REFERENCES, true, PatternStrings.getFieldSignature((IField) element), element, includeMask);
+					IField field = (IField) element;
+					return new SearchPatternData(field.getParent().getElementType()==IJavaElement.TYPE?FIELD:VAR, REFERENCES, true,
+							PatternStrings.getFieldSignature(field), element, includeMask);
 				case IJavaElement.METHOD:
 					IMethod method= (IMethod) element;
 					int searchFor= method.isConstructor() ? CONSTRUCTOR : METHOD;
+					if (method.getParent().getElementType()!=IJavaElement.TYPE)
+						searchFor=FUNCTION;
 					return new SearchPatternData(searchFor, REFERENCES, true, PatternStrings.getMethodSignature(method), element, includeMask);
 			}
 			
