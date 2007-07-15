@@ -41,6 +41,7 @@ import org.eclipse.ui.ide.IDEActionFactory;
 
 import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 
+import org.eclipse.wst.jsdt.internal.ui.IUIConstants;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.AddTaskAction;
 import org.eclipse.wst.jsdt.internal.ui.actions.AllCleanUpsAction;
@@ -183,10 +184,12 @@ public class GenerateActionGroup extends ActionGroup {
 //		fCopyQualifiedNameAction.setActionDefinitionId(CopyQualifiedNameAction.JAVA_EDITOR_ACTION_DEFINITIONS_ID);
 //		editor.setAction("CopyQualifiedName", fCopyQualifiedNameAction); //$NON-NLS-1$
 
-		fOverrideMethods= new OverrideMethodsAction(editor);
+		if (IUIConstants.SUPPORT_REFACTORING) {
+					fOverrideMethods= new OverrideMethodsAction(editor);
 		fOverrideMethods.setActionDefinitionId(IJavaEditorActionDefinitionIds.OVERRIDE_METHODS);
 		editor.setAction("OverrideMethods", fOverrideMethods); //$NON-NLS-1$
 		
+
 		fAddGetterSetter= new AddGetterSetterAction(editor);
 		fAddGetterSetter.setActionDefinitionId(IJavaEditorActionDefinitionIds.CREATE_GETTER_SETTER);
 		editor.setAction("AddGetterSetter", fAddGetterSetter); //$NON-NLS-1$
@@ -202,6 +205,7 @@ public class GenerateActionGroup extends ActionGroup {
 		fGenerateConstructorUsingFields= new GenerateNewConstructorUsingFieldsAction(editor);
 		fGenerateConstructorUsingFields.setActionDefinitionId(IJavaEditorActionDefinitionIds.GENERATE_CONSTRUCTOR_USING_FIELDS);
 		editor.setAction("GenerateConstructorUsingFields", fGenerateConstructorUsingFields); //$NON-NLS-1$		
+		}		
 
 //		fHashCodeEquals= new GenerateHashCodeEqualsAction(editor);
 //		fHashCodeEquals.setActionDefinitionId(IJavaEditorActionDefinitionIds.GENERATE_HASHCODE_EQUALS);
@@ -215,9 +219,11 @@ public class GenerateActionGroup extends ActionGroup {
 		fCleanUp.setActionDefinitionId(IJavaEditorActionDefinitionIds.CLEAN_UP);
 		editor.setAction("CleanUp", fCleanUp); //$NON-NLS-1$
 		
-		fExternalizeStrings= new ExternalizeStringsAction(editor);
+		if (IUIConstants.SUPPORT_REFACTORING) {
+					fExternalizeStrings= new ExternalizeStringsAction(editor);
 		fExternalizeStrings.setActionDefinitionId(IJavaEditorActionDefinitionIds.EXTERNALIZE_STRINGS);
 		editor.setAction("ExternalizeStrings", fExternalizeStrings); //$NON-NLS-1$	
+		}	
 				
 		installQuickAccessAction();
 	}
@@ -249,24 +255,21 @@ public class GenerateActionGroup extends ActionGroup {
 		ISelectionProvider provider= fSite.getSelectionProvider();
 		ISelection selection= provider.getSelection();
 		
-		fOverrideMethods= new OverrideMethodsAction(site);
-		fOverrideMethods.setActionDefinitionId(IJavaEditorActionDefinitionIds.OVERRIDE_METHODS);
-		
-		fAddGetterSetter= new AddGetterSetterAction(site);
-		fAddGetterSetter.setActionDefinitionId(IJavaEditorActionDefinitionIds.CREATE_GETTER_SETTER);
-		
-		fAddDelegateMethods= new AddDelegateMethodsAction(site);
-		fAddDelegateMethods.setActionDefinitionId(IJavaEditorActionDefinitionIds.CREATE_DELEGATE_METHODS);
-		
-//		fAddUnimplementedConstructors= new AddUnimplementedConstructorsAction(site);
-//		fAddUnimplementedConstructors.setActionDefinitionId(IJavaEditorActionDefinitionIds.ADD_UNIMPLEMENTED_CONTRUCTORS);
-		
-		fGenerateConstructorUsingFields= new GenerateNewConstructorUsingFieldsAction(site);
-		fGenerateConstructorUsingFields.setActionDefinitionId(IJavaEditorActionDefinitionIds.GENERATE_CONSTRUCTOR_USING_FIELDS);
-
-//		fHashCodeEquals= new GenerateHashCodeEqualsAction(site);
-//		fHashCodeEquals.setActionDefinitionId(IJavaEditorActionDefinitionIds.GENERATE_HASHCODE_EQUALS);
-
+		if (IUIConstants.SUPPORT_REFACTORING) {
+			fOverrideMethods = new OverrideMethodsAction(site);
+			fOverrideMethods
+					.setActionDefinitionId(IJavaEditorActionDefinitionIds.OVERRIDE_METHODS);
+			fAddGetterSetter = new AddGetterSetterAction(site);
+			fAddGetterSetter
+					.setActionDefinitionId(IJavaEditorActionDefinitionIds.CREATE_GETTER_SETTER);
+			fAddDelegateMethods = new AddDelegateMethodsAction(site);
+			fAddDelegateMethods
+					.setActionDefinitionId(IJavaEditorActionDefinitionIds.CREATE_DELEGATE_METHODS);
+			fGenerateConstructorUsingFields = new GenerateNewConstructorUsingFieldsAction(
+					site);
+			fGenerateConstructorUsingFields
+					.setActionDefinitionId(IJavaEditorActionDefinitionIds.GENERATE_CONSTRUCTOR_USING_FIELDS);
+		}
 		fAddJavaDocStub= new AddJavaDocStubAction(site);
 		fAddJavaDocStub.setActionDefinitionId(IJavaEditorActionDefinitionIds.ADD_JAVADOC_COMMENT);
 		
@@ -278,15 +281,14 @@ public class GenerateActionGroup extends ActionGroup {
 		fAddTaskAction= new AddTaskAction(site);
 		fAddTaskAction.setActionDefinitionId(IWorkbenchActionDefinitionIds.ADD_TASK);
 		
-		fExternalizeStrings= new ExternalizeStringsAction(site);
-		fExternalizeStrings.setActionDefinitionId(IJavaEditorActionDefinitionIds.EXTERNALIZE_STRINGS);
-		
-		fFindNLSProblems= new FindBrokenNLSKeysAction(site);
-		fFindNLSProblems.setActionDefinitionId(FindBrokenNLSKeysAction.FIND_BROKEN_NLS_KEYS_ACTION_ID);
-		
-//		fOrganizeImports= new OrganizeImportsAction(site);
-//		fOrganizeImports.setActionDefinitionId(IJavaEditorActionDefinitionIds.ORGANIZE_IMPORTS);
-		
+		if (IUIConstants.SUPPORT_REFACTORING) {
+			fExternalizeStrings = new ExternalizeStringsAction(site);
+			fExternalizeStrings
+					.setActionDefinitionId(IJavaEditorActionDefinitionIds.EXTERNALIZE_STRINGS);
+			fFindNLSProblems = new FindBrokenNLSKeysAction(site);
+			fFindNLSProblems
+					.setActionDefinitionId(FindBrokenNLSKeysAction.FIND_BROKEN_NLS_KEYS_ACTION_ID);
+		}
 		fSortMembers= new MultiSortMembersAction(site);
 		fSortMembers.setActionDefinitionId(IJavaEditorActionDefinitionIds.SORT_MEMBERS);
 		
@@ -297,15 +299,17 @@ public class GenerateActionGroup extends ActionGroup {
 		fCleanUp.setActionDefinitionId(IJavaEditorActionDefinitionIds.CLEAN_UP);
 
 		
-		fOverrideMethods.update(selection);
-		fAddGetterSetter.update(selection);
-		fAddDelegateMethods.update(selection);
-//		fAddUnimplementedConstructors.update(selection);	
-		fGenerateConstructorUsingFields.update(selection);
-//		fHashCodeEquals.update(selection);
 		fAddJavaDocStub.update(selection);
-		fExternalizeStrings.update(selection);
-		fFindNLSProblems.update(selection);
+		if (IUIConstants.SUPPORT_REFACTORING) {
+			fOverrideMethods.update(selection);
+			fAddGetterSetter.update(selection);
+			fAddDelegateMethods.update(selection);
+			//		fAddUnimplementedConstructors.update(selection);	
+			fGenerateConstructorUsingFields.update(selection);
+			//		fHashCodeEquals.update(selection);
+			fExternalizeStrings.update(selection);
+			fFindNLSProblems.update(selection);
+		}
 		fCleanUp.update(selection);
 		fAddTaskAction.update(selection);
 //		fOrganizeImports.update(selection);
@@ -318,16 +322,18 @@ public class GenerateActionGroup extends ActionGroup {
 			fAddBookmark.setEnabled(false);
 		}
 		
-		registerSelectionListener(provider, fOverrideMethods);
-		registerSelectionListener(provider, fAddGetterSetter);
-		registerSelectionListener(provider, fAddDelegateMethods);
-//		registerSelectionListener(provider, fAddUnimplementedConstructors);
-		registerSelectionListener(provider, fGenerateConstructorUsingFields);
-//		registerSelectionListener(provider, fHashCodeEquals);
+		if (IUIConstants.SUPPORT_REFACTORING) {
+			registerSelectionListener(provider, fOverrideMethods);
+			registerSelectionListener(provider, fAddGetterSetter);
+			registerSelectionListener(provider, fAddDelegateMethods);
+			//		registerSelectionListener(provider, fAddUnimplementedConstructors);
+			registerSelectionListener(provider, fGenerateConstructorUsingFields);
+			registerSelectionListener(provider, fExternalizeStrings);
+			registerSelectionListener(provider, fFindNLSProblems);
+		}
+		//		registerSelectionListener(provider, fHashCodeEquals);
 		registerSelectionListener(provider, fAddJavaDocStub);
 		registerSelectionListener(provider, fAddBookmark);
-		registerSelectionListener(provider, fExternalizeStrings);
-		registerSelectionListener(provider, fFindNLSProblems);
 //		registerSelectionListener(provider, fOrganizeImports);
 		registerSelectionListener(provider, fFormatAll);
 		registerSelectionListener(provider, fSortMembers);
@@ -415,16 +421,20 @@ public class GenerateActionGroup extends ActionGroup {
 //		added+= addAction(source, fOrganizeImports);
 		added+= addAction(source, fSortMembers);
 		added+= addAction(source, fCleanUp);
-		source.add(new Separator(GROUP_GENERATE));
-		added+= addAction(source, fOverrideMethods);
-		added+= addAction(source, fAddGetterSetter);
-		added+= addAction(source, fAddDelegateMethods);
-//		added+= addAction(source, fHashCodeEquals);
-		added+= addAction(source, fGenerateConstructorUsingFields);
-//		added+= addAction(source, fAddUnimplementedConstructors);
+
+		if (IUIConstants.SUPPORT_REFACTORING) {
+			source.add(new Separator(GROUP_GENERATE));
+			added += addAction(source, fOverrideMethods);
+			added += addAction(source, fAddGetterSetter);
+			added += addAction(source, fAddDelegateMethods);
+			//		added+= addAction(source, fHashCodeEquals);
+			added += addAction(source, fGenerateConstructorUsingFields);
+		}
+		//		added+= addAction(source, fAddUnimplementedConstructors);
 		source.add(new Separator(GROUP_CODE));
 		source.add(new Separator(GROUP_EXTERNALIZE));
-		added+= addAction(source, fExternalizeStrings);
+		if (IUIConstants.SUPPORT_REFACTORING) 
+			added+= addAction(source, fExternalizeStrings);
 		return added;
 	}
 
@@ -439,17 +449,21 @@ public class GenerateActionGroup extends ActionGroup {
 //		added+= addAction(source, fOrganizeImports);
 		added+= addAction(source, fSortMembers);
 		added+= addAction(source, fCleanUp);
-		source.add(new Separator(GROUP_GENERATE));
-		added+= addAction(source, fOverrideMethods);
-		added+= addAction(source, fAddGetterSetter);
-		added+= addAction(source, fAddDelegateMethods);
-//		added+= addAction(source, fHashCodeEquals);
-		added+= addAction(source, fGenerateConstructorUsingFields);
-//		added+= addAction(source, fAddUnimplementedConstructors);
+		if (IUIConstants.SUPPORT_REFACTORING) {
+			source.add(new Separator(GROUP_GENERATE));
+			added+= addAction(source, fOverrideMethods);
+			added+= addAction(source, fAddGetterSetter);
+			added+= addAction(source, fAddDelegateMethods);
+	//		added+= addAction(source, fHashCodeEquals);
+			added+= addAction(source, fGenerateConstructorUsingFields);
+	//		added+= addAction(source, fAddUnimplementedConstructors);
+		}
 		source.add(new Separator(GROUP_CODE));
 		source.add(new Separator(GROUP_EXTERNALIZE));
-		added+= addAction(source, fExternalizeStrings);
-		added+= addAction(source, fFindNLSProblems);
+		if (IUIConstants.SUPPORT_REFACTORING) {
+			added+= addAction(source, fExternalizeStrings);
+			added+= addAction(source, fFindNLSProblems);
+		}
 		return added;
 	}
 

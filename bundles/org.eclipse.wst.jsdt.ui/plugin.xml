@@ -2254,6 +2254,7 @@
                menubarPath="org.eclipse.wst.jsdt.ui.refactoring.menu/codingGroup"
                id="org.eclipse.wst.jsdt.ui.actions.Inline">
          </action>
+<!-- UNTIL REFACTORING SUPPORT
          <action
                definitionId="org.eclipse.wst.jsdt.ui.edit.text.java.extract.constant"
                label="%Refactoring.extractConstantAction.label"
@@ -2261,6 +2262,7 @@
                menubarPath="org.eclipse.wst.jsdt.ui.refactoring.menu/codingGroup"
                id="org.eclipse.wst.jsdt.ui.actions.ExtractConstant">
          </action>
+  -->         
          <action
                definitionId="org.eclipse.wst.jsdt.ui.edit.text.java.extract.local.variable"
                label="%Refactoring.extractTempAction.label"
@@ -2284,6 +2286,7 @@
          </action>
          
 <!-- reorg group 2 -->
+<!-- UNTIL REFACTORING SUPPORT
          <action
                definitionId="org.eclipse.wst.jsdt.ui.edit.text.java.promote.local.variable"
                label="%Refactoring.convertLocalToFieldAction.label"
@@ -2305,10 +2308,12 @@
                menubarPath="org.eclipse.wst.jsdt.ui.refactoring.menu/reorgGroup2"
                id="org.eclipse.wst.jsdt.ui.actions.ConvertAnonymousToNested">
          </action>
+  -->         
          
          
          
 <!-- type group  -->
+<!-- UNTIL REFACTORING SUPPORT
          <action
                definitionId="org.eclipse.wst.jsdt.ui.edit.text.java.pull.up"
                label="%Refactoring.pullUpAction.label"
@@ -2344,7 +2349,8 @@
                menubarPath="org.eclipse.wst.jsdt.ui.refactoring.menu/typeGroup"
                id="org.eclipse.wst.jsdt.ui.actions.ExtractSuperclass">
          </action>
-         
+-->         
+           
 <!-- coding group 2  -->
 <!--         
          <action
@@ -2355,6 +2361,7 @@
                id="org.eclipse.wst.jsdt.ui.actions.ReplaceInvocations">
          </action>
 -->
+<!-- UNTIL REFACTORING SUPPORT
          <action
                definitionId="org.eclipse.wst.jsdt.ui.edit.text.java.self.encapsulate.field"
                label="%Refactoring.selfEncapsulateFieldAction.label"
@@ -2362,6 +2369,7 @@
                menubarPath="org.eclipse.wst.jsdt.ui.refactoring.menu/codingGroup2"
                id="org.eclipse.wst.jsdt.ui.actions.SelfEncapsulateField">
          </action>
+-->
          <action
                definitionId="org.eclipse.wst.jsdt.ui.edit.text.java.introduce.parameter"
                label="%Refactoring.introduceParameterAction.label"
@@ -2369,6 +2377,7 @@
                menubarPath="org.eclipse.wst.jsdt.ui.refactoring.menu/codingGroup2"
                id="org.eclipse.wst.jsdt.ui.actions.IntroduceParameter">
          </action>
+<!-- UNTIL REFACTORING SUPPORT
          <action
                definitionId="org.eclipse.wst.jsdt.ui.edit.text.java.introduce.factory"
                label="%Refactoring.introduceFactoryAction.label"
@@ -2383,8 +2392,10 @@
                menubarPath="org.eclipse.wst.jsdt.ui.refactoring.menu/codingGroup2"
                id="org.eclipse.wst.jsdt.ui.actions.IntroduceIndirection">
          </action>
+-->
 
 <!-- type group 2 -->
+ <!-- UNTIL REFACTORING SUPPORT
          <action
                definitionId="org.eclipse.wst.jsdt.ui.edit.text.java.infer.type.arguments"
                label="%Refactoring.inferTypeArgumentsAction.label"
@@ -2399,6 +2410,7 @@
                menubarPath="org.eclipse.wst.jsdt.ui.refactoring.menu/typeGroup2"
                id="org.eclipse.wst.jsdt.ui.actions.ChangeType">
          </action>
+-->
 
 <!-- script group  -->
         <action
@@ -2419,12 +2431,14 @@
               id="org.eclipse.ltk.ui.actions.CreateRefactoringScript"
               label="%Refactoring.createScript.label"
               menubarPath="org.eclipse.wst.jsdt.ui.refactoring.menu/scriptGroup"/>
+ <!-- UNTIL REFACTORING SUPPORT
         <action
               class="org.eclipse.wst.jsdt.internal.ui.refactoring.actions.MigrateJarFileAction"
               definitionId="org.eclipse.wst.jsdt.ui.refactor.migrate.jar"
               id="org.eclipse.wst.jsdt.ui.actions.MigrateJarFile"
               label="%Refactoring.migrateJar.label"
               menubarPath="org.eclipse.wst.jsdt.ui.refactoring.menu/scriptGroup"/>
+-->
          
 <!-- =========================================================================== -->
 <!-- Source Menu                                                                 -->
@@ -2456,6 +2470,7 @@
             </separator>
          </menu>
 <!-- Externalize Group -->
+ <!-- UNTIL REFACTORING SUPPORT
          <action
                definitionId="org.eclipse.wst.jsdt.ui.edit.text.java.find.broken.nls.keys"
                label="%FindNLSProblems.label"
@@ -2470,6 +2485,7 @@
                menubarPath="org.eclipse.wst.jsdt.ui.source.menu/externalizeGroup"
                id="org.eclipse.wst.jsdt.ui.actions.ExternalizeStrings">
          </action>
+-->         
 <!-- Code Group -->
          <action
                definitionId="org.eclipse.wst.jsdt.ui.edit.text.java.surround.with.quickMenu"
@@ -2480,33 +2496,13 @@
                id="org.eclipse.wst.jsdt.internal.ui.actions.SurroundWithTemplateMenuAction">
          </action>
 <!-- Generate Group -->
-         <action
-               definitionId="org.eclipse.wst.jsdt.ui.edit.text.java.add.unimplemented.constructors"
-               label="%AddConstructorFromSuperclassAction.label"
-               retarget="true"
-               menubarPath="org.eclipse.wst.jsdt.ui.source.menu/generateGroup"
-               id="org.eclipse.wst.jsdt.ui.actions.AddConstructorFromSuperclass">
-         </action>
+ <!-- UNTIL REFACTORING SUPPORT
          <action
                definitionId="org.eclipse.wst.jsdt.ui.edit.text.java.generate.constructor.using.fields"
                label="%GenerateConstructorUsingFieldsAction.label"
                retarget="true"
                menubarPath="org.eclipse.wst.jsdt.ui.source.menu/generateGroup"
                id="org.eclipse.wst.jsdt.ui.actions.GenerateConstructorUsingFields">
-         </action>
-         <action
-               definitionId="org.eclipse.wst.jsdt.ui.edit.text.java.generate.hashcode.equals"
-               label="%GenerateHashCodeEqualsAction.label"
-               retarget="true"
-               menubarPath="org.eclipse.wst.jsdt.ui.source.menu/generateGroup"
-               id="org.eclipse.wst.jsdt.ui.actions.GenerateHashCodeEquals">
-         </action>
-         <action
-               definitionId="org.eclipse.wst.jsdt.ui.edit.text.java.create.delegate.methods"
-               label="%GenerateDelegateMethodsAction.label"
-               retarget="true"
-               menubarPath="org.eclipse.wst.jsdt.ui.source.menu/generateGroup"
-               id="org.eclipse.wst.jsdt.ui.actions.GenerateDelegateMethods">
          </action>
          <action
                definitionId="org.eclipse.wst.jsdt.ui.edit.text.java.create.getter.setter"
@@ -2522,6 +2518,7 @@
                menubarPath="org.eclipse.wst.jsdt.ui.source.menu/generateGroup"
                id="org.eclipse.wst.jsdt.ui.actions.OverrideMethods">
          </action>
+-->         
 <!-- Import Group -->
          <action
                definitionId="org.eclipse.wst.jsdt.ui.edit.text.java.clean.up"
@@ -2536,20 +2533,6 @@
                retarget="true"
                menubarPath="org.eclipse.wst.jsdt.ui.source.menu/importGroup"
                id="org.eclipse.wst.jsdt.ui.actions.SortMembers">
-         </action>
-         <action
-               definitionId="org.eclipse.wst.jsdt.ui.edit.text.java.organize.imports"
-               label="%OrganizeImportsAction.label"
-               retarget="true"
-               menubarPath="org.eclipse.wst.jsdt.ui.source.menu/importGroup"
-               id="org.eclipse.wst.jsdt.ui.actions.OrganizeImports">
-         </action>
-         <action
-               definitionId="org.eclipse.wst.jsdt.ui.edit.text.java.add.import"
-               label="%AddImportAction.label"
-               retarget="true"
-               menubarPath="org.eclipse.wst.jsdt.ui.source.menu/importGroup"
-               id="org.eclipse.wst.jsdt.ui.actions.AddImport">
          </action>
 <!-- edit group -->
          <action
