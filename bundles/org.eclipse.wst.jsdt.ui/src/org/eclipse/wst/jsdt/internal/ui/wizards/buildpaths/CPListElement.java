@@ -450,10 +450,10 @@ public class CPListElement {
 	}
 	
 	public boolean isInNonModifiableContainer() {
-			if (fParentContainer instanceof CPListElement) {
+			if (fParentContainer!=null && fParentContainer instanceof CPListElement) {
 				return !((CPListElement) fParentContainer).canUpdateContainer();
 			}
-			return false;
+			return fParentContainer==null && !canUpdateContainer();
 		}
 	
 	public IStatus getContainerChildStatus(CPListElementAttribute attrib) {
