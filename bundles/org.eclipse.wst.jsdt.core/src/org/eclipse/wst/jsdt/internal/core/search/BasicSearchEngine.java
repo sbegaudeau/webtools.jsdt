@@ -519,6 +519,7 @@ public class BasicSearchEngine {
 			IJavaSearchScope scope, 
 			final IRestrictedAccessBindingRequestor nameRequestor,
 			int waitingPolicy,
+			boolean doParse,
 			IProgressMonitor progressMonitor)  throws JavaModelException {
 
 			if (VERBOSE) {
@@ -723,7 +724,7 @@ public class BasicSearchEngine {
 					progressMonitor == null ? null : new SubProgressMonitor(progressMonitor, 100));	
 					
 				// add type names from working copies
-				if (copies != null) {
+				if (copies != null && doParse) {
 					for (int i = 0; i < copiesLength; i++) {
 						ICompilationUnit workingCopy = copies[i];
 						if (!scope.encloses(workingCopy)) continue;

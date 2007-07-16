@@ -529,6 +529,7 @@ public IJavaElement[] findElements(IJavaElement element) {
 				if (currentElement instanceof CompilationUnit)
 					currentElement = ((CompilationUnit)currentElement).getField(child.getElementName());
 				else
+					if (currentElement instanceof IType)
 				currentElement = ((IType)currentElement).getField(child.getElementName());
 				break;
 			case IJavaElement.METHOD:

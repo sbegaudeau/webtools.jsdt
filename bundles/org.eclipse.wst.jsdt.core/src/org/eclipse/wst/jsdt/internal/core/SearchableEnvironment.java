@@ -621,6 +621,7 @@ public class SearchableEnvironment implements INameEnvironment,
 						matchRule, // not case sensitive
 						/*IJavaSearchConstants.TYPE,*/ this.searchScope,
 						bindingRequestor, CANCEL_IF_NOT_READY_TO_SEARCH,
+						true,
 						progressMonitor);
 			} catch (OperationCanceledException e) {
 				findBindings(new String(prefix),bindingType, storage, NameLookup.ACCEPT_ALL);

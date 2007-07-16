@@ -233,6 +233,7 @@ public class NameLookup implements SuffixConstants {
 						}
 					}
 					
+					addWorkingCopyBindings(types, bindingsMap[Binding.TYPE]);
 					addWorkingCopyBindings(workingCopy.getFields(), bindingsMap[Binding.VARIABLE]);
 					addWorkingCopyBindings(workingCopy.getFields(), bindingsMap[Binding.LOCAL]);
 					addWorkingCopyBindings(workingCopy.getMethods(), bindingsMap[Binding.METHOD]);
@@ -2053,6 +2054,7 @@ public class NameLookup implements SuffixConstants {
 							matchRule, // not case sensitive
 							/*IJavaSearchConstants.TYPE,*/ this.searchScope,
 							bindingRequestor, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+							false,
 							progressMonitor);
 					if (bindingRequestor.foundPath!=null)
 					{

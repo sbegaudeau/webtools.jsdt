@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
@@ -70,7 +71,9 @@ public class LookupEnvironment implements ProblemReasons, TypeConstants {
 
 	private CompilationUnitDeclaration[] units = new CompilationUnitDeclaration[4];
 	private MethodVerifier verifier;
-
+	HashSet acceptedCompilationUnits=new HashSet();
+	
+	
 public LookupEnvironment(ITypeRequestor typeRequestor, CompilerOptions globalOptions, ProblemReporter problemReporter, INameEnvironment nameEnvironment) {
 	this.typeRequestor = typeRequestor;
 	this.globalOptions = globalOptions;
@@ -103,10 +106,15 @@ public ReferenceBinding askForType(char[][] compoundName) {
 	if (answer.isBinaryType())
 		// the type was found as a .class file
 		typeRequestor.accept(answer.getBinaryType(), computePackageFrom(compoundName), answer.getAccessRestriction());
-	else if (answer.isCompilationUnit())
+	else if (answer.isCompilationUnit()) {
+		ICompilationUnit compilationUnit = answer.getCompilationUnit();
+		if (!acceptedCompilationUnits.contains(compilationUnit))
+		{
 		// the type was found as a .js file, try to build it then search the cache
-		typeRequestor.accept(answer.getCompilationUnit(), answer.getAccessRestriction());
-	else if (answer.isSourceType())
+			typeRequestor.accept(compilationUnit, answer.getAccessRestriction());
+			acceptedCompilationUnits.add(compilationUnit);
+		}
+	} else if (answer.isSourceType())
 		// the type was found as a source model
 		typeRequestor.accept(answer.getSourceTypes(), computePackageFrom(compoundName), answer.getAccessRestriction());
 
@@ -135,10 +143,15 @@ Binding askForBinding(PackageBinding packageBinding, char[] name, int mask) {
 	if (answer.isBinaryType())
 		// the type was found as a .class file
 		typeRequestor.accept(answer.getBinaryType(), packageBinding, answer.getAccessRestriction());
-	else if (answer.isCompilationUnit())
-		// the type was found as a .js file, try to build it then search the cache
-		typeRequestor.accept(answer.getCompilationUnit(), answer.getAccessRestriction());
-	else if (answer.isSourceType())
+	else if (answer.isCompilationUnit()) {
+		ICompilationUnit compilationUnit = answer.getCompilationUnit();
+		if (!acceptedCompilationUnits.contains(compilationUnit))
+		{
+			// the type was found as a .js file, try to build it then search the cache
+			typeRequestor.accept(compilationUnit, answer.getAccessRestriction());
+			acceptedCompilationUnits.add(compilationUnit);
+		}
+	} else if (answer.isSourceType())
 		// the type was found as a source model
 		typeRequestor.accept(answer.getSourceTypes(), packageBinding, answer.getAccessRestriction());
 
