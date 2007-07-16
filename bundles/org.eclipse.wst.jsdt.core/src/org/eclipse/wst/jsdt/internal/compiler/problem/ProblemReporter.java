@@ -3343,8 +3343,7 @@ public void invalidMethod(MessageSend messageSend, MethodBinding method) {
 	String methodName=(shownMethod.selector!=null)? new String(shownMethod.selector):"";
 	if (method.declaringClass!=null)
 	{
-		shortName=methodName;
-		readableName=new String(method.declaringClass.readableName());
+		shortName=		readableName=new String(method.declaringClass.readableName());
 		
 	}
 	this.handle(

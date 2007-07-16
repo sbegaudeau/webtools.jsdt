@@ -291,9 +291,9 @@ public int nullStatus(FlowInfo flowInfo) {
 
 	public TypeBinding resolveType(BlockScope scope) {
 		// JLS3 15.25
-		constant = Constant.NotAConstant;
-		LookupEnvironment env = scope.environment();
-		boolean use15specifics = scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5;
+ 		constant = Constant.NotAConstant;
+//		LookupEnvironment env = scope.environment();
+//		boolean use15specifics = scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5;
 		TypeBinding conditionType = condition.resolveTypeExpecting(scope, TypeBinding.BOOLEAN);
 		condition.computeConversion(scope, TypeBinding.BOOLEAN, conditionType);
 		
@@ -308,42 +308,42 @@ public int nullStatus(FlowInfo flowInfo) {
 
 		TypeBinding valueIfTrueType = originalValueIfTrueType;
 		TypeBinding valueIfFalseType = originalValueIfFalseType;
-		if (use15specifics && valueIfTrueType != valueIfFalseType) {
-			if (valueIfTrueType.isBaseType()) {
-				if (valueIfFalseType.isBaseType()) {
-					// bool ? baseType : baseType
-					if (valueIfTrueType == TypeBinding.NULL) {  // bool ? null : 12 --> Integer
-						valueIfFalseType = env.computeBoxingType(valueIfFalseType); // boxing
-					} else if (valueIfFalseType == TypeBinding.NULL) {  // bool ? 12 : null --> Integer
-						valueIfTrueType = env.computeBoxingType(valueIfTrueType); // boxing
-					}
-				} else {
-					// bool ? baseType : nonBaseType
-					TypeBinding unboxedIfFalseType = valueIfFalseType.isBaseType() ? valueIfFalseType : env.computeBoxingType(valueIfFalseType);
-					if (valueIfTrueType.isNumericType() && unboxedIfFalseType.isNumericType()) {
-						valueIfFalseType = unboxedIfFalseType; // unboxing
-					} else if (valueIfTrueType != TypeBinding.NULL) {  // bool ? 12 : new Integer(12) --> int
-						valueIfFalseType = env.computeBoxingType(valueIfFalseType); // unboxing
-					}
-				}
-			} else if (valueIfFalseType.isBaseType()) {
-					// bool ? nonBaseType : baseType
-					TypeBinding unboxedIfTrueType = valueIfTrueType.isBaseType() ? valueIfTrueType : env.computeBoxingType(valueIfTrueType);
-					if (unboxedIfTrueType.isNumericType() && valueIfFalseType.isNumericType()) {
-						valueIfTrueType = unboxedIfTrueType; // unboxing
-					} else if (valueIfFalseType != TypeBinding.NULL) {  // bool ? new Integer(12) : 12 --> int
-						valueIfTrueType = env.computeBoxingType(valueIfTrueType); // unboxing
-					}					
-			} else {
-					// bool ? nonBaseType : nonBaseType
-					TypeBinding unboxedIfTrueType = env.computeBoxingType(valueIfTrueType);
-					TypeBinding unboxedIfFalseType = env.computeBoxingType(valueIfFalseType);
-					if (unboxedIfTrueType.isNumericType() && unboxedIfFalseType.isNumericType()) {
-						valueIfTrueType = unboxedIfTrueType;
-						valueIfFalseType = unboxedIfFalseType;
-					}
-			} 
-		}
+//		if (use15specifics && valueIfTrueType != valueIfFalseType) {
+//			if (valueIfTrueType.isBaseType()) {
+//				if (valueIfFalseType.isBaseType()) {
+//					// bool ? baseType : baseType
+//					if (valueIfTrueType == TypeBinding.NULL) {  // bool ? null : 12 --> Integer
+//						valueIfFalseType = env.computeBoxingType(valueIfFalseType); // boxing
+//					} else if (valueIfFalseType == TypeBinding.NULL) {  // bool ? 12 : null --> Integer
+//						valueIfTrueType = env.computeBoxingType(valueIfTrueType); // boxing
+//					}
+//				} else {
+//					// bool ? baseType : nonBaseType
+//					TypeBinding unboxedIfFalseType = valueIfFalseType.isBaseType() ? valueIfFalseType : env.computeBoxingType(valueIfFalseType);
+//					if (valueIfTrueType.isNumericType() && unboxedIfFalseType.isNumericType()) {
+//						valueIfFalseType = unboxedIfFalseType; // unboxing
+//					} else if (valueIfTrueType != TypeBinding.NULL) {  // bool ? 12 : new Integer(12) --> int
+//						valueIfFalseType = env.computeBoxingType(valueIfFalseType); // unboxing
+//					}
+//				}
+//			} else if (valueIfFalseType.isBaseType()) {
+//					// bool ? nonBaseType : baseType
+//					TypeBinding unboxedIfTrueType = valueIfTrueType.isBaseType() ? valueIfTrueType : env.computeBoxingType(valueIfTrueType);
+//					if (unboxedIfTrueType.isNumericType() && valueIfFalseType.isNumericType()) {
+//						valueIfTrueType = unboxedIfTrueType; // unboxing
+//					} else if (valueIfFalseType != TypeBinding.NULL) {  // bool ? new Integer(12) : 12 --> int
+//						valueIfTrueType = env.computeBoxingType(valueIfTrueType); // unboxing
+//					}					
+//			} else {
+//					// bool ? nonBaseType : nonBaseType
+//					TypeBinding unboxedIfTrueType = env.computeBoxingType(valueIfTrueType);
+//					TypeBinding unboxedIfFalseType = env.computeBoxingType(valueIfFalseType);
+//					if (unboxedIfTrueType.isNumericType() && unboxedIfFalseType.isNumericType()) {
+//						valueIfTrueType = unboxedIfTrueType;
+//						valueIfFalseType = unboxedIfFalseType;
+//					}
+//			} 
+//		}
 		// Propagate the constant value from the valueIfTrue and valueIFFalse expression if it is possible
 		Constant condConstant, trueConstant, falseConstant;
 		if ((condConstant = condition.constant) != Constant.NotAConstant
@@ -427,49 +427,49 @@ public int nullStatus(FlowInfo flowInfo) {
 			return this.resolvedType = TypeBinding.DOUBLE;
 		}
 		// Type references (null null is already tested)
-		if (valueIfTrueType.isBaseType() && valueIfTrueType != TypeBinding.NULL) {
-			if (use15specifics) {
-				valueIfTrueType = env.computeBoxingType(valueIfTrueType);
-			} else {
-				scope.problemReporter().conditionalArgumentsIncompatibleTypes(this, valueIfTrueType, valueIfFalseType);
-				return null;
-			}
-		} 
-		if (valueIfFalseType.isBaseType() && valueIfFalseType != TypeBinding.NULL) {
-			if (use15specifics) {
-				valueIfFalseType = env.computeBoxingType(valueIfFalseType);
-			} else {
-				scope.problemReporter().conditionalArgumentsIncompatibleTypes(this, valueIfTrueType, valueIfFalseType);
-				return null;
-			}
-		}
-		if (use15specifics) {
-			// >= 1.5 : LUB(operand types) must exist
-			TypeBinding commonType = null;
-			if (valueIfTrueType == TypeBinding.NULL) {
-				commonType = valueIfFalseType;
-			} else if (valueIfFalseType == TypeBinding.NULL) {
-				commonType = valueIfTrueType;
-			} else {
-				commonType = scope.lowerUpperBound(new TypeBinding[] { valueIfTrueType, valueIfFalseType });
-			}
-			if (commonType != null) {
-				valueIfTrue.computeConversion(scope, commonType, originalValueIfTrueType);
-				valueIfFalse.computeConversion(scope, commonType, originalValueIfFalseType);
-				return this.resolvedType = commonType.capture(scope, this.sourceEnd);
-			}
-		} else {
+//		if (valueIfTrueType.isBaseType() && valueIfTrueType != TypeBinding.NULL) {
+//			if (use15specifics) {
+//				valueIfTrueType = env.computeBoxingType(valueIfTrueType);
+//			} else {
+//				scope.problemReporter().conditionalArgumentsIncompatibleTypes(this, valueIfTrueType, valueIfFalseType);
+//				return null;
+//			}
+//		} 
+//		if (valueIfFalseType.isBaseType() && valueIfFalseType != TypeBinding.NULL) {
+//			if (use15specifics) {
+//				valueIfFalseType = env.computeBoxingType(valueIfFalseType);
+//			} else {
+//				scope.problemReporter().conditionalArgumentsIncompatibleTypes(this, valueIfTrueType, valueIfFalseType);
+//				return null;
+//			}
+//		}
+//		if (use15specifics) {
+//			// >= 1.5 : LUB(operand types) must exist
+//			TypeBinding commonType = null;
+//			if (valueIfTrueType == TypeBinding.NULL) {
+//				commonType = valueIfFalseType;
+//			} else if (valueIfFalseType == TypeBinding.NULL) {
+//				commonType = valueIfTrueType;
+//			} else {
+//				commonType = scope.lowerUpperBound(new TypeBinding[] { valueIfTrueType, valueIfFalseType });
+//			}
+//			if (commonType != null) {
+//				valueIfTrue.computeConversion(scope, commonType, originalValueIfTrueType);
+//				valueIfFalse.computeConversion(scope, commonType, originalValueIfFalseType);
+//				return this.resolvedType = commonType.capture(scope, this.sourceEnd);
+//			}
+//		} else {
 			// < 1.5 : one operand must be convertible to the other
 			if (valueIfFalseType.isCompatibleWith(valueIfTrueType)) {
 				valueIfTrue.computeConversion(scope, valueIfTrueType, originalValueIfTrueType);
 				valueIfFalse.computeConversion(scope, valueIfTrueType, originalValueIfFalseType);
-				return this.resolvedType = valueIfTrueType;
+				return this.resolvedType = (valueIfTrueType != TypeBinding.NULL)?  valueIfTrueType : valueIfFalseType;
 			} else if (valueIfTrueType.isCompatibleWith(valueIfFalseType)) {
 				valueIfTrue.computeConversion(scope, valueIfFalseType, originalValueIfTrueType);
 				valueIfFalse.computeConversion(scope, valueIfFalseType, originalValueIfFalseType);
-				return this.resolvedType = valueIfFalseType;
+				return this.resolvedType = (valueIfFalseType != TypeBinding.NULL)?  valueIfFalseType : valueIfTrueType;
 			}
-		}
+//		}
 		scope.problemReporter().conditionalArgumentsIncompatibleTypes(
 			this,
 			valueIfTrueType,
