@@ -159,7 +159,12 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 			}
 		}
 		
-		Binding varBinding  = scope.getBinding(name, Binding.VARIABLE, this, false /*do not resolve hidden field*/);
+		
+		Binding varBinding  = null;
+		if (scope.enclosingMethodScope()==null)
+			varBinding=scope.getBinding(name, Binding.VARIABLE, this, false /*do not resolve hidden field*/);
+		else
+			varBinding=scope.getLocalBinding(name, Binding.VARIABLE, this, false);
 		if (varBinding != null && varBinding.isValidBinding()){
 			VariableBinding existingVariable=(VariableBinding)varBinding;
 			if (existingVariable.isFor(this))

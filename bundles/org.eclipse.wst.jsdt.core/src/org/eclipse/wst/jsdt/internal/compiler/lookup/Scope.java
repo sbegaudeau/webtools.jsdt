@@ -1182,7 +1182,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			currentType = currentType.superclass();
 		}
 
-		if (found.size==0)
+		if (found.size==0 && (receiverType==null || receiverType instanceof CompilationUnitBinding))
 		{
 			Binding binding = getTypeOrPackage(selector, Binding.METHOD);
 			if (binding instanceof MethodBinding)
@@ -1762,6 +1762,232 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			throw e;
 		} finally {
 			env.missingClassFileLocation = null;
+		}
+	}
+
+	/* API
+	 *	
+	 *	Answer the binding that corresponds to the argument name.
+	 *	flag is a mask of the following values VARIABLE (= FIELD or LOCAL), TYPE, PACKAGE.
+	 *	Only bindings corresponding to the mask can be answered.
+	 *
+	 *	For example, getBinding("foo", VARIABLE, site) will answer
+	 *	the binding for the field or local named "foo" (or an error binding if none exists).
+	 *	If a type named "foo" exists, it will not be detected (and an error binding will be answered)
+	 *
+	 *	The VARIABLE mask has precedence over the TYPE mask.
+	 *
+	 *	If the VARIABLE mask is not set, neither fields nor locals will be looked for.
+	 *
+	 *	InvocationSite implements:
+	 *		isSuperAccess(); this is used to determine if the discovered field is visible.
+	 *
+	 *	Limitations: cannot request FIELD independently of LOCAL, or vice versa
+	 */
+	public Binding getLocalBinding(char[] name, int mask, InvocationSite invocationSite, boolean needResolve) {
+		CompilationUnitScope unitScope = compilationUnitScope();
+		try {
+			Binding binding = null;
+			FieldBinding problemField = null;
+			if ((mask & Binding.VARIABLE) != 0) {
+				boolean insideStaticContext = false;
+				boolean insideConstructorCall = false;
+				
+				FieldBinding foundField = null;
+				// can be a problem field which is answered if a valid field is not found
+				ProblemFieldBinding foundInsideProblem = null;
+				// inside Constructor call or inside static context
+				Scope scope = this;
+				int depth = 0;
+				int foundDepth = 0;
+				ReferenceBinding foundActualReceiverType = null;
+				done : while (true) { // done when a COMPILATION_UNIT_SCOPE is found
+					switch (scope.kind) {
+						case METHOD_SCOPE :
+							MethodScope methodScope = (MethodScope) scope;
+							insideStaticContext |= methodScope.isStatic;
+							insideConstructorCall |= methodScope.isConstructorCall;
+							
+							// Fall through... could duplicate the code below to save a cast - questionable optimization
+						case BLOCK_SCOPE :
+							LocalVariableBinding variableBinding = scope.findVariable(name);
+							// looks in this scope only
+							if (variableBinding != null) {
+								if (foundField != null && foundField.isValidBinding())
+									return new ProblemFieldBinding(
+										foundField, // closest match
+										foundField.declaringClass,
+										name,
+										ProblemReasons.InheritedNameHidesEnclosingName);
+								if (depth > 0)
+									invocationSite.setDepth(depth);
+								return variableBinding;
+							}
+							break;
+						case CLASS_SCOPE :
+							ClassScope classScope = (ClassScope) scope;
+							ReferenceBinding receiverType = classScope.enclosingReceiverType();
+							FieldBinding fieldBinding = classScope.findField(receiverType, name, invocationSite, needResolve);
+							// Use next line instead if willing to enable protected access accross inner types
+							// FieldBinding fieldBinding = findField(enclosingType, name, invocationSite);
+							
+							if (fieldBinding != null) { // skip it if we did not find anything
+								if (fieldBinding.problemId() == ProblemReasons.Ambiguous) {
+									if (foundField == null || foundField.problemId() == ProblemReasons.NotVisible)
+										// supercedes any potential InheritedNameHidesEnclosingName problem
+										return fieldBinding;
+									// make the user qualify the field, likely wants the first inherited field (javac generates an ambiguous error instead)
+									return new ProblemFieldBinding(
+										foundField, // closest match
+										foundField.declaringClass,
+										name,
+										ProblemReasons.InheritedNameHidesEnclosingName);
+								}
+
+								ProblemFieldBinding insideProblem = null;
+								if (fieldBinding.isValidBinding()) {
+									if (!fieldBinding.isStatic()) {
+										if (insideConstructorCall) {
+											insideProblem =
+												new ProblemFieldBinding(
+													fieldBinding, // closest match
+													fieldBinding.declaringClass,
+													name,
+													ProblemReasons.NonStaticReferenceInConstructorInvocation);
+										} else if (insideStaticContext) {
+											insideProblem =
+												new ProblemFieldBinding(
+													fieldBinding, // closest match
+													fieldBinding.declaringClass,
+													name,
+													ProblemReasons.NonStaticReferenceInStaticContext);
+										}
+									}
+									if (receiverType == fieldBinding.declaringClass || compilerOptions().complianceLevel >= ClassFileConstants.JDK1_4) {
+										// found a valid field in the 'immediate' scope (ie. not inherited)
+										// OR in 1.4 mode (inherited shadows enclosing)
+										if (foundField == null) {
+											if (depth > 0){
+												invocationSite.setDepth(depth);
+												invocationSite.setActualReceiverType(receiverType);
+											}
+											// return the fieldBinding if it is not declared in a superclass of the scope's binding (that is, inherited)
+											return insideProblem == null ? fieldBinding : insideProblem;
+										}
+										if (foundField.isValidBinding())
+											// if a valid field was found, complain when another is found in an 'immediate' enclosing type (that is, not inherited)
+											if (foundField.declaringClass != fieldBinding.declaringClass)
+												// ie. have we found the same field - do not trust field identity yet
+												return new ProblemFieldBinding(
+													foundField, // closest match
+													foundField.declaringClass,
+													name,
+													ProblemReasons.InheritedNameHidesEnclosingName);
+									}
+								}
+
+								if (foundField == null || (foundField.problemId() == ProblemReasons.NotVisible && fieldBinding.problemId() != ProblemReasons.NotVisible)) {
+									// only remember the fieldBinding if its the first one found or the previous one was not visible & fieldBinding is...
+									foundDepth = depth;
+									foundActualReceiverType = receiverType;
+									foundInsideProblem = insideProblem;
+									foundField = fieldBinding;
+								}
+							}
+							depth++;
+							insideStaticContext |= receiverType.isStatic();
+							// 1EX5I8Z - accessing outer fields within a constructor call is permitted
+							// in order to do so, we change the flag as we exit from the type, not the method
+							// itself, because the class scope is used to retrieve the fields.
+							MethodScope enclosingMethodScope = scope.methodScope();
+							insideConstructorCall = enclosingMethodScope == null ? false : enclosingMethodScope.isConstructorCall;
+							break;
+						case WITH_SCOPE :
+						{
+							WithScope withScope = (WithScope) scope;
+							TypeBinding withType = withScope.referenceContext;
+							FieldBinding withBinding = withScope.findField(withType, name, invocationSite, needResolve);
+							// Use next line instead if willing to enable protected access accross inner types
+							// FieldBinding fieldBinding = findField(enclosingType, name, invocationSite);
+							
+							if (withBinding != null) { // skip it if we did not find anything
+								if (withBinding.isValidBinding()) {
+									return withBinding;
+								}
+							}
+						}
+							break;
+							case COMPILATION_UNIT_SCOPE :
+							if ( (mask & (Binding.FIELD|Binding.VARIABLE)) >0)
+							{
+								variableBinding = scope.findVariable(name);
+							// looks in this scope only
+								if (variableBinding != null) {
+									if (foundField != null && foundField.isValidBinding())
+										return new ProblemFieldBinding(
+										foundField, // closest match
+										foundField.declaringClass,
+										name,
+										ProblemReasons.InheritedNameHidesEnclosingName);
+									if (depth > 0)
+										invocationSite.setDepth(depth);
+									return variableBinding;
+								}
+								
+								if(unitScope.classScope()!=null) {
+									//ReferenceBinding bind = env.getType(new char[][]{unitScope.superTypeName});
+									//if(bind==null) break done;
+									foundField = (unitScope.classScope()).findField(unitScope.superBinding, name, invocationSite, true);
+									if(foundField!=null && foundField.isValidBinding()) {
+										
+										return foundField;
+									}
+								}
+								
+								
+								
+							}else if  ( (mask & (Binding.METHOD)) >0){
+								MethodBinding methodBinding = (unitScope.classScope()).findMethod(unitScope.superBinding, name, new TypeBinding[0], invocationSite);
+								if(methodBinding!=null && methodBinding.isValidBinding()) return methodBinding;
+								
+							}
+														
+							break done;
+					}
+					scope = scope.parent;
+				}
+
+				if (foundInsideProblem != null)
+					return foundInsideProblem;
+				if (foundField != null) {
+					if (foundField.isValidBinding()) {
+						if (foundDepth > 0) {
+							invocationSite.setDepth(foundDepth);
+							invocationSite.setActualReceiverType(foundActualReceiverType);
+						}
+						return foundField;
+					}
+					problemField = foundField;
+					foundField = null;
+				}
+
+			}
+
+			if ( (mask&Binding.METHOD)!=0)
+			{
+				MethodBinding methodBinding = findMethod(null, name, TypeBinding.NO_PARAMETERS, invocationSite);
+				if (methodBinding!=null && methodBinding.isValidBinding())
+					return methodBinding;
+			}
+ 
+			if (problemField != null) return problemField;
+			if (binding != null && binding.problemId() != ProblemReasons.NotFound)
+				return binding; // answer the better problem binding
+			return new ProblemBinding(name, enclosingTypeBinding(), ProblemReasons.NotFound);
+		} catch (AbortCompilation e) {
+			e.updateContext(invocationSite, referenceCompilationUnit().compilationResult);
+			throw e;
+		} finally {
 		}
 	}
 

@@ -34,7 +34,7 @@ public class Argument extends LocalDeclaration {
 
 		// record the resolved type into the type reference
 
-		Binding existingVariable = scope.getBinding(name, Binding.VARIABLE, this, false /*do not resolve hidden field*/);
+		Binding existingVariable = scope.getLocalBinding(name, Binding.VARIABLE, this, false /*do not resolve hidden field*/);
 		if (existingVariable != null && existingVariable.isValidBinding() && existingVariable instanceof LocalVariableBinding ){
 			LocalVariableBinding localVariableBinding=(LocalVariableBinding)existingVariable;
 //			if (existingVariable instanceof LocalVariableBinding && this.hiddenVariableDepth == 0) {
