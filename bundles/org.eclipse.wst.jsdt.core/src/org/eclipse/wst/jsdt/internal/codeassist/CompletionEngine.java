@@ -6658,9 +6658,11 @@ public final class CompletionEngine
 			else
 			if (sourceType.scope != null){
 				TypeDeclaration parsedType;
-
-				if ((parsedType = ((ClassScope)sourceType.scope).referenceContext) != null){
-					AbstractMethodDeclaration methodDecl = parsedType.declarationOf(method.original());
+				AbstractMethodDeclaration methodDecl = null;
+				if ((parsedType = ((ClassScope)sourceType.scope).referenceContext) != null)
+					 methodDecl = parsedType.declarationOf(method.original());
+				else if ( ((ClassScope)sourceType.scope).inferredType  != null)
+						 methodDecl = ((ClassScope)sourceType.scope).inferredType.declarationOf(method.original());
 
 					if (methodDecl != null){
 						Argument[] arguments = methodDecl.arguments;
@@ -6670,7 +6672,6 @@ public final class CompletionEngine
 							parameterNames[i] = arguments[i].name;
 						}
 					}
-				}
 			}
 		}
 		// look into the model		

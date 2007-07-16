@@ -10,6 +10,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
@@ -231,4 +232,15 @@ public class InferredType extends ASTNode {
 			this.sourceEnd=end;
 	}
 	
+	public AbstractMethodDeclaration declarationOf(MethodBinding methodBinding) {
+		if (methodBinding != null && this.methods != null) {
+			for (int i = 0, max = this.methods.size(); i < max; i++) {
+				InferredMethod method=(InferredMethod) this.methods.get(i);
+
+				if (method.methodBinding==methodBinding)
+					return method.methodDeclaration;
+			}
+		}
+		return null;
+	}
 }

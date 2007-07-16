@@ -180,9 +180,23 @@ public class ASTNodeFinder {
 	public InferredType findInferredType(IType typeHandle)
 	{
 		final char[] typeName = typeHandle.getElementName().toCharArray();
+		final int occurenceCount = ((SourceType)typeHandle).occurrenceCount;
+		final boolean findAnonymous = typeName.length == 0;
+		int count = 0;
 		for (int i = 0; i < this.unit.numberInferredTypes; i++) {
-			if (CharOperation.equals(this.unit.inferredTypes[i].getName(),typeName))
-					return this.unit.inferredTypes[i];
+			InferredType inferredType = this.unit.inferredTypes[i];
+			if (!inferredType.isDefinition)
+				continue;
+			
+			if (inferredType.isAnonymous) {
+				if (findAnonymous && ++count == occurenceCount) {
+					return inferredType;
+				}
+			} else {
+				if (!findAnonymous && CharOperation.equals(inferredType.getName(),typeName)) {
+					return inferredType;
+				}
+			}
 		}
 		return null;
 	}
