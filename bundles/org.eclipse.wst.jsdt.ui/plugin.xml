@@ -4494,6 +4494,7 @@
             description="%HideSystemFiles.description"
             pattern=".*">
       </filter>
+      <!--
       <filter
             targetId="org.eclipse.wst.jsdt.ui.PackageExplorer"
             name="%HideInnerClassFiles.label"
@@ -4526,6 +4527,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.NonJavaElementFilter"
             id="org.eclipse.wst.jsdt.ui.PackageExplorer.NonJavaElementFilter">
       </filter>
+      -->
       <filter
             targetId="org.eclipse.wst.jsdt.ui.PackageExplorer"
             name="%HideReferencedLibraries.label"

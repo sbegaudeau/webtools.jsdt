@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 
 import org.eclipse.core.resources.IFolder;
 
@@ -25,6 +26,9 @@ import org.eclipse.jface.resource.ImageDescriptor;
 
 import org.eclipse.ui.IWorkingSet;
 
+import org.eclipse.wst.jsdt.core.IClassFile;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 
 import org.eclipse.wst.jsdt.ui.JavaElementLabels;
@@ -90,7 +94,16 @@ public class PackageExplorerLabelProvider extends AppearanceAwareLabelProvider {
 		if (text != null) {
 			return decorateText(text, element);
 		}
-		return super.getText(element);
+		text = super.getText(element);
+		IPath itsPath=null;
+		if(element instanceof IClassFile) {
+			text = ((IClassFile)element).getPath().lastSegment();
+		}else if (element instanceof ICompilationUnit) {
+			text = ((ICompilationUnit)element).getPath().lastSegment();
+		}
+		
+		return text;
+		
 	}
 	
 	private String getNameDelta(IPackageFragment parent, IPackageFragment fragment) {

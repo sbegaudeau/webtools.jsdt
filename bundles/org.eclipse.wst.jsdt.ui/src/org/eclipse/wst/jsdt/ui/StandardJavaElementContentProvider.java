@@ -336,22 +336,34 @@ public class StandardJavaElementContentProvider implements ITreeContentProvider,
 		IJavaProject javaProject= JavaCore.create(folder.getProject());
 		if (javaProject == null || !javaProject.exists())
 			return members;
-		boolean isFolderOnClasspath = javaProject.isOnClasspath(folder);
+		//boolean isFolderOnClasspath = javaProject.isOnClasspath(folder);
 		List nonJavaResources= new ArrayList();
 		// Can be on classpath but as a member of non-java resource folder
+		ArrayList cfs = new ArrayList();
+		IPackageFragment frag = javaProject.findPackageFragment(javaProject.getPath());
 		for (int i= 0; i < members.length; i++) {
-			IResource member= members[i];
-			// A resource can also be a java element
-			// in the case of exclusion and inclusion filters.
-			// We therefore exclude Java elements from the list
-			// of non-Java resources.
-			if (isFolderOnClasspath) {
-				if (javaProject.findPackageFragmentRoot(member.getFullPath()) == null) {
-					nonJavaResources.add(member);
-				} 
-			} else if (!javaProject.isOnClasspath(member)) {
-				nonJavaResources.add(member);
+		
+			if(members[i] instanceof IFile) {
+				if(((IFile)members[i]).getFullPath().getFileExtension().equalsIgnoreCase("js") && frag!=null){
+					
+					IJavaElement elm = frag.getCompilationUnit(((IFile)members[i]).getProjectRelativePath().toString());
+					if(!cfs.contains(elm)) cfs.add(elm);
+				}
+			}else {
+				if(!nonJavaResources.contains(members[i])) nonJavaResources.add(members[i]);
 			}
+			nonJavaResources.addAll(cfs);
+//			// A resource can also be a java element
+//			// in the case of exclusion and inclusion filters.
+//			// We therefore exclude Java elements from the list
+//			// of non-Java resources.
+//			if (isFolderOnClasspath) {
+//				if (javaProject.findPackageFragmentRoot(member.getFullPath()) == null) {
+//					nonJavaResources.add(member);
+//				} 
+//			} else if (!javaProject.isOnClasspath(member)) {
+//				nonJavaResources.add(member);
+//			}
 		}
 		return nonJavaResources.toArray();
 	}
