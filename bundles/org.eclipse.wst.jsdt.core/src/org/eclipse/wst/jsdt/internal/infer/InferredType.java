@@ -12,6 +12,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
@@ -153,6 +154,10 @@ public class InferredType extends ASTNode {
 		if (node.isTypeUseDeprecated(this.resolvedType, scope))
 			scope.problemReporter().deprecatedType(this.resolvedType, node);
 		this.resolvedType = scope.environment().convertToRawType(this.resolvedType);
+		
+		if( isAnonymous )
+			this.resolvedType.tagBits |= TagBits.AnonymousTypeMask;
+		
 		return this.resolvedType ;
 	}
 

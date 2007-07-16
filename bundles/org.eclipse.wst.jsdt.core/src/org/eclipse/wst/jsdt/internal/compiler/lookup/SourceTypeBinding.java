@@ -69,7 +69,12 @@ public SourceTypeBinding(char[][] compoundName, PackageBinding fPackage,  Scope 
 		}
 		else
 		{
-			this.sourceName = this.classScope.inferredType.getName();
+			//@GINO: removing the anonymous internal name from UI
+			if( this.classScope.inferredType.isAnonymous )
+				this.sourceName = new char[]{'{','}'};
+			else
+				this.sourceName = this.classScope.inferredType.getName();
+			
 			this.modifiers=ClassFileConstants.AccPublic;
 		}
 	}

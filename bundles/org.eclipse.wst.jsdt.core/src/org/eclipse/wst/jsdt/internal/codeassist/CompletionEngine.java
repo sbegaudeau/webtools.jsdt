@@ -6959,6 +6959,9 @@ public final class CompletionEngine
 				
 				if(isForbidden(sourceType)) continue next;
 				
+				//@GINO: Skip top level anonymous
+				if( sourceType.isAnonymousType() )continue next;
+				
 				if(proposeAllMemberTypes &&
 					sourceType != outerInvocationType) {
 					findSubMemberTypes(

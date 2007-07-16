@@ -1181,7 +1181,7 @@ public void notifySourceElementRequestor( InferredType type ) {
 	ISourceElementRequestor.TypeInfo typeInfo = new ISourceElementRequestor.TypeInfo();
 	typeInfo.declarationStart = type.sourceStart;
 	typeInfo.modifiers = 0;
-	typeInfo.name = type.getName();
+	typeInfo.name = type.isAnonymous ? CharOperation.NO_CHAR : type.getName();
 	typeInfo.nameSourceStart = type.sourceStart;
 	typeInfo.nameSourceEnd = -1;
 	typeInfo.superclass = type.getSuperClassName();
@@ -1191,7 +1191,7 @@ public void notifySourceElementRequestor( InferredType type ) {
 //		typeInfo.categories = (char[][]) this.nodesToCategories.get(typeDeclaration);
 	typeInfo.secondary = false;
 	
-	typeInfo.anonymousMember = type.isAnonymous;
+	//typeInfo.anonymousMember = type.isAnonymous;
 	
 	requestor.enterType(typeInfo);
 	

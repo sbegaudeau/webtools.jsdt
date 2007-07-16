@@ -546,7 +546,14 @@ public char[] computeUniqueKey(boolean isLeaf) {
 */
 public char[] constantPoolName() /* java/lang/Object */ {
 	if (this.constantPoolName != null) return this.constantPoolName;
-	return this.constantPoolName = CharOperation.concatWith(this.compoundName, '/');
+	
+	//@GINO: removing the anonymous internal name from UI
+	if( isAnonymousType() ){
+		char [][] _name = CharOperation.arrayConcat( CharOperation.NO_CHAR_CHAR, new char[]{'{','}'} );
+		return this.constantPoolName = CharOperation.concatWith( _name, '/');
+	}
+	else
+		return this.constantPoolName = CharOperation.concatWith(this.compoundName, '/');
 }
 public String debugName() {
 	return (this.compoundName != null) ? new String(readableName()) : "UNNAMED TYPE"; //$NON-NLS-1$

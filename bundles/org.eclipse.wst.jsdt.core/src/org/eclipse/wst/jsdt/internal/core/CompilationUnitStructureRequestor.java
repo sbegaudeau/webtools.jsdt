@@ -377,9 +377,7 @@ public void enterType(TypeInfo typeInfo) {
 	JavaElement parentHandle= (JavaElement) this.handleStack.peek();
 	String nameString= new String(typeInfo.name);
 	
-	SourceType handle = typeInfo.anonymousMember ? 
-			new SourceType(parentHandle, ""):
-			new SourceType(parentHandle, nameString); //NB: occurenceCount is computed in resolveDuplicates
+	SourceType handle = new SourceType(parentHandle, nameString); //NB: occurenceCount is computed in resolveDuplicates
 	
 	resolveDuplicates(handle);
 	
