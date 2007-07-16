@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.core.search.matching;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.wst.jsdt.core.*;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.*;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
@@ -28,6 +27,7 @@ import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IndexManager;
 import org.eclipse.wst.jsdt.internal.core.util.ASTNodeFinder;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
+import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 /**
  * Collects the super type names of a given declaring type.
@@ -147,9 +147,16 @@ public char[][][] collect() throws JavaModelException {
 				boolean isTopLevelOrMember = sourceType.getOuterMostLocalContext() == null;
 				CompilationUnitDeclaration parsedUnit = buildBindings(unit, isTopLevelOrMember);
 				if (parsedUnit != null) {
-					TypeDeclaration typeDecl = new ASTNodeFinder(parsedUnit).findType(this.type);
-					if (typeDecl != null && typeDecl.binding != null) 
-						collectSuperTypeNames(typeDecl.binding);
+					ASTNodeFinder nodeFinder = new ASTNodeFinder(parsedUnit);
+					InferredType inferredType=nodeFinder.findInferredType(this.type);
+					if (inferredType!=null)
+						collectSuperTypeNames(inferredType.binding);
+					else
+					{
+						TypeDeclaration typeDecl = nodeFinder.findType(this.type);
+						if (typeDecl != null && typeDecl.binding != null) 
+							collectSuperTypeNames(typeDecl.binding);
+					}
 				}
 			}
 		} catch (AbortCompilation e) {

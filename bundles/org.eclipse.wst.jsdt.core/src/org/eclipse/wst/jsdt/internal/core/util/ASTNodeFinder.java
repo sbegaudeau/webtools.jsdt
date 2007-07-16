@@ -11,18 +11,14 @@
 package org.eclipse.wst.jsdt.internal.core.util;
 
 import org.eclipse.wst.jsdt.core.*;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMethod;
-import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.ast.*;
-import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.core.SourceRefElement;
 import org.eclipse.wst.jsdt.internal.core.SourceType;
+import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 /**
  * Finds an ASTNode given an IJavaElement in a CompilationUnitDeclaration
@@ -112,6 +108,8 @@ public class ASTNodeFinder {
 	 * Returns null if not found.
 	 */
 	public TypeDeclaration findType(IType typeHandle) {
+		if (!JavaCore.IS_EMCASCRIPT4)
+			return null;
 		IJavaElement parent = typeHandle.getParent();
 		final char[] typeName = typeHandle.getElementName().toCharArray();
 		final int occurenceCount = ((SourceType)typeHandle).occurrenceCount;
@@ -176,6 +174,15 @@ public class ASTNodeFinder {
 				visitor = new Visitor();
 				methodDecl.traverse(visitor, (ClassScope)null);
 				return visitor.result;
+		}
+		return null;
+	}
+	public InferredType findInferredType(IType typeHandle)
+	{
+		final char[] typeName = typeHandle.getElementName().toCharArray();
+		for (int i = 0; i < this.unit.numberInferredTypes; i++) {
+			if (CharOperation.equals(this.unit.inferredTypes[i].getName(),typeName))
+					return this.unit.inferredTypes[i];
 		}
 		return null;
 	}

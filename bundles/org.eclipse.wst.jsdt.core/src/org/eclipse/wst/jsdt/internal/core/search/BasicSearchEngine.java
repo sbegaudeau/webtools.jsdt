@@ -833,7 +833,7 @@ public class BasicSearchEngine {
 										return true;
 									}
 									public boolean visit(MethodDeclaration methodDeclaration, Scope scope) {
-										if (bindingType==Binding.METHOD &&
+										if (bindingType==Binding.METHOD && methodDeclaration.selector!=null &&
 												match(typeSuffix, packageName, bindingName, matchRule,0, packageDeclaration, methodDeclaration.selector)) {
 											nameRequestor.acceptBinding(bindingType,methodDeclaration.modifiers, packageDeclaration,  methodDeclaration.selector,  path, null);
 										}

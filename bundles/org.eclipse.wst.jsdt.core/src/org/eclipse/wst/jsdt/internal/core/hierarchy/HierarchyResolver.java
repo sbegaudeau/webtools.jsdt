@@ -542,9 +542,16 @@ private void reportHierarchy(IType focus, CompilationUnitDeclaration parsedUnit,
 			} else {
 				// anonymous or local type
 				if (parsedUnit != null) {
-					TypeDeclaration typeDecl = new ASTNodeFinder(parsedUnit).findType(focus);
-					if (typeDecl != null) {
-						this.focusType = typeDecl.binding;
+					ASTNodeFinder nodeFinder = new ASTNodeFinder(parsedUnit);
+					InferredType inferredType=nodeFinder.findInferredType(focus);
+					if (inferredType!=null)
+						this.focusType=inferredType.binding;
+					else
+					{
+						TypeDeclaration typeDecl = nodeFinder.findType(focus);
+						if (typeDecl != null) {
+							this.focusType = typeDecl.binding;
+						}
 					}
 				} 
 			}

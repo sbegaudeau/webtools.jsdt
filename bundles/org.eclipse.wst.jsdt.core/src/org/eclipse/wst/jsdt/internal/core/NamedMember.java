@@ -246,7 +246,9 @@ public abstract class NamedMember extends Member {
 			default:
 				return null;
 		}
-		StringBuffer buffer = new StringBuffer(declaringType.getTypeQualifiedName(enclosingTypeSeparator, showParameters));
+		String typeQualifiedName = declaringType!=null ? 
+				declaringType.getTypeQualifiedName(enclosingTypeSeparator, showParameters) : "";
+		StringBuffer buffer = new StringBuffer(typeQualifiedName);
 		buffer.append(enclosingTypeSeparator);
 		String simpleName = this.name.length() == 0 ? Integer.toString(this.occurrenceCount) : this.name;
 		buffer.append(simpleName);

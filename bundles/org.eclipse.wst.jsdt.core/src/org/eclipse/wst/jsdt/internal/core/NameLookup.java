@@ -731,7 +731,7 @@ public class NameLookup implements SuffixConstants {
 		if (USE_BINDING_SEARCH)
 		{
 			Answer answer =findBindingSearch(typeName, packageName, Binding.TYPE, partialMatch, acceptFlags, true, true, checkRestrictions, null);
-			if (answer.type==null && answer.element instanceof ITypeRoot)
+			if (answer!=null && answer.type==null && answer.element instanceof ITypeRoot)
 			{
 				ITypeRoot typeroot=(ITypeRoot)answer.element;
 				answer.type=typeroot.getType(typeName);
@@ -2046,7 +2046,7 @@ public class NameLookup implements SuffixConstants {
 				final MyBindingRequestor bindingRequestor = new MyBindingRequestor() ;
 				try {
 					int matchRule = SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE;
-					new BasicSearchEngine(this.workingCopies).searchAllBindingNames(
+					new BasicSearchEngine().searchAllBindingNames(
 							null,
 							bindingName.toCharArray(),
 							bindingType,
