@@ -678,8 +678,8 @@ public class CompletionProposalLabelProvider {
 		char[] compUnit = proposal.getDeclarationTypeName();
 		char[] propType = proposal.getName();
 		IJavaProject project = proposal.getJavaProject();
-		NameLookup lookup = proposal.getNameLookup();
-		ICompilationUnit[] sources = lookup.findTypeSources(new String(propType),true);
+//		NameLookup lookup = proposal.getNameLookup();
+//		ICompilationUnit[] sources = lookup.findTypeSources(new String(propType),true);
 		
 		
 		if (compUnit!=null && compUnit.length>0)
