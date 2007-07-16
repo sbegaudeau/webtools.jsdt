@@ -159,7 +159,7 @@ public final class JavaRuntime {
 	/*
 	 * Default supertype for compilation units
 	 */
-	public static final String DEFAULT_SUPER_TYPE ="Object"; //$NON-NLS-1$
+	public static final String DEFAULT_SUPER_TYPE ="Global"; //$NON-NLS-1$
 	
 	public static final String DEFAULT_SUPER_TYPE_LIBRARY = JRE_CONTAINER; //$NON-NLS-1$
 	/**

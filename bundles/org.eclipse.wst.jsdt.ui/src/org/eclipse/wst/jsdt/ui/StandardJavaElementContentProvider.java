@@ -352,7 +352,7 @@ public class StandardJavaElementContentProvider implements ITreeContentProvider,
 			}else {
 				if(!nonJavaResources.contains(members[i])) nonJavaResources.add(members[i]);
 			}
-			nonJavaResources.addAll(cfs);
+			
 //			// A resource can also be a java element
 //			// in the case of exclusion and inclusion filters.
 //			// We therefore exclude Java elements from the list
@@ -365,6 +365,7 @@ public class StandardJavaElementContentProvider implements ITreeContentProvider,
 //				nonJavaResources.add(member);
 //			}
 		}
+		nonJavaResources.addAll(cfs);
 		return nonJavaResources.toArray();
 	}
 	

@@ -287,7 +287,7 @@ public class JREContainerInitializer extends ClasspathContainerInitializer {
 	 * @see org.eclipse.wst.jsdt.core.ClasspathContainerInitializer#containerSuperTypes()
 	 */
 	public String[] containerSuperTypes() {
-		return new String[] {"Object","Array"};
+		return new String[] {"Global","Object","Array"};
 	}
 	
 	
