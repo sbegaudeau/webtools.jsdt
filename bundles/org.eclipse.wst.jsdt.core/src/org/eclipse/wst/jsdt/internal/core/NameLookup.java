@@ -2037,7 +2037,7 @@ public class NameLookup implements SuffixConstants {
 							String path, AccessRestriction access) {
 						if (excludePath != null && excludePath.equals(path))
 							return;
-						for (int i = 0; i < workingCopies.length; i++) {
+						for (int i = 0; workingCopies!=null && i < workingCopies.length; i++) {
 							if (workingCopies[i].getPath().toString().equals(path))
 								return;
 						}

@@ -702,6 +702,15 @@ public class BasicSearchEngine {
 							packageName=string.toCharArray();
 						}
 						
+					}else if (record instanceof TypeDeclarationPattern) {
+						TypeDeclarationPattern typeDecPattern = (TypeDeclarationPattern)record;
+						simpleBindingName=typeDecPattern.simpleName;
+						Path path = new Path(documentPath);
+						String string = path.lastSegment();
+						if (path.hasTrailingSeparator())	// is library
+						{
+							packageName=string.toCharArray();
+						}
 					}
 
 					nameRequestor.acceptBinding( bindingType,modifiers, packageName, simpleBindingName,   documentPath, accessRestriction);

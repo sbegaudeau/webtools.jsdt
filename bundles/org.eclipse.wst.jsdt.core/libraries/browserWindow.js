@@ -2,7 +2,7 @@ function BarProp(){};
 BarProp.prototype = new Array();
 
 
-Window.prototype= new Array();
+Window.prototype= new Global();
 function Window(){};
 
 Window.prototype.document= new Document();
