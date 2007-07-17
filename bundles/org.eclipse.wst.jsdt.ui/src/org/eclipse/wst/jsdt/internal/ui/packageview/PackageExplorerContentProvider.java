@@ -17,11 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -53,7 +49,6 @@ import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 
-import org.eclipse.wst.jsdt.internal.core.ClassFile;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
@@ -253,7 +248,7 @@ public class PackageExplorerContentProvider extends StandardJavaElementContentPr
 		// hierarchical package mode
 		ArrayList result= new ArrayList();
 		
-		//getHierarchicalPackagesInFolder(folder, result);
+		getHierarchicalPackagesInFolder(folder, result);
 		Object[] others= super.getFolderContent(folder);
 		if (result.isEmpty())
 			return others;
@@ -274,10 +269,6 @@ public class PackageExplorerContentProvider extends StandardJavaElementContentPr
 				
 			if (parentElement instanceof IProject) 
 				return ((IProject)parentElement).members();
-			
-			if(parentElement instanceof IPackageFragmentRoot) {
-				return getContainerPackageFragmentRoots((IPackageFragmentRoot)parentElement);
-			}
 			
 			return super.getChildren(parentElement);
 		} catch (CoreException e) {
@@ -305,24 +296,7 @@ public class PackageExplorerContentProvider extends StandardJavaElementContentPr
 				// all ClassPathContainers are added later 
 			} else if (fShowLibrariesNode && (entryKind == IClasspathEntry.CPE_LIBRARY || entryKind == IClasspathEntry.CPE_VARIABLE)) {
 				addJARContainer= true;
-			}else if(entryKind==IClasspathEntry.CPE_SOURCE){
-				IPath cpath = classpathEntry.getPath();
-				IPath projectPath = project.getPath();
-				if(projectPath.isPrefixOf(cpath)) {
-					continue;
-				}
-				if (isProjectPackageFragmentRoot(root)) {
-					// filter out package fragments that correspond to projects and
-					// replace them with the package fragments directly
-					Object[] fragments= getPackageFragmentRootContent(root);
-					for (int j= 0; j < fragments.length; j++) {
-						result.add(fragments[j]);
-					}
-				} else {
-					result.add(root);
-				}
-			
-			}else {
+			} else {
 				if (isProjectPackageFragmentRoot(root)) {
 					// filter out package fragments that correspond to projects and
 					// replace them with the package fragments directly
@@ -352,130 +326,68 @@ public class PackageExplorerContentProvider extends StandardJavaElementContentPr
 		for (int i= 0; i < resources.length; i++) {
 			result.add(resources[i]);
 		}
-		
-		Object[] folders=new Object[0];
-		IContainer res = (IContainer)project.getResource();
-		try {
-			folders = res.members();
-		} catch (CoreException ex) {
-		
-		}
-		IPackageFragment frag = project.findPackageFragment(project.getPath());
-		ArrayList cfs = new ArrayList();
-		for(int i = 0;i<folders.length;i++) {
-			if(folders[i] instanceof IFile) {
-				if(((IFile)folders[i]).getFullPath().getFileExtension().equalsIgnoreCase("js") && frag!=null){
-					
-					IJavaElement elm = frag.getCompilationUnit(((IFile)folders[i]).getProjectRelativePath().toString());
-					if(!cfs.contains(elm)) cfs.add(elm);
-				}
-			}else {
-				if(!result.contains(folders[i])) result.add(folders[i]);
-			}
-			
-		}
-		
-		result.addAll(cfs);
-		
 		return result.toArray();
 	}
-private Object[] getContainerPackageFragmentRoots(IPackageFragmentRoot container) {
-		
-		
-		Object[] children=null;
-		try {
-			children = container.getChildren();
-		} catch (JavaModelException ex1) {
-			// TODO Auto-generated catch block
-			ex1.printStackTrace();
-		}
-		if(children==null) return null;
-		ArrayList allChildren = new ArrayList();
-		
-		boolean unique = false;
-		try {
-			while(!unique && children!=null && children.length>0) {
-				for(int i = 0;i<children.length;i++) {
-					String display1 = ((IJavaElement)children[0]).getDisplayName();
-					String display2 = ((IJavaElement)children[i]).getDisplayName();
-					if(!(   (display1==display2) || (display1!=null && display1.compareTo(display2)==0))){
-						allChildren.addAll(Arrays.asList(children));
-						unique=true;
-						break;
-					}
-				}
-				ArrayList more = new ArrayList();
-				for(int i = 0;!unique && i<children.length;i++) {
-					if(children[i] instanceof IPackageFragment) {
-						more.addAll(Arrays.asList(((IPackageFragment)children[i]).getChildren()));
-					}else if(children[i] instanceof IPackageFragmentRoot) {
-						more.addAll(Arrays.asList(((IPackageFragmentRoot)children[i]).getChildren()));
-					}else if(children[i] instanceof IClassFile) {
-						more.addAll(Arrays.asList(((IClassFile)children[i]).getChildren()));
-					}else if(children[i] instanceof ICompilationUnit) {
-						more.addAll(Arrays.asList(((ICompilationUnit)children[i]).getChildren()));
-					}else {
-						/* bottomed out, now at javaElement level */
-						unique=true;
-						break;
-					}
-					
-				}
-				if(!unique) children = more.toArray();
-			}
-		} catch (JavaModelException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		}
-		
-		
-		return allChildren.toArray();
-	}
+
 	private Object[] getContainerPackageFragmentRoots(PackageFragmentRootContainer container) {
 		
 		
-		Object[] children = container.getChildren();
-		if(children==null) return null;
-		ArrayList allChildren = new ArrayList();
-		
-		boolean unique = false;
-		try {
-			while(!unique && children!=null && children.length>0) {
-				for(int i = 0;i<children.length;i++) {
-					String display1 = ((IJavaElement)children[0]).getDisplayName();
-					String display2 = ((IJavaElement)children[i]).getDisplayName();
-					if(!(   (display1==display2) || (display1!=null && display1.compareTo(display2)==0))){
-						allChildren.addAll(Arrays.asList(children));
-						unique=true;
-						break;
+		//if(container!=null) {	
+			
+			Object[] children = container.getChildren();
+			if(children==null) return null;
+			ArrayList allChildren = new ArrayList();
+			
+			boolean unique = false;
+			try {
+				while(!unique && children!=null && children.length>0) {
+					for(int i = 0;i<children.length;i++) {
+						String display1 = ((IJavaElement)children[0]).getDisplayName();
+						String display2 = ((IJavaElement)children[i]).getDisplayName();
+						if(!(   (display1==display2) || (display1!=null && display1.compareTo(display2)==0))){
+							allChildren.addAll(Arrays.asList(children));
+							unique=true;
+							break;
+						}
 					}
-				}
-				ArrayList more = new ArrayList();
-				for(int i = 0;!unique && i<children.length;i++) {
-					if(children[i] instanceof IPackageFragment) {
-						more.addAll(Arrays.asList(((IPackageFragment)children[i]).getChildren()));
-					}else if(children[i] instanceof IPackageFragmentRoot) {
-						more.addAll(Arrays.asList(((IPackageFragmentRoot)children[i]).getChildren()));
-					}else if(children[i] instanceof IClassFile) {
-						more.addAll(Arrays.asList(((IClassFile)children[i]).getChildren()));
-					}else if(children[i] instanceof ICompilationUnit) {
-						more.addAll(Arrays.asList(((ICompilationUnit)children[i]).getChildren()));
-					}else {
-						/* bottomed out, now at javaElement level */
-						unique=true;
-						break;
+					ArrayList more = new ArrayList();
+					for(int i = 0;!unique && i<children.length;i++) {
+						if(children[i] instanceof IPackageFragment) {
+							more.addAll(Arrays.asList(((IPackageFragment)children[i]).getChildren()));
+						}else if(children[i] instanceof IPackageFragmentRoot) {
+							more.addAll(Arrays.asList(((IPackageFragmentRoot)children[i]).getChildren()));
+						}else if(children[i] instanceof IClassFile) {
+							more.addAll(Arrays.asList(((IClassFile)children[i]).getChildren()));
+						}else if(children[i] instanceof ICompilationUnit) {
+							more.addAll(Arrays.asList(((ICompilationUnit)children[i]).getChildren()));
+						}else {
+							/* bottomed out, now at javaElement level */
+							unique=true;
+							break;
+						}
+						
 					}
-					
+					if(!unique) children = more.toArray();
 				}
-				if(!unique) children = more.toArray();
-			}
-		} catch (JavaModelException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		}
-		
-		
-		return allChildren.toArray();
+			} catch (JavaModelException ex) {}
+			
+			
+			return allChildren.toArray();
+//		}else {
+//		
+//			
+//			Object[] children = container.getChildren();
+//			if(children==null) return null;
+//			ArrayList allChildren = new ArrayList();
+//			for(int i=0;i<children.length;i++) {
+//				try {
+//					allChildren.addAll(Arrays.asList(((IPackageFragmentRoot)children[i]).getChildren()));
+//				} catch (JavaModelException ex) {
+//					
+//				}
+//			}
+//			return allChildren.toArray();
+//		}
 	}
 
 	private Object[] getNonJavaProjects(IJavaModel model) throws JavaModelException {
