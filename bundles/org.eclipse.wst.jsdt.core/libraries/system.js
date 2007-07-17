@@ -33,16 +33,16 @@ Object.prototype.toString = function( ){return "";};
 Object.prototype.toLocaleString  = function( ){return "";};
  /**
   * function valueOf() 
-  * @type    String
+  * @type    Object
   * @class   Object
-  * @return  String
+  * @return  Object
   * @throws  DOMException
   * @see     Object
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
-Object.prototype.valueOf = function( ){return "";};
+Object.prototype.valueOf = function( ){;};
  /**
   * function hasOwnProperty(V) 
   * @type    Boolean
@@ -91,7 +91,7 @@ Object.prototype.propertyIsEnumerable  = function(V){return "";};
   * @link  http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
 Object.prototype.constructor="";
-/**
+/** 
   * Property Prototype
   * @type  String
   * @class Object
@@ -182,8 +182,8 @@ Object.prototype.DefaultValue=function(){};
   * @class Object
   * @param value String
   * @param index String
-  * @type MatchResult
-  * @return MatchResult
+  * @type Object
+  * @return Object
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
   * @link  http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
@@ -480,7 +480,7 @@ Number.NaN=0;
   * @since Level 2 Document Object Model Core Definition.
   * @link  http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Number.NaN=NEGATIVE_INFINITY;
+Number.NEGATIVE_INFINITY=0;
 /**
   * property POSITIVE_INFINITY
   * @type Number
@@ -489,7 +489,7 @@ Number.NaN=NEGATIVE_INFINITY;
   * @since Level 2 Document Object Model Core Definition.
   * @link  http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Number.NaN=POSITIVE_INFINITY;
+Number.POSITIVE_INFINITY=0;
 /**
   * function toFixed(fractionDigits)
   * @type Number
@@ -862,8 +862,8 @@ Date.prototype.toLocaleTimeString=function(){};
 /**
   * function valueOf()
   * @class Date
-  * @type Number
-  * @return Number
+  * @type Object
+  * @return Object
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
   * @link  http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
@@ -1306,7 +1306,7 @@ Global.prototype.Undefined=0;
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
- *//
+ */ 
 Global.prototype.eval=function(s){};
 /**
   * function parseInt(s,radix)
