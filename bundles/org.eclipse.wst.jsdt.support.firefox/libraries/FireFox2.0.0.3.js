@@ -2,7 +2,7 @@
 this.prototype = new Window();
 
 
-Window.prototype= new Array();
+Window.prototype= new Global();
 function Window(){};
 Window.prototype.navigator= new Navigator();
 Window.prototype.document= new HTMLDocument();
