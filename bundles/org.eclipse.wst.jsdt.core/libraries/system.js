@@ -1439,7 +1439,7 @@ Math.SQRT2=0;
   * @since   Level 2 Document Object Model Core Definition.
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Math.prototype.abs=function(x){};
+Math.abs=function(x){};
 /**
   * function acos(x)
   * @class Math
