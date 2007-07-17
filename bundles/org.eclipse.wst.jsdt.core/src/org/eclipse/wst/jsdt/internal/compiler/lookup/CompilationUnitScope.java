@@ -404,8 +404,8 @@ SourceTypeBinding buildType(InferredType inferredType, SourceTypeBinding enclosi
 private void buildVars(ArrayList vars) {
 	for (Iterator iter = vars.iterator(); iter.hasNext();) {
 		LocalDeclaration localVar = (LocalDeclaration) iter.next();
-//		localVar.resolve(this);
-		LocalVariableBinding binding = new LocalVariableBinding(localVar, null, 0, false);
+		TypeBinding type=localVar.resolveVarType(this);
+		LocalVariableBinding binding = new LocalVariableBinding(localVar, type, 0, false);
 		localVar.binding=binding;
 		addLocalVariable(binding);
 		binding.setConstant(Constant.NotAConstant);

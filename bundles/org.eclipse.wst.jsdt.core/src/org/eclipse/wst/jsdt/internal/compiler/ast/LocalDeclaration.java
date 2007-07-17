@@ -133,10 +133,39 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 		return LOCAL_VARIABLE;
 	}
 	
+	public TypeBinding resolveVarType(BlockScope scope)
+	{
+		TypeBinding variableType = null;
+
+		if (type!=null) 
+			variableType=type.resolveType(scope, true /* check bounds*/); 
+		else {
+			if (inferredType!=null)
+			  variableType=inferredType.resolveType(scope,this);
+			else
+				variableType=TypeBinding.UNKNOWN;
+		}
+
+
+		checkModifiers();
+		return variableType;
+
+	}
 	public void resolve(BlockScope scope) {
 
 		// create a binding and add it to the scope
-		TypeBinding variableType = null;
+		TypeBinding variableType = resolveVarType(scope);
+		
+		if (variableType != null) {
+			if (variableType == TypeBinding.VOID) {
+				scope.problemReporter().variableTypeCannotBeVoid(this);
+				return ;
+			}
+			if (variableType.isArrayType() && ((ArrayBinding) variableType).leafComponentType == TypeBinding.VOID) {
+				scope.problemReporter().variableTypeCannotBeVoidArray(this);
+				return;
+			}
+		}
 			if (type!=null) 
 				variableType=type.resolveType(scope, true /* check bounds*/); 
 			else {
