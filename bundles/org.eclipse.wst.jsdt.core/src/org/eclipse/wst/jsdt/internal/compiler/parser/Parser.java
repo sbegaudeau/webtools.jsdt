@@ -1176,7 +1176,7 @@ public RecoveredElement recoverAST(RecoveredElement element) {
 }
 
 protected RecoveredElement recoverFunctionExpression(RecoveredElement element, AbstractMethodDeclaration method) {
-	int start = 0;
+	int start = method.exprStackPtr;
 	int end=this.expressionPtr;
 	boolean isAssignment=true;
 	Statement expression=null;
@@ -4382,6 +4382,7 @@ protected void consumeMethodHeaderName(boolean isAnonymous) {
 		md = new MethodDeclaration(this.compilationUnit.compilationResult);
 //	}
 
+		md.exprStackPtr=this.expressionPtr;
 	//name
 		 long selectorSource =-1;
 	if (!isAnonymous)

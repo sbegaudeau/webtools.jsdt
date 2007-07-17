@@ -850,6 +850,7 @@ protected void consumeMethodHeaderName(boolean isAnnotationMethod) {
 	} else {
 		md = new MethodDeclaration(this.compilationUnit.compilationResult);
 	}
+	md.exprStackPtr=this.expressionPtr;
 	//name
 	md.selector = identifierStack[identifierPtr];
 	selectorSourcePositions = identifierPositionStack[identifierPtr--];

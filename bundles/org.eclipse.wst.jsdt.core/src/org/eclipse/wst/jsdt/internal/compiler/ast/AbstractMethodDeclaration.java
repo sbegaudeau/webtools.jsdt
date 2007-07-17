@@ -56,6 +56,7 @@ public abstract class AbstractMethodDeclaration
 	public InferredMethod inferredMethod;
 
 	public boolean errorInSignature = false; 
+	public int exprStackPtr;
 	
 	AbstractMethodDeclaration(CompilationResult compilationResult){
 		this.compilationResult = compilationResult;
