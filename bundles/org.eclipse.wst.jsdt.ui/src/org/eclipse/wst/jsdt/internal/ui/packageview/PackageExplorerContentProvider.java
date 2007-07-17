@@ -270,12 +270,67 @@ public class PackageExplorerContentProvider extends StandardJavaElementContentPr
 			if (parentElement instanceof IProject) 
 				return ((IProject)parentElement).members();
 			
+			if(parentElement instanceof IPackageFragmentRoot && ((IPackageFragmentRoot)parentElement).isVirtual()) {
+				return getLibraryChildren((IPackageFragmentRoot)parentElement);
+			}
+			
 			return super.getChildren(parentElement);
 		} catch (CoreException e) {
 			return NO_CHILDREN;
 		}
 	}
-	
+private Object[] getLibraryChildren(IPackageFragmentRoot container) {
+		
+		
+		Object[] children=null;
+		try {
+			children = container.getChildren();
+		} catch (JavaModelException ex1) {
+			// TODO Auto-generated catch block
+			ex1.printStackTrace();
+		}
+		if(children==null) return null;
+		ArrayList allChildren = new ArrayList();
+		
+		boolean unique = false;
+		try {
+			while(!unique && children!=null && children.length>0) {
+				for(int i = 0;i<children.length;i++) {
+					String display1 = ((IJavaElement)children[0]).getDisplayName();
+					String display2 = ((IJavaElement)children[i]).getDisplayName();
+					if(!(   (display1==display2) || (display1!=null && display1.compareTo(display2)==0))){
+						allChildren.addAll(Arrays.asList(children));
+						unique=true;
+						break;
+					}
+				}
+				ArrayList more = new ArrayList();
+				for(int i = 0;!unique && i<children.length;i++) {
+					if(children[i] instanceof IPackageFragment) {
+						more.addAll(Arrays.asList(((IPackageFragment)children[i]).getChildren()));
+					}else if(children[i] instanceof IPackageFragmentRoot) {
+						more.addAll(Arrays.asList(((IPackageFragmentRoot)children[i]).getChildren()));
+					}else if(children[i] instanceof IClassFile) {
+						more.addAll(Arrays.asList(((IClassFile)children[i]).getChildren()));
+					}else if(children[i] instanceof ICompilationUnit) {
+						more.addAll(Arrays.asList(((ICompilationUnit)children[i]).getChildren()));
+					}else {
+						/* bottomed out, now at javaElement level */
+						unique=true;
+						break;
+					}
+					
+				}
+				if(!unique) children = more.toArray();
+			}
+		} catch (JavaModelException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
+		
+		
+		return allChildren.toArray();
+	}
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.ui.StandardJavaElementContentProvider#getPackageFragmentRoots(org.eclipse.wst.jsdt.core.IJavaProject)
 	 */
