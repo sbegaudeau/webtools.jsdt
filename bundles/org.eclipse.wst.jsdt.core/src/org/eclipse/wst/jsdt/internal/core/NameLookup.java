@@ -1909,6 +1909,28 @@ public class NameLookup implements SuffixConstants {
 		return false;
 	}
 	
+	
+	private boolean checkBindingAccept(String topLevelTypeName,HashMap []bindingsMap,int bindingType,IJavaElementRequestor requestor)
+	{
+		Object object = bindingsMap[bindingType].get(topLevelTypeName);
+		if (object instanceof IJavaElement) {
+			if (doAcceptBinding((IJavaElement)object, bindingType , true/*a source type*/,requestor)) {
+				return true; // don't continue with compilation unit
+			}
+		} else if (object instanceof IJavaElement[]) {
+			if (object == NO_BINDINGS) return true; // all types where deleted -> type is hidden
+			IJavaElement[] topLevelElements = (IJavaElement[]) object;
+			for (int i = 0, length = topLevelElements.length; i < length; i++) {
+				if (requestor.isCanceled())
+					return false;
+				if (doAcceptBinding(topLevelElements[i], bindingType, true/*a source type*/,requestor)) {
+					return true; // return the first one
+				}
+			}
+		}
+		return false;
+		
+	}
 	protected boolean seekBindingsInWorkingCopies(
 			String name, 
 			int bindingType,
@@ -1923,22 +1945,20 @@ public class NameLookup implements SuffixConstants {
 		if (!partialMatch) {
 			HashMap []bindingsMap = (HashMap[]) (this.bindingsInWorkingCopies == null ? null : this.bindingsInWorkingCopies.get(pkg));
 			if (bindingsMap != null) {
-				Object object = bindingsMap[bindingType].get(topLevelTypeName);
-				if (object instanceof IJavaElement) {
-					if (doAcceptBinding((IJavaElement)object, bindingType , true/*a source type*/,requestor)) {
-						return true; // don't continue with compilation unit
-					}
-				} else if (object instanceof IJavaElement[]) {
-					if (object == NO_BINDINGS) return true; // all types where deleted -> type is hidden
-					IJavaElement[] topLevelElements = (IJavaElement[]) object;
-					for (int i = 0, length = topLevelElements.length; i < length; i++) {
-						if (requestor.isCanceled())
-							return false;
-						if (doAcceptBinding(topLevelElements[i], bindingType, true/*a source type*/,requestor)) {
-							return true; // return the first one
-						}
-					}
-				}
+				if (checkBindingAccept(topLevelTypeName, bindingsMap, bindingType, requestor))
+					return true;
+				if ((bindingType&Binding.VARIABLE)>0 && bindingType!=Binding.VARIABLE)
+					if (checkBindingAccept(topLevelTypeName, bindingsMap, Binding.VARIABLE, requestor))
+						return true;
+				if ((bindingType&Binding.LOCAL)>0 && bindingType!=Binding.LOCAL)
+					if (checkBindingAccept(topLevelTypeName, bindingsMap, Binding.LOCAL, requestor))
+						return true;
+				if ((bindingType&Binding.METHOD)>0 && bindingType!=Binding.METHOD)
+					if (checkBindingAccept(topLevelTypeName, bindingsMap, Binding.METHOD, requestor))
+						return true;
+				if ((bindingType&Binding.TYPE)>0 && bindingType!=Binding.TYPE)
+					if (checkBindingAccept(topLevelTypeName, bindingsMap, Binding.TYPE, requestor))
+						return true;
 			}
 		} else {
 			HashMap[] bindingsMap = (HashMap[]) (this.bindingsInWorkingCopies == null ? null : this.bindingsInWorkingCopies.get(pkg));
