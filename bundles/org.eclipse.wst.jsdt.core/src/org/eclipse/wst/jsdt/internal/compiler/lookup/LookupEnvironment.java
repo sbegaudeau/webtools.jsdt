@@ -111,8 +111,8 @@ public ReferenceBinding askForType(char[][] compoundName) {
 		if (!acceptedCompilationUnits.contains(compilationUnit))
 		{
 		// the type was found as a .js file, try to build it then search the cache
-			typeRequestor.accept(compilationUnit, answer.getAccessRestriction());
 			acceptedCompilationUnits.add(compilationUnit);
+			typeRequestor.accept(compilationUnit, answer.getAccessRestriction());
 		}
 	} else if (answer.isSourceType())
 		// the type was found as a source model
@@ -148,8 +148,8 @@ Binding askForBinding(PackageBinding packageBinding, char[] name, int mask) {
 		if (!acceptedCompilationUnits.contains(compilationUnit))
 		{
 			// the type was found as a .js file, try to build it then search the cache
-			typeRequestor.accept(compilationUnit, answer.getAccessRestriction());
 			acceptedCompilationUnits.add(compilationUnit);
+			typeRequestor.accept(compilationUnit, answer.getAccessRestriction());
 		}
 	} else if (answer.isSourceType())
 		// the type was found as a source model
