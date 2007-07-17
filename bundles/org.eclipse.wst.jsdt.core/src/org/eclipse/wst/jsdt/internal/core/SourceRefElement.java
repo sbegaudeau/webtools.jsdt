@@ -238,6 +238,9 @@ public void move(IJavaElement container, IJavaElement sibling, String rename, bo
 	if (container == null) {
 		throw new IllegalArgumentException(Messages.operation_nullContainer); 
 	}
+	if (getClassFile()!=null)
+		throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
+
 	IJavaElement[] elements= new IJavaElement[] {this};
 	IJavaElement[] containers= new IJavaElement[] {container};
 	IJavaElement[] siblings= null;
@@ -257,6 +260,9 @@ public void rename(String newName, boolean force, IProgressMonitor monitor) thro
 	if (newName == null) {
 		throw new IllegalArgumentException(Messages.element_nullName); 
 	}
+	if (getClassFile()!=null)
+		throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
+
 	IJavaElement[] elements= new IJavaElement[] {this};
 	IJavaElement[] dests= new IJavaElement[] {this.getParent()};
 	String[] renamings= new String[] {newName};

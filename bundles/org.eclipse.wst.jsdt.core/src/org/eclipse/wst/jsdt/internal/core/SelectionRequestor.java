@@ -256,21 +256,21 @@ public void acceptField(char[] declaringTypePackageName, char[] declaringTypeNam
 			IField field= type.getField(new String(name));
 			if (field.exists()) {
 				if (uniqueKey != null) {
-					if(field.isBinary()) {
-						ResolvedBinaryField resolvedField = new ResolvedBinaryField(
-								(JavaElement)field.getParent(),
-								field.getElementName(),
-								new String(uniqueKey));
-						resolvedField.occurrenceCount = field.getOccurrenceCount();
-						field = resolvedField;
-					} else {
+//					if(field.isBinary()) {
+//						ResolvedBinaryField resolvedField = new ResolvedBinaryField(
+//								(JavaElement)field.getParent(),
+//								field.getElementName(),
+//								new String(uniqueKey));
+//						resolvedField.occurrenceCount = field.getOccurrenceCount();
+//						field = resolvedField;
+//					} else {
 						ResolvedSourceField resolvedField = new ResolvedSourceField(
 								(JavaElement)field.getParent(),
 								field.getElementName(),
 								new String(uniqueKey));
 						resolvedField.occurrenceCount = field.getOccurrenceCount();
 						field = resolvedField;
-					}
+//					}
 				}
 				addElement(field);
 				if(SelectionEngine.DEBUG){

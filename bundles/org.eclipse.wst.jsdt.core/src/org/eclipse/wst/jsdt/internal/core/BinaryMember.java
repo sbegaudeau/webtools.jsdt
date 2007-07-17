@@ -41,7 +41,7 @@ public void copy(IJavaElement container, IJavaElement sibling, String rename, bo
 protected void generateInfos(Object info, HashMap newElements, IProgressMonitor pm) throws JavaModelException {
 	Openable openableParent = (Openable) getOpenableParent();
 	if (JavaModelManager.getJavaModelManager().getInfo(openableParent) == null) {
-//		openableParent.generateInfos(openableParent.createElementInfo(), newElements, pm);
+		openableParent.generateInfos(openableParent.createElementInfo(), newElements, pm);
 	}
 }
 public String[] getCategories() throws JavaModelException {
