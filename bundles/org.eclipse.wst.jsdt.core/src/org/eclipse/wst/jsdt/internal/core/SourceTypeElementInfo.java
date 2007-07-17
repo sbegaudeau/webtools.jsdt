@@ -315,6 +315,9 @@ public String toString() {
 }
 
 public char[][] getPackageName() {
-	return getEnclosingType().getPackageName();
+	ISourceType enclosingType = getEnclosingType();
+	if (enclosingType!=null)
+		return enclosingType.getPackageName();
+	return new char[0][];
 }
 }
