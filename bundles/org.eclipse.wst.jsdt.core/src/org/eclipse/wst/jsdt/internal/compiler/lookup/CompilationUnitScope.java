@@ -231,8 +231,6 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 //	}else 
 		
 	
-	 buildSuperType();
-	
 	topLevelTypes = new SourceTypeBinding[typeLength];
 	
 	int count = 0;
@@ -265,6 +263,8 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 		System.arraycopy(topLevelTypes, 0, topLevelTypes = new SourceTypeBinding[count], 0, count);
 	
 
+	 buildSuperType();
+	
 	
 	char [] path=CharOperation.concatWith(this.currentPackageName, '/');
 	referenceContext.compilationUnitBinding=new CompilationUnitBinding(this,environment.defaultPackage,path, superBinding);
@@ -302,7 +302,8 @@ public void buildSuperType() {
 	if (superTypeName==null)
 		return;
 	
-		superBinding  =  environment.askForType(new char[][] {superTypeName});
+//	superBinding  =  environment.askForType(new char[][] {superTypeName});
+	superBinding  =  findType(superTypeName, environment.defaultPackage, environment.defaultPackage);
 	
 		if(superBinding==null || !superBinding.isValidBinding()) {
 			superTypeName = null;
