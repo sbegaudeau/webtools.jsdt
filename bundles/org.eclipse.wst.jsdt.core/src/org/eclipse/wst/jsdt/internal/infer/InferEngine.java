@@ -9,6 +9,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FalseLiteral;
@@ -595,7 +596,7 @@ public class InferEngine extends ASTVisitor {
 	}
 	
 	protected InferredType getTypeOf(Expression expression) {
-		if (expression instanceof StringLiteral) {
+		if (expression instanceof StringLiteral || expression instanceof CharLiteral) {
 			return StringType;
 		}
 		else if (expression instanceof NumberLiteral) {
