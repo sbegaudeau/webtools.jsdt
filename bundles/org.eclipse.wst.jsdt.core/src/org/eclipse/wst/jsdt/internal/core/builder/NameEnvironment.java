@@ -328,11 +328,33 @@ public NameEnvironmentAnswer findType(char[][] compoundName, ITypeRequestor requ
 	return this.searchableEnvironment.findType(compoundName, requestor);
 }
 
+private NameEnvironmentAnswer  convertToSourceFile(NameEnvironmentAnswer answer)
+{
+	if (answer==null || answer.getCompilationUnit()==null)
+		return answer;
+
+	if (answer.getCompilationUnit() instanceof CompilationUnit) {
+		CompilationUnit compilationUnit = (CompilationUnit) answer.getCompilationUnit();
+		IPath path = compilationUnit.getPath();
+		for (int i = 0; i < this.sourceLocations.length; i++) {
+			IContainer srcFolder=sourceLocations[i].sourceFolder;
+			if (srcFolder.getFullPath().isPrefixOf(path))
+			{
+				SourceFile sourceFile=new SourceFile((IFile)compilationUnit.getResource(),sourceLocations[i]);
+				return new NameEnvironmentAnswer(sourceFile,answer.getAccessRestriction());
+			}
+		}
+	}
+	return answer;
+}
+
 
 public NameEnvironmentAnswer findBinding(char[] bindingName, char[][] packageName, int type, ITypeRequestor requestor) {
 	if (this.notifier != null)
 		this.notifier.checkCancelWithinCompiler();
-	return this.searchableEnvironment.findBinding(bindingName, packageName,type, requestor);
+	NameEnvironmentAnswer answer= this.searchableEnvironment.findBinding(bindingName, packageName,type, requestor);
+	answer=convertToSourceFile(answer);
+	return answer;
 
 //	String qBinaryFileName = qualifiedTypeName + SUFFIX_STRING_class;
 //	String binaryFileName = qBinaryFileName;

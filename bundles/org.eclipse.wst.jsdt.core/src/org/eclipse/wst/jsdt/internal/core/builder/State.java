@@ -50,6 +50,7 @@ static final byte SOURCE_FOLDER = 1;
 static final byte BINARY_FOLDER = 2;
 static final byte EXTERNAL_JAR = 3;
 static final byte INTERNAL_JAR = 4;
+static final byte LIBRARY = 5;
 
 State() {
 	// constructor with no argument
@@ -259,6 +260,8 @@ static State read(IProject project, DataInputStream in) throws IOException {
 				break;
 			case INTERNAL_JAR :
 				newState.binaryLocations[i] = ClasspathLocation.forLibrary(root.getFile(new Path(in.readUTF())), readRestriction(in));
+			case LIBRARY :
+				newState.binaryLocations[i] = ClasspathLocation.forLibrary(in.readUTF(), readRestriction(in));
 		}
 	}
 
@@ -436,16 +439,10 @@ void write(DataOutputStream out) throws IOException {
 			out.writeBoolean(cd.isOutputFolder);
 			writeRestriction(cd.accessRuleSet, out);
 		} else {
-			ClasspathJar jar = (ClasspathJar) c;
-			if (jar.resource == null) {
-				out.writeByte(EXTERNAL_JAR);
-				out.writeUTF(jar.zipFilename);
-				out.writeLong(jar.lastModified());
-			} else {
-				out.writeByte(INTERNAL_JAR);
-				out.writeUTF(jar.resource.getFullPath().toString());
-			}
-			writeRestriction(jar.accessRuleSet, out);
+			ClasspathLibrary library = (ClasspathLibrary) c;
+				out.writeByte(LIBRARY);
+				out.writeUTF(library.filename);
+			writeRestriction(library.accessRuleSet, out);
 		}
 	}
 
