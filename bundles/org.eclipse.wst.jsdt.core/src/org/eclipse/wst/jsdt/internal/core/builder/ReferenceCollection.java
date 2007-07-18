@@ -116,22 +116,23 @@ boolean includes(char[][][] qualifiedNames, char[][] simpleNames) {
 // having WellKnownQualifiedNames & WellKnownSimpleNames, saves every type 40 bytes
 // NOTE: These collections are sorted by length
 static final char[][][] WellKnownQualifiedNames = new char[][][] {
-	TypeConstants.JAVA_LANG_RUNTIMEEXCEPTION,
-	TypeConstants.JAVA_LANG_THROWABLE,
+//	TypeConstants.JAVA_LANG_RUNTIMEEXCEPTION,
+//	TypeConstants.JAVA_LANG_THROWABLE,
 	TypeConstants.JAVA_LANG_OBJECT,
-	TypeConstants.JAVA_LANG,
-	new char[][] {TypeConstants.JAVA},
-	new char[][] {new char[] {'o', 'r', 'g'}},
-	new char[][] {new char[] {'c', 'o', 'm'}},
+//	TypeConstants.JAVA_LANG,
+//	new char[][] {TypeConstants.JAVA},
+//	new char[][] {new char[] {'o', 'r', 'g'}},
+//	new char[][] {new char[] {'c', 'o', 'm'}},
 	CharOperation.NO_CHAR_CHAR}; // default package
 static final char[][] WellKnownSimpleNames = new char[][] {
-	TypeConstants.JAVA_LANG_RUNTIMEEXCEPTION[2],
-	TypeConstants.JAVA_LANG_THROWABLE[2],
-	TypeConstants.JAVA_LANG_OBJECT[2],
-	TypeConstants.JAVA,
-	TypeConstants.LANG,
-	new char[] {'o', 'r', 'g'},
-	new char[] {'c', 'o', 'm'}};
+//	TypeConstants.JAVA_LANG_RUNTIMEEXCEPTION[2],
+//	TypeConstants.JAVA_LANG_THROWABLE[2],
+	TypeConstants.JAVA_LANG_OBJECT[1],
+//	TypeConstants.JAVA,
+//	TypeConstants.LANG,
+//	new char[] {'o', 'r', 'g'},
+//	new char[] {'c', 'o', 'm'}
+	};
 
 static final char[][][] EmptyQualifiedNames = new char[0][][];
 static final char[][] EmptySimpleNames = CharOperation.NO_CHAR_CHAR;

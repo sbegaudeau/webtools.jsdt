@@ -14,6 +14,7 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 
 import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.env.*;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
@@ -35,12 +36,14 @@ BuildNotifier notifier;
 
 SimpleSet initialTypeNames; // assumed that each name is of the form "a/b/ClassName"
 SimpleLookupTable additionalUnits;
+SearchableEnvironment searchableEnvironment;
 
 NameEnvironment(IWorkspaceRoot root, JavaProject javaProject, SimpleLookupTable binaryLocationsPerProject, BuildNotifier notifier) throws CoreException {
 	this.isIncrementalBuild = false;
 	this.notifier = notifier;
 	computeClasspathLocations(root, javaProject, binaryLocationsPerProject);
-	setNames(null, null);
+//	setNames(null, null);
+	this.searchableEnvironment=javaProject.newSearchableNameEnvironment(new ICompilationUnit[0]);
 }
 
 public NameEnvironment(IJavaProject javaProject) {
@@ -51,7 +54,13 @@ public NameEnvironment(IJavaProject javaProject) {
 		this.sourceLocations = new ClasspathMultiDirectory[0];
 		this.binaryLocations = new ClasspathLocation[0];
 	}
-	setNames(null, null);
+//	setNames(null, null);
+	try {
+		this.searchableEnvironment=javaProject.newSearchableNameEnvironment(new ICompilationUnit[0]);
+	} catch (JavaModelException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 }
 
 /* Some examples of resolved class path entries.
@@ -162,7 +171,7 @@ private void computeClasspathLocations(
 					IResource resource = (IResource) target;
 					ClasspathLocation bLocation = null;
 					if (resource instanceof IFile) {
-						if (!(org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(path.lastSegment())))
+						if (!(org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(path.lastSegment())))
 							continue nextEntry;
 						AccessRuleSet accessRuleSet = 
 							(JavaCore.IGNORE.equals(javaProject.getOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
@@ -192,7 +201,7 @@ private void computeClasspathLocations(
 						binaryLocationsPerProject.put(p, existingLocations);
 					}
 				} else if (target instanceof File) {
-					if (!(org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(path.lastSegment())))
+					if (!(org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(path.lastSegment())))
 						continue nextEntry;
 					AccessRuleSet accessRuleSet = 
 						(JavaCore.IGNORE.equals(javaProject.getOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
@@ -241,12 +250,13 @@ private void computeClasspathLocations(
 }
 
 public void cleanup() {
-	this.initialTypeNames = null;
-	this.additionalUnits = null;
-	for (int i = 0, l = sourceLocations.length; i < l; i++)
-		sourceLocations[i].cleanup();
-	for (int i = 0, l = binaryLocations.length; i < l; i++)
-		binaryLocations[i].cleanup();
+//	this.initialTypeNames = null;
+//	this.additionalUnits = null;
+//	for (int i = 0, l = sourceLocations.length; i < l; i++)
+//		sourceLocations[i].cleanup();
+//	for (int i = 0, l = binaryLocations.length; i < l; i++)
+//		binaryLocations[i].cleanup();
+	this.searchableEnvironment=null;
 }
 
 private void createOutputFolder(IContainer outputFolder) throws CoreException {
@@ -310,15 +320,19 @@ private NameEnvironmentAnswer findClass(String qualifiedTypeName, char[] typeNam
 }
 
 public NameEnvironmentAnswer findType(char[][] compoundName, ITypeRequestor requestor) {
-	if (compoundName != null)
-		return findClass(
-			new String(CharOperation.concatWith(compoundName, '/')),
-			compoundName[compoundName.length - 1]);
-	return null;
+//	if (compoundName != null)
+//		return findClass(
+//			new String(CharOperation.concatWith(compoundName, '/')),
+//			compoundName[compoundName.length - 1]);
+//	return null;
+	return this.searchableEnvironment.findType(compoundName, requestor);
 }
 
 
 public NameEnvironmentAnswer findBinding(char[] bindingName, char[][] packageName, int type, ITypeRequestor requestor) {
+	if (this.notifier != null)
+		this.notifier.checkCancelWithinCompiler();
+	return this.searchableEnvironment.findBinding(bindingName, packageName,type, requestor);
 
 //	String qBinaryFileName = qualifiedTypeName + SUFFIX_STRING_class;
 //	String binaryFileName = qBinaryFileName;
@@ -330,8 +344,7 @@ public NameEnvironmentAnswer findBinding(char[] bindingName, char[][] packageNam
 //	}
 //
 	// NOTE: the output folders are added at the beginning of the binaryLocations
-	NameEnvironmentAnswer suggestedAnswer = null;
-	throw new UnimplementedException("fix compile error here");
+//	NameEnvironmentAnswer suggestedAnswer = null;
 //	for (int i = 0, l = binaryLocations.length; i < l; i++) {
 //		NameEnvironmentAnswer answer = binaryLocations[i].findClass(binaryFileName, qPackageName, qBinaryFileName);
 //		if (answer != null) {
@@ -350,15 +363,17 @@ public NameEnvironmentAnswer findBinding(char[] bindingName, char[][] packageNam
 }
 
 public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName, ITypeRequestor requestor) {
-	if (typeName != null)
-		return findClass(
-			new String(CharOperation.concatWith(packageName, typeName, '/')),
-			typeName);
-	return null;
+	return searchableEnvironment.findType( typeName,packageName,  requestor);
+//	if (typeName != null)
+//		return findClass(
+//			new String(CharOperation.concatWith(packageName, typeName, '/')),
+//			typeName);
+//	return null;
 }
 
 public boolean isPackage(char[][] compoundName, char[] packageName) {
-	return isPackage(new String(CharOperation.concatWith(compoundName, packageName, '/')));
+	return searchableEnvironment.isPackage(compoundName,packageName);
+//	return isPackage(new String(CharOperation.concatWith(compoundName, packageName, '/')));
 }
 
 public boolean isPackage(String qualifiedPackageName) {

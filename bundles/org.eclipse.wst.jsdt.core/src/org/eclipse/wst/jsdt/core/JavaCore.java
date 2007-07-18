@@ -152,7 +152,7 @@ public final class JavaCore extends Plugin {
 	 * The identifier for the Java builder
 	 * (value <code>"org.eclipse.wst.jsdt.core.jsbuilder"</code>).
 	 */
-	public static final String BUILDER_ID = PLUGIN_ID + ".jsbuilder" ; //$NON-NLS-1$
+	public static final String BUILDER_ID = PLUGIN_ID + ".javascriptValidator" ; //$NON-NLS-1$
 
 	/**
 	 * The identifier for the Java model

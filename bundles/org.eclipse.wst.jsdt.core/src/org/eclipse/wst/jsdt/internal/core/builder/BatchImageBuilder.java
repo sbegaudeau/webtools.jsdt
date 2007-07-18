@@ -40,9 +40,9 @@ public void build() {
 		System.out.println("FULL build"); //$NON-NLS-1$
 
 	try {
-		notifier.subTask(Messages.bind(Messages.build_cleaningOutput, this.javaBuilder.currentProject.getName()));
+//		notifier.subTask(Messages.bind(Messages.build_cleaningOutput, this.javaBuilder.currentProject.getName()));
 		JavaBuilder.removeProblemsAndTasksFor(javaBuilder.currentProject);
-		cleanOutputFolders(true);
+//		cleanOutputFolders(true);
 		notifier.updateProgressDelta(0.05f);
 
 		notifier.subTask(Messages.build_analyzingSources); 

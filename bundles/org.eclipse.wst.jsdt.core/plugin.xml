@@ -61,6 +61,19 @@
 	</runtime>
 </extension>
 
+ <!-- =================================================================================== -->
+<!-- Extension: Java Builder                                                             -->
+<!-- =================================================================================== -->
+
+<extension 
+	point="org.eclipse.core.resources.builders" 
+	id="javascriptValidator"
+	name="%jsBuilderName">
+	<builder>
+		<run class="org.eclipse.wst.jsdt.internal.core.builder.JavaBuilder">
+		</run>
+	</builder>
+</extension>
  
 
 <!-- =================================================================================== -->

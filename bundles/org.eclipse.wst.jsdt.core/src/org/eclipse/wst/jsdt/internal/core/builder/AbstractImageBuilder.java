@@ -353,9 +353,9 @@ protected void compile(SourceFile[] units, SourceFile[] additionalUnits, boolean
 			additionalUnits[length + i] = (SourceFile) problemSourceFiles.get(i);
 	}
 	String[] initialTypeNames = new String[units.length];
-	for (int i = 0, l = units.length; i < l; i++)
-		initialTypeNames[i] = units[i].initialTypeName;
-	nameEnvironment.setNames(initialTypeNames, additionalUnits);
+//	for (int i = 0, l = units.length; i < l; i++)
+//		initialTypeNames[i] = units[i].initialTypeName;
+//	nameEnvironment.setNames(initialTypeNames, additionalUnits);
 	notifier.checkCancel();
 	try {
 		inCompiler = true;

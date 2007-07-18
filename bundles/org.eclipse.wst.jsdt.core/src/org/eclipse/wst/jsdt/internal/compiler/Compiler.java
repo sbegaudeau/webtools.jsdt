@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler;
 
+import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.compiler.*;
 import org.eclipse.wst.jsdt.internal.compiler.env.*;
 import org.eclipse.wst.jsdt.internal.compiler.impl.*;
@@ -307,7 +308,8 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 			parser.inferTypes(parsedUnit,this.options);
 			// initial type binding creation
 			lookupEnvironment.buildTypeBindings(parsedUnit, accessRestriction);
-			this.addCompilationUnit(sourceUnit, parsedUnit);
+			if (!(sourceUnit instanceof IClassFile))
+				this.addCompilationUnit(sourceUnit, parsedUnit);
 
 			// binding resolution
 			lookupEnvironment.completeTypeBindings(parsedUnit);

@@ -35,7 +35,7 @@ public State lastState;
 BuildNotifier notifier;
 char[][] extraResourceFileFilters;
 String[] extraResourceFolderFilters;
-public static final String SOURCE_ID = "JDT"; //$NON-NLS-1$
+public static final String SOURCE_ID = "JSDT"; //$NON-NLS-1$
 
 public static boolean DEBUG = false;
 
