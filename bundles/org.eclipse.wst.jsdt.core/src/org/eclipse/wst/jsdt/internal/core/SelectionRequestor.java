@@ -941,8 +941,9 @@ protected IJavaElement resolveCompilationUnit(char[] packageName, char[] compila
 	String cuName=cuPath.lastSegment();
 
 	if (this.openable instanceof CompilationUnit || this.openable instanceof ClassFile) {
-		if (cuName.equals(this.openable.getElementName()) &&
-				new String(packageName).equals(this.openable.getParent().getElementName()))
+		if ( (cuName.equals(this.openable.getElementName()) &&
+				new String(packageName).equals(this.openable.getParent().getElementName())
+				) || fullCUName.startsWith("http:")&&fullCUName.equals(this.openable.getElementName()))
 		{
 			return this.openable;
 		}

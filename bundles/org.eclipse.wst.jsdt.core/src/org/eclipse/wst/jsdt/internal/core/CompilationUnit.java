@@ -678,6 +678,8 @@ public int getElementType() {
  * @see org.eclipse.wst.jsdt.internal.compiler.env.IDependent#getFileName()
  */
 public char[] getFileName(){
+	if (name.startsWith("http:"))
+		return name.toCharArray();
 	return getPath().toString().toCharArray();
 }
 
@@ -1343,7 +1345,7 @@ public ClasspathContainerInitializer getContainerInitializer() {
 
 public LibrarySuperType getCommonSuperType() {
 	IJavaProject javaProject = getJavaProject();
-	if(javaProject!=null) return javaProject.getCommonSuperType();
+	if(javaProject!=null && javaProject.exists()) return javaProject.getCommonSuperType();
 	return null;
 }
 

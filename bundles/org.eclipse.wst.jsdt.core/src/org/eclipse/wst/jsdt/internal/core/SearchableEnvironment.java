@@ -207,7 +207,7 @@ public class SearchableEnvironment implements INameEnvironment,
 				false/* exact match */,
 				NameLookup.ACCEPT_ALL,
 				this.checkAccessRestrictions);
-		if (answer != null) {
+		if (answer != null && answer.element!=null) {
 			IOpenable openable = ((IJavaElement)answer.element).getOpenable();
 			
 			ICompilationUnit compilationUnit=	null;

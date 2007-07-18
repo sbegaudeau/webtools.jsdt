@@ -415,7 +415,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		TypeBinding[] parameters = method.parameters;
 		TypeVariableBinding[] typeVariables = method.typeVariables;
 		if (parameters == arguments
-			&& (method.returnType.tagBits & TagBits.HasTypeVariable) == 0 
+//			&& (method.returnType.tagBits & TagBits.HasTypeVariable) == 0 
 			&& genericTypeArguments == null
 			&& typeVariables == Binding.NO_TYPE_VARIABLES)
 				return method;
@@ -1198,7 +1198,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			// argument type compatibility check
 			for (int i = 0; i < foundSize; i++) {
 				MethodBinding methodBinding = (MethodBinding) found.elementAt(i);
-				MethodBinding compatibleMethod = computeCompatibleMethod(methodBinding, argumentTypes, invocationSite);
+				MethodBinding compatibleMethod = methodBinding;//computeCompatibleMethod(methodBinding, argumentTypes, invocationSite);
 				if (compatibleMethod != null) {
 					if (compatibleMethod.isValidBinding()) {
 						if (foundSize == 1 && compatibleMethod.canBeSeenBy(receiverType, invocationSite, this)) {

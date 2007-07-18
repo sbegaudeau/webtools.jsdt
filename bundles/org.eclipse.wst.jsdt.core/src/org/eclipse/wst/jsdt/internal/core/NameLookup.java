@@ -2081,8 +2081,8 @@ public class NameLookup implements SuffixConstants {
 						if (this.handleFactory == null)
 							this.handleFactory = new HandleFactory();
 						IOpenable openable = this.handleFactory.createOpenable(bindingRequestor.foundPath, this.searchScope);
-
-						return new Answer(openable, null);
+						if (openable!=null)
+							return new Answer(openable, null);
 					}
 						
 				} catch (OperationCanceledException e) {
