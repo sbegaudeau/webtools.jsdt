@@ -6213,8 +6213,8 @@ private void comsumeArrayLiteral(boolean addElision) {
 	int flag=this.intStack[this.intPtr--];
 	if (addElision || (flag&UNCONSUMED_ELISION)!=0)
 	{
-		pushOnExpressionStack(null);
-		concatExpressionLists();
+//		pushOnExpressionStack(null);
+//		concatExpressionLists();
 	}
 	int length = ((flag&WAS_ARRAY_LIT_ELEMENT)>0)? this.expressionLengthStack[this.expressionLengthPtr--] : 0;
 	arrayInitializer(length);
