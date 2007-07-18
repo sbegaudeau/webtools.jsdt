@@ -220,6 +220,7 @@ public class Parser implements  ParserBasicInformation, TerminalTokens, Operator
 
 	private boolean enteredRecoverStatements;
 
+	private int insertedSemicolonPosition=-1;
 	
 	
 	private static final int  UNCONSUMED_LIT_ELEMENT=0x4;
@@ -7095,8 +7096,15 @@ protected void consumeToken(int type) {
 			this.endPosition = this.scanner.startPosition;
 			this.endStatementPosition = this.scanner.currentPosition - 1;
 			break;
-		case TokenNameRBRACE:
 		case TokenNameSEMICOLON :
+			if (this.insertedSemicolonPosition>0)
+			{
+				this.endStatementPosition = this.insertedSemicolonPosition;
+				this.endPosition = this.insertedSemicolonPosition; 
+				this.insertedSemicolonPosition=-1;
+				break;
+			}// else fallthru
+		case TokenNameRBRACE:
 			this.endStatementPosition = this.scanner.currentPosition - 1;
 			this.endPosition = this.scanner.startPosition - 1; 
 			//the item is not part of the potential futur expression/statement
@@ -8785,6 +8793,7 @@ protected void parse() {
 				  if (shouldInsertSemicolon(prevPos, prevToken) )
 				  {
 					currentToken = TokenNameSEMICOLON;
+					this.insertedSemicolonPosition=prevPos;
 					scanner.pushBack();
 					insertedSemicolon = true;
 				
