@@ -13,12 +13,14 @@ package org.eclipse.wst.jsdt.internal.formatter;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AND_AND_Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
@@ -29,9 +31,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayTypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.AssertStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BreakStatement;
@@ -74,29 +74,29 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NormalAnnotation;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteral;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteralField;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedSingleTypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.RegExLiteral;
-import org.eclipse.wst.jsdt.internal.compiler.ast.SingleMemberAnnotation;
-import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteralConcatenation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NullLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.OR_OR_Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteralField;
 import org.eclipse.wst.jsdt.internal.compiler.ast.OperatorIds;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedSingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.PostfixExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.PrefixExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedSuperReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.RegExLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ReturnStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleMemberAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteralConcatenation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SuperReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SwitchStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SynchronizedStatement;
@@ -127,7 +127,6 @@ import org.eclipse.wst.jsdt.internal.core.util.CodeSnippetParsingUtil;
 import org.eclipse.wst.jsdt.internal.formatter.align.Alignment;
 import org.eclipse.wst.jsdt.internal.formatter.align.AlignmentException;
 import org.eclipse.wst.jsdt.internal.formatter.comment.CommentRegion;
-import org.eclipse.text.edits.TextEdit;
 
 /**
  * This class is responsible for formatting a valid java source code.
@@ -3051,13 +3050,15 @@ public class CodeFormatterVisitor extends ASTVisitor {
 	 * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#visit(org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)
 	 */
 	public boolean visit(CharLiteral charLiteral, BlockScope scope) {
-
+		
 		final int numberOfParens = (charLiteral.bits & ASTNode.ParenthesizedMASK) >> ASTNode.ParenthesizedSHIFT;
 		if (numberOfParens > 0) {
 			manageOpeningParenthesizedExpression(charLiteral, numberOfParens);
 		}
+		this.scribe.checkNLSTag(charLiteral.sourceStart);
 		this.scribe.printNextToken(TerminalTokens.TokenNameCharacterLiteral);
-
+		this.scribe.printTrailingComment();
+		
 		if (numberOfParens > 0) {
 			manageClosingParenthesizedExpression(charLiteral, numberOfParens);
 		}
