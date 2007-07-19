@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JSDT Support for Internet Explorer (Incubation)
-Bundle-SymbolicName: org.eclipse.wst.jsdt.support.ie ;singleton:=true
+Bundle-SymbolicName: org.eclipse.wst.jsdt.support.ie;singleton:=true
 Bundle-Version: 0.0.1.qualifier
 Require-Bundle: org.eclipse.wst.jsdt.core,
  org.eclipse.wst.jsdt.ui,
