@@ -1796,10 +1796,15 @@ public TypeBinding resolveType(BlockScope scope) {
 		this.constant = Constant.NotAConstant;
 		return null;
 	}
-
+	int operator = (this.bits & ASTNode.OperatorMASK) >> ASTNode.OperatorSHIFT;
+	
 	int leftTypeID = leftType.id;
 	int rightTypeID = rightType.id;
-
+	
+	if(operator==OperatorIds.INSTANCEOF && rightTypeID>15) {
+		rightTypeID=  TypeIds.T_JavaLangObject;
+	}
+	
 	// autoboxing support
 	boolean use15specifics = scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5;
 	if (use15specifics) {
@@ -1844,7 +1849,6 @@ public TypeBinding resolveType(BlockScope scope) {
 
 	// Don't test for result = 0. If it is zero, some more work is done.
 	// On the one hand when it is not zero (correct code) we avoid doing the test	
-	int operator = (this.bits & ASTNode.OperatorMASK) >> ASTNode.OperatorSHIFT;
 	int operatorSignature = OperatorExpression.OperatorSignatures[operator][(leftTypeID << 4) + rightTypeID];
 
 	this.left.computeConversion(scope, 	TypeBinding.wellKnownType(scope, (operatorSignature >>> 16) & 0x0000F), leftType);

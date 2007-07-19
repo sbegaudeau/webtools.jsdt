@@ -23,6 +23,7 @@ public class SystemLibraryLocation implements LibraryLocation {
 	public static final char[] SYSTEM_LIBARAY_NAME= {'s','y','s','t','e','m','.','j','s'};
 	public static final char[] LIBRARY_RUNTIME_DIRECTORY={'l','i','b','r','a','r','i','e','s'};
 	public static final char[] LIBRARY_PLUGIN_DIRECTORY={'l','i','b','r','a','r','i','e','s'};
+	private static final boolean AUTO_UPDATE_LIBS=true;
 	
 	private static SystemLibraryLocation fInstance;
 	
@@ -77,15 +78,35 @@ public class SystemLibraryLocation implements LibraryLocation {
 				IPath workingLibLocation = Platform.getStateLocation(Platform.getBundle(JavaCore.PLUGIN_ID)).append( new String(LIBRARY_RUNTIME_DIRECTORY)).append(new String(libFiles[i]));
 				File library = workingLibLocation.toFile();
 			
-			
+				
 				if(!library.exists()) {
 					URL url = null;
 					InputStream is = null;
 						
 					is	 = FileLocator.openStream(Platform.getBundle(getPluginId()),getLibraryPathInPlugin().append(new String(libFiles[i])), false);				
+				
 					copyFile(is,library);
 						
 						
+				}else if(AUTO_UPDATE_LIBS){
+					long lastModold = library.lastModified();
+					URL path  = FileLocator.toFileURL((Platform.getBundle(getPluginId()).getEntry(getLibraryPathInPlugin().append(new String(libFiles[i])).toString())));
+					
+					
+					File inPlugin = new File(path.getFile());
+					long lastModNew = inPlugin.lastModified();
+					if(lastModNew>lastModold) {
+					//	System.out.println("Updating old library file : " + path.getFile());
+						library.delete();
+						URL url = null;
+						InputStream is = null;
+							
+						is	 = FileLocator.openStream(Platform.getBundle(getPluginId()),getLibraryPathInPlugin().append(new String(libFiles[i])), false);				
+					
+						copyFile(is,library);
+					}else {
+						//System.out.println("Not Updating library file : " + path.getFile());
+					}
 				}
 			}
 		}catch(Exception ex) {}

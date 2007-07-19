@@ -47,7 +47,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		OperatorSignatures[IN] = get_EQUAL_EQUAL();
 		OperatorSignatures[EQUAL_EQUAL_EQUAL] = get_EQUAL_EQUAL();
 		OperatorSignatures[NOT_EQUAL_EQUAL] = get_EQUAL_EQUAL();
-		OperatorSignatures[INSTANCEOF] = get_EQUAL_EQUAL();
+		OperatorSignatures[INSTANCEOF] = get_INSTANCEOF();
 	}
 
 	public static final String generateTableTestCase(){
@@ -625,7 +625,60 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		
 		return get_MINUS();
 	}
-
+	public static final int[] get_INSTANCEOF(){
+		
+		
+		//the code is an int
+		// (cast)  left   Op (cast)  rigth --> result
+		//  0000   0000       0000   0000      0000
+		//  <<16   <<12       <<8    <<4       
+		
+		int[] table  = new int[16*16];
+		
+		
+		table[(T_any<<4)+T_JavaLangString] 				= T_boolean;
+		table[(T_any<<4)+T_JavaLangObject] 				= T_boolean;
+		table[(T_any<<4)+T_function] 					= T_boolean;
+		table[(T_any<<4)+T_boolean] 					= T_boolean;
+		table[(T_any<<4)+T_int] 					= T_boolean;
+		
+		table[(T_null<<4)+T_JavaLangObject] 			= T_boolean;
+		table[(T_null<<4)+T_JavaLangString] 				= T_boolean;
+		table[(T_null<<4)+T_function] 					= T_boolean;
+		table[(T_null<<4)+T_boolean] 					= T_boolean;
+		table[(T_null<<4)+T_int] 					= T_boolean;
+		
+		table[(T_JavaLangString<<4)+T_JavaLangObject] 			= T_boolean;
+		table[(T_JavaLangString<<4)+T_JavaLangString] 				= T_boolean;
+		table[(T_JavaLangString<<4)+T_function] 					= T_boolean;
+		table[(T_JavaLangString<<4)+T_boolean] 					= T_boolean;
+		table[(T_JavaLangString<<4)+T_int] 					= T_boolean;
+		
+		table[(T_JavaLangObject<<4)+T_JavaLangObject] 			= T_boolean;
+		table[(T_JavaLangObject<<4)+T_JavaLangString] 				= T_boolean;
+		table[(T_JavaLangObject<<4)+T_function] 					= T_boolean;
+		table[(T_JavaLangObject<<4)+T_boolean] 					= T_boolean;
+		table[(T_JavaLangObject<<4)+T_int] 					= T_boolean;
+		
+		table[(T_function<<4)+T_int] 					= T_boolean;
+		table[(T_function<<4)+T_JavaLangObject] 			= T_boolean;
+		table[(T_function<<4)+T_JavaLangString] 				= T_boolean;
+		table[(T_function<<4)+T_function] 					= T_boolean;
+		table[(T_function<<4)+T_boolean] 					= T_boolean;
+		
+		table[(T_boolean<<4)+T_int] 			= T_boolean;
+		table[(T_boolean<<4)+T_JavaLangObject] 			= T_boolean;
+		table[(T_boolean<<4)+T_JavaLangString] 				= T_boolean;
+		table[(T_boolean<<4)+T_function] 					= T_boolean;
+		table[(T_boolean<<4)+T_boolean] 					= T_boolean;
+		
+		table[(T_int<<4)+T_int] 			= T_boolean;
+		table[(T_int<<4)+T_JavaLangObject] 			= T_boolean;
+		table[(T_int<<4)+T_JavaLangString] 				= T_boolean;
+		table[(T_int<<4)+T_function] 					= T_boolean;
+		table[(T_int<<4)+T_boolean] 					= T_boolean;
+		return table;
+	}
 	public static final int[] get_EQUAL_EQUAL(){
 	
 		//the code is an int
@@ -852,7 +905,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_any<<4)+T_int] 			= T_boolean;
 		table[(T_any<<4)+T_null] 			= T_boolean;
 		table[(T_any<<4)+T_any] 			= T_boolean;
-
+		table[(T_any<<4)+T_function] 		= T_boolean;
 		return table;
 	}
 

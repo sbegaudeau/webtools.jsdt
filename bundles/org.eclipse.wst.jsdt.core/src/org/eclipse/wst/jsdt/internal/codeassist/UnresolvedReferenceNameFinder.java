@@ -320,7 +320,7 @@ public class UnresolvedReferenceNameFinder extends ASTVisitor {
 		return true;
 	}
 	
-	public boolean visit(MethodDeclaration methodDeclaration, ClassScope classScope) {
+	public boolean visit(MethodDeclaration methodDeclaration, Scope classScope) {
 		removeLocals(
 				methodDeclaration.arguments,
 				methodDeclaration.declarationSourceStart,
@@ -379,7 +379,7 @@ public class UnresolvedReferenceNameFinder extends ASTVisitor {
 		endVisitRemoved(localDeclaration.declarationSourceStart, localDeclaration.sourceEnd);
 	}
 	
-	public void endVisit(MethodDeclaration methodDeclaration, ClassScope classScope) {
+	public void endVisit(MethodDeclaration methodDeclaration, Scope classScope) {
 		endVisitPreserved(
 				methodDeclaration.bodyStart,
 				methodDeclaration.bodyEnd);

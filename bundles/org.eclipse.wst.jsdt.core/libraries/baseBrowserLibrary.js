@@ -981,6 +981,48 @@ Document.prototype.getElementsByTagNameNS=function(namespaceURI, localName){};
  */ 
 Document.prototype.getElementById=function(elementId){}; 
 /**
+  * function write(text)
+  * @class Document
+  * @param text String
+  * @see Document
+  * @since Standard ECMA-262 3rd. Edition 
+  * @since Level 1 Document Object Model Core Definition.
+ 
+  * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
+ */ 
+Document.prototype.write=function(text){}; 
+/**
+  * function writeln(text)
+  * @class Document
+  * @param text String
+  * @see Document
+  * @since Standard ECMA-262 3rd. Edition 
+  * @since Level 1 Document Object Model Core Definition.
+ 
+  * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
+ */ 
+Document.prototype.writeln=function(text){}; 
+/**
+  * function close()
+  * @class Document
+  * @see Document
+  * @since Standard ECMA-262 3rd. Edition 
+  * @since Level 1 Document Object Model Core Definition.
+ 
+  * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
+ */ 
+Document.prototype.close=function(){}; 
+/**
+  * function open()
+  * @class Document
+  * @see Document
+  * @since Standard ECMA-262 3rd. Edition 
+  * @since Level 1 Document Object Model Core Definition.
+ 
+  * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
+ */ 
+Document.prototype.open=function(){}; 
+/**
   * Object NamedNodeMap()
   * @super Object
   * @constructor
