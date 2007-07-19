@@ -18,7 +18,7 @@
    </license>
 
    <requires>
-      <import feature="org.eclipse.platform" version="3.3.0.v20070612-_19UEkLEzwsdF9jSqQ-G"/>
+      <import feature="org.eclipse.platform" version="3.3.0" match="compatible"/>
    </requires>
 
    <plugin
