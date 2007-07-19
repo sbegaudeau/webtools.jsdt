@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: FireFox Support for JSDT Plugin
+Bundle-Name: FireFox Support for JSDT Plugin (Incubation)
 Bundle-SymbolicName: org.eclipse.wst.jsdt.support.firefox;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 0.0.1.qualifier
 Require-Bundle: org.eclipse.wst.jsdt.core,
  org.eclipse.wst.jsdt.ui,
  org.eclipse.core.runtime,
