@@ -14,30 +14,21 @@ import java.util.Arrays;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.Path;
-
 import org.eclipse.jface.resource.ImageDescriptor;
-
-
 import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
 import org.eclipse.wst.jsdt.core.CompletionContext;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JSDScopeUtil;
 import org.eclipse.wst.jsdt.core.Signature;
-
-import org.eclipse.wst.jsdt.internal.core.NameLookup;
 import org.eclipse.wst.jsdt.internal.corext.template.java.SignatureUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.IClasspathContainerInitialzerExtension;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
+import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 
 /**
@@ -282,7 +273,9 @@ public class CompletionProposalLabelProvider {
 		nameBuffer.append(" - "); //$NON-NLS-1$
 		String declaringType= extractDeclaringTypeFQN(methodProposal);
 //		declaringType= Signature.getSimpleName(declaringType);
-		nameBuffer.append(declaringType);
+		
+		//@GINO: Anonymous UI Label
+		org.eclipse.wst.jsdt.internal.core.util.Util.insertTypeLabel( declaringType, nameBuffer );
 
 		return nameBuffer.toString();
 	}
@@ -463,9 +456,12 @@ public class CompletionProposalLabelProvider {
 		StringBuffer buf= new StringBuffer();
 		buf.append(proposal.getCompletion());
 		char[] typeName= Signature.getSignatureSimpleName(proposal.getSignature());
+		
 		if (typeName.length > 0) {
 			buf.append("    "); //$NON-NLS-1$
-			buf.append(typeName);
+			
+			//@GINO: Anonymous UI Label
+			org.eclipse.wst.jsdt.internal.core.util.Util.insertTypeLabel( typeName, buf );
 		}
 		return buf.toString();
 	}
@@ -492,14 +488,18 @@ public class CompletionProposalLabelProvider {
 		char[] typeName= Signature.getSignatureSimpleName(proposal.getSignature());
 		if (typeName.length > 0&& !(Arrays.equals(Signature.ANY, typeName))) {
 			buf.append("    "); //$NON-NLS-1$
-			buf.append(typeName);
+			
+			//@GINO: Anonymous UI Label
+			org.eclipse.wst.jsdt.internal.core.util.Util.insertTypeLabel( typeName, buf );
 		}
 		char[] declaration= proposal.getDeclarationSignature();
 		if (declaration != null) {
 			declaration= Signature.getSignatureSimpleName(declaration);
 			if (declaration.length > 0) {
 				buf.append(" - "); //$NON-NLS-1$
-				buf.append(declaration);
+				
+				//@GINO: Anonymous UI Label
+				org.eclipse.wst.jsdt.internal.core.util.Util.insertTypeLabel( declaration, buf );
 			}
 		}
 

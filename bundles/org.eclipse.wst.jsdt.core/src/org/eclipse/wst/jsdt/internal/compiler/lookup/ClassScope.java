@@ -1217,6 +1217,10 @@ public class ClassScope extends Scope {
 		if (enclosingType == null) {
 			char[][] className = CharOperation.arrayConcat(packageBinding.compoundName, inferredType.getName());
 			inferredType.binding = new SourceTypeBinding(className, packageBinding, this);
+			
+			//@GINO: Anonymous set bits
+			if( inferredType.isAnonymous )
+				inferredType.binding.tagBits |= TagBits.AnonymousTypeMask;
 		} else {
 //			char[][] className = CharOperation.deepCopy(enclosingType.compoundName);
 //			className[className.length - 1] =

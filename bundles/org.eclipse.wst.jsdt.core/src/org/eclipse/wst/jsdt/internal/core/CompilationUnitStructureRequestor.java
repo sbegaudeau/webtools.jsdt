@@ -377,7 +377,16 @@ public void enterType(TypeInfo typeInfo) {
 	JavaElement parentHandle= (JavaElement) this.handleStack.peek();
 	String nameString= new String(typeInfo.name);
 	
-	SourceType handle = new SourceType(parentHandle, nameString); //NB: occurenceCount is computed in resolveDuplicates
+	//@GINO: Anonymous setting model as anonymous
+	SourceType handle = typeInfo.anonymousMember ? 
+			new SourceType(parentHandle, nameString){
+
+				public boolean isAnonymous() {
+					return true;
+				}
+		
+			} :
+		new SourceType(parentHandle, nameString);  //NB: occurenceCount is computed in resolveDuplicates
 	
 	resolveDuplicates(handle);
 	

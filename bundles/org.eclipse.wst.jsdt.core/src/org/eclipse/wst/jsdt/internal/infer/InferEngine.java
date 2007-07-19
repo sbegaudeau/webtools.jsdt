@@ -54,7 +54,9 @@ public class InferEngine extends ASTVisitor {
 
     
 	static final char[] CONSTRUCTOR_ID={'c','o','n','s','t','r','u','c','t','o','r'};
-	static final char[] ANONYMOUS_CLASS_ID={'a','n','o','n','y','m','o','u','s'};
+	
+	public final static char[] ANONYMOUS_PREFIX = {'_','_','_'};
+	public static final char[] ANONYMOUS_CLASS_ID= {'a','n','o','n','y','m','o','u','s'};
     
 	static class Context 
 	{
@@ -413,7 +415,7 @@ public class InferEngine extends ASTVisitor {
 		if (currentType==null || !currentType.isAnonymous)
 		{
 			char[] cs = String.valueOf(this.anonymousCount++).toCharArray();
-			char []name = CharOperation.concat(InferredType.ANONYMOUS_PREFIX,var.name,cs);
+			char []name = CharOperation.concat(ANONYMOUS_PREFIX,var.name,cs);
 			InferredType type = addType(name);
 			type.isDefinition=true;
 			type.isAnonymous=true;
@@ -432,7 +434,7 @@ public class InferEngine extends ASTVisitor {
 		
 		//char[] cs = String.valueOf(this.anonymousCount2++).toCharArray();
 		char [] loc = (String.valueOf( objLit.sourceStart ) + '_' + String.valueOf( objLit.sourceEnd )).toCharArray();
-		char []name = CharOperation.concat( InferredType.ANONYMOUS_PREFIX, ANONYMOUS_CLASS_ID, loc );
+		char []name = CharOperation.concat( ANONYMOUS_PREFIX, ANONYMOUS_CLASS_ID, loc );
 		
 		InferredType anonType = addType(name);
 		anonType.isDefinition=true;

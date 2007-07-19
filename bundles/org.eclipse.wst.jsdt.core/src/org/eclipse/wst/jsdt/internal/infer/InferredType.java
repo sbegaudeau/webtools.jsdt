@@ -39,7 +39,7 @@ public class InferredType extends ASTNode {
 	
 	
 	public final static char[] OBJECT_NAME=new char[]{'O','b','j','e','c','t'};
-	public final static char[] ANONYMOUS_PREFIX=new char[]{'_','_','_'};
+	public final static char[] OBJECT_LITERAL_NAME = new char[]{'{','}'};
 
 	public final static char[] ARRAY_NAME=new char[]{'A','r','r','a','y'};
 

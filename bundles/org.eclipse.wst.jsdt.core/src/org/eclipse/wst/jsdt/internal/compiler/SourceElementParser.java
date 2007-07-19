@@ -1157,11 +1157,6 @@ public void notifySourceElementRequestor(CompilationUnitDeclaration parsedUnit) 
 	for (int inx=0;inx<parsedUnit.numberInferredTypes;inx++) {
 			InferredType type = parsedUnit.inferredTypes[inx];
 		
-		//skip anonymouse here because they are from Object Literals and they are represented under
-		//their assign reference
-		if( type.isAnonymous )
-			continue;
-		
 		notifySourceElementRequestor(type);
 	}
 	
@@ -1181,7 +1176,9 @@ public void notifySourceElementRequestor( InferredType type ) {
 	ISourceElementRequestor.TypeInfo typeInfo = new ISourceElementRequestor.TypeInfo();
 	typeInfo.declarationStart = type.sourceStart;
 	typeInfo.modifiers = 0;
-	typeInfo.name = type.isAnonymous ? CharOperation.NO_CHAR : type.getName();
+	
+	typeInfo.name = type.getName();
+	
 	typeInfo.nameSourceStart = type.sourceStart;
 	typeInfo.nameSourceEnd = -1;
 	typeInfo.superclass = type.getSuperClassName();
@@ -1191,7 +1188,7 @@ public void notifySourceElementRequestor( InferredType type ) {
 //		typeInfo.categories = (char[][]) this.nodesToCategories.get(typeDeclaration);
 	typeInfo.secondary = false;
 	
-	//typeInfo.anonymousMember = type.isAnonymous;
+	typeInfo.anonymousMember = type.isAnonymous;
 	
 	requestor.enterType(typeInfo);
 	
@@ -1205,7 +1202,7 @@ public void notifySourceElementRequestor( InferredType type ) {
 		fieldInfo.nameSourceStart = field.nameStart;
 		fieldInfo.nameSourceEnd = field.nameStart+field.name.length-1;
 		
-		fieldInfo.type = getTypeName( field.type );
+		fieldInfo.type = field.type!=null ? field.type.getName():null;
 		
 //			fieldInfo.annotationPositions = collectAnnotationPositions(fieldDeclaration.annotations);
 //			fieldInfo.categories = (char[][]) this.nodesToCategories.get(fieldDeclaration);
@@ -1256,6 +1253,8 @@ public void notifySourceElementRequestor( InferredType type ) {
 		methodInfo.categories = (char[][]) this.nodesToCategories.get(methodDeclaration);
 		requestor.enterMethod(methodInfo);
 		
+		visitIfNeeded( method.methodDeclaration );
+		
 		requestor.exitMethod(methodDeclaration.declarationSourceEnd, -1, -1);
 
 	}
@@ -1263,25 +1262,6 @@ public void notifySourceElementRequestor( InferredType type ) {
 	
 	requestor.exitType(type.sourceEnd);
 	
-}
-
-private char[] getTypeName( InferredType type ){
-	
-	char [] typeName = null;
-	//check the inferred type
-	if( type != null ){
-		
-		if( type.isAnonymous ){
-			//if the inferred type is anonymous, will set type as Object
-			typeName = InferredType.OBJECT_NAME;
-			
-		}
-		else{
-			typeName = type.getName();
-		}					
-	}
-	
-	return typeName;
 }
 
 private void notifySourceStatment(ASTNode node) {
@@ -1498,7 +1478,7 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 				fieldInfo.declarationStart = fieldDeclaration.declarationSourceStart;
 				fieldInfo.name = fieldDeclaration.name;
 				fieldInfo.modifiers = deprecated ? (currentModifiers & ExtraCompilerModifiers.AccJustFlag) | ClassFileConstants.AccDeprecated : currentModifiers & ExtraCompilerModifiers.AccJustFlag;
-				fieldInfo.type = getTypeName( fieldDeclaration.inferredType );
+				fieldInfo.type = fieldDeclaration.inferredType!=null ? fieldDeclaration.inferredType.getName() : null;
 				fieldInfo.nameSourceStart = fieldDeclaration.sourceStart;
 				fieldInfo.nameSourceEnd = fieldDeclaration.sourceEnd;
 				fieldInfo.annotationPositions = collectAnnotationPositions(fieldDeclaration.annotations);

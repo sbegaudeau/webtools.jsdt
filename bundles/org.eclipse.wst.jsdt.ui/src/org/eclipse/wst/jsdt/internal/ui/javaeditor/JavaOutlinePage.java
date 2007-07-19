@@ -255,6 +255,19 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 						String name= element.getElementName();
 						return (name != null && name.indexOf('<') >= 0);
 					}
+					
+					//@GINO: Anonymous Filter top level anonymous
+					if (element.getElementType() == IJavaElement.TYPE && element.getParent().getElementType() == IJavaElement.COMPILATION_UNIT ) {
+						
+						IType type = (IType)element;
+						try {
+							return type.isAnonymous();
+						} catch (JavaModelException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					
 					return false;
 				}
 

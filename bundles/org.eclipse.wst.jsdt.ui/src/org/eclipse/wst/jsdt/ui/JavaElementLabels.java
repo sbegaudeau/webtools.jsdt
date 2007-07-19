@@ -822,7 +822,9 @@ public class JavaElementLabels {
 				break;
 			case Signature.CLASS_TYPE_SIGNATURE:
 				String baseType= Signature.toString(Signature.getTypeErasure(typeSig));
-				buf.append(Signature.getSimpleName(baseType));
+				
+				//@GINO: Anonymous UI Label
+				org.eclipse.wst.jsdt.internal.core.util.Util.insertTypeLabel( Signature.getSimpleName(baseType), buf );		
 				
 				String[] typeArguments= Signature.getTypeArguments(typeSig);
 				getTypeArgumentSignaturesLabel(typeArguments, flags, buf);

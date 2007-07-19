@@ -855,6 +855,16 @@ public String[][] resolveType(String typeName, WorkingCopyOwner owner) throws Ja
 	}
 	return requestor.answers;
 }
+
+/*
+ * @GINO: Anonymous ??? maybe don't need
+ */
+public String getDisplayName() {
+	if( isAnonymous() )
+		return "";
+	else
+		return super.getDisplayName();
+}
 /**
  * @private Debugging purposes
  */

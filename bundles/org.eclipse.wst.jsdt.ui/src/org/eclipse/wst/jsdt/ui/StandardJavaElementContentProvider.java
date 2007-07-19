@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.ui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import org.eclipse.core.runtime.CoreException;
 
@@ -33,6 +34,7 @@ import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IParent;
 import org.eclipse.wst.jsdt.core.ISourceReference;
+import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
  
@@ -192,12 +194,65 @@ public class StandardJavaElementContentProvider implements ITreeContentProvider,
 			}
 			
 			if (getProvideMembers() && element instanceof ISourceReference && element instanceof IParent) {
-				return ((IParent)element).getChildren();
+				
+				//@GINO: Anonymous Filter top level anonymous
+				if( element instanceof ICompilationUnit )
+					return filter( ((IParent)element).getChildren() );
+				else 
+					return ((IParent)element).getChildren();
+				
 			}
 		} catch (CoreException e) {
 			return NO_CHILDREN;
 		}		
 		return NO_CHILDREN;	
+	}
+	
+	/*
+	 * @GINO: Anonymous -- matches anonymous types on the top level
+	 */
+	protected boolean matches(IJavaElement element) {
+			
+		if (element.getElementType() == IJavaElement.TYPE && element.getParent().getElementType() == IJavaElement.COMPILATION_UNIT ) {
+			
+			IType type = (IType)element;
+			try {
+				return type.isAnonymous();
+			} catch (JavaModelException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return false;
+	}
+
+	/*
+	 * @GINO: Anonymous Filter from top level
+	 *
+	 */
+	protected IJavaElement[] filter(IJavaElement[] children) {
+		boolean initializers= false;
+		for (int i= 0; i < children.length; i++) {
+			if (matches(children[i])) {
+				initializers= true;
+				break;
+			}
+		}
+
+		if (!initializers)
+			return children;
+
+		Vector v= new Vector();
+		for (int i= 0; i < children.length; i++) {
+			if (matches(children[i]))
+				continue;
+			v.addElement(children[i]);
+		}
+
+		IJavaElement[] result= new IJavaElement[v.size()];
+		v.copyInto(result);
+		return result;
 	}
 
 	/* (non-Javadoc)

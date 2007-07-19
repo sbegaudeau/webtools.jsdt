@@ -49,6 +49,7 @@ import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.PackageFragmentRoot;
+import org.eclipse.wst.jsdt.internal.infer.InferEngine;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
@@ -3055,5 +3056,37 @@ public class Util {
 			start++;
 		}
 		return start;
+	}
+	
+
+	/*
+	 * @GINO: Anonymous UI Label
+	 * 
+	 * marker and label
+	 */
+	private static final String ANONYMOUS_MARKER = new String( CharOperation.concat(InferEngine.ANONYMOUS_PREFIX, InferEngine.ANONYMOUS_CLASS_ID) );
+	private static final String ANONYMOUS_LABEL = "{}";
+	
+	/*
+	 * @GINO: Anonymous UI Label
+	 * 
+	 * This method is used to hide the internal name used for anonymous types
+	 */
+	public static void insertTypeLabel(char[] typeName, StringBuffer buf) {
+		insertTypeLabel( new String(typeName), buf );
+	}
+	
+	/*
+	 * @GINO: Anonymous UI Label
+	 * 
+	 * This method is used to hide the internal name used for anonymous types
+	 */
+	public static void insertTypeLabel(String typeName, StringBuffer buf) {
+		if( typeName.startsWith(ANONYMOUS_MARKER) ){
+			buf.append( ANONYMOUS_LABEL );				
+		}
+		else{
+			buf.append(typeName);
+		}
 	}
 }

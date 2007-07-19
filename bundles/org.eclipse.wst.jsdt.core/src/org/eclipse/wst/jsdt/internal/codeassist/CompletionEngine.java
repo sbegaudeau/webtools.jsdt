@@ -6960,7 +6960,7 @@ public final class CompletionEngine
 				
 				if(isForbidden(sourceType)) continue next;
 				
-				//@GINO: Skip top level anonymous
+				//@GINO: Anonymous UI Hide types
 				if( sourceType.isAnonymousType() )continue next;
 				
 				if(proposeAllMemberTypes &&
