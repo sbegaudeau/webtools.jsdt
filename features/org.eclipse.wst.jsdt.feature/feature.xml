@@ -29,7 +29,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.wst.jsdt.core.manipulation"
+         id="org.eclipse.wst.jsdt.manipulation"
          download-size="0"
          install-size="0"
          version="0.0.0"
