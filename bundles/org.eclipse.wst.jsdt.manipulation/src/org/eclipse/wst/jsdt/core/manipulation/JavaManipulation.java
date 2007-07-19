@@ -11,12 +11,12 @@
 package org.eclipse.wst.jsdt.core.manipulation;
 
 /**
- * Central access point for the Java Manipulation plug-in (id <code>"org.eclipse.wst.jsdt.core.manipulation"</code>).
+ * Central access point for the Java Manipulation plug-in (id <code>"org.eclipse.wst.jsdt.manipulation"</code>).
  */
 public class JavaManipulation {
 	
 	/**
-	 * The id of the Java Manipulation plug-in (value <code>"org.eclipse.wst.jsdt.core.manipulation"</code>).
+	 * The id of the Java Manipulation plug-in (value <code>"org.eclipse.wst.jsdt.manipulation"</code>).
 	 */	
-	public static final String ID_PLUGIN= "org.eclipse.wst.jsdt.core.manipulation"; //$NON-NLS-1$
+	public static final String ID_PLUGIN= "org.eclipse.wst.jsdt.manipulation"; //$NON-NLS-1$
 }
