@@ -18,6 +18,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IField;
@@ -2078,9 +2080,13 @@ public class NameLookup implements SuffixConstants {
 							progressMonitor);
 					if (bindingRequestor.foundPath!=null)
 					{
+						IOpenable openable = createOpenable(bindingRequestor.foundPath, this.searchScope);
+						if (openable!=null)
+							return new Answer(openable, null);
+						
 						if (this.handleFactory == null)
 							this.handleFactory = new HandleFactory();
-						IOpenable openable = this.handleFactory.createOpenable(bindingRequestor.foundPath, this.searchScope);
+						openable = this.handleFactory.createOpenable(bindingRequestor.foundPath, this.searchScope);
 						if (openable!=null)
 							return new Answer(openable, null);
 					}
@@ -2095,7 +2101,57 @@ public class NameLookup implements SuffixConstants {
 				}
 			return null;
 		}
-
-
+		/* creates an openable from PackageFragmentRoots in this lookup */
+		public IOpenable createOpenable(String resourcePath, IJavaSearchScope scope) {
+			IPath resourceP = new Path(resourcePath);
+			for(int i = 0;i<packageFragmentRoots.length;i++) {
+				IPackageFragmentRoot root = packageFragmentRoots[i];
+				IPath fragPath = root.getPath();
+					if(fragPath.isPrefixOf(resourceP)) {
+						String fileName = resourceP.lastSegment();
+						if(root instanceof DocumentContextFragmentRoot) {
+							DocumentContextFragmentRoot dRoot = (DocumentContextFragmentRoot)root;
+							String pkgName = resourcePath.substring(fragPath.toString().length() + 1);
+							IPath importPath = new Path(pkgName);
+							if(!dRoot.inScope(importPath)) continue;
+							
+							IPackageFragment frag = dRoot.getPackageFragment(pkgName);
+							if(resourceP.toFile().exists()){
+								IClassFile file = frag.getClassFile(resourcePath);
+								return file;
+							}else {
+	
+								ICompilationUnit file = frag.getCompilationUnit((fileName));
+								return file;
+							}
+							
+						}else if (root instanceof LibraryFragmentRoot) {
+							if(resourceP.toFile().exists()){
+								IClassFile file = root.getPackageFragment(resourcePath).getClassFile(resourcePath);
+								return file;
+							}else {
+								String pkgName = resourcePath.substring(fragPath.toString().length());
+								ICompilationUnit file = root.getPackageFragment(pkgName).getCompilationUnit((fileName));
+								return file;
+							}
+						}else {
+							if(resourceP.toFile().exists()){
+								IClassFile file = root.getPackageFragment(resourcePath).getClassFile(resourcePath);
+								return file;
+							}else {
+								String pkgName = resourcePath.substring(fragPath.toString().length());
+								int indexName = pkgName.indexOf(fileName);
+								if(indexName>-1) {
+									pkgName = pkgName.substring(0,indexName-1);
+								}
+								ICompilationUnit file = root.getPackageFragment(pkgName).getCompilationUnit((fileName));
+								return file;
+							}
+						}			
+					}
+				
+			}
+			return null;
+		}
 
 }

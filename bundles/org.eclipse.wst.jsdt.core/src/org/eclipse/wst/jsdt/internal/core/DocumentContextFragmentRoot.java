@@ -205,11 +205,12 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 		for(int i = 0;i<includedFiles.length;i++) {
 			IPath includePath = (IPath)includedFiles[i];
 			String includeName = includePath.toString();
-			String fileName = includePath.lastSegment();
-			IPath pathToFile = includePath.removeLastSegments(1);
-			IResource you = ((IContainer)getResource()).findMember(pathToFile);
+			//String fileName = includePath.lastSegment();
+			//IPath pathToFile = includePath.removeLastSegments(1);
 			
-			DocumentContextFragment packFrag=  new DocumentContextFragment(this, you, new String[] {fileName});
+			//.findMember(pathToFile);
+		
+			DocumentContextFragment packFrag=  new DocumentContextFragment(this,  includeName);
 			LibraryPackageFragmentInfo fragInfo= new LibraryPackageFragmentInfo();
 			packFrag.computeChildren(fragInfo);
 			newElements.put(packFrag, fragInfo);
@@ -252,8 +253,8 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 							
 			case '.':
 				/* returns a new relative path thats relative to the resource */
-				IPath relative = fRelativeFile.getProjectRelativePath().removeLastSegments(1);
-				IPath relRes = getResource().getProjectRelativePath();
+				IPath relative = fRelativeFile.getFullPath().removeLastSegments(1);
+				IPath relRes = getResource().getFullPath();
 				if(relRes.isPrefixOf(relative)) {
 					IPath amended = relative.removeFirstSegments(relRes.matchingFirstSegments(relative));
 					resolvedPath = amended.append(childPathString);
@@ -277,15 +278,15 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	}
 	
 	public IPath getPath() {
-		return fRelativeFile.getProjectRelativePath().removeLastSegments(1);
+		return fRelativeFile.getFullPath().removeLastSegments(1);
 	}
 	
-	public PackageFragment getPackageFragment(String[] filesInFragment) {
+	public IPackageFragment getPackageFragment(String filesInFragment) {
 		return new DocumentContextFragment(this, filesInFragment);
 	}
 	
 	public PackageFragment getDefaultPackageFragment() {
-		return  new DocumentContextFragment(this, (new String[0]));
+		return  new DocumentContextFragment(this, "");
 	}
 	
 	public boolean equals(Object o) {
@@ -472,6 +473,13 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 			if(exists) return new File(resolved.getLocation().toString());
 		}
 		return null;
+	}
+	public boolean inScope(IPath importPath) {
+		
+		for(int i = 0;i<includedFiles.length;i++) {
+			if(includedFiles[i].equals(importPath)) return true;
+		}
+		return false;
 	}
 	
 	protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource) throws JavaModelException {

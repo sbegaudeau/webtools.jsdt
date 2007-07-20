@@ -27,21 +27,19 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 public class DocumentContextFragment extends LibraryPackageFragment{
 	
-	private String[] filesInScope;
-	private IResource me;
+	private String fileInScope;
 	
-
-	protected DocumentContextFragment(PackageFragmentRoot root, String[] names) {
-		super(root, names);
-		this.names = names;
-		filesInScope = names;
+	protected DocumentContextFragment(PackageFragmentRoot root, String names) {
+		super(root, new String[] {names});
+		this.names  =new String[] {names};
+		fileInScope = names;
 	}
-	protected DocumentContextFragment(PackageFragmentRoot root, IResource you, String[] names) {
-		super(root, new String[0]);
-		filesInScope = names;
-		this.names = names;
-		me = you;
-	}
+//	protected DocumentContextFragment(PackageFragmentRoot root, IPath you, String[] names) {
+//		super(root, new String[0]);
+//		filesInScope = names;
+//		this.names = names;
+//		me = you;
+//	}
 //	
 //	public IPath resolveRelativePath(String path) {
 //		IResource member = getRelativeAsResource(path);
@@ -81,15 +79,15 @@ public class DocumentContextFragment extends LibraryPackageFragment{
 //	}
 
 	protected boolean computeChildren(OpenableElementInfo info) {
-		for(int i = 0;i<filesInScope.length;i++) {
+		//for(int i = 0;i<filesInScope.length;i++) {
 			//ClassFile classFile = new ClassFile(this,resolvePath(filesInScope[i]).toOSString());
 //		CompilationUnit cu= new CompilationUnit(this, this.getPackageFragmentRoot().getPath().toOSString(), DefaultWorkingCopyOwner.PRIMARY);
-			IJavaElement[] children= new IJavaElement[]{getJavaElement(filesInScope[i])};
+			IJavaElement[] children= new IJavaElement[]{getJavaElement(fileInScope)};
 			for(int k=0;k<children.length;k++) {
 				
 				info.addChild(children[k]);
 			}
-		}
+		//}
 		return true;
 	}
 	
@@ -126,13 +124,14 @@ public class DocumentContextFragment extends LibraryPackageFragment{
 	
 	
 	public IClassFile[] getClassFiles() throws JavaModelException {
-		IClassFile[] classFiles = new IClassFile[filesInScope.length];
-		for(int i = 0;i<filesInScope.length;i++) {
-			ClassFile classFile = new ClassFile(this,filesInScope[i]);
-			classFiles[i] = classFile;
-			
-		}
-		return classFiles;
+//		IClassFile[] classFiles = new IClassFile[filesInScope.length];
+//		for(int i = 0;i<filesInScope.length;i++) {
+//			ClassFile classFile = new ClassFile(this,filesInScope[i]);
+//			classFiles[i] = classFile;
+//			
+//		}
+//		return classFiles;
+		return new IClassFile[] { new ClassFile(this,fileInScope) };
 	}
 	
 
@@ -147,7 +146,7 @@ public class DocumentContextFragment extends LibraryPackageFragment{
 	
 	public boolean hasSource() {
 		if(DocumentContextFragmentRoot.RETURN_CU /*&& filesInScope.length>0*/) {
-			IResource file = ((IContainer)parent.getResource()).findMember(filesInScope[0]);
+			IResource file = ((IContainer)parent.getResource()).findMember(fileInScope);
 			if(file!=null && file.exists()) return true;
 		}
 		return false;
@@ -157,8 +156,9 @@ public class DocumentContextFragment extends LibraryPackageFragment{
 	 * @see org.eclipse.wst.jsdt.internal.core.PackageFragment#getResource()
 	 */
 	public IResource getResource() {
-		if(me!=null) return me;
-		return parent.getResource();
+			IPath resourcePath = new Path(fileInScope);
+			return ((IContainer)parent.getResource()).findMember(resourcePath.removeLastSegments(1));
+		
 	}
 
 	public IClassFile getClassFile(String classFileName) {
@@ -169,7 +169,6 @@ public class DocumentContextFragment extends LibraryPackageFragment{
 	 * @see org.eclipse.wst.jsdt.internal.core.PackageFragment#getCompilationUnit(java.lang.String)
 	 */
 	public ICompilationUnit getCompilationUnit(String cuName) {
-
 		return  new CompilationUnit(this, cuName, DefaultWorkingCopyOwner.PRIMARY);	
 	}
 

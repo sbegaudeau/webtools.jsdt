@@ -822,8 +822,15 @@ public final class CompletionEngine
 						proposal.setDeclarationTypeName(method.declaringClass.qualifiedSourceName());
 						proposal.setParameterPackageNames(parameterPackageNames);
 						proposal.setParameterTypeNames(parameterTypeNames);
-						proposal.setPackageName(method.returnType.qualifiedPackageName());
-						proposal.setTypeName(method.returnType.qualifiedSourceName());
+						
+						if(method.returnType!=null) {
+							proposal.setPackageName(method.returnType.qualifiedPackageName());
+							proposal.setTypeName(method.returnType.qualifiedSourceName());
+						}else {
+							proposal.setTypeName(null);
+						}
+						
+						
 						proposal.setName(bindingName);
 						proposal.setCompletion(completion);
 						proposal.setFlags(modifiers);
