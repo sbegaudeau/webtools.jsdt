@@ -89,8 +89,7 @@ public class InternetExplorerLibInitializer extends ClasspathContainerInitialize
 	public int getKind() {
 		
 	
-		return  IClasspathContainer.K_APPLICATION;
-	}
+		return  IClasspathContainer.K_SYSTEM;	}
 
 
 	public boolean canUpdateClasspathContainer(IPath containerPath, IJavaProject project) {

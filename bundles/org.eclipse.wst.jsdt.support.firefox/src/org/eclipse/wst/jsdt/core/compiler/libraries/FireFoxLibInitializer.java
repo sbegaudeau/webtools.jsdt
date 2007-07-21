@@ -75,7 +75,7 @@ public class FireFoxLibInitializer extends ClasspathContainerInitializer impleme
 	public int getKind() {
 		
 	
-		return  IClasspathContainer.K_APPLICATION;
+		return  IClasspathContainer.K_SYSTEM;
 	}
 
 
