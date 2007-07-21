@@ -128,7 +128,7 @@ public boolean build(SimpleLookupTable deltas) {
 			notifier.setProgressPerCompilationUnit(increment / allSourceFiles.length);
 			increment = increment / 2;
 			compile(allSourceFiles);
-			removeSecondaryTypes();
+			//removeSecondaryTypes();
 			addAffectedSourceFiles();
 		}
 		if (this.hasStructuralChanges && javaBuilder.javaProject.hasCycleMarker())
@@ -165,11 +165,11 @@ protected void buildAfterBatchBuild() {
 			notifier.setProgressPerCompilationUnit(0.08f / allSourceFiles.length);
 			this.workQueue.addAll(allSourceFiles);
 			compile(allSourceFiles);
-			removeSecondaryTypes();
+			//removeSecondaryTypes();
 			addAffectedSourceFiles();
 		}
-	} catch (CoreException e) {
-		throw internalException(e);
+//	} catch (Exception e) {
+//		throw internalException(e);
 	} finally {
 		cleanUp();
 	}
