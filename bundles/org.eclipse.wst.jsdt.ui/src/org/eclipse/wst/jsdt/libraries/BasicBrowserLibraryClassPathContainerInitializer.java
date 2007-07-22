@@ -40,7 +40,7 @@ public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathC
 	public LibraryLocation getLibraryLocation() {
 		return new BasicLibLocation();
 	}
-	
+
 	public IClasspathEntry[] getClasspathEntries() {
 		LibraryLocation libLocation =  getLibraryLocation();
 		char[][] filesInLibs = libLocation.getLibraryFileNames();
@@ -85,7 +85,7 @@ public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathC
 	}
 	
 	public int getKind() {
-		return IClasspathContainer.K_APPLICATION;
+		return IClasspathContainer.K_SYSTEM;
 	}
 	
 	public IPath getPath() {

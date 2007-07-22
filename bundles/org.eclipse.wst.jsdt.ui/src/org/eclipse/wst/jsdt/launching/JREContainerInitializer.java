@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
 import org.eclipse.wst.jsdt.core.IClasspathAttribute;
 import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IClasspathContainerInitialzer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
@@ -56,6 +57,14 @@ public class JREContainerInitializer extends ClasspathContainerInitializer {
 		}
 	}
 	
+	
+	
+	public int getKind() {
+		return K_DEFAULT_SYSTEM;
+	}
+
+
+
 	/**
 	 * Returns the VM install associated with the container path, or <code>null</code>
 	 * if it does not exist.
