@@ -18,6 +18,8 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -37,6 +39,7 @@ import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.core.ClassFile;
 import org.eclipse.wst.jsdt.internal.core.JavaModel;
 import org.eclipse.wst.jsdt.internal.core.JavaProject;
@@ -45,26 +48,115 @@ import org.eclipse.wst.jsdt.internal.core.LibraryPackageFragment;
 import org.eclipse.wst.jsdt.internal.core.LibraryPackageFragmentInfo;
 import org.eclipse.wst.jsdt.internal.core.OpenableElementInfo;
 import org.eclipse.wst.jsdt.internal.core.PackageFragmentRoot;
+import org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessBindingRequestor;
 import org.eclipse.wst.jsdt.internal.core.search.JavaSearchScope;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
+import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
 
-public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
+
+public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 	
-	private IPath[] includedFiles;
-	private Long[] timeStamps;
+	private String[] includedFiles;
+	//private Long[] timeStamps;
 	private IFile fRelativeFile;
 	private IResource absolutePath;
 	private IPath webContext;
 	private IClasspathEntry rawClassPathEntry;
 	
-	public static final boolean RETURN_CU = true;
-	private static final boolean DEBUG = false;
-	private boolean dirty;
+	//public static final boolean RETURN_CU = true;
+	private static final boolean DEBUG = true;
+	//private boolean dirty;
 	
 	private static int instances=0;
+	private ICompilationUnit[] workingCopies;
+	private String[] fSystemFiles;
+	private RestrictedDocumentBinding importPolice;
+	
+	class RestrictedDocumentBinding implements IRestrictedAccessBindingRequestor {
+		
+		private String foundPath;
+		
+		public void reset() {
+			foundPath=null;
+		}
+		
+		public boolean acceptBinding(int type,int modifiers, char[] packageName,char[] simpleTypeName, String path, AccessRestriction access) {
+			
+			
+			for (int i = 0; workingCopies!=null && i < workingCopies.length; i++) {
+				if (workingCopies[i].getPath().toString().equals(path)) {
+					if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" +"REJECTING binding..\n\t" + new String(simpleTypeName) + " in " + path + "\n\tfor file " + fRelativeFile.toString());
+					if(DEBUG) System.out.println("\tType is in WorkingCopies ");
+					return false;
+				}
+			}
+			
+			for(int i = 0;i<includedFiles.length;i++) {
+				if(Util.isSameResourceString(path, includedFiles[i])) {
+					if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Accepting binding.. " + new String(simpleTypeName) + " in " + path + "\n\tfor file " + fRelativeFile.toString());
+					this.foundPath=path;
+					return true;
+				}
+			}
+			
+			String systemFiles[] = getProjectSystemFiles();
+			
+			for(int i = 0;i<systemFiles.length;i++) {
+				if(Util.isSameResourceString(path, systemFiles[i])) {
+					if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Accepting binding.. " + new String(simpleTypeName) + " in " + path + " \n\tfor file " + fRelativeFile.toString());
+					this.foundPath=path;
+					return true;
+				}
+			}
+			if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" +"REJECTING binding..\n\t" + new String(simpleTypeName) + " in " + path + " \n\tfor file " + fRelativeFile.toString());
+			if(DEBUG) System.out.println("\t(relative) page includes = : " );
+			if(DEBUG) {
+				for(int i = 0;i<includedFiles.length;i++) {
+					System.out.println("\t\t" + includedFiles[i]);
+				}
+			}
+			//this.foundPath=null;
+			return false;
+		}
+		
+		public String getFoundPath() {
+			return foundPath;
+		}
+	} 
+	
+	public String[] getProjectSystemFiles() {
+		
+		if(fSystemFiles!=null) return fSystemFiles;
+		
+		IJavaProject javaProject = getJavaProject();
+		int lastGood = 0;
+		IPackageFragmentRoot[]  projectRoots = null;
+		
+		try {
+			projectRoots = javaProject.getPackageFragmentRoots();
+			for(int i =0;i<projectRoots.length;i++) {
+				if(projectRoots[i].isLanguageRuntime()) {
+					projectRoots[lastGood++]=projectRoots[i];
+				}
+			}
+		} catch (JavaModelException ex) {
+			projectRoots = new IPackageFragmentRoot[0];
+		}
+		
+		fSystemFiles = new String[lastGood ]; 
+		for(int i = 0;i<fSystemFiles.length;i++) {
+			fSystemFiles[i] = projectRoots[i].getPath().toString().intern();
+		}
+		return fSystemFiles;
+	}
 	
 	
+	public void classpathChange() {
+		fSystemFiles=null;
+	}
+
+
 	
 	public DocumentContextFragmentRoot(IJavaProject project,
 									   IFile resourceRelativeFile,
@@ -72,24 +164,23 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 									   IPath webContext, 
 									   IClasspathEntry rawClassPath) {
 		
-		super(resourceAbsolutePath, (JavaProject)project);
-		instances++;
+		super(resourceRelativeFile, (JavaProject)project);
+		
 		fRelativeFile = resourceRelativeFile ;
-		this.includedFiles = new IPath[0];
-		this.timeStamps = new Long[0];
+	//	this.includedFiles = new IPath[0];
+		//this.timeStamps = new Long[0];
 		this.absolutePath = ((IContainer)project.getResource()).findMember(resourceAbsolutePath);
 		this.webContext=webContext;
 		this.rawClassPathEntry = rawClassPath;
-		dirty = true;
-		if(DEBUG) System.out.println("Creating instance of DocuContexFrag for total of:" + instances);
-	}
+		//dirty = true;
+		if(DEBUG) System.out.println("Creating instance of DocuContexFrag for total of:" + ++instances);
+		
 	
-	public void setDirty(boolean dirty) {
-		this.dirty = dirty;
 	}
-	
+
 	public void finalize() {
-		if(DEBUG) System.out.println("Destroying instance of DocuContexFrag for total of:" + instances);
+		
+		if(DEBUG) System.out.println("Destroying doc context for a total of " + --instances);
 	}
 	
 	
@@ -101,7 +192,13 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 		return super.getRawClasspathEntry();
 	}
 
-
+	protected  RestrictedDocumentBinding getRestrictedAccessRequestor() {
+		 if(importPolice==null) {
+			 importPolice = new RestrictedDocumentBinding();
+		 }
+		importPolice.reset();
+		return importPolice;
+	}
 
 	public DocumentContextFragmentRoot(IJavaProject project,
 			   IFile resourceRelativeFile,
@@ -116,109 +213,56 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 			this(project,resourceRelativeFile, new Path(""), new Path(""));
 	}
 	
-	public void removeFile(String fileName) {
-		//includedFiles.remove(resolveChildPath(fileName));
-	}
 	
 	public void setIncludedFiles(String[] fileNames) {
 		
-		IPath[] newImports = new IPath[fileNames.length];
-		Long[] newTimestamps = new Long[fileNames.length];
+		this.includedFiles = new String[0];
+		
+		String[] newImports = new String[fileNames.length];
+		//Long[] newTimestamps = new Long[fileNames.length];
 		int arrayLength = 0;
 		
 		for(int i = 0; i<fileNames.length;i++) {
 			File importFile = isValidImport(fileNames[i]);
 			if(importFile==null) continue;
 			IPath importPath = resolveChildPath(fileNames[i]);	
-			newImports[arrayLength] = importPath;
-			newTimestamps[arrayLength] = new Long(importFile.lastModified());	
+			newImports[arrayLength] = importPath.toString();
+			//newTimestamps[arrayLength] = new Long(importFile.lastModified());	
 
 			arrayLength++;
 		}
 		
-		boolean equals =   this.includedFiles!=null && (newImports !=null) &&
-		  				   this.includedFiles.length == newImports.length;
-		
-
-		if(!equals) dirty = true;
-		
-		/* try some more cases */
-		
-		for(int i = 0;!dirty && i<this.includedFiles.length;i++) {
-			if(!(this.includedFiles[i].equals(newImports[i]))) {
-				dirty = true;
-				
-			}
-		}
-		
-		for(int i = 0;!dirty && i<newTimestamps.length;i++) {
-			if(!(this.timeStamps[i].equals(newTimestamps[i]))) {
-				dirty = true;
-			}
-		}
-		
-		if(!dirty) return;
-		
-		this.includedFiles = new IPath[arrayLength];
-		this.timeStamps = new Long[arrayLength];
-		System.arraycopy(newImports, 0, this.includedFiles, 0, arrayLength);
-		System.arraycopy(newTimestamps, 0, this.timeStamps, 0, arrayLength);
-	
-		
-	}
-
-	public IResource getRelativeAsResource(String path) {
-		IPath absolute =    resolveChildPath(path);
-		IResource member = ((IContainer)getResource()).findMember(absolute);
-		
-		return member;
-	}
-	
-	protected Object createElementInfo() {
-		return new LookupScopeElementInfo((JavaProject)getJavaProject(), new IPackageFragmentRoot[]{this});
-	}
-	
- 
-	
- 
-	public boolean isResourceContainer() {
- 		return true;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.internal.core.LibraryFragmentRoot#computeChildren(org.eclipse.wst.jsdt.internal.core.OpenableElementInfo, java.util.Map)
-	 */
-	protected boolean computeChildren(OpenableElementInfo info, Map newElements) throws JavaModelException {
-		
-		//Enumeration files = includedFiles.keys();
-//		IJavaElement[] children = new IJavaElement[includedFiles.size()];
-//		for(int i=0; files.hasMoreElements(); i++ ) {
-//			IPath fileImport = (IPath)files.nextElement();
-//			String includeName = fileImport.toString();
-//			DocumentContextFragment packFrag=  new DocumentContextFragment(this, new String[] {includeName});
-//			LibraryPackageFragmentInfo fragInfo= new LibraryPackageFragmentInfo();
-//			packFrag.computeChildren(fragInfo);
-//			newElements.put(packFrag, fragInfo);
-//			children[i] = packFrag;
+//		boolean equals =   this.includedFiles!=null && (newImports !=null) &&
+//		  				   this.includedFiles.length == newImports.length;
+//		
+//
+//		if(!equals) dirty = true;
+//		
+//		/* try some more cases */
+//		
+//		for(int i = 0;!dirty && i<this.includedFiles.length;i++) {
+//			if(!(this.includedFiles[i].equals(newImports[i]))) {
+//				dirty = true;
+//				
+//			}
 //		}
-		IJavaElement[] children = new IJavaElement[includedFiles.length];
-		for(int i = 0;i<includedFiles.length;i++) {
-			IPath includePath = (IPath)includedFiles[i];
-			String includeName = includePath.toString();
-			//String fileName = includePath.lastSegment();
-			//IPath pathToFile = includePath.removeLastSegments(1);
-			
-			//.findMember(pathToFile);
+//		
+//		for(int i = 0;!dirty && i<newTimestamps.length;i++) {
+//			if(!(this.timeStamps[i].equals(newTimestamps[i]))) {
+//				dirty = true;
+//			}
+//		}
+//		
+//		if(!dirty) return;
 		
-			DocumentContextFragment packFrag=  new DocumentContextFragment(this,  includeName);
-			LibraryPackageFragmentInfo fragInfo= new LibraryPackageFragmentInfo();
-			packFrag.computeChildren(fragInfo);
-			newElements.put(packFrag, fragInfo);
-			children[i] = packFrag;
-		}
-		info.setChildren(children);
-		return true;
+		this.includedFiles = new String[arrayLength];
+	//	this.timeStamps = new Long[arrayLength];
+		System.arraycopy(newImports, 0, this.includedFiles, 0, arrayLength);
+	//	System.arraycopy(newTimestamps, 0, this.timeStamps, 0, arrayLength);
+	
+		
 	}
+
 	
 	public IPath resolveChildPath(String childPathString) {
 		/* relative paths:
@@ -253,7 +297,13 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 							
 			case '.':
 				/* returns a new relative path thats relative to the resource */
-				IPath relative = fRelativeFile.getFullPath().removeLastSegments(1);
+				IPath relative=null;
+				try {
+					relative = fRelativeFile.getFullPath().removeLastSegments(1);
+				} catch (Exception ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
 				IPath relRes = getResource().getFullPath();
 				if(relRes.isPrefixOf(relative)) {
 					IPath amended = relative.removeFirstSegments(relRes.matchingFirstSegments(relative));
@@ -265,28 +315,11 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 		}
 		
 		return resolvedPath;
-		
-//		IPath childPath = new Path(childPathString);
-//		
-//		if(childPath.isAbsolute()) {
-//			return childPath;
-//		}
-//		IPath newPath = getPath().append(childPath);
-//		
-//		return newPath;
-		
+
 	}
 	
 	public IPath getPath() {
 		return fRelativeFile.getFullPath().removeLastSegments(1);
-	}
-	
-	public IPackageFragment getPackageFragment(String filesInFragment) {
-		return new DocumentContextFragment(this, filesInFragment);
-	}
-	
-	public PackageFragment getDefaultPackageFragment() {
-		return  new DocumentContextFragment(this, "");
 	}
 	
 	public boolean equals(Object o) {
@@ -310,9 +343,9 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 			if(!(this.includedFiles[i].equals(other.includedFiles[i]))) return false;
 		}
 		
-		for(int i = 0;i<this.timeStamps.length;i++) {
-			if(!(this.timeStamps[i].equals( other.timeStamps[i]        )        )) return false;
-		}
+//		for(int i = 0;i<this.timeStamps.length;i++) {
+//			if(!(this.timeStamps[i].equals( other.timeStamps[i]        )        )) return false;
+//		}
 			
 		
 		return true;
@@ -321,7 +354,6 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	public String getElementName() {
 		return this.fRelativeFile.getName();
 	}
-	
 	
 	public int hashCode() {
 		return this.fRelativeFile.hashCode();
@@ -334,7 +366,7 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	 * Jars and jar entries are all read only
 	 */
 	public boolean isReadOnly() {
-		return true;
+		return false;
 	}
 
 	/**
@@ -345,19 +377,11 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	}
 
 
-
-	protected int determineKind(IResource underlyingResource) {
-		if(getJavaProject().getProject().getLocation().isPrefixOf( underlyingResource.getLocation())) {
-			return IPackageFragmentRoot.K_SOURCE;
-		}else
-			return IPackageFragmentRoot.K_BINARY;
-	}
-
 	public SearchableEnvironment newSearchableNameEnvironment(WorkingCopyOwner owner) throws JavaModelException {
 		/* previously restricted searchable environment to 'this'.  But that removes library entries from search results so going back to global project */
-		SearchableEnvironment env =  new SearchableEnvironment((JavaProject)getJavaProject(),this, owner);
+		SearchableEnvironment env =  super.newSearchableNameEnvironment(owner);//new SearchableEnvironment((JavaProject)getJavaProject(),this, owner);
 		int includeMask = IJavaSearchScope.SOURCES | IJavaSearchScope.APPLICATION_LIBRARIES | IJavaSearchScope.SYSTEM_LIBRARIES | IJavaSearchScope.REFERENCED_PROJECTS;
-		
+		env.nameLookup.setRestrictedAccessRequestor(getRestrictedAccessRequestor());
 		((JavaSearchScope)env.searchScope).add((JavaProject)getJavaProject(), includeMask, new HashSet(2));
 		return env;
 	}
@@ -366,7 +390,11 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	 * Returns a new name lookup. This name lookup first looks in the given working copies.
 	 */
 	public NameLookup newNameLookup(ICompilationUnit[] workingCopies) throws JavaModelException {
-		return ((LookupScopeElementInfo)getElementInfo()).newNameLookup( workingCopies);
+		this.workingCopies = workingCopies;
+		NameLookup lookup = super.newNameLookup(this.workingCopies);
+		lookup.setRestrictedAccessRequestor(getRestrictedAccessRequestor());
+		return lookup;
+		//return ((LookupScopeElementInfo)getElementInfo()).newNameLookup( workingCopies);
 	}
 
 	/*
@@ -374,89 +402,19 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 	 */
 	public NameLookup newNameLookup(WorkingCopyOwner owner) throws JavaModelException {
 		
-		JavaModelManager manager = JavaModelManager.getJavaModelManager();
-		ICompilationUnit[] workingCopies = owner == null ? null : manager.getWorkingCopies(owner, true/*add primary WCs*/);
-		return newNameLookup(workingCopies);
+		NameLookup lookup =  super.newNameLookup(owner);
+		lookup.setRestrictedAccessRequestor(getRestrictedAccessRequestor());
+		return lookup;
+//		
+//		JavaModelManager manager = JavaModelManager.getJavaModelManager();
+//		ICompilationUnit[] workingCopies = owner == null ? null : manager.getWorkingCopies(owner, true/*add primary WCs*/);
+//		return newNameLookup(workingCopies);
 	}
 	
-	public Object getElementInfo() {
-		LookupScopeElementInfo fScopeElementInfo = null;
-		
-		try {
-			LookupScopeElementInfo cachedInfo;
-			 
-			
-			if (!isDirty()) {
-				JavaModelManager manager = JavaModelManager.getJavaModelManager();
-				fScopeElementInfo = (LookupScopeElementInfo)manager.getInfo(this);
-				//fScopeElementInfo = (LookupScopeElementInfo)info;
-//				cachedInfo = (LookupScopeElementInfo)info;
-//				String[] rawImports = cachedInfo.getRawImportsFromCache();
-//				String[] currentImports = getRawImports();
-//				if(stringArraysEqual(rawImports,currentImports )) {
-//					fScopeElementInfo = cachedInfo;
-//				}else {
-//					fScopeElementInfo = (LookupScopeElementInfo)openWhenClosed(createElementInfo(),new NullProgressMonitor());
-//				}
-//				
-			}else {
-				
-				fScopeElementInfo = (LookupScopeElementInfo)openWhenClosed(createElementInfo(),new NullProgressMonitor());
-				dirty = false;
-			}
-		} catch (JavaModelException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		}
-		return fScopeElementInfo;
-	}
-	
-	public boolean isDirty() {
-		if(dirty) {
-			if(DEBUG) System.out.println("-----------------------------------DIRTY MODEL");
-			return dirty;
-		}
-		
-		JavaModelManager manager = JavaModelManager.getJavaModelManager();
-		Object info = manager.getInfo(this);
-		if(info==null) {
-			if(DEBUG) System.out.println("-----------------------------------DIRTY MODEL");
-			return true;
-		}
-		if(DEBUG) System.out.println("-------===CLEAN MODEL");
-		return false;
-//		LookupScopeElementInfo myInfo = ((LookupScopeElementInfo)info);
-//		
-//		/* should only be one */
-//		IPackageFragmentRoot[] roots = myInfo.getAllRoots();
-//		if(DEBUG) {
-//			System.out.println("------------------------------ DIRTY CHECK -----------------------------\n");
-//			System.out.println(this);
-//			System.out.println("Comparing to others:");
-//		}
-//		
-//		for(int i = 0;i<roots.length;i++) {
-//			if(DEBUG && roots[i] instanceof DocumentContextFragmentRoot) {
-//				System.out.println("---Start---------------------------");
-//				System.out.println(roots[i]);
-//				System.out.println("----End--------------------------");
-//			}
-//			if(sameScope(roots[i])) {
-//				if(DEBUG) System.out.println("Returning NOT dirty "); 
-//				return false;
-//				
-//				
-//			}
-//		}
-//		
-//		
-//		return true;
-		
-	}
-	
-	public File isValidImport(String importName) {
-			
-		File file = resolveChildPath(importName).toFile();
+	public File isValidImport(String importName) {		
+		IPath filePath = resolveChildPath(importName);
+		if(filePath==null) return null;
+		File file=file = filePath.toFile();
 		if(file.isFile()) {
 			return file;
 		}else {
@@ -474,44 +432,26 @@ public class DocumentContextFragmentRoot extends LibraryFragmentRoot{
 		}
 		return null;
 	}
-	public boolean inScope(IPath importPath) {
-		
-		for(int i = 0;i<includedFiles.length;i++) {
-			if(includedFiles[i].equals(importPath)) return true;
-		}
-		return false;
-	}
-	
-	protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource) throws JavaModelException {
-
-		((PackageFragmentRootInfo) info).setRootKind(determineKind(underlyingResource));
-		boolean known =  computeChildren(info, newElements);
-		if(isDirty()) JavaModelManager.getJavaModelManager().putInfos(this, newElements);
-		dirty = false;
-		return known;
-	}
-
 	
 	public int getKind() throws JavaModelException {
-		if(DocumentContextFragmentRoot.RETURN_CU)
 			return IPackageFragmentRoot.K_SOURCE;
-		else 
-			return IPackageFragmentRoot.K_BINARY;
 	}
 	
-	public IResource getResource() {
-		return absolutePath;
-	}
-
+	
 	public String toString() {
 		StringBuffer me = new StringBuffer("Relative to: " + fRelativeFile.getName() + "\n");
 		me.append("Absolute to: " + webContext + "\n");
 		me.append("Included File\t\t\tLast Moddified\n");
 		for(int i = 0;i<includedFiles.length;i++) {
-			me.append(includedFiles[i] + "\t\t\t\t" + timeStamps[i].longValue() + "\n");
+			me.append(includedFiles[i] /*+ "\t\t\t\t" + timeStamps[i].longValue()*/ + "\n");
 		}
 		
 		return me.toString();
 	}
+
+	public IResource getResource() {
+		return absolutePath;
+	}
 	
+
 }

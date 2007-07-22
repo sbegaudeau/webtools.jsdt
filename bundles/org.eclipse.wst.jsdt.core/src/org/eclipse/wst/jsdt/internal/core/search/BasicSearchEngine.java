@@ -714,6 +714,7 @@ public class BasicSearchEngine {
 					}
 
 					nameRequestor.acceptBinding( bindingType,modifiers, packageName, simpleBindingName,   documentPath, accessRestriction);
+					
 					return true;
 				}
 			};

@@ -95,6 +95,16 @@ public class Util {
 	private Util() {
 		// cannot be instantiated
 	}
+	public static boolean isSameResourceString(String path1, String tail) {
+		if(path1==null || tail==null) return false;
+		int index =  path1.toLowerCase().indexOf(tail.toLowerCase());
+		return (index >-1 && (index + tail.length() == path1.length()));
+		
+	}
+	
+	public static boolean isSameResourceString(IPath path1, IPath tail) {
+		return isSameResourceString(path1.toString(), tail.toString());
+	}
 	
 	/**
 	 * Returns a new array adding the second array at the end of first array.
@@ -1223,6 +1233,8 @@ public class Util {
 	 * Note this is the index of the '.' even if it is not considered part of the extension.
 	 */
 	public static int indexOfJavaLikeExtension(String fileName) {
+		
+		
 		int fileNameLength = fileName.length();
 		char[][] javaLikeExtensions = getJavaLikeExtensions();
 		extensions: for (int i = 0, length = javaLikeExtensions.length; i < length; i++) {

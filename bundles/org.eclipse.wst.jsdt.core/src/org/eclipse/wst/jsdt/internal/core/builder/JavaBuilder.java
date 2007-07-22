@@ -37,7 +37,7 @@ char[][] extraResourceFileFilters;
 String[] extraResourceFolderFilters;
 public static final String SOURCE_ID = "JSDT"; //$NON-NLS-1$
 
-public static boolean DEBUG = false;
+public static boolean DEBUG = true;
 
 /**
  * A list of project names that have been built.
@@ -462,10 +462,10 @@ private IProject[] getRequiredProjects(boolean includeBinaryPrerequisites) {
 }
 
 boolean hasBuildpathErrors() throws CoreException {
-	IMarker[] markers = this.currentProject.findMarkers(IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER, false, IResource.DEPTH_ZERO);
-	for (int i = 0, l = markers.length; i < l; i++)
-		if (markers[i].getAttribute(IJavaModelMarker.CATEGORY_ID, -1) == CategorizedProblem.CAT_BUILDPATH)
-			return true;
+//	IMarker[] markers = this.currentProject.findMarkers(IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER, false, IResource.DEPTH_ZERO);
+//	for (int i = 0, l = markers.length; i < l; i++)
+//		if (markers[i].getAttribute(IJavaModelMarker.CATEGORY_ID, -1) == CategorizedProblem.CAT_BUILDPATH)
+//			return true;
 	return false;
 }
 

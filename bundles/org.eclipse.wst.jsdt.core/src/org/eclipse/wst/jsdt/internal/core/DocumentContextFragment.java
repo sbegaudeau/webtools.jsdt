@@ -25,7 +25,7 @@ import org.eclipse.wst.jsdt.internal.core.PackageFragment;
 import org.eclipse.wst.jsdt.internal.core.PackageFragmentRoot;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
-public class DocumentContextFragment extends LibraryPackageFragment{
+public class DocumentContextFragment extends PackageFragment{
 	
 	private String fileInScope;
 	
@@ -93,7 +93,7 @@ public class DocumentContextFragment extends LibraryPackageFragment{
 	
 	public IJavaElement getJavaElement(String resource) {
 		/* if resource exists in project, return compunit, else return class */
-		if(!DocumentContextFragmentRoot.RETURN_CU) return getClassFile(resource);
+		//if(!DocumentContextFragmentRoot.RETURN_CU) return getClassFile(resource);
 		IPath workspacePath = getPackageFragmentRoot().getJavaProject().getProject().getWorkspace().getRoot().getLocation();
 		/* remove the file part of the path */
 		IResource elementResource=null;
@@ -145,11 +145,11 @@ public class DocumentContextFragment extends LibraryPackageFragment{
 	}
 	
 	public boolean hasSource() {
-		if(DocumentContextFragmentRoot.RETURN_CU /*&& filesInScope.length>0*/) {
+		//if(DocumentContextFragmentRoot.RETURN_CU /*&& filesInScope.length>0*/) {
 			IResource file = ((IContainer)parent.getResource()).findMember(fileInScope);
 			if(file!=null && file.exists()) return true;
-		}
-		return false;
+	//	}
+		return true;
 	}
 
 	/* (non-Javadoc)

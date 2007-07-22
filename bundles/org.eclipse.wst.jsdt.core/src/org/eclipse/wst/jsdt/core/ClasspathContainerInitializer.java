@@ -182,7 +182,7 @@ public abstract class ClasspathContainerInitializer implements IClasspathContain
 
 	public int getKind() {
 		
-		return 0;
+		return K_APPLICATION;
 	}
 
 	public IPath getPath() {

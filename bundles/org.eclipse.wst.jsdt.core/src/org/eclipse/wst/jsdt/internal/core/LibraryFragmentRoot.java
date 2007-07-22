@@ -22,6 +22,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 public class LibraryFragmentRoot extends PackageFragmentRoot implements IVirtualParent {
 
 	protected final IPath libraryPath;
+	protected boolean[] fLangeRuntime= new boolean[] {false,false};
 
 	protected LibraryFragmentRoot(IPath jarPath, JavaProject project) {
 		super(null, project);
@@ -198,4 +199,16 @@ private ClassFile getLibraryClassFile(){
 		return true;
 	}
 
+	public boolean isLanguageRuntime() {
+		if(fLangeRuntime[0]) {
+			return fLangeRuntime[1];
+		}
+		
+		ClasspathContainerInitializer init = getContainerInitializer();
+		fLangeRuntime[1]= init.getKind()==IClasspathContainer.K_SYSTEM ||init.getKind()==IClasspathContainer.K_DEFAULT_SYSTEM ;
+		fLangeRuntime[0]=true;
+		return fLangeRuntime[1];
+	}
+
+	
 } 

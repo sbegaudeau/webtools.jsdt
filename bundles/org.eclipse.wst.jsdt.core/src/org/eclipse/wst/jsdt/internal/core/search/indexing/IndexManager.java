@@ -353,14 +353,20 @@ public void indexLibrary(IClasspathEntry entry, IProject requestingProject) {
 	// requestingProject is no longer used to cancel jobs but leave it here just in case
 	if (JavaCore.getPlugin() == null) return;
 	IndexRequest request = null;
-	
-	request = new AddLibraryFileToIndex(entry.getPath(), this);
+	Object target = JavaModel.getTarget(ResourcesPlugin.getWorkspace().getRoot(), entry.getPath(), true);
+	if(target instanceof IFolder) {
+		char[][] inclusionPatterns = ((ClasspathEntry)entry).fullInclusionPatternChars();
+		char[][] exclusionPatterns = ((ClasspathEntry)entry).fullExclusionPatternChars();
+		
+		request = new AddLibraryFolderToIndex(entry.getPath(), requestingProject, inclusionPatterns, exclusionPatterns, this);
+	}else
+		request = new AddLibraryFileToIndex(entry.getPath(), this);
 	
 	if (!isJobWaiting(request))
 		this.request(request);
 	
-//	Object target = JavaModel.getTarget(ResourcesPlugin.getWorkspace().getRoot(), path, true);
-//	IndexRequest request = null;
+	;
+
 //	if (target instanceof IFile) {
 //		request = new AddLibraryFileToIndex((IFile) target, this);
 ////		request = new AddJarFileToIndex((IFile) target, this);

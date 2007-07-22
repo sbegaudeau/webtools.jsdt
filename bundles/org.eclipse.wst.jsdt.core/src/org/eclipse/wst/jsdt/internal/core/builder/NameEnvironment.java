@@ -167,6 +167,7 @@ private void computeClasspathLocations(
 				continue nextEntry;
 
 			case IClasspathEntry.CPE_LIBRARY :
+				if(true) continue nextEntry;
 				if (target instanceof IResource) {
 					IResource resource = (IResource) target;
 					ClasspathLocation bLocation = null;

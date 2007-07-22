@@ -45,6 +45,9 @@ import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
 import org.eclipse.wst.jsdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
@@ -168,6 +171,7 @@ public class NameLookup implements SuffixConstants {
 	protected HashSet acceptedCUs=new HashSet();
 	private ICompilationUnit[] workingCopies;
 	
+	IRestrictedAccessBindingRequestor restrictedRequestor;
 	
 	public NameLookup(
 			IPackageFragmentRoot[] packageFragmentRoots, 
@@ -182,6 +186,8 @@ public class NameLookup implements SuffixConstants {
 			Util.verbose(" -> working copy size: " + (workingCopies == null ? 0 : workingCopies.length));  //$NON-NLS-1$
 			start = System.currentTimeMillis();
 		}
+		this.restrictedRequestor=restrictedRequestor;
+		//this.restrictToLanguage=restrictToLanguage;
 		this.packageFragmentRoots = packageFragmentRoots;
 		if (workingCopies == null) {
 			this.packageFragments = packageFragments;
@@ -283,6 +289,34 @@ public class NameLookup implements SuffixConstants {
         }
 	}
 
+	public void setRestrictedAccessRequestor(IRestrictedAccessBindingRequestor restrictedRequestor) {
+		this.restrictedRequestor=restrictedRequestor;
+	}
+	
+	protected  IRestrictedAccessBindingRequestor getRestrictedAccessRequestor() {
+		if(this.restrictedRequestor==null) {
+			this.restrictedRequestor=new IRestrictedAccessBindingRequestor() {
+				String foundPath=null;
+				public boolean acceptBinding(int type,int modifiers, char[] packageName,
+						char[] simpleTypeName, 
+						String path, AccessRestriction access) {
+					for (int i = 0; workingCopies!=null && i < workingCopies.length; i++) {
+						if (workingCopies[i].getPath().toString().equals(path))
+							return false;
+					}
+					this.foundPath=path;
+					return true;
+				}
+				/* (non-Javadoc)
+				 * @see org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessBindingRequestor#getFoundPaths()
+				 */
+				public String getFoundPath() {
+					return foundPath;
+				}
+			}; 
+		}
+		return this.restrictedRequestor;
+	}
 	
 	private void addWorkingCopyBindings(IJavaElement [] elements, HashMap bindingsMap)
 	{
@@ -946,6 +980,17 @@ public class NameLookup implements SuffixConstants {
 				if (checkRestrictions) {
 					accessRestriction = getViolatedRestriction(bindingName, packageName, element, accessRestriction);
 				}
+//				char[] path = null;
+//				
+//				if(element instanceof SourceTypeBinding) {
+//					path = ((SourceTypeBinding)element).getFileName();
+//				}else if ( element instanceof ReferenceBinding) {
+//					path = ((ReferenceBinding)element).getFileName();
+//				}
+//				if(!getRestrictedAccessRequestor().acceptBinding(bindingType, acceptFlags, packageName.toCharArray(), bindingName.toCharArray(), new String(path), accessRestriction)){
+//					continue;
+//				}
+//				
 				Answer answer = new Answer(element, accessRestriction);
 				if (!answer.ignoreIfBetter()) {
 					if (answer.isBetter(suggestedAnswer))
@@ -2048,25 +2093,11 @@ public class NameLookup implements SuffixConstants {
 			 * NameLookup.ACCEPT_CLASSES | NameLookup.ACCEPT_INTERFACES); return; }
 			 */
 			try {
-				final String excludePath;
-					excludePath = null;
+				
 
 
-				class MyBindingRequestor implements IRestrictedAccessBindingRequestor {
-					String foundPath=null;
-					public void acceptBinding(int type,int modifiers, char[] packageName,
-							char[] simpleTypeName, 
-							String path, AccessRestriction access) {
-						if (excludePath != null && excludePath.equals(path))
-							return;
-						for (int i = 0; workingCopies!=null && i < workingCopies.length; i++) {
-							if (workingCopies[i].getPath().toString().equals(path))
-								return;
-						}
-						this.foundPath=path;
-					}
-				}
-				final MyBindingRequestor bindingRequestor = new MyBindingRequestor() ;
+				
+				
 				try {
 					int matchRule = SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE;
 					new BasicSearchEngine().searchAllBindingNames(
@@ -2075,18 +2106,21 @@ public class NameLookup implements SuffixConstants {
 							bindingType,
 							matchRule, // not case sensitive
 							/*IJavaSearchConstants.TYPE,*/ this.searchScope,
-							bindingRequestor, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+							getRestrictedAccessRequestor(), IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 							false,
 							progressMonitor);
-					if (bindingRequestor.foundPath!=null)
+					if (getRestrictedAccessRequestor().getFoundPath()!=null)
 					{
-						IOpenable openable = createOpenable(bindingRequestor.foundPath, this.searchScope);
-						if (openable!=null)
-							return new Answer(openable, null);
+						IOpenable openable ; //= createOpenable(getRestrictedAccessRequestor().getFoundPath(), this.searchScope);
+//						if (openable!=null)
+//							return new Answer(openable, null);
 						
 						if (this.handleFactory == null)
 							this.handleFactory = new HandleFactory();
-						openable = this.handleFactory.createOpenable(bindingRequestor.foundPath, this.searchScope);
+						
+						openable = this.handleFactory.createOpenable(getRestrictedAccessRequestor().getFoundPath(), this.searchScope);
+						
+						
 						if (openable!=null)
 							return new Answer(openable, null);
 					}
@@ -2101,40 +2135,34 @@ public class NameLookup implements SuffixConstants {
 				}
 			return null;
 		}
-		/* creates an openable from PackageFragmentRoots in this lookup */
+		/* creates an openable from PackageFragmentRoots in this lookup 
+		 * i thought i was going to use, but found another way.  This may still
+		 * be faster then the current method so leaveing in case...
+		 * 
+		 * */
 		public IOpenable createOpenable(String resourcePath, IJavaSearchScope scope) {
+			if(packageFragmentRoots==null) return null;
 			IPath resourceP = new Path(resourcePath);
 			for(int i = 0;i<packageFragmentRoots.length;i++) {
 				IPackageFragmentRoot root = packageFragmentRoots[i];
 				IPath fragPath = root.getPath();
-					if(fragPath.isPrefixOf(resourceP)) {
-						String fileName = resourceP.lastSegment();
-						if(root instanceof DocumentContextFragmentRoot) {
-							DocumentContextFragmentRoot dRoot = (DocumentContextFragmentRoot)root;
-							String pkgName = resourcePath.substring(fragPath.toString().length() + 1);
-							IPath importPath = new Path(pkgName);
-							if(!dRoot.inScope(importPath)) continue;
+			
+				String fileName = resourceP.lastSegment();
+				IPath rootPostFix=null;
+			
+				if( root.isLanguageRuntime() /*&& restrictToLanguage*/) {
+					int rootSegs = fragPath.segmentCount();
+					int resourceSegs = resourceP.segmentCount();
+					if(rootSegs>resourceSegs)
+						rootPostFix =  (fragPath.removeFirstSegments(rootSegs - resourceSegs )).setDevice(null).makeAbsolute();
+				}
+					
+					if(fragPath.isPrefixOf(resourceP) || (rootPostFix!=null && rootPostFix.equals(resourceP.makeAbsolute()))) {
+						if(root instanceof LibraryFragmentRoot  /*&& (!restrictToLanguage  || root.isLanguageRuntime()      )*/ ) {
+								IClassFile file = root.getPackageFragment(root.getPath().toString()).getClassFile(root.getPath().toString());	
+								return file;
 							
-							IPackageFragment frag = dRoot.getPackageFragment(pkgName);
-							if(resourceP.toFile().exists()){
-								IClassFile file = frag.getClassFile(resourcePath);
-								return file;
-							}else {
-	
-								ICompilationUnit file = frag.getCompilationUnit((fileName));
-								return file;
-							}
-							
-						}else if (root instanceof LibraryFragmentRoot) {
-							if(resourceP.toFile().exists()){
-								IClassFile file = root.getPackageFragment(resourcePath).getClassFile(resourcePath);
-								return file;
-							}else {
-								String pkgName = resourcePath.substring(fragPath.toString().length());
-								ICompilationUnit file = root.getPackageFragment(pkgName).getCompilationUnit((fileName));
-								return file;
-							}
-						}else {
+						}else{
 							if(resourceP.toFile().exists()){
 								IClassFile file = root.getPackageFragment(resourcePath).getClassFile(resourcePath);
 								return file;
@@ -2148,10 +2176,14 @@ public class NameLookup implements SuffixConstants {
 								return file;
 							}
 						}			
+						
+		
 					}
 				
 			}
 			return null;
+			
+
 		}
 
 }

@@ -68,6 +68,12 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 
 public void computeConstant(BlockScope scope, int leftId, int rightId) {
 	//compute the constant when valid
+	
+	/* bchilds - Not sure about this change but left side was null (variable) and causing NPE further down */
+	
+	if(this.left.constant==null) this.left.constant= Constant.NotAConstant;
+	if(this.right.constant==null) this.left.constant= Constant.NotAConstant;
+	
 	if ((this.left.constant != Constant.NotAConstant)
 		&& (this.right.constant != Constant.NotAConstant)) {
 		try {
@@ -78,7 +84,7 @@ public void computeConstant(BlockScope scope, int leftId, int rightId) {
 					(this.bits & ASTNode.OperatorMASK) >> ASTNode.OperatorSHIFT,
 					this.right.constant,
 					rightId);
-		} catch (ArithmeticException e) {
+		} catch (Exception e) {
 			this.constant = Constant.NotAConstant;
 			// 1.2 no longer throws an exception at compile-time
 			//scope.problemReporter().compileTimeConstantThrowsArithmeticException(this);

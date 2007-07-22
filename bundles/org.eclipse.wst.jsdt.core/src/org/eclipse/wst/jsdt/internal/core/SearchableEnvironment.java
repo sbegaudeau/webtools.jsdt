@@ -43,8 +43,6 @@ public class SearchableEnvironment implements INameEnvironment,
 	protected ICompilationUnit unitToSkip;
 
 	protected org.eclipse.wst.jsdt.core.ICompilationUnit[] workingCopies;
-
-	protected IJavaElement resScope;
 	
 	protected JavaProject javaProject;
 
@@ -56,22 +54,22 @@ public class SearchableEnvironment implements INameEnvironment,
 	 * Creates a SearchableEnvironment on the given project
 	 */
 	public SearchableEnvironment(JavaProject project,
-			IJavaElement resolutionScope,
+			IRestrictedAccessBindingRequestor resolutionScope,
 			org.eclipse.wst.jsdt.core.ICompilationUnit[] workingCopies)
 			throws JavaModelException {
-		this.resScope = resolutionScope;
+		
 		this.javaProject = project;
 		this.checkAccessRestrictions = !JavaCore.IGNORE.equals(project
 				.getOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
 				|| !JavaCore.IGNORE.equals(project.getOption(
 						JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE, true));
 		this.workingCopies = workingCopies;
-		this.nameLookup = resScope.newNameLookup(workingCopies);
-
+		this.nameLookup = javaProject.newNameLookup(workingCopies);
+		this.nameLookup.setRestrictedAccessRequestor(resolutionScope);
 		// Create search scope with visible entry on the project's classpath
 		if (false){//this.checkAccessRestrictions) {
 			this.searchScope = BasicSearchEngine
-					.createJavaSearchScope(new IJavaElement[] { resolutionScope });
+					.createJavaSearchScope(this.nameLookup.packageFragmentRoots );
 				} else {
 			this.searchScope = BasicSearchEngine
 					.createJavaSearchScope(this.nameLookup.packageFragmentRoots);
@@ -82,7 +80,7 @@ public class SearchableEnvironment implements INameEnvironment,
 			
 			org.eclipse.wst.jsdt.core.ICompilationUnit[] workingCopies)
 			throws JavaModelException {
-		this(project,project,workingCopies);
+		this(project,null,workingCopies);
 	}
 	/**
 	 * Creates a SearchableEnvironment on the given project
@@ -94,7 +92,7 @@ public class SearchableEnvironment implements INameEnvironment,
 				.getWorkingCopies(owner, true/* add primary WCs */));
 	}
 
-	public SearchableEnvironment(JavaProject project, IJavaElement resolutionScope,WorkingCopyOwner owner)
+	public SearchableEnvironment(JavaProject project, IRestrictedAccessBindingRequestor resolutionScope,WorkingCopyOwner owner)
 	throws JavaModelException {
 		this(project, resolutionScope, owner == null ? null : JavaModelManager
 		.getJavaModelManager()
@@ -601,13 +599,20 @@ public class SearchableEnvironment implements INameEnvironment,
 				}
 			};
 			IRestrictedAccessBindingRequestor bindingRequestor = new IRestrictedAccessBindingRequestor() {
-				public void acceptBinding(int type,int modifiers, char[] packageName,
+				public boolean acceptBinding(int type,int modifiers, char[] packageName,
 						char[] simpleTypeName, 
 						String path, AccessRestriction access) {
 					if (excludePath != null && excludePath.equals(path))
-						return;
+						return false;
 					storage.acceptBinding(packageName, simpleTypeName,type,
 							  modifiers, access);
+					return true;
+				}
+			
+
+				public String getFoundPath() {
+				
+					return null;
 				}
 			};
 			try {

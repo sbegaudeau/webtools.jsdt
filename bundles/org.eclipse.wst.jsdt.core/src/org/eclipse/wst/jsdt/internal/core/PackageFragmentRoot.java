@@ -824,4 +824,11 @@ protected void verifyAttachSource(IPath sourcePath) throws JavaModelException {
 	}
 }
 
+/* (non-Javadoc)
+ * @see org.eclipse.wst.jsdt.core.IPackageFragmentRoot#isLanguageRuntime()
+ */
+public boolean isLanguageRuntime() {
+	return false;
+}
+
 }

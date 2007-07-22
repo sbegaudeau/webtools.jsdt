@@ -19,6 +19,7 @@ import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
  */
 public interface IRestrictedAccessBindingRequestor {
 	
-	public void acceptBinding(int type, int modifiers, char[] packageName, char[] simpleBindingName, String path, AccessRestriction access);
+	public boolean acceptBinding(int type, int modifiers, char[] packageName, char[] simpleBindingName, String path, AccessRestriction access);
 
+	public String getFoundPath();
 }

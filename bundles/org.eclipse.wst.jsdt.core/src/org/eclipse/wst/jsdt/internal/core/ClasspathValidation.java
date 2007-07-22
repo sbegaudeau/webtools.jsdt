@@ -24,6 +24,10 @@ import org.eclipse.wst.jsdt.internal.core.builder.JavaBuilder;
  */
 public class ClasspathValidation {
 	
+	
+	/* Shut OFF classpath validation */
+	private static final boolean VALIDATE_CLASSPATH=false;
+	
 	private JavaProject project;
 	
 	public ClasspathValidation(JavaProject project) {
@@ -31,6 +35,7 @@ public class ClasspathValidation {
 	}
 	
 	public void validate() {
+		if(!VALIDATE_CLASSPATH) return;
 		JavaModelManager.PerProjectInfo perProjectInfo;
 		try {
 			perProjectInfo = this.project.getPerProjectInfo();

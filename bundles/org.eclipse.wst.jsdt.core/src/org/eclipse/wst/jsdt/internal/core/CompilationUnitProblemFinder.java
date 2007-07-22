@@ -29,6 +29,7 @@ import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.parser.SourceTypeConverter;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.util.Messages;
+import org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessBindingRequestor;
 import org.eclipse.wst.jsdt.internal.core.util.CommentRecorderParser;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
@@ -205,7 +206,14 @@ public class CompilationUnitProblemFinder extends Compiler {
 		CancelableProblemFactory problemFactory = null;
 		CompilationUnitProblemFinder problemFinder = null;
 		try {
-			environment = new CancelableNameEnvironment(project,unitElement, workingCopyOwner, monitor);
+			IRestrictedAccessBindingRequestor accessRequestor = null;
+			if(unitElement.getParent().getParent() instanceof DocumentContextFragmentRoot) {
+				accessRequestor = ((DocumentContextFragmentRoot)unitElement.getParent().getParent()).getRestrictedAccessRequestor();
+			}
+			environment = new CancelableNameEnvironment(project, accessRequestor, workingCopyOwner, monitor);
+			
+			
+			
 			if (unitElement instanceof CompilationUnit)
 				environment.unitToSkip=(CompilationUnit)unitElement;
 			else if (unitElement instanceof CompilationUnit)

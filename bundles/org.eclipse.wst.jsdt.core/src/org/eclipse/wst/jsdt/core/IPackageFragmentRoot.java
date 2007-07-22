@@ -343,6 +343,7 @@ public interface IPackageFragmentRoot
 	 */
 	public boolean isArchive();
 	
+	public boolean isLanguageRuntime();
 	/**
 	 * Returns whether this package fragment root is external
 	 * to the workbench (that is, a local file), and has no

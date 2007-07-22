@@ -59,31 +59,47 @@ public class LookupScopeElementInfo extends PackageFragmentRootInfo {
 
 	private IPackageFragmentRoot[] getAllRootsGlobalFirst() {
 		IPackageFragmentRoot[] projectRoots = new IPackageFragmentRoot[0];
+		int lastGood = 0;
 		try {
 			projectRoots = javaProject.getPackageFragmentRoots();
+			
+			
+			for(int i =0;i<projectRoots.length;i++) {
+				if(projectRoots[i].isLanguageRuntime()) {
+					projectRoots[lastGood++]=projectRoots[i];
+				}
+			}
 		} catch (JavaModelException ex) {
 			projectRoots = new IPackageFragmentRoot[0];
 		}
 		
-		IPackageFragmentRoot[]  allRoots = new IPackageFragmentRoot[projectRoots.length + rootsInScope.length ]; 
+		IPackageFragmentRoot[]  allRoots = new IPackageFragmentRoot[lastGood + rootsInScope.length ]; 
 		
-		System.arraycopy(projectRoots, 0, allRoots, 0, projectRoots.length);
-		System.arraycopy(rootsInScope, 0, allRoots, projectRoots.length, rootsInScope.length);
+		System.arraycopy(projectRoots, 0, allRoots, 0, lastGood);
+		System.arraycopy(rootsInScope, 0, allRoots, lastGood, rootsInScope.length);
 		return allRoots;
 	}
 	
 	private IPackageFragmentRoot[] getAllRootsLocalFirst() {
 		IPackageFragmentRoot[] projectRoots = new IPackageFragmentRoot[0];
+		int lastGood = 0;
 		try {
 			projectRoots = javaProject.getPackageFragmentRoots();
+			
+			
+			for(int i =0;i<projectRoots.length;i++) {
+				if(projectRoots[i].isLanguageRuntime()) {
+					projectRoots[lastGood++]=projectRoots[i];
+				}
+			}
 		} catch (JavaModelException ex) {
 			projectRoots = new IPackageFragmentRoot[0];
 		}
 		
-		IPackageFragmentRoot[]  allRoots = new IPackageFragmentRoot[projectRoots.length + rootsInScope.length ]; 
+		IPackageFragmentRoot[]  allRoots = new IPackageFragmentRoot[lastGood + rootsInScope.length ]; 
 		
 		System.arraycopy(rootsInScope, 0, allRoots, 0, rootsInScope.length);
-		System.arraycopy(projectRoots, 0, allRoots, rootsInScope.length, projectRoots.length);
+		System.arraycopy(projectRoots, 0, allRoots, rootsInScope.length, lastGood);
 		return allRoots;
 	}
 	

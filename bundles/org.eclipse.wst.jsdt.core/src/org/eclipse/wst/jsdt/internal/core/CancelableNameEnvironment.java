@@ -19,6 +19,7 @@ import org.eclipse.wst.jsdt.internal.codeassist.ISearchRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
+import org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessBindingRequestor;
 
 
 public class CancelableNameEnvironment extends SearchableEnvironment {
@@ -28,7 +29,7 @@ public class CancelableNameEnvironment extends SearchableEnvironment {
 		super(project, owner);
 		this.monitor = monitor;
 	}
-	public CancelableNameEnvironment(JavaProject project, IJavaElement scope, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException {
+	public CancelableNameEnvironment(JavaProject project, IRestrictedAccessBindingRequestor scope, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException {
 		super(project,scope, owner);
 		this.monitor = monitor;
 	}
