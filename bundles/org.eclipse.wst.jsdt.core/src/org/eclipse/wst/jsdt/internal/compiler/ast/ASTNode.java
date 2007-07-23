@@ -430,7 +430,7 @@ public abstract class ASTNode implements TypeConstants, TypeIds {
 	public final boolean isTypeUseDeprecated(TypeBinding type, Scope scope) {
 
 		if (type.isArrayType())
-			type = ((ArrayBinding) type).leafComponentType;
+			return isTypeUseDeprecated(((ArrayBinding) type).leafComponentType, scope);
 		if (type.isBaseType())
 			return false;
 
