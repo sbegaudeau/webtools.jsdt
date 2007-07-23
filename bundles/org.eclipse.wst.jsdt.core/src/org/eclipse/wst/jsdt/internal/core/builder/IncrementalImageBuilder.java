@@ -646,9 +646,9 @@ protected boolean findSourceFiles(IResourceDelta sourceDelta, ClasspathMultiDire
 						}
 						if (JavaBuilder.DEBUG)
 							System.out.println("Copying changed file " + resourcePath); //$NON-NLS-1$
-						createFolder(resourcePath.removeLastSegments(1), md.binaryFolder); // ensure package exists in the output folder
-						resource.copy(outputFile.getFullPath(), IResource.FORCE | IResource.DERIVED, null);
-						Util.setReadOnly(outputFile, false); // just in case the original was read only
+						//createFolder(resourcePath.removeLastSegments(1), md.binaryFolder); // ensure package exists in the output folder
+						//resource.copy(outputFile.getFullPath(), IResource.FORCE | IResource.DERIVED, null);
+					//	Util.setReadOnly(outputFile, false); // just in case the original was read only
 				}
 				return true;
 			}

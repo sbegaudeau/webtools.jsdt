@@ -129,7 +129,7 @@ public abstract class JobManager implements Runnable {
 			Util.verbose("ENABLING  background indexing"); //$NON-NLS-1$
 		this.notifyAll(); // wake up the background thread if it is waiting (context must be synchronized)			
 	}
-	protected synchronized boolean isJobWaiting(IJob request) {
+	public synchronized boolean isJobWaiting(IJob request) {
 		for (int i = this.jobEnd; i > this.jobStart; i--) // don't check job at jobStart, as it may have already started
 			if (request.equals(this.awaitingJobs[i])) return true;
 		return false;

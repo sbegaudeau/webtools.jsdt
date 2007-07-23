@@ -661,10 +661,10 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 
 		// type checking
 		unit.resolve();
-
+		/* BC- might want to comment the next two out.  They don't seem applicable for JS. */
 		// flow analysis
 		unit.analyseCode();
-
+	
 		// code generation
 		unit.generateCode();
 

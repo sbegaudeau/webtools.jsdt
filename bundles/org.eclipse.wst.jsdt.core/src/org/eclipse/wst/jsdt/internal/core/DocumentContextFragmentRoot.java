@@ -65,7 +65,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 	private IClasspathEntry rawClassPathEntry;
 	
 	//public static final boolean RETURN_CU = true;
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 	//private boolean dirty;
 	
 	private static int instances=0;
