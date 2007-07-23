@@ -37,6 +37,7 @@ import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.internal.core.util.Util;
  
 /**
  * A base content provider for Java elements. It provides access to the
@@ -401,9 +402,12 @@ public class StandardJavaElementContentProvider implements ITreeContentProvider,
 			// We therefore exclude Java elements from the list
 			// of non-Java resources.
 			if (isFolderOnClasspath) {
-				if (javaProject.findPackageFragmentRoot(member.getFullPath()) == null) {
+//				if (javaProject.findPackageFragmentRoot(member.getFullPath()) == null) {
+//					nonJavaResources.add(member);
+//				} 
+				if(!Util.isJavaLikeFileName(member.getFullPath().toString()) && !(member instanceof IFolder)){
 					nonJavaResources.add(member);
-				} 
+				}
 			} else if (!javaProject.isOnClasspath(member)) {
 				nonJavaResources.add(member);
 			}

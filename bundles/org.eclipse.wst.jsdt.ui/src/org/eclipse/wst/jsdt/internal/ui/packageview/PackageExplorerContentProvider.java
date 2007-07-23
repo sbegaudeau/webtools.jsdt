@@ -37,6 +37,7 @@ import org.eclipse.ui.IWorkingSet;
 
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.IClassFile;
+import org.eclipse.wst.jsdt.core.IClasspathAttribute;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
@@ -343,10 +344,19 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 		boolean addJARContainer= false;
 		
 		IPackageFragmentRoot[] roots= project.getPackageFragmentRoots();
-		for (int i= 0; i < roots.length; i++) {
+		nextFrag: for (int i= 0; i < roots.length; i++) {
 			IPackageFragmentRoot root= roots[i];
 			IClasspathEntry classpathEntry= root.getRawClasspathEntry();
 			int entryKind= classpathEntry.getEntryKind();
+			IClasspathAttribute[] attribs = classpathEntry.getExtraAttributes();
+			
+			if(attribs!=null) {
+				for(int j=0;j<attribs.length;j++) {
+					if(attribs[j].getName().equalsIgnoreCase("hide") && attribs[j].getValue().equalsIgnoreCase("true")) {
+						continue nextFrag;
+					}
+				}
+			}
 			if (entryKind == IClasspathEntry.CPE_CONTAINER) {
 				// all ClassPathContainers are added later 
 			} else if (fShowLibrariesNode && (entryKind == IClasspathEntry.CPE_LIBRARY || entryKind == IClasspathEntry.CPE_VARIABLE)) {
@@ -371,13 +381,29 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 		
 		// separate loop to make sure all containers are on the classpath
 		IClasspathEntry[] rawClasspath= project.getRawClasspath();
-		for (int i= 0; i < rawClasspath.length; i++) {
+		nextFrag: for (int i= 0; i < rawClasspath.length; i++) {
 			IClasspathEntry classpathEntry= rawClasspath[i];
+			IClasspathAttribute[] attribs = classpathEntry.getExtraAttributes();
+			
+			if(attribs!=null) {
+				for(int j=0;j<attribs.length;j++) {
+					if(attribs[j].getName().equalsIgnoreCase("hide") && attribs[j].getValue().equalsIgnoreCase("true")) {
+						continue nextFrag;
+					}
+				}
+			}
 			if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
 				result.add(new ClassPathContainer(project, classpathEntry));
 			}	
 		}	
-		Object[] resources= project.getNonJavaResources();
+//		Object[] resources= project.getNonJavaResources();
+		Object[] resources=new Object[0];
+		try {
+			resources = project.getProject().members();
+		} catch (CoreException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
 		for (int i= 0; i < resources.length; i++) {
 			result.add(resources[i]);
 		}
