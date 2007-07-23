@@ -79,7 +79,8 @@ public class ClasspathEntry implements IClasspathEntry {
 	public static final String TAG_NON_ACCESSIBLE = "nonaccessible"; //$NON-NLS-1$
 	public static final String TAG_DISCOURAGED = "discouraged"; //$NON-NLS-1$
 	public static final String TAG_IGNORE_IF_BETTER = "ignoreifbetter"; //$NON-NLS-1$
-	public static final IClasspathAttribute EXCLUDE_VALIDATE = new ClasspathAttribute("validate","false");
+	//public static final IClasspathAttribute EXCLUDE_VALIDATE = new ClasspathAttribute("validate","false");
+	//public static final IClasspathAttribute HIDE = new ClasspathAttribute("hide","true");
 	/**
 	 * Describes the kind of classpath entry - one of 
 	 * CPE_PROJECT, CPE_LIBRARY, CPE_SOURCE, CPE_VARIABLE or CPE_CONTAINER

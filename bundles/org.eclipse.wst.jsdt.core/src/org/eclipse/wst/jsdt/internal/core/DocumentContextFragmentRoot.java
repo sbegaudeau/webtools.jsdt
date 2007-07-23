@@ -27,7 +27,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IClassFile;
+import org.eclipse.wst.jsdt.core.IClasspathAttribute;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
@@ -57,6 +59,7 @@ import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
 
 public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 	
+	private static final ClasspathAttribute HIDE = new ClasspathAttribute("hide","true");
 	private String[] includedFiles;
 	//private Long[] timeStamps;
 	private IFile fRelativeFile;
@@ -82,8 +85,21 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 		}
 		
 		public boolean acceptBinding(int type,int modifiers, char[] packageName,char[] simpleTypeName, String path, AccessRestriction access) {
-			
-			
+			if(DEBUG) {
+				IJavaProject proj = getJavaProject();
+				try {
+					IClasspathEntry[] entries = proj.getResolvedClasspath(true);
+					System.out.println("DocumentContextFragmentRoot ====>" +"Project Classpath : \n");
+
+					for(int i = 0;i<entries.length;i++) {
+						System.out.println("\t" + entries[i].getPath());			
+
+					}
+				} catch (JavaModelException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+			}
 			for (int i = 0; workingCopies!=null && i < workingCopies.length; i++) {
 				if (workingCopies[i].getPath().toString().equals(path)) {
 					if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" +"REJECTING binding..\n\t" + new String(simpleTypeName) + " in " + path + "\n\tfor file " + fRelativeFile.toString());
@@ -112,7 +128,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 			if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" +"REJECTING binding..\n\t" + new String(simpleTypeName) + " in " + path + " \n\tfor file " + fRelativeFile.toString());
 			if(DEBUG) System.out.println("\t(relative) page includes = : " );
 			if(DEBUG) {
-				for(int i = 0;i<includedFiles.length;i++) {
+				for(int i = 0;includedFiles!=null && i<includedFiles.length;i++) {
 					System.out.println("\t\t" + includedFiles[i]);
 				}
 			}
@@ -216,7 +232,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 	
 	public void setIncludedFiles(String[] fileNames) {
 		
-		this.includedFiles = new String[0];
+		
 		
 		String[] newImports = new String[fileNames.length];
 		//Long[] newTimestamps = new Long[fileNames.length];
@@ -226,15 +242,24 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 			File importFile = isValidImport(fileNames[i]);
 			if(importFile==null) continue;
 			IPath importPath = resolveChildPath(fileNames[i]);	
-			newImports[arrayLength] = importPath.toString();
+			newImports[arrayLength++] = importPath.toString();
 			//newTimestamps[arrayLength] = new Long(importFile.lastModified());	
 
-			arrayLength++;
+			//arrayLength++;
 		}
 		
-//		boolean equals =   this.includedFiles!=null && (newImports !=null) &&
-//		  				   this.includedFiles.length == newImports.length;
-//		
+		boolean equals = includedFiles!=null && arrayLength==includedFiles.length;
+		
+		for(int i=0;equals && i<arrayLength;i++) {
+			if(newImports[i].compareTo(includedFiles[i])!=0) equals=false;
+		}
+		
+		//this.includedFiles!=null && (newImports !=null) &&   this.includedFiles.length == arrayLength;
+		
+		//equals = equals || (this.includedFiles==null && newImports ==null);
+		//if(!equals) removeStaleClasspath(this.includedFiles);
+		
+		//		
 //
 //		if(!equals) dirty = true;
 //		
@@ -254,15 +279,68 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 //		}
 //		
 //		if(!dirty) return;
-		
+		if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Imports " + (equals?"did NOT change": "CHANGED:") + "\n");
+		if(DEBUG) {
+			for(int i = 0;includedFiles!=null && i<includedFiles.length;i++) {
+				System.out.println("\t\t" + includedFiles[i]);
+			}
+		}
+		if(equals) return;
 		this.includedFiles = new String[arrayLength];
 	//	this.timeStamps = new Long[arrayLength];
 		System.arraycopy(newImports, 0, this.includedFiles, 0, arrayLength);
 	//	System.arraycopy(newTimestamps, 0, this.timeStamps, 0, arrayLength);
+		updateClasspathIfNeeded();
+		
+	}
 	
+	private void removeStaleClasspath(String[] oldEntries) {
 		
 	}
 
+	private void updateClasspathIfNeeded() {
+		
+		
+				
+		ArrayList newEntriesList = new ArrayList();
+		IJavaProject javaProject = getJavaProject();
+		IResource myResource = getResource();
+		IContainer folder = (IContainer)myResource;
+		
+		for(int i = 0;i<includedFiles.length;i++) {
+			IResource theFile = folder.findMember(includedFiles[i]);
+			if(javaProject.isOnClasspath(theFile)) continue;
+//			try {
+//				if(javaProject.findPackageFragmentRoot(theFile.getLocation())!=null) continue;
+//			} catch (JavaModelException ex) {}
+			
+			//IClasspathEntry entry = JavaCore.newSourceEntry(theFile.getFullPath());
+			IClasspathEntry entry = JavaCore.newLibraryEntry(theFile.getLocation().makeAbsolute(), null, null, new IAccessRule[0], new IClasspathAttribute[] {HIDE}, true);
+			
+			newEntriesList.add(entry);
+		}
+		IClasspathEntry[] current = new IClasspathEntry[0];
+		
+		
+		try {
+			current = javaProject.getRawClasspath();
+		} catch (JavaModelException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
+		
+		
+		IClasspathEntry[] newCpEntries = new IClasspathEntry[newEntriesList.size() + current.length];
+		System.arraycopy(current, 0, newCpEntries, 0, current.length);
+		int newPtr = 0 ;
+		for(int i =  current.length; i<newCpEntries.length;i++) {
+			newCpEntries[i] = (IClasspathEntry)newEntriesList.get(newPtr++);
+		}
+		try {
+			javaProject.setRawClasspath(newCpEntries, false, new NullProgressMonitor());
+		} catch (JavaModelException ex) {}
+		
+	}
 	
 	public IPath resolveChildPath(String childPathString) {
 		/* relative paths:

@@ -112,7 +112,7 @@ private void computeClasspathLocations(
 		IClasspathAttribute[] attribs = entry.getExtraAttributes();
 		
 		for(int k=0;attribs!=null && k<attribs.length;k++) {
-			if(attribs[k]==ClasspathEntry.EXCLUDE_VALIDATE) continue nextEntry;
+			if(attribs[k].getName().equalsIgnoreCase("validate") && attribs[k].getValue().equalsIgnoreCase("false")) continue nextEntry;
 		}
 		
 		switch(entry.getEntryKind()) {
