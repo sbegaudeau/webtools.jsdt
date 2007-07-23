@@ -37,7 +37,7 @@ char[][] extraResourceFileFilters;
 String[] extraResourceFolderFilters;
 public static final String SOURCE_ID = "JSDT"; //$NON-NLS-1$
 
-public static boolean DEBUG = true;
+public static boolean DEBUG = false;
 
 /**
  * A list of project names that have been built.
