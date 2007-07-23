@@ -16,8 +16,25 @@ import java.util.HashMap;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.wst.jsdt.core.*;
-import org.eclipse.wst.jsdt.core.compiler.*;
+import org.eclipse.wst.jsdt.core.CompletionRequestor;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.ICompletionRequestor;
+import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IInitializer;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IMember;
+import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IPackageFragment;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.ITypeHierarchy;
+import org.eclipse.wst.jsdt.core.ITypeParameter;
+import org.eclipse.wst.jsdt.core.IWorkingCopy;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.Signature;
+import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
+import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.internal.codeassist.CompletionEngine;
 import org.eclipse.wst.jsdt.internal.codeassist.ISelectionRequestor;
@@ -28,6 +45,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.core.hierarchy.TypeHierarchy;
 import org.eclipse.wst.jsdt.internal.core.util.MementoTokenizer;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
+import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 /**
  * Handle for a source type. Info object is a SourceTypeElementInfo.
@@ -38,7 +56,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Messages;
  */
 
 public class SourceType extends NamedMember implements IType {
-	
+
 protected SourceType(JavaElement parent, String name) {
 	super(parent, name);
 }
@@ -535,7 +553,7 @@ public IType[] getTypes() throws JavaModelException {
  * @see IType#isAnonymous()
  */
 public boolean isAnonymous() {
-	return this.name.length() == 0;
+	return this.name.length() == 0 || this.name.startsWith(Util.ANONYMOUS_MARKER);
 }
 
 /**

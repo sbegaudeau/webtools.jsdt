@@ -3076,8 +3076,8 @@ public class Util {
 	 * 
 	 * marker and label
 	 */
-	private static final String ANONYMOUS_MARKER = new String( CharOperation.concat(InferEngine.ANONYMOUS_PREFIX, InferEngine.ANONYMOUS_CLASS_ID) );
-	private static final String ANONYMOUS_LABEL = "{}";
+	public static final String ANONYMOUS_MARKER = new String( CharOperation.concat(InferEngine.ANONYMOUS_PREFIX, InferEngine.ANONYMOUS_CLASS_ID) );
+	public static final String ANONYMOUS_LABEL = "{}";
 	
 	/*
 	 * @GINO: Anonymous UI Label
