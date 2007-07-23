@@ -109,9 +109,16 @@ private void computeClasspathLocations(
 		Object target = JavaModel.getTarget(root, path, true);
 		if (target == null) continue nextEntry;
 
+		IClasspathAttribute[] attribs = entry.getExtraAttributes();
+		
+		for(int k=0;attribs!=null && k<attribs.length;k++) {
+			if(attribs[k]==ClasspathEntry.EXCLUDE_VALIDATE) continue nextEntry;
+		}
+		
 		switch(entry.getEntryKind()) {
 			case IClasspathEntry.CPE_SOURCE :
 				if (!(target instanceof IContainer)) continue nextEntry;
+				
 				IPath outputPath = entry.getOutputLocation() != null 
 					? entry.getOutputLocation() 
 					: javaProject.getOutputLocation();
