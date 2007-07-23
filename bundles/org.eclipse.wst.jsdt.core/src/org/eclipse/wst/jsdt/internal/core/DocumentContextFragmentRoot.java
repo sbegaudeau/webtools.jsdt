@@ -173,14 +173,14 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 		this.webContext=webContext;
 		this.rawClassPathEntry = rawClassPath;
 		//dirty = true;
-		if(DEBUG) System.out.println("Creating instance of DocuContexFrag for total of:" + ++instances);
+		if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Creating instance for total of:>>" + ++instances + "<<.  \n\tRelative file:" + fRelativeFile.toString());
 		
 	
 	}
 
 	public void finalize() {
 		
-		if(DEBUG) System.out.println("Destroying doc context for a total of " + --instances);
+		if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "finalize() for a  total of:>>" + --instances + "<<.  \n\tRelative file:" + fRelativeFile!=null?null:fRelativeFile.toString());
 	}
 	
 	
