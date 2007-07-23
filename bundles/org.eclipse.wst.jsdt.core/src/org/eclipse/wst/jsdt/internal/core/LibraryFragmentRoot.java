@@ -205,6 +205,11 @@ private ClassFile getLibraryClassFile(){
 		}
 		
 		ClasspathContainerInitializer init = getContainerInitializer();
+		if(init==null) {
+			fLangeRuntime[0]=true;
+			fLangeRuntime[1]=false;
+			return fLangeRuntime[1];
+		}
 		fLangeRuntime[1]= init.getKind()==IClasspathContainer.K_SYSTEM ||init.getKind()==IClasspathContainer.K_DEFAULT_SYSTEM ;
 		fLangeRuntime[0]=true;
 		return fLangeRuntime[1];
