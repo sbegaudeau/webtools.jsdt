@@ -1014,6 +1014,18 @@ public static final char[] concatWith(
 	return result;
 }
 
+public static final char[] fixLibPackageTail(char[] packageName) {
+	
+	if(packageName==null || packageName.length<3) return packageName;
+	int length = packageName.length;
+	if(    packageName[length-3]=='/' &&  (packageName[length-2]=='j' || packageName[length-2]=='J')  && (packageName[length-1]=='s' || packageName[length-1]=='S')){
+		char[] newPname = packageName;
+		newPname[length-3] = '.';
+		return newPname;
+	}
+	return packageName;
+}
+
 /**
  * Answers the concatenation of the given array parts using the given separator between each part.
  * <br>
