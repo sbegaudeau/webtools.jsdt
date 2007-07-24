@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.Path;
@@ -428,10 +427,12 @@ public void acceptLocalVariable(LocalVariableBinding binding) {
 	if (binding.declaringScope instanceof CompilationUnitScope) {
 		CompilationUnitScope compilationUnitScope = (CompilationUnitScope) binding.declaringScope;
 		char [] packageName=CharOperation.concatWith(compilationUnitScope.currentPackageName, '.');
-		packageName = CharOperation.fixLibPackageTail(packageName);
-		
 		char[] fileName = compilationUnitScope.referenceContext.compilationUnitBinding.qualifiedSourceName();
+		
 		parent=resolveCompilationUnit(packageName, fileName);
+		if(parent==null) {
+			parent=resolveCompilationUnit(new char[0], fileName);
+		}
 	} else
 	 parent = findLocalElement(local.sourceStart); // findLocalElement() cannot find local variable
 	IJavaElement localVar = null;
@@ -951,7 +952,7 @@ protected IJavaElement resolveCompilationUnit(char[] packageName, char[] compila
 			return this.openable;
 		}
 	}
-	
+
 		IPackageFragment[] pkgs = this.nameLookup.findPackageFragments(
 			(packageName == null || packageName.length == 0) ? IPackageFragment.DEFAULT_PACKAGE_NAME : new String(packageName), 
 			false);
