@@ -299,6 +299,8 @@ public class MethodScope extends BlockScope {
 		this.referenceContext = method;
 		method.scope = this;
 		int modifiers = method.modifiers | ExtraCompilerModifiers.AccUnresolved | ClassFileConstants.AccPublic;
+		if (method.inferredMethod.isStatic)
+			modifiers|= ClassFileConstants.AccStatic;
 		if (method.isConstructor() || isConstructor) {
 			if (method.isDefaultConstructor() || isConstructor)
 				modifiers |= ExtraCompilerModifiers.AccIsDefaultConstructor;
