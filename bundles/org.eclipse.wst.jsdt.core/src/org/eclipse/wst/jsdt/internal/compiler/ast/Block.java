@@ -122,10 +122,11 @@ public class Block extends Statement {
 		ASTVisitor visitor,
 		BlockScope blockScope) {
 
+		BlockScope visitScope=(scope!=null) ? scope:blockScope;
 		if (visitor.visit(this, blockScope)) {
 			if (statements != null) {
 				for (int i = 0, length = statements.length; i < length; i++)
-					statements[i].traverse(visitor, scope);
+					statements[i].traverse(visitor, visitScope);
 			}
 		}
 		visitor.endVisit(this, blockScope);

@@ -23,9 +23,11 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.Type;
+import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.ast.*;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
+import org.eclipse.wst.jsdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.util.*;
@@ -63,6 +65,34 @@ private MethodScope methodScope;
 private ClassScope classScope;
 
 
+
+class DeclarationVisitor extends ASTVisitor
+{
+	ArrayList methods=new ArrayList();
+	public boolean visit(LocalDeclaration localDeclaration, BlockScope scope) {
+		TypeBinding type=localDeclaration.resolveVarType(scope);
+		LocalVariableBinding binding = new LocalVariableBinding(localDeclaration, type, 0, false);
+		localDeclaration.binding=binding;
+		addLocalVariable(binding);
+		binding.setConstant(Constant.NotAConstant);
+		return false;
+	}
+
+	public boolean visit(MethodDeclaration methodDeclaration, Scope parentScope) {
+		if (methodDeclaration.selector!=null)
+		{
+			MethodScope scope = new MethodScope(parentScope,methodDeclaration, false);
+			MethodBinding methodBinding = scope.createMethod(methodDeclaration,methodDeclaration.selector,(SourceTypeBinding)referenceContext.compilationUnitBinding,false,false);
+			if (methodBinding != null && methodBinding.selector!=null) // is null if binding could not be created
+				methods.add(methodBinding);
+			if (methodBinding.selector!=null)
+				environment.defaultPackage.addBinding(methodBinding, methodBinding.selector,Binding.METHOD);
+			methodDeclaration.binding=methodBinding;
+		}
+		return false;
+	}
+	
+}
 
 
 
@@ -242,19 +272,37 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 			ReferenceBinding typeBinding = environment.defaultPackage
 					.getType0(typeDecl.getName());
 			recordSimpleReference(typeDecl.getName()); // needed to detect collision cases
+			SourceTypeBinding existingBinding=null;
 			if (typeBinding != null
 					&& !(typeBinding instanceof UnresolvedReferenceBinding)) {
 				// if a type exists, it must be a valid type - cannot be a NotFound problem type
 				// unless its an unresolved type which is now being defined
-				problemReporter().duplicateTypes(referenceContext, typeDecl);
-				continue nextType;
+//				problemReporter().duplicateTypes(referenceContext, typeDecl);
+//				continue nextType;
+				if (typeBinding instanceof SourceTypeBinding)
+					existingBinding=(SourceTypeBinding)typeBinding;
 			}
-			ClassScope child = new ClassScope(this, typeDecl);
-			SourceTypeBinding type = child.buildInferredType(null, environment.defaultPackage,
+			
+				NameEnvironmentAnswer answer = this.environment.nameEnvironment.findType(typeDecl.getName(),environment.defaultPackage.compoundName ,this.environment.typeRequestor);
+				ClassScope child = new ClassScope(this, typeDecl);
+				SourceTypeBinding type = child.buildInferredType(null, environment.defaultPackage,
 					accessRestriction);
 			//		SourceTypeBinding type = buildType(typeDecl,null, fPackage, accessRestriction);
 			if (type != null)
+			{
+				if (existingBinding!=null && false)
+				{
+					if (existingBinding instanceof CombinedSourceTypeBinding)
+					{
+						CombinedSourceTypeBinding combinedBinding=(CombinedSourceTypeBinding)existingBinding;
+						combinedBinding.addSourceType(type);
+					}
+					else 
+						existingBinding=new CombinedSourceTypeBinding(child,type,existingBinding);
+					environment.defaultPackage.addType(existingBinding);
+				}
 				topLevelTypes[count++] = type;
+			}
 		}		
 	}
 
@@ -269,22 +317,11 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 	char [] path=CharOperation.concatWith(this.currentPackageName, '/');
 	referenceContext.compilationUnitBinding=new CompilationUnitBinding(this,environment.defaultPackage,path, superBinding);
 	
-	ArrayList methods=new ArrayList();
-	ArrayList vars=new ArrayList();
-	ArrayList stmts=new ArrayList();
-	for (int i = 0; i < this.referenceContext.statements.length; i++) {
-		ProgramElement element = this.referenceContext.statements[i];
-		if (element instanceof MethodDeclaration /* && ((MethodDeclaration)element).selector!=null */) {
-			methods.add(element);
-		}
-		else if (element instanceof LocalDeclaration) {
-			vars.add(element);
-		}
-		else
-			stmts.add(element);
-	}
-	buildMethods(methods);
-	buildVars(vars);
+	
+	DeclarationVisitor visitor = new DeclarationVisitor();
+	this.referenceContext.traverse(visitor, this);
+	MethodBinding[] methods = (MethodBinding[])visitor.methods.toArray(new MethodBinding[visitor.methods.size()]);
+	referenceContext.compilationUnitBinding.setMethods(methods);
 }
 
 public void buildSuperType() {
@@ -405,42 +442,6 @@ SourceTypeBinding buildType(InferredType inferredType, SourceTypeBinding enclosi
 	environment().setAccessRestriction(sourceType, accessRestriction);		
 	sourceType.fPackage.addType(sourceType);
 	return sourceType;
-}
-
-private void buildVars(ArrayList vars) {
-	for (Iterator iter = vars.iterator(); iter.hasNext();) {
-		LocalDeclaration localVar = (LocalDeclaration) iter.next();
-		TypeBinding type=localVar.resolveVarType(this);
-		LocalVariableBinding binding = new LocalVariableBinding(localVar, type, 0, false);
-		localVar.binding=binding;
-		addLocalVariable(binding);
-		binding.setConstant(Constant.NotAConstant);
-	}
-}
-
-private void buildMethods(ArrayList methods) {
-	if (methods.size()==0) {
-		referenceContext.compilationUnitBinding.setMethods(Binding.NO_METHODS);
-		return;
-	} 
-
-
-	MethodBinding[] methodBindings = new MethodBinding[methods.size()];
-	// create bindings for source methods
-	int count=0;
-	for (Iterator iter = methods.iterator(); iter.hasNext();) {
-		AbstractMethodDeclaration method = (AbstractMethodDeclaration) iter.next();
-			MethodScope scope = new MethodScope(this,method, false);
-			MethodBinding methodBinding = scope.createMethod(method,method.selector,(SourceTypeBinding)referenceContext.compilationUnitBinding,false,false);
-			if (methodBinding != null && methodBinding.selector!=null) // is null if binding could not be created
-				methodBindings[count++] = methodBinding;
-			if (methodBinding.selector!=null)
-				environment.defaultPackage.addBinding(methodBinding, methodBinding.selector,Binding.METHOD);
-			method.binding=methodBinding;
-	}
-	if (count != methodBindings.length)
-		System.arraycopy(methodBindings, 0, methodBindings = new MethodBinding[count], 0, count);
-	referenceContext.compilationUnitBinding.setMethods(methodBindings);
 }
 
 
