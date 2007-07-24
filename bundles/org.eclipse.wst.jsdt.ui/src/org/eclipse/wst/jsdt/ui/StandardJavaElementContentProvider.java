@@ -213,7 +213,7 @@ public class StandardJavaElementContentProvider implements ITreeContentProvider,
 	 */
 	protected boolean matches(IJavaElement element) {
 			
-		if (element.getElementType() == IJavaElement.TYPE && element.getParent().getElementType() == IJavaElement.COMPILATION_UNIT ) {
+		if (element.getElementType() == IJavaElement.TYPE && (element.getParent().getElementType() == IJavaElement.COMPILATION_UNIT || element.getParent().getElementType() == IJavaElement.CLASS_FILE) ) {
 			
 			IType type = (IType)element;
 			try {

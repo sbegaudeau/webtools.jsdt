@@ -317,9 +317,9 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 					}else if(children[i] instanceof IPackageFragmentRoot) {
 						more.addAll(Arrays.asList(((IPackageFragmentRoot)children[i]).getChildren()));
 					}else if(children[i] instanceof IClassFile) {
-						more.addAll(Arrays.asList(((IClassFile)children[i]).getChildren()));
+						more.addAll(Arrays.asList( filter(((IClassFile)children[i]).getChildren())) );
 					}else if(children[i] instanceof ICompilationUnit) {
-						more.addAll(Arrays.asList(((ICompilationUnit)children[i]).getChildren()));
+						more.addAll(Arrays.asList( filter(((ICompilationUnit)children[i]).getChildren())) );
 					}else {
 						/* bottomed out, now at javaElement level */
 						unique=true;
