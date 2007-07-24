@@ -575,7 +575,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 				return false;
 			}
 		}
-		if (lastIdentifierStart > 0) {
+		if (lastIdentifierStart >= 0) {
 			this.actualSelectionStart = lastIdentifierStart;
 			this.actualSelectionEnd = lastIdentifierEnd;
 			this.selectedIdentifier = lastIdentifier;
