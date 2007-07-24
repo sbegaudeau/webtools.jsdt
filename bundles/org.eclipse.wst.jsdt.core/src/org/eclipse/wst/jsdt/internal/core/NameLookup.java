@@ -313,8 +313,15 @@ public class NameLookup implements SuffixConstants {
 				public String getFoundPath() {
 					return foundPath;
 				}
+				
+				
+				public void reset() {
+					foundPath=null;
+				}
+			
 			}; 
 		}
+		
 		return this.restrictedRequestor;
 	}
 	
@@ -2128,6 +2135,10 @@ public class NameLookup implements SuffixConstants {
 				} catch (OperationCanceledException e) {
 					return findBinding( bindingName,packageName,bindingType,partialMatch,acceptFlags,considerSecondaryTypes,waitForIndexes,
 							checkRestrictions,progressMonitor);
+				}
+				finally
+				{
+					getRestrictedAccessRequestor().reset();
 				}
 			} catch (JavaModelException e) {
 				return findBinding( bindingName,packageName,bindingType,partialMatch,acceptFlags,considerSecondaryTypes,waitForIndexes,

@@ -614,6 +614,8 @@ public class SearchableEnvironment implements INameEnvironment,
 				
 					return null;
 				}
+
+				public void reset() {}
 			};
 			try {
 				int matchRule = SearchPattern.R_PREFIX_MATCH;

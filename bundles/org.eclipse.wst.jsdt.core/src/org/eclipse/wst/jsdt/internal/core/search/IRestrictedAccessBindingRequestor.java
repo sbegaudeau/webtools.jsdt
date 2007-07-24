@@ -22,4 +22,9 @@ public interface IRestrictedAccessBindingRequestor {
 	public boolean acceptBinding(int type, int modifiers, char[] packageName, char[] simpleBindingName, String path, AccessRestriction access);
 
 	public String getFoundPath();
+	
+	public void reset();
+
+	
+	
 }
