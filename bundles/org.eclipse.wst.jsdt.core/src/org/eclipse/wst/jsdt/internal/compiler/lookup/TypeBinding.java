@@ -581,8 +581,9 @@ public boolean isReifiable() {
 		if (current.isStatic())
 			return true;
 		if (current.isLocalType()) {
-			NestedTypeBinding nestedType = (NestedTypeBinding) current.erasure();
-			if (nestedType.scope.methodScope().isStatic) return true;
+//			NestedTypeBinding nestedType = (NestedTypeBinding) current.erasure();
+//			if (nestedType.scope.methodScope().isStatic) return true;
+			return true;
 		}
 	} while ((current = current.enclosingType()) != null);
 	return true;
