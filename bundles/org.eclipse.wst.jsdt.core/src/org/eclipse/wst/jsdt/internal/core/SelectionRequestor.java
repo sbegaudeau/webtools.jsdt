@@ -426,9 +426,9 @@ public void acceptLocalVariable(LocalVariableBinding binding) {
 	IJavaElement parent =null;
 	if (binding.declaringScope instanceof CompilationUnitScope) {
 		CompilationUnitScope compilationUnitScope = (CompilationUnitScope) binding.declaringScope;
-		char [] packageName=CharOperation.concatWith(compilationUnitScope.currentPackageName, '.');
+		//char [] packageName=CharOperation.concatWith(compilationUnitScope.currentPackageName, '.');
 		char[] fileName = compilationUnitScope.referenceContext.compilationUnitBinding.qualifiedSourceName();
-		parent=resolveCompilationUnit(packageName, fileName);
+		parent=resolveCompilationUnit(new char[0], fileName);
 	} else
 	 parent = findLocalElement(local.sourceStart); // findLocalElement() cannot find local variable
 	IJavaElement localVar = null;

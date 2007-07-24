@@ -158,6 +158,7 @@ public IClassFile getClassFile(String classFileName) {
 public String getDisplayName() {
 	if(parent instanceof LibraryFragmentRoot) {
 		ClasspathContainerInitializer initializer = ((LibraryFragmentRoot)parent).getContainerInitializer();
+		if(initializer==null) return getPath().removeLastSegments(1).toString();
 		String name = initializer.getDescription(getPath(), getJavaProject());
 		if(name!=null) return name;
 	}

@@ -1060,6 +1060,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 					}
 				} else
 					if (binding instanceof LocalVariableBinding) {
+						this.noProposal = false;
 						if (this.requestor instanceof SelectionRequestor) {
 							((SelectionRequestor)this.requestor).acceptLocalVariable((LocalVariableBinding)binding);
 							this.acceptedAnswer = true;
