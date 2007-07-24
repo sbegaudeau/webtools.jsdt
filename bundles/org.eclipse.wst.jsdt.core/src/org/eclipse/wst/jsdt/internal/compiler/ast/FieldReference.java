@@ -514,7 +514,7 @@ public StringBuffer printExpression(int indent, StringBuffer output) {
 	return receiver.printExpression(0, output).append('.').append(token);
 }
 
-public TypeBinding resolveType(BlockScope scope) {
+public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding useType) {
 	// Answer the signature type of the field.
 	// constants are propaged when the field is final
 	// and initialized with a (compile time) constant 
@@ -576,9 +576,16 @@ public TypeBinding resolveType(BlockScope scope) {
 	if( memberBinding instanceof FieldBinding ){
 		FieldBinding fieldBinding = this.codegenBinding = this.binding = (FieldBinding)memberBinding;
 		if (!fieldBinding.isValidBinding()) {
-			constant = Constant.NotAConstant;
-			scope.problemReporter().invalidField(this, this.receiverType);
-			return null;
+			if (!define)
+			{
+				constant = Constant.NotAConstant;
+				scope.problemReporter().invalidField(this, this.receiverType);
+				return null;
+			}
+			else	// should add binding here
+			{
+				
+			}
 	//		return this.resolvedType=TypeBinding.UNKNOWN;
 		}
 		if (JavaCore.IS_EMCASCRIPT4)
