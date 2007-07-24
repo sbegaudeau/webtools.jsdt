@@ -1200,15 +1200,17 @@ public class NameLookup implements SuffixConstants {
 		return findType(name, partialMatch, acceptFlags, true/*consider secondary types*/, true/*wait for indexes*/, checkRestrictions, null);
 	}
 	public Answer findType(String name, boolean partialMatch, int acceptFlags, boolean considerSecondaryTypes, boolean waitForIndexes, boolean checkRestrictions, IProgressMonitor monitor) {
-		int index= name.lastIndexOf('.');
+//		int index= name.lastIndexOf('.');
 		String className= null, packageName= null;
-		if (index == -1) {
+//		if (index == -1) {
 			packageName= IPackageFragment.DEFAULT_PACKAGE_NAME;
 			className= name;
-		} else {
-			packageName= name.substring(0, index);
-			className= name.substring(index + 1);
-		}
+//		} else {
+//			packageName= name.substring(0, index);
+//			className= name.substring(index + 1);
+//		}
+		if (USE_BINDING_SEARCH)
+			return findBindingSearch(className, packageName, Binding.TYPE, partialMatch, acceptFlags, considerSecondaryTypes, waitForIndexes, checkRestrictions, monitor);
 		return findType(className, packageName, partialMatch, acceptFlags, considerSecondaryTypes, waitForIndexes, checkRestrictions, monitor);
 	}
 
@@ -2082,6 +2084,11 @@ public class NameLookup implements SuffixConstants {
 				}
 				
 			}
+			
+			if (this.searchScope==null)
+				this.searchScope = BasicSearchEngine.createJavaSearchScope(packageFragmentRoots);
+
+			
 			MyRequestor requestor=new MyRequestor();
 			JavaElementRequestor elementRequestor = new JavaElementRequestor();
 			seekPackageFragments(packageName, false, elementRequestor);
