@@ -61,15 +61,15 @@ public StringBuffer printStatement(int indent, StringBuffer output) {
 public void resolve(BlockScope scope) {
 	this.exceptionType = this.exception.resolveType(scope);
 	if (this.exceptionType != null && this.exceptionType.isValidBinding()) {
-		if (this.exceptionType == TypeBinding.NULL) {
-			if (scope.compilerOptions().complianceLevel <= ClassFileConstants.JDK1_3){
-				// if compliant with 1.4, this problem will not be reported
-				scope.problemReporter().cannotThrowNull(this.exception);
-			}
-	 	} else if (exceptionType.findSuperTypeErasingTo(TypeIds.T_JavaLangThrowable, true) == null) {
-			scope.problemReporter().cannotThrowType(this.exception, this.exceptionType);
-		}
-		this.exception.computeConversion(scope, this.exceptionType, this.exceptionType);
+//		if (this.exceptionType == TypeBinding.NULL) {
+//			if (scope.compilerOptions().complianceLevel <= ClassFileConstants.JDK1_3){
+//				// if compliant with 1.4, this problem will not be reported
+//				scope.problemReporter().cannotThrowNull(this.exception);
+//			}
+//	 	} else if (exceptionType.findSuperTypeErasingTo(TypeIds.T_JavaLangThrowable, true) == null) {
+//			scope.problemReporter().cannotThrowType(this.exception, this.exceptionType);
+//		}
+//		this.exception.computeConversion(scope, this.exceptionType, this.exceptionType);
 	}
 }
 
