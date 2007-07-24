@@ -204,7 +204,11 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 			{
 
 			if (existingVariable instanceof LocalVariableBinding && this.hiddenVariableDepth == 0) {
-				scope.problemReporter().redefineLocal(this);
+				LocalVariableBinding localVariableBinding=(LocalVariableBinding)existingVariable;
+				if (localVariableBinding.declaringScope instanceof CompilationUnitScope && scope.enclosingMethodScope()!=null)
+					scope.problemReporter().localVariableHiding(this, existingVariable, false);
+				else
+					scope.problemReporter().redefineLocal(this);
 			} else {
 				scope.problemReporter().localVariableHiding(this, existingVariable, false);
 			}
