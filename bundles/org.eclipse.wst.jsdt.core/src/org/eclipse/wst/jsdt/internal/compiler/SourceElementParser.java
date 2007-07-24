@@ -57,11 +57,14 @@ public class SourceElementParser extends CommentRecorderParser {
 	char[][] typeNames;
 	char[][] superTypeNames;
 	int nestedTypeIndex;
+	int nestedMethodIndex;
 	LocalDeclarationVisitor localDeclarationVisitor = null;
 	CompilerOptions options;
 	HashtableOfObjectToInt sourceEnds = new HashtableOfObjectToInt();
 	HashMap nodesToCategories = new HashMap(); // a map from ASTNode to char[][]
 	boolean useSourceJavadocParser = true;
+	
+	public static final boolean NOTIFY_LOCALS=false;
 	
 /**
  * An ast visitor that visits local type declarations.
@@ -107,7 +110,8 @@ public class LocalDeclarationVisitor extends ASTVisitor {
 	protected ASTVisitor contextDeclarationNotifier = new ASTVisitor(){
 		
 		public boolean visit(LocalDeclaration localDeclaration, BlockScope scope) {
-			notifySourceElementRequestor( localDeclaration, null );
+			if (NOTIFY_LOCALS || nestedMethodIndex==0)
+				notifySourceElementRequestor( localDeclaration, null );
 			return true;
 		}
 	
@@ -118,9 +122,16 @@ public class LocalDeclarationVisitor extends ASTVisitor {
 		public boolean visit(MethodDeclaration methodDeclaration, Scope scope) {
 			
 			//only functions with names are notified
+			nestedMethodIndex++;
 			if( methodDeclaration.selector != null && methodDeclaration.selector.length > 0 )
 				notifySourceElementRequestor( methodDeclaration );
 			return false;
+		}
+
+
+		public void endVisit(MethodDeclaration methodDeclaration, Scope scope) {
+			nestedMethodIndex--;
+
 		}
 	
 	};
@@ -1274,6 +1285,7 @@ private void notifySourceStatment(ASTNode node) {
  */
 public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclaration) {
 
+	this.nestedMethodIndex++;
 	// range check
 	boolean isInRange = 
 				scanner.initialPosition <= methodDeclaration.declarationSourceStart
@@ -1281,6 +1293,7 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 
 	if (methodDeclaration.isClinit()) {
 		this.visitIfNeeded(methodDeclaration);
+		this.nestedMethodIndex--;
 		return;
 	}
 
@@ -1306,6 +1319,7 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 				}
 			}
 		}	
+		this.nestedMethodIndex--;
 		return;	
 	}	
 	char[][] argumentTypes = null;
@@ -1385,6 +1399,7 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 		if (isInRange){
 			requestor.exitConstructor(methodDeclaration.declarationSourceEnd);
 		}
+		this.nestedMethodIndex--;
 		return;
 	}
 	selectorSourceEnd = this.sourceEnds.get(methodDeclaration);
@@ -1429,6 +1444,7 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 		} 
 		requestor.exitMethod(methodDeclaration.declarationSourceEnd, -1, -1);
 	}
+	this.nestedMethodIndex--;
 }
 
 /*
