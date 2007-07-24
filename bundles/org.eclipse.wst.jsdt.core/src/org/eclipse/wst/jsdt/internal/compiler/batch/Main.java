@@ -1654,10 +1654,10 @@ protected void handleWarningToken(String token, boolean isEnabling, boolean useE
 		this.options.put(
 			CompilerOptions.OPTION_ReportMethodWithConstructorName,
 			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
-	} else if (token.equals("pkgDefaultMethod") || token.equals("packageDefaultMethod")/*backward compatible*/ ) { //$NON-NLS-1$ //$NON-NLS-2$
-		this.options.put(
-			CompilerOptions.OPTION_ReportOverridingPackageDefaultMethod,
-			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
+//	} else if (token.equals("pkgDefaultMethod") || token.equals("packageDefaultMethod")/*backward compatible*/ ) { //$NON-NLS-1$ //$NON-NLS-2$
+//		this.options.put(
+//			CompilerOptions.OPTION_ReportOverridingPackageDefaultMethod,
+//			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
 	} else if (token.equals("maskedCatchBlock") || token.equals("maskedCatchBlocks")/*backward compatible*/) { //$NON-NLS-1$ //$NON-NLS-2$
 		this.options.put(
 			CompilerOptions.OPTION_ReportHiddenCatchBlock,

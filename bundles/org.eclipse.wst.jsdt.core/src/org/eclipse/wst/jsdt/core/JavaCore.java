@@ -237,7 +237,7 @@ public final class JavaCore extends Plugin {
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_PB_OVERRIDING_PACKAGE_DEFAULT_METHOD = PLUGIN_ID + ".compiler.problem.overridingPackageDefaultMethod"; //$NON-NLS-1$
+	public static final String COMPILER_PB_UNDEFINED_FIELD = PLUGIN_ID + ".compiler.problem.undefinedField"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()

@@ -39,7 +39,7 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 	private static final String SETTINGS_SECTION_NAME= "ProblemSeveritiesConfigurationBlock";  //$NON-NLS-1$
 	
 	// Preference store keys, see JavaCore.getOptions
-	private static final Key PREF_PB_OVERRIDING_PACKAGE_DEFAULT_METHOD= getJDTCoreKey(JavaCore.COMPILER_PB_OVERRIDING_PACKAGE_DEFAULT_METHOD);
+	private static final Key PREF_PB_UNDEFINED_FIELD= getJDTCoreKey(JavaCore.COMPILER_PB_UNDEFINED_FIELD);
 	private static final Key PREF_PB_METHOD_WITH_CONSTRUCTOR_NAME= getJDTCoreKey(JavaCore.COMPILER_PB_METHOD_WITH_CONSTRUCTOR_NAME);
 	private static final Key PREF_PB_DEPRECATION= getJDTCoreKey(JavaCore.COMPILER_PB_DEPRECATION);
 	private static final Key PREF_PB_DEPRECATION_IN_DEPRECATED_CODE=getJDTCoreKey(JavaCore.COMPILER_PB_DEPRECATION_IN_DEPRECATED_CODE);
@@ -122,7 +122,7 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 	
 	private static Key[] getKeys() {
 		return new Key[] {
-				PREF_PB_OVERRIDING_PACKAGE_DEFAULT_METHOD,
+				PREF_PB_UNDEFINED_FIELD,
 				PREF_PB_METHOD_WITH_CONSTRUCTOR_NAME, PREF_PB_DEPRECATION, PREF_PB_HIDDEN_CATCH_BLOCK, PREF_PB_UNUSED_LOCAL,
 				PREF_PB_UNUSED_PARAMETER, PREF_PB_UNUSED_PARAMETER_INCLUDE_DOC_COMMENT_REFERENCE,
 				PREF_PB_SYNTHETIC_ACCESS_EMULATION, PREF_PB_NON_EXTERNALIZED_STRINGS,
@@ -248,6 +248,9 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 		inner.setLayout(new GridLayout(nColumns, false));
 		excomposite.setClient(inner);
 		
+		label= PreferencesMessages.ProblemSeveritiesConfigurationBlock_pb_undefined_field_label; 
+		addComboBox(inner, label, PREF_PB_UNDEFINED_FIELD, errorWarningIgnore, errorWarningIgnoreLabels, defaultIndent);			
+		
 		label= PreferencesMessages.ProblemSeveritiesConfigurationBlock_pb_missing_serial_version_label; 
 		addComboBox(inner, label, PREF_PB_MISSING_SERIAL_VERSION, errorWarningIgnore, errorWarningIgnoreLabels, defaultIndent);
 				
@@ -308,9 +311,6 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 
 		label= PreferencesMessages.ProblemSeveritiesConfigurationBlock_pb_type_parameter_hiding_label; 
 		addComboBox(inner, label, PREF_15_PB_TYPE_PARAMETER_HIDING, errorWarningIgnore, errorWarningIgnoreLabels, defaultIndent);
-		
-		label= PreferencesMessages.ProblemSeveritiesConfigurationBlock_pb_overriding_pkg_dflt_label; 
-		addComboBox(inner, label, PREF_PB_OVERRIDING_PACKAGE_DEFAULT_METHOD, errorWarningIgnore, errorWarningIgnoreLabels, defaultIndent);			
 		
 		label= PreferencesMessages.ProblemSeveritiesConfigurationBlock_pb_incompatible_interface_method_label; 
 		addComboBox(inner, label, PREF_PB_INCOMPATIBLE_INTERFACE_METHOD, errorWarningIgnore, errorWarningIgnoreLabels, defaultIndent);

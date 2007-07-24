@@ -128,8 +128,6 @@ public static long getIrritant(int problemID) {
 		case IProblem.MethodButWithConstructorName :
 			return CompilerOptions.MethodWithConstructorName;
 		
-		case IProblem.OverridingNonVisibleMethod :
-			return CompilerOptions.OverriddenPackageDefaultMethod;
 
 		case IProblem.IncompatibleReturnTypeForNonInheritedInterfaceMethod :
 		case IProblem.IncompatibleExceptionInThrowsClauseForNonInheritedInterfaceMethod :
@@ -375,6 +373,8 @@ public static long getIrritant(int problemID) {
 			
 		case IProblem.OverridingMethodWithoutSuperInvocation:
 			return CompilerOptions.OverridingMethodWithoutSuperInvocation;
+		case IProblem.UndefinedField:
+			return CompilerOptions.UndefinedField;
 	}
 	return 0;
 }
@@ -408,9 +408,9 @@ public static int getProblemCategory(int severity, int problemID) {
 				case (int)CompilerOptions.AccidentalBooleanAssign:
 				case (int)CompilerOptions.EmptyStatement:
 				case (int)CompilerOptions.FinallyBlockNotCompleting:
+				case (int)CompilerOptions.UndefinedField:
 					return CategorizedProblem.CAT_POTENTIAL_PROGRAMMING_PROBLEM;
 		
-				case (int)CompilerOptions.OverriddenPackageDefaultMethod:
 				case (int)CompilerOptions.IncompatibleNonInheritedInterfaceMethod:
 				case (int)CompilerOptions.LocalVariableHiding:
 				case (int)CompilerOptions.FieldHiding:

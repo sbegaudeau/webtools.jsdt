@@ -36,7 +36,7 @@ public class CompilerOptions {
 	public static final String OPTION_PreserveUnusedLocal = "org.eclipse.wst.jsdt.core.compiler.codegen.unusedLocal"; //$NON-NLS-1$
 	public static final String OPTION_DocCommentSupport= "org.eclipse.wst.jsdt.core.compiler.doc.comment.support"; //$NON-NLS-1$
 	public static final String OPTION_ReportMethodWithConstructorName = "org.eclipse.wst.jsdt.core.compiler.problem.methodWithConstructorName"; //$NON-NLS-1$
-	public static final String OPTION_ReportOverridingPackageDefaultMethod = "org.eclipse.wst.jsdt.core.compiler.problem.overridingPackageDefaultMethod"; //$NON-NLS-1$
+	public static final String OPTION_ReportUndefinedField = "org.eclipse.wst.jsdt.core.compiler.problem.undefinedField"; //$NON-NLS-1$
 	public static final String OPTION_ReportDeprecation = "org.eclipse.wst.jsdt.core.compiler.problem.deprecation"; //$NON-NLS-1$
 	public static final String OPTION_ReportDeprecationInDeprecatedCode = "org.eclipse.wst.jsdt.core.compiler.problem.deprecationInDeprecatedCode"; //$NON-NLS-1$
 	public static final String OPTION_ReportDeprecationWhenOverridingDeprecatedMethod = "org.eclipse.wst.jsdt.core.compiler.problem.deprecationWhenOverridingDeprecatedMethod"; //$NON-NLS-1$
@@ -149,7 +149,7 @@ public class CompilerOptions {
 	 * Bit mask for configurable problems (error/warning threshold)
 	 */
 	public static final long MethodWithConstructorName = ASTNode.Bit1;
-	public static final long OverriddenPackageDefaultMethod = ASTNode.Bit2;
+	public static final long UndefinedField = ASTNode.Bit2;
 	public static final long UsingDeprecatedAPI = ASTNode.Bit3;
 	public static final long MaskedCatchBlock = ASTNode.Bit4;
 	public static final long UnusedLocalVariable = ASTNode.Bit5;
@@ -211,7 +211,7 @@ public class CompilerOptions {
 		MethodWithConstructorName
 		| UsingDeprecatedAPI
 		| MaskedCatchBlock
-		| OverriddenPackageDefaultMethod
+		| UndefinedField
 		| UnusedImport
 		| NonStaticAccessToStatic
 		| NoEffectAssignment
@@ -358,7 +358,7 @@ public class CompilerOptions {
 		optionsMap.put(OPTION_PreserveUnusedLocal, this.preserveAllLocalVariables ? PRESERVE : OPTIMIZE_OUT);
 		optionsMap.put(OPTION_DocCommentSupport, this.docCommentSupport ? ENABLED : DISABLED);
 		optionsMap.put(OPTION_ReportMethodWithConstructorName, getSeverityString(MethodWithConstructorName));
-		optionsMap.put(OPTION_ReportOverridingPackageDefaultMethod, getSeverityString(OverriddenPackageDefaultMethod));
+		optionsMap.put(OPTION_ReportUndefinedField, getSeverityString(UndefinedField));
 		optionsMap.put(OPTION_ReportDeprecation, getSeverityString(UsingDeprecatedAPI));
 		optionsMap.put(OPTION_ReportDeprecationInDeprecatedCode, this.reportDeprecationInsideDeprecatedCode ? ENABLED : DISABLED);
 		optionsMap.put(OPTION_ReportDeprecationWhenOverridingDeprecatedMethod, this.reportDeprecationWhenOverridingDeprecatedMethod ? ENABLED : DISABLED);
@@ -458,8 +458,8 @@ public class CompilerOptions {
 			switch (irritantInt) {
 				case (int) MethodWithConstructorName :
 					return OPTION_ReportMethodWithConstructorName;
-				case (int) OverriddenPackageDefaultMethod  :
-					return OPTION_ReportOverridingPackageDefaultMethod;
+				case (int) UndefinedField  :
+					return OPTION_ReportUndefinedField;
 				case (int) UsingDeprecatedAPI :
 				case (int) (InvalidJavadoc | UsingDeprecatedAPI) :
 					return OPTION_ReportDeprecation;
@@ -785,7 +785,7 @@ public class CompilerOptions {
 			}
 		}
 		if ((optionValue = optionsMap.get(OPTION_ReportMethodWithConstructorName)) != null) updateSeverity(MethodWithConstructorName, optionValue);
-		if ((optionValue = optionsMap.get(OPTION_ReportOverridingPackageDefaultMethod)) != null) updateSeverity(OverriddenPackageDefaultMethod, optionValue);
+		if ((optionValue = optionsMap.get(OPTION_ReportUndefinedField)) != null) updateSeverity(UndefinedField, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportDeprecation)) != null) updateSeverity(UsingDeprecatedAPI, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportHiddenCatchBlock)) != null) updateSeverity(MaskedCatchBlock, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportUnusedLocal)) != null) updateSeverity(UnusedLocalVariable, optionValue);
@@ -947,7 +947,7 @@ public class CompilerOptions {
 		buf.append("\n\t- source debug attributes: ").append((this.produceDebugAttributes & ClassFileConstants.ATTR_SOURCE) != 0 ? "ON" : " OFF"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		buf.append("\n\t- preserve all local variables: ").append(this.preserveAllLocalVariables ? "ON" : " OFF"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		buf.append("\n\t- method with constructor name: ").append(getSeverityString(MethodWithConstructorName)); //$NON-NLS-1$
-		buf.append("\n\t- overridden package default method: ").append(getSeverityString(OverriddenPackageDefaultMethod)); //$NON-NLS-1$
+		buf.append("\n\t- undefined field: ").append(getSeverityString(UndefinedField)); //$NON-NLS-1$
 		buf.append("\n\t- deprecation: ").append(getSeverityString(UsingDeprecatedAPI)); //$NON-NLS-1$
 		buf.append("\n\t- masked catch block: ").append(getSeverityString(MaskedCatchBlock)); //$NON-NLS-1$
 		buf.append("\n\t- unused local variable: ").append(getSeverityString(UnusedLocalVariable)); //$NON-NLS-1$
@@ -1139,7 +1139,7 @@ public class CompilerOptions {
 			OPTION_ReportNullReference,
 			OPTION_ReportPotentialNullReference,
 			OPTION_ReportRedundantNullCheck,
-			OPTION_ReportOverridingPackageDefaultMethod,
+			OPTION_ReportUndefinedField,
 			OPTION_ReportParameterAssignment,
 			OPTION_ReportPossibleAccidentalBooleanAssignment,
 			OPTION_ReportSyntheticAccessEmulation,
