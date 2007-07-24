@@ -360,6 +360,9 @@ public TypeBinding resolveType(BlockScope scope) {
 				TypeBinding[] pseudoArgs = new TypeBinding[length];
 				for (int i = length; --i >= 0;)
 					pseudoArgs[i] = argumentTypes[i] == null ? TypeBinding.NULL  : argumentTypes[i]; // replace args with errors with receiver
+				if (selector==null)  
+					this.binding=new IndirectMethodBinding(0,this.actualReceiverType,argumentTypes,scope.compilationUnitScope().referenceContext.compilationUnitBinding);
+				else
 				this.binding = 
 					receiver.isImplicitThis()
 						? scope.getImplicitMethod(selector, pseudoArgs, this)
