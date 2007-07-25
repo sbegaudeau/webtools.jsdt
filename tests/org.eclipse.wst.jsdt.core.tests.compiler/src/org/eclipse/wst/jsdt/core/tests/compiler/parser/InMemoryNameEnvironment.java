@@ -46,7 +46,7 @@ public NameEnvironmentAnswer findType(char[][] compoundTypeName, ITypeRequestor 
 		compoundTypeName[compoundTypeName.length - 1],
 		CharOperation.subarray(compoundTypeName, 0, compoundTypeName.length - 1),requestor);
 }
-public NameEnvironmentAnswer findBinding(char[] typeName, char[][] packageName, int type, ITypeRequestor requestor) {
+public NameEnvironmentAnswer findBinding(char[] typeName, char[][] packageName, int type, ITypeRequestor requestor, boolean returnMultiple, String excludePath) {
 	HashtableOfObject cus = (HashtableOfObject)this.compilationUnits.get(CharOperation.concatWith(packageName, '.'));
 	if (cus == null) {
 		return this.findTypeFromClassLibs(typeName, packageName,type,requestor);
@@ -59,7 +59,7 @@ public NameEnvironmentAnswer findBinding(char[] typeName, char[][] packageName, 
 }
 
 public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName, ITypeRequestor requestor) {
-	return findBinding(typeName, packageName, Binding.TYPE|Binding.PACKAGE,requestor);
+	return findBinding(typeName, packageName, Binding.TYPE|Binding.PACKAGE,requestor, false, null);
 //	HashtableOfObject cus = (HashtableOfObject)this.compilationUnits.get(CharOperation.concatWith(packageName, '.'));
 //	if (cus == null) {
 //		return this.findTypeFromClassLibs(typeName, packageName);
@@ -72,7 +72,7 @@ public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName, ITy
 }
 private NameEnvironmentAnswer findTypeFromClassLibs(char[] typeName, char[][] packageName, int type, ITypeRequestor requestor) {
 	for (int i = 0; i < this.classLibs.length; i++) {
-		NameEnvironmentAnswer answer = this.classLibs[i].findBinding(typeName, packageName, type,requestor);
+		NameEnvironmentAnswer answer = this.classLibs[i].findBinding(typeName, packageName, type,requestor, false, null);
 		if (answer != null) {
 			return answer;
 		}
