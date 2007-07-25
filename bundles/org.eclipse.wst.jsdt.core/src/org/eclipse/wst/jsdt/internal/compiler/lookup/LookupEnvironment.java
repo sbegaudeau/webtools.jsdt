@@ -128,6 +128,47 @@ ReferenceBinding askForType(PackageBinding packageBinding, char[] name) {
 	return (ReferenceBinding)askForBinding(packageBinding, name, Binding.TYPE|Binding.PACKAGE);
 }
 
+
+
+void addUnitsContainingBinding(PackageBinding packageBinding, char[] name, int mask, String excludePath) {
+	if (packageBinding == null) {
+		if (defaultPackage == null)
+			return;
+		packageBinding = defaultPackage;
+	}
+	NameEnvironmentAnswer answer = nameEnvironment.findBinding(name, packageBinding.compoundName,mask,
+			this.typeRequestor, true, excludePath);
+	if (answer == null)
+		return; 
+
+
+	if (answer.isBinaryType())
+		// the type was found as a .class file
+		typeRequestor.accept(answer.getBinaryType(), packageBinding, answer.getAccessRestriction());
+	else if (answer.isCompilationUnit()) {
+		ICompilationUnit compilationUnit = answer.getCompilationUnit();
+		if (!acceptedCompilationUnits.contains(compilationUnit))
+		{
+			// the type was found as a .js file, try to build it then search the cache
+			acceptedCompilationUnits.add(compilationUnit);
+			typeRequestor.accept(compilationUnit, answer.getAccessRestriction());
+		}
+	}else if (answer.isCompilationUnits()) {
+			ICompilationUnit[] compilationUnits = answer.getCompilationUnits();
+			for (int i = 0; i < compilationUnits.length; i++) {
+				if (!acceptedCompilationUnits.contains(compilationUnits[i])) {
+					// the type was found as a .js file, try to build it then search the cache
+					acceptedCompilationUnits.add(compilationUnits[i]);
+					typeRequestor.accept(compilationUnits[i], answer
+							.getAccessRestriction());
+				}
+			}
+	} else if (answer.isSourceType())
+		// the type was found as a source model
+		typeRequestor.accept(answer.getSourceTypes(), packageBinding, answer.getAccessRestriction());
+
+}
+
 Binding askForBinding(PackageBinding packageBinding, char[] name, int mask) {
 	if (packageBinding == null) {
 		if (defaultPackage == null)
@@ -136,7 +177,7 @@ Binding askForBinding(PackageBinding packageBinding, char[] name, int mask) {
 	}
 	if (mask==Binding.PACKAGE && (name==null || name.length==0)&& this.defaultPackage.compoundName.length==0)
 		return this.defaultPackage;
-	NameEnvironmentAnswer answer = nameEnvironment.findBinding(name, packageBinding.compoundName,mask,this.typeRequestor);
+	NameEnvironmentAnswer answer = nameEnvironment.findBinding(name, packageBinding.compoundName,mask,this.typeRequestor, false, null);
 	if (answer == null)
 		return null;
 

@@ -15,6 +15,7 @@ public class NameEnvironmentAnswer {
 	// only one of the three can be set
 	IBinaryType binaryType;
 	ICompilationUnit compilationUnit;
+	ICompilationUnit[] compilationUnits;
 	ISourceType[] sourceTypes;
 	AccessRestriction accessRestriction;
 	
@@ -27,6 +28,13 @@ public class NameEnvironmentAnswer {
 		this.compilationUnit = compilationUnit;
 		this.accessRestriction = accessRestriction;
 	}
+	
+
+	public NameEnvironmentAnswer(ICompilationUnit[] compilationUnits, AccessRestriction accessRestriction) {
+		this.compilationUnits = compilationUnits;
+		this.accessRestriction = accessRestriction;
+	}
+
 
 	public NameEnvironmentAnswer(ISourceType[] sourceTypes, AccessRestriction accessRestriction) {
 		this.sourceTypes = sourceTypes;
@@ -54,6 +62,9 @@ public class NameEnvironmentAnswer {
 		return this.compilationUnit;
 	}
 
+	public ICompilationUnit[] getCompilationUnits() {
+		return this.compilationUnits;
+	}
 	/**
 	 * Answer the unresolved source forms for the type or null if the
 	 * receiver represents a compilation unit or binary type.
@@ -77,6 +88,10 @@ public class NameEnvironmentAnswer {
 	 */
 	public boolean isCompilationUnit() {
 		return this.compilationUnit != null;
+	}
+
+	public boolean isCompilationUnits() {
+		return this.compilationUnits != null;
 	}
 
 	/**

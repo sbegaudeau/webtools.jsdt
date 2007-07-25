@@ -69,7 +69,7 @@ public NameEnvironmentAnswer findType(char[][] compoundTypeName, ITypeRequestor 
 	return null;
 }
 
-public NameEnvironmentAnswer findBinding(char[] typeName, char[][] packageName, int type, ITypeRequestor requestor) {
+public NameEnvironmentAnswer findBinding(char[] typeName, char[][] packageName, int type, ITypeRequestor requestor, boolean returnMultiple, String excludePath) {
 	//TODO: implement
 	throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	return findType(typeName,packageName);

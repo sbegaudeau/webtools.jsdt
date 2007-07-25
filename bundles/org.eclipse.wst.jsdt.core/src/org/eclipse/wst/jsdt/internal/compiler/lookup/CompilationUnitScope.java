@@ -282,8 +282,8 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 				if (typeBinding instanceof SourceTypeBinding)
 					existingBinding=(SourceTypeBinding)typeBinding;
 			}
-			
-				NameEnvironmentAnswer answer = this.environment.nameEnvironment.findType(typeDecl.getName(),environment.defaultPackage.compoundName ,this.environment.typeRequestor);
+			String fileName=new String(this.referenceContext.getFileName());
+				environment.addUnitsContainingBinding(null, typeDecl.getName(), Binding.TYPE,fileName);
 				ClassScope child = new ClassScope(this, typeDecl);
 				SourceTypeBinding type = child.buildInferredType(null, environment.defaultPackage,
 					accessRestriction);

@@ -194,7 +194,8 @@ public class SearchableEnvironment implements INameEnvironment,
 	 * Returns the given type in the the given package if it exists, otherwise
 	 * <code>null</code>.
 	 */
-	protected NameEnvironmentAnswer findBinding(String typeName, String packageName, int type) {
+	protected NameEnvironmentAnswer findBinding(String typeName, String packageName, 
+			int type, boolean returnMultiple, String excludePath) {
 		if (packageName == null)
 			packageName = IPackageFragment.DEFAULT_PACKAGE_NAME;
 		NameLookup.Answer answer =
@@ -204,19 +205,30 @@ public class SearchableEnvironment implements INameEnvironment,
 				type,
 				false/* exact match */,
 				NameLookup.ACCEPT_ALL,
-				this.checkAccessRestrictions);
+				this.checkAccessRestrictions,  returnMultiple,  excludePath);
 		if (answer != null && answer.element!=null) {
-			IOpenable openable = ((IJavaElement)answer.element).getOpenable();
-			
-			ICompilationUnit compilationUnit=	null;
-			if (openable instanceof ClassFile) {
-				ClassFile classFile = (ClassFile) openable;
-				compilationUnit=(ICompilationUnit)classFile;
+			if (answer.element instanceof IJavaElement)
+			{
+				IOpenable openable = ((IJavaElement)answer.element).getOpenable();
+				
+				ICompilationUnit compilationUnit=	null;
+				if (openable instanceof ClassFile) {
+					ClassFile classFile = (ClassFile) openable;
+					compilationUnit=(ICompilationUnit)classFile;
+				}
+				else if (openable instanceof ICompilationUnit) {
+					compilationUnit=(ICompilationUnit)openable;
+				}
+				return new NameEnvironmentAnswer(compilationUnit,answer.restriction);
+				
 			}
-			else if (openable instanceof ICompilationUnit) {
-				compilationUnit=(ICompilationUnit)openable;
+			else if (answer.element!=null && answer.element.getClass().isArray())
+			{
+				Object [] elements=(Object [])answer.element;
+				ICompilationUnit[] units = new ICompilationUnit[elements.length];
+				System.arraycopy(elements, 0, units, 0, elements.length);
+				return new NameEnvironmentAnswer(units,answer.restriction);
 			}
-			return new NameEnvironmentAnswer(compilationUnit,answer.restriction);
 				// return new NameEnvironmentAnswer((IBinaryType) ((BinaryType)
 				// answer.type).getElementInfo(), answer.restriction);
 		}
@@ -359,13 +371,13 @@ public class SearchableEnvironment implements INameEnvironment,
 	}
 
 	public NameEnvironmentAnswer findBinding(char[] typeName,
-			char[][] packageName, int type, ITypeRequestor requestor) {
+			char[][] packageName, int type, ITypeRequestor requestor, boolean returnMultiple, String excludePath) {
 		if (typeName == null)
 			return null;
 
 		return findBinding(new String(typeName), packageName == null
 				|| packageName.length == 0 ? null : CharOperation
-				.toString(packageName), type);
+				.toString(packageName), type,  returnMultiple,excludePath );
 	}
 
 	/**

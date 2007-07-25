@@ -60,7 +60,7 @@ NameEnvironmentAnswer findType(char[] typeName, char[][] packageName, ITypeReque
  */
 
 boolean isPackage(char[][] parentPackageName, char[] packageName);
-NameEnvironmentAnswer findBinding(char[] typeName, char[][] packageName, int type, ITypeRequestor requestor);
+NameEnvironmentAnswer findBinding(char[] typeName, char[][] packageName, int type, ITypeRequestor requestor, boolean returnMultiple, String excludePath);
 
 /**
  * This method cleans the environment uo. It is responsible for releasing the memory

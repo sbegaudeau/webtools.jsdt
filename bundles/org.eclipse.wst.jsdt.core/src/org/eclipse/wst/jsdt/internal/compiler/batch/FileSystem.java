@@ -284,7 +284,7 @@ private NameEnvironmentAnswer findBinding(String qualifiedTypeName, char[] typeN
 	return null;
 }
 
-public NameEnvironmentAnswer findBinding(char[] typeName, char[][] packageName, int type, ITypeRequestor requestor) {
+public NameEnvironmentAnswer findBinding(char[] typeName, char[][] packageName, int type, ITypeRequestor requestor, boolean returnMultiple, String excludePath) {
 	if (typeName != null)
 		return findBinding(
 			new String(CharOperation.concatWith(packageName, typeName, '/')),

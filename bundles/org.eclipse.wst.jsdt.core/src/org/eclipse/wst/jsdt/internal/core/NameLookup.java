@@ -103,6 +103,39 @@ public class NameLookup implements SuffixConstants {
 		}
 	}
 
+	class BindingAcceptor implements IRestrictedAccessBindingRequestor  {
+		ArrayList foundPaths=new ArrayList();
+		String excludePath;
+		
+		public BindingAcceptor(String excludePath) {
+			this.excludePath = excludePath;
+		}
+		public boolean acceptBinding(int type,int modifiers, char[] packageName,
+				char[] simpleTypeName, 
+				String path, AccessRestriction access) {
+			if (excludePath!=null && path.equals(excludePath))
+				return false;
+			for (int i = 0; workingCopies!=null && i < workingCopies.length; i++) {
+				if (workingCopies[i].getPath().toString().equals(path))
+					return false;
+			}
+			foundPaths.add(path);
+			return true;
+		}
+		/* (non-Javadoc)
+		 * @see org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessBindingRequestor#getFoundPaths()
+		 */
+		public String getFoundPath() {
+			return foundPaths.size()>0?(String)foundPaths.get(0):null;
+		}
+		
+		
+		public void reset() {
+			foundPaths.clear();
+		}
+	
+	}
+
 	// TODO (jerome) suppress the accept flags (qualified name is sufficient to find a type)
 	/**
 	 * Accept flag for specifying classes.
@@ -296,7 +329,7 @@ public class NameLookup implements SuffixConstants {
 	protected  IRestrictedAccessBindingRequestor getRestrictedAccessRequestor() {
 		if(this.restrictedRequestor==null) {
 			this.restrictedRequestor=new IRestrictedAccessBindingRequestor() {
-				String foundPath=null;
+				String foundPath;
 				public boolean acceptBinding(int type,int modifiers, char[] packageName,
 						char[] simpleTypeName, 
 						String path, AccessRestriction access) {
@@ -774,7 +807,7 @@ public class NameLookup implements SuffixConstants {
 		
 		if (USE_BINDING_SEARCH)
 		{
-			Answer answer =findBindingSearch(typeName, packageName, Binding.TYPE, partialMatch, acceptFlags, true, true, checkRestrictions, null);
+			Answer answer =findBindingSearch(typeName, packageName, Binding.TYPE, partialMatch, acceptFlags, true, true, checkRestrictions, null,false,null);
 			if (answer!=null && answer.type==null && answer.element instanceof ITypeRoot)
 			{
 				ITypeRoot typeroot=(ITypeRoot)answer.element;
@@ -793,7 +826,8 @@ public class NameLookup implements SuffixConstants {
 			null);
 	}
 	
-	public Answer findBinding(String typeName, String packageName,int type, boolean partialMatch, int acceptFlags, boolean checkRestrictions) {
+	public Answer findBinding(String typeName, String packageName,int type, boolean partialMatch, 
+			int acceptFlags, boolean checkRestrictions, boolean returnMultiple , String excludePath){
 		if (USE_BINDING_SEARCH)
 		return findBindingSearch(typeName,
 			packageName,
@@ -803,7 +837,7 @@ public class NameLookup implements SuffixConstants {
 			true/* consider secondary types */,
 			false/* do NOT wait for indexes */,
 			checkRestrictions,
-			null);
+			null,  returnMultiple,  excludePath);
 		return findBinding(typeName,
 				packageName,
 				type,
@@ -1210,7 +1244,7 @@ public class NameLookup implements SuffixConstants {
 //			className= name.substring(index + 1);
 //		}
 		if (USE_BINDING_SEARCH)
-			return findBindingSearch(className, packageName, Binding.TYPE, partialMatch, acceptFlags, considerSecondaryTypes, waitForIndexes, checkRestrictions, monitor);
+			return findBindingSearch(className, packageName, Binding.TYPE, partialMatch, acceptFlags, considerSecondaryTypes, waitForIndexes, checkRestrictions, monitor,false,null);
 		return findType(className, packageName, partialMatch, acceptFlags, considerSecondaryTypes, waitForIndexes, checkRestrictions, monitor);
 	}
 
@@ -2049,7 +2083,7 @@ public class NameLookup implements SuffixConstants {
 				boolean considerSecondaryTypes, 
 				boolean waitForIndexes, 
 				boolean checkRestrictions,
-				IProgressMonitor progressMonitor) {
+				IProgressMonitor progressMonitor, boolean returnMultiple, String exclude) {
 
 			
 			class MyRequestor implements IJavaElementRequestor
@@ -2088,6 +2122,8 @@ public class NameLookup implements SuffixConstants {
 			if (this.searchScope==null)
 				this.searchScope = BasicSearchEngine.createJavaSearchScope(packageFragmentRoots);
 
+			ArrayList foundAnswers=new ArrayList();
+			Path excludePath= (exclude!=null)? new Path(exclude) : null;
 			
 			MyRequestor requestor=new MyRequestor();
 			JavaElementRequestor elementRequestor = new JavaElementRequestor();
@@ -2098,8 +2134,14 @@ public class NameLookup implements SuffixConstants {
 						packages[i], -1, partialMatch,
 						bindingName, acceptFlags, requestor);
 				if (requestor.element != null) {
-					return new Answer(requestor.element.getOpenable(), null);
-
+					IOpenable openable = requestor.element.getOpenable();
+					if (excludePath!=null && requestor.element.getPath().equals(excludePath))
+						continue;
+					if (!returnMultiple) {
+						return new Answer(openable, null);
+					} else 
+						foundAnswers.add(openable);
+					requestor.element=null;
 				}
 			}
 			/*
@@ -2110,7 +2152,7 @@ public class NameLookup implements SuffixConstants {
 				
 
 
-				
+				BindingAcceptor bindingAcceptor = new BindingAcceptor(exclude);
 				
 				try {
 					int matchRule = SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE;
@@ -2120,11 +2162,15 @@ public class NameLookup implements SuffixConstants {
 							bindingType,
 							matchRule, // not case sensitive
 							/*IJavaSearchConstants.TYPE,*/ this.searchScope,
-							getRestrictedAccessRequestor(), IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+							bindingAcceptor, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 							false,
 							progressMonitor);
-					if (getRestrictedAccessRequestor().getFoundPath()!=null)
+					if (bindingAcceptor.getFoundPath()!=null)
 					{
+						for (Iterator iterator = bindingAcceptor.foundPaths.iterator(); iterator
+								.hasNext();) {
+							String path = (String) iterator.next();
+							
 						IOpenable openable ; //= createOpenable(getRestrictedAccessRequestor().getFoundPath(), this.searchScope);
 //						if (openable!=null)
 //							return new Answer(openable, null);
@@ -2132,11 +2178,19 @@ public class NameLookup implements SuffixConstants {
 						if (this.handleFactory == null)
 							this.handleFactory = new HandleFactory();
 						
-						openable = this.handleFactory.createOpenable(getRestrictedAccessRequestor().getFoundPath(), this.searchScope);
+						openable = this.handleFactory.createOpenable(path, this.searchScope);
 						
 						
 						if (openable!=null)
-							return new Answer(openable, null);
+						{
+							if (!returnMultiple)
+								return new Answer(openable, null);
+							else 
+								foundAnswers.add(openable);
+						}
+						}
+						if (foundAnswers.size()>0 && returnMultiple)
+							return new Answer(foundAnswers.toArray(),null);
 					}
 						
 				} catch (OperationCanceledException e) {
@@ -2145,7 +2199,7 @@ public class NameLookup implements SuffixConstants {
 				}
 				finally
 				{
-					getRestrictedAccessRequestor().reset();
+					bindingAcceptor.reset();
 				}
 			} catch (JavaModelException e) {
 				return findBinding( bindingName,packageName,bindingType,partialMatch,acceptFlags,considerSecondaryTypes,waitForIndexes,
