@@ -80,15 +80,18 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 		
 		private ArrayList foundPaths=new ArrayList();
 		private String exclude;
+		private boolean shown;
 		
 		public void reset() {
 			foundPaths.clear();
+			shown=false;
 		}
 		
 		public boolean acceptBinding(int type,int modifiers, char[] packageName,char[] simpleTypeName, String path, AccessRestriction access) {
-			if(DEBUG) {
-				if(path.compareTo(exclude)==0) return false;
-				
+			if(path!=null && exclude!=null && path.compareTo(exclude)==0) return false;
+		
+			if(DEBUG && !shown) {
+				shown=false;
 				IJavaProject proj = getJavaProject();
 				try {
 					IClasspathEntry[] entries = proj.getResolvedClasspath(true);
