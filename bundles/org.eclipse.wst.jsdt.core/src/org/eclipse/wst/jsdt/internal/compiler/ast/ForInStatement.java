@@ -339,7 +339,15 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 		// use the scope that will hold the init declarations
 		scope = neededScope ? new BlockScope(upperScope) : upperScope;
 		if (iterationVariable != null)
+		{
+			if (iterationVariable instanceof Expression) {
+				Expression expression = (Expression) iterationVariable;
+				expression.resolveType(scope, true, null);
+// TODO: show a warning message here saying this var is at global scope				
+			}
+			else
 				iterationVariable.resolve(scope);
+		}
 		if (collection != null) {
 			TypeBinding type = collection.resolveTypeExpecting(scope, TypeBinding.BOOLEAN);
 			collection.computeConversion(scope, type, type);
