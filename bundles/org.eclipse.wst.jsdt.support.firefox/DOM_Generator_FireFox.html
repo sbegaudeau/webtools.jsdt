@@ -10,313 +10,375 @@
 <title>FireFox JavaScript Object Browser Dump</title>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <script type="text/javascript">
-// Netscape 6 (or Mozilla)?
+	// Netscape 6 (or Mozilla)?
 
-var isNS6 = (navigator.userAgent.indexOf("Gecko") > 0) ? 1 : 0;
+	var objectInstance = new Array();
 
-// Arrays for tracking objects/methods.
+	var objectName = new Array();
 
-var objectList = new Array();
-var objTypeArrays = new Array();
-var rootElements = new Array();
-var nameArray = new Array();
-
-function addRootDisplayElement(theObject,objName){
-	var valueString;
-	if(objName=="") objName="this";
-	
-	valueString = objName + ".prototype = new " +  getObjectName(theObject) + "();";
-	rootElements[rootElements.length] = valueString;
-}
-
-function shouldExclude(nameOfElement){
-	/* allows filtered values and exclude elements that are coming from this script */
-	var excluded = ["shouldExclude",
-	                "addRootDisplayElement",
-					"buildClasses",
-					"getObjectName",
-					"objectList",
-					"objTypeArrays",
-					"rootElements",
-					"nameArray",
-					"isNS6",
-					"getObjectSuperType",
-					"isKnownObject",
-					"generateHTMLObjectTable",
-					"addElementToObject",
-					"addToObjects",
-					"getAllProperties",
-					"isArray",
-					"isObject",
-					"findProperties",
-					"DOMViewerObj",
-					"DOMViewerName"];
-	var k;
-	for(k=0;k<excluded.length;k++){
-		if(nameOfElement==excluded[k]) return true;
+	function displayString( value) {
+		document.writeln(value + "<br>");
 	}
-	return false;
-}
 
-function buildClasses(){
-	var ea = new Array();
-	var k,j,t;
-	for(k=0;k<objectList.length;k++){
-	  var elementArray;
-	  var classObjectName;
-	  try{
-	  	classObjectName = objectList[k];
-	  }catch(exception){}
-	  
-	  if(shouldExclude(classObjectName)) continue;
-	  var superName = (isArray(classObjectName))?"new Array();":"new Object();";
-	  ea[ea.length] = classObjectName + ".prototype= " + superName;
-	  ea[ea.length] = "function " + classObjectName + "(){};"
-	 
-	  elementArray = objTypeArrays[k];
-	  
-	  if(!isArray(elementArray)) continue;
-	  for(j=0;j<elementArray.length;j++){
-	  	try{
-			value = elementArray[j];
-	  	}catch(exception){
-			value = name;
+	function shouldExclude( nameOfElement) {
+		/* allows filtered values and exclude elements that are coming from this script */
+		var excluded = [ "shouldExclude", "addRootDisplayElement",
+				"buildClasses", "getObjectName", "objectList", "objTypeArrays",
+				"rootElements", "nameArray", "isNS6", "getObjectSuperType",
+				"isKnownObject", "generateHTMLObjectTable",
+				"addElementToObject", "addToObjects", "getAllProperties",
+				"isArray", "isObject", "findProperties", "DOMViewerObj",
+				"DOMViewerName", "objectName", "objectInstance","aptana" ];
+		var k;
+		for (k = 0; k < excluded.length; k++) {
+			if (nameOfElement == excluded[k])
+				return true;
 		}
-		name = nameArray[k][j];
-		if(shouldExclude(name)) continue;
+		return false;
+	}
+
+	function getSince() {
+		return "FireFox 2.0.0.3";
+	}
+
+
+	function buildClasses() {
 		
-			if(value==null) continue;
-		
-			if(isObject(value)){
-		
+		var k;
+		for (k = 0; k < objectInstance.length; k++) {
+			var classObject;
+			try {
+				classObject = objectInstance[k];
+				
+			} catch ( exception) {}
+
+
+			var superName = getObjectSuperTypeName(classObject);
+			var objectClassName = getObjectTypeName(classObject);
+
+			//ea[ea.length] = classObjectName + ".prototype= " + superName;
+			//ea[ea.length] = "function " + classObjectName + "(){};";
+
+			displayString("/**");
+			displayString("  * Object " + objectClassName);
+			displayString("  * @super " + superName);
+			displayString("  * @type  constructor");
+			displayString("  * @class " + objectClassName);
+			displayString("  * @since " + getSince());
+			displayString("*/");
+
+			displayString(objectClassName + ".prototype=new " + superName + "();");
+			displayString("function " + objectClassName + "(){};");
+			
+			if((typeof classObject =="array") || classObject instanceof Array || objectClassName=="Array") continue;
+			
+			
+			/* get each objects properties */
+			
+			var allprops = getAllProperties(classObject);
+			for(i = 0;i<allprops.length;i++)   {
+				var propObjectName = allprops[i];
+				var propObject;
 				try{
-					var superType = getObjectSuperType(value);
-					ea[ea.length] = classObjectName + ".prototype." + name + "= new " + superType + "();";
-			 	}catch(exception){
-					continue;
-		 			//ea[ea.length] = classObjectName + "." + name + ".prototype=new " + name + "();";
-		 		}	
-			}else if(value instanceof Function){
-				var argString = "";	
-				for(t=0;t<value.length;t++){
-					argString += "arg" + (t+1) + ((t+1)<value.length?",":"");
+					propObject = classObject[propObjectName];
+					if(propObject==null) propObject=null;
+				}catch(e){
+					propObject=null;
+				}
+				if(isFinite(propObjectName)) continue;
+				
+				if(shouldExclude(propObjectName)) continue;
+				if(propObject!=null && (typeof propObject)=="function" && propObjectName!="constructor"){
+								var functionType = getFunctionType(propObject);
+								
+								var argString = "";	
+								var t=0;
+								for(t=0;t<propObject.length;t++){
+									var paramType = getObjectTypeName(propObject[t]);
+									
+									if(paramType==null || paramType=="null") paramType="";
+									var paramName = paramType + "arg" + (t+1);
+									
+									argString += paramName + ((t+1)<propObject.length?",":"");
+								}
+								displayString("/**");
+								displayString("  * function " + propObjectName + "(" + argString + ")");
+								displayString("  * @type  " + functionType);
+								for(t=0;t<propObject.length;t++){
+									var paramType = getObjectTypeName(propObject[t]);
+									
+									var paramName;
+									
+									if(paramType==null || paramType=="null") 
+										paramName= "arg" + (t+1);
+									else
+										paramName = paramType;
+										
+									if(paramType==null || paramType=="null") paramType="Object";
+									
+									displayString("  * @param  " +  paramName + " " + paramType );
+									
+								}
+								
+								displayString("  * @class " + objectClassName);
+								displayString("  * @since " + getSince());
+								displayString("*/");
+				}else if (false){ 
+				
+				
+				}else{
+					var primType =  getObjectTypeName(propObject);
+					if(primType==null || primType=="null") primType="Object";
+					var init =  getInit(propObject);
+					displayString("/**");
+					displayString("  * property " + propObjectName);
+					displayString("  * @type  " + primType);
+					displayString("  * @class " + objectClassName);
+					displayString("  * @since " + getSince());
+					displayString("*/");
+					displayString(objectClassName + ".prototype." + propObjectName + "=" + init + ";");	
 				}
 				
-				ea[ea.length] = classObjectName + ".prototype." + name + "=function("+argString+"){};";
-			}else if(typeof value=="string"){
-				ea[ea.length] = classObjectName + ".prototype." + name + "=\"\";";
-		  	}else if(typeof value =="boolean"){
-				ea[ea.length] = classObjectName + ".prototype." + name + "=false;";
-			}else if(typeof value =="number"){
-				ea[ea.length] = classObjectName + ".prototype." + name + "=0;";
+				
 			}
-		
-	  }
-	 
-	}
-	return ea;
-}
 
-function getObjectName(sibObject){
-	
-	var start,end,parentString;
-	
-	var objString = String(sibObject);
-	
-	if(objString!=null){
-		start = (objString.indexOf("object") + 6);
-		end = objString.indexOf("]");
-		if(start<end){
-			parentString = objString.substring(start,end);
-		}else{
-			start = objString.indexOf("[");
-			end = objString.indexOf("]");
-			if(start<end){
-				parentString = objString.subString(start,end);
-			}else{
-				parentString = objString;
-			}
-		}	
-	}
-	
-	return parentString;
-}
-
-function getObjectSuperType(sibObject){
-	
-	var parentString;
-	parentString = getObjectName(sibObject);
-	if(isArray(sibObject)){
-		var array=true;
-	}
-	var constr;
-	
-	if(!(parentString=="Object") && isKnownObject(parentString)){
-		return parentString;
-	} else if(isArray(sibObject)){
-		return "Array";	
-	}
-	
-	return parentString;
-}
-
-function isKnownObject(objValue){
-	if(objValue==null) return false;
-	var k;
-	for(k=0;k<objectList.length;k++){
-	  try{
-	  if(String(objectList[k])==objValue){
-		return true;
-	   }
-	   }catch(Exception){}
-	}
-	return false;
-}
-
-function generateHTMLObjectTable(DOMViewerObj, DOMViewerName){
-  
-  findProperties(DOMViewerObj, null, DOMViewerName);
-  var s = '<table>';
-  var i;
-  
-  
-  for(i = 0; i < rootElements.length; i++){
-  	s+= "<tr><td>" + new String(rootElements[i]) + "</td></tr>";
-  }
-  s+="<tr><td><br><br></tr></td>"
-  
-  newElms = buildClasses();
-  
-  for(i = 0; i < newElms.length; i++){
-  	s+= "<tr><td>" + new String(newElms[i]) + "</td></tr>";
-  }
-  return s + "</table>"
-}
-
-function addElementToObject(classObject,functionObject,name){
-	var value,k;
-	var index=-1;
-	if(isObject(classObject)){
-		value = getObjectName(classObject);
-	}else{
-		value=classObject;
-	}
-	for(k=0;k<objectList.length;k++){
-	  if(objectList[k]==value){
-		index=k;
-		break;
-	   }
-	}
-	
-	if(index==-1) return false;
-	
-	if(objTypeArrays[index]==null){
-		objTypeArrays[index] = new Array();
-	}
-	
-	if(nameArray[index]==null) nameArray[index] = new Array();
-		
-	for(k=0;k<nameArray[index].length;k++){
-		try{
-			if(nameArray[index][k]==name) return; // nothing to do
-		}catch(exception){
-			// not found
 		}
 	}
 	
+	function getFunctionType(thefunction){
+		return "---------Unknown Function Return-----------";
+	}
+	
+	
+	function getInit(object){
+		if(object instanceof String) return "\"\"";
+		if(object instanceof Boolean) return "false";
+		if(object instanceof Number) return "0";
 		
-	objTypeArrays[index][objTypeArrays[index].length] = (functionObject==null?(new String()):functionObject);
-	
-	
-	
-	nameArray[index][objTypeArrays[index].length-1] = name;
-}
+		var typename = getObjectTypeName(object);
+		if(typename=="string") return "\"\"";
+		if(typename=="boolean") return "false";
+		if(typename=="number") return "0";
+		
+		if(typename==null || typename=="null") typename="Object";
+		return "new " + typename + "()";
+	}
 
-function addToObjects(newObject){
-	var value,k;
-	if(newObject==null) return false;
-	value = getObjectName(newObject);
-	for(k=0;k<objectList.length;k++){
-		if(objectList[k]==value){
+	function getObjectTypeName( sibObject) {
+		
+		var typeofo = typeof sibObject;
+		
+		if(typeofo=="string") return "String";
+		if(typeofo=="array") return "Array";
+		if(typeofo=="boolean") return "Boolean";
+		if(typeofo=="number") return "Number";
+		
+		
+		if(isArray(sibObject)){ 
+			return "Array"; 
+		}
+		if(sibObject==null) return null;
+		var start, end, parentString;
+	//	var objString = String(sibObject);
+		var tconstructor=null;
+		try{
+			tconstructor = sibObject.constructor;
+		}catch(e){}
+		
+		var objString = String(tconstructor);
+		start = objString.indexOf("function Object()");
+		if(start!=-1){
+			objString = String(sibObject);
+		}
+		
+		
+		if (objString != null) {
+			start = (objString.indexOf("object") + 7);
+			end = objString.indexOf("]");
+			if (start < end && start>7) {
+				parentString = objString.substring(start, end);
+			} else {
+				start = objString.indexOf("[");
+				end = objString.indexOf(" ", start);
+				var end2 = objString.indexOf("]", start);
+				if (start < end) {
+					parentString = objString.substring(start+1, end);
+				} else if (start < end2){
+					parentString = objString.substring(start+1, end2);
+				}else{
+					parentString = objString;
+				}
+			}
+		}
+
+		return parentString;
+		//var constr;
+		//try{
+		//	constr = sibObject.constructor;
+		//	return String(constr).replace("[","").replace("]","");
+		//}catch(e){}
+		
+	}
+	
+	function getPropertyName( sibObject) {
+		var start, end, parentString;
+		var objString = String(sibObject);
+
+		if (objString != null) {
+			start = (objString.indexOf("object") + 6);
+			end = objString.indexOf("]");
+			if (start < end) {
+				parentString = objString.substring(start, end);
+			} else {
+				start = objString.indexOf("[");
+				end = objString.indexOf("]");
+				if (start < end) {
+					parentString = objString.subString(start, end);
+				} else {
+					parentString = objString;
+				}
+			}
+		}
+
+		return parentString;
+
+	}
+
+	function getObjectSuperTypeName( sibObject) {
+			
+		if(isArray(sibObject)){
+			return "Array";
+		}else{
+			return "Object";
+		}
+		//var subName = getObjectTypeName(sibObject);
+		//for(k=0;k<objectInstance.length;k++){
+		//	var props1 = getAllProperties(sibObject);
+		//	var props2 = getAllProperties(objectInstance[k]);
+		//	var superName = getObjectTypeName(objectInstance[k]);
+		//	if(superName==subName) continue;
+		//	if(compareArrays(props1,props2)){
+		//		var typeName = getObjectTypeName(props2);
+		//		return typeName;
+		//	}
+			
+		
+	}
+	
+	function compareArrays(subtype, supertype){
+		if(supertype.length>subtype.length) return false;
+		
+		for(i=0;i<supertype.length;i++){
+			var contains = false;
+			for(j=0;!contains && j<subtype.length;j++){
+				if(subtype[j]==supertype[i]) contains=true;
+			}
+			if(!contains) return false;
+		}
+	}
+
+	function generateHTMLObjectTable( DOMViewerObj, DOMViewerName) {
+
+		findProperties(DOMViewerObj);
+		//var s = '<table>';
+		//var i;
+
+		//for (i = 0; i < rootElements.length; i++) {
+		//	s += "<tr><td>" + new String(rootElements[i]) + "</td></tr>";
+		//}
+		//s += "<tr><td><br><br></tr></td>"
+
+		//newElms = 
+
+		buildClasses();
+
+		//for (i = 0; i < newElms.length; i++) {
+		//	s += "<tr><td>" + new String(newElms[i]) + "</td></tr>";
+		//}
+		//return s + "</table>"
+	}
+
+	function addToObjects( newObject) {
+		var value, k;
+		if (newObject == null)
 			return false;
-		}	
-	}
 
-	objectList[objectList.length] = value;
-	return true;
-}
-
-
-function getAllProperties(object){
-  var propertyList = new Array();
-  try{
-  for (property in object)
-    propertyList[propertyList.length] = property;
-  }catch(exception){}
-  return propertyList;
-}
-
-function isArray(valueObject){
-	var isArray = false;
-	try{
-		isArray = (valueObject!=null && valueObject.length>0);
-	}catch(exception){ isArray = false;	}
-	return isArray;
-}
-
-function isObject(elem){
-	return ((elem!=null) && (elem instanceof Object) && !(elem instanceof Function));
-}
-
-function findProperties(obj, parent, name) {
- 
-  var allProperties,i;
-  
-  if (  isObject(obj) && ! isArray(obj)  ){
-  	if(parent==null){
-		addToObjects(obj);
-		addRootDisplayElement(obj,name);
+		if(newObject instanceof Array){
+			return true;
+		}
 		
-	}
-	allProperties = getAllProperties(obj);
-  }else{
-  	return;
-  }
-   
-  for (i = 0; i <  allProperties.length  ; i++) {
- 	if(allProperties[i]=="constructor") continue;
-	if(i==72){
-		// do something
-		var k = 10;
-	}
-	var objValue;
-	
-	try{
-		objValue = obj[allProperties[i]];	
-	}catch(exception){
-		objValue = null;
-		addElementToObject(obj,allProperties[i],String(allProperties[i]));
-		continue;
-	}
-	try{
- 	if( isObject(objValue) && (! isArray(objValue)) && addToObjects(objValue)){
-		addElementToObject(obj,obj[allProperties[i]],String(allProperties[i]));
-		findProperties(obj[allProperties[i]], (parent==null?"":parent+ ".")  + name,  String(allProperties[i]));
-	}else if( objValue instanceof Object  ){
-		addElementToObject(obj,objValue,String(allProperties[i]));
-	}else{
-		var isUndefPrim = (objValue==null || objValue=="" );
-		 addElementToObject(obj,(isUndefPrim?allProperties[i]:objValue),String(allProperties[i]));
 		
+		value = getObjectTypeName(newObject);
+		
+		if(value.indexOf("ns")==0 && value!="nsXPCComponents") return false;
+		
+		
+		
+		if (shouldExclude(value))
+			return false;
+
+		for (k = 0; k < objectName.length; k++) {
+			if (objectName[k] == value) {
+				return false;
+			}
+		}
+
+		objectName[objectName.length] = value;
+		objectInstance[objectInstance.length] = newObject;
+		return true;
 	}
-	}catch(exception){
+
+	function getAllProperties( object) {
+		var propertyList = new Array();
+		try {
+			for (property in object)
+				propertyList[propertyList.length] = property;
+		} catch ( exception) {
+		}
+		return propertyList;
+	}
+
+	function isArray( valueObject) {
+		return valueObject instanceof Array;
+		var isArray = false;
+		try {
+			isArray = (valueObject != null && valueObject.length >= 0 && !(valueObject instanceof Function));
+		} catch ( exception) {
+			isArray = false;
+		}
+		return isArray;
+	}
+
+	function isObject( elem) {
+		return ((elem != null) && (elem instanceof Object) && !(elem instanceof Function));
+	}
+
 	
- 
-		var k =10;
+	
+	function findProperties( obj) {
+		
+		var allProperties, i;
+
+		
+		allProperties = getAllProperties(obj);
+		
+
+		for (i = 0; i < allProperties.length; i++) {
+			var theObject;
+			
+			try{
+				theObject = obj[allProperties[i]];
+			}catch(e){
+					
+			}
+			if (isObject(theObject) && addToObjects(theObject) ) {
+				findProperties(theObject);
+			} else {
+				continue;
+			}
+			
+		}
 	}
-  }
- 
-}
 </script>
 </head>
 <body>
@@ -324,20 +386,19 @@ function findProperties(obj, parent, name) {
 <h3>Browsers JavaScript Elements:</h3>
 
 <script type="text/javascript">
+	// Show properties for the specified object in the opening window. Default to
+	// the document if no object is specified.
 
-// Show properties for the specified object in the opening window. Default to
-// the document if no object is specified.
+	var DOMViewerObj = this;
 
-var DOMViewerObj  = this;
-var DOMViewerName = "";
+	var DOMViewerName = "";
 
-if (!DOMViewerObj) {
-  DOMViewerObj = window.opener.document;
-  DOMViewerName = "document";
-}
+	if (!DOMViewerObj) {
+		DOMViewerObj = window.opener.document;
+		DOMViewerName = "document";
+	}
 
-document.writeln(generateHTMLObjectTable(DOMViewerObj, DOMViewerName));
-
+	generateHTMLObjectTable(DOMViewerObj, DOMViewerName);
 </script>
 
 </body>

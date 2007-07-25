@@ -1,10552 +1,8823 @@
-
-this.prototype = new Window();
-
-
-Window.prototype= new Global();
+/**
+* Object Window
+* @super Global
+* @type constructor
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype=new Global();
 function Window(){};
-Window.prototype.navigator= new Navigator();
-Window.prototype.document= new HTMLDocument();
-Window.prototype.Packages= new Package();
-Window.prototype.sun= new Package();
-Window.prototype.java= new Package();
-Window.prototype.netscape= new Object();
-Window.prototype.XPCNativeWrapper=function(){};
-Window.prototype.GeckoActiveXObject=function(arg1){};
-Window.prototype.Components= new nsXPCComponents();
-Window.prototype.length="";
-Window.prototype.parent= new Window();
-Window.prototype.top= new Window();
-Window.prototype.scrollbars= new BarProp();
-Window.prototype.name="";
-Window.prototype.scrollX="";
-Window.prototype.scrollY="";
-Window.prototype.scrollTo=function(arg1,arg2){};
-Window.prototype.scrollBy=function(arg1,arg2){};
-Window.prototype.getSelection=function(){};
-Window.prototype.scrollByLines=function(arg1){};
-Window.prototype.scrollByPages=function(arg1){};
-Window.prototype.sizeToContent=function(){};
+/**
+* property location
+* @type Location
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.location=new Location();
+/**
+* property window
+* @type Window
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.window=new Window();
+/**
+* property property
+* @type String
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.property="";
+/**
+* property navigator
+* @type Navigator
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.navigator=new Navigator();
+/**
+* function addEventListener(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.addEventListener=function(arg1,arg2,arg3){};
+/**
+* function dump(arg1)
+* @type String
+* @param arg1 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.dump=function(arg1){};
+/**
+* property console
+* @type Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.console=new Object();
+/**
+* property document
+* @type HTMLDocument
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.document=new HTMLDocument();
+/**
+* property Packages
+* @type JavaPackage
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.Packages=new JavaPackage();
+/**
+* property sun
+* @type JavaPackage
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.sun=new JavaPackage();
+/**
+* property java
+* @type JavaPackage
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.java=new JavaPackage();
+/**
+* property netscape
+* @type Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.netscape=new Object();
+/**
+* function XPCNativeWrapper()
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.XPCNativeWrapper=function(){};
+/**
+* function GeckoActiveXObject(arg1)
+* @type GeckoActiveXObject
+* @param arg1 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.GeckoActiveXObject=function(arg1){};
+/**
+* property Components
+* @type nsXPCComponents
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.Components=new nsXPCComponents();
+/**
+* property parent
+* @type Window
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.parent=new Window();
+/**
+* property top
+* @type Window
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.top=new Window();
+/**
+* property scrollbars
+* @type BarProp
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.scrollbars=new BarProp();
+/**
+* property name
+* @type String
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.name="";
+/**
+* property scrollX
+* @type Number
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.scrollX=0;
+/**
+* property scrollY
+* @type Number
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.scrollY=0;
+/**
+* function scrollTo(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.scrollTo=function(arg1,arg2){};
+/**
+* function scrollBy(arg1,arg2)
+* @type String
+* @param arg1 Object
+* @param arg2 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.scrollBy=function(arg1,arg2){};
+/**
+* function getSelection()
+* @type String
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.getSelection=function(){};
+/**
+* function scrollByLines(arg1)
+* @param arg1 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.scrollByLines=function(arg1){};
+/**
+* function scrollByPages(arg1)
+* @param arg1 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.scrollByPages=function(arg1){};
+/**
+* function sizeToContent()
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.sizeToContent=function(){};
+/**
+* function setTimeout()
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.setTimeout=function(){};
+/**
+* function setInterval()
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.setInterval=function(){};
+/**
+* function clearTimeout()
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.clearTimeout=function(){};
+/**
+* function clearInterval()
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.clearInterval=function(){};
+/**
+* function setResizable(arg1)
+* @param arg1 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.setResizable=function(arg1){};
+/**
+* function captureEvents(arg1)
+* @param arg1 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.captureEvents=function(arg1){};
+/**
+* function releaseEvents(arg1)
+* @param arg1 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.releaseEvents=function(arg1){};
+/**
+* function routeEvent(arg1)
+* @param arg1 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.routeEvent=function(arg1){};
+/**
+* function enableExternalCapture()
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.enableExternalCapture=function(){};
+/**
+* function disableExternalCapture()
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.disableExternalCapture=function(){};
+/**
+* function prompt()
+* @type String
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.prompt=function(){};
+/**
+* function open()
+* @type Window
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.open=function(){};
+/**
+* function openDialog()
+* @type Window
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.openDialog=function(){};
-Window.prototype.frames= new Window();
+/**
+* property frames
+* @type Window
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.frames=new Window();
+/**
+* function find()
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.find=function(){};
-Window.prototype.self= new Window();
-Window.prototype.screen= new Screen();
-Window.prototype.history= new Array();
-Window.prototype.content= new Window();
-Window.prototype.menubar= new BarProp();
-Window.prototype.toolbar= new BarProp();
-Window.prototype.locationbar= new BarProp();
-Window.prototype.personalbar= new BarProp();
-Window.prototype.statusbar= new BarProp();
-Window.prototype.directories= new BarProp();
-Window.prototype.closed="";
-Window.prototype.crypto= new Crypto();
-Window.prototype.pkcs11= new Pkcs11();
-Window.prototype.controllers= new XULControllers();
-Window.prototype.opener="";
+/**
+* property self
+* @type Window
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.self=new Window();
+/**
+* property screen
+* @type Screen
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.screen=new Screen();
+/**
+* property history
+* @type History
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.history=new History();
+/**
+* property content
+* @type Window
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.content=new Window();
+/**
+* property menubar
+* @type BarProp
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.menubar=new BarProp();
+/**
+* property toolbar
+* @type BarProp
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.toolbar=new BarProp();
+/**
+* property locationbar
+* @type BarProp
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.locationbar=new BarProp();
+/**
+* property personalbar
+* @type BarProp
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.personalbar=new BarProp();
+/**
+* property statusbar
+* @type BarProp
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.statusbar=new BarProp();
+/**
+* property directories
+* @type BarProp
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.directories=new BarProp();
+/**
+* property closed
+* @type Boolean
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.closed=false;
+/**
+* property crypto
+* @type Crypto
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.crypto=new Crypto();
+/**
+* property pkcs11
+* @type Pkcs11
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.pkcs11=new Pkcs11();
+/**
+* property controllers
+* @type XULControllers
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.controllers=new XULControllers();
+/**
+* property opener
+* @type Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.opener=new Object();
+/**
+* property status
+* @type String
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.status="";
+/**
+* property defaultStatus
+* @type String
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.defaultStatus="";
+/**
+* property innerWidth
+* @type Number
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.innerWidth=0;
+/**
+* property innerHeight
+* @type Number
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.innerHeight=0;
+/**
+* property outerWidth
+* @type Number
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.outerWidth=0;
+/**
+* property outerHeight
+* @type Number
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.outerHeight=0;
+/**
+* property screenX
+* @type Number
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.screenX=0;
+/**
+* property screenY
+* @type Number
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.screenY=0;
-Window.prototype.pageXOffset="";
-Window.prototype.pageYOffset="";
-Window.prototype.scrollMaxX="";
-Window.prototype.scrollMaxY="";
-Window.prototype.fullScreen="";
+/**
+* property pageXOffset
+* @type Number
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.pageXOffset=0;
+/**
+* property pageYOffset
+* @type Number
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.pageYOffset=0;
+/**
+* property scrollMaxX
+* @type Number
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.scrollMaxX=0;
+/**
+* property scrollMaxY
+* @type Number
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.scrollMaxY=0;
+/**
+* property length
+* @type Number
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.length=0;
+/**
+* property fullScreen
+* @type Boolean
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.fullScreen=false;
+/**
+* function alert(arg1)
+* @param arg1 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.alert=function(arg1){};
+/**
+* function confirm(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.confirm=function(arg1){};
+/**
+* function focus()
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.focus=function(){};
+/**
+* function blur()
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.blur=function(){};
+/**
+* function back()
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.back=function(){};
+/**
+* function forward()
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.forward=function(){};
+/**
+* function home()
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.home=function(){};
+/**
+* function stop()
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.stop=function(){};
+/**
+* function print()
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.print=function(){};
+/**
+* function moveTo(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.moveTo=function(arg1,arg2){};
+/**
+* function moveBy(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.moveBy=function(arg1,arg2){};
+/**
+* function resizeTo(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.resizeTo=function(arg1,arg2){};
+/**
+* function resizeBy(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.resizeBy=function(arg1,arg2){};
+/**
+* function scroll(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.scroll=function(arg1,arg2){};
+/**
+* function close()
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.close=function(){};
+/**
+* function updateCommands(arg1)
+* @param arg1 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.updateCommands=function(arg1){};
+/**
+* function atob(arg1)
+* @type String
+* @param arg1 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.atob=function(arg1){};
+/**
+* function btoa(arg1)
+* @type String
+* @param arg1 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.btoa=function(arg1){};
-Window.prototype.frameElement="";
+/**
+* property frameElement
+* @type Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.frameElement=new Object();
+/**
+* function removeEventListener(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.removeEventListener=function(arg1,arg2,arg3){};
+/**
+* function dispatchEvent(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.dispatchEvent=function(arg1){};
+/**
+* function getComputedStyle(arg1,arg2)
+* @type CSSStyleDeclaration
+* @param arg1 Object
+* @param arg2 Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
 Window.prototype.getComputedStyle=function(arg1,arg2){};
-Window.prototype.sessionStorage="";
-Window.prototype.globalStorage= new StorageList();
-Navigator.prototype= new Array();
+/**
+* property sessionStorage
+* @type Object
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.sessionStorage=new Object();
+/**
+* property globalStorage
+* @type StorageList
+* @class Window
+* @since FireFox 2.0.0.3
+*/
+Window.prototype.globalStorage=new StorageList();
+/**
+* Object Location
+* @super Object
+* @type constructor
+* @class Location
+* @since FireFox 2.0.0.3
+*/
+Location.prototype=new Object();
+function Location(){};
+/**
+* property hash
+* @type String
+* @class Location
+* @since FireFox 2.0.0.3
+*/
+Location.prototype.hash="";
+/**
+* property host
+* @type String
+* @class Location
+* @since FireFox 2.0.0.3
+*/
+Location.prototype.host="";
+/**
+* property hostname
+* @type String
+* @class Location
+* @since FireFox 2.0.0.3
+*/
+Location.prototype.hostname="";
+/**
+* property href
+* @type String
+* @class Location
+* @since FireFox 2.0.0.3
+*/
+Location.prototype.href="";
+/**
+* property pathname
+* @type String
+* @class Location
+* @since FireFox 2.0.0.3
+*/
+Location.prototype.pathname="";
+/**
+* property port
+* @type String
+* @class Location
+* @since FireFox 2.0.0.3
+*/
+Location.prototype.port="";
+/**
+* property protocol
+* @type String
+* @class Location
+* @since FireFox 2.0.0.3
+*/
+Location.prototype.protocol="";
+/**
+* property search
+* @type String
+* @class Location
+* @since FireFox 2.0.0.3
+*/
+Location.prototype.search="";
+/**
+* function replace(arg1)
+* @param arg1 Object
+* @class Location
+* @since FireFox 2.0.0.3
+*/
+Location.prototype.replace=function(arg1){};
+/**
+* function assign(arg1)
+* @param arg1 Object
+* @class Location
+* @since FireFox 2.0.0.3
+*/
+Location.prototype.assign=function(arg1){};
+/**
+* function reload()
+* @class Location
+* @since FireFox 2.0.0.3
+*/
+Location.prototype.reload=function(){};
+/**
+* Object Navigator
+* @super Object
+* @type constructor
+* @class Navigator
+* @since FireFox 2.0.0.3
+*/
+Navigator.prototype=new Object();
 function Navigator(){};
-Navigator.prototype.userAgent="";
+/**
+* property platform
+* @type String
+* @class Navigator
+* @since FireFox 2.0.0.3
+*/
 Navigator.prototype.platform="";
+/**
+* property appCodeName
+* @type String
+* @class Navigator
+* @since FireFox 2.0.0.3
+*/
 Navigator.prototype.appCodeName="";
+/**
+* property appName
+* @type String
+* @class Navigator
+* @since FireFox 2.0.0.3
+*/
 Navigator.prototype.appName="";
+/**
+* property appVersion
+* @type String
+* @class Navigator
+* @since FireFox 2.0.0.3
+*/
 Navigator.prototype.appVersion="";
+/**
+* property language
+* @type String
+* @class Navigator
+* @since FireFox 2.0.0.3
+*/
 Navigator.prototype.language="";
-Navigator.prototype.mimeTypes= new Array();
+/**
+* property mimeTypes
+* @type MimeTypeArray
+* @class Navigator
+* @since FireFox 2.0.0.3
+*/
+Navigator.prototype.mimeTypes=new MimeTypeArray();
+/**
+* property oscpu
+* @type String
+* @class Navigator
+* @since FireFox 2.0.0.3
+*/
 Navigator.prototype.oscpu="";
+/**
+* property vendor
+* @type String
+* @class Navigator
+* @since FireFox 2.0.0.3
+*/
 Navigator.prototype.vendor="";
+/**
+* property vendorSub
+* @type String
+* @class Navigator
+* @since FireFox 2.0.0.3
+*/
 Navigator.prototype.vendorSub="";
+/**
+* property product
+* @type String
+* @class Navigator
+* @since FireFox 2.0.0.3
+*/
 Navigator.prototype.product="";
+/**
+* property productSub
+* @type String
+* @class Navigator
+* @since FireFox 2.0.0.3
+*/
 Navigator.prototype.productSub="";
-Navigator.prototype.plugins= new Array();
+/**
+* property plugins
+* @type PluginArray
+* @class Navigator
+* @since FireFox 2.0.0.3
+*/
+Navigator.prototype.plugins=new PluginArray();
+/**
+* property securityPolicy
+* @type String
+* @class Navigator
+* @since FireFox 2.0.0.3
+*/
 Navigator.prototype.securityPolicy="";
+/**
+* property userAgent
+* @type String
+* @class Navigator
+* @since FireFox 2.0.0.3
+*/
+Navigator.prototype.userAgent="";
+/**
+* property cookieEnabled
+* @type Boolean
+* @class Navigator
+* @since FireFox 2.0.0.3
+*/
 Navigator.prototype.cookieEnabled=false;
+/**
+* property onLine
+* @type Boolean
+* @class Navigator
+* @since FireFox 2.0.0.3
+*/
 Navigator.prototype.onLine=false;
+/**
+* function javaEnabled()
+* @type Boolean
+* @class Navigator
+* @since FireFox 2.0.0.3
+*/
 Navigator.prototype.javaEnabled=function(){};
+/**
+* function taintEnabled()
+* @type Boolean
+* @class Navigator
+* @since FireFox 2.0.0.3
+*/
 Navigator.prototype.taintEnabled=function(){};
+/**
+* property buildID
+* @type String
+* @class Navigator
+* @since FireFox 2.0.0.3
+*/
 Navigator.prototype.buildID="";
+/**
+* function preference()
+* @class Navigator
+* @since FireFox 2.0.0.3
+*/
 Navigator.prototype.preference=function(){};
+/**
+* function registerContentHandler(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class Navigator
+* @since FireFox 2.0.0.3
+*/
 Navigator.prototype.registerContentHandler=function(arg1,arg2,arg3){};
+/**
+* function registerProtocolHandler(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class Navigator
+* @since FireFox 2.0.0.3
+*/
 Navigator.prototype.registerProtocolHandler=function(arg1,arg2,arg3){};
-HTMLDocument.prototype= new Array();
+/**
+* Object MimeTypeArray
+* @super Object
+* @type constructor
+* @class MimeTypeArray
+* @since FireFox 2.0.0.3
+*/
+MimeTypeArray.prototype=new Object();
+function MimeTypeArray(){};
+/**
+* property length
+* @type Number
+* @class MimeTypeArray
+* @since FireFox 2.0.0.3
+*/
+MimeTypeArray.prototype.length=0;
+/**
+* function item(arg1)
+* @type Object
+* @param arg1 Object
+* @class MimeTypeArray
+* @since FireFox 2.0.0.3
+*/
+MimeTypeArray.prototype.item=function(arg1){};
+/**
+* function namedItem(arg1)
+* @type Object
+* @param arg1 Object
+* @class MimeTypeArray
+* @since FireFox 2.0.0.3
+*/
+MimeTypeArray.prototype.namedItem=function(arg1){};
+/**
+* Object MimeType
+* @super Object
+* @type constructor
+* @class MimeType
+* @since FireFox 2.0.0.3
+*/
+MimeType.prototype=new Object();
+function MimeType(){};
+/**
+* property description
+* @type String
+* @class MimeType
+* @since FireFox 2.0.0.3
+*/
+MimeType.prototype.description="";
+/**
+* property enabledPlugin
+* @type Object
+* @class MimeType
+* @since FireFox 2.0.0.3
+*/
+MimeType.prototype.enabledPlugin=new Object();
+/**
+* property suffixes
+* @type String
+* @class MimeType
+* @since FireFox 2.0.0.3
+*/
+MimeType.prototype.suffixes="";
+/**
+* property type
+* @type String
+* @class MimeType
+* @since FireFox 2.0.0.3
+*/
+MimeType.prototype.type="";
+/**
+* Object PluginArray
+* @super Object
+* @type constructor
+* @class PluginArray
+* @since FireFox 2.0.0.3
+*/
+PluginArray.prototype=new Object();
+function PluginArray(){};
+/**
+* property length
+* @type Number
+* @class PluginArray
+* @since FireFox 2.0.0.3
+*/
+PluginArray.prototype.length=0;
+/**
+* function item(arg1)
+* @type Object
+* @param arg1 Object
+* @class PluginArray
+* @since FireFox 2.0.0.3
+*/
+PluginArray.prototype.item=function(arg1){};
+/**
+* function namedItem(arg1)
+* @type Object
+* @param arg1 Object
+* @class PluginArray
+* @since FireFox 2.0.0.3
+*/
+PluginArray.prototype.namedItem=function(arg1){};
+/**
+* function refresh()
+* @class PluginArray
+* @since FireFox 2.0.0.3
+*/
+PluginArray.prototype.refresh=function(){};
+/**
+* Object Plugin
+* @super Object
+* @type constructor
+* @class Plugin
+* @since FireFox 2.0.0.3
+*/
+Plugin.prototype=new Object();
+function Plugin(){};
+/**
+* property length
+* @type Number
+* @class Plugin
+* @since FireFox 2.0.0.3
+*/
+Plugin.prototype.length=0;
+/**
+* property description
+* @type String
+* @class Plugin
+* @since FireFox 2.0.0.3
+*/
+Plugin.prototype.description="";
+/**
+* property filename
+* @type String
+* @class Plugin
+* @since FireFox 2.0.0.3
+*/
+Plugin.prototype.filename="";
+/**
+* property name
+* @type String
+* @class Plugin
+* @since FireFox 2.0.0.3
+*/
+Plugin.prototype.name="";
+/**
+* function item(arg1)
+* @type Object
+* @param arg1 Object
+* @class Plugin
+* @since FireFox 2.0.0.3
+*/
+Plugin.prototype.item=function(arg1){};
+/**
+* function namedItem(arg1)
+* @type Object
+* @param arg1 Object
+* @class Plugin
+* @since FireFox 2.0.0.3
+*/
+Plugin.prototype.namedItem=function(arg1){};
+/**
+* Object HTMLDocument
+* @super Object
+* @type constructor
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype=new Object();
 function HTMLDocument(){};
-HTMLDocument.prototype.writeln=function(){};
+/**
+* function open()
+* @type Window
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.open=function(){};
+/**
+* property location
+* @type Location
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.location=new Location();
+/**
+* function addEventListener(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.addEventListener=function(arg1,arg2,arg3){};
+/**
+* property xmlVersion
+* @type Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.xmlVersion=new Object();
+/**
+* property title
+* @type String
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.title="";
+/**
+* property referrer
+* @type String
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.referrer="";
-HTMLDocument.prototype.styleSheets= new StyleSheetList();
+/**
+* property styleSheets
+* @type StyleSheetList
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.styleSheets=new StyleSheetList();
+/**
+* property baseURI
+* @type String
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.baseURI="";
+/**
+* function compareDocumentPosition(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.compareDocumentPosition=function(arg1){};
-HTMLDocument.prototype.textContent="";
+/**
+* property textContent
+* @type Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.textContent=new Object();
+/**
+* function isSameNode(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.isSameNode=function(arg1){};
+/**
+* function lookupPrefix(arg1)
+* @type String
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.lookupPrefix=function(arg1){};
+/**
+* function isDefaultNamespace(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.isDefaultNamespace=function(arg1){};
+/**
+* function lookupNamespaceURI(arg1)
+* @type String
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.lookupNamespaceURI=function(arg1){};
+/**
+* function isEqualNode(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.isEqualNode=function(arg1){};
+/**
+* function getFeature(arg1,arg2)
+* @type String
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.getFeature=function(arg1,arg2){};
+/**
+* function setUserData(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.setUserData=function(arg1,arg2,arg3){};
+/**
+* function getUserData(arg1)
+* @type Object
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.getUserData=function(arg1){};
+/**
+* property DOCUMENT_POSITION_DISCONNECTED
+* @type Number
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.DOCUMENT_POSITION_DISCONNECTED=0;
+/**
+* property DOCUMENT_POSITION_PRECEDING
+* @type Number
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.DOCUMENT_POSITION_PRECEDING=0;
+/**
+* property DOCUMENT_POSITION_FOLLOWING
+* @type Number
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.DOCUMENT_POSITION_FOLLOWING=0;
+/**
+* property DOCUMENT_POSITION_CONTAINS
+* @type Number
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.DOCUMENT_POSITION_CONTAINS=0;
+/**
+* property DOCUMENT_POSITION_CONTAINED_BY
+* @type Number
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.DOCUMENT_POSITION_CONTAINED_BY=0;
+/**
+* property DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC
+* @type Number
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC=0;
+/**
+* property nodeName
+* @type String
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.nodeName="";
-HTMLDocument.prototype.nodeValue="";
+/**
+* property nodeValue
+* @type Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.nodeValue=new Object();
+/**
+* property nodeType
+* @type Number
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.nodeType=0;
-HTMLDocument.prototype.parentNode="";
-HTMLDocument.prototype.childNodes= new NodeList();
-HTMLDocument.prototype.firstChild= new DocumentType();
-HTMLDocument.prototype.lastChild= new HTMLHtmlElement();
-HTMLDocument.prototype.previousSibling="";
-HTMLDocument.prototype.nextSibling="";
-HTMLDocument.prototype.attributes="";
-HTMLDocument.prototype.ownerDocument="";
+/**
+* property parentNode
+* @type Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.parentNode=new Object();
+/**
+* property childNodes
+* @type NodeList
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.childNodes=new NodeList();
+/**
+* property firstChild
+* @type DocumentType
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.firstChild=new DocumentType();
+/**
+* property lastChild
+* @type HTMLHtmlElement
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.lastChild=new HTMLHtmlElement();
+/**
+* property previousSibling
+* @type Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.previousSibling=new Object();
+/**
+* property nextSibling
+* @type Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.nextSibling=new Object();
+/**
+* property attributes
+* @type Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.attributes=new Object();
+/**
+* property ownerDocument
+* @type Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.ownerDocument=new Object();
+/**
+* function insertBefore(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.insertBefore=function(arg1,arg2){};
+/**
+* function replaceChild(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.replaceChild=function(arg1,arg2){};
+/**
+* function removeChild(arg1)
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.removeChild=function(arg1){};
+/**
+* function appendChild(arg1)
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.appendChild=function(arg1){};
+/**
+* function hasChildNodes()
+* @type Boolean
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.hasChildNodes=function(){};
+/**
+* function cloneNode(arg1)
+* @type Element
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.cloneNode=function(arg1){};
+/**
+* function normalize()
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.normalize=function(){};
+/**
+* function isSupported(arg1,arg2)
+* @type Boolean
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.isSupported=function(arg1,arg2){};
-HTMLDocument.prototype.namespaceURI="";
-HTMLDocument.prototype.prefix="";
-HTMLDocument.prototype.localName="";
+/**
+* property namespaceURI
+* @type Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.namespaceURI=new Object();
+/**
+* property prefix
+* @type Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.prefix=new Object();
+/**
+* property localName
+* @type Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.localName=new Object();
+/**
+* function hasAttributes()
+* @type Boolean
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.hasAttributes=function(){};
-HTMLDocument.prototype.doctype= new DocumentType();
-HTMLDocument.prototype.implementation= new DOMImplementation();
-HTMLDocument.prototype.documentElement= new HTMLHtmlElement();
+/**
+* property doctype
+* @type DocumentType
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.doctype=new DocumentType();
+/**
+* property implementation
+* @type DOMImplementation
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.implementation=new DOMImplementation();
+/**
+* property documentElement
+* @type HTMLHtmlElement
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.documentElement=new HTMLHtmlElement();
+/**
+* function createElement(arg1)
+* @type Element
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.createElement=function(arg1){};
+/**
+* function createDocumentFragment()
+* @type Element
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.createDocumentFragment=function(){};
+/**
+* function createTextNode(arg1)
+* @type Element
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.createTextNode=function(arg1){};
+/**
+* function createComment(arg1)
+* @type Element
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.createComment=function(arg1){};
+/**
+* function createCDATASection(arg1)
+* @type Text
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.createCDATASection=function(arg1){};
+/**
+* function createProcessingInstruction(arg1,arg2)
+* @type Element
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.createProcessingInstruction=function(arg1,arg2){};
+/**
+* function createAttribute(arg1)
+* @type Attr
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.createAttribute=function(arg1){};
+/**
+* function createEntityReference(arg1)
+* @type Element
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.createEntityReference=function(arg1){};
+/**
+* function getElementsByTagName(arg1)
+* @type NodeList
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.getElementsByTagName=function(arg1){};
+/**
+* function importNode(arg1,arg2)
+* @type Element
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.importNode=function(arg1,arg2){};
+/**
+* function createElementNS(arg1,arg2)
+* @type Element
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.createElementNS=function(arg1,arg2){};
+/**
+* function createAttributeNS(arg1,arg2)
+* @type Element
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.createAttributeNS=function(arg1,arg2){};
+/**
+* function getElementsByTagNameNS(arg1,arg2)
+* @type NodeList
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.getElementsByTagNameNS=function(arg1,arg2){};
+/**
+* function getElementById(arg1)
+* @type Element
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.getElementById=function(arg1){};
+/**
+* property ELEMENT_NODE
+* @type Number
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.ELEMENT_NODE=0;
+/**
+* property ATTRIBUTE_NODE
+* @type Number
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.ATTRIBUTE_NODE=0;
+/**
+* property TEXT_NODE
+* @type Number
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.TEXT_NODE=0;
+/**
+* property CDATA_SECTION_NODE
+* @type Number
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.CDATA_SECTION_NODE=0;
+/**
+* property ENTITY_REFERENCE_NODE
+* @type Number
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.ENTITY_REFERENCE_NODE=0;
+/**
+* property ENTITY_NODE
+* @type Number
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.ENTITY_NODE=0;
+/**
+* property PROCESSING_INSTRUCTION_NODE
+* @type Number
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.PROCESSING_INSTRUCTION_NODE=0;
+/**
+* property COMMENT_NODE
+* @type Number
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.COMMENT_NODE=0;
+/**
+* property DOCUMENT_NODE
+* @type Number
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.DOCUMENT_NODE=0;
+/**
+* property DOCUMENT_TYPE_NODE
+* @type Number
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.DOCUMENT_TYPE_NODE=0;
+/**
+* property DOCUMENT_FRAGMENT_NODE
+* @type Number
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.DOCUMENT_FRAGMENT_NODE=0;
+/**
+* property NOTATION_NODE
+* @type Number
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.NOTATION_NODE=0;
+/**
+* property URL
+* @type String
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.URL="";
-HTMLDocument.prototype.body= new HTMLBodyElement();
-HTMLDocument.prototype.images= new HTMLCollection();
-HTMLDocument.prototype.applets= new HTMLCollection();
-HTMLDocument.prototype.links= new HTMLCollection();
-HTMLDocument.prototype.forms= new HTMLCollection();
-HTMLDocument.prototype.anchors= new HTMLCollection();
+/**
+* property body
+* @type HTMLBodyElement
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.body=new HTMLBodyElement();
+/**
+* property images
+* @type HTMLCollection
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.images=new HTMLCollection();
+/**
+* property applets
+* @type HTMLCollection
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.applets=new HTMLCollection();
+/**
+* property links
+* @type HTMLCollection
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.links=new HTMLCollection();
+/**
+* property forms
+* @type HTMLCollection
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.forms=new HTMLCollection();
+/**
+* property anchors
+* @type HTMLCollection
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.anchors=new HTMLCollection();
+/**
+* property cookie
+* @type String
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.cookie="";
+/**
+* function close()
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.close=function(){};
+/**
+* function getElementsByName(arg1)
+* @type Element
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.getElementsByName=function(arg1){};
+/**
+* property width
+* @type Number
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.width=0;
+/**
+* property height
+* @type Number
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.height=0;
+/**
+* property alinkColor
+* @type String
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.alinkColor="";
+/**
+* property linkColor
+* @type String
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.linkColor="";
+/**
+* property vlinkColor
+* @type String
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.vlinkColor="";
+/**
+* property bgColor
+* @type String
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.bgColor="";
+/**
+* property fgColor
+* @type String
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.fgColor="";
+/**
+* property domain
+* @type String
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.domain="";
-HTMLDocument.prototype.embeds= new HTMLCollection();
+/**
+* property embeds
+* @type HTMLCollection
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.embeds=new HTMLCollection();
+/**
+* function getSelection()
+* @type String
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.getSelection=function(){};
+/**
+* function write()
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.write=function(){};
+/**
+* function writeln()
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.writeln=function(){};
+/**
+* function clear()
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.clear=function(){};
+/**
+* function captureEvents(arg1)
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.captureEvents=function(arg1){};
+/**
+* function releaseEvents(arg1)
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.releaseEvents=function(arg1){};
+/**
+* function routeEvent(arg1)
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.routeEvent=function(arg1){};
+/**
+* property compatMode
+* @type String
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.compatMode="";
-HTMLDocument.prototype.plugins= new HTMLCollection();
+/**
+* property plugins
+* @type HTMLCollection
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.plugins=new HTMLCollection();
+/**
+* property designMode
+* @type String
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.designMode="";
+/**
+* function execCommand(arg1,arg2,arg3)
+* @type Object
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.execCommand=function(arg1,arg2,arg3){};
+/**
+* function execCommandShowHelp(arg1)
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.execCommandShowHelp=function(arg1){};
+/**
+* function queryCommandEnabled(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.queryCommandEnabled=function(arg1){};
+/**
+* function queryCommandIndeterm(arg1)
+* @type Object
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.queryCommandIndeterm=function(arg1){};
+/**
+* function queryCommandState(arg1)
+* @type Object
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.queryCommandState=function(arg1){};
+/**
+* function queryCommandSupported(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.queryCommandSupported=function(arg1){};
+/**
+* function queryCommandText(arg1)
+* @type String
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.queryCommandText=function(arg1){};
+/**
+* function queryCommandValue(arg1)
+* @type Object
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.queryCommandValue=function(arg1){};
+/**
+* property characterSet
+* @type String
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.characterSet="";
+/**
+* property dir
+* @type String
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.dir="";
+/**
+* property contentType
+* @type String
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.contentType="";
+/**
+* property lastModified
+* @type String
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.lastModified="";
+/**
+* function getBoxObjectFor(arg1)
+* @type Object
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.getBoxObjectFor=function(arg1){};
+/**
+* function setBoxObjectFor(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.setBoxObjectFor=function(arg1,arg2){};
+/**
+* function createEvent(arg1)
+* @type Event
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.createEvent=function(arg1){};
+/**
+* property preferredStylesheetSet
+* @type String
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.preferredStylesheetSet="";
-HTMLDocument.prototype.defaultView= new Window();
+/**
+* property defaultView
+* @type Window
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.defaultView=new Window();
+/**
+* function createRange()
+* @type Range
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.createRange=function(){};
+/**
+* function createNodeIterator(arg1,arg2,arg3,arg4)
+* @type Iterator
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @param arg4 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.createNodeIterator=function(arg1,arg2,arg3,arg4){};
+/**
+* function createTreeWalker(arg1,arg2,arg3,arg4)
+* @type TreeWalker
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @param arg4 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.createTreeWalker=function(arg1,arg2,arg3,arg4){};
+/**
+* function getAnonymousNodes(arg1)
+* @type NodeList
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.getAnonymousNodes=function(arg1){};
+/**
+* function getAnonymousElementByAttribute(arg1,arg2,arg3)
+* @type Element
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.getAnonymousElementByAttribute=function(arg1,arg2,arg3){};
+/**
+* function addBinding(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.addBinding=function(arg1,arg2){};
+/**
+* function removeBinding(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.removeBinding=function(arg1,arg2){};
+/**
+* function getBindingParent(arg1)
+* @type Object
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.getBindingParent=function(arg1){};
+/**
+* function loadBindingDocument(arg1)
+* @type HTMLDocument
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.loadBindingDocument=function(arg1){};
+/**
+* function removeEventListener(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.removeEventListener=function(arg1,arg2,arg3){};
+/**
+* function dispatchEvent(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.dispatchEvent=function(arg1){};
+/**
+* property inputEncoding
+* @type String
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.inputEncoding="";
-HTMLDocument.prototype.xmlEncoding="";
-HTMLDocument.prototype.xmlStandalone="";
-HTMLDocument.prototype.xmlVersion="";
+/**
+* property xmlEncoding
+* @type Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.xmlEncoding=new Object();
+/**
+* property xmlStandalone
+* @type Boolean
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.xmlStandalone=false;
+/**
+* property strictErrorChecking
+* @type Boolean
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.strictErrorChecking=false;
+/**
+* property documentURI
+* @type String
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.documentURI="";
+/**
+* function adoptNode(arg1)
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.adoptNode=function(arg1){};
-HTMLDocument.prototype.domConfig="";
+/**
+* property domConfig
+* @type Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
+HTMLDocument.prototype.domConfig=new Object();
+/**
+* function normalizeDocument()
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.normalizeDocument=function(){};
+/**
+* function renameNode(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.renameNode=function(arg1,arg2,arg3){};
+/**
+* function createExpression(arg1,arg2)
+* @type RegExp
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.createExpression=function(arg1,arg2){};
+/**
+* function createNSResolver(arg1)
+* @type Object
+* @param arg1 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.createNSResolver=function(arg1){};
+/**
+* function evaluate(arg1,arg2,arg3,arg4,arg5)
+* @type HTMLDocument
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @param arg4 Object
+* @param arg5 Object
+* @class HTMLDocument
+* @since FireFox 2.0.0.3
+*/
 HTMLDocument.prototype.evaluate=function(arg1,arg2,arg3,arg4,arg5){};
-StyleSheetList.prototype= new Array();
+/**
+* Object StyleSheetList
+* @super Object
+* @type constructor
+* @class StyleSheetList
+* @since FireFox 2.0.0.3
+*/
+StyleSheetList.prototype=new Object();
 function StyleSheetList(){};
-StyleSheetList.prototype.length="";
+/**
+* property length
+* @type Number
+* @class StyleSheetList
+* @since FireFox 2.0.0.3
+*/
+StyleSheetList.prototype.length=0;
+/**
+* function item(arg1)
+* @type Object
+* @param arg1 Object
+* @class StyleSheetList
+* @since FireFox 2.0.0.3
+*/
 StyleSheetList.prototype.item=function(arg1){};
-DocumentType.prototype= new Array();
-function DocumentType(){};
-DocumentType.prototype.nodeName="";
-DocumentType.prototype.nodeValue="";
-DocumentType.prototype.nodeType=0;
-DocumentType.prototype.parentNode= new HTMLDocument();
-DocumentType.prototype.childNodes= new NodeList();
-DocumentType.prototype.firstChild="";
-DocumentType.prototype.lastChild="";
-DocumentType.prototype.previousSibling="";
-DocumentType.prototype.nextSibling= new HTMLHtmlElement();
-DocumentType.prototype.attributes="";
-DocumentType.prototype.ownerDocument= new HTMLDocument();
-DocumentType.prototype.insertBefore=function(arg1,arg2){};
-DocumentType.prototype.replaceChild=function(arg1,arg2){};
-DocumentType.prototype.removeChild=function(arg1){};
-DocumentType.prototype.appendChild=function(arg1){};
-DocumentType.prototype.hasChildNodes=function(){};
-DocumentType.prototype.cloneNode=function(arg1){};
-DocumentType.prototype.normalize=function(){};
-DocumentType.prototype.isSupported=function(arg1,arg2){};
-DocumentType.prototype.namespaceURI="";
-DocumentType.prototype.prefix="";
-DocumentType.prototype.localName="";
-DocumentType.prototype.hasAttributes=function(){};
-DocumentType.prototype.ELEMENT_NODE=0;
-DocumentType.prototype.ATTRIBUTE_NODE=0;
-DocumentType.prototype.TEXT_NODE=0;
-DocumentType.prototype.CDATA_SECTION_NODE=0;
-DocumentType.prototype.ENTITY_REFERENCE_NODE=0;
-DocumentType.prototype.ENTITY_NODE=0;
-DocumentType.prototype.PROCESSING_INSTRUCTION_NODE=0;
-DocumentType.prototype.COMMENT_NODE=0;
-DocumentType.prototype.DOCUMENT_NODE=0;
-DocumentType.prototype.DOCUMENT_TYPE_NODE=0;
-DocumentType.prototype.DOCUMENT_FRAGMENT_NODE=0;
-DocumentType.prototype.NOTATION_NODE=0;
-DocumentType.prototype.name="";
-DocumentType.prototype.entities="";
-DocumentType.prototype.notations="";
-DocumentType.prototype.publicId="";
-DocumentType.prototype.systemId="";
-DocumentType.prototype.internalSubset="";
-DocumentType.prototype.baseURI="";
-DocumentType.prototype.compareDocumentPosition=function(arg1){};
-DocumentType.prototype.textContent="";
-DocumentType.prototype.isSameNode=function(arg1){};
-DocumentType.prototype.lookupPrefix=function(arg1){};
-DocumentType.prototype.isDefaultNamespace=function(arg1){};
-DocumentType.prototype.lookupNamespaceURI=function(arg1){};
-DocumentType.prototype.isEqualNode=function(arg1){};
-DocumentType.prototype.getFeature=function(arg1,arg2){};
-DocumentType.prototype.setUserData=function(arg1,arg2,arg3){};
-DocumentType.prototype.getUserData=function(arg1){};
-DocumentType.prototype.DOCUMENT_POSITION_DISCONNECTED=0;
-DocumentType.prototype.DOCUMENT_POSITION_PRECEDING=0;
-DocumentType.prototype.DOCUMENT_POSITION_FOLLOWING=0;
-DocumentType.prototype.DOCUMENT_POSITION_CONTAINS=0;
-DocumentType.prototype.DOCUMENT_POSITION_CONTAINED_BY=0;
-DocumentType.prototype.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC=0;
-NodeList.prototype= new Array();
+/**
+* Object NodeList
+* @super Object
+* @type constructor
+* @class NodeList
+* @since FireFox 2.0.0.3
+*/
+NodeList.prototype=new Object();
 function NodeList(){};
-NodeList.prototype.length="";
+/**
+* property length
+* @type Number
+* @class NodeList
+* @since FireFox 2.0.0.3
+*/
+NodeList.prototype.length=0;
+/**
+* function item(arg1)
+* @type Object
+* @param arg1 Object
+* @class NodeList
+* @since FireFox 2.0.0.3
+*/
 NodeList.prototype.item=function(arg1){};
-HTMLHtmlElement.prototype= new Array();
+/**
+* Object DocumentType
+* @super Object
+* @type constructor
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype=new Object();
+function DocumentType(){};
+/**
+* property nodeName
+* @type String
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.nodeName="";
+/**
+* property nodeValue
+* @type Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.nodeValue=new Object();
+/**
+* property nodeType
+* @type Number
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.nodeType=0;
+/**
+* property parentNode
+* @type HTMLDocument
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.parentNode=new HTMLDocument();
+/**
+* property childNodes
+* @type NodeList
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.childNodes=new NodeList();
+/**
+* property firstChild
+* @type Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.firstChild=new Object();
+/**
+* property lastChild
+* @type Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.lastChild=new Object();
+/**
+* property previousSibling
+* @type Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.previousSibling=new Object();
+/**
+* property nextSibling
+* @type HTMLHtmlElement
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.nextSibling=new HTMLHtmlElement();
+/**
+* property attributes
+* @type Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.attributes=new Object();
+/**
+* property ownerDocument
+* @type HTMLDocument
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.ownerDocument=new HTMLDocument();
+/**
+* function insertBefore(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.insertBefore=function(arg1,arg2){};
+/**
+* function replaceChild(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.replaceChild=function(arg1,arg2){};
+/**
+* function removeChild(arg1)
+* @param arg1 Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.removeChild=function(arg1){};
+/**
+* function appendChild(arg1)
+* @param arg1 Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.appendChild=function(arg1){};
+/**
+* function hasChildNodes()
+* @type Boolean
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.hasChildNodes=function(){};
+/**
+* function cloneNode(arg1)
+* @type Element
+* @param arg1 Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.cloneNode=function(arg1){};
+/**
+* function normalize()
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.normalize=function(){};
+/**
+* function isSupported(arg1,arg2)
+* @type Boolean
+* @param arg1 Object
+* @param arg2 Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.isSupported=function(arg1,arg2){};
+/**
+* property namespaceURI
+* @type Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.namespaceURI=new Object();
+/**
+* property prefix
+* @type Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.prefix=new Object();
+/**
+* property localName
+* @type Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.localName=new Object();
+/**
+* function hasAttributes()
+* @type Boolean
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.hasAttributes=function(){};
+/**
+* property name
+* @type String
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.name="";
+/**
+* property entities
+* @type Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.entities=new Object();
+/**
+* property notations
+* @type Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.notations=new Object();
+/**
+* property publicId
+* @type String
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.publicId="";
+/**
+* property systemId
+* @type String
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.systemId="";
+/**
+* property internalSubset
+* @type String
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.internalSubset="";
+/**
+* property ELEMENT_NODE
+* @type Number
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.ELEMENT_NODE=0;
+/**
+* property ATTRIBUTE_NODE
+* @type Number
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.ATTRIBUTE_NODE=0;
+/**
+* property TEXT_NODE
+* @type Number
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.TEXT_NODE=0;
+/**
+* property CDATA_SECTION_NODE
+* @type Number
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.CDATA_SECTION_NODE=0;
+/**
+* property ENTITY_REFERENCE_NODE
+* @type Number
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.ENTITY_REFERENCE_NODE=0;
+/**
+* property ENTITY_NODE
+* @type Number
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.ENTITY_NODE=0;
+/**
+* property PROCESSING_INSTRUCTION_NODE
+* @type Number
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.PROCESSING_INSTRUCTION_NODE=0;
+/**
+* property COMMENT_NODE
+* @type Number
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.COMMENT_NODE=0;
+/**
+* property DOCUMENT_NODE
+* @type Number
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.DOCUMENT_NODE=0;
+/**
+* property DOCUMENT_TYPE_NODE
+* @type Number
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.DOCUMENT_TYPE_NODE=0;
+/**
+* property DOCUMENT_FRAGMENT_NODE
+* @type Number
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.DOCUMENT_FRAGMENT_NODE=0;
+/**
+* property NOTATION_NODE
+* @type Number
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.NOTATION_NODE=0;
+/**
+* property baseURI
+* @type String
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.baseURI="";
+/**
+* function compareDocumentPosition(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.compareDocumentPosition=function(arg1){};
+/**
+* property textContent
+* @type Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.textContent=new Object();
+/**
+* function isSameNode(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.isSameNode=function(arg1){};
+/**
+* function lookupPrefix(arg1)
+* @type String
+* @param arg1 Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.lookupPrefix=function(arg1){};
+/**
+* function isDefaultNamespace(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.isDefaultNamespace=function(arg1){};
+/**
+* function lookupNamespaceURI(arg1)
+* @type String
+* @param arg1 Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.lookupNamespaceURI=function(arg1){};
+/**
+* function isEqualNode(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.isEqualNode=function(arg1){};
+/**
+* function getFeature(arg1,arg2)
+* @type String
+* @param arg1 Object
+* @param arg2 Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.getFeature=function(arg1,arg2){};
+/**
+* function setUserData(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.setUserData=function(arg1,arg2,arg3){};
+/**
+* function getUserData(arg1)
+* @type Object
+* @param arg1 Object
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.getUserData=function(arg1){};
+/**
+* property DOCUMENT_POSITION_DISCONNECTED
+* @type Number
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.DOCUMENT_POSITION_DISCONNECTED=0;
+/**
+* property DOCUMENT_POSITION_PRECEDING
+* @type Number
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.DOCUMENT_POSITION_PRECEDING=0;
+/**
+* property DOCUMENT_POSITION_FOLLOWING
+* @type Number
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.DOCUMENT_POSITION_FOLLOWING=0;
+/**
+* property DOCUMENT_POSITION_CONTAINS
+* @type Number
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.DOCUMENT_POSITION_CONTAINS=0;
+/**
+* property DOCUMENT_POSITION_CONTAINED_BY
+* @type Number
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.DOCUMENT_POSITION_CONTAINED_BY=0;
+/**
+* property DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC
+* @type Number
+* @class DocumentType
+* @since FireFox 2.0.0.3
+*/
+DocumentType.prototype.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC=0;
+/**
+* Object HTMLHtmlElement
+* @super Object
+* @type constructor
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHtmlElement.prototype=new Object();
 function HTMLHtmlElement(){};
+/**
+* function addEventListener(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHtmlElement.prototype.addEventListener=function(arg1,arg2,arg3){};
+/**
+* property nodeName
+* @type String
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.nodeName="";
-HTMLHtmlElement.prototype.nodeValue="";
+/**
+* property nodeValue
+* @type Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHtmlElement.prototype.nodeValue=new Object();
+/**
+* property nodeType
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.nodeType=0;
-HTMLHtmlElement.prototype.parentNode= new HTMLDocument();
-HTMLHtmlElement.prototype.childNodes= new NodeList();
-HTMLHtmlElement.prototype.firstChild= new HTMLHeadElement();
-HTMLHtmlElement.prototype.lastChild= new HTMLBodyElement();
-HTMLHtmlElement.prototype.previousSibling= new DocumentType();
-HTMLHtmlElement.prototype.nextSibling="";
-HTMLHtmlElement.prototype.attributes= new NamedNodeMap();
-HTMLHtmlElement.prototype.ownerDocument= new HTMLDocument();
+/**
+* property parentNode
+* @type HTMLDocument
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHtmlElement.prototype.parentNode=new HTMLDocument();
+/**
+* property childNodes
+* @type NodeList
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHtmlElement.prototype.childNodes=new NodeList();
+/**
+* property firstChild
+* @type HTMLHeadElement
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHtmlElement.prototype.firstChild=new HTMLHeadElement();
+/**
+* property lastChild
+* @type HTMLBodyElement
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHtmlElement.prototype.lastChild=new HTMLBodyElement();
+/**
+* property previousSibling
+* @type DocumentType
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHtmlElement.prototype.previousSibling=new DocumentType();
+/**
+* property nextSibling
+* @type Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHtmlElement.prototype.nextSibling=new Object();
+/**
+* property attributes
+* @type NamedNodeMap
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHtmlElement.prototype.attributes=new NamedNodeMap();
+/**
+* property ownerDocument
+* @type HTMLDocument
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHtmlElement.prototype.ownerDocument=new HTMLDocument();
+/**
+* function insertBefore(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.insertBefore=function(arg1,arg2){};
+/**
+* function replaceChild(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.replaceChild=function(arg1,arg2){};
+/**
+* function removeChild(arg1)
+* @param arg1 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.removeChild=function(arg1){};
+/**
+* function appendChild(arg1)
+* @param arg1 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.appendChild=function(arg1){};
+/**
+* function hasChildNodes()
+* @type Boolean
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.hasChildNodes=function(){};
+/**
+* function cloneNode(arg1)
+* @type Element
+* @param arg1 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.cloneNode=function(arg1){};
+/**
+* function normalize()
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.normalize=function(){};
+/**
+* function isSupported(arg1,arg2)
+* @type Boolean
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.isSupported=function(arg1,arg2){};
-HTMLHtmlElement.prototype.namespaceURI="";
-HTMLHtmlElement.prototype.prefix="";
+/**
+* property namespaceURI
+* @type Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHtmlElement.prototype.namespaceURI=new Object();
+/**
+* property prefix
+* @type Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHtmlElement.prototype.prefix=new Object();
+/**
+* property localName
+* @type String
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.localName="";
+/**
+* function hasAttributes()
+* @type Boolean
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.hasAttributes=function(){};
+/**
+* property ELEMENT_NODE
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.ELEMENT_NODE=0;
+/**
+* property ATTRIBUTE_NODE
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.ATTRIBUTE_NODE=0;
+/**
+* property TEXT_NODE
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.TEXT_NODE=0;
+/**
+* property CDATA_SECTION_NODE
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.CDATA_SECTION_NODE=0;
+/**
+* property ENTITY_REFERENCE_NODE
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.ENTITY_REFERENCE_NODE=0;
+/**
+* property ENTITY_NODE
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.ENTITY_NODE=0;
+/**
+* property PROCESSING_INSTRUCTION_NODE
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
+/**
+* property COMMENT_NODE
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.COMMENT_NODE=0;
+/**
+* property DOCUMENT_NODE
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.DOCUMENT_NODE=0;
+/**
+* property DOCUMENT_TYPE_NODE
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.DOCUMENT_TYPE_NODE=0;
+/**
+* property DOCUMENT_FRAGMENT_NODE
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
+/**
+* property NOTATION_NODE
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.NOTATION_NODE=0;
+/**
+* property tagName
+* @type String
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.tagName="";
+/**
+* function getAttribute(arg1)
+* @type Attr
+* @param arg1 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.getAttribute=function(arg1){};
+/**
+* function setAttribute(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.setAttribute=function(arg1,arg2){};
+/**
+* function removeAttribute(arg1)
+* @param arg1 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.removeAttribute=function(arg1){};
+/**
+* function getAttributeNode(arg1)
+* @type Element
+* @param arg1 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.getAttributeNode=function(arg1){};
+/**
+* function setAttributeNode(arg1)
+* @param arg1 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.setAttributeNode=function(arg1){};
+/**
+* function removeAttributeNode(arg1)
+* @param arg1 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.removeAttributeNode=function(arg1){};
+/**
+* function getElementsByTagName(arg1)
+* @type NodeList
+* @param arg1 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.getElementsByTagName=function(arg1){};
+/**
+* function getAttributeNS(arg1,arg2)
+* @type Object
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.getAttributeNS=function(arg1,arg2){};
+/**
+* function setAttributeNS(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.setAttributeNS=function(arg1,arg2,arg3){};
+/**
+* function removeAttributeNS(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.removeAttributeNS=function(arg1,arg2){};
+/**
+* function getAttributeNodeNS(arg1,arg2)
+* @type Object
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.getAttributeNodeNS=function(arg1,arg2){};
+/**
+* function setAttributeNodeNS(arg1)
+* @param arg1 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.setAttributeNodeNS=function(arg1){};
+/**
+* function getElementsByTagNameNS(arg1,arg2)
+* @type NodeList
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.getElementsByTagNameNS=function(arg1,arg2){};
+/**
+* function hasAttribute(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.hasAttribute=function(arg1){};
+/**
+* function hasAttributeNS(arg1,arg2)
+* @type Boolean
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.hasAttributeNS=function(arg1,arg2){};
+/**
+* property id
+* @type String
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.id="";
+/**
+* property title
+* @type String
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.title="";
+/**
+* property lang
+* @type String
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.lang="";
+/**
+* property dir
+* @type String
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.dir="";
+/**
+* property className
+* @type String
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.className="";
+/**
+* property version
+* @type String
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.version="";
-HTMLHtmlElement.prototype.offsetTop="";
-HTMLHtmlElement.prototype.offsetLeft="";
+/**
+* property offsetTop
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHtmlElement.prototype.offsetTop=0;
+/**
+* property offsetLeft
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHtmlElement.prototype.offsetLeft=0;
+/**
+* property offsetWidth
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.offsetWidth=0;
+/**
+* property offsetHeight
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.offsetHeight=0;
-HTMLHtmlElement.prototype.offsetParent="";
+/**
+* property offsetParent
+* @type Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHtmlElement.prototype.offsetParent=new Object();
+/**
+* property innerHTML
+* @type String
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.innerHTML="";
-HTMLHtmlElement.prototype.scrollTop="";
-HTMLHtmlElement.prototype.scrollLeft="";
+/**
+* property scrollTop
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHtmlElement.prototype.scrollTop=0;
+/**
+* property scrollLeft
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHtmlElement.prototype.scrollLeft=0;
+/**
+* property scrollHeight
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.scrollHeight=0;
+/**
+* property scrollWidth
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.scrollWidth=0;
+/**
+* property clientHeight
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.clientHeight=0;
+/**
+* property clientWidth
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.clientWidth=0;
+/**
+* property tabIndex
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.tabIndex=0;
+/**
+* function blur()
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.blur=function(){};
+/**
+* function focus()
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.focus=function(){};
-HTMLHtmlElement.prototype.spellcheck="";
-HTMLHtmlElement.prototype.style= new CSSStyleDeclaration();
+/**
+* property spellcheck
+* @type Boolean
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHtmlElement.prototype.spellcheck=false;
+/**
+* property style
+* @type CSSStyleDeclaration
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHtmlElement.prototype.style=new CSSStyleDeclaration();
+/**
+* function removeEventListener(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.removeEventListener=function(arg1,arg2,arg3){};
+/**
+* function dispatchEvent(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.dispatchEvent=function(arg1){};
+/**
+* property baseURI
+* @type String
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.baseURI="";
+/**
+* function compareDocumentPosition(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.compareDocumentPosition=function(arg1){};
+/**
+* property textContent
+* @type String
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.textContent="";
+/**
+* function isSameNode(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.isSameNode=function(arg1){};
+/**
+* function lookupPrefix(arg1)
+* @type String
+* @param arg1 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.lookupPrefix=function(arg1){};
+/**
+* function isDefaultNamespace(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.isDefaultNamespace=function(arg1){};
+/**
+* function lookupNamespaceURI(arg1)
+* @type String
+* @param arg1 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.lookupNamespaceURI=function(arg1){};
+/**
+* function isEqualNode(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.isEqualNode=function(arg1){};
+/**
+* function getFeature(arg1,arg2)
+* @type String
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.getFeature=function(arg1,arg2){};
+/**
+* function setUserData(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.setUserData=function(arg1,arg2,arg3){};
+/**
+* function getUserData(arg1)
+* @type Object
+* @param arg1 Object
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.getUserData=function(arg1){};
+/**
+* property DOCUMENT_POSITION_DISCONNECTED
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.DOCUMENT_POSITION_DISCONNECTED=0;
+/**
+* property DOCUMENT_POSITION_PRECEDING
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.DOCUMENT_POSITION_PRECEDING=0;
+/**
+* property DOCUMENT_POSITION_FOLLOWING
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.DOCUMENT_POSITION_FOLLOWING=0;
+/**
+* property DOCUMENT_POSITION_CONTAINS
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.DOCUMENT_POSITION_CONTAINS=0;
+/**
+* property DOCUMENT_POSITION_CONTAINED_BY
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.DOCUMENT_POSITION_CONTAINED_BY=0;
+/**
+* property DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC
+* @type Number
+* @class HTMLHtmlElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHtmlElement.prototype.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC=0;
-HTMLHeadElement.prototype= new Array();
+/**
+* Object HTMLHeadElement
+* @super Object
+* @type constructor
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype=new Object();
 function HTMLHeadElement(){};
+/**
+* function addEventListener(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.addEventListener=function(arg1,arg2,arg3){};
+/**
+* property nodeName
+* @type String
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.nodeName="";
-HTMLHeadElement.prototype.nodeValue="";
+/**
+* property nodeValue
+* @type Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.nodeValue=new Object();
+/**
+* property nodeType
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.nodeType=0;
-HTMLHeadElement.prototype.parentNode= new HTMLHtmlElement();
-HTMLHeadElement.prototype.childNodes= new NodeList();
-HTMLHeadElement.prototype.firstChild= new Array();
-HTMLHeadElement.prototype.lastChild= new HTMLScriptElement();
-HTMLHeadElement.prototype.previousSibling="";
-HTMLHeadElement.prototype.nextSibling= new HTMLBodyElement();
-HTMLHeadElement.prototype.attributes= new NamedNodeMap();
-HTMLHeadElement.prototype.ownerDocument= new HTMLDocument();
+/**
+* property parentNode
+* @type HTMLHtmlElement
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.parentNode=new HTMLHtmlElement();
+/**
+* property childNodes
+* @type NodeList
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.childNodes=new NodeList();
+/**
+* property firstChild
+* @type Comment
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.firstChild=new Comment();
+/**
+* property lastChild
+* @type HTMLScriptElement
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.lastChild=new HTMLScriptElement();
+/**
+* property previousSibling
+* @type Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.previousSibling=new Object();
+/**
+* property nextSibling
+* @type HTMLBodyElement
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.nextSibling=new HTMLBodyElement();
+/**
+* property attributes
+* @type NamedNodeMap
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.attributes=new NamedNodeMap();
+/**
+* property ownerDocument
+* @type HTMLDocument
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.ownerDocument=new HTMLDocument();
+/**
+* function insertBefore(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.insertBefore=function(arg1,arg2){};
+/**
+* function replaceChild(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.replaceChild=function(arg1,arg2){};
+/**
+* function removeChild(arg1)
+* @param arg1 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.removeChild=function(arg1){};
+/**
+* function appendChild(arg1)
+* @param arg1 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.appendChild=function(arg1){};
+/**
+* function hasChildNodes()
+* @type Boolean
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.hasChildNodes=function(){};
+/**
+* function cloneNode(arg1)
+* @type Element
+* @param arg1 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.cloneNode=function(arg1){};
+/**
+* function normalize()
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.normalize=function(){};
+/**
+* function isSupported(arg1,arg2)
+* @type Boolean
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.isSupported=function(arg1,arg2){};
-HTMLHeadElement.prototype.namespaceURI="";
-HTMLHeadElement.prototype.prefix="";
+/**
+* property namespaceURI
+* @type Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.namespaceURI=new Object();
+/**
+* property prefix
+* @type Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.prefix=new Object();
+/**
+* property localName
+* @type String
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.localName="";
+/**
+* function hasAttributes()
+* @type Boolean
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.hasAttributes=function(){};
+/**
+* property ELEMENT_NODE
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.ELEMENT_NODE=0;
+/**
+* property ATTRIBUTE_NODE
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.ATTRIBUTE_NODE=0;
+/**
+* property TEXT_NODE
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.TEXT_NODE=0;
+/**
+* property CDATA_SECTION_NODE
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.CDATA_SECTION_NODE=0;
+/**
+* property ENTITY_REFERENCE_NODE
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.ENTITY_REFERENCE_NODE=0;
+/**
+* property ENTITY_NODE
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.ENTITY_NODE=0;
+/**
+* property PROCESSING_INSTRUCTION_NODE
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
+/**
+* property COMMENT_NODE
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.COMMENT_NODE=0;
+/**
+* property DOCUMENT_NODE
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.DOCUMENT_NODE=0;
+/**
+* property DOCUMENT_TYPE_NODE
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.DOCUMENT_TYPE_NODE=0;
+/**
+* property DOCUMENT_FRAGMENT_NODE
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
+/**
+* property NOTATION_NODE
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.NOTATION_NODE=0;
+/**
+* property tagName
+* @type String
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.tagName="";
+/**
+* function getAttribute(arg1)
+* @type Attr
+* @param arg1 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.getAttribute=function(arg1){};
+/**
+* function setAttribute(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.setAttribute=function(arg1,arg2){};
+/**
+* function removeAttribute(arg1)
+* @param arg1 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.removeAttribute=function(arg1){};
+/**
+* function getAttributeNode(arg1)
+* @type Element
+* @param arg1 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.getAttributeNode=function(arg1){};
+/**
+* function setAttributeNode(arg1)
+* @param arg1 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.setAttributeNode=function(arg1){};
+/**
+* function removeAttributeNode(arg1)
+* @param arg1 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.removeAttributeNode=function(arg1){};
+/**
+* function getElementsByTagName(arg1)
+* @type NodeList
+* @param arg1 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.getElementsByTagName=function(arg1){};
+/**
+* function getAttributeNS(arg1,arg2)
+* @type Object
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.getAttributeNS=function(arg1,arg2){};
+/**
+* function setAttributeNS(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.setAttributeNS=function(arg1,arg2,arg3){};
+/**
+* function removeAttributeNS(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.removeAttributeNS=function(arg1,arg2){};
+/**
+* function getAttributeNodeNS(arg1,arg2)
+* @type Object
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.getAttributeNodeNS=function(arg1,arg2){};
+/**
+* function setAttributeNodeNS(arg1)
+* @param arg1 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.setAttributeNodeNS=function(arg1){};
+/**
+* function getElementsByTagNameNS(arg1,arg2)
+* @type NodeList
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.getElementsByTagNameNS=function(arg1,arg2){};
+/**
+* function hasAttribute(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.hasAttribute=function(arg1){};
+/**
+* function hasAttributeNS(arg1,arg2)
+* @type Boolean
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.hasAttributeNS=function(arg1,arg2){};
+/**
+* property id
+* @type String
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.id="";
+/**
+* property title
+* @type String
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.title="";
+/**
+* property lang
+* @type String
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.lang="";
+/**
+* property dir
+* @type String
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.dir="";
+/**
+* property className
+* @type String
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.className="";
+/**
+* property profile
+* @type String
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.profile="";
-HTMLHeadElement.prototype.offsetTop="";
-HTMLHeadElement.prototype.offsetLeft="";
-HTMLHeadElement.prototype.offsetWidth="";
-HTMLHeadElement.prototype.offsetHeight="";
-HTMLHeadElement.prototype.offsetParent="";
+/**
+* property offsetTop
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.offsetTop=0;
+/**
+* property offsetLeft
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.offsetLeft=0;
+/**
+* property offsetWidth
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.offsetWidth=0;
+/**
+* property offsetHeight
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.offsetHeight=0;
+/**
+* property offsetParent
+* @type Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.offsetParent=new Object();
+/**
+* property innerHTML
+* @type String
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.innerHTML="";
-HTMLHeadElement.prototype.scrollTop="";
-HTMLHeadElement.prototype.scrollLeft="";
-HTMLHeadElement.prototype.scrollHeight="";
-HTMLHeadElement.prototype.scrollWidth="";
-HTMLHeadElement.prototype.clientHeight="";
-HTMLHeadElement.prototype.clientWidth="";
+/**
+* property scrollTop
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.scrollTop=0;
+/**
+* property scrollLeft
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.scrollLeft=0;
+/**
+* property scrollHeight
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.scrollHeight=0;
+/**
+* property scrollWidth
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.scrollWidth=0;
+/**
+* property clientHeight
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.clientHeight=0;
+/**
+* property clientWidth
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.clientWidth=0;
+/**
+* property tabIndex
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.tabIndex=0;
+/**
+* function blur()
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.blur=function(){};
+/**
+* function focus()
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.focus=function(){};
-HTMLHeadElement.prototype.spellcheck="";
-HTMLHeadElement.prototype.style= new CSSStyleDeclaration();
+/**
+* property spellcheck
+* @type Boolean
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.spellcheck=false;
+/**
+* property style
+* @type CSSStyleDeclaration
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
+HTMLHeadElement.prototype.style=new CSSStyleDeclaration();
+/**
+* function removeEventListener(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.removeEventListener=function(arg1,arg2,arg3){};
+/**
+* function dispatchEvent(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.dispatchEvent=function(arg1){};
+/**
+* property baseURI
+* @type String
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.baseURI="";
+/**
+* function compareDocumentPosition(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.compareDocumentPosition=function(arg1){};
+/**
+* property textContent
+* @type String
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.textContent="";
+/**
+* function isSameNode(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.isSameNode=function(arg1){};
+/**
+* function lookupPrefix(arg1)
+* @type String
+* @param arg1 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.lookupPrefix=function(arg1){};
+/**
+* function isDefaultNamespace(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.isDefaultNamespace=function(arg1){};
+/**
+* function lookupNamespaceURI(arg1)
+* @type String
+* @param arg1 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.lookupNamespaceURI=function(arg1){};
+/**
+* function isEqualNode(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.isEqualNode=function(arg1){};
+/**
+* function getFeature(arg1,arg2)
+* @type String
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.getFeature=function(arg1,arg2){};
+/**
+* function setUserData(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.setUserData=function(arg1,arg2,arg3){};
+/**
+* function getUserData(arg1)
+* @type Object
+* @param arg1 Object
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.getUserData=function(arg1){};
+/**
+* property DOCUMENT_POSITION_DISCONNECTED
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.DOCUMENT_POSITION_DISCONNECTED=0;
+/**
+* property DOCUMENT_POSITION_PRECEDING
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.DOCUMENT_POSITION_PRECEDING=0;
+/**
+* property DOCUMENT_POSITION_FOLLOWING
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.DOCUMENT_POSITION_FOLLOWING=0;
+/**
+* property DOCUMENT_POSITION_CONTAINS
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.DOCUMENT_POSITION_CONTAINS=0;
+/**
+* property DOCUMENT_POSITION_CONTAINED_BY
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.DOCUMENT_POSITION_CONTAINED_BY=0;
+/**
+* property DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC
+* @type Number
+* @class HTMLHeadElement
+* @since FireFox 2.0.0.3
+*/
 HTMLHeadElement.prototype.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC=0;
-HTMLScriptElement.prototype= new Array();
+/**
+* Object Comment
+* @super Object
+* @type constructor
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype=new Object();
+function Comment(){};
+/**
+* function addEventListener(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.addEventListener=function(arg1,arg2,arg3){};
+/**
+* property nodeName
+* @type String
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.nodeName="";
+/**
+* property nodeValue
+* @type String
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.nodeValue="";
+/**
+* property nodeType
+* @type Number
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.nodeType=0;
+/**
+* property parentNode
+* @type HTMLHeadElement
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.parentNode=new HTMLHeadElement();
+/**
+* property childNodes
+* @type NodeList
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.childNodes=new NodeList();
+/**
+* property firstChild
+* @type Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.firstChild=new Object();
+/**
+* property lastChild
+* @type Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.lastChild=new Object();
+/**
+* property previousSibling
+* @type Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.previousSibling=new Object();
+/**
+* property nextSibling
+* @type Comment
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.nextSibling=new Comment();
+/**
+* property attributes
+* @type Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.attributes=new Object();
+/**
+* property ownerDocument
+* @type HTMLDocument
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.ownerDocument=new HTMLDocument();
+/**
+* function insertBefore(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.insertBefore=function(arg1,arg2){};
+/**
+* function replaceChild(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.replaceChild=function(arg1,arg2){};
+/**
+* function removeChild(arg1)
+* @param arg1 Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.removeChild=function(arg1){};
+/**
+* function appendChild(arg1)
+* @param arg1 Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.appendChild=function(arg1){};
+/**
+* function hasChildNodes()
+* @type Boolean
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.hasChildNodes=function(){};
+/**
+* function cloneNode(arg1)
+* @type Element
+* @param arg1 Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.cloneNode=function(arg1){};
+/**
+* function normalize()
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.normalize=function(){};
+/**
+* function isSupported(arg1,arg2)
+* @type Boolean
+* @param arg1 Object
+* @param arg2 Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.isSupported=function(arg1,arg2){};
+/**
+* property namespaceURI
+* @type Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.namespaceURI=new Object();
+/**
+* property prefix
+* @type Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.prefix=new Object();
+/**
+* property localName
+* @type Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.localName=new Object();
+/**
+* function hasAttributes()
+* @type Boolean
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.hasAttributes=function(){};
+/**
+* property ELEMENT_NODE
+* @type Number
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.ELEMENT_NODE=0;
+/**
+* property ATTRIBUTE_NODE
+* @type Number
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.ATTRIBUTE_NODE=0;
+/**
+* property TEXT_NODE
+* @type Number
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.TEXT_NODE=0;
+/**
+* property CDATA_SECTION_NODE
+* @type Number
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.CDATA_SECTION_NODE=0;
+/**
+* property ENTITY_REFERENCE_NODE
+* @type Number
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.ENTITY_REFERENCE_NODE=0;
+/**
+* property ENTITY_NODE
+* @type Number
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.ENTITY_NODE=0;
+/**
+* property PROCESSING_INSTRUCTION_NODE
+* @type Number
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.PROCESSING_INSTRUCTION_NODE=0;
+/**
+* property COMMENT_NODE
+* @type Number
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.COMMENT_NODE=0;
+/**
+* property DOCUMENT_NODE
+* @type Number
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.DOCUMENT_NODE=0;
+/**
+* property DOCUMENT_TYPE_NODE
+* @type Number
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.DOCUMENT_TYPE_NODE=0;
+/**
+* property DOCUMENT_FRAGMENT_NODE
+* @type Number
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.DOCUMENT_FRAGMENT_NODE=0;
+/**
+* property NOTATION_NODE
+* @type Number
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.NOTATION_NODE=0;
+/**
+* property data
+* @type String
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.data="";
+/**
+* property length
+* @type Number
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.length=0;
+/**
+* function substringData(arg1,arg2)
+* @type String
+* @param arg1 Object
+* @param arg2 Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.substringData=function(arg1,arg2){};
+/**
+* function appendData(arg1)
+* @param arg1 Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.appendData=function(arg1){};
+/**
+* function insertData(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.insertData=function(arg1,arg2){};
+/**
+* function deleteData(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.deleteData=function(arg1,arg2){};
+/**
+* function replaceData(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.replaceData=function(arg1,arg2,arg3){};
+/**
+* function removeEventListener(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.removeEventListener=function(arg1,arg2,arg3){};
+/**
+* function dispatchEvent(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.dispatchEvent=function(arg1){};
+/**
+* property baseURI
+* @type String
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.baseURI="";
+/**
+* function compareDocumentPosition(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.compareDocumentPosition=function(arg1){};
+/**
+* property textContent
+* @type String
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.textContent="";
+/**
+* function isSameNode(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.isSameNode=function(arg1){};
+/**
+* function lookupPrefix(arg1)
+* @type String
+* @param arg1 Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.lookupPrefix=function(arg1){};
+/**
+* function isDefaultNamespace(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.isDefaultNamespace=function(arg1){};
+/**
+* function lookupNamespaceURI(arg1)
+* @type String
+* @param arg1 Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.lookupNamespaceURI=function(arg1){};
+/**
+* function isEqualNode(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.isEqualNode=function(arg1){};
+/**
+* function getFeature(arg1,arg2)
+* @type String
+* @param arg1 Object
+* @param arg2 Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.getFeature=function(arg1,arg2){};
+/**
+* function setUserData(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.setUserData=function(arg1,arg2,arg3){};
+/**
+* function getUserData(arg1)
+* @type Object
+* @param arg1 Object
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.getUserData=function(arg1){};
+/**
+* property DOCUMENT_POSITION_DISCONNECTED
+* @type Number
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.DOCUMENT_POSITION_DISCONNECTED=0;
+/**
+* property DOCUMENT_POSITION_PRECEDING
+* @type Number
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.DOCUMENT_POSITION_PRECEDING=0;
+/**
+* property DOCUMENT_POSITION_FOLLOWING
+* @type Number
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.DOCUMENT_POSITION_FOLLOWING=0;
+/**
+* property DOCUMENT_POSITION_CONTAINS
+* @type Number
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.DOCUMENT_POSITION_CONTAINS=0;
+/**
+* property DOCUMENT_POSITION_CONTAINED_BY
+* @type Number
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.DOCUMENT_POSITION_CONTAINED_BY=0;
+/**
+* property DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC
+* @type Number
+* @class Comment
+* @since FireFox 2.0.0.3
+*/
+Comment.prototype.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC=0;
+/**
+* Object HTMLScriptElement
+* @super Object
+* @type constructor
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype=new Object();
 function HTMLScriptElement(){};
+/**
+* function addEventListener(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.addEventListener=function(arg1,arg2,arg3){};
+/**
+* property nodeName
+* @type String
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.nodeName="";
-HTMLScriptElement.prototype.nodeValue="";
+/**
+* property nodeValue
+* @type Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.nodeValue=new Object();
+/**
+* property nodeType
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.nodeType=0;
-HTMLScriptElement.prototype.parentNode= new HTMLHeadElement();
-HTMLScriptElement.prototype.childNodes= new NodeList();
-HTMLScriptElement.prototype.firstChild= new Array();
-HTMLScriptElement.prototype.lastChild= new Array();
-HTMLScriptElement.prototype.previousSibling= new Array();
-HTMLScriptElement.prototype.nextSibling="";
-HTMLScriptElement.prototype.attributes= new NamedNodeMap();
-HTMLScriptElement.prototype.ownerDocument= new HTMLDocument();
+/**
+* property parentNode
+* @type HTMLHeadElement
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.parentNode=new HTMLHeadElement();
+/**
+* property childNodes
+* @type NodeList
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.childNodes=new NodeList();
+/**
+* property firstChild
+* @type Text
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.firstChild=new Text();
+/**
+* property lastChild
+* @type Text
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.lastChild=new Text();
+/**
+* property previousSibling
+* @type Text
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.previousSibling=new Text();
+/**
+* property nextSibling
+* @type Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.nextSibling=new Object();
+/**
+* property attributes
+* @type NamedNodeMap
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.attributes=new NamedNodeMap();
+/**
+* property ownerDocument
+* @type HTMLDocument
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.ownerDocument=new HTMLDocument();
+/**
+* function insertBefore(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.insertBefore=function(arg1,arg2){};
+/**
+* function replaceChild(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.replaceChild=function(arg1,arg2){};
+/**
+* function removeChild(arg1)
+* @param arg1 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.removeChild=function(arg1){};
+/**
+* function appendChild(arg1)
+* @param arg1 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.appendChild=function(arg1){};
+/**
+* function hasChildNodes()
+* @type Boolean
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.hasChildNodes=function(){};
+/**
+* function cloneNode(arg1)
+* @type Element
+* @param arg1 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.cloneNode=function(arg1){};
+/**
+* function normalize()
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.normalize=function(){};
+/**
+* function isSupported(arg1,arg2)
+* @type Boolean
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.isSupported=function(arg1,arg2){};
-HTMLScriptElement.prototype.namespaceURI="";
-HTMLScriptElement.prototype.prefix="";
+/**
+* property namespaceURI
+* @type Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.namespaceURI=new Object();
+/**
+* property prefix
+* @type Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.prefix=new Object();
+/**
+* property localName
+* @type String
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.localName="";
+/**
+* function hasAttributes()
+* @type Boolean
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.hasAttributes=function(){};
+/**
+* property ELEMENT_NODE
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.ELEMENT_NODE=0;
+/**
+* property ATTRIBUTE_NODE
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.ATTRIBUTE_NODE=0;
+/**
+* property TEXT_NODE
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.TEXT_NODE=0;
+/**
+* property CDATA_SECTION_NODE
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.CDATA_SECTION_NODE=0;
+/**
+* property ENTITY_REFERENCE_NODE
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.ENTITY_REFERENCE_NODE=0;
+/**
+* property ENTITY_NODE
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.ENTITY_NODE=0;
+/**
+* property PROCESSING_INSTRUCTION_NODE
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
+/**
+* property COMMENT_NODE
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.COMMENT_NODE=0;
+/**
+* property DOCUMENT_NODE
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.DOCUMENT_NODE=0;
+/**
+* property DOCUMENT_TYPE_NODE
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.DOCUMENT_TYPE_NODE=0;
+/**
+* property DOCUMENT_FRAGMENT_NODE
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
+/**
+* property NOTATION_NODE
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.NOTATION_NODE=0;
+/**
+* property tagName
+* @type String
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.tagName="";
+/**
+* function getAttribute(arg1)
+* @type Attr
+* @param arg1 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.getAttribute=function(arg1){};
+/**
+* function setAttribute(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.setAttribute=function(arg1,arg2){};
+/**
+* function removeAttribute(arg1)
+* @param arg1 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.removeAttribute=function(arg1){};
+/**
+* function getAttributeNode(arg1)
+* @type Element
+* @param arg1 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.getAttributeNode=function(arg1){};
+/**
+* function setAttributeNode(arg1)
+* @param arg1 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.setAttributeNode=function(arg1){};
+/**
+* function removeAttributeNode(arg1)
+* @param arg1 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.removeAttributeNode=function(arg1){};
+/**
+* function getElementsByTagName(arg1)
+* @type NodeList
+* @param arg1 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.getElementsByTagName=function(arg1){};
+/**
+* function getAttributeNS(arg1,arg2)
+* @type Object
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.getAttributeNS=function(arg1,arg2){};
+/**
+* function setAttributeNS(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.setAttributeNS=function(arg1,arg2,arg3){};
+/**
+* function removeAttributeNS(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.removeAttributeNS=function(arg1,arg2){};
+/**
+* function getAttributeNodeNS(arg1,arg2)
+* @type Object
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.getAttributeNodeNS=function(arg1,arg2){};
+/**
+* function setAttributeNodeNS(arg1)
+* @param arg1 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.setAttributeNodeNS=function(arg1){};
+/**
+* function getElementsByTagNameNS(arg1,arg2)
+* @type NodeList
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.getElementsByTagNameNS=function(arg1,arg2){};
+/**
+* function hasAttribute(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.hasAttribute=function(arg1){};
+/**
+* function hasAttributeNS(arg1,arg2)
+* @type Boolean
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.hasAttributeNS=function(arg1,arg2){};
+/**
+* property id
+* @type String
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.id="";
+/**
+* property title
+* @type String
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.title="";
+/**
+* property lang
+* @type String
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.lang="";
+/**
+* property dir
+* @type String
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.dir="";
+/**
+* property className
+* @type String
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.className="";
+/**
+* property text
+* @type String
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.text="";
+/**
+* property htmlFor
+* @type String
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.htmlFor="";
+/**
+* property event
+* @type String
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.event="";
+/**
+* property charset
+* @type String
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.charset="";
-HTMLScriptElement.prototype.defer="";
+/**
+* property defer
+* @type Boolean
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.defer=false;
+/**
+* property src
+* @type String
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.src="";
+/**
+* property type
+* @type String
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.type="";
-HTMLScriptElement.prototype.offsetTop="";
-HTMLScriptElement.prototype.offsetLeft="";
-HTMLScriptElement.prototype.offsetWidth="";
-HTMLScriptElement.prototype.offsetHeight="";
-HTMLScriptElement.prototype.offsetParent="";
+/**
+* property offsetTop
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.offsetTop=0;
+/**
+* property offsetLeft
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.offsetLeft=0;
+/**
+* property offsetWidth
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.offsetWidth=0;
+/**
+* property offsetHeight
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.offsetHeight=0;
+/**
+* property offsetParent
+* @type Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.offsetParent=new Object();
+/**
+* property innerHTML
+* @type String
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.innerHTML="";
-HTMLScriptElement.prototype.scrollTop="";
-HTMLScriptElement.prototype.scrollLeft="";
-HTMLScriptElement.prototype.scrollHeight="";
-HTMLScriptElement.prototype.scrollWidth="";
-HTMLScriptElement.prototype.clientHeight="";
-HTMLScriptElement.prototype.clientWidth="";
+/**
+* property scrollTop
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.scrollTop=0;
+/**
+* property scrollLeft
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.scrollLeft=0;
+/**
+* property scrollHeight
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.scrollHeight=0;
+/**
+* property scrollWidth
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.scrollWidth=0;
+/**
+* property clientHeight
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.clientHeight=0;
+/**
+* property clientWidth
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.clientWidth=0;
+/**
+* property tabIndex
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.tabIndex=0;
+/**
+* function blur()
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.blur=function(){};
+/**
+* function focus()
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.focus=function(){};
-HTMLScriptElement.prototype.spellcheck="";
-HTMLScriptElement.prototype.style= new CSSStyleDeclaration();
+/**
+* property spellcheck
+* @type Boolean
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.spellcheck=false;
+/**
+* property style
+* @type CSSStyleDeclaration
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
+HTMLScriptElement.prototype.style=new CSSStyleDeclaration();
+/**
+* function removeEventListener(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.removeEventListener=function(arg1,arg2,arg3){};
+/**
+* function dispatchEvent(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.dispatchEvent=function(arg1){};
+/**
+* property baseURI
+* @type String
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.baseURI="";
+/**
+* function compareDocumentPosition(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.compareDocumentPosition=function(arg1){};
+/**
+* property textContent
+* @type String
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.textContent="";
+/**
+* function isSameNode(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.isSameNode=function(arg1){};
+/**
+* function lookupPrefix(arg1)
+* @type String
+* @param arg1 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.lookupPrefix=function(arg1){};
+/**
+* function isDefaultNamespace(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.isDefaultNamespace=function(arg1){};
+/**
+* function lookupNamespaceURI(arg1)
+* @type String
+* @param arg1 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.lookupNamespaceURI=function(arg1){};
+/**
+* function isEqualNode(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.isEqualNode=function(arg1){};
+/**
+* function getFeature(arg1,arg2)
+* @type String
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.getFeature=function(arg1,arg2){};
+/**
+* function setUserData(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.setUserData=function(arg1,arg2,arg3){};
+/**
+* function getUserData(arg1)
+* @type Object
+* @param arg1 Object
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.getUserData=function(arg1){};
+/**
+* property DOCUMENT_POSITION_DISCONNECTED
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.DOCUMENT_POSITION_DISCONNECTED=0;
+/**
+* property DOCUMENT_POSITION_PRECEDING
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.DOCUMENT_POSITION_PRECEDING=0;
+/**
+* property DOCUMENT_POSITION_FOLLOWING
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.DOCUMENT_POSITION_FOLLOWING=0;
+/**
+* property DOCUMENT_POSITION_CONTAINS
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.DOCUMENT_POSITION_CONTAINS=0;
+/**
+* property DOCUMENT_POSITION_CONTAINED_BY
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.DOCUMENT_POSITION_CONTAINED_BY=0;
+/**
+* property DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC
+* @type Number
+* @class HTMLScriptElement
+* @since FireFox 2.0.0.3
+*/
 HTMLScriptElement.prototype.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC=0;
-CSSStyleDeclaration.prototype= new Array();
-function CSSStyleDeclaration(){};
-CSSStyleDeclaration.prototype.length="";
-CSSStyleDeclaration.prototype.cssText="";
-CSSStyleDeclaration.prototype.getPropertyValue=function(arg1){};
-CSSStyleDeclaration.prototype.getPropertyCSSValue=function(arg1){};
-CSSStyleDeclaration.prototype.removeProperty=function(arg1){};
-CSSStyleDeclaration.prototype.getPropertyPriority=function(arg1){};
-CSSStyleDeclaration.prototype.setProperty=function(arg1,arg2,arg3){};
-CSSStyleDeclaration.prototype.item=function(arg1){};
-CSSStyleDeclaration.prototype.parentRule="";
-CSSStyleDeclaration.prototype.azimuth="";
-CSSStyleDeclaration.prototype.background="";
-CSSStyleDeclaration.prototype.backgroundAttachment="";
-CSSStyleDeclaration.prototype.backgroundColor="";
-CSSStyleDeclaration.prototype.backgroundImage="";
-CSSStyleDeclaration.prototype.backgroundPosition="";
-CSSStyleDeclaration.prototype.backgroundRepeat="";
-CSSStyleDeclaration.prototype.border="";
-CSSStyleDeclaration.prototype.borderCollapse="";
-CSSStyleDeclaration.prototype.borderColor="";
-CSSStyleDeclaration.prototype.borderSpacing="";
-CSSStyleDeclaration.prototype.borderStyle="";
-CSSStyleDeclaration.prototype.borderTop="";
-CSSStyleDeclaration.prototype.borderRight="";
-CSSStyleDeclaration.prototype.borderBottom="";
-CSSStyleDeclaration.prototype.borderLeft="";
-CSSStyleDeclaration.prototype.borderTopColor="";
-CSSStyleDeclaration.prototype.borderRightColor="";
-CSSStyleDeclaration.prototype.borderBottomColor="";
-CSSStyleDeclaration.prototype.borderLeftColor="";
-CSSStyleDeclaration.prototype.borderTopStyle="";
-CSSStyleDeclaration.prototype.borderRightStyle="";
-CSSStyleDeclaration.prototype.borderBottomStyle="";
-CSSStyleDeclaration.prototype.borderLeftStyle="";
-CSSStyleDeclaration.prototype.borderTopWidth="";
-CSSStyleDeclaration.prototype.borderRightWidth="";
-CSSStyleDeclaration.prototype.borderBottomWidth="";
-CSSStyleDeclaration.prototype.borderLeftWidth="";
-CSSStyleDeclaration.prototype.borderWidth="";
-CSSStyleDeclaration.prototype.bottom="";
-CSSStyleDeclaration.prototype.captionSide="";
-CSSStyleDeclaration.prototype.clear="";
-CSSStyleDeclaration.prototype.clip="";
-CSSStyleDeclaration.prototype.color="";
-CSSStyleDeclaration.prototype.content="";
-CSSStyleDeclaration.prototype.counterIncrement="";
-CSSStyleDeclaration.prototype.counterReset="";
-CSSStyleDeclaration.prototype.cue="";
-CSSStyleDeclaration.prototype.cueAfter="";
-CSSStyleDeclaration.prototype.cueBefore="";
-CSSStyleDeclaration.prototype.cursor="";
-CSSStyleDeclaration.prototype.direction="";
-CSSStyleDeclaration.prototype.display="";
-CSSStyleDeclaration.prototype.elevation="";
-CSSStyleDeclaration.prototype.emptyCells="";
-CSSStyleDeclaration.prototype.cssFloat="";
-CSSStyleDeclaration.prototype.font="";
-CSSStyleDeclaration.prototype.fontFamily="";
-CSSStyleDeclaration.prototype.fontSize="";
-CSSStyleDeclaration.prototype.fontSizeAdjust="";
-CSSStyleDeclaration.prototype.fontStretch="";
-CSSStyleDeclaration.prototype.fontStyle="";
-CSSStyleDeclaration.prototype.fontVariant="";
-CSSStyleDeclaration.prototype.fontWeight="";
-CSSStyleDeclaration.prototype.height="";
-CSSStyleDeclaration.prototype.left="";
-CSSStyleDeclaration.prototype.letterSpacing="";
-CSSStyleDeclaration.prototype.lineHeight="";
-CSSStyleDeclaration.prototype.listStyle="";
-CSSStyleDeclaration.prototype.listStyleImage="";
-CSSStyleDeclaration.prototype.listStylePosition="";
-CSSStyleDeclaration.prototype.listStyleType="";
-CSSStyleDeclaration.prototype.margin="";
-CSSStyleDeclaration.prototype.marginTop="";
-CSSStyleDeclaration.prototype.marginRight="";
-CSSStyleDeclaration.prototype.marginBottom="";
-CSSStyleDeclaration.prototype.marginLeft="";
-CSSStyleDeclaration.prototype.markerOffset="";
-CSSStyleDeclaration.prototype.marks="";
-CSSStyleDeclaration.prototype.maxHeight="";
-CSSStyleDeclaration.prototype.maxWidth="";
-CSSStyleDeclaration.prototype.minHeight="";
-CSSStyleDeclaration.prototype.minWidth="";
-CSSStyleDeclaration.prototype.orphans="";
-CSSStyleDeclaration.prototype.outline="";
-CSSStyleDeclaration.prototype.outlineColor="";
-CSSStyleDeclaration.prototype.outlineStyle="";
-CSSStyleDeclaration.prototype.outlineWidth="";
-CSSStyleDeclaration.prototype.overflow="";
-CSSStyleDeclaration.prototype.padding="";
-CSSStyleDeclaration.prototype.paddingTop="";
-CSSStyleDeclaration.prototype.paddingRight="";
-CSSStyleDeclaration.prototype.paddingBottom="";
-CSSStyleDeclaration.prototype.paddingLeft="";
-CSSStyleDeclaration.prototype.page="";
-CSSStyleDeclaration.prototype.pageBreakAfter="";
-CSSStyleDeclaration.prototype.pageBreakBefore="";
-CSSStyleDeclaration.prototype.pageBreakInside="";
-CSSStyleDeclaration.prototype.pause="";
-CSSStyleDeclaration.prototype.pauseAfter="";
-CSSStyleDeclaration.prototype.pauseBefore="";
-CSSStyleDeclaration.prototype.pitch="";
-CSSStyleDeclaration.prototype.pitchRange="";
-CSSStyleDeclaration.prototype.position="";
-CSSStyleDeclaration.prototype.quotes="";
-CSSStyleDeclaration.prototype.richness="";
-CSSStyleDeclaration.prototype.right="";
-CSSStyleDeclaration.prototype.size="";
-CSSStyleDeclaration.prototype.speak="";
-CSSStyleDeclaration.prototype.speakHeader="";
-CSSStyleDeclaration.prototype.speakNumeral="";
-CSSStyleDeclaration.prototype.speakPunctuation="";
-CSSStyleDeclaration.prototype.speechRate="";
-CSSStyleDeclaration.prototype.stress="";
-CSSStyleDeclaration.prototype.tableLayout="";
-CSSStyleDeclaration.prototype.textAlign="";
-CSSStyleDeclaration.prototype.textDecoration="";
-CSSStyleDeclaration.prototype.textIndent="";
-CSSStyleDeclaration.prototype.textShadow="";
-CSSStyleDeclaration.prototype.textTransform="";
-CSSStyleDeclaration.prototype.top="";
-CSSStyleDeclaration.prototype.unicodeBidi="";
-CSSStyleDeclaration.prototype.verticalAlign="";
-CSSStyleDeclaration.prototype.visibility="";
-CSSStyleDeclaration.prototype.voiceFamily="";
-CSSStyleDeclaration.prototype.volume="";
-CSSStyleDeclaration.prototype.whiteSpace="";
-CSSStyleDeclaration.prototype.widows="";
-CSSStyleDeclaration.prototype.width="";
-CSSStyleDeclaration.prototype.wordSpacing="";
-CSSStyleDeclaration.prototype.zIndex="";
-CSSStyleDeclaration.prototype.MozAppearance="";
-CSSStyleDeclaration.prototype.MozBackgroundClip="";
-CSSStyleDeclaration.prototype.MozBackgroundInlinePolicy="";
-CSSStyleDeclaration.prototype.MozBackgroundOrigin="";
-CSSStyleDeclaration.prototype.MozBinding="";
-CSSStyleDeclaration.prototype.MozBorderBottomColors="";
-CSSStyleDeclaration.prototype.MozBorderLeftColors="";
-CSSStyleDeclaration.prototype.MozBorderRightColors="";
-CSSStyleDeclaration.prototype.MozBorderTopColors="";
-CSSStyleDeclaration.prototype.MozBorderRadius="";
-CSSStyleDeclaration.prototype.MozBorderRadiusTopleft="";
-CSSStyleDeclaration.prototype.MozBorderRadiusTopright="";
-CSSStyleDeclaration.prototype.MozBorderRadiusBottomleft="";
-CSSStyleDeclaration.prototype.MozBorderRadiusBottomright="";
-CSSStyleDeclaration.prototype.MozBoxAlign="";
-CSSStyleDeclaration.prototype.MozBoxDirection="";
-CSSStyleDeclaration.prototype.MozBoxFlex="";
-CSSStyleDeclaration.prototype.MozBoxOrient="";
-CSSStyleDeclaration.prototype.MozBoxOrdinalGroup="";
-CSSStyleDeclaration.prototype.MozBoxPack="";
-CSSStyleDeclaration.prototype.MozBoxSizing="";
-CSSStyleDeclaration.prototype.MozColumnCount="";
-CSSStyleDeclaration.prototype.MozColumnWidth="";
-CSSStyleDeclaration.prototype.MozColumnGap="";
-CSSStyleDeclaration.prototype.MozFloatEdge="";
-CSSStyleDeclaration.prototype.MozForceBrokenImageIcon="";
-CSSStyleDeclaration.prototype.MozImageRegion="";
-CSSStyleDeclaration.prototype.MozMarginEnd="";
-CSSStyleDeclaration.prototype.MozMarginStart="";
-CSSStyleDeclaration.prototype.MozOpacity="";
-CSSStyleDeclaration.prototype.MozOutline="";
-CSSStyleDeclaration.prototype.MozOutlineColor="";
-CSSStyleDeclaration.prototype.MozOutlineRadius="";
-CSSStyleDeclaration.prototype.MozOutlineRadiusTopleft="";
-CSSStyleDeclaration.prototype.MozOutlineRadiusTopright="";
-CSSStyleDeclaration.prototype.MozOutlineRadiusBottomleft="";
-CSSStyleDeclaration.prototype.MozOutlineRadiusBottomright="";
-CSSStyleDeclaration.prototype.MozOutlineStyle="";
-CSSStyleDeclaration.prototype.MozOutlineWidth="";
-CSSStyleDeclaration.prototype.MozOutlineOffset="";
-CSSStyleDeclaration.prototype.MozPaddingEnd="";
-CSSStyleDeclaration.prototype.MozPaddingStart="";
-CSSStyleDeclaration.prototype.MozUserFocus="";
-CSSStyleDeclaration.prototype.MozUserInput="";
-CSSStyleDeclaration.prototype.MozUserModify="";
-CSSStyleDeclaration.prototype.MozUserSelect="";
-CSSStyleDeclaration.prototype.opacity="";
-CSSStyleDeclaration.prototype.outlineOffset="";
-CSSStyleDeclaration.prototype.overflowX="";
-CSSStyleDeclaration.prototype.overflowY="";
-HTMLBodyElement.prototype= new Array();
-function HTMLBodyElement(){};
-HTMLBodyElement.prototype.nodeName="";
-HTMLBodyElement.prototype.nodeValue="";
-HTMLBodyElement.prototype.nodeType=0;
-HTMLBodyElement.prototype.parentNode= new HTMLHtmlElement();
-HTMLBodyElement.prototype.childNodes= new NodeList();
-HTMLBodyElement.prototype.firstChild= new Array();
-HTMLBodyElement.prototype.lastChild= new HTMLScriptElement();
-HTMLBodyElement.prototype.previousSibling= new HTMLHeadElement();
-HTMLBodyElement.prototype.nextSibling="";
-HTMLBodyElement.prototype.attributes= new NamedNodeMap();
-HTMLBodyElement.prototype.ownerDocument= new HTMLDocument();
-HTMLBodyElement.prototype.insertBefore=function(arg1,arg2){};
-HTMLBodyElement.prototype.replaceChild=function(arg1,arg2){};
-HTMLBodyElement.prototype.removeChild=function(arg1){};
-HTMLBodyElement.prototype.appendChild=function(arg1){};
-HTMLBodyElement.prototype.hasChildNodes=function(){};
-HTMLBodyElement.prototype.cloneNode=function(arg1){};
-HTMLBodyElement.prototype.normalize=function(){};
-HTMLBodyElement.prototype.isSupported=function(arg1,arg2){};
-HTMLBodyElement.prototype.namespaceURI="";
-HTMLBodyElement.prototype.prefix="";
-HTMLBodyElement.prototype.localName="";
-HTMLBodyElement.prototype.hasAttributes=function(){};
-HTMLBodyElement.prototype.ELEMENT_NODE=0;
-HTMLBodyElement.prototype.ATTRIBUTE_NODE=0;
-HTMLBodyElement.prototype.TEXT_NODE=0;
-HTMLBodyElement.prototype.CDATA_SECTION_NODE=0;
-HTMLBodyElement.prototype.ENTITY_REFERENCE_NODE=0;
-HTMLBodyElement.prototype.ENTITY_NODE=0;
-HTMLBodyElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-HTMLBodyElement.prototype.COMMENT_NODE=0;
-HTMLBodyElement.prototype.DOCUMENT_NODE=0;
-HTMLBodyElement.prototype.DOCUMENT_TYPE_NODE=0;
-HTMLBodyElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-HTMLBodyElement.prototype.NOTATION_NODE=0;
-HTMLBodyElement.prototype.tagName="";
-HTMLBodyElement.prototype.getAttribute=function(arg1){};
-HTMLBodyElement.prototype.setAttribute=function(arg1,arg2){};
-HTMLBodyElement.prototype.removeAttribute=function(arg1){};
-HTMLBodyElement.prototype.getAttributeNode=function(arg1){};
-HTMLBodyElement.prototype.setAttributeNode=function(arg1){};
-HTMLBodyElement.prototype.removeAttributeNode=function(arg1){};
-HTMLBodyElement.prototype.getElementsByTagName=function(arg1){};
-HTMLBodyElement.prototype.getAttributeNS=function(arg1,arg2){};
-HTMLBodyElement.prototype.setAttributeNS=function(arg1,arg2,arg3){};
-HTMLBodyElement.prototype.removeAttributeNS=function(arg1,arg2){};
-HTMLBodyElement.prototype.getAttributeNodeNS=function(arg1,arg2){};
-HTMLBodyElement.prototype.setAttributeNodeNS=function(arg1){};
-HTMLBodyElement.prototype.getElementsByTagNameNS=function(arg1,arg2){};
-HTMLBodyElement.prototype.hasAttribute=function(arg1){};
-HTMLBodyElement.prototype.hasAttributeNS=function(arg1,arg2){};
-HTMLBodyElement.prototype.id="";
-HTMLBodyElement.prototype.title="";
-HTMLBodyElement.prototype.lang="";
-HTMLBodyElement.prototype.dir="";
-HTMLBodyElement.prototype.className="";
-HTMLBodyElement.prototype.aLink="";
-HTMLBodyElement.prototype.background="";
-HTMLBodyElement.prototype.bgColor="";
-HTMLBodyElement.prototype.link="";
-HTMLBodyElement.prototype.text="";
-HTMLBodyElement.prototype.vLink="";
-HTMLBodyElement.prototype.offsetTop="";
-HTMLBodyElement.prototype.offsetLeft="";
-HTMLBodyElement.prototype.offsetWidth=0;
-HTMLBodyElement.prototype.offsetHeight=0;
-HTMLBodyElement.prototype.offsetParent="";
-HTMLBodyElement.prototype.innerHTML="";
-HTMLBodyElement.prototype.scrollTop="";
-HTMLBodyElement.prototype.scrollLeft="";
-HTMLBodyElement.prototype.scrollHeight=0;
-HTMLBodyElement.prototype.scrollWidth=0;
-HTMLBodyElement.prototype.clientHeight=0;
-HTMLBodyElement.prototype.clientWidth=0;
-HTMLBodyElement.prototype.tabIndex=0;
-HTMLBodyElement.prototype.blur=function(){};
-HTMLBodyElement.prototype.focus=function(){};
-HTMLBodyElement.prototype.spellcheck="";
-HTMLBodyElement.prototype.style= new CSSStyleDeclaration();
-HTMLBodyElement.prototype.removeEventListener=function(arg1,arg2,arg3){};
-HTMLBodyElement.prototype.dispatchEvent=function(arg1){};
-HTMLBodyElement.prototype.baseURI="";
-HTMLBodyElement.prototype.compareDocumentPosition=function(arg1){};
-HTMLBodyElement.prototype.textContent="";
-HTMLBodyElement.prototype.isSameNode=function(arg1){};
-HTMLBodyElement.prototype.lookupPrefix=function(arg1){};
-HTMLBodyElement.prototype.isDefaultNamespace=function(arg1){};
-HTMLBodyElement.prototype.lookupNamespaceURI=function(arg1){};
-HTMLBodyElement.prototype.isEqualNode=function(arg1){};
-HTMLBodyElement.prototype.getFeature=function(arg1,arg2){};
-HTMLBodyElement.prototype.setUserData=function(arg1,arg2,arg3){};
-HTMLBodyElement.prototype.getUserData=function(arg1){};
-HTMLBodyElement.prototype.DOCUMENT_POSITION_DISCONNECTED=0;
-HTMLBodyElement.prototype.DOCUMENT_POSITION_PRECEDING=0;
-HTMLBodyElement.prototype.DOCUMENT_POSITION_FOLLOWING=0;
-HTMLBodyElement.prototype.DOCUMENT_POSITION_CONTAINS=0;
-HTMLBodyElement.prototype.DOCUMENT_POSITION_CONTAINED_BY=0;
-HTMLBodyElement.prototype.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC=0;
-NamedNodeMap.prototype= new Array();
+/**
+* Object Text
+* @super Object
+* @type constructor
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype=new Object();
+function Text(){};
+/**
+* function addEventListener(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.addEventListener=function(arg1,arg2,arg3){};
+/**
+* property nodeName
+* @type String
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.nodeName="";
+/**
+* property nodeValue
+* @type String
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.nodeValue="";
+/**
+* property nodeType
+* @type Number
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.nodeType=0;
+/**
+* property parentNode
+* @type HTMLScriptElement
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.parentNode=new HTMLScriptElement();
+/**
+* property childNodes
+* @type NodeList
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.childNodes=new NodeList();
+/**
+* property firstChild
+* @type Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.firstChild=new Object();
+/**
+* property lastChild
+* @type Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.lastChild=new Object();
+/**
+* property previousSibling
+* @type Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.previousSibling=new Object();
+/**
+* property nextSibling
+* @type Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.nextSibling=new Object();
+/**
+* property attributes
+* @type Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.attributes=new Object();
+/**
+* property ownerDocument
+* @type HTMLDocument
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.ownerDocument=new HTMLDocument();
+/**
+* function insertBefore(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.insertBefore=function(arg1,arg2){};
+/**
+* function replaceChild(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.replaceChild=function(arg1,arg2){};
+/**
+* function removeChild(arg1)
+* @param arg1 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.removeChild=function(arg1){};
+/**
+* function appendChild(arg1)
+* @param arg1 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.appendChild=function(arg1){};
+/**
+* function hasChildNodes()
+* @type Boolean
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.hasChildNodes=function(){};
+/**
+* function cloneNode(arg1)
+* @type Element
+* @param arg1 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.cloneNode=function(arg1){};
+/**
+* function normalize()
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.normalize=function(){};
+/**
+* function isSupported(arg1,arg2)
+* @type Boolean
+* @param arg1 Object
+* @param arg2 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.isSupported=function(arg1,arg2){};
+/**
+* property namespaceURI
+* @type Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.namespaceURI=new Object();
+/**
+* property prefix
+* @type Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.prefix=new Object();
+/**
+* property localName
+* @type Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.localName=new Object();
+/**
+* function hasAttributes()
+* @type Boolean
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.hasAttributes=function(){};
+/**
+* property ELEMENT_NODE
+* @type Number
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.ELEMENT_NODE=0;
+/**
+* property ATTRIBUTE_NODE
+* @type Number
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.ATTRIBUTE_NODE=0;
+/**
+* property TEXT_NODE
+* @type Number
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.TEXT_NODE=0;
+/**
+* property CDATA_SECTION_NODE
+* @type Number
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.CDATA_SECTION_NODE=0;
+/**
+* property ENTITY_REFERENCE_NODE
+* @type Number
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.ENTITY_REFERENCE_NODE=0;
+/**
+* property ENTITY_NODE
+* @type Number
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.ENTITY_NODE=0;
+/**
+* property PROCESSING_INSTRUCTION_NODE
+* @type Number
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.PROCESSING_INSTRUCTION_NODE=0;
+/**
+* property COMMENT_NODE
+* @type Number
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.COMMENT_NODE=0;
+/**
+* property DOCUMENT_NODE
+* @type Number
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.DOCUMENT_NODE=0;
+/**
+* property DOCUMENT_TYPE_NODE
+* @type Number
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.DOCUMENT_TYPE_NODE=0;
+/**
+* property DOCUMENT_FRAGMENT_NODE
+* @type Number
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.DOCUMENT_FRAGMENT_NODE=0;
+/**
+* property NOTATION_NODE
+* @type Number
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.NOTATION_NODE=0;
+/**
+* property data
+* @type String
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.data="";
+/**
+* property length
+* @type Number
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.length=0;
+/**
+* function substringData(arg1,arg2)
+* @type String
+* @param arg1 Object
+* @param arg2 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.substringData=function(arg1,arg2){};
+/**
+* function appendData(arg1)
+* @param arg1 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.appendData=function(arg1){};
+/**
+* function insertData(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.insertData=function(arg1,arg2){};
+/**
+* function deleteData(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.deleteData=function(arg1,arg2){};
+/**
+* function replaceData(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.replaceData=function(arg1,arg2,arg3){};
+/**
+* function splitText(arg1)
+* @type String
+* @param arg1 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.splitText=function(arg1){};
+/**
+* function removeEventListener(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.removeEventListener=function(arg1,arg2,arg3){};
+/**
+* function dispatchEvent(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.dispatchEvent=function(arg1){};
+/**
+* property baseURI
+* @type String
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.baseURI="";
+/**
+* function compareDocumentPosition(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.compareDocumentPosition=function(arg1){};
+/**
+* property textContent
+* @type String
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.textContent="";
+/**
+* function isSameNode(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.isSameNode=function(arg1){};
+/**
+* function lookupPrefix(arg1)
+* @type String
+* @param arg1 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.lookupPrefix=function(arg1){};
+/**
+* function isDefaultNamespace(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.isDefaultNamespace=function(arg1){};
+/**
+* function lookupNamespaceURI(arg1)
+* @type String
+* @param arg1 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.lookupNamespaceURI=function(arg1){};
+/**
+* function isEqualNode(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.isEqualNode=function(arg1){};
+/**
+* function getFeature(arg1,arg2)
+* @type String
+* @param arg1 Object
+* @param arg2 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.getFeature=function(arg1,arg2){};
+/**
+* function setUserData(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.setUserData=function(arg1,arg2,arg3){};
+/**
+* function getUserData(arg1)
+* @type Object
+* @param arg1 Object
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.getUserData=function(arg1){};
+/**
+* property DOCUMENT_POSITION_DISCONNECTED
+* @type Number
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.DOCUMENT_POSITION_DISCONNECTED=0;
+/**
+* property DOCUMENT_POSITION_PRECEDING
+* @type Number
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.DOCUMENT_POSITION_PRECEDING=0;
+/**
+* property DOCUMENT_POSITION_FOLLOWING
+* @type Number
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.DOCUMENT_POSITION_FOLLOWING=0;
+/**
+* property DOCUMENT_POSITION_CONTAINS
+* @type Number
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.DOCUMENT_POSITION_CONTAINS=0;
+/**
+* property DOCUMENT_POSITION_CONTAINED_BY
+* @type Number
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.DOCUMENT_POSITION_CONTAINED_BY=0;
+/**
+* property DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC
+* @type Number
+* @class Text
+* @since FireFox 2.0.0.3
+*/
+Text.prototype.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC=0;
+/**
+* Object NamedNodeMap
+* @super Object
+* @type constructor
+* @class NamedNodeMap
+* @since FireFox 2.0.0.3
+*/
+NamedNodeMap.prototype=new Object();
 function NamedNodeMap(){};
-NamedNodeMap.prototype.length="";
+/**
+* property length
+* @type Number
+* @class NamedNodeMap
+* @since FireFox 2.0.0.3
+*/
+NamedNodeMap.prototype.length=0;
+/**
+* function getNamedItem(arg1)
+* @type Element
+* @param arg1 Object
+* @class NamedNodeMap
+* @since FireFox 2.0.0.3
+*/
 NamedNodeMap.prototype.getNamedItem=function(arg1){};
+/**
+* function setNamedItem(arg1)
+* @param arg1 Object
+* @class NamedNodeMap
+* @since FireFox 2.0.0.3
+*/
 NamedNodeMap.prototype.setNamedItem=function(arg1){};
+/**
+* function removeNamedItem(arg1)
+* @param arg1 Object
+* @class NamedNodeMap
+* @since FireFox 2.0.0.3
+*/
 NamedNodeMap.prototype.removeNamedItem=function(arg1){};
+/**
+* function item(arg1)
+* @type Object
+* @param arg1 Object
+* @class NamedNodeMap
+* @since FireFox 2.0.0.3
+*/
 NamedNodeMap.prototype.item=function(arg1){};
+/**
+* function getNamedItemNS(arg1,arg2)
+* @type Element
+* @param arg1 Object
+* @param arg2 Object
+* @class NamedNodeMap
+* @since FireFox 2.0.0.3
+*/
 NamedNodeMap.prototype.getNamedItemNS=function(arg1,arg2){};
+/**
+* function setNamedItemNS(arg1)
+* @param arg1 Object
+* @class NamedNodeMap
+* @since FireFox 2.0.0.3
+*/
 NamedNodeMap.prototype.setNamedItemNS=function(arg1){};
+/**
+* function removeNamedItemNS(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class NamedNodeMap
+* @since FireFox 2.0.0.3
+*/
 NamedNodeMap.prototype.removeNamedItemNS=function(arg1,arg2){};
-DOMImplementation.prototype= new Array();
+/**
+* Object Attr
+* @super Object
+* @type constructor
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype=new Object();
+function Attr(){};
+/**
+* property nodeName
+* @type String
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.nodeName="";
+/**
+* property nodeValue
+* @type String
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.nodeValue="";
+/**
+* property nodeType
+* @type Number
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.nodeType=0;
+/**
+* property parentNode
+* @type Object
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.parentNode=new Object();
+/**
+* property childNodes
+* @type NodeList
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.childNodes=new NodeList();
+/**
+* property firstChild
+* @type Text
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.firstChild=new Text();
+/**
+* property lastChild
+* @type Text
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.lastChild=new Text();
+/**
+* property previousSibling
+* @type Object
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.previousSibling=new Object();
+/**
+* property nextSibling
+* @type Object
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.nextSibling=new Object();
+/**
+* property attributes
+* @type Object
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.attributes=new Object();
+/**
+* property ownerDocument
+* @type HTMLDocument
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.ownerDocument=new HTMLDocument();
+/**
+* function insertBefore(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.insertBefore=function(arg1,arg2){};
+/**
+* function replaceChild(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.replaceChild=function(arg1,arg2){};
+/**
+* function removeChild(arg1)
+* @param arg1 Object
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.removeChild=function(arg1){};
+/**
+* function appendChild(arg1)
+* @param arg1 Object
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.appendChild=function(arg1){};
+/**
+* function hasChildNodes()
+* @type Boolean
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.hasChildNodes=function(){};
+/**
+* function cloneNode(arg1)
+* @type Element
+* @param arg1 Object
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.cloneNode=function(arg1){};
+/**
+* function normalize()
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.normalize=function(){};
+/**
+* function isSupported(arg1,arg2)
+* @type Boolean
+* @param arg1 Object
+* @param arg2 Object
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.isSupported=function(arg1,arg2){};
+/**
+* property namespaceURI
+* @type Object
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.namespaceURI=new Object();
+/**
+* property prefix
+* @type Object
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.prefix=new Object();
+/**
+* property localName
+* @type String
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.localName="";
+/**
+* function hasAttributes()
+* @type Boolean
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.hasAttributes=function(){};
+/**
+* property name
+* @type String
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.name="";
+/**
+* property specified
+* @type Boolean
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.specified=false;
+/**
+* property value
+* @type String
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.value="";
+/**
+* property ownerElement
+* @type HTMLScriptElement
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.ownerElement=new HTMLScriptElement();
+/**
+* property ELEMENT_NODE
+* @type Number
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.ELEMENT_NODE=0;
+/**
+* property ATTRIBUTE_NODE
+* @type Number
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.ATTRIBUTE_NODE=0;
+/**
+* property TEXT_NODE
+* @type Number
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.TEXT_NODE=0;
+/**
+* property CDATA_SECTION_NODE
+* @type Number
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.CDATA_SECTION_NODE=0;
+/**
+* property ENTITY_REFERENCE_NODE
+* @type Number
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.ENTITY_REFERENCE_NODE=0;
+/**
+* property ENTITY_NODE
+* @type Number
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.ENTITY_NODE=0;
+/**
+* property PROCESSING_INSTRUCTION_NODE
+* @type Number
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.PROCESSING_INSTRUCTION_NODE=0;
+/**
+* property COMMENT_NODE
+* @type Number
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.COMMENT_NODE=0;
+/**
+* property DOCUMENT_NODE
+* @type Number
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.DOCUMENT_NODE=0;
+/**
+* property DOCUMENT_TYPE_NODE
+* @type Number
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.DOCUMENT_TYPE_NODE=0;
+/**
+* property DOCUMENT_FRAGMENT_NODE
+* @type Number
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.DOCUMENT_FRAGMENT_NODE=0;
+/**
+* property NOTATION_NODE
+* @type Number
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.NOTATION_NODE=0;
+/**
+* property baseURI
+* @type String
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.baseURI="";
+/**
+* function compareDocumentPosition(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.compareDocumentPosition=function(arg1){};
+/**
+* property textContent
+* @type String
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.textContent="";
+/**
+* function isSameNode(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.isSameNode=function(arg1){};
+/**
+* function lookupPrefix(arg1)
+* @type String
+* @param arg1 Object
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.lookupPrefix=function(arg1){};
+/**
+* function isDefaultNamespace(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.isDefaultNamespace=function(arg1){};
+/**
+* function lookupNamespaceURI(arg1)
+* @type String
+* @param arg1 Object
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.lookupNamespaceURI=function(arg1){};
+/**
+* function isEqualNode(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.isEqualNode=function(arg1){};
+/**
+* function getFeature(arg1,arg2)
+* @type String
+* @param arg1 Object
+* @param arg2 Object
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.getFeature=function(arg1,arg2){};
+/**
+* function setUserData(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.setUserData=function(arg1,arg2,arg3){};
+/**
+* function getUserData(arg1)
+* @type Object
+* @param arg1 Object
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.getUserData=function(arg1){};
+/**
+* property DOCUMENT_POSITION_DISCONNECTED
+* @type Number
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.DOCUMENT_POSITION_DISCONNECTED=0;
+/**
+* property DOCUMENT_POSITION_PRECEDING
+* @type Number
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.DOCUMENT_POSITION_PRECEDING=0;
+/**
+* property DOCUMENT_POSITION_FOLLOWING
+* @type Number
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.DOCUMENT_POSITION_FOLLOWING=0;
+/**
+* property DOCUMENT_POSITION_CONTAINS
+* @type Number
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.DOCUMENT_POSITION_CONTAINS=0;
+/**
+* property DOCUMENT_POSITION_CONTAINED_BY
+* @type Number
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.DOCUMENT_POSITION_CONTAINED_BY=0;
+/**
+* property DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC
+* @type Number
+* @class Attr
+* @since FireFox 2.0.0.3
+*/
+Attr.prototype.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC=0;
+/**
+* Object CSSStyleDeclaration
+* @super Object
+* @type constructor
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype=new Object();
+function CSSStyleDeclaration(){};
+/**
+* property length
+* @type Number
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.length=0;
+/**
+* property cssText
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.cssText="";
+/**
+* function getPropertyValue(arg1)
+* @type String
+* @param arg1 Object
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.getPropertyValue=function(arg1){};
+/**
+* function getPropertyCSSValue(arg1)
+* @type String
+* @param arg1 Object
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.getPropertyCSSValue=function(arg1){};
+/**
+* function removeProperty(arg1)
+* @param arg1 Object
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.removeProperty=function(arg1){};
+/**
+* function getPropertyPriority(arg1)
+* @type Number
+* @param arg1 Object
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.getPropertyPriority=function(arg1){};
+/**
+* function setProperty(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.setProperty=function(arg1,arg2,arg3){};
+/**
+* function item(arg1)
+* @type Object
+* @param arg1 Object
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.item=function(arg1){};
+/**
+* property parentRule
+* @type Object
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.parentRule=new Object();
+/**
+* property azimuth
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.azimuth="";
+/**
+* property background
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.background="";
+/**
+* property backgroundAttachment
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.backgroundAttachment="";
+/**
+* property backgroundColor
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.backgroundColor="";
+/**
+* property backgroundImage
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.backgroundImage="";
+/**
+* property backgroundPosition
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.backgroundPosition="";
+/**
+* property backgroundRepeat
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.backgroundRepeat="";
+/**
+* property border
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.border="";
+/**
+* property borderCollapse
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.borderCollapse="";
+/**
+* property borderColor
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.borderColor="";
+/**
+* property borderSpacing
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.borderSpacing="";
+/**
+* property borderStyle
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.borderStyle="";
+/**
+* property borderTop
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.borderTop="";
+/**
+* property borderRight
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.borderRight="";
+/**
+* property borderBottom
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.borderBottom="";
+/**
+* property borderLeft
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.borderLeft="";
+/**
+* property borderTopColor
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.borderTopColor="";
+/**
+* property borderRightColor
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.borderRightColor="";
+/**
+* property borderBottomColor
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.borderBottomColor="";
+/**
+* property borderLeftColor
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.borderLeftColor="";
+/**
+* property borderTopStyle
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.borderTopStyle="";
+/**
+* property borderRightStyle
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.borderRightStyle="";
+/**
+* property borderBottomStyle
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.borderBottomStyle="";
+/**
+* property borderLeftStyle
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.borderLeftStyle="";
+/**
+* property borderTopWidth
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.borderTopWidth="";
+/**
+* property borderRightWidth
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.borderRightWidth="";
+/**
+* property borderBottomWidth
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.borderBottomWidth="";
+/**
+* property borderLeftWidth
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.borderLeftWidth="";
+/**
+* property borderWidth
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.borderWidth="";
+/**
+* property bottom
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.bottom="";
+/**
+* property captionSide
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.captionSide="";
+/**
+* property clear
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.clear="";
+/**
+* property clip
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.clip="";
+/**
+* property color
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.color="";
+/**
+* property content
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.content="";
+/**
+* property counterIncrement
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.counterIncrement="";
+/**
+* property counterReset
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.counterReset="";
+/**
+* property cue
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.cue="";
+/**
+* property cueAfter
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.cueAfter="";
+/**
+* property cueBefore
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.cueBefore="";
+/**
+* property cursor
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.cursor="";
+/**
+* property direction
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.direction="";
+/**
+* property display
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.display="";
+/**
+* property elevation
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.elevation="";
+/**
+* property emptyCells
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.emptyCells="";
+/**
+* property cssFloat
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.cssFloat="";
+/**
+* property font
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.font="";
+/**
+* property fontFamily
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.fontFamily="";
+/**
+* property fontSize
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.fontSize="";
+/**
+* property fontSizeAdjust
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.fontSizeAdjust="";
+/**
+* property fontStretch
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.fontStretch="";
+/**
+* property fontStyle
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.fontStyle="";
+/**
+* property fontVariant
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.fontVariant="";
+/**
+* property fontWeight
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.fontWeight="";
+/**
+* property height
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.height="";
+/**
+* property left
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.left="";
+/**
+* property letterSpacing
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.letterSpacing="";
+/**
+* property lineHeight
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.lineHeight="";
+/**
+* property listStyle
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.listStyle="";
+/**
+* property listStyleImage
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.listStyleImage="";
+/**
+* property listStylePosition
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.listStylePosition="";
+/**
+* property listStyleType
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.listStyleType="";
+/**
+* property margin
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.margin="";
+/**
+* property marginTop
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.marginTop="";
+/**
+* property marginRight
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.marginRight="";
+/**
+* property marginBottom
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.marginBottom="";
+/**
+* property marginLeft
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.marginLeft="";
+/**
+* property markerOffset
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.markerOffset="";
+/**
+* property marks
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.marks="";
+/**
+* property maxHeight
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.maxHeight="";
+/**
+* property maxWidth
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.maxWidth="";
+/**
+* property minHeight
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.minHeight="";
+/**
+* property minWidth
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.minWidth="";
+/**
+* property orphans
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.orphans="";
+/**
+* property outline
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.outline="";
+/**
+* property outlineColor
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.outlineColor="";
+/**
+* property outlineStyle
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.outlineStyle="";
+/**
+* property outlineWidth
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.outlineWidth="";
+/**
+* property overflow
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.overflow="";
+/**
+* property padding
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.padding="";
+/**
+* property paddingTop
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.paddingTop="";
+/**
+* property paddingRight
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.paddingRight="";
+/**
+* property paddingBottom
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.paddingBottom="";
+/**
+* property paddingLeft
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.paddingLeft="";
+/**
+* property page
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.page="";
+/**
+* property pageBreakAfter
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.pageBreakAfter="";
+/**
+* property pageBreakBefore
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.pageBreakBefore="";
+/**
+* property pageBreakInside
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.pageBreakInside="";
+/**
+* property pause
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.pause="";
+/**
+* property pauseAfter
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.pauseAfter="";
+/**
+* property pauseBefore
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.pauseBefore="";
+/**
+* property pitch
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.pitch="";
+/**
+* property pitchRange
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.pitchRange="";
+/**
+* property position
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.position="";
+/**
+* property quotes
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.quotes="";
+/**
+* property richness
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.richness="";
+/**
+* property right
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.right="";
+/**
+* property size
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.size="";
+/**
+* property speak
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.speak="";
+/**
+* property speakHeader
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.speakHeader="";
+/**
+* property speakNumeral
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.speakNumeral="";
+/**
+* property speakPunctuation
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.speakPunctuation="";
+/**
+* property speechRate
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.speechRate="";
+/**
+* property stress
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.stress="";
+/**
+* property tableLayout
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.tableLayout="";
+/**
+* property textAlign
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.textAlign="";
+/**
+* property textDecoration
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.textDecoration="";
+/**
+* property textIndent
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.textIndent="";
+/**
+* property textShadow
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.textShadow="";
+/**
+* property textTransform
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.textTransform="";
+/**
+* property top
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.top="";
+/**
+* property unicodeBidi
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.unicodeBidi="";
+/**
+* property verticalAlign
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.verticalAlign="";
+/**
+* property visibility
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.visibility="";
+/**
+* property voiceFamily
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.voiceFamily="";
+/**
+* property volume
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.volume="";
+/**
+* property whiteSpace
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.whiteSpace="";
+/**
+* property widows
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.widows="";
+/**
+* property width
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.width="";
+/**
+* property wordSpacing
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.wordSpacing="";
+/**
+* property zIndex
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.zIndex="";
+/**
+* property MozAppearance
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozAppearance="";
+/**
+* property MozBackgroundClip
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozBackgroundClip="";
+/**
+* property MozBackgroundInlinePolicy
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozBackgroundInlinePolicy="";
+/**
+* property MozBackgroundOrigin
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozBackgroundOrigin="";
+/**
+* property MozBinding
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozBinding="";
+/**
+* property MozBorderBottomColors
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozBorderBottomColors="";
+/**
+* property MozBorderLeftColors
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozBorderLeftColors="";
+/**
+* property MozBorderRightColors
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozBorderRightColors="";
+/**
+* property MozBorderTopColors
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozBorderTopColors="";
+/**
+* property MozBorderRadius
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozBorderRadius="";
+/**
+* property MozBorderRadiusTopleft
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozBorderRadiusTopleft="";
+/**
+* property MozBorderRadiusTopright
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozBorderRadiusTopright="";
+/**
+* property MozBorderRadiusBottomleft
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozBorderRadiusBottomleft="";
+/**
+* property MozBorderRadiusBottomright
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozBorderRadiusBottomright="";
+/**
+* property MozBoxAlign
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozBoxAlign="";
+/**
+* property MozBoxDirection
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozBoxDirection="";
+/**
+* property MozBoxFlex
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozBoxFlex="";
+/**
+* property MozBoxOrient
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozBoxOrient="";
+/**
+* property MozBoxOrdinalGroup
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozBoxOrdinalGroup="";
+/**
+* property MozBoxPack
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozBoxPack="";
+/**
+* property MozBoxSizing
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozBoxSizing="";
+/**
+* property MozColumnCount
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozColumnCount="";
+/**
+* property MozColumnWidth
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozColumnWidth="";
+/**
+* property MozColumnGap
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozColumnGap="";
+/**
+* property MozFloatEdge
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozFloatEdge="";
+/**
+* property MozForceBrokenImageIcon
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozForceBrokenImageIcon="";
+/**
+* property MozImageRegion
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozImageRegion="";
+/**
+* property MozMarginEnd
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozMarginEnd="";
+/**
+* property MozMarginStart
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozMarginStart="";
+/**
+* property MozOpacity
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozOpacity="";
+/**
+* property MozOutline
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozOutline="";
+/**
+* property MozOutlineColor
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozOutlineColor="";
+/**
+* property MozOutlineRadius
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozOutlineRadius="";
+/**
+* property MozOutlineRadiusTopleft
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozOutlineRadiusTopleft="";
+/**
+* property MozOutlineRadiusTopright
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozOutlineRadiusTopright="";
+/**
+* property MozOutlineRadiusBottomleft
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozOutlineRadiusBottomleft="";
+/**
+* property MozOutlineRadiusBottomright
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozOutlineRadiusBottomright="";
+/**
+* property MozOutlineStyle
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozOutlineStyle="";
+/**
+* property MozOutlineWidth
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozOutlineWidth="";
+/**
+* property MozOutlineOffset
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozOutlineOffset="";
+/**
+* property MozPaddingEnd
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozPaddingEnd="";
+/**
+* property MozPaddingStart
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozPaddingStart="";
+/**
+* property MozUserFocus
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozUserFocus="";
+/**
+* property MozUserInput
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozUserInput="";
+/**
+* property MozUserModify
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozUserModify="";
+/**
+* property MozUserSelect
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.MozUserSelect="";
+/**
+* property opacity
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.opacity="";
+/**
+* property outlineOffset
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.outlineOffset="";
+/**
+* property overflowX
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.overflowX="";
+/**
+* property overflowY
+* @type String
+* @class CSSStyleDeclaration
+* @since FireFox 2.0.0.3
+*/
+CSSStyleDeclaration.prototype.overflowY="";
+/**
+* Object HTMLBodyElement
+* @super Object
+* @type constructor
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype=new Object();
+function HTMLBodyElement(){};
+/**
+* function addEventListener(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.addEventListener=function(arg1,arg2,arg3){};
+/**
+* property nodeName
+* @type String
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.nodeName="";
+/**
+* property nodeValue
+* @type Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.nodeValue=new Object();
+/**
+* property nodeType
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.nodeType=0;
+/**
+* property parentNode
+* @type HTMLHtmlElement
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.parentNode=new HTMLHtmlElement();
+/**
+* property childNodes
+* @type NodeList
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.childNodes=new NodeList();
+/**
+* property firstChild
+* @type Text
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.firstChild=new Text();
+/**
+* property lastChild
+* @type HTMLBRElement
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.lastChild=new HTMLBRElement();
+/**
+* property previousSibling
+* @type HTMLHeadElement
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.previousSibling=new HTMLHeadElement();
+/**
+* property nextSibling
+* @type Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.nextSibling=new Object();
+/**
+* property attributes
+* @type NamedNodeMap
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.attributes=new NamedNodeMap();
+/**
+* property ownerDocument
+* @type HTMLDocument
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.ownerDocument=new HTMLDocument();
+/**
+* function insertBefore(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.insertBefore=function(arg1,arg2){};
+/**
+* function replaceChild(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.replaceChild=function(arg1,arg2){};
+/**
+* function removeChild(arg1)
+* @param arg1 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.removeChild=function(arg1){};
+/**
+* function appendChild(arg1)
+* @param arg1 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.appendChild=function(arg1){};
+/**
+* function hasChildNodes()
+* @type Boolean
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.hasChildNodes=function(){};
+/**
+* function cloneNode(arg1)
+* @type Element
+* @param arg1 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.cloneNode=function(arg1){};
+/**
+* function normalize()
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.normalize=function(){};
+/**
+* function isSupported(arg1,arg2)
+* @type Boolean
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.isSupported=function(arg1,arg2){};
+/**
+* property namespaceURI
+* @type Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.namespaceURI=new Object();
+/**
+* property prefix
+* @type Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.prefix=new Object();
+/**
+* property localName
+* @type String
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.localName="";
+/**
+* function hasAttributes()
+* @type Boolean
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.hasAttributes=function(){};
+/**
+* property ELEMENT_NODE
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.ELEMENT_NODE=0;
+/**
+* property ATTRIBUTE_NODE
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.ATTRIBUTE_NODE=0;
+/**
+* property TEXT_NODE
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.TEXT_NODE=0;
+/**
+* property CDATA_SECTION_NODE
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.CDATA_SECTION_NODE=0;
+/**
+* property ENTITY_REFERENCE_NODE
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.ENTITY_REFERENCE_NODE=0;
+/**
+* property ENTITY_NODE
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.ENTITY_NODE=0;
+/**
+* property PROCESSING_INSTRUCTION_NODE
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
+/**
+* property COMMENT_NODE
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.COMMENT_NODE=0;
+/**
+* property DOCUMENT_NODE
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.DOCUMENT_NODE=0;
+/**
+* property DOCUMENT_TYPE_NODE
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.DOCUMENT_TYPE_NODE=0;
+/**
+* property DOCUMENT_FRAGMENT_NODE
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
+/**
+* property NOTATION_NODE
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.NOTATION_NODE=0;
+/**
+* property tagName
+* @type String
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.tagName="";
+/**
+* function getAttribute(arg1)
+* @type Attr
+* @param arg1 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.getAttribute=function(arg1){};
+/**
+* function setAttribute(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.setAttribute=function(arg1,arg2){};
+/**
+* function removeAttribute(arg1)
+* @param arg1 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.removeAttribute=function(arg1){};
+/**
+* function getAttributeNode(arg1)
+* @type Element
+* @param arg1 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.getAttributeNode=function(arg1){};
+/**
+* function setAttributeNode(arg1)
+* @param arg1 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.setAttributeNode=function(arg1){};
+/**
+* function removeAttributeNode(arg1)
+* @param arg1 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.removeAttributeNode=function(arg1){};
+/**
+* function getElementsByTagName(arg1)
+* @type NodeList
+* @param arg1 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.getElementsByTagName=function(arg1){};
+/**
+* function getAttributeNS(arg1,arg2)
+* @type Object
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.getAttributeNS=function(arg1,arg2){};
+/**
+* function setAttributeNS(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.setAttributeNS=function(arg1,arg2,arg3){};
+/**
+* function removeAttributeNS(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.removeAttributeNS=function(arg1,arg2){};
+/**
+* function getAttributeNodeNS(arg1,arg2)
+* @type Object
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.getAttributeNodeNS=function(arg1,arg2){};
+/**
+* function setAttributeNodeNS(arg1)
+* @param arg1 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.setAttributeNodeNS=function(arg1){};
+/**
+* function getElementsByTagNameNS(arg1,arg2)
+* @type NodeList
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.getElementsByTagNameNS=function(arg1,arg2){};
+/**
+* function hasAttribute(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.hasAttribute=function(arg1){};
+/**
+* function hasAttributeNS(arg1,arg2)
+* @type Boolean
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.hasAttributeNS=function(arg1,arg2){};
+/**
+* property id
+* @type String
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.id="";
+/**
+* property title
+* @type String
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.title="";
+/**
+* property lang
+* @type String
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.lang="";
+/**
+* property dir
+* @type String
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.dir="";
+/**
+* property className
+* @type String
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.className="";
+/**
+* property aLink
+* @type String
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.aLink="";
+/**
+* property background
+* @type String
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.background="";
+/**
+* property bgColor
+* @type String
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.bgColor="";
+/**
+* property link
+* @type String
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.link="";
+/**
+* property text
+* @type String
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.text="";
+/**
+* property vLink
+* @type String
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.vLink="";
+/**
+* property offsetTop
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.offsetTop=0;
+/**
+* property offsetLeft
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.offsetLeft=0;
+/**
+* property offsetWidth
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.offsetWidth=0;
+/**
+* property offsetHeight
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.offsetHeight=0;
+/**
+* property offsetParent
+* @type Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.offsetParent=new Object();
+/**
+* property innerHTML
+* @type String
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.innerHTML="";
+/**
+* property scrollTop
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.scrollTop=0;
+/**
+* property scrollLeft
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.scrollLeft=0;
+/**
+* property scrollHeight
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.scrollHeight=0;
+/**
+* property scrollWidth
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.scrollWidth=0;
+/**
+* property clientHeight
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.clientHeight=0;
+/**
+* property clientWidth
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.clientWidth=0;
+/**
+* property tabIndex
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.tabIndex=0;
+/**
+* function blur()
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.blur=function(){};
+/**
+* function focus()
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.focus=function(){};
+/**
+* property spellcheck
+* @type Boolean
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.spellcheck=false;
+/**
+* property style
+* @type CSSStyleDeclaration
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.style=new CSSStyleDeclaration();
+/**
+* function removeEventListener(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.removeEventListener=function(arg1,arg2,arg3){};
+/**
+* function dispatchEvent(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.dispatchEvent=function(arg1){};
+/**
+* property baseURI
+* @type String
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.baseURI="";
+/**
+* function compareDocumentPosition(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.compareDocumentPosition=function(arg1){};
+/**
+* property textContent
+* @type String
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.textContent="";
+/**
+* function isSameNode(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.isSameNode=function(arg1){};
+/**
+* function lookupPrefix(arg1)
+* @type String
+* @param arg1 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.lookupPrefix=function(arg1){};
+/**
+* function isDefaultNamespace(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.isDefaultNamespace=function(arg1){};
+/**
+* function lookupNamespaceURI(arg1)
+* @type String
+* @param arg1 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.lookupNamespaceURI=function(arg1){};
+/**
+* function isEqualNode(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.isEqualNode=function(arg1){};
+/**
+* function getFeature(arg1,arg2)
+* @type String
+* @param arg1 Object
+* @param arg2 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.getFeature=function(arg1,arg2){};
+/**
+* function setUserData(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.setUserData=function(arg1,arg2,arg3){};
+/**
+* function getUserData(arg1)
+* @type Object
+* @param arg1 Object
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.getUserData=function(arg1){};
+/**
+* property DOCUMENT_POSITION_DISCONNECTED
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.DOCUMENT_POSITION_DISCONNECTED=0;
+/**
+* property DOCUMENT_POSITION_PRECEDING
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.DOCUMENT_POSITION_PRECEDING=0;
+/**
+* property DOCUMENT_POSITION_FOLLOWING
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.DOCUMENT_POSITION_FOLLOWING=0;
+/**
+* property DOCUMENT_POSITION_CONTAINS
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.DOCUMENT_POSITION_CONTAINS=0;
+/**
+* property DOCUMENT_POSITION_CONTAINED_BY
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.DOCUMENT_POSITION_CONTAINED_BY=0;
+/**
+* property DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC
+* @type Number
+* @class HTMLBodyElement
+* @since FireFox 2.0.0.3
+*/
+HTMLBodyElement.prototype.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC=0;
+/**
+* Object DOMImplementation
+* @super Object
+* @type constructor
+* @class DOMImplementation
+* @since FireFox 2.0.0.3
+*/
+DOMImplementation.prototype=new Object();
 function DOMImplementation(){};
+/**
+* function hasFeature(arg1,arg2)
+* @type Boolean
+* @param arg1 Object
+* @param arg2 Object
+* @class DOMImplementation
+* @since FireFox 2.0.0.3
+*/
 DOMImplementation.prototype.hasFeature=function(arg1,arg2){};
+/**
+* function createDocumentType(arg1,arg2,arg3)
+* @type Object
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class DOMImplementation
+* @since FireFox 2.0.0.3
+*/
 DOMImplementation.prototype.createDocumentType=function(arg1,arg2,arg3){};
+/**
+* function createDocument(arg1,arg2,arg3)
+* @type HTMLDocument
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class DOMImplementation
+* @since FireFox 2.0.0.3
+*/
 DOMImplementation.prototype.createDocument=function(arg1,arg2,arg3){};
-HTMLCollection.prototype= new Array();
+/**
+* Object HTMLCollection
+* @super Object
+* @type constructor
+* @class HTMLCollection
+* @since FireFox 2.0.0.3
+*/
+HTMLCollection.prototype=new Object();
 function HTMLCollection(){};
-HTMLCollection.prototype.length="";
+/**
+* property length
+* @type Number
+* @class HTMLCollection
+* @since FireFox 2.0.0.3
+*/
+HTMLCollection.prototype.length=0;
+/**
+* function item(arg1)
+* @type Object
+* @param arg1 Object
+* @class HTMLCollection
+* @since FireFox 2.0.0.3
+*/
 HTMLCollection.prototype.item=function(arg1){};
+/**
+* function namedItem(arg1)
+* @type Object
+* @param arg1 Object
+* @class HTMLCollection
+* @since FireFox 2.0.0.3
+*/
 HTMLCollection.prototype.namedItem=function(arg1){};
-Package .prototype= new Array();
-function Package (){};
-/*
-Package sun.prototype= new Array();
-function Package sun(){};
-Package java.prototype= new Array();
-function Package java(){};
-Object.prototype= new Array();
-function Object(){};
+/**
+* Object JavaPackage
+* @super Object
+* @type constructor
+* @class JavaPackage
+* @since FireFox 2.0.0.3
 */
-nsXPCComponents.prototype= new Array();
+JavaPackage.prototype=new Object();
+function JavaPackage(){};
+/**
+* Object nsXPCComponents
+* @super Object
+* @type constructor
+* @class nsXPCComponents
+* @since FireFox 2.0.0.3
+*/
+nsXPCComponents.prototype=new Object();
 function nsXPCComponents(){};
-nsXPCComponents.prototype.QueryInterface=function(arg1){};
-nsXPCComponents.prototype.interfaces= new nsXPCComponents_Interfaces();
-nsXPCComponents.prototype.interfacesByID= new nsXPCComponents_InterfacesByID();
-nsXPCComponents.prototype.classes="";
-nsXPCComponents.prototype.classesByID="";
-nsXPCComponents.prototype.stack="";
-nsXPCComponents.prototype.results="";
-nsXPCComponents.prototype.manager="";
-nsXPCComponents.prototype.utils="";
-nsXPCComponents.prototype.ID="";
-nsXPCComponents.prototype.Exception="";
-nsXPCComponents.prototype.Constructor="";
-nsXPCComponents.prototype.isSuccessCode=function(arg1){};
-nsXPCComponents.prototype.lookupMethod=function(){};
-nsXPCComponents.prototype.reportError=function(){};
-nsXPCComponents_Interfaces.prototype= new Array();
-function nsXPCComponents_Interfaces(){};
-nsXPCComponents_Interfaces.prototype.nsIDOMStyleSheet= new nsIDOMStyleSheet();
-nsXPCComponents_Interfaces.prototype.nsIWSDLPart= new nsIWSDLPart();
-nsXPCComponents_Interfaces.prototype.nsIUnicharStreamListener= new nsIUnicharStreamListener();
-nsXPCComponents_Interfaces.prototype.nsIContentSniffer= new nsIContentSniffer();
-nsXPCComponents_Interfaces.prototype.nsIXmlRpcClient= new nsIXmlRpcClient();
-nsXPCComponents_Interfaces.prototype.nsIInterfaceInfoToIDL= new nsIInterfaceInfoToIDL();
-nsXPCComponents_Interfaces.prototype.nsITimer= new nsITimer();
-nsXPCComponents_Interfaces.prototype.nsIWebServiceProxyFactory= new nsIWebServiceProxyFactory();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSXBLFormControl= new nsIDOMNSXBLFormControl();
-nsXPCComponents_Interfaces.prototype.nsIScrollBoxObject= new nsIScrollBoxObject();
-nsXPCComponents_Interfaces.prototype.nsICachingChannel= new nsICachingChannel();
-nsXPCComponents_Interfaces.prototype.nsIDOMXMLDocument= new nsIDOMXMLDocument();
-nsXPCComponents_Interfaces.prototype.nsICertSelect= new nsICertSelect();
-nsXPCComponents_Interfaces.prototype.nsIJARURI= new nsIJARURI();
-nsXPCComponents_Interfaces.prototype.nsIEditorSpellCheck_MOZILLA_1_8_BRANCH= new nsIEditorSpellCheck_MOZILLA_1_8_BRANCH();
-nsXPCComponents_Interfaces.prototype.nsIZipReader= new nsIZipReader();
-nsXPCComponents_Interfaces.prototype.nsISOAPService= new nsISOAPService();
-nsXPCComponents_Interfaces.prototype.nsIPropertyBag2= new nsIPropertyBag2();
-nsXPCComponents_Interfaces.prototype.nsILocalFile= new nsILocalFile();
-nsXPCComponents_Interfaces.prototype.nsIDOMStorageItem= new nsIDOMStorageItem();
-nsXPCComponents_Interfaces.prototype.nsISupportsPRInt16= new nsISupportsPRInt16();
-nsXPCComponents_Interfaces.prototype.nsIStorageStream= new nsIStorageStream();
-nsXPCComponents_Interfaces.prototype.nsIDOMLSInput= new nsIDOMLSInput();
-nsXPCComponents_Interfaces.prototype.nsIDOMMutationEvent= new nsIDOMMutationEvent();
-nsXPCComponents_Interfaces.prototype.nsIDownloadObserver= new nsIDownloadObserver();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPathSegLinetoRel= new nsIDOMSVGPathSegLinetoRel();
-nsXPCComponents_Interfaces.prototype.nsIDocumentLoader= new nsIDocumentLoader();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLTableCellElement= new nsIDOMHTMLTableCellElement();
-nsXPCComponents_Interfaces.prototype.nsIException= new nsIException();
-nsXPCComponents_Interfaces.prototype.nsIUrlClassifierDBService= new nsIUrlClassifierDBService();
-nsXPCComponents_Interfaces.prototype.nsIRDFDataSource= new nsIRDFDataSource();
-nsXPCComponents_Interfaces.prototype.nsIPrefLocalizedString= new nsIPrefLocalizedString();
-nsXPCComponents_Interfaces.prototype.nsIJSIID= new nsIJSIID();
-nsXPCComponents_Interfaces.prototype.nsIHTMLObjectResizeListener= new nsIHTMLObjectResizeListener();
-nsXPCComponents_Interfaces.prototype.nsPIProtocolProxyService= new nsPIProtocolProxyService();
-nsXPCComponents_Interfaces.prototype.mozIStorageConnection= new mozIStorageConnection();
-nsXPCComponents_Interfaces.prototype.nsITextServicesFilter= new nsITextServicesFilter();
-nsXPCComponents_Interfaces.prototype.nsIWSPInterfaceInfoService= new nsIWSPInterfaceInfoService();
-nsXPCComponents_Interfaces.prototype.nsIWSDLSOAPBinding= new nsIWSDLSOAPBinding();
-nsXPCComponents_Interfaces.prototype.nsISimpleStreamListener= new nsISimpleStreamListener();
-nsXPCComponents_Interfaces.prototype.nsISearchContext= new nsISearchContext();
-nsXPCComponents_Interfaces.prototype.nsIX509Cert= new nsIX509Cert();
-nsXPCComponents_Interfaces.prototype.nsIRDFNode= new nsIRDFNode();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGDescElement= new nsIDOMSVGDescElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMCSSRule= new nsIDOMCSSRule();
-nsXPCComponents_Interfaces.prototype.nsIProxyInfo= new nsIProxyInfo();
-nsXPCComponents_Interfaces.prototype.nsISupportsPRUint32= new nsISupportsPRUint32();
-nsXPCComponents_Interfaces.prototype.nsICurrentCharsetListener= new nsICurrentCharsetListener();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGImageElement= new nsIDOMSVGImageElement();
-nsXPCComponents_Interfaces.prototype.nsIUrlClassifierDBServiceWorker= new nsIUrlClassifierDBServiceWorker();
-nsXPCComponents_Interfaces.prototype.nsISecureBrowserUI= new nsISecureBrowserUI();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLParagraphElement= new nsIDOMHTMLParagraphElement();
-nsXPCComponents_Interfaces.prototype.jsdIScriptHook= new jsdIScriptHook();
-nsXPCComponents_Interfaces.prototype.nsIRunnable= new nsIRunnable();
-nsXPCComponents_Interfaces.prototype.nsIDirectoryService= new nsIDirectoryService();
-nsXPCComponents_Interfaces.prototype.nsIDNSListener= new nsIDNSListener();
-nsXPCComponents_Interfaces.prototype.nsIPK11TokenDB= new nsIPK11TokenDB();
-nsXPCComponents_Interfaces.prototype.nsISchemaParticle= new nsISchemaParticle();
-nsXPCComponents_Interfaces.prototype.nsPIDNSService= new nsPIDNSService();
-nsXPCComponents_Interfaces.prototype.nsIXTFXMLVisual= new nsIXTFXMLVisual();
-nsXPCComponents_Interfaces.prototype.nsIMIMEHeaderParam= new nsIMIMEHeaderParam();
-nsXPCComponents_Interfaces.prototype.nsIScriptableInterfacesByID= new nsIScriptableInterfacesByID();
-nsXPCComponents_Interfaces.prototype.nsIInstallLocation= new nsIInstallLocation();
-nsXPCComponents_Interfaces.prototype.nsIGlobalHistory= new nsIGlobalHistory();
-nsXPCComponents_Interfaces.prototype.imgIContainerObserver= new imgIContainerObserver();
-nsXPCComponents_Interfaces.prototype.nsIStringEnumerator= new nsIStringEnumerator();
-nsXPCComponents_Interfaces.prototype.nsIHttpAuthManager= new nsIHttpAuthManager();
-nsXPCComponents_Interfaces.prototype.nsIDOMSerializer= new nsIDOMSerializer();
-nsXPCComponents_Interfaces.prototype.nsICacheMetaDataVisitor= new nsICacheMetaDataVisitor();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSHTMLDocument= new nsIDOMNSHTMLDocument();
-nsXPCComponents_Interfaces.prototype.nsIGeneratingKeypairInfoDialogs= new nsIGeneratingKeypairInfoDialogs();
-nsXPCComponents_Interfaces.prototype.jsdIEphemeral= new jsdIEphemeral();
-nsXPCComponents_Interfaces.prototype.mozIStorageService= new mozIStorageService();
-nsXPCComponents_Interfaces.prototype.nsIPrompt= new nsIPrompt();
-nsXPCComponents_Interfaces.prototype.nsIDocShellTreeOwner_MOZILLA_1_8_BRANCH= new nsIDocShellTreeOwner_MOZILLA_1_8_BRANCH();
-nsXPCComponents_Interfaces.prototype.nsIScriptableParamInfo= new nsIScriptableParamInfo();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLLegendElement= new nsIDOMHTMLLegendElement();
-nsXPCComponents_Interfaces.prototype.nsICache= new nsICache();
-nsXPCComponents_Interfaces.prototype.nsIWyciwygChannel= new nsIWyciwygChannel();
-nsXPCComponents_Interfaces.prototype.nsISecretDecoderRing= new nsISecretDecoderRing();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLFontElement= new nsIDOMHTMLFontElement();
-nsXPCComponents_Interfaces.prototype.nsIXULBuilderListener= new nsIXULBuilderListener();
-nsXPCComponents_Interfaces.prototype.nsIDownloader= new nsIDownloader();
-nsXPCComponents_Interfaces.prototype.nsIOutputStream= new nsIOutputStream();
-nsXPCComponents_Interfaces.prototype.nsIDOMCounter= new nsIDOMCounter();
-nsXPCComponents_Interfaces.prototype.nsIHTTPHeaderListener= new nsIHTTPHeaderListener();
-nsXPCComponents_Interfaces.prototype.jsdIObject= new jsdIObject();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSLocation= new nsIDOMNSLocation();
-nsXPCComponents_Interfaces.prototype.nsIRandomAccessIterator= new nsIRandomAccessIterator();
-nsXPCComponents_Interfaces.prototype.nsICertPickDialogs= new nsICertPickDialogs();
-nsXPCComponents_Interfaces.prototype.nsISupportsFloat= new nsISupportsFloat();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLSelectElement= new nsIDOMHTMLSelectElement();
-nsXPCComponents_Interfaces.prototype.nsIBufferedOutputStream= new nsIBufferedOutputStream();
-nsXPCComponents_Interfaces.prototype.nsISOAPCallCompletion= new nsISOAPCallCompletion();
-nsXPCComponents_Interfaces.prototype.nsIUnicharLineInputStream= new nsIUnicharLineInputStream();
-nsXPCComponents_Interfaces.prototype.nsITokenDialogs= new nsITokenDialogs();
-nsXPCComponents_Interfaces.prototype.nsIDOMDocumentCSS= new nsIDOMDocumentCSS();
-nsXPCComponents_Interfaces.prototype.nsICRLInfo= new nsICRLInfo();
-nsXPCComponents_Interfaces.prototype.nsITransportSecurityInfo= new nsITransportSecurityInfo();
-nsXPCComponents_Interfaces.prototype.nsIBoxPaintManager= new nsIBoxPaintManager();
-nsXPCComponents_Interfaces.prototype.nsITextToSubURI= new nsITextToSubURI();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLFrameElement= new nsIDOMHTMLFrameElement();
-nsXPCComponents_Interfaces.prototype.nsITokenPasswordDialogs= new nsITokenPasswordDialogs();
-nsXPCComponents_Interfaces.prototype.nsIExternalProtocolService= new nsIExternalProtocolService();
-nsXPCComponents_Interfaces.prototype.nsIEnvironment= new nsIEnvironment();
-nsXPCComponents_Interfaces.prototype.nsIXMLHttpRequest= new nsIXMLHttpRequest();
-nsXPCComponents_Interfaces.prototype.nsIURIContentListener= new nsIURIContentListener();
-nsXPCComponents_Interfaces.prototype.nsIXPIProgressDialog= new nsIXPIProgressDialog();
-nsXPCComponents_Interfaces.prototype.nsISelectionPrivate= new nsISelectionPrivate();
-nsXPCComponents_Interfaces.prototype.nsISchemaType= new nsISchemaType();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGZoomEvent= new nsIDOMSVGZoomEvent();
-nsXPCComponents_Interfaces.prototype.nsICancelable= new nsICancelable();
-nsXPCComponents_Interfaces.prototype.nsIDOMAbstractView= new nsIDOMAbstractView();
-nsXPCComponents_Interfaces.prototype.nsIJARChannel= new nsIJARChannel();
-nsXPCComponents_Interfaces.prototype.nsIMemory= new nsIMemory();
-nsXPCComponents_Interfaces.prototype.nsIDOMLSSerializerFilter= new nsIDOMLSSerializerFilter();
-nsXPCComponents_Interfaces.prototype.nsIBinaryOutputStream= new nsIBinaryOutputStream();
-nsXPCComponents_Interfaces.prototype.nsIDOMDOMStringList= new nsIDOMDOMStringList();
-nsXPCComponents_Interfaces.prototype.nsIImageLoadingContent= new nsIImageLoadingContent();
-nsXPCComponents_Interfaces.prototype.nsIExceptionService= new nsIExceptionService();
-nsXPCComponents_Interfaces.prototype.nsIFileOutputStream= new nsIFileOutputStream();
-nsXPCComponents_Interfaces.prototype.nsISchemaAnyAttribute= new nsISchemaAnyAttribute();
-nsXPCComponents_Interfaces.prototype.nsIDOMCSSMediaRule= new nsIDOMCSSMediaRule();
-nsXPCComponents_Interfaces.prototype.nsIErrorService= new nsIErrorService();
-nsXPCComponents_Interfaces.prototype.nsIRDFInMemoryDataSource= new nsIRDFInMemoryDataSource();
-nsXPCComponents_Interfaces.prototype.nsIFeed= new nsIFeed();
-nsXPCComponents_Interfaces.prototype.nsIContentViewer_MOZILLA_1_8_BRANCH= new nsIContentViewer_MOZILLA_1_8_BRANCH();
-nsXPCComponents_Interfaces.prototype.nsIEditorMailSupport= new nsIEditorMailSupport();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLPreElement= new nsIDOMHTMLPreElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMNavigator_MOZILLA_1_8_BRANCH= new nsIDOMNavigator_MOZILLA_1_8_BRANCH();
-nsXPCComponents_Interfaces.prototype.gfxIImageFrame= new gfxIImageFrame();
-nsXPCComponents_Interfaces.prototype.nsIAccessibleSelectable= new nsIAccessibleSelectable();
-nsXPCComponents_Interfaces.prototype.nsPICommandUpdater= new nsPICommandUpdater();
-nsXPCComponents_Interfaces.prototype.nsIDownload= new nsIDownload();
-nsXPCComponents_Interfaces.prototype.nsIDOMXULControlElement= new nsIDOMXULControlElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGAnimatedNumberList= new nsIDOMSVGAnimatedNumberList();
-nsXPCComponents_Interfaces.prototype.nsIDocumentCharsetInfo= new nsIDocumentCharsetInfo();
-nsXPCComponents_Interfaces.prototype.nsIContentViewerContainer= new nsIContentViewerContainer();
-nsXPCComponents_Interfaces.prototype.nsIAppStartup= new nsIAppStartup();
-nsXPCComponents_Interfaces.prototype.nsICookie2= new nsICookie2();
-nsXPCComponents_Interfaces.prototype.nsIBrowserInstance= new nsIBrowserInstance();
-nsXPCComponents_Interfaces.prototype.nsIProtocolProxyService= new nsIProtocolProxyService();
-nsXPCComponents_Interfaces.prototype.nsIDOMCDATASection= new nsIDOMCDATASection();
-nsXPCComponents_Interfaces.prototype.nsIJVMConfigManager= new nsIJVMConfigManager();
-nsXPCComponents_Interfaces.prototype.nsISOAPPortBinding= new nsISOAPPortBinding();
-nsXPCComponents_Interfaces.prototype.nsIContentHandler= new nsIContentHandler();
-nsXPCComponents_Interfaces.prototype.nsISchemaComponent= new nsISchemaComponent();
-nsXPCComponents_Interfaces.prototype.nsIPrintSettingsWin= new nsIPrintSettingsWin();
-nsXPCComponents_Interfaces.prototype.nsIDownloadProgressListener= new nsIDownloadProgressListener();
-nsXPCComponents_Interfaces.prototype.nsIMozIconURI= new nsIMozIconURI();
-nsXPCComponents_Interfaces.prototype.nsISHistoryInternal= new nsISHistoryInternal();
-nsXPCComponents_Interfaces.prototype.nsIURIFixup= new nsIURIFixup();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPathSegLinetoHorizontalRel= new nsIDOMSVGPathSegLinetoHorizontalRel();
-nsXPCComponents_Interfaces.prototype.nsIXPIDialogService= new nsIXPIDialogService();
-nsXPCComponents_Interfaces.prototype.nsIEditActionListener= new nsIEditActionListener();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLAppletElement= new nsIDOMHTMLAppletElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMAttr= new nsIDOMAttr();
-nsXPCComponents_Interfaces.prototype.nsIDOMNotation= new nsIDOMNotation();
-nsXPCComponents_Interfaces.prototype.nsIProxyObjectManager= new nsIProxyObjectManager();
-nsXPCComponents_Interfaces.prototype.nsIPassword= new nsIPassword();
-nsXPCComponents_Interfaces.prototype.nsIProfileLock= new nsIProfileLock();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLCanvasElement= new nsIDOMHTMLCanvasElement();
-nsXPCComponents_Interfaces.prototype.nsISelectElement= new nsISelectElement();
-nsXPCComponents_Interfaces.prototype.nsIPopupBoxObject= new nsIPopupBoxObject();
-nsXPCComponents_Interfaces.prototype.nsIFind= new nsIFind();
-nsXPCComponents_Interfaces.prototype.nsIXTFPrivate= new nsIXTFPrivate();
-nsXPCComponents_Interfaces.prototype.nsIPlaintextEditor= new nsIPlaintextEditor();
-nsXPCComponents_Interfaces.prototype.nsIForwardIterator= new nsIForwardIterator();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSHTMLSelectElement= new nsIDOMNSHTMLSelectElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLModElement= new nsIDOMHTMLModElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMCSSMozDocumentRule= new nsIDOMCSSMozDocumentRule();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGEllipseElement= new nsIDOMSVGEllipseElement();
-nsXPCComponents_Interfaces.prototype.jsdIContext= new jsdIContext();
-nsXPCComponents_Interfaces.prototype.nsIDOMPopupBlockedEvent_MOZILLA_1_8_BRANCH= new nsIDOMPopupBlockedEvent_MOZILLA_1_8_BRANCH();
-nsXPCComponents_Interfaces.prototype.nsIDOMDocumentTraversal= new nsIDOMDocumentTraversal();
-nsXPCComponents_Interfaces.prototype.nsIXTFAttributeHandler= new nsIXTFAttributeHandler();
-nsXPCComponents_Interfaces.prototype.inIFlasher= new inIFlasher();
-nsXPCComponents_Interfaces.prototype.nsISupportsWeakReference= new nsISupportsWeakReference();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGElement= new nsIDOMSVGElement();
-nsXPCComponents_Interfaces.prototype.nsIDOM3DocumentEvent= new nsIDOM3DocumentEvent();
-nsXPCComponents_Interfaces.prototype.nsIRDFRemoteDataSource= new nsIRDFRemoteDataSource();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPathSegArcAbs= new nsIDOMSVGPathSegArcAbs();
-nsXPCComponents_Interfaces.prototype.nsIDOMXULButtonElement= new nsIDOMXULButtonElement();
-nsXPCComponents_Interfaces.prototype.nsIClipboardDragDropHooks= new nsIClipboardDragDropHooks();
-nsXPCComponents_Interfaces.prototype.nsIDOMRect= new nsIDOMRect();
-nsXPCComponents_Interfaces.prototype.nsICRLManager= new nsICRLManager();
-nsXPCComponents_Interfaces.prototype.imgIEncoder= new imgIEncoder();
-nsXPCComponents_Interfaces.prototype.nsIX509Cert3= new nsIX509Cert3();
-nsXPCComponents_Interfaces.prototype.nsISearchEngine= new nsISearchEngine();
-nsXPCComponents_Interfaces.prototype.nsIUrlListManagerCallback= new nsIUrlListManagerCallback();
-nsXPCComponents_Interfaces.prototype.nsIDOMEntity= new nsIDOMEntity();
-nsXPCComponents_Interfaces.prototype.nsIDOMXPathNamespace= new nsIDOMXPathNamespace();
-nsXPCComponents_Interfaces.prototype.nsIBookmarksService= new nsIBookmarksService();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLHRElement= new nsIDOMHTMLHRElement();
-nsXPCComponents_Interfaces.prototype.nsIRDFContainerUtils= new nsIRDFContainerUtils();
-nsXPCComponents_Interfaces.prototype.nsISHistoryListener= new nsISHistoryListener();
-nsXPCComponents_Interfaces.prototype.nsIWebBrowserFocus= new nsIWebBrowserFocus();
-nsXPCComponents_Interfaces.prototype.nsISAXErrorHandler= new nsISAXErrorHandler();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPathSegCurvetoCubicAbs= new nsIDOMSVGPathSegCurvetoCubicAbs();
-nsXPCComponents_Interfaces.prototype.nsIHTMLObjectResizer= new nsIHTMLObjectResizer();
-nsXPCComponents_Interfaces.prototype.nsIXTFXULVisual= new nsIXTFXULVisual();
-nsXPCComponents_Interfaces.prototype.nsIInputStreamCallback= new nsIInputStreamCallback();
-nsXPCComponents_Interfaces.prototype.nsISupportsPRUint64= new nsISupportsPRUint64();
-nsXPCComponents_Interfaces.prototype.nsIClipboard= new nsIClipboard();
-nsXPCComponents_Interfaces.prototype.inIDOMUtils= new inIDOMUtils();
-nsXPCComponents_Interfaces.prototype.nsIXmlRpcFault= new nsIXmlRpcFault();
-nsXPCComponents_Interfaces.prototype.nsIDirIndexListener= new nsIDirIndexListener();
-nsXPCComponents_Interfaces.prototype.nsITransactionListener= new nsITransactionListener();
-nsXPCComponents_Interfaces.prototype.nsICookiePermission= new nsICookiePermission();
-nsXPCComponents_Interfaces.prototype.nsIDOMLSResourceResolver= new nsIDOMLSResourceResolver();
-nsXPCComponents_Interfaces.prototype.nsIContentPolicy= new nsIContentPolicy();
-nsXPCComponents_Interfaces.prototype.nsIHelperAppLauncher= new nsIHelperAppLauncher();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSEventTarget= new nsIDOMNSEventTarget();
-nsXPCComponents_Interfaces.prototype.nsIRelativeFilePref= new nsIRelativeFilePref();
-nsXPCComponents_Interfaces.prototype.nsISidebar_MOZILLA_1_8_BRANCH= new nsISidebar_MOZILLA_1_8_BRANCH();
-nsXPCComponents_Interfaces.prototype.nsIRDFObserver= new nsIRDFObserver();
-nsXPCComponents_Interfaces.prototype.nsIDOMPageTransitionEvent= new nsIDOMPageTransitionEvent();
-nsXPCComponents_Interfaces.prototype.nsIWebBrowser= new nsIWebBrowser();
-nsXPCComponents_Interfaces.prototype.nsIRDFXMLSource= new nsIRDFXMLSource();
-nsXPCComponents_Interfaces.prototype.nsIDOMElement= new nsIDOMElement();
-nsXPCComponents_Interfaces.prototype.nsIRegistryEnumerator= new nsIRegistryEnumerator();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGTextElement= new nsIDOMSVGTextElement();
-nsXPCComponents_Interfaces.prototype.jsdIFilter= new jsdIFilter();
-nsXPCComponents_Interfaces.prototype.nsIHTMLEditor= new nsIHTMLEditor();
-nsXPCComponents_Interfaces.prototype.nsISchemaUnionType= new nsISchemaUnionType();
-nsXPCComponents_Interfaces.prototype.nsIRDFPropagatableDataSource= new nsIRDFPropagatableDataSource();
-nsXPCComponents_Interfaces.prototype.nsIContentViewer= new nsIContentViewer();
-nsXPCComponents_Interfaces.prototype.nsIDOMJSWindow= new nsIDOMJSWindow();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGAnimatedLengthList= new nsIDOMSVGAnimatedLengthList();
-nsXPCComponents_Interfaces.prototype.nsIStreamConverterService= new nsIStreamConverterService();
-nsXPCComponents_Interfaces.prototype.nsIFastLoadReadControl= new nsIFastLoadReadControl();
-nsXPCComponents_Interfaces.prototype.nsICommandController= new nsICommandController();
-nsXPCComponents_Interfaces.prototype.nsIFileProtocolHandler= new nsIFileProtocolHandler();
-nsXPCComponents_Interfaces.prototype.nsILocalSearchService= new nsILocalSearchService();
-nsXPCComponents_Interfaces.prototype.nsIAutoCompleteController= new nsIAutoCompleteController();
-nsXPCComponents_Interfaces.prototype.nsIWSDLLoader= new nsIWSDLLoader();
-nsXPCComponents_Interfaces.prototype.nsIPrefBranch= new nsIPrefBranch();
-nsXPCComponents_Interfaces.prototype.nsIDOMPlugin= new nsIDOMPlugin();
-nsXPCComponents_Interfaces.prototype.nsISelectionListener= new nsISelectionListener();
-nsXPCComponents_Interfaces.prototype.nsIMIMEInputStream= new nsIMIMEInputStream();
-nsXPCComponents_Interfaces.prototype.nsIWindowDataSource= new nsIWindowDataSource();
-nsXPCComponents_Interfaces.prototype.nsIXMLContentBuilder= new nsIXMLContentBuilder();
-nsXPCComponents_Interfaces.prototype.nsIStreamLoaderObserver= new nsIStreamLoaderObserver();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLElement= new nsIDOMHTMLElement();
-nsXPCComponents_Interfaces.prototype.nsIXTFElementFactory= new nsIXTFElementFactory();
-nsXPCComponents_Interfaces.prototype.nsIPasswordManagerInternal= new nsIPasswordManagerInternal();
-nsXPCComponents_Interfaces.prototype.nsIStyleSheetService= new nsIStyleSheetService();
-nsXPCComponents_Interfaces.prototype.nsISOAPCall= new nsISOAPCall();
-nsXPCComponents_Interfaces.prototype.nsICharsetConverterManager= new nsICharsetConverterManager();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGTextPositioningElement= new nsIDOMSVGTextPositioningElement();
-nsXPCComponents_Interfaces.prototype.nsIBrowserHandler= new nsIBrowserHandler();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSDocument= new nsIDOMNSDocument();
-nsXPCComponents_Interfaces.prototype.nsIInputStreamTee= new nsIInputStreamTee();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGTitleElement= new nsIDOMSVGTitleElement();
-nsXPCComponents_Interfaces.prototype.nsIXmlRpcClientListener= new nsIXmlRpcClientListener();
-nsXPCComponents_Interfaces.prototype.nsIFontEnumerator= new nsIFontEnumerator();
-nsXPCComponents_Interfaces.prototype.nsISound= new nsISound();
-nsXPCComponents_Interfaces.prototype.nsIAppShellService= new nsIAppShellService();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPathSegCurvetoCubicSmoothAbs= new nsIDOMSVGPathSegCurvetoCubicSmoothAbs();
-nsXPCComponents_Interfaces.prototype.nsIDOMDOMConfiguration= new nsIDOMDOMConfiguration();
-nsXPCComponents_Interfaces.prototype.nsIPasswordManager= new nsIPasswordManager();
-nsXPCComponents_Interfaces.prototype.nsIPKCS11Module= new nsIPKCS11Module();
-nsXPCComponents_Interfaces.prototype.nsIFormatConverter= new nsIFormatConverter();
-nsXPCComponents_Interfaces.prototype.nsIChannel= new nsIChannel();
-nsXPCComponents_Interfaces.prototype.nsIDOMParser= new nsIDOMParser();
-nsXPCComponents_Interfaces.prototype.imgILoader= new imgILoader();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGAnimatedTransformList= new nsIDOMSVGAnimatedTransformList();
-nsXPCComponents_Interfaces.prototype.nsIBrowserGlue= new nsIBrowserGlue();
-nsXPCComponents_Interfaces.prototype.nsIExternalProtocolHandler= new nsIExternalProtocolHandler();
-nsXPCComponents_Interfaces.prototype.nsIXTFElement= new nsIXTFElement();
-nsXPCComponents_Interfaces.prototype.nsIFilePicker= new nsIFilePicker();
-nsXPCComponents_Interfaces.prototype.nsIPropertyElement= new nsIPropertyElement();
-nsXPCComponents_Interfaces.prototype.nsIStandardURL= new nsIStandardURL();
-nsXPCComponents_Interfaces.prototype.nsIRDFPurgeableDataSource= new nsIRDFPurgeableDataSource();
-nsXPCComponents_Interfaces.prototype.nsIExtendedExpatSink= new nsIExtendedExpatSink();
-nsXPCComponents_Interfaces.prototype.nsISeekableStream= new nsISeekableStream();
-nsXPCComponents_Interfaces.prototype.nsISessionStartup= new nsISessionStartup();
-nsXPCComponents_Interfaces.prototype.nsIWindowMediator= new nsIWindowMediator();
-nsXPCComponents_Interfaces.prototype.nsIDocumentLoaderFactory= new nsIDocumentLoaderFactory();
-nsXPCComponents_Interfaces.prototype.nsIStreamListenerTee= new nsIStreamListenerTee();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSCSS2Properties= new nsIDOMNSCSS2Properties();
-nsXPCComponents_Interfaces.prototype.nsINSSCertCache= new nsINSSCertCache();
-nsXPCComponents_Interfaces.prototype.nsISyncStreamListener= new nsISyncStreamListener();
-nsXPCComponents_Interfaces.prototype.nsIDOMLSParserFilter= new nsIDOMLSParserFilter();
-nsXPCComponents_Interfaces.prototype.nsIPKIParamBlock= new nsIPKIParamBlock();
-nsXPCComponents_Interfaces.prototype.nsIScriptError= new nsIScriptError();
-nsXPCComponents_Interfaces.prototype.nsIXULWindow= new nsIXULWindow();
-nsXPCComponents_Interfaces.prototype.nsIEventTarget= new nsIEventTarget();
-nsXPCComponents_Interfaces.prototype.nsIURLParser= new nsIURLParser();
-nsXPCComponents_Interfaces.prototype.mozISpellI18NManager= new mozISpellI18NManager();
-nsXPCComponents_Interfaces.prototype.nsIX509CertValidity= new nsIX509CertValidity();
-nsXPCComponents_Interfaces.prototype.nsISchemaFacet= new nsISchemaFacet();
-nsXPCComponents_Interfaces.prototype.nsIModule= new nsIModule();
-nsXPCComponents_Interfaces.prototype.nsINativeAppSupport= new nsINativeAppSupport();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGMetadataElement= new nsIDOMSVGMetadataElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMMimeTypeArray= new nsIDOMMimeTypeArray();
-nsXPCComponents_Interfaces.prototype.nsIComponentManagerObsolete= new nsIComponentManagerObsolete();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLLIElement= new nsIDOMHTMLLIElement();
-nsXPCComponents_Interfaces.prototype.nsIWindowWatcher= new nsIWindowWatcher();
-nsXPCComponents_Interfaces.prototype.nsIASN1Object= new nsIASN1Object();
-nsXPCComponents_Interfaces.prototype.nsIPrintProgress= new nsIPrintProgress();
-nsXPCComponents_Interfaces.prototype.nsIXPTLoaderSink= new nsIXPTLoaderSink();
-nsXPCComponents_Interfaces.prototype.nsIWindowsShellService= new nsIWindowsShellService();
-nsXPCComponents_Interfaces.prototype.nsIDOMMouseEvent= new nsIDOMMouseEvent();
-nsXPCComponents_Interfaces.prototype.nsISupportsPRInt32= new nsISupportsPRInt32();
-nsXPCComponents_Interfaces.prototype.nsIApplicationUpdateService= new nsIApplicationUpdateService();
-nsXPCComponents_Interfaces.prototype.nsIInterfaceRequestor= new nsIInterfaceRequestor();
-nsXPCComponents_Interfaces.prototype.nsIDOMLSProgressEvent= new nsIDOMLSProgressEvent();
-nsXPCComponents_Interfaces.prototype.nsITransactionManager= new nsITransactionManager();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLOptGroupElement= new nsIDOMHTMLOptGroupElement();
-nsXPCComponents_Interfaces.prototype.nsICommandManager= new nsICommandManager();
-nsXPCComponents_Interfaces.prototype.nsIIDNService= new nsIIDNService();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLTitleElement= new nsIDOMHTMLTitleElement();
-nsXPCComponents_Interfaces.prototype.nsITimelineService= new nsITimelineService();
-nsXPCComponents_Interfaces.prototype.nsIUnicharOutputStream= new nsIUnicharOutputStream();
-nsXPCComponents_Interfaces.prototype.nsIStackFrame= new nsIStackFrame();
-nsXPCComponents_Interfaces.prototype.nsIDataType= new nsIDataType();
-nsXPCComponents_Interfaces.prototype.nsIHttpActivityObserver= new nsIHttpActivityObserver();
-nsXPCComponents_Interfaces.prototype.nsIDOMCSSStyleSheet= new nsIDOMCSSStyleSheet();
-nsXPCComponents_Interfaces.prototype.nsIDOMCryptoDialogs= new nsIDOMCryptoDialogs();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGGradientElement= new nsIDOMSVGGradientElement();
-nsXPCComponents_Interfaces.prototype.nsICookieManager= new nsICookieManager();
-nsXPCComponents_Interfaces.prototype.nsIConverterOutputStream= new nsIConverterOutputStream();
-nsXPCComponents_Interfaces.prototype.nsIInputStreamPump= new nsIInputStreamPump();
-nsXPCComponents_Interfaces.prototype.nsIDOMLSParser= new nsIDOMLSParser();
-nsXPCComponents_Interfaces.prototype.nsIDOMCSSStyleDeclaration= new nsIDOMCSSStyleDeclaration();
-nsXPCComponents_Interfaces.prototype.nsIFlavorDataProvider= new nsIFlavorDataProvider();
-nsXPCComponents_Interfaces.prototype.nsISOAPHeaderBlock= new nsISOAPHeaderBlock();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLTableSectionElement= new nsIDOMHTMLTableSectionElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMNode= new nsIDOMNode();
-nsXPCComponents_Interfaces.prototype.imgICache= new imgICache();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGZoomAndPan= new nsIDOMSVGZoomAndPan();
-nsXPCComponents_Interfaces.prototype.nsIDOMStorageWindow= new nsIDOMStorageWindow();
-nsXPCComponents_Interfaces.prototype.nsISupportsPRUint8= new nsISupportsPRUint8();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGStyleElement= new nsIDOMSVGStyleElement();
-nsXPCComponents_Interfaces.prototype.nsIURILoader= new nsIURILoader();
-nsXPCComponents_Interfaces.prototype.nsICommandLineHandler= new nsICommandLineHandler();
-nsXPCComponents_Interfaces.prototype.nsIDocNavStartProgressListener= new nsIDocNavStartProgressListener();
-nsXPCComponents_Interfaces.prototype.nsIRegistryNode= new nsIRegistryNode();
-nsXPCComponents_Interfaces.prototype.nsITransferable= new nsITransferable();
-nsXPCComponents_Interfaces.prototype.nsIEditingSession= new nsIEditingSession();
-nsXPCComponents_Interfaces.prototype.nsIAccessibilityService= new nsIAccessibilityService();
-nsXPCComponents_Interfaces.prototype.nsIUpdatePatch= new nsIUpdatePatch();
-nsXPCComponents_Interfaces.prototype.nsITransportEventSink= new nsITransportEventSink();
-nsXPCComponents_Interfaces.prototype.nsIDOMCustomEvent= new nsIDOMCustomEvent();
-nsXPCComponents_Interfaces.prototype.nsISupportsPRUint16= new nsISupportsPRUint16();
-nsXPCComponents_Interfaces.prototype.nsIUrlListManager= new nsIUrlListManager();
-nsXPCComponents_Interfaces.prototype.nsIWSDLOperation= new nsIWSDLOperation();
-nsXPCComponents_Interfaces.prototype.nsIWebProgressListener2= new nsIWebProgressListener2();
-nsXPCComponents_Interfaces.prototype.nsISOAPDecoder= new nsISOAPDecoder();
-nsXPCComponents_Interfaces.prototype.nsISAXXMLReader= new nsISAXXMLReader();
-nsXPCComponents_Interfaces.prototype.nsIRecyclingAllocator= new nsIRecyclingAllocator();
-nsXPCComponents_Interfaces.prototype.nsIWebServiceProxy= new nsIWebServiceProxy();
-nsXPCComponents_Interfaces.prototype.nsIRDFXMLSink= new nsIRDFXMLSink();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLIFrameElement= new nsIDOMHTMLIFrameElement();
-nsXPCComponents_Interfaces.prototype.nsIXULBrowserWindow= new nsIXULBrowserWindow();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPointList= new nsIDOMSVGPointList();
-nsXPCComponents_Interfaces.prototype.nsIUserInfo= new nsIUserInfo();
-nsXPCComponents_Interfaces.prototype.nsICacheEntryDescriptor= new nsICacheEntryDescriptor();
-nsXPCComponents_Interfaces.prototype.nsIHTMLAbsPosEditor= new nsIHTMLAbsPosEditor();
-nsXPCComponents_Interfaces.prototype.nsIXTFVisual= new nsIXTFVisual();
-nsXPCComponents_Interfaces.prototype.nsIAutoCompleteObserver= new nsIAutoCompleteObserver();
-nsXPCComponents_Interfaces.prototype.nsIFormHistory2= new nsIFormHistory2();
-nsXPCComponents_Interfaces.prototype.nsIFileSpec= new nsIFileSpec();
-nsXPCComponents_Interfaces.prototype.nsIPasswordInternal= new nsIPasswordInternal();
-nsXPCComponents_Interfaces.prototype.nsISecurityWarningDialogs= new nsISecurityWarningDialogs();
-nsXPCComponents_Interfaces.prototype.nsISOAPBlock= new nsISOAPBlock();
-nsXPCComponents_Interfaces.prototype.nsIImageDocument= new nsIImageDocument();
-nsXPCComponents_Interfaces.prototype.nsITransport= new nsITransport();
-nsXPCComponents_Interfaces.prototype.nsISOAPFault= new nsISOAPFault();
-nsXPCComponents_Interfaces.prototype.nsIScriptContextOwner= new nsIScriptContextOwner();
-nsXPCComponents_Interfaces.prototype.jsdICallHook= new jsdICallHook();
-nsXPCComponents_Interfaces.prototype.nsISOAPEncodingRegistry= new nsISOAPEncodingRegistry();
-nsXPCComponents_Interfaces.prototype.nsICategoryManager= new nsICategoryManager();
-nsXPCComponents_Interfaces.prototype.nsIBidirectionalIterator= new nsIBidirectionalIterator();
-nsXPCComponents_Interfaces.prototype.nsIWindowMediatorListener= new nsIWindowMediatorListener();
-nsXPCComponents_Interfaces.prototype.nsIDOMXPathResult= new nsIDOMXPathResult();
-nsXPCComponents_Interfaces.prototype.nsIXTFSVGVisualWrapper= new nsIXTFSVGVisualWrapper();
-nsXPCComponents_Interfaces.prototype.nsIFeedGenerator= new nsIFeedGenerator();
-nsXPCComponents_Interfaces.prototype.nsIEditor= new nsIEditor();
-nsXPCComponents_Interfaces.prototype.nsIDOMHistory= new nsIDOMHistory();
-nsXPCComponents_Interfaces.prototype.nsIZipEntry= new nsIZipEntry();
-nsXPCComponents_Interfaces.prototype.nsIWebContentHandlerRegistrar= new nsIWebContentHandlerRegistrar();
-nsXPCComponents_Interfaces.prototype.mozIStorageStatementWrapper= new mozIStorageStatementWrapper();
-nsXPCComponents_Interfaces.prototype.nsIFontPackageProxy= new nsIFontPackageProxy();
-nsXPCComponents_Interfaces.prototype.nsIDOMLSOutput= new nsIDOMLSOutput();
-nsXPCComponents_Interfaces.prototype.nsIUnicharInputStream= new nsIUnicharInputStream();
-nsXPCComponents_Interfaces.prototype.nsIFontList= new nsIFontList();
-nsXPCComponents_Interfaces.prototype.nsIScriptLoader= new nsIScriptLoader();
-nsXPCComponents_Interfaces.prototype.nsIDOMXULSelectControlElement= new nsIDOMXULSelectControlElement();
-nsXPCComponents_Interfaces.prototype.nsIVariant= new nsIVariant();
-nsXPCComponents_Interfaces.prototype.nsIDOMCanvasPattern= new nsIDOMCanvasPattern();
-nsXPCComponents_Interfaces.prototype.nsISupportsVoid= new nsISupportsVoid();
-nsXPCComponents_Interfaces.prototype.nsIDOMCSSImportRule= new nsIDOMCSSImportRule();
-nsXPCComponents_Interfaces.prototype.nsISchemaModelGroup= new nsISchemaModelGroup();
-nsXPCComponents_Interfaces.prototype.nsIConsoleMessage= new nsIConsoleMessage();
-nsXPCComponents_Interfaces.prototype.nsISAXLocator= new nsISAXLocator();
-nsXPCComponents_Interfaces.prototype.inIDOMView= new inIDOMView();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLCollection= new nsIDOMHTMLCollection();
-nsXPCComponents_Interfaces.prototype.nsICacheDeviceInfo= new nsICacheDeviceInfo();
-nsXPCComponents_Interfaces.prototype.nsIFeedPerson= new nsIFeedPerson();
-nsXPCComponents_Interfaces.prototype.nsIDOMEvent= new nsIDOMEvent();
-nsXPCComponents_Interfaces.prototype.nsICacheVisitor= new nsICacheVisitor();
-nsXPCComponents_Interfaces.prototype.nsISerializable= new nsISerializable();
-nsXPCComponents_Interfaces.prototype.nsINonBlockingAlertService= new nsINonBlockingAlertService();
-nsXPCComponents_Interfaces.prototype.nsICertificateDialogs= new nsICertificateDialogs();
-nsXPCComponents_Interfaces.prototype.nsIInputIterator= new nsIInputIterator();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPathSegCurvetoQuadraticSmoothRel= new nsIDOMSVGPathSegCurvetoQuadraticSmoothRel();
-nsXPCComponents_Interfaces.prototype.nsIInternetSearchService= new nsIInternetSearchService();
-nsXPCComponents_Interfaces.prototype.nsIHttpAuthenticator= new nsIHttpAuthenticator();
-nsXPCComponents_Interfaces.prototype.nsIAddonUpdateListener= new nsIAddonUpdateListener();
-nsXPCComponents_Interfaces.prototype.nsIEditorLogging= new nsIEditorLogging();
-nsXPCComponents_Interfaces.prototype.nsIZipReaderCache= new nsIZipReaderCache();
-nsXPCComponents_Interfaces.prototype.nsIAsyncStreamCopier= new nsIAsyncStreamCopier();
-nsXPCComponents_Interfaces.prototype.nsIDOMXULLabeledControlElement= new nsIDOMXULLabeledControlElement();
-nsXPCComponents_Interfaces.prototype.nsICookieAcceptDialog= new nsICookieAcceptDialog();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGAnimatedEnumeration= new nsIDOMSVGAnimatedEnumeration();
-nsXPCComponents_Interfaces.prototype.nsIPKCS11ModuleDB= new nsIPKCS11ModuleDB();
-nsXPCComponents_Interfaces.prototype.nsISecretDecoderRingConfig= new nsISecretDecoderRingConfig();
-nsXPCComponents_Interfaces.prototype.nsIDOMCSSUnknownRule= new nsIDOMCSSUnknownRule();
-nsXPCComponents_Interfaces.prototype.nsIXPTLoader= new nsIXPTLoader();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGAnimatedString= new nsIDOMSVGAnimatedString();
-nsXPCComponents_Interfaces.prototype.nsIContentFilter= new nsIContentFilter();
-nsXPCComponents_Interfaces.prototype.nsIWSDLLoadListener= new nsIWSDLLoadListener();
-nsXPCComponents_Interfaces.prototype.mozIStorageStatementRow= new mozIStorageStatementRow();
-nsXPCComponents_Interfaces.prototype.imgIDecoderObserver_MOZILLA_1_8_BRANCH= new imgIDecoderObserver_MOZILLA_1_8_BRANCH();
-nsXPCComponents_Interfaces.prototype.mozISpellCheckingEngine= new mozISpellCheckingEngine();
-nsXPCComponents_Interfaces.prototype.nsISOAPMessageBinding= new nsISOAPMessageBinding();
-nsXPCComponents_Interfaces.prototype.nsICommandHandlerInit= new nsICommandHandlerInit();
-nsXPCComponents_Interfaces.prototype.mozIStorageDataSet= new mozIStorageDataSet();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSHTMLFrameElement= new nsIDOMNSHTMLFrameElement();
-nsXPCComponents_Interfaces.prototype.nsIProfile= new nsIProfile();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGRect= new nsIDOMSVGRect();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPathSegMovetoRel= new nsIDOMSVGPathSegMovetoRel();
-nsXPCComponents_Interfaces.prototype.nsIPromptService= new nsIPromptService();
-nsXPCComponents_Interfaces.prototype.nsIJARProtocolHandler= new nsIJARProtocolHandler();
-nsXPCComponents_Interfaces.prototype.nsIRefreshURI= new nsIRefreshURI();
-nsXPCComponents_Interfaces.prototype.nsIDOMXPathExpression= new nsIDOMXPathExpression();
-nsXPCComponents_Interfaces.prototype.nsISchema= new nsISchema();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGLineElement= new nsIDOMSVGLineElement();
-nsXPCComponents_Interfaces.prototype.nsITreeColumn= new nsITreeColumn();
-nsXPCComponents_Interfaces.prototype.nsIAutoCompletePopup= new nsIAutoCompletePopup();
-nsXPCComponents_Interfaces.prototype.nsIFullScreen= new nsIFullScreen();
-nsXPCComponents_Interfaces.prototype.nsIDOMPkcs11= new nsIDOMPkcs11();
-nsXPCComponents_Interfaces.prototype.nsIRequest= new nsIRequest();
-nsXPCComponents_Interfaces.prototype.nsIDOMCSSPageRule= new nsIDOMCSSPageRule();
-nsXPCComponents_Interfaces.prototype.nsIWebBrowserPrint= new nsIWebBrowserPrint();
-nsXPCComponents_Interfaces.prototype.nsIDOMNameList= new nsIDOMNameList();
-nsXPCComponents_Interfaces.prototype.nsIGlobalHistory2= new nsIGlobalHistory2();
-nsXPCComponents_Interfaces.prototype.nsISOAPResponseListener= new nsISOAPResponseListener();
-nsXPCComponents_Interfaces.prototype.nsIUrlClassifierTable= new nsIUrlClassifierTable();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGAnimatedNumber= new nsIDOMSVGAnimatedNumber();
-nsXPCComponents_Interfaces.prototype.nsIBrowserHistory= new nsIBrowserHistory();
-nsXPCComponents_Interfaces.prototype.nsIRDFDelegateFactory= new nsIRDFDelegateFactory();
-nsXPCComponents_Interfaces.prototype.nsIDOMCSSPrimitiveValue= new nsIDOMCSSPrimitiveValue();
-nsXPCComponents_Interfaces.prototype.nsIFeedResult= new nsIFeedResult();
-nsXPCComponents_Interfaces.prototype.nsISelectionController= new nsISelectionController();
-nsXPCComponents_Interfaces.prototype.nsISocketProvider= new nsISocketProvider();
-nsXPCComponents_Interfaces.prototype.nsIFontPackageService= new nsIFontPackageService();
-nsXPCComponents_Interfaces.prototype.nsIStringInputStream= new nsIStringInputStream();
-nsXPCComponents_Interfaces.prototype.nsIPhonetic= new nsIPhonetic();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGDefsElement= new nsIDOMSVGDefsElement();
-nsXPCComponents_Interfaces.prototype.imgIDecoder= new imgIDecoder();
-nsXPCComponents_Interfaces.prototype.nsIDOMCSSValue= new nsIDOMCSSValue();
-nsXPCComponents_Interfaces.prototype.nsISHContainer= new nsISHContainer();
-nsXPCComponents_Interfaces.prototype.nsICryptoFIPSInfo= new nsICryptoFIPSInfo();
-nsXPCComponents_Interfaces.prototype.nsIMenuBoxObject= new nsIMenuBoxObject();
-nsXPCComponents_Interfaces.prototype.nsIWSDLPort= new nsIWSDLPort();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPathSegClosePath= new nsIDOMSVGPathSegClosePath();
-nsXPCComponents_Interfaces.prototype.nsIDOMLSException= new nsIDOMLSException();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLFieldSetElement= new nsIDOMHTMLFieldSetElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGLinearGradientElement= new nsIDOMSVGLinearGradientElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMStorage= new nsIDOMStorage();
-nsXPCComponents_Interfaces.prototype.nsIStreamLoader= new nsIStreamLoader();
-nsXPCComponents_Interfaces.prototype.nsIDOMWindowCollection= new nsIDOMWindowCollection();
-nsXPCComponents_Interfaces.prototype.nsIBinaryInputStream= new nsIBinaryInputStream();
-nsXPCComponents_Interfaces.prototype.nsIFeedProcessor= new nsIFeedProcessor();
-nsXPCComponents_Interfaces.prototype.nsITextScroll= new nsITextScroll();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGRadialGradientElement= new nsIDOMSVGRadialGradientElement();
-nsXPCComponents_Interfaces.prototype.nsIVersionComparator= new nsIVersionComparator();
-nsXPCComponents_Interfaces.prototype.nsIAsyncStreamListener= new nsIAsyncStreamListener();
-nsXPCComponents_Interfaces.prototype.nsIBrowserDOMWindow= new nsIBrowserDOMWindow();
-nsXPCComponents_Interfaces.prototype.nsIDOMXPathException= new nsIDOMXPathException();
-nsXPCComponents_Interfaces.prototype.nsISHistory= new nsISHistory();
-nsXPCComponents_Interfaces.prototype.nsIDOMCrypto= new nsIDOMCrypto();
-nsXPCComponents_Interfaces.prototype.nsIAccessible= new nsIAccessible();
-nsXPCComponents_Interfaces.prototype.nsITransaction= new nsITransaction();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLOptionsCollection= new nsIDOMHTMLOptionsCollection();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSEvent= new nsIDOMNSEvent();
-nsXPCComponents_Interfaces.prototype.nsIAutoCompleteInput= new nsIAutoCompleteInput();
-nsXPCComponents_Interfaces.prototype.nsICertTree= new nsICertTree();
-nsXPCComponents_Interfaces.prototype.nsIComponentRegistrar= new nsIComponentRegistrar();
-nsXPCComponents_Interfaces.prototype.nsIFileChannel= new nsIFileChannel();
-nsXPCComponents_Interfaces.prototype.jsdIExecutionHook= new jsdIExecutionHook();
-nsXPCComponents_Interfaces.prototype.nsIAutoCompleteInput_MOZILLA_1_8_BRANCH= new nsIAutoCompleteInput_MOZILLA_1_8_BRANCH();
-nsXPCComponents_Interfaces.prototype.nsIBoxLayoutManager= new nsIBoxLayoutManager();
-nsXPCComponents_Interfaces.prototype.nsIMicrosummary= new nsIMicrosummary();
-nsXPCComponents_Interfaces.prototype.nsICacheListener= new nsICacheListener();
-nsXPCComponents_Interfaces.prototype.nsISupportsPRBool= new nsISupportsPRBool();
-nsXPCComponents_Interfaces.prototype.mozIStorageValueArray= new mozIStorageValueArray();
-nsXPCComponents_Interfaces.prototype.nsIXPInstallManagerUI= new nsIXPInstallManagerUI();
-nsXPCComponents_Interfaces.prototype.nsIDOMDocumentEvent= new nsIDOMDocumentEvent();
-nsXPCComponents_Interfaces.prototype.nsIDOMXULCommandEvent= new nsIDOMXULCommandEvent();
-nsXPCComponents_Interfaces.prototype.nsIContentSniffer_MOZILLA_1_8_BRANCH= new nsIContentSniffer_MOZILLA_1_8_BRANCH();
-nsXPCComponents_Interfaces.prototype.nsIXULAppInfo= new nsIXULAppInfo();
-nsXPCComponents_Interfaces.prototype.nsIProxiedProtocolHandler= new nsIProxiedProtocolHandler();
-nsXPCComponents_Interfaces.prototype.nsISupportsString= new nsISupportsString();
-nsXPCComponents_Interfaces.prototype.nsISafeOutputStream= new nsISafeOutputStream();
-nsXPCComponents_Interfaces.prototype.inIDeepTreeWalker= new inIDeepTreeWalker();
-nsXPCComponents_Interfaces.prototype.nsIDocShellTreeItem= new nsIDocShellTreeItem();
-nsXPCComponents_Interfaces.prototype.nsIDOMCSSFontFaceRule= new nsIDOMCSSFontFaceRule();
-nsXPCComponents_Interfaces.prototype.nsIAlertsService= new nsIAlertsService();
-nsXPCComponents_Interfaces.prototype.nsICMSMessageErrors= new nsICMSMessageErrors();
-nsXPCComponents_Interfaces.prototype.nsIPrefBranch2= new nsIPrefBranch2();
-nsXPCComponents_Interfaces.prototype.nsIXTFGenericElementWrapper= new nsIXTFGenericElementWrapper();
-nsXPCComponents_Interfaces.prototype.inISearchObserver= new inISearchObserver();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGAnimatedLength= new nsIDOMSVGAnimatedLength();
-nsXPCComponents_Interfaces.prototype.nsIUTF8StringEnumerator= new nsIUTF8StringEnumerator();
-nsXPCComponents_Interfaces.prototype.nsICookieConsent= new nsICookieConsent();
-nsXPCComponents_Interfaces.prototype.nsIResProtocolHandler= new nsIResProtocolHandler();
-nsXPCComponents_Interfaces.prototype.nsIServerSocketListener= new nsIServerSocketListener();
-nsXPCComponents_Interfaces.prototype.nsIXTFBindableElement= new nsIXTFBindableElement();
-nsXPCComponents_Interfaces.prototype.nsIAccessNode= new nsIAccessNode();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPathSegCurvetoQuadraticAbs= new nsIDOMSVGPathSegCurvetoQuadraticAbs();
-nsXPCComponents_Interfaces.prototype.nsISupportsPRInt64= new nsISupportsPRInt64();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSRange= new nsIDOMNSRange();
-nsXPCComponents_Interfaces.prototype.nsIXPCComponents_ID= new nsIXPCComponents_ID();
-nsXPCComponents_Interfaces.prototype.nsITooltipTextProvider= new nsITooltipTextProvider();
-nsXPCComponents_Interfaces.prototype.nsIExternalHelperAppService= new nsIExternalHelperAppService();
-nsXPCComponents_Interfaces.prototype.nsIFastLoadService= new nsIFastLoadService();
-nsXPCComponents_Interfaces.prototype.nsIDOMDOMImplementationLS= new nsIDOMDOMImplementationLS();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLDListElement= new nsIDOMHTMLDListElement();
-nsXPCComponents_Interfaces.prototype.nsIWindowsRegKey= new nsIWindowsRegKey();
-nsXPCComponents_Interfaces.prototype.nsISchemaLoadListener= new nsISchemaLoadListener();
-nsXPCComponents_Interfaces.prototype.nsII18nCompatibility= new nsII18nCompatibility();
-nsXPCComponents_Interfaces.prototype.nsIWebScriptsAccessService= new nsIWebScriptsAccessService();
-nsXPCComponents_Interfaces.prototype.nsIWindowCreator2= new nsIWindowCreator2();
-nsXPCComponents_Interfaces.prototype.nsIWebServiceErrorHandler= new nsIWebServiceErrorHandler();
-nsXPCComponents_Interfaces.prototype.nsIBaseWindow= new nsIBaseWindow();
-nsXPCComponents_Interfaces.prototype.nsIFastLoadFileControl= new nsIFastLoadFileControl();
-nsXPCComponents_Interfaces.prototype.nsIPrefService= new nsIPrefService();
-nsXPCComponents_Interfaces.prototype.nsIWritablePropertyBag= new nsIWritablePropertyBag();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGException= new nsIDOMSVGException();
-nsXPCComponents_Interfaces.prototype.nsIMicrosummaryGenerator= new nsIMicrosummaryGenerator();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPathSeg= new nsIDOMSVGPathSeg();
-nsXPCComponents_Interfaces.prototype.nsISOAPMessage= new nsISOAPMessage();
-nsXPCComponents_Interfaces.prototype.nsIContextMenuInfo= new nsIContextMenuInfo();
-nsXPCComponents_Interfaces.prototype.nsIHttpProtocolHandler= new nsIHttpProtocolHandler();
-nsXPCComponents_Interfaces.prototype.nsILocaleService= new nsILocaleService();
-nsXPCComponents_Interfaces.prototype.nsIDOMBarProp= new nsIDOMBarProp();
-nsXPCComponents_Interfaces.prototype.nsIProfileStartup= new nsIProfileStartup();
-nsXPCComponents_Interfaces.prototype.nsICookiePromptService= new nsICookiePromptService();
-nsXPCComponents_Interfaces.prototype.imgILoad= new imgILoad();
-nsXPCComponents_Interfaces.prototype.nsIPrintSettingsService= new nsIPrintSettingsService();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPathElement= new nsIDOMSVGPathElement();
-nsXPCComponents_Interfaces.prototype.nsIObjectInputStream= new nsIObjectInputStream();
-nsXPCComponents_Interfaces.prototype.nsISchemaAnyParticle= new nsISchemaAnyParticle();
-nsXPCComponents_Interfaces.prototype.nsIDirIndex= new nsIDirIndex();
-nsXPCComponents_Interfaces.prototype.nsPIExternalAppLauncher= new nsPIExternalAppLauncher();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSHTMLHRElement= new nsIDOMNSHTMLHRElement();
-nsXPCComponents_Interfaces.prototype.nsIXTFSVGVisual= new nsIXTFSVGVisual();
-nsXPCComponents_Interfaces.prototype.nsIFormFillController= new nsIFormFillController();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGSVGElement= new nsIDOMSVGSVGElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMXULMenuListElement= new nsIDOMXULMenuListElement();
-nsXPCComponents_Interfaces.prototype.nsISOAPTransportListener= new nsISOAPTransportListener();
-nsXPCComponents_Interfaces.prototype.nsIDictionary= new nsIDictionary();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSHTMLElement_MOZILLA_1_8_BRANCH= new nsIDOMNSHTMLElement_MOZILLA_1_8_BRANCH();
-nsXPCComponents_Interfaces.prototype.nsISyncLoadDOMService= new nsISyncLoadDOMService();
-nsXPCComponents_Interfaces.prototype.nsIDOMJSPluginArray= new nsIDOMJSPluginArray();
-nsXPCComponents_Interfaces.prototype.nsIURL= new nsIURL();
-nsXPCComponents_Interfaces.prototype.nsIDOMConstructor= new nsIDOMConstructor();
-nsXPCComponents_Interfaces.prototype.nsIMultiplexInputStream= new nsIMultiplexInputStream();
-nsXPCComponents_Interfaces.prototype.nsIClipboardCommands= new nsIClipboardCommands();
-nsXPCComponents_Interfaces.prototype.nsIWebServiceProxyCreationListener= new nsIWebServiceProxyCreationListener();
-nsXPCComponents_Interfaces.prototype.nsIDOMKeyEvent= new nsIDOMKeyEvent();
-nsXPCComponents_Interfaces.prototype.nsIKeygenThread= new nsIKeygenThread();
-nsXPCComponents_Interfaces.prototype.jsdIDebuggerService= new jsdIDebuggerService();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLDocument= new nsIDOMHTMLDocument();
-nsXPCComponents_Interfaces.prototype.nsISchemaListType= new nsISchemaListType();
-nsXPCComponents_Interfaces.prototype.inICSSValueSearch= new inICSSValueSearch();
-nsXPCComponents_Interfaces.prototype.nsIAccessibleDocument= new nsIAccessibleDocument();
-nsXPCComponents_Interfaces.prototype.nsIDocNavStartProgressCallback= new nsIDocNavStartProgressCallback();
-nsXPCComponents_Interfaces.prototype.nsIPrintStatusFeedback= new nsIPrintStatusFeedback();
-nsXPCComponents_Interfaces.prototype.nsIProfileInternal= new nsIProfileInternal();
-nsXPCComponents_Interfaces.prototype.nsIExceptionProvider= new nsIExceptionProvider();
-nsXPCComponents_Interfaces.prototype.nsIDOMJSNavigator= new nsIDOMJSNavigator();
-nsXPCComponents_Interfaces.prototype.nsIXULRuntime= new nsIXULRuntime();
-nsXPCComponents_Interfaces.prototype.nsIDOM3EventTarget= new nsIDOM3EventTarget();
-nsXPCComponents_Interfaces.prototype.nsIJVMConfig= new nsIJVMConfig();
-nsXPCComponents_Interfaces.prototype.nsIDOMXPathNSResolver= new nsIDOMXPathNSResolver();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLAnchorElement= new nsIDOMHTMLAnchorElement();
-nsXPCComponents_Interfaces.prototype.nsIFTPChannel= new nsIFTPChannel();
-nsXPCComponents_Interfaces.prototype.nsIDOMCSSValueList= new nsIDOMCSSValueList();
-nsXPCComponents_Interfaces.prototype.nsIShellService= new nsIShellService();
-nsXPCComponents_Interfaces.prototype.nsISchemaAttributeComponent= new nsISchemaAttributeComponent();
-nsXPCComponents_Interfaces.prototype.nsIJSConsoleService= new nsIJSConsoleService();
-nsXPCComponents_Interfaces.prototype.nsIToolkitChromeRegistry= new nsIToolkitChromeRegistry();
-nsXPCComponents_Interfaces.prototype.nsILocaleDefinition= new nsILocaleDefinition();
-nsXPCComponents_Interfaces.prototype.nsIProtocolProxyFilter= new nsIProtocolProxyFilter();
-nsXPCComponents_Interfaces.prototype.nsIFeedElementBase= new nsIFeedElementBase();
-nsXPCComponents_Interfaces.prototype.nsISOAPResponse= new nsISOAPResponse();
-nsXPCComponents_Interfaces.prototype.nsIFormSigningDialog= new nsIFormSigningDialog();
-nsXPCComponents_Interfaces.prototype.jsdIStackFrame= new jsdIStackFrame();
-nsXPCComponents_Interfaces.prototype.nsIXTFElementWrapper= new nsIXTFElementWrapper();
-nsXPCComponents_Interfaces.prototype.nsITypeAheadFind= new nsITypeAheadFind();
-nsXPCComponents_Interfaces.prototype.nsIInlineSpellChecker= new nsIInlineSpellChecker();
-nsXPCComponents_Interfaces.prototype.nsIAptanaDebugService= new nsIAptanaDebugService();
-nsXPCComponents_Interfaces.prototype.nsIDownloadManager= new nsIDownloadManager();
-nsXPCComponents_Interfaces.prototype.nsIProxyAutoConfig= new nsIProxyAutoConfig();
-nsXPCComponents_Interfaces.prototype.nsIAsyncInputStream= new nsIAsyncInputStream();
-nsXPCComponents_Interfaces.prototype.nsIProfileChangeStatus= new nsIProfileChangeStatus();
-nsXPCComponents_Interfaces.prototype.nsISupportsArray= new nsISupportsArray();
-nsXPCComponents_Interfaces.prototype.nsIToolkitProfile= new nsIToolkitProfile();
-nsXPCComponents_Interfaces.prototype.nsIDOMMediaList= new nsIDOMMediaList();
-nsXPCComponents_Interfaces.prototype.nsIUrlClassifierCallback= new nsIUrlClassifierCallback();
-nsXPCComponents_Interfaces.prototype.nsIWebBrowserPersist= new nsIWebBrowserPersist();
-nsXPCComponents_Interfaces.prototype.nsIDirIndexParser= new nsIDirIndexParser();
-nsXPCComponents_Interfaces.prototype.nsIProgrammingLanguage= new nsIProgrammingLanguage();
-nsXPCComponents_Interfaces.prototype.nsIXULTemplateBuilder= new nsIXULTemplateBuilder();
-nsXPCComponents_Interfaces.prototype.nsISemanticUnitScanner= new nsISemanticUnitScanner();
-nsXPCComponents_Interfaces.prototype.nsIStreamCipher= new nsIStreamCipher();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGTextPathElement= new nsIDOMSVGTextPathElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSHTMLElement= new nsIDOMNSHTMLElement();
-nsXPCComponents_Interfaces.prototype.nsIAtom= new nsIAtom();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGTransformable= new nsIDOMSVGTransformable();
-nsXPCComponents_Interfaces.prototype.nsIEnumerator= new nsIEnumerator();
-nsXPCComponents_Interfaces.prototype.nsIFile= new nsIFile();
-nsXPCComponents_Interfaces.prototype.nsIDOMXULMultiSelectControlElement= new nsIDOMXULMultiSelectControlElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSHTMLTextAreaElement= new nsIDOMNSHTMLTextAreaElement();
-nsXPCComponents_Interfaces.prototype.nsIContextMenuListener2= new nsIContextMenuListener2();
-nsXPCComponents_Interfaces.prototype.nsIDOMWindow2= new nsIDOMWindow2();
-nsXPCComponents_Interfaces.prototype.nsIChromeRegistry= new nsIChromeRegistry();
-nsXPCComponents_Interfaces.prototype.nsIDOMNodeList= new nsIDOMNodeList();
-nsXPCComponents_Interfaces.prototype.nsIInputStreamChannel= new nsIInputStreamChannel();
-nsXPCComponents_Interfaces.prototype.nsISOAPEncoder= new nsISOAPEncoder();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGForeignObjectElement= new nsIDOMSVGForeignObjectElement();
-nsXPCComponents_Interfaces.prototype.nsIEventQueue= new nsIEventQueue();
-nsXPCComponents_Interfaces.prototype.nsIThread= new nsIThread();
-nsXPCComponents_Interfaces.prototype.nsIIOService2= new nsIIOService2();
-nsXPCComponents_Interfaces.prototype.nsIEditorBoxObject= new nsIEditorBoxObject();
-nsXPCComponents_Interfaces.prototype.nsIUpdateChecker= new nsIUpdateChecker();
-nsXPCComponents_Interfaces.prototype.nsIStreamTransportService= new nsIStreamTransportService();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLTableRowElement= new nsIDOMHTMLTableRowElement();
-nsXPCComponents_Interfaces.prototype.nsIAccessibleProvider= new nsIAccessibleProvider();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLButtonElement= new nsIDOMHTMLButtonElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSHTMLInputElement= new nsIDOMNSHTMLInputElement();
-nsXPCComponents_Interfaces.prototype.nsIDownload_MOZILLA_1_8_BRANCH= new nsIDownload_MOZILLA_1_8_BRANCH();
-nsXPCComponents_Interfaces.prototype.nsITransfer= new nsITransfer();
-nsXPCComponents_Interfaces.prototype.nsIWebBrowserStream= new nsIWebBrowserStream();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLTableColElement= new nsIDOMHTMLTableColElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMCSSRuleList= new nsIDOMCSSRuleList();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPathSegCurvetoQuadraticRel= new nsIDOMSVGPathSegCurvetoQuadraticRel();
-nsXPCComponents_Interfaces.prototype.imgIEncoder_MOZILLA_1_8_BRANCH= new imgIEncoder_MOZILLA_1_8_BRANCH();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGTSpanElement= new nsIDOMSVGTSpanElement();
-nsXPCComponents_Interfaces.prototype.nsIControllerContext= new nsIControllerContext();
-nsXPCComponents_Interfaces.prototype.nsIUrlClassifierStreamUpdater= new nsIUrlClassifierStreamUpdater();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGClipPathElement= new nsIDOMSVGClipPathElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLIsIndexElement= new nsIDOMHTMLIsIndexElement();
-nsXPCComponents_Interfaces.prototype.nsIExpatSink= new nsIExpatSink();
-nsXPCComponents_Interfaces.prototype.nsIWebBrowserSetup= new nsIWebBrowserSetup();
-nsXPCComponents_Interfaces.prototype.nsISOCKSSocketInfo= new nsISOCKSSocketInfo();
-nsXPCComponents_Interfaces.prototype.nsIDOMEventListener= new nsIDOMEventListener();
-nsXPCComponents_Interfaces.prototype.nsIPermission= new nsIPermission();
-nsXPCComponents_Interfaces.prototype.nsIEditorObserver= new nsIEditorObserver();
-nsXPCComponents_Interfaces.prototype.nsIScriptableMethodInfo= new nsIScriptableMethodInfo();
-nsXPCComponents_Interfaces.prototype.nsIScriptSecurityManager= new nsIScriptSecurityManager();
-nsXPCComponents_Interfaces.prototype.nsIDOMEventGroup= new nsIDOMEventGroup();
-nsXPCComponents_Interfaces.prototype.nsIURIFixup_MOZILLA_1_8_BRANCH= new nsIURIFixup_MOZILLA_1_8_BRANCH();
-nsXPCComponents_Interfaces.prototype.nsITooltipListener= new nsITooltipListener();
-nsXPCComponents_Interfaces.prototype.nsIDOMStyleSheetList= new nsIDOMStyleSheetList();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGNumberList= new nsIDOMSVGNumberList();
-nsXPCComponents_Interfaces.prototype.nsIPermissionManager= new nsIPermissionManager();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSFeatureFactory= new nsIDOMNSFeatureFactory();
-nsXPCComponents_Interfaces.prototype.nsIUpdate_MOZILLA_1_8_BRANCH= new nsIUpdate_MOZILLA_1_8_BRANCH();
-nsXPCComponents_Interfaces.prototype.nsISAXLexicalHandler= new nsISAXLexicalHandler();
-nsXPCComponents_Interfaces.prototype.nsISMimeCert= new nsISMimeCert();
-nsXPCComponents_Interfaces.prototype.nsISidebarExternal= new nsISidebarExternal();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPathSegArcRel= new nsIDOMSVGPathSegArcRel();
-nsXPCComponents_Interfaces.prototype.nsIEventQueueService= new nsIEventQueueService();
-nsXPCComponents_Interfaces.prototype.nsISaveAsCharset= new nsISaveAsCharset();
-nsXPCComponents_Interfaces.prototype.nsICMSSecureMessage= new nsICMSSecureMessage();
-nsXPCComponents_Interfaces.prototype.nsIStringBundleService= new nsIStringBundleService();
-nsXPCComponents_Interfaces.prototype.nsIXULOverlayProvider= new nsIXULOverlayProvider();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGTransformList= new nsIDOMSVGTransformList();
-nsXPCComponents_Interfaces.prototype.nsIDOMDOMException= new nsIDOMDOMException();
-nsXPCComponents_Interfaces.prototype.nsIScriptableUnicodeConverter= new nsIScriptableUnicodeConverter();
-nsXPCComponents_Interfaces.prototype.nsIFastLoadFileIO= new nsIFastLoadFileIO();
-nsXPCComponents_Interfaces.prototype.nsICollation= new nsICollation();
-nsXPCComponents_Interfaces.prototype.nsIComponentManager= new nsIComponentManager();
-nsXPCComponents_Interfaces.prototype.nsIBrowserSearchService= new nsIBrowserSearchService();
-nsXPCComponents_Interfaces.prototype.nsIXSLTProcessorObsolete= new nsIXSLTProcessorObsolete();
-nsXPCComponents_Interfaces.prototype.nsIUUIDGenerator= new nsIUUIDGenerator();
-nsXPCComponents_Interfaces.prototype.nsIControllerCommandGroup= new nsIControllerCommandGroup();
-nsXPCComponents_Interfaces.prototype.nsIDOMLocation= new nsIDOMLocation();
-nsXPCComponents_Interfaces.prototype.nsITXTToHTMLConv= new nsITXTToHTMLConv();
-nsXPCComponents_Interfaces.prototype.nsISessionStore= new nsISessionStore();
-nsXPCComponents_Interfaces.prototype.nsIRDFBlob= new nsIRDFBlob();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLHeadElement= new nsIDOMHTMLHeadElement();
-nsXPCComponents_Interfaces.prototype.nsIXPCComponents_Exception= new nsIXPCComponents_Exception();
-nsXPCComponents_Interfaces.prototype.nsIASN1PrintableItem= new nsIASN1PrintableItem();
-nsXPCComponents_Interfaces.prototype.nsIEditorStyleSheets= new nsIEditorStyleSheets();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSHTMLButtonElement= new nsIDOMNSHTMLButtonElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLMapElement= new nsIDOMHTMLMapElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLBRElement= new nsIDOMHTMLBRElement();
-nsXPCComponents_Interfaces.prototype.nsISupportsDouble= new nsISupportsDouble();
-nsXPCComponents_Interfaces.prototype.nsIProtocolProxyCallback= new nsIProtocolProxyCallback();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLLinkElement= new nsIDOMHTMLLinkElement();
-nsXPCComponents_Interfaces.prototype.nsIXULSortService= new nsIXULSortService();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSHTMLOptionCollection= new nsIDOMNSHTMLOptionCollection();
-nsXPCComponents_Interfaces.prototype.nsIXULTreeBuilder= new nsIXULTreeBuilder();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGNumber= new nsIDOMSVGNumber();
-nsXPCComponents_Interfaces.prototype.nsIHistoryEntry= new nsIHistoryEntry();
-nsXPCComponents_Interfaces.prototype.nsIDOMXULImageElement= new nsIDOMXULImageElement();
-nsXPCComponents_Interfaces.prototype.nsIFileURL= new nsIFileURL();
-nsXPCComponents_Interfaces.prototype.nsIFindService= new nsIFindService();
-nsXPCComponents_Interfaces.prototype.nsIDOMLSLoadEvent= new nsIDOMLSLoadEvent();
-nsXPCComponents_Interfaces.prototype.nsINetworkLinkService= new nsINetworkLinkService();
-nsXPCComponents_Interfaces.prototype.nsIClipboardHelper= new nsIClipboardHelper();
-nsXPCComponents_Interfaces.prototype.nsIPref= new nsIPref();
-nsXPCComponents_Interfaces.prototype.nsIWebProgressListener= new nsIWebProgressListener();
-nsXPCComponents_Interfaces.prototype.nsIDragService= new nsIDragService();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSDocumentStyle= new nsIDOMNSDocumentStyle();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLStyleElement= new nsIDOMHTMLStyleElement();
-nsXPCComponents_Interfaces.prototype.nsIOCSPResponder= new nsIOCSPResponder();
-nsXPCComponents_Interfaces.prototype.nsILocale= new nsILocale();
-nsXPCComponents_Interfaces.prototype.nsIUpdateItem= new nsIUpdateItem();
-nsXPCComponents_Interfaces.prototype.nsICiter= new nsICiter();
-nsXPCComponents_Interfaces.prototype.nsISchemaRestrictionType= new nsISchemaRestrictionType();
-nsXPCComponents_Interfaces.prototype.nsIXSLTException= new nsIXSLTException();
-nsXPCComponents_Interfaces.prototype.nsIFormHistoryImporter= new nsIFormHistoryImporter();
-nsXPCComponents_Interfaces.prototype.nsISAXDTDHandler= new nsISAXDTDHandler();
-nsXPCComponents_Interfaces.prototype.nsIRequestObserverProxy= new nsIRequestObserverProxy();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGDocument= new nsIDOMSVGDocument();
-nsXPCComponents_Interfaces.prototype.nsIDOM3Node= new nsIDOM3Node();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLUListElement= new nsIDOMHTMLUListElement();
-nsXPCComponents_Interfaces.prototype.nsIActiveXSecurityPolicy= new nsIActiveXSecurityPolicy();
-nsXPCComponents_Interfaces.prototype.nsIUnicodeNormalizer= new nsIUnicodeNormalizer();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLObjectElement= new nsIDOMHTMLObjectElement();
-nsXPCComponents_Interfaces.prototype.nsIXULChromeRegistry= new nsIXULChromeRegistry();
-nsXPCComponents_Interfaces.prototype.nsIXPointerResult= new nsIXPointerResult();
-nsXPCComponents_Interfaces.prototype.nsIDOMCRMFObject= new nsIDOMCRMFObject();
-nsXPCComponents_Interfaces.prototype.nsIURI= new nsIURI();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGMatrix= new nsIDOMSVGMatrix();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLTableElement= new nsIDOMHTMLTableElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGEvent= new nsIDOMSVGEvent();
-nsXPCComponents_Interfaces.prototype.nsIDOMDocumentType= new nsIDOMDocumentType();
-nsXPCComponents_Interfaces.prototype.nsIQTScriptablePlugin= new nsIQTScriptablePlugin();
-nsXPCComponents_Interfaces.prototype.nsIDOMWindowUtils= new nsIDOMWindowUtils();
-nsXPCComponents_Interfaces.prototype.nsIDOMXULPopupElement= new nsIDOMXULPopupElement();
-nsXPCComponents_Interfaces.prototype.nsISchemaComplexType= new nsISchemaComplexType();
-nsXPCComponents_Interfaces.prototype.nsIOSChromeItem= new nsIOSChromeItem();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPathSegLinetoHorizontalAbs= new nsIDOMSVGPathSegLinetoHorizontalAbs();
-nsXPCComponents_Interfaces.prototype.nsIDialogParamBlock= new nsIDialogParamBlock();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLInputElement= new nsIDOMHTMLInputElement();
-nsXPCComponents_Interfaces.prototype.imgIRequest= new imgIRequest();
-nsXPCComponents_Interfaces.prototype.nsIContextMenuListener= new nsIContextMenuListener();
-nsXPCComponents_Interfaces.prototype.nsIExceptionManager= new nsIExceptionManager();
-nsXPCComponents_Interfaces.prototype.nsITimerInternal= new nsITimerInternal();
-nsXPCComponents_Interfaces.prototype.nsISOAPTransport= new nsISOAPTransport();
-nsXPCComponents_Interfaces.prototype.nsIDOMComment= new nsIDOMComment();
-nsXPCComponents_Interfaces.prototype.nsIRegistry= new nsIRegistry();
-nsXPCComponents_Interfaces.prototype.nsIHelperAppLauncherDialog= new nsIHelperAppLauncherDialog();
-nsXPCComponents_Interfaces.prototype.jsdIProperty= new jsdIProperty();
-nsXPCComponents_Interfaces.prototype.nsICookieService= new nsICookieService();
-nsXPCComponents_Interfaces.prototype.nsIRDFInferDataSource= new nsIRDFInferDataSource();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGCircleElement= new nsIDOMSVGCircleElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPathSegLinetoVerticalAbs= new nsIDOMSVGPathSegLinetoVerticalAbs();
-nsXPCComponents_Interfaces.prototype.nsIProperty= new nsIProperty();
-nsXPCComponents_Interfaces.prototype.nsIDocShellTreeNode= new nsIDocShellTreeNode();
-nsXPCComponents_Interfaces.prototype.nsIChromeEventHandler= new nsIChromeEventHandler();
-nsXPCComponents_Interfaces.prototype.nsIConsoleService_MOZILLA_1_8_BRANCH= new nsIConsoleService_MOZILLA_1_8_BRANCH();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPathSegCurvetoCubicSmoothRel= new nsIDOMSVGPathSegCurvetoCubicSmoothRel();
-nsXPCComponents_Interfaces.prototype.nsIDOMCSSCharsetRule= new nsIDOMCSSCharsetRule();
-nsXPCComponents_Interfaces.prototype.nsIPrefetchService= new nsIPrefetchService();
-nsXPCComponents_Interfaces.prototype.nsIAccessibleWin32Object= new nsIAccessibleWin32Object();
-nsXPCComponents_Interfaces.prototype.nsIObjectOutputStream= new nsIObjectOutputStream();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGAnimatedRect= new nsIDOMSVGAnimatedRect();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLLabelElement= new nsIDOMHTMLLabelElement();
-nsXPCComponents_Interfaces.prototype.nsIResumableChannel= new nsIResumableChannel();
-nsXPCComponents_Interfaces.prototype.nsIScriptLoaderObserver= new nsIScriptLoaderObserver();
-nsXPCComponents_Interfaces.prototype.nsIHttpChannelInternal= new nsIHttpChannelInternal();
-nsXPCComponents_Interfaces.prototype.nsICollationFactory= new nsICollationFactory();
-nsXPCComponents_Interfaces.prototype.nsIScriptableRegion= new nsIScriptableRegion();
-nsXPCComponents_Interfaces.prototype.jsdINestCallback= new jsdINestCallback();
-nsXPCComponents_Interfaces.prototype.nsPIAccessible= new nsPIAccessible();
-nsXPCComponents_Interfaces.prototype.nsISchemaBuiltinType= new nsISchemaBuiltinType();
-nsXPCComponents_Interfaces.prototype.nsIAptanaBreakpointProperties= new nsIAptanaBreakpointProperties();
-nsXPCComponents_Interfaces.prototype.nsIAptanaDebugger= new nsIAptanaDebugger();
-nsXPCComponents_Interfaces.prototype.nsIDOMRange= new nsIDOMRange();
-nsXPCComponents_Interfaces.prototype.nsIEditor_MOZILLA_1_8_BRANCH= new nsIEditor_MOZILLA_1_8_BRANCH();
-nsXPCComponents_Interfaces.prototype.nsIListBoxObject= new nsIListBoxObject();
-nsXPCComponents_Interfaces.prototype.nsIDOMCharacterData= new nsIDOMCharacterData();
-nsXPCComponents_Interfaces.prototype.nsIDOM3Document= new nsIDOM3Document();
-nsXPCComponents_Interfaces.prototype.nsIByteRangeRequest= new nsIByteRangeRequest();
-nsXPCComponents_Interfaces.prototype.nsIArray= new nsIArray();
-nsXPCComponents_Interfaces.prototype.nsIDOMDocumentView= new nsIDOMDocumentView();
-nsXPCComponents_Interfaces.prototype.rdfIDataSource= new rdfIDataSource();
-nsXPCComponents_Interfaces.prototype.nsIXPCWrappedJSObjectGetter= new nsIXPCWrappedJSObjectGetter();
-nsXPCComponents_Interfaces.prototype.mozIJSSubScriptLoader= new mozIJSSubScriptLoader();
-nsXPCComponents_Interfaces.prototype.nsISOAPAttachments= new nsISOAPAttachments();
-nsXPCComponents_Interfaces.prototype.nsIPKCS11Slot= new nsIPKCS11Slot();
-nsXPCComponents_Interfaces.prototype.nsIDirectoryEnumerator= new nsIDirectoryEnumerator();
-nsXPCComponents_Interfaces.prototype.nsIMutableArray= new nsIMutableArray();
-nsXPCComponents_Interfaces.prototype.nsIWebServiceCallContext= new nsIWebServiceCallContext();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSUIEvent= new nsIDOMNSUIEvent();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGMarkerElement= new nsIDOMSVGMarkerElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMXULLabelElement= new nsIDOMXULLabelElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMUIEvent= new nsIDOMUIEvent();
-nsXPCComponents_Interfaces.prototype.nsIRDFResource= new nsIRDFResource();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGLength= new nsIDOMSVGLength();
-nsXPCComponents_Interfaces.prototype.nsISidebar= new nsISidebar();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPreserveAspectRatio= new nsIDOMSVGPreserveAspectRatio();
-nsXPCComponents_Interfaces.prototype.nsIEditorDocShell= new nsIEditorDocShell();
-nsXPCComponents_Interfaces.prototype.nsIProgressDialog= new nsIProgressDialog();
-nsXPCComponents_Interfaces.prototype.nsIURIChecker= new nsIURIChecker();
-nsXPCComponents_Interfaces.prototype.nsIAccessibleTreeCache= new nsIAccessibleTreeCache();
-nsXPCComponents_Interfaces.prototype.nsIConsoleListener= new nsIConsoleListener();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSHTMLImageElement= new nsIDOMNSHTMLImageElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMDocumentStyle= new nsIDOMDocumentStyle();
-nsXPCComponents_Interfaces.prototype.nsIFeedProgressListener= new nsIFeedProgressListener();
-nsXPCComponents_Interfaces.prototype.nsIXPCException= new nsIXPCException();
-nsXPCComponents_Interfaces.prototype.nsIWebPageDescriptor= new nsIWebPageDescriptor();
-nsXPCComponents_Interfaces.prototype.nsIKeyObject= new nsIKeyObject();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLQuoteElement= new nsIDOMHTMLQuoteElement();
-nsXPCComponents_Interfaces.prototype.nsIBidiKeyboard= new nsIBidiKeyboard();
-nsXPCComponents_Interfaces.prototype.nsIXPCComponents_Utils= new nsIXPCComponents_Utils();
-nsXPCComponents_Interfaces.prototype.nsPISocketTransportService= new nsPISocketTransportService();
-nsXPCComponents_Interfaces.prototype.nsIPipe= new nsIPipe();
-nsXPCComponents_Interfaces.prototype.nsIURLFormatter= new nsIURLFormatter();
-nsXPCComponents_Interfaces.prototype.nsISearchableInputStream= new nsISearchableInputStream();
-nsXPCComponents_Interfaces.prototype.imgIContainer= new imgIContainer();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPolylineElement= new nsIDOMSVGPolylineElement();
-nsXPCComponents_Interfaces.prototype.nsIPluginElement= new nsIPluginElement();
-nsXPCComponents_Interfaces.prototype.nsIStringBundleOverride= new nsIStringBundleOverride();
-nsXPCComponents_Interfaces.prototype.mozIStorageStatementParams= new mozIStorageStatementParams();
-nsXPCComponents_Interfaces.prototype.nsIJVMPluginInstance= new nsIJVMPluginInstance();
-nsXPCComponents_Interfaces.prototype.nsICipherInfoService= new nsICipherInfoService();
-nsXPCComponents_Interfaces.prototype.nsISocketTransport= new nsISocketTransport();
-nsXPCComponents_Interfaces.prototype.nsIOutputIterator= new nsIOutputIterator();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGTextContentElement= new nsIDOMSVGTextContentElement();
-nsXPCComponents_Interfaces.prototype.nsIHttpHeaderVisitor= new nsIHttpHeaderVisitor();
-nsXPCComponents_Interfaces.prototype.nsITimerManager= new nsITimerManager();
-nsXPCComponents_Interfaces.prototype.nsIWSDLMessage= new nsIWSDLMessage();
-nsXPCComponents_Interfaces.prototype.nsINetUtil= new nsINetUtil();
-nsXPCComponents_Interfaces.prototype.nsIWebContentConverterService= new nsIWebContentConverterService();
-nsXPCComponents_Interfaces.prototype.jsdIValue= new jsdIValue();
-nsXPCComponents_Interfaces.prototype.jsdIScript= new jsdIScript();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSEditableElement= new nsIDOMNSEditableElement();
-nsXPCComponents_Interfaces.prototype.nsIClassInfo= new nsIClassInfo();
-nsXPCComponents_Interfaces.prototype.nsIRDFService= new nsIRDFService();
-nsXPCComponents_Interfaces.prototype.nsISupportsPriority= new nsISupportsPriority();
-nsXPCComponents_Interfaces.prototype.nsIKeyObjectFactory= new nsIKeyObjectFactory();
-nsXPCComponents_Interfaces.prototype.nsIDirectoryIterator= new nsIDirectoryIterator();
-nsXPCComponents_Interfaces.prototype.nsIInputStream= new nsIInputStream();
-nsXPCComponents_Interfaces.prototype.nsISecurityCheckedComponent= new nsISecurityCheckedComponent();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLFormElement= new nsIDOMHTMLFormElement();
-nsXPCComponents_Interfaces.prototype.mozIPersonalDictionary= new mozIPersonalDictionary();
-nsXPCComponents_Interfaces.prototype.nsIUnicharStreamLoader= new nsIUnicharStreamLoader();
-nsXPCComponents_Interfaces.prototype.nsIDocShell= new nsIDocShell();
-nsXPCComponents_Interfaces.prototype.nsIDOMViewCSS= new nsIDOMViewCSS();
-nsXPCComponents_Interfaces.prototype.nsISAXXMLFilter= new nsISAXXMLFilter();
-nsXPCComponents_Interfaces.prototype.nsIJVMManager= new nsIJVMManager();
-nsXPCComponents_Interfaces.prototype.nsITreeColumns= new nsITreeColumns();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLHtmlElement= new nsIDOMHTMLHtmlElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMCanvasGradient= new nsIDOMCanvasGradient();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGAnimatedPoints= new nsIDOMSVGAnimatedPoints();
-nsXPCComponents_Interfaces.prototype.nsIRDFXMLSerializer= new nsIRDFXMLSerializer();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSHTMLAnchorElement= new nsIDOMNSHTMLAnchorElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMCSS2Properties= new nsIDOMCSS2Properties();
-nsXPCComponents_Interfaces.prototype.nsIProfileStartupListener= new nsIProfileStartupListener();
-nsXPCComponents_Interfaces.prototype.nsIFontPackageHandler= new nsIFontPackageHandler();
-nsXPCComponents_Interfaces.prototype.nsIWSDLBinding= new nsIWSDLBinding();
-nsXPCComponents_Interfaces.prototype.nsIProxyCreateInstance= new nsIProxyCreateInstance();
-nsXPCComponents_Interfaces.prototype.nsISecurityEventSink= new nsISecurityEventSink();
-nsXPCComponents_Interfaces.prototype.nsICommandHandler= new nsICommandHandler();
-nsXPCComponents_Interfaces.prototype.nsIDOMLinkStyle= new nsIDOMLinkStyle();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPoint= new nsIDOMSVGPoint();
-nsXPCComponents_Interfaces.prototype.nsIAccessibleEvent= new nsIAccessibleEvent();
-nsXPCComponents_Interfaces.prototype.nsISupportsCString= new nsISupportsCString();
-nsXPCComponents_Interfaces.prototype.nsISupportsID= new nsISupportsID();
-nsXPCComponents_Interfaces.prototype.IDispatch= new IDispatch();
-nsXPCComponents_Interfaces.prototype.nsIXPInstallManager= new nsIXPInstallManager();
-nsXPCComponents_Interfaces.prototype.nsIXTFXMLVisualWrapper= new nsIXTFXMLVisualWrapper();
-nsXPCComponents_Interfaces.prototype.nsIFeedResultListener= new nsIFeedResultListener();
-nsXPCComponents_Interfaces.prototype.nsIDOMTreeWalker= new nsIDOMTreeWalker();
-nsXPCComponents_Interfaces.prototype.nsIDOMUserDataHandler= new nsIDOMUserDataHandler();
-nsXPCComponents_Interfaces.prototype.nsIProcess= new nsIProcess();
-nsXPCComponents_Interfaces.prototype.nsIWindowCreator= new nsIWindowCreator();
-nsXPCComponents_Interfaces.prototype.nsITreeView= new nsITreeView();
-nsXPCComponents_Interfaces.prototype.nsIDOMDocumentXBL= new nsIDOMDocumentXBL();
-nsXPCComponents_Interfaces.prototype.nsIXTFBindableElementWrapper= new nsIXTFBindableElementWrapper();
-nsXPCComponents_Interfaces.prototype.nsIObserverService= new nsIObserverService();
-nsXPCComponents_Interfaces.prototype.nsISAXContentHandler= new nsISAXContentHandler();
-nsXPCComponents_Interfaces.prototype.nsIScriptableConstant= new nsIScriptableConstant();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLFrameSetElement= new nsIDOMHTMLFrameSetElement();
-nsXPCComponents_Interfaces.prototype.nsISchemaSimpleType= new nsISchemaSimpleType();
-nsXPCComponents_Interfaces.prototype.nsIFactory= new nsIFactory();
-nsXPCComponents_Interfaces.prototype.nsIDragDropHandler= new nsIDragDropHandler();
-nsXPCComponents_Interfaces.prototype.nsIAptanaError= new nsIAptanaError();
-nsXPCComponents_Interfaces.prototype.nsISOAPServiceRegistry= new nsISOAPServiceRegistry();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGStopElement= new nsIDOMSVGStopElement();
-nsXPCComponents_Interfaces.prototype.nsIWebBrowserFindInFrames= new nsIWebBrowserFindInFrames();
-nsXPCComponents_Interfaces.prototype.nsIConsoleService= new nsIConsoleService();
-nsXPCComponents_Interfaces.prototype.inISearchProcess= new inISearchProcess();
-nsXPCComponents_Interfaces.prototype.nsICacheService= new nsICacheService();
-nsXPCComponents_Interfaces.prototype.nsIFeedTextConstruct= new nsIFeedTextConstruct();
-nsXPCComponents_Interfaces.prototype.nsIIncrementalDownload= new nsIIncrementalDownload();
-nsXPCComponents_Interfaces.prototype.nsIDocShellHistory= new nsIDocShellHistory();
-nsXPCComponents_Interfaces.prototype.nsICacheSession= new nsICacheSession();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLEmbedElement= new nsIDOMHTMLEmbedElement();
-nsXPCComponents_Interfaces.prototype.nsIASN1Tree= new nsIASN1Tree();
-nsXPCComponents_Interfaces.prototype.nsIUserCertPicker= new nsIUserCertPicker();
-nsXPCComponents_Interfaces.prototype.nsIProfileMigrator= new nsIProfileMigrator();
-nsXPCComponents_Interfaces.prototype.nsIDocShellTreeOwner= new nsIDocShellTreeOwner();
-nsXPCComponents_Interfaces.prototype.mozISpellI18NUtil= new mozISpellI18NUtil();
-nsXPCComponents_Interfaces.prototype.nsIXTFGenericElement= new nsIXTFGenericElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMChromeWindow= new nsIDOMChromeWindow();
-nsXPCComponents_Interfaces.prototype.nsISSLSocketControl= new nsISSLSocketControl();
-nsXPCComponents_Interfaces.prototype.nsIHttpEventSink= new nsIHttpEventSink();
-nsXPCComponents_Interfaces.prototype.nsIGlobalHistory3= new nsIGlobalHistory3();
-nsXPCComponents_Interfaces.prototype.nsIMicrosummarySet= new nsIMicrosummarySet();
-nsXPCComponents_Interfaces.prototype.nsIFeedEntry= new nsIFeedEntry();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGAnimatedAngle= new nsIDOMSVGAnimatedAngle();
-nsXPCComponents_Interfaces.prototype.nsIDOMXULDocument_MOZILLA_1_8_BRANCH= new nsIDOMXULDocument_MOZILLA_1_8_BRANCH();
-nsXPCComponents_Interfaces.prototype.nsIXPCComponents_Constructor= new nsIXPCComponents_Constructor();
-nsXPCComponents_Interfaces.prototype.nsIUTF8ConverterService= new nsIUTF8ConverterService();
-nsXPCComponents_Interfaces.prototype.nsIDOMLSSerializer= new nsIDOMLSSerializer();
-nsXPCComponents_Interfaces.prototype.nsIBufferedInputStream= new nsIBufferedInputStream();
-nsXPCComponents_Interfaces.prototype.nsIHTMLInlineTableEditor= new nsIHTMLInlineTableEditor();
-nsXPCComponents_Interfaces.prototype.nsIDOMMimeType= new nsIDOMMimeType();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLParamElement= new nsIDOMHTMLParamElement();
-nsXPCComponents_Interfaces.prototype.nsIFeedResultService= new nsIFeedResultService();
-nsXPCComponents_Interfaces.prototype.nsIRequestObserver= new nsIRequestObserver();
-nsXPCComponents_Interfaces.prototype.nsIXPCConstructor= new nsIXPCConstructor();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPathSegMovetoAbs= new nsIDOMSVGPathSegMovetoAbs();
-nsXPCComponents_Interfaces.prototype.nsIScriptableInputStream= new nsIScriptableInputStream();
-nsXPCComponents_Interfaces.prototype.nsIAddonUpdateCheckListener= new nsIAddonUpdateCheckListener();
-nsXPCComponents_Interfaces.prototype.nsIControllerCommandTable= new nsIControllerCommandTable();
-nsXPCComponents_Interfaces.prototype.nsIDNSRecord= new nsIDNSRecord();
-nsXPCComponents_Interfaces.prototype.nsIAutoCompleteResult= new nsIAutoCompleteResult();
-nsXPCComponents_Interfaces.prototype.nsIAsyncOutputStream= new nsIAsyncOutputStream();
-nsXPCComponents_Interfaces.prototype.nsIDirectoryServiceProvider2= new nsIDirectoryServiceProvider2();
-nsXPCComponents_Interfaces.prototype.nsIEditorIMESupport= new nsIEditorIMESupport();
-nsXPCComponents_Interfaces.prototype.nsISelection2= new nsISelection2();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLHeadingElement= new nsIDOMHTMLHeadingElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMText= new nsIDOMText();
-nsXPCComponents_Interfaces.prototype.nsIDOMClientInformation= new nsIDOMClientInformation();
-nsXPCComponents_Interfaces.prototype.nsIDOMCanvasRenderingContext2D= new nsIDOMCanvasRenderingContext2D();
-nsXPCComponents_Interfaces.prototype.nsIStreamListener= new nsIStreamListener();
-nsXPCComponents_Interfaces.prototype.nsIOutputStreamCallback= new nsIOutputStreamCallback();
-nsXPCComponents_Interfaces.prototype.jsdIScriptEnumerator= new jsdIScriptEnumerator();
-nsXPCComponents_Interfaces.prototype.nsIClipboardImage= new nsIClipboardImage();
-nsXPCComponents_Interfaces.prototype.nsIBoxObject= new nsIBoxObject();
-nsXPCComponents_Interfaces.prototype.nsICloseAllWindows= new nsICloseAllWindows();
-nsXPCComponents_Interfaces.prototype.nsIScreenManager= new nsIScreenManager();
-nsXPCComponents_Interfaces.prototype.nsIUpdateTimerManager= new nsIUpdateTimerManager();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGAnimatedPreserveAspectRatio= new nsIDOMSVGAnimatedPreserveAspectRatio();
-nsXPCComponents_Interfaces.prototype.nsIHttpChannel= new nsIHttpChannel();
-nsXPCComponents_Interfaces.prototype.nsIDOMXULDescriptionElement= new nsIDOMXULDescriptionElement();
-nsXPCComponents_Interfaces.prototype.nsISupportsPRTime= new nsISupportsPRTime();
-nsXPCComponents_Interfaces.prototype.nsIBookmarkTransactionManager= new nsIBookmarkTransactionManager();
-nsXPCComponents_Interfaces.prototype.nsIClientAuthDialogs= new nsIClientAuthDialogs();
-nsXPCComponents_Interfaces.prototype.nsISelection= new nsISelection();
-nsXPCComponents_Interfaces.prototype.nsIRDFInt= new nsIRDFInt();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGLengthList= new nsIDOMSVGLengthList();
-nsXPCComponents_Interfaces.prototype.nsIDOMCSSStyleRule= new nsIDOMCSSStyleRule();
-nsXPCComponents_Interfaces.prototype.nsIServiceManager= new nsIServiceManager();
-nsXPCComponents_Interfaces.prototype.nsIShellService_MOZILLA_1_8_BRANCH= new nsIShellService_MOZILLA_1_8_BRANCH();
-nsXPCComponents_Interfaces.prototype.nsILoadGroup= new nsILoadGroup();
-nsXPCComponents_Interfaces.prototype.nsIExtensionManager= new nsIExtensionManager();
-nsXPCComponents_Interfaces.prototype.nsICharsetResolver= new nsICharsetResolver();
-nsXPCComponents_Interfaces.prototype.nsICookieManager2= new nsICookieManager2();
-nsXPCComponents_Interfaces.prototype.nsIScriptableDataType= new nsIScriptableDataType();
-nsXPCComponents_Interfaces.prototype.nsIMIMEInfo= new nsIMIMEInfo();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGAnimatedPathData= new nsIDOMSVGAnimatedPathData();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGTransform= new nsIDOMSVGTransform();
-nsXPCComponents_Interfaces.prototype.nsIWebNavigation= new nsIWebNavigation();
-nsXPCComponents_Interfaces.prototype.nsIDOMDocument= new nsIDOMDocument();
-nsXPCComponents_Interfaces.prototype.nsIDOMProcessingInstruction= new nsIDOMProcessingInstruction();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLTextAreaElement= new nsIDOMHTMLTextAreaElement();
-nsXPCComponents_Interfaces.prototype.nsIRDFLiteral= new nsIRDFLiteral();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGAngle= new nsIDOMSVGAngle();
-nsXPCComponents_Interfaces.prototype.nsIDOMXPathEvaluator= new nsIDOMXPathEvaluator();
-nsXPCComponents_Interfaces.prototype.nsITableEditor= new nsITableEditor();
-nsXPCComponents_Interfaces.prototype.nsIPrintOptions= new nsIPrintOptions();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPathSegLinetoAbs= new nsIDOMSVGPathSegLinetoAbs();
-nsXPCComponents_Interfaces.prototype.nsISchemaAttribute= new nsISchemaAttribute();
-nsXPCComponents_Interfaces.prototype.nsIBrowserBoxObject= new nsIBrowserBoxObject();
-nsXPCComponents_Interfaces.prototype.nsIPrintingPromptService= new nsIPrintingPromptService();
-nsXPCComponents_Interfaces.prototype.nsISOAPOperationBinding= new nsISOAPOperationBinding();
-nsXPCComponents_Interfaces.prototype.nsIDOMElementCSSInlineStyle= new nsIDOMElementCSSInlineStyle();
-nsXPCComponents_Interfaces.prototype.nsIWritableVariant= new nsIWritableVariant();
-nsXPCComponents_Interfaces.prototype.nsICommandLine= new nsICommandLine();
-nsXPCComponents_Interfaces.prototype.nsIBookmarksService_MOZILLA_1_8_BRANCH= new nsIBookmarksService_MOZILLA_1_8_BRANCH();
-nsXPCComponents_Interfaces.prototype.nsIRDFXMLParser= new nsIRDFXMLParser();
-nsXPCComponents_Interfaces.prototype.nsISchemaCollection= new nsISchemaCollection();
-nsXPCComponents_Interfaces.prototype.nsIURIRefObject= new nsIURIRefObject();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSHTMLFormElement= new nsIDOMNSHTMLFormElement();
-nsXPCComponents_Interfaces.prototype.nsIXTFXULVisualWrapper= new nsIXTFXULVisualWrapper();
-nsXPCComponents_Interfaces.prototype.nsICollection= new nsICollection();
-nsXPCComponents_Interfaces.prototype.nsISAXAttributes= new nsISAXAttributes();
-nsXPCComponents_Interfaces.prototype.nsIJSXMLHttpRequest= new nsIJSXMLHttpRequest();
-nsXPCComponents_Interfaces.prototype.nsIProgressEventSink= new nsIProgressEventSink();
-nsXPCComponents_Interfaces.prototype.nsIDataChannel= new nsIDataChannel();
-nsXPCComponents_Interfaces.prototype.nsIAuthPromptProvider= new nsIAuthPromptProvider();
-nsXPCComponents_Interfaces.prototype.nsIContentViewerFile= new nsIContentViewerFile();
-nsXPCComponents_Interfaces.prototype.nsITreeContentView= new nsITreeContentView();
-nsXPCComponents_Interfaces.prototype.nsIConverterInputStream= new nsIConverterInputStream();
-nsXPCComponents_Interfaces.prototype.nsIScreen= new nsIScreen();
-nsXPCComponents_Interfaces.prototype.nsIDocCharset= new nsIDocCharset();
-nsXPCComponents_Interfaces.prototype.nsISOAPPropertyBagMutator= new nsISOAPPropertyBagMutator();
-nsXPCComponents_Interfaces.prototype.nsIDOMXULTextBoxElement= new nsIDOMXULTextBoxElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMRGBColor= new nsIDOMRGBColor();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLTableCaptionElement= new nsIDOMHTMLTableCaptionElement();
-nsXPCComponents_Interfaces.prototype.nsIIFrameBoxObject= new nsIIFrameBoxObject();
-nsXPCComponents_Interfaces.prototype.nsIPopupWindowManager= new nsIPopupWindowManager();
-nsXPCComponents_Interfaces.prototype.nsISupportsInterfacePointer= new nsISupportsInterfacePointer();
-nsXPCComponents_Interfaces.prototype.nsIUpdateCheckListener= new nsIUpdateCheckListener();
-nsXPCComponents_Interfaces.prototype.nsIByteArrayInputStream= new nsIByteArrayInputStream();
-nsXPCComponents_Interfaces.prototype.nsISOAPEncoding= new nsISOAPEncoding();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGViewSpec= new nsIDOMSVGViewSpec();
-nsXPCComponents_Interfaces.prototype.nsIWebContentHandlerInfo= new nsIWebContentHandlerInfo();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSHTMLFormControlList= new nsIDOMNSHTMLFormControlList();
-nsXPCComponents_Interfaces.prototype.nsIDOMXULTreeElement= new nsIDOMXULTreeElement();
-nsXPCComponents_Interfaces.prototype.nsIFrameLoaderOwner= new nsIFrameLoaderOwner();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSHistory= new nsIDOMNSHistory();
-nsXPCComponents_Interfaces.prototype.nsISessionRoaming= new nsISessionRoaming();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSXPathExpression= new nsIDOMNSXPathExpression();
-nsXPCComponents_Interfaces.prototype.nsIDragSession= new nsIDragSession();
-nsXPCComponents_Interfaces.prototype.nsITransactionList= new nsITransactionList();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPathSegCurvetoCubicRel= new nsIDOMSVGPathSegCurvetoCubicRel();
-nsXPCComponents_Interfaces.prototype.nsIClipboardDragDropHookList= new nsIClipboardDragDropHookList();
-nsXPCComponents_Interfaces.prototype.nsIScrollable= new nsIScrollable();
-nsXPCComponents_Interfaces.prototype.gfxIFormats= new gfxIFormats();
-nsXPCComponents_Interfaces.prototype.nsIWinAppHelper= new nsIWinAppHelper();
-nsXPCComponents_Interfaces.prototype.nsIDOMNodeFilter= new nsIDOMNodeFilter();
-nsXPCComponents_Interfaces.prototype.nsISocketTransportService= new nsISocketTransportService();
-nsXPCComponents_Interfaces.prototype.nsISelectionDisplay= new nsISelectionDisplay();
-nsXPCComponents_Interfaces.prototype.nsIJSCID= new nsIJSCID();
-nsXPCComponents_Interfaces.prototype.nsIObserver= new nsIObserver();
-nsXPCComponents_Interfaces.prototype.nsIJSID= new nsIJSID();
-nsXPCComponents_Interfaces.prototype.nsISupportsChar= new nsISupportsChar();
-nsXPCComponents_Interfaces.prototype.nsIPrintProgressParams= new nsIPrintProgressParams();
-nsXPCComponents_Interfaces.prototype.nsIDocShell_MOZILLA_1_8_BRANCH= new nsIDocShell_MOZILLA_1_8_BRANCH();
-nsXPCComponents_Interfaces.prototype.nsIProtocolHandler= new nsIProtocolHandler();
-nsXPCComponents_Interfaces.prototype.nsIDOMDOMImplementation= new nsIDOMDOMImplementation();
-nsXPCComponents_Interfaces.prototype.nsPIXPIProxy= new nsPIXPIProxy();
-nsXPCComponents_Interfaces.prototype.nsITreeBoxObject= new nsITreeBoxObject();
-nsXPCComponents_Interfaces.prototype.nsIPersistentProperties= new nsIPersistentProperties();
-nsXPCComponents_Interfaces.prototype.nsIXPCComponents_utils_Sandbox= new nsIXPCComponents_utils_Sandbox();
-nsXPCComponents_Interfaces.prototype.nsIAccessibleRetrieval= new nsIAccessibleRetrieval();
-nsXPCComponents_Interfaces.prototype.nsIExtensionManager_MOZILLA_1_8_BRANCH= new nsIExtensionManager_MOZILLA_1_8_BRANCH();
-nsXPCComponents_Interfaces.prototype.nsIScriptableUnescapeHTML= new nsIScriptableUnescapeHTML();
-nsXPCComponents_Interfaces.prototype.nsIStreamConverter= new nsIStreamConverter();
-nsXPCComponents_Interfaces.prototype.nsIIOService= new nsIIOService();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSHTMLOptionElement= new nsIDOMNSHTMLOptionElement();
-nsXPCComponents_Interfaces.prototype.imgIDecoderObserver= new imgIDecoderObserver();
-nsXPCComponents_Interfaces.prototype.nsIPrinterEnumerator= new nsIPrinterEnumerator();
-nsXPCComponents_Interfaces.prototype.nsIDOMEventTarget= new nsIDOMEventTarget();
-nsXPCComponents_Interfaces.prototype.nsIRegistryValue= new nsIRegistryValue();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGScriptElement= new nsIDOMSVGScriptElement();
-nsXPCComponents_Interfaces.prototype.nsIMarkupDocumentViewer= new nsIMarkupDocumentViewer();
-nsXPCComponents_Interfaces.prototype.nsIFTPEventSink= new nsIFTPEventSink();
-nsXPCComponents_Interfaces.prototype.nsIPluginManager= new nsIPluginManager();
-nsXPCComponents_Interfaces.prototype.nsIBrowserProfileMigrator= new nsIBrowserProfileMigrator();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs= new nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLBaseElement= new nsIDOMHTMLBaseElement();
-nsXPCComponents_Interfaces.prototype.nsIFileInputStream= new nsIFileInputStream();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLMenuElement= new nsIDOMHTMLMenuElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLDivElement= new nsIDOMHTMLDivElement();
-nsXPCComponents_Interfaces.prototype.nsIUpdate= new nsIUpdate();
-nsXPCComponents_Interfaces.prototype.nsIXSLTProcessor= new nsIXSLTProcessor();
-nsXPCComponents_Interfaces.prototype.nsIDOMBeforeUnloadEvent= new nsIDOMBeforeUnloadEvent();
-nsXPCComponents_Interfaces.prototype.nsISOAPPartBinding= new nsISOAPPartBinding();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLMetaElement= new nsIDOMHTMLMetaElement();
-nsXPCComponents_Interfaces.prototype.nsIXTFStyledElementWrapper= new nsIXTFStyledElementWrapper();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGLocatable= new nsIDOMSVGLocatable();
-nsXPCComponents_Interfaces.prototype.nsISAXMutableAttributes= new nsISAXMutableAttributes();
-nsXPCComponents_Interfaces.prototype.nsISchemaElement= new nsISchemaElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMXULSelectControlItemElement= new nsIDOMXULSelectControlItemElement();
-nsXPCComponents_Interfaces.prototype.nsIPrefBranchInternal= new nsIPrefBranchInternal();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPathSegList= new nsIDOMSVGPathSegList();
-nsXPCComponents_Interfaces.prototype.mozIStorageStatement= new mozIStorageStatement();
-nsXPCComponents_Interfaces.prototype.nsIStringBundle= new nsIStringBundle();
-nsXPCComponents_Interfaces.prototype.nsISHEntry= new nsISHEntry();
-nsXPCComponents_Interfaces.prototype.nsIDOMNavigator= new nsIDOMNavigator();
-nsXPCComponents_Interfaces.prototype.nsIXPCComponents_Classes= new nsIXPCComponents_Classes();
-nsXPCComponents_Interfaces.prototype.nsPIEditorTransaction= new nsPIEditorTransaction();
-nsXPCComponents_Interfaces.prototype.nsISearchSubmission= new nsISearchSubmission();
-nsXPCComponents_Interfaces.prototype.nsIDOMWindowInternal= new nsIDOMWindowInternal();
-nsXPCComponents_Interfaces.prototype.nsITreeSelection= new nsITreeSelection();
-nsXPCComponents_Interfaces.prototype.nsIPropertyBag= new nsIPropertyBag();
-nsXPCComponents_Interfaces.prototype.nsIPrintSettings= new nsIPrintSettings();
-nsXPCComponents_Interfaces.prototype.nsIFastLoadWriteControl= new nsIFastLoadWriteControl();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGSymbolElement= new nsIDOMSVGSymbolElement();
-nsXPCComponents_Interfaces.prototype.mozIStorageFunction= new mozIStorageFunction();
-nsXPCComponents_Interfaces.prototype.nsIDebug= new nsIDebug();
-nsXPCComponents_Interfaces.prototype.nsIServerSocket= new nsIServerSocket();
-nsXPCComponents_Interfaces.prototype.nsIDOMXULDocument= new nsIDOMXULDocument();
-nsXPCComponents_Interfaces.prototype.nsIDOMPopupBlockedEvent= new nsIDOMPopupBlockedEvent();
-nsXPCComponents_Interfaces.prototype.nsIEditorSpellCheck= new nsIEditorSpellCheck();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLScriptElement= new nsIDOMHTMLScriptElement();
-nsXPCComponents_Interfaces.prototype.nsIWebBrowserChromeFocus= new nsIWebBrowserChromeFocus();
-nsXPCComponents_Interfaces.prototype.nsIEntityConverter= new nsIEntityConverter();
-nsXPCComponents_Interfaces.prototype.nsISimpleEnumerator= new nsISimpleEnumerator();
-nsXPCComponents_Interfaces.prototype.nsIEmbeddingSiteWindow2= new nsIEmbeddingSiteWindow2();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLBodyElement= new nsIDOMHTMLBodyElement();
-nsXPCComponents_Interfaces.prototype.nsIChannelEventSink= new nsIChannelEventSink();
-nsXPCComponents_Interfaces.prototype.nsICookie= new nsICookie();
-nsXPCComponents_Interfaces.prototype.nsIPrintingPrompt= new nsIPrintingPrompt();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLOptionElement= new nsIDOMHTMLOptionElement();
-nsXPCComponents_Interfaces.prototype.nsIXPCComponents_ClassesByID= new nsIXPCComponents_ClassesByID();
-nsXPCComponents_Interfaces.prototype.nsIMultiPartChannel= new nsIMultiPartChannel();
-nsXPCComponents_Interfaces.prototype.nsIFrameLoader= new nsIFrameLoader();
-nsXPCComponents_Interfaces.prototype.nsIAccessibleCaret= new nsIAccessibleCaret();
-nsXPCComponents_Interfaces.prototype.nsIFeedWriter= new nsIFeedWriter();
-nsXPCComponents_Interfaces.prototype.nsIMIMEService= new nsIMIMEService();
-nsXPCComponents_Interfaces.prototype.nsIDOMXULCommandDispatcher= new nsIDOMXULCommandDispatcher();
-nsXPCComponents_Interfaces.prototype.nsICommandParams= new nsICommandParams();
-nsXPCComponents_Interfaces.prototype.nsIX509CertDB= new nsIX509CertDB();
-nsXPCComponents_Interfaces.prototype.nsIDOMRangeException= new nsIDOMRangeException();
-nsXPCComponents_Interfaces.prototype.nsIRDFCompositeDataSource= new nsIRDFCompositeDataSource();
-nsXPCComponents_Interfaces.prototype.nsIScriptableInterfaces= new nsIScriptableInterfaces();
-nsXPCComponents_Interfaces.prototype.nsILineInputStream= new nsILineInputStream();
-nsXPCComponents_Interfaces.prototype.nsIWeakReference= new nsIWeakReference();
-nsXPCComponents_Interfaces.prototype.nsITypeAheadFind_MOZILLA_1_8_BRANCH= new nsITypeAheadFind_MOZILLA_1_8_BRANCH();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPathSegLinetoVerticalRel= new nsIDOMSVGPathSegLinetoVerticalRel();
-nsXPCComponents_Interfaces.prototype.nsISupports= new nsISupports();
-nsXPCComponents_Interfaces.prototype.nsIWebProgress= new nsIWebProgress();
-nsXPCComponents_Interfaces.prototype.nsIDOMGetSVGDocument= new nsIDOMGetSVGDocument();
-nsXPCComponents_Interfaces.prototype.nsIAutoCompleteController_MOZILLA_1_8_BRANCH= new nsIAutoCompleteController_MOZILLA_1_8_BRANCH();
-nsXPCComponents_Interfaces.prototype.nsISSLStatus= new nsISSLStatus();
-nsXPCComponents_Interfaces.prototype.nsIDOMSmartCardEvent= new nsIDOMSmartCardEvent();
-nsXPCComponents_Interfaces.prototype.nsIDOMXULElement= new nsIDOMXULElement();
-nsXPCComponents_Interfaces.prototype.nsIClipboardOwner= new nsIClipboardOwner();
-nsXPCComponents_Interfaces.prototype.nsIAuthPromptWrapper= new nsIAuthPromptWrapper();
-nsXPCComponents_Interfaces.prototype.nsIWebBrowserChrome= new nsIWebBrowserChrome();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLAreaElement= new nsIDOMHTMLAreaElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGStylable= new nsIDOMSVGStylable();
-nsXPCComponents_Interfaces.prototype.nsILocalFileWin= new nsILocalFileWin();
-nsXPCComponents_Interfaces.prototype.nsIWebBrowserFind= new nsIWebBrowserFind();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGUseElement= new nsIDOMSVGUseElement();
-nsXPCComponents_Interfaces.prototype.nsICertVerificationResult= new nsICertVerificationResult();
-nsXPCComponents_Interfaces.prototype.nsICertVerificationListener= new nsICertVerificationListener();
-nsXPCComponents_Interfaces.prototype.nsIMicrosummaryService= new nsIMicrosummaryService();
-nsXPCComponents_Interfaces.prototype.rdfITripleVisitor= new rdfITripleVisitor();
-nsXPCComponents_Interfaces.prototype.jsdIErrorHook= new jsdIErrorHook();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGGElement= new nsIDOMSVGGElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMPluginArray= new nsIDOMPluginArray();
-nsXPCComponents_Interfaces.prototype.nsICipherInfo= new nsICipherInfo();
-nsXPCComponents_Interfaces.prototype.nsIDOMNamedNodeMap= new nsIDOMNamedNodeMap();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLBaseFontElement= new nsIDOMHTMLBaseFontElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMXULCheckboxElement= new nsIDOMXULCheckboxElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMWindow= new nsIDOMWindow();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLDirectoryElement= new nsIDOMHTMLDirectoryElement();
-nsXPCComponents_Interfaces.prototype.inIFileSearch= new inIFileSearch();
-nsXPCComponents_Interfaces.prototype.nsIDOMNSHTMLAreaElement= new nsIDOMNSHTMLAreaElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLImageElement= new nsIDOMHTMLImageElement();
-nsXPCComponents_Interfaces.prototype.nsIX509CertDB2= new nsIX509CertDB2();
-nsXPCComponents_Interfaces.prototype.nsIControllers= new nsIControllers();
-nsXPCComponents_Interfaces.prototype.nsISchemaAttributeGroup= new nsISchemaAttributeGroup();
-nsXPCComponents_Interfaces.prototype.nsIFeedContainer= new nsIFeedContainer();
-nsXPCComponents_Interfaces.prototype.nsIUnicharStreamLoaderObserver= new nsIUnicharStreamLoaderObserver();
-nsXPCComponents_Interfaces.prototype.nsIEmbeddingSiteWindow= new nsIEmbeddingSiteWindow();
-nsXPCComponents_Interfaces.prototype.nsICacheEntryInfo= new nsICacheEntryInfo();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGFitToViewBox= new nsIDOMSVGFitToViewBox();
-nsXPCComponents_Interfaces.prototype.jsdIFilterEnumerator= new jsdIFilterEnumerator();
-nsXPCComponents_Interfaces.prototype.nsIDNSService= new nsIDNSService();
-nsXPCComponents_Interfaces.prototype.nsIScriptableInterfaceInfo= new nsIScriptableInterfaceInfo();
-nsXPCComponents_Interfaces.prototype.nsIPK11Token= new nsIPK11Token();
-nsXPCComponents_Interfaces.prototype.nsIControllerCommand= new nsIControllerCommand();
-nsXPCComponents_Interfaces.prototype.nsIXSLTProcessorPrivate= new nsIXSLTProcessorPrivate();
-nsXPCComponents_Interfaces.prototype.nsISOAPParameter= new nsISOAPParameter();
-nsXPCComponents_Interfaces.prototype.nsIDOMHTMLOListElement= new nsIDOMHTMLOListElement();
-nsXPCComponents_Interfaces.prototype.nsITimerCallback= new nsITimerCallback();
-nsXPCComponents_Interfaces.prototype.nsIXPCComponents= new nsIXPCComponents();
-nsXPCComponents_Interfaces.prototype.nsISocketProviderService= new nsISocketProviderService();
-nsXPCComponents_Interfaces.prototype.nsIWebServiceSOAPCallContext= new nsIWebServiceSOAPCallContext();
-nsXPCComponents_Interfaces.prototype.nsIAuthPrompt= new nsIAuthPrompt();
-nsXPCComponents_Interfaces.prototype.nsIAtomService= new nsIAtomService();
-nsXPCComponents_Interfaces.prototype.nsIHTTPIndex= new nsIHTTPIndex();
-nsXPCComponents_Interfaces.prototype.nsICryptoHash= new nsICryptoHash();
-nsXPCComponents_Interfaces.prototype.nsIDOMDocumentRange= new nsIDOMDocumentRange();
-nsXPCComponents_Interfaces.prototype.nsIProfileUnlocker= new nsIProfileUnlocker();
-nsXPCComponents_Interfaces.prototype.nsIDOMNodeIterator= new nsIDOMNodeIterator();
-nsXPCComponents_Interfaces.prototype.nsIWebNavigationInfo= new nsIWebNavigationInfo();
-nsXPCComponents_Interfaces.prototype.nsIAutoCompleteSearch= new nsIAutoCompleteSearch();
-nsXPCComponents_Interfaces.prototype.nsIEncodedChannel= new nsIEncodedChannel();
-nsXPCComponents_Interfaces.prototype.nsIToolkitProfileService= new nsIToolkitProfileService();
-nsXPCComponents_Interfaces.prototype.jsdIContextEnumerator= new jsdIContextEnumerator();
-nsXPCComponents_Interfaces.prototype.nsIRDFContainer= new nsIRDFContainer();
-nsXPCComponents_Interfaces.prototype.nsIScriptableDateFormat= new nsIScriptableDateFormat();
-nsXPCComponents_Interfaces.prototype.nsIDOMDocumentFragment= new nsIDOMDocumentFragment();
-nsXPCComponents_Interfaces.prototype.nsIDOMEntityReference= new nsIDOMEntityReference();
-nsXPCComponents_Interfaces.prototype.nsIProperties= new nsIProperties();
-nsXPCComponents_Interfaces.prototype.nsIUpdatePrompt= new nsIUpdatePrompt();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGRectElement= new nsIDOMSVGRectElement();
-nsXPCComponents_Interfaces.prototype.mozITXTToHTMLConv= new mozITXTToHTMLConv();
-nsXPCComponents_Interfaces.prototype.nsIMicrosummaryObserver= new nsIMicrosummaryObserver();
-nsXPCComponents_Interfaces.prototype.nsIDirectoryServiceProvider= new nsIDirectoryServiceProvider();
-nsXPCComponents_Interfaces.prototype.nsIDocShellLoadInfo= new nsIDocShellLoadInfo();
-nsXPCComponents_Interfaces.prototype.nsIXPCComponents_Results= new nsIXPCComponents_Results();
-nsXPCComponents_Interfaces.prototype.nsIRDFDate= new nsIRDFDate();
-nsXPCComponents_Interfaces.prototype.nsIContentViewerEdit= new nsIContentViewerEdit();
-nsXPCComponents_Interfaces.prototype.nsISupportsPrimitive= new nsISupportsPrimitive();
-nsXPCComponents_Interfaces.prototype.nsIXULTreeBuilderObserver= new nsIXULTreeBuilderObserver();
-nsXPCComponents_Interfaces.prototype.nsISSLStatusProvider= new nsISSLStatusProvider();
-nsXPCComponents_Interfaces.prototype.rdfISerializer= new rdfISerializer();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGPolygonElement= new nsIDOMSVGPolygonElement();
-nsXPCComponents_Interfaces.prototype.nsIDOMStorageList= new nsIDOMStorageList();
-nsXPCComponents_Interfaces.prototype.nsIAboutModule= new nsIAboutModule();
-nsXPCComponents_Interfaces.prototype.nsIWritablePropertyBag2= new nsIWritablePropertyBag2();
-nsXPCComponents_Interfaces.prototype.nsIDocumentStateListener= new nsIDocumentStateListener();
-nsXPCComponents_Interfaces.prototype.nsISHTransaction= new nsISHTransaction();
-nsXPCComponents_Interfaces.prototype.nsIRDFXMLSinkObserver= new nsIRDFXMLSinkObserver();
-nsXPCComponents_Interfaces.prototype.nsIOnReadyStateChangeHandler= new nsIOnReadyStateChangeHandler();
-nsXPCComponents_Interfaces.prototype.nsIASN1Sequence= new nsIASN1Sequence();
-nsXPCComponents_Interfaces.prototype.nsIAutoCompleteSimpleResult= new nsIAutoCompleteSimpleResult();
-nsXPCComponents_Interfaces.prototype.nsIDOMToString= new nsIDOMToString();
-nsXPCComponents_Interfaces.prototype.nsIUpdateManager= new nsIUpdateManager();
-nsXPCComponents_Interfaces.prototype.nsIDOMScreen= new nsIDOMScreen();
-nsXPCComponents_Interfaces.prototype.nsIStreamListenerProxy= new nsIStreamListenerProxy();
-nsXPCComponents_Interfaces.prototype.nsISchemaLoader= new nsISchemaLoader();
-nsXPCComponents_Interfaces.prototype.nsPIAccessNode= new nsPIAccessNode();
-nsXPCComponents_Interfaces.prototype.nsIUploadChannel= new nsIUploadChannel();
-nsXPCComponents_Interfaces.prototype.nsIController= new nsIController();
-nsXPCComponents_Interfaces.prototype.nsIDOMSVGURIReference= new nsIDOMSVGURIReference();
-nsXPCComponents_Interfaces.prototype.nsIBadCertListener= new nsIBadCertListener();
-nsXPCComponents_Interfaces.prototype.nsIDOMStorageEvent= new nsIDOMStorageEvent();
-nsIDOMStyleSheet.prototype= new Array();
-function nsIDOMStyleSheet(){};
-nsIWSDLPart.prototype= new Array();
-function nsIWSDLPart(){};
-nsIUnicharStreamListener.prototype= new Array();
-function nsIUnicharStreamListener(){};
-nsIContentSniffer.prototype= new Array();
-function nsIContentSniffer(){};
-nsIXmlRpcClient.prototype= new Array();
-function nsIXmlRpcClient(){};
-nsIXmlRpcClient.prototype.INT=0;
-nsIXmlRpcClient.prototype.BOOLEAN=0;
-nsIXmlRpcClient.prototype.STRING=0;
-nsIXmlRpcClient.prototype.DOUBLE=0;
-nsIXmlRpcClient.prototype.DATETIME=0;
-nsIXmlRpcClient.prototype.ARRAY=0;
-nsIXmlRpcClient.prototype.STRUCT=0;
-nsIInterfaceInfoToIDL.prototype= new Array();
-function nsIInterfaceInfoToIDL(){};
-nsITimer.prototype= new Array();
-function nsITimer(){};
-nsITimer.prototype.TYPE_ONE_SHOT="";
-nsITimer.prototype.TYPE_REPEATING_SLACK=0;
-nsITimer.prototype.TYPE_REPEATING_PRECISE=0;
-nsIWebServiceProxyFactory.prototype= new Array();
-function nsIWebServiceProxyFactory(){};
-nsIDOMNSXBLFormControl.prototype= new Array();
-function nsIDOMNSXBLFormControl(){};
-nsIScrollBoxObject.prototype= new Array();
-function nsIScrollBoxObject(){};
-nsICachingChannel.prototype= new Array();
-function nsICachingChannel(){};
-nsICachingChannel.prototype.LOAD_BYPASS_LOCAL_CACHE=0;
-nsICachingChannel.prototype.LOAD_BYPASS_LOCAL_CACHE_IF_BUSY=0;
-nsICachingChannel.prototype.LOAD_ONLY_FROM_CACHE=0;
-nsICachingChannel.prototype.LOAD_ONLY_IF_MODIFIED=0;
-nsIDOMXMLDocument.prototype= new Array();
-function nsIDOMXMLDocument(){};
-nsIDOMXMLDocument.prototype.ELEMENT_NODE=0;
-nsIDOMXMLDocument.prototype.ATTRIBUTE_NODE=0;
-nsIDOMXMLDocument.prototype.TEXT_NODE=0;
-nsIDOMXMLDocument.prototype.CDATA_SECTION_NODE=0;
-nsIDOMXMLDocument.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMXMLDocument.prototype.ENTITY_NODE=0;
-nsIDOMXMLDocument.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMXMLDocument.prototype.COMMENT_NODE=0;
-nsIDOMXMLDocument.prototype.DOCUMENT_NODE=0;
-nsIDOMXMLDocument.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMXMLDocument.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMXMLDocument.prototype.NOTATION_NODE=0;
-nsICertSelect.prototype= new Array();
-function nsICertSelect(){};
-nsIJARURI.prototype= new Array();
-function nsIJARURI(){};
-nsIEditorSpellCheck_MOZILLA_1_8_BRANCH.prototype= new Array();
-function nsIEditorSpellCheck_MOZILLA_1_8_BRANCH(){};
-nsIZipReader.prototype= new Array();
-function nsIZipReader(){};
-nsISOAPService.prototype= new Array();
-function nsISOAPService(){};
-nsIPropertyBag2.prototype= new Array();
-function nsIPropertyBag2(){};
-nsILocalFile.prototype= new Array();
-function nsILocalFile(){};
-nsILocalFile.prototype.NORMAL_FILE_TYPE="";
-nsILocalFile.prototype.DIRECTORY_TYPE=0;
-nsIDOMStorageItem.prototype= new Array();
-function nsIDOMStorageItem(){};
-nsISupportsPRInt16.prototype= new Array();
-function nsISupportsPRInt16(){};
-nsISupportsPRInt16.prototype.TYPE_ID=0;
-nsISupportsPRInt16.prototype.TYPE_CSTRING=0;
-nsISupportsPRInt16.prototype.TYPE_STRING=0;
-nsISupportsPRInt16.prototype.TYPE_PRBOOL=0;
-nsISupportsPRInt16.prototype.TYPE_PRUINT8=0;
-nsISupportsPRInt16.prototype.TYPE_PRUINT16=0;
-nsISupportsPRInt16.prototype.TYPE_PRUINT32=0;
-nsISupportsPRInt16.prototype.TYPE_PRUINT64=0;
-nsISupportsPRInt16.prototype.TYPE_PRTIME=0;
-nsISupportsPRInt16.prototype.TYPE_CHAR=0;
-nsISupportsPRInt16.prototype.TYPE_PRINT16=0;
-nsISupportsPRInt16.prototype.TYPE_PRINT32=0;
-nsISupportsPRInt16.prototype.TYPE_PRINT64=0;
-nsISupportsPRInt16.prototype.TYPE_FLOAT=0;
-nsISupportsPRInt16.prototype.TYPE_DOUBLE=0;
-nsISupportsPRInt16.prototype.TYPE_VOID=0;
-nsISupportsPRInt16.prototype.TYPE_INTERFACE_POINTER=0;
-nsIStorageStream.prototype= new Array();
-function nsIStorageStream(){};
-nsIDOMLSInput.prototype= new Array();
-function nsIDOMLSInput(){};
-nsIDOMMutationEvent.prototype= new Array();
-function nsIDOMMutationEvent(){};
-nsIDOMMutationEvent.prototype.CAPTURING_PHASE=0;
-nsIDOMMutationEvent.prototype.AT_TARGET=0;
-nsIDOMMutationEvent.prototype.BUBBLING_PHASE=0;
-nsIDOMMutationEvent.prototype.MODIFICATION=0;
-nsIDOMMutationEvent.prototype.ADDITION=0;
-nsIDOMMutationEvent.prototype.REMOVAL=0;
-nsIDownloadObserver.prototype= new Array();
-function nsIDownloadObserver(){};
-nsIDOMSVGPathSegLinetoRel.prototype= new Array();
-function nsIDOMSVGPathSegLinetoRel(){};
-nsIDOMSVGPathSegLinetoRel.prototype.PATHSEG_UNKNOWN="";
-nsIDOMSVGPathSegLinetoRel.prototype.PATHSEG_CLOSEPATH=0;
-nsIDOMSVGPathSegLinetoRel.prototype.PATHSEG_MOVETO_ABS=0;
-nsIDOMSVGPathSegLinetoRel.prototype.PATHSEG_MOVETO_REL=0;
-nsIDOMSVGPathSegLinetoRel.prototype.PATHSEG_LINETO_ABS=0;
-nsIDOMSVGPathSegLinetoRel.prototype.PATHSEG_LINETO_REL=0;
-nsIDOMSVGPathSegLinetoRel.prototype.PATHSEG_CURVETO_CUBIC_ABS=0;
-nsIDOMSVGPathSegLinetoRel.prototype.PATHSEG_CURVETO_CUBIC_REL=0;
-nsIDOMSVGPathSegLinetoRel.prototype.PATHSEG_CURVETO_QUADRATIC_ABS=0;
-nsIDOMSVGPathSegLinetoRel.prototype.PATHSEG_CURVETO_QUADRATIC_REL=0;
-nsIDOMSVGPathSegLinetoRel.prototype.PATHSEG_ARC_ABS=0;
-nsIDOMSVGPathSegLinetoRel.prototype.PATHSEG_ARC_REL=0;
-nsIDOMSVGPathSegLinetoRel.prototype.PATHSEG_LINETO_HORIZONTAL_ABS=0;
-nsIDOMSVGPathSegLinetoRel.prototype.PATHSEG_LINETO_HORIZONTAL_REL=0;
-nsIDOMSVGPathSegLinetoRel.prototype.PATHSEG_LINETO_VERTICAL_ABS=0;
-nsIDOMSVGPathSegLinetoRel.prototype.PATHSEG_LINETO_VERTICAL_REL=0;
-nsIDOMSVGPathSegLinetoRel.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegLinetoRel.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_REL=0;
-nsIDOMSVGPathSegLinetoRel.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegLinetoRel.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL=0;
-nsIDocumentLoader.prototype= new Array();
-function nsIDocumentLoader(){};
-nsIDOMHTMLTableCellElement.prototype= new Array();
-function nsIDOMHTMLTableCellElement(){};
-nsIDOMHTMLTableCellElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLTableCellElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLTableCellElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLTableCellElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLTableCellElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLTableCellElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLTableCellElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLTableCellElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLTableCellElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLTableCellElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLTableCellElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLTableCellElement.prototype.NOTATION_NODE=0;
-nsIException.prototype= new Array();
-function nsIException(){};
-nsIUrlClassifierDBService.prototype= new Array();
-function nsIUrlClassifierDBService(){};
-nsIRDFDataSource.prototype= new Array();
-function nsIRDFDataSource(){};
-nsIPrefLocalizedString.prototype= new Array();
-function nsIPrefLocalizedString(){};
-nsIJSIID.prototype= new Array();
-function nsIJSIID(){};
-nsIHTMLObjectResizeListener.prototype= new Array();
-function nsIHTMLObjectResizeListener(){};
-nsPIProtocolProxyService.prototype= new Array();
-function nsPIProtocolProxyService(){};
-nsPIProtocolProxyService.prototype.RESOLVE_NON_BLOCKING=0;
-mozIStorageConnection.prototype= new Array();
-function mozIStorageConnection(){};
-mozIStorageConnection.prototype.TRANSACTION_DEFERRED="";
-mozIStorageConnection.prototype.TRANSACTION_IMMEDIATE=0;
-mozIStorageConnection.prototype.TRANSACTION_EXCLUSIVE=0;
-nsITextServicesFilter.prototype= new Array();
-function nsITextServicesFilter(){};
-nsIWSPInterfaceInfoService.prototype= new Array();
-function nsIWSPInterfaceInfoService(){};
-nsIWSDLSOAPBinding.prototype= new Array();
-function nsIWSDLSOAPBinding(){};
-nsIWSDLSOAPBinding.prototype.STYLE_RPC=0;
-nsIWSDLSOAPBinding.prototype.STYLE_DOCUMENT=0;
-nsISimpleStreamListener.prototype= new Array();
-function nsISimpleStreamListener(){};
-nsISearchContext.prototype= new Array();
-function nsISearchContext(){};
-nsIX509Cert.prototype= new Array();
-function nsIX509Cert(){};
-nsIX509Cert.prototype.UNKNOWN_CERT="";
-nsIX509Cert.prototype.CA_CERT=0;
-nsIX509Cert.prototype.USER_CERT=0;
-nsIX509Cert.prototype.EMAIL_CERT=0;
-nsIX509Cert.prototype.SERVER_CERT=0;
-nsIX509Cert.prototype.VERIFIED_OK="";
-nsIX509Cert.prototype.NOT_VERIFIED_UNKNOWN=0;
-nsIX509Cert.prototype.CERT_REVOKED=0;
-nsIX509Cert.prototype.CERT_EXPIRED=0;
-nsIX509Cert.prototype.CERT_NOT_TRUSTED=0;
-nsIX509Cert.prototype.ISSUER_NOT_TRUSTED=0;
-nsIX509Cert.prototype.ISSUER_UNKNOWN=0;
-nsIX509Cert.prototype.INVALID_CA=0;
-nsIX509Cert.prototype.USAGE_NOT_ALLOWED=0;
-nsIX509Cert.prototype.CERT_USAGE_SSLClient="";
-nsIX509Cert.prototype.CERT_USAGE_SSLServer=0;
-nsIX509Cert.prototype.CERT_USAGE_SSLServerWithStepUp=0;
-nsIX509Cert.prototype.CERT_USAGE_SSLCA=0;
-nsIX509Cert.prototype.CERT_USAGE_EmailSigner=0;
-nsIX509Cert.prototype.CERT_USAGE_EmailRecipient=0;
-nsIX509Cert.prototype.CERT_USAGE_ObjectSigner=0;
-nsIX509Cert.prototype.CERT_USAGE_UserCertImport=0;
-nsIX509Cert.prototype.CERT_USAGE_VerifyCA=0;
-nsIX509Cert.prototype.CERT_USAGE_ProtectedObjectSigner=0;
-nsIX509Cert.prototype.CERT_USAGE_StatusResponder=0;
-nsIX509Cert.prototype.CERT_USAGE_AnyCA=0;
-nsIRDFNode.prototype= new Array();
-function nsIRDFNode(){};
-nsIDOMSVGDescElement.prototype= new Array();
-function nsIDOMSVGDescElement(){};
-nsIDOMSVGDescElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGDescElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGDescElement.prototype.TEXT_NODE=0;
-nsIDOMSVGDescElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGDescElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGDescElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGDescElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGDescElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGDescElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGDescElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGDescElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGDescElement.prototype.NOTATION_NODE=0;
-nsIDOMCSSRule.prototype= new Array();
-function nsIDOMCSSRule(){};
-nsIDOMCSSRule.prototype.UNKNOWN_RULE="";
-nsIDOMCSSRule.prototype.STYLE_RULE=0;
-nsIDOMCSSRule.prototype.CHARSET_RULE=0;
-nsIDOMCSSRule.prototype.IMPORT_RULE=0;
-nsIDOMCSSRule.prototype.MEDIA_RULE=0;
-nsIDOMCSSRule.prototype.FONT_FACE_RULE=0;
-nsIDOMCSSRule.prototype.PAGE_RULE=0;
-nsIProxyInfo.prototype= new Array();
-function nsIProxyInfo(){};
-nsIProxyInfo.prototype.TRANSPARENT_PROXY_RESOLVES_HOST=0;
-nsISupportsPRUint32.prototype= new Array();
-function nsISupportsPRUint32(){};
-nsISupportsPRUint32.prototype.TYPE_ID=0;
-nsISupportsPRUint32.prototype.TYPE_CSTRING=0;
-nsISupportsPRUint32.prototype.TYPE_STRING=0;
-nsISupportsPRUint32.prototype.TYPE_PRBOOL=0;
-nsISupportsPRUint32.prototype.TYPE_PRUINT8=0;
-nsISupportsPRUint32.prototype.TYPE_PRUINT16=0;
-nsISupportsPRUint32.prototype.TYPE_PRUINT32=0;
-nsISupportsPRUint32.prototype.TYPE_PRUINT64=0;
-nsISupportsPRUint32.prototype.TYPE_PRTIME=0;
-nsISupportsPRUint32.prototype.TYPE_CHAR=0;
-nsISupportsPRUint32.prototype.TYPE_PRINT16=0;
-nsISupportsPRUint32.prototype.TYPE_PRINT32=0;
-nsISupportsPRUint32.prototype.TYPE_PRINT64=0;
-nsISupportsPRUint32.prototype.TYPE_FLOAT=0;
-nsISupportsPRUint32.prototype.TYPE_DOUBLE=0;
-nsISupportsPRUint32.prototype.TYPE_VOID=0;
-nsISupportsPRUint32.prototype.TYPE_INTERFACE_POINTER=0;
-nsICurrentCharsetListener.prototype= new Array();
-function nsICurrentCharsetListener(){};
-nsIDOMSVGImageElement.prototype= new Array();
-function nsIDOMSVGImageElement(){};
-nsIDOMSVGImageElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGImageElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGImageElement.prototype.TEXT_NODE=0;
-nsIDOMSVGImageElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGImageElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGImageElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGImageElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGImageElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGImageElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGImageElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGImageElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGImageElement.prototype.NOTATION_NODE=0;
-nsIUrlClassifierDBServiceWorker.prototype= new Array();
-function nsIUrlClassifierDBServiceWorker(){};
-nsISecureBrowserUI.prototype= new Array();
-function nsISecureBrowserUI(){};
-nsIDOMHTMLParagraphElement.prototype= new Array();
-function nsIDOMHTMLParagraphElement(){};
-nsIDOMHTMLParagraphElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLParagraphElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLParagraphElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLParagraphElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLParagraphElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLParagraphElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLParagraphElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLParagraphElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLParagraphElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLParagraphElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLParagraphElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLParagraphElement.prototype.NOTATION_NODE=0;
-jsdIScriptHook.prototype= new Array();
-function jsdIScriptHook(){};
-nsIRunnable.prototype= new Array();
-function nsIRunnable(){};
-nsIDirectoryService.prototype= new Array();
-function nsIDirectoryService(){};
-nsIDNSListener.prototype= new Array();
-function nsIDNSListener(){};
-nsIPK11TokenDB.prototype= new Array();
-function nsIPK11TokenDB(){};
-nsISchemaParticle.prototype= new Array();
-function nsISchemaParticle(){};
-nsISchemaParticle.prototype.PARTICLE_TYPE_ELEMENT=0;
-nsISchemaParticle.prototype.PARTICLE_TYPE_MODEL_GROUP=0;
-nsISchemaParticle.prototype.PARTICLE_TYPE_ANY=0;
-nsISchemaParticle.prototype.OCCURRENCE_UNBOUNDED=0;
-nsPIDNSService.prototype= new Array();
-function nsPIDNSService(){};
-nsPIDNSService.prototype.RESOLVE_BYPASS_CACHE=0;
-nsPIDNSService.prototype.RESOLVE_CANONICAL_NAME=0;
-nsIXTFXMLVisual.prototype= new Array();
-function nsIXTFXMLVisual(){};
-nsIXTFXMLVisual.prototype.ELEMENT_TYPE_GENERIC_ELEMENT="";
-nsIXTFXMLVisual.prototype.ELEMENT_TYPE_SVG_VISUAL=0;
-nsIXTFXMLVisual.prototype.ELEMENT_TYPE_XML_VISUAL=0;
-nsIXTFXMLVisual.prototype.ELEMENT_TYPE_XUL_VISUAL=0;
-nsIXTFXMLVisual.prototype.ELEMENT_TYPE_BINDABLE=0;
-nsIXTFXMLVisual.prototype.NOTIFY_WILL_CHANGE_DOCUMENT=0;
-nsIXTFXMLVisual.prototype.NOTIFY_DOCUMENT_CHANGED=0;
-nsIXTFXMLVisual.prototype.NOTIFY_WILL_CHANGE_PARENT=0;
-nsIXTFXMLVisual.prototype.NOTIFY_PARENT_CHANGED=0;
-nsIXTFXMLVisual.prototype.NOTIFY_WILL_INSERT_CHILD=0;
-nsIXTFXMLVisual.prototype.NOTIFY_CHILD_INSERTED=0;
-nsIXTFXMLVisual.prototype.NOTIFY_WILL_APPEND_CHILD=0;
-nsIXTFXMLVisual.prototype.NOTIFY_CHILD_APPENDED=0;
-nsIXTFXMLVisual.prototype.NOTIFY_WILL_REMOVE_CHILD=0;
-nsIXTFXMLVisual.prototype.NOTIFY_CHILD_REMOVED=0;
-nsIXTFXMLVisual.prototype.NOTIFY_WILL_SET_ATTRIBUTE=0;
-nsIXTFXMLVisual.prototype.NOTIFY_ATTRIBUTE_SET=0;
-nsIXTFXMLVisual.prototype.NOTIFY_WILL_REMOVE_ATTRIBUTE=0;
-nsIXTFXMLVisual.prototype.NOTIFY_ATTRIBUTE_REMOVED=0;
-nsIXTFXMLVisual.prototype.NOTIFY_BEGIN_ADDING_CHILDREN=0;
-nsIXTFXMLVisual.prototype.NOTIFY_DONE_ADDING_CHILDREN=0;
-nsIXTFXMLVisual.prototype.NOTIFY_HANDLE_DEFAULT=0;
-nsIXTFXMLVisual.prototype.NOTIFY_DID_LAYOUT=0;
-nsIMIMEHeaderParam.prototype= new Array();
-function nsIMIMEHeaderParam(){};
-nsIScriptableInterfacesByID.prototype= new Array();
-function nsIScriptableInterfacesByID(){};
-nsIInstallLocation.prototype= new Array();
-function nsIInstallLocation(){};
-nsIInstallLocation.prototype.PRIORITY_APP_PROFILE="";
-nsIInstallLocation.prototype.PRIORITY_APP_SYSTEM_USER=0;
-nsIInstallLocation.prototype.PRIORITY_XRE_SYSTEM_USER=0;
-nsIInstallLocation.prototype.PRIORITY_APP_SYSTEM_GLOBAL=0;
-nsIInstallLocation.prototype.PRIORITY_XRE_SYSTEM_GLOBAL=0;
-nsIGlobalHistory.prototype= new Array();
-function nsIGlobalHistory(){};
-imgIContainerObserver.prototype= new Array();
-function imgIContainerObserver(){};
-nsIStringEnumerator.prototype= new Array();
-function nsIStringEnumerator(){};
-nsIHttpAuthManager.prototype= new Array();
-function nsIHttpAuthManager(){};
-nsIDOMSerializer.prototype= new Array();
-function nsIDOMSerializer(){};
-nsICacheMetaDataVisitor.prototype= new Array();
-function nsICacheMetaDataVisitor(){};
-nsIDOMNSHTMLDocument.prototype= new Array();
-function nsIDOMNSHTMLDocument(){};
-nsIGeneratingKeypairInfoDialogs.prototype= new Array();
-function nsIGeneratingKeypairInfoDialogs(){};
-jsdIEphemeral.prototype= new Array();
-function jsdIEphemeral(){};
-mozIStorageService.prototype= new Array();
-function mozIStorageService(){};
-nsIPrompt.prototype= new Array();
-function nsIPrompt(){};
-nsIPrompt.prototype.BUTTON_POS_0=0;
-nsIPrompt.prototype.BUTTON_POS_1=0;
-nsIPrompt.prototype.BUTTON_POS_2=0;
-nsIPrompt.prototype.BUTTON_TITLE_OK=0;
-nsIPrompt.prototype.BUTTON_TITLE_CANCEL=0;
-nsIPrompt.prototype.BUTTON_TITLE_YES=0;
-nsIPrompt.prototype.BUTTON_TITLE_NO=0;
-nsIPrompt.prototype.BUTTON_TITLE_SAVE=0;
-nsIPrompt.prototype.BUTTON_TITLE_DONT_SAVE=0;
-nsIPrompt.prototype.BUTTON_TITLE_REVERT=0;
-nsIPrompt.prototype.BUTTON_TITLE_IS_STRING=0;
-nsIPrompt.prototype.BUTTON_POS_0_DEFAULT="";
-nsIPrompt.prototype.BUTTON_POS_1_DEFAULT=0;
-nsIPrompt.prototype.BUTTON_POS_2_DEFAULT=0;
-nsIPrompt.prototype.BUTTON_DELAY_ENABLE=0;
-nsIPrompt.prototype.STD_OK_CANCEL_BUTTONS=0;
-nsIDocShellTreeOwner_MOZILLA_1_8_BRANCH.prototype= new Array();
-function nsIDocShellTreeOwner_MOZILLA_1_8_BRANCH(){};
-nsIScriptableParamInfo.prototype= new Array();
-function nsIScriptableParamInfo(){};
-nsIDOMHTMLLegendElement.prototype= new Array();
-function nsIDOMHTMLLegendElement(){};
-nsIDOMHTMLLegendElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLLegendElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLLegendElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLLegendElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLLegendElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLLegendElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLLegendElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLLegendElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLLegendElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLLegendElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLLegendElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLLegendElement.prototype.NOTATION_NODE=0;
-nsICache.prototype= new Array();
-function nsICache(){};
-nsICache.prototype.ACCESS_NONE="";
-nsICache.prototype.ACCESS_READ=0;
-nsICache.prototype.ACCESS_WRITE=0;
-nsICache.prototype.ACCESS_READ_WRITE=0;
-nsICache.prototype.STORE_ANYWHERE="";
-nsICache.prototype.STORE_IN_MEMORY=0;
-nsICache.prototype.STORE_ON_DISK=0;
-nsICache.prototype.STORE_ON_DISK_AS_FILE=0;
-nsICache.prototype.NOT_STREAM_BASED="";
-nsICache.prototype.STREAM_BASED=0;
-nsICache.prototype.NON_BLOCKING="";
-nsICache.prototype.BLOCKING=0;
-nsIWyciwygChannel.prototype= new Array();
-function nsIWyciwygChannel(){};
-nsIWyciwygChannel.prototype.LOAD_NORMAL="";
-nsIWyciwygChannel.prototype.LOAD_BACKGROUND=0;
-nsIWyciwygChannel.prototype.INHIBIT_CACHING=0;
-nsIWyciwygChannel.prototype.INHIBIT_PERSISTENT_CACHING=0;
-nsIWyciwygChannel.prototype.LOAD_BYPASS_CACHE=0;
-nsIWyciwygChannel.prototype.LOAD_FROM_CACHE=0;
-nsIWyciwygChannel.prototype.VALIDATE_ALWAYS=0;
-nsIWyciwygChannel.prototype.VALIDATE_NEVER=0;
-nsIWyciwygChannel.prototype.VALIDATE_ONCE_PER_SESSION=0;
-nsIWyciwygChannel.prototype.LOAD_DOCUMENT_URI=0;
-nsIWyciwygChannel.prototype.LOAD_RETARGETED_DOCUMENT_URI=0;
-nsIWyciwygChannel.prototype.LOAD_REPLACE=0;
-nsIWyciwygChannel.prototype.LOAD_INITIAL_DOCUMENT_URI=0;
-nsIWyciwygChannel.prototype.LOAD_TARGETED=0;
-nsIWyciwygChannel.prototype.LOAD_CALL_CONTENT_SNIFFERS=0;
-nsISecretDecoderRing.prototype= new Array();
-function nsISecretDecoderRing(){};
-nsIDOMHTMLFontElement.prototype= new Array();
-function nsIDOMHTMLFontElement(){};
-nsIDOMHTMLFontElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLFontElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLFontElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLFontElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLFontElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLFontElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLFontElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLFontElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLFontElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLFontElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLFontElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLFontElement.prototype.NOTATION_NODE=0;
-nsIXULBuilderListener.prototype= new Array();
-function nsIXULBuilderListener(){};
-nsIDownloader.prototype= new Array();
-function nsIDownloader(){};
-nsIOutputStream.prototype= new Array();
-function nsIOutputStream(){};
-nsIDOMCounter.prototype= new Array();
-function nsIDOMCounter(){};
-nsIHTTPHeaderListener.prototype= new Array();
-function nsIHTTPHeaderListener(){};
-jsdIObject.prototype= new Array();
-function jsdIObject(){};
-nsIDOMNSLocation.prototype= new Array();
-function nsIDOMNSLocation(){};
-nsIRandomAccessIterator.prototype= new Array();
-function nsIRandomAccessIterator(){};
-nsICertPickDialogs.prototype= new Array();
-function nsICertPickDialogs(){};
-nsISupportsFloat.prototype= new Array();
-function nsISupportsFloat(){};
-nsISupportsFloat.prototype.TYPE_ID=0;
-nsISupportsFloat.prototype.TYPE_CSTRING=0;
-nsISupportsFloat.prototype.TYPE_STRING=0;
-nsISupportsFloat.prototype.TYPE_PRBOOL=0;
-nsISupportsFloat.prototype.TYPE_PRUINT8=0;
-nsISupportsFloat.prototype.TYPE_PRUINT16=0;
-nsISupportsFloat.prototype.TYPE_PRUINT32=0;
-nsISupportsFloat.prototype.TYPE_PRUINT64=0;
-nsISupportsFloat.prototype.TYPE_PRTIME=0;
-nsISupportsFloat.prototype.TYPE_CHAR=0;
-nsISupportsFloat.prototype.TYPE_PRINT16=0;
-nsISupportsFloat.prototype.TYPE_PRINT32=0;
-nsISupportsFloat.prototype.TYPE_PRINT64=0;
-nsISupportsFloat.prototype.TYPE_FLOAT=0;
-nsISupportsFloat.prototype.TYPE_DOUBLE=0;
-nsISupportsFloat.prototype.TYPE_VOID=0;
-nsISupportsFloat.prototype.TYPE_INTERFACE_POINTER=0;
-nsIDOMHTMLSelectElement.prototype= new Array();
-function nsIDOMHTMLSelectElement(){};
-nsIDOMHTMLSelectElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLSelectElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLSelectElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLSelectElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLSelectElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLSelectElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLSelectElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLSelectElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLSelectElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLSelectElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLSelectElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLSelectElement.prototype.NOTATION_NODE=0;
-nsIBufferedOutputStream.prototype= new Array();
-function nsIBufferedOutputStream(){};
-nsISOAPCallCompletion.prototype= new Array();
-function nsISOAPCallCompletion(){};
-nsIUnicharLineInputStream.prototype= new Array();
-function nsIUnicharLineInputStream(){};
-nsITokenDialogs.prototype= new Array();
-function nsITokenDialogs(){};
-nsIDOMDocumentCSS.prototype= new Array();
-function nsIDOMDocumentCSS(){};
-nsICRLInfo.prototype= new Array();
-function nsICRLInfo(){};
-nsITransportSecurityInfo.prototype= new Array();
-function nsITransportSecurityInfo(){};
-nsIBoxPaintManager.prototype= new Array();
-function nsIBoxPaintManager(){};
-nsITextToSubURI.prototype= new Array();
-function nsITextToSubURI(){};
-nsIDOMHTMLFrameElement.prototype= new Array();
-function nsIDOMHTMLFrameElement(){};
-nsIDOMHTMLFrameElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLFrameElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLFrameElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLFrameElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLFrameElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLFrameElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLFrameElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLFrameElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLFrameElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLFrameElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLFrameElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLFrameElement.prototype.NOTATION_NODE=0;
-nsITokenPasswordDialogs.prototype= new Array();
-function nsITokenPasswordDialogs(){};
-nsIExternalProtocolService.prototype= new Array();
-function nsIExternalProtocolService(){};
-nsIEnvironment.prototype= new Array();
-function nsIEnvironment(){};
-nsIXMLHttpRequest.prototype= new Array();
-function nsIXMLHttpRequest(){};
-nsIURIContentListener.prototype= new Array();
-function nsIURIContentListener(){};
-nsIXPIProgressDialog.prototype= new Array();
-function nsIXPIProgressDialog(){};
-nsIXPIProgressDialog.prototype.DOWNLOAD_START="";
-nsIXPIProgressDialog.prototype.DOWNLOAD_DONE=0;
-nsIXPIProgressDialog.prototype.INSTALL_START=0;
-nsIXPIProgressDialog.prototype.INSTALL_DONE=0;
-nsIXPIProgressDialog.prototype.DIALOG_CLOSE=0;
-nsISelectionPrivate.prototype= new Array();
-function nsISelectionPrivate(){};
-nsISelectionPrivate.prototype.ENDOFPRECEDINGLINE="";
-nsISelectionPrivate.prototype.STARTOFNEXTLINE=0;
-nsISelectionPrivate.prototype.TABLESELECTION_NONE="";
-nsISelectionPrivate.prototype.TABLESELECTION_CELL=0;
-nsISelectionPrivate.prototype.TABLESELECTION_ROW=0;
-nsISelectionPrivate.prototype.TABLESELECTION_COLUMN=0;
-nsISelectionPrivate.prototype.TABLESELECTION_TABLE=0;
-nsISelectionPrivate.prototype.TABLESELECTION_ALLCELLS=0;
-nsISchemaType.prototype= new Array();
-function nsISchemaType(){};
-nsISchemaType.prototype.SCHEMA_TYPE_SIMPLE=0;
-nsISchemaType.prototype.SCHEMA_TYPE_COMPLEX=0;
-nsISchemaType.prototype.SCHEMA_TYPE_PLACEHOLDER=0;
-nsIDOMSVGZoomEvent.prototype= new Array();
-function nsIDOMSVGZoomEvent(){};
-nsIDOMSVGZoomEvent.prototype.CAPTURING_PHASE=0;
-nsIDOMSVGZoomEvent.prototype.AT_TARGET=0;
-nsIDOMSVGZoomEvent.prototype.BUBBLING_PHASE=0;
-nsICancelable.prototype= new Array();
-function nsICancelable(){};
-nsIDOMAbstractView.prototype= new Array();
-function nsIDOMAbstractView(){};
-nsIJARChannel.prototype= new Array();
-function nsIJARChannel(){};
-nsIJARChannel.prototype.LOAD_NORMAL="";
-nsIJARChannel.prototype.LOAD_BACKGROUND=0;
-nsIJARChannel.prototype.INHIBIT_CACHING=0;
-nsIJARChannel.prototype.INHIBIT_PERSISTENT_CACHING=0;
-nsIJARChannel.prototype.LOAD_BYPASS_CACHE=0;
-nsIJARChannel.prototype.LOAD_FROM_CACHE=0;
-nsIJARChannel.prototype.VALIDATE_ALWAYS=0;
-nsIJARChannel.prototype.VALIDATE_NEVER=0;
-nsIJARChannel.prototype.VALIDATE_ONCE_PER_SESSION=0;
-nsIJARChannel.prototype.LOAD_DOCUMENT_URI=0;
-nsIJARChannel.prototype.LOAD_RETARGETED_DOCUMENT_URI=0;
-nsIJARChannel.prototype.LOAD_REPLACE=0;
-nsIJARChannel.prototype.LOAD_INITIAL_DOCUMENT_URI=0;
-nsIJARChannel.prototype.LOAD_TARGETED=0;
-nsIJARChannel.prototype.LOAD_CALL_CONTENT_SNIFFERS=0;
-nsIMemory.prototype= new Array();
-function nsIMemory(){};
-nsIDOMLSSerializerFilter.prototype= new Array();
-function nsIDOMLSSerializerFilter(){};
-nsIDOMLSSerializerFilter.prototype.FILTER_ACCEPT=0;
-nsIDOMLSSerializerFilter.prototype.FILTER_REJECT=0;
-nsIDOMLSSerializerFilter.prototype.FILTER_SKIP=0;
-nsIDOMLSSerializerFilter.prototype.SHOW_ALL=0;
-nsIDOMLSSerializerFilter.prototype.SHOW_ELEMENT=0;
-nsIDOMLSSerializerFilter.prototype.SHOW_ATTRIBUTE=0;
-nsIDOMLSSerializerFilter.prototype.SHOW_TEXT=0;
-nsIDOMLSSerializerFilter.prototype.SHOW_CDATA_SECTION=0;
-nsIDOMLSSerializerFilter.prototype.SHOW_ENTITY_REFERENCE=0;
-nsIDOMLSSerializerFilter.prototype.SHOW_ENTITY=0;
-nsIDOMLSSerializerFilter.prototype.SHOW_PROCESSING_INSTRUCTION=0;
-nsIDOMLSSerializerFilter.prototype.SHOW_COMMENT=0;
-nsIDOMLSSerializerFilter.prototype.SHOW_DOCUMENT=0;
-nsIDOMLSSerializerFilter.prototype.SHOW_DOCUMENT_TYPE=0;
-nsIDOMLSSerializerFilter.prototype.SHOW_DOCUMENT_FRAGMENT=0;
-nsIDOMLSSerializerFilter.prototype.SHOW_NOTATION=0;
-nsIBinaryOutputStream.prototype= new Array();
-function nsIBinaryOutputStream(){};
-nsIDOMDOMStringList.prototype= new Array();
-function nsIDOMDOMStringList(){};
-nsIImageLoadingContent.prototype= new Array();
-function nsIImageLoadingContent(){};
-nsIImageLoadingContent.prototype.UNKNOWN_REQUEST=0;
-nsIImageLoadingContent.prototype.CURRENT_REQUEST="";
-nsIImageLoadingContent.prototype.PENDING_REQUEST=0;
-nsIExceptionService.prototype= new Array();
-function nsIExceptionService(){};
-nsIFileOutputStream.prototype= new Array();
-function nsIFileOutputStream(){};
-nsISchemaAnyAttribute.prototype= new Array();
-function nsISchemaAnyAttribute(){};
-nsISchemaAnyAttribute.prototype.COMPONENT_TYPE_ATTRIBUTE=0;
-nsISchemaAnyAttribute.prototype.COMPONENT_TYPE_GROUP=0;
-nsISchemaAnyAttribute.prototype.COMPONENT_TYPE_ANY=0;
-nsISchemaAnyAttribute.prototype.PROCESS_STRICT=0;
-nsISchemaAnyAttribute.prototype.PROCESS_SKIP=0;
-nsISchemaAnyAttribute.prototype.PROCESS_LAX=0;
-nsIDOMCSSMediaRule.prototype= new Array();
-function nsIDOMCSSMediaRule(){};
-nsIDOMCSSMediaRule.prototype.UNKNOWN_RULE="";
-nsIDOMCSSMediaRule.prototype.STYLE_RULE=0;
-nsIDOMCSSMediaRule.prototype.CHARSET_RULE=0;
-nsIDOMCSSMediaRule.prototype.IMPORT_RULE=0;
-nsIDOMCSSMediaRule.prototype.MEDIA_RULE=0;
-nsIDOMCSSMediaRule.prototype.FONT_FACE_RULE=0;
-nsIDOMCSSMediaRule.prototype.PAGE_RULE=0;
-nsIErrorService.prototype= new Array();
-function nsIErrorService(){};
-nsIRDFInMemoryDataSource.prototype= new Array();
-function nsIRDFInMemoryDataSource(){};
-nsIFeed.prototype= new Array();
-function nsIFeed(){};
-nsIFeed.prototype.TYPE_FEED="";
-nsIFeed.prototype.TYPE_AUDIO=0;
-nsIFeed.prototype.TYPE_IMAGE=0;
-nsIFeed.prototype.TYPE_VIDEO=0;
-nsIContentViewer_MOZILLA_1_8_BRANCH.prototype= new Array();
-function nsIContentViewer_MOZILLA_1_8_BRANCH(){};
-nsIEditorMailSupport.prototype= new Array();
-function nsIEditorMailSupport(){};
-nsIDOMHTMLPreElement.prototype= new Array();
-function nsIDOMHTMLPreElement(){};
-nsIDOMHTMLPreElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLPreElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLPreElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLPreElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLPreElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLPreElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLPreElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLPreElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLPreElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLPreElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLPreElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLPreElement.prototype.NOTATION_NODE=0;
-nsIDOMNavigator_MOZILLA_1_8_BRANCH.prototype= new Array();
-function nsIDOMNavigator_MOZILLA_1_8_BRANCH(){};
-gfxIImageFrame.prototype= new Array();
-function gfxIImageFrame(){};
-nsIAccessibleSelectable.prototype= new Array();
-function nsIAccessibleSelectable(){};
-nsPICommandUpdater.prototype= new Array();
-function nsPICommandUpdater(){};
-nsIDownload.prototype= new Array();
-function nsIDownload(){};
-nsIDownload.prototype.STATE_START=0;
-nsIDownload.prototype.STATE_REDIRECTING=0;
-nsIDownload.prototype.STATE_TRANSFERRING=0;
-nsIDownload.prototype.STATE_NEGOTIATING=0;
-nsIDownload.prototype.STATE_STOP=0;
-nsIDownload.prototype.STATE_IS_REQUEST=0;
-nsIDownload.prototype.STATE_IS_DOCUMENT=0;
-nsIDownload.prototype.STATE_IS_NETWORK=0;
-nsIDownload.prototype.STATE_IS_WINDOW=0;
-nsIDownload.prototype.STATE_RESTORING=0;
-nsIDownload.prototype.STATE_IS_INSECURE=0;
-nsIDownload.prototype.STATE_IS_BROKEN=0;
-nsIDownload.prototype.STATE_IS_SECURE=0;
-nsIDownload.prototype.STATE_SECURE_HIGH=0;
-nsIDownload.prototype.STATE_SECURE_MED=0;
-nsIDownload.prototype.STATE_SECURE_LOW=0;
-nsIDOMXULControlElement.prototype= new Array();
-function nsIDOMXULControlElement(){};
-nsIDOMXULControlElement.prototype.ELEMENT_NODE=0;
-nsIDOMXULControlElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMXULControlElement.prototype.TEXT_NODE=0;
-nsIDOMXULControlElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMXULControlElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMXULControlElement.prototype.ENTITY_NODE=0;
-nsIDOMXULControlElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMXULControlElement.prototype.COMMENT_NODE=0;
-nsIDOMXULControlElement.prototype.DOCUMENT_NODE=0;
-nsIDOMXULControlElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMXULControlElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMXULControlElement.prototype.NOTATION_NODE=0;
-nsIDOMSVGAnimatedNumberList.prototype= new Array();
-function nsIDOMSVGAnimatedNumberList(){};
-nsIDocumentCharsetInfo.prototype= new Array();
-function nsIDocumentCharsetInfo(){};
-nsIContentViewerContainer.prototype= new Array();
-function nsIContentViewerContainer(){};
-nsIAppStartup.prototype= new Array();
-function nsIAppStartup(){};
-nsIAppStartup.prototype.eConsiderQuit=0;
-nsIAppStartup.prototype.eAttemptQuit=0;
-nsIAppStartup.prototype.eForceQuit=0;
-nsIAppStartup.prototype.eRestart=0;
-nsICookie2.prototype= new Array();
-function nsICookie2(){};
-nsICookie2.prototype.STATUS_UNKNOWN="";
-nsICookie2.prototype.STATUS_ACCEPTED=0;
-nsICookie2.prototype.STATUS_DOWNGRADED=0;
-nsICookie2.prototype.STATUS_FLAGGED=0;
-nsICookie2.prototype.STATUS_REJECTED=0;
-nsICookie2.prototype.POLICY_UNKNOWN="";
-nsICookie2.prototype.POLICY_NONE=0;
-nsICookie2.prototype.POLICY_NO_CONSENT=0;
-nsICookie2.prototype.POLICY_IMPLICIT_CONSENT=0;
-nsICookie2.prototype.POLICY_EXPLICIT_CONSENT=0;
-nsICookie2.prototype.POLICY_NO_II=0;
-nsIBrowserInstance.prototype= new Array();
-function nsIBrowserInstance(){};
-nsIProtocolProxyService.prototype= new Array();
-function nsIProtocolProxyService(){};
-nsIProtocolProxyService.prototype.RESOLVE_NON_BLOCKING=0;
-nsIDOMCDATASection.prototype= new Array();
-function nsIDOMCDATASection(){};
-nsIDOMCDATASection.prototype.ELEMENT_NODE=0;
-nsIDOMCDATASection.prototype.ATTRIBUTE_NODE=0;
-nsIDOMCDATASection.prototype.TEXT_NODE=0;
-nsIDOMCDATASection.prototype.CDATA_SECTION_NODE=0;
-nsIDOMCDATASection.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMCDATASection.prototype.ENTITY_NODE=0;
-nsIDOMCDATASection.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMCDATASection.prototype.COMMENT_NODE=0;
-nsIDOMCDATASection.prototype.DOCUMENT_NODE=0;
-nsIDOMCDATASection.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMCDATASection.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMCDATASection.prototype.NOTATION_NODE=0;
-nsIJVMConfigManager.prototype= new Array();
-function nsIJVMConfigManager(){};
-nsISOAPPortBinding.prototype= new Array();
-function nsISOAPPortBinding(){};
-nsISOAPPortBinding.prototype.STYLE_RPC=0;
-nsISOAPPortBinding.prototype.STYLE_DOCUMENT=0;
-nsISOAPPortBinding.prototype.SOAP_VERSION_1_1="";
-nsISOAPPortBinding.prototype.SOAP_VERSION_1_2=0;
-nsISOAPPortBinding.prototype.SOAP_VERSION_UNKNOWN=0;
-nsIContentHandler.prototype= new Array();
-function nsIContentHandler(){};
-nsISchemaComponent.prototype= new Array();
-function nsISchemaComponent(){};
-nsIPrintSettingsWin.prototype= new Array();
-function nsIPrintSettingsWin(){};
-nsIDownloadProgressListener.prototype= new Array();
-function nsIDownloadProgressListener(){};
-nsIMozIconURI.prototype= new Array();
-function nsIMozIconURI(){};
-nsISHistoryInternal.prototype= new Array();
-function nsISHistoryInternal(){};
-nsIURIFixup.prototype= new Array();
-function nsIURIFixup(){};
-nsIURIFixup.prototype.FIXUP_FLAG_NONE="";
-nsIURIFixup.prototype.FIXUP_FLAG_ALLOW_KEYWORD_LOOKUP=0;
-nsIURIFixup.prototype.FIXUP_FLAGS_MAKE_ALTERNATE_URI=0;
-nsIDOMSVGPathSegLinetoHorizontalRel.prototype= new Array();
-function nsIDOMSVGPathSegLinetoHorizontalRel(){};
-nsIDOMSVGPathSegLinetoHorizontalRel.prototype.PATHSEG_UNKNOWN="";
-nsIDOMSVGPathSegLinetoHorizontalRel.prototype.PATHSEG_CLOSEPATH=0;
-nsIDOMSVGPathSegLinetoHorizontalRel.prototype.PATHSEG_MOVETO_ABS=0;
-nsIDOMSVGPathSegLinetoHorizontalRel.prototype.PATHSEG_MOVETO_REL=0;
-nsIDOMSVGPathSegLinetoHorizontalRel.prototype.PATHSEG_LINETO_ABS=0;
-nsIDOMSVGPathSegLinetoHorizontalRel.prototype.PATHSEG_LINETO_REL=0;
-nsIDOMSVGPathSegLinetoHorizontalRel.prototype.PATHSEG_CURVETO_CUBIC_ABS=0;
-nsIDOMSVGPathSegLinetoHorizontalRel.prototype.PATHSEG_CURVETO_CUBIC_REL=0;
-nsIDOMSVGPathSegLinetoHorizontalRel.prototype.PATHSEG_CURVETO_QUADRATIC_ABS=0;
-nsIDOMSVGPathSegLinetoHorizontalRel.prototype.PATHSEG_CURVETO_QUADRATIC_REL=0;
-nsIDOMSVGPathSegLinetoHorizontalRel.prototype.PATHSEG_ARC_ABS=0;
-nsIDOMSVGPathSegLinetoHorizontalRel.prototype.PATHSEG_ARC_REL=0;
-nsIDOMSVGPathSegLinetoHorizontalRel.prototype.PATHSEG_LINETO_HORIZONTAL_ABS=0;
-nsIDOMSVGPathSegLinetoHorizontalRel.prototype.PATHSEG_LINETO_HORIZONTAL_REL=0;
-nsIDOMSVGPathSegLinetoHorizontalRel.prototype.PATHSEG_LINETO_VERTICAL_ABS=0;
-nsIDOMSVGPathSegLinetoHorizontalRel.prototype.PATHSEG_LINETO_VERTICAL_REL=0;
-nsIDOMSVGPathSegLinetoHorizontalRel.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegLinetoHorizontalRel.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_REL=0;
-nsIDOMSVGPathSegLinetoHorizontalRel.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegLinetoHorizontalRel.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL=0;
-nsIXPIDialogService.prototype= new Array();
-function nsIXPIDialogService(){};
-nsIEditActionListener.prototype= new Array();
-function nsIEditActionListener(){};
-nsIDOMHTMLAppletElement.prototype= new Array();
-function nsIDOMHTMLAppletElement(){};
-nsIDOMHTMLAppletElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLAppletElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLAppletElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLAppletElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLAppletElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLAppletElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLAppletElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLAppletElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLAppletElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLAppletElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLAppletElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLAppletElement.prototype.NOTATION_NODE=0;
-nsIDOMAttr.prototype= new Array();
-function nsIDOMAttr(){};
-nsIDOMAttr.prototype.ELEMENT_NODE=0;
-nsIDOMAttr.prototype.ATTRIBUTE_NODE=0;
-nsIDOMAttr.prototype.TEXT_NODE=0;
-nsIDOMAttr.prototype.CDATA_SECTION_NODE=0;
-nsIDOMAttr.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMAttr.prototype.ENTITY_NODE=0;
-nsIDOMAttr.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMAttr.prototype.COMMENT_NODE=0;
-nsIDOMAttr.prototype.DOCUMENT_NODE=0;
-nsIDOMAttr.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMAttr.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMAttr.prototype.NOTATION_NODE=0;
-nsIDOMNotation.prototype= new Array();
-function nsIDOMNotation(){};
-nsIDOMNotation.prototype.ELEMENT_NODE=0;
-nsIDOMNotation.prototype.ATTRIBUTE_NODE=0;
-nsIDOMNotation.prototype.TEXT_NODE=0;
-nsIDOMNotation.prototype.CDATA_SECTION_NODE=0;
-nsIDOMNotation.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMNotation.prototype.ENTITY_NODE=0;
-nsIDOMNotation.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMNotation.prototype.COMMENT_NODE=0;
-nsIDOMNotation.prototype.DOCUMENT_NODE=0;
-nsIDOMNotation.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMNotation.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMNotation.prototype.NOTATION_NODE=0;
-nsIProxyObjectManager.prototype= new Array();
-function nsIProxyObjectManager(){};
-nsIProxyObjectManager.prototype.INVOKE_SYNC=0;
-nsIProxyObjectManager.prototype.INVOKE_ASYNC=0;
-nsIProxyObjectManager.prototype.FORCE_PROXY_CREATION=0;
-nsIPassword.prototype= new Array();
-function nsIPassword(){};
-nsIProfileLock.prototype= new Array();
-function nsIProfileLock(){};
-nsIDOMHTMLCanvasElement.prototype= new Array();
-function nsIDOMHTMLCanvasElement(){};
-nsIDOMHTMLCanvasElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLCanvasElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLCanvasElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLCanvasElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLCanvasElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLCanvasElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLCanvasElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLCanvasElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLCanvasElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLCanvasElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLCanvasElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLCanvasElement.prototype.NOTATION_NODE=0;
-nsISelectElement.prototype= new Array();
-function nsISelectElement(){};
-nsIPopupBoxObject.prototype= new Array();
-function nsIPopupBoxObject(){};
-nsIFind.prototype= new Array();
-function nsIFind(){};
-nsIXTFPrivate.prototype= new Array();
-function nsIXTFPrivate(){};
-nsIPlaintextEditor.prototype= new Array();
-function nsIPlaintextEditor(){};
-nsIPlaintextEditor.prototype.eEditorPlaintextBit="";
-nsIPlaintextEditor.prototype.eEditorSingleLineBit=0;
-nsIPlaintextEditor.prototype.eEditorPasswordBit=0;
-nsIPlaintextEditor.prototype.eEditorReadonlyBit=0;
-nsIPlaintextEditor.prototype.eEditorDisabledBit=0;
-nsIPlaintextEditor.prototype.eEditorFilterInputBit=0;
-nsIPlaintextEditor.prototype.eEditorMailBit=0;
-nsIPlaintextEditor.prototype.eEditorUseAsyncUpdatesBit=0;
-nsIPlaintextEditor.prototype.eEditorEnableWrapHackBit=0;
-nsIPlaintextEditor.prototype.eEditorWidgetBit=0;
-nsIPlaintextEditor.prototype.eEditorNoCSSBit=0;
-nsIPlaintextEditor.prototype.eEditorPlaintextMask=0;
-nsIPlaintextEditor.prototype.eEditorSingleLineMask=0;
-nsIPlaintextEditor.prototype.eEditorPasswordMask=0;
-nsIPlaintextEditor.prototype.eEditorReadonlyMask=0;
-nsIPlaintextEditor.prototype.eEditorDisabledMask=0;
-nsIPlaintextEditor.prototype.eEditorFilterInputMask=0;
-nsIPlaintextEditor.prototype.eEditorMailMask=0;
-nsIPlaintextEditor.prototype.eEditorUseAsyncUpdatesMask=0;
-nsIPlaintextEditor.prototype.eEditorEnableWrapHackMask=0;
-nsIPlaintextEditor.prototype.eEditorWidgetMask=0;
-nsIPlaintextEditor.prototype.eEditorNoCSSMask=0;
-nsIForwardIterator.prototype= new Array();
-function nsIForwardIterator(){};
-nsIDOMNSHTMLSelectElement.prototype= new Array();
-function nsIDOMNSHTMLSelectElement(){};
-nsIDOMHTMLModElement.prototype= new Array();
-function nsIDOMHTMLModElement(){};
-nsIDOMHTMLModElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLModElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLModElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLModElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLModElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLModElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLModElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLModElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLModElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLModElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLModElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLModElement.prototype.NOTATION_NODE=0;
-nsIDOMCSSMozDocumentRule.prototype= new Array();
-function nsIDOMCSSMozDocumentRule(){};
-nsIDOMCSSMozDocumentRule.prototype.UNKNOWN_RULE="";
-nsIDOMCSSMozDocumentRule.prototype.STYLE_RULE=0;
-nsIDOMCSSMozDocumentRule.prototype.CHARSET_RULE=0;
-nsIDOMCSSMozDocumentRule.prototype.IMPORT_RULE=0;
-nsIDOMCSSMozDocumentRule.prototype.MEDIA_RULE=0;
-nsIDOMCSSMozDocumentRule.prototype.FONT_FACE_RULE=0;
-nsIDOMCSSMozDocumentRule.prototype.PAGE_RULE=0;
-nsIDOMSVGEllipseElement.prototype= new Array();
-function nsIDOMSVGEllipseElement(){};
-nsIDOMSVGEllipseElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGEllipseElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGEllipseElement.prototype.TEXT_NODE=0;
-nsIDOMSVGEllipseElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGEllipseElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGEllipseElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGEllipseElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGEllipseElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGEllipseElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGEllipseElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGEllipseElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGEllipseElement.prototype.NOTATION_NODE=0;
-jsdIContext.prototype= new Array();
-function jsdIContext(){};
-jsdIContext.prototype.OPT_STRICT=0;
-jsdIContext.prototype.OPT_WERR=0;
-jsdIContext.prototype.OPT_VAROBJFIX=0;
-jsdIContext.prototype.OPT_ISUPPORTS=0;
-nsIDOMPopupBlockedEvent_MOZILLA_1_8_BRANCH.prototype= new Array();
-function nsIDOMPopupBlockedEvent_MOZILLA_1_8_BRANCH(){};
-nsIDOMDocumentTraversal.prototype= new Array();
-function nsIDOMDocumentTraversal(){};
-nsIXTFAttributeHandler.prototype= new Array();
-function nsIXTFAttributeHandler(){};
-inIFlasher.prototype= new Array();
-function inIFlasher(){};
-nsISupportsWeakReference.prototype= new Array();
-function nsISupportsWeakReference(){};
-nsIDOMSVGElement.prototype= new Array();
-function nsIDOMSVGElement(){};
-nsIDOMSVGElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGElement.prototype.TEXT_NODE=0;
-nsIDOMSVGElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGElement.prototype.NOTATION_NODE=0;
-nsIDOM3DocumentEvent.prototype= new Array();
-function nsIDOM3DocumentEvent(){};
-nsIRDFRemoteDataSource.prototype= new Array();
-function nsIRDFRemoteDataSource(){};
-nsIDOMSVGPathSegArcAbs.prototype= new Array();
-function nsIDOMSVGPathSegArcAbs(){};
-nsIDOMSVGPathSegArcAbs.prototype.PATHSEG_UNKNOWN="";
-nsIDOMSVGPathSegArcAbs.prototype.PATHSEG_CLOSEPATH=0;
-nsIDOMSVGPathSegArcAbs.prototype.PATHSEG_MOVETO_ABS=0;
-nsIDOMSVGPathSegArcAbs.prototype.PATHSEG_MOVETO_REL=0;
-nsIDOMSVGPathSegArcAbs.prototype.PATHSEG_LINETO_ABS=0;
-nsIDOMSVGPathSegArcAbs.prototype.PATHSEG_LINETO_REL=0;
-nsIDOMSVGPathSegArcAbs.prototype.PATHSEG_CURVETO_CUBIC_ABS=0;
-nsIDOMSVGPathSegArcAbs.prototype.PATHSEG_CURVETO_CUBIC_REL=0;
-nsIDOMSVGPathSegArcAbs.prototype.PATHSEG_CURVETO_QUADRATIC_ABS=0;
-nsIDOMSVGPathSegArcAbs.prototype.PATHSEG_CURVETO_QUADRATIC_REL=0;
-nsIDOMSVGPathSegArcAbs.prototype.PATHSEG_ARC_ABS=0;
-nsIDOMSVGPathSegArcAbs.prototype.PATHSEG_ARC_REL=0;
-nsIDOMSVGPathSegArcAbs.prototype.PATHSEG_LINETO_HORIZONTAL_ABS=0;
-nsIDOMSVGPathSegArcAbs.prototype.PATHSEG_LINETO_HORIZONTAL_REL=0;
-nsIDOMSVGPathSegArcAbs.prototype.PATHSEG_LINETO_VERTICAL_ABS=0;
-nsIDOMSVGPathSegArcAbs.prototype.PATHSEG_LINETO_VERTICAL_REL=0;
-nsIDOMSVGPathSegArcAbs.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegArcAbs.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_REL=0;
-nsIDOMSVGPathSegArcAbs.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegArcAbs.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL=0;
-nsIDOMXULButtonElement.prototype= new Array();
-function nsIDOMXULButtonElement(){};
-nsIDOMXULButtonElement.prototype.ELEMENT_NODE=0;
-nsIDOMXULButtonElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMXULButtonElement.prototype.TEXT_NODE=0;
-nsIDOMXULButtonElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMXULButtonElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMXULButtonElement.prototype.ENTITY_NODE=0;
-nsIDOMXULButtonElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMXULButtonElement.prototype.COMMENT_NODE=0;
-nsIDOMXULButtonElement.prototype.DOCUMENT_NODE=0;
-nsIDOMXULButtonElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMXULButtonElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMXULButtonElement.prototype.NOTATION_NODE=0;
-nsIDOMXULButtonElement.prototype.CHECKSTATE_UNCHECKED="";
-nsIDOMXULButtonElement.prototype.CHECKSTATE_CHECKED=0;
-nsIDOMXULButtonElement.prototype.CHECKSTATE_MIXED=0;
-nsIClipboardDragDropHooks.prototype= new Array();
-function nsIClipboardDragDropHooks(){};
-nsIDOMRect.prototype= new Array();
-function nsIDOMRect(){};
-nsICRLManager.prototype= new Array();
-function nsICRLManager(){};
-nsICRLManager.prototype.TYPE_AUTOUPDATE_TIME_BASED=0;
-nsICRLManager.prototype.TYPE_AUTOUPDATE_FREQ_BASED=0;
-imgIEncoder.prototype= new Array();
-function imgIEncoder(){};
-nsIX509Cert3.prototype= new Array();
-function nsIX509Cert3(){};
-nsISearchEngine.prototype= new Array();
-function nsISearchEngine(){};
-nsISearchEngine.prototype.TYPE_MOZSEARCH=0;
-nsISearchEngine.prototype.TYPE_SHERLOCK=0;
-nsISearchEngine.prototype.TYPE_OPENSEARCH=0;
-nsISearchEngine.prototype.DATA_XML=0;
-nsISearchEngine.prototype.DATA_TEXT=0;
-nsIUrlListManagerCallback.prototype= new Array();
-function nsIUrlListManagerCallback(){};
-nsIDOMEntity.prototype= new Array();
-function nsIDOMEntity(){};
-nsIDOMEntity.prototype.ELEMENT_NODE=0;
-nsIDOMEntity.prototype.ATTRIBUTE_NODE=0;
-nsIDOMEntity.prototype.TEXT_NODE=0;
-nsIDOMEntity.prototype.CDATA_SECTION_NODE=0;
-nsIDOMEntity.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMEntity.prototype.ENTITY_NODE=0;
-nsIDOMEntity.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMEntity.prototype.COMMENT_NODE=0;
-nsIDOMEntity.prototype.DOCUMENT_NODE=0;
-nsIDOMEntity.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMEntity.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMEntity.prototype.NOTATION_NODE=0;
-nsIDOMXPathNamespace.prototype= new Array();
-function nsIDOMXPathNamespace(){};
-nsIDOMXPathNamespace.prototype.ELEMENT_NODE=0;
-nsIDOMXPathNamespace.prototype.ATTRIBUTE_NODE=0;
-nsIDOMXPathNamespace.prototype.TEXT_NODE=0;
-nsIDOMXPathNamespace.prototype.CDATA_SECTION_NODE=0;
-nsIDOMXPathNamespace.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMXPathNamespace.prototype.ENTITY_NODE=0;
-nsIDOMXPathNamespace.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMXPathNamespace.prototype.COMMENT_NODE=0;
-nsIDOMXPathNamespace.prototype.DOCUMENT_NODE=0;
-nsIDOMXPathNamespace.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMXPathNamespace.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMXPathNamespace.prototype.NOTATION_NODE=0;
-nsIDOMXPathNamespace.prototype.XPATH_NAMESPACE_NODE=0;
-nsIBookmarksService.prototype= new Array();
-function nsIBookmarksService(){};
-nsIBookmarksService.prototype.BOOKMARK_DEFAULT_TYPE="";
-nsIBookmarksService.prototype.BOOKMARK_SEARCH_TYPE=0;
-nsIBookmarksService.prototype.BOOKMARK_FIND_TYPE=0;
-nsIDOMHTMLHRElement.prototype= new Array();
-function nsIDOMHTMLHRElement(){};
-nsIDOMHTMLHRElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLHRElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLHRElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLHRElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLHRElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLHRElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLHRElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLHRElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLHRElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLHRElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLHRElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLHRElement.prototype.NOTATION_NODE=0;
-nsIRDFContainerUtils.prototype= new Array();
-function nsIRDFContainerUtils(){};
-nsISHistoryListener.prototype= new Array();
-function nsISHistoryListener(){};
-nsIWebBrowserFocus.prototype= new Array();
-function nsIWebBrowserFocus(){};
-nsISAXErrorHandler.prototype= new Array();
-function nsISAXErrorHandler(){};
-nsIDOMSVGPathSegCurvetoCubicAbs.prototype= new Array();
-function nsIDOMSVGPathSegCurvetoCubicAbs(){};
-nsIDOMSVGPathSegCurvetoCubicAbs.prototype.PATHSEG_UNKNOWN="";
-nsIDOMSVGPathSegCurvetoCubicAbs.prototype.PATHSEG_CLOSEPATH=0;
-nsIDOMSVGPathSegCurvetoCubicAbs.prototype.PATHSEG_MOVETO_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicAbs.prototype.PATHSEG_MOVETO_REL=0;
-nsIDOMSVGPathSegCurvetoCubicAbs.prototype.PATHSEG_LINETO_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicAbs.prototype.PATHSEG_LINETO_REL=0;
-nsIDOMSVGPathSegCurvetoCubicAbs.prototype.PATHSEG_CURVETO_CUBIC_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicAbs.prototype.PATHSEG_CURVETO_CUBIC_REL=0;
-nsIDOMSVGPathSegCurvetoCubicAbs.prototype.PATHSEG_CURVETO_QUADRATIC_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicAbs.prototype.PATHSEG_CURVETO_QUADRATIC_REL=0;
-nsIDOMSVGPathSegCurvetoCubicAbs.prototype.PATHSEG_ARC_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicAbs.prototype.PATHSEG_ARC_REL=0;
-nsIDOMSVGPathSegCurvetoCubicAbs.prototype.PATHSEG_LINETO_HORIZONTAL_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicAbs.prototype.PATHSEG_LINETO_HORIZONTAL_REL=0;
-nsIDOMSVGPathSegCurvetoCubicAbs.prototype.PATHSEG_LINETO_VERTICAL_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicAbs.prototype.PATHSEG_LINETO_VERTICAL_REL=0;
-nsIDOMSVGPathSegCurvetoCubicAbs.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicAbs.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_REL=0;
-nsIDOMSVGPathSegCurvetoCubicAbs.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicAbs.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL=0;
-nsIHTMLObjectResizer.prototype= new Array();
-function nsIHTMLObjectResizer(){};
-nsIHTMLObjectResizer.prototype.eTopLeft="";
-nsIHTMLObjectResizer.prototype.eTop=0;
-nsIHTMLObjectResizer.prototype.eTopRight=0;
-nsIHTMLObjectResizer.prototype.eLeft=0;
-nsIHTMLObjectResizer.prototype.eRight=0;
-nsIHTMLObjectResizer.prototype.eBottomLeft=0;
-nsIHTMLObjectResizer.prototype.eBottom=0;
-nsIHTMLObjectResizer.prototype.eBottomRight=0;
-nsIXTFXULVisual.prototype= new Array();
-function nsIXTFXULVisual(){};
-nsIXTFXULVisual.prototype.ELEMENT_TYPE_GENERIC_ELEMENT="";
-nsIXTFXULVisual.prototype.ELEMENT_TYPE_SVG_VISUAL=0;
-nsIXTFXULVisual.prototype.ELEMENT_TYPE_XML_VISUAL=0;
-nsIXTFXULVisual.prototype.ELEMENT_TYPE_XUL_VISUAL=0;
-nsIXTFXULVisual.prototype.ELEMENT_TYPE_BINDABLE=0;
-nsIXTFXULVisual.prototype.NOTIFY_WILL_CHANGE_DOCUMENT=0;
-nsIXTFXULVisual.prototype.NOTIFY_DOCUMENT_CHANGED=0;
-nsIXTFXULVisual.prototype.NOTIFY_WILL_CHANGE_PARENT=0;
-nsIXTFXULVisual.prototype.NOTIFY_PARENT_CHANGED=0;
-nsIXTFXULVisual.prototype.NOTIFY_WILL_INSERT_CHILD=0;
-nsIXTFXULVisual.prototype.NOTIFY_CHILD_INSERTED=0;
-nsIXTFXULVisual.prototype.NOTIFY_WILL_APPEND_CHILD=0;
-nsIXTFXULVisual.prototype.NOTIFY_CHILD_APPENDED=0;
-nsIXTFXULVisual.prototype.NOTIFY_WILL_REMOVE_CHILD=0;
-nsIXTFXULVisual.prototype.NOTIFY_CHILD_REMOVED=0;
-nsIXTFXULVisual.prototype.NOTIFY_WILL_SET_ATTRIBUTE=0;
-nsIXTFXULVisual.prototype.NOTIFY_ATTRIBUTE_SET=0;
-nsIXTFXULVisual.prototype.NOTIFY_WILL_REMOVE_ATTRIBUTE=0;
-nsIXTFXULVisual.prototype.NOTIFY_ATTRIBUTE_REMOVED=0;
-nsIXTFXULVisual.prototype.NOTIFY_BEGIN_ADDING_CHILDREN=0;
-nsIXTFXULVisual.prototype.NOTIFY_DONE_ADDING_CHILDREN=0;
-nsIXTFXULVisual.prototype.NOTIFY_HANDLE_DEFAULT=0;
-nsIXTFXULVisual.prototype.NOTIFY_DID_LAYOUT=0;
-nsIInputStreamCallback.prototype= new Array();
-function nsIInputStreamCallback(){};
-nsISupportsPRUint64.prototype= new Array();
-function nsISupportsPRUint64(){};
-nsISupportsPRUint64.prototype.TYPE_ID=0;
-nsISupportsPRUint64.prototype.TYPE_CSTRING=0;
-nsISupportsPRUint64.prototype.TYPE_STRING=0;
-nsISupportsPRUint64.prototype.TYPE_PRBOOL=0;
-nsISupportsPRUint64.prototype.TYPE_PRUINT8=0;
-nsISupportsPRUint64.prototype.TYPE_PRUINT16=0;
-nsISupportsPRUint64.prototype.TYPE_PRUINT32=0;
-nsISupportsPRUint64.prototype.TYPE_PRUINT64=0;
-nsISupportsPRUint64.prototype.TYPE_PRTIME=0;
-nsISupportsPRUint64.prototype.TYPE_CHAR=0;
-nsISupportsPRUint64.prototype.TYPE_PRINT16=0;
-nsISupportsPRUint64.prototype.TYPE_PRINT32=0;
-nsISupportsPRUint64.prototype.TYPE_PRINT64=0;
-nsISupportsPRUint64.prototype.TYPE_FLOAT=0;
-nsISupportsPRUint64.prototype.TYPE_DOUBLE=0;
-nsISupportsPRUint64.prototype.TYPE_VOID=0;
-nsISupportsPRUint64.prototype.TYPE_INTERFACE_POINTER=0;
-nsIClipboard.prototype= new Array();
-function nsIClipboard(){};
-nsIClipboard.prototype.kSelectionClipboard="";
-nsIClipboard.prototype.kGlobalClipboard=0;
-inIDOMUtils.prototype= new Array();
-function inIDOMUtils(){};
-nsIXmlRpcFault.prototype= new Array();
-function nsIXmlRpcFault(){};
-nsIDirIndexListener.prototype= new Array();
-function nsIDirIndexListener(){};
-nsITransactionListener.prototype= new Array();
-function nsITransactionListener(){};
-nsICookiePermission.prototype= new Array();
-function nsICookiePermission(){};
-nsICookiePermission.prototype.ACCESS_DEFAULT="";
-nsICookiePermission.prototype.ACCESS_ALLOW=0;
-nsICookiePermission.prototype.ACCESS_DENY=0;
-nsICookiePermission.prototype.ACCESS_SESSION=0;
-nsIDOMLSResourceResolver.prototype= new Array();
-function nsIDOMLSResourceResolver(){};
-nsIContentPolicy.prototype= new Array();
-function nsIContentPolicy(){};
-nsIContentPolicy.prototype.TYPE_OTHER=0;
-nsIContentPolicy.prototype.TYPE_SCRIPT=0;
-nsIContentPolicy.prototype.TYPE_IMAGE=0;
-nsIContentPolicy.prototype.TYPE_STYLESHEET=0;
-nsIContentPolicy.prototype.TYPE_OBJECT=0;
-nsIContentPolicy.prototype.TYPE_DOCUMENT=0;
-nsIContentPolicy.prototype.TYPE_SUBDOCUMENT=0;
-nsIContentPolicy.prototype.TYPE_REFRESH=0;
-nsIContentPolicy.prototype.REJECT_REQUEST=0;
-nsIContentPolicy.prototype.REJECT_TYPE=0;
-nsIContentPolicy.prototype.REJECT_SERVER=0;
-nsIContentPolicy.prototype.REJECT_OTHER=0;
-nsIContentPolicy.prototype.ACCEPT=0;
-nsIHelperAppLauncher.prototype= new Array();
-function nsIHelperAppLauncher(){};
-nsIDOMNSEventTarget.prototype= new Array();
-function nsIDOMNSEventTarget(){};
-nsIRelativeFilePref.prototype= new Array();
-function nsIRelativeFilePref(){};
-nsISidebar_MOZILLA_1_8_BRANCH.prototype= new Array();
-function nsISidebar_MOZILLA_1_8_BRANCH(){};
-nsIRDFObserver.prototype= new Array();
-function nsIRDFObserver(){};
-nsIDOMPageTransitionEvent.prototype= new Array();
-function nsIDOMPageTransitionEvent(){};
-nsIDOMPageTransitionEvent.prototype.CAPTURING_PHASE=0;
-nsIDOMPageTransitionEvent.prototype.AT_TARGET=0;
-nsIDOMPageTransitionEvent.prototype.BUBBLING_PHASE=0;
-nsIWebBrowser.prototype= new Array();
-function nsIWebBrowser(){};
-nsIRDFXMLSource.prototype= new Array();
-function nsIRDFXMLSource(){};
-nsIDOMElement.prototype= new Array();
-function nsIDOMElement(){};
-nsIDOMElement.prototype.ELEMENT_NODE=0;
-nsIDOMElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMElement.prototype.TEXT_NODE=0;
-nsIDOMElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMElement.prototype.ENTITY_NODE=0;
-nsIDOMElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMElement.prototype.COMMENT_NODE=0;
-nsIDOMElement.prototype.DOCUMENT_NODE=0;
-nsIDOMElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMElement.prototype.NOTATION_NODE=0;
-nsIRegistryEnumerator.prototype= new Array();
-function nsIRegistryEnumerator(){};
-nsIDOMSVGTextElement.prototype= new Array();
-function nsIDOMSVGTextElement(){};
-nsIDOMSVGTextElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGTextElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGTextElement.prototype.TEXT_NODE=0;
-nsIDOMSVGTextElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGTextElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGTextElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGTextElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGTextElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGTextElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGTextElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGTextElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGTextElement.prototype.NOTATION_NODE=0;
-nsIDOMSVGTextElement.prototype.LENGTHADJUST_UNKNOWN="";
-nsIDOMSVGTextElement.prototype.LENGTHADJUST_SPACING=0;
-nsIDOMSVGTextElement.prototype.LENGTHADJUST_SPACINGANDGLYPHS=0;
-jsdIFilter.prototype= new Array();
-function jsdIFilter(){};
-jsdIFilter.prototype.FLAG_RESERVED_MASK=0;
-jsdIFilter.prototype.FLAG_ENABLED=0;
-jsdIFilter.prototype.FLAG_PASS=0;
-nsIHTMLEditor.prototype= new Array();
-function nsIHTMLEditor(){};
-nsIHTMLEditor.prototype.eLeft="";
-nsIHTMLEditor.prototype.eCenter=0;
-nsIHTMLEditor.prototype.eRight=0;
-nsIHTMLEditor.prototype.eJustify=0;
-nsISchemaUnionType.prototype= new Array();
-function nsISchemaUnionType(){};
-nsISchemaUnionType.prototype.SCHEMA_TYPE_SIMPLE=0;
-nsISchemaUnionType.prototype.SCHEMA_TYPE_COMPLEX=0;
-nsISchemaUnionType.prototype.SCHEMA_TYPE_PLACEHOLDER=0;
-nsISchemaUnionType.prototype.SIMPLE_TYPE_BUILTIN=0;
-nsISchemaUnionType.prototype.SIMPLE_TYPE_LIST=0;
-nsISchemaUnionType.prototype.SIMPLE_TYPE_UNION=0;
-nsISchemaUnionType.prototype.SIMPLE_TYPE_RESTRICTION=0;
-nsIRDFPropagatableDataSource.prototype= new Array();
-function nsIRDFPropagatableDataSource(){};
-nsIContentViewer.prototype= new Array();
-function nsIContentViewer(){};
-nsIDOMJSWindow.prototype= new Array();
-function nsIDOMJSWindow(){};
-nsIDOMSVGAnimatedLengthList.prototype= new Array();
-function nsIDOMSVGAnimatedLengthList(){};
-nsIStreamConverterService.prototype= new Array();
-function nsIStreamConverterService(){};
-nsIFastLoadReadControl.prototype= new Array();
-function nsIFastLoadReadControl(){};
-nsICommandController.prototype= new Array();
-function nsICommandController(){};
-nsIFileProtocolHandler.prototype= new Array();
-function nsIFileProtocolHandler(){};
-nsIFileProtocolHandler.prototype.URI_STD="";
-nsIFileProtocolHandler.prototype.URI_NORELATIVE=0;
-nsIFileProtocolHandler.prototype.URI_NOAUTH=0;
-nsIFileProtocolHandler.prototype.ALLOWS_PROXY=0;
-nsIFileProtocolHandler.prototype.ALLOWS_PROXY_HTTP=0;
-nsILocalSearchService.prototype= new Array();
-function nsILocalSearchService(){};
-nsIAutoCompleteController.prototype= new Array();
-function nsIAutoCompleteController(){};
-nsIAutoCompleteController.prototype.STATUS_NONE=0;
-nsIAutoCompleteController.prototype.STATUS_SEARCHING=0;
-nsIAutoCompleteController.prototype.STATUS_COMPLETE_NO_MATCH=0;
-nsIAutoCompleteController.prototype.STATUS_COMPLETE_MATCH=0;
-nsIAutoCompleteController.prototype.KEY_UP=0;
-nsIAutoCompleteController.prototype.KEY_DOWN=0;
-nsIAutoCompleteController.prototype.KEY_LEFT=0;
-nsIAutoCompleteController.prototype.KEY_RIGHT=0;
-nsIAutoCompleteController.prototype.KEY_PAGE_UP=0;
-nsIAutoCompleteController.prototype.KEY_PAGE_DOWN=0;
-nsIAutoCompleteController.prototype.KEY_HOME=0;
-nsIAutoCompleteController.prototype.KEY_END=0;
-nsIWSDLLoader.prototype= new Array();
-function nsIWSDLLoader(){};
-nsIPrefBranch.prototype= new Array();
-function nsIPrefBranch(){};
-nsIPrefBranch.prototype.PREF_INVALID="";
-nsIPrefBranch.prototype.PREF_STRING=0;
-nsIPrefBranch.prototype.PREF_INT=0;
-nsIPrefBranch.prototype.PREF_BOOL=0;
-nsIDOMPlugin.prototype= new Array();
-function nsIDOMPlugin(){};
-nsISelectionListener.prototype= new Array();
-function nsISelectionListener(){};
-nsISelectionListener.prototype.NO_REASON="";
-nsISelectionListener.prototype.DRAG_REASON=0;
-nsISelectionListener.prototype.MOUSEDOWN_REASON=0;
-nsISelectionListener.prototype.MOUSEUP_REASON=0;
-nsISelectionListener.prototype.KEYPRESS_REASON=0;
-nsISelectionListener.prototype.SELECTALL_REASON=0;
-nsIMIMEInputStream.prototype= new Array();
-function nsIMIMEInputStream(){};
-nsIWindowDataSource.prototype= new Array();
-function nsIWindowDataSource(){};
-nsIXMLContentBuilder.prototype= new Array();
-function nsIXMLContentBuilder(){};
-nsIStreamLoaderObserver.prototype= new Array();
-function nsIStreamLoaderObserver(){};
-nsIDOMHTMLElement.prototype= new Array();
-function nsIDOMHTMLElement(){};
-nsIDOMHTMLElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLElement.prototype.NOTATION_NODE=0;
-nsIXTFElementFactory.prototype= new Array();
-function nsIXTFElementFactory(){};
-nsIPasswordManagerInternal.prototype= new Array();
-function nsIPasswordManagerInternal(){};
-nsIStyleSheetService.prototype= new Array();
-function nsIStyleSheetService(){};
-nsIStyleSheetService.prototype.AGENT_SHEET="";
-nsIStyleSheetService.prototype.USER_SHEET=0;
-nsISOAPCall.prototype= new Array();
-function nsISOAPCall(){};
-nsISOAPCall.prototype.VERSION_1_1="";
-nsISOAPCall.prototype.VERSION_1_2=0;
-nsISOAPCall.prototype.VERSION_UNKNOWN=0;
-nsICharsetConverterManager.prototype= new Array();
-function nsICharsetConverterManager(){};
-nsIDOMSVGTextPositioningElement.prototype= new Array();
-function nsIDOMSVGTextPositioningElement(){};
-nsIDOMSVGTextPositioningElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGTextPositioningElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGTextPositioningElement.prototype.TEXT_NODE=0;
-nsIDOMSVGTextPositioningElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGTextPositioningElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGTextPositioningElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGTextPositioningElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGTextPositioningElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGTextPositioningElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGTextPositioningElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGTextPositioningElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGTextPositioningElement.prototype.NOTATION_NODE=0;
-nsIDOMSVGTextPositioningElement.prototype.LENGTHADJUST_UNKNOWN="";
-nsIDOMSVGTextPositioningElement.prototype.LENGTHADJUST_SPACING=0;
-nsIDOMSVGTextPositioningElement.prototype.LENGTHADJUST_SPACINGANDGLYPHS=0;
-nsIBrowserHandler.prototype= new Array();
-function nsIBrowserHandler(){};
-nsIDOMNSDocument.prototype= new Array();
-function nsIDOMNSDocument(){};
-nsIInputStreamTee.prototype= new Array();
-function nsIInputStreamTee(){};
-nsIDOMSVGTitleElement.prototype= new Array();
-function nsIDOMSVGTitleElement(){};
-nsIDOMSVGTitleElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGTitleElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGTitleElement.prototype.TEXT_NODE=0;
-nsIDOMSVGTitleElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGTitleElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGTitleElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGTitleElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGTitleElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGTitleElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGTitleElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGTitleElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGTitleElement.prototype.NOTATION_NODE=0;
-nsIXmlRpcClientListener.prototype= new Array();
-function nsIXmlRpcClientListener(){};
-nsIFontEnumerator.prototype= new Array();
-function nsIFontEnumerator(){};
-nsISound.prototype= new Array();
-function nsISound(){};
-nsIAppShellService.prototype= new Array();
-function nsIAppShellService(){};
-nsIAppShellService.prototype.SIZE_TO_CONTENT=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothAbs.prototype= new Array();
-function nsIDOMSVGPathSegCurvetoCubicSmoothAbs(){};
-nsIDOMSVGPathSegCurvetoCubicSmoothAbs.prototype.PATHSEG_UNKNOWN="";
-nsIDOMSVGPathSegCurvetoCubicSmoothAbs.prototype.PATHSEG_CLOSEPATH=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothAbs.prototype.PATHSEG_MOVETO_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothAbs.prototype.PATHSEG_MOVETO_REL=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothAbs.prototype.PATHSEG_LINETO_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothAbs.prototype.PATHSEG_LINETO_REL=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothAbs.prototype.PATHSEG_CURVETO_CUBIC_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothAbs.prototype.PATHSEG_CURVETO_CUBIC_REL=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothAbs.prototype.PATHSEG_CURVETO_QUADRATIC_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothAbs.prototype.PATHSEG_CURVETO_QUADRATIC_REL=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothAbs.prototype.PATHSEG_ARC_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothAbs.prototype.PATHSEG_ARC_REL=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothAbs.prototype.PATHSEG_LINETO_HORIZONTAL_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothAbs.prototype.PATHSEG_LINETO_HORIZONTAL_REL=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothAbs.prototype.PATHSEG_LINETO_VERTICAL_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothAbs.prototype.PATHSEG_LINETO_VERTICAL_REL=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothAbs.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothAbs.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_REL=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothAbs.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothAbs.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL=0;
-nsIDOMDOMConfiguration.prototype= new Array();
-function nsIDOMDOMConfiguration(){};
-nsIPasswordManager.prototype= new Array();
-function nsIPasswordManager(){};
-nsIPKCS11Module.prototype= new Array();
-function nsIPKCS11Module(){};
-nsIFormatConverter.prototype= new Array();
-function nsIFormatConverter(){};
-nsIChannel.prototype= new Array();
-function nsIChannel(){};
-nsIChannel.prototype.LOAD_NORMAL="";
-nsIChannel.prototype.LOAD_BACKGROUND=0;
-nsIChannel.prototype.INHIBIT_CACHING=0;
-nsIChannel.prototype.INHIBIT_PERSISTENT_CACHING=0;
-nsIChannel.prototype.LOAD_BYPASS_CACHE=0;
-nsIChannel.prototype.LOAD_FROM_CACHE=0;
-nsIChannel.prototype.VALIDATE_ALWAYS=0;
-nsIChannel.prototype.VALIDATE_NEVER=0;
-nsIChannel.prototype.VALIDATE_ONCE_PER_SESSION=0;
-nsIChannel.prototype.LOAD_DOCUMENT_URI=0;
-nsIChannel.prototype.LOAD_RETARGETED_DOCUMENT_URI=0;
-nsIChannel.prototype.LOAD_REPLACE=0;
-nsIChannel.prototype.LOAD_INITIAL_DOCUMENT_URI=0;
-nsIChannel.prototype.LOAD_TARGETED=0;
-nsIChannel.prototype.LOAD_CALL_CONTENT_SNIFFERS=0;
-nsIDOMParser.prototype= new Array();
-function nsIDOMParser(){};
-imgILoader.prototype= new Array();
-function imgILoader(){};
-nsIDOMSVGAnimatedTransformList.prototype= new Array();
-function nsIDOMSVGAnimatedTransformList(){};
-nsIBrowserGlue.prototype= new Array();
-function nsIBrowserGlue(){};
-nsIExternalProtocolHandler.prototype= new Array();
-function nsIExternalProtocolHandler(){};
-nsIExternalProtocolHandler.prototype.URI_STD="";
-nsIExternalProtocolHandler.prototype.URI_NORELATIVE=0;
-nsIExternalProtocolHandler.prototype.URI_NOAUTH=0;
-nsIExternalProtocolHandler.prototype.ALLOWS_PROXY=0;
-nsIExternalProtocolHandler.prototype.ALLOWS_PROXY_HTTP=0;
-nsIXTFElement.prototype= new Array();
-function nsIXTFElement(){};
-nsIXTFElement.prototype.ELEMENT_TYPE_GENERIC_ELEMENT="";
-nsIXTFElement.prototype.ELEMENT_TYPE_SVG_VISUAL=0;
-nsIXTFElement.prototype.ELEMENT_TYPE_XML_VISUAL=0;
-nsIXTFElement.prototype.ELEMENT_TYPE_XUL_VISUAL=0;
-nsIXTFElement.prototype.ELEMENT_TYPE_BINDABLE=0;
-nsIXTFElement.prototype.NOTIFY_WILL_CHANGE_DOCUMENT=0;
-nsIXTFElement.prototype.NOTIFY_DOCUMENT_CHANGED=0;
-nsIXTFElement.prototype.NOTIFY_WILL_CHANGE_PARENT=0;
-nsIXTFElement.prototype.NOTIFY_PARENT_CHANGED=0;
-nsIXTFElement.prototype.NOTIFY_WILL_INSERT_CHILD=0;
-nsIXTFElement.prototype.NOTIFY_CHILD_INSERTED=0;
-nsIXTFElement.prototype.NOTIFY_WILL_APPEND_CHILD=0;
-nsIXTFElement.prototype.NOTIFY_CHILD_APPENDED=0;
-nsIXTFElement.prototype.NOTIFY_WILL_REMOVE_CHILD=0;
-nsIXTFElement.prototype.NOTIFY_CHILD_REMOVED=0;
-nsIXTFElement.prototype.NOTIFY_WILL_SET_ATTRIBUTE=0;
-nsIXTFElement.prototype.NOTIFY_ATTRIBUTE_SET=0;
-nsIXTFElement.prototype.NOTIFY_WILL_REMOVE_ATTRIBUTE=0;
-nsIXTFElement.prototype.NOTIFY_ATTRIBUTE_REMOVED=0;
-nsIXTFElement.prototype.NOTIFY_BEGIN_ADDING_CHILDREN=0;
-nsIXTFElement.prototype.NOTIFY_DONE_ADDING_CHILDREN=0;
-nsIXTFElement.prototype.NOTIFY_HANDLE_DEFAULT=0;
-nsIFilePicker.prototype= new Array();
-function nsIFilePicker(){};
-nsIFilePicker.prototype.modeOpen="";
-nsIFilePicker.prototype.modeSave=0;
-nsIFilePicker.prototype.modeGetFolder=0;
-nsIFilePicker.prototype.modeOpenMultiple=0;
-nsIFilePicker.prototype.returnOK="";
-nsIFilePicker.prototype.returnCancel=0;
-nsIFilePicker.prototype.returnReplace=0;
-nsIFilePicker.prototype.filterAll=0;
-nsIFilePicker.prototype.filterHTML=0;
-nsIFilePicker.prototype.filterText=0;
-nsIFilePicker.prototype.filterImages=0;
-nsIFilePicker.prototype.filterXML=0;
-nsIFilePicker.prototype.filterXUL=0;
-nsIFilePicker.prototype.filterApps=0;
-nsIPropertyElement.prototype= new Array();
-function nsIPropertyElement(){};
-nsIStandardURL.prototype= new Array();
-function nsIStandardURL(){};
-nsIStandardURL.prototype.URLTYPE_STANDARD=0;
-nsIStandardURL.prototype.URLTYPE_AUTHORITY=0;
-nsIStandardURL.prototype.URLTYPE_NO_AUTHORITY=0;
-nsIRDFPurgeableDataSource.prototype= new Array();
-function nsIRDFPurgeableDataSource(){};
-nsIExtendedExpatSink.prototype= new Array();
-function nsIExtendedExpatSink(){};
-nsISeekableStream.prototype= new Array();
-function nsISeekableStream(){};
-nsISeekableStream.prototype.NS_SEEK_SET="";
-nsISeekableStream.prototype.NS_SEEK_CUR=0;
-nsISeekableStream.prototype.NS_SEEK_END=0;
-nsISessionStartup.prototype= new Array();
-function nsISessionStartup(){};
-nsIWindowMediator.prototype= new Array();
-function nsIWindowMediator(){};
-nsIWindowMediator.prototype.zLevelTop=0;
-nsIWindowMediator.prototype.zLevelBottom=0;
-nsIWindowMediator.prototype.zLevelBelow=0;
-nsIDocumentLoaderFactory.prototype= new Array();
-function nsIDocumentLoaderFactory(){};
-nsIStreamListenerTee.prototype= new Array();
-function nsIStreamListenerTee(){};
-nsIDOMNSCSS2Properties.prototype= new Array();
-function nsIDOMNSCSS2Properties(){};
-nsINSSCertCache.prototype= new Array();
-function nsINSSCertCache(){};
-nsISyncStreamListener.prototype= new Array();
-function nsISyncStreamListener(){};
-nsIDOMLSParserFilter.prototype= new Array();
-function nsIDOMLSParserFilter(){};
-nsIDOMLSParserFilter.prototype.FILTER_ACCEPT=0;
-nsIDOMLSParserFilter.prototype.FILTER_REJECT=0;
-nsIDOMLSParserFilter.prototype.FILTER_SKIP=0;
-nsIDOMLSParserFilter.prototype.FILTER_INTERRUPT=0;
-nsIPKIParamBlock.prototype= new Array();
-function nsIPKIParamBlock(){};
-nsIScriptError.prototype= new Array();
-function nsIScriptError(){};
-nsIScriptError.prototype.errorFlag="";
-nsIScriptError.prototype.warningFlag=0;
-nsIScriptError.prototype.exceptionFlag=0;
-nsIScriptError.prototype.strictFlag=0;
-nsIXULWindow.prototype= new Array();
-function nsIXULWindow(){};
-nsIXULWindow.prototype.lowestZ="";
-nsIXULWindow.prototype.loweredZ=0;
-nsIXULWindow.prototype.normalZ=0;
-nsIXULWindow.prototype.raisedZ=0;
-nsIXULWindow.prototype.highestZ=0;
-nsIEventTarget.prototype= new Array();
-function nsIEventTarget(){};
-nsIURLParser.prototype= new Array();
-function nsIURLParser(){};
-mozISpellI18NManager.prototype= new Array();
-function mozISpellI18NManager(){};
-nsIX509CertValidity.prototype= new Array();
-function nsIX509CertValidity(){};
-nsISchemaFacet.prototype= new Array();
-function nsISchemaFacet(){};
-nsISchemaFacet.prototype.FACET_TYPE_LENGTH=0;
-nsISchemaFacet.prototype.FACET_TYPE_MINLENGTH=0;
-nsISchemaFacet.prototype.FACET_TYPE_MAXLENGTH=0;
-nsISchemaFacet.prototype.FACET_TYPE_PATTERN=0;
-nsISchemaFacet.prototype.FACET_TYPE_ENUMERATION=0;
-nsISchemaFacet.prototype.FACET_TYPE_WHITESPACE=0;
-nsISchemaFacet.prototype.FACET_TYPE_MAXINCLUSIVE=0;
-nsISchemaFacet.prototype.FACET_TYPE_MININCLUSIVE=0;
-nsISchemaFacet.prototype.FACET_TYPE_MAXEXCLUSIVE=0;
-nsISchemaFacet.prototype.FACET_TYPE_MINEXCLUSIVE=0;
-nsISchemaFacet.prototype.FACET_TYPE_TOTALDIGITS=0;
-nsISchemaFacet.prototype.FACET_TYPE_FRACTIONDIGITS=0;
-nsISchemaFacet.prototype.WHITESPACE_PRESERVE=0;
-nsISchemaFacet.prototype.WHITESPACE_REPLACE=0;
-nsISchemaFacet.prototype.WHITESPACE_COLLAPSE=0;
-nsIModule.prototype= new Array();
-function nsIModule(){};
-nsINativeAppSupport.prototype= new Array();
-function nsINativeAppSupport(){};
-nsIDOMSVGMetadataElement.prototype= new Array();
-function nsIDOMSVGMetadataElement(){};
-nsIDOMSVGMetadataElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGMetadataElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGMetadataElement.prototype.TEXT_NODE=0;
-nsIDOMSVGMetadataElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGMetadataElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGMetadataElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGMetadataElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGMetadataElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGMetadataElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGMetadataElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGMetadataElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGMetadataElement.prototype.NOTATION_NODE=0;
-nsIDOMMimeTypeArray.prototype= new Array();
-function nsIDOMMimeTypeArray(){};
-nsIComponentManagerObsolete.prototype= new Array();
-function nsIComponentManagerObsolete(){};
-nsIComponentManagerObsolete.prototype.NS_Startup="";
-nsIComponentManagerObsolete.prototype.NS_Script=0;
-nsIComponentManagerObsolete.prototype.NS_Timer=0;
-nsIComponentManagerObsolete.prototype.NS_Shutdown=0;
-nsIDOMHTMLLIElement.prototype= new Array();
-function nsIDOMHTMLLIElement(){};
-nsIDOMHTMLLIElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLLIElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLLIElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLLIElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLLIElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLLIElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLLIElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLLIElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLLIElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLLIElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLLIElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLLIElement.prototype.NOTATION_NODE=0;
-nsIWindowWatcher.prototype= new Array();
-function nsIWindowWatcher(){};
-nsIASN1Object.prototype= new Array();
-function nsIASN1Object(){};
-nsIASN1Object.prototype.ASN1_END_CONTENTS="";
-nsIASN1Object.prototype.ASN1_BOOLEAN=0;
-nsIASN1Object.prototype.ASN1_INTEGER=0;
-nsIASN1Object.prototype.ASN1_BIT_STRING=0;
-nsIASN1Object.prototype.ASN1_OCTET_STRING=0;
-nsIASN1Object.prototype.ASN1_NULL=0;
-nsIASN1Object.prototype.ASN1_OBJECT_ID=0;
-nsIASN1Object.prototype.ASN1_ENUMERATED=0;
-nsIASN1Object.prototype.ASN1_UTF8_STRING=0;
-nsIASN1Object.prototype.ASN1_SEQUENCE=0;
-nsIASN1Object.prototype.ASN1_SET=0;
-nsIASN1Object.prototype.ASN1_PRINTABLE_STRING=0;
-nsIASN1Object.prototype.ASN1_T61_STRING=0;
-nsIASN1Object.prototype.ASN1_IA5_STRING=0;
-nsIASN1Object.prototype.ASN1_UTC_TIME=0;
-nsIASN1Object.prototype.ASN1_GEN_TIME=0;
-nsIASN1Object.prototype.ASN1_VISIBLE_STRING=0;
-nsIASN1Object.prototype.ASN1_UNIVERSAL_STRING=0;
-nsIASN1Object.prototype.ASN1_BMP_STRING=0;
-nsIASN1Object.prototype.ASN1_HIGH_TAG_NUMBER=0;
-nsIASN1Object.prototype.ASN1_CONTEXT_SPECIFIC=0;
-nsIASN1Object.prototype.ASN1_APPLICATION=0;
-nsIASN1Object.prototype.ASN1_PRIVATE=0;
-nsIPrintProgress.prototype= new Array();
-function nsIPrintProgress(){};
-nsIPrintProgress.prototype.STATE_START=0;
-nsIPrintProgress.prototype.STATE_REDIRECTING=0;
-nsIPrintProgress.prototype.STATE_TRANSFERRING=0;
-nsIPrintProgress.prototype.STATE_NEGOTIATING=0;
-nsIPrintProgress.prototype.STATE_STOP=0;
-nsIPrintProgress.prototype.STATE_IS_REQUEST=0;
-nsIPrintProgress.prototype.STATE_IS_DOCUMENT=0;
-nsIPrintProgress.prototype.STATE_IS_NETWORK=0;
-nsIPrintProgress.prototype.STATE_IS_WINDOW=0;
-nsIPrintProgress.prototype.STATE_RESTORING=0;
-nsIPrintProgress.prototype.STATE_IS_INSECURE=0;
-nsIPrintProgress.prototype.STATE_IS_BROKEN=0;
-nsIPrintProgress.prototype.STATE_IS_SECURE=0;
-nsIPrintProgress.prototype.STATE_SECURE_HIGH=0;
-nsIPrintProgress.prototype.STATE_SECURE_MED=0;
-nsIPrintProgress.prototype.STATE_SECURE_LOW=0;
-nsIXPTLoaderSink.prototype= new Array();
-function nsIXPTLoaderSink(){};
-nsIWindowsShellService.prototype= new Array();
-function nsIWindowsShellService(){};
-nsIWindowsShellService.prototype.BACKGROUND_TILE=0;
-nsIWindowsShellService.prototype.BACKGROUND_STRETCH=0;
-nsIWindowsShellService.prototype.BACKGROUND_CENTER=0;
-nsIWindowsShellService.prototype.BACKGROUND_FILL=0;
-nsIWindowsShellService.prototype.APPLICATION_MAIL="";
-nsIWindowsShellService.prototype.APPLICATION_NEWS=0;
-nsIDOMMouseEvent.prototype= new Array();
-function nsIDOMMouseEvent(){};
-nsIDOMMouseEvent.prototype.CAPTURING_PHASE=0;
-nsIDOMMouseEvent.prototype.AT_TARGET=0;
-nsIDOMMouseEvent.prototype.BUBBLING_PHASE=0;
-nsISupportsPRInt32.prototype= new Array();
-function nsISupportsPRInt32(){};
-nsISupportsPRInt32.prototype.TYPE_ID=0;
-nsISupportsPRInt32.prototype.TYPE_CSTRING=0;
-nsISupportsPRInt32.prototype.TYPE_STRING=0;
-nsISupportsPRInt32.prototype.TYPE_PRBOOL=0;
-nsISupportsPRInt32.prototype.TYPE_PRUINT8=0;
-nsISupportsPRInt32.prototype.TYPE_PRUINT16=0;
-nsISupportsPRInt32.prototype.TYPE_PRUINT32=0;
-nsISupportsPRInt32.prototype.TYPE_PRUINT64=0;
-nsISupportsPRInt32.prototype.TYPE_PRTIME=0;
-nsISupportsPRInt32.prototype.TYPE_CHAR=0;
-nsISupportsPRInt32.prototype.TYPE_PRINT16=0;
-nsISupportsPRInt32.prototype.TYPE_PRINT32=0;
-nsISupportsPRInt32.prototype.TYPE_PRINT64=0;
-nsISupportsPRInt32.prototype.TYPE_FLOAT=0;
-nsISupportsPRInt32.prototype.TYPE_DOUBLE=0;
-nsISupportsPRInt32.prototype.TYPE_VOID=0;
-nsISupportsPRInt32.prototype.TYPE_INTERFACE_POINTER=0;
-nsIApplicationUpdateService.prototype= new Array();
-function nsIApplicationUpdateService(){};
-nsIInterfaceRequestor.prototype= new Array();
-function nsIInterfaceRequestor(){};
-nsIDOMLSProgressEvent.prototype= new Array();
-function nsIDOMLSProgressEvent(){};
-nsIDOMLSProgressEvent.prototype.CAPTURING_PHASE=0;
-nsIDOMLSProgressEvent.prototype.AT_TARGET=0;
-nsIDOMLSProgressEvent.prototype.BUBBLING_PHASE=0;
-nsITransactionManager.prototype= new Array();
-function nsITransactionManager(){};
-nsIDOMHTMLOptGroupElement.prototype= new Array();
-function nsIDOMHTMLOptGroupElement(){};
-nsIDOMHTMLOptGroupElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLOptGroupElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLOptGroupElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLOptGroupElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLOptGroupElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLOptGroupElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLOptGroupElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLOptGroupElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLOptGroupElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLOptGroupElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLOptGroupElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLOptGroupElement.prototype.NOTATION_NODE=0;
-nsICommandManager.prototype= new Array();
-function nsICommandManager(){};
-nsIIDNService.prototype= new Array();
-function nsIIDNService(){};
-nsIDOMHTMLTitleElement.prototype= new Array();
-function nsIDOMHTMLTitleElement(){};
-nsIDOMHTMLTitleElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLTitleElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLTitleElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLTitleElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLTitleElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLTitleElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLTitleElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLTitleElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLTitleElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLTitleElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLTitleElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLTitleElement.prototype.NOTATION_NODE=0;
-nsITimelineService.prototype= new Array();
-function nsITimelineService(){};
-nsIUnicharOutputStream.prototype= new Array();
-function nsIUnicharOutputStream(){};
-nsIStackFrame.prototype= new Array();
-function nsIStackFrame(){};
-nsIDataType.prototype= new Array();
-function nsIDataType(){};
-nsIDataType.prototype.VTYPE_INT8="";
-nsIDataType.prototype.VTYPE_INT16=0;
-nsIDataType.prototype.VTYPE_INT32=0;
-nsIDataType.prototype.VTYPE_INT64=0;
-nsIDataType.prototype.VTYPE_UINT8=0;
-nsIDataType.prototype.VTYPE_UINT16=0;
-nsIDataType.prototype.VTYPE_UINT32=0;
-nsIDataType.prototype.VTYPE_UINT64=0;
-nsIDataType.prototype.VTYPE_FLOAT=0;
-nsIDataType.prototype.VTYPE_DOUBLE=0;
-nsIDataType.prototype.VTYPE_BOOL=0;
-nsIDataType.prototype.VTYPE_CHAR=0;
-nsIDataType.prototype.VTYPE_WCHAR=0;
-nsIDataType.prototype.VTYPE_VOID=0;
-nsIDataType.prototype.VTYPE_ID=0;
-nsIDataType.prototype.VTYPE_DOMSTRING=0;
-nsIDataType.prototype.VTYPE_CHAR_STR=0;
-nsIDataType.prototype.VTYPE_WCHAR_STR=0;
-nsIDataType.prototype.VTYPE_INTERFACE=0;
-nsIDataType.prototype.VTYPE_INTERFACE_IS=0;
-nsIDataType.prototype.VTYPE_ARRAY=0;
-nsIDataType.prototype.VTYPE_STRING_SIZE_IS=0;
-nsIDataType.prototype.VTYPE_WSTRING_SIZE_IS=0;
-nsIDataType.prototype.VTYPE_UTF8STRING=0;
-nsIDataType.prototype.VTYPE_CSTRING=0;
-nsIDataType.prototype.VTYPE_ASTRING=0;
-nsIDataType.prototype.VTYPE_EMPTY_ARRAY=0;
-nsIDataType.prototype.VTYPE_EMPTY=0;
-nsIHttpActivityObserver.prototype= new Array();
-function nsIHttpActivityObserver(){};
-nsIHttpActivityObserver.prototype.ACTIVITY_TYPE_SOCKET_TRANSPORT=0;
-nsIHttpActivityObserver.prototype.ACTIVITY_TYPE_HTTP_TRANSACTION=0;
-nsIHttpActivityObserver.prototype.ACTIVITY_SUBTYPE_REQUEST_HEADER=0;
-nsIHttpActivityObserver.prototype.ACTIVITY_SUBTYPE_REQUEST_BODY_SENT=0;
-nsIHttpActivityObserver.prototype.ACTIVITY_SUBTYPE_RESPONSE_START=0;
-nsIHttpActivityObserver.prototype.ACTIVITY_SUBTYPE_RESPONSE_HEADER=0;
-nsIHttpActivityObserver.prototype.ACTIVITY_SUBTYPE_RESPONSE_COMPLETE=0;
-nsIHttpActivityObserver.prototype.ACTIVITY_SUBTYPE_TRANSACTION_CLOSE=0;
-nsIDOMCSSStyleSheet.prototype= new Array();
-function nsIDOMCSSStyleSheet(){};
-nsIDOMCryptoDialogs.prototype= new Array();
-function nsIDOMCryptoDialogs(){};
-nsIDOMSVGGradientElement.prototype= new Array();
-function nsIDOMSVGGradientElement(){};
-nsIDOMSVGGradientElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGGradientElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGGradientElement.prototype.TEXT_NODE=0;
-nsIDOMSVGGradientElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGGradientElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGGradientElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGGradientElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGGradientElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGGradientElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGGradientElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGGradientElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGGradientElement.prototype.NOTATION_NODE=0;
-nsIDOMSVGGradientElement.prototype.SVG_SPREADMETHOD_UNKNOWN="";
-nsIDOMSVGGradientElement.prototype.SVG_SPREADMETHOD_PAD=0;
-nsIDOMSVGGradientElement.prototype.SVG_SPREADMETHOD_REFLECT=0;
-nsIDOMSVGGradientElement.prototype.SVG_SPREADMETHOD_REPEAT=0;
-nsIDOMSVGGradientElement.prototype.SVG_GRUNITS_UNKNOWN="";
-nsIDOMSVGGradientElement.prototype.SVG_GRUNITS_OBJECTBOUNDINGBOX=0;
-nsIDOMSVGGradientElement.prototype.SVG_GRUNITS_USERSPACEONUSE=0;
-nsICookieManager.prototype= new Array();
-function nsICookieManager(){};
-nsIConverterOutputStream.prototype= new Array();
-function nsIConverterOutputStream(){};
-nsIInputStreamPump.prototype= new Array();
-function nsIInputStreamPump(){};
-nsIInputStreamPump.prototype.LOAD_NORMAL="";
-nsIInputStreamPump.prototype.LOAD_BACKGROUND=0;
-nsIInputStreamPump.prototype.INHIBIT_CACHING=0;
-nsIInputStreamPump.prototype.INHIBIT_PERSISTENT_CACHING=0;
-nsIInputStreamPump.prototype.LOAD_BYPASS_CACHE=0;
-nsIInputStreamPump.prototype.LOAD_FROM_CACHE=0;
-nsIInputStreamPump.prototype.VALIDATE_ALWAYS=0;
-nsIInputStreamPump.prototype.VALIDATE_NEVER=0;
-nsIInputStreamPump.prototype.VALIDATE_ONCE_PER_SESSION=0;
-nsIDOMLSParser.prototype= new Array();
-function nsIDOMLSParser(){};
-nsIDOMLSParser.prototype.ACTION_APPEND_AS_CHILDREN=0;
-nsIDOMLSParser.prototype.ACTION_REPLACE_CHILDREN=0;
-nsIDOMLSParser.prototype.ACTION_INSERT_BEFORE=0;
-nsIDOMLSParser.prototype.ACTION_INSERT_AFTER=0;
-nsIDOMLSParser.prototype.ACTION_REPLACE=0;
-nsIDOMCSSStyleDeclaration.prototype= new Array();
-function nsIDOMCSSStyleDeclaration(){};
-nsIFlavorDataProvider.prototype= new Array();
-function nsIFlavorDataProvider(){};
-nsISOAPHeaderBlock.prototype= new Array();
-function nsISOAPHeaderBlock(){};
-nsIDOMHTMLTableSectionElement.prototype= new Array();
-function nsIDOMHTMLTableSectionElement(){};
-nsIDOMHTMLTableSectionElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLTableSectionElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLTableSectionElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLTableSectionElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLTableSectionElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLTableSectionElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLTableSectionElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLTableSectionElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLTableSectionElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLTableSectionElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLTableSectionElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLTableSectionElement.prototype.NOTATION_NODE=0;
-nsIDOMNode.prototype= new Array();
-function nsIDOMNode(){};
-nsIDOMNode.prototype.ELEMENT_NODE=0;
-nsIDOMNode.prototype.ATTRIBUTE_NODE=0;
-nsIDOMNode.prototype.TEXT_NODE=0;
-nsIDOMNode.prototype.CDATA_SECTION_NODE=0;
-nsIDOMNode.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMNode.prototype.ENTITY_NODE=0;
-nsIDOMNode.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMNode.prototype.COMMENT_NODE=0;
-nsIDOMNode.prototype.DOCUMENT_NODE=0;
-nsIDOMNode.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMNode.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMNode.prototype.NOTATION_NODE=0;
-imgICache.prototype= new Array();
-function imgICache(){};
-nsIDOMSVGZoomAndPan.prototype= new Array();
-function nsIDOMSVGZoomAndPan(){};
-nsIDOMSVGZoomAndPan.prototype.SVG_ZOOMANDPAN_UNKNOWN="";
-nsIDOMSVGZoomAndPan.prototype.SVG_ZOOMANDPAN_DISABLE=0;
-nsIDOMSVGZoomAndPan.prototype.SVG_ZOOMANDPAN_MAGNIFY=0;
-nsIDOMStorageWindow.prototype= new Array();
-function nsIDOMStorageWindow(){};
-nsISupportsPRUint8.prototype= new Array();
-function nsISupportsPRUint8(){};
-nsISupportsPRUint8.prototype.TYPE_ID=0;
-nsISupportsPRUint8.prototype.TYPE_CSTRING=0;
-nsISupportsPRUint8.prototype.TYPE_STRING=0;
-nsISupportsPRUint8.prototype.TYPE_PRBOOL=0;
-nsISupportsPRUint8.prototype.TYPE_PRUINT8=0;
-nsISupportsPRUint8.prototype.TYPE_PRUINT16=0;
-nsISupportsPRUint8.prototype.TYPE_PRUINT32=0;
-nsISupportsPRUint8.prototype.TYPE_PRUINT64=0;
-nsISupportsPRUint8.prototype.TYPE_PRTIME=0;
-nsISupportsPRUint8.prototype.TYPE_CHAR=0;
-nsISupportsPRUint8.prototype.TYPE_PRINT16=0;
-nsISupportsPRUint8.prototype.TYPE_PRINT32=0;
-nsISupportsPRUint8.prototype.TYPE_PRINT64=0;
-nsISupportsPRUint8.prototype.TYPE_FLOAT=0;
-nsISupportsPRUint8.prototype.TYPE_DOUBLE=0;
-nsISupportsPRUint8.prototype.TYPE_VOID=0;
-nsISupportsPRUint8.prototype.TYPE_INTERFACE_POINTER=0;
-nsIDOMSVGStyleElement.prototype= new Array();
-function nsIDOMSVGStyleElement(){};
-nsIDOMSVGStyleElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGStyleElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGStyleElement.prototype.TEXT_NODE=0;
-nsIDOMSVGStyleElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGStyleElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGStyleElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGStyleElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGStyleElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGStyleElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGStyleElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGStyleElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGStyleElement.prototype.NOTATION_NODE=0;
-nsIURILoader.prototype= new Array();
-function nsIURILoader(){};
-nsICommandLineHandler.prototype= new Array();
-function nsICommandLineHandler(){};
-nsIDocNavStartProgressListener.prototype= new Array();
-function nsIDocNavStartProgressListener(){};
-nsIRegistryNode.prototype= new Array();
-function nsIRegistryNode(){};
-nsITransferable.prototype= new Array();
-function nsITransferable(){};
-nsITransferable.prototype.kFlavorHasDataProvider="";
-nsIEditingSession.prototype= new Array();
-function nsIEditingSession(){};
-nsIEditingSession.prototype.eEditorOK="";
-nsIEditingSession.prototype.eEditorCreationInProgress=0;
-nsIEditingSession.prototype.eEditorErrorCantEditMimeType=0;
-nsIEditingSession.prototype.eEditorErrorFileNotFound=0;
-nsIEditingSession.prototype.eEditorErrorCantEditFramesets=0;
-nsIEditingSession.prototype.eEditorErrorUnknown=0;
-nsIAccessibilityService.prototype= new Array();
-function nsIAccessibilityService(){};
-nsIUpdatePatch.prototype= new Array();
-function nsIUpdatePatch(){};
-nsITransportEventSink.prototype= new Array();
-function nsITransportEventSink(){};
-nsIDOMCustomEvent.prototype= new Array();
-function nsIDOMCustomEvent(){};
-nsIDOMCustomEvent.prototype.CAPTURING_PHASE=0;
-nsIDOMCustomEvent.prototype.AT_TARGET=0;
-nsIDOMCustomEvent.prototype.BUBBLING_PHASE=0;
-nsISupportsPRUint16.prototype= new Array();
-function nsISupportsPRUint16(){};
-nsISupportsPRUint16.prototype.TYPE_ID=0;
-nsISupportsPRUint16.prototype.TYPE_CSTRING=0;
-nsISupportsPRUint16.prototype.TYPE_STRING=0;
-nsISupportsPRUint16.prototype.TYPE_PRBOOL=0;
-nsISupportsPRUint16.prototype.TYPE_PRUINT8=0;
-nsISupportsPRUint16.prototype.TYPE_PRUINT16=0;
-nsISupportsPRUint16.prototype.TYPE_PRUINT32=0;
-nsISupportsPRUint16.prototype.TYPE_PRUINT64=0;
-nsISupportsPRUint16.prototype.TYPE_PRTIME=0;
-nsISupportsPRUint16.prototype.TYPE_CHAR=0;
-nsISupportsPRUint16.prototype.TYPE_PRINT16=0;
-nsISupportsPRUint16.prototype.TYPE_PRINT32=0;
-nsISupportsPRUint16.prototype.TYPE_PRINT64=0;
-nsISupportsPRUint16.prototype.TYPE_FLOAT=0;
-nsISupportsPRUint16.prototype.TYPE_DOUBLE=0;
-nsISupportsPRUint16.prototype.TYPE_VOID=0;
-nsISupportsPRUint16.prototype.TYPE_INTERFACE_POINTER=0;
-nsIUrlListManager.prototype= new Array();
-function nsIUrlListManager(){};
-nsIWSDLOperation.prototype= new Array();
-function nsIWSDLOperation(){};
-nsIWebProgressListener2.prototype= new Array();
-function nsIWebProgressListener2(){};
-nsIWebProgressListener2.prototype.STATE_START=0;
-nsIWebProgressListener2.prototype.STATE_REDIRECTING=0;
-nsIWebProgressListener2.prototype.STATE_TRANSFERRING=0;
-nsIWebProgressListener2.prototype.STATE_NEGOTIATING=0;
-nsIWebProgressListener2.prototype.STATE_STOP=0;
-nsIWebProgressListener2.prototype.STATE_IS_REQUEST=0;
-nsIWebProgressListener2.prototype.STATE_IS_DOCUMENT=0;
-nsIWebProgressListener2.prototype.STATE_IS_NETWORK=0;
-nsIWebProgressListener2.prototype.STATE_IS_WINDOW=0;
-nsIWebProgressListener2.prototype.STATE_RESTORING=0;
-nsIWebProgressListener2.prototype.STATE_IS_INSECURE=0;
-nsIWebProgressListener2.prototype.STATE_IS_BROKEN=0;
-nsIWebProgressListener2.prototype.STATE_IS_SECURE=0;
-nsIWebProgressListener2.prototype.STATE_SECURE_HIGH=0;
-nsIWebProgressListener2.prototype.STATE_SECURE_MED=0;
-nsIWebProgressListener2.prototype.STATE_SECURE_LOW=0;
-nsISOAPDecoder.prototype= new Array();
-function nsISOAPDecoder(){};
-nsISAXXMLReader.prototype= new Array();
-function nsISAXXMLReader(){};
-nsIRecyclingAllocator.prototype= new Array();
-function nsIRecyclingAllocator(){};
-nsIWebServiceProxy.prototype= new Array();
-function nsIWebServiceProxy(){};
-nsIRDFXMLSink.prototype= new Array();
-function nsIRDFXMLSink(){};
-nsIDOMHTMLIFrameElement.prototype= new Array();
-function nsIDOMHTMLIFrameElement(){};
-nsIDOMHTMLIFrameElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLIFrameElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLIFrameElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLIFrameElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLIFrameElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLIFrameElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLIFrameElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLIFrameElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLIFrameElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLIFrameElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLIFrameElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLIFrameElement.prototype.NOTATION_NODE=0;
-nsIXULBrowserWindow.prototype= new Array();
-function nsIXULBrowserWindow(){};
-nsIDOMSVGPointList.prototype= new Array();
-function nsIDOMSVGPointList(){};
-nsIUserInfo.prototype= new Array();
-function nsIUserInfo(){};
-nsICacheEntryDescriptor.prototype= new Array();
-function nsICacheEntryDescriptor(){};
-nsIHTMLAbsPosEditor.prototype= new Array();
-function nsIHTMLAbsPosEditor(){};
-nsIXTFVisual.prototype= new Array();
-function nsIXTFVisual(){};
-nsIXTFVisual.prototype.ELEMENT_TYPE_GENERIC_ELEMENT="";
-nsIXTFVisual.prototype.ELEMENT_TYPE_SVG_VISUAL=0;
-nsIXTFVisual.prototype.ELEMENT_TYPE_XML_VISUAL=0;
-nsIXTFVisual.prototype.ELEMENT_TYPE_XUL_VISUAL=0;
-nsIXTFVisual.prototype.ELEMENT_TYPE_BINDABLE=0;
-nsIXTFVisual.prototype.NOTIFY_WILL_CHANGE_DOCUMENT=0;
-nsIXTFVisual.prototype.NOTIFY_DOCUMENT_CHANGED=0;
-nsIXTFVisual.prototype.NOTIFY_WILL_CHANGE_PARENT=0;
-nsIXTFVisual.prototype.NOTIFY_PARENT_CHANGED=0;
-nsIXTFVisual.prototype.NOTIFY_WILL_INSERT_CHILD=0;
-nsIXTFVisual.prototype.NOTIFY_CHILD_INSERTED=0;
-nsIXTFVisual.prototype.NOTIFY_WILL_APPEND_CHILD=0;
-nsIXTFVisual.prototype.NOTIFY_CHILD_APPENDED=0;
-nsIXTFVisual.prototype.NOTIFY_WILL_REMOVE_CHILD=0;
-nsIXTFVisual.prototype.NOTIFY_CHILD_REMOVED=0;
-nsIXTFVisual.prototype.NOTIFY_WILL_SET_ATTRIBUTE=0;
-nsIXTFVisual.prototype.NOTIFY_ATTRIBUTE_SET=0;
-nsIXTFVisual.prototype.NOTIFY_WILL_REMOVE_ATTRIBUTE=0;
-nsIXTFVisual.prototype.NOTIFY_ATTRIBUTE_REMOVED=0;
-nsIXTFVisual.prototype.NOTIFY_BEGIN_ADDING_CHILDREN=0;
-nsIXTFVisual.prototype.NOTIFY_DONE_ADDING_CHILDREN=0;
-nsIXTFVisual.prototype.NOTIFY_HANDLE_DEFAULT=0;
-nsIXTFVisual.prototype.NOTIFY_DID_LAYOUT=0;
-nsIAutoCompleteObserver.prototype= new Array();
-function nsIAutoCompleteObserver(){};
-nsIFormHistory2.prototype= new Array();
-function nsIFormHistory2(){};
-nsIFileSpec.prototype= new Array();
-function nsIFileSpec(){};
-nsIPasswordInternal.prototype= new Array();
-function nsIPasswordInternal(){};
-nsISecurityWarningDialogs.prototype= new Array();
-function nsISecurityWarningDialogs(){};
-nsISOAPBlock.prototype= new Array();
-function nsISOAPBlock(){};
-nsIImageDocument.prototype= new Array();
-function nsIImageDocument(){};
-nsITransport.prototype= new Array();
-function nsITransport(){};
-nsITransport.prototype.OPEN_BLOCKING=0;
-nsITransport.prototype.OPEN_UNBUFFERED=0;
-nsITransport.prototype.STATUS_READING=0;
-nsITransport.prototype.STATUS_WRITING=0;
-nsISOAPFault.prototype= new Array();
-function nsISOAPFault(){};
-nsIScriptContextOwner.prototype= new Array();
-function nsIScriptContextOwner(){};
-jsdICallHook.prototype= new Array();
-function jsdICallHook(){};
-jsdICallHook.prototype.TYPE_TOPLEVEL_START="";
-jsdICallHook.prototype.TYPE_TOPLEVEL_END=0;
-jsdICallHook.prototype.TYPE_FUNCTION_CALL=0;
-jsdICallHook.prototype.TYPE_FUNCTION_RETURN=0;
-nsISOAPEncodingRegistry.prototype= new Array();
-function nsISOAPEncodingRegistry(){};
-nsICategoryManager.prototype= new Array();
-function nsICategoryManager(){};
-nsIBidirectionalIterator.prototype= new Array();
-function nsIBidirectionalIterator(){};
-nsIWindowMediatorListener.prototype= new Array();
-function nsIWindowMediatorListener(){};
-nsIDOMXPathResult.prototype= new Array();
-function nsIDOMXPathResult(){};
-nsIDOMXPathResult.prototype.ANY_TYPE="";
-nsIDOMXPathResult.prototype.NUMBER_TYPE=0;
-nsIDOMXPathResult.prototype.STRING_TYPE=0;
-nsIDOMXPathResult.prototype.BOOLEAN_TYPE=0;
-nsIDOMXPathResult.prototype.UNORDERED_NODE_ITERATOR_TYPE=0;
-nsIDOMXPathResult.prototype.ORDERED_NODE_ITERATOR_TYPE=0;
-nsIDOMXPathResult.prototype.UNORDERED_NODE_SNAPSHOT_TYPE=0;
-nsIDOMXPathResult.prototype.ORDERED_NODE_SNAPSHOT_TYPE=0;
-nsIDOMXPathResult.prototype.ANY_UNORDERED_NODE_TYPE=0;
-nsIDOMXPathResult.prototype.FIRST_ORDERED_NODE_TYPE=0;
-nsIXTFSVGVisualWrapper.prototype= new Array();
-function nsIXTFSVGVisualWrapper(){};
-nsIFeedGenerator.prototype= new Array();
-function nsIFeedGenerator(){};
-nsIEditor.prototype= new Array();
-function nsIEditor(){};
-nsIEditor.prototype.eNone="";
-nsIEditor.prototype.eNext=0;
-nsIEditor.prototype.ePrevious=0;
-nsIEditor.prototype.eNextWord=0;
-nsIEditor.prototype.ePreviousWord=0;
-nsIEditor.prototype.eToBeginningOfLine=0;
-nsIEditor.prototype.eToEndOfLine=0;
-nsIDOMHistory.prototype= new Array();
-function nsIDOMHistory(){};
-nsIZipEntry.prototype= new Array();
-function nsIZipEntry(){};
-nsIWebContentHandlerRegistrar.prototype= new Array();
-function nsIWebContentHandlerRegistrar(){};
-mozIStorageStatementWrapper.prototype= new Array();
-function mozIStorageStatementWrapper(){};
-nsIFontPackageProxy.prototype= new Array();
-function nsIFontPackageProxy(){};
-nsIDOMLSOutput.prototype= new Array();
-function nsIDOMLSOutput(){};
-nsIUnicharInputStream.prototype= new Array();
-function nsIUnicharInputStream(){};
-nsIFontList.prototype= new Array();
-function nsIFontList(){};
-nsIScriptLoader.prototype= new Array();
-function nsIScriptLoader(){};
-nsIDOMXULSelectControlElement.prototype= new Array();
-function nsIDOMXULSelectControlElement(){};
-nsIDOMXULSelectControlElement.prototype.ELEMENT_NODE=0;
-nsIDOMXULSelectControlElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMXULSelectControlElement.prototype.TEXT_NODE=0;
-nsIDOMXULSelectControlElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMXULSelectControlElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMXULSelectControlElement.prototype.ENTITY_NODE=0;
-nsIDOMXULSelectControlElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMXULSelectControlElement.prototype.COMMENT_NODE=0;
-nsIDOMXULSelectControlElement.prototype.DOCUMENT_NODE=0;
-nsIDOMXULSelectControlElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMXULSelectControlElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMXULSelectControlElement.prototype.NOTATION_NODE=0;
-nsIVariant.prototype= new Array();
-function nsIVariant(){};
-nsIDOMCanvasPattern.prototype= new Array();
-function nsIDOMCanvasPattern(){};
-nsISupportsVoid.prototype= new Array();
-function nsISupportsVoid(){};
-nsISupportsVoid.prototype.TYPE_ID=0;
-nsISupportsVoid.prototype.TYPE_CSTRING=0;
-nsISupportsVoid.prototype.TYPE_STRING=0;
-nsISupportsVoid.prototype.TYPE_PRBOOL=0;
-nsISupportsVoid.prototype.TYPE_PRUINT8=0;
-nsISupportsVoid.prototype.TYPE_PRUINT16=0;
-nsISupportsVoid.prototype.TYPE_PRUINT32=0;
-nsISupportsVoid.prototype.TYPE_PRUINT64=0;
-nsISupportsVoid.prototype.TYPE_PRTIME=0;
-nsISupportsVoid.prototype.TYPE_CHAR=0;
-nsISupportsVoid.prototype.TYPE_PRINT16=0;
-nsISupportsVoid.prototype.TYPE_PRINT32=0;
-nsISupportsVoid.prototype.TYPE_PRINT64=0;
-nsISupportsVoid.prototype.TYPE_FLOAT=0;
-nsISupportsVoid.prototype.TYPE_DOUBLE=0;
-nsISupportsVoid.prototype.TYPE_VOID=0;
-nsISupportsVoid.prototype.TYPE_INTERFACE_POINTER=0;
-nsIDOMCSSImportRule.prototype= new Array();
-function nsIDOMCSSImportRule(){};
-nsIDOMCSSImportRule.prototype.UNKNOWN_RULE="";
-nsIDOMCSSImportRule.prototype.STYLE_RULE=0;
-nsIDOMCSSImportRule.prototype.CHARSET_RULE=0;
-nsIDOMCSSImportRule.prototype.IMPORT_RULE=0;
-nsIDOMCSSImportRule.prototype.MEDIA_RULE=0;
-nsIDOMCSSImportRule.prototype.FONT_FACE_RULE=0;
-nsIDOMCSSImportRule.prototype.PAGE_RULE=0;
-nsISchemaModelGroup.prototype= new Array();
-function nsISchemaModelGroup(){};
-nsISchemaModelGroup.prototype.PARTICLE_TYPE_ELEMENT=0;
-nsISchemaModelGroup.prototype.PARTICLE_TYPE_MODEL_GROUP=0;
-nsISchemaModelGroup.prototype.PARTICLE_TYPE_ANY=0;
-nsISchemaModelGroup.prototype.OCCURRENCE_UNBOUNDED=0;
-nsISchemaModelGroup.prototype.COMPOSITOR_ALL=0;
-nsISchemaModelGroup.prototype.COMPOSITOR_SEQUENCE=0;
-nsISchemaModelGroup.prototype.COMPOSITOR_CHOICE=0;
-nsIConsoleMessage.prototype= new Array();
-function nsIConsoleMessage(){};
-nsISAXLocator.prototype= new Array();
-function nsISAXLocator(){};
-inIDOMView.prototype= new Array();
-function inIDOMView(){};
-nsIDOMHTMLCollection.prototype= new Array();
-function nsIDOMHTMLCollection(){};
-nsICacheDeviceInfo.prototype= new Array();
-function nsICacheDeviceInfo(){};
-nsIFeedPerson.prototype= new Array();
-function nsIFeedPerson(){};
-nsIDOMEvent.prototype= new Array();
-function nsIDOMEvent(){};
-nsIDOMEvent.prototype.CAPTURING_PHASE=0;
-nsIDOMEvent.prototype.AT_TARGET=0;
-nsIDOMEvent.prototype.BUBBLING_PHASE=0;
-nsICacheVisitor.prototype= new Array();
-function nsICacheVisitor(){};
-nsISerializable.prototype= new Array();
-function nsISerializable(){};
-nsINonBlockingAlertService.prototype= new Array();
-function nsINonBlockingAlertService(){};
-nsICertificateDialogs.prototype= new Array();
-function nsICertificateDialogs(){};
-nsIInputIterator.prototype= new Array();
-function nsIInputIterator(){};
-nsIDOMSVGPathSegCurvetoQuadraticSmoothRel.prototype= new Array();
-function nsIDOMSVGPathSegCurvetoQuadraticSmoothRel(){};
-nsIDOMSVGPathSegCurvetoQuadraticSmoothRel.prototype.PATHSEG_UNKNOWN="";
-nsIDOMSVGPathSegCurvetoQuadraticSmoothRel.prototype.PATHSEG_CLOSEPATH=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothRel.prototype.PATHSEG_MOVETO_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothRel.prototype.PATHSEG_MOVETO_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothRel.prototype.PATHSEG_LINETO_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothRel.prototype.PATHSEG_LINETO_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothRel.prototype.PATHSEG_CURVETO_CUBIC_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothRel.prototype.PATHSEG_CURVETO_CUBIC_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothRel.prototype.PATHSEG_CURVETO_QUADRATIC_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothRel.prototype.PATHSEG_CURVETO_QUADRATIC_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothRel.prototype.PATHSEG_ARC_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothRel.prototype.PATHSEG_ARC_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothRel.prototype.PATHSEG_LINETO_HORIZONTAL_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothRel.prototype.PATHSEG_LINETO_HORIZONTAL_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothRel.prototype.PATHSEG_LINETO_VERTICAL_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothRel.prototype.PATHSEG_LINETO_VERTICAL_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothRel.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothRel.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothRel.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothRel.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL=0;
-nsIInternetSearchService.prototype= new Array();
-function nsIInternetSearchService(){};
-nsIInternetSearchService.prototype.kHaveNext=0;
-nsIInternetSearchService.prototype.kHavePrev=0;
-nsIHttpAuthenticator.prototype= new Array();
-function nsIHttpAuthenticator(){};
-nsIHttpAuthenticator.prototype.REQUEST_BASED=0;
-nsIHttpAuthenticator.prototype.CONNECTION_BASED=0;
-nsIHttpAuthenticator.prototype.REUSABLE_CREDENTIALS=0;
-nsIHttpAuthenticator.prototype.REUSABLE_CHALLENGE=0;
-nsIHttpAuthenticator.prototype.IDENTITY_IGNORED=0;
-nsIHttpAuthenticator.prototype.IDENTITY_INCLUDES_DOMAIN=0;
-nsIAddonUpdateListener.prototype= new Array();
-function nsIAddonUpdateListener(){};
-nsIEditorLogging.prototype= new Array();
-function nsIEditorLogging(){};
-nsIZipReaderCache.prototype= new Array();
-function nsIZipReaderCache(){};
-nsIAsyncStreamCopier.prototype= new Array();
-function nsIAsyncStreamCopier(){};
-nsIAsyncStreamCopier.prototype.LOAD_NORMAL="";
-nsIAsyncStreamCopier.prototype.LOAD_BACKGROUND=0;
-nsIAsyncStreamCopier.prototype.INHIBIT_CACHING=0;
-nsIAsyncStreamCopier.prototype.INHIBIT_PERSISTENT_CACHING=0;
-nsIAsyncStreamCopier.prototype.LOAD_BYPASS_CACHE=0;
-nsIAsyncStreamCopier.prototype.LOAD_FROM_CACHE=0;
-nsIAsyncStreamCopier.prototype.VALIDATE_ALWAYS=0;
-nsIAsyncStreamCopier.prototype.VALIDATE_NEVER=0;
-nsIAsyncStreamCopier.prototype.VALIDATE_ONCE_PER_SESSION=0;
-nsIDOMXULLabeledControlElement.prototype= new Array();
-function nsIDOMXULLabeledControlElement(){};
-nsIDOMXULLabeledControlElement.prototype.ELEMENT_NODE=0;
-nsIDOMXULLabeledControlElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMXULLabeledControlElement.prototype.TEXT_NODE=0;
-nsIDOMXULLabeledControlElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMXULLabeledControlElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMXULLabeledControlElement.prototype.ENTITY_NODE=0;
-nsIDOMXULLabeledControlElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMXULLabeledControlElement.prototype.COMMENT_NODE=0;
-nsIDOMXULLabeledControlElement.prototype.DOCUMENT_NODE=0;
-nsIDOMXULLabeledControlElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMXULLabeledControlElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMXULLabeledControlElement.prototype.NOTATION_NODE=0;
-nsICookieAcceptDialog.prototype= new Array();
-function nsICookieAcceptDialog(){};
-nsICookieAcceptDialog.prototype.ACCEPT_COOKIE="";
-nsICookieAcceptDialog.prototype.REMEMBER_DECISION=0;
-nsICookieAcceptDialog.prototype.HOSTNAME=0;
-nsICookieAcceptDialog.prototype.COOKIESFROMHOST=0;
-nsICookieAcceptDialog.prototype.CHANGINGCOOKIE=0;
-nsIDOMSVGAnimatedEnumeration.prototype= new Array();
-function nsIDOMSVGAnimatedEnumeration(){};
-nsIPKCS11ModuleDB.prototype= new Array();
-function nsIPKCS11ModuleDB(){};
-nsISecretDecoderRingConfig.prototype= new Array();
-function nsISecretDecoderRingConfig(){};
-nsIDOMCSSUnknownRule.prototype= new Array();
-function nsIDOMCSSUnknownRule(){};
-nsIDOMCSSUnknownRule.prototype.UNKNOWN_RULE="";
-nsIDOMCSSUnknownRule.prototype.STYLE_RULE=0;
-nsIDOMCSSUnknownRule.prototype.CHARSET_RULE=0;
-nsIDOMCSSUnknownRule.prototype.IMPORT_RULE=0;
-nsIDOMCSSUnknownRule.prototype.MEDIA_RULE=0;
-nsIDOMCSSUnknownRule.prototype.FONT_FACE_RULE=0;
-nsIDOMCSSUnknownRule.prototype.PAGE_RULE=0;
-nsIXPTLoader.prototype= new Array();
-function nsIXPTLoader(){};
-nsIDOMSVGAnimatedString.prototype= new Array();
-function nsIDOMSVGAnimatedString(){};
-nsIContentFilter.prototype= new Array();
-function nsIContentFilter(){};
-nsIWSDLLoadListener.prototype= new Array();
-function nsIWSDLLoadListener(){};
-mozIStorageStatementRow.prototype= new Array();
-function mozIStorageStatementRow(){};
-imgIDecoderObserver_MOZILLA_1_8_BRANCH.prototype= new Array();
-function imgIDecoderObserver_MOZILLA_1_8_BRANCH(){};
-mozISpellCheckingEngine.prototype= new Array();
-function mozISpellCheckingEngine(){};
-nsISOAPMessageBinding.prototype= new Array();
-function nsISOAPMessageBinding(){};
-nsISOAPMessageBinding.prototype.STYLE_RPC=0;
-nsISOAPMessageBinding.prototype.STYLE_DOCUMENT=0;
-nsICommandHandlerInit.prototype= new Array();
-function nsICommandHandlerInit(){};
-mozIStorageDataSet.prototype= new Array();
-function mozIStorageDataSet(){};
-nsIDOMNSHTMLFrameElement.prototype= new Array();
-function nsIDOMNSHTMLFrameElement(){};
-nsIProfile.prototype= new Array();
-function nsIProfile(){};
-nsIProfile.prototype.SHUTDOWN_PERSIST=0;
-nsIProfile.prototype.SHUTDOWN_CLEANSE=0;
-nsIDOMSVGRect.prototype= new Array();
-function nsIDOMSVGRect(){};
-nsIDOMSVGPathSegMovetoRel.prototype= new Array();
-function nsIDOMSVGPathSegMovetoRel(){};
-nsIDOMSVGPathSegMovetoRel.prototype.PATHSEG_UNKNOWN="";
-nsIDOMSVGPathSegMovetoRel.prototype.PATHSEG_CLOSEPATH=0;
-nsIDOMSVGPathSegMovetoRel.prototype.PATHSEG_MOVETO_ABS=0;
-nsIDOMSVGPathSegMovetoRel.prototype.PATHSEG_MOVETO_REL=0;
-nsIDOMSVGPathSegMovetoRel.prototype.PATHSEG_LINETO_ABS=0;
-nsIDOMSVGPathSegMovetoRel.prototype.PATHSEG_LINETO_REL=0;
-nsIDOMSVGPathSegMovetoRel.prototype.PATHSEG_CURVETO_CUBIC_ABS=0;
-nsIDOMSVGPathSegMovetoRel.prototype.PATHSEG_CURVETO_CUBIC_REL=0;
-nsIDOMSVGPathSegMovetoRel.prototype.PATHSEG_CURVETO_QUADRATIC_ABS=0;
-nsIDOMSVGPathSegMovetoRel.prototype.PATHSEG_CURVETO_QUADRATIC_REL=0;
-nsIDOMSVGPathSegMovetoRel.prototype.PATHSEG_ARC_ABS=0;
-nsIDOMSVGPathSegMovetoRel.prototype.PATHSEG_ARC_REL=0;
-nsIDOMSVGPathSegMovetoRel.prototype.PATHSEG_LINETO_HORIZONTAL_ABS=0;
-nsIDOMSVGPathSegMovetoRel.prototype.PATHSEG_LINETO_HORIZONTAL_REL=0;
-nsIDOMSVGPathSegMovetoRel.prototype.PATHSEG_LINETO_VERTICAL_ABS=0;
-nsIDOMSVGPathSegMovetoRel.prototype.PATHSEG_LINETO_VERTICAL_REL=0;
-nsIDOMSVGPathSegMovetoRel.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegMovetoRel.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_REL=0;
-nsIDOMSVGPathSegMovetoRel.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegMovetoRel.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL=0;
-nsIPromptService.prototype= new Array();
-function nsIPromptService(){};
-nsIPromptService.prototype.BUTTON_POS_0=0;
-nsIPromptService.prototype.BUTTON_POS_1=0;
-nsIPromptService.prototype.BUTTON_POS_2=0;
-nsIPromptService.prototype.BUTTON_TITLE_OK=0;
-nsIPromptService.prototype.BUTTON_TITLE_CANCEL=0;
-nsIPromptService.prototype.BUTTON_TITLE_YES=0;
-nsIPromptService.prototype.BUTTON_TITLE_NO=0;
-nsIPromptService.prototype.BUTTON_TITLE_SAVE=0;
-nsIPromptService.prototype.BUTTON_TITLE_DONT_SAVE=0;
-nsIPromptService.prototype.BUTTON_TITLE_REVERT=0;
-nsIPromptService.prototype.BUTTON_TITLE_IS_STRING=0;
-nsIPromptService.prototype.BUTTON_POS_0_DEFAULT="";
-nsIPromptService.prototype.BUTTON_POS_1_DEFAULT=0;
-nsIPromptService.prototype.BUTTON_POS_2_DEFAULT=0;
-nsIPromptService.prototype.BUTTON_DELAY_ENABLE=0;
-nsIPromptService.prototype.STD_OK_CANCEL_BUTTONS=0;
-nsIPromptService.prototype.STD_YES_NO_BUTTONS=0;
-nsIJARProtocolHandler.prototype= new Array();
-function nsIJARProtocolHandler(){};
-nsIJARProtocolHandler.prototype.URI_STD="";
-nsIJARProtocolHandler.prototype.URI_NORELATIVE=0;
-nsIJARProtocolHandler.prototype.URI_NOAUTH=0;
-nsIJARProtocolHandler.prototype.ALLOWS_PROXY=0;
-nsIJARProtocolHandler.prototype.ALLOWS_PROXY_HTTP=0;
-nsIRefreshURI.prototype= new Array();
-function nsIRefreshURI(){};
-nsIDOMXPathExpression.prototype= new Array();
-function nsIDOMXPathExpression(){};
-nsISchema.prototype= new Array();
-function nsISchema(){};
-nsIDOMSVGLineElement.prototype= new Array();
-function nsIDOMSVGLineElement(){};
-nsIDOMSVGLineElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGLineElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGLineElement.prototype.TEXT_NODE=0;
-nsIDOMSVGLineElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGLineElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGLineElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGLineElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGLineElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGLineElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGLineElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGLineElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGLineElement.prototype.NOTATION_NODE=0;
-nsITreeColumn.prototype= new Array();
-function nsITreeColumn(){};
-nsITreeColumn.prototype.TYPE_TEXT=0;
-nsITreeColumn.prototype.TYPE_CHECKBOX=0;
-nsITreeColumn.prototype.TYPE_PROGRESSMETER=0;
-nsIAutoCompletePopup.prototype= new Array();
-function nsIAutoCompletePopup(){};
-nsIFullScreen.prototype= new Array();
-function nsIFullScreen(){};
-nsIDOMPkcs11.prototype= new Array();
-function nsIDOMPkcs11(){};
-nsIRequest.prototype= new Array();
-function nsIRequest(){};
-nsIRequest.prototype.LOAD_NORMAL="";
-nsIRequest.prototype.LOAD_BACKGROUND=0;
-nsIRequest.prototype.INHIBIT_CACHING=0;
-nsIRequest.prototype.INHIBIT_PERSISTENT_CACHING=0;
-nsIRequest.prototype.LOAD_BYPASS_CACHE=0;
-nsIRequest.prototype.LOAD_FROM_CACHE=0;
-nsIRequest.prototype.VALIDATE_ALWAYS=0;
-nsIRequest.prototype.VALIDATE_NEVER=0;
-nsIRequest.prototype.VALIDATE_ONCE_PER_SESSION=0;
-nsIDOMCSSPageRule.prototype= new Array();
-function nsIDOMCSSPageRule(){};
-nsIDOMCSSPageRule.prototype.UNKNOWN_RULE="";
-nsIDOMCSSPageRule.prototype.STYLE_RULE=0;
-nsIDOMCSSPageRule.prototype.CHARSET_RULE=0;
-nsIDOMCSSPageRule.prototype.IMPORT_RULE=0;
-nsIDOMCSSPageRule.prototype.MEDIA_RULE=0;
-nsIDOMCSSPageRule.prototype.FONT_FACE_RULE=0;
-nsIDOMCSSPageRule.prototype.PAGE_RULE=0;
-nsIWebBrowserPrint.prototype= new Array();
-function nsIWebBrowserPrint(){};
-nsIWebBrowserPrint.prototype.PRINTPREVIEW_GOTO_PAGENUM="";
-nsIWebBrowserPrint.prototype.PRINTPREVIEW_PREV_PAGE=0;
-nsIWebBrowserPrint.prototype.PRINTPREVIEW_NEXT_PAGE=0;
-nsIWebBrowserPrint.prototype.PRINTPREVIEW_HOME=0;
-nsIWebBrowserPrint.prototype.PRINTPREVIEW_END=0;
-nsIDOMNameList.prototype= new Array();
-function nsIDOMNameList(){};
-nsIGlobalHistory2.prototype= new Array();
-function nsIGlobalHistory2(){};
-nsISOAPResponseListener.prototype= new Array();
-function nsISOAPResponseListener(){};
-nsIUrlClassifierTable.prototype= new Array();
-function nsIUrlClassifierTable(){};
-nsIDOMSVGAnimatedNumber.prototype= new Array();
-function nsIDOMSVGAnimatedNumber(){};
-nsIBrowserHistory.prototype= new Array();
-function nsIBrowserHistory(){};
-nsIRDFDelegateFactory.prototype= new Array();
-function nsIRDFDelegateFactory(){};
-nsIDOMCSSPrimitiveValue.prototype= new Array();
-function nsIDOMCSSPrimitiveValue(){};
-nsIDOMCSSPrimitiveValue.prototype.CSS_INHERIT="";
-nsIDOMCSSPrimitiveValue.prototype.CSS_PRIMITIVE_VALUE=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_VALUE_LIST=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_CUSTOM=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_UNKNOWN="";
-nsIDOMCSSPrimitiveValue.prototype.CSS_NUMBER=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_PERCENTAGE=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_EMS=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_EXS=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_PX=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_CM=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_MM=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_IN=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_PT=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_PC=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_DEG=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_RAD=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_GRAD=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_MS=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_S=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_HZ=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_KHZ=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_DIMENSION=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_STRING=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_URI=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_IDENT=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_ATTR=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_COUNTER=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_RECT=0;
-nsIDOMCSSPrimitiveValue.prototype.CSS_RGBCOLOR=0;
-nsIFeedResult.prototype= new Array();
-function nsIFeedResult(){};
-nsISelectionController.prototype= new Array();
-function nsISelectionController(){};
-nsISelectionController.prototype.DISPLAY_TEXT=0;
-nsISelectionController.prototype.DISPLAY_IMAGES=0;
-nsISelectionController.prototype.DISPLAY_FRAMES=0;
-nsISelectionController.prototype.DISPLAY_ALL=0;
-nsISelectionController.prototype.SELECTION_NONE="";
-nsISelectionController.prototype.SELECTION_NORMAL=0;
-nsISelectionController.prototype.SELECTION_SPELLCHECK=0;
-nsISelectionController.prototype.SELECTION_IME_RAWINPUT=0;
-nsISelectionController.prototype.SELECTION_IME_SELECTEDRAWTEXT=0;
-nsISelectionController.prototype.SELECTION_IME_CONVERTEDTEXT=0;
-nsISelectionController.prototype.SELECTION_IME_SELECTEDCONVERTEDTEXT=0;
-nsISelectionController.prototype.SELECTION_ACCESSIBILITY=0;
-nsISelectionController.prototype.NUM_SELECTIONTYPES=0;
-nsISelectionController.prototype.SELECTION_ANCHOR_REGION="";
-nsISelectionController.prototype.SELECTION_FOCUS_REGION=0;
-nsISelectionController.prototype.NUM_SELECTION_REGIONS=0;
-nsISelectionController.prototype.SELECTION_OFF="";
-nsISelectionController.prototype.SELECTION_HIDDEN=0;
-nsISelectionController.prototype.SELECTION_ON=0;
-nsISelectionController.prototype.SELECTION_DISABLED=0;
-nsISelectionController.prototype.SELECTION_ATTENTION=0;
-nsISocketProvider.prototype= new Array();
-function nsISocketProvider(){};
-nsISocketProvider.prototype.PROXY_RESOLVES_HOST=0;
-nsIFontPackageService.prototype= new Array();
-function nsIFontPackageService(){};
-nsIStringInputStream.prototype= new Array();
-function nsIStringInputStream(){};
-nsIPhonetic.prototype= new Array();
-function nsIPhonetic(){};
-nsIDOMSVGDefsElement.prototype= new Array();
-function nsIDOMSVGDefsElement(){};
-nsIDOMSVGDefsElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGDefsElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGDefsElement.prototype.TEXT_NODE=0;
-nsIDOMSVGDefsElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGDefsElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGDefsElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGDefsElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGDefsElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGDefsElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGDefsElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGDefsElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGDefsElement.prototype.NOTATION_NODE=0;
-imgIDecoder.prototype= new Array();
-function imgIDecoder(){};
-nsIDOMCSSValue.prototype= new Array();
-function nsIDOMCSSValue(){};
-nsIDOMCSSValue.prototype.CSS_INHERIT="";
-nsIDOMCSSValue.prototype.CSS_PRIMITIVE_VALUE=0;
-nsIDOMCSSValue.prototype.CSS_VALUE_LIST=0;
-nsIDOMCSSValue.prototype.CSS_CUSTOM=0;
-nsISHContainer.prototype= new Array();
-function nsISHContainer(){};
-nsICryptoFIPSInfo.prototype= new Array();
-function nsICryptoFIPSInfo(){};
-nsIMenuBoxObject.prototype= new Array();
-function nsIMenuBoxObject(){};
-nsIWSDLPort.prototype= new Array();
-function nsIWSDLPort(){};
-nsIDOMSVGPathSegClosePath.prototype= new Array();
-function nsIDOMSVGPathSegClosePath(){};
-nsIDOMSVGPathSegClosePath.prototype.PATHSEG_UNKNOWN="";
-nsIDOMSVGPathSegClosePath.prototype.PATHSEG_CLOSEPATH=0;
-nsIDOMSVGPathSegClosePath.prototype.PATHSEG_MOVETO_ABS=0;
-nsIDOMSVGPathSegClosePath.prototype.PATHSEG_MOVETO_REL=0;
-nsIDOMSVGPathSegClosePath.prototype.PATHSEG_LINETO_ABS=0;
-nsIDOMSVGPathSegClosePath.prototype.PATHSEG_LINETO_REL=0;
-nsIDOMSVGPathSegClosePath.prototype.PATHSEG_CURVETO_CUBIC_ABS=0;
-nsIDOMSVGPathSegClosePath.prototype.PATHSEG_CURVETO_CUBIC_REL=0;
-nsIDOMSVGPathSegClosePath.prototype.PATHSEG_CURVETO_QUADRATIC_ABS=0;
-nsIDOMSVGPathSegClosePath.prototype.PATHSEG_CURVETO_QUADRATIC_REL=0;
-nsIDOMSVGPathSegClosePath.prototype.PATHSEG_ARC_ABS=0;
-nsIDOMSVGPathSegClosePath.prototype.PATHSEG_ARC_REL=0;
-nsIDOMSVGPathSegClosePath.prototype.PATHSEG_LINETO_HORIZONTAL_ABS=0;
-nsIDOMSVGPathSegClosePath.prototype.PATHSEG_LINETO_HORIZONTAL_REL=0;
-nsIDOMSVGPathSegClosePath.prototype.PATHSEG_LINETO_VERTICAL_ABS=0;
-nsIDOMSVGPathSegClosePath.prototype.PATHSEG_LINETO_VERTICAL_REL=0;
-nsIDOMSVGPathSegClosePath.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegClosePath.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_REL=0;
-nsIDOMSVGPathSegClosePath.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegClosePath.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL=0;
-nsIDOMLSException.prototype= new Array();
-function nsIDOMLSException(){};
-nsIDOMLSException.prototype.PARSE_ERR=0;
-nsIDOMLSException.prototype.SERIALIZE_ERR=0;
-nsIDOMHTMLFieldSetElement.prototype= new Array();
-function nsIDOMHTMLFieldSetElement(){};
-nsIDOMHTMLFieldSetElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLFieldSetElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLFieldSetElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLFieldSetElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLFieldSetElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLFieldSetElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLFieldSetElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLFieldSetElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLFieldSetElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLFieldSetElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLFieldSetElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLFieldSetElement.prototype.NOTATION_NODE=0;
-nsIDOMSVGLinearGradientElement.prototype= new Array();
-function nsIDOMSVGLinearGradientElement(){};
-nsIDOMSVGLinearGradientElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGLinearGradientElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGLinearGradientElement.prototype.TEXT_NODE=0;
-nsIDOMSVGLinearGradientElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGLinearGradientElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGLinearGradientElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGLinearGradientElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGLinearGradientElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGLinearGradientElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGLinearGradientElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGLinearGradientElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGLinearGradientElement.prototype.NOTATION_NODE=0;
-nsIDOMSVGLinearGradientElement.prototype.SVG_SPREADMETHOD_UNKNOWN="";
-nsIDOMSVGLinearGradientElement.prototype.SVG_SPREADMETHOD_PAD=0;
-nsIDOMSVGLinearGradientElement.prototype.SVG_SPREADMETHOD_REFLECT=0;
-nsIDOMSVGLinearGradientElement.prototype.SVG_SPREADMETHOD_REPEAT=0;
-nsIDOMSVGLinearGradientElement.prototype.SVG_GRUNITS_UNKNOWN="";
-nsIDOMSVGLinearGradientElement.prototype.SVG_GRUNITS_OBJECTBOUNDINGBOX=0;
-nsIDOMSVGLinearGradientElement.prototype.SVG_GRUNITS_USERSPACEONUSE=0;
-nsIDOMStorage.prototype= new Array();
-function nsIDOMStorage(){};
-nsIStreamLoader.prototype= new Array();
-function nsIStreamLoader(){};
-nsIDOMWindowCollection.prototype= new Array();
-function nsIDOMWindowCollection(){};
-nsIBinaryInputStream.prototype= new Array();
-function nsIBinaryInputStream(){};
-nsIFeedProcessor.prototype= new Array();
-function nsIFeedProcessor(){};
-nsITextScroll.prototype= new Array();
-function nsITextScroll(){};
-nsIDOMSVGRadialGradientElement.prototype= new Array();
-function nsIDOMSVGRadialGradientElement(){};
-nsIDOMSVGRadialGradientElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGRadialGradientElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGRadialGradientElement.prototype.TEXT_NODE=0;
-nsIDOMSVGRadialGradientElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGRadialGradientElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGRadialGradientElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGRadialGradientElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGRadialGradientElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGRadialGradientElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGRadialGradientElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGRadialGradientElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGRadialGradientElement.prototype.NOTATION_NODE=0;
-nsIDOMSVGRadialGradientElement.prototype.SVG_SPREADMETHOD_UNKNOWN="";
-nsIDOMSVGRadialGradientElement.prototype.SVG_SPREADMETHOD_PAD=0;
-nsIDOMSVGRadialGradientElement.prototype.SVG_SPREADMETHOD_REFLECT=0;
-nsIDOMSVGRadialGradientElement.prototype.SVG_SPREADMETHOD_REPEAT=0;
-nsIDOMSVGRadialGradientElement.prototype.SVG_GRUNITS_UNKNOWN="";
-nsIDOMSVGRadialGradientElement.prototype.SVG_GRUNITS_OBJECTBOUNDINGBOX=0;
-nsIDOMSVGRadialGradientElement.prototype.SVG_GRUNITS_USERSPACEONUSE=0;
-nsIVersionComparator.prototype= new Array();
-function nsIVersionComparator(){};
-nsIAsyncStreamListener.prototype= new Array();
-function nsIAsyncStreamListener(){};
-nsIBrowserDOMWindow.prototype= new Array();
-function nsIBrowserDOMWindow(){};
-nsIBrowserDOMWindow.prototype.OPEN_DEFAULTWINDOW="";
-nsIBrowserDOMWindow.prototype.OPEN_CURRENTWINDOW=0;
-nsIBrowserDOMWindow.prototype.OPEN_NEWWINDOW=0;
-nsIBrowserDOMWindow.prototype.OPEN_NEWTAB=0;
-nsIBrowserDOMWindow.prototype.OPEN_EXTERNAL=0;
-nsIBrowserDOMWindow.prototype.OPEN_NEW=0;
-nsIDOMXPathException.prototype= new Array();
-function nsIDOMXPathException(){};
-nsIDOMXPathException.prototype.INVALID_EXPRESSION_ERR=0;
-nsIDOMXPathException.prototype.TYPE_ERR=0;
-nsISHistory.prototype= new Array();
-function nsISHistory(){};
-nsIDOMCrypto.prototype= new Array();
-function nsIDOMCrypto(){};
-nsIAccessible.prototype= new Array();
-function nsIAccessible(){};
-nsIAccessible.prototype.STATE_UNAVAILABLE=0;
-nsIAccessible.prototype.STATE_SELECTED=0;
-nsIAccessible.prototype.STATE_FOCUSED=0;
-nsIAccessible.prototype.STATE_PRESSED=0;
-nsIAccessible.prototype.STATE_CHECKED=0;
-nsIAccessible.prototype.STATE_MIXED=0;
-nsIAccessible.prototype.STATE_READONLY=0;
-nsIAccessible.prototype.STATE_HOTTRACKED=0;
-nsIAccessible.prototype.STATE_DEFAULT=0;
-nsIAccessible.prototype.STATE_EXPANDED=0;
-nsIAccessible.prototype.STATE_COLLAPSED=0;
-nsIAccessible.prototype.STATE_BUSY=0;
-nsIAccessible.prototype.STATE_FLOATING=0;
-nsIAccessible.prototype.STATE_MARQUEED=0;
-nsIAccessible.prototype.STATE_ANIMATED=0;
-nsIAccessible.prototype.STATE_INVISIBLE=0;
-nsIAccessible.prototype.STATE_OFFSCREEN=0;
-nsIAccessible.prototype.STATE_SIZEABLE=0;
-nsIAccessible.prototype.STATE_MOVEABLE=0;
-nsIAccessible.prototype.STATE_SELFVOICING=0;
-nsIAccessible.prototype.STATE_FOCUSABLE=0;
-nsIAccessible.prototype.STATE_SELECTABLE=0;
-nsIAccessible.prototype.STATE_LINKED=0;
-nsIAccessible.prototype.STATE_TRAVERSED=0;
-nsIAccessible.prototype.STATE_MULTISELECTABLE=0;
-nsIAccessible.prototype.STATE_EXTSELECTABLE=0;
-nsIAccessible.prototype.STATE_ALERT_LOW=0;
-nsIAccessible.prototype.STATE_ALERT_MEDIUM=0;
-nsIAccessible.prototype.STATE_ALERT_HIGH=0;
-nsIAccessible.prototype.STATE_PROTECTED=0;
-nsIAccessible.prototype.STATE_HASPOPUP=0;
-nsIAccessible.prototype.STATE_REQUIRED=0;
-nsIAccessible.prototype.STATE_IMPORTANT=0;
-nsIAccessible.prototype.STATE_INVALID=0;
-nsIAccessible.prototype.STATE_CHECKABLE=0;
-nsIAccessible.prototype.EXT_STATE_EDITABLE=0;
-nsIAccessible.prototype.EXT_STATE_ACTIVE=0;
-nsIAccessible.prototype.EXT_STATE_EXPANDABLE=0;
-nsIAccessible.prototype.EXT_STATE_MODAL=0;
-nsIAccessible.prototype.EXT_STATE_MULTI_LINE=0;
-nsIAccessible.prototype.EXT_STATE_SENSITIVE=0;
-nsIAccessible.prototype.EXT_STATE_SHOWING=0;
-nsIAccessible.prototype.EXT_STATE_SINGLE_LINE=0;
-nsIAccessible.prototype.EXT_STATE_TRANSIENT=0;
-nsIAccessible.prototype.EXT_STATE_VERTICAL=0;
-nsIAccessible.prototype.RELATION_NUL="";
-nsIAccessible.prototype.RELATION_CONTROLLED_BY=0;
-nsIAccessible.prototype.RELATION_CONTROLLER_FOR=0;
-nsIAccessible.prototype.RELATION_LABEL_FOR=0;
-nsIAccessible.prototype.RELATION_LABELLED_BY=0;
-nsIAccessible.prototype.RELATION_MEMBER_OF=0;
-nsIAccessible.prototype.RELATION_NODE_CHILD_OF=0;
-nsIAccessible.prototype.RELATION_FLOWS_TO=0;
-nsIAccessible.prototype.RELATION_FLOWS_FROM=0;
-nsIAccessible.prototype.RELATION_SUBWINDOW_OF=0;
-nsIAccessible.prototype.RELATION_EMBEDS=0;
-nsIAccessible.prototype.RELATION_EMBEDDED_BY=0;
-nsIAccessible.prototype.RELATION_POPUP_FOR=0;
-nsIAccessible.prototype.RELATION_PARENT_WINDOW_OF=0;
-nsIAccessible.prototype.RELATION_DEFAULT_BUTTON=0;
-nsIAccessible.prototype.RELATION_DESCRIBED_BY=0;
-nsIAccessible.prototype.RELATION_DESCRIPTION_FOR=0;
-nsITransaction.prototype= new Array();
-function nsITransaction(){};
-nsIDOMHTMLOptionsCollection.prototype= new Array();
-function nsIDOMHTMLOptionsCollection(){};
-nsIDOMNSEvent.prototype= new Array();
-function nsIDOMNSEvent(){};
-nsIDOMNSEvent.prototype.MOUSEDOWN=0;
-nsIDOMNSEvent.prototype.MOUSEUP=0;
-nsIDOMNSEvent.prototype.MOUSEOVER=0;
-nsIDOMNSEvent.prototype.MOUSEOUT=0;
-nsIDOMNSEvent.prototype.MOUSEMOVE=0;
-nsIDOMNSEvent.prototype.MOUSEDRAG=0;
-nsIDOMNSEvent.prototype.CLICK=0;
-nsIDOMNSEvent.prototype.DBLCLICK=0;
-nsIDOMNSEvent.prototype.KEYDOWN=0;
-nsIDOMNSEvent.prototype.KEYUP=0;
-nsIDOMNSEvent.prototype.KEYPRESS=0;
-nsIDOMNSEvent.prototype.DRAGDROP=0;
-nsIDOMNSEvent.prototype.FOCUS=0;
-nsIDOMNSEvent.prototype.BLUR=0;
-nsIDOMNSEvent.prototype.SELECT=0;
-nsIDOMNSEvent.prototype.CHANGE=0;
-nsIDOMNSEvent.prototype.RESET=0;
-nsIDOMNSEvent.prototype.SUBMIT=0;
-nsIDOMNSEvent.prototype.SCROLL=0;
-nsIDOMNSEvent.prototype.LOAD=0;
-nsIDOMNSEvent.prototype.UNLOAD=0;
-nsIDOMNSEvent.prototype.XFER_DONE=0;
-nsIDOMNSEvent.prototype.ABORT=0;
-nsIDOMNSEvent.prototype.ERROR=0;
-nsIDOMNSEvent.prototype.LOCATE=0;
-nsIDOMNSEvent.prototype.MOVE=0;
-nsIDOMNSEvent.prototype.RESIZE=0;
-nsIDOMNSEvent.prototype.FORWARD=0;
-nsIDOMNSEvent.prototype.HELP=0;
-nsIDOMNSEvent.prototype.BACK=0;
-nsIDOMNSEvent.prototype.TEXT=0;
-nsIDOMNSEvent.prototype.ALT_MASK=0;
-nsIDOMNSEvent.prototype.CONTROL_MASK=0;
-nsIDOMNSEvent.prototype.SHIFT_MASK=0;
-nsIDOMNSEvent.prototype.META_MASK=0;
-nsIAutoCompleteInput.prototype= new Array();
-function nsIAutoCompleteInput(){};
-nsICertTree.prototype= new Array();
-function nsICertTree(){};
-nsICertTree.prototype.DROP_BEFORE=0;
-nsICertTree.prototype.DROP_ON="";
-nsICertTree.prototype.DROP_AFTER=0;
-nsICertTree.prototype.PROGRESS_NORMAL=0;
-nsICertTree.prototype.PROGRESS_UNDETERMINED=0;
-nsICertTree.prototype.PROGRESS_NONE=0;
-nsIComponentRegistrar.prototype= new Array();
-function nsIComponentRegistrar(){};
-nsIFileChannel.prototype= new Array();
-function nsIFileChannel(){};
-nsIFileChannel.prototype.LOAD_NORMAL="";
-nsIFileChannel.prototype.LOAD_BACKGROUND=0;
-nsIFileChannel.prototype.INHIBIT_CACHING=0;
-nsIFileChannel.prototype.INHIBIT_PERSISTENT_CACHING=0;
-nsIFileChannel.prototype.LOAD_BYPASS_CACHE=0;
-nsIFileChannel.prototype.LOAD_FROM_CACHE=0;
-nsIFileChannel.prototype.VALIDATE_ALWAYS=0;
-nsIFileChannel.prototype.VALIDATE_NEVER=0;
-nsIFileChannel.prototype.VALIDATE_ONCE_PER_SESSION=0;
-nsIFileChannel.prototype.LOAD_DOCUMENT_URI=0;
-nsIFileChannel.prototype.LOAD_RETARGETED_DOCUMENT_URI=0;
-nsIFileChannel.prototype.LOAD_REPLACE=0;
-nsIFileChannel.prototype.LOAD_INITIAL_DOCUMENT_URI=0;
-nsIFileChannel.prototype.LOAD_TARGETED=0;
-nsIFileChannel.prototype.LOAD_CALL_CONTENT_SNIFFERS=0;
-jsdIExecutionHook.prototype= new Array();
-function jsdIExecutionHook(){};
-jsdIExecutionHook.prototype.TYPE_INTERRUPTED="";
-jsdIExecutionHook.prototype.TYPE_BREAKPOINT=0;
-jsdIExecutionHook.prototype.TYPE_DEBUG_REQUESTED=0;
-jsdIExecutionHook.prototype.TYPE_DEBUGGER_KEYWORD=0;
-jsdIExecutionHook.prototype.TYPE_THROW=0;
-jsdIExecutionHook.prototype.RETURN_HOOK_ERROR="";
-jsdIExecutionHook.prototype.RETURN_CONTINUE=0;
-jsdIExecutionHook.prototype.RETURN_ABORT=0;
-jsdIExecutionHook.prototype.RETURN_RET_WITH_VAL=0;
-jsdIExecutionHook.prototype.RETURN_THROW_WITH_VAL=0;
-jsdIExecutionHook.prototype.RETURN_CONTINUE_THROW=0;
-nsIAutoCompleteInput_MOZILLA_1_8_BRANCH.prototype= new Array();
-function nsIAutoCompleteInput_MOZILLA_1_8_BRANCH(){};
-nsIBoxLayoutManager.prototype= new Array();
-function nsIBoxLayoutManager(){};
-nsIMicrosummary.prototype= new Array();
-function nsIMicrosummary(){};
-nsICacheListener.prototype= new Array();
-function nsICacheListener(){};
-nsISupportsPRBool.prototype= new Array();
-function nsISupportsPRBool(){};
-nsISupportsPRBool.prototype.TYPE_ID=0;
-nsISupportsPRBool.prototype.TYPE_CSTRING=0;
-nsISupportsPRBool.prototype.TYPE_STRING=0;
-nsISupportsPRBool.prototype.TYPE_PRBOOL=0;
-nsISupportsPRBool.prototype.TYPE_PRUINT8=0;
-nsISupportsPRBool.prototype.TYPE_PRUINT16=0;
-nsISupportsPRBool.prototype.TYPE_PRUINT32=0;
-nsISupportsPRBool.prototype.TYPE_PRUINT64=0;
-nsISupportsPRBool.prototype.TYPE_PRTIME=0;
-nsISupportsPRBool.prototype.TYPE_CHAR=0;
-nsISupportsPRBool.prototype.TYPE_PRINT16=0;
-nsISupportsPRBool.prototype.TYPE_PRINT32=0;
-nsISupportsPRBool.prototype.TYPE_PRINT64=0;
-nsISupportsPRBool.prototype.TYPE_FLOAT=0;
-nsISupportsPRBool.prototype.TYPE_DOUBLE=0;
-nsISupportsPRBool.prototype.TYPE_VOID=0;
-nsISupportsPRBool.prototype.TYPE_INTERFACE_POINTER=0;
-mozIStorageValueArray.prototype= new Array();
-function mozIStorageValueArray(){};
-mozIStorageValueArray.prototype.VALUE_TYPE_NULL="";
-mozIStorageValueArray.prototype.VALUE_TYPE_INTEGER=0;
-mozIStorageValueArray.prototype.VALUE_TYPE_FLOAT=0;
-mozIStorageValueArray.prototype.VALUE_TYPE_TEXT=0;
-mozIStorageValueArray.prototype.VALUE_TYPE_BLOB=0;
-nsIXPInstallManagerUI.prototype= new Array();
-function nsIXPInstallManagerUI(){};
-nsIXPInstallManagerUI.prototype.INSTALL_DOWNLOADING=0;
-nsIXPInstallManagerUI.prototype.INSTALL_INSTALLING=0;
-nsIXPInstallManagerUI.prototype.INSTALL_FINISHED=0;
-nsIXPInstallManagerUI.prototype.DOWNLOAD_TYPE_INSTALL=0;
-nsIDOMDocumentEvent.prototype= new Array();
-function nsIDOMDocumentEvent(){};
-nsIDOMXULCommandEvent.prototype= new Array();
-function nsIDOMXULCommandEvent(){};
-nsIDOMXULCommandEvent.prototype.CAPTURING_PHASE=0;
-nsIDOMXULCommandEvent.prototype.AT_TARGET=0;
-nsIDOMXULCommandEvent.prototype.BUBBLING_PHASE=0;
-nsIContentSniffer_MOZILLA_1_8_BRANCH.prototype= new Array();
-function nsIContentSniffer_MOZILLA_1_8_BRANCH(){};
-nsIXULAppInfo.prototype= new Array();
-function nsIXULAppInfo(){};
-nsIProxiedProtocolHandler.prototype= new Array();
-function nsIProxiedProtocolHandler(){};
-nsIProxiedProtocolHandler.prototype.URI_STD="";
-nsIProxiedProtocolHandler.prototype.URI_NORELATIVE=0;
-nsIProxiedProtocolHandler.prototype.URI_NOAUTH=0;
-nsIProxiedProtocolHandler.prototype.ALLOWS_PROXY=0;
-nsIProxiedProtocolHandler.prototype.ALLOWS_PROXY_HTTP=0;
-nsISupportsString.prototype= new Array();
-function nsISupportsString(){};
-nsISupportsString.prototype.TYPE_ID=0;
-nsISupportsString.prototype.TYPE_CSTRING=0;
-nsISupportsString.prototype.TYPE_STRING=0;
-nsISupportsString.prototype.TYPE_PRBOOL=0;
-nsISupportsString.prototype.TYPE_PRUINT8=0;
-nsISupportsString.prototype.TYPE_PRUINT16=0;
-nsISupportsString.prototype.TYPE_PRUINT32=0;
-nsISupportsString.prototype.TYPE_PRUINT64=0;
-nsISupportsString.prototype.TYPE_PRTIME=0;
-nsISupportsString.prototype.TYPE_CHAR=0;
-nsISupportsString.prototype.TYPE_PRINT16=0;
-nsISupportsString.prototype.TYPE_PRINT32=0;
-nsISupportsString.prototype.TYPE_PRINT64=0;
-nsISupportsString.prototype.TYPE_FLOAT=0;
-nsISupportsString.prototype.TYPE_DOUBLE=0;
-nsISupportsString.prototype.TYPE_VOID=0;
-nsISupportsString.prototype.TYPE_INTERFACE_POINTER=0;
-nsISafeOutputStream.prototype= new Array();
-function nsISafeOutputStream(){};
-inIDeepTreeWalker.prototype= new Array();
-function inIDeepTreeWalker(){};
-nsIDocShellTreeItem.prototype= new Array();
-function nsIDocShellTreeItem(){};
-nsIDocShellTreeItem.prototype.typeChrome="";
-nsIDocShellTreeItem.prototype.typeContent=0;
-nsIDocShellTreeItem.prototype.typeContentWrapper=0;
-nsIDocShellTreeItem.prototype.typeChromeWrapper=0;
-nsIDocShellTreeItem.prototype.typeAll=0;
-nsIDOMCSSFontFaceRule.prototype= new Array();
-function nsIDOMCSSFontFaceRule(){};
-nsIDOMCSSFontFaceRule.prototype.UNKNOWN_RULE="";
-nsIDOMCSSFontFaceRule.prototype.STYLE_RULE=0;
-nsIDOMCSSFontFaceRule.prototype.CHARSET_RULE=0;
-nsIDOMCSSFontFaceRule.prototype.IMPORT_RULE=0;
-nsIDOMCSSFontFaceRule.prototype.MEDIA_RULE=0;
-nsIDOMCSSFontFaceRule.prototype.FONT_FACE_RULE=0;
-nsIDOMCSSFontFaceRule.prototype.PAGE_RULE=0;
-nsIAlertsService.prototype= new Array();
-function nsIAlertsService(){};
-nsICMSMessageErrors.prototype= new Array();
-function nsICMSMessageErrors(){};
-nsICMSMessageErrors.prototype.SUCCESS="";
-nsICMSMessageErrors.prototype.GENERAL_ERROR=0;
-nsICMSMessageErrors.prototype.VERIFY_NOT_SIGNED=0;
-nsICMSMessageErrors.prototype.VERIFY_NO_CONTENT_INFO=0;
-nsICMSMessageErrors.prototype.VERIFY_BAD_DIGEST=0;
-nsICMSMessageErrors.prototype.VERIFY_NOCERT=0;
-nsICMSMessageErrors.prototype.VERIFY_UNTRUSTED=0;
-nsICMSMessageErrors.prototype.VERIFY_ERROR_UNVERIFIED=0;
-nsICMSMessageErrors.prototype.VERIFY_ERROR_PROCESSING=0;
-nsICMSMessageErrors.prototype.VERIFY_BAD_SIGNATURE=0;
-nsICMSMessageErrors.prototype.VERIFY_DIGEST_MISMATCH=0;
-nsICMSMessageErrors.prototype.VERIFY_UNKNOWN_ALGO=0;
-nsICMSMessageErrors.prototype.VERIFY_UNSUPPORTED_ALGO=0;
-nsICMSMessageErrors.prototype.VERIFY_MALFORMED_SIGNATURE=0;
-nsICMSMessageErrors.prototype.VERIFY_HEADER_MISMATCH=0;
-nsICMSMessageErrors.prototype.VERIFY_NOT_YET_ATTEMPTED=0;
-nsICMSMessageErrors.prototype.VERIFY_CERT_WITHOUT_ADDRESS=0;
-nsICMSMessageErrors.prototype.ENCRYPT_NO_BULK_ALG=0;
-nsIPrefBranch2.prototype= new Array();
-function nsIPrefBranch2(){};
-nsIPrefBranch2.prototype.PREF_INVALID="";
-nsIPrefBranch2.prototype.PREF_STRING=0;
-nsIPrefBranch2.prototype.PREF_INT=0;
-nsIPrefBranch2.prototype.PREF_BOOL=0;
-nsIXTFGenericElementWrapper.prototype= new Array();
-function nsIXTFGenericElementWrapper(){};
-inISearchObserver.prototype= new Array();
-function inISearchObserver(){};
-inISearchObserver.prototype.SUCCESS=0;
-inISearchObserver.prototype.INTERRUPTED=0;
-inISearchObserver.prototype.ERROR=0;
-nsIDOMSVGAnimatedLength.prototype= new Array();
-function nsIDOMSVGAnimatedLength(){};
-nsIUTF8StringEnumerator.prototype= new Array();
-function nsIUTF8StringEnumerator(){};
-nsICookieConsent.prototype= new Array();
-function nsICookieConsent(){};
-nsIResProtocolHandler.prototype= new Array();
-function nsIResProtocolHandler(){};
-nsIResProtocolHandler.prototype.URI_STD="";
-nsIResProtocolHandler.prototype.URI_NORELATIVE=0;
-nsIResProtocolHandler.prototype.URI_NOAUTH=0;
-nsIResProtocolHandler.prototype.ALLOWS_PROXY=0;
-nsIResProtocolHandler.prototype.ALLOWS_PROXY_HTTP=0;
-nsIServerSocketListener.prototype= new Array();
-function nsIServerSocketListener(){};
-nsIXTFBindableElement.prototype= new Array();
-function nsIXTFBindableElement(){};
-nsIXTFBindableElement.prototype.ELEMENT_TYPE_GENERIC_ELEMENT="";
-nsIXTFBindableElement.prototype.ELEMENT_TYPE_SVG_VISUAL=0;
-nsIXTFBindableElement.prototype.ELEMENT_TYPE_XML_VISUAL=0;
-nsIXTFBindableElement.prototype.ELEMENT_TYPE_XUL_VISUAL=0;
-nsIXTFBindableElement.prototype.ELEMENT_TYPE_BINDABLE=0;
-nsIXTFBindableElement.prototype.NOTIFY_WILL_CHANGE_DOCUMENT=0;
-nsIXTFBindableElement.prototype.NOTIFY_DOCUMENT_CHANGED=0;
-nsIXTFBindableElement.prototype.NOTIFY_WILL_CHANGE_PARENT=0;
-nsIXTFBindableElement.prototype.NOTIFY_PARENT_CHANGED=0;
-nsIXTFBindableElement.prototype.NOTIFY_WILL_INSERT_CHILD=0;
-nsIXTFBindableElement.prototype.NOTIFY_CHILD_INSERTED=0;
-nsIXTFBindableElement.prototype.NOTIFY_WILL_APPEND_CHILD=0;
-nsIXTFBindableElement.prototype.NOTIFY_CHILD_APPENDED=0;
-nsIXTFBindableElement.prototype.NOTIFY_WILL_REMOVE_CHILD=0;
-nsIXTFBindableElement.prototype.NOTIFY_CHILD_REMOVED=0;
-nsIXTFBindableElement.prototype.NOTIFY_WILL_SET_ATTRIBUTE=0;
-nsIXTFBindableElement.prototype.NOTIFY_ATTRIBUTE_SET=0;
-nsIXTFBindableElement.prototype.NOTIFY_WILL_REMOVE_ATTRIBUTE=0;
-nsIXTFBindableElement.prototype.NOTIFY_ATTRIBUTE_REMOVED=0;
-nsIXTFBindableElement.prototype.NOTIFY_BEGIN_ADDING_CHILDREN=0;
-nsIXTFBindableElement.prototype.NOTIFY_DONE_ADDING_CHILDREN=0;
-nsIXTFBindableElement.prototype.NOTIFY_HANDLE_DEFAULT=0;
-nsIAccessNode.prototype= new Array();
-function nsIAccessNode(){};
-nsIDOMSVGPathSegCurvetoQuadraticAbs.prototype= new Array();
-function nsIDOMSVGPathSegCurvetoQuadraticAbs(){};
-nsIDOMSVGPathSegCurvetoQuadraticAbs.prototype.PATHSEG_UNKNOWN="";
-nsIDOMSVGPathSegCurvetoQuadraticAbs.prototype.PATHSEG_CLOSEPATH=0;
-nsIDOMSVGPathSegCurvetoQuadraticAbs.prototype.PATHSEG_MOVETO_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticAbs.prototype.PATHSEG_MOVETO_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticAbs.prototype.PATHSEG_LINETO_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticAbs.prototype.PATHSEG_LINETO_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticAbs.prototype.PATHSEG_CURVETO_CUBIC_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticAbs.prototype.PATHSEG_CURVETO_CUBIC_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticAbs.prototype.PATHSEG_CURVETO_QUADRATIC_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticAbs.prototype.PATHSEG_CURVETO_QUADRATIC_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticAbs.prototype.PATHSEG_ARC_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticAbs.prototype.PATHSEG_ARC_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticAbs.prototype.PATHSEG_LINETO_HORIZONTAL_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticAbs.prototype.PATHSEG_LINETO_HORIZONTAL_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticAbs.prototype.PATHSEG_LINETO_VERTICAL_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticAbs.prototype.PATHSEG_LINETO_VERTICAL_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticAbs.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticAbs.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticAbs.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticAbs.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL=0;
-nsISupportsPRInt64.prototype= new Array();
-function nsISupportsPRInt64(){};
-nsISupportsPRInt64.prototype.TYPE_ID=0;
-nsISupportsPRInt64.prototype.TYPE_CSTRING=0;
-nsISupportsPRInt64.prototype.TYPE_STRING=0;
-nsISupportsPRInt64.prototype.TYPE_PRBOOL=0;
-nsISupportsPRInt64.prototype.TYPE_PRUINT8=0;
-nsISupportsPRInt64.prototype.TYPE_PRUINT16=0;
-nsISupportsPRInt64.prototype.TYPE_PRUINT32=0;
-nsISupportsPRInt64.prototype.TYPE_PRUINT64=0;
-nsISupportsPRInt64.prototype.TYPE_PRTIME=0;
-nsISupportsPRInt64.prototype.TYPE_CHAR=0;
-nsISupportsPRInt64.prototype.TYPE_PRINT16=0;
-nsISupportsPRInt64.prototype.TYPE_PRINT32=0;
-nsISupportsPRInt64.prototype.TYPE_PRINT64=0;
-nsISupportsPRInt64.prototype.TYPE_FLOAT=0;
-nsISupportsPRInt64.prototype.TYPE_DOUBLE=0;
-nsISupportsPRInt64.prototype.TYPE_VOID=0;
-nsISupportsPRInt64.prototype.TYPE_INTERFACE_POINTER=0;
-nsIDOMNSRange.prototype= new Array();
-function nsIDOMNSRange(){};
-nsIDOMNSRange.prototype.NODE_BEFORE="";
-nsIDOMNSRange.prototype.NODE_AFTER=0;
-nsIDOMNSRange.prototype.NODE_BEFORE_AND_AFTER=0;
-nsIDOMNSRange.prototype.NODE_INSIDE=0;
-nsIXPCComponents_ID.prototype= new Array();
-function nsIXPCComponents_ID(){};
-nsITooltipTextProvider.prototype= new Array();
-function nsITooltipTextProvider(){};
-nsIExternalHelperAppService.prototype= new Array();
-function nsIExternalHelperAppService(){};
-nsIFastLoadService.prototype= new Array();
-function nsIFastLoadService(){};
-nsIFastLoadService.prototype.NS_FASTLOAD_READ=0;
-nsIFastLoadService.prototype.NS_FASTLOAD_WRITE=0;
-nsIDOMDOMImplementationLS.prototype= new Array();
-function nsIDOMDOMImplementationLS(){};
-nsIDOMDOMImplementationLS.prototype.MODE_SYNCHRONOUS=0;
-nsIDOMDOMImplementationLS.prototype.MODE_ASYNCHRONOUS=0;
-nsIDOMHTMLDListElement.prototype= new Array();
-function nsIDOMHTMLDListElement(){};
-nsIDOMHTMLDListElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLDListElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLDListElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLDListElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLDListElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLDListElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLDListElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLDListElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLDListElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLDListElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLDListElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLDListElement.prototype.NOTATION_NODE=0;
-nsIWindowsRegKey.prototype= new Array();
-function nsIWindowsRegKey(){};
-nsIWindowsRegKey.prototype.ROOT_KEY_CLASSES_ROOT=0;
-nsIWindowsRegKey.prototype.ROOT_KEY_CURRENT_USER=0;
-nsIWindowsRegKey.prototype.ROOT_KEY_LOCAL_MACHINE=0;
-nsIWindowsRegKey.prototype.ACCESS_BASIC=0;
-nsIWindowsRegKey.prototype.ACCESS_QUERY_VALUE=0;
-nsIWindowsRegKey.prototype.ACCESS_SET_VALUE=0;
-nsIWindowsRegKey.prototype.ACCESS_CREATE_SUB_KEY=0;
-nsIWindowsRegKey.prototype.ACCESS_ENUMERATE_SUB_KEYS=0;
-nsIWindowsRegKey.prototype.ACCESS_NOTIFY=0;
-nsIWindowsRegKey.prototype.ACCESS_READ=0;
-nsIWindowsRegKey.prototype.ACCESS_WRITE=0;
-nsIWindowsRegKey.prototype.ACCESS_ALL=0;
-nsIWindowsRegKey.prototype.TYPE_NONE="";
-nsIWindowsRegKey.prototype.TYPE_STRING=0;
-nsIWindowsRegKey.prototype.TYPE_BINARY=0;
-nsIWindowsRegKey.prototype.TYPE_INT=0;
-nsIWindowsRegKey.prototype.TYPE_INT64=0;
-nsISchemaLoadListener.prototype= new Array();
-function nsISchemaLoadListener(){};
-nsII18nCompatibility.prototype= new Array();
-function nsII18nCompatibility(){};
-nsIWebScriptsAccessService.prototype= new Array();
-function nsIWebScriptsAccessService(){};
-nsIWindowCreator2.prototype= new Array();
-function nsIWindowCreator2(){};
-nsIWindowCreator2.prototype.PARENT_IS_LOADING_OR_RUNNING_TIMEOUT=0;
-nsIWebServiceErrorHandler.prototype= new Array();
-function nsIWebServiceErrorHandler(){};
-nsIBaseWindow.prototype= new Array();
-function nsIBaseWindow(){};
-nsIFastLoadFileControl.prototype= new Array();
-function nsIFastLoadFileControl(){};
-nsIPrefService.prototype= new Array();
-function nsIPrefService(){};
-nsIWritablePropertyBag.prototype= new Array();
-function nsIWritablePropertyBag(){};
-nsIDOMSVGException.prototype= new Array();
-function nsIDOMSVGException(){};
-nsIDOMSVGException.prototype.SVG_WRONG_TYPE_ERR="";
-nsIDOMSVGException.prototype.SVG_INVALID_VALUE_ERR=0;
-nsIDOMSVGException.prototype.SVG_MATRIX_NOT_INVERTABLE=0;
-nsIMicrosummaryGenerator.prototype= new Array();
-function nsIMicrosummaryGenerator(){};
-nsIDOMSVGPathSeg.prototype= new Array();
-function nsIDOMSVGPathSeg(){};
-nsIDOMSVGPathSeg.prototype.PATHSEG_UNKNOWN="";
-nsIDOMSVGPathSeg.prototype.PATHSEG_CLOSEPATH=0;
-nsIDOMSVGPathSeg.prototype.PATHSEG_MOVETO_ABS=0;
-nsIDOMSVGPathSeg.prototype.PATHSEG_MOVETO_REL=0;
-nsIDOMSVGPathSeg.prototype.PATHSEG_LINETO_ABS=0;
-nsIDOMSVGPathSeg.prototype.PATHSEG_LINETO_REL=0;
-nsIDOMSVGPathSeg.prototype.PATHSEG_CURVETO_CUBIC_ABS=0;
-nsIDOMSVGPathSeg.prototype.PATHSEG_CURVETO_CUBIC_REL=0;
-nsIDOMSVGPathSeg.prototype.PATHSEG_CURVETO_QUADRATIC_ABS=0;
-nsIDOMSVGPathSeg.prototype.PATHSEG_CURVETO_QUADRATIC_REL=0;
-nsIDOMSVGPathSeg.prototype.PATHSEG_ARC_ABS=0;
-nsIDOMSVGPathSeg.prototype.PATHSEG_ARC_REL=0;
-nsIDOMSVGPathSeg.prototype.PATHSEG_LINETO_HORIZONTAL_ABS=0;
-nsIDOMSVGPathSeg.prototype.PATHSEG_LINETO_HORIZONTAL_REL=0;
-nsIDOMSVGPathSeg.prototype.PATHSEG_LINETO_VERTICAL_ABS=0;
-nsIDOMSVGPathSeg.prototype.PATHSEG_LINETO_VERTICAL_REL=0;
-nsIDOMSVGPathSeg.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSeg.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_REL=0;
-nsIDOMSVGPathSeg.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSeg.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL=0;
-nsISOAPMessage.prototype= new Array();
-function nsISOAPMessage(){};
-nsISOAPMessage.prototype.VERSION_1_1="";
-nsISOAPMessage.prototype.VERSION_1_2=0;
-nsISOAPMessage.prototype.VERSION_UNKNOWN=0;
-nsIContextMenuInfo.prototype= new Array();
-function nsIContextMenuInfo(){};
-nsIHttpProtocolHandler.prototype= new Array();
-function nsIHttpProtocolHandler(){};
-nsIHttpProtocolHandler.prototype.URI_STD="";
-nsIHttpProtocolHandler.prototype.URI_NORELATIVE=0;
-nsIHttpProtocolHandler.prototype.URI_NOAUTH=0;
-nsIHttpProtocolHandler.prototype.ALLOWS_PROXY=0;
-nsIHttpProtocolHandler.prototype.ALLOWS_PROXY_HTTP=0;
-nsILocaleService.prototype= new Array();
-function nsILocaleService(){};
-nsIDOMBarProp.prototype= new Array();
-function nsIDOMBarProp(){};
-nsIProfileStartup.prototype= new Array();
-function nsIProfileStartup(){};
-nsICookiePromptService.prototype= new Array();
-function nsICookiePromptService(){};
-nsICookiePromptService.prototype.DENY_COOKIE="";
-nsICookiePromptService.prototype.ACCEPT_COOKIE=0;
-nsICookiePromptService.prototype.ACCEPT_SESSION_COOKIE=0;
-imgILoad.prototype= new Array();
-function imgILoad(){};
-nsIPrintSettingsService.prototype= new Array();
-function nsIPrintSettingsService(){};
-nsIDOMSVGPathElement.prototype= new Array();
-function nsIDOMSVGPathElement(){};
-nsIDOMSVGPathElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGPathElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGPathElement.prototype.TEXT_NODE=0;
-nsIDOMSVGPathElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGPathElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGPathElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGPathElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGPathElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGPathElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGPathElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGPathElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGPathElement.prototype.NOTATION_NODE=0;
-nsIObjectInputStream.prototype= new Array();
-function nsIObjectInputStream(){};
-nsISchemaAnyParticle.prototype= new Array();
-function nsISchemaAnyParticle(){};
-nsISchemaAnyParticle.prototype.PARTICLE_TYPE_ELEMENT=0;
-nsISchemaAnyParticle.prototype.PARTICLE_TYPE_MODEL_GROUP=0;
-nsISchemaAnyParticle.prototype.PARTICLE_TYPE_ANY=0;
-nsISchemaAnyParticle.prototype.OCCURRENCE_UNBOUNDED=0;
-nsISchemaAnyParticle.prototype.PROCESS_STRICT=0;
-nsISchemaAnyParticle.prototype.PROCESS_SKIP=0;
-nsISchemaAnyParticle.prototype.PROCESS_LAX=0;
-nsIDirIndex.prototype= new Array();
-function nsIDirIndex(){};
-nsIDirIndex.prototype.TYPE_UNKNOWN="";
-nsIDirIndex.prototype.TYPE_DIRECTORY=0;
-nsIDirIndex.prototype.TYPE_FILE=0;
-nsIDirIndex.prototype.TYPE_SYMLINK=0;
-nsPIExternalAppLauncher.prototype= new Array();
-function nsPIExternalAppLauncher(){};
-nsIDOMNSHTMLHRElement.prototype= new Array();
-function nsIDOMNSHTMLHRElement(){};
-nsIXTFSVGVisual.prototype= new Array();
-function nsIXTFSVGVisual(){};
-nsIXTFSVGVisual.prototype.ELEMENT_TYPE_GENERIC_ELEMENT="";
-nsIXTFSVGVisual.prototype.ELEMENT_TYPE_SVG_VISUAL=0;
-nsIXTFSVGVisual.prototype.ELEMENT_TYPE_XML_VISUAL=0;
-nsIXTFSVGVisual.prototype.ELEMENT_TYPE_XUL_VISUAL=0;
-nsIXTFSVGVisual.prototype.ELEMENT_TYPE_BINDABLE=0;
-nsIXTFSVGVisual.prototype.NOTIFY_WILL_CHANGE_DOCUMENT=0;
-nsIXTFSVGVisual.prototype.NOTIFY_DOCUMENT_CHANGED=0;
-nsIXTFSVGVisual.prototype.NOTIFY_WILL_CHANGE_PARENT=0;
-nsIXTFSVGVisual.prototype.NOTIFY_PARENT_CHANGED=0;
-nsIXTFSVGVisual.prototype.NOTIFY_WILL_INSERT_CHILD=0;
-nsIXTFSVGVisual.prototype.NOTIFY_CHILD_INSERTED=0;
-nsIXTFSVGVisual.prototype.NOTIFY_WILL_APPEND_CHILD=0;
-nsIXTFSVGVisual.prototype.NOTIFY_CHILD_APPENDED=0;
-nsIXTFSVGVisual.prototype.NOTIFY_WILL_REMOVE_CHILD=0;
-nsIXTFSVGVisual.prototype.NOTIFY_CHILD_REMOVED=0;
-nsIXTFSVGVisual.prototype.NOTIFY_WILL_SET_ATTRIBUTE=0;
-nsIXTFSVGVisual.prototype.NOTIFY_ATTRIBUTE_SET=0;
-nsIXTFSVGVisual.prototype.NOTIFY_WILL_REMOVE_ATTRIBUTE=0;
-nsIXTFSVGVisual.prototype.NOTIFY_ATTRIBUTE_REMOVED=0;
-nsIXTFSVGVisual.prototype.NOTIFY_BEGIN_ADDING_CHILDREN=0;
-nsIXTFSVGVisual.prototype.NOTIFY_DONE_ADDING_CHILDREN=0;
-nsIXTFSVGVisual.prototype.NOTIFY_HANDLE_DEFAULT=0;
-nsIXTFSVGVisual.prototype.NOTIFY_DID_LAYOUT=0;
-nsIFormFillController.prototype= new Array();
-function nsIFormFillController(){};
-nsIDOMSVGSVGElement.prototype= new Array();
-function nsIDOMSVGSVGElement(){};
-nsIDOMSVGSVGElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGSVGElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGSVGElement.prototype.TEXT_NODE=0;
-nsIDOMSVGSVGElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGSVGElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGSVGElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGSVGElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGSVGElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGSVGElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGSVGElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGSVGElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGSVGElement.prototype.NOTATION_NODE=0;
-nsIDOMXULMenuListElement.prototype= new Array();
-function nsIDOMXULMenuListElement(){};
-nsIDOMXULMenuListElement.prototype.ELEMENT_NODE=0;
-nsIDOMXULMenuListElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMXULMenuListElement.prototype.TEXT_NODE=0;
-nsIDOMXULMenuListElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMXULMenuListElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMXULMenuListElement.prototype.ENTITY_NODE=0;
-nsIDOMXULMenuListElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMXULMenuListElement.prototype.COMMENT_NODE=0;
-nsIDOMXULMenuListElement.prototype.DOCUMENT_NODE=0;
-nsIDOMXULMenuListElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMXULMenuListElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMXULMenuListElement.prototype.NOTATION_NODE=0;
-nsISOAPTransportListener.prototype= new Array();
-function nsISOAPTransportListener(){};
-nsIDictionary.prototype= new Array();
-function nsIDictionary(){};
-nsIDOMNSHTMLElement_MOZILLA_1_8_BRANCH.prototype= new Array();
-function nsIDOMNSHTMLElement_MOZILLA_1_8_BRANCH(){};
-nsISyncLoadDOMService.prototype= new Array();
-function nsISyncLoadDOMService(){};
-nsIDOMJSPluginArray.prototype= new Array();
-function nsIDOMJSPluginArray(){};
-nsIURL.prototype= new Array();
-function nsIURL(){};
-nsIDOMConstructor.prototype= new Array();
-function nsIDOMConstructor(){};
-nsIMultiplexInputStream.prototype= new Array();
-function nsIMultiplexInputStream(){};
-nsIClipboardCommands.prototype= new Array();
-function nsIClipboardCommands(){};
-nsIWebServiceProxyCreationListener.prototype= new Array();
-function nsIWebServiceProxyCreationListener(){};
-nsIDOMKeyEvent.prototype= new Array();
-function nsIDOMKeyEvent(){};
-nsIDOMKeyEvent.prototype.CAPTURING_PHASE=0;
-nsIDOMKeyEvent.prototype.AT_TARGET=0;
-nsIDOMKeyEvent.prototype.BUBBLING_PHASE=0;
-nsIDOMKeyEvent.prototype.DOM_VK_CANCEL=0;
-nsIDOMKeyEvent.prototype.DOM_VK_HELP=0;
-nsIDOMKeyEvent.prototype.DOM_VK_BACK_SPACE=0;
-nsIDOMKeyEvent.prototype.DOM_VK_TAB=0;
-nsIDOMKeyEvent.prototype.DOM_VK_CLEAR=0;
-nsIDOMKeyEvent.prototype.DOM_VK_RETURN=0;
-nsIDOMKeyEvent.prototype.DOM_VK_ENTER=0;
-nsIDOMKeyEvent.prototype.DOM_VK_SHIFT=0;
-nsIDOMKeyEvent.prototype.DOM_VK_CONTROL=0;
-nsIDOMKeyEvent.prototype.DOM_VK_ALT=0;
-nsIDOMKeyEvent.prototype.DOM_VK_PAUSE=0;
-nsIDOMKeyEvent.prototype.DOM_VK_CAPS_LOCK=0;
-nsIDOMKeyEvent.prototype.DOM_VK_ESCAPE=0;
-nsIDOMKeyEvent.prototype.DOM_VK_SPACE=0;
-nsIDOMKeyEvent.prototype.DOM_VK_PAGE_UP=0;
-nsIDOMKeyEvent.prototype.DOM_VK_PAGE_DOWN=0;
-nsIDOMKeyEvent.prototype.DOM_VK_END=0;
-nsIDOMKeyEvent.prototype.DOM_VK_HOME=0;
-nsIDOMKeyEvent.prototype.DOM_VK_LEFT=0;
-nsIDOMKeyEvent.prototype.DOM_VK_UP=0;
-nsIDOMKeyEvent.prototype.DOM_VK_RIGHT=0;
-nsIDOMKeyEvent.prototype.DOM_VK_DOWN=0;
-nsIDOMKeyEvent.prototype.DOM_VK_PRINTSCREEN=0;
-nsIDOMKeyEvent.prototype.DOM_VK_INSERT=0;
-nsIDOMKeyEvent.prototype.DOM_VK_DELETE=0;
-nsIDOMKeyEvent.prototype.DOM_VK_0=0;
-nsIDOMKeyEvent.prototype.DOM_VK_1=0;
-nsIDOMKeyEvent.prototype.DOM_VK_2=0;
-nsIDOMKeyEvent.prototype.DOM_VK_3=0;
-nsIDOMKeyEvent.prototype.DOM_VK_4=0;
-nsIDOMKeyEvent.prototype.DOM_VK_5=0;
-nsIDOMKeyEvent.prototype.DOM_VK_6=0;
-nsIDOMKeyEvent.prototype.DOM_VK_7=0;
-nsIDOMKeyEvent.prototype.DOM_VK_8=0;
-nsIDOMKeyEvent.prototype.DOM_VK_9=0;
-nsIDOMKeyEvent.prototype.DOM_VK_SEMICOLON=0;
-nsIDOMKeyEvent.prototype.DOM_VK_EQUALS=0;
-nsIDOMKeyEvent.prototype.DOM_VK_A=0;
-nsIDOMKeyEvent.prototype.DOM_VK_B=0;
-nsIDOMKeyEvent.prototype.DOM_VK_C=0;
-nsIDOMKeyEvent.prototype.DOM_VK_D=0;
-nsIDOMKeyEvent.prototype.DOM_VK_E=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F=0;
-nsIDOMKeyEvent.prototype.DOM_VK_G=0;
-nsIDOMKeyEvent.prototype.DOM_VK_H=0;
-nsIDOMKeyEvent.prototype.DOM_VK_I=0;
-nsIDOMKeyEvent.prototype.DOM_VK_J=0;
-nsIDOMKeyEvent.prototype.DOM_VK_K=0;
-nsIDOMKeyEvent.prototype.DOM_VK_L=0;
-nsIDOMKeyEvent.prototype.DOM_VK_M=0;
-nsIDOMKeyEvent.prototype.DOM_VK_N=0;
-nsIDOMKeyEvent.prototype.DOM_VK_O=0;
-nsIDOMKeyEvent.prototype.DOM_VK_P=0;
-nsIDOMKeyEvent.prototype.DOM_VK_Q=0;
-nsIDOMKeyEvent.prototype.DOM_VK_R=0;
-nsIDOMKeyEvent.prototype.DOM_VK_S=0;
-nsIDOMKeyEvent.prototype.DOM_VK_T=0;
-nsIDOMKeyEvent.prototype.DOM_VK_U=0;
-nsIDOMKeyEvent.prototype.DOM_VK_V=0;
-nsIDOMKeyEvent.prototype.DOM_VK_W=0;
-nsIDOMKeyEvent.prototype.DOM_VK_X=0;
-nsIDOMKeyEvent.prototype.DOM_VK_Y=0;
-nsIDOMKeyEvent.prototype.DOM_VK_Z=0;
-nsIDOMKeyEvent.prototype.DOM_VK_CONTEXT_MENU=0;
-nsIDOMKeyEvent.prototype.DOM_VK_NUMPAD0=0;
-nsIDOMKeyEvent.prototype.DOM_VK_NUMPAD1=0;
-nsIDOMKeyEvent.prototype.DOM_VK_NUMPAD2=0;
-nsIDOMKeyEvent.prototype.DOM_VK_NUMPAD3=0;
-nsIDOMKeyEvent.prototype.DOM_VK_NUMPAD4=0;
-nsIDOMKeyEvent.prototype.DOM_VK_NUMPAD5=0;
-nsIDOMKeyEvent.prototype.DOM_VK_NUMPAD6=0;
-nsIDOMKeyEvent.prototype.DOM_VK_NUMPAD7=0;
-nsIDOMKeyEvent.prototype.DOM_VK_NUMPAD8=0;
-nsIDOMKeyEvent.prototype.DOM_VK_NUMPAD9=0;
-nsIDOMKeyEvent.prototype.DOM_VK_MULTIPLY=0;
-nsIDOMKeyEvent.prototype.DOM_VK_ADD=0;
-nsIDOMKeyEvent.prototype.DOM_VK_SEPARATOR=0;
-nsIDOMKeyEvent.prototype.DOM_VK_SUBTRACT=0;
-nsIDOMKeyEvent.prototype.DOM_VK_DECIMAL=0;
-nsIDOMKeyEvent.prototype.DOM_VK_DIVIDE=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F1=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F2=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F3=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F4=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F5=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F6=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F7=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F8=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F9=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F10=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F11=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F12=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F13=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F14=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F15=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F16=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F17=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F18=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F19=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F20=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F21=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F22=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F23=0;
-nsIDOMKeyEvent.prototype.DOM_VK_F24=0;
-nsIDOMKeyEvent.prototype.DOM_VK_NUM_LOCK=0;
-nsIDOMKeyEvent.prototype.DOM_VK_SCROLL_LOCK=0;
-nsIDOMKeyEvent.prototype.DOM_VK_COMMA=0;
-nsIDOMKeyEvent.prototype.DOM_VK_PERIOD=0;
-nsIDOMKeyEvent.prototype.DOM_VK_SLASH=0;
-nsIDOMKeyEvent.prototype.DOM_VK_BACK_QUOTE=0;
-nsIDOMKeyEvent.prototype.DOM_VK_OPEN_BRACKET=0;
-nsIDOMKeyEvent.prototype.DOM_VK_BACK_SLASH=0;
-nsIDOMKeyEvent.prototype.DOM_VK_CLOSE_BRACKET=0;
-nsIDOMKeyEvent.prototype.DOM_VK_QUOTE=0;
-nsIDOMKeyEvent.prototype.DOM_VK_META=0;
-nsIKeygenThread.prototype= new Array();
-function nsIKeygenThread(){};
-jsdIDebuggerService.prototype= new Array();
-function jsdIDebuggerService(){};
-jsdIDebuggerService.prototype.VERSION_1_0=0;
-jsdIDebuggerService.prototype.VERSION_1_1=0;
-jsdIDebuggerService.prototype.VERSION_1_2=0;
-jsdIDebuggerService.prototype.VERSION_1_3=0;
-jsdIDebuggerService.prototype.VERSION_1_4=0;
-jsdIDebuggerService.prototype.VERSION_1_5=0;
-jsdIDebuggerService.prototype.VERSION_DEFAULT="";
-jsdIDebuggerService.prototype.VERSION_UNKNOWN=0;
-jsdIDebuggerService.prototype.ENABLE_NATIVE_FRAMES=0;
-jsdIDebuggerService.prototype.PROFILE_WHEN_SET=0;
-jsdIDebuggerService.prototype.DEBUG_WHEN_SET=0;
-jsdIDebuggerService.prototype.COLLECT_PROFILE_DATA=0;
-jsdIDebuggerService.prototype.HIDE_DISABLED_FRAMES=0;
-jsdIDebuggerService.prototype.MASK_TOP_FRAME_ONLY=0;
-jsdIDebuggerService.prototype.DISABLE_OBJECT_TRACE=0;
-nsIDOMHTMLDocument.prototype= new Array();
-function nsIDOMHTMLDocument(){};
-nsIDOMHTMLDocument.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLDocument.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLDocument.prototype.TEXT_NODE=0;
-nsIDOMHTMLDocument.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLDocument.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLDocument.prototype.ENTITY_NODE=0;
-nsIDOMHTMLDocument.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLDocument.prototype.COMMENT_NODE=0;
-nsIDOMHTMLDocument.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLDocument.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLDocument.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLDocument.prototype.NOTATION_NODE=0;
-nsISchemaListType.prototype= new Array();
-function nsISchemaListType(){};
-nsISchemaListType.prototype.SCHEMA_TYPE_SIMPLE=0;
-nsISchemaListType.prototype.SCHEMA_TYPE_COMPLEX=0;
-nsISchemaListType.prototype.SCHEMA_TYPE_PLACEHOLDER=0;
-nsISchemaListType.prototype.SIMPLE_TYPE_BUILTIN=0;
-nsISchemaListType.prototype.SIMPLE_TYPE_LIST=0;
-nsISchemaListType.prototype.SIMPLE_TYPE_UNION=0;
-nsISchemaListType.prototype.SIMPLE_TYPE_RESTRICTION=0;
-inICSSValueSearch.prototype= new Array();
-function inICSSValueSearch(){};
-nsIAccessibleDocument.prototype= new Array();
-function nsIAccessibleDocument(){};
-nsIDocNavStartProgressCallback.prototype= new Array();
-function nsIDocNavStartProgressCallback(){};
-nsIPrintStatusFeedback.prototype= new Array();
-function nsIPrintStatusFeedback(){};
-nsIProfileInternal.prototype= new Array();
-function nsIProfileInternal(){};
-nsIProfileInternal.prototype.SHUTDOWN_PERSIST=0;
-nsIProfileInternal.prototype.SHUTDOWN_CLEANSE=0;
-nsIProfileInternal.prototype.LIST_ONLY_NEW=0;
-nsIProfileInternal.prototype.LIST_ONLY_OLD=0;
-nsIProfileInternal.prototype.LIST_ALL=0;
-nsIProfileInternal.prototype.LIST_FOR_IMPORT=0;
-nsIExceptionProvider.prototype= new Array();
-function nsIExceptionProvider(){};
-nsIDOMJSNavigator.prototype= new Array();
-function nsIDOMJSNavigator(){};
-nsIXULRuntime.prototype= new Array();
-function nsIXULRuntime(){};
-nsIDOM3EventTarget.prototype= new Array();
-function nsIDOM3EventTarget(){};
-nsIJVMConfig.prototype= new Array();
-function nsIJVMConfig(){};
-nsIDOMXPathNSResolver.prototype= new Array();
-function nsIDOMXPathNSResolver(){};
-nsIDOMHTMLAnchorElement.prototype= new Array();
-function nsIDOMHTMLAnchorElement(){};
-nsIDOMHTMLAnchorElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLAnchorElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLAnchorElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLAnchorElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLAnchorElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLAnchorElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLAnchorElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLAnchorElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLAnchorElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLAnchorElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLAnchorElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLAnchorElement.prototype.NOTATION_NODE=0;
-nsIFTPChannel.prototype= new Array();
-function nsIFTPChannel(){};
-nsIFTPChannel.prototype.LOAD_NORMAL="";
-nsIFTPChannel.prototype.LOAD_BACKGROUND=0;
-nsIFTPChannel.prototype.INHIBIT_CACHING=0;
-nsIFTPChannel.prototype.INHIBIT_PERSISTENT_CACHING=0;
-nsIFTPChannel.prototype.LOAD_BYPASS_CACHE=0;
-nsIFTPChannel.prototype.LOAD_FROM_CACHE=0;
-nsIFTPChannel.prototype.VALIDATE_ALWAYS=0;
-nsIFTPChannel.prototype.VALIDATE_NEVER=0;
-nsIFTPChannel.prototype.VALIDATE_ONCE_PER_SESSION=0;
-nsIFTPChannel.prototype.LOAD_DOCUMENT_URI=0;
-nsIFTPChannel.prototype.LOAD_RETARGETED_DOCUMENT_URI=0;
-nsIFTPChannel.prototype.LOAD_REPLACE=0;
-nsIFTPChannel.prototype.LOAD_INITIAL_DOCUMENT_URI=0;
-nsIFTPChannel.prototype.LOAD_TARGETED=0;
-nsIFTPChannel.prototype.LOAD_CALL_CONTENT_SNIFFERS=0;
-nsIDOMCSSValueList.prototype= new Array();
-function nsIDOMCSSValueList(){};
-nsIDOMCSSValueList.prototype.CSS_INHERIT="";
-nsIDOMCSSValueList.prototype.CSS_PRIMITIVE_VALUE=0;
-nsIDOMCSSValueList.prototype.CSS_VALUE_LIST=0;
-nsIDOMCSSValueList.prototype.CSS_CUSTOM=0;
-nsIShellService.prototype= new Array();
-function nsIShellService(){};
-nsIShellService.prototype.BACKGROUND_TILE=0;
-nsIShellService.prototype.BACKGROUND_STRETCH=0;
-nsIShellService.prototype.BACKGROUND_CENTER=0;
-nsIShellService.prototype.BACKGROUND_FILL=0;
-nsIShellService.prototype.APPLICATION_MAIL="";
-nsIShellService.prototype.APPLICATION_NEWS=0;
-nsISchemaAttributeComponent.prototype= new Array();
-function nsISchemaAttributeComponent(){};
-nsISchemaAttributeComponent.prototype.COMPONENT_TYPE_ATTRIBUTE=0;
-nsISchemaAttributeComponent.prototype.COMPONENT_TYPE_GROUP=0;
-nsISchemaAttributeComponent.prototype.COMPONENT_TYPE_ANY=0;
-nsIJSConsoleService.prototype= new Array();
-function nsIJSConsoleService(){};
-nsIToolkitChromeRegistry.prototype= new Array();
-function nsIToolkitChromeRegistry(){};
-nsIToolkitChromeRegistry.prototype.NONE="";
-nsIToolkitChromeRegistry.prototype.PARTIAL=0;
-nsIToolkitChromeRegistry.prototype.FULL=0;
-nsILocaleDefinition.prototype= new Array();
-function nsILocaleDefinition(){};
-nsIProtocolProxyFilter.prototype= new Array();
-function nsIProtocolProxyFilter(){};
-nsIFeedElementBase.prototype= new Array();
-function nsIFeedElementBase(){};
-nsISOAPResponse.prototype= new Array();
-function nsISOAPResponse(){};
-nsISOAPResponse.prototype.VERSION_1_1="";
-nsISOAPResponse.prototype.VERSION_1_2=0;
-nsISOAPResponse.prototype.VERSION_UNKNOWN=0;
-nsIFormSigningDialog.prototype= new Array();
-function nsIFormSigningDialog(){};
-jsdIStackFrame.prototype= new Array();
-function jsdIStackFrame(){};
-nsIXTFElementWrapper.prototype= new Array();
-function nsIXTFElementWrapper(){};
-nsITypeAheadFind.prototype= new Array();
-function nsITypeAheadFind(){};
-nsITypeAheadFind.prototype.FIND_FOUND="";
-nsITypeAheadFind.prototype.FIND_NOTFOUND=0;
-nsITypeAheadFind.prototype.FIND_WRAPPED=0;
-nsIInlineSpellChecker.prototype= new Array();
-function nsIInlineSpellChecker(){};
-nsIAptanaDebugService.prototype= new Array();
-function nsIAptanaDebugService(){};
-nsIAptanaDebugService.prototype.STEP=0;
-nsIDownloadManager.prototype= new Array();
-function nsIDownloadManager(){};
-nsIDownloadManager.prototype.DOWNLOAD_NOTSTARTED=0;
-nsIDownloadManager.prototype.DOWNLOAD_DOWNLOADING="";
-nsIDownloadManager.prototype.DOWNLOAD_FINISHED=0;
-nsIDownloadManager.prototype.DOWNLOAD_FAILED=0;
-nsIDownloadManager.prototype.DOWNLOAD_CANCELED=0;
-nsIDownloadManager.prototype.DOWNLOAD_PAUSED=0;
-nsIDownloadManager.prototype.DOWNLOAD_TYPE_DOWNLOAD="";
-nsIProxyAutoConfig.prototype= new Array();
-function nsIProxyAutoConfig(){};
-nsIAsyncInputStream.prototype= new Array();
-function nsIAsyncInputStream(){};
-nsIAsyncInputStream.prototype.WAIT_CLOSURE_ONLY=0;
-nsIProfileChangeStatus.prototype= new Array();
-function nsIProfileChangeStatus(){};
-nsISupportsArray.prototype= new Array();
-function nsISupportsArray(){};
-nsIToolkitProfile.prototype= new Array();
-function nsIToolkitProfile(){};
-nsIDOMMediaList.prototype= new Array();
-function nsIDOMMediaList(){};
-nsIUrlClassifierCallback.prototype= new Array();
-function nsIUrlClassifierCallback(){};
-nsIWebBrowserPersist.prototype= new Array();
-function nsIWebBrowserPersist(){};
-nsIWebBrowserPersist.prototype.PERSIST_FLAGS_NONE="";
-nsIWebBrowserPersist.prototype.PERSIST_FLAGS_FROM_CACHE=0;
-nsIWebBrowserPersist.prototype.PERSIST_FLAGS_BYPASS_CACHE=0;
-nsIWebBrowserPersist.prototype.PERSIST_FLAGS_IGNORE_REDIRECTED_DATA=0;
-nsIWebBrowserPersist.prototype.PERSIST_FLAGS_IGNORE_IFRAMES=0;
-nsIWebBrowserPersist.prototype.PERSIST_FLAGS_NO_CONVERSION=0;
-nsIWebBrowserPersist.prototype.PERSIST_FLAGS_REPLACE_EXISTING_FILES=0;
-nsIWebBrowserPersist.prototype.PERSIST_FLAGS_NO_BASE_TAG_MODIFICATIONS=0;
-nsIWebBrowserPersist.prototype.PERSIST_FLAGS_FIXUP_ORIGINAL_DOM=0;
-nsIWebBrowserPersist.prototype.PERSIST_FLAGS_FIXUP_LINKS_TO_DESTINATION=0;
-nsIWebBrowserPersist.prototype.PERSIST_FLAGS_DONT_FIXUP_LINKS=0;
-nsIWebBrowserPersist.prototype.PERSIST_FLAGS_SERIALIZE_OUTPUT=0;
-nsIWebBrowserPersist.prototype.PERSIST_FLAGS_DONT_CHANGE_FILENAMES=0;
-nsIWebBrowserPersist.prototype.PERSIST_FLAGS_FAIL_ON_BROKEN_LINKS=0;
-nsIWebBrowserPersist.prototype.PERSIST_FLAGS_CLEANUP_ON_FAILURE=0;
-nsIWebBrowserPersist.prototype.PERSIST_FLAGS_AUTODETECT_APPLY_CONVERSION=0;
-nsIWebBrowserPersist.prototype.PERSIST_STATE_READY=0;
-nsIWebBrowserPersist.prototype.PERSIST_STATE_SAVING=0;
-nsIWebBrowserPersist.prototype.PERSIST_STATE_FINISHED=0;
-nsIWebBrowserPersist.prototype.ENCODE_FLAGS_SELECTION_ONLY=0;
-nsIWebBrowserPersist.prototype.ENCODE_FLAGS_FORMATTED=0;
-nsIWebBrowserPersist.prototype.ENCODE_FLAGS_RAW=0;
-nsIWebBrowserPersist.prototype.ENCODE_FLAGS_BODY_ONLY=0;
-nsIWebBrowserPersist.prototype.ENCODE_FLAGS_PREFORMATTED=0;
-nsIWebBrowserPersist.prototype.ENCODE_FLAGS_WRAP=0;
-nsIWebBrowserPersist.prototype.ENCODE_FLAGS_FORMAT_FLOWED=0;
-nsIWebBrowserPersist.prototype.ENCODE_FLAGS_ABSOLUTE_LINKS=0;
-nsIWebBrowserPersist.prototype.ENCODE_FLAGS_ENCODE_W3C_ENTITIES=0;
-nsIWebBrowserPersist.prototype.ENCODE_FLAGS_CR_LINEBREAKS=0;
-nsIWebBrowserPersist.prototype.ENCODE_FLAGS_LF_LINEBREAKS=0;
-nsIWebBrowserPersist.prototype.ENCODE_FLAGS_NOSCRIPT_CONTENT=0;
-nsIWebBrowserPersist.prototype.ENCODE_FLAGS_NOFRAMES_CONTENT=0;
-nsIWebBrowserPersist.prototype.ENCODE_FLAGS_ENCODE_BASIC_ENTITIES=0;
-nsIWebBrowserPersist.prototype.ENCODE_FLAGS_ENCODE_LATIN1_ENTITIES=0;
-nsIWebBrowserPersist.prototype.ENCODE_FLAGS_ENCODE_HTML_ENTITIES=0;
-nsIDirIndexParser.prototype= new Array();
-function nsIDirIndexParser(){};
-nsIProgrammingLanguage.prototype= new Array();
-function nsIProgrammingLanguage(){};
-nsIProgrammingLanguage.prototype.UNKNOWN="";
-nsIProgrammingLanguage.prototype.CPLUSPLUS=0;
-nsIProgrammingLanguage.prototype.JAVASCRIPT=0;
-nsIProgrammingLanguage.prototype.PYTHON=0;
-nsIProgrammingLanguage.prototype.PERL=0;
-nsIProgrammingLanguage.prototype.JAVA=0;
-nsIProgrammingLanguage.prototype.ZX81_BASIC=0;
-nsIProgrammingLanguage.prototype.JAVASCRIPT2=0;
-nsIXULTemplateBuilder.prototype= new Array();
-function nsIXULTemplateBuilder(){};
-nsISemanticUnitScanner.prototype= new Array();
-function nsISemanticUnitScanner(){};
-nsIStreamCipher.prototype= new Array();
-function nsIStreamCipher(){};
-nsIDOMSVGTextPathElement.prototype= new Array();
-function nsIDOMSVGTextPathElement(){};
-nsIDOMSVGTextPathElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGTextPathElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGTextPathElement.prototype.TEXT_NODE=0;
-nsIDOMSVGTextPathElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGTextPathElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGTextPathElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGTextPathElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGTextPathElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGTextPathElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGTextPathElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGTextPathElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGTextPathElement.prototype.NOTATION_NODE=0;
-nsIDOMSVGTextPathElement.prototype.LENGTHADJUST_UNKNOWN="";
-nsIDOMSVGTextPathElement.prototype.LENGTHADJUST_SPACING=0;
-nsIDOMSVGTextPathElement.prototype.LENGTHADJUST_SPACINGANDGLYPHS=0;
-nsIDOMSVGTextPathElement.prototype.TEXTPATH_METHODTYPE_UNKNOWN="";
-nsIDOMSVGTextPathElement.prototype.TEXTPATH_METHODTYPE_ALIGN=0;
-nsIDOMSVGTextPathElement.prototype.TEXTPATH_METHODTYPE_STRETCH=0;
-nsIDOMSVGTextPathElement.prototype.TEXTPATH_SPACINGTYPE_UNKNOWN="";
-nsIDOMSVGTextPathElement.prototype.TEXTPATH_SPACINGTYPE_AUTO=0;
-nsIDOMSVGTextPathElement.prototype.TEXTPATH_SPACINGTYPE_EXACT=0;
-nsIDOMNSHTMLElement.prototype= new Array();
-function nsIDOMNSHTMLElement(){};
-nsIAtom.prototype= new Array();
-function nsIAtom(){};
-nsIDOMSVGTransformable.prototype= new Array();
-function nsIDOMSVGTransformable(){};
-nsIEnumerator.prototype= new Array();
-function nsIEnumerator(){};
-nsIFile.prototype= new Array();
-function nsIFile(){};
-nsIFile.prototype.NORMAL_FILE_TYPE="";
-nsIFile.prototype.DIRECTORY_TYPE=0;
-nsIDOMXULMultiSelectControlElement.prototype= new Array();
-function nsIDOMXULMultiSelectControlElement(){};
-nsIDOMXULMultiSelectControlElement.prototype.ELEMENT_NODE=0;
-nsIDOMXULMultiSelectControlElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMXULMultiSelectControlElement.prototype.TEXT_NODE=0;
-nsIDOMXULMultiSelectControlElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMXULMultiSelectControlElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMXULMultiSelectControlElement.prototype.ENTITY_NODE=0;
-nsIDOMXULMultiSelectControlElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMXULMultiSelectControlElement.prototype.COMMENT_NODE=0;
-nsIDOMXULMultiSelectControlElement.prototype.DOCUMENT_NODE=0;
-nsIDOMXULMultiSelectControlElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMXULMultiSelectControlElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMXULMultiSelectControlElement.prototype.NOTATION_NODE=0;
-nsIDOMNSHTMLTextAreaElement.prototype= new Array();
-function nsIDOMNSHTMLTextAreaElement(){};
-nsIContextMenuListener2.prototype= new Array();
-function nsIContextMenuListener2(){};
-nsIContextMenuListener2.prototype.CONTEXT_NONE="";
-nsIContextMenuListener2.prototype.CONTEXT_LINK=0;
-nsIContextMenuListener2.prototype.CONTEXT_IMAGE=0;
-nsIContextMenuListener2.prototype.CONTEXT_DOCUMENT=0;
-nsIContextMenuListener2.prototype.CONTEXT_TEXT=0;
-nsIContextMenuListener2.prototype.CONTEXT_INPUT=0;
-nsIContextMenuListener2.prototype.CONTEXT_BACKGROUND_IMAGE=0;
-nsIDOMWindow2.prototype= new Array();
-function nsIDOMWindow2(){};
-nsIChromeRegistry.prototype= new Array();
-function nsIChromeRegistry(){};
-nsIChromeRegistry.prototype.NONE="";
-nsIChromeRegistry.prototype.PARTIAL=0;
-nsIChromeRegistry.prototype.FULL=0;
-nsIDOMNodeList.prototype= new Array();
-function nsIDOMNodeList(){};
-nsIInputStreamChannel.prototype= new Array();
-function nsIInputStreamChannel(){};
-nsIInputStreamChannel.prototype.LOAD_NORMAL="";
-nsIInputStreamChannel.prototype.LOAD_BACKGROUND=0;
-nsIInputStreamChannel.prototype.INHIBIT_CACHING=0;
-nsIInputStreamChannel.prototype.INHIBIT_PERSISTENT_CACHING=0;
-nsIInputStreamChannel.prototype.LOAD_BYPASS_CACHE=0;
-nsIInputStreamChannel.prototype.LOAD_FROM_CACHE=0;
-nsIInputStreamChannel.prototype.VALIDATE_ALWAYS=0;
-nsIInputStreamChannel.prototype.VALIDATE_NEVER=0;
-nsIInputStreamChannel.prototype.VALIDATE_ONCE_PER_SESSION=0;
-nsIInputStreamChannel.prototype.LOAD_DOCUMENT_URI=0;
-nsIInputStreamChannel.prototype.LOAD_RETARGETED_DOCUMENT_URI=0;
-nsIInputStreamChannel.prototype.LOAD_REPLACE=0;
-nsIInputStreamChannel.prototype.LOAD_INITIAL_DOCUMENT_URI=0;
-nsIInputStreamChannel.prototype.LOAD_TARGETED=0;
-nsIInputStreamChannel.prototype.LOAD_CALL_CONTENT_SNIFFERS=0;
-nsISOAPEncoder.prototype= new Array();
-function nsISOAPEncoder(){};
-nsIDOMSVGForeignObjectElement.prototype= new Array();
-function nsIDOMSVGForeignObjectElement(){};
-nsIDOMSVGForeignObjectElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGForeignObjectElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGForeignObjectElement.prototype.TEXT_NODE=0;
-nsIDOMSVGForeignObjectElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGForeignObjectElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGForeignObjectElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGForeignObjectElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGForeignObjectElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGForeignObjectElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGForeignObjectElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGForeignObjectElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGForeignObjectElement.prototype.NOTATION_NODE=0;
-nsIEventQueue.prototype= new Array();
-function nsIEventQueue(){};
-nsIThread.prototype= new Array();
-function nsIThread(){};
-nsIThread.prototype.PRIORITY_LOW="";
-nsIThread.prototype.PRIORITY_NORMAL=0;
-nsIThread.prototype.PRIORITY_HIGH=0;
-nsIThread.prototype.PRIORITY_URGENT=0;
-nsIThread.prototype.SCOPE_LOCAL="";
-nsIThread.prototype.SCOPE_GLOBAL=0;
-nsIThread.prototype.SCOPE_BOUND=0;
-nsIThread.prototype.STATE_JOINABLE="";
-nsIThread.prototype.STATE_UNJOINABLE=0;
-nsIIOService2.prototype= new Array();
-function nsIIOService2(){};
-nsIEditorBoxObject.prototype= new Array();
-function nsIEditorBoxObject(){};
-nsIUpdateChecker.prototype= new Array();
-function nsIUpdateChecker(){};
-nsIUpdateChecker.prototype.CURRENT_CHECK=0;
-nsIUpdateChecker.prototype.CURRENT_SESSION=0;
-nsIUpdateChecker.prototype.ANY_CHECKS=0;
-nsIStreamTransportService.prototype= new Array();
-function nsIStreamTransportService(){};
-nsIDOMHTMLTableRowElement.prototype= new Array();
-function nsIDOMHTMLTableRowElement(){};
-nsIDOMHTMLTableRowElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLTableRowElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLTableRowElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLTableRowElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLTableRowElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLTableRowElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLTableRowElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLTableRowElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLTableRowElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLTableRowElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLTableRowElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLTableRowElement.prototype.NOTATION_NODE=0;
-nsIAccessibleProvider.prototype= new Array();
-function nsIAccessibleProvider(){};
-nsIDOMHTMLButtonElement.prototype= new Array();
-function nsIDOMHTMLButtonElement(){};
-nsIDOMHTMLButtonElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLButtonElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLButtonElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLButtonElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLButtonElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLButtonElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLButtonElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLButtonElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLButtonElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLButtonElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLButtonElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLButtonElement.prototype.NOTATION_NODE=0;
-nsIDOMNSHTMLInputElement.prototype= new Array();
-function nsIDOMNSHTMLInputElement(){};
-nsIDownload_MOZILLA_1_8_BRANCH.prototype= new Array();
-function nsIDownload_MOZILLA_1_8_BRANCH(){};
-nsIDownload_MOZILLA_1_8_BRANCH.prototype.STATE_START=0;
-nsIDownload_MOZILLA_1_8_BRANCH.prototype.STATE_REDIRECTING=0;
-nsIDownload_MOZILLA_1_8_BRANCH.prototype.STATE_TRANSFERRING=0;
-nsIDownload_MOZILLA_1_8_BRANCH.prototype.STATE_NEGOTIATING=0;
-nsIDownload_MOZILLA_1_8_BRANCH.prototype.STATE_STOP=0;
-nsIDownload_MOZILLA_1_8_BRANCH.prototype.STATE_IS_REQUEST=0;
-nsIDownload_MOZILLA_1_8_BRANCH.prototype.STATE_IS_DOCUMENT=0;
-nsIDownload_MOZILLA_1_8_BRANCH.prototype.STATE_IS_NETWORK=0;
-nsIDownload_MOZILLA_1_8_BRANCH.prototype.STATE_IS_WINDOW=0;
-nsIDownload_MOZILLA_1_8_BRANCH.prototype.STATE_RESTORING=0;
-nsIDownload_MOZILLA_1_8_BRANCH.prototype.STATE_IS_INSECURE=0;
-nsIDownload_MOZILLA_1_8_BRANCH.prototype.STATE_IS_BROKEN=0;
-nsIDownload_MOZILLA_1_8_BRANCH.prototype.STATE_IS_SECURE=0;
-nsIDownload_MOZILLA_1_8_BRANCH.prototype.STATE_SECURE_HIGH=0;
-nsIDownload_MOZILLA_1_8_BRANCH.prototype.STATE_SECURE_MED=0;
-nsIDownload_MOZILLA_1_8_BRANCH.prototype.STATE_SECURE_LOW=0;
-nsITransfer.prototype= new Array();
-function nsITransfer(){};
-nsITransfer.prototype.STATE_START=0;
-nsITransfer.prototype.STATE_REDIRECTING=0;
-nsITransfer.prototype.STATE_TRANSFERRING=0;
-nsITransfer.prototype.STATE_NEGOTIATING=0;
-nsITransfer.prototype.STATE_STOP=0;
-nsITransfer.prototype.STATE_IS_REQUEST=0;
-nsITransfer.prototype.STATE_IS_DOCUMENT=0;
-nsITransfer.prototype.STATE_IS_NETWORK=0;
-nsITransfer.prototype.STATE_IS_WINDOW=0;
-nsITransfer.prototype.STATE_RESTORING=0;
-nsITransfer.prototype.STATE_IS_INSECURE=0;
-nsITransfer.prototype.STATE_IS_BROKEN=0;
-nsITransfer.prototype.STATE_IS_SECURE=0;
-nsITransfer.prototype.STATE_SECURE_HIGH=0;
-nsITransfer.prototype.STATE_SECURE_MED=0;
-nsITransfer.prototype.STATE_SECURE_LOW=0;
-nsIWebBrowserStream.prototype= new Array();
-function nsIWebBrowserStream(){};
-nsIDOMHTMLTableColElement.prototype= new Array();
-function nsIDOMHTMLTableColElement(){};
-nsIDOMHTMLTableColElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLTableColElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLTableColElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLTableColElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLTableColElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLTableColElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLTableColElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLTableColElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLTableColElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLTableColElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLTableColElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLTableColElement.prototype.NOTATION_NODE=0;
-nsIDOMCSSRuleList.prototype= new Array();
-function nsIDOMCSSRuleList(){};
-nsIDOMSVGPathSegCurvetoQuadraticRel.prototype= new Array();
-function nsIDOMSVGPathSegCurvetoQuadraticRel(){};
-nsIDOMSVGPathSegCurvetoQuadraticRel.prototype.PATHSEG_UNKNOWN="";
-nsIDOMSVGPathSegCurvetoQuadraticRel.prototype.PATHSEG_CLOSEPATH=0;
-nsIDOMSVGPathSegCurvetoQuadraticRel.prototype.PATHSEG_MOVETO_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticRel.prototype.PATHSEG_MOVETO_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticRel.prototype.PATHSEG_LINETO_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticRel.prototype.PATHSEG_LINETO_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticRel.prototype.PATHSEG_CURVETO_CUBIC_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticRel.prototype.PATHSEG_CURVETO_CUBIC_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticRel.prototype.PATHSEG_CURVETO_QUADRATIC_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticRel.prototype.PATHSEG_CURVETO_QUADRATIC_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticRel.prototype.PATHSEG_ARC_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticRel.prototype.PATHSEG_ARC_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticRel.prototype.PATHSEG_LINETO_HORIZONTAL_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticRel.prototype.PATHSEG_LINETO_HORIZONTAL_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticRel.prototype.PATHSEG_LINETO_VERTICAL_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticRel.prototype.PATHSEG_LINETO_VERTICAL_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticRel.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticRel.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticRel.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticRel.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL=0;
-imgIEncoder_MOZILLA_1_8_BRANCH.prototype= new Array();
-function imgIEncoder_MOZILLA_1_8_BRANCH(){};
-imgIEncoder_MOZILLA_1_8_BRANCH.prototype.INPUT_FORMAT_RGB="";
-imgIEncoder_MOZILLA_1_8_BRANCH.prototype.INPUT_FORMAT_RGBA=0;
-imgIEncoder_MOZILLA_1_8_BRANCH.prototype.INPUT_FORMAT_HOSTARGB=0;
-nsIDOMSVGTSpanElement.prototype= new Array();
-function nsIDOMSVGTSpanElement(){};
-nsIDOMSVGTSpanElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGTSpanElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGTSpanElement.prototype.TEXT_NODE=0;
-nsIDOMSVGTSpanElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGTSpanElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGTSpanElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGTSpanElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGTSpanElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGTSpanElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGTSpanElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGTSpanElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGTSpanElement.prototype.NOTATION_NODE=0;
-nsIDOMSVGTSpanElement.prototype.LENGTHADJUST_UNKNOWN="";
-nsIDOMSVGTSpanElement.prototype.LENGTHADJUST_SPACING=0;
-nsIDOMSVGTSpanElement.prototype.LENGTHADJUST_SPACINGANDGLYPHS=0;
-nsIControllerContext.prototype= new Array();
-function nsIControllerContext(){};
-nsIUrlClassifierStreamUpdater.prototype= new Array();
-function nsIUrlClassifierStreamUpdater(){};
-nsIDOMSVGClipPathElement.prototype= new Array();
-function nsIDOMSVGClipPathElement(){};
-nsIDOMSVGClipPathElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGClipPathElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGClipPathElement.prototype.TEXT_NODE=0;
-nsIDOMSVGClipPathElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGClipPathElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGClipPathElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGClipPathElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGClipPathElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGClipPathElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGClipPathElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGClipPathElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGClipPathElement.prototype.NOTATION_NODE=0;
-nsIDOMSVGClipPathElement.prototype.SVG_CPUNITS_UNKNOWN="";
-nsIDOMSVGClipPathElement.prototype.SVG_CPUNITS_OBJECTBOUNDINGBOX=0;
-nsIDOMSVGClipPathElement.prototype.SVG_CPUNITS_USERSPACEONUSE=0;
-nsIDOMHTMLIsIndexElement.prototype= new Array();
-function nsIDOMHTMLIsIndexElement(){};
-nsIDOMHTMLIsIndexElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLIsIndexElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLIsIndexElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLIsIndexElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLIsIndexElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLIsIndexElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLIsIndexElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLIsIndexElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLIsIndexElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLIsIndexElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLIsIndexElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLIsIndexElement.prototype.NOTATION_NODE=0;
-nsIExpatSink.prototype= new Array();
-function nsIExpatSink(){};
-nsIWebBrowserSetup.prototype= new Array();
-function nsIWebBrowserSetup(){};
-nsIWebBrowserSetup.prototype.SETUP_ALLOW_PLUGINS=0;
-nsIWebBrowserSetup.prototype.SETUP_ALLOW_JAVASCRIPT=0;
-nsIWebBrowserSetup.prototype.SETUP_ALLOW_META_REDIRECTS=0;
-nsIWebBrowserSetup.prototype.SETUP_ALLOW_SUBFRAMES=0;
-nsIWebBrowserSetup.prototype.SETUP_ALLOW_IMAGES=0;
-nsIWebBrowserSetup.prototype.SETUP_FOCUS_DOC_BEFORE_CONTENT=0;
-nsIWebBrowserSetup.prototype.SETUP_USE_GLOBAL_HISTORY=0;
-nsIWebBrowserSetup.prototype.SETUP_IS_CHROME_WRAPPER=0;
-nsISOCKSSocketInfo.prototype= new Array();
-function nsISOCKSSocketInfo(){};
-nsIDOMEventListener.prototype= new Array();
-function nsIDOMEventListener(){};
-nsIPermission.prototype= new Array();
-function nsIPermission(){};
-nsIEditorObserver.prototype= new Array();
-function nsIEditorObserver(){};
-nsIScriptableMethodInfo.prototype= new Array();
-function nsIScriptableMethodInfo(){};
-nsIScriptSecurityManager.prototype= new Array();
-function nsIScriptSecurityManager(){};
-nsIScriptSecurityManager.prototype.HOOK_CREATE_WRAPPER=0;
-nsIScriptSecurityManager.prototype.HOOK_CREATE_INSTANCE=0;
-nsIScriptSecurityManager.prototype.HOOK_GET_SERVICE=0;
-nsIScriptSecurityManager.prototype.HOOK_CALL_METHOD=0;
-nsIScriptSecurityManager.prototype.HOOK_GET_PROPERTY=0;
-nsIScriptSecurityManager.prototype.HOOK_SET_PROPERTY=0;
-nsIScriptSecurityManager.prototype.HOOK_ALL=0;
-nsIScriptSecurityManager.prototype.ACCESS_CALL_METHOD="";
-nsIScriptSecurityManager.prototype.ACCESS_GET_PROPERTY=0;
-nsIScriptSecurityManager.prototype.ACCESS_SET_PROPERTY=0;
-nsIScriptSecurityManager.prototype.STANDARD="";
-nsIScriptSecurityManager.prototype.DISALLOW_FROM_MAIL=0;
-nsIScriptSecurityManager.prototype.ALLOW_CHROME=0;
-nsIScriptSecurityManager.prototype.DISALLOW_SCRIPT_OR_DATA=0;
-nsIScriptSecurityManager.prototype.DISALLOW_SCRIPT=0;
-nsIDOMEventGroup.prototype= new Array();
-function nsIDOMEventGroup(){};
-nsIURIFixup_MOZILLA_1_8_BRANCH.prototype= new Array();
-function nsIURIFixup_MOZILLA_1_8_BRANCH(){};
-nsIURIFixup_MOZILLA_1_8_BRANCH.prototype.FIXUP_FLAG_NONE="";
-nsIURIFixup_MOZILLA_1_8_BRANCH.prototype.FIXUP_FLAG_ALLOW_KEYWORD_LOOKUP=0;
-nsIURIFixup_MOZILLA_1_8_BRANCH.prototype.FIXUP_FLAGS_MAKE_ALTERNATE_URI=0;
-nsITooltipListener.prototype= new Array();
-function nsITooltipListener(){};
-nsIDOMStyleSheetList.prototype= new Array();
-function nsIDOMStyleSheetList(){};
-nsIDOMSVGNumberList.prototype= new Array();
-function nsIDOMSVGNumberList(){};
-nsIPermissionManager.prototype= new Array();
-function nsIPermissionManager(){};
-nsIPermissionManager.prototype.UNKNOWN_ACTION="";
-nsIPermissionManager.prototype.ALLOW_ACTION=0;
-nsIPermissionManager.prototype.DENY_ACTION=0;
-nsIDOMNSFeatureFactory.prototype= new Array();
-function nsIDOMNSFeatureFactory(){};
-nsIUpdate_MOZILLA_1_8_BRANCH.prototype= new Array();
-function nsIUpdate_MOZILLA_1_8_BRANCH(){};
-nsISAXLexicalHandler.prototype= new Array();
-function nsISAXLexicalHandler(){};
-nsISMimeCert.prototype= new Array();
-function nsISMimeCert(){};
-nsISidebarExternal.prototype= new Array();
-function nsISidebarExternal(){};
-nsIDOMSVGPathSegArcRel.prototype= new Array();
-function nsIDOMSVGPathSegArcRel(){};
-nsIDOMSVGPathSegArcRel.prototype.PATHSEG_UNKNOWN="";
-nsIDOMSVGPathSegArcRel.prototype.PATHSEG_CLOSEPATH=0;
-nsIDOMSVGPathSegArcRel.prototype.PATHSEG_MOVETO_ABS=0;
-nsIDOMSVGPathSegArcRel.prototype.PATHSEG_MOVETO_REL=0;
-nsIDOMSVGPathSegArcRel.prototype.PATHSEG_LINETO_ABS=0;
-nsIDOMSVGPathSegArcRel.prototype.PATHSEG_LINETO_REL=0;
-nsIDOMSVGPathSegArcRel.prototype.PATHSEG_CURVETO_CUBIC_ABS=0;
-nsIDOMSVGPathSegArcRel.prototype.PATHSEG_CURVETO_CUBIC_REL=0;
-nsIDOMSVGPathSegArcRel.prototype.PATHSEG_CURVETO_QUADRATIC_ABS=0;
-nsIDOMSVGPathSegArcRel.prototype.PATHSEG_CURVETO_QUADRATIC_REL=0;
-nsIDOMSVGPathSegArcRel.prototype.PATHSEG_ARC_ABS=0;
-nsIDOMSVGPathSegArcRel.prototype.PATHSEG_ARC_REL=0;
-nsIDOMSVGPathSegArcRel.prototype.PATHSEG_LINETO_HORIZONTAL_ABS=0;
-nsIDOMSVGPathSegArcRel.prototype.PATHSEG_LINETO_HORIZONTAL_REL=0;
-nsIDOMSVGPathSegArcRel.prototype.PATHSEG_LINETO_VERTICAL_ABS=0;
-nsIDOMSVGPathSegArcRel.prototype.PATHSEG_LINETO_VERTICAL_REL=0;
-nsIDOMSVGPathSegArcRel.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegArcRel.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_REL=0;
-nsIDOMSVGPathSegArcRel.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegArcRel.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL=0;
-nsIEventQueueService.prototype= new Array();
-function nsIEventQueueService(){};
-nsIEventQueueService.prototype.CURRENT_THREAD_EVENT_QUEUE="";
-nsIEventQueueService.prototype.UI_THREAD_EVENT_QUEUE=0;
-nsISaveAsCharset.prototype= new Array();
-function nsISaveAsCharset(){};
-nsISaveAsCharset.prototype.mask_Fallback=0;
-nsISaveAsCharset.prototype.mask_Entity=0;
-nsISaveAsCharset.prototype.mask_CharsetFallback=0;
-nsISaveAsCharset.prototype.mask_IgnorableFallback=0;
-nsISaveAsCharset.prototype.attr_FallbackNone="";
-nsISaveAsCharset.prototype.attr_FallbackQuestionMark=0;
-nsISaveAsCharset.prototype.attr_FallbackEscapeU=0;
-nsISaveAsCharset.prototype.attr_FallbackDecimalNCR=0;
-nsISaveAsCharset.prototype.attr_FallbackHexNCR=0;
-nsISaveAsCharset.prototype.attr_EntityNone="";
-nsISaveAsCharset.prototype.attr_EntityBeforeCharsetConv=0;
-nsISaveAsCharset.prototype.attr_EntityAfterCharsetConv=0;
-nsISaveAsCharset.prototype.attr_CharsetFallback=0;
-nsISaveAsCharset.prototype.attr_IgnoreIgnorables=0;
-nsISaveAsCharset.prototype.attr_plainTextDefault="";
-nsISaveAsCharset.prototype.attr_htmlTextDefault=0;
-nsICMSSecureMessage.prototype= new Array();
-function nsICMSSecureMessage(){};
-nsIStringBundleService.prototype= new Array();
-function nsIStringBundleService(){};
-nsIXULOverlayProvider.prototype= new Array();
-function nsIXULOverlayProvider(){};
-nsIDOMSVGTransformList.prototype= new Array();
-function nsIDOMSVGTransformList(){};
-nsIDOMDOMException.prototype= new Array();
-function nsIDOMDOMException(){};
-nsIDOMDOMException.prototype.INDEX_SIZE_ERR=0;
-nsIDOMDOMException.prototype.DOMSTRING_SIZE_ERR=0;
-nsIDOMDOMException.prototype.HIERARCHY_REQUEST_ERR=0;
-nsIDOMDOMException.prototype.WRONG_DOCUMENT_ERR=0;
-nsIDOMDOMException.prototype.INVALID_CHARACTER_ERR=0;
-nsIDOMDOMException.prototype.NO_DATA_ALLOWED_ERR=0;
-nsIDOMDOMException.prototype.NO_MODIFICATION_ALLOWED_ERR=0;
-nsIDOMDOMException.prototype.NOT_FOUND_ERR=0;
-nsIDOMDOMException.prototype.NOT_SUPPORTED_ERR=0;
-nsIDOMDOMException.prototype.INUSE_ATTRIBUTE_ERR=0;
-nsIDOMDOMException.prototype.INVALID_STATE_ERR=0;
-nsIDOMDOMException.prototype.SYNTAX_ERR=0;
-nsIDOMDOMException.prototype.INVALID_MODIFICATION_ERR=0;
-nsIDOMDOMException.prototype.NAMESPACE_ERR=0;
-nsIDOMDOMException.prototype.INVALID_ACCESS_ERR=0;
-nsIDOMDOMException.prototype.VALIDATION_ERR=0;
-nsIDOMDOMException.prototype.TYPE_MISMATCH_ERR=0;
-nsIScriptableUnicodeConverter.prototype= new Array();
-function nsIScriptableUnicodeConverter(){};
-nsIFastLoadFileIO.prototype= new Array();
-function nsIFastLoadFileIO(){};
-nsICollation.prototype= new Array();
-function nsICollation(){};
-nsICollation.prototype.kCollationStrengthDefault="";
-nsICollation.prototype.kCollationCaseInsensitiveAscii=0;
-nsICollation.prototype.kCollationAccentInsenstive=0;
-nsICollation.prototype.kCollationCaseSensitive="";
-nsICollation.prototype.kCollationCaseInSensitive=0;
-nsIComponentManager.prototype= new Array();
-function nsIComponentManager(){};
-nsIBrowserSearchService.prototype= new Array();
-function nsIBrowserSearchService(){};
-nsIXSLTProcessorObsolete.prototype= new Array();
-function nsIXSLTProcessorObsolete(){};
-nsIUUIDGenerator.prototype= new Array();
-function nsIUUIDGenerator(){};
-nsIControllerCommandGroup.prototype= new Array();
-function nsIControllerCommandGroup(){};
-nsIDOMLocation.prototype= new Array();
-function nsIDOMLocation(){};
-nsITXTToHTMLConv.prototype= new Array();
-function nsITXTToHTMLConv(){};
-nsISessionStore.prototype= new Array();
-function nsISessionStore(){};
-nsIRDFBlob.prototype= new Array();
-function nsIRDFBlob(){};
-nsIDOMHTMLHeadElement.prototype= new Array();
-function nsIDOMHTMLHeadElement(){};
-nsIDOMHTMLHeadElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLHeadElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLHeadElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLHeadElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLHeadElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLHeadElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLHeadElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLHeadElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLHeadElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLHeadElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLHeadElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLHeadElement.prototype.NOTATION_NODE=0;
-nsIXPCComponents_Exception.prototype= new Array();
-function nsIXPCComponents_Exception(){};
-nsIASN1PrintableItem.prototype= new Array();
-function nsIASN1PrintableItem(){};
-nsIASN1PrintableItem.prototype.ASN1_END_CONTENTS="";
-nsIASN1PrintableItem.prototype.ASN1_BOOLEAN=0;
-nsIASN1PrintableItem.prototype.ASN1_INTEGER=0;
-nsIASN1PrintableItem.prototype.ASN1_BIT_STRING=0;
-nsIASN1PrintableItem.prototype.ASN1_OCTET_STRING=0;
-nsIASN1PrintableItem.prototype.ASN1_NULL=0;
-nsIASN1PrintableItem.prototype.ASN1_OBJECT_ID=0;
-nsIASN1PrintableItem.prototype.ASN1_ENUMERATED=0;
-nsIASN1PrintableItem.prototype.ASN1_UTF8_STRING=0;
-nsIASN1PrintableItem.prototype.ASN1_SEQUENCE=0;
-nsIASN1PrintableItem.prototype.ASN1_SET=0;
-nsIASN1PrintableItem.prototype.ASN1_PRINTABLE_STRING=0;
-nsIASN1PrintableItem.prototype.ASN1_T61_STRING=0;
-nsIASN1PrintableItem.prototype.ASN1_IA5_STRING=0;
-nsIASN1PrintableItem.prototype.ASN1_UTC_TIME=0;
-nsIASN1PrintableItem.prototype.ASN1_GEN_TIME=0;
-nsIASN1PrintableItem.prototype.ASN1_VISIBLE_STRING=0;
-nsIASN1PrintableItem.prototype.ASN1_UNIVERSAL_STRING=0;
-nsIASN1PrintableItem.prototype.ASN1_BMP_STRING=0;
-nsIASN1PrintableItem.prototype.ASN1_HIGH_TAG_NUMBER=0;
-nsIASN1PrintableItem.prototype.ASN1_CONTEXT_SPECIFIC=0;
-nsIASN1PrintableItem.prototype.ASN1_APPLICATION=0;
-nsIASN1PrintableItem.prototype.ASN1_PRIVATE=0;
-nsIEditorStyleSheets.prototype= new Array();
-function nsIEditorStyleSheets(){};
-nsIDOMNSHTMLButtonElement.prototype= new Array();
-function nsIDOMNSHTMLButtonElement(){};
-nsIDOMHTMLMapElement.prototype= new Array();
-function nsIDOMHTMLMapElement(){};
-nsIDOMHTMLMapElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLMapElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLMapElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLMapElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLMapElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLMapElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLMapElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLMapElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLMapElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLMapElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLMapElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLMapElement.prototype.NOTATION_NODE=0;
-nsIDOMHTMLBRElement.prototype= new Array();
-function nsIDOMHTMLBRElement(){};
-nsIDOMHTMLBRElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLBRElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLBRElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLBRElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLBRElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLBRElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLBRElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLBRElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLBRElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLBRElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLBRElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLBRElement.prototype.NOTATION_NODE=0;
-nsISupportsDouble.prototype= new Array();
-function nsISupportsDouble(){};
-nsISupportsDouble.prototype.TYPE_ID=0;
-nsISupportsDouble.prototype.TYPE_CSTRING=0;
-nsISupportsDouble.prototype.TYPE_STRING=0;
-nsISupportsDouble.prototype.TYPE_PRBOOL=0;
-nsISupportsDouble.prototype.TYPE_PRUINT8=0;
-nsISupportsDouble.prototype.TYPE_PRUINT16=0;
-nsISupportsDouble.prototype.TYPE_PRUINT32=0;
-nsISupportsDouble.prototype.TYPE_PRUINT64=0;
-nsISupportsDouble.prototype.TYPE_PRTIME=0;
-nsISupportsDouble.prototype.TYPE_CHAR=0;
-nsISupportsDouble.prototype.TYPE_PRINT16=0;
-nsISupportsDouble.prototype.TYPE_PRINT32=0;
-nsISupportsDouble.prototype.TYPE_PRINT64=0;
-nsISupportsDouble.prototype.TYPE_FLOAT=0;
-nsISupportsDouble.prototype.TYPE_DOUBLE=0;
-nsISupportsDouble.prototype.TYPE_VOID=0;
-nsISupportsDouble.prototype.TYPE_INTERFACE_POINTER=0;
-nsIProtocolProxyCallback.prototype= new Array();
-function nsIProtocolProxyCallback(){};
-nsIDOMHTMLLinkElement.prototype= new Array();
-function nsIDOMHTMLLinkElement(){};
-nsIDOMHTMLLinkElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLLinkElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLLinkElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLLinkElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLLinkElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLLinkElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLLinkElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLLinkElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLLinkElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLLinkElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLLinkElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLLinkElement.prototype.NOTATION_NODE=0;
-nsIXULSortService.prototype= new Array();
-function nsIXULSortService(){};
-nsIDOMNSHTMLOptionCollection.prototype= new Array();
-function nsIDOMNSHTMLOptionCollection(){};
-nsIXULTreeBuilder.prototype= new Array();
-function nsIXULTreeBuilder(){};
-nsIDOMSVGNumber.prototype= new Array();
-function nsIDOMSVGNumber(){};
-nsIHistoryEntry.prototype= new Array();
-function nsIHistoryEntry(){};
-nsIDOMXULImageElement.prototype= new Array();
-function nsIDOMXULImageElement(){};
-nsIDOMXULImageElement.prototype.ELEMENT_NODE=0;
-nsIDOMXULImageElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMXULImageElement.prototype.TEXT_NODE=0;
-nsIDOMXULImageElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMXULImageElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMXULImageElement.prototype.ENTITY_NODE=0;
-nsIDOMXULImageElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMXULImageElement.prototype.COMMENT_NODE=0;
-nsIDOMXULImageElement.prototype.DOCUMENT_NODE=0;
-nsIDOMXULImageElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMXULImageElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMXULImageElement.prototype.NOTATION_NODE=0;
-nsIFileURL.prototype= new Array();
-function nsIFileURL(){};
-nsIFindService.prototype= new Array();
-function nsIFindService(){};
-nsIDOMLSLoadEvent.prototype= new Array();
-function nsIDOMLSLoadEvent(){};
-nsIDOMLSLoadEvent.prototype.CAPTURING_PHASE=0;
-nsIDOMLSLoadEvent.prototype.AT_TARGET=0;
-nsIDOMLSLoadEvent.prototype.BUBBLING_PHASE=0;
-nsINetworkLinkService.prototype= new Array();
-function nsINetworkLinkService(){};
-nsIClipboardHelper.prototype= new Array();
-function nsIClipboardHelper(){};
-nsIPref.prototype= new Array();
-function nsIPref(){};
-nsIPref.prototype.ePrefInvalid="";
-nsIPref.prototype.ePrefLocked=0;
-nsIPref.prototype.ePrefUserset=0;
-nsIPref.prototype.ePrefConfig=0;
-nsIPref.prototype.ePrefRemote=0;
-nsIPref.prototype.ePrefLilocal=0;
-nsIPref.prototype.ePrefString=0;
-nsIPref.prototype.ePrefInt=0;
-nsIPref.prototype.ePrefBool=0;
-nsIPref.prototype.ePrefValuetypeMask=0;
-nsIWebProgressListener.prototype= new Array();
-function nsIWebProgressListener(){};
-nsIWebProgressListener.prototype.STATE_START=0;
-nsIWebProgressListener.prototype.STATE_REDIRECTING=0;
-nsIWebProgressListener.prototype.STATE_TRANSFERRING=0;
-nsIWebProgressListener.prototype.STATE_NEGOTIATING=0;
-nsIWebProgressListener.prototype.STATE_STOP=0;
-nsIWebProgressListener.prototype.STATE_IS_REQUEST=0;
-nsIWebProgressListener.prototype.STATE_IS_DOCUMENT=0;
-nsIWebProgressListener.prototype.STATE_IS_NETWORK=0;
-nsIWebProgressListener.prototype.STATE_IS_WINDOW=0;
-nsIWebProgressListener.prototype.STATE_RESTORING=0;
-nsIWebProgressListener.prototype.STATE_IS_INSECURE=0;
-nsIWebProgressListener.prototype.STATE_IS_BROKEN=0;
-nsIWebProgressListener.prototype.STATE_IS_SECURE=0;
-nsIWebProgressListener.prototype.STATE_SECURE_HIGH=0;
-nsIWebProgressListener.prototype.STATE_SECURE_MED=0;
-nsIWebProgressListener.prototype.STATE_SECURE_LOW=0;
-nsIDragService.prototype= new Array();
-function nsIDragService(){};
-nsIDragService.prototype.DRAGDROP_ACTION_NONE="";
-nsIDragService.prototype.DRAGDROP_ACTION_COPY=0;
-nsIDragService.prototype.DRAGDROP_ACTION_MOVE=0;
-nsIDragService.prototype.DRAGDROP_ACTION_LINK=0;
-nsIDOMNSDocumentStyle.prototype= new Array();
-function nsIDOMNSDocumentStyle(){};
-nsIDOMHTMLStyleElement.prototype= new Array();
-function nsIDOMHTMLStyleElement(){};
-nsIDOMHTMLStyleElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLStyleElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLStyleElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLStyleElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLStyleElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLStyleElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLStyleElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLStyleElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLStyleElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLStyleElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLStyleElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLStyleElement.prototype.NOTATION_NODE=0;
-nsIOCSPResponder.prototype= new Array();
-function nsIOCSPResponder(){};
-nsILocale.prototype= new Array();
-function nsILocale(){};
-nsIUpdateItem.prototype= new Array();
-function nsIUpdateItem(){};
-nsIUpdateItem.prototype.TYPE_APP=0;
-nsIUpdateItem.prototype.TYPE_EXTENSION=0;
-nsIUpdateItem.prototype.TYPE_THEME=0;
-nsIUpdateItem.prototype.TYPE_LOCALE=0;
-nsIUpdateItem.prototype.TYPE_PLUGIN=0;
-nsIUpdateItem.prototype.TYPE_MULTI_XPI=0;
-nsIUpdateItem.prototype.TYPE_ADDON=0;
-nsIUpdateItem.prototype.TYPE_ANY=0;
-nsICiter.prototype= new Array();
-function nsICiter(){};
-nsISchemaRestrictionType.prototype= new Array();
-function nsISchemaRestrictionType(){};
-nsISchemaRestrictionType.prototype.SCHEMA_TYPE_SIMPLE=0;
-nsISchemaRestrictionType.prototype.SCHEMA_TYPE_COMPLEX=0;
-nsISchemaRestrictionType.prototype.SCHEMA_TYPE_PLACEHOLDER=0;
-nsISchemaRestrictionType.prototype.SIMPLE_TYPE_BUILTIN=0;
-nsISchemaRestrictionType.prototype.SIMPLE_TYPE_LIST=0;
-nsISchemaRestrictionType.prototype.SIMPLE_TYPE_UNION=0;
-nsISchemaRestrictionType.prototype.SIMPLE_TYPE_RESTRICTION=0;
-nsIXSLTException.prototype= new Array();
-function nsIXSLTException(){};
-nsIFormHistoryImporter.prototype= new Array();
-function nsIFormHistoryImporter(){};
-nsISAXDTDHandler.prototype= new Array();
-function nsISAXDTDHandler(){};
-nsIRequestObserverProxy.prototype= new Array();
-function nsIRequestObserverProxy(){};
-nsIDOMSVGDocument.prototype= new Array();
-function nsIDOMSVGDocument(){};
-nsIDOMSVGDocument.prototype.ELEMENT_NODE=0;
-nsIDOMSVGDocument.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGDocument.prototype.TEXT_NODE=0;
-nsIDOMSVGDocument.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGDocument.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGDocument.prototype.ENTITY_NODE=0;
-nsIDOMSVGDocument.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGDocument.prototype.COMMENT_NODE=0;
-nsIDOMSVGDocument.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGDocument.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGDocument.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGDocument.prototype.NOTATION_NODE=0;
-nsIDOM3Node.prototype= new Array();
-function nsIDOM3Node(){};
-nsIDOM3Node.prototype.DOCUMENT_POSITION_DISCONNECTED=0;
-nsIDOM3Node.prototype.DOCUMENT_POSITION_PRECEDING=0;
-nsIDOM3Node.prototype.DOCUMENT_POSITION_FOLLOWING=0;
-nsIDOM3Node.prototype.DOCUMENT_POSITION_CONTAINS=0;
-nsIDOM3Node.prototype.DOCUMENT_POSITION_CONTAINED_BY=0;
-nsIDOM3Node.prototype.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC=0;
-nsIDOMHTMLUListElement.prototype= new Array();
-function nsIDOMHTMLUListElement(){};
-nsIDOMHTMLUListElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLUListElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLUListElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLUListElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLUListElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLUListElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLUListElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLUListElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLUListElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLUListElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLUListElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLUListElement.prototype.NOTATION_NODE=0;
-nsIActiveXSecurityPolicy.prototype= new Array();
-function nsIActiveXSecurityPolicy(){};
-nsIActiveXSecurityPolicy.prototype.HOSTING_FLAGS_HOST_NOTHING="";
-nsIActiveXSecurityPolicy.prototype.HOSTING_FLAGS_HOST_SAFE_OBJECTS=0;
-nsIActiveXSecurityPolicy.prototype.HOSTING_FLAGS_HOST_ALL_OBJECTS=0;
-nsIActiveXSecurityPolicy.prototype.HOSTING_FLAGS_DOWNLOAD_CONTROLS=0;
-nsIActiveXSecurityPolicy.prototype.HOSTING_FLAGS_SCRIPT_SAFE_OBJECTS=0;
-nsIActiveXSecurityPolicy.prototype.HOSTING_FLAGS_SCRIPT_ALL_OBJECTS=0;
-nsIUnicodeNormalizer.prototype= new Array();
-function nsIUnicodeNormalizer(){};
-nsIDOMHTMLObjectElement.prototype= new Array();
-function nsIDOMHTMLObjectElement(){};
-nsIDOMHTMLObjectElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLObjectElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLObjectElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLObjectElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLObjectElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLObjectElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLObjectElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLObjectElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLObjectElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLObjectElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLObjectElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLObjectElement.prototype.NOTATION_NODE=0;
-nsIXULChromeRegistry.prototype= new Array();
-function nsIXULChromeRegistry(){};
-nsIXULChromeRegistry.prototype.NONE="";
-nsIXULChromeRegistry.prototype.PARTIAL=0;
-nsIXULChromeRegistry.prototype.FULL=0;
-nsIXPointerResult.prototype= new Array();
-function nsIXPointerResult(){};
-nsIDOMCRMFObject.prototype= new Array();
-function nsIDOMCRMFObject(){};
-nsIURI.prototype= new Array();
-function nsIURI(){};
-nsIDOMSVGMatrix.prototype= new Array();
-function nsIDOMSVGMatrix(){};
-nsIDOMHTMLTableElement.prototype= new Array();
-function nsIDOMHTMLTableElement(){};
-nsIDOMHTMLTableElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLTableElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLTableElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLTableElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLTableElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLTableElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLTableElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLTableElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLTableElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLTableElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLTableElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLTableElement.prototype.NOTATION_NODE=0;
-nsIDOMSVGEvent.prototype= new Array();
-function nsIDOMSVGEvent(){};
-nsIDOMSVGEvent.prototype.CAPTURING_PHASE=0;
-nsIDOMSVGEvent.prototype.AT_TARGET=0;
-nsIDOMSVGEvent.prototype.BUBBLING_PHASE=0;
-nsIDOMDocumentType.prototype= new Array();
-function nsIDOMDocumentType(){};
-nsIDOMDocumentType.prototype.ELEMENT_NODE=0;
-nsIDOMDocumentType.prototype.ATTRIBUTE_NODE=0;
-nsIDOMDocumentType.prototype.TEXT_NODE=0;
-nsIDOMDocumentType.prototype.CDATA_SECTION_NODE=0;
-nsIDOMDocumentType.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMDocumentType.prototype.ENTITY_NODE=0;
-nsIDOMDocumentType.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMDocumentType.prototype.COMMENT_NODE=0;
-nsIDOMDocumentType.prototype.DOCUMENT_NODE=0;
-nsIDOMDocumentType.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMDocumentType.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMDocumentType.prototype.NOTATION_NODE=0;
-nsIQTScriptablePlugin.prototype= new Array();
-function nsIQTScriptablePlugin(){};
-nsIDOMWindowUtils.prototype= new Array();
-function nsIDOMWindowUtils(){};
-nsIDOMXULPopupElement.prototype= new Array();
-function nsIDOMXULPopupElement(){};
-nsIDOMXULPopupElement.prototype.ELEMENT_NODE=0;
-nsIDOMXULPopupElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMXULPopupElement.prototype.TEXT_NODE=0;
-nsIDOMXULPopupElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMXULPopupElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMXULPopupElement.prototype.ENTITY_NODE=0;
-nsIDOMXULPopupElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMXULPopupElement.prototype.COMMENT_NODE=0;
-nsIDOMXULPopupElement.prototype.DOCUMENT_NODE=0;
-nsIDOMXULPopupElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMXULPopupElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMXULPopupElement.prototype.NOTATION_NODE=0;
-nsIDOMXULPopupElement.prototype.BEFORE_START=0;
-nsIDOMXULPopupElement.prototype.BEFORE_END=0;
-nsIDOMXULPopupElement.prototype.AFTER_START=0;
-nsIDOMXULPopupElement.prototype.AFTER_END=0;
-nsIDOMXULPopupElement.prototype.START_BEFORE=0;
-nsIDOMXULPopupElement.prototype.START_AFTER=0;
-nsIDOMXULPopupElement.prototype.END_BEFORE=0;
-nsIDOMXULPopupElement.prototype.END_AFTER=0;
-nsIDOMXULPopupElement.prototype.OVERLAP=0;
-nsIDOMXULPopupElement.prototype.AT_POINTER=0;
-nsIDOMXULPopupElement.prototype.AFTER_POINTER=0;
-nsISchemaComplexType.prototype= new Array();
-function nsISchemaComplexType(){};
-nsISchemaComplexType.prototype.SCHEMA_TYPE_SIMPLE=0;
-nsISchemaComplexType.prototype.SCHEMA_TYPE_COMPLEX=0;
-nsISchemaComplexType.prototype.SCHEMA_TYPE_PLACEHOLDER=0;
-nsISchemaComplexType.prototype.CONTENT_MODEL_EMPTY=0;
-nsISchemaComplexType.prototype.CONTENT_MODEL_SIMPLE=0;
-nsISchemaComplexType.prototype.CONTENT_MODEL_ELEMENT_ONLY=0;
-nsISchemaComplexType.prototype.CONTENT_MODEL_MIXED=0;
-nsISchemaComplexType.prototype.DERIVATION_EXTENSION_SIMPLE=0;
-nsISchemaComplexType.prototype.DERIVATION_RESTRICTION_SIMPLE=0;
-nsISchemaComplexType.prototype.DERIVATION_EXTENSION_COMPLEX=0;
-nsISchemaComplexType.prototype.DERIVATION_RESTRICTION_COMPLEX=0;
-nsISchemaComplexType.prototype.DERIVATION_SELF_CONTAINED=0;
-nsIOSChromeItem.prototype= new Array();
-function nsIOSChromeItem(){};
-nsIDOMSVGPathSegLinetoHorizontalAbs.prototype= new Array();
-function nsIDOMSVGPathSegLinetoHorizontalAbs(){};
-nsIDOMSVGPathSegLinetoHorizontalAbs.prototype.PATHSEG_UNKNOWN="";
-nsIDOMSVGPathSegLinetoHorizontalAbs.prototype.PATHSEG_CLOSEPATH=0;
-nsIDOMSVGPathSegLinetoHorizontalAbs.prototype.PATHSEG_MOVETO_ABS=0;
-nsIDOMSVGPathSegLinetoHorizontalAbs.prototype.PATHSEG_MOVETO_REL=0;
-nsIDOMSVGPathSegLinetoHorizontalAbs.prototype.PATHSEG_LINETO_ABS=0;
-nsIDOMSVGPathSegLinetoHorizontalAbs.prototype.PATHSEG_LINETO_REL=0;
-nsIDOMSVGPathSegLinetoHorizontalAbs.prototype.PATHSEG_CURVETO_CUBIC_ABS=0;
-nsIDOMSVGPathSegLinetoHorizontalAbs.prototype.PATHSEG_CURVETO_CUBIC_REL=0;
-nsIDOMSVGPathSegLinetoHorizontalAbs.prototype.PATHSEG_CURVETO_QUADRATIC_ABS=0;
-nsIDOMSVGPathSegLinetoHorizontalAbs.prototype.PATHSEG_CURVETO_QUADRATIC_REL=0;
-nsIDOMSVGPathSegLinetoHorizontalAbs.prototype.PATHSEG_ARC_ABS=0;
-nsIDOMSVGPathSegLinetoHorizontalAbs.prototype.PATHSEG_ARC_REL=0;
-nsIDOMSVGPathSegLinetoHorizontalAbs.prototype.PATHSEG_LINETO_HORIZONTAL_ABS=0;
-nsIDOMSVGPathSegLinetoHorizontalAbs.prototype.PATHSEG_LINETO_HORIZONTAL_REL=0;
-nsIDOMSVGPathSegLinetoHorizontalAbs.prototype.PATHSEG_LINETO_VERTICAL_ABS=0;
-nsIDOMSVGPathSegLinetoHorizontalAbs.prototype.PATHSEG_LINETO_VERTICAL_REL=0;
-nsIDOMSVGPathSegLinetoHorizontalAbs.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegLinetoHorizontalAbs.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_REL=0;
-nsIDOMSVGPathSegLinetoHorizontalAbs.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegLinetoHorizontalAbs.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL=0;
-nsIDialogParamBlock.prototype= new Array();
-function nsIDialogParamBlock(){};
-nsIDOMHTMLInputElement.prototype= new Array();
-function nsIDOMHTMLInputElement(){};
-nsIDOMHTMLInputElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLInputElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLInputElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLInputElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLInputElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLInputElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLInputElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLInputElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLInputElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLInputElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLInputElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLInputElement.prototype.NOTATION_NODE=0;
-imgIRequest.prototype= new Array();
-function imgIRequest(){};
-imgIRequest.prototype.LOAD_NORMAL="";
-imgIRequest.prototype.LOAD_BACKGROUND=0;
-imgIRequest.prototype.INHIBIT_CACHING=0;
-imgIRequest.prototype.INHIBIT_PERSISTENT_CACHING=0;
-imgIRequest.prototype.LOAD_BYPASS_CACHE=0;
-imgIRequest.prototype.LOAD_FROM_CACHE=0;
-imgIRequest.prototype.VALIDATE_ALWAYS=0;
-imgIRequest.prototype.VALIDATE_NEVER=0;
-imgIRequest.prototype.VALIDATE_ONCE_PER_SESSION=0;
-imgIRequest.prototype.STATUS_NONE="";
-imgIRequest.prototype.STATUS_SIZE_AVAILABLE=0;
-imgIRequest.prototype.STATUS_LOAD_PARTIAL=0;
-imgIRequest.prototype.STATUS_LOAD_COMPLETE=0;
-imgIRequest.prototype.STATUS_ERROR=0;
-imgIRequest.prototype.STATUS_FRAME_COMPLETE=0;
-nsIContextMenuListener.prototype= new Array();
-function nsIContextMenuListener(){};
-nsIContextMenuListener.prototype.CONTEXT_NONE="";
-nsIContextMenuListener.prototype.CONTEXT_LINK=0;
-nsIContextMenuListener.prototype.CONTEXT_IMAGE=0;
-nsIContextMenuListener.prototype.CONTEXT_DOCUMENT=0;
-nsIContextMenuListener.prototype.CONTEXT_TEXT=0;
-nsIContextMenuListener.prototype.CONTEXT_INPUT=0;
-nsIExceptionManager.prototype= new Array();
-function nsIExceptionManager(){};
-nsITimerInternal.prototype= new Array();
-function nsITimerInternal(){};
-nsISOAPTransport.prototype= new Array();
-function nsISOAPTransport(){};
-nsIDOMComment.prototype= new Array();
-function nsIDOMComment(){};
-nsIDOMComment.prototype.ELEMENT_NODE=0;
-nsIDOMComment.prototype.ATTRIBUTE_NODE=0;
-nsIDOMComment.prototype.TEXT_NODE=0;
-nsIDOMComment.prototype.CDATA_SECTION_NODE=0;
-nsIDOMComment.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMComment.prototype.ENTITY_NODE=0;
-nsIDOMComment.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMComment.prototype.COMMENT_NODE=0;
-nsIDOMComment.prototype.DOCUMENT_NODE=0;
-nsIDOMComment.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMComment.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMComment.prototype.NOTATION_NODE=0;
-nsIRegistry.prototype= new Array();
-function nsIRegistry(){};
-nsIRegistry.prototype.None="";
-nsIRegistry.prototype.Users=0;
-nsIRegistry.prototype.Common=0;
-nsIRegistry.prototype.CurrentUser=0;
-nsIRegistry.prototype.ApplicationComponentRegistry=0;
-nsIRegistry.prototype.ApplicationRegistry=0;
-nsIRegistry.prototype.ApplicationCustomRegistry=0;
-nsIRegistry.prototype.String=0;
-nsIRegistry.prototype.Int32=0;
-nsIRegistry.prototype.Bytes=0;
-nsIRegistry.prototype.File=0;
-nsIHelperAppLauncherDialog.prototype= new Array();
-function nsIHelperAppLauncherDialog(){};
-nsIHelperAppLauncherDialog.prototype.REASON_CANTHANDLE="";
-nsIHelperAppLauncherDialog.prototype.REASON_SERVERREQUEST=0;
-nsIHelperAppLauncherDialog.prototype.REASON_TYPESNIFFED=0;
-jsdIProperty.prototype= new Array();
-function jsdIProperty(){};
-jsdIProperty.prototype.FLAG_ENUMERATE=0;
-jsdIProperty.prototype.FLAG_READONLY=0;
-jsdIProperty.prototype.FLAG_PERMANENT=0;
-jsdIProperty.prototype.FLAG_ALIAS=0;
-jsdIProperty.prototype.FLAG_ARGUMENT=0;
-jsdIProperty.prototype.FLAG_VARIABLE=0;
-jsdIProperty.prototype.FLAG_EXCEPTION=0;
-jsdIProperty.prototype.FLAG_ERROR=0;
-jsdIProperty.prototype.FLAG_HINTED=0;
-nsICookieService.prototype= new Array();
-function nsICookieService(){};
-nsIRDFInferDataSource.prototype= new Array();
-function nsIRDFInferDataSource(){};
-nsIDOMSVGCircleElement.prototype= new Array();
-function nsIDOMSVGCircleElement(){};
-nsIDOMSVGCircleElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGCircleElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGCircleElement.prototype.TEXT_NODE=0;
-nsIDOMSVGCircleElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGCircleElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGCircleElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGCircleElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGCircleElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGCircleElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGCircleElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGCircleElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGCircleElement.prototype.NOTATION_NODE=0;
-nsIDOMSVGPathSegLinetoVerticalAbs.prototype= new Array();
-function nsIDOMSVGPathSegLinetoVerticalAbs(){};
-nsIDOMSVGPathSegLinetoVerticalAbs.prototype.PATHSEG_UNKNOWN="";
-nsIDOMSVGPathSegLinetoVerticalAbs.prototype.PATHSEG_CLOSEPATH=0;
-nsIDOMSVGPathSegLinetoVerticalAbs.prototype.PATHSEG_MOVETO_ABS=0;
-nsIDOMSVGPathSegLinetoVerticalAbs.prototype.PATHSEG_MOVETO_REL=0;
-nsIDOMSVGPathSegLinetoVerticalAbs.prototype.PATHSEG_LINETO_ABS=0;
-nsIDOMSVGPathSegLinetoVerticalAbs.prototype.PATHSEG_LINETO_REL=0;
-nsIDOMSVGPathSegLinetoVerticalAbs.prototype.PATHSEG_CURVETO_CUBIC_ABS=0;
-nsIDOMSVGPathSegLinetoVerticalAbs.prototype.PATHSEG_CURVETO_CUBIC_REL=0;
-nsIDOMSVGPathSegLinetoVerticalAbs.prototype.PATHSEG_CURVETO_QUADRATIC_ABS=0;
-nsIDOMSVGPathSegLinetoVerticalAbs.prototype.PATHSEG_CURVETO_QUADRATIC_REL=0;
-nsIDOMSVGPathSegLinetoVerticalAbs.prototype.PATHSEG_ARC_ABS=0;
-nsIDOMSVGPathSegLinetoVerticalAbs.prototype.PATHSEG_ARC_REL=0;
-nsIDOMSVGPathSegLinetoVerticalAbs.prototype.PATHSEG_LINETO_HORIZONTAL_ABS=0;
-nsIDOMSVGPathSegLinetoVerticalAbs.prototype.PATHSEG_LINETO_HORIZONTAL_REL=0;
-nsIDOMSVGPathSegLinetoVerticalAbs.prototype.PATHSEG_LINETO_VERTICAL_ABS=0;
-nsIDOMSVGPathSegLinetoVerticalAbs.prototype.PATHSEG_LINETO_VERTICAL_REL=0;
-nsIDOMSVGPathSegLinetoVerticalAbs.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegLinetoVerticalAbs.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_REL=0;
-nsIDOMSVGPathSegLinetoVerticalAbs.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegLinetoVerticalAbs.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL=0;
-nsIProperty.prototype= new Array();
-function nsIProperty(){};
-nsIDocShellTreeNode.prototype= new Array();
-function nsIDocShellTreeNode(){};
-nsIChromeEventHandler.prototype= new Array();
-function nsIChromeEventHandler(){};
-nsIConsoleService_MOZILLA_1_8_BRANCH.prototype= new Array();
-function nsIConsoleService_MOZILLA_1_8_BRANCH(){};
-nsIDOMSVGPathSegCurvetoCubicSmoothRel.prototype= new Array();
-function nsIDOMSVGPathSegCurvetoCubicSmoothRel(){};
-nsIDOMSVGPathSegCurvetoCubicSmoothRel.prototype.PATHSEG_UNKNOWN="";
-nsIDOMSVGPathSegCurvetoCubicSmoothRel.prototype.PATHSEG_CLOSEPATH=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothRel.prototype.PATHSEG_MOVETO_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothRel.prototype.PATHSEG_MOVETO_REL=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothRel.prototype.PATHSEG_LINETO_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothRel.prototype.PATHSEG_LINETO_REL=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothRel.prototype.PATHSEG_CURVETO_CUBIC_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothRel.prototype.PATHSEG_CURVETO_CUBIC_REL=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothRel.prototype.PATHSEG_CURVETO_QUADRATIC_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothRel.prototype.PATHSEG_CURVETO_QUADRATIC_REL=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothRel.prototype.PATHSEG_ARC_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothRel.prototype.PATHSEG_ARC_REL=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothRel.prototype.PATHSEG_LINETO_HORIZONTAL_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothRel.prototype.PATHSEG_LINETO_HORIZONTAL_REL=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothRel.prototype.PATHSEG_LINETO_VERTICAL_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothRel.prototype.PATHSEG_LINETO_VERTICAL_REL=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothRel.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothRel.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_REL=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothRel.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicSmoothRel.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL=0;
-nsIDOMCSSCharsetRule.prototype= new Array();
-function nsIDOMCSSCharsetRule(){};
-nsIDOMCSSCharsetRule.prototype.UNKNOWN_RULE="";
-nsIDOMCSSCharsetRule.prototype.STYLE_RULE=0;
-nsIDOMCSSCharsetRule.prototype.CHARSET_RULE=0;
-nsIDOMCSSCharsetRule.prototype.IMPORT_RULE=0;
-nsIDOMCSSCharsetRule.prototype.MEDIA_RULE=0;
-nsIDOMCSSCharsetRule.prototype.FONT_FACE_RULE=0;
-nsIDOMCSSCharsetRule.prototype.PAGE_RULE=0;
-nsIPrefetchService.prototype= new Array();
-function nsIPrefetchService(){};
-nsIAccessibleWin32Object.prototype= new Array();
-function nsIAccessibleWin32Object(){};
-nsIObjectOutputStream.prototype= new Array();
-function nsIObjectOutputStream(){};
-nsIDOMSVGAnimatedRect.prototype= new Array();
-function nsIDOMSVGAnimatedRect(){};
-nsIDOMHTMLLabelElement.prototype= new Array();
-function nsIDOMHTMLLabelElement(){};
-nsIDOMHTMLLabelElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLLabelElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLLabelElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLLabelElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLLabelElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLLabelElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLLabelElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLLabelElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLLabelElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLLabelElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLLabelElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLLabelElement.prototype.NOTATION_NODE=0;
-nsIResumableChannel.prototype= new Array();
-function nsIResumableChannel(){};
-nsIScriptLoaderObserver.prototype= new Array();
-function nsIScriptLoaderObserver(){};
-nsIHttpChannelInternal.prototype= new Array();
-function nsIHttpChannelInternal(){};
-nsICollationFactory.prototype= new Array();
-function nsICollationFactory(){};
-nsIScriptableRegion.prototype= new Array();
-function nsIScriptableRegion(){};
-jsdINestCallback.prototype= new Array();
-function jsdINestCallback(){};
-nsPIAccessible.prototype= new Array();
-function nsPIAccessible(){};
-nsISchemaBuiltinType.prototype= new Array();
-function nsISchemaBuiltinType(){};
-nsISchemaBuiltinType.prototype.SCHEMA_TYPE_SIMPLE=0;
-nsISchemaBuiltinType.prototype.SCHEMA_TYPE_COMPLEX=0;
-nsISchemaBuiltinType.prototype.SCHEMA_TYPE_PLACEHOLDER=0;
-nsISchemaBuiltinType.prototype.SIMPLE_TYPE_BUILTIN=0;
-nsISchemaBuiltinType.prototype.SIMPLE_TYPE_LIST=0;
-nsISchemaBuiltinType.prototype.SIMPLE_TYPE_UNION=0;
-nsISchemaBuiltinType.prototype.SIMPLE_TYPE_RESTRICTION=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_ANYTYPE=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_STRING=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_NORMALIZED_STRING=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_TOKEN=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_BYTE=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_UNSIGNEDBYTE=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_BASE64BINARY=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_HEXBINARY=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_INTEGER=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_POSITIVEINTEGER=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_NEGATIVEINTEGER=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_NONNEGATIVEINTEGER=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_NONPOSITIVEINTEGER=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_INT=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_UNSIGNEDINT=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_LONG=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_UNSIGNEDLONG=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_SHORT=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_UNSIGNEDSHORT=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_DECIMAL=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_FLOAT=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_DOUBLE=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_BOOLEAN=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_TIME=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_DATETIME=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_DURATION=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_DATE=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_GMONTH=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_GYEAR=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_GYEARMONTH=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_GDAY=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_GMONTHDAY=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_NAME=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_QNAME=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_NCNAME=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_ANYURI=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_LANGUAGE=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_ID=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_IDREF=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_IDREFS=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_ENTITY=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_ENTITIES=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_NOTATION=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_NMTOKEN=0;
-nsISchemaBuiltinType.prototype.BUILTIN_TYPE_NMTOKENS=0;
-nsIAptanaBreakpointProperties.prototype= new Array();
-function nsIAptanaBreakpointProperties(){};
-nsIAptanaDebugger.prototype= new Array();
-function nsIAptanaDebugger(){};
-nsIDOMRange.prototype= new Array();
-function nsIDOMRange(){};
-nsIDOMRange.prototype.START_TO_START="";
-nsIDOMRange.prototype.START_TO_END=0;
-nsIDOMRange.prototype.END_TO_END=0;
-nsIDOMRange.prototype.END_TO_START=0;
-nsIEditor_MOZILLA_1_8_BRANCH.prototype= new Array();
-function nsIEditor_MOZILLA_1_8_BRANCH(){};
-nsIEditor_MOZILLA_1_8_BRANCH.prototype.eNone="";
-nsIEditor_MOZILLA_1_8_BRANCH.prototype.eNext=0;
-nsIEditor_MOZILLA_1_8_BRANCH.prototype.ePrevious=0;
-nsIEditor_MOZILLA_1_8_BRANCH.prototype.eNextWord=0;
-nsIEditor_MOZILLA_1_8_BRANCH.prototype.ePreviousWord=0;
-nsIEditor_MOZILLA_1_8_BRANCH.prototype.eToBeginningOfLine=0;
-nsIEditor_MOZILLA_1_8_BRANCH.prototype.eToEndOfLine=0;
-nsIListBoxObject.prototype= new Array();
-function nsIListBoxObject(){};
-nsIDOMCharacterData.prototype= new Array();
-function nsIDOMCharacterData(){};
-nsIDOMCharacterData.prototype.ELEMENT_NODE=0;
-nsIDOMCharacterData.prototype.ATTRIBUTE_NODE=0;
-nsIDOMCharacterData.prototype.TEXT_NODE=0;
-nsIDOMCharacterData.prototype.CDATA_SECTION_NODE=0;
-nsIDOMCharacterData.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMCharacterData.prototype.ENTITY_NODE=0;
-nsIDOMCharacterData.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMCharacterData.prototype.COMMENT_NODE=0;
-nsIDOMCharacterData.prototype.DOCUMENT_NODE=0;
-nsIDOMCharacterData.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMCharacterData.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMCharacterData.prototype.NOTATION_NODE=0;
-nsIDOM3Document.prototype= new Array();
-function nsIDOM3Document(){};
-nsIDOM3Document.prototype.DOCUMENT_POSITION_DISCONNECTED=0;
-nsIDOM3Document.prototype.DOCUMENT_POSITION_PRECEDING=0;
-nsIDOM3Document.prototype.DOCUMENT_POSITION_FOLLOWING=0;
-nsIDOM3Document.prototype.DOCUMENT_POSITION_CONTAINS=0;
-nsIDOM3Document.prototype.DOCUMENT_POSITION_CONTAINED_BY=0;
-nsIDOM3Document.prototype.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC=0;
-nsIByteRangeRequest.prototype= new Array();
-function nsIByteRangeRequest(){};
-nsIArray.prototype= new Array();
-function nsIArray(){};
-nsIDOMDocumentView.prototype= new Array();
-function nsIDOMDocumentView(){};
-rdfIDataSource.prototype= new Array();
-function rdfIDataSource(){};
-nsIXPCWrappedJSObjectGetter.prototype= new Array();
-function nsIXPCWrappedJSObjectGetter(){};
-mozIJSSubScriptLoader.prototype= new Array();
-function mozIJSSubScriptLoader(){};
-nsISOAPAttachments.prototype= new Array();
-function nsISOAPAttachments(){};
-nsIPKCS11Slot.prototype= new Array();
-function nsIPKCS11Slot(){};
-nsIPKCS11Slot.prototype.SLOT_DISABLED="";
-nsIPKCS11Slot.prototype.SLOT_NOT_PRESENT=0;
-nsIPKCS11Slot.prototype.SLOT_UNINITIALIZED=0;
-nsIPKCS11Slot.prototype.SLOT_NOT_LOGGED_IN=0;
-nsIPKCS11Slot.prototype.SLOT_LOGGED_IN=0;
-nsIPKCS11Slot.prototype.SLOT_READY=0;
-nsIDirectoryEnumerator.prototype= new Array();
-function nsIDirectoryEnumerator(){};
-nsIMutableArray.prototype= new Array();
-function nsIMutableArray(){};
-nsIWebServiceCallContext.prototype= new Array();
-function nsIWebServiceCallContext(){};
-nsIWebServiceCallContext.prototype.PENDING="";
-nsIWebServiceCallContext.prototype.SUCCEEDED=0;
-nsIWebServiceCallContext.prototype.FAILED=0;
-nsIWebServiceCallContext.prototype.ABORTED=0;
-nsIDOMNSUIEvent.prototype= new Array();
-function nsIDOMNSUIEvent(){};
-nsIDOMNSUIEvent.prototype.SCROLL_PAGE_UP=0;
-nsIDOMNSUIEvent.prototype.SCROLL_PAGE_DOWN=0;
-nsIDOMSVGMarkerElement.prototype= new Array();
-function nsIDOMSVGMarkerElement(){};
-nsIDOMSVGMarkerElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGMarkerElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGMarkerElement.prototype.TEXT_NODE=0;
-nsIDOMSVGMarkerElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGMarkerElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGMarkerElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGMarkerElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGMarkerElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGMarkerElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGMarkerElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGMarkerElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGMarkerElement.prototype.NOTATION_NODE=0;
-nsIDOMSVGMarkerElement.prototype.SVG_MARKERUNITS_UNKNOWN="";
-nsIDOMSVGMarkerElement.prototype.SVG_MARKERUNITS_USERSPACEONUSE=0;
-nsIDOMSVGMarkerElement.prototype.SVG_MARKERUNITS_STROKEWIDTH=0;
-nsIDOMSVGMarkerElement.prototype.SVG_MARKER_ORIENT_UNKNOWN="";
-nsIDOMSVGMarkerElement.prototype.SVG_MARKER_ORIENT_AUTO=0;
-nsIDOMSVGMarkerElement.prototype.SVG_MARKER_ORIENT_ANGLE=0;
-nsIDOMXULLabelElement.prototype= new Array();
-function nsIDOMXULLabelElement(){};
-nsIDOMXULLabelElement.prototype.ELEMENT_NODE=0;
-nsIDOMXULLabelElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMXULLabelElement.prototype.TEXT_NODE=0;
-nsIDOMXULLabelElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMXULLabelElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMXULLabelElement.prototype.ENTITY_NODE=0;
-nsIDOMXULLabelElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMXULLabelElement.prototype.COMMENT_NODE=0;
-nsIDOMXULLabelElement.prototype.DOCUMENT_NODE=0;
-nsIDOMXULLabelElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMXULLabelElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMXULLabelElement.prototype.NOTATION_NODE=0;
-nsIDOMUIEvent.prototype= new Array();
-function nsIDOMUIEvent(){};
-nsIDOMUIEvent.prototype.CAPTURING_PHASE=0;
-nsIDOMUIEvent.prototype.AT_TARGET=0;
-nsIDOMUIEvent.prototype.BUBBLING_PHASE=0;
-nsIRDFResource.prototype= new Array();
-function nsIRDFResource(){};
-nsIDOMSVGLength.prototype= new Array();
-function nsIDOMSVGLength(){};
-nsIDOMSVGLength.prototype.SVG_LENGTHTYPE_UNKNOWN="";
-nsIDOMSVGLength.prototype.SVG_LENGTHTYPE_NUMBER=0;
-nsIDOMSVGLength.prototype.SVG_LENGTHTYPE_PERCENTAGE=0;
-nsIDOMSVGLength.prototype.SVG_LENGTHTYPE_EMS=0;
-nsIDOMSVGLength.prototype.SVG_LENGTHTYPE_EXS=0;
-nsIDOMSVGLength.prototype.SVG_LENGTHTYPE_PX=0;
-nsIDOMSVGLength.prototype.SVG_LENGTHTYPE_CM=0;
-nsIDOMSVGLength.prototype.SVG_LENGTHTYPE_MM=0;
-nsIDOMSVGLength.prototype.SVG_LENGTHTYPE_IN=0;
-nsIDOMSVGLength.prototype.SVG_LENGTHTYPE_PT=0;
-nsIDOMSVGLength.prototype.SVG_LENGTHTYPE_PC=0;
-nsISidebar.prototype= new Array();
-function nsISidebar(){};
-nsIDOMSVGPreserveAspectRatio.prototype= new Array();
-function nsIDOMSVGPreserveAspectRatio(){};
-nsIDOMSVGPreserveAspectRatio.prototype.SVG_PRESERVEASPECTRATIO_UNKNOWN="";
-nsIDOMSVGPreserveAspectRatio.prototype.SVG_PRESERVEASPECTRATIO_NONE=0;
-nsIDOMSVGPreserveAspectRatio.prototype.SVG_PRESERVEASPECTRATIO_XMINYMIN=0;
-nsIDOMSVGPreserveAspectRatio.prototype.SVG_PRESERVEASPECTRATIO_XMIDYMIN=0;
-nsIDOMSVGPreserveAspectRatio.prototype.SVG_PRESERVEASPECTRATIO_XMAXYMIN=0;
-nsIDOMSVGPreserveAspectRatio.prototype.SVG_PRESERVEASPECTRATIO_XMINYMID=0;
-nsIDOMSVGPreserveAspectRatio.prototype.SVG_PRESERVEASPECTRATIO_XMIDYMID=0;
-nsIDOMSVGPreserveAspectRatio.prototype.SVG_PRESERVEASPECTRATIO_XMAXYMID=0;
-nsIDOMSVGPreserveAspectRatio.prototype.SVG_PRESERVEASPECTRATIO_XMINYMAX=0;
-nsIDOMSVGPreserveAspectRatio.prototype.SVG_PRESERVEASPECTRATIO_XMIDYMAX=0;
-nsIDOMSVGPreserveAspectRatio.prototype.SVG_PRESERVEASPECTRATIO_XMAXYMAX=0;
-nsIDOMSVGPreserveAspectRatio.prototype.SVG_MEETORSLICE_UNKNOWN="";
-nsIDOMSVGPreserveAspectRatio.prototype.SVG_MEETORSLICE_MEET=0;
-nsIDOMSVGPreserveAspectRatio.prototype.SVG_MEETORSLICE_SLICE=0;
-nsIEditorDocShell.prototype= new Array();
-function nsIEditorDocShell(){};
-nsIProgressDialog.prototype= new Array();
-function nsIProgressDialog(){};
-nsIProgressDialog.prototype.STATE_START=0;
-nsIProgressDialog.prototype.STATE_REDIRECTING=0;
-nsIProgressDialog.prototype.STATE_TRANSFERRING=0;
-nsIProgressDialog.prototype.STATE_NEGOTIATING=0;
-nsIProgressDialog.prototype.STATE_STOP=0;
-nsIProgressDialog.prototype.STATE_IS_REQUEST=0;
-nsIProgressDialog.prototype.STATE_IS_DOCUMENT=0;
-nsIProgressDialog.prototype.STATE_IS_NETWORK=0;
-nsIProgressDialog.prototype.STATE_IS_WINDOW=0;
-nsIProgressDialog.prototype.STATE_RESTORING=0;
-nsIProgressDialog.prototype.STATE_IS_INSECURE=0;
-nsIProgressDialog.prototype.STATE_IS_BROKEN=0;
-nsIProgressDialog.prototype.STATE_IS_SECURE=0;
-nsIProgressDialog.prototype.STATE_SECURE_HIGH=0;
-nsIProgressDialog.prototype.STATE_SECURE_MED=0;
-nsIProgressDialog.prototype.STATE_SECURE_LOW=0;
-nsIURIChecker.prototype= new Array();
-function nsIURIChecker(){};
-nsIURIChecker.prototype.LOAD_NORMAL="";
-nsIURIChecker.prototype.LOAD_BACKGROUND=0;
-nsIURIChecker.prototype.INHIBIT_CACHING=0;
-nsIURIChecker.prototype.INHIBIT_PERSISTENT_CACHING=0;
-nsIURIChecker.prototype.LOAD_BYPASS_CACHE=0;
-nsIURIChecker.prototype.LOAD_FROM_CACHE=0;
-nsIURIChecker.prototype.VALIDATE_ALWAYS=0;
-nsIURIChecker.prototype.VALIDATE_NEVER=0;
-nsIURIChecker.prototype.VALIDATE_ONCE_PER_SESSION=0;
-nsIAccessibleTreeCache.prototype= new Array();
-function nsIAccessibleTreeCache(){};
-nsIConsoleListener.prototype= new Array();
-function nsIConsoleListener(){};
-nsIDOMNSHTMLImageElement.prototype= new Array();
-function nsIDOMNSHTMLImageElement(){};
-nsIDOMDocumentStyle.prototype= new Array();
-function nsIDOMDocumentStyle(){};
-nsIFeedProgressListener.prototype= new Array();
-function nsIFeedProgressListener(){};
-nsIXPCException.prototype= new Array();
-function nsIXPCException(){};
-nsIWebPageDescriptor.prototype= new Array();
-function nsIWebPageDescriptor(){};
-nsIWebPageDescriptor.prototype.DISPLAY_AS_SOURCE=0;
-nsIWebPageDescriptor.prototype.DISPLAY_NORMAL=0;
-nsIKeyObject.prototype= new Array();
-function nsIKeyObject(){};
-nsIKeyObject.prototype.SYM_KEY=0;
-nsIKeyObject.prototype.PRIVATE_KEY=0;
-nsIKeyObject.prototype.PUBLIC_KEY=0;
-nsIKeyObject.prototype.RC4=0;
-nsIKeyObject.prototype.AES_CBC=0;
-nsIDOMHTMLQuoteElement.prototype= new Array();
-function nsIDOMHTMLQuoteElement(){};
-nsIDOMHTMLQuoteElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLQuoteElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLQuoteElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLQuoteElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLQuoteElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLQuoteElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLQuoteElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLQuoteElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLQuoteElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLQuoteElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLQuoteElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLQuoteElement.prototype.NOTATION_NODE=0;
-nsIBidiKeyboard.prototype= new Array();
-function nsIBidiKeyboard(){};
-nsIXPCComponents_Utils.prototype= new Array();
-function nsIXPCComponents_Utils(){};
-nsPISocketTransportService.prototype= new Array();
-function nsPISocketTransportService(){};
-nsIPipe.prototype= new Array();
-function nsIPipe(){};
-nsIURLFormatter.prototype= new Array();
-function nsIURLFormatter(){};
-nsISearchableInputStream.prototype= new Array();
-function nsISearchableInputStream(){};
-imgIContainer.prototype= new Array();
-function imgIContainer(){};
-imgIContainer.prototype.kNormalAnimMode="";
-imgIContainer.prototype.kDontAnimMode=0;
-imgIContainer.prototype.kLoopOnceAnimMode=0;
-nsIDOMSVGPolylineElement.prototype= new Array();
-function nsIDOMSVGPolylineElement(){};
-nsIDOMSVGPolylineElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGPolylineElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGPolylineElement.prototype.TEXT_NODE=0;
-nsIDOMSVGPolylineElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGPolylineElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGPolylineElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGPolylineElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGPolylineElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGPolylineElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGPolylineElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGPolylineElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGPolylineElement.prototype.NOTATION_NODE=0;
-nsIPluginElement.prototype= new Array();
-function nsIPluginElement(){};
-nsIStringBundleOverride.prototype= new Array();
-function nsIStringBundleOverride(){};
-mozIStorageStatementParams.prototype= new Array();
-function mozIStorageStatementParams(){};
-nsIJVMPluginInstance.prototype= new Array();
-function nsIJVMPluginInstance(){};
-nsICipherInfoService.prototype= new Array();
-function nsICipherInfoService(){};
-nsISocketTransport.prototype= new Array();
-function nsISocketTransport(){};
-nsISocketTransport.prototype.OPEN_BLOCKING=0;
-nsISocketTransport.prototype.OPEN_UNBUFFERED=0;
-nsISocketTransport.prototype.STATUS_READING=0;
-nsISocketTransport.prototype.STATUS_WRITING=0;
-nsISocketTransport.prototype.TIMEOUT_CONNECT="";
-nsISocketTransport.prototype.TIMEOUT_READ_WRITE=0;
-nsISocketTransport.prototype.STATUS_RESOLVING=0;
-nsISocketTransport.prototype.STATUS_CONNECTING_TO=0;
-nsISocketTransport.prototype.STATUS_CONNECTED_TO=0;
-nsISocketTransport.prototype.STATUS_SENDING_TO=0;
-nsISocketTransport.prototype.STATUS_WAITING_FOR=0;
-nsISocketTransport.prototype.STATUS_RECEIVING_FROM=0;
-nsIOutputIterator.prototype= new Array();
-function nsIOutputIterator(){};
-nsIDOMSVGTextContentElement.prototype= new Array();
-function nsIDOMSVGTextContentElement(){};
-nsIDOMSVGTextContentElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGTextContentElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGTextContentElement.prototype.TEXT_NODE=0;
-nsIDOMSVGTextContentElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGTextContentElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGTextContentElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGTextContentElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGTextContentElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGTextContentElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGTextContentElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGTextContentElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGTextContentElement.prototype.NOTATION_NODE=0;
-nsIDOMSVGTextContentElement.prototype.LENGTHADJUST_UNKNOWN="";
-nsIDOMSVGTextContentElement.prototype.LENGTHADJUST_SPACING=0;
-nsIDOMSVGTextContentElement.prototype.LENGTHADJUST_SPACINGANDGLYPHS=0;
-nsIHttpHeaderVisitor.prototype= new Array();
-function nsIHttpHeaderVisitor(){};
-nsITimerManager.prototype= new Array();
-function nsITimerManager(){};
-nsIWSDLMessage.prototype= new Array();
-function nsIWSDLMessage(){};
-nsINetUtil.prototype= new Array();
-function nsINetUtil(){};
-nsIWebContentConverterService.prototype= new Array();
-function nsIWebContentConverterService(){};
-jsdIValue.prototype= new Array();
-function jsdIValue(){};
-jsdIValue.prototype.TYPE_BOOLEAN="";
-jsdIValue.prototype.TYPE_DOUBLE=0;
-jsdIValue.prototype.TYPE_INT=0;
-jsdIValue.prototype.TYPE_FUNCTION=0;
-jsdIValue.prototype.TYPE_NULL=0;
-jsdIValue.prototype.TYPE_OBJECT=0;
-jsdIValue.prototype.TYPE_STRING=0;
-jsdIValue.prototype.TYPE_VOID=0;
-jsdIScript.prototype= new Array();
-function jsdIScript(){};
-jsdIScript.prototype.FLAG_PROFILE=0;
-jsdIScript.prototype.FLAG_DEBUG=0;
-jsdIScript.prototype.PCMAP_SOURCETEXT=0;
-jsdIScript.prototype.PCMAP_PRETTYPRINT=0;
-nsIDOMNSEditableElement.prototype= new Array();
-function nsIDOMNSEditableElement(){};
-nsIClassInfo.prototype= new Array();
-function nsIClassInfo(){};
-nsIClassInfo.prototype.SINGLETON=0;
-nsIClassInfo.prototype.THREADSAFE=0;
-nsIClassInfo.prototype.MAIN_THREAD_ONLY=0;
-nsIClassInfo.prototype.DOM_OBJECT=0;
-nsIClassInfo.prototype.PLUGIN_OBJECT=0;
-nsIClassInfo.prototype.EAGER_CLASSINFO=0;
-nsIClassInfo.prototype.CONTENT_NODE=0;
-nsIClassInfo.prototype.RESERVED=0;
-nsIRDFService.prototype= new Array();
-function nsIRDFService(){};
-nsISupportsPriority.prototype= new Array();
-function nsISupportsPriority(){};
-nsISupportsPriority.prototype.PRIORITY_HIGHEST=0;
-nsISupportsPriority.prototype.PRIORITY_HIGH=0;
-nsISupportsPriority.prototype.PRIORITY_NORMAL="";
-nsISupportsPriority.prototype.PRIORITY_LOW=0;
-nsISupportsPriority.prototype.PRIORITY_LOWEST=0;
-nsIKeyObjectFactory.prototype= new Array();
-function nsIKeyObjectFactory(){};
-nsIDirectoryIterator.prototype= new Array();
-function nsIDirectoryIterator(){};
-nsIInputStream.prototype= new Array();
-function nsIInputStream(){};
-nsISecurityCheckedComponent.prototype= new Array();
-function nsISecurityCheckedComponent(){};
-nsIDOMHTMLFormElement.prototype= new Array();
-function nsIDOMHTMLFormElement(){};
-nsIDOMHTMLFormElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLFormElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLFormElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLFormElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLFormElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLFormElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLFormElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLFormElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLFormElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLFormElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLFormElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLFormElement.prototype.NOTATION_NODE=0;
-mozIPersonalDictionary.prototype= new Array();
-function mozIPersonalDictionary(){};
-nsIUnicharStreamLoader.prototype= new Array();
-function nsIUnicharStreamLoader(){};
-nsIUnicharStreamLoader.prototype.DEFAULT_SEGMENT_SIZE=0;
-nsIDocShell.prototype= new Array();
-function nsIDocShell(){};
-nsIDocShell.prototype.INTERNAL_LOAD_FLAGS_NONE="";
-nsIDocShell.prototype.INTERNAL_LOAD_FLAGS_INHERIT_OWNER=0;
-nsIDocShell.prototype.INTERNAL_LOAD_FLAGS_DONT_SEND_REFERRER=0;
-nsIDocShell.prototype.INTERNAL_LOAD_FLAGS_ALLOW_THIRD_PARTY_FIXUP=0;
-nsIDocShell.prototype.INTERNAL_LOAD_FLAGS_FIRST_LOAD=0;
-nsIDocShell.prototype.ENUMERATE_FORWARDS="";
-nsIDocShell.prototype.ENUMERATE_BACKWARDS=0;
-nsIDocShell.prototype.APP_TYPE_UNKNOWN="";
-nsIDocShell.prototype.APP_TYPE_MAIL=0;
-nsIDocShell.prototype.APP_TYPE_EDITOR=0;
-nsIDocShell.prototype.BUSY_FLAGS_NONE="";
-nsIDocShell.prototype.BUSY_FLAGS_BUSY=0;
-nsIDocShell.prototype.BUSY_FLAGS_BEFORE_PAGE_LOAD=0;
-nsIDocShell.prototype.BUSY_FLAGS_PAGE_LOADING=0;
-nsIDocShell.prototype.LOAD_CMD_NORMAL=0;
-nsIDocShell.prototype.LOAD_CMD_RELOAD=0;
-nsIDocShell.prototype.LOAD_CMD_HISTORY=0;
-nsIDOMViewCSS.prototype= new Array();
-function nsIDOMViewCSS(){};
-nsISAXXMLFilter.prototype= new Array();
-function nsISAXXMLFilter(){};
-nsIJVMManager.prototype= new Array();
-function nsIJVMManager(){};
-nsITreeColumns.prototype= new Array();
-function nsITreeColumns(){};
-nsIDOMHTMLHtmlElement.prototype= new Array();
-function nsIDOMHTMLHtmlElement(){};
-nsIDOMHTMLHtmlElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLHtmlElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLHtmlElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLHtmlElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLHtmlElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLHtmlElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLHtmlElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLHtmlElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLHtmlElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLHtmlElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLHtmlElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLHtmlElement.prototype.NOTATION_NODE=0;
-nsIDOMCanvasGradient.prototype= new Array();
-function nsIDOMCanvasGradient(){};
-nsIDOMSVGAnimatedPoints.prototype= new Array();
-function nsIDOMSVGAnimatedPoints(){};
-nsIRDFXMLSerializer.prototype= new Array();
-function nsIRDFXMLSerializer(){};
-nsIDOMNSHTMLAnchorElement.prototype= new Array();
-function nsIDOMNSHTMLAnchorElement(){};
-nsIDOMCSS2Properties.prototype= new Array();
-function nsIDOMCSS2Properties(){};
-nsIProfileStartupListener.prototype= new Array();
-function nsIProfileStartupListener(){};
-nsIFontPackageHandler.prototype= new Array();
-function nsIFontPackageHandler(){};
-nsIWSDLBinding.prototype= new Array();
-function nsIWSDLBinding(){};
-nsIProxyCreateInstance.prototype= new Array();
-function nsIProxyCreateInstance(){};
-nsISecurityEventSink.prototype= new Array();
-function nsISecurityEventSink(){};
-nsICommandHandler.prototype= new Array();
-function nsICommandHandler(){};
-nsIDOMLinkStyle.prototype= new Array();
-function nsIDOMLinkStyle(){};
-nsIDOMSVGPoint.prototype= new Array();
-function nsIDOMSVGPoint(){};
-nsIAccessibleEvent.prototype= new Array();
-function nsIAccessibleEvent(){};
-nsIAccessibleEvent.prototype.EVENT_CREATE=0;
-nsIAccessibleEvent.prototype.EVENT_DESTROY=0;
-nsIAccessibleEvent.prototype.EVENT_SHOW=0;
-nsIAccessibleEvent.prototype.EVENT_HIDE=0;
-nsIAccessibleEvent.prototype.EVENT_REORDER=0;
-nsIAccessibleEvent.prototype.EVENT_FOCUS=0;
-nsIAccessibleEvent.prototype.EVENT_STATE_CHANGE=0;
-nsIAccessibleEvent.prototype.EVENT_LOCATION_CHANGE=0;
-nsIAccessibleEvent.prototype.EVENT_NAME_CHANGE=0;
-nsIAccessibleEvent.prototype.EVENT_DESCRIPTIONCHANGE=0;
-nsIAccessibleEvent.prototype.EVENT_VALUE_CHANGE=0;
-nsIAccessibleEvent.prototype.EVENT_PARENTCHANGE=0;
-nsIAccessibleEvent.prototype.EVENT_HELPCHANGE=0;
-nsIAccessibleEvent.prototype.EVENT_DEFACTIONCHANGE=0;
-nsIAccessibleEvent.prototype.EVENT_ACCELERATORCHANGE=0;
-nsIAccessibleEvent.prototype.EVENT_SELECTION=0;
-nsIAccessibleEvent.prototype.EVENT_SELECTION_ADD=0;
-nsIAccessibleEvent.prototype.EVENT_SELECTION_REMOVE=0;
-nsIAccessibleEvent.prototype.EVENT_SELECTION_WITHIN=0;
-nsIAccessibleEvent.prototype.EVENT_ALERT=0;
-nsIAccessibleEvent.prototype.EVENT_FOREGROUND=0;
-nsIAccessibleEvent.prototype.EVENT_MENUSTART=0;
-nsIAccessibleEvent.prototype.EVENT_MENUEND=0;
-nsIAccessibleEvent.prototype.EVENT_MENUPOPUPSTART=0;
-nsIAccessibleEvent.prototype.EVENT_MENUPOPUPEND=0;
-nsIAccessibleEvent.prototype.EVENT_CAPTURESTART=0;
-nsIAccessibleEvent.prototype.EVENT_CAPTUREEND=0;
-nsIAccessibleEvent.prototype.EVENT_MOVESIZESTART=0;
-nsIAccessibleEvent.prototype.EVENT_MOVESIZEEND=0;
-nsIAccessibleEvent.prototype.EVENT_CONTEXTHELPSTART=0;
-nsIAccessibleEvent.prototype.EVENT_CONTEXTHELPEND=0;
-nsIAccessibleEvent.prototype.EVENT_DRAGDROPSTART=0;
-nsIAccessibleEvent.prototype.EVENT_DRAGDROPEND=0;
-nsIAccessibleEvent.prototype.EVENT_DIALOGSTART=0;
-nsIAccessibleEvent.prototype.EVENT_DIALOGEND=0;
-nsIAccessibleEvent.prototype.EVENT_SCROLLINGSTART=0;
-nsIAccessibleEvent.prototype.EVENT_SCROLLINGEND=0;
-nsIAccessibleEvent.prototype.EVENT_MINIMIZESTART=0;
-nsIAccessibleEvent.prototype.EVENT_MINIMIZEEND=0;
-nsIAccessibleEvent.prototype.EVENT_ATK_PROPERTY_CHANGE=0;
-nsIAccessibleEvent.prototype.EVENT_ATK_SELECTION_CHANGE=0;
-nsIAccessibleEvent.prototype.EVENT_ATK_TEXT_CHANGE=0;
-nsIAccessibleEvent.prototype.EVENT_ATK_TEXT_SELECTION_CHANGE=0;
-nsIAccessibleEvent.prototype.EVENT_ATK_TEXT_CARET_MOVE=0;
-nsIAccessibleEvent.prototype.EVENT_ATK_VISIBLE_DATA_CHANGE=0;
-nsIAccessibleEvent.prototype.EVENT_ATK_TABLE_MODEL_CHANGE=0;
-nsIAccessibleEvent.prototype.EVENT_ATK_TABLE_ROW_INSERT=0;
-nsIAccessibleEvent.prototype.EVENT_ATK_TABLE_ROW_DELETE=0;
-nsIAccessibleEvent.prototype.EVENT_ATK_TABLE_ROW_REORDER=0;
-nsIAccessibleEvent.prototype.EVENT_ATK_TABLE_COLUMN_INSERT=0;
-nsIAccessibleEvent.prototype.EVENT_ATK_TABLE_COLUMN_DELETE=0;
-nsIAccessibleEvent.prototype.EVENT_ATK_TABLE_COLUMN_REORDER=0;
-nsIAccessibleEvent.prototype.EVENT_ATK_LINK_SELECTED=0;
-nsIAccessibleEvent.prototype.EVENT_ATK_WINDOW_ACTIVATE=0;
-nsIAccessibleEvent.prototype.EVENT_ATK_WINDOW_CREATE=0;
-nsIAccessibleEvent.prototype.EVENT_ATK_WINDOW_DEACTIVATE=0;
-nsIAccessibleEvent.prototype.EVENT_ATK_WINDOW_DESTROY=0;
-nsIAccessibleEvent.prototype.EVENT_ATK_WINDOW_MAXIMIZE=0;
-nsIAccessibleEvent.prototype.EVENT_ATK_WINDOW_MINIMIZE=0;
-nsIAccessibleEvent.prototype.EVENT_ATK_WINDOW_RESIZE=0;
-nsIAccessibleEvent.prototype.EVENT_ATK_WINDOW_RESTORE=0;
-nsISupportsCString.prototype= new Array();
-function nsISupportsCString(){};
-nsISupportsCString.prototype.TYPE_ID=0;
-nsISupportsCString.prototype.TYPE_CSTRING=0;
-nsISupportsCString.prototype.TYPE_STRING=0;
-nsISupportsCString.prototype.TYPE_PRBOOL=0;
-nsISupportsCString.prototype.TYPE_PRUINT8=0;
-nsISupportsCString.prototype.TYPE_PRUINT16=0;
-nsISupportsCString.prototype.TYPE_PRUINT32=0;
-nsISupportsCString.prototype.TYPE_PRUINT64=0;
-nsISupportsCString.prototype.TYPE_PRTIME=0;
-nsISupportsCString.prototype.TYPE_CHAR=0;
-nsISupportsCString.prototype.TYPE_PRINT16=0;
-nsISupportsCString.prototype.TYPE_PRINT32=0;
-nsISupportsCString.prototype.TYPE_PRINT64=0;
-nsISupportsCString.prototype.TYPE_FLOAT=0;
-nsISupportsCString.prototype.TYPE_DOUBLE=0;
-nsISupportsCString.prototype.TYPE_VOID=0;
-nsISupportsCString.prototype.TYPE_INTERFACE_POINTER=0;
-nsISupportsID.prototype= new Array();
-function nsISupportsID(){};
-nsISupportsID.prototype.TYPE_ID=0;
-nsISupportsID.prototype.TYPE_CSTRING=0;
-nsISupportsID.prototype.TYPE_STRING=0;
-nsISupportsID.prototype.TYPE_PRBOOL=0;
-nsISupportsID.prototype.TYPE_PRUINT8=0;
-nsISupportsID.prototype.TYPE_PRUINT16=0;
-nsISupportsID.prototype.TYPE_PRUINT32=0;
-nsISupportsID.prototype.TYPE_PRUINT64=0;
-nsISupportsID.prototype.TYPE_PRTIME=0;
-nsISupportsID.prototype.TYPE_CHAR=0;
-nsISupportsID.prototype.TYPE_PRINT16=0;
-nsISupportsID.prototype.TYPE_PRINT32=0;
-nsISupportsID.prototype.TYPE_PRINT64=0;
-nsISupportsID.prototype.TYPE_FLOAT=0;
-nsISupportsID.prototype.TYPE_DOUBLE=0;
-nsISupportsID.prototype.TYPE_VOID=0;
-nsISupportsID.prototype.TYPE_INTERFACE_POINTER=0;
-IDispatch.prototype= new Array();
-function IDispatch(){};
-nsIXPInstallManager.prototype= new Array();
-function nsIXPInstallManager(){};
-nsIXTFXMLVisualWrapper.prototype= new Array();
-function nsIXTFXMLVisualWrapper(){};
-nsIFeedResultListener.prototype= new Array();
-function nsIFeedResultListener(){};
-nsIDOMTreeWalker.prototype= new Array();
-function nsIDOMTreeWalker(){};
-nsIDOMUserDataHandler.prototype= new Array();
-function nsIDOMUserDataHandler(){};
-nsIDOMUserDataHandler.prototype.NODE_CLONED=0;
-nsIDOMUserDataHandler.prototype.NODE_IMPORTED=0;
-nsIDOMUserDataHandler.prototype.NODE_DELETED=0;
-nsIDOMUserDataHandler.prototype.NODE_RENAMED=0;
-nsIProcess.prototype= new Array();
-function nsIProcess(){};
-nsIWindowCreator.prototype= new Array();
-function nsIWindowCreator(){};
-nsITreeView.prototype= new Array();
-function nsITreeView(){};
-nsITreeView.prototype.DROP_BEFORE=0;
-nsITreeView.prototype.DROP_ON="";
-nsITreeView.prototype.DROP_AFTER=0;
-nsITreeView.prototype.PROGRESS_NORMAL=0;
-nsITreeView.prototype.PROGRESS_UNDETERMINED=0;
-nsITreeView.prototype.PROGRESS_NONE=0;
-nsIDOMDocumentXBL.prototype= new Array();
-function nsIDOMDocumentXBL(){};
-nsIXTFBindableElementWrapper.prototype= new Array();
-function nsIXTFBindableElementWrapper(){};
-nsIObserverService.prototype= new Array();
-function nsIObserverService(){};
-nsISAXContentHandler.prototype= new Array();
-function nsISAXContentHandler(){};
-nsIScriptableConstant.prototype= new Array();
-function nsIScriptableConstant(){};
-nsIDOMHTMLFrameSetElement.prototype= new Array();
-function nsIDOMHTMLFrameSetElement(){};
-nsIDOMHTMLFrameSetElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLFrameSetElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLFrameSetElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLFrameSetElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLFrameSetElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLFrameSetElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLFrameSetElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLFrameSetElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLFrameSetElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLFrameSetElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLFrameSetElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLFrameSetElement.prototype.NOTATION_NODE=0;
-nsISchemaSimpleType.prototype= new Array();
-function nsISchemaSimpleType(){};
-nsISchemaSimpleType.prototype.SCHEMA_TYPE_SIMPLE=0;
-nsISchemaSimpleType.prototype.SCHEMA_TYPE_COMPLEX=0;
-nsISchemaSimpleType.prototype.SCHEMA_TYPE_PLACEHOLDER=0;
-nsISchemaSimpleType.prototype.SIMPLE_TYPE_BUILTIN=0;
-nsISchemaSimpleType.prototype.SIMPLE_TYPE_LIST=0;
-nsISchemaSimpleType.prototype.SIMPLE_TYPE_UNION=0;
-nsISchemaSimpleType.prototype.SIMPLE_TYPE_RESTRICTION=0;
-nsIFactory.prototype= new Array();
-function nsIFactory(){};
-nsIDragDropHandler.prototype= new Array();
-function nsIDragDropHandler(){};
-nsIAptanaError.prototype= new Array();
-function nsIAptanaError(){};
-nsISOAPServiceRegistry.prototype= new Array();
-function nsISOAPServiceRegistry(){};
-nsIDOMSVGStopElement.prototype= new Array();
-function nsIDOMSVGStopElement(){};
-nsIDOMSVGStopElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGStopElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGStopElement.prototype.TEXT_NODE=0;
-nsIDOMSVGStopElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGStopElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGStopElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGStopElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGStopElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGStopElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGStopElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGStopElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGStopElement.prototype.NOTATION_NODE=0;
-nsIWebBrowserFindInFrames.prototype= new Array();
-function nsIWebBrowserFindInFrames(){};
-nsIConsoleService.prototype= new Array();
-function nsIConsoleService(){};
-inISearchProcess.prototype= new Array();
-function inISearchProcess(){};
-nsICacheService.prototype= new Array();
-function nsICacheService(){};
-nsIFeedTextConstruct.prototype= new Array();
-function nsIFeedTextConstruct(){};
-nsIIncrementalDownload.prototype= new Array();
-function nsIIncrementalDownload(){};
-nsIIncrementalDownload.prototype.LOAD_NORMAL="";
-nsIIncrementalDownload.prototype.LOAD_BACKGROUND=0;
-nsIIncrementalDownload.prototype.INHIBIT_CACHING=0;
-nsIIncrementalDownload.prototype.INHIBIT_PERSISTENT_CACHING=0;
-nsIIncrementalDownload.prototype.LOAD_BYPASS_CACHE=0;
-nsIIncrementalDownload.prototype.LOAD_FROM_CACHE=0;
-nsIIncrementalDownload.prototype.VALIDATE_ALWAYS=0;
-nsIIncrementalDownload.prototype.VALIDATE_NEVER=0;
-nsIIncrementalDownload.prototype.VALIDATE_ONCE_PER_SESSION=0;
-nsIDocShellHistory.prototype= new Array();
-function nsIDocShellHistory(){};
-nsICacheSession.prototype= new Array();
-function nsICacheSession(){};
-nsIDOMHTMLEmbedElement.prototype= new Array();
-function nsIDOMHTMLEmbedElement(){};
-nsIDOMHTMLEmbedElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLEmbedElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLEmbedElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLEmbedElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLEmbedElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLEmbedElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLEmbedElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLEmbedElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLEmbedElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLEmbedElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLEmbedElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLEmbedElement.prototype.NOTATION_NODE=0;
-nsIASN1Tree.prototype= new Array();
-function nsIASN1Tree(){};
-nsIASN1Tree.prototype.DROP_BEFORE=0;
-nsIASN1Tree.prototype.DROP_ON="";
-nsIASN1Tree.prototype.DROP_AFTER=0;
-nsIASN1Tree.prototype.PROGRESS_NORMAL=0;
-nsIASN1Tree.prototype.PROGRESS_UNDETERMINED=0;
-nsIASN1Tree.prototype.PROGRESS_NONE=0;
-nsIUserCertPicker.prototype= new Array();
-function nsIUserCertPicker(){};
-nsIProfileMigrator.prototype= new Array();
-function nsIProfileMigrator(){};
-nsIDocShellTreeOwner.prototype= new Array();
-function nsIDocShellTreeOwner(){};
-mozISpellI18NUtil.prototype= new Array();
-function mozISpellI18NUtil(){};
-mozISpellI18NUtil.prototype.kCheck="";
-mozISpellI18NUtil.prototype.kSuggest=0;
-nsIXTFGenericElement.prototype= new Array();
-function nsIXTFGenericElement(){};
-nsIXTFGenericElement.prototype.ELEMENT_TYPE_GENERIC_ELEMENT="";
-nsIXTFGenericElement.prototype.ELEMENT_TYPE_SVG_VISUAL=0;
-nsIXTFGenericElement.prototype.ELEMENT_TYPE_XML_VISUAL=0;
-nsIXTFGenericElement.prototype.ELEMENT_TYPE_XUL_VISUAL=0;
-nsIXTFGenericElement.prototype.ELEMENT_TYPE_BINDABLE=0;
-nsIXTFGenericElement.prototype.NOTIFY_WILL_CHANGE_DOCUMENT=0;
-nsIXTFGenericElement.prototype.NOTIFY_DOCUMENT_CHANGED=0;
-nsIXTFGenericElement.prototype.NOTIFY_WILL_CHANGE_PARENT=0;
-nsIXTFGenericElement.prototype.NOTIFY_PARENT_CHANGED=0;
-nsIXTFGenericElement.prototype.NOTIFY_WILL_INSERT_CHILD=0;
-nsIXTFGenericElement.prototype.NOTIFY_CHILD_INSERTED=0;
-nsIXTFGenericElement.prototype.NOTIFY_WILL_APPEND_CHILD=0;
-nsIXTFGenericElement.prototype.NOTIFY_CHILD_APPENDED=0;
-nsIXTFGenericElement.prototype.NOTIFY_WILL_REMOVE_CHILD=0;
-nsIXTFGenericElement.prototype.NOTIFY_CHILD_REMOVED=0;
-nsIXTFGenericElement.prototype.NOTIFY_WILL_SET_ATTRIBUTE=0;
-nsIXTFGenericElement.prototype.NOTIFY_ATTRIBUTE_SET=0;
-nsIXTFGenericElement.prototype.NOTIFY_WILL_REMOVE_ATTRIBUTE=0;
-nsIXTFGenericElement.prototype.NOTIFY_ATTRIBUTE_REMOVED=0;
-nsIXTFGenericElement.prototype.NOTIFY_BEGIN_ADDING_CHILDREN=0;
-nsIXTFGenericElement.prototype.NOTIFY_DONE_ADDING_CHILDREN=0;
-nsIXTFGenericElement.prototype.NOTIFY_HANDLE_DEFAULT=0;
-nsIDOMChromeWindow.prototype= new Array();
-function nsIDOMChromeWindow(){};
-nsIDOMChromeWindow.prototype.STATE_MAXIMIZED=0;
-nsIDOMChromeWindow.prototype.STATE_MINIMIZED=0;
-nsIDOMChromeWindow.prototype.STATE_NORMAL=0;
-nsISSLSocketControl.prototype= new Array();
-function nsISSLSocketControl(){};
-nsIHttpEventSink.prototype= new Array();
-function nsIHttpEventSink(){};
-nsIGlobalHistory3.prototype= new Array();
-function nsIGlobalHistory3(){};
-nsIMicrosummarySet.prototype= new Array();
-function nsIMicrosummarySet(){};
-nsIFeedEntry.prototype= new Array();
-function nsIFeedEntry(){};
-nsIDOMSVGAnimatedAngle.prototype= new Array();
-function nsIDOMSVGAnimatedAngle(){};
-nsIDOMXULDocument_MOZILLA_1_8_BRANCH.prototype= new Array();
-function nsIDOMXULDocument_MOZILLA_1_8_BRANCH(){};
-nsIXPCComponents_Constructor.prototype= new Array();
-function nsIXPCComponents_Constructor(){};
-nsIUTF8ConverterService.prototype= new Array();
-function nsIUTF8ConverterService(){};
-nsIDOMLSSerializer.prototype= new Array();
-function nsIDOMLSSerializer(){};
-nsIBufferedInputStream.prototype= new Array();
-function nsIBufferedInputStream(){};
-nsIHTMLInlineTableEditor.prototype= new Array();
-function nsIHTMLInlineTableEditor(){};
-nsIDOMMimeType.prototype= new Array();
-function nsIDOMMimeType(){};
-nsIDOMHTMLParamElement.prototype= new Array();
-function nsIDOMHTMLParamElement(){};
-nsIDOMHTMLParamElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLParamElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLParamElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLParamElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLParamElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLParamElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLParamElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLParamElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLParamElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLParamElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLParamElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLParamElement.prototype.NOTATION_NODE=0;
-nsIFeedResultService.prototype= new Array();
-function nsIFeedResultService(){};
-nsIRequestObserver.prototype= new Array();
-function nsIRequestObserver(){};
-nsIXPCConstructor.prototype= new Array();
-function nsIXPCConstructor(){};
-nsIDOMSVGPathSegMovetoAbs.prototype= new Array();
-function nsIDOMSVGPathSegMovetoAbs(){};
-nsIDOMSVGPathSegMovetoAbs.prototype.PATHSEG_UNKNOWN="";
-nsIDOMSVGPathSegMovetoAbs.prototype.PATHSEG_CLOSEPATH=0;
-nsIDOMSVGPathSegMovetoAbs.prototype.PATHSEG_MOVETO_ABS=0;
-nsIDOMSVGPathSegMovetoAbs.prototype.PATHSEG_MOVETO_REL=0;
-nsIDOMSVGPathSegMovetoAbs.prototype.PATHSEG_LINETO_ABS=0;
-nsIDOMSVGPathSegMovetoAbs.prototype.PATHSEG_LINETO_REL=0;
-nsIDOMSVGPathSegMovetoAbs.prototype.PATHSEG_CURVETO_CUBIC_ABS=0;
-nsIDOMSVGPathSegMovetoAbs.prototype.PATHSEG_CURVETO_CUBIC_REL=0;
-nsIDOMSVGPathSegMovetoAbs.prototype.PATHSEG_CURVETO_QUADRATIC_ABS=0;
-nsIDOMSVGPathSegMovetoAbs.prototype.PATHSEG_CURVETO_QUADRATIC_REL=0;
-nsIDOMSVGPathSegMovetoAbs.prototype.PATHSEG_ARC_ABS=0;
-nsIDOMSVGPathSegMovetoAbs.prototype.PATHSEG_ARC_REL=0;
-nsIDOMSVGPathSegMovetoAbs.prototype.PATHSEG_LINETO_HORIZONTAL_ABS=0;
-nsIDOMSVGPathSegMovetoAbs.prototype.PATHSEG_LINETO_HORIZONTAL_REL=0;
-nsIDOMSVGPathSegMovetoAbs.prototype.PATHSEG_LINETO_VERTICAL_ABS=0;
-nsIDOMSVGPathSegMovetoAbs.prototype.PATHSEG_LINETO_VERTICAL_REL=0;
-nsIDOMSVGPathSegMovetoAbs.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegMovetoAbs.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_REL=0;
-nsIDOMSVGPathSegMovetoAbs.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegMovetoAbs.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL=0;
-nsIScriptableInputStream.prototype= new Array();
-function nsIScriptableInputStream(){};
-nsIAddonUpdateCheckListener.prototype= new Array();
-function nsIAddonUpdateCheckListener(){};
-nsIAddonUpdateCheckListener.prototype.STATUS_NONE="";
-nsIAddonUpdateCheckListener.prototype.STATUS_UPDATE=0;
-nsIAddonUpdateCheckListener.prototype.STATUS_VERSIONINFO=0;
-nsIAddonUpdateCheckListener.prototype.STATUS_DATA_FOUND=0;
-nsIAddonUpdateCheckListener.prototype.STATUS_FAILURE=0;
-nsIAddonUpdateCheckListener.prototype.STATUS_NO_UPDATE=0;
-nsIAddonUpdateCheckListener.prototype.STATUS_DISABLED=0;
-nsIAddonUpdateCheckListener.prototype.STATUS_APP_MANAGED=0;
-nsIAddonUpdateCheckListener.prototype.STATUS_READ_ONLY=0;
-nsIAddonUpdateCheckListener.prototype.STATUS_PENDING_OP=0;
-nsIAddonUpdateCheckListener.prototype.STATUS_NOT_MANAGED=0;
-nsIAddonUpdateCheckListener.prototype.STATUS_DISALLOWED=0;
-nsIControllerCommandTable.prototype= new Array();
-function nsIControllerCommandTable(){};
-nsIDNSRecord.prototype= new Array();
-function nsIDNSRecord(){};
-nsIAutoCompleteResult.prototype= new Array();
-function nsIAutoCompleteResult(){};
-nsIAutoCompleteResult.prototype.RESULT_IGNORED=0;
-nsIAutoCompleteResult.prototype.RESULT_FAILURE=0;
-nsIAutoCompleteResult.prototype.RESULT_NOMATCH=0;
-nsIAutoCompleteResult.prototype.RESULT_SUCCESS=0;
-nsIAsyncOutputStream.prototype= new Array();
-function nsIAsyncOutputStream(){};
-nsIAsyncOutputStream.prototype.WAIT_CLOSURE_ONLY=0;
-nsIDirectoryServiceProvider2.prototype= new Array();
-function nsIDirectoryServiceProvider2(){};
-nsIEditorIMESupport.prototype= new Array();
-function nsIEditorIMESupport(){};
-nsISelection2.prototype= new Array();
-function nsISelection2(){};
-nsIDOMHTMLHeadingElement.prototype= new Array();
-function nsIDOMHTMLHeadingElement(){};
-nsIDOMHTMLHeadingElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLHeadingElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLHeadingElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLHeadingElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLHeadingElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLHeadingElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLHeadingElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLHeadingElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLHeadingElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLHeadingElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLHeadingElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLHeadingElement.prototype.NOTATION_NODE=0;
-nsIDOMText.prototype= new Array();
-function nsIDOMText(){};
-nsIDOMText.prototype.ELEMENT_NODE=0;
-nsIDOMText.prototype.ATTRIBUTE_NODE=0;
-nsIDOMText.prototype.TEXT_NODE=0;
-nsIDOMText.prototype.CDATA_SECTION_NODE=0;
-nsIDOMText.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMText.prototype.ENTITY_NODE=0;
-nsIDOMText.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMText.prototype.COMMENT_NODE=0;
-nsIDOMText.prototype.DOCUMENT_NODE=0;
-nsIDOMText.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMText.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMText.prototype.NOTATION_NODE=0;
-nsIDOMClientInformation.prototype= new Array();
-function nsIDOMClientInformation(){};
-nsIDOMCanvasRenderingContext2D.prototype= new Array();
-function nsIDOMCanvasRenderingContext2D(){};
-nsIStreamListener.prototype= new Array();
-function nsIStreamListener(){};
-nsIOutputStreamCallback.prototype= new Array();
-function nsIOutputStreamCallback(){};
-jsdIScriptEnumerator.prototype= new Array();
-function jsdIScriptEnumerator(){};
-nsIClipboardImage.prototype= new Array();
-function nsIClipboardImage(){};
-nsIBoxObject.prototype= new Array();
-function nsIBoxObject(){};
-nsICloseAllWindows.prototype= new Array();
-function nsICloseAllWindows(){};
-nsIScreenManager.prototype= new Array();
-function nsIScreenManager(){};
-nsIUpdateTimerManager.prototype= new Array();
-function nsIUpdateTimerManager(){};
-nsIDOMSVGAnimatedPreserveAspectRatio.prototype= new Array();
-function nsIDOMSVGAnimatedPreserveAspectRatio(){};
-nsIHttpChannel.prototype= new Array();
-function nsIHttpChannel(){};
-nsIHttpChannel.prototype.LOAD_NORMAL="";
-nsIHttpChannel.prototype.LOAD_BACKGROUND=0;
-nsIHttpChannel.prototype.INHIBIT_CACHING=0;
-nsIHttpChannel.prototype.INHIBIT_PERSISTENT_CACHING=0;
-nsIHttpChannel.prototype.LOAD_BYPASS_CACHE=0;
-nsIHttpChannel.prototype.LOAD_FROM_CACHE=0;
-nsIHttpChannel.prototype.VALIDATE_ALWAYS=0;
-nsIHttpChannel.prototype.VALIDATE_NEVER=0;
-nsIHttpChannel.prototype.VALIDATE_ONCE_PER_SESSION=0;
-nsIHttpChannel.prototype.LOAD_DOCUMENT_URI=0;
-nsIHttpChannel.prototype.LOAD_RETARGETED_DOCUMENT_URI=0;
-nsIHttpChannel.prototype.LOAD_REPLACE=0;
-nsIHttpChannel.prototype.LOAD_INITIAL_DOCUMENT_URI=0;
-nsIHttpChannel.prototype.LOAD_TARGETED=0;
-nsIHttpChannel.prototype.LOAD_CALL_CONTENT_SNIFFERS=0;
-nsIDOMXULDescriptionElement.prototype= new Array();
-function nsIDOMXULDescriptionElement(){};
-nsIDOMXULDescriptionElement.prototype.ELEMENT_NODE=0;
-nsIDOMXULDescriptionElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMXULDescriptionElement.prototype.TEXT_NODE=0;
-nsIDOMXULDescriptionElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMXULDescriptionElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMXULDescriptionElement.prototype.ENTITY_NODE=0;
-nsIDOMXULDescriptionElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMXULDescriptionElement.prototype.COMMENT_NODE=0;
-nsIDOMXULDescriptionElement.prototype.DOCUMENT_NODE=0;
-nsIDOMXULDescriptionElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMXULDescriptionElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMXULDescriptionElement.prototype.NOTATION_NODE=0;
-nsISupportsPRTime.prototype= new Array();
-function nsISupportsPRTime(){};
-nsISupportsPRTime.prototype.TYPE_ID=0;
-nsISupportsPRTime.prototype.TYPE_CSTRING=0;
-nsISupportsPRTime.prototype.TYPE_STRING=0;
-nsISupportsPRTime.prototype.TYPE_PRBOOL=0;
-nsISupportsPRTime.prototype.TYPE_PRUINT8=0;
-nsISupportsPRTime.prototype.TYPE_PRUINT16=0;
-nsISupportsPRTime.prototype.TYPE_PRUINT32=0;
-nsISupportsPRTime.prototype.TYPE_PRUINT64=0;
-nsISupportsPRTime.prototype.TYPE_PRTIME=0;
-nsISupportsPRTime.prototype.TYPE_CHAR=0;
-nsISupportsPRTime.prototype.TYPE_PRINT16=0;
-nsISupportsPRTime.prototype.TYPE_PRINT32=0;
-nsISupportsPRTime.prototype.TYPE_PRINT64=0;
-nsISupportsPRTime.prototype.TYPE_FLOAT=0;
-nsISupportsPRTime.prototype.TYPE_DOUBLE=0;
-nsISupportsPRTime.prototype.TYPE_VOID=0;
-nsISupportsPRTime.prototype.TYPE_INTERFACE_POINTER=0;
-nsIBookmarkTransactionManager.prototype= new Array();
-function nsIBookmarkTransactionManager(){};
-nsIBookmarkTransactionManager.prototype.IMPORT="";
-nsIBookmarkTransactionManager.prototype.INSERT=0;
-nsIBookmarkTransactionManager.prototype.REMOVE=0;
-nsIClientAuthDialogs.prototype= new Array();
-function nsIClientAuthDialogs(){};
-nsISelection.prototype= new Array();
-function nsISelection(){};
-nsIRDFInt.prototype= new Array();
-function nsIRDFInt(){};
-nsIDOMSVGLengthList.prototype= new Array();
-function nsIDOMSVGLengthList(){};
-nsIDOMCSSStyleRule.prototype= new Array();
-function nsIDOMCSSStyleRule(){};
-nsIDOMCSSStyleRule.prototype.UNKNOWN_RULE="";
-nsIDOMCSSStyleRule.prototype.STYLE_RULE=0;
-nsIDOMCSSStyleRule.prototype.CHARSET_RULE=0;
-nsIDOMCSSStyleRule.prototype.IMPORT_RULE=0;
-nsIDOMCSSStyleRule.prototype.MEDIA_RULE=0;
-nsIDOMCSSStyleRule.prototype.FONT_FACE_RULE=0;
-nsIDOMCSSStyleRule.prototype.PAGE_RULE=0;
-nsIServiceManager.prototype= new Array();
-function nsIServiceManager(){};
-nsIShellService_MOZILLA_1_8_BRANCH.prototype= new Array();
-function nsIShellService_MOZILLA_1_8_BRANCH(){};
-nsILoadGroup.prototype= new Array();
-function nsILoadGroup(){};
-nsILoadGroup.prototype.LOAD_NORMAL="";
-nsILoadGroup.prototype.LOAD_BACKGROUND=0;
-nsILoadGroup.prototype.INHIBIT_CACHING=0;
-nsILoadGroup.prototype.INHIBIT_PERSISTENT_CACHING=0;
-nsILoadGroup.prototype.LOAD_BYPASS_CACHE=0;
-nsILoadGroup.prototype.LOAD_FROM_CACHE=0;
-nsILoadGroup.prototype.VALIDATE_ALWAYS=0;
-nsILoadGroup.prototype.VALIDATE_NEVER=0;
-nsILoadGroup.prototype.VALIDATE_ONCE_PER_SESSION=0;
-nsIExtensionManager.prototype= new Array();
-function nsIExtensionManager(){};
-nsICharsetResolver.prototype= new Array();
-function nsICharsetResolver(){};
-nsICookieManager2.prototype= new Array();
-function nsICookieManager2(){};
-nsIScriptableDataType.prototype= new Array();
-function nsIScriptableDataType(){};
-nsIMIMEInfo.prototype= new Array();
-function nsIMIMEInfo(){};
-nsIMIMEInfo.prototype.saveToDisk="";
-nsIMIMEInfo.prototype.alwaysAsk=0;
-nsIMIMEInfo.prototype.useHelperApp=0;
-nsIMIMEInfo.prototype.handleInternally=0;
-nsIMIMEInfo.prototype.useSystemDefault=0;
-nsIDOMSVGAnimatedPathData.prototype= new Array();
-function nsIDOMSVGAnimatedPathData(){};
-nsIDOMSVGTransform.prototype= new Array();
-function nsIDOMSVGTransform(){};
-nsIDOMSVGTransform.prototype.SVG_TRANSFORM_UNKNOWN="";
-nsIDOMSVGTransform.prototype.SVG_TRANSFORM_MATRIX=0;
-nsIDOMSVGTransform.prototype.SVG_TRANSFORM_TRANSLATE=0;
-nsIDOMSVGTransform.prototype.SVG_TRANSFORM_SCALE=0;
-nsIDOMSVGTransform.prototype.SVG_TRANSFORM_ROTATE=0;
-nsIDOMSVGTransform.prototype.SVG_TRANSFORM_SKEWX=0;
-nsIDOMSVGTransform.prototype.SVG_TRANSFORM_SKEWY=0;
-nsIWebNavigation.prototype= new Array();
-function nsIWebNavigation(){};
-nsIWebNavigation.prototype.LOAD_FLAGS_MASK=0;
-nsIWebNavigation.prototype.LOAD_FLAGS_NONE="";
-nsIWebNavigation.prototype.LOAD_FLAGS_IS_REFRESH=0;
-nsIWebNavigation.prototype.LOAD_FLAGS_IS_LINK=0;
-nsIWebNavigation.prototype.LOAD_FLAGS_BYPASS_HISTORY=0;
-nsIWebNavigation.prototype.LOAD_FLAGS_REPLACE_HISTORY=0;
-nsIWebNavigation.prototype.LOAD_FLAGS_BYPASS_CACHE=0;
-nsIWebNavigation.prototype.LOAD_FLAGS_BYPASS_PROXY=0;
-nsIWebNavigation.prototype.LOAD_FLAGS_CHARSET_CHANGE=0;
-nsIWebNavigation.prototype.LOAD_FLAGS_STOP_CONTENT=0;
-nsIWebNavigation.prototype.LOAD_FLAGS_FROM_EXTERNAL=0;
-nsIWebNavigation.prototype.LOAD_FLAGS_ALLOW_THIRD_PARTY_FIXUP=0;
-nsIWebNavigation.prototype.LOAD_FLAGS_FIRST_LOAD=0;
-nsIWebNavigation.prototype.STOP_NETWORK=0;
-nsIWebNavigation.prototype.STOP_CONTENT=0;
-nsIWebNavigation.prototype.STOP_ALL=0;
-nsIDOMDocument.prototype= new Array();
-function nsIDOMDocument(){};
-nsIDOMDocument.prototype.ELEMENT_NODE=0;
-nsIDOMDocument.prototype.ATTRIBUTE_NODE=0;
-nsIDOMDocument.prototype.TEXT_NODE=0;
-nsIDOMDocument.prototype.CDATA_SECTION_NODE=0;
-nsIDOMDocument.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMDocument.prototype.ENTITY_NODE=0;
-nsIDOMDocument.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMDocument.prototype.COMMENT_NODE=0;
-nsIDOMDocument.prototype.DOCUMENT_NODE=0;
-nsIDOMDocument.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMDocument.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMDocument.prototype.NOTATION_NODE=0;
-nsIDOMProcessingInstruction.prototype= new Array();
-function nsIDOMProcessingInstruction(){};
-nsIDOMProcessingInstruction.prototype.ELEMENT_NODE=0;
-nsIDOMProcessingInstruction.prototype.ATTRIBUTE_NODE=0;
-nsIDOMProcessingInstruction.prototype.TEXT_NODE=0;
-nsIDOMProcessingInstruction.prototype.CDATA_SECTION_NODE=0;
-nsIDOMProcessingInstruction.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMProcessingInstruction.prototype.ENTITY_NODE=0;
-nsIDOMProcessingInstruction.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMProcessingInstruction.prototype.COMMENT_NODE=0;
-nsIDOMProcessingInstruction.prototype.DOCUMENT_NODE=0;
-nsIDOMProcessingInstruction.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMProcessingInstruction.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMProcessingInstruction.prototype.NOTATION_NODE=0;
-nsIDOMHTMLTextAreaElement.prototype= new Array();
-function nsIDOMHTMLTextAreaElement(){};
-nsIDOMHTMLTextAreaElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLTextAreaElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLTextAreaElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLTextAreaElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLTextAreaElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLTextAreaElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLTextAreaElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLTextAreaElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLTextAreaElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLTextAreaElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLTextAreaElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLTextAreaElement.prototype.NOTATION_NODE=0;
-nsIRDFLiteral.prototype= new Array();
-function nsIRDFLiteral(){};
-nsIDOMSVGAngle.prototype= new Array();
-function nsIDOMSVGAngle(){};
-nsIDOMSVGAngle.prototype.SVG_ANGLETYPE_UNKNOWN="";
-nsIDOMSVGAngle.prototype.SVG_ANGLETYPE_UNSPECIFIED=0;
-nsIDOMSVGAngle.prototype.SVG_ANGLETYPE_DEG=0;
-nsIDOMSVGAngle.prototype.SVG_ANGLETYPE_RAD=0;
-nsIDOMSVGAngle.prototype.SVG_ANGLETYPE_GRAD=0;
-nsIDOMXPathEvaluator.prototype= new Array();
-function nsIDOMXPathEvaluator(){};
-nsITableEditor.prototype= new Array();
-function nsITableEditor(){};
-nsITableEditor.prototype.eNoSearch="";
-nsITableEditor.prototype.ePreviousColumn=0;
-nsITableEditor.prototype.ePreviousRow=0;
-nsIPrintOptions.prototype= new Array();
-function nsIPrintOptions(){};
-nsIPrintOptions.prototype.kNativeDataPrintRecord="";
-nsIDOMSVGPathSegLinetoAbs.prototype= new Array();
-function nsIDOMSVGPathSegLinetoAbs(){};
-nsIDOMSVGPathSegLinetoAbs.prototype.PATHSEG_UNKNOWN="";
-nsIDOMSVGPathSegLinetoAbs.prototype.PATHSEG_CLOSEPATH=0;
-nsIDOMSVGPathSegLinetoAbs.prototype.PATHSEG_MOVETO_ABS=0;
-nsIDOMSVGPathSegLinetoAbs.prototype.PATHSEG_MOVETO_REL=0;
-nsIDOMSVGPathSegLinetoAbs.prototype.PATHSEG_LINETO_ABS=0;
-nsIDOMSVGPathSegLinetoAbs.prototype.PATHSEG_LINETO_REL=0;
-nsIDOMSVGPathSegLinetoAbs.prototype.PATHSEG_CURVETO_CUBIC_ABS=0;
-nsIDOMSVGPathSegLinetoAbs.prototype.PATHSEG_CURVETO_CUBIC_REL=0;
-nsIDOMSVGPathSegLinetoAbs.prototype.PATHSEG_CURVETO_QUADRATIC_ABS=0;
-nsIDOMSVGPathSegLinetoAbs.prototype.PATHSEG_CURVETO_QUADRATIC_REL=0;
-nsIDOMSVGPathSegLinetoAbs.prototype.PATHSEG_ARC_ABS=0;
-nsIDOMSVGPathSegLinetoAbs.prototype.PATHSEG_ARC_REL=0;
-nsIDOMSVGPathSegLinetoAbs.prototype.PATHSEG_LINETO_HORIZONTAL_ABS=0;
-nsIDOMSVGPathSegLinetoAbs.prototype.PATHSEG_LINETO_HORIZONTAL_REL=0;
-nsIDOMSVGPathSegLinetoAbs.prototype.PATHSEG_LINETO_VERTICAL_ABS=0;
-nsIDOMSVGPathSegLinetoAbs.prototype.PATHSEG_LINETO_VERTICAL_REL=0;
-nsIDOMSVGPathSegLinetoAbs.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegLinetoAbs.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_REL=0;
-nsIDOMSVGPathSegLinetoAbs.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegLinetoAbs.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL=0;
-nsISchemaAttribute.prototype= new Array();
-function nsISchemaAttribute(){};
-nsISchemaAttribute.prototype.COMPONENT_TYPE_ATTRIBUTE=0;
-nsISchemaAttribute.prototype.COMPONENT_TYPE_GROUP=0;
-nsISchemaAttribute.prototype.COMPONENT_TYPE_ANY=0;
-nsISchemaAttribute.prototype.USE_OPTIONAL=0;
-nsISchemaAttribute.prototype.USE_PROHIBITED=0;
-nsISchemaAttribute.prototype.USE_REQUIRED=0;
-nsIBrowserBoxObject.prototype= new Array();
-function nsIBrowserBoxObject(){};
-nsIPrintingPromptService.prototype= new Array();
-function nsIPrintingPromptService(){};
-nsISOAPOperationBinding.prototype= new Array();
-function nsISOAPOperationBinding(){};
-nsISOAPOperationBinding.prototype.STYLE_RPC=0;
-nsISOAPOperationBinding.prototype.STYLE_DOCUMENT=0;
-nsIDOMElementCSSInlineStyle.prototype= new Array();
-function nsIDOMElementCSSInlineStyle(){};
-nsIWritableVariant.prototype= new Array();
-function nsIWritableVariant(){};
-nsICommandLine.prototype= new Array();
-function nsICommandLine(){};
-nsICommandLine.prototype.STATE_INITIAL_LAUNCH="";
-nsICommandLine.prototype.STATE_REMOTE_AUTO=0;
-nsICommandLine.prototype.STATE_REMOTE_EXPLICIT=0;
-nsIBookmarksService_MOZILLA_1_8_BRANCH.prototype= new Array();
-function nsIBookmarksService_MOZILLA_1_8_BRANCH(){};
-nsIBookmarksService_MOZILLA_1_8_BRANCH.prototype.BOOKMARK_DEFAULT_TYPE="";
-nsIBookmarksService_MOZILLA_1_8_BRANCH.prototype.BOOKMARK_SEARCH_TYPE=0;
-nsIBookmarksService_MOZILLA_1_8_BRANCH.prototype.BOOKMARK_FIND_TYPE=0;
-nsIRDFXMLParser.prototype= new Array();
-function nsIRDFXMLParser(){};
-nsISchemaCollection.prototype= new Array();
-function nsISchemaCollection(){};
-nsIURIRefObject.prototype= new Array();
-function nsIURIRefObject(){};
-nsIDOMNSHTMLFormElement.prototype= new Array();
-function nsIDOMNSHTMLFormElement(){};
-nsIXTFXULVisualWrapper.prototype= new Array();
-function nsIXTFXULVisualWrapper(){};
-nsICollection.prototype= new Array();
-function nsICollection(){};
-nsISAXAttributes.prototype= new Array();
-function nsISAXAttributes(){};
-nsIJSXMLHttpRequest.prototype= new Array();
-function nsIJSXMLHttpRequest(){};
-nsIProgressEventSink.prototype= new Array();
-function nsIProgressEventSink(){};
-nsIDataChannel.prototype= new Array();
-function nsIDataChannel(){};
-nsIDataChannel.prototype.LOAD_NORMAL="";
-nsIDataChannel.prototype.LOAD_BACKGROUND=0;
-nsIDataChannel.prototype.INHIBIT_CACHING=0;
-nsIDataChannel.prototype.INHIBIT_PERSISTENT_CACHING=0;
-nsIDataChannel.prototype.LOAD_BYPASS_CACHE=0;
-nsIDataChannel.prototype.LOAD_FROM_CACHE=0;
-nsIDataChannel.prototype.VALIDATE_ALWAYS=0;
-nsIDataChannel.prototype.VALIDATE_NEVER=0;
-nsIDataChannel.prototype.VALIDATE_ONCE_PER_SESSION=0;
-nsIDataChannel.prototype.LOAD_DOCUMENT_URI=0;
-nsIDataChannel.prototype.LOAD_RETARGETED_DOCUMENT_URI=0;
-nsIDataChannel.prototype.LOAD_REPLACE=0;
-nsIDataChannel.prototype.LOAD_INITIAL_DOCUMENT_URI=0;
-nsIDataChannel.prototype.LOAD_TARGETED=0;
-nsIDataChannel.prototype.LOAD_CALL_CONTENT_SNIFFERS=0;
-nsIAuthPromptProvider.prototype= new Array();
-function nsIAuthPromptProvider(){};
-nsIAuthPromptProvider.prototype.PROMPT_NORMAL="";
-nsIAuthPromptProvider.prototype.PROMPT_PROXY=0;
-nsIContentViewerFile.prototype= new Array();
-function nsIContentViewerFile(){};
-nsITreeContentView.prototype= new Array();
-function nsITreeContentView(){};
-nsIConverterInputStream.prototype= new Array();
-function nsIConverterInputStream(){};
-nsIConverterInputStream.prototype.DEFAULT_REPLACEMENT_CHARACTER=0;
-nsIScreen.prototype= new Array();
-function nsIScreen(){};
-nsIDocCharset.prototype= new Array();
-function nsIDocCharset(){};
-nsISOAPPropertyBagMutator.prototype= new Array();
-function nsISOAPPropertyBagMutator(){};
-nsIDOMXULTextBoxElement.prototype= new Array();
-function nsIDOMXULTextBoxElement(){};
-nsIDOMXULTextBoxElement.prototype.ELEMENT_NODE=0;
-nsIDOMXULTextBoxElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMXULTextBoxElement.prototype.TEXT_NODE=0;
-nsIDOMXULTextBoxElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMXULTextBoxElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMXULTextBoxElement.prototype.ENTITY_NODE=0;
-nsIDOMXULTextBoxElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMXULTextBoxElement.prototype.COMMENT_NODE=0;
-nsIDOMXULTextBoxElement.prototype.DOCUMENT_NODE=0;
-nsIDOMXULTextBoxElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMXULTextBoxElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMXULTextBoxElement.prototype.NOTATION_NODE=0;
-nsIDOMRGBColor.prototype= new Array();
-function nsIDOMRGBColor(){};
-nsIDOMHTMLTableCaptionElement.prototype= new Array();
-function nsIDOMHTMLTableCaptionElement(){};
-nsIDOMHTMLTableCaptionElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLTableCaptionElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLTableCaptionElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLTableCaptionElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLTableCaptionElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLTableCaptionElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLTableCaptionElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLTableCaptionElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLTableCaptionElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLTableCaptionElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLTableCaptionElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLTableCaptionElement.prototype.NOTATION_NODE=0;
-nsIIFrameBoxObject.prototype= new Array();
-function nsIIFrameBoxObject(){};
-nsIPopupWindowManager.prototype= new Array();
-function nsIPopupWindowManager(){};
-nsIPopupWindowManager.prototype.ALLOW_POPUP=0;
-nsIPopupWindowManager.prototype.DENY_POPUP=0;
-nsIPopupWindowManager.prototype.ALLOW_POPUP_WITH_PREJUDICE=0;
-nsISupportsInterfacePointer.prototype= new Array();
-function nsISupportsInterfacePointer(){};
-nsISupportsInterfacePointer.prototype.TYPE_ID=0;
-nsISupportsInterfacePointer.prototype.TYPE_CSTRING=0;
-nsISupportsInterfacePointer.prototype.TYPE_STRING=0;
-nsISupportsInterfacePointer.prototype.TYPE_PRBOOL=0;
-nsISupportsInterfacePointer.prototype.TYPE_PRUINT8=0;
-nsISupportsInterfacePointer.prototype.TYPE_PRUINT16=0;
-nsISupportsInterfacePointer.prototype.TYPE_PRUINT32=0;
-nsISupportsInterfacePointer.prototype.TYPE_PRUINT64=0;
-nsISupportsInterfacePointer.prototype.TYPE_PRTIME=0;
-nsISupportsInterfacePointer.prototype.TYPE_CHAR=0;
-nsISupportsInterfacePointer.prototype.TYPE_PRINT16=0;
-nsISupportsInterfacePointer.prototype.TYPE_PRINT32=0;
-nsISupportsInterfacePointer.prototype.TYPE_PRINT64=0;
-nsISupportsInterfacePointer.prototype.TYPE_FLOAT=0;
-nsISupportsInterfacePointer.prototype.TYPE_DOUBLE=0;
-nsISupportsInterfacePointer.prototype.TYPE_VOID=0;
-nsISupportsInterfacePointer.prototype.TYPE_INTERFACE_POINTER=0;
-nsIUpdateCheckListener.prototype= new Array();
-function nsIUpdateCheckListener(){};
-nsIByteArrayInputStream.prototype= new Array();
-function nsIByteArrayInputStream(){};
-nsISOAPEncoding.prototype= new Array();
-function nsISOAPEncoding(){};
-nsIDOMSVGViewSpec.prototype= new Array();
-function nsIDOMSVGViewSpec(){};
-nsIDOMSVGViewSpec.prototype.SVG_ZOOMANDPAN_UNKNOWN="";
-nsIDOMSVGViewSpec.prototype.SVG_ZOOMANDPAN_DISABLE=0;
-nsIDOMSVGViewSpec.prototype.SVG_ZOOMANDPAN_MAGNIFY=0;
-nsIWebContentHandlerInfo.prototype= new Array();
-function nsIWebContentHandlerInfo(){};
-nsIDOMNSHTMLFormControlList.prototype= new Array();
-function nsIDOMNSHTMLFormControlList(){};
-nsIDOMXULTreeElement.prototype= new Array();
-function nsIDOMXULTreeElement(){};
-nsIDOMXULTreeElement.prototype.ELEMENT_NODE=0;
-nsIDOMXULTreeElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMXULTreeElement.prototype.TEXT_NODE=0;
-nsIDOMXULTreeElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMXULTreeElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMXULTreeElement.prototype.ENTITY_NODE=0;
-nsIDOMXULTreeElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMXULTreeElement.prototype.COMMENT_NODE=0;
-nsIDOMXULTreeElement.prototype.DOCUMENT_NODE=0;
-nsIDOMXULTreeElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMXULTreeElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMXULTreeElement.prototype.NOTATION_NODE=0;
-nsIFrameLoaderOwner.prototype= new Array();
-function nsIFrameLoaderOwner(){};
-nsIDOMNSHistory.prototype= new Array();
-function nsIDOMNSHistory(){};
-nsISessionRoaming.prototype= new Array();
-function nsISessionRoaming(){};
-nsIDOMNSXPathExpression.prototype= new Array();
-function nsIDOMNSXPathExpression(){};
-nsIDragSession.prototype= new Array();
-function nsIDragSession(){};
-nsITransactionList.prototype= new Array();
-function nsITransactionList(){};
-nsIDOMSVGPathSegCurvetoCubicRel.prototype= new Array();
-function nsIDOMSVGPathSegCurvetoCubicRel(){};
-nsIDOMSVGPathSegCurvetoCubicRel.prototype.PATHSEG_UNKNOWN="";
-nsIDOMSVGPathSegCurvetoCubicRel.prototype.PATHSEG_CLOSEPATH=0;
-nsIDOMSVGPathSegCurvetoCubicRel.prototype.PATHSEG_MOVETO_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicRel.prototype.PATHSEG_MOVETO_REL=0;
-nsIDOMSVGPathSegCurvetoCubicRel.prototype.PATHSEG_LINETO_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicRel.prototype.PATHSEG_LINETO_REL=0;
-nsIDOMSVGPathSegCurvetoCubicRel.prototype.PATHSEG_CURVETO_CUBIC_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicRel.prototype.PATHSEG_CURVETO_CUBIC_REL=0;
-nsIDOMSVGPathSegCurvetoCubicRel.prototype.PATHSEG_CURVETO_QUADRATIC_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicRel.prototype.PATHSEG_CURVETO_QUADRATIC_REL=0;
-nsIDOMSVGPathSegCurvetoCubicRel.prototype.PATHSEG_ARC_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicRel.prototype.PATHSEG_ARC_REL=0;
-nsIDOMSVGPathSegCurvetoCubicRel.prototype.PATHSEG_LINETO_HORIZONTAL_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicRel.prototype.PATHSEG_LINETO_HORIZONTAL_REL=0;
-nsIDOMSVGPathSegCurvetoCubicRel.prototype.PATHSEG_LINETO_VERTICAL_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicRel.prototype.PATHSEG_LINETO_VERTICAL_REL=0;
-nsIDOMSVGPathSegCurvetoCubicRel.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicRel.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_REL=0;
-nsIDOMSVGPathSegCurvetoCubicRel.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegCurvetoCubicRel.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL=0;
-nsIClipboardDragDropHookList.prototype= new Array();
-function nsIClipboardDragDropHookList(){};
-nsIScrollable.prototype= new Array();
-function nsIScrollable(){};
-nsIScrollable.prototype.ScrollOrientation_X=0;
-nsIScrollable.prototype.ScrollOrientation_Y=0;
-nsIScrollable.prototype.Scrollbar_Auto=0;
-nsIScrollable.prototype.Scrollbar_Never=0;
-nsIScrollable.prototype.Scrollbar_Always=0;
-gfxIFormats.prototype= new Array();
-function gfxIFormats(){};
-gfxIFormats.prototype.RGB="";
-gfxIFormats.prototype.BGR=0;
-gfxIFormats.prototype.RGB_A1=0;
-gfxIFormats.prototype.BGR_A1=0;
-gfxIFormats.prototype.RGB_A8=0;
-gfxIFormats.prototype.BGR_A8=0;
-gfxIFormats.prototype.RGBA=0;
-gfxIFormats.prototype.BGRA=0;
-nsIWinAppHelper.prototype= new Array();
-function nsIWinAppHelper(){};
-nsIDOMNodeFilter.prototype= new Array();
-function nsIDOMNodeFilter(){};
-nsIDOMNodeFilter.prototype.FILTER_ACCEPT=0;
-nsIDOMNodeFilter.prototype.FILTER_REJECT=0;
-nsIDOMNodeFilter.prototype.FILTER_SKIP=0;
-nsIDOMNodeFilter.prototype.SHOW_ALL=0;
-nsIDOMNodeFilter.prototype.SHOW_ELEMENT=0;
-nsIDOMNodeFilter.prototype.SHOW_ATTRIBUTE=0;
-nsIDOMNodeFilter.prototype.SHOW_TEXT=0;
-nsIDOMNodeFilter.prototype.SHOW_CDATA_SECTION=0;
-nsIDOMNodeFilter.prototype.SHOW_ENTITY_REFERENCE=0;
-nsIDOMNodeFilter.prototype.SHOW_ENTITY=0;
-nsIDOMNodeFilter.prototype.SHOW_PROCESSING_INSTRUCTION=0;
-nsIDOMNodeFilter.prototype.SHOW_COMMENT=0;
-nsIDOMNodeFilter.prototype.SHOW_DOCUMENT=0;
-nsIDOMNodeFilter.prototype.SHOW_DOCUMENT_TYPE=0;
-nsIDOMNodeFilter.prototype.SHOW_DOCUMENT_FRAGMENT=0;
-nsIDOMNodeFilter.prototype.SHOW_NOTATION=0;
-nsISocketTransportService.prototype= new Array();
-function nsISocketTransportService(){};
-nsISelectionDisplay.prototype= new Array();
-function nsISelectionDisplay(){};
-nsISelectionDisplay.prototype.DISPLAY_TEXT=0;
-nsISelectionDisplay.prototype.DISPLAY_IMAGES=0;
-nsISelectionDisplay.prototype.DISPLAY_FRAMES=0;
-nsISelectionDisplay.prototype.DISPLAY_ALL=0;
-nsIJSCID.prototype= new Array();
-function nsIJSCID(){};
-nsIObserver.prototype= new Array();
-function nsIObserver(){};
-nsIJSID.prototype= new Array();
-function nsIJSID(){};
-nsISupportsChar.prototype= new Array();
-function nsISupportsChar(){};
-nsISupportsChar.prototype.TYPE_ID=0;
-nsISupportsChar.prototype.TYPE_CSTRING=0;
-nsISupportsChar.prototype.TYPE_STRING=0;
-nsISupportsChar.prototype.TYPE_PRBOOL=0;
-nsISupportsChar.prototype.TYPE_PRUINT8=0;
-nsISupportsChar.prototype.TYPE_PRUINT16=0;
-nsISupportsChar.prototype.TYPE_PRUINT32=0;
-nsISupportsChar.prototype.TYPE_PRUINT64=0;
-nsISupportsChar.prototype.TYPE_PRTIME=0;
-nsISupportsChar.prototype.TYPE_CHAR=0;
-nsISupportsChar.prototype.TYPE_PRINT16=0;
-nsISupportsChar.prototype.TYPE_PRINT32=0;
-nsISupportsChar.prototype.TYPE_PRINT64=0;
-nsISupportsChar.prototype.TYPE_FLOAT=0;
-nsISupportsChar.prototype.TYPE_DOUBLE=0;
-nsISupportsChar.prototype.TYPE_VOID=0;
-nsISupportsChar.prototype.TYPE_INTERFACE_POINTER=0;
-nsIPrintProgressParams.prototype= new Array();
-function nsIPrintProgressParams(){};
-nsIDocShell_MOZILLA_1_8_BRANCH.prototype= new Array();
-function nsIDocShell_MOZILLA_1_8_BRANCH(){};
-nsIProtocolHandler.prototype= new Array();
-function nsIProtocolHandler(){};
-nsIProtocolHandler.prototype.URI_STD="";
-nsIProtocolHandler.prototype.URI_NORELATIVE=0;
-nsIProtocolHandler.prototype.URI_NOAUTH=0;
-nsIProtocolHandler.prototype.ALLOWS_PROXY=0;
-nsIProtocolHandler.prototype.ALLOWS_PROXY_HTTP=0;
-nsIDOMDOMImplementation.prototype= new Array();
-function nsIDOMDOMImplementation(){};
-nsPIXPIProxy.prototype= new Array();
-function nsPIXPIProxy(){};
-nsITreeBoxObject.prototype= new Array();
-function nsITreeBoxObject(){};
-nsIPersistentProperties.prototype= new Array();
-function nsIPersistentProperties(){};
-nsIXPCComponents_utils_Sandbox.prototype= new Array();
-function nsIXPCComponents_utils_Sandbox(){};
-nsIAccessibleRetrieval.prototype= new Array();
-function nsIAccessibleRetrieval(){};
-nsIExtensionManager_MOZILLA_1_8_BRANCH.prototype= new Array();
-function nsIExtensionManager_MOZILLA_1_8_BRANCH(){};
-nsIScriptableUnescapeHTML.prototype= new Array();
-function nsIScriptableUnescapeHTML(){};
-nsIStreamConverter.prototype= new Array();
-function nsIStreamConverter(){};
-nsIIOService.prototype= new Array();
-function nsIIOService(){};
-nsIDOMNSHTMLOptionElement.prototype= new Array();
-function nsIDOMNSHTMLOptionElement(){};
-imgIDecoderObserver.prototype= new Array();
-function imgIDecoderObserver(){};
-nsIPrinterEnumerator.prototype= new Array();
-function nsIPrinterEnumerator(){};
-nsIDOMEventTarget.prototype= new Array();
-function nsIDOMEventTarget(){};
-nsIRegistryValue.prototype= new Array();
-function nsIRegistryValue(){};
-nsIDOMSVGScriptElement.prototype= new Array();
-function nsIDOMSVGScriptElement(){};
-nsIDOMSVGScriptElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGScriptElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGScriptElement.prototype.TEXT_NODE=0;
-nsIDOMSVGScriptElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGScriptElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGScriptElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGScriptElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGScriptElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGScriptElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGScriptElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGScriptElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGScriptElement.prototype.NOTATION_NODE=0;
-nsIMarkupDocumentViewer.prototype= new Array();
-function nsIMarkupDocumentViewer(){};
-nsIFTPEventSink.prototype= new Array();
-function nsIFTPEventSink(){};
-nsIPluginManager.prototype= new Array();
-function nsIPluginManager(){};
-nsIBrowserProfileMigrator.prototype= new Array();
-function nsIBrowserProfileMigrator(){};
-nsIBrowserProfileMigrator.prototype.ALL="";
-nsIBrowserProfileMigrator.prototype.SETTINGS=0;
-nsIBrowserProfileMigrator.prototype.COOKIES=0;
-nsIBrowserProfileMigrator.prototype.HISTORY=0;
-nsIBrowserProfileMigrator.prototype.FORMDATA=0;
-nsIBrowserProfileMigrator.prototype.PASSWORDS=0;
-nsIBrowserProfileMigrator.prototype.BOOKMARKS=0;
-nsIBrowserProfileMigrator.prototype.OTHERDATA=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs.prototype= new Array();
-function nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs(){};
-nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs.prototype.PATHSEG_UNKNOWN="";
-nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs.prototype.PATHSEG_CLOSEPATH=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs.prototype.PATHSEG_MOVETO_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs.prototype.PATHSEG_MOVETO_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs.prototype.PATHSEG_LINETO_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs.prototype.PATHSEG_LINETO_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs.prototype.PATHSEG_CURVETO_CUBIC_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs.prototype.PATHSEG_CURVETO_CUBIC_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs.prototype.PATHSEG_CURVETO_QUADRATIC_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs.prototype.PATHSEG_CURVETO_QUADRATIC_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs.prototype.PATHSEG_ARC_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs.prototype.PATHSEG_ARC_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs.prototype.PATHSEG_LINETO_HORIZONTAL_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs.prototype.PATHSEG_LINETO_HORIZONTAL_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs.prototype.PATHSEG_LINETO_VERTICAL_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs.prototype.PATHSEG_LINETO_VERTICAL_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_REL=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL=0;
-nsIDOMHTMLBaseElement.prototype= new Array();
-function nsIDOMHTMLBaseElement(){};
-nsIDOMHTMLBaseElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLBaseElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLBaseElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLBaseElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLBaseElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLBaseElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLBaseElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLBaseElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLBaseElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLBaseElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLBaseElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLBaseElement.prototype.NOTATION_NODE=0;
-nsIFileInputStream.prototype= new Array();
-function nsIFileInputStream(){};
-nsIFileInputStream.prototype.DELETE_ON_CLOSE=0;
-nsIFileInputStream.prototype.CLOSE_ON_EOF=0;
-nsIFileInputStream.prototype.REOPEN_ON_REWIND=0;
-nsIDOMHTMLMenuElement.prototype= new Array();
-function nsIDOMHTMLMenuElement(){};
-nsIDOMHTMLMenuElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLMenuElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLMenuElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLMenuElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLMenuElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLMenuElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLMenuElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLMenuElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLMenuElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLMenuElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLMenuElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLMenuElement.prototype.NOTATION_NODE=0;
-nsIDOMHTMLDivElement.prototype= new Array();
-function nsIDOMHTMLDivElement(){};
-nsIDOMHTMLDivElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLDivElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLDivElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLDivElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLDivElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLDivElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLDivElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLDivElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLDivElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLDivElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLDivElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLDivElement.prototype.NOTATION_NODE=0;
-nsIUpdate.prototype= new Array();
-function nsIUpdate(){};
-nsIXSLTProcessor.prototype= new Array();
-function nsIXSLTProcessor(){};
-nsIDOMBeforeUnloadEvent.prototype= new Array();
-function nsIDOMBeforeUnloadEvent(){};
-nsIDOMBeforeUnloadEvent.prototype.CAPTURING_PHASE=0;
-nsIDOMBeforeUnloadEvent.prototype.AT_TARGET=0;
-nsIDOMBeforeUnloadEvent.prototype.BUBBLING_PHASE=0;
-nsISOAPPartBinding.prototype= new Array();
-function nsISOAPPartBinding(){};
-nsISOAPPartBinding.prototype.STYLE_RPC=0;
-nsISOAPPartBinding.prototype.STYLE_DOCUMENT=0;
-nsISOAPPartBinding.prototype.LOCATION_BODY=0;
-nsISOAPPartBinding.prototype.LOCATION_HEADER=0;
-nsISOAPPartBinding.prototype.LOCATION_FAULT=0;
-nsISOAPPartBinding.prototype.USE_LITERAL=0;
-nsISOAPPartBinding.prototype.USE_ENCODED=0;
-nsIDOMHTMLMetaElement.prototype= new Array();
-function nsIDOMHTMLMetaElement(){};
-nsIDOMHTMLMetaElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLMetaElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLMetaElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLMetaElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLMetaElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLMetaElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLMetaElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLMetaElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLMetaElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLMetaElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLMetaElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLMetaElement.prototype.NOTATION_NODE=0;
-nsIXTFStyledElementWrapper.prototype= new Array();
-function nsIXTFStyledElementWrapper(){};
-nsIDOMSVGLocatable.prototype= new Array();
-function nsIDOMSVGLocatable(){};
-nsISAXMutableAttributes.prototype= new Array();
-function nsISAXMutableAttributes(){};
-nsISchemaElement.prototype= new Array();
-function nsISchemaElement(){};
-nsISchemaElement.prototype.PARTICLE_TYPE_ELEMENT=0;
-nsISchemaElement.prototype.PARTICLE_TYPE_MODEL_GROUP=0;
-nsISchemaElement.prototype.PARTICLE_TYPE_ANY=0;
-nsISchemaElement.prototype.OCCURRENCE_UNBOUNDED=0;
-nsIDOMXULSelectControlItemElement.prototype= new Array();
-function nsIDOMXULSelectControlItemElement(){};
-nsIDOMXULSelectControlItemElement.prototype.ELEMENT_NODE=0;
-nsIDOMXULSelectControlItemElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMXULSelectControlItemElement.prototype.TEXT_NODE=0;
-nsIDOMXULSelectControlItemElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMXULSelectControlItemElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMXULSelectControlItemElement.prototype.ENTITY_NODE=0;
-nsIDOMXULSelectControlItemElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMXULSelectControlItemElement.prototype.COMMENT_NODE=0;
-nsIDOMXULSelectControlItemElement.prototype.DOCUMENT_NODE=0;
-nsIDOMXULSelectControlItemElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMXULSelectControlItemElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMXULSelectControlItemElement.prototype.NOTATION_NODE=0;
-nsIPrefBranchInternal.prototype= new Array();
-function nsIPrefBranchInternal(){};
-nsIPrefBranchInternal.prototype.PREF_INVALID="";
-nsIPrefBranchInternal.prototype.PREF_STRING=0;
-nsIPrefBranchInternal.prototype.PREF_INT=0;
-nsIPrefBranchInternal.prototype.PREF_BOOL=0;
-nsIDOMSVGPathSegList.prototype= new Array();
-function nsIDOMSVGPathSegList(){};
-mozIStorageStatement.prototype= new Array();
-function mozIStorageStatement(){};
-mozIStorageStatement.prototype.VALUE_TYPE_NULL="";
-mozIStorageStatement.prototype.VALUE_TYPE_INTEGER=0;
-mozIStorageStatement.prototype.VALUE_TYPE_FLOAT=0;
-mozIStorageStatement.prototype.VALUE_TYPE_TEXT=0;
-mozIStorageStatement.prototype.VALUE_TYPE_BLOB=0;
-mozIStorageStatement.prototype.MOZ_STORAGE_STATEMENT_INVALID="";
-mozIStorageStatement.prototype.MOZ_STORAGE_STATEMENT_READY=0;
-mozIStorageStatement.prototype.MOZ_STORAGE_STATEMENT_EXECUTING=0;
-nsIStringBundle.prototype= new Array();
-function nsIStringBundle(){};
-nsISHEntry.prototype= new Array();
-function nsISHEntry(){};
-nsIDOMNavigator.prototype= new Array();
-function nsIDOMNavigator(){};
-nsIXPCComponents_Classes.prototype= new Array();
-function nsIXPCComponents_Classes(){};
-nsPIEditorTransaction.prototype= new Array();
-function nsPIEditorTransaction(){};
-nsISearchSubmission.prototype= new Array();
-function nsISearchSubmission(){};
-nsIDOMWindowInternal.prototype= new Array();
-function nsIDOMWindowInternal(){};
-nsITreeSelection.prototype= new Array();
-function nsITreeSelection(){};
-nsIPropertyBag.prototype= new Array();
-function nsIPropertyBag(){};
-nsIPrintSettings.prototype= new Array();
-function nsIPrintSettings(){};
-nsIPrintSettings.prototype.kInitSaveOddEvenPages=0;
-nsIPrintSettings.prototype.kInitSaveHeaderLeft=0;
-nsIPrintSettings.prototype.kInitSaveHeaderCenter=0;
-nsIPrintSettings.prototype.kInitSaveHeaderRight=0;
-nsIPrintSettings.prototype.kInitSaveFooterLeft=0;
-nsIPrintSettings.prototype.kInitSaveFooterCenter=0;
-nsIPrintSettings.prototype.kInitSaveFooterRight=0;
-nsIPrintSettings.prototype.kInitSaveBGColors=0;
-nsIPrintSettings.prototype.kInitSaveBGImages=0;
-nsIPrintSettings.prototype.kInitSavePaperSize=0;
-nsIPrintSettings.prototype.kInitSavePaperName=0;
-nsIPrintSettings.prototype.kInitSavePaperSizeUnit=0;
-nsIPrintSettings.prototype.kInitSavePaperSizeType=0;
-nsIPrintSettings.prototype.kInitSavePaperData=0;
-nsIPrintSettings.prototype.kInitSavePaperWidth=0;
-nsIPrintSettings.prototype.kInitSavePaperHeight=0;
-nsIPrintSettings.prototype.kInitSaveReversed=0;
-nsIPrintSettings.prototype.kInitSaveInColor=0;
-nsIPrintSettings.prototype.kInitSaveOrientation=0;
-nsIPrintSettings.prototype.kInitSavePrintCommand=0;
-nsIPrintSettings.prototype.kInitSavePrinterName=0;
-nsIPrintSettings.prototype.kInitSavePrintToFile=0;
-nsIPrintSettings.prototype.kInitSaveToFileName=0;
-nsIPrintSettings.prototype.kInitSavePageDelay=0;
-nsIPrintSettings.prototype.kInitSaveMargins=0;
-nsIPrintSettings.prototype.kInitSaveNativeData=0;
-nsIPrintSettings.prototype.kInitSavePlexName=0;
-nsIPrintSettings.prototype.kInitSaveShrinkToFit=0;
-nsIPrintSettings.prototype.kInitSaveScaling=0;
-nsIPrintSettings.prototype.kInitSaveColorspace=0;
-nsIPrintSettings.prototype.kInitSaveResolutionName=0;
-nsIPrintSettings.prototype.kInitSaveDownloadFonts=0;
-nsIPrintSettings.prototype.kInitSaveAll=0;
-nsIPrintSettings.prototype.kPrintOddPages=0;
-nsIPrintSettings.prototype.kPrintEvenPages=0;
-nsIPrintSettings.prototype.kEnableSelectionRB=0;
-nsIPrintSettings.prototype.kRangeAllPages="";
-nsIPrintSettings.prototype.kRangeSpecifiedPageRange=0;
-nsIPrintSettings.prototype.kRangeSelection=0;
-nsIPrintSettings.prototype.kRangeFocusFrame=0;
-nsIPrintSettings.prototype.kJustLeft="";
-nsIPrintSettings.prototype.kJustCenter=0;
-nsIPrintSettings.prototype.kJustRight=0;
-nsIPrintSettings.prototype.kUseInternalDefault="";
-nsIPrintSettings.prototype.kUseSettingWhenPossible=0;
-nsIPrintSettings.prototype.kPaperSizeNativeData="";
-nsIPrintSettings.prototype.kPaperSizeDefined=0;
-nsIPrintSettings.prototype.kPaperSizeInches="";
-nsIPrintSettings.prototype.kPaperSizeMillimeters=0;
-nsIPrintSettings.prototype.kPortraitOrientation="";
-nsIPrintSettings.prototype.kLandscapeOrientation=0;
-nsIPrintSettings.prototype.kNoFrames="";
-nsIPrintSettings.prototype.kFramesAsIs=0;
-nsIPrintSettings.prototype.kSelectedFrame=0;
-nsIPrintSettings.prototype.kEachFrameSep=0;
-nsIPrintSettings.prototype.kFrameEnableNone="";
-nsIPrintSettings.prototype.kFrameEnableAll=0;
-nsIPrintSettings.prototype.kFrameEnableAsIsAndEach=0;
-nsIFastLoadWriteControl.prototype= new Array();
-function nsIFastLoadWriteControl(){};
-nsIDOMSVGSymbolElement.prototype= new Array();
-function nsIDOMSVGSymbolElement(){};
-nsIDOMSVGSymbolElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGSymbolElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGSymbolElement.prototype.TEXT_NODE=0;
-nsIDOMSVGSymbolElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGSymbolElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGSymbolElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGSymbolElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGSymbolElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGSymbolElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGSymbolElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGSymbolElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGSymbolElement.prototype.NOTATION_NODE=0;
-mozIStorageFunction.prototype= new Array();
-function mozIStorageFunction(){};
-nsIDebug.prototype= new Array();
-function nsIDebug(){};
-nsIServerSocket.prototype= new Array();
-function nsIServerSocket(){};
-nsIDOMXULDocument.prototype= new Array();
-function nsIDOMXULDocument(){};
-nsIDOMPopupBlockedEvent.prototype= new Array();
-function nsIDOMPopupBlockedEvent(){};
-nsIDOMPopupBlockedEvent.prototype.CAPTURING_PHASE=0;
-nsIDOMPopupBlockedEvent.prototype.AT_TARGET=0;
-nsIDOMPopupBlockedEvent.prototype.BUBBLING_PHASE=0;
-nsIEditorSpellCheck.prototype= new Array();
-function nsIEditorSpellCheck(){};
-nsIDOMHTMLScriptElement.prototype= new Array();
-function nsIDOMHTMLScriptElement(){};
-nsIDOMHTMLScriptElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLScriptElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLScriptElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLScriptElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLScriptElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLScriptElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLScriptElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLScriptElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLScriptElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLScriptElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLScriptElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLScriptElement.prototype.NOTATION_NODE=0;
-nsIWebBrowserChromeFocus.prototype= new Array();
-function nsIWebBrowserChromeFocus(){};
-nsIEntityConverter.prototype= new Array();
-function nsIEntityConverter(){};
-nsIEntityConverter.prototype.entityNone="";
-nsIEntityConverter.prototype.html40Latin1=0;
-nsIEntityConverter.prototype.html40Symbols=0;
-nsIEntityConverter.prototype.html40Special=0;
-nsIEntityConverter.prototype.transliterate=0;
-nsIEntityConverter.prototype.mathml20=0;
-nsIEntityConverter.prototype.html32=0;
-nsIEntityConverter.prototype.html40=0;
-nsIEntityConverter.prototype.entityW3C=0;
-nsISimpleEnumerator.prototype= new Array();
-function nsISimpleEnumerator(){};
-nsIEmbeddingSiteWindow2.prototype= new Array();
-function nsIEmbeddingSiteWindow2(){};
-nsIEmbeddingSiteWindow2.prototype.DIM_FLAGS_POSITION=0;
-nsIEmbeddingSiteWindow2.prototype.DIM_FLAGS_SIZE_INNER=0;
-nsIEmbeddingSiteWindow2.prototype.DIM_FLAGS_SIZE_OUTER=0;
-nsIDOMHTMLBodyElement.prototype= new Array();
-function nsIDOMHTMLBodyElement(){};
-nsIDOMHTMLBodyElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLBodyElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLBodyElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLBodyElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLBodyElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLBodyElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLBodyElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLBodyElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLBodyElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLBodyElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLBodyElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLBodyElement.prototype.NOTATION_NODE=0;
-nsIChannelEventSink.prototype= new Array();
-function nsIChannelEventSink(){};
-nsIChannelEventSink.prototype.REDIRECT_TEMPORARY=0;
-nsIChannelEventSink.prototype.REDIRECT_PERMANENT=0;
-nsIChannelEventSink.prototype.REDIRECT_INTERNAL=0;
-nsICookie.prototype= new Array();
-function nsICookie(){};
-nsICookie.prototype.STATUS_UNKNOWN="";
-nsICookie.prototype.STATUS_ACCEPTED=0;
-nsICookie.prototype.STATUS_DOWNGRADED=0;
-nsICookie.prototype.STATUS_FLAGGED=0;
-nsICookie.prototype.STATUS_REJECTED=0;
-nsICookie.prototype.POLICY_UNKNOWN="";
-nsICookie.prototype.POLICY_NONE=0;
-nsICookie.prototype.POLICY_NO_CONSENT=0;
-nsICookie.prototype.POLICY_IMPLICIT_CONSENT=0;
-nsICookie.prototype.POLICY_EXPLICIT_CONSENT=0;
-nsICookie.prototype.POLICY_NO_II=0;
-nsIPrintingPrompt.prototype= new Array();
-function nsIPrintingPrompt(){};
-nsIDOMHTMLOptionElement.prototype= new Array();
-function nsIDOMHTMLOptionElement(){};
-nsIDOMHTMLOptionElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLOptionElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLOptionElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLOptionElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLOptionElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLOptionElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLOptionElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLOptionElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLOptionElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLOptionElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLOptionElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLOptionElement.prototype.NOTATION_NODE=0;
-nsIXPCComponents_ClassesByID.prototype= new Array();
-function nsIXPCComponents_ClassesByID(){};
-nsIMultiPartChannel.prototype= new Array();
-function nsIMultiPartChannel(){};
-nsIFrameLoader.prototype= new Array();
-function nsIFrameLoader(){};
-nsIAccessibleCaret.prototype= new Array();
-function nsIAccessibleCaret(){};
-nsIFeedWriter.prototype= new Array();
-function nsIFeedWriter(){};
-nsIMIMEService.prototype= new Array();
-function nsIMIMEService(){};
-nsIDOMXULCommandDispatcher.prototype= new Array();
-function nsIDOMXULCommandDispatcher(){};
-nsICommandParams.prototype= new Array();
-function nsICommandParams(){};
-nsICommandParams.prototype.eNoType="";
-nsICommandParams.prototype.eBooleanType=0;
-nsICommandParams.prototype.eLongType=0;
-nsICommandParams.prototype.eDoubleType=0;
-nsICommandParams.prototype.eWStringType=0;
-nsICommandParams.prototype.eISupportsType=0;
-nsICommandParams.prototype.eStringType=0;
-nsIX509CertDB.prototype= new Array();
-function nsIX509CertDB(){};
-nsIX509CertDB.prototype.UNTRUSTED="";
-nsIX509CertDB.prototype.TRUSTED_SSL=0;
-nsIX509CertDB.prototype.TRUSTED_EMAIL=0;
-nsIX509CertDB.prototype.TRUSTED_OBJSIGN=0;
-nsIDOMRangeException.prototype= new Array();
-function nsIDOMRangeException(){};
-nsIDOMRangeException.prototype.BAD_BOUNDARYPOINTS_ERR=0;
-nsIDOMRangeException.prototype.INVALID_NODE_TYPE_ERR=0;
-nsIRDFCompositeDataSource.prototype= new Array();
-function nsIRDFCompositeDataSource(){};
-nsIScriptableInterfaces.prototype= new Array();
-function nsIScriptableInterfaces(){};
-nsILineInputStream.prototype= new Array();
-function nsILineInputStream(){};
-nsIWeakReference.prototype= new Array();
-function nsIWeakReference(){};
-nsITypeAheadFind_MOZILLA_1_8_BRANCH.prototype= new Array();
-function nsITypeAheadFind_MOZILLA_1_8_BRANCH(){};
-nsITypeAheadFind_MOZILLA_1_8_BRANCH.prototype.FIND_FOUND="";
-nsITypeAheadFind_MOZILLA_1_8_BRANCH.prototype.FIND_NOTFOUND=0;
-nsITypeAheadFind_MOZILLA_1_8_BRANCH.prototype.FIND_WRAPPED=0;
-nsIDOMSVGPathSegLinetoVerticalRel.prototype= new Array();
-function nsIDOMSVGPathSegLinetoVerticalRel(){};
-nsIDOMSVGPathSegLinetoVerticalRel.prototype.PATHSEG_UNKNOWN="";
-nsIDOMSVGPathSegLinetoVerticalRel.prototype.PATHSEG_CLOSEPATH=0;
-nsIDOMSVGPathSegLinetoVerticalRel.prototype.PATHSEG_MOVETO_ABS=0;
-nsIDOMSVGPathSegLinetoVerticalRel.prototype.PATHSEG_MOVETO_REL=0;
-nsIDOMSVGPathSegLinetoVerticalRel.prototype.PATHSEG_LINETO_ABS=0;
-nsIDOMSVGPathSegLinetoVerticalRel.prototype.PATHSEG_LINETO_REL=0;
-nsIDOMSVGPathSegLinetoVerticalRel.prototype.PATHSEG_CURVETO_CUBIC_ABS=0;
-nsIDOMSVGPathSegLinetoVerticalRel.prototype.PATHSEG_CURVETO_CUBIC_REL=0;
-nsIDOMSVGPathSegLinetoVerticalRel.prototype.PATHSEG_CURVETO_QUADRATIC_ABS=0;
-nsIDOMSVGPathSegLinetoVerticalRel.prototype.PATHSEG_CURVETO_QUADRATIC_REL=0;
-nsIDOMSVGPathSegLinetoVerticalRel.prototype.PATHSEG_ARC_ABS=0;
-nsIDOMSVGPathSegLinetoVerticalRel.prototype.PATHSEG_ARC_REL=0;
-nsIDOMSVGPathSegLinetoVerticalRel.prototype.PATHSEG_LINETO_HORIZONTAL_ABS=0;
-nsIDOMSVGPathSegLinetoVerticalRel.prototype.PATHSEG_LINETO_HORIZONTAL_REL=0;
-nsIDOMSVGPathSegLinetoVerticalRel.prototype.PATHSEG_LINETO_VERTICAL_ABS=0;
-nsIDOMSVGPathSegLinetoVerticalRel.prototype.PATHSEG_LINETO_VERTICAL_REL=0;
-nsIDOMSVGPathSegLinetoVerticalRel.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegLinetoVerticalRel.prototype.PATHSEG_CURVETO_CUBIC_SMOOTH_REL=0;
-nsIDOMSVGPathSegLinetoVerticalRel.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS=0;
-nsIDOMSVGPathSegLinetoVerticalRel.prototype.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL=0;
-nsISupports.prototype= new Array();
-function nsISupports(){};
-nsIWebProgress.prototype= new Array();
-function nsIWebProgress(){};
-nsIWebProgress.prototype.NOTIFY_STATE_REQUEST=0;
-nsIWebProgress.prototype.NOTIFY_STATE_DOCUMENT=0;
-nsIWebProgress.prototype.NOTIFY_STATE_NETWORK=0;
-nsIWebProgress.prototype.NOTIFY_STATE_WINDOW=0;
-nsIWebProgress.prototype.NOTIFY_STATE_ALL=0;
-nsIWebProgress.prototype.NOTIFY_PROGRESS=0;
-nsIWebProgress.prototype.NOTIFY_STATUS=0;
-nsIWebProgress.prototype.NOTIFY_SECURITY=0;
-nsIWebProgress.prototype.NOTIFY_LOCATION=0;
-nsIWebProgress.prototype.NOTIFY_ALL=0;
-nsIDOMGetSVGDocument.prototype= new Array();
-function nsIDOMGetSVGDocument(){};
-nsIAutoCompleteController_MOZILLA_1_8_BRANCH.prototype= new Array();
-function nsIAutoCompleteController_MOZILLA_1_8_BRANCH(){};
-nsIAutoCompleteController_MOZILLA_1_8_BRANCH.prototype.STATUS_NONE=0;
-nsIAutoCompleteController_MOZILLA_1_8_BRANCH.prototype.STATUS_SEARCHING=0;
-nsIAutoCompleteController_MOZILLA_1_8_BRANCH.prototype.STATUS_COMPLETE_NO_MATCH=0;
-nsIAutoCompleteController_MOZILLA_1_8_BRANCH.prototype.STATUS_COMPLETE_MATCH=0;
-nsIAutoCompleteController_MOZILLA_1_8_BRANCH.prototype.KEY_UP=0;
-nsIAutoCompleteController_MOZILLA_1_8_BRANCH.prototype.KEY_DOWN=0;
-nsIAutoCompleteController_MOZILLA_1_8_BRANCH.prototype.KEY_LEFT=0;
-nsIAutoCompleteController_MOZILLA_1_8_BRANCH.prototype.KEY_RIGHT=0;
-nsIAutoCompleteController_MOZILLA_1_8_BRANCH.prototype.KEY_PAGE_UP=0;
-nsIAutoCompleteController_MOZILLA_1_8_BRANCH.prototype.KEY_PAGE_DOWN=0;
-nsIAutoCompleteController_MOZILLA_1_8_BRANCH.prototype.KEY_HOME=0;
-nsIAutoCompleteController_MOZILLA_1_8_BRANCH.prototype.KEY_END=0;
-nsISSLStatus.prototype= new Array();
-function nsISSLStatus(){};
-nsIDOMSmartCardEvent.prototype= new Array();
-function nsIDOMSmartCardEvent(){};
-nsIDOMSmartCardEvent.prototype.CAPTURING_PHASE=0;
-nsIDOMSmartCardEvent.prototype.AT_TARGET=0;
-nsIDOMSmartCardEvent.prototype.BUBBLING_PHASE=0;
-nsIDOMXULElement.prototype= new Array();
-function nsIDOMXULElement(){};
-nsIDOMXULElement.prototype.ELEMENT_NODE=0;
-nsIDOMXULElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMXULElement.prototype.TEXT_NODE=0;
-nsIDOMXULElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMXULElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMXULElement.prototype.ENTITY_NODE=0;
-nsIDOMXULElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMXULElement.prototype.COMMENT_NODE=0;
-nsIDOMXULElement.prototype.DOCUMENT_NODE=0;
-nsIDOMXULElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMXULElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMXULElement.prototype.NOTATION_NODE=0;
-nsIClipboardOwner.prototype= new Array();
-function nsIClipboardOwner(){};
-nsIAuthPromptWrapper.prototype= new Array();
-function nsIAuthPromptWrapper(){};
-nsIAuthPromptWrapper.prototype.SAVE_PASSWORD_NEVER="";
-nsIAuthPromptWrapper.prototype.SAVE_PASSWORD_FOR_SESSION=0;
-nsIAuthPromptWrapper.prototype.SAVE_PASSWORD_PERMANENTLY=0;
-nsIWebBrowserChrome.prototype= new Array();
-function nsIWebBrowserChrome(){};
-nsIWebBrowserChrome.prototype.STATUS_SCRIPT=0;
-nsIWebBrowserChrome.prototype.STATUS_SCRIPT_DEFAULT=0;
-nsIWebBrowserChrome.prototype.STATUS_LINK=0;
-nsIWebBrowserChrome.prototype.CHROME_DEFAULT=0;
-nsIWebBrowserChrome.prototype.CHROME_WINDOW_BORDERS=0;
-nsIWebBrowserChrome.prototype.CHROME_WINDOW_CLOSE=0;
-nsIWebBrowserChrome.prototype.CHROME_WINDOW_RESIZE=0;
-nsIWebBrowserChrome.prototype.CHROME_MENUBAR=0;
-nsIWebBrowserChrome.prototype.CHROME_TOOLBAR=0;
-nsIWebBrowserChrome.prototype.CHROME_LOCATIONBAR=0;
-nsIWebBrowserChrome.prototype.CHROME_STATUSBAR=0;
-nsIWebBrowserChrome.prototype.CHROME_PERSONAL_TOOLBAR=0;
-nsIWebBrowserChrome.prototype.CHROME_SCROLLBARS=0;
-nsIWebBrowserChrome.prototype.CHROME_TITLEBAR=0;
-nsIWebBrowserChrome.prototype.CHROME_EXTRA=0;
-nsIWebBrowserChrome.prototype.CHROME_WITH_SIZE=0;
-nsIWebBrowserChrome.prototype.CHROME_WITH_POSITION=0;
-nsIWebBrowserChrome.prototype.CHROME_WINDOW_MIN=0;
-nsIWebBrowserChrome.prototype.CHROME_WINDOW_POPUP=0;
-nsIWebBrowserChrome.prototype.CHROME_WINDOW_RAISED=0;
-nsIWebBrowserChrome.prototype.CHROME_WINDOW_LOWERED=0;
-nsIWebBrowserChrome.prototype.CHROME_CENTER_SCREEN=0;
-nsIWebBrowserChrome.prototype.CHROME_DEPENDENT=0;
-nsIWebBrowserChrome.prototype.CHROME_MODAL=0;
-nsIWebBrowserChrome.prototype.CHROME_OPENAS_DIALOG=0;
-nsIWebBrowserChrome.prototype.CHROME_OPENAS_CHROME=0;
-nsIWebBrowserChrome.prototype.CHROME_ALL=0;
-nsIDOMHTMLAreaElement.prototype= new Array();
-function nsIDOMHTMLAreaElement(){};
-nsIDOMHTMLAreaElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLAreaElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLAreaElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLAreaElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLAreaElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLAreaElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLAreaElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLAreaElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLAreaElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLAreaElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLAreaElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLAreaElement.prototype.NOTATION_NODE=0;
-nsIDOMSVGStylable.prototype= new Array();
-function nsIDOMSVGStylable(){};
-nsILocalFileWin.prototype= new Array();
-function nsILocalFileWin(){};
-nsILocalFileWin.prototype.NORMAL_FILE_TYPE="";
-nsILocalFileWin.prototype.DIRECTORY_TYPE=0;
-nsIWebBrowserFind.prototype= new Array();
-function nsIWebBrowserFind(){};
-nsIDOMSVGUseElement.prototype= new Array();
-function nsIDOMSVGUseElement(){};
-nsIDOMSVGUseElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGUseElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGUseElement.prototype.TEXT_NODE=0;
-nsIDOMSVGUseElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGUseElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGUseElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGUseElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGUseElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGUseElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGUseElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGUseElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGUseElement.prototype.NOTATION_NODE=0;
-nsICertVerificationResult.prototype= new Array();
-function nsICertVerificationResult(){};
-nsICertVerificationListener.prototype= new Array();
-function nsICertVerificationListener(){};
-nsIMicrosummaryService.prototype= new Array();
-function nsIMicrosummaryService(){};
-rdfITripleVisitor.prototype= new Array();
-function rdfITripleVisitor(){};
-jsdIErrorHook.prototype= new Array();
-function jsdIErrorHook(){};
-jsdIErrorHook.prototype.REPORT_ERROR="";
-jsdIErrorHook.prototype.REPORT_WARNING=0;
-jsdIErrorHook.prototype.REPORT_EXCEPTION=0;
-jsdIErrorHook.prototype.REPORT_STRICT=0;
-nsIDOMSVGGElement.prototype= new Array();
-function nsIDOMSVGGElement(){};
-nsIDOMSVGGElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGGElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGGElement.prototype.TEXT_NODE=0;
-nsIDOMSVGGElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGGElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGGElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGGElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGGElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGGElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGGElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGGElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGGElement.prototype.NOTATION_NODE=0;
-nsIDOMPluginArray.prototype= new Array();
-function nsIDOMPluginArray(){};
-nsICipherInfo.prototype= new Array();
-function nsICipherInfo(){};
-nsIDOMNamedNodeMap.prototype= new Array();
-function nsIDOMNamedNodeMap(){};
-nsIDOMHTMLBaseFontElement.prototype= new Array();
-function nsIDOMHTMLBaseFontElement(){};
-nsIDOMHTMLBaseFontElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLBaseFontElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLBaseFontElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLBaseFontElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLBaseFontElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLBaseFontElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLBaseFontElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLBaseFontElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLBaseFontElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLBaseFontElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLBaseFontElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLBaseFontElement.prototype.NOTATION_NODE=0;
-nsIDOMXULCheckboxElement.prototype= new Array();
-function nsIDOMXULCheckboxElement(){};
-nsIDOMXULCheckboxElement.prototype.ELEMENT_NODE=0;
-nsIDOMXULCheckboxElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMXULCheckboxElement.prototype.TEXT_NODE=0;
-nsIDOMXULCheckboxElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMXULCheckboxElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMXULCheckboxElement.prototype.ENTITY_NODE=0;
-nsIDOMXULCheckboxElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMXULCheckboxElement.prototype.COMMENT_NODE=0;
-nsIDOMXULCheckboxElement.prototype.DOCUMENT_NODE=0;
-nsIDOMXULCheckboxElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMXULCheckboxElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMXULCheckboxElement.prototype.NOTATION_NODE=0;
-nsIDOMXULCheckboxElement.prototype.CHECKSTATE_UNCHECKED="";
-nsIDOMXULCheckboxElement.prototype.CHECKSTATE_CHECKED=0;
-nsIDOMXULCheckboxElement.prototype.CHECKSTATE_MIXED=0;
-nsIDOMWindow.prototype= new Array();
-function nsIDOMWindow(){};
-nsIDOMHTMLDirectoryElement.prototype= new Array();
-function nsIDOMHTMLDirectoryElement(){};
-nsIDOMHTMLDirectoryElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLDirectoryElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLDirectoryElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLDirectoryElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLDirectoryElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLDirectoryElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLDirectoryElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLDirectoryElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLDirectoryElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLDirectoryElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLDirectoryElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLDirectoryElement.prototype.NOTATION_NODE=0;
-inIFileSearch.prototype= new Array();
-function inIFileSearch(){};
-nsIDOMNSHTMLAreaElement.prototype= new Array();
-function nsIDOMNSHTMLAreaElement(){};
-nsIDOMHTMLImageElement.prototype= new Array();
-function nsIDOMHTMLImageElement(){};
-nsIDOMHTMLImageElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLImageElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLImageElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLImageElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLImageElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLImageElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLImageElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLImageElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLImageElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLImageElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLImageElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLImageElement.prototype.NOTATION_NODE=0;
-nsIX509CertDB2.prototype= new Array();
-function nsIX509CertDB2(){};
-nsIControllers.prototype= new Array();
-function nsIControllers(){};
-nsISchemaAttributeGroup.prototype= new Array();
-function nsISchemaAttributeGroup(){};
-nsISchemaAttributeGroup.prototype.COMPONENT_TYPE_ATTRIBUTE=0;
-nsISchemaAttributeGroup.prototype.COMPONENT_TYPE_GROUP=0;
-nsISchemaAttributeGroup.prototype.COMPONENT_TYPE_ANY=0;
-nsIFeedContainer.prototype= new Array();
-function nsIFeedContainer(){};
-nsIUnicharStreamLoaderObserver.prototype= new Array();
-function nsIUnicharStreamLoaderObserver(){};
-nsIEmbeddingSiteWindow.prototype= new Array();
-function nsIEmbeddingSiteWindow(){};
-nsIEmbeddingSiteWindow.prototype.DIM_FLAGS_POSITION=0;
-nsIEmbeddingSiteWindow.prototype.DIM_FLAGS_SIZE_INNER=0;
-nsIEmbeddingSiteWindow.prototype.DIM_FLAGS_SIZE_OUTER=0;
-nsICacheEntryInfo.prototype= new Array();
-function nsICacheEntryInfo(){};
-nsIDOMSVGFitToViewBox.prototype= new Array();
-function nsIDOMSVGFitToViewBox(){};
-jsdIFilterEnumerator.prototype= new Array();
-function jsdIFilterEnumerator(){};
-nsIDNSService.prototype= new Array();
-function nsIDNSService(){};
-nsIDNSService.prototype.RESOLVE_BYPASS_CACHE=0;
-nsIDNSService.prototype.RESOLVE_CANONICAL_NAME=0;
-nsIScriptableInterfaceInfo.prototype= new Array();
-function nsIScriptableInterfaceInfo(){};
-nsIPK11Token.prototype= new Array();
-function nsIPK11Token(){};
-nsIPK11Token.prototype.ASK_EVERY_TIME=0;
-nsIPK11Token.prototype.ASK_FIRST_TIME="";
-nsIPK11Token.prototype.ASK_EXPIRE_TIME=0;
-nsIControllerCommand.prototype= new Array();
-function nsIControllerCommand(){};
-nsIXSLTProcessorPrivate.prototype= new Array();
-function nsIXSLTProcessorPrivate(){};
-nsIXSLTProcessorPrivate.prototype.DISABLE_ALL_LOADS=0;
-nsISOAPParameter.prototype= new Array();
-function nsISOAPParameter(){};
-nsIDOMHTMLOListElement.prototype= new Array();
-function nsIDOMHTMLOListElement(){};
-nsIDOMHTMLOListElement.prototype.ELEMENT_NODE=0;
-nsIDOMHTMLOListElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMHTMLOListElement.prototype.TEXT_NODE=0;
-nsIDOMHTMLOListElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMHTMLOListElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMHTMLOListElement.prototype.ENTITY_NODE=0;
-nsIDOMHTMLOListElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMHTMLOListElement.prototype.COMMENT_NODE=0;
-nsIDOMHTMLOListElement.prototype.DOCUMENT_NODE=0;
-nsIDOMHTMLOListElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMHTMLOListElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMHTMLOListElement.prototype.NOTATION_NODE=0;
-nsITimerCallback.prototype= new Array();
-function nsITimerCallback(){};
-nsIXPCComponents.prototype= new Array();
-function nsIXPCComponents(){};
-nsISocketProviderService.prototype= new Array();
-function nsISocketProviderService(){};
-nsIWebServiceSOAPCallContext.prototype= new Array();
-function nsIWebServiceSOAPCallContext(){};
-nsIWebServiceSOAPCallContext.prototype.PENDING="";
-nsIWebServiceSOAPCallContext.prototype.SUCCEEDED=0;
-nsIWebServiceSOAPCallContext.prototype.FAILED=0;
-nsIWebServiceSOAPCallContext.prototype.ABORTED=0;
-nsIAuthPrompt.prototype= new Array();
-function nsIAuthPrompt(){};
-nsIAuthPrompt.prototype.SAVE_PASSWORD_NEVER="";
-nsIAuthPrompt.prototype.SAVE_PASSWORD_FOR_SESSION=0;
-nsIAuthPrompt.prototype.SAVE_PASSWORD_PERMANENTLY=0;
-nsIAtomService.prototype= new Array();
-function nsIAtomService(){};
-nsIHTTPIndex.prototype= new Array();
-function nsIHTTPIndex(){};
-nsICryptoHash.prototype= new Array();
-function nsICryptoHash(){};
-nsICryptoHash.prototype.MD2=0;
-nsICryptoHash.prototype.MD5=0;
-nsICryptoHash.prototype.SHA1=0;
-nsICryptoHash.prototype.SHA256=0;
-nsICryptoHash.prototype.SHA384=0;
-nsICryptoHash.prototype.SHA512=0;
-nsIDOMDocumentRange.prototype= new Array();
-function nsIDOMDocumentRange(){};
-nsIProfileUnlocker.prototype= new Array();
-function nsIProfileUnlocker(){};
-nsIProfileUnlocker.prototype.ATTEMPT_QUIT="";
-nsIProfileUnlocker.prototype.FORCE_QUIT=0;
-nsIDOMNodeIterator.prototype= new Array();
-function nsIDOMNodeIterator(){};
-nsIWebNavigationInfo.prototype= new Array();
-function nsIWebNavigationInfo(){};
-nsIWebNavigationInfo.prototype.UNSUPPORTED="";
-nsIWebNavigationInfo.prototype.IMAGE=0;
-nsIWebNavigationInfo.prototype.PLUGIN=0;
-nsIWebNavigationInfo.prototype.OTHER=0;
-nsIAutoCompleteSearch.prototype= new Array();
-function nsIAutoCompleteSearch(){};
-nsIEncodedChannel.prototype= new Array();
-function nsIEncodedChannel(){};
-nsIToolkitProfileService.prototype= new Array();
-function nsIToolkitProfileService(){};
-jsdIContextEnumerator.prototype= new Array();
-function jsdIContextEnumerator(){};
-nsIRDFContainer.prototype= new Array();
-function nsIRDFContainer(){};
-nsIScriptableDateFormat.prototype= new Array();
-function nsIScriptableDateFormat(){};
-nsIScriptableDateFormat.prototype.dateFormatNone="";
-nsIScriptableDateFormat.prototype.dateFormatLong=0;
-nsIScriptableDateFormat.prototype.dateFormatShort=0;
-nsIScriptableDateFormat.prototype.dateFormatYearMonth=0;
-nsIScriptableDateFormat.prototype.dateFormatWeekday=0;
-nsIScriptableDateFormat.prototype.timeFormatNone="";
-nsIScriptableDateFormat.prototype.timeFormatSeconds=0;
-nsIScriptableDateFormat.prototype.timeFormatNoSeconds=0;
-nsIScriptableDateFormat.prototype.timeFormatSecondsForce24Hour=0;
-nsIScriptableDateFormat.prototype.timeFormatNoSecondsForce24Hour=0;
-nsIDOMDocumentFragment.prototype= new Array();
-function nsIDOMDocumentFragment(){};
-nsIDOMDocumentFragment.prototype.ELEMENT_NODE=0;
-nsIDOMDocumentFragment.prototype.ATTRIBUTE_NODE=0;
-nsIDOMDocumentFragment.prototype.TEXT_NODE=0;
-nsIDOMDocumentFragment.prototype.CDATA_SECTION_NODE=0;
-nsIDOMDocumentFragment.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMDocumentFragment.prototype.ENTITY_NODE=0;
-nsIDOMDocumentFragment.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMDocumentFragment.prototype.COMMENT_NODE=0;
-nsIDOMDocumentFragment.prototype.DOCUMENT_NODE=0;
-nsIDOMDocumentFragment.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMDocumentFragment.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMDocumentFragment.prototype.NOTATION_NODE=0;
-nsIDOMEntityReference.prototype= new Array();
-function nsIDOMEntityReference(){};
-nsIDOMEntityReference.prototype.ELEMENT_NODE=0;
-nsIDOMEntityReference.prototype.ATTRIBUTE_NODE=0;
-nsIDOMEntityReference.prototype.TEXT_NODE=0;
-nsIDOMEntityReference.prototype.CDATA_SECTION_NODE=0;
-nsIDOMEntityReference.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMEntityReference.prototype.ENTITY_NODE=0;
-nsIDOMEntityReference.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMEntityReference.prototype.COMMENT_NODE=0;
-nsIDOMEntityReference.prototype.DOCUMENT_NODE=0;
-nsIDOMEntityReference.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMEntityReference.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMEntityReference.prototype.NOTATION_NODE=0;
-nsIProperties.prototype= new Array();
-function nsIProperties(){};
-nsIUpdatePrompt.prototype= new Array();
-function nsIUpdatePrompt(){};
-nsIDOMSVGRectElement.prototype= new Array();
-function nsIDOMSVGRectElement(){};
-nsIDOMSVGRectElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGRectElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGRectElement.prototype.TEXT_NODE=0;
-nsIDOMSVGRectElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGRectElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGRectElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGRectElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGRectElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGRectElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGRectElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGRectElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGRectElement.prototype.NOTATION_NODE=0;
-mozITXTToHTMLConv.prototype= new Array();
-function mozITXTToHTMLConv(){};
-mozITXTToHTMLConv.prototype.kEntities="";
-mozITXTToHTMLConv.prototype.kURLs=0;
-mozITXTToHTMLConv.prototype.kGlyphSubstitution=0;
-mozITXTToHTMLConv.prototype.kStructPhrase=0;
-nsIMicrosummaryObserver.prototype= new Array();
-function nsIMicrosummaryObserver(){};
-nsIDirectoryServiceProvider.prototype= new Array();
-function nsIDirectoryServiceProvider(){};
-nsIDocShellLoadInfo.prototype= new Array();
-function nsIDocShellLoadInfo(){};
-nsIDocShellLoadInfo.prototype.loadNormal="";
-nsIDocShellLoadInfo.prototype.loadNormalReplace=0;
-nsIDocShellLoadInfo.prototype.loadHistory=0;
-nsIDocShellLoadInfo.prototype.loadReloadNormal=0;
-nsIDocShellLoadInfo.prototype.loadReloadBypassCache=0;
-nsIDocShellLoadInfo.prototype.loadReloadBypassProxy=0;
-nsIDocShellLoadInfo.prototype.loadReloadBypassProxyAndCache=0;
-nsIDocShellLoadInfo.prototype.loadLink=0;
-nsIDocShellLoadInfo.prototype.loadRefresh=0;
-nsIDocShellLoadInfo.prototype.loadReloadCharsetChange=0;
-nsIDocShellLoadInfo.prototype.loadBypassHistory=0;
-nsIDocShellLoadInfo.prototype.loadStopContent=0;
-nsIDocShellLoadInfo.prototype.loadStopContentAndReplace=0;
-nsIDocShellLoadInfo.prototype.loadNormalExternal=0;
-nsIXPCComponents_Results.prototype= new Array();
-function nsIXPCComponents_Results(){};
-nsIRDFDate.prototype= new Array();
-function nsIRDFDate(){};
-nsIContentViewerEdit.prototype= new Array();
-function nsIContentViewerEdit(){};
-nsIContentViewerEdit.prototype.COPY_IMAGE_TEXT=0;
-nsIContentViewerEdit.prototype.COPY_IMAGE_HTML=0;
-nsIContentViewerEdit.prototype.COPY_IMAGE_DATA=0;
-nsIContentViewerEdit.prototype.COPY_IMAGE_ALL=0;
-nsISupportsPrimitive.prototype= new Array();
-function nsISupportsPrimitive(){};
-nsISupportsPrimitive.prototype.TYPE_ID=0;
-nsISupportsPrimitive.prototype.TYPE_CSTRING=0;
-nsISupportsPrimitive.prototype.TYPE_STRING=0;
-nsISupportsPrimitive.prototype.TYPE_PRBOOL=0;
-nsISupportsPrimitive.prototype.TYPE_PRUINT8=0;
-nsISupportsPrimitive.prototype.TYPE_PRUINT16=0;
-nsISupportsPrimitive.prototype.TYPE_PRUINT32=0;
-nsISupportsPrimitive.prototype.TYPE_PRUINT64=0;
-nsISupportsPrimitive.prototype.TYPE_PRTIME=0;
-nsISupportsPrimitive.prototype.TYPE_CHAR=0;
-nsISupportsPrimitive.prototype.TYPE_PRINT16=0;
-nsISupportsPrimitive.prototype.TYPE_PRINT32=0;
-nsISupportsPrimitive.prototype.TYPE_PRINT64=0;
-nsISupportsPrimitive.prototype.TYPE_FLOAT=0;
-nsISupportsPrimitive.prototype.TYPE_DOUBLE=0;
-nsISupportsPrimitive.prototype.TYPE_VOID=0;
-nsISupportsPrimitive.prototype.TYPE_INTERFACE_POINTER=0;
-nsIXULTreeBuilderObserver.prototype= new Array();
-function nsIXULTreeBuilderObserver(){};
-nsIXULTreeBuilderObserver.prototype.DROP_BEFORE=0;
-nsIXULTreeBuilderObserver.prototype.DROP_ON="";
-nsIXULTreeBuilderObserver.prototype.DROP_AFTER=0;
-nsISSLStatusProvider.prototype= new Array();
-function nsISSLStatusProvider(){};
-rdfISerializer.prototype= new Array();
-function rdfISerializer(){};
-nsIDOMSVGPolygonElement.prototype= new Array();
-function nsIDOMSVGPolygonElement(){};
-nsIDOMSVGPolygonElement.prototype.ELEMENT_NODE=0;
-nsIDOMSVGPolygonElement.prototype.ATTRIBUTE_NODE=0;
-nsIDOMSVGPolygonElement.prototype.TEXT_NODE=0;
-nsIDOMSVGPolygonElement.prototype.CDATA_SECTION_NODE=0;
-nsIDOMSVGPolygonElement.prototype.ENTITY_REFERENCE_NODE=0;
-nsIDOMSVGPolygonElement.prototype.ENTITY_NODE=0;
-nsIDOMSVGPolygonElement.prototype.PROCESSING_INSTRUCTION_NODE=0;
-nsIDOMSVGPolygonElement.prototype.COMMENT_NODE=0;
-nsIDOMSVGPolygonElement.prototype.DOCUMENT_NODE=0;
-nsIDOMSVGPolygonElement.prototype.DOCUMENT_TYPE_NODE=0;
-nsIDOMSVGPolygonElement.prototype.DOCUMENT_FRAGMENT_NODE=0;
-nsIDOMSVGPolygonElement.prototype.NOTATION_NODE=0;
-nsIDOMStorageList.prototype= new Array();
-function nsIDOMStorageList(){};
-nsIAboutModule.prototype= new Array();
-function nsIAboutModule(){};
-nsIWritablePropertyBag2.prototype= new Array();
-function nsIWritablePropertyBag2(){};
-nsIDocumentStateListener.prototype= new Array();
-function nsIDocumentStateListener(){};
-nsISHTransaction.prototype= new Array();
-function nsISHTransaction(){};
-nsIRDFXMLSinkObserver.prototype= new Array();
-function nsIRDFXMLSinkObserver(){};
-nsIOnReadyStateChangeHandler.prototype= new Array();
-function nsIOnReadyStateChangeHandler(){};
-nsIASN1Sequence.prototype= new Array();
-function nsIASN1Sequence(){};
-nsIASN1Sequence.prototype.ASN1_END_CONTENTS="";
-nsIASN1Sequence.prototype.ASN1_BOOLEAN=0;
-nsIASN1Sequence.prototype.ASN1_INTEGER=0;
-nsIASN1Sequence.prototype.ASN1_BIT_STRING=0;
-nsIASN1Sequence.prototype.ASN1_OCTET_STRING=0;
-nsIASN1Sequence.prototype.ASN1_NULL=0;
-nsIASN1Sequence.prototype.ASN1_OBJECT_ID=0;
-nsIASN1Sequence.prototype.ASN1_ENUMERATED=0;
-nsIASN1Sequence.prototype.ASN1_UTF8_STRING=0;
-nsIASN1Sequence.prototype.ASN1_SEQUENCE=0;
-nsIASN1Sequence.prototype.ASN1_SET=0;
-nsIASN1Sequence.prototype.ASN1_PRINTABLE_STRING=0;
-nsIASN1Sequence.prototype.ASN1_T61_STRING=0;
-nsIASN1Sequence.prototype.ASN1_IA5_STRING=0;
-nsIASN1Sequence.prototype.ASN1_UTC_TIME=0;
-nsIASN1Sequence.prototype.ASN1_GEN_TIME=0;
-nsIASN1Sequence.prototype.ASN1_VISIBLE_STRING=0;
-nsIASN1Sequence.prototype.ASN1_UNIVERSAL_STRING=0;
-nsIASN1Sequence.prototype.ASN1_BMP_STRING=0;
-nsIASN1Sequence.prototype.ASN1_HIGH_TAG_NUMBER=0;
-nsIASN1Sequence.prototype.ASN1_CONTEXT_SPECIFIC=0;
-nsIASN1Sequence.prototype.ASN1_APPLICATION=0;
-nsIASN1Sequence.prototype.ASN1_PRIVATE=0;
-nsIAutoCompleteSimpleResult.prototype= new Array();
-function nsIAutoCompleteSimpleResult(){};
-nsIAutoCompleteSimpleResult.prototype.RESULT_IGNORED=0;
-nsIAutoCompleteSimpleResult.prototype.RESULT_FAILURE=0;
-nsIAutoCompleteSimpleResult.prototype.RESULT_NOMATCH=0;
-nsIAutoCompleteSimpleResult.prototype.RESULT_SUCCESS=0;
-nsIDOMToString.prototype= new Array();
-function nsIDOMToString(){};
-nsIUpdateManager.prototype= new Array();
-function nsIUpdateManager(){};
-nsIDOMScreen.prototype= new Array();
-function nsIDOMScreen(){};
-nsIStreamListenerProxy.prototype= new Array();
-function nsIStreamListenerProxy(){};
-nsISchemaLoader.prototype= new Array();
-function nsISchemaLoader(){};
-nsPIAccessNode.prototype= new Array();
-function nsPIAccessNode(){};
-nsIUploadChannel.prototype= new Array();
-function nsIUploadChannel(){};
-nsIController.prototype= new Array();
-function nsIController(){};
-nsIDOMSVGURIReference.prototype= new Array();
-function nsIDOMSVGURIReference(){};
-nsIBadCertListener.prototype= new Array();
-function nsIBadCertListener(){};
-nsIBadCertListener.prototype.UNINIT_ADD_FLAG=0;
-nsIBadCertListener.prototype.ADD_TRUSTED_FOR_SESSION=0;
-nsIBadCertListener.prototype.ADD_TRUSTED_PERMANENTLY=0;
-nsIDOMStorageEvent.prototype= new Array();
-function nsIDOMStorageEvent(){};
-nsIDOMStorageEvent.prototype.CAPTURING_PHASE=0;
-nsIDOMStorageEvent.prototype.AT_TARGET=0;
-nsIDOMStorageEvent.prototype.BUBBLING_PHASE=0;
-nsXPCComponents_InterfacesByID.prototype= new Array();
-function nsXPCComponents_InterfacesByID(){};
-/*
-nsXPCComponents_InterfacesByID.prototype.{a6cf9080-15b3-11d2-932e-00805f8add32}= new nsIDOMStyleSheet();
-nsXPCComponents_InterfacesByID.prototype.{0458dac4-65de-11d5-9b42-00104bdf5339}= new nsIWSDLPart();
-nsXPCComponents_InterfacesByID.prototype.{4a7e9b62-fef8-400d-9865-d6820f630b4c}= new nsIUnicharStreamListener();
-nsXPCComponents_InterfacesByID.prototype.{a5710331-74ec-45fb-aa85-ed3bc7c36924}= new nsIContentSniffer();
-nsXPCComponents_InterfacesByID.prototype.{4d7d15c0-3747-4f7f-b6b3-792a5ea1a9aa}= new nsIXmlRpcClient();
-nsXPCComponents_InterfacesByID.prototype.{b01eb40c-026b-49c9-af55-25e8c9d034c8}= new nsIInterfaceInfoToIDL();
-nsXPCComponents_InterfacesByID.prototype.{436a83fa-b396-11d9-bcfa-00112478d626}= new nsITimer();
-nsXPCComponents_InterfacesByID.prototype.{693611be-bb38-40e0-a98e-b46ff8a5bcca}= new nsIWebServiceProxyFactory();
-nsXPCComponents_InterfacesByID.prototype.{1c28ed66-1dd2-11b2-95af-e2cf10931adb}= new nsIDOMNSXBLFormControl();
-nsXPCComponents_InterfacesByID.prototype.{56e2ada8-4631-11d4-ba11-001083023c1e}= new nsIScrollBoxObject();
-nsXPCComponents_InterfacesByID.prototype.{b1f95f5e-ee05-4434-9d34-89a935d7feef}= new nsICachingChannel();
-nsXPCComponents_InterfacesByID.prototype.{8816d003-e7c8-4065-8827-829b8d07b6e0}= new nsIDOMXMLDocument();
-nsXPCComponents_InterfacesByID.prototype.{3cac403c-edb3-11d4-998b-00b0d02354a0}= new nsICertSelect();
-nsXPCComponents_InterfacesByID.prototype.{c7e410d3-85f2-11d3-9f63-006008a6efe9}= new nsIJARURI();
-nsXPCComponents_InterfacesByID.prototype.{0455cf88-c679-40c3-8e9f-ff4554ee9559}= new nsIEditorSpellCheck_MOZILLA_1_8_BRANCH();
-nsXPCComponents_InterfacesByID.prototype.{6ff6a966-9632-11d3-8cd9-0060b0fc14a3}= new nsIZipReader();
-nsXPCComponents_InterfacesByID.prototype.{9927fa40-1dd1-11b2-a8d1-857ad21b872c}= new nsISOAPService();
-nsXPCComponents_InterfacesByID.prototype.{9bb35f13-0096-4a31-833a-acd97001132d}= new nsIPropertyBag2();
-nsXPCComponents_InterfacesByID.prototype.{aa610f20-a889-11d3-8c81-000064657374}= new nsILocalFile();
-nsXPCComponents_InterfacesByID.prototype.{0cc37c78-4c5f-48e1-adfc-7480b8fe9dc4}= new nsIDOMStorageItem();
-nsXPCComponents_InterfacesByID.prototype.{e30d94b0-4a1c-11d3-9890-006008962422}= new nsISupportsPRInt16();
-nsXPCComponents_InterfacesByID.prototype.{604ad9d0-753e-11d3-90ca-34278643278f}= new nsIStorageStream();
-nsXPCComponents_InterfacesByID.prototype.{165e7f61-5048-4c2c-b4bf-6b44bb617ee4}= new nsIDOMLSInput();
-nsXPCComponents_InterfacesByID.prototype.{8e440d86-886a-4e76-9e59-c13b939c9a4b}= new nsIDOMMutationEvent();
-nsXPCComponents_InterfacesByID.prototype.{44b3153e-a54e-4077-a527-b0325e40924e}= new nsIDownloadObserver();
-nsXPCComponents_InterfacesByID.prototype.{3294d20e-c707-4e59-a625-bde93fc0b25f}= new nsIDOMSVGPathSegLinetoRel();
-nsXPCComponents_InterfacesByID.prototype.{bbe961ee-59e9-42bb-be50-0331979bb79f}= new nsIDocumentLoader();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90b7-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLTableCellElement();
-nsXPCComponents_InterfacesByID.prototype.{f3a8d3b4-c424-4edc-8bf6-8974c983ba78}= new nsIException();
-nsXPCComponents_InterfacesByID.prototype.{211d5360-4af6-4a1d-99c1-926d35861eaf}= new nsIUrlClassifierDBService();
-nsXPCComponents_InterfacesByID.prototype.{0f78da58-8321-11d2-8eac-00805f29f370}= new nsIRDFDataSource();
-nsXPCComponents_InterfacesByID.prototype.{ae419e24-1dd1-11b2-b39a-d3e5e7073802}= new nsIPrefLocalizedString();
-nsXPCComponents_InterfacesByID.prototype.{e08dcda0-d651-11d2-9843-006008962422}= new nsIJSIID();
-nsXPCComponents_InterfacesByID.prototype.{27b00295-349c-429f-ad0c-87b859e77130}= new nsIHTMLObjectResizeListener();
-nsXPCComponents_InterfacesByID.prototype.{d2c7b3eb-7778-468b-ae9b-c106c2afb5d1}= new nsPIProtocolProxyService();
-nsXPCComponents_InterfacesByID.prototype.{77015f88-bfc2-4669-b1c3-cc19fb07cd4e}= new mozIStorageConnection();
-nsXPCComponents_InterfacesByID.prototype.{5bec321f-59ac-413a-a4ad-8a8d7c50a0d0}= new nsITextServicesFilter();
-nsXPCComponents_InterfacesByID.prototype.{8c7bf4bc-d3fe-4524-b213-ce578bfe936e}= new nsIWSPInterfaceInfoService();
-nsXPCComponents_InterfacesByID.prototype.{bb76b72e-d143-4738-804a-53b311466dd9}= new nsIWSDLSOAPBinding();
-nsXPCComponents_InterfacesByID.prototype.{a9b84f6a-0824-4278-bae6-bfca0570a26e}= new nsISimpleStreamListener();
-nsXPCComponents_InterfacesByID.prototype.{31aba0f0-2d93-11d3-8069-00600811a9c3}= new nsISearchContext();
-nsXPCComponents_InterfacesByID.prototype.{f0980f60-ee3d-11d4-998b-00b0d02354a0}= new nsIX509Cert();
-nsXPCComponents_InterfacesByID.prototype.{0f78da50-8321-11d2-8eac-00805f29f370}= new nsIRDFNode();
-nsXPCComponents_InterfacesByID.prototype.{56f539b7-0b3d-4bac-b60d-9efe220216ea}= new nsIDOMSVGDescElement();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90c1-15b3-11d2-932e-00805f8add32}= new nsIDOMCSSRule();
-nsXPCComponents_InterfacesByID.prototype.{3fe9308b-1608-4fa0-933c-c5ec2c6175fd}= new nsIProxyInfo();
-nsXPCComponents_InterfacesByID.prototype.{e01dc470-4a1c-11d3-9890-006008962422}= new nsISupportsPRUint32();
-nsXPCComponents_InterfacesByID.prototype.{cf9428c1-df50-11d3-9d0c-0050040007b2}= new nsICurrentCharsetListener();
-nsXPCComponents_InterfacesByID.prototype.{43ae4efe-2610-4cce-8242-279e556a78fa}= new nsIDOMSVGImageElement();
-nsXPCComponents_InterfacesByID.prototype.{5d405325-2ba1-4040-b69b-8bda8353d3d3}= new nsIUrlClassifierDBServiceWorker();
-nsXPCComponents_InterfacesByID.prototype.{081e31e0-a144-11d3-8c7c-00609792278c}= new nsISecureBrowserUI();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90a1-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLParagraphElement();
-nsXPCComponents_InterfacesByID.prototype.{ae89a7e2-1dd1-11b2-8c2f-af82086291a5}= new jsdIScriptHook();
-nsXPCComponents_InterfacesByID.prototype.{4a2abaf0-6886-11d3-9382-00104ba0fd40}= new nsIRunnable();
-nsXPCComponents_InterfacesByID.prototype.{57a66a60-d43a-11d3-8cc2-00609792278c}= new nsIDirectoryService();
-nsXPCComponents_InterfacesByID.prototype.{41466a9f-f027-487d-a96c-af39e629b8d2}= new nsIDNSListener();
-nsXPCComponents_InterfacesByID.prototype.{4ee28c82-1dd2-11b2-aabf-bb4017abe395}= new nsIPK11TokenDB();
-nsXPCComponents_InterfacesByID.prototype.{3c14a029-6f4e-11d5-9b46-000064657374}= new nsISchemaParticle();
-nsXPCComponents_InterfacesByID.prototype.{a26c5b45-7707-4412-bbc1-2462b890848d}= new nsPIDNSService();
-nsXPCComponents_InterfacesByID.prototype.{e63d240d-bd00-4857-ba65-2f9cc599eead}= new nsIXTFXMLVisual();
-nsXPCComponents_InterfacesByID.prototype.{ddbbdfb8-a1c0-4dd5-a31b-5d2a7a3bb6ec}= new nsIMIMEHeaderParam();
-nsXPCComponents_InterfacesByID.prototype.{c99cffac-5aed-4267-ad2f-f4a4c9d4a081}= new nsIScriptableInterfacesByID();
-nsXPCComponents_InterfacesByID.prototype.{d3d4dada-c6eb-11d9-a68f-001124787b2e}= new nsIInstallLocation();
-nsXPCComponents_InterfacesByID.prototype.{9491c383-e3c4-11d2-bdbe-0050040a9b44}= new nsIGlobalHistory();
-nsXPCComponents_InterfacesByID.prototype.{53102f15-0f53-4939-957e-aea353ad2700}= new imgIContainerObserver();
-nsXPCComponents_InterfacesByID.prototype.{50d3ef6c-9380-4f06-9fb2-95488f7d141c}= new nsIStringEnumerator();
-nsXPCComponents_InterfacesByID.prototype.{7ce8e9d1-8b4b-4883-a307-66fe12a50153}= new nsIHttpAuthManager();
-nsXPCComponents_InterfacesByID.prototype.{9fd4ba15-e67c-4c98-b52c-7715f62c9196}= new nsIDOMSerializer();
-nsXPCComponents_InterfacesByID.prototype.{22f9a49c-3cf8-4c23-8006-54efb11ac562}= new nsICacheMetaDataVisitor();
-nsXPCComponents_InterfacesByID.prototype.{79beb289-3644-4b54-9432-9fb993945629}= new nsIDOMNSHTMLDocument();
-nsXPCComponents_InterfacesByID.prototype.{11bf5cdc-1dd2-11b2-ba6a-c76afb326fa1}= new nsIGeneratingKeypairInfoDialogs();
-nsXPCComponents_InterfacesByID.prototype.{46f1e23e-1dd2-11b2-9ceb-8285f2e95e69}= new jsdIEphemeral();
-nsXPCComponents_InterfacesByID.prototype.{a4a0cad9-e0da-4379-bee4-2feef3dddc7e}= new mozIStorageService();
-nsXPCComponents_InterfacesByID.prototype.{a63f70c0-148b-11d3-9333-00104ba0fd40}= new nsIPrompt();
-nsXPCComponents_InterfacesByID.prototype.{3c2a6927-e923-4ea8-bbda-a335c768ce4e}= new nsIDocShellTreeOwner_MOZILLA_1_8_BRANCH();
-nsXPCComponents_InterfacesByID.prototype.{2309482b-4631-455f-833f-5e4e9ce38589}= new nsIScriptableParamInfo();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9098-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLLegendElement();
-nsXPCComponents_InterfacesByID.prototype.{ec1c0063-197d-44bb-84ba-7525d50fc937}= new nsICache();
-nsXPCComponents_InterfacesByID.prototype.{280da566-6f19-4487-a8ca-70c5ba1602c1}= new nsIWyciwygChannel();
-nsXPCComponents_InterfacesByID.prototype.{0ec80360-075c-11d4-9fd4-00c04f1b83d8}= new nsISecretDecoderRing();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90a7-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLFontElement();
-nsXPCComponents_InterfacesByID.prototype.{ac46be8f-c863-4c23-84a2-d0fcc8dfa9f4}= new nsIXULBuilderListener();
-nsXPCComponents_InterfacesByID.prototype.{fafe41a9-a531-4d6d-89bc-588a6522fb4e}= new nsIDownloader();
-nsXPCComponents_InterfacesByID.prototype.{0d0acd2a-61b4-11d4-9877-00c04fa0cf4a}= new nsIOutputStream();
-nsXPCComponents_InterfacesByID.prototype.{31adb439-0055-402d-9b1d-d5ca94f3f55b}= new nsIDOMCounter();
-nsXPCComponents_InterfacesByID.prototype.{8b246748-1dd2-11b2-9512-9dc84a95fc2f}= new nsIHTTPHeaderListener();
-nsXPCComponents_InterfacesByID.prototype.{d500e8b8-1dd1-11b2-89a1-cdf55d91cbbd}= new jsdIObject();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9108-15b3-11d2-932e-00805f8add32}= new nsIDOMNSLocation();
-nsXPCComponents_InterfacesByID.prototype.{9bd6fdb0-1dd1-11b2-9101-d15375968230}= new nsIRandomAccessIterator();
-nsXPCComponents_InterfacesByID.prototype.{51d59b08-1dd2-11b2-ad4a-a51b92f8a184}= new nsICertPickDialogs();
-nsXPCComponents_InterfacesByID.prototype.{abeaa390-4ac0-11d3-baea-00805f8a5dd7}= new nsISupportsFloat();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9090-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLSelectElement();
-nsXPCComponents_InterfacesByID.prototype.{6476378a-da09-11d3-8cda-0060b0fc14a3}= new nsIBufferedOutputStream();
-nsXPCComponents_InterfacesByID.prototype.{86114dd8-1dd2-11b2-ab2b-91d0c995e03a}= new nsISOAPCallCompletion();
-nsXPCComponents_InterfacesByID.prototype.{67f42475-ba80-40f8-ac0b-649c89230184}= new nsIUnicharLineInputStream();
-nsXPCComponents_InterfacesByID.prototype.{bb4bae9c-39c5-11d5-ba26-00108303b117}= new nsITokenDialogs();
-nsXPCComponents_InterfacesByID.prototype.{39f76c23-45b2-428a-9240-a981e5abf148}= new nsIDOMDocumentCSS();
-nsXPCComponents_InterfacesByID.prototype.{c185d920-4a3e-11d5-ba27-00108303b117}= new nsICRLInfo();
-nsXPCComponents_InterfacesByID.prototype.{68e21b66-1dd2-11b2-aa67-e2b87175e792}= new nsITransportSecurityInfo();
-nsXPCComponents_InterfacesByID.prototype.{5da1e8f0-6255-4b9c-af80-aa3dad7f2fdb}= new nsIBoxPaintManager();
-nsXPCComponents_InterfacesByID.prototype.{8b042e24-6f87-11d3-b3c8-00805f8a6670}= new nsITextToSubURI();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90b9-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLFrameElement();
-nsXPCComponents_InterfacesByID.prototype.{be26b580-1dd1-11b2-9946-c598d0d07727}= new nsITokenPasswordDialogs();
-nsXPCComponents_InterfacesByID.prototype.{a49813a4-98b7-4bdb-998c-8bd9704af0c0}= new nsIExternalProtocolService();
-nsXPCComponents_InterfacesByID.prototype.{101d5941-d820-4e85-a266-9a3469940807}= new nsIEnvironment();
-nsXPCComponents_InterfacesByID.prototype.{7b3b3c62-9d53-4abc-bc89-c33ce78f439f}= new nsIXMLHttpRequest();
-nsXPCComponents_InterfacesByID.prototype.{94928ab3-8b63-11d3-989d-001083010e9b}= new nsIURIContentListener();
-nsXPCComponents_InterfacesByID.prototype.{ce8f744e-d5a5-41b3-911f-0fee3008b64e}= new nsIXPIProgressDialog();
-nsXPCComponents_InterfacesByID.prototype.{3225ca54-d7e1-4ff5-8ee9-091b0bfcda1f}= new nsISelectionPrivate();
-nsXPCComponents_InterfacesByID.prototype.{3c14a022-6f4e-11d5-9b46-000064657374}= new nsISchemaType();
-nsXPCComponents_InterfacesByID.prototype.{339a8c7a-552e-4cbc-8d96-8370a3939358}= new nsIDOMSVGZoomEvent();
-nsXPCComponents_InterfacesByID.prototype.{d94ac0a0-bb18-46b8-844e-84159064b0bd}= new nsICancelable();
-nsXPCComponents_InterfacesByID.prototype.{f51ebade-8b1a-11d3-aae7-0010830123b4}= new nsIDOMAbstractView();
-nsXPCComponents_InterfacesByID.prototype.{c7e410d1-85f2-11d3-9f63-006008a6efe9}= new nsIJARChannel();
-nsXPCComponents_InterfacesByID.prototype.{59e7e77a-38e4-11d4-8cf5-0060b0fc14a3}= new nsIMemory();
-nsXPCComponents_InterfacesByID.prototype.{b9b6ec85-f69f-4a5a-a96a-8a7a8f07e2b4}= new nsIDOMLSSerializerFilter();
-nsXPCComponents_InterfacesByID.prototype.{204ee610-8765-11d3-90cf-0040056a906e}= new nsIBinaryOutputStream();
-nsXPCComponents_InterfacesByID.prototype.{0bbae65c-1dde-11d9-8c46-000a95dc234c}= new nsIDOMDOMStringList();
-nsXPCComponents_InterfacesByID.prototype.{da19c86d-08aa-421c-8c37-12ec2ba5a2c3}= new nsIImageLoadingContent();
-nsXPCComponents_InterfacesByID.prototype.{35a88f54-f267-4414-92a7-191f6454ab52}= new nsIExceptionService();
-nsXPCComponents_InterfacesByID.prototype.{e6f68040-c7ec-11d3-8cda-0060b0fc14a3}= new nsIFileOutputStream();
-nsXPCComponents_InterfacesByID.prototype.{3c14a030-6f4e-11d5-9b46-000064657374}= new nsISchemaAnyAttribute();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90bc-15b3-11d2-932e-00805f8add32}= new nsIDOMCSSMediaRule();
-nsXPCComponents_InterfacesByID.prototype.{e72f94b2-5f85-11d4-9877-00c04fa0cf4a}= new nsIErrorService();
-nsXPCComponents_InterfacesByID.prototype.{17c4e0aa-1dd2-11b2-8029-bf6f668de500}= new nsIRDFInMemoryDataSource();
-nsXPCComponents_InterfacesByID.prototype.{3b8aae33-80e2-4efa-99c8-a6c5b99f76ea}= new nsIFeed();
-nsXPCComponents_InterfacesByID.prototype.{51341ed4-a3bf-4fd5-ae17-5fd3ec59dcab}= new nsIContentViewer_MOZILLA_1_8_BRANCH();
-nsXPCComponents_InterfacesByID.prototype.{fdf23301-4a94-11d3-9ce4-9960496c41bc}= new nsIEditorMailSupport();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90a4-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLPreElement();
-nsXPCComponents_InterfacesByID.prototype.{b3abb5c6-a0c4-47e9-84f6-edb873042769}= new nsIDOMNavigator_MOZILLA_1_8_BRANCH();
-nsXPCComponents_InterfacesByID.prototype.{f6d00ee7-defc-4101-b2dc-e72cf4c37c3c}= new gfxIImageFrame();
-nsXPCComponents_InterfacesByID.prototype.{34d268d6-1dd2-11b2-9d63-83a5e0ada290}= new nsIAccessibleSelectable();
-nsXPCComponents_InterfacesByID.prototype.{b135f602-0bfe-11d5-a73c-f0e420e8293c}= new nsPICommandUpdater();
-nsXPCComponents_InterfacesByID.prototype.{9e1fd9f2-9727-4926-85cd-f16c375bba6d}= new nsIDownload();
-nsXPCComponents_InterfacesByID.prototype.{007b8358-1dd2-11b2-8924-d209efc3f124}= new nsIDOMXULControlElement();
-nsXPCComponents_InterfacesByID.prototype.{93ebb030-f82d-4f8e-b133-d1b5abb73cf3}= new nsIDOMSVGAnimatedNumberList();
-nsXPCComponents_InterfacesByID.prototype.{2d40b291-01e1-11d4-9d0e-0050040007b2}= new nsIDocumentCharsetInfo();
-nsXPCComponents_InterfacesByID.prototype.{ea2ce7a0-5c3d-11d4-90c2-0050041caf44}= new nsIContentViewerContainer();
-nsXPCComponents_InterfacesByID.prototype.{e9b0f89b-0529-4d96-98a8-eb5b2b9a8383}= new nsIAppStartup();
-nsXPCComponents_InterfacesByID.prototype.{d3493503-7854-46ed-8284-8af54a847efb}= new nsICookie2();
-nsXPCComponents_InterfacesByID.prototype.{8af0fa40-598d-11d3-806a-00600811a9c3}= new nsIBrowserInstance();
-nsXPCComponents_InterfacesByID.prototype.{e38ab577-786e-4a7f-936b-7ae4c7d877b2}= new nsIProtocolProxyService();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9071-15b3-11d2-932e-00805f8add32}= new nsIDOMCDATASection();
-nsXPCComponents_InterfacesByID.prototype.{ca29fff1-a677-493c-9d80-3dc60432212b}= new nsIJVMConfigManager();
-nsXPCComponents_InterfacesByID.prototype.{0458dac7-65de-11d5-9b42-00104bdf5339}= new nsISOAPPortBinding();
-nsXPCComponents_InterfacesByID.prototype.{49439df2-b3d2-441c-bf62-866bdaf56fd2}= new nsIContentHandler();
-nsXPCComponents_InterfacesByID.prototype.{5caaa64e-e191-11d8-842a-000393b6661a}= new nsISchemaComponent();
-nsXPCComponents_InterfacesByID.prototype.{ff328fe4-41d5-4b78-82ab-6b1fbc7930af}= new nsIPrintSettingsWin();
-nsXPCComponents_InterfacesByID.prototype.{8b193f0a-cf0c-4b5f-b4e3-a388df6f07b2}= new nsIDownloadProgressListener();
-nsXPCComponents_InterfacesByID.prototype.{1fb33f44-f522-4880-a225-4b75d09b04c6}= new nsIMozIconURI();
-nsXPCComponents_InterfacesByID.prototype.{494fac3c-64f4-41b8-b209-b4ada899613b}= new nsISHistoryInternal();
-nsXPCComponents_InterfacesByID.prototype.{2efd4a40-a5e1-11d4-9589-0020183bf181}= new nsIURIFixup();
-nsXPCComponents_InterfacesByID.prototype.{0a797fdc-8b60-4cb3-a0da-4c898832ba30}= new nsIDOMSVGPathSegLinetoHorizontalRel();
-nsXPCComponents_InterfacesByID.prototype.{8cdd8baa-1dd2-11b2-909a-f0178da5c5ff}= new nsIXPIDialogService();
-nsXPCComponents_InterfacesByID.prototype.{b22907b1-ee93-11d2-8d50-000064657374}= new nsIEditActionListener();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90ae-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLAppletElement();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9070-15b3-11d2-932e-00805f8add32}= new nsIDOMAttr();
-nsXPCComponents_InterfacesByID.prototype.{a6cf907e-15b3-11d2-932e-00805f8add32}= new nsIDOMNotation();
-nsXPCComponents_InterfacesByID.prototype.{eea90d43-b059-11d2-915e-c12b696c9333}= new nsIProxyObjectManager();
-nsXPCComponents_InterfacesByID.prototype.{cf39c2b0-1e4b-11d5-a549-0010a401eb10}= new nsIPassword();
-nsXPCComponents_InterfacesByID.prototype.{50e07b0a-f338-4da3-bcdb-f4bb0db94dbe}= new nsIProfileLock();
-nsXPCComponents_InterfacesByID.prototype.{0583a2ea-ab19-40e1-8be4-5e9b2f275560}= new nsIDOMHTMLCanvasElement();
-nsXPCComponents_InterfacesByID.prototype.{35bd8ed5-5f34-4126-8c4f-38ba01681836}= new nsISelectElement();
-nsXPCComponents_InterfacesByID.prototype.{33c60e14-5150-4876-9a96-2732557e6895}= new nsIPopupBoxObject();
-nsXPCComponents_InterfacesByID.prototype.{75125d55-37ee-4575-b9b5-f33bfa68c2a1}= new nsIFind();
-nsXPCComponents_InterfacesByID.prototype.{13ef3d54-1dd1-4a5c-a8d5-a04a327fb9b6}= new nsIXTFPrivate();
-nsXPCComponents_InterfacesByID.prototype.{b5f39ed4-1dd1-11b2-9d00-fd54d6f54962}= new nsIPlaintextEditor();
-nsXPCComponents_InterfacesByID.prototype.{8da01646-1dd2-11b2-98a7-c7009045be7e}= new nsIForwardIterator();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9105-15b3-11d2-932e-00805f8add32}= new nsIDOMNSHTMLSelectElement();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90a9-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLModElement();
-nsXPCComponents_InterfacesByID.prototype.{4eb9adac-afaf-4b8a-8640-7340863c1587}= new nsIDOMCSSMozDocumentRule();
-nsXPCComponents_InterfacesByID.prototype.{5d1cd1e6-4a14-4056-acc0-2f78c1672898}= new nsIDOMSVGEllipseElement();
-nsXPCComponents_InterfacesByID.prototype.{a2dd25a4-1dd1-11b2-bda6-ed525acd4c35}= new jsdIContext();
-nsXPCComponents_InterfacesByID.prototype.{45d7d2b4-2d98-4cdb-850f-860bc45deeae}= new nsIDOMPopupBlockedEvent_MOZILLA_1_8_BRANCH();
-nsXPCComponents_InterfacesByID.prototype.{13f236c0-47f8-11d5-b6a3-009027446e84}= new nsIDOMDocumentTraversal();
-nsXPCComponents_InterfacesByID.prototype.{72152f7f-7e8d-43fd-8477-3f29ae8d240d}= new nsIXTFAttributeHandler();
-nsXPCComponents_InterfacesByID.prototype.{7b4a099f-6f6e-4565-977b-fb622adbff49}= new inIFlasher();
-nsXPCComponents_InterfacesByID.prototype.{9188bc86-f92e-11d2-81ef-0060083a0bcf}= new nsISupportsWeakReference();
-nsXPCComponents_InterfacesByID.prototype.{e0be7cbb-81c1-4663-8f95-109d96a60b6b}= new nsIDOMSVGElement();
-nsXPCComponents_InterfacesByID.prototype.{090ecc19-b7cb-4f47-ae47-ed68d4926249}= new nsIDOM3DocumentEvent();
-nsXPCComponents_InterfacesByID.prototype.{1d297320-27f7-11d3-be01-000064657374}= new nsIRDFRemoteDataSource();
-nsXPCComponents_InterfacesByID.prototype.{c26e1779-604b-4bad-8a29-02d2a2113769}= new nsIDOMSVGPathSegArcAbs();
-nsXPCComponents_InterfacesByID.prototype.{6852d9a6-1dd2-11b2-a29d-cd7977a91b1b}= new nsIDOMXULButtonElement();
-nsXPCComponents_InterfacesByID.prototype.{e03e6c5e-0d84-4c0b-8739-e6b8d51922de}= new nsIClipboardDragDropHooks();
-nsXPCComponents_InterfacesByID.prototype.{71735f62-ac5c-4236-9a1f-5ffb280d531c}= new nsIDOMRect();
-nsXPCComponents_InterfacesByID.prototype.{486755db-627a-4678-a21b-f6a63bb9c56a}= new nsICRLManager();
-nsXPCComponents_InterfacesByID.prototype.{ccc5b3ad-3e67-4e3d-97e1-b06b2e96fef8}= new imgIEncoder();
-nsXPCComponents_InterfacesByID.prototype.{402aee39-653c-403f-8be1-6d1824223bf9}= new nsIX509Cert3();
-nsXPCComponents_InterfacesByID.prototype.{803e510b-4b27-4ba2-a16d-bb5fa953c166}= new nsISearchEngine();
-nsXPCComponents_InterfacesByID.prototype.{ba913c5c-13d6-41eb-83c1-de2f4165a516}= new nsIUrlListManagerCallback();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9079-15b3-11d2-932e-00805f8add32}= new nsIDOMEntity();
-nsXPCComponents_InterfacesByID.prototype.{75506f87-b504-11d5-a7f2-ca108ab8b6fc}= new nsIDOMXPathNamespace();
-nsXPCComponents_InterfacesByID.prototype.{ccc48346-429d-4931-94dc-beb1afcea292}= new nsIBookmarksService();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90a8-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLHRElement();
-nsXPCComponents_InterfacesByID.prototype.{d4214e91-fb94-11d2-bdd8-00104bde6048}= new nsIRDFContainerUtils();
-nsXPCComponents_InterfacesByID.prototype.{3b07f591-e8e1-11d4-9882-00c04fa02f40}= new nsISHistoryListener();
-nsXPCComponents_InterfacesByID.prototype.{9c5d3c58-1dd1-11b2-a1c9-f3699284657a}= new nsIWebBrowserFocus();
-nsXPCComponents_InterfacesByID.prototype.{e02b6693-6cca-11da-be43-001422106990}= new nsISAXErrorHandler();
-nsXPCComponents_InterfacesByID.prototype.{ad929b96-ef81-4002-b596-c6a8b3a878e9}= new nsIDOMSVGPathSegCurvetoCubicAbs();
-nsXPCComponents_InterfacesByID.prototype.{b0338f6c-ded3-4c39-a953-56e8bae494f5}= new nsIHTMLObjectResizer();
-nsXPCComponents_InterfacesByID.prototype.{a1173d91-4428-4829-8e3e-fe66e558f161}= new nsIXTFXULVisual();
-nsXPCComponents_InterfacesByID.prototype.{d1f28e94-3a6e-4050-a5f5-2e81b1fc2a43}= new nsIInputStreamCallback();
-nsXPCComponents_InterfacesByID.prototype.{e13567c0-4a1c-11d3-9890-006008962422}= new nsISupportsPRUint64();
-nsXPCComponents_InterfacesByID.prototype.{8b5314ba-db01-11d2-96ce-0060b0fb9956}= new nsIClipboard();
-nsXPCComponents_InterfacesByID.prototype.{78fd16c2-bdfb-4b1d-8738-d536d0a8f430}= new inIDOMUtils();
-nsXPCComponents_InterfacesByID.prototype.{691cb864-0a7e-448c-98ee-4a7f359cf145}= new nsIXmlRpcFault();
-nsXPCComponents_InterfacesByID.prototype.{fae4e9a8-1dd1-11b2-b53c-8f3aa1bbf8f5}= new nsIDirIndexListener();
-nsXPCComponents_InterfacesByID.prototype.{58e330c4-7b48-11d2-98b9-00805f297d89}= new nsITransactionListener();
-nsXPCComponents_InterfacesByID.prototype.{91f1c3ec-73a0-4bf0-bdc5-348a1f181b0e}= new nsICookiePermission();
-nsXPCComponents_InterfacesByID.prototype.{9e61c7c8-8698-4477-9971-0923513919bd}= new nsIDOMLSResourceResolver();
-nsXPCComponents_InterfacesByID.prototype.{3bb1a3c8-3073-41e0-9a26-a7671955fb65}= new nsIContentPolicy();
-nsXPCComponents_InterfacesByID.prototype.{99a0882d-2ff9-4659-9952-9ac531ba5592}= new nsIHelperAppLauncher();
-nsXPCComponents_InterfacesByID.prototype.{6cbbbf64-212f-4ef8-9ad4-7240dbb8d6ac}= new nsIDOMNSEventTarget();
-nsXPCComponents_InterfacesByID.prototype.{2f977d4e-5485-11d4-87e2-0010a4e75ef2}= new nsIRelativeFilePref();
-nsXPCComponents_InterfacesByID.prototype.{2efb7dc9-e7b3-44b7-8557-60b1485cfd6e}= new nsISidebar_MOZILLA_1_8_BRANCH();
-nsXPCComponents_InterfacesByID.prototype.{3cc75360-484a-11d2-bc16-00805f912fe7}= new nsIRDFObserver();
-nsXPCComponents_InterfacesByID.prototype.{b712418b-376f-4f75-b156-5d9ad99fe51f}= new nsIDOMPageTransitionEvent();
-nsXPCComponents_InterfacesByID.prototype.{69e5df00-7b8b-11d3-af61-00a024ffc08c}= new nsIWebBrowser();
-nsXPCComponents_InterfacesByID.prototype.{4da56f10-99fe-11d2-8ebb-00805f29f370}= new nsIRDFXMLSource();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9078-15b3-11d2-932e-00805f8add32}= new nsIDOMElement();
-nsXPCComponents_InterfacesByID.prototype.{8cecf236-1dd2-11b2-893c-f9848956eaec}= new nsIRegistryEnumerator();
-nsXPCComponents_InterfacesByID.prototype.{6d43b1b4-efb6-426d-9e65-4420c3e24688}= new nsIDOMSVGTextElement();
-nsXPCComponents_InterfacesByID.prototype.{05593438-1b83-4517-864f-3cea3d37a266}= new jsdIFilter();
-nsXPCComponents_InterfacesByID.prototype.{afc36593-5787-4420-93d9-b2c0ccbf0cad}= new nsIHTMLEditor();
-nsXPCComponents_InterfacesByID.prototype.{3c14a026-6f4e-11d5-9b46-000064657374}= new nsISchemaUnionType();
-nsXPCComponents_InterfacesByID.prototype.{5a9b4770-9fcb-4307-a12e-4b6708e78b97}= new nsIRDFPropagatableDataSource();
-nsXPCComponents_InterfacesByID.prototype.{6a7ddb40-8a9e-4576-8ad1-71c5641d8780}= new nsIContentViewer();
-nsXPCComponents_InterfacesByID.prototype.{c8188620-1dd1-11b2-bc88-df8440498add}= new nsIDOMJSWindow();
-nsXPCComponents_InterfacesByID.prototype.{bfa6e42b-bc9d-404d-8688-729fdbfff801}= new nsIDOMSVGAnimatedLengthList();
-nsXPCComponents_InterfacesByID.prototype.{e086e1e2-40ff-4193-8b8c-bd548babe70d}= new nsIStreamConverterService();
-nsXPCComponents_InterfacesByID.prototype.{652ecec6-d40b-45b6-afef-641d6c63a35b}= new nsIFastLoadReadControl();
-nsXPCComponents_InterfacesByID.prototype.{ebe55080-c8a9-11d5-a73c-dd620d6e04bc}= new nsICommandController();
-nsXPCComponents_InterfacesByID.prototype.{255602ea-c31f-4d29-8f35-905ead3f76f4}= new nsIFileProtocolHandler();
-nsXPCComponents_InterfacesByID.prototype.{1222e6f0-a5e3-11d2-8b7c-00805f8a7db6}= new nsILocalSearchService();
-nsXPCComponents_InterfacesByID.prototype.{cf2aca0c-4fb1-42e4-8a54-23e832cb2a98}= new nsIAutoCompleteController();
-nsXPCComponents_InterfacesByID.prototype.{0458dac5-65de-11d5-9b42-00104bdf5339}= new nsIWSDLLoader();
-nsXPCComponents_InterfacesByID.prototype.{56c35506-f14b-11d3-99d3-ddbfac2ccf65}= new nsIPrefBranch();
-nsXPCComponents_InterfacesByID.prototype.{f6134681-f28b-11d2-8360-c90899049c3c}= new nsIDOMPlugin();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90e2-15b3-11d2-932e-00805f8add32}= new nsISelectionListener();
-nsXPCComponents_InterfacesByID.prototype.{dcbce63c-1dd1-11b2-b94d-91f6d49a3161}= new nsIMIMEInputStream();
-nsXPCComponents_InterfacesByID.prototype.{3722a5b9-5323-4ed0-bb1a-8299f27a4e89}= new nsIWindowDataSource();
-nsXPCComponents_InterfacesByID.prototype.{e9c4cd4f-cd41-43d0-bf3b-48abb9cde90f}= new nsIXMLContentBuilder();
-nsXPCComponents_InterfacesByID.prototype.{359f7990-d4e9-11d3-a1a5-0050041caf44}= new nsIStreamLoaderObserver();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9085-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLElement();
-nsXPCComponents_InterfacesByID.prototype.{27c10dca-2efc-416b-ae36-9794380a661e}= new nsIXTFElementFactory();
-nsXPCComponents_InterfacesByID.prototype.{dc2ff152-85cb-474e-b4c2-86a3d48cf4d0}= new nsIPasswordManagerInternal();
-nsXPCComponents_InterfacesByID.prototype.{41d979dc-ea03-4235-86ff-1e3c090c5630}= new nsIStyleSheetService();
-nsXPCComponents_InterfacesByID.prototype.{a8fefe40-52bc-11d4-9a57-000064657374}= new nsISOAPCall();
-nsXPCComponents_InterfacesByID.prototype.{f5323a76-c8f7-4c65-8d0c-1250e969c7d5}= new nsICharsetConverterManager();
-nsXPCComponents_InterfacesByID.prototype.{5d052835-8cb0-442c-9754-a8e616db1f89}= new nsIDOMSVGTextPositioningElement();
-nsXPCComponents_InterfacesByID.prototype.{8d3f5a9d-118d-4548-a137-cf7718679069}= new nsIBrowserHandler();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90cd-15b3-11d2-932e-00805f8add32}= new nsIDOMNSDocument();
-nsXPCComponents_InterfacesByID.prototype.{44e8b2c8-1ecb-4a63-8b23-3e3500c34f32}= new nsIInputStreamTee();
-nsXPCComponents_InterfacesByID.prototype.{524564b0-13a3-459b-bbec-ad66aea9f789}= new nsIDOMSVGTitleElement();
-nsXPCComponents_InterfacesByID.prototype.{27e60cd8-6d63-4d87-b7d1-82c09e0c7363}= new nsIXmlRpcClientListener();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9114-15b3-11d2-932e-00805f8add32}= new nsIFontEnumerator();
-nsXPCComponents_InterfacesByID.prototype.{b148eed1-236d-11d3-b35c-00a0cc3c1cde}= new nsISound();
-nsXPCComponents_InterfacesByID.prototype.{93a28ba2-7e22-11d9-9b6f-000a95d535fa}= new nsIAppShellService();
-nsXPCComponents_InterfacesByID.prototype.{eb422132-514e-4a1c-81ec-b84a5df5fb96}= new nsIDOMSVGPathSegCurvetoCubicSmoothAbs();
-nsXPCComponents_InterfacesByID.prototype.{cfb5b821-9016-4a79-9d98-87b57c3ea0c7}= new nsIDOMDOMConfiguration();
-nsXPCComponents_InterfacesByID.prototype.{173562f0-2173-11d5-a54c-0010a401eb10}= new nsIPasswordManager();
-nsXPCComponents_InterfacesByID.prototype.{8a44bdf9-d1a5-4734-bd5a-34ed7fe564c2}= new nsIPKCS11Module();
-nsXPCComponents_InterfacesByID.prototype.{948a0023-e3a7-11d2-96cf-0060b0fb9956}= new nsIFormatConverter();
-nsXPCComponents_InterfacesByID.prototype.{c63a055a-a676-4e71-bf3c-6cfa11082018}= new nsIChannel();
-nsXPCComponents_InterfacesByID.prototype.{4f45513e-55e5-411c-a844-e899057026c1}= new nsIDOMParser();
-nsXPCComponents_InterfacesByID.prototype.{a32826ff-9e56-4425-a811-97a8dba64ff5}= new imgILoader();
-nsXPCComponents_InterfacesByID.prototype.{fd54c8c4-2eb4-4849-8df6-79985c2491da}= new nsIDOMSVGAnimatedTransformList();
-nsXPCComponents_InterfacesByID.prototype.{6d340848-9bc1-49a3-9073-99932bbc2a11}= new nsIBrowserGlue();
-nsXPCComponents_InterfacesByID.prototype.{0e61f3b2-34d7-4c79-bfdc-4860bc7341b7}= new nsIExternalProtocolHandler();
-nsXPCComponents_InterfacesByID.prototype.{a8b607fd-24b6-4a8c-9a89-d9b24f8e2592}= new nsIXTFElement();
-nsXPCComponents_InterfacesByID.prototype.{80faf095-c807-4558-a2cc-185ed70754ea}= new nsIFilePicker();
-nsXPCComponents_InterfacesByID.prototype.{283ee646-1aef-11d4-98b3-00c04fa0ce9a}= new nsIPropertyElement();
-nsXPCComponents_InterfacesByID.prototype.{8793370a-311f-11d4-9876-00c04fa0cf4a}= new nsIStandardURL();
-nsXPCComponents_InterfacesByID.prototype.{951700f0-fed0-11d2-bdd9-00104bde6048}= new nsIRDFPurgeableDataSource();
-nsXPCComponents_InterfacesByID.prototype.{0c2dc80f-7aa4-467a-9454-b89dba0e0779}= new nsIExtendedExpatSink();
-nsXPCComponents_InterfacesByID.prototype.{8429d350-1040-4661-8b71-f2a6ba455980}= new nsISeekableStream();
-nsXPCComponents_InterfacesByID.prototype.{22496a00-227b-11db-a98b-0800200c9a66}= new nsISessionStartup();
-nsXPCComponents_InterfacesByID.prototype.{0659cb81-faad-11d2-8e19-b206620a657c}= new nsIWindowMediator();
-nsXPCComponents_InterfacesByID.prototype.{df15f850-5d98-11d4-9f4d-0010a4053fd0}= new nsIDocumentLoaderFactory();
-nsXPCComponents_InterfacesByID.prototype.{fb683e76-d42b-41a4-8ae6-65a6c2b146e5}= new nsIStreamListenerTee();
-nsXPCComponents_InterfacesByID.prototype.{06b42e9d-61b5-400d-9561-b43f0e9883c0}= new nsIDOMNSCSS2Properties();
-nsXPCComponents_InterfacesByID.prototype.{6c143dac-bd65-4333-b594-7ed1e748e0f9}= new nsINSSCertCache();
-nsXPCComponents_InterfacesByID.prototype.{7e1aa658-6e3f-4521-9946-9685a169f764}= new nsISyncStreamListener();
-nsXPCComponents_InterfacesByID.prototype.{10e8893d-ddf5-45d1-8872-615d72065fb4}= new nsIDOMLSParserFilter();
-nsXPCComponents_InterfacesByID.prototype.{b6fe3d78-1dd1-11b2-9058-ced9016984c8}= new nsIPKIParamBlock();
-nsXPCComponents_InterfacesByID.prototype.{b0196fc7-1913-441a-882a-453c0d8b89b8}= new nsIScriptError();
-nsXPCComponents_InterfacesByID.prototype.{b6c2f9e1-53a0-45f2-a2b8-fe37861fe8a8}= new nsIXULWindow();
-nsXPCComponents_InterfacesByID.prototype.{ea99ad5b-cc67-4efb-97c9-2ef620a59f2a}= new nsIEventTarget();
-nsXPCComponents_InterfacesByID.prototype.{7281076d-cf37-464a-815e-698235802604}= new nsIURLParser();
-nsXPCComponents_InterfacesByID.prototype.{aeb8936f-219c-4d3c-8385-d9382daa551a}= new mozISpellI18NManager();
-nsXPCComponents_InterfacesByID.prototype.{e701dfd8-1dd1-11b2-a172-ffa6cc6156ad}= new nsIX509CertValidity();
-nsXPCComponents_InterfacesByID.prototype.{3c14a031-6f4e-11d5-9b46-000064657374}= new nsISchemaFacet();
-nsXPCComponents_InterfacesByID.prototype.{7392d032-5371-11d3-994e-00805fd26fee}= new nsIModule();
-nsXPCComponents_InterfacesByID.prototype.{5fdf8480-1f98-11d4-8077-00600811a9c3}= new nsINativeAppSupport();
-nsXPCComponents_InterfacesByID.prototype.{94558064-140c-41a1-9cc9-4e9cdbf5c124}= new nsIDOMSVGMetadataElement();
-nsXPCComponents_InterfacesByID.prototype.{f6134683-f28b-11d2-8360-c90899049c3c}= new nsIDOMMimeTypeArray();
-nsXPCComponents_InterfacesByID.prototype.{8458a740-d5dc-11d2-92fb-00e09805570f}= new nsIComponentManagerObsolete();
-nsXPCComponents_InterfacesByID.prototype.{a6cf909e-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLLIElement();
-nsXPCComponents_InterfacesByID.prototype.{002286a8-494b-43b3-8ddd-49e3fc50622b}= new nsIWindowWatcher();
-nsXPCComponents_InterfacesByID.prototype.{ba8bf582-1dd1-11b2-898c-f40246bc9a63}= new nsIASN1Object();
-nsXPCComponents_InterfacesByID.prototype.{7e46bc35-fb7d-4b45-ab35-82fd61015380}= new nsIPrintProgress();
-nsXPCComponents_InterfacesByID.prototype.{6e48c500-8682-4730-add6-7db693b9e7ba}= new nsIXPTLoaderSink();
-nsXPCComponents_InterfacesByID.prototype.{5a92782c-a2e8-4dd3-b18a-33acc3af4fd7}= new nsIWindowsShellService();
-nsXPCComponents_InterfacesByID.prototype.{ff751edc-8b02-aae7-0010-8301838a3123}= new nsIDOMMouseEvent();
-nsXPCComponents_InterfacesByID.prototype.{e36c5250-4a1c-11d3-9890-006008962422}= new nsISupportsPRInt32();
-nsXPCComponents_InterfacesByID.prototype.{9849c4bf-5197-4d22-baa8-e3b44a1703d2}= new nsIApplicationUpdateService();
-nsXPCComponents_InterfacesByID.prototype.{033a1470-8b2a-11d3-af88-00a024ffc08c}= new nsIInterfaceRequestor();
-nsXPCComponents_InterfacesByID.prototype.{b9a2371f-70e9-4657-b0e8-28e15b40857e}= new nsIDOMLSProgressEvent();
-nsXPCComponents_InterfacesByID.prototype.{58e330c2-7b48-11d2-98b9-00805f297d89}= new nsITransactionManager();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9091-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLOptGroupElement();
-nsXPCComponents_InterfacesByID.prototype.{080d2001-f91e-11d4-a73c-f9242928207c}= new nsICommandManager();
-nsXPCComponents_InterfacesByID.prototype.{7b67747e-a8c4-4832-80c7-39ebb0c11f94}= new nsIIDNService();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9089-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLTitleElement();
-nsXPCComponents_InterfacesByID.prototype.{93276790-3daf-11d5-b67d-000064657374}= new nsITimelineService();
-nsXPCComponents_InterfacesByID.prototype.{2d00b1bb-8b21-4a63-bcc6-7213f513ac2e}= new nsIUnicharOutputStream();
-nsXPCComponents_InterfacesByID.prototype.{91d82105-7c62-4f8b-9779-154277c0ee90}= new nsIStackFrame();
-nsXPCComponents_InterfacesByID.prototype.{4d12e540-83d7-11d5-90ed-0010a4e73d9a}= new nsIDataType();
-nsXPCComponents_InterfacesByID.prototype.{412880c8-6c36-48d8-bf8f-84f91f892503}= new nsIHttpActivityObserver();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90c2-15b3-11d2-932e-00805f8add32}= new nsIDOMCSSStyleSheet();
-nsXPCComponents_InterfacesByID.prototype.{1f8fe77e-1dd2-11b2-8dd2-e55f8d3465b8}= new nsIDOMCryptoDialogs();
-nsXPCComponents_InterfacesByID.prototype.{988b2de4-137b-4bb8-a15e-fe94038e9cf3}= new nsIDOMSVGGradientElement();
-nsXPCComponents_InterfacesByID.prototype.{aaab6710-0f2c-11d5-a53b-0010a401eb10}= new nsICookieManager();
-nsXPCComponents_InterfacesByID.prototype.{4b71113a-cb0d-479f-8ed5-01daeba2e8d4}= new nsIConverterOutputStream();
-nsXPCComponents_InterfacesByID.prototype.{400f5468-97e7-4d2b-9c65-a82aecc7ae82}= new nsIInputStreamPump();
-nsXPCComponents_InterfacesByID.prototype.{2a31a3a0-be68-40af-9f64-914192f0fba2}= new nsIDOMLSParser();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90be-15b3-11d2-932e-00805f8add32}= new nsIDOMCSSStyleDeclaration();
-nsXPCComponents_InterfacesByID.prototype.{7e225e5f-711c-11d7-9fae-000393636592}= new nsIFlavorDataProvider();
-nsXPCComponents_InterfacesByID.prototype.{063d4a4e-1dd2-11b2-a365-cbaf1651f140}= new nsISOAPHeaderBlock();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90b5-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLTableSectionElement();
-nsXPCComponents_InterfacesByID.prototype.{a6cf907c-15b3-11d2-932e-00805f8add32}= new nsIDOMNode();
-nsXPCComponents_InterfacesByID.prototype.{f1b74aae-5661-4753-a21c-66dd644afebc}= new imgICache();
-nsXPCComponents_InterfacesByID.prototype.{18967370-921a-4245-8158-a279b190abca}= new nsIDOMSVGZoomAndPan();
-nsXPCComponents_InterfacesByID.prototype.{55e9c181-2476-47cf-97f8-efdaaf7b6f7a}= new nsIDOMStorageWindow();
-nsXPCComponents_InterfacesByID.prototype.{dec2e4e0-4a1c-11d3-9890-006008962422}= new nsISupportsPRUint8();
-nsXPCComponents_InterfacesByID.prototype.{9af0d129-b366-4aa8-b7d8-8dce93148d91}= new nsIDOMSVGStyleElement();
-nsXPCComponents_InterfacesByID.prototype.{5cf6420c-74f3-4a7c-bc1d-f5756d79ea07}= new nsIURILoader();
-nsXPCComponents_InterfacesByID.prototype.{d4b123df-51ee-48b1-a663-002180e60d3b}= new nsICommandLineHandler();
-nsXPCComponents_InterfacesByID.prototype.{84991d1b-b010-4127-9e71-82017559abff}= new nsIDocNavStartProgressListener();
-nsXPCComponents_InterfacesByID.prototype.{d1b54831-ac07-11d2-805e-00600811a9c3}= new nsIRegistryNode();
-nsXPCComponents_InterfacesByID.prototype.{8b5314bc-db01-11d2-96ce-0060b0fb9956}= new nsITransferable();
-nsXPCComponents_InterfacesByID.prototype.{d39fd2b4-3978-45d2-a4be-ba448171b61b}= new nsIEditingSession();
-nsXPCComponents_InterfacesByID.prototype.{0e80f152-d676-4fba-8862-9dc4eb761442}= new nsIAccessibilityService();
-nsXPCComponents_InterfacesByID.prototype.{56863a67-bd69-42de-9f40-583e625b457d}= new nsIUpdatePatch();
-nsXPCComponents_InterfacesByID.prototype.{eda4f520-67f7-484b-a691-8c3226a5b0a6}= new nsITransportEventSink();
-nsXPCComponents_InterfacesByID.prototype.{55c7af7b-1a64-40bf-87eb-2c2cbee0491b}= new nsIDOMCustomEvent();
-nsXPCComponents_InterfacesByID.prototype.{dfacb090-4a1c-11d3-9890-006008962422}= new nsISupportsPRUint16();
-nsXPCComponents_InterfacesByID.prototype.{d39982d6-da4f-4a27-8d91-f9c7b179aa33}= new nsIUrlListManager();
-nsXPCComponents_InterfacesByID.prototype.{0458dac2-65de-11d5-9b42-00104bdf5339}= new nsIWSDLOperation();
-nsXPCComponents_InterfacesByID.prototype.{3f24610d-1e1f-4151-9d2e-239884742324}= new nsIWebProgressListener2();
-nsXPCComponents_InterfacesByID.prototype.{4c2e02ae-1dd2-11b2-b1cd-c79dea3d46db}= new nsISOAPDecoder();
-nsXPCComponents_InterfacesByID.prototype.{5556997e-d816-4218-8b54-803d4261206e}= new nsISAXXMLReader();
-nsXPCComponents_InterfacesByID.prototype.{d064a04c-9cee-4319-be31-64d565bccba9}= new nsIRecyclingAllocator();
-nsXPCComponents_InterfacesByID.prototype.{2122421c-1326-41db-87f8-25519d8a12cb}= new nsIWebServiceProxy();
-nsXPCComponents_InterfacesByID.prototype.{eb1a5d31-ab33-11d2-8ec6-00805f29f370}= new nsIRDFXMLSink();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90ba-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLIFrameElement();
-nsXPCComponents_InterfacesByID.prototype.{46b4015c-0121-11d4-9877-00c04fa0d27a}= new nsIXULBrowserWindow();
-nsXPCComponents_InterfacesByID.prototype.{4c12af24-0fc2-4fe7-b71d-5d6b41d463c1}= new nsIDOMSVGPointList();
-nsXPCComponents_InterfacesByID.prototype.{6c1034f0-1dd2-11b2-aa14-e6657ed7bb0b}= new nsIUserInfo();
-nsXPCComponents_InterfacesByID.prototype.{49c1a11d-f5d2-4f09-8262-551e64908ada}= new nsICacheEntryDescriptor();
-nsXPCComponents_InterfacesByID.prototype.{91375f52-20e6-4757-9835-eb04fabe5498}= new nsIHTMLAbsPosEditor();
-nsXPCComponents_InterfacesByID.prototype.{2ee5520b-6593-43c1-b660-4885939a6b68}= new nsIXTFVisual();
-nsXPCComponents_InterfacesByID.prototype.{18c36504-9a4c-4ac3-8494-bd05e00ae27f}= new nsIAutoCompleteObserver();
-nsXPCComponents_InterfacesByID.prototype.{a61f0a62-ae0a-4382-b474-d259442ca80c}= new nsIFormHistory2();
-nsXPCComponents_InterfacesByID.prototype.{37ef2e71-edef-46c7-acd9-f0b6e0b15083}= new nsIFileSpec();
-nsXPCComponents_InterfacesByID.prototype.{2cc35c67-978f-42a9-a958-16e97ad2f4c8}= new nsIPasswordInternal();
-nsXPCComponents_InterfacesByID.prototype.{1c399d06-1dd2-11b2-bc58-c87cbcacdb78}= new nsISecurityWarningDialogs();
-nsXPCComponents_InterfacesByID.prototype.{843afaa8-1dd2-11b2-8b0d-9b5d16fe64ea}= new nsISOAPBlock();
-nsXPCComponents_InterfacesByID.prototype.{7b80eebc-c98e-4461-8bdb-6e3b6e828890}= new nsIImageDocument();
-nsXPCComponents_InterfacesByID.prototype.{cbb0baeb-5fcb-408b-a2be-9f8fc98d0af1}= new nsITransport();
-nsXPCComponents_InterfacesByID.prototype.{99ec6694-535f-11d4-9a58-000064657374}= new nsISOAPFault();
-nsXPCComponents_InterfacesByID.prototype.{a94ec640-0bba-11d2-b326-00805f8a3859}= new nsIScriptContextOwner();
-nsXPCComponents_InterfacesByID.prototype.{f102caf6-1dd1-11b2-bd43-c1dbacb95a98}= new jsdICallHook();
-nsXPCComponents_InterfacesByID.prototype.{9fe91a61-3048-40e3-99ef-e39ab946ae0b}= new nsISOAPEncodingRegistry();
-nsXPCComponents_InterfacesByID.prototype.{3275b2cd-af6d-429a-80d7-f0c5120342ac}= new nsICategoryManager();
-nsXPCComponents_InterfacesByID.prototype.{948defaa-1dd1-11b2-89f6-8ce81f5ebda9}= new nsIBidirectionalIterator();
-nsXPCComponents_InterfacesByID.prototype.{2f276982-0d60-4377-a595-d350ba516395}= new nsIWindowMediatorListener();
-nsXPCComponents_InterfacesByID.prototype.{75506f84-b504-11d5-a7f2-ca108ab8b6fc}= new nsIDOMXPathResult();
-nsXPCComponents_InterfacesByID.prototype.{78582ad3-db1e-4aa6-a15b-b055a7846352}= new nsIXTFSVGVisualWrapper();
-nsXPCComponents_InterfacesByID.prototype.{0fecd56b-bd92-481b-a486-b8d489cdd385}= new nsIFeedGenerator();
-nsXPCComponents_InterfacesByID.prototype.{d4882ffb-e927-408b-96be-d4391b456fa9}= new nsIEditor();
-nsXPCComponents_InterfacesByID.prototype.{896d1d20-b4c4-11d2-bd93-00805f8ae3f4}= new nsIDOMHistory();
-nsXPCComponents_InterfacesByID.prototype.{6ca5e43e-9632-11d3-8cd9-0060b0fc14a3}= new nsIZipEntry();
-nsXPCComponents_InterfacesByID.prototype.{e6a75410-c93e-42bf-84ca-a5c3ec34a2f1}= new nsIWebContentHandlerRegistrar();
-nsXPCComponents_InterfacesByID.prototype.{eee6f7c9-5586-4eaf-b35c-dca987c4ffd1}= new mozIStorageStatementWrapper();
-nsXPCComponents_InterfacesByID.prototype.{6712fdd4-f978-11d4-a144-005004832142}= new nsIFontPackageProxy();
-nsXPCComponents_InterfacesByID.prototype.{757e9971-8890-478d-a53a-07f9f6f6e0d3}= new nsIDOMLSOutput();
-nsXPCComponents_InterfacesByID.prototype.{d5e3bd80-6723-4b92-b0c9-22f6162fd94f}= new nsIUnicharInputStream();
-nsXPCComponents_InterfacesByID.prototype.{702909c6-1dd2-11b2-b833-8a740f643539}= new nsIFontList();
-nsXPCComponents_InterfacesByID.prototype.{339a4eb5-dac6-4034-8c43-f4f8c645ce57}= new nsIScriptLoader();
-nsXPCComponents_InterfacesByID.prototype.{59fec127-2a0e-445b-84b5-a66dc90245db}= new nsIDOMXULSelectControlElement();
-nsXPCComponents_InterfacesByID.prototype.{6c9eb060-8c6a-11d5-90f3-0010a4e73d9a}= new nsIVariant();
-nsXPCComponents_InterfacesByID.prototype.{21dea65c-5c08-4eb1-ac82-81fe95be77b8}= new nsIDOMCanvasPattern();
-nsXPCComponents_InterfacesByID.prototype.{464484f0-568d-11d3-baf8-00805f8a5dd7}= new nsISupportsVoid();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90cf-15b3-11d2-932e-00805f8add32}= new nsIDOMCSSImportRule();
-nsXPCComponents_InterfacesByID.prototype.{3c14a02a-6f4e-11d5-9b46-000064657374}= new nsISchemaModelGroup();
-nsXPCComponents_InterfacesByID.prototype.{41bd8784-1dd2-11b2-9553-8606958fffe1}= new nsIConsoleMessage();
-nsXPCComponents_InterfacesByID.prototype.{7a307c6c-6cc9-11da-be43-001422106990}= new nsISAXLocator();
-nsXPCComponents_InterfacesByID.prototype.{3eb4c760-dffd-4983-94a8-18bcb99100e4}= new inIDOMView();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9083-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLCollection();
-nsXPCComponents_InterfacesByID.prototype.{31d1c294-1dd2-11b2-be3a-c79230dca297}= new nsICacheDeviceInfo();
-nsXPCComponents_InterfacesByID.prototype.{29cbd45f-f2d3-4b28-b557-3ab7a61ecde4}= new nsIFeedPerson();
-nsXPCComponents_InterfacesByID.prototype.{a66b7b80-ff46-bd97-0080-5f8ae38add32}= new nsIDOMEvent();
-nsXPCComponents_InterfacesByID.prototype.{f8c08c4b-d778-49d1-a59b-866fdc500d95}= new nsICacheVisitor();
-nsXPCComponents_InterfacesByID.prototype.{91cca981-c26d-44a8-bebe-d9ed4891503a}= new nsISerializable();
-nsXPCComponents_InterfacesByID.prototype.{e800ef97-ae37-46b7-a46c-31fbe79657ea}= new nsINonBlockingAlertService();
-nsXPCComponents_InterfacesByID.prototype.{a03ca940-09be-11d5-ac5d-000064657374}= new nsICertificateDialogs();
-nsXPCComponents_InterfacesByID.prototype.{85585e12-1dd2-11b2-a930-f6929058269a}= new nsIInputIterator();
-nsXPCComponents_InterfacesByID.prototype.{5c0e4d25-a9f1-4aab-936c-2b61ed6c085f}= new nsIDOMSVGPathSegCurvetoQuadraticSmoothRel();
-nsXPCComponents_InterfacesByID.prototype.{6bd1d803-1c67-11d3-9820-ed1b357eb3c4}= new nsIInternetSearchService();
-nsXPCComponents_InterfacesByID.prototype.{0f331436-8bc8-4c68-a124-d0253a19d06f}= new nsIHttpAuthenticator();
-nsXPCComponents_InterfacesByID.prototype.{bb86037c-98c1-4c22-8e03-1e4c9fc89a8e}= new nsIAddonUpdateListener();
-nsXPCComponents_InterfacesByID.prototype.{4805e681-49b9-11d3-9ce4-ed60bd6cb5bc}= new nsIEditorLogging();
-nsXPCComponents_InterfacesByID.prototype.{52c45d86-0cc3-11d4-986e-00c04fa0cf4a}= new nsIZipReaderCache();
-nsXPCComponents_InterfacesByID.prototype.{eaa49141-c21c-4fe8-a79b-77860a3910aa}= new nsIAsyncStreamCopier();
-nsXPCComponents_InterfacesByID.prototype.{a457ea70-1dd1-11b2-9089-8fd894122084}= new nsIDOMXULLabeledControlElement();
-nsXPCComponents_InterfacesByID.prototype.{3f2f0d2c-bdea-4b5a-afc6-fcf18f66b97e}= new nsICookieAcceptDialog();
-nsXPCComponents_InterfacesByID.prototype.{73b101bd-797b-470f-9308-c24c64278bcd}= new nsIDOMSVGAnimatedEnumeration();
-nsXPCComponents_InterfacesByID.prototype.{ff9fbcd7-9517-4334-b97a-ceed78909974}= new nsIPKCS11ModuleDB();
-nsXPCComponents_InterfacesByID.prototype.{01d8c0f0-0ccc-11d4-9fdd-000064657374}= new nsISecretDecoderRingConfig();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90d0-15b3-11d2-932e-00805f8add32}= new nsIDOMCSSUnknownRule();
-nsXPCComponents_InterfacesByID.prototype.{368a15d9-17a9-4c2b-ac3d-a35b3a22b876}= new nsIXPTLoader();
-nsXPCComponents_InterfacesByID.prototype.{36f18f12-61a9-4529-8fa9-30050bd6ac00}= new nsIDOMSVGAnimatedString();
-nsXPCComponents_InterfacesByID.prototype.{c18c49a8-62f0-4045-9884-4aa91e388f14}= new nsIContentFilter();
-nsXPCComponents_InterfacesByID.prototype.{c3681210-e191-11d8-949e-000393b6661a}= new nsIWSDLLoadListener();
-nsXPCComponents_InterfacesByID.prototype.{02eeaf95-c3db-4182-9340-222c29f68f02}= new mozIStorageStatementRow();
-nsXPCComponents_InterfacesByID.prototype.{d3ab9070-b5d2-410f-977d-36b1788de1e5}= new imgIDecoderObserver_MOZILLA_1_8_BRANCH();
-nsXPCComponents_InterfacesByID.prototype.{43987f7b-0faa-4019-811e-42becac73fc5}= new mozISpellCheckingEngine();
-nsXPCComponents_InterfacesByID.prototype.{c3c4614c-301a-44af-ad70-936f9fd1ba5c}= new nsISOAPMessageBinding();
-nsXPCComponents_InterfacesByID.prototype.{731c6c50-67d6-11d4-9529-0020183bf181}= new nsICommandHandlerInit();
-nsXPCComponents_InterfacesByID.prototype.{57826606-3c8a-4243-9f2f-cb3fe6e91148}= new mozIStorageDataSet();
-nsXPCComponents_InterfacesByID.prototype.{d67bd267-f984-4993-b378-95851b71f0a3}= new nsIDOMNSHTMLFrameElement();
-nsXPCComponents_InterfacesByID.prototype.{02b0625a-e7f3-11d2-9f5a-006008a6efe9}= new nsIProfile();
-nsXPCComponents_InterfacesByID.prototype.{5b912111-c10e-498f-a44c-c713c1843007}= new nsIDOMSVGRect();
-nsXPCComponents_InterfacesByID.prototype.{c6ee1ddd-8b35-4e1b-b381-c063a28012d9}= new nsIDOMSVGPathSegMovetoRel();
-nsXPCComponents_InterfacesByID.prototype.{1630c61a-325e-49ca-8759-a31b16c47aa5}= new nsIPromptService();
-nsXPCComponents_InterfacesByID.prototype.{92c3b42c-98c4-11d3-8cd9-0060b0fc14a3}= new nsIJARProtocolHandler();
-nsXPCComponents_InterfacesByID.prototype.{69efc430-2efe-11d2-9e5d-006008bf092e}= new nsIRefreshURI();
-nsXPCComponents_InterfacesByID.prototype.{75506f82-b504-11d5-a7f2-ca108ab8b6fc}= new nsIDOMXPathExpression();
-nsXPCComponents_InterfacesByID.prototype.{3c14a021-6f4e-11d5-9b46-000064657374}= new nsISchema();
-nsXPCComponents_InterfacesByID.prototype.{4ea07ef3-ed66-4b41-8119-4afc6d0ed5af}= new nsIDOMSVGLineElement();
-nsXPCComponents_InterfacesByID.prototype.{58a8574d-15a8-4678-99a5-e1be56104093}= new nsITreeColumn();
-nsXPCComponents_InterfacesByID.prototype.{65f6cd46-22ec-4329-bb3b-bcd1103f2204}= new nsIAutoCompletePopup();
-nsXPCComponents_InterfacesByID.prototype.{9854976e-1dd1-11b2-8350-e6d35099fbce}= new nsIFullScreen();
-nsXPCComponents_InterfacesByID.prototype.{9fd42950-25e7-11d4-8a7d-006008c844c3}= new nsIDOMPkcs11();
-nsXPCComponents_InterfacesByID.prototype.{ef6bfbd2-fd46-48d8-96b7-9f8f0fd387fe}= new nsIRequest();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90bd-15b3-11d2-932e-00805f8add32}= new nsIDOMCSSPageRule();
-nsXPCComponents_InterfacesByID.prototype.{9a7ca4b0-fbba-11d4-a869-00105a183419}= new nsIWebBrowserPrint();
-nsXPCComponents_InterfacesByID.prototype.{faaf1b80-1ddd-11d9-8c46-000a95dc234c}= new nsIDOMNameList();
-nsXPCComponents_InterfacesByID.prototype.{cf777d42-1270-4b34-be7b-2931c93feda5}= new nsIGlobalHistory2();
-nsXPCComponents_InterfacesByID.prototype.{99ec6692-535f-11d4-9a58-000064657374}= new nsISOAPResponseListener();
-nsXPCComponents_InterfacesByID.prototype.{fd1f8334-1859-472d-b01f-4ac6b1121ce4}= new nsIUrlClassifierTable();
-nsXPCComponents_InterfacesByID.prototype.{716e3b11-b03b-49f7-b82d-5383922b0ab3}= new nsIDOMSVGAnimatedNumber();
-nsXPCComponents_InterfacesByID.prototype.{c43079c3-3d8d-4b7c-af14-0e30ab46865f}= new nsIBrowserHistory();
-nsXPCComponents_InterfacesByID.prototype.{a1b89470-a124-11d3-be59-0020a6361667}= new nsIRDFDelegateFactory();
-nsXPCComponents_InterfacesByID.prototype.{e249031f-8df9-4e7a-b644-18946dce0019}= new nsIDOMCSSPrimitiveValue();
-nsXPCComponents_InterfacesByID.prototype.{7a180b78-0f46-4569-8c22-f3d720ea1c57}= new nsIFeedResult();
-nsXPCComponents_InterfacesByID.prototype.{93aaa4a9-b78e-42eb-9d67-5de77ee2f54b}= new nsISelectionController();
-nsXPCComponents_InterfacesByID.prototype.{00b3df92-e830-11d8-d48e-0004e22243f8}= new nsISocketProvider();
-nsXPCComponents_InterfacesByID.prototype.{6712fdd2-f978-11d4-a144-005004832142}= new nsIFontPackageService();
-nsXPCComponents_InterfacesByID.prototype.{450cd2d4-f0fd-424d-b365-b1251f80fd53}= new nsIStringInputStream();
-nsXPCComponents_InterfacesByID.prototype.{bc6ea726-ab56-46b6-a21a-aa7b76d6818f}= new nsIPhonetic();
-nsXPCComponents_InterfacesByID.prototype.{a2e86036-f04c-4013-9f74-e7090a0aac0a}= new nsIDOMSVGDefsElement();
-nsXPCComponents_InterfacesByID.prototype.{9eebf43a-1dd1-11b2-953e-f1782f4cbad3}= new imgIDecoder();
-nsXPCComponents_InterfacesByID.prototype.{009f7ea5-9e80-41be-b008-db62f10823f2}= new nsIDOMCSSValue();
-nsXPCComponents_InterfacesByID.prototype.{65281ba2-988a-11d3-bdc7-0050040a9b44}= new nsISHContainer();
-nsXPCComponents_InterfacesByID.prototype.{99e81922-7318-4431-b3aa-78b3cb4119bb}= new nsICryptoFIPSInfo();
-nsXPCComponents_InterfacesByID.prototype.{f5099746-5049-4e81-a03e-945d5110fee2}= new nsIMenuBoxObject();
-nsXPCComponents_InterfacesByID.prototype.{0458dac1-65de-11d5-9b42-00104bdf5339}= new nsIWSDLPort();
-nsXPCComponents_InterfacesByID.prototype.{2b72d033-f115-45aa-9748-8c11ea07b845}= new nsIDOMSVGPathSegClosePath();
-nsXPCComponents_InterfacesByID.prototype.{1cc8e4b3-1dbb-4adc-a913-1527bf67748c}= new nsIDOMLSException();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9097-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLFieldSetElement();
-nsXPCComponents_InterfacesByID.prototype.{7e15fce5-b208-43e1-952a-c570ebad0619}= new nsIDOMSVGLinearGradientElement();
-nsXPCComponents_InterfacesByID.prototype.{95cc1383-3b62-4b89-aaef-1004a513ef47}= new nsIDOMStorage();
-nsXPCComponents_InterfacesByID.prototype.{31d37360-8e5a-11d3-93ad-00104ba0fd40}= new nsIStreamLoader();
-nsXPCComponents_InterfacesByID.prototype.{a6cf906f-15b3-11d2-932e-00805f8add32}= new nsIDOMWindowCollection();
-nsXPCComponents_InterfacesByID.prototype.{7b456cb0-8772-11d3-90cf-0040056a906e}= new nsIBinaryInputStream();
-nsXPCComponents_InterfacesByID.prototype.{8a0b2908-21b0-45d7-b14d-30df0f92afc7}= new nsIFeedProcessor();
-nsXPCComponents_InterfacesByID.prototype.{067b28a0-877f-11d3-af7e-00a024ffc08c}= new nsITextScroll();
-nsXPCComponents_InterfacesByID.prototype.{d0262ae1-31a4-44be-b82e-85e4cfe280fd}= new nsIDOMSVGRadialGradientElement();
-nsXPCComponents_InterfacesByID.prototype.{e6cd620a-edbb-41d2-9e42-9a2ffc8107f3}= new nsIVersionComparator();
-nsXPCComponents_InterfacesByID.prototype.{1b012ade-91bf-11d3-8cd9-0060b0fc14a3}= new nsIAsyncStreamListener();
-nsXPCComponents_InterfacesByID.prototype.{af25c296-aaec-4f7f-8885-dd37a1cc0a13}= new nsIBrowserDOMWindow();
-nsXPCComponents_InterfacesByID.prototype.{75506f89-b504-11d5-a7f2-ca108ab8b6fc}= new nsIDOMXPathException();
-nsXPCComponents_InterfacesByID.prototype.{7294fe9b-14d8-11d5-9882-00c04fa02f40}= new nsISHistory();
-nsXPCComponents_InterfacesByID.prototype.{d2b675a5-f05b-4172-bac2-24cc39ffd398}= new nsIDOMCrypto();
-nsXPCComponents_InterfacesByID.prototype.{db717db4-37e9-42f1-a3b0-2579dd7c3814}= new nsIAccessible();
-nsXPCComponents_InterfacesByID.prototype.{58e330c1-7b48-11d2-98b9-00805f297d89}= new nsITransaction();
-nsXPCComponents_InterfacesByID.prototype.{bce0213c-f70f-488f-b93f-688acca55d63}= new nsIDOMHTMLOptionsCollection();
-nsXPCComponents_InterfacesByID.prototype.{e565d518-4510-407f-a3d9-3b4107549c6d}= new nsIDOMNSEvent();
-nsXPCComponents_InterfacesByID.prototype.{e312267f-8f57-43e8-a904-ff9b5d3f5aef}= new nsIAutoCompleteInput();
-nsXPCComponents_InterfacesByID.prototype.{4ea60761-31d6-491d-9e34-4b53a26c416c}= new nsICertTree();
-nsXPCComponents_InterfacesByID.prototype.{2417cbfe-65ad-48a6-b4b6-eb84db174392}= new nsIComponentRegistrar();
-nsXPCComponents_InterfacesByID.prototype.{68a26506-f947-11d3-8cda-0060b0fc14a3}= new nsIFileChannel();
-nsXPCComponents_InterfacesByID.prototype.{9a7b6ad0-1dd1-11b2-a789-fcfae96356a2}= new jsdIExecutionHook();
-nsXPCComponents_InterfacesByID.prototype.{ccd37136-76e8-47a7-b46c-b8fee8eb0536}= new nsIAutoCompleteInput_MOZILLA_1_8_BRANCH();
-nsXPCComponents_InterfacesByID.prototype.{dc06b890-15a1-45a9-a1a3-f144b42eea29}= new nsIBoxLayoutManager();
-nsXPCComponents_InterfacesByID.prototype.{1b1f232d-e65f-446a-9984-786578526072}= new nsIMicrosummary();
-nsXPCComponents_InterfacesByID.prototype.{638c3848-778b-4851-8ff3-9400f65b8773}= new nsICacheListener();
-nsXPCComponents_InterfacesByID.prototype.{ddc3b490-4a1c-11d3-9890-006008962422}= new nsISupportsPRBool();
-nsXPCComponents_InterfacesByID.prototype.{07b5b93e-113c-4150-863c-d247b003a55d}= new mozIStorageValueArray();
-nsXPCComponents_InterfacesByID.prototype.{087f52a4-8fd8-40ab-ae52-c3e161810141}= new nsIXPInstallManagerUI();
-nsXPCComponents_InterfacesByID.prototype.{46b91d66-28e2-11d4-ab1e-0010830123b4}= new nsIDOMDocumentEvent();
-nsXPCComponents_InterfacesByID.prototype.{f9fa8205-a988-4828-9228-f3332d5475ac}= new nsIDOMXULCommandEvent();
-nsXPCComponents_InterfacesByID.prototype.{a5772d1b-fc63-495e-a169-96e8d3311af0}= new nsIContentSniffer_MOZILLA_1_8_BRANCH();
-nsXPCComponents_InterfacesByID.prototype.{a61ede2a-ef09-11d9-a5ce-001124787b2e}= new nsIXULAppInfo();
-nsXPCComponents_InterfacesByID.prototype.{0a24fed4-1dd2-11b2-a75c-9f8b9a8f9ba7}= new nsIProxiedProtocolHandler();
-nsXPCComponents_InterfacesByID.prototype.{d79dc970-4a1c-11d3-9890-006008962422}= new nsISupportsString();
-nsXPCComponents_InterfacesByID.prototype.{5f914307-5c34-4e1f-8e32-ec749d25b27a}= new nsISafeOutputStream();
-nsXPCComponents_InterfacesByID.prototype.{91fca0e9-99d6-406b-9d78-4c96f11e9ee4}= new inIDeepTreeWalker();
-nsXPCComponents_InterfacesByID.prototype.{7d935d63-6d2a-4600-afb5-9a4f7d68b825}= new nsIDocShellTreeItem();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90bb-15b3-11d2-932e-00805f8add32}= new nsIDOMCSSFontFaceRule();
-nsXPCComponents_InterfacesByID.prototype.{647248fd-f925-4e30-93dd-cde26d7e3a90}= new nsIAlertsService();
-nsXPCComponents_InterfacesByID.prototype.{f2aec680-60a0-49f0-afe5-6cf1d3f15e0d}= new nsICMSMessageErrors();
-nsXPCComponents_InterfacesByID.prototype.{74567534-eb94-4b1c-8f45-389643bfc555}= new nsIPrefBranch2();
-nsXPCComponents_InterfacesByID.prototype.{5e0cf513-5b87-4da2-a5ce-d9ba3a30d540}= new nsIXTFGenericElementWrapper();
-nsXPCComponents_InterfacesByID.prototype.{46226d9b-e398-4106-8d9b-225d4d0589f5}= new inISearchObserver();
-nsXPCComponents_InterfacesByID.prototype.{a52f0322-7f4d-418d-af6d-a7b14abd5cdf}= new nsIDOMSVGAnimatedLength();
-nsXPCComponents_InterfacesByID.prototype.{9bdf1010-3695-4907-95ed-83d0410ec307}= new nsIUTF8StringEnumerator();
-nsXPCComponents_InterfacesByID.prototype.{f5a34f50-1f39-11d6-a627-0010a401eb10}= new nsICookieConsent();
-nsXPCComponents_InterfacesByID.prototype.{067ca872-e947-4bd6-8946-a479cb6ba5dd}= new nsIResProtocolHandler();
-nsXPCComponents_InterfacesByID.prototype.{836d98ec-fee2-4bde-b609-abd5e966eabd}= new nsIServerSocketListener();
-nsXPCComponents_InterfacesByID.prototype.{8dcc630c-9adc-4c60-9954-a004cb45e4a7}= new nsIXTFBindableElement();
-nsXPCComponents_InterfacesByID.prototype.{46820f9b-3088-4046-ab0f-56fdacdc7a82}= new nsIAccessNode();
-nsXPCComponents_InterfacesByID.prototype.{ec4e8f65-5f4a-495e-a5f2-00e18d5e5f96}= new nsIDOMSVGPathSegCurvetoQuadraticAbs();
-nsXPCComponents_InterfacesByID.prototype.{e3cb0ff0-4a1c-11d3-9890-006008962422}= new nsISupportsPRInt64();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90f2-15b3-11d2-932e-00805f8add32}= new nsIDOMNSRange();
-nsXPCComponents_InterfacesByID.prototype.{7994a6e0-e028-11d3-8f5d-0010a4e73d9a}= new nsIXPCComponents_ID();
-nsXPCComponents_InterfacesByID.prototype.{b128a1e6-44f3-4331-8fbe-5af360ff21ee}= new nsITooltipTextProvider();
-nsXPCComponents_InterfacesByID.prototype.{0ea90cf3-2dd9-470f-8f76-f141743c5678}= new nsIExternalHelperAppService();
-nsXPCComponents_InterfacesByID.prototype.{759e475e-0c23-4dbf-b1b8-78c9369e3072}= new nsIFastLoadService();
-nsXPCComponents_InterfacesByID.prototype.{e2c8b03c-a49a-4923-81b0-ba9a86da0e21}= new nsIDOMDOMImplementationLS();
-nsXPCComponents_InterfacesByID.prototype.{a6cf909b-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLDListElement();
-nsXPCComponents_InterfacesByID.prototype.{2555b930-d64f-437e-9be7-0a2cb252c1f4}= new nsIWindowsRegKey();
-nsXPCComponents_InterfacesByID.prototype.{8d9aa9ce-e191-11d8-9f31-000393b6661a}= new nsISchemaLoadListener();
-nsXPCComponents_InterfacesByID.prototype.{93941450-664a-11d3-9151-006008a6edf6}= new nsII18nCompatibility();
-nsXPCComponents_InterfacesByID.prototype.{57e2860b-4266-4a85-bfde-ae39d945b014}= new nsIWebScriptsAccessService();
-nsXPCComponents_InterfacesByID.prototype.{f673ec81-a4b0-11d6-964b-eb5a2bf216fc}= new nsIWindowCreator2();
-nsXPCComponents_InterfacesByID.prototype.{068e20e0-df59-11d8-869f-000393b6661a}= new nsIWebServiceErrorHandler();
-nsXPCComponents_InterfacesByID.prototype.{046bc8a0-8015-11d3-af70-00a024ffc08c}= new nsIBaseWindow();
-nsXPCComponents_InterfacesByID.prototype.{8a1e2c63-af50-4147-af7e-26289dc180dd}= new nsIFastLoadFileControl();
-nsXPCComponents_InterfacesByID.prototype.{decb9cc7-c08f-4ea5-be91-a8fc637ce2d2}= new nsIPrefService();
-nsXPCComponents_InterfacesByID.prototype.{96fc4671-eeb4-4823-9421-e50fb70ad353}= new nsIWritablePropertyBag();
-nsXPCComponents_InterfacesByID.prototype.{64e6f0e1-af99-4bb9-ab25-7e56012f0021}= new nsIDOMSVGException();
-nsXPCComponents_InterfacesByID.prototype.{67ffe6b0-d4db-485c-ba20-5e2e8319b78d}= new nsIMicrosummaryGenerator();
-nsXPCComponents_InterfacesByID.prototype.{b9022da7-e26d-4df3-8c94-b45c4aedda7c}= new nsIDOMSVGPathSeg();
-nsXPCComponents_InterfacesByID.prototype.{3970815e-1dd2-11b2-a475-db4dac6826f1}= new nsISOAPMessage();
-nsXPCComponents_InterfacesByID.prototype.{2f977d56-5485-11d4-87e2-0010a4e75ef2}= new nsIContextMenuInfo();
-nsXPCComponents_InterfacesByID.prototype.{122c91c0-2485-40ba-89c9-b895934921bc}= new nsIHttpProtocolHandler();
-nsXPCComponents_InterfacesByID.prototype.{48ab1fa0-4550-11d3-91cd-00105aa3f7dc}= new nsILocaleService();
-nsXPCComponents_InterfacesByID.prototype.{9eb2c150-1d56-11d3-8221-0060083a0bcf}= new nsIDOMBarProp();
-nsXPCComponents_InterfacesByID.prototype.{048e5ca1-0eb7-4bb1-a9a2-a36f7d4e0e3c}= new nsIProfileStartup();
-nsXPCComponents_InterfacesByID.prototype.{72f8bb14-2810-4f38-8d0d-290c5401f54e}= new nsICookiePromptService();
-nsXPCComponents_InterfacesByID.prototype.{e6273acc-1dd1-11b2-a08b-824ad1b1628d}= new imgILoad();
-nsXPCComponents_InterfacesByID.prototype.{841387c8-72e6-484b-9296-bf6eea80d58a}= new nsIPrintSettingsService();
-nsXPCComponents_InterfacesByID.prototype.{2b19e692-3338-440f-a998-3cb1e8474999}= new nsIDOMSVGPathElement();
-nsXPCComponents_InterfacesByID.prototype.{6c248606-4eae-46fa-9df0-ba58502368eb}= new nsIObjectInputStream();
-nsXPCComponents_InterfacesByID.prototype.{3c14a02b-6f4e-11d5-9b46-000064657374}= new nsISchemaAnyParticle();
-nsXPCComponents_InterfacesByID.prototype.{23bbabd0-1dd2-11b2-86b7-aad68ae7d7e0}= new nsIDirIndex();
-nsXPCComponents_InterfacesByID.prototype.{d0b5d7d3-9565-403d-9fb5-e5089c4567c6}= new nsPIExternalAppLauncher();
-nsXPCComponents_InterfacesByID.prototype.{19b5879f-c125-447c-aaaf-719de3ef221a}= new nsIDOMNSHTMLHRElement();
-nsXPCComponents_InterfacesByID.prototype.{5fd47925-03b2-4318-b55e-c37134124b6a}= new nsIXTFSVGVisual();
-nsXPCComponents_InterfacesByID.prototype.{872f07f3-ed11-47c6-b7cf-246db53379fb}= new nsIFormFillController();
-nsXPCComponents_InterfacesByID.prototype.{67b8f41e-3577-4c8a-b1de-bef51186fe08}= new nsIDOMSVGSVGElement();
-nsXPCComponents_InterfacesByID.prototype.{3d49950e-04f9-4e35-a9a0-ffd51356a674}= new nsIDOMXULMenuListElement();
-nsXPCComponents_InterfacesByID.prototype.{99ec6696-535f-11d4-9a58-000064657374}= new nsISOAPTransportListener();
-nsXPCComponents_InterfacesByID.prototype.{1dd0cb45-aea3-4a52-8b29-01429a542863}= new nsIDictionary();
-nsXPCComponents_InterfacesByID.prototype.{91fdb05e-f1af-4857-a604-45448bc02471}= new nsIDOMNSHTMLElement_MOZILLA_1_8_BRANCH();
-nsXPCComponents_InterfacesByID.prototype.{96a13c30-695a-492c-918b-04ae3edb4e4c}= new nsISyncLoadDOMService();
-nsXPCComponents_InterfacesByID.prototype.{ee753352-1dd1-11b2-b18d-b0b7320a28c3}= new nsIDOMJSPluginArray();
-nsXPCComponents_InterfacesByID.prototype.{d6116970-8034-11d3-9399-00104ba0fd40}= new nsIURL();
-nsXPCComponents_InterfacesByID.prototype.{0ccbcf19-d1b4-489e-984c-cd8c43672bb9}= new nsIDOMConstructor();
-nsXPCComponents_InterfacesByID.prototype.{a076fd12-1dd1-11b2-b19a-d53b5dffaade}= new nsIMultiplexInputStream();
-nsXPCComponents_InterfacesByID.prototype.{b8100c90-73be-11d2-92a5-00105a1b0d64}= new nsIClipboardCommands();
-nsXPCComponents_InterfacesByID.prototype.{a711250b-47da-4f16-a1fd-593de16375a1}= new nsIWebServiceProxyCreationListener();
-nsXPCComponents_InterfacesByID.prototype.{028e0e6e-8b01-11d3-aae7-0010838a3123}= new nsIDOMKeyEvent();
-nsXPCComponents_InterfacesByID.prototype.{8712a243-5539-447c-9f47-8653f40c3a09}= new nsIKeygenThread();
-nsXPCComponents_InterfacesByID.prototype.{9dd9006a-4e5e-4a80-ac3d-007fb7335ca4}= new jsdIDebuggerService();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9084-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLDocument();
-nsXPCComponents_InterfacesByID.prototype.{3c14a025-6f4e-11d5-9b46-000064657374}= new nsISchemaListType();
-nsXPCComponents_InterfacesByID.prototype.{e0d39e48-1dd1-11b2-81bd-9a0c117f0736}= new inICSSValueSearch();
-nsXPCComponents_InterfacesByID.prototype.{8781fc88-355f-4439-881f-6504a0a1ceb6}= new nsIAccessibleDocument();
-nsXPCComponents_InterfacesByID.prototype.{163f3437-1d69-4db7-9ce1-fd420fba8219}= new nsIDocNavStartProgressCallback();
-nsXPCComponents_InterfacesByID.prototype.{19855dff-3248-4902-b196-93ee4c477880}= new nsIPrintStatusFeedback();
-nsXPCComponents_InterfacesByID.prototype.{2f977d42-5485-11d4-87e2-0010a4e75ef2}= new nsIProfileInternal();
-nsXPCComponents_InterfacesByID.prototype.{0577744c-c1d2-47f2-8bcc-ce7a9e5a88fc}= new nsIExceptionProvider();
-nsXPCComponents_InterfacesByID.prototype.{4b4f8316-1dd2-11b2-b265-9a857376d159}= new nsIDOMJSNavigator();
-nsXPCComponents_InterfacesByID.prototype.{2848ab92-d912-11d9-89f7-001124787b2e}= new nsIXULRuntime();
-nsXPCComponents_InterfacesByID.prototype.{3e9c01a7-de97-4c3b-8294-b4bd9d7056d1}= new nsIDOM3EventTarget();
-nsXPCComponents_InterfacesByID.prototype.{3e333e20-b190-42d8-b993-d5fa435e46c4}= new nsIJVMConfig();
-nsXPCComponents_InterfacesByID.prototype.{75506f83-b504-11d5-a7f2-ca108ab8b6fc}= new nsIDOMXPathNSResolver();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90aa-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLAnchorElement();
-nsXPCComponents_InterfacesByID.prototype.{3476df52-1dd2-11b2-b928-925d89b33bc0}= new nsIFTPChannel();
-nsXPCComponents_InterfacesByID.prototype.{8f09fa84-39b9-4dca-9b2f-db0eeb186286}= new nsIDOMCSSValueList();
-nsXPCComponents_InterfacesByID.prototype.{a4c253ab-09b9-4fb0-a61d-600621e690e4}= new nsIShellService();
-nsXPCComponents_InterfacesByID.prototype.{3c14a02d-6f4e-11d5-9b46-000064657374}= new nsISchemaAttributeComponent();
-nsXPCComponents_InterfacesByID.prototype.{1b86a0a6-1dd2-11b2-a85c-e3f42b4dcceb}= new nsIJSConsoleService();
-nsXPCComponents_InterfacesByID.prototype.{94490b3f-f094-418e-b1b9-73878d29bff3}= new nsIToolkitChromeRegistry();
-nsXPCComponents_InterfacesByID.prototype.{7c094410-4558-11d3-91cd-00105aa3f7dc}= new nsILocaleDefinition();
-nsXPCComponents_InterfacesByID.prototype.{f424abd3-32b4-456c-9f45-b7e3376cb0d1}= new nsIProtocolProxyFilter();
-nsXPCComponents_InterfacesByID.prototype.{5215291e-fa0a-40c2-8ce7-e86cd1a1d3fa}= new nsIFeedElementBase();
-nsXPCComponents_InterfacesByID.prototype.{99ec6691-535f-11d4-9a58-000064657374}= new nsISOAPResponse();
-nsXPCComponents_InterfacesByID.prototype.{4fe04d6d-4b66-4023-a0bc-b43ce68b3e15}= new nsIFormSigningDialog();
-nsXPCComponents_InterfacesByID.prototype.{b6d50784-1dd1-11b2-a932-882246c6fe45}= new jsdIStackFrame();
-nsXPCComponents_InterfacesByID.prototype.{444d0276-3302-4d35-a74e-25c4e9c483c9}= new nsIXTFElementWrapper();
-nsXPCComponents_InterfacesByID.prototype.{376da416-e6b3-4bac-98f3-6aa408742751}= new nsITypeAheadFind();
-nsXPCComponents_InterfacesByID.prototype.{f5d1ec9e-4d30-11d8-8053-da0cc7df1f20}= new nsIInlineSpellChecker();
-nsXPCComponents_InterfacesByID.prototype.{571f3ff1-6a97-4155-90af-e18b139dc0c1}= new nsIAptanaDebugService();
-nsXPCComponents_InterfacesByID.prototype.{1f280341-30f4-4009-bb0d-a78f2936d1fb}= new nsIDownloadManager();
-nsXPCComponents_InterfacesByID.prototype.{a42619df-0a1c-46fb-8154-0e9b8f8f1ea8}= new nsIProxyAutoConfig();
-nsXPCComponents_InterfacesByID.prototype.{15a15329-00de-44e8-ab06-0d0b0d43dc5b}= new nsIAsyncInputStream();
-nsXPCComponents_InterfacesByID.prototype.{2f977d43-5485-11d4-87e2-0010a4e75ef2}= new nsIProfileChangeStatus();
-nsXPCComponents_InterfacesByID.prototype.{791eafa0-b9e6-11d1-8031-006008159b5a}= new nsISupportsArray();
-nsXPCComponents_InterfacesByID.prototype.{7422b090-4a86-4407-972e-75468a625388}= new nsIToolkitProfile();
-nsXPCComponents_InterfacesByID.prototype.{9b0c2ed7-111c-4824-adf9-ef0da6dad371}= new nsIDOMMediaList();
-nsXPCComponents_InterfacesByID.prototype.{4ca27b6b-a674-4b3d-ab30-d21e2da2dffb}= new nsIUrlClassifierCallback();
-nsXPCComponents_InterfacesByID.prototype.{dd4e0a6a-210f-419a-ad85-40e8543b9465}= new nsIWebBrowserPersist();
-nsXPCComponents_InterfacesByID.prototype.{38e3066c-1dd2-11b2-9b59-8be515c1ee3f}= new nsIDirIndexParser();
-nsXPCComponents_InterfacesByID.prototype.{ea604e90-40ba-11d5-90bb-0010a4e73d9a}= new nsIProgrammingLanguage();
-nsXPCComponents_InterfacesByID.prototype.{9da147a7-5854-49e3-a397-22ecdd93e96d}= new nsIXULTemplateBuilder();
-nsXPCComponents_InterfacesByID.prototype.{9f620be4-e535-11d6-b254-00039310a47a}= new nsISemanticUnitScanner();
-nsXPCComponents_InterfacesByID.prototype.{1d507cd6-1630-4710-af1b-4012dbcc514c}= new nsIStreamCipher();
-nsXPCComponents_InterfacesByID.prototype.{5c29a76c-3489-48fe-b9ea-ea0f5b196dff}= new nsIDOMSVGTextPathElement();
-nsXPCComponents_InterfacesByID.prototype.{da83b2ec-8264-4410-8496-ada3acd2ae42}= new nsIDOMNSHTMLElement();
-nsXPCComponents_InterfacesByID.prototype.{3d1b15b0-93b4-11d1-895b-006008911b81}= new nsIAtom();
-nsXPCComponents_InterfacesByID.prototype.{b81f6e37-1842-4534-a546-1ab86e59a3c6}= new nsIDOMSVGTransformable();
-nsXPCComponents_InterfacesByID.prototype.{ad385286-cbc4-11d2-8cca-0060b0fc14a3}= new nsIEnumerator();
-nsXPCComponents_InterfacesByID.prototype.{c8c0a080-0868-11d3-915f-d9d889d48e3c}= new nsIFile();
-nsXPCComponents_InterfacesByID.prototype.{82c72eca-9886-473e-94cd-9de5694b3f88}= new nsIDOMXULMultiSelectControlElement();
-nsXPCComponents_InterfacesByID.prototype.{ca066b44-9ddf-11d3-bccc-0060b0fc76bd}= new nsIDOMNSHTMLTextAreaElement();
-nsXPCComponents_InterfacesByID.prototype.{7fb719b3-d804-4964-9596-77cf924ee314}= new nsIContextMenuListener2();
-nsXPCComponents_InterfacesByID.prototype.{65455132-b96a-40ec-adea-52fa22b1028c}= new nsIDOMWindow2();
-nsXPCComponents_InterfacesByID.prototype.{68389281-f6d0-4533-841d-344a2018140c}= new nsIChromeRegistry();
-nsXPCComponents_InterfacesByID.prototype.{a6cf907d-15b3-11d2-932e-00805f8add32}= new nsIDOMNodeList();
-nsXPCComponents_InterfacesByID.prototype.{560a64ce-6d66-44db-b38e-864469c52d03}= new nsIInputStreamChannel();
-nsXPCComponents_InterfacesByID.prototype.{fc33ffd6-1dd1-11b2-8750-fa62430a38b4}= new nsISOAPEncoder();
-nsXPCComponents_InterfacesByID.prototype.{fd9c9871-23fd-48eb-a65b-3842e9b0acbd}= new nsIDOMSVGForeignObjectElement();
-nsXPCComponents_InterfacesByID.prototype.{176afb41-00a4-11d3-9f2a-00400553eef0}= new nsIEventQueue();
-nsXPCComponents_InterfacesByID.prototype.{6be5e380-6886-11d3-9382-00104ba0fd40}= new nsIThread();
-nsXPCComponents_InterfacesByID.prototype.{d44fe6d4-ee35-4789-886a-eb8f0554d04e}= new nsIIOService2();
-nsXPCComponents_InterfacesByID.prototype.{14b3b669-3414-4548-aa03-edf257d889c8}= new nsIEditorBoxObject();
-nsXPCComponents_InterfacesByID.prototype.{877ace25-8bc5-452a-8586-9c1cf2871994}= new nsIUpdateChecker();
-nsXPCComponents_InterfacesByID.prototype.{8268d474-efbf-494f-a152-e8a8616f4e52}= new nsIStreamTransportService();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90b6-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLTableRowElement();
-nsXPCComponents_InterfacesByID.prototype.{3f0e3eb0-1dd2-11b2-9605-be5b8e76cf4b}= new nsIAccessibleProvider();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9095-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLButtonElement();
-nsXPCComponents_InterfacesByID.prototype.{993d2efc-a768-11d3-bccd-0060b0fc76bd}= new nsIDOMNSHTMLInputElement();
-nsXPCComponents_InterfacesByID.prototype.{ff76f0c7-caaf-4e64-8896-154348322696}= new nsIDownload_MOZILLA_1_8_BRANCH();
-nsXPCComponents_InterfacesByID.prototype.{23c51569-e9a1-4a92-adeb-3723db82ef7c}= new nsITransfer();
-nsXPCComponents_InterfacesByID.prototype.{86d02f0e-219b-4cfc-9c88-bd98d2cce0b8}= new nsIWebBrowserStream();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90b4-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLTableColElement();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90c0-15b3-11d2-932e-00805f8add32}= new nsIDOMCSSRuleList();
-nsXPCComponents_InterfacesByID.prototype.{7007113c-e06b-4256-8530-4884d5d769c6}= new nsIDOMSVGPathSegCurvetoQuadraticRel();
-nsXPCComponents_InterfacesByID.prototype.{b1b0b493-3369-44e0-878d-f7c56d937680}= new imgIEncoder_MOZILLA_1_8_BRANCH();
-nsXPCComponents_InterfacesByID.prototype.{4a23cb1f-cf1e-437e-9524-8756f7928b2e}= new nsIDOMSVGTSpanElement();
-nsXPCComponents_InterfacesByID.prototype.{47b82b60-a36f-4167-8072-6f421151ed50}= new nsIControllerContext();
-nsXPCComponents_InterfacesByID.prototype.{d9277fa4-7d51-4175-bd4e-546c080a83bf}= new nsIUrlClassifierStreamUpdater();
-nsXPCComponents_InterfacesByID.prototype.{0c3f45a4-e6d0-44e7-a2f8-d128ecf1db9b}= new nsIDOMSVGClipPathElement();
-nsXPCComponents_InterfacesByID.prototype.{a6cf908c-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLIsIndexElement();
-nsXPCComponents_InterfacesByID.prototype.{1deea160-c661-11d5-84cc-0010a4e0c706}= new nsIExpatSink();
-nsXPCComponents_InterfacesByID.prototype.{f15398a0-8018-11d3-af70-00a024ffc08c}= new nsIWebBrowserSetup();
-nsXPCComponents_InterfacesByID.prototype.{8f755c44-1dd2-11b2-a613-91117453fa95}= new nsISOCKSSocketInfo();
-nsXPCComponents_InterfacesByID.prototype.{df31c120-ded6-11d1-bd85-00805f8ae3f4}= new nsIDOMEventListener();
-nsXPCComponents_InterfacesByID.prototype.{28f16d80-157b-11d5-a542-0010a401eb10}= new nsIPermission();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9125-15b3-11d2-932e-00805f8add32}= new nsIEditorObserver();
-nsXPCComponents_InterfacesByID.prototype.{9228afa2-187c-4feb-9228-5108e640ca33}= new nsIScriptableMethodInfo();
-nsXPCComponents_InterfacesByID.prototype.{f4d74511-2b2d-4a14-a3e4-a392ac5ac3ff}= new nsIScriptSecurityManager();
-nsXPCComponents_InterfacesByID.prototype.{33347bee-6620-4841-8152-36091ae80c7e}= new nsIDOMEventGroup();
-nsXPCComponents_InterfacesByID.prototype.{6ca37983-16aa-4013-b753-77b770ff93d6}= new nsIURIFixup_MOZILLA_1_8_BRANCH();
-nsXPCComponents_InterfacesByID.prototype.{44b78386-1dd2-11b2-9ad2-e4eee2ca1916}= new nsITooltipListener();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9081-15b3-11d2-932e-00805f8add32}= new nsIDOMStyleSheetList();
-nsXPCComponents_InterfacesByID.prototype.{59364ec4-faf1-460f-bf58-e6a6a2769a3a}= new nsIDOMSVGNumberList();
-nsXPCComponents_InterfacesByID.prototype.{4f6b5e00-0c36-11d5-a535-0010a401eb10}= new nsIPermissionManager();
-nsXPCComponents_InterfacesByID.prototype.{dc5ba787-b648-4b01-a8e7-b293ffb044ef}= new nsIDOMNSFeatureFactory();
-nsXPCComponents_InterfacesByID.prototype.{5b61356d-8411-48c0-863f-7b038eb0e4a8}= new nsIUpdate_MOZILLA_1_8_BRANCH();
-nsXPCComponents_InterfacesByID.prototype.{23c26a56-adff-440c-8caf-95c2dc2e399b}= new nsISAXLexicalHandler();
-nsXPCComponents_InterfacesByID.prototype.{66710f97-a4dd-49f1-a906-fe0ebc5924c0}= new nsISMimeCert();
-nsXPCComponents_InterfacesByID.prototype.{4350fb73-9305-41df-a669-11d26222d420}= new nsISidebarExternal();
-nsXPCComponents_InterfacesByID.prototype.{a685997e-fb47-47c0-a34c-5da11cb66537}= new nsIDOMSVGPathSegArcRel();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90dc-15b3-11d2-932e-00805f8add32}= new nsIEventQueueService();
-nsXPCComponents_InterfacesByID.prototype.{33b87f70-7a9c-11d3-915c-006008a6edf6}= new nsISaveAsCharset();
-nsXPCComponents_InterfacesByID.prototype.{14b4394a-1dd2-11b2-b4fd-ba4a194fe97e}= new nsICMSSecureMessage();
-nsXPCComponents_InterfacesByID.prototype.{d85a17c0-aa7c-11d2-9b8c-00805f8a16d9}= new nsIStringBundleService();
-nsXPCComponents_InterfacesByID.prototype.{1d5b5b94-dc47-4050-93b7-ac092e383cad}= new nsIXULOverlayProvider();
-nsXPCComponents_InterfacesByID.prototype.{df41474c-a4f8-4ec3-ae79-4342e6f56d8e}= new nsIDOMSVGTransformList();
-nsXPCComponents_InterfacesByID.prototype.{a6cf910a-15b3-11d2-932e-00805f8add32}= new nsIDOMDOMException();
-nsXPCComponents_InterfacesByID.prototype.{1ea19c6c-c59f-4fd7-9fc7-151e946baca0}= new nsIScriptableUnicodeConverter();
-nsXPCComponents_InterfacesByID.prototype.{715577db-d9c5-464a-a32e-0a40c29b22d4}= new nsIFastLoadFileIO();
-nsXPCComponents_InterfacesByID.prototype.{b0132cc0-3786-4557-9874-910d7def5f93}= new nsICollation();
-nsXPCComponents_InterfacesByID.prototype.{a88e5a60-205a-4bb1-94e1-2628daf51eae}= new nsIComponentManager();
-nsXPCComponents_InterfacesByID.prototype.{8307b8f2-08ea-45b8-96bf-b1dc7688fe3b}= new nsIBrowserSearchService();
-nsXPCComponents_InterfacesByID.prototype.{3fbff728-2d20-11d3-aef3-00108300ff91}= new nsIXSLTProcessorObsolete();
-nsXPCComponents_InterfacesByID.prototype.{138ad1b2-c694-41cc-b201-333ce936d8b8}= new nsIUUIDGenerator();
-nsXPCComponents_InterfacesByID.prototype.{9f82c404-1c7b-11d5-a73c-eca43ca836fc}= new nsIControllerCommandGroup();
-nsXPCComponents_InterfacesByID.prototype.{a6cf906d-15b3-11d2-932e-00805f8add32}= new nsIDOMLocation();
-nsXPCComponents_InterfacesByID.prototype.{933355f6-1dd2-11b2-a9b0-d335b9e35983}= new nsITXTToHTMLConv();
-nsXPCComponents_InterfacesByID.prototype.{11852a90-20de-11db-a98b-0800200c9a66}= new nsISessionStore();
-nsXPCComponents_InterfacesByID.prototype.{237f85a2-1dd2-11b2-94af-8122582fc45e}= new nsIRDFBlob();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9087-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLHeadElement();
-nsXPCComponents_InterfacesByID.prototype.{5bf039c0-e028-11d3-8f5d-0010a4e73d9a}= new nsIXPCComponents_Exception();
-nsXPCComponents_InterfacesByID.prototype.{114e1142-1dd2-11b2-ac26-b6db19d9184a}= new nsIASN1PrintableItem();
-nsXPCComponents_InterfacesByID.prototype.{4805e682-49b9-11d3-9ce4-ed60bd6cb5bc}= new nsIEditorStyleSheets();
-nsXPCComponents_InterfacesByID.prototype.{c914d7a4-63b3-4d40-943f-91a3c7ab0d4d}= new nsIDOMNSHTMLButtonElement();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90af-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLMapElement();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90a5-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLBRElement();
-nsXPCComponents_InterfacesByID.prototype.{b32523a0-4ac0-11d3-baea-00805f8a5dd7}= new nsISupportsDouble();
-nsXPCComponents_InterfacesByID.prototype.{a9967200-f95e-45c2-beb3-9b060d874bfd}= new nsIProtocolProxyCallback();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9088-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLLinkElement();
-nsXPCComponents_InterfacesByID.prototype.{bfd05261-834c-11d2-8eac-00805f29f371}= new nsIXULSortService();
-nsXPCComponents_InterfacesByID.prototype.{1181207b-2337-41a7-8ddf-fbe96461256f}= new nsIDOMNSHTMLOptionCollection();
-nsXPCComponents_InterfacesByID.prototype.{06b31b15-ebf5-4e74-a0e2-6bc0a18a3969}= new nsIXULTreeBuilder();
-nsXPCComponents_InterfacesByID.prototype.{98575762-a936-4ecf-a226-b74c3a2981b4}= new nsIDOMSVGNumber();
-nsXPCComponents_InterfacesByID.prototype.{a41661d4-1417-11d5-9882-00c04fa02f40}= new nsIHistoryEntry();
-nsXPCComponents_InterfacesByID.prototype.{f73f4d77-a6fb-4ab5-b41e-15045a0cc6ff}= new nsIDOMXULImageElement();
-nsXPCComponents_InterfacesByID.prototype.{d26b2e2e-1dd1-11b2-88f3-8545a7ba7949}= new nsIFileURL();
-nsXPCComponents_InterfacesByID.prototype.{5060b801-340e-11d5-be5b-b3e063ec6a3c}= new nsIFindService();
-nsXPCComponents_InterfacesByID.prototype.{6c16a810-a37d-4859-b557-337341631aee}= new nsIDOMLSLoadEvent();
-nsXPCComponents_InterfacesByID.prototype.{61618a52-ea91-4277-a4ab-ebe10d7b9a64}= new nsINetworkLinkService();
-nsXPCComponents_InterfacesByID.prototype.{44073a98-1dd2-11b2-8600-d0ae854dbe93}= new nsIClipboardHelper();
-nsXPCComponents_InterfacesByID.prototype.{a22ad7b0-ca86-11d1-a9a4-00805f8a7ac4}= new nsIPref();
-nsXPCComponents_InterfacesByID.prototype.{570f39d1-efd0-11d3-b093-00a024ffc08c}= new nsIWebProgressListener();
-nsXPCComponents_InterfacesByID.prototype.{8b5314bb-db01-11d2-96ce-0060b0fb9956}= new nsIDragService();
-nsXPCComponents_InterfacesByID.prototype.{4ecdf254-a21e-47b0-8d72-55da8208299f}= new nsIDOMNSDocumentStyle();
-nsXPCComponents_InterfacesByID.prototype.{a6cf908d-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLStyleElement();
-nsXPCComponents_InterfacesByID.prototype.{96b2f5ae-4334-11d5-ba27-00108303b117}= new nsIOCSPResponder();
-nsXPCComponents_InterfacesByID.prototype.{21035ee0-4556-11d3-91cd-00105aa3f7dc}= new nsILocale();
-nsXPCComponents_InterfacesByID.prototype.{7f952767-427f-402b-8114-f80c95d1980d}= new nsIUpdateItem();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9102-15b3-11d2-932e-00805f8add32}= new nsICiter();
-nsXPCComponents_InterfacesByID.prototype.{3c14a027-6f4e-11d5-9b46-000064657374}= new nsISchemaRestrictionType();
-nsXPCComponents_InterfacesByID.prototype.{e06dfaea-92d5-47f7-a800-c5f5404d8771}= new nsIXSLTException();
-nsXPCComponents_InterfacesByID.prototype.{9e811188-6a5b-4d96-a92d-1bac66a41898}= new nsIFormHistoryImporter();
-nsXPCComponents_InterfacesByID.prototype.{4d01f225-6cc5-11da-be43-001422106990}= new nsISAXDTDHandler();
-nsXPCComponents_InterfacesByID.prototype.{3c9b532e-db84-4ecf-aa6a-4d38a9c4c5f0}= new nsIRequestObserverProxy();
-nsXPCComponents_InterfacesByID.prototype.{12d3b664-1dd2-11b2-a7cf-ceee7e90f396}= new nsIDOMSVGDocument();
-nsXPCComponents_InterfacesByID.prototype.{29fb2a18-1dd2-11b2-8dd9-a6fd5d5ad12f}= new nsIDOM3Node();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9099-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLUListElement();
-nsXPCComponents_InterfacesByID.prototype.{0a3928d2-76c8-4c25-86a9-9c005ad832f4}= new nsIActiveXSecurityPolicy();
-nsXPCComponents_InterfacesByID.prototype.{b43a461f-1bcf-4329-820b-66e48c979e14}= new nsIUnicodeNormalizer();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90ac-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLObjectElement();
-nsXPCComponents_InterfacesByID.prototype.{3e51f40b-b4b0-4e60-ac45-6c63477ebe41}= new nsIXULChromeRegistry();
-nsXPCComponents_InterfacesByID.prototype.{d3992637-f474-4b65-83ed-323fe69c60d2}= new nsIXPointerResult();
-nsXPCComponents_InterfacesByID.prototype.{16da46c0-208d-11d4-8a7c-006008c844c3}= new nsIDOMCRMFObject();
-nsXPCComponents_InterfacesByID.prototype.{07a22cc0-0ce5-11d3-9331-00104ba0fd40}= new nsIURI();
-nsXPCComponents_InterfacesByID.prototype.{ec2da3ef-5a99-49ed-aaef-b5af916c14ac}= new nsIDOMSVGMatrix();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90b2-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLTableElement();
-nsXPCComponents_InterfacesByID.prototype.{13aed1cc-a505-45d5-bbc2-0052c6bf200f}= new nsIDOMSVGEvent();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9077-15b3-11d2-932e-00805f8add32}= new nsIDOMDocumentType();
-nsXPCComponents_InterfacesByID.prototype.{16141376-7cc3-447d-a961-b5d8b51b9b7e}= new nsIQTScriptablePlugin();
-nsXPCComponents_InterfacesByID.prototype.{8a157a4f-a81e-489f-baf2-bc8970d60472}= new nsIDOMWindowUtils();
-nsXPCComponents_InterfacesByID.prototype.{c32390a8-2bd8-4d1b-bf9f-1b1d0a944d19}= new nsIDOMXULPopupElement();
-nsXPCComponents_InterfacesByID.prototype.{3c14a028-6f4e-11d5-9b46-000064657374}= new nsISchemaComplexType();
-nsXPCComponents_InterfacesByID.prototype.{ddd6790a-1dd1-11b2-a804-b522643903b9}= new nsIOSChromeItem();
-nsXPCComponents_InterfacesByID.prototype.{e74b55ef-1c44-4a40-9f51-a2196b11283a}= new nsIDOMSVGPathSegLinetoHorizontalAbs();
-nsXPCComponents_InterfacesByID.prototype.{f76c0901-437a-11d3-b7a0-e35db351b4bc}= new nsIDialogParamBlock();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9093-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLInputElement();
-nsXPCComponents_InterfacesByID.prototype.{ccf705f6-1dd1-11b2-82ef-e18eccf7f7ec}= new imgIRequest();
-nsXPCComponents_InterfacesByID.prototype.{3478b6b0-3875-11d4-94ef-0020183bf181}= new nsIContextMenuListener();
-nsXPCComponents_InterfacesByID.prototype.{efc9d00b-231c-4feb-852c-ac017266a415}= new nsIExceptionManager();
-nsXPCComponents_InterfacesByID.prototype.{6dd8f185-ceb8-4878-8e38-2d13edc2d079}= new nsITimerInternal();
-nsXPCComponents_InterfacesByID.prototype.{99ec6695-535f-11d4-9a58-000064657374}= new nsISOAPTransport();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9073-15b3-11d2-932e-00805f8add32}= new nsIDOMComment();
-nsXPCComponents_InterfacesByID.prototype.{5d41a440-8e37-11d2-8059-00600811a9c3}= new nsIRegistry();
-nsXPCComponents_InterfacesByID.prototype.{64355793-988d-40a5-ba8e-fcde78cac631}= new nsIHelperAppLauncherDialog();
-nsXPCComponents_InterfacesByID.prototype.{b8816e56-1dd1-11b2-81dc-8ba99a833d9e}= new jsdIProperty();
-nsXPCComponents_InterfacesByID.prototype.{011c3190-1434-11d6-a618-0010a401eb10}= new nsICookieService();
-nsXPCComponents_InterfacesByID.prototype.{2b04860f-4017-40f6-8a57-784a1e35077a}= new nsIRDFInferDataSource();
-nsXPCComponents_InterfacesByID.prototype.{0f89f2a4-b168-4602-90f5-1874418c0a6a}= new nsIDOMSVGCircleElement();
-nsXPCComponents_InterfacesByID.prototype.{0811d434-3d90-4eec-8fa2-066dde037917}= new nsIDOMSVGPathSegLinetoVerticalAbs();
-nsXPCComponents_InterfacesByID.prototype.{6dcf9030-a49f-11d5-910d-0010a4e73d9a}= new nsIProperty();
-nsXPCComponents_InterfacesByID.prototype.{37f1ab73-f224-44b1-82f0-d2834ab1cec0}= new nsIDocShellTreeNode();
-nsXPCComponents_InterfacesByID.prototype.{7bc08970-9e6c-11d3-afb2-00a024ffc08c}= new nsIChromeEventHandler();
-nsXPCComponents_InterfacesByID.prototype.{3c3f3e30-ebd5-11da-8ad9-0800200c9a66}= new nsIConsoleService_MOZILLA_1_8_BRANCH();
-nsXPCComponents_InterfacesByID.prototype.{5860bccd-f86b-47f8-86c1-cb1245b6a8e1}= new nsIDOMSVGPathSegCurvetoCubicSmoothRel();
-nsXPCComponents_InterfacesByID.prototype.{19fe78cc-65ff-4b1d-a5d7-9ea89692cec6}= new nsIDOMCSSCharsetRule();
-nsXPCComponents_InterfacesByID.prototype.{933cb52a-2864-4a40-8678-a2d0851b0ef4}= new nsIPrefetchService();
-nsXPCComponents_InterfacesByID.prototype.{ca7a3a93-822f-4cdf-8cb4-c52d16b9afc7}= new nsIAccessibleWin32Object();
-nsXPCComponents_InterfacesByID.prototype.{92c898ac-5fde-4b99-87b3-5d486422094b}= new nsIObjectOutputStream();
-nsXPCComponents_InterfacesByID.prototype.{ca45959e-f1da-46f6-af19-1ecdc322285a}= new nsIDOMSVGAnimatedRect();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9096-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLLabelElement();
-nsXPCComponents_InterfacesByID.prototype.{4ad136fa-83af-4a22-a76e-503642c0f4a8}= new nsIResumableChannel();
-nsXPCComponents_InterfacesByID.prototype.{501209d3-7edf-437d-9948-3c6d1c08ef7f}= new nsIScriptLoaderObserver();
-nsXPCComponents_InterfacesByID.prototype.{f3764874-ed7e-4873-883c-11d67a4e3638}= new nsIHttpChannelInternal();
-nsXPCComponents_InterfacesByID.prototype.{04971e14-d6b3-4ada-8cbb-c3a13842b349}= new nsICollationFactory();
-nsXPCComponents_InterfacesByID.prototype.{82d8f400-5bde-11d3-b033-b27a62766bbc}= new nsIScriptableRegion();
-nsXPCComponents_InterfacesByID.prototype.{88bea60f-9b5d-4b39-b08b-1c3a278782c6}= new jsdINestCallback();
-nsXPCComponents_InterfacesByID.prototype.{52f1be88-84f7-4f7f-b31c-062afe7df15d}= new nsPIAccessible();
-nsXPCComponents_InterfacesByID.prototype.{3c14a024-6f4e-11d5-9b46-000064657374}= new nsISchemaBuiltinType();
-nsXPCComponents_InterfacesByID.prototype.{548a0672-628f-402b-bb30-da6702111a58}= new nsIAptanaBreakpointProperties();
-nsXPCComponents_InterfacesByID.prototype.{5489519f-e124-4be2-80af-ec2abebc450a}= new nsIAptanaDebugger();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90ce-15b3-11d2-932e-00805f8add32}= new nsIDOMRange();
-nsXPCComponents_InterfacesByID.prototype.{60fbf998-e021-4f81-bdf0-749cc651e221}= new nsIEditor_MOZILLA_1_8_BRANCH();
-nsXPCComponents_InterfacesByID.prototype.{fde7c970-0b4e-49f4-b1eb-974ae6c96336}= new nsIListBoxObject();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9072-15b3-11d2-932e-00805f8add32}= new nsIDOMCharacterData();
-nsXPCComponents_InterfacesByID.prototype.{2e0e9ea1-72ab-4d9e-bdeb-ca64e1abeba4}= new nsIDOM3Document();
-nsXPCComponents_InterfacesByID.prototype.{c1b1f426-7e83-4759-9f88-0e1b17f49366}= new nsIByteRangeRequest();
-nsXPCComponents_InterfacesByID.prototype.{114744d9-c369-456e-b55a-52fe52880d2d}= new nsIArray();
-nsXPCComponents_InterfacesByID.prototype.{1acdb2ba-1dd2-11b2-95bc-9542495d2569}= new nsIDOMDocumentView();
-nsXPCComponents_InterfacesByID.prototype.{ebce86bd-1568-4a34-a808-9ccf9cde8087}= new rdfIDataSource();
-nsXPCComponents_InterfacesByID.prototype.{254bb2e0-6439-11d4-8fe0-0010a4e73d9a}= new nsIXPCWrappedJSObjectGetter();
-nsXPCComponents_InterfacesByID.prototype.{8792d77e-1dd2-11b2-ac7f-9bc9be4f2916}= new mozIJSSubScriptLoader();
-nsXPCComponents_InterfacesByID.prototype.{6192dcbe-1dd2-11b2-81ad-a4597614c4ae}= new nsISOAPAttachments();
-nsXPCComponents_InterfacesByID.prototype.{c2d4f296-ee60-11d4-998b-00b0d02354a0}= new nsIPKCS11Slot();
-nsXPCComponents_InterfacesByID.prototype.{31f7f4ae-6916-4f2d-a81e-926a4e3022ee}= new nsIDirectoryEnumerator();
-nsXPCComponents_InterfacesByID.prototype.{af059da0-c85b-40ec-af07-ae4bfdc192cc}= new nsIMutableArray();
-nsXPCComponents_InterfacesByID.prototype.{87d87900-f102-4a15-b345-7b77a49d2df2}= new nsIWebServiceCallContext();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90c4-15b3-11d2-932e-00805f8add32}= new nsIDOMNSUIEvent();
-nsXPCComponents_InterfacesByID.prototype.{7d89ceb8-f985-4095-8f24-421910704e5e}= new nsIDOMSVGMarkerElement();
-nsXPCComponents_InterfacesByID.prototype.{c987629e-6370-45f5-86ec-aa765fa861cd}= new nsIDOMXULLabelElement();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90c3-15b3-11d2-932e-00805f8add32}= new nsIDOMUIEvent();
-nsXPCComponents_InterfacesByID.prototype.{fb9686a7-719a-49dc-9107-10dea5739341}= new nsIRDFResource();
-nsXPCComponents_InterfacesByID.prototype.{10231b04-7482-4960-bada-3dced0d586fc}= new nsIDOMSVGLength();
-nsXPCComponents_InterfacesByID.prototype.{577cb745-8caf-11d3-aaef-00805f8a4905}= new nsISidebar();
-nsXPCComponents_InterfacesByID.prototype.{7ae42f27-4799-4e7c-86c6-e1dae6ad5157}= new nsIDOMSVGPreserveAspectRatio();
-nsXPCComponents_InterfacesByID.prototype.{3bdb8f01-f141-11d4-a73c-fba4aba8a3fc}= new nsIEditorDocShell();
-nsXPCComponents_InterfacesByID.prototype.{20e790a2-76c6-462d-851a-22ab6cbbe48b}= new nsIProgressDialog();
-nsXPCComponents_InterfacesByID.prototype.{4660c1a1-be2d-4c78-9baf-c22984176c28}= new nsIURIChecker();
-nsXPCComponents_InterfacesByID.prototype.{cc742da2-9c25-4d04-96cd-da407d676c6d}= new nsIAccessibleTreeCache();
-nsXPCComponents_InterfacesByID.prototype.{eaaf61d6-1dd1-11b2-bc6e-8fc96480f20d}= new nsIConsoleListener();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90c7-15b3-11d2-932e-00805f8add32}= new nsIDOMNSHTMLImageElement();
-nsXPCComponents_InterfacesByID.prototype.{3d9f4973-dd2e-48f5-b5f7-2634e09eadd9}= new nsIDOMDocumentStyle();
-nsXPCComponents_InterfacesByID.prototype.{ebfd5de5-713c-40c0-ad7c-f095117fa580}= new nsIFeedProgressListener();
-nsXPCComponents_InterfacesByID.prototype.{b2a34010-3983-11d3-9888-006008962422}= new nsIXPCException();
-nsXPCComponents_InterfacesByID.prototype.{6f30b676-3710-4c2c-80b1-0395fb26516e}= new nsIWebPageDescriptor();
-nsXPCComponents_InterfacesByID.prototype.{4b31f4ed-9424-4710-b946-79b7e33cf3a8}= new nsIKeyObject();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90a3-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLQuoteElement();
-nsXPCComponents_InterfacesByID.prototype.{bb961ae1-7432-11d4-b77a-00104b4119f8}= new nsIBidiKeyboard();
-nsXPCComponents_InterfacesByID.prototype.{bcd54a63-34d9-468c-9a55-0fb5d2d8c677}= new nsIXPCComponents_Utils();
-nsXPCComponents_InterfacesByID.prototype.{6f704e69-a5fb-11d9-8ce8-0011246ecd24}= new nsPISocketTransportService();
-nsXPCComponents_InterfacesByID.prototype.{f4211abc-61b3-11d4-9877-00c04fa0cf4a}= new nsIPipe();
-nsXPCComponents_InterfacesByID.prototype.{4ab31d30-372d-11db-a98b-0800200c9a66}= new nsIURLFormatter();
-nsXPCComponents_InterfacesByID.prototype.{8c39ef62-f7c9-11d4-98f5-001083010e9b}= new nsISearchableInputStream();
-nsXPCComponents_InterfacesByID.prototype.{1a6290e6-8285-4e10-963d-d001f8d327b8}= new imgIContainer();
-nsXPCComponents_InterfacesByID.prototype.{7b6e15cf-9793-41ee-adcc-cc1c206c80e6}= new nsIDOMSVGPolylineElement();
-nsXPCComponents_InterfacesByID.prototype.{41be252d-c47b-40f3-94bc-bffe51762d68}= new nsIPluginElement();
-nsXPCComponents_InterfacesByID.prototype.{965eb278-5678-456b-82a7-20a0c86a803c}= new nsIStringBundleOverride();
-nsXPCComponents_InterfacesByID.prototype.{e65fe6e2-2643-463c-97e2-27665efe2386}= new mozIStorageStatementParams();
-nsXPCComponents_InterfacesByID.prototype.{a0c057d0-01c1-11d2-815b-006008119d7a}= new nsIJVMPluginInstance();
-nsXPCComponents_InterfacesByID.prototype.{766d47cb-6d8c-4e71-b6b7-336917629a69}= new nsICipherInfoService();
-nsXPCComponents_InterfacesByID.prototype.{66418cc8-5f5d-4f52-a7f9-db8fb3b2cfe6}= new nsISocketTransport();
-nsXPCComponents_InterfacesByID.prototype.{7330650e-1dd2-11b2-a0c2-9ff86ee97bed}= new nsIOutputIterator();
-nsXPCComponents_InterfacesByID.prototype.{87ad94bc-07c9-412b-b2d8-de245a2e84a5}= new nsIDOMSVGTextContentElement();
-nsXPCComponents_InterfacesByID.prototype.{0cf40717-d7c1-4a94-8c1e-d6c9734101bb}= new nsIHttpHeaderVisitor();
-nsXPCComponents_InterfacesByID.prototype.{8fce8c6a-1dd2-11b2-8352-8cdd2b965efc}= new nsITimerManager();
-nsXPCComponents_InterfacesByID.prototype.{0458dac3-65de-11d5-9b42-00104bdf5339}= new nsIWSDLMessage();
-nsXPCComponents_InterfacesByID.prototype.{f0c5dddb-4713-4603-af2d-bf671838996b}= new nsINetUtil();
-nsXPCComponents_InterfacesByID.prototype.{632b16a8-5c6b-4dc5-a8db-01771af7a79d}= new nsIWebContentConverterService();
-nsXPCComponents_InterfacesByID.prototype.{b7964304-1dd1-11b2-ba20-cf4205772e9d}= new jsdIValue();
-nsXPCComponents_InterfacesByID.prototype.{a38f65ca-1dd1-11b2-95d5-ff2947e9c920}= new jsdIScript();
-nsXPCComponents_InterfacesByID.prototype.{c4a71f8e-82ba-49d7-94f9-beb359361072}= new nsIDOMNSEditableElement();
-nsXPCComponents_InterfacesByID.prototype.{986c11d0-f340-11d4-9075-0010a4e73d9a}= new nsIClassInfo();
-nsXPCComponents_InterfacesByID.prototype.{bfd05261-834c-11d2-8eac-00805f29f370}= new nsIRDFService();
-nsXPCComponents_InterfacesByID.prototype.{aa578b44-abd5-4c19-8b14-36d4de6fdc36}= new nsISupportsPriority();
-nsXPCComponents_InterfacesByID.prototype.{264eb54d-e20d-49a0-890c-1a5986ea81c4}= new nsIKeyObjectFactory();
-nsXPCComponents_InterfacesByID.prototype.{d8c0a083-0868-11d3-915f-d9d889d48e3c}= new nsIDirectoryIterator();
-nsXPCComponents_InterfacesByID.prototype.{fa9c7f6c-61b3-11d4-9877-00c04fa0cf4a}= new nsIInputStream();
-nsXPCComponents_InterfacesByID.prototype.{0dad9e8c-a12d-4dcb-9a6f-7d09839356e1}= new nsISecurityCheckedComponent();
-nsXPCComponents_InterfacesByID.prototype.{a6cf908f-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLFormElement();
-nsXPCComponents_InterfacesByID.prototype.{7ef52eaf-b7e1-462b-87e2-5d1dbaca9048}= new mozIPersonalDictionary();
-nsXPCComponents_InterfacesByID.prototype.{8a3eca16-167e-443d-9485-7e84ed822e95}= new nsIUnicharStreamLoader();
-nsXPCComponents_InterfacesByID.prototype.{9f0c7461-b9a4-47f6-b88c-421dce1bce66}= new nsIDocShell();
-nsXPCComponents_InterfacesByID.prototype.{0b9341f3-95d4-4fa4-adcd-e119e0db2889}= new nsIDOMViewCSS();
-nsXPCComponents_InterfacesByID.prototype.{77a22cf0-6cdf-11da-be43-001422106990}= new nsISAXXMLFilter();
-nsXPCComponents_InterfacesByID.prototype.{a1e5ed50-aa4a-11d1-85b2-00805f0e4dfe}= new nsIJVMManager();
-nsXPCComponents_InterfacesByID.prototype.{fcc7b6b5-f7d7-4e57-abd1-080602deb21d}= new nsITreeColumns();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9086-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLHtmlElement();
-nsXPCComponents_InterfacesByID.prototype.{bbb20a59-524e-4662-981e-5e142814b20c}= new nsIDOMCanvasGradient();
-nsXPCComponents_InterfacesByID.prototype.{ebf334b3-86ef-4bf3-8a92-d775c72defa4}= new nsIDOMSVGAnimatedPoints();
-nsXPCComponents_InterfacesByID.prototype.{8ae1fbf8-1dd2-11b2-bd21-d728069cca92}= new nsIRDFXMLSerializer();
-nsXPCComponents_InterfacesByID.prototype.{a6cf911c-15b3-11d2-932e-00805f8add32}= new nsIDOMNSHTMLAnchorElement();
-nsXPCComponents_InterfacesByID.prototype.{529b987a-cb21-4d58-99d7-9586e7662801}= new nsIDOMCSS2Properties();
-nsXPCComponents_InterfacesByID.prototype.{6962ca8f-0b8b-11d4-9875-00c04fa0d28b}= new nsIProfileStartupListener();
-nsXPCComponents_InterfacesByID.prototype.{6712fdd1-f978-11d4-a144-005004832142}= new nsIFontPackageHandler();
-nsXPCComponents_InterfacesByID.prototype.{0458dac0-65de-11d5-9b42-00104bdf5339}= new nsIWSDLBinding();
-nsXPCComponents_InterfacesByID.prototype.{948c2080-0398-11d3-915e-0000863011c4}= new nsIProxyCreateInstance();
-nsXPCComponents_InterfacesByID.prototype.{a71aee68-dd38-4736-bd79-035fea1a1ec6}= new nsISecurityEventSink();
-nsXPCComponents_InterfacesByID.prototype.{34a4fcf0-66fc-11d4-9528-0020183bf181}= new nsICommandHandler();
-nsXPCComponents_InterfacesByID.prototype.{24d89a65-f598-481e-a297-23cc02599bbd}= new nsIDOMLinkStyle();
-nsXPCComponents_InterfacesByID.prototype.{45f18f8f-1315-4447-a7d5-8aeca77bdcaf}= new nsIDOMSVGPoint();
-nsXPCComponents_InterfacesByID.prototype.{87f29033-c4a6-40a3-ac7a-3ba391f9992d}= new nsIAccessibleEvent();
-nsXPCComponents_InterfacesByID.prototype.{d65ff270-4a1c-11d3-9890-006008962422}= new nsISupportsCString();
-nsXPCComponents_InterfacesByID.prototype.{d18290a0-4a1c-11d3-9890-006008962422}= new nsISupportsID();
-nsXPCComponents_InterfacesByID.prototype.{00020400-0000-0000-c000-000000000046}= new IDispatch();
-nsXPCComponents_InterfacesByID.prototype.{566689cb-9926-4bec-a66e-a034e364ad2c}= new nsIXPInstallManager();
-nsXPCComponents_InterfacesByID.prototype.{656c9417-744e-4fa3-8e2b-8218185efe21}= new nsIXTFXMLVisualWrapper();
-nsXPCComponents_InterfacesByID.prototype.{4d2ebe88-36eb-4e20-bcd1-997b3c1f24ce}= new nsIFeedResultListener();
-nsXPCComponents_InterfacesByID.prototype.{400af3ca-1dd2-11b2-a50a-887ecca2e63a}= new nsIDOMTreeWalker();
-nsXPCComponents_InterfacesByID.prototype.{5470deff-03c9-41b7-a824-e3225266b343}= new nsIDOMUserDataHandler();
-nsXPCComponents_InterfacesByID.prototype.{9da0b650-d07e-4617-a18a-250035572ac8}= new nsIProcess();
-nsXPCComponents_InterfacesByID.prototype.{30465632-a777-44cc-90f9-8145475ef999}= new nsIWindowCreator();
-nsXPCComponents_InterfacesByID.prototype.{22f034b7-a879-43ad-baee-ba6fd4d466ce}= new nsITreeView();
-nsXPCComponents_InterfacesByID.prototype.{c7c0ae9b-a0ba-4f4e-9f2c-c18deb62ee8b}= new nsIDOMDocumentXBL();
-nsXPCComponents_InterfacesByID.prototype.{7914d5f2-14b4-47d0-88f8-70715cfbdfb7}= new nsIXTFBindableElementWrapper();
-nsXPCComponents_InterfacesByID.prototype.{d07f5192-e3d1-11d2-8acd-00105a1b8860}= new nsIObserverService();
-nsXPCComponents_InterfacesByID.prototype.{2a99c757-dfee-4806-bff3-f721440412e0}= new nsISAXContentHandler();
-nsXPCComponents_InterfacesByID.prototype.{0f6c5b09-88b0-43ca-b55c-578f24f3d810}= new nsIScriptableConstant();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90b8-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLFrameSetElement();
-nsXPCComponents_InterfacesByID.prototype.{3c14a023-6f4e-11d5-9b46-000064657374}= new nsISchemaSimpleType();
-nsXPCComponents_InterfacesByID.prototype.{00000001-0000-0000-c000-000000000046}= new nsIFactory();
-nsXPCComponents_InterfacesByID.prototype.{4f418f58-f834-4736-a755-e0395bedca9d}= new nsIDragDropHandler();
-nsXPCComponents_InterfacesByID.prototype.{4a5b1e2a-c54e-4226-8f0b-aa4ee36b2396}= new nsIAptanaError();
-nsXPCComponents_InterfacesByID.prototype.{9790d6bc-1dd1-11b2-afe0-bcb310c078bf}= new nsISOAPServiceRegistry();
-nsXPCComponents_InterfacesByID.prototype.{93169940-7663-4eab-af23-94a8a08c2654}= new nsIDOMSVGStopElement();
-nsXPCComponents_InterfacesByID.prototype.{e0f5d182-34bc-11d5-be5b-b760676c6ebc}= new nsIWebBrowserFindInFrames();
-nsXPCComponents_InterfacesByID.prototype.{a647f184-1dd1-11b2-a9d1-8537b201161b}= new nsIConsoleService();
-nsXPCComponents_InterfacesByID.prototype.{d5fa765b-2448-4686-b7c1-5ff13acb0fc9}= new inISearchProcess();
-nsXPCComponents_InterfacesByID.prototype.{de114eb4-29fc-4959-b2f7-2d03eb9bc771}= new nsICacheService();
-nsXPCComponents_InterfacesByID.prototype.{fc97a2a9-d649-4494-931e-db81a156c873}= new nsIFeedTextConstruct();
-nsXPCComponents_InterfacesByID.prototype.{6687823f-56c4-461d-93a1-7f6cb7dfbfba}= new nsIIncrementalDownload();
-nsXPCComponents_InterfacesByID.prototype.{89caa9f0-8b1c-47fb-b0d3-f0aef0bff749}= new nsIDocShellHistory();
-nsXPCComponents_InterfacesByID.prototype.{ae9e84b5-3e2d-457e-8fcd-5bbd2a8b832e}= new nsICacheSession();
-nsXPCComponents_InterfacesByID.prototype.{123f90ab-15b3-11d2-456e-00805f8add32}= new nsIDOMHTMLEmbedElement();
-nsXPCComponents_InterfacesByID.prototype.{c727b2f2-1dd1-11b2-95df-f63c15b4cd35}= new nsIASN1Tree();
-nsXPCComponents_InterfacesByID.prototype.{06d018e0-d41b-4629-a4fc-daaa6029888e}= new nsIUserCertPicker();
-nsXPCComponents_InterfacesByID.prototype.{24ce8b9d-b7ff-4279-aef4-26e158f03e34}= new nsIProfileMigrator();
-nsXPCComponents_InterfacesByID.prototype.{9e508466-5ebb-4618-abfa-9ad47bed0b2e}= new nsIDocShellTreeOwner();
-nsXPCComponents_InterfacesByID.prototype.{b075d5dc-1df1-441a-bebf-680d8caaa19c}= new mozISpellI18NUtil();
-nsXPCComponents_InterfacesByID.prototype.{e339eb1d-3ea8-4c85-87ce-644eb7a19034}= new nsIXTFGenericElement();
-nsXPCComponents_InterfacesByID.prototype.{445fa0fc-2151-4cb4-83d3-34c3e39453de}= new nsIDOMChromeWindow();
-nsXPCComponents_InterfacesByID.prototype.{8b3e8488-1dd2-11b2-b547-956290be347c}= new nsISSLSocketControl();
-nsXPCComponents_InterfacesByID.prototype.{9475a6af-6352-4251-90f9-d65b1cd2ea15}= new nsIHttpEventSink();
-nsXPCComponents_InterfacesByID.prototype.{24306852-c60e-49c3-a455-90f6747118ba}= new nsIGlobalHistory3();
-nsXPCComponents_InterfacesByID.prototype.{7111e88d-fecd-4b17-b7a9-1fa74e23153f}= new nsIMicrosummarySet();
-nsXPCComponents_InterfacesByID.prototype.{31bfd5b4-8ff5-4bfd-a8cb-b3dfbd4f0a5b}= new nsIFeedEntry();
-nsXPCComponents_InterfacesByID.prototype.{c6ab8b9e-32db-464a-ae33-8691d44bc60a}= new nsIDOMSVGAnimatedAngle();
-nsXPCComponents_InterfacesByID.prototype.{8cc6316d-ecbc-4c5f-8fda-28c91fb56e3d}= new nsIDOMXULDocument_MOZILLA_1_8_BRANCH();
-nsXPCComponents_InterfacesByID.prototype.{88655640-e028-11d3-8f5d-0010a4e73d9a}= new nsIXPCComponents_Constructor();
-nsXPCComponents_InterfacesByID.prototype.{249f52a3-2599-4b00-ba40-0481364831a2}= new nsIUTF8ConverterService();
-nsXPCComponents_InterfacesByID.prototype.{96ea4792-d362-4c28-a8c2-0337790d648a}= new nsIDOMLSSerializer();
-nsXPCComponents_InterfacesByID.prototype.{616f5b48-da09-11d3-8cda-0060b0fc14a3}= new nsIBufferedInputStream();
-nsXPCComponents_InterfacesByID.prototype.{eda2e65c-a758-451f-9b05-77cb8de74ed2}= new nsIHTMLInlineTableEditor();
-nsXPCComponents_InterfacesByID.prototype.{f6134682-f28b-11d2-8360-c90899049c3c}= new nsIDOMMimeType();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90ad-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLParamElement();
-nsXPCComponents_InterfacesByID.prototype.{f3262589-48b2-4019-9947-90e5269bbfb9}= new nsIFeedResultService();
-nsXPCComponents_InterfacesByID.prototype.{fd91e2e0-1481-11d3-9333-00104ba0fd40}= new nsIRequestObserver();
-nsXPCComponents_InterfacesByID.prototype.{c814ca20-e0dc-11d3-8f5f-0010a4e73d9a}= new nsIXPCConstructor();
-nsXPCComponents_InterfacesByID.prototype.{b0106d01-9746-440b-b067-68ee043dabc3}= new nsIDOMSVGPathSegMovetoAbs();
-nsXPCComponents_InterfacesByID.prototype.{a2a32f90-9b90-11d3-a189-0050041caf44}= new nsIScriptableInputStream();
-nsXPCComponents_InterfacesByID.prototype.{c946119f-9e7c-41aa-a794-803148045350}= new nsIAddonUpdateCheckListener();
-nsXPCComponents_InterfacesByID.prototype.{d1a47834-6ad4-11d7-bfad-000393636592}= new nsIControllerCommandTable();
-nsXPCComponents_InterfacesByID.prototype.{31c9c52e-1100-457d-abac-d2729e43f506}= new nsIDNSRecord();
-nsXPCComponents_InterfacesByID.prototype.{eb43e1dc-2060-4d8e-aebf-3efec4e21cf8}= new nsIAutoCompleteResult();
-nsXPCComponents_InterfacesByID.prototype.{10dc9c94-8aff-49c6-8af9-d7fdb7339dae}= new nsIAsyncOutputStream();
-nsXPCComponents_InterfacesByID.prototype.{2f977d4b-5485-11d4-87e2-0010a4e75ef2}= new nsIDirectoryServiceProvider2();
-nsXPCComponents_InterfacesByID.prototype.{205b3e49-aa58-499e-880b-aacab9dede01}= new nsIEditorIMESupport();
-nsXPCComponents_InterfacesByID.prototype.{eab4ae76-efdc-4e09-828c-bd921e9a662f}= new nsISelection2();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90a2-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLHeadingElement();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9082-15b3-11d2-932e-00805f8add32}= new nsIDOMText();
-nsXPCComponents_InterfacesByID.prototype.{abbb51a4-be75-4d7f-bd4c-373fd7b52f85}= new nsIDOMClientInformation();
-nsXPCComponents_InterfacesByID.prototype.{ab27f42d-e1e1-4ef6-9c83-059a81da479b}= new nsIDOMCanvasRenderingContext2D();
-nsXPCComponents_InterfacesByID.prototype.{1a637020-1482-11d3-9333-00104ba0fd40}= new nsIStreamListener();
-nsXPCComponents_InterfacesByID.prototype.{40dbcdff-9053-42c5-a57c-3ec910d0f148}= new nsIOutputStreamCallback();
-nsXPCComponents_InterfacesByID.prototype.{4c2f706e-1dd2-11b2-9ebc-85a06e948830}= new jsdIScriptEnumerator();
-nsXPCComponents_InterfacesByID.prototype.{db21eb6c-aebb-4d16-94ec-bcd8bbf513ae}= new nsIClipboardImage();
-nsXPCComponents_InterfacesByID.prototype.{caabf76f-9d35-401f-beac-3955817c645c}= new nsIBoxObject();
-nsXPCComponents_InterfacesByID.prototype.{2f977d49-5485-11d4-87e2-0010a4e75ef2}= new nsICloseAllWindows();
-nsXPCComponents_InterfacesByID.prototype.{662e7b78-1dd2-11b2-a3d3-fc1e5f5fb9d4}= new nsIScreenManager();
-nsXPCComponents_InterfacesByID.prototype.{0765c92c-6145-4253-9db4-594d8023087e}= new nsIUpdateTimerManager();
-nsXPCComponents_InterfacesByID.prototype.{afcd7cd4-d74d-492f-b3b1-d71bfa36874f}= new nsIDOMSVGAnimatedPreserveAspectRatio();
-nsXPCComponents_InterfacesByID.prototype.{9277fe09-f0cc-4cd9-bbce-581dd94b0260}= new nsIHttpChannel();
-nsXPCComponents_InterfacesByID.prototype.{c7b0b43c-1dd1-11b2-9e1c-ce5f6a660630}= new nsIDOMXULDescriptionElement();
-nsXPCComponents_InterfacesByID.prototype.{e2563630-4a1c-11d3-9890-006008962422}= new nsISupportsPRTime();
-nsXPCComponents_InterfacesByID.prototype.{f6305e79-1760-4991-ab4d-a42db60f0e67}= new nsIBookmarkTransactionManager();
-nsXPCComponents_InterfacesByID.prototype.{fa4c7520-1433-11d5-ba24-00108303b117}= new nsIClientAuthDialogs();
-nsXPCComponents_InterfacesByID.prototype.{b2c7ed59-8634-4352-9e37-5484c8b6e4e1}= new nsISelection();
-nsXPCComponents_InterfacesByID.prototype.{e13a24e3-c77a-11d2-80be-006097b76b8e}= new nsIRDFInt();
-nsXPCComponents_InterfacesByID.prototype.{a8760fcd-3de5-446a-a009-5cf877e7a4df}= new nsIDOMSVGLengthList();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90bf-15b3-11d2-932e-00805f8add32}= new nsIDOMCSSStyleRule();
-nsXPCComponents_InterfacesByID.prototype.{8bb35ed9-e332-462d-9155-4a002ab5c958}= new nsIServiceManager();
-nsXPCComponents_InterfacesByID.prototype.{d48f8ea2-c912-48fa-9714-10d8098f05ea}= new nsIShellService_MOZILLA_1_8_BRANCH();
-nsXPCComponents_InterfacesByID.prototype.{3de0a31c-feaf-400f-9f1e-4ef71f8b20cc}= new nsILoadGroup();
-nsXPCComponents_InterfacesByID.prototype.{a3f5396c-a6e8-414a-8fbc-c8d831746328}= new nsIExtensionManager();
-nsXPCComponents_InterfacesByID.prototype.{d143a084-b626-4614-845f-41f3ca43a674}= new nsICharsetResolver();
-nsXPCComponents_InterfacesByID.prototype.{3e73ff5f-154e-494f-b640-3c654ba2cc2b}= new nsICookieManager2();
-nsXPCComponents_InterfacesByID.prototype.{312e3b94-dc98-4ccc-b2fb-e3406f905cc6}= new nsIScriptableDataType();
-nsXPCComponents_InterfacesByID.prototype.{1448b42f-cf0d-466e-9a15-64e876ebe857}= new nsIMIMEInfo();
-nsXPCComponents_InterfacesByID.prototype.{6ef2b400-dbf4-4c12-8787-fe15caac5648}= new nsIDOMSVGAnimatedPathData();
-nsXPCComponents_InterfacesByID.prototype.{29cc2e14-6d18-4710-bda9-a88d9d3bc8dc}= new nsIDOMSVGTransform();
-nsXPCComponents_InterfacesByID.prototype.{f5d9e7b0-d930-11d3-b057-00a024ffc08c}= new nsIWebNavigation();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9075-15b3-11d2-932e-00805f8add32}= new nsIDOMDocument();
-nsXPCComponents_InterfacesByID.prototype.{a6cf907f-15b3-11d2-932e-00805f8add32}= new nsIDOMProcessingInstruction();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9094-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLTextAreaElement();
-nsXPCComponents_InterfacesByID.prototype.{e0c493d2-9542-11d2-8eb8-00805f29f370}= new nsIRDFLiteral();
-nsXPCComponents_InterfacesByID.prototype.{58b6190e-37b3-412a-ba02-1d5ad6c6ea7c}= new nsIDOMSVGAngle();
-nsXPCComponents_InterfacesByID.prototype.{75506f8a-b504-11d5-a7f2-ca108ab8b6fc}= new nsIDOMXPathEvaluator();
-nsXPCComponents_InterfacesByID.prototype.{4805e684-49b9-11d3-9ce4-ed60bd6cb5bc}= new nsITableEditor();
-nsXPCComponents_InterfacesByID.prototype.{d9948a4d-f49c-4456-938a-acda2c8d7741}= new nsIPrintOptions();
-nsXPCComponents_InterfacesByID.prototype.{bac3648d-55a3-491b-9863-a18fd7506689}= new nsIDOMSVGPathSegLinetoAbs();
-nsXPCComponents_InterfacesByID.prototype.{3c14a02e-6f4e-11d5-9b46-000064657374}= new nsISchemaAttribute();
-nsXPCComponents_InterfacesByID.prototype.{f2504c26-7cf5-426a-86a7-e50998ac57c1}= new nsIBrowserBoxObject();
-nsXPCComponents_InterfacesByID.prototype.{75d1553d-63bf-4b5d-a8f7-e4e4cac21ba4}= new nsIPrintingPromptService();
-nsXPCComponents_InterfacesByID.prototype.{0458dac8-65de-11d5-9b42-00104bdf5339}= new nsISOAPOperationBinding();
-nsXPCComponents_InterfacesByID.prototype.{99715845-95fc-4a56-aa53-214b65c26e22}= new nsIDOMElementCSSInlineStyle();
-nsXPCComponents_InterfacesByID.prototype.{5586a590-8c82-11d5-90f3-0010a4e73d9a}= new nsIWritableVariant();
-nsXPCComponents_InterfacesByID.prototype.{bc3173bd-aa46-46a0-9d25-d9867a9659b6}= new nsICommandLine();
-nsXPCComponents_InterfacesByID.prototype.{c8d4603a-960a-43e3-a0fa-b3746a270e0e}= new nsIBookmarksService_MOZILLA_1_8_BRANCH();
-nsXPCComponents_InterfacesByID.prototype.{1831dd2e-1dd2-11b2-bdb3-86b7b50b70b5}= new nsIRDFXMLParser();
-nsXPCComponents_InterfacesByID.prototype.{427c5511-941b-48c0-9abc-8ec9ea5d964b}= new nsISchemaCollection();
-nsXPCComponents_InterfacesByID.prototype.{2226927e-1dd2-11b2-b57f-faab47288563}= new nsIURIRefObject();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90c6-15b3-11d2-932e-00805f8add32}= new nsIDOMNSHTMLFormElement();
-nsXPCComponents_InterfacesByID.prototype.{1ab4b724-fd7e-41af-bc19-80bb7299f3c0}= new nsIXTFXULVisualWrapper();
-nsXPCComponents_InterfacesByID.prototype.{83b6019c-cbc4-11d2-8cca-0060b0fc14a3}= new nsICollection();
-nsXPCComponents_InterfacesByID.prototype.{e347005e-6cd0-11da-be43-001422106990}= new nsISAXAttributes();
-nsXPCComponents_InterfacesByID.prototype.{9deabc90-28d5-41d3-a660-474f2254f4ba}= new nsIJSXMLHttpRequest();
-nsXPCComponents_InterfacesByID.prototype.{d974c99e-4148-4df9-8d98-de834a2f6462}= new nsIProgressEventSink();
-nsXPCComponents_InterfacesByID.prototype.{7e835f60-5fea-11d3-a177-0050041caf44}= new nsIDataChannel();
-nsXPCComponents_InterfacesByID.prototype.{129d3bd5-8a26-4b0b-b8a0-19fdea029196}= new nsIAuthPromptProvider();
-nsXPCComponents_InterfacesByID.prototype.{6317f32c-9bc7-11d3-bccc-0060b0fc76bd}= new nsIContentViewerFile();
-nsXPCComponents_InterfacesByID.prototype.{5ef62896-0c0a-41f1-bb3c-44a60f5dfdab}= new nsITreeContentView();
-nsXPCComponents_InterfacesByID.prototype.{fc66ffb6-5404-4908-a4a3-27f92fa0579d}= new nsIConverterInputStream();
-nsXPCComponents_InterfacesByID.prototype.{f728830e-1dd1-11b2-9598-fb9f414f2465}= new nsIScreen();
-nsXPCComponents_InterfacesByID.prototype.{9c18bb4e-1dd1-11b2-bf91-9cc82c275823}= new nsIDocCharset();
-nsXPCComponents_InterfacesByID.prototype.{f34cb3c8-1dd1-11b2-8a18-a93a99d92c08}= new nsISOAPPropertyBagMutator();
-nsXPCComponents_InterfacesByID.prototype.{71135b6c-294e-4634-a8e4-a72398f1e72a}= new nsIDOMXULTextBoxElement();
-nsXPCComponents_InterfacesByID.prototype.{6aff3102-320d-4986-9790-12316bb87cf9}= new nsIDOMRGBColor();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90b3-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLTableCaptionElement();
-nsXPCComponents_InterfacesByID.prototype.{dd9ab9be-fed3-4bff-a72d-5390d52dd887}= new nsIIFrameBoxObject();
-nsXPCComponents_InterfacesByID.prototype.{3210a6aa-b464-4f57-9335-b22815567cf1}= new nsIPopupWindowManager();
-nsXPCComponents_InterfacesByID.prototype.{995ea724-1dd1-11b2-9211-c21bdd3e7ed0}= new nsISupportsInterfacePointer();
-nsXPCComponents_InterfacesByID.prototype.{8cbceb6e-8e27-46f2-8808-444c6499f836}= new nsIUpdateCheckListener();
-nsXPCComponents_InterfacesByID.prototype.{b5a21556-35fc-4815-aff1-f9142639686e}= new nsIByteArrayInputStream();
-nsXPCComponents_InterfacesByID.prototype.{9ae49600-1dd1-11b2-877f-e62f620c5e92}= new nsISOAPEncoding();
-nsXPCComponents_InterfacesByID.prototype.{ede34b03-57b6-45bf-a259-3550b5697286}= new nsIDOMSVGViewSpec();
-nsXPCComponents_InterfacesByID.prototype.{2bd97d63-e928-4d52-9fd4-34061349a9a6}= new nsIWebContentHandlerInfo();
-nsXPCComponents_InterfacesByID.prototype.{a6cf911a-15b3-11d2-932e-00805f8add32}= new nsIDOMNSHTMLFormControlList();
-nsXPCComponents_InterfacesByID.prototype.{1f8111b2-d44d-4d11-845a-a70ae06b7d04}= new nsIDOMXULTreeElement();
-nsXPCComponents_InterfacesByID.prototype.{feaf9285-05ac-4898-a69f-c3bd350767e4}= new nsIFrameLoaderOwner();
-nsXPCComponents_InterfacesByID.prototype.{5fb96f46-1dd2-11b2-a5dc-998ca8636ea9}= new nsIDOMNSHistory();
-nsXPCComponents_InterfacesByID.prototype.{ab62465c-494c-446e-b671-930bb98a7bc4}= new nsISessionRoaming();
-nsXPCComponents_InterfacesByID.prototype.{ce600ca8-e98a-4419-ad61-2f6d0cb0ecc8}= new nsIDOMNSXPathExpression();
-nsXPCComponents_InterfacesByID.prototype.{cba22c53-fcce-11d2-96d4-0060b0fb9956}= new nsIDragSession();
-nsXPCComponents_InterfacesByID.prototype.{97f863f3-f886-11d4-9d39-0060b0f8baff}= new nsITransactionList();
-nsXPCComponents_InterfacesByID.prototype.{dc7ba13f-8cb6-48d2-9e22-a4a6817abbb9}= new nsIDOMSVGPathSegCurvetoCubicRel();
-nsXPCComponents_InterfacesByID.prototype.{876a2015-6b66-11d7-8f18-0003938a9d96}= new nsIClipboardDragDropHookList();
-nsXPCComponents_InterfacesByID.prototype.{919e792a-6490-40b8-bba5-f9e9ad5640c8}= new nsIScrollable();
-nsXPCComponents_InterfacesByID.prototype.{96d086e6-1dd1-11b2-b6b2-b77b59390247}= new gfxIFormats();
-nsXPCComponents_InterfacesByID.prototype.{575249a7-de7a-4602-a997-b7ad2b3b6dab}= new nsIWinAppHelper();
-nsXPCComponents_InterfacesByID.prototype.{e4723748-1dd1-11b2-8ee6-866a532a6237}= new nsIDOMNodeFilter();
-nsXPCComponents_InterfacesByID.prototype.{7b19ac06-a5fb-11d9-9f82-0011246ecd24}= new nsISocketTransportService();
-nsXPCComponents_InterfacesByID.prototype.{0ddf9e1c-1dd2-11b2-a183-908a08aa75ae}= new nsISelectionDisplay();
-nsXPCComponents_InterfacesByID.prototype.{e3a24a60-d651-11d2-9843-006008962422}= new nsIJSCID();
-nsXPCComponents_InterfacesByID.prototype.{db242e01-e4d9-11d2-9dde-000064657374}= new nsIObserver();
-nsXPCComponents_InterfacesByID.prototype.{c86ae131-d101-11d2-9841-006008962422}= new nsIJSID();
-nsXPCComponents_InterfacesByID.prototype.{e2b05e40-4a1c-11d3-9890-006008962422}= new nsISupportsChar();
-nsXPCComponents_InterfacesByID.prototype.{ca89b55b-6faf-4051-9645-1c03ef5108f8}= new nsIPrintProgressParams();
-nsXPCComponents_InterfacesByID.prototype.{45988a14-b240-4d07-ae64-50ecca26e6d8}= new nsIDocShell_MOZILLA_1_8_BRANCH();
-nsXPCComponents_InterfacesByID.prototype.{15fd6940-8ea7-11d3-93ad-00104ba0fd40}= new nsIProtocolHandler();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9074-15b3-11d2-932e-00805f8add32}= new nsIDOMDOMImplementation();
-nsXPCComponents_InterfacesByID.prototype.{6f9d2890-167d-11d5-8daf-000064657374}= new nsPIXPIProxy();
-nsXPCComponents_InterfacesByID.prototype.{55f3b431-1aa8-4e23-ad3d-a9f5644bdaa6}= new nsITreeBoxObject();
-nsXPCComponents_InterfacesByID.prototype.{1a180f60-93b2-11d2-9b8b-00805f8a16d9}= new nsIPersistentProperties();
-nsXPCComponents_InterfacesByID.prototype.{4f8ae0dc-d266-4a32-875b-6a9de71a8ce9}= new nsIXPCComponents_utils_Sandbox();
-nsXPCComponents_InterfacesByID.prototype.{663ca4a8-d219-4000-925d-d8f66406b626}= new nsIAccessibleRetrieval();
-nsXPCComponents_InterfacesByID.prototype.{0fd5caa9-1ffc-42b1-aea1-3fbe73116070}= new nsIExtensionManager_MOZILLA_1_8_BRANCH();
-nsXPCComponents_InterfacesByID.prototype.{3ab244a9-f09d-44da-9e3f-ee4d67367f2d}= new nsIScriptableUnescapeHTML();
-nsXPCComponents_InterfacesByID.prototype.{0b6e2c69-5cf5-48b0-9dfd-c95950e2cc7b}= new nsIStreamConverter();
-nsXPCComponents_InterfacesByID.prototype.{bddeda3f-9020-4d12-8c70-984ee9f7935e}= new nsIIOService();
-nsXPCComponents_InterfacesByID.prototype.{e2dfc89c-7ae0-4651-8aee-7f5edc2aa626}= new nsIDOMNSHTMLOptionElement();
-nsXPCComponents_InterfacesByID.prototype.{cce7152e-4395-4231-a781-c347c5446cc2}= new imgIDecoderObserver();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9128-15b3-11d2-932e-00805f8add32}= new nsIPrinterEnumerator();
-nsXPCComponents_InterfacesByID.prototype.{1c773b30-d1cf-11d2-bd95-00805f8ae3f4}= new nsIDOMEventTarget();
-nsXPCComponents_InterfacesByID.prototype.{5316c380-b2f8-11d2-a374-0080c6f80e4b}= new nsIRegistryValue();
-nsXPCComponents_InterfacesByID.prototype.{bbe0d0ee-e9ed-4f84-a6e4-e58f66530caa}= new nsIDOMSVGScriptElement();
-nsXPCComponents_InterfacesByID.prototype.{18cbdb18-3917-42fd-9c4a-0b2112d41a6d}= new nsIMarkupDocumentViewer();
-nsXPCComponents_InterfacesByID.prototype.{455d4234-0330-43d2-bbfb-99afbecbfeb0}= new nsIFTPEventSink();
-nsXPCComponents_InterfacesByID.prototype.{da58ad80-4eb6-11d2-8164-006008119d7a}= new nsIPluginManager();
-nsXPCComponents_InterfacesByID.prototype.{f8365b4a-da55-4e47-be7a-230142360f62}= new nsIBrowserProfileMigrator();
-nsXPCComponents_InterfacesByID.prototype.{3ce86063-0a35-48ec-b372-f198b7d04755}= new nsIDOMSVGPathSegCurvetoQuadraticSmoothAbs();
-nsXPCComponents_InterfacesByID.prototype.{a6cf908b-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLBaseElement();
-nsXPCComponents_InterfacesByID.prototype.{e3d56a20-c7ec-11d3-8cda-0060b0fc14a3}= new nsIFileInputStream();
-nsXPCComponents_InterfacesByID.prototype.{a6cf909d-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLMenuElement();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90a0-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLDivElement();
-nsXPCComponents_InterfacesByID.prototype.{b0fb539e-f4ab-4ea1-bd75-e6d2813e5fc1}= new nsIUpdate();
-nsXPCComponents_InterfacesByID.prototype.{4a91aeb3-4100-43ee-a21e-9866268757c5}= new nsIXSLTProcessor();
-nsXPCComponents_InterfacesByID.prototype.{da19e9dc-dea2-4a1d-a958-9be375c9799c}= new nsIDOMBeforeUnloadEvent();
-nsXPCComponents_InterfacesByID.prototype.{0458dac9-65de-11d5-9b42-00104bdf5339}= new nsISOAPPartBinding();
-nsXPCComponents_InterfacesByID.prototype.{a6cf908a-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLMetaElement();
-nsXPCComponents_InterfacesByID.prototype.{814dbfdd-32ff-4734-9aea-b84c925bc9c0}= new nsIXTFStyledElementWrapper();
-nsXPCComponents_InterfacesByID.prototype.{9cf4fc9c-90b2-4d66-88f5-35049b558aee}= new nsIDOMSVGLocatable();
-nsXPCComponents_InterfacesByID.prototype.{8b1de83d-cebb-49fa-8245-c0fe319eb7b6}= new nsISAXMutableAttributes();
-nsXPCComponents_InterfacesByID.prototype.{3c14a02c-6f4e-11d5-9b46-000064657374}= new nsISchemaElement();
-nsXPCComponents_InterfacesByID.prototype.{6aaaa30d-54ab-434a-8ae8-6d29a566d870}= new nsIDOMXULSelectControlItemElement();
-nsXPCComponents_InterfacesByID.prototype.{d1d412d9-15d6-4a6a-9533-b949dc175ff5}= new nsIPrefBranchInternal();
-nsXPCComponents_InterfacesByID.prototype.{94a6db98-3f34-4529-a35f-89ef49713795}= new nsIDOMSVGPathSegList();
-nsXPCComponents_InterfacesByID.prototype.{1f39bc95-090d-40a5-9dee-6d5a591e48bf}= new mozIStorageStatement();
-nsXPCComponents_InterfacesByID.prototype.{d85a17c2-aa7c-11d2-9b8c-00805f8a16d9}= new nsIStringBundle();
-nsXPCComponents_InterfacesByID.prototype.{542a98b9-2889-4922-aaf4-02b6056f4136}= new nsISHEntry();
-nsXPCComponents_InterfacesByID.prototype.{8758b72b-63d4-4685-b908-4275126410fb}= new nsIDOMNavigator();
-nsXPCComponents_InterfacesByID.prototype.{978ff520-d26c-11d2-9842-006008962422}= new nsIXPCComponents_Classes();
-nsXPCComponents_InterfacesByID.prototype.{4f18ada2-0ddc-11d5-9d3a-0060b0f8baff}= new nsPIEditorTransaction();
-nsXPCComponents_InterfacesByID.prototype.{58e4f602-a7c8-4cd1-9dca-716705e826ef}= new nsISearchSubmission();
-nsXPCComponents_InterfacesByID.prototype.{f914492c-0138-4123-a634-6ef8e3f126f8}= new nsIDOMWindowInternal();
-nsXPCComponents_InterfacesByID.prototype.{f8a13364-184e-4da3-badf-5c04837537f8}= new nsITreeSelection();
-nsXPCComponents_InterfacesByID.prototype.{bfcd37b0-a49f-11d5-910d-0010a4e73d9a}= new nsIPropertyBag();
-nsXPCComponents_InterfacesByID.prototype.{f1094df6-ce0e-42c9-9847-2f663172c38d}= new nsIPrintSettings();
-nsXPCComponents_InterfacesByID.prototype.{2ad6e9e6-1379-4e45-a899-a54b27ff915c}= new nsIFastLoadWriteControl();
-nsXPCComponents_InterfacesByID.prototype.{86092181-a5db-4a89-be03-07dcc14d426e}= new nsIDOMSVGSymbolElement();
-nsXPCComponents_InterfacesByID.prototype.{898d4189-7012-4ae9-a2af-435491cfa114}= new mozIStorageFunction();
-nsXPCComponents_InterfacesByID.prototype.{3bf0c3d7-3bd9-4cf2-a971-33572c503e1e}= new nsIDebug();
-nsXPCComponents_InterfacesByID.prototype.{a5b64be0-d563-46bb-ae95-132e46fcd42f}= new nsIServerSocket();
-nsXPCComponents_InterfacesByID.prototype.{e64bb081-13ba-430e-ab70-73a9f1d3de58}= new nsIDOMXULDocument();
-nsXPCComponents_InterfacesByID.prototype.{9e201104-78e9-4cb3-aff5-7f0a9cf446c0}= new nsIDOMPopupBlockedEvent();
-nsXPCComponents_InterfacesByID.prototype.{6088a862-1229-11d9-941d-c035b2e390c6}= new nsIEditorSpellCheck();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90b1-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLScriptElement();
-nsXPCComponents_InterfacesByID.prototype.{d2206418-1dd1-11b2-8e55-acddcd2bcfb8}= new nsIWebBrowserChromeFocus();
-nsXPCComponents_InterfacesByID.prototype.{d14c7111-55e0-11d3-91d9-00105aa3f7dc}= new nsIEntityConverter();
-nsXPCComponents_InterfacesByID.prototype.{d1899240-f9d2-11d2-bdd6-000064657374}= new nsISimpleEnumerator();
-nsXPCComponents_InterfacesByID.prototype.{e932bf55-0a64-4beb-923a-1f32d3661044}= new nsIEmbeddingSiteWindow2();
-nsXPCComponents_InterfacesByID.prototype.{a6cf908e-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLBodyElement();
-nsXPCComponents_InterfacesByID.prototype.{6757d790-2916-498e-aaca-6b668a956875}= new nsIChannelEventSink();
-nsXPCComponents_InterfacesByID.prototype.{e9fcb9a4-d376-458f-b720-e65e7df593bc}= new nsICookie();
-nsXPCComponents_InterfacesByID.prototype.{44e314ca-75b1-4f3d-9553-9b3507912108}= new nsIPrintingPrompt();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9092-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLOptionElement();
-nsXPCComponents_InterfacesByID.prototype.{336a9590-4d19-11d3-9893-006008962422}= new nsIXPCComponents_ClassesByID();
-nsXPCComponents_InterfacesByID.prototype.{ba78db7b-b88c-4b76-baf9-3c2296a585ae}= new nsIMultiPartChannel();
-nsXPCComponents_InterfacesByID.prototype.{88800e93-c6af-4d69-9ee0-29c1100ff431}= new nsIFrameLoader();
-nsXPCComponents_InterfacesByID.prototype.{9124c666-6133-4be6-b3ed-dd0ec35f1e64}= new nsIAccessibleCaret();
-nsXPCComponents_InterfacesByID.prototype.{e4a39f75-93da-4264-8bf2-1a5bfb1f2f68}= new nsIFeedWriter();
-nsXPCComponents_InterfacesByID.prototype.{5b3675a1-02db-4f8f-a560-b34736635f47}= new nsIMIMEService();
-nsXPCComponents_InterfacesByID.prototype.{f3c50361-14fe-11d3-bf87-00105a1b0627}= new nsIDOMXULCommandDispatcher();
-nsXPCComponents_InterfacesByID.prototype.{83f892cf-7ed3-490e-967a-62640f3158e1}= new nsICommandParams();
-nsXPCComponents_InterfacesByID.prototype.{da48b3c0-1284-11d5-ac67-000064657374}= new nsIX509CertDB();
-nsXPCComponents_InterfacesByID.prototype.{0f807301-39d2-11d6-a7f2-8f504ff870dc}= new nsIDOMRangeException();
-nsXPCComponents_InterfacesByID.prototype.{96343820-307c-11d2-bc15-00805f912fe7}= new nsIRDFCompositeDataSource();
-nsXPCComponents_InterfacesByID.prototype.{01c78c65-31da-456b-90bf-da39d09fdcbf}= new nsIScriptableInterfaces();
-nsXPCComponents_InterfacesByID.prototype.{c97b466c-1e6e-4773-a4ab-2b2b3190a7a6}= new nsILineInputStream();
-nsXPCComponents_InterfacesByID.prototype.{9188bc85-f92e-11d2-81ef-0060083a0bcf}= new nsIWeakReference();
-nsXPCComponents_InterfacesByID.prototype.{6e934f17-1975-49c2-880e-4f9fa79a1b2e}= new nsITypeAheadFind_MOZILLA_1_8_BRANCH();
-nsXPCComponents_InterfacesByID.prototype.{93db35b1-6b33-49d5-ad25-1ed1a7611ad2}= new nsIDOMSVGPathSegLinetoVerticalRel();
-nsXPCComponents_InterfacesByID.prototype.{00000000-0000-0000-c000-000000000046}= new nsISupports();
-nsXPCComponents_InterfacesByID.prototype.{570f39d0-efd0-11d3-b093-00a024ffc08c}= new nsIWebProgress();
-nsXPCComponents_InterfacesByID.prototype.{0401f299-685b-43a1-82b4-ce1a0011598c}= new nsIDOMGetSVGDocument();
-nsXPCComponents_InterfacesByID.prototype.{729cb096-d5f1-4fc4-97cd-4b86e6917f97}= new nsIAutoCompleteController_MOZILLA_1_8_BRANCH();
-nsXPCComponents_InterfacesByID.prototype.{7b2ca1ca-1dd2-11b2-87ec-d217dbe22b85}= new nsISSLStatus();
-nsXPCComponents_InterfacesByID.prototype.{52bdc7ca-a934-4a40-a2e2-ac83a70b4019}= new nsIDOMSmartCardEvent();
-nsXPCComponents_InterfacesByID.prototype.{0574ed81-c088-11d2-96ed-00104b7b7deb}= new nsIDOMXULElement();
-nsXPCComponents_InterfacesByID.prototype.{5a31c7a1-e122-11d2-9a57-000064657374}= new nsIClipboardOwner();
-nsXPCComponents_InterfacesByID.prototype.{6228d644-17fe-11d4-8cee-0060b0fc14a3}= new nsIAuthPromptWrapper();
-nsXPCComponents_InterfacesByID.prototype.{ba434c60-9d52-11d3-afb0-00a024ffc08c}= new nsIWebBrowserChrome();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90b0-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLAreaElement();
-nsXPCComponents_InterfacesByID.prototype.{ea8a6cb1-9176-45db-989d-d0e89f563d7e}= new nsIDOMSVGStylable();
-nsXPCComponents_InterfacesByID.prototype.{dc42f467-4094-437d-9e3e-8912a072aede}= new nsILocalFileWin();
-nsXPCComponents_InterfacesByID.prototype.{2f977d44-5485-11d4-87e2-0010a4e75ef2}= new nsIWebBrowserFind();
-nsXPCComponents_InterfacesByID.prototype.{d49a3ac7-e779-46c8-ae92-214420aa1b71}= new nsIDOMSVGUseElement();
-nsXPCComponents_InterfacesByID.prototype.{2fd0a785-9f2d-4327-8871-8c3e0783891d}= new nsICertVerificationResult();
-nsXPCComponents_InterfacesByID.prototype.{6684bce9-50db-48e1-81b7-98102bf81357}= new nsICertVerificationListener();
-nsXPCComponents_InterfacesByID.prototype.{edec7c28-4b06-4692-842f-8bf238e61ac1}= new nsIMicrosummaryService();
-nsXPCComponents_InterfacesByID.prototype.{aafea151-c271-4505-9978-a100d292800c}= new rdfITripleVisitor();
-nsXPCComponents_InterfacesByID.prototype.{b7dd3c1c-1dd1-11b2-83eb-8a857d199e0f}= new jsdIErrorHook();
-nsXPCComponents_InterfacesByID.prototype.{0bd57cbd-a090-44aa-a61b-2fb876841194}= new nsIDOMSVGGElement();
-nsXPCComponents_InterfacesByID.prototype.{f6134680-f28b-11d2-8360-c90899049c3c}= new nsIDOMPluginArray();
-nsXPCComponents_InterfacesByID.prototype.{028e2b2a-1f0b-43a4-a1a7-365d2d7f35d0}= new nsICipherInfo();
-nsXPCComponents_InterfacesByID.prototype.{a6cf907b-15b3-11d2-932e-00805f8add32}= new nsIDOMNamedNodeMap();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90a6-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLBaseFontElement();
-nsXPCComponents_InterfacesByID.prototype.{5afaba88-1dd2-11b2-9249-dd65a129d0e4}= new nsIDOMXULCheckboxElement();
-nsXPCComponents_InterfacesByID.prototype.{a6cf906b-15b3-11d2-932e-00805f8add32}= new nsIDOMWindow();
-nsXPCComponents_InterfacesByID.prototype.{a6cf909c-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLDirectoryElement();
-nsXPCComponents_InterfacesByID.prototype.{efa53257-526d-4350-9088-343a510346b8}= new inIFileSearch();
-nsXPCComponents_InterfacesByID.prototype.{3dce9071-f3b9-4280-a6ee-776cdfe3dd9e}= new nsIDOMNSHTMLAreaElement();
-nsXPCComponents_InterfacesByID.prototype.{a6cf90ab-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLImageElement();
-nsXPCComponents_InterfacesByID.prototype.{dedec2ca-f941-4638-a9c0-32e02ff83d5b}= new nsIX509CertDB2();
-nsXPCComponents_InterfacesByID.prototype.{a5ed3a01-7cc7-11d3-bf87-00105a1b0627}= new nsIControllers();
-nsXPCComponents_InterfacesByID.prototype.{3c14a02f-6f4e-11d5-9b46-000064657374}= new nsISchemaAttributeGroup();
-nsXPCComponents_InterfacesByID.prototype.{577a1b4c-b3d4-4c76-9cf8-753e6606114f}= new nsIFeedContainer();
-nsXPCComponents_InterfacesByID.prototype.{e06e8b08-8cdd-4503-a0a0-6f3b943602af}= new nsIUnicharStreamLoaderObserver();
-nsXPCComponents_InterfacesByID.prototype.{3e5432cd-9568-4bd1-8cbe-d50aba110743}= new nsIEmbeddingSiteWindow();
-nsXPCComponents_InterfacesByID.prototype.{fab51c92-95c3-4468-b317-7de4d7588254}= new nsICacheEntryInfo();
-nsXPCComponents_InterfacesByID.prototype.{089410f3-9777-44f1-a882-ab4225696434}= new nsIDOMSVGFitToViewBox();
-nsXPCComponents_InterfacesByID.prototype.{54382875-ed12-4f90-9a63-1f0498d0a3f2}= new jsdIFilterEnumerator();
-nsXPCComponents_InterfacesByID.prototype.{5c8ec09d-bfbf-4eaf-8a36-0d84b5c8f35b}= new nsIDNSService();
-nsXPCComponents_InterfacesByID.prototype.{f902d5ba-2ef6-444e-8a17-52cb70715c10}= new nsIScriptableInterfaceInfo();
-nsXPCComponents_InterfacesByID.prototype.{51191434-1dd2-11b2-a17c-e49c4e99a4e3}= new nsIPK11Token();
-nsXPCComponents_InterfacesByID.prototype.{0eae9a46-1dd2-11b2-aca0-9176f05fe9db}= new nsIControllerCommand();
-nsXPCComponents_InterfacesByID.prototype.{b8d727f7-67f4-4dc1-a318-ec0c87280816}= new nsIXSLTProcessorPrivate();
-nsXPCComponents_InterfacesByID.prototype.{99ec6690-535f-11d4-9a58-000064657374}= new nsISOAPParameter();
-nsXPCComponents_InterfacesByID.prototype.{a6cf909a-15b3-11d2-932e-00805f8add32}= new nsIDOMHTMLOListElement();
-nsXPCComponents_InterfacesByID.prototype.{a796816d-7d47-4348-9ab8-c7aeb3216a7d}= new nsITimerCallback();
-nsXPCComponents_InterfacesByID.prototype.{155809f1-71f1-47c5-be97-d812ba560405}= new nsIXPCComponents();
-nsXPCComponents_InterfacesByID.prototype.{8f8a23d0-5472-11d3-bbc8-0000861d1237}= new nsISocketProviderService();
-nsXPCComponents_InterfacesByID.prototype.{1ef83ece-b645-4b55-a501-df42c3333b47}= new nsIWebServiceSOAPCallContext();
-nsXPCComponents_InterfacesByID.prototype.{2f977d45-5485-11d4-87e2-0010a4e75ef2}= new nsIAuthPrompt();
-nsXPCComponents_InterfacesByID.prototype.{e5d0d92b-ea45-4622-ab48-302baf2094ee}= new nsIAtomService();
-nsXPCComponents_InterfacesByID.prototype.{6f2bdbd0-58c3-11d3-be36-00104bde6048}= new nsIHTTPIndex();
-nsXPCComponents_InterfacesByID.prototype.{1e5b7c43-4688-45ce-92e1-77ed931e3bbe}= new nsICryptoHash();
-nsXPCComponents_InterfacesByID.prototype.{7b9badc6-c9bc-447a-8670-dbd195aed24b}= new nsIDOMDocumentRange();
-nsXPCComponents_InterfacesByID.prototype.{08923af1-e7a3-4fae-ba02-128502193994}= new nsIProfileUnlocker();
-nsXPCComponents_InterfacesByID.prototype.{354b5f02-1dd2-11b2-b053-b8c2997022a0}= new nsIDOMNodeIterator();
-nsXPCComponents_InterfacesByID.prototype.{62a93afb-93a1-465c-84c8-0432264229de}= new nsIWebNavigationInfo();
-nsXPCComponents_InterfacesByID.prototype.{de8db85f-c1de-4d87-94ba-7844890f91fe}= new nsIAutoCompleteSearch();
-nsXPCComponents_InterfacesByID.prototype.{30d7ec3a-f376-4652-9276-3092ec57abb6}= new nsIEncodedChannel();
-nsXPCComponents_InterfacesByID.prototype.{9b434f48-438c-4f85-89de-b7f321a45341}= new nsIToolkitProfileService();
-nsXPCComponents_InterfacesByID.prototype.{912e342a-1dd2-11b2-b09f-cf3af38c15f0}= new jsdIContextEnumerator();
-nsXPCComponents_InterfacesByID.prototype.{d4214e90-fb94-11d2-bdd8-00104bde6048}= new nsIRDFContainer();
-nsXPCComponents_InterfacesByID.prototype.{0c89efb0-1aae-11d3-9141-006008a6edf6}= new nsIScriptableDateFormat();
-nsXPCComponents_InterfacesByID.prototype.{a6cf9076-15b3-11d2-932e-00805f8add32}= new nsIDOMDocumentFragment();
-nsXPCComponents_InterfacesByID.prototype.{a6cf907a-15b3-11d2-932e-00805f8add32}= new nsIDOMEntityReference();
-nsXPCComponents_InterfacesByID.prototype.{78650582-4e93-4b60-8e85-26ebd3eb14ca}= new nsIProperties();
-nsXPCComponents_InterfacesByID.prototype.{22b00276-ec23-4034-a764-395da539b4be}= new nsIUpdatePrompt();
-nsXPCComponents_InterfacesByID.prototype.{1695ca39-e40d-44dc-81db-a51b6fd234fa}= new nsIDOMSVGRectElement();
-nsXPCComponents_InterfacesByID.prototype.{77c0e42a-1dd2-11b2-8ebf-edc6606f2f4b}= new mozITXTToHTMLConv();
-nsXPCComponents_InterfacesByID.prototype.{cb284a83-1ca5-4000-9841-ce345ce84915}= new nsIMicrosummaryObserver();
-nsXPCComponents_InterfacesByID.prototype.{bbf8cab0-d43a-11d3-8cc2-00609792278c}= new nsIDirectoryServiceProvider();
-nsXPCComponents_InterfacesByID.prototype.{4f813a88-7aca-4607-9896-d97270cdf15e}= new nsIDocShellLoadInfo();
-nsXPCComponents_InterfacesByID.prototype.{2fc229a0-5860-11d3-9899-006008962422}= new nsIXPCComponents_Results();
-nsXPCComponents_InterfacesByID.prototype.{e13a24e1-c77a-11d2-80be-006097b76b8e}= new nsIRDFDate();
-nsXPCComponents_InterfacesByID.prototype.{1691a02f-53b2-4cb8-8769-48e7efc908b8}= new nsIContentViewerEdit();
-nsXPCComponents_InterfacesByID.prototype.{d0d4b136-1dd1-11b2-9371-f0727ef827c0}= new nsISupportsPrimitive();
-nsXPCComponents_InterfacesByID.prototype.{a5480e0d-ac7c-42e5-aca5-d7f0bbffa207}= new nsIXULTreeBuilderObserver();
-nsXPCComponents_InterfacesByID.prototype.{8de811f0-1dd2-11b2-8bf1-e9aa324984b2}= new nsISSLStatusProvider();
-nsXPCComponents_InterfacesByID.prototype.{f0edfcdd-8bca-4d32-9226-7421001396a4}= new rdfISerializer();
-nsXPCComponents_InterfacesByID.prototype.{9de04775-77c5-48b5-9f4a-8996a936bfb2}= new nsIDOMSVGPolygonElement();
-nsXPCComponents_InterfacesByID.prototype.{f2166929-91b6-4372-8d5f-c366f47a5f54}= new nsIDOMStorageList();
-nsXPCComponents_InterfacesByID.prototype.{692303c0-2f83-11d3-8cd0-0060b0fc14a3}= new nsIAboutModule();
-nsXPCComponents_InterfacesByID.prototype.{ee42c54a-19d3-472b-8bc3-76318d5ab5f4}= new nsIWritablePropertyBag2();
-nsXPCComponents_InterfacesByID.prototype.{050cdc00-3b8e-11d3-9ce4-a458f454fcbc}= new nsIDocumentStateListener();
-nsXPCComponents_InterfacesByID.prototype.{2edf705f-d252-4971-9f09-71dd0f760dc6}= new nsISHTransaction();
-nsXPCComponents_InterfacesByID.prototype.{eb1a5d30-ab33-11d2-8ec6-00805f29f370}= new nsIRDFXMLSinkObserver();
-nsXPCComponents_InterfacesByID.prototype.{6459b7ce-6b57-4934-a0af-0133ba6f9085}= new nsIOnReadyStateChangeHandler();
-nsXPCComponents_InterfacesByID.prototype.{b6b957e6-1dd1-11b2-89d7-e30624f50b00}= new nsIASN1Sequence();
-nsXPCComponents_InterfacesByID.prototype.{cc79f293-7114-4287-870b-d28aa61aa7df}= new nsIAutoCompleteSimpleResult();
-nsXPCComponents_InterfacesByID.prototype.{2a72e20f-e337-4822-8994-2e35b5550d03}= new nsIDOMToString();
-nsXPCComponents_InterfacesByID.prototype.{fede66a9-9f96-4507-a22a-775ee885577e}= new nsIUpdateManager();
-nsXPCComponents_InterfacesByID.prototype.{77947960-b4af-11d2-bd93-00805f8ae3f4}= new nsIDOMScreen();
-nsXPCComponents_InterfacesByID.prototype.{e400e688-6b54-4a84-8c4e-56b40281981a}= new nsIStreamListenerProxy();
-nsXPCComponents_InterfacesByID.prototype.{9b2f0b4a-8f00-4a78-961a-7e84ed49b0b6}= new nsISchemaLoader();
-nsXPCComponents_InterfacesByID.prototype.{b3507946-4a44-4e40-b66c-f23e320997c5}= new nsPIAccessNode();
-nsXPCComponents_InterfacesByID.prototype.{ddf633d8-e9a4-439d-ad88-de636fd9bb75}= new nsIUploadChannel();
-nsXPCComponents_InterfacesByID.prototype.{d5b61b82-1da4-11d3-bf87-00105a1b0627}= new nsIController();
-nsXPCComponents_InterfacesByID.prototype.{8092b5f3-dc8a-459c-94f1-92f8011f2438}= new nsIDOMSVGURIReference();
-nsXPCComponents_InterfacesByID.prototype.{86960956-edb0-11d4-998b-00b0d02354a0}= new nsIBadCertListener();
-nsXPCComponents_InterfacesByID.prototype.{fc540c28-8edd-4b7a-9c30-8638289b7a7d}= new nsIDOMStorageEvent();
+/**
+* function QueryInterface(arg1)
+* @type Object
+* @param arg1 Object
+* @class nsXPCComponents
+* @since FireFox 2.0.0.3
 */
-BarProp.prototype= new Array();
+nsXPCComponents.prototype.QueryInterface=function(arg1){};
+/**
+* property interfaces
+* @type Object
+* @class nsXPCComponents
+* @since FireFox 2.0.0.3
+*/
+nsXPCComponents.prototype.interfaces=new Object();
+/**
+* property interfacesByID
+* @type Object
+* @class nsXPCComponents
+* @since FireFox 2.0.0.3
+*/
+nsXPCComponents.prototype.interfacesByID=new Object();
+/**
+* property classes
+* @type Object
+* @class nsXPCComponents
+* @since FireFox 2.0.0.3
+*/
+nsXPCComponents.prototype.classes=new Object();
+/**
+* property classesByID
+* @type Object
+* @class nsXPCComponents
+* @since FireFox 2.0.0.3
+*/
+nsXPCComponents.prototype.classesByID=new Object();
+/**
+* property stack
+* @type Object
+* @class nsXPCComponents
+* @since FireFox 2.0.0.3
+*/
+nsXPCComponents.prototype.stack=new Object();
+/**
+* property results
+* @type Object
+* @class nsXPCComponents
+* @since FireFox 2.0.0.3
+*/
+nsXPCComponents.prototype.results=new Object();
+/**
+* property manager
+* @type Object
+* @class nsXPCComponents
+* @since FireFox 2.0.0.3
+*/
+nsXPCComponents.prototype.manager=new Object();
+/**
+* property utils
+* @type Object
+* @class nsXPCComponents
+* @since FireFox 2.0.0.3
+*/
+nsXPCComponents.prototype.utils=new Object();
+/**
+* property ID
+* @type Object
+* @class nsXPCComponents
+* @since FireFox 2.0.0.3
+*/
+nsXPCComponents.prototype.ID=new Object();
+/**
+* property Exception
+* @type Object
+* @class nsXPCComponents
+* @since FireFox 2.0.0.3
+*/
+nsXPCComponents.prototype.Exception=new Object();
+/**
+* property Constructor
+* @type Object
+* @class nsXPCComponents
+* @since FireFox 2.0.0.3
+*/
+nsXPCComponents.prototype.Constructor=new Object();
+/**
+* function isSuccessCode(arg1)
+* @type Boolean
+* @param arg1 Object
+* @class nsXPCComponents
+* @since FireFox 2.0.0.3
+*/
+nsXPCComponents.prototype.isSuccessCode=function(arg1){};
+/**
+* function lookupMethod()
+* @type String
+* @class nsXPCComponents
+* @since FireFox 2.0.0.3
+*/
+nsXPCComponents.prototype.lookupMethod=function(){};
+/**
+* function reportError()
+* @class nsXPCComponents
+* @since FireFox 2.0.0.3
+*/
+nsXPCComponents.prototype.reportError=function(){};
+/**
+* Object BarProp
+* @super Object
+* @type constructor
+* @class BarProp
+* @since FireFox 2.0.0.3
+*/
+BarProp.prototype=new Object();
 function BarProp(){};
+/**
+* property visible
+* @type Boolean
+* @class BarProp
+* @since FireFox 2.0.0.3
+*/
 BarProp.prototype.visible=false;
-Screen.prototype= new Array();
+/**
+* Object Screen
+* @super Object
+* @type constructor
+* @class Screen
+* @since FireFox 2.0.0.3
+*/
+Screen.prototype=new Object();
 function Screen(){};
-Screen.prototype.top="";
-Screen.prototype.left="";
+/**
+* property top
+* @type Number
+* @class Screen
+* @since FireFox 2.0.0.3
+*/
+Screen.prototype.top=0;
+/**
+* property left
+* @type Number
+* @class Screen
+* @since FireFox 2.0.0.3
+*/
+Screen.prototype.left=0;
+/**
+* property width
+* @type Number
+* @class Screen
+* @since FireFox 2.0.0.3
+*/
 Screen.prototype.width=0;
+/**
+* property height
+* @type Number
+* @class Screen
+* @since FireFox 2.0.0.3
+*/
 Screen.prototype.height=0;
+/**
+* property pixelDepth
+* @type Number
+* @class Screen
+* @since FireFox 2.0.0.3
+*/
 Screen.prototype.pixelDepth=0;
+/**
+* property colorDepth
+* @type Number
+* @class Screen
+* @since FireFox 2.0.0.3
+*/
 Screen.prototype.colorDepth=0;
+/**
+* property availWidth
+* @type Number
+* @class Screen
+* @since FireFox 2.0.0.3
+*/
 Screen.prototype.availWidth=0;
+/**
+* property availHeight
+* @type Number
+* @class Screen
+* @since FireFox 2.0.0.3
+*/
 Screen.prototype.availHeight=0;
-Screen.prototype.availLeft="";
-Screen.prototype.availTop="";
-Crypto.prototype= new Array();
+/**
+* property availLeft
+* @type Number
+* @class Screen
+* @since FireFox 2.0.0.3
+*/
+Screen.prototype.availLeft=0;
+/**
+* property availTop
+* @type Number
+* @class Screen
+* @since FireFox 2.0.0.3
+*/
+Screen.prototype.availTop=0;
+/**
+* Object History
+* @super Object
+* @type constructor
+* @class History
+* @since FireFox 2.0.0.3
+*/
+History.prototype=new Object();
+function History(){};
+/**
+* property length
+* @type Number
+* @class History
+* @since FireFox 2.0.0.3
+*/
+History.prototype.length=0;
+/**
+* property current
+* @type Object
+* @class History
+* @since FireFox 2.0.0.3
+*/
+History.prototype.current=new Object();
+/**
+* property previous
+* @type Object
+* @class History
+* @since FireFox 2.0.0.3
+*/
+History.prototype.previous=new Object();
+/**
+* property next
+* @type Object
+* @class History
+* @since FireFox 2.0.0.3
+*/
+History.prototype.next=new Object();
+/**
+* function back()
+* @class History
+* @since FireFox 2.0.0.3
+*/
+History.prototype.back=function(){};
+/**
+* function forward()
+* @class History
+* @since FireFox 2.0.0.3
+*/
+History.prototype.forward=function(){};
+/**
+* function item(arg1)
+* @type Object
+* @param arg1 Object
+* @class History
+* @since FireFox 2.0.0.3
+*/
+History.prototype.item=function(arg1){};
+/**
+* function go()
+* @class History
+* @since FireFox 2.0.0.3
+*/
+History.prototype.go=function(){};
+/**
+* Object Crypto
+* @super Object
+* @type constructor
+* @class Crypto
+* @since FireFox 2.0.0.3
+*/
+Crypto.prototype=new Object();
 function Crypto(){};
+/**
+* property version
+* @type String
+* @class Crypto
+* @since FireFox 2.0.0.3
+*/
 Crypto.prototype.version="";
-Crypto.prototype.enableSmartCardEvents="";
+/**
+* property enableSmartCardEvents
+* @type Boolean
+* @class Crypto
+* @since FireFox 2.0.0.3
+*/
+Crypto.prototype.enableSmartCardEvents=false;
+/**
+* function generateCRMFRequest()
+* @type String
+* @class Crypto
+* @since FireFox 2.0.0.3
+*/
 Crypto.prototype.generateCRMFRequest=function(){};
+/**
+* function importUserCertificates(arg1,arg2,arg3)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @class Crypto
+* @since FireFox 2.0.0.3
+*/
 Crypto.prototype.importUserCertificates=function(arg1,arg2,arg3){};
+/**
+* function popChallengeResponse(arg1)
+* @type Object
+* @param arg1 Object
+* @class Crypto
+* @since FireFox 2.0.0.3
+*/
 Crypto.prototype.popChallengeResponse=function(arg1){};
+/**
+* function random(arg1)
+* @type Number
+* @param arg1 Object
+* @class Crypto
+* @since FireFox 2.0.0.3
+*/
 Crypto.prototype.random=function(arg1){};
+/**
+* function signText(arg1,arg2)
+* @type String
+* @param arg1 Object
+* @param arg2 Object
+* @class Crypto
+* @since FireFox 2.0.0.3
+*/
 Crypto.prototype.signText=function(arg1,arg2){};
+/**
+* function alert(arg1)
+* @param arg1 Object
+* @class Crypto
+* @since FireFox 2.0.0.3
+*/
 Crypto.prototype.alert=function(arg1){};
+/**
+* function logout()
+* @class Crypto
+* @since FireFox 2.0.0.3
+*/
 Crypto.prototype.logout=function(){};
+/**
+* function disableRightClick()
+* @class Crypto
+* @since FireFox 2.0.0.3
+*/
 Crypto.prototype.disableRightClick=function(){};
-Pkcs11.prototype= new Array();
+/**
+* Object Pkcs11
+* @super Object
+* @type constructor
+* @class Pkcs11
+* @since FireFox 2.0.0.3
+*/
+Pkcs11.prototype=new Object();
 function Pkcs11(){};
+/**
+* function deletemodule(arg1)
+* @param arg1 Object
+* @class Pkcs11
+* @since FireFox 2.0.0.3
+*/
 Pkcs11.prototype.deletemodule=function(arg1){};
+/**
+* function addmodule(arg1,arg2,arg3,arg4)
+* @param arg1 Object
+* @param arg2 Object
+* @param arg3 Object
+* @param arg4 Object
+* @class Pkcs11
+* @since FireFox 2.0.0.3
+*/
 Pkcs11.prototype.addmodule=function(arg1,arg2,arg3,arg4){};
-XULControllers.prototype= new Array();
+/**
+* Object XULControllers
+* @super Object
+* @type constructor
+* @class XULControllers
+* @since FireFox 2.0.0.3
+*/
+XULControllers.prototype=new Object();
 function XULControllers(){};
+/**
+* function QueryInterface(arg1)
+* @type Object
+* @param arg1 Object
+* @class XULControllers
+* @since FireFox 2.0.0.3
+*/
 XULControllers.prototype.QueryInterface=function(arg1){};
-XULControllers.prototype.commandDispatcher="";
+/**
+* property commandDispatcher
+* @type Object
+* @class XULControllers
+* @since FireFox 2.0.0.3
+*/
+XULControllers.prototype.commandDispatcher=new Object();
+/**
+* function getControllerForCommand(arg1)
+* @type Object
+* @param arg1 Object
+* @class XULControllers
+* @since FireFox 2.0.0.3
+*/
 XULControllers.prototype.getControllerForCommand=function(arg1){};
+/**
+* function insertControllerAt(arg1,arg2)
+* @param arg1 Object
+* @param arg2 Object
+* @class XULControllers
+* @since FireFox 2.0.0.3
+*/
 XULControllers.prototype.insertControllerAt=function(arg1,arg2){};
+/**
+* function removeControllerAt(arg1)
+* @type String
+* @param arg1 Object
+* @class XULControllers
+* @since FireFox 2.0.0.3
+*/
 XULControllers.prototype.removeControllerAt=function(arg1){};
+/**
+* function getControllerAt(arg1)
+* @type Object
+* @param arg1 Object
+* @class XULControllers
+* @since FireFox 2.0.0.3
+*/
 XULControllers.prototype.getControllerAt=function(arg1){};
+/**
+* function appendController(arg1)
+* @param arg1 Object
+* @class XULControllers
+* @since FireFox 2.0.0.3
+*/
 XULControllers.prototype.appendController=function(arg1){};
+/**
+* function removeController(arg1)
+* @param arg1 Object
+* @class XULControllers
+* @since FireFox 2.0.0.3
+*/
 XULControllers.prototype.removeController=function(arg1){};
+/**
+* function getControllerId(arg1)
+* @type String
+* @param arg1 Object
+* @class XULControllers
+* @since FireFox 2.0.0.3
+*/
 XULControllers.prototype.getControllerId=function(arg1){};
+/**
+* function getControllerById(arg1)
+* @type Object
+* @param arg1 Object
+* @class XULControllers
+* @since FireFox 2.0.0.3
+*/
 XULControllers.prototype.getControllerById=function(arg1){};
+/**
+* function getControllerCount()
+* @type Number
+* @class XULControllers
+* @since FireFox 2.0.0.3
+*/
 XULControllers.prototype.getControllerCount=function(){};
-StorageList.prototype= new Array();
+/**
+* Object StorageList
+* @super Object
+* @type constructor
+* @class StorageList
+* @since FireFox 2.0.0.3
+*/
+StorageList.prototype=new Object();
 function StorageList(){};
+
+/**
+* Object HTMLBRElement
+* @super Object
+* @type constructor
+* @class StorageList
+* @since FireFox 2.0.0.3
+*/
+HTMLBRElement.prototype=new Element();
+function HTMLBRElement(){};
