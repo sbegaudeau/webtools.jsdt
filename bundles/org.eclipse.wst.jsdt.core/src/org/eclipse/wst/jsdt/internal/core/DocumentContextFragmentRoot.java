@@ -78,14 +78,17 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 	
 	class RestrictedDocumentBinding implements IRestrictedAccessBindingRequestor {
 		
-		private String foundPath;
+		private ArrayList foundPaths=new ArrayList();
+		private String exclude;
 		
 		public void reset() {
-			foundPath=null;
+			foundPaths.clear();
 		}
 		
 		public boolean acceptBinding(int type,int modifiers, char[] packageName,char[] simpleTypeName, String path, AccessRestriction access) {
 			if(DEBUG) {
+				if(path.compareTo(exclude)==0) return false;
+				
 				IJavaProject proj = getJavaProject();
 				try {
 					IClasspathEntry[] entries = proj.getResolvedClasspath(true);
@@ -111,7 +114,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 			for(int i = 0;i<includedFiles.length;i++) {
 				if(Util.isSameResourceString(path, includedFiles[i])) {
 					if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Accepting binding.. " + new String(simpleTypeName) + " in " + path + "\n\tfor file " + fRelativeFile.toString());
-					this.foundPath=path;
+					this.foundPaths.add(path);
 					return true;
 				}
 			}
@@ -121,7 +124,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 			for(int i = 0;i<systemFiles.length;i++) {
 				if(Util.isSameResourceString(path, systemFiles[i])) {
 					if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Accepting binding.. " + new String(simpleTypeName) + " in " + path + " \n\tfor file " + fRelativeFile.toString());
-					this.foundPath=path;
+					this.foundPaths.add(path);
 					return true;
 				}
 			}
@@ -137,7 +140,22 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 		}
 		
 		public String getFoundPath() {
-			return foundPath;
+			return foundPaths.size()>0?(String)foundPaths.get(0):null;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessBindingRequestor#getFoundPaths()
+		 */
+		public ArrayList getFoundPaths() {
+			return foundPaths;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessBindingRequestor#setExcludePath(java.lang.String)
+		 */
+		public void setExcludePath(String excludePath) {
+			this.exclude=excludePath;
+			
 		}
 	} 
 	
