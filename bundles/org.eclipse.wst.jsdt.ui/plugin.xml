@@ -5135,6 +5135,8 @@
     	</launchConfigurationType>
 	</extension>
 
+<!-- no need to provide a global SpellingEngine -->
+<!--
     <extension point="org.eclipse.ui.workbench.texteditor.spellingEngine">
         <engine
               preferencesClass="org.eclipse.wst.jsdt.internal.ui.preferences.SpellingPreferenceBlock"
@@ -5144,7 +5146,8 @@
               id="org.eclipse.wst.jsdt.internal.ui.text.spelling.DefaultSpellingEngine">
         </engine>
     </extension>
-        
+-->
+       
     <extension point="org.eclipse.core.runtime.preferences">
         <initializer class="org.eclipse.wst.jsdt.internal.ui.JavaUIPreferenceInitializer"/>
     </extension>
