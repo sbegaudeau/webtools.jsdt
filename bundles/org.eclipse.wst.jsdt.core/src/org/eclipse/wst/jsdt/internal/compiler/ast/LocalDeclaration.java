@@ -194,11 +194,13 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 			varBinding=scope.getBinding(name, Binding.VARIABLE, this, false /*do not resolve hidden field*/);
 		else
 			varBinding=scope.getLocalBinding(name, Binding.VARIABLE, this, false);
+		boolean alreadyDefined=false;
 		if (varBinding != null && varBinding.isValidBinding()){
 			VariableBinding existingVariable=(VariableBinding)varBinding;
 			if (existingVariable.isFor(this))
 			{
 				existingVariable.type=variableType;
+				alreadyDefined=true;
 			}
 			else
 			{
@@ -218,12 +220,15 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 		if ((modifiers & ClassFileConstants.AccFinal)!= 0 && this.initialization == null) {
 			modifiers |= ExtraCompilerModifiers.AccBlankFinal;
 		}
-		this.binding = new LocalVariableBinding(this, variableType, modifiers, false);
-		MethodScope methodScope = scope.methodScope();
-		if (methodScope!=null)
-			methodScope.addLocalVariable(binding);
-		else
-			scope.compilationUnitScope().addLocalVariable(binding);
+		if (!(this.binding!=null && alreadyDefined))
+		{
+			this.binding = new LocalVariableBinding(this, variableType, modifiers, false);
+			MethodScope methodScope = scope.enclosingMethodScope();
+			if (methodScope!=null)
+				methodScope.addLocalVariable(binding);
+			else
+				scope.compilationUnitScope().addLocalVariable(binding);
+		}
 		this.binding.setConstant(Constant.NotAConstant);
 		// allow to recursivelly target the binding....
 		// the correct constant is harmed if correctly computed at the end of this method

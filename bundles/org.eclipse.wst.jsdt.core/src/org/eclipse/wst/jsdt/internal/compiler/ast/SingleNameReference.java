@@ -855,13 +855,16 @@ public int nullStatus(FlowInfo flowInfo) {
 								: fieldType);
 					}
 	
-					// thus it was a type
-					bits &= ~RestrictiveFlagMASK;  // clear bits
-					bits |= Binding.TYPE;
 					if (binding instanceof MethodBinding)
 					{
 						MethodBinding methodBinding=(MethodBinding)binding;
-						return BaseTypeBinding.UNKNOWN;
+						return scope.getJavaLangFunction();
+					}
+					else
+					{
+					// thus it was a type
+						bits &= ~RestrictiveFlagMASK;  // clear bits
+						bits |= Binding.TYPE;
 					}
 
 				case Binding.TYPE : //========only type==============
