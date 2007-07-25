@@ -49,6 +49,7 @@ public class CodeFormatterConfigurationBlock extends ProfileConfigurationBlock {
     		"" + //$NON-NLS-1$
     		"var index=0;" + //$NON-NLS-1$
     		"var arr=[];" + //$NON-NLS-1$
+    		"var obj={x:\"\",y:function(){}};" + //$NON-NLS-1$
     		"function foo(){var1= new Object();}" + //$NON-NLS-1$
     		"function pop(){return arr[index--];}" + //$NON-NLS-1$
     		"function push( elem){arr[index++]=elem;}" + //$NON-NLS-1$
