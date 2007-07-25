@@ -4631,7 +4631,7 @@ protected void consumeMethodInvocationPrimary() {
 	} else if (receiver instanceof FieldReference) {
 		FieldReference fieldReference = (FieldReference) receiver;
 		m.selector=fieldReference.token;
-		m.nameSourcePosition= (((long) fieldReference.sourceStart) << 32)+(fieldReference.sourceStart+m.selector.length-1);
+		m.nameSourcePosition= (((long) (fieldReference.sourceEnd-(m.selector.length-1))) << 32)+(fieldReference.sourceEnd);
 		receiver=fieldReference.receiver;
 	}
 
