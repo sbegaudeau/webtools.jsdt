@@ -8244,7 +8244,7 @@ public final class CompletionEngine
 
 				case Scope.CLASS_SCOPE :
 					ClassScope classScope = (ClassScope) currentScope;
-					SourceTypeBinding enclosingType = classScope.referenceContext.binding;
+					SourceTypeBinding enclosingType = classScope.getReferenceBinding();
 					computeAlreadyDefinedName(
 							enclosingType,
 							classScope,
