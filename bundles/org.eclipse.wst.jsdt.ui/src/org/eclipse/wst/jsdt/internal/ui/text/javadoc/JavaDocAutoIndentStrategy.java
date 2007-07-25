@@ -99,7 +99,9 @@ public class JavaDocAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy
 			buf.append(indentation.substring(0, lengthToAdd));
 
 			if (firstNonWS < offset) {
-				if (d.getChar(firstNonWS) == '/') {
+				/* ensure this isn't a double slash comment */
+				
+				if (d.getChar(firstNonWS) == '/' && d.getChar(firstNonWS+1)!='/') {
 					// javadoc started on this line
 					buf.append(" * "); //$NON-NLS-1$
 
