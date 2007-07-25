@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search;
 
+import java.util.ArrayList;
+
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 
 /**
@@ -25,6 +27,8 @@ public interface IRestrictedAccessBindingRequestor {
 	
 	public void reset();
 
+	public void setExcludePath(String excludePath);
 	
+	public ArrayList getFoundPaths();
 	
 }

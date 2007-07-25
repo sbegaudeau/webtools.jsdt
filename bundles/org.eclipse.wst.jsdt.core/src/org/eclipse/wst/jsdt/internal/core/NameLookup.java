@@ -103,39 +103,6 @@ public class NameLookup implements SuffixConstants {
 		}
 	}
 
-	class BindingAcceptor implements IRestrictedAccessBindingRequestor  {
-		ArrayList foundPaths=new ArrayList();
-		String excludePath;
-		
-		public BindingAcceptor(String excludePath) {
-			this.excludePath = excludePath;
-		}
-		public boolean acceptBinding(int type,int modifiers, char[] packageName,
-				char[] simpleTypeName, 
-				String path, AccessRestriction access) {
-			if (excludePath!=null && path.equals(excludePath))
-				return false;
-			for (int i = 0; workingCopies!=null && i < workingCopies.length; i++) {
-				if (workingCopies[i].getPath().toString().equals(path))
-					return false;
-			}
-			foundPaths.add(path);
-			return true;
-		}
-		/* (non-Javadoc)
-		 * @see org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessBindingRequestor#getFoundPaths()
-		 */
-		public String getFoundPath() {
-			return foundPaths.size()>0?(String)foundPaths.get(0):null;
-		}
-		
-		
-		public void reset() {
-			foundPaths.clear();
-		}
-	
-	}
-
 	// TODO (jerome) suppress the accept flags (qualified name is sufficient to find a type)
 	/**
 	 * Accept flag for specifying classes.
@@ -329,29 +296,40 @@ public class NameLookup implements SuffixConstants {
 	protected  IRestrictedAccessBindingRequestor getRestrictedAccessRequestor() {
 		if(this.restrictedRequestor==null) {
 			this.restrictedRequestor=new IRestrictedAccessBindingRequestor() {
-				String foundPath;
+				ArrayList foundPaths=new ArrayList();
+				String excludePath;
+				
+				public void setExcludePath(String excludePath) {
+					this.excludePath = excludePath;
+				}
 				public boolean acceptBinding(int type,int modifiers, char[] packageName,
 						char[] simpleTypeName, 
 						String path, AccessRestriction access) {
+					if (excludePath!=null && path.equals(excludePath))
+						return false;
 					for (int i = 0; workingCopies!=null && i < workingCopies.length; i++) {
 						if (workingCopies[i].getPath().toString().equals(path))
 							return false;
 					}
-					this.foundPath=path;
+					foundPaths.add(path);
 					return true;
 				}
 				/* (non-Javadoc)
 				 * @see org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessBindingRequestor#getFoundPaths()
 				 */
 				public String getFoundPath() {
-					return foundPath;
+					return foundPaths.size()>0?(String)foundPaths.get(0):null;
 				}
 				
 				
 				public void reset() {
-					foundPath=null;
+					foundPaths.clear();
 				}
-			
+				public ArrayList getFoundPaths()
+				{
+					return foundPaths;
+				}
+
 			}; 
 		}
 		
@@ -2152,7 +2130,8 @@ public class NameLookup implements SuffixConstants {
 				
 
 
-				BindingAcceptor bindingAcceptor = new BindingAcceptor(exclude);
+				IRestrictedAccessBindingRequestor bindingAcceptor = getRestrictedAccessRequestor();
+				bindingAcceptor.setExcludePath(exclude);
 				
 				try {
 					int matchRule = SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE;
@@ -2167,7 +2146,7 @@ public class NameLookup implements SuffixConstants {
 							progressMonitor);
 					if (bindingAcceptor.getFoundPath()!=null)
 					{
-						for (Iterator iterator = bindingAcceptor.foundPaths.iterator(); iterator
+						for (Iterator iterator = bindingAcceptor.getFoundPaths().iterator(); iterator
 								.hasNext();) {
 							String path = (String) iterator.next();
 							

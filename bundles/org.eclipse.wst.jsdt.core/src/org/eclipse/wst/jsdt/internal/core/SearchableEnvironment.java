@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
+import java.util.ArrayList;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.wst.jsdt.core.*;
@@ -611,9 +613,12 @@ public class SearchableEnvironment implements INameEnvironment,
 				}
 			};
 			IRestrictedAccessBindingRequestor bindingRequestor = new IRestrictedAccessBindingRequestor() {
+				String exclude;
 				public boolean acceptBinding(int type,int modifiers, char[] packageName,
 						char[] simpleTypeName, 
 						String path, AccessRestriction access) {
+					if (exclude!=null && exclude.equals(path))
+						return false;
 					if (excludePath != null && excludePath.equals(path))
 						return false;
 					storage.acceptBinding(packageName, simpleTypeName,type,
@@ -628,6 +633,17 @@ public class SearchableEnvironment implements INameEnvironment,
 				}
 
 				public void reset() {}
+
+
+				public ArrayList getFoundPaths() {
+					return null;
+				}
+
+
+				public void setExcludePath(String excludePath) {
+					this.exclude=excludePath;
+					
+				}
 			};
 			try {
 				int matchRule = SearchPattern.R_PREFIX_MATCH;
