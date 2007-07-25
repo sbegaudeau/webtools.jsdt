@@ -3648,6 +3648,7 @@ public NameReference createSingleAssistNameReference(char[] assistName, long pos
 				keywords[count++]= Keywords.FALSE;
 				keywords[count++]= Keywords.NULL;
 				keywords[count++]= Keywords.UNDEFINED;
+				keywords[count++]= Keywords.FUNCTION;
 			
 				if(kind == K_SWITCH_LABEL) {
 					if(topKnownElementInfo(COMPLETION_OR_ASSIST_PARSER) != DEFAULT) {
