@@ -45,7 +45,7 @@ public class CompletionOnSingleNameReference extends SingleNameReference {
 	}
 
 	public CompletionOnSingleNameReference(char[] source, long pos, char[][] possibleKeywords, boolean canBeExplicitConstructor, boolean isInsideAnnotationAttribute) {
-		super(source, pos);
+		super(source, (pos>=0)?pos : 0);
 		this.possibleKeywords = possibleKeywords;
 		this.canBeExplicitConstructor = canBeExplicitConstructor;
 		this.isInsideAnnotationAttribute = isInsideAnnotationAttribute;
