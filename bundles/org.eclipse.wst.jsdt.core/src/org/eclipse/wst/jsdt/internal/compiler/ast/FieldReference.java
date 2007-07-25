@@ -514,6 +514,11 @@ public StringBuffer printExpression(int indent, StringBuffer output) {
 	return receiver.printExpression(0, output).append('.').append(token);
 }
 
+
+public TypeBinding resolveType(BlockScope scope) {
+	return resolveType(scope, false, null);
+}
+
 public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding useType) {
 	// Answer the signature type of the field.
 	// constants are propaged when the field is final
