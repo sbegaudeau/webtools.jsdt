@@ -11,36 +11,46 @@
 
 package org.eclipse.wst.jsdt.internal.ui.text.spelling;
 
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.content.IContentType;
-
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.Region;
+import org.eclipse.jface.text.reconciler.DirtyRegion;
+import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
+import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.ISourceViewer;
-
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.ui.texteditor.spelling.ISpellingEngine;
 import org.eclipse.ui.texteditor.spelling.ISpellingProblemCollector;
+import org.eclipse.ui.texteditor.spelling.SpellingContext;
 import org.eclipse.ui.texteditor.spelling.SpellingProblem;
-import org.eclipse.ui.texteditor.spelling.SpellingReconcileStrategy;
 import org.eclipse.ui.texteditor.spelling.SpellingService;
-
-import org.eclipse.ui.editors.text.EditorsUI;
-
 import org.eclipse.wst.jsdt.core.IProblemRequestor;
-import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 
 /**
  * Reconcile strategy for spell checking comments.
  *
+ * Modified to use the JavaSpellingEngine always and not consult the SpellingService of the platform. It only checks
+ * to comply with the Enabled settings.
+ * 
  * @since 3.1
  */
-public class JavaSpellingReconcileStrategy extends SpellingReconcileStrategy {
+public class JavaSpellingReconcileStrategy implements IReconcilingStrategy, IReconcilingStrategyExtension { //extends SpellingReconcileStrategy {
 
+	//Fix to only call the JavaScript Spell checker 
+	//This disconnects from the SpellingService that the platform provides but it is still
+	//driven by the enable setting.
+	protected ISpellingEngine spellingEngine = new JavaSpellingEngine();
+	
 	
 	/**
 	 * Spelling problem collector that forwards {@link SpellingProblem}s as
@@ -55,8 +65,8 @@ public class JavaSpellingReconcileStrategy extends SpellingReconcileStrategy {
 			IProblemRequestor requestor= fRequestor;
 			if (requestor != null) {
 				try {
-					int line= getDocument().getLineOfOffset(problem.getOffset()) + 1;
-					String word= getDocument().get(problem.getOffset(), problem.getLength());
+					int line= fDocument.getLineOfOffset(problem.getOffset()) + 1;
+					String word= fDocument.get(problem.getOffset(), problem.getLength());
 					boolean dictionaryMatch= false;
 					boolean sentenceStart= false;
 					if (problem instanceof JavaSpellingProblem) {
@@ -66,7 +76,7 @@ public class JavaSpellingReconcileStrategy extends SpellingReconcileStrategy {
 					// see: https://bugs.eclipse.org/bugs/show_bug.cgi?id=81514
 					IEditorInput editorInput= fEditor.getEditorInput();
 					if (editorInput != null) {
-						CoreSpellingProblem iProblem= new CoreSpellingProblem(problem.getOffset(), problem.getOffset() + problem.getLength() - 1, line, problem.getMessage(), word, dictionaryMatch, sentenceStart, getDocument(), editorInput.getName());
+						CoreSpellingProblem iProblem= new CoreSpellingProblem(problem.getOffset(), problem.getOffset() + problem.getLength() - 1, line, problem.getMessage(), word, dictionaryMatch, sentenceStart, fDocument, editorInput.getName());
 						requestor.acceptProblem(iProblem);
 					}
 				} catch (BadLocationException x) {
@@ -96,8 +106,8 @@ public class JavaSpellingReconcileStrategy extends SpellingReconcileStrategy {
 	/** The id of the problem */
 	public static final int SPELLING_PROBLEM_ID= 0x80000000;
 
-	/** Properties file content type */
-	private static final IContentType JAVA_CONTENT_TYPE= Platform.getContentTypeManager().getContentType(JavaCore.JAVA_SOURCE_CONTENT_TYPE);
+//	/** Properties file content type */
+//	private static final IContentType JAVA_CONTENT_TYPE= Platform.getContentTypeManager().getContentType(JavaCore.JAVA_SOURCE_CONTENT_TYPE);
 
 	/** The text editor to operate on. */
 	private ITextEditor fEditor;
@@ -105,6 +115,21 @@ public class JavaSpellingReconcileStrategy extends SpellingReconcileStrategy {
 	/** The problem requester. */
 	private IProblemRequestor fRequestor;
 
+	/** The text editor to operate on. */
+	private ISourceViewer fViewer;
+
+	/** The document to operate on. */
+	private IDocument fDocument;
+
+	/** The progress monitor. */
+	private IProgressMonitor fProgressMonitor;
+
+	private SpellingService fSpellingService;
+	
+	private ISpellingProblemCollector fSpellingProblemCollector;
+	
+	/** The spelling context containing the Java source content type. */
+	private SpellingContext fSpellingContext;
 	
 	/**
 	 * Creates a new comment reconcile strategy.
@@ -113,7 +138,11 @@ public class JavaSpellingReconcileStrategy extends SpellingReconcileStrategy {
 	 * @param editor the text editor to operate on
 	 */
 	public JavaSpellingReconcileStrategy(ISourceViewer viewer, ITextEditor editor) {
-		super(viewer, EditorsUI.getSpellingService());
+		
+		Assert.isNotNull(viewer);
+		fViewer= viewer;
+		fSpellingContext= new SpellingContext();
+		
 		fEditor= editor;
 	}
 
@@ -121,8 +150,39 @@ public class JavaSpellingReconcileStrategy extends SpellingReconcileStrategy {
 	 * @see org.eclipse.jface.text.reconciler.IReconcilingStrategy#reconcile(org.eclipse.jface.text.IRegion)
 	 */
 	public void reconcile(IRegion region) {
-		if (fRequestor != null && isSpellingEnabled())
-			super.reconcile(region);
+		if (fRequestor != null && isSpellingEnabled()){
+			//super.reconcile(region);
+			
+			if (getAnnotationModel() == null || fSpellingProblemCollector == null)
+				return;
+			
+			try {
+				fSpellingProblemCollector.beginCollecting();
+				
+				ISafeRunnable runnable= new ISafeRunnable() {
+					public void run() throws Exception {
+						spellingEngine.check( fDocument, new IRegion[] { new Region(0, fDocument.getLength()) }, fSpellingContext, fSpellingProblemCollector, fProgressMonitor );
+					}
+					public void handleException(Throwable x) {
+					}
+				};
+				SafeRunner.run(runnable);					
+				
+			} finally {
+				fSpellingProblemCollector.endCollecting();
+			}
+			
+		}
+	}
+	
+	/*
+	 * @see org.eclipse.jface.text.reconciler.IReconcilingStrategy#setDocument(org.eclipse.jface.text.IDocument)
+	 */
+	public void setDocument(IDocument document) {
+		fDocument= document;
+		fSpellingProblemCollector= createSpellingProblemCollector();
+		
+		updateProblemRequester();
 	}
 	
 	private boolean isSpellingEnabled() {
@@ -135,22 +195,6 @@ public class JavaSpellingReconcileStrategy extends SpellingReconcileStrategy {
 	 */
 	protected ISpellingProblemCollector createSpellingProblemCollector() {
 		return new SpellingProblemCollector();
-	}
-	
-	/*
-	 * @see org.eclipse.ui.texteditor.spelling.SpellingReconcileStrategy#getContentType()
-	 * @since 3.3
-	 */
-	protected IContentType getContentType() {
-		return JAVA_CONTENT_TYPE;
-	}
-
-	/*
-	 * @see org.eclipse.jface.text.reconciler.IReconcilingStrategy#setDocument(org.eclipse.jface.text.IDocument)
-	 */
-	public void setDocument(IDocument document) {
-		super.setDocument(document);
-		updateProblemRequester();
 	}
 
 	/**
@@ -170,5 +214,17 @@ public class JavaSpellingReconcileStrategy extends SpellingReconcileStrategy {
 		if (documentProvider == null)
 			return null;
 		return documentProvider.getAnnotationModel(fEditor.getEditorInput());
+	}
+
+	public void reconcile(DirtyRegion dirtyRegion, IRegion subRegion) {
+		reconcile(subRegion);
+	}
+
+	public void initialReconcile() {
+		reconcile(new Region(0, fDocument.getLength()));
+	}
+
+	public void setProgressMonitor(IProgressMonitor monitor) {
+		fProgressMonitor= monitor;
 	}
 }
