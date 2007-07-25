@@ -77,7 +77,9 @@ public class CombinedSourceTypeBinding extends SourceTypeBinding {
 
 
 	public boolean isEquivalentTo(TypeBinding otherType) {
-		throw new UnimplementedException("should not get here");
+		if (this == otherType) return true;
+		
+		return false;
 	}
 
 

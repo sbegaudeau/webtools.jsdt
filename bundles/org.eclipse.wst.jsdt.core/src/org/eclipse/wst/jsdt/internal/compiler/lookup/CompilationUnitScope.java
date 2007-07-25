@@ -283,14 +283,13 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 					existingBinding=(SourceTypeBinding)typeBinding;
 			}
 			String fileName=new String(this.referenceContext.getFileName());
-				environment.addUnitsContainingBinding(null, typeDecl.getName(), Binding.TYPE,fileName);
-				ClassScope child = new ClassScope(this, typeDecl);
-				SourceTypeBinding type = child.buildInferredType(null, environment.defaultPackage,
+			ClassScope child = new ClassScope(this, typeDecl);
+			SourceTypeBinding type = child.buildInferredType(null, environment.defaultPackage,
 					accessRestriction);
 			//		SourceTypeBinding type = buildType(typeDecl,null, fPackage, accessRestriction);
 			if (type != null)
 			{
-				if (existingBinding!=null && false)
+				if (existingBinding!=null && !typeDecl.isAnonymous )
 				{
 					if (existingBinding instanceof CombinedSourceTypeBinding)
 					{
@@ -301,6 +300,9 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 						existingBinding=new CombinedSourceTypeBinding(child,type,existingBinding);
 					environment.defaultPackage.addType(existingBinding);
 				}
+				else
+					if (!typeDecl.isAnonymous)
+					environment.addUnitsContainingBinding(null, typeDecl.getName(), Binding.TYPE,fileName);
 				topLevelTypes[count++] = type;
 			}
 		}		
