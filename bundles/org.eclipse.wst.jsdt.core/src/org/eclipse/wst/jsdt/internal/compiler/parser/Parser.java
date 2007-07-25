@@ -1187,7 +1187,7 @@ protected RecoveredElement recoverFunctionExpression(RecoveredElement element, A
     funcExpr.sourceStart=method.sourceStart;
 
 	
-	if (isAssignment)
+	if (isAssignment && start>=0)
 	{
 		expression=new Assignment(this.expressionStack[start],funcExpr,method.declarationSourceEnd);
 	}
