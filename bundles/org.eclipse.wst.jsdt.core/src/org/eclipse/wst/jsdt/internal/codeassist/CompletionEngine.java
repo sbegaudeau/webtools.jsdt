@@ -1719,7 +1719,7 @@ public final class CompletionEngine
 					scope,
 					new ObjectVector(),
 					false,
-					true,
+					false,
 					false,
 					messageSend,
 					scope,
@@ -5198,6 +5198,27 @@ public final class CompletionEngine
 					break;
 
 				case Scope.COMPILATION_UNIT_SCOPE :
+					CompilationUnitScope compScope = (CompilationUnitScope) scope;
+					CompilationUnitBinding compBinding = compScope.enclosingCompilationUnit();
+					findMethods(
+						token,
+						null,
+						argTypes,
+						compBinding,
+						compScope,
+						methodsFound,
+						staticsOnly,
+						false,
+						false,
+						invocationSite,
+						invocationScope,
+						true,
+						false,
+						true,
+						null,
+						null,
+						null,
+						false);
 					break done;
 			}
 			scope = scope.parent;
