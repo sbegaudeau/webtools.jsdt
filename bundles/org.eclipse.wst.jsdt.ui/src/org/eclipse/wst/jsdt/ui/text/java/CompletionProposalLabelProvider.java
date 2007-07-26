@@ -265,7 +265,9 @@ public class CompletionProposalLabelProvider {
 			if (!Arrays.equals(Signature.ANY,returnType))
 			{
 				nameBuffer.append("  "); //$NON-NLS-1$
-				nameBuffer.append(returnType);
+				//@GINO: Anonymous UI Label
+				org.eclipse.wst.jsdt.internal.core.util.Util.insertTypeLabel( returnType, nameBuffer );
+				//nameBuffer.append(returnType);
 			}
 		}
 
