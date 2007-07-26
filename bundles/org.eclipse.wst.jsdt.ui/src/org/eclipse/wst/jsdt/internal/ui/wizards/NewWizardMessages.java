@@ -760,6 +760,12 @@ public final class NewWizardMessages extends NLS {
 	public static String EditVariableEntryDialog_filename_empty;
 	public static String JavaProjectWizardFirstPage_DetectGroup_jre_message;
 
+	public static String Javascript_UI_Wizard_New_Description;
+	public static String Javascript_UI_Wizard_New_Heading;
+	public static String Javascript_UI_Wizard_New_Title;
+	public static String Javascript_Error_Filename_Must_End_JS;
+	public static String Javascript_Resource_Group_Name_Exists;
+	public static String Javascript_Warning_Folder_Must_Be_Inside_Web_Content;
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, NewWizardMessages.class);
 	}

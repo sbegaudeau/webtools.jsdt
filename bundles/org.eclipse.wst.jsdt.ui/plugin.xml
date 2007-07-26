@@ -527,6 +527,7 @@
             %NewJavaProject.description
          </description>
       </wizard>
+<!--      
       <wizard
             name="%NewJavaPackage.label"
             icon="$nl$/icons/full/etool16/newpack_wiz.gif"
@@ -537,13 +538,12 @@
             %NewJavaPackage.description
          </description>
       </wizard>
-<!--      
       <wizard
             name="%NewJavaClass.label"
             icon="$nl$/icons/full/etool16/newclass_wiz.gif"
             category="org.eclipse.wst.jsdt.ui.java"
             id="org.eclipse.wst.jsdt.ui.wizards.NewClassCreationWizard">
-         <class class="org.eclipse.wst.jsdt.internal.ui.wizards.NewClassCreationWizard">
+         <class class="org.eclipse.wst.jsdt.internal.ui.wizards.NewJSWizard">
             <parameter name="javatype" value="true"/>
          </class>
          <description>
