@@ -119,10 +119,7 @@ public void acceptResult(CompilationResult result) {
 	// Before reporting the new problems, we need to update the problem count &
 	// remove the old problems. Plus delete additional class files that no longer exist.
 
-	SourceFile compilationUnit=null;
-	try {
-		compilationUnit = (SourceFile) result.getCompilationUnit();
-	} catch (RuntimeException ex) {}
+	SourceFile compilationUnit = (SourceFile) result.getCompilationUnit(); // go directly back to the sourceFile
 	if (!workQueue.isCompiled(compilationUnit)) {
 		workQueue.finished(compilationUnit);
 
