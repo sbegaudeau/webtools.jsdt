@@ -2901,15 +2901,16 @@ private int internalScanIdentifierOrKeyword(int index, int length, char[] data) 
 					else
 						return TokenNameIdentifier;
 				case 8 :
-					if ((data[++index] == 'e')
-						&& (data[++index] == 'b')
-						&& (data[++index] == 'u')
-						&& (data[++index] == 'g')
-						&& (data[++index] == 'g')
-						&& (data[++index] == 'e')
-						&& (data[++index] == 'r'))
-						return TokenNamedebugger;
-					else
+//@GINO: Bug 197987 (Temp Fix)
+//					if ((data[++index] == 'e')
+//						&& (data[++index] == 'b')
+//						&& (data[++index] == 'u')
+//						&& (data[++index] == 'g')
+//						&& (data[++index] == 'g')
+//						&& (data[++index] == 'e')
+//						&& (data[++index] == 'r'))
+//						return TokenNamedebugger;
+//					else
 						return TokenNameIdentifier;
 				default :
 					return TokenNameIdentifier;

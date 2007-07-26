@@ -1306,7 +1306,16 @@ Global.prototype.Undefined=0;
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
- */ 
+ */
+
+//@GINO: Bug 197987 (Temp Fix)
+/**
+  * Property debugger
+  * @class Global
+  * @description Debugger keyword
+ */
+Global.prototype.debugger=null;
+
 Global.prototype.eval=function(s){};
 /**
   * function parseInt(s,radix)
@@ -1809,3 +1818,6 @@ TypeError.prototype=new Error();
  */
 function URIError(){};
 URIError.prototype=new Error();
+
+//support for debugger keyword
+var debugger = null;
