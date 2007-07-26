@@ -65,7 +65,7 @@ public class SourceElementParser extends CommentRecorderParser {
 	boolean useSourceJavadocParser = true;
 	
 	public static final boolean NOTIFY_LOCALS=false;
-	
+	static final ISourceElementRequestor.TypeParameterInfo[ ] EMPTY_TYPEPARAMETERINFO=new ISourceElementRequestor.TypeParameterInfo[0];
 /**
  * An ast visitor that visits local type declarations.
  */
@@ -1337,16 +1337,7 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 		}
 		isVarArgs = arguments[argumentLength-1].isVarArgs();
 	}
-	char[][] thrownExceptionTypes = null;
-	TypeReference[] thrownExceptions = methodDeclaration.thrownExceptions;
-	if (thrownExceptions != null) {
-		int thrownExceptionLength = thrownExceptions.length;
-		thrownExceptionTypes = new char[thrownExceptionLength][];
-		for (int i = 0; i < thrownExceptionLength; i++) {
-			thrownExceptionTypes[i] = 
-				CharOperation.concatWith(thrownExceptions[i].getParameterizedTypeName(), '.'); 
-		}
-	}
+	char[][] thrownExceptionTypes = getThrownExceptionTypes(methodDeclaration);
 	// by default no selector end position
 	int selectorSourceEnd = -1;
 	if (methodDeclaration.isConstructor()) {
@@ -1447,6 +1438,20 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 	this.nestedMethodIndex--;
 }
 
+private char[][] getThrownExceptionTypes(AbstractMethodDeclaration methodDeclaration) {
+	char[][] thrownExceptionTypes = null;
+	TypeReference[] thrownExceptions = methodDeclaration.thrownExceptions;
+	if (thrownExceptions != null) {
+		int thrownExceptionLength = thrownExceptions.length;
+		thrownExceptionTypes = new char[thrownExceptionLength][];
+		for (int i = 0; i < thrownExceptionLength; i++) {
+			thrownExceptionTypes[i] = 
+				CharOperation.concatWith(thrownExceptions[i].getParameterizedTypeName(), '.'); 
+		}
+	}
+	return thrownExceptionTypes;
+}
+
 /*
 * Update the bodyStart of the corresponding parse node
 */
@@ -1482,48 +1487,100 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 				boolean deprecated = (currentModifiers & ClassFileConstants.AccDeprecated) != 0 || hasDeprecatedAnnotation(fieldDeclaration.annotations);	
 			
 				
-//				if (fieldDeclaration.type == null) {
-//					// enum constant
-//					typeName = declaringType.name;
-//					currentModifiers |= ClassFileConstants.AccEnum;
-//				} else {
-//					// regular field
-//					typeName = CharOperation.concatWith(fieldDeclaration.type.getParameterizedTypeName(), '.');
-//				}
-				ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
-				fieldInfo.declarationStart = fieldDeclaration.declarationSourceStart;
-				fieldInfo.name = fieldDeclaration.name;
-				fieldInfo.modifiers = deprecated ? (currentModifiers & ExtraCompilerModifiers.AccJustFlag) | ClassFileConstants.AccDeprecated : currentModifiers & ExtraCompilerModifiers.AccJustFlag;
-				fieldInfo.type = fieldDeclaration.inferredType!=null ? fieldDeclaration.inferredType.getName() : null;
-				fieldInfo.nameSourceStart = fieldDeclaration.sourceStart;
-				fieldInfo.nameSourceEnd = fieldDeclaration.sourceEnd;
-				fieldInfo.annotationPositions = collectAnnotationPositions(fieldDeclaration.annotations);
-				fieldInfo.categories = (char[][]) this.nodesToCategories.get(fieldDeclaration);
-				requestor.enterField(fieldInfo);
-				
-				//If this field is of an anonymous type, need to notify so that it shows as a child
-				if( fieldDeclaration.inferredType != null && fieldDeclaration.inferredType.isAnonymous  ){
-					notifySourceElementRequestor( fieldDeclaration.inferredType );
+				if (fieldDeclaration.initialization instanceof FunctionExpression) {
+					
+					MethodDeclaration methodDeclaration = ((FunctionExpression)fieldDeclaration.initialization).methodDeclaration;
+					
+					char[][] argumentTypes = null;
+					char[][] argumentNames = null;
+					boolean isVarArgs = false;
+					Argument[] arguments = methodDeclaration.arguments;
+					if (arguments != null) {
+						int argumentLength = arguments.length;
+						argumentTypes = new char[argumentLength][];
+						argumentNames = new char[argumentLength][];
+						for (int i = 0; i < argumentLength; i++) {
+							if (arguments[i].type!=null)
+								argumentTypes[i] = CharOperation.concatWith(arguments[i].type.getParameterizedTypeName(), '.');
+							argumentNames[i] = arguments[i].name;
+						}
+						isVarArgs = arguments[argumentLength-1].isVarArgs();
+					}
+
+					ISourceElementRequestor.MethodInfo methodInfo = new ISourceElementRequestor.MethodInfo();
+					methodInfo.isAnnotation = false;
+					methodInfo.declarationStart = fieldDeclaration.declarationSourceStart;
+					methodInfo.modifiers = deprecated ? (currentModifiers & ExtraCompilerModifiers.AccJustFlag) | ClassFileConstants.AccDeprecated : currentModifiers & ExtraCompilerModifiers.AccJustFlag;
+					methodInfo.returnType = methodDeclaration.returnType == null ? null : CharOperation.concatWith(methodDeclaration.returnType.getParameterizedTypeName(), '.');
+					methodInfo.name = fieldDeclaration.name;
+					methodInfo.nameSourceStart = fieldDeclaration.sourceStart;
+					methodInfo.nameSourceEnd = fieldDeclaration.sourceEnd;
+					methodInfo.parameterTypes = argumentTypes;
+					methodInfo.parameterNames = argumentNames;
+					methodInfo.exceptionTypes = getThrownExceptionTypes(methodDeclaration);
+					methodInfo.typeParameters =EMPTY_TYPEPARAMETERINFO;
+					methodInfo.annotationPositions = collectAnnotationPositions(methodDeclaration.annotations);
+					methodInfo.categories = (char[][]) this.nodesToCategories.get(fieldDeclaration);
+					requestor.enterMethod(methodInfo);					
+				}
+				else
+				{
+					//				if (fieldDeclaration.type == null) {
+					//					// enum constant
+					//					typeName = declaringType.name;
+					//					currentModifiers |= ClassFileConstants.AccEnum;
+					//				} else {
+					//					// regular field
+					//					typeName = CharOperation.concatWith(fieldDeclaration.type.getParameterizedTypeName(), '.');
+					//				}
+					ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
+					fieldInfo.declarationStart = fieldDeclaration.declarationSourceStart;
+					fieldInfo.name = fieldDeclaration.name;
+					fieldInfo.modifiers = deprecated ? (currentModifiers & ExtraCompilerModifiers.AccJustFlag)
+							| ClassFileConstants.AccDeprecated
+							: currentModifiers & ExtraCompilerModifiers.AccJustFlag;
+					fieldInfo.type = fieldDeclaration.inferredType != null ? fieldDeclaration.inferredType
+							.getName()
+							: null;
+					fieldInfo.nameSourceStart = fieldDeclaration.sourceStart;
+					fieldInfo.nameSourceEnd = fieldDeclaration.sourceEnd;
+					fieldInfo.annotationPositions = collectAnnotationPositions(fieldDeclaration.annotations);
+					fieldInfo.categories = (char[][]) this.nodesToCategories
+							.get(fieldDeclaration);
+					requestor.enterField(fieldInfo);
+					//If this field is of an anonymous type, need to notify so that it shows as a child
+					if (fieldDeclaration.inferredType != null
+							&& fieldDeclaration.inferredType.isAnonymous) {
+						notifySourceElementRequestor(fieldDeclaration.inferredType);
+					}
 				}
 				
 			}
 			this.visitIfNeeded(fieldDeclaration, declaringType);
 			if (isInRange){
-				requestor.exitField(
-					// filter out initializations that are not a constant (simple check)
-					(fieldDeclaration.initialization == null 
-							|| fieldDeclaration.initialization instanceof ArrayInitializer
-							|| fieldDeclaration.initialization instanceof AllocationExpression
-							|| fieldDeclaration.initialization instanceof ArrayAllocationExpression
-							|| fieldDeclaration.initialization instanceof Assignment
-							|| fieldDeclaration.initialization instanceof ClassLiteralAccess
-							|| fieldDeclaration.initialization instanceof MessageSend
-							|| fieldDeclaration.initialization instanceof ArrayReference
-							|| fieldDeclaration.initialization instanceof ThisReference) ? 
-						-1 :  
-						fieldDeclaration.initialization.sourceStart, 
-					fieldEndPosition,
-					fieldDeclaration.declarationSourceEnd);
+				if (fieldDeclaration.initialization instanceof FunctionExpression)
+				{
+					requestor.exitMethod(fieldDeclaration.declarationSourceEnd, -1, -1);
+				}
+				else
+				{
+					requestor.exitField(
+							// filter out initializations that are not a constant (simple check)
+							(fieldDeclaration.initialization == null 
+									|| fieldDeclaration.initialization instanceof ArrayInitializer
+									|| fieldDeclaration.initialization instanceof AllocationExpression
+									|| fieldDeclaration.initialization instanceof ArrayAllocationExpression
+									|| fieldDeclaration.initialization instanceof Assignment
+									|| fieldDeclaration.initialization instanceof ClassLiteralAccess
+									|| fieldDeclaration.initialization instanceof MessageSend
+									|| fieldDeclaration.initialization instanceof ArrayReference
+									|| fieldDeclaration.initialization instanceof ThisReference) ? 
+								-1 :  
+								fieldDeclaration.initialization.sourceStart, 
+							fieldEndPosition,
+							fieldDeclaration.declarationSourceEnd);
+					
+				}
 			}
 			break;
 		case AbstractVariableDeclaration.INITIALIZER:
