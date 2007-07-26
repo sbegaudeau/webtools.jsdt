@@ -5429,6 +5429,8 @@ public void parseErrorInsertToComplete(
 	String inserted,
 	String completed){
 	String[] arguments = new String[] {inserted, completed};
+	if (";".equals(inserted))	// ignore missing semicolon error
+		return;
 	this.handle(
 		IProblem.ParsingErrorInsertToComplete,
 		arguments,
