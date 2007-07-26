@@ -518,9 +518,14 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 			return file;
 		}else {
 			IPath childPath = new Path(importName);
-			IFile resolved =  ((IContainer)getResource()).getFile(new Path(file.getPath()));
+			IFile resolved = null;
+			/* since eclipse throws an exception if it doesn't exists (contrary to its API) we have to catch it*/
 			
-			boolean exists =  resolved.exists();
+			try {
+				resolved = ((IContainer)getResource()).getFile(new Path(file.getPath()));
+			}catch(Exception e) {};
+			
+			boolean exists =  resolved!=null && resolved.exists();
 			/* Special case for absolute paths specified with \ and / */
 			if( importName.charAt(0)=='\\' || importName.charAt(0)=='/'){
 				int seg  = resolved.getFullPath().matchingFirstSegments(webContext); 
