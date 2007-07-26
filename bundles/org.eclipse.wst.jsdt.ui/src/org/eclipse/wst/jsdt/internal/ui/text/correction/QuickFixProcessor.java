@@ -254,6 +254,7 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 				ReorgCorrectionsSubProcessor.removeImportStatementProposals(context, problem, proposals);
 				break;
 			case IProblem.UndefinedMethod:
+			case IProblem.UndefinedFunction:
 				UnresolvedElementsSubProcessor.getMethodProposals(context, problem, false, proposals);
 				break;
 			case IProblem.UndefinedConstructor:

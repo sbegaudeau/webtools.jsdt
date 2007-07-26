@@ -209,6 +209,7 @@ public class CorrectionEngine implements ProblemReasons {
 					
 				// Method correction
 				case IProblem.UndefinedMethod :
+				case IProblem.UndefinedFunction :
 					this.filter = METHOD;
 					argument = arguments[1];
 					break;

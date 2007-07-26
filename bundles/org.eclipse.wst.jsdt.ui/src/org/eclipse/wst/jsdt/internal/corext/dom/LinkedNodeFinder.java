@@ -98,6 +98,7 @@ public class LinkedNodeFinder  {
 			case IProblem.UndefinedField:
 				return FIELD;
 			case IProblem.UndefinedMethod:
+			case IProblem.UndefinedFunction:
 				return METHOD;
 			case IProblem.UndefinedLabel:
 				return LABEL;

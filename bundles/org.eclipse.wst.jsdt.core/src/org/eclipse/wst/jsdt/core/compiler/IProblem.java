@@ -375,6 +375,7 @@ void setSourceStart(int sourceStart);
 	int MethodReturnsVoid = MethodRelated + 106;
 	int MethodRequiresBody = Internal + MethodRelated + 107;
 	int ShouldReturnValue = Internal + MethodRelated + 108;
+	int UndefinedFunction = MethodRelated + 109;
 	int MethodButWithConstructorName = MethodRelated + 110;
 	int MissingReturnType = TypeRelated + 111;
 	int BodyForNativeMethod = Internal + MethodRelated + 112;

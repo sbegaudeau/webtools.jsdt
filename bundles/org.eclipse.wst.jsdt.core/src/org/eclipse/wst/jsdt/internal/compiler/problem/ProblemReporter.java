@@ -3169,11 +3169,13 @@ public void invalidFileNameForPackageAnnotations(Annotation annotation) {
 public void invalidMethod(MessageSend messageSend, MethodBinding method) {
 	if (isRecoveredName(messageSend.selector)) return;
 	
-	int id = IProblem.UndefinedMethod; //default...
+	boolean isFunction = method.declaringClass==null;
+	int id = isFunction? IProblem.UndefinedFunction : IProblem.UndefinedMethod; //default...
     MethodBinding shownMethod = method;
+    
 	switch (method.problemId()) {
 		case ProblemReasons.NotFound :
-			id = IProblem.UndefinedMethod;
+			id = isFunction? IProblem.UndefinedFunction : IProblem.UndefinedMethod;
 			ProblemMethodBinding problemMethod = (ProblemMethodBinding) method;
 			if (problemMethod.closestMatch != null) {
 			    	shownMethod = problemMethod.closestMatch;
