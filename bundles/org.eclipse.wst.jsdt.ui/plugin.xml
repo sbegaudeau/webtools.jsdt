@@ -3020,7 +3020,7 @@
             targetID="#JavaScriptRulerContext"
             id="org.eclipse.wst.jsdt.internal.ui.javaeditor.QuickFixRulerMenuAction">
          <action
-               label="%Dummy.label"
+               label="Quick Fix"
                helpContextId="org.eclipse.wst.jsdt.ui.quick_fix_action"
                class="org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaSelectRulerAction"
                menubarPath="additions"
@@ -3066,8 +3066,17 @@
             parentId="org.eclipse.ui.textEditorScope"
             id="org.eclipse.wst.jsdt.ui.javaEditorScope">
       </context>
+      <!-- Not really the scope for the JavScript View.. just extends the editor
+           scope for now.  
+       -->
+      <context
+            name="JavaScript View"
+            description="JavaScript View Context"
+            parentId="org.eclipse.wst.jsdt.ui.javaEditorScope"
+            id="org.eclipse.wst.jsdt.ui.javascriptViewScope">
+      </context>
    </extension>
-
+   
    <extension
          point="org.eclipse.ui.commands">
 <!-- categories -->
@@ -3968,16 +3977,19 @@
 <!-- source -->
       <key
             sequence="M2+M3+S"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.source.quickMenu"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="M2+M3+S"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId=""
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="COMMAND+ALT+S"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.source.quickMenu"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
             
@@ -4024,20 +4036,24 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             sequence="M1+M2+O"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.organize.imports"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             sequence="M2+M3+J"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.add.javadoc.comment"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="M2+M3+J"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId=""
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="COMMAND+ALT+J"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.add.javadoc.comment"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       
@@ -4117,16 +4133,19 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>              
        <key
             sequence="M2+M3+Z"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.surround.with.quickMenu"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>        
        <key
             platform="carbon"
             sequence="M2+M3+Z"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId=""
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
        <key
             platform="carbon"
             sequence="COMMAND+ALT+Z"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.surround.with.quickMenu"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
 
@@ -4134,104 +4153,125 @@
       <key
             sequence="M2+M3+T"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.refactor.quickMenu"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="M2+M3+T"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId=""
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="COMMAND+ALT+T"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.refactor.quickMenu"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             sequence="M2+M3+R"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.rename.element"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="M2+M3+R"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId=""
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="COMMAND+ALT+R"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.rename.element"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
             
       <key
             sequence="M2+M3+V"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.move.element"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="M2+M3+V"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId=""
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="COMMAND+ALT+V"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.move.element"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
             
       <key
             sequence="M2+M3+C"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.modify.method.parameters"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="M2+M3+C"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId=""
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="COMMAND+ALT+C"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.modify.method.parameters"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
             
       <key
             sequence="M2+M3+I"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.inline"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="M2+M3+I"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId=""
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="COMMAND+ALT+I"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.inline"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
             
       <key
             sequence="M2+M3+M"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.extract.method"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="M2+M3+M"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId=""
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="COMMAND+ALT+M"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.extract.method"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
             
       <key
             sequence="M2+M3+L"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.extract.local.variable"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="M2+M3+L"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId=""
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="COMMAND+ALT+L"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.extract.local.variable"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
             
@@ -4290,28 +4330,36 @@
             contextId="org.eclipse.wst.jsdt.ui.javaEditorScope"
             commandId="org.eclipse.wst.jsdt.ui.navigate.java.open.structure"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+            
+       <!-- Changing context to JavaScript Editor -->     
       <key
             sequence="M1+M2+T"
+            contextId="org.eclipse.wst.jsdt.ui.javaEditorScope"
             commandId="org.eclipse.wst.jsdt.ui.navigate.open.type"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             sequence="M1+M2+H"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.navigate.open.type.in.hierarchy"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             sequence="F3"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.open.editor"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             sequence="M2+F2"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.open.external.javadoc"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             sequence="F4"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.open.type.hierarchy"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             sequence="CTRL+ALT+H"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.open.call.hierarchy"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
 	  <!-- COMMAND+ALT+H is "Hide Others" on carbon, so don't overwrite it -->
@@ -4321,14 +4369,17 @@
 <!-- search -->
       <key
             sequence="M1+M2+G"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.search.references.in.workspace"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             sequence="M1+G"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.search.declarations.in.workspace"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             sequence="M1+M2+U"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.search.occurrences.in.file.quickMenu"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
 
@@ -4337,58 +4388,70 @@
 <!-- views -->
       <key
             sequence="M2+M3+Q T"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.TypeHierarchy"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="M2+M3+Q T"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId=""
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="COMMAND+ALT+Q T"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.TypeHierarchy"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             sequence="M2+M3+Q P"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.PackageExplorer"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="M2+M3+Q P"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId=""
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="COMMAND+ALT+Q P"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.PackageExplorer"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             sequence="M2+M3+Q D"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.SourceView"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="M2+M3+Q D"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId=""
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="COMMAND+ALT+Q D"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.SourceView"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             sequence="M2+M3+Q J"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.JavadocView"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="M2+M3+Q J"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId=""
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             platform="carbon"
             sequence="COMMAND+ALT+Q J"
+            contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
             commandId="org.eclipse.wst.jsdt.ui.JavadocView"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
 
