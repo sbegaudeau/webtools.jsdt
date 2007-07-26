@@ -3711,127 +3711,127 @@ public final class CompletionEngine
 		
 		ObjectVector methodsFound = new ObjectVector();
 		
-		if (receiverType.isArrayType()) {
-			if (proposeField
-				&& token.length <= lengthField.length
-				&& CharOperation.prefixEquals(token, lengthField, false /* ignore case */
-			)) {
-				
-				int relevance = computeBaseRelevance();
-				relevance += computeRelevanceForResolution();
-				relevance += computeRelevanceForInterestingProposal();
-				relevance += computeRelevanceForCaseMatching(token,lengthField);
-				relevance += computeRelevanceForExpectingType(TypeBinding.INT);
-				relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE); // no access restriction for length field
-				if (missingElements != null) {
-					relevance += computeRelevanceForMissingElements(missingElementsHaveProblems);
-				}
-				this.noProposal = false;
-				if(!isIgnored(CompletionProposal.FIELD_REF, missingElements != null)) {
-					CompletionProposal proposal = this.createProposal(CompletionProposal.FIELD_REF, this.actualCompletionPosition);
-					proposal.setDeclarationSignature(getSignature(receiverType));
-					proposal.setSignature(INT_SIGNATURE);
-					//proposal.setDeclarationPackageName(null);
-					//proposal.setDeclarationTypeName(null);
-					//proposal.setPackageName(null);
-					proposal.setTypeName(INT);
-					proposal.setName(lengthField);
-					if (missingElements != null) {
-						CompletionProposal[] subProposals = new CompletionProposal[missingElements.length];
-						for (int i = 0; i < missingElements.length; i++) {
-							subProposals[i] =
-								createRequiredTypeProposal(
-										missingElements[i],
-										missingElementsStarts[i],
-										missingElementsEnds[i],
-										relevance);
-						}
-						proposal.setRequiredProposals(subProposals);
-					}
-					proposal.setCompletion(lengthField);
-					proposal.setFlags(Flags.AccPublic);
-					proposal.setReplaceRange(this.startPosition - this.offset, this.endPosition - this.offset);
-					proposal.setRelevance(relevance);
-					this.requestor.accept(proposal);
-					if(DEBUG) {
-						this.printDebug(proposal);
-					}
-				}
-			}
-			if (proposeMethod
-				&& token.length <= cloneMethod.length
-				&& CharOperation.prefixEquals(token, cloneMethod, false /* ignore case */)
-			) {
-				ReferenceBinding objectRef = scope.getJavaLangObject();
-				
-				int relevance = computeBaseRelevance();
-				relevance += computeRelevanceForResolution();
-				relevance += computeRelevanceForInterestingProposal();
-				relevance += computeRelevanceForCaseMatching(token, cloneMethod);
-				relevance += computeRelevanceForExpectingType(objectRef);
-				relevance += computeRelevanceForStatic(false, false);
-				relevance += computeRelevanceForQualification(false);
-				relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE); // no access restriction for clone() method
-				if (missingElements != null) {
-					relevance += computeRelevanceForMissingElements(missingElementsHaveProblems);
-				}
-				char[] completion;
-				if (this.source != null
-					&& this.source.length > this.endPosition
-					&& this.source[this.endPosition] == '(') {
-					completion = cloneMethod;
-					} else {
-					completion = CharOperation.concat(cloneMethod, new char[] { '(', ')' });
-				}
-				this.noProposal = false;
-				if (!this.isIgnored(CompletionProposal.METHOD_REF, missingElements != null)) {
-					CompletionProposal proposal = this.createProposal(CompletionProposal.METHOD_REF, this.actualCompletionPosition);
-					proposal.setDeclarationSignature(getSignature(receiverType));
-					proposal.setSignature(
-							this.compilerOptions.sourceLevel > ClassFileConstants.JDK1_4 && receiverType.isArrayType() ?
-									createMethodSignature(
-											CharOperation.NO_CHAR_CHAR,
-											CharOperation.NO_CHAR_CHAR,
-											getSignature(receiverType)) :
-									createMethodSignature(
-											CharOperation.NO_CHAR_CHAR,
-											CharOperation.NO_CHAR_CHAR,
-											CharOperation.concatWith(JAVA_LANG, '.'),
-											OBJECT));
-					//proposal.setOriginalSignature(null);
-					//proposal.setDeclarationPackageName(null);
-					//proposal.setDeclarationTypeName(null);
-					//proposal.setParameterPackageNames(null);
-					//proposal.setParameterTypeNames(null);
-					proposal.setPackageName(CharOperation.concatWith(JAVA_LANG, '.'));
-					proposal.setTypeName(OBJECT);
-					proposal.setName(cloneMethod);
-					if (missingElements != null) {
-						CompletionProposal[] subProposals = new CompletionProposal[missingElements.length];
-						for (int i = 0; i < missingElements.length; i++) {
-							subProposals[i] =
-								createRequiredTypeProposal(
-										missingElements[i],
-										missingElementsStarts[i],
-										missingElementsEnds[i],
-										relevance);
-						}
-						proposal.setRequiredProposals(subProposals);
-					}
-					proposal.setCompletion(completion);
-					proposal.setFlags(Flags.AccPublic);
-					proposal.setReplaceRange(this.startPosition - this.offset, this.endPosition - this.offset);
-					proposal.setRelevance(relevance);
-					this.requestor.accept(proposal);
-					if(DEBUG) {
-						this.printDebug(proposal);
-					}
-				}
-				methodsFound.add(new Object[]{objectRef.getMethods(cloneMethod)[0], objectRef});
-			}
-			
-			receiverType = scope.getJavaLangObject();
-		}
+//		if (receiverType.isArrayType()) {
+//			if (proposeField
+//				&& token.length <= lengthField.length
+//				&& CharOperation.prefixEquals(token, lengthField, false /* ignore case */
+//			)) {
+//				
+//				int relevance = computeBaseRelevance();
+//				relevance += computeRelevanceForResolution();
+//				relevance += computeRelevanceForInterestingProposal();
+//				relevance += computeRelevanceForCaseMatching(token,lengthField);
+//				relevance += computeRelevanceForExpectingType(TypeBinding.INT);
+//				relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE); // no access restriction for length field
+//				if (missingElements != null) {
+//					relevance += computeRelevanceForMissingElements(missingElementsHaveProblems);
+//				}
+//				this.noProposal = false;
+//				if(!isIgnored(CompletionProposal.FIELD_REF, missingElements != null)) {
+//					CompletionProposal proposal = this.createProposal(CompletionProposal.FIELD_REF, this.actualCompletionPosition);
+//					proposal.setDeclarationSignature(getSignature(receiverType));
+//					proposal.setSignature(INT_SIGNATURE);
+//					//proposal.setDeclarationPackageName(null);
+//					//proposal.setDeclarationTypeName(null);
+//					//proposal.setPackageName(null);
+//					proposal.setTypeName(INT);
+//					proposal.setName(lengthField);
+//					if (missingElements != null) {
+//						CompletionProposal[] subProposals = new CompletionProposal[missingElements.length];
+//						for (int i = 0; i < missingElements.length; i++) {
+//							subProposals[i] =
+//								createRequiredTypeProposal(
+//										missingElements[i],
+//										missingElementsStarts[i],
+//										missingElementsEnds[i],
+//										relevance);
+//						}
+//						proposal.setRequiredProposals(subProposals);
+//					}
+//					proposal.setCompletion(lengthField);
+//					proposal.setFlags(Flags.AccPublic);
+//					proposal.setReplaceRange(this.startPosition - this.offset, this.endPosition - this.offset);
+//					proposal.setRelevance(relevance);
+//					this.requestor.accept(proposal);
+//					if(DEBUG) {
+//						this.printDebug(proposal);
+//					}
+//				}
+//			}
+//			if (proposeMethod
+//				&& token.length <= cloneMethod.length
+//				&& CharOperation.prefixEquals(token, cloneMethod, false /* ignore case */)
+//			) {
+//				ReferenceBinding objectRef = scope.getJavaLangObject();
+//				
+//				int relevance = computeBaseRelevance();
+//				relevance += computeRelevanceForResolution();
+//				relevance += computeRelevanceForInterestingProposal();
+//				relevance += computeRelevanceForCaseMatching(token, cloneMethod);
+//				relevance += computeRelevanceForExpectingType(objectRef);
+//				relevance += computeRelevanceForStatic(false, false);
+//				relevance += computeRelevanceForQualification(false);
+//				relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE); // no access restriction for clone() method
+//				if (missingElements != null) {
+//					relevance += computeRelevanceForMissingElements(missingElementsHaveProblems);
+//				}
+//				char[] completion;
+//				if (this.source != null
+//					&& this.source.length > this.endPosition
+//					&& this.source[this.endPosition] == '(') {
+//					completion = cloneMethod;
+//					} else {
+//					completion = CharOperation.concat(cloneMethod, new char[] { '(', ')' });
+//				}
+//				this.noProposal = false;
+//				if (!this.isIgnored(CompletionProposal.METHOD_REF, missingElements != null)) {
+//					CompletionProposal proposal = this.createProposal(CompletionProposal.METHOD_REF, this.actualCompletionPosition);
+//					proposal.setDeclarationSignature(getSignature(receiverType));
+//					proposal.setSignature(
+//							this.compilerOptions.sourceLevel > ClassFileConstants.JDK1_4 && receiverType.isArrayType() ?
+//									createMethodSignature(
+//											CharOperation.NO_CHAR_CHAR,
+//											CharOperation.NO_CHAR_CHAR,
+//											getSignature(receiverType)) :
+//									createMethodSignature(
+//											CharOperation.NO_CHAR_CHAR,
+//											CharOperation.NO_CHAR_CHAR,
+//											CharOperation.concatWith(JAVA_LANG, '.'),
+//											OBJECT));
+//					//proposal.setOriginalSignature(null);
+//					//proposal.setDeclarationPackageName(null);
+//					//proposal.setDeclarationTypeName(null);
+//					//proposal.setParameterPackageNames(null);
+//					//proposal.setParameterTypeNames(null);
+//					proposal.setPackageName(CharOperation.concatWith(JAVA_LANG, '.'));
+//					proposal.setTypeName(OBJECT);
+//					proposal.setName(cloneMethod);
+//					if (missingElements != null) {
+//						CompletionProposal[] subProposals = new CompletionProposal[missingElements.length];
+//						for (int i = 0; i < missingElements.length; i++) {
+//							subProposals[i] =
+//								createRequiredTypeProposal(
+//										missingElements[i],
+//										missingElementsStarts[i],
+//										missingElementsEnds[i],
+//										relevance);
+//						}
+//						proposal.setRequiredProposals(subProposals);
+//					}
+//					proposal.setCompletion(completion);
+//					proposal.setFlags(Flags.AccPublic);
+//					proposal.setReplaceRange(this.startPosition - this.offset, this.endPosition - this.offset);
+//					proposal.setRelevance(relevance);
+//					this.requestor.accept(proposal);
+//					if(DEBUG) {
+//						this.printDebug(proposal);
+//					}
+//				}
+//				methodsFound.add(new Object[]{objectRef.getMethods(cloneMethod)[0], objectRef});
+//			}
+//			
+//			receiverType = scope.getJavaLangObject();
+//		}
 
 		if(proposeField) {
 			findFields(

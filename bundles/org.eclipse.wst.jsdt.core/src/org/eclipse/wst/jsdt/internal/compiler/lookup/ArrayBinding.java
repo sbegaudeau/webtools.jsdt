@@ -13,8 +13,9 @@ package org.eclipse.wst.jsdt.internal.compiler.lookup;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
-public final class ArrayBinding extends TypeBinding {
+public final class ArrayBinding extends ReferenceBinding {
 	// creation and initialization of the length field
 	// the declaringClass of this field is intentionally set to null so it can be distinguished.
 	public static final FieldBinding ArrayLength = new FieldBinding(TypeConstants.LENGTH, TypeBinding.INT, ClassFileConstants.AccPublic | ClassFileConstants.AccFinal, null, Constant.NotAConstant);
@@ -24,6 +25,7 @@ public final class ArrayBinding extends TypeBinding {
 	LookupEnvironment environment;	
 	char[] constantPoolName;
 	char[] genericTypeSignature;
+	ReferenceBinding referenceBinding;	
 	
 public ArrayBinding(TypeBinding type, int dimensions, LookupEnvironment environment) {
 	this.tagBits |= TagBits.IsArrayType;
@@ -34,6 +36,9 @@ public ArrayBinding(TypeBinding type, int dimensions, LookupEnvironment environm
 		((UnresolvedReferenceBinding) type).addWrapper(this, environment);
 	else
     	this.tagBits |= type.tagBits & (TagBits.HasTypeVariable | TagBits.HasDirectWildcard);
+	
+	referenceBinding = environment.getType(TypeConstants.ARRAY);
+	this.fPackage=environment.defaultPackage;
 }
 
 /**
@@ -46,24 +51,24 @@ public ArrayBinding(TypeBinding type, int dimensions, LookupEnvironment environm
 */
 public void collectSubstitutes(Scope scope, TypeBinding actualType, InferenceContext inferenceContext, int constraint) {
 	
-	if ((this.tagBits & TagBits.HasTypeVariable) == 0) return;
-	if (actualType == TypeBinding.NULL) return;
-	
-	switch(actualType.kind()) {
-		case Binding.ARRAY_TYPE :
-	        int actualDim = actualType.dimensions();
-	        if (actualDim == this.dimensions) {
-			    this.leafComponentType.collectSubstitutes(scope, actualType.leafComponentType(), inferenceContext, constraint);
-	        } else if (actualDim > this.dimensions) {
-	            ArrayBinding actualReducedType = this.environment.createArrayType(actualType.leafComponentType(), actualDim - this.dimensions);
-	            this.leafComponentType.collectSubstitutes(scope, actualReducedType, inferenceContext, constraint);
-	        }
-			break;
-		case Binding.TYPE_PARAMETER :
-			//TypeVariableBinding variable = (TypeVariableBinding) otherType;
-			// TODO (philippe) should consider array bounds, and recurse
-			break;
-	}
+//	if ((this.tagBits & TagBits.HasTypeVariable) == 0) return;
+//	if (actualType == TypeBinding.NULL) return;
+//	
+//	switch(actualType.kind()) {
+//		case Binding.ARRAY_TYPE :
+//	        int actualDim = actualType.dimensions();
+//	        if (actualDim == this.dimensions) {
+//			    this.leafComponentType.collectSubstitutes(scope, actualType.leafComponentType(), inferenceContext, constraint);
+//	        } else if (actualDim > this.dimensions) {
+//	            ArrayBinding actualReducedType = this.environment.createArrayType(actualType.leafComponentType(), actualDim - this.dimensions);
+//	            this.leafComponentType.collectSubstitutes(scope, actualReducedType, inferenceContext, constraint);
+//	        }
+//			break;
+//		case Binding.TYPE_PARAMETER :
+//			//TypeVariableBinding variable = (TypeVariableBinding) otherType;
+//			// TODO (philippe) should consider array bounds, and recurse
+//			break;
+//	}
 }
 
 /*
@@ -246,4 +251,38 @@ public void swapUnresolved(UnresolvedReferenceBinding unresolvedType, ReferenceB
 public String toString() {
 	return leafComponentType != null ? debugName() : "NULL TYPE ARRAY"; //$NON-NLS-1$
 }
+
+public FieldBinding[] availableFields() {
+	return referenceBinding.availableFields();
+}
+
+public MethodBinding[] availableMethods() {
+	return referenceBinding.availableMethods();
+}
+
+public int fieldCount() {
+	return referenceBinding.fieldCount();
+}
+
+public FieldBinding[] fields() {
+	return referenceBinding.fields();
+}
+
+public InferredType getInferredType() {
+	return referenceBinding.getInferredType();
+}
+
+public MethodBinding[] getMethods(char[] selector) {
+	return referenceBinding.getMethods(selector);
+}
+
+boolean implementsMethod(MethodBinding method) {
+	return referenceBinding.implementsMethod(method);
+}
+
+public MethodBinding[] methods() {
+	return referenceBinding.methods();
+}
+
+
 }

@@ -868,9 +868,9 @@ public abstract class Scope implements TypeConstants, TypeIds {
 						break checkArrayField;
 					leafType = receiverErasure.leafComponentType();
 					break;
-				case Binding.ARRAY_TYPE :
-					leafType = receiverType.leafComponentType();
-					break;
+//				case Binding.ARRAY_TYPE :
+//					leafType = receiverType.leafComponentType();
+//					break;
 				default:
 					break checkArrayField;
 			}
@@ -2527,10 +2527,10 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		unitScope.recordQualifiedReference(JAVA_LANG_THROWABLE);
 		return unitScope.environment.getResolvedType(JAVA_LANG_THROWABLE, this);
 	}
-	public final ReferenceBinding getJavaUtilIterator() {
+	public final ReferenceBinding getJavaLangRegExp() {
 		CompilationUnitScope unitScope = compilationUnitScope();
-		unitScope.recordQualifiedReference(JAVA_UTIL_ITERATOR);
-		return unitScope.environment.getResolvedType(JAVA_UTIL_ITERATOR, this);
+		unitScope.recordQualifiedReference(REGEXP);
+		return unitScope.environment.getResolvedType(REGEXP, this);
 	}
 
 	/* Answer the type binding corresponding to the typeName argument, relative to the enclosingType.
@@ -2551,9 +2551,9 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			switch (receiverType.kind()) {
 				case Binding.BASE_TYPE :
 					return new ProblemMethodBinding(selector, argumentTypes, ProblemReasons.NotFound);
-				case Binding.ARRAY_TYPE :
-					unitScope.recordTypeReference(receiverType);
-					return findMethodForArray((ArrayBinding) receiverType, selector, argumentTypes, invocationSite);
+//				case Binding.ARRAY_TYPE :
+//					unitScope.recordTypeReference(receiverType);
+//					return findMethodForArray((ArrayBinding) receiverType, selector, argumentTypes, invocationSite);
 			}
 			unitScope.recordTypeReference(receiverType);
 

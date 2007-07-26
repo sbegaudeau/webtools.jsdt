@@ -49,7 +49,7 @@ public class RegExLiteral extends Literal {
 
 	public TypeBinding literalType(BlockScope scope) {
 
-		return scope.getJavaLangString();
+		return scope.getJavaLangRegExp();
 	}
 
 	public StringBuffer printExpression(int indent, StringBuffer output) {
