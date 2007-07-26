@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
@@ -23,6 +24,7 @@ import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatchRequestor;
 import org.eclipse.wst.jsdt.core.search.TypeNameRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
+import org.eclipse.wst.jsdt.internal.core.LibraryFragmentRoot;
 import org.eclipse.wst.jsdt.internal.core.Openable;
 import org.eclipse.wst.jsdt.internal.core.PackageFragmentRoot;
 import org.eclipse.wst.jsdt.internal.core.LibraryPackageFragment;
@@ -150,47 +152,67 @@ private IType createTypeFromPath(String resourcePath, String simpleTypeName, cha
 	// path to a file in a directory
 	// Optimization: cache package fragment root handle and package handles
 	int rootPathLength = -1;
-	if (this.lastPkgFragmentRootPath == null 
-		|| !(resourcePath.startsWith(this.lastPkgFragmentRootPath) 
-			&& (rootPathLength = this.lastPkgFragmentRootPath.length()) > 0
-			&& resourcePath.charAt(rootPathLength) == '/')) {
+	boolean samePath=false;
+	if(resourcePath!=null && this.lastPkgFragmentRoot!=null) {
+		IPath path1 = new Path(resourcePath);
+		IPath path2 = new Path(this.lastPkgFragmentRootPath);
+		samePath = path1.equals(path2);
+	}
+	if (!samePath && (this.lastPkgFragmentRootPath == null || !(resourcePath.startsWith(this.lastPkgFragmentRootPath) 
+			&& ((rootPathLength = this.lastPkgFragmentRootPath.length()) > 0
+			&& (rootPathLength<resourcePath.length()))
+			&& resourcePath.charAt(rootPathLength) == '/'))) {
 		IPackageFragmentRoot root = ((JavaSearchScope)this.scope).packageFragmentRoot(resourcePath);
 		if (root == null) return null;
 		this.lastPkgFragmentRoot = root;
 		this.lastPkgFragmentRootPath = this.lastPkgFragmentRoot.getPath().toString();
 		this.packageHandles = new HashtableOfArrayToObject(5);
 	}
+	
+	boolean isLibrary = this.lastPkgFragmentRoot instanceof LibraryFragmentRoot;
 	// create handle
-	resourcePath = resourcePath.substring(this.lastPkgFragmentRootPath.length() + 1);
-	String[] simpleNames = new Path(resourcePath).segments();
-	String[] pkgName;
-	int length = simpleNames.length-1;
-	if (length > 0) {
-		pkgName = new String[length];
-		System.arraycopy(simpleNames, 0, pkgName, 0, length);
-	} else {
-		pkgName = CharOperation.NO_STRINGS;
-	}
-	IPackageFragment pkgFragment= (IPackageFragment) this.packageHandles.get(pkgName);
-	if (pkgFragment == null) {
-		pkgFragment= ((PackageFragmentRoot) this.lastPkgFragmentRoot).getPackageFragment(pkgName);
-		this.packageHandles.put(pkgName, pkgFragment);
-	}
-	String simpleName= simpleNames[length]; 
-	if (org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(simpleName) && !(pkgFragment instanceof LibraryPackageFragment)) {
-		ICompilationUnit unit= pkgFragment.getCompilationUnit(simpleName);
-		int etnLength = enclosingTypeNames == null ? 0 : enclosingTypeNames.length;
-		IType type = (etnLength == 0) ? unit.getType(simpleTypeName) : unit.getType(new String(enclosingTypeNames[0]));
-		if (etnLength > 0) {
-			for (int i=1; i<etnLength; i++) {
-				type = type.getType(new String(enclosingTypeNames[i]));
-			}
-			type = type.getType(simpleTypeName);
+	if(isLibrary) {
+		String[] pkgName = new String[] {this.lastPkgFragmentRootPath};
+		IPackageFragment pkgFragment= (IPackageFragment) this.packageHandles.get(pkgName);
+		if (pkgFragment == null) {
+			pkgFragment= ((PackageFragmentRoot) this.lastPkgFragmentRoot).getPackageFragment(pkgName[0]);
+			this.packageHandles.put(pkgName, pkgFragment);
 		}
-		return type;
-	} else {
-		IClassFile classFile= pkgFragment.getClassFile(simpleName);
+		IClassFile classFile= pkgFragment.getClassFile(pkgName[0]);
 		return classFile.getType(simpleTypeName);
+	}else {
+		resourcePath = resourcePath.substring(this.lastPkgFragmentRootPath.length() + 1);
+		String[] simpleNames = new Path(resourcePath).segments();
+		String[] pkgName;
+		int length = simpleNames.length-1;
+		if (length > 0) {
+			pkgName = new String[length];
+			System.arraycopy(simpleNames, 0, pkgName, 0, length);
+		} else {
+			pkgName = CharOperation.NO_STRINGS;
+		}
+		IPackageFragment pkgFragment= (IPackageFragment) this.packageHandles.get(pkgName);
+		if (pkgFragment == null) {
+			pkgFragment= ((PackageFragmentRoot) this.lastPkgFragmentRoot).getPackageFragment(pkgName);
+			this.packageHandles.put(pkgName, pkgFragment);
+		}
+		String simpleName= simpleNames[length]; 
+		if (org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(simpleName) && !(pkgFragment instanceof LibraryPackageFragment)) {
+			ICompilationUnit unit= pkgFragment.getCompilationUnit(simpleName);
+			int etnLength = enclosingTypeNames == null ? 0 : enclosingTypeNames.length;
+			IType type = (etnLength == 0) ? unit.getType(simpleTypeName) : unit.getType(new String(enclosingTypeNames[0]));
+			if (etnLength > 0) {
+				for (int i=1; i<etnLength; i++) {
+					type = type.getType(new String(enclosingTypeNames[i]));
+				}
+				type = type.getType(simpleTypeName);
+			}
+			return type;
+		} else {
+			IClassFile classFile= pkgFragment.getClassFile(simpleName);
+			return classFile.getType(simpleTypeName);
+		}
 	}
+	
 }	
 }

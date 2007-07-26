@@ -393,7 +393,9 @@ private boolean encloses(String enclosingPath, String path, int index) {
 		return true;
 	}
 	if (pathLength == enclosingLength) {
-		return path.equals(enclosingPath);
+		IPath path1 = new Path(path);
+		IPath path2 = new Path(enclosingPath);
+		return path1.equals(path2);
 	}
 	if (!this.isPkgPath[index]) {
 		return path.startsWith(enclosingPath)

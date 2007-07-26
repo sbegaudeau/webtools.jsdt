@@ -1202,7 +1202,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 
 		public int getPackageFlags() {
 			if (fPackageMatcher == null)
-				return SearchPattern.RULE_EXACT_MATCH;
+				return SearchPattern.RULE_PREFIX_MATCH;
 
 			return fPackageMatcher.getMatchRule();
 		}
