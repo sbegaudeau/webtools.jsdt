@@ -336,22 +336,51 @@ public NameEnvironmentAnswer findType(char[][] compoundName, ITypeRequestor requ
 	return this.searchableEnvironment.findType(compoundName, requestor);
 }
 
+private SourceFile convertToSourceFile(CompilationUnit compilationUnit)
+{
+	IPath path = compilationUnit.getPath();
+	for (int i = 0; i < this.sourceLocations.length; i++) {
+		IContainer srcFolder=sourceLocations[i].sourceFolder;
+		if (srcFolder.getFullPath().isPrefixOf(path))
+		{
+			SourceFile sourceFile=new SourceFile((IFile)compilationUnit.getResource(),sourceLocations[i]);
+			return sourceFile;
+		}
+	}
+	return null;
+}
+
 private NameEnvironmentAnswer  convertToSourceFile(NameEnvironmentAnswer answer)
 {
-	if (answer==null || answer.getCompilationUnit()==null)
+	if (answer==null )
 		return answer;
 
 	if (answer.getCompilationUnit() instanceof CompilationUnit) {
 		CompilationUnit compilationUnit = (CompilationUnit) answer.getCompilationUnit();
-		IPath path = compilationUnit.getPath();
-		for (int i = 0; i < this.sourceLocations.length; i++) {
-			IContainer srcFolder=sourceLocations[i].sourceFolder;
-			if (srcFolder.getFullPath().isPrefixOf(path))
-			{
-				SourceFile sourceFile=new SourceFile((IFile)compilationUnit.getResource(),sourceLocations[i]);
-				return new NameEnvironmentAnswer(sourceFile,answer.getAccessRestriction());
+				SourceFile sourceFile=convertToSourceFile(compilationUnit);
+				if (sourceFile!=null)
+					return new NameEnvironmentAnswer(sourceFile,answer.getAccessRestriction());
+	}
+	else if (answer.getCompilationUnits()!=null)
+	{
+		org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit[] compilationUnits = answer.getCompilationUnits();
+		org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit[] newcompilationUnits = 
+			new org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit[compilationUnits.length];
+		boolean newAnswer=false;
+		for (int i = 0; i < compilationUnits.length; i++) {
+			newcompilationUnits[i]=compilationUnits[i];
+			if (compilationUnits[i] instanceof CompilationUnit) {
+				SourceFile sourceFile=convertToSourceFile((CompilationUnit)compilationUnits[i]);
+				if (sourceFile!=null)
+				{
+					newcompilationUnits[i]=sourceFile;
+					newAnswer=true;
+				}
+
 			}
 		}
+		if (newAnswer)
+			return new NameEnvironmentAnswer(newcompilationUnits,answer.getAccessRestriction());
 	}
 	return answer;
 }
