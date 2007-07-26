@@ -1115,6 +1115,21 @@ public RecoveredElement recoverAST(RecoveredElement element) {
 			}
 			continue;
 		}
+		if (node instanceof LocalDeclaration){
+			LocalDeclaration localDecl = (LocalDeclaration) node;
+			if (localDecl.declarationSourceEnd == 0){
+				element = element.add(localDecl, 0);
+				if (localDecl.initialization == null){
+					this.lastCheckPoint = localDecl.sourceEnd + 1;
+				} else {
+					this.lastCheckPoint = localDecl.initialization.sourceEnd + 1;
+				}
+			} else {
+				element = element.add(localDecl, 0);
+				this.lastCheckPoint = localDecl.declarationSourceEnd + 1;
+			}
+			continue;
+		}
 		if (node instanceof TypeDeclaration){
 			TypeDeclaration type = (TypeDeclaration) node;
 			if (type.declarationSourceEnd == 0){
@@ -8828,7 +8843,7 @@ protected void parse() {
 			if (!this.hasReportedError) {
 				this.hasError = true;
 			}
-			if (resumeOnSyntaxError()) {
+ 			if (resumeOnSyntaxError()) {
 				if (act == ERROR_ACTION) this.lastErrorEndPosition = errorPos;
 				act = START_STATE;
 				this.stateStackTop = -1;
@@ -9787,13 +9802,23 @@ protected void recoverStatements() {
 		CompilationUnitDeclaration compilationUnitDeclaration=(CompilationUnitDeclaration)this.referenceContext;
 
 		ReferenceContext oldContext = Parser.this.referenceContext;
-		Parser.this.recoveryScanner.resetTo(compilationUnitDeclaration.sourceStart, compilationUnitDeclaration.sourceEnd);
+		int start = compilationUnitDeclaration.sourceStart;
+		int end = compilationUnitDeclaration.sourceEnd;
+		Parser.this.recoveryScanner.resetTo(start, end);
 		Scanner oldScanner = Parser.this.scanner;
 		Parser.this.scanner = Parser.this.recoveryScanner;
+		/* unit creation */
+		this.referenceContext = 
+			this.compilationUnit = compilationUnitDeclaration=
+				new CompilationUnitDeclaration(
+					this.problemReporter, 
+					compilationUnitDeclaration.compilationResult, 
+					0);
+		
 		Parser.this.parseStatements(
 				compilationUnitDeclaration,
-				compilationUnitDeclaration.sourceStart,
-				compilationUnitDeclaration.sourceEnd,
+				start,
+				end,
 				null,
 				compilationUnit);
 		Parser.this.scanner = oldScanner;
