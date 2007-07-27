@@ -419,23 +419,29 @@ public abstract class AbstractMethodDeclaration
 	public void resolve(Scope upperScope) {
 
 		
-		if (this.scope==null &&  this.selector!=null) 
+		if (this.scope==null ) 
 		{
 			this.scope = new MethodScope(upperScope,this, false);
-			SourceTypeBinding compilationUnitBinding=upperScope.enclosingCompilationUnit();
-			MethodBinding methodBinding = scope.createMethod(this,this.selector,compilationUnitBinding,false,true);
-			if (methodBinding != null) {
-				this.binding=methodBinding;
-				methodBinding=compilationUnitBinding.resolveTypesFor(methodBinding);
-				if (methodBinding != null)
-				{
-					MethodScope enclosingMethodScope = upperScope.enclosingMethodScope();
-					if (enclosingMethodScope!=null)
-						enclosingMethodScope.addLocalMethod(methodBinding);
-					else
-					{
-						compilationUnitBinding.addMethod(methodBinding);
-						upperScope.environment().defaultPackage.addBinding(methodBinding, methodBinding.selector,Binding.METHOD);
+			if (this.selector!=null) {
+				SourceTypeBinding compilationUnitBinding = upperScope
+						.enclosingCompilationUnit();
+				MethodBinding methodBinding = scope.createMethod(this,
+						this.selector, compilationUnitBinding, false, true);
+				if (methodBinding != null) {
+					this.binding = methodBinding;
+					methodBinding = compilationUnitBinding
+							.resolveTypesFor(methodBinding);
+					if (methodBinding != null) {
+						MethodScope enclosingMethodScope = upperScope
+								.enclosingMethodScope();
+						if (enclosingMethodScope != null)
+							enclosingMethodScope.addLocalMethod(methodBinding);
+						else {
+							compilationUnitBinding.addMethod(methodBinding);
+							upperScope.environment().defaultPackage.addBinding(
+									methodBinding, methodBinding.selector,
+									Binding.METHOD);
+						}
 					}
 				}
 			}
