@@ -809,6 +809,16 @@ public class DefaultCodeFormatterConstants {
 	public static final String FORMATTER_CONTINUATION_INDENTATION_FOR_ARRAY_INITIALIZER = JavaCore.PLUGIN_ID + ".formatter.continuation_indentation_for_array_initializer";	//$NON-NLS-1$
 	/**
 	 * <pre>
+	 * FORMATTER / Option to set the continuation indentation inside object literals initializer
+	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.continuation_indentation_for_objlit_initializer"
+	 *     - possible values:   "&lt;n&gt;", where n is zero or a positive integer
+	 *     - default:           "1"
+	 * </pre>
+	 * @since 3.0
+	 */
+	public static final String FORMATTER_CONTINUATION_INDENTATION_FOR_OBJLIT_INITIALIZER = JavaCore.PLUGIN_ID + ".formatter.continuation_indentation_for_objlit_initializer";	//$NON-NLS-1$
+	/**
+	 * <pre>
 	 * FORMATTER / Option to indent body declarations compare to its enclosing annotation declaration header
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.indent_body_declarations_compare_to_annotation_declaration_header"
 	 *     - possible values:   { TRUE, FALSE }
@@ -980,7 +990,20 @@ public class DefaultCodeFormatterConstants {
 	 * @since 3.0
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_AFTER_OPENING_BRACE_IN_OBJLIT_INITIALIZER = JavaCore.PLUGIN_ID + ".formatter.insert_new_line_after_opening_brace_in_objlit_initializer";//$NON-NLS-1$
-
+	
+	/**
+	 * <pre>
+	 * FORMATTER / Option to insert a new line after each comma in an object literal initializer
+	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.insert_new_line_after_comma_in_objlit_initializer"
+	 *     - possible values:   { INSERT, DO_NOT_INSERT }
+	 *     - default:           DO_NOT_INSERT
+	 * </pre>
+	 * @see JavaCore#INSERT
+	 * @see JavaCore#DO_NOT_INSERT
+	 * @since 3.0
+	 */
+	public static final String FORMATTER_INSERT_NEW_LINE_AFTER_COMMA_IN_OBJLIT_INITIALIZER = JavaCore.PLUGIN_ID + ".formatter.insert_new_line_after_comma_in_objlit_initializer";//$NON-NLS-1$
+	
 	/**
 	 * <pre>
 	 * FORMATTER / Option to insert a new line at the end of the current file if missing

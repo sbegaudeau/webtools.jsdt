@@ -304,6 +304,7 @@ final class FormatterMessages extends NLS {
 	public static String LineWrappingTabPage_width_indent_option_max_line_width;
 	public static String LineWrappingTabPage_width_indent_option_default_indent_wrapped;
 	public static String LineWrappingTabPage_width_indent_option_default_indent_array;
+	public static String LineWrappingTabPage_width_indent_option_default_indent_objlit;
 	public static String LineWrappingTabPage_error_invalid_value;
 	public static String LineWrappingTabPage_enum_superinterfaces;
 	public static String LineWrappingTabPage_assignment_alignment;
@@ -448,7 +449,8 @@ final class FormatterMessages extends NLS {
 	public static String NewLinesTabPage_objectInitializer_group_title;
 	public static String NewLinesTabPage_object_group_option_after_opening_brace_of_object_initializer;
 	public static String NewLinesTabPage_object_group_option_before_closing_brace_of_object_initializer;
-
+	public static String NewLinesTabPage_object_group_option_after_comma_in_object_initializer;
+	
 	public static String ProfileManager_default_profile_name;
 	public static String ProfileManager_eclipse_profile_name;
 	public static String ProfileManager_java_conventions_profile_name;

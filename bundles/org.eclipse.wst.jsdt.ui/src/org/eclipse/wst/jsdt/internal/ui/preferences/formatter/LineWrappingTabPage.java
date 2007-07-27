@@ -435,7 +435,7 @@ public class LineWrappingTabPage extends FormatterTabPage {
 
 	private final Category fMethodDeclarationsParametersCategory= new Category(
 	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_PARAMETERS_IN_METHOD_DECLARATION,
-	    "function foo(arg1, arg2, arg3, arg4, arg5, arg6) {}}", //$NON-NLS-1$
+	    "function foo(arg1, arg2, arg3, arg4, arg5, arg6) { var x = 0; return x;}", //$NON-NLS-1$
 	    FormatterMessages.LineWrappingTabPage_parameters
 	); 
 	
@@ -470,19 +470,19 @@ public class LineWrappingTabPage extends FormatterTabPage {
 	
 	private final Category fAllocationExpressionArgumentsCategory= new Category(
 	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_ARGUMENTS_IN_ALLOCATION_EXPRESSION,
-	    "function foo() {return new SomeClass(100, 200, 300, 400, 500, 600, 700, 800, 900 );}", //$NON-NLS-1$
+	    "foo( new SomeClass(100, 200, 300, 400, 500, 600, 700, 800, 900 ) );", //$NON-NLS-1$
 	    FormatterMessages.LineWrappingTabPage_object_allocation
 	);
 	
-	private final Category fQualifiedAllocationExpressionCategory= new Category (
-	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_ARGUMENTS_IN_QUALIFIED_ALLOCATION_EXPRESSION,
-	    "class Example {SomeClass foo() {return SomeOtherClass.new SomeClass(100, 200, 300, 400, 500 );}}", //$NON-NLS-1$
-		FormatterMessages.LineWrappingTabPage_qualified_object_allocation
-	);
+//	private final Category fQualifiedAllocationExpressionCategory= new Category (
+//	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_ARGUMENTS_IN_QUALIFIED_ALLOCATION_EXPRESSION,
+//	    "class Example {SomeClass foo() {return SomeOtherClass.new SomeClass(100, 200, 300, 400, 500 );}}", //$NON-NLS-1$
+//		FormatterMessages.LineWrappingTabPage_qualified_object_allocation
+//	);
 	
 	private final Category fArrayInitializerExpressionsCategory= new Category(
 	    DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_EXPRESSIONS_IN_ARRAY_INITIALIZER,
-	    "function foo() { fArray= [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];}", //$NON-NLS-1$
+	    "fArray= [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];", //$NON-NLS-1$
 	    FormatterMessages.LineWrappingTabPage_array_init
 	);
 	
@@ -655,7 +655,7 @@ public class LineWrappingTabPage extends FormatterTabPage {
 //		functionCalls.children.add(fMessageSendSelectorCategory);
 //		functionCalls.children.add(fExplicitConstructorArgumentsCategory);
 		functionCalls.children.add(fAllocationExpressionArgumentsCategory);
-		functionCalls.children.add(fQualifiedAllocationExpressionCategory);
+//		functionCalls.children.add(fQualifiedAllocationExpressionCategory);
 		
 		final Category expressions= new Category(FormatterMessages.LineWrappingTabPage_expressions); 
 		expressions.children.add(fBinaryExpressionCategory);
@@ -686,8 +686,9 @@ public class LineWrappingTabPage extends FormatterTabPage {
 		final Group lineWidthGroup= createGroup(numColumns, composite, FormatterMessages.LineWrappingTabPage_width_indent); 
 
 		createNumberPref(lineWidthGroup, numColumns, FormatterMessages.LineWrappingTabPage_width_indent_option_max_line_width, DefaultCodeFormatterConstants.FORMATTER_LINE_SPLIT, 0, 9999); 
-		createNumberPref(lineWidthGroup, numColumns, FormatterMessages.LineWrappingTabPage_width_indent_option_default_indent_wrapped, DefaultCodeFormatterConstants.FORMATTER_CONTINUATION_INDENTATION, 0, 9999); 
-		createNumberPref(lineWidthGroup, numColumns, FormatterMessages.LineWrappingTabPage_width_indent_option_default_indent_array, DefaultCodeFormatterConstants.FORMATTER_CONTINUATION_INDENTATION_FOR_ARRAY_INITIALIZER, 0, 9999); 		
+		createNumberPref(lineWidthGroup, numColumns, FormatterMessages.LineWrappingTabPage_width_indent_option_default_indent_wrapped, DefaultCodeFormatterConstants.FORMATTER_CONTINUATION_INDENTATION, 0, 9999);
+		createNumberPref(lineWidthGroup, numColumns, FormatterMessages.LineWrappingTabPage_width_indent_option_default_indent_array, DefaultCodeFormatterConstants.FORMATTER_CONTINUATION_INDENTATION_FOR_ARRAY_INITIALIZER, 0, 9999);
+		createNumberPref(lineWidthGroup, numColumns, FormatterMessages.LineWrappingTabPage_width_indent_option_default_indent_objlit, DefaultCodeFormatterConstants.FORMATTER_CONTINUATION_INDENTATION_FOR_OBJLIT_INITIALIZER, 0, 9999);
 		
 		fCategoriesViewer= new TreeViewer(composite /*categoryGroup*/, SWT.MULTI | SWT.BORDER | SWT.READ_ONLY | SWT.V_SCROLL );
 		fCategoriesViewer.setContentProvider(new ITreeContentProvider() {

@@ -84,6 +84,7 @@ public class DefaultCodeFormatterOptions {
 	
 	public int continuation_indentation;
 	public int continuation_indentation_for_array_initializer;
+	public int continuation_indentation_for_objlit_initializer;
 	
 	public int blank_lines_after_imports;
 	public int blank_lines_after_package;
@@ -127,6 +128,7 @@ public class DefaultCodeFormatterOptions {
 	public boolean insert_new_line_after_annotation;
 	public boolean insert_new_line_after_opening_brace_in_array_initializer;
 	public boolean insert_new_line_after_opening_brace_in_objlit_initializer;
+	public boolean insert_new_line_after_comma_in_objlit_initializer;
 	public boolean insert_new_line_at_end_of_file_if_missing;
 	public boolean insert_new_line_before_catch_in_try_statement;
 	public boolean insert_new_line_before_closing_brace_in_array_initializer;
@@ -380,6 +382,7 @@ public class DefaultCodeFormatterOptions {
 		options.put(DefaultCodeFormatterConstants.FORMATTER_COMMENT_LINE_LENGTH, Integer.toString(this.comment_line_length));
 		options.put(DefaultCodeFormatterConstants.FORMATTER_CONTINUATION_INDENTATION, Integer.toString(this.continuation_indentation));
 		options.put(DefaultCodeFormatterConstants.FORMATTER_CONTINUATION_INDENTATION_FOR_ARRAY_INITIALIZER, Integer.toString(this.continuation_indentation_for_array_initializer));
+		options.put(DefaultCodeFormatterConstants.FORMATTER_CONTINUATION_INDENTATION_FOR_OBJLIT_INITIALIZER, Integer.toString(this.continuation_indentation_for_objlit_initializer));
 		options.put(DefaultCodeFormatterConstants.FORMATTER_BLANK_LINES_AFTER_IMPORTS, Integer.toString(this.blank_lines_after_imports));
 		options.put(DefaultCodeFormatterConstants.FORMATTER_BLANK_LINES_AFTER_PACKAGE, Integer.toString(this.blank_lines_after_package));
 		options.put(DefaultCodeFormatterConstants.FORMATTER_BLANK_LINES_BEFORE_FIELD, Integer.toString(this.blank_lines_before_field));
@@ -406,6 +409,7 @@ public class DefaultCodeFormatterOptions {
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_AFTER_ANNOTATION, this.insert_new_line_after_annotation ? JavaCore.INSERT : JavaCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_AFTER_OPENING_BRACE_IN_ARRAY_INITIALIZER, this.insert_new_line_after_opening_brace_in_array_initializer? JavaCore.INSERT : JavaCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_AFTER_OPENING_BRACE_IN_OBJLIT_INITIALIZER, this.insert_new_line_after_opening_brace_in_objlit_initializer? JavaCore.INSERT : JavaCore.DO_NOT_INSERT);
+		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_AFTER_COMMA_IN_OBJLIT_INITIALIZER, this.insert_new_line_after_comma_in_objlit_initializer? JavaCore.INSERT : JavaCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_AT_END_OF_FILE_IF_MISSING, this.insert_new_line_at_end_of_file_if_missing ? JavaCore.INSERT : JavaCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_BEFORE_CATCH_IN_TRY_STATEMENT, this.insert_new_line_before_catch_in_try_statement? JavaCore.INSERT : JavaCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_BEFORE_CLOSING_BRACE_IN_ARRAY_INITIALIZER, this.insert_new_line_before_closing_brace_in_array_initializer? JavaCore.INSERT : JavaCore.DO_NOT_INSERT);
@@ -924,6 +928,16 @@ public class DefaultCodeFormatterOptions {
 				this.continuation_indentation_for_array_initializer = 2;
 			}
 		}
+		final Object continuationIndentationForObjLitInitializerOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_CONTINUATION_INDENTATION_FOR_OBJLIT_INITIALIZER);
+		if (continuationIndentationForObjLitInitializerOption != null) {
+			try {
+				this.continuation_indentation_for_objlit_initializer = Integer.parseInt((String) continuationIndentationForObjLitInitializerOption);
+			} catch (NumberFormatException e) {
+				this.continuation_indentation_for_objlit_initializer = 1;
+			} catch(ClassCastException e) {
+				this.continuation_indentation_for_objlit_initializer = 1;
+			}
+		}
 		final Object blankLinesAfterImportsOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_BLANK_LINES_AFTER_IMPORTS);
 		if (blankLinesAfterImportsOption != null) {
 			try {
@@ -1156,6 +1170,10 @@ public class DefaultCodeFormatterOptions {
 		final Object insertNewLineAfterOpeningBraceInObjLitInitializerOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_AFTER_OPENING_BRACE_IN_OBJLIT_INITIALIZER);
 		if (insertNewLineAfterOpeningBraceInObjLitInitializerOption != null) {
 			this.insert_new_line_after_opening_brace_in_objlit_initializer = JavaCore.INSERT.equals(insertNewLineAfterOpeningBraceInObjLitInitializerOption);
+		}
+		final Object insertNewLineAfterCommaInObjLitInitializerOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_AFTER_COMMA_IN_OBJLIT_INITIALIZER);
+		if (insertNewLineAfterCommaInObjLitInitializerOption != null) {
+			this.insert_new_line_after_comma_in_objlit_initializer = JavaCore.INSERT.equals(insertNewLineAfterCommaInObjLitInitializerOption);
 		}
 		final Object insertNewLineAtEndOfFileIfMissingOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_AT_END_OF_FILE_IF_MISSING);
 		if (insertNewLineAtEndOfFileIfMissingOption != null) {
@@ -1990,6 +2008,7 @@ public class DefaultCodeFormatterOptions {
 		this.comment_line_length = 80;
 		this.continuation_indentation = 2;
 		this.continuation_indentation_for_array_initializer = 2;
+		this.continuation_indentation_for_objlit_initializer = 1;
 		this.blank_lines_after_imports = 0;
 		this.blank_lines_after_package = 0;
 		this.blank_lines_before_field = 0;
@@ -2016,6 +2035,7 @@ public class DefaultCodeFormatterOptions {
 		this.insert_new_line_after_annotation = true;
 		this.insert_new_line_after_opening_brace_in_array_initializer = false;
 		this.insert_new_line_after_opening_brace_in_objlit_initializer = true;
+		this.insert_new_line_after_comma_in_objlit_initializer = true;
 		this.insert_new_line_at_end_of_file_if_missing = false;
 		this.insert_new_line_before_catch_in_try_statement = false;
 		this.insert_new_line_before_closing_brace_in_array_initializer = false;
@@ -2256,6 +2276,7 @@ public class DefaultCodeFormatterOptions {
 		this.comment_line_length = 80;
 		this.continuation_indentation = 2;
 		this.continuation_indentation_for_array_initializer = 2;
+		this.continuation_indentation_for_objlit_initializer = 1;
 		this.blank_lines_after_imports = 1;
 		this.blank_lines_after_package = 1;
 		this.blank_lines_before_field = 0;
@@ -2282,6 +2303,7 @@ public class DefaultCodeFormatterOptions {
 		this.insert_new_line_after_annotation = true;
 		this.insert_new_line_after_opening_brace_in_array_initializer = false;
 		this.insert_new_line_after_opening_brace_in_objlit_initializer = true;
+		this.insert_new_line_after_comma_in_objlit_initializer = true;
 		this.insert_new_line_at_end_of_file_if_missing = false;
 		this.insert_new_line_before_catch_in_try_statement = false;
 		this.insert_new_line_before_closing_brace_in_array_initializer = false;
