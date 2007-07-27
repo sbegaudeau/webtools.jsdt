@@ -1324,6 +1324,7 @@
             id="org.eclipse.wst.jsdt.ui.preferences.JavaEditorPreferencePage">
             <keywordReference id="org.eclipse.wst.jsdt.ui.javaeditor"/>
       </page>
+<!--      
       <page
             name="%propertiesFileEditorPrefName"
             category="org.eclipse.wst.jsdt.ui.preferences.JavaBasePreferencePage"
@@ -1331,7 +1332,7 @@
             id="org.eclipse.wst.jsdt.ui.preferences.PropertiesFileEditorPreferencePage">
             <keywordReference id="org.eclipse.wst.jsdt.ui.propertieseditor"/>
       </page>
-      
+      -->
       <page
             name="%compliancePrefName"
             category="org.eclipse.wst.jsdt.ui.preferences.JavaBasePreferencePage"
