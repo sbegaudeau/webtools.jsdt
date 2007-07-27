@@ -133,18 +133,18 @@ public class CleanUpSaveParticipantConfigurationModifyDialog extends StatusDialo
 	}
 
 	protected CleanUpTabPage[] createTabPages(Map workingValues) {
-		CleanUpTabPage[] result= new CleanUpTabPage[4];
+		CleanUpTabPage[] result= new CleanUpTabPage[3];
 		result[0]= new CodeStyleTabPage(this, workingValues, true);
-		result[1]= new MemberAccessesTabPage(this, workingValues, true);
-		result[2]= new UnnecessaryCodeTabPage(this, workingValues, true);
+//		result[1]= new MemberAccessesTabPage(this, workingValues, true);
+		result[1]= new UnnecessaryCodeTabPage(this, workingValues, true);
 //		result[3]= new MissingCodeTabPage(this, workingValues, true);
-		result[3]= new CodeFormatingTabPage(this, workingValues, true);
+		result[2]= new CodeFormatingTabPage(this, workingValues, true);
 		
 		addTabPage(SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_CodeStyle_TabPage, result[0]);
-		addTabPage(SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_MemberAccesses_TabPage, result[1]);
-		addTabPage(SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_UnnecessaryCode_TabPage, result[2]);
+//		addTabPage(SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_MemberAccesses_TabPage, result[1]);
+		addTabPage(SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_UnnecessaryCode_TabPage, result[1]);
 //		addTabPage(SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_MissingCode_TabPage, result[3]);
-		addTabPage(SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_CodeOrganizing_TabPage, result[3]);
+		addTabPage(SaveParticipantMessages.CleanUpSaveParticipantConfigurationModifyDialog_CodeOrganizing_TabPage, result[2]);
 		
 		return result;
 	}

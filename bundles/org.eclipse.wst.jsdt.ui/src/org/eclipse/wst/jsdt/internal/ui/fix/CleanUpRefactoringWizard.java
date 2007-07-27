@@ -322,18 +322,18 @@ public class CleanUpRefactoringWizard extends RefactoringWizard {
 				public void widgetSelected(SelectionEvent e) {
 					CleanUpSaveParticipantConfigurationModifyDialog dialog= new CleanUpSaveParticipantConfigurationModifyDialog(getShell(), fCustomSettings, MultiFixMessages.CleanUpRefactoringWizard_CustomCleanUpsDialog_title) {
 						protected CleanUpTabPage[] createTabPages(Map workingValues) {
-							CleanUpTabPage[] result= new CleanUpTabPage[4];
+							CleanUpTabPage[] result= new CleanUpTabPage[3];
 							result[0]= new CodeStyleTabPage(this, workingValues, false);
-							result[1]= new MemberAccessesTabPage(this, workingValues, false);
-							result[2]= new UnnecessaryCodeTabPage(this, workingValues, false);
+//							result[1]= new MemberAccessesTabPage(this, workingValues, false);
+							result[1]= new UnnecessaryCodeTabPage(this, workingValues, false);
 //							result[3]= new MissingCodeTabPage(this, workingValues, false);
-							result[3]= new CodeFormatingTabPage(this, workingValues, false);
+							result[2]= new CodeFormatingTabPage(this, workingValues, false);
 							
 							addTabPage(MultiFixMessages.CleanUpRefactoringWizard_code_style_tab, result[0]);
-							addTabPage(MultiFixMessages.CleanUpRefactoringWizard_member_accesses_tab, result[1]);
-							addTabPage(MultiFixMessages.CleanUpRefactoringWizard_unnecessary_code_tab, result[2]);
+//							addTabPage(MultiFixMessages.CleanUpRefactoringWizard_member_accesses_tab, result[1]);
+							addTabPage(MultiFixMessages.CleanUpRefactoringWizard_unnecessary_code_tab, result[1]);
 //							addTabPage(MultiFixMessages.CleanUpRefactoringWizard_missing_code_tab, result[3]);
-							addTabPage(MultiFixMessages.CleanUpRefactoringWizard_code_organizing_tab, result[3]);
+							addTabPage(MultiFixMessages.CleanUpRefactoringWizard_code_organizing_tab, result[2]);
 							
 							return result;
 						}

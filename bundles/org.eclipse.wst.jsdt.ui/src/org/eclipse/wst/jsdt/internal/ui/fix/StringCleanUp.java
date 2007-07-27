@@ -100,9 +100,9 @@ public class StringCleanUp extends AbstractCleanUp {
 		StringBuffer buf= new StringBuffer();
 		
 		if (isEnabled(CleanUpConstants.REMOVE_UNNECESSARY_NLS_TAGS)) {
-			buf.append("public String s;"); //$NON-NLS-1$
+			buf.append("var s=\"\";"); //$NON-NLS-1$
 		} else {
-			buf.append("public String s; //$NON-NLS-1$"); //$NON-NLS-1$
+			buf.append("var s=\"\"; //$NON-NLS-1$"); //$NON-NLS-1$
 		}
 		
 		return buf.toString();

@@ -90,19 +90,18 @@ public class CodeFormatCleanUp extends AbstractCleanUp {
 	
 	public String getPreview() {
 		StringBuffer buf= new StringBuffer();
-		buf.append("public class Engine {\n"); //$NON-NLS-1$
-		buf.append("  public void start() {}\n"); //$NON-NLS-1$
+		buf.append("  function start() {}\n"); //$NON-NLS-1$
 		if (isEnabled(CleanUpConstants.FORMAT_REMOVE_TRAILING_WHITESPACES) && isEnabled(CleanUpConstants.FORMAT_REMOVE_TRAILING_WHITESPACES_ALL)) {
 			buf.append("\n"); //$NON-NLS-1$
 		} else {
 			buf.append("    \n"); //$NON-NLS-1$
 		}
 		if (isEnabled(CleanUpConstants.FORMAT_REMOVE_TRAILING_WHITESPACES)) {
-			buf.append("    public\n"); //$NON-NLS-1$
+			buf.append("    function\n"); //$NON-NLS-1$
 		} else {
-			buf.append("    public \n"); //$NON-NLS-1$
+			buf.append("    function \n"); //$NON-NLS-1$
 		}
-		buf.append("        void stop() {\n"); //$NON-NLS-1$
+		buf.append("        stop() {\n"); //$NON-NLS-1$
 		buf.append("    }\n"); //$NON-NLS-1$
 		buf.append("}\n"); //$NON-NLS-1$
 		

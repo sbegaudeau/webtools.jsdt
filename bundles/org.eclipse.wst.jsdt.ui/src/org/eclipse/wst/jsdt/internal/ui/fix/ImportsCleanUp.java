@@ -107,11 +107,11 @@ public class ImportsCleanUp extends AbstractCleanUp {
     public String getPreview() {
 		StringBuffer buf= new StringBuffer();
 		
-		if (isEnabled(CleanUpConstants.ORGANIZE_IMPORTS)) {
-			buf.append("import org.model.Engine;\n"); //$NON-NLS-1$
-		} else {
-			buf.append("import org.model.*;\n"); //$NON-NLS-1$
-		}
+//		if (isEnabled(CleanUpConstants.ORGANIZE_IMPORTS)) {
+//			buf.append("import org.model.Engine;\n"); //$NON-NLS-1$
+//		} else {
+//			buf.append("import org.model.*;\n"); //$NON-NLS-1$
+//		}
 		
 		return buf.toString();
     }

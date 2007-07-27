@@ -1041,34 +1041,34 @@ public class CleanUpRefactoring extends Refactoring implements IScheduledRefacto
 	
 	public static ICleanUp[] createCleanUps() {
 		return new ICleanUp[] {
-				new CodeStyleCleanUp(), 
+//				new CodeStyleCleanUp(), 
 				new ControlStatementsCleanUp(), 
 				new ConvertLoopCleanUp(), 
-				new VariableDeclarationCleanUp(), 
+//				new VariableDeclarationCleanUp(), 
 				new ExpressionsCleanUp(), 
 				new UnusedCodeCleanUp(), 
-				new Java50CleanUp(), 
-				new UnnecessaryCodeCleanUp(), 
+//				new Java50CleanUp(), 
+//				new UnnecessaryCodeCleanUp(), 
 				new StringCleanUp(), 
 				new SortMembersCleanUp(), 
-				new ImportsCleanUp(), 
+//				new ImportsCleanUp(), 
 				new CodeFormatCleanUp(), 
 				new CommentFormatCleanUp()};
 	}
 	
 	public static ICleanUp[] createCleanUps(Map settings) {
 		return new ICleanUp[] {
-				new CodeStyleCleanUp(settings), 
+//				new CodeStyleCleanUp(settings), 
 				new ControlStatementsCleanUp(settings), 
 				new ConvertLoopCleanUp(settings), 
-				new VariableDeclarationCleanUp(settings), 
+//				new VariableDeclarationCleanUp(settings), 
 				new ExpressionsCleanUp(settings), 
 				new UnusedCodeCleanUp(settings), 
-				new Java50CleanUp(settings), 
-				new UnnecessaryCodeCleanUp(settings), 
+//				new Java50CleanUp(settings), 
+//				new UnnecessaryCodeCleanUp(settings), 
 				new StringCleanUp(settings),
 				new SortMembersCleanUp(settings), 
-				new ImportsCleanUp(settings), 
+//				new ImportsCleanUp(settings), 
 				new CodeFormatCleanUp(settings), 
 				new CommentFormatCleanUp(settings)};
 	}

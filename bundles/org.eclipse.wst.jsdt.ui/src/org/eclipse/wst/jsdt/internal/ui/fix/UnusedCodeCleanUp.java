@@ -51,11 +51,11 @@ public class UnusedCodeCleanUp extends AbstractCleanUp {
 		boolean removeUnuseMembers= isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_MEMBERS);
 		
 		return removeUnuseMembers && isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_METHODS) ||
-				removeUnuseMembers && isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_CONSTRUCTORS) ||
+//				removeUnuseMembers && isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_CONSTRUCTORS) ||
 				removeUnuseMembers && isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_FELDS) ||
-				removeUnuseMembers && isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_TYPES) || 
-				isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_LOCAL_VARIABLES) ||
-				isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_IMPORTS) && !isEnabled(CleanUpConstants.ORGANIZE_IMPORTS);
+//				removeUnuseMembers && isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_TYPES) || 
+				isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_LOCAL_VARIABLES) ;
+//				isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_IMPORTS) && !isEnabled(CleanUpConstants.ORGANIZE_IMPORTS);
 	}
 
 	public IFix createFix(CompilationUnit compilationUnit) throws CoreException {
@@ -118,14 +118,14 @@ public class UnusedCodeCleanUp extends AbstractCleanUp {
 	 */
 	public String[] getDescriptions() {
 		List result= new ArrayList();
-		if (isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_IMPORTS))
-			result.add(MultiFixMessages.UnusedCodeMultiFix_RemoveUnusedImport_description);
+//		if (isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_IMPORTS))
+//			result.add(MultiFixMessages.UnusedCodeMultiFix_RemoveUnusedImport_description);
 		if (isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_MEMBERS) && isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_METHODS))
 			result.add(MultiFixMessages.UnusedCodeMultiFix_RemoveUnusedMethod_description);
-		if (isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_MEMBERS) && isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_CONSTRUCTORS))
-			result.add(MultiFixMessages.UnusedCodeMultiFix_RemoveUnusedConstructor_description);
-		if (isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_MEMBERS) && isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_TYPES))
-			result.add(MultiFixMessages.UnusedCodeMultiFix_RemoveUnusedType_description);
+//		if (isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_MEMBERS) && isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_CONSTRUCTORS))
+//			result.add(MultiFixMessages.UnusedCodeMultiFix_RemoveUnusedConstructor_description);
+//		if (isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_MEMBERS) && isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_TYPES))
+//			result.add(MultiFixMessages.UnusedCodeMultiFix_RemoveUnusedType_description);
 		if (isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_MEMBERS) && isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_FELDS))
 			result.add(MultiFixMessages.UnusedCodeMultiFix_RemoveUnusedField_description);
 		if (isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_LOCAL_VARIABLES))
@@ -139,35 +139,34 @@ public class UnusedCodeCleanUp extends AbstractCleanUp {
 	public String getPreview() {
 		StringBuffer buf= new StringBuffer();
 		
-		if (isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_IMPORTS)) {
-		} else {
-			buf.append("import pack.Bar;\n"); //$NON-NLS-1$
-		}
-		buf.append("class Example {\n"); //$NON-NLS-1$
-		if (isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_MEMBERS) && isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_TYPES)) {
-		} else {
-			buf.append("    private class Sub {}\n"); //$NON-NLS-1$
-		}
-		buf.append("    public Example(boolean b) {}\n"); //$NON-NLS-1$
-		if (isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_MEMBERS) && isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_CONSTRUCTORS)) {
-		} else {
-			buf.append("    private Example() {}\n"); //$NON-NLS-1$
-		}
+////		if (isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_IMPORTS)) {
+////		} else {
+////			buf.append("import pack.Bar;\n"); //$NON-NLS-1$
+////		}
+////		buf.append("class Example {\n"); //$NON-NLS-1$
+//		if (isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_MEMBERS) && isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_TYPES)) {
+//		} else {
+//			buf.append("    private class Sub {}\n"); //$NON-NLS-1$
+//		}
+//		if (isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_MEMBERS) && isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_CONSTRUCTORS)) {
+//		} else {
+//			buf.append("    function Example() {}\n"); //$NON-NLS-1$
+//		}
 		if (isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_MEMBERS) && isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_FELDS)) {
 		} else {
-			buf.append("    private int fField;\n"); //$NON-NLS-1$
+			buf.append("    var fField;\n"); //$NON-NLS-1$
 		}
 		if (isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_MEMBERS) && isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_PRIVATE_METHODS)) {
 		} else {
-			buf.append("    private void foo() {}\n"); //$NON-NLS-1$
+			buf.append("    function foo() {}\n"); //$NON-NLS-1$
 		}
-		buf.append("    public void bar() {\n"); //$NON-NLS-1$
+		buf.append("    function bar() {\n"); //$NON-NLS-1$
 		if (isEnabled(CleanUpConstants.REMOVE_UNUSED_CODE_LOCAL_VARIABLES)) {
 		} else {
-			buf.append("        int i= 10;\n"); //$NON-NLS-1$
+			buf.append("        var i= 10;\n"); //$NON-NLS-1$
 		}
 		buf.append("    }\n"); //$NON-NLS-1$
-		buf.append("}\n"); //$NON-NLS-1$
+//		buf.append("}\n"); //$NON-NLS-1$
 		
 		return buf.toString();
 	}
