@@ -1164,18 +1164,18 @@ public final class CompletionEngine
 		relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE);
 		
 		this.noProposal = false;
-		if(!this.requestor.isIgnored(CompletionProposal.PACKAGE_REF)) {
-			CompletionProposal proposal = this.createProposal(CompletionProposal.PACKAGE_REF, this.actualCompletionPosition);
-			proposal.setDeclarationSignature(packageName);
-			proposal.setPackageName(packageName);
-			proposal.setCompletion(completion);
-			proposal.setReplaceRange(this.startPosition - this.offset, this.endPosition - this.offset);
-			proposal.setRelevance(relevance);
-			this.requestor.accept(proposal);
-			if(DEBUG) {
-				this.printDebug(proposal);
-			}
-		}
+//		if(!this.requestor.isIgnored(CompletionProposal.PACKAGE_REF)) {
+//			CompletionProposal proposal = this.createProposal(CompletionProposal.PACKAGE_REF, this.actualCompletionPosition);
+//			proposal.setDeclarationSignature(packageName);
+//			proposal.setPackageName(packageName);
+//			proposal.setCompletion(completion);
+//			proposal.setReplaceRange(this.startPosition - this.offset, this.endPosition - this.offset);
+//			proposal.setRelevance(relevance);
+//			this.requestor.accept(proposal);
+//			if(DEBUG) {
+//				this.printDebug(proposal);
+//			}
+//		}
 	}
 		
 	private void buildContext(
@@ -2402,9 +2402,9 @@ public final class CompletionEngine
 				if (parsedUnit.currentPackage instanceof CompletionOnPackageReference) {
 					contextAccepted = true;
 					this.buildContext(parsedUnit.currentPackage, null, null, null);
-					if(!this.requestor.isIgnored(CompletionProposal.PACKAGE_REF)) {
-						findPackages((CompletionOnPackageReference) parsedUnit.currentPackage);
-					}
+//					if(!this.requestor.isIgnored(CompletionProposal.PACKAGE_REF)) {
+//						findPackages((CompletionOnPackageReference) parsedUnit.currentPackage);
+//					}
 					if(this.noProposal && this.problem != null) {
 						this.requestor.completionFailure(this.problem);
 						if(DEBUG) {
@@ -4275,9 +4275,9 @@ public final class CompletionEngine
 			
 		this.completionToken =  importName;
 		// want to replace the existing .*;
-		if(!this.requestor.isIgnored(CompletionProposal.PACKAGE_REF)) {
-			this.nameEnvironment.findPackages(importName, this);
-		}
+//		if(!this.requestor.isIgnored(CompletionProposal.PACKAGE_REF)) {
+//			this.nameEnvironment.findPackages(importName, this);
+//		}
 		if(!this.requestor.isIgnored(CompletionProposal.TYPE_REF)) {
 			this.nameEnvironment.findTypes(
 					importName,
@@ -7204,9 +7204,9 @@ public final class CompletionEngine
 						this);
 				acceptTypes(scope);
 			}
-			if(!isEmptyPrefix && !this.requestor.isIgnored(CompletionProposal.PACKAGE_REF)) {
-				this.nameEnvironment.findPackages(token, this);
-			}
+//			if(!isEmptyPrefix && !this.requestor.isIgnored(CompletionProposal.PACKAGE_REF)) {
+//				this.nameEnvironment.findPackages(token, this);
+//			}
 		}
 	}
 
@@ -7323,9 +7323,9 @@ public final class CompletionEngine
 					this);
 			acceptTypes(scope);
 		}
-		if(!this.requestor.isIgnored(CompletionProposal.PACKAGE_REF)) {
-			this.nameEnvironment.findPackages(qualifiedName, this);
-		}
+//		if(!this.requestor.isIgnored(CompletionProposal.PACKAGE_REF)) {
+//			this.nameEnvironment.findPackages(qualifiedName, this);
+//		}
 	}
 
 	private void findTypesFromStaticImports(char[] token, Scope scope, boolean proposeAllMemberTypes, ObjectVector typesFound) {
