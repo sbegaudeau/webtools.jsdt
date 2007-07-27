@@ -1,1 +1,1 @@
-/**  * Object onrowexit()  * @type constructor  * @super Object  * @class onrowexit  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536963.aspx*/function onrowexit(){};onrowexit.prototype= new Object();
+/**  * Object onrowexit()  * @type onrowexit  * @super Object  * @class onrowexit  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536963.aspx*/function onrowexit(){};onrowexit.prototype= new Object();

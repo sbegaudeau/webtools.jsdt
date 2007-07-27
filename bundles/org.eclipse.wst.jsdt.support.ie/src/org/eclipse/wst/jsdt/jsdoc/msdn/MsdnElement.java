@@ -101,7 +101,7 @@ public class MsdnElement extends ElementInfo{
 					break;
 				}
 				jsDoc.append(dec + "Object " + getName() + "()" + endDec);
-				jsDoc.append(dec + "@type constructor" + endDec);
+				jsDoc.append(dec + "@type " + getName() + endDec);
 				jsDoc.append(dec + "@super "+ getSuperType() + endDec);
 				jsDoc.append(dec + "@class " + getName()  + endDec);
 				jsDoc.append(dec + "@since " + getSince() +  endDec);	
@@ -230,7 +230,7 @@ public class MsdnElement extends ElementInfo{
 			String jsTypeName = getJsTypeName();
 			if(jsTypeName==null) return "Object";
 			jsTypeName = jsTypeName.trim();
-			if(contains(jsTypeName, "variant")) return "Variant";
+			if(contains(jsTypeName, "variant")) return "Object";
 			if(contains(jsTypeName, "integer")) return "Number";
 			return jsTypeName ;
 		}
@@ -243,7 +243,7 @@ public class MsdnElement extends ElementInfo{
 			String jsTypeName = getJsTypeName();
 			if(jsTypeName==null) return null;
 			jsTypeName = jsTypeName.trim();
-			if(contains(jsTypeName, "variant")) return "Variant";
+			if(contains(jsTypeName, "variant")) return "Object";
 			if(contains(jsTypeName, "integer")) return "Number";
 			return jsTypeName ;
 			

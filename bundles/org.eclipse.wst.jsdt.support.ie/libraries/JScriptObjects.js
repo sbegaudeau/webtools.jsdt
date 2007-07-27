@@ -1,25 +1,10 @@
-  /**
-  * Object Variant()
-  *
-  * A variant object may represent an object, function or primitive type. NOTE: Varaint is NOT a valid datatype
-  * and only listed here for documentation.
-  *
-  * @super Object
-  * @type  constructor
-  * @class Variant
-  * @since JScript 5.6   
- */
-
-function Variant(){};
-Variant.prototype=new Object();
- 
-  /**
+ /**
   * Object DABoolean()
   *
   * Temp Definition of DABoolean Type as found in MSDN Pages
   *
   * @super Object
-  * @type  constructor
+  * @type  DABoolean
   * @class DABoolean
   * @since JScript 5.6   
  */
@@ -29,7 +14,7 @@ DABoolean.prototype=new Object();
 
   /* Object arguments()
   * @super Array
-  * @type  constructor
+  * @type  arguments
   * @class arguments
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/9dthzd08.aspx     
@@ -42,7 +27,7 @@ arguments.prototype=new Array();
   * An intrinsic global object that stores information about the results of regular expression pattern matches.
   * Object RegExp()
   * @super Object
-  * @type  constructor
+  * @type  RegExp
   * @class RegExp
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/9dthzd08.aspx     
@@ -198,7 +183,7 @@ RegExp.prototype.compile=function(pattern, flags){};
   * Enables and returns a reference to an Automation object.
   * Object ActiveXObject(servername.typename, location)
   * @super Object
-  * @type  constructor
+  * @type  ActiveXObject
   * @param servername String Required. The name of the application providing the object
   * @param typename String Required. The type or class of the object to create.
   * @param location String  Optional. The name of the network server where the object is to be created.
@@ -342,7 +327,7 @@ Object.prototype.valueOf=function(){};
 /**
   * Object Date()
   * @super Object
-  * @type  constructor
+  * @type  Date
   * @class Date
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/9dthzd08.aspx     
@@ -828,7 +813,7 @@ Date.UTC=function(year, month, day, hours, minutes, seconds, ms){};
   
   * Object Debug()
   * @super Object
-  * @type  constructor
+  * @type  Debug
   * @class Debug
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/bs12a9wf.aspx 
@@ -859,7 +844,7 @@ Debug.writeln=function(value){};
   
   * Object Enumerator()
   * @super Object
-  * @type  constructor
+  * @type  Enumerator
   * @class Enumerator
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/bs12a9wf.aspx 
@@ -869,7 +854,7 @@ function Enumerator(){};
   
   * Object Enumerator(collection)
   * @super Object
-  * @type  constructor
+  * @type  Enumerator
   * @param collection Object
   * @class Enumerator
   * @since JScript 5.6
@@ -922,7 +907,7 @@ Enumerator.prototype.moveNext =function(){};
   
   * Object Error()
   * @super Object
-  * @type  constructor
+  * @type  Error
   * @param number Number
   * @param description String
   * @class Error
@@ -975,7 +960,7 @@ Error.prototype.number=0;
   
   * Object Function()
   * @super Object
-  * @type  constructor
+  * @type  Function
   * @param functionName String
   * @param arg1 String
   * @param arg1 String
@@ -1068,7 +1053,7 @@ Function.prototype.call=function(thisObj, args){};
   
   * Object Global()
   * @super Object
-  * @type  constructor
+  * @type  Global
   * @since   JScript 5.6
   * @link    http://msdn2.microsoft.com/en-us/library/52f50e9t.aspx
   */
@@ -1706,7 +1691,7 @@ String.prototype.sup=function(){};
   * 
   * Object VBArray()
   * @super Array
-  * @type  constructor
+  * @type  VBArray
   * @param safe Boolean
   * @class VBArray
   * @since JScript 5.6
@@ -1722,7 +1707,7 @@ VBArray.prototype=new Array();
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
  */
-VBArray.prototype.dimensions=function(){};
+VBArray.prototype.dimensions=function();
 /**
   * function getItem(dims);
   * @type  Object
@@ -1732,7 +1717,7 @@ VBArray.prototype.dimensions=function(){};
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
  */
-VBArray.prototype.getItem=function(dims){};
+VBArray.prototype.getItem=function(dims);
 /**
   * function lbound(dims);
   * @type  Object
@@ -1742,7 +1727,7 @@ VBArray.prototype.getItem=function(dims){};
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
  */
-VBArray.prototype.lbound=function(dims){};
+VBArray.prototype.lbound=function(dims);
 /**
   * function toArray()
   * @type  Array
@@ -1751,7 +1736,7 @@ VBArray.prototype.lbound=function(dims){};
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
  */
-VBArray.prototype.toArray=function(){};
+VBArray.prototype.toArray=function();
 /**
   * function ubound(dims);
   * @type  Object
@@ -1761,7 +1746,7 @@ VBArray.prototype.toArray=function(){};
   * @since JScript 5.6
   * @link  http://msdn2.microsoft.com/en-us/library/y39d47w8.aspx     
  */
-VBArray.prototype.ubound=function(number){};
+VBArray.prototype.ubound=function(number);
 
 
 /**
@@ -1818,7 +1803,7 @@ function ScriptEngineMajorVersion(){};
   * @since JScript 5.6
   * @link   http://msdn2.microsoft.com/en-us/library/wzaz8hhz.aspx    
  */
-function ScriptEngineMinorVersion(){};
+function ScriptEngineMinorVersion(){}
 
 
 

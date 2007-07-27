@@ -1,1 +1,1 @@
-/**  * Object plainText()  * @type constructor  * @super Object  * @class plainText  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms535881.aspx*/function plainText(){};plainText.prototype= new Object();
+/**  * Object plainText()  * @type plainText  * @super Object  * @class plainText  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms535881.aspx*/function plainText(){};plainText.prototype= new Object();

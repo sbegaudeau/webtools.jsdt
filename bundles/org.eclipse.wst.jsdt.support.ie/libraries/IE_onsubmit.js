@@ -1,1 +1,1 @@
-/**  * Object onsubmit()  * @type constructor  * @super Object  * @class onsubmit  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536972.aspx*/function onsubmit(){};onsubmit.prototype= new Object();
+/**  * Object onsubmit()  * @type onsubmit  * @super Object  * @class onsubmit  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536972.aspx*/function onsubmit(){};onsubmit.prototype= new Object();

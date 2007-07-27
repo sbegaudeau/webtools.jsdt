@@ -1,1 +1,1 @@
-/**  * Object onselectstart()  * @type constructor  * @super Object  * @class onselectstart  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536969.aspx*/function onselectstart(){};onselectstart.prototype= new Object();
+/**  * Object onselectstart()  * @type onselectstart  * @super Object  * @class onselectstart  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536969.aspx*/function onselectstart(){};onselectstart.prototype= new Object();

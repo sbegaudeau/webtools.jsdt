@@ -1,1 +1,1 @@
-/**  * Object onbeforeeditfocus()  * @type constructor  * @super Object  * @class onbeforeeditfocus  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536904.aspx*/function onbeforeeditfocus(){};onbeforeeditfocus.prototype= new Object();
+/**  * Object onbeforeeditfocus()  * @type onbeforeeditfocus  * @super Object  * @class onbeforeeditfocus  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536904.aspx*/function onbeforeeditfocus(){};onbeforeeditfocus.prototype= new Object();

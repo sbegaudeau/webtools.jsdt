@@ -1,1 +1,1 @@
-/**  * Object onmouseover()  * @type constructor  * @super Object  * @class onmouseover  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536949.aspx*/function onmouseover(){};onmouseover.prototype= new Object();
+/**  * Object onmouseover()  * @type onmouseover  * @super Object  * @class onmouseover  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536949.aspx*/function onmouseover(){};onmouseover.prototype= new Object();

@@ -1,1 +1,1 @@
-/**  * Object srcUrn()  * @type constructor  * @super Object  * @class srcUrn  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms534640.aspx*/function srcUrn(){};srcUrn.prototype= new Object();
+/**  * Object srcUrn()  * @type srcUrn  * @super Object  * @class srcUrn  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms534640.aspx*/function srcUrn(){};srcUrn.prototype= new Object();

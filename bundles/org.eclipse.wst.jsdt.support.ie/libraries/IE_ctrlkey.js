@@ -1,1 +1,1 @@
-/**  * Object ctrlKey()  * @type constructor  * @super Object  * @class ctrlKey  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms533699.aspx*/function ctrlKey(){};ctrlKey.prototype= new Object();
+/**  * Object ctrlKey()  * @type ctrlKey  * @super Object  * @class ctrlKey  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms533699.aspx*/function ctrlKey(){};ctrlKey.prototype= new Object();

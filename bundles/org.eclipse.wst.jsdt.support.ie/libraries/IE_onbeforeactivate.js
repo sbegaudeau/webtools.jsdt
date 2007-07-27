@@ -1,1 +1,1 @@
-/**  * Object onbeforeactivate()  * @type constructor  * @super Object  * @class onbeforeactivate  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536791.aspx*/function onbeforeactivate(){};onbeforeactivate.prototype= new Object();
+/**  * Object onbeforeactivate()  * @type onbeforeactivate  * @super Object  * @class onbeforeactivate  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536791.aspx*/function onbeforeactivate(){};onbeforeactivate.prototype= new Object();

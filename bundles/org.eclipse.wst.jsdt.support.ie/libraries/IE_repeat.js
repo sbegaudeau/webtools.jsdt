@@ -1,1 +1,1 @@
-/**  * Object repeat()  * @type constructor  * @super Object  * @class repeat  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms534367.aspx*/function repeat(){};repeat.prototype= new Object();
+/**  * Object repeat()  * @type repeat  * @super Object  * @class repeat  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms534367.aspx*/function repeat(){};repeat.prototype= new Object();

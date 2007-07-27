@@ -1,1 +1,1 @@
-/**  * Object srcElement()  * @type constructor  * @super Object  * @class srcElement  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms534638.aspx*/function srcElement(){};srcElement.prototype= new Object();
+/**  * Object srcElement()  * @type srcElement  * @super Object  * @class srcElement  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms534638.aspx*/function srcElement(){};srcElement.prototype= new Object();

@@ -1,1 +1,1 @@
-/**  * Object onmousewheel()  * @type constructor  * @super Object  * @class onmousewheel  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536951.aspx*/function onmousewheel(){};onmousewheel.prototype= new Object();
+/**  * Object onmousewheel()  * @type onmousewheel  * @super Object  * @class onmousewheel  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536951.aspx*/function onmousewheel(){};onmousewheel.prototype= new Object();

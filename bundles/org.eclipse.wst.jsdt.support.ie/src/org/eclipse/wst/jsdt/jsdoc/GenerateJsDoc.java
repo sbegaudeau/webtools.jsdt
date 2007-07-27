@@ -20,9 +20,10 @@ public class GenerateJsDoc {
 	
 	
 	static final String outDirectory = "./libraries";
-	static final String outFileName = "IEJsObjects.js";
+	static final String outFileName = "JScptBrowserObj.js";
 	static final int REPLACE_FILE = 0;
 	static final int SKIP_FILE = 1;
+	static final int APPEND = 2;
 	static final int LIB_FILE_ACTION = SKIP_FILE;
 	static final boolean CLEAR_CACHE_ON_EXIT = false;
 	static final boolean USE_CACHE=true;
@@ -49,6 +50,7 @@ public class GenerateJsDoc {
 			//allFoundNodes = new ArrayList();
 			for(int i = 0;i<tops.length;i++) {
 				String fileName = getOutFile(JS_PREFIX + tops[i].getName().toLowerCase().trim() + ".js");
+				//String fileName = getOutFile(outFileName);
 				File theFile = new File(fileName);
 				switch(LIB_FILE_ACTION) {
 					case SKIP_FILE:
@@ -74,16 +76,22 @@ public class GenerateJsDoc {
 						if(theFile.exists()) theFile.delete();
 						break;
 					}	
+					case APPEND:
+						
+						
 				}
 				workDone = true;
 				System.out.println("Writing Class '" + tops[i].getName() + "' to disk in " + fileName );
 				tops[i].getChildren();
 				String jsSctureture = tops[i].getJsStructure();
-				Util.stringToFile(jsSctureture, fileName, true, CLEAR_CACHE_ON_EXIT);
+				Util.stringToFile(jsSctureture, fileName, true, false);
 				
 				ElementInfo[] foundObjects = tops[i].getFoundObjects();
 				for(int k = 0;k<foundObjects.length;k++) {
-					if(!allFoundNodes.contains(foundObjects[k])) allFoundNodes.add(foundObjects[k]);
+					if(!allFoundNodes.contains(foundObjects[k])) {
+						allFoundNodes.add(foundObjects[k]);
+						workDone = true;
+					}
 				}
 				ElementInfo.freeObject(tops[i]);
 				tops[i]=null;

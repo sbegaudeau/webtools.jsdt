@@ -1,1 +1,1 @@
-/**  * Object oncopy()  * @type constructor  * @super Object  * @class oncopy  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536916.aspx*/function oncopy(){};oncopy.prototype= new Object();
+/**  * Object oncopy()  * @type oncopy  * @super Object  * @class oncopy  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536916.aspx*/function oncopy(){};oncopy.prototype= new Object();

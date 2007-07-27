@@ -1,1 +1,1 @@
-/**  * Object onbeforecut()  * @type constructor  * @super Object  * @class onbeforecut  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536902.aspx*/function onbeforecut(){};onbeforecut.prototype= new Object();
+/**  * Object onbeforecut()  * @type onbeforecut  * @super Object  * @class onbeforecut  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536902.aspx*/function onbeforecut(){};onbeforecut.prototype= new Object();

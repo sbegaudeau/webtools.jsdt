@@ -1,1 +1,1 @@
-/**  * Object ontimeerror()  * @type constructor  * @super Object  * @class ontimeerror  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms533588.aspx*/function ontimeerror(){};ontimeerror.prototype= new Object();
+/**  * Object ontimeerror()  * @type ontimeerror  * @super Object  * @class ontimeerror  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms533588.aspx*/function ontimeerror(){};ontimeerror.prototype= new Object();

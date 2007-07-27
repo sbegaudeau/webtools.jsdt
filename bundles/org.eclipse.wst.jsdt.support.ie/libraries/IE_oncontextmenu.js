@@ -1,1 +1,1 @@
-/**  * Object oncontextmenu()  * @type constructor  * @super Object  * @class oncontextmenu  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536914.aspx*/function oncontextmenu(){};oncontextmenu.prototype= new Object();
+/**  * Object oncontextmenu()  * @type oncontextmenu  * @super Object  * @class oncontextmenu  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536914.aspx*/function oncontextmenu(){};oncontextmenu.prototype= new Object();

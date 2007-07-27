@@ -1,1 +1,1 @@
-/**  * Object screenX()  * @type constructor  * @super Object  * @class screenX  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms534391.aspx*/function screenX(){};screenX.prototype= new Object();
+/**  * Object screenX()  * @type screenX  * @super Object  * @class screenX  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms534391.aspx*/function screenX(){};screenX.prototype= new Object();

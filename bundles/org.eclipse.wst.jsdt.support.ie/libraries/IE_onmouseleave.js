@@ -1,1 +1,1 @@
-/**  * Object onmouseleave()  * @type constructor  * @super Object  * @class onmouseleave  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536946.aspx*/function onmouseleave(){};onmouseleave.prototype= new Object();
+/**  * Object onmouseleave()  * @type onmouseleave  * @super Object  * @class onmouseleave  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536946.aspx*/function onmouseleave(){};onmouseleave.prototype= new Object();

@@ -1,1 +1,1 @@
-/**  * Object onscroll()  * @type constructor  * @super Object  * @class onscroll  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536966.aspx*/function onscroll(){};onscroll.prototype= new Object();
+/**  * Object onscroll()  * @type onscroll  * @super Object  * @class onscroll  * @since JScript 5.6  * @link http://msdn2.microsoft.com/en-us/library/ms536966.aspx*/function onscroll(){};onscroll.prototype= new Object();
