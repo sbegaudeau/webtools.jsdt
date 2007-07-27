@@ -158,14 +158,14 @@ public class SurroundWithTemplateMenuAction implements IWorkbenchWindowPulldownD
 		return fMenu;
 	}
 
-	public static void fillMenu(IMenuManager menu, CompilationUnitEditor editor, SurroundWithTryCatchAction surroundWithTryCatchAction) {
+	public static void fillMenu(IMenuManager menu, CompilationUnitEditor editor) {
 		IAction[] actions= getTemplateActions(editor);
-		surroundWithTryCatchAction.update(editor.getSelectionProvider().getSelection());
+//		surroundWithTryCatchAction.update(editor.getSelectionProvider().getSelection());
 		
-		if (actions == null && !surroundWithTryCatchAction.isEnabled()) {
+		if (actions == null /* && !surroundWithTryCatchAction.isEnabled()*/) {
 			menu.add(NONE_APPLICABLE_ACTION);
 		} else {		
-    		menu.add(surroundWithTryCatchAction);
+//    		menu.add(surroundWithTryCatchAction);
     		menu.add(new Separator(TEMPLATE_GROUP));
     		
     		if (actions == null) {
@@ -222,8 +222,8 @@ public class SurroundWithTemplateMenuAction implements IWorkbenchWindowPulldownD
 		
 		(new JDTQuickMenuAction(editor, SURROUND_WITH_QUICK_MENU_ACTION_ID) {
 			protected void fillMenu(IMenuManager menu) {
-				SurroundWithTryCatchAction surroundWithTryCatch= createSurroundWithTryCatchAction(editor);
-				SurroundWithTemplateMenuAction.fillMenu(menu, editor, surroundWithTryCatch);
+//				SurroundWithTryCatchAction surroundWithTryCatch= createSurroundWithTryCatchAction(editor);
+				SurroundWithTemplateMenuAction.fillMenu(menu, editor);
 			}
 		}).run();
 	}

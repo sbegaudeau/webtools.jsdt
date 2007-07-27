@@ -33,17 +33,17 @@ import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitEditor;
 public class SurroundWithActionGroup extends ActionGroup {
 	
 	private CompilationUnitEditor fEditor;
-	private SurroundWithTryCatchAction fSurroundWithTryCatchAction;
+//	private SurroundWithTryCatchAction fSurroundWithTryCatchAction;
 	private final String fGroup;
 	
 	public SurroundWithActionGroup(CompilationUnitEditor editor, String group) {
 		fEditor= editor;
 		fGroup= group;
-		fSurroundWithTryCatchAction= createSurroundWithTryCatchAction(fEditor);
+//		fSurroundWithTryCatchAction= createSurroundWithTryCatchAction(fEditor);
 	}
 	
 	public void fillActionBars(IActionBars actionBar) {
-		actionBar.setGlobalActionHandler(JdtActionConstants.SURROUND_WITH_TRY_CATCH, fSurroundWithTryCatchAction);
+//		actionBar.setGlobalActionHandler(JdtActionConstants.SURROUND_WITH_TRY_CATCH, fSurroundWithTryCatchAction);
 	}
 	
 	/**
@@ -76,7 +76,7 @@ public class SurroundWithActionGroup extends ActionGroup {
 		subMenu.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
 				manager.removeAll();
-				SurroundWithTemplateMenuAction.fillMenu(manager, fEditor, fSurroundWithTryCatchAction);
+				SurroundWithTemplateMenuAction.fillMenu(manager, fEditor);
 			}
 		});
 	}
