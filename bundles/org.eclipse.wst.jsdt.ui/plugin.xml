@@ -2697,6 +2697,7 @@
                   name="group1">
             </separator>
          </menu>
+<!--         
          <action
                definitionId="org.eclipse.wst.jsdt.ui.edit.text.java.search.implement.occurrences"
                label="%ImplementOccurrences.label"
@@ -2709,6 +2710,7 @@
                retarget="true"
                id="org.eclipse.wst.jsdt.ui.actions.ExceptionOccurrences">
          </action>
+-->         
          <action
                definitionId="org.eclipse.wst.jsdt.ui.edit.text.java.search.occurrences.in.file"
                label="%OccurrencesInFile.label"
@@ -2787,6 +2789,7 @@
                allowLabelUpdate="true"
                id="org.eclipse.wst.jsdt.ui.actions.ReadAccessInWorkspace">
          </action>
+<!--         
          <menu
                label="%implementorsSubMenu.label"
                path="org.eclipse.search.menu/contextMenuActionsGroup"
@@ -2819,6 +2822,7 @@
                allowLabelUpdate="true"
                id="org.eclipse.wst.jsdt.ui.actions.ImplementorsInWorkspace">
          </action>
+-->         
          <menu
                label="%declarationsSubMenu.label"
                path="org.eclipse.search.menu/contextMenuActionsGroup"

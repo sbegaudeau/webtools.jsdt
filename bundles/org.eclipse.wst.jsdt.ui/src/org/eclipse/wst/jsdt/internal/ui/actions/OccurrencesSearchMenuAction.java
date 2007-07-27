@@ -112,8 +112,8 @@ public class OccurrencesSearchMenuAction implements IWorkbenchWindowPulldownDele
 			if (fPartService != null) {
 				fRetargetActions= new RetargetAction[] {
 					createSubmenuAction(fPartService, JdtActionConstants.FIND_OCCURRENCES_IN_FILE, SearchMessages.Search_FindOccurrencesInFile_shortLabel, IJavaEditorActionDefinitionIds.SEARCH_OCCURRENCES_IN_FILE),
-					createSubmenuAction(fPartService, JdtActionConstants.FIND_IMPLEMENT_OCCURRENCES, ActionMessages.FindImplementOccurrencesAction_text, IJavaEditorActionDefinitionIds.SEARCH_IMPLEMENT_OCCURRENCES_IN_FILE),
-					createSubmenuAction(fPartService, JdtActionConstants.FIND_EXCEPTION_OCCURRENCES, ActionMessages.FindExceptionOccurrences_text, IJavaEditorActionDefinitionIds.SEARCH_EXCEPTION_OCCURRENCES_IN_FILE),
+//					createSubmenuAction(fPartService, JdtActionConstants.FIND_IMPLEMENT_OCCURRENCES, ActionMessages.FindImplementOccurrencesAction_text, IJavaEditorActionDefinitionIds.SEARCH_IMPLEMENT_OCCURRENCES_IN_FILE),
+//					createSubmenuAction(fPartService, JdtActionConstants.FIND_EXCEPTION_OCCURRENCES, ActionMessages.FindExceptionOccurrences_text, IJavaEditorActionDefinitionIds.SEARCH_EXCEPTION_OCCURRENCES_IN_FILE),
 				};
 			}	
 		}
