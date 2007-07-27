@@ -72,6 +72,8 @@ public class GetterSetterUtil {
 	}	
 
 	public static IMethod getGetter(IField field) throws JavaModelException{
+		if (field.getDeclaringType()==null)
+			return null;
 		String getterName= getGetterName(field, EMPTY, true);
 		IMethod primaryCandidate= JavaModelUtil.findMethod(getterName, new String[0], false, field.getDeclaringType());
 		if (! JavaModelUtil.isBoolean(field) || (primaryCandidate != null && primaryCandidate.exists()))
@@ -82,6 +84,8 @@ public class GetterSetterUtil {
 	}
 	
 	public static IMethod getSetter(IField field) throws JavaModelException{
+		if (field.getDeclaringType()==null)
+			return null;
 		String[] args= new String[] { field.getTypeSignature() };	
 		return JavaModelUtil.findMethod(getSetterName(field, EMPTY), args, false, field.getDeclaringType());
 	}

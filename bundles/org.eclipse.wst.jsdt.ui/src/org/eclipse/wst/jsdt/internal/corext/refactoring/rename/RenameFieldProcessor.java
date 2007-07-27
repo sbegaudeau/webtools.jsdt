@@ -226,7 +226,10 @@ public class RenameFieldProcessor extends JavaRenameProcessor implements IRefere
 					: RefactoringCoreMessages.RenameFieldRefactoring_another_name,
 					JavaStatusContext.create(fField));
 		
-		if (fField.getDeclaringType().getField(newName).exists())
+		boolean exists = (fField.getDeclaringType()!=null) ?
+				fField.getDeclaringType().getField(newName).exists() :
+				fField.getCompilationUnit().getField(newName).exists() ;
+		if (exists)
 			result.addError(fIsComposite 
 					? Messages.format(RefactoringCoreMessages.RenameFieldRefactoring_field_already_defined2, new String[] { newName, fField.getDeclaringType().getElementName() }) 
 					: RefactoringCoreMessages.RenameFieldRefactoring_field_already_defined,
@@ -235,7 +238,9 @@ public class RenameFieldProcessor extends JavaRenameProcessor implements IRefere
 	}
 	
 	public Object getNewElement() {
-		return fField.getDeclaringType().getField(getNewElementName());
+		return (fField.getDeclaringType()!=null) ?
+		 fField.getDeclaringType().getField(getNewElementName()):
+		 fField.getCompilationUnit().getField(getNewElementName());
 	}
 	
 	//---- ITextUpdating2 ---------------------------------------------
@@ -273,7 +278,7 @@ public class RenameFieldProcessor extends JavaRenameProcessor implements IRefere
 	 * @throws CoreException 
 	 */
 	public String canEnableGetterRenaming() throws CoreException{
-		if (fField.getDeclaringType().isInterface())
+		if (fField.getDeclaringType()!=null && fField.getDeclaringType().isInterface())
 			return getGetter() == null ? "": null; //$NON-NLS-1$
 			
 		IMethod getter= getGetter();
@@ -293,7 +298,7 @@ public class RenameFieldProcessor extends JavaRenameProcessor implements IRefere
 	 * @throws CoreException 
 	 */
 	public String canEnableSetterRenaming() throws CoreException{
-		if (fField.getDeclaringType().isInterface())
+		if (fField.getDeclaringType()!=null && fField.getDeclaringType().isInterface())
 			return getSetter() == null ? "": null; //$NON-NLS-1$
 			
 		IMethod setter= getSetter();
@@ -505,6 +510,8 @@ public class RenameFieldProcessor extends JavaRenameProcessor implements IRefere
 	}
 	
 	private RefactoringStatus checkNestedHierarchy(IType type) throws CoreException {
+		if (type==null)
+			return null;
 		IType[] nestedTypes= type.getTypes();
 		if (nestedTypes == null)
 			return null;
@@ -524,7 +531,7 @@ public class RenameFieldProcessor extends JavaRenameProcessor implements IRefere
 	
 	private RefactoringStatus checkEnclosingHierarchy() {
 		IType current= fField.getDeclaringType();
-		if (Checks.isTopLevel(current))
+		if (current==null || Checks.isTopLevel(current))
 			return null;
 		RefactoringStatus result= new RefactoringStatus();
 		while (current != null){
@@ -584,7 +591,7 @@ public class RenameFieldProcessor extends JavaRenameProcessor implements IRefere
 			}
 			final IType declaring= fField.getDeclaringType();
 			try {
-				if (declaring.isAnonymous() || declaring.isLocal())
+				if ( declaring!=null && (declaring.isAnonymous() || declaring.isLocal()))
 					flags|= JavaRefactoringDescriptor.JAR_SOURCE_ATTACHMENT;
 			} catch (JavaModelException exception) {
 				JavaPlugin.log(exception);
