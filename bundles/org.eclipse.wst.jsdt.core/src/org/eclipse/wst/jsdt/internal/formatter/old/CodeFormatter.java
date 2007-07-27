@@ -117,6 +117,7 @@ public class CodeFormatter implements TerminalTokens, org.eclipse.wst.jsdt.core.
 		newOptions.put(DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE, this.options.get(JavaCore.FORMATTER_TAB_SIZE));
 		newOptions.put(DefaultCodeFormatterConstants.FORMATTER_LINE_SPLIT, this.options.get(JavaCore.FORMATTER_LINE_SPLIT));
 		newOptions.put(DefaultCodeFormatterConstants.FORMATTER_BRACE_POSITION_FOR_ARRAY_INITIALIZER, DefaultCodeFormatterConstants.END_OF_LINE);
+		newOptions.put(DefaultCodeFormatterConstants.FORMATTER_BRACE_POSITION_FOR_OBJLIT_INITIALIZER, DefaultCodeFormatterConstants.END_OF_LINE);
 		newOptions.put(DefaultCodeFormatterConstants.FORMATTER_CONTINUATION_INDENTATION, "1");//$NON-NLS-1$
 		newOptions.put(DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_PARAMETERS_IN_METHOD_DECLARATION, DefaultCodeFormatterConstants.createAlignmentValue(false, DefaultCodeFormatterConstants.WRAP_ONE_PER_LINE, DefaultCodeFormatterConstants.INDENT_BY_ONE));
 		newOptions.put(DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_PARAMETERS_IN_CONSTRUCTOR_DECLARATION, DefaultCodeFormatterConstants.createAlignmentValue(false, DefaultCodeFormatterConstants.WRAP_ONE_PER_LINE, DefaultCodeFormatterConstants.INDENT_BY_ONE));

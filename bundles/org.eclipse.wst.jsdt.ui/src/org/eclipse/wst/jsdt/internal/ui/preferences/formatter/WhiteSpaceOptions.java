@@ -191,7 +191,7 @@ public final class WhiteSpaceOptions {
 //  "void foo() throws E0, E1 {};" +  //$NON-NLS-1$
 //  "void bar(int x, int y) throws E0, E1 {}"); //$NON-NLS-1$
     CodeFormatter.K_STATEMENTS, 
-    "function foo() {};\nfunction bar(int x, int y) {}"); //$NON-NLS-1$
+    "function foo() {};\nfunction bar(x,y){}"); //$NON-NLS-1$
 
     private final PreviewSnippet ARRAY_DECL_PREVIEW= new PreviewSnippet(
 //  CodeFormatter.K_STATEMENTS, 
@@ -199,16 +199,16 @@ public final class WhiteSpaceOptions {
 //  "int [] array1= new int [] {1, 2, 3};\n" +  //$NON-NLS-1$
 //  "int [] array2= new int[3];"); //$NON-NLS-1$
     CodeFormatter.K_EXPRESSION, 
-    "arr0= new Array();\n" +  //$NON-NLS-1$
-    "arr1= new Array(4);\n" +  //$NON-NLS-1$
-    "arr2= [];\n" + //$NON-NLS-1$
-    "arr3= [4];\n" + //$NON-NLS-1$
-    "arr4= [\'one\',\'two\',\'three\']"); //$NON-NLS-1$
+    "var arr0=new Array();\n" +  //$NON-NLS-1$
+    "var arr1=new Array(4);\n" +  //$NON-NLS-1$
+    "var arr2=[];\n" + //$NON-NLS-1$
+    "var arr3=[4];\n" + //$NON-NLS-1$
+    "var arr4=[\'one\',\'two\',\'three\']"); //$NON-NLS-1$
 
     private final PreviewSnippet ARRAY_REF_PREVIEW= new PreviewSnippet(
     CodeFormatter.K_STATEMENTS, 
 //  "array[i].foo();"); //$NON-NLS-1$
-    "array[i]();"); //$NON-NLS-1$
+    "array[i];"); //$NON-NLS-1$
 
     private final PreviewSnippet METHOD_CALL_PREVIEW= new PreviewSnippet(
     CodeFormatter.K_STATEMENTS, 
@@ -246,7 +246,7 @@ public final class WhiteSpaceOptions {
 
     private final PreviewSnippet OPERATOR_PREVIEW= new PreviewSnippet(
     CodeFormatter.K_STATEMENTS, 
-    "arr= new Array(); var a= -4 + -9; b= a++ / --number; c += 4; value= true && false;"); //$NON-NLS-1$
+    "var arr= new Array();\nvar a= -4 + -9;\nvar b= a++ / --a;\na += 4;\nvar value= true && false;"); //$NON-NLS-1$
 
 //    private final PreviewSnippet CAST_PREVIEW= new PreviewSnippet(
 //    CodeFormatter.K_STATEMENTS, 
@@ -531,9 +531,9 @@ public final class WhiteSpaceOptions {
 
         final InnerNode declarations= new InnerNode(null, workingValues, FormatterMessages.WhiteSpaceTabPage_declarations); 
 //      createClassTree(workingValues, declarations);
-        createFieldTree(workingValues, declarations);
+//        createFieldTree(workingValues, declarations);
         createLocalVariableTree(workingValues, declarations);
-        createConstructorTree(workingValues, declarations);
+//        createConstructorTree(workingValues, declarations);
         createMethodDeclTree(workingValues, declarations);
         createLabelTree(workingValues, declarations);
 //      createAnnotationTree(workingValues, declarations);
@@ -549,7 +549,7 @@ public final class WhiteSpaceOptions {
         createDoWhileTree(workingValues, statements);
 //      createSynchronizedTree(workingValues, statements);
         createTryStatementTree(workingValues, statements);
-        createAssertTree(workingValues, statements);
+//        createAssertTree(workingValues, statements);
         createReturnTree(workingValues, statements);
         createThrowTree(workingValues, statements);
         
@@ -1030,8 +1030,8 @@ public final class WhiteSpaceOptions {
         createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_calls_after_comma_in_method_args, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_METHOD_INVOCATION_ARGUMENTS, METHOD_CALL_PREVIEW); 
         createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_calls_before_comma_in_alloc, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_ALLOCATION_EXPRESSION, ALLOC_PREVIEW); 
         createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_calls_after_comma_in_alloc, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_ALLOCATION_EXPRESSION, ALLOC_PREVIEW); 
-        createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_calls_before_comma_in_qalloc, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_EXPLICIT_CONSTRUCTOR_CALL_ARGUMENTS, CONSTRUCTOR_DECL_PREVIEW); 
-        createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_calls_after_comma_in_qalloc, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_EXPLICIT_CONSTRUCTOR_CALL_ARGUMENTS, CONSTRUCTOR_DECL_PREVIEW); 
+//        createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_calls_before_comma_in_qalloc, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_EXPLICIT_CONSTRUCTOR_CALL_ARGUMENTS, CONSTRUCTOR_DECL_PREVIEW); 
+//        createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_calls_after_comma_in_qalloc, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_EXPLICIT_CONSTRUCTOR_CALL_ARGUMENTS, CONSTRUCTOR_DECL_PREVIEW); 
         return root;
     }
     
@@ -1102,8 +1102,8 @@ public final class WhiteSpaceOptions {
         createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_for_after_comma_inc, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_FOR_INCREMENTS, FOR_PREVIEW); 
         createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_before_semicolon, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_SEMICOLON_IN_FOR, FOR_PREVIEW); 
         createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_after_semicolon, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_SEMICOLON_IN_FOR, FOR_PREVIEW); 
-        createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_before_colon, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_FOR, FOR_PREVIEW); 
-        createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_after_colon, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_COLON_IN_FOR, FOR_PREVIEW); 
+//        createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_before_colon, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COLON_IN_FOR, FOR_PREVIEW); 
+//        createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_after_colon, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_COLON_IN_FOR, FOR_PREVIEW); 
         
         return root;
     }

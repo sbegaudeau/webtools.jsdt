@@ -72,6 +72,7 @@ public class DefaultCodeFormatterOptions {
 	public String brace_position_for_annotation_type_declaration;
 	public String brace_position_for_anonymous_type_declaration;
 	public String brace_position_for_array_initializer;
+	public String brace_position_for_objlit_initializer;
 	public String brace_position_for_block;
 	public String brace_position_for_block_in_case;
 	public String brace_position_for_constructor_declaration;
@@ -125,9 +126,11 @@ public class DefaultCodeFormatterOptions {
 
 	public boolean insert_new_line_after_annotation;
 	public boolean insert_new_line_after_opening_brace_in_array_initializer;
+	public boolean insert_new_line_after_opening_brace_in_objlit_initializer;
 	public boolean insert_new_line_at_end_of_file_if_missing;
 	public boolean insert_new_line_before_catch_in_try_statement;
 	public boolean insert_new_line_before_closing_brace_in_array_initializer;
+	public boolean insert_new_line_before_closing_brace_in_objlit_initializer;
 	public boolean insert_new_line_before_else_in_if_statement;
 	public boolean insert_new_line_before_finally_in_try_statement;
 	public boolean insert_new_line_before_while_in_do_statement;
@@ -296,6 +299,7 @@ public class DefaultCodeFormatterOptions {
 	public boolean keep_guardian_clause_on_one_line;
 	public boolean keep_else_statement_on_same_line;
 	public boolean keep_empty_array_initializer_on_one_line;
+	public boolean keep_empty_objlit_initializer_on_one_line;
 	public boolean keep_simple_if_on_one_line;
 	public boolean keep_then_statement_on_same_line;
 	public boolean never_indent_block_comments_on_first_column;
@@ -352,6 +356,7 @@ public class DefaultCodeFormatterOptions {
 		options.put(DefaultCodeFormatterConstants.FORMATTER_BRACE_POSITION_FOR_ANNOTATION_TYPE_DECLARATION, this.brace_position_for_annotation_type_declaration);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_BRACE_POSITION_FOR_ANONYMOUS_TYPE_DECLARATION, this.brace_position_for_anonymous_type_declaration);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_BRACE_POSITION_FOR_ARRAY_INITIALIZER, this.brace_position_for_array_initializer);
+		options.put(DefaultCodeFormatterConstants.FORMATTER_BRACE_POSITION_FOR_OBJLIT_INITIALIZER, this.brace_position_for_objlit_initializer);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_BRACE_POSITION_FOR_BLOCK, this.brace_position_for_block);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_BRACE_POSITION_FOR_BLOCK_IN_CASE, this.brace_position_for_block_in_case);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_BRACE_POSITION_FOR_CONSTRUCTOR_DECLARATION, this.brace_position_for_constructor_declaration);
@@ -400,9 +405,11 @@ public class DefaultCodeFormatterOptions {
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INDENTATION_SIZE, Integer.toString(this.indentation_size));
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_AFTER_ANNOTATION, this.insert_new_line_after_annotation ? JavaCore.INSERT : JavaCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_AFTER_OPENING_BRACE_IN_ARRAY_INITIALIZER, this.insert_new_line_after_opening_brace_in_array_initializer? JavaCore.INSERT : JavaCore.DO_NOT_INSERT);
+		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_AFTER_OPENING_BRACE_IN_OBJLIT_INITIALIZER, this.insert_new_line_after_opening_brace_in_objlit_initializer? JavaCore.INSERT : JavaCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_AT_END_OF_FILE_IF_MISSING, this.insert_new_line_at_end_of_file_if_missing ? JavaCore.INSERT : JavaCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_BEFORE_CATCH_IN_TRY_STATEMENT, this.insert_new_line_before_catch_in_try_statement? JavaCore.INSERT : JavaCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_BEFORE_CLOSING_BRACE_IN_ARRAY_INITIALIZER, this.insert_new_line_before_closing_brace_in_array_initializer? JavaCore.INSERT : JavaCore.DO_NOT_INSERT);
+		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_BEFORE_CLOSING_BRACE_IN_OBJLIT_INITIALIZER, this.insert_new_line_before_closing_brace_in_objlit_initializer? JavaCore.INSERT : JavaCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_BEFORE_ELSE_IN_IF_STATEMENT, this.insert_new_line_before_else_in_if_statement? JavaCore.INSERT : JavaCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_BEFORE_FINALLY_IN_TRY_STATEMENT, this.insert_new_line_before_finally_in_try_statement? JavaCore.INSERT : JavaCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_BEFORE_WHILE_IN_DO_STATEMENT, this.insert_new_line_before_while_in_do_statement? JavaCore.INSERT : JavaCore.DO_NOT_INSERT);
@@ -571,6 +578,7 @@ public class DefaultCodeFormatterOptions {
 		options.put(DefaultCodeFormatterConstants.FORMATTER_KEEP_GUARDIAN_CLAUSE_ON_ONE_LINE, this.keep_guardian_clause_on_one_line ? DefaultCodeFormatterConstants.TRUE : DefaultCodeFormatterConstants.FALSE);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_KEEP_ELSE_STATEMENT_ON_SAME_LINE, this.keep_else_statement_on_same_line ? DefaultCodeFormatterConstants.TRUE : DefaultCodeFormatterConstants.FALSE);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_KEEP_EMPTY_ARRAY_INITIALIZER_ON_ONE_LINE, this.keep_empty_array_initializer_on_one_line ? DefaultCodeFormatterConstants.TRUE : DefaultCodeFormatterConstants.FALSE);
+		options.put(DefaultCodeFormatterConstants.FORMATTER_KEEP_EMPTY_OBJLIT_INITIALIZER_ON_ONE_LINE, this.keep_empty_objlit_initializer_on_one_line ? DefaultCodeFormatterConstants.TRUE : DefaultCodeFormatterConstants.FALSE);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_KEEP_SIMPLE_IF_ON_ONE_LINE, this.keep_simple_if_on_one_line ? DefaultCodeFormatterConstants.TRUE : DefaultCodeFormatterConstants.FALSE);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_KEEP_THEN_STATEMENT_ON_SAME_LINE, this.keep_then_statement_on_same_line ? DefaultCodeFormatterConstants.TRUE : DefaultCodeFormatterConstants.FALSE);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_NEVER_INDENT_BLOCK_COMMENTS_ON_FIRST_COLUMN, this.never_indent_block_comments_on_first_column ? DefaultCodeFormatterConstants.TRUE : DefaultCodeFormatterConstants.FALSE);
@@ -822,6 +830,14 @@ public class DefaultCodeFormatterOptions {
 				this.brace_position_for_array_initializer = (String) bracePositionForArrayInitializerOption;
 			} catch(ClassCastException e) {
 				this.brace_position_for_array_initializer = DefaultCodeFormatterConstants.END_OF_LINE;
+			}
+		}
+		final Object bracePositionForObjLitInitializerOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_BRACE_POSITION_FOR_OBJLIT_INITIALIZER);
+		if (bracePositionForObjLitInitializerOption != null) {
+			try {
+				this.brace_position_for_objlit_initializer = (String) bracePositionForObjLitInitializerOption;
+			} catch(ClassCastException e) {
+				this.brace_position_for_objlit_initializer = DefaultCodeFormatterConstants.END_OF_LINE;
 			}
 		}
 		final Object bracePositionForBlockOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_BRACE_POSITION_FOR_BLOCK);
@@ -1137,6 +1153,10 @@ public class DefaultCodeFormatterOptions {
 		if (insertNewLineAfterOpeningBraceInArrayInitializerOption != null) {
 			this.insert_new_line_after_opening_brace_in_array_initializer = JavaCore.INSERT.equals(insertNewLineAfterOpeningBraceInArrayInitializerOption);
 		}
+		final Object insertNewLineAfterOpeningBraceInObjLitInitializerOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_AFTER_OPENING_BRACE_IN_OBJLIT_INITIALIZER);
+		if (insertNewLineAfterOpeningBraceInObjLitInitializerOption != null) {
+			this.insert_new_line_after_opening_brace_in_objlit_initializer = JavaCore.INSERT.equals(insertNewLineAfterOpeningBraceInObjLitInitializerOption);
+		}
 		final Object insertNewLineAtEndOfFileIfMissingOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_AT_END_OF_FILE_IF_MISSING);
 		if (insertNewLineAtEndOfFileIfMissingOption != null) {
 			this.insert_new_line_at_end_of_file_if_missing = JavaCore.INSERT.equals(insertNewLineAtEndOfFileIfMissingOption);
@@ -1148,6 +1168,10 @@ public class DefaultCodeFormatterOptions {
 		final Object insertNewLineBeforeClosingBraceInArrayInitializerOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_BEFORE_CLOSING_BRACE_IN_ARRAY_INITIALIZER);
 		if (insertNewLineBeforeClosingBraceInArrayInitializerOption != null) {
 			this.insert_new_line_before_closing_brace_in_array_initializer = JavaCore.INSERT.equals(insertNewLineBeforeClosingBraceInArrayInitializerOption);
+		}
+		final Object insertNewLineBeforeClosingBraceInObjLitInitializerOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_BEFORE_CLOSING_BRACE_IN_OBJLIT_INITIALIZER);
+		if (insertNewLineBeforeClosingBraceInObjLitInitializerOption != null) {
+			this.insert_new_line_before_closing_brace_in_objlit_initializer = JavaCore.INSERT.equals(insertNewLineBeforeClosingBraceInObjLitInitializerOption);
 		}
 		final Object insertNewLineBeforeElseInIfStatementOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_INSERT_NEW_LINE_BEFORE_ELSE_IN_IF_STATEMENT);
 		if (insertNewLineBeforeElseInIfStatementOption != null) {
@@ -1821,6 +1845,10 @@ public class DefaultCodeFormatterOptions {
 		if (keepEmptyArrayInitializerOnOneLineOption != null) {
 			this.keep_empty_array_initializer_on_one_line = DefaultCodeFormatterConstants.TRUE.equals(keepEmptyArrayInitializerOnOneLineOption);
 		}
+		final Object keepEmptyObjLitInitializerOnOneLineOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_KEEP_EMPTY_OBJLIT_INITIALIZER_ON_ONE_LINE);
+		if (keepEmptyObjLitInitializerOnOneLineOption != null) {
+			this.keep_empty_objlit_initializer_on_one_line = DefaultCodeFormatterConstants.TRUE.equals(keepEmptyObjLitInitializerOnOneLineOption);
+		}
 		final Object keepSimpleIfOnOneLineOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_KEEP_SIMPLE_IF_ON_ONE_LINE);
 		if (keepSimpleIfOnOneLineOption != null) {
 			this.keep_simple_if_on_one_line = DefaultCodeFormatterConstants.TRUE.equals(keepSimpleIfOnOneLineOption);
@@ -1938,6 +1966,7 @@ public class DefaultCodeFormatterOptions {
 		this.brace_position_for_annotation_type_declaration = DefaultCodeFormatterConstants.END_OF_LINE;
 		this.brace_position_for_anonymous_type_declaration = DefaultCodeFormatterConstants.END_OF_LINE;
 		this.brace_position_for_array_initializer = DefaultCodeFormatterConstants.END_OF_LINE;
+		this.brace_position_for_objlit_initializer = DefaultCodeFormatterConstants.END_OF_LINE;
 		this.brace_position_for_block = DefaultCodeFormatterConstants.END_OF_LINE;
 		this.brace_position_for_block_in_case = DefaultCodeFormatterConstants.END_OF_LINE;
 		this.brace_position_for_constructor_declaration = DefaultCodeFormatterConstants.END_OF_LINE;
@@ -1986,9 +2015,11 @@ public class DefaultCodeFormatterOptions {
 		this.indentation_size = 4;
 		this.insert_new_line_after_annotation = true;
 		this.insert_new_line_after_opening_brace_in_array_initializer = false;
+		this.insert_new_line_after_opening_brace_in_objlit_initializer = true;
 		this.insert_new_line_at_end_of_file_if_missing = false;
 		this.insert_new_line_before_catch_in_try_statement = false;
 		this.insert_new_line_before_closing_brace_in_array_initializer = false;
+		this.insert_new_line_before_closing_brace_in_objlit_initializer = true;
 		this.insert_new_line_before_else_in_if_statement = false;
 		this.insert_new_line_before_finally_in_try_statement = false;
 		this.insert_new_line_before_while_in_do_statement = false;
@@ -2156,6 +2187,7 @@ public class DefaultCodeFormatterOptions {
 		this.keep_guardian_clause_on_one_line = false;
 		this.keep_else_statement_on_same_line = false;
 		this.keep_empty_array_initializer_on_one_line = false;
+		this.keep_empty_objlit_initializer_on_one_line = false;
 		this.keep_simple_if_on_one_line = false;
 		this.keep_then_statement_on_same_line = false;
 		this.never_indent_block_comments_on_first_column = false;
@@ -2200,6 +2232,7 @@ public class DefaultCodeFormatterOptions {
 		this.brace_position_for_annotation_type_declaration = DefaultCodeFormatterConstants.END_OF_LINE;
 		this.brace_position_for_anonymous_type_declaration = DefaultCodeFormatterConstants.END_OF_LINE;
 		this.brace_position_for_array_initializer = DefaultCodeFormatterConstants.END_OF_LINE;
+		this.brace_position_for_objlit_initializer = DefaultCodeFormatterConstants.END_OF_LINE;
 		this.brace_position_for_block = DefaultCodeFormatterConstants.END_OF_LINE;
 		this.brace_position_for_block_in_case = DefaultCodeFormatterConstants.END_OF_LINE;
 		this.brace_position_for_constructor_declaration = DefaultCodeFormatterConstants.END_OF_LINE;
@@ -2233,7 +2266,7 @@ public class DefaultCodeFormatterOptions {
 		this.blank_lines_before_new_chunk = 1;
 		this.blank_lines_before_package = 0;
 		this.blank_lines_between_import_groups = 1;
-		this.blank_lines_between_type_declarations = 1;
+		this.blank_lines_between_type_declarations = 0;
 		this.blank_lines_at_beginning_of_method_body = 0;
 		this.indent_statements_compare_to_block = true;
 		this.indent_statements_compare_to_body = true;
@@ -2248,9 +2281,11 @@ public class DefaultCodeFormatterOptions {
 		this.indentation_size = 4;
 		this.insert_new_line_after_annotation = true;
 		this.insert_new_line_after_opening_brace_in_array_initializer = false;
+		this.insert_new_line_after_opening_brace_in_objlit_initializer = true;
 		this.insert_new_line_at_end_of_file_if_missing = false;
 		this.insert_new_line_before_catch_in_try_statement = false;
 		this.insert_new_line_before_closing_brace_in_array_initializer = false;
+		this.insert_new_line_before_closing_brace_in_objlit_initializer = true;
 		this.insert_new_line_before_else_in_if_statement = false;
 		this.insert_new_line_before_finally_in_try_statement = false;
 		this.insert_new_line_before_while_in_do_statement = false;
@@ -2418,6 +2453,7 @@ public class DefaultCodeFormatterOptions {
 		this.keep_guardian_clause_on_one_line = false;
 		this.keep_else_statement_on_same_line = false;
 		this.keep_empty_array_initializer_on_one_line = false;
+		this.keep_empty_objlit_initializer_on_one_line = false;
 		this.keep_simple_if_on_one_line = false;
 		this.keep_then_statement_on_same_line = false;
 		this.never_indent_block_comments_on_first_column = false;

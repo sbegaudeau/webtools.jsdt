@@ -36,8 +36,10 @@ public class BracesTabPage extends FormatterTabPage {
 	"\n" + //$NON-NLS-1$
 	"    var abc = 1;\n" + //$NON-NLS-1$
 	"    var xyz = 'one';\n" + //$NON-NLS-1$
-	"    var arr = [ '1', '2', '3', '4' ];\n" + //$NON-NLS-1$
+	"    var arr1 = [ '1', '2', '3', '4' ];\n" + //$NON-NLS-1$
+	"    var arr2 = [];\n" + //$NON-NLS-1$
 	"    var car = { carMake: 'Toyota', carModel: 'Celica', carYear: 2000 };\n" + //$NON-NLS-1$
+	"    var car2 = {};\n" + //$NON-NLS-1$
 	"\n" + //$NON-NLS-1$
 	"    switch (data) {\n" + //$NON-NLS-1$
 	"\n" + //$NON-NLS-1$
@@ -118,6 +120,16 @@ public class BracesTabPage extends FormatterTabPage {
 		createExtendedBracesCombo(group, numColumns, FormatterMessages.BracesTabPage_option_blocks_in_case, DefaultCodeFormatterConstants.FORMATTER_BRACE_POSITION_FOR_BLOCK_IN_CASE); 
 		createBracesCombo(group, numColumns, FormatterMessages.BracesTabPage_option_switch_case, DefaultCodeFormatterConstants.FORMATTER_BRACE_POSITION_FOR_SWITCH); 
 		
+		ComboPreference objectInitOption= createBracesCombo(group, numColumns, FormatterMessages.BracesTabPage_option_object_initializer, DefaultCodeFormatterConstants.FORMATTER_BRACE_POSITION_FOR_OBJLIT_INITIALIZER);
+		final CheckboxPreference objectInitCheckBox= createIndentedCheckboxPref(group, numColumns, FormatterMessages.BracesTabPage_option_keep_empty_object_initializer_on_one_line, DefaultCodeFormatterConstants.FORMATTER_KEEP_EMPTY_OBJLIT_INITIALIZER_ON_ONE_LINE, FALSE_TRUE); 
+		objectInitOption.addObserver(new Observer() {
+			public void update(Observable o, Object arg) {
+				updateOptionEnablement((ComboPreference) o, objectInitCheckBox);
+			}
+		});
+		updateOptionEnablement(objectInitOption, objectInitCheckBox);
+		
+		
 		ComboPreference arrayInitOption= createBracesCombo(group, numColumns, FormatterMessages.BracesTabPage_option_array_initializer, DefaultCodeFormatterConstants.FORMATTER_BRACE_POSITION_FOR_ARRAY_INITIALIZER); 
 		final CheckboxPreference arrayInitCheckBox= createIndentedCheckboxPref(group, numColumns, FormatterMessages.BracesTabPage_option_keep_empty_array_initializer_on_one_line, DefaultCodeFormatterConstants.FORMATTER_KEEP_EMPTY_ARRAY_INITIALIZER_ON_ONE_LINE, FALSE_TRUE); 
 
@@ -127,15 +139,7 @@ public class BracesTabPage extends FormatterTabPage {
 			}
 		});
 		updateOptionEnablement(arrayInitOption, arrayInitCheckBox);
-
-		ComboPreference objectInitOption= createBracesCombo(group, numColumns, FormatterMessages.BracesTabPage_option_object_initializer, DefaultCodeFormatterConstants.FORMATTER_BRACE_POSITION_FOR_ARRAY_INITIALIZER);
-		final CheckboxPreference objectInitCheckBox= createIndentedCheckboxPref(group, numColumns, FormatterMessages.BracesTabPage_option_keep_empty_object_initializer_on_one_line, DefaultCodeFormatterConstants.FORMATTER_KEEP_EMPTY_ARRAY_INITIALIZER_ON_ONE_LINE, FALSE_TRUE); 
-		objectInitOption.addObserver(new Observer() {
-			public void update(Observable o, Object arg) {
-				updateOptionEnablement((ComboPreference) o, objectInitCheckBox);
-			}
-		});
-		updateOptionEnablement(objectInitOption, objectInitCheckBox);
+		
 	}
 	
 	/**

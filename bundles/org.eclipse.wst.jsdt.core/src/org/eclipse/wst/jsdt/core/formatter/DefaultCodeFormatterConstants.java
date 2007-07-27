@@ -33,6 +33,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #FORMATTER_BRACE_POSITION_FOR_ANONYMOUS_TYPE_DECLARATION
 	 * @see #FORMATTER_BRACE_POSITION_FOR_ARRAY_INITIALIZER
+	 * @see #FORMATTER_BRACE_POSITION_FOR_OBJLIT_INITIALIZER
 	 * @see #FORMATTER_BRACE_POSITION_FOR_BLOCK
 	 * @see #FORMATTER_BRACE_POSITION_FOR_CONSTRUCTOR_DECLARATION
  	 * @see #FORMATTER_BRACE_POSITION_FOR_METHOD_DECLARATION
@@ -449,6 +450,20 @@ public class DefaultCodeFormatterConstants {
 	 * @since 3.0
 	 */
 	public static final String FORMATTER_BRACE_POSITION_FOR_ARRAY_INITIALIZER = JavaCore.PLUGIN_ID + ".formatter.brace_position_for_array_initializer";	//$NON-NLS-1$
+	/**
+	 * <pre>
+	 * FORMATTER / Option to position the braces of an object literal initializer
+	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.brace_position_for_objlit_initializer"
+	 *     - possible values:   { END_OF_LINE, NEXT_LINE, NEXT_LINE_SHIFTED, NEXT_LINE_ON_WRAP }
+	 *     - default:           END_OF_LINE
+	 * </pre>
+	 * @see #END_OF_LINE
+	 * @see #NEXT_LINE
+	 * @see #NEXT_LINE_SHIFTED
+	 * @see #NEXT_LINE_ON_WRAP
+	 * @since 3.0
+	 */
+	public static final String FORMATTER_BRACE_POSITION_FOR_OBJLIT_INITIALIZER = JavaCore.PLUGIN_ID + ".formatter.brace_position_for_objlit_initializer";	//$NON-NLS-1$
 	/**
 	 * <pre>
 	 * FORMATTER / Option to position the braces of a block
@@ -952,6 +967,19 @@ public class DefaultCodeFormatterConstants {
 	 * @since 3.0
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_AFTER_OPENING_BRACE_IN_ARRAY_INITIALIZER = JavaCore.PLUGIN_ID + ".formatter.insert_new_line_after_opening_brace_in_array_initializer";//$NON-NLS-1$
+	
+	/**
+	 * <pre>
+	 * FORMATTER / Option to insert a new line after the opening brace in an object literal initializer
+	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.insert_new_line_after_opening_brace_in_objlit_initializer"
+	 *     - possible values:   { INSERT, DO_NOT_INSERT }
+	 *     - default:           DO_NOT_INSERT
+	 * </pre>
+	 * @see JavaCore#INSERT
+	 * @see JavaCore#DO_NOT_INSERT
+	 * @since 3.0
+	 */
+	public static final String FORMATTER_INSERT_NEW_LINE_AFTER_OPENING_BRACE_IN_OBJLIT_INITIALIZER = JavaCore.PLUGIN_ID + ".formatter.insert_new_line_after_opening_brace_in_objlit_initializer";//$NON-NLS-1$
 
 	/**
 	 * <pre>
@@ -989,6 +1017,18 @@ public class DefaultCodeFormatterConstants {
 	 * @since 3.0
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_BEFORE_CLOSING_BRACE_IN_ARRAY_INITIALIZER = JavaCore.PLUGIN_ID + ".formatter.insert_new_line_before_closing_brace_in_array_initializer";//$NON-NLS-1$
+	/**
+	 * <pre>
+	 * FORMATTER / Option to insert a new line before the closing brace in an object literal initializer
+	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.insert_new_line_before_closing_brace_in_objlit_initializer"
+	 *     - possible values:   { INSERT, DO_NOT_INSERT }
+	 *     - default:           DO_NOT_INSERT
+	 * </pre>
+	 * @see JavaCore#INSERT
+	 * @see JavaCore#DO_NOT_INSERT
+	 * @since 3.0
+	 */
+	public static final String FORMATTER_INSERT_NEW_LINE_BEFORE_CLOSING_BRACE_IN_OBJLIT_INITIALIZER = JavaCore.PLUGIN_ID + ".formatter.insert_new_line_before_closing_brace_in_objlit_initializer";//$NON-NLS-1$
 	/**
 	 * <pre>
 	 * FORMATTER / Option to insert a new line before the else keyword in if statement
@@ -2986,6 +3026,18 @@ public class DefaultCodeFormatterConstants {
 	public static final String FORMATTER_KEEP_EMPTY_ARRAY_INITIALIZER_ON_ONE_LINE = JavaCore.PLUGIN_ID + ".formatter.keep_empty_array_initializer_on_one_line"; //$NON-NLS-1$
 	/**
 	 * <pre>
+	 * FORMATTER / Option to keep empty object literal initializer one one line
+	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.keep_empty_objlit_initializer_on_one_line"
+	 *     - possible values:   { TRUE, FALSE }
+	 *     - default:           FALSE
+	 * </pre>
+	 * @see #TRUE
+	 * @see #FALSE
+	 * @since 3.0
+	 */
+	public static final String FORMATTER_KEEP_EMPTY_OBJLIT_INITIALIZER_ON_ONE_LINE = JavaCore.PLUGIN_ID + ".formatter.keep_empty_objlit_initializer_on_one_line"; //$NON-NLS-1$
+	/**
+	 * <pre>
 	 * FORMATTER / Option to keep guardian clause on one line
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.format_guardian_clause_on_one_line"
 	 *     - possible values:   { TRUE, FALSE }
@@ -3172,6 +3224,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #FORMATTER_BRACE_POSITION_FOR_ANONYMOUS_TYPE_DECLARATION
 	 * @see #FORMATTER_BRACE_POSITION_FOR_ARRAY_INITIALIZER
+	 * @see #FORMATTER_BRACE_POSITION_FOR_OBJLIT_INITIALIZER
 	 * @see #FORMATTER_BRACE_POSITION_FOR_BLOCK
 	 * @see #FORMATTER_BRACE_POSITION_FOR_CONSTRUCTOR_DECLARATION
  	 * @see #FORMATTER_BRACE_POSITION_FOR_METHOD_DECLARATION
@@ -3187,6 +3240,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #FORMATTER_BRACE_POSITION_FOR_ANONYMOUS_TYPE_DECLARATION
 	 * @see #FORMATTER_BRACE_POSITION_FOR_ARRAY_INITIALIZER
+	 * @see #FORMATTER_BRACE_POSITION_FOR_OBJLIT_INITIALIZER
 	 * @see #FORMATTER_BRACE_POSITION_FOR_BLOCK
 	 * @see #FORMATTER_BRACE_POSITION_FOR_CONSTRUCTOR_DECLARATION
  	 * @see #FORMATTER_BRACE_POSITION_FOR_METHOD_DECLARATION
@@ -3202,6 +3256,7 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see #FORMATTER_BRACE_POSITION_FOR_ANONYMOUS_TYPE_DECLARATION
 	 * @see #FORMATTER_BRACE_POSITION_FOR_ARRAY_INITIALIZER
+	 * @see #FORMATTER_BRACE_POSITION_FOR_OBJLIT_INITIALIZER
 	 * @see #FORMATTER_BRACE_POSITION_FOR_BLOCK
 	 * @see #FORMATTER_BRACE_POSITION_FOR_CONSTRUCTOR_DECLARATION
  	 * @see #FORMATTER_BRACE_POSITION_FOR_METHOD_DECLARATION

@@ -2450,7 +2450,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 			/*
 			 * Print the argument name
 			 */	
-			this.scribe.printNextToken(TerminalTokens.TokenNameIdentifier, true);
+			this.scribe.printNextToken(TerminalTokens.TokenNameIdentifier, false);
 //		}
 
 
@@ -2606,8 +2606,8 @@ public class CodeFormatterVisitor extends ASTVisitor {
 			boolean keepEmptyArrayInitializerOnTheSameLine = this.preferences.keep_empty_array_initializer_on_one_line;
 			String array_initializer_brace_position = this.preferences.brace_position_for_array_initializer;
 			if (keepEmptyArrayInitializerOnTheSameLine) {
-				this.scribe.printNextToken(TerminalTokens.TokenNameLBRACE, this.preferences.insert_space_before_opening_brace_in_array_initializer);
-				this.scribe.printNextToken(TerminalTokens.TokenNameRBRACE, this.preferences.insert_space_between_empty_braces_in_array_initializer); 
+				this.scribe.printNextToken(TerminalTokens.TokenNameLBRACKET, this.preferences.insert_space_before_opening_brace_in_array_initializer);
+				this.scribe.printNextToken(TerminalTokens.TokenNameRBRACKET, this.preferences.insert_space_between_empty_braces_in_array_initializer); 
 			} else {
 				formatOpeningBracket(array_initializer_brace_position, this.preferences.insert_space_before_opening_brace_in_array_initializer);
 				this.scribe.printNextToken(TerminalTokens.TokenNameRBRACKET, false); 
@@ -2623,19 +2623,19 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		return false;
 	}
 	
-	public boolean visit(ObjectLiteral arrayInitializer, BlockScope scope) {	
-	final int numberOfParens = (arrayInitializer.bits & ASTNode.ParenthesizedMASK) >> ASTNode.ParenthesizedSHIFT;
+	public boolean visit(ObjectLiteral objectLiteral, BlockScope scope) {	
+	final int numberOfParens = (objectLiteral.bits & ASTNode.ParenthesizedMASK) >> ASTNode.ParenthesizedSHIFT;
 	if (numberOfParens > 0) {
-		manageOpeningParenthesizedExpression(arrayInitializer, numberOfParens);
+		manageOpeningParenthesizedExpression(objectLiteral, numberOfParens);
 	}
 	
-	final ObjectLiteralField[] expressions = arrayInitializer.fields;
+	final ObjectLiteralField[] expressions = objectLiteral.fields;
 	if (expressions != null) {
-		String array_initializer_brace_position = this.preferences.brace_position_for_array_initializer;
+		String array_initializer_brace_position = this.preferences.brace_position_for_objlit_initializer;
 		formatOpeningBrace(array_initializer_brace_position, this.preferences.insert_space_before_opening_brace_in_array_initializer);
 	
 		int expressionsLength = expressions.length;
-		final boolean insert_new_line_after_opening_brace = this.preferences.insert_new_line_after_opening_brace_in_array_initializer;
+		final boolean insert_new_line_after_opening_brace = this.preferences.insert_new_line_after_opening_brace_in_objlit_initializer;
 		if (expressionsLength > 1) {
 			if (insert_new_line_after_opening_brace) {
 				this.scribe.printNewLine();
@@ -2703,7 +2703,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 				this.scribe.unIndent();
 			}
 		}
-		if (this.preferences.insert_new_line_before_closing_brace_in_array_initializer) {
+		if (this.preferences.insert_new_line_before_closing_brace_in_objlit_initializer) {
 			this.scribe.printNewLine();
 		} else if (this.preferences.insert_space_before_closing_brace_in_array_initializer) {
 			this.scribe.space();
@@ -2713,22 +2713,22 @@ public class CodeFormatterVisitor extends ASTVisitor {
 			this.scribe.unIndent();
 		}	
 	} else {
-		boolean keepEmptyArrayInitializerOnTheSameLine = this.preferences.keep_empty_array_initializer_on_one_line;
-		String array_initializer_brace_position = this.preferences.brace_position_for_array_initializer;
-		if (keepEmptyArrayInitializerOnTheSameLine) {
+		boolean keepEmptyObjLitInitializerOnTheSameLine = this.preferences.keep_empty_objlit_initializer_on_one_line;
+		String objlit_initializer_brace_position = this.preferences.brace_position_for_objlit_initializer;
+		if (keepEmptyObjLitInitializerOnTheSameLine) {
 			this.scribe.printNextToken(TerminalTokens.TokenNameLBRACE, this.preferences.insert_space_before_opening_brace_in_array_initializer);
 			this.scribe.printNextToken(TerminalTokens.TokenNameRBRACE, this.preferences.insert_space_between_empty_braces_in_array_initializer); 
 		} else {
-			formatOpeningBrace(array_initializer_brace_position, this.preferences.insert_space_before_opening_brace_in_array_initializer);
+			formatOpeningBrace(objlit_initializer_brace_position, this.preferences.insert_space_before_opening_brace_in_array_initializer);
 			this.scribe.printNextToken(TerminalTokens.TokenNameRBRACE, false); 
-			if (array_initializer_brace_position.equals(DefaultCodeFormatterConstants.NEXT_LINE_SHIFTED)) {
+			if (objlit_initializer_brace_position.equals(DefaultCodeFormatterConstants.NEXT_LINE_SHIFTED)) {
 				this.scribe.unIndent();
 			}
 		}
 	}
 
 	if (numberOfParens > 0) {
-		manageClosingParenthesizedExpression(arrayInitializer, numberOfParens);
+		manageClosingParenthesizedExpression(objectLiteral, numberOfParens);
 	}
 	return false;
 }

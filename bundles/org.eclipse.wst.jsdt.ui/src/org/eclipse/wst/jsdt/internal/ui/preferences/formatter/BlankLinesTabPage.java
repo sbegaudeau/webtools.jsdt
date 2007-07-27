@@ -22,7 +22,9 @@ public class BlankLinesTabPage extends FormatterTabPage {
 
 	private final String PREVIEW=
 	createPreviewHeader(FormatterMessages.BlankLinesTabPage_preview_header) + 
-	"var data;\n\n" + //$NON-NLS-1$
+	"var data;\n" + //$NON-NLS-1$
+	"var data2;\n" + //$NON-NLS-1$
+	"var data3;\n" + //$NON-NLS-1$
 	"function foo(otherdata) {\n" + //$NON-NLS-1$
 	"// Between here...\n" + //$NON-NLS-1$
 	"\n\n\n\n\n" + //$NON-NLS-1$
