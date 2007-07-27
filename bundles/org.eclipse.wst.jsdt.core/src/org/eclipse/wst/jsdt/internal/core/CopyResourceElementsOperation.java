@@ -566,7 +566,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 			AST ast = astCU.getAST();
 			ASTRewrite rewrite = ASTRewrite.create(ast);
 			updateTypeName(cu, astCU, cu.getElementName(), newName, rewrite);
-			updatePackageStatement(astCU, destPackageName, rewrite);
+//			updatePackageStatement(astCU, destPackageName, rewrite);
 			return rewrite;
 		}
 	}
