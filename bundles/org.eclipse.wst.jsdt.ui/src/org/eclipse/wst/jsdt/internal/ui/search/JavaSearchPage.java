@@ -674,11 +674,11 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 		result.setLayout(new GridLayout(2, true));
 
 		fSearchFor= new Button[] {
-			createButton(result, SWT.RADIO, SearchMessages.SearchPage_searchFor_function, FUNCTION, false),
+			createButton(result, SWT.RADIO, SearchMessages.SearchPage_searchFor_function, FUNCTION, true),
 			createButton(result, SWT.RADIO, SearchMessages.SearchPage_searchFor_var, VAR, false),
 			createButton(result, SWT.RADIO, SearchMessages.SearchPage_searchFor_method, METHOD, false),
 			createButton(result, SWT.RADIO, SearchMessages.SearchPage_searchFor_field, FIELD, false),
-			createButton(result, SWT.RADIO, SearchMessages.SearchPage_searchFor_type, TYPE, true),
+			createButton(result, SWT.RADIO, SearchMessages.SearchPage_searchFor_type, TYPE, false),
 //			createButton(result, SWT.RADIO, SearchMessages.SearchPage_searchFor_package, PACKAGE, false),
 			createButton(result, SWT.RADIO, SearchMessages.SearchPage_searchFor_constructor, CONSTRUCTOR, false)
 		};
@@ -805,7 +805,7 @@ public class JavaSearchPage extends DialogPage implements ISearchPage {
 		if (res == null && o instanceof IAdaptable) {
 			IWorkbenchAdapter adapter= (IWorkbenchAdapter)((IAdaptable)o).getAdapter(IWorkbenchAdapter.class);
 			if (adapter != null) {
-				return new SearchPatternData(TYPE, REFERENCES, fIsCaseSensitive, adapter.getLabel(o), null, getLastIncludeMask());
+				return new SearchPatternData(VAR, REFERENCES, fIsCaseSensitive, adapter.getLabel(o), null, getLastIncludeMask());
 			}
 		}
 		return res;

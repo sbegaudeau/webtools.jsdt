@@ -51,6 +51,7 @@ public FieldPattern(
 
 	super(FIELD_PATTERN, findDeclarations, readAccess, writeAccess, name, matchRule,field);
 
+	this.isVar=isVar;
 	this.declaringQualification = isCaseSensitive() ? declaringQualification : CharOperation.toLowerCase(declaringQualification);
 	this.declaringSimpleName = isCaseSensitive() ? declaringSimpleName : CharOperation.toLowerCase(declaringSimpleName);
 	this.typeQualification = isCaseSensitive() ? typeQualification : CharOperation.toLowerCase(typeQualification);

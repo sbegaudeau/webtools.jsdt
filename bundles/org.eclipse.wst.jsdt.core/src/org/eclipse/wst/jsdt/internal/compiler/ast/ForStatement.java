@@ -371,11 +371,12 @@ public class ForStatement extends Statement {
 		ASTVisitor visitor,
 		BlockScope blockScope) {
 
+		BlockScope visitScope= (this.scope!=null)?this.scope :blockScope;
 		if (visitor.visit(this, blockScope)) {
 			if (initializations != null) {
 				int initializationsLength = initializations.length;
 				for (int i = 0; i < initializationsLength; i++)
-					initializations[i].traverse(visitor, scope);
+					initializations[i].traverse(visitor, visitScope);
 			}
 
 			if (condition != null)

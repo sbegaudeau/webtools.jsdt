@@ -45,6 +45,7 @@ import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileReader;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFormatException;
 import org.eclipse.wst.jsdt.internal.compiler.env.*;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
+import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
 import org.eclipse.wst.jsdt.internal.compiler.parser.*;
@@ -147,6 +148,49 @@ SimpleLookupTable bindings;
 
 // Cache for method handles
 HashSet methodHandles;
+
+
+class ReportMatchingVisitor extends ASTVisitor
+{
+	MatchingNodeSet nodeSet;
+	boolean matchedClassContainer;
+	IJavaElement enclosingElement;
+	boolean typeInHierarchy;
+	CoreException exception;
+
+	public ReportMatchingVisitor(MatchingNodeSet nodeSet, boolean matchedClassContainer, IJavaElement enclosingElement, boolean typeInHierarchy) {
+		super();
+		this.nodeSet = nodeSet;
+		this.matchedClassContainer = matchedClassContainer;
+		this.enclosingElement = enclosingElement;
+		this.typeInHierarchy = typeInHierarchy;
+	}
+
+	public boolean visit(LocalDeclaration localDeclaration, BlockScope scope) {
+		Integer level = (Integer) nodeSet.matchingNodes.removeKey(localDeclaration);
+		int accuracy = (level != null && matchedClassContainer) ? level.intValue() : -1;
+		try {
+			reportMatching(localDeclaration, null, null, enclosingElement, accuracy, typeInHierarchy, nodeSet);
+		} catch (CoreException e) {
+			exception=e;
+		}
+
+		return false;
+	}
+
+	public boolean visit(MethodDeclaration methodDeclaration, Scope parentScope) {
+		Integer level = (Integer) nodeSet.matchingNodes.removeKey(methodDeclaration);
+		int value = (level != null && matchedClassContainer) ? level.intValue() : -1;
+		try {
+			reportMatching(null, methodDeclaration, enclosingElement, value, typeInHierarchy, nodeSet);
+		} catch (CoreException e) {
+			exception=e;
+		}
+		return false;
+	}
+	
+}
+
 
 /**
  * An ast visitor that visits local type declarations.
@@ -2275,26 +2319,21 @@ protected void reportMatching(CompilationUnitDeclaration unit, boolean mustResol
 		}
 	}
 	ProgramElement[] statements = unit.statements;
+	
 	if (statements!=null)
 	{
 		IJavaElement enclosingElement = this.currentPossibleMatch.openable;
 		if (enclosingElement == null) return;
+		
 		boolean typeInHierarchy = true;
 		boolean matchedClassContainer=true;
+		ReportMatchingVisitor reportMatchingVisitor = new ReportMatchingVisitor(nodeSet,matchedClassContainer,enclosingElement,typeInHierarchy);
+		unit.traverse(reportMatchingVisitor, unit.scope);
+
 		for (int i = 0; i < statements.length; i++) {
 			if (nodeSet.matchingNodes.elementSize == 0) return; // reported all the matching nodes
-			if (statements[i] instanceof AbstractMethodDeclaration) {
-				AbstractMethodDeclaration method = (AbstractMethodDeclaration) statements[i];
-				Integer level = (Integer) nodeSet.matchingNodes.removeKey(method);
-				int value = (level != null && matchedClassContainer) ? level.intValue() : -1;
-				reportMatching(null, method, enclosingElement, value, typeInHierarchy, nodeSet);
-	
-			} else if (statements[i] instanceof LocalDeclaration) {
-				LocalDeclaration var = (LocalDeclaration) statements[i];
-					// Single field, report normally
-					Integer level = (Integer) nodeSet.matchingNodes.removeKey(var);
-					int accuracy = (level != null && matchedClassContainer) ? level.intValue() : -1;
-					reportMatching(var, null, null, enclosingElement, accuracy, typeInHierarchy, nodeSet);
+			if (statements[i] instanceof AbstractMethodDeclaration) {//already handled
+			} else if (statements[i] instanceof LocalDeclaration) {//already handled
 			}
 			else
 			{
@@ -2308,7 +2347,7 @@ protected void reportMatching(CompilationUnitDeclaration unit, boolean mustResol
 								int accuracy = (level != null && matchedClassContainer) ? level.intValue() : -1;
 								this.patternLocator.matchReportReference(node, enclosingElement, unit.compilationUnitBinding, unit.scope, accuracy, this);
 							}
-							return;
+//							return;
 						}
 					}
 					for (int j = 0, l = nodes.length; j < l; j++)

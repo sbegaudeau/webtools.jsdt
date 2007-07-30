@@ -195,7 +195,7 @@ protected int matchContainer() {
 		// need to look almost everywhere to find in javadocs and static import
 		return ALL_CONTAINER;
 	}
-	return CLASS_CONTAINER;
+	return pattern.isFunction ? COMPILATION_UNIT_CONTAINER : CLASS_CONTAINER;
 }
 /* (non-Javadoc)
  * @see org.eclipse.wst.jsdt.internal.core.search.matching.PatternLocator#matchLevelAndReportImportRef(org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference, org.eclipse.wst.jsdt.internal.compiler.lookup.Binding, org.eclipse.wst.jsdt.internal.core.search.matching.MatchLocator)

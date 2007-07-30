@@ -28,10 +28,12 @@ import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
 public class FieldLocator extends VariableLocator {
 
 protected boolean isDeclarationOfAccessedFieldsPattern;
+FieldPattern fieldPattern;
+
 
 public FieldLocator(FieldPattern pattern) {
 	super(pattern);
-
+    this.fieldPattern=pattern;
 	this.isDeclarationOfAccessedFieldsPattern = this.pattern instanceof DeclarationOfAccessedFieldsPattern;
 }
 public int match(ASTNode node, MatchingNodeSet nodeSet) {
@@ -77,8 +79,29 @@ public int match(FieldDeclaration node, MatchingNodeSet nodeSet) {
 	return nodeSet.addMatch(node, referencesLevel >= declarationsLevel ? referencesLevel : declarationsLevel); // use the stronger match
 }
 
+public int match(LocalDeclaration node, MatchingNodeSet nodeSet) {
+	if (!this.fieldPattern.isVar)
+		return IMPOSSIBLE_MATCH;
+	int referencesLevel = IMPOSSIBLE_MATCH;
+	if (this.pattern.findReferences)
+		// must be a write only access with an initializer
+		if (this.pattern.writeAccess && !this.pattern.readAccess && node.initialization != null)
+			if (matchesName(this.pattern.name, node.name))
+				referencesLevel = ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH;
+
+	int declarationsLevel = IMPOSSIBLE_MATCH;
+	if (this.pattern.findDeclarations)
+		if (matchesName(this.pattern.name, node.name))
+//			if (node.declarationSourceStart == this.pattern.getVariableStart())
+				declarationsLevel = ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH;
+
+	return nodeSet.addMatch(node, referencesLevel >= declarationsLevel ? referencesLevel : declarationsLevel); // use the stronger match
+}
+
 //public int match(ConstructorDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
 public int match(InferredAttribute node, MatchingNodeSet nodeSet) {
+	if (this.fieldPattern.isVar)
+		return IMPOSSIBLE_MATCH;
 	int referencesLevel = IMPOSSIBLE_MATCH;
 	if (this.pattern.findReferences)
 		// must be a write only access with an initializer
@@ -109,7 +132,7 @@ protected int matchContainer() {
 		// need to look everywhere to find in javadocs and static import
 		return ALL_CONTAINER;
 	}
-	return CLASS_CONTAINER;
+	return (this.fieldPattern.isVar)? COMPILATION_UNIT_CONTAINER : CLASS_CONTAINER;
 }
 
 protected int matchField(FieldBinding field, boolean matchName) {
