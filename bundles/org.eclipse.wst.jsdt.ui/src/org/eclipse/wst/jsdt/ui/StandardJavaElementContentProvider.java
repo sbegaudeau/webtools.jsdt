@@ -35,6 +35,7 @@ import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IParent;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
  
@@ -196,7 +197,7 @@ public class StandardJavaElementContentProvider implements ITreeContentProvider,
 			if (getProvideMembers() && element instanceof ISourceReference && element instanceof IParent) {
 				
 				//@GINO: Anonymous Filter top level anonymous
-				if( element instanceof ICompilationUnit )
+				if( element instanceof ITypeRoot )
 					return filter( ((IParent)element).getChildren() );
 				else 
 					return ((IParent)element).getChildren();
