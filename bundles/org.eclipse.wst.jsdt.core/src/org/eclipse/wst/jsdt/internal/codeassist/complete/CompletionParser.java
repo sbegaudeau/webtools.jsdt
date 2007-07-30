@@ -3610,7 +3610,7 @@ public NameReference createSingleAssistNameReference(char[] assistName, long pos
 					canBeExplicitConstructorCall = true;
 				}
 				
-				keywords[count++]= Keywords.ASSERT;
+//				keywords[count++]= Keywords.ASSERT;
 				keywords[count++]= Keywords.DO;
 				keywords[count++]= Keywords.FOR;
 				keywords[count++]= Keywords.IF;
