@@ -382,7 +382,9 @@ protected int referenceType() {
 public int resolveLevel(ASTNode possiblelMatchingNode) {
 	if (this.pattern.findReferences) {
 		if (possiblelMatchingNode instanceof FieldReference)
-			return matchField(((FieldReference) possiblelMatchingNode).binding, true);
+			if (!this.fieldPattern.isVar)
+				return matchField(((FieldReference) possiblelMatchingNode).binding, true);
+			else return IMPOSSIBLE_MATCH;
 		else if (possiblelMatchingNode instanceof NameReference)
 			return resolveLevel((NameReference) possiblelMatchingNode);
 	}
@@ -394,9 +396,21 @@ public int resolveLevel(ASTNode possiblelMatchingNode) {
 }
 public int resolveLevel(Binding binding) {
 	if (binding == null) return INACCURATE_MATCH;
-	if (!(binding instanceof FieldBinding)) return IMPOSSIBLE_MATCH;
+	if (fieldPattern.isVar)
+	{
+		if (!(binding instanceof LocalVariableBinding)) return IMPOSSIBLE_MATCH;
+		LocalVariableBinding localVariableBinding=(LocalVariableBinding) binding;
+		if (localVariableBinding.declaringScope.kind!=Scope.COMPILATION_UNIT_SCOPE)
+			return IMPOSSIBLE_MATCH;
+		return matchLocalVariable((LocalVariableBinding) binding, true);
+	}
+	else
+	{
+		if (!(binding instanceof FieldBinding)) return IMPOSSIBLE_MATCH;
 
-	return matchField((FieldBinding) binding, true);
+		return matchField((FieldBinding) binding, true);
+
+	}
 }
 protected int resolveLevel(NameReference nameRef) {
 	if (nameRef instanceof SingleNameReference)
