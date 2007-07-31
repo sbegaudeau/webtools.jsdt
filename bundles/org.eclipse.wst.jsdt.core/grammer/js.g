@@ -1003,15 +1003,23 @@ StatementExpressionNoIn ::= PostDecrementExpressionStmt
 StatementExpressionNoIn ::= MethodInvocationStmt
 /:$readableName Expression:/
 
-IfThenStatement ::=  'if' '(' Expression ')' Statement
+IfThenStatement ::=  'if' '(' Expression ')' BlockStatement
 /.$putCase consumeStatementIfNoElse(); $break ./
 /:$readableName IfStatement:/
 
-IfThenElseStatement ::=  'if' '(' Expression ')' StatementNoShortIf 'else' Statement
+IfThenElseStatement ::=  'if' '(' Expression ')' StatementNoShortIf 'else' BlockStatement
 /.$putCase consumeStatementIfWithElse(); $break ./
 /:$readableName IfStatement:/
 
 IfThenElseStatementNoShortIf ::=  'if' '(' Expression ')' StatementNoShortIf 'else' StatementNoShortIf
+/.$putCase consumeStatementIfWithElse(); $break ./
+/:$readableName IfStatement:/
+
+IfThenElseStatement ::=  'if' '(' Expression ')' LocalVariableDeclarationStatement 'else' BlockStatement
+/.$putCase consumeStatementIfWithElse(); $break ./
+/:$readableName IfStatement:/
+
+IfThenElseStatementNoShortIf ::=  'if' '(' Expression ')' LocalVariableDeclarationStatement 'else' LocalVariableDeclarationStatement
 /.$putCase consumeStatementIfWithElse(); $break ./
 /:$readableName IfStatement:/
 
