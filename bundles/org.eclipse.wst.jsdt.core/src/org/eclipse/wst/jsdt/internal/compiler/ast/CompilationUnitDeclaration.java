@@ -20,6 +20,9 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.flow.InitializationFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitBinding;
@@ -122,7 +125,7 @@ public class CompilationUnitDeclaration
 	 */
 	public void analyseCode() {
 
-		if (ignoreFurtherInvestigation)
+		if (ignoreFurtherInvestigation || true)
 			return;
 		try {
 			if (types != null) {
@@ -132,6 +135,14 @@ public class CompilationUnitDeclaration
 			}
 			// request inner emulation propagation
 			propagateInnerEmulationForAllLocalTypes();
+			FlowInfo flowInfo=FlowInfo.initial(1);
+			FlowContext flowContext = new FlowContext(null, this);
+	
+			if (statements != null) {
+				for (int i = 0, count = statements.length; i < count; i++) {
+					((Statement)statements[i]).analyseCode(scope,flowContext,flowInfo);
+				}
+			}
 		} catch (AbortCompilationUnit e) {
 			this.ignoreFurtherInvestigation = true;
 			return;
