@@ -25,6 +25,7 @@ import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
+import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
@@ -205,8 +206,11 @@ class JavaParseTreeBuilder extends ASTVisitor {
     }
 
     private String getSignature(MethodDeclaration node) {
-        StringBuffer buffer= new StringBuffer();
-        buffer.append(node.getName().toString());
+    	StringBuffer buffer= new StringBuffer();
+        SimpleName name = node.getName();
+        if (name!=null)
+        	buffer.append(name.toString());
+     
         buffer.append('(');
         boolean first= true;
         Iterator iterator= node.parameters().iterator();
