@@ -230,6 +230,17 @@ public TypeBinding resolveType(BlockScope scope) {
 	constant = Constant.NotAConstant;
 	if (this.member!=null) {
 		// initialization of an enum constant
+		if (this.member instanceof SingleNameReference)
+		{
+			Binding binding=	
+					scope.getBinding(((SingleNameReference)this.member).token, (Binding.TYPE|Binding.METHOD | bits)  & RestrictiveFlagMASK, this, true /*resolve*/);
+			if (binding instanceof TypeBinding)
+				this.resolvedType=(TypeBinding)binding;
+			else if (binding instanceof MethodBinding)
+				this.resolvedType=((MethodBinding)binding).returnType;
+
+		}
+		else
 		this.resolvedType = this.member.resolveType(scope);
 	}
 	else if (this.type == null) {

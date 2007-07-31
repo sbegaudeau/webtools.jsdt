@@ -829,7 +829,7 @@ Date.prototype.toTimeString=function(){};
   * @since Level 2 Document Object Model Core Definition.
   * @link  http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Date.prototype.toLocaleString=function(){};
+Date.prototype.toLocaleString=function(){return "";};
 /**
   * function toLocaleDateString()
   * @class Date
@@ -1749,7 +1749,7 @@ Error.prototype.message="";
   * @link  http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
 function EvalError(){};
-EvalError.prototype=new Error();
+EvalError.prototype=new Error("");
 /**
   * Object RangeError()
   * @super Error
@@ -1761,7 +1761,7 @@ EvalError.prototype=new Error();
   * @link  http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
 function RangeError(){};
-RangeError.prototype=new Error();
+RangeError.prototype=new Error("");
 /**
   * Object ReferenceError()
   * @super Error
@@ -1773,7 +1773,7 @@ RangeError.prototype=new Error();
   * @link  http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
 function ReferenceError(){};
-ReferenceError.prototype=new Error();
+ReferenceError.prototype=new Error("");
 /**
   * Object SyntaxError()
   * @super Error
@@ -1785,7 +1785,7 @@ ReferenceError.prototype=new Error();
   * @link  http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
 function SyntaxError(){};
-SyntaxError.prototype=new Error();
+SyntaxError.prototype=new Error("");
 /**
   * Object TypeError()
   * @super Error
@@ -1797,7 +1797,7 @@ SyntaxError.prototype=new Error();
   * @link  http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
 function TypeError(){};
-TypeError.prototype=new Error();
+TypeError.prototype=new Error("");
 /**
   * Object URIError()
   * @super Error
@@ -1809,7 +1809,7 @@ TypeError.prototype=new Error();
   * @link  http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
 function URIError(){};
-URIError.prototype=new Error();
+URIError.prototype=new Error("");
 
 //support for debugger keyword
 var debugger = null;
