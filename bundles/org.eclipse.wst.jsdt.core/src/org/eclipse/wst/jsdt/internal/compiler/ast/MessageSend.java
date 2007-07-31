@@ -43,9 +43,12 @@ public class MessageSend extends Expression implements InvocationSite {
 public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
 
 	boolean nonStatic = !binding.isStatic();
-	flowInfo = receiver.analyseCode(currentScope, flowContext, flowInfo, nonStatic).unconditionalInits();
-	if (nonStatic) {
-		receiver.checkNPE(currentScope, flowContext, flowInfo);
+	if (receiver!=null)
+	{
+		flowInfo = receiver.analyseCode(currentScope, flowContext, flowInfo, nonStatic).unconditionalInits();
+		if (nonStatic) {
+			receiver.checkNPE(currentScope, flowContext, flowInfo);
+		}
 	}
 
 	if (arguments != null) {
@@ -62,7 +65,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 		//               checkExceptionHandlers; consider protecting there instead of here;
 		//               NullReferenceTest#test0510
 	}
-	manageSyntheticAccessIfNecessary(currentScope, flowInfo);	
+//	manageSyntheticAccessIfNecessary(currentScope, flowInfo);	
 	return flowInfo;
 }
 /**

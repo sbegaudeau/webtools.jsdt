@@ -70,7 +70,7 @@ public FlowInfo analyseAssignment(BlockScope currentScope, 	FlowContext flowCont
 	}
 	flowInfo =
 		receiver
-			.analyseCode(currentScope, flowContext, flowInfo, !binding.isStatic())
+			.analyseCode(currentScope, flowContext, flowInfo, binding==null || !binding.isStatic())
 			.unconditionalInits();
 	if (assignment.expression != null) {
 		flowInfo =
@@ -553,6 +553,8 @@ public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding use
 //					typeBinding = superTypeBinding;
 				typeBinding = (TypeBinding)possibleTypeBinding;
 			}
+			char[] fieldname=new char[]{'p','r','o','t','o','t','y','p','e'};
+			this.binding=scope.getJavaLangObject().getField(fieldname, true);
 		}
 		
 		return this.resolvedType = typeBinding;
