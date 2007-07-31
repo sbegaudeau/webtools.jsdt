@@ -16,9 +16,11 @@ package org.eclipse.wst.jsdt.internal.compiler.parser;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
@@ -214,6 +216,7 @@ public CompilationUnitDeclaration updatedCompilationUnitDeclaration(){
 //		this.unitDeclaration.imports = importRefences;
 //	}
 	/* update types */
+	int sourceEnd=(this.unitDeclaration.sourceEnd>0)?this.unitDeclaration.sourceEnd:this.parser().scanner.eofPosition;
 	if (this.statementCount > 0){
 		int existingCount = this.unitDeclaration.statements == null ? 0 : this.unitDeclaration.statements.length;
 		ProgramElement[] stmts = new ProgramElement[existingCount + this.statementCount];
@@ -223,7 +226,20 @@ public CompilationUnitDeclaration updatedCompilationUnitDeclaration(){
 		ASTNode astNode = this.statements[this.statementCount - 1].parseTree();
 		// may need to update the declarationSourceEnd of the last type
 		if (astNode.sourceEnd == 0){
-			astNode.sourceEnd= this.unitDeclaration.sourceEnd;
+			astNode.sourceEnd= sourceEnd;
+			if (astNode instanceof Assignment)
+			{
+				Assignment assign=(Assignment)astNode;
+				if (assign.expression instanceof FunctionExpression)
+				{
+					FunctionExpression functionExpression=(FunctionExpression)assign.expression;
+					functionExpression.sourceEnd=astNode.sourceEnd;
+					functionExpression.methodDeclaration.bodyEnd=
+					functionExpression.methodDeclaration.sourceEnd=astNode.sourceEnd;
+				}
+					
+				
+			}
 			
 //			this.statements[this.statementCount - 1].updateSourceEndIfNecessary(sourceEnd)typeDeclaration.bodyEnd = this.unitDeclaration.sourceEnd;
 		}
