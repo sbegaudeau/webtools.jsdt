@@ -868,6 +868,14 @@ public class BasicParserTests extends AbstractRegressionTest {
 		);
 	}
 
+	public void test0050() {
+		// make sure divide not seen as regex 
+		this.runParseTest(
+				"if (true) var c=1;",
+			"X.js",
+				"if (true)\n    var c = 1;\n"			
+		);
+	}
   
 
 
