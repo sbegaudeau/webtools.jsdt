@@ -430,4 +430,6 @@ public interface IPackageFragmentRoot
 	 * @since 2.1
 	 */
 	void move(IPath destination, int updateResourceFlags, int updateModelFlags, IClasspathEntry sibling, IProgressMonitor monitor) throws JavaModelException;
+	
+	public IClasspathAttribute[] getClasspathAttributes();
 }

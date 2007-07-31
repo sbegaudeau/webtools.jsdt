@@ -831,4 +831,23 @@ public boolean isLanguageRuntime() {
 	return false;
 }
 
+public IClasspathAttribute[] getClasspathAttributes() {
+	IJavaProject javaProject = getJavaProject();
+	IClasspathEntry[] entries=null;
+	IPath rootPath = getPath();
+	if(rootPath==null) return new IClasspathAttribute[0];
+	try {
+		entries = javaProject.getResolvedClasspath(true);
+	} catch (JavaModelException ex) {}
+	
+	IClasspathAttribute[] attribs=null;
+	for(int i = 0;entries!=null && i<entries.length;i++) {
+		if(rootPath.equals(entries[i].getPath())){
+			attribs =  entries[i].getExtraAttributes();
+			break;
+		}
+	}
+	if(attribs!=null) return attribs;
+	return new IClasspathAttribute[0];
+}
 }
