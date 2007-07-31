@@ -36,11 +36,13 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ExtendedStringLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FalseLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FloatLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.InstanceOfExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.RegExLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteralConcatenation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NullLiteral;
@@ -58,6 +60,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.SuperReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TrueLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.UndefinedLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.parser.TerminalTokens;
@@ -344,6 +347,22 @@ class BinaryExpressionFragmentBuilder
 		return false;
 	}
 
+	
+	public boolean visit(ObjectLiteral literal, BlockScope scope) {
+		this.addRealFragment(literal);
+		return false;
+	}
+
+	public boolean visit(UndefinedLiteral undefined, BlockScope scope) {
+		this.addSmallFragment(undefined);
+		return false;
+	}
+
+	public boolean visit(FunctionExpression functionExpression, BlockScope scope) {
+		this.addRealFragment(functionExpression);
+		return false;
+	}
+	
 	public boolean visit(
 		InstanceOfExpression instanceOfExpression,
 		BlockScope scope) {
