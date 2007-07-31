@@ -91,15 +91,7 @@ Object.prototype.propertyIsEnumerable  = function(V){return "";};
   * @link  http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
 Object.prototype.constructor="";
-/** 
-  * Property Prototype
-  * @type  String
-  * @class Object
-  * @since Standard ECMA-262 3rd. Edition
-  * @since Level 2 Document Object Model Core Definition.
-  * @link  http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
- */ 
-Object.prototype.Prototype="";
+
 /**
   * Property Class
   * @type  String
@@ -501,7 +493,7 @@ Number.POSITIVE_INFINITY=0;
   * @since Level 2 Document Object Model Core Definition.
   * @link  http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Number.prototoype.toFixed=function(fractionDigits){};
+Number.prototype.toFixed=function(fractionDigits){};
 /**
   * function toExponential(fractionDigits)
   * @type Number
@@ -513,7 +505,7 @@ Number.prototoype.toFixed=function(fractionDigits){};
   * @since Level 2 Document Object Model Core Definition.
   * @link  http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Number.prototoype.toExponential=function(fractionDigits){};
+Number.prototype.toExponential=function(fractionDigits){};
 /**
   * function toPrecision(precision)
   * @type Number
@@ -525,7 +517,7 @@ Number.prototoype.toExponential=function(fractionDigits){};
   * @since Level 2 Document Object Model Core Definition.
   * @link  http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Number.prototoype.toPrecision=function(fractionDigits){};
+Number.prototype.toPrecision=function(fractionDigits){};
 /**
   * Object Boolean()
   * @super Object
