@@ -324,17 +324,17 @@ String.prototype.match = function(regexp){return true;};
 String.prototype.replace = function(searchValue, replaceValue){return "";};
  /**
   * function search(regexp) 
-  * @type    Boolean
+  * @type    Number
   * @class   String
   * @param   regexp String
-  * @return  Boolean
+  * @return  Number
   * @throws  DOMException
   * @see     String
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
-String.prototype.search = function(regexp){return true;};
+String.prototype.search = function(regexp){return 1;};
  /**
   * function slice(start, end) 
   * @type    String
