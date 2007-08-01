@@ -1821,13 +1821,20 @@ public TypeBinding resolveType(BlockScope scope) {
 			rightTypeID = scope.environment().computeBoxingType(rightType).id;
 		}
 	}
+	if (rightType.isArrayType())
+	{
+		rightType=rightType.leafComponentType();
+		rightTypeID=rightType.id;
+	}
 	if (leftTypeID > 15
 		|| rightTypeID > 15) { // must convert String + Object || Object + String
+		
 		if (leftTypeID == TypeIds.T_JavaLangString) {
 			rightTypeID = TypeIds.T_JavaLangObject;
 		} else if (rightTypeID == TypeIds.T_JavaLangString) {
 			leftTypeID = TypeIds.T_JavaLangObject;
 		} else {
+				
 			this.constant = Constant.NotAConstant;
 			scope.problemReporter().invalidOperator(this, leftType, rightType);
 			return null;

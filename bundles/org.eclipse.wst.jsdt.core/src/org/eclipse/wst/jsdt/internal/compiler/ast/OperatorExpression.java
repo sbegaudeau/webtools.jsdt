@@ -1569,7 +1569,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_JavaLangString<<4)+T_char] 		= (String2String<<12)+(Char2Char<<4)+T_JavaLangString;
 		table[(T_JavaLangString<<4)+T_int] 			= (String2String<<12)+(Int2Int<<4)+T_JavaLangString;
 		table[(T_JavaLangString<<4)+T_null] 		= (String2String<<12)+(T_null<<8)+(T_null<<4)+T_JavaLangString;
-		table[(T_JavaLangString<<4)+T_any] 			= T_any;
+		table[(T_JavaLangString<<4)+T_any] 			= T_JavaLangString;
 	
 		//	table[(T_Object<<4)+T_undefined] 	= T_undefined;
 		//	table[(T_Object<<4)+T_byte] 		= T_undefined;
@@ -1631,20 +1631,20 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_boolean<<4)+T_null] 			= T_undefined;
 		table[(T_boolean<<4)+T_any] 			= T_any;
 		
-		//	table[(T_char<<4)+T_undefined] 		= T_undefined;
-		table[(T_char<<4)+T_byte] 			= (Char2Int<<12)+(Byte2Int<<4)+T_int;
-		table[(T_char<<4)+T_long] 			= (Char2Long<<12)+(Long2Long<<4)+T_long;
-		table[(T_char<<4)+T_short] 			= (Char2Int<<12)+(Short2Int<<4)+T_int;
+			table[(T_char<<4)+T_undefined] 		= T_JavaLangString;
+		table[(T_char<<4)+T_byte] 			= (Char2Int<<12)+(Byte2Int<<4)+T_JavaLangString;
+		table[(T_char<<4)+T_long] 			= (Char2Long<<12)+(Long2Long<<4)+T_JavaLangString;
+		table[(T_char<<4)+T_short] 			= (Char2Int<<12)+(Short2Int<<4)+T_JavaLangString;
 		//	table[(T_char<<4)+T_void] 			= T_undefined;
 		table[(T_char<<4)+T_JavaLangString] 		= (Char2Char<<12)+(String2String<<4)+T_JavaLangString;
-		//	table[(T_char<<4)+T_Object] 		= T_undefined;
-		table[(T_char<<4)+T_double] 		= (Char2Double<<12)+(Double2Double<<4)+T_double;
-		table[(T_char<<4)+T_float] 			= (Char2Float<<12)+(Float2Float<<4)+T_float;
-		//	table[(T_char<<4)+T_boolean] 		= T_undefined;
-		table[(T_char<<4)+T_char] 			= (Char2Int<<12)+(Char2Int<<4)+T_int;
-		table[(T_char<<4)+T_int] 			= (Char2Int<<12)+(Int2Int<<4)+T_int;
+//		table[(T_char<<4)+T_Object] 		= T_JavaLangString;
+		table[(T_char<<4)+T_double] 		= (Char2Double<<12)+(Double2Double<<4)+T_JavaLangString;
+		table[(T_char<<4)+T_float] 			= (Char2Float<<12)+(Float2Float<<4)+T_JavaLangString;
+		table[(T_char<<4)+T_boolean] 		= T_JavaLangString;
+		table[(T_char<<4)+T_char] 			= (Char2Int<<12)+(Char2Int<<4)+T_JavaLangString;
+		table[(T_char<<4)+T_int] 			= (Char2Int<<12)+(Int2Int<<4)+T_JavaLangString;
 		//	table[(T_char<<4)+T_null] 			= T_undefined;
-		table[(T_char<<4)+T_any] 			= T_any;
+		table[(T_char<<4)+T_any] 			= T_JavaLangString;
 		
 		//	table[(T_int<<4)+T_undefined] 	= T_undefined;
 		table[(T_int<<4)+T_byte] 		= (Int2Int<<12)+(Byte2Int<<4)+T_int;
