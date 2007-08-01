@@ -273,22 +273,20 @@ public class SwitchStatement extends Statement {
 			TypeBinding expressionType = expression.resolveType(upperScope);
 			if (expressionType != null) {
 				expression.computeConversion(upperScope, expressionType, expressionType);
-				checkType: {
-					if (expressionType.isBaseType()) {
-						if (expression.isConstantValueOfTypeAssignableToType(expressionType, TypeBinding.INT))
-							break checkType;
-						if (expressionType.isCompatibleWith(TypeBinding.INT))
-							break checkType;
-					} else if (expressionType.isEnum()) {
-						isEnumSwitch = true;
-						break checkType;
-					} else if (upperScope.isBoxingCompatibleWith(expressionType, TypeBinding.INT)) {
-						expression.computeConversion(upperScope, TypeBinding.INT, expressionType);
-						break checkType;
-					}
-					upperScope.problemReporter().incorrectSwitchType(expression, expressionType);
+				
+				switch (expressionType.id)
+				{
+					case TypeIds.T_any:
+					case TypeIds.T_undefined:
+					case TypeIds.T_char:
+					case TypeIds.T_JavaLangString:
+					case TypeIds.T_int:
+									break;
+					default:
+						upperScope.problemReporter().incorrectSwitchType(expression, expressionType);
 					expressionType = null; // fault-tolerance: ignore type mismatch from constants from hereon
 				}
+				
 			}
 			if (statements != null) {
 				scope = !JavaCore.IS_EMCASCRIPT4 ? upperScope :  new BlockScope(upperScope);
