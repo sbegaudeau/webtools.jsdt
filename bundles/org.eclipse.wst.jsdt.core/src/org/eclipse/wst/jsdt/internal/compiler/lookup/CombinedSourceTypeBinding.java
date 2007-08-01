@@ -113,6 +113,16 @@ public class CombinedSourceTypeBinding extends SourceTypeBinding {
 	}
 
 
+	public MethodBinding getExactConstructor(TypeBinding[] argumentTypes) {
+		for (int i = 0; i < this.sourceTypes.length ; i++) {
+			MethodBinding exactConstructor = this.sourceTypes[i].getExactConstructor(argumentTypes);
+			if (exactConstructor!=null && exactConstructor.isValidBinding())
+				return exactConstructor;
+		}	
+		return null;
+	}
+
+
 
 }
 

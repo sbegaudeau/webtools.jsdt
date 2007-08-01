@@ -389,7 +389,7 @@ private NameEnvironmentAnswer  convertToSourceFile(NameEnvironmentAnswer answer)
 public NameEnvironmentAnswer findBinding(char[] bindingName, char[][] packageName, int type, ITypeRequestor requestor, boolean returnMultiple, String excludePath) {
 	if (this.notifier != null)
 		this.notifier.checkCancelWithinCompiler();
-	NameEnvironmentAnswer answer= this.searchableEnvironment.findBinding(bindingName, packageName,type, requestor, returnMultiple, null);
+	NameEnvironmentAnswer answer= this.searchableEnvironment.findBinding(bindingName, packageName,type, requestor, returnMultiple, excludePath);
 	answer=convertToSourceFile(answer);
 	return answer;
 
