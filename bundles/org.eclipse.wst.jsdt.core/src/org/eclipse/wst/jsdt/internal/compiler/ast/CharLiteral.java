@@ -20,14 +20,14 @@ public class CharLiteral extends NumberLiteral {
 	char value;
 public CharLiteral(char[] token, int s, int e) {
 	super(token, s, e);
-	computeValue();
+//	computeValue();
 }
 public void computeConstant() {
 	//The source is a  char[3] first and last char are '
 	//This is true for both regular char AND unicode char
 	//BUT not for escape char like '\b' which are char[4]....
 
-	constant = CharConstant.fromValue(value);
+	constant = StringConstant.fromValue(String.valueOf(source));
 }
 private void computeValue() {
 	//The source is a  char[3] first and last char are '
@@ -91,7 +91,7 @@ public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean
 	codeStream.recordPositionsFrom(pc, this.sourceStart);
 }
 public TypeBinding literalType(BlockScope scope) {
-	return TypeBinding.CHAR;
+	return scope.getJavaLangString();
 }
 public void traverse(ASTVisitor visitor, BlockScope blockScope) {
 	visitor.visit(this, blockScope);
