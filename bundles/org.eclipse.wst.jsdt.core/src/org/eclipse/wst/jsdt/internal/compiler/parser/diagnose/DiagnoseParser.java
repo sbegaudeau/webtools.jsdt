@@ -305,6 +305,7 @@ public class DiagnoseParser implements ParserBasicInformation, TerminalTokens {
 					//
 					currentToken = lexStream.getToken();
 					tok = lexStream.kind(currentToken);
+//					TODO: insert optional semicolon processing here						
 					act = Parser.tAction(act, tok);
 					while(act <= NUM_RULES) {
 						//
@@ -333,6 +334,7 @@ public class DiagnoseParser implements ParserBasicInformation, TerminalTokens {
 	
 						next_pos = next_pos < tempStackTop ? next_pos : tempStackTop;
 						tempStack[tempStackTop + 1] = act;
+//TODO: insert optional semicolon processing here						
 						act = Parser.tAction(act, tok);
 					}
 	
