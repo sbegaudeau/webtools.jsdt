@@ -12,7 +12,9 @@ package org.eclipse.wst.jsdt.internal.core.search;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
@@ -59,6 +61,8 @@ public class JavaSearchScope extends AbstractSearchScope {
 	private int threshold;
 	
 	private IPath[] enclosingProjectsAndJars;
+	private Hashtable exclusionPathList = new Hashtable();
+	
 	public final static AccessRuleSet NOT_ENCLOSED = new AccessRuleSet(null, null);
 
 public JavaSearchScope() {
@@ -199,7 +203,17 @@ public void add(IJavaElement element) throws JavaModelException {
 			break;
 		case IJavaElement.PACKAGE_FRAGMENT_ROOT:
 			IPackageFragmentRoot root = (IPackageFragmentRoot)element;
+			
+			
 			IPath rootPath = root.getPath();
+					
+			IClasspathEntry entry = root.getResolvedClasspathEntry();
+			IPath[] exclusionsPaths = entry.getExclusionPatterns();
+			
+			if(exclusionsPaths!=null &&  exclusionsPaths.length>0)
+				addExclusions(rootPath, exclusionsPaths);
+			
+			
 			containerPath = root.getKind() == IPackageFragmentRoot.K_SOURCE ? root.getParent().getPath() : rootPath;
 			containerPathToString = containerPath.getDevice() == null ? containerPath.toString() : containerPath.toOSString();
 			IResource rootResource = root.getResource();
@@ -258,6 +272,30 @@ public void add(IJavaElement element) throws JavaModelException {
 	
 	if (containerPath != null)
 		addEnclosingProjectOrJar(containerPath);
+}
+
+/**
+ * @param exclusionsPaths
+ */
+private void addExclusions(IPath containerPath, IPath[] exclusionsPaths) {
+	
+	this.exclusionPathList.put(containerPath.toString(), exclusionsPaths);
+}
+
+public boolean shouldExclude(String container, String resourceName) {
+	boolean shouldExclude = false;
+	
+	if(container==null  || resourceName==null || exclusionPathList.size()==0) return false;
+	
+	IPath[] exclusions = (IPath[])exclusionPathList.get(container);
+	if(exclusions==null) return false;
+	IPath fullPath = new Path(container + "/" + resourceName);
+	
+	for(int i=0;!shouldExclude && i<exclusions.length;i++) {
+		shouldExclude = Util.isExcluded(fullPath, new char[0][], new char[][] {exclusions[i].toString().toCharArray()});
+	}
+	
+	return shouldExclude;
 }
 
 /**

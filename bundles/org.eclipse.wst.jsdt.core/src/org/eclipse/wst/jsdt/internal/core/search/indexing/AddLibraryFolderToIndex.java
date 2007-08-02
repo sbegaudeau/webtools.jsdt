@@ -123,4 +123,7 @@ class AddLibraryFolderToIndex extends IndexRequest {
 	public String toString() {
 		return "adding " + this.folderPath + " to index " + this.containerPath; //$NON-NLS-1$ //$NON-NLS-2$
 	}
+	protected Integer updatedIndexState() {
+		return IndexManager.REBUILDING_STATE;
+	}
 }

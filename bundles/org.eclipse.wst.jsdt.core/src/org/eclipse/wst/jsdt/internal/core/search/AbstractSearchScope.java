@@ -52,5 +52,7 @@ public void setIncludesBinaries(boolean includesBinaries) {
 public void setIncludesClasspaths(boolean includesClasspaths) {
 	// implements interface method
 }
-
+public boolean shouldExclude(String container, String resourceName) {
+	return false;
+}
 }

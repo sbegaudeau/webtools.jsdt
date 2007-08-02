@@ -215,5 +215,7 @@ private ClassFile getLibraryClassFile(){
 		return fLangeRuntime[1];
 	}
 
-	
+	public boolean isLibrary() {
+		return true;
+	}
 } 

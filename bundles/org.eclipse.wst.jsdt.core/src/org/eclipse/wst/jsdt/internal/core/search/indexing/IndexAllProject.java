@@ -66,16 +66,16 @@ public class IndexAllProject extends IndexRequest {
 			IClasspathEntry[] sourceEntries = new IClasspathEntry[length+1];
 			int sourceEntriesNumber = 0;
 			
-			IClasspathEntry projectRoot = JavaCore.newSourceEntry( javaProject.getPath());
+			//IClasspathEntry projectRoot = JavaCore.newSourceEntry( javaProject.getPath());
 			
 			
 			for (int i = 0; i < length; i++) {
 				IClasspathEntry entry = entries[i];
-				if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE && (! projectRoot.getPath().isPrefixOf(entry.getPath())|| ! JavaProject.hasJavaNature(project) ))
+				if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE && (! javaProject.getPath().isPrefixOf(entry.getPath())|| ! JavaProject.hasJavaNature(project) ))
 					sourceEntries[sourceEntriesNumber++] = entry;
 			}
 			
-			if(JavaProject.hasJavaNature(project)) sourceEntries[sourceEntriesNumber++] = projectRoot;
+			//if(JavaProject.hasJavaNature(project)) sourceEntries[sourceEntriesNumber++] = projectRoot;
 			
 			if (sourceEntriesNumber == 0) {
 				IPath projectPath = javaProject.getPath();

@@ -127,4 +127,6 @@ public void setIncludesBinaries(boolean includesBinaries);
  * with a Java project instead.
  */
 public void setIncludesClasspaths(boolean includesClasspaths);
+
+public boolean shouldExclude(String container, String resourceName);
 }

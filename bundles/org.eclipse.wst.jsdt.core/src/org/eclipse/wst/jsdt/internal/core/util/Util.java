@@ -1361,6 +1361,10 @@ public class Util {
 		return isExcluded(path, inclusionPatterns, exclusionPatterns, resourceType == IResource.FOLDER || resourceType == IResource.PROJECT);
 	}
 
+	public final static boolean isExcluded(IPath path, char[][] inclusionPatterns, char[][] exclusionPatterns) {
+		
+		return isExcluded(path, inclusionPatterns, exclusionPatterns, path.toFile().isDirectory());
+	}
 
 	/**
 	 * Validate the given .class file name.

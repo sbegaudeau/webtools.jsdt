@@ -596,6 +596,22 @@ public IClasspathEntry getRawClasspathEntry() throws JavaModelException {
 	return JavaCore.newLibraryEntry(getPath().makeAbsolute(), getPath().makeAbsolute(), getPath().makeAbsolute());
 }
 
+public IClasspathEntry getResolvedClasspathEntry() throws JavaModelException {
+
+	IClasspathEntry rawEntry = null;
+	JavaProject project = (JavaProject)this.getJavaProject();
+	project.getResolvedClasspath(); // force the reverse rawEntry cache to be populated
+	Map rootPathToResolvedEntries = project.getPerProjectInfo().rootPathToResolvedEntries;
+	if (rootPathToResolvedEntries != null) {
+		rawEntry = (IClasspathEntry) rootPathToResolvedEntries.get(this.getPath());
+	}
+	if(rawEntry!=null) return rawEntry;
+	/* no raw entry, so this must be a packagefragmentroot of a project with undefined source folder */
+	/* no luck */
+	return null;
+}
+
+
 /*
  * @see IJavaElement
  */
@@ -849,5 +865,8 @@ public IClasspathAttribute[] getClasspathAttributes() {
 	}
 	if(attribs!=null) return attribs;
 	return new IClasspathAttribute[0];
+}
+public boolean isLibrary() {
+	return false;
 }
 }

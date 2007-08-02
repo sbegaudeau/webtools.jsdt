@@ -95,8 +95,11 @@ public abstract class InternalSearchPattern {
 				if (pattern.matchesDecodedKey(decodedResult)) {
 					// TODO (kent) some clients may not need the document names
 					String[] names = entry.getDocumentNames(index);
-					for (int j = 0, n = names.length; j < n; j++)
-						acceptMatch(names[j], containerPath, decodedResult, requestor, participant, scope);
+					for (int j = 0, n = names.length; j < n; j++) {
+						if(!scope.shouldExclude(containerPath, names[j]))
+							acceptMatch(names[j], containerPath, decodedResult, requestor, participant, scope);
+						
+					}
 				}
 			}
 		} finally {
