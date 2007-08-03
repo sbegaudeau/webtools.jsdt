@@ -395,25 +395,19 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 
 	public static final int[] get_AND_AND(){
 	
-		//the code is an int
-		// (cast)  left   Op (cast)  rigth --> result
-		//  0000   0000       0000   0000      0000
-		//  <<16   <<12       <<8    <<4       
-		
 		int[] table  = new int[16*16];
-		
 		//     table[(T_undefined<<4)+T_undefined] 		= T_undefined;
 		//     table[(T_undefined<<4)+T_byte] 			= T_undefined;
 		//     table[(T_undefined<<4)+T_long] 			= T_undefined;
 		//     table[(T_undefined<<4)+T_short] 			= T_undefined;
 		//     table[(T_undefined<<4)+T_void] 			= T_undefined;
-		//     table[(T_undefined<<4)+T_JavaLangString] 		= T_undefined;
+		     table[(T_undefined<<4)+T_JavaLangString] 		= T_JavaLangString;
 		//     table[(T_undefined<<4)+T_Object] 		= T_undefined;
 		//     table[(T_undefined<<4)+T_double] 		= T_undefined;
 		//     table[(T_undefined<<4)+T_float] 			= T_undefined;
-		//     table[(T_undefined<<4)+T_boolean] 		= T_undefined;
-		//     table[(T_undefined<<4)+T_char] 			= T_undefined;
-		//     table[(T_undefined<<4)+T_int] 			= T_undefined;
+		     table[(T_undefined<<4)+T_boolean] 		= T_boolean;
+		     table[(T_undefined<<4)+T_char] 			= T_JavaLangString;
+		     table[(T_undefined<<4)+T_int] 			= T_int;
 		//     table[(T_undefined<<4)+T_null] 			= T_undefined;
 			
 		//     table[(T_byte<<4)+T_undefined] 	= T_undefined;
@@ -476,16 +470,16 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//     table[(T_void<<4)+T_null] 		= T_undefined;
 		table[(T_short<<4)+T_any] 			= T_boolean;
 		
-		//     table[(T_JavaLangString<<4)+T_undefined] 	= T_undefined;
+		     table[(T_JavaLangString<<4)+T_undefined] 	= T_JavaLangString;
 		//     table[(T_JavaLangString<<4)+T_byte] 		= T_undefined;
 		//     table[(T_JavaLangString<<4)+T_long] 		= T_undefined;
 		//     table[(T_JavaLangString<<4)+T_short] 		= T_undefined;
 		//     table[(T_JavaLangString<<4)+T_void] 		= T_undefined;
-		//     table[(T_JavaLangString<<4)+T_JavaLangString] 		= T_undefined;
+		     table[(T_JavaLangString<<4)+T_JavaLangString] 		= T_JavaLangString;
 		//     table[(T_JavaLangString<<4)+T_Object] 		= T_undefined;
 		//     table[(T_JavaLangString<<4)+T_double] 		= T_undefined;
 		//     table[(T_JavaLangString<<4)+T_float] 		= T_undefined;
-		//     table[(T_JavaLangString<<4)+T_boolean] 		= T_undefined;
+		     table[(T_JavaLangString<<4)+T_boolean] 		= T_boolean;
 		//     table[(T_JavaLangString<<4)+T_char] 		= T_undefined;
 		//     table[(T_JavaLangString<<4)+T_int] 			= T_undefined;
 		//     table[(T_JavaLangString<<4)+T_null] 		= T_undefined;
@@ -556,12 +550,12 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//     table[(T_char<<4)+T_long] 			= T_undefined;
 		//     table[(T_char<<4)+T_short] 			= T_undefined;
 		//     table[(T_char<<4)+T_void] 			= T_undefined;
-		//     table[(T_char<<4)+T_JavaLangString] 		= T_undefined;
+		     table[(T_char<<4)+T_JavaLangString] 		= T_JavaLangString;
 		//     table[(T_char<<4)+T_Object] 		= T_undefined;
 		//     table[(T_char<<4)+T_double] 		= T_undefined;
 		//     table[(T_char<<4)+T_float] 			= T_undefined;
 		//     table[(T_char<<4)+T_boolean] 		= T_undefined;
-		//     table[(T_char<<4)+T_char] 			= T_undefined;
+		     table[(T_char<<4)+T_char] 			= T_JavaLangString;
 		//     table[(T_char<<4)+T_int] 			= T_undefined;
 		//     table[(T_char<<4)+T_null] 			= T_undefined;
 		table[(T_char<<4)+T_any] 			= T_boolean;
@@ -577,7 +571,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//     table[(T_int<<4)+T_float] 		= T_undefined;
 		//     table[(T_int<<4)+T_boolean] 	= T_undefined;
 		//     table[(T_int<<4)+T_char] 		= T_undefined;
-		//     table[(T_int<<4)+T_int] 		= T_undefined;
+		     table[(T_int<<4)+T_int] 		= T_int;
 		//     table[(T_int<<4)+T_null] 		= T_undefined;
 		table[(T_int<<4)+T_any] 			= T_boolean;
 		
@@ -601,15 +595,19 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_any<<4)+T_long] 			= T_boolean;
 		table[(T_any<<4)+T_short] 			= T_boolean;
 		table[(T_any<<4)+T_void] 			= T_boolean;
-		table[(T_any<<4)+T_JavaLangString] 		= T_boolean;
-		table[(T_any<<4)+T_JavaLangObject] 		= T_boolean;
+		table[(T_any<<4)+T_JavaLangString] 		= T_JavaLangString;
+		table[(T_any<<4)+T_JavaLangObject] 		= T_JavaLangObject;
 		table[(T_any<<4)+T_double] 		= T_boolean;
 		table[(T_any<<4)+T_float] 			= T_boolean;
 		table[(T_any<<4)+T_boolean] 		= T_boolean;
 		table[(T_any<<4)+T_char] 			= T_boolean;
-		table[(T_any<<4)+T_int] 			= T_boolean;
+		table[(T_any<<4)+T_int] 			= T_int;
 		table[(T_any<<4)+T_null] 			= T_boolean;
-		table[(T_any<<4)+T_any] 			= T_boolean;
+		table[(T_any<<4)+T_any] 			= T_any;
+		table[(T_any<<4)+T_function] 			= T_function;
+
+		table[(T_function<<4)+T_any] 			= T_function;
+		
 		return table;
 	}
 
@@ -1464,217 +1462,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 
 	public static final int[] get_OR_OR(){
 	
-		int[] table  = new int[16*16];
-		//     table[(T_undefined<<4)+T_undefined] 		= T_undefined;
-		//     table[(T_undefined<<4)+T_byte] 			= T_undefined;
-		//     table[(T_undefined<<4)+T_long] 			= T_undefined;
-		//     table[(T_undefined<<4)+T_short] 			= T_undefined;
-		//     table[(T_undefined<<4)+T_void] 			= T_undefined;
-		     table[(T_undefined<<4)+T_JavaLangString] 		= T_JavaLangString;
-		//     table[(T_undefined<<4)+T_Object] 		= T_undefined;
-		//     table[(T_undefined<<4)+T_double] 		= T_undefined;
-		//     table[(T_undefined<<4)+T_float] 			= T_undefined;
-		     table[(T_undefined<<4)+T_boolean] 		= T_boolean;
-		     table[(T_undefined<<4)+T_char] 			= T_JavaLangString;
-		     table[(T_undefined<<4)+T_int] 			= T_int;
-		//     table[(T_undefined<<4)+T_null] 			= T_undefined;
-			
-		//     table[(T_byte<<4)+T_undefined] 	= T_undefined;
-		//     table[(T_byte<<4)+T_byte] 		= T_undefined;
-		//     table[(T_byte<<4)+T_long] 		= T_undefined;
-		//     table[(T_byte<<4)+T_short] 		= T_undefined;
-		//     table[(T_byte<<4)+T_void] 		= T_undefined;
-		//     table[(T_byte<<4)+T_JavaLangString] 		= T_undefined;
-		//     table[(T_byte<<4)+T_Object] 		= T_undefined;
-		//     table[(T_byte<<4)+T_double] 		= T_undefined;
-		//     table[(T_byte<<4)+T_float] 		= T_undefined;
-		//     table[(T_byte<<4)+T_boolean] 	= T_undefined;
-		//     table[(T_byte<<4)+T_char] 		= T_undefined;
-		//     table[(T_byte<<4)+T_int] 		= T_undefined;
-		//     table[(T_byte<<4)+T_null] 		= T_undefined;
-		table[(T_byte<<4)+T_any] 		= T_boolean;
-		
-		//     table[(T_long<<4)+T_undefined] 	= T_undefined;
-		//     table[(T_long<<4)+T_byte] 		= T_undefined;
-		//     table[(T_long<<4)+T_long] 		= T_undefined;
-		//     table[(T_long<<4)+T_short] 		= T_undefined;
-		//     table[(T_long<<4)+T_void] 		= T_undefined;
-		//     table[(T_long<<4)+T_JavaLangString] 		= T_undefined;
-		//     table[(T_long<<4)+T_Object] 		= T_undefined;
-		//     table[(T_long<<4)+T_double] 		= T_undefined;
-		//     table[(T_long<<4)+T_float] 		= T_undefined;
-		//     table[(T_long<<4)+T_boolean] 	= T_undefined;
-		//     table[(T_long<<4)+T_char] 		= T_undefined;
-		//     table[(T_long<<4)+T_int] 		= T_undefined;
-		//     table[(T_long<<4)+T_null] 		= T_undefined;
-		table[(T_long<<4)+T_any] 		= T_boolean;
-		
-		//     table[(T_short<<4)+T_undefined] 	= T_undefined;
-		//     table[(T_short<<4)+T_byte] 		= T_undefined;
-		//     table[(T_short<<4)+T_long] 		= T_undefined;
-		//     table[(T_short<<4)+T_short] 		= T_undefined;
-		//     table[(T_short<<4)+T_void] 		= T_undefined;
-		//     table[(T_short<<4)+T_JavaLangString] 	= T_undefined;
-		//     table[(T_short<<4)+T_Object] 	= T_undefined;
-		//     table[(T_short<<4)+T_double] 	= T_undefined;
-		//     table[(T_short<<4)+T_float] 		= T_undefined;
-		//     table[(T_short<<4)+T_boolean]	= T_undefined;
-		//     table[(T_short<<4)+T_char] 		= T_undefined;
-		//     table[(T_short<<4)+T_int] 		= T_undefined;
-		//     table[(T_short<<4)+T_null] 		= T_undefined;
-		table[(T_short<<4)+T_any] 			= T_boolean;
-			
-		//     table[(T_void<<4)+T_undefined] 	= T_undefined;
-		//     table[(T_void<<4)+T_byte] 		= T_undefined;
-		//     table[(T_void<<4)+T_long] 		= T_undefined;
-		//     table[(T_void<<4)+T_short] 		= T_undefined;
-		//     table[(T_void<<4)+T_void] 		= T_undefined;
-		//     table[(T_void<<4)+T_JavaLangString] 	= T_undefined;
-		//     table[(T_void<<4)+T_Object] 	= T_undefined;
-		//     table[(T_void<<4)+T_double] 	= T_undefined;
-		//     table[(T_void<<4)+T_float] 		= T_undefined;
-		//     table[(T_void<<4)+T_boolean] 	= T_undefined;
-		//     table[(T_void<<4)+T_char] 		= T_undefined;
-		//     table[(T_void<<4)+T_int] 		= T_undefined;
-		//     table[(T_void<<4)+T_null] 		= T_undefined;
-		table[(T_short<<4)+T_any] 			= T_boolean;
-		
-		     table[(T_JavaLangString<<4)+T_undefined] 	= T_JavaLangString;
-		//     table[(T_JavaLangString<<4)+T_byte] 		= T_undefined;
-		//     table[(T_JavaLangString<<4)+T_long] 		= T_undefined;
-		//     table[(T_JavaLangString<<4)+T_short] 		= T_undefined;
-		//     table[(T_JavaLangString<<4)+T_void] 		= T_undefined;
-		     table[(T_JavaLangString<<4)+T_JavaLangString] 		= T_JavaLangString;
-		//     table[(T_JavaLangString<<4)+T_Object] 		= T_undefined;
-		//     table[(T_JavaLangString<<4)+T_double] 		= T_undefined;
-		//     table[(T_JavaLangString<<4)+T_float] 		= T_undefined;
-		     table[(T_JavaLangString<<4)+T_boolean] 		= T_boolean;
-		//     table[(T_JavaLangString<<4)+T_char] 		= T_undefined;
-		//     table[(T_JavaLangString<<4)+T_int] 			= T_undefined;
-		//     table[(T_JavaLangString<<4)+T_null] 		= T_undefined;
-		table[(T_JavaLangString<<4)+T_any] 			= T_boolean;
-		
-		//     table[(T_Object<<4)+T_undefined] 	= T_undefined;
-		//     table[(T_Object<<4)+T_byte] 		= T_undefined;
-		//     table[(T_Object<<4)+T_long] 		= T_undefined;
-		//     table[(T_Object<<4)+T_short]		= T_undefined;
-		//     table[(T_Object<<4)+T_void] 		= T_undefined;
-		//     table[(T_Object<<4)+T_JavaLangString] 		= T_undefined;
-		//     table[(T_Object<<4)+T_Object] 		= T_undefined;
-		//     table[(T_Object<<4)+T_double] 		= T_undefined;
-		//     table[(T_Object<<4)+T_float] 		= T_undefined;
-		//     table[(T_Object<<4)+T_boolean]		= T_undefined;
-		//     table[(T_Object<<4)+T_char] 		= T_undefined;
-		//     table[(T_Object<<4)+T_int] 			= T_undefined;
-		//     table[(T_Object<<4)+T_null] 		= T_undefined;
-		table[(T_JavaLangObject<<4)+T_any] 			= T_boolean;
-		
-		//     table[(T_double<<4)+T_undefined] 	= T_undefined;
-		//     table[(T_double<<4)+T_byte] 		= T_undefined;
-		//     table[(T_double<<4)+T_long] 		= T_undefined;
-		//     table[(T_double<<4)+T_short] 		= T_undefined;
-		//     table[(T_double<<4)+T_void] 		= T_undefined;
-		//     table[(T_double<<4)+T_JavaLangString] 		= T_undefined;
-		//     table[(T_double<<4)+T_Object] 		= T_undefined;
-		//     table[(T_double<<4)+T_double] 		= T_undefined;
-		//     table[(T_double<<4)+T_float] 		= T_undefined;
-		//     table[(T_double<<4)+T_boolean] 		= T_undefined;
-		//     table[(T_double<<4)+T_char] 		= T_undefined;
-		//     table[(T_double<<4)+T_int] 			= T_undefined;
-		//     table[(T_double<<4)+T_null] 		= T_undefined;
-		table[(T_double<<4)+T_any] 			= T_boolean;
-		
-		//     table[(T_float<<4)+T_undefined] 	= T_undefined;
-		//     table[(T_float<<4)+T_byte] 			= T_undefined;
-		//     table[(T_float<<4)+T_long] 			= T_undefined;
-		//     table[(T_float<<4)+T_short] 		= T_undefined;
-		//     table[(T_float<<4)+T_void] 			= T_undefined;
-		//     table[(T_float<<4)+T_JavaLangString] 		= T_undefined;
-		//     table[(T_float<<4)+T_Object] 		= T_undefined;
-		//     table[(T_float<<4)+T_double] 		= T_undefined;
-		//     table[(T_float<<4)+T_float] 		= T_undefined;
-		//     table[(T_float<<4)+T_boolean] 		= T_undefined;
-		//     table[(T_float<<4)+T_char] 			= T_undefined;
-		//     table[(T_float<<4)+T_int] 			= T_undefined;
-		//     table[(T_float<<4)+T_null] 			= T_undefined;
-		table[(T_float<<4)+T_any] 			= T_boolean;
-		
-		//     table[(T_boolean<<4)+T_undefined] 		= T_undefined;
-		//     table[(T_boolean<<4)+T_byte] 			= T_undefined;
-		//     table[(T_boolean<<4)+T_long] 			= T_undefined;
-		//     table[(T_boolean<<4)+T_short] 			= T_undefined;
-		//     table[(T_boolean<<4)+T_void] 			= T_undefined;
-		//     table[(T_boolean<<4)+T_JavaLangString] 			= T_undefined;
-		//     table[(T_boolean<<4)+T_Object] 			= T_undefined;
-		//     table[(T_boolean<<4)+T_double] 			= T_undefined;
-		//     table[(T_boolean<<4)+T_float] 			= T_undefined;
-	   table[(T_boolean<<4)+T_boolean] 		= (Boolean2Boolean<<12)+(Boolean2Boolean<<4)+T_boolean;
-		//     table[(T_boolean<<4)+T_char] 			= T_undefined;
-		//     table[(T_boolean<<4)+T_int] 			= T_undefined;
-		//     table[(T_boolean<<4)+T_null] 			= T_undefined;
-		table[(T_boolean<<4)+T_any] 			= T_boolean;
-			
-		//     table[(T_char<<4)+T_undefined] 		= T_undefined;
-		//     table[(T_char<<4)+T_byte] 			= T_undefined;
-		//     table[(T_char<<4)+T_long] 			= T_undefined;
-		//     table[(T_char<<4)+T_short] 			= T_undefined;
-		//     table[(T_char<<4)+T_void] 			= T_undefined;
-		     table[(T_char<<4)+T_JavaLangString] 		= T_JavaLangString;
-		//     table[(T_char<<4)+T_Object] 		= T_undefined;
-		//     table[(T_char<<4)+T_double] 		= T_undefined;
-		//     table[(T_char<<4)+T_float] 			= T_undefined;
-		//     table[(T_char<<4)+T_boolean] 		= T_undefined;
-		     table[(T_char<<4)+T_char] 			= T_JavaLangString;
-		//     table[(T_char<<4)+T_int] 			= T_undefined;
-		//     table[(T_char<<4)+T_null] 			= T_undefined;
-		table[(T_char<<4)+T_any] 			= T_boolean;
-			
-		//     table[(T_int<<4)+T_undefined] 	= T_undefined;
-		//     table[(T_int<<4)+T_byte] 		= T_undefined;
-		//     table[(T_int<<4)+T_long] 		= T_undefined;
-		//     table[(T_int<<4)+T_short] 		= T_undefined;
-		//     table[(T_int<<4)+T_void] 		= T_undefined;
-		//     table[(T_int<<4)+T_JavaLangString] 		= T_undefined;
-		//     table[(T_int<<4)+T_Object] 		= T_undefined;
-		//     table[(T_int<<4)+T_double] 		= T_undefined;
-		//     table[(T_int<<4)+T_float] 		= T_undefined;
-		//     table[(T_int<<4)+T_boolean] 	= T_undefined;
-		//     table[(T_int<<4)+T_char] 		= T_undefined;
-		     table[(T_int<<4)+T_int] 		= T_int;
-		//     table[(T_int<<4)+T_null] 		= T_undefined;
-		table[(T_int<<4)+T_any] 			= T_boolean;
-		
-		//     table[(T_null<<4)+T_undefined] 		= T_undefined;
-		//     table[(T_null<<4)+T_byte] 			= T_undefined;
-		//     table[(T_null<<4)+T_long] 			= T_undefined;
-		//     table[(T_null<<4)+T_short] 			= T_undefined;
-		//     table[(T_null<<4)+T_void] 			= T_undefined;
-		//     table[(T_null<<4)+T_JavaLangString] 		= T_undefined;
-		//     table[(T_null<<4)+T_Object] 		= T_undefined;
-		//     table[(T_null<<4)+T_double] 		= T_undefined;
-		//     table[(T_null<<4)+T_float] 			= T_undefined;
-		//     table[(T_null<<4)+T_boolean] 		= T_undefined;
-		//     table[(T_null<<4)+T_char] 			= T_undefined;
-		//     table[(T_null<<4)+T_int] 			= T_undefined;
-		//     table[(T_null<<4)+T_null] 			= T_undefined;
-		table[(T_null<<4)+T_any] 			= T_boolean;
-
-	   table[(T_any<<4)+T_undefined] 		= T_boolean;
-		table[(T_any<<4)+T_byte] 			= T_boolean;
-		table[(T_any<<4)+T_long] 			= T_boolean;
-		table[(T_any<<4)+T_short] 			= T_boolean;
-		table[(T_any<<4)+T_void] 			= T_boolean;
-		table[(T_any<<4)+T_JavaLangString] 		= T_JavaLangString;
-		table[(T_any<<4)+T_JavaLangObject] 		= T_JavaLangObject;
-		table[(T_any<<4)+T_double] 		= T_boolean;
-		table[(T_any<<4)+T_float] 			= T_boolean;
-		table[(T_any<<4)+T_boolean] 		= T_boolean;
-		table[(T_any<<4)+T_char] 			= T_boolean;
-		table[(T_any<<4)+T_int] 			= T_int;
-		table[(T_any<<4)+T_null] 			= T_boolean;
-		table[(T_any<<4)+T_any] 			= T_boolean;
-		return table;
-
+		return get_AND_AND();
 	}
 
 	public static final int[] get_PLUS(){
@@ -1876,7 +1664,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_null<<4)+T_float] 			= T_undefined;
 		//	table[(T_null<<4)+T_boolean] 		= T_undefined;
 		//	table[(T_null<<4)+T_char] 			= T_undefined;
-		//	table[(T_null<<4)+T_int] 			= T_undefined;
+			table[(T_null<<4)+T_int] 			= T_int;
 		//	table[(T_null<<4)+T_null] 			= (Null2String<<12)+(Null2String<<4)+T_JavaLangString;;
 		table[(T_null<<4)+T_any] 			= T_any;
 	
