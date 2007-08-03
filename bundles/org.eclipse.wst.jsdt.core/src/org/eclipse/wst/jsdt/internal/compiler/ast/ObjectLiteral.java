@@ -1,6 +1,8 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
@@ -49,5 +51,9 @@ public class ObjectLiteral extends Expression {
 				this.fields[i].resolveType(scope);
 			}
 		return null;
+	}
+	
+	public int nullStatus(FlowInfo flowInfo) {
+			return FlowInfo.NON_NULL; // constant expression cannot be null
 	}
 }

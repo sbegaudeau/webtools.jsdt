@@ -71,8 +71,8 @@ public class ForStatement extends Statement {
 				flowInfo = initializations[i].analyseCode(scope, flowContext, flowInfo);
 			}
 		}
-		preCondInitStateIndex =
-			currentScope.methodScope().recordInitializationStates(flowInfo);
+//		preCondInitStateIndex =
+//			currentScope.methodScope().recordInitializationStates(flowInfo);
 
 		Constant cst = this.condition == null ? null : this.condition.constant;
 		boolean isConditionTrue = cst == null || (cst != Constant.NotAConstant && cst.booleanValue() == true);
@@ -125,8 +125,8 @@ public class ForStatement extends Statement {
 				new LoopingFlowContext(flowContext, flowInfo, this, breakLabel, 
 					continueLabel, scope);
 			FlowInfo initsWhenTrue = condInfo.initsWhenTrue();
-			condIfTrueInitStateIndex =
-				currentScope.methodScope().recordInitializationStates(initsWhenTrue);
+//			condIfTrueInitStateIndex =
+//				currentScope.methodScope().recordInitializationStates(initsWhenTrue);
 
 				if (isConditionFalse) {
 					actionInfo = FlowInfo.DEAD_END;
@@ -167,8 +167,8 @@ public class ForStatement extends Statement {
 					new LoopingFlowContext(flowContext, flowInfo, this, null, 
 						null, scope);
 				FlowInfo incrementInfo = actionInfo;
-				this.preIncrementsInitStateIndex =
-					currentScope.methodScope().recordInitializationStates(incrementInfo);
+//				this.preIncrementsInitStateIndex =
+//					currentScope.methodScope().recordInitializationStates(incrementInfo);
 				for (int i = 0, count = increments.length; i < count; i++) {
 					incrementInfo = increments[i].
 						analyseCode(scope, incrementContext, incrementInfo);
@@ -204,7 +204,7 @@ public class ForStatement extends Statement {
 				exitBranch, 
 				isConditionOptimizedFalse, 
 				!isConditionTrue /*for(;;){}while(true); unreachable(); */);
-		mergedInitStateIndex = currentScope.methodScope().recordInitializationStates(mergedInfo);
+//		mergedInitStateIndex = currentScope.methodScope().recordInitializationStates(mergedInfo);
 		return mergedInfo;
 	}
 

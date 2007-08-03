@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
@@ -62,9 +63,9 @@ public class MethodDeclaration extends AbstractMethodDeclaration {
 				}
 			}
 				
-			// skip enum implicit methods
-			if (binding.declaringClass.isEnum() && (this.selector == TypeConstants.VALUES || this.selector == TypeConstants.VALUEOF))
-				return flowInfo;
+//			// skip enum implicit methods
+//			if (binding.declaringClass.isEnum() && (this.selector == TypeConstants.VALUES || this.selector == TypeConstants.VALUEOF))
+//				return flowInfo;
 
 			// may be in a non necessary <clinit> for innerclass with static final constant fields
 			if (binding.isAbstract() || binding.isNative())
@@ -106,8 +107,10 @@ public class MethodDeclaration extends AbstractMethodDeclaration {
 					scope.problemReporter().shouldReturn(returnTypeBinding, this);
 				}
 			}
+			this.scope.reportUnusedDeclarations();
 			// check unreachable catch blocks
-			methodContext.complainIfUnusedExceptionHandlers(this);
+			if (JavaCore.IS_EMCASCRIPT4)
+				methodContext.complainIfUnusedExceptionHandlers(this);
 		} catch (AbortMethod e) {
 			this.ignoreFurtherInvestigation = true;
 		}

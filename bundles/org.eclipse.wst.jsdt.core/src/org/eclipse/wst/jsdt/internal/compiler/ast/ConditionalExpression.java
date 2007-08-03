@@ -54,7 +54,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 		if (isConditionOptimizedFalse) {
 			trueFlowInfo.setReachMode(FlowInfo.UNREACHABLE); 
 		}
-		trueInitStateIndex = currentScope.methodScope().recordInitializationStates(trueFlowInfo);
+//		trueInitStateIndex = currentScope.methodScope().recordInitializationStates(trueFlowInfo);
 		trueFlowInfo = valueIfTrue.analyseCode(currentScope, flowContext, trueFlowInfo);
 
 		// process the if-false part
@@ -62,7 +62,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 		if (isConditionOptimizedTrue) {
 			falseFlowInfo.setReachMode(FlowInfo.UNREACHABLE); 
 		}
-		falseInitStateIndex = currentScope.methodScope().recordInitializationStates(falseFlowInfo);
+//		falseInitStateIndex = currentScope.methodScope().recordInitializationStates(falseFlowInfo);
 		falseFlowInfo = valueIfFalse.analyseCode(currentScope, flowContext, falseFlowInfo);
 
 		// merge if-true & if-false initializations
@@ -95,8 +95,8 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 					trueInfoWhenTrue.mergedWith(falseInfoWhenTrue),
 					trueInfoWhenFalse.mergedWith(falseInfoWhenFalse));
 		}
-		mergedInitStateIndex =
-			currentScope.methodScope().recordInitializationStates(mergedInfo);
+//		mergedInitStateIndex =
+//			currentScope.methodScope().recordInitializationStates(mergedInfo);
 		mergedInfo.setReachMode(mode);
 		return mergedInfo;
 	}

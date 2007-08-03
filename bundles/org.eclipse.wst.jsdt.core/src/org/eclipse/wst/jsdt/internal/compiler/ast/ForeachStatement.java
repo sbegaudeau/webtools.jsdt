@@ -88,7 +88,7 @@ public class ForeachStatement extends Statement {
 		// element variable will be assigned when iterating
 		condInfo.markAsDefinitelyAssigned(this.elementVariable.binding);
 
-		this.postCollectionInitStateIndex = currentScope.methodScope().recordInitializationStates(condInfo);
+//		this.postCollectionInitStateIndex = currentScope.methodScope().recordInitializationStates(condInfo);
 		
 		// process the action
 		LoopingFlowContext loopingContext = 
@@ -157,7 +157,7 @@ public class ForeachStatement extends Statement {
 				exitBranch, 
 				false, 
 				true /*for(;;){}while(true); unreachable(); */);
-		mergedInitStateIndex = currentScope.methodScope().recordInitializationStates(mergedInfo);
+//		mergedInitStateIndex = currentScope.methodScope().recordInitializationStates(mergedInfo);
 		return mergedInfo;
 	}
 

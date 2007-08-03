@@ -33,8 +33,13 @@ public class AllocationExpression extends Expression implements InvocationSite {
 	
 public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
 	// check captured variables are initialized in current context (26134)
-	checkCapturedLocalInitializationIfNecessary((ReferenceBinding)this.binding.declaringClass.erasure(), currentScope, flowInfo);
+//	checkCapturedLocalInitializationIfNecessary((ReferenceBinding)this.binding.declaringClass.erasure(), currentScope, flowInfo);
 
+	if (this.member!=null)
+		flowInfo =
+			this.member
+				.analyseCode(currentScope, flowContext, flowInfo)
+				.unconditionalInits();
 	// process arguments
 	if (arguments != null) {
 		for (int i = 0, count = arguments.length; i < count; i++) {
@@ -54,8 +59,8 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 			flowInfo.unconditionalCopy(),
 			currentScope);
 	}
-	manageEnclosingInstanceAccessIfNecessary(currentScope, flowInfo);
-	manageSyntheticAccessIfNecessary(currentScope, flowInfo);
+//	manageEnclosingInstanceAccessIfNecessary(currentScope, flowInfo);
+//	manageSyntheticAccessIfNecessary(currentScope, flowInfo);
 	
 	return flowInfo;
 }
@@ -232,12 +237,17 @@ public TypeBinding resolveType(BlockScope scope) {
 		// initialization of an enum constant
 		if (this.member instanceof SingleNameReference)
 		{
+			char[] memberName = ((SingleNameReference)this.member).token;
 			Binding binding=	
-					scope.getBinding(((SingleNameReference)this.member).token, (Binding.TYPE|Binding.METHOD | bits)  & RestrictiveFlagMASK, this, true /*resolve*/);
+					scope.getBinding(memberName, (Binding.TYPE|Binding.METHOD | bits)  & RestrictiveFlagMASK, this, true /*resolve*/);
 			if (binding instanceof TypeBinding)
 				this.resolvedType=(TypeBinding)binding;
 			else if (binding instanceof MethodBinding)
 				this.resolvedType=((MethodBinding)binding).returnType;
+			else if (binding!=null && !binding.isValidBinding())
+			{
+				scope.problemReporter().invalidType(this, new ProblemReferenceBinding(memberName,null,binding.problemId()));
+			}
 
 		}
 		else

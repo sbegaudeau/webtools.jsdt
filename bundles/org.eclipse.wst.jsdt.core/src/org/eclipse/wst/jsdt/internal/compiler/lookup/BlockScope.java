@@ -267,6 +267,27 @@ void computeLocalVariablePositions(int ilocal, int initOffset, CodeStream codeSt
 		this.maxOffset = this.offset;
 }
 
+public void reportUnusedDeclarations()
+{
+	if (this.locals!=null)
+	for (int i = 0; i < localIndex; i++) {
+		LocalVariableBinding local = this.locals[i]; // if no local at all, will be locals[ilocal]==null
+		
+			
+		// do not report fake used variable
+		if (local.useFlag == LocalVariableBinding.UNUSED
+			&& (local.declaration != null) // unused (and non secret) local
+			&& ((local.declaration.bits & ASTNode.IsLocalDeclarationReachable) != 0)) { // declaration is reachable
+				
+			if (!(local.declaration instanceof Argument))  // do not report unused catch arguments
+				this.problemReporter().unusedLocalVariable(local.declaration);
+		}
+		
+
+	}
+}
+
+
 /*
  *	Record the suitable binding denoting a synthetic field or constructor argument,
  * mapping to the actual outer local variable in the scope context.

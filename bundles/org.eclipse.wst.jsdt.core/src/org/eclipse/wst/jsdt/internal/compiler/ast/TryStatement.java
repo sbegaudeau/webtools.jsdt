@@ -71,8 +71,8 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 
 	// process the finally block (subroutine) - create a context for the subroutine
 
-	this.preTryInitStateIndex =
-		currentScope.methodScope().recordInitializationStates(flowInfo);
+//	this.preTryInitStateIndex =
+//		currentScope.methodScope().recordInitializationStates(flowInfo);
 
 	if (this.anyExceptionVariable != null) {
 		this.anyExceptionVariable.useFlag = LocalVariableBinding.USED;
@@ -159,14 +159,14 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 						currentScope,
 						flowContext,
 						catchInfo);
-				this.catchExitInitStateIndexes[i] = currentScope.methodScope().recordInitializationStates(catchInfo);
+//				this.catchExitInitStateIndexes[i] = currentScope.methodScope().recordInitializationStates(catchInfo);
 				this.catchExits[i] = 
 					(catchInfo.tagBits & FlowInfo.UNREACHABLE) != 0;
 				tryInfo = tryInfo.mergedWith(catchInfo.unconditionalInits());
 			}
 		}
-		this.mergedInitStateIndex =
-			currentScope.methodScope().recordInitializationStates(tryInfo);
+//		this.mergedInitStateIndex =
+//			currentScope.methodScope().recordInitializationStates(tryInfo);
 		
 		// chain up null info registry
 		if (flowContext.initsOnFinally != null) {
@@ -270,7 +270,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 						currentScope,
 						insideSubContext,
 						catchInfo);
-				this.catchExitInitStateIndexes[i] = currentScope.methodScope().recordInitializationStates(catchInfo);
+//				this.catchExitInitStateIndexes[i] = currentScope.methodScope().recordInitializationStates(catchInfo);
 				this.catchExits[i] =
 					(catchInfo.tagBits & FlowInfo.UNREACHABLE) != 0;
 				tryInfo = tryInfo.mergedWith(catchInfo.unconditionalInits());
@@ -294,16 +294,16 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 			flowContext.initsOnFinally.add(handlingContext.initsOnFinally);
 		}
 
-		this.naturalExitMergeInitStateIndex =
-			currentScope.methodScope().recordInitializationStates(tryInfo);
+//		this.naturalExitMergeInitStateIndex =
+//			currentScope.methodScope().recordInitializationStates(tryInfo);
 		if (subInfo == FlowInfo.DEAD_END) {
-			this.mergedInitStateIndex =
-				currentScope.methodScope().recordInitializationStates(subInfo);
+//			this.mergedInitStateIndex =
+//				currentScope.methodScope().recordInitializationStates(subInfo);
 			return subInfo;
 		} else {
 			FlowInfo mergedInfo = tryInfo.addInitializationsFrom(subInfo);
-			this.mergedInitStateIndex =
-				currentScope.methodScope().recordInitializationStates(mergedInfo);
+//			this.mergedInitStateIndex =
+//				currentScope.methodScope().recordInitializationStates(mergedInfo);
 			return mergedInfo;
 		}
 	}

@@ -52,7 +52,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 		this.bits &= ~FirstAssignmentToLocal;  // int i = (i = 0);
 	}	
 	flowInfo.markAsDefinitelyAssigned(binding);
-	if ((this.binding.type.tagBits & TagBits.IsBaseType) == 0) {
+	if ( true){//(this.binding.type.tagBits & TagBits.IsBaseType) == 0) {
 		switch(nullStatus) {
 			case FlowInfo.NULL :
 				flowInfo.markAsDefinitelyNull(this.binding);

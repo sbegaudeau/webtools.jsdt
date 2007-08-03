@@ -24,6 +24,8 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemFieldBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
@@ -562,7 +564,9 @@ public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding use
 	
 	this.receiverType = receiver.resolveType(scope);
 	if (this.receiverType == null) {
+		this.binding=new ProblemFieldBinding(null,this.token,ProblemReasons.NotFound);
 		constant = Constant.NotAConstant;
+		this.resolvedType=TypeBinding.ANY;
 		return null;
 	}
 //	if (receiverCast) {
@@ -583,6 +587,8 @@ public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding use
 	if( memberBinding instanceof FieldBinding ){
 		FieldBinding fieldBinding = this.codegenBinding = this.binding = (FieldBinding)memberBinding;
 		if (!fieldBinding.isValidBinding()) {
+			this.binding=fieldBinding;
+			this.resolvedType=TypeBinding.ANY;
 			if (!define)
 			{
 				constant = Constant.NotAConstant;
@@ -630,8 +636,11 @@ public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding use
 				: fieldBinding.type);
 	}
 	else if( memberBinding instanceof MethodBinding ){
+		this.resolvedType= scope.getJavaLangFunction();
+		this.binding=new ProblemFieldBinding(null,this.token,ProblemReasons.NotFound);
 		if( memberBinding.isValidBinding() )
-			return this.resolvedType = scope.getJavaLangFunction();
+			return this.resolvedType;
+		return null;
 	}
 	
 	return null;

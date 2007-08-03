@@ -79,8 +79,8 @@ public class IfStatement extends Statement {
 		}
 		if (this.thenStatement != null) {
 			// Save info for code gen
-			thenInitStateIndex =
-				currentScope.methodScope().recordInitializationStates(thenFlowInfo);
+//			thenInitStateIndex =
+//				currentScope.methodScope().recordInitializationStates(thenFlowInfo);
 			if (!thenStatement.complainIfUnreachable(thenFlowInfo, currentScope, false)) {
 				thenFlowInfo =
 					thenStatement.analyseCode(currentScope, flowContext, thenFlowInfo);
@@ -98,8 +98,8 @@ public class IfStatement extends Statement {
 		        currentScope.problemReporter().unnecessaryElse(this.elseStatement);
 		    }
 			// Save info for code gen
-			elseInitStateIndex =
-				currentScope.methodScope().recordInitializationStates(elseFlowInfo);
+//			elseInitStateIndex =
+//				currentScope.methodScope().recordInitializationStates(elseFlowInfo);
 			if (!elseStatement.complainIfUnreachable(elseFlowInfo, currentScope, false)) {
 				elseFlowInfo =
 					elseStatement.analyseCode(currentScope, flowContext, elseFlowInfo);
@@ -113,7 +113,7 @@ public class IfStatement extends Statement {
 			elseFlowInfo, 
 			isConditionOptimizedFalse,
 			true /*if(true){ return; }  fake-reachable(); */);
-		mergedInitStateIndex = currentScope.methodScope().recordInitializationStates(mergedInfo);
+//		mergedInitStateIndex = currentScope.methodScope().recordInitializationStates(mergedInfo);
 		return mergedInfo;
 	}
 

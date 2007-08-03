@@ -43,8 +43,8 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 		currentScope.problemReporter().invalidContinue(this);
 		return flowInfo; // pretend it did not continue since no actual target
 	}
-	this.initStateIndex =
-		currentScope.methodScope().recordInitializationStates(flowInfo);
+//	this.initStateIndex =
+//		currentScope.methodScope().recordInitializationStates(flowInfo);
 
 	targetLabel = targetContext.continueLabel();
 	FlowContext traversedContext = flowContext;

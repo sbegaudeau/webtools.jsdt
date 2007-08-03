@@ -1800,6 +1800,7 @@ public TypeBinding resolveType(BlockScope scope) {
 	// use the id of the type to navigate into the table
 	if (leftType == null || rightType == null) {
 		this.constant = Constant.NotAConstant;
+		this.resolvedType=TypeBinding.ANY;
 		return null;
 	}
 	int operator = (this.bits & ASTNode.OperatorMASK) >> ASTNode.OperatorSHIFT;
@@ -1895,6 +1896,9 @@ public TypeBinding resolveType(BlockScope scope) {
 			break;
 		case T_any:
 			this.resolvedType = TypeBinding.UNKNOWN;
+			break;
+		case T_function:
+			this.resolvedType = scope.getJavaLangFunction();
 			break;
 		default : //error........
 			this.constant = Constant.NotAConstant;

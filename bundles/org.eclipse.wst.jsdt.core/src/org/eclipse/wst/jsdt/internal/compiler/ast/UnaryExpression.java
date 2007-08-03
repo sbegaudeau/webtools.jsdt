@@ -287,6 +287,8 @@ public FlowInfo analyseCode(
 					scope.problemReporter().invalidOperator(this, expressionType);
 				return null;
 		}
+		if (tableId==AND_AND)
+			this.resolvedType=  TypeBinding.BOOLEAN;
 		// compute the constant when valid
 		if (this.expression.constant != Constant.NotAConstant) {
 			this.constant =

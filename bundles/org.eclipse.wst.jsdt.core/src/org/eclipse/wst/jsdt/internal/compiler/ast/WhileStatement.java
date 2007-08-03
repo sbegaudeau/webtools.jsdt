@@ -52,8 +52,8 @@ public class WhileStatement extends Statement {
 		boolean isConditionOptimizedTrue = cst != Constant.NotAConstant && cst.booleanValue() == true;
 		boolean isConditionOptimizedFalse = cst != Constant.NotAConstant && cst.booleanValue() == false;
 		
-		preCondInitStateIndex =
-			currentScope.methodScope().recordInitializationStates(flowInfo);
+//		preCondInitStateIndex =
+//			currentScope.methodScope().recordInitializationStates(flowInfo);
 		LoopingFlowContext condLoopContext;
 		FlowInfo condInfo =	flowInfo.nullInfoLessUnconditionalCopy();
 		// we need to collect the contribution to nulls of the coming paths through the
@@ -82,8 +82,8 @@ public class WhileStatement extends Statement {
 				if (isConditionOptimizedTrue){
 					mergedInfo.setReachMode(FlowInfo.UNREACHABLE);
 				}
-				mergedInitStateIndex =
-					currentScope.methodScope().recordInitializationStates(mergedInfo);
+//				mergedInitStateIndex =
+//					currentScope.methodScope().recordInitializationStates(mergedInfo);
 				return mergedInfo; 
 			}
 		} else {
@@ -107,9 +107,9 @@ public class WhileStatement extends Statement {
 			}
 
 			// for computing local var attributes
-			condIfTrueInitStateIndex =
-				currentScope.methodScope().recordInitializationStates(
-					condInfo.initsWhenTrue());
+//			condIfTrueInitStateIndex =
+//				currentScope.methodScope().recordInitializationStates(
+//					condInfo.initsWhenTrue());
 
 			if (!this.action.complainIfUnreachable(actionInfo, currentScope, false)) {
 				actionInfo = this.action.analyseCode(currentScope, loopingContext, actionInfo);
@@ -151,7 +151,7 @@ public class WhileStatement extends Statement {
 				exitBranch,
 				isConditionOptimizedFalse,
 				!isConditionTrue /*while(true); unreachable(); */);
-		mergedInitStateIndex = currentScope.methodScope().recordInitializationStates(mergedInfo);
+//		mergedInitStateIndex = currentScope.methodScope().recordInitializationStates(mergedInfo);
 		return mergedInfo;
 	}
 

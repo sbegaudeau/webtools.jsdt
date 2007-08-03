@@ -113,7 +113,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 				// recover null inits from before condition analysis
 			false, // never consider opt false case for DO loop, since break can always occur (47776)
 			!isConditionTrue /*do{}while(true); unreachable(); */);
-	this.mergedInitStateIndex = currentScope.methodScope().recordInitializationStates(mergedInfo);
+//	this.mergedInitStateIndex = currentScope.methodScope().recordInitializationStates(mergedInfo);
 	return mergedInfo;
 }
 

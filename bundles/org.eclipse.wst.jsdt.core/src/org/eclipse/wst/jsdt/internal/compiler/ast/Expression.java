@@ -507,8 +507,8 @@ public final boolean checkCastTypesCompatibility(Scope scope, TypeBinding castTy
 public void checkNPE(BlockScope scope, FlowContext flowContext, 
 		FlowInfo flowInfo) {
 	LocalVariableBinding local = this.localVariableBinding();
-	if (local != null && 
-			(local.type.tagBits & TagBits.IsBaseType) == 0) {
+	if (local != null /*&& 
+			(local.type.tagBits & TagBits.IsBaseType) == 0*/) {
 		if ((this.bits & ASTNode.IsNonNull) == 0) {
 			flowContext.recordUsingNullReference(scope, local, this, 
 					FlowContext.MAY_NULL, flowInfo);

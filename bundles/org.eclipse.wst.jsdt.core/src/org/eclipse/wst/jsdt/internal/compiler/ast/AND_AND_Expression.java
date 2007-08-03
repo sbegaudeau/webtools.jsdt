@@ -40,8 +40,8 @@ public class AND_AND_Expression extends BinaryExpression {
 			FlowInfo mergedInfo = left.analyseCode(currentScope, flowContext, flowInfo)
 					.unconditionalInits();
 			mergedInfo = right.analyseCode(currentScope, flowContext, mergedInfo);
-			mergedInitStateIndex = currentScope.methodScope()
-					.recordInitializationStates(mergedInfo);
+//			mergedInitStateIndex = currentScope.methodScope()
+//					.recordInitializationStates(mergedInfo);
 			return mergedInfo;
 		}
 
@@ -50,7 +50,7 @@ public class AND_AND_Expression extends BinaryExpression {
 		//  (x && y) && !z, if passing the left info to the right, it would be
 		// swapped by the !
 		FlowInfo rightInfo = leftInfo.initsWhenTrue().unconditionalCopy();
-		rightInitStateIndex = currentScope.methodScope().recordInitializationStates(rightInfo);
+//		rightInitStateIndex = currentScope.methodScope().recordInitializationStates(rightInfo);
 
 		int previousMode = rightInfo.reachMode();
 		if (isLeftOptimizedFalse) {
@@ -62,7 +62,7 @@ public class AND_AND_Expression extends BinaryExpression {
 				leftInfo.initsWhenFalse().unconditionalInits().mergedWith(
 						rightInfo.initsWhenFalse().setReachMode(previousMode).unconditionalInits()));
 		// reset after trueMergedInfo got extracted
-		mergedInitStateIndex = currentScope.methodScope().recordInitializationStates(mergedInfo);
+//		mergedInitStateIndex = currentScope.methodScope().recordInitializationStates(mergedInfo);
 		return mergedInfo;
 	}
 

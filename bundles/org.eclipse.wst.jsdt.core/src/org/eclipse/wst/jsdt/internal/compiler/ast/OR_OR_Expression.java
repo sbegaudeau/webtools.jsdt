@@ -41,8 +41,8 @@ public class OR_OR_Expression extends BinaryExpression {
 			//		(x || y) || !z, if passing the left info to the right, it would be swapped by the !
 			FlowInfo mergedInfo = left.analyseCode(currentScope, flowContext, flowInfo).unconditionalInits();
 			mergedInfo = right.analyseCode(currentScope, flowContext, mergedInfo);
-			mergedInitStateIndex =
-				currentScope.methodScope().recordInitializationStates(mergedInfo);
+//			mergedInitStateIndex =
+//				currentScope.methodScope().recordInitializationStates(mergedInfo);
 			return mergedInfo;
 		}
 
@@ -51,8 +51,8 @@ public class OR_OR_Expression extends BinaryExpression {
 		 // need to be careful of scenario:
 		//		(x || y) || !z, if passing the left info to the right, it would be swapped by the !
 		FlowInfo rightInfo = leftInfo.initsWhenFalse().unconditionalCopy();
-		rightInitStateIndex =
-			currentScope.methodScope().recordInitializationStates(rightInfo);
+//		rightInitStateIndex =
+//			currentScope.methodScope().recordInitializationStates(rightInfo);
 
 		int previousMode = rightInfo.reachMode();
 		if (isLeftOptimizedTrue){
@@ -64,8 +64,8 @@ public class OR_OR_Expression extends BinaryExpression {
 					leftInfo.initsWhenTrue().unconditionalInits().mergedWith(
 						rightInfo.safeInitsWhenTrue().setReachMode(previousMode).unconditionalInits()),
 					rightInfo.initsWhenFalse());
-		mergedInitStateIndex =
-			currentScope.methodScope().recordInitializationStates(mergedInfo);
+//		mergedInitStateIndex =
+//			currentScope.methodScope().recordInitializationStates(mergedInfo);
 		return mergedInfo;
 	}
 

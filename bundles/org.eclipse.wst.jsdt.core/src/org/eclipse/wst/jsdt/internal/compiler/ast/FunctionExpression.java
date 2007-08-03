@@ -1,6 +1,8 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
@@ -27,8 +29,13 @@ public class FunctionExpression extends Expression {
 	
 
 	public TypeBinding resolveType(BlockScope scope) {
+		constant = Constant.NotAConstant;
 		this.methodDeclaration.scope=new MethodScope(scope,this.methodDeclaration,false);
 		this.methodDeclaration.resolve(scope);
 		return scope.getJavaLangFunction();
+	}
+	
+	public int nullStatus(FlowInfo flowInfo) {
+			return FlowInfo.NON_NULL; // constant expression cannot be null
 	}
 }

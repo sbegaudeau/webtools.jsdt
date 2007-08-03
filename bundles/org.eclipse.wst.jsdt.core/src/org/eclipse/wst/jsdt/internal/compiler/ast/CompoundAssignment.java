@@ -107,7 +107,10 @@ public int nullStatus(FlowInfo flowInfo) {
 		TypeBinding originalLhsType = lhs.resolveType(scope);
 		TypeBinding originalExpressionType = expression.resolveType(scope);
 		if (originalLhsType == null || originalExpressionType == null)
+		{
+			this.resolvedType=TypeBinding.ANY;
 			return null;
+		}
 	
 		// autoboxing support
 		LookupEnvironment env = scope.environment();

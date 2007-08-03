@@ -664,49 +664,49 @@ public class SingleNameReference extends NameReference implements OperatorIds {
 	}
 	public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FlowInfo flowInfo, boolean isReadAccess) {
 	
-		if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) != 0)	return;
-	
-		//If inlinable field, forget the access emulation, the code gen will directly target it
-		if (constant != Constant.NotAConstant)
-			return;
-	
-		if ((bits & Binding.FIELD) != 0) {
-			FieldBinding fieldBinding = (FieldBinding) binding;
-			FieldBinding codegenField = fieldBinding.original();
-			this.codegenBinding = codegenField;
-			if (((bits & DepthMASK) != 0)
-				&& (codegenField.isPrivate() // private access
-					|| (codegenField.isProtected() // implicit protected access
-							&& codegenField.declaringClass.getPackage() != currentScope.enclosingSourceType().getPackage()))) {
-				if (syntheticAccessors == null)
-					syntheticAccessors = new MethodBinding[2];
-				syntheticAccessors[isReadAccess ? READ : WRITE] = 
-				    ((SourceTypeBinding)currentScope.enclosingSourceType().
-						enclosingTypeAt((bits & DepthMASK) >> DepthSHIFT)).addSyntheticMethod(codegenField, isReadAccess);
-				currentScope.problemReporter().needToEmulateFieldAccess(codegenField, this, isReadAccess);
-				return;
-			}
-			// if the binding declaring class is not visible, need special action
-			// for runtime compatibility on 1.2 VMs : change the declaring class of the binding
-			// NOTE: from target 1.2 on, field's declaring class is touched if any different from receiver type
-			// and not from Object or implicit static field access.	
-			if (fieldBinding.declaringClass != this.actualReceiverType
-					&& !this.actualReceiverType.isArrayType()
-					&& fieldBinding.declaringClass != null // array.length
-					&& fieldBinding.constant() == Constant.NotAConstant) {
-				CompilerOptions options = currentScope.compilerOptions();
-				if ((options.targetJDK >= ClassFileConstants.JDK1_2
-						&& (options.complianceLevel >= ClassFileConstants.JDK1_4 || !fieldBinding.isStatic())
-						&& fieldBinding.declaringClass.id != T_JavaLangObject) // no change for Object fields
-					|| !fieldBinding.declaringClass.canBeSeenBy(currentScope)) {
-		
-					this.codegenBinding = 
-					    currentScope.enclosingSourceType().getUpdatedFieldBinding(
-						       codegenField, 
-						        (ReferenceBinding)this.actualReceiverType.erasure());
-				}
-			}					
-		}
+//		if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) != 0)	return;
+//	
+//		//If inlinable field, forget the access emulation, the code gen will directly target it
+//		if (constant != Constant.NotAConstant)
+//			return;
+//	
+//		if ((bits & Binding.FIELD) != 0) {
+//			FieldBinding fieldBinding = (FieldBinding) binding;
+//			FieldBinding codegenField = fieldBinding.original();
+//			this.codegenBinding = codegenField;
+//			if (((bits & DepthMASK) != 0)
+//				&& (codegenField.isPrivate() // private access
+//					|| (codegenField.isProtected() // implicit protected access
+//							&& codegenField.declaringClass.getPackage() != currentScope.enclosingSourceType().getPackage()))) {
+//				if (syntheticAccessors == null)
+//					syntheticAccessors = new MethodBinding[2];
+//				syntheticAccessors[isReadAccess ? READ : WRITE] = 
+//				    ((SourceTypeBinding)currentScope.enclosingSourceType().
+//						enclosingTypeAt((bits & DepthMASK) >> DepthSHIFT)).addSyntheticMethod(codegenField, isReadAccess);
+//				currentScope.problemReporter().needToEmulateFieldAccess(codegenField, this, isReadAccess);
+//				return;
+//			}
+//			// if the binding declaring class is not visible, need special action
+//			// for runtime compatibility on 1.2 VMs : change the declaring class of the binding
+//			// NOTE: from target 1.2 on, field's declaring class is touched if any different from receiver type
+//			// and not from Object or implicit static field access.	
+//			if (fieldBinding.declaringClass != this.actualReceiverType
+//					&& !this.actualReceiverType.isArrayType()
+//					&& fieldBinding.declaringClass != null // array.length
+//					&& fieldBinding.constant() == Constant.NotAConstant) {
+//				CompilerOptions options = currentScope.compilerOptions();
+//				if ((options.targetJDK >= ClassFileConstants.JDK1_2
+//						&& (options.complianceLevel >= ClassFileConstants.JDK1_4 || !fieldBinding.isStatic())
+//						&& fieldBinding.declaringClass.id != T_JavaLangObject) // no change for Object fields
+//					|| !fieldBinding.declaringClass.canBeSeenBy(currentScope)) {
+//		
+//					this.codegenBinding = 
+//					    currentScope.enclosingSourceType().getUpdatedFieldBinding(
+//						       codegenField, 
+//						        (ReferenceBinding)this.actualReceiverType.erasure());
+//				}
+//			}					
+//		}
 	}
 
 public int nullStatus(FlowInfo flowInfo) {
@@ -825,7 +825,7 @@ public int nullStatus(FlowInfo flowInfo) {
 //								scope.problemReporter().cannotReferToNonFinalOuterLocal((LocalVariableBinding)variable, this);
 //							}
 							TypeBinding fieldType = variable.type;
-							if (useType!=null)
+							if (useType!=null && useType.id!=T_null)
 							{
 								if (fieldType==TypeBinding.UNKNOWN)
 									fieldType=variable.type=useType;

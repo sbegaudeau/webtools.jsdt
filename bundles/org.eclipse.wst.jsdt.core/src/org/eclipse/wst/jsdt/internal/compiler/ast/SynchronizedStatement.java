@@ -45,9 +45,9 @@ public FlowInfo analyseCode(
 	BlockScope currentScope,
 	FlowContext flowContext,
 	FlowInfo flowInfo) {
-
-	this.preSynchronizedInitStateIndex =
-		currentScope.methodScope().recordInitializationStates(flowInfo);
+//
+//	this.preSynchronizedInitStateIndex =
+//		currentScope.methodScope().recordInitializationStates(flowInfo);
     // TODO (philippe) shouldn't it be protected by a check whether reachable statement ?
     
 	// mark the synthetic variable as being used
@@ -60,8 +60,8 @@ public FlowInfo analyseCode(
 			new InsideSubRoutineFlowContext(flowContext, this),
 			expression.analyseCode(scope, flowContext, flowInfo));
 
-	this.mergedSynchronizedInitStateIndex =
-		currentScope.methodScope().recordInitializationStates(flowInfo);
+//	this.mergedSynchronizedInitStateIndex =
+//		currentScope.methodScope().recordInitializationStates(flowInfo);
 
 	// optimizing code gen
 	if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) != 0) {

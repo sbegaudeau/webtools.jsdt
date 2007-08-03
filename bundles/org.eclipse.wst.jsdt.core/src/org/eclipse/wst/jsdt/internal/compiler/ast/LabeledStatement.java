@@ -72,8 +72,8 @@ public class LabeledStatement extends Statement {
 			} else {
 				mergedInfo = statementInfo.mergedWith(labelContext.initsOnBreak);
 			}
-			mergedInitStateIndex =
-				currentScope.methodScope().recordInitializationStates(mergedInfo);
+//			mergedInitStateIndex =
+//				currentScope.methodScope().recordInitializationStates(mergedInfo);
 			if ((this.bits & ASTNode.LabelUsed) == 0) {
 				currentScope.problemReporter().unusedLabel(this);
 			}

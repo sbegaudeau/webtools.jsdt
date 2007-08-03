@@ -125,7 +125,7 @@ public class CompilationUnitDeclaration
 	 */
 	public void analyseCode() {
 
-		if (ignoreFurtherInvestigation || true)
+		if (ignoreFurtherInvestigation ||true)
 			return;
 		try {
 			if (types != null) {
@@ -143,6 +143,7 @@ public class CompilationUnitDeclaration
 					((Statement)statements[i]).analyseCode(scope,flowContext,flowInfo);
 				}
 			}
+			this.scope.reportUnusedDeclarations();
 		} catch (AbortCompilationUnit e) {
 			this.ignoreFurtherInvestigation = true;
 			return;

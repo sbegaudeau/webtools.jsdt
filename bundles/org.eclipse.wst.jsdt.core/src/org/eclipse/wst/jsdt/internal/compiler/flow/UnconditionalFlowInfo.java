@@ -732,8 +732,8 @@ final public boolean isDefinitelyNonNull(LocalVariableBinding local) {
 final public boolean isDefinitelyNull(LocalVariableBinding local) {
 	// do not want to complain in unreachable code
 	if ((this.tagBits & UNREACHABLE) != 0 || 
-			(this.tagBits & NULL_FLAG_MASK) == 0 || 
-			(local.type.tagBits & TagBits.IsBaseType) != 0) {
+			(this.tagBits & NULL_FLAG_MASK) == 0 /*|| 
+			(local.type.tagBits & TagBits.IsBaseType) != 0 */) {
 		return false;
 	}
 	int position = local.id + this.maxFieldCount;

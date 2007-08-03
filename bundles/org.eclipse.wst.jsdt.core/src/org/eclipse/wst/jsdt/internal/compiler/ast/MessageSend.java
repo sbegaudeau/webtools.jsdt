@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.*;
@@ -42,7 +43,7 @@ public class MessageSend extends Expression implements InvocationSite {
 	
 public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
 
-	boolean nonStatic = !binding.isStatic();
+	boolean nonStatic = binding==null || !binding.isStatic();
 	if (receiver!=null)
 	{
 		flowInfo = receiver.analyseCode(currentScope, flowContext, flowInfo, nonStatic).unconditionalInits();
@@ -58,12 +59,15 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 		}
 	}
 	ReferenceBinding[] thrownExceptions;
-	if ((thrownExceptions = binding.thrownExceptions) != Binding.NO_EXCEPTIONS) {
+	if (JavaCore.IS_EMCASCRIPT4)
+	{
+		if ((thrownExceptions = binding.thrownExceptions) != Binding.NO_EXCEPTIONS) {
 		// must verify that exceptions potentially thrown by this expression are caught in the method
-		flowContext.checkExceptionHandlers(thrownExceptions, this, flowInfo.copy(), currentScope);
+			flowContext.checkExceptionHandlers(thrownExceptions, this, flowInfo.copy(), currentScope);
 		// TODO (maxime) the copy above is needed because of a side effect into 
 		//               checkExceptionHandlers; consider protecting there instead of here;
 		//               NullReferenceTest#test0510
+		}
 	}
 //	manageSyntheticAccessIfNecessary(currentScope, flowInfo);	
 	return flowInfo;

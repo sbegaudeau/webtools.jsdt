@@ -59,8 +59,8 @@ public class SwitchStatement extends Statement {
 			// to the entry point)
 			FlowInfo caseInits = FlowInfo.DEAD_END;
 			// in case of statements before the first case
-			preSwitchInitStateIndex =
-				currentScope.methodScope().recordInitializationStates(flowInfo);
+//			preSwitchInitStateIndex =
+//				currentScope.methodScope().recordInitializationStates(flowInfo);
 			int caseIndex = 0;
 			if (statements != null) {
 				boolean didAlreadyComplain = false;
@@ -110,15 +110,15 @@ public class SwitchStatement extends Statement {
 				// only retain the potential initializations
 				flowInfo.addPotentialInitializationsFrom(
 					caseInits.mergedWith(switchContext.initsOnBreak));
-				mergedInitStateIndex =
-					currentScope.methodScope().recordInitializationStates(flowInfo);
+//				mergedInitStateIndex =
+//					currentScope.methodScope().recordInitializationStates(flowInfo);
 				return flowInfo;
 			}
 	
 			// merge all branches inits
 			FlowInfo mergedInfo = caseInits.mergedWith(switchContext.initsOnBreak);
-			mergedInitStateIndex =
-				currentScope.methodScope().recordInitializationStates(mergedInfo);
+//			mergedInitStateIndex =
+//				currentScope.methodScope().recordInitializationStates(mergedInfo);
 			return mergedInfo;
 	    } finally {
 	        if (this.scope != null) this.scope.enclosingCase = null; // no longer inside switch case block

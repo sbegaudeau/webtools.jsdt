@@ -38,8 +38,8 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 	if (this.expression != null) {
 		flowInfo = this.expression.analyseCode(currentScope, flowContext, flowInfo);
 	}
-	this.initStateIndex =
-		currentScope.methodScope().recordInitializationStates(flowInfo);
+//	this.initStateIndex =
+//		currentScope.methodScope().recordInitializationStates(flowInfo);
 	// compute the return sequence (running the finally blocks)
 	FlowContext traversedContext = flowContext;
 	int subCount = 0;
