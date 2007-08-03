@@ -875,7 +875,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 				this.index = restart;
 				this.scanner.tokenizeWhiteSpace = tokenWhiteSpace;
 				valid= pushParamName(isTypeParam);
-				if (isParmType)
+				if (valid && isParmType  )
 				{
 					createParamType(typeReference);
 
