@@ -1,9 +1,11 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 
@@ -55,5 +57,17 @@ public class ObjectLiteral extends Expression {
 	
 	public int nullStatus(FlowInfo flowInfo) {
 			return FlowInfo.NON_NULL; // constant expression cannot be null
+	}
+	
+	public FlowInfo analyseCode(
+			BlockScope classScope,
+			FlowContext initializationContext,
+			FlowInfo flowInfo) {
+		if (this.fields!=null)
+			for (int i = 0; i < this.fields.length; i++) {
+				flowInfo=this.fields[i].analyseCode(classScope,initializationContext, flowInfo); 
+			}
+
+		return flowInfo;
 	}
 }

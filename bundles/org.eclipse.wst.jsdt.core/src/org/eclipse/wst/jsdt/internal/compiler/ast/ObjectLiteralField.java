@@ -1,6 +1,8 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
@@ -44,4 +46,13 @@ public class ObjectLiteralField extends Expression {
 		return initializer.resolveType(scope);
 	}
 
+	
+	public FlowInfo analyseCode(
+			BlockScope classScope,
+			FlowContext initializationContext,
+			FlowInfo flowInfo) {
+			flowInfo=initializer.analyseCode(classScope,initializationContext, flowInfo); 
+
+		return flowInfo;
+	}
 }

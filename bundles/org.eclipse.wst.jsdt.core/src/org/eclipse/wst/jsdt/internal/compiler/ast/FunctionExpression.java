@@ -1,6 +1,7 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
@@ -38,4 +39,12 @@ public class FunctionExpression extends Expression {
 	public int nullStatus(FlowInfo flowInfo) {
 			return FlowInfo.NON_NULL; // constant expression cannot be null
 	}
+	
+	public FlowInfo analyseCode(
+			BlockScope classScope,
+			FlowContext initializationContext,
+			FlowInfo flowInfo) {
+		return this.methodDeclaration.analyseCode(classScope, initializationContext, flowInfo);
+	}
+	
 }

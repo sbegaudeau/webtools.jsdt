@@ -37,6 +37,20 @@ public class WithStatement extends Statement {
 		FlowContext flowContext,
 		FlowInfo flowInfo) {
 
+		flowInfo =
+			condition.analyseCode(currentScope, flowContext, flowInfo);
+
+		if (this.action != null) {
+			// Save info for code gen
+//			thenInitStateIndex =
+//				currentScope.methodScope().recordInitializationStates(thenFlowInfo);
+			if (!action.complainIfUnreachable(flowInfo, currentScope, false)) {
+				flowInfo =
+					this.action.analyseCode(currentScope, flowContext, flowInfo);
+			}
+		}
+
+		
 		return flowInfo;
 	}
 
