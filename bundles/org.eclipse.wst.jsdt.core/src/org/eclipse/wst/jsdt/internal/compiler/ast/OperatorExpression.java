@@ -535,7 +535,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//     table[(T_boolean<<4)+T_long] 			= T_undefined;
 		//     table[(T_boolean<<4)+T_short] 			= T_undefined;
 		//     table[(T_boolean<<4)+T_void] 			= T_undefined;
-		//     table[(T_boolean<<4)+T_JavaLangString] 			= T_undefined;
+		     table[(T_boolean<<4)+T_JavaLangString] 			= T_JavaLangString;
 		//     table[(T_boolean<<4)+T_Object] 			= T_undefined;
 		//     table[(T_boolean<<4)+T_double] 			= T_undefined;
 		//     table[(T_boolean<<4)+T_float] 			= T_undefined;
@@ -639,42 +639,52 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_any<<4)+T_function] 					= T_boolean;
 		table[(T_any<<4)+T_boolean] 					= T_boolean;
 		table[(T_any<<4)+T_int] 					= T_boolean;
+		table[(T_any<<4)+T_any] 					= T_boolean;
 		
 		table[(T_null<<4)+T_JavaLangObject] 			= T_boolean;
 		table[(T_null<<4)+T_JavaLangString] 				= T_boolean;
 		table[(T_null<<4)+T_function] 					= T_boolean;
 		table[(T_null<<4)+T_boolean] 					= T_boolean;
 		table[(T_null<<4)+T_int] 					= T_boolean;
+		table[(T_null<<4)+T_any] 					= T_boolean;
 		
 		table[(T_JavaLangString<<4)+T_JavaLangObject] 			= T_boolean;
 		table[(T_JavaLangString<<4)+T_JavaLangString] 				= T_boolean;
 		table[(T_JavaLangString<<4)+T_function] 					= T_boolean;
 		table[(T_JavaLangString<<4)+T_boolean] 					= T_boolean;
 		table[(T_JavaLangString<<4)+T_int] 					= T_boolean;
+		table[(T_JavaLangString<<4)+T_any] 					= T_boolean;
 		
 		table[(T_JavaLangObject<<4)+T_JavaLangObject] 			= T_boolean;
 		table[(T_JavaLangObject<<4)+T_JavaLangString] 				= T_boolean;
 		table[(T_JavaLangObject<<4)+T_function] 					= T_boolean;
 		table[(T_JavaLangObject<<4)+T_boolean] 					= T_boolean;
 		table[(T_JavaLangObject<<4)+T_int] 					= T_boolean;
+		table[(T_JavaLangObject<<4)+T_any] 					= T_boolean;
 		
 		table[(T_function<<4)+T_int] 					= T_boolean;
 		table[(T_function<<4)+T_JavaLangObject] 			= T_boolean;
 		table[(T_function<<4)+T_JavaLangString] 				= T_boolean;
 		table[(T_function<<4)+T_function] 					= T_boolean;
 		table[(T_function<<4)+T_boolean] 					= T_boolean;
+		table[(T_function<<4)+T_any] 					= T_boolean;
 		
 		table[(T_boolean<<4)+T_int] 			= T_boolean;
 		table[(T_boolean<<4)+T_JavaLangObject] 			= T_boolean;
 		table[(T_boolean<<4)+T_JavaLangString] 				= T_boolean;
 		table[(T_boolean<<4)+T_function] 					= T_boolean;
 		table[(T_boolean<<4)+T_boolean] 					= T_boolean;
+		table[(T_boolean<<4)+T_any] 					= T_boolean;
 		
 		table[(T_int<<4)+T_int] 			= T_boolean;
 		table[(T_int<<4)+T_JavaLangObject] 			= T_boolean;
 		table[(T_int<<4)+T_JavaLangString] 				= T_boolean;
 		table[(T_int<<4)+T_function] 					= T_boolean;
 		table[(T_int<<4)+T_boolean] 					= T_boolean;
+		table[(T_int<<4)+T_any] 					= T_boolean;
+
+		
+
 		return table;
 	}
 	public static final int[] get_EQUAL_EQUAL(){
@@ -1574,7 +1584,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_Object<<4)+T_float] 		= T_undefined;
 		//	table[(T_Object<<4)+T_boolean]		= T_undefined;
 		//	table[(T_Object<<4)+T_char] 		= T_undefined;
-		//	table[(T_Object<<4)+T_int] 			= T_undefined;
+			table[(T_JavaLangObject<<4)+T_int] 			= T_int;
 		//	table[(T_Object<<4)+T_null] 		= T_undefined;
 		table[(T_JavaLangObject<<4)+T_any] 			= T_any;
 		

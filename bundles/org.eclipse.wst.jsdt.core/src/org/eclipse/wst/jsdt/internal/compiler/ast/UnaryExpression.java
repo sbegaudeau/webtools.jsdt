@@ -238,7 +238,8 @@ public FlowInfo analyseCode(
 		}
 	
 		int tableId;
-		switch ((bits & OperatorMASK) >> OperatorSHIFT) {
+		int operator = (bits & OperatorMASK) >> OperatorSHIFT;
+		switch (operator) {
 			case NOT :
 				tableId = AND_AND;
 				break;
@@ -253,8 +254,14 @@ public FlowInfo analyseCode(
 		// (cast)  left   Op (cast)  rigth --> result
 		//  0000   0000       0000   0000      0000
 		//  <<16   <<12       <<8    <<4       <<0
+		if (operator==NOT)
+		{
+			this.resolvedType=  TypeBinding.BOOLEAN;
+		}
+		else
+		{
 		int operatorSignature = OperatorSignatures[tableId][(expressionTypeID << 4) + expressionTypeID];
-		this.expression.computeConversion(scope, TypeBinding.wellKnownType(scope, (operatorSignature >>> 16) & 0x0000F), expressionType);
+//		this.expression.computeConversion(scope, TypeBinding.wellKnownType(scope, (operatorSignature >>> 16) & 0x0000F), expressionType);
 		this.bits |= operatorSignature & 0xF;
 		switch (operatorSignature & 0xF) { // only switch on possible result type.....
 			case T_boolean :
@@ -287,27 +294,26 @@ public FlowInfo analyseCode(
 					scope.problemReporter().invalidOperator(this, expressionType);
 				return null;
 		}
-		if (tableId==AND_AND)
-			this.resolvedType=  TypeBinding.BOOLEAN;
+		}
 		// compute the constant when valid
 		if (this.expression.constant != Constant.NotAConstant) {
 			this.constant =
 				Constant.computeConstantOperation(
 					this.expression.constant,
 					expressionTypeID,
-					(bits & OperatorMASK) >> OperatorSHIFT);
+					operator);
 		} else {
 			this.constant = Constant.NotAConstant;
-			if (((bits & OperatorMASK) >> OperatorSHIFT) == NOT) {
+			if (operator == NOT) {
 				Constant cst = expression.optimizedBooleanConstant();
 				if (cst != Constant.NotAConstant) 
 					this.optimizedBooleanConstant = BooleanConstant.fromValue(!cst.booleanValue());
 			}
 		}
-		if (expressionIsCast) {
-		// check need for operand cast
-			CastExpression.checkNeedForArgumentCast(scope, tableId, operatorSignature, this.expression, expressionTypeID);
-		}
+//		if (expressionIsCast) {
+//		// check need for operand cast
+//			CastExpression.checkNeedForArgumentCast(scope, tableId, operatorSignature, this.expression, expressionTypeID);
+//		}
 		return this.resolvedType;
 	}
 
