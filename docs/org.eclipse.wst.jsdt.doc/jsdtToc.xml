@@ -1,0 +1,60 @@
+<?NLS TYPE="org.eclipse.help.toc"?>
+<!-- ////////////////////////////////////////////////////////////////////////////////
+	// Copyright (c) 2005 International Business Machines Corporation. All rights
+	// reserved. 
+	//////////////////////////////////////////////////////////////////////////////// -->
+
+<toc label="Javascript Development Toolkit User Guide" topic="index.html">
+	
+	
+	<topic label="Features" href="features/index.html"/>
+	
+	<topic label="Getting Started">
+		<topic href="started/overview.html" label="Overview" />
+		<topic href="started/standalone.html" label="Editing Standalone Javascript files" />
+		<topic href="started/embeded.html" label="Editing Javascript inside HTML or JSP" />
+	</topic>
+	
+	
+	<topic label="Advanced Javascript Editing with the JSDT"  href="advanced/index.html">
+
+		
+	
+		<topic href="advanced/global.html" label="Managing the Global Scope" />
+		<topic href="advanced/customlib.html" label="Defining Custom Libraries" />
+		<topic href="advanced/atf.html" label="AJAX, advanced HTML and Debuging Support Through ATF" />
+		
+	
+
+	</topic>
+
+	<topic label="JSDT Framework Developers Guide">
+		<topic href="development/extension-points/index.html"
+			label="Extension Points Reference">
+			<!-- 
+				<topic href="ref/extension-points/org_eclipse_atf_mozilla_ide_ui_action.html" label="org.eclipse.atf.mozilla.ide.ui.action"></topic>
+				<topic href="ref/extension-points/org_eclipse_atf_mozilla_ide_ui_filter.html" label="org.eclipse.atf.mozilla.ide.ui.filter"></topic>
+				<topic href="ref/extension-points/org_eclipse_atf_mozilla_ide_ui_toolbar.html" label="org.eclipse.atf.mozilla.ide.ui.toolbar"></topic>
+				<topic href="ref/extension-points/org_eclipse_atf_mozilla_ide_ui_view.html" label="org.eclipse.atf.mozilla.ide.ui.view"></topic>
+			-->
+		</topic>
+		<topic href="development/archOverview.html"
+			label="Component Design and Architecture Overview" />
+		<topic href="development/limitations.html"
+			label="JSDT Limitations and Work in Progress" />
+	</topic>
+
+
+	<topic label="Contributing to the JSDT Framework or Libraries">
+		<topic href="contributing/framework.html"
+			label="Contributing to Framework" />
+		<topic href="contributing/library.html"
+			label="Contributing to Libraries" />
+	</topic>
+
+
+	<topic label="Legal info and Credits" href="legal/index.html">
+		<anchor id="Legal" />
+	</topic>
+	
+</toc>
