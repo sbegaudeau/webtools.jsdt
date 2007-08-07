@@ -11,11 +11,15 @@
 	
 	<topic label="Getting Started">
 		<topic href="started/overview.html" label="Overview" />
-		<topic label="Pure Javascript Files">
+		<topic label="Pure Javascript">
 			<topic href="started/standaloneProject.html" label="Creating a JavaScript Project"/>
 			<topic href="started/newjsFile.html" label="Adding a JavaScript file."/>
 		</topic>
-		<topic href="started/embeded.html" label="Editing Javascript inside HTML or JSP" />
+		<topic label="Embeded JavaScript">
+			<topic href="started/htmlProject.html" label="Creating a HTML Project"/>
+			<topic href="started/newjsFile.html" label="Adding a JavaScript file."/>
+			<topic href="started/newhtmlFile.html" label="Adding a HTML file."/>
+		</topic>
 	</topic>
 	
 	
