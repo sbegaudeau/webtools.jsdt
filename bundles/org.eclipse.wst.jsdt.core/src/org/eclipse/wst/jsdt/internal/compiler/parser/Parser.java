@@ -9163,7 +9163,7 @@ public CompilationUnitDeclaration parse(
 			}
 		}
 		/* run automaton */
-if (true)
+if (false)
 	System.out.println("parsing "+new String(sourceUnit.getFileName()));
 		parse();
 	} finally {
