@@ -28,6 +28,7 @@
 		<topic label="Managing the Projects Global Scope">
 			<topic href="advanced/global/add.html" label="Adding a Library"/>
 			<topic href="advanced/global/remove.html" label="Removing a Library"/>
+			<topic href="advanced/global/source.html" label="Source Folders"/>
 		</topic>
 	
 		<topic href="advanced/customlib.html" label="Defining Custom Libraries" />
