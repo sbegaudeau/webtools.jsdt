@@ -25,9 +25,11 @@
 	
 	<topic label="Advanced Javascript Editing with the JSDT"  href="advanced/index.html">
 
-		
+		<topic label="Managing the Projects Global Scope">
+			<topic href="advanced/global/add.html" label="Adding a Library"/>
+			<topic href="advanced/global/remove.html" label="Removing a Library"/>
+		</topic>
 	
-		<topic href="advanced/global.html" label="Managing the Global Scope" />
 		<topic href="advanced/customlib.html" label="Defining Custom Libraries" />
 		<topic href="advanced/atf.html" label="AJAX, advanced HTML and Debuging Support Through ATF" />
 		
