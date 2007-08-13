@@ -125,7 +125,7 @@ public class CompilationUnitDeclaration
 	 */
 	public void analyseCode() {
 
-		if (ignoreFurtherInvestigation ||true)
+		if (ignoreFurtherInvestigation )
 			return;
 		try {
 			if (types != null) {
