@@ -10,7 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.parser;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -23,7 +28,104 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AND_AND_Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AnnotationMethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayAllocationExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AssertStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
+import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
+import org.eclipse.wst.jsdt.internal.compiler.ast.BreakStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CaseStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CastExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ClassLiteralAccess;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CombinedBinaryExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CompoundAssignment;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ConditionalExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ConstructorDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ContinueStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.DoStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.DoubleLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.EmptyStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.EqualExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ExplicitConstructorCall;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FalseLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FloatLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ForInStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ForStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ForeachStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.IfStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
+import org.eclipse.wst.jsdt.internal.compiler.ast.InstanceOfExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteralMinValue;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
+import org.eclipse.wst.jsdt.internal.compiler.ast.LabeledStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteralMinValue;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MarkerAnnotation;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.NormalAnnotation;
+import org.eclipse.wst.jsdt.internal.compiler.ast.NullLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.OR_OR_Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteralField;
+import org.eclipse.wst.jsdt.internal.compiler.ast.OperatorIds;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedSingleTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.PostfixExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.PrefixExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedSuperReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedThisReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.RegExLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ReturnStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleMemberAnnotation;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SuperReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SwitchStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SynchronizedStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ThrowStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TrueLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TryStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.UndefinedLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.WhileStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
+import org.eclipse.wst.jsdt.internal.compiler.ast.WithStatement;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
@@ -31,9 +133,9 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 import org.eclipse.wst.jsdt.internal.compiler.parser.diagnose.DiagnoseParser;
@@ -43,8 +145,8 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 import org.eclipse.wst.jsdt.internal.compiler.util.Messages;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
-import org.eclipse.wst.jsdt.internal.core.CreateMethodOperation;
 import org.eclipse.wst.jsdt.internal.infer.InferEngine;
+import org.eclipse.wst.jsdt.internal.infer.InferrenceManager;
 
 public class Parser implements  ParserBasicInformation, TerminalTokens, OperatorIds, TypeIds {
 	
@@ -10206,9 +10308,15 @@ protected void updateSourcePosition(Expression exp) {
 public void inferTypes(CompilationUnitDeclaration parsedUnit, CompilerOptions compileOptions) {
 	if (compileOptions==null)
 		compileOptions=this.options;
-	InferEngine inferEngine=compileOptions.inferOptions.createEngine();
-	inferEngine.setCompilationUnit(parsedUnit);
-	inferEngine.doInfer();
+	InferEngine[] inferenceEngines = InferrenceManager.getInstance().getInferenceEngines();
+//	InferEngine inferEngine=compileOptions.inferOptions.createEngine();
+	for (int i=0;i<inferenceEngines.length;i++)
+	{
+		inferenceEngines[i].initialize();
+		inferenceEngines[i].setCompilationUnit(parsedUnit);
+		inferenceEngines[i].doInfer();
+		
+	}
 }
 
 
