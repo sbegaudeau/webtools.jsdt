@@ -48,6 +48,12 @@
 	schema="schema/compilationParticipant.exsd"/>
 
 <!-- =================================================================================== -->
+<!-- Extension Point: Inferrence Support                                            -->
+<!-- =================================================================================== -->
+
+<extension-point id="inferrenceSupport" name="Support for Inferrencing" schema="schema/inferrenceSupport.exsd"/>
+
+<!-- =================================================================================== -->
 <!-- Extension: JavaScript Nature                                                              -->
 <!-- =================================================================================== -->
 

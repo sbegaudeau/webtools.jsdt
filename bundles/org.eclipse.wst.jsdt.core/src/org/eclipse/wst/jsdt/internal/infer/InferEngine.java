@@ -121,8 +121,19 @@ public class InferEngine extends ASTVisitor {
 	
 	public InferEngine()
 	{
+		this.inferOptions=new InferOptions();
 	}
 	
+	
+	public void initialize()
+	{
+	    this.contextPtr=-1;
+	    this.currentContext=new Context();
+	    this.passNumber=1;
+
+	    this.anonymousCount=0;
+		
+	}
 	
 	public void setCompilationUnit(CompilationUnitDeclaration compilationUnit) {
 		this.compUnit = compilationUnit;
@@ -1114,7 +1125,7 @@ public class InferEngine extends ASTVisitor {
 	 * If at any point it hits a portion of the Field reference that is
 	 * not supported (such as a function call, a prototype, or this )
 	 */
-	private final char [] constructTypeName( Expression expression ){
+	protected final char [] constructTypeName( Expression expression ){
 		
 		return Util.getTypeName( expression );
 	}
