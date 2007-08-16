@@ -192,7 +192,11 @@ public class JDTRefactoringDescriptor extends JavaRefactoringDescriptor {
 		}
 		if (check && element instanceof IMethod) {
 			final IMethod method= (IMethod) element;
-			final IMethod[] methods= method.getDeclaringType().findMethods(method);
+			 IMethod[] methods=null;
+			if (method.getDeclaringType()!=null)
+				methods=method.getDeclaringType().findMethods(method);
+			else
+				methods=method.getCompilationUnit().findMethods(method);
 			if (methods != null && methods.length > 0)
 				element= methods[0];
 		}
