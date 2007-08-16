@@ -352,7 +352,8 @@ public class ColoredJavaElementLabels {
 			if (getFlag(flags, JavaElementLabels.M_POST_QUALIFIED)) {
 				int offset= result.length();
 				result.append(JavaElementLabels.CONCAT_STRING);
-				getTypeLabel(method.getDeclaringType(), JavaElementLabels.T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), result);
+				if (method.getDeclaringType()!=null)
+					getTypeLabel(method.getDeclaringType(), JavaElementLabels.T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), result);
 				if (getFlag(flags, COLORIZE)) {
 					result.colorize(offset, result.length() - offset, QUALIFIER_STYLE);
 				}
