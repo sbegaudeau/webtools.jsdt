@@ -35,11 +35,12 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  * @see org.eclipse.wst.jsdt.core.IPackageFragment
  */
 public class LibraryPackageFragment extends PackageFragment implements SuffixConstants, IVirtualParent {
+final static String[]DEFAULT_PACKAGE={""};	
 /**
  * Constructs a package fragment that is contained within a jar or a zip.
  */
 protected LibraryPackageFragment(PackageFragmentRoot root, String[] names) {
-	super(root, names);
+	super(root, DEFAULT_PACKAGE);
 }
 /**
  * Compute the children of this package fragment. Children of jar package fragments

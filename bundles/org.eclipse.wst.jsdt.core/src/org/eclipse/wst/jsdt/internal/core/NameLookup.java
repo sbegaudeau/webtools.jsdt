@@ -2131,6 +2131,8 @@ public class NameLookup implements SuffixConstants {
 
 
 				IRestrictedAccessBindingRequestor bindingAcceptor = getRestrictedAccessRequestor();
+				if (exclude!=null)
+					exclude=exclude.replace('\\', '/');
 				bindingAcceptor.setExcludePath(exclude);
 				
 				try {
