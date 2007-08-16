@@ -1238,19 +1238,18 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 	switch (element.getElementType()) {
 		case IJavaElement.FIELD :
 			IField field = (IField) element; 
+			IType declaringClassForField = field.getDeclaringType();
+			isVar=(declaringClassForField==null);
 			if (!ignoreDeclaringType) {
-				IType declaringClass = field.getDeclaringType();
-				if (declaringClass!=null)
+				if (declaringClassForField!=null)
 				{
-					declaringSimpleName = declaringClass.getElementName().toCharArray();
-					declaringQualification = declaringClass.getPackageFragment().getElementName().toCharArray();
-					char[][] enclosingNames = enclosingTypeNames(declaringClass);
+					declaringSimpleName = declaringClassForField.getElementName().toCharArray();
+					declaringQualification = declaringClassForField.getPackageFragment().getElementName().toCharArray();
+					char[][] enclosingNames = enclosingTypeNames(declaringClassForField);
 					if (enclosingNames.length > 0) {
 						declaringQualification = CharOperation.concat(declaringQualification, CharOperation.concatWith(enclosingNames, '.'), '.');
 					}
 				}
-				else
-					isVar=true;
 			}
 			char[] name = field.getElementName().toCharArray();
 			char[] typeSimpleName = null;
@@ -1276,6 +1275,7 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 					return null;
 				}
 			}
+
 			// Create field pattern
 			boolean findDeclarations = false;
 			boolean readAccess = false;

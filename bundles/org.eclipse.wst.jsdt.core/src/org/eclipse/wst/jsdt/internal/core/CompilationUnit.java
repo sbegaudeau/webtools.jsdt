@@ -701,6 +701,51 @@ public IJavaElement getHandleFromMemento(String token, MementoTokenizer memento,
 			String typeName = memento.nextToken();
 			JavaElement type = (JavaElement)getType(typeName);
 			return type.getHandleFromMemento(memento, workingCopyOwner);
+			
+			
+		case JEM_FIELD:
+			if (!memento.hasMoreTokens()) return this;
+			String fieldName = memento.nextToken();
+			JavaElement field = (JavaElement)getField(fieldName);
+			return field.getHandleFromMemento(memento, workingCopyOwner);
+
+		case JEM_METHOD:
+			if (!memento.hasMoreTokens()) return this;
+			String selector = memento.nextToken();
+			ArrayList params = new ArrayList();
+			nextParam: while (memento.hasMoreTokens()) {
+				token = memento.nextToken();
+				switch (token.charAt(0)) {
+					case JEM_TYPE:
+					case JEM_TYPE_PARAMETER:
+						break nextParam;
+					case JEM_METHOD:
+						if (!memento.hasMoreTokens()) return this;
+						String param = memento.nextToken();
+						StringBuffer buffer = new StringBuffer();
+						while (param.length() == 1 && Signature.C_ARRAY == param.charAt(0)) { // backward compatible with 3.0 mementos
+							buffer.append(Signature.C_ARRAY);
+							if (!memento.hasMoreTokens()) return this;
+							param = memento.nextToken();
+						}
+						params.add(buffer.toString() + param);
+						break;
+					default:
+						break nextParam;
+				}
+			}
+			String[] parameters = new String[params.size()];
+			params.toArray(parameters);
+			JavaElement method = (JavaElement)getMethod(selector, parameters);
+			switch (token.charAt(0)) {
+				case JEM_TYPE:
+				case JEM_TYPE_PARAMETER:
+				case JEM_LOCALVARIABLE:
+					return method.getHandleFromMemento(token, memento, workingCopyOwner);
+				default:
+					return method;
+			}
+			
 	}
 	return null;
 }
@@ -1347,6 +1392,30 @@ public LibrarySuperType getCommonSuperType() {
 	IJavaProject javaProject = getJavaProject();
 	if(javaProject!=null && javaProject.exists()) return javaProject.getCommonSuperType();
 	return null;
+}
+
+public IMethod[] findMethods(IMethod method) {
+	ArrayList list = new ArrayList();
+	try {
+		IMethod[]methods=getMethods();
+		String elementName = method.getElementName();
+		for (int i = 0, length = methods.length; i < length; i++) {
+			IMethod existingMethod = methods[i];
+			if (elementName.equals(existingMethod.getElementName()))
+			{
+				list.add(existingMethod);
+			}
+		}
+	} catch (JavaModelException e) {
+	}
+	int size = list.size();
+	if (size == 0) {
+		return null;
+	} else {
+		IMethod[] result = new IMethod[size];
+		list.toArray(result);
+		return result;
+	}
 }
 
 

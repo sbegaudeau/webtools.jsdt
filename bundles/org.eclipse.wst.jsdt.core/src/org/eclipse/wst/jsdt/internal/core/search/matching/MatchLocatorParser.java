@@ -387,6 +387,8 @@ public void parseBodies(CompilationUnitDeclaration unit) {
 			AbstractMethodDeclaration methodDeclaration=(AbstractMethodDeclaration)statements[i];
 //			this.parse(methodDeclaration, unit);
 			methodDeclaration.traverse(localDeclarationVisitor, (Scope) null);
+			if (this.patternLocator instanceof MethodLocator)
+				((MethodLocator)this.patternLocator).match((MethodDeclaration)statements[i], this.nodeSet);
 
 		}
 		

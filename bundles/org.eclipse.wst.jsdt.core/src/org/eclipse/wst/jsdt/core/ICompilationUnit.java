@@ -725,6 +725,7 @@ CompilationUnit reconcile(int astLevel, int reconcileFlags, WorkingCopyOwner own
  * @since 3.0
  */
 void restore() throws JavaModelException;
+IMethod[] findMethods(IMethod method);
 
 
 

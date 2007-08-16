@@ -592,7 +592,7 @@ protected IJavaElement createHandle(AbstractMethodDeclaration method, IJavaEleme
 	char [] methodName=method.isInferred()?method.inferredMethod.name:method.selector;
 	if (methodName==null)
 		return null;
-	return createMethodHandle(parent, new String(), parameterTypeSignatures);
+	return createMethodHandle(parent, new String(methodName), parameterTypeSignatures);
 }
 /*
  * Create binary method handle

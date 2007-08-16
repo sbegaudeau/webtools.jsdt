@@ -258,6 +258,7 @@ public void cacheFlags(IType type, int flags) {
  */
 protected void cacheSuperclass(IType type, IType superclass) {
 	if (superclass != null) {
+System.out.println(type.hashCode() +typehash(type));		
 		this.classToSuperclass.put(type, superclass);
 		addSubtype(superclass, type);
 	} 
@@ -300,11 +301,25 @@ protected void compute() throws JavaModelException, CoreException {
 		builder.build(this.computeSubtypes);
 	} // else a RegionBasedTypeHierarchy should be used
 }
+
+private String typehash(IJavaElement type)
+{
+	StringBuffer sb=new StringBuffer();
+	while (type !=null && type.getElementType()!=IJavaElement.JAVA_MODEL)
+	{
+		sb.append(type.getElementName());
+		sb.append(" - ");
+		type=type.getParent();
+	}
+	return sb.toString();
+}
 /**
  * @see ITypeHierarchy
  */
 public boolean contains(IType type) {
 	// classes
+	System.out.println("CONTAINS "+typehash(type));		
+	
 	if (this.classToSuperclass.get(type) != null) {
 		return true;
 	}
