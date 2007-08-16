@@ -22,6 +22,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedGenericMethodB
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedMethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 public class ConstructorLocator extends PatternLocator {
 
@@ -52,26 +53,40 @@ public int match(Expression node, MatchingNodeSet nodeSet) { // interested in Al
 
 	// constructor name is simple type name
 	AllocationExpression allocation = (AllocationExpression) node;
-	char[][] typeName = allocation.type.getTypeName();
-	if (this.pattern.declaringSimpleName != null && !matchesName(this.pattern.declaringSimpleName, typeName[typeName.length-1]))
+	char[] typeName = getTypeName(allocation);
+	if (typeName==null)
+		return IMPOSSIBLE_MATCH;
+		
+	if (this.pattern.declaringSimpleName != null && !matchesName(this.pattern.declaringSimpleName, typeName))
 		return IMPOSSIBLE_MATCH;
 
-	if (!matchParametersCount(node, allocation.arguments)) return IMPOSSIBLE_MATCH;
+//	if (!matchParametersCount(node, allocation.arguments)) return IMPOSSIBLE_MATCH;
 
 	return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
+}
+private char[] getTypeName(AllocationExpression allocation) {
+	char[]typeName =null;
+//	if (allocation.type!=null)
+//	  typeName = allocation.type.getTypeName();
+//	else 
+		if (allocation.member instanceof SingleNameReference)
+		typeName= ((SingleNameReference)allocation.member).token;
+		else if (allocation.member instanceof FieldReference)
+			typeName=Util.getTypeName(allocation.member);
+	return typeName;
 }
 public int match(FieldDeclaration field, MatchingNodeSet nodeSet) {
 	if (!this.pattern.findReferences) return IMPOSSIBLE_MATCH;
 	// look only for enum constant
 	if (field.type != null || !(field.initialization instanceof AllocationExpression)) return IMPOSSIBLE_MATCH;
 
-	AllocationExpression allocation = (AllocationExpression) field.initialization;
+//	AllocationExpression allocation = (AllocationExpression) field.initialization;
 	if (field.binding != null && field.binding.declaringClass != null) {
 		if (this.pattern.declaringSimpleName != null && !matchesName(this.pattern.declaringSimpleName, field.binding.declaringClass.sourceName()))
 			return IMPOSSIBLE_MATCH;
 	}
 
-	if (!matchParametersCount(field, allocation.arguments)) return IMPOSSIBLE_MATCH;
+//	if (!matchParametersCount(field, allocation.arguments)) return IMPOSSIBLE_MATCH;
 
 	return nodeSet.addMatch(field, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
 }
@@ -312,8 +327,8 @@ protected int referenceType() {
 }
 protected int resolveLevel(AllocationExpression allocation) {
 	// constructor name is simple type name
-	char[][] typeName = allocation.type.getTypeName();
-	if (this.pattern.declaringSimpleName != null && !matchesName(this.pattern.declaringSimpleName, typeName[typeName.length-1]))
+	char[] typeName = getTypeName(allocation);
+	if (this.pattern.declaringSimpleName != null && !matchesName(this.pattern.declaringSimpleName, typeName))
 		return IMPOSSIBLE_MATCH;
 
 	return resolveLevel(allocation.binding);
