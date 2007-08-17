@@ -43,6 +43,7 @@ public class InferEngine extends ASTVisitor {
     Context currentContext=new Context();
     int passNumber=1;
 
+    boolean isTopLevelAnonymousFunction;
     int anonymousCount=0;
 	
 	public  InferredType StringType=new InferredType(new char[]{'S','t','r','i','n','g'});
@@ -51,6 +52,7 @@ public class InferEngine extends ASTVisitor {
 	public  InferredType ArrayType=new InferredType(InferredType.ARRAY_NAME);
 	public  InferredType VoidType=new InferredType(new char[]{'v','o','i','d'});
 	public  InferredType ObjectType=new InferredType(InferredType.OBJECT_NAME);
+	public  InferredType GlobalType=new InferredType(InferredType.GLOBAL_NAME);
 
     
 	static final char[] CONSTRUCTOR_ID={'c','o','n','s','t','r','u','c','t','o','r'};
@@ -130,7 +132,7 @@ public class InferEngine extends ASTVisitor {
 	    this.contextPtr=-1;
 	    this.currentContext=new Context();
 	    this.passNumber=1;
-
+	    this.isTopLevelAnonymousFunction=false;
 	    this.anonymousCount=0;
 		
 	}
@@ -145,7 +147,8 @@ public class InferEngine extends ASTVisitor {
 		boolean visitChildren=handleFunctionCall(messageSend);
 		if (visitChildren)
 		{
-			
+			if (this.contextPtr==-1 && messageSend.receiver instanceof FunctionExpression)
+				this.isTopLevelAnonymousFunction=true;
 		}
 		return visitChildren;
 	}
@@ -762,6 +765,13 @@ public class InferEngine extends ASTVisitor {
 
 	public boolean visit(MethodDeclaration methodDeclaration, Scope scope) {
 		pushContext();
+		if (this.isTopLevelAnonymousFunction && this.currentContext.currentType==null)
+		{
+			this.currentContext.currentType=addType(InferredType.GLOBAL_NAME);
+			this.currentContext.currentType.isDefinition=true;
+		}
+		
+		this.isTopLevelAnonymousFunction=false;
 		if (passNumber==1)
 		{
 			buildDefinedMembers(methodDeclaration.statements,methodDeclaration.arguments);
