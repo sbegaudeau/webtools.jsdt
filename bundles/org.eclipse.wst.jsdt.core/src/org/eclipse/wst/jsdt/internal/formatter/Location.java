@@ -27,6 +27,7 @@ public class Location {
 	public int lastLocalDeclarationSourceStart;
 	public int numberOfIndentations;
 	public  int inputToken;
+	public  int inputTokenNonWS;
 
 	// chunk management
 	public int lastNumberOfNewLines;
@@ -44,6 +45,7 @@ public class Location {
 		this.outputLine = scribe.line;
 		this.inputOffset = sourceRestart;
 		this.inputToken=scribe.scanner.currentToken;
+		this.inputTokenNonWS=scribe.scanner.currentNonWhitespaceToken;
 		this.outputIndentationLevel = scribe.indentationLevel;
 		this.lastNumberOfNewLines = scribe.lastNumberOfNewLines;
 		this.needSpace = scribe.needSpace;

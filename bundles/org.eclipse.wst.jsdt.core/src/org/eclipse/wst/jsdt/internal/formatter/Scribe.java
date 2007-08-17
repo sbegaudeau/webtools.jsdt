@@ -988,6 +988,7 @@ public class Scribe {
 			// if we have a space between two tokens we ensure it will be dumped in the formatted string
 			int currentTokenStartPosition = this.scanner.currentPosition;
 			int previousToken=this.scanner.currentToken;
+			int previousNonWSToken=this.scanner.currentNonWhitespaceToken;
 			boolean hasComment = false;
 			boolean hasLineComment = false;
 			boolean hasWhitespace = false;
@@ -1087,7 +1088,7 @@ public class Scribe {
 						break;
 					default :
 						// step back one token
-						this.scanner.resetTo(currentTokenStartPosition, this.scannerEndPosition - 1,previousToken);
+						this.scanner.resetTo(currentTokenStartPosition, this.scannerEndPosition - 1,previousToken,previousNonWSToken);
 						return;
 				}
 			}
@@ -1273,6 +1274,7 @@ public class Scribe {
 			boolean isFirstModifier = true;
 			int currentTokenStartPosition = this.scanner.currentPosition;
 			int previousToken=this.scanner.currentToken;
+			int previousNonWSToken=this.scanner.currentNonWhitespaceToken;
 			boolean hasComment = false;
 			boolean hasModifiers = false;
 			while ((this.currentToken = this.scanner.getNextToken()) != TerminalTokens.TokenNameEOF) {
@@ -1292,7 +1294,7 @@ public class Scribe {
 						this.print(this.scanner.getRawTokenSource(), !isFirstModifier);
 						isFirstModifier = false;
 						currentTokenStartPosition = this.scanner.currentPosition;
-						previousToken=this.scanner.currentToken;
+						previousToken=previousNonWSToken=this.scanner.currentToken;
 						break;
 					case TerminalTokens.TokenNameAT :
 						hasModifiers = true;
@@ -1310,7 +1312,7 @@ public class Scribe {
 						}
 						isFirstModifier = false;
 						currentTokenStartPosition = this.scanner.currentPosition;
-						previousToken=this.scanner.currentToken;
+						previousToken=previousNonWSToken=this.scanner.currentToken;
 						break;
 					case TerminalTokens.TokenNameCOMMENT_BLOCK :
 						this.printBlockComment(this.scanner.getRawTokenSource(), false);
@@ -1359,7 +1361,7 @@ public class Scribe {
 							this.space();
 						}
 						// step back one token
-						this.scanner.resetTo(currentTokenStartPosition, this.scannerEndPosition - 1,previousToken);
+						this.scanner.resetTo(currentTokenStartPosition, this.scannerEndPosition - 1,previousToken,previousNonWSToken);
 						return;					
 				}
 			}
@@ -1463,6 +1465,7 @@ public class Scribe {
 	public void printArrayQualifiedReference(int numberOfTokens, int sourceEnd) {
 		int currentTokenStartPosition = this.scanner.currentPosition;
 		int previousToken=this.scanner.currentToken;
+		int previousNonWSToken=this.scanner.currentNonWhitespaceToken;
 		int numberOfIdentifiers = 0;
 		try {
 			do {
@@ -1489,7 +1492,7 @@ public class Scribe {
 					case TerminalTokens.TokenNameIdentifier :
 						this.print(this.scanner.getRawTokenSource(), false);
 						currentTokenStartPosition = this.scanner.currentPosition;
-						previousToken=this.scanner.currentToken;
+						previousToken=previousNonWSToken=this.scanner.currentToken;
 						if (++ numberOfIdentifiers == numberOfTokens) {
 							this.scanner.resetTo(currentTokenStartPosition, this.scannerEndPosition - 1);
 							return;
@@ -1498,10 +1501,10 @@ public class Scribe {
 					case TerminalTokens.TokenNameDOT :
 						this.print(this.scanner.getRawTokenSource(), false);
 						currentTokenStartPosition = this.scanner.currentPosition;
-						previousToken=this.scanner.currentToken;
+						previousToken=previousNonWSToken=this.scanner.currentToken;
 						break;
 					default:
-						this.scanner.resetTo(currentTokenStartPosition, this.scannerEndPosition - 1,previousToken);
+						this.scanner.resetTo(currentTokenStartPosition, this.scannerEndPosition - 1,previousToken,previousNonWSToken);
 						return;
 				}
 			} while (this.scanner.currentPosition <= sourceEnd);
@@ -1513,6 +1516,7 @@ public class Scribe {
 	public void printQualifiedReference(int sourceEnd) {
 		int currentTokenStartPosition = this.scanner.currentPosition;
 		int previousToken=this.scanner.currentToken;
+		int previousNonWSToken=this.scanner.currentNonWhitespaceToken;
 		try {
 			do {
 				this.printComment();
@@ -1539,10 +1543,10 @@ public class Scribe {
 					case TerminalTokens.TokenNameDOT :
 						this.print(this.scanner.getRawTokenSource(), false);
 						currentTokenStartPosition = this.scanner.currentPosition;
-						previousToken=this.scanner.currentToken;
+						previousToken=previousNonWSToken=this.scanner.currentToken;
 						break;
 					default:
-						this.scanner.resetTo(currentTokenStartPosition, this.scannerEndPosition - 1,previousToken);
+						this.scanner.resetTo(currentTokenStartPosition, this.scannerEndPosition - 1,previousToken,previousNonWSToken);
 						return;
 				}
 			} while (this.scanner.currentPosition <= sourceEnd);
@@ -1572,6 +1576,7 @@ public class Scribe {
 			// if we have a space between two tokens we ensure it will be dumped in the formatted string
 			int currentTokenStartPosition = this.scanner.currentPosition;
 			int previousToken=this.scanner.currentToken;
+			int previousNonWSToken=this.scanner.currentNonWhitespaceToken;
 			boolean hasWhitespaces = false;
 			boolean hasLineComment = false;
 			while ((this.currentToken = this.scanner.getNextToken()) != TerminalTokens.TokenNameEOF) {
@@ -1601,12 +1606,12 @@ public class Scribe {
 								this.scanner.resetTo(this.scanner.currentPosition, this.scannerEndPosition - 1);
 								return;
 							} else {
-								this.scanner.resetTo(currentTokenStartPosition, this.scannerEndPosition - 1,previousToken);
+								this.scanner.resetTo(currentTokenStartPosition, this.scannerEndPosition - 1,previousToken,previousNonWSToken);
 								return;
 							}
 						} else if (count > 1) {
 							this.printEmptyLines(numberOfNewLinesToInsert, this.scanner.getCurrentTokenStartPosition());
-							this.scanner.resetTo(currentTokenStartPosition, this.scannerEndPosition - 1,previousToken);
+							this.scanner.resetTo(currentTokenStartPosition, this.scannerEndPosition - 1,previousToken,previousNonWSToken);
 							return;
 						} else {
 							hasWhitespaces = true;
@@ -1634,7 +1639,7 @@ public class Scribe {
 						break;
 					default :
 						// step back one token
-						this.scanner.resetTo(currentTokenStartPosition, this.scannerEndPosition - 1,previousToken);
+						this.scanner.resetTo(currentTokenStartPosition, this.scannerEndPosition - 1,previousToken,previousNonWSToken);
 						return;
 				}
 			}
@@ -1647,6 +1652,7 @@ public class Scribe {
 			// if we have a space between two tokens we ensure it will be dumped in the formatted string
 			int currentTokenStartPosition = this.scanner.currentPosition;
 			int previousToken=this.scanner.currentToken;
+			int previousNonWSToken=this.scanner.currentNonWhitespaceToken;
 
 			boolean hasWhitespaces = false;
 			boolean hasComment = false;
@@ -1678,14 +1684,14 @@ public class Scribe {
 								this.scanner.resetTo(this.scanner.currentPosition, this.scannerEndPosition - 1);
 								return;
 							} else {
-								this.scanner.resetTo(currentTokenStartPosition, this.scannerEndPosition - 1,previousToken);
+								this.scanner.resetTo(currentTokenStartPosition, this.scannerEndPosition - 1,previousToken,previousNonWSToken);
 								return;
 							}
 						} else if (count >= 1) {
 							if (hasComment) {
 								this.printNewLine(this.scanner.getCurrentTokenStartPosition());
 							}
-							this.scanner.resetTo(currentTokenStartPosition, this.scannerEndPosition - 1,previousToken);
+							this.scanner.resetTo(currentTokenStartPosition, this.scannerEndPosition - 1,previousToken,previousNonWSToken);
 							return;
 						} else {
 							hasWhitespaces = true;
@@ -1714,7 +1720,7 @@ public class Scribe {
 						break;
 					default :
 						// step back one token
-						this.scanner.resetTo(currentTokenStartPosition, this.scannerEndPosition - 1,previousToken);
+						this.scanner.resetTo(currentTokenStartPosition, this.scannerEndPosition - 1,previousToken,previousNonWSToken);
 						return;
 				}
 			}
@@ -1731,7 +1737,7 @@ public class Scribe {
 		} 
 		// reset scribe/scanner to restart at this given location
 		this.resetAt(this.currentAlignment.location);
-		this.scanner.resetTo(this.currentAlignment.location.inputOffset, this.scanner.eofPosition,this.currentAlignment.location.inputToken);
+		this.scanner.resetTo(this.currentAlignment.location.inputOffset, this.scanner.eofPosition,this.currentAlignment.location.inputToken,this.currentAlignment.location.inputTokenNonWS);
 		// clean alignment chunkKind so it will think it is a new chunk again
 		this.currentAlignment.chunkKind = 0;
 	}
@@ -1739,7 +1745,7 @@ public class Scribe {
 	void redoMemberAlignment(AlignmentException e){
 		// reset scribe/scanner to restart at this given location
 		this.resetAt(this.memberAlignment.location);
-		this.scanner.resetTo(this.memberAlignment.location.inputOffset, this.scanner.eofPosition,this.memberAlignment.location.inputToken);
+		this.scanner.resetTo(this.memberAlignment.location.inputOffset, this.scanner.eofPosition,this.memberAlignment.location.inputToken,this.currentAlignment.location.inputTokenNonWS);
 		// clean alignment chunkKind so it will think it is a new chunk again
 		this.memberAlignment.chunkKind = 0;
 	}

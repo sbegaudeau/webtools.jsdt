@@ -8622,7 +8622,7 @@ protected boolean moveRecoveryCheckpoint() {
 	/* reset this.scanner, and move checkpoint by one token */
 	this.scanner.startPosition = pos;
 	this.scanner.currentPosition = pos;
-	this.scanner.currentToken=TokenNameUNKNOWN;
+	this.scanner.currentToken=this.scanner.currentNonWhitespaceToken=TokenNameUNKNOWN;
 	this.scanner.diet = false; // quit jumping over method bodies
 	
 	/* if about to restart, then no need to shift token */

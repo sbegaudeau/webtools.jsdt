@@ -177,6 +177,7 @@ public class Scanner implements TerminalTokens {
 	public boolean insideRecovery = false;
 	
 	public int currentToken;
+	public int currentNonWhitespaceToken;
 	protected boolean pushedBack=false;
 
 	public static final int RoundBracket = 0;
@@ -1049,6 +1050,7 @@ public int getNextToken() throws InvalidInputException {
 		return currentToken;
 	}
 	int previousToken = this.currentToken;
+	int previousTokenNonWS = this.currentNonWhitespaceToken;
 	this.wasAcr = false;
 	if (this.diet) {
 		jumpOverMethodBody();
@@ -1148,38 +1150,38 @@ public int getNextToken() throws InvalidInputException {
 					} else {
 						return TokenNameERROR;
 					}*/
-					currentToken=TokenNameAT;
+					currentToken=currentNonWhitespaceToken=TokenNameAT;
 					return currentToken;
 				case '(' :
-					currentToken=TokenNameLPAREN;
+					currentToken=currentNonWhitespaceToken=TokenNameLPAREN;
 					return currentToken;
 				case ')' :
-					currentToken=TokenNameRPAREN;
+					currentToken=currentNonWhitespaceToken=TokenNameRPAREN;
 					return currentToken;
 				case '{' :
-					currentToken=TokenNameLBRACE;
+					currentToken=currentNonWhitespaceToken=TokenNameLBRACE;
 					return currentToken;
 				case '}' :
-					currentToken=TokenNameRBRACE;
+					currentToken=currentNonWhitespaceToken=TokenNameRBRACE;
 					return currentToken;
 				case '[' :
-					currentToken=TokenNameLBRACKET;
+					currentToken=currentNonWhitespaceToken=TokenNameLBRACKET;
 					return currentToken;
 				case ']' :
-					currentToken=TokenNameRBRACKET;
+					currentToken=currentNonWhitespaceToken=TokenNameRBRACKET;
 					return currentToken;
 				case ';' :
-					currentToken=TokenNameSEMICOLON;
+					currentToken=currentNonWhitespaceToken=TokenNameSEMICOLON;
 					return currentToken;
 				case ',' :
-					currentToken=TokenNameCOMMA;
+					currentToken=currentNonWhitespaceToken=TokenNameCOMMA;
 					return currentToken;
 				case '.' :
 					if (getNextCharAsDigit()) {
-						currentToken=scanNumber(true);
+						currentToken=currentNonWhitespaceToken=scanNumber(true);
 						return currentToken;
 					}
-						currentToken=TokenNameDOT;
+						currentToken=currentNonWhitespaceToken=TokenNameDOT;
 						return currentToken;
 				 
 				case '+' :
@@ -1187,15 +1189,15 @@ public int getNextToken() throws InvalidInputException {
 						int test;
 						if ((test = getNextChar('+', '=')) == 0)
 						{
-							currentToken=TokenNamePLUS_PLUS;
+							currentToken=currentNonWhitespaceToken=TokenNamePLUS_PLUS;
 							return currentToken;
 						}
 						if (test > 0)
 						{
-							currentToken=TokenNamePLUS_EQUAL;
+							currentToken=currentNonWhitespaceToken=TokenNamePLUS_EQUAL;
 							return currentToken;
 						}
-						currentToken=TokenNamePLUS;
+						currentToken=currentNonWhitespaceToken=TokenNamePLUS;
 						return currentToken;
 					}
 				case '-' :
@@ -1203,100 +1205,100 @@ public int getNextToken() throws InvalidInputException {
 						int test;
 						if ((test = getNextChar('-', '=')) == 0)
 						{
-							currentToken=TokenNameMINUS_MINUS;
+							currentToken=currentNonWhitespaceToken=TokenNameMINUS_MINUS;
 							return currentToken;
 						}
 						if (test > 0)
 						{
-							currentToken=TokenNameMINUS_EQUAL;
+							currentToken=currentNonWhitespaceToken=TokenNameMINUS_EQUAL;
 							return currentToken;
 						}
-						currentToken=TokenNameMINUS;
+						currentToken=currentNonWhitespaceToken=TokenNameMINUS;
 						return currentToken;
 					}
 				case '~' :
-					currentToken=TokenNameTWIDDLE;
+					currentToken=currentNonWhitespaceToken=TokenNameTWIDDLE;
 					return currentToken;
 				case '!' :
 					if (getNextChar('='))
 					{
 						if (getNextChar('='))
 						{
-							currentToken=TokenNameNOT_EQUAL_EQUAL;
+							currentToken=currentNonWhitespaceToken=TokenNameNOT_EQUAL_EQUAL;
 							return currentToken;
 						}
-						currentToken=TokenNameNOT_EQUAL;
+						currentToken=currentNonWhitespaceToken=TokenNameNOT_EQUAL;
 						return currentToken;
 					}
-					currentToken=TokenNameNOT;
+					currentToken=currentNonWhitespaceToken=TokenNameNOT;
 					return currentToken;
 				case '*' :
 					if (getNextChar('='))
 					{
-						currentToken=TokenNameMULTIPLY_EQUAL;
+						currentToken=currentNonWhitespaceToken=TokenNameMULTIPLY_EQUAL;
 						return currentToken;
 					}
-					currentToken=TokenNameMULTIPLY;
+					currentToken=currentNonWhitespaceToken=TokenNameMULTIPLY;
 					return currentToken;
 				case '%' :
 					if (getNextChar('='))
 					{
-						currentToken=TokenNameREMAINDER_EQUAL;
+						currentToken=currentNonWhitespaceToken=TokenNameREMAINDER_EQUAL;
 						return currentToken;
 					}
-					currentToken=TokenNameREMAINDER;
+					currentToken=currentNonWhitespaceToken=TokenNameREMAINDER;
 					return currentToken;
 				case '<' :
 					{
 						int test;
 						if ((test = getNextChar('=', '<')) == 0)
 						{
-							currentToken=TokenNameLESS_EQUAL;
+							currentToken=currentNonWhitespaceToken=TokenNameLESS_EQUAL;
 							return currentToken;
 						}
 						if (test > 0) {
 							if (getNextChar('='))
 							{
-								currentToken=TokenNameLEFT_SHIFT_EQUAL;
+								currentToken=currentNonWhitespaceToken=TokenNameLEFT_SHIFT_EQUAL;
 								return currentToken;
 							}
-							currentToken=TokenNameLEFT_SHIFT;
+							currentToken=currentNonWhitespaceToken=TokenNameLEFT_SHIFT;
 							return currentToken;
 						}
-						currentToken=TokenNameLESS;
+						currentToken=currentNonWhitespaceToken=TokenNameLESS;
 						return currentToken;
 					}
 				case '>' :
 					{
 						int test;
 						if (this.returnOnlyGreater) {
-							currentToken=TokenNameGREATER;
+							currentToken=currentNonWhitespaceToken=TokenNameGREATER;
 							return currentToken;
 						}
 						if ((test = getNextChar('=', '>')) == 0)
 						{
-							currentToken=TokenNameGREATER_EQUAL;
+							currentToken=currentNonWhitespaceToken=TokenNameGREATER_EQUAL;
 							return currentToken;
 						}
 						if (test > 0) {
 							if ((test = getNextChar('=', '>')) == 0)
 							{
-								currentToken=TokenNameRIGHT_SHIFT_EQUAL;
+								currentToken=currentNonWhitespaceToken=TokenNameRIGHT_SHIFT_EQUAL;
 								return currentToken;
 							}
 							if (test > 0) {
 								if (getNextChar('='))
 								{
-									currentToken=TokenNameUNSIGNED_RIGHT_SHIFT_EQUAL;
+									currentToken=currentNonWhitespaceToken=TokenNameUNSIGNED_RIGHT_SHIFT_EQUAL;
 									return currentToken;
 								}
-								currentToken=TokenNameUNSIGNED_RIGHT_SHIFT;
+								currentToken=currentNonWhitespaceToken=TokenNameUNSIGNED_RIGHT_SHIFT;
 								return currentToken;
 							}
-							currentToken=TokenNameRIGHT_SHIFT;
+							currentToken=currentNonWhitespaceToken=TokenNameRIGHT_SHIFT;
 							return currentToken;
 						}
-						currentToken=TokenNameGREATER;
+						currentToken=currentNonWhitespaceToken=TokenNameGREATER;
 						return currentToken;
 					}
 				case '=' :
@@ -1304,28 +1306,28 @@ public int getNextToken() throws InvalidInputException {
 					{
 						if (getNextChar('='))
 						{
-							currentToken=TokenNameEQUAL_EQUAL_EQUAL;
+							currentToken=currentNonWhitespaceToken=TokenNameEQUAL_EQUAL_EQUAL;
 							return currentToken;
 						}
-						currentToken=TokenNameEQUAL_EQUAL;
+						currentToken=currentNonWhitespaceToken=TokenNameEQUAL_EQUAL;
 						return currentToken;
 					}
-					currentToken=TokenNameEQUAL;
+					currentToken=currentNonWhitespaceToken=TokenNameEQUAL;
 					return currentToken;
 				case '&' :
 					{
 						int test;
 						if ((test = getNextChar('&', '=')) == 0)
 						{
-							currentToken=TokenNameAND_AND;
+							currentToken=currentNonWhitespaceToken=TokenNameAND_AND;
 							return currentToken;
 						}
 						if (test > 0)
 						{
-							currentToken=TokenNameAND_EQUAL;
+							currentToken=currentNonWhitespaceToken=TokenNameAND_EQUAL;
 							return currentToken;
 						}
-						currentToken=TokenNameAND;
+						currentToken=currentNonWhitespaceToken=TokenNameAND;
 						return currentToken;
 					}
 				case '|' :
@@ -1333,30 +1335,30 @@ public int getNextToken() throws InvalidInputException {
 						int test;
 						if ((test = getNextChar('|', '=')) == 0)
 						{
-							currentToken=TokenNameOR_OR;
+							currentToken=currentNonWhitespaceToken=TokenNameOR_OR;
 							return currentToken;
 						}
 						if (test > 0)
 						{
-							currentToken=TokenNameOR_EQUAL;
+							currentToken=currentNonWhitespaceToken=TokenNameOR_EQUAL;
 							return currentToken;
 						}
-						currentToken=TokenNameOR;
+						currentToken=currentNonWhitespaceToken=TokenNameOR;
 						return currentToken;
 					}
 				case '^' :
 					if (getNextChar('='))
 					{
-						currentToken=TokenNameXOR_EQUAL;
+						currentToken=currentNonWhitespaceToken=TokenNameXOR_EQUAL;
 						return currentToken;
 					}
-					currentToken=TokenNameXOR;
+					currentToken=currentNonWhitespaceToken=TokenNameXOR;
 					return currentToken;
 				case '?' :
-					currentToken=TokenNameQUESTION;
+					currentToken=currentNonWhitespaceToken=TokenNameQUESTION;
 					return currentToken;
 				case ':' :
-					currentToken=TokenNameCOLON;
+					currentToken=currentNonWhitespaceToken=TokenNameCOLON;
 					return currentToken;
 /*				case '\'' :
 					{
@@ -1525,9 +1527,9 @@ public int getNextToken() throws InvalidInputException {
 						throw e; // rethrow
 					}
 					if (character == '\''){
-						currentToken=TokenNameCharacterLiteral;
+						currentToken=currentNonWhitespaceToken=TokenNameCharacterLiteral;
 					} else {
-						currentToken=TokenNameStringLiteral;
+						currentToken=currentNonWhitespaceToken=TokenNameStringLiteral;
 					}
 					return currentToken;
 				case '/' :
@@ -1731,27 +1733,27 @@ public int getNextToken() throws InvalidInputException {
 							break;
 						}
 						
-						if (checkIfDivide(previousToken)){
+						if (checkIfDivide(previousTokenNonWS)){
 							if (getNextChar('='))
 							{
-								currentToken=TokenNameDIVIDE_EQUAL;
+								currentToken=currentNonWhitespaceToken=TokenNameDIVIDE_EQUAL;
 								return currentToken;
 							}
-							currentToken=TokenNameDIVIDE;
+							currentToken=currentNonWhitespaceToken=TokenNameDIVIDE;
 							return currentToken;
 						}
 						
 						// check if regular expression
 						if (checkIfRegExp()) {
-							currentToken = TokenNameRegExLiteral;
+							currentToken =currentNonWhitespaceToken= TokenNameRegExLiteral;
 							return currentToken;
 						} else {
 							if (getNextChar('='))
 							{
-								currentToken=TokenNameDIVIDE_EQUAL;
+								currentToken=currentNonWhitespaceToken=TokenNameDIVIDE_EQUAL;
 								return currentToken;
 							}
-							currentToken=TokenNameDIVIDE;
+							currentToken=currentNonWhitespaceToken=TokenNameDIVIDE;
 							return currentToken;
 						}
 					}
@@ -1767,13 +1769,13 @@ public int getNextToken() throws InvalidInputException {
 					char c = this.currentCharacter;
 					if (c < ScannerHelper.MAX_OBVIOUS) {
 						if ((ScannerHelper.OBVIOUS_IDENT_CHAR_NATURES[c] & ScannerHelper.C_IDENT_START) != 0) {
-							currentToken=scanIdentifierOrKeyword();
+							currentToken=currentNonWhitespaceToken=scanIdentifierOrKeyword();
 							return currentToken;
 						} else if ((ScannerHelper.OBVIOUS_IDENT_CHAR_NATURES[c] & ScannerHelper.C_DIGIT) != 0) {
-								currentToken=scanNumber(false);
+								currentToken=currentNonWhitespaceToken=scanNumber(false);
 								return currentToken;
 						} else {
-							currentToken=TokenNameERROR;
+							currentToken=currentNonWhitespaceToken=TokenNameERROR;
 							return currentToken;
 						}
 					}
@@ -1801,11 +1803,11 @@ public int getNextToken() throws InvalidInputException {
 					}
 					if (isJavaIdStart)
 					{
-						currentToken=scanIdentifierOrKeyword();
+						currentToken=currentNonWhitespaceToken=scanIdentifierOrKeyword();
 						return currentToken;
 					}
 					if (ScannerHelper.isDigit(this.currentCharacter)) {
-						currentToken=scanNumber(false);
+						currentToken=currentNonWhitespaceToken=scanNumber(false);
 						return currentToken;
 					}						
 					currentToken=TokenNameERROR;
@@ -2699,10 +2701,10 @@ public void recordComment(int token) {
  * @param end the given end position
  */
 public void resetTo(int begin, int end) {
-	resetTo(begin, end,this.currentToken);
+	resetTo(begin, end,this.currentToken,this.currentToken);
 }
 
-public void resetTo(int begin, int end, int currentToken) {
+public void resetTo(int begin, int end, int currentToken, int currentNonWSToken) {
 	//reset the scanner to a given position where it may rescan again
 
 	this.diet = false;
@@ -2715,6 +2717,7 @@ public void resetTo(int begin, int end, int currentToken) {
 	this.commentPtr = -1; // reset comment stack
 	this.foundTaskCount = 0;
 	this.currentToken=currentToken;
+	this.currentNonWhitespaceToken=currentNonWSToken;
 }
 
 public final void scanEscapeCharacter() throws InvalidInputException {
