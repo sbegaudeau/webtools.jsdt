@@ -16,15 +16,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 		inferOptions.setDefaultOptions();
 		return inferOptions;
 	}
-	
-	private InferOptions getDojoOptions()
-	{
-		InferOptions inferOptions=new InferOptions();
-		inferOptions.useAssignments=true;
-		inferOptions.useInitMethod=true;
-		inferOptions.engineClass="org.eclipse.wst.jsdt.internal.infer.DojoInferEngine";
-		return inferOptions;
-	}
+	 
 	
 	public void test001() {
 		CompilationUnitDeclaration declaration = this.runInferTest(
@@ -91,22 +83,6 @@ public class InferTypesTests extends AbstractRegressionTest {
 		 );
 	}
 	
-	
-	/*
-	public void test005() {
-		CompilationUnitDeclaration declaration = this.runInferTest(
-			"dojo.provide(\"org.brcp.Bundle\");\n"+
-			"org.brcp.Bundle = function(){\n"+
-			"this.url = \"\";\n"+
-			"this.activate = function(){}\n"+
-			"}\n",
-			"X.js",
-			"class org.brcp.Bundle extends Object{\n  String url;\n  void activate()\n}\n",
-			getDojoOptions()
-			
-		 );
-	}
-	*/
 	
 	/*
 	 * This test setting members using the this.
