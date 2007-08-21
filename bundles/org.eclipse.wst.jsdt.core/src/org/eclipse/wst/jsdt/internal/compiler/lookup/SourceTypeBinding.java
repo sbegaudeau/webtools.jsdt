@@ -967,7 +967,8 @@ public MethodBinding getExactMethod(char[] selector, TypeBinding[] argumentTypes
 					refScope.recordTypeReference(this.superInterfaces[0]);
 				return this.superInterfaces[0].getExactMethod(selector, argumentTypes, refScope);
 			 }
-		} else if (this.superclass != null) {
+		/* BC- Added cycle check BUG 200501 */
+		} else if (this.superclass != null && this.superclass!=this) {
 			if (refScope != null)
 				refScope.recordTypeReference(this.superclass);
 			return this.superclass.getExactMethod(selector, argumentTypes, refScope);

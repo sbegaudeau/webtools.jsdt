@@ -743,7 +743,8 @@ public class ClassScope extends Scope {
 					}
 				}
 			}
-		} while ((currentType = currentType.superclass()) != null && (currentType.tagBits & TagBits.HasNoMemberTypes) == 0);
+			/* BC- Added cycle check BUG 200501 */
+		} while (currentType.superclass()!=currentType && (currentType = currentType.superclass()) != null && (currentType.tagBits & TagBits.HasNoMemberTypes) == 0);
 
 		if (interfacesToVisit != null) {
 			// contains the interfaces between the sourceType and any superclass, which was tagged as having no member types
