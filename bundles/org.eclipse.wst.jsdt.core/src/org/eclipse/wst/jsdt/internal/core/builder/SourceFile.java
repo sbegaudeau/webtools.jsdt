@@ -11,9 +11,12 @@
 package org.eclipse.wst.jsdt.internal.core.builder;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.CoreException;
 
+import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
@@ -117,6 +120,8 @@ public String toString() {
  * @see org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit#getCommonSuperType()
  */
 public LibrarySuperType getCommonSuperType() {
-	return null;
+	IProject myProject = this.resource.getProject();
+	IJavaProject jp = JavaCore.create(myProject);
+	return jp.getCommonSuperType();
 }
 }
