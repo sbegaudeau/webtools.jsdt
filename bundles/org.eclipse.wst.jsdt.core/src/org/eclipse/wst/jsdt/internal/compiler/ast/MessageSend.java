@@ -29,15 +29,15 @@ public class MessageSend extends Expression implements InvocationSite {
 	public char[] selector;
 	public Expression[] arguments;
 	public MethodBinding binding;							// exact binding resulting from lookup
-	protected MethodBinding codegenBinding;		// actual binding used for code generation (if no synthetic accessor)
-	MethodBinding syntheticAccessor;						// synthetic accessor for inner-emulation
+//	protected MethodBinding codegenBinding;		// actual binding used for code generation (if no synthetic accessor)
+//	MethodBinding syntheticAccessor;						// synthetic accessor for inner-emulation
 	public TypeBinding expectedType;					// for generic method invocation (return type inference)
 
 	public long nameSourcePosition ; //(start<<32)+end
 
 	public TypeBinding actualReceiverType;
-	public TypeBinding receiverGenericCast; // extra reference type cast to perform on generic receiver
-	public TypeBinding valueCast; // extra reference type cast to perform on method returned value
+//	public TypeBinding receiverGenericCast; // extra reference type cast to perform on generic receiver
+//	public TypeBinding valueCast; // extra reference type cast to perform on method returned value
 	public TypeReference[] typeArguments;
 	public TypeBinding[] genericTypeArguments;
 	
@@ -112,65 +112,65 @@ public void computeConversion(Scope scope, TypeBinding runtimeTimeType, TypeBind
  */ 
 public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
 
-	int pc = codeStream.position;
-
-	// generate receiver/enclosing instance access
-	boolean isStatic = this.codegenBinding.isStatic();
-	if (isStatic) {
-		receiver.generateCode(currentScope, codeStream, false);
-		codeStream.recordPositionsFrom(pc, this.sourceStart);
-	} else if ((bits & DepthMASK) != 0 && receiver.isImplicitThis()) { // outer access ?
-		// outer method can be reached through emulation if implicit access
-		ReferenceBinding targetType = currentScope.enclosingSourceType().enclosingTypeAt((bits & DepthMASK) >> DepthSHIFT);		
-		Object[] path = currentScope.getEmulationPath(targetType, true /*only exact match*/, false/*consider enclosing arg*/);
-		codeStream.generateOuterAccess(path, this, targetType, currentScope);
-	} else {
-		receiver.generateCode(currentScope, codeStream, true);
-		if (this.receiverGenericCast != null) 
-			codeStream.checkcast(this.receiverGenericCast);
-		codeStream.recordPositionsFrom(pc, this.sourceStart);
-		
-	}
-	// generate arguments
-	generateArguments(binding, arguments, currentScope, codeStream);
-	// actual message invocation
-	if (syntheticAccessor == null){
-		if (isStatic){
-			codeStream.invokestatic(this.codegenBinding);
-		} else {
-			if( (receiver.isSuper()) || this.codegenBinding.isPrivate()){
-				codeStream.invokespecial(this.codegenBinding);
-			} else {
-				if (this.codegenBinding.declaringClass.isInterface()) { // interface or annotation type
-					codeStream.invokeinterface(this.codegenBinding);
-				} else {
-					codeStream.invokevirtual(this.codegenBinding);
-				}
-			}
-		}
-	} else {
-		codeStream.invokestatic(syntheticAccessor);
-	}
-	// operation on the returned value
-	if (valueRequired){
-		// implicit conversion if necessary
-		if (this.valueCast != null) 
-			codeStream.checkcast(this.valueCast);
-		codeStream.generateImplicitConversion(implicitConversion);
-	} else {
-		// pop return value if any
-		switch(binding.returnType.id){
-			case T_long :
-			case T_double :
-				codeStream.pop2();
-				break;
-			case T_void :
-				break;
-			default:
-				codeStream.pop();
-		}
-	}
-	codeStream.recordPositionsFrom(pc, (int)(this.nameSourcePosition >>> 32)); // highlight selector
+//	int pc = codeStream.position;
+//
+//	// generate receiver/enclosing instance access
+//	boolean isStatic = this.codegenBinding.isStatic();
+//	if (isStatic) {
+//		receiver.generateCode(currentScope, codeStream, false);
+//		codeStream.recordPositionsFrom(pc, this.sourceStart);
+//	} else if ((bits & DepthMASK) != 0 && receiver.isImplicitThis()) { // outer access ?
+//		// outer method can be reached through emulation if implicit access
+//		ReferenceBinding targetType = currentScope.enclosingSourceType().enclosingTypeAt((bits & DepthMASK) >> DepthSHIFT);		
+//		Object[] path = currentScope.getEmulationPath(targetType, true /*only exact match*/, false/*consider enclosing arg*/);
+//		codeStream.generateOuterAccess(path, this, targetType, currentScope);
+//	} else {
+//		receiver.generateCode(currentScope, codeStream, true);
+//		if (this.receiverGenericCast != null) 
+//			codeStream.checkcast(this.receiverGenericCast);
+//		codeStream.recordPositionsFrom(pc, this.sourceStart);
+//		
+//	}
+//	// generate arguments
+//	generateArguments(binding, arguments, currentScope, codeStream);
+//	// actual message invocation
+//	if (syntheticAccessor == null){
+//		if (isStatic){
+//			codeStream.invokestatic(this.codegenBinding);
+//		} else {
+//			if( (receiver.isSuper()) || this.codegenBinding.isPrivate()){
+//				codeStream.invokespecial(this.codegenBinding);
+//			} else {
+//				if (this.codegenBinding.declaringClass.isInterface()) { // interface or annotation type
+//					codeStream.invokeinterface(this.codegenBinding);
+//				} else {
+//					codeStream.invokevirtual(this.codegenBinding);
+//				}
+//			}
+//		}
+//	} else {
+//		codeStream.invokestatic(syntheticAccessor);
+//	}
+//	// operation on the returned value
+//	if (valueRequired){
+//		// implicit conversion if necessary
+//		if (this.valueCast != null) 
+//			codeStream.checkcast(this.valueCast);
+//		codeStream.generateImplicitConversion(implicitConversion);
+//	} else {
+//		// pop return value if any
+//		switch(binding.returnType.id){
+//			case T_long :
+//			case T_double :
+//				codeStream.pop2();
+//				break;
+//			case T_void :
+//				break;
+//			default:
+//				codeStream.pop();
+//		}
+//	}
+//	codeStream.recordPositionsFrom(pc, (int)(this.nameSourcePosition >>> 32)); // highlight selector
 }
 
 /**
@@ -191,58 +191,58 @@ public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FlowInfo f
 	if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) != 0)	return;
 
 	// if method from parameterized type got found, use the original method at codegen time
-	this.codegenBinding = this.binding.original();
+//	this.codegenBinding = this.binding.original();
 	if (this.binding.isPrivate()){
 
-		// depth is set for both implicit and explicit access (see MethodBinding#canBeSeenBy)		
-		if (currentScope.enclosingSourceType() != this.codegenBinding.declaringClass){
-		
-			syntheticAccessor = ((SourceTypeBinding)this.codegenBinding.declaringClass).addSyntheticMethod(this.codegenBinding, isSuperAccess());
-			currentScope.problemReporter().needToEmulateMethodAccess(this.codegenBinding, this);
-			return;
-		}
+//		// depth is set for both implicit and explicit access (see MethodBinding#canBeSeenBy)		
+//		if (currentScope.enclosingSourceType() != this.codegenBinding.declaringClass){
+//		
+//			syntheticAccessor = ((SourceTypeBinding)this.codegenBinding.declaringClass).addSyntheticMethod(this.codegenBinding, isSuperAccess());
+//			currentScope.problemReporter().needToEmulateMethodAccess(this.codegenBinding, this);
+//			return;
+//		}
 
 	} else if (receiver instanceof QualifiedSuperReference){ // qualified super
 
 		// qualified super need emulation always
 		SourceTypeBinding destinationType = (SourceTypeBinding)(((QualifiedSuperReference)receiver).currentCompatibleType);
-		syntheticAccessor = destinationType.addSyntheticMethod(this.codegenBinding, isSuperAccess());
-		currentScope.problemReporter().needToEmulateMethodAccess(this.codegenBinding, this);
+//		syntheticAccessor = destinationType.addSyntheticMethod(this.codegenBinding, isSuperAccess());
+//		currentScope.problemReporter().needToEmulateMethodAccess(this.codegenBinding, this);
 		return;
 
 	} else if (binding.isProtected()){
 
 		SourceTypeBinding enclosingSourceType;
-		if (((bits & DepthMASK) != 0) 
-				&& this.codegenBinding.declaringClass.getPackage() 
-					!= (enclosingSourceType = currentScope.enclosingSourceType()).getPackage()){
-
-			SourceTypeBinding currentCompatibleType = (SourceTypeBinding)enclosingSourceType.enclosingTypeAt((bits & DepthMASK) >> DepthSHIFT);
-			syntheticAccessor = currentCompatibleType.addSyntheticMethod(this.codegenBinding, isSuperAccess());
-			currentScope.problemReporter().needToEmulateMethodAccess(this.codegenBinding, this);
-			return;
-		}
+//		if (((bits & DepthMASK) != 0) 
+//				&& this.codegenBinding.declaringClass.getPackage() 
+//					!= (enclosingSourceType = currentScope.enclosingSourceType()).getPackage()){
+//
+//			SourceTypeBinding currentCompatibleType = (SourceTypeBinding)enclosingSourceType.enclosingTypeAt((bits & DepthMASK) >> DepthSHIFT);
+//			syntheticAccessor = currentCompatibleType.addSyntheticMethod(this.codegenBinding, isSuperAccess());
+//			currentScope.problemReporter().needToEmulateMethodAccess(this.codegenBinding, this);
+//			return;
+//		}
 	}
 	
 	// if the binding declaring class is not visible, need special action
 	// for runtime compatibility on 1.2 VMs : change the declaring class of the binding
 	// NOTE: from target 1.2 on, method's declaring class is touched if any different from receiver type
 	// and not from Object or implicit static method call.	
-	if (this.binding.declaringClass != this.actualReceiverType
-			&& this.receiverGenericCast == null
-			&& !this.actualReceiverType.isArrayType()) {
-		CompilerOptions options = currentScope.compilerOptions();
-		if ((options.targetJDK >= ClassFileConstants.JDK1_2
-				&& (options.complianceLevel >= ClassFileConstants.JDK1_4 || !(receiver.isImplicitThis() && this.codegenBinding.isStatic()))
-				&& this.binding.declaringClass.id != T_JavaLangObject) // no change for Object methods
-			|| !this.binding.declaringClass.canBeSeenBy(currentScope)) {
-
-			this.codegenBinding = currentScope.enclosingSourceType().getUpdatedMethodBinding(
-			        										this.codegenBinding, (ReferenceBinding) this.actualReceiverType.erasure());
-		}
-		// Post 1.4.0 target, array clone() invocations are qualified with array type 
-		// This is handled in array type #clone method binding resolution (see Scope and UpdatedMethodBinding)
-	}
+//	if (this.binding.declaringClass != this.actualReceiverType
+//			&& this.receiverGenericCast == null
+//			&& !this.actualReceiverType.isArrayType()) {
+//		CompilerOptions options = currentScope.compilerOptions();
+//		if ((options.targetJDK >= ClassFileConstants.JDK1_2
+//				&& (options.complianceLevel >= ClassFileConstants.JDK1_4 || !(receiver.isImplicitThis() && this.codegenBinding.isStatic()))
+//				&& this.binding.declaringClass.id != T_JavaLangObject) // no change for Object methods
+//			|| !this.binding.declaringClass.canBeSeenBy(currentScope)) {
+//
+//			this.codegenBinding = currentScope.enclosingSourceType().getUpdatedMethodBinding(
+//			        										this.codegenBinding, (ReferenceBinding) this.actualReceiverType.erasure());
+//		}
+//		// Post 1.4.0 target, array clone() invocations are qualified with array type 
+//		// This is handled in array type #clone method binding resolution (see Scope and UpdatedMethodBinding)
+//	}
 }
 public int nullStatus(FlowInfo flowInfo) {
 	return FlowInfo.UNKNOWN;
@@ -253,8 +253,8 @@ public int nullStatus(FlowInfo flowInfo) {
  */
 public TypeBinding postConversionType(Scope scope) {
 	TypeBinding convertedType = this.resolvedType;
-	if (this.valueCast != null) 
-		convertedType = this.valueCast;
+//	if (this.valueCast != null) 
+//		convertedType = this.valueCast;
 	int runtimeType = (this.implicitConversion & IMPLICIT_CONVERSION_MASK) >> 4;
 	switch (runtimeType) {
 		case T_boolean :

@@ -53,156 +53,156 @@ public void generateCode(
 	CodeStream codeStream,
 	boolean valueRequired) {
 
-	int pc = codeStream.position;
-
-	if (this.codegenBinding.canBeSeenBy(this.actualReceiverType, this, currentScope)) {
-		// generate receiver/enclosing instance access
-		boolean isStatic = this.codegenBinding.isStatic();
-		// outer access ?
-		if (!isStatic && ((this.bits & DepthMASK) != 0)) {
-			// outer method can be reached through emulation
-			ReferenceBinding targetType = currentScope.enclosingSourceType().enclosingTypeAt((this.bits & DepthMASK) >> DepthSHIFT);
-			Object[] path = currentScope.getEmulationPath(targetType, true /*only exact match*/, false/*consider enclosing arg*/);
-			if (path == null) {
-				// emulation was not possible (should not happen per construction)
-				currentScope.problemReporter().needImplementation();
-			} else {
-				codeStream.generateOuterAccess(path, this, targetType, currentScope);
-			}
-		} else {
-			this.receiver.generateCode(currentScope, codeStream, !isStatic);
-			if (this.receiverGenericCast != null) 
-				codeStream.checkcast(this.receiverGenericCast);
-			codeStream.recordPositionsFrom(pc, this.sourceStart);			
-		}
-		// generate arguments
-		generateArguments(binding, arguments, currentScope, codeStream);
-		// actual message invocation
-		if (isStatic) {
-			codeStream.invokestatic(this.codegenBinding);
-		} else {
-			if (this.receiver.isSuper()) {
-				codeStream.invokespecial(this.codegenBinding);
-			} else {
-				if (this.codegenBinding.declaringClass.isInterface()) {
-					codeStream.invokeinterface(this.codegenBinding);
-				} else {
-					codeStream.invokevirtual(this.codegenBinding);
-				}
-			}
-		}
-	} else {
-		codeStream.generateEmulationForMethod(currentScope, this.codegenBinding);
-		// generate receiver/enclosing instance access
-		boolean isStatic = this.codegenBinding.isStatic();
-		// outer access ?
-		if (!isStatic && ((this.bits & DepthMASK) != 0)) {
-			// not supported yet
-			currentScope.problemReporter().needImplementation();
-		} else {
-			this.receiver.generateCode(currentScope, codeStream, !isStatic);
-			if (this.receiverGenericCast != null) 
-				codeStream.checkcast(this.receiverGenericCast);
-			codeStream.recordPositionsFrom(pc, this.sourceStart);			
-		}
-		if (isStatic) {
-			// we need an object on the stack which is ignored for the method invocation
-			codeStream.aconst_null();
-		}
-		// generate arguments
-		if (this.arguments != null) {
-			int argsLength = this.arguments.length;
-			codeStream.generateInlinedValue(argsLength);
-			codeStream.newArray(currentScope.createArrayType(currentScope.getType(TypeConstants.JAVA_LANG_OBJECT, 3), 1));
-			codeStream.dup();
-			for (int i = 0; i < argsLength; i++) {
-				codeStream.generateInlinedValue(i);
-				this.arguments[i].generateCode(currentScope, codeStream, true);
-				TypeBinding parameterBinding = this.codegenBinding.parameters[i];
-				if (parameterBinding.isBaseType() && parameterBinding != TypeBinding.NULL) {
-					codeStream.generateBoxingConversion(this.codegenBinding.parameters[i].id);
-				}
-				codeStream.aastore();
-				if (i < argsLength - 1) {
-					codeStream.dup();
-				}	
-			}
-		} else {
-			codeStream.generateInlinedValue(0);
-			codeStream.newArray(currentScope.createArrayType(currentScope.getType(TypeConstants.JAVA_LANG_OBJECT, 3), 1));			
-		}
-		codeStream.invokeJavaLangReflectMethodInvoke();
-
-		// convert the return value to the appropriate type for primitive types
-		if (this.codegenBinding.returnType.isBaseType()) {
-			int typeID = this.codegenBinding.returnType.id;
-			if (typeID == T_void) {
-				// remove the null from the stack
-				codeStream.pop();
-			}
-			codeStream.checkcast(typeID);
-			codeStream.getBaseTypeValue(typeID);
-		} else {
-			codeStream.checkcast(this.codegenBinding.returnType);
-		}
-	}
-	// required cast must occur even if no value is required
-	if (this.valueCast != null) codeStream.checkcast(this.valueCast);
-	if (valueRequired){
-		// implicit conversion if necessary
-		codeStream.generateImplicitConversion(implicitConversion);
-	} else {
-		boolean isUnboxing = (implicitConversion & TypeIds.UNBOXING) != 0;
-		// conversion only generated if unboxing
-		if (isUnboxing) codeStream.generateImplicitConversion(implicitConversion);
-		switch (isUnboxing ? postConversionType(currentScope).id : this.codegenBinding.returnType.id) {
-			case T_long :
-			case T_double :
-				codeStream.pop2();
-				break;
-			case T_void :
-				break;
-			default :
-				codeStream.pop();
-		}
-	}	
-	codeStream.recordPositionsFrom(pc, (int)(this.nameSourcePosition >>> 32)); // highlight selector
+//	int pc = codeStream.position;
+//
+//	if (this.codegenBinding.canBeSeenBy(this.actualReceiverType, this, currentScope)) {
+//		// generate receiver/enclosing instance access
+//		boolean isStatic = this.codegenBinding.isStatic();
+//		// outer access ?
+//		if (!isStatic && ((this.bits & DepthMASK) != 0)) {
+//			// outer method can be reached through emulation
+//			ReferenceBinding targetType = currentScope.enclosingSourceType().enclosingTypeAt((this.bits & DepthMASK) >> DepthSHIFT);
+//			Object[] path = currentScope.getEmulationPath(targetType, true /*only exact match*/, false/*consider enclosing arg*/);
+//			if (path == null) {
+//				// emulation was not possible (should not happen per construction)
+//				currentScope.problemReporter().needImplementation();
+//			} else {
+//				codeStream.generateOuterAccess(path, this, targetType, currentScope);
+//			}
+//		} else {
+//			this.receiver.generateCode(currentScope, codeStream, !isStatic);
+//			if (this.receiverGenericCast != null) 
+//				codeStream.checkcast(this.receiverGenericCast);
+//			codeStream.recordPositionsFrom(pc, this.sourceStart);			
+//		}
+//		// generate arguments
+//		generateArguments(binding, arguments, currentScope, codeStream);
+//		// actual message invocation
+//		if (isStatic) {
+//			codeStream.invokestatic(this.codegenBinding);
+//		} else {
+//			if (this.receiver.isSuper()) {
+//				codeStream.invokespecial(this.codegenBinding);
+//			} else {
+//				if (this.codegenBinding.declaringClass.isInterface()) {
+//					codeStream.invokeinterface(this.codegenBinding);
+//				} else {
+//					codeStream.invokevirtual(this.codegenBinding);
+//				}
+//			}
+//		}
+//	} else {
+//		codeStream.generateEmulationForMethod(currentScope, this.codegenBinding);
+//		// generate receiver/enclosing instance access
+//		boolean isStatic = this.codegenBinding.isStatic();
+//		// outer access ?
+//		if (!isStatic && ((this.bits & DepthMASK) != 0)) {
+//			// not supported yet
+//			currentScope.problemReporter().needImplementation();
+//		} else {
+//			this.receiver.generateCode(currentScope, codeStream, !isStatic);
+//			if (this.receiverGenericCast != null) 
+//				codeStream.checkcast(this.receiverGenericCast);
+//			codeStream.recordPositionsFrom(pc, this.sourceStart);			
+//		}
+//		if (isStatic) {
+//			// we need an object on the stack which is ignored for the method invocation
+//			codeStream.aconst_null();
+//		}
+//		// generate arguments
+//		if (this.arguments != null) {
+//			int argsLength = this.arguments.length;
+//			codeStream.generateInlinedValue(argsLength);
+//			codeStream.newArray(currentScope.createArrayType(currentScope.getType(TypeConstants.JAVA_LANG_OBJECT, 3), 1));
+//			codeStream.dup();
+//			for (int i = 0; i < argsLength; i++) {
+//				codeStream.generateInlinedValue(i);
+//				this.arguments[i].generateCode(currentScope, codeStream, true);
+//				TypeBinding parameterBinding = this.codegenBinding.parameters[i];
+//				if (parameterBinding.isBaseType() && parameterBinding != TypeBinding.NULL) {
+//					codeStream.generateBoxingConversion(this.codegenBinding.parameters[i].id);
+//				}
+//				codeStream.aastore();
+//				if (i < argsLength - 1) {
+//					codeStream.dup();
+//				}	
+//			}
+//		} else {
+//			codeStream.generateInlinedValue(0);
+//			codeStream.newArray(currentScope.createArrayType(currentScope.getType(TypeConstants.JAVA_LANG_OBJECT, 3), 1));			
+//		}
+//		codeStream.invokeJavaLangReflectMethodInvoke();
+//
+//		// convert the return value to the appropriate type for primitive types
+//		if (this.codegenBinding.returnType.isBaseType()) {
+//			int typeID = this.codegenBinding.returnType.id;
+//			if (typeID == T_void) {
+//				// remove the null from the stack
+//				codeStream.pop();
+//			}
+//			codeStream.checkcast(typeID);
+//			codeStream.getBaseTypeValue(typeID);
+//		} else {
+//			codeStream.checkcast(this.codegenBinding.returnType);
+//		}
+//	}
+//	// required cast must occur even if no value is required
+//	if (this.valueCast != null) codeStream.checkcast(this.valueCast);
+//	if (valueRequired){
+//		// implicit conversion if necessary
+//		codeStream.generateImplicitConversion(implicitConversion);
+//	} else {
+//		boolean isUnboxing = (implicitConversion & TypeIds.UNBOXING) != 0;
+//		// conversion only generated if unboxing
+//		if (isUnboxing) codeStream.generateImplicitConversion(implicitConversion);
+//		switch (isUnboxing ? postConversionType(currentScope).id : this.codegenBinding.returnType.id) {
+//			case T_long :
+//			case T_double :
+//				codeStream.pop2();
+//				break;
+//			case T_void :
+//				break;
+//			default :
+//				codeStream.pop();
+//		}
+//	}	
+//	codeStream.recordPositionsFrom(pc, (int)(this.nameSourcePosition >>> 32)); // highlight selector
 }
 public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FlowInfo flowInfo) {
-
-	if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0) {
-
-	// if method from parameterized type got found, use the original method at codegen time
-	this.codegenBinding = this.binding.original();
-	if (this.codegenBinding != this.binding) {
-	    // extra cast needed if method return type was type variable
-	    if (this.codegenBinding.returnType.isTypeVariable()) {
-	        TypeVariableBinding variableReturnType = (TypeVariableBinding) this.codegenBinding.returnType;
-	        if (variableReturnType.firstBound != this.binding.returnType) { // no need for extra cast if same as first bound anyway
-			    this.valueCast = this.binding.returnType;
-	        }
-	    }
-	} 
-	
-	// if the binding declaring class is not visible, need special action
-	// for runtime compatibility on 1.2 VMs : change the declaring class of the binding
-	// NOTE: from target 1.2 on, method's declaring class is touched if any different from receiver type
-	// and not from Object or implicit static method call.	
-	if (this.binding.declaringClass != this.actualReceiverType
-			&& !this.actualReceiverType.isArrayType()) {
-		CompilerOptions options = currentScope.compilerOptions();
-		if ((options.targetJDK >= ClassFileConstants.JDK1_2
-				&& (options.complianceLevel >= ClassFileConstants.JDK1_4 || !receiver.isImplicitThis() || !this.codegenBinding.isStatic())
-				&& this.binding.declaringClass.id != T_JavaLangObject) // no change for Object methods
-			|| !this.binding.declaringClass.canBeSeenBy(currentScope)) {
-
-			this.codegenBinding = currentScope.enclosingSourceType().getUpdatedMethodBinding(
-			        										this.codegenBinding, (ReferenceBinding) this.actualReceiverType.erasure());
-		}
-		// Post 1.4.0 target, array clone() invocations are qualified with array type 
-		// This is handled in array type #clone method binding resolution (see Scope and UpdatedMethodBinding)
-	}
-	}
+//
+//	if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0) {
+//
+//	// if method from parameterized type got found, use the original method at codegen time
+//	this.codegenBinding = this.binding.original();
+//	if (this.codegenBinding != this.binding) {
+//	    // extra cast needed if method return type was type variable
+//	    if (this.codegenBinding.returnType.isTypeVariable()) {
+//	        TypeVariableBinding variableReturnType = (TypeVariableBinding) this.codegenBinding.returnType;
+//	        if (variableReturnType.firstBound != this.binding.returnType) { // no need for extra cast if same as first bound anyway
+//			    this.valueCast = this.binding.returnType;
+//	        }
+//	    }
+//	} 
+//	
+//	// if the binding declaring class is not visible, need special action
+//	// for runtime compatibility on 1.2 VMs : change the declaring class of the binding
+//	// NOTE: from target 1.2 on, method's declaring class is touched if any different from receiver type
+//	// and not from Object or implicit static method call.	
+//	if (this.binding.declaringClass != this.actualReceiverType
+//			&& !this.actualReceiverType.isArrayType()) {
+//		CompilerOptions options = currentScope.compilerOptions();
+//		if ((options.targetJDK >= ClassFileConstants.JDK1_2
+//				&& (options.complianceLevel >= ClassFileConstants.JDK1_4 || !receiver.isImplicitThis() || !this.codegenBinding.isStatic())
+//				&& this.binding.declaringClass.id != T_JavaLangObject) // no change for Object methods
+//			|| !this.binding.declaringClass.canBeSeenBy(currentScope)) {
+//
+//			this.codegenBinding = currentScope.enclosingSourceType().getUpdatedMethodBinding(
+//			        										this.codegenBinding, (ReferenceBinding) this.actualReceiverType.erasure());
+//		}
+//		// Post 1.4.0 target, array clone() invocations are qualified with array type 
+//		// This is handled in array type #clone method binding resolution (see Scope and UpdatedMethodBinding)
+//	}
+//	}
 }
 public TypeBinding resolveType(BlockScope scope) {
 	// Answer the signature return type

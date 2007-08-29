@@ -58,341 +58,341 @@ public TypeBinding checkFieldAccess(BlockScope scope) {
 	return getOtherFieldBindings(scope);
 }
 public void generateAssignment(BlockScope currentScope, CodeStream codeStream, Assignment assignment, boolean valueRequired) {
-
-	FieldBinding lastFieldBinding = generateReadSequence(currentScope, codeStream);
-	if (lastFieldBinding.canBeSeenBy(getReceiverType(currentScope), this, currentScope)) {
-		// the last field access is a write access
-		assignment.expression.generateCode(currentScope, codeStream, true);
-		fieldStore(codeStream, lastFieldBinding, null, valueRequired);
-	} else {
-		codeStream.generateEmulationForField(lastFieldBinding);
-		codeStream.swap();
-		assignment.expression.generateCode(currentScope, codeStream, true);
-		if (valueRequired) {
-			if ((lastFieldBinding.type == TypeBinding.LONG) || (lastFieldBinding.type == TypeBinding.DOUBLE)) {
-				codeStream.dup2_x2();
-			} else {
-				codeStream.dup_x2();
-			}
-		}
-		codeStream.generateEmulatedWriteAccessForField(lastFieldBinding);
-	}
-	if (valueRequired) {
-		codeStream.generateImplicitConversion(assignment.implicitConversion);
-	}
+//
+//	FieldBinding lastFieldBinding = generateReadSequence(currentScope, codeStream);
+//	if (lastFieldBinding.canBeSeenBy(getReceiverType(currentScope), this, currentScope)) {
+//		// the last field access is a write access
+//		assignment.expression.generateCode(currentScope, codeStream, true);
+//		fieldStore(codeStream, lastFieldBinding, null, valueRequired);
+//	} else {
+//		codeStream.generateEmulationForField(lastFieldBinding);
+//		codeStream.swap();
+//		assignment.expression.generateCode(currentScope, codeStream, true);
+//		if (valueRequired) {
+//			if ((lastFieldBinding.type == TypeBinding.LONG) || (lastFieldBinding.type == TypeBinding.DOUBLE)) {
+//				codeStream.dup2_x2();
+//			} else {
+//				codeStream.dup_x2();
+//			}
+//		}
+//		codeStream.generateEmulatedWriteAccessForField(lastFieldBinding);
+//	}
+//	if (valueRequired) {
+//		codeStream.generateImplicitConversion(assignment.implicitConversion);
+//	}
 }
 public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
-	int pc = codeStream.position;
-	if (this.constant != Constant.NotAConstant) {
-		if (valueRequired) {
-			codeStream.generateConstant(this.constant, this.implicitConversion);
-		}
-	} else {
-		FieldBinding lastFieldBinding = generateReadSequence(currentScope, codeStream); 
-		if (valueRequired) {
-			if (lastFieldBinding.declaringClass == null) { // array length
-				codeStream.arraylength();
-				codeStream.generateImplicitConversion(this.implicitConversion);
-			} else {
-				Constant fieldConstant = lastFieldBinding.constant();
-				if (fieldConstant != Constant.NotAConstant) {
-					if (!lastFieldBinding.isStatic()){
-						codeStream.invokeObjectGetClass();
-						codeStream.pop();
-					}
-					// inline the last field constant
-					codeStream.generateConstant(fieldConstant, this.implicitConversion);
-				} else {	
-					if (lastFieldBinding.canBeSeenBy(getReceiverType(currentScope), this, currentScope)) {
-						if (lastFieldBinding.isStatic()) {
-							codeStream.getstatic(lastFieldBinding);
-						} else {
-							codeStream.getfield(lastFieldBinding);
-						}
-					} else {
-						codeStream.generateEmulatedReadAccessForField(lastFieldBinding);
-					}	
-					codeStream.generateImplicitConversion(this.implicitConversion);
-				}
-			}
-		} else {
-			if (lastFieldBinding != null && !lastFieldBinding.isStatic()){
-				codeStream.invokeObjectGetClass(); // perform null check
-				codeStream.pop();
-			}
-		}		
-	}
-	codeStream.recordPositionsFrom(pc, this.sourceStart);
+//	int pc = codeStream.position;
+//	if (this.constant != Constant.NotAConstant) {
+//		if (valueRequired) {
+//			codeStream.generateConstant(this.constant, this.implicitConversion);
+//		}
+//	} else {
+//		FieldBinding lastFieldBinding = generateReadSequence(currentScope, codeStream); 
+//		if (valueRequired) {
+//			if (lastFieldBinding.declaringClass == null) { // array length
+//				codeStream.arraylength();
+//				codeStream.generateImplicitConversion(this.implicitConversion);
+//			} else {
+//				Constant fieldConstant = lastFieldBinding.constant();
+//				if (fieldConstant != Constant.NotAConstant) {
+//					if (!lastFieldBinding.isStatic()){
+//						codeStream.invokeObjectGetClass();
+//						codeStream.pop();
+//					}
+//					// inline the last field constant
+//					codeStream.generateConstant(fieldConstant, this.implicitConversion);
+//				} else {	
+//					if (lastFieldBinding.canBeSeenBy(getReceiverType(currentScope), this, currentScope)) {
+//						if (lastFieldBinding.isStatic()) {
+//							codeStream.getstatic(lastFieldBinding);
+//						} else {
+//							codeStream.getfield(lastFieldBinding);
+//						}
+//					} else {
+//						codeStream.generateEmulatedReadAccessForField(lastFieldBinding);
+//					}	
+//					codeStream.generateImplicitConversion(this.implicitConversion);
+//				}
+//			}
+//		} else {
+//			if (lastFieldBinding != null && !lastFieldBinding.isStatic()){
+//				codeStream.invokeObjectGetClass(); // perform null check
+//				codeStream.pop();
+//			}
+//		}		
+//	}
+//	codeStream.recordPositionsFrom(pc, this.sourceStart);
 }
 public void generateCompoundAssignment(BlockScope currentScope, CodeStream codeStream, Expression expression, int operator, int assignmentImplicitConversion, boolean valueRequired) {
 	
-	FieldBinding lastFieldBinding = generateReadSequence(currentScope, codeStream);
-	if (lastFieldBinding.canBeSeenBy(getReceiverType(currentScope), this, currentScope)) {
-		if (lastFieldBinding.isStatic()){
-			codeStream.getstatic(lastFieldBinding);
-		} else {
-			codeStream.dup();
-			codeStream.getfield(lastFieldBinding);
-		}
-		// the last field access is a write access
-		// perform the actual compound operation
-		int operationTypeID;
-		switch(operationTypeID = (this.implicitConversion & IMPLICIT_CONVERSION_MASK) >> 4) {
-			case T_JavaLangString :
-			case T_JavaLangObject :
-			case T_undefined :
-				codeStream.generateStringConcatenationAppend(currentScope, null, expression);
-				break;
-			default :
-				// promote the array reference to the suitable operation type
-				codeStream.generateImplicitConversion(this.implicitConversion);
-				// generate the increment value (will by itself  be promoted to the operation value)
-				if (expression == IntLiteral.One){ // prefix operation
-					codeStream.generateConstant(expression.constant, this.implicitConversion);			
-				} else {
-					expression.generateCode(currentScope, codeStream, true);
-				}
-				// perform the operation
-				codeStream.sendOperator(operator, operationTypeID);
-				// cast the value back to the array reference type
-				codeStream.generateImplicitConversion(assignmentImplicitConversion);
-		}
-		// actual assignment
-		fieldStore(codeStream, lastFieldBinding, null, valueRequired);
-	} else {
-		if (lastFieldBinding.isStatic()){
-			codeStream.generateEmulationForField(lastFieldBinding);
-			codeStream.swap();
-			codeStream.aconst_null();
-			codeStream.swap();
-
-			codeStream.generateEmulatedReadAccessForField(lastFieldBinding);
-		} else {
-			codeStream.generateEmulationForField(lastFieldBinding);
-			codeStream.swap();
-			codeStream.dup();
-
-			codeStream.generateEmulatedReadAccessForField(lastFieldBinding);
-		}
-		// the last field access is a write access
-		// perform the actual compound operation
-		int operationTypeID;
-		if ((operationTypeID = (this.implicitConversion & IMPLICIT_CONVERSION_MASK) >> 4) == T_JavaLangString) {
-			codeStream.generateStringConcatenationAppend(currentScope, null, expression);
-		} else {
-			// promote the array reference to the suitable operation type
-			codeStream.generateImplicitConversion(this.implicitConversion);
-			// generate the increment value (will by itself  be promoted to the operation value)
-			if (expression == IntLiteral.One){ // prefix operation
-				codeStream.generateConstant(expression.constant, this.implicitConversion);			
-			} else {
-				expression.generateCode(currentScope, codeStream, true);
-			}
-			// perform the operation
-			codeStream.sendOperator(operator, operationTypeID);
-			// cast the value back to the array reference type
-			codeStream.generateImplicitConversion(assignmentImplicitConversion);
-		}
-		// actual assignment
-
-		// current stack is:
-		// field receiver value
-		if (valueRequired) {
-			if ((lastFieldBinding.type == TypeBinding.LONG) || (lastFieldBinding.type == TypeBinding.DOUBLE)) {
-				codeStream.dup2_x2();
-			} else {
-				codeStream.dup_x2();
-			}
-		}
-		// current stack is:
-		// value field receiver value				
-		codeStream.generateEmulatedWriteAccessForField(lastFieldBinding);
-	}
+//	FieldBinding lastFieldBinding = generateReadSequence(currentScope, codeStream);
+//	if (lastFieldBinding.canBeSeenBy(getReceiverType(currentScope), this, currentScope)) {
+//		if (lastFieldBinding.isStatic()){
+//			codeStream.getstatic(lastFieldBinding);
+//		} else {
+//			codeStream.dup();
+//			codeStream.getfield(lastFieldBinding);
+//		}
+//		// the last field access is a write access
+//		// perform the actual compound operation
+//		int operationTypeID;
+//		switch(operationTypeID = (this.implicitConversion & IMPLICIT_CONVERSION_MASK) >> 4) {
+//			case T_JavaLangString :
+//			case T_JavaLangObject :
+//			case T_undefined :
+//				codeStream.generateStringConcatenationAppend(currentScope, null, expression);
+//				break;
+//			default :
+//				// promote the array reference to the suitable operation type
+//				codeStream.generateImplicitConversion(this.implicitConversion);
+//				// generate the increment value (will by itself  be promoted to the operation value)
+//				if (expression == IntLiteral.One){ // prefix operation
+//					codeStream.generateConstant(expression.constant, this.implicitConversion);			
+//				} else {
+//					expression.generateCode(currentScope, codeStream, true);
+//				}
+//				// perform the operation
+//				codeStream.sendOperator(operator, operationTypeID);
+//				// cast the value back to the array reference type
+//				codeStream.generateImplicitConversion(assignmentImplicitConversion);
+//		}
+//		// actual assignment
+//		fieldStore(codeStream, lastFieldBinding, null, valueRequired);
+//	} else {
+//		if (lastFieldBinding.isStatic()){
+//			codeStream.generateEmulationForField(lastFieldBinding);
+//			codeStream.swap();
+//			codeStream.aconst_null();
+//			codeStream.swap();
+//
+//			codeStream.generateEmulatedReadAccessForField(lastFieldBinding);
+//		} else {
+//			codeStream.generateEmulationForField(lastFieldBinding);
+//			codeStream.swap();
+//			codeStream.dup();
+//
+//			codeStream.generateEmulatedReadAccessForField(lastFieldBinding);
+//		}
+//		// the last field access is a write access
+//		// perform the actual compound operation
+//		int operationTypeID;
+//		if ((operationTypeID = (this.implicitConversion & IMPLICIT_CONVERSION_MASK) >> 4) == T_JavaLangString) {
+//			codeStream.generateStringConcatenationAppend(currentScope, null, expression);
+//		} else {
+//			// promote the array reference to the suitable operation type
+//			codeStream.generateImplicitConversion(this.implicitConversion);
+//			// generate the increment value (will by itself  be promoted to the operation value)
+//			if (expression == IntLiteral.One){ // prefix operation
+//				codeStream.generateConstant(expression.constant, this.implicitConversion);			
+//			} else {
+//				expression.generateCode(currentScope, codeStream, true);
+//			}
+//			// perform the operation
+//			codeStream.sendOperator(operator, operationTypeID);
+//			// cast the value back to the array reference type
+//			codeStream.generateImplicitConversion(assignmentImplicitConversion);
+//		}
+//		// actual assignment
+//
+//		// current stack is:
+//		// field receiver value
+//		if (valueRequired) {
+//			if ((lastFieldBinding.type == TypeBinding.LONG) || (lastFieldBinding.type == TypeBinding.DOUBLE)) {
+//				codeStream.dup2_x2();
+//			} else {
+//				codeStream.dup_x2();
+//			}
+//		}
+//		// current stack is:
+//		// value field receiver value				
+//		codeStream.generateEmulatedWriteAccessForField(lastFieldBinding);
+//	}
 }
 public void generatePostIncrement(BlockScope currentScope, CodeStream codeStream, CompoundAssignment postIncrement, boolean valueRequired) {
 
-    FieldBinding lastFieldBinding = generateReadSequence(currentScope, codeStream);
-	if (lastFieldBinding.canBeSeenBy(getReceiverType(currentScope), this, currentScope)) {
-		if (lastFieldBinding.isStatic()){
-			codeStream.getstatic(lastFieldBinding);
-		} else {
-			codeStream.dup();
-			codeStream.getfield(lastFieldBinding);
-		}	
-		// duplicate the old field value
-		if (valueRequired) {
-			if (lastFieldBinding.isStatic()) {
-				if ((lastFieldBinding.type == TypeBinding.LONG) || (lastFieldBinding.type == TypeBinding.DOUBLE)) {
-					codeStream.dup2();
-				} else {
-					codeStream.dup();
-				}
-			} else { // Stack:  [owner][old field value]  ---> [old field value][owner][old field value]
-				if ((lastFieldBinding.type == TypeBinding.LONG) || (lastFieldBinding.type == TypeBinding.DOUBLE)) {
-					codeStream.dup2_x1();
-				} else {
-					codeStream.dup_x1();
-				}
-			}
-		}
-		codeStream.generateConstant(postIncrement.expression.constant, this.implicitConversion);
-		codeStream.sendOperator(postIncrement.operator, lastFieldBinding.type.id);
-		codeStream.generateImplicitConversion(postIncrement.preAssignImplicitConversion);
-		
-		fieldStore(codeStream, lastFieldBinding, null, false);
-	} else {
-		codeStream.generateEmulatedReadAccessForField(lastFieldBinding);
-		if (valueRequired) {
-			if ((lastFieldBinding.type == TypeBinding.LONG) || (lastFieldBinding.type == TypeBinding.DOUBLE)) {
-				codeStream.dup2();
-			} else {
-				codeStream.dup();
-			}
-		}
-		codeStream.generateEmulationForField(lastFieldBinding);
-		if ((lastFieldBinding.type == TypeBinding.LONG) || (lastFieldBinding.type == TypeBinding.DOUBLE)) {
-			codeStream.dup_x2();
-			codeStream.pop();
-			if (lastFieldBinding.isStatic()) {
-				codeStream.aconst_null();
-			} else {
-				generateReadSequence(currentScope, codeStream);
-			}
-			codeStream.dup_x2();
-			codeStream.pop();					
-		} else {
-			codeStream.dup_x1();
-			codeStream.pop();
-			if (lastFieldBinding.isStatic()) {
-				codeStream.aconst_null();
-			} else {
-				generateReadSequence(currentScope, codeStream);
-			}
-			codeStream.dup_x1();
-			codeStream.pop();					
-		}
-		codeStream.generateConstant(postIncrement.expression.constant, this.implicitConversion);
-		codeStream.sendOperator(postIncrement.operator, lastFieldBinding.type.id);
-		codeStream.generateImplicitConversion(postIncrement.preAssignImplicitConversion);
-		codeStream.generateEmulatedWriteAccessForField(lastFieldBinding);
-	}
+//    FieldBinding lastFieldBinding = generateReadSequence(currentScope, codeStream);
+//	if (lastFieldBinding.canBeSeenBy(getReceiverType(currentScope), this, currentScope)) {
+//		if (lastFieldBinding.isStatic()){
+//			codeStream.getstatic(lastFieldBinding);
+//		} else {
+//			codeStream.dup();
+//			codeStream.getfield(lastFieldBinding);
+//		}	
+//		// duplicate the old field value
+//		if (valueRequired) {
+//			if (lastFieldBinding.isStatic()) {
+//				if ((lastFieldBinding.type == TypeBinding.LONG) || (lastFieldBinding.type == TypeBinding.DOUBLE)) {
+//					codeStream.dup2();
+//				} else {
+//					codeStream.dup();
+//				}
+//			} else { // Stack:  [owner][old field value]  ---> [old field value][owner][old field value]
+//				if ((lastFieldBinding.type == TypeBinding.LONG) || (lastFieldBinding.type == TypeBinding.DOUBLE)) {
+//					codeStream.dup2_x1();
+//				} else {
+//					codeStream.dup_x1();
+//				}
+//			}
+//		}
+//		codeStream.generateConstant(postIncrement.expression.constant, this.implicitConversion);
+//		codeStream.sendOperator(postIncrement.operator, lastFieldBinding.type.id);
+//		codeStream.generateImplicitConversion(postIncrement.preAssignImplicitConversion);
+//		
+//		fieldStore(codeStream, lastFieldBinding, null, false);
+//	} else {
+//		codeStream.generateEmulatedReadAccessForField(lastFieldBinding);
+//		if (valueRequired) {
+//			if ((lastFieldBinding.type == TypeBinding.LONG) || (lastFieldBinding.type == TypeBinding.DOUBLE)) {
+//				codeStream.dup2();
+//			} else {
+//				codeStream.dup();
+//			}
+//		}
+//		codeStream.generateEmulationForField(lastFieldBinding);
+//		if ((lastFieldBinding.type == TypeBinding.LONG) || (lastFieldBinding.type == TypeBinding.DOUBLE)) {
+//			codeStream.dup_x2();
+//			codeStream.pop();
+//			if (lastFieldBinding.isStatic()) {
+//				codeStream.aconst_null();
+//			} else {
+//				generateReadSequence(currentScope, codeStream);
+//			}
+//			codeStream.dup_x2();
+//			codeStream.pop();					
+//		} else {
+//			codeStream.dup_x1();
+//			codeStream.pop();
+//			if (lastFieldBinding.isStatic()) {
+//				codeStream.aconst_null();
+//			} else {
+//				generateReadSequence(currentScope, codeStream);
+//			}
+//			codeStream.dup_x1();
+//			codeStream.pop();					
+//		}
+//		codeStream.generateConstant(postIncrement.expression.constant, this.implicitConversion);
+//		codeStream.sendOperator(postIncrement.operator, lastFieldBinding.type.id);
+//		codeStream.generateImplicitConversion(postIncrement.preAssignImplicitConversion);
+//		codeStream.generateEmulatedWriteAccessForField(lastFieldBinding);
+//	}
 }
 /*
  * Generate code for all bindings (local and fields) excluding the last one, which may then be generated code
  * for a read or write access.
  */
-public FieldBinding generateReadSequence(BlockScope currentScope, CodeStream codeStream) {
-    
-	// determine the rank until which we now we do not need any actual value for the field access
-	int otherBindingsCount = this.otherCodegenBindings == null ? 0 : this.otherCodegenBindings.length;
-	boolean needValue = otherBindingsCount == 0 || !this.otherBindings[0].isStatic();
-	FieldBinding lastFieldBinding = null;
-	TypeBinding lastGenericCast = null;
-	
-	switch (this.bits & RestrictiveFlagMASK) {
-		case Binding.FIELD :
-			lastFieldBinding = (FieldBinding) this.codegenBinding;
-			lastGenericCast = this.genericCast;
-			// if first field is actually constant, we can inline it
-			if (lastFieldBinding.constant() != Constant.NotAConstant) {
-				break;
-			}
-			if (needValue) {
-				if (lastFieldBinding.canBeSeenBy(getReceiverType(currentScope), this, currentScope)) {
-					if (!lastFieldBinding.isStatic()) {
-						if ((this.bits & DepthMASK) != 0) {
-							ReferenceBinding targetType = currentScope.enclosingSourceType().enclosingTypeAt((this.bits & DepthMASK) >> DepthSHIFT);
-							Object[] emulationPath = currentScope.getEmulationPath(targetType, true /*only exact match*/, false/*consider enclosing arg*/);
-							codeStream.generateOuterAccess(emulationPath, this, targetType, currentScope);
-						} else {
-							generateReceiver(codeStream);
-						}
-					}
-				} else {
-					if (!lastFieldBinding.isStatic()) {
-						if ((this.bits & DepthMASK) != 0) {
-							// internal error, per construction we should have found it
-							// not yet supported
-							currentScope.problemReporter().needImplementation();
-						} else {
-							generateReceiver(codeStream);
-						}
-					} else {
-						codeStream.aconst_null();
-					}
-				}				
-			}
-			break;
-		case Binding.LOCAL : // reading the first local variable
-			if (!needValue) break; // no value needed
-			LocalVariableBinding localBinding = (LocalVariableBinding) this.codegenBinding;
-			// regular local variable read
-			Constant localConstant = localBinding.constant();
-			if (localConstant != Constant.NotAConstant) {
-				codeStream.generateConstant(localConstant, 0);
-				// no implicit conversion
-			} else {
-				// outer local?
-				if ((bits & DepthMASK) != 0) {
-					// outer local can be reached either through a synthetic arg or a synthetic field
-					VariableBinding[] path = currentScope.getEmulationPath(localBinding);
-					codeStream.generateOuterAccess(path, this, localBinding, currentScope);
-				} else {
-					codeStream.load(localBinding);
-				}
-			}
-	}
-
-	// all intermediate field accesses are read accesses
-	// only the last field binding is a write access
-	if (this.otherCodegenBindings != null) {
-		for (int i = 0; i < otherBindingsCount; i++) {
-			FieldBinding nextField = this.otherCodegenBindings[i];
-			TypeBinding nextGenericCast = this.otherGenericCasts == null ? null : this.otherGenericCasts[i];
-			if (lastFieldBinding != null) {
-				needValue = !nextField.isStatic();
-				if (needValue) {
-					if (lastFieldBinding.canBeSeenBy(getReceiverType(currentScope), this, currentScope)) {
-						Constant fieldConstant = lastFieldBinding.constant();
-						if (fieldConstant != Constant.NotAConstant) {
-							if (lastFieldBinding != this.codegenBinding && !lastFieldBinding.isStatic()) {
-								codeStream.invokeObjectGetClass(); // perform null check
-								codeStream.pop();
-							}
-							codeStream.generateConstant(fieldConstant, 0);
-						} else if (lastFieldBinding.isStatic()) {
-							codeStream.getstatic(lastFieldBinding);
-						} else {
-							codeStream.getfield(lastFieldBinding);
-						}
-					} else {
-						codeStream.generateEmulatedReadAccessForField(lastFieldBinding);
-					}
-					if (lastGenericCast != null) codeStream.checkcast(lastGenericCast);
-				} else {
-					if (this.codegenBinding != lastFieldBinding && !lastFieldBinding.isStatic()){
-						codeStream.invokeObjectGetClass(); // perform null check
-						codeStream.pop();
-					}						
-				}
-			}
-			lastFieldBinding = nextField;
-			lastGenericCast = nextGenericCast;
-			if (lastFieldBinding != null && !lastFieldBinding.canBeSeenBy(getReceiverType(currentScope), this, currentScope)) {
-				if (lastFieldBinding.isStatic()) {
-					codeStream.aconst_null();
-				}
-			}
-		}			
-	}
-	return lastFieldBinding;
-}
+//public FieldBinding generateReadSequence(BlockScope currentScope, CodeStream codeStream) {
+//    
+//	// determine the rank until which we now we do not need any actual value for the field access
+//	int otherBindingsCount = this.otherCodegenBindings == null ? 0 : this.otherCodegenBindings.length;
+//	boolean needValue = otherBindingsCount == 0 || !this.otherBindings[0].isStatic();
+//	FieldBinding lastFieldBinding = null;
+//	TypeBinding lastGenericCast = null;
+//	
+//	switch (this.bits & RestrictiveFlagMASK) {
+//		case Binding.FIELD :
+//			lastFieldBinding = (FieldBinding) this.codegenBinding;
+//			lastGenericCast = this.genericCast;
+//			// if first field is actually constant, we can inline it
+//			if (lastFieldBinding.constant() != Constant.NotAConstant) {
+//				break;
+//			}
+//			if (needValue) {
+//				if (lastFieldBinding.canBeSeenBy(getReceiverType(currentScope), this, currentScope)) {
+//					if (!lastFieldBinding.isStatic()) {
+//						if ((this.bits & DepthMASK) != 0) {
+//							ReferenceBinding targetType = currentScope.enclosingSourceType().enclosingTypeAt((this.bits & DepthMASK) >> DepthSHIFT);
+//							Object[] emulationPath = currentScope.getEmulationPath(targetType, true /*only exact match*/, false/*consider enclosing arg*/);
+//							codeStream.generateOuterAccess(emulationPath, this, targetType, currentScope);
+//						} else {
+//							generateReceiver(codeStream);
+//						}
+//					}
+//				} else {
+//					if (!lastFieldBinding.isStatic()) {
+//						if ((this.bits & DepthMASK) != 0) {
+//							// internal error, per construction we should have found it
+//							// not yet supported
+//							currentScope.problemReporter().needImplementation();
+//						} else {
+//							generateReceiver(codeStream);
+//						}
+//					} else {
+//						codeStream.aconst_null();
+//					}
+//				}				
+//			}
+//			break;
+//		case Binding.LOCAL : // reading the first local variable
+//			if (!needValue) break; // no value needed
+//			LocalVariableBinding localBinding = (LocalVariableBinding) this.codegenBinding;
+//			// regular local variable read
+//			Constant localConstant = localBinding.constant();
+//			if (localConstant != Constant.NotAConstant) {
+//				codeStream.generateConstant(localConstant, 0);
+//				// no implicit conversion
+//			} else {
+//				// outer local?
+//				if ((bits & DepthMASK) != 0) {
+//					// outer local can be reached either through a synthetic arg or a synthetic field
+//					VariableBinding[] path = currentScope.getEmulationPath(localBinding);
+//					codeStream.generateOuterAccess(path, this, localBinding, currentScope);
+//				} else {
+//					codeStream.load(localBinding);
+//				}
+//			}
+//	}
+//
+//	// all intermediate field accesses are read accesses
+//	// only the last field binding is a write access
+//	if (this.otherCodegenBindings != null) {
+//		for (int i = 0; i < otherBindingsCount; i++) {
+//			FieldBinding nextField = this.otherCodegenBindings[i];
+//			TypeBinding nextGenericCast = this.otherGenericCasts == null ? null : this.otherGenericCasts[i];
+//			if (lastFieldBinding != null) {
+//				needValue = !nextField.isStatic();
+//				if (needValue) {
+//					if (lastFieldBinding.canBeSeenBy(getReceiverType(currentScope), this, currentScope)) {
+//						Constant fieldConstant = lastFieldBinding.constant();
+//						if (fieldConstant != Constant.NotAConstant) {
+//							if (lastFieldBinding != this.codegenBinding && !lastFieldBinding.isStatic()) {
+//								codeStream.invokeObjectGetClass(); // perform null check
+//								codeStream.pop();
+//							}
+//							codeStream.generateConstant(fieldConstant, 0);
+//						} else if (lastFieldBinding.isStatic()) {
+//							codeStream.getstatic(lastFieldBinding);
+//						} else {
+//							codeStream.getfield(lastFieldBinding);
+//						}
+//					} else {
+//						codeStream.generateEmulatedReadAccessForField(lastFieldBinding);
+//					}
+//					if (lastGenericCast != null) codeStream.checkcast(lastGenericCast);
+//				} else {
+//					if (this.codegenBinding != lastFieldBinding && !lastFieldBinding.isStatic()){
+//						codeStream.invokeObjectGetClass(); // perform null check
+//						codeStream.pop();
+//					}						
+//				}
+//			}
+//			lastFieldBinding = nextField;
+//			lastGenericCast = nextGenericCast;
+//			if (lastFieldBinding != null && !lastFieldBinding.canBeSeenBy(getReceiverType(currentScope), this, currentScope)) {
+//				if (lastFieldBinding.isStatic()) {
+//					codeStream.aconst_null();
+//				}
+//			}
+//		}			
+//	}
+//	return lastFieldBinding;
+//}
 
 public void generateReceiver(CodeStream codeStream) {
-	codeStream.aload_0();
-	if (this.delegateThis != null) {
-		codeStream.getfield(this.delegateThis); // delegated field access
-	}
+//	codeStream.aload_0();
+//	if (this.delegateThis != null) {
+//		codeStream.getfield(this.delegateThis); // delegated field access
+//	}
 }
 public TypeBinding getOtherFieldBindings(BlockScope scope) {
 	// At this point restrictiveFlag may ONLY have two potential value : FIELD LOCAL (i.e cast <<(VariableBinding) binding>> is valid)
@@ -518,39 +518,39 @@ public TypeBinding getOtherFieldBindings(BlockScope scope) {
 		// for runtime compatibility on 1.2 VMs : change the declaring class of the binding
 		// NOTE: from target 1.2 on, field's declaring class is touched if any different from receiver type
 		// and not from Object or implicit static field access.	
-		if (fieldBinding.declaringClass != lastReceiverType
-				&& !lastReceiverType.isArrayType()
-				&& fieldBinding.declaringClass != null // array.length
-				&& fieldBinding.constant() == Constant.NotAConstant) {
-			CompilerOptions options = currentScope.compilerOptions();
-			if ((options.targetJDK >= ClassFileConstants.JDK1_2
-					&& (options.complianceLevel >= ClassFileConstants.JDK1_4 || (index < 0 ? fieldBinding != binding : index > 0) || this.indexOfFirstFieldBinding > 1 || !fieldBinding.isStatic())
-					&& fieldBinding.declaringClass.id != T_JavaLangObject) // no change for Object fields
-				|| !(useDelegate
-						? new CodeSnippetScope(currentScope).canBeSeenByForCodeSnippet(fieldBinding.declaringClass, (ReferenceBinding) this.delegateThis.type)
-						: fieldBinding.declaringClass.canBeSeenBy(currentScope))) {
-	
-			    if (index < 0) { // write-access?
-					if (fieldBinding == this.binding){
-						this.codegenBinding = currentScope.enclosingSourceType().getUpdatedFieldBinding(fieldBinding, (ReferenceBinding)lastReceiverType.erasure());
-					} else {
-						if (this.otherCodegenBindings == this.otherBindings){
-							int l = this.otherBindings.length;
-							System.arraycopy(this.otherBindings, 0, this.otherCodegenBindings = new FieldBinding[l], 0, l);
-						}
-						this.otherCodegenBindings[this.otherCodegenBindings.length-1] = currentScope.enclosingSourceType().getUpdatedFieldBinding(fieldBinding, (ReferenceBinding)lastReceiverType.erasure());
-					}
-			    } if (index == 0){
-					this.codegenBinding = currentScope.enclosingSourceType().getUpdatedFieldBinding(fieldBinding, (ReferenceBinding)lastReceiverType.erasure());
-				} else {
-					if (this.otherCodegenBindings == this.otherBindings){
-						int l = this.otherBindings.length;
-						System.arraycopy(this.otherBindings, 0, this.otherCodegenBindings = new FieldBinding[l], 0, l);
-					}
-					this.otherCodegenBindings[index-1] = currentScope.enclosingSourceType().getUpdatedFieldBinding(fieldBinding, (ReferenceBinding)lastReceiverType.erasure());
-				}
-			}		
-		}
+//		if (fieldBinding.declaringClass != lastReceiverType
+//				&& !lastReceiverType.isArrayType()
+//				&& fieldBinding.declaringClass != null // array.length
+//				&& fieldBinding.constant() == Constant.NotAConstant) {
+//			CompilerOptions options = currentScope.compilerOptions();
+//			if ((options.targetJDK >= ClassFileConstants.JDK1_2
+//					&& (options.complianceLevel >= ClassFileConstants.JDK1_4 || (index < 0 ? fieldBinding != binding : index > 0) || this.indexOfFirstFieldBinding > 1 || !fieldBinding.isStatic())
+//					&& fieldBinding.declaringClass.id != T_JavaLangObject) // no change for Object fields
+//				|| !(useDelegate
+//						? new CodeSnippetScope(currentScope).canBeSeenByForCodeSnippet(fieldBinding.declaringClass, (ReferenceBinding) this.delegateThis.type)
+//						: fieldBinding.declaringClass.canBeSeenBy(currentScope))) {
+//	
+//			    if (index < 0) { // write-access?
+//					if (fieldBinding == this.binding){
+//						this.codegenBinding = currentScope.enclosingSourceType().getUpdatedFieldBinding(fieldBinding, (ReferenceBinding)lastReceiverType.erasure());
+//					} else {
+//						if (this.otherCodegenBindings == this.otherBindings){
+//							int l = this.otherBindings.length;
+//							System.arraycopy(this.otherBindings, 0, this.otherCodegenBindings = new FieldBinding[l], 0, l);
+//						}
+//						this.otherCodegenBindings[this.otherCodegenBindings.length-1] = currentScope.enclosingSourceType().getUpdatedFieldBinding(fieldBinding, (ReferenceBinding)lastReceiverType.erasure());
+//					}
+//			    } if (index == 0){
+//					this.codegenBinding = currentScope.enclosingSourceType().getUpdatedFieldBinding(fieldBinding, (ReferenceBinding)lastReceiverType.erasure());
+//				} else {
+//					if (this.otherCodegenBindings == this.otherBindings){
+//						int l = this.otherBindings.length;
+//						System.arraycopy(this.otherBindings, 0, this.otherCodegenBindings = new FieldBinding[l], 0, l);
+//					}
+//					this.otherCodegenBindings[index-1] = currentScope.enclosingSourceType().getUpdatedFieldBinding(fieldBinding, (ReferenceBinding)lastReceiverType.erasure());
+//				}
+//			}		
+//		}
 	}
 /**
  * Normal field binding did not work, try to bind to a field of the delegate receiver.
@@ -574,7 +574,7 @@ public TypeBinding reportError(BlockScope scope) {
 			if (((ProblemFieldBinding) fieldBinding).problemId() == NotVisible) {
 				// manage the access to a private field of the enclosing type
 				CodeSnippetScope localScope = new CodeSnippetScope(scope);
-				this.codegenBinding = this.binding = localScope.getFieldForCodeSnippet(this.delegateThis.type, this.tokens[0], this);
+				/*this.codegenBinding =*/ this.binding = localScope.getFieldForCodeSnippet(this.delegateThis.type, this.tokens[0], this);
 				if (this.binding.isValidBinding()) {
 					return checkFieldAccess(scope);						
 				} else {
@@ -584,7 +584,7 @@ public TypeBinding reportError(BlockScope scope) {
 				return super.reportError(scope);
 			}
 		}
-		this.codegenBinding = this.binding = fieldBinding;
+		/*this.codegenBinding = */this.binding = fieldBinding;
 		return checkFieldAccess(scope);
 	}
 
@@ -609,7 +609,7 @@ public TypeBinding resolveTypeVisibility(BlockScope scope) {
 	// the TC is Flag_Type Flag_LocalField and Flag_TypeLocalField 
 
 	CodeSnippetScope localScope = new CodeSnippetScope(scope);
-	if ((this.codegenBinding = this.binding = localScope.getBinding(this.tokens, this.bits & RestrictiveFlagMASK, this, (ReferenceBinding) this.delegateThis.type)).isValidBinding()) {
+	if ((/*this.codegenBinding = */this.binding = localScope.getBinding(this.tokens, this.bits & RestrictiveFlagMASK, this, (ReferenceBinding) this.delegateThis.type)).isValidBinding()) {
 		this.bits &= ~RestrictiveFlagMASK; // clear bits
 		this.bits |= Binding.FIELD;
 		return getOtherFieldBindings(scope);
