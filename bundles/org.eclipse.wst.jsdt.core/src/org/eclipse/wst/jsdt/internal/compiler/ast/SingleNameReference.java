@@ -795,7 +795,8 @@ public int nullStatus(FlowInfo flowInfo) {
 	public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding useType) {
 
 		// for code gen, harm the restrictiveFlag 	
-	
+		constant = Constant.NotAConstant;
+
 		if (this.actualReceiverType != null) {
 			this.binding = scope.getField(this.actualReceiverType, token, this);
 		} else {
@@ -806,6 +807,7 @@ public int nullStatus(FlowInfo flowInfo) {
 		{
 			LocalDeclaration localDeclaration = new LocalDeclaration(this.token,this.sourceEnd,this.sourceEnd);
 			LocalVariableBinding localBinding=new LocalVariableBinding(localDeclaration,TypeBinding.UNKNOWN,0,false);
+			localBinding.setConstant(Constant.NotAConstant);
 		    scope.compilationUnitScope().addLocalVariable(localBinding);
 			this.binding=localBinding;
 		}

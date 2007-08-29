@@ -84,7 +84,7 @@ public FlowInfo analyseAssignment(BlockScope currentScope, 	FlowContext flowCont
 	manageSyntheticAccessIfNecessary(currentScope, flowInfo, false /*write-access*/);
 
 	// check if assigning a final field 
-	if (binding.isFinal()) {
+	if (binding!=null && binding.isFinal()) {
 		// in a context where it can be assigned?
 		if (binding.isBlankFinal()
 			&& !isCompound
