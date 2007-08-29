@@ -596,6 +596,8 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 	public void initializeParser() {
 
 		this.parser = new Parser(this.problemReporter, this.options.parseLiteralExpressionsAsConstants);
+		this.parser.javadocParser=new SourceJavadocParser(this.parser);
+		this.parser.javadocParser.checkDocComment=true;
 	}
 	
 	/**
