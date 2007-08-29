@@ -104,7 +104,8 @@ public class MethodDeclaration extends AbstractMethodDeclaration {
 					(flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0;
 			} else {
 				if (flowInfo != FlowInfo.DEAD_END) { 
-					scope.problemReporter().shouldReturn(returnTypeBinding, this);
+					if (this.inferredMethod==null || !this.inferredMethod.isConstructor)
+						scope.problemReporter().shouldReturn(returnTypeBinding, this);
 				}
 			}
 			this.scope.reportUnusedDeclarations();
