@@ -19,7 +19,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 				"1. ERROR in X.js (at line 2)\n" +
 				"	abc(); \n"+ 
 				"	^^^\n"+
-				"The function abc() is undefined for the type \n"+ 
+				"The function abc() is undefined\n"+ 
 				"----------\n"
 		);
 
@@ -67,8 +67,8 @@ public class BasicResolveTests extends AbstractRegressionTest {
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
-						"var win=window;\n" +
-						"alert();\n" +
+						"var win=debugger;\n" +
+						"Object();\n" +
 						"\n"
 				},
 				""
@@ -95,7 +95,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
-						"alert();\n" +
+						"Object();\n" +
 						"\n"
 				},
 				""
@@ -321,7 +321,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
-						"var c;\n" +
+						"var c=false;\n" +
 						"var d=!c;\n" +
 						"" 
 				},
@@ -399,7 +399,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
-						" if (false) {\n" +
+						" if (true) {\n" +
 						"   var abc=1;}\n" +
 						" var d=abc;\n" +
 						"" 
@@ -521,7 +521,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 						"x.a.b = \"\""
 				},
 				"----------\n" +
-				"1. ERROR in X.js (at line 2)\n" +
+				"1. WARNING in X.js (at line 2)\n" +
 				"	x.a.b = \"\"\n"+ 
 				"	  ^\n"+
 				"a cannot be resolved or is not a field\n"+ 
