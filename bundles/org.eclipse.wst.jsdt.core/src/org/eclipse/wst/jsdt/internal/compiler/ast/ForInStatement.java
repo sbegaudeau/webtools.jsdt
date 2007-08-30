@@ -61,147 +61,83 @@ public class ForInStatement extends Statement {
 		breakLabel = new BranchLabel();
 		continueLabel = new BranchLabel();
 
-//TODO: implement  COPY FROM FOREACH
-throw new org.eclipse.wst.jsdt.core.UnimplementedException();
-//		// process the initializations
-//		if (initializations != null) {
-//			for (int i = 0, count = initializations.length; i < count; i++) {
-//				flowInfo = initializations[i].analyseCode(scope, flowContext, flowInfo);
-//			}
-//		}
-//		preCondInitStateIndex =
-//			currentScope.methodScope().recordInitializationStates(flowInfo);
-//
-//		Constant cst = this.condition == null ? null : this.condition.constant;
-//		boolean isConditionTrue = cst == null || (cst != Constant.NotAConstant && cst.booleanValue() == true);
-//		boolean isConditionFalse = cst != null && (cst != Constant.NotAConstant && cst.booleanValue() == false);
-//
-//		cst = this.condition == null ? null : this.condition.optimizedBooleanConstant();
-//		boolean isConditionOptimizedTrue = cst == null ||  (cst != Constant.NotAConstant && cst.booleanValue() == true);
-//		boolean isConditionOptimizedFalse = cst != null && (cst != Constant.NotAConstant && cst.booleanValue() == false);
-//		
-//		// process the condition
-//		LoopingFlowContext condLoopContext = null;
-//		FlowInfo condInfo = flowInfo.nullInfoLessUnconditionalCopy();
-//		if (condition != null) {
-//			if (!isConditionTrue) {
-//				condInfo =
-//					condition.analyseCode(
-//						scope,
-//						(condLoopContext =
-//							new LoopingFlowContext(flowContext, flowInfo, this, null, 
-//								null, scope)),
-//						condInfo);
-//			}
-//		}
-//
-//		// process the action
-//		LoopingFlowContext loopingContext;
-//		UnconditionalFlowInfo actionInfo;
-//		if (action == null 
-//			|| (action.isEmptyBlock() && currentScope.compilerOptions().complianceLevel <= ClassFileConstants.JDK1_3)) {
-//			if (condLoopContext != null)
-//				condLoopContext.complainOnDeferredFinalChecks(scope, condInfo);
-//			if (isConditionTrue) {
-//				if (condLoopContext != null) {
-//					condLoopContext.complainOnDeferredNullChecks(currentScope,
-//						condInfo);
-//				}
-//				return FlowInfo.DEAD_END;
-//			} else {
-//				if (isConditionFalse){
-//					continueLabel = null; // for(;false;p());
-//				}
-//				actionInfo = condInfo.initsWhenTrue().unconditionalCopy();
-//				loopingContext =
-//					new LoopingFlowContext(flowContext, flowInfo, this, 
-//						breakLabel, continueLabel, scope);
-//			}
-//		} 
-//		else {
-//			loopingContext =
-//				new LoopingFlowContext(flowContext, flowInfo, this, breakLabel, 
-//					continueLabel, scope);
-//			FlowInfo initsWhenTrue = condInfo.initsWhenTrue();
-//			condIfTrueInitStateIndex =
-//				currentScope.methodScope().recordInitializationStates(initsWhenTrue);
-//
-//				if (isConditionFalse) {
-//					actionInfo = FlowInfo.DEAD_END;
-//				} else {
-//					actionInfo = initsWhenTrue.unconditionalCopy();
-//					if (isConditionOptimizedFalse){
-//						actionInfo.setReachMode(FlowInfo.UNREACHABLE);
-//					}
-//				}
-//			if (!this.action.complainIfUnreachable(actionInfo, scope, false)) {
-//				actionInfo = action.analyseCode(scope, loopingContext, actionInfo).
-//					unconditionalInits();
-//			}
-//
-//			// code generation can be optimized when no need to continue in the loop
-//			if ((actionInfo.tagBits & 
-//					loopingContext.initsOnContinue.tagBits &
-//					FlowInfo.UNREACHABLE) != 0) {
-//				continueLabel = null;
-//			} 
-//			else {
-//				if (condLoopContext != null) {
-//					condLoopContext.complainOnDeferredFinalChecks(scope, 
-//							condInfo);
-//				}
-//				actionInfo = actionInfo.mergedWith(loopingContext.initsOnContinue);
-//				loopingContext.complainOnDeferredFinalChecks(scope, 
-//						actionInfo);
-//			}
-//		}
-//		// for increments
-//		FlowInfo exitBranch = flowInfo.copy();
-//		// recover null inits from before condition analysis
-//		LoopingFlowContext incrementContext = null;
-//		if (continueLabel != null) {
-//			if (increments != null) {
-//				incrementContext =
-//					new LoopingFlowContext(flowContext, flowInfo, this, null, 
-//						null, scope);
-//				FlowInfo incrementInfo = actionInfo;
-//				for (int i = 0, count = increments.length; i < count; i++) {
-//					incrementInfo = increments[i].
-//						analyseCode(scope, incrementContext, incrementInfo);
-//				}
-//				incrementContext.complainOnDeferredFinalChecks(scope,
-//						actionInfo = incrementInfo.unconditionalInits());
-//			}
-//			exitBranch.addPotentialInitializationsFrom(actionInfo).
-//				addInitializationsFrom(condInfo.initsWhenFalse());
-//		}
-//		else {
-//			exitBranch.addInitializationsFrom(condInfo.initsWhenFalse());
-//		}
-//		// nulls checks
-//		if (condLoopContext != null) {
-//			condLoopContext.complainOnDeferredNullChecks(currentScope, 
-//				actionInfo);
-//		}
-//		loopingContext.complainOnDeferredNullChecks(currentScope, 
-//			actionInfo);
-//		if (incrementContext != null) {
-//			incrementContext.complainOnDeferredNullChecks(currentScope, 
-//				actionInfo);
-//		}
-//
-//		//end of loop
-//		FlowInfo mergedInfo = FlowInfo.mergedOptimizedBranches(
-//				(loopingContext.initsOnBreak.tagBits &
-//					FlowInfo.UNREACHABLE) != 0 ?
-//					loopingContext.initsOnBreak :
-//					flowInfo.addInitializationsFrom(loopingContext.initsOnBreak), // recover upstream null info
-//				isConditionOptimizedTrue, 
-//				exitBranch, 
-//				isConditionOptimizedFalse, 
-//				!isConditionTrue /*for(;;){}while(true); unreachable(); */);
+		// process the element variable and collection
+		this.collection.checkNPE(currentScope, flowContext, flowInfo);
+		flowInfo = this.iterationVariable.analyseCode(scope, flowContext, flowInfo);
+		FlowInfo condInfo = this.collection.analyseCode(scope, flowContext, flowInfo.copy());
+
+		LocalVariableBinding iterationVariableBinding=null;
+		if (this.iterationVariable instanceof LocalDeclaration)
+			iterationVariableBinding=((LocalDeclaration)this.iterationVariable).binding;
+		else if (this.iterationVariable instanceof SingleNameReference)
+		{
+			SingleNameReference singleNameReference =(SingleNameReference)this.iterationVariable;
+			if (singleNameReference.binding instanceof LocalVariableBinding)
+				iterationVariableBinding=(LocalVariableBinding)singleNameReference.binding;
+		}
+
+		
+		// element variable will be assigned when iterating
+		if (iterationVariableBinding!=null)
+		condInfo.markAsDefinitelyAssigned(iterationVariableBinding);
+
+//		this.postCollectionInitStateIndex = currentScope.methodScope().recordInitializationStates(condInfo);
+		
+		// process the action
+		LoopingFlowContext loopingContext = 
+			new LoopingFlowContext(flowContext, flowInfo, this, breakLabel, 
+				continueLabel, scope);
+		UnconditionalFlowInfo actionInfo = 
+			condInfo.nullInfoLessUnconditionalCopy();
+		if (iterationVariableBinding!=null)
+			actionInfo.markAsDefinitelyUnknown(iterationVariableBinding);
+		FlowInfo exitBranch;
+		if (!(action == null || (action.isEmptyBlock() 
+		        	&& currentScope.compilerOptions().complianceLevel <= ClassFileConstants.JDK1_3))) {
+
+			if (!this.action.complainIfUnreachable(actionInfo, scope, false)) {
+				actionInfo = action.
+					analyseCode(scope, loopingContext, actionInfo).
+					unconditionalCopy();
+			}
+
+			// code generation can be optimized when no need to continue in the loop
+			exitBranch = flowInfo.unconditionalCopy().
+				addInitializationsFrom(condInfo.initsWhenFalse()); 
+			// TODO (maxime) no need to test when false: can optimize (same for action being unreachable above) 
+			if ((actionInfo.tagBits & loopingContext.initsOnContinue.tagBits &
+					FlowInfo.UNREACHABLE) != 0) {
+				continueLabel = null;
+			} else {
+				actionInfo = actionInfo.mergedWith(loopingContext.initsOnContinue);
+				loopingContext.complainOnDeferredFinalChecks(scope, actionInfo);
+				exitBranch.addPotentialInitializationsFrom(actionInfo);
+			}
+		} else {
+			exitBranch = condInfo.initsWhenFalse();
+		}
+
+		// we need the variable to iterate the collection even if the 
+		// element variable is not used
+		final boolean hasEmptyAction = this.action == null
+				|| this.action.isEmptyBlock()
+				|| ((this.action.bits & IsUsefulEmptyStatement) != 0);
+
+
+		//end of loop
+		loopingContext.complainOnDeferredNullChecks(currentScope, actionInfo);
+
+		FlowInfo mergedInfo = FlowInfo.mergedOptimizedBranches(
+				(loopingContext.initsOnBreak.tagBits &
+					FlowInfo.UNREACHABLE) != 0 ?
+					loopingContext.initsOnBreak :
+					flowInfo.addInitializationsFrom(loopingContext.initsOnBreak), // recover upstream null info
+				false, 
+				exitBranch, 
+				false, 
+				true /*for(;;){}while(true); unreachable(); */);
 //		mergedInitStateIndex = currentScope.methodScope().recordInitializationStates(mergedInfo);
-//		return mergedInfo;
+		return mergedInfo;
 	}
 
 	/** 
