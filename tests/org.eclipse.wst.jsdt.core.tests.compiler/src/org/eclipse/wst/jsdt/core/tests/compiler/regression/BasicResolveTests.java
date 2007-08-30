@@ -107,7 +107,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 
 //	With inferred types
 
-	public void test0010()	{	// field reference 
+	public void test010()	{	// field reference 
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -123,7 +123,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 
 	}
 
-	public void test0011()	{	// field reference 
+	public void test011()	{	// field reference 
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -142,7 +142,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 	}
 
 
-	public void test0012()	{	// field reference 
+	public void test012()	{	// field reference 
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -158,7 +158,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 
 	}
 
-	public void test0013()	{
+	public void test013()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -171,7 +171,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 
 	}
 
-	public void test0014()	{
+	public void test014()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -185,7 +185,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 
 
 
-	public void test0020()	{
+	public void test020()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -200,7 +200,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 		);
 
 	}
-	public void test0021()	{
+	public void test021()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -215,7 +215,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 
 	}
 
-	public void test0022()	{
+	public void test022()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -230,7 +230,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 
 	}
 
-	public void test0022b()	{
+	public void test022b()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -245,7 +245,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 	}
 
 
-	public void test0023()	{
+	public void test023()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -257,7 +257,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 
 	}		
 
-	public void test0024()	{
+	public void test024()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -273,7 +273,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 
 	}
 
-	public void test0025()	{
+	public void test025()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -290,7 +290,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 
 	}
 
-	public void test0026()	{
+	public void test026()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -303,7 +303,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 	}
 
 
-	public void test0027()	{
+	public void test027()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -317,7 +317,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 
 	}
 
-	public void test0028()	{
+	public void test028()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -330,7 +330,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 
 	}
 
-	public void test0029()	{
+	public void test029()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -343,7 +343,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 	}
 
 
-	public void test0030()	{
+	public void test030()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -356,7 +356,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 		);
 
 	}
-	public void test0031()	{
+	public void test031()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -369,7 +369,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 
 	}
 
-	public void test0032()	{
+	public void test032()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -383,7 +383,23 @@ public class BasicResolveTests extends AbstractRegressionTest {
 
 	}
 
-	public void test0033()	{
+	public void test032b()	{
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"var foo;\n" +
+						" foo.level1=new Object();\n" +
+						" foo.level1.onMouseDown = function () { return 1; };\n" +
+						" foo.level1.onMouseDown();\n" +
+						"" 
+				},
+				""
+		);
+
+	}
+
+
+	public void test033()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -395,7 +411,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 
 	}
 
-	public void test0034()	{
+	public void test034()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -409,7 +425,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 
 	}
 
-	public void test0035()	{
+	public void test035()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -423,7 +439,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 	}
 
 
-	public void test0036()	{
+	public void test036()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -439,7 +455,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 	}
 
 
-	public void test0037()	{
+	public void test037()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -453,7 +469,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 
 	}
 
-	public void test0038()	{
+	public void test038()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -468,7 +484,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 	}
 
 
-	public void test0039()	{
+	public void test039()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -483,7 +499,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 
 	}
 
-	public void test0040()	{
+	public void test040()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -501,7 +517,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 	/*
 	 * Field reference error testing
 	 */
-	public void test0041()	{
+	public void test041()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
@@ -513,7 +529,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 
 	}
 
-	public void test0042()	{
+	public void test042()	{
 		this.runNegativeTest(
 				new String[] {
 						"X.js",

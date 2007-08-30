@@ -468,7 +468,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		 );
 	}
 
-	public void test0010() {	// for in
+	public void test010() {	// for in
 		this.runParseTest(
 				"for (var a in this.vars)\n" +
 				"  f++;" +
@@ -480,7 +480,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 	}
 
 
-	public void test0011() {	// for in
+	public void test011() {	// for in
 		this.runParseTest(
 				"with (foo)\n" +
 				"  bar;" +
@@ -491,7 +491,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		 );
 	}
 
-	public void test0010a() {	// for in
+	public void test010a() {	// for in
 		this.runParseTest(
 				"for (a in this.vars)\n" +
 				"  f++;" +
@@ -503,7 +503,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 	}
 
 
-	public void test0015() {	// missing semicolon
+	public void test015() {	// missing semicolon
 		this.runParseTest(
 				"  function bar() \n{\n" +
 				"    System.out.println()\n" +
@@ -515,7 +515,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		 );
 	}
 	
-	public void test0015a() {	// missing semicolon
+	public void test015a() {	// missing semicolon
 		this.runParseTest(
 			"function bar() {\n"+	
 			"  System.out\n" +
@@ -527,7 +527,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		 );
 	}
 	
-	public void test0020() {	// missing semicolon
+	public void test020() {	// missing semicolon
 		this.runParseTest(
 			      "function Bob(firstname, lastname) {\n" +
 			      "   var Firstname = firstname;\n" +
@@ -543,7 +543,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		 );
 	}
 
-	public void test0022() {
+	public void test022() {
 		this.runParseTest(
 				"var SingleQuote = {\n" +
 				"   Version: '1.1-beta2' \n" +
@@ -555,7 +555,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		);
 	}
 
-	public void test0023() {
+	public void test023() {
 		this.runParseTest(
 				"var Try = { \n" +
 				"	these: function() { \n" +
@@ -571,7 +571,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		);
 	}
 
-	public void test0024() {
+	public void test024() {
 		this.runParseTest(
 				"var Try = { \n" +
 				"	these: function() { \n" +
@@ -588,7 +588,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 	}
 	
 	
-	public void test0026() {
+	public void test026() {
 		this.runParseTest(
 				"String.replace(/&/g, '&amp;');",
 			"X.js",
@@ -596,7 +596,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		);
 	}
 	
-	public void test0027() {
+	public void test027() {
 		this.runParseTest(
 				"  (!options) ? options = {} : '';",
 			"X.js",
@@ -604,7 +604,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		);
 	}
 	
-	public void test0027b() {
+	public void test027b() {
 		this.runParseTest(
 				"  (!options) ? '' : options = {};",
 			"X.js",
@@ -612,7 +612,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		);
 	}
 	
-	public void test0028() {
+	public void test028() {
 		this.runParseTest(
 				" if (typeof dojo==\"undefined\"){ \n" +
 				"	function dj_undef(){ \n" +
@@ -627,7 +627,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		);
 	}
 	
-	public void test0029() {
+	public void test029() {
 		this.runParseTest(
 				"  abc();",
 			"X.js",
@@ -635,7 +635,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		);
 	}
 	
-	public void test0030() {
+	public void test030() {
 		this.runParseTest(
 				"  \"cc\".abc();",
 			"X.js",
@@ -643,21 +643,21 @@ public class BasicParserTests extends AbstractRegressionTest {
 		);
 	}
 	
-	public void test0031() {
+	public void test031() {
 		this.runParseTest(
 			"var a = 1;\n" +
-			"// test unicode \\u000a var a =1; \n" +
+			"// test unicode \\u00a var a =1; \n" +
 			"var b = 2; \n",
 			"X.js",
 			"var a = 1;\n" +
 			"var b = 2;\n"			
 		);
 	}
-	public void test0032() {
+	public void test032() {
 		this.runParseTest(
 			"var a = 1;\n" +
 			"/* \n" +
-			"* test unicode \\u000a var a =1; \n " +
+			"* test unicode \\u00a var a =1; \n " +
 			"*/" +
 			"var b = 2; \n",
 			"X.js",
@@ -666,7 +666,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		);
 	}
 	
-	public void test0033() {
+	public void test033() {
 		this.runParseTest(
 				"var a = \"a\\>\";\n",
 			"X.js",
@@ -674,7 +674,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		);
 	}
 	
-	public void test0034() {
+	public void test034() {
 				this.runParseTest(
 						"label: for (var i = 0; i < 10; i++) {\n" +
 						"	     continue label;\n" +
@@ -688,39 +688,39 @@ public class BasicParserTests extends AbstractRegressionTest {
 	}
 	
 
-	public void test0035() {
+	public void test035() {
 		// check a unicode " in string. The expected " is escaped 
 		// because of the way the test framework works. It converts 
 		// special characters to a character representation before
 		// doing the compare. 
 		this.runParseTest(
-				"\"abc\\u0022def\";\n",
+				"\"abc\\u022def\";\n",
 			"X.js",
 				"\"abc\\\"def\";\n"			
 		);
 	}
 	
-	public void test0036() {
+	public void test036() {
 		this.runParseTest(
-				"'abc\\u0027def';\n",
+				"'abc\\u027def';\n",
 			"X.js",
 				"'abc'def';\n"			
 		);
 	}
 	
-	public void test0037() {
+	public void test037() {
 		// check a unicode " in string. The expected " is escaped 
 		// because of the way the test framework works. It converts 
 		// special characters to a character representation before
 		// doing the compare. 
 		this.runParseTest(
-				"\"\\u0022def\";\n",
+				"\"\\u022def\";\n",
 			"X.js",
 				"\"\\\"def\";\n"			
 		);
 	}
 	
-	public void test0038() {
+	public void test038() {
 		// check a unicode " in string. The expected " is escaped 
 		// because of the way the test framework works. It converts 
 		// special characters to a character representation before
@@ -732,7 +732,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		);
 	}
 	
-	public void test0039() {
+	public void test039() {
 		// check a unicode " in string. The expected " is escaped 
 		// because of the way the test framework works. It converts 
 		// special characters to a character representation before
@@ -744,7 +744,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		);
 	}
 	
-	public void test0040() {
+	public void test040() {
 		this.runParseTest(
 				"var onStart = function() { \n" +
 				"	this.onStart.fire();\n" + 
@@ -765,7 +765,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		);
 	}
 
-	public void test0041() {
+	public void test041() {
 		// check a unicode " in string. The expected " is escaped 
 		// because of the way the test framework works. It converts 
 		// special characters to a character representation before
@@ -778,7 +778,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 	}
 
 	
-	public void test0042() {
+	public void test042() {
 		// check a unicode " in string. The expected " is escaped 
 		// because of the way the test framework works. It converts 
 		// special characters to a character representation before
@@ -822,7 +822,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 	
 	
 
-	public void test0043() {
+	public void test043() {
 		this.runParseTest(
 				"Foo=function(){}\nbar=function(){}",
 			"X.js",
@@ -831,7 +831,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 	}
 
 
-	public void test0044() {
+	public void test044() {
 		this.runParseTest(
 				"ptr[i]();",
 			"X.js",
@@ -841,7 +841,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 
   
 
-	public void test0045() {
+	public void test045() {
 		// make sure divide not seen as regex 
 		this.runParseTest(
 				"((weight + 1)/2)",
@@ -850,7 +850,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		);
 	}
 
-	public void test0046() {
+	public void test046() {
 		// make sure divide not seen as regex 
 		this.runParseTest(
 				"a=1,b=2",
@@ -859,7 +859,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		);
 	}
 
-	public void test0046b() {
+	public void test046b() {
 		// make sure divide not seen as regex 
 		this.runParseTest(
 				"a=1,funcall(0),5",
@@ -868,7 +868,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		);
 	}
 
-	public void test0050() {
+	public void test050() {
 		// make sure divide not seen as regex 
 		this.runParseTest(
 				"if (true) var c=1;",
