@@ -1084,17 +1084,17 @@ public FlowInfo copy() {
 }
 
 public void markAsDefinitelyNonNull(LocalVariableBinding local) {
-	grow(local.id + this.maxFieldCount);
+	grow( getLocalID(local));
 	super.markAsDefinitelyNonNull(local);
 }
 
 public void markAsDefinitelyNull(LocalVariableBinding local) {
-	grow(local.id + this.maxFieldCount);
+	grow( getLocalID(local));
 	super.markAsDefinitelyNull(local);
 }
 
 public void markAsDefinitelyUnknown(LocalVariableBinding local) {
-	grow(local.id + this.maxFieldCount);
+	grow( getLocalID(local));
 	super.markAsDefinitelyUnknown(local);
 }
 
