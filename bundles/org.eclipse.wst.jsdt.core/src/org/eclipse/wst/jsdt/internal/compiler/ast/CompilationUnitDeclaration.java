@@ -135,7 +135,7 @@ public class CompilationUnitDeclaration
 			}
 			// request inner emulation propagation
 			propagateInnerEmulationForAllLocalTypes();
-			FlowInfo flowInfo=FlowInfo.initial(1);
+			FlowInfo flowInfo=FlowInfo.initial(this.scope.localIndex);
 			FlowContext flowContext = new FlowContext(null, this);
 	
 			if (statements != null) {

@@ -121,7 +121,7 @@ public void markAsComparedEqualToNonNull(LocalVariableBinding local) {
     	this.tagBits |= NULL_FLAG_MASK;
     	int position;
     	// position is zero-based
-    	if ((position = local.id + this.maxFieldCount) < BitCacheSize) { // use bits
+    	if ((position =  getLocalID(local)) < BitCacheSize) { // use bits
     		// set protected non null
     		this.nullBit1 |= (1L << position);
     		if (coverageTestFlag && coverageTestId == 290) {
@@ -162,7 +162,7 @@ public void markAsDefinitelyNonNull(LocalVariableBinding local) {
     	this.tagBits |= NULL_FLAG_MASK;
     	int position;
     	// position is zero-based
-    	if ((position = local.id + this.maxFieldCount) < BitCacheSize) { // use bits
+    	if ((position =  getLocalID(local)) < BitCacheSize) { // use bits
     		// set assigned non null
     		this.nullBit3 |= (1L << position);
     		if (coverageTestFlag && coverageTestId == 290) {
@@ -204,7 +204,7 @@ public void markAsDefinitelyNull(LocalVariableBinding local) {
     	this.tagBits |= NULL_FLAG_MASK;
     	int position;
     	// position is zero-based
-    	if ((position = local.id + this.maxFieldCount) < BitCacheSize) { // use bits
+    	if ((position =  getLocalID(local)) < BitCacheSize) { // use bits
     		// set assigned null
     		this.nullBit2 |= (1L << position);
     		if (coverageTestFlag && coverageTestId == 290) {
@@ -245,7 +245,7 @@ public void markAsDefinitelyUnknown(LocalVariableBinding local) {
     	this.tagBits |= NULL_FLAG_MASK;
     	int position;
     	// position is zero-based
-    	if ((position = local.id + this.maxFieldCount) < BitCacheSize) { // use bits
+    	if ((position =  getLocalID(local)) < BitCacheSize) { // use bits
     		// set assigned unknown
     		this.nullBit4 |= (1L << position);
     		if (coverageTestFlag && coverageTestId == 290) {

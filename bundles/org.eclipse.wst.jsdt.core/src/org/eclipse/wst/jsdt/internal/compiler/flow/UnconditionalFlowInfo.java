@@ -15,6 +15,7 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 
 /**
@@ -508,7 +509,7 @@ final public boolean cannotBeNull(LocalVariableBinding local) {
 		return false;
 	}
 	int position;
-	if ((position = local.id + this.maxFieldCount) < BitCacheSize) {
+	if ((position = getLocalID(local)) < BitCacheSize) {
 		// use bits
 		return (this.nullBit1 & this.nullBit3
 			& ((this.nullBit2 & this.nullBit4) | ~this.nullBit2)
@@ -535,7 +536,7 @@ final public boolean canOnlyBeNull(LocalVariableBinding local) {
 		return false;
 	}
 	int position;
-	if ((position = local.id + this.maxFieldCount) < BitCacheSize) {
+	if ((position = getLocalID(local)) < BitCacheSize) {
 		// use bits
 		return (this.nullBit1 & this.nullBit2
 			& (~this.nullBit3 | ~this.nullBit4)
@@ -697,7 +698,7 @@ final public boolean isDefinitelyAssigned(LocalVariableBinding local) {
 	if ((this.tagBits & UNREACHABLE) != 0 && (local.declaration.bits & ASTNode.IsLocalDeclarationReachable) != 0) {
 		return true;
 	}
-	return isDefinitelyAssigned(local.id + this.maxFieldCount);
+	return isDefinitelyAssigned( getLocalID(local));
 }
 
 final public boolean isDefinitelyNonNull(LocalVariableBinding local) {
@@ -710,7 +711,7 @@ final public boolean isDefinitelyNonNull(LocalVariableBinding local) {
 			local.constant() != Constant.NotAConstant) { // String instances
 		return true;
 	}
-	int position = local.id + this.maxFieldCount;
+	int position =  getLocalID(local);
 	if (position < BitCacheSize) { // use bits
 		return ((this.nullBit1 & this.nullBit3 & (~this.nullBit2 | this.nullBit4))
 			    & (1L << position)) != 0;
@@ -736,7 +737,7 @@ final public boolean isDefinitelyNull(LocalVariableBinding local) {
 			(local.type.tagBits & TagBits.IsBaseType) != 0 */) {
 		return false;
 	}
-	int position = local.id + this.maxFieldCount;
+	int position =  getLocalID(local);
 	if (position < BitCacheSize) { // use bits
 		return ((this.nullBit1 & this.nullBit2
 			        & (~this.nullBit3 | ~this.nullBit4))
@@ -762,7 +763,7 @@ final public boolean isDefinitelyUnknown(LocalVariableBinding local) {
 			(this.tagBits & NULL_FLAG_MASK) == 0) {
 		return false;
 	}
-	int position = local.id + this.maxFieldCount;
+	int position =  getLocalID(local);
 	if (position < BitCacheSize) { // use bits
 		return ((this.nullBit1 & this.nullBit4
 				& ~this.nullBit2 & ~this.nullBit3) & (1L << position)) != 0;
@@ -812,7 +813,7 @@ final public boolean isPotentiallyAssigned(LocalVariableBinding local) {
 	if (local.constant() != Constant.NotAConstant) {
 		return true;
 	}
-	return isPotentiallyAssigned(local.id + this.maxFieldCount);
+	return isPotentiallyAssigned( getLocalID(local));
 }
 
 final public boolean isPotentiallyNonNull(LocalVariableBinding local) {
@@ -821,7 +822,7 @@ final public boolean isPotentiallyNonNull(LocalVariableBinding local) {
 		return false;
 	}
 	int position;
-	if ((position = local.id + this.maxFieldCount) < BitCacheSize) {
+	if ((position = getLocalID(local)) < BitCacheSize) {
 		// use bits
 		return ((this.nullBit3 & (~this.nullBit1 | ~this.nullBit2))
 			    & (1L << position)) != 0;
@@ -846,7 +847,7 @@ final public boolean isPotentiallyNull(LocalVariableBinding local) {
 		return false;
 	}
 	int position;
-	if ((position = local.id + this.maxFieldCount) < BitCacheSize) {
+	if ((position =  getLocalID(local)) < BitCacheSize) {
 		// use bits
 		return ((this.nullBit2 & (~this.nullBit1 | ~this.nullBit3))
 			    & (1L << position)) != 0;
@@ -871,7 +872,7 @@ final public boolean isPotentiallyUnknown(LocalVariableBinding local) {
 			(this.tagBits & NULL_FLAG_MASK) == 0) {
 		return false;
 	}
-	int position = local.id + this.maxFieldCount;
+	int position =  getLocalID(local);
 	if (position < BitCacheSize) { // use bits
 		return (this.nullBit4 
 			& (~this.nullBit1 | ~this.nullBit2 & ~this.nullBit3)
@@ -898,7 +899,7 @@ final public boolean isProtectedNonNull(LocalVariableBinding local) {
 		return false;
 	}
 	int position;
-	if ((position = local.id + this.maxFieldCount) < BitCacheSize) {
+	if ((position =  getLocalID(local)) < BitCacheSize) {
 		// use bits
 		return (this.nullBit1 & this.nullBit3 & this.nullBit4 & (1L << position)) != 0;
 	}
@@ -923,7 +924,7 @@ final public boolean isProtectedNull(LocalVariableBinding local) {
 		return false;
 	}
 	int position;
-	if ((position = local.id + this.maxFieldCount) < BitCacheSize) {
+	if ((position =  getLocalID(local)) < BitCacheSize) {
 		// use bits
 		return (this.nullBit1 & this.nullBit2
 			& (this.nullBit3 ^ this.nullBit4)
@@ -951,7 +952,7 @@ public void markAsComparedEqualToNonNull(LocalVariableBinding local) {
 		long mask;
 		long a1, a2, a3, a4, na2;
 		// position is zero-based
-		if ((position = local.id + this.maxFieldCount) < BitCacheSize) {
+		if ((position =  getLocalID(local)) < BitCacheSize) {
 			// use bits
 			if (((mask = 1L << position) 
 				& (a1 = this.nullBit1)
@@ -1039,7 +1040,7 @@ public void markAsComparedEqualToNull(LocalVariableBinding local) {
 		int position;
 		long mask;
 		// position is zero-based
-		if ((position = local.id + this.maxFieldCount) < BitCacheSize) {
+		if ((position =  getLocalID(local)) < BitCacheSize) {
 			// use bits
 			if (((mask = 1L << position) & this.nullBit1) != 0) {
   			  	if ((mask  
@@ -1160,8 +1161,10 @@ public void markAsDefinitelyAssigned(FieldBinding field) {
 }
 
 public void markAsDefinitelyAssigned(LocalVariableBinding local) {
-	if (this != DEAD_END)
-		markAsDefinitelyAssigned(local.id + this.maxFieldCount);
+ 	if (this != DEAD_END)
+ 	{
+		markAsDefinitelyAssigned(getLocalID(local));
+ 	}
 }
 
 public void markAsDefinitelyNonNull(LocalVariableBinding local) {
@@ -1171,7 +1174,7 @@ public void markAsDefinitelyNonNull(LocalVariableBinding local) {
     	long mask;
     	int position;
     	// position is zero-based
-    	if ((position = local.id + this.maxFieldCount) < BitCacheSize) { // use bits
+    	if ((position =  getLocalID(local)) < BitCacheSize) { // use bits
     		// set assigned non null
     		this.nullBit1 |= (mask = 1L << position);
     		this.nullBit3 |= mask;
@@ -1204,7 +1207,7 @@ public void markAsDefinitelyNull(LocalVariableBinding local) {
     	long mask;
     	int position;
     	// position is zero-based
-    	if ((position = local.id + this.maxFieldCount) < BitCacheSize) { // use bits
+    	if ((position =  getLocalID(local)) < BitCacheSize) { // use bits
     		// mark assigned null
     		this.nullBit1 |= (mask = 1L << position);
     		this.nullBit2 |= mask;
@@ -1243,7 +1246,7 @@ public void markAsDefinitelyUnknown(LocalVariableBinding local) {
 		long mask;
 		int position;
 		// position is zero-based
-		if ((position = local.id + this.maxFieldCount) < BitCacheSize) {
+		if ((position =  getLocalID(local)) < BitCacheSize) {
 			// use bits
 			// mark assigned null
 			this.nullBit1 |= (mask = 1L << position);
@@ -1693,6 +1696,14 @@ public UnconditionalFlowInfo unconditionalInits() {
 
 public UnconditionalFlowInfo unconditionalInitsWithoutSideEffect() {
 	return this;
+}
+
+protected final int getLocalID(LocalVariableBinding local)
+{
+		int id=local.id;
+ 		if (local.declaringScope.kind==Scope.METHOD_SCOPE)
+ 			id+=this.maxFieldCount;	
+ 		return id;
 }
 }
 
