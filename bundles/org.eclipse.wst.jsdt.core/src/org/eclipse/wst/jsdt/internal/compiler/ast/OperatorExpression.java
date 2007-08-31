@@ -590,8 +590,14 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//     table[(T_null<<4)+T_null] 			= T_undefined;
 		table[(T_null<<4)+T_any] 			= T_boolean;
 
-	   table[(T_any<<4)+T_undefined] 		= T_boolean;
-		table[(T_any<<4)+T_byte] 			= T_boolean;
+		   table[(T_any<<4)+T_undefined] 		= T_boolean;
+
+		   table[(T_function<<4)+T_undefined] 		= T_boolean;
+		   table[(T_function<<4)+T_any] 		= T_boolean;
+		   table[(T_function<<4)+T_function] 		= T_boolean;
+		   
+		   
+		   table[(T_any<<4)+T_byte] 			= T_boolean;
 		table[(T_any<<4)+T_long] 			= T_boolean;
 		table[(T_any<<4)+T_short] 			= T_boolean;
 		table[(T_any<<4)+T_void] 			= T_boolean;
