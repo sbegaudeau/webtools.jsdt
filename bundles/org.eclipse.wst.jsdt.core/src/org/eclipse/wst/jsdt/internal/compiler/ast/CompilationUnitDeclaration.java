@@ -135,7 +135,15 @@ public class CompilationUnitDeclaration
 			}
 			// request inner emulation propagation
 			propagateInnerEmulationForAllLocalTypes();
-			FlowInfo flowInfo=FlowInfo.initial(this.scope.localIndex);
+			
+			this.scope.temporaryAnalysisIndex=0;
+			int maxVars=this.scope.localIndex;
+			for (Iterator iter = this.scope.externalCompilationUnits.iterator(); iter.hasNext();) {
+				CompilationUnitScope externalScope = (CompilationUnitScope) iter.next();
+				externalScope.temporaryAnalysisIndex=maxVars;
+				maxVars+=externalScope.localIndex;
+			}
+			FlowInfo flowInfo=FlowInfo.initial(maxVars);
 			FlowContext flowContext = new FlowContext(null, this);
 	
 			if (statements != null) {

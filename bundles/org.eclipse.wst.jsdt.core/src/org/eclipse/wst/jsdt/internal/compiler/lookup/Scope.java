@@ -2132,6 +2132,8 @@ public abstract class Scope implements TypeConstants, TypeIds {
 					if (method.problemId()!=ProblemReasons.NotFound)
 						return method;
 				}
+				else
+					return method;
 			}
 				
 			return new ProblemFieldBinding(
@@ -2895,12 +2897,17 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			// check if the name is in the current package, skip it if its a sub-package
 			PackageBinding currentPackage = unitScope.getDefaultPackage(); 
 			unitScope.recordReference(currentPackage.compoundName, name);
-			Binding binding = currentPackage.getTypeOrPackage(name, mask);
+			Binding binding=currentPackage.getTypeOrPackage(name, mask);
 			if ( (binding instanceof ReferenceBinding || binding instanceof MethodBinding)
 					&& !(binding instanceof ProblemReferenceBinding)) {
 				if (typeOrPackageCache != null)
 					typeOrPackageCache.put(name, binding);
 				return binding; // type is always visible to its own package
+			}
+			else if (binding instanceof LocalVariableBinding && binding.isValidBinding())
+			{
+				compilationUnitScope().addExternalVar((LocalVariableBinding)binding);
+				return binding;
 			}
 
 			// check on demand imports

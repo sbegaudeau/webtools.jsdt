@@ -159,8 +159,10 @@ public class SingleNameReference extends NameReference implements OperatorIds {
 				}
 				break;
 			case Binding.LOCAL : // reading a local variable
-				LocalVariableBinding localBinding;
-				if (!flowInfo.isDefinitelyAssigned(localBinding = (LocalVariableBinding) binding)) {
+				LocalVariableBinding localBinding= (LocalVariableBinding) binding;
+				
+				if (localBinding.isSameCompilationUnit(currentScope) && 
+						!flowInfo.isDefinitelyAssigned(localBinding )) {
 					currentScope.problemReporter().uninitializedLocalVariable(localBinding, this);
 				}
 				if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0)	{

@@ -12,6 +12,7 @@
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
@@ -65,6 +66,10 @@ public ReferenceBinding superBinding;
 private MethodScope methodScope;
 private ClassScope classScope;
 
+public int temporaryAnalysisIndex;
+
+
+public HashSet externalCompilationUnits=new HashSet();
 
 
 class DeclarationVisitor extends ASTVisitor
@@ -1161,5 +1166,9 @@ public void cleanup()
 			type.scope=null;
 		}
 	}
+}
+
+public void addExternalVar(LocalVariableBinding binding) {
+  externalCompilationUnits.add(binding.declaringScope.compilationUnitScope());	
 }
 }

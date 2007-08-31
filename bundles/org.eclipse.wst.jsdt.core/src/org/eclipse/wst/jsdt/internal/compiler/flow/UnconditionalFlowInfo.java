@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.internal.compiler.flow;
 
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
@@ -86,6 +87,7 @@ public class UnconditionalFlowInfo extends FlowInfo {
 	// Constants
 	public static final int BitCacheSize = 64; // 64 bits in a long.
 
+	
 public FlowInfo addInitializationsFrom(FlowInfo inits) {
 	if (this == DEAD_END)
 		return this;
@@ -1703,6 +1705,8 @@ protected final int getLocalID(LocalVariableBinding local)
 		int id=local.id;
  		if (local.declaringScope.kind==Scope.METHOD_SCOPE)
  			id+=this.maxFieldCount;	
+ 		else
+ 			id+=local.declaringScope.compilationUnitScope().temporaryAnalysisIndex;
  		return id;
 }
 }

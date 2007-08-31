@@ -175,6 +175,11 @@ public class LocalVariableBinding extends VariableBinding {
 		return declaration == null && (this.tagBits & TagBits.IsArgument) == 0;
 	}
 
+	public final boolean isSameCompilationUnit(Scope scope)
+	{
+		return this.declaringScope.compilationUnitScope()==scope;
+	}
+	
 	public void recordInitializationEndPC(int pc) {
 
 		if (initializationPCs[((initializationCount - 1) << 1) + 1] == -1)

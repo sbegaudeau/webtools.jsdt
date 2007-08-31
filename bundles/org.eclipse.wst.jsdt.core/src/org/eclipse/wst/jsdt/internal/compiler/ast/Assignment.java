@@ -38,6 +38,8 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 // a field reference, a blank final field reference, a field of an enclosing instance or 
 // just a local variable.
 	LocalVariableBinding local = this.lhs.localVariableBinding();
+//	if (local!=null && local.isSameCompilationUnit(currentScope))
+//		local=null;
 	int nullStatus = this.expression.nullStatus(flowInfo);
 	if (local != null && (local.type.tagBits & TagBits.IsBaseType) == 0) {
 		if (nullStatus == FlowInfo.NULL) {
