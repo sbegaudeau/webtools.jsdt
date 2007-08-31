@@ -54,7 +54,7 @@ public class MethodScope extends BlockScope {
 	
 	public static final char [] ARGUMENTS_NAME={'a','r','g','u','m','e','n','t','s'};
 	
-	LocalVariableBinding argumentsBinding = new LocalVariableBinding(ARGUMENTS_NAME,TypeBinding.UNKNOWN,0,true);
+	LocalVariableBinding argumentsBinding ;
 	
 	
 	public MethodScope(Scope parent, ReferenceContext context, boolean isStatic) {
@@ -64,6 +64,8 @@ public class MethodScope extends BlockScope {
 		this.referenceContext = context;
 		this.isStatic = isStatic;
 		this.startIndex = 0;
+		argumentsBinding = new LocalVariableBinding(ARGUMENTS_NAME,TypeBinding.UNKNOWN,0,true);
+		argumentsBinding.declaringScope=this;
 	}
 
 	/* Spec : 8.4.3 & 9.4
