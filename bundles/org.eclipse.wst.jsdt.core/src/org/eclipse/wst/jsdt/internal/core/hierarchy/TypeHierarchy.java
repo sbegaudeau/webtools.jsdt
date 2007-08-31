@@ -258,7 +258,7 @@ public void cacheFlags(IType type, int flags) {
  */
 protected void cacheSuperclass(IType type, IType superclass) {
 	if (superclass != null) {
-System.out.println(type.hashCode() +typehash(type));		
+//System.out.println(type.hashCode() +typehash(type));		
 		this.classToSuperclass.put(type, superclass);
 		addSubtype(superclass, type);
 	} 
@@ -318,7 +318,7 @@ private String typehash(IJavaElement type)
  */
 public boolean contains(IType type) {
 	// classes
-	System.out.println("CONTAINS "+typehash(type));		
+//	System.out.println("CONTAINS "+typehash(type));		
 	
 	if (this.classToSuperclass.get(type) != null) {
 		return true;
