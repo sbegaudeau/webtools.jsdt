@@ -23,6 +23,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemFieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
@@ -69,6 +70,11 @@ public FlowInfo analyseAssignment(BlockScope currentScope, 	FlowContext flowCont
 			// we could improve error msg here telling "cannot use compound assignment on final blank field"
 		}
 		manageSyntheticAccessIfNecessary(currentScope, flowInfo, true /*read-access*/);
+	}
+	if (receiver instanceof SingleNameReference && ((SingleNameReference)receiver).binding instanceof LocalVariableBinding)
+	{
+		flowInfo.markAsDefinitelyNonNull((LocalVariableBinding)((SingleNameReference)receiver).binding);
+		flowInfo.markAsDefinitelyAssigned((LocalVariableBinding)((SingleNameReference)receiver).binding);
 	}
 	flowInfo =
 		receiver
