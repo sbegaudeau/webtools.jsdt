@@ -253,7 +253,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 				if (initializationType != null) {
 //					if (variableType != initializationType) // must call before computeConversion() and typeMismatchError()
 //						scope.compilationUnitScope().recordTypeConversion(variableType, initializationType);
-					if (variableType==TypeBinding.UNKNOWN)
+					if (variableType==TypeBinding.UNKNOWN && initializationType!=TypeBinding.NULL)
 						this.binding.type=initializationType;
 					else if (initialization.isConstantValueOfTypeAssignableToType(initializationType, variableType)
 						|| variableType.isBaseType() /* && BaseTypeBinding.isWidening(variableType.id, initializationType.id)) */
