@@ -148,7 +148,7 @@ public class CompilationUnitDeclaration
 	
 			if (statements != null) {
 				for (int i = 0, count = statements.length; i < count; i++) {
-					((Statement)statements[i]).analyseCode(scope,flowContext,flowInfo);
+					flowInfo=((Statement)statements[i]).analyseCode(scope,flowContext,flowInfo);
 				}
 			}
 			this.scope.reportUnusedDeclarations();

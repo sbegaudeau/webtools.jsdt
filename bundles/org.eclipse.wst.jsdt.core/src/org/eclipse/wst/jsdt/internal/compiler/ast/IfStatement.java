@@ -105,6 +105,37 @@ public class IfStatement extends Statement {
 					elseStatement.analyseCode(currentScope, flowContext, elseFlowInfo);
 			}
 		}
+		
+		// handle cases  where condition is "typeof something== ''", set inits accordingly
+		if (this.condition instanceof EqualExpression)
+		{
+			EqualExpression equalExpression =(EqualExpression) this.condition;
+			int operator=(equalExpression.bits & OperatorMASK) >> OperatorSHIFT;
+			if (operator==OperatorIds.EQUAL_EQUAL || operator==OperatorIds.NOT_EQUAL)
+			{
+
+				boolean isDefined[]={false};
+				SingleNameReference snr=getTypeofExpressionVar(equalExpression.left,equalExpression.right,isDefined);
+				if (snr==null)
+					snr=getTypeofExpressionVar(equalExpression.right, equalExpression.left,isDefined);
+				if (snr!=null)
+				{
+					LocalVariableBinding local = snr.localVariableBinding();
+					if (local==null)
+						snr.resolve(currentScope);
+					local = snr.localVariableBinding();
+					if (local!=null)
+					{
+						if (isDefined[0])
+							thenFlowInfo.markAsDefinitelyAssigned(local);
+						else
+							elseFlowInfo.markAsDefinitelyAssigned(local);
+					}
+				}
+			    
+				
+			}
+		}
 
 		// merge THEN & ELSE initializations
 		FlowInfo mergedInfo = FlowInfo.mergedOptimizedBranches(
@@ -117,6 +148,23 @@ public class IfStatement extends Statement {
 		return mergedInfo;
 	}
 
+	private SingleNameReference getTypeofExpressionVar(Expression expression1,Expression expression2,boolean isDefined[])
+	{
+		if (expression1 instanceof UnaryExpression && expression2.constant instanceof StringConstant)
+		{
+			UnaryExpression unaryExpression = (UnaryExpression)expression1;
+			if ( unaryExpression.expression instanceof SingleNameReference &&
+					(((unaryExpression.bits & OperatorMASK) >> OperatorSHIFT)==OperatorIds.TYPEOF)
+					)
+		{
+				isDefined[0]=!((StringConstant)expression2.constant).stringValue().equals("undefined");
+				return (SingleNameReference)unaryExpression.expression ;
+				
+		}
+		}
+		return null;
+	}
+	
 	/**
 	 * If code generation
 	 *

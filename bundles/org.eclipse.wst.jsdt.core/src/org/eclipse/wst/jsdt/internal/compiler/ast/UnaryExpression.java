@@ -237,14 +237,20 @@ public FlowInfo analyseCode(
 			return null;
 		}
 	
-		int tableId;
+		int tableId=-1;
 		int operator = (bits & OperatorMASK) >> OperatorSHIFT;
 		switch (operator) {
 			case NOT :
-				tableId = AND_AND;
+				this.resolvedType=  TypeBinding.BOOLEAN;
 				break;
 			case TWIDDLE :
 				tableId = LEFT_SHIFT;
+				break;
+			case TYPEOF :
+				this.resolvedType=  scope.getJavaLangString();
+				break;
+			case OperatorIds.VOID :
+				this.resolvedType= TypeBinding.VOID;
 				break;
 			default :
 				tableId = MINUS;
@@ -254,11 +260,7 @@ public FlowInfo analyseCode(
 		// (cast)  left   Op (cast)  rigth --> result
 		//  0000   0000       0000   0000      0000
 		//  <<16   <<12       <<8    <<4       <<0
-		if (operator==NOT)
-		{
-			this.resolvedType=  TypeBinding.BOOLEAN;
-		}
-		else
+		if (tableId>-1)	// not already determined
 		{
 		int operatorSignature = OperatorSignatures[tableId][(expressionTypeID << 4) + expressionTypeID];
 //		this.expression.computeConversion(scope, TypeBinding.wellKnownType(scope, (operatorSignature >>> 16) & 0x0000F), expressionType);
