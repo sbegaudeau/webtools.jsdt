@@ -148,6 +148,11 @@ public class CompilationUnitDeclaration
 	
 			if (statements != null) {
 				for (int i = 0, count = statements.length; i < count; i++) {
+					if (statements[i] instanceof  AbstractMethodDeclaration)
+					{
+						((AbstractMethodDeclaration)statements[i]).analyseCode(this.scope, null, flowInfo.copy());
+					}
+					else
 					flowInfo=((Statement)statements[i]).analyseCode(scope,flowContext,flowInfo);
 				}
 			}

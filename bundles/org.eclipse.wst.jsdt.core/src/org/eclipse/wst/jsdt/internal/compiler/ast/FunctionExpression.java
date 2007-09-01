@@ -44,7 +44,8 @@ public class FunctionExpression extends Expression {
 			BlockScope classScope,
 			FlowContext initializationContext,
 			FlowInfo flowInfo) {
-		return this.methodDeclaration.analyseCode(classScope, initializationContext, flowInfo);
+		this.methodDeclaration.analyseCode(classScope, initializationContext, flowInfo.copy());
+		return flowInfo;
 	}
 	
 }
