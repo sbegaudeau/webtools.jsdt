@@ -217,6 +217,11 @@ class BindingsCollectorVisitor extends ASTVisitor {
 		collectBindings(node, binding);
 	}
 
+	public void endVisit(ListExpression node) {
+		ITypeBinding typeBinding = node.resolveTypeBinding();
+		collectBindings(node, typeBinding);
+	}
+
 	/**
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(MethodDeclaration)
 	 */

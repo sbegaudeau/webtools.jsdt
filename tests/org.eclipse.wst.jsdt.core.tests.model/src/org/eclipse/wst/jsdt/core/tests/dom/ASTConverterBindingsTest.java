@@ -49,6 +49,7 @@ import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
+import org.eclipse.wst.jsdt.core.dom.ListExpression;
 import org.eclipse.wst.jsdt.core.dom.MemberRef;
 import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
 import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
@@ -261,6 +262,11 @@ public class ASTConverterBindingsTest extends ConverterTestSetup {
 			collectBindings(node, typeBinding);
 		}
 
+		public void endVisit(ListExpression node) {
+			ITypeBinding typeBinding = node.resolveTypeBinding();
+			collectBindings(node, typeBinding);
+		}
+		
 		/**
 		 * @see ASTVisitor#endVisit(MemberRef)
 		 * @since 3.0
