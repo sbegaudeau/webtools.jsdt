@@ -123,6 +123,14 @@ public class CombinedSourceTypeBinding extends SourceTypeBinding {
 	}
 
 
+	public boolean contains(ReferenceBinding binding)
+	{
+		for (int i = 0; i < this.sourceTypes.length ; i++) 
+			if (this.sourceTypes[i]==binding)
+				return true;
+		
+		return false;
+	}
 
 }
 

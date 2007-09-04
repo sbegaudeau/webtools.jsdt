@@ -70,6 +70,12 @@ public final boolean canBeSeenBy(TypeBinding receiverType, InvocationSite invoca
 	SourceTypeBinding invocationType = scope.enclosingSourceType();
 	if (invocationType == declaringClass && invocationType == receiverType) return true;
 
+	if (receiverType instanceof CombinedSourceTypeBinding) {
+		CombinedSourceTypeBinding combinedBinding = (CombinedSourceTypeBinding) receiverType;
+		if (combinedBinding.contains(declaringClass)  && combinedBinding.contains(invocationType)) return true;
+		
+	}
+	
 	if (invocationType == null) // static import call
 		return !isPrivate() && scope.getCurrentPackage() == declaringClass.fPackage;
 
