@@ -358,34 +358,21 @@ public void buildSuperType() {
 	
 		/* If super type is combined source type, search through SourceTypes for the specific instance */
 		if(superBinding instanceof CombinedSourceTypeBinding) {
-			SourceTypeBinding[] refBindings  = ((CombinedSourceTypeBinding)superBinding).sourceTypes;
-			IPackageFragment[] superLibFrags = libSuperType.getPackageFragments();
-			boolean found = false;
-			for(int i = 0;!found && i<refBindings.length;i++) {
-				String cuName = new String(refBindings[i].getFileName());
-				for(int j = 0;!found && j<superLibFrags.length;j++) {
-					IClassFile classfile = superLibFrags[j].getClassFile(cuName);
-					if(classfile.exists()) {
-						superBinding = refBindings[i];
-						InferredType te = refBindings[i].getInferredType();
-						classScope = new ClassScope(this, te);
-						
-						SourceTypeBinding sourceType =refBindings[i];
-						
-						classScope.buildInferredType(sourceType, environment.defaultPackage, null);
-						
-						
-						recordTypeReference(superBinding);
-						recordSuperTypeReference(superBinding);
-						environment().setAccessRestriction(superBinding, null);	
-						found=true;
-						
-					}
-				}
+			
+				CombinedSourceTypeBinding te = (CombinedSourceTypeBinding)superBinding;
+				classScope = te.classScope;
 				
-			}
-			
-			
+				SourceTypeBinding sourceType = null;
+				
+				if(superBinding instanceof SourceTypeBinding) {
+					sourceType = (SourceTypeBinding)superBinding;
+				}
+				classScope.buildInferredType(sourceType, environment.defaultPackage, null);
+				
+				
+				recordTypeReference(superBinding);
+				recordSuperTypeReference(superBinding);
+				environment().setAccessRestriction(superBinding, null);	
 		}else if(superBinding!=null) {
 			InferredType te = superBinding.getInferredType();
 			classScope = new ClassScope(this, te);
