@@ -52,7 +52,7 @@ public class ObjectLiteral extends Expression {
 			for (int i = 0; i < this.fields.length; i++) {
 				this.fields[i].resolveType(scope);
 			}
-		return null;
+		return TypeBinding.ANY;
 	}
 	
 	public int nullStatus(FlowInfo flowInfo) {
