@@ -48,6 +48,7 @@ public class ObjectLiteral extends Expression {
 	
 
 	public TypeBinding resolveType(BlockScope scope) {
+		this.constant=Constant.NotAConstant;
 		if (this.fields!=null)
 			for (int i = 0; i < this.fields.length; i++) {
 				this.fields[i].resolveType(scope);

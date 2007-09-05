@@ -565,6 +565,7 @@ public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding use
 			this.binding=scope.getJavaLangObject().getField(fieldname, true);
 		}
 		
+		constant = Constant.NotAConstant;
 		return this.resolvedType = typeBinding;
 	}	
 	
@@ -590,6 +591,7 @@ public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding use
 	Binding memberBinding = scope.getFieldOrMethod(this.receiverType, token, this);
 	//FieldBinding fieldBinding = this.codegenBinding = this.binding = scope.getField(this.receiverType, token, this);
 	
+	constant = Constant.NotAConstant;
 	if( memberBinding instanceof FieldBinding ){
 		FieldBinding fieldBinding =/* this.codegenBinding =*/ this.binding = (FieldBinding)memberBinding;
 		if (!fieldBinding.isValidBinding()) {
