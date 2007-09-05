@@ -378,26 +378,27 @@ public void enterType(TypeInfo typeInfo) {
 	String nameString= new String(typeInfo.name);
 	
 	//@GINO: Anonymous setting model as anonymous
-	SourceType handle = typeInfo.anonymousMember ? 
-			new SourceType(parentHandle, nameString){
-
-				public boolean isAnonymous() {
-					return true;
-				}
-		
-			} :
+	SourceType handle = 
+//		typeInfo.anonymousMember ? 
+//			new SourceType(parentHandle, nameString){
+//
+//				public boolean isAnonymous() {
+//					return true;
+//				}
+//		
+//			} :
 		new SourceType(parentHandle, nameString);  //NB: occurenceCount is computed in resolveDuplicates
 	
 	resolveDuplicates(handle);
 	
 	SourceTypeElementInfo info =
-		typeInfo.anonymousMember ? 
-				new SourceTypeElementInfo( parentHandle instanceof ClassFile ) {
-					public boolean isAnonymousMember() {
-						return true;
-					}
-				} : 
-			new SourceTypeElementInfo( parentHandle instanceof ClassFile );
+//		typeInfo.anonymousMember ? 
+//				new SourceTypeElementInfo( parentHandle instanceof ClassFile ) {
+//					public boolean isAnonymousMember() {
+//						return true;
+//					}
+//				} : 
+			new SourceTypeElementInfo( parentHandle instanceof ClassFile , typeInfo.anonymousMember);
 	info.setHandle(handle);
 	info.setSourceRangeStart(typeInfo.declarationStart);
 	info.setFlags(typeInfo.modifiers);
