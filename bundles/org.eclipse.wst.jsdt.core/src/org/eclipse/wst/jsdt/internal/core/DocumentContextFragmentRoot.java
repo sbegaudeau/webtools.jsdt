@@ -125,7 +125,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 			String systemFiles[] = getProjectSystemFiles();
 			
 			for(int i = 0;i<systemFiles.length;i++) {
-				if(Util.isSameResourceString(path, systemFiles[i])) {
+				if(Util.isSameResourceString(path, systemFiles[i]) || (new Path(systemFiles[i])).isPrefixOf(new Path(path))) {
 					if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Accepting binding.. " + new String(simpleTypeName) + " in " + path + " \n\tfor file " + fRelativeFile.toString());
 					this.foundPaths.add(path);
 					return true;
@@ -174,6 +174,8 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 			projectRoots = javaProject.getPackageFragmentRoots();
 			for(int i =0;i<projectRoots.length;i++) {
 				if(projectRoots[i].isLanguageRuntime()) {
+					projectRoots[lastGood++]=projectRoots[i];
+				}else if(projectRoots[i].getRawClasspathEntry().getEntryKind()== IClasspathEntry.CPE_SOURCE) {
 					projectRoots[lastGood++]=projectRoots[i];
 				}
 			}
