@@ -567,4 +567,10 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 	public char[] qualifiedPackageName() {
 		return this.path;
 	}
+	
+	public void cleanup()
+	{
+		super.cleanup();
+		this.compilationUnitScope=null;
+	}
 }

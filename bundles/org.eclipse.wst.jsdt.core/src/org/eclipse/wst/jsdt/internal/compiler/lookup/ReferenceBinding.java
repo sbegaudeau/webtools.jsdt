@@ -1204,4 +1204,9 @@ public InferredType getInferredType() {
 MethodBinding[] unResolvedMethods() { // for the MethodVerifier so it doesn't resolve types
 	return methods();
 }
+
+public void cleanup()
+{
+	
+}
 }

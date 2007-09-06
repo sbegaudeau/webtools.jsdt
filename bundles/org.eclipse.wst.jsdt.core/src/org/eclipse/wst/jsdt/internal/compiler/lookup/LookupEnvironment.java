@@ -1335,6 +1335,7 @@ public void reset() {
 	this.classFilePool.reset();
 	// name environment has a longer life cycle, and must be reset in
 	// the code which created it.
+	this.acceptedCompilationUnits.clear();
 }
 /**
  * Associate a given type with some access restriction

@@ -1149,8 +1149,7 @@ public void cleanup()
 		if (obj instanceof SourceTypeBinding)
 		{
 			SourceTypeBinding type = (SourceTypeBinding) obj;
-			type.classScope=null;
-			type.scope=null;
+			type.cleanup();
 		}
 	}
 }

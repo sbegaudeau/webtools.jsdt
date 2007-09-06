@@ -49,6 +49,13 @@ public class CompilationUnitDeclaration
 	extends ASTNode
 	implements ProblemSeverities, ReferenceContext {
 	
+	protected void finalize() throws Throwable {
+//		System.out.println("finalize "+hashCode());
+		super.finalize();
+	}
+
+
+
 	private static final Comparator STRING_LITERAL_COMPARATOR = new Comparator() {
 		public int compare(Object o1, Object o2) {
 			StringLiteral literal1 = (StringLiteral) o1;
@@ -103,6 +110,7 @@ public class CompilationUnitDeclaration
 		//by definition of a compilation unit....
 		sourceStart = 0;
 		sourceEnd = sourceLength - 1;
+//		System.out.println("create "+hashCode());
 	}
 
 	/*
@@ -169,7 +177,8 @@ public class CompilationUnitDeclaration
 	 */
 	public void cleanUp() {
 		if (this.compilationUnitBinding!=null)
-			this.compilationUnitBinding.scope=null;
+			
+			this.compilationUnitBinding.cleanup();
 		if (this.types != null) {
 			for (int i = 0, max = this.types.length; i < max; i++) {
 				cleanUp(this.types[i]);
@@ -185,7 +194,7 @@ public class CompilationUnitDeclaration
 		for (int i = 0; i < this.numberInferredTypes; i++) {
 			SourceTypeBinding binding = this.inferredTypes[i].binding;
 			if (binding!=null)
-				binding.scope=null;
+				binding.cleanup();
 		}
 		compilationResult.recoveryScannerData = null; // recovery is already done
 		

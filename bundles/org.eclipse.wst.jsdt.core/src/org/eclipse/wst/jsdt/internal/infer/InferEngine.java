@@ -959,6 +959,7 @@ public class InferEngine extends ASTVisitor {
 		compUnit.traverse(this, compUnit.scope,true);
 		passNumber=2;
 		compUnit.traverse(this, compUnit.scope,true);
+		this.compUnit=null;
 }
 	
 

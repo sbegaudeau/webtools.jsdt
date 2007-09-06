@@ -132,5 +132,11 @@ public class CombinedSourceTypeBinding extends SourceTypeBinding {
 		return false;
 	}
 
+	public void cleanup()
+	{
+		for (int i = 0; i < this.sourceTypes.length ; i++) 
+			this.sourceTypes[i].cleanup();		
+	}
+
 }
 

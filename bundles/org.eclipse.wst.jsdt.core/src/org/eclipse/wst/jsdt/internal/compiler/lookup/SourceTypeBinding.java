@@ -1803,4 +1803,9 @@ public void addMethod(MethodBinding binding)
 	
 }
 
+public void cleanup()
+{
+this.scope=null;
+this.classScope=null;
+}
 }

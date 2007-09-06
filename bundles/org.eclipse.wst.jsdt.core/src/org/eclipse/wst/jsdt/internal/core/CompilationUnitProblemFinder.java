@@ -291,7 +291,7 @@ public class CompilationUnitProblemFinder extends Compiler {
 			if (problemFactory != null)
 				problemFactory.monitor = null; // don't hold a reference to this external object
 			// NB: unit.cleanUp() is done by caller
-			if (problemFinder != null && !creatingAST)
+			if (problemFinder != null )//&& !creatingAST)
 				problemFinder.lookupEnvironment.reset();		
 		}
 	}
