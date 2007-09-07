@@ -1704,9 +1704,12 @@ private static char[][] enclosingTypeNames(IType type) {
 		case IJavaElement.INITIALIZER:
 		case IJavaElement.METHOD:
 			IType declaringClass = ((IMember) parent).getDeclaringType();
+			if (declaringClass!=null)
 			return CharOperation.arrayConcat(
 				enclosingTypeNames(declaringClass),
 				new char[][] {declaringClass.getElementName().toCharArray(), IIndexConstants.ONE_STAR});
+			else 
+				return CharOperation.NO_CHAR_CHAR;
 		case IJavaElement.TYPE:
 			return CharOperation.arrayConcat(
 				enclosingTypeNames((IType)parent), 
