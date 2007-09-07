@@ -516,8 +516,8 @@ public class JavaElementLabels {
 			
 			// qualification
 			IType declaringType = method.getDeclaringType();
-			if (getFlag(flags, M_FULLY_QUALIFIED)) {
-				if (declaringType!=null)
+			if (getFlag(flags, M_FULLY_QUALIFIED) ) {
+				if (declaringType!=null && !method.isConstructor())
 				{
 					getTypeLabel(method.getDeclaringType(), T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), buf);
 					buf.append('.');
@@ -893,7 +893,7 @@ public class JavaElementLabels {
 			IPackageFragment pack= type.getPackageFragment();
 			if (!pack.isDefaultPackage()) {
 				getPackageFragmentLabel(pack, (flags & QUALIFIER_FLAGS), buf);
-				buf.append('.');
+				//buf.append('.');
 			}
 		}
 		if (getFlag(flags, T_FULLY_QUALIFIED | T_CONTAINER_QUALIFIED)) {
@@ -1090,7 +1090,7 @@ public class JavaElementLabels {
 				}
 				buf.append(name.substring(start));
 		} else {
-			buf.append(pack.getDisplayName());
+			buf.append( "[" + pack.getDisplayName() + "]");
 		}
 		if (getFlag(flags, P_POST_QUALIFIED)) {
 			buf.append(CONCAT_STRING);
