@@ -107,11 +107,11 @@ abstract class JavaMatchFilter extends MatchFilter {
 	private static final JavaMatchFilter READ_FILTER= new ReadFilter(); 
 	private static final JavaMatchFilter WRITE_FILTER= new WriteFilter(); 
 	
-	private static final JavaMatchFilter POLYMORPHIC_FILTER= new PolymorphicFilter(); 
+	//private static final JavaMatchFilter POLYMORPHIC_FILTER= new PolymorphicFilter(); 
 	private static final JavaMatchFilter INEXACT_FILTER= new InexactMatchFilter(); 
 	private static final JavaMatchFilter ERASURE_FILTER= new ErasureMatchFilter(); 
 	
-	private static final JavaMatchFilter NON_PUBLIC_FILTER= new NonPublicFilter();
+	//private static final JavaMatchFilter NON_PUBLIC_FILTER= new NonPublicFilter();
 	private static final JavaMatchFilter STATIC_FILTER= new StaticFilter();
 	private static final JavaMatchFilter NON_STATIC_FILTER= new NonStaticFilter();
 	private static final JavaMatchFilter DEPRECATED_FILTER= new DeprecatedFilter();
@@ -124,11 +124,11 @@ abstract class JavaMatchFilter extends MatchFilter {
 			READ_FILTER,
 			WRITE_FILTER,
 			
-            POLYMORPHIC_FILTER,
+            /*POLYMORPHIC_FILTER,*/
 			INEXACT_FILTER,
 			ERASURE_FILTER,
 			
-			NON_PUBLIC_FILTER,
+		/*	NON_PUBLIC_FILTER,*/
 			STATIC_FILTER,
 			NON_STATIC_FILTER,
 			DEPRECATED_FILTER,
