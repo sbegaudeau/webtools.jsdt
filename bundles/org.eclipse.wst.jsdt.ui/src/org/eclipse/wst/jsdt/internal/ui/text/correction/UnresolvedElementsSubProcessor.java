@@ -147,8 +147,9 @@ public class UnresolvedElementsSubProcessor {
 						}
 					}
 				} else if (parent instanceof SimpleType || parent instanceof ClassInstanceCreation) {
-					suggestVariableProposals= false;
-					typeKind= SimilarElementsRequestor.REF_TYPES_AND_VAR;
+					
+				//	suggestVariableProposals= false;
+				//	typeKind= SimilarElementsRequestor.REF_TYPES_AND_VAR;
 				} else if (parent instanceof QualifiedName) {
 					Name qualifier= ((QualifiedName) parent).getQualifier();
 					if (qualifier != node) {
@@ -427,6 +428,9 @@ public class UnresolvedElementsSubProcessor {
 									|| isWriteAccess && canAssign(guessedType, varType)) {
 								relevance += 2; // unresolved variable can be assign to this variable
 							}
+						}else if (guessedType==null && relevance==0) {
+							/* type any? */
+							relevance+=1;
 						}
 						if (methodSenderName != null && hasMethodWithName(varType, methodSenderName)) {
 							relevance += 2;

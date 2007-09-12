@@ -6167,7 +6167,9 @@
             class="org.eclipse.wst.jsdt.libraries.BasicBrowserLibraryClassPathContainerInitializer"
             id="org.eclipse.wst.jsdt.launching.baseBrowserLibrary">
       </classpathContainerInitializer>
-   </extension>    
+   </extension>   
+   <!-- UNCOMMENT to add a menu option for JSDT standalone setup on project -->
+   <!-- 
    <extension
          point="org.eclipse.ui.popupMenus">
   		<objectContribution
@@ -6189,5 +6191,6 @@
             id="org.eclipse.wst.jsdt.internal.ui.convertProjects">
       	</action>
    		</objectContribution>
-   </extension> 
+   </extension>
+   --> 
 </plugin>

@@ -850,6 +850,7 @@ public void resolve(BlockScope upperScope) {
 
 public void traverse(ASTVisitor visitor, BlockScope blockScope) {
 	if (visitor.visit(this, blockScope)) {
+		if(this.scope==null) this.scope=blockScope;
 		this.tryBlock.traverse(visitor, this.scope);
 		if (this.catchArguments != null) {
 			for (int i = 0, max = this.catchBlocks.length; i < max; i++) {
