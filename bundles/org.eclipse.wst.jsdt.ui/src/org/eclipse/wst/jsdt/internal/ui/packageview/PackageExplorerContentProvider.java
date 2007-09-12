@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.ui.packageview;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -52,8 +51,6 @@ import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 
-import org.eclipse.wst.jsdt.internal.core.LibraryFragmentRoot;
-import org.eclipse.wst.jsdt.internal.core.LibraryPackageFragment;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
@@ -271,7 +268,7 @@ public class PackageExplorerContentProvider extends StandardJavaElementContentPr
 				return concatenate(getJavaProjects((IJavaModel)parentElement), getNonJavaProjects((IJavaModel)parentElement));
 
 			if(parentElement instanceof ContainerFolder) {
-				return getFolderChildren((ContainerFolder)parentElement);
+				return getContainerPackageFragmentRoots((PackageFragmentRootContainer)((ContainerFolder)parentElement).getParentObject());
 			}
 			if (parentElement instanceof PackageFragmentRootContainer)
 				return getContainerPackageFragmentRoots((PackageFragmentRootContainer)parentElement, true);
@@ -410,100 +407,67 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 		return getContainerPackageFragmentRoots(container, false);
 	}
 	
-	class PackageFragComparator implements Comparator{
-
-		public int compare(Object o1, Object o2) {
-			String val1 = null;
-			String val2 = null;
-			if(o1 instanceof IJavaElement) {
-				val1 = ((IJavaElement)o1).getDisplayName();
-			}else {
-				val1 = o1.toString();
-			}
-			if(o2 instanceof IJavaElement) {
-				val2 = ((IJavaElement)o2).getDisplayName();
-			}else {
-				val2=o2.toString();
-			}
-			return val1.compareTo(val2);
-		}
-		
-	}
-	
-	private Object[] getFolderChildren(ContainerFolder folder) {
-			Object[] children = ((PackageFragmentRootContainer)folder.getParentObject()).getChildren();
-			ArrayList allChildren = new ArrayList();
-			String lookFor = folder.getName();
-			Arrays.sort(children, 0, children.length, new PackageFragComparator());
-			for(int i = 0;i<children.length;i++) {
-				IJavaElement current = (IJavaElement)children[i];
-				String thisDisplay = current.getDisplayName();
-				if(thisDisplay!=null && thisDisplay.compareTo(lookFor)==0) {
-					
-					try {
-						if(current instanceof IPackageFragment) {
-							allChildren.addAll(Arrays.asList(((IPackageFragment)current).getChildren()));
-						}else if(current instanceof LibraryFragmentRoot) {
-								allChildren.addAll(Arrays.asList(getLibraryChildren((LibraryFragmentRoot)current)));
-						}else if(current instanceof IPackageFragmentRoot) {
-							allChildren.addAll(Arrays.asList(((IPackageFragmentRoot)current).getChildren()));
-						}else if(current instanceof IClassFile) {
-							allChildren.addAll(Arrays.asList( filter(((IClassFile)current).getChildren())) );
-						}else if(current instanceof ICompilationUnit) {
-							allChildren.addAll(Arrays.asList( filter(((ICompilationUnit)current).getChildren())) );
-						}else {
-							allChildren.add(current);
-						}
-					} catch (JavaModelException ex) {
-						// TODO Auto-generated catch block
-						ex.printStackTrace();
-					}
-				}
-			}
-		return allChildren.toArray();
-	}
-	
 	private Object[] getContainerPackageFragmentRoots(PackageFragmentRootContainer container, boolean createFolder) {
-		Object[] children = container.getChildren();
-		ArrayList allChildren = new ArrayList();
 		
-		if(createFolder) {
-			Arrays.sort(children, 0, children.length, new PackageFragComparator());
-			/* more then 2 items put it in a folder */
-			IJavaElement last=null;
-			boolean multiple=false;
+		
+		if(container!=null) {	
 			
-			for(int i = 0;i<children.length;i++) {
-				if(last==null) {
-					last=(IJavaElement)children[i];
-					continue;
+			Object[] children = container.getChildren();
+			if(children==null) return null;
+			ArrayList allChildren = new ArrayList();
+			
+			boolean unique = false;
+			
+				while(!unique && children!=null && children.length>0) {
+					String display1=null;
+					for(int i = 0;i<children.length;i++) {
+						display1 = ((IJavaElement)children[0]).getDisplayName();
+						String display2 = ((IJavaElement)children[i]).getDisplayName();
+						if(!(   (display1==display2) || (display1!=null && display1.compareTo(display2)==0))){
+							allChildren.addAll(Arrays.asList(children));
+							unique=true;
+							break;
+						}
+					}
+					if(!unique && createFolder) {
+						ContainerFolder folder = new ContainerFolder(display1, container);
+						return new Object[] {folder};
+					}
+					ArrayList more = new ArrayList();
+					for(int i = 0;!unique && i<children.length;i++) {
+					
+						try {
+							if(children[i] instanceof IPackageFragment) {
+								more.addAll(Arrays.asList(((IPackageFragment)children[i]).getChildren()));
+							}else if(children[i] instanceof IPackageFragmentRoot) {
+								more.addAll(Arrays.asList(((IPackageFragmentRoot)children[i]).getChildren()));
+							}else if(children[i] instanceof IClassFile) {
+								more.addAll(Arrays.asList( filter(((IClassFile)children[i]).getChildren())) );
+							}else if(children[i] instanceof ICompilationUnit) {
+								more.addAll(Arrays.asList( filter(((ICompilationUnit)children[i]).getChildren())) );
+							}else {
+								/* bottomed out, now at javaElement level */
+								unique=true;
+								break;
+							}
+						} catch (JavaModelException ex) {
+							// TODO Auto-generated catch block
+							ex.printStackTrace();
+						}
+						
+					}
+					if(!unique) children = more.toArray();
 				}
-				
-				IJavaElement current = (IJavaElement)children[i];
-				String lastDisplay = last==null?null:last.getDisplayName();
-				String thisDisplay = current.getDisplayName();
-				
-				if(lastDisplay!=null && thisDisplay !=null && thisDisplay.compareTo(lastDisplay)==0) {
-					multiple=true;
-					last = current;
-				}else if(multiple==true) {
-					/* last element was multiple items so create a folder */
-					ContainerFolder folder = new ContainerFolder(lastDisplay, container);
-					allChildren.add(folder);
-					multiple=false;
-					last = null;
-				}else {
-					allChildren.add(current);
-					multiple = false;
-				}
-			}
-			if(last!=null && !multiple) {
-				allChildren.add(last);
-			}else if(last!=null) {
-				ContainerFolder folder = new ContainerFolder(last.getDisplayName(), container);
-				allChildren.add(folder);
-			}
+		
+			
+			
+			return allChildren.toArray();
 		}else {
+		
+			
+			Object[] children = container.getChildren();
+			if(children==null) return null;
+			ArrayList allChildren = new ArrayList();
 			for(int i=0;i<children.length;i++) {
 				try {
 					allChildren.addAll(Arrays.asList(((IPackageFragmentRoot)children[i]).getChildren()));
@@ -513,7 +477,6 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 			}
 			return allChildren.toArray();
 		}
-		return allChildren.toArray();
 	}
 
 	private Object[] getNonJavaProjects(IJavaModel model) throws JavaModelException {
