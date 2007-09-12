@@ -6167,5 +6167,27 @@
             class="org.eclipse.wst.jsdt.libraries.BasicBrowserLibraryClassPathContainerInitializer"
             id="org.eclipse.wst.jsdt.launching.baseBrowserLibrary">
       </classpathContainerInitializer>
-   </extension>     
+   </extension>    
+   <extension
+         point="org.eclipse.ui.popupMenus">
+  		<objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
+            id="org.eclipse.wst.jsdt.ui.jsdtSetup">
+            <menu
+               label="JavaScript Development Tools"
+               id="org.eclipse.wst.jsdt.ui.project.tools">
+            <separator
+               name="group0">
+            </separator>
+         </menu>
+         <action
+            class="org.eclipse.wst.jsdt.internal.ui.SetupProjectsWizzard"
+            label="Add Standalone JavaScript Support"
+            menubarPath="org.eclipse.wst.jsdt.ui.project.tools/group0"
+            enablesFor="+"
+            id="org.eclipse.wst.jsdt.internal.ui.convertProjects">
+      	</action>
+   		</objectContribution>
+   </extension> 
 </plugin>
