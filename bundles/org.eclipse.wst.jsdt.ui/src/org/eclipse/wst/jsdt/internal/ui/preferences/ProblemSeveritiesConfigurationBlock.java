@@ -99,6 +99,12 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 //	private static final Key PREF_PB_UNHANDLED_WARNING_TOKEN= getJDTCoreKey(JavaCore.COMPILER_PB_UNHANDLED_WARNING_TOKEN);
 	private static final Key PREF_PB_FATAL_OPTIONAL_ERROR= getJDTCoreKey(JavaCore.COMPILER_PB_FATAL_OPTIONAL_ERROR);
 
+	/* START -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+	private static final Key PREF_UNRESOLVED_TYPE_OPTIONAL_ERROR =  getJDTCoreKey(JavaCore.UNRESOLVED_TYPE_REFERENCE);
+	private static final Key PREF_UNRESOLVED_FIELD_OPTIONAL_ERROR =  getJDTCoreKey(JavaCore.UNRESOLVED_FIELD_REFERENCE);
+	private static final Key PREF_UNRESOLVED_METHOD_OPTIONAL_ERROR =  getJDTCoreKey(JavaCore.UNRESOLVED_METHOD_REFERENCE);
+	/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+	
 	
 	// values
 	private static final String ERROR= JavaCore.ERROR;
@@ -142,7 +148,7 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 //				PREF_15_PB_AUTOBOXING_PROBLEM, PREF_15_PB_MISSING_OVERRIDE_ANNOTATION, PREF_15_PB_ANNOTATION_SUPER_INTERFACE,
 				/*PREF_15_PB_TYPE_PARAMETER_HIDING, PREF_15_PB_INCOMPLETE_ENUM_SWITCH,*/ PREF_PB_MISSING_DEPRECATED_ANNOTATION,
 				/*PREF_15_PB_RAW_TYPE_REFERENCE,*/ PREF_PB_FATAL_OPTIONAL_ERROR,
-				PREF_PB_FORBIDDEN_REFERENCE, PREF_PB_DISCOURRAGED_REFERENCE/*, PREF_PB_SUPPRESS_WARNINGS, PREF_PB_UNHANDLED_WARNING_TOKEN*/
+				PREF_PB_FORBIDDEN_REFERENCE, PREF_PB_DISCOURRAGED_REFERENCE/*, PREF_PB_SUPPRESS_WARNINGS, PREF_PB_UNHANDLED_WARNING_TOKEN*/,PREF_UNRESOLVED_TYPE_OPTIONAL_ERROR,PREF_UNRESOLVED_FIELD_OPTIONAL_ERROR,PREF_UNRESOLVED_METHOD_OPTIONAL_ERROR
 			};
 	}
 	
@@ -203,7 +209,21 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 		String label;
 		ExpandableComposite excomposite;
 		Composite inner;
+		/* START -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+		label= "&Resolution";
+		excomposite= createStyleSection(composite, label, nColumns);
 		
+		inner= new Composite(excomposite, SWT.NONE);
+		inner.setFont(composite.getFont());
+		inner.setLayout(new GridLayout(nColumns, false));
+		excomposite.setClient(inner);
+		label= "Unresolved Types"; 
+		addComboBox(inner, label, PREF_UNRESOLVED_TYPE_OPTIONAL_ERROR, errorWarningIgnore, errorWarningIgnoreLabels, defaultIndent);
+		label= "Unresolved Fields"; 
+		addComboBox(inner, label, PREF_UNRESOLVED_FIELD_OPTIONAL_ERROR, errorWarningIgnore, errorWarningIgnoreLabels, defaultIndent);
+		label= "Unresolved Methods"; 
+		addComboBox(inner, label, PREF_UNRESOLVED_METHOD_OPTIONAL_ERROR, errorWarningIgnore, errorWarningIgnoreLabels, defaultIndent);
+		/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
 		// --- style
 		
 		label= PreferencesMessages.ProblemSeveritiesConfigurationBlock_section_code_style; 
