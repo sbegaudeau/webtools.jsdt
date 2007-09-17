@@ -1715,6 +1715,17 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 	private Hashtable getDefaultOptionsNoInitialization() {
 		Map defaultOptionsMap = new CompilerOptions().getMap(); // compiler defaults
 		
+		/* START -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+		/*
+		 * Default ERROR for unresolved types/fields/methods
+		 */
+		defaultOptionsMap.put(JavaCore.UNRESOLVED_TYPE_REFERENCE, JavaCore.ERROR);
+		defaultOptionsMap.put(JavaCore.UNRESOLVED_FIELD_REFERENCE, JavaCore.ERROR);
+		defaultOptionsMap.put(JavaCore.UNRESOLVED_METHOD_REFERENCE, JavaCore.ERROR);
+		/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+
+		
+		
 		// Override some compiler defaults
 		defaultOptionsMap.put(JavaCore.COMPILER_LOCAL_VARIABLE_ATTR, JavaCore.GENERATE);
 		defaultOptionsMap.put(JavaCore.COMPILER_CODEGEN_UNUSED_LOCAL, JavaCore.PRESERVE);

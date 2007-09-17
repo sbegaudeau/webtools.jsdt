@@ -88,6 +88,16 @@ public class JavaCorePreferenceInitializer extends AbstractPreferenceInitializer
 		defaultOptionsMap.put(JavaCore.CODEASSIST_CAMEL_CASE_MATCH, JavaCore.ENABLED);
 		defaultOptionsMap.put(JavaCore.CODEASSIST_SUGGEST_STATIC_IMPORTS, JavaCore.ENABLED);
 		
+		/* START -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+		/*
+		 * Default ERROR for unresolved types/fields/methods
+		 */
+		defaultOptionsMap.put(JavaCore.UNRESOLVED_TYPE_REFERENCE, JavaCore.ERROR);
+		defaultOptionsMap.put(JavaCore.UNRESOLVED_FIELD_REFERENCE, JavaCore.ERROR);
+		defaultOptionsMap.put(JavaCore.UNRESOLVED_METHOD_REFERENCE, JavaCore.ERROR);
+		/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+		
+		
 		// Time out for parameter names
 		defaultOptionsMap.put(JavaCore.TIMEOUT_FOR_PARAMETER_NAME_FROM_ATTACHED_JAVADOC, "50"); //$NON-NLS-1$
 

@@ -128,6 +128,16 @@ public static long getIrritant(int problemID) {
 		case IProblem.MethodButWithConstructorName :
 			return CompilerOptions.MethodWithConstructorName;
 		
+			/* START -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+			
+		case IProblem.UndefinedName:
+			return CompilerOptions.UnresolvedType;
+		case IProblem.UndefinedFunction:
+ 		case IProblem.UndefinedMethod:
+ 		case IProblem.UndefinedConstructor:	
+			return CompilerOptions.UnresolvedMethod;
+			/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+
 
 		case IProblem.IncompatibleReturnTypeForNonInheritedInterfaceMethod :
 		case IProblem.IncompatibleExceptionInThrowsClauseForNonInheritedInterfaceMethod :
@@ -1103,7 +1113,12 @@ public int computeSeverity(int problemID){
  		case IProblem.TypeMismatch:
  			return ProblemSeverities.Warning;
  			
- 			
+// 		case IProblem.UndefinedName:
+// 		case IProblem.UndefinedFunction:
+// 		case IProblem.UndefinedMethod:
+// 		case IProblem.UndefinedField:
+// 		case IProblem.UndefinedConstructor:
+// 			break;
 		/*
 		 * Javadoc tags resolved references errors
 		 */

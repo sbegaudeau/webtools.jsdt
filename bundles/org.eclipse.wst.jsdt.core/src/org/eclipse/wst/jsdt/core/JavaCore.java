@@ -671,7 +671,21 @@ public final class JavaCore extends Plugin {
 	 * @since 3.1
 	 */
 	public static final String COMPILER_PB_DISCOURAGED_REFERENCE = PLUGIN_ID + ".compiler.problem.discouragedReference"; //$NON-NLS-1$
+	
+	/* START -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+	
+	public static final String UNRESOLVED_TYPE_REFERENCE = PLUGIN_ID + ".compiler.problem.unresolvedTypeReference"; //$NON-NLS-1$
+	
+	public static final String UNRESOLVED_FIELD_REFERENCE = PLUGIN_ID + ".compiler.problem.unresolvedFieldReference"; //$NON-NLS-1$
+	
+	public static final String UNRESOLVED_METHOD_REFERENCE = PLUGIN_ID + ".compiler.problem.unresolvedMethodReference"; //$NON-NLS-1$
+	
+	
+	/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+	
 	/**
+	
+	 * 
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
 	 * @since 3.1

@@ -16,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.Compiler;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
@@ -115,6 +116,16 @@ public class CompilerOptions {
 	public static final String OPTION_GenerateClassFiles = "org.eclipse.wst.jsdt.core.compiler.generateClassFiles"; //$NON-NLS-1$
 	public static final String OPTION_Process_Annotations = "org.eclipse.wst.jsdt.core.compiler.processAnnotations"; //$NON-NLS-1$
 
+	/* START -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+	
+	public static final String OPTION_Unresolved_Type = JavaCore.UNRESOLVED_TYPE_REFERENCE;
+	public static final String OPTION_Unresolved_Field = JavaCore.UNRESOLVED_FIELD_REFERENCE;
+	public static final String OPTION_Unresolved_Method = JavaCore.UNRESOLVED_METHOD_REFERENCE;
+	
+	
+	/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+	
+	
 	// Backward compatibility
 	public static final String OPTION_ReportInvalidAnnotation = "org.eclipse.wst.jsdt.core.compiler.problem.invalidAnnotation"; //$NON-NLS-1$
 	public static final String OPTION_ReportMissingAnnotation = "org.eclipse.wst.jsdt.core.compiler.problem.missingAnnotation"; //$NON-NLS-1$
@@ -200,6 +211,16 @@ public class CompilerOptions {
 	public static final long OverridingMethodWithoutSuperInvocation = ASTNode.Bit50L;
 	public static final long PotentialNullReference = ASTNode.Bit51L;
 	public static final long RedundantNullCheck = ASTNode.Bit52L;
+	
+	
+	/* START -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+	public static final long UnresolvedType = ASTNode.Bit53L;
+	public static final long UnresolvedMethod = ASTNode.Bit54L;
+	public static final long UnresolvedField = ASTNode.Bit55L;
+	
+	/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+	
+	
 
 	// Map: String optionKey --> Long irritant>
 	private static Map OptionToIrritants;
@@ -440,6 +461,16 @@ public class CompilerOptions {
 		optionsMap.put(OPTION_GenerateClassFiles, this.generateClassFiles ? ENABLED : DISABLED);
 		optionsMap.put(OPTION_Process_Annotations, this.processAnnotations ? ENABLED : DISABLED);
 
+		/* START -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+
+		optionsMap.put(OPTION_Unresolved_Type, getSeverityString(UnresolvedType));
+		optionsMap.put(OPTION_Unresolved_Field, getSeverityString(UnresolvedField));
+		optionsMap.put(OPTION_Unresolved_Method, getSeverityString(UnresolvedMethod));
+		
+		/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+
+		
+		
 		Map inferOptionsMap = inferOptions.getMap();
 		optionsMap.putAll(inferOptionsMap);
 		
@@ -565,6 +596,22 @@ public class CompilerOptions {
 					return OPTION_ReportFallthroughCase;
 				case (int)(OverridingMethodWithoutSuperInvocation >>> 32) :
 					return OPTION_ReportOverridingMethodWithoutSuperInvocation;
+				
+				
+				/* START -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+				
+				case (int)(UnresolvedType >>> 32) :
+					return OPTION_Unresolved_Type;
+				case (int)(UnresolvedMethod >>> 32) :
+					return OPTION_Unresolved_Method;
+				case (int)(UnresolvedField >>> 32) :
+					return OPTION_Unresolved_Field;
+				
+				/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+
+				
+				
+				
 			}
 		}
 		return null;
@@ -833,6 +880,17 @@ public class CompilerOptions {
 		if ((optionValue = optionsMap.get(OPTION_ReportFallthroughCase)) != null) updateSeverity(FallthroughCase, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportOverridingMethodWithoutSuperInvocation)) != null) updateSeverity(OverridingMethodWithoutSuperInvocation, optionValue);
 
+		/* START -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+		if ((optionValue = optionsMap.get(OPTION_Unresolved_Type)) != null) updateSeverity(UnresolvedType, optionValue);
+		if ((optionValue = optionsMap.get(OPTION_Unresolved_Field)) != null) updateSeverity(UnresolvedField, optionValue);
+		if ((optionValue = optionsMap.get(OPTION_Unresolved_Method)) != null) updateSeverity(UnresolvedMethod, optionValue);
+		
+		/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+
+		
+		
+		
+		
 		// Javadoc options
 		if ((optionValue = optionsMap.get(OPTION_DocCommentSupport)) != null) {
 			if (ENABLED.equals(optionValue)) {
