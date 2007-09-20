@@ -1724,7 +1724,11 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 		defaultOptionsMap.put(JavaCore.UNRESOLVED_METHOD_REFERENCE, JavaCore.ERROR);
 		/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
 
+		/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
+		defaultOptionsMap.put(JavaCore.LOOSE_VAR_DECL, JavaCore.WARNING);
+		defaultOptionsMap.put(JavaCore.OPTIONAL_SEMICOLON, JavaCore.WARNING);
 		
+		/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
 		
 		// Override some compiler defaults
 		defaultOptionsMap.put(JavaCore.COMPILER_LOCAL_VARIABLE_ATTR, JavaCore.GENERATE);

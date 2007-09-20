@@ -354,8 +354,22 @@ public class ForStatement extends Statement {
 		// use the scope that will hold the init declarations
 		scope = neededScope ? new BlockScope(upperScope) : upperScope;
 		if (initializations != null)
-			for (int i = 0, length = initializations.length; i < length; i++)
+			for (int i = 0, length = initializations.length; i < length; i++) {
 				initializations[i].resolve(scope);
+		/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */		
+		/* check where for variable exists in scope chain, report error if not local */
+				if(initializations[i] instanceof Assignment  ) {
+					Assignment as = ((Assignment)initializations[i]);
+					LocalVariableBinding bind1 = as.localVariableBinding();
+					if(bind1==null || bind1.declaringScope!=upperScope) {
+						upperScope.problemReporter().looseVariableDecleration(this, as);
+					}
+				}
+		
+		
+			}
+		/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
+		
 		if (condition != null) {
 			TypeBinding type = condition.resolveTypeExpecting(scope, TypeBinding.BOOLEAN);
 			condition.computeConversion(scope, type, type);

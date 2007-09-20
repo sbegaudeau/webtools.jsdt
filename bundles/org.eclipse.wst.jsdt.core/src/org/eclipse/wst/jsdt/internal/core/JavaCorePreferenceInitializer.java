@@ -96,7 +96,11 @@ public class JavaCorePreferenceInitializer extends AbstractPreferenceInitializer
 		defaultOptionsMap.put(JavaCore.UNRESOLVED_FIELD_REFERENCE, JavaCore.ERROR);
 		defaultOptionsMap.put(JavaCore.UNRESOLVED_METHOD_REFERENCE, JavaCore.ERROR);
 		/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+		/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
+		defaultOptionsMap.put(JavaCore.LOOSE_VAR_DECL, JavaCore.WARNING);
+		defaultOptionsMap.put(JavaCore.OPTIONAL_SEMICOLON, JavaCore.WARNING);
 		
+		/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
 		
 		// Time out for parameter names
 		defaultOptionsMap.put(JavaCore.TIMEOUT_FOR_PARAMETER_NAME_FROM_ATTACHED_JAVADOC, "50"); //$NON-NLS-1$

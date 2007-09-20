@@ -298,6 +298,7 @@ void setSourceStart(int sourceStart);
 	/** @since 3.3 */
 	int TypeHidingType = TypeRelated + 33;
 	
+		
 	// variables
 	int UndefinedName = Internal + FieldRelated + 50;
 	int UninitializedLocalVariable = Internal + 51;
@@ -364,7 +365,11 @@ void setSourceStart(int sourceStart);
 	int ArgumentHidingField = Internal + 95;		
 	/** @since 3.1 */
 	int MissingSerialVersion = Internal + 96;
-	
+	/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
+	int LooseVarDecl = Internal + 97;
+	/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
+
+
 	// methods
 	int UndefinedMethod = MethodRelated + 100;
 	int NotVisibleMethod = MethodRelated + 101;
@@ -551,6 +556,10 @@ void setSourceStart(int sourceStart);
     int ParsingErrorInsertToCompleteScope = Syntax + Internal + 241;
     /** @since 3.0 */
     int ParsingErrorInsertToCompletePhrase = Syntax + Internal + 242;
+    /* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
+    int OptionalSemiColon = Syntax + Internal + 243;    
+    /* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
+    
     
 	// scanner errors
 	int EndOfSource = Syntax + Internal + 250;

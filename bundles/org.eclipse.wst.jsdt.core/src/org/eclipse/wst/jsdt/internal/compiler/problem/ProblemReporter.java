@@ -128,7 +128,7 @@ public static long getIrritant(int problemID) {
 		case IProblem.MethodButWithConstructorName :
 			return CompilerOptions.MethodWithConstructorName;
 		
-			/* START -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+		/* START -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
 			
 		case IProblem.UndefinedName:
 			return CompilerOptions.UnresolvedType;
@@ -136,9 +136,15 @@ public static long getIrritant(int problemID) {
  		case IProblem.UndefinedMethod:
  		case IProblem.UndefinedConstructor:	
 			return CompilerOptions.UnresolvedMethod;
-			/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
-
-
+		/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+ 		case IProblem.OptionalSemiColon:
+ 				return CompilerOptions.OptionalSemicolon;
+ 		case IProblem.LooseVarDecl:
+ 				return CompilerOptions.LooseVariableDecl;
+		/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
+			
+			
+		/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
 		case IProblem.IncompatibleReturnTypeForNonInheritedInterfaceMethod :
 		case IProblem.IncompatibleExceptionInThrowsClauseForNonInheritedInterfaceMethod :
 			return CompilerOptions.IncompatibleNonInheritedInterfaceMethod;
@@ -5063,6 +5069,24 @@ public void nonStaticAccessToStaticMethod(ASTNode location, MethodBinding method
 		location.sourceStart,
 		location.sourceEnd);
 }
+
+
+public void looseVariableDecleration(ASTNode location, Assignment assignment) {
+	String[] arguments = new String[] {assignment.lhs.toString()};
+	this.handle(
+			IProblem.LooseVarDecl,
+			 arguments,
+			 arguments,
+			assignment.sourceStart,
+			assignment.sourceEnd);
+	
+}
+
+public void optionalSemicolon(ASTNode location) {
+	// Do something else
+	System.out.println("Optional Semi");
+}
+
 public void nonStaticContextForEnumMemberType(SourceTypeBinding type) {
 	String[] arguments = new String[] {new String(type.sourceName())};
 	this.handle(

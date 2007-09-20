@@ -117,13 +117,16 @@ public class CompilerOptions {
 	public static final String OPTION_Process_Annotations = "org.eclipse.wst.jsdt.core.compiler.processAnnotations"; //$NON-NLS-1$
 
 	/* START -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
-	
 	public static final String OPTION_Unresolved_Type = JavaCore.UNRESOLVED_TYPE_REFERENCE;
 	public static final String OPTION_Unresolved_Field = JavaCore.UNRESOLVED_FIELD_REFERENCE;
 	public static final String OPTION_Unresolved_Method = JavaCore.UNRESOLVED_METHOD_REFERENCE;
-	
-	
 	/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
+	
+	/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
+	public static final String OPTION_LOOSE_VAR_DECL = JavaCore.LOOSE_VAR_DECL;
+	public static final String OPTION_OPTIONAL_SEMICOLON = JavaCore.OPTIONAL_SEMICOLON;
+	/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
+	
 	
 	
 	// Backward compatibility
@@ -220,7 +223,11 @@ public class CompilerOptions {
 	
 	/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
 	
+	/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
+	public static final long LooseVariableDecl = ASTNode.Bit56L;
+	public static final long OptionalSemicolon = ASTNode.Bit57L;
 	
+	/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
 
 	// Map: String optionKey --> Long irritant>
 	private static Map OptionToIrritants;
@@ -462,13 +469,15 @@ public class CompilerOptions {
 		optionsMap.put(OPTION_Process_Annotations, this.processAnnotations ? ENABLED : DISABLED);
 
 		/* START -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
-
 		optionsMap.put(OPTION_Unresolved_Type, getSeverityString(UnresolvedType));
 		optionsMap.put(OPTION_Unresolved_Field, getSeverityString(UnresolvedField));
 		optionsMap.put(OPTION_Unresolved_Method, getSeverityString(UnresolvedMethod));
-		
 		/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
-
+		/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
+		optionsMap.put(OPTION_LOOSE_VAR_DECL, getSeverityString(LooseVariableDecl));
+		optionsMap.put(OPTION_OPTIONAL_SEMICOLON, getSeverityString(OptionalSemicolon));
+		
+		/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
 		
 		
 		Map inferOptionsMap = inferOptions.getMap();
@@ -609,7 +618,14 @@ public class CompilerOptions {
 				
 				/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
 
+				/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
+				case (int)(LooseVariableDecl  >>> 32) :
+					return OPTION_LOOSE_VAR_DECL;
+				case (int)( OptionalSemicolon >>> 32) :
+					return OPTION_OPTIONAL_SEMICOLON;
 				
+				/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
+
 				
 				
 			}
@@ -888,7 +904,12 @@ public class CompilerOptions {
 		/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
 
 		
-		
+		/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
+		 if ((optionValue = optionsMap.get(OPTION_OPTIONAL_SEMICOLON)) != null)
+				updateSeverity(OptionalSemicolon, optionValue);
+		if ((optionValue = optionsMap.get(OPTION_LOOSE_VAR_DECL)) != null)
+				updateSeverity(LooseVariableDecl, optionValue);
+		/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
 		
 		
 		// Javadoc options
