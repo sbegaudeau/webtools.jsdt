@@ -1032,7 +1032,7 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 		viewMenuManager.add(new Separator("EndFilterGroup")); //$NON-NLS-1$
 
 		fToggleLinkingAction= new ToggleLinkingAction(this);
-		viewMenuManager.add(new ClassOnlyAction());
+	//	viewMenuManager.add(new ClassOnlyAction());
 		viewMenuManager.add(fToggleLinkingAction);
 
 		fCategoryFilterActionGroup= new CategoryFilterActionGroup(fOutlineViewer, "org.eclipse.wst.jsdt.ui.JavaOutlinePage", new IJavaElement[] {fInput}); //$NON-NLS-1$

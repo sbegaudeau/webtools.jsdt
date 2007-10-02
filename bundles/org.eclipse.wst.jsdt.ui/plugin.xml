@@ -4622,6 +4622,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.JavaFileFilter"
             id="org.eclipse.wst.jsdt.ui.PackageExplorer.CuAndClassFileFilter">
       </filter>
+      <!--
       <filter
             targetId="org.eclipse.wst.jsdt.ui.PackageExplorer"
             name="%HidePackageDeclaration.label"
@@ -4630,6 +4631,8 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.PackageDeclarationFilter"
             id="org.eclipse.wst.jsdt.ui.PackageExplorer.PackageDeclarationFilter">
       </filter>
+      -->
+      <!--
       <filter
             targetId="org.eclipse.wst.jsdt.ui.PackageExplorer"
             name="%HideImportDeclaration.label"
@@ -4638,6 +4641,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.ImportDeclarationFilter"
             id="org.eclipse.wst.jsdt.ui.PackageExplorer.ImportDeclarationFilter">
       </filter>
+      -->
       <filter
             targetId="org.eclipse.wst.jsdt.ui.PackageExplorer"
             name="%HideSyntheticMembers.label"
@@ -4811,6 +4815,7 @@
             id="org.eclipse.wst.jsdt.ui.MembersView.SyntheticMembersFilter">
       </filter>
 <!-- Outline Page -->
+<!--
       <filter
             targetId="org.eclipse.wst.jsdt.ui.JavaOutlinePage"
             name="%HidePackageDeclaration.label"
@@ -4819,6 +4824,8 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.PackageDeclarationFilter"
             id="org.eclipse.wst.jsdt.ui.JavaOutlinePage.PackageDeclarationFilter">
       </filter>
+-->
+<!--
       <filter
             targetId="org.eclipse.wst.jsdt.ui.JavaOutlinePage"
             name="%HideImportDeclaration.label"
@@ -4827,6 +4834,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.ImportDeclarationFilter"
             id="org.eclipse.wst.jsdt.ui.JavaOutlinePage.ImportDeclarationFilter">
       </filter>
+ -->
       <filter
             targetId="org.eclipse.wst.jsdt.ui.JavaOutlinePage"
             name="%HideSyntheticMembers.label"
@@ -5563,12 +5571,14 @@
 		        name="%HideFields.label"
 		        description="%HideFields.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideFields"/>
+		 <!--
   		<commonFilter
 		        activeByDefault="true"
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.ImportDeclarationFilter"
 		        name="%HideImportDeclaration.label"
 		        description="%HideImportDeclaration.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideImportDeclaration"/> 
+  		-->
   		<commonFilter
 		        activeByDefault="true"
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.InnerClassFilesFilter"
@@ -5605,12 +5615,14 @@
 		        name="%HideNonSharedProjects.label"
 		        description="%HideNonSharedProjects.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideNonSharedProjects"/>   
+  		<!--
   		<commonFilter
 		        activeByDefault="true"
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.PackageDeclarationFilter"
 		        name="%HidePackageDeclaration.label"
 		        description="%HidePackageDeclaration.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HidePackageDeclaration"/>   
+  		-->
   		<commonFilter 
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.LibraryFilter"
 		        name="%HideReferencedLibraries.label"

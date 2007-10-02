@@ -36,6 +36,7 @@ import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
+import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
@@ -116,6 +117,10 @@ public class TypeContextChecker {
 		}
 		
 		public RefactoringStatus[] checkAndResolveMethodTypes() throws CoreException {
+			
+			/* ECMA3 no variable or return types */
+			if(!JavaCore.IS_EMCASCRIPT4) return new RefactoringStatus[0];
+			
 			RefactoringStatus[] results= new MethodTypesSyntaxChecker(fMethod, fParameterInfos, fReturnTypeInfo).checkSyntax();
 			for (int i= 0; i < results.length; i++)
 				if (results[i] != null && results[i].hasFatalError())
@@ -362,6 +367,8 @@ public class TypeContextChecker {
 		}
 		
 		public RefactoringStatus[] checkSyntax() {
+			/* No checks for ECMA 3 */
+			if(!JavaCore.IS_EMCASCRIPT4) return new RefactoringStatus[0]; 
 			int parameterCount= fParameterInfos.size();
 			RefactoringStatus[] results= new RefactoringStatus[parameterCount + 1];
 			results[parameterCount]= checkReturnTypeSyntax();

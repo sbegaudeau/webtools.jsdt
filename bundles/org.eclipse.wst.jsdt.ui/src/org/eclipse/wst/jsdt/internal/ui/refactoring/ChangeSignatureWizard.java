@@ -38,6 +38,7 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
 
+import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 
@@ -95,6 +96,7 @@ public class ChangeSignatureWizard extends RefactoringWizard {
 			try {
 				createHeadControls(composite);
 
+			
 				createParameterExceptionsFolder(composite);
 				fLeaveDelegateCheckBox= DelegateUIHelper.generateLeaveDelegateCheckbox(composite, getRefactoring(), false);
 				if (fLeaveDelegateCheckBox != null) {
@@ -141,9 +143,10 @@ public class ChangeSignatureWizard extends RefactoringWizard {
 			layout.marginHeight= 0;
 			layout.marginWidth= 0;
 			composite.setLayout(layout);
-			
-			createAccessControl(composite);
-			createReturnTypeControl(composite);
+			if(JavaCore.IS_EMCASCRIPT4) { 
+				createAccessControl(composite);
+				createReturnTypeControl(composite);
+			}
 			createNameControl(composite);
 		}
 
@@ -269,11 +272,11 @@ public class ChangeSignatureWizard extends RefactoringWizard {
 			TabItem item= new TabItem(folder, SWT.NONE);
 			item.setText(RefactoringMessages.ChangeSignatureInputPage_parameters); 
 			item.setControl(createParameterTableControl(folder));
-			
-			TabItem itemEx= new TabItem(folder, SWT.NONE);
-			itemEx.setText(RefactoringMessages.ChangeSignatureInputPage_exceptions); 
-			itemEx.setControl(createExceptionsTableControl(folder));
-
+			if(JavaCore.IS_EMCASCRIPT4) { 
+				TabItem itemEx= new TabItem(folder, SWT.NONE);
+				itemEx.setText(RefactoringMessages.ChangeSignatureInputPage_exceptions); 
+				itemEx.setControl(createExceptionsTableControl(folder));
+			}
 			folder.addSelectionListener(new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
 					((TabItem) e.item).getControl().setFocus();
@@ -282,6 +285,7 @@ public class ChangeSignatureWizard extends RefactoringWizard {
 		}
 	
 		private Control createParameterTableControl(Composite composite) {
+			
 			Composite border= new Composite(composite, SWT.NONE);
 			border.setLayout(new GridLayout());
 			

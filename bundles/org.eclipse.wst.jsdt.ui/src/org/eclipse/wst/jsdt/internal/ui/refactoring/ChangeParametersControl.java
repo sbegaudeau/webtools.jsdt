@@ -56,6 +56,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
 
 import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.JavaCore;
 
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.ParameterInfo;
@@ -151,7 +152,7 @@ public class ChangeParametersControl extends Composite {
 	private class ParametersCellModifier implements ICellModifier {
 		public boolean canModify(Object element, String property) {
 			Assert.isTrue(element instanceof ParameterInfo);
-			if (property.equals(PROPERTIES[TYPE_PROP]))
+			if (JavaCore.IS_EMCASCRIPT4 && property.equals(PROPERTIES[TYPE_PROP]))
 				return fMode.canChangeTypes();
 			else if (property.equals(PROPERTIES[NEWNAME_PROP]))
 				return true;
@@ -162,7 +163,7 @@ public class ChangeParametersControl extends Composite {
 		}
 		public Object getValue(Object element, String property) {
 			Assert.isTrue(element instanceof ParameterInfo);
-			if (property.equals(PROPERTIES[TYPE_PROP]))
+			if (JavaCore.IS_EMCASCRIPT4 && property.equals(PROPERTIES[TYPE_PROP]))
 				return ((ParameterInfo) element).getNewTypeName();
 			else if (property.equals(PROPERTIES[NEWNAME_PROP]))
 				return ((ParameterInfo) element).getNewName();
@@ -197,10 +198,17 @@ public class ChangeParametersControl extends Composite {
 		}
 	}
 
-	private static final String[] PROPERTIES= { "type", "new", "default" }; //$NON-NLS-2$ //$NON-NLS-1$ //$NON-NLS-3$
-	private static final int TYPE_PROP= 0;
-	private static final int NEWNAME_PROP= 1;
-	private static final int DEFAULT_PROP= 2;
+	private static final String[] PROPERTIES_NO_RETURN = new String[] {  "new", "default" }; 
+	private static final String[] PROPERTIES_WITH_RETURN = new String[] { "type", "new", "default" }; 
+	
+	private static final String[] PROPERTIES= JavaCore.IS_EMCASCRIPT4?PROPERTIES_WITH_RETURN:PROPERTIES_NO_RETURN;
+	
+	
+	
+	
+	private static final int TYPE_PROP= JavaCore.IS_EMCASCRIPT4?0:-1;
+	private static final int NEWNAME_PROP= JavaCore.IS_EMCASCRIPT4?1:0;
+	private static final int DEFAULT_PROP= JavaCore.IS_EMCASCRIPT4?2:1;
 
 	private static final int ROW_COUNT= 7;
 
@@ -292,10 +300,12 @@ public class ChangeParametersControl extends Composite {
 		
 //		if (SHOW_TYPES)
 //		{
+		if(JavaCore.IS_EMCASCRIPT4) {
 			tc= new TableColumn(table, SWT.NONE, TYPE_PROP);
 			tc.setResizable(true);
 			tc.setText(SHOW_TYPES?RefactoringMessages.ChangeParametersControl_table_type:"");
-//		}
+//		
+			}
 		
 		int index= NEWNAME_PROP;
 //		if (!SHOW_TYPES)
@@ -384,7 +394,7 @@ public class ChangeParametersControl extends Composite {
 	
 	private void addColumnLayoutData(TableLayoutComposite layouter) {
 		if (fMode.canChangeDefault()){
-			layouter.addColumnData(new ColumnWeightData(33, true));
+		//	layouter.addColumnData(new ColumnWeightData(33, true));
 			layouter.addColumnData(new ColumnWeightData(33, true));
 			layouter.addColumnData(new ColumnWeightData(34, true));
 		} else if (SHOW_TYPES){
@@ -592,15 +602,15 @@ public class ChangeParametersControl extends Composite {
 		
 		final TableTextCellEditor editors[]= new TableTextCellEditor[PROPERTIES.length];
 
-		editors[TYPE_PROP]= new TableTextCellEditor(fTableViewer, TYPE_PROP);
+		if(JavaCore.IS_EMCASCRIPT4)	editors[TYPE_PROP]= new TableTextCellEditor(fTableViewer, TYPE_PROP);
 		editors[NEWNAME_PROP]= new TableTextCellEditor(fTableViewer, NEWNAME_PROP);
 		editors[DEFAULT_PROP]= new TableTextCellEditor(fTableViewer, DEFAULT_PROP);
 		
-		if (fMode.canChangeTypes()) {
+		if (fMode.canChangeTypes() && (JavaCore.IS_EMCASCRIPT4)	) {
 			SubjectControlContentAssistant assistant= installParameterTypeContentAssist(editors[TYPE_PROP].getText());
 			editors[TYPE_PROP].setContentAssistant(assistant);
 		}
-		if (fParamNameProposals.length > 0) {
+		if (fParamNameProposals.length > 0 ) {
 			SubjectControlContentAssistant assistant= installParameterNameContentAssist(editors[NEWNAME_PROP].getText());
 			editors[NEWNAME_PROP].setContentAssistant(assistant);
 		}

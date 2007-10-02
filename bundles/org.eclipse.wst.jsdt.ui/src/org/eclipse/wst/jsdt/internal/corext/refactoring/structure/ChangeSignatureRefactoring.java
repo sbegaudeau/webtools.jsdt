@@ -47,6 +47,7 @@ import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
+import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
@@ -149,6 +150,10 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 	private static final String ATTRIBUTE_KIND= "kind"; //$NON-NLS-1$
 	private static final String ATTRIBUTE_DELEGATE= "delegate"; //$NON-NLS-1$
 	private static final String ATTRIBUTE_DEPRECATE= "deprecate"; //$NON-NLS-1$
+	private static final String ATTRIBUTE_FUNCTION_HEAD="function";
+	
+	private static final boolean PREFIX_FUNCTION_HEAD = true;
+	
 	
 	private List fParameterInfos;
 
@@ -165,7 +170,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 	private int fVisibility;
 	private static final String CONST_CLASS_DECL = "class A{";//$NON-NLS-1$
 	private static final String CONST_ASSIGN = " i=";		//$NON-NLS-1$
-	private static final String CONST_CLOSE = ";}";			//$NON-NLS-1$
+	private static final String CONST_CLOSE = ";";			//$NON-NLS-1$
 
 	private StubTypeContext fContextCuStartEnd;
 	private int fOldVarargIndex; // initialized in checkVarargs()
@@ -618,6 +623,21 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 	
 	public static boolean isValidExpression(String string){
 		String trimmed= string.trim();
+		StringBuffer cuBuff= new StringBuffer();
+		cuBuff.append(CONST_ASSIGN);
+		int offset= cuBuff.length();
+		cuBuff.append(trimmed)
+			  .append(CONST_CLOSE);
+		ASTParser p= ASTParser.newParser(AST.JLS3);
+		p.setSource(cuBuff.toString().toCharArray());
+		CompilationUnit cu= (CompilationUnit) p.createAST(null);
+		Selection selection= Selection.createFromStartLength(offset, trimmed.length());
+		SelectionAnalyzer analyzer= new SelectionAnalyzer(selection, false);
+		cu.accept(analyzer);
+		ASTNode selected= analyzer.getFirstSelectedNode();
+		return (selected instanceof Expression) && 
+				trimmed.equals(cuBuff.substring(cu.getExtendedStartPosition(selected), cu.getExtendedStartPosition(selected) + cu.getExtendedLength(selected)));
+		/*
 		if ("".equals(trimmed)) //speed up for a common case //$NON-NLS-1$
 			return false;
 		StringBuffer cuBuff= new StringBuffer();
@@ -636,6 +656,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		ASTNode selected= analyzer.getFirstSelectedNode();
 		return (selected instanceof Expression) && 
 				trimmed.equals(cuBuff.substring(cu.getExtendedStartPosition(selected), cu.getExtendedStartPosition(selected) + cu.getExtendedLength(selected)));
+		*/
 	}
 	
 	public static boolean isValidVarargsExpression(String string) {
@@ -852,10 +873,17 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		StringBuffer buff= new StringBuffer();
 		
 		int flags= getMethod().getFlags();
-		buff.append(getVisibilityString(flags));
-		if (Flags.isStatic(flags))
-			buff.append("static "); //$NON-NLS-1$
-		if (! getMethod().isConstructor())
+		if(JavaCore.IS_EMCASCRIPT4) {
+			buff.append(getVisibilityString(flags));
+			if (Flags.isStatic(flags))
+				buff.append("static "); //$NON-NLS-1$
+		}
+		
+		if(PREFIX_FUNCTION_HEAD) {
+			buff.append(ATTRIBUTE_FUNCTION_HEAD + " ");
+		}
+		
+		if (! getMethod().isConstructor() && JavaCore.IS_EMCASCRIPT4)
 			buff.append(fReturnTypeInfo.getOldTypeName())
 				.append(' ');
 
@@ -873,20 +901,23 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 
 	public String getNewMethodSignature() throws JavaModelException{
 		StringBuffer buff= new StringBuffer();
-		
-		buff.append(getVisibilityString(fVisibility));
-		if (Flags.isStatic(getMethod().getFlags()))
-			buff.append("static "); //$NON-NLS-1$
-		if (! getMethod().isConstructor())
-			buff.append(getReturnTypeString())
-				.append(' ');
+		if(PREFIX_FUNCTION_HEAD) {
+			buff.append(ATTRIBUTE_FUNCTION_HEAD + " ");
+		}
+		if(JavaCore.IS_EMCASCRIPT4) {
+			buff.append(getVisibilityString(fVisibility));
+			if (Flags.isStatic(getMethod().getFlags()))
+				buff.append("static "); //$NON-NLS-1$
+		}
+		if (! getMethod().isConstructor() && JavaCore.IS_EMCASCRIPT4)
+			buff.append(getReturnTypeString()).append(' ');
 
 		buff.append(getMethodName())
 			.append(Signature.C_PARAM_START)
 			.append(getMethodParameters())
 			.append(Signature.C_PARAM_END);
-		
-		buff.append(getMethodThrows());
+		if(JavaCore.IS_EMCASCRIPT4) 
+			buff.append(getMethodThrows());
 		
 		return buff.toString();
 	}
@@ -954,7 +985,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			return false;
 		else if (JdtFlags.isNative(getMethod()))
 			return false;
-		else if (getMethod().getDeclaringType().isInterface())
+		else if (JavaCore.IS_EMCASCRIPT4 && getMethod().getDeclaringType().isInterface())
 			return false;
 		else 
 			return true;
@@ -1162,7 +1193,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 				if (!Flags.isPrivate(fMethod.getFlags()))
 					flags|= RefactoringDescriptor.MULTI_CHANGE;
 				final IType declaring= fMethod.getDeclaringType();
-				if (declaring.isAnonymous() || declaring.isLocal())
+				if (declaring!=null && (declaring.isAnonymous() || declaring.isLocal()))
 					flags|= JavaRefactoringDescriptor.JAR_SOURCE_ATTACHMENT;
 			} catch (JavaModelException exception) {
 				JavaPlugin.log(exception);
@@ -1470,12 +1501,16 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 	}
 	
 	private static String createDeclarationString(ParameterInfo info) {
-		String newTypeName= info.getNewTypeName();
-		int index= newTypeName.indexOf('.');
-		if (index != -1){
-			newTypeName= newTypeName.substring(index+1);
+		if(JavaCore.IS_EMCASCRIPT4) {
+			String newTypeName= info.getNewTypeName();
+			int index= newTypeName.indexOf('.');
+			if (index != -1){
+				newTypeName= newTypeName.substring(index+1);
+			}
+			return newTypeName + " " + info.getNewName(); //$NON-NLS-1$
+		}else {
+			return info.getNewName();
 		}
-		return newTypeName + " " + info.getNewName(); //$NON-NLS-1$
 	}
 	
 	private static final boolean BUG_89686= true; //see bug 83693: Search for References to methods/constructors: do ranges include parameter lists?
