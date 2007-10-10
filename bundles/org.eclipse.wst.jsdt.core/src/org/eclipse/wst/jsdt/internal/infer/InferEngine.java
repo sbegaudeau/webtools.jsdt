@@ -54,6 +54,7 @@ public class InferEngine extends ASTVisitor {
 	public  InferredType ObjectType=new InferredType(InferredType.OBJECT_NAME);
 	public  InferredType GlobalType=new InferredType(InferredType.GLOBAL_NAME);
 
+	protected InferredType inferredGlobal=null;
     
 	static final char[] CONSTRUCTOR_ID={'c','o','n','s','t','r','u','c','t','o','r'};
 	
@@ -134,6 +135,7 @@ public class InferEngine extends ASTVisitor {
 	    this.passNumber=1;
 	    this.isTopLevelAnonymousFunction=false;
 	    this.anonymousCount=0;
+	    this.inferredGlobal=null;
 		
 	}
 	
@@ -261,6 +263,20 @@ public class InferEngine extends ASTVisitor {
 						if (var!=null)
 						{
 							receiverType=createAnonymousType(var);
+						}
+						else
+						{
+							if (this.inferredGlobal!=null && fieldReference.receiver instanceof SingleNameReference)
+							{
+								char []name=((SingleNameReference)fieldReference.receiver).token;
+								InferredAttribute attr=(InferredAttribute)this.inferredGlobal.attributesHash.get(name);
+								if (attr!=null)
+									receiverType=attr.type;
+							}
+
+						}
+						if (receiverType!=null)
+						{
 							InferredMethod method = receiverType.addMethod(fieldReference.token,functionExpression.methodDeclaration);
 							method.nameStart=nameStart;
 							receiverType.updatePositions(assignment.sourceStart, assignment.sourceEnd);
@@ -769,6 +785,7 @@ public class InferEngine extends ASTVisitor {
 		{
 			this.currentContext.currentType=addType(InferredType.GLOBAL_NAME);
 			this.currentContext.currentType.isDefinition=true;
+			this.inferredGlobal=this.currentContext.currentType;
 		}
 		
 		this.isTopLevelAnonymousFunction=false;
@@ -1021,6 +1038,7 @@ public class InferEngine extends ASTVisitor {
 			Object var = this.currentContext.getMember( name );
 			if (var instanceof AbstractVariableDeclaration)
 				return (AbstractVariableDeclaration)var;
+			
 		}
 		return null;
 		
