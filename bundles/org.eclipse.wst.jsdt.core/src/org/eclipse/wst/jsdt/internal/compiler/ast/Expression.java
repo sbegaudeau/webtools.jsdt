@@ -979,8 +979,11 @@ public void markAsNonNull() {
 			if (scope.isBoxingCompatibleWith(expressionType, expectedType)) {
 				this.computeConversion(scope, expectedType, expressionType);
 			} else {
-				scope.problemReporter().typeMismatchError(expressionType, expectedType, this);
-				return null;
+				if (expectedType!=TypeBinding.BOOLEAN || expressionType==TypeBinding.VOID)
+				{
+					scope.problemReporter().typeMismatchError(expressionType, expectedType, this);
+					return null;
+				}
 			}
 		}
 		return expressionType;
