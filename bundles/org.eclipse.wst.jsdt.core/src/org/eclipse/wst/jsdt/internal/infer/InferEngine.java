@@ -259,22 +259,7 @@ public class InferEngine extends ASTVisitor {
 					}
 					else if (this.passNumber==2)	// create anonymous class
 					{
-						AbstractVariableDeclaration var=getVariable(fieldReference.receiver);
-						if (var!=null)
-						{
-							receiverType=createAnonymousType(var);
-						}
-						else
-						{
-							if (this.inferredGlobal!=null && fieldReference.receiver instanceof SingleNameReference)
-							{
-								char []name=((SingleNameReference)fieldReference.receiver).token;
-								InferredAttribute attr=(InferredAttribute)this.inferredGlobal.attributesHash.get(name);
-								if (attr!=null)
-									receiverType=attr.type;
-							}
-
-						}
+						receiverType = getInferredType2(fieldReference.receiver);
 						if (receiverType!=null)
 						{
 							InferredMethod method = receiverType.addMethod(fieldReference.token,functionExpression.methodDeclaration);
@@ -359,6 +344,9 @@ public class InferEngine extends ASTVisitor {
 				
 				InferredType receiverType = getInferredType( fRef.receiver );
 				
+				if (receiverType==null && this.passNumber==2)
+				  receiverType=getInferredType2(fRef.receiver );
+				
 				if( receiverType != null ){
 					//check if there is an attribute already created
 					
@@ -399,34 +387,54 @@ public class InferEngine extends ASTVisitor {
 			{
 				if( assignment.lhs instanceof FieldReference ){
 					FieldReference fRef = (FieldReference)assignment.lhs;
-					
+					int nameStart=(int)(fRef.nameSourcePosition>>>32);
+
 					InferredType receiverType = getInferredType( fRef.receiver );
+					if (receiverType==null && this.passNumber==2)
+						  receiverType=getInferredType2(fRef.receiver );
 					
 					if( receiverType != null ){
 						//check if there is an attribute already created
 						
+						InferredMethod method=null;
 						InferredAttribute attr = receiverType.findAttribute( fRef.token );
+						if (attr==null)
+							 method = receiverType.findMethod(fRef.token, null);
 						
 						//ignore if the attribute exists and has a type
-						if( !(attr != null && attr.type != null) ){
+						if(  (method==null && attr==null) ||  (method==null && attr != null && attr.type == null) ){
 							
-							attr = receiverType.addAttribute( fRef.token, assignment );
-							attr.type = getTypeOf( assignment.expression );
 							
+//							attr.type = 
+							MethodDeclaration definedFunction=null;
+							InferredType exprType = getTypeOf( assignment.expression );
+							if (exprType==null)
+								 definedFunction = getDefinedFunction(assignment.expression );
+							
+							if (definedFunction!=null)
+							{
+								method = receiverType.addMethod(fRef.token, definedFunction);
+								method.nameStart=nameStart;
+							}
+							else
+							{
+							  attr = receiverType.addAttribute( fRef.token, assignment );
+							
+							  attr.type=exprType;
 							/*
 							 * determine if static
 							 * 
 							 * check if the receiver is a type
 							 */
-							char [] possibleTypeName = constructTypeName( fRef.receiver );
+							  char [] possibleTypeName = constructTypeName( fRef.receiver );
 							
-							if( possibleTypeName != null && compUnit.findInferredType( possibleTypeName ) != null )
+							  if( possibleTypeName != null && compUnit.findInferredType( possibleTypeName ) != null )
 								attr.isStatic = true;
-							else
+							  else
 								attr.isStatic = false;
 							
-							attr.nameStart = (int)(fRef.nameSourcePosition>>>32);
-							
+							  attr.nameStart = (int)(fRef.nameSourcePosition>>>32);
+							}
 							return false; //done with this
 						}
 						
@@ -436,6 +444,28 @@ public class InferEngine extends ASTVisitor {
 			}
 		}
 		return true; // do nothing by default, keep traversing
+	}
+	
+	protected InferredType getInferredType2(Expression fieldReceiver)
+	{
+		InferredType receiverType=null;
+		AbstractVariableDeclaration var=getVariable(fieldReceiver);
+		if (var!=null)
+		{
+			receiverType=createAnonymousType(var);
+		}
+		else
+		{
+			if (this.inferredGlobal!=null && fieldReceiver instanceof SingleNameReference)
+			{
+				char []name=((SingleNameReference)fieldReceiver).token;
+				InferredAttribute attr=(InferredAttribute)this.inferredGlobal.attributesHash.get(name);
+				if (attr!=null)
+					receiverType=attr.type;
+			}
+
+		}
+		return receiverType;
 	}
 
 	private InferredType createAnonymousType(AbstractVariableDeclaration var) {
@@ -600,13 +630,8 @@ public class InferEngine extends ASTVisitor {
 				InferredType typeOf = getTypeOf(assignment.expression);
 				MethodDeclaration methodDecl=null;
 				
-				if (typeOf==null && assignment.expression instanceof SingleNameReference)
-				{
-					Object object = this.currentContext.getMember( ((SingleNameReference)assignment.expression).token );
-					if (object instanceof AbstractMethodDeclaration)
-						methodDecl=(MethodDeclaration)object;
-				} else if (assignment.expression instanceof FunctionExpression)
-					methodDecl=((FunctionExpression)assignment.expression).methodDeclaration;
+				if (typeOf==null)
+					methodDecl=getDefinedFunction(assignment.expression);
 				
 				if (methodDecl!=null)
 				{
@@ -625,6 +650,34 @@ public class InferEngine extends ASTVisitor {
 			}
 		}
 		return false;
+	}
+	
+	protected MethodDeclaration getDefinedFunction(Expression expression)
+	{
+		if (expression instanceof SingleNameReference)
+		{
+			Object object = this.currentContext.getMember( ((SingleNameReference)expression).token );
+			if (object instanceof AbstractMethodDeclaration)
+				return (MethodDeclaration)object;
+		} else if (expression instanceof FunctionExpression)
+			return ((FunctionExpression)expression).methodDeclaration;
+		 else if (expression instanceof FieldReference)
+		 {
+			 FieldReference fieldReference=(FieldReference)expression;
+			InferredType receiverType = getInferredType( fieldReference.receiver );
+			if (receiverType==null && passNumber==2)
+				receiverType=getInferredType2( fieldReference.receiver );
+			if (receiverType!=null)
+			{
+				InferredMethod method = receiverType.findMethod(fieldReference.token, null);
+				if (method!=null)
+					return method.methodDeclaration;
+			}
+
+		 }
+	
+		return null;
+
 	}
 	
 	protected InferredType getTypeOf(Expression expression) {
@@ -654,6 +707,12 @@ public class InferEngine extends ASTVisitor {
 			AbstractVariableDeclaration varDecl = getVariable( (SingleNameReference)expression );
 			if( varDecl != null )
 				return varDecl.inferredType;
+			if (this.inferredGlobal!=null)
+			{
+				InferredAttribute attribute = this.inferredGlobal.findAttribute(((SingleNameReference)expression).token );
+				if (attribute!=null)
+					return attribute.type;
+			}
 			
 		}
 		else if (expression instanceof FieldReference)
