@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IClasspathAttribute;
@@ -37,6 +38,7 @@ import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.ILookupScope;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.JSDScopeUtil;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
@@ -58,6 +60,11 @@ import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
 
 
 public class DocumentContextFragmentRoot extends PackageFragmentRoot{
+	
+	/*
+	 * if user includes dojo.js check if dojo.js.uncompressed.js exists instead and replace with that.
+	 */
+	public static final boolean HACK_DOJO= true;
 	
 	private static final ClasspathAttribute HIDE = new ClasspathAttribute("hide","true");
 	private String[] includedFiles;
@@ -257,51 +264,22 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 		
 		
 		
-		String[] newImports = new String[fileNames.length];
-		//Long[] newTimestamps = new Long[fileNames.length];
-		int arrayLength = 0;
+		ArrayList newImports = new ArrayList();
+		//int arrayLength = 0;
 		
 		for(int i = 0; i<fileNames.length;i++) {
 			File importFile = isValidImport(fileNames[i]);
 			if(importFile==null) continue;
 			IPath importPath = resolveChildPath(fileNames[i]);	
-			newImports[arrayLength++] = importPath.toString();
-			//newTimestamps[arrayLength] = new Long(importFile.lastModified());	
-
-			//arrayLength++;
+			newImports.add( importPath.toString() );
 		}
 		
-		boolean equals = includedFiles!=null && arrayLength==includedFiles.length;
+		boolean equals = includedFiles!=null && newImports.size()==includedFiles.length;
 		
-		for(int i=0;equals && i<arrayLength;i++) {
-			if(newImports[i].compareTo(includedFiles[i])!=0) equals=false;
+		for(int i=0;equals && i<newImports.size();i++) {
+			if(((String)newImports.get(i)).compareTo(includedFiles[i])!=0) equals=false;
 		}
 		
-		//this.includedFiles!=null && (newImports !=null) &&   this.includedFiles.length == arrayLength;
-		
-		//equals = equals || (this.includedFiles==null && newImports ==null);
-		//if(!equals) removeStaleClasspath(this.includedFiles);
-		
-		//		
-//
-//		if(!equals) dirty = true;
-//		
-//		/* try some more cases */
-//		
-//		for(int i = 0;!dirty && i<this.includedFiles.length;i++) {
-//			if(!(this.includedFiles[i].equals(newImports[i]))) {
-//				dirty = true;
-//				
-//			}
-//		}
-//		
-//		for(int i = 0;!dirty && i<newTimestamps.length;i++) {
-//			if(!(this.timeStamps[i].equals(newTimestamps[i]))) {
-//				dirty = true;
-//			}
-//		}
-//		
-//		if(!dirty) return;
 		if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Imports " + (equals?"did NOT change": "CHANGED:") + "\n");
 		if(DEBUG) {
 			for(int i = 0;includedFiles!=null && i<includedFiles.length;i++) {
@@ -309,12 +287,53 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 			}
 		}
 		if(equals) return;
-		this.includedFiles = new String[arrayLength];
-	//	this.timeStamps = new Long[arrayLength];
-		System.arraycopy(newImports, 0, this.includedFiles, 0, arrayLength);
-	//	System.arraycopy(newTimestamps, 0, this.timeStamps, 0, arrayLength);
-		updateClasspathIfNeeded();
+/*  start  try and expand the include paths from the library entries if necisary */
+		IClasspathEntry[] current = new IClasspathEntry[0];
+		IJavaProject javaProject = getJavaProject();
 		
+		try {
+			current = javaProject.getRawClasspath();
+		} catch (JavaModelException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}		
+		for(int i = 0;i<current.length;i++) {
+			ClasspathContainerInitializer init = JSDScopeUtil.getContainerInitializer(current[i].getPath());
+			for(int k=0;k<fileNames.length;k++) {
+				String[] newEntries = init.resolvedLibraryImport(fileNames[k]);
+				if(newEntries!=null && newEntries.length>0        ) {
+					newImports.removeAll(Arrays.asList(newEntries));
+					newImports.addAll(Arrays.asList(newEntries));
+				}
+			}
+		}
+		
+/* end class path expansion */
+		this.includedFiles = (String[])newImports.toArray(new String[newImports.size()]);
+	//	System.arraycopy(newImports, 0, this.includedFiles, 0, arrayLength);
+		updateClasspathIfNeeded();
+		dojoHack();
+	}
+	
+	private void dojoHack() {
+		if(!HACK_DOJO) return;
+		String UNCOMPRESSED_DOJO="dojo.js.uncompressed.js";
+		String DOJO_COMPRESSED = "dojo.js";
+		
+		for(int i = 0;i<includedFiles.length;i++) {
+			String includeString = includedFiles[i];
+			
+			int dojoIndex = includeString.toLowerCase().indexOf(DOJO_COMPRESSED);
+			
+			if(includeString!=null && dojoIndex>=0) {
+				/* found dojo.js replace it with dojo.js.uncompressed.js if it exists */
+				String newIncludeString = includeString.substring(0, dojoIndex) + UNCOMPRESSED_DOJO + includeString.substring(dojoIndex + DOJO_COMPRESSED.length(),includeString.length());
+				File djUncom = isValidImport(newIncludeString);
+				if(djUncom!=null && djUncom.exists()) {
+					includedFiles[i] = newIncludeString;
+				}
+			}
+		}
 	}
 	
 	private void removeStaleClasspath(String[] oldEntries) {
@@ -329,28 +348,21 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 		IJavaProject javaProject = getJavaProject();
 		IResource myResource = getResource();
 		IContainer folder = (IContainer)myResource;
-		
+
 		for(int i = 0;i<includedFiles.length;i++) {
 			IResource theFile = folder.findMember(includedFiles[i]);
 			if(javaProject.isOnClasspath(theFile)) continue;
-//			try {
-//				if(javaProject.findPackageFragmentRoot(theFile.getLocation())!=null) continue;
-//			} catch (JavaModelException ex) {}
-			
-			//IClasspathEntry entry = JavaCore.newSourceEntry(theFile.getFullPath());
 			IClasspathEntry entry = JavaCore.newLibraryEntry(theFile.getLocation().makeAbsolute(), null, null, new IAccessRule[0], new IClasspathAttribute[] {HIDE}, true);
 			
 			newEntriesList.add(entry);
 		}
 		IClasspathEntry[] current = new IClasspathEntry[0];
-		
-		
 		try {
 			current = javaProject.getRawClasspath();
 		} catch (JavaModelException ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
-		}
+		}		
 		
 		
 		IClasspathEntry[] newCpEntries = new IClasspathEntry[newEntriesList.size() + current.length];

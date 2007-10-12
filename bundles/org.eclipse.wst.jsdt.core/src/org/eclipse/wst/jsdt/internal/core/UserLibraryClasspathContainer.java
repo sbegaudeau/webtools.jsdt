@@ -67,4 +67,11 @@ public class UserLibraryClasspathContainer implements IClasspathContainer {
 	public IPath getPath() {
 		return new Path(JavaCore.USER_LIBRARY_CONTAINER_ID).append(this.name);
 	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#resolvedLibraryImport(java.lang.String)
+	 */
+	public String[] resolvedLibraryImport(String a) {
+		return new String[] {a};
+	}
 }

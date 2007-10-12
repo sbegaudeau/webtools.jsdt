@@ -135,6 +135,9 @@ public abstract class ClasspathContainerInitializer implements IClasspathContain
 				public String toString() { 
 					return getDescription(); 
 				}
+				public String[] resolvedLibraryImport(String a) {
+					return new String[] {a};
+				}
 			};
 	}
 
@@ -164,6 +167,15 @@ public abstract class ClasspathContainerInitializer implements IClasspathContain
 	 * returns a String of all SuperTypes provided by this library.
 	 */
 	public String[] containerSuperTypes() {return new String[0];};
+	
+	/* Return a string of imports to replace the real imports for.  necisary for toolkits and other t
+	 * things that may have a certain import best for runtime but not best for building a model 
+	 * 
+	 */
+	public String[] resolvedLibraryImport(String realImport) {
+		return new String[] {realImport};
+	}
+	
 	
 	public IClasspathEntry[] getClasspathEntries() {
 		LibraryLocation libLocation =  getLibraryLocation();

@@ -127,5 +127,10 @@ public interface IClasspathContainer {
 	 * @return IPath - the container path that is associated with this container
 	 */	
     IPath getPath();
+    
+    /* allows mapping between HTML imports and a toolkits actual page imports.  Implementers
+     * should ensure the validity of the imports before returning a value.
+     */
+    String[] resolvedLibraryImport(String a);
 }
 

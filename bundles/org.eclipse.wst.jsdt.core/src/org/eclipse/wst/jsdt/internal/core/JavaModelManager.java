@@ -176,6 +176,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 		public int getKind() { return 0; }
 		public IPath getPath() { return null; }
 		public String toString() { return getDescription(); }
+		public String[] resolvedLibraryImport(String a) {return new String[] {a};}
 	};
 	
 	private static final String BUFFER_MANAGER_DEBUG = JavaCore.PLUGIN_ID + "/debug/buffermanager" ; //$NON-NLS-1$
@@ -2622,6 +2623,13 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 		public String toString() {
 			return getDescription();
 		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#resolvedLibraryImport(java.lang.String)
+		 */
+		public String[] resolvedLibraryImport(String a) {
+			return new String[] {a};
+		}
 	}
 
 	private final class VariablesAndContainersLoadHelper {
@@ -3016,6 +3024,9 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 					}
 					public String toString() {
 						return getDescription();
+					}
+					public String[] resolvedLibraryImport(String a) {
+						return new String[] {a};
 					}
 
 				};
