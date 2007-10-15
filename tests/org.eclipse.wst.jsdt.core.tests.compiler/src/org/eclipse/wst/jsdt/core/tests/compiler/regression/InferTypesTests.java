@@ -435,6 +435,33 @@ public class InferTypesTests extends AbstractRegressionTest {
 			 );
 		}
 		
+		public void test068b() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+					"var ns = {};"+ 
+					"ns.foo = function(){};" +
+					"function abc(){};" +
+					"ns.foo2 = abc;" +
+					"",
+				"X.js",
+				"class ___anonymous9_10 extends Object{\n  void foo()\n  void foo2()\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		
+		public void test068c() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+					"var ns = {};"+ 
+					"ns.foo = function(){};" +
+					"ns.foo2 = ns.foo;" +
+					"",
+				"X.js",
+				"class ___anonymous9_10 extends Object{\n  void foo()\n  void foo2()\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		
 		/**
 		 * namespaced type (new "class" nested inside an Object Literal)
 		 */

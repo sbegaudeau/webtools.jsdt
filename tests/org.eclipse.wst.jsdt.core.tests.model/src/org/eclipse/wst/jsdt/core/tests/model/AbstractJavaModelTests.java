@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.wst.jsdt.core.*;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
-import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraries;
+import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.search.*;
@@ -1375,16 +1375,28 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	 * Returns the java.io path to the external java class library (e.g. jclMin.jar)
 	 */
 	protected String getExternalJCLPathString() {
-		return SystemLibraries.getLibraryPath("system.js");
+		return getSystemJsPath();
+//		return SystemLibraries.getLibraryPath("system.js");
 //		return getExternalJCLPathString("");
 	}
 	/**
 	 * Returns the java.io path to the external java class library (e.g. jclMin.jar)
 	 */
 	protected String getExternalJCLPathString(String compliance) {
-		return SystemLibraries.getLibraryPath("system.js");
+		return getSystemJsPath();
+//		return SystemLibraries.getLibraryPath("system.js");
 //		return getExternalPath() + "jclMin" + compliance + ".jar";
 	}
+	
+	private String getSystemJsPath()
+	{
+		IPath targetRoot =  (new Path(System.getProperty("user.dir"))).removeLastSegments(1);
+		IPath pluginDir = targetRoot.append(new Path("org.eclipse.wst.jsdt.core"));
+		IPath libDir = pluginDir.append(new Path(new String(SystemLibraryLocation.LIBRARY_PLUGIN_DIRECTORY)));
+		IPath fullDir = libDir.append(new Path(new String(SystemLibraryLocation.SYSTEM_LIBARAY_NAME)));
+		return	fullDir.toOSString();
+	}
+	
 	/**
 	 * Returns the IPath to the root source of the external java class library (e.g. "src")
 	 */

@@ -8633,4 +8633,31 @@ public void test017(){
 		expectedReplacedSource,
 		testName); 
 }
+
+public void testRECOVERY001() {
+	String str = 
+		"var foo;\n" + 
+		"if (f) {\n"; 
+
+	String testName = "<complete on name inside if>";
+	String completeBehind = "(f";
+	String expectedCompletionNodeToString = "<CompleteOnName:f>";
+	String completionIdentifier = "f";
+	String expectedReplacedSource = "f";
+	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
+	String expectedUnitDisplayString =
+		"var foo;\n" + 
+		"if (<CompleteOnName:f>)\n" + 
+		"\n";
+
+	checkDietParse(
+		str.toCharArray(), 
+		cursorLocation, 
+		expectedCompletionNodeToString,
+		expectedUnitDisplayString,
+		completionIdentifier,
+		expectedReplacedSource,
+		testName); 
+}
+
 }
