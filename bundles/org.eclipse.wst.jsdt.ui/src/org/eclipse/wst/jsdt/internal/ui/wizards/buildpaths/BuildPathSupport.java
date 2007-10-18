@@ -168,6 +168,13 @@ public class BuildPathSupport {
 		public IPath getPath() {
 			return fOriginal.getPath();
 		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#resolvedLibraryImport(java.lang.String)
+		 */
+		public String[] resolvedLibraryImport(String a) {
+				return null;
+		}
 	}
 
 	/**

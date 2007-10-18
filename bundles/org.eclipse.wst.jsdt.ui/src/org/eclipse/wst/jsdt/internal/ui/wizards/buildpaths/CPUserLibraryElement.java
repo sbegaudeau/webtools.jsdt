@@ -58,6 +58,14 @@ public class CPUserLibraryElement {
 		public IPath getPath() {
 			return CPUserLibraryElement.this.getPath();
 		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#resolvedLibraryImport(java.lang.String)
+		 */
+		public String[] resolvedLibraryImport(String a) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 	
 	
