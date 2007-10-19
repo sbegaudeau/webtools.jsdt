@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import org.eclipse.wst.jsdt.jsdoc.msdn.IeFromMsdn;
 
-import com.sun.org.apache.xpath.internal.FoundIndex;
+// import com.sun.org.apache.xpath.internal.FoundIndex;
 
 /**
  * 
