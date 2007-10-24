@@ -39,7 +39,7 @@ import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
 import org.eclipse.wst.jsdt.internal.infer.InferredMethod;
 import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
-import sun.misc.FpUtils;
+
 
 public class CompilationUnitScope extends BlockScope {
 	

@@ -56,8 +56,6 @@ import org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessBindingRequest
 import org.eclipse.wst.jsdt.internal.core.search.JavaSearchScope;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
-
 
 public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 	
