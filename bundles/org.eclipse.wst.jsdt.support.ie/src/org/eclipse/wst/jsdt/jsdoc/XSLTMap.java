@@ -35,8 +35,6 @@ public class XSLTMap {
 
     private File stylesheet;
 
-    private XSLTMap() {}
-
     public XSLTMap(File stylesheet) {
         this.stylesheet = stylesheet;
     }
@@ -56,12 +54,7 @@ public class XSLTMap {
     public void applyMap(String dataString, OutputStream _os) throws MappingException {
         Document document;
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        try {
-			factory.setFeature("validating", false);
-		} catch (ParserConfigurationException ex1) {
-			// TODO Auto-generated catch block
-			ex1.printStackTrace();
-		}
+        factory.setValidating(false);
         
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();

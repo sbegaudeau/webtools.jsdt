@@ -147,7 +147,7 @@ public class Util {
 			while (st.hasMoreTokens()) {
 				fullLine = st.nextToken();
 				if (appendToEnd) {
-					out.append(fullLine /* + Util.NEW_LINE */);
+					out.write(fullLine /* + Util.NEW_LINE */);
 				} else {
 					out.write(fullLine /* + Util.NEW_LINE */);
 				}
