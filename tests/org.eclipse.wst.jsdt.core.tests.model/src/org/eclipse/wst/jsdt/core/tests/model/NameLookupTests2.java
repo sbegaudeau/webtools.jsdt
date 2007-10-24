@@ -159,7 +159,8 @@ public void testDuplicateTypesInWorkingCopies() throws CoreException {
 			"}"
 		);
 		NameLookup nameLookup = project.newNameLookup(workingCopies);
-		NameLookup.Answer answer=nameLookup.findBinding("foo","",Binding.METHOD, false, NameLookup.ACCEPT_ALL,false); 
+		//		NameLookup.Answer answer=nameLookup.findBinding("foo","",Binding.METHOD, false, NameLookup.ACCEPT_ALL,false);
+		NameLookup.Answer answer=nameLookup.findBinding("foo","",Binding.METHOD, false, NameLookup.ACCEPT_ALL,false, false, null); 
 		assertEquals(
 			"Unepexted ",
 			"foo",

@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
 import org.eclipse.wst.jsdt.core.IClasspathContainer;
 import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
 
 public class ContainerInitializer extends ClasspathContainerInitializer {
 	public static ITestInitializer initializer;
@@ -36,5 +37,12 @@ public class ContainerInitializer extends ClasspathContainerInitializer {
 	public void initialize(IPath containerPath, IJavaProject project) throws CoreException {
 		if (initializer == null) return;
 		initializer.initialize(containerPath, project);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.core.IClasspathContainerInitialzer#getLibraryLocation()
+	 */
+	public LibraryLocation getLibraryLocation() {
+		return null;
 	}
 }

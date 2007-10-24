@@ -68,6 +68,12 @@ public class ClasspathTests extends ModifyingResourceTests {
 		public IClasspathEntry[] getClasspathEntries() { return this.entries;	}
 		public String getDescription() { return this.path.toString(); 	}
 		public int getKind() { return 0; }
+		/* (non-Javadoc)
+		 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#resolvedLibraryImport(java.lang.String)
+		 */
+		public String[] resolvedLibraryImport(String a) {
+			return new String[] {a};
+		}
 	}
 
 public ClasspathTests(String name) {
@@ -261,7 +267,7 @@ public void testClasspathCorruption() throws CoreException {
 */
 		p1.close();
 		JavaModelManager.PerProjectInfo perProjectInfo = JavaModelManager.getJavaModelManager().getPerProjectInfo(p1.getProject(), true/*create if missing*/);
-		perProjectInfo.setClasspath(null, null, null, null, null, null);
+		perProjectInfo.setClasspath(null, null, null, null, null, null, null);
 
 		// shouldn't fail 
 		p1.getExpandedClasspath();
@@ -2973,6 +2979,12 @@ public void testCycleDetectionThroughContainerVariants() throws CoreException {
 			public IClasspathEntry[] getClasspathEntries() { return this.entries;	}
 			public String getDescription() { return null; 	}
 			public int getKind() { return 0; }
+			/* (non-Javadoc)
+			 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#resolvedLibraryImport(java.lang.String)
+			 */
+			public String[] resolvedLibraryImport(String a) {
+				return new String[] {a};
+			}
 		}
 
 		IClasspathContainer[] containers = new IClasspathContainer[]{ 

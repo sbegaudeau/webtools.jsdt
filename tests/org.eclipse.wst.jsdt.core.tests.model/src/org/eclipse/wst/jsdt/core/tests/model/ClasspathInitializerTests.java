@@ -78,6 +78,12 @@ public static class DefaultContainerInitializer implements ContainerInitializer.
 		public IPath getPath() {
 			return new Path("org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER");
 		}
+		/* (non-Javadoc)
+		 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#resolvedLibraryImport(java.lang.String)
+		 */
+		public String[] resolvedLibraryImport(String a) {
+			return new String[] {a};
+		}
 	}
 	
 	Map containerValues;

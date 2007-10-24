@@ -22,7 +22,8 @@ import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
-import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraries;
+
+import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 import org.eclipse.wst.jsdt.core.dom.*;
 import org.eclipse.wst.jsdt.core.tests.util.Util;
 
@@ -45,7 +46,7 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 
 	protected IPath getConverterJCLPath(String compliance) {
 //		return new Path(getExternalPath() + "converterJclMin" + compliance + ".jar"); //$NON-NLS-1$
-		return new Path(SystemLibraries.getLibraryPath("system.js"));
+		return new Path(new SystemLibraryLocation().getLibraryPath("system.js"));
 	}
 
 	protected IPath getConverterJCLSourcePath() {
