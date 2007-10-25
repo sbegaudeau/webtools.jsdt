@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.text.spelling;
 
-import com.ibm.icu.text.BreakIterator;
-
 import java.util.Locale;
 
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
+
+import com.ibm.icu.text.BreakIterator;
 
 
 /**

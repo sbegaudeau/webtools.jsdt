@@ -14,17 +14,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ui.ISharedImages;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
-
-import org.eclipse.wst.jsdt.core.dom.*;
+import org.eclipse.wst.jsdt.core.dom.ASTNode;
+import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
+import org.eclipse.wst.jsdt.core.dom.Assignment;
+import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
+import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.Expression;
+import org.eclipse.wst.jsdt.core.dom.FieldAccess;
+import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.IBinding;
+import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
+import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
+import org.eclipse.wst.jsdt.core.dom.Javadoc;
+import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
+import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
+import org.eclipse.wst.jsdt.core.dom.QualifiedName;
+import org.eclipse.wst.jsdt.core.dom.SimpleName;
+import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.TagElement;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.LinkedNodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 

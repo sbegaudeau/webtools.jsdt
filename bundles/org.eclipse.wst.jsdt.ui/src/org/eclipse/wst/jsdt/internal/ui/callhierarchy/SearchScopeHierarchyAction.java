@@ -14,12 +14,10 @@
 package org.eclipse.wst.jsdt.internal.ui.callhierarchy;
 
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.search.JavaSearchScopeFactory;

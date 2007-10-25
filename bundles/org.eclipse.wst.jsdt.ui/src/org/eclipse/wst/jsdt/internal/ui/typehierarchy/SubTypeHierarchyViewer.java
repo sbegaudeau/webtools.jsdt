@@ -13,9 +13,7 @@ package org.eclipse.wst.jsdt.internal.ui.typehierarchy;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
-
 import org.eclipse.ui.IWorkbenchPart;
-
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 

@@ -27,7 +27,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -35,32 +34,25 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-
-
 import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptorProxy;
 import org.eclipse.ltk.core.refactoring.history.IRefactoringHistoryService;
 import org.eclipse.ltk.core.refactoring.history.RefactoringHistory;
-
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IPackageFragment;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.internal.corext.util.Messages;
+import org.eclipse.wst.jsdt.internal.ui.IJavaStatusConstants;
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.ui.jarpackager.IJarDescriptionReader;
+import org.eclipse.wst.jsdt.ui.jarpackager.JarPackageData;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-
-import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.jarpackager.IJarDescriptionReader;
-import org.eclipse.wst.jsdt.ui.jarpackager.JarPackageData;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.internal.ui.IJavaStatusConstants;
 
 /**
  * Reads data from an InputStream and returns a JarPackage

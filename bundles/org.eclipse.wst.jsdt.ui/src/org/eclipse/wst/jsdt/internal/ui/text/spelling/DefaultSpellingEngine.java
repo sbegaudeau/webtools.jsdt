@@ -18,14 +18,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
-
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
-
 import org.eclipse.ui.texteditor.spelling.ISpellingEngine;
 import org.eclipse.ui.texteditor.spelling.ISpellingProblemCollector;
 import org.eclipse.ui.texteditor.spelling.SpellingContext;
-
 import org.eclipse.wst.jsdt.core.JavaCore;
 
 /**

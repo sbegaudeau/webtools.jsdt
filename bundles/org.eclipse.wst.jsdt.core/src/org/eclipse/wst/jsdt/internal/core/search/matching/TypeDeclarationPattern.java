@@ -15,7 +15,8 @@ import java.io.IOException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.core.index.*;
+import org.eclipse.wst.jsdt.internal.core.index.EntryResult;
+import org.eclipse.wst.jsdt.internal.core.index.Index;
 
 public class TypeDeclarationPattern extends JavaSearchPattern {
 
@@ -23,12 +24,12 @@ public char[] simpleName;
 public char[] pkg;
 public char[][] enclosingTypeNames;
 
-// set to CLASS_SUFFIX for only matching classes 
+// set to CLASS_SUFFIX for only matching classes
 // set to INTERFACE_SUFFIX for only matching interfaces
 // set to ENUM_SUFFIX for only matching enums
 // set to ANNOTATION_TYPE_SUFFIX for only matching annotation types
 // set to TYPE_SUFFIX for matching both classes and interfaces
-public char typeSuffix; 
+public char typeSuffix;
 public int modifiers;
 public boolean secondary = false;
 
@@ -227,7 +228,7 @@ public char[][] getIndexCategories() {
 }
 public boolean matchesDecodedKey(SearchPattern decodedPattern) {
 	TypeDeclarationPattern pattern = (TypeDeclarationPattern) decodedPattern;
-	
+
 	// check type suffix
 	if (this.typeSuffix != pattern.typeSuffix && typeSuffix != TYPE_SUFFIX) {
 		if (!matchDifferentTypeSuffixes(this.typeSuffix, pattern.typeSuffix)) {
@@ -333,7 +334,7 @@ protected StringBuffer print(StringBuffer output) {
 			output.append("TypeDeclarationPattern: pkg<"); //$NON-NLS-1$
 			break;
 	}
-	if (pkg != null) 
+	if (pkg != null)
 		output.append(pkg);
 	else
 		output.append("*"); //$NON-NLS-1$
@@ -348,7 +349,7 @@ protected StringBuffer print(StringBuffer output) {
 		output.append("*"); //$NON-NLS-1$
 	}
 	output.append(">, type<"); //$NON-NLS-1$
-	if (simpleName != null) 
+	if (simpleName != null)
 		output.append(simpleName);
 	else
 		output.append("*"); //$NON-NLS-1$

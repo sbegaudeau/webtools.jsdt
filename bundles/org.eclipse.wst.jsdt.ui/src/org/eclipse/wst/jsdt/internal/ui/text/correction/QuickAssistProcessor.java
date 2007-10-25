@@ -20,12 +20,9 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-
-import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.TextChange;
-
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
@@ -80,7 +77,6 @@ import org.eclipse.wst.jsdt.core.dom.WithStatement;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodeFactory;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
@@ -99,12 +95,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.code.ExtractTempRefactor
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.InlineTempRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.PromoteTempToFieldRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
-import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
-import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
-import org.eclipse.wst.jsdt.ui.text.java.IQuickAssistProcessor;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.fix.ControlStatementsCleanUp;
@@ -112,6 +102,10 @@ import org.eclipse.wst.jsdt.internal.ui.fix.ConvertLoopCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.ICleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.VariableDeclarationCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
+import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
+import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
+import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
+import org.eclipse.wst.jsdt.ui.text.java.IQuickAssistProcessor;
 
 /**
   */

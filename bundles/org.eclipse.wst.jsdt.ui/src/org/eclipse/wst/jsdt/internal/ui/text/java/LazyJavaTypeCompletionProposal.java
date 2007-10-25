@@ -10,17 +10,13 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.text.java;
 
-import org.eclipse.text.edits.TextEdit;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-
 import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.IContextInformation;
-
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -30,17 +26,13 @@ import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.ContextSensitiveImportRewriteContext;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
-import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.QualifiedTypeNameHistory;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
+import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
 
 /**
  * If passed compilation unit is not null, the replacement string will be seen as a qualified type name.

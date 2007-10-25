@@ -11,10 +11,15 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class InstanceOfExpression extends OperatorExpression {
 
@@ -37,7 +42,7 @@ public FlowInfo analyseCode(
 		FlowInfo flowInfo) {
 	LocalVariableBinding local = this.expression.localVariableBinding();
 	if (local != null && (local.type.tagBits & TagBits.IsBaseType) == 0) {
-		flowContext.recordUsingNullReference(currentScope, local, 
+		flowContext.recordUsingNullReference(currentScope, local,
 			this.expression, FlowContext.CAN_ONLY_NULL, flowInfo);
 		flowInfo = expression.analyseCode(currentScope, flowContext, flowInfo).
 			unconditionalInits();

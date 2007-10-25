@@ -11,12 +11,10 @@
 package org.eclipse.wst.jsdt.internal.ui.compare;
 
 import org.eclipse.core.resources.IFile;
-
+import org.eclipse.team.ui.history.ElementLocalHistoryPageSource;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
-
-import org.eclipse.team.ui.history.ElementLocalHistoryPageSource;
 
 public class JavaElementHistoryPageSource extends ElementLocalHistoryPageSource {
 	

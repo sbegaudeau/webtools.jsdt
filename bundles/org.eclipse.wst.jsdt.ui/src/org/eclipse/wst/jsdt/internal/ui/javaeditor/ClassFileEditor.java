@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -25,9 +26,17 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-
-import org.eclipse.core.resources.IFile;
-
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.text.IWidgetTokenKeeper;
+import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.IVerticalRuler;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.custom.StyledText;
@@ -46,20 +55,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
-
-import org.eclipse.jface.text.IWidgetTokenKeeper;
-import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.text.source.IVerticalRuler;
-
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
@@ -69,7 +64,6 @@ import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
-
 import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IClasspathContainer;
@@ -84,19 +78,16 @@ import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.util.ClassFileBytesDisassembler;
 import org.eclipse.wst.jsdt.core.util.ClassFormatException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.actions.RefactorActionGroup;
-import org.eclipse.wst.jsdt.ui.wizards.BuildPathDialogAccess;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIStatus;
 import org.eclipse.wst.jsdt.internal.ui.actions.CompositeActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.SourceAttachmentBlock;
+import org.eclipse.wst.jsdt.ui.actions.RefactorActionGroup;
+import org.eclipse.wst.jsdt.ui.wizards.BuildPathDialogAccess;
 
 /**
  * Java specific text editor.

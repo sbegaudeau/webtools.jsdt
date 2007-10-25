@@ -20,26 +20,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.text.edits.MultiTextEdit;
-import org.eclipse.text.edits.TextEdit;
-import org.eclipse.text.edits.TextEditGroup;
-
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubProgressMonitor;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.TextChange;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.ltk.core.refactoring.participants.ResourceChangeChecker;
-
+import org.eclipse.text.edits.MultiTextEdit;
+import org.eclipse.text.edits.TextEdit;
+import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
@@ -65,7 +61,6 @@ import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
 import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaRefactoringDescriptor;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptor;
@@ -80,10 +75,8 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.JavaElementUtil;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParser;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.TextChangeManager;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 /*
  * Open items:

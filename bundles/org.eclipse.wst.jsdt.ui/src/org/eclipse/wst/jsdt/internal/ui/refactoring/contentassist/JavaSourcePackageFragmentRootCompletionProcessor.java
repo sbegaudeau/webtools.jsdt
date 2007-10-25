@@ -14,35 +14,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.core.resources.ResourcesPlugin;
-
-import org.eclipse.swt.graphics.Image;
-
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.contentassist.IContentAssistSubjectControl;
 import org.eclipse.jface.contentassist.ISubjectControlContentAssistProcessor;
 import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
-
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.core.IJavaModel;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
-
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.text.java.JavaCompletionProposal;
 import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.java.CompletionProposalComparator;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.internal.ui.text.java.JavaCompletionProposal;
 
 /**
  * Simple completion processor that completes package fragment roots that are source

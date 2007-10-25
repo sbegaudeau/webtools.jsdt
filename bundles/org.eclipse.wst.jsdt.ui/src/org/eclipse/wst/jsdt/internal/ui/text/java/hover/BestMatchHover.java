@@ -20,13 +20,10 @@ import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.ITextHoverExtension;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
-
 import org.eclipse.ui.IEditorPart;
-
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.java.hover.IJavaEditorTextHover;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 /**
  * Caution: this implementation is a layer breaker and contains some "shortcuts"

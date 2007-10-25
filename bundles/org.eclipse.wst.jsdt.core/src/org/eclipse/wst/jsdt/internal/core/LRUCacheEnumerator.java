@@ -13,13 +13,13 @@ package org.eclipse.wst.jsdt.internal.core;
 import java.util.Enumeration;
 
 /**
- *	The <code>LRUCacheEnumerator</code> returns its elements in 
+ *	The <code>LRUCacheEnumerator</code> returns its elements in
  *	the order they are found in the <code>LRUCache</code>, with the
  *	most recent elements first.
  *
- *	Once the enumerator is created, elements which are later added 
+ *	Once the enumerator is created, elements which are later added
  *	to the cache are not returned by the enumerator.  However,
- *	elements returned from the enumerator could have been closed 
+ *	elements returned from the enumerator could have been closed
  *	by the cache.
  */
 public class LRUCacheEnumerator implements Enumeration {
@@ -33,7 +33,7 @@ public class LRUCacheEnumerator implements Enumeration {
 		 *	Value returned by <code>nextElement()</code>;
 		 */
 		public Object fValue;
-		
+
 		/**
 		 *	Next element
 		 */

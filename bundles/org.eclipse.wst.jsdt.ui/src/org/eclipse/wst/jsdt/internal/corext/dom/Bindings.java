@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -47,7 +46,6 @@ import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.SuperFieldAccess;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 
 public class Bindings {

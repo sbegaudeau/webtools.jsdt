@@ -10,10 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.launching;
 
-import java.util.Map;
-
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * Optional extensions that may be implemented by an

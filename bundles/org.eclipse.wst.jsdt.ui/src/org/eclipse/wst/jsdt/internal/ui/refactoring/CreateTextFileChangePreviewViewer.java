@@ -11,39 +11,31 @@
 package org.eclipse.wst.jsdt.internal.ui.refactoring;
 
 import org.eclipse.core.runtime.IAdaptable;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
-
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
-
-import org.eclipse.ui.model.IWorkbenchAdapter;
-
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.ui.refactoring.ChangePreviewViewerInput;
 import org.eclipse.ltk.ui.refactoring.IChangePreviewViewer;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.changes.CreateTextFileChange;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration;
-import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.IPropertiesFilePartitions;
 import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.PropertiesFileDocumentSetupParticipant;
 import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.PropertiesFileSourceViewerConfiguration;
 import org.eclipse.wst.jsdt.internal.ui.util.ViewerPane;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
+import org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration;
+import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
 
 /**
  * Change preview viewer for <code>CreateTextFileChange</code> objects.

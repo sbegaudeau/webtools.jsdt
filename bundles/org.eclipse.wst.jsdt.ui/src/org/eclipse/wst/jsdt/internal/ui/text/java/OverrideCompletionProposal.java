@@ -13,20 +13,17 @@ package org.eclipse.wst.jsdt.internal.ui.text.java;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.text.edits.MalformedTreeException;
-import org.eclipse.text.edits.TextEdit;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension4;
-
+import org.eclipse.text.edits.MalformedTreeException;
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.dom.AST;
@@ -46,13 +43,11 @@ import org.eclipse.wst.jsdt.core.dom.rewrite.ITrackedNodePosition;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.CodeGenerationSettings;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility2;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.preferences.JavaPreferencesSettings;
 

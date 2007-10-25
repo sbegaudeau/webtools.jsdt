@@ -37,7 +37,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemFieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
- 
+
 public class SelectionOnSingleNameReference extends SingleNameReference {
 public SelectionOnSingleNameReference(char[] source, long pos) {
 	super(source, pos);
@@ -48,7 +48,7 @@ public TypeBinding resolveType(BlockScope scope) {
 		if (this.binding != null && this.binding.isValidBinding()) {
 			throw new SelectionNodeFound(binding);
 		}
-	} 
+	}
 	// it can be a package, type, member type, local variable or field
 	binding = scope.getBinding(token, Binding.VARIABLE | Binding.METHOD, this, true /*resolve*/);
 	if (!binding.isValidBinding()) {
@@ -65,7 +65,7 @@ public TypeBinding resolveType(BlockScope scope) {
 			// tolerate some error cases
 			if (binding.problemId() == ProblemReasons.NotVisible){
 				throw new SelectionNodeFound(binding);
-			}			
+			}
 			scope.problemReporter().invalidType(this, (TypeBinding) binding);
 		} else {
 			scope.problemReporter().unresolvableReference(this, binding);

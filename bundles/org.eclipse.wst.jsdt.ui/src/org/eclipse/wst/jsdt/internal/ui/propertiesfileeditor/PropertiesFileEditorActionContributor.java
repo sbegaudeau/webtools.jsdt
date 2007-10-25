@@ -11,13 +11,10 @@
 package org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor;
 
 import org.eclipse.jface.action.IStatusLineManager;
-
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.texteditor.ITextEditor;
-
 import org.eclipse.ui.editors.text.TextEditorActionContributor;
-
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.wst.jsdt.ui.actions.JdtActionConstants;
 
 

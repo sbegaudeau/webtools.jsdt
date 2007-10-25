@@ -15,34 +15,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
-
-import org.eclipse.core.filebuffers.FileBuffers;
-import org.eclipse.core.filebuffers.ITextFileBuffer;
-import org.eclipse.core.filebuffers.ITextFileBufferManager;
-import org.eclipse.core.filebuffers.LocationKind;
-
-import org.eclipse.core.resources.IFile;
-
-import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.TextUtilities;
-
-import org.eclipse.ui.IEditorInput;
-
 import org.eclipse.compare.EditionSelectionDialog;
 import org.eclipse.compare.IStreamContentAccessor;
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.structuremergeviewer.DocumentRangeNode;
-
+import org.eclipse.core.filebuffers.FileBuffers;
+import org.eclipse.core.filebuffers.ITextFileBuffer;
+import org.eclipse.core.filebuffers.ITextFileBufferManager;
+import org.eclipse.core.filebuffers.LocationKind;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.TextUtilities;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IMember;
@@ -59,16 +51,13 @@ import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.util.Resources;
-
-import org.eclipse.wst.jsdt.ui.IWorkingCopyManager;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
+import org.eclipse.wst.jsdt.ui.IWorkingCopyManager;
 
 
 class JavaAddElementFromHistoryImpl extends JavaHistoryActionImpl {

@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
 import org.eclipse.wst.jsdt.core.IJavaElement;
@@ -29,7 +30,6 @@ import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
 import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
-import org.eclipse.jface.text.IDocument;
 
 /**
  * <p>This operation adds/replaces a package declaration in an existing compilation unit.
@@ -82,14 +82,14 @@ protected IJavaElement generateResultHandle() {
  * @see CreateElementInCUOperation#getMainTaskName()
  */
 public String getMainTaskName(){
-	return Messages.operation_createPackageProgress; 
+	return Messages.operation_createPackageProgress;
 }
 /**
  * Sets the correct position for new package declaration:<ul>
  * <li> before the first import
  * <li> if no imports, before the first type
  * <li> if no type - first thing in the CU
- * <li> 
+ * <li>
  */
 protected void initializeDefaultPosition() {
 	try {
@@ -110,7 +110,7 @@ protected void initializeDefaultPosition() {
 }
 /**
  * Possible failures: <ul>
- *  <li>NO_ELEMENTS_TO_PROCESS - no compilation unit was supplied to the operation 
+ *  <li>NO_ELEMENTS_TO_PROCESS - no compilation unit was supplied to the operation
  *  <li>INVALID_NAME - a name supplied to the operation was not a valid
  * 		package declaration name.
  * </ul>

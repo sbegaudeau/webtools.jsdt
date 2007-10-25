@@ -10,9 +10,9 @@ public class CompletionOnSingleTypeName extends SingleNameReference  {
 	public CompletionOnSingleTypeName(char[] source, long pos) {
 		super(source, pos);
 	}
-	
+
 	public StringBuffer printExpression(int indent, StringBuffer output) {
-		
+
 		output.append("<CompleteOnType:"); //$NON-NLS-1$
 		return output.append(token).append('>');
 	}

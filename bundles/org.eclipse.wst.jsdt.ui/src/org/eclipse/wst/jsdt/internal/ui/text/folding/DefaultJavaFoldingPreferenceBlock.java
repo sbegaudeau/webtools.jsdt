@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -24,15 +25,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-
-import org.eclipse.jface.preference.IPreferenceStore;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.folding.IJavaFoldingPreferenceBlock;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.preferences.OverlayPreferenceStore;
 import org.eclipse.wst.jsdt.internal.ui.preferences.OverlayPreferenceStore.OverlayKey;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
+import org.eclipse.wst.jsdt.ui.text.folding.IJavaFoldingPreferenceBlock;
 
 
 /**

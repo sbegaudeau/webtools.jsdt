@@ -10,16 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.refactoring.changes;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-
-import org.eclipse.core.resources.IProject;
-
 import org.eclipse.ltk.core.refactoring.Change;
-
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.INewNameQuery;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.IPackageFragmentRootManipulationQuery;

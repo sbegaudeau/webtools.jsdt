@@ -12,13 +12,18 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
-import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.flow.LoopingFlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.UnconditionalFlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class ForInStatement extends Statement {
-	
+
 	public Statement  iterationVariable;
 	public Expression collection;
 	public Statement action;
@@ -57,7 +62,7 @@ public class ForInStatement extends Statement {
 		BlockScope currentScope,
 		FlowContext flowContext,
 		FlowInfo flowInfo) {
-			
+
 		breakLabel = new BranchLabel();
 		continueLabel = new BranchLabel();
 
@@ -76,23 +81,23 @@ public class ForInStatement extends Statement {
 				iterationVariableBinding=(LocalVariableBinding)singleNameReference.binding;
 		}
 
-		
+
 		// element variable will be assigned when iterating
 		if (iterationVariableBinding!=null)
 		condInfo.markAsDefinitelyAssigned(iterationVariableBinding);
 
 //		this.postCollectionInitStateIndex = currentScope.methodScope().recordInitializationStates(condInfo);
-		
+
 		// process the action
-		LoopingFlowContext loopingContext = 
-			new LoopingFlowContext(flowContext, flowInfo, this, breakLabel, 
+		LoopingFlowContext loopingContext =
+			new LoopingFlowContext(flowContext, flowInfo, this, breakLabel,
 				continueLabel, scope);
-		UnconditionalFlowInfo actionInfo = 
+		UnconditionalFlowInfo actionInfo =
 			condInfo.nullInfoLessUnconditionalCopy();
 		if (iterationVariableBinding!=null)
 			actionInfo.markAsDefinitelyUnknown(iterationVariableBinding);
 		FlowInfo exitBranch;
-		if (!(action == null || (action.isEmptyBlock() 
+		if (!(action == null || (action.isEmptyBlock()
 		        	&& currentScope.compilerOptions().complianceLevel <= ClassFileConstants.JDK1_3))) {
 
 			if (!this.action.complainIfUnreachable(actionInfo, scope, false)) {
@@ -103,8 +108,8 @@ public class ForInStatement extends Statement {
 
 			// code generation can be optimized when no need to continue in the loop
 			exitBranch = flowInfo.unconditionalCopy().
-				addInitializationsFrom(condInfo.initsWhenFalse()); 
-			// TODO (maxime) no need to test when false: can optimize (same for action being unreachable above) 
+				addInitializationsFrom(condInfo.initsWhenFalse());
+			// TODO (maxime) no need to test when false: can optimize (same for action being unreachable above)
 			if ((actionInfo.tagBits & loopingContext.initsOnContinue.tagBits &
 					FlowInfo.UNREACHABLE) != 0) {
 				continueLabel = null;
@@ -117,7 +122,7 @@ public class ForInStatement extends Statement {
 			exitBranch = condInfo.initsWhenFalse();
 		}
 
-		// we need the variable to iterate the collection even if the 
+		// we need the variable to iterate the collection even if the
 		// element variable is not used
 		final boolean hasEmptyAction = this.action == null
 				|| this.action.isEmptyBlock()
@@ -132,15 +137,15 @@ public class ForInStatement extends Statement {
 					FlowInfo.UNREACHABLE) != 0 ?
 					loopingContext.initsOnBreak :
 					flowInfo.addInitializationsFrom(loopingContext.initsOnBreak), // recover upstream null info
-				false, 
-				exitBranch, 
-				false, 
+				false,
+				exitBranch,
+				false,
 				true /*for(;;){}while(true); unreachable(); */);
 //		mergedInitStateIndex = currentScope.methodScope().recordInitializationStates(mergedInfo);
 		return mergedInfo;
 	}
 
-	/** 
+	/**
 	 * For statement code generation
 	 *
 	 * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
@@ -174,7 +179,7 @@ public class ForInStatement extends Statement {
 //			codeStream.recordPositionsFrom(pc, this.sourceStart);
 //			return;
 //		}
-//		
+//
 //		// label management
 //		BranchLabel actionLabel = new BranchLabel(codeStream);
 //		actionLabel.tagBits |= BranchLabel.USED;
@@ -279,7 +284,7 @@ public class ForInStatement extends Statement {
 			if (iterationVariable instanceof Expression) {
 				Expression expression = (Expression) iterationVariable;
 				expression.resolveType(scope, true, null);
-// TODO: show a warning message here saying this var is at global scope				
+// TODO: show a warning message here saying this var is at global scope
 			}
 			else
 				iterationVariable.resolve(scope);
@@ -291,7 +296,7 @@ public class ForInStatement extends Statement {
 		if (action != null)
 			action.resolve(scope);
 	}
-	
+
 	public void traverse(
 		ASTVisitor visitor,
 		BlockScope blockScope) {
@@ -304,7 +309,7 @@ public class ForInStatement extends Statement {
 			if (collection != null)
 				collection.traverse(visitor, scope);
 
- 
+
 			if (action != null)
 				action.traverse(visitor, scope);
 		}

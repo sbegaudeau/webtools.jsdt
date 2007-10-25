@@ -12,9 +12,7 @@ package org.eclipse.wst.jsdt.internal.corext.fix;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-
 import org.eclipse.ltk.core.refactoring.TextChange;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 
 /**

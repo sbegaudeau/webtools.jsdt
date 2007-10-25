@@ -10,15 +10,13 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.refactoring.nls;
 
-import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
-
+import org.eclipse.wst.jsdt.core.IPackageFragment;
+import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.TextFieldNavigationHandler;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist.ControlContentAssistHelper;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist.JavaPackageCompletionProcessor;

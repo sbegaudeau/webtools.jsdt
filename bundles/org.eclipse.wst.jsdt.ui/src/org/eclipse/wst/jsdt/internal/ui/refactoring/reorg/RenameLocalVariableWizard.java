@@ -10,11 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.refactoring.reorg;
 
+import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
-
-import org.eclipse.ltk.core.refactoring.Refactoring;
 
 public final class RenameLocalVariableWizard extends RenameRefactoringWizard {
 

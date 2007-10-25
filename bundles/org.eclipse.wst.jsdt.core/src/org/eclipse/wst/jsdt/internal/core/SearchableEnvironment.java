@@ -14,9 +14,18 @@ import java.util.ArrayList;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IOpenable;
+import org.eclipse.wst.jsdt.core.IPackageFragment;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.UnimplementedException;
+import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.search.*;
+import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.codeassist.ISearchRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
@@ -25,13 +34,9 @@ import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceType;
 import org.eclipse.wst.jsdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.core.search.BasicSearchEngine;
-import org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessTypeRequestor;
 import org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessBindingRequestor;
-import org.eclipse.wst.jsdt.internal.core.util.HandleFactory;
-import org.eclipse.wst.jsdt.internal.core.util.Util;
-import org.eclipse.wst.jsdt.internal.eval.Evaluator;
+import org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessTypeRequestor;
 
 /**
  * This class provides a <code>SearchableBuilderEnvironment</code> for code
@@ -45,7 +50,7 @@ public class SearchableEnvironment implements INameEnvironment,
 	protected ICompilationUnit unitToSkip;
 
 	protected org.eclipse.wst.jsdt.core.ICompilationUnit[] workingCopies;
-	
+
 	protected JavaProject javaProject;
 
 	protected IJavaSearchScope searchScope;
@@ -59,7 +64,7 @@ public class SearchableEnvironment implements INameEnvironment,
 			IRestrictedAccessBindingRequestor resolutionScope,
 			org.eclipse.wst.jsdt.core.ICompilationUnit[] workingCopies)
 			throws JavaModelException {
-		
+
 		this.javaProject = project;
 		this.checkAccessRestrictions = !JavaCore.IGNORE.equals(project
 				.getOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
@@ -79,7 +84,7 @@ public class SearchableEnvironment implements INameEnvironment,
 		this.nameLookup.searchScope=this.searchScope;
 	}
 	public SearchableEnvironment(JavaProject project,
-			
+
 			org.eclipse.wst.jsdt.core.ICompilationUnit[] workingCopies)
 			throws JavaModelException {
 		this(project,null,workingCopies);
@@ -118,7 +123,7 @@ public class SearchableEnvironment implements INameEnvironment,
 				return NameLookup.ACCEPT_ALL;
 		}
 	}
-	
+
 	/**
 	 * Returns the given type in the the given package if it exists, otherwise
 	 * <code>null</code>.
@@ -161,7 +166,7 @@ public class SearchableEnvironment implements INameEnvironment,
 					 types = compilationUnit.getTypes();
 					else if (sourceType.getHandle().getClassFile()!=null)
 						 types = sourceType.getHandle().getClassFile().getTypes();
-						
+
 					ISourceType[] sourceTypes = new ISourceType[types.length];
 
 					// in the resulting collection, ensure the requested type is
@@ -196,7 +201,7 @@ public class SearchableEnvironment implements INameEnvironment,
 	 * Returns the given type in the the given package if it exists, otherwise
 	 * <code>null</code>.
 	 */
-	protected NameEnvironmentAnswer findBinding(String typeName, String packageName, 
+	protected NameEnvironmentAnswer findBinding(String typeName, String packageName,
 			int type, boolean returnMultiple, String excludePath) {
 		if (packageName == null)
 			packageName = IPackageFragment.DEFAULT_PACKAGE_NAME;
@@ -212,17 +217,17 @@ public class SearchableEnvironment implements INameEnvironment,
 			if (answer.element instanceof IJavaElement)
 			{
 				IOpenable openable = ((IJavaElement)answer.element).getOpenable();
-				
+
 				ICompilationUnit compilationUnit=	null;
 				if (openable instanceof ClassFile) {
 					ClassFile classFile = (ClassFile) openable;
-					compilationUnit=(ICompilationUnit)classFile;
+					compilationUnit=classFile;
 				}
 				else if (openable instanceof ICompilationUnit) {
 					compilationUnit=(ICompilationUnit)openable;
 				}
 				return new NameEnvironmentAnswer(compilationUnit,answer.restriction);
-				
+
 			}
 			else if (answer.element!=null && answer.element.getClass().isArray())
 			{
@@ -338,7 +343,7 @@ public class SearchableEnvironment implements INameEnvironment,
 				convertSearchFilterToModelFilter(searchFor));
 		}
 	}
-	
+
 	/**
 	 * Returns all types whose simple name matches with the given <code>name</code>.
 	 */
@@ -347,7 +352,7 @@ public class SearchableEnvironment implements INameEnvironment,
 			new SearchableEnvironmentRequestor(storage, this.unitToSkip, this.javaProject, this.nameLookup);
 		this.nameLookup.seekTypes(name, null, false, type, requestor);
 	}
-	
+
 
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment#findType(char[][])
@@ -401,14 +406,14 @@ public class SearchableEnvironment implements INameEnvironment,
 	 * current environment and whose name starts with the given prefix. The
 	 * prefix is a qualified name separated by periods or a simple name (ex.
 	 * java.util.V or V).
-	 * 
+	 *
 	 * The types found are passed to one of the following methods (if additional
 	 * information is known about the types):
 	 * ISearchRequestor.acceptType(char[][] packageName, char[] typeName)
 	 * ISearchRequestor.acceptClass(char[][] packageName, char[] typeName, int
 	 * modifiers) ISearchRequestor.acceptInterface(char[][] packageName, char[]
 	 * typeName, int modifiers)
-	 * 
+	 *
 	 * This method can not be used to find member types... member types are
 	 * found relative to their enclosing type.
 	 */
@@ -525,14 +530,14 @@ public class SearchableEnvironment implements INameEnvironment,
 	 * current environment and whose name starts with the given prefix. The
 	 * prefix is a qualified name separated by periods or a simple name (ex.
 	 * java.util.V or V).
-	 * 
+	 *
 	 * The types found are passed to one of the following methods (if additional
 	 * information is known about the types):
 	 * ISearchRequestor.acceptType(char[][] packageName, char[] typeName)
 	 * ISearchRequestor.acceptClass(char[][] packageName, char[] typeName, int
 	 * modifiers) ISearchRequestor.acceptInterface(char[][] packageName, char[]
 	 * typeName, int modifiers)
-	 * 
+	 *
 	 * This method can not be used to find member types... member types are
 	 * found relative to their enclosing type.
 	 */
@@ -615,7 +620,7 @@ public class SearchableEnvironment implements INameEnvironment,
 			IRestrictedAccessBindingRequestor bindingRequestor = new IRestrictedAccessBindingRequestor() {
 				String exclude;
 				public boolean acceptBinding(int type,int modifiers, char[] packageName,
-						char[] simpleTypeName, 
+						char[] simpleTypeName,
 						String path, AccessRestriction access) {
 					if (exclude!=null && exclude.equals(path))
 						return false;
@@ -625,10 +630,10 @@ public class SearchableEnvironment implements INameEnvironment,
 							  modifiers, access);
 					return true;
 				}
-			
+
 
 				public String getFoundPath() {
-				
+
 					return null;
 				}
 
@@ -642,7 +647,7 @@ public class SearchableEnvironment implements INameEnvironment,
 
 				public void setExcludePath(String excludePath) {
 					this.exclude=excludePath;
-					
+
 				}
 			};
 			try {
@@ -670,7 +675,7 @@ public class SearchableEnvironment implements INameEnvironment,
 	/**
 	 * Returns all types whose name starts with the given (qualified)
 	 * <code>prefix</code>.
-	 * 
+	 *
 	 * If the <code>prefix</code> is unqualified, all types whose simple name
 	 * matches the <code>prefix</code> are returned.
 	 */

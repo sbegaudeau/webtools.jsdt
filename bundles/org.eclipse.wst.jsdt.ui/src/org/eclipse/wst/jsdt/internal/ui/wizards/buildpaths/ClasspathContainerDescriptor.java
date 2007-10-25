@@ -18,14 +18,11 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPage;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.CoreUtility;
+import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPage;
 
 /**
   */

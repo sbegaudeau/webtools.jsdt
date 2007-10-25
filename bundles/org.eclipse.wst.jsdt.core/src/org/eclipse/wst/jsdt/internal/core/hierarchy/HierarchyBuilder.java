@@ -27,7 +27,17 @@ import org.eclipse.wst.jsdt.internal.compiler.env.IGenericType;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceType;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblemFactory;
-import org.eclipse.wst.jsdt.internal.core.*;
+import org.eclipse.wst.jsdt.internal.core.ClassFile;
+import org.eclipse.wst.jsdt.internal.core.JarPackageFragmentRoot;
+import org.eclipse.wst.jsdt.internal.core.JavaElement;
+import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
+import org.eclipse.wst.jsdt.internal.core.JavaProject;
+import org.eclipse.wst.jsdt.internal.core.NameLookup;
+import org.eclipse.wst.jsdt.internal.core.Openable;
+import org.eclipse.wst.jsdt.internal.core.PackageFragment;
+import org.eclipse.wst.jsdt.internal.core.ResolvedBinaryType;
+import org.eclipse.wst.jsdt.internal.core.SearchableEnvironment;
+import org.eclipse.wst.jsdt.internal.core.SourceTypeElementInfo;
 import org.eclipse.wst.jsdt.internal.core.util.ResourceCompilationUnit;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
@@ -56,12 +66,12 @@ public abstract class HierarchyBuilder {
 	 * The dot-separated fully qualified name of the focus type, or null of none.
 	 */
 	protected String focusQualifiedName;
-	
+
 	public HierarchyBuilder(TypeHierarchy hierarchy) throws JavaModelException {
-		
+
 		this.hierarchy = hierarchy;
 		JavaProject project = (JavaProject) hierarchy.javaProject();
-		
+
 		IType focusType = hierarchy.getType();
 		org.eclipse.wst.jsdt.core.ICompilationUnit unitToLookInside = focusType == null ? null : focusType.getCompilationUnit();
 		org.eclipse.wst.jsdt.core.ICompilationUnit[] workingCopies = this.hierarchy.workingCopies;
@@ -91,7 +101,7 @@ public abstract class HierarchyBuilder {
 		this.infoToHandle = new HashMap(5);
 		this.focusQualifiedName = focusType == null ? null : focusType.getFullyQualifiedName();
 	}
-	
+
 	public abstract void build(boolean computeSubtypes)
 		throws JavaModelException, CoreException;
 	/**
@@ -111,7 +121,7 @@ public abstract class HierarchyBuilder {
 			return;
 		}
 		//NB: no need to set focus type on hierarchy resolver since no other type is injected
-		//    in the hierarchy resolver, thus there is no need to check that a type is 
+		//    in the hierarchy resolver, thus there is no need to check that a type is
 		//    a sub or super type of the focus type.
 		this.hierarchyResolver.resolve(type);
 
@@ -170,12 +180,12 @@ public abstract class HierarchyBuilder {
 			case TypeDeclaration.ANNOTATION_TYPE_DECL :
 				this.hierarchy.addInterface(typeHandle);
 				break;
-		}		
+		}
 		if (superinterfaceHandles == null) {
 			superinterfaceHandles = TypeHierarchy.NO_TYPE;
 		}
 		this.hierarchy.cacheSuperInterfaces(typeHandle, superinterfaceHandles);
-		 
+
 		// record flags
 		this.hierarchy.cacheFlags(typeHandle, type.getModifiers());
 	}
@@ -204,7 +214,7 @@ public abstract class HierarchyBuilder {
 				// optimization: remember the handle for next call (case of java.io.Serializable that a lot of classes implement)
 				classFile = (ClassFile) handle.getParent();
 				this.infoToHandle.put(genericType, classFile);
-			} 
+			}
 			return new ResolvedBinaryType(classFile, classFile.getTypeName(), new String(binding.computeUniqueKey()));
 		} else if (genericType instanceof SourceTypeElementInfo) {
 			IType handle = ((SourceTypeElementInfo) genericType).getHandle();
@@ -235,7 +245,7 @@ public abstract class HierarchyBuilder {
 				//case IGenericType.ANNOTATION :
 				flag = NameLookup.ACCEPT_ANNOTATIONS;
 				break;
-		}			
+		}
 		char[] bName = typeInfo.getName();
 		qualifiedName = new String(ClassFile.translatedName(bName));
 		if (qualifiedName.equals(this.focusQualifiedName)) return getType();
@@ -247,7 +257,7 @@ public abstract class HierarchyBuilder {
 			false/*don't check restrictions*/,
 			null);
 		return answer == null || answer.type == null || !answer.type.isBinary() ? null : answer.type;
-		
+
 	}
 	protected void worked(IProgressMonitor monitor, int work) {
 		if (monitor != null) {
@@ -292,7 +302,7 @@ protected IBinaryType createInfoFromClassFile(Openable handle, IResource file) {
 			e.printStackTrace();
 		}
 		return null;
-	}						
+	}
 	this.infoToHandle.put(info, handle);
 	return info;
 }

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaModelStatus;
 import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
@@ -40,7 +40,7 @@ public class CreateTypeHierarchyOperation extends JavaModelOperation {
 	 * The generated type hierarchy
 	 */
 	protected TypeHierarchy typeHierarchy;
-	
+
 /**
  * Constructs an operation to create a type hierarchy for the
  * given type within the specified region, in the context of

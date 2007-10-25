@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AND_AND_Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
@@ -21,7 +22,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CastExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral;
@@ -42,11 +42,9 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteral;
-import org.eclipse.wst.jsdt.internal.compiler.ast.RegExLiteral;
-import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteralConcatenation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NullLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.OR_OR_Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.OperatorIds;
 import org.eclipse.wst.jsdt.internal.compiler.ast.PostfixExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.PrefixExpression;
@@ -54,8 +52,10 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedSuperReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedThisReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.RegExLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteralConcatenation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SuperReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TrueLiteral;
@@ -67,7 +67,7 @@ import org.eclipse.wst.jsdt.internal.compiler.parser.TerminalTokens;
 
 class BinaryExpressionFragmentBuilder
 	extends ASTVisitor {
-		
+
 	ArrayList fragmentsList;
 	ArrayList operatorsList;
 	private int realFragmentsSize;
@@ -82,7 +82,7 @@ class BinaryExpressionFragmentBuilder
 		this.fragmentsList.add(node);
 		this.realFragmentsSize++;
 	}
-	
+
 	private final void addSmallFragment(ASTNode node) {
 		this.fragmentsList.add(node);
 	}
@@ -101,7 +101,7 @@ class BinaryExpressionFragmentBuilder
 		this.fragmentsList.toArray(fragments);
 		return fragments;
 	}
-	
+
 	public int[] operators() {
 		int length = operatorsList.size();
 		int[] tab = new int[length];
@@ -114,7 +114,7 @@ class BinaryExpressionFragmentBuilder
 	public int realFragmentsSize() {
 		return this.realFragmentsSize;
 	}
-	
+
 	public boolean visit(
 		AllocationExpression allocationExpression,
 		BlockScope scope) {
@@ -147,7 +147,7 @@ class BinaryExpressionFragmentBuilder
 		this.addRealFragment(arrayInitializer);
 		return false;
 	}
-	
+
 	public boolean visit(
 		ArrayQualifiedTypeReference arrayQualifiedTypeReference,
 		BlockScope scope) {
@@ -300,7 +300,7 @@ class BinaryExpressionFragmentBuilder
 			this.addRealFragment(classLiteralAccess);
 			return false;
 	}
-	
+
 	public boolean visit(
 		CompoundAssignment compoundAssignment,
 		BlockScope scope) {
@@ -347,7 +347,7 @@ class BinaryExpressionFragmentBuilder
 		return false;
 	}
 
-	
+
 	public boolean visit(ObjectLiteral literal, BlockScope scope) {
 		this.addRealFragment(literal);
 		return false;
@@ -362,7 +362,7 @@ class BinaryExpressionFragmentBuilder
 		this.addRealFragment(functionExpression);
 		return false;
 	}
-	
+
 	public boolean visit(
 		InstanceOfExpression instanceOfExpression,
 		BlockScope scope) {
@@ -405,7 +405,7 @@ class BinaryExpressionFragmentBuilder
 			return false;
 		}
 	}
-	
+
 	public boolean visit(NullLiteral nullLiteral, BlockScope scope) {
 		this.addRealFragment(nullLiteral);
 		return false;
@@ -419,7 +419,7 @@ class BinaryExpressionFragmentBuilder
 			this.operatorsList.add(new Integer(TerminalTokens.TokenNameOR_OR));
 			or_or_Expression.right.traverse(this, scope);
 		}
-		return false;		
+		return false;
 	}
 
 	public boolean visit(

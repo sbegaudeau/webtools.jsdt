@@ -17,39 +17,30 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.internal.text.html.HTMLPrinter;
 import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.resource.JFaceResources;
-
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHoverExtension;
 import org.eclipse.jface.text.ITextViewer;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
-
 import org.eclipse.ui.editors.text.EditorsUI;
-
 import org.eclipse.wst.jsdt.core.ICodeAssist;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.java.hover.IJavaEditorTextHover;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.IClassFileEditorInput;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.WorkingCopyManager;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaWordFinder;
-
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
+import org.eclipse.wst.jsdt.ui.text.java.hover.IJavaEditorTextHover;
 import org.osgi.framework.Bundle;
 
 /**

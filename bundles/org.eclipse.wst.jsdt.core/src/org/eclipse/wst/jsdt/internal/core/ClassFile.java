@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -30,10 +29,36 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.*;
-import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
+import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
+import org.eclipse.wst.jsdt.core.CompletionRequestor;
+import org.eclipse.wst.jsdt.core.IBuffer;
+import org.eclipse.wst.jsdt.core.IClassFile;
+import org.eclipse.wst.jsdt.core.ICodeAssist;
+import org.eclipse.wst.jsdt.core.ICodeCompletionRequestor;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.ICompletionRequestor;
+import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IMember;
+import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IPackageFragment;
+import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.IParent;
+import org.eclipse.wst.jsdt.core.IProblemRequestor;
+import org.eclipse.wst.jsdt.core.ISourceRange;
+import org.eclipse.wst.jsdt.core.ISourceReference;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.ITypeRoot;
+import org.eclipse.wst.jsdt.core.JavaConventions;
+import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.LibrarySuperType;
+import org.eclipse.wst.jsdt.core.Signature;
+import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
-import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.internal.compiler.IProblemFactory;
 import org.eclipse.wst.jsdt.internal.compiler.SourceElementParser;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
@@ -58,7 +83,7 @@ public class ClassFile extends Openable implements IClassFile, SuffixConstants, 
 	protected BinaryType binaryType = null;
 	private static final IField[] NO_FIELDS = new IField[0];
 	private static final IMethod[] NO_METHODS = new IMethod[0];
-	
+
 /*
  * Creates a handle to a class file.
  */
@@ -70,7 +95,7 @@ protected ClassFile(PackageFragment parent, String path) {
 		String lastSegment = filePath.lastSegment();
 		this.name=lastSegment.substring(0,lastSegment.length()-(filePath.getFileExtension().length()+1));
 	}
-	else 
+	else
 		this.name=path;
 }
 
@@ -87,7 +112,7 @@ public ICompilationUnit becomeWorkingCopy(IProblemRequestor problemRequestor, Wo
 
 		BecomeWorkingCopyOperation operation = new BecomeWorkingCopyOperation(workingCopy, problemRequestor);
 		operation.runOperation(monitor);
-		
+
 		return workingCopy;
 	}
 	return perWorkingCopyInfo.workingCopy;
@@ -99,7 +124,7 @@ public ICompilationUnit becomeWorkingCopy(IProblemRequestor problemRequestor, Wo
  * Creates the children elements for this class file adding the resulting
  * new handles and info objects to the newElements table. Returns true
  * if successful, or false if an error is encountered parsing the class file.
- * 
+ *
  * @see Openable
  * @see Signature
  */
@@ -109,8 +134,8 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 	if (!status.isOK()) throw newJavaModelException(status);
 	if (underlyingResource != null && !underlyingResource.isAccessible()) throw newNotPresentException();
 
-	
-	
+
+
 	CompilationUnitElementInfo unitInfo = new CompilationUnitElementInfo();
 
 	// get buffer contents
@@ -135,7 +160,7 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 		reconcileFlags = 0;
 		problems = null;
 	}
-	
+
 	boolean computeProblems = false;//perWorkingCopyInfo != null && perWorkingCopyInfo.isActive() && project != null && JavaProject.hasJavaNature(project.getProject());
 	IProblemFactory problemFactory = new DefaultProblemFactory();
 	Map options = project == null ? JavaCore.getOptions() : project.getOptions(true);
@@ -144,21 +169,21 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 		options.put(JavaCore.COMPILER_TASK_TAGS, ""); //$NON-NLS-1$
 	}
 	SourceElementParser parser = new SourceElementParser(
-		requestor, 
-		problemFactory, 
+		requestor,
+		problemFactory,
 		new CompilerOptions(options),
 		true/*report local declarations*/,
 		!createAST /*optimize string literals only if not creating a DOM AST*/);
 	parser.reportOnlyOneSyntaxError = !computeProblems;
 	parser.setStatementsRecovery((reconcileFlags & ICompilationUnit.ENABLE_STATEMENTS_RECOVERY) != 0);
-	
+
 	if (!computeProblems && !resolveBindings && !createAST) // disable javadoc parsing if not computing problems, not resolving and not creating ast
 		parser.javadocParser.checkDocComment = false;
 	requestor.parser = parser;
 	CompilationUnitDeclaration unit = parser.parseCompilationUnit(
 			this,
 		true /*full parse to find local elements*/);
-	
+
 	// update timestamp (might be IResource.NULL_STAMP if original does not exist)
 	if (underlyingResource == null) {
 		underlyingResource = getResource();
@@ -166,12 +191,12 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 	// underlying resource is null in the case of a working copy on a class file in a jar
 	if (underlyingResource != null)
 		unitInfo.timestamp = ((IFile)underlyingResource).getModificationStamp();
-	
+
 	// compute other problems if needed
 	CompilationUnitDeclaration compilationUnitDeclaration = null;
 	info.setChildren(unitInfo.children);
 	try {
-		
+
 		if (createAST) {
 			int astLevel = ((ASTHolderCUInfo) info).astLevel;
 //			org.eclipse.wst.jsdt.core.dom.CompilationUnit cu = AST.convertCompilationUnit(astLevel, unit, contents, options, computeProblems, this, pm);
@@ -184,9 +209,9 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 	    }
 	}
 
-	
-	
-	
+
+
+
 //	IBinaryType typeInfo = getBinaryTypeInfo((IFile) underlyingResource);
 //	if (typeInfo == null) {
 //		// The structure of a class file is unknown if a class file format errors occurred
@@ -235,9 +260,9 @@ public void codeComplete(int offset, CompletionRequestor requestor, WorkingCopyO
 	String source = getSource();
 	if (source != null) {
 		BinaryType type = (BinaryType) getType();
-		BasicCompilationUnit cu = 
+		BasicCompilationUnit cu =
 			new BasicCompilationUnit(
-				getSource().toCharArray(), 
+				getSource().toCharArray(),
 				null,
 				type.sourceFileName((IBinaryType) type.getElementInfo()),
 				getJavaProject()); // use project to retrieve corresponding .js IFile
@@ -521,27 +546,27 @@ public IJavaElement getElementAtConsideringSibling(int position) throws JavaMode
 	SourceMapper mapper = root.getSourceMapper();
 	if (mapper == null) {
 		return null;
-	} else {		
+	} else {
 		int index = this.name.indexOf('$');
 		int prefixLength = index < 0 ? this.name.length() : index;
-		
+
 		IType type = null;
 		int start = -1;
 		int end = Integer.MAX_VALUE;
 		IJavaElement[] children = fragment.getChildren();
 		for (int i = 0; i < children.length; i++) {
 			String childName = children[i].getElementName();
-			
+
 			int childIndex = childName.indexOf('$');
 			int childPrefixLength = childIndex < 0 ? childName.indexOf('.') : childIndex;
 			if (prefixLength == childPrefixLength && this.name.regionMatches(0, childName, 0, prefixLength)) {
 				IClassFile classFile = (IClassFile) children[i];
-				
+
 				// ensure this class file's buffer is open so that source ranges are computed
 				classFile.getBuffer();
-				
+
 				SourceRange range = mapper.getSourceRange(classFile.getType());
-				if (range == SourceMapper.UNKNOWN_RANGE) continue; 
+				if (range == SourceMapper.UNKNOWN_RANGE) continue;
 				int newStart = range.offset;
 				int newEnd = newStart + range.length - 1;
 				if(newStart > start && newEnd < end
@@ -602,8 +627,8 @@ protected boolean resourceExists() {
 	Object me = JavaModel.getTarget(workspace.getRoot(), this.getPath(), true) ;
 	if(me!=null) return true;
 	me = JavaModel.getTarget(workspace.getRoot(), this.getPath().makeRelative(), true);
-	return (me!=null); 
-	
+	return (me!=null);
+
 }
 public IPath getPath() {
 	PackageFragmentRoot root = getPackageFragmentRoot();
@@ -680,7 +705,7 @@ public String getTypeName() {
 public ICompilationUnit getWorkingCopy(WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException {
 	CompilationUnit workingCopy = new ClassFileWorkingCopy(this, owner == null ? DefaultWorkingCopyOwner.PRIMARY : owner);
 	JavaModelManager manager = JavaModelManager.getJavaModelManager();
-	JavaModelManager.PerWorkingCopyInfo perWorkingCopyInfo = 
+	JavaModelManager.PerWorkingCopyInfo perWorkingCopyInfo =
 		manager.getPerWorkingCopyInfo(workingCopy, false/*don't create*/, true/*record usage*/, null/*not used since don't create*/);
 	if (perWorkingCopyInfo != null) {
 		return perWorkingCopyInfo.getWorkingCopy(); // return existing handle instead of the one created above
@@ -726,7 +751,7 @@ public boolean isReadOnly() {
 private IStatus validateClassFile() {
 	IPackageFragmentRoot root = getPackageFragmentRoot();
 	try {
-		if (root.getKind() != IPackageFragmentRoot.K_BINARY) 
+		if (root.getKind() != IPackageFragmentRoot.K_BINARY)
 			return new JavaModelStatus(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, root);
 	} catch (JavaModelException e) {
 		return e.getJavaModelStatus();
@@ -737,9 +762,9 @@ private IStatus validateClassFile() {
 /**
  * Opens and returns buffer on the source code associated with this class file.
  * Maps the source code to the children elements of this class file.
- * If no source code is associated with this class file, 
+ * If no source code is associated with this class file,
  * <code>null</code> is returned.
- * 
+ *
  * @see Openable
  */
 protected IBuffer openBuffer(IProgressMonitor pm, Object info) throws JavaModelException {
@@ -750,7 +775,7 @@ protected IBuffer openBuffer(IProgressMonitor pm, Object info) throws JavaModelE
 	return null;
 }
 private IBuffer mapSource(SourceMapper mapper, IBinaryType info) {
-	char[] contents =null; 
+	char[] contents =null;
 	try {
 		contents=org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileCharContent(new File(filePath.toOSString()),null);
 	} catch (IOException ex){}
@@ -761,18 +786,18 @@ private IBuffer mapSource(SourceMapper mapper, IBinaryType info) {
 		if (buffer == null) return null;
 		BufferManager bufManager = getBufferManager();
 		bufManager.addBuffer(buffer);
-		
+
 		// set the buffer source
 		if (buffer.getCharacters() == null){
 			buffer.setContents(contents);
 		}
-		
+
 		// listen to buffer changes
 		buffer.addBufferChangedListener(this);
-				
+
 		// do the source mapping
 //		mapper.mapSource(getType(), contents, info);
-		
+
 		return buffer;
 	} else {
 		// create buffer
@@ -791,7 +816,7 @@ private IBuffer mapSource(SourceMapper mapper, IBinaryType info) {
 		return null;
 	String simpleName = new String(unqualifiedName(className));
 	int lastDollar = simpleName.lastIndexOf('$');
-	if (lastDollar != -1) 
+	if (lastDollar != -1)
 		return Util.localTypeName(simpleName, lastDollar, simpleName.length());
 	else
 		return simpleName;
@@ -868,7 +893,7 @@ public static char[] translatedName(char[] name) {
  * @deprecated - should use codeComplete(int, ICompletionRequestor) instead
  */
 public void codeComplete(int offset, final org.eclipse.wst.jsdt.core.ICodeCompletionRequestor requestor) throws JavaModelException {
-	
+
 	if (requestor == null){
 		codeComplete(offset, (ICompletionRequestor)null);
 		return;
@@ -927,7 +952,7 @@ public void codeComplete(int offset, final org.eclipse.wst.jsdt.core.ICodeComple
  */
 public IField getField(String fieldName) {
 	return new SourceField(this, fieldName);
-	
+
 }
 /*
  * @see IType#getFields()
@@ -998,7 +1023,7 @@ public IType[] getTypes() throws JavaModelException {
 	 */
 	public String getDisplayName() {
 		if(isVirtual()) {
-			
+
 			ClasspathContainerInitializer init = ((IVirtualParent)parent).getContainerInitializer();
 			if(init==null) return super.getDisplayName();
 			return init.getDescription(new Path(getElementName()), getJavaProject());

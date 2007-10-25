@@ -13,7 +13,15 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 
 /**
  * Syntactic representation of a reference to a generic type.
@@ -29,7 +37,7 @@ public class ParameterizedQualifiedTypeReference extends ArrayQualifiedTypeRefer
 	 * @param positions
 	 */
 	public ParameterizedQualifiedTypeReference(char[][] tokens, TypeReference[][] typeArguments, int dim, long[] positions) {
-	    
+
 		super(tokens, dim, positions);
 		this.typeArguments = typeArguments;
 	}
@@ -58,8 +66,8 @@ public class ParameterizedQualifiedTypeReference extends ArrayQualifiedTypeRefer
 	}
 	public TypeReference copyDims(int dim){
 		return new ParameterizedQualifiedTypeReference(this.tokens, this.typeArguments, dim, this.sourcePositions);
-	}	
-	
+	}
+
 	/**
 	 * @return char[][]
 	 */
@@ -81,7 +89,7 @@ public class ParameterizedQualifiedTypeReference extends ArrayQualifiedTypeRefer
 				buffer.append('>');
 				int nameLength = buffer.length();
 				qParamName[i] = new char[nameLength];
-				buffer.getChars(0, nameLength, qParamName[i], 0);		
+				buffer.getChars(0, nameLength, qParamName[i], 0);
 			}
 		}
 		int dim = this.dimensions;
@@ -95,15 +103,15 @@ public class ParameterizedQualifiedTypeReference extends ArrayQualifiedTypeRefer
 			qParamName[length-1] = CharOperation.concat(qParamName[length-1], dimChars);
 		}
 		return qParamName;
-	}	
-	
+	}
+
 	/* (non-Javadoc)
      * @see org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference#getTypeBinding(org.eclipse.wst.jsdt.internal.compiler.lookup.Scope)
      */
     protected TypeBinding getTypeBinding(Scope scope) {
         return null; // not supported here - combined with resolveType(...)
     }
-    
+
     /*
      * No need to check for reference to raw type per construction
      */
@@ -115,7 +123,7 @@ public class ParameterizedQualifiedTypeReference extends ArrayQualifiedTypeRefer
 			if (this.resolvedType != null && !this.resolvedType.isValidBinding())
 				return null; // already reported error
 			return this.resolvedType;
-		} 
+		}
 		this.bits |= ASTNode.DidResolve;
 		boolean isClassScope = scope.kind == Scope.CLASS_SCOPE;
 		Binding binding = scope.getPackage(this.tokens);
@@ -160,7 +168,7 @@ public class ParameterizedQualifiedTypeReference extends ArrayQualifiedTypeRefer
 						    	typeArgument.resolveType((BlockScope) scope);
 						    }
 						}
-				    }				
+				    }
 				}
 				return null;
 			}
@@ -172,11 +180,11 @@ public class ParameterizedQualifiedTypeReference extends ArrayQualifiedTypeRefer
 						? (ReferenceBinding) scope.environment().convertToRawType(qualifiedType)
 						: scope.environment().convertToParameterizedType(qualifiedType);
 				}
-			}				
+			}
 			if (typeIsConsistent && currentType.isStatic() && qualifiedType != null && (qualifiedType.isParameterizedType() || qualifiedType.isGenericType())) {
 				scope.problemReporter().staticMemberOfParameterizedType(this, scope.environment().createParameterizedType((ReferenceBinding)currentType.erasure(), null, qualifiedType));
 				typeIsConsistent = false;
-			}			
+			}
 			// check generic and arity
 		    TypeReference[] args = this.typeArguments[i];
 		    if (args != null) {
@@ -197,8 +205,8 @@ public class ParameterizedQualifiedTypeReference extends ArrayQualifiedTypeRefer
 						argHasError = true;
 					} else {
 						argTypes[j] = argType;
-					}			    
-				}				
+					}
+				}
 				if (argHasError) {
 					return null;
 				}
@@ -222,9 +230,9 @@ public class ParameterizedQualifiedTypeReference extends ArrayQualifiedTypeRefer
 					if (actualEnclosing != null && actualEnclosing.isRawType()) {
 						scope.problemReporter().rawMemberTypeCannotBeParameterized(
 								this, scope.environment().createRawType((ReferenceBinding)currentType.erasure(), actualEnclosing), argTypes);
-						typeIsConsistent = false;				
+						typeIsConsistent = false;
 					}
-				}				
+				}
 				ParameterizedTypeBinding parameterizedType = scope.environment().createParameterizedType((ReferenceBinding)currentType.erasure(), argTypes, qualifiedType);
 				// check argument type compatibility
 				if (checkBounds) // otherwise will do it in Scope.connectTypeVariables() or generic method resolution
@@ -248,7 +256,7 @@ public class ParameterizedQualifiedTypeReference extends ArrayQualifiedTypeRefer
 				}
 			}
 			if (isTypeUseDeprecated(qualifiedType, scope))
-				reportDeprecatedType(qualifiedType, scope);		    
+				reportDeprecatedType(qualifiedType, scope);
 			this.resolvedType = qualifiedType;
 		}
 //		this.resolvedType = qualifiedType;
@@ -260,7 +268,7 @@ public class ParameterizedQualifiedTypeReference extends ArrayQualifiedTypeRefer
 		}
 		return this.resolvedType;
 	}
-	
+
 	public StringBuffer printExpression(int indent, StringBuffer output) {
 		int length = tokens.length;
 		for (int i = 0; i < length - 1; i++) {
@@ -301,11 +309,11 @@ public class ParameterizedQualifiedTypeReference extends ArrayQualifiedTypeRefer
 			}
 		}
 		return output;
-	}	
-	
+	}
+
 	public TypeBinding resolveType(BlockScope scope, boolean checkBounds) {
 	    return internalResolveType(scope, checkBounds);
-	}	
+	}
 	public TypeBinding resolveType(ClassScope scope) {
 	    return internalResolveType(scope, false);
 	}
@@ -321,7 +329,7 @@ public class ParameterizedQualifiedTypeReference extends ArrayQualifiedTypeRefer
 		}
 		visitor.endVisit(this, scope);
 	}
-	
+
 	public void traverse(ASTVisitor visitor, ClassScope scope) {
 		if (visitor.visit(this, scope)) {
 			for (int i = 0, max = this.typeArguments.length; i < max; i++) {

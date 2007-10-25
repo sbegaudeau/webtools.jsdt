@@ -12,10 +12,21 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.impl.*;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
+import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedGenericMethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 
 public class CastExpression extends Expression {
@@ -23,8 +34,8 @@ public class CastExpression extends Expression {
 	public Expression expression;
 	public Expression type;
 	public TypeBinding expectedType; // when assignment conversion to a given expected type: String s = (String) t;
-	
-	//expression.implicitConversion holds the cast for baseType casting 
+
+	//expression.implicitConversion holds the cast for baseType casting
 	public CastExpression(Expression expression, Expression type) {
 		this.expression = expression;
 		this.type = type;
@@ -45,35 +56,35 @@ public class CastExpression extends Expression {
 	 * Complain if assigned expression is cast, but not actually used as such, e.g. Object o = (List) object;
 	 */
 	public static void checkNeedForAssignedCast(BlockScope scope, TypeBinding expectedType, CastExpression rhs) {
-	
+
 		if (scope.compilerOptions().getSeverity(CompilerOptions.UnnecessaryTypeCheck) == ProblemSeverities.Ignore) return;
-	
+
 		TypeBinding castedExpressionType = rhs.expression.resolvedType;
 		//	int i = (byte) n; // cast still had side effect
 		// double d = (float) n; // cast to float is unnecessary
-		if (castedExpressionType == null || rhs.resolvedType.isBaseType()) return; 
+		if (castedExpressionType == null || rhs.resolvedType.isBaseType()) return;
 		//if (castedExpressionType.id == T_null) return; // tolerate null expression cast
 		if (castedExpressionType.isCompatibleWith(expectedType)) {
-			scope.problemReporter().unnecessaryCast(rhs); 
+			scope.problemReporter().unnecessaryCast(rhs);
 		}
 	}
-	
+
 	/**
 	 * Casting an enclosing instance will considered as useful if removing it would actually bind to a different type
 	 */
 	public static void checkNeedForEnclosingInstanceCast(BlockScope scope, Expression enclosingInstance, TypeBinding enclosingInstanceType, TypeBinding memberType) {
-	
+
 		if (scope.compilerOptions().getSeverity(CompilerOptions.UnnecessaryTypeCheck) == ProblemSeverities.Ignore) return;
-		
+
 		TypeBinding castedExpressionType = ((CastExpression)enclosingInstance).expression.resolvedType;
 		if (castedExpressionType == null) return; // cannot do better
 		// obvious identity cast
-		if (castedExpressionType == enclosingInstanceType) { 
+		if (castedExpressionType == enclosingInstanceType) {
 			scope.problemReporter().unnecessaryCast((CastExpression)enclosingInstance);
 		} else if (castedExpressionType == TypeBinding.NULL){
 			return; // tolerate null enclosing instance cast
 		} else {
-			TypeBinding alternateEnclosingInstanceType = castedExpressionType; 
+			TypeBinding alternateEnclosingInstanceType = castedExpressionType;
 			if (castedExpressionType.isBaseType() || castedExpressionType.isArrayType()) return; // error case
 			if (memberType == scope.getMemberType(memberType.sourceName(), (ReferenceBinding) alternateEnclosingInstanceType)) {
 				scope.problemReporter().unnecessaryCast((CastExpression)enclosingInstance);
@@ -82,12 +93,12 @@ public class CastExpression extends Expression {
 	}
 
 	/**
-	 * Only complain for identity cast, since other type of casts may be useful: e.g.  ~((~(long) 0) << 32)  is different from: ~((~0) << 32) 
+	 * Only complain for identity cast, since other type of casts may be useful: e.g.  ~((~(long) 0) << 32)  is different from: ~((~0) << 32)
 	 */
 	public static void checkNeedForArgumentCast(BlockScope scope, int operator, int operatorSignature, Expression expression, int expressionTypeId) {
-	
+
 		if (scope.compilerOptions().getSeverity(CompilerOptions.UnnecessaryTypeCheck) == ProblemSeverities.Ignore) return;
-	
+
 		// check need for left operand cast
 		int alternateLeftTypeId = expressionTypeId;
 		if ((expression.bits & UnnecessaryCast) == 0 && expression.resolvedType.isBaseType()) {
@@ -97,7 +108,7 @@ public class CastExpression extends Expression {
 			TypeBinding alternateLeftType = ((CastExpression)expression).expression.resolvedType;
 			if (alternateLeftType == null) return; // cannot do better
 			if ((alternateLeftTypeId = alternateLeftType.id) == expressionTypeId) { // obvious identity cast
-				scope.problemReporter().unnecessaryCast((CastExpression)expression); 
+				scope.problemReporter().unnecessaryCast((CastExpression)expression);
 				return;
 			} else if (alternateLeftTypeId == T_null) {
 				alternateLeftTypeId = expressionTypeId;  // tolerate null argument cast
@@ -111,19 +122,19 @@ public class CastExpression extends Expression {
 		//  <<16   <<12       <<8    <<4       <<0
 		final int CompareMASK = (0xF<<16) + (0xF<<8) + 0xF; // mask hiding compile-time types
 		if ((operatorSignature & CompareMASK) == (alternateOperatorSignature & CompareMASK)) { // same promotions and result
-			scope.problemReporter().unnecessaryCastForArgument((CastExpression)expression,  TypeBinding.wellKnownType(scope, expression.implicitConversion >> 4)); 
+			scope.problemReporter().unnecessaryCastForArgument((CastExpression)expression,  TypeBinding.wellKnownType(scope, expression.implicitConversion >> 4));
 		}
-*/		
+*/
 	}
-		
+
 	/**
 	 * Cast expressions will considered as useful if removing them all would actually bind to a different method
 	 * (no fine grain analysis on per casted argument basis, simply separate widening cast from narrowing ones)
 	 */
 	public static void checkNeedForArgumentCasts(BlockScope scope, Expression receiver, TypeBinding receiverType, MethodBinding binding, Expression[] arguments, TypeBinding[] argumentTypes, final InvocationSite invocationSite) {
-	
+
 		if (scope.compilerOptions().getSeverity(CompilerOptions.UnnecessaryTypeCheck) == ProblemSeverities.Ignore) return;
-		
+
 		int length = argumentTypes.length;
 
 		// iterate over arguments, and retrieve original argument types (before cast)
@@ -134,11 +145,11 @@ public class CastExpression extends Expression {
  				// narrowing conversion on base type may change value, thus necessary
 				if ((argument.bits & UnnecessaryCast) == 0 && argument.resolvedType.isBaseType()) {
 					continue;
-				}		
+				}
 				TypeBinding castedExpressionType = ((CastExpression)argument).expression.resolvedType;
 				if (castedExpressionType == null) return; // cannot do better
 				// obvious identity cast
-				if (castedExpressionType == argumentTypes[i]) { 
+				if (castedExpressionType == argumentTypes[i]) {
 					scope.problemReporter().unnecessaryCast((CastExpression)argument);
 				} else if (castedExpressionType == TypeBinding.NULL){
 					continue; // tolerate null argument cast
@@ -149,9 +160,9 @@ public class CastExpression extends Expression {
 						System.arraycopy(rawArgumentTypes, 0, rawArgumentTypes = new TypeBinding[length], 0, length);
 					}
 					// retain original argument type
-					rawArgumentTypes[i] = castedExpressionType; 
+					rawArgumentTypes[i] = castedExpressionType;
 				}
-			}				
+			}
 		}
 		// perform alternate lookup with original types
 		if (rawArgumentTypes != argumentTypes) {
@@ -160,7 +171,7 @@ public class CastExpression extends Expression {
 	}
 
 	/**
-	 * Check binary operator casted arguments 
+	 * Check binary operator casted arguments
 	 */
 	public static void checkNeedForArgumentCasts(BlockScope scope, int operator, int operatorSignature, Expression left, int leftTypeId, boolean leftIsCast, Expression right, int rightTypeId, boolean rightIsCast) {
 
@@ -176,7 +187,7 @@ public class CastExpression extends Expression {
 				TypeBinding alternateLeftType = ((CastExpression)left).expression.resolvedType;
 				if (alternateLeftType == null) return; // cannot do better
 				if ((alternateLeftTypeId = alternateLeftType.id) == leftTypeId) { // obvious identity cast
-					scope.problemReporter().unnecessaryCast((CastExpression)left); 
+					scope.problemReporter().unnecessaryCast((CastExpression)left);
 					leftIsCast = false;
 				} else if (alternateLeftTypeId == T_null) {
 					alternateLeftTypeId = leftTypeId;  // tolerate null argument cast
@@ -194,13 +205,13 @@ public class CastExpression extends Expression {
 				TypeBinding alternateRightType = ((CastExpression)right).expression.resolvedType;
 				if (alternateRightType == null) return; // cannot do better
 				if ((alternateRightTypeId = alternateRightType.id) == rightTypeId) { // obvious identity cast
-					scope.problemReporter().unnecessaryCast((CastExpression)right); 
+					scope.problemReporter().unnecessaryCast((CastExpression)right);
 					rightIsCast = false;
 				} else if (alternateRightTypeId == T_null) {
 					alternateRightTypeId = rightTypeId;  // tolerate null argument cast
 					rightIsCast = false;
 				}
-			}	
+			}
 		}
 		if (leftIsCast || rightIsCast) {
 			if (alternateLeftTypeId > 15 || alternateRightTypeId > 15) { // must convert String + Object || Object + String
@@ -218,7 +229,7 @@ public class CastExpression extends Expression {
 			//  <<16   <<12       <<8    <<4       <<0
 			final int CompareMASK = (0xF<<16) + (0xF<<8) + 0xF; // mask hiding compile-time types
 			if ((operatorSignature & CompareMASK) == (alternateOperatorSignature & CompareMASK)) { // same promotions and result
-				if (leftIsCast) scope.problemReporter().unnecessaryCast((CastExpression)left); 
+				if (leftIsCast) scope.problemReporter().unnecessaryCast((CastExpression)left);
 				if (rightIsCast) scope.problemReporter().unnecessaryCast((CastExpression)right);
 			}
 		}
@@ -226,7 +237,7 @@ public class CastExpression extends Expression {
 
 	private static void checkAlternateBinding(BlockScope scope, Expression receiver, TypeBinding receiverType, MethodBinding binding, Expression[] arguments, TypeBinding[] originalArgumentTypes, TypeBinding[] alternateArgumentTypes, final InvocationSite invocationSite) {
 
-			InvocationSite fakeInvocationSite = new InvocationSite(){	
+			InvocationSite fakeInvocationSite = new InvocationSite(){
 				public TypeBinding[] genericTypeArguments() { return null; }
 				public boolean isSuperAccess(){ return invocationSite.isSuperAccess(); }
 				public boolean isTypeAccess() { return invocationSite.isTypeAccess(); }
@@ -235,14 +246,14 @@ public class CastExpression extends Expression {
 				public void setFieldIndex(int depth){ /* ignore */}
 				public int sourceStart() { return 0; }
 				public int sourceEnd() { return 0; }
-			};	
+			};
 			MethodBinding bindingIfNoCast;
 			if (binding.isConstructor()) {
 				bindingIfNoCast = scope.getConstructor((ReferenceBinding)receiverType, alternateArgumentTypes, fakeInvocationSite);
 			} else {
 				bindingIfNoCast = receiver.isImplicitThis()
 					? scope.getImplicitMethod(binding.selector, alternateArgumentTypes, fakeInvocationSite)
-					: scope.getMethod(receiverType, binding.selector, alternateArgumentTypes, fakeInvocationSite); 	
+					: scope.getMethod(receiverType, binding.selector, alternateArgumentTypes, fakeInvocationSite);
 			}
 			if (bindingIfNoCast == binding) {
 				int argumentLength = originalArgumentTypes.length;
@@ -268,9 +279,9 @@ public class CastExpression extends Expression {
 						scope.problemReporter().unnecessaryCast((CastExpression)arguments[i]);
 					}
 				}
-			}	
+			}
 	}
-	
+
 	public boolean checkUnsafeCast(Scope scope, TypeBinding castType, TypeBinding expressionType, TypeBinding match, boolean isNarrowing) {
  		if (match == castType) {
 			if (!isNarrowing && match == this.resolvedType.leafComponentType()) { // do not tag as unnecessary when recursing through upper bounds
@@ -279,7 +290,7 @@ public class CastExpression extends Expression {
 			return true;
 		}
 		if (match != null && match.isProvablyDistinctFrom(isNarrowing ? expressionType : castType, 0)) {
-			return false; 
+			return false;
 		}
 		switch (castType.kind()) {
 			case Binding.PARAMETERIZED_TYPE :
@@ -333,14 +344,14 @@ public class CastExpression extends Expression {
 				break;
 			case Binding.TYPE_PARAMETER :
 				this.bits |= UnsafeCast;
-				return true;				
+				return true;
 		}
 		if (!isNarrowing && match == this.resolvedType.leafComponentType()) { // do not tag as unnecessary when recursing through upper bounds
 			tagAsUnnecessaryCast(scope, castType);
 		}
 		return true;
-	}	
-	
+	}
+
 	/**
 	 * Cast expression code generation
 	 *
@@ -349,7 +360,7 @@ public class CastExpression extends Expression {
 	 * @param valueRequired boolean
 	 */
 	public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
-	
+
 		int pc = codeStream.position;
 		boolean needRuntimeCheckcast = (this.bits & GenerateCheckcast) != 0;
 		if (constant != Constant.NotAConstant) {
@@ -378,7 +389,7 @@ public class CastExpression extends Expression {
 		codeStream.recordPositionsFrom(pc, this.sourceStart);
 	}
 
-	public Expression innermostCastedExpression(){ 
+	public Expression innermostCastedExpression(){
 		Expression current = this.expression;
 		while (current instanceof CastExpression) {
 			current = ((CastExpression) current).expression;
@@ -392,11 +403,11 @@ public class CastExpression extends Expression {
 	public LocalVariableBinding localVariableBinding() {
 		return this.expression.localVariableBinding();
 	}
-	
+
 	public int nullStatus(FlowInfo flowInfo) {
 		return this.expression.nullStatus(flowInfo);
 	}
-	
+
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.ast.Expression#optimizedBooleanConstant()
 	 */
@@ -408,7 +419,7 @@ public class CastExpression extends Expression {
 		}
 		return Constant.NotAConstant;
 	}
-	
+
 	public StringBuffer printExpression(int indent, StringBuffer output) {
 
 		output.append('(');
@@ -430,7 +441,7 @@ public class CastExpression extends Expression {
 				&& ((type.bits & ASTNode.ParenthesizedMASK) >> ASTNode.ParenthesizedSHIFT) == 0) { // no extra parenthesis around type: ((A))exp
 
 			TypeBinding castType = this.resolvedType = type.resolveType(scope);
-			//expression.setExpectedType(this.resolvedType); // needed in case of generic method invocation			
+			//expression.setExpectedType(this.resolvedType); // needed in case of generic method invocation
 			TypeBinding expressionType = expression.resolveType(scope);
 			if (castType != null) {
 				if (expressionType != null) {
@@ -441,9 +452,9 @@ public class CastExpression extends Expression {
 							scope.problemReporter().unsafeCast(this, scope);
 						} else {
 							if (castType.isRawType() && scope.compilerOptions().getSeverity(CompilerOptions.RawTypeReference) != ProblemSeverities.Ignore){
-								scope.problemReporter().rawTypeReference(this.type, castType);			
+								scope.problemReporter().rawTypeReference(this.type, castType);
 							}
-							if ((this.bits & (UnnecessaryCast|DisableUnnecessaryCastCheck)) == UnnecessaryCast) { // unnecessary cast 
+							if ((this.bits & (UnnecessaryCast|DisableUnnecessaryCastCheck)) == UnnecessaryCast) { // unnecessary cast
 								if (!isIndirectlyUsed()) // used for generic type inference or boxing ?
 									scope.problemReporter().unnecessaryCast(this);
 							}
@@ -463,7 +474,7 @@ public class CastExpression extends Expression {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.ast.Expression#setExpectedType(org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding)
 	 */
@@ -480,7 +491,7 @@ public class CastExpression extends Expression {
 			MethodBinding method = ((MessageSend)this.expression).binding;
 			if (method instanceof ParameterizedGenericMethodBinding
 						&& ((ParameterizedGenericMethodBinding)method).inferredReturnType) {
-				if (this.expectedType == null) 
+				if (this.expectedType == null)
 					return true;
 				if (this.resolvedType != this.expectedType)
 					return true;
@@ -499,7 +510,7 @@ public class CastExpression extends Expression {
 	public void tagAsNeedCheckCast() {
 		this.bits |= GenerateCheckcast;
 	}
-	
+
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.ast.Expression#tagAsUnnecessaryCast(Scope, TypeBinding)
 	 */
@@ -507,7 +518,7 @@ public class CastExpression extends Expression {
 		if (this.expression.resolvedType == null) return; // cannot do better if expression is not bound
 		this.bits |= UnnecessaryCast;
 	}
-	
+
 	public void traverse(
 		ASTVisitor visitor,
 		BlockScope blockScope) {

@@ -16,9 +16,7 @@ import java.util.Map;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.CustomProfile;
 
 

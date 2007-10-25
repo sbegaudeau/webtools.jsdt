@@ -12,40 +12,31 @@ package org.eclipse.wst.jsdt.ui;
 
 import java.util.Locale;
 
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-
-import org.eclipse.core.resources.ProjectScope;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.RGB;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.resource.ColorRegistry;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
-
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
-
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
-
-import org.eclipse.wst.jsdt.ui.text.IJavaColorConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaThemeConstants;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightings;
 import org.eclipse.wst.jsdt.internal.ui.preferences.NewJavaProjectPreferencePage;
-import org.eclipse.wst.jsdt.internal.ui.preferences.WorkInProgressPreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.FormatterProfileManager;
 import org.eclipse.wst.jsdt.internal.ui.text.java.ProposalSorterRegistry;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.JavaSpellingEngine;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.SpellCheckEngine;
+import org.eclipse.wst.jsdt.ui.text.IJavaColorConstants;
 
 /**
  * Preference constants used in the JDT-UI preference store. Clients should only read the

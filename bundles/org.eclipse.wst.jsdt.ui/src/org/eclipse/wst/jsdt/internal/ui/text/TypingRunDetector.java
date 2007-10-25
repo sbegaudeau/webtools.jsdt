@@ -17,7 +17,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
-
+import org.eclipse.jface.text.DocumentEvent;
+import org.eclipse.jface.text.ITextListener;
+import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.TextEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.FocusEvent;
@@ -26,12 +29,6 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
-
-import org.eclipse.jface.text.DocumentEvent;
-import org.eclipse.jface.text.ITextListener;
-import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.TextEvent;
-
 import org.eclipse.wst.jsdt.internal.ui.text.TypingRun.ChangeType;
 
 

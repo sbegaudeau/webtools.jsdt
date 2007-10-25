@@ -13,8 +13,9 @@ package org.eclipse.wst.jsdt.internal.corext.codemanipulation;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.text.edits.TextEdit;
-
+import org.eclipse.core.filebuffers.ITextFileBuffer;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -23,17 +24,10 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-
-import org.eclipse.core.filebuffers.ITextFileBuffer;
-
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.ResourcesPlugin;
-
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
-
 import org.eclipse.ltk.core.refactoring.Change;
-
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IField;
@@ -52,14 +46,12 @@ import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitChange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.CompilationUnitRewrite;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringFileBuffers;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 /**

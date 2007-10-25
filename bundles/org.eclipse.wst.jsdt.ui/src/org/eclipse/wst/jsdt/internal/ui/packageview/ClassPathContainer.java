@@ -13,33 +13,25 @@ package org.eclipse.wst.jsdt.internal.ui.packageview;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IPath;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.resource.ImageDescriptor;
-
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.model.IWorkbenchAdapter;
-
 import org.eclipse.ui.ide.IDE;
-
+import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
 import org.eclipse.wst.jsdt.core.IClasspathContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JSDScopeUtil;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
 import org.eclipse.wst.jsdt.internal.ui.IClasspathContainerInitialzerExtension;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;

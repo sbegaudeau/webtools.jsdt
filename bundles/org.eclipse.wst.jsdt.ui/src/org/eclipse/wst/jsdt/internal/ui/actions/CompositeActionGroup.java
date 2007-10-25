@@ -11,9 +11,7 @@
 package org.eclipse.wst.jsdt.internal.ui.actions;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.action.IMenuManager;
-
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionGroup;

@@ -12,27 +12,21 @@ package org.eclipse.wst.jsdt.internal.ui.navigator;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
-
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.navigator.ICommonContentExtensionSite;
 import org.eclipse.ui.navigator.ICommonLabelProvider;
 import org.eclipse.ui.navigator.IExtensionStateModel;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.navigator.IExtensionStateConstants.Values;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageExplorerContentProvider;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageExplorerLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 /**
  * Provides the labels for the Project Explorer.

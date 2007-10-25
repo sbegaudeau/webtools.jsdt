@@ -12,12 +12,27 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemMethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.RawTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.VariableBinding;
 
 public class ExplicitConstructorCall extends Statement implements InvocationSite {
-		
+
 	public Expression[] arguments;
 	public Expression qualification;
 	public MethodBinding binding;							// exact binding resulting from lookup
@@ -26,13 +41,13 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 	public int accessMode;
 	public TypeReference[] typeArguments;
 	public TypeBinding[] genericTypeArguments;
-	
+
 	public final static int ImplicitSuper = 1;
 	public final static int Super = 2;
 	public final static int This = 3;
 
 	public VariableBinding[][] implicitArguments;
-	
+
 	// TODO Remove once DOMParser is activated
 	public int typeArgumentsSourceStart;
 
@@ -104,7 +119,7 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 			codeStream.aload_0();
 
 			ReferenceBinding targetType = this.codegenBinding.declaringClass;
-			
+
 			// special name&ordinal argument generation for enum constructors
 			if (targetType.erasure().id == T_JavaLangEnum || targetType.isEnum()) {
 				codeStream.aload_1(); // pass along name param as name arg
@@ -120,8 +135,8 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 					this);
 			}
 			// generate arguments
-			generateArguments(binding, arguments, currentScope, codeStream);			
-			
+			generateArguments(binding, arguments, currentScope, codeStream);
+
 			// handling innerclass instance allocation - outer local arguments
 			if (targetType.isNestedType()) {
 				codeStream.generateSyntheticOuterArgumentValues(
@@ -168,7 +183,7 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 		return true;
 	}
 
-	/* Inner emulation consists in either recording a dependency 
+	/* Inner emulation consists in either recording a dependency
 	 * link only, or performing one level of propagation.
 	 *
 	 * Dependency mechanism is used whenever dealing with source target
@@ -198,7 +213,7 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 		if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0)	{
 		// if constructor from parameterized type got found, use the original constructor at codegen time
 		this.codegenBinding = this.binding.original();
-		
+
 		// perform some emulation work in case there is some and we are inside a local type only
 		if (binding.isPrivate() && accessMode != This) {
 			ReferenceBinding declaringClass = this.codegenBinding.declaringClass;
@@ -227,7 +242,7 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 			}
 			typeArguments[max].print(0, output);
 			output.append('>');
-		}		
+		}
 		if (accessMode == This) {
 			output.append("this("); //$NON-NLS-1$
 		} else {
@@ -241,7 +256,7 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 		}
 		return output.append(");"); //$NON-NLS-1$
 	}
-	
+
 	public void resolve(BlockScope scope) {
 		// the return type should be void for a constructor.
 		// the test is made into getConstructor
@@ -251,7 +266,7 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 		MethodScope methodScope = scope.methodScope();
 		try {
 			AbstractMethodDeclaration methodDeclaration = methodScope.referenceMethod();
-			if (methodDeclaration == null 
+			if (methodDeclaration == null
 					|| !methodDeclaration.isConstructor()
 					|| ((ConstructorDeclaration) methodDeclaration).constructorCall != this) {
 				scope.problemReporter().invalidExplicitConstructorCall(this);
@@ -318,8 +333,8 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 				if (argHasError) {
 					return;
 				}
-			}			
-	
+			}
+
 			// arguments buffering for the method lookup
 			TypeBinding[] argumentTypes = Binding.NO_PARAMETERS;
 			boolean argsContainCast = false;
@@ -372,7 +387,7 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 				checkInvocationArguments(scope, null, receiverType, binding, this.arguments, argumentTypes, argsContainCast, this);
 				if (binding.isPrivate() || receiverType.isLocalType()) {
 					binding.original().modifiers |= ExtraCompilerModifiers.AccLocallyUsed;
-				}				
+				}
 			} else {
 				if (binding.declaringClass == null)
 					binding.declaringClass = receiverType;
@@ -404,7 +419,7 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 			if (this.typeArguments != null) {
 				for (int i = 0, typeArgumentsLength = this.typeArguments.length; i < typeArgumentsLength; i++) {
 					this.typeArguments[i].traverse(visitor, scope);
-				}			
+				}
 			}
 			if (this.arguments != null) {
 				for (int i = 0, argumentLength = this.arguments.length; i < argumentLength; i++)

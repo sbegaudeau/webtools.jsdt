@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.internal.compiler.impl;
 
 public class DoubleConstant extends Constant {
-	
+
 	private double value;
 
 	public static Constant fromValue(double value) {
@@ -22,39 +22,39 @@ public class DoubleConstant extends Constant {
 	private DoubleConstant(double value) {
 		this.value = value;
 	}
-	
+
 	public byte byteValue() {
 		return (byte) value;
 	}
-	
+
 	public char charValue() {
 		return (char) value;
 	}
-	
+
 	public double doubleValue() {
 		return this.value;
 	}
-	
+
 	public float floatValue() {
 		return (float) value;
 	}
-	
+
 	public int intValue() {
 		return (int) value;
 	}
-	
+
 	public long longValue() {
 		return (long) value;
 	}
-	
+
 	public short shortValue() {
 		return (short) value;
 	}
-	
+
 	public String stringValue() {
 		return String.valueOf(this.value);
 	}
-	
+
 	public String toString() {
 		if (this == NotAConstant)
 			return "(Constant) NotAConstant"; //$NON-NLS-1$

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.util;
 
-import com.ibm.icu.text.BreakIterator;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -21,30 +19,25 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.help.HelpSystem;
 import org.eclipse.help.IContext;
 import org.eclipse.help.IContext2;
 import org.eclipse.help.IHelpResource;
-
 import org.eclipse.jface.internal.text.html.HTML2TextReader;
-
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
+import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
+import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 import org.eclipse.wst.jsdt.ui.JavaUI;
 import org.eclipse.wst.jsdt.ui.JavadocContentAccess;
 
-import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
-import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
+import com.ibm.icu.text.BreakIterator;
 
 public class JavadocHelpContext implements IContext2 {
 	

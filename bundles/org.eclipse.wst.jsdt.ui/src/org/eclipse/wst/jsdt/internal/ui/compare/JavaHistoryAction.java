@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.ui.compare;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;

@@ -12,26 +12,18 @@ package org.eclipse.wst.jsdt.internal.ui.refactoring.actions;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.IStructuredSelection;
-
 import org.eclipse.jface.text.ITextSelection;
-
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringExecutionStarter;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-
-import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
@@ -40,6 +32,7 @@ import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaTextSelection;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
+import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
 
 public final class MoveInstanceMethodAction extends SelectionDispatchAction {
 

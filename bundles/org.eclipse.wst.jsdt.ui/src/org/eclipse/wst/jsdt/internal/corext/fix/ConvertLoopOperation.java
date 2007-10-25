@@ -18,23 +18,19 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.text.edits.TextEditGroup;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-
+import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Statement;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor;
 import org.eclipse.wst.jsdt.internal.corext.dom.ScopeAnalyzer;
 import org.eclipse.wst.jsdt.internal.corext.fix.LinkedFix.AbstractLinkedFixRewriteOperation;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.CompilationUnitRewrite;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 public abstract class ConvertLoopOperation extends AbstractLinkedFixRewriteOperation {

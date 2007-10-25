@@ -10,14 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.refactoring.actions;
 
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
-import org.eclipse.jface.text.ITextSelection;
-
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaTextSelection;

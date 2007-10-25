@@ -17,13 +17,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.text.edits.TextEdit;
 
 /**
  * Java compilation unit AST node type. This is the type of the root of an AST.
@@ -46,7 +46,7 @@ import org.eclipse.text.edits.TextEdit;
  *        { ImportDeclaration }
  *        { TypeDeclaration | EnumDeclaration | AnnotationTypeDeclaration | <b>;</b> }
  * </pre>
- * 
+ *
  * @since 2.0
  */
 public class CompilationUnit extends ASTNode {
@@ -55,30 +55,30 @@ public class CompilationUnit extends ASTNode {
 	 * Canonical empty list of messages.
 	 */
 	private static final Message[] EMPTY_MESSAGES = new Message[0];
-	
+
 	/**
 	 * Canonical empty list of problems.
 	 */
 	private static final IProblem[] EMPTY_PROBLEMS = new IProblem[0];
-	
+
 	/**
 	 * The "imports" structural property of this node type.
-	 * 
+	 *
 	 * @since 3.0
 	 */
 	public static final ChildListPropertyDescriptor IMPORTS_PROPERTY =
 		new ChildListPropertyDescriptor(CompilationUnit.class, "imports", ImportDeclaration.class, NO_CYCLE_RISK); //$NON-NLS-1$
-	
+
 	/**
 	 * The "package" structural property of this node type.
-	 * 
+	 *
 	 * @since 3.0
 	 */
-	public static final ChildPropertyDescriptor PACKAGE_PROPERTY = 
+	public static final ChildPropertyDescriptor PACKAGE_PROPERTY =
 		new ChildPropertyDescriptor(CompilationUnit.class, "package", PackageDeclaration.class, OPTIONAL, NO_CYCLE_RISK); //$NON-NLS-1$
-	
+
 	/**
-	 * A list of property descriptors (element type: 
+	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
 	 * @since 3.0
@@ -87,15 +87,15 @@ public class CompilationUnit extends ASTNode {
 
 	/**
 	 * The "types" structural property of this node type.
-	 * 
+	 *
 	 * @since 3.0
 	 */
 	public static final ChildListPropertyDescriptor TYPES_PROPERTY =
 		new ChildListPropertyDescriptor(CompilationUnit.class, "types", AbstractTypeDeclaration.class, CYCLE_RISK); //$NON-NLS-1$
-			
+
 	public static final ChildListPropertyDescriptor STATEMENTS_PROPERTY =
 		new ChildListPropertyDescriptor(CompilationUnit.class, "statements", ProgramElement.class, CYCLE_RISK); //$NON-NLS-1$
-			
+
 	static {
 		List properyList = new ArrayList(4);
 		createPropertyList(CompilationUnit.class, properyList);
@@ -105,47 +105,47 @@ public class CompilationUnit extends ASTNode {
 		addProperty(STATEMENTS_PROPERTY, properyList);
 		PROPERTY_DESCRIPTORS = reapPropertyList(properyList);
 	}
-	
+
 	/**
 	 * Returns a list of structural property descriptors for this node type.
 	 * Clients must not modify the result.
-	 * 
+	 *
 	 * @param apiLevel the API level; one of the
 	 * <code>AST.JLS*</code> constants
 
-	 * @return a list of property descriptors (element type: 
+	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
 	 * @since 3.0
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
 	}
-	
+
 	/**
-	 * The comment mapper, or <code>null</code> if none; 
+	 * The comment mapper, or <code>null</code> if none;
 	 * initially <code>null</code>.
 	 * @since 3.0
 	 */
 	private DefaultCommentMapper commentMapper = null;
-	
+
 	/**
-	 * The Java type root (an <code>org.eclipse.wst.jsdt.core.ICompilationUnit</code> or an <code>org.eclipse.wst.jsdt.core.IClassFile</code>) 
+	 * The Java type root (an <code>org.eclipse.wst.jsdt.core.ICompilationUnit</code> or an <code>org.eclipse.wst.jsdt.core.IClassFile</code>)
 	 * this compilation unit was created from, or <code>null</code> if it was not created from a Java type root.
 	 */
 	private ITypeRoot typeRoot = null;
-	
+
 	/**
-	 * The list of import declarations in textual order order; 
+	 * The list of import declarations in textual order order;
 	 * initially none (elementType: <code>ImportDeclaration</code>).
 	 */
 	private ASTNode.NodeList imports =
 		new ASTNode.NodeList(IMPORTS_PROPERTY);
-	
+
 	/**
 	 * Line end table. If <code>lineEndTable[i] == p</code> then the
-	 * line number <code>i+1</code> ends at character position 
+	 * line number <code>i+1</code> ends at character position
 	 * <code>p</code>. Except for the last line, the positions are that
-	 * of the last character of the line delimiter. 
+	 * of the last character of the line delimiter.
 	 * For example, the source string <code>A\nB\nC</code> has
 	 * line end table {1, 3} (if \n is one character).
 	 */
@@ -157,7 +157,7 @@ public class CompilationUnit extends ASTNode {
 	private Message[] messages;
 
 	/**
-	 * The comment list (element type: <code>Comment</code>, 
+	 * The comment list (element type: <code>Comment</code>,
 	 * or <code>null</code> if none; initially <code>null</code>.
 	 * @since 3.0
 	 */
@@ -170,39 +170,39 @@ public class CompilationUnit extends ASTNode {
 	 * @since 3.0
 	 */
 	Comment[] optionalCommentTable = null;
-	
+
 	/**
 	 * The package declaration, or <code>null</code> if none; initially
 	 * <code>null</code>.
 	 */
 	private PackageDeclaration optionalPackageDeclaration = null;
-	
+
 	/**
 	 * Problems reported by the compiler during parsing or name resolution.
 	 */
 	private IProblem[] problems = EMPTY_PROBLEMS;
-	
+
 	/**
-	 * The list of type declarations in textual order order; 
+	 * The list of type declarations in textual order order;
 	 * initially none (elementType: <code>AbstractTypeDeclaration</code>)
 	 */
 	private ASTNode.NodeList types =
 		new ASTNode.NodeList(TYPES_PROPERTY);
-	
+
 	private ASTNode.NodeList statements =
 		new ASTNode.NodeList(STATEMENTS_PROPERTY);
-	
+
 
 	/**
 	 * Creates a new AST node for a compilation owned by the given AST.
 	 * The compilation unit initially has no package declaration, no
 	 * import declarations, and no type declarations.
 	 * <p>
-	 * N.B. This constructor is package-private; all subclasses must be 
-	 * declared in the same package; clients are unable to declare 
+	 * N.B. This constructor is package-private; all subclasses must be
+	 * declared in the same package; clients are unable to declare
 	 * additional subclasses.
 	 * </p>
-	 * 
+	 *
 	 * @param ast the AST that is to own this node
 	 */
 	CompilationUnit(AST ast) {
@@ -238,14 +238,14 @@ public class CompilationUnit extends ASTNode {
 		result.statements().addAll(ASTNode.copySubtrees(target, statements()));
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * Returns the column number corresponding to the given source character
-	 * position in the original source string. Column number are zero-based. 
+	 * position in the original source string. Column number are zero-based.
 	 * Return <code>-1</code> if it is beyond the valid range or <code>-2</code>
 	 * if the column number information is unknown.
-	 * 
+	 *
 	 * @param position a 0-based character position, possibly
 	 *   negative or out of range
 	 * @return the 0-based column number, or <code>-1</code> if the character
@@ -279,9 +279,9 @@ public class CompilationUnit extends ASTNode {
 			return position - offsetForLine;
 		}
 	}
-	
+
 	/**
-	 * Finds the corresponding AST node in the given compilation unit from 
+	 * Finds the corresponding AST node in the given compilation unit from
 	 * which the given binding originated. Returns <code>null</code> if the
 	 * binding does not correspond to any node in this compilation unit.
 	 * This method always returns <code>null</code> if bindings were not requested
@@ -295,11 +295,11 @@ public class CompilationUnit extends ASTNode {
 	 *    <code>AnonymousClassDeclaration</code> (for anonymous classes)</li>
 	 * <li>primitive type - none</li>
 	 * <li>array type - none</li>
-	 * <li>field - a <code>VariableDeclarationFragment</code> in a 
+	 * <li>field - a <code>VariableDeclarationFragment</code> in a
 	 *    <code>FieldDeclaration</code> </li>
 	 * <li>local variable - a <code>SingleVariableDeclaration</code>, or
-	 *    a <code>VariableDeclarationFragment</code> in a 
-	 *    <code>VariableDeclarationStatement</code> or 
+	 *    a <code>VariableDeclarationFragment</code> in a
+	 *    <code>VariableDeclarationStatement</code> or
 	 *    <code>VariableDeclarationExpression</code></li>
 	 * <li>method - a <code>MethodDeclaration</code> </li>
 	 * <li>constructor - a <code>MethodDeclaration</code> </li>
@@ -310,7 +310,7 @@ public class CompilationUnit extends ASTNode {
      * <li>type variable - a <code>TypeParameter</code></li>
      * <li>capture binding - none</li>
      * <li>annotation binding - an <code>Annotation</code></li>
-     * <li>member value pair binding - an <code>MemberValuePair</code>, 
+     * <li>member value pair binding - an <code>MemberValuePair</code>,
      *      or <code>null</code> if it represents a default value or a single member value</li>
 	 * </ul>
      * For parameterized or raw type bindings, the declaring node is
@@ -325,7 +325,7 @@ public class CompilationUnit extends ASTNode {
 	 * Use <code>findDeclaringNode(binding.getKey())</code> when the binding comes
 	 * from a different AST.
 	 * </p>
-	 * 
+	 *
 	 * @param binding the binding
 	 * @return the corresponding node where the given binding is declared,
 	 * or <code>null</code> if the binding does not correspond to a node in this
@@ -335,9 +335,9 @@ public class CompilationUnit extends ASTNode {
 	public ASTNode findDeclaringNode(IBinding binding) {
 		return this.ast.getBindingResolver().findDeclaringNode(binding);
 	}
-	
+
 	/**
-	 * Finds the corresponding AST node in the given compilation unit from 
+	 * Finds the corresponding AST node in the given compilation unit from
 	 * which the binding with the given key originated. Returns
 	 * <code>null</code> if the corresponding node cannot be determined.
 	 * This method always returns <code>null</code> if bindings were not requested
@@ -352,11 +352,11 @@ public class CompilationUnit extends ASTNode {
 	 *    <code>AnonymousClassDeclaration</code> (for anonymous classes)</li>
 	 * <li>primitive type - none</li>
 	 * <li>array type - none</li>
-	 * <li>field - a <code>VariableDeclarationFragment</code> in a 
+	 * <li>field - a <code>VariableDeclarationFragment</code> in a
 	 *    <code>FieldDeclaration</code> </li>
 	 * <li>local variable - a <code>SingleVariableDeclaration</code>, or
-	 *    a <code>VariableDeclarationFragment</code> in a 
-	 *    <code>VariableDeclarationStatement</code> or 
+	 *    a <code>VariableDeclarationFragment</code> in a
+	 *    <code>VariableDeclarationStatement</code> or
 	 *    <code>VariableDeclarationExpression</code></li>
 	 * <li>method - a <code>MethodDeclaration</code> </li>
 	 * <li>constructor - a <code>MethodDeclaration</code> </li>
@@ -372,7 +372,7 @@ public class CompilationUnit extends ASTNode {
      * method bindings, the declaring node is that of the corresponding
      * generic method.
 	 * </p>
-	 * 
+	 *
 	 * @param key the binding key, or <code>null</code>
 	 * @return the corresponding node where a binding with the given
 	 * key is declared, or <code>null</code> if the key is <code>null</code>
@@ -384,14 +384,14 @@ public class CompilationUnit extends ASTNode {
 	public ASTNode findDeclaringNode(String key) {
 		return this.ast.getBindingResolver().findDeclaringNode(key);
 	}
-	
+
 	/**
 	 * Returns a list of the comments encountered while parsing
 	 * this compilation unit.
 	 * <p>
 	 * Since the Java language allows comments to appear most anywhere
 	 * in the source text, it is problematic to locate comments in relation
-	 * to the structure of an AST. The one exception is doc comments 
+	 * to the structure of an AST. The one exception is doc comments
 	 * which, by convention, immediately precede type, field, and
 	 * method declarations; these comments are located in the AST
 	 * by {@link  BodyDeclaration#getJavadoc BodyDeclaration.getJavadoc}.
@@ -399,7 +399,7 @@ public class CompilationUnit extends ASTNode {
 	 * is provided for clients that need to find the source ranges of
 	 * all comments in the original source string. It includes entries
 	 * for comments of all kinds (line, block, and doc), arranged in order
-	 * of increasing source position. 
+	 * of increasing source position.
 	 * </p>
 	 * <p>
 	 * Note on comment parenting: The {@link ASTNode#getParent() getParent()}
@@ -411,7 +411,7 @@ public class CompilationUnit extends ASTNode {
 	 * However, for other comment nodes, {@link ASTNode#getParent() getParent()}
 	 * will return <code>null</code>, and {@link ASTNode#getRoot() getRoot()}
 	 * will return the comment node itself, indicating that these comment nodes
-	 * are not directly connected to the AST for the compilation unit. The 
+	 * are not directly connected to the AST for the compilation unit. The
 	 * {@link Comment#getAlternateRoot Comment.getAlternateRoot}
 	 * method provides a way to navigate from a comment to its compilation
 	 * unit.
@@ -426,7 +426,7 @@ public class CompilationUnit extends ASTNode {
 	 * <p>
 	 * Clients cannot modify the resulting list.
 	 * </p>
-	 * 
+	 *
 	 * @return an unmodifiable list of comments in increasing order of source
 	 * start position, or <code>null</code> if comment information
 	 * for this compilation unit is not available
@@ -439,7 +439,7 @@ public class CompilationUnit extends ASTNode {
 
 	/**
 	 * Returns the internal comment mapper.
-	 * 
+	 *
 	 * @return the comment mapper, or <code>null</code> if none.
 	 * @since 3.0
 	 */
@@ -452,7 +452,7 @@ public class CompilationUnit extends ASTNode {
 	 * {@link ASTNode#getStartPosition()} and {@link ASTNode#getLength()},
 	 * the extended source range may include comments and whitespace
 	 * immediately before or after the normal source range for the node.
-	 * 
+	 *
 	 * @param node the node
 	 * @return a (possibly 0) length, or <code>0</code>
 	 *    if no source position information is recorded for this node
@@ -476,7 +476,7 @@ public class CompilationUnit extends ASTNode {
 	 * {@link ASTNode#getStartPosition()} and {@link ASTNode#getLength()},
 	 * the extended source range may include comments and whitespace
 	 * immediately before or after the normal source range for the node.
-	 * 
+	 *
 	 * @param node the node
 	 * @return the 0-based character index, or <code>-1</code>
 	 *    if no source position information is recorded for this node
@@ -494,11 +494,11 @@ public class CompilationUnit extends ASTNode {
 			return this.commentMapper.getExtendedStartPosition(node);
 		}
 	}
-	
+
 	/**
-	 * The Java element (an <code>org.eclipse.wst.jsdt.core.ICompilationUnit</code> or an <code>org.eclipse.wst.jsdt.core.IClassFile</code>) 
+	 * The Java element (an <code>org.eclipse.wst.jsdt.core.ICompilationUnit</code> or an <code>org.eclipse.wst.jsdt.core.IClassFile</code>)
 	 * this compilation unit was created from, or <code>null</code> if it was not created from a Java element.
-	 * 
+	 *
 	 * @return the Java element this compilation unit was created from, or <code>null</code> if none
 	 * @since 3.1
 	 * @see #getTypeRoot()
@@ -506,10 +506,10 @@ public class CompilationUnit extends ASTNode {
 	public IJavaElement getJavaElement() {
 		return this.typeRoot;
 	}
-	
+
 	/**
-	 * Returns the list of messages reported by the compiler during the parsing 
-	 * or the type checking of this compilation unit. This list might be a subset of 
+	 * Returns the list of messages reported by the compiler during the parsing
+	 * or the type checking of this compilation unit. This list might be a subset of
 	 * errors detected and reported by a Java compiler.
 	 * <p>
 	 * This list of messages is suitable for simple clients that do little
@@ -546,33 +546,33 @@ public class CompilationUnit extends ASTNode {
 	final int getNodeType0() {
 		return COMPILATION_UNIT;
 	}
-	
+
 	/**
-	 * Returns the node for the package declaration of this compilation 
-	 * unit, or <code>null</code> if this compilation unit is in the 
+	 * Returns the node for the package declaration of this compilation
+	 * unit, or <code>null</code> if this compilation unit is in the
 	 * default package.
-	 * 
+	 *
 	 * @return the package declaration node, or <code>null</code> if none
-	 */ 
+	 */
 	public PackageDeclaration getPackage() {
 		return this.optionalPackageDeclaration;
 	}
-	
+
 	/**
-	 * Given a line number and column number, returns the corresponding 
+	 * Given a line number and column number, returns the corresponding
 	 * position in the original source string.
 	 * Returns -2 if no line number information is available for this
-	 * compilation unit. 
+	 * compilation unit.
 	 * Returns the total size of the source string if <code>line</code>
 	 * is greater than the actual number lines in the unit.
-	 * Returns -1 if <code>column</code> is less than 0,  
+	 * Returns -1 if <code>column</code> is less than 0,
 	 * or the position of the last character of the line if <code>column</code>
-	 * is beyond the legal range, or the given line number is less than one. 
-	 * 
+	 * is beyond the legal range, or the given line number is less than one.
+	 *
 	 * @param line the one-based line number
 	 * @param column the zero-based column number
-	 * @return the 0-based character position in the source string; 
-	 * <code>-2</code> if line/column number information is not known 
+	 * @return the 0-based character position in the source string;
+	 * <code>-2</code> if line/column number information is not known
 	 * for this compilation unit or <code>-1</code> the inputs are not valid
 	 * @since 3.2
 	 */
@@ -586,20 +586,20 @@ public class CompilationUnit extends ASTNode {
 		}
 		if (line == 1) {
 			final int endOfLine = this.lineEndTable[0];
-			return column > endOfLine ? -1 : column;			
+			return column > endOfLine ? -1 : column;
 		} else if( line > length + 1 ) {
 			// greater than the number of lines in the source string.
 			return -1;
-		}		
+		}
 		// -1 to for one-based to zero-based conversion.
 		// -1, again, to get previous line.
 		final int previousLineOffset = this.lineEndTable[line - 2];
 		 // previousLineOffset + 1 is the first character of the current line
 		final int offsetForLine = previousLineOffset + 1;
 		final int currentLineEnd = line == length + 1 ? getStartPosition() + getLength() - 1 : this.lineEndTable[line-1];
-		if ((offsetForLine + column) > currentLineEnd) {  
+		if ((offsetForLine + column) > currentLineEnd) {
 			return -1;
-		} else {  
+		} else {
 			return offsetForLine + column;
 		}
 	}
@@ -613,7 +613,7 @@ public class CompilationUnit extends ASTNode {
 	 * Simple clients that do little more than log the messages or display
 	 * them to the user should probably call <code>getMessages</code> instead.
 	 * </p>
-	 * 
+	 *
 	 * @return the list of detailed problem objects, possibly empty
 	 * @see #getMessages()
 	 * @see ASTParser
@@ -622,11 +622,11 @@ public class CompilationUnit extends ASTNode {
 	public IProblem[] getProblems() {
 		return this.problems;
 	}
-	
+
 	/**
-	 * The Java type root (a {@link org.eclipse.wst.jsdt.core.ICompilationUnit compilation unit} or a {@link org.eclipse.wst.jsdt.core.IClassFile class file}) 
+	 * The Java type root (a {@link org.eclipse.wst.jsdt.core.ICompilationUnit compilation unit} or a {@link org.eclipse.wst.jsdt.core.IClassFile class file})
 	 * this compilation unit was created from, or <code>null</code> if it was not created from a Java type root.
-	 * 
+	 *
 	 * @return the Java type root this compilation unit was created from, or <code>null</code> if none
 	 * @since 3.3
 	 */
@@ -635,20 +635,20 @@ public class CompilationUnit extends ASTNode {
 	}
 
 	/**
-	 * Returns the live list of nodes for the import declarations of this 
+	 * Returns the live list of nodes for the import declarations of this
 	 * compilation unit, in order of appearance.
-	 * 
+	 *
 	 * @return the live list of import declaration nodes
 	 *    (elementType: <code>ImportDeclaration</code>)
-	 */ 
+	 */
 	public List imports() {
 		return this.imports;
 	}
 
 	/**
 	 * Return the index in the whole comments list {@link #getCommentList() }
-	 * of the first leading comments associated with the given node. 
-	 * 
+	 * of the first leading comments associated with the given node.
+	 *
 	 * @param node the node
 	 * @return 0-based index of first leading comment or -1 if node has no associated
 	 * 	comment before its start position.
@@ -666,8 +666,8 @@ public class CompilationUnit extends ASTNode {
 
 	/**
 	 * Return the index in the whole comments list {@link #getCommentList() }
-	 * of the last trailing comments associated with the given node. 
-	 * 
+	 * of the last trailing comments associated with the given node.
+	 *
 	 * @param node the node
 	 * @return 0-based index of last trailing comment or -1 if node has no
 	 * 	associated comment after its end position.
@@ -682,11 +682,11 @@ public class CompilationUnit extends ASTNode {
 		}
 		return this.commentMapper.lastTrailingCommentIndex(node);
 	}
-	
+
 	/**
 	 * Initializes the internal comment mapper with the given
 	 * scanner.
-	 * 
+	 *
 	 * @param scanner the scanner
 	 * @since 3.0
 	 */
@@ -735,10 +735,10 @@ public class CompilationUnit extends ASTNode {
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
-		
+
 	/**
 	 * Returns the line number corresponding to the given source character
-	 * position in the original source string. The initial line of the 
+	 * position in the original source string. The initial line of the
 	 * compilation unit is numbered 1, and each line extends through the
 	 * last character of the end-of-line delimiter. The very last line extends
 	 * through the end of the source string and has no line delimiter.
@@ -747,7 +747,7 @@ public class CompilationUnit extends ASTNode {
 	 * Returns 1 for a character position that does not correspond to any
 	 * source line, or if no line number information is available for this
 	 * compilation unit.
-	 * 
+	 *
 	 * @param position a 0-based character position, possibly
 	 *   negative or out of range
 	 * @return the 1-based line number, or <code>1</code> if the character
@@ -756,16 +756,16 @@ public class CompilationUnit extends ASTNode {
 	 *    compilation unit
 	 * @deprecated Use getLineNumber(int) instead. Be careful to handle the negative values.
 	 * @see ASTParser
-	 * @see #getLineNumber(int) 
+	 * @see #getLineNumber(int)
 	 */
 	public int lineNumber(int position) {
 		int lineNumber = getLineNumber(position);
 		return lineNumber < 1 ? 1 : lineNumber;
 	}
-	
+
 	/**
 	 * Returns the line number corresponding to the given source character
-	 * position in the original source string. The initial line of the 
+	 * position in the original source string. The initial line of the
 	 * compilation unit is numbered 1, and each line extends through the
 	 * last character of the end-of-line delimiter. The very last line extends
 	 * through the end of the source string and has no line delimiter.
@@ -774,7 +774,7 @@ public class CompilationUnit extends ASTNode {
 	 * Returns -1 for a character position that does not correspond to any
 	 * source line, or -2 if no line number information is available for this
 	 * compilation unit.
-	 * 
+	 *
 	 * @param position a 0-based character position, possibly
 	 *   negative or out of range
 	 * @return the 1-based line number, or <code>-1</code> if the character
@@ -795,7 +795,7 @@ public class CompilationUnit extends ASTNode {
 		}
 		int low = 0;
 		if (position < 0) {
-			// position illegal 
+			// position illegal
 			return -1;
 		}
 		if (position <= this.lineEndTable[low]) {
@@ -815,7 +815,7 @@ public class CompilationUnit extends ASTNode {
 		}
 		// assert lineEndTable[low]  < position <= lineEndTable[hi]
 		// && low == 0 && hi == length - 1 && low < hi
-		
+
 		// binary search line end table
 		while (true) {
 			// invariant lineEndTable[low] < position <= lineEndTable[hi]
@@ -857,7 +857,7 @@ public class CompilationUnit extends ASTNode {
 		// ignore the space taken up by optionalCommentList
 		return size;
 	}
-	
+
 	/**
 	 * Enables the recording of changes to this compilation
 	 * unit and its descendents. The compilation unit must have
@@ -866,11 +866,11 @@ public class CompilationUnit extends ASTNode {
 	 * arbitrary changes to the subtree rooted at this compilation
 	 * unit are recorded internally. Once the modification has
 	 * been completed, call <code>rewrite</code> to get an object
-	 * representing the corresponding edits to the original 
+	 * representing the corresponding edits to the original
 	 * source code string.
 	 *
 	 * @exception IllegalArgumentException if this compilation unit is
-	 * marked as unmodifiable, or if this compilation unit has already 
+	 * marked as unmodifiable, or if this compilation unit has already
 	 * been tampered with, or recording has already been enabled
 	 * @since 3.0
 	 */
@@ -898,7 +898,7 @@ public class CompilationUnit extends ASTNode {
 	 * accurately reflect the net cumulative affect of all those
 	 * changes.
 	 * </p>
-	 * 
+	 *
 	 * @param document original document containing source code
 	 * for this compilation unit
 	 * @param options the table of formatter options
@@ -921,7 +921,7 @@ public class CompilationUnit extends ASTNode {
 	/**
 	 * Sets the list of the comments encountered while parsing
 	 * this compilation unit.
-	 * 
+	 *
 	 * @param commentTable a list of comments in increasing order
 	 * of source start position, or <code>null</code> if comment
 	 * information for this compilation unit is not available
@@ -961,21 +961,21 @@ public class CompilationUnit extends ASTNode {
 	/**
 	 * Sets the Java type root (a {@link org.eclipse.wst.jsdt.core.ICompilationUnit compilation unit} or a {@link org.eclipse.wst.jsdt.core.IClassFile class file})
 	 * this compilation unit was created from, or <code>null</code> if it was not created from a Java type root.
-	 * 
+	 *
 	 * @param typeRoot the Java type root this compilation unit was created from
 	 */
 	void setTypeRoot(ITypeRoot typeRoot) {
 		this.typeRoot = typeRoot;
 	}
-	
+
 	/**
 	 * Sets the line end table for this compilation unit.
-	 * If <code>lineEndTable[i] == p</code> then line number <code>i+1</code> 
-	 * ends at character position <code>p</code>. Except for the last line, the 
+	 * If <code>lineEndTable[i] == p</code> then line number <code>i+1</code>
+	 * ends at character position <code>p</code>. Except for the last line, the
 	 * positions are that of (the last character of) the line delimiter.
 	 * For example, the source string <code>A\nB\nC</code> has
 	 * line end table {1, 3, 4}.
-	 * 
+	 *
 	 * @param lineEndTable the line end table
 	 */
 	void setLineEndTable(int[] lineEndTable) {
@@ -987,12 +987,12 @@ public class CompilationUnit extends ASTNode {
 		checkModifiable();
 		this.lineEndTable = lineEndTable;
 	}
-	
+
 	/**
-	 * Sets or clears the package declaration of this compilation unit 
+	 * Sets or clears the package declaration of this compilation unit
 	 * node to the given package declaration node.
-	 * 
-	 * @param pkgDecl the new package declaration node, or 
+	 *
+	 * @param pkgDecl the new package declaration node, or
 	 *   <code>null</code> if this compilation unit does not have a package
 	 *   declaration (that is in the default package)
 	 * @exception IllegalArgumentException if:
@@ -1000,7 +1000,7 @@ public class CompilationUnit extends ASTNode {
 	 * <li>the node belongs to a different AST</li>
 	 * <li>the node already has a parent</li>
 	 * </ul>
-	 */ 
+	 */
 	public void setPackage(PackageDeclaration pkgDecl) {
 		ASTNode oldChild = this.optionalPackageDeclaration;
 		preReplaceChild(oldChild, pkgDecl, PACKAGE_PROPERTY);
@@ -1012,7 +1012,7 @@ public class CompilationUnit extends ASTNode {
 	/**
 	 * Sets the array of problems reported by the compiler during the parsing or
 	 * name resolution of this compilation unit.
-	 * 
+	 *
 	 * @param problems the list of problems
 	 */
 	void setProblems(IProblem[] problems) {
@@ -1021,7 +1021,7 @@ public class CompilationUnit extends ASTNode {
 		}
 		this.problems = problems;
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -1029,7 +1029,7 @@ public class CompilationUnit extends ASTNode {
 		// dispatch to correct overloaded match method
 		return matcher.match(this, other);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -1052,23 +1052,23 @@ public class CompilationUnit extends ASTNode {
 		}
 		return size;
 	}
-	
+
 	/**
-	 * Returns the live list of nodes for the top-level type declarations of this 
+	 * Returns the live list of nodes for the top-level type declarations of this
 	 * compilation unit, in order of appearance.
      * <p>
      * Note that in JLS3, the types may include both enum declarations
      * and annotation type declarations introduced in J2SE 5.
      * For JLS2, the elements are always <code>TypeDeclaration</code>.
      * </p>
-	 * 
+	 *
 	 * @return the live list of top-level type declaration
 	 *    nodes (elementType: <code>AbstractTypeDeclaration</code>)
-	 */ 
+	 */
 	public List types() {
 		return this.types;
 	}
-	
+
 	public List statements() {
 		return this.statements;
 	}

@@ -16,10 +16,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-
 import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -27,15 +25,13 @@ import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
-
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.text.JavaHeuristicScanner;
+import org.eclipse.wst.jsdt.internal.ui.text.Symbols;
 import org.eclipse.wst.jsdt.ui.text.java.CompletionProposalCollector;
 import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
 import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
 import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.internal.ui.text.JavaHeuristicScanner;
-import org.eclipse.wst.jsdt.internal.ui.text.Symbols;
 
 /**
  * 

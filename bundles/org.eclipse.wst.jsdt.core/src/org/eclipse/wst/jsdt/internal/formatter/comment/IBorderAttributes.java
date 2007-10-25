@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.formatter.comment;
 
 /**
  * Comment region border attributes.
- * 
+ *
  * @since 3.0
  */
 public interface IBorderAttributes {

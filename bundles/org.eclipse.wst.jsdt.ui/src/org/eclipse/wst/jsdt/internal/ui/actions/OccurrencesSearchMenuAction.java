@@ -10,27 +10,23 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.actions;
 
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Menu;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.ISelection;
-
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowPulldownDelegate2;
 import org.eclipse.ui.actions.RetargetAction;
-
-import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
-import org.eclipse.wst.jsdt.ui.actions.JdtActionConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.search.SearchMessages;
+import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
+import org.eclipse.wst.jsdt.ui.actions.JdtActionConstants;
 
 /**
  * <p>

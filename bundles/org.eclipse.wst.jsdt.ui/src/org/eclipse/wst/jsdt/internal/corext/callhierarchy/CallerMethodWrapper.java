@@ -20,7 +20,6 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.JavaModelException;
@@ -29,10 +28,8 @@ import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.corext.util.SearchUtils;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 class CallerMethodWrapper extends MethodWrapper {

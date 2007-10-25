@@ -13,19 +13,14 @@ package org.eclipse.wst.jsdt.ui.actions;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.IStructuredSelection;
-
 import org.eclipse.jface.text.ITextSelection;
-
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringExecutionStarter;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;

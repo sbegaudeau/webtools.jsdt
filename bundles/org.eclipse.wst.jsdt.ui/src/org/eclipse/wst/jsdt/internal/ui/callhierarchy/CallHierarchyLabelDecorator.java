@@ -11,18 +11,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.callhierarchy;
 
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.wst.jsdt.internal.corext.callhierarchy.MethodWrapper;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageImageDescriptor;
-
-import org.eclipse.wst.jsdt.internal.corext.callhierarchy.MethodWrapper;
 
 /**
  * LabelDecorator that decorates an method's image with recursion overlays.

@@ -17,14 +17,20 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IAdaptable;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.ITreeViewerListener;
+import org.eclipse.jface.viewers.TreeExpansionEvent;
+import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.ModifyEvent;
@@ -38,23 +44,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.TreeItem;
-
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
-import org.eclipse.jface.viewers.CheckboxTreeViewer;
-import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.ITreeViewerListener;
-import org.eclipse.jface.viewers.TreeExpansionEvent;
-import org.eclipse.jface.wizard.WizardPage;
-
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.IWorkingSetPage;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaModel;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -62,10 +57,6 @@ import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
-import org.eclipse.wst.jsdt.ui.JavaElementComparator;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
@@ -77,6 +68,8 @@ import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.DecoratingJavaLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
+import org.eclipse.wst.jsdt.ui.JavaElementComparator;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 /**
  * The Java working set page allows the user to create

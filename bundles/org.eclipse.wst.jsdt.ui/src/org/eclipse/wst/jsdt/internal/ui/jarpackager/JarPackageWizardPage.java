@@ -16,19 +16,30 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.DecoratingLabelProvider;
+import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.ltk.core.refactoring.RefactoringCore;
+import org.eclipse.ltk.core.refactoring.history.IRefactoringHistoryService;
+import org.eclipse.ltk.core.refactoring.history.RefactoringHistory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -43,25 +54,8 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.TreeItem;
-
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
-import org.eclipse.jface.viewers.DecoratingLabelProvider;
-import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.wizard.IWizardPage;
-
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.WizardExportResourcesPage;
-
-import org.eclipse.ltk.core.refactoring.RefactoringCore;
-import org.eclipse.ltk.core.refactoring.history.IRefactoringHistoryService;
-import org.eclipse.ltk.core.refactoring.history.RefactoringHistory;
-
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
@@ -72,18 +66,16 @@ import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaRefactoringDescriptor;
-
-import org.eclipse.wst.jsdt.ui.JavaElementComparator;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
-import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator;
-import org.eclipse.wst.jsdt.ui.StandardJavaElementContentProvider;
-import org.eclipse.wst.jsdt.ui.jarpackager.JarPackageData;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.filters.EmptyInnerPackageFilter;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.LibraryFilter;
+import org.eclipse.wst.jsdt.ui.JavaElementComparator;
+import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator;
+import org.eclipse.wst.jsdt.ui.StandardJavaElementContentProvider;
+import org.eclipse.wst.jsdt.ui.jarpackager.JarPackageData;
 
 /**
  *	Page 1 of the JAR Package wizard

@@ -17,32 +17,24 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.util.PropertyChangeEvent;
-
 import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
-import org.eclipse.jface.text.rules.IWhitespaceDetector;
-import org.eclipse.jface.text.rules.IWordDetector;
 import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
-
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.wst.jsdt.core.JavaCore;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.IColorManager;
-import org.eclipse.wst.jsdt.ui.text.IJavaColorConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightings;
 import org.eclipse.wst.jsdt.internal.ui.text.AbstractJavaScanner;
 import org.eclipse.wst.jsdt.internal.ui.text.CombinedWordRule;
+import org.eclipse.wst.jsdt.internal.ui.text.ISourceVersionDependent;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaWhitespaceDetector;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaWordDetector;
-import org.eclipse.wst.jsdt.internal.ui.text.ISourceVersionDependent;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
+import org.eclipse.wst.jsdt.ui.text.IColorManager;
+import org.eclipse.wst.jsdt.ui.text.IJavaColorConstants;
 
 
 /**

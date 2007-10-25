@@ -12,15 +12,12 @@ package org.eclipse.wst.jsdt.internal.ui.browsing;
 
 import java.util.List;
 
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Widget;
-
-import org.eclipse.jface.viewers.ViewerFilter;
-
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ProblemTreeViewer;

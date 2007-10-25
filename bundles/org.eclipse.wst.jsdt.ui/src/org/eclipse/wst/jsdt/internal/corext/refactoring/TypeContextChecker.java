@@ -22,12 +22,9 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -73,7 +70,6 @@ import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTFlattener;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.HierarchicalASTVisitor;
@@ -85,7 +81,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringFileBuff
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.TypeNameMatchCollector;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist.JavaTypeCompletionProcessor;
 

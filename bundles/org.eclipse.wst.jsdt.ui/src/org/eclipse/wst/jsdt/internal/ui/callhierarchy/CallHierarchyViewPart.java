@@ -16,23 +16,7 @@ package org.eclipse.wst.jsdt.internal.ui.callhierarchy;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DropTarget;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-
 import org.eclipse.help.IContextProvider;
-
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
@@ -52,7 +36,20 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IMemento;
@@ -71,28 +68,14 @@ import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.part.ResourceTransfer;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
-
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
-
 import org.eclipse.wst.jsdt.internal.corext.callhierarchy.CallHierarchy;
 import org.eclipse.wst.jsdt.internal.corext.callhierarchy.CallLocation;
 import org.eclipse.wst.jsdt.internal.corext.callhierarchy.MethodWrapper;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.JavaUI;
-import org.eclipse.wst.jsdt.ui.actions.CCPActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.GenerateActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.JavaSearchActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.OpenEditorActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.OpenViewActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.RefactorActionGroup;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.CompositeActionGroup;
@@ -104,6 +87,15 @@ import org.eclipse.wst.jsdt.internal.ui.packageview.SelectionTransferDragAdapter
 import org.eclipse.wst.jsdt.internal.ui.util.JavaUIHelp;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.SelectionProviderMediator;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.StatusBarUpdater;
+import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.actions.CCPActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.GenerateActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.JavaSearchActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.OpenEditorActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.OpenViewActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.RefactorActionGroup;
 
 /**
  * This is the main view for the callers plugin. It builds a tree of callers/callees

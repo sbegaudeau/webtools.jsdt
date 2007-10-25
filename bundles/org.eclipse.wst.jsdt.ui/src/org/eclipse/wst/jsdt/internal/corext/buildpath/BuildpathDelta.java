@@ -13,10 +13,8 @@ package org.eclipse.wst.jsdt.internal.corext.buildpath;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.IPath;
-
 import org.eclipse.core.resources.IResource;
-
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
 
 public class BuildpathDelta {

@@ -12,19 +12,13 @@ package org.eclipse.wst.jsdt.internal.compiler.batch;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import org.eclipse.wst.jsdt.core.UnimplementedException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileReader;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFormatException;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
 import org.eclipse.wst.jsdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
@@ -33,7 +27,7 @@ import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 public class ClasspathFile extends ClasspathLocation {
-	
+
 protected File file;
 protected Hashtable packageCache;
 String packageName;
@@ -43,7 +37,7 @@ HashtableOfObject definedItems[] = new HashtableOfObject[Binding.NUMBER_BASIC_BI
 
 NameEnvironmentAnswer foundAnswer;
 
-public ClasspathFile(File file, String encoding, 
+public ClasspathFile(File file, String encoding,
 		AccessRuleSet accessRuleSet, String destinationPath) {
 	super(accessRuleSet,destinationPath);
 	this.file = file;
@@ -87,9 +81,9 @@ private void parseFile(ITypeRequestor requestor) {
 	for (int i = 0; i < definedItems.length; i++) {
 		definedItems[i]=new HashtableOfObject();
 	}
-	
-	
-		foundAnswer =  
+
+
+		foundAnswer =
 		 new NameEnvironmentAnswer(compilationUnit,
 			fetchAccessRestriction(file.getAbsolutePath()));
 
@@ -104,7 +98,7 @@ private void parseFile(ITypeRequestor requestor) {
 			else if (declaration.statements[i] instanceof AbstractVariableDeclaration) {
 				AbstractVariableDeclaration var = (AbstractVariableDeclaration) declaration.statements[i];
 				definedItems[Binding.VARIABLE].put(var.name, foundAnswer);
-				
+
 			}
 		}
 		for (int inx=0;inx<declaration.numberInferredTypes;inx++) {
@@ -112,12 +106,12 @@ private void parseFile(ITypeRequestor requestor) {
 			if (inferredType.isDefinition)
 				definedItems[Binding.TYPE].put(inferredType.getName(), foundAnswer);
 		}
-		
+
 	}
 	else
 		//TODO: implement
 		throw new org.eclipse.wst.jsdt.core.UnimplementedException();
-	
+
 }
 
 public NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageName, String qualifiedBinaryFileName) {
@@ -126,7 +120,7 @@ public NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageN
 public NameEnvironmentAnswer findClass(char[] typeName,
 			String qualifiedPackageName, String qualifiedBinaryFileName,
 			boolean asBinaryOnly) {
-	if (!isPackage(qualifiedPackageName)) 
+	if (!isPackage(qualifiedPackageName))
 		return null; // most common case
 	throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 
@@ -138,7 +132,7 @@ public boolean isPackage(String qualifiedPackageName) {
 		return packageName.equals(qualifiedPackageName);
 }
 public void reset() {
- 
+
 	this.packageCache = null;
 }
 public String toString() {

@@ -15,15 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.commands.operations.IUndoContext;
-
-import org.eclipse.core.runtime.PerformanceStats;
-
 import org.eclipse.core.resources.ResourcesPlugin;
-
-import org.eclipse.swt.events.MenuAdapter;
-import org.eclipse.swt.events.MenuEvent;
-import org.eclipse.swt.widgets.Menu;
-
+import org.eclipse.core.runtime.PerformanceStats;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
@@ -31,13 +24,14 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.commands.ActionHandler;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
-
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.ITextSelection;
-
+import org.eclipse.swt.events.MenuAdapter;
+import org.eclipse.swt.events.MenuEvent;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IViewPart;
@@ -48,11 +42,7 @@ import org.eclipse.ui.handlers.IHandlerActivation;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.operations.UndoRedoActionGroup;
 import org.eclipse.ui.part.Page;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
-
-import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.IUIConstants;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
@@ -64,6 +54,7 @@ import org.eclipse.wst.jsdt.internal.ui.javaeditor.IClassFileEditorInput;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaTextSelection;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
+import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 
 /**
  * Action group that adds refactor actions (for example 'Rename', 'Move')

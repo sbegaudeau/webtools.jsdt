@@ -17,21 +17,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
-
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
-
 import org.eclipse.wst.jsdt.core.JavaCore;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.preferences.PreferencesAccess;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.CustomProfile;
-
+import org.eclipse.wst.jsdt.ui.JavaUI;
 import org.osgi.service.prefs.BackingStoreException;
 import org.xml.sax.InputSource;
 

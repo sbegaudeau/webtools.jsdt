@@ -15,7 +15,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.text.Region;
-
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
@@ -47,7 +46,6 @@ import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.TagElement;
 import org.eclipse.wst.jsdt.core.dom.ThisExpression;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor;
 import org.eclipse.wst.jsdt.internal.corext.dom.ScopeAnalyzer;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;

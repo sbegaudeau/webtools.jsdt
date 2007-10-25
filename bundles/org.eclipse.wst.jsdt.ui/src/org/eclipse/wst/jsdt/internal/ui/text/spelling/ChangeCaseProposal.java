@@ -13,9 +13,8 @@ package org.eclipse.wst.jsdt.internal.ui.text.spelling;
 
 import java.util.Locale;
 
-import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
+import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
 
 /**
  * Proposal to change the letter case of a word.

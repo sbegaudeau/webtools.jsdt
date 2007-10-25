@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.compiler.lookup;
 public class ProblemReferenceBinding extends ReferenceBinding {
 	private ReferenceBinding closestMatch;
 	private int problemReason;
-	
+
 // NOTE: must only answer the subset of the name related to the problem
 
 public ProblemReferenceBinding(char[][] compoundName, ReferenceBinding closestMatch, int problemReason) {

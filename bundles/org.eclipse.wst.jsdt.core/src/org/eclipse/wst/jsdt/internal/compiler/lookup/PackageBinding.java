@@ -16,7 +16,7 @@ import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfPackage;
 
 public class PackageBinding extends Binding implements TypeConstants {
 	public long tagBits = 0; // See values in the interface TagBits below
-	
+
 	public char[][] compoundName;
 	PackageBinding parent;
 	public LookupEnvironment environment;
@@ -24,8 +24,8 @@ public class PackageBinding extends Binding implements TypeConstants {
 	HashtableOfBinding[] knownBindings=new HashtableOfBinding[NUMBER_BASIC_BINDING];
 	HashtableOfPackage knownPackages;
 
-	
-	 
+
+
 protected PackageBinding() {
 	// for creating problem package
 }
@@ -229,7 +229,7 @@ public Binding getTypeOrPackage(char[] name, int mask) {
 //	}
 	if (typeBinding!=null)
 		return typeBinding;
-	
+
 	PackageBinding packageBinding = getPackage0(name);
 	if (packageBinding != null && packageBinding != LookupEnvironment.TheNotFoundPackage)
 		return packageBinding;

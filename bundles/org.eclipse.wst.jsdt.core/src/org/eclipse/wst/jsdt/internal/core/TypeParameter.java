@@ -13,8 +13,9 @@ package org.eclipse.wst.jsdt.internal.core;
 import java.util.HashMap;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IMember;
+import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -22,9 +23,9 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 public class TypeParameter extends SourceRefElement implements ITypeParameter {
 
 	static final ITypeParameter[] NO_TYPE_PARAMETERS = new ITypeParameter[0];
-	
+
 	protected String name;
-	
+
 	public TypeParameter(JavaElement parent, String name) {
 		super(parent);
 		this.name = name;
@@ -43,8 +44,8 @@ public class TypeParameter extends SourceRefElement implements ITypeParameter {
 		if (JavaModelManager.getJavaModelManager().getInfo(openableParent) == null) {
 			openableParent.generateInfos(openableParent.createElementInfo(), newElements, pm);
 		}
-	}	
-	
+	}
+
 	public String[] getBounds() throws JavaModelException {
 		TypeParameterElementInfo info = (TypeParameterElementInfo) getElementInfo();
 		return CharOperation.toStrings(info.bounds);
@@ -65,7 +66,7 @@ public class TypeParameter extends SourceRefElement implements ITypeParameter {
 	protected char getHandleMementoDelimiter() {
 		return JavaElement.JEM_TYPE_PARAMETER;
 	}
-	
+
 	public ISourceRange getNameRange() throws JavaModelException {
 		SourceMapper mapper= getSourceMapper();
 		if (mapper != null) {

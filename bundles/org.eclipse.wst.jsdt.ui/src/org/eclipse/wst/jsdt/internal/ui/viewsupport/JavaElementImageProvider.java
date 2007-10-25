@@ -11,22 +11,16 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.viewsupport;
 
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IPath;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-
-import org.eclipse.jface.resource.ImageDescriptor;
-
 import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.model.IWorkbenchAdapter;
-
 import org.eclipse.ui.ide.IDE;
-
+import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -37,14 +31,11 @@ import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-
-import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.JavaWorkbenchAdapter;
+import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
 
 /**
  * Default strategy of the Java plugin for the construction of Java element icons.

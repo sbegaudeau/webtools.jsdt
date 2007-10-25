@@ -12,9 +12,10 @@ package org.eclipse.wst.jsdt.internal.core.jdom;
 
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.jdom.*;
-import org.eclipse.wst.jsdt.internal.core.util.Messages;
+import org.eclipse.wst.jsdt.core.jdom.IDOMInitializer;
+import org.eclipse.wst.jsdt.core.jdom.IDOMNode;
 import org.eclipse.wst.jsdt.internal.core.util.CharArrayBuffer;
+import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 /**
  * DOMInitializer provides an implementation of IDOMInitializer.
@@ -22,7 +23,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  * @see IDOMInitializer
  * @see DOMNode
  * @deprecated The JDOM was made obsolete by the addition in 2.0 of the more
- * powerful, fine-grained DOM/AST API found in the 
+ * powerful, fine-grained DOM/AST API found in the
  * org.eclipse.wst.jsdt.core.dom package.
  */
 class DOMInitializer extends DOMMember implements IDOMInitializer {
@@ -97,7 +98,7 @@ DOMInitializer(char[] document, int[] sourceRange, int[] commentRange, int flags
 DOMInitializer(char[] document, int[] sourceRange, int flags) {
 	this(document, sourceRange, new int[] {-1, -1}, flags, new int[] {-1, -1}, -1);
 	setMask(MASK_DETAILED_SOURCE_INDEXES, false);
-	
+
 }
 /**
  * @see DOMMember#appendMemberBodyContents(CharArrayBuffer)
@@ -164,7 +165,7 @@ public IJavaElement getJavaElement(IJavaElement parent) throws IllegalArgumentEx
 		}
 		return ((IType) parent).getInitializer(count);
 	} else {
-		throw new IllegalArgumentException(Messages.element_illegalParent); 
+		throw new IllegalArgumentException(Messages.element_illegalParent);
 	}
 }
 /**

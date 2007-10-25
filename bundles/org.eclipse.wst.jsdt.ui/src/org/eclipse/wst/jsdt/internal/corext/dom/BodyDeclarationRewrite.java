@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.corext.dom;
 import java.util.List;
 
 import org.eclipse.text.edits.TextEditGroup;
-
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;

@@ -20,12 +20,10 @@ import org.eclipse.jface.text.templates.TemplateContextType;
 import org.eclipse.jface.text.templates.TemplateException;
 import org.eclipse.jface.text.templates.TemplateVariable;
 import org.eclipse.jface.text.templates.TemplateVariableResolver;
-
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.dom.TokenScanner;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;

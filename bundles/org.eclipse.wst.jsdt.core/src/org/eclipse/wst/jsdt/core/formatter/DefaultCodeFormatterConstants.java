@@ -50,7 +50,7 @@ public class DefaultCodeFormatterConstants {
 	 * @since 3.0
 	 */
 	public static final String FALSE = "false"; //$NON-NLS-1$
-	
+
 	/**
 	 * <pre>
 	 * FORMATTER / Option to align type members of a type declaration on column
@@ -63,7 +63,7 @@ public class DefaultCodeFormatterConstants {
 	 * @since 3.0
 	 */
 	public static final String FORMATTER_ALIGN_TYPE_MEMBERS_ON_COLUMNS = JavaCore.PLUGIN_ID + ".formatter.align_type_members_on_columns";	 //$NON-NLS-1$
-	
+
 	/**
 	 * <pre>
 	 * FORMATTER / Option for alignment of arguments in allocation expression
@@ -195,7 +195,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #createAlignmentValue(boolean, int, int)
 	 * @since 3.0
 	 */
-	public static final String FORMATTER_ALIGNMENT_FOR_MULTIPLE_FIELDS = JavaCore.PLUGIN_ID + ".formatter.alignment_for_multiple_fields";//$NON-NLS-1$	
+	public static final String FORMATTER_ALIGNMENT_FOR_MULTIPLE_FIELDS = JavaCore.PLUGIN_ID + ".formatter.alignment_for_multiple_fields";//$NON-NLS-1$
 	/**
 	 * <pre>
 	 * FORMATTER / Option for alignment of parameters in constructor declaration
@@ -589,9 +589,9 @@ public class DefaultCodeFormatterConstants {
 	 * @see #FALSE
 	 * @since 3.1
 	 * @deprecated Use {@link #FORMATTER_COMMENT_CLEAR_BLANK_LINES_IN_BLOCK_COMMENT} and {@link #FORMATTER_COMMENT_CLEAR_BLANK_LINES_IN_JAVADOC_COMMENT}
-	 */	
+	 */
 	public final static String FORMATTER_COMMENT_CLEAR_BLANK_LINES = "org.eclipse.wst.jsdt.core.formatter.comment.clear_blank_lines"; //$NON-NLS-1$
-	
+
 	/**
 	 * <pre>
 	 * FORMATTER / Option to control whether blank lines are cleared inside javadoc comments
@@ -602,7 +602,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #TRUE
 	 * @see #FALSE
 	 * @since 3.3
-	 */	
+	 */
 	public final static String FORMATTER_COMMENT_CLEAR_BLANK_LINES_IN_JAVADOC_COMMENT = "org.eclipse.wst.jsdt.core.formatter.comment.clear_blank_lines_in_javadoc_comment"; //$NON-NLS-1$
 
 	/**
@@ -615,7 +615,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #TRUE
 	 * @see #FALSE
 	 * @since 3.3
-	 */	
+	 */
 	public final static String FORMATTER_COMMENT_CLEAR_BLANK_LINES_IN_BLOCK_COMMENT = "org.eclipse.wst.jsdt.core.formatter.comment.clear_blank_lines_in_block_comment"; //$NON-NLS-1$
 
 	/**
@@ -630,7 +630,7 @@ public class DefaultCodeFormatterConstants {
 	 * @since 3.1
 	 * @deprecated Use multiple settings for each kind of comments. See {@link #FORMATTER_COMMENT_FORMAT_BLOCK_COMMENT},
 	 * {@link #FORMATTER_COMMENT_FORMAT_JAVADOC_COMMENT} and {@link #FORMATTER_COMMENT_FORMAT_LINE_COMMENT}.
-	 */	
+	 */
 	public final static String FORMATTER_COMMENT_FORMAT = "org.eclipse.wst.jsdt.core.formatter.comment.format_comments"; //$NON-NLS-1$
 
 	/**
@@ -643,7 +643,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #TRUE
 	 * @see #FALSE
 	 * @since 3.3
-	 */	
+	 */
 	public final static String FORMATTER_COMMENT_FORMAT_LINE_COMMENT = "org.eclipse.wst.jsdt.core.formatter.comment.format_line_comments"; //$NON-NLS-1$
 
 	/**
@@ -656,7 +656,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #TRUE
 	 * @see #FALSE
 	 * @since 3.3
-	 */	
+	 */
 	public final static String FORMATTER_COMMENT_FORMAT_BLOCK_COMMENT = "org.eclipse.wst.jsdt.core.formatter.comment.format_block_comments"; //$NON-NLS-1$
 
 	/**
@@ -669,7 +669,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #TRUE
 	 * @see #FALSE
 	 * @since 3.3
-	 */	
+	 */
 	public final static String FORMATTER_COMMENT_FORMAT_JAVADOC_COMMENT = "org.eclipse.wst.jsdt.core.formatter.comment.format_javadoc_comments"; //$NON-NLS-1$
 
 	/**
@@ -682,7 +682,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #TRUE
 	 * @see #FALSE
 	 * @since 3.1
-	 */	
+	 */
 	public final static String FORMATTER_COMMENT_FORMAT_HEADER = "org.eclipse.wst.jsdt.core.formatter.comment.format_header"; //$NON-NLS-1$
 
 	/**
@@ -695,7 +695,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #TRUE
 	 * @see #FALSE
 	 * @since 3.1
-	 */	
+	 */
 	public final static String FORMATTER_COMMENT_FORMAT_HTML = "org.eclipse.wst.jsdt.core.formatter.comment.format_html"; //$NON-NLS-1$
 
 	/**
@@ -708,9 +708,9 @@ public class DefaultCodeFormatterConstants {
 	 * @see #TRUE
 	 * @see #FALSE
 	 * @since 3.1
-	 */	
+	 */
 	public final static String FORMATTER_COMMENT_FORMAT_SOURCE = "org.eclipse.wst.jsdt.core.formatter.comment.format_source_code"; //$NON-NLS-1$
-	
+
 	/**
 	 * <pre>
 	 * FORMATTER / Option to control whether description of Javadoc parameters are indented
@@ -721,7 +721,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #TRUE
 	 * @see #FALSE
 	 * @since 3.1
-	 */	
+	 */
 	public final static String FORMATTER_COMMENT_INDENT_PARAMETER_DESCRIPTION = "org.eclipse.wst.jsdt.core.formatter.comment.indent_parameter_description"; //$NON-NLS-1$
 
 	/**
@@ -734,7 +734,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #TRUE
 	 * @see #FALSE
 	 * @since 3.1
-	 */	
+	 */
 	public final static String FORMATTER_COMMENT_INDENT_ROOT_TAGS = "org.eclipse.wst.jsdt.core.formatter.comment.indent_root_tags"; //$NON-NLS-1$
 
 	/**
@@ -747,7 +747,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see JavaCore#INSERT
 	 * @see JavaCore#DO_NOT_INSERT
 	 * @since 3.1
-	 */	
+	 */
 	public final static String FORMATTER_COMMENT_INSERT_EMPTY_LINE_BEFORE_ROOT_TAGS = "org.eclipse.wst.jsdt.core.formatter.comment.insert_new_line_before_root_tags"; //$NON-NLS-1$
 
 	/**
@@ -760,7 +760,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see JavaCore#INSERT
 	 * @see JavaCore#DO_NOT_INSERT
 	 * @since 3.1
-	 */	
+	 */
 	public final static String FORMATTER_COMMENT_INSERT_NEW_LINE_FOR_PARAMETER = "org.eclipse.wst.jsdt.core.formatter.comment.insert_new_line_for_parameter"; //$NON-NLS-1$
 
 	/**
@@ -771,7 +771,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - default:           "80"
 	 * </pre>
 	 * @since 3.1
-	 */	
+	 */
 	public final static String FORMATTER_COMMENT_LINE_LENGTH = "org.eclipse.wst.jsdt.core.formatter.comment.line_length"; //$NON-NLS-1$
 
 	/**
@@ -888,7 +888,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see #FALSE
 	 * @since 3.2
 	 */
-	public static final String FORMATTER_INDENT_EMPTY_LINES = JavaCore.PLUGIN_ID + ".formatter.indent_empty_lines"; //$NON-NLS-1$	
+	public static final String FORMATTER_INDENT_EMPTY_LINES = JavaCore.PLUGIN_ID + ".formatter.indent_empty_lines"; //$NON-NLS-1$
 	/**
 	 * <pre>
 	 * FORMATTER / Option to indent statements inside a block
@@ -940,7 +940,7 @@ public class DefaultCodeFormatterConstants {
 
 	/**
 	 * <pre>
-	 * FORMATTER / Option to specify the equivalent number of spaces that represents one indentation 
+	 * FORMATTER / Option to specify the equivalent number of spaces that represents one indentation
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.indentation.size"
 	 *     - possible values:   "&lt;n&gt;", where n is zero or a positive integer
 	 *     - default:           "4"
@@ -977,7 +977,7 @@ public class DefaultCodeFormatterConstants {
 	 * @since 3.0
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_AFTER_OPENING_BRACE_IN_ARRAY_INITIALIZER = JavaCore.PLUGIN_ID + ".formatter.insert_new_line_after_opening_brace_in_array_initializer";//$NON-NLS-1$
-	
+
 	/**
 	 * <pre>
 	 * FORMATTER / Option to insert a new line after the opening brace in an object literal initializer
@@ -990,7 +990,7 @@ public class DefaultCodeFormatterConstants {
 	 * @since 3.0
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_AFTER_OPENING_BRACE_IN_OBJLIT_INITIALIZER = JavaCore.PLUGIN_ID + ".formatter.insert_new_line_after_opening_brace_in_objlit_initializer";//$NON-NLS-1$
-	
+
 	/**
 	 * <pre>
 	 * FORMATTER / Option to insert a new line after each comma in an object literal initializer
@@ -1003,7 +1003,7 @@ public class DefaultCodeFormatterConstants {
 	 * @since 3.0
 	 */
 	public static final String FORMATTER_INSERT_NEW_LINE_AFTER_COMMA_IN_OBJLIT_INITIALIZER = JavaCore.PLUGIN_ID + ".formatter.insert_new_line_after_comma_in_objlit_initializer";//$NON-NLS-1$
-	
+
 	/**
 	 * <pre>
 	 * FORMATTER / Option to insert a new line at the end of the current file if missing
@@ -2823,7 +2823,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - possible values:   { INSERT, DO_NOT_INSERT }
 	 *     - default:           INSERT
 	 * </pre>
-	 * 
+	 *
 	 * @see JavaCore#INSERT
 	 * @see JavaCore#DO_NOT_INSERT
 	 * @since 3.2
@@ -2836,7 +2836,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - possible values:   { INSERT, DO_NOT_INSERT }
 	 *     - default:           INSERT
 	 * </pre>
-	 * 
+	 *
 	 * @see JavaCore#INSERT
 	 * @see JavaCore#DO_NOT_INSERT
 	 * @since 3.3
@@ -3119,7 +3119,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see ToolFactory#createCodeFormatter(Map, int)
 	 * @since 3.3
 	 */
-	public static final String FORMATTER_NEVER_INDENT_BLOCK_COMMENTS_ON_FIRST_COLUMN = JavaCore.PLUGIN_ID + ".formatter.never_indent_block_comments_on_first_column"; //$NON-NLS-1$	
+	public static final String FORMATTER_NEVER_INDENT_BLOCK_COMMENTS_ON_FIRST_COLUMN = JavaCore.PLUGIN_ID + ".formatter.never_indent_block_comments_on_first_column"; //$NON-NLS-1$
 	/**
 	 * <pre>
 	 * FORMATTER / Option to indent line comments that start on the first column
@@ -3133,7 +3133,7 @@ public class DefaultCodeFormatterConstants {
 	 * @see ToolFactory#createCodeFormatter(Map, int)
 	 * @since 3.3
 	 */
-	public static final String FORMATTER_NEVER_INDENT_LINE_COMMENTS_ON_FIRST_COLUMN = JavaCore.PLUGIN_ID + ".formatter.never_indent_line_comments_on_first_column"; //$NON-NLS-1$	
+	public static final String FORMATTER_NEVER_INDENT_LINE_COMMENTS_ON_FIRST_COLUMN = JavaCore.PLUGIN_ID + ".formatter.never_indent_line_comments_on_first_column"; //$NON-NLS-1$
 	/**
 	 * <pre>
 	 * FORMATTER / Option to specify the number of empty lines to preserve
@@ -3164,7 +3164,7 @@ public class DefaultCodeFormatterConstants {
 	 *     - default:           TAB
 	 * </pre>
 	 * More values may be added in the future.
-	 * 
+	 *
 	 * @see JavaCore#TAB
 	 * @see JavaCore#SPACE
 	 * @see #MIXED
@@ -3173,7 +3173,7 @@ public class DefaultCodeFormatterConstants {
 	public static final String FORMATTER_TAB_CHAR = JavaCore.PLUGIN_ID + ".formatter.tabulation.char"; //$NON-NLS-1$
 	/**
 	 * <pre>
-	 * FORMATTER / Option to specify the equivalent number of spaces that represents one tabulation 
+	 * FORMATTER / Option to specify the equivalent number of spaces that represents one tabulation
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.tabulation.size"
 	 *     - possible values:   "&lt;n&gt;", where n is zero or a positive integer
 	 *     - default:           "4"
@@ -3184,7 +3184,7 @@ public class DefaultCodeFormatterConstants {
 
 	/**
 	 * <pre>
-	 * FORMATTER / Option to use tabulations only for leading indentations 
+	 * FORMATTER / Option to use tabulations only for leading indentations
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.use_tabs_only_for_leading_indentations"
 	 *     - possible values:   { TRUE, FALSE }
 	 *     - default:           FALSE
@@ -3214,7 +3214,7 @@ public class DefaultCodeFormatterConstants {
 	 * @since 3.0
 	 */
 	public static final int INDENT_BY_ONE= 2;
-	
+
 	/**
 	 * <pre>
 	 * FORMATTER / The wrapping is done by using the current indentation.
@@ -3229,7 +3229,7 @@ public class DefaultCodeFormatterConstants {
 	 * @since 3.0
 	 */
 	public static final int INDENT_ON_COLUMN = 1;
-	
+
 	/**
 	 * <pre>
 	 * FORMATTER / Possible value for the option FORMATTER_TAB_CHAR
@@ -3349,15 +3349,15 @@ public class DefaultCodeFormatterConstants {
 	/**
 	 * Create a new alignment value according to the given values. This must be used to set up
 	 * the alignment options.
-	 * 
+	 *
 	 * @param forceSplit the given force value
 	 * @param wrapStyle the given wrapping style
 	 * @param indentStyle the given indent style
-	 * 
+	 *
 	 * @return the new alignement value
 	 */
 	public static String createAlignmentValue(boolean forceSplit, int wrapStyle, int indentStyle) {
-		int alignmentValue = 0; 
+		int alignmentValue = 0;
 		switch(wrapStyle) {
 			case WRAP_COMPACT :
 				alignmentValue |= Alignment.M_COMPACT_SPLIT;
@@ -3374,7 +3374,7 @@ public class DefaultCodeFormatterConstants {
 			case WRAP_ONE_PER_LINE :
 				alignmentValue |= Alignment.M_ONE_PER_LINE_SPLIT;
 				break;
-		}		
+		}
 		if (forceSplit) {
 			alignmentValue |= Alignment.M_FORCE;
 		}
@@ -3391,7 +3391,7 @@ public class DefaultCodeFormatterConstants {
 	/**
 	 * Returns the formatter settings that most closely approximate
 	 * the default formatter settings of Eclipse version 2.1.
-	 * 
+	 *
 	 * @return the Eclipse 2.1 settings
 	 * @since 3.0
 	 */
@@ -3401,7 +3401,7 @@ public class DefaultCodeFormatterConstants {
 
 	/**
 	 * Returns the default Eclipse formatter settings
-	 * 
+	 *
 	 * @return the Eclipse default settings
 	 * @since 3.1
 	 */
@@ -3418,7 +3418,7 @@ public class DefaultCodeFormatterConstants {
 	 * @param value the given alignment value
 	 * @return the force value of the given alignment value
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @exception IllegalArgumentException if the given alignment value is null, or if it 
+	 * @exception IllegalArgumentException if the given alignment value is null, or if it
 	 * doesn't have a valid format.
 	 */
 	public static boolean getForceWrapping(String value) {
@@ -3432,7 +3432,7 @@ public class DefaultCodeFormatterConstants {
 			throw WRONG_ARGUMENT;
 		}
 	}
-	
+
 	/**
 	 * <p>Return the indentation style of the given alignment value.
 	 * The given alignment value should be created using the <code>createAlignmentValue(boolean, int, int)</code>
@@ -3442,7 +3442,7 @@ public class DefaultCodeFormatterConstants {
 	 * @param value the given alignment value
 	 * @return the indentation style of the given alignment value
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @exception IllegalArgumentException if the given alignment value is null, or if it 
+	 * @exception IllegalArgumentException if the given alignment value is null, or if it
 	 * doesn't have a valid format.
 	 */
 	public static int getIndentStyle(String value) {
@@ -3465,7 +3465,7 @@ public class DefaultCodeFormatterConstants {
 
 	/**
 	 * Returns the settings according to the Java conventions.
-	 * 
+	 *
 	 * @return the settings according to the Java conventions
 	 * @since 3.0
 	 */
@@ -3481,7 +3481,7 @@ public class DefaultCodeFormatterConstants {
 	 * @param value the given alignment value
 	 * @return the wrapping style of the given alignment value
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @exception IllegalArgumentException if the given alignment value is null, or if it 
+	 * @exception IllegalArgumentException if the given alignment value is null, or if it
 	 * doesn't have a valid format.
 	 */
 	public static int getWrappingStyle(String value) {
@@ -3518,7 +3518,7 @@ public class DefaultCodeFormatterConstants {
 	 * @param force the given force value
 	 * @return the new alignment value
 	 * @see #createAlignmentValue(boolean, int, int)
-	 * @exception IllegalArgumentException if the given alignment value is null, or if it 
+	 * @exception IllegalArgumentException if the given alignment value is null, or if it
 	 * doesn't have a valid format.
 	 */
 	public static String setForceWrapping(String value, boolean force) {
@@ -3535,9 +3535,9 @@ public class DefaultCodeFormatterConstants {
 			return String.valueOf(existingValue);
 		} catch (NumberFormatException e) {
 			throw WRONG_ARGUMENT;
-		}		
+		}
 	}
-	
+
 	/**
 	 * <p>Set the indentation style of the given alignment value and return the new value.
 	 * The given value should be created using the <code>createAlignmentValue(boolean, int, int)</code>

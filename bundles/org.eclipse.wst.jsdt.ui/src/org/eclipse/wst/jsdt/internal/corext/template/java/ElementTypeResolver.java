@@ -15,9 +15,7 @@ import java.util.List;
 import org.eclipse.jface.text.templates.TemplateContext;
 import org.eclipse.jface.text.templates.TemplateVariable;
 import org.eclipse.jface.text.templates.TemplateVariableResolver;
-
 import org.eclipse.wst.jsdt.internal.corext.template.java.CompilationUnitCompletion.Variable;
-
 import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.MultiVariable;
 
 

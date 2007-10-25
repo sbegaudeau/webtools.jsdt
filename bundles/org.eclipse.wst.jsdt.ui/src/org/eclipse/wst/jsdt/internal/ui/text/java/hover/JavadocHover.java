@@ -13,13 +13,9 @@ package org.eclipse.wst.jsdt.internal.ui.text.java.hover;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.internal.text.html.BrowserInformationControl;
 import org.eclipse.jface.internal.text.html.HTMLPrinter;
 import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
-
 import org.eclipse.jface.text.AbstractReusableInformationControlCreator;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;
@@ -27,21 +23,18 @@ import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IInformationControlExtension4;
 import org.eclipse.jface.text.ITextHoverExtension;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.javadoc.JavaDocLocations;
-
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 import org.eclipse.wst.jsdt.ui.JavadocContentAccess;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 /**
  * Provides Javadoc as hover info for Java elements.

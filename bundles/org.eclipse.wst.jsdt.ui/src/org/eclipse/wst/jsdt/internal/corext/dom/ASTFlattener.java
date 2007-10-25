@@ -14,7 +14,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.wst.jsdt.core.dom.*;
 
 

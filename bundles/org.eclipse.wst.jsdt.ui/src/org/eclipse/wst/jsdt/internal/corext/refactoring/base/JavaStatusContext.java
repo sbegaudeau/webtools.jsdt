@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.refactoring.base;
 
+import org.eclipse.ltk.core.refactoring.RefactoringStatusContext;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
@@ -20,10 +21,8 @@ import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
-
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
 import org.eclipse.wst.jsdt.internal.corext.dom.Selection;
-import org.eclipse.ltk.core.refactoring.RefactoringStatusContext;
 
 /**
  * A Java element context that can be used to annotate a </code>RefactoringStatusEntry<code> 

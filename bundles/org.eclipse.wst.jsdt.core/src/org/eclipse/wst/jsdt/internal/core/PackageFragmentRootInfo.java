@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.IClasspathEntry;
+import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 /**
@@ -48,9 +51,9 @@ public PackageFragmentRootInfo() {
 	this.fNonJavaResources = null;
 }
 /**
- * Starting at this folder, create non-java resources for this package fragment root 
+ * Starting at this folder, create non-java resources for this package fragment root
  * and add them to the non-java resources collection.
- * 
+ *
  * @exception JavaModelException  The resource associated with this package fragment does not exist
  */
 static Object[] computeFolderNonJavaResources(JavaProject project, IContainer folder, char[][] inclusionPatterns, char[][] exclusionPatterns) throws JavaModelException {
@@ -68,22 +71,22 @@ static Object[] computeFolderNonJavaResources(JavaProject project, IContainer fo
 				switch (member.getType()) {
 					case IResource.FILE :
 						String fileName = member.getName();
-					
+
 						// ignore .js files that are not excluded
-						if (Util.isValidCompilationUnitName(fileName, sourceLevel, complianceLevel) && !Util.isExcluded(member, inclusionPatterns, exclusionPatterns)) 
+						if (Util.isValidCompilationUnitName(fileName, sourceLevel, complianceLevel) && !Util.isExcluded(member, inclusionPatterns, exclusionPatterns))
 							continue nextResource;
 						// ignore .class files
-						if (Util.isValidClassFileName(fileName, sourceLevel, complianceLevel)) 
+						if (Util.isValidClassFileName(fileName, sourceLevel, complianceLevel))
 							continue nextResource;
 						// ignore .zip or .jar file on classpath
-						if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(fileName) && isClasspathEntry(member.getFullPath(), classpath)) 
+						if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(fileName) && isClasspathEntry(member.getFullPath(), classpath))
 							continue nextResource;
 						break;
 
 					case IResource.FOLDER :
 						// ignore valid packages or excluded folders that correspond to a nested pkg fragment root
 						if (Util.isValidFolderNameForPackage(member.getName(), sourceLevel, complianceLevel)
-								&& (!Util.isExcluded(member, inclusionPatterns, exclusionPatterns) 
+								&& (!Util.isExcluded(member, inclusionPatterns, exclusionPatterns)
 										|| isClasspathEntry(member.getFullPath(), classpath)))
 							continue nextResource;
 						break;
@@ -93,7 +96,7 @@ static Object[] computeFolderNonJavaResources(JavaProject project, IContainer fo
 					System.arraycopy(nonJavaResources, 0, (nonJavaResources = new IResource[nonJavaResourcesCounter * 2]), 0, nonJavaResourcesCounter);
 				}
 				nonJavaResources[nonJavaResourcesCounter++] = member;
-			}	
+			}
 		}
 		if (nonJavaResources.length != nonJavaResourcesCounter) {
 			System.arraycopy(nonJavaResources, 0, (nonJavaResources = new IResource[nonJavaResourcesCounter]), 0, nonJavaResourcesCounter);
@@ -112,10 +115,10 @@ private Object[] computeNonJavaResources(IJavaProject project, IResource underly
 		// the underlying resource may be a folder or a project (in the case that the project folder
 		// is actually the package fragment root)
 		if (underlyingResource!=null && (underlyingResource.getType() == IResource.FOLDER || underlyingResource.getType() == IResource.PROJECT)) {
-			nonJavaResources = 
+			nonJavaResources =
 				computeFolderNonJavaResources(
-					(JavaProject)project, 
-					(IContainer) underlyingResource,  
+					(JavaProject)project,
+					(IContainer) underlyingResource,
 					handle.fullInclusionPatternChars(),
 					handle.fullExclusionPatternChars());
 		}

@@ -11,7 +11,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 public class CompletionOnQualifiedType extends
 QualifiedNameReference {
 
-	
+
 	public char[] completionIdentifier;
 public CompletionOnQualifiedType(char[][] previousIdentifiers, char[] completionIdentifier, long[] positions) {
 	super(previousIdentifiers, positions, (int) (positions[0] >>> 32), (int) positions[positions.length - 1]);
@@ -24,7 +24,7 @@ public StringBuffer printExpression(int indent, StringBuffer output) {
 		output.append(tokens[i]);
 		output.append('.');
 	}
-	output.append(completionIdentifier).append('>'); 
+	output.append(completionIdentifier).append('>');
 	return output;
 }
 
@@ -39,14 +39,14 @@ public TypeBinding resolveType(BlockScope scope) {
 		} else {
 			scope.problemReporter().unresolvableReference(this, binding);
 		}
-		
+
 		if (binding.problemId() == ProblemReasons.NotFound) {
 			throw new CompletionNodeFound(this, binding, scope);
 		}
-		
+
 		throw new CompletionNodeFound();
 	}
-	
+
 	throw new CompletionNodeFound(this, binding, scope);
 }
 

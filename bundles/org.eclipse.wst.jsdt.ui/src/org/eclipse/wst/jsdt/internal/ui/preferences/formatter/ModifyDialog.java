@@ -23,7 +23,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.content.IContentType;
-
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.StatusDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -39,16 +42,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.dialogs.StatusDialog;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ModifyDialogTabPage.IModificationListener;
@@ -58,6 +52,7 @@ import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringDialogField;
+import org.eclipse.wst.jsdt.ui.JavaUI;
 
 public abstract class ModifyDialog extends StatusDialog implements IModificationListener {
     

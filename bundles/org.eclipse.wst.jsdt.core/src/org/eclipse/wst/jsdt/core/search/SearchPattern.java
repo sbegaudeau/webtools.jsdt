@@ -10,15 +10,37 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.search;
 
-import org.eclipse.wst.jsdt.core.*;
-import org.eclipse.wst.jsdt.core.compiler.*;
+import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IImportDeclaration;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IMember;
+import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.ITypeParameter;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.Signature;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 import org.eclipse.wst.jsdt.internal.compiler.parser.TerminalTokens;
 import org.eclipse.wst.jsdt.internal.core.LocalVariable;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
-import org.eclipse.wst.jsdt.internal.core.search.matching.*;
+import org.eclipse.wst.jsdt.internal.core.search.matching.ConstructorPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.FieldPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.InternalSearchPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.LocalVariablePattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.MatchLocator;
+import org.eclipse.wst.jsdt.internal.core.search.matching.MethodPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.OrPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.PackageDeclarationPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.PackageReferencePattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.QualifiedTypeDeclarationPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.SuperTypeReferencePattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.TypeDeclarationPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.TypeParameterPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.TypeReferencePattern;
 
 
 /**
@@ -26,15 +48,15 @@ import org.eclipse.wst.jsdt.internal.core.search.matching.*;
  * to create a search pattern.
  * <p>
  * Search patterns are used during the search phase to decode index entries that were added during the indexing phase
- * (see {@link SearchDocument#addIndexEntry(char[], char[])}). When an index is queried, the 
+ * (see {@link SearchDocument#addIndexEntry(char[], char[])}). When an index is queried, the
  * index categories and keys to consider are retrieved from the search pattern using {@link #getIndexCategories()} and
  * {@link #getIndexKey()}, as well as the match rule (see {@link #getMatchRule()}). A blank pattern is
  * then created (see {@link #getBlankPattern()}). This blank pattern is used as a record as follows.
- * For each index entry in the given index categories and that starts with the given key, the blank pattern is fed using 
+ * For each index entry in the given index categories and that starts with the given key, the blank pattern is fed using
  * {@link #decodeIndexKey(char[])}. The original pattern is then asked if it matches the decoded key using
  * {@link #matchesDecodedKey(SearchPattern)}. If it matches, a search doument is created for this index entry
  * using {@link SearchParticipant#getDocument(String)}.
- * 
+ *
  * </p><p>
  * This class is intended to be subclassed by clients. A default behavior is provided for each of the methods above, that
  * clients can ovveride if they wish.
@@ -58,7 +80,7 @@ public abstract class SearchPattern extends InternalSearchPattern {
 	public static final int R_PREFIX_MATCH = 0x0001;
 
 	/**
-	 * Match rule: The search pattern contains one or more wild cards ('*' or '?'). 
+	 * Match rule: The search pattern contains one or more wild cards ('*' or '?').
 	 * A '*' wild-card can replace 0 or more characters in the search result.
 	 * A '?' wild-card replaces exactly 1 character in the search result.
 	 */
@@ -158,13 +180,13 @@ public abstract class SearchPattern extends InternalSearchPattern {
 	 *<br>
 	 * Match rule {@link #R_PATTERN_MATCH} may also be combined but both rules
 	 * will not be used simultaneously as they are mutually exclusive.
-	 * Used match rule depends on whether string pattern contains specific pattern 
+	 * Used match rule depends on whether string pattern contains specific pattern
 	 * characters (e.g. '*' or '?') or not. If it does, then only Pattern match rule
 	 * will be used, otherwise only Camel Case match will be used.
 	 * For example, with <code>"NPE"</code> string pattern, search will only use
-	 * Camel Case match rule, but with <code>N*P*E*</code> string pattern, it will 
+	 * Camel Case match rule, but with <code>N*P*E*</code> string pattern, it will
 	 * use only Pattern match rule.
-	 * 
+	 *
 	 * @since 3.2
 	 */
 	public static final int R_CAMELCASE_MATCH = 0x0080;
@@ -174,14 +196,14 @@ public abstract class SearchPattern extends InternalSearchPattern {
 	private int matchRule;
 
 /**
- * Creates a search pattern with the rule to apply for matching index keys. 
+ * Creates a search pattern with the rule to apply for matching index keys.
  * It can be exact match, prefix match, pattern match or regexp match.
  * Rule can also be combined with a case sensitivity flag.
- * 
+ *
  * @param matchRule one of {@link #R_EXACT_MATCH}, {@link #R_PREFIX_MATCH}, {@link #R_PATTERN_MATCH},
  * 	{@link #R_REGEXP_MATCH}, {@link #R_CAMELCASE_MATCH} combined with one of following values:
  * 	{@link #R_CASE_SENSITIVE}, {@link #R_ERASURE_MATCH} or {@link #R_EQUIVALENT_MATCH}.
- *		e.g. {@link #R_EXACT_MATCH} | {@link #R_CASE_SENSITIVE} if an exact and case sensitive match is requested, 
+ *		e.g. {@link #R_EXACT_MATCH} | {@link #R_CASE_SENSITIVE} if an exact and case sensitive match is requested,
  *		{@link #R_PREFIX_MATCH} if a prefix non case sensitive match is requested or {@link #R_EXACT_MATCH} | {@link #R_ERASURE_MATCH}
  *		if a non case sensitive and erasure match is requested.<br>
  * 	Note that {@link #R_ERASURE_MATCH} or {@link #R_EQUIVALENT_MATCH} have no effect
@@ -197,7 +219,7 @@ public SearchPattern(int matchRule) {
 }
 
 /**
- * Answers true if the pattern matches the given name using CamelCase rules, or false otherwise. 
+ * Answers true if the pattern matches the given name using CamelCase rules, or false otherwise.
  * CamelCase matching does NOT accept explicit wild-cards '*' and '?' and is inherently case sensitive.
  * <br>
  * CamelCase denotes the convention of writing compound names without spaces, and capitalizing every term.
@@ -235,7 +257,7 @@ public SearchPattern(int matchRule) {
  * @see CharOperation#camelCaseMatch(char[], char[])
  * 	Implementation has been entirely copied from this method except for array lengthes
  * 	which were obviously replaced with calls to {@link String#length()}.
- * 
+ *
  * @param pattern the given pattern
  * @param name the given name
  * @return true if the pattern matches the given name, false otherwise
@@ -251,8 +273,8 @@ public static final boolean camelCaseMatch(String pattern, String name) {
 }
 
 /**
- * Answers true if a sub-pattern matches the subpart of the given name using CamelCase rules, or false otherwise.  
- * CamelCase matching does NOT accept explicit wild-cards '*' and '?' and is inherently case sensitive. 
+ * Answers true if a sub-pattern matches the subpart of the given name using CamelCase rules, or false otherwise.
+ * CamelCase matching does NOT accept explicit wild-cards '*' and '?' and is inherently case sensitive.
  * Can match only subset of name/pattern, considering end positions as non-inclusive.
  * The subpattern is defined by the patternStart and patternEnd positions.
  * <br>
@@ -324,7 +346,7 @@ public static final boolean camelCaseMatch(String pattern, String name) {
  * 	Implementation has been entirely copied from this method except for array lengthes
  * 	which were obviously replaced with calls to {@link String#length()} and
  * 	for array direct access which were replaced with calls to {@link String#charAt(int)}.
- * 
+ *
  * @param pattern the given pattern
  * @param patternStart the start index of the pattern, inclusive
  * @param patternEnd the end index of the pattern, exclusive
@@ -366,7 +388,7 @@ public static final boolean camelCaseMatch(String pattern, int patternStart, int
 		}
 
 		if (iName == nameEnd){
-			// We have exhausted name (and not pattern), so it's not a match 
+			// We have exhausted name (and not pattern), so it's not a match
 			return false;
 		}
 
@@ -396,7 +418,7 @@ public static final boolean camelCaseMatch(String pattern, int patternStart, int
 
 			if (nameChar < ScannerHelper.MAX_OBVIOUS) {
 				if ((ScannerHelper.OBVIOUS_IDENT_CHAR_NATURES[nameChar] & (ScannerHelper.C_LOWER_LETTER | ScannerHelper.C_SPECIAL | ScannerHelper.C_DIGIT)) != 0) {
-					// nameChar is lowercase    
+					// nameChar is lowercase
 					iName++;
 				// nameChar is uppercase...
 				} else  if (patternChar != nameChar) {
@@ -408,7 +430,7 @@ public static final boolean camelCaseMatch(String pattern, int patternStart, int
 				}
 			}
 			else if (Character.isJavaIdentifierPart(nameChar) && !Character.isUpperCase(nameChar)) {
-				// nameChar is lowercase    
+				// nameChar is lowercase
 				iName++;
 			// nameChar is uppercase...
 			} else  if (patternChar != nameChar) {
@@ -422,7 +444,7 @@ public static final boolean camelCaseMatch(String pattern, int patternStart, int
 		// At this point, either name has been exhausted, or it is at an uppercase letter.
 		// Since pattern is also at an uppercase letter
 	}
-}	
+}
 
 /**
  * Returns a search pattern that combines the given two patterns into an
@@ -443,13 +465,13 @@ public static SearchPattern createAndPattern(SearchPattern leftPattern, SearchPa
  *		field*
  */
 private static SearchPattern createFieldPattern(String patternString, int limitTo, int matchRule,boolean isVar) {
-	
-	Scanner scanner = new Scanner(false /*comment*/, true /*whitespace*/, false /*nls*/, ClassFileConstants.JDK1_3/*sourceLevel*/, null /*taskTags*/, null/*taskPriorities*/, true/*taskCaseSensitive*/); 
+
+	Scanner scanner = new Scanner(false /*comment*/, true /*whitespace*/, false /*nls*/, ClassFileConstants.JDK1_3/*sourceLevel*/, null /*taskTags*/, null/*taskPriorities*/, true/*taskCaseSensitive*/);
 	scanner.setSource(patternString.toCharArray());
 	final int InsideDeclaringPart = 1;
 	final int InsideType = 2;
 	int lastToken = -1;
-	
+
 	String declaringType = null, fieldName = null;
 	String type = null;
 	int mode = InsideDeclaringPart;
@@ -485,7 +507,7 @@ private static SearchPattern createFieldPattern(String patternString, int limitT
 							fieldName += scanner.getCurrentTokenString();
 				}
 				break;
-			// read type 
+			// read type
 			case InsideType:
 				switch (token) {
 					case TerminalTokens.TokenNameWHITESPACE:
@@ -509,7 +531,7 @@ private static SearchPattern createFieldPattern(String patternString, int limitT
 
 	char[] fieldNameChars = fieldName.toCharArray();
 	if (fieldNameChars.length == 1 && fieldNameChars[0] == '*') fieldNameChars = null;
-		
+
 	char[] declaringTypeQualification = null, declaringTypeSimpleName = null;
 	char[] typeQualification = null, typeSimpleName = null;
 
@@ -603,15 +625,15 @@ private static SearchPattern createFieldPattern(String patternString, int limitT
  * @see #createTypePattern(String,int,int,char)
  */
 private static SearchPattern createMethodOrConstructorPattern(String patternString, int limitTo, int matchRule, boolean isConstructor, boolean isFunction) {
-	
-	Scanner scanner = new Scanner(false /*comment*/, true /*whitespace*/, false /*nls*/, ClassFileConstants.JDK1_3/*sourceLevel*/, null /*taskTags*/, null/*taskPriorities*/, true/*taskCaseSensitive*/); 
+
+	Scanner scanner = new Scanner(false /*comment*/, true /*whitespace*/, false /*nls*/, ClassFileConstants.JDK1_3/*sourceLevel*/, null /*taskTags*/, null/*taskPriorities*/, true/*taskCaseSensitive*/);
 	scanner.setSource(patternString.toCharArray());
 	final int InsideSelector = 1;
 	final int InsideTypeArguments = 2;
 	final int InsideParameter = 3;
 	final int InsideReturnType = 4;
 	int lastToken = -1;
-	
+
 	String declaringType = null, selector = null, parameterType = null;
 	String[] parameterTypes = null;
 	char[][] typeArguments = null;
@@ -830,7 +852,7 @@ private static SearchPattern createMethodOrConstructorPattern(String patternStri
 		if (selectorChars.length == 1 && selectorChars[0] == '*')
 			selectorChars = null;
 	}
-		
+
 	char[] declaringTypeQualification = null, declaringTypeSimpleName = null;
 	char[] returnTypeQualification = null, returnTypeSimpleName = null;
 	char[][] parameterTypeQualifications = null, parameterTypeSimpleNames = null;
@@ -906,7 +928,7 @@ private static SearchPattern createMethodOrConstructorPattern(String patternStri
 			if (parameterTypeSimpleNames[i].length == 1 && parameterTypeSimpleNames[i][0] == '*')
 				parameterTypeSimpleNames[i] = null;
 		}
-	}	
+	}
 	// extract return type infos
 	if (returnType != null) {
 		// get return type part and signature
@@ -931,7 +953,7 @@ private static SearchPattern createMethodOrConstructorPattern(String patternStri
 			} else {
 				// because of an import
 				returnTypeQualification = CharOperation.concat(IIndexConstants.ONE_STAR, returnTypeQualification);
-			}			
+			}
 			returnTypeSimpleName = CharOperation.subarray(returnTypePart, lastDotPosition+1, returnTypePart.length);
 		} else {
 			returnTypeSimpleName = returnTypePart;
@@ -956,10 +978,10 @@ private static SearchPattern createMethodOrConstructorPattern(String patternStri
 		return new ConstructorPattern(
 				findDeclarations,
 				findReferences,
-				declaringTypeSimpleName, 
+				declaringTypeSimpleName,
 				declaringTypeQualification,
 				declaringTypeSignature,
-				parameterTypeQualifications, 
+				parameterTypeQualifications,
 				parameterTypeSimpleNames,
 				parameterTypeSignatures,
 				typeArguments,
@@ -1063,7 +1085,7 @@ private static SearchPattern createPackagePattern(String patternString, int limi
  * @param matchRule one of {@link #R_EXACT_MATCH}, {@link #R_PREFIX_MATCH}, {@link #R_PATTERN_MATCH},
  * 	{@link #R_REGEXP_MATCH}, {@link #R_CAMELCASE_MATCH} combined with one of following values:
  * 	{@link #R_CASE_SENSITIVE}, {@link #R_ERASURE_MATCH} or {@link #R_EQUIVALENT_MATCH}.
- *		e.g. {@link #R_EXACT_MATCH} | {@link #R_CASE_SENSITIVE} if an exact and case sensitive match is requested, 
+ *		e.g. {@link #R_EXACT_MATCH} | {@link #R_CASE_SENSITIVE} if an exact and case sensitive match is requested,
  *		{@link #R_PREFIX_MATCH} if a prefix non case sensitive match is requested or {@link #R_EXACT_MATCH} | {@link #R_ERASURE_MATCH}
  *		if a non case sensitive and erasure match is requested.<br>
  * 	Note that {@link #R_ERASURE_MATCH} or {@link #R_EQUIVALENT_MATCH} have no effect
@@ -1115,7 +1137,7 @@ public static SearchPattern createPattern(String stringPattern, int searchFor, i
 }
 
 /**
- * Returns a search pattern based on a given Java element. 
+ * Returns a search pattern based on a given Java element.
  * The pattern is used to trigger the appropriate search.
  * <br>
  * Note that for generic searches, the returned pattern consider {@link #R_ERASURE_MATCH} matches.
@@ -1169,7 +1191,7 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo) {
 }
 
 /**
- * Returns a search pattern based on a given Java element. 
+ * Returns a search pattern based on a given Java element.
  * The pattern is used to trigger the appropriate search, and can be parameterized as follows:
  *
  * @param element the Java element the search pattern is based on
@@ -1212,7 +1234,7 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo) {
  * @param matchRule one of {@link #R_EXACT_MATCH}, {@link #R_PREFIX_MATCH}, {@link #R_PATTERN_MATCH},
  * 	{@link #R_REGEXP_MATCH}, {@link #R_CAMELCASE_MATCH} combined with one of following values:
  * 	{@link #R_CASE_SENSITIVE}, {@link #R_ERASURE_MATCH} or {@link #R_EQUIVALENT_MATCH}.
- *		e.g. {@link #R_EXACT_MATCH} | {@link #R_CASE_SENSITIVE} if an exact and case sensitive match is requested, 
+ *		e.g. {@link #R_EXACT_MATCH} | {@link #R_CASE_SENSITIVE} if an exact and case sensitive match is requested,
  *		{@link #R_PREFIX_MATCH} if a prefix non case sensitive match is requested or {@link #R_EXACT_MATCH} |{@link #R_ERASURE_MATCH}
  *		if a non case sensitive and erasure match is requested.<br>
  * 	Note that {@link #R_ERASURE_MATCH} or {@link #R_EQUIVALENT_MATCH} have no effect on non-generic types
@@ -1237,7 +1259,7 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 	boolean isFunction=false;
 	switch (element.getElementType()) {
 		case IJavaElement.FIELD :
-			IField field = (IField) element; 
+			IField field = (IField) element;
 			IType declaringClassForField = field.getDeclaringType();
 			isVar=(declaringClassForField==null);
 			if (!ignoreDeclaringType) {
@@ -1300,16 +1322,16 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 					writeAccess = true;
 					break;
 			}
-			searchPattern = 
+			searchPattern =
 				new FieldPattern(
 					findDeclarations,
 					readAccess,
 					writeAccess,
 					isVar,
-					name, 
-					declaringQualification, 
-					declaringSimpleName, 
-					typeQualification, 
+					name,
+					declaringQualification,
+					declaringSimpleName,
+					typeQualification,
 					typeSimpleName,
 					typeSignature,
 					matchRule,field);
@@ -1322,7 +1344,7 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 			if (importDecl.isOnDemand()) {
 				searchPattern = createPackagePattern(elementName.substring(0, lastDot), maskedLimitTo, matchRule);
 			} else {
-				searchPattern = 
+				searchPattern =
 					createTypePattern(
 						elementName.substring(lastDot+1).toCharArray(),
 						elementName.substring(0, lastDot).toCharArray(),
@@ -1358,7 +1380,7 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 					findVarWriteAccess = true;
 					break;
 			}
-			searchPattern = 
+			searchPattern =
 				new LocalVariablePattern(
 					findVarDeclarations,
 					findVarReadAccess,
@@ -1378,7 +1400,7 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 					findParamDeclarations = false;
 					break;
 			}
-			searchPattern = 
+			searchPattern =
 				new TypeParameterPattern(
 					findParamDeclarations,
 					findParamReferences,
@@ -1394,7 +1416,7 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 				return null;
 			}
 			IType declaringClass = method.getDeclaringType();
-			
+
 			if (declaringClass!=null) {
 				if (ignoreDeclaringType) {
 					if (isConstructor)
@@ -1414,7 +1436,7 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 					}
 				}
 			}
-			else 
+			else
 				isFunction=true;
 			char[] selector = method.getElementName().toCharArray();
 			char[] returnSimpleName = null;
@@ -1481,9 +1503,9 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 					new ConstructorPattern(
 						findMethodDeclarations,
 						findMethodReferences,
-						declaringSimpleName, 
-						declaringQualification, 
-						parameterQualifications, 
+						declaringSimpleName,
+						declaringQualification,
+						parameterQualifications,
 						parameterSimpleNames,
 						parameterSignatures,
 						method,
@@ -1494,13 +1516,13 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 						findMethodDeclarations,
 						findMethodReferences,
 						isFunction,
-						selector, 
-						declaringQualification, 
-						declaringSimpleName, 
-						returnQualification, 
-						returnSimpleName, 
+						selector,
+						declaringQualification,
+						declaringSimpleName,
+						returnQualification,
+						returnSimpleName,
 						returnSignature,
-						parameterQualifications, 
+						parameterQualifications,
 						parameterSimpleNames,
 						parameterSignatures,
 						method,
@@ -1510,7 +1532,7 @@ public static SearchPattern createPattern(IJavaElement element, int limitTo, int
 		case IJavaElement.TYPE :
 			IType type = (IType)element;
 			searchPattern = 	createTypePattern(
-						type.getElementName().toCharArray(), 
+						type.getElementName().toCharArray(),
 						type.getPackageFragment().getElementName().toCharArray(),
 						ignoreDeclaringType ? null : enclosingTypeNames(type),
 						null,
@@ -1532,46 +1554,46 @@ private static SearchPattern createTypePattern(char[] simpleName, char[] package
 	switch (limitTo) {
 		case IJavaSearchConstants.DECLARATIONS :
 			return new TypeDeclarationPattern(
-				packageName, 
-				enclosingTypeNames, 
-				simpleName, 
+				packageName,
+				enclosingTypeNames,
+				simpleName,
 				IIndexConstants.TYPE_SUFFIX,
 				matchRule);
 		case IJavaSearchConstants.REFERENCES :
 			if (type != null) {
 				return new TypeReferencePattern(
-					CharOperation.concatWith(packageName, enclosingTypeNames, '.'), 
+					CharOperation.concatWith(packageName, enclosingTypeNames, '.'),
 					simpleName,
 					type,
 					matchRule);
 			}
 			return new TypeReferencePattern(
-				CharOperation.concatWith(packageName, enclosingTypeNames, '.'), 
+				CharOperation.concatWith(packageName, enclosingTypeNames, '.'),
 				simpleName,
 				typeSignature,
 				matchRule);
-		case IJavaSearchConstants.IMPLEMENTORS : 
+		case IJavaSearchConstants.IMPLEMENTORS :
 			return new SuperTypeReferencePattern(
-				CharOperation.concatWith(packageName, enclosingTypeNames, '.'), 
+				CharOperation.concatWith(packageName, enclosingTypeNames, '.'),
 				simpleName,
 				SuperTypeReferencePattern.ONLY_SUPER_INTERFACES,
 				matchRule);
 		case IJavaSearchConstants.ALL_OCCURRENCES :
 			return new OrPattern(
 				new TypeDeclarationPattern(
-					packageName, 
-					enclosingTypeNames, 
-					simpleName, 
+					packageName,
+					enclosingTypeNames,
+					simpleName,
 					IIndexConstants.TYPE_SUFFIX,
-					matchRule), 
+					matchRule),
 				(type != null)
 					? new TypeReferencePattern(
-						CharOperation.concatWith(packageName, enclosingTypeNames, '.'), 
+						CharOperation.concatWith(packageName, enclosingTypeNames, '.'),
 						simpleName,
 						type,
 						matchRule)
 					: new TypeReferencePattern(
-						CharOperation.concatWith(packageName, enclosingTypeNames, '.'), 
+						CharOperation.concatWith(packageName, enclosingTypeNames, '.'),
 						simpleName,
 						typeSignature,
 						matchRule)
@@ -1593,8 +1615,8 @@ private static SearchPattern createTypePattern(char[] simpleName, char[] package
  * 		- '?' is treated as a wildcard when it is inside &lt;&gt; (ie. it must be put on first position of the type argument)
  */
 private static SearchPattern createTypePattern(String patternString, int limitTo, int matchRule, char indexSuffix) {
-	
-	Scanner scanner = new Scanner(false /*comment*/, true /*whitespace*/, false /*nls*/, ClassFileConstants.JDK1_3/*sourceLevel*/, null /*taskTags*/, null/*taskPriorities*/, true/*taskCaseSensitive*/); 
+
+	Scanner scanner = new Scanner(false /*comment*/, true /*whitespace*/, false /*nls*/, ClassFileConstants.JDK1_3/*sourceLevel*/, null /*taskTags*/, null/*taskPriorities*/, true/*taskCaseSensitive*/);
 	scanner.setSource(patternString.toCharArray());
 	String type = null;
 	int token;
@@ -1675,7 +1697,7 @@ private static SearchPattern createTypePattern(String patternString, int limitTo
 			return new QualifiedTypeDeclarationPattern(qualificationChars, typeChars, indexSuffix, matchRule);
 		case IJavaSearchConstants.REFERENCES :
 			return new TypeReferencePattern(qualificationChars, typeChars, typeSignature, matchRule);
-		case IJavaSearchConstants.IMPLEMENTORS : 
+		case IJavaSearchConstants.IMPLEMENTORS :
 			return new SuperTypeReferencePattern(qualificationChars, typeChars, SuperTypeReferencePattern.ONLY_SUPER_INTERFACES, indexSuffix, matchRule);
 		case IJavaSearchConstants.ALL_OCCURRENCES :
 			return new OrPattern(
@@ -1696,7 +1718,7 @@ private static char[][] enclosingTypeNames(IType type) {
 			IType declaringType = type.getDeclaringType();
 			if (declaringType == null) return CharOperation.NO_CHAR_CHAR;
 			return CharOperation.arrayConcat(
-				enclosingTypeNames(declaringType), 
+				enclosingTypeNames(declaringType),
 				declaringType.getElementName().toCharArray());
 		case IJavaElement.COMPILATION_UNIT:
 			return CharOperation.NO_CHAR_CHAR;
@@ -1708,11 +1730,11 @@ private static char[][] enclosingTypeNames(IType type) {
 			return CharOperation.arrayConcat(
 				enclosingTypeNames(declaringClass),
 				new char[][] {declaringClass.getElementName().toCharArray(), IIndexConstants.ONE_STAR});
-			else 
+			else
 				return CharOperation.NO_CHAR_CHAR;
 		case IJavaElement.TYPE:
 			return CharOperation.arrayConcat(
-				enclosingTypeNames((IType)parent), 
+				enclosingTypeNames((IType)parent),
 				parent.getElementName().toCharArray());
 		default:
 			return null;
@@ -1720,13 +1742,13 @@ private static char[][] enclosingTypeNames(IType type) {
 }
 
 /**
- * Decode the given index key in this pattern. The decoded index key is used by 
- * {@link #matchesDecodedKey(SearchPattern)} to find out if the corresponding index entry 
+ * Decode the given index key in this pattern. The decoded index key is used by
+ * {@link #matchesDecodedKey(SearchPattern)} to find out if the corresponding index entry
  * should be considered.
  * <p>
  * This method should be re-implemented in subclasses that need to decode an index key.
  * </p>
- * 
+ *
  * @param key the given index key
  */
 public void decodeIndexKey(char[] key) {
@@ -1738,7 +1760,7 @@ public void decodeIndexKey(char[] key) {
  * Implementors of this method should return a new search pattern that is going to be used
  * to decode index keys.
  * </p>
- * 
+ *
  * @return a new blank pattern
  * @see #decodeIndexKey(char[])
  */
@@ -1752,7 +1774,7 @@ public abstract SearchPattern getBlankPattern();
  * This method should be re-implemented in subclasses that need to narrow down the
  * index query.
  * </p>
- * 
+ *
  * @return an index key from this pattern, or <code>null</code> if all index entries are matched.
  */
 public char[] getIndexKey() {
@@ -1767,7 +1789,7 @@ public char[] getIndexKey() {
  * This method should be re-implemented in subclasses that need to narrow down the
  * index query.
  * </p>
- * 
+ *
  * @return an array of index categories
  */
 public char[][] getIndexCategories() {
@@ -1776,12 +1798,12 @@ public char[][] getIndexCategories() {
 /**
  * Returns the rule to apply for matching index keys. Can be exact match, prefix match, pattern match or regexp match.
  * Rule can also be combined with a case sensitivity flag.
- * 
+ *
  * @return one of R_EXACT_MATCH, R_PREFIX_MATCH, R_PATTERN_MATCH, R_REGEXP_MATCH combined with R_CASE_SENSITIVE,
- *   e.g. R_EXACT_MATCH | R_CASE_SENSITIVE if an exact and case sensitive match is requested, 
+ *   e.g. R_EXACT_MATCH | R_CASE_SENSITIVE if an exact and case sensitive match is requested,
  *   or R_PREFIX_MATCH if a prefix non case sensitive match is requested.
  * [TODO (frederic) I hope R_ERASURE_MATCH doesn't need to be on this list. Because it would be a breaking API change.]
- */	
+ */
 public final int getMatchRule() {
 	return this.matchRule;
 }
@@ -1791,7 +1813,7 @@ public final int getMatchRule() {
  * This method should be re-implemented in subclasses that need to narrow down the
  * index query.
  * </p>
- * 
+ *
  * @param decodedPattern a pattern representing a decoded index key
  * @return whether this pattern matches the given pattern
  */
@@ -1805,7 +1827,7 @@ public boolean matchesDecodedKey(SearchPattern decodedPattern) {
  * This method should be re-implemented in subclasses that need to define how
  * a name matches a pattern.
  * </p>
- * 
+ *
  * @param pattern the given pattern, or <code>null</code> to represent "*"
  * @param name the given name
  * @return whether the given name matches the given pattern

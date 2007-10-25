@@ -11,9 +11,7 @@
 package org.eclipse.wst.jsdt.internal.corext.template.java;
 
 import org.eclipse.jface.text.templates.TemplateVariableType;
-
 import org.eclipse.wst.jsdt.internal.corext.template.java.CompilationUnitCompletion.Variable;
-
 import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.MultiVariable;
 
 

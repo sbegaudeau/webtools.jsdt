@@ -12,14 +12,10 @@ package org.eclipse.wst.jsdt.internal.ui.refactoring.reorg;
 
 
 import org.eclipse.core.runtime.CoreException;
-
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.participants.RenameProcessor;
-
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.INameUpdating;
-
 import org.eclipse.wst.jsdt.internal.ui.refactoring.UserInterfaceStarter;
 
 public class RenameUserInterfaceStarter extends UserInterfaceStarter {

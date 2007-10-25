@@ -11,16 +11,20 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class QualifiedThisReference extends ThisReference {
-	
+
 	public TypeReference qualification;
 	ReferenceBinding currentCompatibleType;
-	
+
 	public QualifiedThisReference(TypeReference name, int sourceStart, int sourceEnd) {
 		super(sourceStart, sourceEnd);
 		qualification = name;
@@ -79,7 +83,7 @@ public class QualifiedThisReference extends ThisReference {
 		if (type == null) return null;
 		// X.this is not a param/raw type as denoting enclosing instance
 		type = type.erasure();
-		
+
 		// resolvedType needs to be converted to parameterized
 		if (type instanceof ReferenceBinding) {
 			this.resolvedType = scope.environment().convertToParameterizedType((ReferenceBinding) type);
@@ -87,7 +91,7 @@ public class QualifiedThisReference extends ThisReference {
 			// error case
 			this.resolvedType = type;
 		}
-		
+
 		// the qualification MUST exactly match some enclosing type name
 		// It is possible to qualify 'this' by the name of the current class
 		int depth = 0;
@@ -96,7 +100,7 @@ public class QualifiedThisReference extends ThisReference {
 			depth++;
 			this.currentCompatibleType = this.currentCompatibleType.isStatic() ? null : this.currentCompatibleType.enclosingType();
 		}
-		bits &= ~DepthMASK; // flush previous depth if any			
+		bits &= ~DepthMASK; // flush previous depth if any
 		bits |= (depth & 0xFF) << DepthSHIFT; // encoded depth into 8 bits
 
 		if (this.currentCompatibleType == null) {
@@ -108,7 +112,7 @@ public class QualifiedThisReference extends ThisReference {
 		if (depth == 0) {
 			checkAccess(scope.methodScope());
 		} // if depth>0, path emulation will diagnose bad scenarii
-		
+
 		return  this.resolvedType;
 	}
 
@@ -126,7 +130,7 @@ public class QualifiedThisReference extends ThisReference {
 		}
 		visitor.endVisit(this, blockScope);
 	}
-	
+
 	public void traverse(
 			ASTVisitor visitor,
 			ClassScope blockScope) {

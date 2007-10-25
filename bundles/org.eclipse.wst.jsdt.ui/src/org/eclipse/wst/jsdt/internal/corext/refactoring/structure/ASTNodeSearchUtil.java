@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IImportContainer;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
@@ -47,7 +46,6 @@ import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.dom.Selection;

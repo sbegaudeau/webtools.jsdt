@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
 import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
@@ -54,7 +53,6 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.MethodChecks;

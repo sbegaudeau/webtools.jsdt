@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.builder;
 
+import java.util.Locale;
+
 import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblemFactory;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
-
-import java.util.*;
 
 public class ProblemFactory extends DefaultProblemFactory {
 

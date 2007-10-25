@@ -17,10 +17,8 @@ import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
-
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.internal.core.JavaProject;
 import org.eclipse.wst.jsdt.launching.JavaRuntime;
 
 public class CPListElementSorter extends ViewerComparator {

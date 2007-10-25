@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.ui.packageview;
 
 import org.eclipse.jface.viewers.ISelectionProvider;
-
 import org.eclipse.wst.jsdt.internal.ui.dnd.BasicSelectionTransferDragAdapter;
 
 public class SelectionTransferDragAdapter extends BasicSelectionTransferDragAdapter {

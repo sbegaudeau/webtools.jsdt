@@ -15,26 +15,21 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-
-import org.eclipse.core.resources.IMarker;
-
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IMarkerResolution2;
 import org.eclipse.ui.IMarkerResolutionGenerator;
 import org.eclipse.ui.IMarkerResolutionGenerator2;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
-
 import org.eclipse.wst.jsdt.core.CorrectionEngine;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaModelMarker;
@@ -42,11 +37,7 @@ import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.wizards.BuildPathDialogAccess;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.preferences.BuildPathsPropertyPage;
@@ -54,6 +45,7 @@ import org.eclipse.wst.jsdt.internal.ui.preferences.UserLibraryPreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.CorrectionMessages;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
+import org.eclipse.wst.jsdt.ui.wizards.BuildPathDialogAccess;
 
 public class UserLibraryMarkerResolutionGenerator implements IMarkerResolutionGenerator, IMarkerResolutionGenerator2 {
 	

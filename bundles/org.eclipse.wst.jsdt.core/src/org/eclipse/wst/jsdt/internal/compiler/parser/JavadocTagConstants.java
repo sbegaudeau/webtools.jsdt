@@ -57,7 +57,7 @@ public interface JavadocTagConstants {
 	public static final char[] TAG_TYPE = "type".toCharArray(); //$NON-NLS-1$
 	public static final char[] TAG_ARGUMENT = "argument".toCharArray(); //$NON-NLS-1$
 	public static final char[] TAG_RETURNS = "returns".toCharArray(); //$NON-NLS-1$
-	
+
 	// tags lengthes
 	public static final int TAG_DEPRECATED_LENGTH = TAG_DEPRECATED.length;
 	public static final int TAG_PARAM_LENGTH = TAG_PARAM.length;
@@ -118,19 +118,19 @@ public interface JavadocTagConstants {
 	public static final int TAG_PROJECT_DESCRIPTION_VALUE = 24;
 	public static final int TAG_SDOC_VALUE = 25;
 	public static final int TAG_TYPE_VALUE = 26;
-	
+
 	public static final int TAG_CLASS_VALUE = 27;
 	public static final int TAG_EXTENDS_VALUE = 28;
 	public static final int TAG_PRIVATE_VALUE = 29;
 	public static final int TAG_FINAL_VALUE = 30;
 	public static final int TAG_ARGUMENT_VALUE = 31;
 	public static final int TAG_RETURNS_VALUE = 32;
-	
-	
-	
-	
+
+
+
+
 	public static final int TAG_OTHERS_VALUE = 100;
-	
+
 	// tags expected positions
 	public final static int ORDERED_TAGS_NUMBER = 3;
 	public final static int PARAM_TAG_EXPECTED_ORDER = 0;

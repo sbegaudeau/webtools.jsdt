@@ -13,31 +13,25 @@ package org.eclipse.wst.jsdt.internal.ui.fix;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.text.edits.DeleteEdit;
-import org.eclipse.text.edits.MultiTextEdit;
-import org.eclipse.text.edits.TextEdit;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.TextUtilities;
-
 import org.eclipse.ltk.core.refactoring.CategorizedTextEditGroup;
 import org.eclipse.ltk.core.refactoring.GroupCategory;
 import org.eclipse.ltk.core.refactoring.GroupCategorySet;
 import org.eclipse.ltk.core.refactoring.TextChange;
-
+import org.eclipse.text.edits.DeleteEdit;
+import org.eclipse.text.edits.MultiTextEdit;
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
-
 import org.eclipse.wst.jsdt.internal.corext.fix.IFix;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitChange;
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 

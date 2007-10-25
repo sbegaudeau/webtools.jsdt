@@ -11,12 +11,10 @@
 package org.eclipse.wst.jsdt.internal.ui.compare;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-
-import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitEditor;
 

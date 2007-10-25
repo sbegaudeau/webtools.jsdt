@@ -15,16 +15,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.eclipse.core.runtime.Assert;
-
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IDocument;
@@ -38,21 +31,21 @@ import org.eclipse.jface.text.quickassist.QuickAssistAssistant;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.ISourceViewer;
-
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
-
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.ui.JavaUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.IColorManager;
 import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 
 
 public class JavaCorrectionAssistant extends QuickAssistAssistant {

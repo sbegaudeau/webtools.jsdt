@@ -16,7 +16,6 @@ import java.util.StringTokenizer;
 
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.search.ui.text.MatchFilter;
-
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
 import org.eclipse.wst.jsdt.core.IJavaElement;
@@ -30,14 +29,11 @@ import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
-
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.ui.search.ElementQuerySpecification;
 import org.eclipse.wst.jsdt.ui.search.PatternQuerySpecification;
 import org.eclipse.wst.jsdt.ui.search.QuerySpecification;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 abstract class JavaMatchFilter extends MatchFilter {
 	

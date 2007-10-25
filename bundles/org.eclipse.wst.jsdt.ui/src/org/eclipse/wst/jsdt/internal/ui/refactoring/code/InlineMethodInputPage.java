@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.refactoring.code;
 
-import org.eclipse.wst.jsdt.core.JavaModelException;
-
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -20,19 +21,12 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-
-import org.eclipse.jface.dialogs.Dialog;
-
 import org.eclipse.ui.PlatformUI;
-
+import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.InlineMethodRefactoring;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
-
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
 
 public class InlineMethodInputPage extends UserInputWizardPage {
 

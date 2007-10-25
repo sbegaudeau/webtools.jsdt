@@ -13,11 +13,6 @@ package org.eclipse.wst.jsdt.internal.ui.text.correction;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.VerifyEvent;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
@@ -31,26 +26,25 @@ import org.eclipse.jface.text.link.LinkedPosition;
 import org.eclipse.jface.text.link.LinkedPositionGroup;
 import org.eclipse.jface.text.link.LinkedModeUI.ExitFlags;
 import org.eclipse.jface.text.link.LinkedModeUI.IExitPolicy;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.LinkedNodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorHighlightingSynchronizer;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
+import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
 
 /**
  * A template proposal.

@@ -11,7 +11,6 @@
 
 package org.eclipse.wst.jsdt.internal.ui.text.java;
 
-import com.ibm.icu.text.BreakIterator;
 import java.text.CharacterIterator;
 
 import org.eclipse.jface.text.BadLocationException;
@@ -20,6 +19,8 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;
+
+import com.ibm.icu.text.BreakIterator;
 
 
 /**

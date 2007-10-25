@@ -16,9 +16,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CleanUpProfileVersioner;
 
 public class CleanUpConstants {

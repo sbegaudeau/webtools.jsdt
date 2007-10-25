@@ -17,15 +17,16 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
-
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ProjectScope;
-
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.StatusDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -37,17 +38,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.dialogs.StatusDialog;
-import org.eclipse.jface.window.Window;
-
 import org.eclipse.wst.jsdt.core.JavaCore;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.preferences.PreferencesAccess;
 import org.eclipse.wst.jsdt.internal.ui.preferences.PreferencesMessages;
@@ -56,7 +48,7 @@ import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.Pro
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;
-
+import org.eclipse.wst.jsdt.ui.JavaUI;
 import org.osgi.service.prefs.BackingStoreException;
 
 public abstract class ProfileConfigurationBlock {

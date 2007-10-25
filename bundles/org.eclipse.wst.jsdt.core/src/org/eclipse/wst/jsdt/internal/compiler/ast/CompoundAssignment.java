@@ -12,10 +12,13 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LookupEnvironment;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class CompoundAssignment extends Assignment implements OperatorIds {
 	public int operator;
@@ -27,30 +30,30 @@ public class CompoundAssignment extends Assignment implements OperatorIds {
 	public CompoundAssignment(Expression lhs, Expression expression,int operator, int sourceEnd) {
 		//lhs is always a reference by construction ,
 		//but is build as an expression ==> the checkcast cannot fail
-	
+
 		super(lhs, expression, sourceEnd);
 		lhs.bits &= ~IsStrictlyAssigned; // tag lhs as NON assigned - it is also a read access
 		lhs.bits |= IsCompoundAssigned; // tag lhs as assigned by compound
 		this.operator = operator ;
 	}
-	
-public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, 
+
+public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 		FlowInfo flowInfo) {
-	// record setting a variable: various scenarii are possible, setting an array reference, 
-	// a field reference, a blank final field reference, a field of an enclosing instance or 
+	// record setting a variable: various scenarii are possible, setting an array reference,
+	// a field reference, a blank final field reference, a field of an enclosing instance or
 	// just a local variable.
 	if (this.resolvedType.id != T_JavaLangString) {
 		lhs.checkNPE(currentScope, flowContext, flowInfo);
 	}
 	return  ((Reference) lhs).analyseAssignment(currentScope, flowContext, flowInfo, this, true).unconditionalInits();
 }
-	
+
 	public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
-	
-//		// various scenarii are possible, setting an array reference, 
-//		// a field reference, a blank final field reference, a field of an enclosing instance or 
+
+//		// various scenarii are possible, setting an array reference,
+//		// a field reference, a blank final field reference, a field of an enclosing instance or
 //		// just a local variable.
-//	
+//
 //		int pc = codeStream.position;
 //		 ((Reference) lhs).generateCompoundAssignment(currentScope, codeStream, this.expression, this.operator, this.preAssignImplicitConversion, valueRequired);
 //		if (valueRequired) {
@@ -58,12 +61,12 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 //		}
 //		codeStream.recordPositionsFrom(pc, this.sourceStart);
 	}
-	
+
 public int nullStatus(FlowInfo flowInfo) {
 	return FlowInfo.NON_NULL;
-	// we may have complained on checkNPE, but we avoid duplicate error 
+	// we may have complained on checkNPE, but we avoid duplicate error
 }
-	
+
 	public String operatorToString() {
 		switch (operator) {
 			case PLUS :
@@ -91,13 +94,13 @@ public int nullStatus(FlowInfo flowInfo) {
 		}
 		return "unknown operator"; //$NON-NLS-1$
 	}
-	
+
 	public StringBuffer printExpressionNoParenthesis(int indent, StringBuffer output) {
-	
+
 		lhs.printExpression(indent, output).append(' ').append(operatorToString()).append(' ');
-		return expression.printExpression(0, output) ; 
+		return expression.printExpression(0, output) ;
 	}
-	
+
 	public TypeBinding resolveType(BlockScope scope) {
 		constant = Constant.NotAConstant;
 		if (!(this.lhs instanceof Reference) || this.lhs.isThis()) {
@@ -111,7 +114,7 @@ public int nullStatus(FlowInfo flowInfo) {
 			this.resolvedType=TypeBinding.ANY;
 			return null;
 		}
-	
+
 		// autoboxing support
 		LookupEnvironment env = scope.environment();
 		TypeBinding lhsType = originalLhsType, expressionType = originalExpressionType;
@@ -129,7 +132,7 @@ public int nullStatus(FlowInfo flowInfo) {
 				expressionType = env.computeBoxingType(expressionType);
 			}
 		}
-		
+
 		if (restrainUsageToNumericTypes() && !lhsType.isNumericType() && !lhsType.isAnyType()) {
 			scope.problemReporter().operatorOnlyValidOnNumericType(this, lhsType, expressionType);
 			return null;
@@ -143,12 +146,12 @@ public int nullStatus(FlowInfo flowInfo) {
 			}
 			expressionID = T_JavaLangObject; // use the Object has tag table
 		}
-	
+
 		// the code is an int
-		// (cast)  left   Op (cast)  rigth --> result 
+		// (cast)  left   Op (cast)  rigth --> result
 		//  0000   0000       0000   0000      0000
 		//  <<16   <<12       <<8     <<4        <<0
-	
+
 		// the conversion is stored INTO the reference (info needed for the code gen)
 		int result = OperatorExpression.OperatorSignatures[operator][ (lhsID << 4) + expressionID];
 		if (result == T_undefined) {
@@ -174,11 +177,11 @@ public int nullStatus(FlowInfo flowInfo) {
 		if (unboxedLhs) scope.problemReporter().autoboxing(this, lhsType, originalLhsType);
 		return this.resolvedType = originalLhsType;
 	}
-	
+
 	public boolean restrainUsageToNumericTypes(){
 		return false ;
 	}
-	
+
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
 		if (visitor.visit(this, scope)) {
 			lhs.traverse(visitor, scope);

@@ -13,13 +13,10 @@ package org.eclipse.wst.jsdt.internal.ui.preferences;
 import java.util.StringTokenizer;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.eclipse.wst.jsdt.core.IJavaProject;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.CodeGenerationSettings;
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 public class JavaPreferencesSettings  {
 	

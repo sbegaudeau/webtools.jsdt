@@ -10,21 +10,26 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.refactoring.rename;
 
-import org.eclipse.text.edits.ReplaceEdit;
-
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-
-import org.eclipse.core.resources.IResource;
-
 import org.eclipse.ltk.core.refactoring.GroupCategorySet;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusContext;
 import org.eclipse.ltk.core.refactoring.TextChange;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
-
-
+import org.eclipse.text.edits.ReplaceEdit;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.ISourceRange;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
+import org.eclipse.wst.jsdt.core.search.MethodDeclarationMatch;
+import org.eclipse.wst.jsdt.core.search.SearchEngine;
+import org.eclipse.wst.jsdt.core.search.SearchMatch;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
@@ -39,16 +44,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.TextChangeManager;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.SearchUtils;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IMethod;
-import org.eclipse.wst.jsdt.core.ISourceRange;
-import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.MethodDeclarationMatch;
-import org.eclipse.wst.jsdt.core.search.SearchEngine;
-import org.eclipse.wst.jsdt.core.search.SearchMatch;
-import org.eclipse.wst.jsdt.core.search.SearchPattern;
 
 public class RenameNonVirtualMethodProcessor extends RenameMethodProcessor {
 

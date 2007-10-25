@@ -16,28 +16,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.LabelProvider;
-
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.core.Flags;
-
-import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageDescriptorRegistry;
@@ -46,6 +39,8 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ListDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.SelectionButtonDialogField;
+import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 public class MembersOrderPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 	

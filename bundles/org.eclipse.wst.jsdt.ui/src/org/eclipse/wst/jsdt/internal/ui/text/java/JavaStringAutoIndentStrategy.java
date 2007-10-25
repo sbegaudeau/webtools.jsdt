@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.ui.text.java;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultIndentLineAutoEditStrategy;
 import org.eclipse.jface.text.DocumentCommand;
@@ -19,14 +18,11 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.TextUtilities;
-
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.texteditor.ITextEditorExtension3;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**
  * Auto indent strategy for java strings

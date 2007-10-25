@@ -13,18 +13,14 @@ package org.eclipse.wst.jsdt.internal.ui.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.dialogs.StatusDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.jface.dialogs.StatusDialog;
-
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.core.JavaCore;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.preferences.TodoTaskConfigurationBlock.TodoTask;

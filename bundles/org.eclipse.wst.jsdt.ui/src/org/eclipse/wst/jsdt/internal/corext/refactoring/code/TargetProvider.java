@@ -23,9 +23,7 @@ import java.util.Stack;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMethod;
@@ -52,7 +50,6 @@ import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
-
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.IRefactoringSearchRequestor;

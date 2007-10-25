@@ -12,15 +12,18 @@ package org.eclipse.wst.jsdt.internal.core;
 
 import java.util.HashMap;
 
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.ITypeParameter;
+import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceField;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceImport;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceMethod;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceType;
 
-/** 
- * Element info for an IType element that originated from source. 
+/**
+ * Element info for an IType element that originated from source.
  */
 public class SourceTypeElementInfo extends MemberElementInfo implements ISourceType {
 
@@ -35,7 +38,7 @@ public class SourceTypeElementInfo extends MemberElementInfo implements ISourceT
 	 * fully qualified for source types.
 	 */
 	protected char[] superclassName;
-	
+
 	/**
 	 * The names of the interfaces this type implements or
 	 * extends. These names are fully qualified in the case
@@ -43,27 +46,27 @@ public class SourceTypeElementInfo extends MemberElementInfo implements ISourceT
 	 * case of a source type
 	 */
 	protected char[][] superInterfaceNames;
-	
+
 	/**
 	 * Backpointer to my type handle - useful for translation
 	 * from info to handle.
 	 */
 	protected IType handle = null;
-	
+
 	/*
 	 * The type parameters of this source type. Empty if none.
 	 */
 	protected ITypeParameter[] typeParameters = TypeParameter.NO_TYPE_PARAMETERS;
-	
+
 	/*
 	 * A map from an IJavaElement (this type or a child of this type) to a String[] (the categories of this element)
 	 */
 	protected HashMap categories;
-	
+
 	protected boolean isBinary;
-	
+
 	protected boolean isAnonymous;
-	
+
 	public SourceTypeElementInfo(boolean isBinary,boolean anonymous) {
 		super();
 		this.isBinary=isBinary;
@@ -258,11 +261,11 @@ public char[] getName() {
  */
 public char[] getSuperclassName() {
 	if (this.handle.getElementName().length() == 0) { // if anonymous type
-		char[][] interfaceNames = this.superInterfaceNames;	
+		char[][] interfaceNames = this.superInterfaceNames;
 		if (interfaceNames != null && interfaceNames.length > 0) {
 			return interfaceNames[0];
 		}
-	} 
+	}
 	return this.superclassName;
 }
 public char[][][] getTypeParameterBounds() {

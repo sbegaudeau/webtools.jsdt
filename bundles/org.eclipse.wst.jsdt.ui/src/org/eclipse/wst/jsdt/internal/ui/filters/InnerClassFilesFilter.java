@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.internal.ui.filters;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-
 import org.eclipse.wst.jsdt.core.IClassFile;
 
 public class InnerClassFilesFilter extends ViewerFilter {

@@ -11,19 +11,16 @@
 package org.eclipse.wst.jsdt.internal.ui.text.java;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.Signature;
-
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.java.CompletionProposalCollector;
 import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
 import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 /**
  * Completion proposal collector which creates proposals with

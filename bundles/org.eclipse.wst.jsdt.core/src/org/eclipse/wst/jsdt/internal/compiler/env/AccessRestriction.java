@@ -18,16 +18,16 @@ public class AccessRestriction {
 		this.accessRule = accessRule;
 		this.messageTemplates = messageTemplates;
 	}
-	
+
 	/**
-	 * Returns readable description for problem reporting, 
+	 * Returns readable description for problem reporting,
 	 * message is expected to contain room for restricted type name
 	 * e.g. "{0} has restricted access"
 	 */
 	public String getMessageTemplate() {
 		return this.messageTemplates[0];
 	}
-	
+
 	public String getConstructorAccessMessageTemplate() {
 		return this.messageTemplates[1];
 	}

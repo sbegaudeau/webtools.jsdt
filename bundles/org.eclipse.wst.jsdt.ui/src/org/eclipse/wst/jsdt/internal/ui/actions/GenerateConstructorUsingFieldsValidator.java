@@ -14,15 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
-
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
-
 import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 
 public class GenerateConstructorUsingFieldsValidator implements ISelectionStatusValidator {

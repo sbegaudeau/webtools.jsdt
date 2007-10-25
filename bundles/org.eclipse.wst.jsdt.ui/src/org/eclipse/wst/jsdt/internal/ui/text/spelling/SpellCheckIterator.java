@@ -10,21 +10,19 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.text.spelling;
 
-import com.ibm.icu.text.BreakIterator;
-
 import java.util.LinkedList;
 import java.util.Locale;
 
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.TextUtilities;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.NLSElement;
-
 import org.eclipse.wst.jsdt.internal.ui.text.javadoc.IHtmlTagConstants;
 import org.eclipse.wst.jsdt.internal.ui.text.javadoc.IJavaDocTagConstants;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.DefaultSpellChecker;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellCheckIterator;
+
+import com.ibm.icu.text.BreakIterator;
 
 
 /**

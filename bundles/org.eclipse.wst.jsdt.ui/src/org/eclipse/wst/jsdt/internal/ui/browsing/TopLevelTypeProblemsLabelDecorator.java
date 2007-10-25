@@ -11,15 +11,12 @@
 package org.eclipse.wst.jsdt.internal.ui.browsing;
 
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
-
-import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator;
-
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageDescriptorRegistry;
+import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator;
 
 /**
  * Decorates top-level types with problem markers that

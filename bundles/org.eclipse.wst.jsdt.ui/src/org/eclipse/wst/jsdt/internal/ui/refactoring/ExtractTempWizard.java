@@ -11,7 +11,10 @@
 package org.eclipse.wst.jsdt.internal.ui.refactoring;
 
 import org.eclipse.core.runtime.Assert;
-
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -21,18 +24,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.IDialogSettings;
-
-
 import org.eclipse.ui.PlatformUI;
-
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.ExtractTempRefactoring;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist.ControlContentAssistHelper;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist.VariableNamesProcessor;

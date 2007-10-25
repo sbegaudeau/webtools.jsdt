@@ -11,13 +11,10 @@
 package org.eclipse.wst.jsdt.internal.ui.refactoring;
 
 import org.eclipse.core.runtime.CoreException;
-
-import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.wst.jsdt.internal.ui.refactoring.actions.RefactoringStarter;
-
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.wst.jsdt.internal.ui.refactoring.actions.RefactoringStarter;
 
 /**
  * Opens the user interface for a given refactoring.

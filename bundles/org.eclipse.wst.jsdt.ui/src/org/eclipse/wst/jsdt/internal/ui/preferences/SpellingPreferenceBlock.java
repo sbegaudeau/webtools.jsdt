@@ -12,13 +12,10 @@
 package org.eclipse.wst.jsdt.internal.ui.preferences;
 
 import org.eclipse.core.runtime.IStatus;
-
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-
 import org.eclipse.ui.texteditor.spelling.IPreferenceStatusMonitor;
 import org.eclipse.ui.texteditor.spelling.ISpellingPreferenceBlock;
-
 import org.eclipse.wst.jsdt.internal.ui.wizards.IStatusChangeListener;
 
 /**

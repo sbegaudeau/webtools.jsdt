@@ -13,9 +13,10 @@ package org.eclipse.wst.jsdt.internal.core.jdom;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.jdom.*;
-import org.eclipse.wst.jsdt.internal.core.util.Messages;
+import org.eclipse.wst.jsdt.core.jdom.IDOMImport;
+import org.eclipse.wst.jsdt.core.jdom.IDOMNode;
 import org.eclipse.wst.jsdt.internal.core.util.CharArrayBuffer;
+import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 /**
@@ -24,23 +25,23 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  * @see IDOMImport
  * @see DOMNode
  * @deprecated The JDOM was made obsolete by the addition in 2.0 of the more
- * powerful, fine-grained DOM/AST API found in the 
+ * powerful, fine-grained DOM/AST API found in the
  * org.eclipse.wst.jsdt.core.dom package.
  */
 // TODO (jerome) - add implementation support for 1.5 features
 class DOMImport extends DOMNode implements IDOMImport {
-	
+
 	/**
 	 * Indicates if this import is an on demand type import
 	 */
 	protected boolean fOnDemand;
-	
+
 	/**
 	 * Modifiers for this import.
 	 * @since 3.0
 	 */
 	protected int fFlags = Flags.AccDefault;
-	
+
 /**
  * Creates a new empty IMPORT node.
  */
@@ -108,7 +109,7 @@ protected void appendFragmentedContents(CharArrayBuffer buffer) {
 		buffer.append(fDocument, fNameRange[1] + 1, fSourceRange[1] - fNameRange[1]);
 	}
 }
-/** 
+/**
  * @see IDOMNode#getContents()
  */
 public String getContents() {
@@ -131,7 +132,7 @@ public IJavaElement getJavaElement(IJavaElement parent) throws IllegalArgumentEx
 	if (parent.getElementType() == IJavaElement.COMPILATION_UNIT) {
 		return ((ICompilationUnit)parent).getImport(getName());
 	} else {
-		throw new IllegalArgumentException(Messages.element_illegalParent); 
+		throw new IllegalArgumentException(Messages.element_illegalParent);
 	}
 }
 /**
@@ -144,7 +145,7 @@ public int getNodeType() {
  * @see IDOMImport#isOnDemand()
  */
 public boolean isOnDemand() {
-	return fOnDemand;	
+	return fOnDemand;
 }
 /**
  * @see DOMNode
@@ -157,7 +158,7 @@ protected DOMNode newDOMNode() {
  */
 public void setName(String name) {
 	if (name == null) {
-		throw new IllegalArgumentException(Messages.element_nullName); 
+		throw new IllegalArgumentException(Messages.element_nullName);
 	}
 	becomeDetailed();
 	super.setName(name);

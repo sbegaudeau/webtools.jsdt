@@ -24,7 +24,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPart;
@@ -34,14 +33,12 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.texteditor.IUpdate;
-
-import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.JarImportWizardAction;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
+import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 
 /**
  * Action group that adds the source and generate actions to a part's context

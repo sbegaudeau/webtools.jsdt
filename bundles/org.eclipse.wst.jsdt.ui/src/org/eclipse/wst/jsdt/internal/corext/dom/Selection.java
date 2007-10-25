@@ -11,10 +11,8 @@
 package org.eclipse.wst.jsdt.internal.corext.dom;
 
 import org.eclipse.core.runtime.Assert;
-
-import org.eclipse.wst.jsdt.core.dom.ASTNode;
-
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.wst.jsdt.core.dom.ASTNode;
 
 
 public class Selection {

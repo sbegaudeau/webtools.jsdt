@@ -11,26 +11,21 @@
 package org.eclipse.wst.jsdt.internal.corext.template.java;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.TextUtilities;
-import org.eclipse.jface.text.templates.TemplateContextType;
 import org.eclipse.jface.text.templates.Template;
 import org.eclipse.jface.text.templates.TemplateBuffer;
+import org.eclipse.jface.text.templates.TemplateContextType;
 import org.eclipse.jface.text.templates.TemplateException;
 import org.eclipse.jface.text.templates.TemplateTranslator;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaProject;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 
 /**

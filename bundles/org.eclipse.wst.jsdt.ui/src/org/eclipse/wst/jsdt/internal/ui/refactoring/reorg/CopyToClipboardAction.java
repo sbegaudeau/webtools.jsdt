@@ -15,12 +15,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-
-import org.eclipse.core.resources.IResource;
-
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.DND;
@@ -28,34 +29,25 @@ import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
-
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ResourceTransfer;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.TypedSource;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaElementTransfer;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ParentChecker;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ReorgUtils;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.JavaElementUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
-import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
+import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
 
 
 public class CopyToClipboardAction extends SelectionDispatchAction{

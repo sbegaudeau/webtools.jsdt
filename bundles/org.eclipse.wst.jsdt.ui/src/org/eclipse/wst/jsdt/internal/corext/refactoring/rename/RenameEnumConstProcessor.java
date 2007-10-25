@@ -12,12 +12,10 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.rename;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
-
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IJavaElement;
@@ -27,7 +25,6 @@ import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
 import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaRefactoringDescriptor;
 import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameJavaElementDescriptor;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptorComment;
@@ -37,10 +34,8 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.RefactoringDescriptorChange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.ScriptableRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 public final class RenameEnumConstProcessor extends RenameFieldProcessor {
 

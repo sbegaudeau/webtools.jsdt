@@ -74,9 +74,9 @@ public final boolean canBeSeenBy(TypeBinding receiverType, InvocationSite invoca
 	if (receiverType instanceof CombinedSourceTypeBinding) {
 		CombinedSourceTypeBinding combinedBinding = (CombinedSourceTypeBinding) receiverType;
 		if (combinedBinding.contains(declaringClass)  && combinedBinding.contains(invocationType)) return true;
-		
+
 	}
-	
+
 	if (invocationType == null) // static import call
 		return !isPrivate() && scope.getCurrentPackage() == declaringClass.fPackage;
 
@@ -168,19 +168,19 @@ public final boolean canBeSeenBy(TypeBinding receiverType, InvocationSite invoca
  */
 public char[] computeUniqueKey(boolean isLeaf) {
 	// declaring key
-	char[] declaringKey = 
-		this.declaringClass == null /*case of length field for an array*/ 
-			? CharOperation.NO_CHAR 
+	char[] declaringKey =
+		this.declaringClass == null /*case of length field for an array*/
+			? CharOperation.NO_CHAR
 			: this.declaringClass.computeUniqueKey(false/*not a leaf*/);
 	int declaringLength = declaringKey.length;
-	
+
 	// name
 	int nameLength = this.name.length;
-	
+
 	// return type
 	char[] returnTypeKey = this.type == null ? new char[] {'V'} : this.type.computeUniqueKey(false/*not a leaf*/);
 	int returnTypeLength = returnTypeKey.length;
-	
+
 	char[] uniqueKey = new char[declaringLength + 1 + nameLength + 1 + returnTypeLength];
 	int index = 0;
 	System.arraycopy(declaringKey, 0, uniqueKey, index, declaringLength);
@@ -207,13 +207,13 @@ public Constant constant() {
 				if (sourceType.scope != null) {
 					TypeDeclaration typeDecl = sourceType.classScope.referenceContext;
 					FieldDeclaration fieldDecl = typeDecl.declarationOf(originalField);
-					fieldDecl.resolve(originalField.isStatic() //side effect on binding 
+					fieldDecl.resolve(originalField.isStatic() //side effect on binding
 							? typeDecl.staticInitializerScope
 							: typeDecl.initializerScope);
 					fieldConstant = originalField.constant();
 				} else {
 					fieldConstant = Constant.NotAConstant; // shouldn't occur per construction (paranoid null check)
-				} 
+				}
 			} else {
 				fieldConstant = Constant.NotAConstant; // shouldn't occur per construction (paranoid null check)
 			}
@@ -254,7 +254,7 @@ public long getAnnotationTagBits() {
 		if (fieldDecl != null) {
 			MethodScope initializationScope = isStatic() ? typeDecl.staticInitializerScope : typeDecl.initializerScope;
 			FieldBinding previousField = initializationScope.initializedField;
-			int previousFieldID = initializationScope.lastVisibleFieldID;			
+			int previousFieldID = initializationScope.lastVisibleFieldID;
 			try {
 				initializationScope.initializedField = originalField;
 				initializationScope.lastVisibleFieldID = originalField.id;
@@ -273,7 +273,7 @@ public AnnotationBinding[] getAnnotations() {
 	ReferenceBinding declaringClassBinding = originalField.declaringClass;
 	if (declaringClassBinding == null) {
 		return Binding.NO_ANNOTATIONS;
-	}	
+	}
 	return declaringClassBinding.retrieveAnnotations(originalField);
 }
 
@@ -361,7 +361,7 @@ public  boolean isFor(AbstractVariableDeclaration variableDeclaration)
 //	try {
 //		sourceType = (SourceTypeBinding) declaringClass;
 //	} catch (ClassCastException e) {
-//		return null;		
+//		return null;
 //	}
 //
 //	FieldDeclaration[] fields = sourceType.scope.referenceContext.fields;
@@ -370,6 +370,6 @@ public  boolean isFor(AbstractVariableDeclaration variableDeclaration)
 //			if (this == fields[i].binding)
 //				return fields[i];
 //	}
-//	return null;		
+//	return null;
 //}
 }

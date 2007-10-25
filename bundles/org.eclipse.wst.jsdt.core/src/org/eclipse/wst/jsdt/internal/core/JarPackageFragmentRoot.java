@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -18,7 +20,11 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.core.util.HashtableOfArrayToObject;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
@@ -34,9 +40,9 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  * @see org.eclipse.wst.jsdt.internal.core.JarPackageFragmentRootInfo
  */
 public class JarPackageFragmentRoot extends PackageFragmentRoot {
-	
+
 	public final static ArrayList EMPTY_LIST = new ArrayList();
-	
+
 	/**
 	 * The path to the jar file
 	 * (a workspace relative path if the jar is internal,
@@ -45,7 +51,7 @@ public class JarPackageFragmentRoot extends PackageFragmentRoot {
 	protected final IPath jarPath;
 
 	/**
-	 * Constructs a package fragment root which is the root of the Java package directory hierarchy 
+	 * Constructs a package fragment root which is the root of the Java package directory hierarchy
 	 * based on a JAR file that is not contained in a <code>IJavaProject</code> and
 	 * does not have an associated <code>IResource</code>.
 	 */
@@ -54,7 +60,7 @@ public class JarPackageFragmentRoot extends PackageFragmentRoot {
 		this.jarPath = jarPath;
 	}
 	/**
-	 * Constructs a package fragment root which is the root of the Java package directory hierarchy 
+	 * Constructs a package fragment root which is the root of the Java package directory hierarchy
 	 * based on a JAR file.
 	 */
 	protected JarPackageFragmentRoot(IResource resource, JavaProject project) {
@@ -69,30 +75,30 @@ public class JarPackageFragmentRoot extends PackageFragmentRoot {
 	 * Has the side effect of opening the package fragment children.
 	 */
 	protected boolean computeChildren(OpenableElementInfo info, Map newElements) throws JavaModelException {
-		
+
 		ArrayList vChildren= new ArrayList();
 		final int JAVA = 0;
 		final int NON_JAVA = 1;
 		ZipFile jar= null;
 		try {
 			jar= getJar();
-	
+
 			HashtableOfArrayToObject packageFragToTypes= new HashtableOfArrayToObject();
-	
+
 			// always create the default package
 			packageFragToTypes.put(CharOperation.NO_STRINGS, new ArrayList[] { EMPTY_LIST, EMPTY_LIST });
-	
+
 			for (Enumeration e= jar.entries(); e.hasMoreElements();) {
 				ZipEntry member= (ZipEntry) e.nextElement();
 				initPackageFragToTypes(packageFragToTypes, member.getName(), member.isDirectory());
 			}
-			
+
 			//loop through all of referenced packages, creating package fragments if necessary
 			// and cache the entry names in the infos created for those package fragments
 			for (int i = 0, length = packageFragToTypes.keyTable.length; i < length; i++) {
 				String[] pkgName = (String[]) packageFragToTypes.keyTable[i];
 				if (pkgName == null) continue;
-				
+
 				ArrayList[] entries= (ArrayList[]) packageFragToTypes.get(pkgName);
 				JarPackageFragment packFrag= (JarPackageFragment) getPackageFragment(pkgName);
 				JarPackageFragmentInfo fragInfo= new JarPackageFragmentInfo();
@@ -252,7 +258,7 @@ public class JarPackageFragmentRoot extends PackageFragmentRoot {
 		}
 		if (isDirectory)
 			return;
-		
+
 		// add classfile info amongst children
 		ArrayList[] children = (ArrayList[]) packageFragToTypes.get(pkgName);
 		if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(entryName)) {
@@ -263,7 +269,7 @@ public class JarPackageFragmentRoot extends PackageFragmentRoot {
 			if (children[1/*NON_JAVA*/] == EMPTY_LIST) children[1/*NON_JAVA*/] = new ArrayList();
 			children[1/*NON_JAVA*/].add(entryName);
 		}
-		
+
 	}
 	/**
 	 * @see IPackageFragmentRoot
@@ -289,9 +295,9 @@ public class JarPackageFragmentRoot extends PackageFragmentRoot {
  */
 protected boolean resourceExists() {
 	if (this.isExternal()) {
-		return 
+		return
 			JavaModel.getTarget(
-				ResourcesPlugin.getWorkspace().getRoot(), 
+				ResourcesPlugin.getWorkspace().getRoot(),
 				this.getPath(), // don't make the path relative as this is an external archive
 				true) != null;
 	} else {

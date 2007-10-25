@@ -47,17 +47,17 @@ public PossibleMatch[] getPossibleMatches(IPackageFragmentRoot[] roots) {
 	int index = 0;
 	// Virtual entries
 	ObjectVector virtualEntries = (ObjectVector) this.rootsToPossibleMatches.get(VIRTUAL_RESOURCE);
-	
+
 	if (virtualEntries != null) {
 		virtualEntries.copyInto(result, index);
 		index += virtualEntries.size();
 	}
-	
-	
+
+
 	for (int i = 0, length = roots.length; i < length; i++) {
-		
+
 		if(roots[i].getPath()!=null && roots[i].getPath().isEmpty()) continue;
-		
+
 		ObjectVector possibleMatches = (ObjectVector) this.rootsToPossibleMatches.get(roots[i].getPath());
 		if (possibleMatches != null) {
 			possibleMatches.copyInto(result, index);
@@ -65,9 +65,9 @@ public PossibleMatch[] getPossibleMatches(IPackageFragmentRoot[] roots) {
 		}
 	}
 	if (index < this.elementCount) {
-	
+
 		System.arraycopy(result, 0, result = new PossibleMatch[index], 0, index);
-		
+
 	}
 	return result;
 }

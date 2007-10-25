@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.compiler.lookup;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 
 public interface TagBits {
-    
+
 	// Tag bits in the tagBits int of every TypeBinding
 	long IsArrayType = ASTNode.Bit1;
 	long IsBaseType = ASTNode.Bit2;
@@ -25,15 +25,15 @@ public interface TagBits {
 	long IsAnonymousType = ASTNode.Bit6;
 	long AnonymousTypeMask = LocalTypeMask | IsAnonymousType;
 	long IsBinaryBinding = ASTNode.Bit7;
-	
+
 	long HasInconsistentHierarchy = ASTNode.Bit8; // for binary type binding only
-	
+
 	// for the type cycle hierarchy check used by ClassScope
 	long BeginHierarchyCheck = ASTNode.Bit9;  // type
 	long EndHierarchyCheck = ASTNode.Bit10; // type
 	long ContainsNestedTypesInSignature = ASTNode.Bit10; // method
 	long HasParameterAnnotations = ASTNode.Bit11; // method
-	
+
 	// test bit to see if default abstract methods were computed
 	long KnowsDefaultAbstractMethods = ASTNode.Bit11; // type
 
@@ -57,10 +57,10 @@ public interface TagBits {
 
 	// set for parameterized type with successfull bound check
 	long PassedBoundCheck = ASTNode.Bit23;
-	
+
 	// set for parameterized type NOT of the form X<?,?>
-	long IsBoundParameterizedType = ASTNode.Bit24; 
-	
+	long IsBoundParameterizedType = ASTNode.Bit24;
+
 	// used by BinaryTypeBinding
 	long HasUnresolvedTypeVariables = ASTNode.Bit25;
 	long HasUnresolvedSuperclass = ASTNode.Bit26;
@@ -70,11 +70,11 @@ public interface TagBits {
 
 	long HasTypeVariable = ASTNode.Bit30; // set either for type variables (direct) or parameterized types indirectly referencing type variables
 	long HasDirectWildcard = ASTNode.Bit31; // set for parameterized types directly referencing wildcards
-	
+
 	// for the annotation cycle hierarchy check used by ClassScope
 	long BeginAnnotationCheck = ASTNode.Bit32L;
 	long EndAnnotationCheck = ASTNode.Bit33L;
-	
+
 	// standard annotations
 	// 9-bits for targets
 	long AnnotationResolved = ASTNode.Bit34L;
@@ -105,9 +105,9 @@ public interface TagBits {
 	long AnnotationOverride = ASTNode.Bit50L;
 	long AnnotationSuppressWarnings = ASTNode.Bit51L;
 	long AllStandardAnnotationsMask = AnnotationTargetMASK | AnnotationRetentionMASK | AnnotationDeprecated | AnnotationDocumented | AnnotationInherited |  AnnotationOverride | AnnotationSuppressWarnings;
-	
+
 	long DefaultValueResolved = ASTNode.Bit52L;
-	
+
 	// set when type contains non-private constructor(s)
 	long HasNonPrivateConstructor = ASTNode.Bit53L;
 }

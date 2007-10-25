@@ -12,18 +12,14 @@
 package org.eclipse.wst.jsdt.ui.actions;
 
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.jface.viewers.IStructuredSelection;
-
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.PlatformUI;
-
-import org.eclipse.wst.jsdt.ui.wizards.NewInterfaceWizardPage;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewInterfaceCreationWizard;
+import org.eclipse.wst.jsdt.ui.wizards.NewInterfaceWizardPage;
 
 /**
 * <p>Action that opens the new interface wizard. The action initialized the wizard with either the selection

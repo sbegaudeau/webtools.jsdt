@@ -13,16 +13,23 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BaseTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class Assignment extends Expression {
 
 	public Expression lhs;
 	public Expression expression;
-		
+
 public Assignment(Expression lhs, Expression expression, int sourceEnd) {
 	//lhs is always a reference by construction ,
 	//but is build as an expression ==> the checkcast cannot fail
@@ -34,8 +41,8 @@ public Assignment(Expression lhs, Expression expression, int sourceEnd) {
 }
 
 public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
-	// record setting a variable: various scenarii are possible, setting an array reference, 
-// a field reference, a blank final field reference, a field of an enclosing instance or 
+	// record setting a variable: various scenarii are possible, setting an array reference,
+// a field reference, a blank final field reference, a field of an enclosing instance or
 // just a local variable.
 	LocalVariableBinding local = this.lhs.localVariableBinding();
 //	if (local!=null && local.isSameCompilationUnit(currentScope))
@@ -43,7 +50,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 	int nullStatus = this.expression.nullStatus(flowInfo);
 	if (local != null && (local.type.tagBits & TagBits.IsBaseType) == 0) {
 		if (nullStatus == FlowInfo.NULL) {
-			flowContext.recordUsingNullReference(currentScope, local, this.lhs, 
+			flowContext.recordUsingNullReference(currentScope, local, this.lhs,
 				FlowContext.CAN_ONLY_NULL| FlowContext.IN_ASSIGNMENT, flowInfo);
 		}
 	}
@@ -73,7 +80,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 					flowContext.initsOnFinally.markAsDefinitelyUnknown(local);
 			}
 		}
-	}		
+	}
 	return flowInfo;
 }
 
@@ -83,15 +90,15 @@ void checkAssignment(BlockScope scope, TypeBinding lhsType, TypeBinding rhsType)
 //	    scope.problemReporter().wildcardAssignment(lhsType, rhsType, this.expression);
 //	} else if (leftField != null && !leftField.isStatic() && leftField.declaringClass != null /*length pseudo field*/&& leftField.declaringClass.isRawType()) {
 //	    scope.problemReporter().unsafeRawFieldAssignment(leftField, rhsType, this.lhs);
-//	} else 
+//	} else
 		if (rhsType.needsUncheckedConversion(lhsType)) {
 	    scope.problemReporter().unsafeTypeConversion(this.expression, rhsType, lhsType);
-	}		
+	}
 }
 
 public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
-	// various scenarii are possible, setting an array reference, 
-	// a field reference, a blank final field reference, a field of an enclosing instance or 
+	// various scenarii are possible, setting an array reference,
+	// a field reference, a blank final field reference, a field of an enclosing instance or
 	// just a local variable.
 
 	int pc = codeStream.position;
@@ -111,7 +118,7 @@ public static Binding getDirectBinding(Expression someExpression) {
 		FieldReference fieldRef = (FieldReference)someExpression;
 		if (fieldRef.receiver.isThis() && !(fieldRef.receiver instanceof QualifiedThisReference)) {
 			return fieldRef.binding;
-		}			
+		}
 	} else if (someExpression instanceof Assignment) {
 		Expression lhs = ((Assignment)someExpression).lhs;
 		if ((lhs.bits & ASTNode.IsStrictlyAssigned) != 0) {
@@ -146,14 +153,14 @@ FieldBinding getLastField(Expression someExpression) {
         }
     }
     return null;
-}	
+}
 
 public int nullStatus(FlowInfo flowInfo) {
 	return this.expression.nullStatus(flowInfo);
 }
 
 public StringBuffer print(int indent, StringBuffer output) {
-	//no () when used as a statement 
+	//no () when used as a statement
 	printIndent(indent, output);
 	return printExpressionNoParenthesis(indent, output);
 }
@@ -161,7 +168,7 @@ public StringBuffer printExpression(int indent, StringBuffer output) {
 	//subclass redefine printExpressionNoParenthesis()
 	output.append('(');
 	return printExpressionNoParenthesis(0, output).append(')');
-} 
+}
 
 public StringBuffer printExpressionNoParenthesis(int indent, StringBuffer output) {
 	lhs.printExpression(indent, output).append(" = "); //$NON-NLS-1$
@@ -169,7 +176,7 @@ public StringBuffer printExpressionNoParenthesis(int indent, StringBuffer output
 }
 
 public StringBuffer printStatement(int indent, StringBuffer output) {
-	//no () when used as a statement 
+	//no () when used as a statement
 	return print(indent, output).append(';');
 }
 
@@ -183,16 +190,16 @@ public TypeBinding resolveType(BlockScope scope) {
 	TypeBinding rhsType = this.expression.resolveType(scope);
 	TypeBinding lhsType = lhs.resolveType(scope,true,rhsType);
 //	this.expression.setExpectedType(lhsType); // needed in case of generic method invocation
-	if (lhsType != null) 
+	if (lhsType != null)
 		this.resolvedType = lhsType.capture(scope, this.sourceEnd);
 	if (lhsType == null || rhsType == null) {
 		return null;
 	}
-	
+
 	//check if the lhs is prototype, in which case we are done
 	if( lhs instanceof FieldReference && ((FieldReference)lhs).isPrototype() )
 		return this.resolvedType;
-	
+
 	// check for assignment with no effect
 	Binding left = getDirectBinding(this.lhs);
 	if (left != null && left == getDirectBinding(this.expression)) {
@@ -203,30 +210,30 @@ public TypeBinding resolveType(BlockScope scope) {
 	// may require to widen the rhs expression at runtime
 //	if (lhsType != rhsType) // must call before computeConversion() and typeMismatchError()
 //		scope.compilationUnitScope().recordTypeConversion(lhsType, rhsType);
- 
-	
+
+
 	if ((this.expression.isConstantValueOfTypeAssignableToType(rhsType, lhsType)
 			|| (lhsType.isBaseType() && BaseTypeBinding.isWidening(lhsType.id, rhsType.id)))
 			|| rhsType.isCompatibleWith(lhsType)) {
 //		this.expression.computeConversion(scope, lhsType, rhsType);
 		checkAssignment(scope, lhsType, rhsType);
-		if (this.expression instanceof CastExpression 
+		if (this.expression instanceof CastExpression
 				&& (this.expression.bits & ASTNode.UnnecessaryCast) == 0) {
 			CastExpression.checkNeedForAssignedCast(scope, lhsType, (CastExpression) this.expression);
-		}			
+		}
 		return this.resolvedType;
-	} else if (scope.isBoxingCompatibleWith(rhsType, lhsType) 
+	} else if (scope.isBoxingCompatibleWith(rhsType, lhsType)
 						|| (rhsType.isBaseType()  // narrowing then boxing ?
 								&& scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5 // autoboxing
 								&& !lhsType.isBaseType()
 								&& this.expression.isConstantValueOfTypeAssignableToType(rhsType, scope.environment().computeBoxingType(lhsType)))) {
 		this.expression.computeConversion(scope, lhsType, rhsType);
-		if (this.expression instanceof CastExpression 
+		if (this.expression instanceof CastExpression
 				&& (this.expression.bits & ASTNode.UnnecessaryCast) == 0) {
 			CastExpression.checkNeedForAssignedCast(scope, lhsType, (CastExpression) this.expression);
-		}			
+		}
 		return this.resolvedType;
-	} 
+	}
 	scope.problemReporter().typeMismatchError(rhsType, lhsType, this.expression);
 	return lhsType;
 }
@@ -238,11 +245,11 @@ public TypeBinding resolveTypeExpecting(BlockScope scope, TypeBinding expectedTy
 
 	TypeBinding type = super.resolveTypeExpecting(scope, expectedType);
 	if (type == null) return null;
-	TypeBinding lhsType = this.resolvedType; 
+	TypeBinding lhsType = this.resolvedType;
 	TypeBinding rhsType = this.expression.resolvedType;
 	// signal possible accidental boolean assignment (instead of using '==' operator)
-	if (expectedType == TypeBinding.BOOLEAN 
-			&& lhsType == TypeBinding.BOOLEAN 
+	if (expectedType == TypeBinding.BOOLEAN
+			&& lhsType == TypeBinding.BOOLEAN
 			&& (this.lhs.bits & IsStrictlyAssigned) != 0) {
 		scope.problemReporter().possibleAccidentalBooleanAssignment(this);
 	}

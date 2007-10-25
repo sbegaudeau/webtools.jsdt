@@ -14,41 +14,33 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension2;
-
 import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.TextChange;
 import org.eclipse.ltk.core.refactoring.TextFileChange;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-
 import org.eclipse.wst.jsdt.internal.corext.fix.AbstractFix;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.fix.IFix;
 import org.eclipse.wst.jsdt.internal.corext.fix.LinkedFix;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitChange;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
-import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.fix.ICleanUp;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringExecutionHelper;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageImageDescriptor;
+import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
+import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
 
 /**
  * A correction proposal which uses an {@link IFix} to

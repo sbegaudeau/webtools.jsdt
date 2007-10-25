@@ -22,7 +22,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.content.IContentDescription;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.BufferChangedEvent;
+import org.eclipse.wst.jsdt.core.IBuffer;
+import org.eclipse.wst.jsdt.core.IBufferChangedListener;
+import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IOpenable;
+import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 /**
@@ -208,7 +213,7 @@ public boolean isReadOnly() {
 }
 /**
  * Moves the gap to location and adjust its size to the
- * anticipated change size. The size represents the expected 
+ * anticipated change size. The size represents the expected
  * range of the gap that will be filled after the gap has been moved.
  * Thus the gap is resized to actual size + the specified size and
  * moved to the given position.
@@ -265,7 +270,7 @@ protected void notifyChanged(final BufferChangedEvent event) {
 					listener.bufferChanged(event);
 				}
 			});
-			
+
 		}
 	}
 }
@@ -282,7 +287,7 @@ public synchronized void removeBufferChangedListener(IBufferChangedListener list
 }
 /**
  * Replaces <code>length</code> characters starting from <code>position</code> with <code>text<code>.
- * After that operation, the gap is placed at the end of the 
+ * After that operation, the gap is placed at the end of the
  * inserted <code>text</code>.
  */
 public void replace(int position, int length, char[] text) {
@@ -290,7 +295,7 @@ public void replace(int position, int length, char[] text) {
 		int textLength = text == null ? 0 : text.length;
 		synchronized (this.lock) {
 		    if (this.contents == null) return;
-		    
+
 			// move gap
 			moveAndResizeGap(position + length, textLength - length);
 
@@ -318,7 +323,7 @@ public void replace(int position, int length, char[] text) {
 }
 /**
  * Replaces <code>length</code> characters starting from <code>position</code> with <code>text<code>.
- * After that operation, the gap is placed at the end of the 
+ * After that operation, the gap is placed at the end of the
  * inserted <code>text</code>.
  */
 public void replace(int position, int length, String text) {
@@ -329,13 +334,13 @@ public void replace(int position, int length, String text) {
  */
 public void save(IProgressMonitor progress, boolean force) throws JavaModelException {
 
-	// determine if saving is required 
+	// determine if saving is required
 	if (isReadOnly() || this.file == null) {
 		return;
 	}
 	if (!hasUnsavedChanges())
 		return;
-		
+
 	// use a platform operation to update the resource contents
 	try {
 		String stringContents = this.getContents();
@@ -349,10 +354,10 @@ public void save(IProgressMonitor progress, boolean force) throws JavaModelExcep
 		catch (CoreException ce) {
 			// use no encoding
 		}
-		
+
 		// Create bytes array
-		byte[] bytes = encoding == null 
-			? stringContents.getBytes() 
+		byte[] bytes = encoding == null
+			? stringContents.getBytes()
 			: stringContents.getBytes(encoding);
 
 		// Special case for UTF-8 BOM files
@@ -367,17 +372,17 @@ public void save(IProgressMonitor progress, boolean force) throws JavaModelExcep
 				bytes= bytesWithBOM;
 			}
 		}
-		
+
 		// Set file contents
 		ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
 		if (this.file.exists()) {
 			this.file.setContents(
-				stream, 
-				force ? IResource.FORCE | IResource.KEEP_HISTORY : IResource.KEEP_HISTORY, 
+				stream,
+				force ? IResource.FORCE | IResource.KEEP_HISTORY : IResource.KEEP_HISTORY,
 				null);
 		} else {
 			this.file.create(stream, force, null);
-		}	
+		}
 	} catch (IOException e) {
 		throw new JavaModelException(e, IJavaModelStatusConstants.IO_EXCEPTION);
 	} catch (CoreException e) {
@@ -391,7 +396,7 @@ public void save(IProgressMonitor progress, boolean force) throws JavaModelExcep
  * @see IBuffer
  */
 public void setContents(char[] newContents) {
-	// allow special case for first initialization 
+	// allow special case for first initialization
 	// after creation by buffer factory
 	if (this.contents == null) {
 		synchronized (this.lock) {
@@ -400,7 +405,7 @@ public void setContents(char[] newContents) {
 		}
 		return;
 	}
-	
+
 	if (!isReadOnly()) {
 		String string = null;
 		if (newContents != null) {
@@ -448,7 +453,7 @@ public String toString() {
 		for (int i = 0; i < length; i++) {
 			char c = charContents[i];
 			switch (c) {
-				case '\n': 
+				case '\n':
 					buffer.append("\\n\n"); //$NON-NLS-1$
 					break;
 				case '\r':

@@ -34,7 +34,6 @@ import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
-import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 
 /**
@@ -94,12 +93,12 @@ protected ASTNode generateElementAST(ASTRewrite rewriter, IDocument document, IC
 			CompilationUnit compilationUnit = (CompilationUnit) node;
 			this.createdNode = (ASTNode) compilationUnit.statements().iterator().next();
 			createdNodeSource = this.source;
-		} 
+		}
 		else if (node.getNodeType() == ASTNode.TYPE_DECLARATION) {
 			TypeDeclaration typeDeclaration = (TypeDeclaration) node;
 			this.createdNode = (ASTNode) typeDeclaration.bodyDeclarations().iterator().next();
 			createdNodeSource = this.source;
-		} 
+		}
 		else {
 			createdNodeSource = generateSyntaxIncorrectAST();
 			if (this.createdNode == null)
@@ -122,7 +121,7 @@ protected ASTNode generateElementAST(ASTRewrite rewriter, IDocument document, IC
 				newSource.append(createdNodeSource.substring(createdNodeStart, nameStart));
 				newSource.append(this.alteredName);
 				newSource.append(createdNodeSource.substring(nameEnd, createdNodeEnd));
-				
+
 			}
 			this.source = newSource.toString();
 		}
@@ -218,7 +217,7 @@ public IJavaModelStatus verify() {
 		}
 		return verifyNameCollision();
 	}
-	
+
 	return JavaModelStatus.VERIFIED_OK;
 }
 /**

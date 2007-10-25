@@ -15,35 +15,27 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
-import org.eclipse.text.edits.ReplaceEdit;
-
+import org.eclipse.core.filebuffers.FileBuffers;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-
-import org.eclipse.core.filebuffers.FileBuffers;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-
+import org.eclipse.ltk.core.refactoring.GroupCategory;
+import org.eclipse.ltk.core.refactoring.GroupCategorySet;
+import org.eclipse.ltk.core.refactoring.TextChange;
 import org.eclipse.search.core.text.TextSearchEngine;
 import org.eclipse.search.core.text.TextSearchMatchAccess;
 import org.eclipse.search.core.text.TextSearchRequestor;
 import org.eclipse.search.core.text.TextSearchScope;
-
-import org.eclipse.ltk.core.refactoring.GroupCategory;
-import org.eclipse.ltk.core.refactoring.GroupCategorySet;
-import org.eclipse.ltk.core.refactoring.TextChange;
-
+import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaCore;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.TextChangeCompatibility;
-
 import org.eclipse.wst.jsdt.internal.ui.util.PatternConstructor;
 
 public class QualifiedNameFinder {

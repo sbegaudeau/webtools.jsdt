@@ -13,12 +13,12 @@ package org.eclipse.wst.jsdt.internal.core;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.runtime.preferences.PreferenceModifyListener;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.JavaCore;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
 public class JavaCorePreferenceModifyListener extends PreferenceModifyListener {
-	
+
 	static int PREFIX_LENGTH = JavaModelManager.CP_CONTAINER_PREFERENCES_PREFIX.length();
 	JavaModel javaModel = JavaModelManager.getJavaModelManager().getJavaModel();
 
@@ -30,7 +30,7 @@ public class JavaCorePreferenceModifyListener extends PreferenceModifyListener {
 		cleanJavaCore(instance.node(JavaCore.PLUGIN_ID));
 		return super.preApply(node);
 	}
-	
+
 	/**
 	 * Clean imported preferences from obsolete keys.
 	 *
@@ -53,7 +53,7 @@ public class JavaCorePreferenceModifyListener extends PreferenceModifyListener {
 	/**
 	 * Returns whether a java project referenced in property key
 	 * is still longer accessible or not.
-	 * 
+	 *
 	 * @param propertyName
 	 * @return true if a project is referenced in given key and this project
 	 * 	is still accessible, false otherwise.

@@ -18,19 +18,19 @@ public class NestedTypeBinding extends SourceTypeBinding {
 	public SyntheticArgumentBinding[] outerLocalVariables;
 	public int enclosingInstancesSlotSize; // amount of slots used by synthetic enclosing instances
 	public int outerLocalVariablesSlotSize; // amount of slots used by synthetic outer local variables
-	
+
 	public NestedTypeBinding(char[][] typeName, ClassScope scope, SourceTypeBinding enclosingType) {
 		super(typeName, enclosingType.fPackage, scope);
 		this.tagBits |= TagBits.IsNestedType;
 		this.enclosingType = enclosingType;
 	}
-	
+
 	/* Add a new synthetic argument for <actualOuterLocalVariable>.
 	* Answer the new argument or the existing argument if one already existed.
 	*/
 	public SyntheticArgumentBinding addSyntheticArgument(LocalVariableBinding actualOuterLocalVariable) {
 		SyntheticArgumentBinding synthLocal = null;
-	
+
 		if (outerLocalVariables == null) {
 			synthLocal = new SyntheticArgumentBinding(actualOuterLocalVariable);
 			outerLocalVariables = new SyntheticArgumentBinding[] {synthLocal};
@@ -89,7 +89,7 @@ public class NestedTypeBinding extends SourceTypeBinding {
 	public SyntheticArgumentBinding addSyntheticArgumentAndField(LocalVariableBinding actualOuterLocalVariable) {
 		SyntheticArgumentBinding synthLocal = addSyntheticArgument(actualOuterLocalVariable);
 		if (synthLocal == null) return null;
-	
+
 		if (synthLocal.matchingField == null)
 			synthLocal.matchingField = addSyntheticFieldForInnerclass(actualOuterLocalVariable);
 		return synthLocal;
@@ -101,7 +101,7 @@ public class NestedTypeBinding extends SourceTypeBinding {
 	public SyntheticArgumentBinding addSyntheticArgumentAndField(ReferenceBinding targetEnclosingType) {
 		SyntheticArgumentBinding synthLocal = addSyntheticArgument(targetEnclosingType);
 		if (synthLocal == null) return null;
-	
+
 		if (synthLocal.matchingField == null)
 			synthLocal.matchingField = addSyntheticFieldForInnerclass(targetEnclosingType);
 		return synthLocal;
@@ -111,8 +111,8 @@ public class NestedTypeBinding extends SourceTypeBinding {
 	 * Compute the resolved positions for all the synthetic arguments
 	 */
 	final public void computeSyntheticArgumentSlotSizes() {
-	
-		int slotSize = 0; 
+
+		int slotSize = 0;
 		// insert enclosing instances first, followed by the outerLocals
 		int enclosingInstancesCount = this.enclosingInstances == null ? 0 : this.enclosingInstances.length;
 		for (int i = 0; i < enclosingInstancesCount; i++){
@@ -120,7 +120,7 @@ public class NestedTypeBinding extends SourceTypeBinding {
 			// position the enclosing instance synthetic arg
 			argument.resolvedPosition = slotSize + 1; // shift by 1 to leave room for aload0==this
 			if (slotSize + 1 > 0xFF) { // no more than 255 words of arguments
-				this.scope.problemReporter().noMoreAvailableSpaceForArgument(argument, this.classScope.referenceType()); 
+				this.scope.problemReporter().noMoreAvailableSpaceForArgument(argument, this.classScope.referenceType());
 			}
 			if ((argument.type == TypeBinding.LONG) || (argument.type == TypeBinding.DOUBLE)){
 				slotSize += 2;
@@ -128,8 +128,8 @@ public class NestedTypeBinding extends SourceTypeBinding {
 				slotSize ++;
 			}
 		}
-		this.enclosingInstancesSlotSize = slotSize; 
-		
+		this.enclosingInstancesSlotSize = slotSize;
+
 		slotSize = 0; // reset, outer local are not positionned yet, since will be appended to user arguments
 		int outerLocalsCount = this.outerLocalVariables == null ? 0 : this.outerLocalVariables.length;
 			for (int i = 0; i < outerLocalsCount; i++){
@@ -143,7 +143,7 @@ public class NestedTypeBinding extends SourceTypeBinding {
 		}
 		this.outerLocalVariablesSlotSize = slotSize;
 	}
-	
+
 	/* Answer the receiver's enclosing type... null if the receiver is a top level type.
 	*/
 	public ReferenceBinding enclosingType() {
@@ -156,7 +156,7 @@ public class NestedTypeBinding extends SourceTypeBinding {
 	public SyntheticArgumentBinding getSyntheticArgument(LocalVariableBinding actualOuterLocalVariable) {
 
 		if (outerLocalVariables == null) return null;		// is null if no outer local variables are known
-	
+
 		for (int i = outerLocalVariables.length; --i >= 0;)
 			if (outerLocalVariables[i].actualOuterLocalVariable == actualOuterLocalVariable)
 				return outerLocalVariables[i];
@@ -170,7 +170,7 @@ public class NestedTypeBinding extends SourceTypeBinding {
 	public ReferenceBinding[] syntheticEnclosingInstanceTypes() {
 		if (enclosingInstances == null)
 			return null;
-	
+
 		int length = enclosingInstances.length;
 		ReferenceBinding types[] = new ReferenceBinding[length];
 		for (int i = 0; i < length; i++)
@@ -190,19 +190,19 @@ public class NestedTypeBinding extends SourceTypeBinding {
 	public void updateInnerEmulationDependents() {
 		// nothing to do in general, only local types are doing anything
 	}
-	
+
 	/* Answer the synthetic argument for <targetEnclosingType> or null if one does not exist.
 	*/
 	public SyntheticArgumentBinding getSyntheticArgument(ReferenceBinding targetEnclosingType, boolean onlyExactMatch) {
 
 		if (enclosingInstances == null) return null;		// is null if no enclosing instances are known
-	
+
 		// exact match
 		for (int i = enclosingInstances.length; --i >= 0;)
 			if (enclosingInstances[i].type == targetEnclosingType)
 				if (enclosingInstances[i].actualOuterLocalVariable == null)
 					return enclosingInstances[i];
-	
+
 		// type compatibility : to handle cases such as
 		// class T { class M{}}
 		// class S extends T { class N extends M {}} --> need to use S as a default enclosing instance for the super constructor call in N().

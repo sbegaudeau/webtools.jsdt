@@ -12,8 +12,8 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.flow.LoopingFlowContext;
@@ -23,18 +23,17 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class ForeachStatement extends Statement {
-    
+
 	public LocalDeclaration elementVariable;
-	public int elementVariableImplicitWidening = -1; 
+	public int elementVariableImplicitWidening = -1;
 	public Expression collection;
 	public Statement action;
-	
+
 	// set the kind of foreach
 	private int kind;
 	// possible kinds of iterating behavior
@@ -48,7 +47,7 @@ public class ForeachStatement extends Statement {
 	// loop labels
 	private BranchLabel breakLabel;
 	private BranchLabel continueLabel;
-	
+
 	public BlockScope scope;
 
 	// secret variables for codegen
@@ -59,10 +58,10 @@ public class ForeachStatement extends Statement {
 	private static final char[] SecretIndexVariableName = " index".toCharArray(); //$NON-NLS-1$
 	private static final char[] SecretCollectionVariableName = " collection".toCharArray(); //$NON-NLS-1$
 	private static final char[] SecretMaxVariableName = " max".toCharArray(); //$NON-NLS-1$
-	
+
 	int postCollectionInitStateIndex = -1;
 	int mergedInitStateIndex = -1;
-	
+
 	public ForeachStatement(
 		LocalDeclaration elementVariable,
 		int start) {
@@ -89,16 +88,16 @@ public class ForeachStatement extends Statement {
 		condInfo.markAsDefinitelyAssigned(this.elementVariable.binding);
 
 //		this.postCollectionInitStateIndex = currentScope.methodScope().recordInitializationStates(condInfo);
-		
+
 		// process the action
-		LoopingFlowContext loopingContext = 
-			new LoopingFlowContext(flowContext, flowInfo, this, breakLabel, 
+		LoopingFlowContext loopingContext =
+			new LoopingFlowContext(flowContext, flowInfo, this, breakLabel,
 				continueLabel, scope);
-		UnconditionalFlowInfo actionInfo = 
+		UnconditionalFlowInfo actionInfo =
 			condInfo.nullInfoLessUnconditionalCopy();
 		actionInfo.markAsDefinitelyUnknown(this.elementVariable.binding);
 		FlowInfo exitBranch;
-		if (!(action == null || (action.isEmptyBlock() 
+		if (!(action == null || (action.isEmptyBlock()
 		        	&& currentScope.compilerOptions().complianceLevel <= ClassFileConstants.JDK1_3))) {
 
 			if (!this.action.complainIfUnreachable(actionInfo, scope, false)) {
@@ -109,8 +108,8 @@ public class ForeachStatement extends Statement {
 
 			// code generation can be optimized when no need to continue in the loop
 			exitBranch = flowInfo.unconditionalCopy().
-				addInitializationsFrom(condInfo.initsWhenFalse()); 
-			// TODO (maxime) no need to test when false: can optimize (same for action being unreachable above) 
+				addInitializationsFrom(condInfo.initsWhenFalse());
+			// TODO (maxime) no need to test when false: can optimize (same for action being unreachable above)
 			if ((actionInfo.tagBits & loopingContext.initsOnContinue.tagBits &
 					FlowInfo.UNREACHABLE) != 0) {
 				continueLabel = null;
@@ -123,7 +122,7 @@ public class ForeachStatement extends Statement {
 			exitBranch = condInfo.initsWhenFalse();
 		}
 
-		// we need the variable to iterate the collection even if the 
+		// we need the variable to iterate the collection even if the
 		// element variable is not used
 		final boolean hasEmptyAction = this.action == null
 				|| this.action.isEmptyBlock()
@@ -132,7 +131,7 @@ public class ForeachStatement extends Statement {
 		switch(this.kind) {
 			case ARRAY :
 				if (!hasEmptyAction
-						|| this.elementVariable.binding.resolvedPosition != -1) {				
+						|| this.elementVariable.binding.resolvedPosition != -1) {
 					this.collectionVariable.useFlag = LocalVariableBinding.USED;
 					if (this.continueLabel != null) {
 					this.indexVariable.useFlag = LocalVariableBinding.USED;
@@ -153,9 +152,9 @@ public class ForeachStatement extends Statement {
 					FlowInfo.UNREACHABLE) != 0 ?
 					loopingContext.initsOnBreak :
 					flowInfo.addInitializationsFrom(loopingContext.initsOnBreak), // recover upstream null info
-				false, 
-				exitBranch, 
-				false, 
+				false,
+				exitBranch,
+				false,
 				true /*for(;;){}while(true); unreachable(); */);
 //		mergedInitStateIndex = currentScope.methodScope().recordInitializationStates(mergedInfo);
 		return mergedInfo;
@@ -168,7 +167,7 @@ public class ForeachStatement extends Statement {
 	 * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
 	 */
 	public void generateCode(BlockScope currentScope, CodeStream codeStream) {
-//	    
+//
 //		if ((bits & IsReachable) == 0) {
 //			return;
 //		}
@@ -184,7 +183,7 @@ public class ForeachStatement extends Statement {
 //			codeStream.exitUserScope(scope);
 //			if (mergedInitStateIndex != -1) {
 //				codeStream.removeNotDefinitelyAssignedVariables(currentScope, mergedInitStateIndex);
-//				codeStream.addDefinitelyAssignedVariables(currentScope, mergedInitStateIndex);				
+//				codeStream.addDefinitelyAssignedVariables(currentScope, mergedInitStateIndex);
 //			}
 //			codeStream.recordPositionsFrom(pc, this.sourceStart);
 //			return;
@@ -326,7 +325,7 @@ public class ForeachStatement extends Statement {
 //		codeStream.exitUserScope(scope);
 //		if (mergedInitStateIndex != -1) {
 //			codeStream.removeNotDefinitelyAssignedVariables(currentScope, mergedInitStateIndex);
-//			codeStream.addDefinitelyAssignedVariables(currentScope, mergedInitStateIndex);			
+//			codeStream.addDefinitelyAssignedVariables(currentScope, mergedInitStateIndex);
 //		}
 //		breakLabel.place();
 //		codeStream.recordPositionsFrom(pc, this.sourceStart);
@@ -335,7 +334,7 @@ public class ForeachStatement extends Statement {
 	public StringBuffer printStatement(int indent, StringBuffer output) {
 
 		printIndent(indent, output).append("for ("); //$NON-NLS-1$
-		this.elementVariable.printAsExpression(0, output); 
+		this.elementVariable.printAsExpression(0, output);
 		output.append(" : ");//$NON-NLS-1$
 		this.collection.print(0, output).append(") "); //$NON-NLS-1$
 		//block
@@ -389,7 +388,7 @@ public class ForeachStatement extends Statement {
 			    ReferenceBinding iterableType = ((ReferenceBinding)collectionType).findSuperTypeErasingTo(T_JavaLangIterable, false /*Iterable is not a class*/);
 			    checkIterable: {
 			    	if (iterableType == null) break checkIterable;
-			    	
+
 					this.iteratorReceiverType = collectionType.erasure();
 					if (((ReferenceBinding)iteratorReceiverType).findSuperTypeErasingTo(T_JavaLangIterable, false) == null) {
 						this.iteratorReceiverType = iterableType; // handle indirect inheritance thru variable secondary bound
@@ -409,23 +408,23 @@ public class ForeachStatement extends Statement {
 							}
 							// no conversion needed as only for reference types
 			    			break checkIterable;
-			    			
+
 			    		case Binding.GENERIC_TYPE : // for (T t : Iterable<T>) - in case used inside Iterable itself
 			    			arguments = iterableType.typeVariables();
 			    			break;
-			    			
+
 			    		case Binding.PARAMETERIZED_TYPE : // for(E e : Iterable<E>)
 			    			arguments = ((ParameterizedTypeBinding)iterableType).arguments;
 			    			break;
-			    			
+
 			    		default:
 			    			break checkIterable;
 			    	}
 			    	// generic or parameterized case
 					if (arguments.length != 1) break checkIterable; // per construction can only be one
 					this.kind = GENERIC_ITERABLE;
-					
-					this.collectionElementType = arguments[0]; 
+
+					this.collectionElementType = arguments[0];
 					if (!collectionElementType.isCompatibleWith(elementType)
 							&& !scope.isBoxingCompatibleWith(collectionElementType, elementType)) {
 						scope.problemReporter().notCompatibleTypesErrorInForeach(collection, collectionElementType, elementType);
@@ -457,7 +456,7 @@ public class ForeachStatement extends Statement {
 					this.indexVariable = new LocalVariableBinding(SecretIndexVariableName, TypeBinding.INT, ClassFileConstants.AccDefault, false);
 					scope.addLocalVariable(this.indexVariable);
 					this.indexVariable.setConstant(Constant.NotAConstant); // not inlinable
-					
+
 					// allocate #max secret variable
 					this.maxVariable = new LocalVariableBinding(SecretMaxVariableName, TypeBinding.INT, ClassFileConstants.AccDefault, false);
 					scope.addLocalVariable(this.maxVariable);
@@ -482,7 +481,7 @@ public class ForeachStatement extends Statement {
 			action.resolve(scope);
 		}
 	}
-	
+
 	public void traverse(
 		ASTVisitor visitor,
 		BlockScope blockScope) {

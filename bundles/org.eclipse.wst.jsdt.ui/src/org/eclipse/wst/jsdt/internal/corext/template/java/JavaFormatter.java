@@ -16,14 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.text.edits.MalformedTreeException;
-import org.eclipse.text.edits.MultiTextEdit;
-import org.eclipse.text.edits.RangeMarker;
-import org.eclipse.text.edits.ReplaceEdit;
-import org.eclipse.text.edits.TextEdit;
-
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.Document;
@@ -37,17 +30,18 @@ import org.eclipse.jface.text.templates.DocumentTemplateContext;
 import org.eclipse.jface.text.templates.TemplateBuffer;
 import org.eclipse.jface.text.templates.TemplateContext;
 import org.eclipse.jface.text.templates.TemplateVariable;
-
+import org.eclipse.text.edits.MalformedTreeException;
+import org.eclipse.text.edits.MultiTextEdit;
+import org.eclipse.text.edits.RangeMarker;
+import org.eclipse.text.edits.ReplaceEdit;
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
-
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
-
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.IndentUtil;
 import org.eclipse.wst.jsdt.internal.ui.text.FastJavaPartitionScanner;
+import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
 
 /**
  * A template editor using the Java formatter to format a template buffer.

@@ -11,11 +11,36 @@
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AnnotationMethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ConstructorDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocAllocationExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocArgumentExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocFieldReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocMessageSend;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
-import org.eclipse.wst.jsdt.internal.infer.InferEngine;
 import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
 import org.eclipse.wst.jsdt.internal.infer.InferredMethod;
 import org.eclipse.wst.jsdt.internal.infer.InferredType;
@@ -274,7 +299,7 @@ protected void consumeMethodInvocationNameWithTypeArguments() {
 	this.patternLocator.match((MessageSend) this.expressionStack[this.expressionPtr], this.nodeSet);
 }
 protected void consumeMethodInvocationPrimary() {
-	super.consumeMethodInvocationPrimary(); 
+	super.consumeMethodInvocationPrimary();
 
 	// this is always a MessageSend
 	this.patternLocator.match((MessageSend) this.expressionStack[this.expressionPtr], this.nodeSet);
@@ -311,7 +336,7 @@ protected void consumePrimaryNoNewArray() {
 }
 
 protected void consumePrimaryNoNewArrayWithName() {
-	// PrimaryNoNewArray ::=  PushLPAREN Expression PushRPAREN 
+	// PrimaryNoNewArray ::=  PushLPAREN Expression PushRPAREN
 	pushOnExpressionStack(getUnspecifiedReferenceOptimized());
 	// pop parenthesis positions (and don't update expression positions
 	// (see http://bugs.eclipse.org/bugs/show_bug.cgi?id=23329)
@@ -365,16 +390,16 @@ protected NameReference getUnspecifiedReferenceOptimized() {
  */
 public void parseBodies(CompilationUnitDeclaration unit) {
 	TypeDeclaration[] types = unit.types;
-	if (types != null) 
+	if (types != null)
 	  for (int i = 0; i < types.length; i++) {
 		TypeDeclaration type = types[i];
 		this.patternLocator.match(type, this.nodeSet);
 		this.parseBodies(type, unit);
 	}
-	
-	
+
+
 	ProgramElement[] statements = unit.statements;
-	if (statements != null) 
+	if (statements != null)
  	  for (int i = 0; i < statements.length; i++) {
 		if (statements[i] instanceof LocalDeclaration)
 		{
@@ -391,9 +416,9 @@ public void parseBodies(CompilationUnitDeclaration unit) {
 				((MethodLocator)this.patternLocator).match((MethodDeclaration)statements[i], this.nodeSet);
 
 		}
-		
+
 	}
-	
+
 	unit.traverseInferredTypes(localDeclarationVisitor,  null);
 }
 /**
@@ -442,7 +467,7 @@ protected void parseBodies(TypeDeclaration type, CompilationUnitDeclaration unit
 //	}
 }
 
- 
+
 
 }
 

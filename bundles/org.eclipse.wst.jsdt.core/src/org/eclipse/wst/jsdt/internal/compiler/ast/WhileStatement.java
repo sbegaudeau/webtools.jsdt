@@ -11,14 +11,18 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.impl.*;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.flow.LoopingFlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class WhileStatement extends Statement {
-	
+
 	public Expression condition;
 	public Statement action;
 	private BranchLabel breakLabel, continueLabel;
@@ -42,7 +46,7 @@ public class WhileStatement extends Statement {
 		FlowInfo flowInfo) {
 
 		breakLabel = new BranchLabel();
-		continueLabel = new BranchLabel(); 
+		continueLabel = new BranchLabel();
 
 		Constant cst = this.condition.constant;
 		boolean isConditionTrue = cst != Constant.NotAConstant && cst.booleanValue() == true;
@@ -51,7 +55,7 @@ public class WhileStatement extends Statement {
 		cst = this.condition.optimizedBooleanConstant();
 		boolean isConditionOptimizedTrue = cst != Constant.NotAConstant && cst.booleanValue() == true;
 		boolean isConditionOptimizedFalse = cst != Constant.NotAConstant && cst.booleanValue() == false;
-		
+
 //		preCondInitStateIndex =
 //			currentScope.methodScope().recordInitializationStates(flowInfo);
 		LoopingFlowContext condLoopContext;
@@ -62,16 +66,16 @@ public class WhileStatement extends Statement {
 		condInfo = this.condition.analyseCode(
 				currentScope,
 				(condLoopContext =
-					new LoopingFlowContext(flowContext, flowInfo, this, null, 
+					new LoopingFlowContext(flowContext, flowInfo, this, null,
 						null, currentScope)),
 				condInfo);
 
 		LoopingFlowContext loopingContext;
 		FlowInfo actionInfo;
 		FlowInfo exitBranch;
-		if (action == null 
+		if (action == null
 			|| (action.isEmptyBlock() && currentScope.compilerOptions().complianceLevel <= ClassFileConstants.JDK1_3)) {
-			condLoopContext.complainOnDeferredFinalChecks(currentScope, 
+			condLoopContext.complainOnDeferredFinalChecks(currentScope,
 					condInfo);
 			condLoopContext.complainOnDeferredNullChecks(currentScope,
 				condInfo.unconditionalInits());
@@ -84,10 +88,10 @@ public class WhileStatement extends Statement {
 				}
 //				mergedInitStateIndex =
 //					currentScope.methodScope().recordInitializationStates(mergedInfo);
-				return mergedInfo; 
+				return mergedInfo;
 			}
 		} else {
-			// in case the condition was inlined to false, record the fact that there is no way to reach any 
+			// in case the condition was inlined to false, record the fact that there is no way to reach any
 			// statement inside the looping action
 			loopingContext =
 				new LoopingFlowContext(
@@ -119,20 +123,20 @@ public class WhileStatement extends Statement {
 			exitBranch = flowInfo.copy();
 			// need to start over from flowInfo so as to get null inits
 
-			if ((actionInfo.tagBits & 
+			if ((actionInfo.tagBits &
 					loopingContext.initsOnContinue.tagBits &
 					FlowInfo.UNREACHABLE) != 0) {
 				continueLabel = null;
 				exitBranch.addInitializationsFrom(condInfo.initsWhenFalse());
 			} else {
-				condLoopContext.complainOnDeferredFinalChecks(currentScope, 
+				condLoopContext.complainOnDeferredFinalChecks(currentScope,
 						condInfo);
 				actionInfo = actionInfo.mergedWith(loopingContext.initsOnContinue.unconditionalInits());
-				condLoopContext.complainOnDeferredNullChecks(currentScope, 
+				condLoopContext.complainOnDeferredNullChecks(currentScope,
 						actionInfo);
-				loopingContext.complainOnDeferredFinalChecks(currentScope, 
+				loopingContext.complainOnDeferredFinalChecks(currentScope,
 						actionInfo);
-				loopingContext.complainOnDeferredNullChecks(currentScope, 
+				loopingContext.complainOnDeferredNullChecks(currentScope,
 						actionInfo);
 				exitBranch.
 					addPotentialInitializationsFrom(
@@ -147,7 +151,7 @@ public class WhileStatement extends Statement {
 					FlowInfo.UNREACHABLE) != 0 ?
 					loopingContext.initsOnBreak :
 					flowInfo.addInitializationsFrom(loopingContext.initsOnBreak), // recover upstream null info
-				isConditionOptimizedTrue, 
+				isConditionOptimizedTrue,
 				exitBranch,
 				isConditionOptimizedFalse,
 				!isConditionTrue /*while(true); unreachable(); */);
@@ -179,7 +183,7 @@ public class WhileStatement extends Statement {
 			codeStream.recordPositionsFrom(pc, this.sourceStart);
 			return;
 		}
-		
+
 		breakLabel.initialize(codeStream);
 
 		// generate condition
@@ -259,7 +263,7 @@ public class WhileStatement extends Statement {
 		if (action == null)
 			output.append(';');
 		else
-			action.printStatement(tab + 1, output); 
+			action.printStatement(tab + 1, output);
 		return output;
 	}
 

@@ -10,7 +10,13 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.Flags;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 
@@ -21,7 +27,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 public class SourceField extends NamedMember implements IField {
 
 /**
- * Constructs a handle to the field with the given name in the specified type. 
+ * Constructs a handle to the field with the given name in the specified type.
  */
 protected SourceField(JavaElement parent, String name) {
 	super(parent, name);
@@ -45,13 +51,13 @@ public ASTNode findNode(org.eclipse.wst.jsdt.core.dom.CompilationUnit ast) {
  * @see IField
  */
 public Object getConstant() throws JavaModelException {
-	Object constant = null;	
+	Object constant = null;
 	SourceFieldElementInfo info = (SourceFieldElementInfo) getElementInfo();
 	final char[] constantSourceChars = info.initializationSource;
 	if (constantSourceChars == null) {
 		return null;
 	}
-			
+
 	String constantSource = new String(constantSourceChars);
 	String signature = info.getTypeSignature();
 	try {

@@ -11,10 +11,12 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class QualifiedSuperReference extends QualifiedThisReference {
-	
+
 	public QualifiedSuperReference(TypeReference name, int pos, int sourceEnd) {
 		super(name, pos, sourceEnd);
 	}
@@ -33,7 +35,7 @@ public class QualifiedSuperReference extends QualifiedThisReference {
 
 		return qualification.print(0, output).append(".super"); //$NON-NLS-1$
 	}
-	
+
 	public TypeBinding resolveType(BlockScope scope) {
 
 		if ((this.bits & ParenthesizedMASK) != 0) {

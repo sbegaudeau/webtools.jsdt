@@ -17,13 +17,10 @@ import org.eclipse.jface.text.templates.GlobalTemplateVariables;
 import org.eclipse.jface.text.templates.TemplateContext;
 import org.eclipse.jface.text.templates.TemplateVariable;
 import org.eclipse.jface.text.templates.TemplateVariableResolver;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaProject;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.template.java.CompilationUnitCompletion.Variable;
-
 import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.MultiVariable;
 
 /**

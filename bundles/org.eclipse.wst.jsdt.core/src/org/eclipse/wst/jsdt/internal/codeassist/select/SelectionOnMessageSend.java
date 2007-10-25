@@ -75,7 +75,7 @@ public class SelectionOnMessageSend extends MessageSend {
 		}
 		return methodBinding;
 	}
-	
+
 	public StringBuffer printExpression(int indent, StringBuffer output) {
 
 		output.append("<SelectOnMessageSend:"); //$NON-NLS-1$
@@ -89,14 +89,14 @@ public class SelectionOnMessageSend extends MessageSend {
 		}
 		return output.append(")>"); //$NON-NLS-1$
 	}
-	
+
 	public TypeBinding resolveType(BlockScope scope) {
 
 		super.resolveType(scope);
 
 		// tolerate some error cases
 		if(binding == null ||
-					!(binding.isValidBinding() || 
+					!(binding.isValidBinding() ||
 						binding.problemId() == ProblemReasons.NotVisible
 						|| binding.problemId() == ProblemReasons.InheritedNameHidesEnclosingName
 						|| binding.problemId() == ProblemReasons.NonStaticReferenceInConstructorInvocation

@@ -25,31 +25,31 @@ import org.eclipse.wst.jsdt.core.search.TypeNameMatchRequestor;
 import org.eclipse.wst.jsdt.core.search.TypeNameRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.core.LibraryFragmentRoot;
+import org.eclipse.wst.jsdt.internal.core.LibraryPackageFragment;
 import org.eclipse.wst.jsdt.internal.core.Openable;
 import org.eclipse.wst.jsdt.internal.core.PackageFragmentRoot;
-import org.eclipse.wst.jsdt.internal.core.LibraryPackageFragment;
 import org.eclipse.wst.jsdt.internal.core.util.HandleFactory;
 import org.eclipse.wst.jsdt.internal.core.util.HashtableOfArrayToObject;
 
 /**
  * Wrapper used to link {@link IRestrictedAccessTypeRequestor} with {@link TypeNameRequestor}.
  * This wrapper specifically allows usage of internal method {@link BasicSearchEngine#searchAllTypeNames(
- * 	char[] packageName, 
- * 	int packageMatchRule, 
+ * 	char[] packageName,
+ * 	int packageMatchRule,
  * 	char[] typeName,
- * 	int typeMatchRule, 
- * 	int searchFor, 
- * 	org.eclipse.wst.jsdt.core.search.IJavaSearchScope scope, 
+ * 	int typeMatchRule,
+ * 	int searchFor,
+ * 	org.eclipse.wst.jsdt.core.search.IJavaSearchScope scope,
  * 	IRestrictedAccessTypeRequestor nameRequestor,
  * 	int waitingPolicy,
  * 	org.eclipse.core.runtime.IProgressMonitor monitor) }.
  * from  API method {@link org.eclipse.wst.jsdt.core.search.SearchEngine#searchAllTypeNames(
- * 	char[] packageName, 
+ * 	char[] packageName,
  * 	int packageMatchRule,
  * 	char[] typeName,
- * 	int matchRule, 
- * 	int searchFor, 
- * 	org.eclipse.wst.jsdt.core.search.IJavaSearchScope scope, 
+ * 	int matchRule,
+ * 	int searchFor,
+ * 	org.eclipse.wst.jsdt.core.search.IJavaSearchScope scope,
  * 	TypeNameRequestor nameRequestor,
  * 	int waitingPolicy,
  * 	org.eclipse.core.runtime.IProgressMonitor monitor) }.
@@ -120,7 +120,7 @@ public void acceptType(int modifiers, char[] packageName, char[] simpleTypeName,
 private IType createTypeFromJar(String resourcePath, int separatorIndex) throws JavaModelException {
 	// path to a class file inside a jar
 	// Optimization: cache package fragment root handle and package handles
-	if (this.lastPkgFragmentRootPath == null 
+	if (this.lastPkgFragmentRootPath == null
 			|| this.lastPkgFragmentRootPath.length() > resourcePath.length()
 			|| !resourcePath.startsWith(this.lastPkgFragmentRootPath)) {
 		String jarPath= resourcePath.substring(0, separatorIndex);
@@ -147,7 +147,7 @@ private IType createTypeFromJar(String resourcePath, int separatorIndex) throws 
 		this.packageHandles.put(pkgName, pkgFragment);
 	}
 	return pkgFragment.getClassFile(simpleNames[length]).getType();
-}	
+}
 private IType createTypeFromPath(String resourcePath, String simpleTypeName, char[][] enclosingTypeNames) throws JavaModelException {
 	// path to a file in a directory
 	// Optimization: cache package fragment root handle and package handles
@@ -158,7 +158,7 @@ private IType createTypeFromPath(String resourcePath, String simpleTypeName, cha
 		IPath path2 = new Path(this.lastPkgFragmentRootPath);
 		samePath = path1.equals(path2);
 	}
-	if (!samePath && (this.lastPkgFragmentRootPath == null || !(resourcePath.startsWith(this.lastPkgFragmentRootPath) 
+	if (!samePath && (this.lastPkgFragmentRootPath == null || !(resourcePath.startsWith(this.lastPkgFragmentRootPath)
 			&& ((rootPathLength = this.lastPkgFragmentRootPath.length()) > 0
 			&& (rootPathLength<resourcePath.length()))
 			&& resourcePath.charAt(rootPathLength) == '/'))) {
@@ -168,7 +168,7 @@ private IType createTypeFromPath(String resourcePath, String simpleTypeName, cha
 		this.lastPkgFragmentRootPath = this.lastPkgFragmentRoot.getPath().toString();
 		this.packageHandles = new HashtableOfArrayToObject(5);
 	}
-	
+
 	boolean isLibrary = this.lastPkgFragmentRoot instanceof LibraryFragmentRoot;
 	// create handle
 	if(isLibrary) {
@@ -196,7 +196,7 @@ private IType createTypeFromPath(String resourcePath, String simpleTypeName, cha
 			pkgFragment= ((PackageFragmentRoot) this.lastPkgFragmentRoot).getPackageFragment(pkgName);
 			this.packageHandles.put(pkgName, pkgFragment);
 		}
-		String simpleName= simpleNames[length]; 
+		String simpleName= simpleNames[length];
 		if (org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(simpleName) && !(pkgFragment instanceof LibraryPackageFragment)) {
 			ICompilationUnit unit= pkgFragment.getCompilationUnit(simpleName);
 			int etnLength = enclosingTypeNames == null ? 0 : enclosingTypeNames.length;
@@ -213,6 +213,6 @@ private IType createTypeFromPath(String resourcePath, String simpleTypeName, cha
 			return classFile.getType(simpleTypeName);
 		}
 	}
-	
-}	
+
+}
 }

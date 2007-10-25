@@ -11,15 +11,12 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.code;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.ICommentProvider;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.IScriptableRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
 import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 /**

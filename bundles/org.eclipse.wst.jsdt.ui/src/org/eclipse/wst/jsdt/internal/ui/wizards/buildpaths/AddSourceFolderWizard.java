@@ -12,10 +12,8 @@ package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.IPath;
-
 import org.eclipse.core.resources.IContainer;
-
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 

@@ -12,7 +12,6 @@
 package org.eclipse.wst.jsdt.internal.ui.wizards;
 
 import org.eclipse.core.resources.IFile;
-//import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -22,13 +21,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-//import org.eclipse.wst.jsdt.ui.internal.wizards.JSEditorPluginImageHelper;
-//import org.eclipse.wst.jsdt.ui.internal.wizards.JSEditorPluginImages;
-//import org.eclipse.wst.javascript.ui.internal.editor.Logger;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
-import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 
 public class NewJSWizard extends Wizard implements INewWizard {
 	

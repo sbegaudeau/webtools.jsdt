@@ -10,30 +10,24 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.navigator;
 
-import org.eclipse.swt.events.HelpListener;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
-
-import org.eclipse.jface.text.ITextSelection;
-
+import org.eclipse.swt.events.HelpListener;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchSite;
-
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
+import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaTextSelection;
 import org.eclipse.wst.jsdt.ui.actions.OpenAction;
 import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
-
-import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaTextSelection;
 
 public class OpenAndExpand extends SelectionDispatchAction implements IAction {
 

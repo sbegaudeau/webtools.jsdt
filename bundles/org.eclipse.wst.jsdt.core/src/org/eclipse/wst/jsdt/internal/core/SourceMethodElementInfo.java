@@ -10,20 +10,20 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceMethod;
 
-/** 
- * Element info for IMethod elements. 
+/**
+ * Element info for IMethod elements.
  */
 public abstract class SourceMethodElementInfo extends MemberElementInfo implements ISourceMethod {
-	
+
 	/**
 	 * For a source method (that is, a method contained in a compilation unit)
 	 * this is a collection of the names of the parameters for this method,
-	 * in the order the parameters are delcared. For a binary method (that is, 
+	 * in the order the parameters are delcared. For a binary method (that is,
 	 * a method declared in a binary type), these names are invented as
 	 * "arg"i where i starts at 1. This is an empty array if this method
 	 * has no parameters.
@@ -43,7 +43,7 @@ public abstract class SourceMethodElementInfo extends MemberElementInfo implemen
 	 * The type parameters of this source type. Empty if none.
 	 */
 	protected ITypeParameter[] typeParameters = TypeParameter.NO_TYPE_PARAMETERS;
-	
+
 public char[][] getArgumentNames() {
 	return this.argumentNames;
 }

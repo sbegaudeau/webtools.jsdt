@@ -15,10 +15,30 @@ package org.eclipse.wst.jsdt.internal.codeassist.impl;
  *
  */
 
-import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnQualifiedNameReference;
-import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnSingleNameReference;
-import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionScanner;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ConstructorDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ExplicitConstructorCall;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ForeachStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
+import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SuperReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
@@ -38,10 +58,10 @@ public abstract class AssistParser extends Parser {
 	// Default behavior is to stop parsing at the cursor position, but
 	// we need to parse fully so that types can be inferred
 	public static final boolean STOP_AT_CURSOR=false;
-	
+
 	public ASTNode assistNode;
 	public boolean isOrphanCompletionNode;
-		
+
 	/* recovery */
 	int[] blockStarts = new int[30];
 
@@ -50,7 +70,7 @@ public abstract class AssistParser extends Parser {
 
 	// the index in the identifier stack of the previous identifier
 	protected int previousIdentifierPtr;
-	
+
 	// element stack
 	protected static final int ElementStackIncrement = 100;
 	protected int elementPtr;
@@ -58,10 +78,10 @@ public abstract class AssistParser extends Parser {
 	protected int[] elementInfoStack = new int[ElementStackIncrement];
 	protected int previousKind;
 	protected int previousInfo;
-	
+
 	// OWNER
 	protected static final int ASSIST_PARSER = 512;
-	
+
 	// KIND : all values known by AssistParser are between 513 and 1023
 	protected static final int K_SELECTOR = ASSIST_PARSER + 1; // whether we are inside a message send
 	protected static final int K_TYPE_DELIMITER = ASSIST_PARSER + 2; // whether we are inside a type declaration
@@ -69,21 +89,21 @@ public abstract class AssistParser extends Parser {
 	protected static final int K_FIELD_INITIALIZER_DELIMITER = ASSIST_PARSER + 4; // whether we are inside a field initializer
 	protected static final int K_ATTRIBUTE_VALUE_DELIMITER = ASSIST_PARSER + 5; // whether we are inside a annotation attribute valuer
 	protected static final int K_ENUM_CONSTANT_DELIMITER = ASSIST_PARSER + 6; // whether we are inside a field initializer
-	
+
 	// selector constants
 	protected static final int THIS_CONSTRUCTOR = -1;
 	protected static final int SUPER_CONSTRUCTOR = -2;
-	
+
 	// enum constant constants
 	protected static final int NO_BODY = 0;
 	protected static final int WITH_BODY = 1;
-	
+
 	protected boolean isFirst = false;
 
 public AssistParser(ProblemReporter problemReporter) {
 	super(problemReporter, true);
 	this.javadocParser.checkDocComment = false;
-	
+
 	this.setMethodsFullRecovery(false);
 	this.setStatementsRecovery(false);
 }
@@ -125,18 +145,18 @@ public RecoveredElement buildInitialRecoveryState(){
 		if (referenceContext instanceof TypeDeclaration){
 			TypeDeclaration type = (TypeDeclaration) referenceContext;
 			for (int i = 0; i < type.fields.length; i++){
-				FieldDeclaration field = type.fields[i];					
+				FieldDeclaration field = type.fields[i];
 				if (field != null
 						&& field.getKind() == AbstractVariableDeclaration.INITIALIZER
 						&& field.declarationSourceStart <= scanner.initialPosition
 						&& scanner.initialPosition <= field.declarationSourceEnd
 						&& scanner.eofPosition <= field.declarationSourceEnd+1){
 					element = new RecoveredInitializer(field, null, 1, this);
-					lastCheckPoint = field.declarationSourceStart;					
+					lastCheckPoint = field.declarationSourceStart;
 					break;
 				}
 			}
-		} 
+		}
 	}
 
 	if (element == null) return element;
@@ -150,7 +170,7 @@ public RecoveredElement buildInitialRecoveryState(){
 
 	for(int i = 0; i <= astPtr; i++){
 		ASTNode node = astStack[i];
-		
+
 		if(node instanceof ForeachStatement && ((ForeachStatement)node).action == null) {
 			node = ((ForeachStatement)node).elementVariable;
 		}
@@ -194,7 +214,7 @@ public RecoveredElement buildInitialRecoveryState(){
 				lastCheckPoint = local.declarationSourceEnd + 1;
 			}
 			continue;
-		}		
+		}
 		if (node instanceof AbstractMethodDeclaration){
 			AbstractMethodDeclaration method = (AbstractMethodDeclaration) node;
 			if (method.declarationSourceEnd == 0){
@@ -210,13 +230,13 @@ public RecoveredElement buildInitialRecoveryState(){
 			Initializer initializer = (Initializer) node;
 			if (initializer.declarationSourceEnd == 0){
 				element = element.add(initializer, 1);
-				lastCheckPoint = initializer.sourceStart;				
+				lastCheckPoint = initializer.sourceStart;
 			} else {
 				element = element.add(initializer, 0);
 				lastCheckPoint = initializer.declarationSourceEnd + 1;
 			}
 			continue;
-		}		
+		}
 		if (node instanceof FieldDeclaration){
 			FieldDeclaration field = (FieldDeclaration) node;
 			if (field.declarationSourceEnd == 0){
@@ -235,10 +255,10 @@ public RecoveredElement buildInitialRecoveryState(){
 		if (node instanceof TypeDeclaration){
 			TypeDeclaration type = (TypeDeclaration) node;
 			if (type.declarationSourceEnd == 0){
-				element = element.add(type, 0);	
+				element = element.add(type, 0);
 				lastCheckPoint = type.bodyStart;
 			} else {
-				element = element.add(type, 0);				
+				element = element.add(type, 0);
 				lastCheckPoint = type.declarationSourceEnd + 1;
 			}
 			continue;
@@ -270,7 +290,7 @@ public RecoveredElement buildInitialRecoveryState(){
 			}
 		}
 	}
-	
+
 	return element;
 }
 protected void consumeAnnotationTypeDeclarationHeader() {
@@ -356,7 +376,7 @@ protected void consumeForceNoDiet() {
 				pushOnElementStack(K_FIELD_INITIALIZER_DELIMITER);
 			}
 		}
-		
+
 	}
 }
 protected void consumeInterfaceHeader() {
@@ -452,7 +472,7 @@ protected void consumeOpenFakeBlock() {
 
 protected void consumePackageDeclarationName() {
 	// PackageDeclarationName ::= 'package' Name
-	/* build an ImportRef build from the last name 
+	/* build an ImportRef build from the last name
 	stored in the identifier stack. */
 
 	int index;
@@ -470,17 +490,17 @@ protected void consumePackageDeclarationName() {
 	identifierPtr -= length;
 	long[] positions = new long[length];
 	System.arraycopy(
-		identifierPositionStack, 
-		identifierPtr + 1, 
-		positions, 
-		0, 
-		length); 
+		identifierPositionStack,
+		identifierPtr + 1,
+		positions,
+		0,
+		length);
 
 	/* build specific assist node on package statement */
 	ImportReference reference = this.createAssistPackageReference(subset, positions);
 	assistNode = reference;
 	this.lastCheckPoint = reference.sourceEnd + 1;
-	compilationUnit.currentPackage = reference; 
+	compilationUnit.currentPackage = reference;
 
 	if (currentToken == TokenNameSEMICOLON){
 		reference.declarationSourceEnd = scanner.currentPosition - 1;
@@ -495,12 +515,12 @@ protected void consumePackageDeclarationName() {
 	// recovery
 	if (currentElement != null){
 		lastCheckPoint = reference.declarationSourceEnd+1;
-		restartRecovery = AssistParser.STOP_AT_CURSOR; // used to avoid branching back into the regular automaton		
-	}	
+		restartRecovery = AssistParser.STOP_AT_CURSOR; // used to avoid branching back into the regular automaton
+	}
 }
 protected void consumePackageDeclarationNameWithModifiers() {
 	// PackageDeclarationName ::= Modifiers 'package' PushRealModifiers Name
-	/* build an ImportRef build from the last name 
+	/* build an ImportRef build from the last name
 	stored in the identifier stack. */
 
 	int index;
@@ -518,11 +538,11 @@ protected void consumePackageDeclarationNameWithModifiers() {
 	identifierPtr -= length;
 	long[] positions = new long[length];
 	System.arraycopy(
-		identifierPositionStack, 
-		identifierPtr + 1, 
-		positions, 
-		0, 
-		length); 
+		identifierPositionStack,
+		identifierPtr + 1,
+		positions,
+		0,
+		length);
 
 	this.intPtr--; // we don't need the modifiers start
 	this.intPtr--; // we don't need the package modifiers
@@ -530,16 +550,16 @@ protected void consumePackageDeclarationNameWithModifiers() {
 	// consume annotations
 	if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
 		System.arraycopy(
-			this.expressionStack, 
-			(this.expressionPtr -= length) + 1, 
-			reference.annotations = new Annotation[length], 
-			0, 
-			length); 
-	}	
+			this.expressionStack,
+			(this.expressionPtr -= length) + 1,
+			reference.annotations = new Annotation[length],
+			0,
+			length);
+	}
 	/* build specific assist node on package statement */
 	assistNode = reference;
 	this.lastCheckPoint = reference.sourceEnd + 1;
-	compilationUnit.currentPackage = reference; 
+	compilationUnit.currentPackage = reference;
 
 	if (currentToken == TokenNameSEMICOLON){
 		reference.declarationSourceEnd = scanner.currentPosition - 1;
@@ -554,8 +574,8 @@ protected void consumePackageDeclarationNameWithModifiers() {
 	// recovery
 	if (currentElement != null){
 		lastCheckPoint = reference.declarationSourceEnd+1;
-		restartRecovery = true; // used to avoid branching back into the regular automaton		
-	}	
+		restartRecovery = true; // used to avoid branching back into the regular automaton
+	}
 }
 protected void consumeRestoreDiet() {
 	super.consumeRestoreDiet();
@@ -567,7 +587,7 @@ protected void consumeRestoreDiet() {
 }
 protected void consumeSingleStaticImportDeclarationName() {
 	// SingleTypeImportDeclarationName ::= 'import' 'static' Name
-	/* push an ImportRef build from the last name 
+	/* push an ImportRef build from the last name
 	stored in the identifier stack. */
 
 	int index;
@@ -585,11 +605,11 @@ protected void consumeSingleStaticImportDeclarationName() {
 	identifierPtr -= length;
 	long[] positions = new long[length];
 	System.arraycopy(
-		identifierPositionStack, 
-		identifierPtr + 1, 
-		positions, 
-		0, 
-		length); 
+		identifierPositionStack,
+		identifierPtr + 1,
+		positions,
+		0,
+		length);
 
 	/* build specific assist node on import statement */
 	ImportReference reference = this.createAssistImportReference(subset, positions, ClassFileConstants.AccStatic);
@@ -613,12 +633,12 @@ protected void consumeSingleStaticImportDeclarationName() {
 		lastCheckPoint = reference.declarationSourceEnd+1;
 		currentElement = currentElement.add(reference, 0);
 		lastIgnoredToken = -1;
-		restartRecovery = true; // used to avoid branching back into the regular automaton		
+		restartRecovery = true; // used to avoid branching back into the regular automaton
 	}
 }
 protected void consumeSingleTypeImportDeclarationName() {
 	// SingleTypeImportDeclarationName ::= 'import' Name
-	/* push an ImportRef build from the last name 
+	/* push an ImportRef build from the last name
 	stored in the identifier stack. */
 
 	int index;
@@ -636,11 +656,11 @@ protected void consumeSingleTypeImportDeclarationName() {
 	identifierPtr -= length;
 	long[] positions = new long[length];
 	System.arraycopy(
-		identifierPositionStack, 
-		identifierPtr + 1, 
-		positions, 
-		0, 
-		length); 
+		identifierPositionStack,
+		identifierPtr + 1,
+		positions,
+		0,
+		length);
 
 	/* build specific assist node on import statement */
 	ImportReference reference = this.createAssistImportReference(subset, positions, ClassFileConstants.AccDefault);
@@ -664,12 +684,12 @@ protected void consumeSingleTypeImportDeclarationName() {
 		lastCheckPoint = reference.declarationSourceEnd+1;
 		currentElement = currentElement.add(reference, 0);
 		lastIgnoredToken = -1;
-		restartRecovery = true; // used to avoid branching back into the regular automaton		
+		restartRecovery = true; // used to avoid branching back into the regular automaton
 	}
 }
 protected void consumeStaticImportOnDemandDeclarationName() {
 	// TypeImportOnDemandDeclarationName ::= 'import' 'static' Name '.' '*'
-	/* push an ImportRef build from the last name 
+	/* push an ImportRef build from the last name
 	stored in the identifier stack. */
 
 	int index;
@@ -687,11 +707,11 @@ protected void consumeStaticImportOnDemandDeclarationName() {
 	identifierPtr -= length;
 	long[] positions = new long[length];
 	System.arraycopy(
-		identifierPositionStack, 
-		identifierPtr + 1, 
-		positions, 
-		0, 
-		length); 
+		identifierPositionStack,
+		identifierPtr + 1,
+		positions,
+		0,
+		length);
 
 	/* build specific assist node on import statement */
 	ImportReference reference = this.createAssistImportReference(subset, positions, ClassFileConstants.AccStatic);
@@ -716,7 +736,7 @@ protected void consumeStaticImportOnDemandDeclarationName() {
 		lastCheckPoint = reference.declarationSourceEnd+1;
 		currentElement = currentElement.add(reference, 0);
 		lastIgnoredToken = -1;
-		restartRecovery = true; // used to avoid branching back into the regular automaton		
+		restartRecovery = true; // used to avoid branching back into the regular automaton
 	}
 }
 protected void consumeStaticInitializer() {
@@ -729,12 +749,12 @@ protected void consumeStaticOnly() {
 }
 protected void consumeToken(int token) {
 	super.consumeToken(token);
-	
+
 	if(isFirst) {
 		isFirst = false;
 		return;
 	}
-	// register message send selector only if inside a method or if looking at a field initializer 
+	// register message send selector only if inside a method or if looking at a field initializer
 	// and if the current token is an open parenthesis
 	if (isInsideMethod() || isInsideFieldInitialization() || isInsideAttributeValue()) {
 		switch (token) {
@@ -750,7 +770,7 @@ protected void consumeToken(int token) {
 						this.pushOnElementStack(K_SELECTOR, SUPER_CONSTRUCTOR);
 						break;
 					case TokenNameGREATER: // explicit constructor invocation, eg. Fred<X>[(]1, 2)
-					case TokenNameRIGHT_SHIFT: // or fred<X<X>>[(]1, 2) 
+					case TokenNameRIGHT_SHIFT: // or fred<X<X>>[(]1, 2)
 					case TokenNameUNSIGNED_RIGHT_SHIFT: //or Fred<X<X<X>>>[(]1, 2)
 						if(this.identifierPtr > -1) {
 							this.pushOnElementStack(K_SELECTOR, this.previousIdentifierPtr);
@@ -775,7 +795,7 @@ protected void consumeToken(int token) {
 }
 protected void consumeTypeImportOnDemandDeclarationName() {
 	// TypeImportOnDemandDeclarationName ::= 'import' Name '.' '*'
-	/* push an ImportRef build from the last name 
+	/* push an ImportRef build from the last name
 	stored in the identifier stack. */
 
 	int index;
@@ -793,11 +813,11 @@ protected void consumeTypeImportOnDemandDeclarationName() {
 	identifierPtr -= length;
 	long[] positions = new long[length];
 	System.arraycopy(
-		identifierPositionStack, 
-		identifierPtr + 1, 
-		positions, 
-		0, 
-		length); 
+		identifierPositionStack,
+		identifierPtr + 1,
+		positions,
+		0,
+		length);
 
 	/* build specific assist node on import statement */
 	ImportReference reference = this.createAssistImportReference(subset, positions, ClassFileConstants.AccDefault);
@@ -822,7 +842,7 @@ protected void consumeTypeImportOnDemandDeclarationName() {
 		lastCheckPoint = reference.declarationSourceEnd+1;
 		currentElement = currentElement.add(reference, 0);
 		lastIgnoredToken = -1;
-		restartRecovery = true; // used to avoid branching back into the regular automaton		
+		restartRecovery = true; // used to avoid branching back into the regular automaton
 	}
 }
 public abstract ImportReference createAssistImportReference(char[][] tokens, long[] positions, int mod);
@@ -874,34 +894,34 @@ protected TypeReference getTypeReference(int dim) {
 	} else {
 		/* retrieve identifiers subset and whole positions, the assist node positions
 			should include the entire replaced source. */
-		
+
 		char[][] subset = identifierSubSet(index);
 		identifierLengthPtr--;
 		identifierPtr -= length;
 		long[] positions = new long[length];
 		System.arraycopy(
-			identifierPositionStack, 
-			identifierPtr + 1, 
-			positions, 
-			0, 
-			length); 
-	
+			identifierPositionStack,
+			identifierPtr + 1,
+			positions,
+			0,
+			length);
+
 		/* build specific assist on type reference */
-		
+
 		if (index == 0) {
 //			genericsIdentifiersLengthPtr--;
 			genericsLengthPtr--;
 			/* assist inside first identifier */
 			reference = this.createSingleAssistTypeReference(
-							assistIdentifier(), 
+							assistIdentifier(),
 							positions[0]);
 		} else {
 //			genericsIdentifiersLengthPtr--;
 			genericsLengthPtr--;
 			/* assist inside subsequent identifier */
 			reference =	this.createQualifiedAssistTypeReference(
-							subset,  
-							assistIdentifier(), 
+							subset,
+							assistIdentifier(),
 							positions);
 		}
 		assistNode = reference;
@@ -918,24 +938,24 @@ protected TypeReference getAssistTypeReferenceForGenericType(int dim, int identi
 		System.arraycopy(this.genericsStack, this.genericsPtr + 1, typeArguments, 0, currentTypeArgumentsLength);
 		long[] positions = new long[identifierLength];
 		System.arraycopy(
-			identifierPositionStack, 
-			identifierPtr, 
-			positions, 
-			0, 
-			identifierLength); 
-		
+			identifierPositionStack,
+			identifierPtr,
+			positions,
+			0,
+			identifierLength);
+
 		this.identifierPtr--;
-				
+
 		TypeReference reference = this.createParameterizedSingleAssistTypeReference(
 				typeArguments,
 				assistIdentifier(),
 				positions[0]);
-		
+
 		this.assistNode = reference;
 		this.lastCheckPoint = reference.sourceEnd + 1;
 		return reference;
 	}
-	
+
 	TypeReference[][] typeArguments = new TypeReference[numberOfIdentifiers][];
 	char[][] tokens = new char[numberOfIdentifiers][];
 	long[] positions = new long[numberOfIdentifiers];
@@ -964,7 +984,7 @@ protected TypeReference getAssistTypeReferenceForGenericType(int dim, int identi
 			currentIdentifiersLength = this.identifierLengthStack[this.identifierLengthPtr--];
 		}
 	}
-	
+
 	// remove completion token
 	int realLength = numberOfIdentifiers;
 	for (int i = 0; i < numberOfIdentifiers; i++) {
@@ -983,7 +1003,7 @@ protected TypeReference getAssistTypeReferenceForGenericType(int dim, int identi
 		TypeReference[] assistTypeArguments = typeArguments[realLength];
 		System.arraycopy(tokens, 0, tokens = new char[realLength][], 0, realLength);
 		System.arraycopy(typeArguments, 0, typeArguments = new TypeReference[realLength][], 0, realLength);
-		
+
 		boolean isParameterized = false;
 		for (int i = 0; i < typeArguments.length; i++) {
 			if(typeArguments[i] != null) {
@@ -1003,8 +1023,8 @@ protected TypeReference getAssistTypeReferenceForGenericType(int dim, int identi
 }
 /*
  * Copy of code from superclass with the following change:
- * In the case of qualified name reference if the cursor location is on the 
- * qualified name reference, then create a CompletionOnQualifiedNameReference 
+ * In the case of qualified name reference if the cursor location is on the
+ * qualified name reference, then create a CompletionOnQualifiedNameReference
  * instead.
  */
 protected NameReference getUnspecifiedReferenceOptimized() {
@@ -1024,10 +1044,10 @@ protected NameReference getUnspecifiedReferenceOptimized() {
 	identifierPtr -= length;
 	long[] positions = new long[length];
 	System.arraycopy(
-		identifierPositionStack, 
-		identifierPtr + 1, 
-		positions, 
-		0, 
+		identifierPositionStack,
+		identifierPtr + 1,
+		positions,
+		0,
 		length);
 
 	/* build specific completion on name reference */
@@ -1041,7 +1061,7 @@ protected NameReference getUnspecifiedReferenceOptimized() {
 	}
 	reference.bits &= ~ASTNode.RestrictiveFlagMASK;
 	reference.bits |= Binding.LOCAL | Binding.FIELD;
-	
+
 	assistNode = reference;
 	lastCheckPoint = reference.sourceEnd + 1;
 	return reference;
@@ -1076,7 +1096,7 @@ public void goForProgramElements() {
 protected char[][] identifierSubSet(int subsetLength){
 
 	if (subsetLength == 0) return null;
-	
+
 	char[][] subset;
 	System.arraycopy(
 		identifierStack,
@@ -1089,7 +1109,7 @@ protected char[][] identifierSubSet(int subsetLength){
 
 protected int indexOfAssistIdentifier(){
 	return this.indexOfAssistIdentifier(false);
-} 
+}
 /*
  * Iterate the most recent group of awaiting identifiers (grouped for qualified name reference (eg. aa.bb.cc)
  * so as to check whether one of them is the assist identifier.
@@ -1113,7 +1133,7 @@ protected int indexOfAssistIdentifier(boolean useGenericsStack){
 	if(useGenericsStack && length > 0 && this.genericsIdentifiersLengthPtr > -1 ) {
 		length = this.genericsIdentifiersLengthStack[this.genericsIdentifiersLengthPtr];
 	}
-	for (int i = 0; i < length; i++){ 
+	for (int i = 0; i < length; i++){
 		if (identifierStack[identifierPtr - i] == assistIdentifier){
 			return length - i - 1;
 		}
@@ -1193,7 +1213,7 @@ protected boolean isInsideMethod(){
 			case K_TYPE_DELIMITER : return false;
 			case K_METHOD_DELIMITER : return true;
 			case K_FIELD_INITIALIZER_DELIMITER : return false;
-		}	
+		}
 		i--;
 	}
 	return false;
@@ -1214,7 +1234,7 @@ protected int lastIndexOfElement(int kind) {
 	int i = elementPtr;
 	while(i > -1) {
 		if(elementKindStack[i] == kind) return i;
-		i--;	
+		i--;
 	}
 	return -1;
 }
@@ -1240,7 +1260,7 @@ public void parseBlockStatements(ConstructorDeclaration cd, CompilationUnitDecla
 	//convert bugs into parse error
 
 	initialize();
-	
+
 	// simulate goForConstructorBody except that we don't want to balance brackets because they are not going to be balanced
 	goForBlockStatementsopt();
 
@@ -1254,7 +1274,7 @@ public void parseBlockStatements(ConstructorDeclaration cd, CompilationUnitDecla
 	} catch (AbortCompilation ex) {
 		lastAct = ERROR_ACTION;
 	}
-	
+
 	if (lastAct == ERROR_ACTION) {
 		return;
 	}
@@ -1268,26 +1288,26 @@ public void parseBlockStatements(ConstructorDeclaration cd, CompilationUnitDecla
 			//avoid a isSomeThing that would only be used here BUT what is faster between two alternatives ?
 			{
 			System.arraycopy(
-				astStack, 
-				astPtr + 2, 
-				cd.statements = new Statement[length - 1], 
-				0, 
-				length - 1); 
+				astStack,
+				astPtr + 2,
+				cd.statements = new Statement[length - 1],
+				0,
+				length - 1);
 			cd.constructorCall = (ExplicitConstructorCall) astStack[astPtr + 1];
 		} else { //need to add explicitly the super();
 			System.arraycopy(
-				astStack, 
-				astPtr + 1, 
-				cd.statements = new Statement[length], 
-				0, 
-				length); 
+				astStack,
+				astPtr + 1,
+				cd.statements = new Statement[length],
+				0,
+				length);
 			cd.constructorCall = SuperReference.implicitSuperConstructorCall();
 		}
 	} else {
 		cd.constructorCall = SuperReference.implicitSuperConstructorCall();
 		if (!containsComment(cd.bodyStart, cd.bodyEnd)) {
 			cd.bits |= ASTNode.UndocumentedEmptyBlock;
-		}		
+		}
 	}
 
 	if (cd.constructorCall.sourceEnd == 0) {
@@ -1301,14 +1321,14 @@ public void parseBlockStatements(ConstructorDeclaration cd, CompilationUnitDecla
  */
 public void parseBlockStatements(
 	Initializer initializer,
-	TypeDeclaration type, 
+	TypeDeclaration type,
 	CompilationUnitDeclaration unit) {
 
 	initialize();
 
 	// simulate goForInitializer except that we don't want to balance brackets because they are not going to be balanced
 	goForBlockStatementsopt();
-	
+
 	referenceContext = type;
 	compilationUnit = unit;
 
@@ -1321,7 +1341,7 @@ public void parseBlockStatements(
 	} finally {
 		nestedMethod[nestedType]--;
 	}
-	
+
 	if (lastAct == ERROR_ACTION) {
 		return;
 	}
@@ -1330,18 +1350,18 @@ public void parseBlockStatements(
 	initializer.block.explicitDeclarations = realBlockStack[realBlockPtr--];
 	int length;
 	if ((length = astLengthStack[astLengthPtr--]) > 0) {
-		System.arraycopy(astStack, (astPtr -= length) + 1, initializer.block.statements = new Statement[length], 0, length); 
+		System.arraycopy(astStack, (astPtr -= length) + 1, initializer.block.statements = new Statement[length], 0, length);
 	} else {
 		// check whether this block at least contains some comment in it
 		if (!containsComment(initializer.block.sourceStart, initializer.block.sourceEnd)) {
 			initializer.block.bits |= ASTNode.UndocumentedEmptyBlock;
 		}
 	}
-	
+
 	// mark initializer with local type if one was found during parsing
 	if ((type.bits & ASTNode.HasLocalType) != 0) {
 		initializer.bits |= ASTNode.HasLocalType;
-	}	
+	}
 }
 /**
  * Parse the block statements inside the given method declaration and try to complete at the
@@ -1367,7 +1387,7 @@ public void parseBlockStatements(MethodDeclaration md, CompilationUnitDeclaratio
 
 	referenceContext = md;
 	compilationUnit = unit;
-	
+
 	scanner.resetTo(md.bodyStart, bodyEnd(md)); // reset the scanner to parser from { down to the cursor location
 	consumeNestedMethod();
 	try {
@@ -1375,9 +1395,9 @@ public void parseBlockStatements(MethodDeclaration md, CompilationUnitDeclaratio
 	} catch (AbortCompilation ex) {
 		lastAct = ERROR_ACTION;
 	} finally {
-		nestedMethod[nestedType]--;		
+		nestedMethod[nestedType]--;
 	}
-	
+
 	if (lastAct == ERROR_ACTION) {
 		return;
 	}
@@ -1387,11 +1407,11 @@ public void parseBlockStatements(MethodDeclaration md, CompilationUnitDeclaratio
 	int length;
 	if ((length = astLengthStack[astLengthPtr--]) != 0) {
 		System.arraycopy(
-			astStack, 
-			(astPtr -= length) + 1, 
-			md.statements = new Statement[length], 
-			0, 
-			length); 
+			astStack,
+			(astPtr -= length) + 1,
+			md.statements = new Statement[length],
+			0,
+			length);
 	} else {
 		if (!containsComment(md.bodyStart, md.bodyEnd)) {
 			md.bits |= ASTNode.UndocumentedEmptyBlock;
@@ -1401,10 +1421,10 @@ public void parseBlockStatements(MethodDeclaration md, CompilationUnitDeclaratio
 }
 protected void popElement(int kind){
 	if(elementPtr < 0 || elementKindStack[elementPtr] != kind) return;
-	
+
 	previousKind = elementKindStack[elementPtr];
 	previousInfo = elementInfoStack[elementPtr];
-	
+
 	switch (kind) {
 		default :
 			elementPtr--;
@@ -1422,7 +1442,7 @@ protected void popUntilElement(int kind){
 			previousKind = elementKindStack[i+1];
 			previousInfo = elementInfoStack[i+1];
 		}
-		elementPtr = i;	
+		elementPtr = i;
 	}
 }
 /*
@@ -1432,7 +1452,7 @@ protected void prepareForBlockStatements() {
 	this.nestedMethod[this.nestedType = 0] = 1;
 	this.variablesCounter[this.nestedType] = 0;
 	this.realBlockStack[this.realBlockPtr = 1] = 0;
-	
+
 	// initialize element stack
 	int fieldInitializerIndex = lastIndexOfElement(K_FIELD_INITIALIZER_DELIMITER);
 	int methodIndex = lastIndexOfElement(K_METHOD_DELIMITER);
@@ -1452,7 +1472,7 @@ protected void prepareForHeaders() {
 	nestedMethod[nestedType = 0] = 0;
 	variablesCounter[nestedType] = 0;
 	realBlockStack[realBlockPtr = 0] = 0;
-	
+
 //	popUntilElement(K_TYPE_DELIMITER);
 //
 //	if(this.topKnownElementKind(ASSIST_PARSER) != K_TYPE_DELIMITER) {
@@ -1466,10 +1486,10 @@ protected void pushOnElementStack(int kind){
 }
 protected void pushOnElementStack(int kind, int info){
 	if (this.elementPtr < -1) return;
-	
+
 	this.previousKind = 0;
 	this.previousInfo = 0;
-	
+
 	int stackLength = this.elementKindStack.length;
 	if (++this.elementPtr >= stackLength) {
 		System.arraycopy(
@@ -1523,7 +1543,7 @@ public void recoveryTokenCheck() {
 					popElement(K_METHOD_DELIMITER);
 				} else if(oldElement instanceof RecoveredType) {
 					popUntilElement(K_TYPE_DELIMITER);
-					if(!(referenceContext instanceof CompilationUnitDeclaration) 
+					if(!(referenceContext instanceof CompilationUnitDeclaration)
 							|| isIndirectlyInsideFieldInitialization()
 							|| currentElement instanceof RecoveredUnit) {
 						popElement(K_TYPE_DELIMITER);
@@ -1548,21 +1568,21 @@ public void reset(){
  */
 protected boolean resumeAfterRecovery() {
 
-	// reset internal stacks 
+	// reset internal stacks
 	this.astPtr = -1;
 	this.astLengthPtr = -1;
 	this.expressionPtr = -1;
 	this.expressionLengthPtr = -1;
-	this.identifierPtr = -1;	
+	this.identifierPtr = -1;
 	this.identifierLengthPtr	= -1;
 	this.intPtr = -1;
 	this.dimensions = 0 ;
 	this.recoveredStaticInitializerStart = 0;
-	
+
 	this.genericsIdentifiersLengthPtr = -1;
 	this.genericsLengthPtr = -1;
 	this.genericsPtr = -1;
-	
+
 	this.modifiers = ClassFileConstants.AccDefault;
 	this.modifiersSourceStart = -1;
 
@@ -1576,9 +1596,9 @@ protected boolean resumeAfterRecovery() {
 	if (referenceContext instanceof CompilationUnitDeclaration
 		|| this.assistNode != null){
 		if(isInsideMethod() &&
-			isIndirectlyInsideFieldInitialization() &&		
+			isIndirectlyInsideFieldInitialization() &&
 			this.assistNode == null
-			){ 
+			){
 			this.prepareForBlockStatements();
 			goForBlockStatementsOrCatchHeader();
 		} else {
@@ -1595,7 +1615,7 @@ protected boolean resumeAfterRecovery() {
 	}
 	if (referenceContext instanceof AbstractMethodDeclaration
 		|| referenceContext instanceof TypeDeclaration){
-			
+
 		if (currentElement instanceof RecoveredType){
 			this.prepareForHeaders();
 			goForHeaders();
@@ -1648,8 +1668,8 @@ protected ASTNode wrapWithExplicitConstructorCallIfNeeded(ASTNode ast) {
 			(((selector = topKnownElementInfo(ASSIST_PARSER)) == THIS_CONSTRUCTOR) ||
 			(selector == SUPER_CONSTRUCTOR))) {
 		ExplicitConstructorCall call = new ExplicitConstructorCall(
-			(selector == THIS_CONSTRUCTOR) ? 
-				ExplicitConstructorCall.This : 
+			(selector == THIS_CONSTRUCTOR) ?
+				ExplicitConstructorCall.This :
 				ExplicitConstructorCall.Super
 		);
 		call.arguments = new Expression[] {(Expression)ast};
@@ -1669,7 +1689,7 @@ protected void consumePropertyOperator() {
 		 return;
 	}
 
-	
+
 	int length = identifierLengthStack[identifierLengthPtr];
 	char[][] subset = identifierSubSet(completionIndex);
 	identifierLengthPtr--;
@@ -1688,7 +1708,7 @@ protected void consumePropertyOperator() {
 	{
 		ThisReference thisReference = (ThisReference) receiver;
 
-		subsetLength=1; 
+		subsetLength=1;
 	subsetLength=1;
 	subset=new char[][]{{'t','h','i','s'}};
 	subsetPositions=new long[]{ (((long)thisReference.sourceStart)<<32)+thisReference.sourceEnd};
@@ -1701,23 +1721,23 @@ protected void consumePropertyOperator() {
 	long[] positions = new long[length+subsetLength];
 	if (subsetLength>0)
 	{
-		System.arraycopy( 
-				subsetPositions, 
-				0, 
-				positions, 
-				0, 
+		System.arraycopy(
+				subsetPositions,
+				0,
+				positions,
+				0,
 				subsetLength);
-		
+
 	}
 	System.arraycopy(
-			identifierPositionStack, 
-			identifierPtr + 1, 
-			positions, 
-			subsetLength, 
+			identifierPositionStack,
+			identifierPtr + 1,
+			positions,
+			subsetLength,
 			length);
 
-	
-	
+
+
 	/* build specific completion on name reference */
 	NameReference reference;
 	if (completionIndex == 0 && subsetLength==0) {
@@ -1729,7 +1749,7 @@ protected void consumePropertyOperator() {
 	}
 	reference.bits &= ~ASTNode.RestrictiveFlagMASK;
 	reference.bits |= Binding.LOCAL | Binding.FIELD;
-	
+
 	assistNode = reference;
 	lastCheckPoint = reference.sourceEnd + 1;
 	this.expressionStack[this.expressionPtr] =reference ;

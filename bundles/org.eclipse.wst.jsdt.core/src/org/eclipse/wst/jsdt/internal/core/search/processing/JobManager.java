@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.processing;
 
-import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
@@ -30,14 +31,14 @@ public abstract class JobManager implements Runnable {
 	protected Thread processingThread;
 	protected Job progressJob;
 
-	/* counter indicating whether job execution is enabled or not, disabled if <= 0 
+	/* counter indicating whether job execution is enabled or not, disabled if <= 0
 	    it cannot go beyond 1 */
 	private int enableCount = 1;
 
 	public static boolean VERBOSE = false;
 	/* flag indicating that the activation has completed */
 	public boolean activated = false;
-	
+
 	private int awaitingClients = 0;
 
 	/**
@@ -127,7 +128,7 @@ public abstract class JobManager implements Runnable {
 		this.enableCount++;
 		if (VERBOSE)
 			Util.verbose("ENABLING  background indexing"); //$NON-NLS-1$
-		this.notifyAll(); // wake up the background thread if it is waiting (context must be synchronized)			
+		this.notifyAll(); // wake up the background thread if it is waiting (context must be synchronized)
 	}
 	public synchronized boolean isJobWaiting(IJob request) {
 		for (int i = this.jobEnd; i > this.jobStart; i--) // don't check job at jobStart, as it may have already started
@@ -157,7 +158,7 @@ public abstract class JobManager implements Runnable {
 	}
 	/**
 	 * This API is allowing to run one job in concurrence with background processing.
-	 * Indeed since other jobs are performed in background, resource sharing might be 
+	 * Indeed since other jobs are performed in background, resource sharing might be
 	 * an issue.Therefore, this functionality allows a given job to be run without
 	 * colliding with background ones.
 	 * Note: multiple thread might attempt to perform concurrent jobs at the same time,
@@ -183,7 +184,7 @@ public abstract class JobManager implements Runnable {
 				progress.beginTask("", concurrentJobWork); //$NON-NLS-1$
 			if (awaitingJobsCount() > 0) {
 				switch (waitingPolicy) {
-	
+
 					case IJob.ForceImmediate :
 						if (VERBOSE)
 							Util.verbose("-> NOT READY - forcing immediate - " + searchJob);//$NON-NLS-1$
@@ -196,14 +197,14 @@ public abstract class JobManager implements Runnable {
 						if (VERBOSE)
 							Util.verbose("FINISHED  concurrent job - " + searchJob); //$NON-NLS-1$
 						return status;
-	
+
 					case IJob.CancelIfNotReady :
 						if (VERBOSE)
 							Util.verbose("-> NOT READY - cancelling - " + searchJob); //$NON-NLS-1$
 						if (VERBOSE)
 							Util.verbose("CANCELED concurrent job - " + searchJob); //$NON-NLS-1$
 						throw new OperationCanceledException();
-	
+
 					case IJob.WaitUntilReady :
 						IProgressMonitor subProgress = null;
 						try {
@@ -286,7 +287,7 @@ public abstract class JobManager implements Runnable {
 		return status;
 	}
 	public abstract String processName();
-	
+
 	public synchronized void request(IJob job) {
 
 		job.ensureReadyToRun();
@@ -319,7 +320,7 @@ public abstract class JobManager implements Runnable {
 			this.processingThread = new Thread(this, this.processName());
 			this.processingThread.setDaemon(true);
 			// less prioritary by default, priority is raised if clients are actively waiting on it
-			this.processingThread.setPriority(Thread.NORM_PRIORITY-1); 
+			this.processingThread.setPriority(Thread.NORM_PRIORITY-1);
 			this.processingThread.start();
 		}
 	}
@@ -338,7 +339,7 @@ public abstract class JobManager implements Runnable {
 				protected IStatus run(IProgressMonitor monitor) {
 					int awaitingJobsCount;
 					while (!monitor.isCanceled() && (awaitingJobsCount = awaitingJobsCount()) > 0) {
-						monitor.subTask(Messages.bind(Messages.manager_filesToIndex, Integer.toString(awaitingJobsCount))); 
+						monitor.subTask(Messages.bind(Messages.manager_filesToIndex, Integer.toString(awaitingJobsCount)));
 						try {
 							Thread.sleep(500);
 						} catch (InterruptedException e) {
@@ -384,7 +385,7 @@ public abstract class JobManager implements Runnable {
 					try {
 						this.executing = true;
 						if (this.progressJob == null) {
-							this.progressJob = new ProgressJob(Messages.manager_indexingInProgress); 
+							this.progressJob = new ProgressJob(Messages.manager_indexingInProgress);
 							this.progressJob.setPriority(Job.LONG);
 							this.progressJob.setSystem(true);
 							this.progressJob.schedule();
@@ -406,7 +407,7 @@ public abstract class JobManager implements Runnable {
 			if (this.processingThread != null) { // if not shutting down
 				// log exception
 				Util.log(e, "Background Indexer Crash Recovery"); //$NON-NLS-1$
-				
+
 				// keep job manager alive
 				this.discardJobs(null);
 				this.processingThread = null;
@@ -417,7 +418,7 @@ public abstract class JobManager implements Runnable {
 			if (this.processingThread != null && !(e instanceof ThreadDeath)) {
 				// log exception
 				Util.log(e, "Background Indexer Crash Recovery"); //$NON-NLS-1$
-				
+
 				// keep job manager alive
 				this.discardJobs(null);
 				this.processingThread = null;
@@ -464,5 +465,5 @@ public abstract class JobManager implements Runnable {
 			buffer.append(i).append(" - job["+i+"]: ").append(this.awaitingJobs[this.jobStart+i]).append('\n'); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return buffer.toString();
-	}	
+	}
 }

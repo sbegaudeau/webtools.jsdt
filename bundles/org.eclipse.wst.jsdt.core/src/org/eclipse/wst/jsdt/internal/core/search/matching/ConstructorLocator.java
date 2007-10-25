@@ -15,7 +15,20 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ConstructorDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ExplicitConstructorCall;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocMessageSend;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedGenericMethodBinding;
@@ -56,7 +69,7 @@ public int match(Expression node, MatchingNodeSet nodeSet) { // interested in Al
 	char[] typeName = getTypeName(allocation);
 	if (typeName==null)
 		return IMPOSSIBLE_MATCH;
-		
+
 	if (this.pattern.declaringSimpleName != null && !matchesName(this.pattern.declaringSimpleName, typeName))
 		return IMPOSSIBLE_MATCH;
 
@@ -68,7 +81,7 @@ private char[] getTypeName(AllocationExpression allocation) {
 	char[]typeName =null;
 //	if (allocation.type!=null)
 //	  typeName = allocation.type.getTypeName();
-//	else 
+//	else
 		if (allocation.member instanceof SingleNameReference)
 		typeName= ((SingleNameReference)allocation.member).token;
 		else if (allocation.member instanceof FieldReference)

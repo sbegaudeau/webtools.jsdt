@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.corext.dom.fragments;
 
 import org.eclipse.text.edits.TextEditGroup;
-
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 

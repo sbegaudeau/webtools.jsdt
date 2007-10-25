@@ -12,13 +12,20 @@ package org.eclipse.wst.jsdt.internal.core.search.matching;
 
 import java.io.IOException;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.search.*;
+import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.SearchParticipant;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
-import org.eclipse.wst.jsdt.internal.core.index.*;
-import org.eclipse.wst.jsdt.internal.core.search.*;
+import org.eclipse.wst.jsdt.internal.core.index.EntryResult;
+import org.eclipse.wst.jsdt.internal.core.index.Index;
+import org.eclipse.wst.jsdt.internal.core.search.IndexQueryRequestor;
+import org.eclipse.wst.jsdt.internal.core.search.JavaSearchScope;
 
 /**
  * Internal search pattern implementation
@@ -32,7 +39,7 @@ public abstract class InternalSearchPattern {
 
 	int kind;
 	boolean mustResolve = true;
-	
+
 	void acceptMatch(String relativePath, String containerPath, SearchPattern pattern, IndexQueryRequestor requestor, SearchParticipant participant, IJavaSearchScope scope) {
 
 		if (scope instanceof JavaSearchScope) {
@@ -42,15 +49,15 @@ public abstract class InternalSearchPattern {
 			AccessRuleSet access = javaSearchScope.getAccessRuleSet(relativePath, containerPath);
 			if (access != JavaSearchScope.NOT_ENCLOSED) { // scope encloses the document path
 				String documentPath = documentPath(containerPath, relativePath);
-				if (!requestor.acceptIndexMatch(documentPath, pattern, participant, access)) 
+				if (!requestor.acceptIndexMatch(documentPath, pattern, participant, access))
 					throw new OperationCanceledException();
 			}
 		} else {
 			String documentPath = documentPath(containerPath, relativePath);
-			if (scope.encloses(documentPath)) 
-				if (!requestor.acceptIndexMatch(documentPath, pattern, participant, null)) 
+			if (scope.encloses(documentPath))
+				if (!requestor.acceptIndexMatch(documentPath, pattern, participant, null))
 					throw new OperationCanceledException();
-			
+
 		}
 	}
 	SearchPattern currentPattern() {
@@ -58,7 +65,7 @@ public abstract class InternalSearchPattern {
 	}
 	String documentPath(String containerPath, String relativePath) {
 		/* For some library entries containerPath == relativePath */
-		
+
 		if(containerPath!=null && relativePath!=null) {
 			IPath container = new Path(containerPath);
 			IPath relative = new Path(relativePath);
@@ -66,7 +73,7 @@ public abstract class InternalSearchPattern {
 				return relativePath;
 			}
 		}
-		
+
 		String separator = Util.isArchiveFileName(containerPath) ? IJavaSearchScope.JAR_FILE_ENTRY_SEPARATOR : "/"; //$NON-NLS-1$
 		StringBuffer buffer = new StringBuffer(containerPath.length() + separator.length() + relativePath.length());
 		buffer.append(containerPath);
@@ -84,12 +91,12 @@ public abstract class InternalSearchPattern {
 			SearchPattern pattern = currentPattern();
 			EntryResult[] entries = ((InternalSearchPattern)pattern).queryIn(index);
 			if (entries == null) return;
-		
+
 			SearchPattern decodedResult = pattern.getBlankPattern();
 			String containerPath = index.containerPath;
 			for (int i = 0, l = entries.length; i < l; i++) {
 				if (monitor != null && monitor.isCanceled()) throw new OperationCanceledException();
-		
+
 				EntryResult entry = entries[i];
 				decodedResult.decodeIndexKey(entry.getWord());
 				if (pattern.matchesDecodedKey(decodedResult)) {
@@ -98,7 +105,7 @@ public abstract class InternalSearchPattern {
 					for (int j = 0, n = names.length; j < n; j++) {
 						if(!scope.shouldExclude(containerPath, names[j]))
 							acceptMatch(names[j], containerPath, decodedResult, requestor, participant, scope);
-						
+
 					}
 				}
 			}

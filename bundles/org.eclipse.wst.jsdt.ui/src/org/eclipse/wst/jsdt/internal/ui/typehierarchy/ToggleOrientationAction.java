@@ -11,15 +11,11 @@
 package org.eclipse.wst.jsdt.internal.ui.typehierarchy;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.action.Action;
-
 import org.eclipse.ui.PlatformUI;
-
-import org.eclipse.wst.jsdt.ui.ITypeHierarchyViewPart;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.ui.ITypeHierarchyViewPart;
 
 /**
  * Toggles the orientationof the layout of the type hierarchy

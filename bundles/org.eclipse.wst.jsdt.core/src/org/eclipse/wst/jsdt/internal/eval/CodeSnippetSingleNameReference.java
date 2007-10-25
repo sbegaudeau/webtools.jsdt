@@ -11,10 +11,8 @@
 package org.eclipse.wst.jsdt.internal.eval;
 
 import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
-import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompoundAssignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
@@ -22,19 +20,19 @@ import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedFieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemFieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.VariableBinding;
 
 /**
  * A single name reference inside a code snippet can denote a field of a remote
@@ -44,7 +42,7 @@ public class CodeSnippetSingleNameReference extends SingleNameReference implemen
 
 	EvaluationContext evaluationContext;
 	FieldBinding delegateThis;
-	
+
 public CodeSnippetSingleNameReference(char[] source, long pos, EvaluationContext evaluationContext) {
 	super(source, pos);
 	this.evaluationContext = evaluationContext;
@@ -55,7 +53,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 		case Binding.FIELD : // reading a field
 			// check if reading a final blank field
 			FieldBinding fieldBinding;
-			if ((fieldBinding = (FieldBinding) this.binding).isBlankFinal() 
+			if ((fieldBinding = (FieldBinding) this.binding).isBlankFinal()
 					&& currentScope.allowBlankFinalFieldAssignment(fieldBinding)) {
 				if (!flowInfo.isDefinitelyAssigned(fieldBinding)) {
 					currentScope.problemReporter().uninitializedBlankFinalField(fieldBinding, this);
@@ -224,7 +222,7 @@ public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean
 //	} else {
 //		switch (this.bits & RestrictiveFlagMASK) {
 //			case Binding.FIELD : // reading a field
-//				if (!valueRequired) 
+//				if (!valueRequired)
 //					break;
 //				FieldBinding fieldBinding = (FieldBinding) this.codegenBinding;
 //				Constant fieldConstant = fieldBinding.constant();
@@ -241,7 +239,7 @@ public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean
 //								generateReceiver(codeStream);
 //							}
 //						}
-//						// managing private access							
+//						// managing private access
 //						if (isStatic) {
 //							codeStream.getstatic(fieldBinding);
 //						} else {
@@ -262,7 +260,7 @@ public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean
 //						}
 //						codeStream.generateEmulatedReadAccessForField(fieldBinding);
 //					}
-//					if (this.genericCast != null) codeStream.checkcast(this.genericCast);		
+//					if (this.genericCast != null) codeStream.checkcast(this.genericCast);
 //					codeStream.generateImplicitConversion(this.implicitConversion);
 //				} else { // directly use the inlined value
 //					codeStream.generateConstant(fieldConstant, this.implicitConversion);
@@ -348,9 +346,9 @@ public void generateCompoundAssignment(BlockScope currentScope, CodeStream codeS
 //					codeStream.store(localBinding, false);
 //					return;
 //				case T_int :
-//					if (((assignConstant = expression.constant) != Constant.NotAConstant) 
+//					if (((assignConstant = expression.constant) != Constant.NotAConstant)
 //						&& (assignConstant.typeID() != T_float) // only for integral types
-//						&& (assignConstant.typeID() != T_double)		
+//						&& (assignConstant.typeID() != T_double)
 //						&& ((increment = assignConstant.intValue()) == (short) increment)) { // 16 bits value
 //						switch (operator) {
 //							case PLUS :
@@ -384,10 +382,10 @@ public void generateCompoundAssignment(BlockScope currentScope, CodeStream codeS
 //			codeStream.generateImplicitConversion(this.implicitConversion);
 //			// generate the increment value (will by itself  be promoted to the operation value)
 //			if (expression == IntLiteral.One){ // prefix operation
-//				codeStream.generateConstant(expression.constant, this.implicitConversion);			
+//				codeStream.generateConstant(expression.constant, this.implicitConversion);
 //			} else {
 //				expression.generateCode(currentScope, codeStream, true);
-//			}		
+//			}
 //			// perform the operation
 //			codeStream.sendOperator(operator, operationTypeID);
 //			// cast the value back to the array reference type
@@ -410,7 +408,7 @@ public void generateCompoundAssignment(BlockScope currentScope, CodeStream codeS
 //					}
 //				}
 //				// current stack is:
-//				// value field receiver value				
+//				// value field receiver value
 //				codeStream.generateEmulatedWriteAccessForField(fieldBinding);
 //			}
 //			return;
@@ -493,7 +491,7 @@ public void generatePostIncrement(BlockScope currentScope, CodeStream codeStream
 //						generateReceiver(codeStream);
 //					}
 //					codeStream.dup_x2();
-//					codeStream.pop();					
+//					codeStream.pop();
 //				} else {
 //					codeStream.dup_x1();
 //					codeStream.pop();
@@ -503,7 +501,7 @@ public void generatePostIncrement(BlockScope currentScope, CodeStream codeStream
 //						generateReceiver(codeStream);
 //					}
 //					codeStream.dup_x1();
-//					codeStream.pop();					
+//					codeStream.pop();
 //				}
 //				codeStream.generateConstant(postIncrement.expression.constant, this.implicitConversion);
 //				codeStream.sendOperator(postIncrement.operator, fieldBinding.type.id);
@@ -570,7 +568,7 @@ public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FlowInfo f
 	if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) != 0) return;
 	//If inlinable field, forget the access emulation, the code gen will directly target it
 	if (this.constant != Constant.NotAConstant)
-		return;	
+		return;
 	// if field from parameterized type got found, use the original field at codegen time
 	if (this.binding instanceof ParameterizedFieldBinding) {
 	    ParameterizedFieldBinding parameterizedField = (ParameterizedFieldBinding) this.binding;
@@ -579,15 +577,15 @@ public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FlowInfo f
 //	    // extra cast needed if field type was type variable
 //	    if ((fieldCodegenBinding.type.tagBits & TagBits.HasTypeVariable) != 0) {
 //	        this.genericCast = fieldCodegenBinding.type.genericCast(currentScope.boxing(parameterizedField.type)); // runtimeType could be base type in boxing case
-//	    }		    
-	}		
+//	    }
+	}
 	if ((this.bits & Binding.FIELD) != 0) {
 		FieldBinding fieldBinding = (FieldBinding) this.binding;
-		
+
 		// if the binding declaring class is not visible, need special action
 		// for runtime compatibility on 1.2 VMs : change the declaring class of the binding
 		// NOTE: from target 1.2 on, field's declaring class is touched if any different from receiver type
-		// and not from Object or implicit static field access.	
+		// and not from Object or implicit static field access.
 		if (fieldBinding.declaringClass != this.delegateThis.type
 				&& fieldBinding.declaringClass != null // array.length
 				&& fieldBinding.constant() == Constant.NotAConstant) {
@@ -596,13 +594,13 @@ public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FlowInfo f
 					&& (options.complianceLevel >= ClassFileConstants.JDK1_4 || !fieldBinding.isStatic())
 					&& fieldBinding.declaringClass.id != T_JavaLangObject) // no change for Object fields
 				|| !fieldBinding.declaringClass.canBeSeenBy(currentScope)) {
-	
-//				this.codegenBinding = 
+
+//				this.codegenBinding =
 //				    currentScope.enclosingSourceType().getUpdatedFieldBinding(
-//					       (FieldBinding)this.codegenBinding, 
+//					       (FieldBinding)this.codegenBinding,
 //					        (ReferenceBinding)this.delegateThis.type.erasure());
 			}
-		}				
+		}
 	}
 }
 /**
@@ -635,7 +633,7 @@ public TypeBinding reportError(BlockScope scope) {
 						// manage the access to a private field of the enclosing type
 						CodeSnippetScope localScope = new CodeSnippetScope(scope);
 						/*this.codegenBinding =*/ this.binding = localScope.getFieldForCodeSnippet(this.delegateThis.type, this.token, this);
-						return checkFieldAccess(scope);						
+						return checkFieldAccess(scope);
 					} else {
 						return super.reportError(scope);
 					}

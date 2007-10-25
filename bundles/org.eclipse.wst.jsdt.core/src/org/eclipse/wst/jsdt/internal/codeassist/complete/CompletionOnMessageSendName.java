@@ -25,14 +25,14 @@ public class CompletionOnMessageSendName extends MessageSend {
 	}
 
 	public TypeBinding resolveType(BlockScope scope) {
-		
+
 		if (receiver==null || receiver.isImplicitThis())
 			throw new CompletionNodeFound();
 
 		this.actualReceiverType = receiver.resolveType(scope);
 		if (this.actualReceiverType == null || this.actualReceiverType.isBaseType() || this.actualReceiverType.isArrayType())
 			throw new CompletionNodeFound();
-		
+
 		// resolve type arguments
 		if (this.typeArguments != null) {
 			int length = this.typeArguments.length;
@@ -41,7 +41,7 @@ public class CompletionOnMessageSendName extends MessageSend {
 				this.genericTypeArguments[i] = this.typeArguments[i].resolveType(scope, true /* check bounds*/);
 			}
 		}
-	
+
 		if(this.receiver instanceof NameReference) {
 			throw new CompletionNodeFound(this, ((NameReference)this.receiver).binding, scope);
 		} else if(this.receiver instanceof MessageSend) {
@@ -49,7 +49,7 @@ public class CompletionOnMessageSendName extends MessageSend {
 		}
 		throw new CompletionNodeFound(this, this.actualReceiverType, scope);
 	}
-	
+
 	public StringBuffer printExpression(int indent, StringBuffer output) {
 
 		output.append("<CompleteOnMessageSendName:"); //$NON-NLS-1$

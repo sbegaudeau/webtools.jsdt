@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.dom.fragments;
 
-import org.eclipse.text.edits.TextEditGroup;
-
 import org.eclipse.core.runtime.Assert;
-
+import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.JdtASTMatcher;
 
 class SimpleFragment extends ASTFragment {

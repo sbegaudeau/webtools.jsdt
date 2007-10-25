@@ -16,10 +16,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusContext;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.JavaModelException;
@@ -35,7 +33,6 @@ import org.eclipse.wst.jsdt.core.dom.SynchronizedStatement;
 import org.eclipse.wst.jsdt.core.dom.TryStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
 import org.eclipse.wst.jsdt.core.dom.WithStatement;
-
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.Selection;

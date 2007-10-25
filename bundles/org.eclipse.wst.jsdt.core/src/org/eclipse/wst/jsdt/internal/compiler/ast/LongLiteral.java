@@ -11,14 +11,17 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.impl.*;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.DoubleConstant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.LongConstant;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 
 public class LongLiteral extends NumberLiteral {
-	static final Constant FORMAT_ERROR = DoubleConstant.fromValue(1.0/0.0); // NaN;	
-		
+	static final Constant FORMAT_ERROR = DoubleConstant.fromValue(1.0/0.0); // NaN;
+
 public LongLiteral(char[] token, int s,int e) {
 	super(token, s,e);
 }
@@ -26,7 +29,7 @@ public void computeConstant() {
 	//the overflow (when radix=10) is tested using the fact that
 	//the value should always grow during its computation
 	int length = source.length - 1; //minus one because the last char is 'l' or 'L'
-	
+
 	long computedValue ;
 	if (source[0] == '0') {
 		if (length == 1) {
@@ -49,7 +52,7 @@ public void computeConstant() {
 				return ;
 			}
 		}
-				
+
 		int digitValue ;
 		if ((digitValue = ScannerHelper.digit(source[j++],radix)) < 0 ) {
 			constant = FORMAT_ERROR; return ;
@@ -77,7 +80,7 @@ public void computeConstant() {
 		computedValue = 0;
 		final long limit = Long.MAX_VALUE / 10; // needed to check prior to the multiplication
 		for (int i = 0 ; i < length; i++) {
-			int digitValue ;	
+			int digitValue ;
 			if ((digitValue = ScannerHelper.digit(source[i], 10)) < 0 ) return /*constant stays null*/;
 			previous = computedValue;
 			if (computedValue > limit)
@@ -98,7 +101,7 @@ public void computeConstant() {
  * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
  * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
  * @param valueRequired boolean
- */ 
+ */
 public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
 	int pc = codeStream.position;
 	if (valueRequired) {
@@ -111,7 +114,7 @@ public TypeBinding literalType(BlockScope scope) {
 }
 public final boolean mayRepresentMIN_VALUE(){
 	//a special autorized int literral is 9223372036854775808L
-	//which is ONE over the limit. This special case 
+	//which is ONE over the limit. This special case
 	//only is used in combinaison with - to denote
 	//the minimal value of int -9223372036854775808L
 
@@ -119,20 +122,20 @@ public final boolean mayRepresentMIN_VALUE(){
 			(source[0] == '9') &&
 			(source[1] == '2') &&
 			(source[2] == '2') &&
-			(source[3] == '3') &&			
+			(source[3] == '3') &&
 			(source[4] == '3') &&
 			(source[5] == '7') &&
 			(source[6] == '2') &&
-			(source[7] == '0') &&			
+			(source[7] == '0') &&
 			(source[8] == '3') &&
 			(source[9] == '6') &&
 			(source[10] == '8') &&
 			(source[11] == '5') &&
-			(source[12] == '4') &&			
+			(source[12] == '4') &&
 			(source[13] == '7') &&
 			(source[14] == '7') &&
 			(source[15] == '5') &&
-			(source[16] == '8') &&			
+			(source[16] == '8') &&
 			(source[17] == '0') &&
 			(source[18] == '8') &&
 			(((this.bits & ASTNode.ParenthesizedMASK) >> ASTNode.ParenthesizedSHIFT) == 0));

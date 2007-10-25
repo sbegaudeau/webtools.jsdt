@@ -12,18 +12,13 @@ package org.eclipse.wst.jsdt.internal.ui;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterFactory;
-
+import org.eclipse.search.ui.ISearchPageScoreComputer;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IStorageEditorInput;
-
-import org.eclipse.search.ui.ISearchPageScoreComputer;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
 import org.eclipse.wst.jsdt.internal.ui.search.JavaSearchPageScoreComputer;
 import org.eclipse.wst.jsdt.internal.ui.search.SearchUtil;
+import org.eclipse.wst.jsdt.ui.JavaUI;
 
 /**
  * Adapter factory to support basic UI operations for for editor inputs.

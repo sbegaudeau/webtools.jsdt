@@ -19,26 +19,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.text.edits.InsertEdit;
 import org.eclipse.text.edits.TextEdit;
-
-import org.eclipse.core.runtime.CoreException;
-
-import org.eclipse.core.resources.IFile;
-
-import org.eclipse.swt.graphics.Image;
-
-import org.eclipse.jface.viewers.StructuredSelection;
-
-import org.eclipse.jface.text.IDocument;
-
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.part.FileEditorInput;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
@@ -84,7 +77,6 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodeFactory;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
@@ -102,11 +94,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.surround.ExceptionAnalyz
 import org.eclipse.wst.jsdt.internal.corext.refactoring.surround.SurroundWithTryCatchRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.actions.InferTypeArgumentsAction;
-import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
-import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.fix.CodeStyleCleanUp;
@@ -120,6 +107,9 @@ import org.eclipse.wst.jsdt.internal.ui.refactoring.nls.ExternalizeWizard;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ChangeMethodSignatureProposal.ChangeDescription;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ChangeMethodSignatureProposal.InsertDescription;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ChangeMethodSignatureProposal.RemoveDescription;
+import org.eclipse.wst.jsdt.ui.actions.InferTypeArgumentsAction;
+import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
+import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
 
 /**
   */

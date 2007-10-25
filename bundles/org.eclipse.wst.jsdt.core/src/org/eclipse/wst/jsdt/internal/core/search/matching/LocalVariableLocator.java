@@ -12,7 +12,11 @@ package org.eclipse.wst.jsdt.internal.core.search.matching;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.core.LocalVariable;

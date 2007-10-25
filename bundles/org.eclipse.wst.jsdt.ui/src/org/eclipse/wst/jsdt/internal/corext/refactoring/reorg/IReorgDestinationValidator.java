@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.reorg;
 
 import org.eclipse.core.resources.IResource;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 
 public interface IReorgDestinationValidator {

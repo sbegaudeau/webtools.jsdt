@@ -10,10 +10,22 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.util;
 
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IInitializer;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.core.SourceRefElement;
@@ -187,7 +199,7 @@ public class ASTNodeFinder {
 			InferredType inferredType = this.unit.inferredTypes[i];
 			if (!inferredType.isDefinition)
 				continue;
-			
+
 			if (inferredType.isAnonymous) {
 				if (findAnonymous && ++count == occurenceCount) {
 					return inferredType;

@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.newsourcepage;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-
 import org.eclipse.ui.part.ISetSelectionTarget;
 
 public class CreateSourceFolderAction2 extends CreateSourceFolderAction {

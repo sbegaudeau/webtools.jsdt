@@ -15,9 +15,13 @@ import java.io.IOException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.search.*;
+import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.SearchParticipant;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.LocalVariable;
@@ -27,7 +31,7 @@ import org.eclipse.wst.jsdt.internal.core.search.JavaSearchScope;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 public class LocalVariablePattern extends VariablePattern  {
-	
+
 LocalVariable localVariable;
 
 
@@ -45,7 +49,7 @@ public LocalVariablePattern(boolean findDeclarations, boolean readAccess, boolea
 public void findIndexMatches(Index index, IndexQueryRequestor requestor, SearchParticipant participant, IJavaSearchScope scope, IProgressMonitor progressMonitor) throws IOException {
 	if (this.localVariable!=null)
 	{
-		
+
     IPackageFragmentRoot root = (IPackageFragmentRoot)this.localVariable.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
 	String documentPath;
 	String relativePath;
@@ -65,11 +69,11 @@ public void findIndexMatches(Index index, IndexQueryRequestor requestor, SearchP
 		// Note that requestor has to verify if needed whether the document violates the access restriction or not
 		AccessRuleSet access = javaSearchScope.getAccessRuleSet(relativePath, index.containerPath);
 		if (access != JavaSearchScope.NOT_ENCLOSED) { // scope encloses the path
-			if (!requestor.acceptIndexMatch(documentPath, this, participant, access)) 
+			if (!requestor.acceptIndexMatch(documentPath, this, participant, access))
 				throw new OperationCanceledException();
 		}
 	} else if (scope.encloses(documentPath)) {
-		if (!requestor.acceptIndexMatch(documentPath, this, participant, null)) 
+		if (!requestor.acceptIndexMatch(documentPath, this, participant, null))
 			throw new OperationCanceledException();
 	}
 	}

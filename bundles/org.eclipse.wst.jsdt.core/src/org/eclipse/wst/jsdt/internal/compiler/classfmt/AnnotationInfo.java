@@ -13,8 +13,19 @@ package org.eclipse.wst.jsdt.internal.compiler.classfmt;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.ConstantPool;
-import org.eclipse.wst.jsdt.internal.compiler.env.*;
-import org.eclipse.wst.jsdt.internal.compiler.impl.*;
+import org.eclipse.wst.jsdt.internal.compiler.env.ClassSignature;
+import org.eclipse.wst.jsdt.internal.compiler.env.EnumConstantSignature;
+import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryAnnotation;
+import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryElementValuePair;
+import org.eclipse.wst.jsdt.internal.compiler.impl.BooleanConstant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.ByteConstant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.CharConstant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.DoubleConstant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.FloatConstant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.IntConstant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.LongConstant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.ShortConstant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.StringConstant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 
 public class AnnotationInfo extends ClassFileStruct implements IBinaryAnnotation {
@@ -147,7 +158,7 @@ Object decodeDefaultValue() {
 			}
 			break;
 		default:
-			throw new IllegalStateException("Unrecognized tag " + (char) tag); //$NON-NLS-1$	
+			throw new IllegalStateException("Unrecognized tag " + (char) tag); //$NON-NLS-1$
 	}
 	return value;
 }
@@ -259,12 +270,12 @@ private int readTargetValue(int offset) {
  * Read through this annotation in order to figure out the necessary tag
  * bits and the length of this annotation. The data structure will not be
  * flushed out.
- * 
+ *
  * The tag bits are derived from the following (supported) standard
  * annotation. java.lang.annotation.Documented,
  * java.lang.annotation.Retention, java.lang.annotation.Target, and
  * java.lang.Deprecated
- * 
+ *
  * @param expectRuntimeVisibleAnno
  *            <code>true</cod> to indicate that this is a runtime-visible annotation
  * @param toplevel <code>false</code> to indicate that an nested annotation is read.

@@ -16,7 +16,7 @@ public class CharConstant extends Constant {
 
 	public static Constant fromValue(char value) {
 		return new CharConstant(value);
-	}	
+	}
 
 	private CharConstant(char value) {
 		this.value = value;
@@ -47,7 +47,7 @@ public class CharConstant extends Constant {
 		return String.valueOf(this.value);
 	}
 	public String toString(){
-	
+
 		return "(char)" + value; //$NON-NLS-1$
 	}
 	public int typeID() {

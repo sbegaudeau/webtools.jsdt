@@ -11,9 +11,7 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 
 public class ParameterTypeVariable extends ConstraintVariable {

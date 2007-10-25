@@ -10,12 +10,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui;
 
-import org.eclipse.core.runtime.IAdaptable;
-
 import org.eclipse.core.resources.IResource;
-
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.views.tasklist.ITaskListResourceAdapter;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 

@@ -13,10 +13,19 @@ package org.eclipse.wst.jsdt.internal.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceProxy;
+import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.IClasspathEntry;
+import org.eclipse.wst.jsdt.core.IJavaModel;
+import org.eclipse.wst.jsdt.core.IJavaModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.JavaModelException;
 
 public class DeletePackageFragmentRootOperation extends JavaModelOperation {
 
@@ -27,22 +36,22 @@ public class DeletePackageFragmentRootOperation extends JavaModelOperation {
 		IPackageFragmentRoot root,
 		int updateResourceFlags,
 		int updateModelFlags) {
-			
+
 		super(root);
 		this.updateResourceFlags = updateResourceFlags;
 		this.updateModelFlags = updateModelFlags;
 	}
 
 	protected void executeOperation() throws JavaModelException {
-		
+
 		IPackageFragmentRoot root = (IPackageFragmentRoot)this.getElementToProcess();
 		IClasspathEntry rootEntry = root.getRawClasspathEntry();
-		
+
 		// remember olds roots
 		DeltaProcessor deltaProcessor = JavaModelManager.getJavaModelManager().getDeltaProcessor();
 		if (deltaProcessor.oldRoots == null)
 			deltaProcessor.oldRoots = new HashMap();
-		
+
 		// update classpath if needed
 		if ((updateModelFlags & IPackageFragmentRoot.ORIGINATING_PROJECT_CLASSPATH) != 0) {
 			updateProjectClasspath(rootEntry.getPath(), root.getJavaProject(), deltaProcessor.oldRoots);
@@ -50,7 +59,7 @@ public class DeletePackageFragmentRootOperation extends JavaModelOperation {
 		if ((updateModelFlags & IPackageFragmentRoot.OTHER_REFERRING_PROJECTS_CLASSPATH) != 0) {
 			updateReferringProjectClasspaths(rootEntry.getPath(), root.getJavaProject(), deltaProcessor.oldRoots);
 		}
-		
+
 		// delete resource
 		if (!root.isExternal() && (this.updateModelFlags & IPackageFragmentRoot.NO_RESOURCE_MODIFICATION) == 0) {
 			deleteResource(root, rootEntry);
@@ -95,7 +104,7 @@ public class DeletePackageFragmentRootOperation extends JavaModelOperation {
 				throw new JavaModelException(e);
 			}
 		}
-		setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE); 
+		setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
 	}
 
 
@@ -118,7 +127,7 @@ public class DeletePackageFragmentRootOperation extends JavaModelOperation {
 	protected void updateProjectClasspath(IPath rootPath, IJavaProject project, Map oldRoots) throws JavaModelException {
 		// remember old roots
 		oldRoots.put(project, project.getPackageFragmentRoots());
-		
+
 		IClasspathEntry[] classpath = project.getRawClasspath();
 		IClasspathEntry[] newClasspath = null;
 		int cpLength = classpath.length;
@@ -141,7 +150,7 @@ public class DeletePackageFragmentRootOperation extends JavaModelOperation {
 			}
 			project.setRawClasspath(newClasspath, progressMonitor);
 		}
-	}	
+	}
 	protected IJavaModelStatus verify() {
 		IJavaModelStatus status = super.verify();
 		if (!status.isOK()) {

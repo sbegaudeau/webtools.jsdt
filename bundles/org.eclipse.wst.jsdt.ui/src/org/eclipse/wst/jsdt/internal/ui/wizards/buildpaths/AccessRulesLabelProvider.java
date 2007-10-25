@@ -11,13 +11,10 @@
 
 package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths;
 
-import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.core.IAccessRule;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 

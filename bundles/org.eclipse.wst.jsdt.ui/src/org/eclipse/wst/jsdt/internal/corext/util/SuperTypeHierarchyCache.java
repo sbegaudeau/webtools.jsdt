@@ -15,7 +15,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.ITypeHierarchyChangedListener;

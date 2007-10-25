@@ -39,7 +39,7 @@ void addDependencies(String[] typeNameDependencies) {
 			if (!includes(qualifiedTypeName[qualifiedTypeName.length - 1])) {
 				int length = this.simpleNameReferences.length;
 				System.arraycopy(this.simpleNameReferences, 0, this.simpleNameReferences = new char[length + 1][], 0, length);
-				this.simpleNameReferences[length] = qualifiedTypeName[qualifiedTypeName.length - 1];				
+				this.simpleNameReferences[length] = qualifiedTypeName[qualifiedTypeName.length - 1];
 			}
 			int length = this.qualifiedNameReferences.length;
 			System.arraycopy(this.qualifiedNameReferences, 0, this.qualifiedNameReferences = new char[length + 1][][], 0, length);

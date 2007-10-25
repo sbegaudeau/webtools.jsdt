@@ -10,26 +10,20 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.refactoring.changes;
 
-import org.eclipse.text.edits.UndoEdit;
-
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
-
-import org.eclipse.core.resources.IFile;
-
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-
-import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
-import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.ContentStamp;
 import org.eclipse.ltk.core.refactoring.UndoTextFileChange;
+import org.eclipse.text.edits.UndoEdit;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
+import org.eclipse.wst.jsdt.internal.corext.util.Messages;
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 /* package */ class UndoCompilationUnitChange extends UndoTextFileChange {
 	

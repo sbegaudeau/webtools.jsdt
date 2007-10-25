@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.compiler;
 /**
  * Generic option description, which can be modified independently from the
  * component it belongs to.
- * 
+ *
  * @deprecated backport 1.0 internal functionality
  */
 
@@ -36,9 +36,9 @@ public class ConfigurableOption {
 	private int currentValueIndex;
 	private String[] possibleValues;
 
-	// special value for <possibleValues> indicating that 
+	// special value for <possibleValues> indicating that
 	// the <currentValueIndex> is the actual value
-	public final static String[] NoDiscreteValue = {}; 
+	public final static String[] NoDiscreteValue = {};
 /**
  * INTERNAL USE ONLY
  *
@@ -47,15 +47,15 @@ public class ConfigurableOption {
  * @param loc java.util.Locale
  */
 public ConfigurableOption(
-	String componentName, 
-	String optionName, 
-	Locale loc, 
+	String componentName,
+	String optionName,
+	Locale loc,
 	int currentValueIndex) {
 
 	this.componentName = componentName;
 	this.optionName = optionName;
 	this.currentValueIndex = currentValueIndex;
-		
+
 	ResourceBundle resource = null;
 	try {
 		String location = componentName.substring(0, componentName.lastIndexOf('.'));
@@ -183,28 +183,28 @@ public void setValueIndex(int newIndex) {
 }
 public String toString() {
 	StringBuffer buffer = new StringBuffer();
-	buffer.append("Configurable option for "); //$NON-NLS-1$ 
-	buffer.append(this.componentName).append("\n"); //$NON-NLS-1$ 
+	buffer.append("Configurable option for "); //$NON-NLS-1$
+	buffer.append(this.componentName).append("\n"); //$NON-NLS-1$
 	buffer.append("- category:			").append(this.category).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
 	buffer.append("- name:				").append(this.name).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
 	/* display current value */
-	buffer.append("- current value:	"); //$NON-NLS-1$ 
+	buffer.append("- current value:	"); //$NON-NLS-1$
 	if (possibleValues == NoDiscreteValue){
 		buffer.append(this.currentValueIndex);
 	} else {
 		buffer.append(this.possibleValues[this.currentValueIndex]);
 	}
-	buffer.append("\n"); //$NON-NLS-1$ 
-	
+	buffer.append("\n"); //$NON-NLS-1$
+
 	/* display possible values */
 	if (possibleValues != NoDiscreteValue){
-		buffer.append("- possible values:	["); //$NON-NLS-1$ 
+		buffer.append("- possible values:	["); //$NON-NLS-1$
 		for (int i = 0, max = possibleValues.length; i < max; i++) {
 			if (i != 0)
-				buffer.append(", "); //$NON-NLS-1$ 
+				buffer.append(", "); //$NON-NLS-1$
 			buffer.append(possibleValues[i]);
 		}
-		buffer.append("]\n"); //$NON-NLS-1$ 
+		buffer.append("]\n"); //$NON-NLS-1$
 		buffer.append("- curr. val. index:	").append(currentValueIndex).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	buffer.append("- description:		").append(description).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$

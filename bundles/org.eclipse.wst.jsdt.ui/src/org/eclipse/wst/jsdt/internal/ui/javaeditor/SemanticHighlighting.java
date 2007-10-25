@@ -11,12 +11,9 @@
 
 package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
-import org.eclipse.swt.graphics.RGB;
-
 import org.eclipse.jface.resource.ColorRegistry;
-
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.ui.JavaUI;
 
 /**

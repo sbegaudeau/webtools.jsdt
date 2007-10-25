@@ -14,7 +14,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -46,7 +49,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  *
  * <p>Required Attributes:<ul>
  *  <li>The package fragment in which to create the compilation unit.
- *  <li>The name of the compilation unit.  
+ *  <li>The name of the compilation unit.
  *      Do not include the <code>".js"</code> suffix (ex. <code>"Object"</code> -
  * 		the <code>".js"</code> will be added for the name of the compilation unit.)
  *  <li>
@@ -78,7 +81,7 @@ public CreateCompilationUnitOperation(IPackageFragment parentElement, String nam
  */
 protected void executeOperation() throws JavaModelException {
 	try {
-		beginTask(Messages.operation_createUnitProgress, 2); 
+		beginTask(Messages.operation_createUnitProgress, 2);
 		JavaElementDelta delta = newJavaElementDelta();
 		ICompilationUnit unit = getCompilationUnit();
 		IPackageFragment pkg = (IPackageFragment) getParentElement();
@@ -102,8 +105,8 @@ protected void executeOperation() throws JavaModelException {
 				}
 			} else {
 				throw new JavaModelException(new JavaModelStatus(
-					IJavaModelStatusConstants.NAME_COLLISION, 
-					Messages.bind(Messages.status_nameCollision, compilationUnitFile.getFullPath().toString()))); 
+					IJavaModelStatusConstants.NAME_COLLISION,
+					Messages.bind(Messages.status_nameCollision, compilationUnitFile.getFullPath().toString())));
 			}
 		} else {
 			try {
@@ -127,7 +130,7 @@ protected void executeOperation() throws JavaModelException {
 			} catch (IOException e) {
 				throw new JavaModelException(e, IJavaModelStatusConstants.IO_EXCEPTION);
 			}
-		} 
+		}
 		worked(1);
 	} finally {
 		done();
@@ -152,7 +155,7 @@ protected ISchedulingRule getSchedulingRule() {
  * Possible failures: <ul>
  *  <li>NO_ELEMENTS_TO_PROCESS - the package fragment supplied to the operation is
  * 		<code>null</code>.
- *	<li>INVALID_NAME - the compilation unit name provided to the operation 
+ *	<li>INVALID_NAME - the compilation unit name provided to the operation
  * 		is <code>null</code> or has an invalid syntax
  *  <li>INVALID_CONTENTS - the source specified for the compiliation unit is null
  * </ul>

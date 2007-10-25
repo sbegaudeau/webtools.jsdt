@@ -20,12 +20,19 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.eclipse.core.filesystem.URIUtil;
-
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-
-import org.eclipse.core.resources.ResourcesPlugin;
-
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.viewers.DecoratingLabelProvider;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -37,21 +44,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
-
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.viewers.DecoratingLabelProvider;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.wizard.WizardPage;
-
 import org.eclipse.ui.PlatformUI;
-
-import org.eclipse.ltk.core.refactoring.RefactoringCore;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaModel;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -60,18 +53,16 @@ import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaRefactoringDescriptor;
-
-import org.eclipse.wst.jsdt.ui.JavaElementComparator;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
-import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator;
-import org.eclipse.wst.jsdt.ui.StandardJavaElementContentProvider;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.filters.EmptyPackageFilter;
 import org.eclipse.wst.jsdt.internal.ui.jarpackager.JarPackagerUtil;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.binary.BinaryRefactoringHistoryWizard;
 import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;
+import org.eclipse.wst.jsdt.ui.JavaElementComparator;
+import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator;
+import org.eclipse.wst.jsdt.ui.StandardJavaElementContentProvider;
 
 /**
  * Jar import wizard page.

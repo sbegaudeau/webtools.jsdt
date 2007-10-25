@@ -26,29 +26,22 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-
-
 import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptorProxy;
 import org.eclipse.ltk.core.refactoring.history.IRefactoringHistoryService;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-
-import org.eclipse.wst.jsdt.ui.jarpackager.IJarDescriptionWriter;
-import org.eclipse.wst.jsdt.ui.jarpackager.JarPackageData;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaStatusConstants;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-
+import org.eclipse.wst.jsdt.ui.jarpackager.IJarDescriptionWriter;
+import org.eclipse.wst.jsdt.ui.jarpackager.JarPackageData;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

@@ -17,20 +17,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.text.edits.ReplaceEdit;
-import org.eclipse.text.edits.TextEdit;
-
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubProgressMonitor;
-
-import org.eclipse.core.resources.IResource;
-
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.TextChange;
-
+import org.eclipse.text.edits.ReplaceEdit;
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
@@ -49,7 +45,6 @@ import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.core.search.TypeReferenceMatch;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.CollectingSearchRequestor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
@@ -62,7 +57,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.TextChangeManager;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.SearchUtils;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 public class MoveCuUpdateCreator {

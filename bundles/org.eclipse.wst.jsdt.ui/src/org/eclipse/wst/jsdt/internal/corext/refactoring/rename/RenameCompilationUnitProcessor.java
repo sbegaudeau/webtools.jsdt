@@ -10,15 +10,13 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.refactoring.rename;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.IResourceMapper;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
@@ -26,7 +24,6 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.ltk.core.refactoring.participants.RenameArguments;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
@@ -37,7 +34,6 @@ import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
 import org.eclipse.wst.jsdt.core.refactoring.RenameTypeArguments;
 import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameJavaElementDescriptor;
 import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameResourceDescriptor;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptorComment;
@@ -56,7 +52,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.ISimilarDeclarat
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.ITextUpdating;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.ResourceUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper;
 

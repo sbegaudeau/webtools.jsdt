@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui.actions;
 
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.action.IStatusLineManager;
-import org.eclipse.jface.viewers.IStructuredSelection;
-
 import org.eclipse.jface.text.ITextSelection;
-
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -27,13 +24,11 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.texteditor.IEditorStatusLine;
-
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;

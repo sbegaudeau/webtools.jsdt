@@ -1,34 +1,20 @@
 package org.eclipse.wst.jsdt.internal.core;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Map;
-
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.core.PackageFragment;
-import org.eclipse.wst.jsdt.internal.core.PackageFragmentRoot;
-import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 public class DocumentContextFragment extends PackageFragment{
-	
+
 	private String fileInScope;
-	
+
 	protected DocumentContextFragment(PackageFragmentRoot root, String names) {
 		super(root, new String[] {names});
 		this.names  =new String[] {names};
@@ -40,18 +26,18 @@ public class DocumentContextFragment extends PackageFragment{
 //		this.names = names;
 //		me = you;
 //	}
-//	
+//
 //	public IPath resolveRelativePath(String path) {
 //		IResource member = getRelativeAsResource(path);
 //		if(member!=null) return member.getLocation();
 //		return ((DocumentContextFragmentRoot)parent).resolveRelativePath(path);
 //	}
-//	
+//
 //	public IResource getRelativeAsResource(String path) {
-//		
+//
 //		return ((DocumentContextFragmentRoot)parent).getRelativeAsResource(path);
 //	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.core.PackageFragment#buildStructure(org.eclipse.wst.jsdt.internal.core.OpenableElementInfo, org.eclipse.core.runtime.IProgressMonitor, java.util.Map, org.eclipse.core.resources.IResource)
 	 */
@@ -66,7 +52,7 @@ public class DocumentContextFragment extends PackageFragment{
 //						IResource me = parent.findMember(myPath);
 //						//((CompilationUnit)children[k]).openWhenClosed(compInfo, pm);
 //						//((CompilationUnit)children[k]).buildStructure(compInfo, pm, newElements, me);
-//						
+//
 //					} catch (/*JavaModelException*/ Exception  ex) {
 //						// TODO Auto-generated catch block
 //						ex.printStackTrace();
@@ -75,7 +61,7 @@ public class DocumentContextFragment extends PackageFragment{
 //				info.addChild(children[k]);
 //			}
 //			return true;
-//			
+//
 //	}
 
 	protected boolean computeChildren(OpenableElementInfo info) {
@@ -84,13 +70,13 @@ public class DocumentContextFragment extends PackageFragment{
 //		CompilationUnit cu= new CompilationUnit(this, this.getPackageFragmentRoot().getPath().toOSString(), DefaultWorkingCopyOwner.PRIMARY);
 			IJavaElement[] children= new IJavaElement[]{getJavaElement(fileInScope)};
 			for(int k=0;k<children.length;k++) {
-				
+
 				info.addChild(children[k]);
 			}
 		//}
 		return true;
 	}
-	
+
 	public IJavaElement getJavaElement(String resource) {
 		/* if resource exists in project, return compunit, else return class */
 		//if(!DocumentContextFragmentRoot.RETURN_CU) return getClassFile(resource);
@@ -101,7 +87,7 @@ public class DocumentContextFragment extends PackageFragment{
 			elementResource = ((IContainer)getResource()).findMember(resource);
 		}
 		//if(true) return getClassFile(resource);
-		
+
 		if(elementResource!=null && elementResource.exists()) {
 			try {
 				//return createCompilationUnit(resource, null, true, new NullProgressMonitor());
@@ -119,21 +105,21 @@ public class DocumentContextFragment extends PackageFragment{
 		}else {
 			return getClassFile(resource);
 		}
-		
+
 	}
-	
-	
+
+
 	public IClassFile[] getClassFiles() throws JavaModelException {
 //		IClassFile[] classFiles = new IClassFile[filesInScope.length];
 //		for(int i = 0;i<filesInScope.length;i++) {
 //			ClassFile classFile = new ClassFile(this,filesInScope[i]);
 //			classFiles[i] = classFile;
-//			
+//
 //		}
 //		return classFiles;
 		return new IClassFile[] { new ClassFile(this,fileInScope) };
 	}
-	
+
 
 
 	/* (non-Javadoc)
@@ -143,7 +129,7 @@ public class DocumentContextFragment extends PackageFragment{
 		if(hasSource()) return IPackageFragmentRoot.K_SOURCE;
 		return super.getKind();
 	}
-	
+
 	public boolean hasSource() {
 		//if(DocumentContextFragmentRoot.RETURN_CU /*&& filesInScope.length>0*/) {
 			IResource file = ((IContainer)parent.getResource()).findMember(fileInScope);
@@ -158,18 +144,18 @@ public class DocumentContextFragment extends PackageFragment{
 	public IResource getResource() {
 			IPath resourcePath = new Path(fileInScope);
 			return ((IContainer)parent.getResource()).findMember(resourcePath.removeLastSegments(1));
-		
+
 	}
 
 	public IClassFile getClassFile(String classFileName) {
 		return new ClassFile(this,classFileName);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.core.PackageFragment#getCompilationUnit(java.lang.String)
 	 */
 	public ICompilationUnit getCompilationUnit(String cuName) {
-		return  new CompilationUnit(this, cuName, DefaultWorkingCopyOwner.PRIMARY);	
+		return  new CompilationUnit(this, cuName, DefaultWorkingCopyOwner.PRIMARY);
 	}
 
 	public ICompilationUnit createCompilationUnit(String cuName, String contents, boolean force, IProgressMonitor monitor) throws JavaModelException {
@@ -177,15 +163,15 @@ public class DocumentContextFragment extends PackageFragment{
 		op.runOperation(monitor);
 		return new CompilationUnit(this, cuName, DefaultWorkingCopyOwner.PRIMARY);
 	}
-	
+
 	public String getElementName() {
 		return DEFAULT_PACKAGE_NAME;
 	}
-	
+
 	public boolean isDefaultPackage() {
 		return true;
 	}
 
 
-	
+
 }

@@ -16,20 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-
-import org.eclipse.core.resources.IResource;
-
-import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IDocumentPartitioner;
-
-import org.eclipse.ui.services.IDisposable;
-
 import org.eclipse.compare.CompareUI;
 import org.eclipse.compare.IEditableContent;
 import org.eclipse.compare.IEditableContentExtension;
@@ -45,7 +31,15 @@ import org.eclipse.compare.structuremergeviewer.IDiffElement;
 import org.eclipse.compare.structuremergeviewer.IStructureComparator;
 import org.eclipse.compare.structuremergeviewer.StructureCreator;
 import org.eclipse.compare.structuremergeviewer.StructureRootNode;
-
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentPartitioner;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.services.IDisposable;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -57,10 +51,8 @@ import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
 
 
 public class JavaStructureCreator extends StructureCreator {

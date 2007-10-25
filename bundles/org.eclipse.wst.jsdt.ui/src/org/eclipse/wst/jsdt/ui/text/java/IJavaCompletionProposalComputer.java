@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.ui.text.java;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 

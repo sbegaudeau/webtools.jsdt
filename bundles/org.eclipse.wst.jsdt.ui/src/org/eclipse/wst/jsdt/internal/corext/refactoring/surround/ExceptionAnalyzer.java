@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
@@ -30,7 +29,6 @@ import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.ThrowStatement;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.dom.Selection;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.AbstractExceptionAnalyzer;

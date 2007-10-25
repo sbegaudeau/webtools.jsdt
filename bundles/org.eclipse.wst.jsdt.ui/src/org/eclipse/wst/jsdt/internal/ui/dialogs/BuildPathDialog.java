@@ -12,30 +12,23 @@ package org.eclipse.wst.jsdt.internal.ui.dialogs;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
-
-import org.eclipse.core.resources.IWorkspaceRunnable;
-
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.StatusDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.StatusDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.core.IJavaProject;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.WorkbenchRunnableAdapter;
 import org.eclipse.wst.jsdt.internal.ui.preferences.PreferencesMessages;

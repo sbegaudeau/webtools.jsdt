@@ -12,12 +12,17 @@ package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import java.util.ArrayList;
 
-import org.eclipse.wst.jsdt.core.JavaConventions;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.UnimplementedException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.env.*;
+import org.eclipse.wst.jsdt.internal.compiler.env.ClassSignature;
+import org.eclipse.wst.jsdt.internal.compiler.env.EnumConstantSignature;
+import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryAnnotation;
+import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryElementValuePair;
+import org.eclipse.wst.jsdt.internal.compiler.env.ISourceField;
+import org.eclipse.wst.jsdt.internal.compiler.env.ISourceMethod;
+import org.eclipse.wst.jsdt.internal.compiler.env.ISourceType;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
@@ -114,27 +119,27 @@ public static ReferenceBinding resolveType(ReferenceBinding type, LookupEnvironm
 }
 public static TypeBinding resolveType(TypeBinding type, LookupEnvironment environment, ParameterizedTypeBinding parameterizedType, int rank) {
 	switch (type.kind()) {
-		
+
 		case Binding.PARAMETERIZED_TYPE :
 			return ((ParameterizedTypeBinding) type).resolve();
-			
+
 		case Binding.WILDCARD_TYPE :
 			return ((WildcardBinding) type).resolve();
-			
+
 		case Binding.ARRAY_TYPE :
 			resolveType(((ArrayBinding) type).leafComponentType, environment, parameterizedType, rank);
 			break;
-			
+
 		case Binding.TYPE_PARAMETER :
 			((TypeVariableBinding) type).resolve(environment);
 			break;
-						
+
 		case Binding.GENERIC_TYPE :
 			if (parameterizedType == null) // raw reference to generic ?
 				return environment.convertUnresolvedBinaryToRawType(type);
 			break;
-			
-		default:			
+
+		default:
 			if (type instanceof UnresolvedReferenceBinding)
 				return ((UnresolvedReferenceBinding) type).resolve(environment, parameterizedType == null);
 	}
@@ -170,7 +175,7 @@ public BinaryTypeBinding(PackageBinding packageBinding, ISourceType binaryType, 
 
 	this.sourceName = binaryType.getFileName();
 	this.modifiers = binaryType.getModifiers();
-		
+
 //	if ((binaryType.getTagBits() & TagBits.HasInconsistentHierarchy) != 0)
 //		this.tagBits |= TagBits.HierarchyHasProblems;
 //	if (binaryType.isAnonymous()) {
@@ -191,7 +196,7 @@ public BinaryTypeBinding(PackageBinding packageBinding, ISourceType binaryType, 
 //			this.modifiers |= ClassFileConstants.AccStrictfp;
 //		if (this.enclosingType().isDeprecated())
 //			this.modifiers |= ExtraCompilerModifiers.AccDeprecatedImplicitly;
-//	}	
+//	}
 }
 
 public FieldBinding[] availableFields() {
@@ -327,7 +332,7 @@ void cachePartsFrom(ISourceType binaryType, boolean needFieldsAndMethods) {
 		this.methods = Binding.NO_METHODS;
 	}
 //	if (this.environment.globalOptions.storeAnnotations)
-//		setAnnotations(createAnnotations(binaryType.getAnnotations(), this.environment));	
+//		setAnnotations(createAnnotations(binaryType.getAnnotations(), this.environment));
 }
 private void createFields(ISourceField[] iFields, long sourceLevel) {
 	this.fields = Binding.NO_FIELDS;
@@ -342,19 +347,19 @@ private void createFields(ISourceField[] iFields, long sourceLevel) {
 			for (int i = 0; i < size; i++) {
 				ISourceField binaryField = iFields[i];
 				char[] fieldSignature = null;//use15specifics ? binaryField.getGenericSignature() : null;
-				TypeBinding type = fieldSignature == null 
-					? environment.getTypeFromSignature(binaryField.getTypeName(), 0, -1, false, this) 
+				TypeBinding type = fieldSignature == null
+					? environment.getTypeFromSignature(binaryField.getTypeName(), 0, -1, false, this)
 					: environment.getTypeFromTypeSignature(new SignatureWrapper(fieldSignature), Binding.NO_TYPE_VARIABLES, this);
-				FieldBinding field = 
+				FieldBinding field =
 					new FieldBinding(
-//						binaryField.getName(), 
-						((SourceField)binaryField).getElementName ().toCharArray(), 
-						type, 
-						binaryField.getModifiers() | ExtraCompilerModifiers.AccUnresolved, 
-						this, 
+//						binaryField.getName(),
+						((SourceField)binaryField).getElementName ().toCharArray(),
+						type,
+						binaryField.getModifiers() | ExtraCompilerModifiers.AccUnresolved,
+						this,
 						null);//binaryField.getConstant());
 //				if (firstAnnotatedFieldIndex < 0
-//						&& this.environment.globalOptions.storeAnnotations 
+//						&& this.environment.globalOptions.storeAnnotations
 //						&& binaryField.getAnnotations() != null) {
 //					firstAnnotatedFieldIndex = i;
 //				}
@@ -385,7 +390,7 @@ private MethodBinding createMethod(ISourceMethod method, long sourceLevel) {
 	ReferenceBinding[] exceptions = Binding.NO_EXCEPTIONS;
 	TypeBinding[] parameters = Binding.NO_PARAMETERS;
 	TypeVariableBinding[] typeVars = Binding.NO_TYPE_VARIABLES;
-	AnnotationBinding[][] paramAnnotations = null; 
+	AnnotationBinding[][] paramAnnotations = null;
 	TypeBinding returnType = null;
 
 	throw new UnimplementedException("fix compile errors for this code");
@@ -585,10 +590,10 @@ private TypeVariableBinding[] createTypeVariables(SignatureWrapper wrapper, bool
 	createVariables: {
 		for (int i = 1; i < length; i++) {
 			switch(typeSignature[i]) {
-				case '<' : 
+				case '<' :
 					depth++;
 					break;
-				case '>' : 
+				case '>' :
 					if (--depth < 0)
 						break createVariables;
 					break;
@@ -667,7 +672,7 @@ public MethodBinding getExactConstructor(TypeBinding[] argumentTypes) {
 	int argCount = argumentTypes.length;
 	long range;
 	if ((range = ReferenceBinding.binarySearch(TypeConstants.INIT, this.methods)) >= 0) {
-		nextMethod: for (int imethod = (int)range, end = (int)(range >> 32); imethod <= end; imethod++) {	
+		nextMethod: for (int imethod = (int)range, end = (int)(range >> 32); imethod <= end; imethod++) {
 			MethodBinding method = methods[imethod];
 			if (method.parameters.length == argCount) {
 				resolveTypesFor(method);
@@ -677,7 +682,7 @@ public MethodBinding getExactConstructor(TypeBinding[] argumentTypes) {
 						continue nextMethod;
 				return method;
 			}
-		}	
+		}
 	}
 	return null;
 }
@@ -686,7 +691,7 @@ public MethodBinding getExactConstructor(TypeBinding[] argumentTypes) {
 //searches up the hierarchy as long as no potential (but not exact) match was found.
 public MethodBinding getExactMethod(char[] selector, TypeBinding[] argumentTypes, CompilationUnitScope refScope) {
 	// sender from refScope calls recordTypeReference(this)
-	
+
 	// lazily sort methods
 	if ((this.tagBits & TagBits.AreMethodsSorted) == 0) {
 		int length = this.methods.length;
@@ -700,7 +705,7 @@ public MethodBinding getExactMethod(char[] selector, TypeBinding[] argumentTypes
 
 	long range;
 	if ((range = ReferenceBinding.binarySearch(selector, this.methods)) >= 0) {
-		nextMethod: for (int imethod = (int)range, end = (int)(range >> 32); imethod <= end; imethod++) {	
+		nextMethod: for (int imethod = (int)range, end = (int)(range >> 32); imethod <= end; imethod++) {
 			MethodBinding method = methods[imethod];
 			foundNothing = false; // inner type lookups must know that a method with this name exists
 			if (method.parameters.length == argCount) {
@@ -767,7 +772,7 @@ public MethodBinding[] getMethods(char[] selector) {
 			int length = end - start + 1;
 			if ((this.tagBits & TagBits.AreMethodsComplete) != 0) {
 				// simply clone method subset
-				MethodBinding[] result;				
+				MethodBinding[] result;
 				System.arraycopy(this.methods, start, result = new MethodBinding[length], 0, length);
 				return result;
 			}
@@ -859,7 +864,7 @@ public int kind() {
 	if (this.typeVariables != Binding.NO_TYPE_VARIABLES)
 		return Binding.GENERIC_TYPE;
 	return Binding.TYPE;
-}	
+}
 // NOTE: member types of binary types are resolved when needed
 public ReferenceBinding[] memberTypes() {
  	if ((this.tagBits & TagBits.HasUnresolvedMemberTypes) == 0)
@@ -972,7 +977,7 @@ public String toString() {
 	if (isEnum()) buffer.append("enum "); //$NON-NLS-1$
 	else if (isAnnotationType()) buffer.append("@interface "); //$NON-NLS-1$
 	else if (isClass()) buffer.append("class "); //$NON-NLS-1$
-	else buffer.append("interface "); //$NON-NLS-1$	
+	else buffer.append("interface "); //$NON-NLS-1$
 	buffer.append((compoundName != null) ? CharOperation.toString(compoundName) : "UNNAMED TYPE"); //$NON-NLS-1$
 
 	buffer.append("\n\textends "); //$NON-NLS-1$

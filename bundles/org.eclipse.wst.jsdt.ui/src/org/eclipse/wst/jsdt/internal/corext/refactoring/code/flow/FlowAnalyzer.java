@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.Region;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
@@ -101,10 +103,6 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
 import org.eclipse.wst.jsdt.core.dom.WildcardType;
 import org.eclipse.wst.jsdt.core.dom.WithStatement;
-
-import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.Region;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor;
 
 /**

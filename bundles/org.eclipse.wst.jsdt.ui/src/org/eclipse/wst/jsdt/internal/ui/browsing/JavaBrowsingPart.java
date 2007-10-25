@@ -16,33 +16,21 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IPath;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Shell;
-
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.help.IContextProvider;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.util.TransferDragSourceListener;
@@ -58,9 +46,16 @@ import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
-
-import org.eclipse.jface.text.ITextSelection;
-
+import org.eclipse.search.ui.ISearchResultViewPart;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -84,11 +79,7 @@ import org.eclipse.ui.part.ResourceTransfer;
 import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditor;
-
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
-
-import org.eclipse.search.ui.ISearchResultViewPart;
-
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
@@ -97,26 +88,7 @@ import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
-import org.eclipse.wst.jsdt.ui.IWorkingCopyManager;
-import org.eclipse.wst.jsdt.ui.JavaElementComparator;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.JavaUI;
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.actions.BuildActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.CCPActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.CustomFiltersActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.GenerateActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.ImportActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.JavaSearchActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.OpenEditorActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.OpenViewActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.RefactorActionGroup;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.CompositeActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.actions.NewWizardsActionGroup;
@@ -138,6 +110,22 @@ import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaUILabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ProblemTableViewer;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.StatusBarUpdater;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.WorkingSetFilterActionGroup;
+import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
+import org.eclipse.wst.jsdt.ui.IWorkingCopyManager;
+import org.eclipse.wst.jsdt.ui.JavaElementComparator;
+import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
+import org.eclipse.wst.jsdt.ui.actions.BuildActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.CCPActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.CustomFiltersActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.GenerateActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.ImportActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.JavaSearchActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.OpenEditorActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.OpenViewActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.RefactorActionGroup;
 
 
 abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISelectionListener, IViewPartInputProvider {

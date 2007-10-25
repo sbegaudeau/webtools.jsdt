@@ -10,30 +10,23 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.refactoring.nls;
 
-import org.eclipse.core.runtime.IPath;
-
 import org.eclipse.core.resources.IWorkspaceRoot;
-
-import org.eclipse.swt.widgets.Shell;
-
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
-
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
-import org.eclipse.wst.jsdt.ui.JavaElementComparator;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
-import org.eclipse.wst.jsdt.ui.StandardJavaElementContentProvider;
-
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.TypedElementSelectionValidator;
 import org.eclipse.wst.jsdt.internal.ui.wizards.TypedViewerFilter;
+import org.eclipse.wst.jsdt.ui.JavaElementComparator;
+import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
+import org.eclipse.wst.jsdt.ui.StandardJavaElementContentProvider;
 
 public class SourceContainerDialog extends ElementTreeSelectionDialog {
 

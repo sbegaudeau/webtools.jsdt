@@ -31,7 +31,6 @@ import org.eclipse.wst.jsdt.core.dom.QualifiedType;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.ImportReferencesCollector;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 

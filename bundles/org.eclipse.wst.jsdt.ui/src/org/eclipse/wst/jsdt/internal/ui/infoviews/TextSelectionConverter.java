@@ -11,22 +11,17 @@
 package org.eclipse.wst.jsdt.internal.ui.infoviews;
 
 import org.eclipse.jface.text.ITextSelection;
-
 import org.eclipse.ui.IEditorInput;
-
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICodeAssist;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-
-import org.eclipse.wst.jsdt.ui.IWorkingCopyManager;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.IClassFileEditorInput;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
+import org.eclipse.wst.jsdt.ui.IWorkingCopyManager;
 
 /**
  * Helper class to convert text selections to Java elements.

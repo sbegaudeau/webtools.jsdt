@@ -16,7 +16,17 @@ import java.util.List;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.internal.codeassist.CompletionEngine;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocAllocationExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocArgumentExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocFieldReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocMessageSend;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocQualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.parser.JavadocParser;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
@@ -26,7 +36,7 @@ import org.eclipse.wst.jsdt.internal.compiler.parser.TerminalTokens;
  * Parser specialized for decoding javadoc comments which includes cursor location for code completion.
  */
 public class CompletionJavadocParser extends JavadocParser {
-	
+
 	// Initialize lengthes for block and inline tags tables
 	public final static int INLINE_ALL_TAGS_LENGTH;
 	public final static int BLOCK_ALL_TAGS_LENGTH;
@@ -42,11 +52,11 @@ public class CompletionJavadocParser extends JavadocParser {
 		}
 		BLOCK_ALL_TAGS_LENGTH = length;
 	}
-	
+
 	// Level tags are array of inline/block tags depending on compilation source level
 	char[][][] levelTags = new char[2][][];
 	int[] levelTagsLength = new int[2];
-	
+
 	// Completion specific info
 	int cursorLocation;
 	CompletionOnJavadoc completionNode = null;
@@ -305,7 +315,7 @@ public class CompletionJavadocParser extends JavadocParser {
 	 * Parse argument in @see tag method reference
 	 */
 	protected Object parseArguments(Object receiver) throws InvalidInputException {
-		
+
 		if (this.tagSourceStart>this.cursorLocation) {
 			return super.parseArguments(receiver);
 		}
@@ -321,7 +331,7 @@ public class CompletionJavadocParser extends JavadocParser {
 		long[] dimPositions = new long[20]; // assume that there won't be more than 20 dimensions...
 		char[] name = null;
 		long argNamePos = -1;
-		
+
 		// Parse arguments declaration if method reference
 		nextArg : while (this.index < this.scanner.eofPosition) {
 
@@ -414,7 +424,7 @@ public class CompletionJavadocParser extends JavadocParser {
 			} else if (argName != null) { // verify that no argument name is declared
 				break nextArg;
 			}
-			
+
 			// Verify token position
 			if (firstArg) {
 				modulo = iToken + 1;
@@ -460,7 +470,7 @@ public class CompletionJavadocParser extends JavadocParser {
 			if (this.identifierPtr > 2) return valid;
 			// See if expression is concerned by completion
 			char[] name = null;
-			
+
 //TODO: implement types
 			TypeReference[]types=null;
 			CompletionScanner completionScanner = (CompletionScanner) this.scanner;
@@ -783,13 +793,13 @@ public class CompletionJavadocParser extends JavadocParser {
 	protected int readToken() throws InvalidInputException {
 		int token = super.readToken();
 		if (token == TerminalTokens.TokenNameIdentifier && this.scanner.currentPosition == this.scanner.startPosition) {
-			// Scanner is looping on empty token => read it... 
+			// Scanner is looping on empty token => read it...
 			this.scanner.getCurrentIdentifierSource();
 		}
 		return token;
 	}
 
-	/* 
+	/*
 	 * Recover syntax on invalid qualified name.
 	 */
 	protected Object syntaxRecoverQualifiedName(int primitiveToken) throws InvalidInputException {
@@ -812,7 +822,7 @@ public class CompletionJavadocParser extends JavadocParser {
 		return this.completionNode;
 	}
 
-	/* 
+	/*
 	 * Recover syntax on type argument in invalid method/constructor reference
 	 */
 	protected Object syntaxRecoverArgumentType(Object receiver, List arguments, Object argument) throws InvalidInputException {
@@ -913,5 +923,5 @@ public class CompletionJavadocParser extends JavadocParser {
 		}
 		return super.verifySpaceOrEndComment();
 	}
-	
+
 }

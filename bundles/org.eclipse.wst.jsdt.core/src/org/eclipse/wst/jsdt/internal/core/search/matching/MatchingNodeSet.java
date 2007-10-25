@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfLong;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
@@ -98,7 +98,7 @@ public void addPossibleMatch(ASTNode node) {
 }
 public void addTrustedMatch(ASTNode node, boolean isExact) {
 	addTrustedMatch(node, isExact ? EXACT_MATCH : POTENTIAL_MATCH);
-	
+
 }
 void addTrustedMatch(ASTNode node, Integer level) {
 	// remove existing node at same position from set
@@ -108,7 +108,7 @@ void addTrustedMatch(ASTNode node, Integer level) {
 	ASTNode existing = (ASTNode) this.matchingNodesKeys.get(key);
 	if (existing != null && existing.getClass().equals(node.getClass()))
 		this.matchingNodes.removeKey(existing);
-	
+
 	// map node to its accuracy level
 	this.matchingNodes.put(node, level);
 	this.matchingNodesKeys.put(key, node);

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.actions;
 
-import com.ibm.icu.text.Collator;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -21,16 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.BusyIndicator;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuListener;
@@ -45,10 +33,16 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.dialogs.SelectionStatusDialog;
-
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
@@ -58,7 +52,6 @@ import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.CheckedListDialogField;
@@ -66,6 +59,8 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IListAdapter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ListDialogField;
+
+import com.ibm.icu.text.Collator;
 
 public class CategoryFilterActionGroup extends ActionGroup {
 

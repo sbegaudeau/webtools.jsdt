@@ -16,10 +16,8 @@ import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
-
-import org.eclipse.wst.jsdt.ui.dialogs.ITypeInfoFilterExtension;
-
 import org.eclipse.wst.jsdt.internal.ui.util.StringMatcher;
+import org.eclipse.wst.jsdt.ui.dialogs.ITypeInfoFilterExtension;
 
 public class TypeInfoFilter {
 	

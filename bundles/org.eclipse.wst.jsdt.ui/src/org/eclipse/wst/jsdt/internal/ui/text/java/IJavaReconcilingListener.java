@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.ui.text.java;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 
 

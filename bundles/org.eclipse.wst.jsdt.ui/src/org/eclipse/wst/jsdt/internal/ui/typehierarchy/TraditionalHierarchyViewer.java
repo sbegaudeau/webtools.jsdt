@@ -14,9 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
-
 import org.eclipse.ui.IWorkbenchPart;
-
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;

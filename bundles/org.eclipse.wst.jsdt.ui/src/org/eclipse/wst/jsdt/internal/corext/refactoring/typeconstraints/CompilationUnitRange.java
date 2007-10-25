@@ -11,12 +11,10 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 

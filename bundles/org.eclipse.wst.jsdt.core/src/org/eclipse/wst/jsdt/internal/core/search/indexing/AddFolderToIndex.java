@@ -85,7 +85,7 @@ class AddFolderToIndex extends IndexRequest {
 								case IResource.FOLDER :
 									if (exclusionPatterns != null && inclusionPatterns == null) {
 										// if there are inclusion patterns then we must walk the children
-										if (Util.isExcluded(proxy.requestFullPath(), inclusionPatterns, exclusionPatterns, true)) 
+										if (Util.isExcluded(proxy.requestFullPath(), inclusionPatterns, exclusionPatterns, true))
 										    return false;
 									}
 							}

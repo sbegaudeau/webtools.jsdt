@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths;
 
-import com.ibm.icu.text.Collator;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,34 +18,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-
-import org.eclipse.jface.dialogs.Dialog;
-
 import org.eclipse.ui.dialogs.PreferencesUtil;
-
 import org.eclipse.wst.jsdt.core.IClasspathContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPage;
-import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPageExtension;
-import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPageExtension2;
-import org.eclipse.wst.jsdt.ui.wizards.NewElementWizardPage;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
@@ -59,6 +45,12 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListene
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IListAdapter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ListDialogField;
+import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPage;
+import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPageExtension;
+import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPageExtension2;
+import org.eclipse.wst.jsdt.ui.wizards.NewElementWizardPage;
+
+import com.ibm.icu.text.Collator;
 
 /**
  *

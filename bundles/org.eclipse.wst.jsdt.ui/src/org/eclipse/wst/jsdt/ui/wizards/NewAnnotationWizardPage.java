@@ -11,18 +11,13 @@
 package org.eclipse.wst.jsdt.ui.wizards;
 
 import org.eclipse.core.runtime.IStatus;
-
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.viewers.IStructuredSelection;
-
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 

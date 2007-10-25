@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Variable declaration fragment AST node type, used in field declarations, 
+ * Variable declaration fragment AST node type, used in field declarations,
  * local variable declarations, and <code>ForStatement</code> initializers.
  * It contrast to <code>SingleVariableDeclaration</code>, fragments are
  * missing the modifiers and the type; these are located in the fragment's
@@ -25,40 +25,40 @@ import java.util.List;
  * VariableDeclarationFragment:
  *    Identifier { <b>[</b><b>]</b> } [ <b>=</b> Expression ]
  * </pre>
- * 
+ *
  * @since 2.0
  */
 public class VariableDeclarationFragment extends VariableDeclaration {
-		
+
 	/**
 	 * The "name" structural property of this node type.
 	 * @since 3.0
 	 */
-	public static final ChildPropertyDescriptor NAME_PROPERTY = 
+	public static final ChildPropertyDescriptor NAME_PROPERTY =
 		new ChildPropertyDescriptor(VariableDeclarationFragment.class, "name", SimpleName.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "extraDimensions" structural property of this node type.
 	 * @since 3.0
 	 */
-	public static final SimplePropertyDescriptor EXTRA_DIMENSIONS_PROPERTY = 
+	public static final SimplePropertyDescriptor EXTRA_DIMENSIONS_PROPERTY =
 		new SimplePropertyDescriptor(VariableDeclarationFragment.class, "extraDimensions", int.class, MANDATORY); //$NON-NLS-1$
-	
+
 	/**
 	 * The "initializer" structural property of this node type.
 	 * @since 3.0
 	 */
-	public static final ChildPropertyDescriptor INITIALIZER_PROPERTY = 
+	public static final ChildPropertyDescriptor INITIALIZER_PROPERTY =
 		new ChildPropertyDescriptor(VariableDeclarationFragment.class, "initializer", Expression.class, OPTIONAL, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
-	 * A list of property descriptors (element type: 
+	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
 	 * @since 3.0
 	 */
 	private static final List PROPERTY_DESCRIPTORS;
-		
+
 	static {
 		List propertyList = new ArrayList(4);
 		createPropertyList(VariableDeclarationFragment.class, propertyList);
@@ -71,17 +71,17 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 	/**
 	 * Returns a list of structural property descriptors for this node type.
 	 * Clients must not modify the result.
-	 * 
+	 *
 	 * @param apiLevel the API level; one of the
 	 * <code>AST.JLS*</code> constants
-	 * @return a list of property descriptors (element type: 
+	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
 	 * @since 3.0
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
 	}
-			
+
 	/**
 	 * The variable name; lazily initialized; defaults to an unspecified,
 	 * legal Java identifier.
@@ -99,15 +99,15 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 	 * defaults to none.
 	 */
 	private Expression optionalInitializer = null;
-	
+
 	/**
-	 * Creates a new AST node for a variable declaration fragment owned by the 
-	 * given AST. By default, the variable declaration has: an unspecified 
+	 * Creates a new AST node for a variable declaration fragment owned by the
+	 * given AST. By default, the variable declaration has: an unspecified
 	 * (but legal) variable name, no initializer, and no extra array dimensions.
 	 * <p>
 	 * N.B. This constructor is package-private.
 	 * </p>
-	 * 
+	 *
 	 * @param ast the AST that is to own this node
 	 */
 	VariableDeclarationFragment(AST ast) {
@@ -144,7 +144,7 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -160,7 +160,7 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 		// allow default implementation to flag the error
 		return super.internalGetSetIntProperty(property, get, value);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -184,7 +184,7 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 		// allow default implementation to flag the error
 		return super.internalGetSetChildProperty(property, get, child);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -225,10 +225,10 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 		}
 		visitor.endVisit(this);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on VariableDeclaration.
-	 */ 
+	 */
 	public SimpleName getName() {
 		if (this.variableName == null) {
 			// lazy init must be thread-safe for readers
@@ -242,10 +242,10 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 		}
 		return this.variableName;
 	}
-		
+
 	/* (omit javadoc for this method)
 	 * Method declared on VariableDeclaration.
-	 */ 
+	 */
 	public void setName(SimpleName variableName) {
 		if (variableName == null) {
 			throw new IllegalArgumentException();
@@ -260,16 +260,16 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 	 * Returns the number of extra array dimensions this variable has over
 	 * and above the type specified in the enclosing declaration.
 	 * <p>
-	 * For example, in the AST for <code>int[] i, j[], k[][]</code> the 
+	 * For example, in the AST for <code>int[] i, j[], k[][]</code> the
 	 * variable declaration fragments for the variables <code>i</code>,
 	 * <code>j</code>, and <code>k</code>, have 0, 1, and 2 extra array
 	 * dimensions, respectively.
 	 * </p>
-	 * 
+	 *
 	 * @return the number of extra array dimensions this variable has over
 	 *         and above the type specified in the enclosing declaration
 	 * @since 2.0
-	 */ 
+	 */
 	public int getExtraDimensions() {
 		return this.extraArrayDimensions;
 	}
@@ -278,15 +278,15 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 	 * Sets the number of extra array dimensions this variable has over
 	 * and above the type specified in the enclosing declaration.
 	 * <p>
-	 * For example, in the AST for <code>int[] i, j[], k[][]</code> the 
+	 * For example, in the AST for <code>int[] i, j[], k[][]</code> the
 	 * variable declaration fragments for the variables <code>i</code>,
 	 * <code>j</code>, and <code>k</code>, have 0, 1, and 2 extra array
 	 * dimensions, respectively.
 	 * </p>
-	 * 
+	 *
 	 * @param dimensions the given dimensions
 	 * @since 2.0
-	 */ 
+	 */
 	public void setExtraDimensions(int dimensions) {
 		if (dimensions < 0) {
 			throw new IllegalArgumentException();
@@ -298,14 +298,14 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 
 	/* (omit javadoc for this method)
 	 * Method declared on VariableDeclaration.
-	 */ 
+	 */
 	public Expression getInitializer() {
 		return this.optionalInitializer;
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on VariableDeclaration.
-	 */ 
+	 */
 	public void setInitializer(Expression initializer) {
 		ASTNode oldChild = this.optionalInitializer;
 		preReplaceChild(oldChild, initializer, INITIALIZER_PROPERTY);
@@ -320,12 +320,12 @@ public class VariableDeclarationFragment extends VariableDeclaration {
 		// treat Operator as free
 		return BASE_NODE_SIZE + 3 * 4;
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {
-		return 
+		return
 			memSize()
 			+ (this.variableName == null ? 0 : getName().treeSize())
 			+ (this.optionalInitializer == null ? 0 : getInitializer().treeSize());

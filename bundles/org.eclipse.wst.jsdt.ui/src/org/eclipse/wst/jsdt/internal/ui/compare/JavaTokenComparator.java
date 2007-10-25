@@ -10,16 +10,13 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.compare;
 
-import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.compare.contentmergeviewer.ITokenComparator;
 import org.eclipse.compare.rangedifferencer.IRangeComparator;
-
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.TokenScanner;
 
 

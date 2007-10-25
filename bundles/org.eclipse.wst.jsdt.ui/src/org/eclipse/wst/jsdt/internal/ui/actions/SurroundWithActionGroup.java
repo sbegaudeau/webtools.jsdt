@@ -14,21 +14,16 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
-
-import org.eclipse.jface.text.ITextSelection;
-
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.keys.IBindingService;
-
-import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
-import org.eclipse.wst.jsdt.ui.actions.JdtActionConstants;
-import org.eclipse.wst.jsdt.ui.actions.SurroundWithTryCatchAction;
-
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitEditor;
+import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
+import org.eclipse.wst.jsdt.ui.actions.SurroundWithTryCatchAction;
 
 public class SurroundWithActionGroup extends ActionGroup {
 	

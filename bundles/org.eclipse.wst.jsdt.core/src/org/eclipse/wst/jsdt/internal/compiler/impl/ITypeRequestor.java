@@ -18,7 +18,7 @@ import org.eclipse.wst.jsdt.internal.compiler.env.ISourceType;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
 
 public interface ITypeRequestor {
-	
+
 	/**
 	 * Accept the resolved binary form for the requested type.
 	 */

@@ -11,32 +11,26 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.fix;
 
-import com.ibm.icu.text.MessageFormat;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
-
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.debug.core.model.IBreakpoint;
-
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.corext.fix.IFix;
 import org.eclipse.wst.jsdt.internal.corext.fix.SortMembersFix;
-
 import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
+
+import com.ibm.icu.text.MessageFormat;
 
 public class SortMembersCleanUp extends AbstractCleanUp {
 	

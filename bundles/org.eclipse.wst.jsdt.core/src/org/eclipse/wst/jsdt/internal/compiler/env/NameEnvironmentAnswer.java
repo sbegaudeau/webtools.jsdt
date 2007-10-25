@@ -11,14 +11,14 @@
 package org.eclipse.wst.jsdt.internal.compiler.env;
 
 public class NameEnvironmentAnswer {
-	
+
 	// only one of the three can be set
 	IBinaryType binaryType;
 	ICompilationUnit compilationUnit;
 	ICompilationUnit[] compilationUnits;
 	ISourceType[] sourceTypes;
 	AccessRestriction accessRestriction;
-	
+
 	public NameEnvironmentAnswer(IBinaryType binaryType, AccessRestriction accessRestriction) {
 		this.binaryType = binaryType;
 		this.accessRestriction = accessRestriction;
@@ -28,7 +28,7 @@ public class NameEnvironmentAnswer {
 		this.compilationUnit = compilationUnit;
 		this.accessRestriction = accessRestriction;
 	}
-	
+
 
 	public NameEnvironmentAnswer(ICompilationUnit[] compilationUnits, AccessRestriction accessRestriction) {
 		this.compilationUnits = compilationUnits;
@@ -68,7 +68,7 @@ public class NameEnvironmentAnswer {
 	/**
 	 * Answer the unresolved source forms for the type or null if the
 	 * receiver represents a compilation unit or binary type.
-	 * 
+	 *
 	 * Multiple source forms can be answered in case the originating compilation unit did contain
 	 * several type at once. Then the first type is guaranteed to be the requested type.
 	 */
@@ -100,11 +100,11 @@ public class NameEnvironmentAnswer {
 	public boolean isSourceType() {
 		return this.sourceTypes != null;
 	}
-	
+
 	public boolean ignoreIfBetter() {
 		return this.accessRestriction != null && this.accessRestriction.ignoreIfBetter();
 	}
-	
+
 	/*
 	 * Returns whether this answer is better than the other awswer.
 	 * (accessible is better than discouraged, which is better than
@@ -113,7 +113,7 @@ public class NameEnvironmentAnswer {
 	public boolean isBetter(NameEnvironmentAnswer otherAnswer) {
 		if (otherAnswer == null) return true;
 		if (this.accessRestriction == null) return true;
-		return otherAnswer.accessRestriction != null 
+		return otherAnswer.accessRestriction != null
 			&& this.accessRestriction.getProblemId() < otherAnswer.accessRestriction.getProblemId();
 	}
 }

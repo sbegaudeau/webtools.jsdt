@@ -14,11 +14,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.text.edits.TextEditGroup;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-
+import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.AST;
@@ -45,7 +43,6 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.LinkedNodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.generics.InferTypeArgumentsConstraintCreator;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.generics.InferTypeArgumentsConstraintsSolver;
@@ -55,10 +52,8 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.generics.InferTypeArgume
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.CompilationUnitRewrite;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
-
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ProblemLocation;
+import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
 
 /**
  * Fix which introduce new language constructs to pre Java50 code.

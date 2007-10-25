@@ -11,14 +11,11 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.util;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.Selection;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 

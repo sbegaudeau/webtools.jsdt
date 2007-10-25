@@ -10,7 +10,13 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ClassLiteralAccess;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 

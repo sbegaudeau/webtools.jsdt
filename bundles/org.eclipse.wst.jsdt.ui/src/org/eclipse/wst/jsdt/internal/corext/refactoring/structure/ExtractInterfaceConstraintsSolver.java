@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.structure;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.constraints.SuperTypeConstraintsModel;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.constraints.SuperTypeConstraintsSolver;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.constraints.SuperTypeSet;

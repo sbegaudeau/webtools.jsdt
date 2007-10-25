@@ -16,7 +16,6 @@ import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParser;
 
 

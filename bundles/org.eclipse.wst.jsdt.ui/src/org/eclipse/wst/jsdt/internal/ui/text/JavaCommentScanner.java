@@ -20,21 +20,16 @@ import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.Preferences;
-
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.util.PropertyChangeEvent;
-
 import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.IWordDetector;
 import org.eclipse.jface.text.rules.Token;
-
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.wst.jsdt.core.JavaCore;
-
+import org.eclipse.wst.jsdt.internal.ui.text.CombinedWordRule.WordMatcher;
 import org.eclipse.wst.jsdt.ui.text.IColorManager;
 import org.eclipse.wst.jsdt.ui.text.IJavaColorConstants;
-
-import org.eclipse.wst.jsdt.internal.ui.text.CombinedWordRule.WordMatcher;
 
 /**
  * AbstractJavaCommentScanner.java

@@ -14,18 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
-
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
-import org.eclipse.wst.jsdt.ui.IWorkingCopyProvider;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.ui.IWorkingCopyProvider;
 
 /**
  * Content provider used for the method view.

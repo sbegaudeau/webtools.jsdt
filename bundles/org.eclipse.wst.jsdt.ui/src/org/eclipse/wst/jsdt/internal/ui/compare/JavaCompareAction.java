@@ -15,32 +15,24 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ResourceBundle;
 
+import org.eclipse.compare.IEncodedStreamContentAccessor;
+import org.eclipse.compare.ITypedElement;
+import org.eclipse.compare.structuremergeviewer.DiffNode;
 import org.eclipse.core.runtime.CoreException;
-
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionDelegate;
-
-import org.eclipse.compare.IEncodedStreamContentAccessor;
-import org.eclipse.compare.ITypedElement;
-import org.eclipse.compare.structuremergeviewer.DiffNode;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
 
 public class JavaCompareAction implements IActionDelegate {
 	

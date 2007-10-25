@@ -11,27 +11,14 @@
 package org.eclipse.wst.jsdt.launching;
 
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
-import org.eclipse.wst.jsdt.core.IClasspathAttribute;
 import org.eclipse.wst.jsdt.core.IClasspathContainer;
-import org.eclipse.wst.jsdt.core.IClasspathContainerInitialzer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-
-import com.ibm.icu.text.MessageFormat;
 
 /** 
  * Resolves a container for a JRE classpath container entry.

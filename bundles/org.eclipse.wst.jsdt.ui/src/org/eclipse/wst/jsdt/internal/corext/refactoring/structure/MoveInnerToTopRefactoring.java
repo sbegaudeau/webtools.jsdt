@@ -21,15 +21,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.text.edits.TextEdit;
-import org.eclipse.text.edits.TextEditGroup;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.IRefactoringStatusEntryComparator;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
@@ -37,7 +33,8 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.core.refactoring.TextChange;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
-
+import org.eclipse.text.edits.TextEdit;
+import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IField;
@@ -96,7 +93,6 @@ import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaRefactoringDescript
 import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.CodeGenerationSettings;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodeFactory;
@@ -127,13 +123,11 @@ import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.SearchUtils;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-
-import org.eclipse.wst.jsdt.ui.CodeGeneration;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.preferences.JavaPreferencesSettings;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
+import org.eclipse.wst.jsdt.ui.CodeGeneration;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 public final class MoveInnerToTopRefactoring extends ScriptableRefactoring {
 

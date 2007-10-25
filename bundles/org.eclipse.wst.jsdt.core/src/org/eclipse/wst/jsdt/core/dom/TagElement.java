@@ -28,7 +28,7 @@ import java.util.List;
  *     MemberRef
  *     <b>{</b> TagElement <b>}</b>
  * </pre>
- * 
+ *
  * @see Javadoc
  * @since 3.0
  */
@@ -36,27 +36,27 @@ public final class TagElement extends ASTNode implements IDocElement {
 
 	/**
 	 * The "tagName" structural property of this node type.
-	 * 
+	 *
 	 * @since 3.0
 	 */
-	public static final SimplePropertyDescriptor TAG_NAME_PROPERTY = 
+	public static final SimplePropertyDescriptor TAG_NAME_PROPERTY =
 		new SimplePropertyDescriptor(TagElement.class, "tagName", String.class, OPTIONAL); //$NON-NLS-1$
-	
+
 	/**
 	 * The "fragments" structural property of this node type.
 	 * @since 3.0
 	 */
-	public static final ChildListPropertyDescriptor FRAGMENTS_PROPERTY = 
+	public static final ChildListPropertyDescriptor FRAGMENTS_PROPERTY =
 		new ChildListPropertyDescriptor(TagElement.class, "fragments", IDocElement.class, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
-	 * A list of property descriptors (element type: 
+	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
 	 * @since 3.0
 	 */
 	private static final List PROPERTY_DESCRIPTORS;
-	
+
 	static {
 		List propertyList = new ArrayList(3);
 		createPropertyList(TagElement.class, propertyList);
@@ -64,21 +64,21 @@ public final class TagElement extends ASTNode implements IDocElement {
 		addProperty(FRAGMENTS_PROPERTY, propertyList);
 		PROPERTY_DESCRIPTORS = reapPropertyList(propertyList);
 	}
-	
+
 	/**
 	 * Returns a list of structural property descriptors for this node type.
 	 * Clients must not modify the result.
-	 * 
+	 *
 	 * @param apiLevel the API level; one of the
 	 * <code>AST.JLS*</code> constants
-	 * @return a list of property descriptors (element type: 
+	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
 	 * @since 3.0
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
 	}
-	
+
 	/**
 	 * Standard doc tag name (value {@value}).
 	 */
@@ -186,36 +186,36 @@ public final class TagElement extends ASTNode implements IDocElement {
 	 * The tag name, or null if none; defaults to null.
 	 */
 	private String optionalTagName = null;
-	
+
 	/**
-	 * The list of doc elements (element type: <code>IDocElement</code>). 
+	 * The list of doc elements (element type: <code>IDocElement</code>).
 	 * Defaults to an empty list.
 	 */
-	private ASTNode.NodeList fragments = 
+	private ASTNode.NodeList fragments =
 		new ASTNode.NodeList(FRAGMENTS_PROPERTY);
 
 	/**
 	 * Creates a new AST node for a tag element owned by the given AST.
 	 * The new node has no name and an empty list of fragments.
 	 * <p>
-	 * N.B. This constructor is package-private; all subclasses must be 
-	 * declared in the same package; clients are unable to declare 
+	 * N.B. This constructor is package-private; all subclasses must be
+	 * declared in the same package; clients are unable to declare
 	 * additional subclasses.
 	 * </p>
-	 * 
+	 *
 	 * @param ast the AST that is to own this node
 	 */
 	TagElement(AST ast) {
 		super(ast);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -242,7 +242,7 @@ public final class TagElement extends ASTNode implements IDocElement {
 		// allow default implementation to flag the error
 		return super.internalGetChildListProperty(property);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -260,7 +260,7 @@ public final class TagElement extends ASTNode implements IDocElement {
 		result.fragments().addAll(ASTNode.copySubtrees(target, fragments()));
 		return result;
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -291,11 +291,11 @@ public final class TagElement extends ASTNode implements IDocElement {
      * the first explicit tag.
      *
 	 * @return the tag name, or <code>null</code> if none
-	 */ 
+	 */
 	public String getTagName() {
 		return this.optionalTagName;
 	}
-	
+
 	/**
 	 * Sets the tag name of this node to the given value.
 	 * For top level doc tags such as parameter tags, the tag name
@@ -307,22 +307,22 @@ public final class TagElement extends ASTNode implements IDocElement {
 	 * the first explicit tag.
 	 *
 	 * @param tagName the tag name, or <code>null</code> if none
-	 */ 
+	 */
 	public void setTagName(String tagName) {
 		preValueChange(TAG_NAME_PROPERTY);
 		this.optionalTagName = tagName;
 		postValueChange(TAG_NAME_PROPERTY);
 	}
-		
+
 	/**
-	 * Returns the live list of fragments in this tag element. 
+	 * Returns the live list of fragments in this tag element.
 	 * <p>
 	 * The fragments cover everything following the tag name
 	 * (or everything if there is no tag name), and generally omit
 	 * embedded line breaks (and leading whitespace on new lines,
 	 * including any leading "*"). {@link org.eclipse.wst.jsdt.core.dom.TagElement}
 	 * nodes are used to represent tag elements (e.g., "@link")
-	 * nested within this tag element. 
+	 * nested within this tag element.
 	 * </p>
 	 * <p>
 	 * Here are some typical examples:
@@ -333,7 +333,7 @@ public final class TagElement extends ASTNode implements IDocElement {
 	 * TagElement with tag name "@param";
 	 * 2 fragments: SimpleName ("args"), TextElement
 	 * (" the program arguments")</li>
-	 * <li>"@return See {&#64;link #foo foo} instead." - 
+	 * <li>"@return See {&#64;link #foo foo} instead." -
 	 * TagElement with tag name "@return";
 	 * 3 fragments: TextElement ("See "),
 	 * TagElement (for "&#64;link #foo foo"),
@@ -346,24 +346,24 @@ public final class TagElement extends ASTNode implements IDocElement {
 	 * <p>
 	 * Adding and removing nodes from this list affects this node
 	 * dynamically. The nodes in this list may be of various
-	 * types, including {@link TextElement}, 
-	 * {@link org.eclipse.wst.jsdt.core.dom.TagElement}, {@link Name}, 
+	 * types, including {@link TextElement},
+	 * {@link org.eclipse.wst.jsdt.core.dom.TagElement}, {@link Name},
 	 * {@link MemberRef}, and {@link MethodRef}.
 	 * Clients should assume that the list of types may grow in
 	 * the future, and write their code to deal with unexpected
 	 * nodes types. However, attempts to add a non-proscribed type
 	 * of node will trigger an exception.
-	 * 
+	 *
 	 * @return the live list of doc elements in this tag element
 	 * (element type: <code>ASTNode</code>)
-	 */ 
+	 */
 	public List fragments() {
 		return this.fragments;
 	}
 
 	/**
 	 * Returns whether this tag element is nested within another
-	 * tag element. Nested tag elements appears enclosed in 
+	 * tag element. Nested tag elements appears enclosed in
 	 * "{" and "}"; certain doc tags, including "@link" and
 	 * "@linkplain" are only meaningful as nested tags.
 	 * Top-level (i.e., non-nested) doc tags begin on a new line;
@@ -373,7 +373,7 @@ public final class TagElement extends ASTNode implements IDocElement {
 	 * This convenience methods checks to see whether the parent
 	 * of this node is of type {@link org.eclipse.wst.jsdt.core.dom.TagElement}.
 	 * </p>
-	 * 
+	 *
 	 * @return <code>true</code> if this node is a nested tag element,
 	 * and false if this node is either parented by a doc comment node
 	 * ({@link Javadoc}), or is unparented
@@ -381,7 +381,7 @@ public final class TagElement extends ASTNode implements IDocElement {
 	public boolean isNested() {
 		return (getParent() instanceof TagElement);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -389,7 +389,7 @@ public final class TagElement extends ASTNode implements IDocElement {
 		int size = BASE_NODE_SIZE + 2 * 4 + stringSize(this.optionalTagName);
 		return size;
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */

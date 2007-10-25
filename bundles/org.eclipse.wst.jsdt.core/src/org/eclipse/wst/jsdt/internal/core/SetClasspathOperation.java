@@ -27,7 +27,7 @@ public class SetClasspathOperation extends ChangeClasspathOperation {
 	IClasspathEntry[] newRawClasspath;
 	IPath newOutputLocation;
 	JavaProject project;
-			
+
 	/**
 	 * When executed, this operation sets the raw classpath and output location of the given project.
 	 */
@@ -51,14 +51,14 @@ public class SetClasspathOperation extends ChangeClasspathOperation {
 		try {
 			// set raw classpath and null out resolved info
 			this.project.getPerProjectInfo().setClasspath(this.newRawClasspath, this.newOutputLocation, JavaModelStatus.VERIFIED_OK/*format is ok*/, null, null, null, null);
-			
+
 			// if needed, generate delta, update project ref, create markers, ...
 			classpathChanged(this.project);
-			
+
 			// write .classpath file
 			if (this.canChangeResources && this.project.saveClasspath(this.newRawClasspath, this.newOutputLocation))
 				setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
-		} finally {		
+		} finally {
 			done();
 		}
 	}

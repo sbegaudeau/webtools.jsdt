@@ -30,7 +30,7 @@ public class FileSystem implements INameEnvironment, SuffixConstants {
 	public interface Classpath {
 		char[][][] findTypeNames(String qualifiedPackageName);
 		NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageName, String qualifiedBinaryFileName);
-		boolean isPackage(String qualifiedPackageName); 
+		boolean isPackage(String qualifiedPackageName);
 		NameEnvironmentAnswer findBinding(char[] typeName, String qualifiedPackageName, int type, ITypeRequestor requestor);
 		NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageName, String qualifiedBinaryFileName, boolean asBinaryOnly);
 		/**
@@ -132,29 +132,29 @@ FileSystem(Classpath[] paths, String[] initialFileNames) {
 public static Classpath getClasspath(String classpathName, String encoding, AccessRuleSet accessRuleSet) {
 	return getClasspath(classpathName, encoding, false, accessRuleSet, null);
 }
-static Classpath getClasspath(String classpathName, String encoding, 
-		boolean isSourceOnly, AccessRuleSet accessRuleSet, 
+static Classpath getClasspath(String classpathName, String encoding,
+		boolean isSourceOnly, AccessRuleSet accessRuleSet,
 		String destinationPath) {
 	Classpath result = null;
 	File file = new File(convertPathSeparators(classpathName));
 	if (file.isDirectory()) {
 		if (file.exists()) {
-			result = new ClasspathDirectory(file, encoding, 
-					isSourceOnly ? ClasspathLocation.SOURCE : 
-						ClasspathLocation.SOURCE | ClasspathLocation.BINARY, 
+			result = new ClasspathDirectory(file, encoding,
+					isSourceOnly ? ClasspathLocation.SOURCE :
+						ClasspathLocation.SOURCE | ClasspathLocation.BINARY,
 					accessRuleSet,
 					destinationPath == null || destinationPath == Main.NONE ?
 						destinationPath : // keep == comparison valid
 						convertPathSeparators(destinationPath));
 		}
-	} else { 
+	} else {
 		String lowercaseClasspathName = classpathName.toLowerCase();
 		if (lowercaseClasspathName.endsWith(SUFFIX_STRING_jar)
 				|| lowercaseClasspathName.endsWith(SUFFIX_STRING_zip)) {
 			if (isSourceOnly) {
 				// source only mode
-				result = new ClasspathSourceJar(file, true, accessRuleSet, 
-					encoding, 
+				result = new ClasspathSourceJar(file, true, accessRuleSet,
+					encoding,
 					destinationPath == null || destinationPath == Main.NONE ?
 						destinationPath : // keep == comparison valid
 						convertPathSeparators(destinationPath));
@@ -190,8 +190,8 @@ private void initializeKnownFileNames(String[] initialFileNames) {
 		CharOperation.replace(fileName, '\\', '/');
 		for (int j = 0; j < classpaths.length; j++){
 			char[] matchCandidate = this.classpaths[j].normalizedPath();
-			if (this.classpaths[j] instanceof  ClasspathDirectory && 
-					CharOperation.prefixEquals(matchCandidate, fileName) && 
+			if (this.classpaths[j] instanceof  ClasspathDirectory &&
+					CharOperation.prefixEquals(matchCandidate, fileName) &&
 					(matchingPathName == null ||
 							matchCandidate.length < matchingPathName.length))
 				matchingPathName = matchCandidate;

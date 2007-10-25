@@ -12,12 +12,10 @@ package org.eclipse.wst.jsdt.internal.ui.workingsets;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
-
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.IWorkingSetEditWizard;
-
 import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
 
 

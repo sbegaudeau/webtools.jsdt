@@ -17,10 +17,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.TypedSource;
 
 public class TypedSourceTransfer extends ByteArrayTransfer {

@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.internal.compiler.parser;
 
 /**
- * Internal field structure for parsing recovery 
+ * Internal field structure for parsing recovery
  */
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
@@ -27,7 +27,7 @@ public class RecoveredField extends RecoveredElement {
 
 	public FieldDeclaration fieldDeclaration;
 	boolean alreadyCompletedFieldInitialization;
-	
+
 	public RecoveredType[] anonymousTypes;
 	public int anonymousTypeCount;
 public RecoveredField(FieldDeclaration fieldDeclaration, RecoveredElement parent, int bracketBalance){
@@ -55,17 +55,17 @@ public RecoveredElement add(Statement statement, int bracketBalanceValue) {
 	}
 }
 /*
- * Record a type declaration if this field is expecting an initialization expression 
+ * Record a type declaration if this field is expecting an initialization expression
  * and the type is an anonymous type.
  * Used for completion inside field initializers.
  */
 public RecoveredElement add(TypeDeclaration typeDeclaration, int bracketBalanceValue) {
 
-	if (this.alreadyCompletedFieldInitialization 
+	if (this.alreadyCompletedFieldInitialization
 			|| ((typeDeclaration.bits & ASTNode.IsAnonymousType) == 0)
 			|| (this.fieldDeclaration.declarationSourceEnd != 0 && typeDeclaration.sourceStart > this.fieldDeclaration.declarationSourceEnd)) {
 		return super.add(typeDeclaration, bracketBalanceValue);
-	} else { 
+	} else {
 		// Prepare anonymous type list
 		if (this.anonymousTypes == null) {
 			this.anonymousTypes = new RecoveredType[5];
@@ -73,11 +73,11 @@ public RecoveredElement add(TypeDeclaration typeDeclaration, int bracketBalanceV
 		} else {
 			if (this.anonymousTypeCount == this.anonymousTypes.length) {
 				System.arraycopy(
-					this.anonymousTypes, 
-					0, 
-					(this.anonymousTypes = new RecoveredType[2 * this.anonymousTypeCount]), 
-					0, 
-					this.anonymousTypeCount); 
+					this.anonymousTypes,
+					0,
+					(this.anonymousTypes = new RecoveredType[2 * this.anonymousTypeCount]),
+					0,
+					this.anonymousTypeCount);
 			}
 		}
 		// Store type declaration as an anonymous type
@@ -86,7 +86,7 @@ public RecoveredElement add(TypeDeclaration typeDeclaration, int bracketBalanceV
 		return element;
 	}
 }
-/* 
+/*
  * Answer the associated parsed structure
  */
 public ASTNode parseTree(){
@@ -179,20 +179,20 @@ public RecoveredElement updateOnClosingBrace(int braceStart, int braceEnd){
  * in which case the bodyStart is updated.
  */
 public RecoveredElement updateOnOpeningBrace(int braceStart, int braceEnd){
-	if (fieldDeclaration.declarationSourceEnd == 0 
+	if (fieldDeclaration.declarationSourceEnd == 0
 		&& (fieldDeclaration.type instanceof ArrayTypeReference || fieldDeclaration.type instanceof ArrayQualifiedTypeReference)
 		&& !alreadyCompletedFieldInitialization){
 		bracketBalance++;
 		return null; // no update is necessary	(array initializer)
 	}
-	if (fieldDeclaration.declarationSourceEnd == 0 
+	if (fieldDeclaration.declarationSourceEnd == 0
 		&& fieldDeclaration.getKind() == AbstractVariableDeclaration.ENUM_CONSTANT){
 		bracketBalance++;
 		return null; // no update is necessary	(enum constant)
 	}
 	// might be an array initializer
-	this.updateSourceEndIfNecessary(braceStart - 1, braceEnd - 1);	
-	return this.parent.updateOnOpeningBrace(braceStart, braceEnd);	
+	this.updateSourceEndIfNecessary(braceStart - 1, braceEnd - 1);
+	return this.parent.updateOnOpeningBrace(braceStart, braceEnd);
 }
 public void updateParseTree(){
 	this.updatedFieldDeclaration();

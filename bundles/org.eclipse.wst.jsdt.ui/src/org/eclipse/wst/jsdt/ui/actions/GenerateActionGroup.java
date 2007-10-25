@@ -15,7 +15,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -25,7 +24,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchSite;
@@ -33,14 +31,10 @@ import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.actions.AddBookmarkAction;
 import org.eclipse.ui.handlers.IHandlerActivation;
 import org.eclipse.ui.handlers.IHandlerService;
+import org.eclipse.ui.ide.IDEActionFactory;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.texteditor.IUpdate;
 import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
-
-import org.eclipse.ui.ide.IDEActionFactory;
-
-import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.IUIConstants;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.AddTaskAction;
@@ -48,8 +42,8 @@ import org.eclipse.wst.jsdt.internal.ui.actions.AllCleanUpsAction;
 import org.eclipse.wst.jsdt.internal.ui.actions.FindBrokenNLSKeysAction;
 import org.eclipse.wst.jsdt.internal.ui.actions.JDTQuickMenuAction;
 import org.eclipse.wst.jsdt.internal.ui.actions.MultiSortMembersAction;
-import org.eclipse.wst.jsdt.internal.ui.javaeditor.AddImportOnSelectionAction;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitEditor;
+import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 
 /**
  * Action group that adds the source and generate actions to a part's context

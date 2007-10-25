@@ -82,7 +82,7 @@ ITypeParameter[] getTypeParameters() throws JavaModelException;
 /**
  * Returns the number of parameters of this method.
  * This is a handle-only method.
- * 
+ *
  * @return the number of parameters of this method
  */
 int getNumberOfParameters();
@@ -90,7 +90,7 @@ int getNumberOfParameters();
  * Returns the binding key for this method. A binding key is a key that uniquely
  * identifies this method. It allows access to generic info for parameterized
  * methods.
- * 
+ *
  * @return the binding key for this method
  * @see org.eclipse.wst.jsdt.core.dom.IBinding#getKey()
  * @see BindingKey
@@ -125,14 +125,14 @@ String[] getParameterNames() throws JavaModelException;
  * or resolved (for binary types), and either basic (for basic types)
  * or rich (for parameterized types). See {@link Signature} for details.
  * </p>
- * 
+ *
  * @return the type signatures for the parameters of this method, an empty array if this method has no parameters
  * @see Signature
  */
 String[] getParameterTypes();
 /**
  * Returns the names of parameters in this method.
- * For binary types, these names are invented as "arg"+i, where i starts at 0 
+ * For binary types, these names are invented as "arg"+i, where i starts at 0
  * (even if source is associated with the binary or if Javdoc is attached to the binary).
  * Returns an empty array if this method has no parameters.
  *
@@ -190,7 +190,7 @@ String getSignature() throws JavaModelException;
 /**
  * Returns the type parameter declared in this method with the given name.
  * This is a handle-only method. The type parameter may or may not exist.
- * 
+ *
  * @param name the given simple name
  * @return the type parameter declared in this method with the given name
  * @since 3.1
@@ -201,7 +201,7 @@ ITypeParameter getTypeParameter(String name);
  *
  * @exception JavaModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource.
- * 
+ *
  * @return true if this method is a constructor, false otherwise
  */
 boolean isConstructor() throws JavaModelException;
@@ -215,7 +215,7 @@ boolean isConstructor() throws JavaModelException;
  * <li>it is <code>static</code> and <code>public</code></li>
  * <li>it defines one parameter whose type's simple name is <code>String[]</code></li>
  * </ul>
- * 
+ *
  * @exception JavaModelException if this element does not exist or if an
  *      exception occurs while accessing its corresponding resource.
  * @since 2.0
@@ -225,7 +225,7 @@ boolean isMainMethod() throws JavaModelException;
 /**
  * Returns whether this method represents a resolved method.
  * If a method is resoved, its key contains resolved information.
- * 
+ *
  * @return whether this method represents a resolved method.
  * @since 3.1
  */
@@ -239,7 +239,7 @@ boolean isResolved();
  * <li>the simple names of their parameter types are equal</li>
  * </ul>
  * This is a handle-only method.
- * 
+ *
  * @param method the given method
  * @return true if this method is similar to the given method.
  * @see Signature#getSimpleName(char[])

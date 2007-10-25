@@ -13,7 +13,9 @@ package org.eclipse.wst.jsdt.internal.core.search.matching;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 public class TypeDeclarationLocator extends PatternLocator {
@@ -91,7 +93,7 @@ public int resolveLevel(Binding binding) {
 	}
 }
 /**
- * Returns whether the given type binding matches the given simple name pattern 
+ * Returns whether the given type binding matches the given simple name pattern
  * qualification pattern and enclosing type name pattern.
  */
 protected int resolveLevelForType(char[] simpleNamePattern, char[] qualificationPattern, char[] enclosingNamePattern, TypeBinding type) {

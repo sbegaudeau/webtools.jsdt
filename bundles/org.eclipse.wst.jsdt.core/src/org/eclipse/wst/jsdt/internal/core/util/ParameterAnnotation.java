@@ -21,14 +21,14 @@ import org.eclipse.wst.jsdt.core.util.IParameterAnnotation;
 public class ParameterAnnotation extends ClassFileStruct implements IParameterAnnotation {
 
 	private static final IAnnotation[] NO_ENTRIES = new IAnnotation[0];
-	
+
 	private int annotationsNumber;
 	private IAnnotation[] annotations;
 	private int readOffset;
-	
+
 	/**
 	 * Constructor for Annotation.
-	 * 
+	 *
 	 * @param classFileBytes
 	 * @param constantPool
 	 * @param offset
@@ -38,7 +38,7 @@ public class ParameterAnnotation extends ClassFileStruct implements IParameterAn
 			byte[] classFileBytes,
 			IConstantPool constantPool,
 			int offset) throws ClassFormatException {
-		
+
 		final int length = u2At(classFileBytes, 0, offset);
 		this.readOffset = 2;
 		this.annotationsNumber = length;
@@ -53,7 +53,7 @@ public class ParameterAnnotation extends ClassFileStruct implements IParameterAn
 			this.annotations = NO_ENTRIES;
 		}
 	}
-	
+
 	int sizeInBytes() {
 		return this.readOffset;
 	}

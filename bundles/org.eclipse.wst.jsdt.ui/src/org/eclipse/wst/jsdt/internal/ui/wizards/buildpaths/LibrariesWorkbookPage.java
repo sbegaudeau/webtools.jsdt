@@ -19,50 +19,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.window.Window;
-import org.eclipse.jface.wizard.WizardDialog;
-
-import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
-
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
-import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.launching.JavaRuntime;
-
-import org.eclipse.wst.jsdt.ui.wizards.BuildPathDialogAccess;
-
-import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.internal.ui.actions.JarImportWizardAction;
 import org.eclipse.wst.jsdt.internal.ui.actions.WorkbenchRunnableAdapter;
 import org.eclipse.wst.jsdt.internal.ui.jarimport.JarImportWizard;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
@@ -75,6 +53,8 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ITreeListAdapter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ListDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.TreeListDialogField;
+import org.eclipse.wst.jsdt.launching.JavaRuntime;
+import org.eclipse.wst.jsdt.ui.wizards.BuildPathDialogAccess;
 
 public class LibrariesWorkbookPage extends BuildPathBasePage {
 	

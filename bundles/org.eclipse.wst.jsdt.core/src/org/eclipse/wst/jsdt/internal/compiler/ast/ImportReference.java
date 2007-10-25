@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 
 public class ImportReference extends ASTNode {
 
@@ -39,7 +39,7 @@ public class ImportReference extends ASTNode {
 		this.sourceStart = (int) (sourcePositions[0] >>> 32);
 		this.modifiers = modifiers;
 	}
-	
+
 	public boolean isStatic() {
 		return (this.modifiers & ClassFileConstants.AccStatic) != 0;
 	}

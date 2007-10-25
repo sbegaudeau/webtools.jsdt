@@ -23,30 +23,30 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
 public class LocalVariableBinding extends VariableBinding {
 
 	public int resolvedPosition; // for code generation (position in method context)
-	
+
 	public static final int UNUSED = 0;
 	public static final int USED = 1;
 	public static final int FAKE_USED = 2;
 	public int useFlag; // for flow analysis (default is UNUSED)
-	
+
 	public BlockScope declaringScope; // back-pointer to its declaring scope
 	public LocalDeclaration declaration; // for source-positions
 
 	public int[] initializationPCs;
 	public int initializationCount = 0;
 
-	// for synthetic local variables	
+	// for synthetic local variables
 	// if declaration slot is not positionned, the variable will not be listed in attribute
 	// note that the name of a variable should be chosen so as not to conflict with user ones (usually starting with a space char is all needed)
 	public LocalVariableBinding(char[] name, TypeBinding type, int modifiers, boolean isArgument) {
 		super(name, type, modifiers, isArgument ? Constant.NotAConstant : null);
 		if (isArgument) this.tagBits |= TagBits.IsArgument;
 	}
-	
+
 	// regular local variable or argument
 	public LocalVariableBinding(LocalDeclaration declaration, TypeBinding type, int modifiers, boolean isArgument) {
 
-		this(declaration.name, type!=null ? type : BaseTypeBinding.UNKNOWN, modifiers, isArgument);
+		this(declaration.name, type!=null ? type : TypeBinding.UNKNOWN, modifiers, isArgument);
 		this.declaration = declaration;
 	}
 
@@ -57,14 +57,14 @@ public class LocalVariableBinding extends VariableBinding {
 
 		return LOCAL;
 	}
-	
+
 	/*
 	 * declaringUniqueKey # scopeIndex / varName
 	 * p.X { void foo() { int local; } } --> Lp/X;.foo()V#1/local
 	 */
 	public char[] computeUniqueKey(boolean isLeaf) {
 		StringBuffer buffer = new StringBuffer();
-		
+
 		// declaring method or type
  		BlockScope scope = this.declaringScope;
 		if (scope != null) {
@@ -108,7 +108,7 @@ public class LocalVariableBinding extends VariableBinding {
 		// variable name
 		buffer.append('#');
 		buffer.append(this.name);
-		
+
 		int length = buffer.length();
 		char[] uniqueKey = new char[length];
 		buffer.getChars(0, length, uniqueKey, 0);
@@ -168,7 +168,7 @@ public class LocalVariableBinding extends VariableBinding {
 			buffer.append(scopeIndex);
 		}
 	}
-	
+
 	// Answer whether the variable binding is a secret variable added for code gen purposes
 	public boolean isSecret() {
 
@@ -179,7 +179,7 @@ public class LocalVariableBinding extends VariableBinding {
 	{
 		return this.declaringScope.compilationUnitScope()==scope;
 	}
-	
+
 	public void recordInitializationEndPC(int pc) {
 
 		if (initializationPCs[((initializationCount - 1) << 1) + 1] == -1)

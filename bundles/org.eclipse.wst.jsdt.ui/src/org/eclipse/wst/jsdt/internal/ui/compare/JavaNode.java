@@ -10,17 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.compare;
 
-import org.eclipse.swt.graphics.Image;
-
-import org.eclipse.jface.resource.ImageDescriptor;
-
-import org.eclipse.jface.text.IDocument;
-
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.structuremergeviewer.DocumentRangeNode;
-
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.core.IJavaElement;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 /**

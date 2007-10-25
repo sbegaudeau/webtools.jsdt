@@ -14,9 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.ltk.core.refactoring.participants.ReorgExecutionLog;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptor;
 
 /**

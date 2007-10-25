@@ -16,10 +16,8 @@ import java.util.List;
 import java.util.Stack;
 
 import org.eclipse.core.resources.IResource;
-
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Widget;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 

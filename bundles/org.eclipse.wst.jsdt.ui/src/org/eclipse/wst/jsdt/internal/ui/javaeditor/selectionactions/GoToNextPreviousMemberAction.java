@@ -15,14 +15,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.text.ITextSelection;
-
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IUpdate;
-
 import org.eclipse.wst.jsdt.core.IInitializer;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
@@ -34,9 +31,7 @@ import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
-
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.IClassFileEditorInput;

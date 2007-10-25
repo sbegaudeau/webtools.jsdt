@@ -11,9 +11,9 @@
 package org.eclipse.wst.jsdt.internal.ui.search;
 
 import org.eclipse.core.resources.IFile;
-
 import org.eclipse.jface.dialogs.MessageDialog;
-
+import org.eclipse.search.ui.NewSearchUI;
+import org.eclipse.search.ui.text.Match;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -22,24 +22,17 @@ import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IReusableEditor;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.part.FileEditorInput;
-
 import org.eclipse.ui.ide.IDE;
-
-import org.eclipse.search.ui.NewSearchUI;
-import org.eclipse.search.ui.text.Match;
-
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.InternalClassFileEditorInput;
+import org.eclipse.wst.jsdt.ui.JavaUI;
 
 public class JavaSearchEditorOpener {
 	

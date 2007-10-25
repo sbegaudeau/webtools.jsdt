@@ -10,14 +10,13 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.util;
 
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.ViewForm;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
-
-import org.eclipse.jface.action.ToolBarManager;
 
 /**
  * A <code>ViewerPane</code> is a convenience class which installs a

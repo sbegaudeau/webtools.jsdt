@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.typeset
 import java.util.Iterator;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.ArrayType;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.TType;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2.TTypes;

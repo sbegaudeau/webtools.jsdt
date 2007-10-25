@@ -14,9 +14,7 @@ import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
-
 import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 public class PatternStrings {

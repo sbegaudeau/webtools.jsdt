@@ -15,7 +15,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
@@ -29,7 +28,6 @@ import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
 import org.eclipse.wst.jsdt.core.dom.BreakStatement;
 import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
-import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;

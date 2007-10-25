@@ -11,31 +11,27 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.ExceptionHandlingFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
-import org.eclipse.wst.jsdt.internal.compiler.flow.InitializationFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortMethod;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 
 public class MethodDeclaration extends AbstractMethodDeclaration {
-	
+
 	public TypeReference returnType;
 	public TypeParameter[] typeParameters;
-	
+
 	/**
 	 * MethodDeclaration constructor comment.
 	 */
@@ -54,15 +50,15 @@ public class MethodDeclaration extends AbstractMethodDeclaration {
 		try {
 			if (binding == null)
 				return flowInfo;
-				
-			if (!this.binding.isUsed() && 
-					(this.binding.isPrivate() 
+
+			if (!this.binding.isUsed() &&
+					(this.binding.isPrivate()
 						|| (((this.binding.modifiers & (ExtraCompilerModifiers.AccOverriding|ExtraCompilerModifiers.AccImplementing)) == 0) && this.binding.declaringClass.isLocalType()))) {
 				if (!classScope.referenceCompilationUnit().compilationResult.hasSyntaxError) {
 					scope.problemReporter().unusedPrivateMethod(this);
 				}
 			}
-				
+
 //			// skip enum implicit methods
 //			if (binding.declaringClass.isEnum() && (this.selector == TypeConstants.VALUES || this.selector == TypeConstants.VALUEOF))
 //				return flowInfo;
@@ -70,7 +66,7 @@ public class MethodDeclaration extends AbstractMethodDeclaration {
 			// may be in a non necessary <clinit> for innerclass with static final constant fields
 			if (binding.isAbstract() || binding.isNative())
 				return flowInfo;
-			
+
 			ExceptionHandlingFlowContext methodContext =
 				new ExceptionHandlingFlowContext(
 					initializationContext,
@@ -103,7 +99,7 @@ public class MethodDeclaration extends AbstractMethodDeclaration {
 				this.needFreeReturn =
 					(flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0;
 			} else {
-				if (flowInfo != FlowInfo.DEAD_END) { 
+				if (flowInfo != FlowInfo.DEAD_END) {
 					if (this.inferredMethod==null || !this.inferredMethod.isConstructor)
 						scope.problemReporter().shouldReturn(returnTypeBinding, this);
 				}
@@ -148,13 +144,13 @@ public class MethodDeclaration extends AbstractMethodDeclaration {
 //		if (CharOperation.equals(this.scope.enclosingSourceType().sourceName, selector)) {
 //			this.scope.problemReporter().methodWithConstructorName(this);
 //		}
-		
+
 		if (this.typeParameters != null) {
 			for (int i = 0, length = this.typeParameters.length; i < length; i++) {
 				this.typeParameters[i].resolve(this.scope);
 			}
 		}
-		
+
 		// check @Override annotation
 		final CompilerOptions compilerOptions = this.scope.compilerOptions();
 		checkOverride: {
@@ -174,14 +170,14 @@ public class MethodDeclaration extends AbstractMethodDeclaration {
 						&& ((bindingModifiers & (ClassFileConstants.AccStatic|ExtraCompilerModifiers.AccImplementing)) == ExtraCompilerModifiers.AccImplementing))
 					break checkOverride;
 				// claims to override, and doesn't actually do so
-				this.scope.problemReporter().methodMustOverride(this);					
-			} else if (!isInterfaceMethod 	
+				this.scope.problemReporter().methodMustOverride(this);
+			} else if (!isInterfaceMethod
 						&& (bindingModifiers & (ClassFileConstants.AccStatic|ExtraCompilerModifiers.AccOverriding)) == ExtraCompilerModifiers.AccOverriding) {
 				// actually overrides, but did not claim to do so
 				this.scope.problemReporter().missingOverrideAnnotation(this);
 			}
 		}
-				
+
 		// by grammatical construction, interface methods are always abstract
 //		switch (TypeDeclaration.kind(this.scope.referenceType().modifiers)) {
 //			case TypeDeclaration.ENUM_DECL :
@@ -189,7 +185,7 @@ public class MethodDeclaration extends AbstractMethodDeclaration {
 //				if (this.selector == TypeConstants.VALUEOF) break;
 //			case TypeDeclaration.CLASS_DECL :
 //				// if a method has an semicolon body and is not declared as abstract==>error
-//				// native methods may have a semicolon body 
+//				// native methods may have a semicolon body
 //				if ((this.modifiers & ExtraCompilerModifiers.AccSemicolonBody) != 0) {
 //					if ((this.modifiers & ClassFileConstants.AccNative) == 0)
 //						if ((this.modifiers & ClassFileConstants.AccAbstract) == 0)
@@ -201,7 +197,7 @@ public class MethodDeclaration extends AbstractMethodDeclaration {
 //				}
 //		}
 		super.resolveStatements();
-		
+
 		// TagBits.OverridingMethodWithSupercall is set during the resolveStatements() call
 		if (compilerOptions.getSeverity(CompilerOptions.OverridingMethodWithoutSuperInvocation) != ProblemSeverities.Ignore) {
 			if (this.binding != null) {
@@ -232,7 +228,7 @@ public class MethodDeclaration extends AbstractMethodDeclaration {
 				for (int i = 0; i < typeParametersLength; i++) {
 					this.typeParameters[i].traverse(visitor, scope);
 				}
-			}			
+			}
 			if (returnType != null)
 				returnType.traverse(visitor, scope);
 			if (arguments != null) {
@@ -268,7 +264,7 @@ public class MethodDeclaration extends AbstractMethodDeclaration {
 					for (int i = 0; i < typeParametersLength; i++) {
 						this.typeParameters[i].traverse(visitor, scope);
 					}
-				}			
+				}
 				if (returnType != null)
 					returnType.traverse(visitor, scope);
 				if (arguments != null) {
@@ -290,8 +286,8 @@ public class MethodDeclaration extends AbstractMethodDeclaration {
 			visitor.endVisit(this, blockScope);
 		}
 
-	
+
 	public TypeParameter[] typeParameters() {
 	    return this.typeParameters;
-	}		
+	}
 }

@@ -10,19 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.search;
 
-import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.jface.viewers.ITreeContentProvider;
-
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaModel;
 import org.eclipse.wst.jsdt.core.IType;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredJavaElementLabels;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredString;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 public class PostfixLabelProvider extends SearchLabelProvider {
 	private ITreeContentProvider fContentProvider;

@@ -11,9 +11,7 @@
 package org.eclipse.wst.jsdt.internal.ui.refactoring.code;
 
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.ReplaceInvocationsRefactoring;
-
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
 
 public class ReplaceInvocationsWizard extends RefactoringWizard {

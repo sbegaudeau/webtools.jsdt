@@ -11,22 +11,33 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.impl.*;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BaseTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class FieldDeclaration extends AbstractVariableDeclaration {
-	
+
 	public FieldBinding binding;
 //	 is in super		public Javadoc javadoc;
 
 	//allows to retrieve both the "type" part of the declaration (part1)
 	//and also the part that decribe the name and the init and optionally
-	//some other dimension ! .... 
+	//some other dimension ! ....
 	//public int[] a, b[] = X, c ;
-	//for b that would give for 
+	//for b that would give for
 	// - part1 : public int[]
 	// - part2 : b[] = X,
 
@@ -39,7 +50,7 @@ public FieldDeclaration() {
 
 public FieldDeclaration(	char[] name, int sourceStart, int sourceEnd) {
 	this.name = name;
-	//due to some declaration like 
+	//due to some declaration like
 	// int x, y = 3, z , x ;
 	//the sourceStart and the sourceEnd is ONLY on  the name
 	this.sourceStart = sourceStart;
@@ -78,7 +89,7 @@ public FlowInfo analyseCode(MethodScope initializationScope, FlowContext flowCon
 
 /**
  * Code generation for a field declaration:
- *	   standard assignment to a field 
+ *	   standard assignment to a field
  *
  * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
  * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
@@ -137,13 +148,13 @@ public void resolve(MethodScope initializationScope) {
 	//--------------------------------------------------------
 	if ((this.bits & ASTNode.HasBeenResolved) != 0) return;
 	if (this.binding == null || !this.binding.isValidBinding()) return;
-	
+
 	this.bits |= ASTNode.HasBeenResolved;
 
 	// check if field is hiding some variable - issue is that field binding already got inserted in scope
 	// thus must lookup separately in super type and outer context
 	ClassScope classScope = initializationScope.enclosingClassScope();
-	
+
 	if (classScope != null) {
 		checkHiding: {
 			SourceTypeBinding declaringType = classScope.enclosingSourceType();
@@ -159,7 +170,7 @@ public void resolve(MethodScope initializationScope) {
 				// collision with supertype field
 				initializationScope.problemReporter().fieldHiding(this, existingVariable);
 				break checkHiding; // already found a matching field
-			}					
+			}
 			// only corner case is: lookup of outer field through static declaringType, which isn't detected by #getBinding as lookup starts
 			// from outer scope. Subsequent static contexts are detected for free.
 			Scope outerScope = classScope.parent;
@@ -177,7 +188,7 @@ public void resolve(MethodScope initializationScope) {
 			initializationScope.problemReporter().fieldHiding(this, existingVariable);
 		}
 	}
-	
+
 	if (this.type != null ) { // enum constants have no declared type
 		this.type.resolvedType = this.binding.type; // update binding for type reference
 	}
@@ -194,14 +205,14 @@ public void resolve(MethodScope initializationScope) {
 				&& (this.binding.modifiers & ClassFileConstants.AccDeprecated) != 0
 				&& initializationScope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5) {
 			initializationScope.problemReporter().missingDeprecatedAnnotationForField(this);
-		}						
+		}
 		// the resolution of the initialization hasn't been done
 		if (this.initialization == null) {
 			this.binding.setConstant(Constant.NotAConstant);
 		} else {
 			// break dead-lock cycles by forcing constant to NotAConstant
 			this.binding.setConstant(Constant.NotAConstant);
-			
+
 			TypeBinding fieldType = this.binding.type;
 			TypeBinding initializationType;
 			this.initialization.setExpectedType(fieldType); // needed in case of generic method invocation
@@ -222,20 +233,20 @@ public void resolve(MethodScope initializationScope) {
 					if (initializationType.needsUncheckedConversion(fieldType)) {
 						    initializationScope.problemReporter().unsafeTypeConversion(this.initialization, initializationType, fieldType);
 					}
-					if (this.initialization instanceof CastExpression 
+					if (this.initialization instanceof CastExpression
 							&& (this.initialization.bits & ASTNode.UnnecessaryCast) == 0) {
 						CastExpression.checkNeedForAssignedCast(initializationScope, fieldType, (CastExpression) this.initialization);
-					}								
-				} else if (initializationScope.isBoxingCompatibleWith(initializationType, fieldType) 
+					}
+				} else if (initializationScope.isBoxingCompatibleWith(initializationType, fieldType)
 									|| (initializationType.isBaseType()  // narrowing then boxing ?
 											&& initializationScope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5 // autoboxing
 											&& !fieldType.isBaseType()
 											&& initialization.isConstantValueOfTypeAssignableToType(initializationType, initializationScope.environment().computeBoxingType(fieldType)))) {
 					this.initialization.computeConversion(initializationScope, fieldType, initializationType);
-					if (this.initialization instanceof CastExpression 
+					if (this.initialization instanceof CastExpression
 							&& (this.initialization.bits & ASTNode.UnnecessaryCast) == 0) {
 						CastExpression.checkNeedForAssignedCast(initializationScope, fieldType, (CastExpression) this.initialization);
-					}							
+					}
 				} else {
 					initializationScope.problemReporter().typeMismatchError(initializationType, fieldType, this);
 				}
@@ -248,7 +259,7 @@ public void resolve(MethodScope initializationScope) {
 			// check for assignment with no effect
 			if (this.binding == Assignment.getDirectBinding(this.initialization)) {
 				initializationScope.problemReporter().assignmentHasNoEffect(this, this.name);
-			}					
+			}
 		}
 		// Resolve Javadoc comment if one is present
 		if (this.javadoc != null) {

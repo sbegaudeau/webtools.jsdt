@@ -15,15 +15,12 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-
-import org.eclipse.swt.widgets.Composite;
-
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.formatter.FormattingContextProperties;
 import org.eclipse.jface.text.formatter.IContentFormatter;
 import org.eclipse.jface.text.formatter.IContentFormatterExtension;
 import org.eclipse.jface.text.formatter.IFormattingContext;
-
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.wst.jsdt.internal.ui.IJavaStatusConstants;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.comment.CommentFormattingContext;

@@ -10,19 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.refactoring;
 
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-
 import org.eclipse.ltk.core.refactoring.Change;
-
 import org.eclipse.wst.jsdt.core.JavaCore;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JDTChange;
 
 public abstract class AbstractJavaElementRenameChange extends JDTChange {

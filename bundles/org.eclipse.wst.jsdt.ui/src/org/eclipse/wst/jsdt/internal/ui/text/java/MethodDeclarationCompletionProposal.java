@@ -16,33 +16,27 @@ import java.util.Set;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-
 import org.eclipse.jface.resource.ImageDescriptor;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension4;
-
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaConventions;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.CodeGenerationSettings;
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-
-import org.eclipse.wst.jsdt.ui.CodeGeneration;
-import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.preferences.JavaPreferencesSettings;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
+import org.eclipse.wst.jsdt.ui.CodeGeneration;
+import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
 
 /**
  * Method declaration proposal.

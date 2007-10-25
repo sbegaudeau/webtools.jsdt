@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.ui;
 
 
 import org.eclipse.ui.IViewPart;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IType;
 

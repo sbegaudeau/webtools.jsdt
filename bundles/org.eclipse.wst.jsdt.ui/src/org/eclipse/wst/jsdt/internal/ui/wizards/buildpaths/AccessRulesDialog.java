@@ -14,6 +14,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.StatusDialog;
+import org.eclipse.jface.viewers.ColumnLayoutData;
+import org.eclipse.jface.viewers.ColumnPixelData;
+import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.GridData;
@@ -22,32 +28,18 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.dialogs.StatusDialog;
-import org.eclipse.jface.viewers.ColumnLayoutData;
-import org.eclipse.jface.viewers.ColumnPixelData;
-import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.window.Window;
-
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
-
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-
+import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.preferences.ProblemSeveritiesPreferencePage;
@@ -58,6 +50,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IListAdapter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ListDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.SelectionButtonDialogField;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 public class AccessRulesDialog extends StatusDialog {
 	

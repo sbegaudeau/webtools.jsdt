@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search;
 
-import org.eclipse.wst.jsdt.core.*;
-import org.eclipse.wst.jsdt.core.search.*;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
 
 /**
  * Java Search concrete class for a type name match.
- * 
+ *
  * @since 3.3
  */
 public class JavaSearchTypeNameMatch extends TypeNameMatch {
@@ -74,7 +74,7 @@ public int hashCode() {
 
 /**
  * Set modifiers of the matched type.
- * 
+ *
  * @param modifiers the modifiers of the matched type.
  */
 public void setModifiers(int modifiers) {
@@ -83,7 +83,7 @@ public void setModifiers(int modifiers) {
 
 /**
  * Set matched type.
- * 
+ *
  * @param type the matched type.
  */
 public void setType(IType type) {

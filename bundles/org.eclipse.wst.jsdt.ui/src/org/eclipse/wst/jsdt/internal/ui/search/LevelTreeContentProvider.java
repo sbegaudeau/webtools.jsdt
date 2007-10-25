@@ -18,15 +18,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
-
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IType;
-
 import org.eclipse.wst.jsdt.ui.StandardJavaElementContentProvider;
 
 public class LevelTreeContentProvider extends JavaSearchContentProvider implements ITreeContentProvider {

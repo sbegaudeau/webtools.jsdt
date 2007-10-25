@@ -14,7 +14,6 @@ package org.eclipse.wst.jsdt.internal.ui.text;
 import java.io.IOException;
 
 import org.eclipse.jface.internal.text.html.SingleCharReader;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 

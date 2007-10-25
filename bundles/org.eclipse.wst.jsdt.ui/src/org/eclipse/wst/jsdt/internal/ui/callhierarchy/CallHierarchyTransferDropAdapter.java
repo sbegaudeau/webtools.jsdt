@@ -11,14 +11,11 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.callhierarchy;
 
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DropTargetEvent;
-
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredViewer;
-
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.wst.jsdt.core.IMethod;
-
 import org.eclipse.wst.jsdt.internal.ui.packageview.SelectionTransferDropAdapter;
 import org.eclipse.wst.jsdt.internal.ui.util.SelectionUtil;
 

@@ -16,9 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.wst.jsdt.core.CorrectionEngine;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
@@ -46,14 +44,11 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
-import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
+import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
 
 /**
  * 

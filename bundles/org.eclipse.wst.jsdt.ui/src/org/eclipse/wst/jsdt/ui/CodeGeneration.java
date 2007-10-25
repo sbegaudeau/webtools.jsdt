@@ -12,14 +12,12 @@
 package org.eclipse.wst.jsdt.ui;
 
 import org.eclipse.core.runtime.CoreException;
-
-
-import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
-import org.eclipse.wst.jsdt.internal.corext.template.java.CodeTemplateContextType;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
 import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
+import org.eclipse.wst.jsdt.internal.corext.template.java.CodeTemplateContextType;
 
 /**
  * Class that offers access to the templates contained in the 'code templates' preference page.

@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.ui.text.java;
 
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
-
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui.actions;
 
-import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.ui.IViewPart;
@@ -18,6 +17,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.actions.ExportResourcesAction;
 import org.eclipse.ui.actions.ImportResourcesAction;
+import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 
 /**
  * Action group to add the Import and Export action to a view part's

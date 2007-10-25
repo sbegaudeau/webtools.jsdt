@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2;
 
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.TypeVariable;
 
 public final class CollectionElementVariable2 extends ConstraintVariable2 {

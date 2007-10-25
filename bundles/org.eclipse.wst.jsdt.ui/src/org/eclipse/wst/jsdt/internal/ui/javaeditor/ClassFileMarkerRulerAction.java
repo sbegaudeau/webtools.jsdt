@@ -15,17 +15,13 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 import java.util.Map;
 
 import org.eclipse.core.resources.IResource;
-
 import org.eclipse.jface.text.source.IVerticalRuler;
-
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.MarkerRulerAction;
-
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.ui.IResourceLocator;
 
 

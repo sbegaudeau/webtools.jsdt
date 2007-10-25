@@ -12,15 +12,12 @@
 package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.newsourcepage;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-
-import org.eclipse.core.resources.IFolder;
-
+import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.operation.IRunnableContext;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.GridData;
@@ -28,26 +25,16 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-
-import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.operation.IRunnableContext;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.viewers.StructuredSelection;
-
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
-
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.buildpath.BuildpathDelta;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.ClasspathModifier;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.IBuildpathModifierListener;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.preferences.ScrolledPageContent;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
@@ -57,11 +44,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathBasePage;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathsBlock;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElementAttribute;
-import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
-import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
-import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ListDialogField;
-import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.SelectionButtonDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringDialogField;
 
 public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements IBuildpathModifierListener {

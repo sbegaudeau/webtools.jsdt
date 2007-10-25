@@ -29,7 +29,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.ProgressMonitorWrapper;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -54,11 +54,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-
-import org.eclipse.jface.resource.ImageDescriptor;
-
 import org.eclipse.ui.progress.UIJob;
-
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
@@ -69,27 +65,23 @@ import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatchRequestor;
 import org.eclipse.wst.jsdt.core.search.TypeNameRequestor;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.OpenTypeHistory;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
 import org.eclipse.wst.jsdt.internal.corext.util.TypeFilter;
-import org.eclipse.wst.jsdt.internal.corext.util.TypeInfoRequestorAdapter;
 import org.eclipse.wst.jsdt.internal.corext.util.TypeInfoFilter;
-
-import org.eclipse.wst.jsdt.launching.IVMInstall;
-import org.eclipse.wst.jsdt.launching.IVMInstallType;
-import org.eclipse.wst.jsdt.launching.JavaRuntime;
-import org.eclipse.wst.jsdt.launching.LibraryLocation;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.dialogs.ITypeInfoFilterExtension;
-import org.eclipse.wst.jsdt.ui.dialogs.ITypeInfoImageProvider;
-
+import org.eclipse.wst.jsdt.internal.corext.util.TypeInfoRequestorAdapter;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
+import org.eclipse.wst.jsdt.launching.IVMInstall;
+import org.eclipse.wst.jsdt.launching.IVMInstallType;
+import org.eclipse.wst.jsdt.launching.JavaRuntime;
+import org.eclipse.wst.jsdt.launching.LibraryLocation;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.dialogs.ITypeInfoFilterExtension;
+import org.eclipse.wst.jsdt.ui.dialogs.ITypeInfoImageProvider;
 
 /**
  * A viewer to present type queried form the type history and form the

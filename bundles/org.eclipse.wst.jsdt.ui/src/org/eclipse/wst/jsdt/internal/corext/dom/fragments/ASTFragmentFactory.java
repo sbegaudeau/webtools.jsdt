@@ -11,13 +11,11 @@
 package org.eclipse.wst.jsdt.internal.corext.dom.fragments;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
-
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
 import org.eclipse.wst.jsdt.internal.corext.dom.HierarchicalASTVisitor;
 import org.eclipse.wst.jsdt.internal.corext.dom.Selection;

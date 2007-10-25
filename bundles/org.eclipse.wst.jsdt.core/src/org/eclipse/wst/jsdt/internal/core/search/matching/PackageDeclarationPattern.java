@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
-import org.eclipse.wst.jsdt.internal.core.index.*;
+import org.eclipse.wst.jsdt.internal.core.index.EntryResult;
+import org.eclipse.wst.jsdt.internal.core.index.Index;
 
 public class PackageDeclarationPattern extends JavaSearchPattern {
 
@@ -26,7 +27,7 @@ EntryResult[] queryIn(Index index) {
 }
 protected StringBuffer print(StringBuffer output) {
 	output.append("PackageDeclarationPattern: <"); //$NON-NLS-1$
-	if (this.pkgName != null) 
+	if (this.pkgName != null)
 		output.append(this.pkgName);
 	else
 		output.append("*"); //$NON-NLS-1$

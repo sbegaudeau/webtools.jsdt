@@ -11,22 +11,16 @@
 package org.eclipse.wst.jsdt.ui.actions;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-
-import org.eclipse.jface.text.ITextSelection;
-
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParser;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;

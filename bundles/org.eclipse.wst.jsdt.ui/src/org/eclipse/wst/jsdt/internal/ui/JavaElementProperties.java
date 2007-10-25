@@ -13,11 +13,9 @@ package org.eclipse.wst.jsdt.internal.ui;
 
 
 import org.eclipse.jface.viewers.IBasicPropertyConstants;
-
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 
 public class JavaElementProperties implements IPropertySource {

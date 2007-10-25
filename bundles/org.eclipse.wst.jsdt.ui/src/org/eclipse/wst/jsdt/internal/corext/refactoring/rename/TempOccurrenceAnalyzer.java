@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
@@ -24,7 +23,6 @@ import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.Javadoc;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 
 

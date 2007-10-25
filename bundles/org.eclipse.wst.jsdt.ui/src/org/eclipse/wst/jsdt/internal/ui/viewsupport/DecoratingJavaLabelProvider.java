@@ -15,12 +15,9 @@ import org.eclipse.jface.viewers.DecorationContext;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelDecorator;
-
 import org.eclipse.ui.PlatformUI;
-
-import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator;
-
 import org.eclipse.wst.jsdt.internal.ui.packageview.HierarchicalDecorationContext;
+import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator;
 
 public class DecoratingJavaLabelProvider extends DecoratingLabelProvider implements IRichLabelProvider {
 	

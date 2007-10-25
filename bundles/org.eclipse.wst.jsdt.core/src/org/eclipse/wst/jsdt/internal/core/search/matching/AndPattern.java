@@ -14,16 +14,19 @@ import java.io.IOException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.wst.jsdt.core.search.*;
+import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.SearchParticipant;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
-import org.eclipse.wst.jsdt.internal.core.index.*;
+import org.eclipse.wst.jsdt.internal.core.index.EntryResult;
+import org.eclipse.wst.jsdt.internal.core.index.Index;
 import org.eclipse.wst.jsdt.internal.core.search.IndexQueryRequestor;
 
 /**
  * Query the index multiple times and do an 'and' on the results.
  */
 public abstract class AndPattern extends JavaSearchPattern { // TODO should rename IntersectingPattern, and make AndPattern a true subclass
-	
+
 public AndPattern(int patternKind, int matchRule) {
 	super(patternKind, matchRule);
 }

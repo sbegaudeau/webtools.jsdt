@@ -35,8 +35,8 @@ public interface IProblemFactory {
 		int endPosition,
 		int lineNumber,
 		int columnNumber);
-		
+
 	Locale getLocale();
-	
+
 	String getLocalizedMessage(int problemId, String[] messageArguments);
 }

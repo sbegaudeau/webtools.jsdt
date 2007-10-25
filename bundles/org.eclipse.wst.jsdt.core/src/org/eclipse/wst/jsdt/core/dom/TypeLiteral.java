@@ -21,7 +21,7 @@ import java.util.List;
  * TypeLiteral:
  *     ( Type | <b>void</b> ) <b>.</b> <b>class</b>
  * </pre>
- * 
+ *
  * @since 2.0
  */
 public class TypeLiteral extends Expression {
@@ -30,16 +30,16 @@ public class TypeLiteral extends Expression {
 	 * The "type" structural property of this node type.
 	 * @since 3.0
 	 */
-	public static final ChildPropertyDescriptor TYPE_PROPERTY = 
+	public static final ChildPropertyDescriptor TYPE_PROPERTY =
 		new ChildPropertyDescriptor(TypeLiteral.class, "type", Type.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
-	 * A list of property descriptors (element type: 
+	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
 	 */
 	private static final List PROPERTY_DESCRIPTORS;
-	
+
 	static {
 		List propertyList = new ArrayList(2);
 		createPropertyList(TypeLiteral.class, propertyList);
@@ -50,17 +50,17 @@ public class TypeLiteral extends Expression {
 	/**
 	 * Returns a list of structural property descriptors for this node type.
 	 * Clients must not modify the result.
-	 * 
+	 *
 	 * @param apiLevel the API level; one of the
 	 * <code>AST.JLS*</code> constants
-	 * @return a list of property descriptors (element type: 
+	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
 	 * @since 3.0
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
 	}
-			
+
 	/**
 	 * The type; lazily initialized; defaults to a unspecified,
 	 * legal type.
@@ -68,12 +68,12 @@ public class TypeLiteral extends Expression {
 	private Type type = null;
 
 	/**
-	 * Creates a new AST node for a type literal owned by the given 
+	 * Creates a new AST node for a type literal owned by the given
 	 * AST. By default, the expression has an unspecified (but legal) type.
 	 * <p>
 	 * N.B. This constructor is package-private.
 	 * </p>
-	 * 
+	 *
 	 * @param ast the AST that is to own this node
 	 */
 	TypeLiteral(AST ast) {
@@ -86,7 +86,7 @@ public class TypeLiteral extends Expression {
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -102,7 +102,7 @@ public class TypeLiteral extends Expression {
 		// allow default implementation to flag the error
 		return super.internalGetSetChildProperty(property, get, child);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -138,12 +138,12 @@ public class TypeLiteral extends Expression {
 		}
 		visitor.endVisit(this);
 	}
-	
+
 	/**
 	 * Returns the type in this type literal expression.
-	 * 
+	 *
 	 * @return the type
-	 */ 
+	 */
 	public Type getType() {
 		if (this.type == null) {
 			// lazy init must be thread-safe for readers
@@ -160,14 +160,14 @@ public class TypeLiteral extends Expression {
 
 	/**
 	 * Sets the type in this type literal expression to the given type.
-	 * 
+	 *
 	 * @param type the new type
 	 * @exception IllegalArgumentException if:
 	 * <ul>
 	 * <li>the node belongs to a different AST</li>
 	 * <li>the node already has a parent</li>
 	 * </ul>
-	 */ 
+	 */
 	public void setType(Type type) {
 		if (type == null) {
 			throw new IllegalArgumentException();
@@ -185,12 +185,12 @@ public class TypeLiteral extends Expression {
 		// treat Operator as free
 		return BASE_NODE_SIZE + 1 * 4;
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {
-		return 
+		return
 			memSize()
 			+ (this.type == null ? 0 : getType().treeSize());
 	}

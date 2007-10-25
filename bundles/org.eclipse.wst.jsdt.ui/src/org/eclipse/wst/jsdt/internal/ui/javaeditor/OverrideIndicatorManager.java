@@ -19,15 +19,12 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-
 import org.eclipse.jface.dialogs.MessageDialog;
-
 import org.eclipse.jface.text.ISynchronizable;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelExtension;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
@@ -36,16 +33,13 @@ import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.java.IJavaReconcilingListener;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
+import org.eclipse.wst.jsdt.ui.JavaUI;
 
 /**
  * Manages the override and overwrite indicators for

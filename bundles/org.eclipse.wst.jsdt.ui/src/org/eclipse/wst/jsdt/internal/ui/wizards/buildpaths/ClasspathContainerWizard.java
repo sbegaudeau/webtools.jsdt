@@ -11,24 +11,19 @@
 package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths;
 
 import org.eclipse.core.runtime.CoreException;
-
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
-
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
-
-import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPage;
-import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPageExtension;
-import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPageExtension2;
-
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
+import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPage;
+import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPageExtension;
+import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPageExtension2;
 
 
 /**

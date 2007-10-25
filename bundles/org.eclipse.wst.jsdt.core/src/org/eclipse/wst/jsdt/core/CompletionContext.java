@@ -15,12 +15,12 @@ import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnJavadoc;
 
 /**
  * Completion context.
- * 
+ *
  * Represent the context in which the completion occurs.
  * <p>
  * This class is not intended to be instantiated or subclassed by clients.
  * </p>
- * 
+ *
  * @see CompletionRequestor#acceptContext(CompletionContext)
  * @since 3.1
  */
@@ -31,7 +31,7 @@ public final class CompletionContext extends InternalCompletionContext {
 	 * @since 3.2
 	 */
 	public static final int TOKEN_KIND_UNKNOWN = 0;
-	
+
 	/**
 	 * The completion token is a name.
 	 * @since 3.2
@@ -40,14 +40,14 @@ public final class CompletionContext extends InternalCompletionContext {
 	/**
 	 * The completion token is a string literal.
 	 * The string literal ends quote can be not present the source.
-	 * <code>"foo"</code> or <code>"foo</code>. 
+	 * <code>"foo"</code> or <code>"foo</code>.
 	 * @since 3.2
 	 */
-	
+
 	public static final int TOKEN_KIND_STRING_LITERAL = 2;
 	/**
 	 * Tell user whether completion takes place in a javadoc comment or not.
-	 * 
+	 *
 	 * @return boolean true if completion takes place in a javadoc comment, false otherwise.
 	 * @since 3.2
 	 */
@@ -57,7 +57,7 @@ public final class CompletionContext extends InternalCompletionContext {
 
 	/**
 	 * Tell user whether completion takes place in text area of a javadoc comment or not.
-	 * 
+	 *
 	 * @return boolean true if completion takes place in a text area of a javadoc comment, false otherwise.
 	 * @since 3.2
 	 */
@@ -76,7 +76,7 @@ public final class CompletionContext extends InternalCompletionContext {
 	 * 	<li>{&#64;linkplain Object}</li>
 	 * 	<li>{&#64;value} when compiler compliance is set at leats to 1.5</li>
 	 * </ul>
-	 * 
+	 *
 	 * @return boolean true if completion takes place in formal reference of a javadoc tag, false otherwise.
 	 * @since 3.2
 	 */
@@ -86,12 +86,12 @@ public final class CompletionContext extends InternalCompletionContext {
 
 	/**
 	 * Return signatures of expected types of a potential completion proposal at the completion position.
-	 * 
-	 * It's not mandatory to a completion proposal to respect this expectation. 
-	 * 
+	 *
+	 * It's not mandatory to a completion proposal to respect this expectation.
+	 *
 	 * @return signatures expected types of a potential completion proposal at the completion position or
 	 * <code>null</code> if there is no expected types.
-	 * 
+	 *
 	 * @see Signature
 	 */
 	public char[][] getExpectedTypesSignatures() {
@@ -99,33 +99,33 @@ public final class CompletionContext extends InternalCompletionContext {
 	}
 	/**
 	 * Return keys of expected types of a potential completion proposal at the completion position.
-	 * 
-	 * It's not mandatory to a completion proposal to respect this expectation. 
-	 * 
+	 *
+	 * It's not mandatory to a completion proposal to respect this expectation.
+	 *
 	 * @return keys of expected types of a potential completion proposal at the completion position or
 	 * <code>null</code> if there is no expected types.
-	 * 
+	 *
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTParser#createASTs(ICompilationUnit[], String[], org.eclipse.wst.jsdt.core.dom.ASTRequestor, org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	public char[][] getExpectedTypesKeys() {
 		return this.expectedTypesKeys;
 	}
-	
+
 	/**
 	 * Returns the completed token.
 	 * This token is either the identifier or Java language keyword
-	 * or the string literal under, immediately preceding, 
+	 * or the string literal under, immediately preceding,
 	 * the original request offset. If the original request offset
 	 * is not within or immediately after an identifier or keyword or
 	 * a string literal then the returned value is <code>null</code>.
-	 * 
+	 *
 	 * @return completed token or <code>null</code>
 	 * @since 3.2
 	 */
 	public char[] getToken() {
 		return this.token;
 	}
-	
+
 	/**
 	 * Returns the kind of completion token being proposed.
 	 * <p>
@@ -135,7 +135,7 @@ public final class CompletionContext extends InternalCompletionContext {
 	 * ones they know about, and code defensively for the
 	 * possibility of unexpected future growth.
 	 * </p>
-	 * 
+	 *
 	 * @return the kind; one of the kind constants declared on
 	 * this class whose name starts with <code>TOKEN_KIND</code>,
 	 * or possibly a kind unknown to the caller
@@ -144,32 +144,32 @@ public final class CompletionContext extends InternalCompletionContext {
 	public int getTokenKind() {
 		return this.tokenKind;
 	}
-	
+
 	/**
 	 * Returns the character index of the start of the
 	 * subrange in the source file buffer containing the
 	 * relevant token being completed. This
 	 * token is either the identifier or Java language keyword
-	 * under, or immediately preceding, the original request 
+	 * under, or immediately preceding, the original request
 	 * offset. If the original request offset is not within
 	 * or immediately after an identifier or keyword, then the
 	 * position returned is original request offset and the
 	 * token range is empty.
-	 * 
+	 *
 	 * @return character index of token start position (inclusive)
 	 * @since 3.2
 	 */
 	public int getTokenStart() {
 		return this.tokenStart;
 	}
-	
+
 	/**
 	 * Returns the character index of the end (exclusive) of the subrange
 	 * in the source file buffer containing the
 	 * relevant token. When there is no relevant token, the
 	 * range is empty
 	 * (<code>getTokenEnd() == getTokenStart() - 1</code>).
-	 * 
+	 *
 	 * @return character index of token end position (exclusive)
 	 * @since 3.2
 	 */
@@ -177,31 +177,31 @@ public final class CompletionContext extends InternalCompletionContext {
 	public int getTokenEnd() {
 		return this.tokenEnd;
 	}
-	
+
 	/**
 	 * Returns the offset position in the source file buffer
 	 * after which code assist is requested.
-	 * 
+	 *
 	 * @return offset position in the source file buffer
 	 * @since 3.2
 	 */
 	public int getOffset() {
 		return this.offset;
 	}
-	
+
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		
+
 		buffer.append("completion offset="); //$NON-NLS-1$
 		buffer.append(this.offset);
 		buffer.append('\n');
-		
+
 		buffer.append("completion range=["); //$NON-NLS-1$
 		buffer.append(this.tokenStart);
 		buffer.append(", "); //$NON-NLS-1$
 		buffer.append(this.tokenEnd);
 		buffer.append("]\n"); //$NON-NLS-1$
-		
+
 		buffer.append("completion token="); //$NON-NLS-1$
 		String string = "null"; //$NON-NLS-1$
 		if(token == null) {
@@ -212,7 +212,7 @@ public final class CompletionContext extends InternalCompletionContext {
 			buffer.append('\"');
 		}
 		buffer.append('\n');
-		
+
 		buffer.append("expectedTypesSignatures="); //$NON-NLS-1$
 		if(this.expectedTypesSignatures == null) {
 			buffer.append(string);
@@ -221,12 +221,12 @@ public final class CompletionContext extends InternalCompletionContext {
 			for (int i = 0; i < this.expectedTypesSignatures.length; i++) {
 				if(i > 0) buffer.append(',');
 				buffer.append(this.expectedTypesSignatures[i]);
-				
+
 			}
 			buffer.append('}');
 		}
 		buffer.append('\n');
-		
+
 		buffer.append("expectedTypesKeys="); //$NON-NLS-1$
 		if(expectedTypesSignatures == null) {
 			buffer.append(string);
@@ -235,12 +235,12 @@ public final class CompletionContext extends InternalCompletionContext {
 			for (int i = 0; i < this.expectedTypesKeys.length; i++) {
 				if(i > 0) buffer.append(',');
 				buffer.append(this.expectedTypesKeys[i]);
-				
+
 			}
 			buffer.append('}');
 		}
 		buffer.append('\n');
-			
+
 		return buffer.toString();
 	}
 }

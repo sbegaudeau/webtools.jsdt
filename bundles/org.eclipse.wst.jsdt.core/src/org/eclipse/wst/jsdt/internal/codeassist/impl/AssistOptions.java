@@ -48,10 +48,10 @@ public class AssistOptions {
 		"org.eclipse.wst.jsdt.core.codeComplete.camelCaseMatch"; 	//$NON-NLS-1$
 	public static final String OPTION_SuggestStaticImports =
 		"org.eclipse.wst.jsdt.core.codeComplete.suggestStaticImports"; 	//$NON-NLS-1$
-	
+
 	public static final String ENABLED = "enabled"; //$NON-NLS-1$
 	public static final String DISABLED = "disabled"; //$NON-NLS-1$
-	
+
 	public boolean checkVisibility = false;
 	public boolean checkDeprecation = false;
 	public boolean checkForbiddenReference = false;
@@ -68,14 +68,14 @@ public class AssistOptions {
 	public char[][] localSuffixes = null;
 	public char[][] argumentSuffixes = null;
 
-	/** 
+	/**
 	 * Initializing the assist options with default settings
 	 */
 	public AssistOptions() {
 		// Initializing the assist options with default settings
 	}
 
-	/** 
+	/**
 	 * Initializing the assist options with external settings
 	 */
 	public AssistOptions(Map settings) {
@@ -217,12 +217,12 @@ public class AssistOptions {
 			}
 		}
 	}
-	
+
 	private char[][] splitAndTrimOn(char divider, char[] arrayToSplit) {
 		char[][] result = CharOperation.splitAndTrimOn(',', arrayToSplit);
-		
+
 		int length = result.length;
-		
+
 		int resultCount = 0;
 		for (int i = 0; i < length; i++) {
 			if(result[i].length != 0) {

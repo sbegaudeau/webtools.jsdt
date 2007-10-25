@@ -10,19 +10,14 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.filters;
 
-import org.eclipse.core.runtime.IAdaptable;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IStorage;
-
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
-
 import org.eclipse.wst.jsdt.internal.ui.util.StringMatcher;
 
 /**

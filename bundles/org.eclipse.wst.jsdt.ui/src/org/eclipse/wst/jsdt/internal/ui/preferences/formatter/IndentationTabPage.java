@@ -17,10 +17,8 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 

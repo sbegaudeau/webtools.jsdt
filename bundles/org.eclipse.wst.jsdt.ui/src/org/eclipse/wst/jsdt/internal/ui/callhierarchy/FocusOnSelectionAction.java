@@ -14,18 +14,14 @@ package org.eclipse.wst.jsdt.internal.ui.callhierarchy;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
-
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IMethod;
-
-import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.util.SelectionUtil;
-
 import org.eclipse.wst.jsdt.internal.corext.callhierarchy.MethodWrapper;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
+import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
+import org.eclipse.wst.jsdt.internal.ui.util.SelectionUtil;
 
 class FocusOnSelectionAction extends Action {
     private CallHierarchyViewPart fPart;

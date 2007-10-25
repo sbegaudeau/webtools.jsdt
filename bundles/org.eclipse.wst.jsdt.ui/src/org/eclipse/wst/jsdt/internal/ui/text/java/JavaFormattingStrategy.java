@@ -13,9 +13,6 @@ package org.eclipse.wst.jsdt.internal.ui.text.java;
 import java.util.LinkedList;
 import java.util.Map;
 
-import org.eclipse.text.edits.MalformedTreeException;
-import org.eclipse.text.edits.TextEdit;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextUtilities;
@@ -23,9 +20,9 @@ import org.eclipse.jface.text.TypedPosition;
 import org.eclipse.jface.text.formatter.ContextBasedFormattingStrategy;
 import org.eclipse.jface.text.formatter.FormattingContextProperties;
 import org.eclipse.jface.text.formatter.IFormattingContext;
-
+import org.eclipse.text.edits.MalformedTreeException;
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
-
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 

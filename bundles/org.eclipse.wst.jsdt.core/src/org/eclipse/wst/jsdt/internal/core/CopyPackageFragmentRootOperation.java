@@ -10,11 +10,23 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceProxy;
+import org.eclipse.core.resources.IResourceProxyVisitor;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.AssertionFailedException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.IClasspathEntry;
+import org.eclipse.wst.jsdt.core.IJavaModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 
 public class CopyPackageFragmentRootOperation extends JavaModelOperation {
@@ -29,7 +41,7 @@ public class CopyPackageFragmentRootOperation extends JavaModelOperation {
 		int updateResourceFlags,
 		int updateModelFlags,
 		IClasspathEntry sibling) {
-			
+
 		super(root);
 		this.destination = destination;
 		this.updateResourceFlags = updateResourceFlags;
@@ -37,7 +49,7 @@ public class CopyPackageFragmentRootOperation extends JavaModelOperation {
 		this.sibling = sibling;
 	}
 	protected void executeOperation() throws JavaModelException {
-		
+
 		IPackageFragmentRoot root = (IPackageFragmentRoot)this.getElementToProcess();
 		IClasspathEntry rootEntry = root.getRawClasspathEntry();
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -46,7 +58,7 @@ public class CopyPackageFragmentRootOperation extends JavaModelOperation {
 		if (!root.isExternal() && (this.updateModelFlags & IPackageFragmentRoot.NO_RESOURCE_MODIFICATION) == 0) {
 			copyResource(root, rootEntry, workspaceRoot);
 		}
-		
+
 		// update classpath if needed
 		if ((this.updateModelFlags & IPackageFragmentRoot.DESTINATION_PROJECT_CLASSPATH) != 0) {
 			addEntryToClasspath(rootEntry, workspaceRoot);
@@ -124,16 +136,16 @@ public class CopyPackageFragmentRootOperation extends JavaModelOperation {
 				throw new JavaModelException(e);
 			}
 		}
-		setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE); 
+		setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
 	}
 	protected void addEntryToClasspath(IClasspathEntry rootEntry, IWorkspaceRoot workspaceRoot) throws JavaModelException {
-		
+
 		IProject destProject = workspaceRoot.getProject(this.destination.segment(0));
 		IJavaProject jProject = JavaCore.create(destProject);
 		IClasspathEntry[] classpath = jProject.getRawClasspath();
 		int length = classpath.length;
 		IClasspathEntry[] newClasspath;
-		
+
 		// case of existing entry and REPLACE was specified
 		if ((this.updateModelFlags & IPackageFragmentRoot.REPLACE) != 0) {
 			// find existing entry
@@ -146,8 +158,8 @@ public class CopyPackageFragmentRootOperation extends JavaModelOperation {
 					return;
 				}
 			}
-		} 
-		
+		}
+
 		// other cases
 		int position;
 		if (this.sibling == null) {
@@ -248,8 +260,8 @@ public class CopyPackageFragmentRootOperation extends JavaModelOperation {
 					}
 					if (foundExistingEntry && (this.updateModelFlags & IPackageFragmentRoot.REPLACE) == 0) {
 						return new JavaModelStatus(
-							IJavaModelStatusConstants.NAME_COLLISION, 
-							Messages.bind(Messages.status_nameCollision, new String[] {this.destination.toString()})); 
+							IJavaModelStatusConstants.NAME_COLLISION,
+							Messages.bind(Messages.status_nameCollision, new String[] {this.destination.toString()}));
 					}
 				} catch (JavaModelException e) {
 					return e.getJavaModelStatus();

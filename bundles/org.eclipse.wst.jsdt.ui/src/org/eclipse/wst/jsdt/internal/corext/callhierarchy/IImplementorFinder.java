@@ -14,7 +14,6 @@ package org.eclipse.wst.jsdt.internal.corext.callhierarchy;
 import java.util.Collection;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-
 import org.eclipse.wst.jsdt.core.IType;
 
 public interface IImplementorFinder {

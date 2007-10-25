@@ -25,7 +25,7 @@ public class InternetExplorerLibraryWizardPage extends NewElementWizardPage impl
 
 	private static final String LIBRARY_FILE_NAME = "InternetExplorer.js";
 	private static final String CONTAINER_ID="org.eclipse.wst.jsdt.launching.InternetExplorer";
-	
+
 	public InternetExplorerLibraryWizardPage() {
 		super("InternetExplorerBrowserLib");
 	}
@@ -46,7 +46,7 @@ public class InternetExplorerLibraryWizardPage extends NewElementWizardPage impl
 		Composite composite= new Composite(parent, SWT.NONE);
 		composite.setFont(parent.getFont());
 		DialogField field = new DialogField();
-		
+
 		//field.createEmptySpace(parent);
 		field.setLabelText("Internet Explorer Browser (5.0) Library added to Project.\n\n  - This library supports JavaScript elements provided by Microsoft's Internet Explorer web browser.");
 		//field.setText("Default Browser Library added to project");
@@ -55,11 +55,11 @@ public class InternetExplorerLibraryWizardPage extends NewElementWizardPage impl
 		Dialog.applyDialogFont(composite);
 		setControl(composite);
 		setDescription("Internet Explorer Browser Support");
-		
+
 	}
 
 	public void initialize(IJavaProject project, IClasspathEntry[] currentEntries) {
-	
+
 	}
 
 	public IClasspathEntry[] getNewContainers() {

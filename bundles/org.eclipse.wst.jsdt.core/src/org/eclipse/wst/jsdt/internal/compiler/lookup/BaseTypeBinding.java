@@ -29,7 +29,7 @@ public final class BaseTypeBinding extends TypeBinding {
 	public char[] computeUniqueKey(boolean isLeaf) {
 		return constantPoolName();
 	}
-	
+
 	/* Answer the receiver's constant pool name.
 	*/
 	public char[] constantPoolName() {

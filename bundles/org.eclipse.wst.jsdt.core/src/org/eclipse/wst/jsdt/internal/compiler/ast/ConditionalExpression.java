@@ -11,11 +11,15 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.impl.*;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.flow.UnconditionalFlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BaseTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class ConditionalExpression extends OperatorExpression {
 
@@ -23,12 +27,12 @@ public class ConditionalExpression extends OperatorExpression {
 	public Constant optimizedBooleanConstant;
 	public Constant optimizedIfTrueConstant;
 	public Constant optimizedIfFalseConstant;
-	
+
 	// for local variables table attributes
 	int trueInitStateIndex = -1;
 	int falseInitStateIndex = -1;
 	int mergedInitStateIndex = -1;
-	
+
 	public ConditionalExpression(
 		Expression condition,
 		Expression valueIfTrue,
@@ -48,11 +52,11 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 
 		int mode = flowInfo.reachMode();
 		flowInfo = condition.analyseCode(currentScope, flowContext, flowInfo, cst == Constant.NotAConstant);
-		
+
 		// process the if-true part
 		FlowInfo trueFlowInfo = flowInfo.initsWhenTrue().copy();
 		if (isConditionOptimizedFalse) {
-			trueFlowInfo.setReachMode(FlowInfo.UNREACHABLE); 
+			trueFlowInfo.setReachMode(FlowInfo.UNREACHABLE);
 		}
 //		trueInitStateIndex = currentScope.methodScope().recordInitializationStates(trueFlowInfo);
 		trueFlowInfo = valueIfTrue.analyseCode(currentScope, flowContext, trueFlowInfo);
@@ -60,7 +64,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 		// process the if-false part
 		FlowInfo falseFlowInfo = flowInfo.initsWhenFalse().copy();
 		if (isConditionOptimizedTrue) {
-			falseFlowInfo.setReachMode(FlowInfo.UNREACHABLE); 
+			falseFlowInfo.setReachMode(FlowInfo.UNREACHABLE);
 		}
 //		falseInitStateIndex = currentScope.methodScope().recordInitializationStates(falseFlowInfo);
 		falseFlowInfo = valueIfFalse.analyseCode(currentScope, flowContext, falseFlowInfo);
@@ -76,7 +80,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 			cst = this.optimizedIfTrueConstant;
 			boolean isValueIfTrueOptimizedTrue = cst != null && cst != Constant.NotAConstant && cst.booleanValue() == true;
 			boolean isValueIfTrueOptimizedFalse = cst != null && cst != Constant.NotAConstant && cst.booleanValue() == false;
-			
+
 			cst = this.optimizedIfFalseConstant;
 			boolean isValueIfFalseOptimizedTrue = cst != null && cst != Constant.NotAConstant && cst.booleanValue() == true;
 			boolean isValueIfFalseOptimizedFalse = cst != null && cst != Constant.NotAConstant && cst.booleanValue() == false;
@@ -85,10 +89,10 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 			UnconditionalFlowInfo falseInfoWhenTrue = falseFlowInfo.initsWhenTrue().unconditionalCopy();
 			UnconditionalFlowInfo trueInfoWhenFalse = trueFlowInfo.initsWhenFalse().unconditionalInits();
 			UnconditionalFlowInfo falseInfoWhenFalse = falseFlowInfo.initsWhenFalse().unconditionalInits();
-			if (isValueIfTrueOptimizedFalse) trueInfoWhenTrue.setReachMode(FlowInfo.UNREACHABLE); 
-			if (isValueIfFalseOptimizedFalse) falseInfoWhenTrue.setReachMode(FlowInfo.UNREACHABLE); 
-			if (isValueIfTrueOptimizedTrue) trueInfoWhenFalse.setReachMode(FlowInfo.UNREACHABLE); 
-			if (isValueIfFalseOptimizedTrue) falseInfoWhenFalse.setReachMode(FlowInfo.UNREACHABLE); 
+			if (isValueIfTrueOptimizedFalse) trueInfoWhenTrue.setReachMode(FlowInfo.UNREACHABLE);
+			if (isValueIfFalseOptimizedFalse) falseInfoWhenTrue.setReachMode(FlowInfo.UNREACHABLE);
+			if (isValueIfTrueOptimizedTrue) trueInfoWhenFalse.setReachMode(FlowInfo.UNREACHABLE);
+			if (isValueIfFalseOptimizedTrue) falseInfoWhenFalse.setReachMode(FlowInfo.UNREACHABLE);
 
 			mergedInfo =
 				FlowInfo.conditional(
@@ -231,7 +235,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 		// Then code generation
 		if (needTruePart) {
 			valueIfTrue.generateOptimizedBoolean(currentScope, codeStream, trueLabel, falseLabel, valueRequired);
-			
+
 			if (needFalsePart) {
 				// Jump over the else part
 				int position = codeStream.position;
@@ -259,7 +263,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 		// no implicit conversion for boolean values
 		codeStream.updateLastRecordedEndPC(currentScope, codeStream.position);
 	}
-	
+
 public int nullStatus(FlowInfo flowInfo) {
 	Constant cst = this.condition.optimizedBooleanConstant();
 	if (cst != Constant.NotAConstant) {
@@ -281,9 +285,9 @@ public int nullStatus(FlowInfo flowInfo) {
 
 		return this.optimizedBooleanConstant == null ? this.constant : this.optimizedBooleanConstant;
 	}
-	
+
 	public StringBuffer printExpressionNoParenthesis(int indent, StringBuffer output) {
-		
+
 		condition.printExpression(indent, output).append(" ? "); //$NON-NLS-1$
 		valueIfTrue.printExpression(0, output).append(" : "); //$NON-NLS-1$
 		return valueIfFalse.printExpression(0, output);
@@ -296,7 +300,7 @@ public int nullStatus(FlowInfo flowInfo) {
 //		boolean use15specifics = scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5;
 		TypeBinding conditionType = condition.resolveTypeExpecting(scope, TypeBinding.BOOLEAN);
 		condition.computeConversion(scope, TypeBinding.BOOLEAN, conditionType);
-		
+
 		if (valueIfTrue instanceof CastExpression) valueIfTrue.bits |= DisableUnnecessaryCastCheck; // will check later on
 		TypeBinding originalValueIfTrueType = valueIfTrue.resolveType(scope);
 
@@ -333,7 +337,7 @@ public int nullStatus(FlowInfo flowInfo) {
 //						valueIfTrueType = unboxedIfTrueType; // unboxing
 //					} else if (valueIfFalseType != TypeBinding.NULL) {  // bool ? new Integer(12) : 12 --> int
 //						valueIfTrueType = env.computeBoxingType(valueIfTrueType); // unboxing
-//					}					
+//					}
 //			} else {
 //					// bool ? nonBaseType : nonBaseType
 //					TypeBinding unboxedIfTrueType = env.computeBoxingType(valueIfTrueType);
@@ -342,7 +346,7 @@ public int nullStatus(FlowInfo flowInfo) {
 //						valueIfTrueType = unboxedIfTrueType;
 //						valueIfFalseType = unboxedIfFalseType;
 //					}
-//			} 
+//			}
 //		}
 		// Propagate the constant value from the valueIfTrue and valueIFFalse expression if it is possible
 		Constant condConstant, trueConstant, falseConstant;
@@ -353,13 +357,13 @@ public int nullStatus(FlowInfo flowInfo) {
 			// from valueIFTrue or valueIfFalse to the receiver constant
 			constant = condConstant.booleanValue() ? trueConstant : falseConstant;
 		}
-		if (valueIfTrueType == valueIfFalseType) { // harmed the implicit conversion 
+		if (valueIfTrueType == valueIfFalseType) { // harmed the implicit conversion
 			valueIfTrue.computeConversion(scope, valueIfTrueType, originalValueIfTrueType);
 			valueIfFalse.computeConversion(scope, valueIfFalseType, originalValueIfFalseType);
 			if (valueIfTrueType == TypeBinding.BOOLEAN) {
 				this.optimizedIfTrueConstant = valueIfTrue.optimizedBooleanConstant();
 				this.optimizedIfFalseConstant = valueIfFalse.optimizedBooleanConstant();
-				if (this.optimizedIfTrueConstant != Constant.NotAConstant 
+				if (this.optimizedIfTrueConstant != Constant.NotAConstant
 						&& this.optimizedIfFalseConstant != Constant.NotAConstant
 						&& this.optimizedIfTrueConstant.booleanValue() == this.optimizedIfFalseConstant.booleanValue()) {
 					// a ? true : true  /   a ? false : false
@@ -434,7 +438,7 @@ public int nullStatus(FlowInfo flowInfo) {
 //				scope.problemReporter().conditionalArgumentsIncompatibleTypes(this, valueIfTrueType, valueIfFalseType);
 //				return null;
 //			}
-//		} 
+//		}
 //		if (valueIfFalseType.isBaseType() && valueIfFalseType != TypeBinding.NULL) {
 //			if (use15specifics) {
 //				valueIfFalseType = env.computeBoxingType(valueIfFalseType);
@@ -476,7 +480,7 @@ public int nullStatus(FlowInfo flowInfo) {
 			valueIfFalseType);
 		return null;
 	}
-	
+
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
 		if (visitor.visit(this, scope)) {
 			condition.traverse(visitor, scope);

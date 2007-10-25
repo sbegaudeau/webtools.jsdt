@@ -97,7 +97,7 @@ public abstract class ClassFileStruct {
 			return false;
 		if (first.length != second.length)
 			return false;
-	
+
 		for (int i = first.length; --i >= 0;)
 			if (first[i] != second[i])
 				return false;

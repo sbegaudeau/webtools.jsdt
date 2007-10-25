@@ -11,11 +11,9 @@
 package org.eclipse.wst.jsdt.internal.ui.viewsupport;
 
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-
+import org.eclipse.wst.jsdt.internal.ui.browsing.LogicalPackage;
 import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
 import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator;
-
-import org.eclipse.wst.jsdt.internal.ui.browsing.LogicalPackage;
 
 /**
  * Special problem decorator for hierarchical package layout.

@@ -12,11 +12,9 @@ package org.eclipse.wst.jsdt.internal.ui.javadocexport;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 public class JavadocMemberContentProvider implements ITreeContentProvider {

@@ -11,11 +11,8 @@
 package org.eclipse.wst.jsdt.internal.ui;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-
 import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.eclipse.ui.editors.text.EditorsUI;
-
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 public class JavaUIPreferenceInitializer extends AbstractPreferenceInitializer {

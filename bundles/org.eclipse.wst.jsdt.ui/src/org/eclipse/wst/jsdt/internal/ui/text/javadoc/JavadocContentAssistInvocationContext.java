@@ -11,9 +11,7 @@
 package org.eclipse.wst.jsdt.internal.ui.text.javadoc;
 
 import org.eclipse.jface.text.ITextViewer;
-
 import org.eclipse.ui.IEditorPart;
-
 import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
 
 

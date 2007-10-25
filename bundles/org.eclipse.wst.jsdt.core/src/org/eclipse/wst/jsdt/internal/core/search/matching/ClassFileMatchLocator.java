@@ -11,14 +11,26 @@
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.search.*;
+import org.eclipse.wst.jsdt.core.search.SearchMatch;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.env.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryField;
+import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryMethod;
+import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BinaryTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
-import org.eclipse.wst.jsdt.internal.core.*;
+import org.eclipse.wst.jsdt.internal.core.BinaryType;
+import org.eclipse.wst.jsdt.internal.core.ClassFile;
+import org.eclipse.wst.jsdt.internal.core.JavaElement;
+import org.eclipse.wst.jsdt.internal.core.ResolvedBinaryField;
+import org.eclipse.wst.jsdt.internal.core.ResolvedBinaryMethod;
+import org.eclipse.wst.jsdt.internal.core.ResolvedBinaryType;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
 
 public class ClassFileMatchLocator implements IIndexConstants {
@@ -96,7 +108,7 @@ public void locateMatches(MatchLocator locator, ClassFile classFile, IBinaryType
 			}
 		} catch (AbortCompilation e) { // if compilation was aborted it is a problem with the class path
 		}
-		// report as a potential match if binary info matches the pattern		
+		// report as a potential match if binary info matches the pattern
 		accuracy = SearchMatch.A_INACCURATE;
 	}
 

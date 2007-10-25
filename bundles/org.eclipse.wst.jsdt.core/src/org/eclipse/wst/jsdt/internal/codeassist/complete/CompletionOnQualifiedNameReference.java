@@ -33,8 +33,13 @@ package org.eclipse.wst.jsdt.internal.codeassist.complete;
  * which should be replaced by the completion.
  */
 
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemFieldBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class CompletionOnQualifiedNameReference extends QualifiedNameReference {
 	public char[] completionIdentifier;
@@ -51,7 +56,7 @@ public StringBuffer printExpression(int indent, StringBuffer output) {
 		output.append(tokens[i]);
 		output.append('.');
 	}
-	output.append(completionIdentifier).append('>'); 
+	output.append(completionIdentifier).append('>');
 	return output;
 }
 public TypeBinding resolveType(BlockScope scope) {
@@ -65,14 +70,14 @@ public TypeBinding resolveType(BlockScope scope) {
 		} else {
 			scope.problemReporter().unresolvableReference(this, binding);
 		}
-		
+
 		if (binding.problemId() == ProblemReasons.NotFound) {
 			throw new CompletionNodeFound(this, binding, scope);
 		}
-		
+
 		throw new CompletionNodeFound();
 	}
-	
+
 	throw new CompletionNodeFound(this, binding, scope);
 }
 

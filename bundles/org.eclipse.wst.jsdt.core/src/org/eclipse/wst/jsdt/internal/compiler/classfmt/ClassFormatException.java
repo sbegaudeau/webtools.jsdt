@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.compiler.classfmt;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 public class ClassFormatException extends Exception {
-	
+
 	public static final int ErrBadMagic = 1;
 	public static final int ErrBadMinorVersion = 2;
 	public static final int ErrBadMajorVersion = 3;
@@ -75,7 +75,7 @@ public class ClassFormatException extends Exception {
 	}
 	/**
 	 * Returns the underlying <code>Throwable</code> that caused the failure.
-	 * 
+	 *
 	 * @return the wrappered <code>Throwable</code>, or <code>null</code>
 	 *         if the direct case of the failure was at the Java model layer
 	 */
@@ -87,7 +87,7 @@ public class ClassFormatException extends Exception {
 	}
 	/**
 	 * Prints this exception's stack trace to the given print stream.
-	 * 
+	 *
 	 * @param output
 	 *            the print stream
 	 * @since 3.0
@@ -110,7 +110,7 @@ public class ClassFormatException extends Exception {
 	}
 	/**
 	 * Prints this exception's stack trace to the given print writer.
-	 * 
+	 *
 	 * @param output
 	 *            the print writer
 	 * @since 3.0

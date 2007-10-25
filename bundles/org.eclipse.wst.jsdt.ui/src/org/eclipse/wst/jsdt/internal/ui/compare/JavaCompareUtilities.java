@@ -20,35 +20,27 @@ import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-
-import org.eclipse.core.resources.ResourcesPlugin;
-
-import org.eclipse.swt.graphics.Image;
-
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.resource.ImageDescriptor;
-
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IDocumentPartitioner;
-
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.IEncodedStreamContentAccessor;
 import org.eclipse.compare.IStreamContentAccessor;
-
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentPartitioner;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IType;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.PropertiesFileDocumentSetupParticipant;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
 
 
 class JavaCompareUtilities {

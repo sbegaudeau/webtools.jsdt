@@ -18,7 +18,6 @@ import java.util.Map;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
-
 import org.eclipse.wst.jsdt.ui.text.IColorManager;
 import org.eclipse.wst.jsdt.ui.text.IColorManagerExtension;
 

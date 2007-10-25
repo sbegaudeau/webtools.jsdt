@@ -11,9 +11,9 @@
 package org.eclipse.wst.jsdt.internal.compiler.impl;
 
 public class FloatConstant extends Constant {
-	
+
 	float value;
-	
+
 	public static Constant fromValue(float value) {
 		return new FloatConstant(value);
 	}
@@ -21,42 +21,42 @@ public class FloatConstant extends Constant {
 	private FloatConstant(float value) {
 		this.value = value;
 	}
-	
+
 	public byte byteValue() {
 		return (byte) value;
 	}
-	
+
 	public char charValue() {
 		return (char) value;
 	}
-	
+
 	public double doubleValue() {
 		return value; // implicit cast to return type
 	}
-	
+
 	public float floatValue() {
 		return this.value;
 	}
-	
+
 	public int intValue() {
 		return (int) value;
 	}
-	
+
 	public long longValue() {
 		return (long) value;
 	}
-	
+
 	public short shortValue() {
 		return (short) value;
 	}
-	
+
 	public String stringValue() {
 		return String.valueOf(this.value);
 	}
 
 	public String toString() {
 		return "(float)" + value; //$NON-NLS-1$
-	} 
+	}
 
 	public int typeID() {
 		return T_float;

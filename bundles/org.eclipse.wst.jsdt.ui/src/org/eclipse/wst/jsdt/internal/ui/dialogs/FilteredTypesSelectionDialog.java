@@ -29,7 +29,22 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
-
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.operation.IRunnableContext;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.ILabelDecorator;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -40,25 +55,6 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
-
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.operation.IRunnableContext;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.viewers.ILabelDecorator;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.LabelProviderChangedEvent;
-
-import org.eclipse.jface.text.ITextSelection;
-
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkingSet;
@@ -69,7 +65,6 @@ import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.SearchPattern;
-
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
@@ -83,25 +78,11 @@ import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatchRequestor;
 import org.eclipse.wst.jsdt.core.search.TypeNameRequestor;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.OpenTypeHistory;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
 import org.eclipse.wst.jsdt.internal.corext.util.TypeFilter;
 import org.eclipse.wst.jsdt.internal.corext.util.TypeInfoRequestorAdapter;
-
-import org.eclipse.wst.jsdt.launching.IVMInstall;
-import org.eclipse.wst.jsdt.launching.IVMInstallType;
-import org.eclipse.wst.jsdt.launching.JavaRuntime;
-import org.eclipse.wst.jsdt.launching.LibraryLocation;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.JavaUI;
-import org.eclipse.wst.jsdt.ui.dialogs.ITypeInfoFilterExtension;
-import org.eclipse.wst.jsdt.ui.dialogs.ITypeInfoImageProvider;
-import org.eclipse.wst.jsdt.ui.dialogs.ITypeSelectionComponent;
-import org.eclipse.wst.jsdt.ui.dialogs.TypeSelectionExtension;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
@@ -115,6 +96,16 @@ import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.OwnerDrawSupport;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.WorkingSetFilterActionGroup;
+import org.eclipse.wst.jsdt.launching.IVMInstall;
+import org.eclipse.wst.jsdt.launching.IVMInstallType;
+import org.eclipse.wst.jsdt.launching.JavaRuntime;
+import org.eclipse.wst.jsdt.launching.LibraryLocation;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.dialogs.ITypeInfoFilterExtension;
+import org.eclipse.wst.jsdt.ui.dialogs.ITypeInfoImageProvider;
+import org.eclipse.wst.jsdt.ui.dialogs.ITypeSelectionComponent;
+import org.eclipse.wst.jsdt.ui.dialogs.TypeSelectionExtension;
 
 /**
  * Shows a list of Java types to the user with a text entry field for a string

@@ -13,12 +13,9 @@ package org.eclipse.wst.jsdt.internal.ui.text.correction;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
-
-import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
-
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
+import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
 
 /**
   */

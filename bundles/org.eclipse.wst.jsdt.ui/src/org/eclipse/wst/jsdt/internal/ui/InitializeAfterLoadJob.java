@@ -16,11 +16,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
-
 import org.eclipse.ui.progress.UIJob;
-
 import org.eclipse.wst.jsdt.core.JavaCore;
-
 import org.eclipse.wst.jsdt.ui.JavaUI;
 
 public class InitializeAfterLoadJob extends UIJob {

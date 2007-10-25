@@ -11,13 +11,10 @@
 package org.eclipse.wst.jsdt.internal.ui.refactoring.nls;
 
 import org.eclipse.core.runtime.IPath;
-
 import org.eclipse.jface.dialogs.IDialogSettings;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.JavaCore;
-
 import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 

@@ -6,19 +6,18 @@ import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class FunctionExpression extends Expression {
 
 
 	public MethodDeclaration methodDeclaration;
-	
+
 	public FunctionExpression(MethodDeclaration methodDeclaration)
 	{
 		this.methodDeclaration=methodDeclaration;
 	}
-	
+
 	public StringBuffer printExpression(int indent, StringBuffer output) {
 		return methodDeclaration.print(indent, output);
 	}
@@ -27,7 +26,7 @@ public class FunctionExpression extends Expression {
 		if (visitor.visit(this, scope))
 			methodDeclaration.traverse(visitor, scope);
 	}
-	
+
 
 	public TypeBinding resolveType(BlockScope scope) {
 		constant = Constant.NotAConstant;
@@ -35,11 +34,11 @@ public class FunctionExpression extends Expression {
 		this.methodDeclaration.resolve(scope);
 		return scope.getJavaLangFunction();
 	}
-	
+
 	public int nullStatus(FlowInfo flowInfo) {
 			return FlowInfo.NON_NULL; // constant expression cannot be null
 	}
-	
+
 	public FlowInfo analyseCode(
 			BlockScope classScope,
 			FlowContext initializationContext,
@@ -47,5 +46,5 @@ public class FunctionExpression extends Expression {
 		this.methodDeclaration.analyseCode(classScope, initializationContext, flowInfo.copy());
 		return flowInfo;
 	}
-	
+
 }

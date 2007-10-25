@@ -99,21 +99,21 @@ public void codeComplete(char[] snippet,int insertion,int position,char[][] loca
 	if (requestor == null) {
 		throw new IllegalArgumentException("Completion requestor cannot be null"); //$NON-NLS-1$
 	}
-	
+
 	JavaProject project = (JavaProject) getJavaProject();
 	SearchableEnvironment environment = newSearchableNameEnvironment(owner);
 	CompletionEngine engine = new CompletionEngine(environment, requestor, project.getOptions(true), project);
 
 	String source = getCompilationUnit().getSource();
 	if (source != null && insertion > -1 && insertion < source.length()) {
-		
+
 		char[] prefix = CharOperation.concat(source.substring(0, insertion).toCharArray(), new char[]{'{'});
 		char[] suffix = CharOperation.concat(new char[]{'}'}, source.substring(insertion).toCharArray());
 		char[] fakeSource = CharOperation.concat(prefix, snippet, suffix);
-		
-		BasicCompilationUnit cu = 
+
+		BasicCompilationUnit cu =
 			new BasicCompilationUnit(
-				fakeSource, 
+				fakeSource,
 				null,
 				getElementName(),
 				getParent());
@@ -198,7 +198,7 @@ public IJavaElement[] getChildrenForCategory(String category) throws JavaModelEx
 	for (int i = 0; i < length; i++) {
 		IJavaElement child = children[i];
 		String[] elementCategories = (String[]) categories.get(child);
-		if (elementCategories != null) 
+		if (elementCategories != null)
 			for (int j = 0, length2 = elementCategories.length; j < length2; j++) {
 				if (elementCategories[j].equals(category))
 					result[index++] = child;
@@ -349,7 +349,7 @@ public IJavaElement getHandleFromMemento(String token, MementoTokenizer memento,
 			String typeParameterName = memento.nextToken();
 			JavaElement typeParameter = new TypeParameter(this, typeParameterName);
 			return typeParameter.getHandleFromMemento(memento, workingCopyOwner);
-			
+
 	}
 	return null;
 }
@@ -628,15 +628,15 @@ public ITypeHierarchy loadTypeHierachy(InputStream input, IProgressMonitor monit
 }
 /**
  * NOTE: This method is not part of the API has it is not clear clients would easily use it: they would need to
- * first make sure all working copies for the given owner exist before calling it. This is especially har at startup 
+ * first make sure all working copies for the given owner exist before calling it. This is especially har at startup
  * time.
  * In case clients want this API, here is how it should be specified:
  * <p>
  * Loads a previously saved ITypeHierarchy from an input stream. A type hierarchy can
  * be stored using ITypeHierachy#store(OutputStream). A compilation unit of a
- * loaded type has the given owner if such a working copy exists, otherwise the type's 
+ * loaded type has the given owner if such a working copy exists, otherwise the type's
  * compilation unit is a primary compilation unit.
- * 
+ *
  * Only hierarchies originally created by the following methods can be loaded:
  * <ul>
  * <li>IType#newSupertypeHierarchy(IProgressMonitor)</li>
@@ -646,12 +646,12 @@ public ITypeHierarchy loadTypeHierachy(InputStream input, IProgressMonitor monit
  * <li>IType#newTypeHierarchy(IProgressMonitor)</li>
  * <li>IType#newTypeHierarchy(WorkingCopyOwner, IProgressMonitor)</li>
  * </u>
- * 
+ *
  * @param input stream where hierarchy will be read
  * @param monitor the given progress monitor
  * @return the stored hierarchy
  * @exception JavaModelException if the hierarchy could not be restored, reasons include:
- *      - type is not the focus of the hierarchy or 
+ *      - type is not the focus of the hierarchy or
  *		- unable to read the input stream (wrong format, IOException during reading, ...)
  * @see ITypeHierarchy#store(java.io.OutputStream, IProgressMonitor)
  * @since 3.0
@@ -726,7 +726,7 @@ public ITypeHierarchy newTypeHierarchy(IJavaProject project, IProgressMonitor mo
  */
 public ITypeHierarchy newTypeHierarchy(IJavaProject project, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException {
 	if (project == null) {
-		throw new IllegalArgumentException(Messages.hierarchy_nullProject); 
+		throw new IllegalArgumentException(Messages.hierarchy_nullProject);
 	}
 	ICompilationUnit[] workingCopies = JavaModelManager.getJavaModelManager().getWorkingCopies(owner, true/*add primary working copies*/);
 	ICompilationUnit[] projectWCs = null;
@@ -745,9 +745,9 @@ public ITypeHierarchy newTypeHierarchy(IJavaProject project, WorkingCopyOwner ow
 		}
 	}
 	CreateTypeHierarchyOperation op= new CreateTypeHierarchyOperation(
-		this, 
+		this,
 		projectWCs,
-		project, 
+		project,
 		true);
 	op.runOperation(monitor);
 	return op.getResult();
@@ -767,7 +767,7 @@ public ITypeHierarchy newTypeHierarchy(
 	ICompilationUnit[] workingCopies,
 	IProgressMonitor monitor)
 	throws JavaModelException {
-		
+
 	CreateTypeHierarchyOperation op= new CreateTypeHierarchyOperation(this, workingCopies, SearchEngine.createWorkspaceScope(), true);
 	op.runOperation(monitor);
 	return op.getResult();
@@ -780,7 +780,7 @@ public ITypeHierarchy newTypeHierarchy(
 	IWorkingCopy[] workingCopies,
 	IProgressMonitor monitor)
 	throws JavaModelException {
-		
+
 	ICompilationUnit[] copies;
 	if (workingCopies == null) {
 		copies = null;
@@ -797,11 +797,11 @@ public ITypeHierarchy newTypeHierarchy(
 	WorkingCopyOwner owner,
 	IProgressMonitor monitor)
 	throws JavaModelException {
-		
+
 	ICompilationUnit[] workingCopies = JavaModelManager.getJavaModelManager().getWorkingCopies(owner, true/*add primary working copies*/);
 	CreateTypeHierarchyOperation op= new CreateTypeHierarchyOperation(this, workingCopies, SearchEngine.createWorkspaceScope(), true);
 	op.runOperation(monitor);
-	return op.getResult();	
+	return op.getResult();
 }
 public JavaElement resolved(Binding binding) {
 	SourceRefElement resolvedHandle = new ResolvedSourceType(this.parent, this.name, new String(binding.computeUniqueKey()));
@@ -856,16 +856,16 @@ public String[][] resolveType(String typeName, WorkingCopyOwner owner) throws Ja
 
 	}
 	TypeResolveRequestor requestor = new TypeResolveRequestor();
-	SelectionEngine engine = 
+	SelectionEngine engine =
 		new SelectionEngine(environment, requestor, project.getOptions(true));
-		
+
  	IType[] topLevelTypes = getCompilationUnit().getTypes();
  	int length = topLevelTypes.length;
  	SourceTypeElementInfo[] topLevelInfos = new SourceTypeElementInfo[length];
  	for (int i = 0; i < length; i++) {
 		topLevelInfos[i] = (SourceTypeElementInfo) ((SourceType)topLevelTypes[i]).getElementInfo();
 	}
-		
+
 	engine.selectType(info, typeName.toCharArray(), topLevelInfos, false);
 	if (NameLookup.VERBOSE) {
 		System.out.println(Thread.currentThread() + " TIME SPENT in NameLoopkup#seekTypesInSourcePackage: " + environment.nameLookup.timeSpentInSeekTypesInSourcePackage + "ms");  //$NON-NLS-1$ //$NON-NLS-2$

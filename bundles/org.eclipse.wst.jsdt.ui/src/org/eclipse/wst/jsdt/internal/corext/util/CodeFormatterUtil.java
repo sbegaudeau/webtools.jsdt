@@ -12,31 +12,26 @@ package org.eclipse.wst.jsdt.internal.corext.util;
 
 import java.util.Map;
 
-import org.eclipse.text.edits.DeleteEdit;
-import org.eclipse.text.edits.InsertEdit;
-import org.eclipse.text.edits.MultiTextEdit;
-import org.eclipse.text.edits.ReplaceEdit;
-import org.eclipse.text.edits.TextEdit;
-
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.DefaultPositionUpdater;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.Position;
-
+import org.eclipse.text.edits.DeleteEdit;
+import org.eclipse.text.edits.InsertEdit;
+import org.eclipse.text.edits.MultiTextEdit;
+import org.eclipse.text.edits.ReplaceEdit;
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.ToolFactory;
-import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
-import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
-
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.Statement;
-
+import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
+import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 public class CodeFormatterUtil {

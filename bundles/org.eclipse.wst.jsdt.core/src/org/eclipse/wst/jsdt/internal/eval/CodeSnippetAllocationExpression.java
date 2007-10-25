@@ -36,8 +36,8 @@ public CodeSnippetAllocationExpression(EvaluationContext evaluationContext) {
 	this.evaluationContext = evaluationContext;
 }
 public void generateCode(
-	BlockScope currentScope, 
-	CodeStream codeStream, 
+	BlockScope currentScope,
+	CodeStream codeStream,
 	boolean valueRequired) {
 
 	int pc = codeStream.position;
@@ -93,18 +93,18 @@ public void generateCode(
 				codeStream.aastore();
 				if (i < argsLength - 1) {
 					codeStream.dup();
-				}	
+				}
 			}
 		} else {
 			codeStream.generateInlinedValue(0);
-			codeStream.newArray(currentScope.createArrayType(currentScope.getType(TypeConstants.JAVA_LANG_OBJECT, 3), 1));			
+			codeStream.newArray(currentScope.createArrayType(currentScope.getType(TypeConstants.JAVA_LANG_OBJECT, 3), 1));
 		}
 		codeStream.invokeJavaLangReflectConstructorNewInstance();
 		codeStream.checkcast(allocatedType);
 	}
 	codeStream.recordPositionsFrom(pc, this.sourceStart);
 }
-/* Inner emulation consists in either recording a dependency 
+/* Inner emulation consists in either recording a dependency
  * link only, or performing one level of propagation.
  *
  * Dependency mechanism is used whenever dealing with source target
@@ -174,7 +174,7 @@ public TypeBinding resolveType(BlockScope scope) {
 				scope.problemReporter().invalidConstructor(this, this.binding);
 				return this.resolvedType;
 			}
-			CodeSnippetScope localScope = new CodeSnippetScope(scope);			
+			CodeSnippetScope localScope = new CodeSnippetScope(scope);
 			MethodBinding privateBinding = localScope.getConstructor((ReferenceBinding)this.delegateThis.type, argumentTypes, this);
 			if (!privateBinding.isValidBinding()) {
 				if (this.binding.declaringClass == null) {
@@ -184,7 +184,7 @@ public TypeBinding resolveType(BlockScope scope) {
 				return this.resolvedType;
 			} else {
 				this.binding = privateBinding;
-			}				
+			}
 		} else {
 			if (this.binding.declaringClass == null) {
 				this.binding.declaringClass = allocatedType;

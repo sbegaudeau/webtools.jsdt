@@ -15,11 +15,9 @@ import java.util.StringTokenizer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMethod;
@@ -29,14 +27,12 @@ import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
-
-import org.eclipse.wst.jsdt.internal.corext.refactoring.JavaRefactoringArguments;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringContribution;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptor;
+import org.eclipse.wst.jsdt.internal.corext.refactoring.JavaRefactoringArguments;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.InlineMethodRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 /**

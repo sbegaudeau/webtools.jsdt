@@ -13,22 +13,25 @@ package org.eclipse.wst.jsdt.internal.ui.compare;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-
-import org.eclipse.core.resources.IResource;
-
-import org.eclipse.swt.widgets.*;
-
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.util.PropertyChangeEvent;
-
-import org.eclipse.compare.*;
-import org.eclipse.compare.structuremergeviewer.StructureDiffViewer;
-import org.eclipse.compare.structuremergeviewer.IDiffContainer;
+import org.eclipse.compare.CompareConfiguration;
+import org.eclipse.compare.CompareViewerPane;
+import org.eclipse.compare.IResourceProvider;
+import org.eclipse.compare.ITypedElement;
+import org.eclipse.compare.structuremergeviewer.DiffNode;
 import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
-import org.eclipse.compare.structuremergeviewer.DiffNode;
-
+import org.eclipse.compare.structuremergeviewer.IDiffContainer;
+import org.eclipse.compare.structuremergeviewer.StructureDiffViewer;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;

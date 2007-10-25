@@ -18,7 +18,9 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.StatusDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -33,24 +35,16 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.dialogs.StatusDialog;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CleanUpTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CodeFormatingTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CodeStyleTabPage;
-import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.MemberAccessesTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.UnnecessaryCodeTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ModifyDialogTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ModifyDialogTabPage.IModificationListener;
+import org.eclipse.wst.jsdt.ui.JavaUI;
 
 public class CleanUpSaveParticipantConfigurationModifyDialog extends StatusDialog implements IModificationListener {
 	

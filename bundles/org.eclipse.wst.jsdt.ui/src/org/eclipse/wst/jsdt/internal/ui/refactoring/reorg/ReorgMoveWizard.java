@@ -11,7 +11,13 @@
 package org.eclipse.wst.jsdt.internal.ui.refactoring.reorg;
 
 import org.eclipse.core.resources.IResource;
-
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.participants.MoveRefactoring;
+import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -22,23 +28,11 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
-
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.ltk.core.refactoring.participants.MoveRefactoring;
-import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ICreateTargetQuery;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.IReorgDestinationValidator;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaMoveProcessor;
-
 import org.eclipse.wst.jsdt.internal.ui.refactoring.QualifiedNameComponent;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
 import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;

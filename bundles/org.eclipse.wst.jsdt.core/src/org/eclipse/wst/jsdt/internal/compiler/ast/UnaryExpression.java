@@ -11,14 +11,18 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.impl.*;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.impl.BooleanConstant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class UnaryExpression extends OperatorExpression {
-	
+
 	public Expression expression;
 	public Constant optimizedBooleanConstant;
 
@@ -31,7 +35,7 @@ public FlowInfo analyseCode(
 		BlockScope currentScope,
 		FlowContext flowContext,
 		FlowInfo flowInfo) {
-	this.expression.checkNPE(currentScope, flowContext, flowInfo);	
+	this.expression.checkNPE(currentScope, flowContext, flowInfo);
 	if (((bits & OperatorMASK) >> OperatorSHIFT) == NOT) {
 		return this.expression.
 			analyseCode(currentScope, flowContext, flowInfo).
@@ -43,9 +47,9 @@ public FlowInfo analyseCode(
 }
 
 	public Constant optimizedBooleanConstant() {
-		
-		return this.optimizedBooleanConstant == null 
-				? this.constant 
+
+		return this.optimizedBooleanConstant == null
+				? this.constant
 				: this.optimizedBooleanConstant;
 	}
 
@@ -60,7 +64,7 @@ public FlowInfo analyseCode(
 		BlockScope currentScope,
 		CodeStream codeStream,
 		boolean valueRequired) {
-			
+
 		int pc = codeStream.position;
 		BranchLabel falseLabel, endifLabel;
 		if (this.constant != Constant.NotAConstant) {
@@ -94,7 +98,7 @@ public FlowInfo analyseCode(
 							}
 						} else { // 6596: if (!(a && b)){} - must still place falseLabel
 							falseLabel.place();
-						}						
+						}
 						break;
 				}
 				break;
@@ -200,23 +204,23 @@ public FlowInfo analyseCode(
 	}
 
 	public StringBuffer printExpressionNoParenthesis(int indent, StringBuffer output) {
-		
+
 		output.append(operatorToString()).append(' ');
 		return this.expression.printExpression(0, output);
-	} 
-	
+	}
+
 	protected final int getOperator()
 	{
 		return (bits & OperatorMASK) >> OperatorSHIFT;
 	}
-	
+
 	public TypeBinding resolveType(BlockScope scope) {
-		
+
 		boolean expressionIsCast;
 		if ((expressionIsCast = this.expression instanceof CastExpression) == true) this.expression.bits |= DisableUnnecessaryCastCheck; // will check later on
 		TypeBinding expressionType = null;
 		if (getOperator()==TYPEOF && (this.expression instanceof SingleNameReference))
-			expressionType=BaseTypeBinding.UNKNOWN;
+			expressionType=TypeBinding.UNKNOWN;
 		else
 			expressionType = this.expression.resolveType(scope);
 		if (expressionType == null) {
@@ -230,13 +234,13 @@ public FlowInfo analyseCode(
 			if (!expressionType.isBaseType()) {
 				expressionTypeID = scope.environment().computeBoxingType(expressionType).id;
 			}
-		}		
+		}
 		if (expressionTypeID > 15) {
 			this.constant = Constant.NotAConstant;
 			scope.problemReporter().invalidOperator(this, expressionType);
 			return null;
 		}
-	
+
 		int tableId=-1;
 		int operator = (bits & OperatorMASK) >> OperatorSHIFT;
 		switch (operator) {
@@ -255,7 +259,7 @@ public FlowInfo analyseCode(
 			default :
 				tableId = MINUS;
 		} //+ and - cases
-	
+
 		// the code is an int
 		// (cast)  left   Op (cast)  rigth --> result
 		//  0000   0000       0000   0000      0000
@@ -308,7 +312,7 @@ public FlowInfo analyseCode(
 			this.constant = Constant.NotAConstant;
 			if (operator == NOT) {
 				Constant cst = expression.optimizedBooleanConstant();
-				if (cst != Constant.NotAConstant) 
+				if (cst != Constant.NotAConstant)
 					this.optimizedBooleanConstant = BooleanConstant.fromValue(!cst.booleanValue());
 			}
 		}
@@ -322,7 +326,7 @@ public FlowInfo analyseCode(
 	public void traverse(
     		ASTVisitor visitor,
     		BlockScope blockScope) {
-			
+
 		if (visitor.visit(this, blockScope)) {
 			this.expression.traverse(visitor, blockScope);
 		}

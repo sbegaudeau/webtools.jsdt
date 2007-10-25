@@ -92,8 +92,8 @@ public class IndexBinaryFolder extends IndexRequest {
 									if (location != null) {
 										String containerRelativePath = Util.relativePath(file.getFullPath(), containerPath.segmentCount());
 										indexedFileNames.put(containerRelativePath,
-											indexedFileNames.get(containerRelativePath) == null 
-													|| indexLastModified < 
+											indexedFileNames.get(containerRelativePath) == null
+													|| indexLastModified <
 													EFS.getStore(location).fetchInfo().getLastModified()
 												? (Object) file
 												: (Object) OK);

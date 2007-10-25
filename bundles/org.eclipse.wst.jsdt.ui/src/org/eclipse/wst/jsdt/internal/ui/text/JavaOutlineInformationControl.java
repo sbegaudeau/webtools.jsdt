@@ -18,7 +18,15 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.KeyAdapter;
@@ -31,24 +39,12 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
-
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerFilter;
-
 import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.keys.KeySequence;
 import org.eclipse.ui.keys.SWTKeySupport;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
@@ -57,16 +53,9 @@ import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.MethodOverrideTester;
 import org.eclipse.wst.jsdt.internal.corext.util.SuperTypeHierarchyCache;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.OverrideIndicatorLabelDecorator;
-import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator;
-import org.eclipse.wst.jsdt.ui.StandardJavaElementContentProvider;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
@@ -77,6 +66,10 @@ import org.eclipse.wst.jsdt.internal.ui.util.StringMatcher;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.MemberFilter;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.OverrideIndicatorLabelDecorator;
+import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator;
+import org.eclipse.wst.jsdt.ui.StandardJavaElementContentProvider;
 
 /**
  * Show outline in light-weight control.

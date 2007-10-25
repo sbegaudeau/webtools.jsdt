@@ -13,8 +13,6 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.code;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
-import org.eclipse.wst.jsdt.internal.corext.dom.*;
 import org.eclipse.wst.jsdt.core.dom.ASTMatcher;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
@@ -109,6 +107,7 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
 import org.eclipse.wst.jsdt.core.dom.WildcardType;
 import org.eclipse.wst.jsdt.core.dom.WithStatement;
+import org.eclipse.wst.jsdt.internal.corext.dom.JdtASTMatcher;
 
 class AstMatchingNodeFinder {
 	

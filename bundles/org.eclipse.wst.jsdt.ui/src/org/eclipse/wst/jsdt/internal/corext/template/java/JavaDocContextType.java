@@ -12,8 +12,7 @@ package org.eclipse.wst.jsdt.internal.corext.template.java;
 
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
-import org.eclipse.jface.text.templates.*;
-
+import org.eclipse.jface.text.templates.GlobalTemplateVariables;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 
 

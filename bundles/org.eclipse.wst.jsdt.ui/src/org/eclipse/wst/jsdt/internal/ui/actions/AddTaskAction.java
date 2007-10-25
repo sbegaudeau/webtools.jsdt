@@ -12,16 +12,12 @@ package org.eclipse.wst.jsdt.internal.ui.actions;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
-
 import org.eclipse.jface.viewers.IStructuredSelection;
-
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.tasklist.TaskPropertiesDialog;
-
-import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
+import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
 
 public class AddTaskAction extends SelectionDispatchAction {
 

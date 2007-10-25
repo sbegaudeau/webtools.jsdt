@@ -28,53 +28,53 @@ import java.util.List;
  * When a Javadoc comment is present, the source
  * range begins with the first character of the "/**" comment delimiter.
  * When there is no Javadoc comment, the source range begins with the first
- * character of the first modifier keyword (if modifiers), 
- * or the first character of the member type (no modifiers). 
+ * character of the first modifier keyword (if modifiers),
+ * or the first character of the member type (no modifiers).
  * The source range extends through the last character of the
  * ";" token.
  * </p>
- * 
+ *
  * @since 3.1
  */
 public class AnnotationTypeMemberDeclaration extends BodyDeclaration {
-	
+
 	/**
 	 * The "javadoc" structural property of this node type.
 	 */
-	public static final ChildPropertyDescriptor JAVADOC_PROPERTY = 
+	public static final ChildPropertyDescriptor JAVADOC_PROPERTY =
 		internalJavadocPropertyFactory(AnnotationTypeMemberDeclaration.class);
 
 	/**
 	 * The "modifiers" structural property of this node type.
 	 */
-	public static final ChildListPropertyDescriptor MODIFIERS2_PROPERTY = 
+	public static final ChildListPropertyDescriptor MODIFIERS2_PROPERTY =
 		internalModifiers2PropertyFactory(AnnotationTypeMemberDeclaration.class);
-	
+
 	/**
 	 * The "name" structural property of this node type.
 	 */
-	public static final ChildPropertyDescriptor NAME_PROPERTY = 
+	public static final ChildPropertyDescriptor NAME_PROPERTY =
 		new ChildPropertyDescriptor(AnnotationTypeMemberDeclaration.class, "name", SimpleName.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "type" structural property of this node type.
 	 */
-	public static final ChildPropertyDescriptor TYPE_PROPERTY = 
+	public static final ChildPropertyDescriptor TYPE_PROPERTY =
 		new ChildPropertyDescriptor(AnnotationTypeMemberDeclaration.class, "type", Type.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "default" structural property of this node type.
 	 */
-	public static final ChildPropertyDescriptor DEFAULT_PROPERTY = 
+	public static final ChildPropertyDescriptor DEFAULT_PROPERTY =
 		new ChildPropertyDescriptor(AnnotationTypeMemberDeclaration.class, "default", Expression.class, OPTIONAL, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
-	 * A list of property descriptors (element type: 
+	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
 	 */
 	private static final List PROPERTY_DESCRIPTORS;
-	
+
 	static {
 		List properyList = new ArrayList(6);
 		createPropertyList(AnnotationTypeMemberDeclaration.class, properyList);
@@ -89,16 +89,16 @@ public class AnnotationTypeMemberDeclaration extends BodyDeclaration {
 	/**
 	 * Returns a list of structural property descriptors for this node type.
 	 * Clients must not modify the result.
-	 * 
+	 *
 	 * @param apiLevel the API level; one of the
 	 * <code>AST.JLS*</code> constants
-	 * @return a list of property descriptors (element type: 
+	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
 	}
-						
+
 	/**
 	 * The member name; lazily initialized; defaults to an unspecified,
 	 * legal Java identifier.
@@ -109,23 +109,23 @@ public class AnnotationTypeMemberDeclaration extends BodyDeclaration {
 	 * The member type; lazily initialized; defaults to int.
 	 */
 	private Type memberType = null;
-	
+
 	/**
 	 * The optional default expression; <code>null</code> for none; defaults to none.
 	 */
 	private Expression optionalDefaultValue = null;
-	
+
 	/**
-	 * Creates a new AST node for an annotation type member declaration owned 
+	 * Creates a new AST node for an annotation type member declaration owned
 	 * by the given AST. By default, the declaration is for a member of an
 	 * unspecified, but legal, name; no modifiers; no javadoc;
 	 * an unspecified value type; and no default value.
 	 * <p>
-	 * N.B. This constructor is package-private; all subclasses must be 
-	 * declared in the same package; clients are unable to declare 
+	 * N.B. This constructor is package-private; all subclasses must be
+	 * declared in the same package; clients are unable to declare
 	 * additional subclasses.
 	 * </p>
-	 * 
+	 *
 	 * @param ast the AST that is to own this node
 	 */
 	AnnotationTypeMemberDeclaration(AST ast) {
@@ -139,7 +139,7 @@ public class AnnotationTypeMemberDeclaration extends BodyDeclaration {
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -187,7 +187,7 @@ public class AnnotationTypeMemberDeclaration extends BodyDeclaration {
 		// allow default implementation to flag the error
 		return super.internalGetSetChildProperty(property, get, child);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -198,7 +198,7 @@ public class AnnotationTypeMemberDeclaration extends BodyDeclaration {
 		// allow default implementation to flag the error
 		return super.internalGetChildListProperty(property);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on BodyDeclaration.
 	 */
@@ -250,7 +250,7 @@ public class AnnotationTypeMemberDeclaration extends BodyDeclaration {
 		// dispatch to correct overloaded match method
 		return matcher.match(this, other);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -266,12 +266,12 @@ public class AnnotationTypeMemberDeclaration extends BodyDeclaration {
 		}
 		visitor.endVisit(this);
 	}
-	
+
 	/**
 	 * Returns the name of the annotation type member declared in this declaration.
-	 * 
+	 *
 	 * @return the member name node
-	 */ 
+	 */
 	public SimpleName getName() {
 		if (this.memberName == null) {
 			// lazy init must be thread-safe for readers
@@ -285,18 +285,18 @@ public class AnnotationTypeMemberDeclaration extends BodyDeclaration {
 		}
 		return this.memberName;
 	}
-	
+
 	/**
 	 * Sets the name of the annotation type member declared in this declaration to the
 	 * given name.
-	 * 
+	 *
 	 * @param memberName the new member name
 	 * @exception IllegalArgumentException if:
 	 * <ul>
 	 * <li>the node belongs to a different AST</li>
 	 * <li>the node already has a parent</li>
 	 * </ul>
-	 */ 
+	 */
 	public void setName(SimpleName memberName) {
 		if (memberName == null) {
 			throw new IllegalArgumentException();
@@ -308,11 +308,11 @@ public class AnnotationTypeMemberDeclaration extends BodyDeclaration {
 	}
 
 	/**
-	 * Returns the type of the annotation type member declared in this 
+	 * Returns the type of the annotation type member declared in this
 	 * declaration.
-	 * 
+	 *
 	 * @return the type of the member
-	 */ 
+	 */
 	public Type getType() {
 		if (this.memberType == null) {
 			// lazy init must be thread-safe for readers
@@ -330,14 +330,14 @@ public class AnnotationTypeMemberDeclaration extends BodyDeclaration {
 	/**
 	 * Sets the type of the annotation type member declared in this declaration
 	 * to the given type.
-	 * 
+	 *
 	 * @param type the new member type
 	 * @exception IllegalArgumentException if:
 	 * <ul>
 	 * <li>the node belongs to a different AST</li>
 	 * <li>the node already has a parent</li>
 	 * </ul>
-	 */ 
+	 */
 	public void setType(Type type) {
 		if (type == null) {
 			throw new IllegalArgumentException();
@@ -349,19 +349,19 @@ public class AnnotationTypeMemberDeclaration extends BodyDeclaration {
 	}
 
 	/**
-	 * Returns the default value of this annotation type member, or 
+	 * Returns the default value of this annotation type member, or
 	 * <code>null</code> if there is none.
-	 * 
+	 *
 	 * @return the expression node, or <code>null</code> if there is none
-	 */ 
+	 */
 	public Expression getDefault() {
 		return this.optionalDefaultValue;
 	}
-	
+
 	/**
 	 * Sets or clears the default value of this annotation type member.
-	 * 
-	 * @param defaultValue the expression node, or <code>null</code> if 
+	 *
+	 * @param defaultValue the expression node, or <code>null</code> if
 	 *    there is none
 	 * @exception IllegalArgumentException if:
 	 * <ul>
@@ -369,7 +369,7 @@ public class AnnotationTypeMemberDeclaration extends BodyDeclaration {
 	 * <li>the node already has a parent</li>
 	 * <li>a cycle in would be created</li>
 	 * </ul>
-	 */ 
+	 */
 	public void setDefault(Expression defaultValue) {
 		// a AnnotationTypeMemberDeclaration may occur inside an Expression - must check cycles
 		ASTNode oldChild = this.optionalDefaultValue;
@@ -377,7 +377,7 @@ public class AnnotationTypeMemberDeclaration extends BodyDeclaration {
 		this.optionalDefaultValue = defaultValue;
 		postReplaceChild(oldChild, defaultValue, DEFAULT_PROPERTY);
 	}
-	
+
 	/**
 	 * Resolves and returns the binding for the annotation type member declared
 	 * in this declaration.
@@ -385,10 +385,10 @@ public class AnnotationTypeMemberDeclaration extends BodyDeclaration {
 	 * Note that bindings are generally unavailable unless requested when the
 	 * AST is being built.
 	 * </p>
-	 * 
-	 * @return the binding, or <code>null</code> if the binding cannot be 
+	 *
+	 * @return the binding, or <code>null</code> if the binding cannot be
 	 *    resolved
-	 */	
+	 */
 	public IMethodBinding resolveBinding() {
 		return this.ast.getBindingResolver().resolveMember(this);
 	}
@@ -399,7 +399,7 @@ public class AnnotationTypeMemberDeclaration extends BodyDeclaration {
 	int memSize() {
 		return super.memSize() + 3 * 4;
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */

@@ -60,7 +60,7 @@ public class VerificationTypeInfo implements Cloneable {
 	 * @since 3.2
 	 */
 	public static final int ITEM_UNINITIALIZED = 8;
-	
+
 	public int tag;
 	private int id;
 	private char[] constantPoolName;

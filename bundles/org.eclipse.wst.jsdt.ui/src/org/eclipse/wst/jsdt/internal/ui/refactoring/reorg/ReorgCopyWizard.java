@@ -11,14 +11,11 @@
 package org.eclipse.wst.jsdt.internal.ui.refactoring.reorg;
 
 import org.eclipse.core.resources.IResource;
-
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CopyRefactoring;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.IReorgDestinationValidator;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaCopyProcessor;
 

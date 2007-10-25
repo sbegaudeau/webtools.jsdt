@@ -14,19 +14,19 @@ package org.eclipse.wst.jsdt.core.dom;
 import java.util.ArrayList;
 import java.util.List;
 
- 
+
 public class ObjectLiteral extends Expression {
 
-	public static final ChildListPropertyDescriptor FIELDS_PROPERTY = 
+	public static final ChildListPropertyDescriptor FIELDS_PROPERTY =
 		new ChildListPropertyDescriptor(ObjectLiteral.class, "fields", ObjectLiteralField.class, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
-	 * A list of property descriptors (element type: 
+	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
 	 */
 	private static final List PROPERTY_DESCRIPTORS;
-	
+
 	static {
 		List properyList = new ArrayList(3);
 		createPropertyList(ObjectLiteral.class, properyList);
@@ -37,27 +37,27 @@ public class ObjectLiteral extends Expression {
 	/**
 	 * Returns a list of structural property descriptors for this node type.
 	 * Clients must not modify the result.
-	 * 
+	 *
 	 * @param apiLevel the API level; one of the
 	 * <code>AST.JLS*</code> constants
-	 * @return a list of property descriptors (element type: 
+	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
 	 * @since 3.0
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
 	}
-			
+
 	private ASTNode.NodeList fields =
 		new ASTNode.NodeList(FIELDS_PROPERTY);
-	
+
 	/**
-	 * Creates a new AST node for a cast expression owned by the given 
+	 * Creates a new AST node for a cast expression owned by the given
 	 * AST. By default, the type and expression are unspecified (but legal).
 	 * <p>
 	 * N.B. This constructor is package-private.
 	 * </p>
-	 * 
+	 *
 	 * @param ast the AST that is to own this node
 	 */
 	ObjectLiteral(AST ast) {
@@ -70,7 +70,7 @@ public class ObjectLiteral extends Expression {
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -81,7 +81,7 @@ public class ObjectLiteral extends Expression {
 		// allow default implementation to flag the error
 		return super.internalGetChildListProperty(property);
 	}
-	
+
 
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
@@ -119,11 +119,11 @@ public class ObjectLiteral extends Expression {
 		}
 		visitor.endVisit(this);
 	}
-	
+
 	public List fields() {
 		return this.fields;
 	}
-	
+
 
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
@@ -132,12 +132,12 @@ public class ObjectLiteral extends Expression {
 		// treat Code as free
 		return BASE_NODE_SIZE + 2 * 4;
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {
-		return 
+		return
 			memSize()
 			+ this.fields.listSize();
 	}

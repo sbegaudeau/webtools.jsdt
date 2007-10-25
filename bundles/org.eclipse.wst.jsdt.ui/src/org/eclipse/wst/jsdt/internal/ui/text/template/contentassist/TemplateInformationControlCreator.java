@@ -11,16 +11,13 @@
 package org.eclipse.wst.jsdt.internal.ui.text.template.contentassist;
 
 import org.eclipse.core.runtime.Assert;
-
+import org.eclipse.jface.text.IInformationControl;
+import org.eclipse.jface.text.IInformationControlCreator;
+import org.eclipse.jface.text.IInformationControlCreatorExtension;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.jface.text.IInformationControl;
-import org.eclipse.jface.text.IInformationControlCreator;
-import org.eclipse.jface.text.IInformationControlCreatorExtension;
-
 import org.eclipse.wst.jsdt.internal.ui.text.java.hover.SourceViewerInformationControl;
 
 

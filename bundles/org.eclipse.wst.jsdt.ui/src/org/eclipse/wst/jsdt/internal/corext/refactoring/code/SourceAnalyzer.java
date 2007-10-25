@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-
 import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
@@ -55,7 +54,6 @@ import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.ThisExpression;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.ImportReferencesCollector;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.LocalVariableIndex;

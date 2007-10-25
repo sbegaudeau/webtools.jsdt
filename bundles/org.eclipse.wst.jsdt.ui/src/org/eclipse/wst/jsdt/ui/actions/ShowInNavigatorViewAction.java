@@ -13,13 +13,10 @@ package org.eclipse.wst.jsdt.ui.actions;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IResource;
-
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-
-import org.eclipse.jface.text.ITextSelection;
-
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -27,10 +24,8 @@ import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ISetSelectionTarget;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;

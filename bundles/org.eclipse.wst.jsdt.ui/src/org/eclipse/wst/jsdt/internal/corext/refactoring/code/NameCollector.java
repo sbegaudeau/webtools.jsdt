@@ -18,7 +18,6 @@ import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor;
 import org.eclipse.wst.jsdt.internal.corext.dom.Selection;
 

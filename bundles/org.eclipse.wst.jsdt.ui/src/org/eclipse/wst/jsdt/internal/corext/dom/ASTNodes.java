@@ -20,10 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.text.edits.TextEdit;
-
 import org.eclipse.core.runtime.Assert;
-
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IJavaElement;
@@ -75,9 +73,7 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
-
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.preferences.MembersOrderPreferenceCache;
 

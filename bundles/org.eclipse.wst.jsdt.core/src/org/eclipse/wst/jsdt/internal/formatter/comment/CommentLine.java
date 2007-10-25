@@ -17,7 +17,7 @@ import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 
 /**
  * General comment line in a comment region.
- * 
+ *
  * @since 3.0
  */
 public abstract class CommentLine implements IBorderAttributes {
@@ -36,7 +36,7 @@ public abstract class CommentLine implements IBorderAttributes {
 
 	/**
 	 * Creates a new comment line.
-	 * 
+	 *
 	 * @param parent comment region to create the comment line for
 	 */
 	protected CommentLine(final CommentRegion parent) {
@@ -46,14 +46,14 @@ public abstract class CommentLine implements IBorderAttributes {
 	/**
 	 * Adapts the line attributes from the previous line in the comment
 	 * region.
-	 * 
+	 *
 	 * @param previous the previous comment line in the comment region
 	 */
 	protected abstract void adapt(final CommentLine previous);
 
 	/**
 	 * Appends the specified comment range to this comment line.
-	 * 
+	 *
 	 * @param range comment range to append to this line
 	 */
 	protected void append(final CommentRange range) {
@@ -62,7 +62,7 @@ public abstract class CommentLine implements IBorderAttributes {
 
 	/**
 	 * Formats this comment line as content line.
-	 * 
+	 *
 	 * @param predecessor the predecessor comment line in the comment region
 	 * @param last the most recently processed comment range
 	 * @param indentation the indentation of the comment region
@@ -102,7 +102,7 @@ public abstract class CommentLine implements IBorderAttributes {
 	/**
 	 * Formats this comment line as end line having a lower border
 	 * consisting of content line prefixes.
-	 * 
+	 *
 	 * @param range last comment range of the last comment line in the
 	 *                comment region
 	 * @param indentation the indentation of the comment region
@@ -143,7 +143,7 @@ public abstract class CommentLine implements IBorderAttributes {
 	/**
 	 * Formats this comment line as start line having an upper border
 	 * consisting of content line prefixes.
-	 * 
+	 *
 	 * @param range the first comment range in the comment region
 	 * @param indentation the indentation of the comment region
 	 * @param length the maximal length of text in this comment region
@@ -179,21 +179,21 @@ public abstract class CommentLine implements IBorderAttributes {
 
 	/**
 	 * Returns the line prefix of content lines.
-	 * 
+	 *
 	 * @return line prefix of content lines
 	 */
 	protected abstract String getContentPrefix();
 
 	/**
 	 * Returns the line prefix of end lines.
-	 * 
+	 *
 	 * @return line prefix of end lines
 	 */
 	protected abstract String getEndingPrefix();
 
 	/**
 	 * Returns the first comment range in this comment line.
-	 * 
+	 *
 	 * @return the first comment range
 	 */
 	protected final CommentRange getFirst() {
@@ -202,7 +202,7 @@ public abstract class CommentLine implements IBorderAttributes {
 
 	/**
 	 * Returns the indentation reference string for this line.
-	 * 
+	 *
 	 * @return the indentation reference string for this line
 	 */
 	protected String getIndentationReference() {
@@ -211,7 +211,7 @@ public abstract class CommentLine implements IBorderAttributes {
 
 	/**
 	 * Returns the last comment range in this comment line.
-	 * 
+	 *
 	 * @return the last comment range
 	 */
 	protected final CommentRange getLast() {
@@ -220,7 +220,7 @@ public abstract class CommentLine implements IBorderAttributes {
 
 	/**
 	 * Returns the parent comment region of this comment line.
-	 * 
+	 *
 	 * @return the parent comment region
 	 */
 	protected final CommentRegion getParent() {
@@ -229,7 +229,7 @@ public abstract class CommentLine implements IBorderAttributes {
 
 	/**
 	 * Returns the number of comment ranges in this comment line.
-	 * 
+	 *
 	 * @return the number of ranges in this line
 	 */
 	protected final int getSize() {
@@ -238,14 +238,14 @@ public abstract class CommentLine implements IBorderAttributes {
 
 	/**
 	 * Returns the line prefix of start lines.
-	 * 
+	 *
 	 * @return line prefix of start lines
 	 */
 	protected abstract String getStartingPrefix();
 
 	/**
 	 * Is the attribute <code>attribute</code> true?
-	 * 
+	 *
 	 * @param attribute the attribute to get.
 	 * @return <code>true</code> iff this attribute is <code>true</code>,
 	 *         <code>false</code> otherwise.
@@ -256,14 +256,14 @@ public abstract class CommentLine implements IBorderAttributes {
 
 	/**
 	 * Scans this comment line for comment range boundaries.
-	 * 
+	 *
 	 * @param line the index of this line in the comment region
 	 */
 	protected abstract void scanLine(final int line);
 
 	/**
 	 * Set the attribute <code>attribute</code> to true.
-	 * 
+	 *
 	 * @param attribute the attribute to set.
 	 */
 	protected final void setAttribute(final int attribute) {
@@ -272,7 +272,7 @@ public abstract class CommentLine implements IBorderAttributes {
 
 	/**
 	 * Tokenizes this comment line into comment ranges
-	 * 
+	 *
 	 * @param line the index of this line in the comment region
 	 */
 	protected void tokenizeLine(final int line) {
@@ -303,7 +303,7 @@ public abstract class CommentLine implements IBorderAttributes {
 			}
 		}
 	}
-	
+
 	public String toString() {
 		final StringBuffer buffer = new StringBuffer();
 		final int size = this.fRanges.size();

@@ -11,13 +11,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.callhierarchy;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Tree;
-
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.IOpenListener;
@@ -25,11 +18,14 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IWorkbenchPartSite;
-
 import org.eclipse.wst.jsdt.internal.corext.callhierarchy.MethodWrapper;
-
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
 
 class CallHierarchyViewer extends TreeViewer {

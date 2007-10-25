@@ -11,7 +11,11 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 
 public class JavadocReturnStatement extends ReturnStatement {
@@ -29,8 +33,8 @@ public class JavadocReturnStatement extends ReturnStatement {
 		MethodBinding methodBinding = null;
 		TypeBinding methodType =
 			(methodScope.referenceContext instanceof AbstractMethodDeclaration)
-				? ((methodBinding = ((AbstractMethodDeclaration) methodScope.referenceContext).binding) == null 
-					? null 
+				? ((methodBinding = ((AbstractMethodDeclaration) methodScope.referenceContext).binding) == null
+					? null
 					: methodBinding.returnType)
 				: TypeBinding.VOID;
 		if (methodType == null || methodType == TypeBinding.VOID) {

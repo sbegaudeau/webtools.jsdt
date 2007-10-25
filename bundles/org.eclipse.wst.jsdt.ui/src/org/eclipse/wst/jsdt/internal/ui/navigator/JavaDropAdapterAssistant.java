@@ -13,36 +13,28 @@ package org.eclipse.wst.jsdt.internal.ui.navigator;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
-
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
-
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-
 import org.eclipse.ui.actions.CopyFilesAndFoldersOperation;
 import org.eclipse.ui.navigator.CommonDropAdapter;
 import org.eclipse.ui.navigator.CommonDropAdapterAssistant;
-
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaCopyProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaMoveProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ReorgPolicyFactory;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ReorgUtils;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.IReorgPolicy.ICopyPolicy;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.IReorgPolicy.IMovePolicy;
-
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackagesMessages;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.reorg.ReorgCopyStarter;

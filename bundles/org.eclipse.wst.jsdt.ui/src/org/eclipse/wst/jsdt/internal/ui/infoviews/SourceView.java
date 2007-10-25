@@ -13,27 +13,12 @@ package org.eclipse.wst.jsdt.internal.ui.infoviews;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.Assert;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
@@ -42,33 +27,40 @@ import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.text.source.SourceViewer;
-
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IAbstractTextEditorHelpContextIds;
-
 import org.eclipse.wst.jsdt.core.ICodeAssist;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-
+import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaSourceViewer;
+import org.eclipse.wst.jsdt.internal.ui.text.JavaCodeReader;
+import org.eclipse.wst.jsdt.internal.ui.text.SimpleJavaSourceViewerConfiguration;
 import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.wst.jsdt.ui.actions.JdtActionConstants;
 import org.eclipse.wst.jsdt.ui.actions.OpenAction;
 import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
 import org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration;
-
-import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaSourceViewer;
-import org.eclipse.wst.jsdt.internal.ui.text.JavaCodeReader;
-import org.eclipse.wst.jsdt.internal.ui.text.SimpleJavaSourceViewerConfiguration;
 
 /**
  * View which shows source for a given Java element.

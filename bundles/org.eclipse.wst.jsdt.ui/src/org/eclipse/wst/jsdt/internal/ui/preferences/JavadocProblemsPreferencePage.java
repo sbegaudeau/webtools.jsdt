@@ -10,16 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.preferences;
 
-import org.eclipse.core.runtime.IAdaptable;
-
 import org.eclipse.core.resources.IProject;
-
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 

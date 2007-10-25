@@ -344,7 +344,7 @@ public int literalIndex(char[] utf8Constant) {
 		if (index > 0xFFFF){
 			this.classFile.referenceBinding.scope.problemReporter().noMoreAvailableSpaceInConstantPool(this.classFile.referenceBinding.classScope.referenceType());
 		}
-		currentIndex++;     
+		currentIndex++;
 		// Now we know the length that we have to write in the constant pool
 		// we use savedCurrentOffset to do that
 		poolContent[savedCurrentOffset] = (byte) (length >> 8);
@@ -377,7 +377,7 @@ public int literalIndex(char[] stringCharArray, byte[] utf8encoding) {
 }
 /**
  * This method returns the index into the constantPool corresponding to the double
- * value. If the double is not already present into the pool, it is added. The 
+ * value. If the double is not already present into the pool, it is added. The
  * double cache is updated and it returns the right index.
  *
  * @param key <CODE>double</CODE>
@@ -420,7 +420,7 @@ public int literalIndex(double key) {
 }
 /**
  * This method returns the index into the constantPool corresponding to the float
- * value. If the float is not already present into the pool, it is added. The 
+ * value. If the float is not already present into the pool, it is added. The
  * int cache is updated and it returns the right index.
  *
  * @param key <CODE>float</CODE>
@@ -456,7 +456,7 @@ public int literalIndex(float key) {
 }
 /**
  * This method returns the index into the constantPool corresponding to the int
- * value. If the int is not already present into the pool, it is added. The 
+ * value. If the int is not already present into the pool, it is added. The
  * int cache is updated and it returns the right index.
  *
  * @param key <CODE>int</CODE>
@@ -491,7 +491,7 @@ public int literalIndex(int key) {
 }
 /**
  * This method returns the index into the constantPool corresponding to the long
- * value. If the long is not already present into the pool, it is added. The 
+ * value. If the long is not already present into the pool, it is added. The
  * long cache is updated and it returns the right index.
  *
  * @param key <CODE>long</CODE>
@@ -582,7 +582,7 @@ public int literalIndexForType(final char[] constantPoolName) {
 	return index;
 }
 /*
- * This method returns the index into the constantPool corresponding to the type descriptor 
+ * This method returns the index into the constantPool corresponding to the type descriptor
  * corresponding to a type constant pool name
  * binding must not be an array type.
  */
@@ -610,7 +610,7 @@ public int literalIndexForMethod(char[] declaringClass, char[] selector, char[] 
 			resizePoolContents(4);
 		}
 		currentOffset+=4;
-		
+
 		final int classIndex = literalIndexForType(declaringClass);
 		final int nameAndTypeIndex = literalIndexForNameAndType(selector, signature);
 
@@ -641,7 +641,7 @@ public int literalIndexForNameAndType(char[] name, char[] signature) {
 			resizePoolContents(4);
 		}
 		currentOffset+=4;
-		
+
 		final int nameIndex = literalIndex(name);
 		final int typeIndex = literalIndex(signature);
 		poolContent[nameIndexOffset++] = (byte) (nameIndex >> 8);
@@ -667,14 +667,14 @@ public int literalIndexForField(char[] declaringClass, char[] name, char[] signa
 			resizePoolContents(4);
 		}
 		currentOffset+=4;
-		
+
 		final int classIndex = literalIndexForType(declaringClass);
 		final int nameAndTypeIndex = literalIndexForNameAndType(name, signature);
 
 		poolContent[classIndexOffset++] = (byte) (classIndex >> 8);
 		poolContent[classIndexOffset++] = (byte) classIndex;
 		poolContent[classIndexOffset++] = (byte) (nameAndTypeIndex >> 8);
-		poolContent[classIndexOffset] = (byte) nameAndTypeIndex;		
+		poolContent[classIndexOffset] = (byte) nameAndTypeIndex;
 	}
 	return index;
 }
@@ -693,7 +693,7 @@ public int literalIndexForLdc(char[] stringCharArray) {
 		this.currentIndex++;
 		// Write the tag first
 		writeU1(StringTag);
-		
+
 		// Then the string index
 		int stringIndexOffset = this.currentOffset;
 		if (currentOffset + 2 >= poolContent.length) {
@@ -793,7 +793,7 @@ private int putInNameAndTypeCacheIfAbsent(final char[] key1, final char[] key2, 
 			CharArrayCache charArrayCache = new CharArrayCache();
 			charArrayCache.putIfAbsent(entry.signature, entry.index);
 			index = charArrayCache.putIfAbsent(key2, value);
-			this.nameAndTypeCacheForFieldsAndMethods.put(key1, charArrayCache);			
+			this.nameAndTypeCacheForFieldsAndMethods.put(key1, charArrayCache);
 		}
 	} else {
 		CharArrayCache charArrayCache = (CharArrayCache) key1Value;
@@ -831,18 +831,18 @@ private int putInCacheIfAbsent(final char[] key1, final char[] key2, final char[
 			} else {
 				CharArrayCache charArrayCache = new CharArrayCache();
 				charArrayCache.putIfAbsent(entry.signature, entry.index);
-				index = charArrayCache.putIfAbsent(key3, value);				
+				index = charArrayCache.putIfAbsent(key3, value);
 				key1Value.put(key2, charArrayCache);
 			}
 		} else {
 			CharArrayCache charArrayCache = (CharArrayCache) key2Value;
-			index = charArrayCache.putIfAbsent(key3, value);			
+			index = charArrayCache.putIfAbsent(key3, value);
 		}
 	}
 	return index;
 }
 /**
- * This method is used to clean the receiver in case of a clinit header is generated, but the 
+ * This method is used to clean the receiver in case of a clinit header is generated, but the
  * clinit has no code.
  * This implementation assumes that the clinit is the first method to be generated.
  * @see org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration#addClinit()
@@ -873,7 +873,7 @@ private final void resizePoolContents(int minimalSize) {
 }
 /**
  * Write a unsigned byte into the byte array
- * 
+ *
  * @param value <CODE>int</CODE> The value to write into the byte array
  */
 protected final void writeU1(int value) {
@@ -884,7 +884,7 @@ protected final void writeU1(int value) {
 }
 /**
  * Write a unsigned byte into the byte array
- * 
+ *
  * @param value <CODE>int</CODE> The value to write into the byte array
  */
 protected final void writeU2(int value) {

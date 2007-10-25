@@ -17,12 +17,9 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
-
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.search.LRUWorkingSetsList;
 import org.eclipse.wst.jsdt.internal.ui.search.WorkingSetComparator;

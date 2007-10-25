@@ -58,7 +58,7 @@ public TypeBinding literalType(BlockScope scope) {
 	return TypeBinding.BOOLEAN;
 }
 /**
- * 
+ *
  */
 public char[] source() {
 	return source;

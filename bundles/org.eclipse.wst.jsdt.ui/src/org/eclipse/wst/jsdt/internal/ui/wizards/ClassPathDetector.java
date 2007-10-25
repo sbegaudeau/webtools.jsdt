@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.wizards;
 
-import com.ibm.icu.text.Collator;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -24,6 +22,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceProxy;
+import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -32,13 +35,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceProxy;
-import org.eclipse.core.resources.IResourceProxyVisitor;
-
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.JavaConventions;
@@ -51,12 +47,11 @@ import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.core.util.IClassFileReader;
 import org.eclipse.wst.jsdt.core.util.ISourceAttribute;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import com.ibm.icu.text.Collator;
 
 /**
   */

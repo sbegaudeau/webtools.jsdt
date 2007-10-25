@@ -10,15 +10,13 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.actions;
 
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.graphics.Point;
-
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.ITextViewerExtension5;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.source.ISourceViewer;
-
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaWordFinder;
 

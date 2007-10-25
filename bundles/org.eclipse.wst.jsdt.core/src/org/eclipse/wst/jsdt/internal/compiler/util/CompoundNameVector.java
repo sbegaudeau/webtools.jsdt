@@ -14,7 +14,7 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 
 public final class CompoundNameVector {
 	static int INITIAL_SIZE = 10;
-    
+
 	public int size;
 	int maxSize;
 	char[][][] elements;

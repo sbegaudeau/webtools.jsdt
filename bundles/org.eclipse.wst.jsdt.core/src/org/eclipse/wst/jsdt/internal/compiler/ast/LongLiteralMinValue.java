@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
-import org.eclipse.wst.jsdt.internal.compiler.impl.*;
+import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.LongConstant;
 
 public class LongLiteralMinValue extends LongLiteral {
 
 	final static char[] CharValue = new char[]{'-', '9','2','2','3','3','7','2','0','3','6','8','5','4','7','7','5','8','0','8','L'};
-	final static Constant MIN_VALUE = LongConstant.fromValue(Long.MIN_VALUE) ; 
+	final static Constant MIN_VALUE = LongConstant.fromValue(Long.MIN_VALUE) ;
 
 public LongLiteralMinValue(){
 	super(CharValue,0,0);

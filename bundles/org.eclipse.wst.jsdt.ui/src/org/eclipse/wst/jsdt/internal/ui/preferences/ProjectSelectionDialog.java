@@ -12,20 +12,8 @@ package org.eclipse.wst.jsdt.internal.ui.preferences;
 
 import java.util.Set;
 
-import org.eclipse.core.runtime.IStatus;
-
 import org.eclipse.core.resources.ResourcesPlugin;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Shell;
-
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -36,18 +24,23 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.SelectionStatusDialog;
-
 import org.eclipse.wst.jsdt.core.IJavaModel;
 import org.eclipse.wst.jsdt.core.JavaCore;
-
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.ui.JavaElementComparator;
 import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
 import org.eclipse.wst.jsdt.ui.StandardJavaElementContentProvider;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 
 public class ProjectSelectionDialog extends SelectionStatusDialog {
 

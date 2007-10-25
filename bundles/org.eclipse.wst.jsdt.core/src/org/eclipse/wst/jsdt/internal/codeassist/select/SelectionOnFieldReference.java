@@ -28,31 +28,31 @@ package org.eclipse.wst.jsdt.internal.codeassist.select;
  *       }
  *
  */
- 
+
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class SelectionOnFieldReference extends FieldReference {
-	
+
 	public SelectionOnFieldReference(char[] source , long pos) {
 
 		super(source, pos);
 	}
-	
+
 	public StringBuffer printExpression(int indent, StringBuffer output){
-		
+
 		output.append("<SelectionOnFieldReference:");  //$NON-NLS-1$
 		return super.printExpression(0, output).append('>');
 	}
-	
+
 	public TypeBinding resolveType(BlockScope scope) {
 
 		super.resolveType(scope);
 		// tolerate some error cases
-		if (binding == null || 
-				!(binding.isValidBinding() || 
+		if (binding == null ||
+				!(binding.isValidBinding() ||
 					binding.problemId() == ProblemReasons.NotVisible
 					|| binding.problemId() == ProblemReasons.InheritedNameHidesEnclosingName
 					|| binding.problemId() == ProblemReasons.NonStaticReferenceInConstructorInvocation

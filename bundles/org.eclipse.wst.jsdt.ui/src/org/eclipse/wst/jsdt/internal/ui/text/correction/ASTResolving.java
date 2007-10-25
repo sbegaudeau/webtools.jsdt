@@ -18,7 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
@@ -80,18 +79,15 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WildcardType;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType.Code;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodeFactory;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor;
 import org.eclipse.wst.jsdt.internal.corext.dom.ScopeAnalyzer;
 import org.eclipse.wst.jsdt.internal.corext.dom.TypeBindingVisitor;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 public class ASTResolving {
 

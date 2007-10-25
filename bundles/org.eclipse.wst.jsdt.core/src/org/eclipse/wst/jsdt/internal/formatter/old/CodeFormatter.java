@@ -12,24 +12,24 @@ package org.eclipse.wst.jsdt.internal.formatter.old;
 
 import java.util.Map;
 
+import org.eclipse.text.edits.ReplaceEdit;
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.wst.jsdt.internal.compiler.parser.TerminalTokens;
 import org.eclipse.wst.jsdt.internal.formatter.DefaultCodeFormatter;
-import org.eclipse.text.edits.ReplaceEdit;
-import org.eclipse.text.edits.TextEdit;
 
 /** <h2>How to format a piece of code ?</h2>
  * <ul><li>Create an instance of <code>CodeFormatter</code>
  * <li>Use the method <code>void format(aString)</code>
  * on this instance to format <code>aString</code>.
  * It will return the formatted string.</ul>
- * @deprecated 
+ * @deprecated
 */
 public class CodeFormatter implements TerminalTokens, org.eclipse.wst.jsdt.core.ICodeFormatter {
 
 	private Map options;
-	
+
 	public CodeFormatter(Map options) {
 		if (options == null) {
 			this.options = JavaCore.getOptions();
@@ -37,7 +37,7 @@ public class CodeFormatter implements TerminalTokens, org.eclipse.wst.jsdt.core.
 			this.options = options;
 		}
 	}
-	
+
 	public String format(String string, int indentLevel, int[] positions, String lineSeparator) {
 		// initialize the new formatter with old options
 		Map newOptions = DefaultCodeFormatterConstants.getEclipse21Settings();
@@ -131,7 +131,7 @@ public class CodeFormatter implements TerminalTokens, org.eclipse.wst.jsdt.core.
 		newOptions.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_ARRAY_INITIALIZER, JavaCore.INSERT);
 		newOptions.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_OPENING_BRACE_IN_ARRAY_INITIALIZER, JavaCore.INSERT);
 		newOptions.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_CLOSING_BRACE_IN_ARRAY_INITIALIZER, JavaCore.INSERT);
-		
+
 		DefaultCodeFormatter defaultCodeFormatter = new DefaultCodeFormatter(newOptions);
 		TextEdit textEdit = defaultCodeFormatter.format(org.eclipse.wst.jsdt.core.formatter.CodeFormatter.K_UNKNOWN, string, 0, string.length(), indentLevel, lineSeparator);
 		if (positions != null && textEdit != null) {
@@ -162,5 +162,5 @@ public class CodeFormatter implements TerminalTokens, org.eclipse.wst.jsdt.core.
 			}
 		}
 		return org.eclipse.wst.jsdt.internal.core.util.Util.editedString(string, textEdit);
-	}	
+	}
 }

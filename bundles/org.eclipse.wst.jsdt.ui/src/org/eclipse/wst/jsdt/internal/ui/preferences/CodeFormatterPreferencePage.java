@@ -12,9 +12,7 @@ package org.eclipse.wst.jsdt.internal.ui.preferences;
 
 
 import org.eclipse.swt.widgets.Composite;
-
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.CodeFormatterConfigurationBlock;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileConfigurationBlock;

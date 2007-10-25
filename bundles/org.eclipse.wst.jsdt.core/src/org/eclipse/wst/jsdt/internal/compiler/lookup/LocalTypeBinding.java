@@ -22,13 +22,13 @@ public final class LocalTypeBinding extends NestedTypeBinding {
 	public CaseStatement enclosingCase; // from 1.4 on, local types should not be accessed across switch case blocks (52221)
 	public int sourceStart; // used by computeUniqueKey to uniquely identify this binding
 	public MethodBinding enclosingMethod;
-	
+
 public LocalTypeBinding(ClassScope scope, SourceTypeBinding enclosingType, CaseStatement switchCase) {
 	super(
 		new char[][] {CharOperation.concat(LocalTypePrefix, scope.referenceContext.name)},
 		scope,
 		enclosingType);
-	
+
 	if (this.sourceName == CharOperation.NO_CHAR)
 		this.tagBits |= TagBits.AnonymousTypeMask;
 	else
@@ -71,19 +71,19 @@ public char[] computeUniqueKey(boolean isLeaf) {
 	// insert $sourceStart
 	sig.append('$');
 	sig.append(String.valueOf(this.sourceStart));
-	
+
 	// insert $LocalName if local
 	if (!isAnonymousType()) {
 		sig.append('$');
 		sig.append(this.sourceName);
 	}
-	
+
 	// insert remaining from outer key
 	sig.append(outerKey, semicolon, outerKey.length-semicolon);
-	
+
 	int sigLength = sig.length();
 	char[] uniqueKey = new char[sigLength];
-	sig.getChars(0, sigLength, uniqueKey, 0);			
+	sig.getChars(0, sigLength, uniqueKey, 0);
 	return uniqueKey;
 }
 
@@ -104,7 +104,7 @@ ArrayBinding createArrayType(int dimensionCount, LookupEnvironment lookupEnviron
 			return localArrayBindings[i];
 
 	// no matching array
-	System.arraycopy(localArrayBindings, 0, localArrayBindings = new ArrayBinding[length + 1], 0, length); 
+	System.arraycopy(localArrayBindings, 0, localArrayBindings = new ArrayBinding[length + 1], 0, length);
 	return localArrayBindings[length] = new ArrayBinding(this, dimensionCount, lookupEnvironment);
 }
 
@@ -134,7 +134,7 @@ public char[] readableName() /*java.lang.Object,  p.X<T> */ {
 		readableName = CharOperation.concat(enclosingType().readableName(), this.sourceName, '.');
 	} else {
 		readableName = this.sourceName;
-	}    
+	}
 	TypeVariableBinding[] typeVars;
 	if ((typeVars = this.typeVariables()) != Binding.NO_TYPE_VARIABLES) {
 	    StringBuffer nameBuffer = new StringBuffer(10);
@@ -174,7 +174,7 @@ public char[] shortReadableName() /*Object*/ {
 	    nameBuffer.append('>');
 		int nameLength = nameBuffer.length();
 		shortReadableName = new char[nameLength];
-		nameBuffer.getChars(0, nameLength, shortReadableName, 0);	    
+		nameBuffer.getChars(0, nameLength, shortReadableName, 0);
 	}
 	return shortReadableName;
 }
@@ -207,7 +207,7 @@ public char[] sourceName() {
 			return CharOperation.concat(TypeConstants.ANONYM_PREFIX, superclass.sourceName(), TypeConstants.ANONYM_SUFFIX);
 		else
 			return CharOperation.concat(TypeConstants.ANONYM_PREFIX, superInterfaces[0].sourceName(), TypeConstants.ANONYM_SUFFIX);
-			
+
 	} else
 		return sourceName;
 }

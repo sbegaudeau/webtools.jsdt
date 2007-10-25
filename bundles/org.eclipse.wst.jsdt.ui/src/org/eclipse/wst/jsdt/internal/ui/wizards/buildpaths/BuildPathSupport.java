@@ -12,18 +12,14 @@ package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-
-import org.eclipse.core.resources.ResourcesPlugin;
-
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.dialogs.MessageDialog;
-
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
 import org.eclipse.wst.jsdt.core.IClasspathAttribute;
 import org.eclipse.wst.jsdt.core.IClasspathContainer;
@@ -32,13 +28,10 @@ import org.eclipse.wst.jsdt.core.IJavaModel;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
+import org.eclipse.wst.jsdt.ui.JavaUI;
 
 /**
  *

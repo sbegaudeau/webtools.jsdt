@@ -11,18 +11,25 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.impl.*;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CaseLabel;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.IntConstant;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class CaseStatement extends Statement {
-	
+
 	public Expression constantExpression;
 	public CaseLabel targetLabel;
 	public boolean isEnumConstant;
-	
+
 	public CaseStatement(Expression constantExpression, int sourceEnd, int sourceStart) {
 		this.constantExpression = constantExpression;
 		this.sourceEnd = sourceEnd;
@@ -54,7 +61,7 @@ public class CaseStatement extends Statement {
 		}
 		return output.append(';');
 	}
-	
+
 	/**
 	 * Case code generation
 	 *
@@ -83,13 +90,13 @@ public class CaseStatement extends Statement {
 	public Constant resolveCase(BlockScope scope, TypeBinding switchExpressionType, SwitchStatement switchStatement) {
 		// switchExpressionType maybe null in error case
 	    scope.enclosingCase = this; // record entering in a switch case block
-	    
+
 		if (constantExpression == null) {
 			// remember the default case into the associated switch statement
 			if (switchStatement.defaultCase != null)
 				scope.problemReporter().duplicateDefaultCase(this);
-	
-			// on error the last default will be the selected one ...	
+
+			// on error the last default will be the selected one ...
 			switchStatement.defaultCase = this;
 			return Constant.NotAConstant;
 		}

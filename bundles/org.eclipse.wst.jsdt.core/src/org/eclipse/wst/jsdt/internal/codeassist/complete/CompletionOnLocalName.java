@@ -24,13 +24,13 @@ public class CompletionOnLocalName extends LocalDeclaration {
 		super(CharOperation.concat(name, FAKENAMESUFFIX), sourceStart, sourceEnd);
 		this.realName = name;
 	}
-	
+
 	public void resolve(BlockScope scope) {
-		
+
 		super.resolve(scope);
 		throw new CompletionNodeFound(this, scope);
 	}
-	
+
 	public StringBuffer printAsExpression(int indent, StringBuffer output) {
 		printIndent(indent, output);
 		output.append("<CompleteOnLocalName:"); //$NON-NLS-1$
@@ -38,7 +38,7 @@ public class CompletionOnLocalName extends LocalDeclaration {
 		output.append(this.realName);
 		if (initialization != null) {
 			output.append(" = "); //$NON-NLS-1$
-			initialization.printExpression(0, output); 
+			initialization.printExpression(0, output);
 		}
 		return output.append('>');
 	}
@@ -46,6 +46,6 @@ public class CompletionOnLocalName extends LocalDeclaration {
 	public StringBuffer printStatement(int indent, StringBuffer output) {
 		this.printAsExpression(indent, output);
 		return output.append(';');
-	}	
+	}
 }
 

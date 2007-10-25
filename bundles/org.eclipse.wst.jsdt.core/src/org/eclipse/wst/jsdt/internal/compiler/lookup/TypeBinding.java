@@ -24,10 +24,10 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
  * null is NOT a valid value for a non-public field... it just means the field is not initialized.
  */
 abstract public class TypeBinding extends Binding {
-	
+
 	public int id = TypeIds.NoId;
 	public long tagBits = 0; // See values in the interface TagBits below
-	
+
 
 	/** Base type definitions */
 	public final static BaseTypeBinding INT = new BaseTypeBinding(
@@ -127,7 +127,7 @@ public void collectSubstitutes(Scope scope, TypeBinding actualType, InferenceCon
 /**
  *  Answer the receiver's constant pool name.
  *  NOTE: This method should only be used during/after code gen.
- *  e.g. 'java/lang/Object' 
+ *  e.g. 'java/lang/Object'
  */
 public abstract char[] constantPoolName();
 
@@ -163,17 +163,17 @@ public ReferenceBinding findSuperTypeErasingTo(int wellKnownErasureID, boolean e
 
 	if (!(this instanceof ReferenceBinding)) return null;
 	ReferenceBinding reference = (ReferenceBinding) this;
-	
+
     // do not allow type variables to match with erasures for free
     if (reference.id == wellKnownErasureID || (!isTypeVariable() && !isIntersectionType()  && erasure().id == wellKnownErasureID)) return reference;
 
     ReferenceBinding currentType = reference;
     // iterate superclass to avoid recording interfaces if searched supertype is class
     if (erasureIsClass) {
-		while ((currentType = currentType.superclass()) != null) { 
+		while ((currentType = currentType.superclass()) != null) {
 			if (currentType.id == wellKnownErasureID || (!currentType.isTypeVariable() && !currentType.isIntersectionType() && currentType.erasure().id == wellKnownErasureID))
 				return currentType;
-		}    
+		}
 		return null;
     }
 	ReferenceBinding[] interfacesToVisit = null;
@@ -197,7 +197,7 @@ public ReferenceBinding findSuperTypeErasingTo(int wellKnownErasureID, boolean e
 			}
 		}
 	} while ((currentType = currentType.superclass()) != null);
-			
+
 	for (int i = 0; i < nextPosition; i++) {
 		currentType = interfacesToVisit[i];
 		if (currentType.id == wellKnownErasureID || (!currentType.isTypeVariable() && !currentType.isIntersectionType() && currentType.erasure().id == wellKnownErasureID))
@@ -244,8 +244,8 @@ public TypeBinding findSuperTypeWithSameErasure(TypeBinding otherType) {
 			if (!(arrayType.leafComponentType instanceof ReferenceBinding)) return null;
 			TypeBinding leafSuperType = arrayType.leafComponentType.findSuperTypeWithSameErasure(otherType.leafComponentType());
 			if (leafSuperType == null) return null;
-			return arrayType.environment().createArrayType(leafSuperType, arrayType.dimensions);	
-			
+			return arrayType.environment().createArrayType(leafSuperType, arrayType.dimensions);
+
 		case Binding.TYPE_PARAMETER :
 		    if (isCapture()) {
 		    	CaptureBinding capture = (CaptureBinding) this;
@@ -264,7 +264,7 @@ public TypeBinding findSuperTypeWithSameErasure(TypeBinding otherType) {
 		    // do not allow type variables/intersection types to match with erasures for free
 		    if (!otherType.isTypeVariable() && !otherType.isIntersectionType()) otherType = otherType.erasure();
 		    if (this == otherType || (!isTypeVariable() && !isIntersectionType() && erasure() == otherType)) return this;
-		    
+
 		    ReferenceBinding currentType = (ReferenceBinding)this;
 		    if (!otherType.isInterface()) {
 				while ((currentType = currentType.superclass()) != null) {
@@ -293,7 +293,7 @@ public TypeBinding findSuperTypeWithSameErasure(TypeBinding otherType) {
 					}
 				}
 			} while ((currentType = currentType.superclass()) != null);
-					
+
 			for (int i = 0; i < nextPosition; i++) {
 				currentType = interfacesToVisit[i];
 				if (currentType == otherType || (!currentType.isTypeVariable() && !currentType.isIntersectionType() && currentType.erasure() == otherType))
@@ -553,7 +553,7 @@ public boolean isRawType() {
 }
 
 /**
- * JLS(3) 4.7. 
+ * JLS(3) 4.7.
  * Note: Foo<?>.Bar is also reifiable
  */
 public boolean isReifiable() {

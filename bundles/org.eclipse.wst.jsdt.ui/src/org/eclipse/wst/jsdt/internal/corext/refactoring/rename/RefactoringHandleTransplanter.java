@@ -15,7 +15,6 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IInitializer;
 import org.eclipse.wst.jsdt.core.IJavaElement;

@@ -12,42 +12,34 @@ package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.newsourcepage;
 
 import java.util.ArrayList;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-
-import org.eclipse.swt.widgets.Shell;
-
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
-
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ISetSelectionTarget;
-
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.buildpath.BuildpathDelta;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.ClasspathModifier;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.EditFilterWizard;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 //SelectedElements iff enabled: (IJavaProject || IPackageFragmentRoot) && size == 1
 public class EditFilterAction extends BuildpathModifierAction {

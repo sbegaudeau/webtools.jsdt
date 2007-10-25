@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.changes;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.ChangeDescriptor;
 import org.eclipse.ltk.core.refactoring.CompositeChange;

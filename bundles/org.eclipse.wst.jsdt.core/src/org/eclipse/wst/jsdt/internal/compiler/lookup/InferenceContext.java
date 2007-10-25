@@ -14,7 +14,7 @@ package org.eclipse.wst.jsdt.internal.compiler.lookup;
  * Context used during type inference for a generic method invocation
  */
 public class InferenceContext {
-	
+
 	private TypeBinding[][][] collectedSubstitutes;
 	MethodBinding genericMethod;
 	int depth;
@@ -24,7 +24,7 @@ public class InferenceContext {
 	TypeBinding[] substitutes;
 	final static int FAILED = 1;
 	final static int RAW_SUBSTITUTION = 2;
-	
+
 public InferenceContext(MethodBinding genericMethod) {
 	this.genericMethod = genericMethod;
 	TypeVariableBinding[] typeVariables = genericMethod.typeVariables;
@@ -41,7 +41,7 @@ public boolean checkRawSubstitution() {
 //	}
 	this.status = RAW_SUBSTITUTION;
 	return true;
-}		
+}
 
 public TypeBinding[] getSubstitutes(TypeVariableBinding typeVariable, int constraint) {
 	return this.collectedSubstitutes[typeVariable.rank][constraint];
@@ -57,7 +57,7 @@ public boolean hasUnresolvedTypeArgument() {
 		}
 	}
 	return false;
-}		
+}
 
 public void recordSubstitute(TypeVariableBinding typeVariable, TypeBinding actualType, int constraint) {
     TypeBinding[][] variableSubstitutes = this.collectedSubstitutes[typeVariable.rank];
@@ -90,7 +90,7 @@ public String toString() {
 	for (int i = 0, length = this.genericMethod.typeVariables.length; i < length; i++) {
 		buffer.append(this.genericMethod.typeVariables[i]);
 	}
-	buffer.append(this.genericMethod); 
+	buffer.append(this.genericMethod);
 	buffer.append("\n\t[status=");//$NON-NLS-1$
 	switch(this.status) {
 		case 0 :

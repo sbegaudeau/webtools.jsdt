@@ -21,7 +21,6 @@ import org.eclipse.wst.jsdt.core.dom.MethodRef;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 
 /**

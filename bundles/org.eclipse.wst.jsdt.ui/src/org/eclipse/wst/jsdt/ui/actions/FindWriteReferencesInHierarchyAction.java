@@ -12,15 +12,13 @@ package org.eclipse.wst.jsdt.ui.actions;
 
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
-import org.eclipse.wst.jsdt.internal.ui.search.SearchMessages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
+import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
+import org.eclipse.wst.jsdt.internal.ui.search.SearchMessages;
 
 /**
  * Finds field write accesses of the selected element in its hierarchy.

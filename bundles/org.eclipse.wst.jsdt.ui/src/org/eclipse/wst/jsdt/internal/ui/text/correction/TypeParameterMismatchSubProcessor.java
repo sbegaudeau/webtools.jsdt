@@ -13,20 +13,16 @@ package org.eclipse.wst.jsdt.internal.ui.text.correction;
 import java.util.Collection;
 
 import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
-
+import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
 import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 
 
 public class TypeParameterMismatchSubProcessor {

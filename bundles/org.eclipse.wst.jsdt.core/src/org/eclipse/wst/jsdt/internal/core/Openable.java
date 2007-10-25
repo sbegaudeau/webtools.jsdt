@@ -14,11 +14,23 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.PerformanceStats;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.BufferChangedEvent;
+import org.eclipse.wst.jsdt.core.CompletionRequestor;
+import org.eclipse.wst.jsdt.core.IBuffer;
+import org.eclipse.wst.jsdt.core.IBufferChangedListener;
+import org.eclipse.wst.jsdt.core.IBufferFactory;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IOpenable;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.internal.codeassist.CompletionEngine;
 import org.eclipse.wst.jsdt.internal.codeassist.SelectionEngine;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
@@ -50,7 +62,7 @@ public void bufferChanged(BufferChangedEvent event) {
 	} else {
 		JavaModelManager.getJavaModelManager().getElementsOutOfSynchWithBuffers().add(this);
 	}
-}	
+}
 /**
  * Builds this element's structure and properties in the given
  * info object, based on this element's current contents (reuse buffer
@@ -136,10 +148,10 @@ protected IJavaElement[] codeSelect(org.eclipse.wst.jsdt.internal.compiler.env.I
 	if(performanceStats != null) {
 		performanceStats.startRun(new String(cu.getFileName()) + " at [" + offset + "," + length + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
-	
+
 	JavaProject project = (JavaProject)getJavaProject();
 	SearchableEnvironment environment = newSearchableNameEnvironment(owner);
-	
+
 	SelectionRequestor requestor= new SelectionRequestor(environment.nameLookup, this);
 	IBuffer buffer = getBuffer();
 	if (buffer == null) {
@@ -153,7 +165,7 @@ protected IJavaElement[] codeSelect(org.eclipse.wst.jsdt.internal.compiler.env.I
 	// fix for 1FVXGDK
 	SelectionEngine engine = new SelectionEngine(environment, requestor, project.getOptions(true));
 	engine.select(cu, offset, offset + length - 1);
-	
+
 	if(performanceStats != null) {
 		performanceStats.endRun();
 	}
@@ -213,10 +225,10 @@ protected void generateInfos(Object info, HashMap newElements, IProgressMonitor 
 		}
 		System.out.println(Thread.currentThread() +" OPENING " + element + " " + this.toStringWithAncestors()); //$NON-NLS-1$//$NON-NLS-2$
 	}
-	
+
 	// open the parent if necessary
 	openParent(info, newElements, monitor);
-	if (monitor != null && monitor.isCanceled()) 
+	if (monitor != null && monitor.isCanceled())
 		throw new OperationCanceledException();
 
 	 // puts the info before building the structure so that questions to the handle behave as if the element existed
@@ -232,7 +244,7 @@ protected void generateInfos(Object info, HashMap newElements, IProgressMonitor 
 		newElements.remove(this);
 		throw e;
 	}
-	
+
 	// remove out of sync buffer for this element
 	JavaModelManager.getJavaModelManager().getElementsOutOfSynchWithBuffers().remove(this);
 
@@ -246,7 +258,7 @@ protected void generateInfos(Object info, HashMap newElements, IProgressMonitor 
  * is the first time a request is being made for the buffer, an attempt is
  * made to create and fill this element's buffer. If the buffer has been
  * closed since it was first opened, the buffer is re-created.
- * 
+ *
  * @see IOpenable
  */
 public IBuffer getBuffer() throws JavaModelException {
@@ -293,7 +305,7 @@ public IResource getCorrespondingResource() throws JavaModelException {
  * @see IJavaElement
  */
 public IOpenable getOpenable() {
-	return this;	
+	return this;
 }
 
 
@@ -331,7 +343,7 @@ protected boolean hasBuffer() {
  * @see IOpenable
  */
 public boolean hasUnsavedChanges() throws JavaModelException{
-	
+
 	if (isReadOnly() || !isOpen()) {
 		return false;
 	}
@@ -357,7 +369,7 @@ public boolean hasUnsavedChanges() throws JavaModelException{
 			}
 		}
 	}
-	
+
 	return false;
 }
 /**
@@ -369,7 +381,7 @@ public boolean isConsistent() {
 	return true;
 }
 /**
- * 
+ *
  * @see IOpenable
  */
 public boolean isOpen() {
@@ -426,10 +438,10 @@ protected void openParent(Object childInfo, HashMap newElements, IProgressMonito
 
 /**
  *  Answers true if the parent exists (null parent is answering true)
- * 
+ *
  */
 protected boolean parentExists(){
-	
+
 	IJavaElement parentElement = getParent();
 	if (parentElement == null) return true;
 	return parentElement.exists();
@@ -441,9 +453,9 @@ protected boolean parentExists(){
 protected boolean resourceExists() {
 	IWorkspace workspace = ResourcesPlugin.getWorkspace();
 	if (workspace == null) return false; // workaround for http://bugs.eclipse.org/bugs/show_bug.cgi?id=34069
-	return 
+	return
 		JavaModel.getTarget(
-			workspace.getRoot(), 
+			workspace.getRoot(),
 			this.getPath().makeRelative(), // ensure path is relative (see http://dev.eclipse.org/bugs/show_bug.cgi?id=22517)
 			true) != null;
 }

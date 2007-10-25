@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.nls;
 
 import org.eclipse.jface.text.Region;
-
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 
 

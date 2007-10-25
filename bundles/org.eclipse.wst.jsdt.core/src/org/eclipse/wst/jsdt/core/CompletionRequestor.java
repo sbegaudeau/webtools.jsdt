@@ -47,7 +47,7 @@ import org.eclipse.wst.jsdt.core.compiler.IProblem;
  * The class was introduced in 3.0 as a more evolvable replacement
  * for the <code>ICompletionRequestor</code> interface.
  * </p>
- * 
+ *
  * @see ICodeAssist
  * @since 3.0
  */
@@ -59,9 +59,9 @@ public abstract class CompletionRequestor {
 	 * 1 << completionProposalKind
 	 */
 	private int ignoreSet = 0;
-	
+
 	private String[] favoriteReferences;
-	
+
 	/**
 	 * The set of CompletionProposal kinds that this requestor
 	 * allows for required proposals; <code>0</code> means the set is empty.
@@ -80,7 +80,7 @@ public abstract class CompletionRequestor {
 
 	/**
 	 * Returns whether the given kind of completion proposal is ignored.
-	 * 
+	 *
 	 * @param completionProposalKind one of the kind constants declared
 	 * on <code>CompletionProposal</code>
 	 * @return <code>true</code> if the given kind of completion proposal
@@ -96,10 +96,10 @@ public abstract class CompletionRequestor {
 		}
 		return 0 != (this.ignoreSet & (1 << completionProposalKind));
 	}
-	
+
 	/**
 	 * Sets whether the given kind of completion proposal is ignored.
-	 * 
+	 *
 	 * @param completionProposalKind one of the kind constants declared
 	 * on <code>CompletionProposal</code>
 	 * @param ignore <code>true</code> if the given kind of completion proposal
@@ -119,16 +119,16 @@ public abstract class CompletionRequestor {
 			this.ignoreSet &= ~(1 << completionProposalKind);
 		}
 	}
-	
+
 	/**
 	 * Returns whether a proposal of a given kind with a required proposal
 	 * of the given kind is allowed.
-	 * 
+	 *
 	 * @param proposalKind one of the kind constants declared
 	 * @param requiredProposalKind one of the kind constants declared
 	 * on <code>CompletionProposal</code>
 	 * @return <code>true</code> if a proposal of a given kind with a required proposal
-	 * of the given kind is allowed by this requestor, and <code>false</code> 
+	 * of the given kind is allowed by this requestor, and <code>false</code>
 	 * if it isn't of interest.
 	 * <p>
 	 * By default, all kinds of required proposals aren't allowed.
@@ -136,7 +136,7 @@ public abstract class CompletionRequestor {
 	 * @see #setAllowsRequiredProposals(int, int, boolean)
 	 * @see CompletionProposal#getKind()
 	 * @see CompletionProposal#getRequiredProposals()
-	 * 
+	 *
 	 * @since 3.3
 	 */
 	public boolean isAllowingRequiredProposals(int proposalKind, int requiredProposalKind) {
@@ -144,34 +144,34 @@ public abstract class CompletionRequestor {
 			|| proposalKind > CompletionProposal.LAST_KIND) {
 				throw new IllegalArgumentException("Unknown kind of completion proposal: "+requiredProposalKind); //$NON-NLS-1$
 			}
-		
+
 		if (requiredProposalKind < CompletionProposal.FIRST_KIND
 			|| requiredProposalKind > CompletionProposal.LAST_KIND) {
 				throw new IllegalArgumentException("Unknown required kind of completion proposal: "+requiredProposalKind); //$NON-NLS-1$
 		}
 		if (this.requiredProposalAllowSet == null) return false;
-		
+
 		return 0 != (this.requiredProposalAllowSet[proposalKind] & (1 << requiredProposalKind));
 	}
-	
+
 	/**
 	 * Sets whether a proposal of a given kind with a required proposal
 	 * of the given kind is allowed.
-	 * 
+	 *
 	 * Currently only a subset of kinds support required proposals. To see what combinations
 	 * are supported you must look at {@link CompletionProposal#getRequiredProposals()}
 	 * documentation.
-	 * 
+	 *
 	 * @param proposalKind one of the kind constants declared
 	 * @param requiredProposalKind one of the kind constants declared
 	 * on <code>CompletionProposal</code>
 	 * @param allow <code>true</code> if a proposal of a given kind with a required proposal
-	 * of the given kind is allowed by this requestor, and <code>false</code> 
+	 * of the given kind is allowed by this requestor, and <code>false</code>
 	 * if it isn't of interest
 	 * @see #isAllowingRequiredProposals(int, int)
 	 * @see CompletionProposal#getKind()
 	 * @see CompletionProposal#getRequiredProposals()
-	 * 
+	 *
 	 * @since 3.3
 	 */
 	public void setAllowsRequiredProposals(int proposalKind, int requiredProposalKind, boolean allow) {
@@ -183,18 +183,18 @@ public abstract class CompletionRequestor {
 			|| requiredProposalKind > CompletionProposal.LAST_KIND) {
 				throw new IllegalArgumentException("Unknown required kind of completion proposal: "+requiredProposalKind); //$NON-NLS-1$
 		}
-		
+
 		if (this.requiredProposalAllowSet == null) {
 			this.requiredProposalAllowSet = new int[CompletionProposal.LAST_KIND + 1];
 		}
-		
+
 		if (allow) {
 			this.requiredProposalAllowSet[proposalKind] |= (1 << requiredProposalKind);
 		} else {
 			this.requiredProposalAllowSet[proposalKind] &= ~(1 << requiredProposalKind);
 		}
 	}
-	
+
 	/**
 	 * Returns the favorite references which are used to compute some completion proposals.
 	 * <p>
@@ -211,27 +211,27 @@ public abstract class CompletionRequestor {
 	 * Other kind of reference could be used in the future.
 	 * </p>
 	 * @return favorite imports
-	 * 
+	 *
 	 * @since 3.3
 	 */
 	public String[] getFavoriteReferences() {
 		return this.favoriteReferences;
 	}
-	
+
 	/**
 	 * Set the favorite references which will be used to compute some completion proposals.
 	 * A favorite reference is a qualified reference as it can be seen in an import statement.<br>
-	 * 
+	 *
 	 * @param favoriteImports
-	 * 
+	 *
 	 * @see #getFavoriteReferences()
-	 * 
+	 *
 	 * @since 3.3
 	 */
 	public void setFavoriteReferences(String[] favoriteImports) {
 		this.favoriteReferences = favoriteImports;
 	}
-	
+
 	/**
 	 * Pro forma notification sent before reporting a batch of
 	 * completion proposals.
@@ -263,7 +263,7 @@ public abstract class CompletionRequestor {
 	 * The default implementation of this method does nothing.
 	 * Clients may override to receive this kind of notice.
 	 * </p>
-	 * 
+	 *
 	 * @param problem the problem object
 	 */
 	public void completionFailure(IProblem problem) {
@@ -276,17 +276,17 @@ public abstract class CompletionRequestor {
 	 * checking {@link #isIgnored(int)} before avoid creating proposal
 	 * objects that would only be ignored.
 	 * <p>
-	 * Similarly, implementers should check 
-	 * {@link #isIgnored(int) isIgnored(proposal.getKind())} 
+	 * Similarly, implementers should check
+	 * {@link #isIgnored(int) isIgnored(proposal.getKind())}
 	 * and ignore proposals that have been declared as uninteresting.
 	 * The proposal object passed is only valid for the duration of
 	 * completion operation.
-	 * 
+	 *
 	 * @param proposal the completion proposal
 	 * @exception IllegalArgumentException if the proposal is null
 	 */
 	public abstract void accept(CompletionProposal proposal);
-	
+
 	/**
 	 * Propose the context in which the completion occurs.
 	 * <p>
@@ -296,7 +296,7 @@ public abstract class CompletionRequestor {
 	 * Clients may override.
 	 * </p>
 	 * @param context the completion context
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	public void acceptContext(CompletionContext context) {

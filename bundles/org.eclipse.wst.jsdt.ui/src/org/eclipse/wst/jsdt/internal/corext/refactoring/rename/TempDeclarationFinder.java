@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.refactoring.rename;
 
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.Region;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
@@ -17,10 +19,6 @@ import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
-
-import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.Region;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.Selection;
 import org.eclipse.wst.jsdt.internal.corext.dom.SelectionAnalyzer;
 

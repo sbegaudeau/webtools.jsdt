@@ -11,9 +11,7 @@
 package org.eclipse.wst.jsdt.internal.ui.viewsupport;
 
 import org.eclipse.jface.text.ITextSelection;
-
 import org.eclipse.ui.IEditorPart;
-
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 
 /**

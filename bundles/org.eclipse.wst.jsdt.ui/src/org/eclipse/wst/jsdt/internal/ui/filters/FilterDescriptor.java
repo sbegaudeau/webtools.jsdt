@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.filters;
 
-import com.ibm.icu.text.Collator;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -23,16 +21,14 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
-
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.ViewerFilter;
-
 import org.eclipse.ui.IPluginContribution;
 import org.eclipse.ui.activities.WorkbenchActivityHelper;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
 import org.eclipse.wst.jsdt.ui.JavaUI;
+
+import com.ibm.icu.text.Collator;
 
 /**
  * Represents a custom filter which is provided by the

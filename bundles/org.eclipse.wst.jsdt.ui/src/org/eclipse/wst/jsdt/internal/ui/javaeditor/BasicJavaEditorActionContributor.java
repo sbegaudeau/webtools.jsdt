@@ -20,7 +20,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -31,13 +30,11 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.RetargetTextEditorAction;
-
-import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
-
 import org.eclipse.wst.jsdt.internal.ui.actions.CopyQualifiedNameAction;
 import org.eclipse.wst.jsdt.internal.ui.actions.FoldingActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.selectionactions.GoToNextPreviousMemberAction;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.selectionactions.StructureSelectionAction;
+import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
 
 /**
  * Common base class for action contributors for Java editors.

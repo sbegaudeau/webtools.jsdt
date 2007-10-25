@@ -10,24 +10,21 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.text;
 
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.util.PropertyChangeEvent;
-
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.text.java.JavaCompletionProcessor;
+import org.eclipse.wst.jsdt.internal.ui.text.javadoc.JavadocCompletionProcessor;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.IColorManager;
 import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
 import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.internal.ui.text.java.JavaCompletionProcessor;
-import org.eclipse.wst.jsdt.internal.ui.text.javadoc.JavadocCompletionProcessor;
 
 
 public class ContentAssistPreference {

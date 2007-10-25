@@ -10,36 +10,27 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui;
 
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IAdapterFactory;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.ResourceMapping;
-
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IAdapterFactory;
+import org.eclipse.search.ui.ISearchPageScoreComputer;
+import org.eclipse.team.ui.history.IHistoryPageSource;
 import org.eclipse.ui.IContainmentAdapter;
 import org.eclipse.ui.IContributorResourceAdapter;
 import org.eclipse.ui.IPersistableElement;
+import org.eclipse.ui.ide.IContributorResourceAdapter2;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-
 import org.eclipse.ui.views.properties.FilePropertySource;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.ResourcePropertySource;
 import org.eclipse.ui.views.tasklist.ITaskListResourceAdapter;
-
-import org.eclipse.ui.ide.IContributorResourceAdapter2;
-
-import org.eclipse.search.ui.ISearchPageScoreComputer;
-
-import org.eclipse.team.ui.history.IHistoryPageSource;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JavaElementResourceMapping;
-
 import org.eclipse.wst.jsdt.internal.ui.compare.JavaElementHistoryPageSource;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.IClassFileEditorInput;
 import org.eclipse.wst.jsdt.internal.ui.search.JavaSearchPageScoreComputer;

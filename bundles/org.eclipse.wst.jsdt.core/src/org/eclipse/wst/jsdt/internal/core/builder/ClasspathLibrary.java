@@ -11,20 +11,16 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.builder;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.*;
+import java.io.File;
+import java.util.Date;
 
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileReader;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
 import org.eclipse.wst.jsdt.internal.compiler.env.NameEnvironmentAnswer;
-import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
-import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
-
-import java.io.*;
-import java.util.*;
-import java.util.zip.*;
 
 public class ClasspathLibrary extends ClasspathLocation {
 
@@ -49,7 +45,7 @@ ClasspathLibrary(IFile resource, AccessRuleSet accessRuleSet) {
 		}
 	} catch (CoreException e) {
 		// ignore
-	}	
+	}
 	this.knownPackageNames = null;
 	this.accessRuleSet = accessRuleSet;
 }

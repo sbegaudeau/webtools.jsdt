@@ -13,7 +13,15 @@ package org.eclipse.wst.jsdt.internal.core.hierarchy;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IOpenable;
+import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.IRegion;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.internal.core.CompilationUnit;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
@@ -26,7 +34,7 @@ public class RegionBasedTypeHierarchy extends TypeHierarchy {
 	 * The region of types for which to build the hierarchy
 	 */
 	protected IRegion region;
-	
+
 /**
  * Creates a TypeHierarchy on the types in the specified region,
  * considering first the given working copies,
@@ -36,7 +44,7 @@ public class RegionBasedTypeHierarchy extends TypeHierarchy {
  */
 public RegionBasedTypeHierarchy(IRegion region, ICompilationUnit[] workingCopies, IType type, boolean computeSubtypes) {
 	super(type, workingCopies, (IJavaSearchScope)null, computeSubtypes);
-	
+
 	Region newRegion = new Region() {
 		public void add(IJavaElement element) {
 			if (!contains(element)) {
@@ -44,7 +52,7 @@ public RegionBasedTypeHierarchy(IRegion region, ICompilationUnit[] workingCopies
 				removeAllChildren(element);
 				fRootElements.add(element);
 				if (element.getElementType() == IJavaElement.JAVA_PROJECT) {
-					// add jar roots as well so that jars don't rely on their parent to know 
+					// add jar roots as well so that jars don't rely on their parent to know
 					// if they are contained in the region
 					// (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=146615)
 					try {
@@ -64,7 +72,7 @@ public RegionBasedTypeHierarchy(IRegion region, ICompilationUnit[] workingCopies
 	IJavaElement[] elements = region.getElements();
 	for (int i = 0, length = elements.length; i < length; i++) {
 		newRegion.add(elements[i]);
-		
+
 	}
 	this.region = newRegion;
 	if (elements.length > 0)

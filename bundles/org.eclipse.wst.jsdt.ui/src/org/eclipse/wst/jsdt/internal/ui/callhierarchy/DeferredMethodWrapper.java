@@ -14,10 +14,10 @@ package org.eclipse.wst.jsdt.internal.ui.callhierarchy;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
+import org.eclipse.ui.progress.IElementCollector;
 import org.eclipse.wst.jsdt.internal.corext.callhierarchy.MethodWrapper;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.ui.progress.IElementCollector;
-import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 
 public class DeferredMethodWrapper extends MethodWrapperWorkbenchAdapter implements IDeferredWorkbenchAdapter {
     private final CallHierarchyContentProvider fProvider;

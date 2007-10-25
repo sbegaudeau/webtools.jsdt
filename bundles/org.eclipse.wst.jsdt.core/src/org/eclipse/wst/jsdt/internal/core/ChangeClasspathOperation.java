@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -31,7 +31,7 @@ public abstract class ChangeClasspathOperation extends JavaModelOperation {
 		// changing the classpath can modify roots
 		return true;
 	}
-	
+
 	/*
 	 * The resolved classpath of the given project may have changed:
 	 * - generate a delta
@@ -48,8 +48,8 @@ public abstract class ChangeClasspathOperation extends JavaModelOperation {
 			if (isTopLevelOperation() && !ResourcesPlugin.getWorkspace().isTreeLocked()) {
 				new ClasspathValidation(project).validate();
 			}
-				
-			// delta, indexing and classpath markers are going to be created by the delta processor 
+
+			// delta, indexing and classpath markers are going to be created by the delta processor
 			// while handling the .classpath file change
 
 			// however ensure project references are updated
@@ -61,10 +61,10 @@ public abstract class ChangeClasspathOperation extends JavaModelOperation {
 			if ((result & ClasspathChange.HAS_DELTA) != 0) {
 				// create delta
 				addDelta(delta);
-				
+
 				// ensure indexes are updated
 				change.requestIndexing();
-				
+
 				// ensure classpath is validated on next build
 				state.addClasspathValidation(project);
 			}
@@ -78,7 +78,7 @@ public abstract class ChangeClasspathOperation extends JavaModelOperation {
 	protected ISchedulingRule getSchedulingRule() {
 		return null; // no lock taken while changing classpath
 	}
-	
+
 	public boolean isReadOnly() {
 		return !this.canChangeResources;
 	}

@@ -10,19 +10,16 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.text.template.preferences;
 
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.dialogs.MessageDialog;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.templates.TemplateVariableResolver;
-
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 /**

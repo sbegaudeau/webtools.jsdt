@@ -12,21 +12,16 @@ package org.eclipse.wst.jsdt.internal.ui.refactoring.reorg;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-
-import org.eclipse.wst.jsdt.core.IMethod;
-
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.dialogs.MessageDialog;
-
+import org.eclipse.ltk.core.refactoring.Refactoring;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameVirtualMethodProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.JavaElementUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.ltk.core.refactoring.Refactoring;
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 
 public class RenameMethodUserInterfaceStarter extends RenameUserInterfaceStarter {
 	

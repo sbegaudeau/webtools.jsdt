@@ -17,13 +17,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
-
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
@@ -46,7 +43,6 @@ import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.Statement;
-
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.MethodChecks;
@@ -55,7 +51,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ReorgUtils;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.JavaElementUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
-
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaTextSelection;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.actions.RefactoringActions;
 

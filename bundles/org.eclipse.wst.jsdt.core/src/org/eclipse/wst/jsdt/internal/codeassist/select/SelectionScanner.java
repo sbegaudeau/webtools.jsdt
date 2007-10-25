@@ -22,12 +22,12 @@ public class SelectionScanner extends Scanner {
 
 	public char[] selectionIdentifier;
 	public int selectionStart, selectionEnd;
-/* 
+/*
  * Truncate the current identifier if it is containing the cursor location. Since completion is performed
  * on an identifier prefix.
  *
  */
- 
+
 public SelectionScanner(long sourceLevel) {
 	super(false /*comment*/, false /*whitespace*/, false /*nls*/, sourceLevel, null /*taskTags*/, null/*taskPriorities*/, true/*taskCaseSensitive*/);
 }
@@ -40,7 +40,7 @@ public char[] getCurrentIdentifierSource() {
 				System.arraycopy(withoutUnicodeBuffer, 1, selectionIdentifier = new char[withoutUnicodePtr], 0, withoutUnicodePtr);
 			} else {
 				int length = currentPosition - startPosition;
-				// no char[] sharing around completionIdentifier, we want it to be unique so as to use identity checks	
+				// no char[] sharing around completionIdentifier, we want it to be unique so as to use identity checks
 				System.arraycopy(source, startPosition, (selectionIdentifier = new char[length]), 0, length);
 			}
 			return selectionIdentifier;
@@ -58,7 +58,7 @@ public int scanIdentifierOrKeyword() {
 
 	// convert completed keyword into an identifier
 	if (id != TokenNameIdentifier
-		&& startPosition == selectionStart 
+		&& startPosition == selectionStart
 		&& currentPosition == selectionEnd+1){
 		return TokenNameIdentifier;
 	}

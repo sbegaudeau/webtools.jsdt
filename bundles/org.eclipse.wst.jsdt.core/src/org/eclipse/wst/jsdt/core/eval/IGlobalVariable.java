@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.core.eval;
 /**
  * A global variable declared in an evaluation context.
  * <p>
- * This interface is not intended to be implemented by clients. 
+ * This interface is not intended to be implemented by clients.
  * <code>IEvaluationContext.newVariable</code> can be used to obtain an instance.
  * </p>
  *
@@ -21,7 +21,7 @@ package org.eclipse.wst.jsdt.core.eval;
  */
 public interface IGlobalVariable {
 /**
- * Returns the initializer of this global variable. 
+ * Returns the initializer of this global variable.
  * The syntax for an initializer corresponds to VariableInitializer (JLS2 8.3).
  *
  * @return the initializer expression, or <code>null</code> if this global does
@@ -36,7 +36,7 @@ public String getInitializer();
 public String getName();
 /**
  * Returns the fully qualified name of the type of this global
- * variable, or its simple representation if it is a primitive type 
+ * variable, or its simple representation if it is a primitive type
  * (<code>int</code>, <code>boolean</code>, etc.).
  * <p>
  * The syntax for a type name corresponds to Type in Field Declaration (JLS2 8.3).

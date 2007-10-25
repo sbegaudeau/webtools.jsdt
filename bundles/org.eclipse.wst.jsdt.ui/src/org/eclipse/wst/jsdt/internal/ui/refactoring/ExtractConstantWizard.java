@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.refactoring;
 
-import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -22,19 +25,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.jface.resource.ImageDescriptor;
-
 import org.eclipse.ui.PlatformUI;
-
+import org.eclipse.wst.jsdt.core.Flags;
+import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.ExtractConstantRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
-
-import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist.ControlContentAssistHelper;
@@ -42,9 +37,7 @@ import org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist.VariableNamesP
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.RowLayouter;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
-
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
+import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
 
 public class ExtractConstantWizard extends RefactoringWizard {
 

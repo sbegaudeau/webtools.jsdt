@@ -14,10 +14,7 @@ import java.util.Collection;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
-
-
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
-
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 
 /**

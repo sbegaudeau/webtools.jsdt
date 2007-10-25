@@ -11,7 +11,9 @@
 package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.IImportDeclaration;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.JavaModelException;
 
 /**
  * Handle for an import declaration. Info object is a ImportDeclarationElementInfo.
@@ -22,7 +24,7 @@ public class ImportDeclaration extends SourceRefElement implements IImportDeclar
 
 	protected String name;
 	protected boolean isOnDemand;
-	
+
 /**
  * Constructs an ImportDeclaration in the given import container
  * with the given name.

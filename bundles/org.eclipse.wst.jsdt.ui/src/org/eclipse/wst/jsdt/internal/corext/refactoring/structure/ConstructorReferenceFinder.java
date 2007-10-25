@@ -15,12 +15,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-
-import org.eclipse.core.resources.IResource;
-
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.IType;
@@ -42,7 +41,6 @@ import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringScopeFactory;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringSearchEngine;
@@ -51,8 +49,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.JavaElementUtil;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParser;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.corext.util.SearchUtils;
-
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 
 /**
  * This class is used to find references to constructors.

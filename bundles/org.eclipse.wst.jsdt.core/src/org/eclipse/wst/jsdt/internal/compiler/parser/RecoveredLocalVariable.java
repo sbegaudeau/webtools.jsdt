@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.parser;
 
-/** 
- * Internal local variable structure for parsing recovery 
+/**
+ * Internal local variable structure for parsing recovery
  */
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference;
@@ -31,7 +31,7 @@ public RecoveredLocalVariable(LocalDeclaration localDeclaration, RecoveredElemen
 	this.alreadyCompletedLocalInitialization = localDeclaration.initialization != null;
 }
 /*
- * Record an expression statement if local variable is expecting an initialization expression. 
+ * Record an expression statement if local variable is expecting an initialization expression.
  */
 public RecoveredElement add(Statement stmt, int bracketBalanceValue) {
 
@@ -45,7 +45,7 @@ public RecoveredElement add(Statement stmt, int bracketBalanceValue) {
 		return this;
 	}
 }
-/* 
+/*
  * Answer the associated parsed structure
  */
 public ASTNode parseTree(){
@@ -85,15 +85,15 @@ public RecoveredElement updateOnClosingBrace(int braceStart, int braceEnd){
  * in which case the bodyStart is updated.
  */
 public RecoveredElement updateOnOpeningBrace(int braceStart, int braceEnd){
-	if (localDeclaration.declarationSourceEnd == 0 
+	if (localDeclaration.declarationSourceEnd == 0
 		&& (localDeclaration.type instanceof ArrayTypeReference || localDeclaration.type instanceof ArrayQualifiedTypeReference)
 		&& !alreadyCompletedLocalInitialization){
 		bracketBalance++;
 		return null; // no update is necessary	(array initializer)
 	}
 	// might be an array initializer
-	this.updateSourceEndIfNecessary(braceStart - 1, braceEnd - 1);	
-	return this.parent.updateOnOpeningBrace(braceStart, braceEnd);	
+	this.updateSourceEndIfNecessary(braceStart - 1, braceEnd - 1);
+	return this.parent.updateOnOpeningBrace(braceStart, braceEnd);
 }
 public void updateParseTree(){
 	this.updatedStatement();
@@ -104,7 +104,7 @@ public void updateParseTree(){
 public void updateSourceEndIfNecessary(int bodyStart, int bodyEnd){
 	if (this.localDeclaration.declarationSourceEnd == 0) {
 		this.localDeclaration.declarationSourceEnd = bodyEnd;
-		this.localDeclaration.declarationEnd = bodyEnd;	
+		this.localDeclaration.declarationEnd = bodyEnd;
 	}
 }
 

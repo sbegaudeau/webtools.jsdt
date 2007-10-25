@@ -12,26 +12,21 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.viewers.ISelection;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.source.ISourceViewer;
-
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.IUpdate;
-
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-
 import org.eclipse.wst.jsdt.internal.ui.text.java.CompletionProposalCategory;
 import org.eclipse.wst.jsdt.internal.ui.text.java.CompletionProposalComputerRegistry;
+import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
 
 /**
  * Action to run content assist on a specific proposal category.

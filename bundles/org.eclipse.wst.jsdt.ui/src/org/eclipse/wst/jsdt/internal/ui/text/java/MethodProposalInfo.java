@@ -22,7 +22,6 @@ import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
-
 import org.eclipse.wst.jsdt.internal.corext.template.java.SignatureUtil;
 
 

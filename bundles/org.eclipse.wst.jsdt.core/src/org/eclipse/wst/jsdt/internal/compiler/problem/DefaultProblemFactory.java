@@ -15,7 +15,8 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.eclipse.wst.jsdt.core.compiler.*;
+import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.internal.compiler.IProblemFactory;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfInt;
@@ -61,26 +62,26 @@ public DefaultProblemFactory(Locale loc) {
  * @return CategorizedProblem
  */
 public CategorizedProblem createProblem(
-	char[] originatingFileName, 
-	int problemId, 
-	String[] problemArguments, 
-	String[] messageArguments, 
-	int severity, 
-	int startPosition, 
-	int endPosition, 
+	char[] originatingFileName,
+	int problemId,
+	String[] problemArguments,
+	String[] messageArguments,
+	int severity,
+	int startPosition,
+	int endPosition,
 	int lineNumber,
 	int columnNumber) {
 
 	return new DefaultProblem(
-		originatingFileName, 
+		originatingFileName,
 		this.getLocalizedMessage(problemId, messageArguments),
-		problemId, 
-		problemArguments, 
-		severity, 
-		startPosition, 
-		endPosition, 
+		problemId,
+		problemArguments,
+		severity,
+		startPosition,
+		endPosition,
 		lineNumber,
-		columnNumber); 
+		columnNumber);
 }
 private final static int keyFromID(int id) {
     return id + 1; // keys are offsetted by one in table, since it cannot handle 0 key
@@ -106,7 +107,7 @@ public void setLocale(Locale locale) {
 }
 
 public final String getLocalizedMessage(int id, String[] problemArguments) {
-	String message = (String) this.messageTemplates.get(keyFromID(id & IProblem.IgnoreCategoriesMask)); 
+	String message = (String) this.messageTemplates.get(keyFromID(id & IProblem.IgnoreCategoriesMask));
 	if (message == null) {
 		return "Unable to retrieve the error message for problem id: " //$NON-NLS-1$
 			+ (id & IProblem.IgnoreCategoriesMask)
@@ -181,7 +182,7 @@ public static HashtableOfInt loadMessageTemplates(Locale loc) {
 	ResourceBundle bundle = null;
 	String bundleName = "org.eclipse.wst.jsdt.internal.compiler.problem.messages"; //$NON-NLS-1$
 	try {
-		bundle = ResourceBundle.getBundle(bundleName, loc); 
+		bundle = ResourceBundle.getBundle(bundleName, loc);
 	} catch(MissingResourceException e) {
 		System.out.println("Missing resource : " + bundleName.replace('.', '/') + ".properties for locale " + loc); //$NON-NLS-1$//$NON-NLS-2$
 		throw e;

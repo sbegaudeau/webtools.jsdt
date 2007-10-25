@@ -18,14 +18,14 @@ import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 
 /**
- * A compiler that compiles code snippets. 
+ * A compiler that compiles code snippets.
  */
 public class CodeSnippetCompiler extends Compiler {
-	
+
 	EvaluationContext evaluationContext;
 	int codeSnippetStart;
 	int codeSnippetEnd;
-	
+
 	/**
 	 * Creates a new code snippet compiler initialized with a code snippet parser.
 	 */
@@ -52,7 +52,7 @@ public class CodeSnippetCompiler extends Compiler {
 		this.parseThreshold = 1;
 		// fully parse only the code snippet compilation unit
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.compiler.Compiler#initializeParser()
 	 */

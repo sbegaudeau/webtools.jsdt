@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.structure.constraints;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.HierarchyType;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.TType;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2.ITypeSet;

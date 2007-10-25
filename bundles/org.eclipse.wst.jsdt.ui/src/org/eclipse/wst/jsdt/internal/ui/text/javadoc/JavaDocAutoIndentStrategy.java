@@ -14,7 +14,6 @@ package org.eclipse.wst.jsdt.internal.ui.text.javadoc;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultIndentLineAutoEditStrategy;
 import org.eclipse.jface.text.DocumentCommand;
@@ -23,13 +22,11 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TextUtilities;
-
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditorExtension3;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -38,18 +35,15 @@ import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.MethodOverrideTester;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
 import org.eclipse.wst.jsdt.internal.corext.util.SuperTypeHierarchyCache;
-
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.ui.CodeGeneration;
 import org.eclipse.wst.jsdt.ui.IWorkingCopyManager;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 
 /**

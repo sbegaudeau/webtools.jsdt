@@ -13,31 +13,27 @@ package org.eclipse.wst.jsdt.internal.ui.compare;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
-import org.eclipse.text.edits.MultiTextEdit;
-import org.eclipse.text.edits.TextEdit;
-
+import org.eclipse.compare.HistoryItem;
+import org.eclipse.compare.ITypedElement;
+import org.eclipse.compare.ResourceNode;
+import org.eclipse.core.filebuffers.ITextFileBuffer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFileState;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-
-import org.eclipse.core.filebuffers.ITextFileBuffer;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFileState;
-
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.RewriteSessionEditProcessor;
-
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.text.edits.MultiTextEdit;
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -45,11 +41,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
-
-import org.eclipse.compare.HistoryItem;
-import org.eclipse.compare.ITypedElement;
-import org.eclipse.compare.ResourceNode;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -64,10 +55,8 @@ import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;

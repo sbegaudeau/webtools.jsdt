@@ -14,11 +14,9 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
-
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 

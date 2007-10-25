@@ -11,13 +11,13 @@
 package org.eclipse.wst.jsdt.internal.ui;
 
 import org.eclipse.debug.ui.IDebugUIConstants;
-import org.eclipse.wst.jsdt.ui.JavaUI;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.progress.IProgressConstants;
+import org.eclipse.wst.jsdt.ui.JavaUI;
 
 public class JavaPerspectiveFactory implements IPerspectiveFactory {
 	

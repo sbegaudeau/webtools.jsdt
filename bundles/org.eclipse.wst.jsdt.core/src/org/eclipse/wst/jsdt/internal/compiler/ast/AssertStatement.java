@@ -10,26 +10,33 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
-import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
+import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.flow.UnconditionalFlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class AssertStatement extends Statement {
-	
+
 	public Expression assertExpression, exceptionArgument;
 
 	// for local variable attribute
 	int preAssertInitStateIndex = -1;
 	private FieldBinding assertionSyntheticFieldBinding;
-	
+
 	public AssertStatement(
 		Expression exceptionArgument,
 		Expression assertExpression,
 		int startPosition) {
-			
+
 		this.assertExpression = assertExpression;
 		this.exceptionArgument = exceptionArgument;
 		sourceStart = startPosition;
@@ -47,10 +54,10 @@ public class AssertStatement extends Statement {
 		BlockScope currentScope,
 		FlowContext flowContext,
 		FlowInfo flowInfo) {
-			
+
 //		preAssertInitStateIndex = currentScope.methodScope().recordInitializationStates(flowInfo);
 
-		Constant cst = this.assertExpression.optimizedBooleanConstant();		
+		Constant cst = this.assertExpression.optimizedBooleanConstant();
 		boolean isOptimizedTrueAssertion = cst != Constant.NotAConstant && cst.booleanValue() == true;
 		boolean isOptimizedFalseAssertion = cst != Constant.NotAConstant && cst.booleanValue() == false;
 
@@ -62,11 +69,11 @@ public class AssertStatement extends Statement {
 		if (isOptimizedTrueAssertion) {
 			assertInfo.setReachMode(FlowInfo.UNREACHABLE);
 		}
-		
+
 		if (exceptionArgument != null) {
 			// only gets evaluated when escaping - results are not taken into account
-			FlowInfo exceptionInfo = exceptionArgument.analyseCode(currentScope, flowContext, assertInfo.copy()); 
-			
+			FlowInfo exceptionInfo = exceptionArgument.analyseCode(currentScope, flowContext, assertInfo.copy());
+
 			if (!isOptimizedTrueAssertion){
 				flowContext.checkExceptionHandlers(
 					currentScope.getJavaLangAssertionError(),
@@ -75,7 +82,7 @@ public class AssertStatement extends Statement {
 					currentScope);
 			}
 		}
-		
+
 		if (!isOptimizedTrueAssertion){
 			// add the assert support in the clinit
 			manageSyntheticAccessIfNecessary(currentScope, flowInfo);
@@ -87,7 +94,7 @@ public class AssertStatement extends Statement {
 		} else {
 			return flowInfo.mergedWith(assertInfo.nullInfoLessUnconditionalCopy()).
 				addInitializationsFrom(assertWhenTrueInfo.discardInitializationInfo());
-			// keep the merge from the initial code for the definite assignment 
+			// keep the merge from the initial code for the definite assignment
 			// analysis, tweak the null part to influence nulls downstream
 		}
 	}
@@ -98,12 +105,12 @@ public class AssertStatement extends Statement {
 			return;
 		}
 		int pc = codeStream.position;
-	
+
 		if (this.assertionSyntheticFieldBinding != null) {
 			BranchLabel assertionActivationLabel = new BranchLabel(codeStream);
 			codeStream.getstatic(this.assertionSyntheticFieldBinding);
 			codeStream.ifne(assertionActivationLabel);
-			
+
 			BranchLabel falseLabel;
 			this.assertExpression.generateOptimizedBoolean(currentScope, codeStream, (falseLabel = new BranchLabel(codeStream)), null , true);
 			codeStream.newJavaLangAssertionError();
@@ -115,18 +122,18 @@ public class AssertStatement extends Statement {
 				codeStream.invokeJavaLangAssertionErrorDefaultConstructor();
 			}
 			codeStream.athrow();
-			
+
 			// May loose some local variable initializations : affecting the local variable attributes
 			if (preAssertInitStateIndex != -1) {
 				codeStream.removeNotDefinitelyAssignedVariables(currentScope, preAssertInitStateIndex);
-			}	
+			}
 			falseLabel.place();
 			assertionActivationLabel.place();
-		} else {			
+		} else {
 			// May loose some local variable initializations : affecting the local variable attributes
 			if (preAssertInitStateIndex != -1) {
 				codeStream.removeNotDefinitelyAssignedVariables(currentScope, preAssertInitStateIndex);
-			}			
+			}
 		}
 		codeStream.recordPositionsFrom(pc, this.sourceStart);
 	}
@@ -167,12 +174,12 @@ public class AssertStatement extends Statement {
 			}
 		}
 		visitor.endVisit(this, scope);
-	}	
-	
+	}
+
 	public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FlowInfo flowInfo) {
 
 		if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0) {
-    		
+
     		// need assertion flag: $assertionsDisabled on outer most source clas
     		// (in case of static member of interface, will use the outermost static member - bug 22334)
     		SourceTypeBinding outerMostClass = currentScope.enclosingSourceType();
@@ -181,9 +188,9 @@ public class AssertStatement extends Statement {
     			if (enclosing == null || enclosing.isInterface()) break;
     			outerMostClass = (SourceTypeBinding) enclosing;
     		}
-    
+
     		this.assertionSyntheticFieldBinding = outerMostClass.addSyntheticFieldForAssert(currentScope);
-    
+
     		// find <clinit> and enable assertion support
     		TypeDeclaration typeDeclaration = outerMostClass.classScope.referenceType();
     		AbstractMethodDeclaration[] methods = typeDeclaration.methods;
@@ -208,5 +215,5 @@ public class AssertStatement extends Statement {
 		}
 		return output.append(';');
 	}
-	
+
 }

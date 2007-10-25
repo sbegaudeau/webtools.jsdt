@@ -10,13 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.preferences;
 
-import org.eclipse.core.runtime.IStatus;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -24,17 +23,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-
-import org.eclipse.jface.dialogs.IDialogSettings;
-
-import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
-
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
-
+import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.eclipse.wst.jsdt.core.JavaCore;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusUtil;

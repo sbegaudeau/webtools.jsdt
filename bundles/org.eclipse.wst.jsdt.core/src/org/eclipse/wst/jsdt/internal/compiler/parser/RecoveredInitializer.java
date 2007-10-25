@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.parser;
 
-import org.eclipse.wst.jsdt.core.compiler.*;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
@@ -26,7 +26,7 @@ public class RecoveredInitializer extends RecoveredField implements TerminalToke
 	public RecoveredType[] localTypes;
 	public int localTypeCount;
 
-	public RecoveredBlock initializerBody;	
+	public RecoveredBlock initializerBody;
 
 public RecoveredInitializer(FieldDeclaration fieldDeclaration, RecoveredElement parent, int bracketBalance){
 	this(fieldDeclaration, parent, bracketBalance, null);
@@ -42,7 +42,7 @@ public RecoveredElement add(Block nestedBlockDeclaration, int bracketBalanceValu
 
 	/* default behavior is to delegate recording to parent if any,
 	do not consider elements passed the known end (if set)
-	it must be belonging to an enclosing element 
+	it must be belonging to an enclosing element
 	*/
 	if (fieldDeclaration.declarationSourceEnd > 0
 			&& nestedBlockDeclaration.sourceStart > fieldDeclaration.declarationSourceEnd){
@@ -68,7 +68,7 @@ public RecoveredElement add(FieldDeclaration newFieldDeclaration, int bracketBal
 	if ((newFieldDeclaration.modifiers & ~ClassFileConstants.AccFinal) != 0 /* local var can only be final */
 			|| (newFieldDeclaration.type == null) // initializer
 			|| ((fieldTypeName = newFieldDeclaration.type.getTypeName()).length == 1 // non void
-				&& CharOperation.equals(fieldTypeName[0], TypeBinding.VOID.sourceName()))){ 
+				&& CharOperation.equals(fieldTypeName[0], TypeBinding.VOID.sourceName()))){
 		if (this.parent == null) return this; // ignore
 		this.updateSourceEndIfNecessary(this.previousAvailableLineEnd(newFieldDeclaration.declarationSourceStart - 1));
 		return this.parent.add(newFieldDeclaration, bracketBalanceValue);
@@ -76,7 +76,7 @@ public RecoveredElement add(FieldDeclaration newFieldDeclaration, int bracketBal
 
 	/* default behavior is to delegate recording to parent if any,
 	do not consider elements passed the known end (if set)
-	it must be belonging to an enclosing element 
+	it must be belonging to an enclosing element
 	*/
 	if (this.fieldDeclaration.declarationSourceEnd > 0
 			&& newFieldDeclaration.declarationSourceStart > this.fieldDeclaration.declarationSourceEnd){
@@ -93,7 +93,7 @@ public RecoveredElement add(LocalDeclaration localDeclaration, int bracketBalanc
 
 	/* do not consider a type starting passed the type end (if set)
 		it must be belonging to an enclosing type */
-	if (fieldDeclaration.declarationSourceEnd != 0 
+	if (fieldDeclaration.declarationSourceEnd != 0
 			&& localDeclaration.declarationSourceStart > fieldDeclaration.declarationSourceEnd){
 		if (parent == null) return this; // ignore
 		return this.parent.add(localDeclaration, bracketBalanceValue);
@@ -102,7 +102,7 @@ public RecoveredElement add(LocalDeclaration localDeclaration, int bracketBalanc
 	Block block = new Block(0);
 	block.sourceStart = ((Initializer)fieldDeclaration).sourceStart;
 	RecoveredElement element = this.add(block, 1);
-	return element.add(localDeclaration, bracketBalanceValue);	
+	return element.add(localDeclaration, bracketBalanceValue);
 }
 /*
  * Record a statement - regular method should have been created a block body
@@ -111,7 +111,7 @@ public RecoveredElement add(Statement statement, int bracketBalanceValue) {
 
 	/* do not consider a statement starting passed the initializer end (if set)
 		it must be belonging to an enclosing type */
-	if (fieldDeclaration.declarationSourceEnd != 0 
+	if (fieldDeclaration.declarationSourceEnd != 0
 			&& statement.sourceStart > fieldDeclaration.declarationSourceEnd){
 		if (parent == null) return this; // ignore
 		return this.parent.add(statement, bracketBalanceValue);
@@ -120,13 +120,13 @@ public RecoveredElement add(Statement statement, int bracketBalanceValue) {
 	Block block = new Block(0);
 	block.sourceStart = ((Initializer)fieldDeclaration).sourceStart;
 	RecoveredElement element = this.add(block, 1);
-	return element.add(statement, bracketBalanceValue);	
+	return element.add(statement, bracketBalanceValue);
 }
 public RecoveredElement add(TypeDeclaration typeDeclaration, int bracketBalanceValue) {
 
 	/* do not consider a type starting passed the type end (if set)
 		it must be belonging to an enclosing type */
-	if (fieldDeclaration.declarationSourceEnd != 0 
+	if (fieldDeclaration.declarationSourceEnd != 0
 			&& typeDeclaration.declarationSourceStart > fieldDeclaration.declarationSourceEnd){
 		if (parent == null) return this; // ignore
 		return this.parent.add(typeDeclaration, bracketBalanceValue);
@@ -136,24 +136,24 @@ public RecoveredElement add(TypeDeclaration typeDeclaration, int bracketBalanceV
 		Block block = new Block(0);
 		block.sourceStart = ((Initializer)fieldDeclaration).sourceStart;
 		RecoveredElement element = this.add(block, 1);
-		return element.add(typeDeclaration, bracketBalanceValue);	
-	}	
+		return element.add(typeDeclaration, bracketBalanceValue);
+	}
 	if (localTypes == null) {
 		localTypes = new RecoveredType[5];
 		localTypeCount = 0;
 	} else {
 		if (localTypeCount == localTypes.length) {
 			System.arraycopy(
-				localTypes, 
-				0, 
-				(localTypes = new RecoveredType[2 * localTypeCount]), 
-				0, 
-				localTypeCount); 
+				localTypes,
+				0,
+				(localTypes = new RecoveredType[2 * localTypeCount]),
+				0,
+				localTypeCount);
 		}
 	}
 	RecoveredType element = new RecoveredType(typeDeclaration, this, bracketBalanceValue);
 	localTypes[localTypeCount++] = element;
-	
+
 	/* consider that if the opening brace was not found, it is there */
 	if (!foundOpeningBrace){
 		foundOpeningBrace = true;
@@ -180,7 +180,7 @@ public FieldDeclaration updatedFieldDeclaration(){
 		}
 		if (this.localTypeCount > 0) fieldDeclaration.bits |= ASTNode.HasLocalType;
 
-	}	
+	}
 	if (fieldDeclaration.sourceEnd == 0){
 		fieldDeclaration.sourceEnd = fieldDeclaration.declarationSourceEnd;
 	}

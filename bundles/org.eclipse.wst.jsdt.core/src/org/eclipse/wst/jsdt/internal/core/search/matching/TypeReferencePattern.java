@@ -16,30 +16,30 @@ import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 	public class TypeReferencePattern extends AndPattern {
-	
+
 	protected char[] qualification;
 	protected char[] simpleName;
-		
+
 	protected char[] currentCategory;
-	
+
 	/* Optimization: case where simpleName == null */
 	public int segmentsSize;
 	protected char[][] segments;
 	protected int currentSegment;
 
 	protected static char[][] CATEGORIES = { REF };
-	
+
 	public TypeReferencePattern(char[] qualification, char[] simpleName, int matchRule) {
 		this(matchRule);
-	
+
 		this.qualification = isCaseSensitive() ? qualification : CharOperation.toLowerCase(qualification);
 		this.simpleName = (isCaseSensitive() || isCamelCase())  ? simpleName : CharOperation.toLowerCase(simpleName);
-	
+
 		if (simpleName == null)
 			this.segments = this.qualification == null ? ONE_STAR_CHAR : CharOperation.splitOn('.', this.qualification);
 		else
 			this.segments = null;
-		
+
 		if (this.segments == null)
 			if (this.qualification == null)
 				this.segmentsSize =  0;
@@ -47,7 +47,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 				this.segmentsSize =  CharOperation.occurencesOf('.', this.qualification) + 1;
 		else
 			this.segmentsSize = this.segments.length;
-	
+
 		((InternalSearchPattern)this).mustResolve = true; // always resolve (in case of a simple name reference being a potential match)
 	}
 	/*
@@ -83,9 +83,9 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 	public char[] getIndexKey() {
 		if (this.simpleName != null)
 			return this.simpleName;
-	
+
 		// Optimization, eg. type reference is 'org.eclipse.wst.jsdt.core.*'
-		if (this.currentSegment >= 0) 
+		if (this.currentSegment >= 0)
 			return this.segments[this.currentSegment];
 		return null;
 	}
@@ -94,7 +94,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 	}
 	protected boolean hasNextQuery() {
 		if (this.segments == null) return false;
-	
+
 		// Optimization, eg. type reference is 'org.eclipse.wst.jsdt.core.*'
 		// if package has at least 4 segments, don't look at the first 2 since they are mostly
 		// redundant (eg. in 'org.eclipse.wst.jsdt.core.*' 'org.eclipse' is used all the time)
@@ -112,12 +112,12 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 	}
 	protected StringBuffer print(StringBuffer output) {
 		output.append("TypeReferencePattern: qualification<"); //$NON-NLS-1$
-		if (qualification != null) 
+		if (qualification != null)
 			output.append(qualification);
 		else
 			output.append("*"); //$NON-NLS-1$
 		output.append(">, type<"); //$NON-NLS-1$
-		if (simpleName != null) 
+		if (simpleName != null)
 			output.append(simpleName);
 		else
 			output.append("*"); //$NON-NLS-1$

@@ -16,14 +16,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
-
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.TreePath;
-
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.IWorkingSet;
-
 import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
 
 public class RemoveWorkingSetElementAction extends SelectionDispatchAction {

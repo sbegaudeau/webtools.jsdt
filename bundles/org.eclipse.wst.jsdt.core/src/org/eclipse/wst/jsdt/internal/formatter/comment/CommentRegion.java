@@ -15,17 +15,14 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.eclipse.core.runtime.Assert;
-
-import org.eclipse.text.edits.MalformedTreeException;
-import org.eclipse.text.edits.TextEdit;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultLineTracker;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ILineTracker;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Position;
-
+import org.eclipse.text.edits.MalformedTreeException;
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 import org.eclipse.wst.jsdt.internal.formatter.CodeFormatterVisitor;
 import org.eclipse.wst.jsdt.internal.formatter.DefaultCodeFormatterOptions;
@@ -33,7 +30,7 @@ import org.eclipse.wst.jsdt.internal.formatter.Scribe;
 
 /**
  * Comment region in a source code document.
- * 
+ *
  * @since 3.0
  */
 public class CommentRegion extends Position implements IHtmlTagDelimiters, IBorderAttributes, ICommentAttributes {
@@ -58,10 +55,10 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/** The lines in this comment region */
 	private final LinkedList fLines= new LinkedList();
-	
+
 	/** The formatting preferences */
 	protected final DefaultCodeFormatterOptions preferences;
-	
+
 	/** The comment ranges in this comment region */
 	private final LinkedList fRanges= new LinkedList();
 
@@ -76,7 +73,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Creates a new comment region.
-	 * 
+	 *
 	 * @param document the document which contains the comment region
 	 * @param position the position of this comment region in the document
 	 * @param formatter the given code formatter
@@ -87,7 +84,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 		this.preferences = formatter.preferences;
 		fDelimiter = this.preferences.line_separator;
 		fDocument= document;
-		
+
 		fTabSize= DefaultCodeFormatterOptions.SPACE == this.preferences.tab_char ? this.preferences.indentation_size : this.preferences.tab_size;
 
 		this.scribe = formatter.scribe;
@@ -120,7 +117,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Appends the comment range to this comment region.
-	 * 
+	 *
 	 * @param range comment range to append to this comment region
 	 */
 	protected final void append(final CommentRange range) {
@@ -129,7 +126,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Can the comment range be appended to the comment line?
-	 * 
+	 *
 	 * @param line comment line where to append the comment range
 	 * @param previous comment range which is the predecessor of the current
 	 *                comment range
@@ -148,7 +145,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Can the whitespace between the two comment ranges be formatted?
-	 * 
+	 *
 	 * @param previous previous comment range which was already formatted,
 	 *                can be <code>null</code>
 	 * @param next next comment range to be formatted
@@ -161,7 +158,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Formats the comment region with the given indentation level.
-	 * 
+	 *
 	 * @param indentationLevel the indentation level
 	 * @return the resulting text edit of the formatting process
 	 * @since 3.1
@@ -188,7 +185,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Formats this comment region.
-	 * 
+	 *
 	 * @param indentation the indentation of this comment region
 	 * @param width the maximal width of text in this comment region
 	 *                measured in average character widths
@@ -218,7 +215,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Returns the line delimiter used in this comment region.
-	 * 
+	 *
 	 * @return the line delimiter for this comment region
 	 */
 	protected final String getDelimiter() {
@@ -227,7 +224,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Returns the line delimiter used in this comment line break.
-	 * 
+	 *
 	 * @param predecessor the predecessor comment line after the line break
 	 * @param successor the successor comment line before the line break
 	 * @param previous the comment range after the line break
@@ -241,7 +238,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Returns the range delimiter for this comment range break.
-	 * 
+	 *
 	 * @param previous the previous comment range to the right of the range
 	 *                delimiter
 	 * @param next the next comment range to the left of the range delimiter
@@ -253,7 +250,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Returns the document of this comment region.
-	 * 
+	 *
 	 * @return the document of this region
 	 */
 	protected final IDocument getDocument() {
@@ -262,7 +259,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Returns the comment ranges in this comment region
-	 * 
+	 *
 	 * @return the comment ranges in this region
 	 */
 	protected final LinkedList getRanges() {
@@ -271,7 +268,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Returns the number of comment lines in this comment region.
-	 * 
+	 *
 	 * @return the number of lines in this comment region
 	 */
 	protected final int getSize() {
@@ -280,7 +277,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Returns the text of this comment region in the indicated range.
-	 * 
+	 *
 	 * @param position the offset of the comment range to retrieve in
 	 *                comment region coordinates
 	 * @param count the length of the comment range to retrieve
@@ -299,7 +296,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Does the border <code>border</code> exist?
-	 * 
+	 *
 	 * @param border the type of the border, must be a border attribute of
 	 *                <code>CommentRegion</code>
 	 * @return <code>true</code> iff this border exists,
@@ -311,7 +308,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Does the comment range consist of letters and digits only?
-	 * 
+	 *
 	 * @param range the comment range to text
 	 * @return <code>true</code> iff the comment range consists of letters
 	 *         and digits only, <code>false</code> otherwise
@@ -329,7 +326,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Does the comment range contain no letters and digits?
-	 * 
+	 *
 	 * @param range the comment range to text
 	 * @return <code>true</code> iff the comment range contains no letters
 	 *         and digits, <code>false</code> otherwise
@@ -347,7 +344,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Should blank lines be cleared during formatting?
-	 * 
+	 *
 	 * @return <code>true</code> iff blank lines should be cleared,
 	 *         <code>false</code> otherwise
 	 */
@@ -357,7 +354,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Is this comment region a single line region?
-	 * 
+	 *
 	 * @return <code>true</code> iff this region is single line,
 	 *         <code>false</code> otherwise
 	 */
@@ -367,7 +364,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Logs a text edit operation occurred during the formatting process
-	 * 
+	 *
 	 * @param change the changed text
 	 * @param position offset measured in comment region coordinates where
 	 *                to apply the changed text
@@ -403,7 +400,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Set the border type <code>border</code> to true.
-	 * 
+	 *
 	 * @param border the type of the border. Must be a border attribute of
 	 *                <code>CommentRegion</code>
 	 */
@@ -413,7 +410,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Returns the indentation of the given indentation level.
-	 * 
+	 *
 	 * @param indentationLevel the indentation level
 	 * @return the indentation of the given indentation level
 	 * @since 3.1
@@ -424,21 +421,21 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 		if (DefaultCodeFormatterOptions.SPACE == this.preferences.tab_char)
 			return replicate(" ", indentationLevel * this.preferences.tab_size); //$NON-NLS-1$
-		
+
 		if (DefaultCodeFormatterOptions.MIXED == this.preferences.tab_char) {
 			int tabSize= this.preferences.tab_size;
 			int indentSize= this.preferences.indentation_size;
 			int spaceEquivalents= indentationLevel * indentSize;
 			return replicate("\t", spaceEquivalents / tabSize) + replicate(" ", spaceEquivalents % tabSize); //$NON-NLS-1$ //$NON-NLS-2$
 		}
-		
+
 		Assert.isTrue(false);
 		return null;
 	}
-	
+
 	/**
 	 * Returns the given string n-times replicated.
-	 * 
+	 *
 	 * @param string the string
 	 * @param n n
 	 * @return the given string n-times replicated
@@ -453,7 +450,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Computes the equivalent indentation for a string
-	 * 
+	 *
 	 * @param reference the string to compute the indentation for
 	 * @return the indentation string
 	 */
@@ -463,7 +460,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Returns the length of the string in expanded characters.
-	 * 
+	 *
 	 * @param reference the string to get the length for
 	 * @return the length of the string in expanded characters
 	 */
@@ -473,7 +470,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Expands the given string's tabs according to the given tab size.
-	 * 
+	 *
 	 * @param string the string
 	 * @return the expanded string
 	 * @since 3.1
@@ -492,7 +489,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 				if (chars >= fTabSize)
 					chars= 0;
 			}
-		
+
 		}
 		return expanded.toString();
 	}
@@ -516,7 +513,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Wraps the comment ranges in this comment region into comment lines.
-	 * 
+	 *
 	 * @param width the maximal width of text in this comment region
 	 *                measured in average character widths
 	 */
@@ -566,7 +563,7 @@ public class CommentRegion extends Position implements IHtmlTagDelimiters, IBord
 
 	/**
 	 * Creates a new line for this region.
-	 * 
+	 *
 	 * @return a new line for this region
 	 * @since 3.1
 	 */

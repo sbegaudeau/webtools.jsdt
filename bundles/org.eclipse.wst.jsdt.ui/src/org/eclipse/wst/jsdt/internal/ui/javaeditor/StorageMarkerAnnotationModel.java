@@ -2,10 +2,7 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.Position;
-import org.eclipse.ui.texteditor.MarkerAnnotation;
-import org.eclipse.ui.texteditor.MarkerUtilities;
 import org.eclipse.ui.texteditor.ResourceMarkerAnnotationModel;
  
 

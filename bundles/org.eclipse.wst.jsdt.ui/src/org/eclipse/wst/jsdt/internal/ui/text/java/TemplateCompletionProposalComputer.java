@@ -18,26 +18,20 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.templates.TemplateContextType;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
-
 import org.eclipse.wst.jsdt.internal.corext.template.java.JavaContextType;
 import org.eclipse.wst.jsdt.internal.corext.template.java.JavaDocContextType;
-
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposalComputer;
-import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
-import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
-import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.TemplateEngine;
 import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.TemplateProposal;
+import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
+import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
+import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposalComputer;
+import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
 
 /**
  * 

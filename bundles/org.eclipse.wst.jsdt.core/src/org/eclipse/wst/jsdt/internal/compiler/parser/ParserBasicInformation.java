@@ -14,7 +14,7 @@ package org.eclipse.wst.jsdt.internal.compiler.parser;
  about the parser such as the number of rules in the grammar, the starting state, etc...*/
 public interface ParserBasicInformation {
 
-	int 
+	int
 
 
 
@@ -38,5 +38,5 @@ public interface ParserBasicInformation {
     EOLT_SYMBOL       = 55,
     ACCEPT_ACTION     = 7131,
     ERROR_ACTION      = 7132;
-	
+
 }

@@ -10,13 +10,32 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.text.edits.TextEdit;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IPackageFragment;
+import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
@@ -29,9 +48,6 @@ import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.text.edits.TextEdit;
 
 /**
  * This operation copies/moves/renames a collection of resources from their current
@@ -50,7 +66,7 @@ import org.eclipse.text.edits.TextEdit;
  *    same type of container.
  *
  *    <li>This operation can be used to copy and rename elements within
- *    the same container. 
+ *    the same container.
  *
  *    <li>This operation only copies compilation units and package fragments.
  *    It does not copy package fragment roots - a platform operation must be used for that.
@@ -63,7 +79,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 	 */
 	protected ArrayList createdElements;
 	/**
-	 * Table specifying deltas for elements being 
+	 * Table specifying deltas for elements being
 	 * copied/moved/renamed. Keyed by elements' project(s), and
 	 * values are the corresponding deltas.
 	 */
@@ -121,7 +137,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 		for (int i = 0, max = nonJavaResources.length, index = 0; i < max; i++){
 			if (nonJavaResources[i] instanceof IResource) actualNonJavaResources[index++] = (IResource)nonJavaResources[i];
 		}
-		
+
 		if (actualNonJavaResourceCount != 0) {
 			int correctKindChildrenSize = correctKindChildren.size();
 			IResource[] result = new IResource[correctKindChildrenSize + actualNonJavaResourceCount];
@@ -161,7 +177,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 				}
 				IPackageFragment sideEffectPackage = root.getPackageFragment(sideEffectPackageName);
 				if (i < newFragName.length - 1 // all but the last one are side effect packages
-						&& !Util.isExcluded(parentFolder, inclusionPatterns, exclusionPatterns)) { 
+						&& !Util.isExcluded(parentFolder, inclusionPatterns, exclusionPatterns)) {
 					if (projectDelta == null) {
 						projectDelta = getDeltaFor(root.getJavaProject());
 					}
@@ -174,7 +190,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 		}
 		return containsReadOnlyPackageFragment;
 	}
-	
+
 	/**
 	 * Returns the <code>JavaElementDelta</code> for <code>javaProject</code>,
 	 * creating it and putting it in <code>fDeltasPerProject</code> if
@@ -192,7 +208,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 	 * @see MultiOperation
 	 */
 	protected String getMainTaskName() {
-		return Messages.operation_copyResourceProgress; 
+		return Messages.operation_copyResourceProgress;
 	}
 	/**
 	 * Sets the deltas to register the changes resulting from this operation
@@ -203,7 +219,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 	 * 			<li>one rooted in the source project
 	 *			<li>one rooted in the destination project</ul></ul>
 	 * If the operation is rooted in a single project, the delta is rooted in that project
-	 * 	 
+	 *
 	 */
 	protected void prepareDeltas(IJavaElement sourceElement, IJavaElement destinationElement, boolean isMove) {
 		if (Util.isExcluded(sourceElement) || Util.isExcluded(destinationElement)) return;
@@ -229,7 +245,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 		String newCUName = getNewNameFor(source);
 		String destName = (newCUName != null) ? newCUName : source.getElementName();
 		ASTRewrite rewrite = updateContent(source, dest, newCUName); // null if unchanged
-	
+
 		// TODO (frederic) remove when bug 67606 will be fixed (bug 67823)
 		// store encoding (fix bug 66898)
 		IFile sourceResource = (IFile)source.getResource();
@@ -256,8 +272,8 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 						} else {
 							// abort
 							throw new JavaModelException(new JavaModelStatus(
-								IJavaModelStatusConstants.NAME_COLLISION, 
-								Messages.bind(Messages.status_nameCollision, destFile.getFullPath().toString()))); 
+								IJavaModelStatusConstants.NAME_COLLISION,
+								Messages.bind(Messages.status_nameCollision, destFile.getFullPath().toString())));
 						}
 					}
 					int flags = this.force ? IResource.FORCE : IResource.NONE;
@@ -268,7 +284,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 						if (rewrite != null) flags |= IResource.KEEP_HISTORY;
 						sourceResource.copy(destFile.getFullPath(), flags, getSubProgressMonitor(1));
 					}
-					setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE); 
+					setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
 				} else {
 					destCU.getBuffer().setContents(source.getBuffer().getContents());
 				}
@@ -277,7 +293,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 			} catch (CoreException e) {
 				throw new JavaModelException(e);
 			}
-	
+
 			// update new resource content
 			if (rewrite != null){
 				boolean wasReadOnly = destFile.isReadOnly();
@@ -290,7 +306,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 					Util.setReadOnly(destFile, wasReadOnly);
 				}
 			}
-		
+
 			// register the correct change deltas
 			prepareDeltas(source, destCU, isMove());
 			if (newCUName != null) {
@@ -302,8 +318,8 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 		} else {
 			if (!this.force) {
 				throw new JavaModelException(new JavaModelStatus(
-					IJavaModelStatusConstants.NAME_COLLISION, 
-					Messages.bind(Messages.status_nameCollision, destFile.getFullPath().toString()))); 
+					IJavaModelStatusConstants.NAME_COLLISION,
+					Messages.bind(Messages.status_nameCollision, destFile.getFullPath().toString())));
 			}
 			// update new resource content
 			// in case we do a saveas on the same resource we have to simply update the contents
@@ -370,7 +386,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 			String[] newFragName = (newName == null) ? source.names : Util.getTrimmedSimpleNames(newName);
 			IPackageFragment newFrag = root.getPackageFragment(newFragName);
 			IResource[] resources = collectResourcesOfInterest(source);
-			
+
 			// if isMove() can we move the folder itself ? (see http://bugs.eclipse.org/bugs/show_bug.cgi?id=22458)
 			boolean shouldMoveFolder = isMove() && !newFrag.getResource().exists(); // if new pkg fragment exists, it is an override
 			IFolder srcFolder = (IFolder)source.getResource();
@@ -388,11 +404,11 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 							break;
 						}
 					}
-				}	
+				}
 			}
 			boolean containsReadOnlySubPackageFragments = createNeededPackageFragments((IContainer) source.getParent().getResource(), root, newFragName, shouldMoveFolder);
 			boolean sourceIsReadOnly = Util.isReadOnly(srcFolder);
-	
+
 			// Process resources
 			if (shouldMoveFolder) {
 				// move underlying resource
@@ -404,7 +420,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 				if (sourceIsReadOnly) {
 					Util.setReadOnly(srcFolder, true);
 				}
-				setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE); 
+				setAttribute(HAS_MODIFIED_RESOURCE_ATTR, TRUE);
 			} else {
 				// process the leaf resources
 				if (resources.length > 0) {
@@ -421,8 +437,8 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 									deleteResource(destinationResource, IResource.KEEP_HISTORY);
 								} else {
 									throw new JavaModelException(new JavaModelStatus(
-										IJavaModelStatusConstants.NAME_COLLISION, 
-										Messages.bind(Messages.status_nameCollision, destinationResource.getFullPath().toString()))); 
+										IJavaModelStatusConstants.NAME_COLLISION,
+										Messages.bind(Messages.status_nameCollision, destinationResource.getFullPath().toString())));
 								}
 							}
 						}
@@ -437,8 +453,8 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 									deleteResource(destinationResource, IResource.KEEP_HISTORY);
 								} else {
 									throw new JavaModelException(new JavaModelStatus(
-										IJavaModelStatusConstants.NAME_COLLISION, 
-										Messages.bind(Messages.status_nameCollision, destinationResource.getFullPath().toString()))); 
+										IJavaModelStatusConstants.NAME_COLLISION,
+										Messages.bind(Messages.status_nameCollision, destinationResource.getFullPath().toString())));
 								}
 							}
 						}
@@ -446,7 +462,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 					}
 				}
 			}
-	
+
 			// Update package statement in compilation unit if needed
 			if (!Util.equalArraysOrNull(newFragName, source.names)) { // if package has been renamed, update the compilation units
 				char[][] inclusionPatterns = root.fullInclusionPatternChars();
@@ -468,12 +484,12 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 							edits.apply(document);
 						} catch (BadLocationException e) {
 							throw new JavaModelException(e, IJavaModelStatusConstants.INVALID_CONTENTS);
-						}			
+						}
 						cu.save(null, false);
 					}
 				}
 			}
-			
+
 			// Discard empty old package (if still empty after the rename)
 			boolean isEmpty = true;
 			if (isMove()) {
@@ -502,7 +518,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 					} else {
 						rootResource =  source.getParent().getResource();
 					}
-					
+
 					// delete recursively empty folders
 					deleteEmptyPackageFragment(source, false, rootResource);
 				}
@@ -591,7 +607,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 			}
 		}
 	}
-	
+
 	private void updateReadOnlyPackageFragmentsForCopy(IContainer sourceFolder, IPackageFragmentRoot root, String[] newFragName) {
 		IContainer parentFolder = (IContainer) root.getResource();
 		for (int i = 0, length = newFragName.length; i <length; i++) {
@@ -666,7 +682,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 		if (!status.isOK()) {
 			return status;
 		}
-	
+
 		if (this.renamingsList != null && this.renamingsList.length != elementsToProcess.length) {
 			return new JavaModelStatus(IJavaModelStatusConstants.INDEX_OUT_OF_BOUNDS);
 		}
@@ -678,7 +694,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 	protected void verify(IJavaElement element) throws JavaModelException {
 		if (element == null || !element.exists())
 			error(IJavaModelStatusConstants.ELEMENT_DOES_NOT_EXIST, element);
-			
+
 		if (element.isReadOnly() && (isRename() || isMove()))
 			error(IJavaModelStatusConstants.READ_ONLY, element);
 
@@ -688,9 +704,9 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 				error(IJavaModelStatusConstants.INVALID_RESOURCE, element);
 			}
 		}
-	
+
 		int elementType = element.getElementType();
-	
+
 		if (elementType == IJavaElement.COMPILATION_UNIT) {
 			org.eclipse.wst.jsdt.internal.core.CompilationUnit compilationUnit = (org.eclipse.wst.jsdt.internal.core.CompilationUnit) element;
 			if (isMove() && compilationUnit.isWorkingCopy() && !compilationUnit.isPrimary())
@@ -698,7 +714,7 @@ public class CopyResourceElementsOperation extends MultiOperation implements Suf
 		} else if (elementType != IJavaElement.PACKAGE_FRAGMENT) {
 			error(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, element);
 		}
-		
+
 		JavaElement dest = (JavaElement) getDestinationParent(element);
 		verifyDestination(element, dest);
 		if (this.renamings != null) {

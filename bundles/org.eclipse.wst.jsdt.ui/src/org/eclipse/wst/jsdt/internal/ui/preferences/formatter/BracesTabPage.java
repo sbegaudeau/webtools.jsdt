@@ -17,7 +17,6 @@ import java.util.Observer;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 
 public class BracesTabPage extends FormatterTabPage {

@@ -15,7 +15,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IType;
@@ -44,7 +43,6 @@ import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ITrackedNodePosition;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor;
@@ -56,10 +54,8 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.code.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.flow.InOutFlowAnalyzer;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.surround.SurroundWithAnalyzer;
-
-import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
-
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
+import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
 
 public abstract class SurroundWith {
 

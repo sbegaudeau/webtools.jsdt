@@ -11,28 +11,20 @@
 package org.eclipse.wst.jsdt.ui.actions;
 
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-
-import org.eclipse.jface.text.ITextSelection;
-
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.MethodOverrideTester;
 import org.eclipse.wst.jsdt.internal.corext.util.SuperTypeHierarchyCache;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
@@ -40,6 +32,7 @@ import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
+import org.eclipse.wst.jsdt.ui.JavaUI;
 
 /**
  * The action opens a Java editor on the selected method's super implementation.

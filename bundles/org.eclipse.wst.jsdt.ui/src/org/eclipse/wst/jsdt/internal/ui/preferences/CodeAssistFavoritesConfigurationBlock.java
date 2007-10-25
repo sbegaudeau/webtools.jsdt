@@ -15,7 +15,12 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
-
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.StatusDialog;
+import org.eclipse.jface.operation.IRunnableContext;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -26,29 +31,15 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.StatusDialog;
-import org.eclipse.jface.operation.IRunnableContext;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.jface.window.Window;
-
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
-
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaConventions;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
-
-import org.eclipse.wst.jsdt.ui.IJavaElementSearchConstants;
-import org.eclipse.wst.jsdt.ui.JavaUI;
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
@@ -65,6 +56,9 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IStringButtonAdapte
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ListDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonDialogField;
+import org.eclipse.wst.jsdt.ui.IJavaElementSearchConstants;
+import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 
 /**

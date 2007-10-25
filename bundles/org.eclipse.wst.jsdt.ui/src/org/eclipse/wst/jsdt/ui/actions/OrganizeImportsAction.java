@@ -10,23 +10,14 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui.actions;
 
-import com.ibm.icu.text.Collator;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.Comparator;
 
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableContext;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.window.Window;
-
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IEditingSupport;
 import org.eclipse.jface.text.IEditingSupportRegistry;
@@ -34,30 +25,29 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.IRewriteTarget;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.source.ISourceViewer;
-
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.CodeGenerationSettings;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.OrganizeImportsOperation;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.OrganizeImportsOperation.IChooseImportQuery;
 import org.eclipse.wst.jsdt.internal.corext.util.History;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.QualifiedTypeNameHistory;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
@@ -72,6 +62,9 @@ import org.eclipse.wst.jsdt.internal.ui.preferences.JavaPreferencesSettings;
 import org.eclipse.wst.jsdt.internal.ui.util.ElementValidator;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.TypeNameMatchLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaUI;
+
+import com.ibm.icu.text.Collator;
 
 /**
  * Organizes the imports of a compilation unit.

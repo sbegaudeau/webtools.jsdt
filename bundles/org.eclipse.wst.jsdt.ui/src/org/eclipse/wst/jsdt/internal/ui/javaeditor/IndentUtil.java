@@ -16,15 +16,11 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.source.ILineRange;
-
 import org.eclipse.wst.jsdt.core.IJavaProject;
-
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
-
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-
 import org.eclipse.wst.jsdt.internal.ui.text.JavaHeuristicScanner;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaIndenter;
+import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
 
 
 /**

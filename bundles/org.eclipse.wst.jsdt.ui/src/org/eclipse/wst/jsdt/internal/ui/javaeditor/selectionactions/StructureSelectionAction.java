@@ -13,12 +13,9 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor.selectionactions;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
-
 import org.eclipse.jface.text.ITextSelection;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
@@ -26,11 +23,9 @@ import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
-
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
 import org.eclipse.wst.jsdt.internal.corext.dom.Selection;
 import org.eclipse.wst.jsdt.internal.corext.dom.SelectionAnalyzer;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;

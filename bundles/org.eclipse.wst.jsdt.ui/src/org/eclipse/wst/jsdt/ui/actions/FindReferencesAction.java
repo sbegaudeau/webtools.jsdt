@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.ui.actions;
 
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
@@ -26,16 +25,14 @@ import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
-
-import org.eclipse.wst.jsdt.ui.search.ElementQuerySpecification;
-import org.eclipse.wst.jsdt.ui.search.QuerySpecification;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.search.JavaSearchScopeFactory;
 import org.eclipse.wst.jsdt.internal.ui.search.SearchMessages;
 import org.eclipse.wst.jsdt.internal.ui.search.SearchUtil;
+import org.eclipse.wst.jsdt.ui.search.ElementQuerySpecification;
+import org.eclipse.wst.jsdt.ui.search.QuerySpecification;
 
 /**
  * Finds references of the selected element in the workspace.

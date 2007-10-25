@@ -206,7 +206,7 @@ protected int matchContainer() {
 	return result;
 }
 protected void matchLevelAndReportImportRef(ImportReference importRef, Binding binding, MatchLocator locator) throws CoreException {
-	
+
 	// for static import, binding can be a field binding or a member type binding
 	// verify that in this case binding is static and use declaring class for fields
 	Binding refBinding = binding;
@@ -224,7 +224,7 @@ protected void matchLevelAndReportImportRef(ImportReference importRef, Binding b
 			if (!memberBinding.isStatic()) return;
 		}
 	}
-	
+
 	// Look for closest pattern
 	PatternLocator closestPattern = null;
 	int level = IMPOSSIBLE_MATCH;

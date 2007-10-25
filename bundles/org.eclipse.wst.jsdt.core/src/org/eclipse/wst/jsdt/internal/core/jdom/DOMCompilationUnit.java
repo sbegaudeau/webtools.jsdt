@@ -13,7 +13,9 @@ package org.eclipse.wst.jsdt.internal.core.jdom;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.jdom.*;
+import org.eclipse.wst.jsdt.core.jdom.IDOMCompilationUnit;
+import org.eclipse.wst.jsdt.core.jdom.IDOMNode;
+import org.eclipse.wst.jsdt.core.jdom.IDOMType;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.util.CharArrayBuffer;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
@@ -24,7 +26,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  * @see IDOMCompilationUnit
  * @see DOMNode
  * @deprecated The JDOM was made obsolete by the addition in 2.0 of the more
- * powerful, fine-grained DOM/AST API found in the 
+ * powerful, fine-grained DOM/AST API found in the
  * org.eclipse.wst.jsdt.core.dom package.
  */
 class DOMCompilationUnit extends DOMNode implements IDOMCompilationUnit, SuffixConstants {
@@ -47,7 +49,7 @@ DOMCompilationUnit() {
  * @param document - the document containing this node's original contents
  * @param sourceRange - a two element array of integers describing the
  *		entire inclusive source range of this node within its document.
- * 		A compilation unit's source range is the entire document - 
+ * 		A compilation unit's source range is the entire document -
  *		the first integer is zero, and the second integer is the position
  *		of the last character in the document.
  */
@@ -81,13 +83,13 @@ public IJavaElement getJavaElement(IJavaElement parent) throws IllegalArgumentEx
 	if (parent.getElementType() == IJavaElement.PACKAGE_FRAGMENT) {
 		return ((IPackageFragment)parent).getCompilationUnit(getName());
 	} else {
-		throw new IllegalArgumentException(Messages.element_illegalParent); 
+		throw new IllegalArgumentException(Messages.element_illegalParent);
 	}
 }
 /**
  * @see IDOMCompilationUnit#getName()
  */
-public String getName() { 
+public String getName() {
 	IDOMType topLevelType= null;
 	IDOMType firstType= null;
 	IDOMNode child= fFirstChild;
@@ -137,11 +139,11 @@ protected void initalizeHeader() {
 public boolean isAllowableChild(IDOMNode node) {
 	if (node != null) {
 		int type= node.getNodeType();
-		return type == IDOMNode.PACKAGE || type == IDOMNode.IMPORT || type == IDOMNode.TYPE; 
+		return type == IDOMNode.PACKAGE || type == IDOMNode.IMPORT || type == IDOMNode.TYPE;
 	} else {
 		return false;
 	}
-	
+
 }
 /**
  * @see DOMNode

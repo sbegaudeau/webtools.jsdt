@@ -11,6 +11,11 @@
 
 package org.eclipse.wst.jsdt.internal.ui.refactoring;
 
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.ltk.core.refactoring.Refactoring;
+import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
+import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -19,19 +24,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.IDialogSettings;
-
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.generics.InferTypeArgumentsRefactoring;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-
-import org.eclipse.ltk.core.refactoring.Refactoring;
-import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
-import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
 
 public class InferTypeArgumentsWizard extends RefactoringWizard {
 

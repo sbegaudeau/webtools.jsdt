@@ -32,21 +32,57 @@ import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AnnotationMethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ConstructorDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedSingleTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.env.*;
-
+import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
+import org.eclipse.wst.jsdt.internal.compiler.env.ISourceImport;
+import org.eclipse.wst.jsdt.internal.compiler.env.ISourceType;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
-import org.eclipse.wst.jsdt.internal.core.*;
+import org.eclipse.wst.jsdt.internal.core.CompilationUnitElementInfo;
+import org.eclipse.wst.jsdt.internal.core.ImportDeclaration;
+import org.eclipse.wst.jsdt.internal.core.InitializerElementInfo;
+import org.eclipse.wst.jsdt.internal.core.JavaElement;
+import org.eclipse.wst.jsdt.internal.core.PackageFragment;
+import org.eclipse.wst.jsdt.internal.core.SourceAnnotationMethodInfo;
+import org.eclipse.wst.jsdt.internal.core.SourceField;
+import org.eclipse.wst.jsdt.internal.core.SourceFieldElementInfo;
+import org.eclipse.wst.jsdt.internal.core.SourceMethod;
+import org.eclipse.wst.jsdt.internal.core.SourceMethodElementInfo;
+import org.eclipse.wst.jsdt.internal.core.SourceType;
+import org.eclipse.wst.jsdt.internal.core.SourceTypeElementInfo;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 public class SourceTypeConverter {
-	
-	/* 
+
+	/*
 	 * Exception thrown while converting an anonymous type of a member type
 	 * in this case, we must parse the source as the enclosing instance cannot be recreated
 	 * from the model
@@ -63,7 +99,7 @@ public class SourceTypeConverter {
 	public static final int FIELD_AND_METHOD = FIELD | CONSTRUCTOR | METHOD;
 	public static final int LOCAL_TYPE = 0x20;
 	public static final int NONE = 0;
-	
+
 	private int flags;
 	private CompilationUnitDeclaration unit;
 	private Parser parser;
@@ -72,9 +108,9 @@ public class SourceTypeConverter {
 	private char[] source;
 	private HashMap annotationPositions;
 	private boolean has1_5Compliance;
-	
+
 	int namePos;
-	
+
 	private SourceTypeConverter(int flags, ProblemReporter problemReporter) {
 		this.flags = flags;
 		this.problemReporter = problemReporter;
@@ -83,7 +119,7 @@ public class SourceTypeConverter {
 
 	/*
 	 * Convert a set of source element types into a parsed compilation unit declaration
-	 * The argument types are then all grouped in the same unit. The argument types must 
+	 * The argument types are then all grouped in the same unit. The argument types must
 	 * at least contain one type.
 	 * Can optionally ignore fields & methods or member types or field initialization
 	 */
@@ -92,7 +128,7 @@ public class SourceTypeConverter {
 		int flags,
 		ProblemReporter problemReporter,
 		CompilationResult compilationResult) {
-			
+
 //		long start = System.currentTimeMillis();
 		SourceTypeConverter converter = new SourceTypeConverter(flags, problemReporter);
 		try {
@@ -106,7 +142,7 @@ public class SourceTypeConverter {
 
 	/*
 	 * Convert a set of source element types into a parsed compilation unit declaration
-	 * The argument types are then all grouped in the same unit. The argument types must 
+	 * The argument types are then all grouped in the same unit. The argument types must
 	 * at least contain one type.
 	 */
 	private CompilationUnitDeclaration convert(ISourceType[] sourceTypes, CompilationResult compilationResult) throws JavaModelException {
@@ -142,7 +178,7 @@ public class SourceTypeConverter {
 			ISourceImport sourceImport = (ISourceImport) importDeclaration.getElementInfo();
 			String nameWithoutStar = importDeclaration.getNameWithoutStar();
 			this.unit.imports[i] = createImportReference(
-				Util.splitOn('.', nameWithoutStar, 0, nameWithoutStar.length()), 
+				Util.splitOn('.', nameWithoutStar, 0, nameWithoutStar.length()),
 				sourceImport.getDeclarationSourceStart(),
 				sourceImport.getDeclarationSourceEnd(),
 				importDeclaration.isOnDemand(),
@@ -167,7 +203,7 @@ public class SourceTypeConverter {
 			return new Parser(this.problemReporter, true).parse(this.cu, compilationResult);
 		}
 	}
-	
+
 	private void addIdentifiers(String typeSignature, int start, int endExclusive, int identCount, ArrayList fragments) {
 		if (identCount == 1) {
 			char[] identifier;
@@ -176,7 +212,7 @@ public class SourceTypeConverter {
 		} else
 			fragments.add(extractIdentifiers(typeSignature, start, endExclusive-1, identCount));
 	}
-	
+
 	/*
 	 * Convert an initializerinfo into a parsed initializer declaration
 	 */
@@ -213,7 +249,7 @@ public class SourceTypeConverter {
 			}
 			block.statements = statements;
 		}
-		
+
 		return initializer;
 	}
 
@@ -258,7 +294,7 @@ public class SourceTypeConverter {
 				this.parser.parse(field, type, this.unit, initializationSource);
 			}
 		}
-		
+
 		/* conversion of local and anonymous types */
 		if ((this.flags & LOCAL_TYPE) != 0) {
 			IJavaElement[] children = fieldInfo.getChildren();
@@ -294,7 +330,7 @@ public class SourceTypeConverter {
 	}
 
 	/*
-	 * Convert a method source element into a parsed method/constructor declaration 
+	 * Convert a method source element into a parsed method/constructor declaration
 	 */
 	private AbstractMethodDeclaration convert(SourceMethod methodHandle, SourceMethodElementInfo methodInfo, CompilationResult compilationResult) throws JavaModelException {
 		AbstractMethodDeclaration method;
@@ -319,7 +355,7 @@ public class SourceTypeConverter {
 				}
 			}
 		}
-		
+
 		int modifiers = methodInfo.getModifiers();
 		if (methodInfo.isConstructor()) {
 			ConstructorDeclaration decl = new ConstructorDeclaration(compilationResult);
@@ -354,13 +390,13 @@ public class SourceTypeConverter {
 			} else {
 				decl = new MethodDeclaration(compilationResult);
 			}
-			
+
 			// convert return type
 			decl.returnType = createTypeReference(methodInfo.getReturnTypeName(), start, end);
-			
+
 			// type parameters
 			decl.typeParameters = typeParams;
-			
+
 			method = decl;
 		}
 		method.selector = methodHandle.getElementName().toCharArray();
@@ -409,7 +445,7 @@ public class SourceTypeConverter {
 					createTypeReference(exceptionTypeNames[i], start, end);
 			}
 		}
-		
+
 		/* convert local and anonymous types */
 		if ((this.flags & LOCAL_TYPE) != 0) {
 			IJavaElement[] children = methodInfo.getChildren();
@@ -433,7 +469,7 @@ public class SourceTypeConverter {
 				method.statements = statements;
 			}
 		}
-		
+
 		return method;
 	}
 
@@ -469,12 +505,12 @@ public class SourceTypeConverter {
 		type.declarationSourceStart = typeInfo.getDeclarationSourceStart();
 		type.declarationSourceEnd = typeInfo.getDeclarationSourceEnd();
 		type.bodyEnd = type.declarationSourceEnd;
-		
+
 		// convert 1.5 specific constructs only if compliance is 1.5 or above
 		if (this.has1_5Compliance) {
 			/* convert annotations */
 			type.annotations = convertAnnotations(typeHandle);
-	
+
 			/* convert type parameters */
 			char[][] typeParameterNames = typeInfo.getTypeParameterNames();
 			if (typeParameterNames.length > 0) {
@@ -486,7 +522,7 @@ public class SourceTypeConverter {
 				}
 			}
 		}
-		
+
 		/* set superclass and superinterfaces */
 		if (typeInfo.getSuperclassName() != null) {
 			type.superclass = createTypeReference(typeInfo.getSuperclassName(), start, end);
@@ -540,10 +576,10 @@ public class SourceTypeConverter {
 		boolean needConstructor = (this.flags & CONSTRUCTOR) != 0;
 		boolean needMethod = (this.flags & METHOD) != 0;
 		if (needConstructor || needMethod) {
-			
+
 			SourceMethod[] sourceMethods = typeInfo.getMethodHandles();
 			int sourceMethodCount = sourceMethods.length;
-	
+
 			/* source type has a constructor ?           */
 			/* by default, we assume that one is needed. */
 			int extraConstructor = 0;
@@ -580,7 +616,7 @@ public class SourceTypeConverter {
 				}
 				if ((isConstructor && needConstructor) || (!isConstructor && needMethod)) {
 					AbstractMethodDeclaration method = convert(sourceMethod, methodInfo, compilationResult);
-					if (isAbstract || method.isAbstract()) { // fix-up flag 
+					if (isAbstract || method.isAbstract()) { // fix-up flag
 						method.modifiers |= ExtraCompilerModifiers.AccSemicolonBody;
 					}
 					type.methods[extraConstructor + index++] = method;
@@ -588,10 +624,10 @@ public class SourceTypeConverter {
 			}
 			if (hasAbstractMethods) type.bits |= ASTNode.HasAbstractMethods;
 		}
-		
+
 		return type;
 	}
-	
+
 	private Annotation[] convertAnnotations(JavaElement element) {
 		if (this.annotationPositions == null) return null;
 		char[] cuSource = getSource();
@@ -631,10 +667,10 @@ public class SourceTypeConverter {
 	private ImportReference createImportReference(
 		String[] importName,
 		int start,
-		int end, 
+		int end,
 		boolean onDemand,
 		int modifiers) {
-	
+
 		int length = importName.length;
 		long[] positions = new long[length];
 		long position = ((long) start << 32) + end;
@@ -672,7 +708,7 @@ public class SourceTypeConverter {
 		}
 		return parameter;
 	}
-	
+
 	/*
 	 * Build a type reference from a readable name, e.g. java.lang.Object[][]
 	 */
@@ -685,7 +721,7 @@ public class SourceTypeConverter {
 		this.namePos = 0;
 		return decodeType(typeName, length, start, end);
 	}
-	
+
 	/*
 	 * Build a type reference from a type signature, e.g. Ljava.lang.Object;
 	 */
@@ -693,12 +729,12 @@ public class SourceTypeConverter {
 			String typeSignature,
 			int start,
 			int end) {
-		
+
 		int length = typeSignature.length();
 		this.namePos = 0;
 		return decodeType(typeSignature, length, start, end);
 	}
-	
+
 	private TypeReference decodeType(String typeSignature, int length, int start, int end) {
 		int identCount = 1;
 		int dim = 0;
@@ -715,7 +751,7 @@ public class SourceTypeConverter {
 							return new SingleTypeReference(TypeBinding.BOOLEAN.simpleName, ((long) start << 32) + end);
 						else
 							return new ArrayTypeReference(TypeBinding.BOOLEAN.simpleName, dim, ((long) start << 32) + end);
-					} 
+					}
 					break;
 				case Signature.C_BYTE :
 					if (!nameStarted) {
@@ -723,7 +759,7 @@ public class SourceTypeConverter {
 						if (dim == 0)
 							return new SingleTypeReference(TypeBinding.BYTE.simpleName, ((long) start << 32) + end);
 						else
-							return new ArrayTypeReference(TypeBinding.BYTE.simpleName, dim, ((long) start << 32) + end);				
+							return new ArrayTypeReference(TypeBinding.BYTE.simpleName, dim, ((long) start << 32) + end);
 					}
 					break;
 				case Signature.C_CHAR :
@@ -741,7 +777,7 @@ public class SourceTypeConverter {
 						if (dim == 0)
 							return new SingleTypeReference(TypeBinding.DOUBLE.simpleName, ((long) start << 32) + end);
 						else
-							return new ArrayTypeReference(TypeBinding.DOUBLE.simpleName, dim, ((long) start << 32) + end);				
+							return new ArrayTypeReference(TypeBinding.DOUBLE.simpleName, dim, ((long) start << 32) + end);
 					}
 					break;
 				case Signature.C_FLOAT :
@@ -750,7 +786,7 @@ public class SourceTypeConverter {
 						if (dim == 0)
 							return new SingleTypeReference(TypeBinding.FLOAT.simpleName, ((long) start << 32) + end);
 						else
-							return new ArrayTypeReference(TypeBinding.FLOAT.simpleName, dim, ((long) start << 32) + end);				
+							return new ArrayTypeReference(TypeBinding.FLOAT.simpleName, dim, ((long) start << 32) + end);
 					}
 					break;
 				case Signature.C_INT :
@@ -759,7 +795,7 @@ public class SourceTypeConverter {
 						if (dim == 0)
 							return new SingleTypeReference(TypeBinding.INT.simpleName, ((long) start << 32) + end);
 						else
-							return new ArrayTypeReference(TypeBinding.INT.simpleName, dim, ((long) start << 32) + end);				
+							return new ArrayTypeReference(TypeBinding.INT.simpleName, dim, ((long) start << 32) + end);
 					}
 					break;
 				case Signature.C_LONG :
@@ -768,7 +804,7 @@ public class SourceTypeConverter {
 						if (dim == 0)
 							return new SingleTypeReference(TypeBinding.LONG.simpleName, ((long) start << 32) + end);
 						else
-							return new ArrayTypeReference(TypeBinding.LONG.simpleName, dim, ((long) start << 32) + end);				
+							return new ArrayTypeReference(TypeBinding.LONG.simpleName, dim, ((long) start << 32) + end);
 					}
 					break;
 				case Signature.C_SHORT :
@@ -777,7 +813,7 @@ public class SourceTypeConverter {
 						if (dim == 0)
 							return new SingleTypeReference(TypeBinding.SHORT.simpleName, ((long) start << 32) + end);
 						else
-							return new ArrayTypeReference(TypeBinding.SHORT.simpleName, dim, ((long) start << 32) + end);				
+							return new ArrayTypeReference(TypeBinding.SHORT.simpleName, dim, ((long) start << 32) + end);
 					}
 					break;
 				case Signature.C_VOID :
@@ -832,7 +868,7 @@ public class SourceTypeConverter {
 				case Signature.C_GENERIC_START :
 					nameFragmentEnd = this.namePos-1;
 					// convert 1.5 specific constructs only if compliance is 1.5 or above
-					if (!this.has1_5Compliance) 
+					if (!this.has1_5Compliance)
 						break typeLoop;
 					if (fragments == null) fragments = new ArrayList(2);
 					addIdentifiers(typeSignature, nameFragmentStart, nameFragmentEnd + 1, identCount, fragments);
@@ -846,7 +882,7 @@ public class SourceTypeConverter {
 			}
 			this.namePos++;
 		}
-		if (fragments == null) { // non parameterized 
+		if (fragments == null) { // non parameterized
 			/* rebuild identifiers and dimensions */
 			if (identCount == 1) { // simple type reference
 				if (dim == 0) {
@@ -918,7 +954,7 @@ public class SourceTypeConverter {
 			return new ParameterizedQualifiedTypeReference(tokens, arguments, dim, positions);
 		}
 	}
-	
+
 	private TypeReference decodeType(char[] typeName, int length, int start, int end) {
 		int identCount = 1;
 		int dim = 0;
@@ -983,7 +1019,7 @@ public class SourceTypeConverter {
 					break;
 				case '<' :
 					// convert 1.5 specific constructs only if compliance is 1.5 or above
-					if (!this.has1_5Compliance) 
+					if (!this.has1_5Compliance)
 						break typeLoop;
 					if (fragments == null) fragments = new ArrayList(2);
 					nameFragmentEnd = this.namePos-1;
@@ -1001,14 +1037,14 @@ public class SourceTypeConverter {
 			this.namePos++;
 		}
 		if (nameFragmentEnd < 0) nameFragmentEnd = this.namePos-1;
-		if (fragments == null) { // non parameterized 
+		if (fragments == null) { // non parameterized
 			/* rebuild identifiers and dimensions */
 			if (identCount == 1) { // simple type reference
 				if (dim == 0) {
 					char[] nameFragment;
 					if (nameFragmentStart != 0 || nameFragmentEnd >= 0) {
 						int nameFragmentLength = nameFragmentEnd - nameFragmentStart + 1;
-						System.arraycopy(typeName, nameFragmentStart, nameFragment = new char[nameFragmentLength], 0, nameFragmentLength);						
+						System.arraycopy(typeName, nameFragmentStart, nameFragment = new char[nameFragmentLength], 0, nameFragmentLength);
 					} else {
 						nameFragment = typeName;
 					}
@@ -1077,7 +1113,7 @@ public class SourceTypeConverter {
 			return new ParameterizedQualifiedTypeReference(tokens, arguments, dim, positions);
 		}
 	}
-	
+
 	private TypeReference[] decodeTypeArguments(char[] typeName, int length, int start, int end) {
 		ArrayList argumentList = new ArrayList(1);
 		int count = 0;
@@ -1095,7 +1131,7 @@ public class SourceTypeConverter {
 		argumentList.toArray(typeArguments);
 		return typeArguments;
 	}
-	
+
 	private TypeReference[] decodeTypeArguments(String typeSignature, int length, int start, int end) {
 		ArrayList argumentList = new ArrayList(1);
 		int count = 0;
@@ -1112,28 +1148,28 @@ public class SourceTypeConverter {
 		argumentList.toArray(typeArguments);
 		return typeArguments;
 	}
-	
+
 	private char[][] extractIdentifiers(String typeSignature, int start, int endInclusive, int identCount) {
 		char[][] result = new char[identCount][];
 		int charIndex = start;
 		int i = 0;
 		while (charIndex < endInclusive) {
 			if (typeSignature.charAt(charIndex) == '.') {
-				typeSignature.getChars(start, charIndex, result[i++] = new char[charIndex - start], 0); 
+				typeSignature.getChars(start, charIndex, result[i++] = new char[charIndex - start], 0);
 				start = ++charIndex;
 			} else
 				charIndex++;
 		}
-		typeSignature.getChars(start, charIndex + 1, result[i++] = new char[charIndex - start + 1], 0); 
+		typeSignature.getChars(start, charIndex + 1, result[i++] = new char[charIndex - start + 1], 0);
 		return result;
 	}
-	
+
 	private char[] getSource() {
 		if (this.source == null)
 			this.source = this.cu.getContents();
 		return this.source;
 	}
-	
+
 	private Expression parseMemberValue(char[] memberValue) {
 		// memberValue must not be null
 		if (this.parser == null) {

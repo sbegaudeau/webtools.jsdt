@@ -14,11 +14,9 @@ import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist.JavaPackageCompletionProcessor;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonDialogField;
-
 import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
 
 public final class PackageSelectionDialogButtonField extends StringButtonDialogField {

@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.compiler.codegen;
 public class CachedIndexEntry {
 	public char[] signature;
 	public int index;
-	
+
 	public CachedIndexEntry(char[] signature, int index) {
 		this.signature = signature;
 		this.index = index;

@@ -15,12 +15,9 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.sef;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.text.edits.TextEditGroup;
-
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-
+import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.JavaModelException;
@@ -47,7 +44,6 @@ import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;

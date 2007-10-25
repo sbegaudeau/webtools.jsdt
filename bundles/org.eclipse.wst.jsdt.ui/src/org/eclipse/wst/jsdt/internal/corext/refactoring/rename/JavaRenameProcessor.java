@@ -10,14 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.refactoring.rename;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.mapping.IResourceChangeDescriptionFactory;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.mapping.IResourceChangeDescriptionFactory;
-
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
@@ -25,11 +23,9 @@ import org.eclipse.ltk.core.refactoring.participants.RenameProcessor;
 import org.eclipse.ltk.core.refactoring.participants.ResourceChangeChecker;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.eclipse.ltk.core.refactoring.participants.ValidateEditChecker;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.ICommentProvider;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.INameUpdating;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.IScriptableRefactoring;
-
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper;
 
 public abstract class JavaRenameProcessor extends RenameProcessor implements IScriptableRefactoring, INameUpdating, ICommentProvider {

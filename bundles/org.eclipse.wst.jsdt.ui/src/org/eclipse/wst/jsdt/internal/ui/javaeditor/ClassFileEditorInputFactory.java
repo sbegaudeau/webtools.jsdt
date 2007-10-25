@@ -12,17 +12,14 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
 
 import org.eclipse.core.runtime.IAdaptable;
-
 import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IMemento;
-
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 
 /**

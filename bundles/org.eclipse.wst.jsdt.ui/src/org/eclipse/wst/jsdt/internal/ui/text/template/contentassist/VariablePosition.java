@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.ui.text.template.contentassist;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.link.LinkedPositionGroup;

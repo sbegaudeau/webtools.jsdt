@@ -20,7 +20,28 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-
+import org.eclipse.help.IContextProvider;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IStatusLineManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.util.TransferDragSourceListener;
+import org.eclipse.jface.util.TransferDropTargetListener;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
+import org.eclipse.jface.viewers.IBasicPropertyConstants;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.custom.CLabel;
@@ -44,31 +65,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.ToolBar;
-
-import org.eclipse.help.IContextProvider;
-
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IStatusLineManager;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.util.TransferDragSourceListener;
-import org.eclipse.jface.util.TransferDropTargetListener;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
-import org.eclipse.jface.viewers.IBasicPropertyConstants;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.StructuredViewer;
-
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IMemento;
@@ -92,9 +88,7 @@ import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.part.ResourceTransfer;
 import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.part.ViewPart;
-
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IType;
@@ -102,21 +96,7 @@ import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
-import org.eclipse.wst.jsdt.ui.ITypeHierarchyViewPart;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.JavaUI;
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.actions.CCPActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.GenerateActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.JavaSearchActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.OpenEditorActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.OpenViewActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.RefactorActionGroup;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.CompositeActionGroup;
@@ -135,6 +115,17 @@ import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaUILabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.SelectionProviderMediator;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.StatusBarUpdater;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.WorkingSetFilterActionGroup;
+import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
+import org.eclipse.wst.jsdt.ui.ITypeHierarchyViewPart;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
+import org.eclipse.wst.jsdt.ui.actions.CCPActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.GenerateActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.JavaSearchActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.OpenEditorActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.OpenViewActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.RefactorActionGroup;
 
 /**
  * view showing the super types/sub types of its input.

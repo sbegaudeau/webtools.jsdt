@@ -35,12 +35,12 @@ public class StackMapFrameCodeStream extends CodeStream {
 	public ArrayList frames;
 
 	public Set framePositions;
-	
+
 	public ArrayList variablesModificationsPositions;
-	
+
 	public int[] stateIndexes;
 	public int stateIndexesCounter;
-	
+
 public StackMapFrameCodeStream(ClassFile givenClassFile) {
 	super(givenClassFile);
 }
@@ -51,7 +51,7 @@ public void aaload() {
 }
 public void aastore() {
 	super.aastore();
-	this.currentFrame.numberOfStackItems-=3;	
+	this.currentFrame.numberOfStackItems-=3;
 }
 public void aconst_null() {
 	super.aconst_null();
@@ -109,7 +109,7 @@ public void addDefinitelyAssignedVariables(Scope scope, int initStateIndex) {
 	storeStackMapFrame();
 }
 public void addVariable(LocalVariableBinding localBinding) {
-	currentFrame.putLocal(localBinding.resolvedPosition, new VerificationTypeInfo(localBinding.type));	
+	currentFrame.putLocal(localBinding.resolvedPosition, new VerificationTypeInfo(localBinding.type));
 	storeStackMapFrame();
 	super.addVariable(localBinding);
 }
@@ -190,11 +190,11 @@ public void baload() {
 }
 public void bastore() {
 	super.bastore();
-	this.currentFrame.numberOfStackItems-=3;	
+	this.currentFrame.numberOfStackItems-=3;
 }
 public void bipush(byte b) {
 	super.bipush(b);
-	this.currentFrame.addStackItem(TypeBinding.INT);	
+	this.currentFrame.addStackItem(TypeBinding.INT);
 }
 public void caload() {
 	super.caload();
@@ -203,7 +203,7 @@ public void caload() {
 }
 public void castore() {
 	super.castore();
-	this.currentFrame.numberOfStackItems-=3;	
+	this.currentFrame.numberOfStackItems-=3;
 }
 public void checkcast(int baseId) {
 	super.checkcast(baseId);
@@ -264,7 +264,7 @@ public void daload() {
 }
 public void dastore() {
 	super.dastore();
-	this.currentFrame.numberOfStackItems-=3;	
+	this.currentFrame.numberOfStackItems-=3;
 }
 public void dcmpg() {
 	super.dcmpg();
@@ -278,15 +278,15 @@ public void dcmpl() {
 }
 public void dconst_0() {
 	super.dconst_0();
-	this.currentFrame.addStackItem(TypeBinding.DOUBLE);	
+	this.currentFrame.addStackItem(TypeBinding.DOUBLE);
 }
 public void dconst_1() {
 	super.dconst_1();
-	this.currentFrame.addStackItem(TypeBinding.DOUBLE);	
+	this.currentFrame.addStackItem(TypeBinding.DOUBLE);
 }
 public void ddiv() {
 	super.ddiv();
-	this.currentFrame.numberOfStackItems--;	
+	this.currentFrame.numberOfStackItems--;
 }
 public void decrStackSize(int offset) {
 	super.decrStackSize(offset);
@@ -294,11 +294,11 @@ public void decrStackSize(int offset) {
 }
 public void dload(int iArg) {
 	super.dload(iArg);
-	this.currentFrame.addStackItem(getLocal(iArg, this.currentFrame));	
+	this.currentFrame.addStackItem(getLocal(iArg, this.currentFrame));
 }
 public void dload_0() {
 	super.dload_0();
-	this.currentFrame.addStackItem(getLocal(0, this.currentFrame));	
+	this.currentFrame.addStackItem(getLocal(0, this.currentFrame));
 }
 public void dload_1() {
 	super.dload_1();
@@ -314,15 +314,15 @@ public void dload_3() {
 }
 public void dmul() {
 	super.dmul();
-	this.currentFrame.numberOfStackItems--;	
+	this.currentFrame.numberOfStackItems--;
 }
 public void drem() {
 	super.drem();
-	this.currentFrame.numberOfStackItems--;	
+	this.currentFrame.numberOfStackItems--;
 }
 public void dreturn() {
 	super.dreturn();
-	this.currentFrame.numberOfStackItems--;	
+	this.currentFrame.numberOfStackItems--;
 	this.framePositions.add(new Integer(this.position));
 }
 public void dstore(int iArg) {
@@ -543,7 +543,7 @@ public void exitUserScope(BlockScope currentScope, LocalVariableBinding binding)
 			}
 		}
 	}
-	this.storeStackMapFrame();	
+	this.storeStackMapFrame();
 	super.exitUserScope(currentScope, binding);
 }
 public void f2d() {
@@ -569,7 +569,7 @@ public void faload() {
 }
 public void fastore() {
 	super.fastore();
-	this.currentFrame.numberOfStackItems-=3;	
+	this.currentFrame.numberOfStackItems-=3;
 }
 public void fcmpg() {
 	super.fcmpg();
@@ -583,19 +583,19 @@ public void fcmpl() {
 }
 public void fconst_0() {
 	super.fconst_0();
-	this.currentFrame.addStackItem(TypeBinding.FLOAT);	
+	this.currentFrame.addStackItem(TypeBinding.FLOAT);
 }
 public void fconst_1() {
 	super.fconst_1();
-	this.currentFrame.addStackItem(TypeBinding.FLOAT);	
+	this.currentFrame.addStackItem(TypeBinding.FLOAT);
 }
 public void fconst_2() {
 	super.fconst_2();
-	this.currentFrame.addStackItem(TypeBinding.FLOAT);	
+	this.currentFrame.addStackItem(TypeBinding.FLOAT);
 }
 public void fdiv() {
 	super.fdiv();
-	this.currentFrame.numberOfStackItems--;	
+	this.currentFrame.numberOfStackItems--;
 }
 public void fload(int iArg) {
 	super.fload(iArg);
@@ -619,11 +619,11 @@ public void fload_3() {
 }
 public void fmul() {
 	super.fmul();
-	this.currentFrame.numberOfStackItems--;	
+	this.currentFrame.numberOfStackItems--;
 }
 public void frem() {
 	super.frem();
-	this.currentFrame.numberOfStackItems--;	
+	this.currentFrame.numberOfStackItems--;
 }
 public void freturn() {
 	super.freturn();
@@ -657,7 +657,7 @@ public void fstore_3() {
 }
 public void fsub() {
 	super.fsub();
-	this.currentFrame.numberOfStackItems--;	
+	this.currentFrame.numberOfStackItems--;
 }
 public void generateBoxingConversion(int unboxedTypeID) {
 	super.generateBoxingConversion(unboxedTypeID);
@@ -672,7 +672,7 @@ public void generateBoxingConversion(int unboxedTypeID) {
         case TypeIds.T_char :
            	info = new VerificationTypeInfo(TypeIds.T_JavaLangCharacter, ConstantPool.JavaLangCharacterConstantPoolName);
            break;
-        case TypeIds.T_int :             
+        case TypeIds.T_int :
            	info = new VerificationTypeInfo(TypeIds.T_JavaLangInteger, ConstantPool.JavaLangIntegerConstantPoolName);
             break;
         case TypeIds.T_long :
@@ -683,7 +683,7 @@ public void generateBoxingConversion(int unboxedTypeID) {
             break;
         case TypeIds.T_double :
            	info = new VerificationTypeInfo(TypeIds.T_JavaLangDouble, ConstantPool.JavaLangDoubleConstantPoolName);
-            break;  
+            break;
         case TypeIds.T_boolean :
            	info = new VerificationTypeInfo(TypeIds.T_JavaLangBoolean, ConstantPool.JavaLangBooleanConstantPoolName);
     }
@@ -710,7 +710,7 @@ public void generateOuterAccess(Object[] mappingSequence, ASTNode invocationSite
 		this.currentFrame.addStackItem((ReferenceBinding)target);
 		return;
 	}
-	
+
 	if (mappingSequence == BlockScope.EmulationPathToImplicitThis) {
 		this.aload_0();
 		return;
@@ -791,7 +791,7 @@ public void getBaseTypeValue(int baseTypeID) {
 			info = new VerificationTypeInfo(TypeBinding.BOOLEAN);
 	}
 	if (info != null) {
-		this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = info;	
+		this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = info;
 	}
 }
 public void getfield(FieldBinding fieldBinding) {
@@ -1014,7 +1014,7 @@ public boolean inlineForwardReferencesFromLabelsTargeting(BranchLabel targetLabe
 			continue;
 		}
 		if (currentLabel.isStandardLabel()) {
-			if (currentLabel.delegate != null) continue;			
+			if (currentLabel.delegate != null) continue;
 			chaining |= L_OPTIMIZABLE;
 			if (currentLabel.forwardReferenceCount() == 0 && ((currentLabel.tagBits & BranchLabel.USED) != 0)) {
 				removeFrame = false;
@@ -1041,7 +1041,7 @@ public boolean inlineForwardReferencesFromLabelsTargeting(BranchLabel targetLabe
 			}
 		}
 	}
-	return (chaining & (L_OPTIMIZABLE|L_CANNOT_OPTIMIZE)) == L_OPTIMIZABLE; // check was some standards, and no case/recursive	
+	return (chaining & (L_OPTIMIZABLE|L_CANNOT_OPTIMIZE)) == L_OPTIMIZABLE; // check was some standards, and no case/recursive
 }
 
 public void init(ClassFile targetClassFile) {
@@ -1053,8 +1053,8 @@ public void initializeMaxLocals(MethodBinding methodBinding) {
 	super.initializeMaxLocals(methodBinding);
 	StackMapFrame frame = new StackMapFrame();
 	frame.pc = -1;
-	
-	if (this.maxLocals != 0) {		
+
+	if (this.maxLocals != 0) {
 		int resolvedPosition = 0;
 		// take into account enum constructor synthetic name+ordinal
 		final boolean isConstructor = methodBinding.isConstructor();
@@ -1063,9 +1063,9 @@ public void initializeMaxLocals(MethodBinding methodBinding) {
 			resolvedPosition++;
 		} else if (!methodBinding.isStatic()) {
 			frame.putLocal(resolvedPosition, new VerificationTypeInfo(VerificationTypeInfo.ITEM_OBJECT, methodBinding.declaringClass));
-			resolvedPosition++;			
+			resolvedPosition++;
 		}
-			
+
 		if (isConstructor) {
 			if (methodBinding.declaringClass.isEnum()) {
 				frame.putLocal(resolvedPosition, new VerificationTypeInfo(TypeIds.T_JavaLangString, ConstantPool.JavaLangStringConstantPoolName));
@@ -1177,7 +1177,7 @@ protected void invokeArrayNewInstance() {
 }
 public void invokeClassForName() {
 	super.invokeClassForName();
-	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeIds.T_JavaLangClass, ConstantPool.JavaLangClassConstantPoolName);	
+	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeIds.T_JavaLangClass, ConstantPool.JavaLangClassConstantPoolName);
 }
 protected void invokeClassGetDeclaredConstructor() {
 	super.invokeClassGetDeclaredConstructor();
@@ -1187,16 +1187,16 @@ protected void invokeClassGetDeclaredConstructor() {
 protected void invokeClassGetDeclaredField() {
 	super.invokeClassGetDeclaredField();
 	this.currentFrame.numberOfStackItems--;
-	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeIds.T_JavaLangReflectField, ConstantPool.JAVALANGREFLECTFIELD_CONSTANTPOOLNAME);	
+	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeIds.T_JavaLangReflectField, ConstantPool.JAVALANGREFLECTFIELD_CONSTANTPOOLNAME);
 }
 protected void invokeClassGetDeclaredMethod() {
 	super.invokeClassGetDeclaredMethod();
 	this.currentFrame.numberOfStackItems-=2;
-	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeIds.T_JavaLangReflectMethod, ConstantPool.JAVALANGREFLECTMETHOD_CONSTANTPOOLNAME);	
+	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeIds.T_JavaLangReflectMethod, ConstantPool.JAVALANGREFLECTMETHOD_CONSTANTPOOLNAME);
 }
 public void invokeEnumOrdinal(char[] enumTypeConstantPoolName) {
 	super.invokeEnumOrdinal(enumTypeConstantPoolName);
-	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeBinding.INT);	
+	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeBinding.INT);
 }
 public void invokeinterface(MethodBinding methodBinding) {
 	super.invokeinterface(methodBinding);
@@ -1222,7 +1222,7 @@ public void invokeJavaLangAssertionErrorDefaultConstructor() {
 public void invokeJavaLangClassDesiredAssertionStatus() {
 	// invokevirtual: java.lang.Class.desiredAssertionStatus()Z;
 	super.invokeJavaLangClassDesiredAssertionStatus();
-	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeBinding.BOOLEAN);	
+	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeBinding.BOOLEAN);
 }
 public void invokeJavaLangEnumvalueOf(ReferenceBinding binding) {
 	// invokestatic: java.lang.Enum.valueOf(Class,String)
@@ -1243,7 +1243,7 @@ public void invokeJavaLangErrorConstructor() {
 public void invokeJavaLangReflectConstructorNewInstance() {
 	super.invokeJavaLangReflectConstructorNewInstance();
 	this.currentFrame.numberOfStackItems--;
-	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeIds.T_JavaLangObject, ConstantPool.JavaLangObjectConstantPoolName);	
+	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeIds.T_JavaLangObject, ConstantPool.JavaLangObjectConstantPoolName);
 }
 protected void invokeJavaLangReflectFieldGetter(int typeID) {
 	super.invokeJavaLangReflectFieldGetter(typeID);
@@ -1278,7 +1278,7 @@ protected void invokeJavaLangReflectFieldGetter(int typeID) {
 			break;
 	}
 	this.currentFrame.numberOfStackItems--;
-	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = info;	
+	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = info;
 }
 protected void invokeJavaLangReflectFieldSetter(int typeID) {
 	super.invokeJavaLangReflectFieldSetter(typeID);
@@ -1290,12 +1290,12 @@ public void invokeJavaLangReflectMethodInvoke() {
 }
 public void invokeJavaUtilIteratorHasNext() {
 	super.invokeJavaUtilIteratorHasNext();
-	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeBinding.BOOLEAN);		
+	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeBinding.BOOLEAN);
 }
 public void invokeJavaUtilIteratorNext() {
 	// invokeinterface java.util.Iterator.next()java.lang.Object
 	super.invokeJavaUtilIteratorNext();
-	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeIds.T_JavaLangObject, ConstantPool.JavaLangObjectConstantPoolName);		
+	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeIds.T_JavaLangObject, ConstantPool.JavaLangObjectConstantPoolName);
 }
 public void invokeNoClassDefFoundErrorStringConstructor() {
 	super.invokeNoClassDefFoundErrorStringConstructor();
@@ -1305,7 +1305,7 @@ public void invokeNoClassDefFoundErrorStringConstructor() {
 }
 public void invokeObjectGetClass() {
 	super.invokeObjectGetClass();
-	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeIds.T_JavaLangClass, ConstantPool.JavaLangClassConstantPoolName);		
+	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeIds.T_JavaLangClass, ConstantPool.JavaLangClassConstantPoolName);
 }
 public void invokespecial(MethodBinding methodBinding) {
 	super.invokespecial(methodBinding);
@@ -1344,7 +1344,7 @@ public void invokestatic(MethodBinding methodBinding) {
 	this.currentFrame.numberOfStackItems -= methodBinding.parameters.length;
 	if (methodBinding.returnType != TypeBinding.VOID) {
 		this.currentFrame.addStackItem(methodBinding.returnType);
-	}	
+	}
 }
 public void invokeStringConcatenationAppendForType(int typeID) {
 	super.invokeStringConcatenationAppendForType(typeID);
@@ -1364,11 +1364,11 @@ public void invokeStringConcatenationStringConstructor() {
 }
 public void invokeStringConcatenationToString() {
 	super.invokeStringConcatenationToString();
-	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeIds.T_JavaLangString, ConstantPool.JavaLangStringConstantPoolName);		
+	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeIds.T_JavaLangString, ConstantPool.JavaLangStringConstantPoolName);
 }
 public void invokeStringValueOf(int typeID) {
 	super.invokeStringValueOf(typeID);
-	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeIds.T_JavaLangString, ConstantPool.JavaLangStringConstantPoolName);		
+	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeIds.T_JavaLangString, ConstantPool.JavaLangStringConstantPoolName);
 }
 public void invokeSystemArraycopy() {
 	super.invokeSystemArraycopy();
@@ -1376,7 +1376,7 @@ public void invokeSystemArraycopy() {
 }
 public void invokeThrowableGetMessage() {
 	super.invokeThrowableGetMessage();
-	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeIds.T_JavaLangString, ConstantPool.JavaLangStringConstantPoolName);		
+	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeIds.T_JavaLangString, ConstantPool.JavaLangStringConstantPoolName);
 }
 public void invokevirtual(MethodBinding methodBinding) {
 	super.invokevirtual(methodBinding);
@@ -1476,7 +1476,7 @@ public void lastore() {
 }
 public void lcmp() {
 	super.lcmp();
-	this.currentFrame.numberOfStackItems--;	
+	this.currentFrame.numberOfStackItems--;
 	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeBinding.INT);
 }
 public void lconst_0() {
@@ -1615,7 +1615,7 @@ public void multianewarray(TypeBinding typeBinding, int dimensions) {
 	char[] brackets = new char[dimensions];
 	for (int i = dimensions - 1; i >= 0; i--) brackets[i] = '[';
 	char[] constantPoolName = CharOperation.concat(brackets, typeBinding.constantPoolName());
-	this.currentFrame.addStackItem(new VerificationTypeInfo(typeBinding.id, constantPoolName));	
+	this.currentFrame.addStackItem(new VerificationTypeInfo(typeBinding.id, constantPoolName));
 }
 // We didn't call it new, because there is a conflit with the new keyword
 public void new_(TypeBinding typeBinding) {
@@ -1654,7 +1654,7 @@ public void newarray(int array_Type) {
 			constantPoolName = new char[] { '[', 'D' };
 			break;
 	}
-	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeIds.T_JavaLangObject, constantPoolName);	
+	this.currentFrame.stackItems[this.currentFrame.numberOfStackItems - 1] = new VerificationTypeInfo(TypeIds.T_JavaLangObject, constantPoolName);
 }
 public void newJavaLangAssertionError() {
 	int pc = this.position;
@@ -1780,7 +1780,7 @@ public void pushOnStack(TypeBinding binding) {
 }
 public void putfield(FieldBinding fieldBinding) {
 	super.putfield(fieldBinding);
-	this.currentFrame.numberOfStackItems -= 2;	
+	this.currentFrame.numberOfStackItems -= 2;
 }
 
 public void pushStateIndex(int naturalExitMergeInitStateIndex) {
@@ -1796,7 +1796,7 @@ public void pushStateIndex(int naturalExitMergeInitStateIndex) {
 }
 public void putstatic(FieldBinding fieldBinding) {
 	super.putstatic(fieldBinding);
-	this.currentFrame.numberOfStackItems--;	
+	this.currentFrame.numberOfStackItems--;
 }
 public void recordExpressionType(TypeBinding typeBinding) {
 	super.recordExpressionType(typeBinding);

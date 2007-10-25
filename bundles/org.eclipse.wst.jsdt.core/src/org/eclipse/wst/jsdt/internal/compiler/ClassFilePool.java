@@ -16,11 +16,11 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 
 public class ClassFilePool {
 	public static final int POOL_SIZE = 7;
-	ClassFile[] classFiles; 
-	
+	ClassFile[] classFiles;
+
 private ClassFilePool() {
 	// prevent instantiation
-	this.classFiles = new ClassFile[POOL_SIZE];		
+	this.classFiles = new ClassFile[POOL_SIZE];
 }
 
 public static ClassFilePool newInstance() {
@@ -36,7 +36,7 @@ public void release(ClassFile classFile) {
 		}
 	}
 }
-	
+
 public ClassFile acquire(SourceTypeBinding typeBinding) {
 	for (int i = 0; i < POOL_SIZE; i++) {
 		ClassFile classFile = this.classFiles[i];
@@ -56,7 +56,7 @@ public ClassFile acquire(SourceTypeBinding typeBinding) {
 	return new ClassFile(typeBinding);
 }
 public void reset() {
-	Arrays.fill(this.classFiles, null); 	
+	Arrays.fill(this.classFiles, null);
 }
 //	TypeBinding mostEnclosingType(TypeBinding binding) {
 //		TypeBinding currentBinding = binding;

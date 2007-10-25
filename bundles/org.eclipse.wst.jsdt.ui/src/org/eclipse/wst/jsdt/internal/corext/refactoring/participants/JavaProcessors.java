@@ -14,11 +14,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IMember;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 
 /**

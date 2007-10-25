@@ -17,9 +17,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenamingNameSuggestor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.IReorgPolicy;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.IReorgPolicy.IMovePolicy;
@@ -30,10 +28,8 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.IReferenceUpdati
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.ISimilarDeclarationUpdating;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.ITextUpdating;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 /**
  * Helper class to generate a refactoring descriptor comment.

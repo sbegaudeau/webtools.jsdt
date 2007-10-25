@@ -21,13 +21,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-
-import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.jface.resource.ImageDescriptor;
-
 import org.eclipse.jface.text.contentassist.IContextInformation;
-
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.core.CompletionContext;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
@@ -37,10 +33,7 @@ import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
-
 import org.eclipse.wst.jsdt.internal.corext.util.TypeFilter;
-
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.java.AnonymousTypeCompletionProposal;
 import org.eclipse.wst.jsdt.internal.ui.text.java.AnonymousTypeProposalInfo;

@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.codeassist.complete;
 
 /*
  * Completion node build by the parser in any case it was intending to
- * reduce an access to a member (field reference or message send) 
+ * reduce an access to a member (field reference or message send)
  * containing the completion identifier.
  * e.g.
  *
@@ -32,29 +32,35 @@ package org.eclipse.wst.jsdt.internal.codeassist.complete;
  * which should be replaced by the completion.
  */
 
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemMethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class CompletionOnMemberAccess extends FieldReference {
-	
+
 	public boolean isInsideAnnotation;
-	
+
 	public CompletionOnMemberAccess(char[] source, long pos, boolean isInsideAnnotation) {
-		
+
 		super(source, pos);
 		this.isInsideAnnotation = isInsideAnnotation;
 	}
-	
+
 	public StringBuffer printExpression(int indent, StringBuffer output) {
 
 		output.append("<CompleteOnMemberAccess:"); //$NON-NLS-1$
-		return super.printExpression(0, output).append('>'); 
+		return super.printExpression(0, output).append('>');
 	}
 
 	public TypeBinding resolveType(BlockScope scope) {
-		
+
 		this.receiverType = receiver.resolveType(scope);
-		
+
 		if (this.receiverType == null && receiver instanceof MessageSend) {
 			MessageSend messageSend = (MessageSend) receiver;
 			if(messageSend.receiver instanceof ThisReference) {
@@ -67,12 +73,12 @@ public class CompletionOnMemberAccess extends FieldReference {
 						throw new CompletionNodeFound();
 					}
 				}
-					
+
 				ProblemMethodBinding problemMethodBinding = new ProblemMethodBinding(messageSend.selector, argBindings, ProblemReasons.NotFound);
 				throw new CompletionNodeFound(this, problemMethodBinding, scope);
 			}
 		}
-		
+
 		if (this.receiverType == null || this.receiverType.isBaseType())
 			throw new CompletionNodeFound();
 		else

@@ -9,25 +9,20 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.eval;
- 
+
 import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompoundAssignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteral;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedFieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemFieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 
 public class CodeSnippetFieldReference extends FieldReference implements ProblemReasons, EvaluationConstants {
 
@@ -124,7 +119,7 @@ public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean
 }
 
 public void generateCompoundAssignment(BlockScope currentScope, CodeStream codeStream, Expression expression, int operator, int assignmentImplicitConversion, boolean valueRequired) {
-//	
+//
 //	boolean isStatic;
 //	if (this.codegenBinding.canBeSeenBy(this.receiverType, this, currentScope)) {
 //		this.receiver.generateCode(currentScope, codeStream, !(isStatic = this.codegenBinding.isStatic()));
@@ -146,10 +141,10 @@ public void generateCompoundAssignment(BlockScope currentScope, CodeStream codeS
 //				codeStream.generateImplicitConversion(this.implicitConversion);
 //				// generate the increment value (will by itself  be promoted to the operation value)
 //				if (expression == IntLiteral.One){ // prefix operation
-//					codeStream.generateConstant(expression.constant, this.implicitConversion);			
+//					codeStream.generateConstant(expression.constant, this.implicitConversion);
 //				} else {
 //					expression.generateCode(currentScope, codeStream, true);
-//				}		
+//				}
 //				// perform the operation
 //				codeStream.sendOperator(operator, operationTypeID);
 //				// cast the value back to the array reference type
@@ -183,10 +178,10 @@ public void generateCompoundAssignment(BlockScope currentScope, CodeStream codeS
 //			codeStream.generateImplicitConversion(this.implicitConversion);
 //			// generate the increment value (will by itself  be promoted to the operation value)
 //			if (expression == IntLiteral.One){ // prefix operation
-//				codeStream.generateConstant(expression.constant, this.implicitConversion);			
+//				codeStream.generateConstant(expression.constant, this.implicitConversion);
 //			} else {
 //				expression.generateCode(currentScope, codeStream, true);
-//			}		
+//			}
 //			// perform the operation
 //			codeStream.sendOperator(operator, operationTypeID);
 //			// cast the value back to the array reference type
@@ -202,7 +197,7 @@ public void generateCompoundAssignment(BlockScope currentScope, CodeStream codeS
 //			}
 //		}
 //		// current stack is:
-//		// value field receiver value				
+//		// value field receiver value
 //		codeStream.generateEmulatedWriteAccessForField(this.codegenBinding);
 //	}
 }
@@ -271,7 +266,7 @@ public void generatePostIncrement(BlockScope currentScope, CodeStream codeStream
 //		}
 //		codeStream.generateEmulationForField(this.codegenBinding);
 //		codeStream.swap();
-//		
+//
 //		if ((this.codegenBinding.type == TypeBinding.LONG) || (this.codegenBinding.type == TypeBinding.DOUBLE)) {
 //			codeStream.dup2_x2();
 //		} else {
@@ -292,7 +287,7 @@ public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FlowInfo f
 	// The private access will be managed through the code generation
 
 	if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) != 0) return;
-	
+
 	// if field from parameterized type got found, use the original field at codegen time
 //	if (this.binding instanceof ParameterizedFieldBinding) {
 //	    ParameterizedFieldBinding parameterizedField = (ParameterizedFieldBinding) this.binding;
@@ -307,7 +302,7 @@ public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FlowInfo f
 //	} else {
 //	    this.codegenBinding = this.binding;
 //	}
-//		
+//
 	// if the binding declaring class is not visible, need special action
 	// for runtime compatibility on 1.2 VMs : change the declaring class of the binding
 	// NOTE: from target 1.2 on, field's declaring class is touched if any different from receiver type
@@ -316,7 +311,7 @@ public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FlowInfo f
 			&& !someReceiverType.isArrayType()
 			&& this.binding.declaringClass != null // array.length
 			&& this.binding.constant() == Constant.NotAConstant) {
-	
+
 		CompilerOptions options = currentScope.compilerOptions();
 //		if ((options.targetJDK >= ClassFileConstants.JDK1_2
 //				&& (options.complianceLevel >= ClassFileConstants.JDK1_4 || !receiver.isImplicitThis() || !this.codegenBinding.isStatic())
@@ -328,14 +323,14 @@ public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FlowInfo f
 //					this.codegenBinding,
 //					(ReferenceBinding) someReceiverType.erasure());
 //		}
-	}	
+	}
 }
 public TypeBinding resolveType(BlockScope scope) {
 	// Answer the signature type of the field.
 	// constants are propaged when the field is final
-	// and initialized with a (compile time) constant 
+	// and initialized with a (compile time) constant
 
-	// regular receiver reference 
+	// regular receiver reference
 	this.receiverType = this.receiver.resolveType(scope);
 	if (this.receiverType == null){
 		this.constant = Constant.NotAConstant;

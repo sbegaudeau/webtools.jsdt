@@ -12,12 +12,39 @@ package org.eclipse.wst.jsdt.internal.core.search.matching;
 
 import java.util.Arrays;
 
-import org.eclipse.core.runtime.*;
-import org.eclipse.wst.jsdt.core.*;
-import org.eclipse.wst.jsdt.core.compiler.*;
-import org.eclipse.wst.jsdt.core.search.*;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.Signature;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.core.search.SearchMatch;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ConstructorDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BinaryTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.CaptureBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.WildcardBinding;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
 import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
 import org.eclipse.wst.jsdt.internal.infer.InferredMethod;
@@ -180,7 +207,7 @@ protected TypeBinding getTypeNameBinding(int index) {
 }
 /**
  * Initializes this search pattern so that polymorphic search can be performed.
- */ 
+ */
 public void initializePolymorphicSearch(MatchLocator locator) {
 	// default is to do nothing
 }
@@ -275,7 +302,7 @@ protected boolean matchesName(char[] pattern, char[] name) {
 /**
  * Return how the given name matches the given pattern.
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=79866"
- * 
+ *
  * @param pattern
  * @param name
  * @return Possible values are:
@@ -374,9 +401,9 @@ protected void matchLevelAndReportImportRef(ImportReference importRef, Binding b
 	int level = resolveLevel(binding);
 	if (level >= INACCURATE_MATCH) {
 		matchReportImportRef(
-			importRef, 
-			binding, 
-			locator.createImportHandle(importRef), 
+			importRef,
+			binding,
+			locator.createImportHandle(importRef),
 			level == ACCURATE_MATCH
 				? SearchMatch.A_ACCURATE
 				: SearchMatch.A_INACCURATE,
@@ -441,9 +468,9 @@ protected int referenceType() {
 /**
  * Finds out whether the given ast node matches this search pattern.
  * Returns IMPOSSIBLE_MATCH if it doesn't.
- * Returns INACCURATE_MATCH if it potentially matches this search pattern (ie. 
+ * Returns INACCURATE_MATCH if it potentially matches this search pattern (ie.
  * it has already been resolved but resolving failed.)
- * Returns ACCURATE_MATCH if it matches exactly this search pattern (ie. 
+ * Returns ACCURATE_MATCH if it matches exactly this search pattern (ie.
  * it doesn't need to be resolved or it has already been resolved.)
  */
 public int resolveLevel(ASTNode possibleMatchingNode) {
@@ -472,7 +499,7 @@ protected void updateMatch(ParameterizedTypeBinding parameterizedBinding, char[]
 	if (isRaw && !match.isRaw()) {
 		match.setRaw(isRaw);
 	}
-	
+
 	// Update match
 	if (!endPattern && patternTypeArguments != null) {
 		// verify if this is a reference to the generic type itself
@@ -487,7 +514,7 @@ protected void updateMatch(ParameterizedTypeBinding parameterizedBinding, char[]
 			}
 			if (needUpdate) {
 				char[][] patternArguments =  patternTypeArguments[depth];
-				updateMatch(argumentsBindings, locator, patternArguments, patternHasTypeParameters);	
+				updateMatch(argumentsBindings, locator, patternArguments, patternHasTypeParameters);
 			}
 		} else {
 			char[][] patternArguments =  patternTypeArguments[depth];
@@ -524,7 +551,7 @@ protected void updateMatch(TypeBinding[] argumentsBinding, MatchLocator locator,
 	if (hasTypeParameters) {
 		matchRule = SearchPattern.R_ERASURE_MATCH;
 	}
-	
+
 	// Compare arguments lengthes
 	if (patternTypeArgsLength == typeArgumentsLength) {
 		if (!match.isRaw() && hasTypeParameters) {
@@ -584,7 +611,7 @@ protected void updateMatch(TypeBinding[] argumentsBinding, MatchLocator locator,
 			}
 			patternTypeName = Signature.toCharArray(patternTypeName);
 			TypeBinding patternBinding = locator.getType(patternTypeArgument, patternTypeName);
-			
+
 			// If have no binding for pattern arg, then we won't be able to refine accuracy
 			if (patternBinding == null) {
 				if (argumentBinding.isWildcard()) {
@@ -598,7 +625,7 @@ protected void updateMatch(TypeBinding[] argumentsBinding, MatchLocator locator,
 				}
 				continue;
 			}
-				
+
 			// Verify tha pattern binding is compatible with match type argument binding
 			switch (patternWildcard) {
 				case Signature.C_STAR : // UNBOUND pattern
@@ -628,7 +655,7 @@ protected void updateMatch(TypeBinding[] argumentsBinding, MatchLocator locator,
 								continue;
 						}
 					} else if (argumentBinding.isCompatibleWith(patternBinding)) {
-						// valid when arg is a subclass of pattern 
+						// valid when arg is a subclass of pattern
 						matchRule &= ~SearchPattern.R_FULL_MATCH;
 						continue;
 					}
@@ -688,7 +715,7 @@ protected void updateMatch(TypeBinding[] argumentsBinding, MatchLocator locator,
 						continue;
 					break;
 			}
-			
+
 			// Argument does not match => erasure match will be the only possible one
 			match.setRule(SearchPattern.R_ERASURE_MATCH);
 			return;
@@ -710,7 +737,7 @@ public int resolveLevel(Binding binding) {
 	return INACCURATE_MATCH;
 }
 /**
- * Returns whether the given type binding matches the given simple name pattern 
+ * Returns whether the given type binding matches the given simple name pattern
  * and qualification pattern.
  * Note that from since 3.1, this method resolve to accurate member or local types
  * even if they are not fully qualified (ie. X.Member instead of p.X.Member).
@@ -798,7 +825,7 @@ protected int resolveLevelForType (char[] simpleNamePattern,
 	if (type == null || patternTypeArguments == null || patternTypeArguments.length == 0 || depth >= patternTypeArguments.length) {
 		return level;
 	}
-	
+
 	// if pattern is erasure match (see bug 79790), commute impossible to erasure
 	int impossible = this.isErasureMatch ? ERASURE_MATCH : IMPOSSIBLE_MATCH;
 
@@ -838,7 +865,7 @@ protected int resolveLevelForType (char[] simpleNamePattern,
 			// type parameters length must match at least specified type names length
 			int length = patternTypeArguments[depth].length;
 			if (paramTypeBinding.arguments.length != length) return IMPOSSIBLE_MATCH;
-	
+
 			// verify each pattern type parameter
 			nextTypeArgument: for (int i= 0; i<length; i++) {
 				char[] patternTypeArgument = patternTypeArguments[depth][i];
@@ -860,7 +887,7 @@ protected int resolveLevelForType (char[] simpleNamePattern,
 				patternTypeArgument = Signature.toCharArray(patternTypeArgument);
 				if (!this.isCaseSensitive) patternTypeArgument = CharOperation.toLowerCase(patternTypeArgument);
 				boolean patternTypeArgHasAnyChars = CharOperation.contains(new char[] {'*', '?'}, patternTypeArgument);
-	
+
 				// Verify that names match...
 				// ...special case for wildcard
 				if (argTypeBinding instanceof CaptureBinding) {
@@ -887,7 +914,7 @@ protected int resolveLevelForType (char[] simpleNamePattern,
 
 					// If pattern is not exact then match fails
 					if (patternTypeArgHasAnyChars) return impossible;
-						
+
 					// Look for bound name in type argument superclasses
 					boundBinding = boundBinding.superclass();
 					while (boundBinding != null) {
@@ -904,7 +931,7 @@ protected int resolveLevelForType (char[] simpleNamePattern,
 					}
 					return impossible;
 				}
-				
+
 				// See if names match
 				if (CharOperation.match(patternTypeArgument, argTypeBinding.shortReadableName(), this.isCaseSensitive) ||
 					CharOperation.match(patternTypeArgument, argTypeBinding.readableName(), this.isCaseSensitive)) {
@@ -937,7 +964,7 @@ protected int resolveLevelForType (char[] simpleNamePattern,
 				return impossible;
 			}
 		}
-		
+
 		// Recurse on enclosing type
 		TypeBinding enclosingType = paramTypeBinding.enclosingType();
 		if (enclosingType != null && enclosingType.isParameterizedType() && depth < patternTypeArguments.length && qualificationPattern != null) {

@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.ui.workingsets;
 
 import org.eclipse.core.runtime.IAdaptable;
-
 import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistableElement;

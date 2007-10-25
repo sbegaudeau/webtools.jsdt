@@ -10,20 +10,14 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.text.correction;
 
-import com.ibm.icu.text.Collator;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-
-import org.eclipse.core.resources.IFile;
-
-import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.DocumentEvent;
@@ -32,29 +26,27 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.templates.GlobalTemplateVariables;
 import org.eclipse.jface.text.templates.Template;
-
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.part.FileEditorInput;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.dom.Statement;
-
 import org.eclipse.wst.jsdt.internal.corext.template.java.CompilationUnitContext;
 import org.eclipse.wst.jsdt.internal.corext.template.java.CompilationUnitContextType;
 import org.eclipse.wst.jsdt.internal.corext.template.java.JavaContextType;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.internal.ui.JavaUIStatus;
+import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.SurroundWithTemplateProposal;
+import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.TemplateProposal;
 import org.eclipse.wst.jsdt.ui.JavaUI;
 import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
 import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
 import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
 import org.eclipse.wst.jsdt.ui.text.java.IQuickAssistProcessor;
 
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
-import org.eclipse.wst.jsdt.internal.ui.JavaUIStatus;
-import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.SurroundWithTemplateProposal;
-import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.TemplateProposal;
+import com.ibm.icu.text.Collator;
 
 
 /**

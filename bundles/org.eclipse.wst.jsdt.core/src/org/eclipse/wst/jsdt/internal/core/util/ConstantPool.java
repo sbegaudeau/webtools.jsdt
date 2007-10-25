@@ -18,11 +18,11 @@ import org.eclipse.wst.jsdt.core.util.IConstantPoolEntry;
  * Default implementation of IConstantPool.
  */
 public class ConstantPool extends ClassFileStruct implements IConstantPool {
-	
+
 	private int constantPoolCount;
 	private int[] constantPoolOffset;
 	private byte[] classFileBytes;
-	
+
 	ConstantPool(byte[] reference, int[] constantPoolOffset) {
 		this.constantPoolCount = constantPoolOffset.length;
 		this.constantPoolOffset = constantPoolOffset;

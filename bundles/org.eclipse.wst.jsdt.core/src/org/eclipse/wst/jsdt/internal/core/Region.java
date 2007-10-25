@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.core.IRegion;
 /**
  * @see IRegion
  */
- 
+
 public class Region implements IRegion {
 
 	/**
@@ -50,10 +50,10 @@ public void add(IJavaElement element) {
  * @see IRegion
  */
 public boolean contains(IJavaElement element) {
-	
+
 	int size = fRootElements.size();
 	ArrayList parents = getAncestors(element);
-	
+
 	for (int i = 0; i < size; i++) {
 		IJavaElement aTop = (IJavaElement) fRootElements.get(i);
 		if (aTop.equals(element)) {

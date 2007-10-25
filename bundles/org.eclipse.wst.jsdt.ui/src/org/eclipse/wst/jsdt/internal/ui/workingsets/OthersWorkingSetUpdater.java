@@ -16,15 +16,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IAdaptable;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
-
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.ui.IWorkingSet;
+import org.eclipse.ui.IWorkingSetManager;
+import org.eclipse.ui.IWorkingSetUpdater;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
 import org.eclipse.wst.jsdt.core.IJavaElement;
@@ -33,16 +37,7 @@ import org.eclipse.wst.jsdt.core.IJavaModel;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
-
-import org.eclipse.ui.IWorkingSet;
-import org.eclipse.ui.IWorkingSetManager;
-import org.eclipse.ui.IWorkingSetUpdater;
-import org.eclipse.ui.PlatformUI;
 
 public class OthersWorkingSetUpdater implements IWorkingSetUpdater {
 	

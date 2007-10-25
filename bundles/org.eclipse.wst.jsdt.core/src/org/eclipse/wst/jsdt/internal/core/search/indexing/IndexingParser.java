@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -14,7 +14,6 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.IProblemFactory;
 import org.eclipse.wst.jsdt.internal.compiler.ISourceElementRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.SourceElementParser;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
@@ -32,7 +31,7 @@ public class IndexingParser extends SourceElementParser {
 		super(requestor, problemFactory, options, reportLocalDeclarations,
 				optimizeStringLiterals, useSourceJavadocParser);
 	}
-	
+
 //	protected ImportReference newImportReference(char[][] tokens, long[] sourcePositions, boolean onDemand, int mod) {
 //		ImportReference ref = this.importReference;
 //		ref.tokens = tokens;
@@ -53,7 +52,7 @@ public class IndexingParser extends SourceElementParser {
 //		ref.sourceEnd = (int) positions;
 //		return ref;
 //	}
-//	
+//
 //	protected QualifiedNameReference newQualifiedNameReference(char[][] tokens, long[] positions, int sourceStart, int sourceEnd) {
 //		QualifiedNameReference ref = this.qualifiedNameReference;
 //		ref.tokens = tokens;

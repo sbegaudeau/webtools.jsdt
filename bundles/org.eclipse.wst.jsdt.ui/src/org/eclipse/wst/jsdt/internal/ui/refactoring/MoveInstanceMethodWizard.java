@@ -11,7 +11,18 @@
 package org.eclipse.wst.jsdt.internal.ui.refactoring;
 
 import org.eclipse.core.runtime.Assert;
-
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
+import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -26,38 +37,19 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
-
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
-
 import org.eclipse.ui.PlatformUI;
-
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
-import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
-
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.MoveInstanceMethodProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.MoveInstanceMethodRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.TextFieldNavigationHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;
 import org.eclipse.wst.jsdt.internal.ui.util.TableLayoutComposite;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 /**
  * Refactoring wizard for the 'move instance method' refactoring.

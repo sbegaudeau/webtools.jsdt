@@ -13,9 +13,7 @@ package org.eclipse.wst.jsdt.internal.ui.jarimport;
 import java.net.URI;
 
 import org.eclipse.ltk.core.refactoring.history.RefactoringHistory;
-
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-
 import org.eclipse.wst.jsdt.ui.jarpackager.JarPackageData;
 
 /**

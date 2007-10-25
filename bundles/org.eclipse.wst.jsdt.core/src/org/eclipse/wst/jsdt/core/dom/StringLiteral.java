@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.compiler.parser.TerminalTokens;
 
 /**
  * String literal nodes.
- * 
+ *
  * @since 2.0
  */
 public class StringLiteral extends Expression {
@@ -29,16 +29,16 @@ public class StringLiteral extends Expression {
 	 * The "escapedValue" structural property of this node type.
 	 * @since 3.0
 	 */
-	public static final SimplePropertyDescriptor ESCAPED_VALUE_PROPERTY = 
+	public static final SimplePropertyDescriptor ESCAPED_VALUE_PROPERTY =
 		new SimplePropertyDescriptor(StringLiteral.class, "escapedValue", String.class, MANDATORY); //$NON-NLS-1$
-	
+
 	/**
-	 * A list of property descriptors (element type: 
+	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
 	 */
 	private static final List PROPERTY_DESCRIPTORS;
-	
+
 	static {
 		List propertyList = new ArrayList(2);
 		createPropertyList(StringLiteral.class, propertyList);
@@ -49,20 +49,20 @@ public class StringLiteral extends Expression {
 	/**
 	 * Returns a list of structural property descriptors for this node type.
 	 * Clients must not modify the result.
-	 * 
+	 *
 	 * @param apiLevel the API level; one of the
 	 * <code>AST.JLS*</code> constants
 
-	 * @return a list of property descriptors (element type: 
+	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
 	 * @since 3.0
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
 	}
-			
+
 	/**
-	 * The literal string, including quotes and escapes; defaults to the 
+	 * The literal string, including quotes and escapes; defaults to the
 	 * literal for the empty string.
 	 */
 	private String escapedValue = "\"\"";//$NON-NLS-1$
@@ -73,7 +73,7 @@ public class StringLiteral extends Expression {
 	 * <p>
 	 * N.B. This constructor is package-private.
 	 * </p>
-	 * 
+	 *
 	 * @param ast the AST that is to own this node
 	 */
 	StringLiteral(AST ast) {
@@ -86,7 +86,7 @@ public class StringLiteral extends Expression {
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -102,7 +102,7 @@ public class StringLiteral extends Expression {
 		// allow default implementation to flag the error
 		return super.internalGetSetObjectProperty(property, get, value);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -135,20 +135,20 @@ public class StringLiteral extends Expression {
 		visitor.visit(this);
 		visitor.endVisit(this);
 	}
-	
+
 	/**
 	 * Returns the string value of this literal node to the given string
 	 * literal token. The token is the sequence of characters that would appear
 	 * in the source program, including enclosing double quotes and embedded
 	 * escapes.
-	 * 
+	 *
 	 * @return the string literal token, including enclosing double
 	 *    quotes and embedded escapes
-	 */ 
+	 */
 	public String getEscapedValue() {
 		return this.escapedValue;
 	}
-		
+
 	/**
 	 * Sets the string value of this literal node to the given string literal
 	 * token. The token is the sequence of characters that would appear in the
@@ -159,11 +159,11 @@ public class StringLiteral extends Expression {
 	 * <li><code>"hello world"</code> <code>setLiteral("\"hello world\"")</code></li>
 	 * <li><code>"boo\nhoo"</code> <code>setLiteral("\"boo\\nhoo\"")</code></li>
 	 * </ul>
-	 * 
+	 *
 	 * @param token the string literal token, including enclosing double
 	 *    quotes and embedded escapes
 	 * @exception IllegalArgumentException if the argument is incorrect
-	 */ 
+	 */
 	public void setEscapedValue(String token) {
 		// update internalSetEscapedValue(String) if this is changed
 		if (token == null) {
@@ -199,7 +199,7 @@ public class StringLiteral extends Expression {
 	}
 
 	/**
-	 * Returns the value of this literal node. 
+	 * Returns the value of this literal node.
 	 * <p>
 	 * For example,
 	 * <pre>
@@ -209,21 +209,21 @@ public class StringLiteral extends Expression {
 	 * </pre>
 	 * </p>
 	 * <p>
-	 * Note that this is a convenience method that converts from the stored 
+	 * Note that this is a convenience method that converts from the stored
 	 * string literal token returned by <code>getEscapedLiteral</code>.
 	 * </p>
-	 * 
+	 *
 	 * @return the string value without enclosing double quotes and embedded
 	 *    escapes
 	 * @exception IllegalArgumentException if the literal value cannot be converted
-	 */ 
+	 */
 	public String getLiteralValue() {
 		String s = getEscapedValue();
 		int len = s.length();
 		if (len < 2 || s.charAt(0) != '\"' || s.charAt(len-1) != '\"' ) {
 			throw new IllegalArgumentException();
 		}
-		
+
 		Scanner scanner = this.ast.scanner;
 		char[] source = s.toCharArray();
 		scanner.setSource(source);
@@ -242,7 +242,7 @@ public class StringLiteral extends Expression {
 	}
 
 	/**
-	 * Sets the value of this literal node. 
+	 * Sets the value of this literal node.
 	 * <p>
 	 * For example,
 	 * <pre>
@@ -253,11 +253,11 @@ public class StringLiteral extends Expression {
 	 * </pre>
 	 * </p>
 	 * <p>
-	 * Note that this is a convenience method that converts to the stored 
+	 * Note that this is a convenience method that converts to the stored
 	 * string literal token acceptable to <code>setEscapedLiteral</code>.
 	 * </p>
-	 * 
-	 * @param value the string value without enclosing double quotes and 
+	 *
+	 * @param value the string value without enclosing double quotes and
 	 *    embedded escapes
 	 * @exception IllegalArgumentException if the argument is incorrect
 	 */
@@ -267,7 +267,7 @@ public class StringLiteral extends Expression {
 		}
 		int len = value.length();
 		StringBuffer b = new StringBuffer(len + 2);
-		
+
 		b.append("\""); // opening delimiter //$NON-NLS-1$
 		for (int i = 0; i < len; i++) {
 			char c = value.charAt(i);
@@ -319,7 +319,7 @@ public class StringLiteral extends Expression {
 					break;
 				case '\7' :
 					b.append("\\7"); //$NON-NLS-1$
-					break;			
+					break;
 				default:
 					b.append(c);
 			}
@@ -334,7 +334,7 @@ public class StringLiteral extends Expression {
 		int size = BASE_NODE_SIZE + 1 * 4 + stringSize(escapedValue);
 		return size;
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */

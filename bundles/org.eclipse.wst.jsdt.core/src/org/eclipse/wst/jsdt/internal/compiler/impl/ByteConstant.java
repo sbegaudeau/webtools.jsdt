@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.compiler.impl;
 
 public class ByteConstant extends Constant {
 	private byte value;
-	
+
 public static Constant fromValue(byte value) {
 	return new ByteConstant(value);
 }

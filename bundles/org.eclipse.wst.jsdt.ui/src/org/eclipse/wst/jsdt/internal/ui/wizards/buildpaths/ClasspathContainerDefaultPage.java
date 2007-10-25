@@ -14,6 +14,11 @@ import java.util.ArrayList;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
@@ -28,13 +33,6 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringDialogField;
 import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPage;
 import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPageExtension;
 import org.eclipse.wst.jsdt.ui.wizards.NewElementWizardPage;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-
-import org.eclipse.jface.dialogs.Dialog;
-
-import org.eclipse.ui.PlatformUI;
 
 /**
   */

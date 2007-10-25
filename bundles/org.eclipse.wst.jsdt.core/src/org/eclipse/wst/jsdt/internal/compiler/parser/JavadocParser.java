@@ -14,7 +14,22 @@ import java.util.List;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocAllocationExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocArgumentExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocArrayQualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocArraySingleTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocFieldReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocImplicitTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocMessageSend;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocQualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocReturnStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
@@ -25,7 +40,7 @@ public class JavadocParser extends AbstractCommentParser {
 
 	// Public fields
 	public Javadoc docComment;
-	
+
 	// bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=51600
 	// Store param references for tag with invalid syntax
 	private int invalidParamReferencesPtr = -1;
@@ -36,15 +51,15 @@ public class JavadocParser extends AbstractCommentParser {
 	private long validValuePositions, invalidValuePositions;
 
 	private int flags=0;
-	
+
 	private TypeReference namespace=null;
 	private TypeReference memberOf=null;
 	private TypeReference returnType=null;
 	private TypeReference extendsType=null;
 
 	private boolean isConstructor;
-	
-	
+
+
 
 	protected boolean commentParse() {
 		// TODO Auto-generated method stub
@@ -52,7 +67,7 @@ public class JavadocParser extends AbstractCommentParser {
 		this.isConstructor=false;
 		this.namespace=null;
 		this.flags=0;
-		
+
 		this.namespace=null;
 		this.memberOf=null;
 		this.returnType=null;
@@ -67,7 +82,7 @@ public class JavadocParser extends AbstractCommentParser {
 
 	/* (non-Javadoc)
 	 * Returns true if tag @deprecated is present in javadoc comment.
-	 * 
+	 *
 	 * If javadoc checking is enabled, will also construct an Javadoc node, which will be stored into Parser.javadoc
 	 * slot for being consumed later on.
 	 */
@@ -86,7 +101,7 @@ public class JavadocParser extends AbstractCommentParser {
 		} else {
 			this.docComment = null;
 		}
-		
+
 		// If there's no tag in javadoc, return without parsing it
 		if (this.firstTagPosition == 0) {
 			switch (this.kind & PARSER_KIND) {
@@ -106,13 +121,13 @@ public class JavadocParser extends AbstractCommentParser {
 				this.lineEnds = this.scanner.lineEnds;
 				commentParse();
 			} else {
-				
+
 				// Parse comment
 				Scanner sourceScanner = this.sourceParser.scanner;
 				int firstLineNumber = Util.getLineNumber(javadocStart, sourceScanner.lineEnds, 0, sourceScanner.linePtr);
 				int lastLineNumber = Util.getLineNumber(javadocEnd, sourceScanner.lineEnds, 0, sourceScanner.linePtr);
 				this.index = javadocStart +3;
-	
+
 				// scan line per line, since tags must be at beginning of lines only
 				this.deprecated = false;
 				nextLine : for (int line = firstLineNumber; line <= lastLineNumber; line++) {
@@ -373,7 +388,7 @@ public class JavadocParser extends AbstractCommentParser {
 
 
 	protected void parseSimpleTag() {
-		
+
 		// Read first char
 		// readChar() code is inlined to balance additional method call in checkDeprectation(int)
 		char first = this.source[this.index++];
@@ -414,7 +429,7 @@ public class JavadocParser extends AbstractCommentParser {
 
 	protected boolean parseTag(int previousPosition) throws InvalidInputException {
 		boolean valid = false;
-	
+
 		// Read tag name
 		int currentPosition = this.index;
 		int token = readTokenAndConsume();
@@ -433,7 +448,7 @@ public class JavadocParser extends AbstractCommentParser {
 		this.tagSourceStart = this.scanner.getCurrentTokenStartPosition();
 		this.tagSourceEnd = this.scanner.getCurrentTokenEndPosition();
 		char[] tagName = this.scanner.getCurrentIdentifierSource();
-	
+
 		// Try to get tag name other than java identifier
 		// (see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=51660)
 		if (this.scanner.currentCharacter != ' ' && !ScannerHelper.isWhitespace(this.scanner.currentCharacter)) {
@@ -487,7 +502,7 @@ public class JavadocParser extends AbstractCommentParser {
 		if (length == 0) return false; // may happen for some parser (completion for example)
 		this.index = this.tagSourceEnd+1;
 		this.scanner.currentPosition = this.tagSourceEnd+1;
-	
+
 		// Decide which parse to perform depending on tag name
 		this.tagValue = NO_TAG_VALUE;
 		switch (token) {
@@ -501,17 +516,17 @@ public class JavadocParser extends AbstractCommentParser {
 						if (length == TAG_ALIAS_LENGTH && CharOperation.equals(TAG_ALIAS, tagName)) {
 							this.tagValue = TAG_ALIAS_VALUE;
 							valid=true;
-						} 
+						}
 						else if (length == TAG_ARGUMENT_LENGTH && CharOperation.equals(TAG_ARGUMENT, tagName)) {
 						this.tagValue = TAG_ARGUMENT_VALUE;
 						valid=parseParam();
-					} 
+					}
 				break;
 				case 'b':
 					if (length == TAG_BASE_LENGTH && CharOperation.equals(TAG_BASE, tagName)) {
 						this.tagValue = TAG_BASE_VALUE;
 						valid=parseExtends();
-					} 
+					}
 				break;
 					case 'c':
 						if (length == TAG_CATEGORY_LENGTH && CharOperation.equals(TAG_CATEGORY, tagName)) {
@@ -526,7 +541,7 @@ public class JavadocParser extends AbstractCommentParser {
 									this.tagValue = TAG_CONSTRUCTOR_VALUE;
 									this.isConstructor=true;
 									valid =true;
-								} 
+								}
 					break;
 					case 'd':
 						if (length == TAG_DEPRECATED_LENGTH && CharOperation.equals(TAG_DEPRECATED, tagName)) {
@@ -543,14 +558,14 @@ public class JavadocParser extends AbstractCommentParser {
 							if (length == TAG_EXEC_LENGTH && CharOperation.equals(TAG_EXEC, tagName)) {
 								this.tagValue = TAG_EXEC_VALUE;
 								valid = true;
-							} 
-						
+							}
+
 						break;
 					case 'f':
 						if (length == TAG_FILEOVERVIEW_LENGTH && CharOperation.equals(TAG_FILEOVERVIEW, tagName)) {
 							this.tagValue = TAG_FILEOVERVIEW_VALUE;
 							valid = true;
-						}  
+						}
 						break;
 					case 'i':
 						if (length == TAG_INHERITDOC_LENGTH && CharOperation.equals(TAG_INHERITDOC, tagName)) {
@@ -568,11 +583,11 @@ public class JavadocParser extends AbstractCommentParser {
 						else if (length == TAG_ID_LENGTH && CharOperation.equals(TAG_ID, tagName)) {
 							this.tagValue = TAG_ID_VALUE;
 							valid = true;
-						}  
+						}
 						else if (length == TAG_IGNORE_LENGTH && CharOperation.equals(TAG_IGNORE, tagName)) {
 							this.tagValue = TAG_IGNORE_VALUE;
 							valid = true;
-						}  
+						}
 						break;
 					case 'l':
 						if (length == TAG_LINK_LENGTH && CharOperation.equals(TAG_LINK, tagName)) {
@@ -603,17 +618,17 @@ public class JavadocParser extends AbstractCommentParser {
 						if (length == TAG_MEMBER_LENGTH && CharOperation.equals(TAG_MEMBER, tagName)) {
 							this.tagValue = TAG_MEMBER_VALUE;
 							valid = parseMember();
-						}  
+						}
 						else if (length == TAG_MEMBEROF_LENGTH && CharOperation.equals(TAG_MEMBEROF, tagName)) {
 							this.tagValue = TAG_MEMBEROF_VALUE;
 							valid = parseMember();
-						}  
+						}
 						break;
 					case 'n':
 						if (length == TAG_NAMESPACE_LENGTH && CharOperation.equals(TAG_NAMESPACE, tagName)) {
 							this.tagValue = TAG_NAMESPACE_VALUE;
 							valid = parseNamespace();
-						}  
+						}
 						break;
 					case 'p':
 						if (length == TAG_PARAM_LENGTH && CharOperation.equals(TAG_PARAM, tagName)) {
@@ -623,7 +638,7 @@ public class JavadocParser extends AbstractCommentParser {
 						else if (length == TAG_PROJECT_DESCRIPTION_LENGTH && CharOperation.equals(TAG_PROJECT_DESCRIPTION, tagName)) {
 							this.tagValue = TAG_PROJECT_DESCRIPTION_VALUE;
 							valid = true;
-						} 
+						}
 						break;
 					case 'r':
 						if (length == TAG_RETURNS_LENGTH && CharOperation.equals(TAG_RETURNS, tagName)) {
@@ -648,7 +663,7 @@ public class JavadocParser extends AbstractCommentParser {
 						else if (length == TAG_SDOC_LENGTH && CharOperation.equals(TAG_SDOC, tagName)) {
 							this.tagValue = TAG_SDOC_VALUE;
 							valid = true;
-						} 	
+						}
 						break;
 
 					case 't':
@@ -862,8 +877,8 @@ public class JavadocParser extends AbstractCommentParser {
 	protected void updateDocComment() {
 
 		this.docComment.modifiers=this.flags;
-		
-		
+
+
 		this.docComment.namespace=this.namespace;
 		this.docComment.memberOf=this.memberOf;
 		this.docComment.returnType=this.returnType;
@@ -879,7 +894,7 @@ public class JavadocParser extends AbstractCommentParser {
 		if (this.returnStatement != null) {
 			this.docComment.returnStatement = (JavadocReturnStatement) this.returnStatement;
 		}
-		
+
 		// Copy array of invalid syntax param tags
 		if (this.invalidParamReferencesPtr >= 0) {
 			this.docComment.invalidParameters = new JavadocSingleNameReference[this.invalidParamReferencesPtr+1];
@@ -936,7 +951,7 @@ public class JavadocParser extends AbstractCommentParser {
 					break;
 			}
 		}
-		
+
 		// Resize param tag references arrays
 		if (paramRefPtr == 0) { // there's no type parameters references
 			this.docComment.paramTypeParameters = null;
@@ -957,6 +972,6 @@ public class JavadocParser extends AbstractCommentParser {
 			  refs = new TypeReference[typeReference.length];
 			  System.arraycopy(typeReference, 0, refs, 0, typeReference.length);
 		  }
-		  nameRef.types=refs;		
+		  nameRef.types=refs;
 	}
 }

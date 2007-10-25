@@ -30,7 +30,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
@@ -39,11 +38,11 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.ShouldNotImplement;
 import org.eclipse.wst.jsdt.internal.compiler.util.Messages;
 
 public abstract class Expression extends Statement {
-	
+
 	public Constant constant;
-	
+
 	public int statementEnd = -1;
-	
+
 	//Some expression may not be used - from a java semantic point
 	//of view only - as statements. Other may. In order to avoid the creation
 	//of wrappers around expression in order to tune them as expression
@@ -76,7 +75,7 @@ public static final boolean isConstantValueRepresentable(Constant constant, int 
 					return constant.longValue() == constant.charValue();
 				default :
 					return false;//boolean
-			} 
+			}
 
 		case T_float :
 			switch (constantTypeID) {
@@ -96,8 +95,8 @@ public static final boolean isConstantValueRepresentable(Constant constant, int 
 					return constant.longValue() == constant.floatValue();
 				default :
 					return false;//boolean
-			} 
-			
+			}
+
 		case T_double :
 			switch (constantTypeID) {
 				case T_char :
@@ -116,8 +115,8 @@ public static final boolean isConstantValueRepresentable(Constant constant, int 
 					return constant.longValue() == constant.doubleValue();
 				default :
 					return false; //boolean
-			} 
-			
+			}
+
 		case T_byte :
 			switch (constantTypeID) {
 				case T_char :
@@ -136,8 +135,8 @@ public static final boolean isConstantValueRepresentable(Constant constant, int 
 					return constant.longValue() == constant.byteValue();
 				default :
 					return false; //boolean
-			} 
-			
+			}
+
 		case T_short :
 			switch (constantTypeID) {
 				case T_char :
@@ -156,8 +155,8 @@ public static final boolean isConstantValueRepresentable(Constant constant, int 
 					return constant.longValue() == constant.shortValue();
 				default :
 					return false; //boolean
-			} 
-			
+			}
+
 		case T_int :
 			switch (constantTypeID) {
 				case T_char :
@@ -176,8 +175,8 @@ public static final boolean isConstantValueRepresentable(Constant constant, int 
 					return constant.longValue() == constant.intValue();
 				default :
 					return false; //boolean
-			} 
-			
+			}
+
 		case T_long :
 			switch (constantTypeID) {
 				case T_char :
@@ -196,13 +195,13 @@ public static final boolean isConstantValueRepresentable(Constant constant, int 
 					return true;
 				default :
 					return false; //boolean
-			} 
-			
+			}
+
 		default :
 			return false; //boolean
-	} 
+	}
 }
-	
+
 public Expression() {
 	super();
 }
@@ -214,7 +213,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 /**
  * More sophisticated for of the flow analysis used for analyzing expressions, and be able to optimize out
  * portions of expressions where no actual value is required.
- * 
+ *
  * @param currentScope
  * @param flowContext
  * @param flowInfo
@@ -227,7 +226,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 }
 
 /**
- * Returns false if cast is not legal. 
+ * Returns false if cast is not legal.
  */
 public final boolean checkCastTypesCompatibility(Scope scope, TypeBinding castType, TypeBinding expressionType, Expression expression) {
 
@@ -265,37 +264,37 @@ public final boolean checkCastTypesCompatibility(Scope scope, TypeBinding castTy
 				}
 				if (!necessary) tagAsUnnecessaryCast(scope, castType);
 				return true;
-				
+
 			}
-		} else if (use15specifics 
+		} else if (use15specifics
 							&& scope.environment().computeBoxingType(expressionType).isCompatibleWith(castType)) { // unboxing - only widening match is allowed
-			tagAsUnnecessaryCast(scope, castType);  
+			tagAsUnnecessaryCast(scope, castType);
 			return true;
 		}
 		return false;
-	} else if (use15specifics 
-						&& expressionType.isBaseType() 
+	} else if (use15specifics
+						&& expressionType.isBaseType()
 						&& scope.environment().computeBoxingType(expressionType).isCompatibleWith(castType)) { // boxing - only widening match is allowed
-		tagAsUnnecessaryCast(scope, castType);  
+		tagAsUnnecessaryCast(scope, castType);
 		return true;
 	}
 
 	switch(expressionType.kind()) {
 		case Binding.BASE_TYPE :
-			//-----------cast to something which is NOT a base type--------------------------	
+			//-----------cast to something which is NOT a base type--------------------------
 			if (expressionType == TypeBinding.NULL) {
 				tagAsUnnecessaryCast(scope, castType);
 				return true; //null is compatible with every thing
 			}
 			return false;
-			
+
 		case Binding.ARRAY_TYPE :
 			if (castType == expressionType) {
 				tagAsUnnecessaryCast(scope, castType);
 				return true; // identity conversion
 			}
 			switch (castType.kind()) {
-				case Binding.ARRAY_TYPE : 
+				case Binding.ARRAY_TYPE :
 					// ( ARRAY ) ARRAY
 					TypeBinding castElementType = ((ArrayBinding) castType).elementsType();
 					TypeBinding exprElementType = ((ArrayBinding) expressionType).elementsType();
@@ -303,13 +302,13 @@ public final boolean checkCastTypesCompatibility(Scope scope, TypeBinding castTy
 						if (castElementType == exprElementType) {
 							tagAsNeedCheckCast();
 							return true;
-						} 
+						}
 						return false;
 					}
 					// recurse on array type elements
 					return checkCastTypesCompatibility(scope, castElementType, exprElementType, expression);
-					
-				case Binding.TYPE_PARAMETER : 
+
+				case Binding.TYPE_PARAMETER :
 					// ( TYPE_PARAMETER ) ARRAY
 					TypeBinding match = expressionType.findSuperTypeWithSameErasure(castType);
 					if (match == null) {
@@ -317,7 +316,7 @@ public final boolean checkCastTypesCompatibility(Scope scope, TypeBinding castTy
 					}
 					// recurse on the type variable upper bound
 					return checkCastTypesCompatibility(scope, ((TypeVariableBinding)castType).upperBound(), expressionType, expression);
-					
+
 				default:
 					// ( CLASS/INTERFACE ) ARRAY
 					switch (castType.id) {
@@ -332,7 +331,7 @@ public final boolean checkCastTypesCompatibility(Scope scope, TypeBinding castTy
 							return false;
 					}
 			}
-					
+
 		case Binding.TYPE_PARAMETER :
 			TypeBinding match = expressionType.findSuperTypeWithSameErasure(castType);
 			if (match != null) {
@@ -340,7 +339,7 @@ public final boolean checkCastTypesCompatibility(Scope scope, TypeBinding castTy
 			}
 			// recursively on the type variable upper bound
 			return checkCastTypesCompatibility(scope, castType, ((TypeVariableBinding)expressionType).upperBound(), expression);
-			
+
 		case Binding.WILDCARD_TYPE : // intersection type
 			match = expressionType.findSuperTypeWithSameErasure(castType);
 			if (match != null) {
@@ -359,7 +358,7 @@ public final boolean checkCastTypesCompatibility(Scope scope, TypeBinding castTy
 							case T_JavaIoSerializable :
 								tagAsNeedCheckCast();
 								return true;
-							default :									
+							default :
 								return false;
 						}
 
@@ -401,12 +400,12 @@ public final boolean checkCastTypesCompatibility(Scope scope, TypeBinding castTy
 												&& (CharOperation.equals(castTypeMethods[i].selector, expressionTypeMethods[j].selector))
 												&& castTypeMethods[i].areParametersEqual(expressionTypeMethods[j])) {
 											return false;
-				
+
 										}
 									}
 								}
 							}
-							return true;		
+							return true;
 						} else {
 							// ( CLASS ) INTERFACE
 							if (castType.id == TypeIds.T_JavaLangObject) { // no runtime error
@@ -443,7 +442,7 @@ public final boolean checkCastTypesCompatibility(Scope scope, TypeBinding castTy
 							return true;
 						}
 						return false;
-						
+
 					case Binding.TYPE_PARAMETER :
 						// ( TYPE_PARAMETER ) CLASS
 						match = expressionType.findSuperTypeWithSameErasure(castType);
@@ -452,7 +451,7 @@ public final boolean checkCastTypesCompatibility(Scope scope, TypeBinding castTy
 						}
 						// recurse on the type variable upper bound
 						return checkCastTypesCompatibility(scope, ((TypeVariableBinding)castType).upperBound(), expressionType, expression);
-						
+
 					default :
 						if (castType.isInterface()) {
 							// ( INTERFACE ) CLASS
@@ -475,7 +474,7 @@ public final boolean checkCastTypesCompatibility(Scope scope, TypeBinding castTy
 								// ensure there is no collision between both interfaces: i.e. I1 extends List<String>, I2 extends List<Object>
 								if (refExprType.hasIncompatibleSuperType((ReferenceBinding) castType))
 									return false;
-							}								
+							}
 							return true;
 						} else {
 							// ( CLASS ) CLASS
@@ -494,29 +493,29 @@ public final boolean checkCastTypesCompatibility(Scope scope, TypeBinding castTy
 				}
 			}
 	}
-}	
-	
+}
+
 /**
- * Check the local variable of this expression, if any, against potential NPEs 
+ * Check the local variable of this expression, if any, against potential NPEs
  * given a flow context and an upstream flow info. If so, report the risk to
  * the context. Marks the local as checked, which affects the flow info.
  * @param scope the scope of the analysis
  * @param flowContext the current flow context
  * @param flowInfo the upstream flow info; caveat: may get modified
  */
-public void checkNPE(BlockScope scope, FlowContext flowContext, 
+public void checkNPE(BlockScope scope, FlowContext flowContext,
 		FlowInfo flowInfo) {
 	LocalVariableBinding local = this.localVariableBinding();
-	if (local != null /*&& 
+	if (local != null /*&&
 			(local.type.tagBits & TagBits.IsBaseType) == 0*/) {
 		if ((this.bits & ASTNode.IsNonNull) == 0) {
-			flowContext.recordUsingNullReference(scope, local, this, 
+			flowContext.recordUsingNullReference(scope, local, this,
 					FlowContext.MAY_NULL, flowInfo);
 		}
-		flowInfo.markAsComparedEqualToNonNull(local); 
+		flowInfo.markAsComparedEqualToNonNull(local);
 			// from thereon it is set
 		if (flowContext.initsOnFinally != null) {
-			flowContext.initsOnFinally.markAsComparedEqualToNonNull(local); 
+			flowContext.initsOnFinally.markAsComparedEqualToNonNull(local);
 		}
 	}
 }
@@ -527,11 +526,11 @@ public boolean checkUnsafeCast(Scope scope, TypeBinding castType, TypeBinding ex
 			return true;
 		}
 		if (match != null && (
-				castType.isBoundParameterizedType() 
+				castType.isBoundParameterizedType()
 				|| 	expressionType.isBoundParameterizedType())) {
-			
+
 			if (match.isProvablyDistinctFrom(isNarrowing ? expressionType : castType, 0)) {
-				return false; 
+				return false;
 			}
 		}
 		if (!isNarrowing) tagAsUnnecessaryCast(scope, castType);
@@ -540,13 +539,13 @@ public boolean checkUnsafeCast(Scope scope, TypeBinding castType, TypeBinding ex
 	/**
 	 * Base types need that the widening is explicitly done by the compiler using some bytecode like i2f.
 	 * Also check unsafe type operations.
-	 */ 
+	 */
 	public void computeConversion(Scope scope, TypeBinding runtimeType, TypeBinding compileTimeType) {
 
 //		if (runtimeType == null || compileTimeType == null)
 //			return;
 //		if (this.implicitConversion != 0) return; // already set independantly
-//		
+//
 //		// it is possible for a Byte to be unboxed to a byte & then converted to an int
 //		// but it is not possible for a byte to become Byte & then assigned to an Integer,
 //		// or to become an int before boxed into an Integer
@@ -560,7 +559,7 @@ public boolean checkUnsafeCast(Scope scope, TypeBinding castType, TypeBinding ex
 //		} else if (compileTimeType != TypeBinding.NULL && compileTimeType.isBaseType()) {
 //			TypeBinding boxedType = scope.environment().computeBoxingType(runtimeType);
 //			if (boxedType == runtimeType) // Object o = 12;
-//				boxedType = compileTimeType; 
+//				boxedType = compileTimeType;
 //			this.implicitConversion = TypeIds.BOXING | (boxedType.id << 4) + compileTimeType.id;
 //			scope.problemReporter().autoboxing(this, compileTimeType, scope.environment().computeBoxingType(boxedType));
 //			return;
@@ -571,7 +570,7 @@ public boolean checkUnsafeCast(Scope scope, TypeBinding castType, TypeBinding ex
 //		int compileTimeTypeID, runtimeTypeID;
 //		if ((compileTimeTypeID = compileTimeType.id) == TypeIds.NoId) { // e.g. ? extends String  ==> String (103227)
 //			compileTimeTypeID = compileTimeType.erasure().id == TypeIds.T_JavaLangString ? TypeIds.T_JavaLangString : TypeIds.T_JavaLangObject;
-//		}		
+//		}
 //		switch (runtimeTypeID = runtimeType.id) {
 //			case T_byte :
 //			case T_short :
@@ -589,7 +588,7 @@ public boolean checkUnsafeCast(Scope scope, TypeBinding castType, TypeBinding ex
 //			default : // regular object ref
 ////				if (compileTimeType.isRawType() && runtimeTimeType.isBoundParameterizedType()) {
 ////				    scope.problemReporter().unsafeRawExpression(this, compileTimeType, runtimeTimeType);
-////				}		
+////				}
 //		}
 	}
 
@@ -598,7 +597,7 @@ public boolean checkUnsafeCast(Scope scope, TypeBinding castType, TypeBinding ex
 	 * normal expressions with no value required.
 	 *
 	 * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
-	 * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream 
+	 * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
 	 */
 	public void generateCode(BlockScope currentScope, CodeStream codeStream) {
 
@@ -607,7 +606,7 @@ public boolean checkUnsafeCast(Scope scope, TypeBinding castType, TypeBinding ex
 		}
 		generateCode(currentScope, codeStream, false);
 	}
-	
+
 	/**
 	 * Every expression is responsible for generating its implicit conversion when necessary.
 	 *
@@ -627,10 +626,10 @@ public boolean checkUnsafeCast(Scope scope, TypeBinding castType, TypeBinding ex
 			codeStream.recordPositionsFrom(pc, this.sourceStart);
 		} else {
 			// actual non-constant code generation
-			throw new ShouldNotImplement(Messages.ast_missingCode); 
+			throw new ShouldNotImplement(Messages.ast_missingCode);
 		}
-	}	
-	
+	}
+
 	/**
 	 * Default generation of a boolean value
 	 * @param currentScope
@@ -646,7 +645,7 @@ public boolean checkUnsafeCast(Scope scope, TypeBinding castType, TypeBinding ex
 			BranchLabel falseLabel,
 			boolean valueRequired) {
 
-		// a label valued to nil means: by default we fall through the case... 
+		// a label valued to nil means: by default we fall through the case...
 		// both nil means we leave the value on the stack
 
 		Constant cst = this.optimizedBooleanConstant();
@@ -738,7 +737,7 @@ public boolean checkUnsafeCast(Scope scope, TypeBinding castType, TypeBinding ex
 			case T_null :
 				if (this.constant != Constant.NotAConstant) {
 					String stringValue = this.constant.stringValue();
-					if (stringValue.length() == 0) {  // optimize ""+<str> 
+					if (stringValue.length() == 0) {  // optimize ""+<str>
 						codeStream.invokeStringConcatenationDefaultConstructor();
 						return;
 					}
@@ -773,11 +772,11 @@ public boolean checkUnsafeCast(Scope scope, TypeBinding castType, TypeBinding ex
 			getAllInheritedMethods0(superInterfaces[i], collector);
 		}
 	}
-	
+
 	public boolean isCompactableOperation() {
 
 		return false;
-	}	
+	}
 
 	//Return true if the conversion is done AUTOMATICALLY by the vm
 	//while the javaVM is an int based-machine, thus for example pushing
@@ -814,7 +813,7 @@ public boolean checkUnsafeCast(Scope scope, TypeBinding castType, TypeBinding ex
 	public LocalVariableBinding localVariableBinding() {
 		return null;
 	}
-	
+
 /**
  * Mark this expression as being non null, per a specific tag in the
  * source code.
@@ -825,11 +824,11 @@ public void markAsNonNull() {
 }
 
 	public int nullStatus(FlowInfo flowInfo) {
-		
-		if (/* (this.bits & IsNonNull) != 0 || */ 
+
+		if (/* (this.bits & IsNonNull) != 0 || */
 				this.constant != null && this.constant != Constant.NotAConstant)
 			return FlowInfo.NON_NULL; // constant expression cannot be null
-		
+
 		LocalVariableBinding local = localVariableBinding();
 		if (local != null) {
 			if (flowInfo.isDefinitelyNull(local))
@@ -840,14 +839,14 @@ public void markAsNonNull() {
 		}
 		return FlowInfo.NON_NULL;
 	}
-	
+
 	/**
 	 * Constant usable for bytecode pattern optimizations, but cannot be inlined
 	 * since it is not strictly equivalent to the definition of constant expressions.
 	 * In particular, some side-effects may be required to occur (only the end value
 	 * is known).
 	 * @return Constant known to be of boolean type
-	 */ 
+	 */
 	public Constant optimizedBooleanConstant() {
 		return this.constant;
 	}
@@ -887,7 +886,7 @@ public void markAsNonNull() {
 				convertedType = TypeBinding.DOUBLE;
 				break;
 			default :
-		}		
+		}
 		if ((this.implicitConversion & TypeIds.BOXING) != 0) {
 			convertedType = scope.environment().computeBoxingType(convertedType);
 		}
@@ -898,7 +897,7 @@ public void markAsNonNull() {
 		printIndent(indent, output);
 		return printExpression(indent, output);
 	}
-	
+
 	public abstract StringBuffer printExpression(int indent, StringBuffer output);
 
 	public StringBuffer printStatement(int indent, StringBuffer output) {
@@ -914,7 +913,7 @@ public void markAsNonNull() {
 
 	/**
 	 * Resolve the type of this expression in the context of a blockScope
-	 * 
+	 *
 	 * @param scope
 	 * @return
 	 * 	Return the actual type of this expression after resolution
@@ -931,7 +930,7 @@ public void markAsNonNull() {
 
 	/**
 	 * Resolve the type of this expression in the context of a classScope
-	 * 
+	 *
 	 * @param scope
 	 * @return
 	 * 	Return the actual type of this expression after resolution
@@ -949,10 +948,10 @@ public void markAsNonNull() {
 		this.setExpectedType(expectedTypes[0]); // needed in case of generic method invocation
 		TypeBinding expressionType = this.resolveType(scope);
 		if (expressionType == null) return null;
-	
+
 		for (int i = 0; i < expectedTypes.length; i++) {
 			if (expressionType == expectedTypes[i]) return expressionType;
-			
+
 			if (expressionType.isCompatibleWith(expectedTypes[i])) {
 //				if (scope.isBoxingCompatibleWith(expressionType, expectedType)) {
 //					this.computeConversion(scope, expectedType, expressionType);
@@ -965,7 +964,7 @@ public void markAsNonNull() {
 		return null;
 	}
 
-	
+
 	public TypeBinding resolveTypeExpecting(
 		BlockScope scope,
 		TypeBinding expectedType) {
@@ -974,7 +973,7 @@ public void markAsNonNull() {
 		TypeBinding expressionType = this.resolveType(scope);
 		if (expressionType == null) return null;
 		if (expressionType == expectedType) return expressionType;
-		
+
 		if (!expressionType.isCompatibleWith(expectedType)) {
 			if (scope.isBoxingCompatibleWith(expressionType, expectedType)) {
 				this.computeConversion(scope, expectedType, expressionType);
@@ -999,33 +998,33 @@ public void markAsNonNull() {
 			return this.constant;
 		return null;
 	}
-	
+
 	/**
 	 * Record the type expectation before this expression is typechecked.
 	 * e.g. String s = foo();, foo() will be tagged as being expected of type String
 	 * Used to trigger proper inference of generic method invocations.
-	 * 
+	 *
 	 * @param expectedType
 	 * 	The type denoting an expectation in the context of an assignment conversion
 	 */
 	public void setExpectedType(TypeBinding expectedType) {
 	    // do nothing by default
 	}
-	
+
 	public void tagAsNeedCheckCast() {
-	    // do nothing by default		
+	    // do nothing by default
 	}
-	
+
 	/**
 	 * Record the fact a cast expression got detected as being unnecessary.
-	 * 
+	 *
 	 * @param scope
 	 * @param castType
 	 */
 	public void tagAsUnnecessaryCast(Scope scope, TypeBinding castType) {
 	    // do nothing by default
 	}
-	
+
 	public Expression toTypeReference() {
 		//by default undefined
 
@@ -1036,7 +1035,7 @@ public void markAsNonNull() {
 
 		return this;
 	}
-	
+
 	/**
 	 * Traverse an expression in the context of a blockScope
 	 * @param visitor
@@ -1045,7 +1044,7 @@ public void markAsNonNull() {
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
 		// nothing to do
 	}
-	
+
 	/**
 	 * Traverse an expression in the context of a classScope
 	 * @param visitor
@@ -1054,7 +1053,7 @@ public void markAsNonNull() {
 	public void traverse(ASTVisitor visitor, ClassScope scope) {
 		// nothing to do
 	}
-	
+
 	public void traverse(ASTVisitor visitior, Scope scope)
 	{
 		if (scope instanceof BlockScope)
@@ -1064,7 +1063,7 @@ public void markAsNonNull() {
 		else if (scope instanceof CompilationUnitScope)
 			traverse(visitior,(CompilationUnitScope)scope);
 	}
-	
+
 	public boolean isPrototype()
 	{
 		return false;

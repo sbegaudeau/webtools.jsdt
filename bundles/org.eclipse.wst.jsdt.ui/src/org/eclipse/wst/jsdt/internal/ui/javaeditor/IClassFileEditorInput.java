@@ -12,8 +12,8 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
 
 
-import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.wst.jsdt.core.IClassFile;
 
 
 /**

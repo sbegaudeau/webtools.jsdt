@@ -11,10 +11,11 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class UndefinedLiteral extends MagicLiteral {
 
@@ -26,8 +27,8 @@ public class UndefinedLiteral extends MagicLiteral {
 	}
 
 	public void computeConstant() {
-	
-		constant = Constant.NotAConstant; 
+
+		constant = Constant.NotAConstant;
 	}
 
 	/**
@@ -36,7 +37,7 @@ public class UndefinedLiteral extends MagicLiteral {
 	 * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
 	 * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
 	 * @param valueRequired boolean
-	 */ 
+	 */
 	public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
 		int pc = codeStream.position;
 		if (valueRequired) {
@@ -56,7 +57,7 @@ public class UndefinedLiteral extends MagicLiteral {
 	public Object reusableJSRTarget() {
 		return TypeBinding.UNDEFINED;
 	}
-	
+
 	public char[] source() {
 		return source;
 	}

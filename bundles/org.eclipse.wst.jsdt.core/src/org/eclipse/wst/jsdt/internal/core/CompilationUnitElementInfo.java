@@ -23,23 +23,23 @@ public class CompilationUnitElementInfo extends OpenableElementInfo {
 	 */
 	protected int sourceLength;
 
-	/** 
+	/**
 	 * Timestamp of original resource at the time this element
 	 * was opened or last updated.
 	 */
 	protected long timestamp;
-	
+
 	/*
 	 * The positions of annotations for each element in this compilation unit.
 	 * A map from IJavaElement to long[]
 	 */
 	public HashMap annotationPositions;
-	
+
 	/*
 	 * A map from an IJavaElement (this type or a child of this type) to a String[] (the categories of this element)
 	 */
 	protected HashMap categories;
-	
+
 protected void addCategories(IJavaElement element, char[][] elementCategories) {
 	if (elementCategories == null) return;
 	if (this.categories == null)

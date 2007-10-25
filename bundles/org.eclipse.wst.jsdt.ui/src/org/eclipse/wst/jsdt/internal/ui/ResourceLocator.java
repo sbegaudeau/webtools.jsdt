@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.ui;
 
 import org.eclipse.core.resources.IResource;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 

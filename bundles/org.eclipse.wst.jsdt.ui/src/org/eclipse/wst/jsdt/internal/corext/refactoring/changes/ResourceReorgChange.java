@@ -10,22 +10,19 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.refactoring.changes;
 
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubProgressMonitor;
-
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.participants.ReorgExecutionLog;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JDTChange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.INewNameQuery;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ReorgUtils;

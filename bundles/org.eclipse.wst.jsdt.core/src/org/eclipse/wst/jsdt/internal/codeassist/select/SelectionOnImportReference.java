@@ -28,7 +28,7 @@ package org.eclipse.wst.jsdt.internal.codeassist.select;
  *       }
  *
  */
- 
+
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 
 public class SelectionOnImportReference extends ImportReference {

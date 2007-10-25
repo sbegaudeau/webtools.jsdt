@@ -12,7 +12,12 @@ package org.eclipse.wst.jsdt.internal.core.jdom;
 
 import java.util.Enumeration;
 
-import org.eclipse.wst.jsdt.core.jdom.*;
+import org.eclipse.wst.jsdt.core.jdom.DOMException;
+import org.eclipse.wst.jsdt.core.jdom.DOMFactory;
+import org.eclipse.wst.jsdt.core.jdom.IDOMCompilationUnit;
+import org.eclipse.wst.jsdt.core.jdom.IDOMFactory;
+import org.eclipse.wst.jsdt.core.jdom.IDOMMethod;
+import org.eclipse.wst.jsdt.core.jdom.IDOMNode;
 import org.eclipse.wst.jsdt.internal.core.util.CharArrayBuffer;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 
@@ -23,7 +28,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Messages;
  * contents are located in a contiguous range of a shared document. A shared
  * document is a char array, and is shared in the sense that the contents of other
  * document fragments may also be contained in the array.
- * 
+ *
  * <p>A node maintains indicies of relevant portions of its contents
  * in the shared document. Thus the original document and indicies create a
  * form from which to generate the contents of the document fragment. As attributes
@@ -45,11 +50,11 @@ import org.eclipse.wst.jsdt.internal.core.util.Messages;
  * preceding the node on the line where the node begins, and to include and trailing
  * whitespace up to the line where the next node begins. Any trailing // comments
  * that begin on the line where the current node ends, are considered part of that
- * node. 
+ * node.
  *
  * @see IDOMNode
  * @deprecated The JDOM was made obsolete by the addition in 2.0 of the more
- * powerful, fine-grained DOM/AST API found in the 
+ * powerful, fine-grained DOM/AST API found in the
  * org.eclipse.wst.jsdt.core.dom package.
  */
 public abstract class DOMNode implements IDOMNode {
@@ -94,7 +99,7 @@ public abstract class DOMNode implements IDOMNode {
 	 * shared document, or when the attributes of a
 	 * descendant have been altered. False when the
 	 * contents of this node and all descendants are
-	 * consistent with the content of the shared 
+	 * consistent with the content of the shared
 	 * document.
 	 */
 	protected boolean fIsFragmented= false;
@@ -150,7 +155,7 @@ public abstract class DOMNode implements IDOMNode {
 	 * expression
 	 */
 	protected static final int MASK_FIELD_HAS_INITIALIZER= 0x00000001;
-	
+
 	/**
 	 * A bit mask indicating this field is a secondary variable
 	 * declarator for a previous field declaration.
@@ -174,7 +179,7 @@ public abstract class DOMNode implements IDOMNode {
 	 * body.
 	 */
 	protected static final int MASK_HAS_BODY= 0x00000010;
-	
+
 	/**
 	 * A bit mask indicating this node currently has a
 	 * preceding comment.
@@ -255,12 +260,12 @@ DOMNode(char[] document, int[] sourceRange, String name, int[] nameRange) {
  *
  * <p>When a child is added, this node must be considered fragmented such that
  * the contents of this node are properly generated.
- * 
+ *
  * @see IDOMNode#addChild(IDOMNode)
  */
 public void addChild(IDOMNode child) throws IllegalArgumentException, DOMException {
 	basicAddChild(child);
-	
+
 	// if the node is a constructor, it must also be fragmented to update the constructor's name
 	if (child.getNodeType() == IDOMNode.METHOD && ((IDOMMethod)child).isConstructor()) {
 		((DOMNode)child).fragment();
@@ -276,7 +281,7 @@ public void addChild(IDOMNode child) throws IllegalArgumentException, DOMExcepti
  * using the original document and indicies as a form for the current
  * attribute values of this node. If this node not fragmented, the
  * contents can be obtained from the document.
- * 
+ *
  */
 protected void appendContents(CharArrayBuffer buffer) {
 	if (isFragmented()) {
@@ -296,7 +301,7 @@ protected void appendContents(CharArrayBuffer buffer) {
 protected void appendContentsOfChildren(CharArrayBuffer buffer) {
 	DOMNode child= fFirstChild;
 	DOMNode sibling;
-	
+
 	int start= 0, end= 0;
 	if (child != null) {
 		start= child.getStartPosition();
@@ -341,33 +346,33 @@ protected abstract void appendFragmentedContents(CharArrayBuffer buffer);
 void basicAddChild(IDOMNode child) throws IllegalArgumentException, DOMException {
 	// verify child may be added
 	if (!canHaveChildren()) {
-		throw new DOMException(Messages.dom_unableAddChild); 
+		throw new DOMException(Messages.dom_unableAddChild);
 	}
 	if (child == null) {
-		throw new IllegalArgumentException(Messages.dom_addNullChild); 
+		throw new IllegalArgumentException(Messages.dom_addNullChild);
 	}
 	if (!isAllowableChild(child)) {
-		throw new DOMException(Messages.dom_addIncompatibleChild); 
+		throw new DOMException(Messages.dom_addIncompatibleChild);
 	}
 	if (child.getParent() != null) {
-		throw new DOMException(Messages.dom_addChildWithParent); 
+		throw new DOMException(Messages.dom_addChildWithParent);
 	}
 	/* NOTE: To test if the child is an ancestor of this node, we
 	 * need only test if the root of this node is the child (the child
 	 * is already a root since we have just guarenteed it has no parent).
 	 */
 	if (child == getRoot()) {
-		throw new DOMException(Messages.dom_addAncestorAsChild); 
+		throw new DOMException(Messages.dom_addAncestorAsChild);
 	}
 
 	DOMNode node= (DOMNode)child;
-	
+
 	// if the child is not already part of this document, localize its contents
 	// before adding it to the tree
 	if (node.getDocument() != getDocument()) {
 		node.localizeContents();
 	}
-	
+
 	// add the child last
 	if (fFirstChild == null) {
 		// this is the first and only child
@@ -389,7 +394,7 @@ protected void becomeDetailed() throws DOMException {
 	if (!isDetailed()) {
 		DOMNode detailed= getDetailedNode();
 		if (detailed == null) {
-			throw new DOMException(Messages.dom_cannotDetail); 
+			throw new DOMException(Messages.dom_cannotDetail);
 		}
 		if (detailed != this) {
 			shareContents(detailed);
@@ -417,12 +422,12 @@ public Object clone() {
 	int length= 0;
 	char[] buffer= null;
 	int offset= fSourceRange[0];
-	
+
 	if (offset >= 0) {
 		length= fSourceRange[1] - offset + 1;
 		buffer= new char[length];
 		System.arraycopy(fDocument, offset, buffer, 0, length);
-	}	
+	}
 	DOMNode clone= newDOMNode();
 	clone.shareContents(this);
 	clone.fDocument = buffer;
@@ -443,10 +448,10 @@ public Object clone() {
 				DOMNode childClone= (DOMNode)child.clone();
 				clone.addChild(childClone);
 			}
-			
+
 		}
 	}
-	
+
 	return clone;
 }
 private DOMNode cloneSharingDocument(char[] document, int rootOffset) {
@@ -457,7 +462,7 @@ private DOMNode cloneSharingDocument(char[] document, int rootOffset) {
 	if (rootOffset > 0) {
 		clone.offset(0 - rootOffset);
 	}
-	
+
 	if (canHaveChildren()) {
 		Enumeration children = getChildren();
 		while (children.hasMoreElements()) {
@@ -530,7 +535,7 @@ public Enumeration getChildren() {
  * using the original document and indicies as a form for the current
  * attribute values of this node. If this node not fragmented, the
  * contents can be obtained from the document.
- * 
+ *
  * @see IDOMNode#getContents()
  */
 public String getContents() {
@@ -665,27 +670,27 @@ public int getStartPosition() {
 public void insertSibling(IDOMNode sibling) throws IllegalArgumentException, DOMException {
 	// verify sibling may be added
 	if (sibling == null) {
-		throw new IllegalArgumentException(Messages.dom_addNullSibling); 
+		throw new IllegalArgumentException(Messages.dom_addNullSibling);
 	}
 	if (fParent == null) {
-		throw new DOMException(Messages.dom_addSiblingBeforeRoot); 
+		throw new DOMException(Messages.dom_addSiblingBeforeRoot);
 	}
 	if (!fParent.isAllowableChild(sibling)) {
-		throw new DOMException(Messages.dom_addIncompatibleSibling); 
+		throw new DOMException(Messages.dom_addIncompatibleSibling);
 	}
 	if (sibling.getParent() != null) {
-		throw new DOMException(Messages.dom_addSiblingWithParent); 
+		throw new DOMException(Messages.dom_addSiblingWithParent);
 	}
 	/* NOTE: To test if the sibling is an ancestor of this node, we
 	 * need only test if the root of this node is the child (the sibling
 	 * is already a root since we have just guaranteed it has no parent).
 	 */
 	if (sibling == getRoot()) {
-		throw new DOMException(Messages.dom_addAncestorAsSibling); 
+		throw new DOMException(Messages.dom_addAncestorAsSibling);
 	}
 
 	DOMNode node= (DOMNode)sibling;
-	
+
 	// if the sibling is not already part of this document, localize its contents
 	// before inserting it into the tree
 	if (node.getDocument() != getDocument()) {
@@ -696,7 +701,7 @@ public void insertSibling(IDOMNode sibling) throws IllegalArgumentException, DOM
 	if (fPreviousNode == null) {
 		fParent.fFirstChild= node;
 	} else {
-		fPreviousNode.fNextNode= node;	
+		fPreviousNode.fNextNode= node;
 	}
 	node.fParent= fParent;
 	node.fPreviousNode= fPreviousNode;
@@ -735,7 +740,7 @@ protected boolean isDetailed() {
 	return getMask(MASK_DETAILED_SOURCE_INDEXES);
 }
 /**
- * Returns <code>true</code> if this node's or a descendant node's contents 
+ * Returns <code>true</code> if this node's or a descendant node's contents
  * have been altered since this node was created. This indicates
  * that the contents of this node are no longer consistent with
  * the contents of this node's document.
@@ -826,7 +831,7 @@ void normalizeStartPosition(int previousEnd, ILineStartFinder finder) {
 	int nodeStart = getStartPosition();
 	int lineStart = finder.getLineStart(nodeStart);
 	if (nodeStart > lineStart && (lineStart > previousEnd || (previousEnd == 0 && lineStart == 0)))
-		setStartPosition(lineStart);			
+		setStartPosition(lineStart);
 }
 /**
  * Offsets all the source indexes in this node by the given amount.
@@ -870,7 +875,7 @@ public void remove() {
 	if (fParent != null) {
 		fParent.fragment();
 	}
-	
+
 	// link siblings
 	if (fNextNode != null) {
 		fNextNode.fPreviousNode= fPreviousNode;
@@ -950,7 +955,7 @@ protected void shareContents(DOMNode node) {
 	fSourceRange= rangeCopy(node.fSourceRange);
 	fStateMask= node.fStateMask;
 
-	
+
 	if (canHaveChildren()) {
 		Enumeration myChildren= getChildren();
 		Enumeration otherChildren= node.getChildren();

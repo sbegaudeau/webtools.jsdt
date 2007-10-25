@@ -11,26 +11,45 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.compiler.*;
-import org.eclipse.wst.jsdt.internal.compiler.*;
+import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
+import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
+import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
-import org.eclipse.wst.jsdt.internal.compiler.flow.InitializationFlowContext;
-import org.eclipse.wst.jsdt.internal.compiler.impl.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
-import org.eclipse.wst.jsdt.internal.compiler.parser.*;
-import org.eclipse.wst.jsdt.internal.compiler.problem.*;
+import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
+import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
+import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilationUnit;
+import org.eclipse.wst.jsdt.internal.compiler.problem.AbortMethod;
+import org.eclipse.wst.jsdt.internal.compiler.problem.AbortType;
+import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 import org.eclipse.wst.jsdt.internal.infer.InferredMethod;
 import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 public abstract class AbstractMethodDeclaration
 	extends Statement
 	implements ProblemSeverities, ReferenceContext {
-		
+
 	public MethodScope scope;
-	//it is not relevent for constructor but it helps to have the name of the constructor here 
+	//it is not relevent for constructor but it helps to have the name of the constructor here
 	//which is always the name of the class.....parsing do extra work to fill it up while it do not have to....
 	public char[] selector;
 	public int declarationSourceStart;
@@ -45,9 +64,9 @@ public abstract class AbstractMethodDeclaration
 	public MethodBinding binding;
 	public boolean ignoreFurtherInvestigation = false;
 	public boolean needFreeReturn = false;
-	
+
 	public Javadoc javadoc;
-	
+
 	public int bodyStart;
 	public int bodyEnd = -1;
 	public CompilationResult compilationResult;
@@ -55,13 +74,13 @@ public abstract class AbstractMethodDeclaration
 	public InferredType inferredType;
 	public InferredMethod inferredMethod;
 
-	public boolean errorInSignature = false; 
+	public boolean errorInSignature = false;
 	public int exprStackPtr;
-	
+
 	AbstractMethodDeclaration(CompilationResult compilationResult){
 		this.compilationResult = compilationResult;
 	}
-	
+
 	/*
 	 *	We cause the compilation task to abort to a given extent.
 	 */
@@ -81,7 +100,7 @@ public abstract class AbstractMethodDeclaration
 
 	public FlowInfo analyseCode(BlockScope classScope, FlowContext initializationContext, FlowInfo info)
 	{
-	 return this.analyseCode((Scope)classScope, initializationContext, info);	
+	 return this.analyseCode((Scope)classScope, initializationContext, info);
 	}
 	public abstract FlowInfo analyseCode(Scope classScope, FlowContext initializationContext, FlowInfo info);
 
@@ -157,7 +176,7 @@ public abstract class AbstractMethodDeclaration
 						if (CharOperation.equals(thrownException.getTypeName(), bindingCompoundName)) {
 							thrownException.resolvedType = thrownExceptionBinding;
 							bindingIndex++;
-						}						
+						}
 					}
 				}
 			}
@@ -165,17 +184,17 @@ public abstract class AbstractMethodDeclaration
 	}
 
 	public CompilationResult compilationResult() {
-		
+
 		return this.compilationResult;
 	}
-	
+
 	/**
 	 * Bytecode generation for a method
 	 * @param classScope
 	 * @param classFile
 	 */
 	public void generateCode(ClassScope classScope, ClassFile classFile) {
-		
+
 		int problemResetPC = 0;
 		classFile.codeStream.wideMode = false; // reset wideMode to false
 		if (this.ignoreFurtherInvestigation) {
@@ -201,7 +220,7 @@ public abstract class AbstractMethodDeclaration
 				try {
 					classFile.contentsOffset = problemResetPC;
 					classFile.methodCount--;
-					classFile.codeStream.wideMode = true; // request wide mode 
+					classFile.codeStream.wideMode = true; // request wide mode
 					this.generateCode(classFile); // restart method generation
 				} catch (AbortMethod e2) {
 					int problemsLength;
@@ -282,7 +301,7 @@ public abstract class AbstractMethodDeclaration
 			}
 		}
 	}
-	
+
 	public boolean hasErrors() {
 		return this.ignoreFurtherInvestigation;
 	}
@@ -298,7 +317,7 @@ public abstract class AbstractMethodDeclaration
 
 		return false;
 	}
-	
+
 	public boolean isClinit() {
 
 		return false;
@@ -360,7 +379,7 @@ public abstract class AbstractMethodDeclaration
 		printIndent(tab, output);
 		printModifiers(this.modifiers, output);
 //		if (this.annotations != null) printAnnotations(this.annotations, output);
-		
+
 //		TypeParameter[] typeParams = typeParameters();
 //		if (typeParams != null) {
 //			output.append('<');
@@ -396,14 +415,14 @@ public abstract class AbstractMethodDeclaration
 
 	public StringBuffer printBody(int indent, StringBuffer output) {
 
-		if (isAbstract() || (this.modifiers & ExtraCompilerModifiers.AccSemicolonBody) != 0) 
+		if (isAbstract() || (this.modifiers & ExtraCompilerModifiers.AccSemicolonBody) != 0)
 			return output.append(';');
 
 		output.append(" {"); //$NON-NLS-1$
 		if (this.statements != null) {
 			for (int i = 0; i < this.statements.length; i++) {
 				output.append('\n');
-				this.statements[i].printStatement(indent, output); 
+				this.statements[i].printStatement(indent, output);
 			}
 		}
 		output.append('\n');
@@ -412,14 +431,14 @@ public abstract class AbstractMethodDeclaration
 	}
 
 	public StringBuffer printReturnType(int indent, StringBuffer output) {
-		
+
 		return output;
 	}
 
 	public void resolve(Scope upperScope) {
 
-		
-		if (this.scope==null ) 
+
+		if (this.scope==null )
 		{
 			this.scope = new MethodScope(upperScope,this, false);
 			if (this.selector!=null) {
@@ -449,13 +468,13 @@ public abstract class AbstractMethodDeclaration
 		}
 
 		if (this.binding == null) {
-			
-			
+
+
 			this.ignoreFurtherInvestigation = true;
 		}
 
 		try {
-			bindArguments(); 
+			bindArguments();
 			if (JavaCore.IS_EMCASCRIPT4)
 				bindThrownExceptions();
 			resolveJavadoc();
@@ -468,14 +487,14 @@ public abstract class AbstractMethodDeclaration
 					&& (this.binding.modifiers & ClassFileConstants.AccDeprecated) != 0
 					&& this.scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5) {
 				this.scope.problemReporter().missingDeprecatedAnnotationForMethod(this);
-			}			
+			}
 		} catch (AbortMethod e) {	// ========= abort on fatal error =============
 			this.ignoreFurtherInvestigation = true;
-		} 
+		}
 	}
 
 	public void resolveJavadoc() {
-		
+
 		if (this.binding == null) return;
 		if (this.javadoc != null) {
 			this.javadoc.resolve(this.scope);
@@ -507,7 +526,7 @@ public abstract class AbstractMethodDeclaration
 		Scope classScope) {
 		// default implementation: subclass will define it
 	}
-	
+
 	public TypeParameter[] typeParameters() {
 	    return null;
 	}
@@ -515,7 +534,7 @@ public abstract class AbstractMethodDeclaration
 
 
 	public void generateCode(BlockScope currentScope, CodeStream codeStream) {
-		
+
 	}
 
 	public void resolve(BlockScope scope) {
@@ -527,6 +546,6 @@ public abstract class AbstractMethodDeclaration
 	 */
 	public boolean isInferred() {
 		return this.inferredMethod!=null;
-	}		
+	}
 
 }

@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui.wizards;
 
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.resource.ImageDescriptor;
-
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.core.IClasspathAttribute;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;

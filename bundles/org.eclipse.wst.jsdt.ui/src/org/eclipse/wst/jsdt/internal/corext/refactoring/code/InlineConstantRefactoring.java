@@ -19,28 +19,24 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.eclipse.text.edits.MalformedTreeException;
-import org.eclipse.text.edits.RangeMarker;
-import org.eclipse.text.edits.TextEdit;
-import org.eclipse.text.edits.TextEditGroup;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubProgressMonitor;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.TextUtilities;
-
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
-
+import org.eclipse.text.edits.MalformedTreeException;
+import org.eclipse.text.edits.RangeMarker;
+import org.eclipse.text.edits.TextEdit;
+import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IField;
@@ -87,7 +83,6 @@ import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaRefactoringDescript
 import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
-
 import org.eclipse.wst.jsdt.internal.corext.Corext;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.ImportReferencesCollector;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodeFactory;
@@ -98,9 +93,9 @@ import org.eclipse.wst.jsdt.internal.corext.dom.fragments.ASTFragmentFactory;
 import org.eclipse.wst.jsdt.internal.corext.dom.fragments.IExpressionFragment;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.IRefactoringSearchRequestor;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.JavaRefactoringArguments;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptorComment;
+import org.eclipse.wst.jsdt.internal.corext.refactoring.JavaRefactoringArguments;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringScopeFactory;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringSearchEngine2;
@@ -115,10 +110,8 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.TightSourceRangeCom
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 public class InlineConstantRefactoring extends ScriptableRefactoring {
 

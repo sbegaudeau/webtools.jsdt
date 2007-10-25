@@ -13,27 +13,21 @@ package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.newsourcepage;
 
 import java.util.HashMap;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Path;
-
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-
 import org.eclipse.jface.viewers.IStructuredSelection;
-
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.dialogs.PreferencesUtil;
-
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.packageview.ClassPathContainer;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer;

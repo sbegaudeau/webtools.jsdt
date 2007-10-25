@@ -121,14 +121,14 @@ public class CompilerOptions {
 	public static final String OPTION_Unresolved_Field = JavaCore.UNRESOLVED_FIELD_REFERENCE;
 	public static final String OPTION_Unresolved_Method = JavaCore.UNRESOLVED_METHOD_REFERENCE;
 	/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
-	
+
 	/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
 	public static final String OPTION_LOOSE_VAR_DECL = JavaCore.LOOSE_VAR_DECL;
 	public static final String OPTION_OPTIONAL_SEMICOLON = JavaCore.OPTIONAL_SEMICOLON;
 	/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
-	
-	
-	
+
+
+
 	// Backward compatibility
 	public static final String OPTION_ReportInvalidAnnotation = "org.eclipse.wst.jsdt.core.compiler.problem.invalidAnnotation"; //$NON-NLS-1$
 	public static final String OPTION_ReportMissingAnnotation = "org.eclipse.wst.jsdt.core.compiler.problem.missingAnnotation"; //$NON-NLS-1$
@@ -214,19 +214,19 @@ public class CompilerOptions {
 	public static final long OverridingMethodWithoutSuperInvocation = ASTNode.Bit50L;
 	public static final long PotentialNullReference = ASTNode.Bit51L;
 	public static final long RedundantNullCheck = ASTNode.Bit52L;
-	
-	
+
+
 	/* START -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
 	public static final long UnresolvedType = ASTNode.Bit53L;
 	public static final long UnresolvedMethod = ASTNode.Bit54L;
 	public static final long UnresolvedField = ASTNode.Bit55L;
-	
+
 	/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
-	
+
 	/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
 	public static final long LooseVariableDecl = ASTNode.Bit56L;
 	public static final long OptionalSemicolon = ASTNode.Bit57L;
-	
+
 	/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
 
 	// Map: String optionKey --> Long irritant>
@@ -352,7 +352,7 @@ public class CompilerOptions {
 
 	public InferOptions inferOptions=new InferOptions();
 
-	
+
 	/**
 	 * Initializing the compiler options with defaults
 	 */
@@ -476,13 +476,13 @@ public class CompilerOptions {
 		/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
 		optionsMap.put(OPTION_LOOSE_VAR_DECL, getSeverityString(LooseVariableDecl));
 		optionsMap.put(OPTION_OPTIONAL_SEMICOLON, getSeverityString(OptionalSemicolon));
-		
+
 		/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
-		
-		
+
+
 		Map inferOptionsMap = inferOptions.getMap();
 		optionsMap.putAll(inferOptionsMap);
-		
+
 		return optionsMap;
 	}
 
@@ -605,17 +605,17 @@ public class CompilerOptions {
 					return OPTION_ReportFallthroughCase;
 				case (int)(OverridingMethodWithoutSuperInvocation >>> 32) :
 					return OPTION_ReportOverridingMethodWithoutSuperInvocation;
-				
-				
+
+
 				/* START -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
-				
+
 				case (int)(UnresolvedType >>> 32) :
 					return OPTION_Unresolved_Type;
 				case (int)(UnresolvedMethod >>> 32) :
 					return OPTION_Unresolved_Method;
 				case (int)(UnresolvedField >>> 32) :
 					return OPTION_Unresolved_Field;
-				
+
 				/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
 
 				/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
@@ -623,11 +623,11 @@ public class CompilerOptions {
 					return OPTION_LOOSE_VAR_DECL;
 				case (int)( OptionalSemicolon >>> 32) :
 					return OPTION_OPTIONAL_SEMICOLON;
-				
+
 				/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
 
-				
-				
+
+
 			}
 		}
 		return null;
@@ -778,7 +778,7 @@ public class CompilerOptions {
 			} else if (DISABLED.equals(optionValue)) {
 				this.reportUnusedParameterIncludeDocCommentReference = false;
 			}
-		}		
+		}
 		if ((optionValue = optionsMap.get(OPTION_ReportSpecialParameterHidingField)) != null) {
 			if (ENABLED.equals(optionValue)) {
 				this.reportSpecialParameterHidingField = true;
@@ -900,18 +900,18 @@ public class CompilerOptions {
 		if ((optionValue = optionsMap.get(OPTION_Unresolved_Type)) != null) updateSeverity(UnresolvedType, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_Unresolved_Field)) != null) updateSeverity(UnresolvedField, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_Unresolved_Method)) != null) updateSeverity(UnresolvedMethod, optionValue);
-		
+
 		/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
 
-		
+
 		/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
 		 if ((optionValue = optionsMap.get(OPTION_OPTIONAL_SEMICOLON)) != null)
 				updateSeverity(OptionalSemicolon, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_LOOSE_VAR_DECL)) != null)
 				updateSeverity(LooseVariableDecl, optionValue);
 		/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
-		
-		
+
+
 		// Javadoc options
 		if ((optionValue = optionsMap.get(OPTION_DocCommentSupport)) != null) {
 			if (ENABLED.equals(optionValue)) {

@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.eclipse.jface.internal.text.html.HTMLPrinter;
 import org.eclipse.jface.internal.text.html.SubstitutionTextReader;
-
 import org.eclipse.wst.jsdt.core.dom.TagElement;
 
 

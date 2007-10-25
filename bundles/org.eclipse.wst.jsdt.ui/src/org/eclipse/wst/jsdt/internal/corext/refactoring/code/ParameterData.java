@@ -16,7 +16,6 @@ import java.util.List;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.flow.FlowInfo;
 
 /* package */ class ParameterData {

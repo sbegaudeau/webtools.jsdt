@@ -13,10 +13,9 @@ package org.eclipse.wst.jsdt.internal.ui.search;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.swt.widgets.Table;
-
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.widgets.Table;
 
 public class JavaSearchTableContentProvider extends JavaSearchContentProvider implements IStructuredContentProvider {
 	public JavaSearchTableContentProvider(JavaSearchResultPage page) {

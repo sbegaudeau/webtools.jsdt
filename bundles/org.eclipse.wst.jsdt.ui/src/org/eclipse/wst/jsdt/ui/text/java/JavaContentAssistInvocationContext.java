@@ -10,12 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui.text.java;
 
-import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.text.ITextViewer;
-
 import org.eclipse.ui.IEditorPart;
-
 import org.eclipse.wst.jsdt.core.CompletionContext;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.ICodeAssist;
@@ -24,9 +20,7 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.template.java.SignatureUtil;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.wst.jsdt.internal.ui.text.java.ContentAssistHistory.RHSHistory;

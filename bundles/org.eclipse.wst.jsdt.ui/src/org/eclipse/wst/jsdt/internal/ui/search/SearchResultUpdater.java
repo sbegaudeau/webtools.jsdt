@@ -13,17 +13,18 @@ package org.eclipse.wst.jsdt.internal.ui.search;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.search.ui.IQueryListener;
+import org.eclipse.search.ui.ISearchQuery;
+import org.eclipse.search.ui.NewSearchUI;
+import org.eclipse.search.ui.text.Match;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaElementDelta;
 import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.search.ui.IQueryListener;
-import org.eclipse.search.ui.ISearchQuery;
-import org.eclipse.search.ui.NewSearchUI;
-import org.eclipse.search.ui.text.Match;
 
 public class SearchResultUpdater implements IElementChangedListener, IQueryListener {
 

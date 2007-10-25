@@ -13,16 +13,13 @@ package org.eclipse.wst.jsdt.internal.ui.preferences;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
-
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.preference.IPreferencePageContainer;
+import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.preference.IPreferencePageContainer;
-import org.eclipse.jface.preference.PreferenceDialog;
-
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
@@ -30,7 +27,6 @@ import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 
 /**

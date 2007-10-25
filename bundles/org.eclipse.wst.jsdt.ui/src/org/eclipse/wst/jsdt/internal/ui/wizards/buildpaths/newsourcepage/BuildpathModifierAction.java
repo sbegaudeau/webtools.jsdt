@@ -16,9 +16,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -28,18 +25,15 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchSite;
-import org.eclipse.ui.part.ISetSelectionTarget;
-
 import org.eclipse.ui.forms.widgets.FormText;
-
+import org.eclipse.ui.part.ISetSelectionTarget;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.BuildpathDelta;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.IBuildpathModifierListener;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 public abstract class BuildpathModifierAction extends Action implements ISelectionChangedListener {

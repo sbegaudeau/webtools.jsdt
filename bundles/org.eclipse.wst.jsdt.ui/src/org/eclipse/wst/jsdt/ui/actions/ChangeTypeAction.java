@@ -11,14 +11,10 @@
 package org.eclipse.wst.jsdt.ui.actions;
 
 import org.eclipse.core.runtime.CoreException;
-
-import org.eclipse.jface.viewers.IStructuredSelection;
-
 import org.eclipse.jface.text.ITextSelection;
-
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IMethod;
@@ -26,12 +22,10 @@ import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringExecutionStarter;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;

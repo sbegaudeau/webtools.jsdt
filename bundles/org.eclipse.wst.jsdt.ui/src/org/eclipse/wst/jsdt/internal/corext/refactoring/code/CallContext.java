@@ -15,7 +15,6 @@ import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.CodeScopeBuilder;
 
 public class CallContext {

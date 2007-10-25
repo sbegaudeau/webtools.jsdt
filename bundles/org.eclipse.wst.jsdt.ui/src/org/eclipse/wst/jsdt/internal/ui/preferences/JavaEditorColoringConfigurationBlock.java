@@ -18,7 +18,25 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.eclipse.core.runtime.Preferences;
-
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.preference.ColorSelector;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.StructuredViewer;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -37,39 +55,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Scrollable;
-
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.preference.ColorSelector;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceConverter;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.StructuredViewer;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerComparator;
-
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.IDocument;
-
 import org.eclipse.ui.dialogs.PreferencesUtil;
-import org.eclipse.ui.texteditor.ChainedPreferenceStore;
-
 import org.eclipse.ui.editors.text.EditorsUI;
-
+import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.wst.jsdt.core.JavaCore;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.IColorManager;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlighting;
@@ -80,6 +69,9 @@ import org.eclipse.wst.jsdt.internal.ui.text.JavaColorManager;
 import org.eclipse.wst.jsdt.internal.ui.text.PreferencesAdapter;
 import org.eclipse.wst.jsdt.internal.ui.text.SimpleJavaSourceViewerConfiguration;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
+import org.eclipse.wst.jsdt.ui.text.IColorManager;
+import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
 
 /**
  * Configures Java Editor hover preferences.

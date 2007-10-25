@@ -17,9 +17,7 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;
-
 import org.eclipse.wst.jsdt.core.JavaCore;
-
 import org.eclipse.wst.jsdt.internal.ui.text.ISourceVersionDependent;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaPairMatcher;
 

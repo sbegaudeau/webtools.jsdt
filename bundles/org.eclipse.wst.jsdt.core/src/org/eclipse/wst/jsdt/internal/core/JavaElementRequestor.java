@@ -28,7 +28,7 @@ public class JavaElementRequestor implements IJavaElementRequestor {
 	 * results from its <code>IRequestorNameLookup</code>.
 	 */
 	protected boolean fCanceled= false;
-	
+
 	/**
 	 * A collection of the resulting fields, or <code>null</code>
 	 * if no field results have been received.

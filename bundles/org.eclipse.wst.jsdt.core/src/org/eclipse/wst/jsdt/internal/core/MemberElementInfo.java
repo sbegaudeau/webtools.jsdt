@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-/** 
- *Element info for IMember elements. 
+/**
+ *Element info for IMember elements.
  */
 /* package */ abstract class MemberElementInfo extends SourceRefElementInfo {
 	/**

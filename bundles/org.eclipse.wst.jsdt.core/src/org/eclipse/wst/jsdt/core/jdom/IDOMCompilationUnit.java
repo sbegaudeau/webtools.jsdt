@@ -11,17 +11,17 @@
 package org.eclipse.wst.jsdt.core.jdom;
 
 /**
- * Represents a Java compilation unit (source file with one of the 
- * {@link org.eclipse.wst.jsdt.core.JavaCore#getJavaLikeExtensions() 
- * Java-like extensions}). 
- * The corresponding syntactic unit is CompilationUnit (JLS2 7.3).  
+ * Represents a Java compilation unit (source file with one of the
+ * {@link org.eclipse.wst.jsdt.core.JavaCore#getJavaLikeExtensions()
+ * Java-like extensions}).
+ * The corresponding syntactic unit is CompilationUnit (JLS2 7.3).
  * Allowable child types for a compilation unit are <code>IDOMPackage</code>, <code>IDOMImport</code>,
  * and <code>IDOMType</code>.
  * <p>
  * This interface is not intended to be implemented by clients.
  * </p>
  * @deprecated The JDOM was made obsolete by the addition in 2.0 of the more
- * powerful, fine-grained DOM/AST API found in the 
+ * powerful, fine-grained DOM/AST API found in the
  * org.eclipse.wst.jsdt.core.dom package.
  */
 public interface IDOMCompilationUnit extends IDOMNode {
@@ -40,8 +40,8 @@ public String getHeader();
  * method returns the name of this compilation unit.
  *
  * <p>The name of a compilation unit is the name of the first top-level public type
- * defined in the compilation unit, suffixed with one of the 
- * {@link org.eclipse.wst.jsdt.core.JavaCore#getJavaLikeExtensions() 
+ * defined in the compilation unit, suffixed with one of the
+ * {@link org.eclipse.wst.jsdt.core.JavaCore#getJavaLikeExtensions()
  * Java-like extensions}. For example, if the first
  * top-level public type defined in this compilation unit has the name "Hanoi",
  * then name of this compilation unit is "Hanoi.js".</p>
@@ -66,7 +66,7 @@ public void setHeader(String comment);
 /**
  * The <code>IDOMCompilationNode</code> refinement of this <code>IDOMNode</code>
  * method has no effect (the name is computed from the types declared within it).
- * 
+ *
  * @param name the given name
  */
 public void setName(String name);

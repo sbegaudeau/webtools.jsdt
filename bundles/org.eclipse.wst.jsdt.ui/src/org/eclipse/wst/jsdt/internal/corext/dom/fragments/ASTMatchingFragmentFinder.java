@@ -15,7 +15,6 @@ import java.util.Set;
 
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Javadoc;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor;
 
 class ASTMatchingFragmentFinder extends GenericVisitor {

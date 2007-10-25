@@ -12,25 +12,39 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.NestedTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.SyntheticArgumentBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 
 public class AllocationExpression extends Expression implements InvocationSite {
-		
+
 	public TypeReference type;
 	public Expression[] arguments;
 	public MethodBinding binding;							// exact binding resulting from lookup
 	protected MethodBinding codegenBinding;	// actual binding used for code generation (if no synthetic accessor)
 	MethodBinding syntheticAccessor;						// synthetic accessor for inner-emulation
-	public TypeReference[] typeArguments;	
+	public TypeReference[] typeArguments;
 	public TypeBinding[] genericTypeArguments;
 	public FieldDeclaration enumConstant; // for enum constant initializations
     public Expression member;
 	public boolean isShort;
-	
-	
+
+
 public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
 	// check captured variables are initialized in current context (26134)
 //	checkCapturedLocalInitializationIfNecessary((ReferenceBinding)this.binding.declaringClass.erasure(), currentScope, flowInfo);
@@ -61,17 +75,17 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 	}
 //	manageEnclosingInstanceAccessIfNecessary(currentScope, flowInfo);
 //	manageSyntheticAccessIfNecessary(currentScope, flowInfo);
-	
+
 	return flowInfo;
 }
 
 public void checkCapturedLocalInitializationIfNecessary(ReferenceBinding checkedType, BlockScope currentScope, FlowInfo flowInfo) {
-	if (checkedType.isLocalType() 
+	if (checkedType.isLocalType()
 			&& !checkedType.isAnonymousType()
 			&& !currentScope.isDefinedInType(checkedType)) { // only check external allocations
 		NestedTypeBinding nestedType = (NestedTypeBinding) checkedType;
 		SyntheticArgumentBinding[] syntheticArguments = nestedType.syntheticOuterLocalVariables();
-		if (syntheticArguments != null) 
+		if (syntheticArguments != null)
 			for (int i = 0, count = syntheticArguments.length; i < count; i++){
 				SyntheticArgumentBinding syntheticArgument = syntheticArguments[i];
 				LocalVariableBinding targetLocal;
@@ -153,7 +167,7 @@ public boolean isTypeAccess() {
 	return true;
 }
 
-/* Inner emulation consists in either recording a dependency 
+/* Inner emulation consists in either recording a dependency
  * link only, or performing one level of propagation.
  *
  * Dependency mechanism is used whenever dealing with source target
@@ -214,7 +228,7 @@ public StringBuffer printExpression(int indent, StringBuffer output) {
 		output.append('>');
 	}
 	if (type != null) { // type null for enum constant initializations
-		type.printExpression(0, output); 
+		type.printExpression(0, output);
 	}
 	if (!isShort)
 	{
@@ -226,7 +240,7 @@ public StringBuffer printExpression(int indent, StringBuffer output) {
 			}
 		}
 		output.append(')');
-	} 
+	}
 	return output;
 }
 
@@ -238,7 +252,7 @@ public TypeBinding resolveType(BlockScope scope) {
 		if (this.member instanceof SingleNameReference)
 		{
 			char[] memberName = ((SingleNameReference)this.member).token;
-			Binding binding=	
+			Binding binding=
 					scope.getBinding(memberName, (Binding.TYPE|Binding.METHOD | bits)  & RestrictiveFlagMASK, this, true /*resolve*/);
 			if (binding instanceof TypeBinding)
 				this.resolvedType=(TypeBinding)binding;
@@ -294,7 +308,7 @@ public TypeBinding resolveType(BlockScope scope) {
 			return null;
 		}
 	}
-	
+
 	// buffering the arguments' types
 	boolean argsContainCast = false;
 	TypeBinding[] argumentTypes = Binding.NO_PARAMETERS;

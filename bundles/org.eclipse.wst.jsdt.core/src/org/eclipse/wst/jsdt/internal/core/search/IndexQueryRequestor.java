@@ -18,8 +18,8 @@ import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
  * TODO add spec
  */
 public abstract class IndexQueryRequestor {
-	
+
 	// answer false if requesting cancel
 	public abstract boolean acceptIndexMatch(String documentPath, SearchPattern indexRecord, SearchParticipant participant, AccessRuleSet access);
-	
+
 }

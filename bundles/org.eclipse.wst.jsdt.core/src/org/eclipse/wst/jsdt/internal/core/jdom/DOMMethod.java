@@ -15,9 +15,10 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.jdom.*;
-import org.eclipse.wst.jsdt.internal.core.util.Messages;
+import org.eclipse.wst.jsdt.core.jdom.IDOMMethod;
+import org.eclipse.wst.jsdt.core.jdom.IDOMNode;
 import org.eclipse.wst.jsdt.internal.core.util.CharArrayBuffer;
+import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 /**
  * DOMMethod provides an implementation of IDOMMethod.
@@ -25,7 +26,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  * @see IDOMMethod
  * @see DOMNode
  * @deprecated The JDOM was made obsolete by the addition in 2.0 of the more
- * powerful, fine-grained DOM/AST API found in the 
+ * powerful, fine-grained DOM/AST API found in the
  * org.eclipse.wst.jsdt.core.dom package.
  */
 // TODO (jerome) - add implementation support for 1.5 features
@@ -79,7 +80,7 @@ class DOMMethod extends DOMMember implements IDOMMethod {
 	 * method's exception list in the document.
 	 */
 	protected int[]  fExceptionRange;
-	
+
 	/**
 	 * Contains the method's body when the body has
 	 * been altered from the contents in the document,
@@ -126,7 +127,7 @@ class DOMMethod extends DOMMember implements IDOMMethod {
 	 * @since 3.0
 	 */
 	protected String fDefaultValue = null;
-	
+
 /**
  * Constructs an empty method node.
  */
@@ -208,7 +209,7 @@ DOMMethod(char[] document, int[] sourceRange, String name, int[] nameRange, int[
 	setHasBody(true);
 	fBodyRange= bodyRange;
 	setMask(MASK_DETAILED_SOURCE_INDEXES, true);
-	
+
 }
 /**
  * Creates a new simple METHOD document fragment on the given range of the document.
@@ -246,7 +247,7 @@ DOMMethod(char[] document, int[] sourceRange, String name, int[] nameRange, int 
  */
 public void addException(String name) throws IllegalArgumentException {
 	if (name == null) {
-		throw new IllegalArgumentException(Messages.dom_nullExceptionType); 
+		throw new IllegalArgumentException(Messages.dom_nullExceptionType);
 	}
 	if (fExceptions == null) {
 		fExceptions= new String[1];
@@ -261,10 +262,10 @@ public void addException(String name) throws IllegalArgumentException {
  */
 public void addParameter(String type, String name) throws IllegalArgumentException {
 	if (type == null) {
-		throw new IllegalArgumentException(Messages.dom_nullTypeParameter); 
+		throw new IllegalArgumentException(Messages.dom_nullTypeParameter);
 	}
 	if (name == null) {
-		throw new IllegalArgumentException(Messages.dom_nullNameParameter); 
+		throw new IllegalArgumentException(Messages.dom_nullNameParameter);
 	}
 	if (fParameterNames == null) {
 		fParameterNames= new String[1];
@@ -349,7 +350,7 @@ protected void appendMemberDeclarationContents(CharArrayBuffer buffer) {
 			buffer.append(fDocument, start, fBodyRange[0] - start);
 		}
 	}
-	
+
 }
 /**
  * @see DOMMember#appendSimpleContents(CharArrayBuffer)
@@ -398,7 +399,7 @@ protected String getConstructorName() {
 	} else {
 		return null;
 	}
-	
+
 }
 /**
  * @see DOMNode#getDetailedNode()
@@ -441,7 +442,7 @@ public IJavaElement getJavaElement(IJavaElement parent) throws IllegalArgumentEx
 		}
 		return ((IType)parent).getMethod(name, sigs);
 	} else {
-		throw new IllegalArgumentException(Messages.element_illegalParent); 
+		throw new IllegalArgumentException(Messages.element_illegalParent);
 	}
 }
 /**
@@ -537,7 +538,7 @@ public boolean isSignatureEqual(IDOMNode node) {
 	boolean ok= node.getNodeType() == getNodeType();
 	if (ok) {
 		IDOMMethod method= (IDOMMethod)node;
-		ok = (isConstructor() && method.isConstructor()) ||  
+		ok = (isConstructor() && method.isConstructor()) ||
 			(!isConstructor() && !method.isConstructor());
 		if (ok && !isConstructor()) {
 			ok= getName().equals(method.getName());
@@ -545,7 +546,7 @@ public boolean isSignatureEqual(IDOMNode node) {
 		if (!ok) {
 			return false;
 		}
-		
+
 		String[] types= method.getParameterTypes();
 		if (fParameterTypes == null || fParameterTypes.length == 0) {
 			// this method has no parameters
@@ -573,7 +574,7 @@ public boolean isSignatureEqual(IDOMNode node) {
 		}
 	}
 	return false;
-	
+
 }
 /**
  * @see DOMNode
@@ -633,7 +634,7 @@ public void setExceptions(String[] names) {
 				buffer.append(comma);
 			buffer.append(names[i]);
 		}
-		fExceptionList= buffer.getContents();		
+		fExceptionList= buffer.getContents();
 	}
 	fragment();
 }
@@ -642,7 +643,7 @@ public void setExceptions(String[] names) {
  */
 public void setName(String name) {
 	if (name == null) {
-		throw new IllegalArgumentException(Messages.element_nullName); 
+		throw new IllegalArgumentException(Messages.element_nullName);
 	} else {
 		super.setName(name);
 	}
@@ -658,10 +659,10 @@ public void setParameters(String[] types, String[] names) throws IllegalArgument
 			fParameterNames= null;
 			fParameterList= new char[] {'(',')'};
 		} else {
-			throw new IllegalArgumentException(Messages.dom_mismatchArgNamesAndTypes); 
+			throw new IllegalArgumentException(Messages.dom_mismatchArgNamesAndTypes);
 		}
 	} else if (names.length != types.length) {
-		throw new IllegalArgumentException(Messages.dom_mismatchArgNamesAndTypes); 
+		throw new IllegalArgumentException(Messages.dom_mismatchArgNamesAndTypes);
 	} else if (names.length == 0) {
 		setParameters(null, null);
 	} else {
@@ -680,7 +681,7 @@ public void setParameters(String[] types, String[] names) throws IllegalArgument
 				.append(names[i]);
 		}
 		parametersBuffer.append(')');
-		fParameterList= parametersBuffer.getContents();		
+		fParameterList= parametersBuffer.getContents();
 	}
 	fragment();
 }
@@ -689,7 +690,7 @@ public void setParameters(String[] types, String[] names) throws IllegalArgument
  */
 public void setReturnType(String name) throws IllegalArgumentException {
 	if (name == null) {
-		throw new IllegalArgumentException(Messages.dom_nullReturnType); 
+		throw new IllegalArgumentException(Messages.dom_nullReturnType);
 	}
 	becomeDetailed();
 	fragment();

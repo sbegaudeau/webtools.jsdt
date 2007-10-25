@@ -12,17 +12,14 @@
 package org.eclipse.wst.jsdt.internal.ui.refactoring.reorg;
 
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.jface.resource.ImageDescriptor;
-
+import org.eclipse.ltk.core.refactoring.Refactoring;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenamingNameSuggestor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.INameUpdating;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
-
-import org.eclipse.ltk.core.refactoring.Refactoring;
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 
 public class RenameRefactoringWizard extends RefactoringWizard {
 	

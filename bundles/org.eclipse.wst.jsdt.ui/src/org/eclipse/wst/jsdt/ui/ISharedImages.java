@@ -11,10 +11,8 @@
 package org.eclipse.wst.jsdt.ui;
 
 
-import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.jface.resource.ImageDescriptor;
-
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 
 /**

@@ -14,23 +14,23 @@ import org.eclipse.wst.jsdt.core.IType;
 
 public final class TypeVector {
 	static int INITIAL_SIZE = 10;
-	
+
 	public int size;
 	int maxSize;
 	IType[] elements;
-	
+
 	public final static IType[] NoElements = new IType[0];
-	
+
 public TypeVector() {
 	maxSize = INITIAL_SIZE;
 	size = 0;
 	elements = new IType[maxSize];
 }
 public TypeVector(IType[] types) {
-	this.size = types.length; 
+	this.size = types.length;
 	this.maxSize = this.size + 1; // when an element is added, it assumes that the length is > 0
 	elements = new IType[this.maxSize];
-	System.arraycopy(types, 0, elements, 0, this.size);	
+	System.arraycopy(types, 0, elements, 0, this.size);
 }
 public TypeVector(IType type) {
 	this.maxSize = INITIAL_SIZE;
@@ -69,10 +69,10 @@ public IType elementAt(int index) {
 	return elements[index];
 }
 public IType[] elements() {
-	
+
 	// do not resize to 0 if empty since may add more elements later
 	if (this.size == 0) return NoElements;
-	
+
 	if (this.size < this.maxSize) {
 		maxSize = size;
 		System.arraycopy(this.elements, 0, (this.elements = new IType[maxSize]), 0, size);

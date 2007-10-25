@@ -14,33 +14,27 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.text.edits.ReplaceEdit;
-import org.eclipse.text.edits.TextEdit;
-import org.eclipse.text.edits.TextEditGroup;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-
 import org.eclipse.ltk.core.refactoring.CategorizedTextEditGroup;
 import org.eclipse.ltk.core.refactoring.GroupCategory;
 import org.eclipse.ltk.core.refactoring.GroupCategorySet;
 import org.eclipse.ltk.core.refactoring.TextChange;
-
+import org.eclipse.text.edits.ReplaceEdit;
+import org.eclipse.text.edits.TextEdit;
+import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitChange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.TextChangeCompatibility;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.NLSUtil;
-
-import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
-
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ProblemLocation;
+import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
 
 /**
  * Fix which solves various issues with strings.

@@ -10,18 +10,14 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.wizards;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.wst.jsdt.core.IJavaElement;
-
-import org.eclipse.wst.jsdt.ui.wizards.NewAnnotationWizardPage;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.ui.wizards.NewAnnotationWizardPage;
 
 public class NewAnnotationCreationWizard extends NewElementWizard {
 

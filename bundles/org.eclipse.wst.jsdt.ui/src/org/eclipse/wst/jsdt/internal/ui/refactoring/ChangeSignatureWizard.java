@@ -10,6 +10,13 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.refactoring;
 
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.text.Document;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
+import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -25,31 +32,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
-
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.JFaceResources;
-
-import org.eclipse.jface.text.Document;
-
 import org.eclipse.ui.PlatformUI;
-
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
-import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
-
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.ParameterInfo;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.StubTypeContext;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ChangeSignatureRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.TextFieldNavigationHandler;
@@ -58,6 +48,8 @@ import org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist.ControlContent
 import org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist.JavaTypeCompletionProcessor;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
+import org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration;
 
 public class ChangeSignatureWizard extends RefactoringWizard {
 

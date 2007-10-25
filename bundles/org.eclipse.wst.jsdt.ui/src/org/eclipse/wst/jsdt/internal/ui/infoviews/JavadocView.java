@@ -21,7 +21,32 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Platform;
-
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialogWithToggle;
+import org.eclipse.jface.internal.text.html.HTMLPrinter;
+import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.BadPartitioningException;
+import org.eclipse.jface.text.DefaultInformationControl;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentExtension3;
+import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.text.ITypedRegion;
+import org.eclipse.jface.text.TextPresentation;
+import org.eclipse.jface.text.TextSelection;
+import org.eclipse.jface.text.TextUtilities;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
@@ -37,41 +62,11 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.jface.internal.text.html.HTMLPrinter;
-import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.window.Window;
-
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.BadPartitioningException;
-import org.eclipse.jface.text.DefaultInformationControl;
-import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IDocumentExtension3;
-import org.eclipse.jface.text.ITextSelection;
-import org.eclipse.jface.text.ITypedRegion;
-import org.eclipse.jface.text.TextPresentation;
-import org.eclipse.jface.text.TextSelection;
-import org.eclipse.jface.text.TextUtilities;
-
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IAbstractTextEditorHelpContextIds;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
-
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
@@ -79,18 +74,14 @@ import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.javadoc.JavaDocLocations;
-
+import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 import org.eclipse.wst.jsdt.ui.JavadocContentAccess;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-
-import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
-
 import org.osgi.framework.Bundle;
 
 /**

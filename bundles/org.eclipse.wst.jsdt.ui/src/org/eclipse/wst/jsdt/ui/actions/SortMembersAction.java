@@ -14,31 +14,22 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
 import org.eclipse.core.runtime.CoreException;
-
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.window.Window;
-
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.source.IAnnotationModel;
-
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.window.Window;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IParent;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.SortMembersOperation;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
@@ -51,6 +42,7 @@ import org.eclipse.wst.jsdt.internal.ui.javaeditor.IJavaAnnotation;
 import org.eclipse.wst.jsdt.internal.ui.util.BusyIndicatorRunnableContext;
 import org.eclipse.wst.jsdt.internal.ui.util.ElementValidator;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
+import org.eclipse.wst.jsdt.ui.JavaUI;
 
 /**
  * Sorts the members of a compilation unit with the sort order as specified in

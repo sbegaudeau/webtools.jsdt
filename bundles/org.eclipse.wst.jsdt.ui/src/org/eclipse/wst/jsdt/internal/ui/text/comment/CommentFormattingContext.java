@@ -12,7 +12,6 @@
 package org.eclipse.wst.jsdt.internal.ui.text.comment;
 
 import org.eclipse.jface.text.formatter.FormattingContext;
-
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 
 /**

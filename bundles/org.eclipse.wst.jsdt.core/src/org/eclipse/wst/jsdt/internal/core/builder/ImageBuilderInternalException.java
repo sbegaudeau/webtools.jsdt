@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.builder;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 
 /**
  * Exception thrown when there is an internal error in the image builder.

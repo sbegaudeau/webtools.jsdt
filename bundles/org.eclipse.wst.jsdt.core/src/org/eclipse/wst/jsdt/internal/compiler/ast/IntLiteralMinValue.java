@@ -10,18 +10,19 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
-import org.eclipse.wst.jsdt.internal.compiler.impl.*;
+import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.IntConstant;
 
 public class IntLiteralMinValue extends IntLiteral {
 
 	final static char[] CharValue = new char[]{'-','2','1','4','7','4','8','3','6','4','8'};
-	final static Constant MIN_VALUE = IntConstant.fromValue(Integer.MIN_VALUE) ; 
+	final static Constant MIN_VALUE = IntConstant.fromValue(Integer.MIN_VALUE) ;
 
 public IntLiteralMinValue() {
 	super(CharValue,0,0,Integer.MIN_VALUE);
 	constant = MIN_VALUE;
 }
 public void computeConstant(){
-	
+
 	/*precomputed at creation time*/ }
 }

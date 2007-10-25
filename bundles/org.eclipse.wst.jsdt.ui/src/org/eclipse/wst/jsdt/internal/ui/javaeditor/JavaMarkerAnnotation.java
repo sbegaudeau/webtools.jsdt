@@ -15,10 +15,8 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 import java.util.Iterator;
 
 import org.eclipse.core.resources.IMarker;
-
 import org.eclipse.ui.texteditor.MarkerAnnotation;
 import org.eclipse.ui.texteditor.MarkerUtilities;
-
 import org.eclipse.wst.jsdt.core.CorrectionEngine;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;

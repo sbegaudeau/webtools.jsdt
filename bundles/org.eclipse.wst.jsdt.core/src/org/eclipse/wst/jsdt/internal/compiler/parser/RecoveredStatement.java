@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.parser;
 
-/** 
- * Internal statement structure for parsing recovery 
+/**
+ * Internal statement structure for parsing recovery
  */
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
@@ -24,13 +24,13 @@ public class RecoveredStatement extends RecoveredElement {
 
 	public RecoveredElement[] childStatements;
 	public int childCount;
-	
+
 	public RecoveredStatement(Statement statement, RecoveredElement parent, int bracketBalance){
 	super(parent, bracketBalance);
 	this.statement = statement;
 
 }
-/* 
+/*
  * Answer the associated parsed structure
  */
 public ASTNode parseTree(){
@@ -58,7 +58,7 @@ public void updateParseTree(){
  * Update the declarationSourceEnd of the corresponding parse node
  */
 public void updateSourceEndIfNecessary(int bodyStart, int bodyEnd){
-	if (this.statement.sourceEnd == 0)	
+	if (this.statement.sourceEnd == 0)
 		this.statement.sourceEnd = bodyEnd;
 }
 public ProgramElement updatedASTNode() {
@@ -72,7 +72,7 @@ public RecoveredElement add(AbstractMethodDeclaration methodDeclaration, int bra
 	RecoveredMethod element = new RecoveredMethod(methodDeclaration, this, bracketBalanceValue, this.recoveringParser);
 	addChild(element);
 
-	
+
 	/* consider that if the opening brace was not found, it is there */
 	if (!foundOpeningBrace){
 		foundOpeningBrace = true;
@@ -91,11 +91,11 @@ private void addChild(RecoveredElement statement)
 	} else {
 		if (this.childCount == this.childStatements.length) {
 			System.arraycopy(
-				this.childStatements, 
-				0, 
-				(this.childStatements = new RecoveredElement[2 * this.childCount]), 
-				0, 
-				this.childCount); 
+				this.childStatements,
+				0,
+				(this.childStatements = new RecoveredElement[2 * this.childCount]),
+				0,
+				this.childCount);
 		}
 	}
 	this.childStatements[this.childCount++] = statement;

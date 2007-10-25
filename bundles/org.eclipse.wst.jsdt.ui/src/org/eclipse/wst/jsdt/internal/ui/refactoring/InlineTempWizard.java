@@ -10,15 +10,11 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.refactoring;
 
-import org.eclipse.swt.widgets.Composite;
-
-import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
-
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.InlineTempRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 
 public class InlineTempWizard extends RefactoringWizard {

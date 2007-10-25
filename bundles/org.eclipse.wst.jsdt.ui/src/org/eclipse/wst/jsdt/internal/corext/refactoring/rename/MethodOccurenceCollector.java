@@ -11,14 +11,12 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.rename;
 
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.core.search.MethodReferenceMatch;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.CuCollectingSearchRequestor;
 
 class MethodOccurenceCollector extends CuCollectingSearchRequestor {

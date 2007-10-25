@@ -13,16 +13,12 @@ package org.eclipse.wst.jsdt.internal.ui.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.core.resources.IFolder;
-
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptorProxy;
 import org.eclipse.ltk.core.refactoring.history.RefactoringHistory;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaProject;
-
 import org.eclipse.wst.jsdt.ui.StandardJavaElementContentProvider;
 
 /**

@@ -16,26 +16,20 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableContext;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.window.Window;
-
 import org.eclipse.jface.text.IRewriteTarget;
 import org.eclipse.jface.text.ITextSelection;
-
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchSite;
-import org.eclipse.ui.PlatformUI;
-
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusContext;
 import org.eclipse.ltk.ui.refactoring.RefactoringUI;
-
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchSite;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
@@ -51,7 +45,6 @@ import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.CodeGenerationSettings;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.GenerateHashCodeEqualsOperation;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
@@ -60,9 +53,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JavaStatusContext;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParser;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
@@ -75,6 +65,7 @@ import org.eclipse.wst.jsdt.internal.ui.preferences.JavaPreferencesSettings;
 import org.eclipse.wst.jsdt.internal.ui.util.BusyIndicatorRunnableContext;
 import org.eclipse.wst.jsdt.internal.ui.util.ElementValidator;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
+import org.eclipse.wst.jsdt.ui.JavaUI;
 
 /**
  * Adds method implementations for

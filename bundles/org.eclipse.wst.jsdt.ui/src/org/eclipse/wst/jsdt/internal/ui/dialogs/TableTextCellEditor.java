@@ -11,7 +11,10 @@
 package org.eclipse.wst.jsdt.internal.ui.dialogs;
 
 import org.eclipse.core.runtime.Assert;
-
+import org.eclipse.jface.contentassist.SubjectControlContentAssistant;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -30,12 +33,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
-
-import org.eclipse.jface.contentassist.SubjectControlContentAssistant;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 
 /**

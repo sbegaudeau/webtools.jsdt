@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -36,24 +36,24 @@ public class ClasspathChange {
 	public static int NO_DELTA = 0x00;
 	public static int HAS_DELTA = 0x01;
 	public static int HAS_PROJECT_CHANGE = 0x10;
-	
+
 	JavaProject project;
 	IClasspathEntry[] oldRawClasspath;
 	IPath oldOutputLocation;
 	IClasspathEntry[] oldResolvedClasspath;
-	
+
 	public ClasspathChange(JavaProject project, IClasspathEntry[] oldRawClasspath, IPath oldOutputLocation, IClasspathEntry[] oldResolvedClasspath) {
 		this.project = project;
 		this.oldRawClasspath = oldRawClasspath;
 		this.oldOutputLocation = oldOutputLocation;
 		this.oldResolvedClasspath = oldResolvedClasspath;
 	}
-	
+
 	private void addClasspathDeltas(JavaElementDelta delta, IPackageFragmentRoot[] roots, int flag) {
 		for (int i = 0; i < roots.length; i++) {
 			IPackageFragmentRoot root = roots[i];
 			delta.changed(root, flag);
-			if ((flag & IJavaElementDelta.F_REMOVED_FROM_CLASSPATH) != 0 
+			if ((flag & IJavaElementDelta.F_REMOVED_FROM_CLASSPATH) != 0
 					|| (flag & IJavaElementDelta.F_SOURCEATTACHED) != 0
 					|| (flag & IJavaElementDelta.F_SOURCEDETACHED) != 0){
 				try {
@@ -88,7 +88,7 @@ public class ClasspathChange {
 						if (!entryOutput.equals(otherOutput))
 							continue;
 					}
-					
+
 					// check inclusion patterns
 					IPath[] otherIncludes = other.getInclusionPatterns();
 					if (inclusionPatterns != otherIncludes) {
@@ -97,7 +97,7 @@ public class ClasspathChange {
 						if (otherIncludes == null || otherIncludes.length != includeLength)
 							continue;
 						for (int j = 0; j < includeLength; j++) {
-							// compare toStrings instead of IPaths 
+							// compare toStrings instead of IPaths
 							// since IPath.equals is specified to ignore trailing separators
 							if (!inclusionPatterns[j].toString().equals(otherIncludes[j].toString()))
 								continue nextEntry;
@@ -111,7 +111,7 @@ public class ClasspathChange {
 						if (otherExcludes == null || otherExcludes.length != excludeLength)
 							continue;
 						for (int j = 0; j < excludeLength; j++) {
-							// compare toStrings instead of IPaths 
+							// compare toStrings instead of IPaths
 							// since IPath.equals is specified to ignore trailing separators
 							if (!exclusionPatterns[j].toString().equals(otherExcludes[j].toString()))
 								continue nextEntry;
@@ -135,7 +135,7 @@ public class ClasspathChange {
 					collection.add(r);
 					collectAllSubfolders((IFolder)r, collection);
 				}
-			}	
+			}
 		} catch (CoreException e) {
 			throw new JavaModelException(e);
 		}
@@ -149,7 +149,7 @@ public class ClasspathChange {
 	 */
 	private ArrayList determineAffectedPackageFragments(IPath location) throws JavaModelException {
 		ArrayList fragments = new ArrayList();
-	
+
 		// see if this will cause any package fragments to be affected
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IResource resource = null;
@@ -185,7 +185,7 @@ public class ClasspathChange {
 		}
 		return fragments;
 	}
-	
+
 	public boolean equals(Object obj) {
 		if (!(obj instanceof ClasspathChange))
 			return false;
@@ -211,41 +211,41 @@ public class ClasspathChange {
 		int result = NO_DELTA;
 		try {
 			PerProjectInfo perProjectInfo = this.project.getPerProjectInfo();
-			
+
 			// get new info
 			this.project.resolveClasspath(perProjectInfo);
 			IClasspathEntry[] newRawClasspath;
-			
+
 			// use synchronized block to ensure consistency
 			synchronized (perProjectInfo) {
 				newRawClasspath = perProjectInfo.rawClasspath;
 				newResolvedClasspath = perProjectInfo.resolvedClasspath;
-				newOutputLocation = perProjectInfo.outputLocation;				
+				newOutputLocation = perProjectInfo.outputLocation;
 			}
-			
+
 			// check if raw classpath has changed
 			if (this.oldRawClasspath != null && !JavaProject.areClasspathsEqual(this.oldRawClasspath, newRawClasspath, this.oldOutputLocation, newOutputLocation)) {
 				delta.changed(this.project, IJavaElementDelta.F_CLASSPATH_CHANGED);
 				result |= HAS_DELTA;
 			}
-					
+
 			// if no changes to resolved classpath, nothing more to do
 			if (this.oldResolvedClasspath != null && JavaProject.areClasspathsEqual(this.oldResolvedClasspath, newResolvedClasspath, this.oldOutputLocation, newOutputLocation))
 				return NO_DELTA;
-			
+
 			// close cached info
 			this.project.close();
-		} catch (JavaModelException e) {	
+		} catch (JavaModelException e) {
 			if (DeltaProcessor.VERBOSE) {
 				e.printStackTrace();
 			}
 			// project no longer exist
 			return NO_DELTA;
 		}
-		
+
 		if (this.oldResolvedClasspath == null)
 			return NO_DELTA;
-		
+
 		Map removedRoots = null;
 		IPackageFragmentRoot[] roots = null;
 		Map allOldRoots ;
@@ -261,14 +261,14 @@ public class ClasspathChange {
 		}
 
 		int newLength = newResolvedClasspath.length;
-		int oldLength = this.oldResolvedClasspath.length;		
+		int oldLength = this.oldResolvedClasspath.length;
 		for (int i = 0; i < oldLength; i++) {
 			int index = classpathContains(newResolvedClasspath, this.oldResolvedClasspath[i]);
 			if (index == -1) {
 				// remote project changes
 				if (this.oldResolvedClasspath[i].getEntryKind() == IClasspathEntry.CPE_PROJECT) {
 					result |= HAS_PROJECT_CHANGE;
-					continue; 
+					continue;
 				}
 
 				IPackageFragmentRoot[] pkgFragmentRoots = null;
@@ -284,8 +284,8 @@ public class ClasspathChange {
 						HashSet rootIDs = new HashSet(5);
 						rootIDs.add(this.project.rootID());
 						this.project.computePackageFragmentRoots(
-							this.oldResolvedClasspath[i], 
-							accumulatedRoots, 
+							this.oldResolvedClasspath[i],
+							accumulatedRoots,
 							rootIDs,
 							null, // inside original project
 							false, // don't check existency
@@ -303,13 +303,13 @@ public class ClasspathChange {
 				// remote project changes
 				if (this.oldResolvedClasspath[i].getEntryKind() == IClasspathEntry.CPE_PROJECT) {
 					result |= HAS_PROJECT_CHANGE;
-					continue; 
-				}				
+					continue;
+				}
 				if (index != i) { //reordering of the classpath
 					addClasspathDeltas(delta, this.project.computePackageFragmentRoots(this.oldResolvedClasspath[i]),	IJavaElementDelta.F_REORDER);
 					result |= HAS_DELTA;
 				}
-				
+
 				// check source attachment
 				IPath newSourcePath = newResolvedClasspath[index].getSourceAttachmentPath();
 				int sourceAttachmentFlags = getSourceAttachmentDeltaFlag(this.oldResolvedClasspath[i].getSourceAttachmentPath(), newSourcePath);
@@ -345,7 +345,7 @@ public class ClasspathChange {
 				// remote project changes
 				if (newResolvedClasspath[i].getEntryKind() == IClasspathEntry.CPE_PROJECT) {
 					result |= HAS_PROJECT_CHANGE;
-					continue; 
+					continue;
 				}
 				addClasspathDeltas(delta, this.project.computePackageFragmentRoots(newResolvedClasspath[i]), IJavaElementDelta.F_ADDED_TO_CLASSPATH);
 				result |= HAS_DELTA;
@@ -353,7 +353,7 @@ public class ClasspathChange {
 		}
 
 		// see if a change in output location will cause any package fragments to be added/removed
-		if ((newOutputLocation == null && this.oldOutputLocation != null) 
+		if ((newOutputLocation == null && this.oldOutputLocation != null)
 				|| (newOutputLocation != null && !newOutputLocation.equals(this.oldOutputLocation))) {
 			try {
 				ArrayList added= determineAffectedPackageFragments(this.oldOutputLocation);
@@ -364,13 +364,13 @@ public class ClasspathChange {
 					delta.added(frag);
 					result |= HAS_DELTA;
 				}
-			
+
 				// see if this will cause any package fragments to be removed
 				ArrayList removed= determineAffectedPackageFragments(newOutputLocation);
 				iter = removed.iterator();
 				while (iter.hasNext()) {
 					IPackageFragment frag= (IPackageFragment)iter.next();
-					((IPackageFragmentRoot)frag.getParent()).close(); 
+					((IPackageFragmentRoot)frag.getParent()).close();
 					delta.removed(frag);
 					result |= HAS_DELTA;
 				}
@@ -382,7 +382,7 @@ public class ClasspathChange {
 
 		return result;
 	}
-	
+
 	/*
 	 * Returns the source attachment flag for the delta between the 2 give source paths.
 	 * Returns either F_SOURCEATTACHED, F_SOURCEDETACHED, F_SOURCEATTACHED | F_SOURCEDETACHED
@@ -403,7 +403,7 @@ public class ClasspathChange {
 			return 0;
 		}
 	}
-	
+
 	public int hashCode() {
 		return this.project.hashCode();
 	}
@@ -415,11 +415,11 @@ public class ClasspathChange {
 		IClasspathEntry[] newResolvedClasspath = null;
 		try {
 			newResolvedClasspath = this.project.getResolvedClasspath();
-		} catch (JavaModelException e) {	
+		} catch (JavaModelException e) {
 			// project doesn't exist
 			return;
 		}
-		
+
 		JavaModelManager manager = JavaModelManager.getJavaModelManager();
 		IndexManager indexManager = manager.indexManager;
 		if (indexManager == null)
@@ -427,13 +427,13 @@ public class ClasspathChange {
 		DeltaProcessingState state = manager.deltaState;
 
 		int newLength = newResolvedClasspath.length;
-		int oldLength = this.oldResolvedClasspath.length;		
+		int oldLength = this.oldResolvedClasspath.length;
 		for (int i = 0; i < oldLength; i++) {
 			int index = classpathContains(newResolvedClasspath, this.oldResolvedClasspath[i]);
 			if (index == -1) {
 				// remote projects are not indexed in this project
 				if (this.oldResolvedClasspath[i].getEntryKind() == IClasspathEntry.CPE_PROJECT){
-					continue; 
+					continue;
 				}
 
 				// Remove the .js files from the index for a source folder
@@ -463,9 +463,9 @@ public class ClasspathChange {
 			if (index == -1) {
 				// remote projects are not indexed in this project
 				if (newResolvedClasspath[i].getEntryKind() == IClasspathEntry.CPE_PROJECT){
-					continue; 
+					continue;
 				}
-				
+
 				// Request indexing
 				int entryKind = newResolvedClasspath[i].getEntryKind();
 				switch (entryKind) {
@@ -494,7 +494,7 @@ public class ClasspathChange {
 			}
 		}
 	}
-	
+
 	public String toString() {
 		return "ClasspathChange: " + this.project.getElementName(); //$NON-NLS-1$
 	}

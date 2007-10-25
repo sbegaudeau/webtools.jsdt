@@ -13,12 +13,13 @@ package org.eclipse.wst.jsdt.launching;
 
 import java.io.File;
 import java.net.URL;
-import com.ibm.icu.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
+
+import com.ibm.icu.text.MessageFormat;
  
 /**
  * Abstract implementation of a VM install type.

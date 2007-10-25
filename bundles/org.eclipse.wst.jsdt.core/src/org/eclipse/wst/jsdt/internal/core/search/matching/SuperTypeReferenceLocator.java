@@ -12,8 +12,13 @@ package org.eclipse.wst.jsdt.internal.core.search.matching;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
 
 public class SuperTypeReferenceLocator extends PatternLocator {
@@ -43,7 +48,7 @@ public int match(TypeReference node, MatchingNodeSet nodeSet) {
 	} else { // QualifiedTypeReference
 		char[][] tokens = ((QualifiedTypeReference) node).tokens;
 		typeRefSimpleName = tokens[tokens.length-1];
-	}				
+	}
 	if (matchesName(this.pattern.superSimpleName, typeRefSimpleName))
 		return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
 

@@ -19,13 +19,11 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-
+import org.eclipse.ui.progress.DeferredTreeContentManager;
 import org.eclipse.wst.jsdt.core.IJavaElement;
-
 import org.eclipse.wst.jsdt.internal.corext.callhierarchy.MethodWrapper;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
-import org.eclipse.ui.progress.DeferredTreeContentManager;
 
 public class CallHierarchyContentProvider implements ITreeContentProvider {
     private final static Object[] EMPTY_ARRAY = new Object[0];

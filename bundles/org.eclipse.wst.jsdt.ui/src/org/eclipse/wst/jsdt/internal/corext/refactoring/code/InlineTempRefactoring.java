@@ -14,29 +14,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.eclipse.text.edits.MalformedTreeException;
-import org.eclipse.text.edits.RangeMarker;
-import org.eclipse.text.edits.TextEdit;
-import org.eclipse.text.edits.TextEditGroup;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.TextUtilities;
-
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringChangeDescriptor;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
-
+import org.eclipse.text.edits.MalformedTreeException;
+import org.eclipse.text.edits.RangeMarker;
+import org.eclipse.text.edits.TextEdit;
+import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -69,7 +65,6 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
-
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodeFactory;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
@@ -87,11 +82,9 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParse
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.ResourceUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 public class InlineTempRefactoring extends ScriptableRefactoring {
 

@@ -15,17 +15,9 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-
-import org.eclipse.jface.dialogs.Dialog;
-
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.fix.CodeFormatCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.CommentFormatCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.ICleanUp;

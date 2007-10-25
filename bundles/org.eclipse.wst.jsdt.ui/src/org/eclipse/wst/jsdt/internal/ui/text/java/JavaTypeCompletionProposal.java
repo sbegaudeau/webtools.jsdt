@@ -10,28 +10,20 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.text.java;
 
-import org.eclipse.text.edits.TextEdit;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-
-import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**
  * If passed compilation unit is not null, the replacement string will be seen as a qualified type name.

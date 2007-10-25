@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.ui.actions;
 import java.util.Iterator;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -21,18 +20,15 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
-
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
-
-import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.search.SearchMessages;
 import org.eclipse.wst.jsdt.internal.ui.search.SearchUtil;
+import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 
 /**
  * Action group that adds the search for write references actions to a

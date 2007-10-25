@@ -78,7 +78,7 @@ public boolean equals(Object o) {
 	if (!(o instanceof ClasspathSourceDirectory)) return false;
 
 	return sourceFolder.equals(((ClasspathSourceDirectory) o).sourceFolder);
-} 
+}
 
 public NameEnvironmentAnswer findClass(String sourceFileWithoutExtension, String qualifiedPackageName, String qualifiedSourceFileWithoutExtension) {
 	SimpleLookupTable dirTable = directoryTable(qualifiedPackageName);

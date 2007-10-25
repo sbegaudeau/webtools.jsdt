@@ -10,25 +10,45 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.indexing;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.Map;
 import java.util.zip.CRC32;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.IClasspathEntry;
+import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.search.*;
+import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.SearchDocument;
+import org.eclipse.wst.jsdt.core.search.SearchEngine;
+import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.internal.compiler.ISourceElementRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.SourceElementParser;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblemFactory;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
-import org.eclipse.wst.jsdt.internal.core.*;
-import org.eclipse.wst.jsdt.internal.core.index.*;
+import org.eclipse.wst.jsdt.internal.core.ClasspathEntry;
+import org.eclipse.wst.jsdt.internal.core.JavaModel;
+import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
+import org.eclipse.wst.jsdt.internal.core.JavaProject;
+import org.eclipse.wst.jsdt.internal.core.LibraryFragmentRoot;
+import org.eclipse.wst.jsdt.internal.core.index.DiskIndex;
+import org.eclipse.wst.jsdt.internal.core.index.Index;
 import org.eclipse.wst.jsdt.internal.core.search.BasicSearchEngine;
 import org.eclipse.wst.jsdt.internal.core.search.PatternSearchJob;
 import org.eclipse.wst.jsdt.internal.core.search.processing.IJob;
@@ -80,7 +100,7 @@ public synchronized void aboutToUpdateIndex(IPath containerPath, Integer newInde
  * Note: the actual operation is performed in background
  */
 public void addBinary(IFile resource, IPath containerPath) {
-	if (JavaCore.getPlugin() == null) return;	
+	if (JavaCore.getPlugin() == null) return;
 	SearchParticipant participant = SearchEngine.getDefaultSearchParticipant();
 	SearchDocument document = participant.getDocument(resource.getFullPath().toString());
 	IPath indexLocation = computeIndexLocation(containerPath);
@@ -91,7 +111,7 @@ public void addBinary(IFile resource, IPath containerPath) {
  * Note: the actual operation is performed in background
  */
 public void addSource(IFile resource, IPath containerPath, SourceElementParser parser) {
-	if (JavaCore.getPlugin() == null) return;	
+	if (JavaCore.getPlugin() == null) return;
 	SearchParticipant participant = SearchEngine.getDefaultSearchParticipant();
 	SearchDocument document = participant.getDocument(resource.getFullPath().toString());
 	((InternalSearchDocument) document).parser = parser;
@@ -174,11 +194,11 @@ public SourceElementParser getSourceElementParser(IJavaProject project, ISourceE
 	// disable task tags to speed up parsing
 	Map options = project.getOptions(true);
 	options.put(JavaCore.COMPILER_TASK_TAGS, ""); //$NON-NLS-1$
-	
+
 	SourceElementParser parser = new IndexingParser(
-		requestor, 
+		requestor,
 		new DefaultProblemFactory(Locale.getDefault()),
-		new CompilerOptions(options), 
+		new CompilerOptions(options),
 		true, // index local declarations
 		true, // optimize string literals
 		false); // do not use source javadoc parser to speed up parsing
@@ -187,7 +207,7 @@ public SourceElementParser getSourceElementParser(IJavaProject project, ISourceE
 	// Always check javadoc while indexing
 	parser.javadocParser.checkDocComment = true;
 	parser.javadocParser.reportProblems = false;
-		
+
 	return parser;
 }
 /**
@@ -195,7 +215,7 @@ public SourceElementParser getSourceElementParser(IJavaProject project, ISourceE
  * - if index is already in memory: answers this one back
  * - if (reuseExistingFile) then read it and return this index and record it in memory
  * - if (createIfMissing) then create a new empty index and record it in memory
- * 
+ *
  * Warning: Does not check whether index is consistent (not being used)
  */
 public synchronized Index getIndex(IPath containerPath, boolean reuseExistingFile, boolean createIfMissing) {
@@ -207,7 +227,7 @@ public synchronized Index getIndex(IPath containerPath, boolean reuseExistingFil
  * - if index is already in memory: answers this one back
  * - if (reuseExistingFile) then read it and return this index and record it in memory
  * - if (createIfMissing) then create a new empty index and record it in memory
- * 
+ *
  * Warning: Does not check whether index is consistent (not being used)
  */
 public synchronized Index getIndex(IPath containerPath, IPath indexLocation, boolean reuseExistingFile, boolean createIfMissing) {
@@ -240,7 +260,7 @@ public synchronized Index getIndex(IPath containerPath, IPath indexLocation, boo
 							Util.verbose("-> cannot reuse existing index: "+indexLocationString+" path: "+containerPathString); //$NON-NLS-1$ //$NON-NLS-2$
 						rebuildIndex(indexLocation, containerPath);
 						return null;
-					} 
+					}
 					/*index = null;*/ // will fall thru to createIfMissing & create a empty index for the rebuild all job to populate
 				}
 			}
@@ -248,7 +268,7 @@ public synchronized Index getIndex(IPath containerPath, IPath indexLocation, boo
 				rebuildIndex(indexLocation, containerPath);
 				return null;
 			}
-		} 
+		}
 		// index wasn't found on disk, consider creating an empty new one
 		if (createIfMissing) {
 			try {
@@ -265,7 +285,7 @@ public synchronized Index getIndex(IPath containerPath, IPath indexLocation, boo
 			}
 		}
 	}
-	//System.out.println(" index name: " + path.toOSString() + " <----> " + index.getIndexFile().getName());	
+	//System.out.println(" index name: " + path.toOSString() + " <----> " + index.getIndexFile().getName());
 	return index;
 }
 public synchronized Index getIndex(IPath indexLocation) {
@@ -318,7 +338,7 @@ public void indexDocument(SearchDocument searchDocument, SearchParticipant searc
 }
 /**
  * Trigger addition of the entire content of a project
- * Note: the actual operation is performed in background 
+ * Note: the actual operation is performed in background
  */
 public void indexAll(IProject project) {
 	if (JavaCore.getPlugin() == null) return;
@@ -327,11 +347,11 @@ public void indexAll(IProject project) {
 	// determine the new children
 	try {
 		JavaModel model = JavaModelManager.getJavaModelManager().getJavaModel();
-		JavaProject javaProject = (JavaProject) model.getJavaProject(project);	
+		JavaProject javaProject = (JavaProject) model.getJavaProject(project);
 		// only consider immediate libraries - each project will do the same
 		// NOTE: force to resolve CP variables before calling indexer - 19303, so that initializers
 		// will be run in the current thread.
-		IClasspathEntry[] entries = javaProject.getResolvedClasspath();	
+		IClasspathEntry[] entries = javaProject.getResolvedClasspath();
 		for (int i = 0; i < entries.length; i++) {
 			IClasspathEntry entry= entries[i];
 			if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY)
@@ -357,15 +377,15 @@ public void indexLibrary(IClasspathEntry entry, IProject requestingProject) {
 	if(target instanceof IFolder || (target instanceof File && ((File)target).isDirectory())){
 		char[][] inclusionPatterns = ((ClasspathEntry)entry).fullInclusionPatternChars();
 		char[][] exclusionPatterns = ((ClasspathEntry)entry).fullExclusionPatternChars();
-		
+
 		request = new AddLibraryFolderToIndex(entry.getPath(), requestingProject, inclusionPatterns, exclusionPatterns, this);
 	}else
 		request = new AddLibraryFileToIndex(entry.getPath(), this);
-	
+
 	if (!isJobWaiting(request))
 		this.request(request);
+
 	
-	;
 
 //	if (target instanceof IFile) {
 //		request = new AddLibraryFileToIndex((IFile) target, this);
@@ -391,10 +411,10 @@ public void indexLibrary(IClasspathEntry entry, IProject requestingProject) {
 		try {
 			indexLibrary(entry.getRawClasspathEntry(), requestingProject);
 		} catch (JavaModelException ex) {
-			
+
 			ex.printStackTrace();
 		}
-		
+
 	}
 /**
  * Index the content of the given source folder.
@@ -437,7 +457,7 @@ protected void notifyIdle(long idlingTime){
  * Name of the background process
  */
 public String processName(){
-	return Messages.process_name; 
+	return Messages.process_name;
 }
 private void rebuildIndex(IPath indexLocation, IPath containerPath) {
 	IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -502,7 +522,7 @@ public void remove(String containerRelativePath, IPath indexedContainer){
 	request(new RemoveFromIndex(containerRelativePath, indexedContainer, this));
 }
 /**
- * Removes the index for a given path. 
+ * Removes the index for a given path.
  * This is a no-op if the index did not exist.
  */
 public synchronized void removeIndex(IPath containerPath) {
@@ -523,7 +543,7 @@ public synchronized void removeIndex(IPath containerPath) {
 	updateIndexState(indexLocation, null);
 }
 /**
- * Removes all indexes whose paths start with (or are equal to) the given path. 
+ * Removes all indexes whose paths start with (or are equal to) the given path.
  */
 public synchronized void removeIndexPath(IPath path) {
 	Object[] keyTable = this.indexes.keyTable;
@@ -555,7 +575,7 @@ public synchronized void removeIndexPath(IPath path) {
 	}
 }
 /**
- * Removes all indexes whose paths start with (or are equal to) the given path. 
+ * Removes all indexes whose paths start with (or are equal to) the given path.
  */
 public synchronized void removeIndexFamily(IPath path) {
 	// only finds cached index files... shutdown removes all non-cached index files
@@ -642,7 +662,7 @@ public void saveIndexes() {
 		try {
 			// take read lock before checking if index has changed
 			// don't take write lock yet since it can cause a deadlock (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=50571)
-			monitor.enterRead(); 
+			monitor.enterRead();
 			if (index.hasChanged()) {
 				if (monitor.exitReadEnterWrite()) {
 					try {
@@ -670,13 +690,13 @@ public void scheduleDocumentIndexing(final SearchDocument searchDocument, IPath 
 	request(new IndexRequest(container, this) {
 		public boolean execute(IProgressMonitor progressMonitor) {
 			if (this.isCancelled || progressMonitor != null && progressMonitor.isCanceled()) return true;
-			
+
 			/* ensure no concurrent write access to index */
 			Index index = getIndex(this.containerPath, indexLocation, true, /*reuse index file*/ true /*create if none*/);
 			if (index == null) return true;
 			ReadWriteMonitor monitor = index.monitor;
 			if (monitor == null) return true; // index got deleted since acquired
-			
+
 			try {
 				monitor.enterWrite(); // ask permission to write
 				indexDocument(searchDocument, searchParticipant, index, indexLocation);

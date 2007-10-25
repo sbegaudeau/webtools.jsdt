@@ -13,20 +13,15 @@ package org.eclipse.wst.jsdt.internal.ui.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.mapping.ModelProvider;
-
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.ltk.ui.refactoring.model.AbstractResourceMappingMerger;
-
 import org.eclipse.wst.jsdt.core.IJavaModel;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 /**

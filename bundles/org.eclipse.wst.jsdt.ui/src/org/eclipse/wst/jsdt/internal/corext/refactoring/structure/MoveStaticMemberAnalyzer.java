@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.structure;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
@@ -28,14 +29,12 @@ import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.Type;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTFlattener;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodeFactory;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JavaStatusContext;
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 
 /* package */ class MoveStaticMemberAnalyzer extends ASTVisitor {
 

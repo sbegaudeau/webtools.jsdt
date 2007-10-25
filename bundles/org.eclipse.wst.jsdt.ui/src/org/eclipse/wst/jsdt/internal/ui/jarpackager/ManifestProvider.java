@@ -17,10 +17,7 @@ import java.util.jar.Manifest;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-
-
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-
 import org.eclipse.wst.jsdt.ui.jarpackager.IManifestProvider;
 import org.eclipse.wst.jsdt.ui.jarpackager.JarPackageData;
 

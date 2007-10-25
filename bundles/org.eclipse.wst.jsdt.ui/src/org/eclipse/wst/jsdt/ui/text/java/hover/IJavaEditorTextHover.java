@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.ui.text.java.hover;
 
 import org.eclipse.jface.text.ITextHover;
-
 import org.eclipse.ui.IEditorPart;
 
 

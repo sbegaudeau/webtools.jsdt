@@ -15,20 +15,15 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
-
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.wst.jsdt.core.IClasspathAttribute;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-
-import org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration;
 
 public abstract class BuildPathBasePage {
 	
@@ -166,7 +161,7 @@ public abstract class BuildPathBasePage {
 	
 	public abstract void setFocus();
 	
-	public void aboutToShow() {};
-	public void aboutToDispose() {};
+	public void aboutToShow() {}
+	public void aboutToDispose() {}
 	
 }

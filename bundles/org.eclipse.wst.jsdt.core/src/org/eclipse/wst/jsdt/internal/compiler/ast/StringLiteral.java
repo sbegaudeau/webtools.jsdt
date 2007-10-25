@@ -25,7 +25,7 @@ public class StringLiteral extends Literal {
 
 		this(start,end);
 		this.source = token;
-		this.lineNumber = lineNumber - 1; // line number is 1 based 
+		this.lineNumber = lineNumber - 1; // line number is 1 based
 	}
 
 	public StringLiteral(int s, int e) {
@@ -34,7 +34,7 @@ public class StringLiteral extends Literal {
 	}
 
 	public void computeConstant() {
-	
+
 		constant = StringConstant.fromValue(String.valueOf(source));
 	}
 
@@ -58,7 +58,7 @@ public class StringLiteral extends Literal {
 	}
 	/**
 	 * Code generation for string literal
-	 */ 
+	 */
 	public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
 
 		int pc = codeStream.position;
@@ -73,7 +73,7 @@ public class StringLiteral extends Literal {
 	}
 
 	public StringBuffer printExpression(int indent, StringBuffer output) {
-	
+
 		// handle some special char.....
 		output.append('\"');
 		for (int i = 0; i < source.length; i++) {
@@ -106,7 +106,7 @@ public class StringLiteral extends Literal {
 					output.append(source[i]);
 			}
 		}
-		output.append('\"'); 
+		output.append('\"');
 		return output;
 	}
 

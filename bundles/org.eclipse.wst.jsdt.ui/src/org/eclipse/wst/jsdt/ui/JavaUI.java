@@ -15,22 +15,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
-
-import org.eclipse.core.resources.IProject;
-
+import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.jface.operation.IRunnableContext;
-
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.texteditor.IDocumentProvider;
-
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -41,13 +36,8 @@ import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
-
 import org.eclipse.wst.jsdt.internal.corext.javadoc.JavaDocLocations;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaElementTransfer;
-
-import org.eclipse.wst.jsdt.ui.dialogs.TypeSelectionExtension;
-import org.eclipse.wst.jsdt.ui.text.IColorManager;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.SharedImages;
@@ -57,6 +47,8 @@ import org.eclipse.wst.jsdt.internal.ui.dialogs.MultiMainTypeSelectionDialog;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.PackageSelectionDialog;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.wst.jsdt.internal.ui.util.BusyIndicatorRunnableContext;
+import org.eclipse.wst.jsdt.ui.dialogs.TypeSelectionExtension;
+import org.eclipse.wst.jsdt.ui.text.IColorManager;
 
 /**
  * Central access point for the Java UI plug-in (id <code>"org.eclipse.wst.jsdt.ui"</code>).

@@ -27,7 +27,20 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
-
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.source.SourceViewer;
+import org.eclipse.jface.text.templates.Template;
+import org.eclipse.jface.text.templates.TemplateContextType;
+import org.eclipse.jface.text.templates.persistence.TemplatePersistenceData;
+import org.eclipse.jface.text.templates.persistence.TemplateReaderWriter;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Font;
@@ -39,30 +52,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.jface.window.Window;
-
-import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.source.SourceViewer;
-import org.eclipse.jface.text.templates.Template;
-import org.eclipse.jface.text.templates.TemplateContextType;
-import org.eclipse.jface.text.templates.persistence.TemplatePersistenceData;
-import org.eclipse.jface.text.templates.persistence.TemplateReaderWriter;
-
 import org.eclipse.wst.jsdt.internal.corext.template.java.CodeTemplateContextType;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.wst.jsdt.internal.ui.text.template.preferences.TemplateVariableProcessor;
@@ -73,6 +64,9 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListene
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ITreeListAdapter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.TreeListDialogField;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
+import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
 
 /**
   */

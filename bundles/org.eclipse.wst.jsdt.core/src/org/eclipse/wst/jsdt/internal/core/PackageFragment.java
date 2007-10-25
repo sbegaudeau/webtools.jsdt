@@ -53,7 +53,7 @@ public class PackageFragment extends Openable implements IPackageFragment, Suffi
 	 * Constant empty list of compilation units
 	 */
 	protected static final ICompilationUnit[] NO_COMPILATION_UNITS = new ICompilationUnit[] {};
-	
+
 	public String[] names;
 
 protected PackageFragment(PackageFragmentRoot root, String[] names) {
@@ -67,10 +67,10 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 
 	// check whether this pkg can be opened
 	if (!underlyingResource.isAccessible()) throw newNotPresentException();
-	
+
 	// check that it is not excluded (https://bugs.eclipse.org/bugs/show_bug.cgi?id=138577)
 	int kind = getKind();
-	if (kind == IPackageFragmentRoot.K_SOURCE && Util.isExcluded(this)) 
+	if (kind == IPackageFragmentRoot.K_SOURCE && Util.isExcluded(this))
 		throw newNotPresentException();
 
 
@@ -104,7 +104,7 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 	} catch (CoreException e) {
 		throw new JavaModelException(e);
 	}
-	
+
 	if (kind == IPackageFragmentRoot.K_SOURCE) {
 		// add primary compilation units
 		ICompilationUnit[] primaryCompilationUnits = getCompilationUnits(DefaultWorkingCopyOwner.PRIMARY);
@@ -113,7 +113,7 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 			vChildren.add(primary);
 		}
 	}
-	
+
 	IJavaElement[] children = new IJavaElement[vChildren.size()];
 	vChildren.toArray(children);
 	info.setChildren(children);
@@ -131,7 +131,7 @@ public boolean containsJavaResources() throws JavaModelException {
  */
 public void copy(IJavaElement container, IJavaElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaModelException {
 	if (container == null) {
-		throw new IllegalArgumentException(Messages.operation_nullContainer); 
+		throw new IllegalArgumentException(Messages.operation_nullContainer);
 	}
 	IJavaElement[] elements= new IJavaElement[] {this};
 	IJavaElement[] containers= new IJavaElement[] {container};
@@ -169,15 +169,15 @@ public void delete(boolean force, IProgressMonitor monitor) throws JavaModelExce
 public boolean equals(Object o) {
 	if (this == o) return true;
 	if (!(o instanceof PackageFragment)) return false;
-	
-	PackageFragment other = (PackageFragment) o;		
+
+	PackageFragment other = (PackageFragment) o;
 	return Util.equalArraysOrNull(this.names, other.names) &&
 			this.parent.equals(other.parent);
 }
 public boolean exists() {
 	// super.exist() only checks for the parent and the resource existence
 	// so also ensure that the package is not exceluded (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=138577)
-	return super.exists() && !Util.isExcluded(this); 
+	return super.exists() && !Util.isExcluded(this);
 }
 /**
  * @see IPackageFragment#getClassFile(String)
@@ -185,7 +185,7 @@ public boolean exists() {
  */
 public IClassFile getClassFile(String classFileName) {
 	if (!org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(classFileName)) {
-		throw new IllegalArgumentException(Messages.element_invalidClassFileName); 
+		throw new IllegalArgumentException(Messages.element_invalidClassFileName);
 	}
 	// don't hold on the .class file extension to save memory
 	// also make sure to not use substring as the resulting String may hold on the underlying char[] which might be much bigger than necessary
@@ -205,7 +205,7 @@ public IClassFile[] getClassFiles() throws JavaModelException {
 	if (getKind() == IPackageFragmentRoot.K_SOURCE) {
 		return NO_CLASSFILES;
 	}
-	
+
 	ArrayList list = getChildrenOfType(CLASS_FILE);
 	IClassFile[] array= new IClassFile[list.size()];
 	list.toArray(array);
@@ -217,16 +217,16 @@ public IClassFile[] getClassFiles() throws JavaModelException {
  */
 public ICompilationUnit getCompilationUnit(String cuName, String superTypeName) {
 	if (!org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(cuName)) {
-		throw new IllegalArgumentException(Messages.convention_unit_notJavaName); 
+		throw new IllegalArgumentException(Messages.convention_unit_notJavaName);
 	}
-	// If parent specified in filename remove it 
+	// If parent specified in filename remove it
 	String parentName = new String();
 	try {
 		IResource parentNameR = this.parent.getResource();
 		parentName = parentNameR==null?null:parentNameR.getName() + "/";
 		//String parentString = parentName.getProjectRelativePath().toString();
 	} catch (Exception ex) {
-		
+
 		ex.printStackTrace();
 	}
 	if(parentName!=null) {
@@ -249,7 +249,7 @@ public ICompilationUnit[] getCompilationUnits() throws JavaModelException {
 	if (getKind() == IPackageFragmentRoot.K_BINARY) {
 		return NO_COMPILATION_UNITS;
 	}
-	
+
 	ArrayList list = getChildrenOfType(COMPILATION_UNIT);
 	ICompilationUnit[] array= new ICompilationUnit[list.size()];
 	list.toArray(array);
@@ -395,7 +395,7 @@ public int hashCode() {
 	return hash;
 }
 /**
- * @see IParent 
+ * @see IParent
  */
 public boolean hasChildren() throws JavaModelException {
 	return getChildren().length > 0;
@@ -427,7 +427,7 @@ public boolean isDefaultPackage() {
  */
 public void move(IJavaElement container, IJavaElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaModelException {
 	if (container == null) {
-		throw new IllegalArgumentException(Messages.operation_nullContainer); 
+		throw new IllegalArgumentException(Messages.operation_nullContainer);
 	}
 	IJavaElement[] elements= new IJavaElement[] {this};
 	IJavaElement[] containers= new IJavaElement[] {container};
@@ -446,7 +446,7 @@ public void move(IJavaElement container, IJavaElement sibling, String rename, bo
  */
 public void rename(String newName, boolean force, IProgressMonitor monitor) throws JavaModelException {
 	if (newName == null) {
-		throw new IllegalArgumentException(Messages.element_nullName); 
+		throw new IllegalArgumentException(Messages.element_nullName);
 	}
 	IJavaElement[] elements= new IJavaElement[] {this};
 	IJavaElement[] dests= new IJavaElement[] {this.getParent()};
@@ -502,7 +502,7 @@ public String getAttachedJavadoc(IProgressMonitor monitor) throws JavaModelExcep
 	}
 	String packPath= this.getElementName().replace('.', '/');
 	pathBuffer.append(packPath).append('/').append(JavadocConstants.PACKAGE_FILE_NAME);
-	
+
 	if (monitor != null && monitor.isCanceled()) throw new OperationCanceledException();
 	final String contents = getURLContents(String.valueOf(pathBuffer));
 	if (monitor != null && monitor.isCanceled()) throw new OperationCanceledException();

@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.search.*;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
 
 public class QualifiedTypeDeclarationPattern extends TypeDeclarationPattern implements IIndexConstants {
@@ -82,7 +82,7 @@ public SearchPattern getBlankPattern() {
 }
 public boolean matchesDecodedKey(SearchPattern decodedPattern) {
 	QualifiedTypeDeclarationPattern pattern = (QualifiedTypeDeclarationPattern) decodedPattern;
-	
+
 	// check type suffix
 	if (this.typeSuffix != pattern.typeSuffix && typeSuffix != TYPE_SUFFIX) {
 		if (!matchDifferentTypeSuffixes(this.typeSuffix, pattern.typeSuffix)) {
@@ -121,12 +121,12 @@ protected StringBuffer print(StringBuffer output) {
 			output.append("TypeDeclarationPattern: qualification<"); //$NON-NLS-1$
 			break;
 	}
-	if (this.qualification != null) 
+	if (this.qualification != null)
 		output.append(this.qualification);
 	else
 		output.append("*"); //$NON-NLS-1$
 	output.append(">, type<"); //$NON-NLS-1$
-	if (simpleName != null) 
+	if (simpleName != null)
 		output.append(simpleName);
 	else
 		output.append("*"); //$NON-NLS-1$

@@ -11,8 +11,10 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.flow.InsideSubRoutineFlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
 public class ContinueStatement extends BranchStatement {
 
@@ -34,10 +36,10 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 		if (label == null) {
 			currentScope.problemReporter().invalidContinue(this);
 		} else {
-			currentScope.problemReporter().undefinedLabel(this); 
+			currentScope.problemReporter().undefinedLabel(this);
 		}
-		return flowInfo; // pretend it did not continue since no actual target			
-	} 
+		return flowInfo; // pretend it did not continue since no actual target
+	}
 
 	if (targetContext == FlowContext.NotContinuableContext) {
 		currentScope.problemReporter().invalidContinue(this);
@@ -68,15 +70,15 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 			ASTNode node = traversedContext.associatedNode;
 			if (node instanceof TryStatement) {
 				TryStatement tryStatement = (TryStatement) node;
-				flowInfo.addInitializationsFrom(tryStatement.subRoutineInits); // collect inits			
-			}		
+				flowInfo.addInitializationsFrom(tryStatement.subRoutineInits); // collect inits
+			}
 		} else if (traversedContext == targetContext) {
 			// only record continue info once accumulated through subroutines, and only against target context
 			targetContext.recordContinueFrom(flowContext, flowInfo);
 			break;
 		}
 	} while ((traversedContext = traversedContext.parent) != null);
-	
+
 	// resize subroutines
 	if (subCount != subroutines.length) {
 		System.arraycopy(subroutines, 0, subroutines = new SubRoutineStatement[subCount], 0, subCount);

@@ -30,9 +30,9 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  * A working copy on an <code>IClassFile</code>.
  */
 public class ClassFileWorkingCopy extends CompilationUnit {
-	
+
 	public IClassFile classFile;
-	
+
 public ClassFileWorkingCopy(IClassFile classFile, WorkingCopyOwner owner) {
 	super((PackageFragment) classFile.getParent(), ((BinaryType) ((ClassFile) classFile).getType()).getSourceFileName(null/*no info available*/), owner);
 	this.classFile = classFile;
@@ -82,7 +82,7 @@ protected IBuffer openBuffer(IProgressMonitor pm, Object info) throws JavaModelE
 	// create buffer
 	IBuffer buffer = this.owner.createBuffer(this);
 	if (buffer == null) return null;
-	
+
 	// set the buffer source
 	if (buffer.getCharacters() == null) {
 		IBuffer classFileBuffer = this.classFile.getBuffer();
@@ -100,10 +100,10 @@ protected IBuffer openBuffer(IProgressMonitor pm, Object info) throws JavaModelE
 	// add buffer to buffer cache
 	BufferManager bufManager = getBufferManager();
 	bufManager.addBuffer(buffer);
-			
+
 	// listen to buffer changes
 	buffer.addBufferChangedListener(this);
-	
+
 	return buffer;
 }
 

@@ -32,49 +32,49 @@ import java.util.List;
  *    EnumDeclaration
  * </pre>
  * Although allowed at the AST, not all arrangements of AST nodes are meaningful;
- * in particular, only class and enum declarations are meaningful in the context of 
+ * in particular, only class and enum declarations are meaningful in the context of
  * a block.
- * 
+ *
  * @since 2.0
  */
 public class TypeDeclarationStatement extends Statement {
-	
+
 	/**
 	 * The "typeDeclaration" structural property of this node type (JLS2 API only).
 	 * @since 3.0
 	 */
-	public static final ChildPropertyDescriptor TYPE_DECLARATION_PROPERTY = 
+	public static final ChildPropertyDescriptor TYPE_DECLARATION_PROPERTY =
 		new ChildPropertyDescriptor(TypeDeclarationStatement.class, "typeDeclaration", TypeDeclaration.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "declaration" structural property of this node type (added in JLS3 API).
 	 * @since 3.1
 	 */
-	public static final ChildPropertyDescriptor DECLARATION_PROPERTY = 
+	public static final ChildPropertyDescriptor DECLARATION_PROPERTY =
 		new ChildPropertyDescriptor(TypeDeclarationStatement.class, "declaration", AbstractTypeDeclaration.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
-	 * A list of property descriptors (element type: 
+	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
 	 * @since 3.0
 	 */
 	private static final List PROPERTY_DESCRIPTORS_2_0;
-	
+
 	/**
-	 * A list of property descriptors (element type: 
+	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
 	 * @since 3.1
 	 */
 	private static final List PROPERTY_DESCRIPTORS_3_0;
-	
+
 	static {
 		List propertyList = new ArrayList(2);
 		createPropertyList(TypeDeclarationStatement.class, propertyList);
 		addProperty(TYPE_DECLARATION_PROPERTY, propertyList);
 		PROPERTY_DESCRIPTORS_2_0 = reapPropertyList(propertyList);
-		
+
 		propertyList = new ArrayList(2);
 		createPropertyList(TypeDeclarationStatement.class, propertyList);
 		addProperty(DECLARATION_PROPERTY, propertyList);
@@ -84,11 +84,11 @@ public class TypeDeclarationStatement extends Statement {
 	/**
 	 * Returns a list of structural property descriptors for this node type.
 	 * Clients must not modify the result.
-	 * 
+	 *
 	 * @param apiLevel the API level; one of the
 	 * <code>AST.JLS*</code> constants
 
-	 * @return a list of property descriptors (element type: 
+	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
 	 * @since 3.0
 	 */
@@ -99,20 +99,20 @@ public class TypeDeclarationStatement extends Statement {
 			return PROPERTY_DESCRIPTORS_3_0;
 		}
 	}
-			
+
 	/**
-	 * The type declaration; lazily initialized; defaults to a unspecified, 
+	 * The type declaration; lazily initialized; defaults to a unspecified,
 	 * but legal, type declaration. In JLS2, corresponds to TYPE_DECLARATION_PROPERTY.
      * After JLS2, corresponds to DECLARATION_PROPERTY.
      * @see #typeDeclProperty
 	 */
 	private AbstractTypeDeclaration typeDecl = null;
-    
+
     /**
      * The child property stored on the <code>typeDecl</code> instance variable.
-     * In JLS2, corresponds to TYPE_DECLARATION_PROPERTY. After JLS2, corresponds to 
+     * In JLS2, corresponds to TYPE_DECLARATION_PROPERTY. After JLS2, corresponds to
      * DECLARATION_PROPERTY.
-     * 
+     *
      * @return the property corresponding to the <code>typeDecl</code> instance variable;
      * never <code>null</code>
      */
@@ -126,13 +126,13 @@ public class TypeDeclarationStatement extends Statement {
 
 
 	/**
-	 * Creates a new unparented local type declaration statement node owned 
+	 * Creates a new unparented local type declaration statement node owned
 	 * by the given AST. By default, the local type declaration is an
 	 * unspecified, but legal, type declaration.
 	 * <p>
 	 * N.B. This constructor is package-private.
 	 * </p>
-	 * 
+	 *
 	 * @param ast the AST that is to own this node
 	 */
 	TypeDeclarationStatement(AST ast) {
@@ -146,7 +146,7 @@ public class TypeDeclarationStatement extends Statement {
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -170,7 +170,7 @@ public class TypeDeclarationStatement extends Statement {
 		// allow default implementation to flag the error
 		return super.internalGetSetChildProperty(property, get, child);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -182,7 +182,7 @@ public class TypeDeclarationStatement extends Statement {
 	 * Method declared on ASTNode.
 	 */
 	ASTNode clone0(AST target) {
-		TypeDeclarationStatement result = 
+		TypeDeclarationStatement result =
 			new TypeDeclarationStatement(target);
 		result.setSourceRange(this.getStartPosition(), this.getLength());
 		result.copyLeadingComment(this);
@@ -190,7 +190,7 @@ public class TypeDeclarationStatement extends Statement {
 			(AbstractTypeDeclaration) getDeclaration().clone(target));
 		return result;
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -209,14 +209,14 @@ public class TypeDeclarationStatement extends Statement {
 		}
 		visitor.endVisit(this);
 	}
-	
+
 	/**
 	 * Returns the abstract type declaration of this local type declaration
 	 * statement (added in JLS3 API).
-	 * 
+	 *
 	 * @return the type declaration node
 	 * @since 3.1
-	 */ 
+	 */
 	public AbstractTypeDeclaration getDeclaration() {
 		if (this.typeDecl == null) {
 			// lazy init must be thread-safe for readers
@@ -230,11 +230,11 @@ public class TypeDeclarationStatement extends Statement {
 		}
 		return this.typeDecl;
 	}
-		
+
 	/**
 	 * Sets the abstract type declaration of this local type declaration
 	 * statement (added in JLS3 API).
-	 * 
+	 *
 	 * @param decl the type declaration node
 	 * @exception IllegalArgumentException if:
 	 * <ul>
@@ -243,12 +243,12 @@ public class TypeDeclarationStatement extends Statement {
 	 * <li>a cycle in would be created</li>
 	 * </ul>
 	 * @since 3.1
-	 */ 
+	 */
 	public void setDeclaration(AbstractTypeDeclaration decl) {
 		if (decl == null) {
 			throw new IllegalArgumentException();
 		}
-		// a TypeDeclarationStatement may occur inside an 
+		// a TypeDeclarationStatement may occur inside an
 		// TypeDeclaration - must check cycles
 		ASTNode oldChild = this.typeDecl;
 		ChildPropertyDescriptor typeDeclProperty = typeDeclProperty();
@@ -256,22 +256,22 @@ public class TypeDeclarationStatement extends Statement {
 		this.typeDecl= decl;
 		postReplaceChild(oldChild, decl, typeDeclProperty);
 	}
-	
+
 	/**
 	 * Returns the type declaration of this local type declaration
 	 * statement (JLS2 API only).
-	 * 
+	 *
 	 * @return the type declaration node
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * an AST later than JLS2
-	 * @deprecated In the JLS3 API, this method is replaced by 
+	 * @deprecated In the JLS3 API, this method is replaced by
 	 * {@link #getDeclaration()}, which returns <code>AbstractTypeDeclaration</code>
 	 * instead of <code>TypeDeclaration</code>.
-	 */ 
+	 */
 	public TypeDeclaration getTypeDeclaration() {
 		return internalGetTypeDeclaration();
 	}
-	
+
 	/**
 	 * Internal synonym for deprecated method. Used to avoid
 	 * deprecation warnings.
@@ -281,11 +281,11 @@ public class TypeDeclarationStatement extends Statement {
 		supportedOnlyIn2();
 		return (TypeDeclaration) getDeclaration();
 	}
-		
+
 	/**
 	 * Sets the type declaration of this local type declaration
 	 * statement (JLS2 API only).
-	 * 
+	 *
 	 * @param decl the type declaration node
 	 * @exception IllegalArgumentException if:
 	 * <ul>
@@ -295,15 +295,15 @@ public class TypeDeclarationStatement extends Statement {
 	 * </ul>
 	 * @exception UnsupportedOperationException if this operation is used in
 	 * an AST later than JLS2
-     * @deprecated In the JLS3 API, this method is replaced by 
+     * @deprecated In the JLS3 API, this method is replaced by
      * {@link #setDeclaration(AbstractTypeDeclaration)} which takes
      * <code>AbstractTypeDeclaration</code> instead of
      * <code>TypeDeclaration</code>.
-	 */ 
+	 */
 	public void setTypeDeclaration(TypeDeclaration decl) {
 		internalSetTypeDeclaration(decl);
 	}
-	
+
 	/**
 	 * Internal synonym for deprecated method. Used to avoid
 	 * deprecation warnings.
@@ -314,7 +314,7 @@ public class TypeDeclarationStatement extends Statement {
 		// forward to non-deprecated replacement method
 		setDeclaration(decl);
 	}
-	
+
 	/**
 	 * Resolves and returns the binding for the class or interface declared in
 	 * this type declaration statement.
@@ -322,10 +322,10 @@ public class TypeDeclarationStatement extends Statement {
 	 * Note that bindings are generally unavailable unless requested when the
 	 * AST is being built.
 	 * </p>
-	 * 
-	 * @return the binding, or <code>null</code> if the binding cannot be 
+	 *
+	 * @return the binding, or <code>null</code> if the binding cannot be
 	 *    resolved
-	 */	
+	 */
 	public ITypeBinding resolveBinding() {
 		// forward request to the wrapped type declaration
 		AbstractTypeDeclaration d = getDeclaration();
@@ -338,14 +338,14 @@ public class TypeDeclarationStatement extends Statement {
 			return null;
 		}
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
 		return super.memSize() + 1 * 4;
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */

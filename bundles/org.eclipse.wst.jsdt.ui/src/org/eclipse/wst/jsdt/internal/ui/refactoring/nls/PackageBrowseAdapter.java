@@ -14,24 +14,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.eclipse.swt.widgets.Display;
-
 import org.eclipse.jface.window.Window;
-
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IStringButtonAdapter;
+import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
 
 
 public class PackageBrowseAdapter implements IStringButtonAdapter {

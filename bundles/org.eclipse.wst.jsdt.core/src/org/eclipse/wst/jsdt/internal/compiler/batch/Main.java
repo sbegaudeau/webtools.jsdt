@@ -42,8 +42,8 @@ import java.util.StringTokenizer;
 
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
+import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 import org.eclipse.wst.jsdt.internal.compiler.AbstractAnnotationProcessorManager;
 import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
@@ -65,9 +65,9 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 import org.eclipse.wst.jsdt.internal.compiler.util.GenericXMLWriter;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfInt;
+import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.Messages;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
-import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 public class Main implements ProblemSeverities, SuffixConstants {
@@ -1012,7 +1012,7 @@ public class Main implements ProblemSeverities, SuffixConstants {
 			this.parameters.put(Logger.NUMBER_OF_WARNINGS, new Integer(warnings));
 			this.printTag(Logger.PROBLEMS, this.parameters, true, false);
 		}
-		
+
 		private void startLoggingExtraProblems(int count) {
 			this.parameters.put(Logger.NUMBER_OF_PROBLEMS, new Integer(count));
 			this.printTag(Logger.EXTRA_PROBLEMS, this.parameters, true, false);
@@ -1177,22 +1177,22 @@ public class Main implements ProblemSeverities, SuffixConstants {
 			if ((startPosition > endPosition)
 				|| ((startPosition < 0) && (endPosition < 0))
 				|| length == 0)
-				return Messages.problem_noSourceInformation; 
+				return Messages.problem_noSourceInformation;
 
 			StringBuffer errorBuffer = new StringBuffer();
 			if ((bits & Main.Logger.EMACS) == 0) {
-				errorBuffer.append(' ').append(Messages.bind(Messages.problem_atLine, String.valueOf(problem.getSourceLineNumber()))); 
+				errorBuffer.append(' ').append(Messages.bind(Messages.problem_atLine, String.valueOf(problem.getSourceLineNumber())));
 				errorBuffer.append(Util.LINE_SEPARATOR);
 			}
 			errorBuffer.append('\t');
-			
+
 			char c;
 			final char SPACE = '\u0020';
 			final char MARK = '^';
 			final char TAB = '\t';
 			//the next code tries to underline the token.....
 			//it assumes (for a good display) that token source does not
-			//contain any \r \n. This is false on statements ! 
+			//contain any \r \n. This is false on statements !
 			//(the code still works but the display is not optimal !)
 
 			// expand to line limits
@@ -1204,11 +1204,11 @@ public class Main implements ProblemSeverities, SuffixConstants {
 			for (end = endPosition >= length ? length - 1 : endPosition ; end+1 < length; end++) {
 				if ((c = unitSource[end + 1]) == '\r' || c == '\n') break;
 			}
-			
+
 			// trim left and right spaces/tabs
 			while ((c = unitSource[begin]) == ' ' || c == '\t') begin++;
 			//while ((c = unitSource[end]) == ' ' || c == '\t') end--; TODO (philippe) should also trim right, but all tests are to be updated
-			
+
 			// copy source
 			errorBuffer.append(unitSource, begin, end-begin+1);
 			errorBuffer.append(Util.LINE_SEPARATOR).append("\t"); //$NON-NLS-1$
@@ -1529,7 +1529,7 @@ public String bind(String id, String[] arguments) {
 }
 /**
  * Return true if and only if the running VM supports the given minimal version.
- * 
+ *
  * <p>This only checks the major version, since the minor version is always 0 (at least for the useful cases).</p>
  * <p>The given minimalSupportedVersion is one of the constants:</p>
  * <ul>
@@ -2049,7 +2049,7 @@ protected ArrayList handleBootclasspath(ArrayList bootclasspaths, String customE
 //					bootclasspaths.add(currentClasspath);
 //				}
 //			}
-//		} else 
+//		} else
 		{
 			 String libraryPath = SystemLibraryLocation.getInstance().getLibraryPath(new String(SystemLibraryLocation.SYSTEM_LIBARAY_NAME));
 			 if (libraryPath!=null)
@@ -3093,7 +3093,7 @@ public void configure(String[] argv) throws InvalidInputException {
 	this.logger.logVersion(printVersionRequired);
 
 	validateOptions(didSpecifyCompliance);
-	
+
 	// Enable annotation processing by default in batch mode when compliance is at least 1.6
 	// see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=185768
 	if (!didSpecifyDisabledAnnotationProcessing
@@ -3128,7 +3128,7 @@ public void configure(String[] argv) throws InvalidInputException {
 			0,
 			classCount);
 	}
-	
+
 	setPaths(bootclasspaths,
 			sourcepathClasspathArg,
 			sourcepathClasspaths,

@@ -12,19 +12,15 @@ package org.eclipse.wst.jsdt.internal.ui.typehierarchy;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
-
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.MethodOverrideTester;
-
-import org.eclipse.wst.jsdt.ui.JavaElementComparator;
-
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.SourcePositionComparator;
+import org.eclipse.wst.jsdt.ui.JavaElementComparator;
 
 /**
   */

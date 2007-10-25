@@ -15,7 +15,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.ArrayType;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.TType;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2.TTypes;

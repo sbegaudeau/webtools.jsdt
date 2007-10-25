@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Stack;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.GenericType;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.TType;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2.CollectionElementVariable2;

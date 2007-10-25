@@ -15,13 +15,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Menu;
-
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
 
 /**
  * Drop down action for toolbars containing <code>BuildpathModifierAction</code>s.

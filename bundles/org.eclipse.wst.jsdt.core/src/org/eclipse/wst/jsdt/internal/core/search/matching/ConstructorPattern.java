@@ -101,9 +101,9 @@ public ConstructorPattern(
 public ConstructorPattern(
 	boolean findDeclarations,
 	boolean findReferences,
-	char[] declaringSimpleName,	
+	char[] declaringSimpleName,
 	char[] declaringQualification,
-	char[][] parameterQualifications, 
+	char[][] parameterQualifications,
 	char[][] parameterSimpleNames,
 	String[] parameterSignatures,
 	IMethod method,
@@ -112,9 +112,9 @@ public ConstructorPattern(
 
 	this(findDeclarations,
 		findReferences,
-		declaringSimpleName,	
+		declaringSimpleName,
 		declaringQualification,
-		parameterQualifications, 
+		parameterQualifications,
 		parameterSimpleNames,
 		matchRule);
 
@@ -165,10 +165,10 @@ public ConstructorPattern(
 public ConstructorPattern(
 	boolean findDeclarations,
 	boolean findReferences,
-	char[] declaringSimpleName,	
+	char[] declaringSimpleName,
 	char[] declaringQualification,
 	String declaringSignature,
-	char[][] parameterQualifications, 
+	char[][] parameterQualifications,
 	char[][] parameterSimpleNames,
 	String[] parameterSignatures,
 	char[][] arguments,
@@ -176,9 +176,9 @@ public ConstructorPattern(
 
 	this(findDeclarations,
 		findReferences,
-		declaringSimpleName,	
+		declaringSimpleName,
 		declaringQualification,
-		parameterQualifications, 
+		parameterQualifications,
 		parameterSimpleNames,
 		matchRule);
 
@@ -300,7 +300,7 @@ protected StringBuffer print(StringBuffer output) {
 	}
 	if (declaringQualification != null)
 		output.append(declaringQualification).append('.');
-	if (declaringSimpleName != null) 
+	if (declaringSimpleName != null)
 		output.append(declaringSimpleName);
 	else if (declaringQualification != null)
 		output.append("*"); //$NON-NLS-1$

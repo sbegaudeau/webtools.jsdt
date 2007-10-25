@@ -10,18 +10,14 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.refactoring.actions;
 
-import org.eclipse.wst.jsdt.core.JavaModelException;
-
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.dialogs.IDialogConstants;
-
-import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper;
-
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizardOpenOperation;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper;
 
 /**
  * A helper class to activate the UI of a refactoring

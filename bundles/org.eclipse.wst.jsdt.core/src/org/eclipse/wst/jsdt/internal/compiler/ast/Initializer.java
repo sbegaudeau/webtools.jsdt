@@ -12,20 +12,24 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
-import org.eclipse.wst.jsdt.internal.compiler.parser.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 
 public class Initializer extends FieldDeclaration {
-	
+
 	public Block block;
 	public int lastVisibleFieldID;
 	public int bodyStart;
 	public int bodyEnd;
-	
-	public boolean errorInSignature = false; 
-	
+
+	public boolean errorInSignature = false;
+
 	public Initializer(Block block, int modifiers) {
 		this.block = block;
 		this.modifiers = modifiers;
@@ -42,7 +46,7 @@ public class Initializer extends FieldDeclaration {
 	}
 
 	/**
-	 * Code generation for a non-static initializer: 
+	 * Code generation for a non-static initializer:
 	 *    standard block code gen
 	 *
 	 * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
@@ -64,12 +68,12 @@ public class Initializer extends FieldDeclaration {
 	public int getKind() {
 		return INITIALIZER;
 	}
-	
+
 	public boolean isStatic() {
 
 		return (this.modifiers & ClassFileConstants.AccStatic) != 0;
 	}
-	
+
 	public void parseStatements(
 		Parser parser,
 		TypeDeclaration typeDeclaration,
@@ -87,13 +91,13 @@ public class Initializer extends FieldDeclaration {
 			if (this.annotations != null) printAnnotations(this.annotations, output);
 			output.append("{\n"); //$NON-NLS-1$
 			block.printBody(indent, output);
-			printIndent(indent, output).append('}'); 
+			printIndent(indent, output).append('}');
 			return output;
 		} else {
 			return block.printStatement(indent, output);
 		}
 	}
-	
+
 	public void resolve(MethodScope scope) {
 
 	    FieldBinding previousField = scope.initializedField;

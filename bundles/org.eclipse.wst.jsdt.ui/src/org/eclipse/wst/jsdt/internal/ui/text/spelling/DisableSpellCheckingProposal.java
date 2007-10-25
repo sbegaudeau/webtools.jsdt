@@ -10,23 +10,17 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.text.spelling;
 
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
-
 import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.IContextInformation;
-
-import org.eclipse.ui.texteditor.spelling.SpellingService;
-
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.editors.text.EditorsUI;
-
-import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
-import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
-
+import org.eclipse.ui.texteditor.spelling.SpellingService;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
+import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
+import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
 
 
 /**

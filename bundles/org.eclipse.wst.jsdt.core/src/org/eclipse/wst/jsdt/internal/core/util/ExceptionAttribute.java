@@ -20,11 +20,11 @@ import org.eclipse.wst.jsdt.core.util.IExceptionAttribute;
 /**
  * Default implementation of IExceptionAttribute.
  */
-public class ExceptionAttribute extends ClassFileAttribute implements IExceptionAttribute {	
+public class ExceptionAttribute extends ClassFileAttribute implements IExceptionAttribute {
 	private int exceptionsNumber;
 	private char[][] exceptionNames;
 	private int[] exceptionIndexes;
-	
+
 	ExceptionAttribute(byte[] classFileBytes, IConstantPool constantPool, int offset) throws ClassFormatException {
 		super(classFileBytes, constantPool, offset);
 		this.exceptionsNumber = u2At(classFileBytes, 6, offset);
@@ -47,7 +47,7 @@ public class ExceptionAttribute extends ClassFileAttribute implements IException
 			readOffset += 2;
 		}
 	}
-	
+
 	/**
 	 * @see IExceptionAttribute#getExceptionIndexes()
 	 */

@@ -22,7 +22,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameSourceFolde
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameTypeParameterProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameTypeProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameVirtualMethodProcessor;
-
 import org.eclipse.wst.jsdt.internal.ui.refactoring.UserInterfaceManager;
 
 public class RenameUserInterfaceManager extends UserInterfaceManager {

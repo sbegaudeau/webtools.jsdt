@@ -11,16 +11,12 @@
 package org.eclipse.wst.jsdt.internal.ui.search;
 
 import org.eclipse.core.resources.IResource;
-
 import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
 import org.eclipse.wst.jsdt.core.IJavaElement;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredJavaElementLabels;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredString;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 public class SortingLabelProvider extends SearchLabelProvider {
 	

@@ -19,39 +19,63 @@ package org.eclipse.wst.jsdt.internal.codeassist.select;
  *	0  means completion behind the first character
  *  n  means completion behind the n-th character
  */
- 
+
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnMemberAccess;
-import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnSingleNameReference;
-import org.eclipse.wst.jsdt.internal.codeassist.impl.*;
-import org.eclipse.wst.jsdt.internal.compiler.*;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.codeassist.impl.AssistParser;
+import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayAllocationExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CaseStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ExplicitConstructorCall;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MarkerAnnotation;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
+import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.NormalAnnotation;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleMemberAnnotation;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SuperReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SwitchStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.env.*;
+import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.parser.*;
-import org.eclipse.wst.jsdt.internal.compiler.problem.*;
+import org.eclipse.wst.jsdt.internal.compiler.parser.JavadocParser;
+import org.eclipse.wst.jsdt.internal.compiler.parser.RecoveredType;
+import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 public class SelectionParser extends AssistParser {
 	// OWNER
 	protected static final int SELECTION_PARSER = 1024;
 	protected static final int SELECTION_OR_ASSIST_PARSER = ASSIST_PARSER + SELECTION_PARSER;
-	
+
 	// KIND : all values known by SelectionParser are between 1025 and 1549
 	protected static final int K_BETWEEN_CASE_AND_COLON = SELECTION_PARSER + 1; // whether we are inside a block
 
 	public ASTNode assistNodeParent; // the parent node of assist node
-	
+
 	/* public fields */
 
 	public int selectionStart, selectionEnd;
 
 	public static final char[] SUPER = "super".toCharArray(); //$NON-NLS-1$
 	public static final char[] THIS = "this".toCharArray(); //$NON-NLS-1$
-	
+
 public SelectionParser(ProblemReporter problemReporter) {
 	super(problemReporter);
 	this.javadocParser.checkDocComment = true;
@@ -63,21 +87,21 @@ protected void attachOrphanCompletionNode(){
 	if (isOrphanCompletionNode){
 		ASTNode orphan = this.assistNode;
 		isOrphanCompletionNode = false;
-		
-		
+
+
 		/* if in context of a type, then persists the identifier into a fake field return type */
 		if (currentElement instanceof RecoveredType){
 			RecoveredType recoveredType = (RecoveredType)currentElement;
 			/* filter out cases where scanner is still inside type header */
 			if (recoveredType.foundOpeningBrace) {
-				/* generate a pseudo field with a completion on type reference */	
+				/* generate a pseudo field with a completion on type reference */
 				if (orphan instanceof TypeReference){
 					currentElement = currentElement.add(new SelectionOnFieldType((TypeReference)orphan), 0);
 					return;
 				}
 			}
 		}
-		
+
 		if (orphan instanceof Expression) {
 			buildMoreCompletionContext((Expression)orphan);
 		} else {
@@ -89,7 +113,7 @@ protected void attachOrphanCompletionNode(){
 }
 private void buildMoreCompletionContext(Expression expression) {
 	ASTNode parentNode = null;
-	
+
 	int kind = topKnownElementKind(SELECTION_OR_ASSIST_PARSER);
 	if(kind != 0) {
 //		int info = topKnownElementInfo(SELECTION_OR_ASSIST_PARSER);
@@ -105,11 +129,11 @@ private void buildMoreCompletionContext(Expression expression) {
 						if(length != 0 && firstNode.sourceStart > switchStatement.expression.sourceEnd) {
 							switchStatement.statements = new Statement[length + 1];
 							System.arraycopy(
-								this.astStack, 
-								newAstPtr + 1, 
-								switchStatement.statements, 
-								0, 
-								length); 
+								this.astStack,
+								newAstPtr + 1,
+								switchStatement.statements,
+								0,
+								length);
 						}
 					}
 					CaseStatement caseStatement = new CaseStatement(expression, expression.sourceStart, expression.sourceEnd);
@@ -154,23 +178,23 @@ private boolean checkRecoveredType() {
 	return false;
 }
 protected void classInstanceCreation(boolean hasClassBody, boolean isShort) {
-	
+
 	// ClassInstanceCreationExpression ::= 'new' ClassType '(' ArgumentListopt ')' ClassBodyopt
 
 	// ClassBodyopt produces a null item on the astStak if it produces NO class body
 	// An empty class body produces a 0 on the length stack.....
 
-	
+
 //	if ((astLengthStack[astLengthPtr] == 1)
 //		&& (astStack[astPtr] == null)) {
 
-		
+
 //		int index;
 		int argsLength= isShort ? 0 : expressionLengthStack[expressionLengthPtr];
 		if (!(this.expressionStack[this.expressionPtr-argsLength] instanceof SelectionOnSingleNameReference))
 		{
-//				
-//		
+//
+//
 //		if ((index = this.indexOfAssistIdentifier()) < 0) {
 //			super.classInstanceCreation(hasClassBody, isShort);
 //			return;
@@ -191,14 +215,14 @@ protected void classInstanceCreation(boolean hasClassBody, boolean isShort) {
 			if ((length = expressionLengthStack[expressionLengthPtr--]) != 0) {
 				expressionPtr -= length;
 				System.arraycopy(
-						expressionStack, 
-						expressionPtr + 1, 
-						alloc.arguments = new Expression[length], 
-						0, 
-						length); 
+						expressionStack,
+						expressionPtr + 1,
+						alloc.arguments = new Expression[length],
+						0,
+						length);
 			}
 		}
-		else 
+		else
 			alloc.arguments=new Expression[0];
 		// trick to avoid creating a selection on type reference
 		char [] oldIdent = this.assistIdentifier();
@@ -206,9 +230,9 @@ protected void classInstanceCreation(boolean hasClassBody, boolean isShort) {
 //		alloc.type = getTypeReference(0);
 		alloc.member = this.expressionStack[this.expressionPtr--];
 		this.expressionLengthPtr--;
-		
+
 		this.setAssistIdentifier(oldIdent);
-		
+
 		//the default constructor with the correct number of argument
 		//will be created and added by the TC (see createsInternalConstructorWithBinding)
 		alloc.sourceStart = intStack[intPtr--];
@@ -218,7 +242,7 @@ protected void classInstanceCreation(boolean hasClassBody, boolean isShort) {
 		this.lastCheckPoint = alloc.sourceEnd + 1;
 		if (!diet){
 			this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
-			this.lastIgnoredToken = -1;	
+			this.lastIgnoredToken = -1;
 		}
 		this.isOrphanCompletionNode = true;
 //	} else {
@@ -235,7 +259,7 @@ protected void consumeArrayCreationExpressionWithoutInitializer() {
 //	if (alloc.type == assistNode){
 //		if (!diet){
 //			this.restartRecovery	= true;	// force to restart in recovery mode
-//			this.lastIgnoredToken = -1;	
+//			this.lastIgnoredToken = -1;
 //		}
 //		this.isOrphanCompletionNode = true;
 //	}
@@ -249,7 +273,7 @@ protected void consumeArrayCreationExpressionWithInitializer() {
 //	if (alloc.type == assistNode){
 //		if (!diet){
 //			this.restartRecovery	= true;	// force to restart in recovery mode
-//			this.lastIgnoredToken = -1;	
+//			this.lastIgnoredToken = -1;
 //		}
 //		this.isOrphanCompletionNode = true;
 //	}
@@ -261,33 +285,33 @@ protected void consumeClassInstanceCreationExpressionQualifiedWithTypeArguments(
 	QualifiedAllocationExpression alloc;
 	int length;
 	if (((length = this.astLengthStack[this.astLengthPtr]) == 1) && (this.astStack[this.astPtr] == null)) {
-		
+
 		if (this.indexOfAssistIdentifier() < 0) {
 			super.consumeClassInstanceCreationExpressionQualifiedWithTypeArguments();
 			return;
 		}
-		
+
 		//NO ClassBody
 		this.astPtr--;
 		this.astLengthPtr--;
 		alloc = new SelectionOnQualifiedAllocationExpression();
-		alloc.sourceEnd = this.rParenPos;; //the position has been stored explicitly
+		alloc.sourceEnd = this.rParenPos; //the position has been stored explicitly
 
 		if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
 			this.expressionPtr -= length;
 			System.arraycopy(
-				this.expressionStack, 
-				this.expressionPtr + 1, 
-				alloc.arguments = new Expression[length], 
-				0, 
-				length); 
+				this.expressionStack,
+				this.expressionPtr + 1,
+				alloc.arguments = new Expression[length],
+				0,
+				length);
 		}
-		
+
 		// trick to avoid creating a selection on type reference
 		char [] oldIdent = this.assistIdentifier();
 		this.setAssistIdentifier(null);
 		alloc.type = getTypeReference(0);
-		
+
 		this.setAssistIdentifier(oldIdent);
 
 		length = this.genericsLengthStack[this.genericsLengthPtr--];
@@ -299,12 +323,12 @@ protected void consumeClassInstanceCreationExpressionQualifiedWithTypeArguments(
 		//will be created and added by the TC (see createsInternalConstructorWithBinding)
 		alloc.sourceStart = this.intStack[this.intPtr--];
 		pushOnExpressionStack(alloc);
-		
+
 		this.assistNode = alloc;
 		this.lastCheckPoint = alloc.sourceEnd + 1;
 		if (!diet){
 			this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
-			this.lastIgnoredToken = -1;	
+			this.lastIgnoredToken = -1;
 		}
 		this.isOrphanCompletionNode = true;
 	} else {
@@ -312,8 +336,8 @@ protected void consumeClassInstanceCreationExpressionQualifiedWithTypeArguments(
 	}
 
 	this.expressionLengthPtr--;
-	QualifiedAllocationExpression qae = 
-		(QualifiedAllocationExpression) this.expressionStack[this.expressionPtr--]; 
+	QualifiedAllocationExpression qae =
+		(QualifiedAllocationExpression) this.expressionStack[this.expressionPtr--];
 	qae.enclosingInstance = this.expressionStack[this.expressionPtr];
 	this.expressionStack[this.expressionPtr] = qae;
 	qae.sourceStart = qae.enclosingInstance.sourceStart;
@@ -324,12 +348,12 @@ protected void consumeClassInstanceCreationExpressionWithTypeArguments() {
 	int length;
 	if (((length = this.astLengthStack[this.astLengthPtr]) == 1)
 		&& (this.astStack[this.astPtr] == null)) {
-		
+
 		if (this.indexOfAssistIdentifier() < 0) {
 			super.consumeClassInstanceCreationExpressionWithTypeArguments();
 			return;
 		}
-		
+
 		//NO ClassBody
 		this.astPtr--;
 		this.astLengthPtr--;
@@ -339,35 +363,35 @@ protected void consumeClassInstanceCreationExpressionWithTypeArguments() {
 		if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
 			this.expressionPtr -= length;
 			System.arraycopy(
-				this.expressionStack, 
-				this.expressionPtr + 1, 
-				alloc.arguments = new Expression[length], 
-				0, 
-				length); 
+				this.expressionStack,
+				this.expressionPtr + 1,
+				alloc.arguments = new Expression[length],
+				0,
+				length);
 		}
-		
+
 		// trick to avoid creating a selection on type reference
 		char [] oldIdent = this.assistIdentifier();
 		this.setAssistIdentifier(null);
 		alloc.type = getTypeReference(0);
-		
+
 		this.setAssistIdentifier(oldIdent);
 
 		length = this.genericsLengthStack[this.genericsLengthPtr--];
 		this.genericsPtr -= length;
 		System.arraycopy(this.genericsStack, this.genericsPtr + 1, alloc.typeArguments = new TypeReference[length], 0, length);
 		intPtr--; // remove the position of the '<'
-		
+
 		//the default constructor with the correct number of argument
 		//will be created and added by the TC (see createsInternalConstructorWithBinding)
 		alloc.sourceStart = this.intStack[this.intPtr--];
 		pushOnExpressionStack(alloc);
-		
+
 		this.assistNode = alloc;
 		this.lastCheckPoint = alloc.sourceEnd + 1;
 		if (!diet){
 			this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
-			this.lastIgnoredToken = -1;	
+			this.lastIgnoredToken = -1;
 		}
 		this.isOrphanCompletionNode = true;
 	} else {
@@ -381,17 +405,17 @@ protected void consumeEnterAnonymousClassBody() {
 		super.consumeEnterAnonymousClassBody();
 		return;
 	}
-	
+
 	// trick to avoid creating a selection on type reference
 	char [] oldIdent = this.assistIdentifier();
-	this.setAssistIdentifier(null);		
+	this.setAssistIdentifier(null);
 	TypeReference typeReference = getTypeReference(0);
-	this.setAssistIdentifier(oldIdent);		
+	this.setAssistIdentifier(oldIdent);
 
-	TypeDeclaration anonymousType = new TypeDeclaration(this.compilationUnit.compilationResult); 
+	TypeDeclaration anonymousType = new TypeDeclaration(this.compilationUnit.compilationResult);
 	anonymousType.name = CharOperation.NO_CHAR;
 	anonymousType.bits |= (ASTNode.IsAnonymousType|ASTNode.IsLocalType);
-	QualifiedAllocationExpression alloc = new SelectionOnQualifiedAllocationExpression(anonymousType); 
+	QualifiedAllocationExpression alloc = new SelectionOnQualifiedAllocationExpression(anonymousType);
 	markEnclosingMemberWithLocalType();
 	pushOnAstStack(anonymousType);
 
@@ -400,14 +424,14 @@ protected void consumeEnterAnonymousClassBody() {
 	if ((argumentLength = expressionLengthStack[expressionLengthPtr--]) != 0) {
 		expressionPtr -= argumentLength;
 		System.arraycopy(
-			expressionStack, 
-			expressionPtr + 1, 
-			alloc.arguments = new Expression[argumentLength], 
-			0, 
-			argumentLength); 
+			expressionStack,
+			expressionPtr + 1,
+			alloc.arguments = new Expression[argumentLength],
+			0,
+			argumentLength);
 	}
 
-	alloc.type = typeReference;	
+	alloc.type = typeReference;
 
 	anonymousType.sourceEnd = alloc.sourceEnd;
 	//position at the type while it impacts the anonymous declaration
@@ -431,7 +455,7 @@ protected void consumeEnterAnonymousClassBody() {
 		lastCheckPoint = anonymousType.bodyStart;
 		currentElement = currentElement.add(anonymousType, 0);
 		currentToken = 0; // opening brace already taken into account
-		lastIgnoredToken = -1;		
+		lastIgnoredToken = -1;
 	}
 }
 protected void consumeEnterVariable() {
@@ -444,7 +468,7 @@ protected void consumeEnterVariable() {
 //	if (variable.type == assistNode){
 //		if (!diet){
 //			this.restartRecovery	= true;	// force to restart in recovery mode
-//			this.lastIgnoredToken = -1;	
+//			this.lastIgnoredToken = -1;
 //		}
 //		isOrphanCompletionNode = false; // already attached inside variable decl
 //	}
@@ -452,7 +476,7 @@ protected void consumeEnterVariable() {
 
 protected void consumeExitVariableWithInitialization() {
 	super.consumeExitVariableWithInitialization();
-	
+
 	// does not keep the initialization if selection is not inside
 	AbstractVariableDeclaration variable = (AbstractVariableDeclaration) astStack[astPtr];
 	int start = variable.initialization.sourceStart;
@@ -468,10 +492,10 @@ protected void consumePropertyOperator() {
 	if (this.indexOfAssistIdentifier() < 0) {
 		super.consumePropertyOperator();
 		return;
-	} 
-	FieldReference fieldReference = 
+	}
+	FieldReference fieldReference =
 		new SelectionOnFieldReference(
-			identifierStack[identifierPtr], 
+			identifierStack[identifierPtr],
 			identifierPositionStack[identifierPtr--]);
 	identifierLengthPtr--;
 		if ((fieldReference.receiver = expressionStack[expressionPtr]).isThis()) { //fieldReferenceerence begins at the this
@@ -484,7 +508,7 @@ protected void consumePropertyOperator() {
 		this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
 		this.lastIgnoredToken = -1;
 	}
-	this.isOrphanCompletionNode = true;	
+	this.isOrphanCompletionNode = true;
 
 }
 protected void consumeFieldAccess(boolean isSuperAccess) {
@@ -494,13 +518,13 @@ protected void consumeFieldAccess(boolean isSuperAccess) {
 	if (this.indexOfAssistIdentifier() < 0) {
 		super.consumeFieldAccess(isSuperAccess);
 		return;
-	} 
-	FieldReference fieldReference = 
+	}
+	FieldReference fieldReference =
 		new SelectionOnFieldReference(
-			identifierStack[identifierPtr], 
+			identifierStack[identifierPtr],
 			identifierPositionStack[identifierPtr--]);
 	identifierLengthPtr--;
-	if (isSuperAccess) { //considerates the fieldReferenceerence beginning at the 'super' ....	
+	if (isSuperAccess) { //considerates the fieldReferenceerence beginning at the 'super' ....
 		fieldReference.sourceStart = intStack[intPtr--];
 		fieldReference.receiver = new SuperReference(fieldReference.sourceStart, endPosition);
 		pushOnExpressionStack(fieldReference);
@@ -516,7 +540,7 @@ protected void consumeFieldAccess(boolean isSuperAccess) {
 		this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
 		this.lastIgnoredToken = -1;
 	}
-	this.isOrphanCompletionNode = true;	
+	this.isOrphanCompletionNode = true;
 }
 protected void consumeFormalParameter(boolean isVarArgs) {
 	if (this.indexOfAssistIdentifier() < 0) {
@@ -526,7 +550,7 @@ protected void consumeFormalParameter(boolean isVarArgs) {
 //			if(argument.type == assistNode) {
 //				isOrphanCompletionNode = true;
 //				this.restartRecovery	= true;	// force to restart in recovery mode
-//				this.lastIgnoredToken = -1;	
+//				this.lastIgnoredToken = -1;
 //			}
 //		}
 	} else {
@@ -550,28 +574,28 @@ protected void consumeFormalParameter(boolean isVarArgs) {
 //		}
 		int modifierPositions = intStack[intPtr--];
 		intPtr--;
-		Argument arg = 
+		Argument arg =
 			new SelectionOnArgumentName(
-				identifierName, 
-				namePositions, 
-				null, 
+				identifierName,
+				namePositions,
+				null,
 				intStack[intPtr + 1] & ~ClassFileConstants.AccDeprecated); // modifiers
 		arg.declarationSourceStart = modifierPositions;
 		pushOnAstStack(arg);
-		
+
 		assistNode = arg;
 		this.lastCheckPoint = (int) namePositions;
 		isOrphanCompletionNode = true;
-		
+
 		if (!diet){
 			this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
-			this.lastIgnoredToken = -1;	
+			this.lastIgnoredToken = -1;
 		}
 
 		/* if incomplete method header, listLength counter will not have been reset,
 			indicating that some arguments are available on the stack */
 		listLength++;
-	} 	
+	}
 }
 
 
@@ -604,55 +628,55 @@ protected void consumeInstanceOfExpressionWithName() {
 }
 protected void consumeLocalVariableDeclarationStatement() {
 	super.consumeLocalVariableDeclarationStatement();
-	
+
 	// force to restart in recovery mode if the declaration contains the selection
 	if (!this.diet) {
 		LocalDeclaration localDeclaration = (LocalDeclaration) this.astStack[this.astPtr];
-		if ((this.selectionStart >= localDeclaration.sourceStart) 
+		if ((this.selectionStart >= localDeclaration.sourceStart)
 				&&  (this.selectionEnd <= localDeclaration.sourceEnd)) {
-			this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	
-			this.lastIgnoredToken = -1;	
+			this.restartRecovery	= AssistParser.STOP_AT_CURSOR;
+			this.lastIgnoredToken = -1;
 		}
 	}
 }
 protected void consumeMarkerAnnotation() {
 	int index;
-	
+
 	if ((index = this.indexOfAssistIdentifier()) < 0) {
 		super.consumeMarkerAnnotation();
 		return;
-	} 
-	
+	}
+
 	MarkerAnnotation markerAnnotation = null;
 	int length = this.identifierLengthStack[this.identifierLengthPtr];
 	TypeReference typeReference;
 
 	/* retrieve identifiers subset and whole positions, the assist node positions
 		should include the entire replaced source. */
-	
+
 	char[][] subset = identifierSubSet(index);
 	identifierLengthPtr--;
 	identifierPtr -= length;
 	long[] positions = new long[length];
 	System.arraycopy(
-		identifierPositionStack, 
-		identifierPtr + 1, 
-		positions, 
-		0, 
-		length); 
+		identifierPositionStack,
+		identifierPtr + 1,
+		positions,
+		0,
+		length);
 
 	/* build specific assist on type reference */
-	
+
 	if (index == 0) {
 		/* assist inside first identifier */
 		typeReference = this.createSingleAssistTypeReference(
-						assistIdentifier(), 
+						assistIdentifier(),
 						positions[0]);
 	} else {
 		/* assist inside subsequent identifier */
 		typeReference =	this.createQualifiedAssistTypeReference(
-						subset,  
-						assistIdentifier(), 
+						subset,
+						assistIdentifier(),
 						positions);
 	}
 	assistNode = typeReference;
@@ -666,8 +690,8 @@ protected void consumeMemberValuePair() {
 	if (this.indexOfAssistIdentifier() < 0) {
 		super.consumeMemberValuePair();
 		return;
-	} 
-	
+	}
+
 	char[] simpleName = this.identifierStack[this.identifierPtr];
 	long position = this.identifierPositionStack[this.identifierPtr--];
 	this.identifierLengthPtr--;
@@ -677,11 +701,11 @@ protected void consumeMemberValuePair() {
 	this.expressionLengthPtr--;
 	MemberValuePair memberValuePair = new SelectionOnNameOfMemberValuePair(simpleName, start, end, value);
 	pushOnAstStack(memberValuePair);
-	
+
 	assistNode = memberValuePair;
 	this.lastCheckPoint = memberValuePair.sourceEnd + 1;
-	
-	
+
+
 }
 protected void consumeMethodInvocationName() {
 	// MethodInvocation ::= Name '(' ArgumentListopt ')'
@@ -703,7 +727,7 @@ protected void consumeMethodInvocationName() {
 		super.consumeMethodInvocationName();
 		return;
 	}
-	
+
 	final ExplicitConstructorCall constructorCall = new SelectionOnExplicitConstructorCall(accessMode);
 	constructorCall.sourceEnd = rParenPos;
 	constructorCall.sourceStart = (int) (identifierPositionStack[identifierPtr] >>> 32);
@@ -724,11 +748,11 @@ protected void consumeMethodInvocationName() {
 				return null;
 			}
 			public StringBuffer printExpression(int indent, StringBuffer output) {
-				return output; 
+				return output;
 			}
 		});
 	}
-	this.assistNode = constructorCall;	
+	this.assistNode = constructorCall;
 	this.lastCheckPoint = constructorCall.sourceEnd + 1;
 	this.isOrphanCompletionNode = true;
 }
@@ -753,7 +777,7 @@ protected void consumeMethodInvocationName() {
 //		super.consumeMethodInvocationPrimary();
 //		return;
 //	}
-//	
+//
 //	final ExplicitConstructorCall constructorCall = new SelectionOnExplicitConstructorCall(accessMode);
 //	constructorCall.sourceEnd = rParenPos;
 //	int length;
@@ -763,7 +787,7 @@ protected void consumeMethodInvocationName() {
 //	}
 //	constructorCall.qualification = expressionStack[expressionPtr--];
 //	constructorCall.sourceStart = constructorCall.qualification.sourceStart;
-//	
+//
 //	if (!diet){
 //		pushOnAstStack(constructorCall);
 //		this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
@@ -775,108 +799,108 @@ protected void consumeMethodInvocationName() {
 //				return null;
 //			}
 //			public StringBuffer printExpression(int indent, StringBuffer output) {
-//				return output; 
+//				return output;
 //			}
 //		});
 //	}
-//	
+//
 //	this.assistNode = constructorCall;
 //	this.lastCheckPoint = constructorCall.sourceEnd + 1;
 //	this.isOrphanCompletionNode = true;
 //}
 protected void consumeNormalAnnotation() {
 	int index;
-	
+
 	if ((index = this.indexOfAssistIdentifier()) < 0) {
 		super.consumeNormalAnnotation();
 		return;
-	} 
-	
+	}
+
 	NormalAnnotation normalAnnotation = null;
 	int length = this.identifierLengthStack[this.identifierLengthPtr];
 	TypeReference typeReference;
-	
+
 	/* retrieve identifiers subset and whole positions, the assist node positions
 		should include the entire replaced source. */
-	
+
 	char[][] subset = identifierSubSet(index);
 	identifierLengthPtr--;
 	identifierPtr -= length;
 	long[] positions = new long[length];
 	System.arraycopy(
-		identifierPositionStack, 
-		identifierPtr + 1, 
-		positions, 
-		0, 
-		length); 
+		identifierPositionStack,
+		identifierPtr + 1,
+		positions,
+		0,
+		length);
 
 	/* build specific assist on type reference */
-	
+
 	if (index == 0) {
 		/* assist inside first identifier */
 		typeReference = this.createSingleAssistTypeReference(
-						assistIdentifier(), 
+						assistIdentifier(),
 						positions[0]);
 	} else {
 		/* assist inside subsequent identifier */
 		typeReference =	this.createQualifiedAssistTypeReference(
-						subset,  
-						assistIdentifier(), 
+						subset,
+						assistIdentifier(),
 						positions);
 	}
 	assistNode = typeReference;
 	this.lastCheckPoint = typeReference.sourceEnd + 1;
-		
+
 	normalAnnotation = new NormalAnnotation(typeReference, this.intStack[this.intPtr--]);
 	if ((length = this.astLengthStack[this.astLengthPtr--]) != 0) {
 		System.arraycopy(
-			this.astStack, 
-			(this.astPtr -= length) + 1, 
-			normalAnnotation.memberValuePairs = new MemberValuePair[length], 
-			0, 
-			length); 
+			this.astStack,
+			(this.astPtr -= length) + 1,
+			normalAnnotation.memberValuePairs = new MemberValuePair[length],
+			0,
+			length);
 	}
 	normalAnnotation.declarationSourceEnd = this.rParenPos;
 	pushOnExpressionStack(normalAnnotation);
 }
 protected void consumeSingleMemberAnnotation() {
 	int index;
-	
+
 	if ((index = this.indexOfAssistIdentifier()) < 0) {
 		super.consumeSingleMemberAnnotation();
 		return;
-	} 
-	
+	}
+
 	SingleMemberAnnotation singleMemberAnnotation = null;
 	int length = this.identifierLengthStack[this.identifierLengthPtr];
 	TypeReference typeReference;
-	
+
 	/* retrieve identifiers subset and whole positions, the assist node positions
 		should include the entire replaced source. */
-	
+
 	char[][] subset = identifierSubSet(index);
 	identifierLengthPtr--;
 	identifierPtr -= length;
 	long[] positions = new long[length];
 	System.arraycopy(
-		identifierPositionStack, 
-		identifierPtr + 1, 
-		positions, 
-		0, 
-		length); 
+		identifierPositionStack,
+		identifierPtr + 1,
+		positions,
+		0,
+		length);
 
 	/* build specific assist on type reference */
-	
+
 	if (index == 0) {
 		/* assist inside first identifier */
 		typeReference = this.createSingleAssistTypeReference(
-						assistIdentifier(), 
+						assistIdentifier(),
 						positions[0]);
 	} else {
 		/* assist inside subsequent identifier */
 		typeReference =	this.createQualifiedAssistTypeReference(
-						subset,  
-						assistIdentifier(), 
+						subset,
+						assistIdentifier(),
 						positions);
 	}
 	assistNode = typeReference;
@@ -890,7 +914,7 @@ protected void consumeSingleMemberAnnotation() {
 }
 protected void consumeStaticImportOnDemandDeclarationName() {
 	// TypeImportOnDemandDeclarationName ::= 'import' 'static' Name '.' '*'
-	/* push an ImportRef build from the last name 
+	/* push an ImportRef build from the last name
 	stored in the identifier stack. */
 
 	int index;
@@ -908,18 +932,18 @@ protected void consumeStaticImportOnDemandDeclarationName() {
 	identifierPtr -= length;
 	long[] positions = new long[length];
 	System.arraycopy(
-		identifierPositionStack, 
-		identifierPtr + 1, 
-		positions, 
-		0, 
-		length); 
+		identifierPositionStack,
+		identifierPtr + 1,
+		positions,
+		0,
+		length);
 
 	/* build specific assist node on import statement */
 	ImportReference reference = this.createAssistImportReference(subset, positions, ClassFileConstants.AccStatic);
 	reference.bits |= ASTNode.OnDemand;
 	assistNode = reference;
 	this.lastCheckPoint = reference.sourceEnd + 1;
-	
+
 	pushOnAstStack(reference);
 
 	if (currentToken == TokenNameSEMICOLON){
@@ -937,20 +961,20 @@ protected void consumeStaticImportOnDemandDeclarationName() {
 		lastCheckPoint = reference.declarationSourceEnd+1;
 		currentElement = currentElement.add(reference, 0);
 		lastIgnoredToken = -1;
-		restartRecovery = true; // used to avoid branching back into the regular automaton		
+		restartRecovery = true; // used to avoid branching back into the regular automaton
 	}
 }
 protected void consumeToken(int token) {
 	super.consumeToken(token);
-	
-	// if in a method or if in a field initializer 
+
+	// if in a method or if in a field initializer
 	if (isInsideMethod() || isInsideFieldInitialization()) {
 		switch (token) {
 			case TokenNamecase :
 				pushOnElementStack(K_BETWEEN_CASE_AND_COLON);
 				break;
 			case TokenNameCOLON:
-				if(topKnownElementKind(SELECTION_OR_ASSIST_PARSER) == K_BETWEEN_CASE_AND_COLON) { 
+				if(topKnownElementKind(SELECTION_OR_ASSIST_PARSER) == K_BETWEEN_CASE_AND_COLON) {
 					popElement(K_BETWEEN_CASE_AND_COLON);
 				}
 				break;
@@ -959,7 +983,7 @@ protected void consumeToken(int token) {
 }
 protected void consumeTypeImportOnDemandDeclarationName() {
 	// TypeImportOnDemandDeclarationName ::= 'import' Name '.' '*'
-	/* push an ImportRef build from the last name 
+	/* push an ImportRef build from the last name
 	stored in the identifier stack. */
 
 	int index;
@@ -977,18 +1001,18 @@ protected void consumeTypeImportOnDemandDeclarationName() {
 	identifierPtr -= length;
 	long[] positions = new long[length];
 	System.arraycopy(
-		identifierPositionStack, 
-		identifierPtr + 1, 
-		positions, 
-		0, 
-		length); 
+		identifierPositionStack,
+		identifierPtr + 1,
+		positions,
+		0,
+		length);
 
 	/* build specific assist node on import statement */
 	ImportReference reference = this.createAssistImportReference(subset, positions, ClassFileConstants.AccDefault);
 	reference.bits |= ASTNode.OnDemand;
 	assistNode = reference;
 	this.lastCheckPoint = reference.sourceEnd + 1;
-	
+
 	pushOnAstStack(reference);
 
 	if (currentToken == TokenNameSEMICOLON){
@@ -1006,7 +1030,7 @@ protected void consumeTypeImportOnDemandDeclarationName() {
 		lastCheckPoint = reference.declarationSourceEnd+1;
 		currentElement = currentElement.add(reference, 0);
 		lastIgnoredToken = -1;
-		restartRecovery = true; // used to avoid branching back into the regular automaton		
+		restartRecovery = true; // used to avoid branching back into the regular automaton
 	}
 }
 public ImportReference createAssistImportReference(char[][] tokens, long[] positions, int mod){
@@ -1030,15 +1054,15 @@ protected LocalDeclaration createLocalDeclaration(char[] assistName,int sourceSt
 }
 public NameReference createQualifiedAssistNameReference(char[][] previousIdentifiers, char[] assistName, long[] positions){
 	return new SelectionOnQualifiedNameReference(
-					previousIdentifiers, 
-					assistName, 
-					positions); 	
+					previousIdentifiers,
+					assistName,
+					positions);
 }
 public TypeReference createQualifiedAssistTypeReference(char[][] previousIdentifiers, char[] assistName, long[] positions){
 	return new SelectionOnQualifiedTypeReference(
-					previousIdentifiers, 
-					assistName, 
-					positions); 	
+					previousIdentifiers,
+					assistName,
+					positions);
 }
 public TypeReference createParameterizedQualifiedAssistTypeReference(
 		char[][] tokens, TypeReference[][] typeArguments, char[] assistname, TypeReference[] assistTypeArguments, long[] positions) {
@@ -1057,11 +1081,11 @@ public TypeReference createParameterizedSingleAssistTypeReference(TypeReference[
 public CompilationUnitDeclaration dietParse(ICompilationUnit sourceUnit, CompilationResult compilationResult, int start, int end) {
 
 	this.selectionStart = start;
-	this.selectionEnd = end;	
+	this.selectionEnd = end;
 	SelectionScanner selectionScanner = (SelectionScanner)this.scanner;
 	selectionScanner.selectionIdentifier = null;
 	selectionScanner.selectionStart = start;
-	selectionScanner.selectionEnd = end;	
+	selectionScanner.selectionEnd = end;
 	return this.dietParse(sourceUnit, compilationResult);
 }
 protected NameReference getUnspecifiedReference() {
@@ -1083,9 +1107,9 @@ protected NameReference getUnspecifiedReference() {
 			int ptr = identifierPtr -= (length - completionIndex);
 			pushOnGenericsLengthStack(0);
 			pushOnGenericsIdentifiersLengthStack(identifierLengthStack[identifierLengthPtr]);
-			reference = 
+			reference =
 				new SelectionOnQualifiedSuperReference(
-					getTypeReference(0), 
+					getTypeReference(0),
 					(int)(identifierPositionStack[ptr+1] >>> 32),
 					(int) identifierPositionStack[ptr+1]);
 		} else { // standard super
@@ -1094,11 +1118,11 @@ protected NameReference getUnspecifiedReference() {
 			reference = new SelectionOnSuperReference((int)(identifierPositionStack[identifierPtr+1] >>> 32), (int) identifierPositionStack[identifierPtr+1]);
 		}
 		pushOnAstStack(reference);
-		this.assistNode = reference;	
+		this.assistNode = reference;
 		this.lastCheckPoint = reference.sourceEnd + 1;
 		if (!diet || dietInt != 0){
 			this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
-			this.lastIgnoredToken = -1;		
+			this.lastIgnoredToken = -1;
 		}
 		this.isOrphanCompletionNode = true;
 		return new SingleNameReference(CharOperation.NO_CHAR, 0); // dummy reference
@@ -1111,10 +1135,10 @@ protected NameReference getUnspecifiedReference() {
 	identifierPtr -= length;
 	long[] positions = new long[length];
 	System.arraycopy(
-		identifierPositionStack, 
-		identifierPtr + 1, 
-		positions, 
-		0, 
+		identifierPositionStack,
+		identifierPtr + 1,
+		positions,
+		0,
 		length);
 	/* build specific completion on name reference */
 	if (completionIndex == 0) {
@@ -1128,15 +1152,15 @@ protected NameReference getUnspecifiedReference() {
 	this.lastCheckPoint = nameReference.sourceEnd + 1;
 	if (!diet){
 		this.restartRecovery	= true;	// force to restart in recovery mode
-		this.lastIgnoredToken = -1;	
+		this.lastIgnoredToken = -1;
 	}
 	this.isOrphanCompletionNode = true;
 	return nameReference;
 }
 /*
  * Copy of code from superclass with the following change:
- * In the case of qualified name reference if the cursor location is on the 
- * qualified name reference, then create a CompletionOnQualifiedNameReference 
+ * In the case of qualified name reference if the cursor location is on the
+ * qualified name reference, then create a CompletionOnQualifiedNameReference
  * instead.
  */
 protected NameReference getUnspecifiedReferenceOptimized() {
@@ -1147,7 +1171,7 @@ protected NameReference getUnspecifiedReferenceOptimized() {
 	if (index >= 0){
 		if (!diet){
 			this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
-			this.lastIgnoredToken = -1;		
+			this.lastIgnoredToken = -1;
 		}
 		this.isOrphanCompletionNode = true;
 	}
@@ -1161,33 +1185,33 @@ protected MessageSend newMessageSend() {
 	// the arguments are on the expression stack
 
 
-	
+
 	int numArgs=expressionLengthStack[expressionLengthPtr];
 	Expression receiver = expressionStack[expressionPtr-numArgs];
 //	char[] selector = identifierStack[identifierPtr];
 //	if (selector != this.assistIdentifier()){
-	
+
 	if (!(receiver instanceof SelectionOnSingleNameReference || receiver instanceof SelectionOnFieldReference))
 	{
 		return super.newMessageSend();
-	}	
+	}
 	MessageSend messageSend = new SelectionOnMessageSend();
 	int length;
 	if ((length = expressionLengthStack[expressionLengthPtr--]) != 0) {
 		expressionPtr -= length;
 		System.arraycopy(
-			expressionStack, 
-			expressionPtr + 1, 
-			messageSend.arguments = new Expression[length], 
-			0, 
-			length); 
+			expressionStack,
+			expressionPtr + 1,
+			messageSend.arguments = new Expression[length],
+			0,
+			length);
 	}
 	assistNode = messageSend;
 	if (!diet){
 		this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
-		this.lastIgnoredToken = -1;	
+		this.lastIgnoredToken = -1;
 	}
-	
+
 	this.isOrphanCompletionNode = true;
 	return messageSend;
 }
@@ -1195,37 +1219,37 @@ protected MessageSend newMessageSendWithTypeArguments() {
 	char[] selector = identifierStack[identifierPtr];
 	if (selector != this.assistIdentifier()){
 		return super.newMessageSendWithTypeArguments();
-	}	
+	}
 	MessageSend messageSend = new SelectionOnMessageSend();
 	int length;
 	if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
 		this.expressionPtr -= length;
 		System.arraycopy(
-			this.expressionStack, 
-			this.expressionPtr + 1, 
-			messageSend.arguments = new Expression[length], 
-			0, 
-			length); 
+			this.expressionStack,
+			this.expressionPtr + 1,
+			messageSend.arguments = new Expression[length],
+			0,
+			length);
 	}
 	assistNode = messageSend;
 	if (!diet){
 		this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
-		this.lastIgnoredToken = -1;	
+		this.lastIgnoredToken = -1;
 	}
-	
+
 	this.isOrphanCompletionNode = true;
 	return messageSend;
 }
 public CompilationUnitDeclaration parse(ICompilationUnit sourceUnit, CompilationResult compilationResult, int start, int end) {
 
 	if (end == -1) return super.parse(sourceUnit, compilationResult, start, end);
-	
+
 	this.selectionStart = start;
-	this.selectionEnd = end;	
+	this.selectionEnd = end;
 	SelectionScanner selectionScanner = (SelectionScanner)this.scanner;
 	selectionScanner.selectionIdentifier = null;
 	selectionScanner.selectionStart = start;
-	selectionScanner.selectionEnd = end;	
+	selectionScanner.selectionEnd = end;
 	return super.parse(sourceUnit, compilationResult, -1, -1/*parse without reseting the scanner*/);
 }
 /*
@@ -1247,7 +1271,7 @@ protected boolean resumeAfterRecovery() {
 				this.resetStacks();
 				return false;
 			}
-			
+
 			RecoveredType recoveredType = (RecoveredType)currentElement;
 			if(recoveredType.typeDeclaration != null && recoveredType.typeDeclaration.allocation == this.assistNode){
 				this.resetStacks();
@@ -1255,7 +1279,7 @@ protected boolean resumeAfterRecovery() {
 			}
 		}
 	}
-	return super.resumeAfterRecovery();			
+	return super.resumeAfterRecovery();
 }
 
 public void selectionIdentifierCheck(){
@@ -1275,16 +1299,16 @@ protected void updateRecoveryState() {
 	/* may be able to retrieve completionNode as an orphan, and then attach it */
 	this.selectionIdentifierCheck();
 	this.attachOrphanCompletionNode();
-	
+
 	// if an assist node has been found and a recovered element exists,
 	// mark enclosing blocks as to be preserved
 	if (this.assistNode != null && this.currentElement != null) {
 		currentElement.preserveEnclosingBlocks();
 	}
-	
+
 	/* check and update recovered state based on current token,
 		this action is also performed when shifting token after recovery
-		got activated once. 
+		got activated once.
 	*/
 	this.recoveryTokenCheck();
 }
@@ -1308,6 +1332,6 @@ public int getCursorLocation() {
 }
 
 public void createAssistTypeForAllocation(AllocationExpression expression) {
-	
+
 }
 }

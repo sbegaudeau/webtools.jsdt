@@ -15,13 +15,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.eclipse.core.runtime.preferences.IScopeContext;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
-
+import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpPostSaveListener;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.fix.CleanUpSaveParticipantPreferenceConfiguration;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitDocumentProvider;

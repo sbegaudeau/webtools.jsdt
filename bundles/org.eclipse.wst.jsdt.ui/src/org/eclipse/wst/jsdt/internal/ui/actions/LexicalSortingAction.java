@@ -10,20 +10,16 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.actions;
 
-import org.eclipse.swt.custom.BusyIndicator;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.StructuredViewer;
-
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.ui.PlatformUI;
-
-import org.eclipse.wst.jsdt.ui.JavaElementComparator;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.browsing.JavaBrowsingMessages;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.SourcePositionComparator;
+import org.eclipse.wst.jsdt.ui.JavaElementComparator;
 
 /*
  * XXX: This class should become part of the MemberFilterActionGroup

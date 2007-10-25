@@ -12,13 +12,10 @@ package org.eclipse.wst.jsdt.internal.ui.browsing;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.IAdaptable;
-
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.OpenInNewWindowAction;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaCore;
 

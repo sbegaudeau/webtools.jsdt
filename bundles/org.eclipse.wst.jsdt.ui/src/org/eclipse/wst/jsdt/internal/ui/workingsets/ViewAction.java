@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.ui.workingsets;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.action.Action;
 
 public class ViewAction extends Action {

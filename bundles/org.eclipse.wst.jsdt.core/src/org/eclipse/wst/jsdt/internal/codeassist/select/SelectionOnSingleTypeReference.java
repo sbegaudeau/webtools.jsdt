@@ -53,8 +53,8 @@ public TypeBinding resolveTypeEnclosing(BlockScope scope, ReferenceBinding enclo
 	super.resolveTypeEnclosing(scope, enclosingType);
 
 		// tolerate some error cases
-		if (this.resolvedType == null || 
-				!(this.resolvedType.isValidBinding() || 
+		if (this.resolvedType == null ||
+				!(this.resolvedType.isValidBinding() ||
 					this.resolvedType.problemId() == ProblemReasons.NotVisible))
 		throw new SelectionNodeFound();
 	else

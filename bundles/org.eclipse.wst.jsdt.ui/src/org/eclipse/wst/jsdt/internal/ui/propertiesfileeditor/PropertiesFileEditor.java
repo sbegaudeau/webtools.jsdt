@@ -10,24 +10,18 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor;
 
-import org.eclipse.swt.SWT;
-
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.util.PropertyChangeEvent;
-
 import org.eclipse.jface.text.source.ISourceViewer;
-
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.SWT;
 import org.eclipse.ui.IPageLayout;
-import org.eclipse.ui.part.IShowInTargetList;
-
 import org.eclipse.ui.editors.text.TextEditor;
-
+import org.eclipse.ui.part.IShowInTargetList;
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.ui.JavaUI;
 import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.wst.jsdt.ui.actions.JdtActionConstants;
 import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 /**
  * Properties file editor.

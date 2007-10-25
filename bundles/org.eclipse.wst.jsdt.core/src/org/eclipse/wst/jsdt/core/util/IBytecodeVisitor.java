@@ -13,9 +13,9 @@ package org.eclipse.wst.jsdt.core.util;
 /**
  * Description of a Java opcodes visitor. This should be used to walk the opcodes
  * of a ICodeAttribute.
- * 
- * This interface is not intended to be implemented by clients. 
- *  
+ *
+ * This interface is not intended to be implemented by clients.
+ *
  * @since 2.0
  */
 public interface IBytecodeVisitor {
@@ -265,7 +265,7 @@ public interface IBytecodeVisitor {
 	void _sipush(int pc, short value);
 	void _swap(int pc);
 	void _tableswitch(
-		int pc, 
+		int pc,
 		int defaultoffset,
 		int low,
 		int high,
@@ -281,5 +281,5 @@ public interface IBytecodeVisitor {
 		int _const);
 	void _breakpoint(int pc);
 	void _impdep1(int pc);
-	void _impdep2(int pc);	
+	void _impdep2(int pc);
 }

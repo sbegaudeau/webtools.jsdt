@@ -32,7 +32,7 @@ package org.eclipse.wst.jsdt.internal.codeassist.complete;
  * before the cursor.
  */
 
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 
 public class CompletionOnImportReference extends ImportReference {
 

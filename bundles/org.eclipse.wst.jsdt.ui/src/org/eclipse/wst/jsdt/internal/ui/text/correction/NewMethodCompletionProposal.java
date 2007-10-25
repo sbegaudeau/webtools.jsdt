@@ -14,9 +14,7 @@ package org.eclipse.wst.jsdt.internal.ui.text.correction;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.dom.AST;
@@ -38,7 +36,6 @@ import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;

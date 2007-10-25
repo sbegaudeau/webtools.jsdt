@@ -19,20 +19,30 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.text.edits.TextEdit;
-
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
-
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-
-import org.eclipse.core.resources.IResource;
-
+import org.eclipse.jface.contentassist.SubjectControlContentAssistant;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.preference.PreferenceDialog;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.text.templates.Template;
+import org.eclipse.jface.text.templates.TemplateException;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ICellModifier;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.accessibility.AccessibleAdapter;
 import org.eclipse.swt.accessibility.AccessibleEvent;
@@ -49,28 +59,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
-
-import org.eclipse.jface.contentassist.SubjectControlContentAssistant;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.preference.PreferenceDialog;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ICellModifier;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.window.Window;
-
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.ITextSelection;
-import org.eclipse.jface.text.templates.Template;
-import org.eclipse.jface.text.templates.TemplateException;
-
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.dialogs.PreferencesUtil;
-
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
@@ -105,7 +97,6 @@ import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.AddUnimplementedConstructorsOperation;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.AddUnimplementedMethodsOperation;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.CodeGenerationSettings;
@@ -120,11 +111,6 @@ import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.Resources;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-
-import org.eclipse.wst.jsdt.ui.CodeGeneration;
-import org.eclipse.wst.jsdt.ui.CodeStyleConfiguration;
-import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.FilteredTypesSelectionDialog;
@@ -152,6 +138,9 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.Separator;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonStatusDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringDialogField;
+import org.eclipse.wst.jsdt.ui.CodeGeneration;
+import org.eclipse.wst.jsdt.ui.CodeStyleConfiguration;
+import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
 
 /**
  * The class <code>NewTypeWizardPage</code> contains controls and validation routines 

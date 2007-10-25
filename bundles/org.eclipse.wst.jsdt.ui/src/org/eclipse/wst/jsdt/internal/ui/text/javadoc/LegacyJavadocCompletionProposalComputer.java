@@ -20,22 +20,16 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-
-import org.eclipse.swt.graphics.Point;
-
-
 import org.eclipse.jface.text.contentassist.IContextInformation;
-
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
-
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.ui.JavaUI;
-import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposalComputer;
+import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
 import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
+import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposalComputer;
 import org.eclipse.wst.jsdt.ui.text.java.IJavadocCompletionProcessor;
 import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
-import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 /**
  * Java doc completion processor using contributed IJavaDocCompletionProcessor's

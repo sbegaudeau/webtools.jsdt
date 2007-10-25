@@ -21,35 +21,18 @@ import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.IDependent;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BaseTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.CaptureBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.RawTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.WildcardBinding;
-import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
-import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
-import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 import org.eclipse.wst.jsdt.internal.core.ClassFile;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
 
@@ -59,17 +42,17 @@ import org.eclipse.wst.jsdt.internal.core.JavaElement;
 class CompilationUnitBinding implements ITypeBinding {
 	private static final IMethodBinding[] NO_METHOD_BINDINGS = new IMethodBinding[0];
 
-	private static final String NO_NAME = ""; //$NON-NLS-1$	
+	private static final String NO_NAME = ""; //$NON-NLS-1$
 	private static final ITypeBinding[] NO_TYPE_BINDINGS = new ITypeBinding[0];
 	private static final IVariableBinding[] NO_VARIABLE_BINDINGS = new IVariableBinding[0];
 
 	private static final int VALID_MODIFIERS = Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE |
 		Modifier.ABSTRACT | Modifier.STATIC | Modifier.FINAL | Modifier.STRICTFP;
-	
+
 	org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding binding;
 	private String key;
 	private BindingResolver resolver;
-	
+
 	public CompilationUnitBinding(BindingResolver resolver, org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding binding) {
 		this.binding = binding;
 		this.resolver = resolver;
@@ -85,7 +68,7 @@ class CompilationUnitBinding implements ITypeBinding {
 		return null;
 	}
 
-	public IAnnotationBinding[] getAnnotations() { 
+	public IAnnotationBinding[] getAnnotations() {
 		return AnnotationBinding.NoAnnotations;
 	}
 
@@ -112,7 +95,7 @@ class CompilationUnitBinding implements ITypeBinding {
 //		}
 		return null;
 	}
-	
+
 	/*
 	 * Returns the class file for the given file name, or null if not found.
 	 * @see org.eclipse.wst.jsdt.internal.compiler.env.IDependent#getFileName()
@@ -120,7 +103,7 @@ class CompilationUnitBinding implements ITypeBinding {
 //	private IClassFile getClassFile(char[] fileName) {
 //		int jarSeparator = CharOperation.indexOf(IDependent.JAR_FILE_ENTRY_SEPARATOR, fileName);
 //		int pkgEnd = CharOperation.lastIndexOf('/', fileName); // pkgEnd is exclusive
-//		if (pkgEnd == -1) 
+//		if (pkgEnd == -1)
 //			pkgEnd = CharOperation.lastIndexOf(File.separatorChar, fileName);
 //		if (jarSeparator != -1 && pkgEnd < jarSeparator) // if in a jar and no slash, it is a default package -> pkgEnd should be equal to jarSeparator
 //			pkgEnd = jarSeparator;
@@ -131,7 +114,7 @@ class CompilationUnitBinding implements ITypeBinding {
 //		int start;
 //		return pkg.getClassFile(new String(fileName, start = pkgEnd + 1, fileName.length - start));
 //	}
-	
+
 	/*
 	 * Returns the compilation unit for the given file name, or null if not found.
 	 * @see org.eclipse.wst.jsdt.internal.compiler.env.IDependent#getFileName()
@@ -147,7 +130,7 @@ class CompilationUnitBinding implements ITypeBinding {
 		ICompilationUnit cu = pkg.getCompilationUnit(new String(slashSeparatedFileName, start =  pkgEnd+1, slashSeparatedFileName.length - start));
 		if (this.resolver instanceof DefaultBindingResolver) {
 			ICompilationUnit workingCopy = cu.findWorkingCopy(((DefaultBindingResolver) this.resolver).workingCopyOwner);
-			if (workingCopy != null) 
+			if (workingCopy != null)
 				return workingCopy;
 		}
 		return cu;
@@ -182,7 +165,7 @@ class CompilationUnitBinding implements ITypeBinding {
 		}
 		return NO_VARIABLE_BINDINGS;
 	}
-	
+
 
 	/*
 	 * @see ITypeBinding#getDeclaredMethods()
@@ -196,7 +179,7 @@ class CompilationUnitBinding implements ITypeBinding {
 				IMethodBinding[] newMethods = new IMethodBinding[length];
 				for (int i = 0; i < length; i++) {
 					org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding methodBinding = methods[i];
-//					if (!shouldBeRemoved(methodBinding)) { 
+//					if (!shouldBeRemoved(methodBinding)) {
 						newMethods[i] = this.resolver.getMethodBinding(methodBinding);
 //					}
 				}
@@ -274,7 +257,7 @@ class CompilationUnitBinding implements ITypeBinding {
 	}
 
 	public ITypeBinding[] getInterfaces() {
-//		if (this.binding == null) 
+//		if (this.binding == null)
 			return NO_TYPE_BINDINGS;
 //		switch (this.binding.kind()) {
 //			case Binding.ARRAY_TYPE :
@@ -310,21 +293,21 @@ class CompilationUnitBinding implements ITypeBinding {
 //			return newInterfaces;
 //		}
 	}
-	
+
 	public IJavaElement getJavaElement() {
 		JavaElement element = getUnresolvedJavaElement();
 		if (element == null)
 			return null;
 		return element.resolved(this.binding);
 	}
-	
+
 	private JavaElement getUnresolvedJavaElement() {
 		return getUnresolvedJavaElement(this.binding);
 	}
 	private JavaElement getUnresolvedJavaElement(org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding typeBinding ) {
-		if (typeBinding == null) 
+		if (typeBinding == null)
 			return null;
- 
+
 		ReferenceBinding referenceBinding = (ReferenceBinding) typeBinding;
 		char[] fileName = referenceBinding.getFileName();
 			if (fileName == null) return null; // case of a WilCardBinding that doesn't have a corresponding Java element
@@ -334,7 +317,7 @@ class CompilationUnitBinding implements ITypeBinding {
 				// top level type
 				if (((ReferenceBinding)this.binding).isBinaryBinding()) {
 					ClassFile classFile = (ClassFile) getClassFile(fileName);
-					return (JavaElement) classFile;
+					return classFile;
 				}
 				ICompilationUnit cu = getCompilationUnit(fileName);
 				return (JavaElement)cu;
@@ -378,7 +361,7 @@ class CompilationUnitBinding implements ITypeBinding {
 			ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
 			final int accessFlags = referenceBinding.getAccessFlags() & VALID_MODIFIERS;
 			// clear the AccAbstract, AccAnnotation and the AccInterface bits
-			return accessFlags & ~(ClassFileConstants.AccAbstract | ClassFileConstants.AccInterface | ClassFileConstants.AccAnnotation);			
+			return accessFlags & ~(ClassFileConstants.AccAbstract | ClassFileConstants.AccInterface | ClassFileConstants.AccAnnotation);
 		} else if (isInterface()) {
 			ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
 			final int accessFlags = referenceBinding.getAccessFlags() & VALID_MODIFIERS;
@@ -397,7 +380,7 @@ class CompilationUnitBinding implements ITypeBinding {
 	public String getName() {
 				return new String(this.binding.sourceName());
 	}
-	
+
 	/*
 	 * @see ITypeBinding#getPackage()
 	 */
@@ -412,13 +395,13 @@ class CompilationUnitBinding implements ITypeBinding {
 		ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
 		return this.resolver.getPackageBinding(referenceBinding.getPackage());
 	}
-	
+
 	/*
 	 * Returns the package that includes the given file name, or null if not found.
 	 * pkgEnd == jarSeparator if default package in a jar
 	 * pkgEnd > jarSeparator if non default package in a jar
 	 * pkgEnd > 0 if package not in a jar
-	 * 
+	 *
 	 * @see org.eclipse.wst.jsdt.internal.compiler.env.IDependent#getFileName()
 	 */
 	private IPackageFragment getPackageFragment(char[] fileName, int pkgEnd, int jarSeparator) {
@@ -456,7 +439,7 @@ class CompilationUnitBinding implements ITypeBinding {
 	public String getQualifiedName() {
 		StringBuffer buffer;
 //		switch (this.binding.kind()) {
-//			
+//
 //			case Binding.WILDCARD_TYPE :
 //				WildcardBinding wildcardBinding = (WildcardBinding) this.binding;
 //				buffer = new StringBuffer();
@@ -473,10 +456,10 @@ class CompilationUnitBinding implements ITypeBinding {
 //					buffer.append(bound.getQualifiedName());
 //				}
 //				return String.valueOf(buffer);
-//		
+//
 //			case Binding.RAW_TYPE :
 //				return getTypeDeclaration().getQualifiedName();
-//				
+//
 //			case Binding.ARRAY_TYPE :
 //				ITypeBinding elementType = getElementType();
 //				if (elementType.isLocal() || elementType.isAnonymous() || elementType.isCapture()) {
@@ -491,14 +474,14 @@ class CompilationUnitBinding implements ITypeBinding {
 //				buffer = new StringBuffer(elementType.getQualifiedName());
 //				buffer.append(brackets);
 //				return String.valueOf(buffer);
-//				
+//
 //			case Binding.TYPE_PARAMETER :
 //				if (isCapture()) {
 //					return NO_NAME;
-//				}				
+//				}
 //				TypeVariableBinding typeVariableBinding = (TypeVariableBinding) this.binding;
 //				return new String(typeVariableBinding.sourceName);
-//				
+//
 //			case Binding.PARAMETERIZED_TYPE :
 //				buffer = new StringBuffer();
 //				if (isMember()) {
@@ -517,10 +500,10 @@ class CompilationUnitBinding implements ITypeBinding {
 //							}
 //							buffer.append(typeArguments[i].getQualifiedName());
 //						}
-//						buffer.append('>');	
+//						buffer.append('>');
 //					}
 //					return String.valueOf(buffer);
-//				}				
+//				}
 //				buffer.append(getTypeDeclaration().getQualifiedName());
 //				ITypeBinding[] typeArguments = getTypeArguments();
 //				final int typeArgumentsLength = typeArguments.length;
@@ -535,7 +518,7 @@ class CompilationUnitBinding implements ITypeBinding {
 //					buffer.append('>');
 //				}
 //				return String.valueOf(buffer);
-//				
+//
 //			default :
 				if (isAnonymous() || isLocal()) {
 					return NO_NAME;
@@ -589,7 +572,7 @@ class CompilationUnitBinding implements ITypeBinding {
 	public ITypeBinding[] getTypeParameters() {
 		return NO_TYPE_BINDINGS;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#getWildcard()
 	 * @since 3.1
@@ -605,7 +588,7 @@ class CompilationUnitBinding implements ITypeBinding {
 	public boolean isGenericType() {
 			return false;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#isAnnotation()
 	 */
@@ -626,14 +609,14 @@ class CompilationUnitBinding implements ITypeBinding {
 	public boolean isArray() {
 		return false;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see ITypeBinding#isAssignmentCompatible(ITypeBinding)
 	 */
 	public boolean isAssignmentCompatible(ITypeBinding type) {
 		return false;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see ITypeBinding#isCapture()
 	 */
@@ -665,7 +648,7 @@ class CompilationUnitBinding implements ITypeBinding {
 		}
 		return false;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see ITypeBinding#isEnum()
 	 */
@@ -693,7 +676,7 @@ class CompilationUnitBinding implements ITypeBinding {
 		// check return type
 		return BindingComparator.isEqual(this.binding, otherBinding);
 	}
-	
+
 	/*
 	 * @see ITypeBinding#isFromSource()
 	 */
@@ -728,7 +711,7 @@ class CompilationUnitBinding implements ITypeBinding {
 	public boolean isNested() {
 		return false;
 	}
-	
+
 	/**
 	 * @see ITypeBinding#isNullType()
 	 */
@@ -742,7 +725,7 @@ class CompilationUnitBinding implements ITypeBinding {
 	public boolean isParameterizedType() {
 		return false;
 	}
-	
+
 	/*
 	 * @see ITypeBinding#isPrimitive()
 	 */
@@ -763,7 +746,7 @@ class CompilationUnitBinding implements ITypeBinding {
 	public boolean isSubTypeCompatible(ITypeBinding type) {
 		return false;
 	}
-	
+
 	/**
 	 * @see IBinding#isSynthetic()
 	 */
@@ -800,7 +783,7 @@ class CompilationUnitBinding implements ITypeBinding {
 	}
 
 
-	/* 
+	/*
 	 * For debugging purpose only.
 	 * @see java.lang.Object#toString()
 	 */
@@ -811,11 +794,11 @@ class CompilationUnitBinding implements ITypeBinding {
 	{
 		return true;
 	}
-	
+
 	private IClassFile getClassFile(char[] fileName) {
 		int jarSeparator = CharOperation.indexOf(IDependent.JAR_FILE_ENTRY_SEPARATOR, fileName);
 		int pkgEnd = CharOperation.lastIndexOf('/', fileName); // pkgEnd is exclusive
-		if (pkgEnd == -1) 
+		if (pkgEnd == -1)
 			pkgEnd = CharOperation.lastIndexOf(File.separatorChar, fileName);
 		if (jarSeparator != -1 && pkgEnd < jarSeparator) // if in a jar and no slash, it is a default package -> pkgEnd should be equal to jarSeparator
 			pkgEnd = jarSeparator;
@@ -826,7 +809,7 @@ class CompilationUnitBinding implements ITypeBinding {
 		int start;
 		return pkg.getClassFile(new String(fileName, start = pkgEnd + 1, fileName.length - start));
 	}
-	
+
 	public boolean isRecovered() {
 		return false;
 	}

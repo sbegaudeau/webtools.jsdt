@@ -12,19 +12,18 @@
 package org.eclipse.wst.jsdt.internal.ui.refactoring.nls.search;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.ui.search.JavaSearchResultPage;
-import org.eclipse.wst.jsdt.internal.ui.search.TextSearchTableContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerComparator;
-
 import org.eclipse.search.ui.text.AbstractTextSearchViewPage;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IShowInTargetList;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.internal.ui.search.JavaSearchResultPage;
+import org.eclipse.wst.jsdt.internal.ui.search.TextSearchTableContentProvider;
 
 
 public class NLSSearchResultPage extends AbstractTextSearchViewPage  implements IAdaptable {

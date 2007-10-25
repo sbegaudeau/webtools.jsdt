@@ -14,7 +14,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IPackageFragment;
+import org.eclipse.wst.jsdt.core.JavaConventions;
+import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaModelException;
 
 /**
  * This class is used to perform operations on multiple <code>IJavaElement</code>.
@@ -27,14 +35,14 @@ import org.eclipse.wst.jsdt.core.*;
  */
 public abstract class MultiOperation extends JavaModelOperation {
 	/**
-	 * Table specifying insertion positions for elements being 
+	 * Table specifying insertion positions for elements being
 	 * copied/moved/renamed. Keyed by elements being processed, and
 	 * values are the corresponding insertion point.
 	 * @see #processElements()
 	 */
 	protected Map insertBeforeElements = new HashMap(1);
 	/**
-	 * Table specifying the new parent for elements being 
+	 * Table specifying the new parent for elements being
 	 * copied/moved/renamed.
 	 * Keyed by elements being processed, and
 	 * values are the corresponding destination parent.
@@ -70,7 +78,7 @@ public abstract class MultiOperation extends JavaModelOperation {
 				this.newParents.put(elementsToProcess[i], parentElements[0]);
 			}
 		}
-	
+
 	}
 	/**
 	 * Convenience method to create a <code>JavaModelException</code>
@@ -140,7 +148,7 @@ public abstract class MultiOperation extends JavaModelOperation {
 	protected boolean isRename() {
 		return false;
 	}
-	
+
 	/**
 	 * Subclasses must implement this method to process a given <code>IJavaElement</code>.
 	 */
@@ -223,7 +231,7 @@ public abstract class MultiOperation extends JavaModelOperation {
 	protected void verifyDestination(IJavaElement element, IJavaElement destination) throws JavaModelException {
 		if (destination == null || !destination.exists())
 			error(IJavaModelStatusConstants.ELEMENT_DOES_NOT_EXIST, destination);
-		
+
 		int destType = destination.getElementType();
 		switch (element.getElementType()) {
 			case IJavaElement.PACKAGE_DECLARATION :
@@ -290,7 +298,7 @@ public abstract class MultiOperation extends JavaModelOperation {
 				isValid = JavaConventions.validateIdentifier(newName, sourceLevel, complianceLevel).getSeverity() != IStatus.ERROR;
 				break;
 		}
-	
+
 		if (!isValid) {
 			throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INVALID_NAME, element, newName));
 		}

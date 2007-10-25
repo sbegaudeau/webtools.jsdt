@@ -21,16 +21,11 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-
 import org.eclipse.jface.preference.IPreferenceStore;
-
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.folding.IJavaFoldingStructureProvider;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 
 /**

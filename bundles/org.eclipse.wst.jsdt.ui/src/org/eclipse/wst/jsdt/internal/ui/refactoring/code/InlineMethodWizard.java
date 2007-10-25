@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.refactoring.code;
 
+import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.InlineMethodRefactoring;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
-
-import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 
 public class InlineMethodWizard extends RefactoringWizard {
 	

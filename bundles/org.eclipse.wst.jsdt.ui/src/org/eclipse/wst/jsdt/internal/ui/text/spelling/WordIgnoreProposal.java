@@ -11,27 +11,22 @@
 
 package org.eclipse.wst.jsdt.internal.ui.text.spelling;
 
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
-
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.IContextInformation;
-
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.spelling.SpellingProblem;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
-import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellCheckEngine;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellChecker;
+import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
+import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
 
 /**
  * Proposal to ignore the word during the current editing session.

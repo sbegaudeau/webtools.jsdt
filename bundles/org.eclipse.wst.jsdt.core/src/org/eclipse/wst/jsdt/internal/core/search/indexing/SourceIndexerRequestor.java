@@ -11,7 +11,8 @@
 package org.eclipse.wst.jsdt.internal.core.search.indexing;
 
 import org.eclipse.wst.jsdt.core.Signature;
-import org.eclipse.wst.jsdt.core.compiler.*;
+import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ISourceElementRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
@@ -28,7 +29,7 @@ public class SourceIndexerRequestor implements ISourceElementRequestor, IIndexCo
 	char[][] enclosingTypeNames = new char[5][];
 	int depth = 0;
 	int methodDepth = 0;
-	
+
 public SourceIndexerRequestor(SourceIndexer indexer) {
 	this.indexer = indexer;
 }
@@ -136,7 +137,7 @@ private void enterAnnotationType(TypeInfo typeInfo) {
 		typeNames = this.enclosingTypeNames();
 	}
 	this.indexer.addAnnotationTypeDeclaration(typeInfo.modifiers, packageName, typeInfo.name, typeNames, typeInfo.secondary);
-	this.pushTypeName(typeInfo.name);	
+	this.pushTypeName(typeInfo.name);
 }
 
 private void enterClass(TypeInfo typeInfo) {
@@ -144,7 +145,7 @@ private void enterClass(TypeInfo typeInfo) {
 	// eliminate possible qualifications, given they need to be fully resolved again
 	if (typeInfo.superclass != null) {
 		typeInfo.superclass = getSimpleName(typeInfo.superclass);
-		
+
 		// add implicit constructor reference to default constructor
 		this.indexer.addConstructorReference(typeInfo.superclass, 0);
 	}
@@ -191,7 +192,7 @@ private void enterEnum(TypeInfo typeInfo) {
 		for (int i = 0, length = typeInfo.superinterfaces.length; i < length; i++){
 			typeInfo.superinterfaces[i] = getSimpleName(typeInfo.superinterfaces[i]);
 		}
-	}	
+	}
 	char[][] typeNames;
 	if (this.methodDepth > 0) {
 		typeNames = ONE_ZERO_CHAR;
@@ -200,7 +201,7 @@ private void enterEnum(TypeInfo typeInfo) {
 	}
 	char[] superclass = typeInfo.superclass == null ? CharOperation.concatWith(TypeConstants.JAVA_LANG_ENUM, '.'): typeInfo.superclass;
 	this.indexer.addEnumDeclaration(typeInfo.modifiers, packageName, typeInfo.name, typeNames, superclass, typeInfo.superinterfaces, typeInfo.secondary);
-	this.pushTypeName(typeInfo.name);	
+	this.pushTypeName(typeInfo.name);
 }
 /**
  * @see ISourceElementRequestor#enterField(FieldInfo)
@@ -225,7 +226,7 @@ private void enterInterface(TypeInfo typeInfo) {
 		for (int i = 0, length = typeInfo.superinterfaces.length; i < length; i++){
 			typeInfo.superinterfaces[i] = getSimpleName(typeInfo.superinterfaces[i]);
 		}
-	}	
+	}
 	char[][] typeNames;
 	if (this.methodDepth > 0) {
 		typeNames = ONE_ZERO_CHAR;
@@ -242,7 +243,7 @@ private void enterInterface(TypeInfo typeInfo) {
 		}
 	}
 	this.indexer.addInterfaceDeclaration(typeInfo.modifiers, packageName, typeInfo.name, typeNames, typeInfo.superinterfaces, typeParameterSignatures, typeInfo.secondary);
-	this.pushTypeName(typeInfo.name);	
+	this.pushTypeName(typeInfo.name);
 }
 /**
  * @see ISourceElementRequestor#enterMethod(MethodInfo)
@@ -261,13 +262,13 @@ public void enterType(TypeInfo typeInfo) {
 		case TypeDeclaration.CLASS_DECL:
 			enterClass(typeInfo);
 			break;
-		case TypeDeclaration.ANNOTATION_TYPE_DECL: 
+		case TypeDeclaration.ANNOTATION_TYPE_DECL:
 			enterAnnotationType(typeInfo);
 			break;
 		case TypeDeclaration.INTERFACE_DECL:
 			enterInterface(typeInfo);
 			break;
-		case TypeDeclaration.ENUM_DECL: 
+		case TypeDeclaration.ENUM_DECL:
 			enterEnum(typeInfo);
 			break;
 	}

@@ -16,7 +16,6 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.ISourceRange;
@@ -35,10 +34,8 @@ import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 class CalleeAnalyzerVisitor extends ASTVisitor {

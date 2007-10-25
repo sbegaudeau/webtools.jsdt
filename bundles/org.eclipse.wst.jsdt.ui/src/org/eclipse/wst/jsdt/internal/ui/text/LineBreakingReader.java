@@ -15,8 +15,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 
-import com.ibm.icu.text.BreakIterator;
 import org.eclipse.swt.graphics.GC;
+
+import com.ibm.icu.text.BreakIterator;
 
 /*
  * Not a real reader. Could change if requested

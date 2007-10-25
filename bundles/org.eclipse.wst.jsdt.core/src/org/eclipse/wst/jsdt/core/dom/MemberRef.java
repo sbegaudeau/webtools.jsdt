@@ -23,33 +23,33 @@ import java.util.List;
  * MemberRef:
  * 		[ Name ] <b>#</b> Identifier
  * </pre>
- * 
+ *
  * @see Javadoc
  * @since 3.0
  */
 public class MemberRef extends ASTNode implements IDocElement {
-	
+
 	/**
 	 * The "qualifier" structural property of this node type.
 	 * @since 3.0
 	 */
-	public static final ChildPropertyDescriptor QUALIFIER_PROPERTY = 
+	public static final ChildPropertyDescriptor QUALIFIER_PROPERTY =
 		new ChildPropertyDescriptor(MemberRef.class, "qualifier", Name.class, OPTIONAL, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "name" structural property of this node type.
 	 * @since 3.0
 	 */
-	public static final ChildPropertyDescriptor NAME_PROPERTY = 
+	public static final ChildPropertyDescriptor NAME_PROPERTY =
 		new ChildPropertyDescriptor(MemberRef.class, "name", SimpleName.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
-	 * A list of property descriptors (element type: 
+	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
 	 */
 	private static final List PROPERTY_DESCRIPTORS;
-	
+
 	static {
 		List propertyList = new ArrayList(3);
 		createPropertyList(MemberRef.class, propertyList);
@@ -61,16 +61,16 @@ public class MemberRef extends ASTNode implements IDocElement {
 	/**
 	 * Returns a list of structural property descriptors for this node type.
 	 * Clients must not modify the result.
-	 * 
+	 *
 	 * @param apiLevel the API level; one of the AST.JLS* constants
-	 * @return a list of property descriptors (element type: 
+	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
 	 * @since 3.0
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
 	}
-			
+
 	/**
 	 * The optional qualifier; <code>null</code> for none; defaults to none.
 	 */
@@ -81,17 +81,17 @@ public class MemberRef extends ASTNode implements IDocElement {
 	 * legal Java method name.
 	 */
 	private SimpleName memberName = null;
-	
+
 	/**
-	 * Creates a new AST node for a member reference owned by the given 
+	 * Creates a new AST node for a member reference owned by the given
 	 * AST. By default, the method reference is for a member with an
 	 * unspecified, but legal, name; and no qualifier.
 	 * <p>
-	 * N.B. This constructor is package-private; all subclasses must be 
-	 * declared in the same package; clients are unable to declare 
+	 * N.B. This constructor is package-private; all subclasses must be
+	 * declared in the same package; clients are unable to declare
 	 * additional subclasses.
 	 * </p>
-	 * 
+	 *
 	 * @param ast the AST that is to own this node
 	 */
 	MemberRef(AST ast) {
@@ -104,7 +104,7 @@ public class MemberRef extends ASTNode implements IDocElement {
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -128,7 +128,7 @@ public class MemberRef extends ASTNode implements IDocElement {
 		// allow default implementation to flag the error
 		return super.internalGetSetChildProperty(property, get, child);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -154,7 +154,7 @@ public class MemberRef extends ASTNode implements IDocElement {
 		// dispatch to correct overloaded match method
 		return matcher.match(this, other);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -167,28 +167,28 @@ public class MemberRef extends ASTNode implements IDocElement {
 		}
 		visitor.endVisit(this);
 	}
-	
+
 	/**
-	 * Returns the qualifier of this member reference, or 
+	 * Returns the qualifier of this member reference, or
 	 * <code>null</code> if there is none.
-	 * 
+	 *
 	 * @return the qualifier name node, or <code>null</code> if there is none
-	 */ 
+	 */
 	public Name getQualifier() {
 		return this.optionalQualifier;
 	}
-	
+
 	/**
 	 * Sets or clears the qualifier of this member reference.
-	 * 
-	 * @param name the qualifier name node, or <code>null</code> if 
+	 *
+	 * @param name the qualifier name node, or <code>null</code> if
 	 *    there is none
 	 * @exception IllegalArgumentException if:
 	 * <ul>
 	 * <li>the node belongs to a different AST</li>
 	 * <li>the node already has a parent</li>
 	 * </ul>
-	 */ 
+	 */
 	public void setQualifier(Name name) {
 		ASTNode oldChild = this.optionalQualifier;
 		preReplaceChild(oldChild, name, QUALIFIER_PROPERTY);
@@ -198,9 +198,9 @@ public class MemberRef extends ASTNode implements IDocElement {
 
 	/**
 	 * Returns the name of the referenced member.
-	 * 
+	 *
 	 * @return the member name node
-	 */ 
+	 */
 	public SimpleName getName() {
 		if (this.memberName == null) {
 			// lazy init must be thread-safe for readers
@@ -214,10 +214,10 @@ public class MemberRef extends ASTNode implements IDocElement {
 		}
 		return this.memberName;
 	}
-	
+
 	/**
 	 * Sets the name of the referenced member to the given name.
-	 * 
+	 *
 	 * @param name the new member name node
 	 * @exception IllegalArgumentException if:
 	 * <ul>
@@ -225,7 +225,7 @@ public class MemberRef extends ASTNode implements IDocElement {
 	 * <li>the node belongs to a different AST</li>
 	 * <li>the node already has a parent</li>
 	 * </ul>
-	 */ 
+	 */
 	public void setName(SimpleName name) {
 		if (name == null) {
 			throw new IllegalArgumentException();
@@ -243,10 +243,10 @@ public class MemberRef extends ASTNode implements IDocElement {
 	 * Note that bindings are generally unavailable unless requested when the
 	 * AST is being built.
 	 * </p>
-	 * 
-	 * @return the binding, or <code>null</code> if the binding cannot be 
+	 *
+	 * @return the binding, or <code>null</code> if the binding cannot be
 	 *    resolved
-	 */	
+	 */
 	public final IBinding resolveBinding() {
 		return this.ast.getBindingResolver().resolveReference(this);
 	}
@@ -257,7 +257,7 @@ public class MemberRef extends ASTNode implements IDocElement {
 	int memSize() {
 		return BASE_NODE_SIZE + 2 * 4;
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */

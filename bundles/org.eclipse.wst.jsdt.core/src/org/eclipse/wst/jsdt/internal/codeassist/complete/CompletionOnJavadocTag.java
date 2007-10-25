@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.codeassist.complete;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.parser.JavadocTagConstants;
@@ -38,7 +37,7 @@ public class CompletionOnJavadocTag extends JavadocSingleNameReference implement
 
 	/**
 	 * Get completion node flags.
-	 * 
+	 *
 	 * @return int Flags of the javadoc completion node.
 	 */
 	public int getCompletionFlags() {

@@ -11,19 +11,15 @@
 package org.eclipse.wst.jsdt.internal.ui.text;
 
 
-import org.eclipse.jface.viewers.IStructuredSelection;
-
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.information.IInformationProviderExtension;
-
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;

@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.ui.text.java;
 import java.util.Comparator;
 
 import org.eclipse.core.runtime.IConfigurationElement;
-
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 
 /**

@@ -16,7 +16,7 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ElementValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
-import org.eclipse.wst.jsdt.internal.compiler.util.*;
+import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 
 /**
  * Internal class
@@ -32,7 +32,7 @@ class AnnotationBinding implements IAnnotationBinding {
 		internalAnnotation = annotation;
 		bindingResolver = resolver;
 	}
-	
+
 	public IAnnotationBinding[] getAnnotations() {
 		return NoAnnotations;
 	}
@@ -43,7 +43,7 @@ class AnnotationBinding implements IAnnotationBinding {
 			return null;
 		return binding;
 	}
-	
+
 	public IMemberValuePairBinding[] getDeclaredMemberValuePairs() {
 		ElementValuePair[] internalPairs = this.internalAnnotation.getElementValuePairs();
 		int length = internalPairs.length;
@@ -77,7 +77,7 @@ class AnnotationBinding implements IAnnotationBinding {
 		}
 		return allPairs;
 	}
-	
+
 	public IJavaElement getJavaElement() {
 		ITypeBinding annotationType = getAnnotationType();
 		if (annotationType == null)
@@ -106,13 +106,13 @@ class AnnotationBinding implements IAnnotationBinding {
 			return annotationType.getName();
 		}
 	}
-	
+
 	public boolean isDeprecated() {
 		ReferenceBinding typeBinding = this.internalAnnotation.getAnnotationType();
 		if (typeBinding == null) return false;
 		return typeBinding.isDeprecated();
 	}
-	
+
 	public boolean isEqualTo(IBinding binding) {
 		if (this == binding)
 			return true;
@@ -160,5 +160,5 @@ class AnnotationBinding implements IAnnotationBinding {
 		buffer.append(')');
 		return buffer.toString();
 	}
-	
+
 }

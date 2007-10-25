@@ -17,9 +17,10 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-//import org.eclipse.wst.jsdt.core.*;
-//import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IPackageDeclaration;
+import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
@@ -39,14 +40,14 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  * A name environment based on the classpath of a Java project.
  */
 public class JavaSearchNameEnvironment implements INameEnvironment, SuffixConstants {
-	
+
 	ClasspathLocation[] locations;
-	
+
 	/*
 	 * A map from the fully qualified slash-separated name of the main type (String) to the working copy
 	 */
 	HashMap workingCopies;
-	
+
 public JavaSearchNameEnvironment(IJavaProject javaProject, org.eclipse.wst.jsdt.core.ICompilationUnit[] copies) {
 	computeClasspathLocations(javaProject.getProject().getWorkspace().getRoot(), (JavaProject) javaProject);
 	try {
@@ -108,7 +109,7 @@ private void computeClasspathLocations(IWorkspaceRoot workspaceRoot, JavaProject
 				}
 				else
 					cpLocations[index++] = ClasspathLocation.forLibrary(path.toOSString(), ((ClasspathEntry) root.getRawClasspathEntry()).getAccessRuleSet());
-					 
+
 			}
 		} catch (CoreException e1) {
 			// problem opening zip file or getting root kind
@@ -121,9 +122,9 @@ private void computeClasspathLocations(IWorkspaceRoot workspaceRoot, JavaProject
 }
 
 private NameEnvironmentAnswer findClass(String qualifiedTypeName, char[] typeName) {
-	String 
-		binaryFileName = null, qBinaryFileName = null, 
-		sourceFileName = null, qSourceFileName = null, 
+	String
+		binaryFileName = null, qBinaryFileName = null,
+		sourceFileName = null, qSourceFileName = null,
 		qPackageName = null;
 	NameEnvironmentAnswer suggestedAnswer = null;
 	for (int i = 0, length = this.locations.length; i < length; i++) {
@@ -160,10 +161,10 @@ private NameEnvironmentAnswer findClass(String qualifiedTypeName, char[] typeNam
 					binaryFileName = qBinaryFileName.substring(typeNameStart);
 				}
 			}
-			answer = 
+			answer =
 				location.findClass(
-					binaryFileName, 
-					qPackageName, 
+					binaryFileName,
+					qPackageName,
 					qBinaryFileName);
 		}
 		if (answer != null) {

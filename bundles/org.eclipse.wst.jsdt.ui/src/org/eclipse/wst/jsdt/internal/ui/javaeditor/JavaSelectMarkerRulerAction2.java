@@ -13,21 +13,18 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 import java.util.ResourceBundle;
 
 import org.eclipse.jface.action.IAction;
-
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.VerticalRulerEvent;
-
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.IUpdate;
 import org.eclipse.ui.texteditor.SelectAnnotationRulerAction;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.JavaCorrectionProcessor;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.QuickAssistLightBulbUpdater.AssistAnnotation;

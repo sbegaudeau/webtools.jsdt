@@ -22,11 +22,11 @@ import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 public class BufferFactoryWrapper extends WorkingCopyOwner {
 
 	public org.eclipse.wst.jsdt.core.IBufferFactory factory;
-		
+
 	private BufferFactoryWrapper(org.eclipse.wst.jsdt.core.IBufferFactory factory) {
 		this.factory = factory;
 	}
-	
+
 	public static WorkingCopyOwner create(org.eclipse.wst.jsdt.core.IBufferFactory factory) {
 		return new BufferFactoryWrapper(factory);
 	}
@@ -37,8 +37,8 @@ public class BufferFactoryWrapper extends WorkingCopyOwner {
 	public IBuffer createBuffer(ICompilationUnit workingCopy) {
 		if (this.factory == null) return super.createBuffer(workingCopy);
 		return this.factory.createBuffer(workingCopy);
-	}	
-	
+	}
+
 	public boolean equals(Object obj) {
 		if (!(obj instanceof BufferFactoryWrapper)) return false;
 		BufferFactoryWrapper other = (BufferFactoryWrapper)obj;

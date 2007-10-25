@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.dom;
 
-import org.eclipse.wst.jsdt.core.dom.BindingResolver;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
 
 /**
  * Member value pair which compose of default values.

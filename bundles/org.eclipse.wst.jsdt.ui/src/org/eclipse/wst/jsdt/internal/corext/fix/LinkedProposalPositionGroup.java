@@ -13,30 +13,22 @@ package org.eclipse.wst.jsdt.internal.corext.fix;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.text.link.LinkedModeModel;
+import org.eclipse.jface.text.link.LinkedPosition;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
-
-import org.eclipse.core.runtime.CoreException;
-
-import org.eclipse.swt.graphics.Image;
-
-import org.eclipse.jface.resource.ImageDescriptor;
-
-import org.eclipse.jface.text.link.LinkedModeModel;
-import org.eclipse.jface.text.link.LinkedPosition;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ITrackedNodePosition;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 public class LinkedProposalPositionGroup {
 	

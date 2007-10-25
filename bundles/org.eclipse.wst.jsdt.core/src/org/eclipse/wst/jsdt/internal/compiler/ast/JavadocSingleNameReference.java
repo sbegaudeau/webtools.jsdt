@@ -11,7 +11,11 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 
 public class JavadocSingleNameReference extends SingleNameReference {
 
@@ -33,7 +37,7 @@ public class JavadocSingleNameReference extends SingleNameReference {
 	 * Resolve without warnings
 	 */
 	public void resolve(BlockScope scope, boolean warn, boolean considerParamRefAsUsage) {
-		
+
 		LocalVariableBinding variableBinding = scope.findVariable(this.token);
 		if (variableBinding != null && variableBinding.isValidBinding() && ((variableBinding.tagBits & TagBits.IsArgument) != 0)) {
 			this.binding = variableBinding;
@@ -69,9 +73,9 @@ public class JavadocSingleNameReference extends SingleNameReference {
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);
 	}
-	
+
 	public StringBuffer printExpression(int indent, StringBuffer output){
-		
+
 		if (types!=null && types.length>0)
 		{
 			output.append("{");

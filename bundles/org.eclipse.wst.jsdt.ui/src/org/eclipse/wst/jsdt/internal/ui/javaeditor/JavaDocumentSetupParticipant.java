@@ -11,13 +11,10 @@
 package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
 import org.eclipse.core.filebuffers.IDocumentSetupParticipant;
-
 import org.eclipse.jface.text.IDocument;
-
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
 import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 /**
  * The document setup participant for JDT.

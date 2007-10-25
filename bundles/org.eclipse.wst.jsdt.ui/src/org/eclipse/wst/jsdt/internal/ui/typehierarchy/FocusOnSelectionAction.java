@@ -13,18 +13,13 @@ package org.eclipse.wst.jsdt.internal.ui.typehierarchy;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
-
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.core.IType;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.ITypeHierarchyViewPart;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.util.SelectionUtil;
+import org.eclipse.wst.jsdt.ui.ITypeHierarchyViewPart;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 /**
  * Refocuses the type hierarchy on the currently selection type.

@@ -10,21 +10,16 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.workingsets;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
-
-import org.eclipse.core.resources.IResource;
-
 import org.eclipse.jface.viewers.Viewer;
-
 import org.eclipse.ui.IWorkingSet;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
-
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer;
 import org.eclipse.wst.jsdt.internal.ui.packageview.ClassPathContainer.RequiredProjectWrapper;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaViewerFilter;

@@ -11,7 +11,13 @@
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CaseStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
@@ -30,7 +36,7 @@ public class BlockScope extends Scope {
 
 	// finally scopes must be shifted behind respective try&catch scope(s) so as to avoid
 	// collisions of secret variables (return address, save value).
-	public BlockScope[] shiftScopes; 
+	public BlockScope[] shiftScopes;
 
 	public Scope[] subscopes = new Scope[1]; // need access from code assist
 	public int subscopeCount = 0; // need access from code assist
@@ -100,9 +106,9 @@ public  void addLocalVariable(LocalVariableBinding binding) {
 			this.localIndex);
 	this.locals[this.localIndex++] = binding;
 
-	// update local variable binding 
+	// update local variable binding
 	binding.declaringScope = this;
-	
+
 	MethodScope outerMostMethodScope = this.outerMostMethodScope();
 	binding.id = (outerMostMethodScope!=null)? outerMostMethodScope.analysisIndex++ : this.compilationUnitScope().analysisIndex++;
 	// share the outermost method scope analysisIndex
@@ -142,7 +148,7 @@ public void addSubscope(Scope childScope) {
 
 /* Answer true if the receiver is suitable for assigning final blank fields.
  *
- * in other words, it is inside an initializer, a constructor or a clinit 
+ * in other words, it is inside an initializer, a constructor or a clinit
  */
 public final boolean allowBlankFinalFieldAssignment(FieldBinding binding) {
 	if (enclosingReceiverType() != binding.declaringClass)
@@ -174,9 +180,9 @@ private void checkAndSetModifiersForVariable(LocalVariableBinding varBinding) {
 		problemReporter().duplicateModifierForVariable(varBinding.declaration, this instanceof MethodScope);
 	}
 	int realModifiers = modifiers & ExtraCompilerModifiers.AccJustFlag;
-	
+
 	int unexpectedModifiers = ~ClassFileConstants.AccFinal;
-	if ((realModifiers & unexpectedModifiers) != 0 && varBinding.declaration != null){ 
+	if ((realModifiers & unexpectedModifiers) != 0 && varBinding.declaration != null){
 		problemReporter().illegalModifierForVariable(varBinding.declaration, this instanceof MethodScope);
 	}
 	varBinding.modifiers = modifiers;
@@ -184,7 +190,7 @@ private void checkAndSetModifiersForVariable(LocalVariableBinding varBinding) {
 
 /* Compute variable positions in scopes given an initial position offset
  * ignoring unused local variables.
- * 
+ *
  * No argument is expected here (ilocal is the first non-argument local of the outermost scope)
  * Arguments are managed by the MethodScope method
  */
@@ -214,22 +220,22 @@ void computeLocalVariablePositions(int ilocal, int initOffset, CodeStream codeSt
 			}
 			hasMoreScopes = ++iscope < maxScopes;
 		} else {
-			
+
 			// consider variable first
 			LocalVariableBinding local = this.locals[ilocal]; // if no local at all, will be locals[ilocal]==null
-			
+
 			// check if variable is actually used, and may force it to be preserved
 			boolean generateCurrentLocalVar = (local.useFlag == LocalVariableBinding.USED && local.constant() == Constant.NotAConstant);
-				
+
 			// do not report fake used variable
 			if (local.useFlag == LocalVariableBinding.UNUSED
 				&& (local.declaration != null) // unused (and non secret) local
 				&& ((local.declaration.bits & ASTNode.IsLocalDeclarationReachable) != 0)) { // declaration is reachable
-					
+
 				if (!(local.declaration instanceof Argument))  // do not report unused catch arguments
 					this.problemReporter().unusedLocalVariable(local.declaration);
 			}
-			
+
 			// could be optimized out, but does need to preserve unread variables ?
 			if (!generateCurrentLocalVar) {
 				if (local.declaration != null && compilerOptions().preserveAllLocalVariables) {
@@ -237,7 +243,7 @@ void computeLocalVariablePositions(int ilocal, int initOffset, CodeStream codeSt
 					local.useFlag = LocalVariableBinding.USED;
 				}
 			}
-			
+
 			// allocate variable
 			if (generateCurrentLocalVar) {
 
@@ -254,7 +260,7 @@ void computeLocalVariablePositions(int ilocal, int initOffset, CodeStream codeSt
 				}
 				if (this.offset > 0xFFFF) { // no more than 65535 words of locals
 					this.problemReporter().noMoreAvailableSpaceForLocal(
-						local, 
+						local,
 						local.declaration == null ? (ASTNode)this.methodScope().referenceContext : local.declaration);
 				}
 			} else {
@@ -272,17 +278,17 @@ public void reportUnusedDeclarations()
 	if (this.locals!=null)
 	for (int i = 0; i < localIndex; i++) {
 		LocalVariableBinding local = this.locals[i]; // if no local at all, will be locals[ilocal]==null
-		
-			
+
+
 		// do not report fake used variable
 		if (local.useFlag == LocalVariableBinding.UNUSED
 			&& (local.declaration != null) // unused (and non secret) local
 			&& ((local.declaration.bits & ASTNode.IsLocalDeclarationReachable) != 0)) { // declaration is reachable
-				
+
 			if (!(local.declaration instanceof Argument))  // do not report unused catch arguments
 				this.problemReporter().unusedLocalVariable(local.declaration);
 		}
-		
+
 
 	}
 }
@@ -340,7 +346,7 @@ public final ReferenceBinding findLocalType(char[] name) {
 	for (int i = this.subscopeCount-1; i >= 0; i--) {
 		if (this.subscopes[i] instanceof ClassScope) {
 			LocalTypeBinding sourceType = (LocalTypeBinding)((ClassScope) this.subscopes[i]).getReferenceBinding();
-			// from 1.4 on, local types should not be accessed across switch case blocks (52221)				
+			// from 1.4 on, local types should not be accessed across switch case blocks (52221)
 			if (compliance >= ClassFileConstants.JDK1_4 && sourceType.enclosingCase != null) {
 				if (!this.isInsideCase(sourceType.enclosingCase)) {
 					continue;
@@ -445,7 +451,7 @@ public LocalVariableBinding findVariable(char[] variableName) {
  *		Only if all of the input is consumed is the type answered
  *
  *	All other conditions are errors, and a problem binding is returned.
- *	
+ *
  *	NOTE: If a problem binding is returned, senders should extract the compound name
  *	from the binding & not assume the problem applies to the entire compoundName.
  *
@@ -545,7 +551,7 @@ public Binding getBinding(char[][] compoundName, int mask, InvocationSite invoca
 					CharOperation.subarray(compoundName, 0, currentIndex),
 					referenceBinding,
 					ProblemReasons.NotFound);
-			} 
+			}
 			return new ProblemReferenceBinding(
 				CharOperation.subarray(compoundName, 0, currentIndex),
 				referenceBinding,
@@ -595,7 +601,7 @@ public final Binding getBinding(char[][] compoundName, InvocationSite invocation
 		getBinding(
 			compoundName[currentIndex++],
 			Binding.VARIABLE | Binding.TYPE | Binding.PACKAGE,
-			invocationSite, 
+			invocationSite,
 			true /*resolve*/);
 	if (!binding.isValidBinding())
 		return binding;
@@ -626,7 +632,7 @@ public final Binding getBinding(char[][] compoundName, InvocationSite invocation
 				if (!((ReferenceBinding) binding).canBeSeenBy(this))
 					return new ProblemReferenceBinding(
 						CharOperation.subarray(compoundName, 0, currentIndex),
-						(ReferenceBinding) binding, 
+						(ReferenceBinding) binding,
 						ProblemReasons.NotVisible);
 				break foundType;
 			}
@@ -697,7 +703,7 @@ public final Binding getBinding(char[][] compoundName, InvocationSite invocation
 /*
  * This retrieves the argument that maps to an enclosing instance of the suitable type,
  * 	if not found then answers nil -- do not create one
- *	
+ *
  *		#implicitThis		  	 			: the implicit this will be ok
  *		#((arg) this$n)						: available as a constructor arg
  * 		#((arg) this$n ... this$p) 			: available as as a constructor arg + a sequence of fields
@@ -775,7 +781,7 @@ public Object[] getEmulationPath(ReferenceBinding targetEnclosingType, boolean o
 		if ((syntheticArg = ((NestedTypeBinding) sourceType).getSyntheticArgument(targetEnclosingType, onlyExactMatch)) != null) {
 			// reject allocation and super constructor call
 			if (denyEnclosingArgInConstructorCall
-					&& currentMethodScope.isConstructorCall 
+					&& currentMethodScope.isConstructorCall
 					&& (sourceType == targetEnclosingType || (!onlyExactMatch && sourceType.findSuperTypeWithSameErasure(targetEnclosingType) != null))) {
 				return BlockScope.NoEnclosingInstanceInConstructorCall;
 			}
@@ -821,7 +827,7 @@ public Object[] getEmulationPath(ReferenceBinding targetEnclosingType, boolean o
 		path[0] = sourceType.getSyntheticField(currentType, onlyExactMatch);
 	}
 	if (path[0] != null) { // keep accumulating
-		
+
 		int count = 1;
 		ReferenceBinding currentEnclosingType;
 		while ((currentEnclosingType = currentType.enclosingType()) != null) {
@@ -839,7 +845,7 @@ public Object[] getEmulationPath(ReferenceBinding targetEnclosingType, boolean o
 					return BlockScope.NoEnclosingInstanceInStaticContext;
 				}
 			}
-			
+
 			syntheticField = ((NestedTypeBinding) currentType).getSyntheticField(currentEnclosingType, onlyExactMatch);
 			if (syntheticField == null) break;
 
@@ -903,7 +909,7 @@ public ProblemReporter problemReporter() {
  */
 public void propagateInnerEmulation(ReferenceBinding targetType, boolean isEnclosingInstanceSupplied) {
 	// no need to propagate enclosing instances, they got eagerly allocated already.
-	
+
 	SyntheticArgumentBinding[] syntheticArguments;
 	if ((syntheticArguments = targetType.syntheticOuterLocalVariables()) != null) {
 		for (int i = 0, max = syntheticArguments.length; i < max; i++) {

@@ -20,14 +20,16 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.StatusDialog;
+import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -41,21 +43,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.StatusDialog;
-import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.jface.window.Window;
-
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
-
-import org.eclipse.wst.jsdt.launching.IRuntimeClasspathEntry;
-import org.eclipse.wst.jsdt.launching.JavaRuntime;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.WorkbenchRunnableAdapter;
@@ -71,6 +62,8 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListene
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IListAdapter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ListDialogField;
+import org.eclipse.wst.jsdt.launching.IRuntimeClasspathEntry;
+import org.eclipse.wst.jsdt.launching.JavaRuntime;
 
 public class JavadocStandardWizardPage extends JavadocWizardPage {
 	

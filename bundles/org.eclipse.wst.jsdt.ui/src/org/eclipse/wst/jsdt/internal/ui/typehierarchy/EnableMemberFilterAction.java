@@ -10,16 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.typehierarchy;
 
-import org.eclipse.swt.custom.BusyIndicator;
-
 import org.eclipse.jface.action.Action;
-
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.ui.PlatformUI;
-
-import org.eclipse.wst.jsdt.ui.ITypeHierarchyViewPart;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.ui.ITypeHierarchyViewPart;
 
 /**
  * Action enable / disable member filtering

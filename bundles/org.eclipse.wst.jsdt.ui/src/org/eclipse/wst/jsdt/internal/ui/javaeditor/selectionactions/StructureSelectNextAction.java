@@ -10,16 +10,13 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.javaeditor.selectionactions;
 
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-
-import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor;
 import org.eclipse.wst.jsdt.internal.corext.dom.SelectionAnalyzer;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 

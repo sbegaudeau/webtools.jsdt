@@ -14,29 +14,22 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
-
-import org.eclipse.core.resources.IFile;
-
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ErrorDialog;
-
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.ui.jarpackager.IJarDescriptionReader;
 import org.eclipse.wst.jsdt.ui.jarpackager.IJarExportRunnable;
 import org.eclipse.wst.jsdt.ui.jarpackager.JarPackageData;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 
 public class CreateJarActionDelegate extends JarPackageActionDelegate {
 

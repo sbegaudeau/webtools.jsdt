@@ -12,7 +12,6 @@
 package org.eclipse.wst.jsdt.ui;
 
 import org.eclipse.ui.IEditorInput;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 
 /**

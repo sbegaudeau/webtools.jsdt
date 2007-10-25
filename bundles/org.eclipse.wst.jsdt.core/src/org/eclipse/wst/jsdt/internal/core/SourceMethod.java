@@ -10,10 +10,16 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.Flags;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.ITypeParameter;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
-import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 /**
  * @see IMethod
@@ -223,7 +229,7 @@ public boolean isResolved() {
  * @see IMethod#isSimilar(IMethod)
  */
 public boolean isSimilar(IMethod method) {
-	return 
+	return
 		areSimilarMethods(
 			this.getElementName(), this.getParameterTypes(),
 			method.getElementName(), method.getParameterTypes(),
@@ -315,7 +321,7 @@ protected void toStringName(StringBuffer buffer, int flags) {
 	}
 }
 
-public IMethod getMethod(String selector, String[] parameterTypeSignatures) 
+public IMethod getMethod(String selector, String[] parameterTypeSignatures)
 {
 	return new SourceMethod(this, selector, parameterTypeSignatures);
 

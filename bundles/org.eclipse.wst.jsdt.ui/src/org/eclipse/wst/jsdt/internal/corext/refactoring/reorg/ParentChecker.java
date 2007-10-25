@@ -13,10 +13,8 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.reorg;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.core.resources.IResource;
-
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaCore;
 

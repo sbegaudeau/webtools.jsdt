@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.core.search.matching;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
-
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 public class FieldPattern extends VariablePattern {
@@ -42,10 +41,10 @@ public FieldPattern(
 	boolean readAccess,
 	boolean writeAccess,
 	boolean isVar,
-	char[] name, 
+	char[] name,
 	char[] declaringQualification,
-	char[] declaringSimpleName,	
-	char[] typeQualification, 
+	char[] declaringSimpleName,
+	char[] typeQualification,
 	char[] typeSimpleName,
 	int matchRule, IField field) {
 
@@ -67,10 +66,10 @@ public FieldPattern(
 	boolean readAccess,
 	boolean writeAccess,
 	boolean isVar,
-	char[] name, 
+	char[] name,
 	char[] declaringQualification,
-	char[] declaringSimpleName,	
-	char[] typeQualification, 
+	char[] declaringSimpleName,
+	char[] typeQualification,
 	char[] typeSimpleName,
 	String typeSignature,
 	int matchRule, IField field) {
@@ -90,10 +89,10 @@ public SearchPattern getBlankPattern() {
 	return new FieldPattern(false, false, false, isVar, null, null, null, null, null, R_EXACT_MATCH | R_CASE_SENSITIVE,null);
 }
 public char[] getIndexKey() {
-	return this.name; 
+	return this.name;
 }
 public char[][] getIndexCategories() {
-	
+
 	if (this.isVar) {
 		if (this.findReferences)
 			return this.findDeclarations || this.writeAccess ? VAR_REF_AND_DECL_CATEGORIES
@@ -107,7 +106,7 @@ public char[][] getIndexCategories() {
 					: REF_CATEGORIES;
 		if (this.findDeclarations)
 			return DECL_CATEGORIES;
-		
+
 	}
 	return CharOperation.NO_CHAR_CHAR;
 }
@@ -129,7 +128,7 @@ protected StringBuffer print(StringBuffer output) {
 		output.append("FieldReferencePattern: "); //$NON-NLS-1$
 	}
 	if (declaringQualification != null) output.append(declaringQualification).append('.');
-	if (declaringSimpleName != null) 
+	if (declaringSimpleName != null)
 		output.append(declaringSimpleName).append('.');
 	else if (declaringQualification != null) output.append("*."); //$NON-NLS-1$
 	if (name == null) {
@@ -137,10 +136,10 @@ protected StringBuffer print(StringBuffer output) {
 	} else {
 		output.append(name);
 	}
-	if (typeQualification != null) 
+	if (typeQualification != null)
 		output.append(" --> ").append(typeQualification).append('.'); //$NON-NLS-1$
 	else if (typeSimpleName != null) output.append(" --> "); //$NON-NLS-1$
-	if (typeSimpleName != null) 
+	if (typeSimpleName != null)
 		output.append(typeSimpleName);
 	else if (typeQualification != null) output.append("*"); //$NON-NLS-1$
 	return super.print(output);

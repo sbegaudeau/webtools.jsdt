@@ -10,21 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.compare;
 
-import org.eclipse.core.resources.IFile;
-
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
-
-import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareUI;
-
+import org.eclipse.core.resources.IFile;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.team.ui.TeamUI;
 import org.eclipse.team.ui.history.HistoryPageCompareEditorInput;
-
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IMember;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 
 

@@ -13,41 +13,43 @@ package org.eclipse.wst.jsdt.internal.ui.compare;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ProjectScope;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.graphics.RGB;
-
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.util.*;
-import org.eclipse.jface.text.*;
-import org.eclipse.jface.text.source.SourceViewer;
-import org.eclipse.jface.preference.PreferenceConverter;
-
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.IResourceProvider;
+import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.contentmergeviewer.ITokenComparator;
 import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
-import org.eclipse.compare.structuremergeviewer.*;
-import org.eclipse.compare.ITypedElement;
-
+import org.eclipse.compare.structuremergeviewer.ICompareInput;
+import org.eclipse.compare.structuremergeviewer.IDiffContainer;
+import org.eclipse.compare.structuremergeviewer.IDiffElement;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ProjectScope;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentPartitioner;
+import org.eclipse.jface.text.Position;
+import org.eclipse.jface.text.TextViewer;
+import org.eclipse.jface.text.source.SourceViewer;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.editors.text.EditorsUI;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
+import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
-
-import org.eclipse.wst.jsdt.ui.text.*;
-
-import org.eclipse.ui.texteditor.AbstractTextEditor;
-import org.eclipse.ui.texteditor.ChainedPreferenceStore;
-
-import org.eclipse.ui.editors.text.EditorsUI;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.compare.JavaTokenComparator.ITokenComparatorFactory;
 import org.eclipse.wst.jsdt.internal.ui.text.PreferencesAdapter;
+import org.eclipse.wst.jsdt.ui.text.IJavaColorConstants;
+import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration;
+import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
 
 
 public class JavaMergeViewer extends TextMergeViewer {

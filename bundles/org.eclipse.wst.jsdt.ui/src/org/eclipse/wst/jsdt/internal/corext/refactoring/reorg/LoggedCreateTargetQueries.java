@@ -13,20 +13,17 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.reorg;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.CoreUtility;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathsBlock;

@@ -13,12 +13,19 @@ package org.eclipse.wst.jsdt.internal.ui.jarpackager;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.TrayDialog;
+import org.eclipse.ltk.core.refactoring.RefactoringDescriptorProxy;
+import org.eclipse.ltk.core.refactoring.history.RefactoringHistory;
+import org.eclipse.ltk.ui.refactoring.RefactoringUI;
+import org.eclipse.ltk.ui.refactoring.history.ISortableRefactoringHistoryControl;
+import org.eclipse.ltk.ui.refactoring.history.RefactoringHistoryControlConfiguration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -27,23 +34,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.dialogs.TrayDialog;
-
 import org.eclipse.ui.PlatformUI;
-
-import org.eclipse.ltk.core.refactoring.RefactoringDescriptorProxy;
-import org.eclipse.ltk.core.refactoring.history.RefactoringHistory;
-import org.eclipse.ltk.ui.refactoring.RefactoringUI;
-import org.eclipse.ltk.ui.refactoring.history.ISortableRefactoringHistoryControl;
-import org.eclipse.ltk.ui.refactoring.history.RefactoringHistoryControlConfiguration;
-
-import org.eclipse.wst.jsdt.ui.jarpackager.JarPackageData;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
+import org.eclipse.wst.jsdt.ui.jarpackager.JarPackageData;
 
 /**
  * Dialog to configure the refactorings to export.

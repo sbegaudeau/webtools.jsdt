@@ -25,9 +25,35 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.IClassFile;
+import org.eclipse.wst.jsdt.core.IClasspathAttribute;
+import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IClasspathEntry;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaModel;
+import org.eclipse.wst.jsdt.core.IJavaModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IMember;
+import org.eclipse.wst.jsdt.core.IOpenable;
+import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.IParent;
+import org.eclipse.wst.jsdt.core.ISourceRange;
+import org.eclipse.wst.jsdt.core.ISourceReference;
+import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.LibrarySuperType;
+import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
@@ -70,7 +96,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 
 	protected static final JavaElement[] NO_ELEMENTS = new JavaElement[0];
 	protected static final Object NO_INFO = new Object();
-	
+
 	/**
 	 * Constructs a handle for a java element with
 	 * the given parent element.
@@ -110,14 +136,14 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	 * @see Object#equals
 	 */
 	public boolean equals(Object o) {
-		
+
 		if (this == o) return true;
-	
+
 		// Java model parent is null
 		if (this.parent == null) return super.equals(o);
-	
+
 		// assume instanceof check is done in subclass
-		JavaElement other = (JavaElement) o;		
+		JavaElement other = (JavaElement) o;
 		return getElementName().equals(other.getElementName()) &&
 				this.parent.equals(other.parent);
 	}
@@ -149,7 +175,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	 * @see IJavaElement
 	 */
 	public boolean exists() {
-		
+
 		try {
 			getElementInfo();
 			return true;
@@ -158,7 +184,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Returns the <code>ASTNode</code> that corresponds to this <code>JavaElement</code>
 	 * or <code>null</code> if there is no corresponding node.
@@ -171,21 +197,21 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	 * Puts the newly created element info in the given map.
 	 */
 	protected abstract void generateInfos(Object info, HashMap newElements, IProgressMonitor pm) throws JavaModelException;
-	
+
 	/**
 	 * @see IJavaElement
 	 */
 	public IJavaElement getAncestor(int ancestorType) {
-		
+
 		IJavaElement element = this;
 		while (element != null) {
 			if (element.getElementType() == ancestorType)  return element;
 			element= element.getParent();
 		}
-		return null;				
+		return null;
 	}
 	/**
-	 * @see IParent 
+	 * @see IParent
 	 */
 	public IJavaElement[] getChildren() throws JavaModelException {
 		Object elementInfo = getElementInfo();
@@ -226,7 +252,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 		return null;
 	}
 	/**
-	 * Returns the info for this handle.  
+	 * Returns the info for this handle.
 	 * If this element is not already open, it and all of its parents are opened.
 	 * Does not return null.
 	 * NOTE: BinaryType infos are NOT rooted under JavaElementInfo.
@@ -236,7 +262,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 		return getElementInfo(null);
 	}
 	/**
-	 * Returns the info for this handle.  
+	 * Returns the info for this handle.
 	 * If this element is not already open, it and all of its parents are opened.
 	 * Does not return null.
 	 * NOTE: BinaryType infos are NOT rooted under JavaElementInfo.
@@ -319,7 +345,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	 * @see IJavaElement
 	 */
 	public IOpenable getOpenable() {
-		return this.getOpenableParent();	
+		return this.getOpenableParent();
 	}
 	/**
 	 * Return the first instance of IOpenable in the parent
@@ -438,7 +464,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 		}
 	}
 	/**
-	 * @see IParent 
+	 * @see IParent
 	 */
 	public boolean hasChildren() throws JavaModelException {
 		// if I am not open, return true to avoid opening (case of a Java project, a compilation unit or a class file).
@@ -472,7 +498,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 		}
 		return parentElement != null;
 	}
-	
+
 	/**
 	 * @see IJavaElement
 	 */
@@ -632,7 +658,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	protected void toStringName(StringBuffer buffer) {
 		buffer.append(getElementName());
 	}
-	
+
 	protected URL getJavadocBaseLocation() throws JavaModelException {
 		IPackageFragmentRoot root= (IPackageFragmentRoot) this.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
 		if (root == null) {
@@ -654,7 +680,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 		}
 		return null;
 	}
-	
+
 	private static IClasspathEntry getRealClasspathEntry(IJavaProject jproject, IPath containerPath, IPath libPath) throws JavaModelException {
 		IClasspathContainer container= JavaCore.getClasspathContainer(containerPath, jproject);
 		if (container != null) {
@@ -675,7 +701,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 		}
 		return null; // not found
 	}
-	
+
 	protected static URL getLibraryJavadocLocation(IClasspathEntry entry) throws JavaModelException {
 		switch(entry.getEntryKind()) {
 			case IClasspathEntry.CPE_LIBRARY :
@@ -684,7 +710,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 			default :
 				throw new IllegalArgumentException("Entry must be of kind CPE_LIBRARY or CPE_VARIABLE"); //$NON-NLS-1$
 		}
-		
+
 		IClasspathAttribute[] extraAttributes= entry.getExtraAttributes();
 		for (int i= 0; i < extraAttributes.length; i++) {
 			IClasspathAttribute attrib= extraAttributes[i];
@@ -699,14 +725,14 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 		}
 		return null;
 	}
-	
+
 	/*
 	 * @see IJavaElement#getAttachedJavadoc(IProgressMonitor)
 	 */
 	public String getAttachedJavadoc(IProgressMonitor monitor) throws JavaModelException {
 		return null;
 	}
-	
+
 	int getIndexOf(byte[] array, byte[] toBeFound, int start) {
 		if (array == null || toBeFound == null)
 			return -1;
@@ -724,10 +750,10 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 			}
 		}
 		return -1;
-	}	
+	}
 	/*
 	 * We don't use getContentEncoding() on the URL connection, because it might leave open streams behind.
-	 * See https://bugs.eclipse.org/bugs/show_bug.cgi?id=117890 
+	 * See https://bugs.eclipse.org/bugs/show_bug.cgi?id=117890
 	 */
 	protected String getURLContents(String docUrlValue) throws JavaModelException {
 		InputStream stream = null;
@@ -774,7 +800,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 					// platform encoding is used
 					return new String(contents);
 				}
-			}			
+			}
  		} catch (MalformedURLException e) {
  			throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.CANNOT_RETRIEVE_ATTACHED_JAVADOC, this));
 		} catch (FileNotFoundException e) {
@@ -809,7 +835,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 		}
 		return null;
 	}
-	
+
 	/*
 	 * Returns a new name lookup. This name lookup first looks in the given working copies.
 	 */
@@ -821,7 +847,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	 * Returns a new name lookup. This name lookup first looks in the working copies of the given owner.
 	 */
 	public NameLookup newNameLookup(WorkingCopyOwner owner) throws JavaModelException {
-		
+
 		return parent!=null?parent.newNameLookup(owner):getJavaProject().newNameLookup(owner);
 	}
 
@@ -839,15 +865,15 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	public SearchableEnvironment newSearchableNameEnvironment(WorkingCopyOwner owner) throws JavaModelException {
 		return parent!=null?parent.newSearchableNameEnvironment(owner):getJavaProject().newSearchableNameEnvironment(owner);
 	}
-	
+
 	public String getDisplayName() {
 		return getElementName();
 	}
-	
+
 	public boolean isVirtual() {
 		return parent.isVirtual();
 	}
-	
+
 	public URI getHostPath() {
 		if(isVirtual()) return parent.getHostPath();
 		return null;

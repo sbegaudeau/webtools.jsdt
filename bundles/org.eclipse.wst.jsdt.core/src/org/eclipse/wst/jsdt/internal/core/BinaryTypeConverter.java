@@ -41,37 +41,37 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  * Converter from a binary type to an AST type declaration.
  */
 public class BinaryTypeConverter {
-	
+
 	/**
 	 * Convert a binary type into an AST type declaration and put it in the given compilation unit.
 	 */
 	public static TypeDeclaration buildTypeDeclaration(IType type, CompilationUnitDeclaration compilationUnit, CompilationResult compilationResult)  throws JavaModelException {
 		PackageFragment pkg = (PackageFragment) type.getPackageFragment();
 		char[][] packageName = Util.toCharArrays(pkg.names);
-		
-		if (packageName.length > 0) { 
+
+		if (packageName.length > 0) {
 			compilationUnit.currentPackage = new ImportReference(packageName, new long[]{0}, false, ClassFileConstants.AccDefault);
 		}
-	
+
 		/* convert type */
 		TypeDeclaration typeDeclaration = convert(type, null, null, compilationResult);
-		
+
 		IType alreadyComputedMember = type;
 		IType parent = type.getDeclaringType();
 		TypeDeclaration previousDeclaration = typeDeclaration;
 		while(parent != null) {
 			TypeDeclaration declaration = convert(parent, alreadyComputedMember, previousDeclaration, compilationResult);
-			
+
 			alreadyComputedMember = parent;
 			previousDeclaration = declaration;
 			parent = parent.getDeclaringType();
 		}
-		
+
 		compilationUnit.types = new TypeDeclaration[]{previousDeclaration};
 
 		return typeDeclaration;
 	}
-	
+
 	private static FieldDeclaration convert(IField field, IType type) throws JavaModelException {
 
 		FieldDeclaration fieldDeclaration = new FieldDeclaration();
@@ -82,7 +82,7 @@ public class BinaryTypeConverter {
 
 		return fieldDeclaration;
 	}
-	
+
 	private static AbstractMethodDeclaration convert(IMethod method, IType type, CompilationResult compilationResult) throws JavaModelException {
 
 		AbstractMethodDeclaration methodDeclaration;
@@ -133,7 +133,7 @@ public class BinaryTypeConverter {
 		}
 		return methodDeclaration;
 	}
-	
+
 	private static TypeDeclaration convert(IType type, IType alreadyComputedMember,TypeDeclaration alreadyComputedMemberDeclaration, CompilationResult compilationResult) throws JavaModelException {
 		/* create type declaration - can be member type */
 		TypeDeclaration typeDeclaration = new TypeDeclaration(compilationResult);
@@ -157,7 +157,7 @@ public class BinaryTypeConverter {
 			typeDeclaration.superInterfaces[i] = createTypeReference(interfaceNames[i].toCharArray());
 			typeDeclaration.superInterfaces[i].bits |= ASTNode.IsSuperType;
 		}
-		
+
 		/* convert member types */
 		IType[] memberTypes = type.getTypes();
 		int memberTypeCount =	memberTypes == null ? 0 : memberTypes.length;
@@ -202,7 +202,7 @@ public class BinaryTypeConverter {
 		for (int i = 0; i < methodCount; i++) {
 			AbstractMethodDeclaration method =convert(methods[i], type, compilationResult);
 			boolean isAbstract;
-			if ((isAbstract = method.isAbstract()) || isInterface) { // fix-up flag 
+			if ((isAbstract = method.isAbstract()) || isInterface) { // fix-up flag
 				method.modifiers |= ExtraCompilerModifiers.AccSemicolonBody;
 			}
 			if (isAbstract) {
@@ -215,7 +215,7 @@ public class BinaryTypeConverter {
 		}
 		return typeDeclaration;
 	}
-	
+
 	private static TypeReference createTypeReference(char[] type) {
 		/* count identifiers and dimensions */
 		int max = type.length;

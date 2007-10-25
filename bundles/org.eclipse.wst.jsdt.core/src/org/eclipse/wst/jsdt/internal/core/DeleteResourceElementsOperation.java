@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
@@ -67,7 +67,7 @@ private void deletePackageFragment(IPackageFragment frag)
 			if (nonJavaResources[i] instanceof IResource) actualNonJavaResources[index++] = (IResource)nonJavaResources[i];
 		}
 		deleteResources(actualNonJavaResources, force);
-		
+
 		// delete remaining files in this package (.class file in the case where Proj=src=bin)
 		IResource[] remainingFiles;
 		try {
@@ -97,7 +97,7 @@ private void deletePackageFragment(IPackageFragment frag)
  * @see MultiOperation
  */
 protected String getMainTaskName() {
-	return Messages.operation_deleteResourceProgress; 
+	return Messages.operation_deleteResourceProgress;
 }
 /**
  * @see MultiOperation This method delegate to <code>deleteResource</code> or

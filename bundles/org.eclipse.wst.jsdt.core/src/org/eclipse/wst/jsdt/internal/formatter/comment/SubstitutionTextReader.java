@@ -19,11 +19,11 @@ import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 
 /**
  * Reads the text contents from a reader and computes for each character
- * a potential substitution. The substitution may eat more characters than 
+ * a potential substitution. The substitution may eat more characters than
  * only the one passed into the computation routine.
  */
 public abstract class SubstitutionTextReader extends Reader {
-	
+
 	private Reader fReader;
 	private boolean fWasWhiteSpace;
 	private int fCharAfterWhiteSpace;
@@ -32,7 +32,7 @@ public abstract class SubstitutionTextReader extends Reader {
 	 * Tells whether white space characters are skipped.
 	 */
 	private boolean fSkipWhiteSpace= true;
-	
+
 	private boolean fReadFromBuffer;
 	private StringBuffer fBuffer;
 	private int fIndex;
@@ -46,7 +46,7 @@ public abstract class SubstitutionTextReader extends Reader {
 		fCharAfterWhiteSpace= -1;
 		fWasWhiteSpace= true;
 	}
-	
+
 	/**
 	 * Gets the content as a String
 	 */
@@ -58,21 +58,21 @@ public abstract class SubstitutionTextReader extends Reader {
 		}
 		return buf.toString();
 	}
-	
+
 	/**
-	 * Implement to compute the substitution for the given character and 
+	 * Implement to compute the substitution for the given character and
 	 * if necessary subsequent characters. Use <code>nextChar</code>
 	 * to read subsequent characters.
 	 */
 	protected abstract String computeSubstitution(int c) throws IOException;
-	
+
 	/**
 	 * Returns the internal reader.
 	 */
 	protected Reader getReader() {
 		return fReader;
 	}
-	 
+
 	/**
 	 * Returns the next character.
 	 */
@@ -104,14 +104,14 @@ public abstract class SubstitutionTextReader extends Reader {
 			return ch;
 		}
 	}
-	
+
 	/*
 	 * @see Reader#read()
 	 */
 	public int read() throws IOException {
 		int c;
 		do {
-			
+
 			c= nextChar();
 			while (!fReadFromBuffer) {
 				String s= computeSubstitution(c);
@@ -121,12 +121,12 @@ public abstract class SubstitutionTextReader extends Reader {
 					fBuffer.insert(0, s);
 				c= nextChar();
 			}
-			
+
 		} while (fSkipWhiteSpace && fWasWhiteSpace && (c == ' '));
 		fWasWhiteSpace= (c == ' ' || c == '\r' || c == '\n');
 		return c;
 	}
-		
+
 	/*
 	 * @see Reader#read(char[],int,int)
 	 */
@@ -144,31 +144,31 @@ public abstract class SubstitutionTextReader extends Reader {
 			cbuf[i]= (char)ch;
 		}
 		return len;
-	}		
-	
+	}
+
 	/*
 	 * @see java.io.Reader#ready()
 	 */
 	public boolean ready() throws IOException {
 		return fReader.ready();
 	}
-		
+
 	/*
 	 * @see Reader#close()
-	 */		
+	 */
 	public void close() throws IOException {
 		fReader.close();
 	}
-	
+
 	/*
 	 * @see Reader#reset()
-	 */		
+	 */
 	public void reset() throws IOException {
 		fReader.reset();
 		fWasWhiteSpace= true;
 		fCharAfterWhiteSpace= -1;
 		fBuffer.setLength(0);
-		fIndex= 0;		
+		fIndex= 0;
 	}
 
 	protected final void setSkipWhitespace(boolean state) {

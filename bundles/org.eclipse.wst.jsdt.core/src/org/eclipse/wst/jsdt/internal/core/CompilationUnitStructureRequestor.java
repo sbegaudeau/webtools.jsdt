@@ -16,7 +16,11 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.Flags;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.ITypeParameter;
+import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
@@ -60,9 +64,9 @@ public class CompilationUnitStructureRequestor extends ReferenceInfoAdapter impl
 	 * will be the type the method is contained in.
 	 */
 	protected Stack infoStack;
-	
+
 	/*
-	 * Map from JavaElementInfo to of ArrayList of IJavaElement representing the children 
+	 * Map from JavaElementInfo to of ArrayList of IJavaElement representing the children
 	 * of the given info.
 	 */
 	protected HashMap children;
@@ -84,12 +88,12 @@ public class CompilationUnitStructureRequestor extends ReferenceInfoAdapter impl
 	 * Problem requestor which will get notified of discovered problems
 	 */
 	protected boolean hasSyntaxErrors = false;
-	
+
 	/*
 	 * The parser this requestor is using.
 	 */
 	protected Parser parser;
-	
+
 	/**
 	 * Empty collections used for efficient initialization
 	 */
@@ -104,7 +108,7 @@ protected CompilationUnitStructureRequestor(IJavaElement unit, CompilationUnitEl
 	this.unit = unit;
 	this.unitInfo = unitInfo;
 	this.newElements = newElements;
-} 
+}
 /**
  * @see ISourceElementRequestor
  */
@@ -123,11 +127,11 @@ public void acceptImport(int declarationStart, int declarationEnd, char[][] toke
 		addToChildren(parentInfo, importContainer);
 		this.newElements.put(importContainer, this.importContainerInfo);
 	}
-	
+
 	String elementName = JavaModelManager.getJavaModelManager().intern(new String(CharOperation.concatWith(tokens, '.')));
 	ImportDeclaration handle = new ImportDeclaration(importContainer, elementName, onDemand);
 	resolveDuplicates(handle);
-	
+
 	ImportDeclarationElementInfo info = new ImportDeclarationElementInfo();
 	info.setSourceRangeStart(declarationStart);
 	info.setSourceRangeEnd(declarationEnd);
@@ -141,7 +145,7 @@ public void acceptImport(int declarationStart, int declarationEnd, char[][] toke
  * of the parse action, so as to allow computation of normalized ranges.
  *
  * A line separator might corresponds to several characters in the source,
- * 
+ *
  */
 public void acceptLineSeparatorPositions(int[] positions) {
 	// ignore line separator positions
@@ -154,7 +158,7 @@ public void acceptPackage(int declarationStart, int declarationEnd, char[] name)
 		JavaElementInfo parentInfo = (JavaElementInfo) this.infoStack.peek();
 		JavaElement parentHandle= (JavaElement) this.handleStack.peek();
 		PackageDeclaration handle = null;
-		
+
 		if (parentHandle.getElementType() == IJavaElement.COMPILATION_UNIT) {
 			handle = new PackageDeclaration((CompilationUnit) parentHandle, new String(name));
 		}
@@ -165,7 +169,7 @@ public void acceptPackage(int declarationStart, int declarationEnd, char[] name)
 			Assert.isTrue(false); // Should not happen
 		}
 		resolveDuplicates(handle);
-		
+
 		SourceRefElementInfo info = new SourceRefElementInfo();
 		info.setSourceRangeStart(declarationStart);
 		info.setSourceRangeEnd(declarationEnd);
@@ -226,8 +230,8 @@ public void enterField(FieldInfo fieldInfo) {
 	JavaElementInfo parentInfo = (JavaElementInfo) this.infoStack.peek();
 	JavaElement parentHandle= (JavaElement) this.handleStack.peek();
 	SourceField handle = null;
-	if (parentHandle.getElementType() == IJavaElement.TYPE 
-			|| parentHandle.getElementType() == IJavaElement.COMPILATION_UNIT 
+	if (parentHandle.getElementType() == IJavaElement.TYPE
+			|| parentHandle.getElementType() == IJavaElement.COMPILATION_UNIT
 			|| parentHandle.getElementType() == IJavaElement.CLASS_FILE
 			|| parentHandle.getElementType() == IJavaElement.METHOD
 			) {
@@ -238,7 +242,7 @@ public void enterField(FieldInfo fieldInfo) {
 		Assert.isTrue(false); // Should not happen
 	}
 	resolveDuplicates(handle);
-	
+
 	SourceFieldElementInfo info = new SourceFieldElementInfo();
 	info.setNameSourceStart(fieldInfo.nameSourceStart);
 	info.setNameSourceEnd(fieldInfo.nameSourceEnd);
@@ -249,7 +253,7 @@ public void enterField(FieldInfo fieldInfo) {
 	  char[] typeName = JavaModelManager.getJavaModelManager().intern(fieldInfo.type);
 	  info.setTypeName(typeName);
 	}
-	
+
 	this.unitInfo.addAnnotationPositions(handle, fieldInfo.annotationPositions);
 
 	addToChildren(parentInfo, handle);
@@ -271,7 +275,7 @@ public void enterInitializer(
 		JavaElementInfo parentInfo = (JavaElementInfo) this.infoStack.peek();
 		JavaElement parentHandle= (JavaElement) this.handleStack.peek();
 		Initializer handle = null;
-		
+
 		if (parentHandle.getElementType() == IJavaElement.TYPE) {
 			handle = new Initializer(parentHandle, 1);
 		}
@@ -279,7 +283,7 @@ public void enterInitializer(
 			Assert.isTrue(false); // Should not happen
 		}
 		resolveDuplicates(handle);
-		
+
 		InitializerElementInfo info = new InitializerElementInfo();
 		info.setSourceRangeStart(declarationSourceStart);
 		info.setFlags(modifiers);
@@ -309,16 +313,16 @@ public void enterMethod(MethodInfo methodInfo) {
 	if (methodInfo.exceptionTypes == null) {
 		methodInfo.exceptionTypes= CharOperation.NO_CHAR_CHAR;
 	}
-	
+
 	String[] parameterTypeSigs = convertTypeNamesToSigs(methodInfo.parameterTypes);
-	if (parentHandle.getElementType() == IJavaElement.TYPE 
+	if (parentHandle.getElementType() == IJavaElement.TYPE
 			|| parentHandle.getElementType() == IJavaElement.COMPILATION_UNIT
 			|| parentHandle.getElementType() == IJavaElement.CLASS_FILE
 			|| parentHandle.getElementType() == IJavaElement.METHOD
 			) {
-		
+
 		char[] cs = methodInfo.name!=null ? methodInfo.name: CharOperation.NO_CHAR;
-		
+
 		String selector = JavaModelManager.getJavaModelManager().intern(new String(cs));
 		handle = new SourceMethod(parentHandle, selector, parameterTypeSigs);
 	}
@@ -326,7 +330,7 @@ public void enterMethod(MethodInfo methodInfo) {
 		Assert.isTrue(false); // Should not happen
 	}
 	resolveDuplicates(handle);
-	
+
 	SourceMethodElementInfo info;
 	if (methodInfo.isConstructor)
 		info = new SourceConstructorInfo();
@@ -376,28 +380,28 @@ public void enterType(TypeInfo typeInfo) {
 	JavaElementInfo parentInfo = (JavaElementInfo) this.infoStack.peek();
 	JavaElement parentHandle= (JavaElement) this.handleStack.peek();
 	String nameString= new String(typeInfo.name);
-	
+
 	//@GINO: Anonymous setting model as anonymous
-	SourceType handle = 
-//		typeInfo.anonymousMember ? 
+	SourceType handle =
+//		typeInfo.anonymousMember ?
 //			new SourceType(parentHandle, nameString){
 //
 //				public boolean isAnonymous() {
 //					return true;
 //				}
-//		
+//
 //			} :
 		new SourceType(parentHandle, nameString);  //NB: occurenceCount is computed in resolveDuplicates
-	
+
 	resolveDuplicates(handle);
-	
+
 	SourceTypeElementInfo info =
-//		typeInfo.anonymousMember ? 
+//		typeInfo.anonymousMember ?
 //				new SourceTypeElementInfo( parentHandle instanceof ClassFile ) {
 //					public boolean isAnonymousMember() {
 //						return true;
 //					}
-//				} : 
+//				} :
 			new SourceTypeElementInfo( parentHandle instanceof ClassFile , typeInfo.anonymousMember);
 	info.setHandle(handle);
 	info.setSourceRangeStart(typeInfo.declarationStart);
@@ -419,7 +423,7 @@ public void enterType(TypeInfo typeInfo) {
 	this.newElements.put(handle, info);
 	this.infoStack.push(info);
 	this.handleStack.push(handle);
-	
+
 	if (typeInfo.typeParameters != null) {
 		for (int i = 0, length = typeInfo.typeParameters.length; i < length; i++) {
 			TypeParameterInfo typeParameterInfo = typeInfo.typeParameters[i];
@@ -434,7 +438,7 @@ protected void enterTypeParameter(TypeParameterInfo typeParameterInfo) {
 	String nameString = new String(typeParameterInfo.name);
 	TypeParameter handle = new TypeParameter(parentHandle, nameString); //NB: occurenceCount is computed in resolveDuplicates
 	resolveDuplicates(handle);
-	
+
 	TypeParameterElementInfo info = new TypeParameterElementInfo();
 	info.setSourceRangeStart(typeParameterInfo.declarationStart);
 	info.nameStart = typeParameterInfo.nameSourceStart;
@@ -468,10 +472,10 @@ public void exitCompilationUnit(int declarationEnd) {
 	if (this.importContainerInfo != null) {
 		setChildren(this.importContainerInfo);
 	}
-	
+
 	// set children
 	setChildren(this.unitInfo);
-	
+
 	this.unitInfo.setSourceLength(declarationEnd + 1);
 
 	// determine if there were any parsing errors
@@ -490,7 +494,7 @@ public void exitField(int initializationStart, int declarationEnd, int declarati
 	SourceFieldElementInfo info = (SourceFieldElementInfo) this.infoStack.pop();
 	info.setSourceRangeEnd(declarationSourceEnd);
 	setChildren(info);
-	
+
 	// remember initializer source if field is a constant
 	if (initializationStart != -1) {
 		int flags = info.flags;
@@ -530,7 +534,7 @@ public void exitMethod(int declarationEnd, int defaultValueStart, int defaultVal
 	SourceMethodElementInfo info = (SourceMethodElementInfo) this.infoStack.pop();
 	info.setSourceRangeEnd(declarationEnd);
 	setChildren(info);
-	
+
 	// remember default value of annotation method
 	if (info.isAnnotationMethod()) {
 		SourceAnnotationMethodInfo annotationMethodInfo = (SourceAnnotationMethodInfo) info;

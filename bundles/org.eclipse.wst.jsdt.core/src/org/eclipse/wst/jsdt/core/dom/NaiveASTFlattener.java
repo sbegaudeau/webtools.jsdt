@@ -31,51 +31,51 @@ import java.util.List;
  * Call the <code>reset</code> method to clear the previous result before reusing an
  * existing instance.
  * </p>
- * 
+ *
  * @since 2.0
  */
 class NaiveASTFlattener extends ASTVisitor {
-	
+
 	/**
 	 * The string buffer into which the serialized representation of the AST is
 	 * written.
 	 */
 	private StringBuffer buffer;
-	
+
 	private int indent = 0;
-	
+
 	/**
 	 * Creates a new AST printer.
 	 */
 	NaiveASTFlattener() {
 		this.buffer = new StringBuffer();
 	}
-	
+
 	/**
 	 * Returns the string accumulated in the visit.
 	 *
-	 * @return the serialized 
+	 * @return the serialized
 	 */
 	public String getResult() {
 		return this.buffer.toString();
 	}
-	
+
 	/**
 	 * Resets this printer so that it can be used again.
 	 */
 	public void reset() {
 		this.buffer.setLength(0);
 	}
-	
+
 	void printIndent() {
-		for (int i = 0; i < this.indent; i++) 
+		for (int i = 0; i < this.indent; i++)
 			this.buffer.append("  "); //$NON-NLS-1$
 	}
-	
+
 	/**
 	 * Appends the text representation of the given modifier flags, followed by a single space.
 	 * Used for 3.0 modifiers and annotations.
-	 * 
+	 *
 	 * @param ext the list of modifier and annotation nodes
 	 * (element type: <code>IExtendedModifiers</code>)
 	 */
@@ -85,12 +85,12 @@ class NaiveASTFlattener extends ASTVisitor {
 //			p.accept(this);
 //			this.buffer.append(" ");//$NON-NLS-1$
 //		}
-	}		
-	
+	}
+
 	/**
 	 * Appends the text representation of the given modifier flags, followed by a single space.
 	 * Used for JLS2 modifiers.
-	 * 
+	 *
 	 * @param modifiers the modifier flags
 	 */
 	void printModifiers(int modifiers) {
@@ -127,8 +127,8 @@ class NaiveASTFlattener extends ASTVisitor {
 //		if (Modifier.isTransient(modifiers)) {
 //			this.buffer.append("transient ");//$NON-NLS-1$
 //		}
-	}		
-	
+	}
+
 	/*
 	 * @see ASTVisitor#visit(AnnotationTypeDeclaration)
 	 * @since 3.1
@@ -149,7 +149,7 @@ class NaiveASTFlattener extends ASTVisitor {
 		this.buffer.append("}\n");//$NON-NLS-1$
 		return false;
 	}
-	
+
 	/*
 	 * @see ASTVisitor#visit(AnnotationTypeMemberDeclaration)
 	 * @since 3.1
@@ -171,7 +171,7 @@ class NaiveASTFlattener extends ASTVisitor {
 		this.buffer.append(";\n");//$NON-NLS-1$
 		return false;
 	}
-	
+
 	/*
 	 * @see ASTVisitor#visit(AnonymousClassDeclaration)
 	 */
@@ -344,7 +344,7 @@ class NaiveASTFlattener extends ASTVisitor {
 		return false;
 	}
 
-	
+
 	/*
 	 * @see ASTVisitor#visit(CatchClause)
 	 */
@@ -363,7 +363,7 @@ class NaiveASTFlattener extends ASTVisitor {
 		this.buffer.append(node.getEscapedValue());
 		return false;
 	}
-	
+
 	public boolean visit(RegularExpressionLiteral node) {
 		this.buffer.append(node.getRegularExpression());
 		return false;
@@ -815,7 +815,7 @@ class NaiveASTFlattener extends ASTVisitor {
 		}
 		return false;
 	}
-	
+
 	/*
 	 * @see ASTVisitor#visit(MarkerAnnotation)
 	 * @since 3.1
@@ -825,7 +825,7 @@ class NaiveASTFlattener extends ASTVisitor {
 		node.getTypeName().accept(this);
 		return false;
 	}
-	
+
 	/*
 	 * @see ASTVisitor#visit(MemberRef)
 	 * @since 3.0
@@ -838,7 +838,7 @@ class NaiveASTFlattener extends ASTVisitor {
 		node.getName().accept(this);
 		return false;
 	}
-	
+
 	/*
 	 * @see ASTVisitor#visit(MemberValuePair)
 	 * @since 3.1
@@ -849,7 +849,7 @@ class NaiveASTFlattener extends ASTVisitor {
 		node.getValue().accept(this);
 		return false;
 	}
-	
+
 	/*
 	 * @see ASTVisitor#visit(MethodRef)
 	 * @since 3.0
@@ -871,7 +871,7 @@ class NaiveASTFlattener extends ASTVisitor {
 		this.buffer.append(")");//$NON-NLS-1$
 		return false;
 	}
-	
+
 	/*
 	 * @see ASTVisitor#visit(MethodRefParameter)
 	 * @since 3.0
@@ -889,7 +889,7 @@ class NaiveASTFlattener extends ASTVisitor {
 		}
 		return false;
 	}
-	
+
 	/*
 	 * @see ASTVisitor#visit(MethodDeclaration)
 	 */
@@ -943,7 +943,7 @@ class NaiveASTFlattener extends ASTVisitor {
 		this.buffer.append(")");//$NON-NLS-1$
 		for (int i = 0; i < node.getExtraDimensions(); i++) {
 			this.buffer.append("[]"); //$NON-NLS-1$
-		}		
+		}
 		if (!node.thrownExceptions().isEmpty()) {
 			this.buffer.append(" throws ");//$NON-NLS-1$
 			for (Iterator it = node.thrownExceptions().iterator(); it.hasNext(); ) {
@@ -1007,7 +1007,7 @@ class NaiveASTFlattener extends ASTVisitor {
 		this.buffer.append(node.getKeyword().toString());
 		return false;
 	}
-	
+
 	/*
 	 * @see ASTVisitor#visit(NormalAnnotation)
 	 * @since 3.1
@@ -1026,7 +1026,7 @@ class NaiveASTFlattener extends ASTVisitor {
 		this.buffer.append(")");//$NON-NLS-1$
 		return false;
 	}
-	
+
 	/*
 	 * @see ASTVisitor#visit(NullLiteral)
 	 */
@@ -1048,7 +1048,7 @@ class NaiveASTFlattener extends ASTVisitor {
 		return false;
 	}
 
-	
+
 
 	/*
 	 * @see ASTVisitor#visit(PrefixExpression)
@@ -1056,7 +1056,7 @@ class NaiveASTFlattener extends ASTVisitor {
 	public boolean visit(ObjectLiteral node) {
 		if (node.fields().isEmpty())
 			this.buffer.append("{}");//$NON-NLS-1$
-		else {	
+		else {
 			this.buffer.append("{\n");//$NON-NLS-1$
 			for (Iterator it = node.fields().iterator(); it.hasNext(); ) {
 				ObjectLiteralField field = (ObjectLiteralField) it.next();
@@ -1077,7 +1077,7 @@ class NaiveASTFlattener extends ASTVisitor {
 		return false;
 	}
 
-	
+
 	/*
 	 * @see ASTVisitor#visit(PackageDeclaration)
 	 */
@@ -1215,7 +1215,7 @@ class NaiveASTFlattener extends ASTVisitor {
 		this.buffer.append(")");//$NON-NLS-1$
 		return false;
 	}
-	
+
 	/*
 	 * @see ASTVisitor#visit(SingleVariableDeclaration)
 	 */
@@ -1237,7 +1237,7 @@ class NaiveASTFlattener extends ASTVisitor {
 		node.getName().accept(this);
 		for (int i = 0; i < node.getExtraDimensions(); i++) {
 			this.buffer.append("[]"); //$NON-NLS-1$
-		}			
+		}
 		if (node.getInitializer() != null) {
 			this.buffer.append("=");//$NON-NLS-1$
 			node.getInitializer().accept(this);
@@ -1420,7 +1420,7 @@ class NaiveASTFlattener extends ASTVisitor {
 		}
 		return false;
 	}
-	
+
 	/*
 	 * @see ASTVisitor#visit(TextElement)
 	 * @since 3.0
@@ -1429,7 +1429,7 @@ class NaiveASTFlattener extends ASTVisitor {
 		this.buffer.append(node.getText());
 		return false;
 	}
-	
+
 	/*
 	 * @see ASTVisitor#visit(ThisExpression)
 	 */

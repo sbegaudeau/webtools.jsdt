@@ -10,18 +10,40 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.builder;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
-import org.eclipse.wst.jsdt.core.*;
-import org.eclipse.wst.jsdt.core.compiler.*;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.wst.jsdt.core.IClasspathEntry;
+import org.eclipse.wst.jsdt.core.IJavaModelMarker;
+import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.core.compiler.CompilationParticipant;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
-import org.eclipse.wst.jsdt.internal.core.*;
+import org.eclipse.wst.jsdt.internal.core.ClasspathEntry;
+import org.eclipse.wst.jsdt.internal.core.JavaModel;
+import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
+import org.eclipse.wst.jsdt.internal.core.JavaProject;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
-
-import java.io.*;
-import java.util.*;
 
 public class JavaBuilder extends IncrementalProjectBuilder {
 

@@ -22,11 +22,11 @@ public final class ArrayBinding extends ReferenceBinding {
 
 	public TypeBinding leafComponentType;
 	public int dimensions;
-	LookupEnvironment environment;	
+	LookupEnvironment environment;
 	char[] constantPoolName;
 	char[] genericTypeSignature;
-	ReferenceBinding referenceBinding;	
-	
+	ReferenceBinding referenceBinding;
+
 public ArrayBinding(TypeBinding type, int dimensions, LookupEnvironment environment) {
 	this.tagBits |= TagBits.IsArrayType;
 	this.leafComponentType = type;
@@ -36,7 +36,7 @@ public ArrayBinding(TypeBinding type, int dimensions, LookupEnvironment environm
 		((UnresolvedReferenceBinding) type).addWrapper(this, environment);
 	else
     	this.tagBits |= type.tagBits & (TagBits.HasTypeVariable | TagBits.HasDirectWildcard);
-	
+
 	referenceBinding = environment.getType(TypeConstants.ARRAY);
 	this.fPackage=environment.defaultPackage;
 }
@@ -50,10 +50,10 @@ public ArrayBinding(TypeBinding type, int dimensions, LookupEnvironment environm
  *   A >> F   corresponds to:   F.collectSubstitutes(..., A, ..., CONSTRAINT_SUPER (2))
 */
 public void collectSubstitutes(Scope scope, TypeBinding actualType, InferenceContext inferenceContext, int constraint) {
-	
+
 //	if ((this.tagBits & TagBits.HasTypeVariable) == 0) return;
 //	if (actualType == TypeBinding.NULL) return;
-//	
+//
 //	switch(actualType.kind()) {
 //		case Binding.ARRAY_TYPE :
 //	        int actualDim = actualType.dimensions();
@@ -80,7 +80,7 @@ public char[] computeUniqueKey(boolean isLeaf) {
 	for (int i = dimensions - 1; i >= 0; i--) brackets[i] = '[';
 	return CharOperation.concat(brackets, this.leafComponentType.computeUniqueKey(isLeaf));
  }
-	
+
 /**
  * Answer the receiver's constant pool name.
  * NOTE: This method should only be used during/after code gen.
@@ -127,7 +127,7 @@ public LookupEnvironment environment() {
 }
 
 public char[] genericTypeSignature() {
-	
+
     if (this.genericTypeSignature == null) {
 		char[] brackets = new char[dimensions];
 		for (int i = dimensions - 1; i >= 0; i--) brackets[i] = '[';
@@ -164,14 +164,14 @@ public boolean isCompatibleWith(TypeBinding otherType) {
 			return false;
 		case Binding.WILDCARD_TYPE :
 		    return ((WildcardBinding) otherType).boundCheck(this);
-		    
+
 		case Binding.TYPE_PARAMETER :
 			// check compatibility with capture of ? super X
 			if (otherType.isCapture()) {
 				CaptureBinding otherCapture = (CaptureBinding) otherType;
 				TypeBinding otherLowerBound;
 				if ((otherLowerBound = otherCapture.lowerBound) != null) {
-					if (!otherLowerBound.isArrayType()) return false;					
+					if (!otherLowerBound.isArrayType()) return false;
 					return this.isCompatibleWith(otherLowerBound);
 				}
 			}

@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.ui.refactoring.nls.search;
 
 import org.eclipse.core.runtime.IAdaptable;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 
 public class CompilationUnitEntry implements IAdaptable {

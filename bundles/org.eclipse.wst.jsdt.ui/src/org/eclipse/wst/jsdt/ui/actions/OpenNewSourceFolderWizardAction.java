@@ -12,12 +12,9 @@
 package org.eclipse.wst.jsdt.ui.actions;
 
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.jface.viewers.IStructuredSelection;
-
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;

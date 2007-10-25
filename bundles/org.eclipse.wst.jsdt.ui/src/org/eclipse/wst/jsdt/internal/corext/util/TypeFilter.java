@@ -14,14 +14,11 @@ import java.util.StringTokenizer;
 
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.StringMatcher;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**
  *

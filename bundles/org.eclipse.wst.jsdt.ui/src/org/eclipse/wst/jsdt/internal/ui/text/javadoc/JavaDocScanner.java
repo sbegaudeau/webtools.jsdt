@@ -15,9 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Preferences;
-
 import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.ICharacterScanner;
@@ -27,15 +25,13 @@ import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
-
-import org.eclipse.wst.jsdt.ui.text.IColorManager;
-import org.eclipse.wst.jsdt.ui.text.IJavaColorConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.text.CombinedWordRule;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaCommentScanner;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaWhitespaceDetector;
 import org.eclipse.wst.jsdt.internal.ui.text.CombinedWordRule.CharacterBuffer;
 import org.eclipse.wst.jsdt.internal.ui.text.CombinedWordRule.WordMatcher;
+import org.eclipse.wst.jsdt.ui.text.IColorManager;
+import org.eclipse.wst.jsdt.ui.text.IJavaColorConstants;
 
 /**
  * A rule based JavaDoc scanner.

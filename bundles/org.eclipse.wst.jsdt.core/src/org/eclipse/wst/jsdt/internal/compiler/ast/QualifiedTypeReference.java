@@ -11,7 +11,16 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LookupEnvironment;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 
 public class QualifiedTypeReference extends TypeReference {
@@ -20,13 +29,13 @@ public class QualifiedTypeReference extends TypeReference {
 	public long[] sourcePositions;
 
 	public QualifiedTypeReference(char[][] sources , long[] poss) {
-		
+
 		tokens = sources ;
 		sourcePositions = poss ;
 		sourceStart = (int) (sourcePositions[0]>>>32) ;
 		sourceEnd = (int)(sourcePositions[sourcePositions.length-1] & 0x00000000FFFFFFFFL ) ;
 	}
-		
+
 	public TypeReference copyDims(int dim){
 		//return a type reference copy of me with some dimensions
 		//warning : the new type ref has a null binding
@@ -62,7 +71,7 @@ public class QualifiedTypeReference extends TypeReference {
 		return this.tokens[this.tokens.length-1];
 	}
 	protected TypeBinding getTypeBinding(Scope scope) {
-		
+
 		if (this.resolvedType != null)
 			return this.resolvedType;
 
@@ -82,7 +91,7 @@ public class QualifiedTypeReference extends TypeReference {
 				return this.resolvedType = null;
 			}
 			if (i < last && isTypeUseDeprecated(this.resolvedType, scope)) {
-				reportDeprecatedType(this.resolvedType, scope);			
+				reportDeprecatedType(this.resolvedType, scope);
 			}
 			if (isClassScope)
 				if (((ClassScope) scope).detectHierarchyCycle(this.resolvedType, this)) // must connect hierarchy to find inherited member types
@@ -101,34 +110,34 @@ public class QualifiedTypeReference extends TypeReference {
 				}
 			} else {
 				qualifiedType = currentType.isGenericType() ? (ReferenceBinding)scope.environment().convertToRawType(currentType) : currentType;
-			}			
+			}
 		}
 		this.resolvedType = qualifiedType;
 		return this.resolvedType;
 	}
-	
+
 	public char[][] getTypeName(){
-	
+
 		return tokens;
 	}
-	
+
 	public StringBuffer printExpression(int indent, StringBuffer output) {
-		
+
 		for (int i = 0; i < tokens.length; i++) {
 			if (i > 0) output.append('.');
 			output.append(tokens[i]);
 		}
 		return output;
 	}
-	
+
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
-		
+
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);
 	}
-	
+
 	public void traverse(ASTVisitor visitor, ClassScope scope) {
-		
+
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);
 	}

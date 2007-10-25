@@ -12,33 +12,25 @@ package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.newsourcepage;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
-
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
-
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.NewFolderDialog;
-
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.wizards.BuildPathDialogAccess;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.ExclusionInclusionDialog;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
+import org.eclipse.wst.jsdt.ui.wizards.BuildPathDialogAccess;
 
 /**
  * Helper class for queries used by the <code>ClasspathModifier</code>. 

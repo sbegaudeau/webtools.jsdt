@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.ui.jarpackager;
 
 import org.eclipse.core.runtime.IStatus;
-
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
 /**

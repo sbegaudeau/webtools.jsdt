@@ -65,7 +65,7 @@ NameEnvironmentAnswer findBinding(char[] typeName, char[][] packageName, int typ
 /**
  * This method cleans the environment uo. It is responsible for releasing the memory
  * and freeing resources. Passed that point, the name environment is no longer usable.
- * 
+ *
  * A name environment can have a long life cycle, therefore it is the responsibility of
  * the code which created it to decide when it is a good time to clean it up.
  */

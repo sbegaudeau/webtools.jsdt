@@ -17,23 +17,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.text.edits.MultiTextEdit;
-import org.eclipse.text.edits.TextEdit;
-import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.text.edits.TextEditVisitor;
-import org.eclipse.text.edits.UndoEdit;
-
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ProjectScope;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ProjectScope;
-import org.eclipse.core.resources.ResourcesPlugin;
-
 import org.eclipse.ltk.core.refactoring.CategorizedTextEditGroup;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.CompositeChange;
@@ -47,7 +39,11 @@ import org.eclipse.ltk.core.refactoring.RefactoringTickProvider;
 import org.eclipse.ltk.core.refactoring.TextChange;
 import org.eclipse.ltk.core.refactoring.TextEditBasedChangeGroup;
 import org.eclipse.ltk.core.refactoring.TextFileChange;
-
+import org.eclipse.text.edits.MultiTextEdit;
+import org.eclipse.text.edits.TextEdit;
+import org.eclipse.text.edits.TextEditGroup;
+import org.eclipse.text.edits.TextEditVisitor;
+import org.eclipse.text.edits.UndoEdit;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
@@ -56,7 +52,6 @@ import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.ASTRequestor;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitChange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.DynamicValidationStateChange;
@@ -64,26 +59,19 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.MultiStateCompil
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.TextChangeCompatibility;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParser;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.fix.CodeFormatCleanUp;
-import org.eclipse.wst.jsdt.internal.ui.fix.CodeStyleCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.CommentFormatCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.ControlStatementsCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.ConvertLoopCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.ExpressionsCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.ICleanUp;
-import org.eclipse.wst.jsdt.internal.ui.fix.ImportsCleanUp;
-import org.eclipse.wst.jsdt.internal.ui.fix.Java50CleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.SortMembersCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.StringCleanUp;
-import org.eclipse.wst.jsdt.internal.ui.fix.UnnecessaryCodeCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.UnusedCodeCleanUp;
-import org.eclipse.wst.jsdt.internal.ui.fix.VariableDeclarationCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.IScheduledRefactoring;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 public class CleanUpRefactoring extends Refactoring implements IScheduledRefactoring {
 	

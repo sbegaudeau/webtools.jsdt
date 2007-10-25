@@ -10,18 +10,16 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.refactoring.actions;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
-
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.TableViewer;
-
 import org.eclipse.ui.dialogs.SelectionDialog;
 
 public class ListDialog extends SelectionDialog {

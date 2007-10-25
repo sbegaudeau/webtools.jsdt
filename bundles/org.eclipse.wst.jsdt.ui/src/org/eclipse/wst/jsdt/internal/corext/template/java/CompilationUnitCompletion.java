@@ -21,8 +21,6 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-
-
 import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
@@ -33,7 +31,6 @@ import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 /**

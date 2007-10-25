@@ -14,11 +14,11 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class ExceptionLabel extends Label {
-	
+
 	public int ranges[] = {POS_NOT_SET,POS_NOT_SET};
 	public int count = 0; // incremented each time placeStart or placeEnd is called
 	public TypeBinding exceptionType;
-	
+
 public ExceptionLabel(CodeStream codeStream, TypeBinding exceptionType) {
 	super(codeStream);
 	this.exceptionType = exceptionType;
@@ -58,7 +58,7 @@ public void placeStart() {
 public String toString() {
 	String basic = getClass().getName();
 	basic = basic.substring(basic.lastIndexOf('.')+1);
-	StringBuffer buffer = new StringBuffer(basic); 
+	StringBuffer buffer = new StringBuffer(basic);
 	buffer.append('@').append(Integer.toHexString(hashCode()));
 	buffer.append("(type=").append(this.exceptionType == null ? CharOperation.NO_CHAR : this.exceptionType.readableName()); //$NON-NLS-1$
 	buffer.append(", position=").append(position); //$NON-NLS-1$
@@ -69,7 +69,7 @@ public String toString() {
 		for (int i = 0; i < this.count; i++) {
 			if ((i & 1) == 0) {
 				buffer.append("[").append(ranges[i]); //$NON-NLS-1$
-			} else { 
+			} else {
 				buffer.append(",").append(ranges[i]).append("]"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}

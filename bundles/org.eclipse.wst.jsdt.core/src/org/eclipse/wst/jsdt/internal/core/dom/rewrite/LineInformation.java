@@ -11,15 +11,15 @@
 
 package org.eclipse.wst.jsdt.internal.core.dom.rewrite;
 
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 
 /**
- * 
+ *
  */
 public abstract class LineInformation {
-	
+
 	public static LineInformation create(final IDocument doc) {
 		return new LineInformation() {
 			public int getLineOfOffset(int offset) {
@@ -39,7 +39,7 @@ public abstract class LineInformation {
 			}
 		};
 	}
-	
+
 	public static LineInformation create(final CompilationUnit astRoot) {
 		return new LineInformation() {
 			public int getLineOfOffset(int offset) {
@@ -50,10 +50,10 @@ public abstract class LineInformation {
 			}
 		};
 	}
-	
-	
-	
+
+
+
 	public abstract int getLineOfOffset(int offset);
 	public abstract int getLineOffset(int line);
-	
+
 }

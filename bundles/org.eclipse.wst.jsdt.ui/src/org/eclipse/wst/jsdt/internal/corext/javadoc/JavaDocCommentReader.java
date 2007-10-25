@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.corext.javadoc;
 
 import org.eclipse.jface.internal.text.html.SingleCharReader;
-
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
 

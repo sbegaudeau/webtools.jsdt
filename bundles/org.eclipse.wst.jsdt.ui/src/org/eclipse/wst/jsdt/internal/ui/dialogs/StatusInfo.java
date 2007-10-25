@@ -12,8 +12,6 @@ package org.eclipse.wst.jsdt.internal.ui.dialogs;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
-
-
 import org.eclipse.wst.jsdt.ui.JavaUI;
 
 /**

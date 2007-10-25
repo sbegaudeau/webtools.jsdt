@@ -10,16 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui.refactoring;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.mapping.ResourceMapping;
 import org.eclipse.core.resources.mapping.ResourceMappingContext;
-
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.IResourceMapper;
-
 import org.eclipse.wst.jsdt.core.refactoring.IJavaElementMapper;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameCompilationUnitProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameEnumConstProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameFieldProcessor;

@@ -11,7 +11,104 @@
 package org.eclipse.wst.jsdt.internal.compiler;
 
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AND_AND_Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AnnotationMethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayAllocationExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AssertStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
+import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
+import org.eclipse.wst.jsdt.internal.compiler.ast.BreakStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CaseStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CastExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ClassLiteralAccess;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Clinit;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CompoundAssignment;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ConditionalExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ConstructorDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ContinueStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.DoStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.DoubleLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.EmptyStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.EqualExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ExplicitConstructorCall;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ExtendedStringLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FalseLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FloatLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ForInStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ForStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ForeachStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.IfStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
+import org.eclipse.wst.jsdt.internal.compiler.ast.InstanceOfExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocAllocationExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocArgumentExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocArrayQualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocArraySingleTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocFieldReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocImplicitTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocMessageSend;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocQualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocReturnStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.LabeledStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MarkerAnnotation;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.NormalAnnotation;
+import org.eclipse.wst.jsdt.internal.compiler.ast.NullLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.OR_OR_Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteralField;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedSingleTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.PostfixExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.PrefixExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedSuperReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedThisReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.RegExLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ReturnStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleMemberAnnotation;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteralConcatenation;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SuperReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SwitchStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SynchronizedStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ThrowStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TrueLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TryStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
+import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.UndefinedLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.WhileStatement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
+import org.eclipse.wst.jsdt.internal.compiler.ast.WithStatement;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
@@ -21,7 +118,7 @@ import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
 import org.eclipse.wst.jsdt.internal.infer.InferredMethod;
 import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
-/** 
+/**
  * A visitor for iterating through the parse tree.
  */
 public abstract class ASTVisitor {
@@ -40,7 +137,7 @@ public abstract class ASTVisitor {
 			AnnotationMethodDeclaration annotationTypeDeclaration,
 			ClassScope classScope) {
 			// do nothing by default
-	}	
+	}
 	public void endVisit(Argument argument, BlockScope scope) {
 		// do nothing by default
 	}
@@ -381,12 +478,12 @@ public abstract class ASTVisitor {
     		ClassScope scope) {
 		// do nothing by default
 	}
-	
+
 	public void endVisit(RegExLiteral stringLiteral, BlockScope scope) {
 		// do nothing by default
 	}
 
-	
+
 	public void endVisit(ReturnStatement returnStatement, BlockScope scope) {
 		// do nothing by default
 	}
@@ -451,7 +548,7 @@ public abstract class ASTVisitor {
 		TypeDeclaration localTypeDeclaration,
 		BlockScope scope) {
 		// do nothing by default
-	}	
+	}
 	public void endVisit(
 		TypeDeclaration memberTypeDeclaration,
 		ClassScope scope) {
@@ -500,7 +597,7 @@ public abstract class ASTVisitor {
 			AnnotationMethodDeclaration annotationTypeDeclaration,
 			ClassScope classScope) {
 		return true; // do nothing by default, keep traversing
-	}	
+	}
 	public boolean visit(Argument argument, BlockScope scope) {
 		return true; // do nothing by default, keep traversing
 	}
@@ -923,7 +1020,7 @@ public abstract class ASTVisitor {
 		TypeDeclaration memberTypeDeclaration,
 		ClassScope scope) {
 		return true; // do nothing by default, keep traversing
-	}	
+	}
 	public boolean visit(
 		TypeDeclaration typeDeclaration,
 		CompilationUnitScope scope) {

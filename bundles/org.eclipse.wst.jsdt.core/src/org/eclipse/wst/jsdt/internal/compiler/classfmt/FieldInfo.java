@@ -14,7 +14,16 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.AttributeNamesConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryField;
-import org.eclipse.wst.jsdt.internal.compiler.impl.*;
+import org.eclipse.wst.jsdt.internal.compiler.impl.BooleanConstant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.ByteConstant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.CharConstant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.DoubleConstant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.FloatConstant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.IntConstant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.LongConstant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.ShortConstant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.StringConstant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
@@ -26,8 +35,8 @@ public class FieldInfo extends ClassFileStruct implements IBinaryField, Comparab
 	protected char[] name;
 	protected char[] signature;
 	protected int signatureUtf8Offset;
-	protected long tagBits;	
-	protected Object wrappedConstantValue;	
+	protected long tagBits;
+	protected Object wrappedConstantValue;
 
 public static FieldInfo createField(byte classFileBytes[], int offsets[], int offset) {
 	FieldInfo fieldInfo = new FieldInfo(classFileBytes, offsets, offset);
@@ -44,7 +53,7 @@ public static FieldInfo createField(byte classFileBytes[], int offsets[], int of
  */
 protected FieldInfo (byte classFileBytes[], int offsets[], int offset) {
 	super(classFileBytes, offsets, offset);
-	this.accessFlags = -1;	
+	this.accessFlags = -1;
 	this.signatureUtf8Offset = -1;
 }
 private AnnotationInfo[] decodeAnnotations(int offset, boolean runtimeVisible) {
@@ -249,7 +258,7 @@ private AnnotationInfo[] readAttributes() {
 						if (annotations == null) {
 							annotations = decodedAnnotations;
 						} else {
-							int length = annotations.length;			
+							int length = annotations.length;
 							AnnotationInfo[] combined = new AnnotationInfo[length + decodedAnnotations.length];
 							System.arraycopy(annotations, 0, combined, 0, length);
 							System.arraycopy(decodedAnnotations, 0, combined, length, decodedAnnotations.length);
@@ -296,7 +305,7 @@ private void readConstantAttribute() {
 								constant = ShortConstant.fromValue((short) i4At(relativeOffset + 1));
 								break;
 							default:
-								constant = Constant.NotAConstant;                   
+								constant = Constant.NotAConstant;
 						}
 					} else {
 						constant = Constant.NotAConstant;
@@ -313,9 +322,9 @@ private void readConstantAttribute() {
 					break;
 				case ClassFileConstants.StringTag :
 					utf8Offset = constantPoolOffsets[u2At(relativeOffset + 1)] - structOffset;
-					constant = 
+					constant =
 						StringConstant.fromValue(
-							String.valueOf(utf8At(utf8Offset + 3, u2At(utf8Offset + 1)))); 
+							String.valueOf(utf8At(utf8Offset + 3, u2At(utf8Offset + 1))));
 					break;
 			}
 		}
@@ -349,7 +358,7 @@ private void readModifierRelatedAttributes() {
 }
 /**
  * Answer the size of the receiver in bytes.
- * 
+ *
  * @return int
  */
 public int sizeInBytes() {
@@ -359,7 +368,7 @@ public void throwFormatException() throws ClassFormatException {
 	throw new ClassFormatException(ClassFormatException.ErrBadFieldInfo);
 }
 public String toString() {
-	StringBuffer buffer = new StringBuffer(this.getClass().getName());	
+	StringBuffer buffer = new StringBuffer(this.getClass().getName());
 	toStringContent(buffer);
 	return buffer.toString();
 }
@@ -382,6 +391,6 @@ protected void toStringContent(StringBuffer buffer) {
 		.append(' ')
 		.append(getConstant())
 		.append('}')
-		.toString(); 
+		.toString();
 }
 }

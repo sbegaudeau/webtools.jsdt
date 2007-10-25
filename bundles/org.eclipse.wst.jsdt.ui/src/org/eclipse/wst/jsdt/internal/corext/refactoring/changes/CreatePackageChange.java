@@ -11,19 +11,16 @@
 
 package org.eclipse.wst.jsdt.internal.corext.refactoring.changes;
 
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-
-import org.eclipse.core.resources.IFolder;
-
-import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-
-import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JDTChange;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.NullChange;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.wst.jsdt.core.IPackageFragment;
+import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
+import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JDTChange;
 
 public class CreatePackageChange extends JDTChange {
 	

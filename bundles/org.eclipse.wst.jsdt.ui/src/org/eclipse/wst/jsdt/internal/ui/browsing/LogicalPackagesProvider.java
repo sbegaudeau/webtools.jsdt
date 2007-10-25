@@ -16,13 +16,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
 import org.eclipse.wst.jsdt.core.IJavaElement;
@@ -31,7 +29,6 @@ import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 abstract class LogicalPackagesProvider implements IPropertyChangeListener, IElementChangedListener {

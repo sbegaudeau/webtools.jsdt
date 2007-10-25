@@ -26,5 +26,5 @@ public class SourceAnnotationMethodInfo extends SourceMethodInfo {
 	public boolean isAnnotationMethod() {
 		return true;
 	}
-	
+
 }

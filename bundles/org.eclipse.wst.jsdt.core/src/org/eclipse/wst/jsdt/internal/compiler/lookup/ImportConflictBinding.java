@@ -15,7 +15,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 
 public class ImportConflictBinding extends ImportBinding {
 public ReferenceBinding conflictingTypeBinding; // must ensure the import is resolved
-	
+
 public ImportConflictBinding(char[][] compoundName, Binding methodBinding, ReferenceBinding conflictingTypeBinding, ImportReference reference) {
 	super(compoundName, false, methodBinding, reference);
 	this.conflictingTypeBinding = conflictingTypeBinding;

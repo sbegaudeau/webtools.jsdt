@@ -11,20 +11,16 @@
 package org.eclipse.wst.jsdt.internal.ui.search;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.OpenEvent;
-
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.actions.ActionGroup;
-
+import org.eclipse.wst.jsdt.internal.ui.actions.CompositeActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.GenerateActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.JavaSearchActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.OpenEditorActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.OpenViewActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.RefactorActionGroup;
-
-import org.eclipse.wst.jsdt.internal.ui.actions.CompositeActionGroup;
 
 class NewSearchViewActionGroup extends CompositeActionGroup {
 	private OpenEditorActionGroup fOpenEditorActionGroup;

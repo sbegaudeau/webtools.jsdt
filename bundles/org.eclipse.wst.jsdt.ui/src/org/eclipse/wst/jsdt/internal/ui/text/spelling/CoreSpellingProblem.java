@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.ui.text.spelling;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
-
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 
 /**

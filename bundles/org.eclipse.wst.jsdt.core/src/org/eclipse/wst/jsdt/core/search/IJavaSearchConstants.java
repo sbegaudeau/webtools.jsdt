@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.search;
 
-import org.eclipse.wst.jsdt.internal.core.search.processing.*;
+import org.eclipse.wst.jsdt.internal.core.search.processing.IJob;
 
 /**
  * <p>
@@ -28,9 +28,9 @@ public interface IJavaSearchConstants {
 	 * of match in unknown.
 	 */
 	int UNKNOWN = -1;
-	
+
 	/* Nature of searched element */
-	
+
 	/**
 	 * The searched element is a type, which may include classes, interfaces,
 	 * enums, and annotation types.
@@ -58,7 +58,7 @@ public interface IJavaSearchConstants {
 	int FIELD= 4;
 
 	/**
-	 * The searched element is a class. 
+	 * The searched element is a class.
 	 * More selective than using {@link #TYPE}.
 	 */
 	int CLASS= 5;
@@ -96,7 +96,7 @@ public interface IJavaSearchConstants {
 	 * @since 3.1
 	 */
 	int CLASS_AND_INTERFACE= 10;
-	
+
 	/**
 	 * The searched element is an interface or annotation type.
 	 * More selective than using {@link #TYPE}.
@@ -120,7 +120,7 @@ public interface IJavaSearchConstants {
 	int DECLARATIONS= 0;
 
 	/**
-	 * The search result is a type that implements an interface or extends a class. 
+	 * The search result is a type that implements an interface or extends a class.
 	 * Used in conjunction with either TYPE or CLASS or INTERFACE, it will
 	 * respectively search for any type implementing/extending a type,
 	 * or rather exclusively search for classes implementing/extending the type, or
@@ -138,7 +138,7 @@ public interface IJavaSearchConstants {
 	int REFERENCES= 2;
 
 	/**
-	 * The search result is a declaration, a reference, or an implementer 
+	 * The search result is a declaration, a reference, or an implementer
 	 * of an interface.
 	 * Can be used in conjunction with any of the nature of searched elements
 	 * so as to better narrow down the search.
@@ -149,16 +149,16 @@ public interface IJavaSearchConstants {
 	 * When searching for field matches, it will exclusively find read accesses, as
 	 * opposed to write accesses. Note that some expressions are considered both
 	 * as field read/write accesses: for example, x++; x+= 1;
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	int READ_ACCESSES = 4;
-	
+
 	/**
 	 * When searching for field matches, it will exclusively find write accesses, as
 	 * opposed to read accesses. Note that some expressions are considered both
 	 * as field read/write accesses: for example,  x++; x+= 1;
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	int WRITE_ACCESSES = 5;
@@ -181,9 +181,9 @@ public interface IJavaSearchConstants {
 	 * @since 3.1
 	 */
 	int IGNORE_RETURN_TYPE = 0x20;
-	
+
 	/* Syntactic match modes */
-	
+
 	/**
 	 * The search pattern matches exactly the search result,
 	 * that is, the source of the search result equals the search pattern.
@@ -196,7 +196,7 @@ public interface IJavaSearchConstants {
 	 */
 	int PREFIX_MATCH = 1;
 	/**
-	 * The search pattern contains one or more wild cards ('*') where a 
+	 * The search pattern contains one or more wild cards ('*') where a
 	 * wild-card can replace 0 or more characters in the search result.
 	 * @deprecated Use {@link SearchPattern#R_PATTERN_MATCH} instead.
 	 */
@@ -204,7 +204,7 @@ public interface IJavaSearchConstants {
 
 
 	/* Case sensitivity */
-	
+
 	/**
 	 * The search pattern matches the search result only
 	 * if cases are the same.
@@ -218,10 +218,10 @@ public interface IJavaSearchConstants {
 	 *   without {@link SearchPattern#R_CASE_SENSITIVE} as a matchRule instead.
 	 */
 	boolean CASE_INSENSITIVE = false;
-	
+
 
 	/* Waiting policies */
-	
+
 	/**
 	 * The search operation starts immediately, even if the underlying indexer
 	 * has not finished indexing the workspace. Results will more likely
@@ -234,10 +234,10 @@ public interface IJavaSearchConstants {
 	 */
 	int CANCEL_IF_NOT_READY_TO_SEARCH = IJob.CancelIfNotReady;
 	/**
-	 * The search operation waits for the underlying indexer to finish indexing 
+	 * The search operation waits for the underlying indexer to finish indexing
 	 * the workspace before starting the search.
 	 */
 	int WAIT_UNTIL_READY_TO_SEARCH = IJob.WaitUntilReady;
-	
-	
+
+
 }

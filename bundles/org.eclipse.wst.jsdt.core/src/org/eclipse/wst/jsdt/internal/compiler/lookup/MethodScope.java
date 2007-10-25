@@ -11,7 +11,14 @@
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ConstructorDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
@@ -31,9 +38,9 @@ public class MethodScope extends BlockScope {
 	public boolean isStatic; // method modifier or initializer one
 
 	//fields used during name resolution
-	public boolean isConstructorCall = false; 
+	public boolean isConstructorCall = false;
 	public FieldBinding initializedField; // the field being initialized
-	public int lastVisibleFieldID = -1; // the ID of the last field which got declared 
+	public int lastVisibleFieldID = -1; // the ID of the last field which got declared
 	// note that #initializedField can be null AND lastVisibleFieldID >= 0, when processing instance field initializers.
 
 	// flow analysis
@@ -47,16 +54,16 @@ public class MethodScope extends BlockScope {
 
 	// annotation support
 	public boolean insideTypeAnnotation = false;
-	
+
 	// inner-emulation
 	public SyntheticArgumentBinding[] extraSyntheticArguments;
-	
-	
+
+
 	public static final char [] ARGUMENTS_NAME={'a','r','g','u','m','e','n','t','s'};
-	
+
 	LocalVariableBinding argumentsBinding ;
-	
-	
+
+
 	public MethodScope(Scope parent, ReferenceContext context, boolean isStatic) {
 
 		super(METHOD_SCOPE, parent);
@@ -71,7 +78,7 @@ public class MethodScope extends BlockScope {
 	/* Spec : 8.4.3 & 9.4
 	 */
 	private void checkAndSetModifiersForConstructor(MethodBinding methodBinding) {
-		
+
 		int modifiers = methodBinding.modifiers;
 		final ReferenceBinding declaringClass = methodBinding.declaringClass;
 		if ((modifiers & ExtraCompilerModifiers.AccAlternateModifierProblem) != 0)
@@ -139,11 +146,11 @@ public class MethodScope extends BlockScope {
 
 		methodBinding.modifiers = modifiers;
 	}
-	
+
 	/* Spec : 8.4.3 & 9.4
 	 */
 	private void checkAndSetModifiersForMethod(MethodBinding methodBinding) {
-		
+
 		int modifiers = methodBinding.modifiers;
 		final ReferenceBinding declaringClass = methodBinding.declaringClass;
 		if ((modifiers & ExtraCompilerModifiers.AccAlternateModifierProblem) != 0)
@@ -197,7 +204,7 @@ public class MethodScope extends BlockScope {
 		}
 
 		/* DISABLED for backward compatibility with javac (if enabled should also mark private methods as final)
-		// methods from a final class are final : 8.4.3.3 
+		// methods from a final class are final : 8.4.3.3
 		if (methodBinding.declaringClass.isFinal())
 			modifiers |= AccFinal;
 		*/
@@ -211,10 +218,10 @@ public class MethodScope extends BlockScope {
 
 		methodBinding.modifiers = modifiers;
 	}
-	
+
 	/* Compute variable positions in scopes given an initial position offset
 	 * ignoring unused local variables.
-	 * 
+	 *
 	 * Deal with arguments here, locals and subscopes are processed in BlockScope method
 	 */
 	public void computeLocalVariablePositions(int initOffset, CodeStream codeStream) {
@@ -225,7 +232,7 @@ public class MethodScope extends BlockScope {
 			AbstractMethodDeclaration methodDecl = (AbstractMethodDeclaration)referenceContext;
 			MethodBinding method = methodDecl.binding;
 			if (!(method.isAbstract()
-					|| (method.isImplementing() && !compilerOptions().reportUnusedParameterWhenImplementingAbstract) 
+					|| (method.isImplementing() && !compilerOptions().reportUnusedParameterWhenImplementingAbstract)
 					|| (method.isOverriding() && !method.isImplementing() && !compilerOptions().reportUnusedParameterWhenOverridingConcrete)
 					|| method.isMain())) {
 				isReportingUnusedArgument = true;
@@ -234,8 +241,8 @@ public class MethodScope extends BlockScope {
 		this.offset = initOffset;
 		this.maxOffset = initOffset;
 
-		// manage arguments	
-		int ilocal = 0, maxLocals = this.localIndex;	
+		// manage arguments
+		int ilocal = 0, maxLocals = this.localIndex;
 		while (ilocal < maxLocals) {
 			LocalVariableBinding local = locals[ilocal];
 			if (local == null || ((local.tagBits & TagBits.IsArgument) == 0)) break; // done with arguments
@@ -248,7 +255,7 @@ public class MethodScope extends BlockScope {
 			}
 
 			// record user-defined argument for attribute generation
-			codeStream.record(local); 
+			codeStream.record(local);
 
 			// assign variable position
 			local.resolvedPosition = this.offset;
@@ -264,7 +271,7 @@ public class MethodScope extends BlockScope {
 			}
 			ilocal++;
 		}
-		
+
 		// sneak in extra argument before other local variables
 		if (extraSyntheticArguments != null) {
 			for (int iarg = 0, maxArguments = extraSyntheticArguments.length; iarg < maxArguments; iarg++){
@@ -276,7 +283,7 @@ public class MethodScope extends BlockScope {
 					this.offset++;
 				}
 				if (this.offset > 0xFF) { // no more than 255 words of arguments
-					this.problemReporter().noMoreAvailableSpaceForArgument(argument, (ASTNode)this.referenceContext); 
+					this.problemReporter().noMoreAvailableSpaceForArgument(argument, (ASTNode)this.referenceContext);
 				}
 			}
 		}
@@ -288,12 +295,12 @@ public class MethodScope extends BlockScope {
 	 * 		otherwise return a correct method binding (but without the element
 	 *		that caused the problem) : ie : Incorrect thrown exception
 	 */
-	
+
 	MethodBinding createMethod(InferredMethod inferredMethod) {
-		
+
 		return createMethod(inferredMethod.methodDeclaration,inferredMethod.name,inferredMethod.inType.binding, inferredMethod.isConstructor,false);
 	}
-	
+
 	public MethodBinding createMethod(AbstractMethodDeclaration method,char[] name,SourceTypeBinding declaringClass, boolean isConstructor, boolean isLocal) {
 
 		MethodBinding methodBinding=null;
@@ -315,7 +322,7 @@ public class MethodScope extends BlockScope {
 				 (method.inferredType!=null)?method.inferredType.resolveType(this,method):TypeBinding.UNKNOWN;
 //			TypeBinding returnType =
 //			 (method instanceof MethodDeclaration && ((MethodDeclaration)method).returnType!=null && method.inferredMethod!=null)?method.inferredType.resolveType(this,((MethodDeclaration)method).returnType):TypeBinding.ANY;
-				 
+
 			if (isLocal && method.selector!=null)
 			{
 				methodBinding =
@@ -338,7 +345,7 @@ public class MethodScope extends BlockScope {
 					problemReporter().illegalVararg(argTypes[argLength], method);
 			}
 		}
-		
+
 		TypeParameter[] typeParameters = method.typeParameters();
 	    // do not construct type variables if source < 1.5
 		if (typeParameters == null || compilerOptions().sourceLevel < ClassFileConstants.JDK1_5) {
@@ -351,7 +358,7 @@ public class MethodScope extends BlockScope {
 	}
 
 	/* Overridden to detect the error case inside an explicit constructor call:
-	
+
 	class X {
 		int i;
 		X myX;
@@ -401,7 +408,7 @@ public class MethodScope extends BlockScope {
 
 		return (referenceContext instanceof ConstructorDeclaration);
 	}
-	
+
 	public boolean isInsideInitializer() {
 
 		return (referenceContext instanceof TypeDeclaration);
@@ -531,6 +538,6 @@ public class MethodScope extends BlockScope {
 			binding=this.argumentsBinding;
 		return binding;
 	}
-	
-	
+
+
 }

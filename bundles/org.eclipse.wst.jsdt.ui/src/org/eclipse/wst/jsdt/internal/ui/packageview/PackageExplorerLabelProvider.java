@@ -14,29 +14,20 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-
-import org.eclipse.core.resources.IFolder;
-
-import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.jface.resource.ImageDescriptor;
-
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IWorkingSet;
-
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.navigator.ContainerFolder;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredString;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 /**
  * Provides the labels for the Package Explorer.

@@ -12,13 +12,17 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
-import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.flow.SwitchFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
-import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.SyntheticMethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 
 public class SwitchStatement extends Statement {
 
@@ -32,15 +36,15 @@ public class SwitchStatement extends Statement {
 	public int blockStart;
 	public int caseCount;
 	Constant[] constants;
-	
+
 	// fallthrough
 	public final static int CASE = 0;
 	public final static int FALLTHROUGH = 1;
 	public final static int ESCAPING = 2;
-	
-	
+
+
 	public SyntheticMethodBinding synthetic; // use for switch on enums types
-	
+
 	// for local variables table attributes
 	int preSwitchInitStateIndex = -1;
 	int mergedInitStateIndex = -1;
@@ -54,8 +58,8 @@ public class SwitchStatement extends Statement {
 			flowInfo = expression.analyseCode(currentScope, flowContext, flowInfo);
 			SwitchFlowContext switchContext =
 				new SwitchFlowContext(flowContext, this, (breakLabel = new BranchLabel()));
-	
-			// analyse the block by considering specially the case/default statements (need to bind them 
+
+			// analyse the block by considering specially the case/default statements (need to bind them
 			// to the entry point)
 			FlowInfo caseInits = FlowInfo.DEAD_END;
 			// in case of statements before the first case
@@ -79,7 +83,7 @@ public class SwitchStatement extends Statement {
 						fallThroughState = CASE;
 					} else if (statement == defaultCase) { // statement is the default case
 						this.scope.enclosingCase = defaultCase; // record entering in a switch case block
-						if (fallThroughState == FALLTHROUGH 
+						if (fallThroughState == FALLTHROUGH
 								&& (statement.bits & ASTNode.DocumentedFallthrough) == 0) {
 							scope.problemReporter().possibleFallThroughCase(this.scope.enclosingCase);
 						}
@@ -99,7 +103,7 @@ public class SwitchStatement extends Statement {
 					}
 				}
 			}
-	
+
 			final TypeBinding resolvedTypeBinding = this.expression.resolvedType;
 			if (caseCount > 0 && resolvedTypeBinding.isEnum()) {
 				final SourceTypeBinding sourceTypeBinding = this.scope.classScope().referenceContext.binding;
@@ -114,7 +118,7 @@ public class SwitchStatement extends Statement {
 //					currentScope.methodScope().recordInitializationStates(flowInfo);
 				return flowInfo;
 			}
-	
+
 			// merge all branches inits
 			FlowInfo mergedInfo = caseInits.mergedWith(switchContext.initsOnBreak);
 //			mergedInitStateIndex =
@@ -138,7 +142,7 @@ public class SwitchStatement extends Statement {
 //				return;
 //			}
 //			int pc = codeStream.position;
-//	
+//
 //			// prepare the labels and constants
 //			this.breakLabel.initialize(codeStream);
 //			CaseLabel[] caseLabels = new CaseLabel[this.caseCount];
@@ -184,12 +188,12 @@ public class SwitchStatement extends Statement {
 //				int max = localKeysCopy[this.caseCount - 1];
 //				int min = localKeysCopy[0];
 //				if ((long) (caseCount * 2.5) > ((long) max - (long) min)) {
-//					
+//
 //					// work-around 1.3 VM bug, if max>0x7FFF0000, must use lookup bytecode
 //					// see http://dev.eclipse.org/bugs/show_bug.cgi?id=21557
 //					if (max > 0x7FFF0000 && currentScope.compilerOptions().complianceLevel < ClassFileConstants.JDK1_4) {
 //						codeStream.lookupswitch(defaultLabel, this.constants, sortedIndexes, caseLabels);
-//	
+//
 //					} else {
 //						codeStream.tableswitch(
 //							defaultLabel,
@@ -204,7 +208,7 @@ public class SwitchStatement extends Statement {
 //				}
 //				codeStream.updateLastRecordedEndPC(this.scope, codeStream.position);
 //			}
-//			
+//
 //			// generate the switch block statements
 //			int caseIndex = 0;
 //			if (this.statements != null) {
@@ -245,7 +249,7 @@ public class SwitchStatement extends Statement {
 //			codeStream.recordPositionsFrom(pc, this.sourceStart);
 //	    } finally {
 //	        if (this.scope != null) this.scope.enclosingCase = null; // no longer inside switch case block
-//	    }		
+//	    }
 	}
 
 	public StringBuffer printStatement(int indent, StringBuffer output) {
@@ -267,13 +271,13 @@ public class SwitchStatement extends Statement {
 	}
 
 	public void resolve(BlockScope upperScope) {
-	
+
 	    try {
 			boolean isEnumSwitch = false;
 			TypeBinding expressionType = expression.resolveType(upperScope);
 			if (expressionType != null) {
 				expression.computeConversion(upperScope, expressionType, expressionType);
-				
+
 				switch (expressionType.id)
 				{
 					case TypeIds.T_any:
@@ -286,7 +290,7 @@ public class SwitchStatement extends Statement {
 						upperScope.problemReporter().incorrectSwitchType(expression, expressionType);
 					expressionType = null; // fault-tolerance: ignore type mismatch from constants from hereon
 				}
-				
+
 			}
 			if (statements != null) {
 				scope = !JavaCore.IS_EMCASCRIPT4 ? upperScope :  new BlockScope(upperScope);
@@ -340,8 +344,8 @@ public class SwitchStatement extends Statement {
 					upperScope.problemReporter().undocumentedEmptyBlock(this.blockStart, this.sourceEnd);
 				}
 			}
-			// for enum switch, check if all constants are accounted for (if no default) 
-//			if (isEnumSwitch && defaultCase == null 
+			// for enum switch, check if all constants are accounted for (if no default)
+//			if (isEnumSwitch && defaultCase == null
 //					&& upperScope.compilerOptions().getSeverity(CompilerOptions.IncompleteEnumSwitch) != ProblemSeverities.Ignore) {
 //				int constantCount = this.constants == null ? 0 : this.constants.length; // could be null if no case statement
 //				if (constantCount == caseCount // ignore diagnosis if unresolved constants
@@ -380,12 +384,12 @@ public class SwitchStatement extends Statement {
 		}
 		visitor.endVisit(this, blockScope);
 	}
-	
+
 	/**
 	 * Dispatch the call on its last statement.
 	 */
 	public void branchChainTo(BranchLabel label) {
-		
+
 		// in order to improve debug attributes for stepping (11431)
 		// we want to inline the jumps to #breakLabel which already got
 		// generated (if any), and have them directly branch to a better

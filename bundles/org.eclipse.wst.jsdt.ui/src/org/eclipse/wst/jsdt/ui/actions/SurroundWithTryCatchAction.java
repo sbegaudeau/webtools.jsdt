@@ -15,31 +15,23 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
-
 import org.eclipse.jface.text.ITextSelection;
-
-import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.PerformChangeOperation;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.ui.refactoring.RefactoringUI;
-
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.ISourceRange;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JavaStatusContext;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.surround.ISurroundWithTryCatchQuery;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.surround.SurroundWithTryCatchRefactoring;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;

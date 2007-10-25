@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.ConstantPool;
 
 public class MethodBinding extends Binding {
-	
+
 	public int modifiers;
 	public char[] selector;
 	public TypeBinding returnType;
@@ -29,7 +29,7 @@ public class MethodBinding extends Binding {
 	public TypeVariableBinding[] typeVariables = Binding.NO_TYPE_VARIABLES;
 	char[] signature;
 	public long tagBits;
-	
+
 protected MethodBinding() {
 	// for creating problem or synthetic method
 }
@@ -40,7 +40,7 @@ public MethodBinding(int modifiers, char[] selector, TypeBinding returnType, Typ
 	this.parameters = (parameters == null || parameters.length == 0) ? Binding.NO_PARAMETERS : parameters;
 	this.thrownExceptions = (thrownExceptions == null || thrownExceptions.length == 0) ? Binding.NO_EXCEPTIONS : thrownExceptions;
 	this.declaringClass = declaringClass;
-	
+
 	// propagate the strictfp & deprecated modifiers
 	if (this.declaringClass != null) {
 		if (this.declaringClass.isStrictfp())
@@ -87,7 +87,7 @@ public final boolean areParametersEqual(MethodBinding method) {
 	int length = parameters.length;
 	if (length != args.length)
 		return false;
-	
+
 	for (int i = 0; i < length; i++)
 		if (parameters[i] != args[i])
 			return false;
@@ -225,9 +225,9 @@ public final boolean canBeSeenBy(TypeBinding receiverType, InvocationSite invoca
 		//    OR previous assertions are true for one of the enclosing type
 		if (invocationType == declaringClass) return true;
 		if (invocationType.fPackage == declaringClass.fPackage) return true;
-		
+
 		ReferenceBinding currentType = invocationType;
-		TypeBinding receiverErasure = receiverType.erasure();		
+		TypeBinding receiverErasure = receiverType.erasure();
 		ReferenceBinding declaringErasure = (ReferenceBinding) declaringClass.erasure();
 		int depth = 0;
 		do {
@@ -320,19 +320,19 @@ MethodBinding computeSubstitutedMethod(MethodBinding method, LookupEnvironment e
  * p.X { <T> void bar(X<T> t) } --> Lp/X;.bar<T:Ljava/lang/Object;>(LX<TT;>;)V
  */
 public char[] computeUniqueKey(boolean isLeaf) {
-	// declaring class 
+	// declaring class
 	char[] declaringKey = this.declaringClass.computeUniqueKey(false/*not a leaf*/);
 	int declaringLength = declaringKey.length;
-	
+
 	// selector
 	int selectorLength = this.selector == TypeConstants.INIT ? 0 : this.selector.length;
-	
+
 	// generic signature
 	char[] sig = genericSignature();
 	boolean isGeneric = sig != null;
 	if (!isGeneric) sig = signature();
 	int signatureLength = sig.length;
-	
+
 	// thrown exceptions
 	int thrownExceptionsLength = this.thrownExceptions.length;
 	int thrownExceptionsSignatureLength = 0;
@@ -347,7 +347,7 @@ public char[] computeUniqueKey(boolean isLeaf) {
 			}
 		}
 	}
-	
+
 	char[] uniqueKey = new char[declaringLength + 1 + selectorLength + signatureLength + thrownExceptionsSignatureLength];
 	int index = 0;
 	System.arraycopy(declaringKey, 0, uniqueKey, index, declaringLength);
@@ -371,7 +371,7 @@ public char[] computeUniqueKey(boolean isLeaf) {
 
 	return uniqueKey;
 }
-/* 
+/*
  * Answer the declaring class to use in the constant pool
  * may not be a reference binding (see subtypes)
  */
@@ -410,7 +410,7 @@ public char[] genericSignature() {
 	sig.append(')');
 	if (this.returnType != null)
 		sig.append(this.returnType.genericTypeSignature());
-	
+
 	// only append thrown exceptions if any is generic/parameterized
 	boolean needExceptionSignatures = false;
 	int length = this.thrownExceptions.length;
@@ -428,7 +428,7 @@ public char[] genericSignature() {
 	}
 	int sigLength = sig.length();
 	char[] genericSignature = new char[sigLength];
-	sig.getChars(0, sigLength, genericSignature, 0);	
+	sig.getChars(0, sigLength, genericSignature, 0);
 	return genericSignature;
 }
 public AnnotationBinding[] getAnnotations() {
@@ -438,7 +438,7 @@ public AnnotationBinding[] getAnnotations() {
 /**
  * @param index the index of the parameter of interest
  * @return the annotations on the <code>index</code>th parameter
- * @throws ArrayIndexOutOfBoundsException when <code>index</code> is not valid 
+ * @throws ArrayIndexOutOfBoundsException when <code>index</code> is not valid
  */
 public AnnotationBinding[] getParameterAnnotations(int index) {
 	MethodBinding originalMethod = this.original();
@@ -576,7 +576,7 @@ public final boolean isOverriding() {
 public final boolean isMain() {
 	if (this.selector.length == 4 && CharOperation.equals(this.selector, TypeConstants.MAIN)
 			&& ((this.modifiers & (ClassFileConstants.AccPublic | ClassFileConstants.AccStatic)) != 0)
-			&& TypeBinding.VOID == this.returnType  
+			&& TypeBinding.VOID == this.returnType
 			&& this.parameters.length == 1) {
 		TypeBinding paramType = this.parameters[0];
 		if (paramType.dimensions() == 1 && paramType.leafComponentType().id == TypeIds.T_JavaLangString) {
@@ -712,7 +712,7 @@ public char[] shortReadableName() {
 	buffer.append(')');
 	int nameLength = buffer.length();
 	char[] shortReadableName = new char[nameLength];
-	buffer.getChars(0, nameLength, shortReadableName, 0);	    
+	buffer.getChars(0, nameLength, shortReadableName, 0);
 	return shortReadableName;
 }
 
@@ -733,10 +733,10 @@ public final char[] signature() /* (ILjava/lang/Thread;)Ljava/lang/Object; */ {
 
 	StringBuffer buffer = new StringBuffer(parameters.length + 1 * 20);
 	buffer.append('(');
-	
+
 	TypeBinding[] targetParameters = this.parameters;
 	boolean isConstructor = isConstructor();
-	if (isConstructor && declaringClass.isEnum()) { // insert String name,int ordinal 
+	if (isConstructor && declaringClass.isEnum()) { // insert String name,int ordinal
 		buffer.append(ConstantPool.JavaLangStringSignature);
 		buffer.append(TypeBinding.INT.signature());
 	}
@@ -749,7 +749,7 @@ public final char[] signature() /* (ILjava/lang/Thread;)Ljava/lang/Object; */ {
 				buffer.append(syntheticArgumentTypes[i].signature());
 			}
 		}
-		
+
 		if (this instanceof SyntheticMethodBinding) {
 			targetParameters = ((SyntheticMethodBinding)this).targetMethod.parameters;
 		}
@@ -766,7 +766,7 @@ public final char[] signature() /* (ILjava/lang/Thread;)Ljava/lang/Object; */ {
 		for (int i = 0; i < count; i++) {
 			buffer.append(syntheticOuterArguments[i].type.signature());
 		}
-		// move the extra padding arguments of the synthetic constructor invocation to the end		
+		// move the extra padding arguments of the synthetic constructor invocation to the end
 		for (int i = targetParameters.length, extraLength = parameters.length; i < extraLength; i++) {
 			buffer.append(parameters[i].signature());
 		}
@@ -776,14 +776,14 @@ public final char[] signature() /* (ILjava/lang/Thread;)Ljava/lang/Object; */ {
 		buffer.append(this.returnType.signature());
 	int nameLength = buffer.length();
 	signature = new char[nameLength];
-	buffer.getChars(0, nameLength, signature, 0);	    
-	
+	buffer.getChars(0, nameLength, signature, 0);
+
 	return signature;
 }
 /*
  * This method is used to record references to nested types inside the method signature.
  * This is the one that must be used during code generation.
- * 
+ *
  * See https://bugs.eclipse.org/bugs/show_bug.cgi?id=171184
  */
 public final char[] signature(ClassFile classFile) {
@@ -819,7 +819,7 @@ public final char[] signature(ClassFile classFile) {
 				}
 			}
 			if (needSynthetics) {
-				// move the extra padding arguments of the synthetic constructor invocation to the end		
+				// move the extra padding arguments of the synthetic constructor invocation to the end
 				for (int i = targetParameters.length, extraLength = parameters.length; i < extraLength; i++) {
 					TypeBinding parameter = parameters[i];
 					TypeBinding leafParameterType = parameter.leafComponentType();
@@ -840,10 +840,10 @@ public final char[] signature(ClassFile classFile) {
 
 	StringBuffer buffer = new StringBuffer(parameters.length + 1 * 20);
 	buffer.append('(');
-	
+
 	TypeBinding[] targetParameters = this.parameters;
 	boolean isConstructor = isConstructor();
-	if (isConstructor && declaringClass.isEnum()) { // insert String name,int ordinal 
+	if (isConstructor && declaringClass.isEnum()) { // insert String name,int ordinal
 		buffer.append(ConstantPool.JavaLangStringSignature);
 		buffer.append(TypeBinding.INT.signature());
 	}
@@ -861,7 +861,7 @@ public final char[] signature(ClassFile classFile) {
 				buffer.append(syntheticArgumentType.signature());
 			}
 		}
-		
+
 		if (this instanceof SyntheticMethodBinding) {
 			targetParameters = ((SyntheticMethodBinding)this).targetMethod.parameters;
 		}
@@ -884,7 +884,7 @@ public final char[] signature(ClassFile classFile) {
 		for (int i = 0; i < count; i++) {
 			buffer.append(syntheticOuterArguments[i].type.signature());
 		}
-		// move the extra padding arguments of the synthetic constructor invocation to the end		
+		// move the extra padding arguments of the synthetic constructor invocation to the end
 		for (int i = targetParameters.length, extraLength = parameters.length; i < extraLength; i++) {
 			TypeBinding parameter = parameters[i];
 			TypeBinding leafParameterType = parameter.leafComponentType();
@@ -906,8 +906,8 @@ public final char[] signature(ClassFile classFile) {
 	}
 	int nameLength = buffer.length();
 	signature = new char[nameLength];
-	buffer.getChars(0, nameLength, signature, 0);	    
-	
+	buffer.getChars(0, nameLength, signature, 0);
+
 	return signature;
 }
 public final int sourceEnd() {
@@ -924,12 +924,12 @@ public AbstractMethodDeclaration sourceMethod() {
 	try {
 		sourceType = (SourceTypeBinding) declaringClass;
 	} catch (ClassCastException e) {
-		return null;		
+		return null;
 	}
 
 	if (sourceType!=null)
 		return sourceType.sourceMethod(this);
-	return null;		
+	return null;
 }
 public final int sourceStart() {
 	AbstractMethodDeclaration method = sourceMethod();

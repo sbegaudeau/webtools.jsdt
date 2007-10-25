@@ -12,18 +12,13 @@ package org.eclipse.wst.jsdt.internal.ui.text.java;
 
 
 
-import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.jface.resource.ImageDescriptor;
-
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationExtension;
-
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-
-import org.eclipse.wst.jsdt.ui.text.java.CompletionProposalLabelProvider;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.ui.text.java.CompletionProposalLabelProvider;
 
 
 /**

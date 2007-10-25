@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.ui.text;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextHover;
@@ -20,9 +19,7 @@ import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.jface.text.information.IInformationPresenter;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
-
 import org.eclipse.ui.texteditor.ITextEditor;
-
 import org.eclipse.wst.jsdt.ui.text.IColorManager;
 import org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration;
 

@@ -21,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.compiler.parser.TerminalTokens;
 
 /**
  * Character literal nodes.
- * 
+ *
  * @since 2.0
  */
 public class CharacterLiteral extends Expression {
@@ -30,16 +30,16 @@ public class CharacterLiteral extends Expression {
 	 * The "escapedValue" structural property of this node type.
 	 * @since 3.0
 	 */
-	public static final SimplePropertyDescriptor ESCAPED_VALUE_PROPERTY = 
+	public static final SimplePropertyDescriptor ESCAPED_VALUE_PROPERTY =
 		new SimplePropertyDescriptor(CharacterLiteral.class, "escapedValue", String.class, MANDATORY); //$NON-NLS-1$
-	
+
 	/**
-	 * A list of property descriptors (element type: 
+	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
 	 */
 	private static final List PROPERTY_DESCRIPTORS;
-	
+
 	static {
 		List properyList = new ArrayList(2);
 		createPropertyList(CharacterLiteral.class, properyList);
@@ -50,20 +50,20 @@ public class CharacterLiteral extends Expression {
 	/**
 	 * Returns a list of structural property descriptors for this node type.
 	 * Clients must not modify the result.
-	 * 
+	 *
 	 * @param apiLevel the API level; one of the
 	 * <code>AST.JLS*</code> constants
 
-	 * @return a list of property descriptors (element type: 
+	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
 	 * @since 3.0
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
 	}
-			
+
 	/**
-	 * The literal string, including quotes and escapes; defaults to the 
+	 * The literal string, including quotes and escapes; defaults to the
 	 * literal for the character 'X'.
 	 */
 	private String escapedValue = "\'X\'";//$NON-NLS-1$
@@ -74,7 +74,7 @@ public class CharacterLiteral extends Expression {
 	 * <p>
 	 * N.B. This constructor is package-private.
 	 * </p>
-	 * 
+	 *
 	 * @param ast the AST that is to own this node
 	 */
 	CharacterLiteral(AST ast) {
@@ -87,7 +87,7 @@ public class CharacterLiteral extends Expression {
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -103,7 +103,7 @@ public class CharacterLiteral extends Expression {
 		// allow default implementation to flag the error
 		return super.internalGetSetObjectProperty(property, get, value);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -136,19 +136,19 @@ public class CharacterLiteral extends Expression {
 		visitor.visit(this);
 		visitor.endVisit(this);
 	}
-	
+
 	/**
 	 * Returns the string value of this literal node. The value is the sequence
 	 * of characters that would appear in the source program, including
 	 * enclosing single quotes and embedded escapes.
-	 * 
+	 *
 	 * @return the escaped string value, including enclosing single quotes
 	 *    and embedded escapes
-	 */ 
+	 */
 	public String getEscapedValue() {
 		return this.escapedValue;
 	}
-		
+
 	/**
 	 * Sets the string value of this literal node. The value is the sequence
 	 * of characters that would appear in the source program, including
@@ -157,11 +157,11 @@ public class CharacterLiteral extends Expression {
 	 * <li><code>'a'</code> <code>setEscapedValue("\'a\'")</code></li>
 	 * <li><code>'\n'</code> <code>setEscapedValue("\'\\n\'")</code></li>
 	 * </ul>
-	 * 
+	 *
 	 * @param value the string value, including enclosing single quotes
 	 *    and embedded escapes
 	 * @exception IllegalArgumentException if the argument is incorrect
-	 */ 
+	 */
 	public void setEscapedValue(String value) {
 		// check setInternalEscapedValue(String) if this method is changed
 		if (value == null) {
@@ -198,7 +198,7 @@ public class CharacterLiteral extends Expression {
 	}
 
 	/**
-	 * Returns the value of this literal node. 
+	 * Returns the value of this literal node.
 	 * <p>
 	 * For example,
 	 * <pre>
@@ -207,11 +207,11 @@ public class CharacterLiteral extends Expression {
 	 * assert s.charValue() == 'x';
 	 * </pre>
 	 * </p>
-	 * 
+	 *
 	 * @return the character value without enclosing quotes and embedded
 	 *    escapes
 	 * @exception IllegalArgumentException if the literal value cannot be converted
-	 */ 
+	 */
 	public char charValue() {
 		Scanner scanner = this.ast.scanner;
 		char[] source = escapedValue.toCharArray();
@@ -278,7 +278,7 @@ public class CharacterLiteral extends Expression {
 									number = (number * 8) + ScannerHelper.getNumericValue(nextChar);
 								}
 							}
-							return (char) number;			
+							return (char) number;
 						} else {
 							throw new IllegalArgumentException("illegal character literal");//$NON-NLS-1$
 						}
@@ -297,7 +297,7 @@ public class CharacterLiteral extends Expression {
 		return value;
 	}
 	/**
-	 * Sets the value of this character literal node to the given character. 
+	 * Sets the value of this character literal node to the given character.
 	 * <p>
 	 * For example,
 	 * <pre>
@@ -307,12 +307,12 @@ public class CharacterLiteral extends Expression {
 	 * assert s.getEscapedValue("\'x\'");
 	 * </pre>
 	 * </p>
-	 * 
+	 *
 	 * @param value the character value
 	 */
 	public void setCharValue(char value) {
 		StringBuffer b = new StringBuffer(3);
-		
+
 		b.append('\''); // opening delimiter
 		switch(value) {
 			case '\b' :
@@ -362,14 +362,14 @@ public class CharacterLiteral extends Expression {
 				break;
 			case '\7' :
 				b.append("\\7"); //$NON-NLS-1$
-				break;			
+				break;
 			default:
 				b.append(value);
 		}
 		b.append('\''); // closing delimiter
 		setEscapedValue(b.toString());
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -377,7 +377,7 @@ public class CharacterLiteral extends Expression {
 		int size = BASE_NODE_SIZE + 1 * 4 + stringSize(escapedValue);
 		return size;
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */

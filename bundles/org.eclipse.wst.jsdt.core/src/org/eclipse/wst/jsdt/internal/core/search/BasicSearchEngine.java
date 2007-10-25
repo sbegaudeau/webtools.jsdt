@@ -10,27 +10,76 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.wst.jsdt.core.Flags;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IMember;
+import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IPackageDeclaration;
+import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.search.*;
-import org.eclipse.wst.jsdt.internal.compiler.*;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.SearchDocument;
+import org.eclipse.wst.jsdt.core.search.SearchEngine;
+import org.eclipse.wst.jsdt.core.search.SearchParticipant;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
+import org.eclipse.wst.jsdt.core.search.SearchRequestor;
+import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
+import org.eclipse.wst.jsdt.core.search.TypeNameRequestor;
+import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
+import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
+import org.eclipse.wst.jsdt.internal.compiler.DefaultErrorHandlingPolicies;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblemFactory;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
-import org.eclipse.wst.jsdt.internal.core.*;
-import org.eclipse.wst.jsdt.internal.core.search.indexing.*;
-import org.eclipse.wst.jsdt.internal.core.search.matching.*;
+import org.eclipse.wst.jsdt.internal.core.CompilationUnit;
+import org.eclipse.wst.jsdt.internal.core.DefaultWorkingCopyOwner;
+import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
+import org.eclipse.wst.jsdt.internal.core.JavaProject;
+import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
+import org.eclipse.wst.jsdt.internal.core.search.indexing.IndexManager;
+import org.eclipse.wst.jsdt.internal.core.search.matching.DeclarationOfAccessedFieldsPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.DeclarationOfReferencedMethodsPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.DeclarationOfReferencedTypesPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.JavaSearchPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.LocalVariablePattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.MatchLocator;
+import org.eclipse.wst.jsdt.internal.core.search.matching.MethodPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.MultiTypeDeclarationPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.OrPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.QualifiedTypeDeclarationPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.SecondaryTypeDeclarationPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.TypeDeclarationPattern;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
@@ -46,22 +95,22 @@ public class BasicSearchEngine {
 	 */
 	private Parser parser;
 	private CompilerOptions compilerOptions;
-		
+
 	/*
-	 * A list of working copies that take precedence over their original 
+	 * A list of working copies that take precedence over their original
 	 * compilation units.
 	 */
 	private ICompilationUnit[] workingCopies;
-	
+
 	/*
-	 * A working copy owner whose working copies will take precedent over 
+	 * A working copy owner whose working copies will take precedent over
 	 * their original compilation units.
 	 */
 	private WorkingCopyOwner workingCopyOwner;
 
 	/**
 	 * For tracing purpose.
-	 */	
+	 */
 	public static boolean VERBOSE = false;
 
 	/*
@@ -70,7 +119,7 @@ public class BasicSearchEngine {
 	public BasicSearchEngine() {
 		// will use working copies of PRIMARY owner
 	}
-	
+
 	/**
 	 * @see SearchEngine#SearchEngine(ICompilationUnit[]) for detailed comment.
 	 */
@@ -100,7 +149,7 @@ public class BasicSearchEngine {
 	public static IJavaSearchScope createHierarchyScope(IType type) throws JavaModelException {
 		return createHierarchyScope(type, DefaultWorkingCopyOwner.PRIMARY);
 	}
-	
+
 	/**
 	 * @see SearchEngine#createHierarchyScope(IType,WorkingCopyOwner) for detailed comment.
 	 */
@@ -155,14 +204,14 @@ public class BasicSearchEngine {
 	public static TypeNameMatch createTypeNameMatch(IType type, int modifiers) {
 		return new JavaSearchTypeNameMatch(type, modifiers);
 	}
-	
+
 	/**
 	 * @see SearchEngine#createWorkspaceScope() for detailed comment.
 	 */
 	public static IJavaSearchScope createWorkspaceScope() {
 		return JavaModelManager.getJavaModelManager().getWorkspaceScope();
 	}
-	
+
 	/**
 	 * Searches for matches to a given query. Search queries can be created using helper
 	 * methods (from a String pattern or a Java element) and encapsulate the description of what is
@@ -182,19 +231,19 @@ public class BasicSearchEngine {
 				if (VERBOSE) Util.verbose("No participants => do nothing!"); //$NON-NLS-1$
 				return;
 			}
-	
+
 			/* initialize progress monitor */
 			int length = participants.length;
 			if (monitor != null)
-				monitor.beginTask(Messages.engine_searching, 100 * length); 
+				monitor.beginTask(Messages.engine_searching, 100 * length);
 			IndexManager indexManager = JavaModelManager.getJavaModelManager().getIndexManager();
 			requestor.beginReporting();
 			for (int i = 0; i < length; i++) {
 				if (monitor != null && monitor.isCanceled()) throw new OperationCanceledException();
-	
+
 				SearchParticipant participant = participants[i];
 				try {
-					if (monitor != null) monitor.subTask(Messages.bind(Messages.engine_searching_indexing, new String[] {participant.getDescription()})); 
+					if (monitor != null) monitor.subTask(Messages.bind(Messages.engine_searching_indexing, new String[] {participant.getDescription()}));
 					participant.beginSearching();
 					requestor.enterParticipant(participant);
 					PathCollector pathCollector = new PathCollector();
@@ -203,9 +252,9 @@ public class BasicSearchEngine {
 						IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 						monitor==null ? null : new SubProgressMonitor(monitor, 50));
 					if (monitor != null && monitor.isCanceled()) throw new OperationCanceledException();
-	
+
 					// locate index matches if any (note that all search matches could have been issued during index querying)
-					if (monitor != null) monitor.subTask(Messages.bind(Messages.engine_searching_matching, new String[] {participant.getDescription()})); 
+					if (monitor != null) monitor.subTask(Messages.bind(Messages.engine_searching_matching, new String[] {participant.getDescription()}));
 					String[] indexMatchPaths = pathCollector.getPaths();
 					if (indexMatchPaths != null) {
 						pathCollector = null; // release
@@ -217,7 +266,7 @@ public class BasicSearchEngine {
 						SearchDocument[] matches = MatchLocator.addWorkingCopies(pattern, indexMatches, getWorkingCopies(), participant);
 						participant.locateMatches(matches, pattern, scope, requestor, monitor==null ? null : new SubProgressMonitor(monitor, 50));
 					}
-				} finally {		
+				} finally {
 					requestor.exitParticipant(participant);
 					participant.doneSearching();
 				}
@@ -230,7 +279,7 @@ public class BasicSearchEngine {
 	}
 	/**
 	 * Returns a new default Java search participant.
-	 * 
+	 *
 	 * @return a new default Java search participant
 	 * @since 3.0
 	 */
@@ -282,7 +331,7 @@ public class BasicSearchEngine {
 
 	/**
 	 * Return kind of search corresponding to given value.
-	 * 
+	 *
 	 * @param searchFor
 	 */
 	public static String getSearchForString(final int searchFor) {
@@ -366,7 +415,7 @@ public class BasicSearchEngine {
 			copies = JavaModelManager.getJavaModelManager().getWorkingCopies(DefaultWorkingCopyOwner.PRIMARY, false/*don't add primary WCs a second time*/);
 		}
 		if (copies == null) return null;
-		
+
 		// filter out primary working copies that are saved
 		ICompilationUnit[] result = null;
 		int length = copies.length;
@@ -391,7 +440,7 @@ public class BasicSearchEngine {
 		}
 		return result;
 	}
-	
+
 	/*
 	 * Returns the list of working copies used to do the search on the given Java element.
 	 */
@@ -406,7 +455,7 @@ public class BasicSearchEngine {
 					System.arraycopy(copies, 0, newWorkingCopies, 0, length);
 					newWorkingCopies[length] = cu;
 					return newWorkingCopies;
-				} 
+				}
 				return new ICompilationUnit[] {cu};
 			}
 		}
@@ -460,11 +509,11 @@ public class BasicSearchEngine {
 				break;
 			case IIndexConstants.TYPE_SUFFIX : // nothing
 		}
-	
+
 		boolean isCaseSensitive = (matchRule & SearchPattern.R_CASE_SENSITIVE) != 0;
 		if (patternPkg != null && !CharOperation.equals(patternPkg, pkg, isCaseSensitive))
 				return false;
-		
+
 		if (patternTypeName != null) {
 			boolean isCamelCase = (matchRule & SearchPattern.R_CAMELCASE_MATCH) != 0;
 			int matchMode = matchRule & JavaSearchPattern.MATCH_MODE_MASK;
@@ -491,9 +540,9 @@ public class BasicSearchEngine {
 			}
 		}
 		return true;
-	
-	}	
-	
+
+	}
+
 	/**
 	 * Searches for matches of a given search pattern. Search patterns can be created using helper
 	 * methods (from a String pattern or a Java element) and encapsulate the description of what is
@@ -509,14 +558,14 @@ public class BasicSearchEngine {
 		findMatches(pattern, participants, scope, requestor, monitor);
 	}
 
-	
+
 	public void searchAllBindingNames(
-			final char[] packageName, 
+			final char[] packageName,
 			final char[] bindingName,
 			final int bindingType,
-			final int matchRule, 
-//			int searchFor, 
-			IJavaSearchScope scope, 
+			final int matchRule,
+//			int searchFor,
+			IJavaSearchScope scope,
 			final IRestrictedAccessBindingRequestor nameRequestor,
 			int waitingPolicy,
 			boolean doParse,
@@ -545,7 +594,7 @@ public class BasicSearchEngine {
 			SearchPattern searchPattern=null;
 			char suffix=0;
 			switch(bindingType){
-			
+
 				case Binding.TYPE :
 				{
 					suffix = IIndexConstants.CLASS_SUFFIX;
@@ -573,7 +622,7 @@ public class BasicSearchEngine {
 							null,null,null,null,
 							null,null,null,
 							matchRule);
-					 
+
 				}
 				break;
 				default: // some combination
@@ -586,7 +635,7 @@ public class BasicSearchEngine {
 								null,null,null,null,
 								null,null,null,
 								matchRule);
-						
+
 					}
 					if ((bindingType & (Binding.VARIABLE |Binding.LOCAL |Binding.FIELD )) >0)
 					{
@@ -604,7 +653,7 @@ public class BasicSearchEngine {
 								null, // do find member types
 								bindingName,
 								suffix,
-								matchRule);			
+								matchRule);
 							if (searchPattern==null)
 								searchPattern=typeDeclarationPattern;
 							else
@@ -701,7 +750,7 @@ public class BasicSearchEngine {
 						{
 							packageName=string.toCharArray();
 						}
-						
+
 					}else if (record instanceof TypeDeclarationPattern) {
 						TypeDeclarationPattern typeDecPattern = (TypeDeclarationPattern)record;
 						simpleBindingName=typeDecPattern.simpleName;
@@ -714,25 +763,25 @@ public class BasicSearchEngine {
 					}
 
 					nameRequestor.acceptBinding( bindingType,modifiers, packageName, simpleBindingName,   documentPath, accessRestriction);
-					
+
 					return true;
 				}
 			};
-		
+
 			try {
 				if (progressMonitor != null) {
-					progressMonitor.beginTask(Messages.engine_searching, 100); 
+					progressMonitor.beginTask(Messages.engine_searching, 100);
 				}
 				// add type names from indexes
 				indexManager.performConcurrentJob(
 					new PatternSearchJob(
-						pattern, 
+						pattern,
 						getDefaultSearchParticipant(), // Java search only
-						scope, 
+						scope,
 						searchRequestor),
 					waitingPolicy,
-					progressMonitor == null ? null : new SubProgressMonitor(progressMonitor, 100));	
-					
+					progressMonitor == null ? null : new SubProgressMonitor(progressMonitor, 100));
+
 				// add type names from working copies
 				if (copies != null && doParse) {
 					for (int i = 0; i < copiesLength; i++) {
@@ -837,7 +886,7 @@ public class BasicSearchEngine {
 										return true;
 									}
 									public boolean visit(LocalDeclaration localDeclaration, BlockScope scope) {
-										if ((scope instanceof CompilationUnitScope) && (bindingType==Binding.LOCAL || bindingType==Binding.FIELD || bindingType==Binding.VARIABLE )&& 
+										if ((scope instanceof CompilationUnitScope) && (bindingType==Binding.LOCAL || bindingType==Binding.FIELD || bindingType==Binding.VARIABLE )&&
 												match(typeSuffix, packageName, bindingName, matchRule,0, packageDeclaration, localDeclaration.name)) {
 											nameRequestor.acceptBinding(bindingType,localDeclaration.modifiers, packageDeclaration,  localDeclaration.name,  path, null);
 										}
@@ -873,7 +922,7 @@ public class BasicSearchEngine {
 							}
 						}
 					}
-				}	
+				}
 			} finally {
 				if (progressMonitor != null) {
 					progressMonitor.done();
@@ -882,12 +931,12 @@ public class BasicSearchEngine {
 		}
 
 
-	
+
 
 	/**
 	 * Searches for all secondary types in the given scope.
 	 * The search can be selecting specific types (given a package or a type name
-	 * prefix and match modes). 
+	 * prefix and match modes).
 	 */
 	public void searchAllSecondaryTypeNames(
 			IPackageFragmentRoot[] sourceFolders,
@@ -989,13 +1038,13 @@ public class BasicSearchEngine {
 		// add type names from indexes
 		try {
 			if (progressMonitor != null) {
-				progressMonitor.beginTask(Messages.engine_searching, 100); 
+				progressMonitor.beginTask(Messages.engine_searching, 100);
 			}
 			indexManager.performConcurrentJob(
 				new PatternSearchJob(
-					pattern, 
+					pattern,
 					getDefaultSearchParticipant(), // Java search only
-					createJavaSearchScope(sourceFolders), 
+					createJavaSearchScope(sourceFolders),
 					searchRequestor),
 				waitForIndexes
 					? IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH
@@ -1013,18 +1062,18 @@ public class BasicSearchEngine {
 	/**
 	 * Searches for all top-level types and member types in the given scope.
 	 * The search can be selecting specific types (given a package or a type name
-	 * prefix and match modes). 
-	 * 
+	 * prefix and match modes).
+	 *
 	 * @see SearchEngine#searchAllTypeNames(char[], int, char[], int, int, IJavaSearchScope, TypeNameRequestor, int, IProgressMonitor)
 	 * 	for detailed comment
 	 */
 	public void searchAllTypeNames(
-		final char[] packageName, 
-		final int packageMatchRule, 
+		final char[] packageName,
+		final int packageMatchRule,
 		final char[] typeName,
-		final int typeMatchRule, 
-		int searchFor, 
-		IJavaSearchScope scope, 
+		final int typeMatchRule,
+		int searchFor,
+		IJavaSearchScope scope,
 		final IRestrictedAccessTypeRequestor nameRequestor,
 		int waitingPolicy,
 		IProgressMonitor progressMonitor)  throws JavaModelException {
@@ -1064,7 +1113,7 @@ public class BasicSearchEngine {
 			case IJavaSearchConstants.ANNOTATION_TYPE :
 				typeSuffix = IIndexConstants.ANNOTATION_TYPE_SUFFIX;
 				break;
-			default : 
+			default :
 				typeSuffix = IIndexConstants.TYPE_SUFFIX;
 				break;
 		}
@@ -1151,21 +1200,21 @@ public class BasicSearchEngine {
 				return true;
 			}
 		};
-	
+
 		try {
 			if (progressMonitor != null) {
-				progressMonitor.beginTask(Messages.engine_searching, 100); 
+				progressMonitor.beginTask(Messages.engine_searching, 100);
 			}
 			// add type names from indexes
 			indexManager.performConcurrentJob(
 				new PatternSearchJob(
-					pattern, 
+					pattern,
 					getDefaultSearchParticipant(), // Java search only
-					scope, 
+					scope,
 					searchRequestor),
 				waitingPolicy,
-				progressMonitor == null ? null : new SubProgressMonitor(progressMonitor, 100));	
-				
+				progressMonitor == null ? null : new SubProgressMonitor(progressMonitor, 100));
+
 			// add type names from working copies
 			if (copies != null) {
 				for (int i = 0; i < copiesLength; i++) {
@@ -1258,7 +1307,7 @@ public class BasicSearchEngine {
 						}
 					}
 				}
-			}	
+			}
 		} finally {
 			if (progressMonitor != null) {
 				progressMonitor.done();
@@ -1269,16 +1318,16 @@ public class BasicSearchEngine {
 	/**
 	 * Searches for all top-level types and member types in the given scope using  a case sensitive exact match
 	 * with the given qualified names and type names.
-	 * 
+	 *
 	 * @see SearchEngine#searchAllTypeNames(char[][], char[][], IJavaSearchScope, TypeNameRequestor, int, IProgressMonitor)
 	 * 	for detailed comment
 	 */
 	public void searchAllTypeNames(
-		final char[][] qualifications, 
+		final char[][] qualifications,
 		final char[][] typeNames,
-		final int matchRule, 
-		int searchFor, 
-		IJavaSearchScope scope, 
+		final int matchRule,
+		int searchFor,
+		IJavaSearchScope scope,
 		final IRestrictedAccessTypeRequestor nameRequestor,
 		int waitingPolicy,
 		IProgressMonitor progressMonitor)  throws JavaModelException {
@@ -1316,7 +1365,7 @@ public class BasicSearchEngine {
 			case IJavaSearchConstants.ANNOTATION_TYPE :
 				typeSuffix = IIndexConstants.ANNOTATION_TYPE_SUFFIX;
 				break;
-			default : 
+			default :
 				typeSuffix = IIndexConstants.TYPE_SUFFIX;
 				break;
 		}
@@ -1389,21 +1438,21 @@ public class BasicSearchEngine {
 				return true;
 			}
 		};
-	
+
 		try {
 			if (progressMonitor != null) {
-				progressMonitor.beginTask(Messages.engine_searching, 100); 
+				progressMonitor.beginTask(Messages.engine_searching, 100);
 			}
 			// add type names from indexes
 			indexManager.performConcurrentJob(
 				new PatternSearchJob(
-					pattern, 
+					pattern,
 					getDefaultSearchParticipant(), // Java search only
-					scope, 
+					scope,
 					searchRequestor),
 				waitingPolicy,
-				progressMonitor == null ? null : new SubProgressMonitor(progressMonitor, 100));	
-				
+				progressMonitor == null ? null : new SubProgressMonitor(progressMonitor, 100));
+
 			// add type names from working copies
 			if (copies != null) {
 				for (int i = 0, length = copies.length; i < length; i++) {
@@ -1487,14 +1536,14 @@ public class BasicSearchEngine {
 						}
 					}
 				}
-			}	
+			}
 		} finally {
 			if (progressMonitor != null) {
 				progressMonitor.done();
 			}
 		}
 	}
-	
+
 	public void searchDeclarations(IJavaElement enclosingElement, SearchRequestor requestor, SearchPattern pattern, IProgressMonitor monitor) throws JavaModelException {
 		if (VERBOSE) {
 			Util.verbose("	- java element: "+enclosingElement); //$NON-NLS-1$
@@ -1526,20 +1575,20 @@ public class BasicSearchEngine {
 						getWorkingCopies(enclosingElement),
 						participant);
 					participant.locateMatches(
-						documents, 
-						pattern, 
-						scope, 
-						requestor, 
+						documents,
+						pattern,
+						scope,
+						requestor,
 						monitor);
 				} finally {
 					requestor.endReporting();
 				}
 			} else {
 				search(
-					pattern, 
-					new SearchParticipant[] {getDefaultSearchParticipant()}, 
-					scope, 
-					requestor, 
+					pattern,
+					new SearchParticipant[] {getDefaultSearchParticipant()},
+					scope,
+					requestor,
 					monitor);
 			}
 		} catch (CoreException e) {
@@ -1556,7 +1605,7 @@ public class BasicSearchEngine {
 	 *
 	 * @see SearchEngine#searchDeclarationsOfAccessedFields(IJavaElement, SearchRequestor, IProgressMonitor)
 	 * 	for detailed comment
-	 */	
+	 */
 	public void searchDeclarationsOfAccessedFields(IJavaElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaModelException {
 		if (VERBOSE) {
 			Util.verbose("BasicSearchEngine.searchDeclarationsOfAccessedFields(IJavaElement, SearchRequestor, SearchPattern, IProgressMonitor)"); //$NON-NLS-1$
@@ -1564,15 +1613,15 @@ public class BasicSearchEngine {
 		SearchPattern pattern = new DeclarationOfAccessedFieldsPattern(enclosingElement);
 		searchDeclarations(enclosingElement, requestor, pattern, monitor);
 	}
-	
+
 	/**
 	 * Searches for all declarations of the types referenced in the given element.
 	 * The element can be a compilation unit, a source type, or a source method.
 	 * Reports the type declarations using the given requestor.
-	 * 
+	 *
 	 * @see SearchEngine#searchDeclarationsOfReferencedTypes(IJavaElement, SearchRequestor, IProgressMonitor)
 	 * 	for detailed comment
-	 */	
+	 */
 	public void searchDeclarationsOfReferencedTypes(IJavaElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaModelException {
 		if (VERBOSE) {
 			Util.verbose("BasicSearchEngine.searchDeclarationsOfReferencedTypes(IJavaElement, SearchRequestor, SearchPattern, IProgressMonitor)"); //$NON-NLS-1$
@@ -1580,15 +1629,15 @@ public class BasicSearchEngine {
 		SearchPattern pattern = new DeclarationOfReferencedTypesPattern(enclosingElement);
 		searchDeclarations(enclosingElement, requestor, pattern, monitor);
 	}
-	
+
 	/**
 	 * Searches for all declarations of the methods invoked in the given element.
 	 * The element can be a compilation unit, a source type, or a source method.
 	 * Reports the method declarations using the given requestor.
-	 * 
+	 *
 	 * @see SearchEngine#searchDeclarationsOfSentMessages(IJavaElement, SearchRequestor, IProgressMonitor)
 	 * 	for detailed comment
-	 */	
+	 */
 	public void searchDeclarationsOfSentMessages(IJavaElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaModelException {
 		if (VERBOSE) {
 			Util.verbose("BasicSearchEngine.searchDeclarationsOfSentMessages(IJavaElement, SearchRequestor, SearchPattern, IProgressMonitor)"); //$NON-NLS-1$

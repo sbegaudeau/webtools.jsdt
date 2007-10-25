@@ -19,28 +19,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.runtime.IAdaptable;
-
 import org.eclipse.core.resources.IResource;
-
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.dnd.Transfer;
-
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.TreePath;
-
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.ui.IWorkingSet;
-
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ReorgUtils;
-
 import org.eclipse.wst.jsdt.internal.ui.dnd.JdtViewerDropAdapter;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.OthersWorkingSetUpdater;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.WorkingSetModel;

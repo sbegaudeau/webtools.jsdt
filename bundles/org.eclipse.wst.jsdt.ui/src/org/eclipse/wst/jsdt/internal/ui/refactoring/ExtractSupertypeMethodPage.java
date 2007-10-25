@@ -13,16 +13,11 @@ package org.eclipse.wst.jsdt.internal.ui.refactoring;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-
-import org.eclipse.swt.widgets.Composite;
-
 import org.eclipse.jface.operation.IRunnableWithProgress;
-
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ExtractSupertypeProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ExtractSupertypeRefactoring;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 

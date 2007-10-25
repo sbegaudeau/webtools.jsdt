@@ -29,8 +29,9 @@ package org.eclipse.wst.jsdt.internal.codeassist.select;
  *
  */
 
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ExplicitConstructorCall;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
 
 public class SelectionOnExplicitConstructorCall extends ExplicitConstructorCall {
 
@@ -61,9 +62,9 @@ public class SelectionOnExplicitConstructorCall extends ExplicitConstructorCall 
 	public void resolve(BlockScope scope) {
 
 		super.resolve(scope);
-	
+
 		// tolerate some error cases
-		if (binding == null || 
+		if (binding == null ||
 				!(binding.isValidBinding() ||
 					binding.problemId() == ProblemReasons.NotVisible))
 			throw new SelectionNodeFound();

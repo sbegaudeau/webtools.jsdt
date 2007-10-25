@@ -11,14 +11,10 @@
 
 package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
-import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.jface.resource.ImageDescriptor;
-
 import org.eclipse.jface.text.source.Annotation;
-
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.texteditor.IAnnotationImageProvider;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 
 /**

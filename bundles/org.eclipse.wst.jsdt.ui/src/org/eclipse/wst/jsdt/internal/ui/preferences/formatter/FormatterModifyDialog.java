@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.ui.preferences.formatter;
 import java.util.Map;
 
 import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.Profile;
 
 public class FormatterModifyDialog extends ModifyDialog {

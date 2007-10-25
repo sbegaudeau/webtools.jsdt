@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.wst.jsdt.core.*;
 import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaElementDelta;
+import org.eclipse.wst.jsdt.core.IProblemRequestor;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 
 /**
@@ -19,9 +20,9 @@ import org.eclipse.wst.jsdt.core.JavaModelException;
  * and signal the working copy addition through a delta.
  */
 public class BecomeWorkingCopyOperation extends JavaModelOperation {
-	
+
 	IProblemRequestor problemRequestor;
-	
+
 	/*
 	 * Creates a BecomeWorkingCopyOperation for the given working copy.
 	 * perOwnerWorkingCopies map is not null if the working copy is a shared working copy.

@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.ui.refactoring.reorg;
 
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaDeleteProcessor;
-
 import org.eclipse.wst.jsdt.internal.ui.refactoring.UserInterfaceManager;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.UserInterfaceStarter;
 

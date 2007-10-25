@@ -14,9 +14,7 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
-
 import org.eclipse.ui.IFileEditorInput;
-
 import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
 
 /**

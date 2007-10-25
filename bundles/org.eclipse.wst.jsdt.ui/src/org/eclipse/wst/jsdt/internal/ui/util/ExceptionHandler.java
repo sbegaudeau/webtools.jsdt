@@ -13,17 +13,15 @@ package org.eclipse.wst.jsdt.internal.ui.util;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.internal.ui.IJavaStatusConstants;
-import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.wst.jsdt.internal.ui.IJavaStatusConstants;
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 
 /**
  * The default exception handler shows an error dialog when one of its handle methods

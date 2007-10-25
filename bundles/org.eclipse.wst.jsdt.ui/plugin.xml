@@ -3027,7 +3027,7 @@
             targetID="#JavaScriptRulerContext"
             id="org.eclipse.wst.jsdt.internal.ui.javaeditor.QuickFixRulerMenuAction">
          <action
-               label="Quick Fix"
+               label="%action.label.0"
                helpContextId="org.eclipse.wst.jsdt.ui.quick_fix_action"
                class="org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaSelectRulerAction"
                menubarPath="additions"
@@ -3077,8 +3077,8 @@
            scope for now.  
        -->
       <context
-            name="JavaScript View"
-            description="JavaScript View Context"
+            name="%context.name.0"
+            description="%context.description.0"
             parentId="org.eclipse.wst.jsdt.ui.javaEditorScope"
             id="org.eclipse.wst.jsdt.ui.javascriptViewScope">
       </context>

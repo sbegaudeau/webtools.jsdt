@@ -18,7 +18,6 @@ import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.UnimplementedException;
 import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
-import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 
 /**
  *
@@ -31,7 +30,7 @@ public class UserLibraryClasspathContainerInitializer extends ClasspathContainer
 	public void initialize(IPath containerPath, IJavaProject project) throws CoreException {
 		if (isUserLibraryContainer(containerPath)) {
 			String userLibName= containerPath.segment(1);
-						
+
 			UserLibrary entries= UserLibraryManager.getUserLibrary(userLibName);
 			if (entries != null) {
 				UserLibraryClasspathContainer container= new UserLibraryClasspathContainer(userLibName);
@@ -39,11 +38,11 @@ public class UserLibraryClasspathContainerInitializer extends ClasspathContainer
 			}
 		}
 	}
-	
+
 	private boolean isUserLibraryContainer(IPath path) {
 		return path != null && path.segmentCount() == 2 && JavaCore.USER_LIBRARY_CONTAINER_ID.equals(path.segment(0));
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.ClasspathContainerInitializer#canUpdateClasspathContainer(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
 	 */

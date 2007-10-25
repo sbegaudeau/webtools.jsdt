@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
-import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
-import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
 public class EmptyStatement extends Statement {
 
@@ -30,22 +30,22 @@ public class EmptyStatement extends Statement {
 
 	// Report an error if necessary
 	public boolean complainIfUnreachable(FlowInfo flowInfo, BlockScope scope, boolean didAlreadyComplain) {
-		
+
 		// before 1.4, empty statements are tolerated anywhere
 		if (scope.compilerOptions().complianceLevel < ClassFileConstants.JDK1_4) {
 			return false;
 		}
 		return super.complainIfUnreachable(flowInfo, scope, didAlreadyComplain);
 	}
-	
+
 	public void generateCode(BlockScope currentScope, CodeStream codeStream){
 		// no bytecode, no need to check for reachability or recording source positions
 	}
-	
+
 	public StringBuffer printStatement(int tab, StringBuffer output) {
 		return printIndent(tab, output).append(';');
 	}
-		
+
 	public void resolve(BlockScope scope) {
 		if ((bits & IsUsefulEmptyStatement) == 0) {
 			scope.problemReporter().superfluousSemicolon(this.sourceStart, this.sourceEnd);
@@ -58,7 +58,7 @@ public class EmptyStatement extends Statement {
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);
 	}
-	
+
 
 }
 

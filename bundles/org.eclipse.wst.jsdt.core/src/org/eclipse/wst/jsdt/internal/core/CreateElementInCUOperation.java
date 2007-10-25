@@ -15,6 +15,9 @@ import java.util.Map;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaModelStatus;
@@ -29,9 +32,6 @@ import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.text.edits.TextEdit;
 
 /**
  * <p>This abstract class implements behavior common to <code>CreateElementInCUOperations</code>.
@@ -48,7 +48,7 @@ public abstract class CreateElementInCUOperation extends JavaModelOperation {
 	/**
 	 * The compilation unit AST used for this operation
 	 */
-	protected CompilationUnit cuAST;		
+	protected CompilationUnit cuAST;
 	/**
 	 * A constant meaning to position the new element
 	 * as the last child of its parent element.
@@ -159,12 +159,12 @@ public abstract class CreateElementInCUOperation extends JavaModelOperation {
 			done();
 		}
 	}
-	
+
 	/*
 	 * Returns the property descriptor for the element being created.
 	 */
 	protected abstract StructuralPropertyDescriptor getChildPropertyDescriptor(ASTNode parent);
-	
+
 	/*
 	 * Returns an AST node for the element being created.
 	 */
@@ -174,7 +174,7 @@ public abstract class CreateElementInCUOperation extends JavaModelOperation {
 	 */
 	protected void generateNewCompilationUnitAST(ICompilationUnit cu) throws JavaModelException {
 		this.cuAST = parse(cu);
-		
+
 		AST ast = this.cuAST.getAST();
 		ASTRewrite rewriter = ASTRewrite.create(ast);
 		IDocument document = getDocument(cu);
@@ -224,7 +224,7 @@ public abstract class CreateElementInCUOperation extends JavaModelOperation {
 	}
 	/**
 	 * Sets the default position in which to create the new type
-	 * member. 
+	 * member.
 	 * Operations that require a different default position must
 	 * override this method.
 	 */
@@ -233,7 +233,7 @@ public abstract class CreateElementInCUOperation extends JavaModelOperation {
 		// last child of the parent element in which it is created.
 	}
 	/**
-	 * Inserts the given child into the given AST, 
+	 * Inserts the given child into the given AST,
 	 * based on the position settings of this operation.
 	 *
 	 * @see #createAfter(IJavaElement)

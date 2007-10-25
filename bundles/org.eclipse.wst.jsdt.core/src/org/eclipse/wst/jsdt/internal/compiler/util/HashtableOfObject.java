@@ -16,7 +16,7 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
  * Hashtable of {char[] --> Object }
  */
 public final class HashtableOfObject implements Cloneable {
-	
+
 	// to avoid using Enumerations, walk the individual tables skipping nulls
 	public char[] keyTable[];
 	public Object valueTable[];
@@ -63,7 +63,7 @@ public final class HashtableOfObject implements Cloneable {
 	}
 
 	public boolean containsKey(char[] key) {
-		int length = keyTable.length, 
+		int length = keyTable.length,
 			index = CharOperation.hashCode(key) % length;
 		int keyLength = key.length;
 		char[] currentKey;
@@ -78,7 +78,7 @@ public final class HashtableOfObject implements Cloneable {
 	}
 
 	public Object get(char[] key) {
-		int length = keyTable.length, 
+		int length = keyTable.length,
 			index = CharOperation.hashCode(key) % length;
 		int keyLength = key.length;
 		char[] currentKey;
@@ -93,7 +93,7 @@ public final class HashtableOfObject implements Cloneable {
 	}
 
 	public Object put(char[] key, Object value) {
-		int length = keyTable.length, 
+		int length = keyTable.length,
 			index = CharOperation.hashCode(key) % length;
 		int keyLength = key.length;
 		char[] currentKey;
@@ -114,7 +114,7 @@ public final class HashtableOfObject implements Cloneable {
 	}
 
 	public Object removeKey(char[] key) {
-		int length = keyTable.length, 
+		int length = keyTable.length,
 			index = CharOperation.hashCode(key) % length;
 		int keyLength = key.length;
 		char[] currentKey;

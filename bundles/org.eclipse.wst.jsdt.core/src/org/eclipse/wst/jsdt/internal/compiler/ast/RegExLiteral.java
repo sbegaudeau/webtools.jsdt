@@ -32,13 +32,13 @@ public class RegExLiteral extends Literal {
 	}
 
 	public void computeConstant() {
-	
+
 		constant = StringConstant.fromValue(String.valueOf(source));
 	}
 
 	/**
 	 * Code generation for string literal
-	 */ 
+	 */
 	public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
 
 		int pc = codeStream.position;
@@ -53,7 +53,7 @@ public class RegExLiteral extends Literal {
 	}
 
 	public StringBuffer printExpression(int indent, StringBuffer output) {
-	
+
 		// handle some special char.....
 		for (int i = 0; i < source.length; i++) {
 			switch (source[i]) {

@@ -10,23 +10,36 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.search;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.wst.jsdt.core.Flags;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.IWorkingCopy;
+import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
-import org.eclipse.wst.jsdt.internal.core.search.*;
-import org.eclipse.wst.jsdt.internal.core.search.matching.*;
+import org.eclipse.wst.jsdt.internal.core.search.BasicSearchEngine;
+import org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessTypeRequestor;
+import org.eclipse.wst.jsdt.internal.core.search.TypeNameMatchRequestorWrapper;
+import org.eclipse.wst.jsdt.internal.core.search.TypeNameRequestorWrapper;
+import org.eclipse.wst.jsdt.internal.core.search.matching.DeclarationOfAccessedFieldsPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.DeclarationOfReferencedMethodsPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.DeclarationOfReferencedTypesPattern;
 
 /**
  * A {@link SearchEngine} searches for Java elements following a search pattern.
  * The search can be limited to a search scope.
  * <p>
- * Various search patterns can be created using the factory methods 
+ * Various search patterns can be created using the factory methods
  * {@link SearchPattern#createPattern(String, int, int, int)}, {@link SearchPattern#createPattern(IJavaElement, int)},
  * {@link SearchPattern#createOrPattern(SearchPattern, SearchPattern)}.
  * </p>
- * <p>For example, one can search for references to a method in the hierarchy of a type, 
+ * <p>For example, one can search for references to a method in the hierarchy of a type,
  * or one can search for the declarations of types starting with "Abstract" in a project.
  * </p>
  * <p>
@@ -98,7 +111,7 @@ public class SearchEngine {
 			}
 		}
 	}
-		
+
 	// Search engine now uses basic engine functionalities
 	private BasicSearchEngine basicEngine;
 
@@ -108,16 +121,16 @@ public class SearchEngine {
 	public SearchEngine() {
 		this.basicEngine = new BasicSearchEngine();
 	}
-	
+
 	/**
-	 * Creates a new search engine with a list of working copies that will take precedence over 
+	 * Creates a new search engine with a list of working copies that will take precedence over
 	 * their original compilation units in the subsequent search operations.
 	 * <p>
 	 * Note that passing an empty working copy will be as if the original compilation
 	 * unit had been deleted.</p>
 	 * <p>
 	 * Since 3.0 the given working copies take precedence over primary working copies (if any).
-	 * 
+	 *
 	 * @param workingCopies the working copies that take precedence over their original compilation units
 	 * @since 3.0
 	 */
@@ -125,14 +138,14 @@ public class SearchEngine {
 		this.basicEngine = new BasicSearchEngine(workingCopies);
 	}
 	/**
-	 * Creates a new search engine with a list of working copies that will take precedence over 
+	 * Creates a new search engine with a list of working copies that will take precedence over
 	 * their original compilation units in the subsequent search operations.
 	 * <p>
 	 * Note that passing an empty working copy will be as if the original compilation
 	 * unit had been deleted.</p>
 	 * <p>
 	 * Since 3.0 the given working copies take precedence over primary working copies (if any).
-	 * 
+	 *
 	 * @param workingCopies the working copies that take precedence over their original compilation units
 	 * @since 2.0
 	 * @deprecated Use {@link #SearchEngine(ICompilationUnit[])} instead.
@@ -143,12 +156,12 @@ public class SearchEngine {
 		System.arraycopy(workingCopies, 0, units, 0, length);
 		this.basicEngine = new BasicSearchEngine(units);
 	}
-	
+
 	/**
 	 * Creates a new search engine with the given working copy owner.
-	 * The working copies owned by this owner will take precedence over 
+	 * The working copies owned by this owner will take precedence over
 	 * the primary compilation units in the subsequent search operations.
-	 * 
+	 *
 	 * @param workingCopyOwner the owner of the working copies that take precedence over their original compilation units
 	 * @since 3.0
 	 */
@@ -168,7 +181,7 @@ public class SearchEngine {
 	public static IJavaSearchScope createHierarchyScope(IType type) throws JavaModelException {
 		return BasicSearchEngine.createHierarchyScope(type);
 	}
-	
+
 	/**
 	 * Returns a Java search scope limited to the hierarchy of the given type.
 	 * When the hierarchy is computed, the types defined in the working copies owned
@@ -213,13 +226,13 @@ public class SearchEngine {
 	 * The Java elements resulting from a search with this scope will
 	 * be children of the given elements.
 	 * <p>
-	 * If an element is an IJavaProject, then the project's source folders, 
-	 * its jars (external and internal) and its referenced projects (with their source 
+	 * If an element is an IJavaProject, then the project's source folders,
+	 * its jars (external and internal) and its referenced projects (with their source
 	 * folders and jars, recursively) will be included.
-	 * If an element is an IPackageFragmentRoot, then only the package fragments of 
+	 * If an element is an IPackageFragmentRoot, then only the package fragments of
 	 * this package fragment root will be included.
-	 * If an element is an IPackageFragment, then only the compilation unit and class 
-	 * files of this package fragment will be included. Subpackages will NOT be 
+	 * If an element is an IPackageFragment, then only the compilation unit and class
+	 * files of this package fragment will be included. Subpackages will NOT be
 	 * included.</p>
 	 * <p>
 	 * In other words, this is equivalent to using SearchEngine.createJavaSearchScope(elements, true).</p>
@@ -236,18 +249,18 @@ public class SearchEngine {
 	 * Returns a Java search scope limited to the given Java elements.
 	 * The Java elements resulting from a search with this scope will
 	 * be children of the given elements.
-	 * 
-	 * If an element is an IJavaProject, then the project's source folders, 
-	 * its jars (external and internal) and - if specified - its referenced projects 
+	 *
+	 * If an element is an IJavaProject, then the project's source folders,
+	 * its jars (external and internal) and - if specified - its referenced projects
 	 * (with their source folders and jars, recursively) will be included.
-	 * If an element is an IPackageFragmentRoot, then only the package fragments of 
+	 * If an element is an IPackageFragmentRoot, then only the package fragments of
 	 * this package fragment root will be included.
-	 * If an element is an IPackageFragment, then only the compilation unit and class 
-	 * files of this package fragment will be included. Subpackages will NOT be 
+	 * If an element is an IPackageFragment, then only the compilation unit and class
+	 * files of this package fragment will be included. Subpackages will NOT be
 	 * included.
 	 *
 	 * @param elements the Java elements the scope is limited to
-	 * @param includeReferencedProjects a flag indicating if referenced projects must be 
+	 * @param includeReferencedProjects a flag indicating if referenced projects must be
 	 * 									 recursively included
 	 * @return a new Java search scope
 	 * @since 2.0
@@ -260,22 +273,22 @@ public class SearchEngine {
 	 * Returns a Java search scope limited to the given Java elements.
 	 * The Java elements resulting from a search with this scope will
 	 * be children of the given elements.
-	 * 
+	 *
 	 * If an element is an IJavaProject, then it includes:
-	 * - its source folders if IJavaSearchScope.SOURCES is specified, 
-	 * - its application libraries (internal and external jars, class folders that are on the raw classpath, 
+	 * - its source folders if IJavaSearchScope.SOURCES is specified,
+	 * - its application libraries (internal and external jars, class folders that are on the raw classpath,
 	 *   or the ones that are coming from a classpath path variable,
 	 *   or the ones that are coming from a classpath container with the K_APPLICATION kind)
 	 *   if IJavaSearchScope.APPLICATION_LIBRARIES is specified
-	 * - its system libraries (internal and external jars, class folders that are coming from an 
-	 *   IClasspathContainer with the K_SYSTEM kind) 
+	 * - its system libraries (internal and external jars, class folders that are coming from an
+	 *   IClasspathContainer with the K_SYSTEM kind)
 	 *   if IJavaSearchScope.APPLICATION_LIBRARIES is specified
-	 * - its referenced projects (with their source folders and jars, recursively) 
+	 * - its referenced projects (with their source folders and jars, recursively)
 	 *   if IJavaSearchScope.REFERENCED_PROJECTS is specified.
-	 * If an element is an IPackageFragmentRoot, then only the package fragments of 
+	 * If an element is an IPackageFragmentRoot, then only the package fragments of
 	 * this package fragment root will be included.
-	 * If an element is an IPackageFragment, then only the compilation unit and class 
-	 * files of this package fragment will be included. Subpackages will NOT be 
+	 * If an element is an IPackageFragment, then only the compilation unit and class
+	 * files of this package fragment will be included. Subpackages will NOT be
 	 * included.
 	 *
 	 * @param elements the Java elements the scope is limited to
@@ -290,7 +303,7 @@ public class SearchEngine {
 	public static IJavaSearchScope createJavaSearchScope(IJavaElement[] elements, int includeMask) {
 		return BasicSearchEngine.createJavaSearchScope(elements, includeMask);
 	}
-	
+
 	/**
 	 * Returns a search pattern that combines the given two patterns into a "or" pattern.
 	 * The search result will match either the left pattern or the right pattern.
@@ -306,7 +319,7 @@ public class SearchEngine {
 		SearchPattern pattern = SearchPattern.createOrPattern(left, right);
 		return new SearchPatternAdapter(pattern);
 	}
-	
+
 	/**
 	 * Returns a search pattern based on a given string pattern. The string patterns support '*' wild-cards.
 	 * The remaining parameters are used to narrow down the type of expected results.
@@ -361,9 +374,9 @@ public class SearchEngine {
 		int matchRule = isCaseSensitive ? matchMode | SearchPattern.R_CASE_SENSITIVE : matchMode;
 		return  new SearchPatternAdapter(SearchPattern.createPattern(stringPattern, searchFor, limitTo, matchRule));
 	}
-	
+
 	/**
-	 * Returns a search pattern based on a given Java element. 
+	 * Returns a search pattern based on a given Java element.
 	 * The pattern is used to trigger the appropriate search, and can be parameterized as follows:
 	 *
 	 * @param element the Java element the search pattern is based on
@@ -390,7 +403,7 @@ public class SearchEngine {
 
 	/**
 	 * Create a type name match on a given type with specific modifiers.
-	 * 
+	 *
 	 * @param type The java model handle of the type
 	 * @param modifiers Modifiers of the type
 	 * @return A non-null match on the given type.
@@ -410,7 +423,7 @@ public class SearchEngine {
 	}
 	/**
 	 * Returns a new default Java search participant.
-	 * 
+	 *
 	 * @return a new default Java search participant
 	 * @since 3.0
 	 */
@@ -420,24 +433,24 @@ public class SearchEngine {
 
 	/**
 	 * Searches for the Java element determined by the given signature. The signature
-	 * can be incomplete. For example, a call like 
+	 * can be incomplete. For example, a call like
 	 * <code>search(ws, "run()", METHOD,REFERENCES, col)</code>
 	 * searches for all references to the method <code>run</code>.
 	 *
 	 * Note that by default the pattern will be case insensitive. For specifying case s
 	 * sensitive search, use <code>search(workspace, createSearchPattern(patternString, searchFor, limitTo, true), scope, resultCollector);</code>
-	 * 
+	 *
 	 * @param workspace the workspace
 	 * @param patternString the pattern to be searched for
 	 * @param searchFor a hint what kind of Java element the string pattern represents.
 	 *  Look into {@link IJavaSearchConstants} for valid values
 	 * @param limitTo one of the following values:
 	 *	<ul>
-	 *	  <li>{@link IJavaSearchConstants#DECLARATIONS}: search 
+	 *	  <li>{@link IJavaSearchConstants#DECLARATIONS}: search
 	 *		  for declarations only </li>
-	 *	  <li>{@link IJavaSearchConstants#REFERENCES}: search 
+	 *	  <li>{@link IJavaSearchConstants#REFERENCES}: search
 	 *		  for all references </li>
-	 *	  <li>{@link IJavaSearchConstants#ALL_OCCURRENCES}: search 
+	 *	  <li>{@link IJavaSearchConstants#ALL_OCCURRENCES}: search
 	 *		  for both declarations and all references </li>
 	 *	  <li>{@link IJavaSearchConstants#IMPLEMENTORS}: for types, will find all types
 	 *			which directly implement/extend a given interface.<br>
@@ -446,7 +459,7 @@ public class SearchEngine {
 	 *	  </li>
 	 * </ul>
 	 * @param scope the search result has to be limited to the given scope
-	 * @param resultCollector a callback object to which each match is reported	 
+	 * @param resultCollector a callback object to which each match is reported
 	 * @exception JavaModelException if the search failed. Reasons include:
 	 *	<ul>
 	 *		<li>the classpath is incorrectly set</li>
@@ -459,10 +472,10 @@ public class SearchEngine {
 				? SearchPattern.R_PATTERN_MATCH
 				: SearchPattern.R_EXACT_MATCH;
 			search(
-				SearchPattern.createPattern(patternString, searchFor, limitTo, matchMode | SearchPattern.R_CASE_SENSITIVE), 
-				new SearchParticipant[] {getDefaultSearchParticipant()}, 
-				scope, 
-				new ResultCollectorAdapter(resultCollector), 
+				SearchPattern.createPattern(patternString, searchFor, limitTo, matchMode | SearchPattern.R_CASE_SENSITIVE),
+				new SearchParticipant[] {getDefaultSearchParticipant()},
+				scope,
+				new ResultCollectorAdapter(resultCollector),
 				resultCollector.getProgressMonitor());
 		} catch (CoreException e) {
 			if (e instanceof JavaModelException)
@@ -478,11 +491,11 @@ public class SearchEngine {
 	 * @param element the Java element to be searched for
 	 * @param limitTo one of the following values:
 	 *	<ul>
-	 *	  <li>{@link IJavaSearchConstants#DECLARATIONS}: search 
+	 *	  <li>{@link IJavaSearchConstants#DECLARATIONS}: search
 	 *		  for declarations only </li>
-	 *	  <li>{@link IJavaSearchConstants#REFERENCES}: search 
+	 *	  <li>{@link IJavaSearchConstants#REFERENCES}: search
 	 *		  for all references </li>
-	 *	  <li>{@link IJavaSearchConstants#ALL_OCCURRENCES}: search 
+	 *	  <li>{@link IJavaSearchConstants#ALL_OCCURRENCES}: search
 	 *		  for both declarations and all references </li>
 	 *	  <li>{@link IJavaSearchConstants#IMPLEMENTORS}: for types, will find all types
 	 *				which directly implement/extend a given interface.</li>
@@ -518,10 +531,10 @@ public class SearchEngine {
 	public void search(IWorkspace workspace, ISearchPattern searchPattern, IJavaSearchScope scope, IJavaSearchResultCollector resultCollector) throws JavaModelException {
 		try {
 			search(
-				((SearchPatternAdapter)searchPattern).pattern, 
-				new SearchParticipant[] {getDefaultSearchParticipant()}, 
-				scope, 
-				new ResultCollectorAdapter(resultCollector), 
+				((SearchPatternAdapter)searchPattern).pattern,
+				new SearchParticipant[] {getDefaultSearchParticipant()},
+				scope,
+				new ResultCollectorAdapter(resultCollector),
 				resultCollector.getProgressMonitor());
 		} catch (CoreException e) {
 			if (e instanceof JavaModelException)
@@ -529,7 +542,7 @@ public class SearchEngine {
 			throw new JavaModelException(e);
 		}
 	}
-	
+
 	/**
 	 * Searches for matches of a given search pattern. Search patterns can be created using helper
 	 * methods (from a String pattern or a Java element) and encapsulate the description of what is
@@ -553,8 +566,8 @@ public class SearchEngine {
 	/**
 	 * Searches for all top-level types and member types in the given scope.
 	 * The search can be selecting specific types (given a package exact full name or
-	 * a type name with specific match mode). 
-	 * 
+	 * a type name with specific match mode).
+	 *
 	 * @param packageExactName the exact package full name of the searched types.<br>
 	 * 					If you want to use a prefix or a wild-carded string for package, you need to use
 	 * 					{@link #searchAllTypeNames(char[], int, char[], int, int, IJavaSearchScope, TypeNameRequestor, int, IProgressMonitor)}
@@ -573,7 +586,7 @@ public class SearchEngine {
 	 *		<li>{@link SearchPattern#R_CAMELCASE_MATCH} if type name are camel case of the names of the searched types.</li>
 	 * </ul>
 	 * combined with {@link SearchPattern#R_CASE_SENSITIVE},
-	 *   e.g. {@link SearchPattern#R_EXACT_MATCH} | {@link SearchPattern#R_CASE_SENSITIVE} if an exact and case sensitive match is requested, 
+	 *   e.g. {@link SearchPattern#R_EXACT_MATCH} | {@link SearchPattern#R_CASE_SENSITIVE} if an exact and case sensitive match is requested,
 	 *   or {@link SearchPattern#R_PREFIX_MATCH} if a prefix non case sensitive match is requested.
 	 * @param searchFor determines the nature of the searched elements
 	 *	<ul>
@@ -606,23 +619,23 @@ public class SearchEngine {
 	 * 	instead
 	 */
 	public void searchAllTypeNames(
-		final char[] packageExactName, 
+		final char[] packageExactName,
 		final char[] typeName,
-		final int matchRule, 
-		int searchFor, 
-		IJavaSearchScope scope, 
+		final int matchRule,
+		int searchFor,
+		IJavaSearchScope scope,
 		final TypeNameRequestor nameRequestor,
 		int waitingPolicy,
 		IProgressMonitor progressMonitor)  throws JavaModelException {
-		
+
 		searchAllTypeNames(packageExactName, SearchPattern.R_EXACT_MATCH, typeName, matchRule, searchFor, scope, nameRequestor, waitingPolicy, progressMonitor);
 	}
 
 	/**
 	 * Searches for all top-level types and member types in the given scope.
 	 * The search can be selecting specific types (given a package name using specific match mode
-	 * and/or a type name using another specific match mode). 
-	 * 
+	 * and/or a type name using another specific match mode).
+	 *
 	 * @param packageName the full name of the package of the searched types, or a prefix for this
 	 *						package, or a wild-carded string for this package.
 	 *						May be <code>null</code>, then any package name is accepted.
@@ -640,7 +653,7 @@ public class SearchEngine {
 	 *		<li>{@link SearchPattern#R_CAMELCASE_MATCH} if type name are camel case of the names of the searched types.</li>
 	 * </ul>
 	 * combined with {@link SearchPattern#R_CASE_SENSITIVE},
-	 *   e.g. {@link SearchPattern#R_EXACT_MATCH} | {@link SearchPattern#R_CASE_SENSITIVE} if an exact and case sensitive match is requested, 
+	 *   e.g. {@link SearchPattern#R_EXACT_MATCH} | {@link SearchPattern#R_CASE_SENSITIVE} if an exact and case sensitive match is requested,
 	 *   or {@link SearchPattern#R_PREFIX_MATCH} if a prefix non case sensitive match is requested.
 	 * @param typeMatchRule one of
 	 * <ul>
@@ -652,7 +665,7 @@ public class SearchEngine {
 	 *		<li>{@link SearchPattern#R_CAMELCASE_MATCH} if type name are camel case of the names of the searched types.</li>
 	 * </ul>
 	 * combined with {@link SearchPattern#R_CASE_SENSITIVE},
-	 *   e.g. {@link SearchPattern#R_EXACT_MATCH} | {@link SearchPattern#R_CASE_SENSITIVE} if an exact and case sensitive match is requested, 
+	 *   e.g. {@link SearchPattern#R_EXACT_MATCH} | {@link SearchPattern#R_CASE_SENSITIVE} if an exact and case sensitive match is requested,
 	 *   or {@link SearchPattern#R_PREFIX_MATCH} if a prefix non case sensitive match is requested.
 	 * @param searchFor determines the nature of the searched elements
 	 *	<ul>
@@ -683,16 +696,16 @@ public class SearchEngine {
 	 * @since 3.3
 	 */
 	public void searchAllTypeNames(
-		final char[] packageName, 
-		final int packageMatchRule, 
+		final char[] packageName,
+		final int packageMatchRule,
 		final char[] typeName,
-		final int typeMatchRule, 
-		int searchFor, 
-		IJavaSearchScope scope, 
+		final int typeMatchRule,
+		int searchFor,
+		IJavaSearchScope scope,
 		final TypeNameRequestor nameRequestor,
 		int waitingPolicy,
 		IProgressMonitor progressMonitor)  throws JavaModelException {
-		
+
 		TypeNameRequestorWrapper requestorWrapper = new TypeNameRequestorWrapper(nameRequestor);
 		this.basicEngine.searchAllTypeNames(packageName, packageMatchRule, typeName, typeMatchRule, searchFor, scope, requestorWrapper, waitingPolicy, progressMonitor);
 	}
@@ -705,7 +718,7 @@ public class SearchEngine {
 	 * Provided {@link TypeNameMatchRequestor} requestor will collect {@link TypeNameMatch}
 	 * matches found during the search.
 	 * </p>
-	 * 
+	 *
 	 * @param packageName the full name of the package of the searched types, or a prefix for this
 	 *						package, or a wild-carded string for this package.
 	 *						May be <code>null</code>, then any package name is accepted.
@@ -719,7 +732,7 @@ public class SearchEngine {
 	 *		<li>{@link SearchPattern#R_CAMELCASE_MATCH} if type name are camel case of the names of the searched types.</li>
 	 * </ul>
 	 * combined with {@link SearchPattern#R_CASE_SENSITIVE},
-	 *   e.g. {@link SearchPattern#R_EXACT_MATCH} | {@link SearchPattern#R_CASE_SENSITIVE} if an exact and case sensitive match is requested, 
+	 *   e.g. {@link SearchPattern#R_EXACT_MATCH} | {@link SearchPattern#R_CASE_SENSITIVE} if an exact and case sensitive match is requested,
 	 *   or {@link SearchPattern#R_PREFIX_MATCH} if a prefix non case sensitive match is requested.
 	 * @param typeName the dot-separated qualified name of the searched type (the qualification include
 	 *					the enclosing types if the searched type is a member type), or a prefix
@@ -735,7 +748,7 @@ public class SearchEngine {
 	 *		<li>{@link SearchPattern#R_CAMELCASE_MATCH} if type name are camel case of the names of the searched types.</li>
 	 * </ul>
 	 * combined with {@link SearchPattern#R_CASE_SENSITIVE},
-	 *   e.g. {@link SearchPattern#R_EXACT_MATCH} | {@link SearchPattern#R_CASE_SENSITIVE} if an exact and case sensitive match is requested, 
+	 *   e.g. {@link SearchPattern#R_EXACT_MATCH} | {@link SearchPattern#R_CASE_SENSITIVE} if an exact and case sensitive match is requested,
 	 *   or {@link SearchPattern#R_PREFIX_MATCH} if a prefix non case sensitive match is requested.
 	 * @param searchFor determines the nature of the searched elements
 	 *	<ul>
@@ -767,16 +780,16 @@ public class SearchEngine {
 	 * @since 3.3
 	 */
 	public void searchAllTypeNames(
-		final char[] packageName, 
-		final int packageMatchRule, 
+		final char[] packageName,
+		final int packageMatchRule,
 		final char[] typeName,
-		final int typeMatchRule, 
-		int searchFor, 
-		IJavaSearchScope scope, 
+		final int typeMatchRule,
+		int searchFor,
+		IJavaSearchScope scope,
 		final TypeNameMatchRequestor nameMatchRequestor,
 		int waitingPolicy,
 		IProgressMonitor progressMonitor)  throws JavaModelException {
-		
+
 		TypeNameMatchRequestorWrapper requestorWrapper = new TypeNameMatchRequestorWrapper(nameMatchRequestor, scope);
 		this.basicEngine.searchAllTypeNames(packageName, packageMatchRule, typeName, typeMatchRule, searchFor, scope, requestorWrapper, waitingPolicy, progressMonitor);
 	}
@@ -784,7 +797,7 @@ public class SearchEngine {
 	/**
 	 * Searches for all top-level types and member types in the given scope matching any of the given qualifications
 	 * and type names in a case sensitive way.
-	 * 
+	 *
 	 * @param qualifications the qualified name of the package/enclosing type of the searched types.
 	 *					May be <code>null</code>, then any package name is accepted.
 	 * @param typeNames the simple names of the searched types.
@@ -808,9 +821,9 @@ public class SearchEngine {
 	 * @since 3.1
 	 */
 	public void searchAllTypeNames(
-		final char[][] qualifications, 
+		final char[][] qualifications,
 		final char[][] typeNames,
-		IJavaSearchScope scope, 
+		IJavaSearchScope scope,
 		final TypeNameRequestor nameRequestor,
 		int waitingPolicy,
 		IProgressMonitor progressMonitor)  throws JavaModelException {
@@ -834,7 +847,7 @@ public class SearchEngine {
 	 * Provided {@link TypeNameMatchRequestor} requestor will collect {@link TypeNameMatch}
 	 * matches found during the search.
 	 * </p>
-	 * 
+	 *
 	 * @param qualifications the qualified name of the package/enclosing type of the searched types.
 	 *					May be <code>null</code>, then any package name is accepted.
 	 * @param typeNames the simple names of the searched types.
@@ -859,9 +872,9 @@ public class SearchEngine {
 	 * @since 3.3
 	 */
 	public void searchAllTypeNames(
-		final char[][] qualifications, 
+		final char[][] qualifications,
 		final char[][] typeNames,
-		IJavaSearchScope scope, 
+		IJavaSearchScope scope,
 		final TypeNameMatchRequestor nameMatchRequestor,
 		int waitingPolicy,
 		IProgressMonitor progressMonitor)  throws JavaModelException {
@@ -881,8 +894,8 @@ public class SearchEngine {
 	/**
 	 * Searches for all top-level types and member types in the given scope.
 	 * The search can be selecting specific types (given a package or a type name
-	 * prefix and match modes). 
-	 * 
+	 * prefix and match modes).
+	 *
 	 * @param packageName the full name of the package of the searched types, or a prefix for this
 	 *						package, or a wild-carded string for this package.
 	 * @param typeName the dot-separated qualified name of the searched type (the qualification include
@@ -897,7 +910,7 @@ public class SearchEngine {
 	 *		<li>{@link SearchPattern#R_PATTERN_MATCH} if the package name and type name contain wild-cards.</li>
 	 * </ul>
 	 * combined with {@link SearchPattern#R_CASE_SENSITIVE},
-	 *   e.g. {@link SearchPattern#R_EXACT_MATCH} | {@link SearchPattern#R_CASE_SENSITIVE} if an exact and case sensitive match is requested, 
+	 *   e.g. {@link SearchPattern#R_EXACT_MATCH} | {@link SearchPattern#R_CASE_SENSITIVE} if an exact and case sensitive match is requested,
 	 *   or {@link SearchPattern#R_PREFIX_MATCH} if a prefix non case sensitive match is requested.
 	 * @param searchFor one of
 	 * <ul>
@@ -925,15 +938,15 @@ public class SearchEngine {
 	 *@deprecated Use {@link #searchAllTypeNames(char[], char[], int, int, IJavaSearchScope, TypeNameRequestor, int, IProgressMonitor)} instead
 	 */
 	public void searchAllTypeNames(
-		final char[] packageName, 
+		final char[] packageName,
 		final char[] typeName,
-		final int matchRule, 
-		int searchFor, 
-		IJavaSearchScope scope, 
+		final int matchRule,
+		int searchFor,
+		IJavaSearchScope scope,
 		final ITypeNameRequestor nameRequestor,
 		int waitingPolicy,
 		IProgressMonitor progressMonitor)  throws JavaModelException {
-		
+
 		TypeNameRequestorAdapter requestorAdapter = new TypeNameRequestorAdapter(nameRequestor);
 		this.basicEngine.searchAllTypeNames(packageName, SearchPattern.R_EXACT_MATCH, typeName, matchRule, searchFor, scope, requestorAdapter, waitingPolicy, progressMonitor);
 	}
@@ -941,8 +954,8 @@ public class SearchEngine {
 	/**
 	 * Searches for all top-level types and member types in the given scope.
 	 * The search can be selecting specific types (given a package or a type name
-	 * prefix and match modes). 
-	 * 
+	 * prefix and match modes).
+	 *
 	 * @param workspace the workspace to search in
 	 * @param packageName the full name of the package of the searched types, or a prefix for this
 	 *						package, or a wild-carded string for this package.
@@ -984,26 +997,26 @@ public class SearchEngine {
 	 */
 	public void searchAllTypeNames(
 		IWorkspace workspace,
-		final char[] packageName, 
+		final char[] packageName,
 		final char[] typeName,
-		final int matchMode, 
+		final int matchMode,
 		final boolean isCaseSensitive,
-		int searchFor, 
-		IJavaSearchScope scope, 
+		int searchFor,
+		IJavaSearchScope scope,
 		final ITypeNameRequestor nameRequestor,
 		int waitingPolicy,
 		IProgressMonitor progressMonitor)  throws JavaModelException {
-		
+
 		searchAllTypeNames(
-			packageName, 
-			typeName, 
-			isCaseSensitive ? matchMode | SearchPattern.R_CASE_SENSITIVE : matchMode, 
-			searchFor, 
-			scope, 
-			nameRequestor, 
-			waitingPolicy, 
+			packageName,
+			typeName,
+			isCaseSensitive ? matchMode | SearchPattern.R_CASE_SENSITIVE : matchMode,
+			searchFor,
+			scope,
+			nameRequestor,
+			waitingPolicy,
 			progressMonitor);
-	}	
+	}
 
 	/**
 	 * Searches for all declarations of the fields accessed in the given element.
@@ -1027,7 +1040,7 @@ public class SearchEngine {
 	 *		}
 	 * </pre>
 	 * </code>
-	 * then searching for declarations of accessed fields in method 
+	 * then searching for declarations of accessed fields in method
 	 * <code>X.test()</code> would collect the fields
 	 * <code>B.value</code> and <code>A.field1</code>.
 	 * </p>
@@ -1041,11 +1054,11 @@ public class SearchEngine {
 	 *		<li>the classpath is incorrectly set</li>
 	 *	</ul>
 	 * @since 3.0
-	 */	
+	 */
 	public void searchDeclarationsOfAccessedFields(IJavaElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaModelException {
 		this.basicEngine.searchDeclarationsOfAccessedFields(enclosingElement, requestor, monitor);
 	}
-	
+
 	/**
 	 * Searches for all declarations of the fields accessed in the given element.
 	 * The element can be a compilation unit, a source type, or a source method.
@@ -1068,7 +1081,7 @@ public class SearchEngine {
 	 *		}
 	 * </pre>
 	 * </code>
-	 * then searching for declarations of accessed fields in method 
+	 * then searching for declarations of accessed fields in method
 	 * <code>X.test()</code> would collect the fields
 	 * <code>B.value</code> and <code>A.field1</code>.
 	 * </p>
@@ -1082,12 +1095,12 @@ public class SearchEngine {
 	 *		<li>the classpath is incorrectly set</li>
 	 *	</ul>
 	 * @deprecated Use {@link  #searchDeclarationsOfAccessedFields(IJavaElement, SearchRequestor, IProgressMonitor)} instead.
-	 */	
+	 */
 	public void searchDeclarationsOfAccessedFields(IWorkspace workspace, IJavaElement enclosingElement, IJavaSearchResultCollector resultCollector) throws JavaModelException {
 		SearchPattern pattern = new DeclarationOfAccessedFieldsPattern(enclosingElement);
 		this.basicEngine.searchDeclarations(enclosingElement, new ResultCollectorAdapter(resultCollector), pattern, resultCollector.getProgressMonitor());
 	}
-	
+
 	/**
 	 * Searches for all declarations of the types referenced in the given element.
 	 * The element can be a compilation unit, a source type, or a source method.
@@ -1124,11 +1137,11 @@ public class SearchEngine {
 	 *		<li>the classpath is incorrectly set</li>
 	 *	</ul>
 	 * @since 3.0
-	 */	
+	 */
 	public void searchDeclarationsOfReferencedTypes(IJavaElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaModelException {
 		this.basicEngine.searchDeclarationsOfReferencedTypes(enclosingElement, requestor, monitor);
 	}
-	
+
 	/**
 	 * Searches for all declarations of the types referenced in the given element.
 	 * The element can be a compilation unit, a source type, or a source method.
@@ -1165,12 +1178,12 @@ public class SearchEngine {
 	 *		<li>the classpath is incorrectly set</li>
 	 *	</ul>
 	 * @deprecated Use {@link #searchDeclarationsOfReferencedTypes(IJavaElement, SearchRequestor, IProgressMonitor)} instead.
-	 */	
+	 */
 	public void searchDeclarationsOfReferencedTypes(IWorkspace workspace, IJavaElement enclosingElement, IJavaSearchResultCollector resultCollector) throws JavaModelException {
 		SearchPattern pattern = new DeclarationOfReferencedTypesPattern(enclosingElement);
 		this.basicEngine.searchDeclarations(enclosingElement, new ResultCollectorAdapter(resultCollector), pattern, resultCollector.getProgressMonitor());
 	}
-	
+
 	/**
 	 * Searches for all declarations of the methods invoked in the given element.
 	 * The element can be a compilation unit, a source type, or a source method.
@@ -1196,7 +1209,7 @@ public class SearchEngine {
 	 *		}
 	 * </pre>
 	 * </code>
-	 * then searching for declarations of sent messages in method 
+	 * then searching for declarations of sent messages in method
 	 * <code>X.test()</code> would collect the methods
 	 * <code>A.foo()</code>, <code>B.foo()</code>, and <code>A.bar()</code>.
 	 * </p>
@@ -1210,7 +1223,7 @@ public class SearchEngine {
 	 *		<li>the classpath is incorrectly set</li>
 	 *	</ul>
 	 * @since 3.0
-	 */	
+	 */
 	public void searchDeclarationsOfSentMessages(IJavaElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaModelException {
 		this.basicEngine.searchDeclarationsOfSentMessages(enclosingElement, requestor, monitor);
 	}
@@ -1240,7 +1253,7 @@ public class SearchEngine {
 	 *		}
 	 * </pre>
 	 * </code>
-	 * then searching for declarations of sent messages in method 
+	 * then searching for declarations of sent messages in method
 	 * <code>X.test()</code> would collect the methods
 	 * <code>A.foo()</code>, <code>B.foo()</code>, and <code>A.bar()</code>.
 	 * </p>
@@ -1254,7 +1267,7 @@ public class SearchEngine {
 	 *		<li>the classpath is incorrectly set</li>
 	 *	</ul>
 	 * @deprecated Use {@link #searchDeclarationsOfSentMessages(IJavaElement, SearchRequestor, IProgressMonitor)} instead.
-	 */	
+	 */
 	public void searchDeclarationsOfSentMessages(IWorkspace workspace, IJavaElement enclosingElement, IJavaSearchResultCollector resultCollector) throws JavaModelException {
 		SearchPattern pattern = new DeclarationOfReferencedMethodsPattern(enclosingElement);
 		this.basicEngine.searchDeclarations(enclosingElement, new ResultCollectorAdapter(resultCollector), pattern, resultCollector.getProgressMonitor());

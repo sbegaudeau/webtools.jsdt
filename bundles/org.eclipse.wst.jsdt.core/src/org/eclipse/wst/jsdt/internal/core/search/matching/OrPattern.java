@@ -13,7 +13,9 @@ package org.eclipse.wst.jsdt.internal.core.search.matching;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.wst.jsdt.core.search.*;
+import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.SearchParticipant;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.core.index.Index;
 import org.eclipse.wst.jsdt.internal.core.search.IndexQueryRequestor;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
@@ -36,13 +38,13 @@ public class OrPattern extends SearchPattern implements IIndexConstants {
 		super(Math.max(leftPattern.getMatchRule(), rightPattern.getMatchRule()));
 		((InternalSearchPattern)this).kind = OR_PATTERN;
 		((InternalSearchPattern)this).mustResolve = ((InternalSearchPattern) leftPattern).mustResolve || ((InternalSearchPattern) rightPattern).mustResolve;
-	
+
 		SearchPattern[] leftPatterns = leftPattern instanceof OrPattern ? ((OrPattern) leftPattern).patterns : null;
 		SearchPattern[] rightPatterns = rightPattern instanceof OrPattern ? ((OrPattern) rightPattern).patterns : null;
 		int leftSize = leftPatterns == null ? 1 : leftPatterns.length;
 		int rightSize = rightPatterns == null ? 1 : rightPatterns.length;
 		this.patterns = new SearchPattern[leftSize + rightSize];
-	
+
 		if (leftPatterns == null)
 			this.patterns[0] = leftPattern;
 		else

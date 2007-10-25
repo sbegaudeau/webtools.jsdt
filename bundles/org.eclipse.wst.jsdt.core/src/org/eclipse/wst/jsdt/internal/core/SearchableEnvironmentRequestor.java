@@ -19,9 +19,9 @@ import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.codeassist.ISearchRequestor;
+import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
-import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 
 /**
  * Implements <code>IJavaElementRequestor</code>, wrappering and forwarding
@@ -38,11 +38,11 @@ class SearchableEnvironmentRequestor extends JavaElementRequestor {
 	 * accept types within.
 	 */
 	protected ICompilationUnit unitToSkip;
-	
+
 	protected IJavaProject project;
-	
+
 	protected NameLookup nameLookup;
-	
+
 	protected boolean checkAccessRestrictions;
 /**
  * Constructs a SearchableEnvironmentRequestor that wraps the
@@ -54,7 +54,7 @@ public SearchableEnvironmentRequestor(ISearchRequestor requestor) {
 	this.project= null;
 	this.nameLookup= null;
 	this.checkAccessRestrictions = false;
-	
+
 }
 /**
  * Constructs a SearchableEnvironmentRequestor that wraps the
@@ -66,7 +66,7 @@ public SearchableEnvironmentRequestor(ISearchRequestor requestor, ICompilationUn
 	this.unitToSkip= unitToSkip;
 	this.project= project;
 	this.nameLookup = nameLookup;
-	this.checkAccessRestrictions = 
+	this.checkAccessRestrictions =
 		!JavaCore.IGNORE.equals(project.getOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
 		|| !JavaCore.IGNORE.equals(project.getOption(JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE, true));
 }
@@ -95,10 +95,10 @@ public void acceptType(IType type) {
 		}
 		char[] packageName = type.getPackageFragment().getElementName().toCharArray();
 		boolean isBinary = type instanceof BinaryType;
-		
+
 		// determine associated access restriction
 		AccessRestriction accessRestriction = null;
-		
+
 		if (this.checkAccessRestrictions && (isBinary || !type.getJavaProject().equals(this.project))) {
 			PackageFragmentRoot root = (PackageFragmentRoot)type.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
 			ClasspathEntry entry = (ClasspathEntry) this.nameLookup.rootToResolvedEntries.get(root);

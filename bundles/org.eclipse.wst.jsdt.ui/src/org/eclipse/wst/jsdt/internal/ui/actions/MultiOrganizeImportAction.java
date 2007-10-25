@@ -15,11 +15,8 @@ import java.util.Map;
 
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
-
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.fix.ICleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.ImportsCleanUp;

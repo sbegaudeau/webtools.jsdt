@@ -8,7 +8,7 @@ public abstract class InferredMember extends ASTNode{
 	public InferredType inType;
 	public int nameStart;
 	public boolean isStatic = false;
-	
+
 	public boolean isInferred()
 	{
 		return true;

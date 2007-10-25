@@ -15,12 +15,10 @@ import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-
-import org.eclipse.wst.jsdt.ui.text.java.*;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.IJavaAnnotation;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaMarkerAnnotation;
+import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
 
 /**
  *

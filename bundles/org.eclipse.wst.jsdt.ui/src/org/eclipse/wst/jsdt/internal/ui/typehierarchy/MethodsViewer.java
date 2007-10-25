@@ -13,12 +13,6 @@ package org.eclipse.wst.jsdt.internal.ui.typehierarchy;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.ScrollBar;
-import org.eclipse.swt.widgets.Table;
-
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -28,20 +22,17 @@ import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.ScrollBar;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
-
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.actions.MemberFilterActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.OpenAction;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.filters.SyntheticMembersFilter;
@@ -50,6 +41,9 @@ import org.eclipse.wst.jsdt.internal.ui.util.SelectionUtil;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.DecoratingJavaLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ProblemTableViewer;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.actions.MemberFilterActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.OpenAction;
 
 /**
  * Method viewer shows a list of methods of a input type. 

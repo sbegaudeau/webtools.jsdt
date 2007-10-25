@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;

@@ -14,9 +14,33 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Map;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.wst.jsdt.core.IBuffer;
+import org.eclipse.wst.jsdt.core.IClasspathAttribute;
+import org.eclipse.wst.jsdt.core.IClasspathEntry;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaModel;
+import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IOpenable;
+import org.eclipse.wst.jsdt.core.IPackageFragment;
+import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.IParent;
+import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.core.util.MementoTokenizer;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
@@ -49,7 +73,7 @@ public class PackageFragmentRoot extends Openable implements IPackageFragmentRoo
 	 * (an IResource or a java.io.File (for external jar only))
 	 */
 	protected Object resource;
-	
+
 /**
  * Constructs a package fragment root which is the root of the java package
  * directory hierarchy.
@@ -66,7 +90,7 @@ public void attachSource(IPath sourcePath, IPath rootPath, IProgressMonitor moni
 	try {
 		verifyAttachSource(sourcePath);
 		if (monitor != null) {
-			monitor.beginTask(Messages.element_attachingSource, 2); 
+			monitor.beginTask(Messages.element_attachingSource, 2);
 		}
 		SourceMapper oldMapper= getSourceMapper();
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -125,7 +149,7 @@ public void attachSource(IPath sourcePath, IPath rootPath, IProgressMonitor moni
 			//set the property to the path of the mapped source
 			Util.setSourceAttachmentProperty(
 				getPath(),
-				sourcePath.toString() 
+				sourcePath.toString()
 				+ (rootPath == null ? "" : (ATTACHMENT_PROPERTY_DELIMITER + rootPath.toString()))); //$NON-NLS-1$
 		}
 		if (rootNeedsToBeClosed) {
@@ -159,7 +183,7 @@ public void attachSource(IPath sourcePath, IPath rootPath, IProgressMonitor moni
  * @see Openable
  */
 protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource) throws JavaModelException {
-	
+
 	// check whether this pkg fragment root can be opened
 	IStatus status = validateOnClasspath();
 	if (!status.isOK()) throw newJavaModelException(status);
@@ -171,8 +195,8 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 
 SourceMapper createSourceMapper(IPath sourcePath, IPath rootPath) {
 	SourceMapper mapper = new SourceMapper(
-		sourcePath, 
-		rootPath == null ? null : rootPath.toOSString(), 
+		sourcePath,
+		rootPath == null ? null : rootPath.toOSString(),
 		getJavaProject().getOptions(true)); // cannot use workspace options if external jar is 1.5 jar and workspace options are 1.4 options
 	return mapper;
 }
@@ -191,7 +215,7 @@ public void delete(
 
 /**
  * Compute the package fragment children of this package fragment root.
- * 
+ *
  * @exception JavaModelException  The resource associated with this package fragment root does not exist
  */
 protected boolean computeChildren(OpenableElementInfo info, Map newElements) throws JavaModelException {
@@ -222,7 +246,7 @@ protected boolean computeChildren(OpenableElementInfo info, Map newElements) thr
 /**
  * Starting at this folder, create package fragments and add the fragments that are not exclused
  * to the collection of children.
- * 
+ *
  * @exception JavaModelException  The resource associated with this package fragment does not exist
  */
 protected void computeFolderChildren(IContainer folder, boolean isIncluded, String[] pkgName, ArrayList vChildren, char[][] inclusionPatterns, char[][] exclusionPatterns) throws JavaModelException {
@@ -243,9 +267,9 @@ protected void computeFolderChildren(IContainer folder, boolean isIncluded, Stri
 			for (int i = 0; i < length; i++) {
 				IResource member = members[i];
 				String memberName = member.getName();
-			
+
 				switch(member.getType()) {
-			    
+
 			    	case IResource.FOLDER:
 			    		// recurse into sub folders even even parent not included as a sub folder could be included
 			    		// (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=65637)
@@ -265,7 +289,7 @@ protected void computeFolderChildren(IContainer folder, boolean isIncluded, Stri
 								&& !Util.isExcluded(member, inclusionPatterns, exclusionPatterns)) {
 			    			hasIncluded = true;
 			    			IPackageFragment pkg = getPackageFragment(pkgName);
-			    			vChildren.add(pkg); 
+			    			vChildren.add(pkg);
 			    		}
 			    		break;
 				}
@@ -288,8 +312,8 @@ public void copy(
 	IClasspathEntry sibling,
 	IProgressMonitor monitor)
 	throws JavaModelException {
-		
-	CopyPackageFragmentRootOperation op = 
+
+	CopyPackageFragmentRootOperation op =
 		new CopyPackageFragmentRootOperation(this, destination, updateResourceFlags, updateModelFlags, sibling);
 	op.runOperation(monitor);
 }
@@ -337,7 +361,7 @@ public boolean equals(Object o) {
 	if (!(o instanceof PackageFragmentRoot))
 		return false;
 	PackageFragmentRoot other = (PackageFragmentRoot) o;
-	return this.resource.equals(other.resource) && 
+	return this.resource.equals(other.resource) &&
 			this.parent.equals(other.parent);
 }
 
@@ -353,7 +377,7 @@ private IClasspathEntry findSourceAttachmentRecommendation() {
 		IPath rootPath = this.getPath();
 		IClasspathEntry entry;
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		
+
 		// try on enclosing project first
 		JavaProject parentProject = (JavaProject) getJavaProject();
 		try {
@@ -384,7 +408,7 @@ private IClasspathEntry findSourceAttachmentRecommendation() {
 		} catch(JavaModelException e){
 			// ignore
 		}
-		
+
 		// iterate over all projects
 		IJavaModel model = getJavaModel();
 		IJavaProject[] jProjects = model.getJavaProjects();
@@ -439,10 +463,10 @@ public char[][] fullExclusionPatternChars() {
 		} else {
 			return entry.fullExclusionPatternChars();
 		}
-	} catch (JavaModelException e) { 
+	} catch (JavaModelException e) {
 		return null;
 	}
-}		
+}
 
 /*
  * Returns the inclusion patterns from the classpath entry associated with this root.
@@ -456,10 +480,10 @@ public char[][] fullInclusionPatternChars() {
 		} else {
 			return entry.fullInclusionPatternChars();
 		}
-	} catch (JavaModelException e) { 
+	} catch (JavaModelException e) {
 		return null;
 	}
-}		
+}
 public String getElementName() {
 	if (this.resource instanceof IFolder)
 		return ((IFolder) this.resource).getName();
@@ -525,7 +549,7 @@ protected void getHandleMemento(StringBuffer buff) {
 	}
 	((JavaElement)getParent()).getHandleMemento(buff);
 	buff.append(getHandleMementoDelimiter());
-	escapeMementoName(buff, path.toString()); 
+	escapeMementoName(buff, path.toString());
 }
 /**
  * @see IPackageFragmentRoot
@@ -546,7 +570,7 @@ public Object[] getNonJavaResources() throws JavaModelException {
  */
 public IPackageFragment getPackageFragment(String packageName) {
 	// tolerate package names with spaces (e.g. 'x . y') (http://bugs.eclipse.org/bugs/show_bug.cgi?id=21957)
-	String[] pkgName = Util.getTrimmedSimpleNames(packageName); 
+	String[] pkgName = Util.getTrimmedSimpleNames(packageName);
 	return getPackageFragment(pkgName);
 }
 public PackageFragment getPackageFragment(String[] pkgName) {
@@ -579,7 +603,7 @@ public IPath getPath() {
 }
 
 /*
- * @see IPackageFragmentRoot 
+ * @see IPackageFragmentRoot
  */
 public IClasspathEntry getRawClasspathEntry() throws JavaModelException {
 
@@ -592,7 +616,7 @@ public IClasspathEntry getRawClasspathEntry() throws JavaModelException {
 	}
 	if(rawEntry!=null) return rawEntry;
 	/* no raw entry, so this must be a packagefragmentroot of a project with undefined source folder */
-	
+
 	return JavaCore.newLibraryEntry(getPath().makeAbsolute(), getPath().makeAbsolute(), getPath().makeAbsolute());
 }
 
@@ -624,7 +648,7 @@ public IResource getResource() {
  */
 public IPath getSourceAttachmentPath() throws JavaModelException {
 	if (getKind() != K_BINARY) return null;
-	
+
 	// 1) look source attachment property (set iff attachSource(...) was called
 	IPath path = getPath();
 	String serverPathString= Util.getSourceAttachmentProperty(path);
@@ -644,14 +668,14 @@ public IPath getSourceAttachmentPath() throws JavaModelException {
 	IPath sourceAttachmentPath;
 	if (entry != null && (sourceAttachmentPath = entry.getSourceAttachmentPath()) != null)
 		return sourceAttachmentPath;
-	
+
 	// 3) look for a recommendation
 	entry = findSourceAttachmentRecommendation();
 	if (entry != null && (sourceAttachmentPath = entry.getSourceAttachmentPath()) != null) {
 		return sourceAttachmentPath;
 	}
-	
-	return null;	
+
+	return null;
 }
 
 /**
@@ -669,7 +693,7 @@ public void setSourceMapper(SourceMapper mapper) throws JavaModelException {
  */
 public IPath getSourceAttachmentRootPath() throws JavaModelException {
 	if (getKind() != K_BINARY) return null;
-	
+
 	// 1) look source attachment property (set iff attachSource(...) was called
 	IPath path = getPath();
 	String serverPathString= Util.getSourceAttachmentProperty(path);
@@ -688,13 +712,13 @@ public IPath getSourceAttachmentRootPath() throws JavaModelException {
 	IPath sourceAttachmentRootPath;
 	if (entry != null && (sourceAttachmentRootPath = entry.getSourceAttachmentRootPath()) != null)
 		return sourceAttachmentRootPath;
-	
+
 	// 3) look for a recomendation
 	entry = findSourceAttachmentRecommendation();
 	if (entry != null && (sourceAttachmentRootPath = entry.getSourceAttachmentRootPath()) != null)
 		return sourceAttachmentRootPath;
-	
-	return null;	
+
+	return null;
 }
 
 /**
@@ -731,7 +755,7 @@ public IResource getUnderlyingResource() throws JavaModelException {
 }
 
 /**
- * @see IParent 
+ * @see IParent
  */
 public boolean hasChildren() throws JavaModelException {
 	// a package fragment root always has the default package as a child
@@ -766,12 +790,12 @@ public boolean isExternal() {
  * Validate whether this package fragment root is on the classpath of its project.
  */
 protected IStatus validateOnClasspath() {
-	
+
 	IPath path = this.getPath();
 	try {
 		// check package fragment root on classpath of its project
 		JavaProject project = (JavaProject) getJavaProject();
-		IClasspathEntry entry = project.getClasspathEntryFor(path);	
+		IClasspathEntry entry = project.getClasspathEntryFor(path);
 		if (entry != null) {
 			return Status.OK_STATUS;
 		}
@@ -792,7 +816,7 @@ public void move(
 	IProgressMonitor monitor)
 	throws JavaModelException {
 
-	MovePackageFragmentRootOperation op = 
+	MovePackageFragmentRootOperation op =
 		new MovePackageFragmentRootOperation(this, destination, updateResourceFlags, updateModelFlags, sibling);
 	op.runOperation(monitor);
 }
@@ -855,7 +879,7 @@ public IClasspathAttribute[] getClasspathAttributes() {
 	try {
 		entries = javaProject.getResolvedClasspath(true);
 	} catch (JavaModelException ex) {}
-	
+
 	IClasspathAttribute[] attribs=null;
 	for(int i = 0;entries!=null && i<entries.length;i++) {
 		if(rootPath.equals(entries[i].getPath())){

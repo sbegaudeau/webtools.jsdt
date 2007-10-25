@@ -10,8 +10,18 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.codeassist.select;
 
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocAllocationExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocFieldReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocMessageSend;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocQualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 
 /**
  * Node representing a Javadoc comment including code selection.
@@ -66,7 +76,7 @@ public class SelectionJavadoc extends Javadoc {
 	/**
 	 * Resolve selected node if not null and throw exception to let clients know
 	 * that it has been found.
-	 * 
+	 *
 	 * @throws SelectionNodeFound
 	 */
 	private void internalResolve(Scope scope) {
@@ -112,7 +122,7 @@ public class SelectionJavadoc extends Javadoc {
 	/**
 	 * Resolve selected node if not null and throw exception to let clients know
 	 * that it has been found.
-	 * 
+	 *
 	 * @throws SelectionNodeFound
 	 */
 	public void resolve(ClassScope scope) {
@@ -122,7 +132,7 @@ public class SelectionJavadoc extends Javadoc {
 	/**
 	 * Resolve selected node if not null and throw exception to let clients know
 	 * that it has been found.
-	 * 
+	 *
 	 * @throws SelectionNodeFound
 	 */
 	public void resolve(MethodScope scope) {

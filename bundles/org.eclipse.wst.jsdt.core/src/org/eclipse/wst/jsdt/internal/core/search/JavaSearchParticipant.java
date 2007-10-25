@@ -10,26 +10,33 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search;
 
-import org.eclipse.core.runtime.*;
-import org.eclipse.wst.jsdt.core.search.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.SearchDocument;
+import org.eclipse.wst.jsdt.core.search.SearchParticipant;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
+import org.eclipse.wst.jsdt.core.search.SearchRequestor;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.BinaryIndexer;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.SourceIndexer;
 import org.eclipse.wst.jsdt.internal.core.search.matching.MatchLocator;
 
 /**
- * A search participant describes a particular extension to a generic search mechanism, allowing thus to 
+ * A search participant describes a particular extension to a generic search mechanism, allowing thus to
  * perform combined search actions which will involve all required participants
- * 
- * A search scope defines which participants are involved. 
- * 
+ *
+ * A search scope defines which participants are involved.
+ *
  * A search participant is responsible for holding index files, and selecting the appropriate ones to feed to
  * index queries. It also can map a document path to an actual document (note that documents could live outside
  * the workspace or no exist yet, and thus aren't just resources).
  */
 public class JavaSearchParticipant extends SearchParticipant {
-	
+
 	IndexSelector indexSelector;
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.search.SearchParticipant#beginSearching()
 	 */
@@ -52,7 +59,7 @@ public class JavaSearchParticipant extends SearchParticipant {
 	public String getDescription() {
 		return "Java"; //$NON-NLS-1$
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.search.SearchParticipant#getDocument(String)
 	 */
@@ -74,17 +81,17 @@ public class JavaSearchParticipant extends SearchParticipant {
 			new BinaryIndexer(document).indexDocument();
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see SearchParticipant#locateMatches(SearchDocument[], SearchPattern, IJavaSearchScope, SearchRequestor, IProgressMonitor)
 	 */
 	public void locateMatches(SearchDocument[] indexMatches, SearchPattern pattern,
 			IJavaSearchScope scope, SearchRequestor requestor, IProgressMonitor monitor) throws CoreException {
-		
-		MatchLocator matchLocator = 
+
+		MatchLocator matchLocator =
 			new MatchLocator(
-				pattern, 
-				requestor, 
+				pattern,
+				requestor,
 				scope,
 				monitor
 		);
@@ -92,10 +99,10 @@ public class JavaSearchParticipant extends SearchParticipant {
 		/* eliminating false matches and locating them */
 		if (monitor != null && monitor.isCanceled()) throw new OperationCanceledException();
 		matchLocator.locateMatches(indexMatches);
-		
+
 
 		if (monitor != null && monitor.isCanceled()) throw new OperationCanceledException();
-		
+
 		matchLocator.locatePackageDeclarations(this);
 	}
 
@@ -105,11 +112,11 @@ public class JavaSearchParticipant extends SearchParticipant {
 	public IPath[] selectIndexes(
 		SearchPattern pattern,
 		IJavaSearchScope scope) {
-		
+
 		if (this.indexSelector == null) {
 			this.indexSelector = new IndexSelector(scope, pattern);
 		}
 		return this.indexSelector.getIndexLocations();
 	}
-	
+
 }

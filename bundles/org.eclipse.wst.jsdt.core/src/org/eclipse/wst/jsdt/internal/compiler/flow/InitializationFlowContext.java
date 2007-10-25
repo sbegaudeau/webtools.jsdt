@@ -26,7 +26,7 @@ public class InitializationFlowContext extends ExceptionHandlingFlowContext {
 	public TypeBinding[] thrownExceptions = new TypeBinding[5];
 	public ASTNode[] exceptionThrowers = new ASTNode[5];
 	public FlowInfo[] exceptionThrowerFlowInfos = new FlowInfo[5];
-	
+
 	public InitializationFlowContext(
 		FlowContext parent,
 		ASTNode associatedNode,
@@ -35,7 +35,7 @@ public class InitializationFlowContext extends ExceptionHandlingFlowContext {
 			parent,
 			associatedNode,
 			Binding.NO_EXCEPTIONS, // no exception allowed by default
-			scope, 
+			scope,
 			FlowInfo.DEAD_END);
 	}
 
@@ -53,7 +53,7 @@ public class InitializationFlowContext extends ExceptionHandlingFlowContext {
 	}
 
 	public String individualToString() {
-		
+
 		StringBuffer buffer = new StringBuffer("Initialization flow context"); //$NON-NLS-1$
 		for (int i = 0; i < exceptionCount; i++) {
 			buffer.append('[').append(thrownExceptions[i].readableName());
@@ -61,14 +61,14 @@ public class InitializationFlowContext extends ExceptionHandlingFlowContext {
 		}
 		return buffer.toString();
 	}
-	
+
 	public void recordHandlingException(
 		ReferenceBinding exceptionType,
 		UnconditionalFlowInfo flowInfo,
 		TypeBinding raisedException,
 		ASTNode invocationSite,
 		boolean wasMasked) {
-			
+
 		// even if unreachable code, need to perform unhandled exception diagnosis
 		int size = thrownExceptions.length;
 		if (exceptionCount == size) {
@@ -94,5 +94,5 @@ public class InitializationFlowContext extends ExceptionHandlingFlowContext {
 		thrownExceptions[exceptionCount] = raisedException;
 		exceptionThrowers[exceptionCount] = invocationSite;
 		exceptionThrowerFlowInfos[exceptionCount++] = flowInfo.copy();
-	}	
+	}
 }

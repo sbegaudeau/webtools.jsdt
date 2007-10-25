@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints;
 
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.dom.TypeRules;
 

@@ -13,15 +13,13 @@ package org.eclipse.wst.jsdt.internal.ui.jarimport;
 import java.util.LinkedList;
 
 import org.eclipse.core.runtime.Assert;
-
+import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-
-import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.wizard.IWizard;
 
 /**
  * Control which maintains a selectable location field with persisted history.

@@ -11,7 +11,9 @@
 package org.eclipse.wst.jsdt.internal.core.search;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.wst.jsdt.core.search.*;
+import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.SearchParticipant;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
 import org.eclipse.wst.jsdt.internal.core.index.Index;
 

@@ -6,32 +6,26 @@ import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
-import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 
 
 public class CompilationUnitBinding  extends SourceTypeBinding {
 //	public char[] sourceName;
-//	
+//
 //	private FieldBinding[] fields;
-//	
+//
 //	private MethodBinding[] methods;
 //	public long tagBits = 0; // See values in the interface TagBits below
 	CompilationUnitScope compilationUnitScope;
 	private char[]shortName;
-	
+
 	char [] path;
-	
+
 	public CompilationUnitBinding(CompilationUnitScope scope,PackageBinding fPackage,char [] path) {
 		this(scope,fPackage,path,null);
 	}
-	
+
 	public CompilationUnitBinding(CompilationUnitScope scope,PackageBinding fPackage,char [] path,ReferenceBinding superType ) {
 		super(new char [][]{scope.referenceContext.getFileName()}, fPackage, scope);
 		this.compilationUnitScope=scope;
@@ -43,7 +37,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 		this.path=path;
 		/* bc - allows super type of 'Window' (and other types) for a compilation unit */
 		this.superclass = superType;
-		
+
 	}
 
 	private void setShortName(char[] fileName) {
@@ -69,7 +63,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 
 		return this.signature = CharOperation.concat(Signature.C_COMPILATION_UNIT, constantPoolName(), ';');
 	}
-	
+
 //	public char[] readableName() {
 //		return sourceName;
 //	}
@@ -104,13 +98,13 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //					ReferenceBinding.sortMethods(this.methods, 0, length);
 //				this.tagBits |= TagBits.AreMethodsSorted;
 //			}
-//			
+//
 //			long range;
 //			if ((range = ReferenceBinding.binarySearch(selector, this.methods)) >= 0) {
 //				// check unresolved method
 //				int start = (int) range, end = (int) (range >> 32);
 //				for (int imethod = start; imethod <= end; imethod++) {
-//					MethodBinding method = this.methods[imethod];			
+//					MethodBinding method = this.methods[imethod];
 //					if (resolveTypesFor(method) == null || method.returnType == null) {
 //						methods();
 //						return getExactMethod(selector, argumentTypes, refScope); // try again since the problem methods have been removed
@@ -122,7 +116,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //					MethodBinding method1 = this.methods[i];
 //					for (int j = end; j > i; j--) {
 //						MethodBinding method2 = this.methods[j];
-//						boolean paramsMatch = 
+//						boolean paramsMatch =
 ////							isSource15
 ////							? method1.areParameterErasuresEqual(method2)
 ////							:
@@ -134,7 +128,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //					}
 //				}
 //				nextMethod: for (int imethod = start; imethod <= end; imethod++) {
-//					MethodBinding method = this.methods[imethod];						
+//					MethodBinding method = this.methods[imethod];
 //					TypeBinding[] toMatch = method.parameters;
 //					if (toMatch.length == argCount) {
 //						for (int iarg = 0; iarg < argCount; iarg++)
@@ -142,7 +136,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //								continue nextMethod;
 //						return method;
 //					}
-//				}				
+//				}
 //			}
 //		}
 //
@@ -164,7 +158,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //
 ////	NOTE: the type of a field of a source type is resolved when needed
 //	public FieldBinding getField(char[] fieldName, boolean needResolve) {
-//		
+//
 //		if ((this.tagBits & TagBits.AreFieldsComplete) != 0)
 //			return ReferenceBinding.binarySearch(fieldName, this.fields);
 //
@@ -174,7 +168,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //			if (length > 1)
 //				ReferenceBinding.sortFields(this.fields, 0, length);
 //			this.tagBits |= TagBits.AreFieldsSorted;
-//		}		
+//		}
 //		// always resolve anyway on source types
 //		FieldBinding field = ReferenceBinding.binarySearch(fieldName, this.fields);
 //		if (field != null) {
@@ -204,12 +198,12 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //		return null;
 //	}
 //
-//	
+//
 ////	 NOTE: the return type, arg & exception types of each method of a source type are resolved when needed
 //	public MethodBinding[] methods() {
 //		if ((this.tagBits & TagBits.AreMethodsComplete) != 0)
 //			return this.methods;
-//		
+//
 //		// lazily sort methods
 //		if ((this.tagBits & TagBits.AreMethodsSorted) == 0) {
 //			int length = this.methods.length;
@@ -231,7 +225,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //			boolean complyTo15 = this.scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5;
 //			for (int i = 0, length = this.methods.length; i < length; i++) {
 //				MethodBinding method = this.methods[i];
-//				if (method == null) 
+//				if (method == null)
 //					continue;
 //				char[] selector = method.selector;
 //				AbstractMethodDeclaration methodDecl = null;
@@ -239,7 +233,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //					MethodBinding method2 = this.methods[j];
 //					if (method2 == null)
 //						continue nextSibling;
-//					if (!CharOperation.equals(selector, method2.selector)) 
+//					if (!CharOperation.equals(selector, method2.selector))
 //						break nextSibling; // methods with same selector are contiguous
 //
 //					if (complyTo15 && method.returnType != null && method2.returnType != null) {
@@ -301,7 +295,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //					if (methodDecl == null) {
 //						methodDecl = method.sourceMethod(); // cannot be retrieved after binding is lost & may still be null if method is special
 //						if (methodDecl != null && methodDecl.binding != null) { // ensure its a valid user defined method
-////							if (isEnumSpecialMethod) { 
+////							if (isEnumSpecialMethod) {
 ////								this.scope.problemReporter().duplicateEnumSpecialMethod(this, methodDecl);
 ////							} else {
 //								this.scope.problemReporter().duplicateMethodInType(this, methodDecl);
@@ -321,7 +315,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //						method2Decl.binding = null;
 //						this.methods[j] = null;
 //						failed++;
-//					} 
+//					}
 //				}
 ////				if (/*method.returnType == null && */ methodDecl == null) { // forget method with invalid return type... was kept to detect possible collisions
 ////					method.sourceMethod().binding = null;
@@ -346,9 +340,9 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //			// handle forward references to potential default abstract methods
 ////			addDefaultAbstractMethods();
 //			this.tagBits |= TagBits.AreMethodsComplete;
-//		}		
+//		}
 //		return this.methods;
-//	} 
+//	}
 //
 //	private FieldBinding resolveTypeFor(FieldBinding field) {
 //		if ((field.modifiers & ExtraCompilerModifiers.AccUnresolved) == 0)
@@ -359,7 +353,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 ////				field.modifiers |= ClassFileConstants.AccDeprecated;
 ////		}
 ////		if (isViewedAsDeprecated() && !field.isDeprecated())
-////			field.modifiers |= ExtraCompilerModifiers.AccDeprecatedImplicitly;	
+////			field.modifiers |= ExtraCompilerModifiers.AccDeprecatedImplicitly;
 ////		if (hasRestrictedAccess())
 ////			field.modifiers |= ExtraCompilerModifiers.AccRestrictedAccess;
 //		FieldDeclaration[] fieldDecls = this.scope.referenceContext.fields;
@@ -367,14 +361,14 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //			if (fieldDecls[f].binding != field)
 //				continue;
 //
-//				MethodScope initializationScope = field.isStatic() 
-//					? this.scope.referenceContext.staticInitializerScope 
+//				MethodScope initializationScope = field.isStatic()
+//					? this.scope.referenceContext.staticInitializerScope
 //					: this.scope.referenceContext.initializerScope;
 //				FieldBinding previousField = initializationScope.initializedField;
 //				try {
 //					initializationScope.initializedField = field;
 //					FieldDeclaration fieldDecl = fieldDecls[f];
-//					TypeBinding fieldType = 
+//					TypeBinding fieldType =
 //						fieldDecl.getKind() == AbstractVariableDeclaration.ENUM_CONSTANT
 //							? initializationScope.environment().convertToRawType(this) // enum constant is implicitly of declaring enum type
 //							: fieldDecl.type.resolveType(initializationScope, true /* check bounds*/);
@@ -397,7 +391,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //					TypeBinding leafType = fieldType.leafComponentType();
 //					if (leafType instanceof ReferenceBinding && (((ReferenceBinding)leafType).modifiers & ExtraCompilerModifiers.AccGenericSignature) != 0) {
 //						field.modifiers |= ExtraCompilerModifiers.AccGenericSignature;
-//					}				
+//					}
 //				} finally {
 //				    initializationScope.initializedField = previousField;
 //				}
@@ -466,7 +460,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //				TypeBinding parameterType = arg.type.resolveType(methodDecl.scope, true /* check bounds*/);
 //				if (parameterType == null) {
 //					foundArgProblem = true;
-////				} 
+////				}
 ////				else if (parameterType == TypeBinding.VOID) {
 ////					methodDecl.scope.problemReporter().argumentTypeCannotBeVoid(this, methodDecl, arg);
 ////					foundArgProblem = true;
@@ -495,7 +489,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //			    TypeBinding methodType = returnType.resolveType(methodDecl.scope, true /* check bounds*/);
 //				if (methodType == null) {
 //					foundReturnTypeProblem = true;
-//				} 
+//				}
 ////				else if (methodType.isArrayType() && ((ArrayBinding) methodType).leafComponentType == TypeBinding.VOID) {
 ////					methodDecl.scope.problemReporter().returnTypeCannotBeVoidArray(this, (MethodDeclaration) methodDecl);
 ////					foundReturnTypeProblem = true;
@@ -525,16 +519,16 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 //		return method;
 //	}
 //
-//	
+//
 //	public void setFields(FieldBinding[] fields) {
 //		this.fields = fields;
 //	}
 //	public void setMethods(MethodBinding[] methods) {
 //		this.methods = methods;
 //	}
-	
+
 	public AbstractMethodDeclaration sourceMethod(MethodBinding binding) {
-		  ProgramElement[] statements = compilationUnitScope.referenceContext.statements; 
+		  ProgramElement[] statements = compilationUnitScope.referenceContext.statements;
 		  for (int i = 0; i < statements.length; i++) {
 			if (statements[i] instanceof AbstractMethodDeclaration && ((AbstractMethodDeclaration)statements[i]).binding==binding)
 				return (AbstractMethodDeclaration)statements[i];
@@ -567,7 +561,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 	public char[] qualifiedPackageName() {
 		return this.path;
 	}
-	
+
 	public void cleanup()
 	{
 		super.cleanup();

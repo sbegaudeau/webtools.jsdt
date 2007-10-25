@@ -10,14 +10,11 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.typehierarchy;
 
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DropTargetEvent;
-
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ISelection;
-
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.wst.jsdt.core.IJavaElement;
-
 import org.eclipse.wst.jsdt.internal.ui.packageview.SelectionTransferDropAdapter;
 import org.eclipse.wst.jsdt.internal.ui.util.OpenTypeHierarchyUtil;
 import org.eclipse.wst.jsdt.internal.ui.util.SelectionUtil;

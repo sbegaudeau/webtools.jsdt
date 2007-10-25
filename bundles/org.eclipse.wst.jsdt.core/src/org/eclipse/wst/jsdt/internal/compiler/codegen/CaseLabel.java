@@ -11,9 +11,9 @@
 package org.eclipse.wst.jsdt.internal.compiler.codegen;
 
 public class CaseLabel extends BranchLabel {
-	
+
 	public int instructionPosition = POS_NOT_SET;
-	
+
 /**
  * CaseLabel constructor comment.
  * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream

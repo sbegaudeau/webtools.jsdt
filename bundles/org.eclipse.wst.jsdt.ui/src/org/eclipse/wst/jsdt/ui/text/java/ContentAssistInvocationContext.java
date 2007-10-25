@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.ui.text.java;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;

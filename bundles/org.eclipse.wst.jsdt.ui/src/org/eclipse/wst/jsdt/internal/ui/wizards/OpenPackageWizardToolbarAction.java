@@ -14,10 +14,8 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-
 import org.eclipse.wst.jsdt.ui.actions.OpenNewPackageWizardAction;
 
 public class OpenPackageWizardToolbarAction extends OpenNewPackageWizardAction implements IWorkbenchWindowActionDelegate  {

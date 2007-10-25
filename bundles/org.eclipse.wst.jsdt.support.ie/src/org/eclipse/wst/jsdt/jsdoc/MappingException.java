@@ -4,12 +4,17 @@ package org.eclipse.wst.jsdt.jsdoc;
  *
  * Bradley Childs (childsb@us.ibm.com)
  * Copyright IBM 2006.
- * 
+ *
  * Error thrown for any mapping related issues.
  */
 public class MappingException extends Exception {
 
-    public MappingException() {
+    /**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public MappingException() {
         super();
     }
 

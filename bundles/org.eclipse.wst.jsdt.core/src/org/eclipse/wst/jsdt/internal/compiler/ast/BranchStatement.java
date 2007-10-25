@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
 public abstract class BranchStatement extends Statement {
-	
+
 	public char[] label;
 	public BranchLabel targetLabel;
 	public SubRoutineStatement[] subroutines;
@@ -40,7 +41,7 @@ public void generateCode(BlockScope currentScope, CodeStream codeStream) {
 	}
 	int pc = codeStream.position;
 
-	// generation of code responsible for invoking the finally 
+	// generation of code responsible for invoking the finally
 	// blocks in sequence
 	if (this.subroutines != null){
 		for (int i = 0, max = this.subroutines.length; i < max; i++){
@@ -52,7 +53,7 @@ public void generateCode(BlockScope currentScope, CodeStream codeStream) {
 					if (this.initStateIndex != -1) {
 						codeStream.removeNotDefinitelyAssignedVariables(currentScope, this.initStateIndex);
 						codeStream.addDefinitelyAssignedVariables(currentScope, this.initStateIndex);
-					}					
+					}
 					return;
 			}
 		}
@@ -63,7 +64,7 @@ public void generateCode(BlockScope currentScope, CodeStream codeStream) {
 	if (this.initStateIndex != -1) {
 		codeStream.removeNotDefinitelyAssignedVariables(currentScope, this.initStateIndex);
 		codeStream.addDefinitelyAssignedVariables(currentScope, this.initStateIndex);
-	}					
+	}
 }
 
 public void resolve(BlockScope scope) {

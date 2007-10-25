@@ -36,7 +36,7 @@ public class ParameterizedMethodBinding extends MethodBinding {
 				parameterizedDeclaringClass);
 		this.originalMethod = originalMethod;
 		this.tagBits = originalMethod.tagBits;
-		
+
 		final TypeVariableBinding[] originalVariables = originalMethod.typeVariables;
 		Substitution substitution = null;
 		final int length = originalVariables.length;
@@ -52,11 +52,11 @@ public class ParameterizedMethodBinding extends MethodBinding {
 				substitutedVariables[i] = new TypeVariableBinding(originalVariable.sourceName, this, originalVariable.rank);
 			}
 			this.typeVariables = substitutedVariables;
-			
+
 			// need to substitute old var refs with new ones (double substitution: declaringClass + new type variables)
 			substitution = new Substitution() {
-				public LookupEnvironment environment() { 
-					return parameterizedDeclaringClass.environment; 
+				public LookupEnvironment environment() {
+					return parameterizedDeclaringClass.environment;
 				}
 				public boolean isRawSubstitution() {
 					return !isStatic && parameterizedDeclaringClass.isRawSubstitution();
@@ -71,7 +71,7 @@ public class ParameterizedMethodBinding extends MethodBinding {
 			        return typeVariable;
 				}
 			};
-		
+
 			// initialize new variable bounds
 			for (int i = 0; i < length; i++) {
 				TypeVariableBinding originalVariable = originalVariables[i];
@@ -82,7 +82,7 @@ public class ParameterizedMethodBinding extends MethodBinding {
 					substitutedVariable.firstBound = originalVariable.firstBound == originalVariable.superclass
 						? substitutedSuperclass // could be array type or interface
 						: substitutedInterfaces[0];
-				}				
+				}
 				switch (substitutedSuperclass.kind()) {
 					case Binding.ARRAY_TYPE :
 						substitutedVariable.superclass = parameterizedDeclaringClass.environment.getResolvedType(TypeConstants.JAVA_LANG_OBJECT, null);
@@ -108,7 +108,7 @@ public class ParameterizedMethodBinding extends MethodBinding {
 			this.thrownExceptions = Scope.substitute(substitution, this.thrownExceptions);
 		}
 	}
-	
+
 	/**
 	 * Create method of parameterized type, substituting original parameters/exception/return type with type arguments.
 	 * This is a CODE ASSIST method ONLY.
@@ -124,7 +124,7 @@ public class ParameterizedMethodBinding extends MethodBinding {
 				declaringClass);
 		this.originalMethod = originalMethod;
 		this.tagBits = originalMethod.tagBits;
-		
+
 		final TypeVariableBinding[] originalVariables = originalMethod.typeVariables;
 		Substitution substitution = null;
 		final int length = originalVariables.length;
@@ -143,11 +143,11 @@ public class ParameterizedMethodBinding extends MethodBinding {
 							originalVariable.rank);
 			}
 			this.typeVariables = substitutedVariables;
-			
+
 			// need to substitute old var refs with new ones (double substitution: declaringClass + new type variables)
 			substitution = new Substitution() {
-				public LookupEnvironment environment() { 
-					return environment; 
+				public LookupEnvironment environment() {
+					return environment;
 				}
 				public boolean isRawSubstitution() {
 					return false;
@@ -160,7 +160,7 @@ public class ParameterizedMethodBinding extends MethodBinding {
 			        return typeVariable;
 				}
 			};
-		
+
 			// initialize new variable bounds
 			for (int i = 0; i < length; i++) {
 				TypeVariableBinding originalVariable = originalVariables[i];
@@ -171,7 +171,7 @@ public class ParameterizedMethodBinding extends MethodBinding {
 					substitutedVariable.firstBound = originalVariable.firstBound == originalVariable.superclass
 						? substitutedSuperclass // could be array type or interface
 						: substitutedInterfaces[0];
-				}				
+				}
 				switch (substitutedSuperclass.kind()) {
 					case Binding.ARRAY_TYPE :
 						substitutedVariable.superclass = environment.getResolvedType(TypeConstants.JAVA_LANG_OBJECT, null);

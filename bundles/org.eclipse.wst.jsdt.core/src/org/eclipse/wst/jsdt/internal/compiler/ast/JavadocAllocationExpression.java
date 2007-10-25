@@ -13,7 +13,17 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedMethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemMethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class JavadocAllocationExpression extends AllocationExpression {
 
@@ -31,7 +41,7 @@ public class JavadocAllocationExpression extends AllocationExpression {
 	}
 
 	TypeBinding internalResolveType(Scope scope) {
-	
+
 		// Propagate the type checking to the arguments, and check if the constructor is defined.
 		this.constant = Constant.NotAConstant;
 		if (this.type == null) {
@@ -41,7 +51,7 @@ public class JavadocAllocationExpression extends AllocationExpression {
 		} else {
 			this.resolvedType = this.type.resolveType((BlockScope)scope, true /* check bounds*/);
 		}
-	
+
 		// buffering the arguments' types
 		TypeBinding[] argumentTypes = Binding.NO_PARAMETERS;
 		boolean hasTypeVarArgs = false;
@@ -66,7 +76,7 @@ public class JavadocAllocationExpression extends AllocationExpression {
 				return null;
 			}
 		}
-	
+
 		// check resolved type
 		if (this.resolvedType == null) {
 			return null;
@@ -76,7 +86,7 @@ public class JavadocAllocationExpression extends AllocationExpression {
 		if (enclosingType == null ? false : enclosingType.isCompatibleWith(this.resolvedType)) {
 			this.bits |= ASTNode.SuperAccess;
 		}
-	
+
 		ReferenceBinding allocationType = (ReferenceBinding) this.resolvedType;
 		this.binding = scope.getConstructor(allocationType, argumentTypes, this);
 		if (!this.binding.isValidBinding()) {
@@ -191,5 +201,5 @@ public class JavadocAllocationExpression extends AllocationExpression {
 			}
 		}
 		visitor.endVisit(this, scope);
-	}	
+	}
 }

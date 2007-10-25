@@ -24,7 +24,6 @@ import org.eclipse.jface.text.rules.RuleBasedPartitionScanner;
 import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WordRule;
-
 import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
 
 

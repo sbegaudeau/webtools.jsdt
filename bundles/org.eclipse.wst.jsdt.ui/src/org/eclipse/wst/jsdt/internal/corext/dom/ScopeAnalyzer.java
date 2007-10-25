@@ -52,8 +52,6 @@ import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
-
-
 import org.eclipse.wst.jsdt.internal.core.SearchableEnvironment;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ASTResolving;
 

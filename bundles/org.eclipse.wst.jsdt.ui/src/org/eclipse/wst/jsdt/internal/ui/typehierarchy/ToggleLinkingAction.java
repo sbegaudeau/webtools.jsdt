@@ -10,9 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.typehierarchy;
 
-import org.eclipse.wst.jsdt.ui.ITypeHierarchyViewPart;
-
 import org.eclipse.wst.jsdt.internal.ui.actions.AbstractToggleLinkingAction;
+import org.eclipse.wst.jsdt.ui.ITypeHierarchyViewPart;
 
 
 /**

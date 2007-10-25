@@ -10,21 +10,16 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.typehierarchy;
 
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogConstants;
-
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
-
-import org.eclipse.wst.jsdt.ui.ITypeHierarchyViewPart;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.FilteredTypesSelectionDialog;
+import org.eclipse.wst.jsdt.ui.ITypeHierarchyViewPart;
 
 /**
  * Refocuses the type hierarchy on a type selection from a all types dialog.

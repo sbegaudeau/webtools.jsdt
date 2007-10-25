@@ -12,10 +12,8 @@ package org.eclipse.wst.jsdt.internal.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -27,7 +25,6 @@ import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
-import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 /**
  * A package fragment that represents a package fragment found in a JAR.
@@ -35,7 +32,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  * @see org.eclipse.wst.jsdt.core.IPackageFragment
  */
 public class LibraryPackageFragment extends PackageFragment implements SuffixConstants, IVirtualParent {
-final static String[]DEFAULT_PACKAGE={""};	
+final static String[]DEFAULT_PACKAGE={""};
 /**
  * Constructs a package fragment that is contained within a jar or a zip.
  */
@@ -141,9 +138,9 @@ protected LibraryFragmentRoot getLibraryFragmentRoot()
 
 public IClassFile getClassFile(String classFileName) {
 	if (!org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(classFileName)) {
-		throw new IllegalArgumentException(Messages.element_invalidClassFileName); 
+		throw new IllegalArgumentException(Messages.element_invalidClassFileName);
 	}
-	
+
 	IPath path = getLibraryFragmentRoot().getPath();
 //	if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(path.lastSegment().toCharArray())
 //			&& path.lastSegment().equalsIgnoreCase(classFileName))
@@ -151,7 +148,7 @@ public IClassFile getClassFile(String classFileName) {
 	if(path.toOSString().endsWith(classFileName)
  		|| path.isPrefixOf(new Path(classFileName))) {
 		return new ClassFile(this, path.toOSString());
-		
+
 	}
 
 	return super.getClassFile(classFileName);

@@ -21,24 +21,20 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.actions.RetargetAction;
+import org.eclipse.ui.ide.IDEActionFactory;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.RetargetTextEditorAction;
-
-import org.eclipse.ui.ide.IDEActionFactory;
-
-import org.eclipse.wst.jsdt.ui.actions.JdtActionConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.text.java.CompletionProposalCategory;
 import org.eclipse.wst.jsdt.internal.ui.text.java.CompletionProposalComputerRegistry;
+import org.eclipse.wst.jsdt.ui.actions.JdtActionConstants;
 
 
 public class BasicCompilationUnitEditorActionContributor extends BasicJavaEditorActionContributor {

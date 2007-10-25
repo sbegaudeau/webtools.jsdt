@@ -27,12 +27,12 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 /**
  * A java element delta biulder creates a java element delta on
  * a java element between the version of the java element
- * at the time the comparator was created and the current version 
+ * at the time the comparator was created and the current version
  * of the java element.
  *
- * It performs this operation by locally caching the contents of 
+ * It performs this operation by locally caching the contents of
  * the java element when it is created. When the method
- * createDeltas() is called, it creates a delta over the cached 
+ * createDeltas() is called, it creates a delta over the cached
  * contents and the new contents.
  */
 public class JavaElementDeltaBuilder {
@@ -75,7 +75,7 @@ public class JavaElementDeltaBuilder {
 	 * List of removed elements
 	 */
 	ArrayList removed;
-	
+
 	/**
 	 * Doubly linked list item
 	 */
@@ -96,7 +96,7 @@ public JavaElementDeltaBuilder(IJavaElement javaElement) {
 	this.javaElement = javaElement;
 	this.initialize();
 	this.recordElementInfo(
-		javaElement, 
+		javaElement,
 		(JavaModel)this.javaElement.getJavaModel(),
 		0);
 }
@@ -109,7 +109,7 @@ public JavaElementDeltaBuilder(IJavaElement javaElement, int maxDepth) {
 	this.maxDepth = maxDepth;
 	this.initialize();
 	this.recordElementInfo(
-		javaElement, 
+		javaElement,
 		(JavaModel)this.javaElement.getJavaModel(),
 		0);
 }
@@ -136,7 +136,7 @@ private void added(IJavaElement element) {
  */
 public void buildDeltas() {
 	this.delta = new JavaElementDelta(this.javaElement);
-	// if building a delta on a compilation unit or below, 
+	// if building a delta on a compilation unit or below,
 	// it's a fine grained delta
 	if (this.javaElement.getElementType() >= IJavaElement.COMPILATION_UNIT) {
 		this.delta.fineGrained();
@@ -175,7 +175,7 @@ private void findAdditions(IJavaElement newElement, int depth) {
 	} else {
 		this.removeElementInfo(newElement);
 	}
-	
+
 	if (depth >= this.maxDepth) {
 		// mark element as changed
 		this.delta.changed(newElement, IJavaElementDelta.F_CONTENT);
@@ -183,14 +183,14 @@ private void findAdditions(IJavaElement newElement, int depth) {
 	}
 
 	JavaElementInfo newInfo = null;
-	try { 
+	try {
 		newInfo = (JavaElementInfo)((JavaElement)newElement).getElementInfo();
 	} catch (JavaModelException npe) {
 		return;
 	}
-	
+
 	this.findContentChange(oldInfo, newInfo, newElement);
-		
+
 	if (oldInfo != null && newElement instanceof IParent) {
 
 		IJavaElement[] children = newInfo.getChildren();
@@ -199,7 +199,7 @@ private void findAdditions(IJavaElement newElement, int depth) {
 			for(int i = 0; i < length; i++) {
 				this.findAdditions(children[i], depth + 1);
 			}
-		}		
+		}
 	}
 }
 /**
@@ -208,14 +208,14 @@ private void findAdditions(IJavaElement newElement, int depth) {
 private void findChangesInPositioning(IJavaElement element, int depth) {
 	if (depth >= this.maxDepth || this.added.contains(element) || this.removed.contains(element))
 		return;
-		
+
 	if (!isPositionedCorrectly(element)) {
 		this.delta.changed(element, IJavaElementDelta.F_REORDER);
-	} 
-	
+	}
+
 	if (element instanceof IParent) {
 		JavaElementInfo info = null;
-		try { 
+		try {
 			info = (JavaElementInfo)((JavaElement)element).getElementInfo();
 		} catch (JavaModelException npe) {
 			return;
@@ -227,7 +227,7 @@ private void findChangesInPositioning(IJavaElement element, int depth) {
 			for(int i = 0; i < length; i++) {
 				this.findChangesInPositioning(children[i], depth + 1);
 			}
-		}		
+		}
 	}
 }
 /**
@@ -247,7 +247,7 @@ private void findContentChange(JavaElementInfo oldInfo, JavaElementInfo newInfo,
 			}
 		} else if (oldInfo instanceof SourceFieldElementInfo && newInfo instanceof SourceFieldElementInfo) {
 			if (!CharOperation.equals(
-					((SourceFieldElementInfo)oldInfo).getTypeName(), 
+					((SourceFieldElementInfo)oldInfo).getTypeName(),
 					((SourceFieldElementInfo)newInfo).getTypeName())) {
 				this.delta.changed(newElement, IJavaElementDelta.F_CONTENT);
 			}
@@ -256,7 +256,7 @@ private void findContentChange(JavaElementInfo oldInfo, JavaElementInfo newInfo,
 	if (oldInfo instanceof SourceTypeElementInfo && newInfo instanceof SourceTypeElementInfo) {
 		SourceTypeElementInfo oldSourceTypeInfo = (SourceTypeElementInfo)oldInfo;
 		SourceTypeElementInfo newSourceTypeInfo = (SourceTypeElementInfo)newInfo;
-		if (!CharOperation.equals(oldSourceTypeInfo.getSuperclassName(), newSourceTypeInfo.getSuperclassName()) 
+		if (!CharOperation.equals(oldSourceTypeInfo.getSuperclassName(), newSourceTypeInfo.getSuperclassName())
 				|| !CharOperation.equals(oldSourceTypeInfo.getInterfaceNames(), newSourceTypeInfo.getInterfaceNames())) {
 			this.delta.changed(newElement, IJavaElementDelta.F_SUPER_TYPES);
 		}
@@ -317,7 +317,7 @@ private void initialize() {
 	this.oldPositions = new HashMap(20);
 	this.newPositions = new HashMap(20);
 	this.putOldPosition(this.javaElement, new ListItem(null, null));
-	this.putNewPosition(this.javaElement, new ListItem(null, null));	
+	this.putNewPosition(this.javaElement, new ListItem(null, null));
 	this.added = new ArrayList(5);
 	this.removed = new ArrayList(5);
 }
@@ -344,10 +344,10 @@ private void insertPositions(IJavaElement[] elements, boolean isNew) {
 private boolean isPositionedCorrectly(IJavaElement element) {
 	ListItem oldListItem = this.getOldPosition(element);
 	if (oldListItem == null) return false;
-	
+
 	ListItem newListItem = this.getNewPosition(element);
 	if (newListItem == null) return false;
-	
+
 	IJavaElement oldPrevious = oldListItem.previous;
 	IJavaElement newPrevious = newListItem.previous;
 	if (oldPrevious == null) {
@@ -377,7 +377,7 @@ private void recordElementInfo(IJavaElement element, JavaModel model, int depth)
 	if (info == null) // no longer in the java model.
 		return;
 	this.putElementInfo(element, info);
-		
+
 	if (element instanceof IParent) {
 		IJavaElement[] children = info.getChildren();
 		if (children != null) {
@@ -393,7 +393,7 @@ private void recordElementInfo(IJavaElement element, JavaModel model, int depth)
 private void recordNewPositions(IJavaElement newElement, int depth) {
 	if (depth < this.maxDepth && newElement instanceof IParent) {
 		JavaElementInfo info = null;
-		try { 
+		try {
 			info = (JavaElementInfo)((JavaElement)newElement).getElementInfo();
 		} catch (JavaModelException npe) {
 			return;
@@ -424,7 +424,7 @@ private void removed(IJavaElement element) {
 		previous.next = current.next;
 	if (next != null)
 		next.previous = current.previous;
-	
+
 }
 private void removeElementInfo(IJavaElement element) {
 	this.infos.remove(element);

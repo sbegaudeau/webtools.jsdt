@@ -38,39 +38,39 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
- 
+
 public class SelectionOnQualifiedAllocationExpression extends QualifiedAllocationExpression {
 
 	public SelectionOnQualifiedAllocationExpression() {
 		// constructor without argument
 	}
-	
+
 	public SelectionOnQualifiedAllocationExpression(TypeDeclaration anonymous) {
 		super(anonymous);
 	}
-	
+
 	public StringBuffer printExpression(int indent, StringBuffer output) {
 		if (this.enclosingInstance == null)
 			output.append("<SelectOnAllocationExpression:");  //$NON-NLS-1$
-		else 
+		else
 			output.append("<SelectOnQualifiedAllocationExpression:"); //$NON-NLS-1$
 
-		return super.printExpression(indent, output).append('>'); 
+		return super.printExpression(indent, output).append('>');
 	}
-	
+
 	public TypeBinding resolveType(BlockScope scope) {
 		super.resolveType(scope);
-	
+
 		// tolerate some error cases
-		if (binding == null || 
-				!(binding.isValidBinding() || 
+		if (binding == null ||
+				!(binding.isValidBinding() ||
 					binding.problemId() == ProblemReasons.NotVisible))
 			throw new SelectionNodeFound();
 		if (anonymousType == null)
 			throw new SelectionNodeFound(binding);
-	
+
 		// if selecting a type for an anonymous type creation, we have to
-		// find its target super constructor (if extending a class) or its target 
+		// find its target super constructor (if extending a class) or its target
 		// super interface (if extending an interface)
 		if (anonymousType.binding.superInterfaces == Binding.NO_SUPERINTERFACES) {
 			// find the constructor binding inside the super constructor call

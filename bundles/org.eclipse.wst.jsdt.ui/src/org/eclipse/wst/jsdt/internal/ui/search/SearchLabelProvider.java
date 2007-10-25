@@ -15,36 +15,28 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
-
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.RGB;
-
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
-
-import org.eclipse.ui.preferences.ScopedPreferenceStore;
-
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.search.ui.text.AbstractTextSearchResult;
 import org.eclipse.search.ui.text.Match;
-
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator;
-import org.eclipse.wst.jsdt.ui.search.IMatchPresentation;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredJavaElementLabels;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredString;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator;
+import org.eclipse.wst.jsdt.ui.search.IMatchPresentation;
 
 public abstract class SearchLabelProvider extends AppearanceAwareLabelProvider {
 	

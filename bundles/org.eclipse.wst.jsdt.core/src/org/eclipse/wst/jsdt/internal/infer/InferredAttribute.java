@@ -7,7 +7,7 @@ public class InferredAttribute extends InferredMember{
 	public FieldBinding binding;
 	public int initializationStart=-1;
 	public InferredType type;
-	
+
 	public InferredAttribute(char [] name, InferredType inType, int start, int end)
 	{
 		this.name=name;
@@ -15,9 +15,9 @@ public class InferredAttribute extends InferredMember{
 		this.sourceStart=start;
 		this.sourceEnd=end;
 	}
-	
-	
-	public StringBuffer print(int indent, StringBuffer output)  
+
+
+	public StringBuffer print(int indent, StringBuffer output)
 	{
 		String modifier=(isStatic)? "static ":"";
 		printIndent(indent, output).append(modifier);
@@ -25,7 +25,7 @@ public class InferredAttribute extends InferredMember{
 		   type.dumpReference(output);
 	   else
 		   output.append("??");
-	   output.append(" ").append(name);	
+	   output.append(" ").append(name);
 	   return output;
 	}
 

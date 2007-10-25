@@ -19,9 +19,9 @@ import java.util.List;
  *
  * <pre>
  * CastExpression:
- *    <b>(</b> Type <b>)</b> Expression 
+ *    <b>(</b> Type <b>)</b> Expression
  * </pre>
- * 
+ *
  * @since 2.0
  */
 public class FunctionExpression extends Expression {
@@ -30,17 +30,17 @@ public class FunctionExpression extends Expression {
 	 * The "type" structural property of this node type.
 	 * @since 3.0
 	 */
-	public static final ChildPropertyDescriptor METHOD_PROPERTY = 
+	public static final ChildPropertyDescriptor METHOD_PROPERTY =
 		new ChildPropertyDescriptor(FunctionExpression.class, "method", MethodDeclaration.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
 
 
 	/**
-	 * A list of property descriptors (element type: 
+	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
 	 */
 	private static final List PROPERTY_DESCRIPTORS;
-	
+
 	static {
 		List properyList = new ArrayList(3);
 		createPropertyList(FunctionExpression.class, properyList);
@@ -51,17 +51,17 @@ public class FunctionExpression extends Expression {
 	/**
 	 * Returns a list of structural property descriptors for this node type.
 	 * Clients must not modify the result.
-	 * 
+	 *
 	 * @param apiLevel the API level; one of the
 	 * <code>AST.JLS*</code> constants
-	 * @return a list of property descriptors (element type: 
+	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
 	 * @since 3.0
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
 	}
-			
+
 	/**
 	 * The type; lazily initialized; defaults to a unspecified,
 	 * legal type.
@@ -70,12 +70,12 @@ public class FunctionExpression extends Expression {
 
 
 	/**
-	 * Creates a new AST node for a cast expression owned by the given 
+	 * Creates a new AST node for a cast expression owned by the given
 	 * AST. By default, the type and expression are unspecified (but legal).
 	 * <p>
 	 * N.B. This constructor is package-private.
 	 * </p>
-	 * 
+	 *
 	 * @param ast the AST that is to own this node
 	 */
 	FunctionExpression(AST ast) {
@@ -88,7 +88,7 @@ public class FunctionExpression extends Expression {
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -141,12 +141,12 @@ public class FunctionExpression extends Expression {
 		}
 		visitor.endVisit(this);
 	}
-	
+
 	/**
 	 * Returns the type in this cast expression.
-	 * 
+	 *
 	 * @return the type
-	 */ 
+	 */
 	public MethodDeclaration getMethod() {
 		if (this.methodDeclaration == null) {
 			// lazy init must be thread-safe for readers
@@ -163,14 +163,14 @@ public class FunctionExpression extends Expression {
 
 	/**
 	 * Sets the type in this cast expression to the given type.
-	 * 
+	 *
 	 * @param type the new type
 	 * @exception IllegalArgumentException if:
 	 * <ul>
 	 * <li>the node belongs to a different AST</li>
 	 * <li>the node already has a parent</li>
 	 * </ul>
-	 */ 
+	 */
 	public void setMethod(MethodDeclaration method) {
 		if (method == null) {
 			throw new IllegalArgumentException();
@@ -180,9 +180,9 @@ public class FunctionExpression extends Expression {
 		this.methodDeclaration = method;
 		postReplaceChild(oldChild, method, METHOD_PROPERTY);
 	}
-	
 
-	
+
+
 
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
@@ -191,12 +191,12 @@ public class FunctionExpression extends Expression {
 		// treat Code as free
 		return BASE_NODE_SIZE + 2 * 4;
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {
-		return 
+		return
 			memSize()
 			+ (this.methodDeclaration == null ? 0 : getMethod().treeSize());
 	}

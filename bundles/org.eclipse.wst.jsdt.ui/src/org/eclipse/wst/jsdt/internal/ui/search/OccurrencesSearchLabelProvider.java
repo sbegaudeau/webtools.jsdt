@@ -11,9 +11,9 @@
 
 package org.eclipse.wst.jsdt.internal.ui.search;
 
-import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.search.ui.text.AbstractTextSearchViewPage;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 
 class OccurrencesSearchLabelProvider extends TextSearchLabelProvider {
 	

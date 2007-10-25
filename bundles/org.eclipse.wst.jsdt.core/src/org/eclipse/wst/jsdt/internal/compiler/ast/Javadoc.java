@@ -13,7 +13,18 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ImportBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.JavadocTagConstants;
 
 /**
@@ -34,7 +45,7 @@ public class Javadoc extends ASTNode {
 	// Store value tag positions
 	public long valuePositions = -1;
 	public int modifiers=0;
-	
+
 	public TypeReference namespace=null;
 	public TypeReference memberOf=null;
 	public TypeReference returnType=null;
@@ -158,13 +169,13 @@ public class Javadoc extends ASTNode {
 		printIndent(indent, output).append("/**\n"); //$NON-NLS-1$
 		if (this.paramReferences != null) {
 			for (int i = 0, length = this.paramReferences.length; i < length; i++) {
-				printIndent(indent + 1, output).append(" * @param "); //$NON-NLS-1$		
+				printIndent(indent + 1, output).append(" * @param "); //$NON-NLS-1$
 				this.paramReferences[i].print(indent, output).append('\n');
 			}
 		}
 		if (this.paramTypeParameters != null) {
 			for (int i = 0, length = this.paramTypeParameters.length; i < length; i++) {
-				printIndent(indent + 1, output).append(" * @param <"); //$NON-NLS-1$		
+				printIndent(indent + 1, output).append(" * @param <"); //$NON-NLS-1$
 				this.paramTypeParameters[i].print(indent, output).append(">\n"); //$NON-NLS-1$
 			}
 		}
@@ -174,43 +185,43 @@ public class Javadoc extends ASTNode {
 		}
 		if (this.exceptionReferences != null) {
 			for (int i = 0, length = this.exceptionReferences.length; i < length; i++) {
-				printIndent(indent + 1, output).append(" * @throws "); //$NON-NLS-1$		
+				printIndent(indent + 1, output).append(" * @throws "); //$NON-NLS-1$
 				this.exceptionReferences[i].print(indent, output).append('\n');
 			}
 		}
 		if (this.seeReferences != null) {
 			for (int i = 0, length = this.seeReferences.length; i < length; i++) {
-				printIndent(indent + 1, output).append(" * @see "); //$NON-NLS-1$		
+				printIndent(indent + 1, output).append(" * @see "); //$NON-NLS-1$
 				this.seeReferences[i].print(indent, output).append('\n');
 			}
 		}
 
 		if (this.returnType!=null)
 		{
-			printIndent(indent + 1, output).append(" * @type "); //$NON-NLS-1$		
+			printIndent(indent + 1, output).append(" * @type "); //$NON-NLS-1$
 			this.returnType.print(indent, output).append('\n');
-			
+
 		}
 		if (this.memberOf!=null)
 		{
-			printIndent(indent + 1, output).append(" * @member "); //$NON-NLS-1$		
+			printIndent(indent + 1, output).append(" * @member "); //$NON-NLS-1$
 			this.memberOf.print(indent, output).append('\n');
-			
+
 		}
 		if (this.extendsType!=null)
 		{
-			printIndent(indent + 1, output).append(" * @extends "); //$NON-NLS-1$		
+			printIndent(indent + 1, output).append(" * @extends "); //$NON-NLS-1$
 			this.extendsType.print(indent, output).append('\n');
-			
+
 		}
 		if (this.isConstructor)
-			printIndent(indent + 1, output).append(" * @constructor\n"); //$NON-NLS-1$		
+			printIndent(indent + 1, output).append(" * @constructor\n"); //$NON-NLS-1$
 		if ((this.modifiers & ClassFileConstants.AccPrivate) != 0)
-			printIndent(indent + 1, output).append(" * @private\n"); //$NON-NLS-1$		
+			printIndent(indent + 1, output).append(" * @private\n"); //$NON-NLS-1$
 		if ((this.modifiers & ClassFileConstants.AccFinal) != 0)
-			printIndent(indent + 1, output).append(" * @final\n"); //$NON-NLS-1$		
+			printIndent(indent + 1, output).append(" * @final\n"); //$NON-NLS-1$
 
-		
+
 		printIndent(indent, output).append(" */\n"); //$NON-NLS-1$
 		return output;
 	}
@@ -277,21 +288,21 @@ public class Javadoc extends ASTNode {
 	 * Resolve method javadoc
 	 */
 	public void resolve(MethodScope methScope) {
-		
+
 		// get method declaration
 		AbstractMethodDeclaration methDecl = methScope.referenceMethod();
 		boolean overriding = methDecl == null /* field declaration */ || methDecl.binding == null /* compiler error */
 			? false :
 			!methDecl.binding.isStatic() && ((methDecl.binding.modifiers & (ExtraCompilerModifiers.AccImplementing | ExtraCompilerModifiers.AccOverriding)) != 0);
-		
+
 		// @see tags
 		int seeTagsLength = this.seeReferences == null ? 0 : this.seeReferences.length;
 		boolean superRef = false;
 		for (int i = 0; i < seeTagsLength; i++) {
-			
+
 			// Resolve reference
 			resolveReference(this.seeReferences[i], methScope);
-			
+
 			if (methDecl != null && (methDecl.isConstructor() || overriding) && !superRef) {
 				if (this.seeReferences[i] instanceof JavadocMessageSend) {
 					JavadocMessageSend messageSend = (JavadocMessageSend) this.seeReferences[i];
@@ -326,7 +337,7 @@ public class Javadoc extends ASTNode {
 				}
 			}
 		}
-		
+
 		// Look at @Override annotations
 		if (!superRef && methDecl != null && methDecl.annotations != null) {
 			int length = methDecl.annotations.length;
@@ -334,7 +345,7 @@ public class Javadoc extends ASTNode {
 				superRef = (methDecl.binding.tagBits & TagBits.AnnotationOverride) != 0;
 			}
 		}
-		
+
 		// Store if a reference exists to an overriden method/constructor or the method is in a local type,
 		boolean reportMissing = methDecl == null || !((overriding && this.inheritedPositions != -1) || superRef || (methDecl.binding.declaringClass != null && methDecl.binding.declaringClass.isLocalType()));
 		if (!overriding && this.inheritedPositions != -1) {
@@ -378,7 +389,7 @@ public class Javadoc extends ASTNode {
 			this.invalidParameters[i].resolve(methScope, false, false);
 		}
 	}
-	
+
 	private void resolveReference(Expression reference, Scope scope) {
 
 		// Perform resolve
@@ -398,7 +409,7 @@ public class Javadoc extends ASTNode {
 		int scopeModifiers = -1;
 		if (reference instanceof JavadocFieldReference) {
 			JavadocFieldReference fieldRef = (JavadocFieldReference) reference;
-			
+
 			// Verify if this is a method reference
 			// see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=51911
 			if (fieldRef.methodBinding != null) {
@@ -410,7 +421,7 @@ public class Javadoc extends ASTNode {
 				else if (fieldRef.receiverType != null) {
 					if (scope.enclosingSourceType().isCompatibleWith(fieldRef.receiverType)) {
 							fieldRef.bits |= ASTNode.SuperAccess;
-						}		
+						}
 					fieldRef.methodBinding = scope.findMethod((ReferenceBinding)fieldRef.receiverType, fieldRef.token, new TypeBinding[0], fieldRef);
 				}
 			}
@@ -472,7 +483,7 @@ public class Javadoc extends ASTNode {
 				verifyTypeReference(alloc, alloc.type, scope, source15, resolvedType, alloc.binding.modifiers);
 			}
 		}
-		
+
 		// Verify that there's no type variable reference
 		// (javadoc does not accept them and this is not a referenced bug or requested enhancement)
 		if (reference.resolvedType != null && reference.resolvedType.isTypeVariable()) {
@@ -495,7 +506,7 @@ public class Javadoc extends ASTNode {
 			}
 			return;
 		}
-		
+
 		// If no param tags then report a problem for each method argument
 		int argumentsSize = methodDecl.arguments == null ? 0 : methodDecl.arguments.length;
 		if (paramTagsSize == 0) {
@@ -588,7 +599,7 @@ public class Javadoc extends ASTNode {
 			}
 			return;
 		}
-		
+
 		// If no param tags then report a problem for each declaration type parameter
 		if (parameters != null) {
 			int typeParametersLength = parameters.length;
@@ -640,7 +651,7 @@ public class Javadoc extends ASTNode {
 						scope.problemReporter().javadocMissingParamTag(parameter.name, parameter.sourceStart, parameter.sourceEnd, modifiers);
 					}
 				}
-			
+
 				// Report invalid param
 				for (int i=0; i<paramTypeParamLength; i++) {
 					if (bindings[i] != null) {
@@ -746,7 +757,7 @@ public class Javadoc extends ASTNode {
 							compatible = typeRef.resolvedType.isCompatibleWith(exceptionBinding);
 						}
 					}
-			
+
 					//  If not compatible only complain on unchecked exception
 					if (!compatible && !typeRef.resolvedType.isUncheckedException(false)) {
 						methScope.problemReporter().javadocInvalidThrowsClassName(typeRef, md.binding.modifiers);
@@ -773,7 +784,7 @@ public class Javadoc extends ASTNode {
 					return;
 				}
 			}
-			
+
 			// member types
 			if (resolvedType.isMemberType()) {
 				ReferenceBinding topLevelType = resolvedType;
@@ -787,12 +798,12 @@ public class Javadoc extends ASTNode {
 					topLevelType = topLevelType.enclosingType();
 					computedCompoundName[--idx] = topLevelType.sourceName;
 				}
-				
+
 				// add package information
 				for (int i = packageLength; --i >= 0;) {
 					computedCompoundName[--idx] = topLevelType.fPackage.compoundName[i];
 				}
-										
+
 				ClassScope topLevelScope = scope.classScope();
 				// when scope is not on compilation unit type, then inner class may not be visible...
 				if (topLevelScope.parent.kind != Scope.COMPILATION_UNIT_SCOPE ||
@@ -820,7 +831,7 @@ public class Javadoc extends ASTNode {
 													break mainLoop;
 												}
 											} else {
-												break;	
+												break;
 											}
 										}
 									}
@@ -856,12 +867,12 @@ public class Javadoc extends ASTNode {
 				this.returnStatement.traverse(visitor, scope);
 			}
 			if (this.exceptionReferences != null) {
-				for (int i = 0, length = this.exceptionReferences.length; i < length; i++) {	
+				for (int i = 0, length = this.exceptionReferences.length; i < length; i++) {
 					this.exceptionReferences[i].traverse(visitor, scope);
 				}
 			}
 			if (this.seeReferences != null) {
-				for (int i = 0, length = this.seeReferences.length; i < length; i++) {	
+				for (int i = 0, length = this.seeReferences.length; i < length; i++) {
 					this.seeReferences[i].traverse(visitor, scope);
 				}
 			}
@@ -884,19 +895,19 @@ public class Javadoc extends ASTNode {
 				this.returnStatement.traverse(visitor, scope);
 			}
 			if (this.exceptionReferences != null) {
-				for (int i = 0, length = this.exceptionReferences.length; i < length; i++) {	
+				for (int i = 0, length = this.exceptionReferences.length; i < length; i++) {
 					this.exceptionReferences[i].traverse(visitor, scope);
 				}
 			}
 			if (this.seeReferences != null) {
-				for (int i = 0, length = this.seeReferences.length; i < length; i++) {	
+				for (int i = 0, length = this.seeReferences.length; i < length; i++) {
 					this.seeReferences[i].traverse(visitor, scope);
 				}
 			}
 		}
 		visitor.endVisit(this, scope);
 	}
-	
+
 	public JavadocSingleNameReference findParam(char [] name)
 	{
 		if (this.paramReferences!=null)

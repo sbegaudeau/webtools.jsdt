@@ -23,7 +23,7 @@ import java.util.Map;
  * PostfixExpression:
  *    Expression PostfixOperator
  * </pre>
- * 
+ *
  * @since 2.0
  */
 public class PostfixExpression extends Expression {
@@ -37,39 +37,39 @@ public class PostfixExpression extends Expression {
 	 * </pre>
 	 */
 	public static class Operator {
-	
+
 		/**
 		 * The token for the operator.
 		 */
 		private String token;
-		
+
 		/**
 		 * Creates a new postfix operator with the given token.
 		 * <p>
 		 * Note: this constructor is private. The only instances
 		 * ever created are the ones for the standard operators.
 		 * </p>
-		 * 
+		 *
 		 * @param token the character sequence for the operator
 		 */
 		private Operator(String token) {
 			this.token = token;
 		}
-		
+
 		/**
 		 * Returns the character sequence for the operator.
-		 * 
+		 *
 		 * @return the character sequence for the operator
 		 */
 		public String toString() {
 			return token;
 		}
-		
+
 		/** Postfix increment "++" operator. */
 		public static final Operator INCREMENT = new Operator("++");//$NON-NLS-1$
 		/** Postfix decrement "--" operator. */
 		public static final Operator DECREMENT = new Operator("--");//$NON-NLS-1$
-		
+
 		/**
 		 * Map from token to operator (key type: <code>String</code>;
 		 * value type: <code>Operator</code>).
@@ -91,10 +91,10 @@ public class PostfixExpression extends Expression {
 		 * or <code>null</code> if none.
 		 * <p>
 		 * <code>toOperator</code> is the converse of <code>toString</code>:
-		 * that is, <code>Operator.toOperator(op.toString()) == op</code> for 
+		 * that is, <code>Operator.toOperator(op.toString()) == op</code> for
 		 * all operators <code>op</code>.
 		 * </p>
-		 * 
+		 *
 		 * @param token the character sequence for the operator
 		 * @return the postfix operator, or <code>null</code> if none
 		 */
@@ -102,28 +102,28 @@ public class PostfixExpression extends Expression {
 			return (Operator) CODES.get(token);
 		}
 	}
-	
+
 	/**
 	 * The "operator" structural property of this node type.
 	 * @since 3.0
 	 */
-	public static final SimplePropertyDescriptor OPERATOR_PROPERTY = 
+	public static final SimplePropertyDescriptor OPERATOR_PROPERTY =
 		new SimplePropertyDescriptor(PostfixExpression.class, "operator", PostfixExpression.Operator.class, MANDATORY); //$NON-NLS-1$
-	
+
 	/**
 	 * The "operand" structural property of this node type.
 	 * @since 3.0
 	 */
-	public static final ChildPropertyDescriptor OPERAND_PROPERTY = 
+	public static final ChildPropertyDescriptor OPERAND_PROPERTY =
 		new ChildPropertyDescriptor(PostfixExpression.class, "operand", Expression.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
-	 * A list of property descriptors (element type: 
+	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
 	 */
 	private static final List PROPERTY_DESCRIPTORS;
-	
+
 	static {
 		List propertyList = new ArrayList(3);
 		createPropertyList(PostfixExpression.class, propertyList);
@@ -135,22 +135,22 @@ public class PostfixExpression extends Expression {
 	/**
 	 * Returns a list of structural property descriptors for this node type.
 	 * Clients must not modify the result.
-	 * 
+	 *
 	 * @param apiLevel the API level; one of the
 	 * <code>AST.JLS*</code> constants
 
-	 * @return a list of property descriptors (element type: 
+	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
 	 * @since 3.0
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
 	}
-			
+
 	/**
 	 * The operator; defaults to an unspecified postfix operator.
 	 */
-	private PostfixExpression.Operator operator = 
+	private PostfixExpression.Operator operator =
 		PostfixExpression.Operator.INCREMENT;
 
 	/**
@@ -160,10 +160,10 @@ public class PostfixExpression extends Expression {
 	private Expression operand = null;
 
 	/**
-	 * Creates a new AST node for an postfix expression owned by the given 
-	 * AST. By default, the node has unspecified (but legal) operator and 
+	 * Creates a new AST node for an postfix expression owned by the given
+	 * AST. By default, the node has unspecified (but legal) operator and
 	 * operand.
-	 * 
+	 *
 	 * @param ast the AST that is to own this node
 	 */
 	PostfixExpression(AST ast) {
@@ -176,7 +176,7 @@ public class PostfixExpression extends Expression {
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -208,7 +208,7 @@ public class PostfixExpression extends Expression {
 		// allow default implementation to flag the error
 		return super.internalGetSetChildProperty(property, get, child);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -245,22 +245,22 @@ public class PostfixExpression extends Expression {
 		}
 		visitor.endVisit(this);
 	}
-	
+
 	/**
 	 * Returns the operator of this postfix expression.
-	 * 
+	 *
 	 * @return the operator
-	 */ 
+	 */
 	public PostfixExpression.Operator getOperator() {
 		return this.operator;
 	}
 
 	/**
 	 * Sets the operator of this postfix expression.
-	 * 
+	 *
 	 * @param operator the operator
 	 * @exception IllegalArgumentException if the argument is incorrect
-	 */ 
+	 */
 	public void setOperator(PostfixExpression.Operator operator) {
 		if (operator == null) {
 			throw new IllegalArgumentException();
@@ -272,9 +272,9 @@ public class PostfixExpression extends Expression {
 
 	/**
 	 * Returns the operand of this postfix expression.
-	 * 
+	 *
 	 * @return the operand expression node
-	 */ 
+	 */
 	public Expression getOperand() {
 		if (this.operand  == null) {
 			// lazy init must be thread-safe for readers
@@ -288,10 +288,10 @@ public class PostfixExpression extends Expression {
 		}
 		return this.operand;
 	}
-		
+
 	/**
 	 * Sets the operand of this postfix expression.
-	 * 
+	 *
 	 * @param expression the operand expression node
 	 * @exception IllegalArgumentException if:
 	 * <ul>
@@ -299,7 +299,7 @@ public class PostfixExpression extends Expression {
 	 * <li>the node already has a parent</li>
 	 * <li>a cycle in would be created</li>
 	 * </ul>
-	 */ 
+	 */
 	public void setOperand(Expression expression) {
 		if (expression == null) {
 			throw new IllegalArgumentException();
@@ -317,12 +317,12 @@ public class PostfixExpression extends Expression {
 		// treat Operator as free
 		return BASE_NODE_SIZE + 2 * 4;
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {
-		return 
+		return
 			memSize()
 			+ (this.operand == null ? 0 : getOperand().treeSize());
 	}

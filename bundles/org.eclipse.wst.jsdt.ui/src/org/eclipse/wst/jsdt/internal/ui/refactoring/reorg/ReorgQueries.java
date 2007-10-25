@@ -12,21 +12,16 @@ package org.eclipse.wst.jsdt.internal.ui.refactoring.reorg;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.OperationCanceledException;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.wizard.Wizard;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.IConfirmQuery;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.IReorgQueries;
-
 import org.eclipse.wst.jsdt.internal.ui.dialogs.ListDialog;
-
 import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
 
 public class ReorgQueries implements IReorgQueries {

@@ -17,7 +17,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class SuperReference extends ThisReference {
-	
+
 	public SuperReference(int sourceStart, int sourceEnd) {
 
 		super(sourceStart, sourceEnd);
@@ -29,24 +29,24 @@ public class SuperReference extends ThisReference {
 	}
 
 	public boolean isImplicitThis() {
-		
+
 		return false;
 	}
 
 	public boolean isSuper() {
-		
+
 		return true;
 	}
 
 	public boolean isThis() {
-		
+
 		return false ;
 	}
 
 	public StringBuffer printExpression(int indent, StringBuffer output){
-	
+
 		return output.append("super"); //$NON-NLS-1$
-		
+
 	}
 
 	public TypeBinding resolveType(BlockScope scope) {

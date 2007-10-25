@@ -10,6 +10,11 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui.actions;
 
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IWorkbenchSite;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.JavaModelException;
@@ -19,11 +24,6 @@ import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageExplorerPart;
-import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.text.ITextSelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IWorkbenchSite;
-import org.eclipse.ui.PlatformUI;
 /**
  * This action reveals the currently selected Java element in the 
  * package explorer. 

@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.ui.refactoring;
 
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.IntroduceIndirectionRefactoring;
 
 /**

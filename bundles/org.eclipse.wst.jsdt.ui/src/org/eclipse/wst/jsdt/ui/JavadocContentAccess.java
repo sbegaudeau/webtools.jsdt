@@ -22,10 +22,8 @@ import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.javadoc.JavaDocCommentReader;
 import org.eclipse.wst.jsdt.internal.corext.util.MethodOverrideTester;
-
 import org.eclipse.wst.jsdt.internal.ui.text.javadoc.JavaDoc2HTMLTextReader;
 
 /**

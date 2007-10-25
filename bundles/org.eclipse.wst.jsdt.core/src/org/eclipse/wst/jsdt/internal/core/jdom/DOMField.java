@@ -15,9 +15,12 @@ import java.util.Enumeration;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.jdom.*;
-import org.eclipse.wst.jsdt.internal.core.util.Messages;
+import org.eclipse.wst.jsdt.core.jdom.DOMException;
+import org.eclipse.wst.jsdt.core.jdom.IDOMField;
+import org.eclipse.wst.jsdt.core.jdom.IDOMMember;
+import org.eclipse.wst.jsdt.core.jdom.IDOMNode;
 import org.eclipse.wst.jsdt.internal.core.util.CharArrayBuffer;
+import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 /**
  * DOMField provides an implementation of IDOMField.
@@ -25,11 +28,11 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  * @see IDOMField
  * @see DOMNode
  * @deprecated The JDOM was made obsolete by the addition in 2.0 of the more
- * powerful, fine-grained DOM/AST API found in the 
+ * powerful, fine-grained DOM/AST API found in the
  * org.eclipse.wst.jsdt.core.dom package.
  */
 class DOMField extends DOMMember implements IDOMField {
-	
+
 	/**
 	 * Contains the type of the field when the type
 	 * has been altered from the contents in the
@@ -42,7 +45,7 @@ class DOMField extends DOMMember implements IDOMField {
 	 * field's type in the document.
 	 */
 	protected int[] fTypeRange;
-		
+
 	/**
 	 * The contents of the initializer when the
 	 * initializer has been altered from the
@@ -167,7 +170,7 @@ protected void appendMemberDeclarationContents(CharArrayBuffer buffer) {
 			.append(getTypeContents())
 			.append(fDocument, fTypeRange[1] + 1, fNameRange[0] - fTypeRange[1] - 1);
 	}
-	
+
 	buffer.append(getNameContents());
 	if (hasInitializer()) {
 		if (fInitializerRange[0] < 0) {
@@ -238,7 +241,7 @@ protected void becomeDetailed() throws DOMException {
 			DOMBuilder builder = new DOMBuilder();
 			IDOMField[] details= builder.createFields(source.toCharArray());
 			if (details.length == 0) {
-				throw new DOMException(Messages.dom_cannotDetail); 
+				throw new DOMException(Messages.dom_cannotDetail);
 			} else {
 				node= this;
 				for (int i= 0; i < details.length; i++) {
@@ -264,7 +267,7 @@ public Object clone() {
 }
 /**
  * Expands all variable declarators in this field declaration into
- * stand-alone field declarations. 
+ * stand-alone field declarations.
  */
 protected void expand() {
 	if (isVariableDeclarator() || hasMultipleVariableDeclarators()) {
@@ -325,7 +328,7 @@ public IJavaElement getJavaElement(IJavaElement parent) throws IllegalArgumentEx
 	if (parent.getElementType() == IJavaElement.TYPE) {
 		return ((IType)parent).getField(getName());
 	} else {
-		throw new IllegalArgumentException(Messages.element_illegalParent); 
+		throw new IllegalArgumentException(Messages.element_illegalParent);
 	}
 }
 /**
@@ -374,7 +377,7 @@ protected char[] getSingleVariableDeclaratorContents() {
 	} else {
 		buffer.append(first.fDocument, first.fSourceRange[0], first.fNameRange[0] - first.fSourceRange[0]);
 	}
-	
+
 	buffer.append(getName());
 	if (hasInitializer()) {
 		if (fInitializerRange[0] < 0) {
@@ -439,7 +442,7 @@ protected boolean hasMultipleVariableDeclarators() {
 public void insertSibling(IDOMNode sibling) throws IllegalArgumentException, DOMException {
 	if (isVariableDeclarator()) {
 		expand();
-	} 
+	}
 	super.insertSibling(sibling);
 }
 /**
@@ -483,7 +486,7 @@ void normalizeEndPosition(ILineStartFinder finder, DOMNode next) {
 		// unless the next node is a field that is declared along with this one
 		int temp = next.getStartPosition() - 1;
 		fInsertionPosition = Math.max(finder.getLineStart(temp + 1), getEndPosition());
-		
+
 		next.normalizeStartPosition(getEndPosition(), finder);
 		if (next instanceof DOMField) {
 			DOMField field = (DOMField) next;
@@ -575,7 +578,7 @@ protected void setIsVariableDeclarator(boolean isVariableDeclarator) {
  */
 public void setName(String name) throws IllegalArgumentException {
 	if (name == null) {
-		throw new IllegalArgumentException(Messages.element_nullName); 
+		throw new IllegalArgumentException(Messages.element_nullName);
 	} else {
 		super.setName(name);
 		setTypeAltered(true);
@@ -586,7 +589,7 @@ public void setName(String name) throws IllegalArgumentException {
  */
 public void setType(String typeName) throws IllegalArgumentException {
 	if (typeName == null) {
-		throw new IllegalArgumentException(Messages.element_nullType); 
+		throw new IllegalArgumentException(Messages.element_nullType);
 	}
 	becomeDetailed();
 	expand();

@@ -10,11 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.text.java;
 
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.dialogs.MessageDialog;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -23,17 +19,15 @@ import org.eclipse.jface.text.link.LinkedModeModel;
 import org.eclipse.jface.text.link.LinkedModeUI;
 import org.eclipse.jface.text.link.LinkedPosition;
 import org.eclipse.jface.text.link.LinkedPositionGroup;
-
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
-
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-
-import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorHighlightingSynchronizer;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
+import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
 
 /**
  * A method proposal with filled in argument names.

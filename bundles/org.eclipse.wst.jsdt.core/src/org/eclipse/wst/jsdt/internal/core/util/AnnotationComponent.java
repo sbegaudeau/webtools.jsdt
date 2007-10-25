@@ -21,12 +21,12 @@ import org.eclipse.wst.jsdt.core.util.IConstantPoolEntry;
  * Default implementation of IAnnotationComponent
  */
 public class AnnotationComponent extends ClassFileStruct implements IAnnotationComponent {
-	
+
 	private int componentNameIndex;
 	private char[] componentName;
 	private IAnnotationComponentValue componentValue;
 	private int readOffset;
-	
+
 	public AnnotationComponent(
 			byte[] classFileBytes,
 			IConstantPool constantPool,
@@ -45,7 +45,7 @@ public class AnnotationComponent extends ClassFileStruct implements IAnnotationC
 		this.componentValue = value;
 		this.readOffset += value.sizeInBytes();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.util.IAnnotationComponent#getComponentNameIndex()
 	 */
@@ -64,7 +64,7 @@ public class AnnotationComponent extends ClassFileStruct implements IAnnotationC
 	public IAnnotationComponentValue getComponentValue() {
 		return this.componentValue;
 	}
-	
+
 	int sizeInBytes() {
 		return this.readOffset;
 	}

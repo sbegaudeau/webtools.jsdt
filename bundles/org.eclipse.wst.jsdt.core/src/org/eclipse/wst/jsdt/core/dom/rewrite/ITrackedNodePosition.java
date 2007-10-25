@@ -16,27 +16,27 @@ package org.eclipse.wst.jsdt.core.dom.rewrite;
  * <p>
  * This interface is not intended to be implemented by clients.
  * </p>
- * 
+ *
  * @see ASTRewrite#track(org.eclipse.wst.jsdt.core.dom.ASTNode)
  * @since 3.0
  */
 public interface ITrackedNodePosition {
-	
+
 	/**
 	 * Returns the original or modified start position of the tracked node depending if called before
 	 * or after the rewrite is applied. <code>-1</code> is returned for removed nodes.
-	 * 
+	 *
 	 * @return the original or modified start position of the tracked node
 	 */
 	public int getStartPosition();
-	
+
 	/**
 	 * Returns the original or modified length of the tracked node depending if called before
 	 * or after the rewrite is applied. <code>-1</code> is returned for removed nodes.
-	 * 
+	 *
 	 * @return the original or modified length of the tracked node
 	 */
 	public int getLength();
-	
-	
+
+
 }

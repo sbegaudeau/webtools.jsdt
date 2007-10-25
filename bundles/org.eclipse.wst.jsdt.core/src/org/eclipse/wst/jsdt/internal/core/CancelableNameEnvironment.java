@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.internal.codeassist.ISearchRequestor;
@@ -55,7 +54,7 @@ public class CancelableNameEnvironment extends SearchableEnvironment {
 		checkCanceled();
 		return super.findBinding(typeName, packageName, type, requestor, returnMultiple, excludePath);
 	}
-	
+
 	public NameEnvironmentAnswer findType(char[][] compoundTypeName,  ITypeRequestor requestor) {
 		checkCanceled();
 		return super.findType(compoundTypeName,requestor);

@@ -16,13 +16,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
-
-//import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-
+import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ChangeTypeRefactoring;
 
 class ChangeTypeContentProvider implements ITreeContentProvider {

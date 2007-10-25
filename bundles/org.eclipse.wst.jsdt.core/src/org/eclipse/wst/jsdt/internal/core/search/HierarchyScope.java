@@ -15,14 +15,30 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.IClasspathEntry;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaModel;
+import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IMember;
+import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.ITypeHierarchy;
+import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
-import org.eclipse.wst.jsdt.internal.core.*;
 import org.eclipse.wst.jsdt.internal.core.JarPackageFragmentRoot;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
 import org.eclipse.wst.jsdt.internal.core.JavaModel;
+import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
+import org.eclipse.wst.jsdt.internal.core.JavaProject;
 import org.eclipse.wst.jsdt.internal.core.hierarchy.TypeHierarchy;
 
 /**
@@ -33,7 +49,7 @@ public class HierarchyScope extends AbstractSearchScope implements SuffixConstan
 	public IType focusType;
 	private String focusPath;
 	private WorkingCopyOwner owner;
-	
+
 	private ITypeHierarchy hierarchy;
 	private IType[] types;
 	private HashSet resourcePaths;
@@ -41,7 +57,7 @@ public class HierarchyScope extends AbstractSearchScope implements SuffixConstan
 
 	protected IResource[] elements;
 	protected int elementCount;
-	
+
 	public boolean needsRefresh;
 
 	/* (non-Javadoc)
@@ -58,14 +74,14 @@ public class HierarchyScope extends AbstractSearchScope implements SuffixConstan
 		}
 		elements[elementCount++] = element;
 	}
-	
+
 	/* (non-Javadoc)
 	 * Creates a new hiearchy scope for the given type.
 	 */
 	public HierarchyScope(IType type, WorkingCopyOwner owner) throws JavaModelException {
 		this.focusType = type;
 		this.owner = owner;
-		
+
 		this.enclosingProjectsAndJars = this.computeProjectsAndJars(type);
 
 		// resource path
@@ -91,9 +107,9 @@ public class HierarchyScope extends AbstractSearchScope implements SuffixConstan
 		} else {
 			this.focusPath = type.getPath().toString();
 		}
-		
+
 		this.needsRefresh = true;
-			
+
 		//disabled for now as this could be expensive
 		//JavaModelManager.getJavaModelManager().rememberScope(this);
 	}
@@ -131,7 +147,7 @@ public class HierarchyScope extends AbstractSearchScope implements SuffixConstan
 						+ JAR_FILE_ENTRY_SEPARATOR
 						+ type.getFullyQualifiedName().replace('.', '/')
 						+ SUFFIX_STRING_class;
-				
+
 				this.resourcePaths.add(resourcePath);
 				paths.put(jarPath, type);
 			} else {
@@ -275,7 +291,7 @@ public class HierarchyScope extends AbstractSearchScope implements SuffixConstan
 					// the scope is used only to find enclosing projects and jars
 					// clients is responsible for filtering out elements not in the hierarchy (see SearchEngine)
 					return true;
-				}					
+				}
 			}
 		}
 		if (this.needsRefresh) {
@@ -297,12 +313,12 @@ public class HierarchyScope extends AbstractSearchScope implements SuffixConstan
 			} else {
 				// be flexible: look at original element (see bug 14106 Declarations in Hierarchy does not find declarations in hierarchy)
 				IType original;
-				if (!type.isBinary() 
+				if (!type.isBinary()
 						&& (original = (IType)type.getPrimaryElement()) != null) {
 					return this.hierarchy.contains(original);
 				}
 			}
-		} 
+		}
 		return false;
 	}
 	/* (non-Javadoc)

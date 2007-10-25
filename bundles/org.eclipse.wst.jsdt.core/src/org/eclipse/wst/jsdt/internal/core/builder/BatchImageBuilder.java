@@ -10,16 +10,21 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.builder;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import java.util.ArrayList;
 
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceProxy;
+import org.eclipse.core.resources.IResourceProxyVisitor;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.compiler.*;
+import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
+import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
-
-import java.util.*;
 
 public class BatchImageBuilder extends AbstractImageBuilder {
 
@@ -45,7 +50,7 @@ public void build() {
 //		cleanOutputFolders(true);
 		notifier.updateProgressDelta(0.05f);
 
-		notifier.subTask(Messages.build_analyzingSources); 
+		notifier.subTask(Messages.build_analyzingSources);
 		ArrayList sourceFiles = new ArrayList(33);
 		addAllSourceFiles(sourceFiles);
 		notifier.updateProgressDelta(0.10f);
@@ -89,13 +94,13 @@ protected void acceptSecondaryType(ClassFile classFile) {
 //
 //		ArrayList visited = new ArrayList(sourceLocations.length);
 //		for (int i = 0, l = sourceLocations.length; i < l; i++) {
-//			notifier.subTask(Messages.bind(Messages.build_cleaningOutput, this.javaBuilder.currentProject.getName())); 
+//			notifier.subTask(Messages.bind(Messages.build_cleaningOutput, this.javaBuilder.currentProject.getName()));
 //			ClasspathMultiDirectory sourceLocation = sourceLocations[i];
 //			if (sourceLocation.hasIndependentOutputFolder) {
 //				IContainer outputFolder = sourceLocation.binaryFolder;
 //				if (!visited.contains(outputFolder)) {
 //					visited.add(outputFolder);
-//					IResource[] members = outputFolder.members(); 
+//					IResource[] members = outputFolder.members();
 //					for (int j = 0, m = members.length; j < m; j++) {
 //						IResource member = members[j];
 //						if (!member.isDerived()) {
@@ -177,7 +182,7 @@ protected void copyExtraResourcesBack(ClasspathMultiDirectory sourceLocation, fi
 	// When, if ever, does a builder need to copy resources files (not .js or .class) into the output folder?
 	// If we wipe the output folder at the beginning of the build then all 'extra' resources must be copied to the output folder.
 
-	notifier.subTask(Messages.build_copyingResources); 
+	notifier.subTask(Messages.build_copyingResources);
 	final int segmentCount = sourceLocation.sourceFolder.getFullPath().segmentCount();
 	final char[][] exclusionPatterns = sourceLocation.exclusionPatterns;
 	final char[][] inclusionPatterns = sourceLocation.inclusionPatterns;
@@ -207,7 +212,7 @@ protected void copyExtraResourcesBack(ClasspathMultiDirectory sourceLocation, fi
 								createProblemFor(
 									resource,
 									null,
-									Messages.bind(Messages.build_duplicateResource, id), 
+									Messages.bind(Messages.build_duplicateResource, id),
 									javaBuilder.javaProject.getOption(JavaCore.CORE_JAVA_BUILD_DUPLICATE_RESOURCE, true));
 								return false;
 							}

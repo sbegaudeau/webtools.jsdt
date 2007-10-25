@@ -12,21 +12,18 @@ package org.eclipse.wst.jsdt.internal.ui.callhierarchy;
 
 import java.util.Iterator;
 
-import org.eclipse.swt.SWTError;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-
+import org.eclipse.swt.SWTError;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
-
 import org.eclipse.wst.jsdt.internal.corext.callhierarchy.CallLocation;
 
 /**

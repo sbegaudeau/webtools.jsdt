@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2;
 
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.TType;
 
 /**

@@ -13,21 +13,16 @@ package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.resource.ImageDescriptor;
-
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.core.IClasspathAttribute;
 import org.eclipse.wst.jsdt.core.JavaCore;
-
 import org.eclipse.wst.jsdt.internal.corext.javadoc.JavaDocLocations;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.wizards.BuildPathDialogAccess;
-import org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
+import org.eclipse.wst.jsdt.ui.wizards.BuildPathDialogAccess;
+import org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration;
 
 public class JavadocAttributeConfiguration extends ClasspathAttributeConfiguration {
 

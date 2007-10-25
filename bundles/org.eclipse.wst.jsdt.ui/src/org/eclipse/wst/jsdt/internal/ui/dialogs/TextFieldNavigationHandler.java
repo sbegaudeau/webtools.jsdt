@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.dialogs;
 
-import com.ibm.icu.text.BreakIterator;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,7 +19,12 @@ import org.eclipse.core.commands.CommandManager;
 import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.core.commands.contexts.ContextManager;
-
+import org.eclipse.jface.bindings.BindingManager;
+import org.eclipse.jface.bindings.Scheme;
+import org.eclipse.jface.bindings.TriggerSequence;
+import org.eclipse.jface.bindings.keys.KeySequence;
+import org.eclipse.jface.bindings.keys.SWTKeySupport;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.DisposeEvent;
@@ -36,23 +39,15 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
-
-import org.eclipse.jface.bindings.BindingManager;
-import org.eclipse.jface.bindings.Scheme;
-import org.eclipse.jface.bindings.TriggerSequence;
-import org.eclipse.jface.bindings.keys.KeySequence;
-import org.eclipse.jface.bindings.keys.SWTKeySupport;
-import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaWordIterator;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
+
+import com.ibm.icu.text.BreakIterator;
 
 /**
  * Support for camelCase-aware sub-word navigation in dialog fields.

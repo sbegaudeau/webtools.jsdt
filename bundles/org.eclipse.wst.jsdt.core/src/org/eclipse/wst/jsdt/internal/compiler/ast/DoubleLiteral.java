@@ -11,9 +11,10 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.impl.*;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.impl.DoubleConstant;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.util.FloatUtil;
 
 public class DoubleLiteral extends NumberLiteral {
@@ -56,7 +57,7 @@ public class DoubleLiteral extends NumberLiteral {
 			// a true 0 only has '0' and '.' in mantissa
 			// 1.0e-5000d is non-zero, but underflows to 0
 			boolean isHexaDecimal = false;
-			label : for (int i = 0; i < source.length; i++) { //it is welled formated so just test against '0' and potential . D d  
+			label : for (int i = 0; i < source.length; i++) { //it is welled formated so just test against '0' and potential . D d
 				switch (source[i]) {
 					case '0' :
 					case '.' :

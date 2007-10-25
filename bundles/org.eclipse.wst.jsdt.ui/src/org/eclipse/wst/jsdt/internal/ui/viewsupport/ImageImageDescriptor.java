@@ -10,10 +10,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.viewsupport;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
-
-import org.eclipse.jface.resource.ImageDescriptor;
 
 /**
   */

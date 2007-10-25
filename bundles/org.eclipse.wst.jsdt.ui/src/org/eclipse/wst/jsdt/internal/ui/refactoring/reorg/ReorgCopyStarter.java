@@ -12,25 +12,18 @@ package org.eclipse.wst.jsdt.internal.ui.refactoring.reorg;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.core.resources.IResource;
-
-import org.eclipse.swt.widgets.Shell;
-
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableContext;
-
 import org.eclipse.ltk.core.refactoring.RefactoringCore;
-
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaCopyProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaCopyRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ReorgPolicyFactory;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.IReorgPolicy.ICopyPolicy;
-
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringExecutionHelper;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper;
 

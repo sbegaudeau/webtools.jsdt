@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.ui.text;
 import java.util.Arrays;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -21,7 +20,6 @@ import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.TypedRegion;
-
 import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
 
 /**

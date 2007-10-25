@@ -18,11 +18,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.eclipse.core.runtime.IStatus;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.dialogs.DialogPage;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -38,20 +39,10 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-
-import org.eclipse.jface.dialogs.DialogPage;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceStore;
-
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
-
 import org.eclipse.ui.ide.dialogs.EncodingFieldEditor;
-
+import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusUtil;
@@ -60,6 +51,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.spelling.SpellCheckEngine;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.IStatusChangeListener;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**
  * Options configuration block for spell check related settings.

@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.internal.compiler.parser;
 
 /**
- * Internal import structure for parsing recovery 
+ * Internal import structure for parsing recovery
  */
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
@@ -24,7 +24,7 @@ public RecoveredImport(ImportReference importReference, RecoveredElement parent,
 	super(parent, bracketBalance);
 	this.importReference = importReference;
 }
-/* 
+/*
  * Answer the associated parsed structure
  */
 public ASTNode parseTree(){

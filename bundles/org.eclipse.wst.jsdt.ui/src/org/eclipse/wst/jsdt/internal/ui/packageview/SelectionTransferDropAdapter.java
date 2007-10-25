@@ -14,29 +14,23 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
-
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
-
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaCopyProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaMoveProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ReorgPolicyFactory;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ReorgUtils;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.IReorgPolicy.ICopyPolicy;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.IReorgPolicy.IMovePolicy;
-
 import org.eclipse.wst.jsdt.internal.ui.dnd.JdtViewerDropAdapter;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.reorg.ReorgCopyStarter;

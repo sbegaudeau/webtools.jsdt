@@ -11,13 +11,10 @@
 package org.eclipse.wst.jsdt.internal.ui.refactoring;
 
 import org.eclipse.core.runtime.Assert;
-
+import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Widget;
-
-import org.eclipse.jface.viewers.CheckboxTableViewer;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.IMemberActionInfo;
 
 class PullPushCheckboxTableViewer extends CheckboxTableViewer{

@@ -20,9 +20,9 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
  *	try statements, exception handlers, etc...
  */
 public class LabelFlowContext extends SwitchFlowContext {
-	
+
 	public char[] labelName;
-	
+
 public LabelFlowContext(FlowContext parent, ASTNode associatedNode, char[] labelName, BranchLabel breakLabel, BlockScope scope) {
 	super(parent, associatedNode, breakLabel);
 	this.labelName = labelName;

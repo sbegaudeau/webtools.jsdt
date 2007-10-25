@@ -69,7 +69,7 @@ boolean areReturnTypesCompatible(MethodBinding one, MethodBinding two) {
 	if (one.returnType == two.returnType) return true;
 
 	if (areTypesEqual(one.returnType, two.returnType)) return true;
-	
+
 	// when sourceLevel < 1.5 but compliance >= 1.5, allow return types in binaries to be compatible instead of just equal
 	if (this.allowCompatibleReturnTypes &&
 			one.declaringClass instanceof BinaryTypeBinding &&
@@ -168,11 +168,11 @@ void checkAgainstInheritedMethods(MethodBinding currentMethod, MethodBinding[] m
 			} else {
 				currentMethod.modifiers |= ExtraCompilerModifiers.AccOverriding;
 			}
-	
+
 			if (!areReturnTypesCompatible(currentMethod, inheritedMethod))
 				if (reportIncompatibleReturnTypeError(currentMethod, inheritedMethod))
 					continue nextMethod;
-	
+
 			if (currentMethod.thrownExceptions != Binding.NO_EXCEPTIONS)
 				checkExceptions(currentMethod, inheritedMethod);
 			if (inheritedMethod.isFinal())
@@ -187,7 +187,7 @@ void checkAgainstInheritedMethods(MethodBinding currentMethod, MethodBinding[] m
 						for (int j = length; --j >= 0;)
 							if (i != j && methods[j].declaringClass.implementsInterface(declaringClass, false))
 								continue nextMethod;
-	
+
 					problemReporter(currentMethod).overridesDeprecatedMethod(currentMethod, inheritedMethod);
 				}
 			}
@@ -199,7 +199,7 @@ void checkConcreteInheritedMethod(MethodBinding concreteMethod, MethodBinding[] 
 	// Remember that interfaces can only define public instance methods
 	if (concreteMethod.isStatic())
 		// Cannot inherit a static method which is specified as an instance method by an interface
-		problemReporter().staticInheritedMethodConflicts(type, concreteMethod, abstractMethods);	
+		problemReporter().staticInheritedMethodConflicts(type, concreteMethod, abstractMethods);
 	if (!concreteMethod.isPublic()) {
 		int index = 0, length = abstractMethods.length;
 		if (concreteMethod.isProtected()) {
@@ -291,7 +291,7 @@ boolean checkInheritedReturnTypes(MethodBinding[] methods, int length) {
 	MethodBinding first = methods[0];
 	int index = length;
 	while (--index > 0 && areReturnTypesCompatible(first, methods[index])){/*empty*/}
-	if (index == 0) 
+	if (index == 0)
 		return true;
 
 	// All inherited methods do NOT have the same vmSignature
@@ -305,7 +305,7 @@ boolean checkInheritedReturnTypes(MethodBinding[] methods, int length) {
 /*
 For each inherited method identifier (message pattern - vm signature minus the return type)
 	if current method exists
-		if current's vm signature does not match an inherited signature then complain 
+		if current's vm signature does not match an inherited signature then complain
 		else compare current's exceptions & visibility against each inherited method
 	else
 		if inherited methods = 1
@@ -698,7 +698,7 @@ ProblemReporter problemReporter(MethodBinding currentMethod) {
 }
 /**
  * Return true and report an incompatibleReturnType error if currentMethod's
- * return type is strictly incompatible with inheritedMethod's, else return 
+ * return type is strictly incompatible with inheritedMethod's, else return
  * false and report an unchecked conversion warning. Do not call when
  * areReturnTypesCompatible(currentMethod, inheritedMethod) returns true.
  * @param currentMethod the (potentially) inheriting method

@@ -14,7 +14,6 @@ package org.eclipse.wst.jsdt.internal.ui.preferences.cleanup;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.IProfileVersioner;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.CustomProfile;
 

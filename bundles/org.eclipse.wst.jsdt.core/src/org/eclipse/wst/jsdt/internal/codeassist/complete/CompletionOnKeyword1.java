@@ -17,7 +17,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 public class CompletionOnKeyword1 extends SingleTypeReference implements CompletionOnKeyword {
 	private char[][] possibleKeywords;
 	public boolean canCompleteEmptyToken;
-	
+
 	public CompletionOnKeyword1(char[] token, long pos, char[] possibleKeyword) {
 		this(token, pos, new char[][]{possibleKeyword});
 	}
@@ -41,7 +41,7 @@ public class CompletionOnKeyword1 extends SingleTypeReference implements Complet
 		throw new CompletionNodeFound(this, scope);
 	}
 	public StringBuffer printExpression(int indent, StringBuffer output){
-		
-		return output.append("<CompleteOnKeyword:").append(token).append('>');  //$NON-NLS-1$ 
+
+		return output.append("<CompleteOnKeyword:").append(token).append('>');  //$NON-NLS-1$
 	}
 }

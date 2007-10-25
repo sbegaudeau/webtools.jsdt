@@ -13,7 +13,20 @@ package org.eclipse.wst.jsdt.internal.core;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.Flags;
+import org.eclipse.wst.jsdt.core.IBuffer;
+import org.eclipse.wst.jsdt.core.IClassFile;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IMember;
+import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.ISourceRange;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.ITypeRoot;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.Signature;
+import org.eclipse.wst.jsdt.core.ToolFactory;
+import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
@@ -27,21 +40,21 @@ import org.eclipse.wst.jsdt.internal.core.util.MementoTokenizer;
  */
 
 public abstract class Member extends SourceRefElement implements IMember {
-	
+
 protected Member(JavaElement parent) {
 	super(parent);
 }
 protected static boolean areSimilarMethods(
-	String name1, String[] params1, 
+	String name1, String[] params1,
 	String name2, String[] params2,
 	String[] simpleNames1) {
-		
+
 	if (name1.equals(name2)) {
 		int params1Length = params1.length;
 		if (params1Length == params2.length) {
 			for (int i = 0; i < params1Length; i++) {
-				String simpleName1 = 
-					simpleNames1 == null ? 
+				String simpleName1 =
+					simpleNames1 == null ?
 						Signature.getSimpleName(Signature.toString(Signature.getTypeErasure(params1[i]))) :
 						simpleNames1[i];
 				String simpleName2 = Signature.getSimpleName(Signature.toString(Signature.getTypeErasure(params2[i])));
@@ -252,9 +265,9 @@ public Member getOuterMostLocalContext() {
 				 // these elements can define local members
 				lastLocalContext = (Member) current;
 				break;
-		}		
+		}
 		current = current.getParent();
-	} 
+	}
 	return lastLocalContext;
 }
 public ISourceRange getJavadocRange() throws JavaModelException {
@@ -278,7 +291,7 @@ public ISourceRange getJavadocRange() throws JavaModelException {
 		try {
 			int docOffset= -1;
 			int docEnd= -1;
-			
+
 			int terminal= scanner.getNextToken();
 			loop: while (true) {
 				switch(terminal) {

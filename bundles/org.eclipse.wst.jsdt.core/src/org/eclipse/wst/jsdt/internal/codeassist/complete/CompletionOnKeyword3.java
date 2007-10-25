@@ -34,7 +34,7 @@ public class CompletionOnKeyword3 extends SingleNameReference implements Complet
 		return possibleKeywords;
 	}
 	public StringBuffer printExpression(int indent, StringBuffer output) {
-		
+
 		return output.append("<CompleteOnKeyword:").append(token).append('>'); //$NON-NLS-1$
 	}
 	public TypeBinding resolveType(BlockScope scope) {

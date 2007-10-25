@@ -10,43 +10,34 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths;
 
-import org.eclipse.core.runtime.IPath;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-
-import org.eclipse.swt.graphics.Image;
-
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.LabelProvider;
-
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IWorkbench;
-
 import org.eclipse.ui.ide.IDE;
-
 import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IClasspathContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.ISharedImages;
-import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.JavaUI;
-import org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration;
-import org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration.ClasspathAttributeAccess;
-
 import org.eclipse.wst.jsdt.internal.ui.IClasspathContainerInitialzerExtension;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageDescriptorRegistry;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
+import org.eclipse.wst.jsdt.ui.ISharedImages;
+import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration;
+import org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration.ClasspathAttributeAccess;
 
 public class CPListLabelProvider extends LabelProvider {
 		

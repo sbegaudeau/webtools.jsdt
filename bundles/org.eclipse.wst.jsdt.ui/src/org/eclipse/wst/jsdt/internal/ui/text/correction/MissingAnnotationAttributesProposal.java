@@ -17,7 +17,6 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.Annotation;
@@ -33,7 +32,6 @@ import org.eclipse.wst.jsdt.core.dom.NormalAnnotation;
 import org.eclipse.wst.jsdt.core.dom.SingleMemberAnnotation;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 
 public class MissingAnnotationAttributesProposal extends LinkedCorrectionProposal {

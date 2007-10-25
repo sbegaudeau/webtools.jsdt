@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.corext.dom;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;

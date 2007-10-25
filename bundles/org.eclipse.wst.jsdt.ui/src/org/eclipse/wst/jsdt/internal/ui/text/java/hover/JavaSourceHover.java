@@ -13,31 +13,25 @@ package org.eclipse.wst.jsdt.internal.ui.text.java.hover;
 
 import java.io.IOException;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextHoverExtension;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.part.IWorkbenchPartOrientation;
-
 import org.eclipse.ui.editors.text.EditorsUI;
-
+import org.eclipse.ui.part.IWorkbenchPartOrientation;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaCodeReader;
 

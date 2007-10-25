@@ -10,7 +10,13 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CompoundAssignment;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 
 public class VariableLocator extends PatternLocator {
 

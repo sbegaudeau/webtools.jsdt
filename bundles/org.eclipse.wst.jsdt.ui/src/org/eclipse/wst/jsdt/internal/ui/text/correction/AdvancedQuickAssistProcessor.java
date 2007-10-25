@@ -20,9 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
@@ -74,7 +72,6 @@ import org.eclipse.wst.jsdt.core.dom.InfixExpression.Operator;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor;
@@ -84,15 +81,13 @@ import org.eclipse.wst.jsdt.internal.corext.fix.ExpressionsFix;
 import org.eclipse.wst.jsdt.internal.corext.fix.IFix;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
+import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.internal.ui.fix.ExpressionsCleanUp;
 import org.eclipse.wst.jsdt.ui.CodeStyleConfiguration;
 import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
 import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
 import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
 import org.eclipse.wst.jsdt.ui.text.java.IQuickAssistProcessor;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
-import org.eclipse.wst.jsdt.internal.ui.fix.ExpressionsCleanUp;
 
 /**
  */

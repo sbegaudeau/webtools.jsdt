@@ -10,23 +10,18 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
-
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.ImageRegistry;
-
-import org.eclipse.jface.text.source.Annotation;
-
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IAnnotationImageProvider;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.JavaCorrectionProcessor;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**
  * Image provider for annotations based on Java problem markers.

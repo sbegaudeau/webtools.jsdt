@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.tagging;
 
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 
 /**

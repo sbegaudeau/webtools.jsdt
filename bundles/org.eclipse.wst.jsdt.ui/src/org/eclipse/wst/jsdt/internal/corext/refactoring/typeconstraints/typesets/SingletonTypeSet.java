@@ -13,8 +13,6 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.typeset
 import java.util.Iterator;
 
 import org.eclipse.core.runtime.Assert;
-
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.TType;
 
 public class SingletonTypeSet extends TypeSet {

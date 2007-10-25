@@ -12,13 +12,19 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.flow.LoopingFlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.UnconditionalFlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class ForStatement extends Statement {
-	
+
 	public Statement[] initializations;
 	public Expression condition;
 	public Statement[] increments;
@@ -61,7 +67,7 @@ public class ForStatement extends Statement {
 		BlockScope currentScope,
 		FlowContext flowContext,
 		FlowInfo flowInfo) {
-			
+
 		breakLabel = new BranchLabel();
 		continueLabel = new BranchLabel();
 
@@ -81,7 +87,7 @@ public class ForStatement extends Statement {
 		cst = this.condition == null ? null : this.condition.optimizedBooleanConstant();
 		boolean isConditionOptimizedTrue = cst == null ||  (cst != Constant.NotAConstant && cst.booleanValue() == true);
 		boolean isConditionOptimizedFalse = cst != null && (cst != Constant.NotAConstant && cst.booleanValue() == false);
-		
+
 		// process the condition
 		LoopingFlowContext condLoopContext = null;
 		FlowInfo condInfo = flowInfo.nullInfoLessUnconditionalCopy();
@@ -91,7 +97,7 @@ public class ForStatement extends Statement {
 					condition.analyseCode(
 						scope,
 						(condLoopContext =
-							new LoopingFlowContext(flowContext, flowInfo, this, null, 
+							new LoopingFlowContext(flowContext, flowInfo, this, null,
 								null, scope)),
 						condInfo);
 			}
@@ -100,7 +106,7 @@ public class ForStatement extends Statement {
 		// process the action
 		LoopingFlowContext loopingContext;
 		UnconditionalFlowInfo actionInfo;
-		if (action == null 
+		if (action == null
 			|| (action.isEmptyBlock() && currentScope.compilerOptions().complianceLevel <= ClassFileConstants.JDK1_3)) {
 			if (condLoopContext != null)
 				condLoopContext.complainOnDeferredFinalChecks(scope, condInfo);
@@ -116,13 +122,13 @@ public class ForStatement extends Statement {
 				}
 				actionInfo = condInfo.initsWhenTrue().unconditionalCopy();
 				loopingContext =
-					new LoopingFlowContext(flowContext, flowInfo, this, 
+					new LoopingFlowContext(flowContext, flowInfo, this,
 						breakLabel, continueLabel, scope);
 			}
-		} 
+		}
 		else {
 			loopingContext =
-				new LoopingFlowContext(flowContext, flowInfo, this, breakLabel, 
+				new LoopingFlowContext(flowContext, flowInfo, this, breakLabel,
 					continueLabel, scope);
 			FlowInfo initsWhenTrue = condInfo.initsWhenTrue();
 //			condIfTrueInitStateIndex =
@@ -142,18 +148,18 @@ public class ForStatement extends Statement {
 			}
 
 			// code generation can be optimized when no need to continue in the loop
-			if ((actionInfo.tagBits & 
+			if ((actionInfo.tagBits &
 					loopingContext.initsOnContinue.tagBits &
 					FlowInfo.UNREACHABLE) != 0) {
 				continueLabel = null;
-			} 
+			}
 			else {
 				if (condLoopContext != null) {
-					condLoopContext.complainOnDeferredFinalChecks(scope, 
+					condLoopContext.complainOnDeferredFinalChecks(scope,
 							condInfo);
 				}
 				actionInfo = actionInfo.mergedWith(loopingContext.initsOnContinue);
-				loopingContext.complainOnDeferredFinalChecks(scope, 
+				loopingContext.complainOnDeferredFinalChecks(scope,
 						actionInfo);
 			}
 		}
@@ -164,7 +170,7 @@ public class ForStatement extends Statement {
 		if (continueLabel != null) {
 			if (increments != null) {
 				incrementContext =
-					new LoopingFlowContext(flowContext, flowInfo, this, null, 
+					new LoopingFlowContext(flowContext, flowInfo, this, null,
 						null, scope);
 				FlowInfo incrementInfo = actionInfo;
 //				this.preIncrementsInitStateIndex =
@@ -184,13 +190,13 @@ public class ForStatement extends Statement {
 		}
 		// nulls checks
 		if (condLoopContext != null) {
-			condLoopContext.complainOnDeferredNullChecks(currentScope, 
+			condLoopContext.complainOnDeferredNullChecks(currentScope,
 				actionInfo);
 		}
-		loopingContext.complainOnDeferredNullChecks(currentScope, 
+		loopingContext.complainOnDeferredNullChecks(currentScope,
 			actionInfo);
 		if (incrementContext != null) {
-			incrementContext.complainOnDeferredNullChecks(currentScope, 
+			incrementContext.complainOnDeferredNullChecks(currentScope,
 				actionInfo);
 		}
 
@@ -200,9 +206,9 @@ public class ForStatement extends Statement {
 					FlowInfo.UNREACHABLE) != 0 ?
 					loopingContext.initsOnBreak :
 					flowInfo.addInitializationsFrom(loopingContext.initsOnBreak), // recover upstream null info
-				isConditionOptimizedTrue, 
-				exitBranch, 
-				isConditionOptimizedFalse, 
+				isConditionOptimizedTrue,
+				exitBranch,
+				isConditionOptimizedFalse,
 				!isConditionTrue /*for(;;){}while(true); unreachable(); */);
 //		mergedInitStateIndex = currentScope.methodScope().recordInitializationStates(mergedInfo);
 		return mergedInfo;
@@ -242,7 +248,7 @@ public class ForStatement extends Statement {
 			codeStream.recordPositionsFrom(pc, this.sourceStart);
 			return;
 		}
-		
+
 		// label management
 		BranchLabel actionLabel = new BranchLabel(codeStream);
 		actionLabel.tagBits |= BranchLabel.USED;
@@ -356,7 +362,7 @@ public class ForStatement extends Statement {
 		if (initializations != null)
 			for (int i = 0, length = initializations.length; i < length; i++) {
 				initializations[i].resolve(scope);
-		/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */		
+		/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
 		/* check where for variable exists in scope chain, report error if not local */
 				if(initializations[i] instanceof Assignment  ) {
 					Assignment as = ((Assignment)initializations[i]);
@@ -365,11 +371,11 @@ public class ForStatement extends Statement {
 						upperScope.problemReporter().looseVariableDecleration(this, as);
 					}
 				}
-		
-		
+
+
 			}
 		/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
-		
+
 		if (condition != null) {
 			TypeBinding type = condition.resolveTypeExpecting(scope, TypeBinding.BOOLEAN);
 			condition.computeConversion(scope, type, type);
@@ -380,7 +386,7 @@ public class ForStatement extends Statement {
 		if (action != null)
 			action.resolve(scope);
 	}
-	
+
 	public void traverse(
 		ASTVisitor visitor,
 		BlockScope blockScope) {

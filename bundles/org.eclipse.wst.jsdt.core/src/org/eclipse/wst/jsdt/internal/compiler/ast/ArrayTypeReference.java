@@ -28,14 +28,14 @@ public class ArrayTypeReference extends SingleTypeReference {
 	 * @param pos int
 	 */
 	public ArrayTypeReference(char[] source, int dimensions, long pos) {
-		
+
 		super(source, pos);
 		this.originalSourceEnd = this.sourceEnd;
 		this.dimensions = dimensions ;
 	}
-	
+
 	public int dimensions() {
-		
+
 		return dimensions;
 	}
 	/**
@@ -50,20 +50,20 @@ public class ArrayTypeReference extends SingleTypeReference {
 			dimChars[index+1] = ']';
 		}
 		return new char[][]{ CharOperation.concat(token, dimChars) };
-	}	
+	}
 	protected TypeBinding getTypeBinding(Scope scope) {
-		
+
 		if (this.resolvedType != null) return this.resolvedType;
 		if (dimensions > 255) {
 			scope.problemReporter().tooManyDimensions(this);
 		}
 		TypeBinding leafComponentType = scope.getType(token);
 		return scope.createArrayType(leafComponentType, dimensions);
-	
+
 	}
-	
+
 	public StringBuffer printExpression(int indent, StringBuffer output){
-	
+
 		super.printExpression(indent, output);
 		if ((this.bits & IsVarArgs) != 0) {
 			for (int i= 0 ; i < dimensions - 1; i++) {
@@ -77,15 +77,15 @@ public class ArrayTypeReference extends SingleTypeReference {
 		}
 		return output;
 	}
-	
+
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
-		
+
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);
 	}
-	
+
 	public void traverse(ASTVisitor visitor, ClassScope scope) {
-		
+
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);
 	}

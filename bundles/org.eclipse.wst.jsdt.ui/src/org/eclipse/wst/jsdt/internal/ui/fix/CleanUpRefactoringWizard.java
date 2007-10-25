@@ -22,13 +22,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-
-import org.eclipse.core.resources.ProjectScope;
-
+import org.eclipse.jface.dialogs.ControlEnableState;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.viewers.ColumnLayoutData;
+import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
+import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -41,32 +50,13 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
-
-import org.eclipse.jface.dialogs.ControlEnableState;
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.viewers.ColumnLayoutData;
-import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.jface.wizard.IWizardPage;
-
 import org.eclipse.ui.dialogs.PreferencesUtil;
-
-import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
-import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaProject;
-
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpPreferenceUtil;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.preferences.BulletListBlock;
@@ -75,7 +65,6 @@ import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CleanUpProfileVersio
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CleanUpTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CodeFormatingTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CodeStyleTabPage;
-import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.MemberAccessesTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.UnnecessaryCodeTabPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileStore;
@@ -88,7 +77,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListene
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IListAdapter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ListDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.SelectionButtonDialogField;
-
+import org.eclipse.wst.jsdt.ui.JavaUI;
 import org.xml.sax.InputSource;
 
 public class CleanUpRefactoringWizard extends RefactoringWizard {

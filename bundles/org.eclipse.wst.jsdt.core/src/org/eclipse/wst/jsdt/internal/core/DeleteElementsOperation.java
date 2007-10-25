@@ -18,6 +18,9 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
@@ -29,9 +32,6 @@ import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.text.edits.TextEdit;
 
 /**
  * This operation deletes a collection of elements (and
@@ -49,7 +49,7 @@ public class DeleteElementsOperation extends MultiOperation {
 	 * @see #processElements() Keys are compilation units,
 	 * values are <code>IRegion</code>s of elements to be processed in each
 	 * compilation unit.
-	 */ 
+	 */
 	protected Map childrenToRemove;
 	/**
 	 * The <code>ASTParser</code> used to manipulate the source code of
@@ -65,14 +65,14 @@ public class DeleteElementsOperation extends MultiOperation {
 		super(elementsToDelete, force);
 		initASTParser();
 	}
-	
+
 	private void deleteElement(IJavaElement elementToRemove, ICompilationUnit cu) throws JavaModelException {
 		// ensure cu is consistent (noop if already consistent)
 		cu.makeConsistent(this.progressMonitor);
 		this.parser.setSource(cu);
 		CompilationUnit astCU = (CompilationUnit) this.parser.createAST(this.progressMonitor);
 		ASTNode node = ((JavaElement) elementToRemove).findNode(astCU);
-		if (node == null) 
+		if (node == null)
 			Assert.isTrue(false, "Failed to locate " + elementToRemove.getElementName() + " in " + cu.getElementName()); //$NON-NLS-1$//$NON-NLS-2$
 		IDocument document = getDocument(cu);
 		AST ast = astCU.getAST();
@@ -94,7 +94,7 @@ public class DeleteElementsOperation extends MultiOperation {
 	 * @see MultiOperation
 	 */
 	protected String getMainTaskName() {
-		return Messages.operation_deleteElementProgress; 
+		return Messages.operation_deleteElementProgress;
 	}
 	protected ISchedulingRule getSchedulingRule() {
 		if (this.elementsToProcess != null && this.elementsToProcess.length == 1) {
@@ -141,11 +141,11 @@ public class DeleteElementsOperation extends MultiOperation {
 	 */
 	protected void processElement(IJavaElement element) throws JavaModelException {
 		ICompilationUnit cu = (ICompilationUnit) element;
-	
+
 		// keep track of the import statements - if all are removed, delete
 		// the import container (and report it in the delta)
 		int numberOfImports = cu.getImports().length;
-	
+
 		JavaElementDelta delta = new JavaElementDelta(cu);
 		IJavaElement[] cuElements = ((IRegion) childrenToRemove.get(cu)).getElements();
 		for (int i = 0, length = cuElements.length; i < length; i++) {

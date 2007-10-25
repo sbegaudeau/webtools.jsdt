@@ -12,9 +12,7 @@ package org.eclipse.wst.jsdt.internal.ui.text.java.hover;
 
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
-
 import org.eclipse.ui.IEditorPart;
-
 import org.eclipse.wst.jsdt.ui.text.java.hover.IJavaEditorTextHover;
 
 

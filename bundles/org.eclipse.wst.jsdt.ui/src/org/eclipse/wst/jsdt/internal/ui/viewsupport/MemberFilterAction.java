@@ -11,10 +11,8 @@
 package org.eclipse.wst.jsdt.internal.ui.viewsupport;
 
 import org.eclipse.jface.action.Action;
-
 import org.eclipse.ui.PlatformUI;
-
-import org.eclipse.wst.jsdt.ui.actions.*;
+import org.eclipse.wst.jsdt.ui.actions.MemberFilterActionGroup;
 
 /**
  * Action used to enable / disable method filter properties

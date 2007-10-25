@@ -56,7 +56,7 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 	/**
 	 * Singleton OK object
 	 */
-	public static final IJavaModelStatus VERIFIED_OK = new JavaModelStatus(OK, OK, Messages.status_OK); 
+	public static final IJavaModelStatus VERIFIED_OK = new JavaModelStatus(OK, OK, Messages.status_OK);
 
 	/**
 	 * Constructs an Java model status with no corresponding elements.
@@ -95,7 +95,7 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 		this.elements= JavaElement.NO_ELEMENTS;
 		this.path= null;
 		this.string = string;
-	}	
+	}
 	/**
 	 * Constructs an Java model status with no corresponding elements.
 	 */
@@ -144,7 +144,7 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 		this(code, new IJavaElement[]{element});
 		this.path = path;
 		this.string = string;
-	}	
+	}
 
 	/**
      * Constructs an Java model status with the given corresponding
@@ -189,40 +189,40 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 		if (exception == null) {
 			switch (getCode()) {
 				case CORE_EXCEPTION :
-					return Messages.status_coreException; 
+					return Messages.status_coreException;
 
 				case BUILDER_INITIALIZATION_ERROR:
-					return Messages.build_initializationError; 
+					return Messages.build_initializationError;
 
 				case BUILDER_SERIALIZATION_ERROR:
-					return Messages.build_serializationError; 
+					return Messages.build_serializationError;
 
 				case DEVICE_PATH:
-					return Messages.bind(Messages.status_cannotUseDeviceOnPath, getPath().toString()); 
+					return Messages.bind(Messages.status_cannotUseDeviceOnPath, getPath().toString());
 
 				case DOM_EXCEPTION:
-					return Messages.status_JDOMError; 
+					return Messages.status_JDOMError;
 
 				case ELEMENT_DOES_NOT_EXIST:
-					return Messages.bind(Messages.element_doesNotExist, ((JavaElement)elements[0]).toStringWithAncestors()); 
+					return Messages.bind(Messages.element_doesNotExist, ((JavaElement)elements[0]).toStringWithAncestors());
 
 				case ELEMENT_NOT_ON_CLASSPATH:
-					return Messages.bind(Messages.element_notOnClasspath, ((JavaElement)elements[0]).toStringWithAncestors()); 
+					return Messages.bind(Messages.element_notOnClasspath, ((JavaElement)elements[0]).toStringWithAncestors());
 
 				case EVALUATION_ERROR:
-					return Messages.bind(Messages.status_evaluationError, string); 
+					return Messages.bind(Messages.status_evaluationError, string);
 
 				case INDEX_OUT_OF_BOUNDS:
-					return Messages.status_indexOutOfBounds; 
+					return Messages.status_indexOutOfBounds;
 
 				case INVALID_CONTENTS:
-					return Messages.status_invalidContents; 
+					return Messages.status_invalidContents;
 
 				case INVALID_DESTINATION:
-					return Messages.bind(Messages.status_invalidDestination, ((JavaElement)elements[0]).toStringWithAncestors()); 
+					return Messages.bind(Messages.status_invalidDestination, ((JavaElement)elements[0]).toStringWithAncestors());
 
 				case INVALID_ELEMENT_TYPES:
-					StringBuffer buff= new StringBuffer(Messages.operation_notSupported); 
+					StringBuffer buff= new StringBuffer(Messages.operation_notSupported);
 					for (int i= 0; i < elements.length; i++) {
 						if (i > 0) {
 							buff.append(", "); //$NON-NLS-1$
@@ -232,10 +232,10 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 					return buff.toString();
 
 				case INVALID_NAME:
-					return Messages.bind(Messages.status_invalidName, string); 
+					return Messages.bind(Messages.status_invalidName, string);
 
 				case INVALID_PACKAGE:
-					return Messages.bind(Messages.status_invalidPackage, string); 
+					return Messages.bind(Messages.status_invalidPackage, string);
 
 				case INVALID_PATH:
 					if (string != null) {
@@ -244,33 +244,33 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 						return Messages.bind(
 							Messages.status_invalidPath,
 							new String[] {getPath() == null ? "null" : getPath().toString()} //$NON-NLS-1$
-						); 
+						);
 					}
 
 				case INVALID_PROJECT:
-					return Messages.bind(Messages.status_invalidProject, string); 
+					return Messages.bind(Messages.status_invalidProject, string);
 
 				case INVALID_RESOURCE:
-					return Messages.bind(Messages.status_invalidResource, string); 
+					return Messages.bind(Messages.status_invalidResource, string);
 
 				case INVALID_RESOURCE_TYPE:
-					return Messages.bind(Messages.status_invalidResourceType, string); 
+					return Messages.bind(Messages.status_invalidResourceType, string);
 
 				case INVALID_SIBLING:
 					if (string != null) {
-						return Messages.bind(Messages.status_invalidSibling, string); 
+						return Messages.bind(Messages.status_invalidSibling, string);
 					} else {
-						return Messages.bind(Messages.status_invalidSibling, ((JavaElement)elements[0]).toStringWithAncestors()); 
+						return Messages.bind(Messages.status_invalidSibling, ((JavaElement)elements[0]).toStringWithAncestors());
 					}
 
 				case IO_EXCEPTION:
-					return Messages.status_IOException; 
+					return Messages.status_IOException;
 
 				case NAME_COLLISION:
 					if (elements != null && elements.length > 0) {
 						IJavaElement element = elements[0];
 						if (element instanceof PackageFragment && ((PackageFragment) element).isDefaultPackage()) {
-							return Messages.operation_cannotRenameDefaultPackage; 
+							return Messages.operation_cannotRenameDefaultPackage;
 						}
 					}
 					if (string != null) {
@@ -279,39 +279,39 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 						return Messages.bind(Messages.status_nameCollision, "");  //$NON-NLS-1$
 					}
 				case NO_ELEMENTS_TO_PROCESS:
-					return Messages.operation_needElements; 
+					return Messages.operation_needElements;
 
 				case NULL_NAME:
-					return Messages.operation_needName; 
+					return Messages.operation_needName;
 
 				case NULL_PATH:
-					return Messages.operation_needPath; 
+					return Messages.operation_needPath;
 
 				case NULL_STRING:
-					return Messages.operation_needString; 
+					return Messages.operation_needString;
 
 				case PATH_OUTSIDE_PROJECT:
-					return Messages.bind(Messages.operation_pathOutsideProject, new String[] {string, ((JavaElement)elements[0]).toStringWithAncestors()}); 
+					return Messages.bind(Messages.operation_pathOutsideProject, new String[] {string, ((JavaElement)elements[0]).toStringWithAncestors()});
 
 				case READ_ONLY:
 					IJavaElement element = elements[0];
 					String name = element.getElementName();
 					if (element instanceof IPackageFragment && name.equals(IPackageFragment.DEFAULT_PACKAGE_NAME)) {
-						return Messages.status_defaultPackageReadOnly; 
+						return Messages.status_defaultPackageReadOnly;
 					}
-					return Messages.bind(Messages.status_readOnly, name); 
+					return Messages.bind(Messages.status_readOnly, name);
 
 				case RELATIVE_PATH:
-					return Messages.bind(Messages.operation_needAbsolutePath, getPath().toString()); 
+					return Messages.bind(Messages.operation_needAbsolutePath, getPath().toString());
 
 				case TARGET_EXCEPTION:
-					return Messages.status_targetException; 
+					return Messages.status_targetException;
 
 				case UPDATE_CONFLICT:
-					return Messages.status_updateConflict; 
+					return Messages.status_updateConflict;
 
 				case NO_LOCAL_CONTENTS :
-					return Messages.bind(Messages.status_noLocalContents, getPath().toString()); 
+					return Messages.bind(Messages.status_noLocalContents, getPath().toString());
 
 				case CP_CONTAINER_PATH_UNBOUND:
 					IJavaProject javaProject = (IJavaProject)elements[0];
@@ -319,7 +319,7 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 					String description = null;
 					if (initializer != null) description = initializer.getDescription(this.path, javaProject);
 					if (description == null) description = path.makeRelative().toString();
-					return Messages.bind(Messages.classpath_unboundContainerPath, new String[] {description, javaProject.getElementName()}); 
+					return Messages.bind(Messages.classpath_unboundContainerPath, new String[] {description, javaProject.getElementName()});
 
 				case INVALID_CP_CONTAINER_ENTRY:
 					javaProject = (IJavaProject)elements[0];
@@ -337,15 +337,15 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 						description = container.getDescription();
 					}
 					if (description == null) description = path.makeRelative().toString();
-					return Messages.bind(Messages.classpath_invalidContainer, new String[] {description, javaProject.getElementName()}); 
+					return Messages.bind(Messages.classpath_invalidContainer, new String[] {description, javaProject.getElementName()});
 
 				case CP_VARIABLE_PATH_UNBOUND:
 					javaProject = (IJavaProject)elements[0];
-					return Messages.bind(Messages.classpath_unboundVariablePath, new String[] {path.makeRelative().toString(), javaProject.getElementName()}); 
+					return Messages.bind(Messages.classpath_unboundVariablePath, new String[] {path.makeRelative().toString(), javaProject.getElementName()});
 
-				case CLASSPATH_CYCLE: 
+				case CLASSPATH_CYCLE:
 					javaProject = (IJavaProject)elements[0];
-					return Messages.bind(Messages.classpath_cycle, javaProject.getElementName()); 
+					return Messages.bind(Messages.classpath_cycle, javaProject.getElementName());
 
 				case DISABLED_CP_EXCLUSION_PATTERNS:
 					javaProject = (IJavaProject)elements[0];
@@ -354,7 +354,7 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 					if (path.segment(0).toString().equals(projectName)) {
 						newPath = path.removeFirstSegments(1);
 					}
-					return Messages.bind(Messages.classpath_disabledInclusionExclusionPatterns, new String[] {newPath.makeRelative().toString(), projectName}); 
+					return Messages.bind(Messages.classpath_disabledInclusionExclusionPatterns, new String[] {newPath.makeRelative().toString(), projectName});
 
 				case DISABLED_CP_MULTIPLE_OUTPUT_LOCATIONS:
 					javaProject = (IJavaProject)elements[0];
@@ -363,13 +363,13 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 					if (path.segment(0).toString().equals(projectName)) {
 						newPath = path.removeFirstSegments(1);
 					}
-					return Messages.bind(Messages.classpath_disabledMultipleOutputLocations, new String[] {newPath.makeRelative().toString(), projectName}); 
+					return Messages.bind(Messages.classpath_disabledMultipleOutputLocations, new String[] {newPath.makeRelative().toString(), projectName});
 
 				case INCOMPATIBLE_JDK_LEVEL:
 						javaProject = (IJavaProject)elements[0];
-						return Messages.bind(Messages.classpath_incompatibleLibraryJDKLevel, new String[]{	
-							javaProject.getElementName(), 
-							javaProject.getOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, true), 
+						return Messages.bind(Messages.classpath_incompatibleLibraryJDKLevel, new String[]{
+							javaProject.getElementName(),
+							javaProject.getOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, true),
 							path.makeRelative().toString(),
 							string,
 						});
@@ -377,7 +377,7 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 				case CANNOT_RETRIEVE_ATTACHED_JAVADOC :
 					if (elements != null && elements.length == 1) {
 						if (this.string != null) {
-							return Messages.bind(Messages.status_cannot_retrieve_attached_javadoc, ((JavaElement)elements[0]).toStringWithAncestors(), this.string); 
+							return Messages.bind(Messages.status_cannot_retrieve_attached_javadoc, ((JavaElement)elements[0]).toStringWithAncestors(), this.string);
 						}
 						return Messages.bind(Messages.status_cannot_retrieve_attached_javadoc, ((JavaElement)elements[0]).toStringWithAncestors(), ""); //$NON-NLS-1$
 					}
@@ -387,11 +387,11 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 					break;
 
 				case UNKNOWN_JAVADOC_FORMAT :
-					return Messages.bind(Messages.status_unknown_javadoc_format, ((JavaElement)elements[0]).toStringWithAncestors()); 
+					return Messages.bind(Messages.status_unknown_javadoc_format, ((JavaElement)elements[0]).toStringWithAncestors());
 
 				case DEPRECATED_VARIABLE :
 					javaProject = (IJavaProject)elements[0];
-					return Messages.bind(Messages.classpath_deprecated_variable, new String[] {path.segment(0).toString(), javaProject.getElementName(), this.string}); 
+					return Messages.bind(Messages.classpath_deprecated_variable, new String[] {path.segment(0).toString(), javaProject.getElementName(), this.string});
 			}
 			if (string != null) {
 				return string;

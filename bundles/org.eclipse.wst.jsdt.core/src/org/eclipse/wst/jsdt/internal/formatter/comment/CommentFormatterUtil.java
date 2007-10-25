@@ -12,29 +12,26 @@ package org.eclipse.wst.jsdt.internal.formatter.comment;
 
 import java.util.Map;
 
-import org.eclipse.text.edits.TextEdit;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.DefaultPositionUpdater;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.Position;
-
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.ToolFactory;
-
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 /**
  * Comment formatting utils.
- * 
+ *
  * @since 3.1
  */
 public class CommentFormatterUtil {
 
 	/**
 	 * Evaluates the edit on the given string.
-	 * 
+	 *
 	 * @throws IllegalArgumentException if the positions are not inside the
 	 *                 string
 	 */
@@ -54,12 +51,12 @@ public class CommentFormatterUtil {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Creates edits that describe how to format the given string. Returns
 	 * <code>null</code> if the code could not be formatted for the given
 	 * kind.
-	 * 
+	 *
 	 * @throws IllegalArgumentException if the offset and length are not
 	 *                 inside the string
 	 */
@@ -74,7 +71,7 @@ public class CommentFormatterUtil {
 	/**
 	 * Returns a document with the given content and the given positions
 	 * registered with the {@link DefaultPositionUpdater}.
-	 * 
+	 *
 	 * @param content the content
 	 * @param positions the positions
 	 * @return the document
@@ -85,7 +82,7 @@ public class CommentFormatterUtil {
 		try {
 			if (positions != null) {
 				final String POS_CATEGORY= "myCategory"; //$NON-NLS-1$
-				
+
 				doc.addPositionCategory(POS_CATEGORY);
 				doc.addPositionUpdater(new DefaultPositionUpdater(POS_CATEGORY) {
 					protected boolean notDeleted() {
@@ -112,7 +109,7 @@ public class CommentFormatterUtil {
 
 	/**
 	 * Logs the given throwable.
-	 * 
+	 *
 	 * @param t the throwable
 	 * @since 3.1
 	 */

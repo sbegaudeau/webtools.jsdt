@@ -236,7 +236,7 @@ class MethodBinding implements IMethodBinding {
 	}
 
 	private JavaElement getUnresolvedJavaElement() {
-		IJavaElement declaringElement = (IJavaElement) getDeclaringClass().getJavaElement();
+		IJavaElement declaringElement = getDeclaringClass().getJavaElement();
 		if (declaringElement == null) return null;
 		if (!(this.resolver instanceof DefaultBindingResolver)) return null;
 		ASTNode node = (ASTNode) ((DefaultBindingResolver) this.resolver).bindingsToAstNodes.get(this);
@@ -245,7 +245,7 @@ class MethodBinding implements IMethodBinding {
 		if (declaringElement instanceof ITypeRoot)
 		{
 			typeRoot=(ITypeRoot)declaringElement;
-			
+
 		}
 		else if (declaringElement instanceof IType )
 			declaringType=(IType)declaringElement;

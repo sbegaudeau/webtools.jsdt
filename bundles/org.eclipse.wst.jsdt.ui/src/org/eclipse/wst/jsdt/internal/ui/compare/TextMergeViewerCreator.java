@@ -10,13 +10,11 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.compare;
 
-import org.eclipse.swt.widgets.Composite;
-
-import org.eclipse.jface.viewers.Viewer;
-
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.IViewerCreator;
 import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * A factory object for the <code>TextMergeViewer</code>.

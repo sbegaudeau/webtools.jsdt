@@ -12,15 +12,8 @@ package org.eclipse.wst.jsdt.internal.ui.text.java;
 
 import java.util.Arrays;
 
-import org.eclipse.text.edits.DeleteEdit;
-import org.eclipse.text.edits.MalformedTreeException;
-import org.eclipse.text.edits.ReplaceEdit;
-import org.eclipse.text.edits.TextEdit;
-
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IAutoEditStrategy;
@@ -31,19 +24,20 @@ import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.text.TextUtilities;
-
+import org.eclipse.text.edits.DeleteEdit;
+import org.eclipse.text.edits.MalformedTreeException;
+import org.eclipse.text.edits.ReplaceEdit;
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.texteditor.ITextEditorExtension2;
 import org.eclipse.ui.texteditor.ITextEditorExtension3;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.wst.jsdt.internal.ui.text.SmartBackspaceManager;
 import org.eclipse.wst.jsdt.internal.ui.text.SmartBackspaceManager.UndoSpec;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
+import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
 
 /**
  * Modifies <code>DocumentCommand</code>s inserting semicolons and opening braces to place them

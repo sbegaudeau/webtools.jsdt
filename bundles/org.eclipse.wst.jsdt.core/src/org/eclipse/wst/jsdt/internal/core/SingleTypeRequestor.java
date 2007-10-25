@@ -17,7 +17,7 @@ import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 
 /**
- * The SingleTypeRequestor is an IJavaElementRequestor that 
+ * The SingleTypeRequestor is an IJavaElementRequestor that
  * only accepts one result element and then cancels.
  */
 /* package */ class SingleTypeRequestor implements IJavaElementRequestor {

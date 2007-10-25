@@ -17,7 +17,11 @@ import java.util.Arrays;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.AttributeNamesConstants;
-import org.eclipse.wst.jsdt.internal.compiler.env.*;
+import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryAnnotation;
+import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryField;
+import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryMethod;
+import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryNestedType;
+import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
@@ -47,13 +51,13 @@ public static ClassFileReader read(File file, boolean fullyInitialize) throws Cl
 	return classFileReader;
 }
 public static ClassFileReader read(
-	java.util.zip.ZipFile zip, 
+	java.util.zip.ZipFile zip,
 	String filename)
 	throws ClassFormatException, java.io.IOException {
 		return read(zip, filename, false);
 }
 public static ClassFileReader read(
-	java.util.zip.ZipFile zip, 
+	java.util.zip.ZipFile zip,
 	String filename,
 	boolean fullyInitialize)
 	throws ClassFormatException, java.io.IOException {
@@ -95,13 +99,13 @@ public static ClassFileReader read(String fileName, boolean fullyInitialize) thr
 	private char[] superclassName;
 	private long tagBits;
 	private long version;
-	
+
 	private char[] enclosingTypeName;
 
 /**
  * @param classFileBytes Actual bytes of a .class file
  * @param fileName	Actual name of the file that contains the bytes, can be null
- * 
+ *
  * @exception ClassFormatException
  */
 public ClassFileReader(byte classFileBytes[], char[] fileName) throws ClassFormatException {
@@ -111,10 +115,10 @@ public ClassFileReader(byte classFileBytes[], char[] fileName) throws ClassForma
 /**
  * @param classFileBytes byte[]
  * 		Actual bytes of a .class file
- * 
+ *
  * @param fileName char[]
  * 		Actual name of the file that contains the bytes, can be null
- * 
+ *
  * @param fullyInitialize boolean
  * 		Flag to fully initialize the new object
  * @exception ClassFormatException
@@ -195,7 +199,7 @@ public ClassFileReader(byte[] classFileBytes, char[] fileName, boolean fullyInit
 		// Read the superclass name, can be null for java.lang.Object
 		int superclassNameIndex = u2At(readOffset);
 		readOffset += 2;
-		// if superclassNameIndex is equals to 0 there is no need to set a value for the 
+		// if superclassNameIndex is equals to 0 there is no need to set a value for the
 		// field this.superclassName. null is fine.
 		if (superclassNameIndex != 0) {
 			this.superclassName = getConstantClassNameAt(superclassNameIndex);
@@ -251,8 +255,8 @@ public ClassFileReader(byte[] classFileBytes, char[] fileName, boolean fullyInit
 			switch(attributeName[0] ) {
 				case 'E' :
 					if (CharOperation.equals(attributeName, AttributeNamesConstants.EnclosingMethodName)) {
-						utf8Offset = 
-							constantPoolOffsets[u2At(constantPoolOffsets[u2At(readOffset + 6)] - structOffset + 1)] - structOffset; 
+						utf8Offset =
+							constantPoolOffsets[u2At(constantPoolOffsets[u2At(readOffset + 6)] - structOffset + 1)] - structOffset;
 						this.enclosingTypeName = utf8At(utf8Offset + 3, u2At(utf8Offset + 1));
 					}
 					break;
@@ -269,8 +273,8 @@ public ClassFileReader(byte[] classFileBytes, char[] fileName, boolean fullyInit
 							innerOffset+= 2;
 							this.innerInfos = new InnerClassInfo[number_of_classes];
 							for (int j = 0; j < number_of_classes; j++) {
-								this.innerInfos[j] = 
-									new InnerClassInfo(reference, this.constantPoolOffsets, innerOffset); 
+								this.innerInfos[j] =
+									new InnerClassInfo(reference, this.constantPoolOffsets, innerOffset);
 								if (this.classNameIndex == this.innerInfos[j].innerClassNameIndex) {
 									this.innerInfo = this.innerInfos[j];
 									this.innerInfoIndex = j;
@@ -305,7 +309,7 @@ public ClassFileReader(byte[] classFileBytes, char[] fileName, boolean fullyInit
 							case 'i' :
 								if (CharOperation.equals(attributeName, AttributeNamesConstants.SignatureName)) {
 									utf8Offset = this.constantPoolOffsets[u2At(readOffset + 6)];
-									this.signature = utf8At(utf8Offset + 3, u2At(utf8Offset + 1));				
+									this.signature = utf8At(utf8Offset + 3, u2At(utf8Offset + 1));
 								}
 						}
 					}
@@ -327,15 +331,15 @@ public ClassFileReader(byte[] classFileBytes, char[] fileName, boolean fullyInit
 		throw e;
 	} catch (Exception e) {
 		throw new ClassFormatException(
-			ClassFormatException.ErrTruncatedInput, 
-			readOffset); 
+			ClassFormatException.ErrTruncatedInput,
+			readOffset);
 	}
 }
 
 /**
  * 	Answer the receiver's access flags.  The value of the access_flags
  *	item is a mask of modifiers used with class and interface declarations.
- *  @return int 
+ *  @return int
  */
 public int accessFlags() {
 	return this.accessFlags;
@@ -457,10 +461,10 @@ public char[][] getInterfaceNames() {
 
 /**
  * Answer the receiver's nested types or null if the array is empty.
- * 
+ *
  * This nested type info is extracted from the inner class attributes. Ask the
  * name environment to find a member type using its compound name
- * 
+ *
  * @return org.eclipse.wst.jsdt.internal.compiler.api.IBinaryNestedType[]
  */
 public IBinaryNestedType[] getMemberTypes() {
@@ -470,8 +474,8 @@ public IBinaryNestedType[] getMemberTypes() {
 	int length = this.innerInfos.length;
 	int startingIndex = this.innerInfo != null ? this.innerInfoIndex + 1 : 0;
 	if (length != startingIndex) {
-		IBinaryNestedType[] memberTypes = 
-			new IBinaryNestedType[length - this.innerInfoIndex]; 
+		IBinaryNestedType[] memberTypes =
+			new IBinaryNestedType[length - this.innerInfoIndex];
 		int memberTypeIndex = 0;
 		for (int i = startingIndex; i < length; i++) {
 			InnerClassInfo currentInnerInfo = this.innerInfos[i];
@@ -482,12 +486,12 @@ public IBinaryNestedType[] getMemberTypes() {
 			 * attribute entry is a member class, but due to the bug:
 			 * http://dev.eclipse.org/bugs/show_bug.cgi?id=14592
 			 * we needed to add an extra check. So we check that innerNameIndex is different from 0 as well.
-			 * 
+			 *
 			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=49879
 			 * From JavaMail 1.2, the class javax.mail.Folder contains an anonymous class in the
 			 * terminateQueue() method for which the inner attribute is boggus.
 			 * outerClassNameIdx is not 0, innerNameIndex is not 0, but the sourceName length is 0.
-			 * So I added this extra check to filter out this anonymous class from the 
+			 * So I added this extra check to filter out this anonymous class from the
 			 * member types.
 			 */
 			if (outerClassNameIdx != 0
@@ -502,11 +506,11 @@ public IBinaryNestedType[] getMemberTypes() {
 			// we need to resize the memberTypes array. Some local or anonymous classes
 			// are present in the current class.
 			System.arraycopy(
-				memberTypes, 
-				0, 
-				(memberTypes = new IBinaryNestedType[memberTypeIndex]), 
-				0, 
-				memberTypeIndex); 
+				memberTypes,
+				0,
+				(memberTypes = new IBinaryNestedType[memberTypeIndex]),
+				0,
+				memberTypeIndex);
 		}
 		return memberTypes;
 	}
@@ -566,7 +570,7 @@ public char[] getSourceName() {
 			name = newName;
 		}
 	}
-	return this.sourceName = name;	
+	return this.sourceName = name;
 }
 /**
  * Answer the resolved name of the receiver's superclass in the
@@ -651,7 +655,7 @@ private boolean hasNonSyntheticMethodChanges(MethodInfo[] currentMethodInfos, Me
  * - changes for thrown exceptions
  * - change for the super class or any super interfaces.
  * - changes for member types name or modifiers
- * If any of these changes occurs, the method returns true. false otherwise. 
+ * If any of these changes occurs, the method returns true. false otherwise.
  * The synthetic fields are included and the members are not required to be sorted.
  * @param newBytes the bytes of the .class file we want to compare the receiver to
  * @return boolean Returns true is there is a structural change between the two .class files, false otherwise
@@ -690,11 +694,11 @@ public boolean hasStructuralChanges(byte[] newBytes, boolean orderRequired, bool
 			| TagBits.AnnotationDeprecated // different @Deprecated status ?
 			| TagBits.AnnotationRetentionMASK // different @Retention status ?
 			| TagBits.HasInconsistentHierarchy; // different hierarchy status ?
-		
+
 		// meta-annotations
 		if ((this.getTagBits() & OnlyStructuralTagBits) != (newClassFile.getTagBits() & OnlyStructuralTagBits))
 			return true;
-		
+
 		// generic signature
 		if (!CharOperation.equals(this.getGenericSignature(), newClassFile.getGenericSignature()))
 			return true;
@@ -755,7 +759,7 @@ public boolean hasStructuralChanges(byte[] newBytes, boolean orderRequired, bool
 						return true;
 			}
 		}
-		
+
 		// methods
 		MethodInfo[] otherMethodInfos = (MethodInfo[]) newClassFile.getMethods();
 		int otherMethodInfosLength = otherMethodInfos == null ? 0 : otherMethodInfos.length;
@@ -774,7 +778,7 @@ public boolean hasStructuralChanges(byte[] newBytes, boolean orderRequired, bool
 				if (this.methodsCount != 0)
 					Arrays.sort(this.methods);
 				if (otherMethodInfosLength != 0)
-					Arrays.sort(otherMethodInfos);	
+					Arrays.sort(otherMethodInfos);
 			}
 			if (excludesSynthetic) {
 				if (hasNonSyntheticMethodChanges(this.methods, otherMethodInfos))
@@ -919,7 +923,7 @@ public boolean isLocal() {
 	if (this.innerInfo == null) return false;
 	if (this.innerInfo.getEnclosingTypeName() != null) return false;
 	char[] innerSourceName = this.innerInfo.getSourceName();
-	return (innerSourceName != null && innerSourceName.length > 0);	
+	return (innerSourceName != null && innerSourceName.length > 0);
 }
 /**
  * Answer true if the receiver is a member type, false otherwise
@@ -942,7 +946,7 @@ public boolean isNestedType() {
 }
 /**
  * Answer the source file name attribute. Return null if there is no source file attribute for the receiver.
- * 
+ *
  * @return char[]
  */
 public char[] sourceFileName() {
@@ -984,7 +988,7 @@ public static void main(String[] args) throws ClassFormatException, IOException 
 	if (interfaces != null && interfaces.length > 0) {
 		System.err.print(" implements "); //$NON-NLS-1$
 		for (int i = 0; i < interfaces.length; i++) {
-			if (i != 0) System.err.print(", "); //$NON-NLS-1$		
+			if (i != 0) System.err.print(", "); //$NON-NLS-1$
 			System.err.println(interfaces[i]);
 		}
 	}

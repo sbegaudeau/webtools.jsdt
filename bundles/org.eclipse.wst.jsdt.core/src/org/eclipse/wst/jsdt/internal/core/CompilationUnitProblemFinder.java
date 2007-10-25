@@ -15,10 +15,19 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaModelMarker;
+import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
-import org.eclipse.wst.jsdt.internal.compiler.*;
+import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.Compiler;
+import org.eclipse.wst.jsdt.internal.compiler.DefaultErrorHandlingPolicies;
+import org.eclipse.wst.jsdt.internal.compiler.ICompilerRequestor;
+import org.eclipse.wst.jsdt.internal.compiler.IErrorHandlingPolicy;
+import org.eclipse.wst.jsdt.internal.compiler.IProblemFactory;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
@@ -58,12 +67,12 @@ public class CompilationUnitProblemFinder extends Compiler {
 	 *      them all) and at the same time perform some actions such as opening a dialog
 	 *      in UI when compiling interactively.
 	 *      @see org.eclipse.wst.jsdt.internal.compiler.DefaultErrorHandlingPolicies
-	 * 
+	 *
 	 *	@param compilerOptions The compiler options to use for the resolution.
-	 *      
+	 *
 	 *  @param requestor org.eclipse.wst.jsdt.internal.compiler.api.ICompilerRequestor
 	 *      Component which will receive and persist all compilation results and is intended
-	 *      to consume them as they are produced. Typically, in a batch compiler, it is 
+	 *      to consume them as they are produced. Typically, in a batch compiler, it is
 	 *      responsible for writing out the actual .class files to the file system.
 	 *      @see org.eclipse.wst.jsdt.internal.compiler.CompilationResult
 	 *
@@ -144,7 +153,7 @@ public class CompilationUnitProblemFinder extends Compiler {
 				parsedUnit = parser.dietParse(sourceUnit, unitResult);
 			}
 			parser.inferTypes(parsedUnit,this.options);
-			
+
 			// initial type binding creation
 			lookupEnvironment.buildTypeBindings(parsedUnit, accessRestriction);
 
@@ -161,7 +170,7 @@ public class CompilationUnitProblemFinder extends Compiler {
 		}
 	}
 
-	
+
 	protected static CompilerOptions getCompilerOptions(Map settings, boolean creatingAST, boolean statementsRecovery) {
 		CompilerOptions compilerOptions = new CompilerOptions(settings);
 		compilerOptions.performMethodsFullRecovery = statementsRecovery;
@@ -170,7 +179,7 @@ public class CompilationUnitProblemFinder extends Compiler {
 		compilerOptions.storeAnnotations = creatingAST; /*store annotations in the bindings if creating a DOM AST*/
 		return compilerOptions;
 	}
-	
+
 	/*
 	 *  Low-level API performing the actual compilation
 	 */
@@ -191,7 +200,7 @@ public class CompilationUnitProblemFinder extends Compiler {
 
 	public static CompilationUnitDeclaration process(
 		CompilationUnitDeclaration unit,
-		ICompilationUnit unitElement, 
+		ICompilationUnit unitElement,
 		char[] contents,
 		Parser parser,
 		WorkingCopyOwner workingCopyOwner,
@@ -211,9 +220,9 @@ public class CompilationUnitProblemFinder extends Compiler {
 				accessRequestor = ((DocumentContextFragmentRoot)unitElement.getParent().getParent()).getRestrictedAccessRequestor();
 			}
 			environment = new CancelableNameEnvironment(project, accessRequestor, workingCopyOwner, monitor);
-			
-			
-			
+
+
+
 			if (unitElement instanceof CompilationUnit)
 				environment.unitToSkip=(CompilationUnit)unitElement;
 			else if (unitElement instanceof CompilationUnit)
@@ -273,10 +282,10 @@ public class CompilationUnitProblemFinder extends Compiler {
 			return unit;
 		} catch (OperationCanceledException e) {
 			throw e;
-		} catch(RuntimeException e) { 
+		} catch(RuntimeException e) {
 			// avoid breaking other tools due to internal compiler failure (40334)
 			String lineDelimiter = unitElement.findRecommendedLineSeparator();
-			StringBuffer message = new StringBuffer("Exception occurred during problem detection:");  //$NON-NLS-1$ 
+			StringBuffer message = new StringBuffer("Exception occurred during problem detection:");  //$NON-NLS-1$
 			message.append(lineDelimiter);
 			message.append("----------------------------------- SOURCE BEGIN -------------------------------------"); //$NON-NLS-1$
 			message.append(lineDelimiter);
@@ -292,12 +301,12 @@ public class CompilationUnitProblemFinder extends Compiler {
 				problemFactory.monitor = null; // don't hold a reference to this external object
 			// NB: unit.cleanUp() is done by caller
 			if (problemFinder != null )//&& !creatingAST)
-				problemFinder.lookupEnvironment.reset();		
+				problemFinder.lookupEnvironment.reset();
 		}
 	}
 
 	public static CompilationUnitDeclaration process(
-		ICompilationUnit unitElement, 
+		ICompilationUnit unitElement,
 		char[] contents,
 		WorkingCopyOwner workingCopyOwner,
 		HashMap problems,
@@ -305,7 +314,7 @@ public class CompilationUnitProblemFinder extends Compiler {
 		int reconcileFlags,
 		IProgressMonitor monitor)
 		throws JavaModelException {
-			
+
 		return process(null/*no CompilationUnitDeclaration*/, unitElement, contents, null/*use default Parser*/, workingCopyOwner, problems, creatingAST, reconcileFlags, monitor);
 	}
 
@@ -316,5 +325,5 @@ public class CompilationUnitProblemFinder extends Compiler {
 	public void initializeParser() {
 		this.parser = new CommentRecorderParser(this.problemReporter, this.options.parseLiteralExpressionsAsConstants);
 	}
-}	
+}
 

@@ -12,12 +12,6 @@ package org.eclipse.wst.jsdt.ui.wizards;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Status;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -26,36 +20,29 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Shell;
-
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
-
 import org.eclipse.ui.views.navigator.ResourceComparator;
-
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.LibrarySuperType;
-import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
-import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IUIConstants;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.TypedElementSelectionValidator;
 import org.eclipse.wst.jsdt.internal.ui.wizards.TypedViewerFilter;
@@ -67,6 +54,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.JavadocLocationDialog
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.MultipleFolderSelectionDialog;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.NewVariableEntryDialog;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.SourceAttachmentDialog;
+import org.eclipse.wst.jsdt.ui.JavaUI;
 
 /**
  * Class that gives access to dialogs used by the Java build path page to configure classpath entries

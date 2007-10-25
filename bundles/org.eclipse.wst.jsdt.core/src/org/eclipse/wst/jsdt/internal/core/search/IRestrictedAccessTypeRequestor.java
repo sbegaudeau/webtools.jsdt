@@ -18,7 +18,7 @@ import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
  * @see org.eclipse.wst.jsdt.core.search.TypeNameRequestor
  */
 public interface IRestrictedAccessTypeRequestor {
-	
+
 	public void acceptType(int modifiers, char[] packageName, char[] simpleTypeName, char[][] enclosingTypeNames, String path, AccessRestriction access);
 
 }

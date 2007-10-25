@@ -15,8 +15,6 @@ import java.util.List;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
-import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleNameReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
@@ -34,7 +32,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 	protected final static int PARSER_KIND = 0x00FF;
 	protected final static int TEXT_PARSE = 0x0100; // flag saying that text must be stored
 	protected final static int TEXT_VERIF = 0x0200; // flag saying that text must be verified
-	
+
 	// Parser recovery states
 	protected final static int QUALIFIED_NAME_RECOVERY = 1;
 	protected final static int ARGUMENT_RECOVERY= 2;
@@ -46,18 +44,18 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 	public char[] source;
 	protected Parser sourceParser;
 	private int currentTokenType = -1;
-	
+
 	// Options
 	public boolean checkDocComment = false;
 	public boolean reportProblems;
 	protected long complianceLevel;
 	protected long sourceLevel;
-	
+
 	// Results
 	protected long inheritedPositions;
 	protected boolean deprecated;
 	protected Object returnStatement;
-	
+
 	// Positions
 	protected int javadocStart, javadocEnd;
 	protected int firstTagPosition;
@@ -67,17 +65,17 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 	protected int tagSourceStart, tagSourceEnd;
 	protected int inlineTagStart;
 	protected int[] lineEnds;
-	
+
 	// Flags
 	protected boolean lineStarted = false;
 	protected boolean inlineTagStarted = false;
 	protected boolean abort = false;
 	protected int kind;
 	protected int tagValue = NO_TAG_VALUE;
-	
+
 	// Line pointers
 	private int linePtr, lastLinePtr;
-	
+
 	// Identifier stack
 	protected int identifierPtr;
 	protected char[][] identifierStack;
@@ -111,12 +109,12 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 
 	/* (non-Javadoc)
 	 * Returns true if tag @deprecated is present in javadoc comment.
-	 * 
+	 *
 	 * If javadoc checking is enabled, will also construct an Javadoc node, which will be stored into Parser.javadoc
 	 * slot for being consumed later on.
 	 */
 	protected boolean commentParse() {
-		
+
 		boolean validComment = true;
 		try {
 			// Init scanner position
@@ -153,17 +151,17 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 			boolean pushText = (this.kind & TEXT_PARSE) != 0;
 			boolean verifText = (this.kind & TEXT_VERIF) != 0;
 			boolean isDomParser = (this.kind & DOM_PARSER) != 0;
-			
+
 			// Loop on each comment character
 			while (!abort && this.index < this.javadocEnd) {
 				previousPosition = this.index;
 				previousChar = nextCharacter;
-				
+
 				// Calculate line end (cannot use this.scanner.linePtr as scanner does not parse line ends again)
 				if (this.index > (this.lineEnd+1)) {
 					updateLineEnd();
 				}
-				
+
 				// Read next char only if token was consumed
 				if (this.currentTokenType < 0) {
 					nextCharacter = readChar(); // consider unicodes
@@ -181,11 +179,11 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 					}
 					consumeToken();
 				}
-			
+
 				if (this.index >= this.javadocEnd) {
 					break;
 				}
-				
+
 				switch (nextCharacter) {
 					case '@' :
 						// Start tag parsing only if we are on line beginning or at inline tag beginning
@@ -359,7 +357,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 	 * when linePtr field is not initialized.
 	 */
 	private int getLineNumber(int position) {
-	
+
 		if (this.scanner.linePtr != -1) {
 			return Util.getLineNumber(position, this.scanner.lineEnds, 0, this.scanner.linePtr);
 		}
@@ -375,7 +373,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 			return this.scanner.getCurrentTokenEndPosition();
 		}
 	}
-	
+
 	/**
 	 * @return Returns the currentTokenType.
 	 */
@@ -400,7 +398,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 		long[] dimPositions = new long[20]; // assume that there won't be more than 20 dimensions...
 		char[] name = null;
 		long argNamePos = -1;
-		
+
 		// Parse arguments declaration if method reference
 		nextArg : while (this.index < this.scanner.eofPosition) {
 
@@ -477,7 +475,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 			} else if (argName != null) { // verify that no argument name is declared
 				break nextArg;
 			}
-			
+
 			// Verify token position
 			if (firstArg) {
 				modulo = iToken + 1;
@@ -599,7 +597,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 		return false;
 	}
 
-	/* 
+	/*
 	 * Parse tag followed by an identifier
 	 */
 	protected boolean parseIdentifierTag(boolean report) {
@@ -624,7 +622,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 		this.identifierLengthPtr = -1;
 		int start = this.scanner.getCurrentTokenStartPosition();
 		this.memberStart = start;
-	
+
 		// Get member identifier
 		if (readToken() == TerminalTokens.TokenNameIdentifier) {
 			if (this.scanner.currentCharacter == '.') { // member name may be qualified (inner class constructor reference)
@@ -649,12 +647,12 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 				}
 				return null;
 			}
-	
+
 			// Reset position: we want to rescan last token
 			this.index = previousPosition;
 			this.scanner.currentPosition = previousPosition;
 			this.currentTokenType = -1;
-	
+
 			// Verify character(s) after identifier (expecting space or end comment)
 			if (!verifySpaceOrEndComment()) {
 				int end = this.starPosition == -1 ? this.lineEnd : this.starPosition;
@@ -685,7 +683,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 		boolean tokenWhiteSpace = this.scanner.tokenizeWhiteSpace;
 		this.scanner.tokenizeWhiteSpace = true;
 		Object []typeReference=null;
-		
+
 		// Verify that there are whitespaces after tag
 		boolean isCompletionParser = (this.kind & COMPLETION_PARSER) != 0;
 		if (this.scanner.currentCharacter != ' ' && !ScannerHelper.isWhitespace(this.scanner.currentCharacter)) {
@@ -698,7 +696,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 			this.scanner.tokenizeWhiteSpace = tokenWhiteSpace;
 			return false;
 		}
-		
+
 		// Get first non whitespace token
 		this.identifierPtr = -1;
 		this.identifierLengthPtr = -1;
@@ -717,7 +715,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 			}
 			switch (token) {
 				case TerminalTokens.TokenNameIdentifier :
-					if (valid) { 
+					if (valid) {
 						// store param name id
 						pushIdentifier(true, false);
 						start = this.scanner.getCurrentTokenStartPosition();
@@ -773,10 +771,10 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 						this.identifierLengthPtr = -1;
 						this.scanner.tokenizeWhiteSpace = true;
 					break;
-					
+
 			}
 		}
-		
+
 		// Scan more tokens for type parameter declaration
 		if (isTypeParam && mayBeGeneric) {
 			// Get type parameter name
@@ -814,7 +812,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 						break;
 				}
 			}
-			
+
 			// Get last character of type parameter declaration
 			boolean spaces = false;
 			nextToken: while (true) {
@@ -906,7 +904,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 	}
 
 	protected abstract void createParamType(Object[] typeReference) ;
-	
+
 
 	private Object [] parseTypeReference() {
 		int currentPosition = this.scanner.currentPosition;
@@ -916,19 +914,19 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 			int previousPosition = -1;
 			int typeRefStartPosition = -1;
 			boolean expectingRef=true;
-			
+
 			// Get reference tokens
 			nextToken : while (this.index < this.scanner.eofPosition ) {
 				previousPosition = this.index;
 				int token = readTokenSafely();
 				switch (token) {
-				case TerminalTokens.TokenNameRBRACE :  
+				case TerminalTokens.TokenNameRBRACE :
 						// If typeRef != null we may raise a warning here to let user know there's an unused reference...
 						// Currently as javadoc 1.4.2 ignore it, we do the same (see bug 69302)
 						consumeToken();
 						 break nextToken;
 
-				case TerminalTokens.TokenNameLBRACE :  
+				case TerminalTokens.TokenNameLBRACE :
 					// If typeRef != null we may raise a warning here to let user know there's an unused reference...
 					// Currently as javadoc 1.4.2 ignore it, we do the same (see bug 69302)
 					consumeToken();
@@ -950,7 +948,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 								return null;
 							}
 							// verify end line
-//							if (verifyEndLine(previousPosition)) 
+//							if (verifyEndLine(previousPosition))
 //								return true;
 //							if (this.reportProblems) this.sourceParser.problemReporter().javadocUnexpectedText(this.scanner.currentPosition, this.lineEnd);
 						}
@@ -1118,7 +1116,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 			Object reference = null;
 			int previousPosition = -1;
 			int typeRefStartPosition = -1;
-			
+
 			// Get reference tokens
 			nextToken : while (this.index < this.scanner.eofPosition) {
 				previousPosition = this.index;
@@ -1237,7 +1235,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 				if (this.reportProblems) this.sourceParser.problemReporter().javadocMalformedSeeReference(typeRefStartPosition, end);
 				return false;
 			}
-			
+
 			// Everything is OK, store reference
 			return pushSeeRef(reference);
 		}
@@ -1391,7 +1389,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 	 * Warning: scanner position is unchanged using this method!
 	 */
 	protected char readChar() {
-	
+
 		char c = this.source[this.index++];
 		if (c == '\\' && this.source[this.index] == 'u') {
 			int c1, c2, c3, c4;
@@ -1450,7 +1448,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 		}
 		return token;
 	}
-	
+
 	/*
 	 * Refresh start position and length of an inline tag.
 	 */
@@ -1481,32 +1479,32 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 			return "EOF\n\n" + new String(this.source); //$NON-NLS-1$
 		if (endPos > this.source.length)
 			return "behind the EOF\n\n" + new String(this.source); //$NON-NLS-1$
-	
+
 		char front[] = new char[startPos];
 		System.arraycopy(this.source, 0, front, 0, startPos);
-	
+
 		int middleLength = (endPos - 1) - startPos + 1;
 		char middle[];
 		if (middleLength > -1) {
 			middle = new char[middleLength];
 			System.arraycopy(
-				this.source, 
-				startPos, 
-				middle, 
-				0, 
+				this.source,
+				startPos,
+				middle,
+				0,
 				middleLength);
 		} else {
 			middle = CharOperation.NO_CHAR;
 		}
-		
+
 		char end[] = new char[this.source.length - (endPos - 1)];
 		System.arraycopy(
-			this.source, 
-			(endPos - 1) + 1, 
-			end, 
-			0, 
+			this.source,
+			(endPos - 1) + 1,
+			end,
+			0,
 			this.source.length - (endPos - 1) - 1);
-		
+
 		buffer.append(front);
 		if (this.scanner.currentPosition<this.index) {
 			buffer.append("\n===============================\nScanner current position here -->"); //$NON-NLS-1$
@@ -1525,7 +1523,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 	}
 
 	/*
-	 * Update 
+	 * Update
 	 */
 	protected abstract void updateDocComment();
 
@@ -1561,7 +1559,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 			}
 			return false;
 		}
-		
+
 		int startPosition = this.index;
 		int previousPosition = this.index;
 		this.starPosition = -1;
@@ -1595,7 +1593,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 				default :
 					// leave loop
 					break nextChar;
-				
+
 			}
 			previousPosition = this.index;
 			ch = readChar();
@@ -1641,7 +1639,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 					// invalid whatever other character, even white spaces
 					this.index = startPosition;
 					return false;
-				
+
 			}
 			previousPosition = this.index;
 			ch = readChar();

@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.ui.wizards;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 

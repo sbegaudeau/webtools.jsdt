@@ -15,7 +15,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
 public class ExtendedStringLiteral extends StringLiteral {
 
-	/** 
+	/**
 	 *  Build a string+char literal
 	 */
 	public ExtendedStringLiteral(StringLiteral str, CharLiteral character) {
@@ -24,7 +24,7 @@ public class ExtendedStringLiteral extends StringLiteral {
 		extendWith(character);
 	}
 
-	/**	
+	/**
 	 * Build a two-strings literal
 	 * */
 	public ExtendedStringLiteral(StringLiteral str1, StringLiteral str2) {

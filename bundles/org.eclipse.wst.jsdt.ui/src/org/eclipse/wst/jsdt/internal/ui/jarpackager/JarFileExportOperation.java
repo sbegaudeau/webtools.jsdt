@@ -31,14 +31,6 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipException;
 
 import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -47,13 +39,16 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
-
-import org.eclipse.swt.widgets.Shell;
-
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.operation.ModalContext;
-
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
-
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaModelMarker;
@@ -67,21 +62,18 @@ import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.util.IClassFileReader;
 import org.eclipse.wst.jsdt.core.util.ISourceAttribute;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.Resources;
-
+import org.eclipse.wst.jsdt.internal.ui.IJavaStatusConstants;
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper;
+import org.eclipse.wst.jsdt.internal.ui.util.BusyIndicatorRunnableContext;
 import org.eclipse.wst.jsdt.ui.StandardJavaElementContentProvider;
 import org.eclipse.wst.jsdt.ui.jarpackager.IJarDescriptionWriter;
 import org.eclipse.wst.jsdt.ui.jarpackager.IJarExportRunnable;
 import org.eclipse.wst.jsdt.ui.jarpackager.JarPackageData;
 import org.eclipse.wst.jsdt.ui.jarpackager.JarWriter3;
-
-import org.eclipse.wst.jsdt.internal.ui.IJavaStatusConstants;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper;
-import org.eclipse.wst.jsdt.internal.ui.util.BusyIndicatorRunnableContext;
 
 /**
  * Operation for exporting a resource and its children to a new  JAR file.

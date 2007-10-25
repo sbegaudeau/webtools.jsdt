@@ -11,14 +11,9 @@
 package org.eclipse.wst.jsdt.internal.ui;
 
 import org.eclipse.core.resources.mapping.ResourceMapping;
-
 import org.eclipse.core.runtime.IAdapterFactory;
-
-
 import org.eclipse.search.ui.ISearchPageScoreComputer;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JavaElementResourceMapping;
-
 import org.eclipse.wst.jsdt.internal.ui.browsing.LogicalPackage;
 import org.eclipse.wst.jsdt.internal.ui.search.JavaSearchPageScoreComputer;
 import org.eclipse.wst.jsdt.internal.ui.search.SearchUtil;

@@ -27,7 +27,7 @@ public class StackMapFrame implements Cloneable {
 
 	public int pc;
 	public int numberOfStackItems;
-	private int numberOfLocals;	
+	private int numberOfLocals;
 	public int localIndex;
 	public VerificationTypeInfo[] locals;
 	public VerificationTypeInfo[] stackItems;
@@ -97,7 +97,7 @@ public Object clone() throws CloneNotSupportedException {
 	result.numberOfDifferentLocals = -1;
 	result.pc = this.pc;
 	result.numberOfStackItems = this.numberOfStackItems;
-	
+
 	int length = this.locals == null ? 0 : this.locals.length;
 	if (length != 0) {
 		result.locals = new VerificationTypeInfo[length];
@@ -213,7 +213,7 @@ public int numberOfDifferentLocals(StackMapFrame prevFrame) {
 					// locals at the same location are not equals - this has to be a full frame
 					result = Integer.MAX_VALUE;
 					this.numberOfDifferentLocals = result;
-					return result;						
+					return result;
 				}
 				indexInPrevLocals++;
 				continue currentLocalsLoop;

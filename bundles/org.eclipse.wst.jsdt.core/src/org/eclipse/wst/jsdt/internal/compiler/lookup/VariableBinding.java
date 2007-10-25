@@ -15,7 +15,7 @@ import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 
 public abstract class VariableBinding extends Binding {
-    
+
 	public int modifiers;
 	public TypeBinding type;
 	public char[] name;
@@ -29,7 +29,7 @@ public abstract class VariableBinding extends Binding {
 		this.modifiers = modifiers;
 		this.constant = constant;
 	}
-	
+
 	public Constant constant() {
 		return this.constant;
 	}
@@ -41,7 +41,7 @@ public abstract class VariableBinding extends Binding {
 	}
 	/* Answer true if the receiver is final and cannot be changed
 	*/
-	
+
 	public final boolean isFinal() {
 		return (modifiers & ClassFileConstants.AccFinal) != 0;
 	}

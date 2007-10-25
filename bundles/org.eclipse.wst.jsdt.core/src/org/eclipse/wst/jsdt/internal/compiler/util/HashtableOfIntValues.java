@@ -16,9 +16,9 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
  * Hashtable of {char[] --> int}
  */
 public final class HashtableOfIntValues implements Cloneable {
-	
+
 	public static final int NO_VALUE = Integer.MIN_VALUE;
-	
+
 	// to avoid using Enumerations, walk the individual tables skipping nulls
 	public char[] keyTable[];
 	public int valueTable[];
@@ -57,7 +57,7 @@ public final class HashtableOfIntValues implements Cloneable {
 	}
 
 	public boolean containsKey(char[] key) {
-		int length = keyTable.length, 
+		int length = keyTable.length,
 			index = CharOperation.hashCode(key) % length;
 		int keyLength = key.length;
 		char[] currentKey;
@@ -72,7 +72,7 @@ public final class HashtableOfIntValues implements Cloneable {
 	}
 
 	public int get(char[] key) {
-		int length = keyTable.length, 
+		int length = keyTable.length,
 			index = CharOperation.hashCode(key) % length;
 		int keyLength = key.length;
 		char[] currentKey;
@@ -87,7 +87,7 @@ public final class HashtableOfIntValues implements Cloneable {
 	}
 
 	public int put(char[] key, int value) {
-		int length = keyTable.length, 
+		int length = keyTable.length,
 			index = CharOperation.hashCode(key) % length;
 		int keyLength = key.length;
 		char[] currentKey;
@@ -108,7 +108,7 @@ public final class HashtableOfIntValues implements Cloneable {
 	}
 
 	public int removeKey(char[] key) {
-		int length = keyTable.length, 
+		int length = keyTable.length,
 			index = CharOperation.hashCode(key) % length;
 		int keyLength = key.length;
 		char[] currentKey;

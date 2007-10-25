@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.nls;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.text.Region;
 
 public class NLSElement {

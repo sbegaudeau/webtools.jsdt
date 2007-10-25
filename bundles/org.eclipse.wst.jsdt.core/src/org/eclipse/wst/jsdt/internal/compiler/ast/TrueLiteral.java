@@ -11,8 +11,8 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.impl.BooleanConstant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
@@ -31,7 +31,7 @@ public void computeConstant() {
  * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
  * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
  * @param valueRequired boolean
- */ 
+ */
 public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
 	int pc = codeStream.position;
 	if (valueRequired) {
@@ -59,7 +59,7 @@ public TypeBinding literalType(BlockScope scope) {
 	return TypeBinding.BOOLEAN;
 }
 /**
- * 
+ *
  */
 public char[] source() {
 	return source;

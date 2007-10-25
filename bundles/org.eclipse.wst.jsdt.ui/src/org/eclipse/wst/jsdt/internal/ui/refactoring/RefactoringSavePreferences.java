@@ -12,9 +12,7 @@
 package org.eclipse.wst.jsdt.internal.ui.refactoring;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 public class RefactoringSavePreferences {

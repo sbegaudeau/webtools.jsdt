@@ -14,13 +14,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IStatus;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.dialogs.ControlEnableState;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -30,21 +32,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
-
-import org.eclipse.jface.dialogs.ControlEnableState;
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.jface.window.Window;
-
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbenchPropertyPage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
-
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.IStatusChangeListener;

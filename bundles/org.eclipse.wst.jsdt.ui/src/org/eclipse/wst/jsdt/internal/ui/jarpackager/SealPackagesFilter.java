@@ -14,7 +14,6 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 
 /**

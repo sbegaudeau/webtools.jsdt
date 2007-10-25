@@ -11,14 +11,19 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.impl.*;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.StringConstant;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class IfStatement extends Statement {
-	
-	//this class represents the case of only one statement in 
+
+	//this class represents the case of only one statement in
 	//either else and/or then branches.
 
 	public Expression condition;
@@ -67,15 +72,15 @@ public class IfStatement extends Statement {
 		Constant cst = this.condition.optimizedBooleanConstant();
 		boolean isConditionOptimizedTrue = cst != Constant.NotAConstant && cst.booleanValue() == true;
 		boolean isConditionOptimizedFalse = cst != Constant.NotAConstant && cst.booleanValue() == false;
-		
+
 		// process the THEN part
 		FlowInfo thenFlowInfo = conditionFlowInfo.safeInitsWhenTrue();
 		if (isConditionOptimizedFalse) {
-			thenFlowInfo.setReachMode(FlowInfo.UNREACHABLE); 
+			thenFlowInfo.setReachMode(FlowInfo.UNREACHABLE);
 		}
 		FlowInfo elseFlowInfo = conditionFlowInfo.initsWhenFalse();
 		if (isConditionOptimizedTrue) {
-			elseFlowInfo.setReachMode(FlowInfo.UNREACHABLE); 
+			elseFlowInfo.setReachMode(FlowInfo.UNREACHABLE);
 		}
 		if (this.thenStatement != null) {
 			// Save info for code gen
@@ -92,7 +97,7 @@ public class IfStatement extends Statement {
 		// process the ELSE part
 		if (this.elseStatement != null) {
 		    // signal else clause unnecessarily nested, tolerate else-if code pattern
-		    if (thenFlowInfo == FlowInfo.DEAD_END 
+		    if (thenFlowInfo == FlowInfo.DEAD_END
 		            && (this.bits & IsElseIfStatement) == 0 	// else of an else-if
 		            && !(this.elseStatement instanceof IfStatement)) {
 		        currentScope.problemReporter().unnecessaryElse(this.elseStatement);
@@ -105,7 +110,7 @@ public class IfStatement extends Statement {
 					elseStatement.analyseCode(currentScope, flowContext, elseFlowInfo);
 			}
 		}
-		
+
 		// handle cases  where condition is "typeof something== ''", set inits accordingly
 		if (this.condition instanceof EqualExpression)
 		{
@@ -132,16 +137,16 @@ public class IfStatement extends Statement {
 							elseFlowInfo.markAsDefinitelyAssigned(local);
 					}
 				}
-			    
-				
+
+
 			}
 		}
 
 		// merge THEN & ELSE initializations
 		FlowInfo mergedInfo = FlowInfo.mergedOptimizedBranches(
-			thenFlowInfo, 
-			isConditionOptimizedTrue, 
-			elseFlowInfo, 
+			thenFlowInfo,
+			isConditionOptimizedTrue,
+			elseFlowInfo,
 			isConditionOptimizedFalse,
 			true /*if(true){ return; }  fake-reachable(); */);
 //		mergedInitStateIndex = currentScope.methodScope().recordInitializationStates(mergedInfo);
@@ -159,12 +164,12 @@ public class IfStatement extends Statement {
 		{
 				isDefined[0]=!((StringConstant)expression2.constant).stringValue().equals("undefined");
 				return (SingleNameReference)unaryExpression.expression ;
-				
+
 		}
 		}
 		return null;
 	}
-	
+
 	/**
 	 * If code generation
 	 *
@@ -181,7 +186,7 @@ public class IfStatement extends Statement {
 
 		// optimizing the then/else part code gen
 		Constant cst;
-		boolean hasThenPart = 
+		boolean hasThenPart =
 			!(((cst = this.condition.optimizedBooleanConstant()) != Constant.NotAConstant
 					&& cst.booleanValue() == false)
 				|| this.thenStatement == null
@@ -262,7 +267,7 @@ public class IfStatement extends Statement {
 	public StringBuffer printStatement(int indent, StringBuffer output) {
 
 		printIndent(indent, output).append("if ("); //$NON-NLS-1$
-		condition.printExpression(0, output).append(")\n");	//$NON-NLS-1$ 
+		condition.printExpression(0, output).append(")\n");	//$NON-NLS-1$
 		thenStatement.printStatement(indent + 2, output);
 		if (elseStatement != null) {
 			output.append('\n');

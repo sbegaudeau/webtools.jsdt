@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.JavaModelException;

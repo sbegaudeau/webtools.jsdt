@@ -12,18 +12,11 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.rename;
 
 import java.util.StringTokenizer;
 
-import org.eclipse.text.edits.MultiTextEdit;
-import org.eclipse.text.edits.ReplaceEdit;
-import org.eclipse.text.edits.TextEdit;
-import org.eclipse.text.edits.TextEditGroup;
-
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-
-import org.eclipse.core.resources.IFile;
-
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.GroupCategorySet;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
@@ -32,7 +25,10 @@ import org.eclipse.ltk.core.refactoring.TextChange;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.ltk.core.refactoring.participants.RenameArguments;
-
+import org.eclipse.text.edits.MultiTextEdit;
+import org.eclipse.text.edits.ReplaceEdit;
+import org.eclipse.text.edits.TextEdit;
+import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -47,7 +43,6 @@ import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
 import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameLocalVariableDescriptor;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptor;
@@ -66,11 +61,9 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParse
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.ResourceUtil;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.TextChangeManager;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 public class RenameLocalVariableProcessor extends JavaRenameProcessor implements IReferenceUpdating {
 

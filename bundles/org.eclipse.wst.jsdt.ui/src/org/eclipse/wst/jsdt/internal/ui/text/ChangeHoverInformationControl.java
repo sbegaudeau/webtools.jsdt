@@ -11,7 +11,11 @@
 package org.eclipse.wst.jsdt.internal.ui.text;
 
 import org.eclipse.core.runtime.Assert;
-
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.ITextViewerExtension;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
@@ -19,17 +23,8 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.jface.resource.JFaceResources;
-
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.ITextViewerExtension;
-
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-
 import org.eclipse.wst.jsdt.internal.ui.text.java.hover.SourceViewerInformationControl;
+import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
 
 /**
  * Specialized source viewer information control used to display quick diff hovers.

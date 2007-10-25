@@ -11,15 +11,17 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ElementValuePair;
 
 /**
  * Normal annotation node
  */
 public class NormalAnnotation extends Annotation {
-	
+
 	public MemberValuePair[] memberValuePairs;
-	
+
 	public NormalAnnotation(TypeReference type, int sourceStart) {
 		this.type = type;
 		this.sourceStart = sourceStart;
@@ -57,7 +59,7 @@ public class NormalAnnotation extends Annotation {
 		output.append(')');
 		return output;
 	}
-	
+
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
 		if (visitor.visit(this, scope)) {
 			if (this.memberValuePairs != null) {

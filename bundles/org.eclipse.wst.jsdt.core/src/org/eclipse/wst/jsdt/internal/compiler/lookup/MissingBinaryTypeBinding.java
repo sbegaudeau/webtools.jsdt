@@ -37,8 +37,8 @@ public MissingBinaryTypeBinding(PackageBinding packageBinding, char[][] compound
 	this.memberTypes = Binding.NO_MEMBER_TYPES;
 	this.fields = Binding.NO_FIELDS;
 	this.methods = Binding.NO_METHODS;
-}	
-	
+}
+
 /**
  * Missing binary type will answer <code>false</code> to #isValidBinding()
  * @see org.eclipse.wst.jsdt.internal.compiler.lookup.Binding#problemId()
@@ -54,5 +54,5 @@ public int problemId() {
  */
 void setMissingSuperclass(ReferenceBinding missingSuperclass) {
 	this.superclass = missingSuperclass;
-}	
+}
 }

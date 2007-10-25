@@ -28,7 +28,7 @@ public class SelectionOnParameterizedQualifiedTypeReference extends Parameterize
 		System.arraycopy(this.typeArguments, 0, this.typeArguments = new TypeReference[length + 1][], 0, length);
 		this.typeArguments[length] = assistTypeArguments;
 	}
-	
+
 	public TypeBinding resolveType(BlockScope scope, boolean checkBounds) {
 		super.resolveType(scope, checkBounds);
 		//// removed unnecessary code to solve bug 94653
@@ -38,7 +38,7 @@ public class SelectionOnParameterizedQualifiedTypeReference extends Parameterize
 		//}
 		throw new SelectionNodeFound(this.resolvedType);
 	}
-	
+
 	public TypeBinding resolveType(ClassScope scope) {
 		super.resolveType(scope);
 		//// removed unnecessary code to solve bug 94653
@@ -48,7 +48,7 @@ public class SelectionOnParameterizedQualifiedTypeReference extends Parameterize
 		//}
 		throw new SelectionNodeFound(this.resolvedType);
 	}
-	
+
 	public StringBuffer printExpression(int indent, StringBuffer output) {
 		output.append("<SelectOnType:");//$NON-NLS-1$
 		int length = tokens.length;
@@ -68,9 +68,9 @@ public class SelectionOnParameterizedQualifiedTypeReference extends Parameterize
 				typeArgument[max].print(0, output);
 				output.append('>');
 			}
-			
+
 		}
-		output.append('>'); 
+		output.append('>');
 		return output;
 	}
 }

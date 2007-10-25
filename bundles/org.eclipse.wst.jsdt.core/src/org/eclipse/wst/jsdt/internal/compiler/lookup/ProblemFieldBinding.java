@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.compiler.lookup;
 public class ProblemFieldBinding extends FieldBinding {
 	private int problemId;
 	public FieldBinding closestMatch;
-		
+
 // NOTE: must only answer the subset of the name related to the problem
 
 public ProblemFieldBinding(ReferenceBinding declaringClass, char[] name, int problemId) {

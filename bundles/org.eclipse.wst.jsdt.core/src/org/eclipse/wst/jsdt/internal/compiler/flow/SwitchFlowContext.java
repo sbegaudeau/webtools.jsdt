@@ -18,10 +18,10 @@ import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
  *	try statements, exception handlers, etc...
  */
 public class SwitchFlowContext extends FlowContext {
-	
+
 	public BranchLabel breakLabel;
 	public UnconditionalFlowInfo initsOnBreak = FlowInfo.DEAD_END;
-	
+
 public SwitchFlowContext(FlowContext parent, ASTNode associatedNode, BranchLabel breakLabel) {
 	super(parent, associatedNode);
 	this.breakLabel = breakLabel;
@@ -44,7 +44,7 @@ public boolean isBreakable() {
 public void recordBreakFrom(FlowInfo flowInfo) {
 	if ((initsOnBreak.tagBits & FlowInfo.UNREACHABLE) == 0) {
 		initsOnBreak = initsOnBreak.mergedWith(flowInfo.unconditionalInits());
-	} 
+	}
 	else {
 		initsOnBreak = flowInfo.unconditionalCopy();
 	}

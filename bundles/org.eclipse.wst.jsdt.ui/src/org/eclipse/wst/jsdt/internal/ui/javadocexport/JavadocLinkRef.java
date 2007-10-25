@@ -16,14 +16,11 @@ import java.net.URL;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathSupport;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
+import org.eclipse.wst.jsdt.ui.JavaUI;
 
 
 public class JavadocLinkRef {

@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.IBufferFactory;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;

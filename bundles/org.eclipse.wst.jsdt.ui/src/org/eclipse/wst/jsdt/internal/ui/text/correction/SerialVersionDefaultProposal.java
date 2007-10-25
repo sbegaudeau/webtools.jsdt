@@ -11,12 +11,9 @@
 package org.eclipse.wst.jsdt.internal.ui.text.correction;
 
 import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.wst.jsdt.internal.corext.fix.IFix;
-
-import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
-
 import org.eclipse.wst.jsdt.internal.ui.fix.ICleanUp;
+import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
 
 public final class SerialVersionDefaultProposal extends FixCorrectionProposal {
 	

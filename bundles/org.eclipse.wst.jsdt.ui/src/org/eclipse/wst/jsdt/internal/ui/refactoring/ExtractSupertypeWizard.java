@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.internal.ui.refactoring;
 
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 
 /**

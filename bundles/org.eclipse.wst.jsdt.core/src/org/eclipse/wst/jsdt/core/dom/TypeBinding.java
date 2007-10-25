@@ -1357,7 +1357,7 @@ class TypeBinding implements ITypeBinding {
 	public String toString() {
 		return this.binding.toString();
 	}
-	
+
 	public boolean isCompilationUnit()
 	{
 		return false;

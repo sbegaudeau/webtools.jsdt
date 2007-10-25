@@ -58,7 +58,7 @@ public class FloatLiteral extends NumberLiteral {
 			// a true 0 only has '0' and '.' in mantissa
 			// 1.0e-5000d is non-zero, but underflows to 0
 			boolean isHexaDecimal = false;
-			label : for (int i = 0; i < source.length; i++) { //it is welled formated so just test against '0' and potential . D d  
+			label : for (int i = 0; i < source.length; i++) { //it is welled formated so just test against '0' and potential . D d
 				switch (source[i]) {
 					case '0' :
 					case '.' :

@@ -10,19 +10,14 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.text.correction;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
-
-import org.eclipse.core.runtime.CoreException;
-
-import org.eclipse.jface.text.IDocument;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
-
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.LinkedNodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;

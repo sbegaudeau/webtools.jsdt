@@ -13,9 +13,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.callhierarchy;
 
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
-
 import org.eclipse.jface.action.Action;
+import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 
 
 abstract class SearchScopeAction extends Action {

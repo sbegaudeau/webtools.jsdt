@@ -16,7 +16,15 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
-
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.DialogPage;
+import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.search.ui.ISearchPage;
+import org.eclipse.search.ui.ISearchPageContainer;
+import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -30,52 +38,33 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.DialogPage;
-import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-
-import org.eclipse.jface.text.ITextSelection;
-
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-
-import org.eclipse.search.ui.ISearchPage;
-import org.eclipse.search.ui.ISearchPageContainer;
-import org.eclipse.search.ui.NewSearchUI;
-
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IImportDeclaration;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
-
-import org.eclipse.wst.jsdt.ui.search.ElementQuerySpecification;
-import org.eclipse.wst.jsdt.ui.search.PatternQuerySpecification;
-import org.eclipse.wst.jsdt.ui.search.QuerySpecification;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
-import org.eclipse.wst.jsdt.internal.ui.browsing.LogicalPackage;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.TextFieldNavigationHandler;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
+import org.eclipse.wst.jsdt.ui.search.ElementQuerySpecification;
+import org.eclipse.wst.jsdt.ui.search.PatternQuerySpecification;
+import org.eclipse.wst.jsdt.ui.search.QuerySpecification;
 
 public class JavaSearchPage extends DialogPage implements ISearchPage {
 	

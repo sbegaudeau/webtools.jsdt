@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.text;
 
-import com.ibm.icu.text.BreakIterator;
 import java.text.CharacterIterator;
 
 import org.eclipse.core.runtime.Assert;
+
+import com.ibm.icu.text.BreakIterator;
 
 
 

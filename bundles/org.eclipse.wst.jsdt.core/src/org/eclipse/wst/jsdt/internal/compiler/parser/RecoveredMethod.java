@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.parser;
 
-import org.eclipse.wst.jsdt.core.compiler.*;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ConstructorDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ExplicitConstructorCall;
@@ -32,7 +32,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 /**
- * Internal method structure for parsing recovery 
+ * Internal method structure for parsing recovery
  */
 
 public class RecoveredMethod extends RecoveredElement implements TerminalTokens {
@@ -60,7 +60,7 @@ public RecoveredElement add(Block nestedBlockDeclaration, int bracketBalanceValu
 
 	/* default behavior is to delegate recording to parent if any,
 	do not consider elements passed the known end (if set)
-	it must be belonging to an enclosing element 
+	it must be belonging to an enclosing element
 	*/
 	if (methodDeclaration.declarationSourceEnd > 0
 		&& nestedBlockDeclaration.sourceStart
@@ -87,11 +87,11 @@ public RecoveredElement add(Block nestedBlockDeclaration, int bracketBalanceValu
 public RecoveredElement add(FieldDeclaration fieldDeclaration, int bracketBalanceValue) {
 
 	/* local variables inside method can only be final and non void */
-	char[][] fieldTypeName; 
-	if ((fieldDeclaration.modifiers & ~ClassFileConstants.AccFinal) != 0 // local var can only be final 
+	char[][] fieldTypeName;
+	if ((fieldDeclaration.modifiers & ~ClassFileConstants.AccFinal) != 0 // local var can only be final
 		|| (fieldDeclaration.type == null) // initializer
 		|| ((fieldTypeName = fieldDeclaration.type.getTypeName()).length == 1 // non void
-			&& CharOperation.equals(fieldTypeName[0], TypeBinding.VOID.sourceName()))){ 
+			&& CharOperation.equals(fieldTypeName[0], TypeBinding.VOID.sourceName()))){
 
 		if (this.parent == null){
 			return this; // ignore
@@ -102,7 +102,7 @@ public RecoveredElement add(FieldDeclaration fieldDeclaration, int bracketBalanc
 	}
 	/* default behavior is to delegate recording to parent if any,
 	do not consider elements passed the known end (if set)
-	it must be belonging to an enclosing element 
+	it must be belonging to an enclosing element
 	*/
 	if (methodDeclaration.declarationSourceEnd > 0
 		&& fieldDeclaration.declarationSourceStart
@@ -127,12 +127,12 @@ public RecoveredElement add(FieldDeclaration fieldDeclaration, int bracketBalanc
 public RecoveredElement add(LocalDeclaration localDeclaration, int bracketBalanceValue) {
 
 	/* local variables inside method can only be final and non void */
-/*	
-	char[][] localTypeName; 
-	if ((localDeclaration.modifiers & ~AccFinal) != 0 // local var can only be final 
+/*
+	char[][] localTypeName;
+	if ((localDeclaration.modifiers & ~AccFinal) != 0 // local var can only be final
 		|| (localDeclaration.type == null) // initializer
 		|| ((localTypeName = localDeclaration.type.getTypeName()).length == 1 // non void
-			&& CharOperation.equals(localTypeName[0], VoidBinding.sourceName()))){ 
+			&& CharOperation.equals(localTypeName[0], VoidBinding.sourceName()))){
 
 		if (this.parent == null){
 			return this; // ignore
@@ -144,9 +144,9 @@ public RecoveredElement add(LocalDeclaration localDeclaration, int bracketBalanc
 */
 	/* do not consider a type starting passed the type end (if set)
 		it must be belonging to an enclosing type */
-	if (methodDeclaration.declarationSourceEnd != 0 
+	if (methodDeclaration.declarationSourceEnd != 0
 		&& localDeclaration.declarationSourceStart > methodDeclaration.declarationSourceEnd){
-			
+
 		if (this.parent == null) {
 			return this; // ignore
 		} else {
@@ -174,7 +174,7 @@ public RecoveredElement add(Statement statement, int bracketBalanceValue) {
 
 	/* do not consider a type starting passed the type end (if set)
 		it must be belonging to an enclosing type */
-	if (methodDeclaration.declarationSourceEnd != 0 
+	if (methodDeclaration.declarationSourceEnd != 0
 		&& statement.sourceStart > methodDeclaration.declarationSourceEnd){
 
 		if (this.parent == null) {
@@ -195,15 +195,15 @@ public RecoveredElement add(Statement statement, int bracketBalanceValue) {
 		}
 		return currentBlock.add(statement, bracketBalanceValue);
 	}
-	return methodBody.add(statement, bracketBalanceValue, true);	
+	return methodBody.add(statement, bracketBalanceValue, true);
 }
 public RecoveredElement add(TypeDeclaration typeDeclaration, int bracketBalanceValue) {
 
 	/* do not consider a type starting passed the type end (if set)
 		it must be belonging to an enclosing type */
-	if (methodDeclaration.declarationSourceEnd != 0 
+	if (methodDeclaration.declarationSourceEnd != 0
 		&& typeDeclaration.declarationSourceStart > methodDeclaration.declarationSourceEnd){
-			
+
 		if (this.parent == null) {
 			return this; // ignore
 		}
@@ -215,7 +215,7 @@ public RecoveredElement add(TypeDeclaration typeDeclaration, int bracketBalanceV
 			block.sourceStart = methodDeclaration.bodyStart;
 			this.add(block, 1);
 		}
-		return methodBody.add(typeDeclaration, bracketBalanceValue, true);	
+		return methodBody.add(typeDeclaration, bracketBalanceValue, true);
 	}
 	switch (TypeDeclaration.kind(typeDeclaration.modifiers)) {
 		case TypeDeclaration.INTERFACE_DECL :
@@ -233,11 +233,11 @@ public RecoveredElement add(TypeDeclaration typeDeclaration, int bracketBalanceV
 	} else {
 		if (localTypeCount == localTypes.length) {
 			System.arraycopy(
-				localTypes, 
-				0, 
-				(localTypes = new RecoveredType[2 * localTypeCount]), 
-				0, 
-				localTypeCount); 
+				localTypes,
+				0,
+				(localTypes = new RecoveredType[2 * localTypeCount]),
+				0,
+				localTypeCount);
 		}
 	}
 	RecoveredType element = new RecoveredType(typeDeclaration, this, bracketBalanceValue);
@@ -253,7 +253,7 @@ public RecoveredElement add(TypeDeclaration typeDeclaration, int bracketBalanceV
 public boolean bodyStartsAtHeaderEnd(){
 	return methodDeclaration.bodyStart == methodDeclaration.sourceEnd+1;
 }
-/* 
+/*
  * Answer the associated parsed structure
  */
 public ASTNode parseTree(){
@@ -285,7 +285,7 @@ public String toString(int tab) {
  * Update the bodyStart of the corresponding parse node
  */
 public void updateBodyStart(int bodyStart){
-	this.foundOpeningBrace = true;		
+	this.foundOpeningBrace = true;
 	this.methodDeclaration.bodyStart = bodyStart;
 }
 public AbstractMethodDeclaration updatedMethodDeclaration(){
@@ -303,8 +303,8 @@ public AbstractMethodDeclaration updatedMethodDeclaration(){
 					constructor.constructorCall = (ExplicitConstructorCall)methodDeclaration.statements[0];
 					int length = methodDeclaration.statements.length;
 					System.arraycopy(
-						methodDeclaration.statements, 
-						1, 
+						methodDeclaration.statements,
+						1,
 						(methodDeclaration.statements = new Statement[length-1]),
 						0,
 						length-1);
@@ -330,7 +330,7 @@ public void updateFromParserState(){
 		if (parser.listLength > 0 && parser.astLengthPtr > 0){ // awaiting interface type references
 			/* has consumed the arguments - listed elements must be thrown exceptions */
 			if (methodDeclaration.sourceEnd == parser.rParenPos) {
-				
+
 				// protection for bugs 15142
 				int length = parser.astLengthStack[parser.astLengthPtr];
 				int astPtr = parser.astPtr - length;
@@ -346,7 +346,7 @@ public void updateFromParserState(){
 					}
 				}
 				if (canConsume){
-					parser.consumeMethodHeaderThrowsClause(); 
+					parser.consumeMethodHeaderThrowsClause();
 					// will reset typeListLength to zero
 					// thus this check will only be performed on first errorCheck after void foo() throws X, Y,
 				} else {
@@ -356,27 +356,27 @@ public void updateFromParserState(){
 				/* has not consumed arguments yet, listed elements must be arguments */
 				if (parser.currentToken == TokenNameLPAREN || parser.currentToken == TokenNameSEMICOLON){
 					/* if currentToken is parenthesis this last argument is a method/field signature */
-					parser.astLengthStack[parser.astLengthPtr] --; 
-					parser.astPtr --; 
+					parser.astLengthStack[parser.astLengthPtr] --;
+					parser.astPtr --;
 					parser.listLength --;
 					parser.currentToken = 0;
 				}
 				int argLength = parser.astLengthStack[parser.astLengthPtr];
 				int argStart = parser.astPtr - argLength + 1;
 				boolean needUpdateRParenPos = parser.rParenPos < parser.lParenPos; // 12387 : rParenPos will be used
-				
+
 				// remove unfinished annotation nodes
 				MemberValuePair[] memberValuePairs = null;
 				if (argLength > 0 && parser.astStack[parser.astPtr] instanceof MemberValuePair) {
 					System.arraycopy(parser.astStack, argStart, memberValuePairs = new MemberValuePair[argLength], 0, argLength);
 					parser.astLengthPtr--;
 					parser.astPtr -= argLength;
-					
+
 					argLength = parser.astLengthStack[parser.astLengthPtr];
 					argStart = parser.astPtr - argLength + 1;
 					needUpdateRParenPos = true;
 				}
-				
+
 				// to compute bodyStart, and thus used to set next checkpoint.
 				int count;
 				for (count = 0; count < argLength; count++){
@@ -388,23 +388,23 @@ public void updateFromParserState(){
 						if ((argument.modifiers & ~ClassFileConstants.AccFinal) != 0
 							|| (argTypeName.length == 1
 								&& CharOperation.equals(argTypeName[0], TypeBinding.VOID.sourceName()))){
-							parser.astLengthStack[parser.astLengthPtr] = count; 
-							parser.astPtr = argStart+count-1; 
+							parser.astLengthStack[parser.astLengthPtr] = count;
+							parser.astPtr = argStart+count-1;
 							parser.listLength = count;
 							parser.currentToken = 0;
 							break;
 						}
 						if (needUpdateRParenPos) parser.rParenPos = argument.sourceEnd + 1;
 					} else {
-						parser.astLengthStack[parser.astLengthPtr] = count; 
-						parser.astPtr = argStart+count-1; 
+						parser.astLengthStack[parser.astLengthPtr] = count;
+						parser.astPtr = argStart+count-1;
 						parser.listLength = count;
 						parser.currentToken = 0;
 						break;
 					}
 				}
 				if (parser.listLength > 0 && parser.astLengthPtr > 0){
-					
+
 					// protection for bugs 15142
 					int length = parser.astLengthStack[parser.astLengthPtr];
 					int astPtr = parser.astPtr - length;
@@ -429,7 +429,7 @@ public void updateFromParserState(){
 						}
 					}
 				}
-				
+
 				if(memberValuePairs != null) {
 					System.arraycopy(memberValuePairs, 0, parser.astStack, parser.astPtr + 1, memberValuePairs.length);
 					parser.astPtr += memberValuePairs.length;
@@ -469,7 +469,7 @@ public RecoveredElement updateOnOpeningBrace(int braceStart, int braceEnd){
 	/* in case the opening brace is close enough to the signature */
 	if (bracketBalance == 0){
 		/*
-			if (parser.scanner.searchLineNumber(methodDeclaration.sourceEnd) 
+			if (parser.scanner.searchLineNumber(methodDeclaration.sourceEnd)
 				!= parser.scanner.searchLineNumber(braceEnd)){
 		 */
 		switch(parser().lastIgnoredToken){
@@ -477,10 +477,10 @@ public RecoveredElement updateOnOpeningBrace(int braceStart, int braceEnd){
 			case TokenNamethrows :
 				break;
 			default:
-				this.foundOpeningBrace = true;				
+				this.foundOpeningBrace = true;
 				bracketBalance = 1; // pretend the brace was already there
 		}
-	}	
+	}
 	return super.updateOnOpeningBrace(braceStart, braceEnd);
 }
 public void updateParseTree(){
@@ -502,17 +502,17 @@ public void updateSourceEndIfNecessary(int braceStart, int braceEnd){
 }
 void attach(TypeParameter[] parameters, int startPos) {
 	if(methodDeclaration.modifiers != ClassFileConstants.AccDefault) return;
-	
+
 	int lastParameterEnd = parameters[parameters.length - 1].sourceEnd;
-	
+
 	Parser parser = this.parser();
 	Scanner scanner = parser.scanner;
 	if(Util.getLineNumber(methodDeclaration.declarationSourceStart, scanner.lineEnds, 0, scanner.linePtr)
 			!= Util.getLineNumber(lastParameterEnd, scanner.lineEnds, 0, scanner.linePtr)) return;
-	
+
 	if(parser.modifiersSourceStart > lastParameterEnd
 			&& parser.modifiersSourceStart < methodDeclaration.declarationSourceStart) return;
-	
+
 	if (this.methodDeclaration instanceof MethodDeclaration) {
 		((MethodDeclaration)this.methodDeclaration).typeParameters = parameters;
 		this.methodDeclaration.declarationSourceStart = startPos;

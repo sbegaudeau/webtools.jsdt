@@ -15,7 +15,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.core.dom.rewrite.ITrackedNodePosition;
-
 import org.eclipse.wst.jsdt.internal.corext.fix.LinkedProposalPositionGroup.PositionInformation;
 
 public class LinkedProposalModel {

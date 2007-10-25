@@ -15,7 +15,18 @@ import java.util.HashMap;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.IBuffer;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IMember;
+import org.eclipse.wst.jsdt.core.IOpenable;
+import org.eclipse.wst.jsdt.core.IParent;
+import org.eclipse.wst.jsdt.core.ISourceManipulation;
+import org.eclipse.wst.jsdt.core.ISourceRange;
+import org.eclipse.wst.jsdt.core.ISourceReference;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.internal.core.util.DOMFinder;
@@ -31,7 +42,7 @@ public abstract class SourceRefElement extends JavaElement implements ISourceRef
 	 * that a duplicate named element exists. For example, if
 	 * there are two fields in a compilation unit with the
 	 * same name, the occurrence count is used to distinguish
-	 * them.  The occurrence count starts at 1 (thus the first 
+	 * them.  The occurrence count starts at 1 (thus the first
 	 * occurrence is occurrence 1, not occurrence 0).
 	 */
 	public int occurrenceCount = 1;
@@ -56,7 +67,7 @@ protected Object createElementInfo() {
  */
 public void copy(IJavaElement container, IJavaElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaModelException {
 	if (container == null) {
-		throw new IllegalArgumentException(Messages.operation_nullContainer); 
+		throw new IllegalArgumentException(Messages.operation_nullContainer);
 	}
 	IJavaElement[] elements= new IJavaElement[] {this};
 	IJavaElement[] containers= new IJavaElement[] {container};
@@ -219,7 +230,7 @@ public IResource getUnderlyingResource() throws JavaModelException {
 	return getParent().getUnderlyingResource();
 }
 /**
- * @see IParent 
+ * @see IParent
  */
 public boolean hasChildren() throws JavaModelException {
 	return getChildren().length > 0;
@@ -236,7 +247,7 @@ public boolean isStructureKnown() throws JavaModelException {
  */
 public void move(IJavaElement container, IJavaElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaModelException {
 	if (container == null) {
-		throw new IllegalArgumentException(Messages.operation_nullContainer); 
+		throw new IllegalArgumentException(Messages.operation_nullContainer);
 	}
 	if (getClassFile()!=null)
 		throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));
@@ -258,7 +269,7 @@ public void move(IJavaElement container, IJavaElement sibling, String rename, bo
  */
 public void rename(String newName, boolean force, IProgressMonitor monitor) throws JavaModelException {
 	if (newName == null) {
-		throw new IllegalArgumentException(Messages.element_nullName); 
+		throw new IllegalArgumentException(Messages.element_nullName);
 	}
 	if (getClassFile()!=null)
 		throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.READ_ONLY, this));

@@ -23,11 +23,11 @@ public class CompletionOnMethodTypeParameter extends MethodDeclaration {
 		this.sourceStart = typeParameters[0].sourceStart;
 		this.sourceEnd = typeParameters[typeParameters.length - 1].sourceEnd;
 	}
-	
+
 	public void resolveStatements() {
 			throw new CompletionNodeFound(this, this.scope);
 	}
-	
+
 	public StringBuffer print(int tab, StringBuffer output) {
 		printIndent(tab, output);
 		output.append('<');

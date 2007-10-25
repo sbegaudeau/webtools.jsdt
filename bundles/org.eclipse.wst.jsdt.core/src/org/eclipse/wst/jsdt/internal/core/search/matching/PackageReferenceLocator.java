@@ -11,15 +11,32 @@
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocQualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ImportBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MemberTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemFieldBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 public class PackageReferenceLocator extends PatternLocator {
@@ -33,8 +50,8 @@ public static boolean isDeclaringPackageFragment(IPackageFragment packageFragmen
 		// retrieve the actual file name from the full path (sources are generally only containing it already)
 		fileName = CharOperation.replaceOnCopy(fileName, '/', '\\'); // ensure to not do any side effect on file name (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=136016)
 		fileName = CharOperation.lastSegment(fileName, '\\');
-		
-		try { 
+
+		try {
 			switch (packageFragment.getKind()) {
 				case IPackageFragmentRoot.K_SOURCE :
 					if (!org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(fileName) || !packageFragment.getCompilationUnit(new String(fileName)).exists()) {
@@ -56,7 +73,7 @@ public static boolean isDeclaringPackageFragment(IPackageFragment packageFragmen
 			// unable to determine kind; tolerate this match
 		}
 	}
-	return true; // by default, do not eliminate 
+	return true; // by default, do not eliminate
 }
 
 public PackageReferenceLocator(PackageReferencePattern pattern) {
@@ -193,7 +210,7 @@ protected void matchReportReference(ASTNode reference, IJavaElement element, Bin
 					break;
 				case Binding.VARIABLE : //============unbound cases===========
 				case Binding.TYPE | Binding.VARIABLE :
-					Binding binding = qNameRef.binding; 
+					Binding binding = qNameRef.binding;
 					if (binding instanceof TypeBinding) {
 						typeBinding = (TypeBinding) binding;
 					} else if (binding instanceof ProblemFieldBinding) {
@@ -204,7 +221,7 @@ protected void matchReportReference(ASTNode reference, IJavaElement element, Bin
 						typeBinding = pbBinding.searchType;
 						last = CharOperation.occurencesOf('.', pbBinding.name);
 					}
-					break;					
+					break;
 			}
 		} else if (reference instanceof QualifiedTypeReference) {
 			QualifiedTypeReference qTypeRef = (QualifiedTypeReference) reference;
@@ -297,7 +314,7 @@ public int resolveLevel(Binding binding) {
 			// check that type is located inside this instance of a package fragment
 			if (!isDeclaringPackageFragment((IPackageFragment)((InternalSearchPattern) this.pattern).focus, (ReferenceBinding)binding))
 				return IMPOSSIBLE_MATCH;
-		}				
+		}
 		return ACCURATE_MATCH;
 	} else {
 		return IMPOSSIBLE_MATCH;
@@ -323,7 +340,7 @@ protected int resolveLevel(QualifiedNameReference qNameRef) {
 		 */
 		case Binding.VARIABLE : //============unbound cases===========
 		case Binding.TYPE | Binding.VARIABLE :
-			Binding binding = qNameRef.binding; 
+			Binding binding = qNameRef.binding;
 			if (binding instanceof ProblemReferenceBinding) {
 				typeBinding = (TypeBinding) binding;
 			} else if (binding instanceof ProblemFieldBinding) {
@@ -336,7 +353,7 @@ protected int resolveLevel(QualifiedNameReference qNameRef) {
 					return INACCURATE_MATCH;
 				typeBinding = pbBinding.searchType;
 			}
-			break;					
+			break;
 	}
 	return resolveLevel(typeBinding);
 }

@@ -10,19 +10,14 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.preferences;
 
-import org.eclipse.core.runtime.IAdaptable;
-
 import org.eclipse.core.resources.IProject;
-
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.preference.IPreferencePageContainer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-
-import org.eclipse.jface.preference.IPreferencePageContainer;
-
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.eclipse.ui.preferences.IWorkingCopyManager;
 import org.eclipse.ui.preferences.WorkingCopyManager;
-
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileConfigurationBlock;
 
 public abstract class ProfilePreferencePage extends PropertyAndPreferencePage {

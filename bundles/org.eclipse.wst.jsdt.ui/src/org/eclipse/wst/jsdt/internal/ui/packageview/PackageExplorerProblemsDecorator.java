@@ -11,11 +11,8 @@
 package org.eclipse.wst.jsdt.internal.ui.packageview;
 
 import org.eclipse.core.runtime.IAdaptable;
-
 import org.eclipse.ui.IWorkingSet;
-
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.TreeHierarchyLayoutProblemsDecorator;
-
 import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
 
 

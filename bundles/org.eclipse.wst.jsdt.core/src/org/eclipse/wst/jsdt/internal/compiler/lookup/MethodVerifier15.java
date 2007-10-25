@@ -544,7 +544,7 @@ boolean detectNameClash(MethodBinding current, MethodBinding inherited) {
 	MethodBinding original = inherited.original(); // can be the same as inherited
 	if (!current.areParameterErasuresEqual(original) || current.returnType.erasure() != original.returnType.erasure()) return false;
 
-	problemReporter(current).methodNameClash(current, 
+	problemReporter(current).methodNameClash(current,
 			inherited.declaringClass.isRawType() ? inherited : original);
 	return true;
 }
@@ -572,7 +572,7 @@ boolean doesSubstituteMethodOverride(MethodBinding method, MethodBinding substit
 			if (params[i] != ((TypeVariableBinding) inheritedParams[i]).upperBound())
 				return false;
 		} else if (params[i] != inheritedParams[i]) {
-			return false;			
+			return false;
 		}
 	}
 	return true;

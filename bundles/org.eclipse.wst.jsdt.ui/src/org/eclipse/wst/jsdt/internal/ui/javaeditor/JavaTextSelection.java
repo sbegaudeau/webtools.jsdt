@@ -12,11 +12,9 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextSelection;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
@@ -24,7 +22,6 @@ import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.Selection;
 import org.eclipse.wst.jsdt.internal.corext.dom.SelectionAnalyzer;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;

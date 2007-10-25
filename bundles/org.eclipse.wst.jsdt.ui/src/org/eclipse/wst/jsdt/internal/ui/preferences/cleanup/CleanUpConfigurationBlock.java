@@ -18,26 +18,20 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
-
-import org.eclipse.core.resources.IProject;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpPreferenceUtil;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpRefactoring;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.fix.ICleanUp;
 import org.eclipse.wst.jsdt.internal.ui.preferences.BulletListBlock;
@@ -52,6 +46,7 @@ import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.Pro
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.SelectionButtonDialogField;
+import org.eclipse.wst.jsdt.ui.JavaUI;
 
 
 /**

@@ -13,10 +13,8 @@ package org.eclipse.wst.jsdt.ui.wizards;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.filesystem.URIUtil;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -25,23 +23,18 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubProgressMonitor;
-
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-
-import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.eclipse.ui.PlatformUI;
-
+import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.preferences.NewJavaProjectPreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.util.BusyIndicatorRunnableContext;

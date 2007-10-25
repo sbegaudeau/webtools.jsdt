@@ -12,7 +12,6 @@
 package org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist;
 
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.StubTypeContext;
 
 

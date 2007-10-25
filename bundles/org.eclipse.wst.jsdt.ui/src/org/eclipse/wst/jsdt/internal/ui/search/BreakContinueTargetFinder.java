@@ -15,11 +15,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-
-import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
-import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.JavaModelException;
@@ -43,6 +38,9 @@ import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SwitchStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
+import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
+import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 /**
  * Class used to find the target for a break or continue statement according 

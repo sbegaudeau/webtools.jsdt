@@ -21,6 +21,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -28,17 +31,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-
-import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.jface.dialogs.MessageDialog;
-
 import org.eclipse.jface.text.IDocument;
-
+import org.eclipse.ltk.core.refactoring.CompositeChange;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -46,9 +42,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.progress.IProgressService;
-
-import org.eclipse.ltk.core.refactoring.CompositeChange;
-
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
@@ -75,7 +68,6 @@ import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.corext.fix.IFix;
@@ -87,17 +79,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.RenameCompilatio
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.TypeNameMatchCollector;
-
-import org.eclipse.wst.jsdt.launching.IVMInstall;
-import org.eclipse.wst.jsdt.launching.IVMInstall2;
-import org.eclipse.wst.jsdt.launching.IVMInstallType;
-import org.eclipse.wst.jsdt.launching.JavaRuntime;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.actions.OrganizeImportsAction;
-import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
-import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.actions.WorkbenchRunnableAdapter;
@@ -106,6 +87,14 @@ import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.preferences.BuildPathsPropertyPage;
 import org.eclipse.wst.jsdt.internal.ui.util.CoreUtility;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
+import org.eclipse.wst.jsdt.launching.IVMInstall;
+import org.eclipse.wst.jsdt.launching.IVMInstall2;
+import org.eclipse.wst.jsdt.launching.IVMInstallType;
+import org.eclipse.wst.jsdt.launching.JavaRuntime;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.actions.OrganizeImportsAction;
+import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
+import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
 
 public class ReorgCorrectionsSubProcessor {
 

@@ -15,7 +15,9 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.window.Window;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -25,14 +27,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
-
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.window.Window;
-import org.eclipse.jface.wizard.IWizardPage;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameTypeProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.ISimilarDeclarationUpdating;
-
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.RowLayouter;

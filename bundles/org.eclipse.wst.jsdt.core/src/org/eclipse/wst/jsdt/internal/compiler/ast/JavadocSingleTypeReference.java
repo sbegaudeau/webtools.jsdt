@@ -25,7 +25,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 
 public class JavadocSingleTypeReference extends SingleTypeReference {
-	
+
 	public int tagSourceStart, tagSourceEnd;
 	public PackageBinding packageBinding;
 
@@ -51,7 +51,7 @@ public class JavadocSingleTypeReference extends SingleTypeReference {
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);
 	}
-	
+
 	public void traverse(ASTVisitor visitor, ClassScope scope) {
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);

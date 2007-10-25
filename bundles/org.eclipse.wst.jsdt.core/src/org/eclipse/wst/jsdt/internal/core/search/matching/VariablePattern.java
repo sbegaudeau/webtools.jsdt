@@ -63,11 +63,11 @@ protected int getVariableLength()
 }
 
 /*
- * Returns whether a method declaration or message send will need to be resolved to 
+ * Returns whether a method declaration or message send will need to be resolved to
  * find out if this method pattern matches it.
  */
 protected boolean mustResolve() {
 	// would like to change this so that we only do it if generic references are found
 	return this.findReferences; // always resolve (in case of a simple name reference being a potential match)
-}	
+}
 }

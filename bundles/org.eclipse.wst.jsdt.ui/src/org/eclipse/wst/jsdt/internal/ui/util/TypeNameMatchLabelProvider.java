@@ -10,18 +10,14 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.util;
 
-import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.jface.viewers.LabelProvider;
-
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 public class TypeNameMatchLabelProvider extends LabelProvider {
 	

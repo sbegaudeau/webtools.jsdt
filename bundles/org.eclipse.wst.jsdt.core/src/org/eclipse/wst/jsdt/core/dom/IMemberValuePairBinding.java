@@ -19,20 +19,20 @@ package org.eclipse.wst.jsdt.core.dom;
  * <p>
  * This interface is not intended to be implemented by clients.
  * </p>
- * 
+ *
  * @since 3.2
  */
 public interface IMemberValuePairBinding extends IBinding {
 /**
  * Returns the name of the annotation type member.
- * 
+ *
  * @return the name of the member
  */
 public String getName();
 
 /**
  * Returns the method binding corresponding to the named annotation type member.
- * 
+ *
  * @return the method binding for the annotation type member
  */
 public IMethodBinding getMethodBinding();
@@ -48,7 +48,7 @@ public IMethodBinding getMethodBinding();
  * <li>array type - an <code>Object[]</code> whose elements are as per above
  * (the language only allows single dimensional arrays in annotations)</li>
  * </ul>
- * 	
+ *
  * @return the resolved value, or <code>null</code> if none exists
  */
 public Object getValue();

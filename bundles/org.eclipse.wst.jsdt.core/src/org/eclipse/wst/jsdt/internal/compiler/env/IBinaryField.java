@@ -19,7 +19,7 @@ public interface IBinaryField extends IGenericField {
 IBinaryAnnotation[] getAnnotations();
 
 /**
- * 
+ *
  * @return org.eclipse.wst.jsdt.internal.compiler.Constant
  */
 Constant getConstant();

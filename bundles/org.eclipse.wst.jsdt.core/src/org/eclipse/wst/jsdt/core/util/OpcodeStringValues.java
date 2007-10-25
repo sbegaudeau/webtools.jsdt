@@ -15,7 +15,7 @@ package org.eclipse.wst.jsdt.core.util;
  * <p>
  * This class is not intended to be instantiated or subclassed by clients.
  * </p>
- *  
+ *
  * @since 2.0
  */
 public class OpcodeStringValues implements IOpcodeMnemonics {

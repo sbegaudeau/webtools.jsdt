@@ -17,9 +17,7 @@ import java.util.StringTokenizer;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
-
 import org.eclipse.wst.jsdt.core.JavaCore;
-
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.AbstractSpellDictionary;
 
 /**

@@ -14,15 +14,11 @@ import java.util.Hashtable;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
-
 import org.eclipse.ui.IEditorPart;
-
 import org.eclipse.wst.jsdt.core.JavaCore;
-
 import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
 import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
 

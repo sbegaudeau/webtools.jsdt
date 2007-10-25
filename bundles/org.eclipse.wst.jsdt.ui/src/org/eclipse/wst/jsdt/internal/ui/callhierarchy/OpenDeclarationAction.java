@@ -11,12 +11,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.callhierarchy;
 
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.internal.corext.callhierarchy.MethodWrapper;
 import org.eclipse.wst.jsdt.internal.ui.util.SelectionUtil;
 import org.eclipse.wst.jsdt.ui.actions.OpenAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IWorkbenchSite;
 
 /**
  * This class is used for opening the declaration of an element from the call hierarchy view.

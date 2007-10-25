@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.text.edits.TextEditGroup;
-
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.Javadoc;
@@ -27,10 +26,8 @@ import org.eclipse.wst.jsdt.core.dom.TagElement;
 import org.eclipse.wst.jsdt.core.dom.TextElement;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
-
-import org.eclipse.wst.jsdt.internal.ui.text.correction.JavadocTagsSubProcessor;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
+import org.eclipse.wst.jsdt.internal.ui.text.correction.JavadocTagsSubProcessor;
 
 
 public class JavadocUtil {

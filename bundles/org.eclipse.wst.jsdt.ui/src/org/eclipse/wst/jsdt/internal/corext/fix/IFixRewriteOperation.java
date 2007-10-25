@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.corext.fix;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.CompilationUnitRewrite;
 
 public interface IFixRewriteOperation {

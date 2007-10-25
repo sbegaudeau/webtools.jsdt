@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 

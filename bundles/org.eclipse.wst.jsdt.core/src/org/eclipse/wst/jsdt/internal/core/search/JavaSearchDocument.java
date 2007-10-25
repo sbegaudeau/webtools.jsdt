@@ -23,12 +23,12 @@ import org.eclipse.wst.jsdt.internal.core.search.processing.JobManager;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 public class JavaSearchDocument extends SearchDocument {
-	
+
 	private IFile file;
 	protected byte[] byteContents;
 	protected char[] charContents;
 	private String packageName;
-	
+
 	public JavaSearchDocument(String documentPath, SearchParticipant participant) {
 		super(documentPath, participant);
 	}
@@ -41,7 +41,7 @@ public class JavaSearchDocument extends SearchDocument {
 		super(filePath.toString(), participant);
 		this.charContents = contents;
 		this.packageName=packageName;
-		
+
 	}
 
 	public byte[] getByteContents() {

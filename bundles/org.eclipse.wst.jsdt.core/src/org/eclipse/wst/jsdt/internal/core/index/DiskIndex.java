@@ -10,16 +10,25 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.index;
 
-import java.io.*;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.RandomAccessFile;
+import java.io.UTFDataFormatException;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.search.*;
-import org.eclipse.wst.jsdt.internal.core.util.*;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfIntValues;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSetOfCharArray;
+import org.eclipse.wst.jsdt.internal.core.util.Messages;
+import org.eclipse.wst.jsdt.internal.core.util.SimpleWordSet;
+import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 public class DiskIndex {
 
@@ -77,7 +86,7 @@ int[] asArray() {
 	int[] result = new int[this.size];
 	System.arraycopy(this.elements, 0, result, 0, this.size);
 	return result;
-}	
+}
 }
 
 
@@ -365,7 +374,7 @@ void initialize(boolean reuseExistingFile) throws IOException {
 			try {
 				String signature = file.readUTF();
 				if (!signature.equals(SIGNATURE))
-					throw new IOException(Messages.exception_wrongFormat); 
+					throw new IOException(Messages.exception_wrongFormat);
 
 				this.headerInfoOffset = file.readInt();
 				if (this.headerInfoOffset > 0) // file is empty if its not set
@@ -815,17 +824,17 @@ private void readStreamBuffer(FileInputStream stream) throws IOException {
 	this.bufferIndex = 0;
 }
 /**
- * Reads in a string from the specified data input stream. The 
- * string has been encoded using a modified UTF-8 format. 
+ * Reads in a string from the specified data input stream. The
+ * string has been encoded using a modified UTF-8 format.
  * <p>
  * The first two bytes are read as an unsigned short.
  * This value gives the number of following bytes that are in the encoded string,
- * not the length of the resulting string. The following bytes are then 
- * interpreted as bytes encoding characters in the UTF-8 format 
- * and are converted into characters. 
+ * not the length of the resulting string. The following bytes are then
+ * interpreted as bytes encoding characters in the UTF-8 format
+ * and are converted into characters.
  * <p>
- * This method blocks until all the bytes are read, the end of the 
- * stream is detected, or an exception is thrown. 
+ * This method blocks until all the bytes are read, the end of the
+ * stream is detected, or an exception is thrown.
  *
  * @param      stream   a data input stream.
  * @return     UTF decoded string as a char array
@@ -1154,12 +1163,12 @@ private void writeOffsetToHeader(int offsetToHeader) throws IOException {
 	}
 }
 /**
- * Writes a string to the given output stream using UTF-8 
- * encoding in a machine-independent manner. 
+ * Writes a string to the given output stream using UTF-8
+ * encoding in a machine-independent manner.
  * <p>
- * First, two bytes of the array are giving the number of bytes to 
- * follow. This value is the number of bytes actually written out, 
- * not the length of the string. Following the length, each character 
+ * First, two bytes of the array are giving the number of bytes to
+ * follow. This value is the number of bytes actually written out,
+ * not the length of the string. Following the length, each character
  * of the string is put in the bytes array, in sequence, using the UTF-8
  * encoding for the character.
  * </p>

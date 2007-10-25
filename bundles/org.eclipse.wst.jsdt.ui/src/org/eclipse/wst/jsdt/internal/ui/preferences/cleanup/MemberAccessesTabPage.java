@@ -16,9 +16,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.fix.CodeStyleCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.ICleanUp;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ModifyDialog;

@@ -12,7 +12,12 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.WildcardBinding;
 
 /**
  * Node to represent Wildcard
@@ -22,7 +27,7 @@ public class Wildcard extends SingleTypeReference {
     public static final int UNBOUND = 0;
     public static final int EXTENDS = 1;
     public static final int SUPER = 2;
-    
+
 	public TypeReference bound;
 	public int kind;
 
@@ -30,47 +35,47 @@ public class Wildcard extends SingleTypeReference {
 		super(WILDCARD_NAME, 0);
 		this.kind = kind;
 	}
-	
+
 	public char [][] getParameterizedTypeName() {
         switch (this.kind) {
-            case Wildcard.UNBOUND : 
+            case Wildcard.UNBOUND :
                return new char[][] { WILDCARD_NAME };
             case Wildcard.EXTENDS :
                 return new char[][] { CharOperation.concat(WILDCARD_NAME, WILDCARD_EXTENDS, CharOperation.concatWith(this.bound.getParameterizedTypeName(), '.')) };
 			default: // SUPER
                 return new char[][] { CharOperation.concat(WILDCARD_NAME, WILDCARD_SUPER, CharOperation.concatWith(this.bound.getParameterizedTypeName(), '.')) };
-        }        	    
-	}	
+        }
+	}
 
 	public char [][] getTypeName() {
         switch (this.kind) {
-            case Wildcard.UNBOUND : 
+            case Wildcard.UNBOUND :
                return new char[][] { WILDCARD_NAME };
             case Wildcard.EXTENDS :
                 return new char[][] { CharOperation.concat(WILDCARD_NAME, WILDCARD_EXTENDS, CharOperation.concatWith(this.bound.getTypeName(), '.')) };
 			default: // SUPER
                 return new char[][] { CharOperation.concat(WILDCARD_NAME, WILDCARD_SUPER, CharOperation.concatWith(this.bound.getTypeName(), '.')) };
-        }        	    
+        }
 	}
-	
+
 	private TypeBinding internalResolveType(Scope scope, ReferenceBinding genericType, int rank) {
 	    TypeBinding boundType = null;
 	    if (this.bound != null) {
 			boundType = scope.kind == Scope.CLASS_SCOPE
 	       		? this.bound.resolveType((ClassScope)scope)
 	       		: this.bound.resolveType((BlockScope)scope, true /* check bounds*/);
-	       		        
+
 			if (boundType == null) {
 				return null;
-			}	    
+			}
 		}
 	    WildcardBinding wildcard = scope.environment().createWildcard(genericType, rank, boundType, null /*no extra bound*/, this.kind);
 	    return this.resolvedType = wildcard;
 	}
-	
+
 	public StringBuffer printExpression(int indent, StringBuffer output){
         switch (this.kind) {
-            case Wildcard.UNBOUND : 
+            case Wildcard.UNBOUND :
                 output.append(WILDCARD_NAME);
                 break;
             case Wildcard.EXTENDS :
@@ -81,10 +86,10 @@ public class Wildcard extends SingleTypeReference {
                 output.append(WILDCARD_NAME).append(WILDCARD_SUPER);
             	this.bound.printExpression(0, output);
             	break;
-        }        	    
+        }
 		return output;
-	}	
-	
+	}
+
 	// only invoked for improving resilience when unable to bind generic type from parameterized reference
 	public TypeBinding resolveType(BlockScope scope, boolean checkBounds) {
 		if (this.bound != null) {
@@ -102,7 +107,7 @@ public class Wildcard extends SingleTypeReference {
 	public TypeBinding resolveTypeArgument(BlockScope blockScope, ReferenceBinding genericType, int rank) {
 	    return internalResolveType(blockScope, genericType, rank);
 	}
-	
+
 	public TypeBinding resolveTypeArgument(ClassScope classScope, ReferenceBinding genericType, int rank) {
 	    return internalResolveType(classScope, genericType, rank);
 	}

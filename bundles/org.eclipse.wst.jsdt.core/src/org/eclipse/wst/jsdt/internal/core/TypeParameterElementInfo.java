@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.internal.core;
 
 public class TypeParameterElementInfo extends SourceRefElementInfo {
-	
+
 	/*
 	 * The start position of this type parameter's name in the its
 	 * openable's buffer.

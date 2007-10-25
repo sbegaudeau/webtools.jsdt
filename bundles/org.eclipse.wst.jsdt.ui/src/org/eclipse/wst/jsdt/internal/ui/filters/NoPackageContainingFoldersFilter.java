@@ -10,14 +10,11 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.filters;
 
-import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
-
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.JavaCore;

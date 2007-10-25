@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.core.jdom;
 
 import java.util.Enumeration;
 
-import org.eclipse.wst.jsdt.core.jdom.*;
+import org.eclipse.wst.jsdt.core.jdom.IDOMNode;
 
 /**
  * SiblingEnumeration provides an enumeration on a linked list
@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.core.jdom.*;
  *
  * @see java.util.Enumeration
  * @deprecated The JDOM was made obsolete by the addition in 2.0 of the more
- * powerful, fine-grained DOM/AST API found in the 
+ * powerful, fine-grained DOM/AST API found in the
  * org.eclipse.wst.jsdt.core.dom package.
  */
 /* package */ class SiblingEnumeration implements Enumeration {

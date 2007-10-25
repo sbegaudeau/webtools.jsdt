@@ -11,20 +11,17 @@
 package org.eclipse.wst.jsdt.internal.ui.navigator;
 
 import org.eclipse.jface.action.IMenuManager;
-
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
-
+import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.newsourcepage.GenerateBuildPathActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.CCPActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.GenerateActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.JavaSearchActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.OpenViewActionGroup;
-
-import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.newsourcepage.GenerateBuildPathActionGroup;
 
 /**
  * Contributes the following actions to the menu on behalf of the JDT content

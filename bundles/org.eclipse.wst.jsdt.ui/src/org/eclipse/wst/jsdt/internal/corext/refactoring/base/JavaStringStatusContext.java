@@ -11,10 +11,8 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.base;
 
 import org.eclipse.core.runtime.Assert;
-
-import org.eclipse.wst.jsdt.core.ISourceRange;
-
 import org.eclipse.ltk.core.refactoring.RefactoringStatusContext;
+import org.eclipse.wst.jsdt.core.ISourceRange;
 
 /**
  * A Java string context can be used to annotate a </code>RefactoringStatusEntry<code> 

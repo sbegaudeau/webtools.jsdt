@@ -12,23 +12,17 @@
 package org.eclipse.wst.jsdt.internal.ui.navigator;
 
 import org.eclipse.core.resources.IFile;
-
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.navigator.ILinkHelper;
-
 import org.eclipse.ui.ide.ResourceUtil;
-
+import org.eclipse.ui.navigator.ILinkHelper;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaCore;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
+import org.eclipse.wst.jsdt.ui.JavaUI;
 
 public class JavaFileLinkHelper implements ILinkHelper {
 

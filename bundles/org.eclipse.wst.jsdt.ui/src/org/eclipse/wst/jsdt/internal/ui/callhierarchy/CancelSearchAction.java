@@ -11,11 +11,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.callhierarchy;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
-import org.eclipse.jface.action.Action;
-
-import org.eclipse.ui.PlatformUI;
 
 /**
  * This class is copied from the org.eclipse.search2.internal.ui.CancelSearchAction class. 

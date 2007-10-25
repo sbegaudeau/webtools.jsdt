@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.corext.dom;
 import java.util.List;
 
 import org.eclipse.text.edits.TextEditGroup;
-
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
@@ -21,7 +20,6 @@ import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
-import org.eclipse.wst.jsdt.core.dom.IExtendedModifier;
 import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;

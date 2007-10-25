@@ -62,7 +62,7 @@ public CodeSnippetClassFile(
 	this.headerOffset += 2;
 	this.constantPool = new ConstantPool(this);
 	int accessFlags = aType.getAccessFlags();
-	
+
 	if (!aType.isInterface()) { // class or enum
 		accessFlags |= ClassFileConstants.AccSuper;
 	}
@@ -172,7 +172,7 @@ public static void createProblemType(TypeDeclaration typeDeclaration, Compilatio
 				MethodBinding method = methodDecl.binding;
 				if (method == null || method.isConstructor()) continue;
 				classFile.addAbstractMethod(methodDecl, method);
-			}		
+			}
 		} else {
 			for (int i = 0, length = methodDecls.length; i < length; i++) {
 				AbstractMethodDeclaration methodDecl = methodDecls[i];

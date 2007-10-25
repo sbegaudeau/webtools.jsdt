@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.internal.ui.text;
 
 
 import java.util.List;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.wst.jsdt.ui.text.IColorManager;
 

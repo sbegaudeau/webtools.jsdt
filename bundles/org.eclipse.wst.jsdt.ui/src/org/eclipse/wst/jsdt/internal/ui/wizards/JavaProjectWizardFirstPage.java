@@ -11,68 +11,42 @@
 package org.eclipse.wst.jsdt.internal.ui.wizards;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
-
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
-
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.util.Policy;
-import org.eclipse.jface.wizard.WizardPage;
-
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
-
-import org.eclipse.wst.jsdt.core.JavaCore;
-
-import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.launching.IVMInstall;
-import org.eclipse.wst.jsdt.launching.IVMInstall2;
-import org.eclipse.wst.jsdt.launching.IVMInstallType;
-import org.eclipse.wst.jsdt.launching.JavaRuntime;
-import org.eclipse.wst.jsdt.launching.VMStandin;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.preferences.CompliancePreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.NewJavaProjectPreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.PropertyAndPreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathSupport;
-import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ComboDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IStringButtonAdapter;
@@ -82,6 +56,9 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonDialogF
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringDialogField;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.JavaWorkingSetUpdater;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.WorkingSetConfigurationBlock;
+import org.eclipse.wst.jsdt.launching.JavaRuntime;
+import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**
  * The first page of the <code>SimpleProjectWizard</code>.

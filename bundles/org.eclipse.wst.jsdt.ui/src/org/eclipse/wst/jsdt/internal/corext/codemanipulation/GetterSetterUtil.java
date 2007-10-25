@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.corext.codemanipulation;
 
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -21,10 +20,8 @@ import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.NamingConventions;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
-
 import org.eclipse.wst.jsdt.ui.CodeGeneration;
 
 public class GetterSetterUtil {

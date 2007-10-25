@@ -16,22 +16,15 @@ import java.io.OutputStream;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.operation.IRunnableContext;
-
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptorProxy;
-
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
-
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.jarpackager.JarFileExportOperation;
 import org.eclipse.wst.jsdt.internal.ui.jarpackager.JarPackageReader;

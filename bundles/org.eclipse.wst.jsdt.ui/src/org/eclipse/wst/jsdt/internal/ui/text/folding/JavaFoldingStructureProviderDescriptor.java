@@ -13,8 +13,6 @@ package org.eclipse.wst.jsdt.internal.ui.text.folding;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-
-
 import org.eclipse.wst.jsdt.ui.text.folding.IJavaFoldingPreferenceBlock;
 import org.eclipse.wst.jsdt.ui.text.folding.IJavaFoldingStructureProvider;
 

@@ -15,7 +15,27 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuListener2;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.bindings.keys.IKeyLookup;
+import org.eclipse.jface.bindings.keys.KeyLookupFactory;
+import org.eclipse.jface.bindings.keys.KeyStroke;
+import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.text.ITextListener;
+import org.eclipse.jface.text.ITextViewerExtension5;
+import org.eclipse.jface.text.IViewportListener;
+import org.eclipse.jface.text.IWidgetTokenKeeper;
+import org.eclipse.jface.text.IWidgetTokenKeeperExtension;
+import org.eclipse.jface.text.IWidgetTokenOwner;
+import org.eclipse.jface.text.IWidgetTokenOwnerExtension;
+import org.eclipse.jface.text.TextEvent;
+import org.eclipse.jface.text.link.LinkedPosition;
+import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.util.Geometry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -49,30 +69,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tracker;
-
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuListener2;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.bindings.keys.IKeyLookup;
-import org.eclipse.jface.bindings.keys.KeyLookupFactory;
-import org.eclipse.jface.bindings.keys.KeyStroke;
-import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.util.Geometry;
-
-import org.eclipse.jface.text.ITextListener;
-import org.eclipse.jface.text.ITextViewerExtension5;
-import org.eclipse.jface.text.IViewportListener;
-import org.eclipse.jface.text.IWidgetTokenKeeper;
-import org.eclipse.jface.text.IWidgetTokenKeeperExtension;
-import org.eclipse.jface.text.IWidgetTokenOwner;
-import org.eclipse.jface.text.IWidgetTokenOwnerExtension;
-import org.eclipse.jface.text.TextEvent;
-import org.eclipse.jface.text.link.LinkedPosition;
-import org.eclipse.jface.text.source.ISourceViewer;
-
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
@@ -80,15 +76,12 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.progress.UIJob;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.wst.jsdt.internal.ui.preferences.JavaBasePreferencePage;
+import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
 
 public class RenameInformationPopup implements IWidgetTokenKeeper, IWidgetTokenKeeperExtension {
 	

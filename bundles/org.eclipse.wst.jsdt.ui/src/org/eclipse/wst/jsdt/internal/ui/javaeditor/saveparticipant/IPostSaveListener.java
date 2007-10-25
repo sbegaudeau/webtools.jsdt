@@ -12,9 +12,7 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor.saveparticipant;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
-
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitDocumentProvider;
 
 /**

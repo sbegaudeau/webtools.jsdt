@@ -13,36 +13,32 @@ package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 
-import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
-import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
-import org.eclipse.wst.jsdt.core.dom.AST;
-import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
-import org.eclipse.wst.jsdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
-import org.eclipse.wst.jsdt.internal.compiler.util.*;
-import org.eclipse.wst.jsdt.internal.core.JavaProject;
-import org.eclipse.wst.jsdt.internal.core.PackageFragment;
-import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
-import org.eclipse.wst.jsdt.internal.infer.InferredMethod;
+import org.eclipse.wst.jsdt.internal.compiler.util.CompoundNameVector;
+import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
+import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfType;
+import org.eclipse.wst.jsdt.internal.compiler.util.ObjectVector;
+import org.eclipse.wst.jsdt.internal.compiler.util.SimpleNameVector;
 import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 
 
 public class CompilationUnitScope extends BlockScope {
-	
+
 public LookupEnvironment environment;
 public CompilationUnitDeclaration referenceContext;
 public char[][] currentPackageName;
@@ -88,7 +84,7 @@ class DeclarationVisitor extends ASTVisitor
 		if (methodDeclaration.selector!=null)
 		{
 			MethodScope scope = new MethodScope(parentScope,methodDeclaration, false);
-			MethodBinding methodBinding = scope.createMethod(methodDeclaration,methodDeclaration.selector,(SourceTypeBinding)referenceContext.compilationUnitBinding,false,false);
+			MethodBinding methodBinding = scope.createMethod(methodDeclaration,methodDeclaration.selector,referenceContext.compilationUnitBinding,false,false);
 			if (methodBinding != null && methodBinding.selector!=null) // is null if binding could not be created
 				methods.add(methodBinding);
 			if (methodBinding.selector!=null)
@@ -97,7 +93,7 @@ class DeclarationVisitor extends ASTVisitor
 		}
 		return false;
 	}
-	
+
 }
 
 
@@ -108,12 +104,12 @@ public CompilationUnitScope(CompilationUnitDeclaration unit, LookupEnvironment e
 	this.environment = environment;
 	this.referenceContext = unit;
 	unit.scope = this;
-	
+
 	char [][]pkgName= unit.currentPackage == null ? unit.compilationResult.getPackageName() : unit.currentPackage.tokens;
-	
+
 	this.currentPackageName = pkgName == null ? CharOperation.NO_CHAR_CHAR : pkgName;
- 
-	
+
+
 	this.referencedTypes = new ObjectVector();
 	if (compilerOptions().produceReferenceInfo) {
 		this.qualifiedReferences = new CompoundNameVector();
@@ -125,14 +121,14 @@ public CompilationUnitScope(CompilationUnitDeclaration unit, LookupEnvironment e
 //		this.referencedTypes = null;
 		this.referencedSuperTypes = null;
 	}
-	
+
 }
 
 public MethodScope methodScope() {
 	if(superBinding!=null && methodScope==null) {
 		methodScope = new MethodScope(classScope,referenceContext(),false);
 	}
-	
+
 	return methodScope;
 }
 
@@ -150,12 +146,12 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 	boolean firstIsSynthetic = false;
 //	if (referenceContext.compilationResult.compilationUnit != null) {
 //		char[][] expectedPackageName = referenceContext.compilationResult.compilationUnit.getPackageName();
-//		if (expectedPackageName != null 
+//		if (expectedPackageName != null
 //				&& !CharOperation.equals(currentPackageName, expectedPackageName)) {
 //
 //			// only report if the unit isn't structurally empty
-//			if (referenceContext.currentPackage != null 
-//					|| referenceContext.types != null 
+//			if (referenceContext.currentPackage != null
+//					|| referenceContext.types != null
 //					|| referenceContext.imports != null) {
 //				problemReporter().packageIsNotExpectedPackage(referenceContext);
 //			}
@@ -172,7 +168,7 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 //			problemReporter().packageCollidesWithType(referenceContext);
 //			return;
 //		} else if (referenceContext.isPackageInfo()) {
-//			// resolve package annotations now if this is "package-info.js".				
+//			// resolve package annotations now if this is "package-info.js".
 //			if (referenceContext.types == null || referenceContext.types.length == 0) {
 //				referenceContext.types = new TypeDeclaration[1];
 //				TypeDeclaration declaration = new TypeDeclaration(referenceContext.compilationResult);
@@ -184,7 +180,7 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 //		}
 //		recordQualifiedReference(currentPackageName); // always dependent on your own package
 //	}
-	
+
 //	// Skip typeDeclarations which know of previously reported errors
 //	TypeDeclaration[] types = referenceContext.types;
 //	int typeLength = (types == null) ? 0 : types.length;
@@ -226,12 +222,12 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 //	// shrink topLevelTypes... only happens if an error was reported
 //	if (count != topLevelTypes.length)
 //		System.arraycopy(topLevelTypes, 0, topLevelTypes = new SourceTypeBinding[count], 0, count);
-//	
+//
 
-	
+
 	// Skip typeDeclarations which know of previously reported errors
 	int typeLength = referenceContext.numberInferredTypes;
-	
+
 	/* Include super type whild building */
 //	if(superTypeName!=null) {
 //		superType = environment.askForType(new char[][] {superTypeName});
@@ -241,16 +237,16 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 //			//((SourceTypeBinding)superType).classScope.connectTypeHierarchy();
 //			//FieldBinding[] fields = superType.fields();
 //			//addSubscope(((SourceTypeBinding)superType).classScope);
-//			
-//			
+//
+//
 //		//	this.parent = ((SourceTypeBinding)superType).classScope;
-//			
-//			
+//
+//
 //		}
-//	
-//		
+//
+//
 //	}
-	
+
 	/* may need to get the actual binding here */
 //	if(libSuperType!=null) {
 //		//ClasspathContainerInitializer cinit = libSuperType.getContainerInitializer();
@@ -261,17 +257,17 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 //			PackageBinding binding = environment.getPackage0(packageName.toCharArray());
 //			superBinding  = binding.getType(libSuperType.getSuperTypeName().toCharArray());
 //			if(superBinding!=null) break;
-//			
+//
 //		}
-//		
-//	}else 
-		
-	
+//
+//	}else
+
+
 	topLevelTypes = new SourceTypeBinding[typeLength];
-	
+
 	int count = 0;
-	
-	
+
+
 	nextType: for (int i = 0; i < typeLength; i++) {
 		InferredType typeDecl =  referenceContext.inferredTypes[i];
 		if (typeDecl.isDefinition) {
@@ -302,7 +298,7 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 						CombinedSourceTypeBinding combinedBinding=(CombinedSourceTypeBinding)existingBinding;
 						combinedBinding.addSourceType(type);
 					}
-					else 
+					else
 						existingBinding=new CombinedSourceTypeBinding(child,type,existingBinding);
 					environment.defaultPackage.addType(existingBinding);
 				}
@@ -311,21 +307,21 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 					environment.addUnitsContainingBinding(null, typeDecl.getName(), Binding.TYPE,fileName);
 				topLevelTypes[count++] = type;
 			}
-		}		
+		}
 	}
 
 	// shrink topLevelTypes... only happens if an error was reported
 	if (count != topLevelTypes.length)
 		System.arraycopy(topLevelTypes, 0, topLevelTypes = new SourceTypeBinding[count], 0, count);
-	
+
 
 	 buildSuperType();
-	
-	
+
+
 	char [] path=CharOperation.concatWith(this.currentPackageName, '/');
 	referenceContext.compilationUnitBinding=new CompilationUnitBinding(this,environment.defaultPackage,path, superBinding);
-	
-	
+
+
 	DeclarationVisitor visitor = new DeclarationVisitor();
 	this.referenceContext.traverse(visitor, this);
 	MethodBinding[] methods = (MethodBinding[])visitor.methods.toArray(new MethodBinding[visitor.methods.size()]);
@@ -333,7 +329,7 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 }
 
 public void buildSuperType() {
-	
+
 	char[] superTypeName = null;
 	LibrarySuperType libSuperType = null;
 	if(this.referenceContext.compilationResult!=null && this.referenceContext.compilationResult.compilationUnit!=null) {
@@ -346,56 +342,56 @@ public void buildSuperType() {
 	}
 	if (superTypeName==null)
 		return;
-	
+
 //	superBinding  =  environment.askForType(new char[][] {superTypeName});
 	superBinding  =  findType(superTypeName, environment.defaultPackage, environment.defaultPackage);
-	
+
 		if(superBinding==null || !superBinding.isValidBinding()) {
 			superTypeName = null;
 			return ;
 		}
-		
-	
+
+
 		/* If super type is combined source type, search through SourceTypes for the specific instance */
 		if(superBinding instanceof CombinedSourceTypeBinding) {
-			
+
 				CombinedSourceTypeBinding te = (CombinedSourceTypeBinding)superBinding;
 				classScope = te.classScope;
-				
+
 				SourceTypeBinding sourceType = null;
-				
+
 				if(superBinding instanceof SourceTypeBinding) {
 					sourceType = (SourceTypeBinding)superBinding;
 				}
 				classScope.buildInferredType(sourceType, environment.defaultPackage, null);
-				
-				
+
+
 				recordTypeReference(superBinding);
 				recordSuperTypeReference(superBinding);
-				environment().setAccessRestriction(superBinding, null);	
+				environment().setAccessRestriction(superBinding, null);
 		}else if(superBinding!=null) {
 			InferredType te = superBinding.getInferredType();
 			classScope = new ClassScope(this, te);
-			
+
 			SourceTypeBinding sourceType = null;
-			
+
 			if(superBinding instanceof SourceTypeBinding) {
 				sourceType = (SourceTypeBinding)superBinding;
 			}
 			classScope.buildInferredType(sourceType, environment.defaultPackage, null);
-			
-			
+
+
 			recordTypeReference(superBinding);
 			recordSuperTypeReference(superBinding);
-			environment().setAccessRestriction(superBinding, null);	
+			environment().setAccessRestriction(superBinding, null);
 		}
-		
-		
-		
-		
-		
-	
-	
+
+
+
+
+
+
+
 	if(superTypeName!=null && superTypeName.length==0) {
 		superTypeName=null;
 	}
@@ -422,7 +418,7 @@ public TypeVariableBinding[] createTypeVariables(TypeParameter[] typeParameters,
 				problemReporter().duplicateTypeParameterInType(typeParameter);
 		}
 		typeVariableBindings[count++] = parameterBinding;
-//			TODO should offer warnings to inform about hiding declaring, enclosing or member types				
+//			TODO should offer warnings to inform about hiding declaring, enclosing or member types
 //			ReferenceBinding type = sourceType;
 //			// check that the member does not conflict with an enclosing type
 //			do {
@@ -450,11 +446,11 @@ SourceTypeBinding buildType(InferredType inferredType, SourceTypeBinding enclosi
 	if (enclosingType == null) {
 		char[][] className = CharOperation.arrayConcat(packageBinding.compoundName, inferredType.getName());
 		inferredType.binding = new SourceTypeBinding(className, packageBinding, this);
-		
+
 		//@GINO: Anonymous set bits
 		if( inferredType.isAnonymous )
 			inferredType.binding.tagBits |= TagBits.AnonymousTypeMask;
-		
+
 	} else {
 //		char[][] className = CharOperation.deepCopy(enclosingType.compoundName);
 //		className[className.length - 1] =
@@ -463,7 +459,7 @@ SourceTypeBinding buildType(InferredType inferredType, SourceTypeBinding enclosi
 	}
 
 	SourceTypeBinding sourceType = inferredType.binding;
-	environment().setAccessRestriction(sourceType, accessRestriction);		
+	environment().setAccessRestriction(sourceType, accessRestriction);
 	sourceType.fPackage.addType(sourceType);
 	return sourceType;
 }
@@ -557,7 +553,7 @@ public char[] computeConstantPoolName(LocalTypeBinding localType) {
 		constantPoolNameUsage = new HashtableOfType();
 
 	ReferenceBinding outerMostEnclosingType = localType.scope.outerMostClassScope().enclosingSourceType();
-	
+
 	// ensure there is not already such a local type name defined by the user
 	int index = 0;
 	char[] candidateName;
@@ -609,7 +605,7 @@ public char[] computeConstantPoolName(LocalTypeBinding localType) {
 					'$',
 					localType.sourceName);
 			}
-		}						
+		}
 		if (constantPoolNameUsage.get(candidateName) != null) {
 			index ++;
 		} else {
@@ -622,12 +618,12 @@ public char[] computeConstantPoolName(LocalTypeBinding localType) {
 
 void connectTypeHierarchy() {
 
-	
+
 	//	if(superType!=null) {
 //			if(superType instanceof SourceTypeBinding) {
 //				((SourceTypeBinding)superType).classScope.buildFieldsAndMethods();
 //				((SourceTypeBinding)superType).classScope.connectTypeHierarchy();
-//				
+//
 //			}
 //			ReferenceBinding[] memberTypes = superType.memberTypes();
 //			ReferenceBinding[] memberFields = superType.typeVariables();
@@ -636,7 +632,7 @@ void connectTypeHierarchy() {
 //				recordReference(memberTypes[i], memberTypes[i].sourceName);
 //			}
 //		}
-	
+
 //	if(superTypeName!=null) {
 //		ReferenceBinding binding = environment.askForType(new char[][] {superTypeName});
 //		this.recordSuperTypeReference(binding);
@@ -646,7 +642,7 @@ void connectTypeHierarchy() {
 			InferredType inferredType = referenceContext.inferredTypes[i];
 			if (inferredType.binding!=null)
  			  inferredType.binding.classScope.connectTypeHierarchy();
-			
+
 		}
 }
 void faultInImports() {
@@ -918,7 +914,7 @@ MethodBinding findStaticMethod(ReferenceBinding currentType, char[] selector) {
 ImportBinding[] getDefaultImports() {
 	// initialize the default imports if necessary... share the default java.lang.* import
 	if (environment.defaultImports != null) return environment.defaultImports;
- 
+
 	Binding importBinding = environment.defaultPackage;
 //	if (importBinding != null)
 //		importBinding = ((PackageBinding) importBinding).getTypeOrPackage(JAVA_LANG[1]);
@@ -1155,6 +1151,6 @@ public void cleanup()
 }
 
 public void addExternalVar(LocalVariableBinding binding) {
-  externalCompilationUnits.add(binding.declaringScope.compilationUnitScope());	
+  externalCompilationUnits.add(binding.declaringScope.compilationUnitScope());
 }
 }

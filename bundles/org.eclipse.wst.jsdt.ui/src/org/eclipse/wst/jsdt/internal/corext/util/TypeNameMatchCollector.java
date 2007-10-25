@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.corext.util;
 import java.util.Collection;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatchRequestor;
 

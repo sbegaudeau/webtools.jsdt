@@ -36,7 +36,7 @@ public class CompletionOnParameterizedQualifiedTypeReference extends Parameteriz
 	public static final int K_CLASS = 1;
 	public static final int K_INTERFACE = 2;
 	public static final int K_EXCEPTION = 3;
-	
+
 	private int kind = K_TYPE;
 	public char[] completionIdentifier;
 	/**
@@ -47,7 +47,7 @@ public class CompletionOnParameterizedQualifiedTypeReference extends Parameteriz
 	public CompletionOnParameterizedQualifiedTypeReference(char[][] tokens,	TypeReference[][] typeArguments, char[] completionIdentifier, long[] positions) {
 		this(tokens, typeArguments, completionIdentifier, positions, K_TYPE);
 	}
-	
+
 	/**
 	 * @param tokens
 	 * @param typeArguments
@@ -59,24 +59,24 @@ public class CompletionOnParameterizedQualifiedTypeReference extends Parameteriz
 		this.completionIdentifier = completionIdentifier;
 		this.kind = kind;
 	}
-	
+
 	public boolean isClass(){
 		return this.kind == K_CLASS;
 	}
-	
+
 	public boolean isInterface(){
 		return this.kind == K_INTERFACE;
 	}
-	
+
 	public boolean isException(){
 		return this.kind == K_EXCEPTION;
 	}
-	
+
 	public TypeBinding resolveType(BlockScope scope, boolean checkBounds) {
 		super.resolveType(scope, checkBounds);
 		throw new CompletionNodeFound(this, this.resolvedType, scope);
 	}
-	
+
 	public TypeBinding resolveType(ClassScope scope) {
 		super.resolveType(scope);
 		throw new CompletionNodeFound(this, this.resolvedType, scope);
@@ -127,7 +127,7 @@ public class CompletionOnParameterizedQualifiedTypeReference extends Parameteriz
 			typeArgument[max].print(0, output);
 			output.append('>');
 		}
-		output.append('.').append(completionIdentifier).append('>'); 
+		output.append('.').append(completionIdentifier).append('>');
 		return output;
-	}	
+	}
 }

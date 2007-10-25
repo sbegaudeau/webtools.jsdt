@@ -77,29 +77,29 @@ class ASTRecoveryPropagator extends DefaultASTVisitor {
 
 	private CategorizedProblem[] problems;
 	private boolean[] usedOrIrrelevantProblems;
-	
+
 	private RecoveryScannerData data;
 	private int blockDepth = 0;
 	private int lastEnd;
-	
+
 	private int[] insertedTokensKind;
 	private int[] insertedTokensPosition;
 	private boolean[] insertedTokensFlagged;
-	
+
 	private boolean[] removedTokensFlagged;
 	private boolean[] replacedTokensFlagged;
-	
+
 	private Vector stack = new Vector();
-	
+
 	ASTRecoveryPropagator(CategorizedProblem[] problems, RecoveryScannerData data) {
 		// visit Javadoc.tags() as well
 		this.problems = problems;
 		this.usedOrIrrelevantProblems = new boolean[problems.length];
-		
+
 		this.data = data;
-		
+
 		if(this.data != null) {
-			
+
 			int length = 0;
 			for (int i = 0; i < data.insertedTokensPtr + 1; i++) {
 				length += data.insertedTokens[i].length;
@@ -115,7 +115,7 @@ class ASTRecoveryPropagator extends DefaultASTVisitor {
 					tokenCount++;
 				}
 			}
-			
+
 			if(data.removedTokensPtr != -1) {
 				this.removedTokensFlagged = new boolean[data.removedTokensPtr + 1];
 			}
@@ -133,23 +133,23 @@ class ASTRecoveryPropagator extends DefaultASTVisitor {
 		super.endVisit(node);
 	}
 
-	
+
 
 	public boolean visit(Block node) {
 		boolean visitChildren = super.visit(node);
 		this.blockDepth++;
 		return visitChildren;
 	}
-	
+
 	protected boolean visitNode(ASTNode node) {
 		if(this.blockDepth > 0) {
 			if (node instanceof InferredType)
 				return true;
 			int start = node.getStartPosition();
 			int end = start + node.getLength() - 1;
-			
+
 			// continue to visit the node only if it contains tokens modifications
-			
+
 			if(this.insertedTokensFlagged != null) {
 				for (int i = 0; i < this.insertedTokensFlagged.length; i++) {
 					if(this.insertedTokensPosition[i] >= start &&
@@ -158,7 +158,7 @@ class ASTRecoveryPropagator extends DefaultASTVisitor {
 					}
 				}
 			}
-			
+
 			if(this.removedTokensFlagged != null) {
 				for (int i = 0; i <= this.data.removedTokensPtr; i++) {
 					if(this.data.removedTokensStart[i] >= start &&
@@ -167,7 +167,7 @@ class ASTRecoveryPropagator extends DefaultASTVisitor {
 					}
 				}
 			}
-			
+
 			if(this.replacedTokensFlagged != null) {
 				for (int i = 0; i <= this.data.replacedTokensPtr; i++) {
 					if(this.data.replacedTokensStart[i] >= start &&
@@ -176,7 +176,7 @@ class ASTRecoveryPropagator extends DefaultASTVisitor {
 					}
 				}
 			}
-			
+
 			return false;
 		}
 		return true;
@@ -185,15 +185,15 @@ class ASTRecoveryPropagator extends DefaultASTVisitor {
 	protected void endVisitNode(ASTNode node) {
 		int start = node.getStartPosition();
 		int end = start + node.getLength() - 1;
-		
+
 		// is inside diet part of the ast
 		if(this.blockDepth < 1) {
 			if(this.markIncludedProblems(start, end)) {
 				node.setFlags(node.getFlags() | ASTNode.RECOVERED);
 			}
-		} else {			
+		} else {
 			this.markIncludedProblems(start, end);
-			
+
 			if(this.insertedTokensFlagged != null) {
 				if(this.lastEnd != end) {
 					flagNodeWithInsertedTokens();
@@ -211,7 +211,7 @@ class ASTRecoveryPropagator extends DefaultASTVisitor {
 					}
 				}
 			}
-			
+
 			if(this.replacedTokensFlagged != null) {
 				for (int i = 0; i <= this.data.replacedTokensPtr; i++) {
 					if(!this.replacedTokensFlagged[i] &&
@@ -225,7 +225,7 @@ class ASTRecoveryPropagator extends DefaultASTVisitor {
 		}
 		this.lastEnd = end;
 	}
-	
+
 	private void flagNodeWithInsertedTokens() {
 		if(this.insertedTokensKind != null && this.insertedTokensKind.length > 0) {
 			int s = this.stack.size();
@@ -238,13 +238,13 @@ class ASTRecoveryPropagator extends DefaultASTVisitor {
 			this.stack = new Vector();
 		}
 	}
-	
+
 	private boolean flagNodesWithInsertedTokensAtEnd(ASTNode node) {
 		int[] expectedEndingToken = this.endingTokens.get(node.getClass());
 		if (expectedEndingToken != null) {
 			int start = node.getStartPosition();
 			int end = start + node.getLength() - 1;
-			
+
 			boolean flagParent = false;
 			done : for (int i = this.insertedTokensKind.length - 1; i > -1 ; i--) {
 				if(!this.insertedTokensFlagged[i] &&
@@ -259,7 +259,7 @@ class ASTRecoveryPropagator extends DefaultASTVisitor {
 					flagParent = true;
 				}
 			}
-			
+
 			if(flagParent) {
 				ASTNode parent = node.getParent();
 				while (parent != null) {
@@ -274,7 +274,7 @@ class ASTRecoveryPropagator extends DefaultASTVisitor {
 		}
 		return true;
 	}
-	
+
 	private boolean flagNodesWithInsertedTokensInside(ASTNode node) {
 		int start = node.getStartPosition();
 		int end = start + node.getLength() - 1;
@@ -288,14 +288,14 @@ class ASTRecoveryPropagator extends DefaultASTVisitor {
 		}
 		return true;
 	}
-	
+
 	private boolean markIncludedProblems(int start, int end) {
 		boolean foundProblems = false;
 		next: for (int i = 0, max = this.problems.length; i < max; i++) {
 			CategorizedProblem problem = this.problems[i];
-			
+
 			if(this.usedOrIrrelevantProblems[i]) continue next;
-			
+
 			switch(problem.getID()) {
 				case IProblem.ParsingErrorOnKeywordNoSuggestion :
 				case IProblem.ParsingErrorOnKeyword :
@@ -330,9 +330,9 @@ class ASTRecoveryPropagator extends DefaultASTVisitor {
 				default:
 					this.usedOrIrrelevantProblems[i] = true;
 					continue next;
-					
+
 			}
-			
+
 			int problemStart = problem.getSourceStart();
 			int problemEnd = problem.getSourceEnd();
 			if ((start <= problemStart) && (problemStart <= end) ||
@@ -346,7 +346,7 @@ class ASTRecoveryPropagator extends DefaultASTVisitor {
 
 	public void endVisit(ExpressionStatement node) {
 		endVisitNode(node);
-		if ((node.getFlags() & ASTNode.RECOVERED) == 0) return; 
+		if ((node.getFlags() & ASTNode.RECOVERED) == 0) return;
 		Expression expression = node.getExpression();
 		if (expression.getNodeType() == ASTNode.ASSIGNMENT) {
 			Assignment assignment = (Assignment) expression;
@@ -363,7 +363,7 @@ class ASTRecoveryPropagator extends DefaultASTVisitor {
 			}
 		}
 	}
-	
+
 	public void endVisit(VariableDeclarationStatement node) {
 		endVisitNode(node);
 		List fragments = node.fragments();
@@ -377,7 +377,7 @@ class ASTRecoveryPropagator extends DefaultASTVisitor {
 				if (CharOperation.equals(RecoveryScanner.FAKE_IDENTIFIER, simpleName.getIdentifier().toCharArray())) {
 					fragment.setInitializer(null);
 					fragment.setFlags(node.getFlags() | ASTNode.RECOVERED);
-				}			
+				}
 			}
 		}
 	}

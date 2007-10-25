@@ -18,7 +18,6 @@
 package org.eclipse.wst.jsdt.core;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -39,18 +38,18 @@ import org.eclipse.wst.jsdt.internal.core.JavaModelStatus;
  * <p>
  * Multiple classpath containers can be registered, each of them declares
  * the container ID they can handle, so as to narrow the set of containers they
- * can resolve, in other words, a container initializer is guaranteed to only be 
+ * can resolve, in other words, a container initializer is guaranteed to only be
  * activated to resolve containers which match the ID they registered onto.
  * <p>
  * In case multiple container initializers collide on the same container ID, the first
  * registered one will be invoked.
- * 
+ *
  * @see IClasspathEntry
  * @see IClasspathContainer
  * @since 2.0
  */
 public abstract class ClasspathContainerInitializer implements IClasspathContainerInitialzer,  IClasspathContainer {
-	
+
 	/**
 	 * Status code indicating that an attribute is not supported.
 	 *
@@ -83,7 +82,7 @@ public abstract class ClasspathContainerInitializer implements IClasspathContain
 	public void initialize(IPath containerPath, IJavaProject project) throws CoreException {
 		JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { project }, new IClasspathContainer[] { getContainer(containerPath, project) }, null);
 	}
-	
+
 	protected IClasspathContainer getContainer(IPath containerPath, IJavaProject project) {
 		return this;
 	}
@@ -106,34 +105,34 @@ public abstract class ClasspathContainerInitializer implements IClasspathContain
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.IClasspathContainerInitialzer#getDescription(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
-	 */    
+	 */
     public String getDescription(IPath containerPath, IJavaProject project) {
-    	
+
     	// By default, a container path is the only available description
     	return containerPath.makeRelative().toString();
     }
-    
+
     /* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.IClasspathContainerInitialzer#getFailureContainer(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
 	 */
     public IClasspathContainer getFailureContainer(final IPath containerPath, IJavaProject project) {
     	final String description = getDescription(containerPath, project);
-    	return 
+    	return
     		new IClasspathContainer() {
-				public IClasspathEntry[] getClasspathEntries() { 
-					return new IClasspathEntry[0]; 
+				public IClasspathEntry[] getClasspathEntries() {
+					return new IClasspathEntry[0];
 				}
-				public String getDescription() { 
+				public String getDescription() {
 					return description;
 				}
-				public int getKind() { 
-					return 0; 
+				public int getKind() {
+					return 0;
 				}
-				public IPath getPath() { 
-					return containerPath; 
+				public IPath getPath() {
+					return containerPath;
 				}
-				public String toString() { 
-					return getDescription(); 
+				public String toString() {
+					return getDescription();
 				}
 				public String[] resolvedLibraryImport(String a) {
 					return new String[] {a};
@@ -154,29 +153,29 @@ public abstract class ClasspathContainerInitializer implements IClasspathContain
 			return containerPath.segment(0);
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.IClasspathContainerInitialzer#getHostPath(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
 	 */
 	public URI getHostPath(IPath path, IJavaProject project) {
 		return null;
 	}
-	
-	public boolean allowAttachJsDoc() { return true; };
+
+	public boolean allowAttachJsDoc() { return true; }
 	/*
 	 * returns a String of all SuperTypes provided by this library.
 	 */
-	public String[] containerSuperTypes() {return new String[0];};
-	
+	public String[] containerSuperTypes() {return new String[0];}
+
 	/* Return a string of imports to replace the real imports for.  necisary for toolkits and other t
-	 * things that may have a certain import best for runtime but not best for building a model 
-	 * 
+	 * things that may have a certain import best for runtime but not best for building a model
+	 *
 	 */
 	public String[] resolvedLibraryImport(String realImport) {
 		return new String[] {realImport};
 	}
-	
-	
+
+
 	public IClasspathEntry[] getClasspathEntries() {
 		LibraryLocation libLocation =  getLibraryLocation();
 		char[][] filesInLibs = libLocation.getLibraryFileNames();
@@ -188,17 +187,17 @@ public abstract class ClasspathContainerInitializer implements IClasspathContain
 		return entries;
 	}
 
-	public String getDescription() {		
+	public String getDescription() {
 		return null;
 	}
 
 	public int getKind() {
-		
+
 		return K_APPLICATION;
 	}
 
 	public IPath getPath() {
-		
+
 		return null;
 	}
 	/**

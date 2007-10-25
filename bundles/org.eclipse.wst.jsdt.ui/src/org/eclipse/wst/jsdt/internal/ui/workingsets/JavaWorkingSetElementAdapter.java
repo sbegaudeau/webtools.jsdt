@@ -13,15 +13,12 @@ package org.eclipse.wst.jsdt.internal.ui.workingsets;
 
 import java.util.ArrayList;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetElementAdapter;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaCore;
 

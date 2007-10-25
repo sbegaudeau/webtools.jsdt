@@ -10,18 +10,16 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields;
 
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-
-import org.eclipse.swt.layout.GridData;
-
-import org.eclipse.jface.resource.JFaceResources;
 
 /**
  * Dialog field containing a label, text control, status label and a button control.

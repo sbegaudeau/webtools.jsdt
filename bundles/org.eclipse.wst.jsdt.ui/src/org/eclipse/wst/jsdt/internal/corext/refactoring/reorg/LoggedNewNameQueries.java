@@ -11,9 +11,7 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.reorg;
 
 import org.eclipse.core.resources.IResource;
-
 import org.eclipse.ltk.core.refactoring.participants.ReorgExecutionLog;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;

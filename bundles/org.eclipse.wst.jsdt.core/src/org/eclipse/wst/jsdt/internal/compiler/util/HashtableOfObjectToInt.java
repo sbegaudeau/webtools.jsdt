@@ -14,7 +14,7 @@ package org.eclipse.wst.jsdt.internal.compiler.util;
  * Hashtable of {Object --> int }
  */
 public final class HashtableOfObjectToInt implements Cloneable {
-	
+
 	// to avoid using Enumerations, walk the individual tables skipping nulls
 	public Object[] keyTable;
 	public int[] valueTable;
@@ -143,7 +143,7 @@ public final class HashtableOfObjectToInt implements Cloneable {
 	public int size() {
 		return elementSize;
 	}
-	
+
 	public String toString() {
 		String s = ""; //$NON-NLS-1$
 		Object key;

@@ -17,17 +17,13 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardDialog;
-
-import org.eclipse.jface.text.IDocument;
-
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
@@ -40,18 +36,11 @@ import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
-import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
-import org.eclipse.wst.jsdt.ui.wizards.NewTypeWizardPage;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
@@ -61,6 +50,10 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.NewClassCreationWizard;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewElementWizard;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewEnumCreationWizard;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewInterfaceCreationWizard;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
+import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
+import org.eclipse.wst.jsdt.ui.wizards.NewTypeWizardPage;
 
 /**
  * This proposal is listed in the corrections list for a "type not found" problem.

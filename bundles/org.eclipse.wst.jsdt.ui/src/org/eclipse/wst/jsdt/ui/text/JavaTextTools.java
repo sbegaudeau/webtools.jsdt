@@ -11,18 +11,15 @@
 package org.eclipse.wst.jsdt.ui.text;
 
 import org.eclipse.core.runtime.Preferences;
-
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
-
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
-
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.wst.jsdt.internal.ui.text.FastJavaPartitionScanner;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaColorManager;
 import org.eclipse.wst.jsdt.internal.ui.text.JavaCommentScanner;

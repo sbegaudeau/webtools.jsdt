@@ -11,19 +11,15 @@
 
 package org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.IContentType;
-
-import org.eclipse.core.resources.IFile;
-
 import org.eclipse.jface.text.IDocument;
-
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.ForwardingDocumentProvider;
 import org.eclipse.ui.editors.text.TextFileDocumentProvider;
-
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 
 

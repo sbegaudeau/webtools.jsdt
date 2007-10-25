@@ -10,22 +10,17 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.model;
 
-import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.core.resources.IFolder;
-
-import org.eclipse.swt.graphics.Image;
-
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptorProxy;
 import org.eclipse.ltk.core.refactoring.history.RefactoringHistory;
 import org.eclipse.ltk.ui.refactoring.history.RefactoringHistoryControlConfiguration;
 import org.eclipse.ltk.ui.refactoring.history.RefactoringHistoryLabelProvider;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 /**
  * Label provider for Java models.

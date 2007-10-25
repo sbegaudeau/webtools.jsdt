@@ -32,13 +32,13 @@ public class ThrownExceptionFinder extends ASTVisitor {
 
 	private SimpleSet thrownExceptions;
 	private Stack exceptionsStack;
-	
+
 	public ReferenceBinding[] find(TryStatement tryStatement, BlockScope scope) {
 		this.thrownExceptions = new SimpleSet();
 		this.exceptionsStack = new Stack();
 		tryStatement.traverse(this, scope);
 		removeCaughtExceptions(tryStatement);
-		
+
 		ReferenceBinding[] result = new ReferenceBinding[this.thrownExceptions.elementSize];
 		this.thrownExceptions.asArray(result);
 		return result;
@@ -49,27 +49,27 @@ public class ThrownExceptionFinder extends ASTVisitor {
 			this.thrownExceptions.add(binding);
 		}
 	}
-	
+
 	public void endVisit(MessageSend messageSend, BlockScope scope) {
 		if (messageSend.binding != null) {
 			this.endVisitMethodInvocation(messageSend.binding);
 		}
 		super.endVisit(messageSend, scope);
 	}
-	
+
 	public void endVisit(AllocationExpression allocationExpression, BlockScope scope) {
 		if (allocationExpression.binding != null) {
 			this.endVisitMethodInvocation(allocationExpression.binding);
 		}
 		super.endVisit(allocationExpression, scope);
 	}
-	
+
 	public void endVisit(ThrowStatement throwStatement, BlockScope scope) {
 		this.acceptException((ReferenceBinding)throwStatement.exception.resolvedType);
 		super.endVisit(throwStatement, scope);
 	}
-	
-	
+
+
 	private void endVisitMethodInvocation(MethodBinding methodBinding) {
 		ReferenceBinding[] thrownExceptionBindings = methodBinding.thrownExceptions;
 		int length = thrownExceptionBindings == null ? 0 : thrownExceptionBindings.length;
@@ -77,19 +77,19 @@ public class ThrownExceptionFinder extends ASTVisitor {
 			this.acceptException(thrownExceptionBindings[i]);
 		}
 	}
-	
+
 	public boolean visit(TypeDeclaration typeDeclaration, CompilationUnitScope scope) {
 		return this.visitType(typeDeclaration);
 	}
-	
+
 	public boolean visit(TypeDeclaration memberTypeDeclaration, ClassScope scope) {
 		return this.visitType(memberTypeDeclaration);
 	}
-	
+
 	public boolean visit(TypeDeclaration localTypeDeclaration, BlockScope scope) {
 		return this.visitType(localTypeDeclaration);
 	}
-	
+
 	private boolean visitType(TypeDeclaration typeDeclaration) {
 		return false;
 	}
@@ -99,18 +99,18 @@ public class ThrownExceptionFinder extends ASTVisitor {
 		SimpleSet exceptionSet = new SimpleSet();
 		this.thrownExceptions = exceptionSet;
 		tryStatement.tryBlock.traverse(this, scope);
-		
+
 		this.removeCaughtExceptions(tryStatement);
 
 		this.thrownExceptions = (SimpleSet)this.exceptionsStack.pop();
-		
+
 		Object[] values = exceptionSet.values;
 		for (int i = 0; i < values.length; i++) {
 			if (values[i] != null) {
 				this.thrownExceptions.add(values[i]);
 			}
 		}
-		
+
 		Block[] catchBlocks = tryStatement.catchBlocks;
 		int length = catchBlocks == null ? 0 : catchBlocks.length;
 		for (int i = 0; i < length; i++) {
@@ -118,7 +118,7 @@ public class ThrownExceptionFinder extends ASTVisitor {
 		}
 		return false;
 	}
-	
+
 	private void removeCaughtExceptions(TryStatement tryStatement) {
 		Argument[] catchArguments = tryStatement.catchArguments;
 		int length = catchArguments == null ? 0 : catchArguments.length;
@@ -126,7 +126,7 @@ public class ThrownExceptionFinder extends ASTVisitor {
 			TypeBinding exception = catchArguments[i].type.resolvedType;
 			if (exception != null && exception.isValidBinding()) {
 				this.removeCaughtException((ReferenceBinding)exception);
-				
+
 			}
 		}
 	}

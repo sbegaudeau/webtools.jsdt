@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
  * <p>
  * This class is intended to be instantiated and subclassed by clients.
  * </p>
- * 
+ *
  * @since 3.0
  */
 public class MethodReferenceMatch extends SearchMatch {
@@ -29,7 +29,7 @@ public class MethodReferenceMatch extends SearchMatch {
 
 	/**
 	 * Creates a new method reference match.
-	 * 
+	 *
 	 * @param enclosingElement the inner-most enclosing member that references this method
 	 * @param accuracy one of {@link #A_ACCURATE} or {@link #A_INACCURATE}
 	 * @param offset the offset the match starts at, or -1 if unknown
@@ -46,7 +46,7 @@ public class MethodReferenceMatch extends SearchMatch {
 
 	/**
 	 * Creates a new method reference match.
-	 * 
+	 *
 	 * @param enclosingElement the inner-most enclosing member that references this method
 	 * @param accuracy one of {@link #A_ACCURATE} or {@link #A_INACCURATE}
 	 * @param offset the offset the match starts at, or -1 if unknown
@@ -69,7 +69,7 @@ public class MethodReferenceMatch extends SearchMatch {
 
 	/**
 	 * Creates a new method reference match.
-	 * 
+	 *
 	 * @param enclosingElement the inner-most enclosing member that references this method
 	 * @param accuracy one of {@link #A_ACCURATE} or {@link #A_INACCURATE}
 	 * @param offset the offset the match starts at, or -1 if unknown
@@ -100,12 +100,12 @@ public class MethodReferenceMatch extends SearchMatch {
 	public final boolean isConstructor() {
 		return this.constructor;
 	}
-	
+
 	/**
 	 * Returns whether the reference is on a synthetic element.
 	 * Note that this field is only used for constructor reference. This happens when default constructor
 	 * declaration is used or implicit super constructor is called.
-	 * 
+	 *
 	 * @return whether the reference is synthetic or not.
 	 * @since 3.1
 	 */
@@ -118,7 +118,7 @@ public class MethodReferenceMatch extends SearchMatch {
 	 * which is a super type of the searched method declaring type.
 	 * If <code>true</code>, the method called at run-time may or may not be
 	 * the search target, depending on the run-time type of the receiver object.
-	 * 
+	 *
 	 * @return <code>true</code> if the reference is on a message sent from
 	 * a super-type of the searched method declaring class, <code>false </code> otherwise
 	 */

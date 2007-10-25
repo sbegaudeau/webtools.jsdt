@@ -11,22 +11,17 @@
 
 package org.eclipse.wst.jsdt.internal.ui.packageview;
 
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.ResourceMappingContext;
 import org.eclipse.core.resources.mapping.ResourceTraversal;
-
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.IDecorationContext;
-
 import org.eclipse.team.ui.mapping.SynchronizationStateTester;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JavaElementResourceMapping;
 
 public class HierarchicalDecorationContext implements IDecorationContext {

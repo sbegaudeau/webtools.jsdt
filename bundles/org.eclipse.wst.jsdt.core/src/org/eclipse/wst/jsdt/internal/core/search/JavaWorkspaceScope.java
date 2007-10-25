@@ -15,11 +15,11 @@ import java.util.HashSet;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.JavaProject;
-import org.eclipse.wst.jsdt.core.IJavaProject;
 
 /**
  * A Java-specific scope for searching the entire workspace.
@@ -68,7 +68,7 @@ public boolean equals(Object o) {
   return o instanceof JavaWorkspaceScope;
 }
 public AccessRuleSet getAccessRuleSet(String relativePath, String containerPath) {
-	if (this.pathRestrictions == null) 
+	if (this.pathRestrictions == null)
 		return null;
 	return super.getAccessRuleSet(relativePath, containerPath);
 }

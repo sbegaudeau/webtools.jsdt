@@ -12,9 +12,8 @@ package org.eclipse.wst.jsdt.internal.core.builder;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.CoreException;
-
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.LibrarySuperType;
@@ -49,7 +48,7 @@ public boolean equals(Object o) {
 
 	SourceFile f = (SourceFile) o;
 	return this.sourceLocation == f.sourceLocation && this.resource.getFullPath().equals(f.resource.getFullPath());
-} 
+}
 
 String extractTypeName() {
 	// answer a String with the qualified type name for the source file in the form: 'p1/p2/A'
@@ -79,7 +78,7 @@ String extractTypeName() {
 
 public char[] getContents() {
 
-	try {	
+	try {
 		return Util.getResourceContentsAsCharArray(this.resource);
 	} catch (CoreException e) {
 		throw new AbortCompilation(true, new MissingSourceFileException(this.resource.getFullPath().toString()));

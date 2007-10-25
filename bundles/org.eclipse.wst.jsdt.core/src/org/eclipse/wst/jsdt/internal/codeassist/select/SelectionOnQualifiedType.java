@@ -12,6 +12,6 @@ public class SelectionOnQualifiedType extends SelectionOnQualifiedNameReference 
 			if (i > 0) output.append('.');
 			output.append(tokens[i]);
 		}
-		return output.append('>'); 
+		return output.append('>');
 	}
 }

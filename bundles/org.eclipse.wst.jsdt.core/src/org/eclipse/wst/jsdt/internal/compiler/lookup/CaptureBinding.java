@@ -15,15 +15,15 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 
 public class CaptureBinding extends TypeVariableBinding {
-	
+
 	public TypeBinding lowerBound;
 	public WildcardBinding wildcard;
 	public int captureID;
-	
+
 	/* information to compute unique binding key */
 	public ReferenceBinding sourceType;
 	public int position;
-	
+
 	public CaptureBinding(WildcardBinding wildcard, ReferenceBinding sourceType, int position, int captureID) {
 		super(TypeConstants.WILDCARD_CAPTURE_NAME_PREFIX, null, 0);
 		this.wildcard = wildcard;
@@ -53,7 +53,7 @@ public class CaptureBinding extends TypeVariableBinding {
 		char[] uniqueKey = new char[length];
 		buffer.getChars(0, length, uniqueKey, 0);
 		return uniqueKey;
-	}	
+	}
 
 	public String debugName() {
 
@@ -68,7 +68,7 @@ public class CaptureBinding extends TypeVariableBinding {
 		}
 		return super.debugName();
 	}
-	
+
 	public char[] genericTypeSignature() {
 		if (this.genericTypeSignature == null) {
 			this.genericTypeSignature = CharOperation.concat(TypeConstants.WILDCARD_CAPTURE, this.wildcard.genericTypeSignature());
@@ -86,8 +86,8 @@ public class CaptureBinding extends TypeVariableBinding {
 		ReferenceBinding substitutedVariableSuperclass = (ReferenceBinding) Scope.substitute(capturedParameterizedType, originalVariableSuperclass);
 		// prevent cyclic capture: given X<T>, capture(X<? extends T> could yield a circular type
 		if (substitutedVariableSuperclass == this) substitutedVariableSuperclass = originalVariableSuperclass;
-		
-		ReferenceBinding[] originalVariableInterfaces = wildcardVariable.superInterfaces();		
+
+		ReferenceBinding[] originalVariableInterfaces = wildcardVariable.superInterfaces();
 		ReferenceBinding[] substitutedVariableInterfaces = Scope.substitute(capturedParameterizedType, originalVariableInterfaces);
 		if (substitutedVariableInterfaces != originalVariableInterfaces) {
 			// prevent cyclic capture: given X<T>, capture(X<? extends T> could yield a circular type
@@ -97,7 +97,7 @@ public class CaptureBinding extends TypeVariableBinding {
 		}
 		// no substitution for wildcard bound (only formal bounds from type variables are to be substituted: 104082)
 		TypeBinding originalWildcardBound = wildcard.bound;
-		
+
 		switch (wildcard.boundKind) {
 			case Wildcard.EXTENDS :
 				// still need to capture bound supertype as well so as not to expose wildcards to the outside (111208)
@@ -137,16 +137,16 @@ public class CaptureBinding extends TypeVariableBinding {
 				if ((originalWildcardBound.tagBits & TagBits.HasTypeVariable) == 0)
 					this.tagBits &= ~TagBits.HasTypeVariable;
 				break;
-		}		
+		}
 	}
-	
+
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding#isCapture()
 	 */
 	public boolean isCapture() {
 		return true;
 	}
-	
+
 	/**
 	 * @see TypeBinding#isEquivalentTo(TypeBinding)
 	 */
@@ -178,7 +178,7 @@ public class CaptureBinding extends TypeVariableBinding {
 		}
 		return super.readableName();
 	}
-	
+
 	public char[] shortReadableName() {
 		if (this.wildcard != null) {
 			StringBuffer buffer = new StringBuffer(10);
@@ -192,9 +192,9 @@ public class CaptureBinding extends TypeVariableBinding {
 			buffer.getChars(0, length, name, 0);
 			return name;
 		}
-		return super.shortReadableName();		
+		return super.shortReadableName();
 	}
-	
+
 	public String toString() {
 		if (this.wildcard != null) {
 			StringBuffer buffer = new StringBuffer(10);
@@ -206,5 +206,5 @@ public class CaptureBinding extends TypeVariableBinding {
 			return buffer.toString();
 		}
 		return super.toString();
-	}		
+	}
 }

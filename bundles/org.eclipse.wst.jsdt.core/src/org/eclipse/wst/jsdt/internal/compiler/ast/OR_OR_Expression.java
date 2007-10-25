@@ -11,10 +11,12 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.impl.*;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
 //dedicated treatment for the ||
 public class OR_OR_Expression extends BinaryExpression {
@@ -47,7 +49,7 @@ public class OR_OR_Expression extends BinaryExpression {
 		}
 
 		FlowInfo leftInfo = left.analyseCode(currentScope, flowContext, flowInfo);
-	
+
 		 // need to be careful of scenario:
 		//		(x || y) || !z, if passing the left info to the right, it would be swapped by the !
 		FlowInfo rightInfo = leftInfo.initsWhenFalse().unconditionalCopy();
@@ -56,7 +58,7 @@ public class OR_OR_Expression extends BinaryExpression {
 
 		int previousMode = rightInfo.reachMode();
 		if (isLeftOptimizedTrue){
-			rightInfo.setReachMode(FlowInfo.UNREACHABLE); 
+			rightInfo.setReachMode(FlowInfo.UNREACHABLE);
 		}
 		rightInfo = right.analyseCode(currentScope, flowContext, rightInfo);
 		FlowInfo mergedInfo = FlowInfo.conditional(
@@ -94,13 +96,13 @@ public class OR_OR_Expression extends BinaryExpression {
 			}
 			if (mergedInitStateIndex != -1) {
 				codeStream.removeNotDefinitelyAssignedVariables(currentScope, mergedInitStateIndex);
-			}			
+			}
 			codeStream.generateImplicitConversion(implicitConversion);
 			codeStream.updateLastRecordedEndPC(currentScope, codeStream.position);
 			codeStream.recordPositionsFrom(pc, this.sourceStart);
 			return;
 		}
-		
+
 		BranchLabel trueLabel = new BranchLabel(codeStream), endLabel;
 		cst = left.optimizedBooleanConstant();
 		boolean leftIsConst = cst != Constant.NotAConstant;
@@ -117,8 +119,8 @@ public class OR_OR_Expression extends BinaryExpression {
 					break generateOperands; // no need to generate right operand
 				}
 			} else {
-				left.generateOptimizedBoolean(currentScope, codeStream, trueLabel, null, true); 
-				// need value, e.g. if (a == 1 || ((b = 2) > 0)) {} -> shouldn't initialize 'b' if a==1 
+				left.generateOptimizedBoolean(currentScope, codeStream, trueLabel, null, true);
+				// need value, e.g. if (a == 1 || ((b = 2) > 0)) {} -> shouldn't initialize 'b' if a==1
 			}
 			if (rightInitStateIndex != -1) {
 				codeStream.addDefinitelyAssignedVariables(currentScope, rightInitStateIndex);
@@ -189,11 +191,11 @@ public class OR_OR_Expression extends BinaryExpression {
 			this.left.generateOptimizedBoolean(currentScope, codeStream, trueLabel, falseLabel, valueRequired);
 			if (mergedInitStateIndex != -1) {
 				codeStream.removeNotDefinitelyAssignedVariables(currentScope, mergedInitStateIndex);
-			}			
+			}
 			codeStream.recordPositionsFrom(pc, this.sourceStart);
 			return;
 		}
-	
+
 		cst = left.optimizedBooleanConstant();
 		boolean leftIsConst = cst != Constant.NotAConstant;
 		boolean leftIsTrue = leftIsConst && cst.booleanValue() == true;
@@ -207,7 +209,7 @@ public class OR_OR_Expression extends BinaryExpression {
 			if (falseLabel == null) {
 				if (trueLabel != null) {
 					// implicit falling through the FALSE case
-					left.generateOptimizedBoolean(currentScope, codeStream, trueLabel, null, !leftIsConst); 
+					left.generateOptimizedBoolean(currentScope, codeStream, trueLabel, null, !leftIsConst);
 					// need value, e.g. if (a == 1 || ((b = 2) > 0)) {} -> shouldn't initialize 'b' if a==1
 					if (leftIsConst && leftIsTrue) {
 						codeStream.goto_(trueLabel);
@@ -228,7 +230,7 @@ public class OR_OR_Expression extends BinaryExpression {
 				// implicit falling through the TRUE case
 				if (trueLabel == null) {
 					BranchLabel internalTrueLabel = new BranchLabel(codeStream);
-					left.generateOptimizedBoolean(currentScope, codeStream, internalTrueLabel, null, !leftIsConst); 
+					left.generateOptimizedBoolean(currentScope, codeStream, internalTrueLabel, null, !leftIsConst);
 					// need value, e.g. if (a == 1 || ((b = 2) > 0)) {} -> shouldn't initialize 'b' if a==1
 					if (leftIsConst && leftIsTrue) {
 						internalTrueLabel.place();
@@ -255,7 +257,7 @@ public class OR_OR_Expression extends BinaryExpression {
 			codeStream.removeNotDefinitelyAssignedVariables(currentScope, mergedInitStateIndex);
 		}
 	}
-	
+
 	public boolean isCompactableOperation() {
 		return false;
 	}

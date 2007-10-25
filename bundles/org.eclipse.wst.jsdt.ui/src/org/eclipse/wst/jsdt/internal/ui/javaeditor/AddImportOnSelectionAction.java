@@ -12,47 +12,35 @@
 package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
 
-import com.ibm.icu.text.Collator;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.Comparator;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-
-import org.eclipse.core.resources.ResourcesPlugin;
-
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IStatusLineManager;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.window.Window;
-
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IEditingSupport;
 import org.eclipse.jface.text.IEditingSupportRegistry;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.source.ISourceViewer;
-
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.window.Window;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.dialogs.FilteredList;
 import org.eclipse.ui.progress.IProgressService;
 import org.eclipse.ui.texteditor.IUpdate;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.AddImportsOperation;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.AddImportsOperation.IChooseImportQuery;
 import org.eclipse.wst.jsdt.internal.corext.util.History;
 import org.eclipse.wst.jsdt.internal.corext.util.QualifiedTypeNameHistory;
-
-import org.eclipse.wst.jsdt.ui.IWorkingCopyManager;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionUtil;
@@ -60,6 +48,9 @@ import org.eclipse.wst.jsdt.internal.ui.actions.WorkbenchRunnableAdapter;
 import org.eclipse.wst.jsdt.internal.ui.util.ElementValidator;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.TypeNameMatchLabelProvider;
+import org.eclipse.wst.jsdt.ui.IWorkingCopyManager;
+
+import com.ibm.icu.text.Collator;
 
 
 public class AddImportOnSelectionAction extends Action implements IUpdate {

@@ -12,9 +12,11 @@ package org.eclipse.wst.jsdt.internal.core.builder;
 
 import java.io.IOException;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileReader;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFormatException;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
@@ -90,7 +92,7 @@ public boolean equals(Object o) {
 		if (this.accessRuleSet == null || !this.accessRuleSet.equals(dir.accessRuleSet))
 			return false;
 	return this.binaryFolder.equals(dir.binaryFolder);
-} 
+}
 
 public NameEnvironmentAnswer findClass(String binaryFileName, String qualifiedPackageName, String qualifiedBinaryFileName) {
 	if (!doesFileExist(binaryFileName, qualifiedPackageName, qualifiedBinaryFileName)) return null; // most common case

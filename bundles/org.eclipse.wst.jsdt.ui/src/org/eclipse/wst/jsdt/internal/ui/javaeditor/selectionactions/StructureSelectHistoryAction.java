@@ -11,14 +11,10 @@
 package org.eclipse.wst.jsdt.internal.ui.javaeditor.selectionactions;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.action.Action;
-
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IUpdate;
-
 import org.eclipse.wst.jsdt.core.ISourceRange;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 

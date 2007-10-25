@@ -10,22 +10,37 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.builder;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import java.io.File;
+import java.util.ArrayList;
 
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.wst.jsdt.core.IClasspathAttribute;
+import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.internal.compiler.env.*;
+import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
+import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
+import org.eclipse.wst.jsdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
-import org.eclipse.wst.jsdt.internal.core.*;
-
-import java.io.*;
-import java.util.*;
+import org.eclipse.wst.jsdt.internal.core.ClasspathEntry;
+import org.eclipse.wst.jsdt.internal.core.CompilationUnit;
+import org.eclipse.wst.jsdt.internal.core.JavaModel;
+import org.eclipse.wst.jsdt.internal.core.JavaProject;
+import org.eclipse.wst.jsdt.internal.core.SearchableEnvironment;
 
 public class NameEnvironment implements INameEnvironment, SuffixConstants {
 
@@ -110,17 +125,17 @@ private void computeClasspathLocations(
 		if (target == null) continue nextEntry;
 
 		IClasspathAttribute[] attribs = entry.getExtraAttributes();
-		
+
 		for(int k=0;attribs!=null && k<attribs.length;k++) {
 			if(attribs[k].getName().equalsIgnoreCase("validate") && attribs[k].getValue().equalsIgnoreCase("false")) continue nextEntry;
 		}
-		
+
 		switch(entry.getEntryKind()) {
 			case IClasspathEntry.CPE_SOURCE :
 				if (!(target instanceof IContainer)) continue nextEntry;
-				
-				IPath outputPath = entry.getOutputLocation() != null 
-					? entry.getOutputLocation() 
+
+				IPath outputPath = entry.getOutputLocation() != null
+					? entry.getOutputLocation()
 					: javaProject.getOutputLocation();
 				IContainer outputFolder;
 				if (outputPath.segmentCount() == 1) {
@@ -147,8 +162,8 @@ private void computeClasspathLocations(
 					if (prereqEntry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
 						Object prereqTarget = JavaModel.getTarget(root, prereqEntry.getPath(), true);
 						if (!(prereqTarget instanceof IContainer)) continue nextPrereqEntry;
-						IPath prereqOutputPath = prereqEntry.getOutputLocation() != null 
-							? prereqEntry.getOutputLocation() 
+						IPath prereqOutputPath = prereqEntry.getOutputLocation() != null
+							? prereqEntry.getOutputLocation()
 							: prereqJavaProject.getOutputLocation();
 						IContainer binaryFolder = prereqOutputPath.segmentCount() == 1
 							? (IContainer) prereqProject
@@ -181,14 +196,14 @@ private void computeClasspathLocations(
 					if (resource instanceof IFile) {
 						if (!(org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(path.lastSegment())))
 							continue nextEntry;
-						AccessRuleSet accessRuleSet = 
+						AccessRuleSet accessRuleSet =
 							(JavaCore.IGNORE.equals(javaProject.getOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
 							&& JavaCore.IGNORE.equals(javaProject.getOption(JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE, true)))
 								? null
 								: entry.getAccessRuleSet();
 						bLocation = ClasspathLocation.forLibrary((IFile) resource, accessRuleSet);
 					} else if (resource instanceof IContainer) {
-						AccessRuleSet accessRuleSet = 
+						AccessRuleSet accessRuleSet =
 							(JavaCore.IGNORE.equals(javaProject.getOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
 							&& JavaCore.IGNORE.equals(javaProject.getOption(JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE, true)))
 								? null
@@ -211,7 +226,7 @@ private void computeClasspathLocations(
 				} else if (target instanceof File) {
 					if (!(org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(path.lastSegment())))
 						continue nextEntry;
-					AccessRuleSet accessRuleSet = 
+					AccessRuleSet accessRuleSet =
 						(JavaCore.IGNORE.equals(javaProject.getOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
 							&& JavaCore.IGNORE.equals(javaProject.getOption(JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE, true)))
 								? null
@@ -364,7 +379,7 @@ private NameEnvironmentAnswer  convertToSourceFile(NameEnvironmentAnswer answer)
 	else if (answer.getCompilationUnits()!=null)
 	{
 		org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit[] compilationUnits = answer.getCompilationUnits();
-		org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit[] newcompilationUnits = 
+		org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit[] newcompilationUnits =
 			new org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit[compilationUnits.length];
 		boolean newAnswer=false;
 		for (int i = 0; i < compilationUnits.length; i++) {

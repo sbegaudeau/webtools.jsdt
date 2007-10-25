@@ -19,25 +19,13 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
-//import org.eclipse.wst.common.componentcore.ComponentCore;
-//import org.eclipse.wst.common.componentcore.internal.util.IModuleConstants;
-//import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
-//import org.eclipse.wst.common.project.facet.core.IFacetedProject;
-//import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
-//import org.eclipse.wst.javascript.core.internal.JavaScriptCorePlugin;
-//import org.eclipse.wst.javascript.core.internal.contenttype.ContentTypeIdForJavaScript;
-//import org.eclipse.wst.javascript.core.internal.preferences.JavaScriptCorePreferenceNames;
-//import org.eclipse.wst.javascript.ui.internal.editor.JavaScriptUIMessages;
-//import org.eclipse.wst.javascript.ui.internal.editor.Logger;
 
 class NewJSFileWizardPage extends WizardNewFileCreationPage {
 	

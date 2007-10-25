@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.launching;
 
 
 import java.net.URL;
-import com.ibm.icu.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +23,8 @@ import org.eclipse.wst.jsdt.core.IClasspathAttribute;
 import org.eclipse.wst.jsdt.core.IClasspathContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.JavaCore;
+
+import com.ibm.icu.text.MessageFormat;
 
 /** 
  * JRE Container - resolves a classpath container variable to a JRE

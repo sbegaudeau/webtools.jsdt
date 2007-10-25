@@ -11,16 +11,22 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 
 public class Argument extends LocalDeclaration {
-	
+
 	// prefix for setter method (to recognize special hiding argument)
 	private final static char[] SET = "set".toCharArray(); //$NON-NLS-1$
-	
+
 	public Argument(char[] name, long posNom, TypeReference tr, int modifiers) {
 
 		super(name, (int) (posNom >>> 32), (int) posNom);
@@ -61,7 +67,7 @@ public class Argument extends LocalDeclaration {
 		}
 		scope.addLocalVariable(	this.binding );
 		if (JavaCore.IS_EMCASCRIPT4)
-			resolveAnnotations(scope, this.annotations, this.binding);		
+			resolveAnnotations(scope, this.annotations, this.binding);
 		//true stand for argument instead of just local
 		this.binding.declaration = this;
 		this.binding.useFlag = used ? LocalVariableBinding.USED : LocalVariableBinding.UNUSED;
@@ -77,17 +83,17 @@ public class Argument extends LocalDeclaration {
 	public boolean isVarArgs() {
 		return this.type != null &&  (this.type.bits & IsVarArgs) != 0;
 	}
-		
+
 	public StringBuffer print(int indent, StringBuffer output) {
 
 		printIndent(indent, output);
 		printModifiers(this.modifiers, output);
 //		if (this.annotations != null) printAnnotations(this.annotations, output);
-		
+
 //		if (type == null) {
 //			output.append("<no type> "); //$NON-NLS-1$
 //		} else {
-//			type.print(0, output).append(' '); 
+//			type.print(0, output).append(' ');
 //		}
 		return output.append(this.name);
 	}
@@ -95,7 +101,7 @@ public class Argument extends LocalDeclaration {
 	public StringBuffer printStatement(int indent, StringBuffer output) {
 
 		return print(indent, output).append(';');
-	}	
+	}
 
 	public TypeBinding resolveForCatch(BlockScope scope) {
 
@@ -103,7 +109,7 @@ public class Argument extends LocalDeclaration {
 		// provide the scope with a side effect : insertion of a LOCAL
 		// that represents the argument. The type must be from JavaThrowable
 
-		TypeBinding exceptionType = this.type!=null ? 
+		TypeBinding exceptionType = this.type!=null ?
 			this.type.resolveType(scope, true /* check bounds*/) : TypeBinding.UNKNOWN;
 		if (exceptionType == null) return null;
 		boolean hasError = false;
@@ -127,7 +133,7 @@ public class Argument extends LocalDeclaration {
 			hasError = true;
 			// fall thru to create the variable - avoids additional errors because the variable is missing
 		}
-		
+
 		Binding existingVariable = scope.getBinding(name, Binding.VARIABLE, this, false /*do not resolve hidden field*/);
 		if (existingVariable != null && existingVariable.isValidBinding()){
 			if (existingVariable instanceof LocalVariableBinding && this.hiddenVariableDepth == 0) {
@@ -139,7 +145,7 @@ public class Argument extends LocalDeclaration {
 
 		this.binding = new LocalVariableBinding(this, exceptionType, modifiers, false); // argument decl, but local var  (where isArgument = false)
 		resolveAnnotations(scope, this.annotations, this.binding);
-		
+
 		scope.addLocalVariable(binding);
 		binding.setConstant(Constant.NotAConstant);
 		if (hasError) return null;
@@ -147,7 +153,7 @@ public class Argument extends LocalDeclaration {
 	}
 
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
-		
+
 		if (visitor.visit(this, scope)) {
 			if (this.annotations != null) {
 				int annotationsLength = this.annotations.length;
@@ -160,7 +166,7 @@ public class Argument extends LocalDeclaration {
 		visitor.endVisit(this, scope);
 	}
 	public void traverse(ASTVisitor visitor, ClassScope scope) {
-		
+
 		if (visitor.visit(this, scope)) {
 			if (this.annotations != null) {
 				int annotationsLength = this.annotations.length;

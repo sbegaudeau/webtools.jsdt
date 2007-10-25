@@ -15,7 +15,6 @@ import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 
 
@@ -28,9 +27,9 @@ public class LibraryFragmentRoot extends PackageFragmentRoot implements IVirtual
 		super(null, project);
 		this.libraryPath = jarPath;
 	}
-	
+
 	/**
-	 * Constructs a package fragment root which is the root of the Java package directory hierarchy 
+	 * Constructs a package fragment root which is the root of the Java package directory hierarchy
 	 * based on a JAR file.
 	 */
 	protected LibraryFragmentRoot(IResource resource, JavaProject project) {
@@ -42,7 +41,7 @@ public class LibraryFragmentRoot extends PackageFragmentRoot implements IVirtual
 		return new LibraryPackageFragment(this, pkgName);
 	}
 
-	
+
 	public IPath getPath() {
 		if (isExternal()) {
 			return this.libraryPath;
@@ -50,7 +49,7 @@ public class LibraryFragmentRoot extends PackageFragmentRoot implements IVirtual
 			return super.getPath();
 		}
 	}
-	
+
 	public IResource getUnderlyingResource() throws JavaModelException {
 		if (isExternal()) {
 			if (!exists()) throw newNotPresentException();
@@ -70,28 +69,28 @@ public class LibraryFragmentRoot extends PackageFragmentRoot implements IVirtual
 			return null;
 		}
 	}
-	
+
 	protected boolean computeChildren(OpenableElementInfo info, Map newElements) throws JavaModelException {
 
 		String name[]={""};//libraryPath.lastSegment()};
 		LibraryPackageFragment packFrag=  new LibraryPackageFragment(this, name);
 		LibraryPackageFragmentInfo fragInfo= new LibraryPackageFragmentInfo();
-	
+
  		packFrag.computeChildren(fragInfo);
 
-		
+
 		newElements.put(packFrag, fragInfo);
-		
+
 		IJavaElement[] children= new IJavaElement[]{packFrag};
 		info.setChildren(children);
 		return true;
 	}
-	
+
 	protected Object createElementInfo() {
 		return new LibraryFragmentRootInfo();
 	}
- 
-	
+
+
 	protected int determineKind(IResource underlyingResource) {
 		return IPackageFragmentRoot.K_BINARY;
 	}
@@ -108,12 +107,12 @@ public class LibraryFragmentRoot extends PackageFragmentRoot implements IVirtual
 		//return "";
 		return this.libraryPath.lastSegment();
 	}
-	
-	
+
+
 	public int hashCode() {
 		return this.libraryPath.hashCode();
 	}
-	
+
 	public boolean isExternal() {
 		return getResource() == null;
 	}
@@ -129,9 +128,9 @@ public class LibraryFragmentRoot extends PackageFragmentRoot implements IVirtual
  */
 protected boolean resourceExists() {
 	if (this.isExternal()) {
-		return 
+		return
 			JavaModel.getTarget(
-				ResourcesPlugin.getWorkspace().getRoot(), 
+				ResourcesPlugin.getWorkspace().getRoot(),
 				this.getPath(), // don't make the path relative as this is an external archive
 				true) != null;
 	} else {
@@ -171,23 +170,23 @@ private ClassFile getLibraryClassFile(){
 	 * @see org.eclipse.wst.jsdt.internal.core.JavaElement#getDisplayName()
 	 */
 	public String getDisplayName() {
-		
+
 		ClasspathContainerInitializer containerInitializer = getContainerInitializer();
 		if(containerInitializer!=null) return containerInitializer.getDescription(getPath(), getJavaProject());
 		return super.getDisplayName();
-		
+
 	}
-	
+
 	public ClasspathContainerInitializer getContainerInitializer() {
 		IClasspathEntry fClassPathEntry=null;
 
 		try {
 			fClassPathEntry =  getRawClasspathEntry();
 		} catch (JavaModelException ex) {}
-		
+
 		if(fClassPathEntry==null) return null;
-		
-		
+
+
 		return  JavaCore.getClasspathContainerInitializer(fClassPathEntry.getPath().segment(0));
 
 	}
@@ -203,7 +202,7 @@ private ClassFile getLibraryClassFile(){
 		if(fLangeRuntime[0]) {
 			return fLangeRuntime[1];
 		}
-		
+
 		ClasspathContainerInitializer init = getContainerInitializer();
 		if(init==null) {
 			fLangeRuntime[0]=true;
@@ -218,4 +217,4 @@ private ClassFile getLibraryClassFile(){
 	public boolean isLibrary() {
 		return true;
 	}
-} 
+}

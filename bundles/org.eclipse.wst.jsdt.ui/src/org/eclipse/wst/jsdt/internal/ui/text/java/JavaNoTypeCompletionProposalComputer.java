@@ -11,15 +11,12 @@
 package org.eclipse.wst.jsdt.internal.ui.text.java;
 
 import org.eclipse.jface.text.IDocument;
-
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-
+import org.eclipse.wst.jsdt.internal.ui.text.JavaHeuristicScanner;
+import org.eclipse.wst.jsdt.internal.ui.text.Symbols;
 import org.eclipse.wst.jsdt.ui.text.java.CompletionProposalCollector;
 import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
 import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
-
-import org.eclipse.wst.jsdt.internal.ui.text.JavaHeuristicScanner;
-import org.eclipse.wst.jsdt.internal.ui.text.Symbols;
 
 /**
  * 

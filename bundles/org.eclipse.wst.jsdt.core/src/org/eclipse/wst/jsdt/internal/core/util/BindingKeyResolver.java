@@ -48,13 +48,13 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.WildcardBinding;
 public class BindingKeyResolver extends BindingKeyParser {
 	Compiler compiler;
 	Binding compilerBinding;
-	
+
 	char[][] compoundName;
 	int dimension;
 	LookupEnvironment environment;
 	ReferenceBinding genericType;
 	MethodBinding methodBinding;
-	
+
 	char[] secondarySimpleName;
 	CompilationUnitDeclaration parsedUnit;
 	BlockScope scope;
@@ -62,11 +62,11 @@ public class BindingKeyResolver extends BindingKeyParser {
 	TypeDeclaration typeDeclaration;
 	ArrayList types = new ArrayList();
 	int rank = 0;
-	
+
 	int wildcardRank;
-	
+
 	CompilationUnitDeclaration outerMostParsedUnit;
-	
+
 	private BindingKeyResolver(BindingKeyParser parser, Compiler compiler, LookupEnvironment environment, int wildcardRank, CompilationUnitDeclaration outerMostParsedUnit) {
 		super(parser);
 		this.compiler = compiler;
@@ -74,7 +74,7 @@ public class BindingKeyResolver extends BindingKeyParser {
 		this.wildcardRank = wildcardRank;
 		this.outerMostParsedUnit = outerMostParsedUnit;
 	}
-	
+
 	public BindingKeyResolver(String key) {
 		this(key, null, null);
 	}
@@ -84,7 +84,7 @@ public class BindingKeyResolver extends BindingKeyParser {
 		this.compiler = compiler;
 		this.environment = environment;
 	}
-	
+
 	/*
 	 * If not already cached, computes and cache the compound name (pkg name + top level name) of this key.
 	 * Returns the package name if key is a pkg key.
@@ -94,11 +94,11 @@ public class BindingKeyResolver extends BindingKeyParser {
 	public char[][] compoundName() {
 		return this.compoundName;
 	}
-	 
+
 	public void consumeArrayDimension(char[] brakets) {
 		this.dimension = brakets.length;
 	}
-	
+
 	public void consumeBaseType(char[] baseTypeSig) {
 		this.compoundName = new char[][] {getKey().toCharArray()};
 		TypeBinding baseTypeBinding = getBaseTypeBinding(baseTypeSig);
@@ -106,7 +106,7 @@ public class BindingKeyResolver extends BindingKeyParser {
 			this.typeBinding = baseTypeBinding;
 		}
 	}
-	
+
 	public void consumeCapture(final int position) {
 		CompilationUnitDeclaration outerParsedUnit = this.outerMostParsedUnit == null ? this.parsedUnit : this.outerMostParsedUnit;
 		if (outerParsedUnit == null) return;
@@ -142,7 +142,7 @@ public class BindingKeyResolver extends BindingKeyParser {
 				return false;
 			}
 			public boolean visit(SingleNameReference singleNameReference, BlockScope blockScope) {
-				if (checkType(singleNameReference.resolvedType)) 
+				if (checkType(singleNameReference.resolvedType))
 					return false;
 				return super.visit(singleNameReference, blockScope);
 			}
@@ -186,7 +186,7 @@ public class BindingKeyResolver extends BindingKeyParser {
 		outerParsedUnit.traverse(captureFinder, outerParsedUnit.scope);
 		this.typeBinding = captureFinder.capture;
 	}
-	
+
 	public void consumeException() {
 		this.types = new ArrayList();
 	}
@@ -213,7 +213,7 @@ public class BindingKeyResolver extends BindingKeyParser {
 	 		this.methodBinding = this.environment.createParameterizedGenericMethod(this.methodBinding, arguments);
 		this.compilerBinding = this.methodBinding;
 	}
-	
+
 	public void consumeLocalType(char[] uniqueKey) {
  		LocalTypeBinding[] localTypeBindings  = this.parsedUnit.localTypes;
  		for (int i = 0; i < this.parsedUnit.localTypeCount; i++)
@@ -254,7 +254,7 @@ public class BindingKeyResolver extends BindingKeyParser {
 			}
 		}
 	}
-	
+
 	public void consumeMemberType(char[] simpleTypeName) {
 		this.typeBinding = getTypeBinding(simpleTypeName);
 	}
@@ -263,7 +263,7 @@ public class BindingKeyResolver extends BindingKeyParser {
 		this.compoundName = CharOperation.splitOn('/', pkgName);
 		this.compilerBinding = new PackageBinding(this.compoundName, null, this.environment);
 	}
-	
+
 	public void consumeParameterizedType(char[] simpleTypeName, boolean isRaw) {
 		TypeBinding[] arguments = getTypeBindingArguments();
 		if (simpleTypeName != null) {
@@ -287,14 +287,14 @@ public class BindingKeyResolver extends BindingKeyParser {
 			this.typeBinding = this.environment.createParameterizedType(this.genericType, arguments, enclosing);
 		}
 	}
-	
+
 
 	public void consumeParser(BindingKeyParser parser) {
 		this.types.add(parser);
 		if (((BindingKeyResolver) parser).compilerBinding instanceof WildcardBinding)
 			this.rank++;
 	}
-	
+
 	public void consumeScope(int scopeNumber) {
 		if (this.scope == null) {
 			this.scope = this.methodBinding.sourceMethod().scope;
@@ -303,7 +303,7 @@ public class BindingKeyResolver extends BindingKeyParser {
 			return; // malformed key
 		this.scope = (BlockScope) this.scope.subscopes[scopeNumber];
 	}
-	
+
 	public void consumeRawType() {
 		if (this.typeBinding == null) return;
 		this.typeBinding = this.environment.convertToRawType(this.typeBinding);
@@ -311,11 +311,11 @@ public class BindingKeyResolver extends BindingKeyParser {
 	public void consumeSecondaryType(char[] simpleTypeName) {
 		this.secondarySimpleName = simpleTypeName;
 	}
-	
+
 	public void consumeFullyQualifiedName(char[] fullyQualifiedName) {
 		this.compoundName = CharOperation.splitOn('/', fullyQualifiedName);
 	}
-	
+
 	public void consumeTopLevelType() {
 		this.parsedUnit = getCompilationUnitDeclaration();
 		if (this.parsedUnit != null && this.compiler != null) {
@@ -328,14 +328,14 @@ public class BindingKeyResolver extends BindingKeyParser {
 			this.typeBinding = getTypeBinding(typeName);
 		}
 	}
-	
+
 	public void consumeKey() {
 		if (this.typeBinding != null) {
 			this.typeBinding = getArrayBinding(this.dimension, this.typeBinding);
 			this.compilerBinding = this.typeBinding;
 		}
 	}
-	
+
 	public void consumeTypeVariable(char[] position, char[] typeVariableName) {
 		if (position.length > 0) {
 			int pos = Integer.parseInt(new String(position));
@@ -353,12 +353,12 @@ public class BindingKeyResolver extends BindingKeyParser {
 			}
 		}
 	}
-	
+
 	public void consumeTypeWithCapture() {
 		BindingKeyResolver resolver = (BindingKeyResolver) this.types.get(0);
 		this.typeBinding =(TypeBinding) resolver.compilerBinding;
 	}
-	
+
 	public void consumeWildCard(int kind) {
 		switch (kind) {
 			case Wildcard.EXTENDS:
@@ -371,7 +371,7 @@ public class BindingKeyResolver extends BindingKeyParser {
 				break;
 		}
 	}
-	
+
 	/*
 	 * If the given dimension is greater than 0 returns an array binding for the given type binding.
 	 * Otherwise return the given type binding.
@@ -382,7 +382,7 @@ public class BindingKeyResolver extends BindingKeyParser {
 		if (dim == 0) return binding;
 		return this.environment.createArrayType(binding, dim);
 	}
-	
+
 	private TypeBinding getBaseTypeBinding(char[] signature) {
 		switch (signature[0]) {
 			case 'I' :
@@ -409,7 +409,7 @@ public class BindingKeyResolver extends BindingKeyParser {
 				return null;
 		}
 	}
-	 
+
 	/*
 	 * Returns a binary binding corresonding to this key's compound name.
 	 * Returns null if not found.
@@ -418,7 +418,7 @@ public class BindingKeyResolver extends BindingKeyParser {
 		if (this.compoundName.length == 0) return null;
 		return this.environment.getType(this.compoundName);
 	}
-	 
+
 	/*
 	 * Finds the compilation unit declaration corresponding to the key in the given lookup environment.
 	 * Returns null if no compilation unit declaration could be found.
@@ -430,7 +430,7 @@ public class BindingKeyResolver extends BindingKeyParser {
 		if (this.environment == null) return null;
 		ReferenceBinding binding = this.environment.getType(name);
 		if (!(binding instanceof SourceTypeBinding)) {
-			if (this.secondarySimpleName == null) 
+			if (this.secondarySimpleName == null)
 				return null;
 			// case of a secondary type with no primary type (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=177115)
 			int length = name.length;
@@ -441,11 +441,11 @@ public class BindingKeyResolver extends BindingKeyParser {
 				return null;
 		}
 		SourceTypeBinding sourceTypeBinding = (SourceTypeBinding) binding;
-		if (sourceTypeBinding.scope == null) 
+		if (sourceTypeBinding.scope == null)
 			return null;
 		return sourceTypeBinding.scope.compilationUnitScope().referenceContext;
 	}
-	 
+
 	/*
 	 * Returns the compiler binding corresponding to this key.
 	 * Returns null is malformed.
@@ -460,14 +460,14 @@ public class BindingKeyResolver extends BindingKeyParser {
 			return null;
 		}
 	}
-	
+
 	private TypeBinding getTypeBinding(char[] simpleTypeName) {
 		if (this.typeBinding instanceof BinaryTypeBinding) {
 			return ((BinaryTypeBinding) this.typeBinding).getMemberType(simpleTypeName);
 		} else {
-			TypeDeclaration[] typeDeclarations = 
-				this.typeDeclaration == null ? 
-					(this.parsedUnit == null ? null : this.parsedUnit.types) : 
+			TypeDeclaration[] typeDeclarations =
+				this.typeDeclaration == null ?
+					(this.parsedUnit == null ? null : this.parsedUnit.types) :
 					this.typeDeclaration.memberTypes;
 			if (typeDeclarations == null) return null;
 			for (int i = 0, length = typeDeclarations.length; i < length; i++) {
@@ -480,7 +480,7 @@ public class BindingKeyResolver extends BindingKeyParser {
 		}
 		return null;
 	}
-	
+
 	private TypeBinding[] getTypeBindingArguments() {
 		int size = this.types.size();
 		TypeBinding[] arguments = new TypeBinding[size];
@@ -495,15 +495,15 @@ public class BindingKeyResolver extends BindingKeyParser {
 		this.types = new ArrayList();
 		return arguments;
 	}
-	 
+
 	public void malformedKey() {
 		this.compoundName = CharOperation.NO_CHAR_CHAR;
 	}
-	
+
 	public BindingKeyParser newParser() {
 		return new BindingKeyResolver(this, this.compiler, this.environment, this.rank, this.outerMostParsedUnit == null ? this.parsedUnit : this.outerMostParsedUnit);
 	}
-	 
+
 	public String toString() {
 		return getKey();
 	}

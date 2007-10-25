@@ -14,17 +14,14 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
-
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.part.Page;
-
-import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageExplorerPart;
+import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 
 /**
  * Action group that adds the show actions to a context menu and

@@ -14,12 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-
-import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.Expression;
-
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
+import org.eclipse.wst.jsdt.core.dom.ASTNode;
+import org.eclipse.wst.jsdt.core.dom.Expression;
 
 
 /**

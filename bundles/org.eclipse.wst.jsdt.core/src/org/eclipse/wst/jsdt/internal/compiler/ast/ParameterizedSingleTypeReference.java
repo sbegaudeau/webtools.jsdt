@@ -13,7 +13,14 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 
 /**
  * Syntactic representation of a reference to a generic type.
@@ -22,7 +29,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
 public class ParameterizedSingleTypeReference extends ArrayTypeReference {
 
 	public TypeReference[] typeArguments;
-	
+
 	public ParameterizedSingleTypeReference(char[] name, TypeReference[] typeArguments, int dim, long pos){
 		super(name, dim, pos);
 		this.originalSourceEnd = this.sourceEnd;
@@ -71,15 +78,15 @@ public class ParameterizedSingleTypeReference extends ArrayTypeReference {
 				dimChars[index+1] = ']';
 			}
 			name = CharOperation.concat(name, dimChars);
-		}		
+		}
 		return new char[][]{ name };
-	}	
+	}
 	/**
      * @see org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference#getTypeBinding(org.eclipse.wst.jsdt.internal.compiler.lookup.Scope)
      */
     protected TypeBinding getTypeBinding(Scope scope) {
         return null; // not supported here - combined with resolveType(...)
-    }	
+    }
 
     /*
      * No need to check for reference to raw type per construction
@@ -92,7 +99,7 @@ public class ParameterizedSingleTypeReference extends ArrayTypeReference {
 			if (this.resolvedType != null && !this.resolvedType.isValidBinding())
 				return null; // already reported error
 			return this.resolvedType;
-		} 
+		}
 		this.bits |= ASTNode.DidResolve;
 		if (enclosingType == null) {
 			this.resolvedType = scope.getType(token);
@@ -189,8 +196,8 @@ public class ParameterizedSingleTypeReference extends ArrayTypeReference {
 			this.resolvedType = scope.createArrayType(this.resolvedType, dimensions);
 		}
 		return this.resolvedType;
-	}	
-	
+	}
+
 	public StringBuffer printExpression(int indent, StringBuffer output){
 		output.append(token);
 		output.append("<"); //$NON-NLS-1$
@@ -213,19 +220,19 @@ public class ParameterizedSingleTypeReference extends ArrayTypeReference {
 		}
 		return output;
 	}
-	
+
 	public TypeBinding resolveType(BlockScope scope, boolean checkBounds) {
 	    return internalResolveType(scope, null, checkBounds);
-	}	
+	}
 
 	public TypeBinding resolveType(ClassScope scope) {
 	    return internalResolveType(scope, null, false /*no bounds check in classScope*/);
-	}	
-	
+	}
+
 	public TypeBinding resolveTypeEnclosing(BlockScope scope, ReferenceBinding enclosingType) {
 	    return internalResolveType(scope, enclosingType, true/*check bounds*/);
 	}
-	
+
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
 		if (visitor.visit(this, scope)) {
 			for (int i = 0, max = this.typeArguments.length; i < max; i++) {
@@ -234,7 +241,7 @@ public class ParameterizedSingleTypeReference extends ArrayTypeReference {
 		}
 		visitor.endVisit(this, scope);
 	}
-	
+
 	public void traverse(ASTVisitor visitor, ClassScope scope) {
 		if (visitor.visit(this, scope)) {
 			for (int i = 0, max = this.typeArguments.length; i < max; i++) {

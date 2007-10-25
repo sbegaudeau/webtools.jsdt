@@ -17,31 +17,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.text.edits.TextEdit;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.jface.resource.ImageDescriptor;
-
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
-
-import org.eclipse.ltk.ui.refactoring.LanguageElementNode;
-import org.eclipse.ltk.ui.refactoring.TextEditChangeNode;
-
 import org.eclipse.ltk.core.refactoring.TextEditBasedChange;
 import org.eclipse.ltk.core.refactoring.TextEditBasedChangeGroup;
-
+import org.eclipse.ltk.ui.refactoring.LanguageElementNode;
+import org.eclipse.ltk.ui.refactoring.TextEditChangeNode;
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 public class CompilationUnitChangeNode extends TextEditChangeNode {
 

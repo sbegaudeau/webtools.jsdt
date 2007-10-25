@@ -20,7 +20,6 @@ import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.ThrowStatement;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.AbstractExceptionAnalyzer;
 
 /* package */ class ExceptionAnalyzer extends AbstractExceptionAnalyzer {

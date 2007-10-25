@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.ui.wizards;
 
 import org.eclipse.jface.wizard.IWizardPage;
-
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 
 /**

@@ -32,8 +32,9 @@ package org.eclipse.wst.jsdt.internal.codeassist.complete;
  * before the cursor.
  */
 
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class CompletionOnMessageSend extends MessageSend {
 
@@ -43,7 +44,7 @@ public class CompletionOnMessageSend extends MessageSend {
 			for (int a = argsLength; --a >= 0;)
 				arguments[a].resolveType(scope);
 		}
-		
+
 		if (receiver==null || receiver.isImplicitThis())
 			throw new CompletionNodeFound(this, null, scope);
 

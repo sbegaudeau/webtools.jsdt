@@ -11,21 +11,16 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.changes;
 
 import org.eclipse.core.resources.mapping.ResourceMapping;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-
-
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.ReorgExecutionLog;
-
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JDTChange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.INewNameQuery;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaElementResourceMapping;

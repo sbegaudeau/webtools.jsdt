@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.IStatus;
@@ -22,9 +23,6 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
-
-import org.eclipse.core.resources.IMarker;
-
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.contentassist.ContentAssistEvent;
@@ -33,18 +31,15 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.quickassist.IQuickAssistInvocationContext;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
-
+import org.eclipse.ltk.core.refactoring.NullChange;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IMarkerHelpRegistry;
 import org.eclipse.ui.IMarkerResolution;
-import org.eclipse.ui.texteditor.SimpleMarkerAnnotation;
-
 import org.eclipse.ui.ide.IDE;
-
-import org.eclipse.ltk.core.refactoring.NullChange;
-
+import org.eclipse.ui.texteditor.SimpleMarkerAnnotation;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
-
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.javaeditor.IJavaAnnotation;
 import org.eclipse.wst.jsdt.ui.JavaUI;
 import org.eclipse.wst.jsdt.ui.text.java.CompletionProposalComparator;
 import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
@@ -52,9 +47,6 @@ import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
 import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
 import org.eclipse.wst.jsdt.ui.text.java.IQuickAssistProcessor;
 import org.eclipse.wst.jsdt.ui.text.java.IQuickFixProcessor;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.internal.ui.javaeditor.IJavaAnnotation;
 
 
 public class JavaCorrectionProcessor implements org.eclipse.jface.text.quickassist.IQuickAssistProcessor {

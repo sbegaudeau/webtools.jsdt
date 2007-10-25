@@ -11,34 +11,21 @@
 
 package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
-import org.eclipse.swt.graphics.RGB;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.util.PropertyChangeEvent;
-
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
-import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
-import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
-import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.InfixExpression;
-import org.eclipse.wst.jsdt.core.dom.MemberValuePair;
 import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.ObjectLiteral;
 import org.eclipse.wst.jsdt.core.dom.ObjectLiteralField;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
-import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
-import org.eclipse.wst.jsdt.core.dom.QualifiedType;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SimpleType;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
@@ -46,9 +33,6 @@ import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
-
-import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
-
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 

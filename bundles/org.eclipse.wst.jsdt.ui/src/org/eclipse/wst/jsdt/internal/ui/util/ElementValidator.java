@@ -13,20 +13,14 @@ package org.eclipse.wst.jsdt.internal.ui.util;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IStatus;
-
-import org.eclipse.core.resources.IResource;
-
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.dialogs.ErrorDialog;
-
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Resources;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 
 /**

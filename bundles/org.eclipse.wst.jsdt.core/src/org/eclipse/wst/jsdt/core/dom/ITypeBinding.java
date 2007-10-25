@@ -107,7 +107,7 @@ public interface ITypeBinding extends IBinding {
 	/**
 	 * Returns a list of bindings representing all the fields declared
 	 * as members of this class, interface, or enum type.
-	 * 
+	 *
 	 * <p>These include public, protected, default (package-private) access,
 	 * and private fields declared by the class, but excludes inherited fields.
 	 * Synthetic fields may or may not be included. Fields from binary types that
@@ -370,7 +370,7 @@ public interface ITypeBinding extends IBinding {
 
 	/**
 	 * Returns the binding for the package in which this type is declared.
-	 * 
+	 *
 	 * <p>The package of a recovered type reference binding is the package of the
 	 * enclosing type.</p>
 	 *
@@ -928,7 +928,7 @@ public interface ITypeBinding extends IBinding {
 	 * @see #isUpperbound()
 	 */
 	public boolean isWildcardType();
-	
+
 	public boolean isCompilationUnit();
 
 }

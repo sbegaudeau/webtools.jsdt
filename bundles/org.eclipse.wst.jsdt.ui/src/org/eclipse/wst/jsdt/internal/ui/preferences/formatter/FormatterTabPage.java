@@ -12,18 +12,15 @@ package org.eclipse.wst.jsdt.internal.ui.preferences.formatter;
 
 import java.util.Map;
 
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-
-import org.eclipse.jface.dialogs.IDialogSettings;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.ui.JavaUI;
 
 public abstract class FormatterTabPage extends ModifyDialogTabPage {
 	

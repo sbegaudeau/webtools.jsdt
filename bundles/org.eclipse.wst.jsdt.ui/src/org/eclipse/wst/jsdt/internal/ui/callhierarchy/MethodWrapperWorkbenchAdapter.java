@@ -12,11 +12,8 @@
 package org.eclipse.wst.jsdt.internal.ui.callhierarchy;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.resource.ImageDescriptor;
-
 import org.eclipse.ui.model.IWorkbenchAdapter;
-
 import org.eclipse.wst.jsdt.internal.corext.callhierarchy.MethodWrapper;
 
 public class MethodWrapperWorkbenchAdapter implements IWorkbenchAdapter {

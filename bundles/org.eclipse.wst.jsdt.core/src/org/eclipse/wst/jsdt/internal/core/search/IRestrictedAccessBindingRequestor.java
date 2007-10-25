@@ -20,15 +20,15 @@ import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
  * @see org.eclipse.wst.jsdt.core.search.TypeNameRequestor
  */
 public interface IRestrictedAccessBindingRequestor {
-	
+
 	public boolean acceptBinding(int type, int modifiers, char[] packageName, char[] simpleBindingName, String path, AccessRestriction access);
 
 	public String getFoundPath();
-	
+
 	public void reset();
 
 	public void setExcludePath(String excludePath);
-	
+
 	public ArrayList getFoundPaths();
-	
+
 }

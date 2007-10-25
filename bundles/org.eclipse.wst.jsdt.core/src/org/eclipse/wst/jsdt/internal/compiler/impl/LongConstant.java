@@ -40,7 +40,7 @@ public int intValue() {
 	return (int) value;
 }
 public long longValue() {
-	return value; 
+	return value;
 }
 public short shortValue() {
 	return (short) value;

@@ -15,17 +15,13 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableContext;
-
 import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.RenameProcessor;
 import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
-
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -36,7 +32,6 @@ import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameJavaElementDescriptor;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.JavaRenameProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.JavaRenameRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.MethodChecks;
@@ -55,7 +50,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.INameUpdating;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.IReferenceUpdating;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.ITextUpdating;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringExecutionHelper;

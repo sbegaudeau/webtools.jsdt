@@ -13,7 +13,16 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemMethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 
 public class JavadocMessageSend extends MessageSend {
@@ -49,11 +58,11 @@ public class JavadocMessageSend extends MessageSend {
 		}
 
 		// will check for null after args are resolved
-		
+
 		TypeBinding[] argumentTypes = Binding.NO_PARAMETERS;
 		boolean hasArgsTypeVar = false;
 		if (this.arguments != null) {
-			boolean argHasError = false; // typeChecks all arguments 
+			boolean argHasError = false; // typeChecks all arguments
 			int length = this.arguments.length;
 			argumentTypes = new TypeBinding[length];
 			for (int i = 0; i < length; i++){
@@ -119,8 +128,8 @@ public class JavadocMessageSend extends MessageSend {
 			switch (this.binding.problemId()) {
 				case ProblemReasons.NonStaticReferenceInConstructorInvocation:
 				case ProblemReasons.NonStaticReferenceInStaticContext:
-				case ProblemReasons.InheritedNameHidesEnclosingName : 
-				case ProblemReasons.Ambiguous: 
+				case ProblemReasons.InheritedNameHidesEnclosingName :
+				case ProblemReasons.Ambiguous:
 					MethodBinding closestMatch = ((ProblemMethodBinding)this.binding).closestMatch;
 					if (closestMatch != null) {
 						this.binding = closestMatch; // ignore problem if can reach target method through it
@@ -131,7 +140,7 @@ public class JavadocMessageSend extends MessageSend {
 			if (this.binding.declaringClass == null) {
 				if (this.actualReceiverType instanceof ReferenceBinding) {
 					this.binding.declaringClass = (ReferenceBinding) this.actualReceiverType;
-				} else { 
+				} else {
 					scope.problemReporter().javadocErrorNoMethodFor(this, this.actualReceiverType, argumentTypes, scope.getDeclarationModifiers());
 					return null;
 				}
@@ -168,7 +177,7 @@ public class JavadocMessageSend extends MessageSend {
 
 		return this.resolvedType = this.binding.returnType;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite#isSuperAccess()
 	 */
@@ -177,13 +186,13 @@ public class JavadocMessageSend extends MessageSend {
 	}
 
 	public StringBuffer printExpression(int indent, StringBuffer output){
-	
+
 		if (this.receiver != null) {
 			this.receiver.printExpression(0, output);
 		}
 		output.append('#').append(this.selector).append('(');
 		if (this.arguments != null) {
-			for (int i = 0; i < this.arguments.length ; i ++) {	
+			for (int i = 0; i < this.arguments.length ; i ++) {
 				if (i > 0) output.append(", "); //$NON-NLS-1$
 				this.arguments[i].printExpression(0, output);
 			}

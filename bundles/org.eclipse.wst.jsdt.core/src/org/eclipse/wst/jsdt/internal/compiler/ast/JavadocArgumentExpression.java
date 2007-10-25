@@ -13,7 +13,10 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class JavadocArgumentExpression extends Expression {
 	public char[] token;
@@ -53,7 +56,7 @@ public class JavadocArgumentExpression extends Expression {
 		}
 		return null;
 	}
-	
+
 	public StringBuffer printExpression(int indent, StringBuffer output) {
 		if (this.argument == null) {
 			if (this.token != null) {

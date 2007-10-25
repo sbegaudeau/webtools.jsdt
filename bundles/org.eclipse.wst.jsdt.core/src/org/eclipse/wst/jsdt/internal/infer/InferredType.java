@@ -19,14 +19,14 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 
 public class InferredType extends ASTNode {
-  
+
 	char [] name;
 	public ArrayList methods;
 	public InferredAttribute[] attributes=new InferredAttribute[5];
 	public int numberAttributes=0;
 	HashtableOfObject attributesHash = new HashtableOfObject();
 	public InferredType superClass;
-	
+
 	public InferredType referenceClass;
 
 	public SourceTypeBinding binding;
@@ -34,17 +34,17 @@ public class InferredType extends ASTNode {
 	private TypeBinding resolvedType;
 	public ClassScope scope;
 	ReferenceBinding resolvedSuperType;
-	
+
 	public boolean isAnonymous=false;
-	
-	
+
+
 	public final static char[] OBJECT_NAME=new char[]{'O','b','j','e','c','t'};
 	public final static char[] OBJECT_LITERAL_NAME = new char[]{'{','}'};
 
 	public final static char[] ARRAY_NAME=new char[]{'A','r','r','a','y'};
 	public final static char[] GLOBAL_NAME=new char[]{'G','l','o','b','a','l'};
 
-	
+
 	public InferredType(char [] className)
 	{
 		this.name=className;
@@ -53,7 +53,7 @@ public class InferredType extends ASTNode {
 	public char [] getName() {
 		return name;
 	}
-	
+
 	public char [] getSuperClassName()
 	{
 		return superClass!=null ? superClass.getName() : OBJECT_NAME;
@@ -61,12 +61,12 @@ public class InferredType extends ASTNode {
 	public InferredAttribute addAttribute(char [] name, ASTNode definer)
 	{
 		InferredAttribute attribute = findAttribute(name);
-		if (attribute==null) 
+		if (attribute==null)
 		{
 			attribute=new InferredAttribute(name, this ,definer.sourceStart,definer.sourceEnd);
- 
+
 			if (this.numberAttributes == this.attributes.length)
-				
+
 				System.arraycopy(
 						this.attributes,
 						0,
@@ -74,16 +74,16 @@ public class InferredType extends ASTNode {
 						0,
 						this.numberAttributes );
 						this.attributes [this.numberAttributes  ++] = attribute;
-			
-			
+
+
 			attributesHash.put(name, attribute);
-			
+
 			if( !isAnonymous )
 				this.updatePositions(definer.sourceStart, definer.sourceEnd);
 		}
 		return attribute;
 	}
-	
+
 	public InferredAttribute findAttribute(char [] name)
 	{
 		return (InferredAttribute)attributesHash.get(name);
@@ -105,7 +105,7 @@ public class InferredType extends ASTNode {
 			if (methods==null)
 				methods=new ArrayList();
 			methods.add(method);
-			
+
 			if( !isAnonymous )
 				this.updatePositions(methodDeclaration.sourceStart, methodDeclaration.sourceEnd);
 		}
@@ -123,9 +123,9 @@ public class InferredType extends ASTNode {
 					return method;
 			}
 			return null;
-		
+
 	}
-	
+
 	public TypeBinding resolveType(BlockScope scope, ASTNode node) {
 		// handle the error here
 		if (this.resolvedType != null) // is a shared type reference which was already resolved
@@ -145,10 +145,10 @@ public class InferredType extends ASTNode {
 			/* the inferred type isn't valid, so don't assign it to the variable */
 			if(!this.resolvedType.isValidBinding()) this.resolvedType = null;
 		}
-		
-		
+
+
 		if (this.resolvedType == null)
-			return null; // detected cycle while resolving hierarchy	
+			return null; // detected cycle while resolving hierarchy
 		if (!this.resolvedType.isValidBinding()) {
 			scope.problemReporter().invalidType(node, this.resolvedType);
 			return null;
@@ -156,14 +156,14 @@ public class InferredType extends ASTNode {
 		if (node.isTypeUseDeprecated(this.resolvedType, scope))
 			scope.problemReporter().deprecatedType(this.resolvedType, node);
 		this.resolvedType = scope.environment().convertToRawType(this.resolvedType);
-		
+
 		if( isAnonymous )
 			this.resolvedType.tagBits |= TagBits.AnonymousTypeMask;
-		
+
 		return this.resolvedType ;
 	}
 
-	
+
 
 	public void dumpReference(StringBuffer sb)
 	{
@@ -175,7 +175,7 @@ public class InferredType extends ASTNode {
 			sb.append(')');
 		}
 	}
-	
+
 	public boolean containsMethod(AbstractMethodDeclaration inMethod) {
 		if (methods!=null)
 			for (Iterator iter = methods.iterator(); iter.hasNext();) {
@@ -186,7 +186,7 @@ public class InferredType extends ASTNode {
 		return false;
 	}
 
- 
+
 
 	public ReferenceBinding resolveSuperType(ClassScope classScope) {
 		if (this.resolvedSuperType != null)
@@ -196,20 +196,20 @@ public class InferredType extends ASTNode {
 
 		return this.resolvedSuperType;
 	}
-	
+
 	public boolean isArray()
 	{
 		return ARRAY_NAME.equals(name);
 	}
 
 	public StringBuffer print(int indent, StringBuffer output) {
-		printIndent(indent, output); //$NON-NLS-1$
+		printIndent(indent, output);
 		char[] superName= getSuperClassName();
 		output.append("class ").append(name).append(" extends ").append(superName).append("{\n");
 		for (int i=0;i<this.numberAttributes;i++) {
 				this.attributes[i].print(indent+1,output);
 				output.append(";\n");
-			}		
+			}
 		if (methods!=null)
 			for (Iterator methodIterator = methods.iterator(); methodIterator.hasNext();) {
 				InferredMethod method = (InferredMethod) methodIterator.next();
@@ -219,7 +219,7 @@ public class InferredType extends ASTNode {
 		output.append("}");
 		return output;
 	}
-	
+
 	public boolean isInferred()
 	{
 		return true;
@@ -232,7 +232,7 @@ public class InferredType extends ASTNode {
 		if (end>0&&end>this.sourceEnd)
 			this.sourceEnd=end;
 	}
-	
+
 	public AbstractMethodDeclaration declarationOf(MethodBinding methodBinding) {
 		if (methodBinding != null && this.methods != null) {
 			for (int i = 0, max = this.methods.size(); i < max; i++) {

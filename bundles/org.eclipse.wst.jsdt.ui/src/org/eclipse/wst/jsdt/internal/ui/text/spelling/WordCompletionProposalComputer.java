@@ -17,23 +17,19 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposalComputer;
-import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.text.java.JavaCompletionProposal;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellCheckEngine;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellChecker;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.RankedWordProposal;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
+import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
+import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposalComputer;
 
 /**
  * Content assist processor to complete words.

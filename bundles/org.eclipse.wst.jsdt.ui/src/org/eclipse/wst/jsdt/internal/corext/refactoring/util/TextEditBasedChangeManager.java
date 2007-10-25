@@ -16,10 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-
-import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitChange;
 import org.eclipse.ltk.core.refactoring.TextEditBasedChange;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitChange;
 
 /**
  * A <code>TextChangeManager</code> manages associations between <code>ICompilationUnit</code>

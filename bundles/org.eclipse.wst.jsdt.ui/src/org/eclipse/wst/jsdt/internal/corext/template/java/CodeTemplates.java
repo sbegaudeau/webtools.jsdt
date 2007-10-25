@@ -14,9 +14,7 @@ import java.io.File;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-
 import org.eclipse.jface.text.templates.Template;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 /**

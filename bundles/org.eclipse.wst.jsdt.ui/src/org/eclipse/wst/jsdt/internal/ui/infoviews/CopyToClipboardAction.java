@@ -10,21 +10,17 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.infoviews;
 
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-
-import org.eclipse.jface.dialogs.MessageDialog;
-
-import org.eclipse.jface.text.ITextSelection;
-
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IAbstractTextEditorHelpContextIds;
-
 import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
 
 class CopyToClipboardAction extends SelectionDispatchAction{

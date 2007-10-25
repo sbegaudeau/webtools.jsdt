@@ -10,25 +10,51 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.builder;
 
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.resources.*;
+import java.io.ByteArrayInputStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
 
-import org.eclipse.wst.jsdt.core.*;
-import org.eclipse.wst.jsdt.core.compiler.*;
-import org.eclipse.wst.jsdt.internal.compiler.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceProxy;
+import org.eclipse.core.resources.IResourceProxyVisitor;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.wst.jsdt.core.IJavaModelMarker;
+import org.eclipse.wst.jsdt.core.IMember;
+import org.eclipse.wst.jsdt.core.ISourceRange;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.JavaConventions;
+import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.compiler.BuildContext;
+import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.core.compiler.IProblem;
+import org.eclipse.wst.jsdt.internal.compiler.AbstractAnnotationProcessorManager;
+import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
+import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.Compiler;
+import org.eclipse.wst.jsdt.internal.compiler.DefaultErrorHandlingPolicies;
+import org.eclipse.wst.jsdt.internal.compiler.ICompilerRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
-import org.eclipse.wst.jsdt.internal.compiler.problem.*;
+import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
-
-import java.io.*;
-import java.util.*;
 
 /**
  * The abstract superclass of Java builders.
@@ -57,22 +83,22 @@ protected SimpleSet filesWithAnnotations = null;
 
 public static int MAX_AT_ONCE = 2000; // best compromise between space used and speed
 public final static String[] JAVA_PROBLEM_MARKER_ATTRIBUTE_NAMES = {
-	IMarker.MESSAGE, 
-	IMarker.SEVERITY, 
-	IJavaModelMarker.ID, 
-	IMarker.CHAR_START, 
-	IMarker.CHAR_END, 
-	IMarker.LINE_NUMBER, 
+	IMarker.MESSAGE,
+	IMarker.SEVERITY,
+	IJavaModelMarker.ID,
+	IMarker.CHAR_START,
+	IMarker.CHAR_END,
+	IMarker.LINE_NUMBER,
 	IJavaModelMarker.ARGUMENTS,
-	IJavaModelMarker.CATEGORY_ID,	
+	IJavaModelMarker.CATEGORY_ID,
 };
 public final static String[] JAVA_TASK_MARKER_ATTRIBUTE_NAMES = {
-	IMarker.MESSAGE, 
-	IMarker.PRIORITY, 
-	IJavaModelMarker.ID, 
-	IMarker.CHAR_START, 
-	IMarker.CHAR_END, 
-	IMarker.LINE_NUMBER, 
+	IMarker.MESSAGE,
+	IMarker.PRIORITY,
+	IJavaModelMarker.ID,
+	IMarker.CHAR_START,
+	IMarker.CHAR_END,
+	IMarker.LINE_NUMBER,
 	IMarker.USER_EDITABLE,
 	IMarker.SOURCE_ID,
 };
@@ -175,7 +201,7 @@ public void acceptResult(CompilationResult result) {
 						String simpleName = qualifiedTypeName.substring(qualifiedTypeName.lastIndexOf('/')+1);
 						type = mainType == null ? null : mainType.getCompilationUnit().getType(simpleName);
 					}
-					createProblemFor(compilationUnit.resource, type, Messages.bind(Messages.build_duplicateClassFile, new String(typeName)), JavaCore.ERROR); 
+					createProblemFor(compilationUnit.resource, type, Messages.bind(Messages.build_duplicateClassFile, new String(typeName)), JavaCore.ERROR);
 					continue;
 				}
 				newState.recordLocatorForType(qualifiedTypeName, typeLocator);
@@ -187,9 +213,9 @@ public void acceptResult(CompilationResult result) {
 			} catch (CoreException e) {
 				Util.log(e, "JavaBuilder handling CoreException"); //$NON-NLS-1$
 				if (e.getStatus().getCode() == IResourceStatus.CASE_VARIANT_EXISTS)
-					createProblemFor(compilationUnit.resource, null, Messages.bind(Messages.build_classFileCollision, e.getMessage()), JavaCore.ERROR); 
+					createProblemFor(compilationUnit.resource, null, Messages.bind(Messages.build_classFileCollision, e.getMessage()), JavaCore.ERROR);
 				else
-					createProblemFor(compilationUnit.resource, null, Messages.build_inconsistentClassFile, JavaCore.ERROR); 
+					createProblemFor(compilationUnit.resource, null, Messages.build_inconsistentClassFile, JavaCore.ERROR);
 			}
 		}
 		if (result.hasAnnotations && this.filesWithAnnotations != null) // only initialized if an annotation processor is attached
@@ -273,7 +299,7 @@ protected void cleanUp() {
 	this.problemSourceFiles = null;
 }
 
-/* Compile the given elements, adding more elements to the work queue 
+/* Compile the given elements, adding more elements to the work queue
 * if they are affected by the changes.
 */
 protected void compile(SourceFile[] units) {
@@ -497,7 +523,7 @@ protected Compiler newCompiler() {
 			}
 		}
 	}
-	
+
 	// called once when the builder is initialized... can override if needed
 	CompilerOptions compilerOptions = new CompilerOptions(projectOptions);
 	compilerOptions.performMethodsFullRecovery = true;
@@ -509,7 +535,7 @@ protected Compiler newCompiler() {
 		this,
 		ProblemFactory.getProblemFactory(Locale.getDefault()));
 	CompilerOptions options = newCompiler.options;
-	
+
 	// enable the compiler reference info support
 	options.produceReferenceInfo = true;
 
@@ -518,7 +544,7 @@ protected Compiler newCompiler() {
 		// support for Java 6 annotation processors
 		initializeAnnotationProcessorManager(newCompiler);
 	}
-	
+
 	return newCompiler;
 }
 
@@ -631,7 +657,7 @@ protected void recordParticipantResult(CompilationParticipantResult result) {
  *	 - its range is the problem's range
  *	 - it has an extra attribute "ID" which holds the problem's id
  *   - it's GENERATED_BY attribute is positioned to JavaBuilder.GENERATED_BY if
- *     the problem was generated by JDT; else the GENERATED_BY attribute is 
+ *     the problem was generated by JDT; else the GENERATED_BY attribute is
  *     carried from the problem to the marker in extra attributes, if present.
  */
 protected void storeProblemsFor(SourceFile sourceFile, CategorizedProblem[] problems) throws CoreException {
@@ -780,7 +806,7 @@ protected void updateTasksFor(SourceFile sourceFile, CompilationResult result) t
 protected char[] writeClassFile(ClassFile classFile, SourceFile compilationUnit, boolean isTopLevelType) throws CoreException {
 	String fileName = new String(classFile.fileName()); // the qualified type name "p1/p2/A"
 	IPath filePath = new Path(fileName);
-	IContainer outputFolder = compilationUnit.sourceLocation.binaryFolder; 
+	IContainer outputFolder = compilationUnit.sourceLocation.binaryFolder;
 	IContainer container = outputFolder;
 	if (filePath.segmentCount() > 1) {
 		container = createFolder(filePath.removeLastSegments(1), outputFolder);

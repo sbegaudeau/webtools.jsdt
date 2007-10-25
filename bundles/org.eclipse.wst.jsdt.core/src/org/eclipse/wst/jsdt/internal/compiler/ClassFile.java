@@ -15,16 +15,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
@@ -33,7 +30,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ClassLiteralAccess;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NormalAnnotation;
@@ -46,22 +42,18 @@ import org.eclipse.wst.jsdt.internal.compiler.codegen.AttributeNamesConstants;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.ConstantPool;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.ExceptionLabel;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.VerificationTypeInfo;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.StackMapFrame;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.StackMapFrameCodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.VerificationTypeInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.impl.StringConstant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LookupEnvironment;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.NestedTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.SyntheticArgumentBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SyntheticMethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
@@ -69,7 +61,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 import org.eclipse.wst.jsdt.internal.compiler.util.Messages;
-import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 /**
  * Represents a class file wrapper on bytes, it is aware of its actual
@@ -85,8 +76,8 @@ import org.eclipse.wst.jsdt.internal.compiler.util.Util;
  * 		For example, {{java}, {util}, {Hashtable}}.
  *
  * byte[] getReducedBytes();
- * 		Answer a smaller byte format, which is only contains some structural 
- *      information. Those bytes are decodable with a regular class file reader, 
+ * 		Answer a smaller byte format, which is only contains some structural
+ *      information. Those bytes are decodable with a regular class file reader,
  *      such as DietClassFileReader
  */
 public class ClassFile
@@ -104,7 +95,7 @@ public class ClassFile
 	public int contentsOffset;
 
 	protected boolean creatingProblemType;
-	
+
 	public ClassFile enclosingClassFile;
 	public byte[] header;
 	// that collection contains all the remaining bytes of the .class file
@@ -122,7 +113,7 @@ public class ClassFile
 	public static final int INITIAL_CONTENTS_SIZE = 400;
 	public static final int INITIAL_HEADER_SIZE = 1500;
 	public static final int INNER_CLASSES_SIZE = 5;
-	
+
 	/**
 	 * INTERNAL USE-ONLY
 	 * Build all the directories and subdirectories corresponding to the packages names
@@ -132,7 +123,7 @@ public class ClassFile
 	 *	   c:\temp\ the last character is a file separator
 	 * relativeFileName is formed like:
 	 *     java\lang\String.class *
-	 * 
+	 *
 	 * @param outputPath java.lang.String
 	 * @param relativeFileName java.lang.String
 	 * @return java.lang.String
@@ -160,7 +151,7 @@ public class ClassFile
 			}
 		} else {
 			if (outputPath.endsWith(fileSeparator)) {
-				outputDirPath = outputPath + 
+				outputDirPath = outputPath +
 					relativeFileName.substring(0, separatorIndex);
 				fileName = outputPath + relativeFileName;
 			} else {
@@ -222,8 +213,8 @@ public class ClassFile
 	    			  	} else {
 	    			  	  	// no one could create f -- complain
 	        				throw new IOException(Messages.bind(
-	        					Messages.output_notValid, 
-	        						outDir.substring(outputPath.length() + 1, 
+	        					Messages.output_notValid,
+	        						outDir.substring(outputPath.length() + 1,
 	        							outDir.length() - 1),
 	        						outputPath));
 	    			  	}
@@ -254,7 +245,7 @@ public class ClassFile
 		SourceTypeBinding typeBinding = typeDeclaration.binding;
 		ClassFile classFile = ClassFile.getNewInstance(typeBinding);
 		classFile.initialize(typeBinding, null, true);
-	
+
 		// TODO (olivier) handle cases where a field cannot be generated (name too long)
 		// TODO (olivier) handle too many methods
 		// inner attributes
@@ -281,7 +272,7 @@ public class ClassFile
 		}
 		CategorizedProblem[] problemsCopy = new CategorizedProblem[problemsLength = problems.length];
 		System.arraycopy(problems, 0, problemsCopy, 0, problemsLength);
-		
+
 		AbstractMethodDeclaration[] methodDecls = typeDeclaration.methods;
 		if (methodDecls != null) {
 			if (typeBinding.isInterface()) {
@@ -293,7 +284,7 @@ public class ClassFile
 					MethodBinding method = methodDecl.binding;
 					if (method == null || method.isConstructor()) continue;
 					classFile.addAbstractMethod(methodDecl, method);
-				}		
+				}
 			} else {
 				for (int i = 0, length = methodDecls.length; i < length; i++) {
 					AbstractMethodDeclaration methodDecl = methodDecls[i];
@@ -308,8 +299,8 @@ public class ClassFile
 			}
 			// add abstract methods
 			classFile.addDefaultAbstractMethods();
-		}		
-		
+		}
+
 		// propagate generation of (problem) member types
 		if (typeDeclaration.memberTypes != null) {
 			for (int i = 0, max = typeDeclaration.memberTypes.length; i < max; i++) {
@@ -326,7 +317,7 @@ public class ClassFile
 		LookupEnvironment env = typeBinding.scope.environment();
 		return env.classFilePool.acquire(typeBinding);
 	}
-	
+
 	/**
 	 * INTERNAL USE-ONLY
 	 * outputPath is formed like:
@@ -337,14 +328,14 @@ public class ClassFile
 	 * @param outputPath the given output directory
 	 * @param relativeFileName the given relative file name
 	 * @param classFile the given classFile to write
-	 * 
+	 *
 	 */
 	public static void writeToDisk(
 		boolean generatePackagesStructure,
 		String outputPath,
 		String relativeFileName,
 		ClassFile classFile) throws IOException {
-			
+
 		BufferedOutputStream output = null;
     	if (generatePackagesStructure) {
     		output = new BufferedOutputStream(
@@ -387,7 +378,7 @@ public class ClassFile
 			output.close();
 		}
 	}
-	
+
 	/**
 	 * INTERNAL USE-ONLY
 	 * This methods creates a new instance of the receiver.
@@ -395,7 +386,7 @@ public class ClassFile
 	protected ClassFile() {
 		// default constructor for subclasses
 	}
-	
+
 	public ClassFile(SourceTypeBinding typeBinding) {
 		// default constructor for subclasses
 		this.constantPool = new ConstantPool(this);
@@ -537,7 +528,7 @@ public class ClassFile
 //			contents[contentsOffset++] = 0;
 //			contents[contentsOffset++] = 0;
 //			contents[contentsOffset++] = 4;
-//			
+//
 //			int enclosingTypeIndex = constantPool.literalIndexForType(this.referenceBinding.enclosingType().constantPoolName());
 //			contents[contentsOffset++] = (byte) (enclosingTypeIndex >> 8);
 //			contents[contentsOffset++] = (byte) enclosingTypeIndex;
@@ -553,7 +544,7 @@ public class ClassFile
 //			}
 //			contents[contentsOffset++] = methodIndexByte1;
 //			contents[contentsOffset++] = methodIndexByte2;
-//			attributeNumber++;			
+//			attributeNumber++;
 //		}
 //		if (this.targetJDK >= ClassFileConstants.JDK1_5 && !this.creatingProblemType) {
 //			TypeDeclaration typeDeclaration = referenceBinding.scope.referenceContext;
@@ -564,7 +555,7 @@ public class ClassFile
 //				}
 //			}
 //		}
-//		
+//
 //		if (this.referenceBinding.isHierarchyInconsistent()) {
 //			// add an attribute for inconsistent hierarchy
 //			if (contentsOffset + 6 >= contents.length) {
@@ -680,7 +671,7 @@ public class ClassFile
 			completeMethodInfo(methodAttributeOffset, attributeNumber);
 		}
 	}
-	
+
 	private int addFieldAttributes(FieldBinding fieldBinding, int fieldAttributeOffset) {
 		return 0;
 //		int attributesNumber = 0;
@@ -845,7 +836,7 @@ public class ClassFile
 		if (targetJDK < ClassFileConstants.JDK1_5) {
 		    // pre 1.5, synthetic was an attribute, not a modifier
 		    accessFlags &= ~ClassFileConstants.AccSynthetic;
-		}		
+		}
 		contents[contentsOffset++] = (byte) (accessFlags >> 8);
 		contents[contentsOffset++] = (byte) accessFlags;
 		// Then the nameIndex
@@ -914,33 +905,33 @@ public class ClassFile
 		generateMethodInfoHeader(methodBinding, methodBinding.modifiers & ~(ClassFileConstants.AccStrictfp | ClassFileConstants.AccNative | ClassFileConstants.AccAbstract));
 		int methodAttributeOffset = contentsOffset;
 		int attributeNumber = generateMethodInfoAttribute(methodBinding);
-		
+
 		// Code attribute
 		attributeNumber++;
-		
+
 		int codeAttributeOffset = contentsOffset;
 		generateCodeAttributeHeader();
 		StringBuffer buffer = new StringBuffer(25);
 		buffer.append("\t"  + problem.getMessage() + "\n" ); //$NON-NLS-1$ //$NON-NLS-2$
 		buffer.insert(0, Messages.compilation_unresolvedProblem);
 		String problemString = buffer.toString();
-		
+
 		codeStream.init(this);
 		codeStream.preserveUnusedLocals = true;
 		codeStream.initializeMaxLocals(methodBinding);
 
 		// return codeStream.generateCodeAttributeForProblemMethod(comp.options.runtimeExceptionNameForCompileError, "")
 		codeStream.generateCodeAttributeForProblemMethod(problemString);
-				
+
 		completeCodeAttributeForMissingAbstractProblemMethod(
 			methodBinding,
 			codeAttributeOffset,
 			compilationResult.getLineSeparatorPositions(),
 			problem.getSourceLineNumber());
-			
+
 		completeMethodInfo(methodAttributeOffset, attributeNumber);
 	}
-	
+
 	/**
 	 * INTERNAL USE-ONLY
 	 * Generate the byte for a problem clinit method info that correspond to a boggus method.
@@ -1013,7 +1004,7 @@ public class ClassFile
 		generateMethodInfoHeader(methodBinding, methodBinding.modifiers & ~(ClassFileConstants.AccStrictfp | ClassFileConstants.AccNative | ClassFileConstants.AccAbstract));
 		int methodAttributeOffset = contentsOffset;
 		int attributeNumber = generateMethodInfoAttribute(methodBinding, true);
-		
+
 		// Code attribute
 		attributeNumber++;
 		int codeAttributeOffset = contentsOffset;
@@ -1098,10 +1089,10 @@ public class ClassFile
 		generateMethodInfoHeader(methodBinding, methodBinding.modifiers & ~(ClassFileConstants.AccStrictfp | ClassFileConstants.AccNative | ClassFileConstants.AccAbstract));
 		int methodAttributeOffset = contentsOffset;
 		int attributeNumber = generateMethodInfoAttribute(methodBinding, true);
-		
+
 		// Code attribute
 		attributeNumber++;
-		
+
 		int codeAttributeOffset = contentsOffset;
 		generateCodeAttributeHeader();
 		codeStream.reset(method, this);
@@ -1177,7 +1168,7 @@ public class ClassFile
 	 * - default abstract methods
 	 */
 	public void addSpecialMethods() {
-//	    
+//
 //		// add all methods (default abstract methods and synthetic)
 //
 //		// default abstract methods
@@ -1261,13 +1252,13 @@ public class ClassFile
 		contents[methodAttributeOffset++] = (byte) (attributeNumber >> 8);
 		contents[methodAttributeOffset] = (byte) attributeNumber;
 	}
-		
+
 	/**
 	 * INTERNAL USE-ONLY
 	 *  Generate the bytes for a synthetic method that implements Enum#valueOf(String) for a given enum type
 	 *
 	 * @param methodBinding org.eclipse.wst.jsdt.internal.compiler.nameloopkup.SyntheticAccessMethodBinding
-	 */	
+	 */
 	public void addSyntheticEnumValueOfMethod(SyntheticMethodBinding methodBinding) {
 		generateMethodInfoHeader(methodBinding);
 		int methodAttributeOffset = this.contentsOffset;
@@ -1289,7 +1280,7 @@ public class ClassFile
 				.getLineSeparatorPositions());
 		// update the number of attributes
 		contents[methodAttributeOffset++] = (byte) (attributeNumber >> 8);
-		contents[methodAttributeOffset] = (byte) attributeNumber;			
+		contents[methodAttributeOffset] = (byte) attributeNumber;
 	}
 
 	/**
@@ -1297,7 +1288,7 @@ public class ClassFile
 	 *  Generate the bytes for a synthetic method that implements Enum#values() for a given enum type
 	 *
 	 * @param methodBinding org.eclipse.wst.jsdt.internal.compiler.nameloopkup.SyntheticAccessMethodBinding
-	 */	
+	 */
 	public void addSyntheticEnumValuesMethod(SyntheticMethodBinding methodBinding) {
 		generateMethodInfoHeader(methodBinding);
 		int methodAttributeOffset = this.contentsOffset;
@@ -1319,7 +1310,7 @@ public class ClassFile
 				.getLineSeparatorPositions());
 		// update the number of attributes
 		contents[methodAttributeOffset++] = (byte) (attributeNumber >> 8);
-		contents[methodAttributeOffset] = (byte) attributeNumber;		
+		contents[methodAttributeOffset] = (byte) attributeNumber;
 	}
 
 	/**
@@ -1481,13 +1472,13 @@ public class ClassFile
 		ExceptionLabel[] exceptionLabels = codeStream.exceptionLabels;
 		int exceptionHandlersCount = 0; // each label holds one handler per range (start/end contiguous)
 		for (int i = 0, length = codeStream.exceptionLabelsCounter; i < length; i++) {
-			exceptionHandlersCount += codeStream.exceptionLabels[i].count / 2; 
+			exceptionHandlersCount += codeStream.exceptionLabels[i].count / 2;
 		}
 		int exSize = exceptionHandlersCount * 8 + 2;
 		if (exSize + localContentsOffset >= this.contents.length) {
 			resizeContents(exSize);
 		}
-		// there is no exception table, so we need to offset by 2 the current offset and move 
+		// there is no exception table, so we need to offset by 2 the current offset and move
 		// on the attribute generation
 		this.contents[localContentsOffset++] = (byte) (exceptionHandlersCount >> 8);
 		this.contents[localContentsOffset++] = (byte) exceptionHandlersCount;
@@ -1497,7 +1488,7 @@ public class ClassFile
 				int iRange = 0, maxRange = exceptionLabel.count;
 				if ((maxRange & 1) != 0) {
 					codeStream.methodDeclaration.scope.problemReporter().abortDueToInternalError(
-							Messages.bind(Messages.abort_invalidExceptionAttribute, new String(codeStream.methodDeclaration.selector)), 
+							Messages.bind(Messages.abort_invalidExceptionAttribute, new String(codeStream.methodDeclaration.selector)),
 							codeStream.methodDeclaration);
 				}
 				while  (iRange < maxRange) {
@@ -1539,7 +1530,7 @@ public class ClassFile
 
 		// first we handle the linenumber attribute
 		if ((this.produceAttributes & ClassFileConstants.ATTR_LINES) != 0) {
-			/* Create and add the line number attribute (used for debugging) 
+			/* Create and add the line number attribute (used for debugging)
 			 * Build the pairs of:
 			 * 	(bytecodePC lineNumber)
 			 * according to the table of start line indexes and the pcToSourceMap table
@@ -1628,7 +1619,7 @@ public class ClassFile
 			int genericLocalVariablesCounter = 0;
 			LocalVariableBinding[] genericLocalVariables = null;
 			int numberOfGenericEntries = 0;
-			
+
 			for (int i = 0, max = codeStream.allLocalsCounter; i < max; i++) {
 				LocalVariableBinding localVariable = codeStream.locals[i];
 				final TypeBinding localVariableTypeBinding = localVariable.type;
@@ -1646,7 +1637,7 @@ public class ClassFile
 					if (startPC != endPC) { // only entries for non zero length
 						if (endPC == -1) {
 							localVariable.declaringScope.problemReporter().abortDueToInternalError(
-									Messages.bind(Messages.abort_invalidAttribute, new String(localVariable.name)), 
+									Messages.bind(Messages.abort_invalidAttribute, new String(localVariable.name)),
 									(ASTNode) localVariable.declaringScope.methodScope().referenceContext);
 						}
 						if (isParameterizedType) {
@@ -1679,10 +1670,10 @@ public class ClassFile
 			this.contents[localVariableTableOffset++] = (byte) (numberOfEntries >> 8);
 			this.contents[localVariableTableOffset] = (byte) numberOfEntries;
 			attributeNumber++;
-			
-			final boolean currentInstanceIsGeneric = 
+
+			final boolean currentInstanceIsGeneric =
 				!methodDeclarationIsStatic
-				&& declaringClassBinding != null 
+				&& declaringClassBinding != null
 				&& declaringClassBinding.typeVariables != Binding.NO_TYPE_VARIABLES;
 			if (genericLocalVariablesCounter != 0 || currentInstanceIsGeneric) {
 				// add the local variable type table attribute
@@ -1717,7 +1708,7 @@ public class ClassFile
 					this.contents[localContentsOffset++] = 0;// the resolved position for this is always 0
 					this.contents[localContentsOffset++] = 0;
 				}
-				
+
 				for (int i = 0; i < genericLocalVariablesCounter; i++) {
 					LocalVariableBinding localVariable = genericLocalVariables[i];
 					for (int j = 0; j < localVariable.initializationCount; j++) {
@@ -1764,7 +1755,7 @@ public class ClassFile
 					constantPool.literalIndex(AttributeNamesConstants.StackMapTableName);
 				this.contents[localContentsOffset++] = (byte) (stackMapTableAttributeNameIndex >> 8);
 				this.contents[localContentsOffset++] = (byte) stackMapTableAttributeNameIndex;
-				
+
 				int stackMapTableAttributeLengthOffset = localContentsOffset;
 				// generate the attribute
 				localContentsOffset += 4;
@@ -1801,7 +1792,7 @@ public class ClassFile
 						case StackMapFrame.APPEND_FRAME :
 							if (localContentsOffset + 3 >= this.contents.length) {
 								resizeContents(3);
-							}							
+							}
 							int numberOfDifferentLocals = currentFrame.numberOfDifferentLocals(prevFrame);
 							this.contents[localContentsOffset++] = (byte) (251 + numberOfDifferentLocals);
 							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
@@ -1859,13 +1850,13 @@ public class ClassFile
 						case StackMapFrame.SAME_FRAME :
 							if (localContentsOffset + 1 >= this.contents.length) {
 								resizeContents(1);
-							}							
+							}
 							this.contents[localContentsOffset++] = (byte) offsetDelta;
 							break;
 						case StackMapFrame.SAME_FRAME_EXTENDED :
 							if (localContentsOffset + 3 >= this.contents.length) {
 								resizeContents(3);
-							}							
+							}
 							this.contents[localContentsOffset++] = (byte) 251;
 							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
 							this.contents[localContentsOffset++] = (byte) offsetDelta;
@@ -1873,16 +1864,16 @@ public class ClassFile
 						case StackMapFrame.CHOP_FRAME :
 							if (localContentsOffset + 3 >= this.contents.length) {
 								resizeContents(3);
-							}							
+							}
 							numberOfDifferentLocals = -currentFrame.numberOfDifferentLocals(prevFrame);
 							this.contents[localContentsOffset++] = (byte) (251 - numberOfDifferentLocals);
 							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
-							this.contents[localContentsOffset++] = (byte) offsetDelta;							
+							this.contents[localContentsOffset++] = (byte) offsetDelta;
 							break;
 						case StackMapFrame.SAME_LOCALS_1_STACK_ITEMS :
 							if (localContentsOffset + 4 >= this.contents.length) {
 								resizeContents(4);
-							}							
+							}
 							this.contents[localContentsOffset++] = (byte) (offsetDelta + 64);
 							if (currentFrame.stackItems[0] == null) {
 								this.contents[localContentsOffset++] = (byte) VerificationTypeInfo.ITEM_TOP;
@@ -1928,7 +1919,7 @@ public class ClassFile
 						case StackMapFrame.SAME_LOCALS_1_STACK_ITEMS_EXTENDED :
 							if (localContentsOffset + 6 >= this.contents.length) {
 								resizeContents(6);
-							}							
+							}
 							this.contents[localContentsOffset++] = (byte) 247;
 							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
 							this.contents[localContentsOffset++] = (byte) offsetDelta;
@@ -1977,7 +1968,7 @@ public class ClassFile
 							// FULL_FRAME
 							if (localContentsOffset + 5 >= this.contents.length) {
 								resizeContents(5);
-							}							
+							}
 							this.contents[localContentsOffset++] = (byte) 255;
 							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
 							this.contents[localContentsOffset++] = (byte) offsetDelta;
@@ -1990,7 +1981,7 @@ public class ClassFile
 							for (int i = 0; i < localsLength && numberOfLocalEntries < numberOfLocals; i++) {
 								if (localContentsOffset + 3 >= this.contents.length) {
 									resizeContents(3);
-								}							
+								}
 								VerificationTypeInfo info = currentFrame.locals[i];
 								if (info == null) {
 									this.contents[localContentsOffset++] = (byte) VerificationTypeInfo.ITEM_TOP;
@@ -2037,7 +2028,7 @@ public class ClassFile
 							}
 							if (localContentsOffset + 4 >= this.contents.length) {
 								resizeContents(4);
-							}							
+							}
 							this.contents[numberOfLocalOffset++] = (byte) (numberOfEntries >> 8);
 							this.contents[numberOfLocalOffset] = (byte) numberOfEntries;
 							int numberOfStackItems = currentFrame.numberOfStackItems;
@@ -2089,11 +2080,11 @@ public class ClassFile
 							}
 					}
 				}
-				
+
 				if (numberOfFrames != 0) {
 					this.contents[numberOfFramesOffset++] = (byte) (numberOfFrames >> 8);
 					this.contents[numberOfFramesOffset] = (byte) numberOfFrames;
-	
+
 					int attributeLength = localContentsOffset - stackMapTableAttributeLengthOffset - 4;
 					this.contents[stackMapTableAttributeLengthOffset++] = (byte) (attributeLength >> 24);
 					this.contents[stackMapTableAttributeLengthOffset++] = (byte) (attributeLength >> 16);
@@ -2161,13 +2152,13 @@ public class ClassFile
 		ExceptionLabel[] exceptionLabels = codeStream.exceptionLabels;
 		int exceptionHandlersCount = 0; // each label holds one handler per range (start/end contiguous)
 		for (int i = 0, length = codeStream.exceptionLabelsCounter; i < length; i++) {
-			exceptionHandlersCount += codeStream.exceptionLabels[i].count / 2; 
+			exceptionHandlersCount += codeStream.exceptionLabels[i].count / 2;
 		}
 		int exSize = exceptionHandlersCount * 8 + 2;
 		if (exSize + localContentsOffset >= this.contents.length) {
 			resizeContents(exSize);
 		}
-		// there is no exception table, so we need to offset by 2 the current offset and move 
+		// there is no exception table, so we need to offset by 2 the current offset and move
 		// on the attribute generation
 		this.contents[localContentsOffset++] = (byte) (exceptionHandlersCount >> 8);
 		this.contents[localContentsOffset++] = (byte) exceptionHandlersCount;
@@ -2177,9 +2168,9 @@ public class ClassFile
 				int iRange = 0, maxRange = exceptionLabel.count;
 				if ((maxRange & 1) != 0) {
 					codeStream.methodDeclaration.scope.problemReporter().abortDueToInternalError(
-							Messages.bind(Messages.abort_invalidExceptionAttribute, new String(codeStream.methodDeclaration.selector)), 
+							Messages.bind(Messages.abort_invalidExceptionAttribute, new String(codeStream.methodDeclaration.selector)),
 							codeStream.methodDeclaration);
-				}				
+				}
 				while  (iRange < maxRange) {
 					int start = exceptionLabel.ranges[iRange++]; // even ranges are start positions
 					this.contents[localContentsOffset++] = (byte) (start >> 8);
@@ -2219,7 +2210,7 @@ public class ClassFile
 
 		// first we handle the linenumber attribute
 		if ((this.produceAttributes & ClassFileConstants.ATTR_LINES) != 0) {
-			/* Create and add the line number attribute (used for debugging) 
+			/* Create and add the line number attribute (used for debugging)
 			 * Build the pairs of:
 			 * 	(bytecodePC lineNumber)
 			 * according to the table of start line indexes and the pcToSourceMap table
@@ -2306,7 +2297,7 @@ public class ClassFile
 						if (startPC != endPC) { // only entries for non zero length
 							if (endPC == -1) {
 								localVariable.declaringScope.problemReporter().abortDueToInternalError(
-									Messages.bind(Messages.abort_invalidAttribute, new String(localVariable.name)), 
+									Messages.bind(Messages.abort_invalidAttribute, new String(localVariable.name)),
 									(ASTNode) localVariable.declaringScope.methodScope().referenceContext);
 							}
 							if (localContentsOffset + 10 >= this.contents.length) {
@@ -2390,7 +2381,7 @@ public class ClassFile
 				}
 			}
 		}
-		
+
 		if ((this.produceAttributes & ClassFileConstants.ATTR_STACK_MAP) != 0) {
 			final Set framesPositions = ((StackMapFrameCodeStream) codeStream).framePositions;
 			final int framesPositionsSize = framesPositions.size();
@@ -2407,7 +2398,7 @@ public class ClassFile
 					constantPool.literalIndex(AttributeNamesConstants.StackMapTableName);
 				this.contents[localContentsOffset++] = (byte) (stackMapTableAttributeNameIndex >> 8);
 				this.contents[localContentsOffset++] = (byte) stackMapTableAttributeNameIndex;
-				
+
 				int stackMapTableAttributeLengthOffset = localContentsOffset;
 				// generate the attribute
 				localContentsOffset += 4;
@@ -2437,7 +2428,7 @@ public class ClassFile
 						case StackMapFrame.APPEND_FRAME :
 							if (localContentsOffset + 3 >= this.contents.length) {
 								resizeContents(3);
-							}							
+							}
 							int numberOfDifferentLocals = currentFrame.numberOfDifferentLocals(prevFrame);
 							this.contents[localContentsOffset++] = (byte) (251 + numberOfDifferentLocals);
 							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
@@ -2495,13 +2486,13 @@ public class ClassFile
 						case StackMapFrame.SAME_FRAME :
 							if (localContentsOffset + 1 >= this.contents.length) {
 								resizeContents(1);
-							}							
+							}
 							this.contents[localContentsOffset++] = (byte) offsetDelta;
 							break;
 						case StackMapFrame.SAME_FRAME_EXTENDED :
 							if (localContentsOffset + 3 >= this.contents.length) {
 								resizeContents(3);
-							}							
+							}
 							this.contents[localContentsOffset++] = (byte) 251;
 							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
 							this.contents[localContentsOffset++] = (byte) offsetDelta;
@@ -2509,16 +2500,16 @@ public class ClassFile
 						case StackMapFrame.CHOP_FRAME :
 							if (localContentsOffset + 3 >= this.contents.length) {
 								resizeContents(3);
-							}							
+							}
 							numberOfDifferentLocals = -currentFrame.numberOfDifferentLocals(prevFrame);
 							this.contents[localContentsOffset++] = (byte) (251 - numberOfDifferentLocals);
 							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
-							this.contents[localContentsOffset++] = (byte) offsetDelta;							
+							this.contents[localContentsOffset++] = (byte) offsetDelta;
 							break;
 						case StackMapFrame.SAME_LOCALS_1_STACK_ITEMS :
 							if (localContentsOffset + 4 >= this.contents.length) {
 								resizeContents(4);
-							}							
+							}
 							this.contents[localContentsOffset++] = (byte) (offsetDelta + 64);
 							if (currentFrame.stackItems[0] == null) {
 								this.contents[localContentsOffset++] = (byte) VerificationTypeInfo.ITEM_TOP;
@@ -2563,7 +2554,7 @@ public class ClassFile
 						case StackMapFrame.SAME_LOCALS_1_STACK_ITEMS_EXTENDED :
 							if (localContentsOffset + 6 >= this.contents.length) {
 								resizeContents(6);
-							}							
+							}
 							this.contents[localContentsOffset++] = (byte) 247;
 							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
 							this.contents[localContentsOffset++] = (byte) offsetDelta;
@@ -2611,7 +2602,7 @@ public class ClassFile
 							// FULL_FRAME
 							if (localContentsOffset + 5 >= this.contents.length) {
 								resizeContents(5);
-							}							
+							}
 							this.contents[localContentsOffset++] = (byte) 255;
 							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
 							this.contents[localContentsOffset++] = (byte) offsetDelta;
@@ -2624,7 +2615,7 @@ public class ClassFile
 							for (int i = 0; i < localsLength && numberOfLocalEntries < numberOfLocals; i++) {
 								if (localContentsOffset + 3 >= this.contents.length) {
 									resizeContents(3);
-								}							
+								}
 								VerificationTypeInfo info = currentFrame.locals[i];
 								if (info == null) {
 									this.contents[localContentsOffset++] = (byte) VerificationTypeInfo.ITEM_TOP;
@@ -2671,7 +2662,7 @@ public class ClassFile
 							}
 							if (localContentsOffset + 4 >= this.contents.length) {
 								resizeContents(4);
-							}							
+							}
 							this.contents[numberOfLocalOffset++] = (byte) (numberOfEntries >> 8);
 							this.contents[numberOfLocalOffset] = (byte) numberOfEntries;
 							int numberOfStackItems = currentFrame.numberOfStackItems;
@@ -2723,7 +2714,7 @@ public class ClassFile
 							}
 					}
 				}
-				
+
 				this.contents[numberOfFramesOffset++] = (byte) (numberOfFrames >> 8);
 				this.contents[numberOfFramesOffset] = (byte) numberOfFrames;
 
@@ -2735,7 +2726,7 @@ public class ClassFile
 				attributeNumber++;
 			}
 		}
-		
+
 		// update the number of attributes
 		// ensure first that there is enough space available inside the contents array
 		if (codeAttributeAttributeOffset + 2 >= this.contents.length) {
@@ -2807,8 +2798,8 @@ public class ClassFile
 		if ((this.produceAttributes & ClassFileConstants.ATTR_LINES) != 0) {
 			if (localContentsOffset + 20 >= this.contents.length) {
 				resizeContents(20);
-			}			
-			/* Create and add the line number attribute (used for debugging) 
+			}
+			/* Create and add the line number attribute (used for debugging)
 			    * Build the pairs of:
 			    * (bytecodePC lineNumber)
 			    * according to the table of start line indexes and the pcToSourceMap table
@@ -2849,7 +2840,7 @@ public class ClassFile
 			this.contents[localContentsOffset++] = 0;
 			attributeNumber++;
 		}
-		
+
 		if ((this.produceAttributes & ClassFileConstants.ATTR_STACK_MAP) != 0) {
 			final Set framesPositions = ((StackMapFrameCodeStream) codeStream).framePositions;
 			final int framesPositionsSize = framesPositions.size();
@@ -2866,7 +2857,7 @@ public class ClassFile
 					constantPool.literalIndex(AttributeNamesConstants.StackMapTableName);
 				this.contents[localContentsOffset++] = (byte) (stackMapTableAttributeNameIndex >> 8);
 				this.contents[localContentsOffset++] = (byte) stackMapTableAttributeNameIndex;
-				
+
 				int stackMapTableAttributeLengthOffset = localContentsOffset;
 				// generate the attribute
 				localContentsOffset += 4;
@@ -2898,7 +2889,7 @@ public class ClassFile
 						case StackMapFrame.APPEND_FRAME :
 							if (localContentsOffset + 3 >= this.contents.length) {
 								resizeContents(3);
-							}							
+							}
 							int numberOfDifferentLocals = currentFrame.numberOfDifferentLocals(prevFrame);
 							this.contents[localContentsOffset++] = (byte) (251 + numberOfDifferentLocals);
 							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
@@ -2956,13 +2947,13 @@ public class ClassFile
 						case StackMapFrame.SAME_FRAME :
 							if (localContentsOffset + 1 >= this.contents.length) {
 								resizeContents(1);
-							}							
+							}
 							this.contents[localContentsOffset++] = (byte) offsetDelta;
 							break;
 						case StackMapFrame.SAME_FRAME_EXTENDED :
 							if (localContentsOffset + 3 >= this.contents.length) {
 								resizeContents(3);
-							}							
+							}
 							this.contents[localContentsOffset++] = (byte) 251;
 							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
 							this.contents[localContentsOffset++] = (byte) offsetDelta;
@@ -2970,16 +2961,16 @@ public class ClassFile
 						case StackMapFrame.CHOP_FRAME :
 							if (localContentsOffset + 3 >= this.contents.length) {
 								resizeContents(3);
-							}							
+							}
 							numberOfDifferentLocals = -currentFrame.numberOfDifferentLocals(prevFrame);
 							this.contents[localContentsOffset++] = (byte) (251 - numberOfDifferentLocals);
 							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
-							this.contents[localContentsOffset++] = (byte) offsetDelta;							
+							this.contents[localContentsOffset++] = (byte) offsetDelta;
 							break;
 						case StackMapFrame.SAME_LOCALS_1_STACK_ITEMS :
 							if (localContentsOffset + 4 >= this.contents.length) {
 								resizeContents(4);
-							}							
+							}
 							this.contents[localContentsOffset++] = (byte) (offsetDelta + 64);
 							if (currentFrame.stackItems[0] == null) {
 								this.contents[localContentsOffset++] = (byte) VerificationTypeInfo.ITEM_TOP;
@@ -3024,7 +3015,7 @@ public class ClassFile
 						case StackMapFrame.SAME_LOCALS_1_STACK_ITEMS_EXTENDED :
 							if (localContentsOffset + 6 >= this.contents.length) {
 								resizeContents(6);
-							}							
+							}
 							this.contents[localContentsOffset++] = (byte) 247;
 							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
 							this.contents[localContentsOffset++] = (byte) offsetDelta;
@@ -3072,7 +3063,7 @@ public class ClassFile
 							// FULL_FRAME
 							if (localContentsOffset + 5 >= this.contents.length) {
 								resizeContents(5);
-							}							
+							}
 							this.contents[localContentsOffset++] = (byte) 255;
 							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
 							this.contents[localContentsOffset++] = (byte) offsetDelta;
@@ -3085,7 +3076,7 @@ public class ClassFile
 							for (int i = 0; i < localsLength && numberOfLocalEntries < numberOfLocals; i++) {
 								if (localContentsOffset + 3 >= this.contents.length) {
 									resizeContents(3);
-								}							
+								}
 								VerificationTypeInfo info = currentFrame.locals[i];
 								if (info == null) {
 									this.contents[localContentsOffset++] = (byte) VerificationTypeInfo.ITEM_TOP;
@@ -3132,7 +3123,7 @@ public class ClassFile
 							}
 							if (localContentsOffset + 4 >= this.contents.length) {
 								resizeContents(4);
-							}							
+							}
 							this.contents[numberOfLocalOffset++] = (byte) (numberOfEntries >> 8);
 							this.contents[numberOfLocalOffset] = (byte) numberOfEntries;
 							int numberOfStackItems = currentFrame.numberOfStackItems;
@@ -3184,7 +3175,7 @@ public class ClassFile
 							}
 					}
 				}
-				
+
 				this.contents[numberOfFramesOffset++] = (byte) (numberOfFrames >> 8);
 				this.contents[numberOfFramesOffset] = (byte) numberOfFrames;
 
@@ -3196,7 +3187,7 @@ public class ClassFile
 				attributeNumber++;
 			}
 		}
-		
+
 		// update the number of attributes
 		// ensure first that there is enough space available inside the contents array
 		if (codeAttributeAttributeOffset + 2 >= this.contents.length) {
@@ -3214,7 +3205,7 @@ public class ClassFile
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public void completeCodeAttributeForMissingAbstractProblemMethod(
 		MethodBinding binding,
@@ -3254,7 +3245,7 @@ public class ClassFile
 //			if (localContentsOffset + 12 >= this.contents.length) {
 //				resizeContents(12);
 //			}
-//			/* Create and add the line number attribute (used for debugging) 
+//			/* Create and add the line number attribute (used for debugging)
 //			    * Build the pairs of:
 //			    * (bytecodePC lineNumber)
 //			    * according to the table of start line indexes and the pcToSourceMap table
@@ -3298,7 +3289,7 @@ public class ClassFile
 //					constantPool.literalIndex(AttributeNamesConstants.StackMapTableName);
 //				this.contents[localContentsOffset++] = (byte) (stackMapTableAttributeNameIndex >> 8);
 //				this.contents[localContentsOffset++] = (byte) stackMapTableAttributeNameIndex;
-//				
+//
 //				int stackMapTableAttributeLengthOffset = localContentsOffset;
 //				// generate the attribute
 //				localContentsOffset += 4;
@@ -3328,7 +3319,7 @@ public class ClassFile
 //						case StackMapFrame.APPEND_FRAME :
 //							if (localContentsOffset + 3 >= this.contents.length) {
 //								resizeContents(3);
-//							}							
+//							}
 //							int numberOfDifferentLocals = currentFrame.numberOfDifferentLocals(prevFrame);
 //							this.contents[localContentsOffset++] = (byte) (251 + numberOfDifferentLocals);
 //							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
@@ -3386,13 +3377,13 @@ public class ClassFile
 //						case StackMapFrame.SAME_FRAME :
 //							if (localContentsOffset + 1 >= this.contents.length) {
 //								resizeContents(1);
-//							}							
+//							}
 //							this.contents[localContentsOffset++] = (byte) offsetDelta;
 //							break;
 //						case StackMapFrame.SAME_FRAME_EXTENDED :
 //							if (localContentsOffset + 3 >= this.contents.length) {
 //								resizeContents(3);
-//							}							
+//							}
 //							this.contents[localContentsOffset++] = (byte) 251;
 //							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
 //							this.contents[localContentsOffset++] = (byte) offsetDelta;
@@ -3400,16 +3391,16 @@ public class ClassFile
 //						case StackMapFrame.CHOP_FRAME :
 //							if (localContentsOffset + 3 >= this.contents.length) {
 //								resizeContents(3);
-//							}							
+//							}
 //							numberOfDifferentLocals = -currentFrame.numberOfDifferentLocals(prevFrame);
 //							this.contents[localContentsOffset++] = (byte) (251 - numberOfDifferentLocals);
 //							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
-//							this.contents[localContentsOffset++] = (byte) offsetDelta;							
+//							this.contents[localContentsOffset++] = (byte) offsetDelta;
 //							break;
 //						case StackMapFrame.SAME_LOCALS_1_STACK_ITEMS :
 //							if (localContentsOffset + 4 >= this.contents.length) {
 //								resizeContents(4);
-//							}							
+//							}
 //							this.contents[localContentsOffset++] = (byte) (offsetDelta + 64);
 //							if (currentFrame.stackItems[0] == null) {
 //								this.contents[localContentsOffset++] = (byte) VerificationTypeInfo.ITEM_TOP;
@@ -3454,7 +3445,7 @@ public class ClassFile
 //						case StackMapFrame.SAME_LOCALS_1_STACK_ITEMS_EXTENDED :
 //							if (localContentsOffset + 6 >= this.contents.length) {
 //								resizeContents(6);
-//							}							
+//							}
 //							this.contents[localContentsOffset++] = (byte) 247;
 //							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
 //							this.contents[localContentsOffset++] = (byte) offsetDelta;
@@ -3502,7 +3493,7 @@ public class ClassFile
 //							// FULL_FRAME
 //							if (localContentsOffset + 5 >= this.contents.length) {
 //								resizeContents(5);
-//							}							
+//							}
 //							this.contents[localContentsOffset++] = (byte) 255;
 //							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
 //							this.contents[localContentsOffset++] = (byte) offsetDelta;
@@ -3515,7 +3506,7 @@ public class ClassFile
 //							for (int i = 0; i < localsLength && numberOfLocalEntries < numberOfLocals; i++) {
 //								if (localContentsOffset + 3 >= this.contents.length) {
 //									resizeContents(3);
-//								}							
+//								}
 //								VerificationTypeInfo info = currentFrame.locals[i];
 //								if (info == null) {
 //									this.contents[localContentsOffset++] = (byte) VerificationTypeInfo.ITEM_TOP;
@@ -3562,7 +3553,7 @@ public class ClassFile
 //							}
 //							if (localContentsOffset + 4 >= this.contents.length) {
 //								resizeContents(4);
-//							}							
+//							}
 //							this.contents[numberOfLocalOffset++] = (byte) (numberOfEntries >> 8);
 //							this.contents[numberOfLocalOffset] = (byte) numberOfEntries;
 //							int numberOfStackItems = currentFrame.numberOfStackItems;
@@ -3614,7 +3605,7 @@ public class ClassFile
 //							}
 //					}
 //				}
-//				
+//
 //				this.contents[numberOfFramesOffset++] = (byte) (numberOfFrames >> 8);
 //				this.contents[numberOfFramesOffset] = (byte) numberOfFrames;
 //
@@ -3626,7 +3617,7 @@ public class ClassFile
 //				attributeNumber++;
 //			}
 //		}
-//		
+//
 //		// then we do the local variable attribute
 //		// update the number of attributes// ensure first that there is enough space available inside the localContents array
 //		if (codeAttributeAttributeOffset + 2 >= this.contents.length) {
@@ -3696,7 +3687,7 @@ public class ClassFile
 //			if (localContentsOffset + 20 >= this.contents.length) {
 //				resizeContents(20);
 //			}
-//			/* Create and add the line number attribute (used for debugging) 
+//			/* Create and add the line number attribute (used for debugging)
 //			    * Build the pairs of:
 //			    * (bytecodePC lineNumber)
 //			    * according to the table of start line indexes and the pcToSourceMap table
@@ -3768,7 +3759,7 @@ public class ClassFile
 //			int genericLocalVariablesCounter = 0;
 //			LocalVariableBinding[] genericLocalVariables = null;
 //			int numberOfGenericEntries = 0;
-//			
+//
 //			if (binding.isConstructor()) {
 //				ReferenceBinding declaringClass = binding.declaringClass;
 //				if (declaringClass.isNestedType()) {
@@ -3785,7 +3776,7 @@ public class ClassFile
 //									genericLocalVariables = new LocalVariableBinding[max];
 //								}
 //								genericLocalVariables[genericLocalVariablesCounter++] = localVariable;
-//								numberOfGenericEntries++;								
+//								numberOfGenericEntries++;
 //							}
 //							if (localContentsOffset + 10 >= this.contents.length) {
 //								resizeContents(10);
@@ -3813,7 +3804,7 @@ public class ClassFile
 //			} else {
 //				argSize = binding.isStatic() ? 0 : 1;
 //			}
-//			
+//
 //			int genericArgumentsCounter = 0;
 //			int[] genericArgumentsNameIndexes = null;
 //			int[] genericArgumentsResolvedPositions = null;
@@ -3870,8 +3861,8 @@ public class ClassFile
 //			this.contents[localVariableTableOffset++] = (byte) (numberOfEntries >> 8);
 //			this.contents[localVariableTableOffset] = (byte) numberOfEntries;
 //			attributeNumber++;
-//			
-//			final boolean currentInstanceIsGeneric = 
+//
+//			final boolean currentInstanceIsGeneric =
 //				!methodDeclarationIsStatic
 //				&& declaringClassBinding != null
 //				&& declaringClassBinding.typeVariables != Binding.NO_TYPE_VARIABLES;
@@ -3909,7 +3900,7 @@ public class ClassFile
 //					this.contents[localContentsOffset++] = 0;// the resolved position for this is always 0
 //					this.contents[localContentsOffset++] = 0;
 //				}
-//				
+//
 //				for (int i = 0; i < genericLocalVariablesCounter; i++) {
 //					LocalVariableBinding localVariable = genericLocalVariables[i];
 //					this.contents[localContentsOffset++] = 0;
@@ -3940,11 +3931,11 @@ public class ClassFile
 //					int resolvedPosition = genericArgumentsResolvedPositions[i];
 //					this.contents[localContentsOffset++] = (byte) (resolvedPosition >> 8);
 //					this.contents[localContentsOffset++] = (byte) resolvedPosition;
-//				}				
+//				}
 //				attributeNumber++;
-//			}			
+//			}
 //		}
-//		
+//
 //		if ((this.produceAttributes & ClassFileConstants.ATTR_STACK_MAP) != 0) {
 //			final Set framesPositions = ((StackMapFrameCodeStream) codeStream).framePositions;
 //			final int framesPositionsSize = framesPositions.size();
@@ -3961,7 +3952,7 @@ public class ClassFile
 //					constantPool.literalIndex(AttributeNamesConstants.StackMapTableName);
 //				this.contents[localContentsOffset++] = (byte) (stackMapTableAttributeNameIndex >> 8);
 //				this.contents[localContentsOffset++] = (byte) stackMapTableAttributeNameIndex;
-//				
+//
 //				int stackMapTableAttributeLengthOffset = localContentsOffset;
 //				// generate the attribute
 //				localContentsOffset += 4;
@@ -3991,7 +3982,7 @@ public class ClassFile
 //						case StackMapFrame.APPEND_FRAME :
 //							if (localContentsOffset + 3 >= this.contents.length) {
 //								resizeContents(3);
-//							}							
+//							}
 //							int numberOfDifferentLocals = currentFrame.numberOfDifferentLocals(prevFrame);
 //							this.contents[localContentsOffset++] = (byte) (251 + numberOfDifferentLocals);
 //							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
@@ -4049,13 +4040,13 @@ public class ClassFile
 //						case StackMapFrame.SAME_FRAME :
 //							if (localContentsOffset + 1 >= this.contents.length) {
 //								resizeContents(1);
-//							}							
+//							}
 //							this.contents[localContentsOffset++] = (byte) offsetDelta;
 //							break;
 //						case StackMapFrame.SAME_FRAME_EXTENDED :
 //							if (localContentsOffset + 3 >= this.contents.length) {
 //								resizeContents(3);
-//							}							
+//							}
 //							this.contents[localContentsOffset++] = (byte) 251;
 //							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
 //							this.contents[localContentsOffset++] = (byte) offsetDelta;
@@ -4063,16 +4054,16 @@ public class ClassFile
 //						case StackMapFrame.CHOP_FRAME :
 //							if (localContentsOffset + 3 >= this.contents.length) {
 //								resizeContents(3);
-//							}							
+//							}
 //							numberOfDifferentLocals = -currentFrame.numberOfDifferentLocals(prevFrame);
 //							this.contents[localContentsOffset++] = (byte) (251 - numberOfDifferentLocals);
 //							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
-//							this.contents[localContentsOffset++] = (byte) offsetDelta;							
+//							this.contents[localContentsOffset++] = (byte) offsetDelta;
 //							break;
 //						case StackMapFrame.SAME_LOCALS_1_STACK_ITEMS :
 //							if (localContentsOffset + 4 >= this.contents.length) {
 //								resizeContents(4);
-//							}							
+//							}
 //							this.contents[localContentsOffset++] = (byte) (offsetDelta + 64);
 //							if (currentFrame.stackItems[0] == null) {
 //								this.contents[localContentsOffset++] = (byte) VerificationTypeInfo.ITEM_TOP;
@@ -4117,7 +4108,7 @@ public class ClassFile
 //						case StackMapFrame.SAME_LOCALS_1_STACK_ITEMS_EXTENDED :
 //							if (localContentsOffset + 6 >= this.contents.length) {
 //								resizeContents(6);
-//							}							
+//							}
 //							this.contents[localContentsOffset++] = (byte) 247;
 //							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
 //							this.contents[localContentsOffset++] = (byte) offsetDelta;
@@ -4165,7 +4156,7 @@ public class ClassFile
 //							// FULL_FRAME
 //							if (localContentsOffset + 5 >= this.contents.length) {
 //								resizeContents(5);
-//							}							
+//							}
 //							this.contents[localContentsOffset++] = (byte) 255;
 //							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
 //							this.contents[localContentsOffset++] = (byte) offsetDelta;
@@ -4178,7 +4169,7 @@ public class ClassFile
 //							for (int i = 0; i < localsLength && numberOfLocalEntries < numberOfLocals; i++) {
 //								if (localContentsOffset + 3 >= this.contents.length) {
 //									resizeContents(3);
-//								}							
+//								}
 //								VerificationTypeInfo info = currentFrame.locals[i];
 //								if (info == null) {
 //									this.contents[localContentsOffset++] = (byte) VerificationTypeInfo.ITEM_TOP;
@@ -4225,7 +4216,7 @@ public class ClassFile
 //							}
 //							if (localContentsOffset + 4 >= this.contents.length) {
 //								resizeContents(4);
-//							}							
+//							}
 //							this.contents[numberOfLocalOffset++] = (byte) (numberOfEntries >> 8);
 //							this.contents[numberOfLocalOffset] = (byte) numberOfEntries;
 //							int numberOfStackItems = currentFrame.numberOfStackItems;
@@ -4277,7 +4268,7 @@ public class ClassFile
 //							}
 //					}
 //				}
-//				
+//
 //				this.contents[numberOfFramesOffset++] = (byte) (numberOfFrames >> 8);
 //				this.contents[numberOfFramesOffset] = (byte) numberOfFrames;
 //
@@ -4289,7 +4280,7 @@ public class ClassFile
 //				attributeNumber++;
 //			}
 //		}
-//		
+//
 //		// update the number of attributes// ensure first that there is enough space available inside the localContents array
 //		if (codeAttributeAttributeOffset + 2 >= this.contents.length) {
 //			resizeContents(2);
@@ -4344,19 +4335,19 @@ public class ClassFile
 //		if ((localContentsOffset + 40) >= this.contents.length) {
 //			resizeContents(40);
 //		}
-//		
+//
 //		if (hasExceptionHandlers) {
 //			// write the exception table
 //			ExceptionLabel[] exceptionLabels = codeStream.exceptionLabels;
 //			int exceptionHandlersCount = 0; // each label holds one handler per range (start/end contiguous)
 //			for (int i = 0, length = codeStream.exceptionLabelsCounter; i < length; i++) {
-//				exceptionHandlersCount += codeStream.exceptionLabels[i].count / 2; 
+//				exceptionHandlersCount += codeStream.exceptionLabels[i].count / 2;
 //			}
 //			int exSize = exceptionHandlersCount * 8 + 2;
 //			if (exSize + localContentsOffset >= this.contents.length) {
 //				resizeContents(exSize);
 //			}
-//			// there is no exception table, so we need to offset by 2 the current offset and move 
+//			// there is no exception table, so we need to offset by 2 the current offset and move
 //			// on the attribute generation
 //			this.contents[localContentsOffset++] = (byte) (exceptionHandlersCount >> 8);
 //			this.contents[localContentsOffset++] = (byte) exceptionHandlersCount;
@@ -4366,7 +4357,7 @@ public class ClassFile
 //					int iRange = 0, maxRange = exceptionLabel.count;
 //					if ((maxRange & 1) != 0) {
 //						referenceBinding.scope.problemReporter().abortDueToInternalError(
-//								Messages.bind(Messages.abort_invalidExceptionAttribute, new String(binding.selector), 
+//								Messages.bind(Messages.abort_invalidExceptionAttribute, new String(binding.selector),
 //										referenceBinding.scope.problemReporter().referenceContext));
 //					}
 //					while  (iRange < maxRange) {
@@ -4404,7 +4395,7 @@ public class ClassFile
 //				}
 //			}
 //		} else {
-//			// there is no exception table, so we need to offset by 2 the current offset and move 
+//			// there is no exception table, so we need to offset by 2 the current offset and move
 //			// on the attribute generation
 //			contents[localContentsOffset++] = 0;
 //			contents[localContentsOffset++] = 0;
@@ -4422,7 +4413,7 @@ public class ClassFile
 //		if ((this.produceAttributes & ClassFileConstants.ATTR_LINES) != 0) {
 //			if (localContentsOffset + 12 >= this.contents.length) {
 //				resizeContents(12);
-//			}		
+//			}
 //			int index = 0;
 //			int lineNumberNameIndex =
 //				constantPool.literalIndex(AttributeNamesConstants.LineNumberTableName);
@@ -4466,7 +4457,7 @@ public class ClassFile
 //			int genericLocalVariablesCounter = 0;
 //			LocalVariableBinding[] genericLocalVariables = null;
 //			int numberOfGenericEntries = 0;
-//			
+//
 //			for (int i = 0, max = codeStream.allLocalsCounter; i < max; i++) {
 //				LocalVariableBinding localVariable = codeStream.locals[i];
 //				final TypeBinding localVariableTypeBinding = localVariable.type;
@@ -4484,7 +4475,7 @@ public class ClassFile
 //					if (startPC != endPC) { // only entries for non zero length
 //						if (endPC == -1) {
 //							localVariable.declaringScope.problemReporter().abortDueToInternalError(
-//								Messages.bind(Messages.abort_invalidAttribute, new String(localVariable.name)), 
+//								Messages.bind(Messages.abort_invalidAttribute, new String(localVariable.name)),
 //								(ASTNode) localVariable.declaringScope.methodScope().referenceContext);
 //						}
 //						if (localContentsOffset + 10 > this.contents.length) {
@@ -4567,7 +4558,7 @@ public class ClassFile
 //				attributeNumber++;
 //			}
 //		}
-//		
+//
 //		if ((this.produceAttributes & ClassFileConstants.ATTR_STACK_MAP) != 0) {
 //			final Set framesPositions = ((StackMapFrameCodeStream) codeStream).framePositions;
 //			final int framesPositionsSize = framesPositions.size();
@@ -4584,7 +4575,7 @@ public class ClassFile
 //					constantPool.literalIndex(AttributeNamesConstants.StackMapTableName);
 //				this.contents[localContentsOffset++] = (byte) (stackMapTableAttributeNameIndex >> 8);
 //				this.contents[localContentsOffset++] = (byte) stackMapTableAttributeNameIndex;
-//				
+//
 //				int stackMapTableAttributeLengthOffset = localContentsOffset;
 //				// generate the attribute
 //				localContentsOffset += 4;
@@ -4614,7 +4605,7 @@ public class ClassFile
 //						case StackMapFrame.APPEND_FRAME :
 //							if (localContentsOffset + 3 >= this.contents.length) {
 //								resizeContents(3);
-//							}							
+//							}
 //							int numberOfDifferentLocals = currentFrame.numberOfDifferentLocals(prevFrame);
 //							this.contents[localContentsOffset++] = (byte) (251 + numberOfDifferentLocals);
 //							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
@@ -4672,13 +4663,13 @@ public class ClassFile
 //						case StackMapFrame.SAME_FRAME :
 //							if (localContentsOffset + 1 >= this.contents.length) {
 //								resizeContents(1);
-//							}							
+//							}
 //							this.contents[localContentsOffset++] = (byte) offsetDelta;
 //							break;
 //						case StackMapFrame.SAME_FRAME_EXTENDED :
 //							if (localContentsOffset + 3 >= this.contents.length) {
 //								resizeContents(3);
-//							}							
+//							}
 //							this.contents[localContentsOffset++] = (byte) 251;
 //							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
 //							this.contents[localContentsOffset++] = (byte) offsetDelta;
@@ -4686,16 +4677,16 @@ public class ClassFile
 //						case StackMapFrame.CHOP_FRAME :
 //							if (localContentsOffset + 3 >= this.contents.length) {
 //								resizeContents(3);
-//							}							
+//							}
 //							numberOfDifferentLocals = -currentFrame.numberOfDifferentLocals(prevFrame);
 //							this.contents[localContentsOffset++] = (byte) (251 - numberOfDifferentLocals);
 //							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
-//							this.contents[localContentsOffset++] = (byte) offsetDelta;							
+//							this.contents[localContentsOffset++] = (byte) offsetDelta;
 //							break;
 //						case StackMapFrame.SAME_LOCALS_1_STACK_ITEMS :
 //							if (localContentsOffset + 4 >= this.contents.length) {
 //								resizeContents(4);
-//							}							
+//							}
 //							this.contents[localContentsOffset++] = (byte) (offsetDelta + 64);
 //							if (currentFrame.stackItems[0] == null) {
 //								this.contents[localContentsOffset++] = (byte) VerificationTypeInfo.ITEM_TOP;
@@ -4740,7 +4731,7 @@ public class ClassFile
 //						case StackMapFrame.SAME_LOCALS_1_STACK_ITEMS_EXTENDED :
 //							if (localContentsOffset + 6 >= this.contents.length) {
 //								resizeContents(6);
-//							}							
+//							}
 //							this.contents[localContentsOffset++] = (byte) 247;
 //							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
 //							this.contents[localContentsOffset++] = (byte) offsetDelta;
@@ -4788,7 +4779,7 @@ public class ClassFile
 //							// FULL_FRAME
 //							if (localContentsOffset + 5 >= this.contents.length) {
 //								resizeContents(5);
-//							}							
+//							}
 //							this.contents[localContentsOffset++] = (byte) 255;
 //							this.contents[localContentsOffset++] = (byte) (offsetDelta >> 8);
 //							this.contents[localContentsOffset++] = (byte) offsetDelta;
@@ -4801,7 +4792,7 @@ public class ClassFile
 //							for (int i = 0; i < localsLength && numberOfLocalEntries < numberOfLocals; i++) {
 //								if (localContentsOffset + 3 >= this.contents.length) {
 //									resizeContents(3);
-//								}							
+//								}
 //								VerificationTypeInfo info = currentFrame.locals[i];
 //								if (info == null) {
 //									this.contents[localContentsOffset++] = (byte) VerificationTypeInfo.ITEM_TOP;
@@ -4848,7 +4839,7 @@ public class ClassFile
 //							}
 //							if (localContentsOffset + 4 >= this.contents.length) {
 //								resizeContents(4);
-//							}							
+//							}
 //							this.contents[numberOfLocalOffset++] = (byte) (numberOfEntries >> 8);
 //							this.contents[numberOfLocalOffset] = (byte) numberOfEntries;
 //							int numberOfStackItems = currentFrame.numberOfStackItems;
@@ -4900,7 +4891,7 @@ public class ClassFile
 //							}
 //					}
 //				}
-//				
+//
 //				this.contents[numberOfFramesOffset++] = (byte) (numberOfFrames >> 8);
 //				this.contents[numberOfFramesOffset] = (byte) numberOfFrames;
 //
@@ -4912,7 +4903,7 @@ public class ClassFile
 //				attributeNumber++;
 //			}
 //		}
-//		
+//
 //		// update the number of attributes
 //		// ensure first that there is enough space available inside the contents array
 //		if (codeAttributeAttributeOffset + 2 >= this.contents.length) {
@@ -4947,7 +4938,7 @@ public class ClassFile
 		SyntheticMethodBinding binding,
 		int codeAttributeOffset,
 		int[] startLineIndexes) {
-		
+
 		this.completeCodeAttributeForSyntheticMethod(
 				false,
 				binding,
@@ -4960,7 +4951,7 @@ public class ClassFile
 	 * Complete the creation of a method info by setting up the number of attributes at the right offset.
 	 *
 	 * @param methodAttributeOffset <CODE>int</CODE>
-	 * @param attributeNumber <CODE>int</CODE> 
+	 * @param attributeNumber <CODE>int</CODE>
 	 */
 	public void completeMethodInfo(
 		int methodAttributeOffset,
@@ -4969,7 +4960,7 @@ public class ClassFile
 		contents[methodAttributeOffset++] = (byte) (attributeNumber >> 8);
 		contents[methodAttributeOffset] = (byte) attributeNumber;
 	}
-	
+
 	/**
 	 * INTERNAL USE-ONLY
 	 * This methods returns a char[] representing the file name of the receiver
@@ -5237,7 +5228,7 @@ public class ClassFile
 			contentsOffset = attributeOffset;
 		}
 	}
-	
+
 	public int generateMethodInfoAttribute(MethodBinding methodBinding) {
 		return generateMethodInfoAttribute(methodBinding, false);
 	}
@@ -5262,7 +5253,7 @@ public class ClassFile
 				contents[attributeLengthOffset++] = (byte) (attributeLength >> 24);
 				contents[attributeLengthOffset++] = (byte) (attributeLength >> 16);
 				contents[attributeLengthOffset++] = (byte) (attributeLength >> 8);
-				contents[attributeLengthOffset++] = (byte) attributeLength;			
+				contents[attributeLengthOffset++] = (byte) attributeLength;
 				attributesNumber++;
 			}
 		}
@@ -5454,7 +5445,7 @@ public class ClassFile
 	 * That method generates the method info header of a clinit:
 	 * The header consists in:
 	 * - the access flags (always default access + static)
-	 * - the name index of the method name (always <clinit>) inside the constant pool 
+	 * - the name index of the method name (always <clinit>) inside the constant pool
 	 * - the descriptor index of the signature (always ()V) of the method inside the constant pool.
 	 */
 	public void generateMethodInfoHeaderForClinit() {
@@ -5520,7 +5511,7 @@ public class ClassFile
 		final int length = annotations.length;
 		int visibleAnnotationsCounter = 0;
 		int invisibleAnnotationsCounter = 0;
-		
+
 		for (int i = 0; i < length; i++) {
 			Annotation annotation = annotations[i];
 			if (isRuntimeInvisible(annotation)) {
@@ -5541,10 +5532,10 @@ public class ClassFile
 			contents[contentsOffset++] = (byte) runtimeInvisibleAnnotationsAttributeNameIndex;
 			int attributeLengthOffset = contentsOffset;
 			contentsOffset += 4; // leave space for the attribute length
-	
+
 			int annotationsLengthOffset = contentsOffset;
 			contentsOffset += 2; // leave space for the annotations length
-		
+
 			contents[annotationsLengthOffset++] = (byte) (invisibleAnnotationsCounter >> 8);
 			contents[annotationsLengthOffset++] = (byte) invisibleAnnotationsCounter;
 
@@ -5564,13 +5555,13 @@ public class ClassFile
 				contents[attributeLengthOffset++] = (byte) (attributeLength >> 24);
 				contents[attributeLengthOffset++] = (byte) (attributeLength >> 16);
 				contents[attributeLengthOffset++] = (byte) (attributeLength >> 8);
-				contents[attributeLengthOffset++] = (byte) attributeLength;			
+				contents[attributeLengthOffset++] = (byte) attributeLength;
 				attributesNumber++;
-			} else {		
+			} else {
 				contentsOffset = annotationAttributeOffset;
 			}
 		}
-	
+
 		if (visibleAnnotationsCounter != 0) {
 			int annotationAttributeOffset = contentsOffset;
 			if (contentsOffset + 10 >= contents.length) {
@@ -5582,10 +5573,10 @@ public class ClassFile
 			contents[contentsOffset++] = (byte) runtimeVisibleAnnotationsAttributeNameIndex;
 			int attributeLengthOffset = contentsOffset;
 			contentsOffset += 4; // leave space for the attribute length
-	
+
 			int annotationsLengthOffset = contentsOffset;
 			contentsOffset += 2; // leave space for the annotations length
-		
+
 			contents[annotationsLengthOffset++] = (byte) (visibleAnnotationsCounter >> 8);
 			contents[annotationsLengthOffset++] = (byte) visibleAnnotationsCounter;
 
@@ -5605,7 +5596,7 @@ public class ClassFile
 				contents[attributeLengthOffset++] = (byte) (attributeLength >> 24);
 				contents[attributeLengthOffset++] = (byte) (attributeLength >> 16);
 				contents[attributeLengthOffset++] = (byte) (attributeLength >> 8);
-				contents[attributeLengthOffset++] = (byte) attributeLength;			
+				contents[attributeLengthOffset++] = (byte) attributeLength;
 				attributesNumber++;
 			} else {
 				contentsOffset = annotationAttributeOffset;
@@ -5657,7 +5648,7 @@ public class ClassFile
 				}
 				if (invisibleParametersAnnotationsCounter == 0) {
 					contents[contentsOffset++] = (byte) 0;
-					contents[contentsOffset++] = (byte) 0;					
+					contents[contentsOffset++] = (byte) 0;
 				} else {
 					final int numberOfInvisibleAnnotations = annotationsCounters[i][INVISIBLE_INDEX];
 					contents[contentsOffset++] = (byte) (numberOfInvisibleAnnotations >> 8);
@@ -5683,7 +5674,7 @@ public class ClassFile
 				contents[attributeLengthOffset++] = (byte) (attributeLength >> 24);
 				contents[attributeLengthOffset++] = (byte) (attributeLength >> 16);
 				contents[attributeLengthOffset++] = (byte) (attributeLength >> 8);
-				contents[attributeLengthOffset++] = (byte) attributeLength;			
+				contents[attributeLengthOffset++] = (byte) attributeLength;
 				attributesNumber++;
 			} else {
 				contentsOffset = annotationAttributeOffset;
@@ -5707,7 +5698,7 @@ public class ClassFile
 				}
 				if (visibleParametersAnnotationsCounter == 0) {
 					contents[contentsOffset++] = (byte) 0;
-					contents[contentsOffset++] = (byte) 0;					
+					contents[contentsOffset++] = (byte) 0;
 				} else {
 					final int numberOfVisibleAnnotations = annotationsCounters[i][VISIBLE_INDEX];
 					contents[contentsOffset++] = (byte) (numberOfVisibleAnnotations >> 8);
@@ -5733,7 +5724,7 @@ public class ClassFile
 				contents[attributeLengthOffset++] = (byte) (attributeLength >> 24);
 				contents[attributeLengthOffset++] = (byte) (attributeLength >> 16);
 				contents[attributeLengthOffset++] = (byte) (attributeLength >> 8);
-				contents[attributeLengthOffset++] = (byte) attributeLength;			
+				contents[attributeLengthOffset++] = (byte) attributeLength;
 				attributesNumber++;
 			} else {
 				contentsOffset = annotationAttributeOffset;
@@ -5741,7 +5732,7 @@ public class ClassFile
 		}
 		return attributesNumber;
 	}
-	
+
 	/**
 	 * EXTERNAL API
 	 * Answer the actual bytes of the class file
@@ -5781,7 +5772,7 @@ public class ClassFile
 //		header[headerOffset++] = (byte) (0xCAFEBABEL >> 16);
 //		header[headerOffset++] = (byte) (0xCAFEBABEL >> 8);
 //		header[headerOffset++] = (byte) (0xCAFEBABEL >> 0);
-//		
+//
 //		header[headerOffset++] = (byte) (this.targetJDK >> 8); // minor high
 //		header[headerOffset++] = (byte) (this.targetJDK >> 0); // minor low
 //		header[headerOffset++] = (byte) (this.targetJDK >> 24); // major high
@@ -5790,7 +5781,7 @@ public class ClassFile
 //		constantPoolOffset = headerOffset;
 //		headerOffset += 2;
 //		this.constantPool.initialize(this);
-//		
+//
 //		// Modifier manipulations for classfile
 //		int accessFlags = aType.getAccessFlags();
 //		if (aType.isPrivate()) { // rewrite private to non-public
@@ -5808,12 +5799,12 @@ public class ClassFile
 //					| ClassFileConstants.AccStatic
 //					| ClassFileConstants.AccSynchronized
 //					| ClassFileConstants.AccNative);
-//					
+//
 //		// set the AccSuper flag (has to be done after clearing AccSynchronized - since same value)
 //		if (!aType.isInterface()) { // class or enum
 //			accessFlags |= ClassFileConstants.AccSuper;
 //		}
-//		
+//
 //		this.enclosingClassFile = parentClassFile;
 //		// innerclasses get their names computed at code gen time
 //
@@ -5853,7 +5844,7 @@ public class ClassFile
 //		}
 	}
 
-	
+
 	private boolean isRuntimeInvisible(Annotation annotation) {
 		final TypeBinding annotationBinding = annotation.resolvedType;
 		if (annotationBinding == null) {
@@ -5862,7 +5853,7 @@ public class ClassFile
 		long metaTagBits = annotationBinding.getAnnotationTagBits(); // could be forward reference
 		if ((metaTagBits & TagBits.AnnotationRetentionMASK) == 0)
 			return true; // by default the retention is CLASS
-			
+
 		return (metaTagBits & TagBits.AnnotationRetentionMASK) == TagBits.AnnotationClassRetention;
 	}
 
@@ -5874,7 +5865,7 @@ public class ClassFile
 		long metaTagBits = annotationBinding.getAnnotationTagBits();
 		if ((metaTagBits & TagBits.AnnotationRetentionMASK) == 0)
 			return false; // by default the retention is CLASS
-			
+
 		return (metaTagBits & TagBits.AnnotationRetentionMASK) == TagBits.AnnotationRuntimeRetention;
 	}
 

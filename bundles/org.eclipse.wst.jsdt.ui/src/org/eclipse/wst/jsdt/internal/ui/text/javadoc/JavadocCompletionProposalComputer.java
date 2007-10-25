@@ -11,11 +11,9 @@
 package org.eclipse.wst.jsdt.internal.ui.text.javadoc;
 
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-
+import org.eclipse.wst.jsdt.internal.ui.text.java.JavaCompletionProposalComputer;
 import org.eclipse.wst.jsdt.ui.text.java.CompletionProposalCollector;
 import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
-
-import org.eclipse.wst.jsdt.internal.ui.text.java.JavaCompletionProposalComputer;
 
 /**
  * 

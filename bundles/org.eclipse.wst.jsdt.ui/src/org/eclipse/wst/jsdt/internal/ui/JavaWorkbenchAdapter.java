@@ -12,17 +12,13 @@ package org.eclipse.wst.jsdt.internal.ui;
 
 
 import org.eclipse.jface.resource.ImageDescriptor;
-
 import org.eclipse.ui.model.IWorkbenchAdapter;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IParent;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.IClassFileEditorInput;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 /**
  * An imlementation of the IWorkbenchAdapter for IJavaElements.

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
-import com.ibm.icu.text.BreakIterator;
-
 import java.text.CharacterIterator;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +19,8 @@ import java.util.Map;
 
 import org.eclipse.core.commands.operations.IOperationApprover;
 import org.eclipse.core.commands.operations.IUndoContext;
-
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -31,39 +30,13 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
-
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ProjectScope;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ST;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.help.IContextProvider;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.IPostSelectionProvider;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
@@ -102,7 +75,25 @@ import org.eclipse.jface.text.source.LineChangeHover;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.text.source.projection.ProjectionSupport;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
-
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.IPostSelectionProvider;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ST;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPageLayout;
@@ -118,6 +109,9 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionGroup;
+import org.eclipse.ui.editors.text.DefaultEncodingSupport;
+import org.eclipse.ui.editors.text.EditorsUI;
+import org.eclipse.ui.editors.text.IEncodingSupport;
 import org.eclipse.ui.operations.NonLocalUndoUserApprover;
 import org.eclipse.ui.part.IShowInSource;
 import org.eclipse.ui.part.IShowInTargetList;
@@ -134,14 +128,8 @@ import org.eclipse.ui.texteditor.MarkerAnnotation;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.texteditor.TextNavigationAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
-
-import org.eclipse.ui.editors.text.DefaultEncodingSupport;
-import org.eclipse.ui.editors.text.EditorsUI;
-import org.eclipse.ui.editors.text.IEncodingSupport;
-
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IImportContainer;
@@ -163,23 +151,7 @@ import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.wst.jsdt.core.util.IModifierConstants;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
-
-import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
-import org.eclipse.wst.jsdt.ui.JavaUI;
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
-import org.eclipse.wst.jsdt.ui.actions.JavaSearchActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.OpenEditorActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.OpenViewActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.ShowInPackageViewAction;
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-import org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration;
-import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
-import org.eclipse.wst.jsdt.ui.text.folding.IJavaFoldingStructureProvider;
-import org.eclipse.wst.jsdt.ui.text.folding.IJavaFoldingStructureProviderExtension;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.CompositeActionGroup;
@@ -210,8 +182,22 @@ import org.eclipse.wst.jsdt.internal.ui.util.JavaUIHelp;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ISelectionListenerWithAST;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.IViewPartInputProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.SelectionListenerWithASTManager;
-
+import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
+import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
+import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
+import org.eclipse.wst.jsdt.ui.actions.JavaSearchActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.OpenEditorActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.OpenViewActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.ShowInPackageViewAction;
+import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration;
+import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
+import org.eclipse.wst.jsdt.ui.text.folding.IJavaFoldingStructureProvider;
+import org.eclipse.wst.jsdt.ui.text.folding.IJavaFoldingStructureProviderExtension;
 import org.osgi.service.prefs.BackingStoreException;
+
+import com.ibm.icu.text.BreakIterator;
 
 /**
  * Java specific text editor.

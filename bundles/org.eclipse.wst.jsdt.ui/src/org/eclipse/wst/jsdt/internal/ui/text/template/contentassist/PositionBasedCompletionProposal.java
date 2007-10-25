@@ -13,10 +13,6 @@ package org.eclipse.wst.jsdt.internal.ui.text.template.contentassist;
 
 
 import org.eclipse.core.runtime.Assert;
-
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
@@ -26,6 +22,8 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension;
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension2;
 import org.eclipse.jface.text.contentassist.IContextInformation;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 
 
 /**

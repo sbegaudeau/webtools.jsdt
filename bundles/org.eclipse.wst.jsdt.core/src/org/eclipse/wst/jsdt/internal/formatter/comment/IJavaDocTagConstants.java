@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.formatter.comment;
 
 /**
  * Javadoc tag constants.
- * 
+ *
  * @since 3.0
  */
 public interface IJavaDocTagConstants {
@@ -97,7 +97,7 @@ public interface IJavaDocTagConstants {
 
 	public static final char[] LINK_TAG_PREFIX= LINK_TAG_PREFIX_STRING.toCharArray();
 
-	
+
 	/** Comment root tags */
 	public static final char[][] COMMENT_ROOT_TAGS= new char[][] {
 			"@deprecated".toCharArray(), //$NON-NLS-1$

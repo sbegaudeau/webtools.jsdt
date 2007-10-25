@@ -11,28 +11,31 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class ThisReference extends Reference {
 
 	public static ThisReference implicitThis(){
 
-		ThisReference implicitThis = new ThisReference(0, 0); 
+		ThisReference implicitThis = new ThisReference(0, 0);
 		implicitThis.bits |= IsImplicitThis;
 		return implicitThis;
 	}
-		
+
 	public ThisReference(int sourceStart, int sourceEnd) {
-	
+
 		this.sourceStart = sourceStart;
 		this.sourceEnd = sourceEnd;
 	}
 
-	/* 
+	/*
 	 * @see Reference#analyseAssignment(...)
 	 */
 	public FlowInfo analyseAssignment(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo, Assignment assignment, boolean isCompound) {
@@ -41,13 +44,13 @@ public class ThisReference extends Reference {
 	}
 
 	public boolean checkAccess(MethodScope methodScope) {
-	
+
 		// this/super cannot be used in constructor call
 		if (methodScope!=null && methodScope.isConstructorCall) {
 			methodScope.problemReporter().fieldsOrThisBeforeConstructorInvocation(this);
 			return false;
 		}
-	
+
 		// static may not refer to this/super
 		if (methodScope!=null && methodScope.isStatic) {
 			methodScope.problemReporter().errorThisSuperInStatic(this);
@@ -56,7 +59,7 @@ public class ThisReference extends Reference {
 		return true;
 	}
 
-	/* 
+	/*
 	 * @see Reference#generateAssignment(...)
 	 */
 	public void generateAssignment(BlockScope currentScope, CodeStream codeStream, Assignment assignment, boolean valueRequired) {
@@ -65,51 +68,51 @@ public class ThisReference extends Reference {
 	}
 
 	public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
-	
+
 		int pc = codeStream.position;
 		if (valueRequired)
 			codeStream.aload_0();
 		if ((this.bits & IsImplicitThis) == 0) codeStream.recordPositionsFrom(pc, this.sourceStart);
 	}
 
-	/* 
+	/*
 	 * @see Reference#generateCompoundAssignment(...)
 	 */
 	public void generateCompoundAssignment(BlockScope currentScope, CodeStream codeStream, Expression expression, int operator, int assignmentImplicitConversion,  boolean valueRequired) {
 
 		 // this cannot be assigned
 	}
-	
-	/* 
+
+	/*
 	 * @see org.eclipse.wst.jsdt.internal.compiler.ast.Reference#generatePostIncrement()
 	 */
 	public void generatePostIncrement(BlockScope currentScope, CodeStream codeStream, CompoundAssignment postIncrement, boolean valueRequired) {
 
 		 // this cannot be assigned
 	}
-	
+
 	public boolean isImplicitThis() {
-		
+
 		return (this.bits & IsImplicitThis) != 0;
 	}
 
 	public boolean isThis() {
-		
+
 		return true ;
 	}
 
 	public int nullStatus(FlowInfo flowInfo) {
 		return FlowInfo.NON_NULL;
 	}
-	
+
 	public StringBuffer printExpression(int indent, StringBuffer output){
-	
+
 		if (this.isImplicitThis()) return output;
 		return output.append("this"); //$NON-NLS-1$
 	}
 
 	public TypeBinding resolveType(BlockScope scope) {
-	
+
 		constant = Constant.NotAConstant;
 		if (!this.isImplicitThis() &&!checkAccess(scope.methodScope())) {
 			return null;

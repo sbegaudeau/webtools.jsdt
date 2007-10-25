@@ -14,14 +14,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ProjectScope;
-
+import org.eclipse.jface.preference.IPreferencePageContainer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -32,27 +31,19 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.jface.preference.IPreferencePageContainer;
-
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
-
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
-
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpPostSaveListener;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpPreferenceUtil;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpRefactoring;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.saveparticipant.AbstractSaveParticipantPreferenceConfiguration;
 import org.eclipse.wst.jsdt.internal.ui.preferences.BulletListBlock;
 import org.eclipse.wst.jsdt.internal.ui.preferences.CodeFormatterPreferencePage;
-import org.eclipse.wst.jsdt.internal.ui.preferences.ImportOrganizePreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
+import org.eclipse.wst.jsdt.ui.JavaUI;
 
 /**
  * Preference configuration UI for the clean up save participant.

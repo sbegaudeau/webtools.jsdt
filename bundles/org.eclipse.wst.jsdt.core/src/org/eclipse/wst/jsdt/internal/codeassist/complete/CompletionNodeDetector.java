@@ -10,9 +10,46 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.codeassist.complete;
 
-import org.eclipse.wst.jsdt.internal.compiler.*;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AND_AND_Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayAllocationExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
+import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CastExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CompoundAssignment;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ConditionalExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.EqualExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ExplicitConstructorCall;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.InstanceOfExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
+import org.eclipse.wst.jsdt.internal.compiler.ast.OR_OR_Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedSingleTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.PostfixExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.PrefixExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedSuperReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedThisReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SuperReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 
 /**
  * Detect the presence of a node in expression
@@ -21,20 +58,20 @@ public class CompletionNodeDetector extends ASTVisitor {
 	private ASTNode searchedNode;
 	private ASTNode parent;
 	private boolean result;
-	
+
 	public CompletionNodeDetector(ASTNode searchedNode, ASTNode visitedAst){
 		this.searchedNode = searchedNode;
 		this.result = false;
-		
+
 		if(searchedNode != null && visitedAst != null) {
 			visitedAst.traverse(this, null);
 		}
 	}
-	
+
 	public boolean containsCompletionNode() {
 		return this.result;
 	}
-	
+
 	public ASTNode getCompletionNodeParent() {
 		return this.parent;
 	}
@@ -292,7 +329,7 @@ public class CompletionNodeDetector extends ASTVisitor {
 			if(!(astNode instanceof AllocationExpression && ((AllocationExpression) astNode).type == this.searchedNode)
 				&& !(astNode instanceof ConditionalExpression && ((ConditionalExpression) astNode).valueIfTrue == this.searchedNode)
 				&& !(astNode instanceof ConditionalExpression && ((ConditionalExpression) astNode).valueIfFalse == this.searchedNode)) {
-				this.parent = astNode;	
+				this.parent = astNode;
 			}
 		}
 	}

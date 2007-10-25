@@ -17,7 +17,15 @@ import java.util.Set;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedSingleTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
@@ -37,17 +45,17 @@ public class MissingTypesGuesser extends ASTVisitor {
 				int[] missingElementsStarts,
 				int[] missingElementsEnds,
 				boolean hasProblems);
-		
+
 	}
-	
+
 	private static class ResolutionCleaner extends ASTVisitor {
 		private HashtableOfObjectToInt bitsMap = new HashtableOfObjectToInt();
 		private boolean firstCall = true;
-		
+
 		public ResolutionCleaner(){
 			super();
 		}
-		
+
 		private void cleanUp(TypeReference typeReference) {
 			if (this.firstCall) {
 				this.bitsMap.put(typeReference, typeReference.bits);
@@ -56,17 +64,17 @@ public class MissingTypesGuesser extends ASTVisitor {
 			}
 			typeReference.resolvedType = null;
 		}
-		
+
 		private void cleanUp(ParameterizedSingleTypeReference typeReference) {
 			this.cleanUp((TypeReference)typeReference);
 			typeReference.bits &= ~ASTNode.DidResolve;
 		}
-		
+
 		private void cleanUp(ParameterizedQualifiedTypeReference typeReference) {
 			this.cleanUp((TypeReference)typeReference);
 			typeReference.bits &= ~ASTNode.DidResolve;
 		}
-		
+
 		public void cleanUp(TypeReference convertedType, BlockScope scope) {
 			convertedType.traverse(this, scope);
 			this.firstCall = false;
@@ -76,91 +84,91 @@ public class MissingTypesGuesser extends ASTVisitor {
 			convertedType.traverse(this, scope);
 			this.firstCall = false;
 		}
-		
+
 		public boolean visit(SingleTypeReference singleTypeReference, BlockScope scope) {
 			this.cleanUp(singleTypeReference);
 			return true;
 		}
-		
+
 		public boolean visit(SingleTypeReference singleTypeReference, ClassScope scope) {
 			this.cleanUp(singleTypeReference);
 			return true;
 		}
-		
+
 		public boolean visit(Wildcard wildcard, BlockScope scope) {
 			this.cleanUp(wildcard);
 			return true;
 		}
-		
+
 		public boolean visit(Wildcard wildcard, ClassScope scope) {
 			this.cleanUp(wildcard);
 			return true;
 		}
-		
+
 		public boolean visit(ArrayTypeReference arrayTypeReference, BlockScope scope) {
 			this.cleanUp(arrayTypeReference);
 			return true;
 		}
-		
+
 		public boolean visit(ArrayTypeReference arrayTypeReference, ClassScope scope) {
 			this.cleanUp(arrayTypeReference);
 			return true;
 		}
-		
+
 		public boolean visit(ParameterizedSingleTypeReference parameterizedSingleTypeReference, BlockScope scope) {
 			this.cleanUp(parameterizedSingleTypeReference);
 			return true;
 		}
-		
+
 		public boolean visit(ParameterizedSingleTypeReference parameterizedSingleTypeReference, ClassScope scope) {
 			this.cleanUp(parameterizedSingleTypeReference);
 			return true;
 		}
-		
+
 		public boolean visit(QualifiedTypeReference qualifiedTypeReference, BlockScope scope) {
 			this.cleanUp(qualifiedTypeReference);
 			return true;
 		}
-		
+
 		public boolean visit(QualifiedTypeReference qualifiedTypeReference, ClassScope scope) {
 			this.cleanUp(qualifiedTypeReference);
 			return true;
 		}
-		
+
 		public boolean visit(ArrayQualifiedTypeReference arrayQualifiedTypeReference, BlockScope scope) {
 			this.cleanUp(arrayQualifiedTypeReference);
 			return true;
 		}
-		
+
 		public boolean visit(ArrayQualifiedTypeReference arrayQualifiedTypeReference, ClassScope scope) {
 			this.cleanUp(arrayQualifiedTypeReference);
 			return true;
 		}
-		
+
 		public boolean visit(ParameterizedQualifiedTypeReference parameterizedQualifiedTypeReference, BlockScope scope) {
 			this.cleanUp(parameterizedQualifiedTypeReference);
 			return true;
 		}
-		
+
 		public boolean visit(ParameterizedQualifiedTypeReference parameterizedQualifiedTypeReference, ClassScope scope) {
 			this.cleanUp(parameterizedQualifiedTypeReference);
 			return true;
 		}
 
 	}
-	
+
 	private CompletionEngine.CompletionProblemFactory problemFactory ;
 	private  SearchableEnvironment nameEnvironment;
-	
+
 	private HashMap substituedTypes;
 	private HashMap originalTypes;
 	private int combinationsCount;
-			
+
 	public MissingTypesGuesser(CompletionEngine completionEngine) {
 		this.problemFactory = completionEngine.problemFactory;
 		this.nameEnvironment = completionEngine.nameEnvironment;
 	}
-	
+
 	private boolean computeMissingElements(
 			QualifiedTypeReference[] substituedTypeNodes,
 			char[][][] originalTypeNames,
@@ -168,7 +176,7 @@ public class MissingTypesGuesser extends ASTVisitor {
 			int[] missingElementsStarts,
 			int[] missingElementsEnds) {
 		int length = substituedTypeNodes.length;
-		
+
 		for (int i = 0; i < length; i++) {
 			TypeReference substituedType = substituedTypeNodes[i];
 			if (substituedType.resolvedType == null) return false;
@@ -179,7 +187,7 @@ public class MissingTypesGuesser extends ASTVisitor {
 				missingElement = erasure;
 			} else {
 				int depth = erasure.depth() + 1;
-				
+
 				if (depth > depthToRemove) {
 					missingElement = erasure.enclosingTypeAt(depthToRemove);
 				} else {
@@ -196,13 +204,13 @@ public class MissingTypesGuesser extends ASTVisitor {
 					//missingElement = packageBinding;
 				}
 			}
-			
+
 			missingElements[i] = missingElement;
 			missingElementsStarts[i] = substituedType.sourceStart;
 			missingElementsEnds[i] = substituedType.sourceEnd + 1;
-			
+
 		}
-		
+
 		return true;
 	}
 
@@ -220,7 +228,7 @@ public class MissingTypesGuesser extends ASTVisitor {
 			} else if((typeRef.resolvedType.problemId() & ProblemReasons.NotFound) != 0) {
 				// only the first token must be resolved
 				if(((ReferenceBinding)typeRef.resolvedType.leafComponentType()).compoundName.length != 1) return null;
-				
+
 				char[][] typeName = typeRef.getTypeName();
 				char[][][] typeNames = findTypeNames(typeName);
 				if(typeNames == null || typeNames.length == 0) return null;
@@ -270,7 +278,7 @@ public class MissingTypesGuesser extends ASTVisitor {
 		}
 		return null;
 	}
-	
+
 	private TypeReference convert(ParameterizedQualifiedTypeReference typeRef) {
 		if (typeRef.resolvedType != null) {
 			TypeReference[][] typeArguments = typeRef.typeArguments;
@@ -285,7 +293,7 @@ public class MissingTypesGuesser extends ASTVisitor {
 					if (convertedTypeArguments[i][j] == null) return null;
 				}
 			}
-			
+
 			if (typeRef.resolvedType.isValidBinding()) {
 				ParameterizedQualifiedTypeReference convertedType =
 					new ParameterizedQualifiedTypeReference(
@@ -299,18 +307,18 @@ public class MissingTypesGuesser extends ASTVisitor {
 			} else if((typeRef.resolvedType.problemId() & ProblemReasons.NotFound) != 0) {
 				// only the first token must be resolved
 				if(((ReferenceBinding)typeRef.resolvedType.leafComponentType()).compoundName.length != 1) return null;
-				
+
 				char[][] typeName = typeRef.getTypeName();
 				char[][][] typeNames = findTypeNames(typeName);
 				if(typeNames == null || typeNames.length == 0) return null;
-				
+
 				TypeReference[][] newConvertedTypeArguments = new TypeReference[typeNames[0].length][];
 				for (int k = newConvertedTypeArguments.length - 1, l = convertedTypeArguments.length -1; k > -1 && l > -1;) {
 					newConvertedTypeArguments[k] = convertedTypeArguments[l];
 					k--;
 					l--;
 				}
-				
+
 				ParameterizedQualifiedTypeReference convertedType =
 					new ParameterizedQualifiedTypeReference(
 							typeNames[0],
@@ -327,7 +335,7 @@ public class MissingTypesGuesser extends ASTVisitor {
 		}
 		return null;
 	}
-	
+
 	private TypeReference convert(ParameterizedSingleTypeReference typeRef) {
 		if (typeRef.resolvedType != null) {
 			TypeReference[] typeArguments = typeRef.typeArguments;
@@ -337,7 +345,7 @@ public class MissingTypesGuesser extends ASTVisitor {
 				convertedTypeArguments[i] = convert(typeArguments[i]);
 				if(convertedTypeArguments[i] == null) return null;
 			}
-			
+
 			if (typeRef.resolvedType.isValidBinding()) {
 				ParameterizedSingleTypeReference convertedType =
 					new ParameterizedSingleTypeReference(
@@ -352,10 +360,10 @@ public class MissingTypesGuesser extends ASTVisitor {
 				char[][] typeName = typeRef.getTypeName();
 				char[][][] typeNames = findTypeNames(typeName);
 				if(typeNames == null || typeNames.length == 0) return null;
-				
+
 				TypeReference[][] allConvertedTypeArguments = new TypeReference[typeNames[0].length][];
 				allConvertedTypeArguments[allConvertedTypeArguments.length - 1] = convertedTypeArguments;
-				
+
 				ParameterizedQualifiedTypeReference convertedType =
 					new ParameterizedQualifiedTypeReference(
 							typeNames[0],
@@ -372,7 +380,7 @@ public class MissingTypesGuesser extends ASTVisitor {
 		}
 		return null;
 	}
-	
+
 	private TypeReference convert(QualifiedTypeReference typeRef) {
 		if (typeRef.resolvedType != null) {
 			if (typeRef.resolvedType.isValidBinding()) {
@@ -383,7 +391,7 @@ public class MissingTypesGuesser extends ASTVisitor {
 			} else if((typeRef.resolvedType.problemId() & ProblemReasons.NotFound) != 0) {
 				// only the first token must be resolved
 				if(((ReferenceBinding)typeRef.resolvedType).compoundName.length != 1) return null;
-				
+
 				char[][] typeName = typeRef.getTypeName();
 				char[][][] typeNames = findTypeNames(typeName);
 				if(typeNames == null || typeNames.length == 0) return null;
@@ -398,7 +406,7 @@ public class MissingTypesGuesser extends ASTVisitor {
 		}
 		return null;
 	}
-	
+
 	private TypeReference convert(SingleTypeReference typeRef) {
 		if (typeRef.resolvedType != null) {
 			if (typeRef.resolvedType.isValidBinding()) {
@@ -421,7 +429,7 @@ public class MissingTypesGuesser extends ASTVisitor {
 		}
 		return null;
 	}
-	
+
 	private TypeReference convert(TypeReference typeRef) {
 		if (typeRef instanceof ParameterizedSingleTypeReference) {
 			return convert((ParameterizedSingleTypeReference)typeRef);
@@ -440,7 +448,7 @@ public class MissingTypesGuesser extends ASTVisitor {
 		}
 		return null;
 	}
-	
+
 	private TypeReference convert(Wildcard typeRef) {
 		TypeReference bound = typeRef.bound;
 		TypeReference convertedBound = null;
@@ -454,15 +462,15 @@ public class MissingTypesGuesser extends ASTVisitor {
 		convertedType.sourceEnd = typeRef.sourceEnd;
 		return convertedType;
 	}
-	
+
 	private char[][][] findTypeNames(char[][] missingTypeName) {
 		char[] missingSimpleName = missingTypeName[missingTypeName.length - 1];
 		final boolean isQualified = missingTypeName.length > 1;
-		final char[] missingFullyQualifiedName = 
+		final char[] missingFullyQualifiedName =
 			isQualified ? CharOperation.concatWith(missingTypeName, '.') : null;
 		final ArrayList results = new ArrayList();
 		ISearchRequestor storage = new ISearchRequestor() {
-			
+
 			public void acceptPackage(char[] packageName) {
 				// package aren't searched
 			}
@@ -479,40 +487,40 @@ public class MissingTypesGuesser extends ASTVisitor {
 			}
 			public void acceptBinding(char[] packageName, char[] bindingName, int bindingType, int modifiers, AccessRestriction accessRestriction) {
 				// TODO Auto-generated method stub
-				
+
 			}
-		
+
 		};
 		nameEnvironment.findExactTypes(missingSimpleName, true, IJavaSearchConstants.TYPE, storage);
 		if(results.size() == 0) return null;
 		return (char[][][])results.toArray(new char[results.size()][0][0]);
 	}
-	
+
 	private char[][] getOriginal(TypeReference typeRef) {
 		return (char[][])this.originalTypes.get(typeRef);
 	}
-	
+
 	private QualifiedTypeReference[] getSubstituedTypes() {
 		Set types = this.substituedTypes.keySet();
 		return (QualifiedTypeReference[]) types.toArray(new QualifiedTypeReference[types.size()]);
 	}
-	
+
 	private char[][][] getSubstitution(TypeReference typeRef) {
 		return (char[][][])this.substituedTypes.get(typeRef);
 	}
-	
+
 	public void guess(TypeReference typeRef, Scope scope, GuessedTypeRequestor requestor) {
 		this.substituedTypes = new HashMap();
 		this.originalTypes = new HashMap();
 		this.combinationsCount = 1;
-		
+
 		TypeReference convertedType = convert(typeRef);
-		
+
 		if(convertedType == null) return;
-		
+
 		QualifiedTypeReference[] substituedTypeNodes = this.getSubstituedTypes();
 		int length = substituedTypeNodes.length;
-		
+
 		int[] substitutionsIndexes = new int[substituedTypeNodes.length];
 		char[][][][] subtitutions = new char[substituedTypeNodes.length][][][];
 		char[][][] originalTypeNames = new char[substituedTypeNodes.length][][];
@@ -520,13 +528,13 @@ public class MissingTypesGuesser extends ASTVisitor {
 			subtitutions[i] = this.getSubstitution(substituedTypeNodes[i]);
 			originalTypeNames[i] = this.getOriginal(substituedTypeNodes[i]);
 		}
-		
+
 		ResolutionCleaner resolutionCleaner = new ResolutionCleaner();
 		for (int i = 0; i < this.combinationsCount; i++) {
-			
+
 			nextSubstitution(substituedTypeNodes, subtitutions, substitutionsIndexes);
-			
-			
+
+
 			this.problemFactory.startCheckingProblems();
 			TypeBinding guessedType = null;
 			switch (scope.kind) {
@@ -546,7 +554,7 @@ public class MissingTypesGuesser extends ASTVisitor {
 					Binding[] missingElements = new Binding[length];
 					int[] missingElementsStarts = new int[length];
 					int[] missingElementsEnds = new int[length];
-					
+
 					if(computeMissingElements(
 							substituedTypeNodes,
 							originalTypeNames,
@@ -569,7 +577,7 @@ public class MissingTypesGuesser extends ASTVisitor {
 			char[][][][] subtitutions,
 			int[] substitutionsIndexes) {
 		int length = substituedTypeNodes.length;
-		
+
 		done : for (int i = 0; i < length; i++) {
 			if(substitutionsIndexes[i] < subtitutions[i].length - 1) {
 				substitutionsIndexes[i]++;
@@ -578,7 +586,7 @@ public class MissingTypesGuesser extends ASTVisitor {
 				substitutionsIndexes[i] = 0;
 			}
 		}
-		
+
 		for (int i = 0; i < length; i++) {
 			QualifiedTypeReference qualifiedTypeReference = substituedTypeNodes[i];
 			qualifiedTypeReference.tokens = subtitutions[i][substitutionsIndexes[i]];

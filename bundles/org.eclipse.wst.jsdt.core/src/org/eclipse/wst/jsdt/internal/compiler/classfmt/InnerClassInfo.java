@@ -47,10 +47,10 @@ public char[] getEnclosingTypeName() {
 		// read outer class name
 		readOuterClassName = true;
 		if (outerClassNameIndex != 0) {
-			int utf8Offset = 
+			int utf8Offset =
 				constantPoolOffsets[u2At(
 					constantPoolOffsets[outerClassNameIndex] - structOffset + 1)]
-					- structOffset; 
+					- structOffset;
 			outerClassName = utf8At(utf8Offset + 3, u2At(utf8Offset + 1));
 		}
 
@@ -121,7 +121,7 @@ public String toString() {
 	if (getSourceName() != null) {
 		buffer.append(getSourceName());
 	}
-	return buffer.toString();   
+	return buffer.toString();
 }
 /**
  * This method is used to fully initialize the contents of the receiver. All methodinfos, fields infos

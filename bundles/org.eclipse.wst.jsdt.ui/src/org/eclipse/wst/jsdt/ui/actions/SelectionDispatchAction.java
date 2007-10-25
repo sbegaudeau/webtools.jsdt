@@ -11,20 +11,15 @@
 package org.eclipse.wst.jsdt.ui.actions;
 
 import org.eclipse.core.runtime.Assert;
-
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-
-import org.eclipse.jface.text.ITextSelection;
-
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchSite;
-
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaTextSelection;
 
 /**

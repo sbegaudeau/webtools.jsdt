@@ -13,21 +13,16 @@ package org.eclipse.wst.jsdt.internal.ui.callhierarchy;
 
 import java.util.Collection;
 
-import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.jface.viewers.ILabelDecorator;
-
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-
 import org.eclipse.wst.jsdt.internal.corext.callhierarchy.MethodWrapper;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredJavaElementLabels;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredString;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 class CallHierarchyLabelProvider extends AppearanceAwareLabelProvider {
     private static final long TEXTFLAGS= DEFAULT_TEXTFLAGS | JavaElementLabels.ALL_POST_QUALIFIED | JavaElementLabels.P_COMPRESSED;

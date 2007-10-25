@@ -15,18 +15,14 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import org.eclipse.core.runtime.preferences.IScopeContext;
-
 import org.eclipse.core.resources.IProject;
-
+import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
 import org.eclipse.wst.jsdt.internal.ui.preferences.PreferencesAccess;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.Profile;
+import org.eclipse.wst.jsdt.ui.JavaUI;
 
 
 

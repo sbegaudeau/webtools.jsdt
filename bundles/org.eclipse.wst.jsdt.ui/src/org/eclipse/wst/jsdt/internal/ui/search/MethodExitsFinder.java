@@ -40,7 +40,6 @@ import org.eclipse.wst.jsdt.core.dom.ThrowStatement;
 import org.eclipse.wst.jsdt.core.dom.TryStatement;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.dom.LocalVariableIndex;

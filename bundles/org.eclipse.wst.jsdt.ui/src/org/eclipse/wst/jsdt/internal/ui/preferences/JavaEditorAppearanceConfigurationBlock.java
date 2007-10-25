@@ -13,6 +13,11 @@ package org.eclipse.wst.jsdt.internal.ui.preferences;
 
 import java.util.ArrayList;
 
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.preference.ColorSelector;
+import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -30,18 +35,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.preference.ColorSelector;
-import org.eclipse.jface.preference.PreferenceConverter;
-import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.jface.resource.JFaceResources;
-
 import org.eclipse.ui.dialogs.PreferencesUtil;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**
  * Configures Java Editor hover preferences.

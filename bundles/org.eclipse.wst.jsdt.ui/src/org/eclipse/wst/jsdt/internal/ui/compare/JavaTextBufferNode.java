@@ -13,25 +13,19 @@ package org.eclipse.wst.jsdt.internal.ui.compare;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import org.eclipse.core.runtime.CoreException;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFileState;
-import org.eclipse.core.resources.IResource;
-
-import org.eclipse.swt.graphics.Image;
-
-import org.eclipse.jface.text.IDocument;
-
 import org.eclipse.compare.HistoryItem;
 import org.eclipse.compare.IEncodedStreamContentAccessor;
 import org.eclipse.compare.IResourceProvider;
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.ResourceNode;
 import org.eclipse.compare.structuremergeviewer.DocumentRangeNode;
-
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFileState;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 /**

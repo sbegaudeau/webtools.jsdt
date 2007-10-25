@@ -11,23 +11,18 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.fix;
 
-import org.eclipse.text.edits.TextEdit;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-
 import org.eclipse.ltk.core.refactoring.CategorizedTextEditGroup;
 import org.eclipse.ltk.core.refactoring.GroupCategory;
 import org.eclipse.ltk.core.refactoring.GroupCategorySet;
 import org.eclipse.ltk.core.refactoring.TextChange;
-
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.util.CompilationUnitSorter;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.SortMembersOperation.DefaultJavaElementComparator;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitChange;
-
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 
 public class SortMembersFix implements IFix {

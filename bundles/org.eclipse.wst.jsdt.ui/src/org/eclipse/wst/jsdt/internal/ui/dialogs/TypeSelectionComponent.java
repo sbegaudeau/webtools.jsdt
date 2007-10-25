@@ -14,6 +14,14 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.DialogSettings;
+import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.accessibility.AccessibleAdapter;
 import org.eclipse.swt.accessibility.AccessibleEvent;
@@ -43,30 +51,14 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.dialogs.DialogSettings;
-import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
-
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.XMLMemento;
-
 import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-
-import org.eclipse.wst.jsdt.ui.dialogs.ITypeSelectionComponent;
-import org.eclipse.wst.jsdt.ui.dialogs.TypeSelectionExtension;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
@@ -75,6 +67,8 @@ import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;
 import org.eclipse.wst.jsdt.internal.ui.util.TypeNameMatchLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.WorkingSetFilterActionGroup;
+import org.eclipse.wst.jsdt.ui.dialogs.ITypeSelectionComponent;
+import org.eclipse.wst.jsdt.ui.dialogs.TypeSelectionExtension;
 
 /**
  * @deprecated use {@link FilteredTypesSelectionDialog}

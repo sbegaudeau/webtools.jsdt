@@ -3,8 +3,6 @@
  */
 package org.eclipse.wst.jsdt.internal.ui.navigator;
 
-import org.eclipse.core.internal.resources.Folder;
-import org.eclipse.core.runtime.Path;
 
 /**
  * @author childsb

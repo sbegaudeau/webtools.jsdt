@@ -10,13 +10,11 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui.actions;
 
-import org.eclipse.swt.dnd.Clipboard;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
-
+import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchSite;
@@ -25,7 +23,6 @@ import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
-
 import org.eclipse.wst.jsdt.internal.ui.actions.CopyQualifiedNameAction;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.reorg.CopyToClipboardAction;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.reorg.CutAction;

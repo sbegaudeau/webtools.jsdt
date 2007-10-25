@@ -11,11 +11,8 @@
 package org.eclipse.wst.jsdt.ui;
 
 import org.eclipse.core.resources.IStorage;
-
-import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.jface.viewers.LabelProvider;
-
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.StorageLabelProvider;
 

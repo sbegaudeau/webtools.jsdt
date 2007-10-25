@@ -12,10 +12,15 @@ package org.eclipse.wst.jsdt.internal.core.search.matching;
 
 import java.io.IOException;
 
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.BindingKey;
+import org.eclipse.wst.jsdt.core.Flags;
+import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
-import org.eclipse.wst.jsdt.internal.core.index.*;
+import org.eclipse.wst.jsdt.internal.core.index.EntryResult;
+import org.eclipse.wst.jsdt.internal.core.index.Index;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 public class MethodPattern extends JavaSearchPattern  {
@@ -73,12 +78,12 @@ public MethodPattern(
 	boolean findDeclarations,
 	boolean findReferences,
 	boolean isFunction,
-	char[] selector, 
+	char[] selector,
 	char[] declaringQualification,
-	char[] declaringSimpleName,	
-	char[] returnQualification, 
+	char[] declaringSimpleName,
+	char[] returnQualification,
 	char[] returnSimpleName,
-	char[][] parameterQualifications, 
+	char[][] parameterQualifications,
 	char[][] parameterSimpleNames,
 	IType declaringType,
 	int matchRule) {
@@ -114,13 +119,13 @@ public MethodPattern(
 	boolean findDeclarations,
 	boolean findReferences,
 	boolean isFunction,
-	char[] selector, 
+	char[] selector,
 	char[] declaringQualification,
-	char[] declaringSimpleName,	
-	char[] returnQualification, 
+	char[] declaringSimpleName,
+	char[] returnQualification,
 	char[] returnSimpleName,
 	String returnSignature,
-	char[][] parameterQualifications, 
+	char[][] parameterQualifications,
 	char[][] parameterSimpleNames,
 	String[] parameterSignatures,
 	IMethod method,
@@ -129,16 +134,16 @@ public MethodPattern(
 	this(findDeclarations,
 		findReferences,
 		isFunction,
-		selector, 
+		selector,
 		declaringQualification,
-		declaringSimpleName,	
-		returnQualification, 
+		declaringSimpleName,
+		returnQualification,
 		returnSimpleName,
-		parameterQualifications, 
+		parameterQualifications,
 		parameterSimpleNames,
 		method.getDeclaringType(),
 		matchRule);
-	
+
 	// Set flags
 	try {
 		this.varargs = (method.getFlags() & Flags.AccVarargs) != 0;
@@ -165,7 +170,7 @@ public MethodPattern(
 		} else {
 			storeTypeSignaturesAndArguments(declaringType);
 		}
-	}	
+	}
 	// Store type signatures and arguments for return type
 	if (returnSignature != null) {
 		returnTypeSignatures = Util.splitTypeLevelsSignature(returnSignature);
@@ -196,14 +201,14 @@ public MethodPattern(
 	boolean findDeclarations,
 	boolean findReferences,
 	boolean isFunction,
-	char[] selector, 
+	char[] selector,
 	char[] declaringQualification,
-	char[] declaringSimpleName,	
+	char[] declaringSimpleName,
 	String declaringSignature,
-	char[] returnQualification, 
+	char[] returnQualification,
 	char[] returnSimpleName,
 	String returnSignature,
-	char[][] parameterQualifications, 
+	char[][] parameterQualifications,
 	char[][] parameterSimpleNames,
 	String[] parameterSignatures,
 	char[][] arguments,
@@ -212,12 +217,12 @@ public MethodPattern(
 	this(findDeclarations,
 		findReferences,
 		isFunction,
-		selector, 
+		selector,
 		declaringQualification,
-		declaringSimpleName,	
-		returnQualification, 
+		declaringSimpleName,
+		returnQualification,
 		returnSimpleName,
-		parameterQualifications, 
+		parameterQualifications,
 		parameterSimpleNames,
 		null,
 		matchRule);
@@ -274,7 +279,7 @@ public SearchPattern getBlankPattern() {
 }
 public char[][] getIndexCategories() {
 	if (this.findReferences)
-		return this.findDeclarations ? 
+		return this.findDeclarations ?
 				(isFunction ? FUNCTION_REF_AND_DECL_CATEGORIES : REF_AND_DECL_CATEGORIES)
 				: REF_CATEGORIES;
 	if (this.findDeclarations)
@@ -297,7 +302,7 @@ public boolean matchesDecodedKey(SearchPattern decodedPattern) {
 		&& matchesName(this.selector, pattern.selector);
 }
 /**
- * Returns whether a method declaration or message send must be resolved to 
+ * Returns whether a method declaration or message send must be resolved to
  * find out if this method pattern matches it.
  */
 protected boolean mustResolve() {
@@ -356,7 +361,7 @@ protected StringBuffer print(StringBuffer output) {
 	}
 	if (declaringQualification != null)
 		output.append(declaringQualification).append('.');
-	if (declaringSimpleName != null) 
+	if (declaringSimpleName != null)
 		output.append(declaringSimpleName).append('.');
 	else if (declaringQualification != null)
 		output.append("*."); //$NON-NLS-1$
@@ -376,11 +381,11 @@ protected StringBuffer print(StringBuffer output) {
 		}
 	}
 	output.append(')');
-	if (returnQualification != null) 
+	if (returnQualification != null)
 		output.append(" --> ").append(returnQualification).append('.'); //$NON-NLS-1$
 	else if (returnSimpleName != null)
 		output.append(" --> "); //$NON-NLS-1$
-	if (returnSimpleName != null) 
+	if (returnSimpleName != null)
 		output.append(returnSimpleName);
 	else if (returnQualification != null)
 		output.append("*"); //$NON-NLS-1$

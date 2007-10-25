@@ -12,17 +12,13 @@
 package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
 
-import org.eclipse.core.runtime.IPath;
-
 import org.eclipse.core.resources.IStorage;
-
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.resource.ImageDescriptor;
-
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.core.IJarEntryResource;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 

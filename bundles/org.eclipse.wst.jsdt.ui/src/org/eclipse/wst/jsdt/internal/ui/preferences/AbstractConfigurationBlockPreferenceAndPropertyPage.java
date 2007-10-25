@@ -10,23 +10,17 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.preferences;
 
-import org.eclipse.core.runtime.preferences.IScopeContext;
-
 import org.eclipse.core.resources.IProject;
-
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-
+import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.preference.IPreferencePageContainer;
-
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.eclipse.ui.preferences.IWorkingCopyManager;
 import org.eclipse.ui.preferences.WorkingCopyManager;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-
 import org.osgi.service.prefs.BackingStoreException;
 
 /**

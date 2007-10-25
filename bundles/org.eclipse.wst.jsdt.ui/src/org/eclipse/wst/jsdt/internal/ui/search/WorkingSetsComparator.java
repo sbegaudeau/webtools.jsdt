@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.search;
 
-import com.ibm.icu.text.Collator;
 import java.util.Comparator;
+
 import org.eclipse.ui.IWorkingSet;
+
+import com.ibm.icu.text.Collator;
 
 class WorkingSetsComparator implements Comparator {
 

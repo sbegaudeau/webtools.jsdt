@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.swt.custom.StyleRange;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.DocumentEvent;
@@ -30,7 +28,7 @@ import org.eclipse.jface.text.ITextPresentationListener;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TextPresentation;
-
+import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightingManager.HighlightedPosition;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightingManager.Highlighting;

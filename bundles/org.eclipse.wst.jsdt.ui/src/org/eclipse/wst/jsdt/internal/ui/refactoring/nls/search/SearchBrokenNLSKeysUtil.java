@@ -11,9 +11,7 @@
 package org.eclipse.wst.jsdt.internal.ui.refactoring.nls.search;
 
 import org.eclipse.core.resources.IFile;
-
 import org.eclipse.search.ui.NewSearchUI;
-
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 

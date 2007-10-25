@@ -51,7 +51,7 @@
 <!-- Extension Point: Inferrence Support                                            -->
 <!-- =================================================================================== -->
 
-<extension-point id="inferrenceSupport" name="Support for Inferrencing" schema="schema/inferrenceSupport.exsd"/>
+<extension-point id="inferrenceSupport" name="%extension-point.name.0" schema="schema/inferrenceSupport.exsd"/>
 
 <!-- =================================================================================== -->
 <!-- Extension: JavaScript Nature                                                              -->

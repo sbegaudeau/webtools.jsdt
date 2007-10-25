@@ -12,7 +12,6 @@
 package org.eclipse.wst.jsdt.ui.text.java;
 
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 
 

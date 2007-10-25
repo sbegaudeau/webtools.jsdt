@@ -24,7 +24,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 
 public class JavaSearchPattern extends SearchPattern implements IIndexConstants {
-	
+
 	/*
 	 * Whether this pattern is case sensitive.
 	 */
@@ -79,7 +79,7 @@ public class JavaSearchPattern extends SearchPattern implements IIndexConstants 
 		this.matchCompatibility = rule & MATCH_COMPATIBILITY_MASK;
 		this.matchMode = rule & MATCH_MODE_MASK;
 	}
-	
+
 	public SearchPattern getBlankPattern() {
 		return null;
 	}
@@ -181,13 +181,13 @@ public class JavaSearchPattern extends SearchPattern implements IIndexConstants 
 	public final boolean hasTypeParameters() {
 		return !hasSignatures() && hasTypeArguments();
 	}
-	
+
 	/**
 	 * Return whether two suffixes are compatible.
-	 * 
+	 *
 	 * Note that obvious compatibility values as equals and {@link IIndexConstants#TYPE_SUFFIX}
 	 * has to be tested by caller to avoid unnecessary method call...
-	 * 
+	 *
 	 * @param typeSuffix
 	 * @param patternSuffix
 	 * @return true if suffixes are compatible, false otherwise
@@ -240,7 +240,7 @@ public class JavaSearchPattern extends SearchPattern implements IIndexConstants 
 				}
 				return false;
 		}
-		
+
 		// Default behavior is to match suffixes
 		return true;
 	}
@@ -256,7 +256,7 @@ public class JavaSearchPattern extends SearchPattern implements IIndexConstants 
 			output.append("camel case + "); //$NON-NLS-1$
 		}
 		switch(getMatchMode()) {
-			case R_EXACT_MATCH : 
+			case R_EXACT_MATCH :
 				output.append("exact match,"); //$NON-NLS-1$
 				break;
 			case R_PREFIX_MATCH :

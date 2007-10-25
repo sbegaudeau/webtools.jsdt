@@ -13,9 +13,8 @@ package org.eclipse.wst.jsdt.internal.ui.text.spelling;
 
 import java.net.URL;
 
-import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.AbstractSpellDictionary;
-
 import org.eclipse.wst.jsdt.internal.ui.text.javadoc.IHtmlTagConstants;
+import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.AbstractSpellDictionary;
 
 /**
  * Dictionary for html tags.

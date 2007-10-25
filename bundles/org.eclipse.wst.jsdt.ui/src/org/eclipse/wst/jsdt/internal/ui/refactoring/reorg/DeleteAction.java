@@ -13,22 +13,18 @@ package org.eclipse.wst.jsdt.internal.ui.refactoring.reorg;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.IStructuredSelection;
-
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchSite;
-import org.eclipse.ui.actions.DeleteResourceAction;
 import org.eclipse.ui.PlatformUI;
-
+import org.eclipse.ui.actions.DeleteResourceAction;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringExecutionStarter;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ReorgUtils;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
-
 import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
 
 

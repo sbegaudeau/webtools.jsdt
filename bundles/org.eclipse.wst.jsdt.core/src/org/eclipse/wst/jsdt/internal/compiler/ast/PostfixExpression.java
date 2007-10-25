@@ -11,8 +11,8 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
 public class PostfixExpression extends CompoundAssignment {
 
@@ -30,8 +30,8 @@ public PostfixExpression(Expression lhs, Expression expression, int operator, in
  * @param valueRequired boolean
  */
 public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
-	// various scenarii are possible, setting an array reference, 
-	// a field reference, a blank final field reference, a field of an enclosing instance or 
+	// various scenarii are possible, setting an array reference,
+	// a field reference, a blank final field reference, a field of an enclosing instance or
 	// just a local variable.
 
 	int pc = codeStream.position;
@@ -48,13 +48,13 @@ public String operatorToString() {
 			return "++"; //$NON-NLS-1$
 		case MINUS :
 			return "--"; //$NON-NLS-1$
-	} 
+	}
 	return "unknown operator"; //$NON-NLS-1$
 }
 
 public StringBuffer printExpressionNoParenthesis(int indent, StringBuffer output) {
-	return this.lhs.printExpression(indent, output).append(' ').append(operatorToString()); 
-} 
+	return this.lhs.printExpression(indent, output).append(' ').append(operatorToString());
+}
 
 public boolean restrainUsageToNumericTypes() {
 	return true;

@@ -13,30 +13,23 @@ package org.eclipse.wst.jsdt.internal.ui.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-
+import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.mapping.IModelProviderDescriptor;
 import org.eclipse.core.resources.mapping.ModelProvider;
 import org.eclipse.core.resources.mapping.ResourceMapping;
-
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.ltk.core.refactoring.RefactoringDescriptorProxy;
+import org.eclipse.ltk.ui.refactoring.model.AbstractSynchronizationCompareAdapter;
+import org.eclipse.team.core.mapping.ISynchronizationContext;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
-
-import org.eclipse.compare.structuremergeviewer.ICompareInput;
-
-import org.eclipse.team.core.mapping.ISynchronizationContext;
-
-import org.eclipse.ltk.core.refactoring.RefactoringDescriptorProxy;
-import org.eclipse.ltk.ui.refactoring.model.AbstractSynchronizationCompareAdapter;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 /**

@@ -14,14 +14,15 @@ import java.io.IOException;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
-import org.eclipse.wst.jsdt.internal.core.index.*;
+import org.eclipse.wst.jsdt.internal.core.index.EntryResult;
+import org.eclipse.wst.jsdt.internal.core.index.Index;
 
 public class MultiTypeDeclarationPattern extends JavaSearchPattern {
 
 public char[][] simpleNames;
 public char[][] qualifications;
 
-// set to CLASS_SUFFIX for only matching classes 
+// set to CLASS_SUFFIX for only matching classes
 // set to INTERFACE_SUFFIX for only matching interfaces
 // set to ENUM_SUFFIX for only matching enums
 // set to ANNOTATION_TYPE_SUFFIX for only matching annotation types
@@ -72,7 +73,7 @@ public char[][] getIndexCategories() {
 }
 public boolean matchesDecodedKey(SearchPattern decodedPattern) {
 	QualifiedTypeDeclarationPattern pattern = (QualifiedTypeDeclarationPattern) decodedPattern;
-	
+
 	// check type suffix
 	if (this.typeSuffix != pattern.typeSuffix && typeSuffix != TYPE_SUFFIX) {
 		if (!matchDifferentTypeSuffixes(this.typeSuffix, pattern.typeSuffix)) {

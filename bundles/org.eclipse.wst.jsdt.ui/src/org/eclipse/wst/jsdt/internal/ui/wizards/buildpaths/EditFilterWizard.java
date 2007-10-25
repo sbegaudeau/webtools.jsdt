@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths;
 
 import org.eclipse.core.runtime.IPath;
-
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 
 public class EditFilterWizard extends BuildPathWizard {

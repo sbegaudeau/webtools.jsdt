@@ -12,8 +12,8 @@ package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.wst.jsdt.core.ISourceRange;
 
-/** 
- * Element info for ISourceReference elements. 
+/**
+ * Element info for ISourceReference elements.
  */
 /* package */ class SourceRefElementInfo extends JavaElementInfo {
 	protected int fSourceRangeStart, fSourceRangeEnd;

@@ -24,15 +24,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
-
-import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.jface.resource.ImageDescriptor;
-
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
-
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
 import org.eclipse.wst.jsdt.core.Flags;
@@ -44,17 +40,14 @@ import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
-
 import org.eclipse.wst.jsdt.internal.corext.util.SuperTypeHierarchyCache;
-
-import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.PositionBasedCompletionProposal;
 import org.eclipse.wst.jsdt.internal.ui.util.StringMatcher;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageDescriptorRegistry;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
+import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
 
 /**
  * This class triggers a code-completion that will track all local ane member variables for later

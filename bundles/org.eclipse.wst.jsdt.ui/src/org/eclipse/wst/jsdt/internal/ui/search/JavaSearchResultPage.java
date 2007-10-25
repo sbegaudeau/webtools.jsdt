@@ -12,20 +12,10 @@ package org.eclipse.wst.jsdt.internal.ui.search;
 
 import java.util.HashMap;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Item;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.Tree;
-
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -41,7 +31,19 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
-
+import org.eclipse.search.ui.IContextMenuConstants;
+import org.eclipse.search.ui.ISearchResultViewPart;
+import org.eclipse.search.ui.NewSearchUI;
+import org.eclipse.search.ui.text.AbstractTextSearchResult;
+import org.eclipse.search.ui.text.AbstractTextSearchViewPage;
+import org.eclipse.search.ui.text.Match;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Item;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IMemento;
@@ -49,34 +51,18 @@ import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.dialogs.PreferencesUtil;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.IShowInTargetList;
 import org.eclipse.ui.part.ResourceTransfer;
 import org.eclipse.ui.texteditor.ITextEditor;
-
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
-
-import org.eclipse.ui.ide.IDE;
-
-import org.eclipse.search.ui.IContextMenuConstants;
-import org.eclipse.search.ui.ISearchResultViewPart;
-import org.eclipse.search.ui.NewSearchUI;
-import org.eclipse.search.ui.text.AbstractTextSearchResult;
-import org.eclipse.search.ui.text.AbstractTextSearchViewPage;
-import org.eclipse.search.ui.text.Match;
-
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
-import org.eclipse.wst.jsdt.ui.search.IMatchPresentation;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.actions.CopyQualifiedNameAction;
@@ -88,6 +74,9 @@ import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.DecoratingJavaLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ProblemTableViewer;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ProblemTreeViewer;
+import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
+import org.eclipse.wst.jsdt.ui.search.IMatchPresentation;
 
 public class JavaSearchResultPage extends AbstractTextSearchViewPage implements IAdaptable {
 	

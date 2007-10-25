@@ -12,10 +12,15 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.flow.InsideSubRoutineFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class SynchronizedStatement extends SubRoutineStatement {
 
@@ -49,7 +54,7 @@ public FlowInfo analyseCode(
 //	this.preSynchronizedInitStateIndex =
 //		currentScope.methodScope().recordInitializationStates(flowInfo);
     // TODO (philippe) shouldn't it be protected by a check whether reachable statement ?
-    
+
 	// mark the synthetic variable as being used
 	synchroVariable.useFlag = LocalVariableBinding.USED;
 
@@ -184,7 +189,7 @@ public void resolve(BlockScope upperScope) {
 			break;
 		case T_null :
 			scope.problemReporter().invalidNullToSynchronize(expression);
-			break; 
+			break;
 	}
 	//continue even on errors in order to have the TC done into the statements
 	synchroVariable = new LocalVariableBinding(SecretLocalDeclarationName, type, ClassFileConstants.AccDefault, false);
@@ -199,7 +204,7 @@ public StringBuffer printStatement(int indent, StringBuffer output) {
 	output.append("synchronized ("); //$NON-NLS-1$
 	expression.printExpression(0, output).append(')');
 	output.append('\n');
-	return block.printStatement(indent + 1, output); 
+	return block.printStatement(indent + 1, output);
 }
 
 public void traverse(ASTVisitor visitor, BlockScope blockScope) {

@@ -11,11 +11,18 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.impl.*;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.flow.UnconditionalFlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.impl.BooleanConstant;
+import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class EqualExpression extends BinaryExpression {
 
@@ -23,7 +30,7 @@ public class EqualExpression extends BinaryExpression {
 		super(left,right,operator);
 	}
 	private void checkNullComparison(BlockScope scope, FlowContext flowContext, FlowInfo flowInfo, FlowInfo initsWhenTrue, FlowInfo initsWhenFalse) {
-		
+
 		LocalVariableBinding local = this.left.localVariableBinding();
 		if (local != null && (local.type.tagBits & TagBits.IsBaseType) == 0) {
 			checkVariableComparison(scope, flowContext, flowInfo, initsWhenTrue, initsWhenFalse, local, right.nullStatus(flowInfo), this.left);
@@ -37,12 +44,12 @@ public class EqualExpression extends BinaryExpression {
 		switch (nullStatus) {
 		case FlowInfo.NULL :
 			if (((this.bits & OperatorMASK) >> OperatorSHIFT) == EQUAL_EQUAL) {
-				flowContext.recordUsingNullReference(scope, local, reference, 
+				flowContext.recordUsingNullReference(scope, local, reference,
 						FlowContext.CAN_ONLY_NULL_NON_NULL | FlowContext.IN_COMPARISON_NULL, flowInfo);
 				initsWhenTrue.markAsComparedEqualToNull(local); // from thereon it is set
 				initsWhenFalse.markAsComparedEqualToNonNull(local); // from thereon it is set
 			} else {
-				flowContext.recordUsingNullReference(scope, local, reference, 
+				flowContext.recordUsingNullReference(scope, local, reference,
 						FlowContext.CAN_ONLY_NULL_NON_NULL | FlowContext.IN_COMPARISON_NON_NULL, flowInfo);
 				initsWhenTrue.markAsComparedEqualToNonNull(local); // from thereon it is set
 				initsWhenFalse.markAsComparedEqualToNull(local); // from thereon it is set
@@ -50,49 +57,49 @@ public class EqualExpression extends BinaryExpression {
 			break;
 		case FlowInfo.NON_NULL :
 			if (((this.bits & OperatorMASK) >> OperatorSHIFT) == EQUAL_EQUAL) {
-				flowContext.recordUsingNullReference(scope, local, reference, 
+				flowContext.recordUsingNullReference(scope, local, reference,
 						FlowContext.CAN_ONLY_NULL | FlowContext.IN_COMPARISON_NON_NULL, flowInfo);
 				initsWhenTrue.markAsComparedEqualToNonNull(local); // from thereon it is set
 			} else {
-				flowContext.recordUsingNullReference(scope, local, reference, 
+				flowContext.recordUsingNullReference(scope, local, reference,
 						FlowContext.CAN_ONLY_NULL | FlowContext.IN_COMPARISON_NULL, flowInfo);
 			}
 			break;
-	}	
+	}
 	// we do not impact enclosing try context because this kind of protection
 	// does not preclude the variable from being null in an enclosing scope
 	}
-	
+
 	public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
 		FlowInfo result;
 		if (((bits & OperatorMASK) >> OperatorSHIFT) == EQUAL_EQUAL) {
 			if ((left.constant != Constant.NotAConstant) && (left.constant.typeID() == T_boolean)) {
 				if (left.constant.booleanValue()) { //  true == anything
-					//  this is equivalent to the right argument inits 
+					//  this is equivalent to the right argument inits
 					result = right.analyseCode(currentScope, flowContext, flowInfo);
 				} else { // false == anything
 					//  this is equivalent to the right argument inits negated
 					result = right.analyseCode(currentScope, flowContext, flowInfo).asNegatedCondition();
 				}
-			} 
+			}
 			else if ((right.constant != Constant.NotAConstant) && (right.constant.typeID() == T_boolean)) {
 				if (right.constant.booleanValue()) { //  anything == true
-					//  this is equivalent to the left argument inits 
+					//  this is equivalent to the left argument inits
 					result = left.analyseCode(currentScope, flowContext, flowInfo);
 				} else { // anything == false
 					//  this is equivalent to the right argument inits negated
 					result = left.analyseCode(currentScope, flowContext, flowInfo).asNegatedCondition();
 				}
-			} 
+			}
 			else {
 				result = right.analyseCode(
-					currentScope, flowContext, 
+					currentScope, flowContext,
 					left.analyseCode(currentScope, flowContext, flowInfo).unconditionalInits()).unconditionalInits();
 			}
 		} else { //NOT_EQUAL :
 			if ((left.constant != Constant.NotAConstant) && (left.constant.typeID() == T_boolean)) {
 				if (!left.constant.booleanValue()) { //  false != anything
-					//  this is equivalent to the right argument inits 
+					//  this is equivalent to the right argument inits
 					result = right.analyseCode(currentScope, flowContext, flowInfo);
 				} else { // true != anything
 					//  this is equivalent to the right argument inits negated
@@ -101,22 +108,22 @@ public class EqualExpression extends BinaryExpression {
 			}
 			else if ((right.constant != Constant.NotAConstant) && (right.constant.typeID() == T_boolean)) {
 				if (!right.constant.booleanValue()) { //  anything != false
-					//  this is equivalent to the right argument inits 
+					//  this is equivalent to the right argument inits
 					result = left.analyseCode(currentScope, flowContext, flowInfo);
 				} else { // anything != true
 					//  this is equivalent to the right argument inits negated
 					result = left.analyseCode(currentScope, flowContext, flowInfo).asNegatedCondition();
 				}
-			} 
+			}
 			else {
 				result = right.analyseCode(
-					currentScope, flowContext, 
+					currentScope, flowContext,
 					left.analyseCode(currentScope, flowContext, flowInfo).unconditionalInits()).
 					/* unneeded since we flatten it: asNegatedCondition(). */
 					unconditionalInits();
 			}
 		}
-		if (result instanceof UnconditionalFlowInfo && 
+		if (result instanceof UnconditionalFlowInfo &&
 				(result.tagBits & FlowInfo.UNREACHABLE) == 0) { // the flow info is flat
 			result = FlowInfo.conditional(result.copy(), result.copy());
 			// TODO (maxime) check, reintroduced copy
@@ -124,7 +131,7 @@ public class EqualExpression extends BinaryExpression {
 	  checkNullComparison(currentScope, flowContext, result, result.initsWhenTrue(), result.initsWhenFalse());
 	  return result;
 	}
-	
+
 	public final void computeConstant(TypeBinding leftType, TypeBinding rightType) {
 		if ((this.left.constant != Constant.NotAConstant) && (this.right.constant != Constant.NotAConstant)) {
 			this.constant =
@@ -148,15 +155,15 @@ public class EqualExpression extends BinaryExpression {
 	 * @param valueRequired boolean
 	 */
 	public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
-	
+
 		int pc = codeStream.position;
 		if (constant != Constant.NotAConstant) {
-			if (valueRequired) 
+			if (valueRequired)
 				codeStream.generateConstant(constant, implicitConversion);
 			codeStream.recordPositionsFrom(pc, this.sourceStart);
 			return;
 		}
-		
+
 		if ((left.implicitConversion & COMPILE_TYPE_MASK) /*compile-time*/ == T_boolean) {
 			generateBooleanEqual(currentScope, codeStream, valueRequired);
 		} else {
@@ -172,7 +179,7 @@ public class EqualExpression extends BinaryExpression {
 	 *	Optimized operations are: == and !=
 	 */
 	public void generateOptimizedBoolean(BlockScope currentScope, CodeStream codeStream, BranchLabel trueLabel, BranchLabel falseLabel, boolean valueRequired) {
-	
+
 		if (constant != Constant.NotAConstant) {
 			super.generateOptimizedBoolean(currentScope, codeStream, trueLabel, falseLabel, valueRequired);
 			return;
@@ -198,9 +205,9 @@ public class EqualExpression extends BinaryExpression {
 	 * Note this code does not optimize conditional constants !!!!
 	 */
 	public void generateBooleanEqual(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
-	
-		// optimized cases: <something equivalent to true> == x, <something equivalent to false> == x, 
-		// optimized cases: <something equivalent to false> != x, <something equivalent to true> != x, 
+
+		// optimized cases: <something equivalent to true> == x, <something equivalent to false> == x,
+		// optimized cases: <something equivalent to false> != x, <something equivalent to true> != x,
 		boolean isEqualOperator = ((this.bits & OperatorMASK) >> OperatorSHIFT) == EQUAL_EQUAL;
 		Constant cst = left.optimizedBooleanConstant();
 		if (cst != Constant.NotAConstant) {
@@ -237,7 +244,7 @@ public class EqualExpression extends BinaryExpression {
 					BranchLabel falseLabel = new BranchLabel(codeStream);
 					left.generateCode(currentScope, codeStream, false);
 					right.generateOptimizedBoolean(currentScope, codeStream, null, falseLabel, valueRequired);
-					// comparison is TRUE 
+					// comparison is TRUE
 					codeStream.iconst_0();
 					if ((bits & IsReturnedValue) != 0){
 						codeStream.generateImplicitConversion(this.implicitConversion);
@@ -266,7 +273,7 @@ public class EqualExpression extends BinaryExpression {
 //				}
 			}
 			return;
-		} 
+		}
 		cst = right.optimizedBooleanConstant();
 		if (cst != Constant.NotAConstant) {
 			if (cst.booleanValue() == isEqualOperator) {
@@ -279,7 +286,7 @@ public class EqualExpression extends BinaryExpression {
 					BranchLabel falseLabel = new BranchLabel(codeStream);
 					left.generateOptimizedBoolean(currentScope, codeStream, null, falseLabel, valueRequired);
 					right.generateCode(currentScope, codeStream, false);
-					// comparison is TRUE 
+					// comparison is TRUE
 					codeStream.iconst_0();
 					if ((bits & IsReturnedValue) != 0){
 						codeStream.generateImplicitConversion(this.implicitConversion);
@@ -308,7 +315,7 @@ public class EqualExpression extends BinaryExpression {
 //				}
 			}
 			return;
-		} 
+		}
 		// default case
 		left.generateCode(currentScope, codeStream, valueRequired);
 		right.generateCode(currentScope, codeStream, valueRequired);
@@ -317,7 +324,7 @@ public class EqualExpression extends BinaryExpression {
 			if (isEqualOperator) {
 				BranchLabel falseLabel;
 				codeStream.if_icmpne(falseLabel = new BranchLabel(codeStream));
-				// comparison is TRUE 
+				// comparison is TRUE
 				codeStream.iconst_1();
 				if ((bits & IsReturnedValue) != 0){
 					codeStream.generateImplicitConversion(this.implicitConversion);
@@ -335,18 +342,18 @@ public class EqualExpression extends BinaryExpression {
 					endLabel.place();
 				}
 			} else {
-				codeStream.ixor();				
+				codeStream.ixor();
 			}
 		}
 	}
-	
+
 	/**
 	 * Boolean generation for == with boolean operands
 	 *
 	 * Note this code does not optimize conditional constants !!!!
 	 */
 	public void generateOptimizedBooleanEqual(BlockScope currentScope, CodeStream codeStream, BranchLabel trueLabel, BranchLabel falseLabel, boolean valueRequired) {
-	
+
 		// optimized cases: true == x, false == x
 		if (left.constant != Constant.NotAConstant) {
 			boolean inline = left.constant.booleanValue();
@@ -377,14 +384,14 @@ public class EqualExpression extends BinaryExpression {
 			}
 		}
 		// reposition the endPC
-		codeStream.updateLastRecordedEndPC(currentScope, codeStream.position);					
+		codeStream.updateLastRecordedEndPC(currentScope, codeStream.position);
 	}
 	/**
 	 * Boolean generation for == with non-boolean operands
 	 *
 	 */
 	public void generateNonBooleanEqual(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
-	
+
 		boolean isEqualOperator = ((this.bits & OperatorMASK) >> OperatorSHIFT) == EQUAL_EQUAL;
 		if (((left.implicitConversion & IMPLICIT_CONVERSION_MASK) >> 4) == T_int) {
 			Constant cst;
@@ -398,7 +405,7 @@ public class EqualExpression extends BinaryExpression {
 					} else {
 						codeStream.ifeq(falseLabel);
 					}
-					// comparison is TRUE 
+					// comparison is TRUE
 					codeStream.iconst_1();
 					if ((bits & IsReturnedValue) != 0){
 						codeStream.generateImplicitConversion(this.implicitConversion);
@@ -415,7 +422,7 @@ public class EqualExpression extends BinaryExpression {
 						codeStream.iconst_0();
 						endLabel.place();
 					}
-				}				
+				}
 				return;
 			}
 			if ((cst = right.constant) != Constant.NotAConstant && cst.intValue() == 0) {
@@ -428,7 +435,7 @@ public class EqualExpression extends BinaryExpression {
 					} else {
 						codeStream.ifeq(falseLabel);
 					}
-					// comparison is TRUE 
+					// comparison is TRUE
 					codeStream.iconst_1();
 					if ((bits & IsReturnedValue) != 0){
 						codeStream.generateImplicitConversion(this.implicitConversion);
@@ -445,9 +452,9 @@ public class EqualExpression extends BinaryExpression {
 						codeStream.iconst_0();
 						endLabel.place();
 					}
-				}				
+				}
 				return;
-			}			
+			}
 		}
 
 		// null cases
@@ -471,7 +478,7 @@ public class EqualExpression extends BinaryExpression {
 					} else {
 						codeStream.ifnull(falseLabel);
 					}
-					// comparison is TRUE 
+					// comparison is TRUE
 					codeStream.iconst_1();
 					if ((bits & IsReturnedValue) != 0){
 						codeStream.generateImplicitConversion(this.implicitConversion);
@@ -501,7 +508,7 @@ public class EqualExpression extends BinaryExpression {
 				} else {
 					codeStream.ifnull(falseLabel);
 				}
-				// comparison is TRUE 
+				// comparison is TRUE
 				codeStream.iconst_1();
 				if ((bits & IsReturnedValue) != 0){
 					codeStream.generateImplicitConversion(this.implicitConversion);
@@ -518,10 +525,10 @@ public class EqualExpression extends BinaryExpression {
 					codeStream.iconst_0();
 					endLabel.place();
 				}
-			}				
+			}
 			return;
 		}
-	
+
 		// default case
 		left.generateCode(currentScope, codeStream, valueRequired);
 		right.generateCode(currentScope, codeStream, valueRequired);
@@ -566,9 +573,9 @@ public class EqualExpression extends BinaryExpression {
 						break;
 					default :
 						codeStream.if_acmpeq(falseLabel);
-				}				
+				}
 			}
-			// comparison is TRUE 
+			// comparison is TRUE
 			codeStream.iconst_1();
 			if ((bits & IsReturnedValue) != 0){
 				codeStream.generateImplicitConversion(this.implicitConversion);
@@ -584,16 +591,16 @@ public class EqualExpression extends BinaryExpression {
 				falseLabel.place();
 				codeStream.iconst_0();
 				endLabel.place();
-			}			
+			}
 		}
 	}
-	
+
 	/**
 	 * Boolean generation for == with non-boolean operands
 	 *
 	 */
 	public void generateOptimizedNonBooleanEqual(BlockScope currentScope, CodeStream codeStream, BranchLabel trueLabel, BranchLabel falseLabel, boolean valueRequired) {
-	
+
 		int pc = codeStream.position;
 		Constant inline;
 		if ((inline = right.constant) != Constant.NotAConstant) {
@@ -696,7 +703,7 @@ public class EqualExpression extends BinaryExpression {
 			codeStream.recordPositionsFrom(pc, this.sourceStart);
 			return;
 		}
-	
+
 		// default case
 		left.generateCode(currentScope, codeStream, valueRequired);
 		right.generateCode(currentScope, codeStream, valueRequired);
@@ -757,21 +764,21 @@ public class EqualExpression extends BinaryExpression {
 		return false;
 	}
 	public TypeBinding resolveType(BlockScope scope) {
-	
+
 		constant = Constant.NotAConstant;
 			boolean leftIsCast, rightIsCast;
 			if ((leftIsCast = left instanceof CastExpression) == true) left.bits |= DisableUnnecessaryCastCheck; // will check later on
 			TypeBinding originalLeftType = left.resolveType(scope);
-	
+
 			if ((rightIsCast = right instanceof CastExpression) == true) right.bits |= DisableUnnecessaryCastCheck; // will check later on
 			TypeBinding originalRightType = right.resolveType(scope);
-	
+
 		// always return BooleanBinding
 		if (originalLeftType == null || originalRightType == null){
-			constant = Constant.NotAConstant;		
+			constant = Constant.NotAConstant;
 			return null;
 		}
-	
+
 		// autoboxing support
 		boolean use15specifics = scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5;
 		TypeBinding leftType = originalLeftType, rightType = originalRightType;
@@ -794,7 +801,7 @@ public class EqualExpression extends BinaryExpression {
 		if ( leftType.isBasicType() && rightType.isBasicType()) {
 			int leftTypeID = leftType.id;
 			int rightTypeID = rightType.id;
-	
+
 			// the code is an int
 			// (cast)  left   == (cast)  right --> result
 			//  0000   0000       0000   0000      0000
@@ -802,7 +809,7 @@ public class EqualExpression extends BinaryExpression {
 			int operatorSignature = OperatorSignatures[EQUAL_EQUAL][ (leftTypeID << 4) + rightTypeID];
 			left.computeConversion(scope, TypeBinding.wellKnownType(scope, (operatorSignature >>> 16) & 0x0000F), originalLeftType);
 			right.computeConversion(scope, TypeBinding.wellKnownType(scope, (operatorSignature >>> 8) & 0x0000F), originalRightType);
-			bits |= operatorSignature & 0xF;		
+			bits |= operatorSignature & 0xF;
 			if ((operatorSignature & 0x0000F) == T_undefined) {
 				constant = Constant.NotAConstant;
 				scope.problemReporter().invalidOperator(this, leftType, rightType);
@@ -815,12 +822,12 @@ public class EqualExpression extends BinaryExpression {
 			computeConstant(leftType, rightType);
 			return this.resolvedType = TypeBinding.BOOLEAN;
 		}
-	
-		// Object references 
+
+		// Object references
 		// spec 15.20.3
 		if ((!leftType.isBaseType() || leftType == TypeBinding.NULL) // cannot compare: Object == (int)0
 				&& (!rightType.isBaseType() || rightType == TypeBinding.NULL)
-				&& (this.checkCastTypesCompatibility(scope, leftType, rightType, null) 
+				&& (this.checkCastTypesCompatibility(scope, leftType, rightType, null)
 						|| this.checkCastTypesCompatibility(scope, rightType, leftType, null))) {
 
 			// (special case for String)
@@ -838,9 +845,9 @@ public class EqualExpression extends BinaryExpression {
 			if (unnecessaryLeftCast || unnecessaryRightCast) {
 				TypeBinding alternateLeftType = unnecessaryLeftCast ? ((CastExpression)left).expression.resolvedType : leftType;
 				TypeBinding alternateRightType = unnecessaryRightCast ? ((CastExpression)right).expression.resolvedType : rightType;
-				if (this.checkCastTypesCompatibility(scope, alternateLeftType, alternateRightType, null) 
+				if (this.checkCastTypesCompatibility(scope, alternateLeftType, alternateRightType, null)
 						|| this.checkCastTypesCompatibility(scope, alternateRightType, alternateLeftType, null)) {
-					if (unnecessaryLeftCast) scope.problemReporter().unnecessaryCast((CastExpression)left); 
+					if (unnecessaryLeftCast) scope.problemReporter().unnecessaryCast((CastExpression)left);
 					if (unnecessaryRightCast) scope.problemReporter().unnecessaryCast((CastExpression)right);
 				}
 			}

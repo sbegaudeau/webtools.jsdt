@@ -34,8 +34,11 @@ package org.eclipse.wst.jsdt.internal.codeassist.complete;
  * before the cursor.
  */
 
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class CompletionOnQualifiedAllocationExpression extends QualifiedAllocationExpression {
 public TypeBinding resolveType(BlockScope scope) {
@@ -44,7 +47,7 @@ public TypeBinding resolveType(BlockScope scope) {
 		for (int a = argsLength; --a >= 0;)
 			arguments[a].resolveType(scope);
 	}
-	
+
 	if (enclosingInstance != null) {
 		TypeBinding enclosingType = enclosingInstance.resolveType(scope);
 		if (enclosingType == null || !(enclosingType instanceof ReferenceBinding)) {
@@ -64,10 +67,10 @@ public TypeBinding resolveType(BlockScope scope) {
 	throw new CompletionNodeFound(this, this.resolvedType, scope);
 }
 public StringBuffer printExpression(int indent, StringBuffer output) {
-	if (this.enclosingInstance == null) 
+	if (this.enclosingInstance == null)
 		output.append("<CompleteOnAllocationExpression:" );  //$NON-NLS-1$
-	else 
+	else
 		output.append("<CompleteOnQualifiedAllocationExpression:");  //$NON-NLS-1$
-	return super.printExpression(indent, output).append('>'); 
+	return super.printExpression(indent, output).append('>');
 }
 }

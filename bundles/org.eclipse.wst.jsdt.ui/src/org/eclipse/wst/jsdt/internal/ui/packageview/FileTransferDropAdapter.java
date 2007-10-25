@@ -12,27 +12,21 @@ package org.eclipse.wst.jsdt.internal.ui.packageview;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
-
+import org.eclipse.jface.util.TransferDropTargetListener;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.jface.util.TransferDropTargetListener;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
-
 import org.eclipse.ui.actions.CopyFilesAndFoldersOperation;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Resources;
-
 import org.eclipse.wst.jsdt.internal.ui.dnd.JdtViewerDropAdapter;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 

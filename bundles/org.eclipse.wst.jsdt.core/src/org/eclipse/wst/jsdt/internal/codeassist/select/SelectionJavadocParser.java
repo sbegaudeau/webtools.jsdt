@@ -14,14 +14,17 @@ import java.util.List;
 
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.internal.codeassist.SelectionEngine;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocQualifiedTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.parser.JavadocParser;
 
 /**
  * Parser specialized for decoding javadoc comments which includes code selection.
  */
 public class SelectionJavadocParser extends JavadocParser {
-	
+
 	int selectionStart;
 	int selectionEnd;
 	ASTNode selectedNode;
@@ -122,7 +125,7 @@ public class SelectionJavadocParser extends JavadocParser {
 	protected Object createTypeReference(int primitiveToken) {
 		// Need to create type ref in case it was needed by members
 		TypeReference typeRef = (TypeReference) super.createTypeReference(primitiveToken);
-	
+
 		// See if node is concerned by selection
 		if (typeRef.sourceStart <= this.selectionStart && this.selectionEnd <= typeRef.sourceEnd) {
 			// See if selection is in one of tokens of qualification

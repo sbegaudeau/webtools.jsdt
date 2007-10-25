@@ -10,9 +10,16 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.Flags;
+import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.ITypeParameter;
+import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryMethod;
@@ -136,7 +143,7 @@ public int getNumberOfParameters() {
  * Look for source attachment information to retrieve the actual parameter names as stated in source.
  */
 public String[] getParameterNames() throws JavaModelException {
-	if (this.parameterNames != null) 
+	if (this.parameterNames != null)
 		return this.parameterNames;
 
 	// force source mapping if not already done
@@ -144,7 +151,7 @@ public String[] getParameterNames() throws JavaModelException {
 	SourceMapper mapper = getSourceMapper();
 	if (mapper != null) {
 		char[][] paramNames = mapper.getMethodParameterNames(this);
-		
+
 		// map source and try to find parameter names
 		if(paramNames == null) {
 			IBinaryType info = (IBinaryType) ((BinaryType) getDeclaringType()).getElementInfo();
@@ -154,7 +161,7 @@ public String[] getParameterNames() throws JavaModelException {
 			}
 			paramNames = mapper.getMethodParameterNames(this);
 		}
-		
+
 		// if parameter names exist, convert parameter names to String array
 		if(paramNames != null) {
 			this.parameterNames = new String[paramNames.length];
@@ -164,7 +171,7 @@ public String[] getParameterNames() throws JavaModelException {
 			return this.parameterNames;
 		}
 	}
-	
+
 	// try to see if we can retrieve the names from the attached javadoc
 	IBinaryMethod info = (IBinaryMethod) getElementInfo();
 	final int paramCount = Signature.getParameterCount(new String(info.getMethodDescriptor()));
@@ -381,7 +388,7 @@ public ITypeParameter[] getTypeParameters() throws JavaModelException {
 public String[] getTypeParameterSignatures() throws JavaModelException {
 	IBinaryMethod info = (IBinaryMethod) getElementInfo();
 	char[] genericSignature = info.getGenericSignature();
-	if (genericSignature == null) 
+	if (genericSignature == null)
 		return CharOperation.NO_STRINGS;
 	char[] dotBasedSignature = CharOperation.replaceOnCopy(genericSignature, '/', '.');
 	char[][] typeParams = Signature.getTypeParameters(dotBasedSignature);
@@ -442,7 +449,7 @@ public boolean isConstructor() throws JavaModelException {
 	if (!this.getElementName().equals(this.parent.getElementName())) {
 		// faster than reaching the info
 		return false;
-	}	
+	}
 	IBinaryMethod info = (IBinaryMethod) getElementInfo();
 	return info.isConstructor();
 }
@@ -462,7 +469,7 @@ public boolean isResolved() {
  * @see IMethod#isSimilar(IMethod)
  */
 public boolean isSimilar(IMethod method) {
-	return 
+	return
 		areSimilarMethods(
 			this.getElementName(), this.getParameterTypes(),
 			method.getElementName(), method.getParameterTypes(),

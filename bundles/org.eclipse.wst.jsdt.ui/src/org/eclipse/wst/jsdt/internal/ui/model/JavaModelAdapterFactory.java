@@ -10,17 +10,14 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.model;
 
-import org.eclipse.core.runtime.IAdapterFactory;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.ModelProvider;
 import org.eclipse.core.resources.mapping.ResourceMapping;
-
-import org.eclipse.team.core.mapping.IResourceMappingMerger;
-
-import org.eclipse.team.ui.mapping.ISynchronizationCompareAdapter;
+import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptorProxy;
 import org.eclipse.ltk.core.refactoring.history.RefactoringHistory;
+import org.eclipse.team.core.mapping.IResourceMappingMerger;
+import org.eclipse.team.ui.mapping.ISynchronizationCompareAdapter;
 
 /**
  * Adaptor factory for model support.

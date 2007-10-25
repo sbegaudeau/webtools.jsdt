@@ -14,7 +14,7 @@ package org.eclipse.wst.jsdt.internal.compiler;
  * A callback interface for receiving compilation results.
  */
 public interface ICompilerRequestor {
-	
+
 	/**
 	 * Accept a compilation result.
 	 */

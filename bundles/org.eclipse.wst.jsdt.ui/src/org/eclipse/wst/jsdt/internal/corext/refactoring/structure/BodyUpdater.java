@@ -12,10 +12,8 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.structure;
 
 import org.eclipse.core.runtime.CoreException;
-
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
 
 
 public abstract class BodyUpdater {

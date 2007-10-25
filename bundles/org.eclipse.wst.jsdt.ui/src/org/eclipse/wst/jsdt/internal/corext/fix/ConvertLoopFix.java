@@ -19,10 +19,8 @@ import java.util.Hashtable;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
-
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 

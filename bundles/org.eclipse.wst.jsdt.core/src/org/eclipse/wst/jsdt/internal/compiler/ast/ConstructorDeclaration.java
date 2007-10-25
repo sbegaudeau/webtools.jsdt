@@ -12,19 +12,38 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import java.util.ArrayList;
 
-import org.eclipse.wst.jsdt.core.compiler.*;
-import org.eclipse.wst.jsdt.internal.compiler.*;
+import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
+import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
+import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
-import org.eclipse.wst.jsdt.internal.compiler.parser.*;
-import org.eclipse.wst.jsdt.internal.compiler.problem.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.ExceptionHandlingFlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.flow.InitializationFlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.NestedTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.SyntheticArgumentBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
+import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
+import org.eclipse.wst.jsdt.internal.compiler.problem.AbortMethod;
 
 public class ConstructorDeclaration extends AbstractMethodDeclaration {
 
 	public ExplicitConstructorCall constructorCall;
-	
+
 	public boolean isDefaultConstructor = false;
 	public TypeParameter[] typeParameters;
 
@@ -32,7 +51,7 @@ public ConstructorDeclaration(CompilationResult compilationResult){
 	super(compilationResult);
 }
 
-/** 
+/**
  * @see org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration#analyseCode(org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope, org.eclipse.wst.jsdt.internal.compiler.flow.InitializationFlowContext, org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo)
  * @deprecated use instead {@link #analyseCode(ClassScope, InitializationFlowContext, FlowInfo, int)}
  */
@@ -44,7 +63,7 @@ public void analyseCode(ClassScope classScope, InitializationFlowContext initial
 public FlowInfo analyseCode(Scope classScope, FlowContext initializationContext, FlowInfo flowInfo) {
 	analyseCode((ClassScope)classScope, (InitializationFlowContext)initializationContext, flowInfo, FlowInfo.REACHABLE);
 	return flowInfo;
-}		
+}
 /**
  * The flowInfo corresponds to non-static field initialization infos. It may be unreachable (155423), but still the explicit constructor call must be
  * analysed as reachable, since it will be generated in the end.
@@ -55,7 +74,7 @@ public void analyseCode(ClassScope classScope, InitializationFlowContext initial
 
 	int nonStaticFieldInfoReachMode = flowInfo.reachMode();
 	flowInfo.setReachMode(initialReachMode);
-	
+
 	checkUnused: {
 		MethodBinding constructorBinding;
 		if ((constructorBinding = this.binding) == null) break checkUnused;
@@ -70,12 +89,12 @@ public void analyseCode(ClassScope classScope, InitializationFlowContext initial
 		// complain unused
 		this.scope.problemReporter().unusedPrivateConstructor(this);
 	}
-		
+
 	// check constructor recursion, once all constructor got resolved
-	if (isRecursive(null /*lazy initialized visited list*/)) {				
+	if (isRecursive(null /*lazy initialized visited list*/)) {
 		this.scope.problemReporter().recursiveConstructorInvocation(this.constructorCall);
 	}
-		
+
 	try {
 		ExceptionHandlingFlowContext constructorContext =
 			new ExceptionHandlingFlowContext(
@@ -101,14 +120,14 @@ public void analyseCode(ClassScope classScope, InitializationFlowContext initial
 				}
 			}
 		}
-		
+
 		// tag parameters as being set
 		if (this.arguments != null) {
 			for (int i = 0, count = this.arguments.length; i < count; i++) {
 				flowInfo.markAsDefinitelyAssigned(this.arguments[i].binding);
 			}
 		}
-		
+
 		// propagate to constructor call
 		if (this.constructorCall != null) {
 			// if calling 'this(...)', then flag all non-static fields as definitely
@@ -124,7 +143,7 @@ public void analyseCode(ClassScope classScope, InitializationFlowContext initial
 			}
 			flowInfo = this.constructorCall.analyseCode(this.scope, constructorContext, flowInfo);
 		}
-		
+
 		// reuse the reachMode from non static field info
 		flowInfo.setReachMode(nonStaticFieldInfoReachMode);
 
@@ -144,7 +163,7 @@ public void analyseCode(ClassScope classScope, InitializationFlowContext initial
 		this.needFreeReturn = (flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0;
 
 		// reuse the initial reach mode for diagnosing missing blank finals
-		flowInfo.setReachMode(initialReachMode);		
+		flowInfo.setReachMode(initialReachMode);
 
 		// check missing blank final field initializations
 		if ((this.constructorCall != null)
@@ -197,7 +216,7 @@ public void generateCode(ClassScope classScope, ClassFile classFile) {
 			try {
 				classFile.contentsOffset = problemResetPC;
 				classFile.methodCount--;
-				classFile.codeStream.wideMode = true; // request wide mode 
+				classFile.codeStream.wideMode = true; // request wide mode
 				this.internalGenerateCode(classScope, classFile); // restart method generation
 			} catch (AbortMethod e2) {
 				int problemsLength;
@@ -220,7 +239,7 @@ public void generateCode(ClassScope classScope, ClassFile classFile) {
 
 public void generateSyntheticFieldInitializationsIfNecessary(MethodScope methodScope, CodeStream codeStream, ReferenceBinding declaringClass) {
 	if (!declaringClass.isNestedType()) return;
-	
+
 	NestedTypeBinding nestedType = (NestedTypeBinding) declaringClass;
 
 	SyntheticArgumentBinding[] syntheticArgs = nestedType.syntheticEnclosingInstances();
@@ -248,7 +267,7 @@ private void internalGenerateCode(ClassScope classScope, ClassFile classFile) {
 	int methodAttributeOffset = classFile.contentsOffset;
 	int attributeNumber = classFile.generateMethodInfoAttribute(this.binding);
 	if ((!this.binding.isNative()) && (!this.binding.isAbstract())) {
-		
+
 		TypeDeclaration declaringType = classScope.referenceContext;
 		int codeAttributeOffset = classFile.contentsOffset;
 		classFile.generateCodeAttributeHeader();
@@ -272,7 +291,7 @@ private void internalGenerateCode(ClassScope classScope, ClassFile classFile) {
 		} else {
 			this.scope.computeLocalVariablePositions(1 + enumOffset,  codeStream);
 		}
-			
+
 		if (this.arguments != null) {
 			for (int i = 0, max = this.arguments.length; i < max; i++) {
 				// arguments initialization for local variable debug attributes
@@ -287,7 +306,7 @@ private void internalGenerateCode(ClassScope classScope, ClassFile classFile) {
 				}
 			}
 		}
-		
+
 		MethodScope initializerScope = declaringType.initializerScope;
 		initializerScope.computeLocalVariablePositions(argSlotSize, codeStream); // offset by the argument size (since not linked to method scope)
 
@@ -366,8 +385,8 @@ public boolean isRecursive(ArrayList visited) {
 			|| !this.constructorCall.binding.isValidBinding()) {
 		return false;
 	}
-	
-	ConstructorDeclaration targetConstructor = 
+
+	ConstructorDeclaration targetConstructor =
 		((ConstructorDeclaration)this.scope.referenceType().declarationOf(this.constructorCall.binding.original()));
 	if (this == targetConstructor) return true; // direct case
 
@@ -389,7 +408,7 @@ public void parseStatements(Parser parser, CompilationUnitDeclaration unit) {
 	if (this.isDefaultConstructor && this.constructorCall == null){
 		this.constructorCall = SuperReference.implicitSuperConstructorCall();
 		this.constructorCall.sourceStart = this.sourceStart;
-		this.constructorCall.sourceEnd = this.sourceEnd; 
+		this.constructorCall.sourceEnd = this.sourceEnd;
 		return;
 	}
 	parser.parse(this, unit);
@@ -449,10 +468,10 @@ public void resolveStatements() {
 			this.constructorCall = null;
 		} else {
 			this.constructorCall.resolve(this.scope);
-		}	
+		}
 	}
 	if ((this.modifiers & ExtraCompilerModifiers.AccSemicolonBody) != 0) {
-		this.scope.problemReporter().methodNeedBody(this);		
+		this.scope.problemReporter().methodNeedBody(this);
 	}
 	super.resolveStatements();
 }
@@ -472,7 +491,7 @@ public void traverse(ASTVisitor visitor,	ClassScope classScope) {
 			for (int i = 0; i < typeParametersLength; i++) {
 				this.typeParameters[i].traverse(visitor, this.scope);
 			}
-		}			
+		}
 		if (this.arguments != null) {
 			int argumentLength = this.arguments.length;
 			for (int i = 0; i < argumentLength; i++)

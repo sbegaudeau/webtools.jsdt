@@ -16,20 +16,12 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
-
 import org.eclipse.ui.texteditor.spelling.SpellingProblem;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
-import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.AssistContext;
 import org.eclipse.wst.jsdt.internal.ui.text.javadoc.IHtmlTagConstants;
@@ -38,6 +30,9 @@ import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellCheckEngine;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellChecker;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellEvent;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.RankedWordProposal;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
+import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
+import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
 
 /**
  * A {@link SpellingProblem} that adapts a {@link ISpellEvent}.

@@ -37,7 +37,7 @@ import org.eclipse.wst.jsdt.internal.core.search.processing.JobManager;
  * - Constructors.
  */
 public class SourceIndexer extends AbstractIndexer implements SuffixConstants {
-	
+
 	public SourceIndexer(SearchDocument document) {
 		super(document);
 	}
@@ -53,7 +53,7 @@ public class SourceIndexer extends AbstractIndexer implements SuffixConstants {
 		} else {
 			parser.requestor = requestor;
 		}
-		
+
 		// Launch the parser
 		char[] source = null;
 		char[] name = null;
@@ -66,10 +66,10 @@ public class SourceIndexer extends AbstractIndexer implements SuffixConstants {
 		if (source == null || name == null) return; // could not retrieve document info (e.g. resource was discarded)
 		String pkgName=((JavaSearchDocument)document).getPackageName();
 		char [][]packageName=null;
-		if (pkgName!=null) 
+		if (pkgName!=null)
 		{
 			packageName=new char[1][];
-			packageName[0]=pkgName.toCharArray(); 
+			packageName[0]=pkgName.toCharArray();
 		}
 		CompilationUnit compilationUnit = new CompilationUnit(source, name,packageName);
 		try {

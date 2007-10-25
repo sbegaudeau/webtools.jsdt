@@ -22,25 +22,21 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.text.edits.MalformedTreeException;
-import org.eclipse.text.edits.MultiTextEdit;
-import org.eclipse.text.edits.RangeMarker;
-import org.eclipse.text.edits.TextEdit;
-import org.eclipse.text.edits.TextEditProcessor;
-import org.eclipse.text.edits.UndoEdit;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TextUtilities;
-
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-
+import org.eclipse.text.edits.MalformedTreeException;
+import org.eclipse.text.edits.MultiTextEdit;
+import org.eclipse.text.edits.RangeMarker;
+import org.eclipse.text.edits.TextEdit;
+import org.eclipse.text.edits.TextEditProcessor;
+import org.eclipse.text.edits.UndoEdit;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
@@ -71,14 +67,12 @@ import org.eclipse.wst.jsdt.core.dom.WhileStatement;
 import org.eclipse.wst.jsdt.core.dom.WithStatement;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.dom.CodeScopeBuilder;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.SourceAnalyzer.NameData;
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 /**

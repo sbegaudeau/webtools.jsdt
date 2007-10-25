@@ -17,9 +17,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.Assert;
-
-import org.eclipse.swt.graphics.Point;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -29,12 +26,10 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.templates.GlobalTemplateVariables;
 import org.eclipse.jface.text.templates.Template;
 import org.eclipse.jface.text.templates.TemplateContextType;
-
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
-
 import org.eclipse.wst.jsdt.internal.corext.template.java.CompilationUnitContext;
 import org.eclipse.wst.jsdt.internal.corext.template.java.CompilationUnitContextType;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 

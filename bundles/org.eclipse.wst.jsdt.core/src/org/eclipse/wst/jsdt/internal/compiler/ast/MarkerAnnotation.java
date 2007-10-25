@@ -17,23 +17,23 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
 public class MarkerAnnotation extends Annotation {
-	
+
 	public MarkerAnnotation(TypeReference type, int sourceStart) {
 		this.type = type;
 		this.sourceStart = sourceStart;
 		this.sourceEnd = type.sourceEnd;
 	}
-	
+
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.ast.Annotation#memberValuePairs()
 	 */
 	public MemberValuePair[] memberValuePairs() {
 		return NoValuePairs;
 	}
-	
+
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);

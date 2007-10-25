@@ -15,14 +15,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.corext.fix.ConvertLoopFix;
 import org.eclipse.wst.jsdt.internal.corext.fix.IFix;
-
 import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
 
 public class ConvertLoopCleanUp extends AbstractCleanUp {

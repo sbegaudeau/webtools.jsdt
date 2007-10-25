@@ -12,7 +12,16 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemFieldBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class JavadocFieldReference extends FieldReference {
 
@@ -24,7 +33,7 @@ public class JavadocFieldReference extends FieldReference {
 		super(source, pos);
 		this.bits |= InsideJavadoc;
 	}
-	
+
 	/*
 	public Binding getBinding() {
 		if (this.methodBinding != null) {
@@ -59,7 +68,7 @@ public class JavadocFieldReference extends FieldReference {
 			switch (fieldBinding.problemId()) {
 				case ProblemReasons.NonStaticReferenceInConstructorInvocation:
 				case ProblemReasons.NonStaticReferenceInStaticContext:
-				case ProblemReasons.InheritedNameHidesEnclosingName : 
+				case ProblemReasons.InheritedNameHidesEnclosingName :
 					FieldBinding closestMatch = ((ProblemFieldBinding)fieldBinding).closestMatch;
 					if (closestMatch != null) {
 						fieldBinding = closestMatch; // ignore problem if can reach target field through it
@@ -100,7 +109,7 @@ public class JavadocFieldReference extends FieldReference {
 		}
 		return this.resolvedType = this.binding.type;
 	}
-	
+
 	public boolean isSuperAccess() {
 		return (this.bits & ASTNode.SuperAccess) != 0;
 	}

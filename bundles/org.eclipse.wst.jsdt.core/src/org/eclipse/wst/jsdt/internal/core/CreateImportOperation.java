@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.internal.core;
 import java.util.Iterator;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
@@ -33,7 +34,6 @@ import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
-import org.eclipse.jface.text.IDocument;
 
 /**
  * <p>This operation adds an import declaration to an existing compilation unit.
@@ -59,7 +59,7 @@ public class CreateImportOperation extends CreateElementInCUOperation {
 	 * The name of the import to be created.
 	 */
 	protected String importName;
-	
+
 	/*
 	 * The flags of the import to be created (either Flags#AccDefault or Flags#AccStatic)
 	 */
@@ -93,7 +93,7 @@ protected ASTNode generateElementAST(ASTRewrite rewriter, IDocument document, IC
 			return null;
 		}
 	}
-	
+
 	AST ast = this.cuAST.getAST();
 	ImportDeclaration importDeclaration = ast.newImportDeclaration();
 	importDeclaration.setStatic(Flags.isStatic(this.flags));
@@ -119,7 +119,7 @@ protected IJavaElement generateResultHandle() {
  * @see CreateElementInCUOperation#getMainTaskName()
  */
 public String getMainTaskName(){
-	return Messages.operation_createImportsProgress; 
+	return Messages.operation_createImportsProgress;
 }
 /**
  * Sets the correct position for the new import:<ul>

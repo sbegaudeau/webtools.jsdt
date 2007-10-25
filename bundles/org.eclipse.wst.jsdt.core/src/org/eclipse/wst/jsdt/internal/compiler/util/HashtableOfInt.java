@@ -9,11 +9,11 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.util;
- 
+
  /**
   *	Hashtable for non-zero int keys.
   */
-  
+
 public final class HashtableOfInt {
 	// to avoid using Enumerations, walk the individual tables skipping nulls
 	public int[] keyTable;

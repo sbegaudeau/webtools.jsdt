@@ -13,16 +13,16 @@ package org.eclipse.wst.jsdt.core.dom;
  */
 class DefaultASTVisitor extends ASTVisitor {
 
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public DefaultASTVisitor() {
 		super();
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public DefaultASTVisitor(boolean visitDocTags) {
 		super(visitDocTags);
@@ -55,16 +55,16 @@ class DefaultASTVisitor extends ASTVisitor {
 	public void endVisit(Assignment node) {
 		endVisitNode(node);
 	}
-	
+
 	public void endVisit(Block node) {
 		endVisitNode(node);
 	}
-	
+
 	/* since 3.0 */
 	public void endVisit(BlockComment node) {
 		endVisitNode(node);
 	}
-	
+
 	public void endVisit(BooleanLiteral node) {
 		endVisitNode(node);
 	}
@@ -353,11 +353,11 @@ class DefaultASTVisitor extends ASTVisitor {
 	public boolean visit(ConditionalExpression node) {
 		return visitNode(node);
 	}
-	
+
 	public boolean visit(ConstructorInvocation node) {
 		return visitNode(node);
 	}
-	
+
 	public boolean visit(ContinueStatement node) {
 		return visitNode(node);
 	}
@@ -414,7 +414,7 @@ class DefaultASTVisitor extends ASTVisitor {
 	}
 	public boolean visit(Javadoc node) {
 		//	do not visit Javadoc tags by default. Use constructor with boolean to enable.
-		if (super.visit(node)) { 
+		if (super.visit(node)) {
 			return visitNode(node);
 		}
 		return false;
@@ -533,11 +533,11 @@ class DefaultASTVisitor extends ASTVisitor {
 	public boolean visit(TypeDeclaration node) {
 		return visitNode(node);
 	}
-	
+
 	public boolean visit(TypeDeclarationStatement node) {
 		return visitNode(node);
 	}
-	
+
 	public boolean visit(TypeLiteral node) {
 		return visitNode(node);
 	}

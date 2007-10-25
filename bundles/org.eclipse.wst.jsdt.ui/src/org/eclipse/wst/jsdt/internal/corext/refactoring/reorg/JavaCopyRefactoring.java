@@ -11,13 +11,11 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.reorg;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CopyProcessor;
 import org.eclipse.ltk.core.refactoring.participants.CopyRefactoring;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.IScriptableRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;

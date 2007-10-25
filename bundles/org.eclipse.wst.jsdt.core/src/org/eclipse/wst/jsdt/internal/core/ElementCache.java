@@ -18,9 +18,9 @@ import org.eclipse.wst.jsdt.internal.core.util.LRUCache;
  * An LRU cache of <code>JavaElements</code>.
  */
 public class ElementCache extends OverflowingLRUCache {
-	
+
 	IJavaElement spaceLimitParent = null;
-	
+
 /**
  * Constructs a new element cache of the given size.
  */
@@ -71,7 +71,7 @@ protected void ensureSpaceLimit(int childrenSize, IJavaElement parent) {
 	if (fSpaceLimit < spaceNeeded) {
 		// parent is being opened with more children than the space limit
 		shrink(); // remove overflow
-		setSpaceLimit(spaceNeeded); 
+		setSpaceLimit(spaceNeeded);
 		this.spaceLimitParent = parent;
 	}
 }

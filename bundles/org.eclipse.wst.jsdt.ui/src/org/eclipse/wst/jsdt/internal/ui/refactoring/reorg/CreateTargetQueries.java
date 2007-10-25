@@ -12,24 +12,18 @@
 package org.eclipse.wst.jsdt.internal.ui.refactoring.reorg;
 
 import org.eclipse.core.runtime.Assert;
-
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
-
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWizard;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ICreateTargetQueries;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ICreateTargetQuery;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewPackageCreationWizard;
-
 import org.eclipse.wst.jsdt.ui.wizards.NewPackageWizardPage;
 
 public class CreateTargetQueries implements ICreateTargetQueries {

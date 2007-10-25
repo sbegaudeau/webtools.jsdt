@@ -104,7 +104,7 @@ public final class Messages extends NLS {
 	public static String build_prereqProjectHasClasspathProblems;
 	public static String build_prereqProjectMustBeRebuilt;
 	public static String build_abortDueToClasspathProblems;
-	public static String status_cannot_retrieve_attached_javadoc;	
+	public static String status_cannot_retrieve_attached_javadoc;
 	public static String status_cannotUseDeviceOnPath;
 	public static String status_coreException;
 	public static String status_defaultPackageReadOnly;
@@ -331,7 +331,7 @@ public final class Messages extends NLS {
 	public static String classfileformat_linenumbertableentry;
 	public static String classfileformat_localvariabletableentry;
 	public static String classfileformat_versionUnknown;
-	
+
 	public static String disassembler_frame_same_locals_1_stack_item_extended;
 	public static String disassembler_frame_chop;
 	public static String disassembler_frame_same_frame_extended;
@@ -343,20 +343,20 @@ public final class Messages extends NLS {
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
-	
+
 	/**
 	 * Bind the given message's substitution locations with the given string values.
-	 * 
+	 *
 	 * @param message the message to be manipulated
 	 * @return the manipulated String
 	 */
 	public static String bind(String message) {
 		return bind(message, null);
 	}
-	
+
 	/**
 	 * Bind the given message's substitution locations with the given string values.
-	 * 
+	 *
 	 * @param message the message to be manipulated
 	 * @param binding the object to be inserted into the message
 	 * @return the manipulated String
@@ -367,7 +367,7 @@ public final class Messages extends NLS {
 
 	/**
 	 * Bind the given message's substitution locations with the given string values.
-	 * 
+	 *
 	 * @param message the message to be manipulated
 	 * @param binding1 An object to be inserted into the message
 	 * @param binding2 A second object to be inserted into the message
@@ -379,7 +379,7 @@ public final class Messages extends NLS {
 
 	/**
 	 * Bind the given message's substitution locations with the given string values.
-	 * 
+	 *
 	 * @param message the message to be manipulated
 	 * @param bindings An array of objects to be inserted into the message
 	 * @return the manipulated String

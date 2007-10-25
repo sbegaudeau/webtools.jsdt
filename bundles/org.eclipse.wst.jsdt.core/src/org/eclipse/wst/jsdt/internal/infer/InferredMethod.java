@@ -4,9 +4,9 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 
 public class InferredMethod extends InferredMember{
-  
+
 	public MethodDeclaration methodDeclaration;
-	
+
 	public boolean isConstructor;
 	public MethodBinding methodBinding;
 	public InferredMethod(char [] name, MethodDeclaration methodDeclaration, InferredType inType )
@@ -17,9 +17,9 @@ public class InferredMethod extends InferredMember{
 		this.sourceStart=methodDeclaration.sourceStart;
 		this.sourceEnd=methodDeclaration.sourceEnd;
 	}
-	
-	
-	public StringBuffer print(int indent, StringBuffer output)  
+
+
+	public StringBuffer print(int indent, StringBuffer output)
 	{
 		String modifier=(isStatic)? "static ":"";
 		printIndent(indent, output).append(modifier);
@@ -31,8 +31,8 @@ public class InferredMethod extends InferredMember{
 			output.append("??");
 		output.append(" ");
 		}
-			
-		output.append(name).append("(");	
+
+		output.append(name).append("(");
 		   if (methodDeclaration.arguments!=null)
 			   for (int i = 0; i < methodDeclaration.arguments.length; i++) {
 				   if (i>0)
@@ -44,7 +44,7 @@ public class InferredMethod extends InferredMember{
 				  }
 				   output.append(methodDeclaration.arguments[i].name);
 			   }
-		   output.append(")");	
+		   output.append(")");
 
 		   return output;
 	}

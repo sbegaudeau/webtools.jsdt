@@ -14,7 +14,7 @@ import org.eclipse.wst.jsdt.core.eval.IGlobalVariable;
 import org.eclipse.wst.jsdt.internal.eval.GlobalVariable;
 
 /**
- * A wrapper around the infrastructure global variable.  
+ * A wrapper around the infrastructure global variable.
  */
 class GlobalVariableWrapper implements IGlobalVariable {
 	GlobalVariable variable;

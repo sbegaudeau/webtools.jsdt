@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchRequestor;

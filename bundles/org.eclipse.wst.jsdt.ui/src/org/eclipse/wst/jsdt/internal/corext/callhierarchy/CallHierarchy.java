@@ -18,9 +18,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
-
 import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IMethod;
@@ -31,7 +29,6 @@ import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.StringMatcher;
 

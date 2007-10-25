@@ -13,14 +13,11 @@ package org.eclipse.wst.jsdt.internal.ui.text;
 
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Preferences;
-
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 /**

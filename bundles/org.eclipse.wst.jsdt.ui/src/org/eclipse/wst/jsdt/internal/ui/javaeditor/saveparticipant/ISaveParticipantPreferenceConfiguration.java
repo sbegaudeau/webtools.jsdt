@@ -12,11 +12,9 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor.saveparticipant;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.preferences.IScopeContext;
-
+import org.eclipse.jface.preference.IPreferencePageContainer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-
-import org.eclipse.jface.preference.IPreferencePageContainer;
 
 /**
  * Preference UI to configure details of a save participant on the  the

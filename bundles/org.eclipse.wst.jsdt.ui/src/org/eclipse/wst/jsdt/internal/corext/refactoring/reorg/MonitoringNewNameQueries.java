@@ -10,18 +10,13 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.refactoring.reorg;
 
-import org.eclipse.core.runtime.OperationCanceledException;
-
-import org.eclipse.core.resources.mapping.ResourceMapping;
-
 import org.eclipse.core.resources.IResource;
-
+import org.eclipse.core.resources.mapping.ResourceMapping;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.participants.ReorgExecutionLog;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JavaElementResourceMapping;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 

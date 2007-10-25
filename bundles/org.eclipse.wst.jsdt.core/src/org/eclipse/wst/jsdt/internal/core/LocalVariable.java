@@ -15,9 +15,14 @@ import java.util.HashMap;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.ILocalVariable;
+import org.eclipse.wst.jsdt.core.IOpenable;
+import org.eclipse.wst.jsdt.core.ISourceRange;
+import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.internal.core.util.MementoTokenizer;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
@@ -29,16 +34,16 @@ public class LocalVariable extends SourceRefElement implements ILocalVariable {
 	public int declarationSourceStart, declarationSourceEnd;
 	public int nameStart, nameEnd;
 	String typeSignature;
-	
+
 	public LocalVariable(
-			JavaElement parent, 
-			String name, 
-			int declarationSourceStart, 
+			JavaElement parent,
+			String name,
+			int declarationSourceStart,
 			int declarationSourceEnd,
-			int nameStart, 
+			int nameStart,
 			int nameEnd,
 			String typeSignature) {
-		
+
 		super(parent);
 		this.name = name;
 		this.declarationSourceStart = declarationSourceStart;
@@ -60,14 +65,14 @@ public class LocalVariable extends SourceRefElement implements ILocalVariable {
 	public boolean equals(Object o) {
 		if (!(o instanceof LocalVariable)) return false;
 		LocalVariable other = (LocalVariable)o;
-		return 
-			this.declarationSourceStart == other.declarationSourceStart 
+		return
+			this.declarationSourceStart == other.declarationSourceStart
 			&& this.declarationSourceEnd == other.declarationSourceEnd
 			&& this.nameStart == other.nameStart
 			&& this.nameEnd == other.nameEnd
 			&& super.equals(o);
 	}
-	
+
 	public boolean exists() {
 		return this.parent.exists(); // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=46192
 	}
@@ -114,7 +119,7 @@ public class LocalVariable extends SourceRefElement implements ILocalVariable {
 	public IResource getCorrespondingResource() {
 		return null;
 	}
-	
+
 	public String getElementName() {
 		return this.name;
 	}
@@ -126,7 +131,7 @@ public class LocalVariable extends SourceRefElement implements ILocalVariable {
 	public ISourceRange getNameRange() {
 		return new SourceRange(this.nameStart, this.nameEnd-this.nameStart+1);
 	}
-	
+
 	public IPath getPath() {
 		return this.parent.getPath();
 	}
@@ -156,14 +161,14 @@ public class LocalVariable extends SourceRefElement implements ILocalVariable {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * @see ISourceReference
 	 */
 	public ISourceRange getSourceRange() {
 		return new SourceRange(this.declarationSourceStart, this.declarationSourceEnd-this.declarationSourceStart+1);
 	}
-	
+
 	public String getTypeSignature() {
 		return this.typeSignature;
 	}
@@ -175,11 +180,11 @@ public class LocalVariable extends SourceRefElement implements ILocalVariable {
 	public int hashCode() {
 		return Util.combineHashCodes(this.parent.hashCode(), this.nameStart);
 	}
-	
+
 	public boolean isStructureKnown() throws JavaModelException {
         return true;
     }
-	
+
 	protected void toStringInfo(int tab, StringBuffer buffer, Object info, boolean showResolvedInfo) {
 		buffer.append(this.tabString(tab));
 		if (info != NO_INFO) {

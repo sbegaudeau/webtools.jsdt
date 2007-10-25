@@ -22,7 +22,7 @@ import org.eclipse.wst.jsdt.core.util.IConstantPoolEntry;
  */
 public class AnnotationComponentValue extends ClassFileStruct implements IAnnotationComponentValue {
 	private static final IAnnotationComponentValue[] NO_VALUES = new AnnotationComponentValue[0];
-	
+
 	private IAnnotationComponentValue[] annotationComponentValues;
 	private IAnnotation annotationValue;
 	private IConstantPoolEntry classInfo;
@@ -37,7 +37,7 @@ public class AnnotationComponentValue extends ClassFileStruct implements IAnnota
 	private int readOffset;
 	private int tag;
 	private int valuesNumber;
-	
+
 	public AnnotationComponentValue(
 			byte[] classFileBytes,
 			IConstantPool constantPool,
@@ -205,7 +205,7 @@ public class AnnotationComponentValue extends ClassFileStruct implements IAnnota
 	public int getValuesNumber() {
 		return this.valuesNumber;
 	}
-	
+
 	int sizeInBytes() {
 		return this.readOffset;
 	}

@@ -12,19 +12,16 @@ package org.eclipse.wst.jsdt.ui.actions;
 
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
-
-import org.eclipse.wst.jsdt.ui.search.ElementQuerySpecification;
-import org.eclipse.wst.jsdt.ui.search.QuerySpecification;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.search.JavaSearchScopeFactory;
 import org.eclipse.wst.jsdt.internal.ui.search.SearchMessages;
+import org.eclipse.wst.jsdt.ui.search.ElementQuerySpecification;
+import org.eclipse.wst.jsdt.ui.search.QuerySpecification;
 
 /**
  * Finds implementors of the selected element in the enclosing project.

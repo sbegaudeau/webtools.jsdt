@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.eclipse.wst.jsdt.internal.core;
 
@@ -11,6 +11,6 @@ import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
  */
 public interface IVirtualParent {
 	public ClasspathContainerInitializer getContainerInitializer();
-	
-	
+
+
 }

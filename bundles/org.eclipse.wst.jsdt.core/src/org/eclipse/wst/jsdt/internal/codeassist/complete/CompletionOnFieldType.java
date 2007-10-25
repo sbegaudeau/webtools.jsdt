@@ -30,13 +30,14 @@ package org.eclipse.wst.jsdt.internal.codeassist.complete;
  * The arguments of the allocation expression are all the arguments defined
  * before the cursor.
  */
- 
+
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 
 public class CompletionOnFieldType extends FieldDeclaration {
 	public boolean isLocalVariable;
-	
+
 public CompletionOnFieldType(TypeReference type, boolean isLocalVariable){
 	super();
 	this.sourceStart = type.sourceStart;
@@ -50,6 +51,6 @@ public CompletionOnFieldType(TypeReference type, boolean isLocalVariable){
 }
 
 public StringBuffer printStatement(int tab, StringBuffer output) {
-	return type.print(tab, output).append(';'); 
+	return type.print(tab, output).append(';');
 }
 }

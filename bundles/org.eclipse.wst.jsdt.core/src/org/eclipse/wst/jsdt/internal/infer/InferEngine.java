@@ -1,6 +1,6 @@
 package org.eclipse.wst.jsdt.internal.infer;
 
- 
+
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
@@ -45,7 +45,7 @@ public class InferEngine extends ASTVisitor {
 
     boolean isTopLevelAnonymousFunction;
     int anonymousCount=0;
-	
+
 	public  InferredType StringType=new InferredType(new char[]{'S','t','r','i','n','g'});
 	public  InferredType NumberType=new InferredType(new char[]{'N','u','m','b','e','r'});
 	public  InferredType BooleanType=new InferredType(new char[]{'B','o','o','l','e','a','n'});
@@ -55,79 +55,79 @@ public class InferEngine extends ASTVisitor {
 	public  InferredType GlobalType=new InferredType(InferredType.GLOBAL_NAME);
 
 	protected InferredType inferredGlobal=null;
-    
+
 	static final char[] CONSTRUCTOR_ID={'c','o','n','s','t','r','u','c','t','o','r'};
-	
+
 	public final static char[] ANONYMOUS_PREFIX = {'_','_','_'};
 	public static final char[] ANONYMOUS_CLASS_ID= {'a','n','o','n','y','m','o','u','s'};
-    
-	static class Context 
+
+	static class Context
 	{
 		InferredType currentType;
 		MethodDeclaration currentMethod;
-				
+
 		private HashtableOfObject definedMembers;
-		
+
 		/*
 		 * Parent context to provide chaining when searching
 		 * for members in scope.
 		 */
 		private Context parent = null;
-		
+
 		/*
 		 * Root context
 		 */
 		Context(){}
-		
+
 		/*
 		 * Nested context
 		 */
 		Context( Context parent )
 		{
 			this.parent = parent;
-			
+
 			currentType = parent.currentType;
 			currentMethod = parent.currentMethod;
 		}
-		
+
 		public Object getMember( char [] key ){
-			
+
 			Object value = null;
 			if( definedMembers != null ){
-				value = definedMembers.get( key );				
+				value = definedMembers.get( key );
 			}
-			
+
 			//chain lookup
 			if( value == null && parent != null ){
 				value = parent.getMember( key );
 			}
-			
+
 			return value;
 		}
-		
+
 		public void addMember( char [] key, Object member ){
-			
+
 			if( definedMembers == null ){
 				definedMembers = new HashtableOfObject();
 			}
-			
+
 			definedMembers.put( key, member );
 		}
-		
-		
+
+
 	}
-	
+
 	public InferEngine(InferOptions inferOptions)
 	{
 		this.inferOptions=inferOptions;
 	}
-	
+
 	public InferEngine()
 	{
 		this.inferOptions=new InferOptions();
 	}
-	
-	
+
+
 	public void initialize()
 	{
 	    this.contextPtr=-1;
@@ -136,9 +136,9 @@ public class InferEngine extends ASTVisitor {
 	    this.isTopLevelAnonymousFunction=false;
 	    this.anonymousCount=0;
 	    this.inferredGlobal=null;
-		
+
 	}
-	
+
 	public void setCompilationUnit(CompilationUnitDeclaration compilationUnit) {
 		this.compUnit = compilationUnit;
 		buildDefinedMembers(compilationUnit.statements,null);
@@ -156,10 +156,10 @@ public class InferEngine extends ASTVisitor {
 	}
 
 	public boolean visit(LocalDeclaration localDeclaration, BlockScope scope) {
-		
+
 		//add as a member of the current context
 		currentContext.addMember( localDeclaration.name, localDeclaration );
-		
+
 		if (localDeclaration.javadoc!=null)
 		{
 			Javadoc javadoc = localDeclaration.javadoc;
@@ -172,7 +172,7 @@ public class InferEngine extends ASTVisitor {
 					 attribute.initializationStart=localDeclaration.initialization.sourceStart;
 				attribute.type=type;
 			}
-			
+
 			if (javadoc.returnType!=null)
 			{
 			   InferredType type = this.addType(javadoc.returnType.getSimpleTypeName());
@@ -193,18 +193,18 @@ public class InferEngine extends ASTVisitor {
 		pushContext();
 		if (handlePrototype(assignment))
 		{
-			
+
 		}
 		else if (assignment.expression instanceof FunctionExpression)
 		{
 			FunctionExpression functionExpression=(FunctionExpression)assignment.expression;
-			
+
 			char [] possibleTypeName = constructTypeName( assignment.lhs );
-			
+
 			InferredType type = null;
 			if( possibleTypeName != null )
 				type = compUnit.findInferredType( possibleTypeName );
-			
+
 			if (type!=null)	// isConstructor
 			{
 				if (this.inferOptions.useInitMethod)
@@ -216,7 +216,7 @@ public class InferEngine extends ASTVisitor {
 					method.isConstructor=true;
 					method.nameStart=assignment.lhs.sourceStart;
 				}
-				
+
 			}
 			else	// could be method
 			{
@@ -224,38 +224,38 @@ public class InferEngine extends ASTVisitor {
 				{
 					FieldReference fieldReference=(FieldReference)assignment.lhs;
 					int nameStart=(int)(fieldReference.nameSourcePosition>>>32);
-					
+
 					InferredType receiverType = getInferredType( fieldReference.receiver );
-					
+
 					if( receiverType != null ){
-						
+
 						//check if there is a member method already created
 						InferredMethod method = receiverType.findMethod( fieldReference.token, functionExpression.methodDeclaration );
-						
+
 						if( method == null ){
 							//create member method if it does not exist
-							
+
 							method = receiverType.addMethod( fieldReference.token, functionExpression.methodDeclaration );
 							receiverType.updatePositions(assignment.sourceStart, assignment.sourceEnd); // @GINO: not sure if necessary
 							method.nameStart = nameStart;
-							
+
 							/*
 							 * determine if static
-							 * 
+							 *
 							 * check if the receiver is a type
 							 */
 							char [] possibleInTypeName = constructTypeName( fieldReference.receiver );
-							
+
 							if( possibleInTypeName != null && compUnit.findInferredType( possibleInTypeName ) != null )
 								method.isStatic = true;
 							else
 								method.isStatic = false;
-							
+
 							return true; //keep visiting to get return type
 						}
 						else
 							return false; //no need to visit again
-						
+
 					}
 					else if (this.passNumber==2)	// create anonymous class
 					{
@@ -275,110 +275,110 @@ public class InferEngine extends ASTVisitor {
 		{
 			SingleNameReference snr=(SingleNameReference)assignment.expression;
 			Object object = this.currentContext.getMember( snr.token );
-			
-			
+
+
 			FieldReference fieldReference=(FieldReference)assignment.lhs;
 			char [] memberName = fieldReference.token;
 			InferredMember member = null;
-			
+
 			/*
 			 * this.foo = bar //bar is a function
 			 */
 			if( object instanceof MethodDeclaration ){
-				
+
 				MethodDeclaration method=(MethodDeclaration)object;
 				member = this.currentContext.currentType.addMethod( memberName, method );
-				
+
 			}
 			/*
 			 * this.foo = bar //assume that bar is not a function and create a new attribute in teh current type
 			 */
 			else{
-			
+
 				member = this.currentContext.currentType.addAttribute( memberName, assignment );
 				((InferredAttribute)member).type = getTypeOf( assignment.expression );
-				
+
 			}
-			
+
 			//setting location
 			if( member != null ){
 				member.isStatic = false; //this is a not static member because it is being set on the this
 				member.nameStart = fieldReference.sourceEnd - memberName.length+1;
 			}
 		}
-		
+
 		/*
-		 *	foo = {}; 
+		 *	foo = {};
 		 */
 		else if ( assignment.expression instanceof ObjectLiteral && assignment.lhs instanceof SingleNameReference ){
-			
-			AbstractVariableDeclaration varDecl = getVariable( (SingleNameReference)assignment.lhs );
-			
+
+			AbstractVariableDeclaration varDecl = getVariable( assignment.lhs );
+
 			if( varDecl != null ){
 				InferredType type = varDecl.inferredType;
-				
+
 				if( type == null ){
 					//create an annonymous type based on the ObjectLiteral
 					type = getTypeOf( assignment.expression );
-					
+
 					varDecl.inferredType = type;
-					
+
 					return true;
 				}
 				else
-					return false; // 
-				
+					return false; //
+
 			}
-			
+
 		}
 		/*
 		 * foo.bar = {};
-		 * 
+		 *
 		 */
 		else if ( assignment.expression instanceof ObjectLiteral && assignment.lhs instanceof FieldReference ){
-			
+
 			if (this.inferOptions.useAssignments && passNumber == 2 )
 			{
-				
+
 				FieldReference fRef = (FieldReference)assignment.lhs;
-				
+
 				InferredType receiverType = getInferredType( fRef.receiver );
-				
+
 				if (receiverType==null && this.passNumber==2)
 				  receiverType=getInferredType2(fRef.receiver );
-				
+
 				if( receiverType != null ){
 					//check if there is an attribute already created
-					
+
 					InferredAttribute attr = receiverType.findAttribute( fRef.token );
-					
+
 					//ignore if the attribute exists and has a type
 					if( !(attr != null && attr.type != null) ){
-						
+
 						attr = receiverType.addAttribute( fRef.token, assignment );
 						attr.type = getTypeOf( assignment.expression );
-						
+
 						/*
 						 * determine if static
-						 * 
+						 *
 						 * check if the receiver is a type
 						 */
 						char [] possibleTypeName = constructTypeName( fRef.receiver );
-						
+
 						if( possibleTypeName != null && compUnit.findInferredType( possibleTypeName ) != null )
 							attr.isStatic = true;
 						else
 							attr.isStatic = false;
-						
+
 						attr.nameStart = (int)(fRef.nameSourcePosition>>>32);
-						
+
 						return false; //done with this
 					}
-					
-				}				
-			}			
-		}	
-		else   
+
+				}
+			}
+		}
+		else
 		{
 			/*
 			 * foo.bar = ?  //? is not {} and not a function
@@ -392,25 +392,25 @@ public class InferEngine extends ASTVisitor {
 					InferredType receiverType = getInferredType( fRef.receiver );
 					if (receiverType==null && this.passNumber==2)
 						  receiverType=getInferredType2(fRef.receiver );
-					
+
 					if( receiverType != null ){
 						//check if there is an attribute already created
-						
+
 						InferredMethod method=null;
 						InferredAttribute attr = receiverType.findAttribute( fRef.token );
 						if (attr==null)
 							 method = receiverType.findMethod(fRef.token, null);
-						
+
 						//ignore if the attribute exists and has a type
 						if(  (method==null && attr==null) ||  (method==null && attr != null && attr.type == null) ){
-							
-							
-//							attr.type = 
+
+
+//							attr.type =
 							MethodDeclaration definedFunction=null;
 							InferredType exprType = getTypeOf( assignment.expression );
 							if (exprType==null)
 								 definedFunction = getDefinedFunction(assignment.expression );
-							
+
 							if (definedFunction!=null)
 							{
 								method = receiverType.addMethod(fRef.token, definedFunction);
@@ -419,33 +419,33 @@ public class InferEngine extends ASTVisitor {
 							else
 							{
 							  attr = receiverType.addAttribute( fRef.token, assignment );
-							
+
 							  attr.type=exprType;
 							/*
 							 * determine if static
-							 * 
+							 *
 							 * check if the receiver is a type
 							 */
 							  char [] possibleTypeName = constructTypeName( fRef.receiver );
-							
+
 							  if( possibleTypeName != null && compUnit.findInferredType( possibleTypeName ) != null )
 								attr.isStatic = true;
 							  else
 								attr.isStatic = false;
-							
+
 							  attr.nameStart = (int)(fRef.nameSourcePosition>>>32);
 							}
 							return false; //done with this
 						}
-						
-						
+
+
 					}
 				}
 			}
 		}
 		return true; // do nothing by default, keep traversing
 	}
-	
+
 	protected InferredType getInferredType2(Expression fieldReceiver)
 	{
 		InferredType receiverType=null;
@@ -469,9 +469,9 @@ public class InferEngine extends ASTVisitor {
 	}
 
 	private InferredType createAnonymousType(AbstractVariableDeclaration var) {
-		
+
 		InferredType currentType = var.inferredType;
-		
+
 		if (currentType==null || !currentType.isAnonymous)
 		{
 			char[] cs = String.valueOf(this.anonymousCount++).toCharArray();
@@ -485,36 +485,36 @@ public class InferEngine extends ASTVisitor {
 		}
 		return var.inferredType;
 	}
-	
+
 	/*
 	 * Creates an anonymous type based in the location in the document. This information is used
 	 * to avoid creating duplicates because of the 2-pass nature of this engine.
 	 */
 	private InferredType createAnonymousType( ObjectLiteral objLit ) {
-		
+
 		//char[] cs = String.valueOf(this.anonymousCount2++).toCharArray();
 		char [] loc = (String.valueOf( objLit.sourceStart ) + '_' + String.valueOf( objLit.sourceEnd )).toCharArray();
 		char []name = CharOperation.concat( ANONYMOUS_PREFIX, ANONYMOUS_CLASS_ID, loc );
-		
+
 		InferredType anonType = addType(name);
 		anonType.isDefinition=true;
 		anonType.isAnonymous=true;
 		anonType.superClass = ObjectType;
-		
+
 		anonType.sourceStart = objLit.sourceStart;
 		anonType.sourceEnd = objLit.sourceEnd;
-		
+
 		populateType( anonType, objLit );
-		
+
 		return anonType;
 	}
 
 	protected boolean handlePrototype(Assignment assignment) {
-		
+
 		Expression lhs = assignment.lhs;
 		if (lhs instanceof FieldReference) {
 			FieldReference fieldReference = (FieldReference) lhs;
-			
+
 			/*
 			 * foo.prototype = ?
 			 */
@@ -523,7 +523,7 @@ public class InferEngine extends ASTVisitor {
 				/*
 				 * When encountering a prototype, we are going to assume that the
 				 * receiver is a type.
-				 * 
+				 *
 				 * If the type had not been inferred, it will be added at this point
 				 */
 				InferredType newType = null;
@@ -532,25 +532,25 @@ public class InferEngine extends ASTVisitor {
 					newType = compUnit.findInferredType( possibleTypeName );
 				else
 					return true; //no type created
-				
-				
+
+
 				//create the new type if not found
 				if( newType == null ){
 					newType = addType( possibleTypeName );
 					newType.isDefinition = true;
 				}
-				
+
 //				char[] typeName = getTypeName(fieldReference.receiver);
 //				Object object = currentContext.definedMembers.get(typeName);
-//				
+//
 //				if (object instanceof Argument)
 //					return false;
-//				
+//
 //				InferredType newType = addType(typeName);
 //				newType.isDefinition=true;
-				
-				newType.updatePositions(assignment.sourceStart, assignment.sourceEnd);				
-				
+
+				newType.updatePositions(assignment.sourceStart, assignment.sourceEnd);
+
 				/*
 				 * foo.prototype = new ...
 				 */
@@ -558,20 +558,20 @@ public class InferEngine extends ASTVisitor {
 				{
 					//setting the super type
 					AllocationExpression allocationExpression =(AllocationExpression)assignment.expression;
-					
+
 					InferredType superType = null;
 					char [] possibleSuperTypeName = constructTypeName( allocationExpression.member );
 					if( possibleSuperTypeName != null ){
 						superType = compUnit.findInferredType( possibleSuperTypeName );
-					
+
 						if( superType == null )
 							superType = addType( possibleSuperTypeName );
-						
+
 						//check if it is set already because it might be set by jsdocs
 						if( newType.superClass == null )
 							newType.superClass = superType;
 					}
-					
+
 					return true;
 				}
 				/*
@@ -581,11 +581,11 @@ public class InferEngine extends ASTVisitor {
 					//rather than creating an anonymous type, is better just to set the members directly
 					//on newType
 					populateType( newType, (ObjectLiteral)assignment.expression );
-					
+
 					//check if it is set already because it might be set by jsdocs
 					if( newType.superClass == null )
 						newType.superClass = ObjectType;
-					
+
 					return true;
 				}
 			}
@@ -594,45 +594,45 @@ public class InferEngine extends ASTVisitor {
 			 */
 			else if ( fieldReference.receiver.isPrototype() )
 			{
-								
+
 				FieldReference prototype = (FieldReference) fieldReference.receiver;
-				
+
 				InferredType newType = null;
 				char[] possibleTypeName = constructTypeName( prototype.receiver );
 				if( possibleTypeName != null )
 					newType = compUnit.findInferredType( possibleTypeName );
 				else
 					return true; //no type created
-				
+
 				//create the new type if not found
 				if( newType == null ){
 					newType = addType( possibleTypeName );
 					newType.isDefinition = true;
 				}
-				
+
 //				char[] typeName = getTypeName(prototype.receiver);
 //				Object receiverDef = currentContext.definedMembers.get(typeName);
 //				if (receiverDef instanceof Argument)
 //					return false;
 //				InferredType newType = addType(typeName);
-//				newType.isDefinition=true;				
-				
+//				newType.isDefinition=true;
+
 				newType.updatePositions(assignment.sourceStart, assignment.sourceEnd);
-				
+
 				//prevent Object literal based anonymous types from being created more than once
 				if( passNumber == 1 && assignment.expression instanceof ObjectLiteral ){
 					return false;
 				}
-				
+
 				char[] memberName = fieldReference.token;
 				int nameStart= (int)(fieldReference.nameSourcePosition >>> 32);
-							
+
 				InferredType typeOf = getTypeOf(assignment.expression);
 				MethodDeclaration methodDecl=null;
-				
+
 				if (typeOf==null)
 					methodDecl=getDefinedFunction(assignment.expression);
-				
+
 				if (methodDecl!=null)
 				{
 					InferredMember method = newType.addMethod(memberName, methodDecl);
@@ -651,7 +651,7 @@ public class InferEngine extends ASTVisitor {
 		}
 		return false;
 	}
-	
+
 	protected MethodDeclaration getDefinedFunction(Expression expression)
 	{
 		if (expression instanceof SingleNameReference)
@@ -675,11 +675,11 @@ public class InferEngine extends ASTVisitor {
 			}
 
 		 }
-	
+
 		return null;
 
 	}
-	
+
 	protected InferredType getTypeOf(Expression expression) {
 		if (expression instanceof StringLiteral || expression instanceof CharLiteral) {
 			return StringType;
@@ -690,21 +690,21 @@ public class InferEngine extends ASTVisitor {
 		else if (expression instanceof AllocationExpression)
 		{
 			AllocationExpression allocationExpression=(AllocationExpression)expression;
-			
+
 			InferredType type = null;
 			char [] possibleTypeName = constructTypeName( allocationExpression.member );
 			if( possibleTypeName != null ){
 				type = compUnit.findInferredType( possibleTypeName );
-			
+
 				if( type == null )
 					type = addType( possibleTypeName );
-				
+
 				return type;
 			}
 		}
 		else if (expression instanceof SingleNameReference)
 		{
-			AbstractVariableDeclaration varDecl = getVariable( (SingleNameReference)expression );
+			AbstractVariableDeclaration varDecl = getVariable( expression );
 			if( varDecl != null )
 				return varDecl.inferredType;
 			if (this.inferredGlobal!=null)
@@ -713,7 +713,7 @@ public class InferEngine extends ASTVisitor {
 				if (attribute!=null)
 					return attribute.type;
 			}
-			
+
 		}
 		else if (expression instanceof FieldReference)
 		{
@@ -741,7 +741,7 @@ public class InferEngine extends ASTVisitor {
 						  else
 							  memberType=null;
 					  typeSet=true;
- 						 
+
 					}
 				}
 			if (memberType!=null)
@@ -756,17 +756,17 @@ public class InferEngine extends ASTVisitor {
 			return BooleanType;
 		}
 		else if ( expression instanceof ObjectLiteral ){
-			
+
 			//create an annonymous type based on the ObjectLiteral
 			InferredType type = createAnonymousType( (ObjectLiteral)expression );
-			
+
 			//set the start and end
 			type.sourceStart = expression.sourceStart;
 			type.sourceEnd = expression.sourceEnd;
-			
+
 			return type;
-		
-			
+
+
 		}
 		return null;
 	}
@@ -775,7 +775,7 @@ public class InferEngine extends ASTVisitor {
 		if( objLit.fields != null ){
 			for (int i = 0; i < objLit.fields.length; i++) {
 				ObjectLiteralField field = objLit.fields[i];
-				
+
 				char [] name=null;
 				int nameStart=-1;
 
@@ -788,19 +788,19 @@ public class InferEngine extends ASTVisitor {
 				}
 				else
 					continue; //not supporting this case right now
-				
+
 				//need to build the members of the annonymous inferred type
 				if (field.initializer instanceof FunctionExpression) {
 					FunctionExpression functionExpression = (FunctionExpression) field.initializer;
 				    InferredMember method = type.addMethod(name, functionExpression.methodDeclaration);
 				    method.nameStart = nameStart;
-				    
-				}	
+
+				}
 				else	//attribute
 				{
 					InferredAttribute attribute = type.addAttribute(name, field.fieldName);
 					attribute.nameStart = nameStart;
-					
+
 					//@GINO: recursion might not be the best idea
 					attribute.type = getTypeOf( field.initializer );
 				}
@@ -814,24 +814,24 @@ public class InferEngine extends ASTVisitor {
 
 	protected boolean handleFunctionCall(MessageSend messageSend) {
 		return true;
-	}	
-	
+	}
+
 	public void endVisit(ReturnStatement returnStatement, BlockScope scope) {
-		
+
 			if (currentContext.currentMethod!=null)
 			{
 				if (returnStatement.expression!=null)
 				{
-					
+
 					InferredType type = getTypeOf(returnStatement.expression);
-					
+
 					if (currentContext.currentMethod.inferredType==VoidType)
 						currentContext.currentMethod.inferredType=type;
 					else if (type==null || !type.equals(currentContext.currentMethod.inferredType))
 						currentContext.currentMethod.inferredType=null;
 				}
 			}
-		
+
 	}
 
 	public void endVisit(MethodDeclaration methodDeclaration, Scope scope) {
@@ -846,7 +846,7 @@ public class InferEngine extends ASTVisitor {
 			this.currentContext.currentType.isDefinition=true;
 			this.inferredGlobal=this.currentContext.currentType;
 		}
-		
+
 		this.isTopLevelAnonymousFunction=false;
 		if (passNumber==1)
 		{
@@ -862,7 +862,7 @@ public class InferEngine extends ASTVisitor {
 					method = type.addMethod(methodDeclaration.selector, methodDeclaration);
 					method.nameStart=methodDeclaration.sourceStart;
 					method.isConstructor=true;
-					
+
 					if (javadoc.extendsType!=null)
 					{
 						InferredType superType=this.addType(javadoc.extendsType.getSimpleTypeName());
@@ -874,13 +874,13 @@ public class InferEngine extends ASTVisitor {
 					InferredType type = this.addType(javadoc.memberOf.getSimpleTypeName());
 					method=type.addMethod(methodDeclaration.selector, methodDeclaration);
 				}
-				
+
 				if (javadoc.returnType!=null)
 				{
 				   InferredType type = this.addType(javadoc.returnType.getSimpleTypeName());
 				   methodDeclaration.inferredType=type;
 				}
-				
+
 				if (methodDeclaration.arguments!=null)
 				for (int i = 0; i < methodDeclaration.arguments.length; i++) {
 					JavadocSingleNameReference param = javadoc.findParam(methodDeclaration.arguments[i].name);
@@ -901,7 +901,7 @@ public class InferEngine extends ASTVisitor {
 		// check if this is a constructor
 		if (passNumber==2)
 		{
-			
+
 			if (methodDeclaration.selector!=null) {
 				InferredType type = compUnit
 						.findInferredType(methodDeclaration.selector);
@@ -914,7 +914,7 @@ public class InferEngine extends ASTVisitor {
 					method.isConstructor = true;
 					methodDeclaration.inferredType=type;
 				}
-			}			
+			}
 		}
 		this.currentContext.currentMethod=methodDeclaration;
 		if (methodDeclaration.inferredMethod!=null && methodDeclaration.inferredMethod.inType!=null)
@@ -923,25 +923,25 @@ public class InferEngine extends ASTVisitor {
 			methodDeclaration.inferredType=VoidType;
 		return true;
 	}
-	
-	
-	
+
+
+
 	public boolean visit(
     		AllocationExpression allocationExpression,
     		BlockScope scope) {
-		
+
 		InferredType type = null;
 		char [] possibleTypeName = constructTypeName( allocationExpression.member );
 		if( possibleTypeName != null ){
 			type = compUnit.findInferredType( possibleTypeName );
-		
+
 			if( type == null  )
 				type = addType( possibleTypeName ); //creating type
 		}
 		return true;
 	}
-	
- 
+
+
 	public void endVisit(ObjectLiteralField field, BlockScope scope) {
 		if (field.javaDoc!=null)
 		{
@@ -966,7 +966,7 @@ public class InferEngine extends ASTVisitor {
 			{
 				returnType=this.addType(javaDoc.returnType.getSimpleTypeName());
 			}
-			
+
 			if (inClass!=null)
 			{
 				if (field.initializer instanceof FunctionExpression) {
@@ -980,7 +980,7 @@ public class InferEngine extends ASTVisitor {
 				    }
 //				    else
 //				    	method.inferredType=functionExpression.methodDeclaration.inferredType;
-				}	
+				}
 				else	//attribute
 				{
 					InferredAttribute attribute = inClass.addAttribute(name, field.fieldName);
@@ -989,16 +989,16 @@ public class InferEngine extends ASTVisitor {
 						attribute.type=returnType;
 				}
 			}
-			
+
 		}
 		//no jsdoc
 		else{
-			
+
 			if( field.initializer instanceof ObjectLiteral ){
-				
+
 			}
-			
-			
+
+
 		}
 	}
 
@@ -1013,7 +1013,7 @@ public class InferEngine extends ASTVisitor {
 			FieldReference fieldReference = (FieldReference) expr;
 			if (CharOperation.equals(fieldReference.token, matchName))
 				return isMatch(fieldReference.receiver, names, index-1);
-			
+
 		}
 		return false;
 	}
@@ -1023,12 +1023,12 @@ public class InferEngine extends ASTVisitor {
 		char [] functionName=names[names.length-1].toCharArray();
 		if (!CharOperation.equals(functionName, messageSend.selector))
 			return false;
-		
+
 		if (names.length>1)
 			return isMatch(messageSend.receiver, names, names.length-2);
 		return true;
 	}
-	
+
 	public void doInfer()
 	{
 		BlockScope scope=null;
@@ -1037,17 +1037,17 @@ public class InferEngine extends ASTVisitor {
 		compUnit.traverse(this, compUnit.scope,true);
 		this.compUnit=null;
 }
-	
+
 
 	protected InferredType addType(char[] className) {
-		
+
 		InferredType type = compUnit.findInferredType(className);
 
-		
+
 		if (type==null)
 		{
 			if (compUnit.numberInferredTypes == compUnit.inferredTypes.length)
-				
+
 				System.arraycopy(
 						compUnit.inferredTypes,
 						0,
@@ -1056,40 +1056,40 @@ public class InferEngine extends ASTVisitor {
 						compUnit.numberInferredTypes );
 			type=compUnit.inferredTypes[compUnit.numberInferredTypes ++] = new InferredType(className);
 			compUnit.inferredTypesHash.put(className,type);
-				
+
 		}
 		return type;
 	}
-	
+
 	protected final void pushContext()
 	{
 		Context newContext = new Context( currentContext  );
 		contexts[++contextPtr] = currentContext;
 		currentContext = newContext;
-		
+
 	}
-	
+
 	protected final void popContext()
 	{
 		currentContext = contexts[contextPtr];
 		contexts[contextPtr--] = null;
 	}
-	
+
 	protected final boolean isInNamedMethod()
 	{
 		return this.currentContext.currentMethod!=null && this.currentContext.currentMethod.selector!=null;
 	}
 
-	
+
 	/*
 	 * Finds a Var Declaration on the context from the name represented with the expression
-	 * 
+	 *
 	 * Currently, only SNR are supported
 	 */
 	protected AbstractVariableDeclaration getVariable(Expression expression)
 	{
 		char [] name=null;
-		
+
 		if (expression instanceof SingleNameReference)
 			name=((SingleNameReference)expression).token;
 		if (name!=null)
@@ -1097,14 +1097,14 @@ public class InferEngine extends ASTVisitor {
 			Object var = this.currentContext.getMember( name );
 			if (var instanceof AbstractVariableDeclaration)
 				return (AbstractVariableDeclaration)var;
-			
+
 		}
 		return null;
-		
+
 	}
-	
+
 	private void buildDefinedMembers(ProgramElement[] statements, Argument[] arguments) {
-		
+
 		if (arguments!=null)
 		{
 			for (int i = 0; i < arguments.length; i++) {
@@ -1136,20 +1136,20 @@ public class InferEngine extends ASTVisitor {
 
 	/*
 	 * This method is used to determined the inferred type of a LHS Expression.
-	 * 
+	 *
 	 * It could return null.
-	 * 
+	 *
 	 * a.b.c
 	 */
 	private InferredType getInferredType( Expression expression ){
-		
+
 		InferredType type = null;
-		
+
 		/*
 		 * this
 		 */
 		if( expression instanceof ThisReference ){
-			
+
 			type = this.currentContext.currentType;
 		}
 		/*
@@ -1157,23 +1157,23 @@ public class InferEngine extends ASTVisitor {
 		 */
 		else if( expression instanceof SingleNameReference ){
 			char [] possibleTypeName = constructTypeName( expression );
-			
+
 			if( possibleTypeName != null ){
 				//search the defined types in the context
 				type = compUnit.findInferredType( possibleTypeName );
-				
+
 				/*
 				 * There is no match for a type with the name, check if the name refers to
 				 * var decl and return its type
 				 */
 				if( type == null ){
-					
-					AbstractVariableDeclaration varDecl = getVariable( ((SingleNameReference)expression) );
-					
+
+					AbstractVariableDeclaration varDecl = getVariable( (expression) );
+
 					if( varDecl != null ){
-						type = varDecl.inferredType; //could be null					
+						type = varDecl.inferredType; //could be null
 					}
-					
+
 				}
 			}
 		}
@@ -1182,11 +1182,11 @@ public class InferEngine extends ASTVisitor {
 		 */
 		else if( expression instanceof FieldReference ){
 			char [] possibleTypeName = constructTypeName( expression );
-			
+
 			if( possibleTypeName != null ){
 				//search the defined types in the context
 				type = compUnit.findInferredType( possibleTypeName );
-				
+
 				/*
 				 * Continue the search by trying to resolve further down the name
 				 * because this token of the field reference could be a member of
@@ -1194,33 +1194,33 @@ public class InferEngine extends ASTVisitor {
 				 */
 				if( type == null ){
 					FieldReference fRef = (FieldReference)expression;
-					
+
 					//this
 					InferredType parentType = getInferredType( fRef.receiver );
-					
+
 					if( parentType != null ){
 						//check the members and return type
 						InferredAttribute typeAttribute = parentType.findAttribute( fRef.token );
-						
+
 						if( typeAttribute != null )
 							type = typeAttribute.type;
 					}
 				}
 			}
 		}
-		
+
 		return type;
 	}
-	
+
 	/*
 	 * For SNR it returns the name
 	 * For FR it construct a Qualified name separated by '.'
-	 * 
+	 *
 	 * If at any point it hits a portion of the Field reference that is
 	 * not supported (such as a function call, a prototype, or this )
 	 */
 	protected final char [] constructTypeName( Expression expression ){
-		
+
 		return Util.getTypeName( expression );
 	}
 

@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.builder;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
@@ -59,7 +60,7 @@ public BuildNotifier(IProgressMonitor monitor, IProject project) {
  * Notification before a compile that a unit is about to be compiled.
  */
 public void aboutToCompile(SourceFile unit) {
-	String message = Messages.bind(Messages.build_compiling, unit.resource.getFullPath().removeLastSegments(1).makeRelative().toString()); 
+	String message = Messages.bind(Messages.build_compiling, unit.resource.getFullPath().removeLastSegments(1).makeRelative().toString());
 	subTask(message);
 }
 
@@ -87,7 +88,7 @@ public void checkCancelWithinCompiler() {
 		setCancelling(true);
 		// Only AbortCompilation can stop the compiler cleanly.
 		// We check cancelation again following the call to compile.
-		throw new AbortCompilation(true, null); 
+		throw new AbortCompilation(true, null);
 	}
 }
 
@@ -95,7 +96,7 @@ public void checkCancelWithinCompiler() {
  * Notification while within a compile that a unit has finished being compiled.
  */
 public void compiled(SourceFile unit) {
-	String message = Messages.bind(Messages.build_compiling, unit.resource.getFullPath().removeLastSegments(1).makeRelative().toString()); 
+	String message = Messages.bind(Messages.build_compiling, unit.resource.getFullPath().removeLastSegments(1).makeRelative().toString());
 	subTask(message);
 	updateProgressDelta(progressPerCompilationUnit);
 	checkCancelWithinCompiler();
@@ -108,7 +109,7 @@ public void done() {
 	FixedWarningCount = this.fixedWarningCount;
 
 	updateProgress(1.0f);
-	subTask(Messages.build_done); 
+	subTask(Messages.build_done);
 	if (monitor != null)
 		monitor.done();
 	this.previousSubtask = null;
@@ -127,28 +128,28 @@ protected String problemsMessage() {
 	buffer.append('(');
 	if (numNew > 0) {
 		// (Found x errors + y warnings)
-		buffer.append(Messages.build_foundHeader); 
+		buffer.append(Messages.build_foundHeader);
 		buffer.append(' ');
 		if (displayBoth || newErrorCount > 0) {
 			if (newErrorCount == 1)
-				buffer.append(Messages.build_oneError); 
+				buffer.append(Messages.build_oneError);
 			else
-				buffer.append(Messages.bind(Messages.build_multipleErrors, String.valueOf(newErrorCount))); 
+				buffer.append(Messages.bind(Messages.build_multipleErrors, String.valueOf(newErrorCount)));
 			if (displayBoth || newWarningCount > 0)
 				buffer.append(" + "); //$NON-NLS-1$
 		}
 		if (displayBoth || newWarningCount > 0) {
 			if (newWarningCount == 1)
-				buffer.append(Messages.build_oneWarning); 
+				buffer.append(Messages.build_oneWarning);
 			else
-				buffer.append(Messages.bind(Messages.build_multipleWarnings, String.valueOf(newWarningCount))); 
+				buffer.append(Messages.bind(Messages.build_multipleWarnings, String.valueOf(newWarningCount)));
 		}
 		if (numFixed > 0)
 			buffer.append(", "); //$NON-NLS-1$
 	}
 	if (numFixed > 0) {
 		// (Fixed x errors + y warnings) or (Found x errors + y warnings, Fixed x + y)
-		buffer.append(Messages.build_fixedHeader); 
+		buffer.append(Messages.build_fixedHeader);
 		buffer.append(' ');
 		if (displayBoth) {
 			buffer.append(String.valueOf(fixedErrorCount));
@@ -157,17 +158,17 @@ protected String problemsMessage() {
 		} else {
 			if (fixedErrorCount > 0) {
 				if (fixedErrorCount == 1)
-					buffer.append(Messages.build_oneError); 
+					buffer.append(Messages.build_oneError);
 				else
-					buffer.append(Messages.bind(Messages.build_multipleErrors, String.valueOf(fixedErrorCount))); 
+					buffer.append(Messages.bind(Messages.build_multipleErrors, String.valueOf(fixedErrorCount)));
 				if (fixedWarningCount > 0)
 					buffer.append(" + "); //$NON-NLS-1$
 			}
 			if (fixedWarningCount > 0) {
 				if (fixedWarningCount == 1)
-					buffer.append(Messages.build_oneWarning); 
+					buffer.append(Messages.build_oneWarning);
 				else
-					buffer.append(Messages.bind(Messages.build_multipleWarnings, String.valueOf(fixedWarningCount))); 
+					buffer.append(Messages.bind(Messages.build_multipleWarnings, String.valueOf(fixedWarningCount)));
 			}
 		}
 	}

@@ -10,26 +10,21 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.compare;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
-
 import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
-
-import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.IPropertiesFilePartitions;
 import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.PropertiesFilePartitionScanner;
 import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.PropertiesFileSourceViewerConfiguration;
+import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
 
 /**
  * Properties file merge viewer.

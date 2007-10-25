@@ -16,72 +16,72 @@ package org.eclipse.wst.jsdt.core;
  * <p>
  * This interface is not intended to be implemented by clients.
  * </p>
- * 
+ *
  * @see JavaCore#newContainerEntry(
- *			org.eclipse.core.runtime.IPath containerPath, 
- *			IAccessRule[] accessRules, 
+ *			org.eclipse.core.runtime.IPath containerPath,
+ *			IAccessRule[] accessRules,
  *			IClasspathAttribute[] extraAttributes,
  *			boolean isExported)
  * @see JavaCore#newLibraryEntry(
  *			org.eclipse.core.runtime.IPath path,
  *			org.eclipse.core.runtime.IPath sourceAttachmentPath,
  *			org.eclipse.core.runtime.IPath sourceAttachmentRootPath,
- *			IAccessRule[] accessRules, 
+ *			IAccessRule[] accessRules,
  *			IClasspathAttribute[] extraAttributes,
  *			boolean isExported)
  * @see JavaCore#newProjectEntry(
- *			org.eclipse.core.runtime.IPath path, 
- *			IAccessRule[] accessRules, 
+ *			org.eclipse.core.runtime.IPath path,
+ *			IAccessRule[] accessRules,
  *			boolean combineAccessRestrictions,
  *			IClasspathAttribute[] extraAttributes,
- *			boolean isExported)	
+ *			boolean isExported)
  * @see JavaCore#newSourceEntry(
- * 			org.eclipse.core.runtime.IPath path, 
- * 			org.eclipse.core.runtime.IPath[] inclusionPatterns, 
- * 			org.eclipse.core.runtime.IPath[] exclusionPatterns, 
- * 			org.eclipse.core.runtime.IPath specificOutputLocation, 
+ * 			org.eclipse.core.runtime.IPath path,
+ * 			org.eclipse.core.runtime.IPath[] inclusionPatterns,
+ * 			org.eclipse.core.runtime.IPath[] exclusionPatterns,
+ * 			org.eclipse.core.runtime.IPath specificOutputLocation,
  * 			IClasspathAttribute[] extraAttributes)
  * @see JavaCore#newVariableEntry(
  *			org.eclipse.core.runtime.IPath variablePath,
  *			org.eclipse.core.runtime.IPath variableSourceAttachmentPath,
  *			org.eclipse.core.runtime.IPath variableSourceAttachmentRootPath,
- *			IAccessRule[] accessRules, 
+ *			IAccessRule[] accessRules,
  *			IClasspathAttribute[] extraAttributes,
  *			boolean isExported)
  * @since 3.1
  */
 public interface IClasspathAttribute {
-	
+
 	/**
 	 * Constant for the name of the javadoc location attribute.
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	String JAVADOC_LOCATION_ATTRIBUTE_NAME = "javadoc_location"; //$NON-NLS-1$
-	
+
 	/**
 	 * Constant for the name of the optional attribute. The possible values
-	 * for this attribute are <code>"true"</code> or <code>"false"</code>. 
+	 * for this attribute are <code>"true"</code> or <code>"false"</code>.
 	 * When not present, <code>"false"</code> is assumed.
 	 * If the value of this attribute is <code>"true"</code>, the classpath entry
 	 * is optional. If the underlying resource or jar file doesn't exist, no error
 	 * is reported and the classpath entry is ignored.
-	 * 
+	 *
 	 * @since 3.2
 	 */
 	String OPTIONAL = "optional"; //$NON-NLS-1$
-	
+
 	/**
 	 * Returns the name of this classpath attribute.
-	 * 
+	 *
 	 * @return the name of this classpath attribute.
 	 * @since 3.1
 	 */
 	String getName();
-	
+
 	/**
 	 * Returns the value of this classpath attribute.
-	 * 
+	 *
 	 * @return the value of this classpath attribute.
 	 * @since 3.1
 	 */

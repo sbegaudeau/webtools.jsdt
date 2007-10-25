@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
  * <p>
  * This class is intended to be instantiated and subclassed by clients.
  * </p>
- * 
+ *
  * @since 3.0
  */
 public class TypeReferenceMatch extends SearchMatch {
@@ -29,7 +29,7 @@ public class TypeReferenceMatch extends SearchMatch {
 
 	/**
 	 * Creates a new type reference match.
-	 * 
+	 *
 	 * @param enclosingElement the inner-most enclosing member that references this type
 	 * @param accuracy one of {@link #A_ACCURATE} or {@link #A_INACCURATE}
 	 * @param offset the offset the match starts at, or -1 if unknown
@@ -48,7 +48,7 @@ public class TypeReferenceMatch extends SearchMatch {
 	 * Returns the local element of this search match.
 	 * This may be a local variable which declaring type is the referenced one
 	 * or a type parameter which extends it.
-	 * 
+	 *
 	 * @return the element of the search match, or <code>null</code> if none or there's
 	 * 	no more specific local element than the element itself ({@link SearchMatch#getElement()}).
 	 * @since 3.2
@@ -64,7 +64,7 @@ public class TypeReferenceMatch extends SearchMatch {
 	 * local elements such as additional local variables of a multiple local
 	 * variables declaration. Otherwise, these may be other elements such as
 	 * additional fields of a multiple fields declaration.
-	 * 
+	 *
 	 * @return the other elements of the search match, or <code>null</code> if none
 	 * @since 3.2
 	 */
@@ -74,7 +74,7 @@ public class TypeReferenceMatch extends SearchMatch {
 
 	/**
 	 * Sets the local element of this search match.
-	 * 
+	 *
 	 * @param localElement A more specific local element that corresponds to the match,
 	 * 	or <code>null</code> if none
 	 * @since 3.2
@@ -85,7 +85,7 @@ public class TypeReferenceMatch extends SearchMatch {
 
 	/**
 	 * Sets the other elements of this search match.
-	 * 
+	 *
 	 * @param otherElements the other elements of the match,
 	 * 	or <code>null</code> if none
 	 * @since 3.2

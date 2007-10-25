@@ -17,14 +17,9 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-
-
 import org.eclipse.ui.IEditorInput;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-
 import org.eclipse.wst.jsdt.ui.IWorkingCopyManager;
 import org.eclipse.wst.jsdt.ui.IWorkingCopyManagerExtension;
 

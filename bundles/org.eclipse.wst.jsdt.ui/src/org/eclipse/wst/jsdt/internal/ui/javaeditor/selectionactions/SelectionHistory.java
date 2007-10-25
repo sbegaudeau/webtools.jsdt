@@ -14,12 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-
 import org.eclipse.wst.jsdt.core.ISourceRange;
-
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 
 public class SelectionHistory {

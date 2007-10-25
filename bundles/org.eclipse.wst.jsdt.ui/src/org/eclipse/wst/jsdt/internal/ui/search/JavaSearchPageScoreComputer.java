@@ -11,9 +11,7 @@
 package org.eclipse.wst.jsdt.internal.ui.search;
 
 import org.eclipse.search.ui.ISearchPageScoreComputer;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
-
 import org.eclipse.wst.jsdt.internal.ui.browsing.LogicalPackage;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.IClassFileEditorInput;
 

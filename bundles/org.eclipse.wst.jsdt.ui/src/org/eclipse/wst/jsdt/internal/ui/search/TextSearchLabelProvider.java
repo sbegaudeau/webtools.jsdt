@@ -11,9 +11,7 @@
 package org.eclipse.wst.jsdt.internal.ui.search;
 
 import org.eclipse.jface.viewers.LabelProvider;
-
 import org.eclipse.search.ui.text.AbstractTextSearchViewPage;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 
 public abstract class TextSearchLabelProvider extends LabelProvider {

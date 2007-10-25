@@ -10,20 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths;
 
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
-
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.core.IClasspathAttribute;
 import org.eclipse.wst.jsdt.core.JavaCore;
-
-import org.eclipse.wst.jsdt.launching.JavaRuntime;
-
-import org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
+import org.eclipse.wst.jsdt.launching.JavaRuntime;
+import org.eclipse.wst.jsdt.ui.wizards.ClasspathAttributeConfiguration;
 
 
 public class NativeLibAttributeConfiguration extends ClasspathAttributeConfiguration {

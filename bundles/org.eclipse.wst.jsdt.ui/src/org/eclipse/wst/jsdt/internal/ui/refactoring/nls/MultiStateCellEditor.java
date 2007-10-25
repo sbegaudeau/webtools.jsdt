@@ -11,11 +11,9 @@
 package org.eclipse.wst.jsdt.internal.ui.refactoring.nls;
 
 import org.eclipse.core.runtime.Assert;
-
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-
-import org.eclipse.jface.viewers.CellEditor;
 
 
 public class MultiStateCellEditor extends CellEditor {

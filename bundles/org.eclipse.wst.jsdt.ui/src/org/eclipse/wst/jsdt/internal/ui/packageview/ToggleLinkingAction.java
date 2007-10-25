@@ -10,9 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.packageview;
 
-import org.eclipse.wst.jsdt.ui.IPackagesViewPart;
-
 import org.eclipse.wst.jsdt.internal.ui.actions.AbstractToggleLinkingAction;
+import org.eclipse.wst.jsdt.ui.IPackagesViewPart;
 
 
 /**

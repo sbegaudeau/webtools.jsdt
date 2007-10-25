@@ -28,7 +28,7 @@ package org.eclipse.wst.jsdt.internal.codeassist.select;
  *       }
  *
  */
- 
+
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 
@@ -42,6 +42,6 @@ public StringBuffer print(int tab, StringBuffer output, boolean withOnDemand) {
 		if (i > 0) output.append('.');
 		output.append(tokens[i]);
 	}
-	return output.append('>'); 
+	return output.append('>');
 }
 }

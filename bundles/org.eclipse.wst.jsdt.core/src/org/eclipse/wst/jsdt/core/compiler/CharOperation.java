@@ -18,7 +18,7 @@ import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
  * <p>
  * This class is not intended to be instantiated or subclassed by clients.
  * </p>
- * 
+ *
  * @since 2.1
  */
 public final class CharOperation {
@@ -32,13 +32,13 @@ public final class CharOperation {
 	 * Constant for an empty char array with two dimensions.
 	 */
 	public static final char[][] NO_CHAR_CHAR = new char[0][];
-	
+
 	/**
 	 * Constant for an empty String array.
 	 * @since 3.1
 	 */
 	public static final String[] NO_STRINGS = new String[0];
-	
+
 /**
  * Answers a new array with appending the suffix character at the end of the array.
  * <br>
@@ -57,7 +57,7 @@ public final class CharOperation {
  *    => result = { 'c' }
  * </pre></li>
  * </ol>
- * 
+ *
  * @param array the array that is concanated with the suffix character
  * @param suffix the suffix character
  * @return the new array
@@ -104,13 +104,13 @@ public static final char[] append(char[] array, char suffix) {
  *    => result = { 'a', 'd' , 'e', 'f', '0', '0', '0', '0' } (new array)
  * </pre></li>
  * </ol>
- * 
+ *
  * @param target the given target
  * @param index the given index
  * @param array the given array
  * @param start the given start index
  * @param end the given end index
- * 
+ *
  * @return the new array
  * @throws NullPointerException if the target array is null
  */
@@ -158,7 +158,7 @@ public static final char[] append(char[] target, int index, char[] array, int st
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param first the first array to concatenate
  * @param second the second array to concatenate
  * @return the concatenation of the two arrays, or null if the two arrays are null.
@@ -178,7 +178,7 @@ public static final char[][] arrayConcat(char[][] first, char[][] second) {
 }
 
 /**
- * Answers true if the pattern matches the given name using CamelCase rules, or false otherwise. 
+ * Answers true if the pattern matches the given name using CamelCase rules, or false otherwise.
  * char[] CamelCase matching does NOT accept explicit wild-cards '*' and '?' and is inherently case sensitive.
  * <br>
  * CamelCase denotes the convention of writing compound names without spaces, and capitalizing every term.
@@ -225,7 +225,7 @@ public static final char[][] arrayConcat(char[][] first, char[][] second) {
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param pattern the given pattern
  * @param name the given name
  * @return true if the pattern matches the given name, false otherwise
@@ -241,8 +241,8 @@ public static final boolean camelCaseMatch(char[] pattern, char[] name) {
 }
 
 /**
- * Answers true if a sub-pattern matches the subpart of the given name using CamelCase rules, or false otherwise.  
- * char[] CamelCase matching does NOT accept explicit wild-cards '*' and '?' and is inherently case sensitive. 
+ * Answers true if a sub-pattern matches the subpart of the given name using CamelCase rules, or false otherwise.
+ * char[] CamelCase matching does NOT accept explicit wild-cards '*' and '?' and is inherently case sensitive.
  * Can match only subset of name/pattern, considering end positions as non-inclusive.
  * The subpattern is defined by the patternStart and patternEnd positions.
  * <br>
@@ -310,7 +310,7 @@ public static final boolean camelCaseMatch(char[] pattern, char[] name) {
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param pattern the given pattern
  * @param patternStart the start index of the pattern, inclusive
  * @param patternEnd the end index of the pattern, exclusive
@@ -352,7 +352,7 @@ public static final boolean camelCaseMatch(char[] pattern, int patternStart, int
 		}
 
 		if (iName == nameEnd){
-			// We have exhausted name (and not pattern), so it's not a match 
+			// We have exhausted name (and not pattern), so it's not a match
 			return false;
 		}
 
@@ -381,7 +381,7 @@ public static final boolean camelCaseMatch(char[] pattern, int patternStart, int
 			nameChar = name[iName];
 			if (nameChar < ScannerHelper.MAX_OBVIOUS) {
 				if ((ScannerHelper.OBVIOUS_IDENT_CHAR_NATURES[nameChar] & (ScannerHelper.C_LOWER_LETTER | ScannerHelper.C_SPECIAL | ScannerHelper.C_DIGIT)) != 0) {
-					// nameChar is lowercase    
+					// nameChar is lowercase
 					iName++;
 				// nameChar is uppercase...
 				} else  if (patternChar != nameChar) {
@@ -393,7 +393,7 @@ public static final boolean camelCaseMatch(char[] pattern, int patternStart, int
 				}
 			}
 			else if (Character.isJavaIdentifierPart(nameChar) && !Character.isUpperCase(nameChar)) {
-				// nameChar is lowercase    
+				// nameChar is lowercase
 				iName++;
 			// nameChar is uppercase...
 			} else  if (patternChar != nameChar) {
@@ -407,11 +407,11 @@ public static final boolean camelCaseMatch(char[] pattern, int patternStart, int
 		// At this point, either name has been exhausted, or it is at an uppercase letter.
 		// Since pattern is also at an uppercase letter
 	}
-}	
+}
 
 /**
  * Returns the char arrays as an array of Strings
- * 
+ *
  * @param charArrays the char array to convert
  * @return the char arrays as an array of Strings or null if the given char arrays is null.
  * @since 3.0
@@ -467,7 +467,7 @@ public static String charToString(char[] charArray) {
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param first the first array to concatenate
  * @param second the array to add at the end of the first array
  * @return a new array adding the second array at the end of first array, or null if the two arrays are null.
@@ -488,9 +488,9 @@ public static final char[][] arrayConcat(char[][] first, char[] second) {
  * Compares the two char arrays lexicographically.
  *
  * Returns a negative integer if array1 lexicographically precedes the array2,
- * a positive integer if this array1 lexicographically follows the array2, or 
- * zero if both arrays are equal. 
- * 
+ * a positive integer if this array1 lexicographically follows the array2, or
+ * zero if both arrays are equal.
+ *
  * @param array1 the first given array
  * @param array2 the second given array
  * @return the returned value of the comparison between array1 and array2
@@ -513,7 +513,7 @@ public static final int compareTo(char[] array1, char[] array2) {
  * <ul>
  * <li>zero if the array starts with the prefix contents</li>
  * <li>the difference between the first two characters that are not equal </li>
- * <li>one if array length is lower than the prefix length and that the prefix starts with the 
+ * <li>one if array length is lower than the prefix length and that the prefix starts with the
  * array contents.</li>
  * </ul>
  * <p>
@@ -557,7 +557,7 @@ public static final int compareTo(char[] array1, char[] array2) {
  * </li>
  * </ol>
  * </p>
- * 
+ *
  * @param array the given array
  * @param prefix the given prefix
  * @return the result of the comparison (>=0 if array>prefix)
@@ -606,7 +606,7 @@ public static final int compareWith(char[] array, char[] prefix) {
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param first the first array to concatenate
  * @param second the second array to concatenate
  * @return the concatenation of the two arrays, or null if the two arrays are null.
@@ -670,11 +670,11 @@ public static final char[] concat(char[] first, char[] second) {
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param first the first array to concatenate
  * @param second the second array to concatenate
  * @param third the third array to concatenate
- * 
+ *
  * @return the concatenation of the three arrays, or null if the three arrays are null.
  */
 public static final char[] concat(
@@ -729,11 +729,11 @@ public static final char[] concat(
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param first the first array to concatenate
  * @param second the second array to concatenate
  * @param separator the character to insert
- * @return the concatenation of the two arrays inserting the separator character 
+ * @return the concatenation of the two arrays inserting the separator character
  * between the two arrays , or null if the two arrays are null.
  */
 public static final char[] concat(
@@ -760,7 +760,7 @@ public static final char[] concat(
 }
 
 /**
- * Answers the concatenation of the three arrays inserting the sep1 character between the 
+ * Answers the concatenation of the three arrays inserting the sep1 character between the
  * first two arrays and sep2 between the last two.
  * It answers null if the three arrays are null.
  * If the first array is null, then it answers the concatenation of second and third inserting
@@ -810,13 +810,13 @@ public static final char[] concat(
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param first the first array to concatenate
  * @param sep1 the character to insert
  * @param second the second array to concatenate
  * @param sep2 the character to insert
  * @param third the second array to concatenate
- * @return the concatenation of the three arrays inserting the sep1 character between the 
+ * @return the concatenation of the three arrays inserting the sep1 character between the
  * two arrays and sep2 between the last two.
  */
 public static final char[] concat(
@@ -845,8 +845,8 @@ public static final char[] concat(
 }
 
 /**
- * Answers a new array with prepending the prefix character and appending the suffix 
- * character at the end of the array. If array is null, it answers a new array containing the 
+ * Answers a new array with prepending the prefix character and appending the suffix
+ * character at the end of the array. If array is null, it answers a new array containing the
  * prefix and the suffix characters.
  * <br>
  * <br>
@@ -866,7 +866,7 @@ public static final char[] concat(
  *    => result = { 'a', 'c' }
  * </pre></li>
  * </ol>
- * 
+ *
  * @param prefix the prefix character
  * @param array the array that is concanated with the prefix and suffix characters
  * @param suffix the suffix character
@@ -911,7 +911,7 @@ public static final char[] concat(char prefix, char[] array, char suffix) {
  *    => result = { 'c' }
  * </pre></li>
  * </ol>
- * 
+ *
  * @param name the given name
  * @param array the given array
  * @param separator the given separator
@@ -976,7 +976,7 @@ public static final char[] concatWith(
  *    => result = { 'c' }
  * </pre></li>
  * </ol>
- * 
+ *
  * @param array the given array
  * @param name the given name
  * @param separator the given separator
@@ -1015,7 +1015,7 @@ public static final char[] concatWith(
 }
 
 public static final char[] fixLibPackageTail(char[] packageName) {
-	
+
 	if(packageName==null || packageName.length<3) return packageName;
 	int length = packageName.length;
 	if(    packageName[length-3]=='/' &&  (packageName[length-2]=='j' || packageName[length-2]=='J')  && (packageName[length-1]=='s' || packageName[length-1]=='S')){
@@ -1044,7 +1044,7 @@ public static final char[] fixLibPackageTail(char[] packageName) {
  *    => result = { }
  * </pre></li>
  * </ol>
- * 
+ *
  * @param array the given array
  * @param separator the given separator
  * @return the concatenation of the given array parts using the given separator between each part
@@ -1084,7 +1084,7 @@ public static final char[] concatWith(char[][] array, char separator) {
 
 /**
  * Answers true if the array contains an occurrence of character, false otherwise.
- * 
+ *
  * <br>
  * <br>
  * For example:
@@ -1102,7 +1102,7 @@ public static final char[] concatWith(char[][] array, char separator) {
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param character the character to search
  * @param array the array in which the search is done
  * @return true if the array contains an occurrence of character, false otherwise.
@@ -1120,7 +1120,7 @@ public static final boolean contains(char character, char[][] array) {
 
 /**
  * Answers true if the array contains an occurrence of character, false otherwise.
- * 
+ *
  * <br>
  * <br>
  * For example:
@@ -1138,7 +1138,7 @@ public static final boolean contains(char character, char[][] array) {
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param character the character to search
  * @param array the array in which the search is done
  * @return true if the array contains an occurrence of character, false otherwise.
@@ -1153,7 +1153,7 @@ public static final boolean contains(char character, char[] array) {
 
 /**
  * Answers true if the array contains an occurrence of one of the characters, false otherwise.
- * 
+ *
  * <br>
  * <br>
  * For example:
@@ -1171,7 +1171,7 @@ public static final boolean contains(char character, char[] array) {
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param characters the characters to search
  * @param array the array in which the search is done
  * @return true if the array contains an occurrence of one of the characters, false otherwise.
@@ -1188,7 +1188,7 @@ public static final boolean contains(char[] characters, char[] array) {
 
 /**
  * Answers a deep copy of the toCopy array.
- * 
+ *
  * @param toCopy the array to copy
  * @return a deep copy of the toCopy array.
  */
@@ -1207,7 +1207,7 @@ public static final char[][] deepCopy(char[][] toCopy) {
 }
 
 /**
- * Return true if array ends with the sequence of characters contained in toBeFound, 
+ * Return true if array ends with the sequence of characters contained in toBeFound,
  * otherwise false.
  * <br>
  * <br>
@@ -1226,10 +1226,10 @@ public static final char[][] deepCopy(char[][] toCopy) {
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param array the array to check
  * @param toBeFound the array to find
- * @return true if array ends with the sequence of characters contained in toBeFound, 
+ * @return true if array ends with the sequence of characters contained in toBeFound,
  * otherwise false.
  * @throws NullPointerException if array is null or toBeFound is null
  */
@@ -1298,7 +1298,7 @@ public static final boolean equals(char[][] first, char[][] second) {
 /**
  * If isCaseSensite is true, answers true if the two arrays are identical character
  * by character, otherwise false.
- * If it is false, answers true if the two arrays are identical character by 
+ * If it is false, answers true if the two arrays are identical character by
  * character without checking the case, otherwise false.
  * <br>
  * <br>
@@ -1333,7 +1333,7 @@ public static final boolean equals(char[][] first, char[][] second) {
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param first the first array
  * @param second the second array
  * @param isCaseSensitive check whether or not the equality should be case sensitive
@@ -1464,7 +1464,7 @@ public static final boolean equals(char[] first, char[] second, int secondStart,
 }
 /**
  * <p>Answers true if the first array is identical character by character to a portion of the second array
- * delimited from position secondStart (inclusive) to secondEnd(exclusive), otherwise false. The equality could be either 
+ * delimited from position secondStart (inclusive) to secondEnd(exclusive), otherwise false. The equality could be either
  * case sensitive or case insensitive according to the value of the <code>isCaseSensitive</code> parameter.
  * </p>
  * <p>For example:</p>
@@ -1545,7 +1545,7 @@ public static final boolean equals(char[] first, char[] second, int secondStart,
 /**
  * If isCaseSensite is true, answers true if the two arrays are identical character
  * by character, otherwise false.
- * If it is false, answers true if the two arrays are identical character by 
+ * If it is false, answers true if the two arrays are identical character by
  * character without checking the case, otherwise false.
  * <br>
  * <br>
@@ -1580,7 +1580,7 @@ public static final boolean equals(char[] first, char[] second, int secondStart,
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param first the first array
  * @param second the second array
  * @param isCaseSensitive check whether or not the equality should be case sensitive
@@ -1611,7 +1611,7 @@ public static final boolean equals(
 
 /**
  * If isCaseSensite is true, the equality is case sensitive, otherwise it is case insensitive.
- * 
+ *
  * Answers true if the name contains the fragment at the starting index startIndex, otherwise false.
  * <br>
  * <br>
@@ -1650,12 +1650,12 @@ public static final boolean equals(
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param fragment the fragment to check
  * @param name the array to check
  * @param startIndex the starting index
  * @param isCaseSensitive check whether or not the equality should be case sensitive
- * @return true if the name contains the fragment at the starting index startIndex according to the 
+ * @return true if the name contains the fragment at the starting index startIndex according to the
  * value of isCaseSensitive, otherwise false.
  * @throws NullPointerException if fragment or name is null.
  */
@@ -1687,7 +1687,7 @@ public static final boolean fragmentEquals(
 
 /**
  * Answers a hashcode for the array
- * 
+ *
  * @param array the array for which a hashcode is required
  * @return the hashcode
  * @throws NullPointerException if array is null
@@ -1723,7 +1723,7 @@ public static final int hashCode(char[] array) {
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param c the character to check
  * @return true if c is a whitespace according to the JLS, otherwise false.
  */
@@ -1751,7 +1751,7 @@ public static boolean isWhitespace(char c) {
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param toBeFound the character to search
  * @param array the array to be searched
  * @return the first index in the array for which the corresponding character is
@@ -1782,7 +1782,7 @@ public static final int indexOf(char toBeFound, char[] array) {
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param toBeFound the subarray to search
  * @param array the array to be searched
  * @param isCaseSensitive flag to know if the matching should be case sensitive
@@ -1815,11 +1815,11 @@ public static final int indexOf(char[] toBeFound, char[] array, boolean isCaseSe
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param toBeFound the subarray to search
  * @param array the array to be searched
  * @param isCaseSensitive flag to know if the matching should be case sensitive
- * @param start the starting index 
+ * @param start the starting index
  * @return the first index in the array for which the toBeFound array is a matching
  * subarray following the case rule starting at the index start, -1 otherwise
  * @throws NullPointerException if array is null or toBeFound is null
@@ -1849,7 +1849,7 @@ public static final int indexOf(final char[] toBeFound, final char[] array, fina
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param toBeFound the subarray to search
  * @param array the array to be searched
  * @param isCaseSensitive flag to know if the matching should be case sensitive
@@ -1930,7 +1930,7 @@ public static final int indexOf(final char[] toBeFound, final char[] array, fina
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param toBeFound the character to search
  * @param array the array to be searched
  * @param start the starting index
@@ -1976,7 +1976,7 @@ public static final int indexOf(char toBeFound, char[] array, int start) {
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param toBeFound the character to search
  * @param array the array to be searched
  * @param start the starting index (inclusive)
@@ -2111,7 +2111,7 @@ public static final int lastIndexOf(
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param toBeFound the character to search
  * @param array the array to be searched
  * @param startIndex the stopping index
@@ -2140,7 +2140,7 @@ public static final int lastIndexOf(
  * <pre>
  * 	lastSegment("java.lang.Object".toCharArray(),'.') --> Object
  * </pre>
- * 
+ *
  * @param array the array
  * @param separator the given separator
  * @return the last portion of a name given a separator
@@ -2187,7 +2187,7 @@ final static public char[] lastSegment(char[] array, char separator) {
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param pattern the given pattern
  * @param name the given name
  * @param isCaseSensitive flag to know whether or not the matching should be case sensitive
@@ -2247,7 +2247,7 @@ public static final boolean match(
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param pattern the given pattern
  * @param patternStart the given pattern start
  * @param patternEnd the given pattern end
@@ -2336,18 +2336,18 @@ public static final boolean match(
 
 /**
  * Answers true if the pattern matches the filepath using the pathSepatator, false otherwise.
- * 
+ *
  * Path char[] pattern matching, accepting wild-cards '**', '*' and '?' (using Ant directory tasks
  * conventions, also see "http://jakarta.apache.org/ant/manual/dirtasks.html#defaultexcludes").
  * Path pattern matching is enhancing regular pattern matching in supporting extra rule where '**' represent
  * any folder combination.
- * Special rule: 
- * - foo\  is equivalent to foo\**   
+ * Special rule:
+ * - foo\  is equivalent to foo\**
  * When not case sensitive, the pattern is assumed to already be lowercased, the
  * name will be lowercased character per character as comparing.
- * 
+ *
  * @param pattern the given pattern
- * @param filepath the given path 
+ * @param filepath the given path
  * @param isCaseSensitive to find out whether or not the matching should be case sensitive
  * @param pathSeparator the given path separator
  * @return true if the pattern matches the filepath using the pathSepatator, false otherwise
@@ -2406,7 +2406,7 @@ public static final boolean pathMatch(
 			return false;
 		}
 
-		// jump to next segment		
+		// jump to next segment
 		pSegmentEnd =
 			CharOperation.indexOf(
 				pathSeparator,
@@ -2445,7 +2445,7 @@ public static final boolean pathMatch(
 	}
 	int fSegmentRestart = fSegmentStart;
 	checkSegment : while (fSegmentStart < fLength) {
-			
+
 		if (pSegmentStart >= pLength) {
 			if (freeTrailingDoubleStar) return true;
 			// mismatch - restart current path segment
@@ -2453,7 +2453,7 @@ public static final boolean pathMatch(
 				CharOperation.indexOf(pathSeparator, pattern, pSegmentStart = pSegmentRestart);
 			if (pSegmentEnd < 0) pSegmentEnd = pLength;
 
-			fSegmentRestart = 
+			fSegmentRestart =
 				CharOperation.indexOf(pathSeparator, filepath, fSegmentRestart + 1);
 			// skip separator
 			if (fSegmentRestart < 0) {
@@ -2466,7 +2466,7 @@ public static final boolean pathMatch(
 			if (fSegmentEnd < 0) fSegmentEnd = fLength;
 			continue checkSegment;
 		}
-		
+
 		/* path segment is ending */
 		if (pSegmentEnd == pSegmentStart + 2
 			&& pattern[pSegmentStart] == '*'
@@ -2494,7 +2494,7 @@ public static final boolean pathMatch(
 				CharOperation.indexOf(pathSeparator, pattern, pSegmentStart = pSegmentRestart);
 			if (pSegmentEnd < 0) pSegmentEnd = pLength;
 
-			fSegmentRestart = 
+			fSegmentRestart =
 				CharOperation.indexOf(pathSeparator, filepath, fSegmentRestart + 1);
 			// skip separator
 			if (fSegmentRestart < 0) {
@@ -2507,7 +2507,7 @@ public static final boolean pathMatch(
 			if (fSegmentEnd < 0) fSegmentEnd = fLength;
 			continue checkSegment;
 		}
-		// jump to next segment		
+		// jump to next segment
 		pSegmentEnd =
 			CharOperation.indexOf(
 				pathSeparator,
@@ -2537,7 +2537,7 @@ public static final boolean pathMatch(
 
 /**
  * Answers the number of occurrences of the given character in the given array, 0 if any.
- * 
+ *
  * <br>
  * <br>
  * For example:
@@ -2555,7 +2555,7 @@ public static final boolean pathMatch(
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param toBeFound the given character
  * @param array the given array
  * @return the number of occurrences of the given character in the given array, 0 if any
@@ -2572,7 +2572,7 @@ public static final int occurencesOf(char toBeFound, char[] array) {
 /**
  * Answers the number of occurrences of the given character in the given array starting
  * at the given index, 0 if any.
- * 
+ *
  * <br>
  * <br>
  * For example:
@@ -2592,7 +2592,7 @@ public static final int occurencesOf(char toBeFound, char[] array) {
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param toBeFound the given character
  * @param array the given array
  * @param start the given index
@@ -2631,7 +2631,7 @@ public static final int occurencesOf(
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param prefix the given prefix
  * @param name the given name
  * @return true if the given name starts with the given prefix, false otherwise
@@ -2672,7 +2672,7 @@ public static final boolean prefixEquals(char[] prefix, char[] name) {
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param prefix the given prefix
  * @param name the given name
  * @param isCaseSensitive to find out whether or not the comparison should be case sensitive
@@ -2725,7 +2725,7 @@ public static final boolean prefixEquals(
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param array the given array
  * @param toBeRemoved the character to be removed
  * @return a new array removing given character
@@ -2777,7 +2777,7 @@ public static final char[] remove(char[] array, char toBeRemoved) {
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param array the given array
  * @param toBeReplaced the character to be replaced
  * @param replacementChar the replacement character
@@ -2810,7 +2810,7 @@ public static final void replace(
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param array the given array
  * @param toBeReplaced characters to be replaced
  * @param replacementChar the replacement character
@@ -2838,7 +2838,7 @@ public static final void replace(char[] array, char[] toBeReplaced, char replace
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param array the given array
  * @param toBeReplaced characters to be replaced
  * @param replacementChar the replacement character
@@ -2876,7 +2876,7 @@ public static final void replace(char[] array, char[] toBeReplaced, char replace
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param array the given array
  * @param toBeReplaced characters to be replaced
  * @param replacementChars the replacement characters
@@ -2940,7 +2940,7 @@ public static final char[] replace(
 }
 
 /**
- * Replace all occurrence of the character to be replaced with the remplacement character 
+ * Replace all occurrence of the character to be replaced with the remplacement character
  * in a copy of the given array. Returns the given array if no occurrences of the character
  * to be replaced are found.
  * <br>
@@ -2962,7 +2962,7 @@ public static final char[] replace(
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param array the given array
  * @param toBeReplaced the character to be replaced
  * @param replacementChar the replacement character
@@ -2973,7 +2973,7 @@ public static final char[] replaceOnCopy(
 	char[] array,
 	char toBeReplaced,
 	char replacementChar) {
-	
+
 	char[] result = null;
 	for (int i = 0, length = array.length; i < length; i++) {
 		char c = array[i];
@@ -3023,7 +3023,7 @@ public static final char[] replaceOnCopy(
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param divider the given divider
  * @param array the given array
  * @return a new array which is the split of the given array using the given divider and triming each subarray to remove
@@ -3097,7 +3097,7 @@ public static final char[][] splitAndTrimOn(char divider, char[] array) {
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param divider the given divider
  * @param array the given array
  * @return a new array which is the split of the given array using the given divider
@@ -3131,7 +3131,7 @@ public static final char[][] splitOn(char divider, char[] array) {
 }
 
 /**
- * Return a new array which is the split of the given array using the given divider. The given end 
+ * Return a new array which is the split of the given array using the given divider. The given end
  * is exclusive and the given start is inclusive.
  * <br>
  * <br>
@@ -3146,7 +3146,7 @@ public static final char[][] splitOn(char divider, char[] array) {
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param divider the given divider
  * @param array the given array
  * @param start the given starting index
@@ -3187,9 +3187,9 @@ public static final char[][] splitOn(
 }
 
 /**
- * Answers a new array which is a copy of the given array starting at the given start and 
+ * Answers a new array which is a copy of the given array starting at the given start and
  * ending at the given end. The given start is inclusive and the given end is exclusive.
- * Answers null if start is greater than end, if start is lower than 0 or if end is greater 
+ * Answers null if start is greater than end, if start is lower than 0 or if end is greater
  * than the length of the given array. If end  equals -1, it is converted to the array length.
  * <br>
  * <br>
@@ -3210,11 +3210,11 @@ public static final char[][] splitOn(
  * </pre>
  * </li>
  * </ol>
- *  
+ *
  * @param array the given array
  * @param start the given starting index
  * @param end the given ending index
- * @return a new array which is a copy of the given array starting at the given start and 
+ * @return a new array which is a copy of the given array starting at the given start and
  * ending at the given end
  * @throws NullPointerException if the given array is null
  */
@@ -3234,9 +3234,9 @@ public static final char[][] subarray(char[][] array, int start, int end) {
 }
 
 /**
- * Answers a new array which is a copy of the given array starting at the given start and 
+ * Answers a new array which is a copy of the given array starting at the given start and
  * ending at the given end. The given start is inclusive and the given end is exclusive.
- * Answers null if start is greater than end, if start is lower than 0 or if end is greater 
+ * Answers null if start is greater than end, if start is lower than 0 or if end is greater
  * than the length of the given array. If end  equals -1, it is converted to the array length.
  * <br>
  * <br>
@@ -3257,11 +3257,11 @@ public static final char[][] subarray(char[][] array, int start, int end) {
  * </pre>
  * </li>
  * </ol>
- *  
+ *
  * @param array the given array
  * @param start the given starting index
  * @param end the given ending index
- * @return a new array which is a copy of the given array starting at the given start and 
+ * @return a new array which is a copy of the given array starting at the given start and
  * ending at the given end
  * @throws NullPointerException if the given array is null
  */
@@ -3299,7 +3299,7 @@ public static final char[] subarray(char[] array, int start, int end) {
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param chars the chars to convert
  * @return the result of a char[] conversion to lowercase
  */
@@ -3344,7 +3344,7 @@ final static public char[] toLowerCase(char[] chars) {
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param chars the given array
  * @return a new array removing leading and trailing spaces (' ')
  */
@@ -3383,7 +3383,7 @@ final static public char[] trim(char[] chars) {
  * </pre>
  * </li>
  * </ol>
- * 
+ *
  * @param array the given array
  * @return a string which is the concatenation of the given array using the '.' as a separator
  */
@@ -3394,7 +3394,7 @@ final static public String toString(char[][] array) {
 
 /**
  * Answers an array of strings from the given array of char array.
- * 
+ *
  * @param array the given array
  * @return an array of strings
  * @since 3.0

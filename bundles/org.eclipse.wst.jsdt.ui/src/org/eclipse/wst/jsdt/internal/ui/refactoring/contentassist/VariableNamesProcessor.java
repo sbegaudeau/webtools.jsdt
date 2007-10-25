@@ -15,19 +15,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.eclipse.core.runtime.Assert;
-
-import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.jface.contentassist.IContentAssistSubjectControl;
 import org.eclipse.jface.contentassist.ISubjectControlContentAssistProcessor;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
-
-import org.eclipse.jface.resource.ImageDescriptor;
-
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;

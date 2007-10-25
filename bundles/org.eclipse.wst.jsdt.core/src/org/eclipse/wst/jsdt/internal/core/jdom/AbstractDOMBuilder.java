@@ -12,14 +12,16 @@ package org.eclipse.wst.jsdt.internal.core.jdom;
 
 import java.util.Stack;
 
-import org.eclipse.wst.jsdt.core.jdom.*;
+import org.eclipse.wst.jsdt.core.jdom.IDOMCompilationUnit;
+import org.eclipse.wst.jsdt.core.jdom.IDOMFactory;
+import org.eclipse.wst.jsdt.core.jdom.IDOMNode;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.core.util.ReferenceInfoAdapter;
 
 /**
  * An abstract DOM builder that contains shared functionality of DOMBuilder and SimpleDOMBuilder.
  * @deprecated The JDOM was made obsolete by the addition in 2.0 of the more
- * powerful, fine-grained DOM/AST API found in the 
+ * powerful, fine-grained DOM/AST API found in the
  * org.eclipse.wst.jsdt.core.dom package.
  */
 public class AbstractDOMBuilder extends ReferenceInfoAdapter implements ILineStartFinder {
@@ -28,7 +30,7 @@ public class AbstractDOMBuilder extends ReferenceInfoAdapter implements ILineSta
 	 * fuzzy parsing
 	 */
 	protected boolean fAbort;
-	
+
 	/**
 	 * True when a compilation unit is being constructed.
 	 * False when any other type of document fragment is
@@ -47,7 +49,7 @@ public class AbstractDOMBuilder extends ReferenceInfoAdapter implements ILineSta
 	 * The String on which the JDOM is being created.
 	 */
 	protected char[] fDocument= null;
-		
+
 	/**
 	 * The source positions of all of the line separators in the document.
 	 */
@@ -58,7 +60,7 @@ public class AbstractDOMBuilder extends ReferenceInfoAdapter implements ILineSta
 	 * a compilation unit or type. The top of the stack
 	 * is the document fragment that children are added to.
 	 */
-	protected Stack fStack = null;	
+	protected Stack fStack = null;
 
 	/**
 	 * The number of fields constructed in the current
@@ -94,7 +96,7 @@ public void acceptLineSeparatorPositions(int[] positions) {
 			int documentLength = fDocument.length;
 			for (int i = 0; i < length; i++) {
 				int iPlusOne = i + 1;
-				int positionPlusOne = positions[i] + 1;	
+				int positionPlusOne = positions[i] + 1;
 				if (positionPlusOne < documentLength) {
 					if (iPlusOne < length) {
 						// more separators
@@ -120,7 +122,7 @@ public void acceptLineSeparatorPositions(int[] positions) {
  * is being built (since those are the only nodes that have children).
  *
  * <p>NOTE: nodes are added to the JDOM via the method #basicAddChild such that
- * the nodes in the newly created JDOM are not fragmented. 
+ * the nodes in the newly created JDOM are not fragmented.
  */
 protected void addChild(IDOMNode child) {
 	if (fStack.size() > 0) {

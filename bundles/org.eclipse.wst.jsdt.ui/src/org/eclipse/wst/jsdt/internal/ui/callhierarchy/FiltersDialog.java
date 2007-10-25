@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.callhierarchy;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.StatusDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -24,16 +26,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.StatusDialog;
-
 import org.eclipse.ui.PlatformUI;
-
+import org.eclipse.wst.jsdt.internal.corext.callhierarchy.CallHierarchy;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
-
-import org.eclipse.wst.jsdt.internal.corext.callhierarchy.CallHierarchy;
 
 class FiltersDialog extends StatusDialog {
     private Label fNamesHelpText;

@@ -12,8 +12,6 @@ package org.eclipse.wst.jsdt.launching;
 
 
 import java.io.File;
-
-import org.eclipse.debug.core.ILaunchManager;
  
 public class StandardVM extends AbstractVMInstall {
 	StandardVM(IVMInstallType type, String id) {

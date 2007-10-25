@@ -11,19 +11,12 @@
 
 package org.eclipse.wst.jsdt.internal.ui.browsing;
 
-import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.core.resources.IResource;
-
-import org.eclipse.swt.graphics.Image;
-
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.resource.ImageDescriptor;
-
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
@@ -31,6 +24,7 @@ import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredString;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageDescriptorRegistry;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.TreeHierarchyLayoutProblemsDecorator;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 /**
  * Label provider for the Packages view.

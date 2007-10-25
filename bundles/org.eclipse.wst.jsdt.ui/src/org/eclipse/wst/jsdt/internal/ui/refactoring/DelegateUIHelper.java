@@ -10,16 +10,13 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.refactoring;
 
+import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-
-import org.eclipse.ltk.core.refactoring.Refactoring;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.IDelegateUpdating;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 /**

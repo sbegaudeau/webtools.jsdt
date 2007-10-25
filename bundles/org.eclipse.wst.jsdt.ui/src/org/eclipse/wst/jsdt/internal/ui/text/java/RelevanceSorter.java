@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.ui.text.java;
 import java.util.Comparator;
 
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
-
 import org.eclipse.wst.jsdt.ui.text.java.AbstractProposalSorter;
 import org.eclipse.wst.jsdt.ui.text.java.CompletionProposalComparator;
 

@@ -14,7 +14,7 @@ import org.eclipse.wst.jsdt.core.util.IConstantPoolEntry;
 
 /**
  * Default implementation of IConstantPoolEntry
- * 
+ *
  * @since 2.0
  */
 public class ConstantPoolEntry implements IConstantPoolEntry {
@@ -39,7 +39,7 @@ public class ConstantPoolEntry implements IConstantPoolEntry {
 	private char[] utf8Value;
 	private int utf8Length;
 	private char[] classInfoName;
-	
+
 	public ConstantPoolEntry() {
 		this.classInfoNameIndex = -1;
 		this.classIndex = -1;
@@ -59,9 +59,9 @@ public class ConstantPoolEntry implements IConstantPoolEntry {
 		this.methodDescriptor = null;
 		this.utf8Value = null;
 		this.utf8Length = -1;
-		this.classInfoName = null;		
+		this.classInfoName = null;
 	}
-	
+
 	/**
 	 * @see IConstantPoolEntry#getKind()
 	 */

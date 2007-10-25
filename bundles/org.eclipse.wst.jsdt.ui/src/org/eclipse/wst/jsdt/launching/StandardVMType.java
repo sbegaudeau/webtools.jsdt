@@ -13,9 +13,7 @@ package org.eclipse.wst.jsdt.launching;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import com.ibm.icu.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,15 +23,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.core.Launch;
-import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.osgi.service.environment.Constants;
 
 /**
  * A VM install type for VMs the conform to the standard

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.preferences;
 
-import com.ibm.icu.text.Collator;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -19,20 +17,19 @@ import java.util.Comparator;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.preferences.IScopeContext;
-
+import org.eclipse.jface.preference.IPreferencePageContainer;
+import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-
-import org.eclipse.jface.preference.IPreferencePageContainer;
-import org.eclipse.jface.preference.PreferencePage;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.saveparticipant.ISaveParticipantPreferenceConfiguration;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.saveparticipant.SaveParticipantDescriptor;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.saveparticipant.SaveParticipantRegistry;
+
+import com.ibm.icu.text.Collator;
 
 /**
  * Configures Java Editor save participants.

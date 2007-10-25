@@ -16,20 +16,17 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
-import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
-import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
-import org.eclipse.wst.jsdt.ui.text.java.IQuickFixProcessor;
-
 import org.eclipse.wst.jsdt.internal.ui.text.javadoc.IHtmlTagConstants;
 import org.eclipse.wst.jsdt.internal.ui.text.javadoc.IJavaDocTagConstants;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellCheckEngine;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.ISpellChecker;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.engine.RankedWordProposal;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
+import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
+import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
+import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
+import org.eclipse.wst.jsdt.ui.text.java.IQuickFixProcessor;
 
 /**
  * Quick fix processor for incorrectly spelled words.

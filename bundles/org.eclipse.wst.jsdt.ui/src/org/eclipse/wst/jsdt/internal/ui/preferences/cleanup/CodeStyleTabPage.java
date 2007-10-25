@@ -14,9 +14,7 @@ import java.util.Map;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.fix.ControlStatementsCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.ConvertLoopCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.ExpressionsCleanUp;

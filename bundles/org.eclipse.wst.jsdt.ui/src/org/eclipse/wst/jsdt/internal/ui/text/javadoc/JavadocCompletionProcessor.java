@@ -15,14 +15,11 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
-
 import org.eclipse.ui.IEditorPart;
-
-import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
-import org.eclipse.wst.jsdt.ui.text.java.IJavadocCompletionProcessor;
-import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
-
 import org.eclipse.wst.jsdt.internal.ui.text.java.JavaCompletionProcessor;
+import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
+import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
+import org.eclipse.wst.jsdt.ui.text.java.IJavadocCompletionProcessor;
 
 /**
  * Javadoc completion processor.

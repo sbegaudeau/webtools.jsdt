@@ -12,18 +12,16 @@ package org.eclipse.wst.jsdt.internal.ui.compare;
 
 import java.util.ResourceBundle;
 
+import org.eclipse.compare.CompareUI;
+import org.eclipse.jface.dialogs.DialogSettings;
+import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.jface.dialogs.DialogSettings;
-import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.dialogs.TrayDialog;
-
-import org.eclipse.compare.CompareUI;
 
 /**
  * Base class for resizable Dialogs with persistent window bounds.

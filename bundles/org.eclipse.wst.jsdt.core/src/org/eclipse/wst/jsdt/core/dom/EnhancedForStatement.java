@@ -24,36 +24,36 @@ import java.util.List;
  * </pre>
  * The FormalParameter is represented by a <code>SingleVariableDeclaration</code>
  * (without an initializer).
- * 
+ *
  * @since 3.1
  */
 public class EnhancedForStatement extends Statement {
-	
+
 	/**
 	 * The "parameter" structural property of this node type.
 	 */
-	public static final ChildPropertyDescriptor PARAMETER_PROPERTY = 
+	public static final ChildPropertyDescriptor PARAMETER_PROPERTY =
 		new ChildPropertyDescriptor(EnhancedForStatement.class, "parameter", SingleVariableDeclaration.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "expression" structural property of this node type.
 	 */
-	public static final ChildPropertyDescriptor EXPRESSION_PROPERTY = 
+	public static final ChildPropertyDescriptor EXPRESSION_PROPERTY =
 		new ChildPropertyDescriptor(EnhancedForStatement.class, "expression", Expression.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "body" structural property of this node type.
 	 */
-	public static final ChildPropertyDescriptor BODY_PROPERTY = 
+	public static final ChildPropertyDescriptor BODY_PROPERTY =
 		new ChildPropertyDescriptor(EnhancedForStatement.class, "body", Statement.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
-	 * A list of property descriptors (element type: 
+	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
 	 */
 	private static final List PROPERTY_DESCRIPTORS;
-	
+
 	static {
 		List properyList = new ArrayList(4);
 		createPropertyList(EnhancedForStatement.class, properyList);
@@ -66,17 +66,17 @@ public class EnhancedForStatement extends Statement {
 	/**
 	 * Returns a list of structural property descriptors for this node type.
 	 * Clients must not modify the result.
-	 * 
+	 *
 	 * @param apiLevel the API level; one of the
 	 * <code>AST.JLS*</code> constants
 
-	 * @return a list of property descriptors (element type: 
+	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
 	}
-			
+
 	/**
 	 * The parameter; lazily initialized; defaults to a unspecified,
 	 * legal node.
@@ -94,12 +94,12 @@ public class EnhancedForStatement extends Statement {
 	 * statement.
 	 */
 	private Statement body = null;
-			
+
 	/**
 	 * Creates a new AST node for an enchanced for statement owned by the
 	 * given AST. By default, the parameter and expression are unspecified
 	 * but legal subtrees, and the body is an empty block.
-	 * 
+	 *
 	 * @param ast the AST that is to own this node
 	 */
 	EnhancedForStatement(AST ast) {
@@ -113,7 +113,7 @@ public class EnhancedForStatement extends Statement {
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -145,7 +145,7 @@ public class EnhancedForStatement extends Statement {
 		// allow default implementation to flag the error
 		return super.internalGetSetChildProperty(property, get, child);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -188,12 +188,12 @@ public class EnhancedForStatement extends Statement {
 		}
 		visitor.endVisit(this);
 	}
-	
+
 	/**
 	 * Returns the formal parameter in this enhanced for statement.
-	 * 
+	 *
 	 * @return the parameter
-	 */ 
+	 */
 	public SingleVariableDeclaration getParameter() {
 		if (this.parameter == null) {
 			// lazy init must be thread-safe for readers
@@ -210,14 +210,14 @@ public class EnhancedForStatement extends Statement {
 
 	/**
 	 * Sets the formal parameter in this enhanced for statement.
-	 * 
+	 *
 	 * @param parameter the new parameter
 	 * @exception IllegalArgumentException if:
 	 * <ul>
 	 * <li>the node belongs to a different AST</li>
 	 * <li>the node already has a parent</li>
 	 * </ul>
-	 */ 
+	 */
 	public void setParameter(SingleVariableDeclaration parameter) {
 		if (parameter == null) {
 			throw new IllegalArgumentException();
@@ -227,12 +227,12 @@ public class EnhancedForStatement extends Statement {
 		this.parameter = parameter;
 		postReplaceChild(oldChild, parameter, PARAMETER_PROPERTY);
 	}
-	
+
 	/**
 	 * Returns the expression of this enhanced for statement.
-	 * 
+	 *
 	 * @return the expression node
-	 */ 
+	 */
 	public Expression getExpression() {
 		if (this.expression == null) {
 			// lazy init must be thread-safe for readers
@@ -246,10 +246,10 @@ public class EnhancedForStatement extends Statement {
 		}
 		return this.expression;
 	}
-		
+
 	/**
 	 * Sets the expression of this enhanced for statement.
-	 * 
+	 *
 	 * @param expression the new expression node
 	 * @exception IllegalArgumentException if:
 	 * <ul>
@@ -257,7 +257,7 @@ public class EnhancedForStatement extends Statement {
 	 * <li>the node already has a parent</li>
 	 * <li>a cycle in would be created</li>
 	 * </ul>
-	 */ 
+	 */
 	public void setExpression(Expression expression) {
 		if (expression == null) {
 			throw new IllegalArgumentException();
@@ -270,9 +270,9 @@ public class EnhancedForStatement extends Statement {
 
 	/**
 	 * Returns the body of this enchanced for statement.
-	 * 
+	 *
 	 * @return the body statement node
-	 */ 
+	 */
 	public Statement getBody() {
 		if (this.body == null) {
 			// lazy init must be thread-safe for readers
@@ -286,10 +286,10 @@ public class EnhancedForStatement extends Statement {
 		}
 		return this.body;
 	}
-	
+
 	/**
 	 * Sets the body of this enhanced for statement.
-	 * 
+	 *
 	 * @param statement the body statement node
 	 * @exception IllegalArgumentException if:
 	 * <ul>
@@ -297,7 +297,7 @@ public class EnhancedForStatement extends Statement {
 	 * <li>the node already has a parent</li>
 	 * <li>a cycle in would be created</li>
 	 * </ul>
-	 */ 
+	 */
 	public void setBody(Statement statement) {
 		if (statement == null) {
 			throw new IllegalArgumentException();
@@ -307,14 +307,14 @@ public class EnhancedForStatement extends Statement {
 		this.body = statement;
 		postReplaceChild(oldChild, statement, BODY_PROPERTY);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
 		return super.memSize() + 3 * 4;
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */

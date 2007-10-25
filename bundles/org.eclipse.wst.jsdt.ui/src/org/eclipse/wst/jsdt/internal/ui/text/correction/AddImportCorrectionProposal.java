@@ -13,17 +13,12 @@ package org.eclipse.wst.jsdt.internal.ui.text.correction;
 
 
 import org.eclipse.core.runtime.CoreException;
-
-import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.jface.text.IDocument;
-
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorPart;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.util.QualifiedTypeNameHistory;
 
 public class AddImportCorrectionProposal extends ASTRewriteCorrectionProposal {

@@ -31,8 +31,8 @@ package org.eclipse.wst.jsdt.internal.codeassist.complete;
  * The arguments of the allocation expression are all the arguments defined
  * before the cursor.
  */
- 
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+
+import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 
 public class CompletionOnPackageReference extends ImportReference {
@@ -40,12 +40,12 @@ public CompletionOnPackageReference(char[][] tokens , long[] positions) {
 	super(tokens, positions, true, ClassFileConstants.AccDefault);
 }
 public StringBuffer print(int indent, StringBuffer output, boolean withOnDemand) {
-	
+
 	printIndent(indent, output).append("<CompleteOnPackage:"); //$NON-NLS-1$
 	for (int i = 0; i < tokens.length; i++) {
 		if (i > 0) output.append('.');
 		output.append(tokens[i]);
 	}
-	return output.append('>'); 
+	return output.append('>');
 }
 }

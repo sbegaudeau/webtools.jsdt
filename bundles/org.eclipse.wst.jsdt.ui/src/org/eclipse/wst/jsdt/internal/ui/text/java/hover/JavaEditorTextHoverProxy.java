@@ -16,9 +16,7 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHoverExtension;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
-
 import org.eclipse.ui.IEditorPart;
-
 import org.eclipse.wst.jsdt.ui.text.java.hover.IJavaEditorTextHover;
 
 

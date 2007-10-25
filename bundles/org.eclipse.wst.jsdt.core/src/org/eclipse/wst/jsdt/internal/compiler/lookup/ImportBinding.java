@@ -19,7 +19,7 @@ public class ImportBinding extends Binding {
 	public ImportReference reference;
 
 	public Binding resolvedImport; // must ensure the import is resolved
-	
+
 public ImportBinding(char[][] compoundName, boolean isOnDemand, Binding binding, ImportReference reference) {
 	this.compoundName = compoundName;
 	this.onDemand = isOnDemand;

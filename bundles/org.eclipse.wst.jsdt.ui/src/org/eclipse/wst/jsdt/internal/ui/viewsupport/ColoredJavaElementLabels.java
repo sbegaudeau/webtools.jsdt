@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.viewsupport;
 
-import org.eclipse.core.runtime.IPath;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-
 import org.eclipse.wst.jsdt.core.BindingKey;
 import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
 import org.eclipse.wst.jsdt.core.Flags;
@@ -38,18 +35,14 @@ import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.launching.JavaRuntime;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.packageview.ClassPathContainer;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredString.Style;
+import org.eclipse.wst.jsdt.launching.JavaRuntime;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 public class ColoredJavaElementLabels {
 

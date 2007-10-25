@@ -13,13 +13,38 @@ package org.eclipse.wst.jsdt.internal.core.search.matching;
 import java.util.HashMap;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.*;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.wst.jsdt.core.Flags;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.search.*;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.core.search.MethodDeclarationMatch;
+import org.eclipse.wst.jsdt.core.search.SearchMatch;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleMemberAnnotation;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedGenericMethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedMethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
 import org.eclipse.wst.jsdt.internal.core.search.BasicSearchEngine;
@@ -83,7 +108,7 @@ private boolean isTypeInSuperDeclaringTypeNames(char[][] typeName) {
 	return false;
 }
 /**
- * Returns whether the code gen will use an invoke virtual for 
+ * Returns whether the code gen will use an invoke virtual for
  * this message send or not.
  */
 protected boolean isVirtualInvoke(MethodBinding method, MessageSend messageSend) {
@@ -116,7 +141,7 @@ public int match(MethodDeclaration node, MatchingNodeSet nodeSet) {
 
 	// Verify method name
 	if (!matchesName(this.pattern.selector, node.selector)) return IMPOSSIBLE_MATCH;
-	
+
 	// Verify parameters types
 	boolean resolve = ((InternalSearchPattern)this.pattern).mustResolve;
 	if (this.pattern.parameterSimpleNames != null) {
@@ -322,7 +347,7 @@ protected void matchReportReference(ASTNode reference, IJavaElement element, Bin
 		if (accuracy != SearchMatch.A_ACCURATE) return;
 
 		// element that references the method must be included in the enclosing element
-		DeclarationOfReferencedMethodsPattern declPattern = (DeclarationOfReferencedMethodsPattern) this.pattern; 
+		DeclarationOfReferencedMethodsPattern declPattern = (DeclarationOfReferencedMethodsPattern) this.pattern;
 		while (element != null && !declPattern.enclosingElement.equals(element))
 			element = element.getParent();
 		if (element != null) {
@@ -539,7 +564,7 @@ protected void reportDeclaration(MethodBinding methodBinding, MatchLocator locat
 					methodDecl = methodDecls[i];
 					break;
 				}
-			} 
+			}
 			if (methodDecl != null) {
 				int offset = methodDecl.sourceStart;
 				Binding binding = methodDecl.binding;
@@ -618,7 +643,7 @@ protected int resolveLevel(MessageSend messageSend) {
 		}
 		return IMPOSSIBLE_MATCH;
 	}
-	
+
 	int methodLevel = matchMethod(method, false);
 	if (methodLevel == IMPOSSIBLE_MATCH) {
 		if (method != method.original()) methodLevel = matchMethod(method.original(), false);
@@ -740,7 +765,7 @@ public int match(InferredMethod inferredMethod, MatchingNodeSet nodeSet) {
 
 	// Verify method name
 	if (!matchesName(this.pattern.selector, inferredMethod.name)) return IMPOSSIBLE_MATCH;
-	
+
 	// Verify parameters types
 	boolean resolve = ((InternalSearchPattern)this.pattern).mustResolve;
 	if (this.pattern.parameterSimpleNames != null) {

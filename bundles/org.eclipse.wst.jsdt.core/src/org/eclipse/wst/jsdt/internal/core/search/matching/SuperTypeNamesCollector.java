@@ -12,17 +12,42 @@ package org.eclipse.wst.jsdt.internal.core.search.matching;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.IClassFile;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.search.*;
+import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.SearchEngine;
+import org.eclipse.wst.jsdt.core.search.SearchParticipant;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ConstructorDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BinaryTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
-import org.eclipse.wst.jsdt.internal.core.*;
-import org.eclipse.wst.jsdt.internal.core.search.*;
+import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
+import org.eclipse.wst.jsdt.internal.core.JavaProject;
+import org.eclipse.wst.jsdt.internal.core.Openable;
+import org.eclipse.wst.jsdt.internal.core.SourceType;
+import org.eclipse.wst.jsdt.internal.core.search.IndexQueryRequestor;
+import org.eclipse.wst.jsdt.internal.core.search.JavaSearchParticipant;
+import org.eclipse.wst.jsdt.internal.core.search.PathCollector;
+import org.eclipse.wst.jsdt.internal.core.search.PatternSearchJob;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IndexManager;
 import org.eclipse.wst.jsdt.internal.core.util.ASTNodeFinder;
@@ -76,7 +101,7 @@ SearchPattern pattern;
 char[] typeSimpleName;
 char[] typeQualification;
 MatchLocator locator;
-IType type; 
+IType type;
 IProgressMonitor progressMonitor;
 char[][][] result;
 int resultIndex;
@@ -86,7 +111,7 @@ public SuperTypeNamesCollector(
 	char[] typeSimpleName,
 	char[] typeQualification,
 	MatchLocator locator,
-	IType type, 
+	IType type,
 	IProgressMonitor progressMonitor) {
 
 	this.pattern = pattern;
@@ -114,7 +139,7 @@ protected CompilationUnitDeclaration buildBindings(ICompilationUnit compilationU
 	org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit sourceUnit = (org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit) compilationUnit;
 
 	CompilationResult compilationResult = new CompilationResult(sourceUnit, 1, 1, 0);
-	CompilationUnitDeclaration unit = 
+	CompilationUnitDeclaration unit =
 		isTopLevelOrMember ?
 			this.locator.basicParser().dietParse(sourceUnit, compilationResult) :
 			this.locator.basicParser().parse(sourceUnit, compilationResult);
@@ -154,7 +179,7 @@ public char[][][] collect() throws JavaModelException {
 					else
 					{
 						TypeDeclaration typeDecl = nodeFinder.findType(this.type);
-						if (typeDecl != null && typeDecl.binding != null) 
+						if (typeDecl != null && typeDecl.binding != null)
 							collectSuperTypeNames(typeDecl.binding);
 					}
 				}
@@ -172,7 +197,7 @@ public char[][][] collect() throws JavaModelException {
 	String[] paths = this.getPathsOfDeclaringType();
 	if (paths == null) return null;
 
-	// Create bindings from source types and binary types and collect super type names of the type declaration 
+	// Create bindings from source types and binary types and collect super type names of the type declaration
 	// that match the given declaring type
 	Util.sort(paths); // sort by projects
 	JavaProject previousProject = null;
@@ -247,14 +272,14 @@ protected String[] getPathsOfDeclaringType() {
 				pathCollector.acceptIndexMatch(documentPath, indexRecord, participant, access);
 			}
 			return true;
-		}		
-	};		
+		}
+	};
 
 	indexManager.performConcurrentJob(
 		new PatternSearchJob(
-			searchPattern, 
+			searchPattern,
 			new JavaSearchParticipant(),
-			scope, 
+			scope,
 			searchRequestor),
 		IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 		progressMonitor == null ? null : new SubProgressMonitor(progressMonitor, 100));
@@ -279,7 +304,7 @@ protected boolean matches(char[][] compoundName) {
 	int dollar = CharOperation.indexOf('$', simpleName);
 	if (dollar == -1) return false;
 	compoundName[last] = CharOperation.subarray(simpleName, 0, dollar);
-	compoundName[length] = CharOperation.subarray(simpleName, dollar+1, simpleName.length); 
+	compoundName[length] = CharOperation.subarray(simpleName, dollar+1, simpleName.length);
 	return this.matches(compoundName);
 }
 protected boolean matches(ReferenceBinding binding) {

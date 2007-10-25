@@ -12,16 +12,13 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ILineTracker;
 import org.eclipse.jface.text.source.IAnnotationModelListener;
-
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IDocumentProviderExtension2;
 import org.eclipse.ui.texteditor.IDocumentProviderExtension3;
 import org.eclipse.ui.texteditor.IDocumentProviderExtension5;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 
 /**

@@ -10,22 +10,35 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.builder;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import java.io.ByteArrayInputStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Date;
 
-import org.eclipse.wst.jsdt.core.*;
-import org.eclipse.wst.jsdt.core.compiler.*;
-import org.eclipse.wst.jsdt.internal.compiler.*;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.*;
-import org.eclipse.wst.jsdt.internal.compiler.problem.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.wst.jsdt.core.IJavaModelMarker;
+import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
+import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileReader;
+import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFormatException;
+import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
-
-import java.io.*;
-import java.net.URI;
-import java.util.*;
 
 /**
  * The incremental image builder
@@ -105,7 +118,7 @@ public boolean build(SimpleLookupTable deltas) {
 			}
 			notifier.updateProgressDelta(0.10f);
 
-			notifier.subTask(Messages.build_analyzingSources); 
+			notifier.subTask(Messages.build_analyzingSources);
 			addAffectedSourceFiles();
 			notifier.updateProgressDelta(0.05f);
 		}
@@ -206,7 +219,7 @@ protected void addAffectedSourceFiles(StringSet qualifiedSet, StringSet simpleSe
 				if (sourceFiles.contains(sourceFile)) continue next;
 				if (compiledAllAtOnce && previousSourceFiles != null && previousSourceFiles.contains(sourceFile))
 					continue next; // can skip previously compiled files since already saw hierarchy related problems
-	
+
 				if (JavaBuilder.DEBUG)
 					System.out.println("  adding affected source file " + typeLocator); //$NON-NLS-1$
 				sourceFiles.add(sourceFile);
@@ -575,7 +588,7 @@ protected boolean findSourceFiles(IResourceDelta sourceDelta, ClasspathMultiDire
 								// if the target file is a non-java resource, then markers are removed
 								// see bug 2857
 								IResource movedFile = javaBuilder.workspaceRoot.getFile(sourceDelta.getMovedToPath());
-								JavaBuilder.removeProblemsAndTasksFor(movedFile); 
+								JavaBuilder.removeProblemsAndTasksFor(movedFile);
 							}
 						} else {
 							if (JavaBuilder.DEBUG)

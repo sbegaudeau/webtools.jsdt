@@ -17,6 +17,6 @@ import org.eclipse.wst.jsdt.internal.compiler.env.ISourceImport;
  * @see org.eclipse.wst.jsdt.core.IImportDeclaration
  */
 public class ImportDeclarationElementInfo extends MemberElementInfo implements ISourceImport{
-	
+
 	// empty element info
 }

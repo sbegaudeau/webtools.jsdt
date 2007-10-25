@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.internal.compiler;
 
 /**
- * A compilation result consists of all information returned by the compiler for 
+ * A compilation result consists of all information returned by the compiler for
  * a single compiled compilation source unit.  This includes:
  * <ul>
  * <li> the compilation unit that was compiled
@@ -27,7 +27,7 @@ package org.eclipse.wst.jsdt.internal.compiler;
  * parameter and return types, local variable types, types of intermediate expressions, etc.
  * It also includes the namespaces (packages) in which names were looked up.
  * It does <em>not</em> include finer grained dependencies such as information about
- * specific fields and methods which were referenced, but does contain their 
+ * specific fields and methods which were referenced, but does contain their
  * declaring types and any other types used to locate such fields or methods.
  */
 import java.util.Arrays;
@@ -50,7 +50,7 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 public class CompilationResult {
-	
+
 	public CategorizedProblem problems[];
 	public CategorizedProblem tasks[];
 	public int problemCount;
@@ -71,10 +71,10 @@ public class CompilationResult {
 	public boolean hasInconsistentToplevelHierarchies = false; // record the fact some toplevel types have inconsistent hierarchies
 	public boolean hasSyntaxError = false;
 	long[] suppressWarningIrritants;  // irritant for suppressed warnings
-	long[] suppressWarningScopePositions; // (start << 32) + end 
+	long[] suppressWarningScopePositions; // (start << 32) + end
 	int suppressWarningsCount;
 	public char[][] packageName;
-	
+
 private static final int[] EMPTY_LINE_ENDS = Util.EMPTY_INT_ARRAY;
 private static final Comparator PROBLEM_COMPARATOR = new Comparator() {
 	public int compare(Object o1, Object o2) {
@@ -84,7 +84,7 @@ private static final Comparator PROBLEM_COMPARATOR = new Comparator() {
 
 public CompilationResult(
 		char[] fileName,
-		char[][] packageName, 
+		char[][] packageName,
 		int unitIndex,
 		int totalUnitsKnown, int maxProblemPerUnit){
 
@@ -96,7 +96,7 @@ public CompilationResult(
 
 public CompilationResult(
 		ICompilationUnit compilationUnit,
-		int unitIndex, 
+		int unitIndex,
 		int totalUnitsKnown,
 		int maxProblemPerUnit){
 
@@ -112,7 +112,7 @@ private int computePriority(CategorizedProblem problem){
 	final int P_OUTSIDE_METHOD = 40000;
 	final int P_FIRST_ERROR = 20000;
 	final int P_ERROR = 100000;
-	
+
 	int priority = 10000 - problem.getSourceLineNumber(); // early problems first
 	if (priority < 0) priority = 0;
 	if (problem.isError()){
@@ -234,7 +234,7 @@ public CategorizedProblem[] getAllProblems() {
 public ClassFile[] getClassFiles() {
 	ClassFile[] classFiles = new ClassFile[this.compiledTypes.size()];
 	this.compiledTypes.values().toArray(classFiles);
-	return classFiles;	
+	return classFiles;
 }
 
 /**
@@ -462,7 +462,7 @@ public String toString(){
 		while (keys.hasNext()) {
 			char[] typeName = (char[]) keys.next();
 			buffer.append("\t - ").append(typeName).append('\n');   //$NON-NLS-1$
-			
+
 		}
 	} else {
 		buffer.append("No COMPILED type\n");  //$NON-NLS-1$
@@ -474,7 +474,7 @@ public String toString(){
 		}
 	} else {
 		buffer.append("No PROBLEM\n"); //$NON-NLS-1$
-	} 
+	}
 	return buffer.toString();
 }
 }

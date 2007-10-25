@@ -20,7 +20,7 @@ public class StringLiteralConcatenation extends StringLiteral {
 	private static final int INITIAL_SIZE = 5;
 	public Expression[] literals;
 	public int counter;
-	/**	
+	/**
 	 * Build a two-strings literal
 	 * */
 	public StringLiteralConcatenation(StringLiteral str1, StringLiteral str2) {
@@ -51,10 +51,10 @@ public class StringLiteralConcatenation extends StringLiteral {
 			0,
 			length);
 		System.arraycopy(lit.source, 0, source, length, lit.source.length);
-		this.literals[this.counter++] = lit;		
+		this.literals[this.counter++] = lit;
 		return this;
 	}
-	
+
 	public StringBuffer printExpression(int indent, StringBuffer output) {
 		output.append("StringLiteralConcatenation{"); //$NON-NLS-1$
 		for (int i = 0, max = this.counter; i < max; i++) {
@@ -63,7 +63,7 @@ public class StringLiteralConcatenation extends StringLiteral {
 		}
 		return output.append('}');
 	}
-	
+
 	public char[] source() {
 		return source;
 	}
@@ -72,7 +72,7 @@ public class StringLiteralConcatenation extends StringLiteral {
 		if (visitor.visit(this, scope)) {
 			for (int i = 0, max = this.counter; i < max; i++) {
 				this.literals[i].traverse(visitor, scope);
-			}			
+			}
 		}
 		visitor.endVisit(this, scope);
 	}

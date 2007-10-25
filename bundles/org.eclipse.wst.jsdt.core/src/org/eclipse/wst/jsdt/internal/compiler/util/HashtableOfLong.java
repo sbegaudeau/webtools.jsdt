@@ -9,11 +9,11 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.util;
- 
+
  /**
   *	Hashtable for non-zero long keys.
   */
-  
+
 public final class HashtableOfLong {
 	// to avoid using Enumerations, walk the individual tables skipping nulls
 	public long[] keyTable;

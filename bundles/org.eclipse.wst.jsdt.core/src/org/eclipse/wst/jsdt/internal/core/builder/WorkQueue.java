@@ -34,7 +34,7 @@ public void addAll(SourceFile[] elements) {
 public void clear() {
 	this.needsCompileList.clear();
 	this.compiledList.clear();
-}	
+}
 
 public void finished(SourceFile element) {
 	needsCompileList.remove(element);

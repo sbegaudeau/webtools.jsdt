@@ -11,14 +11,16 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.impl.*;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.WithScope;
 
 public class WithStatement extends Statement {
-	
+
 	public Expression condition;
 	public Statement action;
 
@@ -50,7 +52,7 @@ public class WithStatement extends Statement {
 			}
 		}
 
-		
+
 		return flowInfo;
 	}
 
@@ -68,7 +70,7 @@ public class WithStatement extends Statement {
 
 		TypeBinding type = condition.resolveTypeExpecting(parentScope, TypeBinding.ANY);
         BlockScope scope = (type instanceof ReferenceBinding)?
-        		new WithScope(parentScope,(ReferenceBinding)type) : parentScope; 
+        		new WithScope(parentScope,(ReferenceBinding)type) : parentScope;
 		if (action != null)
 			action.resolve(scope);
 	}
@@ -80,7 +82,7 @@ public class WithStatement extends Statement {
 		if (action == null)
 			output.append(';');
 		else
-			action.printStatement(tab + 1, output); 
+			action.printStatement(tab + 1, output);
 		return output;
 	}
 

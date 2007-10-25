@@ -28,13 +28,13 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
 	/**
 	 * Shared empty collection used for efficiency.
 	 */
-	static Object[] NO_NON_JAVA_RESOURCES = new Object[] {};	
-	
+	static Object[] NO_NON_JAVA_RESOURCES = new Object[] {};
+
 	protected JavaElementInfo() {
 		this.children = JavaElement.NO_ELEMENTS;
 	}
 	public void addChild(IJavaElement child) {
-		int length = this.children.length;		
+		int length = this.children.length;
 		if (length == 0) {
 			this.children = new IJavaElement[] {child};
 		} else {

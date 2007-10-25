@@ -14,32 +14,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.eclipse.core.runtime.Assert;
-
-import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.jface.contentassist.IContentAssistSubjectControl;
 import org.eclipse.jface.contentassist.ISubjectControlContentAssistProcessor;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.viewers.ILabelProvider;
-
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
-
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
-
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.text.java.JavaCompletionProposal;
 import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.java.CompletionProposalComparator;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.internal.ui.text.java.JavaCompletionProposal;
 
 public class JavaPackageCompletionProcessor implements IContentAssistProcessor, ISubjectControlContentAssistProcessor {
 	

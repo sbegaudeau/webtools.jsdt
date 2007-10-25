@@ -22,7 +22,7 @@ package org.eclipse.wst.jsdt.core.jdom;
  * @see IDOMField
  * @see IDOMInitializer
  * @deprecated The JDOM was made obsolete by the addition in 2.0 of the more
- * powerful, fine-grained DOM/AST API found in the 
+ * powerful, fine-grained DOM/AST API found in the
  * org.eclipse.wst.jsdt.core.dom package.
  */
 public interface IDOMMember extends IDOMNode {
@@ -48,7 +48,7 @@ public int getFlags();
  * deprecated flag is automatically set to reflect the deprecated tag in the
  * comment.
  *
- * @param comment the comment, including comment delimiters, or 
+ * @param comment the comment, including comment delimiters, or
  *   <code>null</code> indicating this member should have no associated comment
  * @see #setFlags(int)
  */

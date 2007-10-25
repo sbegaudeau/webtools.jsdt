@@ -24,7 +24,6 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-
 import org.eclipse.wst.jsdt.ui.wizards.NewElementWizardPage;
 
 public abstract class JavadocWizardPage extends NewElementWizardPage {

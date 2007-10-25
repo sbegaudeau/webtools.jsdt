@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 
 /**
@@ -18,9 +18,9 @@ import org.eclipse.wst.jsdt.core.IPackageDeclaration;
  */
 
 /* package */ class PackageDeclaration extends SourceRefElement implements IPackageDeclaration {
-	
+
 	String name;
-	
+
 protected PackageDeclaration(CompilationUnit parent, String name) {
 	super(parent);
 	this.name = name;

@@ -21,7 +21,7 @@ package org.eclipse.wst.jsdt.internal.codeassist.select;
  *	---> class X extends <SelectOnType:java.lang.Object>
  *
  */
- 
+
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
@@ -59,6 +59,6 @@ public StringBuffer printExpression(int indent, StringBuffer output) {
 		if (i > 0) output.append('.');
 		output.append(tokens[i]);
 	}
-	return output.append('>'); 
+	return output.append('>');
 }
 }

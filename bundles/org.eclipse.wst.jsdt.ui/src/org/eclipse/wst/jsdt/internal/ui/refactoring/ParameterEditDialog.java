@@ -12,9 +12,8 @@ package org.eclipse.wst.jsdt.internal.ui.refactoring;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-
-import org.eclipse.wst.jsdt.core.JavaConventions;
-
+import org.eclipse.jface.dialogs.StatusDialog;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -25,11 +24,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-
-import org.eclipse.jface.dialogs.StatusDialog;
-
-import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-
+import org.eclipse.wst.jsdt.core.JavaConventions;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.ParameterInfo;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
@@ -37,7 +32,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.StubTypeContext;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.TypeContextChecker;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ChangeSignatureRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.TextFieldNavigationHandler;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.contentassist.ControlContentAssistHelper;

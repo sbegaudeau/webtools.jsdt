@@ -12,11 +12,8 @@ package org.eclipse.wst.jsdt.internal.ui.packageview;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
-
 import org.eclipse.jface.resource.ImageDescriptor;
-
 import org.eclipse.ui.model.IWorkbenchAdapter;
-
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 

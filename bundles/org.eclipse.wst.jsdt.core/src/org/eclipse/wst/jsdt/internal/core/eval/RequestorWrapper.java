@@ -19,11 +19,11 @@ import org.eclipse.wst.jsdt.core.eval.ICodeSnippetRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
 import org.eclipse.wst.jsdt.internal.core.builder.JavaBuilder;
 import org.eclipse.wst.jsdt.internal.eval.IRequestor;
- 
+
 public class RequestorWrapper implements IRequestor {
-	
+
 	ICodeSnippetRequestor requestor;
-	
+
 public RequestorWrapper(ICodeSnippetRequestor requestor) {
 	this.requestor = requestor;
 }

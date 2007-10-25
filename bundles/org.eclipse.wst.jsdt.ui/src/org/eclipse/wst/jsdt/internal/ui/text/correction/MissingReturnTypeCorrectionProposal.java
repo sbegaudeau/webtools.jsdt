@@ -27,11 +27,9 @@ import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodeFactory;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.ScopeAnalyzer;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 
 public class MissingReturnTypeCorrectionProposal extends LinkedCorrectionProposal {

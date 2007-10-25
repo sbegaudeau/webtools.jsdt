@@ -6,8 +6,8 @@ import java.util.List;
 public class InferredType extends Type {
 
 	private static final List PROPERTY_DESCRIPTORS;
-	
-//	public static final ChildPropertyDescriptor TYPE_PROPERTY = 
+
+//	public static final ChildPropertyDescriptor TYPE_PROPERTY =
 //		new ChildPropertyDescriptor(InferredType.class, "type", String.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	static {
@@ -18,8 +18,8 @@ public class InferredType extends Type {
 	}
 
      String type;
-	
-	
+
+
 	InferredType(AST ast) {
 		super(ast);
 	}
@@ -27,8 +27,8 @@ public class InferredType extends Type {
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
 	}
-		
-	 
+
+
 	void accept0(ASTVisitor visitor) {
 		boolean visitChildren = visitor.visit(this);
 		if (visitChildren) {
@@ -54,7 +54,7 @@ public class InferredType extends Type {
 		return propertyDescriptors(apiLevel);
 
 	}
-	
+
 
 	int memSize() {
 		return 0;
@@ -71,10 +71,10 @@ public class InferredType extends Type {
 	{
 		return true;
 	}
- 
+
 	public String getType() {
 		return this.type;
 	}
-	
+
 
 }

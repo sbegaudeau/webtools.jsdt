@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.core.jdom;
 
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.jdom.*;
+import org.eclipse.wst.jsdt.core.jdom.IDOMMember;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.core.util.CharArrayBuffer;
 /**
@@ -21,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.core.util.CharArrayBuffer;
  * @see IDOMMember
  * @see DOMNode
  * @deprecated The JDOM was made obsolete by the addition in 2.0 of the more
- * powerful, fine-grained DOM/AST API found in the 
+ * powerful, fine-grained DOM/AST API found in the
  * org.eclipse.wst.jsdt.core.dom package.
  */
 abstract class DOMMember extends DOMNode implements IDOMMember {
@@ -48,7 +48,7 @@ abstract class DOMMember extends DOMNode implements IDOMMember {
 
 
 	/**
-	 * The member's modifiers textual representation when 
+	 * The member's modifiers textual representation when
 	 * the modifiers (flags) have been altered from
 	 * their original contents, otherwise <code>null</code>.
 	 */
@@ -157,7 +157,7 @@ protected void appendMemberHeaderFragment(CharArrayBuffer buffer) {
 			buffer.append(fDocument, spaceStart, spaceEnd - spaceStart);
 		}
 	}
-	
+
 	String fragment= getComment();
 	if (fragment != null) {
 		buffer.append(fragment);

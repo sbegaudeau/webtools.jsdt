@@ -12,10 +12,8 @@ package org.eclipse.wst.jsdt.internal.ui.filters;
 
 
 import org.eclipse.core.resources.IProject;
-
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-
 import org.eclipse.wst.jsdt.core.IJavaProject;
 
 /**

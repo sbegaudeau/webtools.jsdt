@@ -38,7 +38,7 @@ public static MethodInfo createMethod(byte classFileBytes[], int offsets[], int 
 		int utf8Offset = methodInfo.constantPoolOffsets[methodInfo.u2At(readOffset)] - methodInfo.structOffset;
 		char[] attributeName = methodInfo.utf8At(utf8Offset + 3, methodInfo.u2At(utf8Offset + 1));
 		if (attributeName.length > 0) {
-			switch(attributeName[0]) {				
+			switch(attributeName[0]) {
 				case 'S' :
 					if (CharOperation.equals(AttributeNamesConstants.SignatureName, attributeName))
 						methodInfo.signatureUtf8Offset = methodInfo.constantPoolOffsets[methodInfo.u2At(readOffset + 6)] - methodInfo.structOffset;
@@ -47,11 +47,11 @@ public static MethodInfo createMethod(byte classFileBytes[], int offsets[], int 
 					AnnotationInfo[] methodAnnotations = null;
 					AnnotationInfo[][] paramAnnotations = null;
 					if (CharOperation.equals(attributeName, AttributeNamesConstants.RuntimeVisibleAnnotationsName)) {
-						methodAnnotations = decodeMethodAnnotations(readOffset, true, methodInfo);						
+						methodAnnotations = decodeMethodAnnotations(readOffset, true, methodInfo);
 					} else if (CharOperation.equals(attributeName, AttributeNamesConstants.RuntimeInvisibleAnnotationsName)) {
 						methodAnnotations = decodeMethodAnnotations(readOffset, false, methodInfo);
 					} else if (CharOperation.equals(attributeName, AttributeNamesConstants.RuntimeVisibleParameterAnnotationsName)) {
-						paramAnnotations = decodeParamAnnotations(readOffset, true, methodInfo);						
+						paramAnnotations = decodeParamAnnotations(readOffset, true, methodInfo);
 					} else if (CharOperation.equals(attributeName, AttributeNamesConstants.RuntimeInvisibleParameterAnnotationsName)) {
 						paramAnnotations = decodeParamAnnotations(readOffset, false, methodInfo);
 					}
@@ -104,7 +104,7 @@ static AnnotationInfo[] decodeAnnotations(int offset, boolean runtimeVisible, in
 	int readOffset = offset;
 	for (int i = 0; i < numberOfAnnotations; i++) {
 		result[i] = new AnnotationInfo(methodInfo.reference, methodInfo.constantPoolOffsets,
-			readOffset + methodInfo.structOffset, runtimeVisible, false);		
+			readOffset + methodInfo.structOffset, runtimeVisible, false);
 		readOffset += result[i].readOffset;
 	}
 	return result;
@@ -114,7 +114,7 @@ static AnnotationInfo[] decodeMethodAnnotations(int offset, boolean runtimeVisib
 	if (numberOfAnnotations > 0) {
 		AnnotationInfo[] annos = decodeAnnotations(offset + 8, runtimeVisible, numberOfAnnotations, methodInfo);
 		if (runtimeVisible){
-			int numStandardAnnotations = 0;			
+			int numStandardAnnotations = 0;
 			for( int i=0; i<numberOfAnnotations; i++ ){
 				long standardAnnoTagBits = annos[i].standardAnnotationTagBits;
 				methodInfo.tagBits |= standardAnnoTagBits;
@@ -128,21 +128,21 @@ static AnnotationInfo[] decodeMethodAnnotations(int offset, boolean runtimeVisib
 				if( numStandardAnnotations == numberOfAnnotations )
 					return null;
 
-				// need to resize			
+				// need to resize
 				AnnotationInfo[] temp = new AnnotationInfo[numberOfAnnotations - numStandardAnnotations ];
 				int tmpIndex = 0;
 				for (int i = 0; i < numberOfAnnotations; i++)
 					if (annos[i] != null)
 						temp[tmpIndex ++] = annos[i];
-				annos = temp;	
+				annos = temp;
 			}
 		}
 		return annos;
 	}
 	return null;
 }
-static AnnotationInfo[][] decodeParamAnnotations(int offset, boolean runtimeVisible, MethodInfo methodInfo) {		
-	AnnotationInfo[][] allParamAnnotations = null;	
+static AnnotationInfo[][] decodeParamAnnotations(int offset, boolean runtimeVisible, MethodInfo methodInfo) {
+	AnnotationInfo[][] allParamAnnotations = null;
 	int numberOfParameters = methodInfo.u1At(offset + 6);
 	if (numberOfParameters > 0) {
 		// u2 attribute_name_index + u4 attribute_length + u1 num_parameters
@@ -150,13 +150,13 @@ static AnnotationInfo[][] decodeParamAnnotations(int offset, boolean runtimeVisi
 		for (int i=0 ; i < numberOfParameters; i++) {
 			int numberOfAnnotations = methodInfo.u2At(readOffset);
 			readOffset += 2;
-			if (numberOfAnnotations > 0) {	
+			if (numberOfAnnotations > 0) {
 				if (allParamAnnotations == null)
 					allParamAnnotations = new AnnotationInfo[numberOfParameters][];
 				AnnotationInfo[] annos = decodeAnnotations(readOffset, runtimeVisible, numberOfAnnotations, methodInfo);
 				allParamAnnotations[i] = annos;
 				for (int aIndex = 0; aIndex < annos.length; aIndex++)
-					readOffset += annos[aIndex].readOffset;						
+					readOffset += annos[aIndex].readOffset;
 			}
 		}
 	}
@@ -170,7 +170,7 @@ static AnnotationInfo[][] decodeParamAnnotations(int offset, boolean runtimeVisi
  */
 protected MethodInfo (byte classFileBytes[], int offsets[], int offset) {
 	super(classFileBytes, offsets, offset);
-	this.accessFlags = -1;	
+	this.accessFlags = -1;
 	this.signatureUtf8Offset = -1;
 }
 public int compareTo(Object o) {
@@ -324,10 +324,10 @@ private void readExceptionAttributes() {
 			} else {
 				exceptionNames = new char[entriesNumber][];
 				for (int j = 0; j < entriesNumber; j++) {
-					utf8Offset = 
+					utf8Offset =
 						constantPoolOffsets[u2At(
 							constantPoolOffsets[u2At(readOffset)] - structOffset + 1)]
-							- structOffset; 
+							- structOffset;
 					exceptionNames[j] = utf8At(utf8Offset + 3, u2At(utf8Offset + 1));
 					readOffset += 2;
 				}
@@ -368,7 +368,7 @@ private void readModifierRelatedAttributes() {
 }
 /**
  * Answer the size of the receiver in bytes.
- * 
+ *
  * @return int
  */
 public int sizeInBytes() {
@@ -380,8 +380,8 @@ public String toString() {
 	toString(buffer);
 	return buffer.toString();
 }
-void toString(StringBuffer buffer) {	
-	buffer.append(this.getClass().getName());	
+void toString(StringBuffer buffer) {
+	buffer.append(this.getClass().getName());
 	toStringContent(buffer);
 }
 protected void toStringContent(StringBuffer buffer) {

@@ -11,10 +11,9 @@
 package org.eclipse.wst.jsdt.internal.ui.viewsupport;
 
 
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-
-import org.eclipse.jface.viewers.ILabelProvider;
 
 /**
  * Helper class to manage images that should be disposed when a control is disposed

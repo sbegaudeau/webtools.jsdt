@@ -10,18 +10,33 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler;
 
-import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.compiler.*;
-import org.eclipse.wst.jsdt.internal.compiler.env.*;
-import org.eclipse.wst.jsdt.internal.compiler.impl.*;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
-import org.eclipse.wst.jsdt.internal.compiler.parser.*;
-import org.eclipse.wst.jsdt.internal.compiler.problem.*;
-import org.eclipse.wst.jsdt.internal.compiler.util.*;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Map;
 
-import java.io.*;
-import java.util.*;
+import org.eclipse.wst.jsdt.core.IClassFile;
+import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
+import org.eclipse.wst.jsdt.core.compiler.IProblem;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
+import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
+import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
+import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
+import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
+import org.eclipse.wst.jsdt.internal.compiler.env.ISourceType;
+import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
+import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LookupEnvironment;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
+import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
+import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilationUnit;
+import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblem;
+import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
+import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
+import org.eclipse.wst.jsdt.internal.compiler.util.Messages;
 
 public class Compiler implements ITypeRequestor, ProblemSeverities {
 	public Parser parser;
@@ -41,7 +56,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 	// ONCE STABILIZED, THESE SHOULD RETURN TO A FINAL FIELD
 	public static boolean DEBUG = false;
 	public int parseThreshold = -1;
-	
+
 	public AbstractAnnotationProcessorManager annotationProcessorManager;
 	public ReferenceBinding[] referenceBindings;
 
@@ -51,7 +66,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 	/*
 	 * Static requestor reserved to listening compilation results in debug mode,
 	 * so as for example to monitor compiler activity independantly from a particular
-	 * builder implementation. It is reset at the end of compilation, and should not 
+	 * builder implementation. It is reset at the end of compilation, and should not
 	 * persist any information after having been reset.
 	 */
 	public static IDebugRequestor DebugRequestor = null;
@@ -75,13 +90,13 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 	 *      them all) and at the same time perform some actions such as opening a dialog
 	 *      in UI when compiling interactively.
 	 *      @see org.eclipse.wst.jsdt.internal.compiler.DefaultErrorHandlingPolicies
-	 *  
+	 *
 	 *  @param settings java.util.Map
 	 *      The settings that control the compiler behavior.
-	 *      
+	 *
 	 *  @param requestor org.eclipse.wst.jsdt.internal.compiler.api.ICompilerRequestor
 	 *      Component which will receive and persist all compilation results and is intended
-	 *      to consume them as they are produced. Typically, in a batch compiler, it is 
+	 *      to consume them as they are produced. Typically, in a batch compiler, it is
 	 *      responsible for writing out the actual .class files to the file system.
 	 *      @see org.eclipse.wst.jsdt.internal.compiler.CompilationResult
 	 *
@@ -91,7 +106,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 	 *      order to avoid object conversions. Note that the factory is not supposed
 	 *      to accumulate the created problems, the compiler will gather them all and hand
 	 *      them back as part of the compilation unit result.
-	 *      
+	 *
 	 *  @deprecated this constructor is kept to preserve 3.1 and 3.2M4 compatibility
 	 */
 	public Compiler(
@@ -100,104 +115,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 		Map settings,
 		final ICompilerRequestor requestor,
 		IProblemFactory problemFactory) {
-		this(environment, policy, new CompilerOptions(settings), requestor, problemFactory, null); 
-	}
-	
-	/**
-	 * Answer a new compiler using the given name environment and compiler options.
-	 * The environment and options will be in effect for the lifetime of the compiler.
-	 * When the compiler is run, compilation results are sent to the given requestor.
-	 *
-	 *  @param environment org.eclipse.wst.jsdt.internal.compiler.api.env.INameEnvironment
-	 *      Environment used by the compiler in order to resolve type and package
-	 *      names. The name environment implements the actual connection of the compiler
-	 *      to the outside world (e.g. in batch mode the name environment is performing
-	 *      pure file accesses, reuse previous build state or connection to repositories).
-	 *      Note: the name environment is responsible for implementing the actual classpath
-	 *            rules.
-	 *
-	 *  @param policy org.eclipse.wst.jsdt.internal.compiler.api.problem.IErrorHandlingPolicy
-	 *      Configurable part for problem handling, allowing the compiler client to
-	 *      specify the rules for handling problems (stop on first error or accumulate
-	 *      them all) and at the same time perform some actions such as opening a dialog
-	 *      in UI when compiling interactively.
-	 *      @see org.eclipse.wst.jsdt.internal.compiler.DefaultErrorHandlingPolicies
-	 *      
-	 *  @param settings java.util.Map
-	 *      The settings that control the compiler behavior.
-	 *      
-	 *  @param requestor org.eclipse.wst.jsdt.internal.compiler.api.ICompilerRequestor
-	 *      Component which will receive and persist all compilation results and is intended
-	 *      to consume them as they are produced. Typically, in a batch compiler, it is 
-	 *      responsible for writing out the actual .class files to the file system.
-	 *      @see org.eclipse.wst.jsdt.internal.compiler.CompilationResult
-	 *
-	 *  @param problemFactory org.eclipse.wst.jsdt.internal.compiler.api.problem.IProblemFactory
-	 *      Factory used inside the compiler to create problem descriptors. It allows the
-	 *      compiler client to supply its own representation of compilation problems in
-	 *      order to avoid object conversions. Note that the factory is not supposed
-	 *      to accumulate the created problems, the compiler will gather them all and hand
-	 *      them back as part of the compilation unit result.
-	 *      
-	 *  @param parseLiteralExpressionsAsConstants <code>boolean</code>
-	 *		This parameter is used to optimize the literals or leave them as they are in the source.
-	 * 		If you put true, "Hello" + " world" will be converted to "Hello world".
-	 * 
-	 *  @deprecated this constructor is kept to preserve 3.1 and 3.2M4 compatibility
-	 */
-	public Compiler(
-		INameEnvironment environment,
-		IErrorHandlingPolicy policy,
-		Map settings,
-		final ICompilerRequestor requestor,
-		IProblemFactory problemFactory,
-		boolean parseLiteralExpressionsAsConstants) {
-		this(environment, policy, new CompilerOptions(settings, parseLiteralExpressionsAsConstants), requestor, problemFactory, null); 
-	}
-	
-	/**
-	 * Answer a new compiler using the given name environment and compiler options.
-	 * The environment and options will be in effect for the lifetime of the compiler.
-	 * When the compiler is run, compilation results are sent to the given requestor.
-	 *
-	 *  @param environment org.eclipse.wst.jsdt.internal.compiler.api.env.INameEnvironment
-	 *      Environment used by the compiler in order to resolve type and package
-	 *      names. The name environment implements the actual connection of the compiler
-	 *      to the outside world (e.g. in batch mode the name environment is performing
-	 *      pure file accesses, reuse previous build state or connection to repositories).
-	 *      Note: the name environment is responsible for implementing the actual classpath
-	 *            rules.
-	 *
-	 *  @param policy org.eclipse.wst.jsdt.internal.compiler.api.problem.IErrorHandlingPolicy
-	 *      Configurable part for problem handling, allowing the compiler client to
-	 *      specify the rules for handling problems (stop on first error or accumulate
-	 *      them all) and at the same time perform some actions such as opening a dialog
-	 *      in UI when compiling interactively.
-	 *      @see org.eclipse.wst.jsdt.internal.compiler.DefaultErrorHandlingPolicies
-	 *      
-	 *  @param options org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions
-	 *      The options that control the compiler behavior.
-	 *      
-	 *  @param requestor org.eclipse.wst.jsdt.internal.compiler.api.ICompilerRequestor
-	 *      Component which will receive and persist all compilation results and is intended
-	 *      to consume them as they are produced. Typically, in a batch compiler, it is 
-	 *      responsible for writing out the actual .class files to the file system.
-	 *      @see org.eclipse.wst.jsdt.internal.compiler.CompilationResult
-	 *
-	 *  @param problemFactory org.eclipse.wst.jsdt.internal.compiler.api.problem.IProblemFactory
-	 *      Factory used inside the compiler to create problem descriptors. It allows the
-	 *      compiler client to supply its own representation of compilation problems in
-	 *      order to avoid object conversions. Note that the factory is not supposed
-	 *      to accumulate the created problems, the compiler will gather them all and hand
-	 *      them back as part of the compilation unit result.
-	 */
-	public Compiler(
-		INameEnvironment environment,
-		IErrorHandlingPolicy policy,
-		CompilerOptions options,
-		final ICompilerRequestor requestor,
-		IProblemFactory problemFactory) {
-		this(environment, policy, options, requestor, problemFactory, null); 
+		this(environment, policy, new CompilerOptions(settings), requestor, problemFactory, null);
 	}
 
 	/**
@@ -219,13 +137,110 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 	 *      them all) and at the same time perform some actions such as opening a dialog
 	 *      in UI when compiling interactively.
 	 *      @see org.eclipse.wst.jsdt.internal.compiler.DefaultErrorHandlingPolicies
-	 *      
-	 *  @param options org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions
-	 *      The options that control the compiler behavior.
-	 *      
+	 *
+	 *  @param settings java.util.Map
+	 *      The settings that control the compiler behavior.
+	 *
 	 *  @param requestor org.eclipse.wst.jsdt.internal.compiler.api.ICompilerRequestor
 	 *      Component which will receive and persist all compilation results and is intended
-	 *      to consume them as they are produced. Typically, in a batch compiler, it is 
+	 *      to consume them as they are produced. Typically, in a batch compiler, it is
+	 *      responsible for writing out the actual .class files to the file system.
+	 *      @see org.eclipse.wst.jsdt.internal.compiler.CompilationResult
+	 *
+	 *  @param problemFactory org.eclipse.wst.jsdt.internal.compiler.api.problem.IProblemFactory
+	 *      Factory used inside the compiler to create problem descriptors. It allows the
+	 *      compiler client to supply its own representation of compilation problems in
+	 *      order to avoid object conversions. Note that the factory is not supposed
+	 *      to accumulate the created problems, the compiler will gather them all and hand
+	 *      them back as part of the compilation unit result.
+	 *
+	 *  @param parseLiteralExpressionsAsConstants <code>boolean</code>
+	 *		This parameter is used to optimize the literals or leave them as they are in the source.
+	 * 		If you put true, "Hello" + " world" will be converted to "Hello world".
+	 *
+	 *  @deprecated this constructor is kept to preserve 3.1 and 3.2M4 compatibility
+	 */
+	public Compiler(
+		INameEnvironment environment,
+		IErrorHandlingPolicy policy,
+		Map settings,
+		final ICompilerRequestor requestor,
+		IProblemFactory problemFactory,
+		boolean parseLiteralExpressionsAsConstants) {
+		this(environment, policy, new CompilerOptions(settings, parseLiteralExpressionsAsConstants), requestor, problemFactory, null);
+	}
+
+	/**
+	 * Answer a new compiler using the given name environment and compiler options.
+	 * The environment and options will be in effect for the lifetime of the compiler.
+	 * When the compiler is run, compilation results are sent to the given requestor.
+	 *
+	 *  @param environment org.eclipse.wst.jsdt.internal.compiler.api.env.INameEnvironment
+	 *      Environment used by the compiler in order to resolve type and package
+	 *      names. The name environment implements the actual connection of the compiler
+	 *      to the outside world (e.g. in batch mode the name environment is performing
+	 *      pure file accesses, reuse previous build state or connection to repositories).
+	 *      Note: the name environment is responsible for implementing the actual classpath
+	 *            rules.
+	 *
+	 *  @param policy org.eclipse.wst.jsdt.internal.compiler.api.problem.IErrorHandlingPolicy
+	 *      Configurable part for problem handling, allowing the compiler client to
+	 *      specify the rules for handling problems (stop on first error or accumulate
+	 *      them all) and at the same time perform some actions such as opening a dialog
+	 *      in UI when compiling interactively.
+	 *      @see org.eclipse.wst.jsdt.internal.compiler.DefaultErrorHandlingPolicies
+	 *
+	 *  @param options org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions
+	 *      The options that control the compiler behavior.
+	 *
+	 *  @param requestor org.eclipse.wst.jsdt.internal.compiler.api.ICompilerRequestor
+	 *      Component which will receive and persist all compilation results and is intended
+	 *      to consume them as they are produced. Typically, in a batch compiler, it is
+	 *      responsible for writing out the actual .class files to the file system.
+	 *      @see org.eclipse.wst.jsdt.internal.compiler.CompilationResult
+	 *
+	 *  @param problemFactory org.eclipse.wst.jsdt.internal.compiler.api.problem.IProblemFactory
+	 *      Factory used inside the compiler to create problem descriptors. It allows the
+	 *      compiler client to supply its own representation of compilation problems in
+	 *      order to avoid object conversions. Note that the factory is not supposed
+	 *      to accumulate the created problems, the compiler will gather them all and hand
+	 *      them back as part of the compilation unit result.
+	 */
+	public Compiler(
+		INameEnvironment environment,
+		IErrorHandlingPolicy policy,
+		CompilerOptions options,
+		final ICompilerRequestor requestor,
+		IProblemFactory problemFactory) {
+		this(environment, policy, options, requestor, problemFactory, null);
+	}
+
+	/**
+	 * Answer a new compiler using the given name environment and compiler options.
+	 * The environment and options will be in effect for the lifetime of the compiler.
+	 * When the compiler is run, compilation results are sent to the given requestor.
+	 *
+	 *  @param environment org.eclipse.wst.jsdt.internal.compiler.api.env.INameEnvironment
+	 *      Environment used by the compiler in order to resolve type and package
+	 *      names. The name environment implements the actual connection of the compiler
+	 *      to the outside world (e.g. in batch mode the name environment is performing
+	 *      pure file accesses, reuse previous build state or connection to repositories).
+	 *      Note: the name environment is responsible for implementing the actual classpath
+	 *            rules.
+	 *
+	 *  @param policy org.eclipse.wst.jsdt.internal.compiler.api.problem.IErrorHandlingPolicy
+	 *      Configurable part for problem handling, allowing the compiler client to
+	 *      specify the rules for handling problems (stop on first error or accumulate
+	 *      them all) and at the same time perform some actions such as opening a dialog
+	 *      in UI when compiling interactively.
+	 *      @see org.eclipse.wst.jsdt.internal.compiler.DefaultErrorHandlingPolicies
+	 *
+	 *  @param options org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions
+	 *      The options that control the compiler behavior.
+	 *
+	 *  @param requestor org.eclipse.wst.jsdt.internal.compiler.api.ICompilerRequestor
+	 *      Component which will receive and persist all compilation results and is intended
+	 *      to consume them as they are produced. Typically, in a batch compiler, it is
 	 *      responsible for writing out the actual .class files to the file system.
 	 *      @see org.eclipse.wst.jsdt.internal.compiler.CompilationResult
 	 *
@@ -243,9 +258,9 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 			final ICompilerRequestor requestor,
 			IProblemFactory problemFactory,
 			PrintWriter out) {
-		
+
 		this.options = options;
-		
+
 		// wrap requestor in DebugRequestor if one is specified
 		if(DebugRequestor == null) {
 			this.requestor = requestor;
@@ -264,7 +279,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 		this.out = out == null ? new PrintWriter(System.out, true) : out;
 		initializeParser();
 	}
-	
+
 	/**
 	 * Add an additional binary type
 	 */
@@ -364,7 +379,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 	 */
 	public void accept(ISourceType[] sourceTypes, PackageBinding packageBinding, AccessRestriction accessRestriction) {
 		problemReporter.abortDueToInternalError(
-			Messages.bind(Messages.abort_againstSourceModel, new String[] { String.valueOf(sourceTypes[0].getName()), String.valueOf(sourceTypes[0].getFileName()) })); 
+			Messages.bind(Messages.abort_againstSourceModel, new String[] { String.valueOf(sourceTypes[0].getName()), String.valueOf(sourceTypes[0].getFileName()) }));
 	}
 
 	protected void addCompilationUnit(
@@ -458,10 +473,10 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 		if (options.verbose) {
 			if (this.totalUnits > 1) {
 				this.out.println(
-					Messages.bind(Messages.compilation_units, String.valueOf(this.totalUnits))); 
+					Messages.bind(Messages.compilation_units, String.valueOf(this.totalUnits)));
 			} else {
 				this.out.println(
-					Messages.bind(Messages.compilation_unit, String.valueOf(this.totalUnits))); 
+					Messages.bind(Messages.compilation_unit, String.valueOf(this.totalUnits)));
 			}
 		}
 	}
@@ -479,11 +494,11 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 		// Lookup environment may be in middle of connecting types
 		if ((result == null) && lookupEnvironment.unitBeingCompleted != null) {
 		    result = lookupEnvironment.unitBeingCompleted.compilationResult;
-		}		
+		}
 		// Lookup environment may be in middle of connecting types
 		if ((result == null) && lookupEnvironment.unitBeingCompleted != null) {
 		    result = lookupEnvironment.unitBeingCompleted.compilationResult;
-		}		
+		}
 		if ((result == null) && (unitsToProcess != null) && (totalUnits > 0))
 			result = unitsToProcess[totalUnits - 1].compilationResult;
 		// last unit in beginToCompile ?
@@ -547,7 +562,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 		}
 
 		/* uncomment following line to see where the abort came from */
-		// abortException.printStackTrace(); 
+		// abortException.printStackTrace();
 
 		// Exception may tell which compilation result it is related, and which problem caused it
 		CompilationResult result = abortException.compilationResult;
@@ -599,7 +614,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 		this.parser.javadocParser=new SourceJavadocParser(this.parser);
 		this.parser.javadocParser.checkDocComment=true;
 	}
-	
+
 	/**
 	 * Add the initial set of compilation units into the loop
 	 *  ->  build compilation unit declarations, their bindings and record their results.
@@ -626,7 +641,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 				} else {
 					parsedUnit = parser.dietParse(sourceUnits[i], unitResult);
 				}
-				
+
 				parser.inferTypes(parsedUnit,this.options);
 				// initial type binding creation
 				this.addCompilationUnit(sourceUnits[i], parsedUnit);
@@ -663,9 +678,9 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 
 		// type checking
 		unit.resolve();
-	
+
 		unit.analyseCode();
-	
+
 		/* BC- might want to comment the next two out.  They don't seem applicable for JS. */
 		// flow analysis
 		// code generation
@@ -738,12 +753,12 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 	 * Internal API used to resolve a given compilation unit. Can run a subset of the compilation process
 	 */
 	public CompilationUnitDeclaration resolve(
-			CompilationUnitDeclaration unit, 
-			ICompilationUnit sourceUnit, 
+			CompilationUnitDeclaration unit,
+			ICompilationUnit sourceUnit,
 			boolean verifyMethods,
 			boolean analyzeCode,
 			boolean generateCode) {
-				
+
 		try {
 			if (unit == null) {
 				// build and record parsed units
@@ -769,11 +784,11 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 					unit.scope.verifyMethods(lookupEnvironment.methodVerifier());
 				}
 				// type checking
-				unit.resolve();		
+				unit.resolve();
 
 				// flow analysis
 				if (analyzeCode) unit.analyseCode();
-		
+
 				// code generation
 //				if (generateCode) unit.generateCode();
 			}
@@ -806,11 +821,11 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 	 * Internal API used to resolve a given compilation unit. Can run a subset of the compilation process
 	 */
 	public CompilationUnitDeclaration resolve(
-			ICompilationUnit sourceUnit, 
+			ICompilationUnit sourceUnit,
 			boolean verifyMethods,
 			boolean analyzeCode,
 			boolean generateCode) {
-				
+
 		return resolve(
 			null,
 			sourceUnit,

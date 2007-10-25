@@ -24,32 +24,32 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.VariableBinding;
  *	try statements, exception handlers, etc...
  */
 public class FinallyFlowContext extends FlowContext {
-	
+
 	Reference[] finalAssignments;
 	VariableBinding[] finalVariables;
 	int assignCount;
 
-	LocalVariableBinding[] nullLocals;	
+	LocalVariableBinding[] nullLocals;
 	Expression[] nullReferences;
 	int[] nullCheckTypes;
 	int nullCount;
-	
+
 	public FinallyFlowContext(FlowContext parent, ASTNode associatedNode) {
 		super(parent, associatedNode);
 	}
 
 /**
- * Given some contextual initialization info (derived from a try block or a catch block), this 
+ * Given some contextual initialization info (derived from a try block or a catch block), this
  * code will check that the subroutine context does not also initialize a final variable potentially set
  * redundantly.
  */
 public void complainOnDeferredChecks(FlowInfo flowInfo, BlockScope scope) {
-	
+
 	// check redundant final assignments
 	for (int i = 0; i < this.assignCount; i++) {
 		VariableBinding variable = this.finalVariables[i];
 		if (variable == null) continue;
-		
+
 		boolean complained = false; // remember if have complained on this final assignment
 		if (variable instanceof FieldBinding) {
 			// final field
@@ -66,7 +66,7 @@ public void complainOnDeferredChecks(FlowInfo flowInfo, BlockScope scope) {
 					this.finalAssignments[i]);
 			}
 		}
-		// any reference reported at this level is removed from the parent context 
+		// any reference reported at this level is removed from the parent context
 		// where it could also be reported again
 		if (complained) {
 			FlowContext currentContext = this.parent;
@@ -78,11 +78,11 @@ public void complainOnDeferredChecks(FlowInfo flowInfo, BlockScope scope) {
 			}
 		}
 	}
-	
+
 	// check inconsistent null checks
 	if (this.deferNullDiagnostic) { // within an enclosing loop, be conservative
 		for (int i = 0; i < this.nullCount; i++) {
-			this.parent.recordUsingNullReference(scope, this.nullLocals[i], 
+			this.parent.recordUsingNullReference(scope, this.nullLocals[i],
 					this.nullReferences[i],	this.nullCheckTypes[i], flowInfo);
 		}
 	}
@@ -138,19 +138,19 @@ public void complainOnDeferredChecks(FlowInfo flowInfo, BlockScope scope) {
 		}
 	}
 }
-	
+
 	public String individualToString() {
-		
+
 		StringBuffer buffer = new StringBuffer("Finally flow context"); //$NON-NLS-1$
 		buffer.append("[finalAssignments count - ").append(assignCount).append(']'); //$NON-NLS-1$
 		buffer.append("[nullReferences count - ").append(nullCount).append(']'); //$NON-NLS-1$
 		return buffer.toString();
 	}
-	
+
 	public boolean isSubRoutine() {
 		return true;
 	}
-	
+
 	protected boolean recordFinalAssignment(
 		VariableBinding binding,
 		Reference finalAssignment) {
@@ -177,7 +177,7 @@ public void complainOnDeferredChecks(FlowInfo flowInfo, BlockScope scope) {
 		return true;
 	}
 
-	public void recordUsingNullReference(Scope scope, LocalVariableBinding local, 
+	public void recordUsingNullReference(Scope scope, LocalVariableBinding local,
 			Expression reference, int checkType, FlowInfo flowInfo) {
 		if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0 && !flowInfo.isDefinitelyUnknown(local))	{
 			if (deferNullDiagnostic) { // within an enclosing loop, be conservative
@@ -276,11 +276,11 @@ public void complainOnDeferredChecks(FlowInfo flowInfo, BlockScope scope) {
 						// never happens
 				}
 			}
-			recordNullReference(local, reference, checkType); 
+			recordNullReference(local, reference, checkType);
 			// prepare to re-check with try/catch flow info
 		}
 	}
-	
+
 	void removeFinalAssignmentIfAny(Reference reference) {
 		for (int i = 0; i < assignCount; i++) {
 			if (finalAssignments[i] == reference) {
@@ -291,23 +291,23 @@ public void complainOnDeferredChecks(FlowInfo flowInfo, BlockScope scope) {
 		}
 	}
 
-protected void recordNullReference(LocalVariableBinding local, 
+protected void recordNullReference(LocalVariableBinding local,
 	Expression expression, int status) {
 	if (this.nullCount == 0) {
 		this.nullLocals = new LocalVariableBinding[5];
 		this.nullReferences = new Expression[5];
 		this.nullCheckTypes = new int[5];
-	} 
+	}
 	else if (this.nullCount == this.nullLocals.length) {
 		int newLength = this.nullCount * 2;
-		System.arraycopy(this.nullLocals, 0, 
-			this.nullLocals = new LocalVariableBinding[newLength], 0, 
+		System.arraycopy(this.nullLocals, 0,
+			this.nullLocals = new LocalVariableBinding[newLength], 0,
 			this.nullCount);
-		System.arraycopy(this.nullReferences, 0, 
+		System.arraycopy(this.nullReferences, 0,
 			this.nullReferences = new Expression[newLength], 0,
 			this.nullCount);
-		System.arraycopy(this.nullCheckTypes, 0, 
-			this.nullCheckTypes = new int[newLength], 0, 
+		System.arraycopy(this.nullCheckTypes, 0,
+			this.nullCheckTypes = new int[newLength], 0,
 			this.nullCount);
 	}
 	this.nullLocals[this.nullCount] = local;

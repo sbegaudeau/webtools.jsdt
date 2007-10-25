@@ -12,9 +12,7 @@
 package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.newsourcepage;
 
 import org.eclipse.jface.action.Action;
-
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 

@@ -11,14 +11,11 @@
 package org.eclipse.wst.jsdt.internal.corext.util;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.action.LegacyActionTools;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultLineTracker;
 import org.eclipse.jface.text.ILineTracker;
 import org.eclipse.jface.text.IRegion;
-
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
 

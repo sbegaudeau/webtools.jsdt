@@ -16,16 +16,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-
-import org.eclipse.core.resources.ProjectScope;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CleanUpMessages;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CleanUpProfileManager;
@@ -36,6 +32,7 @@ import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.Bui
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.CustomProfile;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.KeySet;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.Profile;
+import org.eclipse.wst.jsdt.ui.JavaUI;
 
 public class CleanUpPreferenceUtil {
 	

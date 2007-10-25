@@ -20,13 +20,13 @@ import org.eclipse.wst.jsdt.core.JavaCore;
  *
  */
 public class UserLibraryClasspathContainer implements IClasspathContainer {
-	
+
 	private String name;
-	
+
 	public UserLibraryClasspathContainer(String libName) {
 		this.name= libName;
 	}
-	
+
 	private UserLibrary getUserLibrary() {
 		return UserLibraryManager.getUserLibrary(this.name);
 	}
@@ -40,7 +40,7 @@ public class UserLibraryClasspathContainer implements IClasspathContainer {
 			return library.getEntries();
 		}
 		return new IClasspathEntry[0];
-		
+
 	}
 
 	/* (non-Javadoc)

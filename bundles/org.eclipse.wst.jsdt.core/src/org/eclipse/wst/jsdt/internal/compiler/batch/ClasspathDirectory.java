@@ -32,7 +32,7 @@ private String[] missingPackageHolder = new String[1];
 private int mode; // ability to only consider one kind of files (source vs. binaries), by default use both
 private String encoding; // only useful if referenced in the source path
 
-ClasspathDirectory(File directory, String encoding, int mode, 
+ClasspathDirectory(File directory, String encoding, int mode,
 		AccessRuleSet accessRuleSet, String destinationPath) {
 	super(accessRuleSet, destinationPath);
 	this.mode = mode;

@@ -10,32 +10,24 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.javadocexport;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
-
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.debug.ui.console.IConsole;
+import org.eclipse.debug.ui.console.IConsoleLineTracker;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
-
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.texteditor.ITextEditor;
-
 import org.eclipse.ui.console.IHyperlink;
-
-import org.eclipse.debug.ui.console.IConsole;
-import org.eclipse.debug.ui.console.IConsoleLineTracker;
-
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.ui.JavaUI;
 
 public class JavadocConsoleLineTracker implements IConsoleLineTracker {
 	

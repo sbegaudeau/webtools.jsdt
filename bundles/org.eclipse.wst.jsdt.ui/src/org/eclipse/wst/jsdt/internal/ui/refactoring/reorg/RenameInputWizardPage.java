@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.refactoring.reorg;
 
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -19,19 +21,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-
-import org.eclipse.jface.dialogs.Dialog;
-
 import org.eclipse.ui.PlatformUI;
-
-import org.eclipse.ltk.core.refactoring.Refactoring;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.IDelegateUpdating;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.INameUpdating;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.IQualifiedNameUpdating;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.IReferenceUpdating;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.ITextUpdating;
-
 import org.eclipse.wst.jsdt.internal.ui.refactoring.DelegateUIHelper;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.QualifiedNameComponent;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;

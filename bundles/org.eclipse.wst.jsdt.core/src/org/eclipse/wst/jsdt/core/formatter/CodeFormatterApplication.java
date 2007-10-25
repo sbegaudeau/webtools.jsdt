@@ -1,11 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2004 Ben Konrath <ben@bagu.org>
  * Copyright (c) 2006 Red Hat Incorporated
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Ben Konrath <ben@bagu.org> - initial implementation
  *     Red Hat Incorporated - improvements based on comments from JDT developers
@@ -26,24 +26,24 @@ import java.util.Properties;
 
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.eclipse.wst.jsdt.core.ToolFactory;
-import org.eclipse.wst.jsdt.internal.core.util.Util;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.text.edits.TextEdit;
+import org.eclipse.wst.jsdt.core.ToolFactory;
+import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 /**
  * Implements an Eclipse Application for org.eclipse.wst.jsdt.core.JavaCodeFormatter.
- * 
+ *
  * There are a couple improvments that could be made: 1. Make a list of all the
  * files first so that a file does not get formatted twice. 2. Use a text based
  * progress monitor for output.
  * <p>
  * This class is not intended to be instantiated or subclassed by clients.
  * </p>
- * 
+ *
  * @author Ben Konrath <bkonrath@redhat.com>
  * @since 3.2
  */
@@ -67,7 +67,7 @@ public class CodeFormatterApplication implements IApplication {
 		public static String CommandLineErrorFileDir;
 
 		public static String CommandLineErrorQuietVerbose;
-		
+
 		public static String CommandLineErrorNoConfigFile;
 
 		public static String CommandLineFormatting;
@@ -91,7 +91,7 @@ public class CodeFormatterApplication implements IApplication {
 		/**
 		 * Bind the given message's substitution locations with the given string
 		 * values.
-		 * 
+		 *
 		 * @param message
 		 *            the message to be manipulated
 		 * @return the manipulated String
@@ -103,7 +103,7 @@ public class CodeFormatterApplication implements IApplication {
 		/**
 		 * Bind the given message's substitution locations with the given string
 		 * values.
-		 * 
+		 *
 		 * @param message
 		 *            the message to be manipulated
 		 * @param binding
@@ -119,7 +119,7 @@ public class CodeFormatterApplication implements IApplication {
 		/**
 		 * Bind the given message's substitution locations with the given string
 		 * values.
-		 * 
+		 *
 		 * @param message
 		 *            the message to be manipulated
 		 * @param binding1
@@ -137,7 +137,7 @@ public class CodeFormatterApplication implements IApplication {
 		/**
 		 * Bind the given message's substitution locations with the given string
 		 * values.
-		 * 
+		 *
 		 * @param message
 		 *            the message to be manipulated
 		 * @param bindings
@@ -167,7 +167,7 @@ public class CodeFormatterApplication implements IApplication {
 
 	private boolean verbose = false;
 
-	/** 
+	/**
 	 * Display the command line usage message.
 	 */
 	private void displayHelp() {
@@ -255,11 +255,11 @@ public class CodeFormatterApplication implements IApplication {
 
 		final int DEFAULT_MODE = 0;
 		final int CONFIG_MODE = 1;
-		
+
 		int mode = DEFAULT_MODE;
 		final int INITIAL_SIZE = 1;
 		int fileCounter = 0;
-		
+
 		File[] filesToFormat = new File[INITIAL_SIZE];
 
 		loop: while (index < argCount) {
@@ -272,7 +272,7 @@ public class CodeFormatterApplication implements IApplication {
 					}
 					if (ARG_HELP.equals(currentArg)) {
 						displayHelp();
-						return null;				
+						return null;
 					}
 					if (ARG_VERBOSE.equals(currentArg)) {
 						this.verbose = true;
@@ -307,12 +307,12 @@ public class CodeFormatterApplication implements IApplication {
 					}
 					mode = DEFAULT_MODE;
 					continue loop;
-			}			
+			}
 		}
 
 		if (mode == CONFIG_MODE || this.options == null) {
 			displayHelp(Messages.bind(Messages.CommandLineErrorNoConfigFile));
-			return null;			
+			return null;
 		}
 		if (this.quiet && this.verbose) {
 			displayHelp(
@@ -382,7 +382,7 @@ public class CodeFormatterApplication implements IApplication {
 				formatDirTree(file, codeFormatter);
 			} else if (Util.isJavaLikeFileName(file.getPath())) {
 				formatFile(file, codeFormatter);
-			}			
+			}
 		}
 		if (!this.quiet) {
 			System.out.println(Messages.bind(Messages.CommandLineDone));

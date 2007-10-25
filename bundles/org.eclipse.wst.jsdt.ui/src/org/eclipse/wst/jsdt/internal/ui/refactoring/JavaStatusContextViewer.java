@@ -10,47 +10,37 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.refactoring;
 
-import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.core.resources.IFile;
-
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.Region;
+import org.eclipse.jface.text.source.SourceViewer;
+import org.eclipse.ltk.core.refactoring.RefactoringStatusContext;
+import org.eclipse.ltk.ui.refactoring.TextStatusContextViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.JFaceResources;
-
-import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.Region;
-import org.eclipse.jface.text.source.SourceViewer;
-
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.part.FileEditorInput;
-import org.eclipse.ui.texteditor.IDocumentProvider;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JavaStatusContext;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JavaStringStatusContext;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.InternalClassFileEditorInput;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaSourceViewer;
-
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration;
 import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
-
-import org.eclipse.ltk.core.refactoring.RefactoringStatusContext;
-import org.eclipse.ltk.ui.refactoring.TextStatusContextViewer;
 
 
 public class JavaStatusContextViewer extends TextStatusContextViewer {

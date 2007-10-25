@@ -35,11 +35,11 @@ import java.util.Map;
  * have a specific parent, there needs to multiple instances of these
  * nodes.
  * </p>
- * 
+ *
  * @since 2.0
  */
 public class PrimitiveType extends Type {
-	
+
 	/**
  	 * Primitive type codes (typesafe enumeration).
 	 * <pre>
@@ -55,35 +55,35 @@ public class PrimitiveType extends Type {
 	 * </pre>
 	 */
 	public static class Code {
-	
+
 		/**
 		 * The name of the type.
 		 */
 		private String name;
-		
+
 		/**
 		 * Creates a new primitive type code with the given name.
 		 * <p>
 		 * Note: this constructor is package-private. The only instances
 		 * ever created are the ones for the standard primitive types.
 		 * </p>
-		 * 
+		 *
 		 * @param name the standard name of the primitive type
 		 */
 		Code(String name) {
 			this.name = name;
 		}
-		
+
 		/**
 		 * Returns the standard name of the primitive type.
-		 * 
+		 *
 		 * @return the standard name of the primitive type
 		 */
 		public String toString() {
 			return name;
 		}
-	}		
-	
+	}
+
 	/** Type code for the primitive type "int". */
 	public static final Code INT = new Code("int");//$NON-NLS-1$
 	/** Type code for the primitive type "char". */
@@ -108,13 +108,13 @@ public class PrimitiveType extends Type {
 	 * type and as a type literal.
 	 */
 	public static final Code VOID = new Code("void");//$NON-NLS-1$
-		
-	/** 
+
+	/**
 	 * The primitive type code; one of the PrimitiveType constants; default
 	 * is int.
 	 */
 	private PrimitiveType.Code typeCode = INT;
-	
+
 	/**
 	 * Map from token to primitive type code (key type: <code>String</code>;
 	 * value type: <code>PrimitiveType.Code</code>).
@@ -138,33 +138,33 @@ public class PrimitiveType extends Type {
 			CODES.put(ops[i].toString(), ops[i]);
 		}
 	}
-	
+
 	/**
 	 * Returns the primitive type code corresponding to the given string,
 	 * or <code>null</code> if none.
 	 * <p>
 	 * <code>toCode</code> is the converse of <code>toString</code>:
-	 * that is, 
+	 * that is,
 	 * <code>PrimitiveType.Code.toCode(code.toString()) == code</code>
 	 * for all type code <code>code</code>.
 	 * </p>
-	 * 
+	 *
 	 * @param token the standard name of the primitive type
 	 * @return the primitive type code, or <code>null</code> if none
 	 */
 	public static PrimitiveType.Code toCode(String token) {
 		return (PrimitiveType.Code) CODES.get(token);
 	}
-	
+
 	/**
 	 * The "primitiveTypeCode" structural property of this node type.
 	 * @since 3.0
 	 */
-	public static final SimplePropertyDescriptor PRIMITIVE_TYPE_CODE_PROPERTY = 
+	public static final SimplePropertyDescriptor PRIMITIVE_TYPE_CODE_PROPERTY =
 		new SimplePropertyDescriptor(PrimitiveType.class, "primitiveTypeCode", PrimitiveType.Code.class, MANDATORY); //$NON-NLS-1$
-	
+
 	/**
-	 * A list of property descriptors (element type: 
+	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
 	 */
@@ -180,11 +180,11 @@ public class PrimitiveType extends Type {
 	/**
 	 * Returns a list of structural property descriptors for this node type.
 	 * Clients must not modify the result.
-	 * 
+	 *
 	 * @param apiLevel the API level; one of the
 	 * <code>AST.JLS*</code> constants
 
-	 * @return a list of property descriptors (element type: 
+	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
 	 * @since 3.0
 	 */
@@ -192,35 +192,35 @@ public class PrimitiveType extends Type {
 		return PROPERTY_DESCRIPTORS;
 	}
 
-	
+
 	public static PrimitiveType createAnyType(AST ast)
 	{
 		PrimitiveType type = new PrimitiveType(ast);
 		type.setPrimitiveTypeCode(ANY_CODE);
 		return type;
 	}
-	
-	
+
+
 	/**
 	 * Creates a new unparented node for a primitive type owned by the given
 	 * AST. By default, the node has type "int".
 	 * <p>
 	 * N.B. This constructor is package-private.
 	 * </p>
-	 * 
+	 *
 	 * @param ast the AST that is to own this node
 	 */
 	PrimitiveType(AST ast) {
 		super(ast);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -269,21 +269,21 @@ public class PrimitiveType extends Type {
 		visitor.visit(this);
 		visitor.endVisit(this);
 	}
-	
+
 	/**
 	 * Returns the primitive type code.
-	 * 
+	 *
 	 * @return one of the primitive type code constants declared in this
 	 *    class
 	 */
 	public PrimitiveType.Code getPrimitiveTypeCode() {
 		return this.typeCode;
 	}
-	
+
 	/**
 	 * Sets the primitive type code.
-	 * 
-	 * @param typeCode one of the primitive type code constants declared in 
+	 *
+	 * @param typeCode one of the primitive type code constants declared in
 	 *    this class
 	 * @exception IllegalArgumentException if the argument is incorrect
 	 */
@@ -303,7 +303,7 @@ public class PrimitiveType extends Type {
 		// treat Code as free
 		return BASE_NODE_SIZE + 1 * 4;
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */

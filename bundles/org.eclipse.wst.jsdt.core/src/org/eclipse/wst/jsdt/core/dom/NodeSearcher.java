@@ -25,7 +25,7 @@ class NodeSearcher extends ASTVisitor {
 	public org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode found;
 	public TypeDeclaration enclosingType;
 	public int position;
-	
+
 	NodeSearcher(int position) {
 		this.position = position;
 	}
@@ -71,7 +71,7 @@ class NodeSearcher extends ASTVisitor {
 					return true;
 
 			}
-			return false;		
+			return false;
 	}
 
 	public boolean visit(
@@ -94,7 +94,7 @@ class NodeSearcher extends ASTVisitor {
 					enclosingType = typeDeclaration;
 					return true;
 			}
-			return false;		
+			return false;
 	}
 
 }

@@ -1,12 +1,9 @@
 package org.eclipse.wst.jsdt.jsdoc;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,11 +12,11 @@ import java.net.URLConnection;
 import java.util.StringTokenizer;
 
 /**
- * 
+ *
  */
 /**
  * @author childsb
- * 
+ *
  */
 public class Util {
 	public static final String XSL_HEADER = "<?xml version=\"1.0\"?> <xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"1.0\">";
@@ -27,14 +24,14 @@ public class Util {
 	public static final String NEW_LINE = System.getProperty("line.separator");
 	private static final String BUFFER_DIR = "./webCache";
 	public static final boolean VERBOSE = true;
-	
+
 	private static File getTempDir() {
 		File tempDir = new File(BUFFER_DIR);
 		if (tempDir.exists()) return tempDir;
 		tempDir.mkdir();
 		return tempDir;
 	}
-	
+
 	public static String retrieveFromUrl(String url, boolean useCache, boolean deleteOnExit) throws IOException {
 		System.gc();
 		String buffFile = getTempDir().getAbsolutePath() + "\\" + toUniqueFileName(url);
@@ -63,7 +60,7 @@ public class Util {
 		}
 		return pageText.toString();
 	}
-	
+
 	public static String toUniqueFileName(String url) {
 		String temp = url.replace('/', '_');
 		temp = temp.replace('\\', '_');
@@ -81,7 +78,7 @@ public class Util {
 		temp = temp.replace('$', '_');
 		return temp;
 	}
-	
+
 	public static String retrieveFromUrlFixEncode(String url, boolean useBuffer, boolean deleteOnExit) throws IOException {
 		String encoding = "ISO-8859-1";
 		/* Changes all UTF-8 and UTF-16 encoding to stated encoding string */
@@ -90,12 +87,12 @@ public class Util {
 		text = text.replaceAll("UTF-16", encoding);
 		return text;
 	}
-	
+
 	public static String applyTranslation(String text, File translation) throws MappingException {
 		XSLTMap map = new XSLTMap(translation);
 		return map.applyMap(text);
 	}
-	
+
 	public static File dataToTempFile(String data) {
 		File temp = null;
 		try {
@@ -111,7 +108,7 @@ public class Util {
 		}
 		return temp;
 	}
-	
+
 	public static String fileToString(String fileName) throws IOException {
 		System.gc();
 		File file = new File(fileName);
@@ -129,7 +126,7 @@ public class Util {
 		dis.close();
 		return buff.toString();
 	}
-	
+
 	public static File stringToFile(String data, String fileName, boolean appendToEnd, boolean deleteOnExit) {
 		File temp = null;
 		System.gc();
@@ -157,7 +154,7 @@ public class Util {
 		}
 		return temp;
 	}
-	
+
 	public static String getBaseUrl(String url) {
 		int last = url.lastIndexOf('/');
 		if (last < 0) return url;

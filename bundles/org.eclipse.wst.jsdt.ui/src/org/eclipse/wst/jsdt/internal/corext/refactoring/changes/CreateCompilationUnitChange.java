@@ -11,9 +11,7 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.changes;
 
 import org.eclipse.core.resources.IResource;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.changes.CreateTextFileChange;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;

@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.internal.ui.preferences;
 
 
 import org.eclipse.swt.widgets.Composite;
-
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CleanUpConfigurationBlock;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileConfigurationBlock;
 

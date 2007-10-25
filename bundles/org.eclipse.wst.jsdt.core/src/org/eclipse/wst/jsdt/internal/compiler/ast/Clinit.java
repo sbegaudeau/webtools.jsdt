@@ -32,7 +32,7 @@ import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortMethod;
 
 public class Clinit extends AbstractMethodDeclaration {
-	
+
 	private FieldBinding assertionSyntheticFieldBinding = null;
 	private FieldBinding classLiteralSyntheticField = null;
 
@@ -117,7 +117,7 @@ public class Clinit extends AbstractMethodDeclaration {
 				try {
 					classFile.contentsOffset = clinitOffset;
 					classFile.methodCount--;
-					classFile.codeStream.wideMode = true; // request wide mode 
+					classFile.codeStream.wideMode = true; // request wide mode
 					this.generateCode(classScope, classFile, clinitOffset);
 					// restart method generation
 				} catch (AbortMethod e2) {
@@ -224,13 +224,13 @@ public class Clinit extends AbstractMethodDeclaration {
 						case AbstractVariableDeclaration.ENUM_CONSTANT :
 							break;
 						case AbstractVariableDeclaration.INITIALIZER :
-							if (!fieldDecl.isStatic()) 
+							if (!fieldDecl.isStatic())
 								break;
 							lastInitializerScope = ((Initializer) fieldDecl).block.scope;
 							fieldDecl.generateCode(staticInitializerScope, codeStream);
 							break;
 						case AbstractVariableDeclaration.FIELD :
-							if (!fieldDecl.binding.isStatic()) 
+							if (!fieldDecl.binding.isStatic())
 								break;
 							lastInitializerScope = null;
 							fieldDecl.generateCode(staticInitializerScope, codeStream);
@@ -244,13 +244,13 @@ public class Clinit extends AbstractMethodDeclaration {
 					FieldDeclaration fieldDecl = fieldDeclarations[i];
 					switch (fieldDecl.getKind()) {
 						case AbstractVariableDeclaration.INITIALIZER :
-							if (!fieldDecl.isStatic()) 
+							if (!fieldDecl.isStatic())
 								break;
 							lastInitializerScope = ((Initializer) fieldDecl).block.scope;
 							fieldDecl.generateCode(staticInitializerScope, codeStream);
 							break;
 						case AbstractVariableDeclaration.FIELD :
-							if (!fieldDecl.binding.isStatic()) 
+							if (!fieldDecl.binding.isStatic())
 								break;
 							lastInitializerScope = null;
 							fieldDecl.generateCode(staticInitializerScope, codeStream);
@@ -259,7 +259,7 @@ public class Clinit extends AbstractMethodDeclaration {
 				}
 			}
 		}
-		
+
 		if (codeStream.position == 0) {
 			// do not need to output a Clinit if no bytecodes
 			// so we reset the offset inside the byte array contents.
@@ -299,7 +299,7 @@ public class Clinit extends AbstractMethodDeclaration {
 	}
 
 	public void parseStatements(Parser parser, CompilationUnitDeclaration unit) {
-		//the clinit is filled by hand .... 
+		//the clinit is filled by hand ....
 	}
 
 	public StringBuffer print(int tab, StringBuffer output) {
@@ -331,7 +331,7 @@ public class Clinit extends AbstractMethodDeclaration {
 			SourceTypeBinding sourceType =
 				this.scope.outerMostClassScope().enclosingSourceType();
 			// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=22334
-			if (!sourceType.isInterface() && !sourceType.isBaseType()) {			
+			if (!sourceType.isInterface() && !sourceType.isBaseType()) {
 				this.classLiteralSyntheticField = sourceType.addSyntheticFieldForClassLiteral(sourceType, scope);
 			}
 		}

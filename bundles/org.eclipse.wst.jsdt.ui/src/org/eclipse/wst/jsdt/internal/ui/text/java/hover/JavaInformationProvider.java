@@ -11,12 +11,8 @@
 package org.eclipse.wst.jsdt.internal.ui.text.java.hover;
 
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.internal.text.html.BrowserInformationControl;
 import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
-
 import org.eclipse.jface.text.AbstractReusableInformationControlCreator;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;
@@ -25,17 +21,16 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
-
-import org.eclipse.wst.jsdt.ui.text.java.hover.IJavaEditorTextHover;
-
 import org.eclipse.wst.jsdt.internal.ui.text.JavaWordFinder;
+import org.eclipse.wst.jsdt.ui.text.java.hover.IJavaEditorTextHover;
 
 
 public class JavaInformationProvider implements IInformationProvider, IInformationProviderExtension2 {

@@ -15,14 +15,11 @@ import java.util.List;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
-
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
 import org.eclipse.wst.jsdt.internal.ui.preferences.PreferencesAccess;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.IProfileVersioner;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager;
+import org.eclipse.wst.jsdt.ui.JavaUI;
 
 public class CleanUpProfileManager extends ProfileManager {
 	

@@ -15,9 +15,7 @@ import java.util.StringTokenizer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-
 import org.eclipse.wst.jsdt.core.Flags;
-
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**

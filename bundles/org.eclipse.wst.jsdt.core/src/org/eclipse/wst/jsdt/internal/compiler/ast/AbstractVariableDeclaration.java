@@ -34,31 +34,31 @@ public abstract class AbstractVariableDeclaration extends Statement implements I
 	public char[] name;
 
 	public TypeReference type;
-	
+
 	public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
 		return flowInfo;
 	}
-	
+
 	public static final int FIELD = 1;
 	public static final int INITIALIZER = 2;
 	public static final int ENUM_CONSTANT = 3;
 	public static final int LOCAL_VARIABLE = 4;
 	public static final int PARAMETER = 5;
 	public static final int TYPE_PARAMETER = 6;
-	
-	
+
+
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite#genericTypeArguments()
 	 */
 	public TypeBinding[] genericTypeArguments() {
 		return null;
 	}
-	
+
 	/**
 	 * Returns the constant kind of this variable declaration
 	 */
 	public abstract int getKind();
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite#isSuperAccess()
 	 */
@@ -82,17 +82,17 @@ public abstract class AbstractVariableDeclaration extends Statement implements I
 				return output.append(';');
 		}
 	}
-	
+
 	public StringBuffer printAsExpression(int indent, StringBuffer output) {
 		printIndent(indent, output);
 		printModifiers(this.modifiers, output);
 		output.append("var ");
 		if (this.annotations != null) printAnnotations(this.annotations, output);
-		
+
 		if (type != null) {
 			type.print(0, output).append(' ');
 		}
-		output.append(this.name); 
+		output.append(this.name);
 		switch(getKind()) {
 			case ENUM_CONSTANT:
 				if (initialization != null) {
@@ -133,7 +133,7 @@ public abstract class AbstractVariableDeclaration extends Statement implements I
 	public void setFieldIndex(int depth) {
 		// do nothing by default
 	}
-	
+
 	public TypeBinding getTypeBinding()
 	{
 		if (type!=null)
@@ -141,6 +141,6 @@ public abstract class AbstractVariableDeclaration extends Statement implements I
 		else if (inferredType!=null)
 			return inferredType.binding;
 		return null;
-			
+
 	}
 }

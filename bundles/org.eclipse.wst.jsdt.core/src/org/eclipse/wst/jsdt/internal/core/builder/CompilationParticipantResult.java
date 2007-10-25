@@ -7,13 +7,13 @@
  *
  * Contributors:
  *    IBM - rewrote spec
- *    
+ *
  *******************************************************************************/
 
 package org.eclipse.wst.jsdt.internal.core.builder;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.wst.jsdt.core.compiler.*;
+import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 
 public class CompilationParticipantResult {
 	protected SourceFile sourceFile;

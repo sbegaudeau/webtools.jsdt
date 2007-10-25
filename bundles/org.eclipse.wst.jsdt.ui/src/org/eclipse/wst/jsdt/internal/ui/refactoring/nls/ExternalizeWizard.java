@@ -11,13 +11,10 @@
 package org.eclipse.wst.jsdt.internal.ui.refactoring.nls;
 
 import org.eclipse.jface.wizard.IWizardPage;
-
+import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.NLSRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
-
-import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 
 /**
  * good citizen problems - wizard is only valid after constructor (when the pages toggle

@@ -31,7 +31,7 @@ public static String printTypeModifiers(int modifiers) {
 }
 public static void verifyMethodNameAndSignature(char[] name, char[] signature) throws ClassFormatException {
 
-	// ensure name is not empty 
+	// ensure name is not empty
 	if (name.length == 0) {
 		throw new ClassFormatException(ClassFormatException.ErrInvalidMethodName);
 	}
@@ -76,13 +76,13 @@ public int i4At(int relativeOffset) {
 }
 public long i8At(int relativeOffset) {
 	int position = relativeOffset + structOffset;
-	return (((long) (reference[position++] & 0xFF)) << 56) 
-					| (((long) (reference[position++] & 0xFF)) << 48) 
-					| (((long) (reference[position++] & 0xFF)) << 40) 
-					| (((long) (reference[position++] & 0xFF)) << 32) 
-					| (((long) (reference[position++] & 0xFF)) << 24) 
-					| (((long) (reference[position++] & 0xFF)) << 16) 
-					| (((long) (reference[position++] & 0xFF)) << 8) 
+	return (((long) (reference[position++] & 0xFF)) << 56)
+					| (((long) (reference[position++] & 0xFF)) << 48)
+					| (((long) (reference[position++] & 0xFF)) << 40)
+					| (((long) (reference[position++] & 0xFF)) << 32)
+					| (((long) (reference[position++] & 0xFF)) << 24)
+					| (((long) (reference[position++] & 0xFF)) << 16)
+					| (((long) (reference[position++] & 0xFF)) << 8)
 					| (reference[position++] & 0xFF);
 }
 protected void reset() {
@@ -105,7 +105,7 @@ public char[] utf8At(int relativeOffset, int bytesAvailable) {
 	char outputBuf[] = new char[bytesAvailable];
 	int outputPos = 0;
 	int readOffset = this.structOffset + relativeOffset;
-	
+
 	while (length != 0) {
 		int x = this.reference[readOffset++] & 0xFF;
 		length--;
@@ -132,7 +132,7 @@ public char[] utf8At(int relativeOffset, int bytesAvailable, boolean testValidit
 	char outputBuf[] = new char[bytesAvailable];
 	int outputPos = 0;
 	int readOffset = structOffset + relativeOffset;
-	
+
 	while (length != 0) {
 		x = reference[readOffset++] & 0xFF;
 		length--;

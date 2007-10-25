@@ -55,7 +55,7 @@ public class IndexAllProject extends IndexRequest {
 
 		if (this.isCancelled || progressMonitor != null && progressMonitor.isCanceled()) return true;
 		if (!project.isAccessible()) return true; // nothing to do
-		
+
 		ReadWriteMonitor monitor = null;
 		try {
 			// Get source folder entries. Libraries are done as a separate job
@@ -65,18 +65,18 @@ public class IndexAllProject extends IndexRequest {
 			int length = entries.length;
 			IClasspathEntry[] sourceEntries = new IClasspathEntry[length+1];
 			int sourceEntriesNumber = 0;
-			
+
 			//IClasspathEntry projectRoot = JavaCore.newSourceEntry( javaProject.getPath());
-			
-			
+
+
 			for (int i = 0; i < length; i++) {
 				IClasspathEntry entry = entries[i];
 				if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE && (! javaProject.getPath().isPrefixOf(entry.getPath())|| ! JavaProject.hasJavaNature(project) ))
 					sourceEntries[sourceEntriesNumber++] = entry;
 			}
-			
+
 			//if(JavaProject.hasJavaNature(project)) sourceEntries[sourceEntriesNumber++] = projectRoot;
-			
+
 			if (sourceEntriesNumber == 0) {
 				IPath projectPath = javaProject.getPath();
 				for (int i = 0; i < length; i++) {
@@ -97,12 +97,12 @@ public class IndexAllProject extends IndexRequest {
 			}
 			if (sourceEntriesNumber != length)
 				System.arraycopy(sourceEntries, 0, sourceEntries = new IClasspathEntry[sourceEntriesNumber], 0, sourceEntriesNumber);
-	
+
 			Index index = this.manager.getIndexForUpdate(this.containerPath, true, /*reuse index file*/ true /*create if none*/);
 			if (index == null) return true;
 			monitor = index.monitor;
 			if (monitor == null) return true; // index got deleted since acquired
-			
+
 			monitor.enterRead(); // ask permission to read
 
 			String[] paths = index.queryDocumentNames(""); // all file names //$NON-NLS-1$
@@ -123,7 +123,7 @@ public class IndexAllProject extends IndexRequest {
 				IClasspathEntry entry = sourceEntries[i];
 				IResource sourceFolder = root.findMember(entry.getPath());
 				if (sourceFolder != null) {
-					
+
 					// collect output locations if source is project (see http://bugs.eclipse.org/bugs/show_bug.cgi?id=32041)
 					final HashSet outputs = new HashSet();
 					if (sourceFolder.getType() == IResource.PROJECT) {
@@ -137,7 +137,7 @@ public class IndexAllProject extends IndexRequest {
 						}
 					}
 					final boolean hasOutputs = !outputs.isEmpty();
-					
+
 					final char[][] inclusionPatterns = ((ClasspathEntry) entry).fullInclusionPatternChars();
 					final char[][] exclusionPatterns = ((ClasspathEntry) entry).fullExclusionPatternChars();
 					if (max == 0) {
@@ -158,7 +158,7 @@ public class IndexAllProject extends IndexRequest {
 										case IResource.FOLDER :
 											if (exclusionPatterns != null && inclusionPatterns == null) {
 												// if there are inclusion patterns then we must walk the children
-												if (Util.isExcluded(proxy.requestFullPath(), inclusionPatterns, exclusionPatterns, true)) 
+												if (Util.isExcluded(proxy.requestFullPath(), inclusionPatterns, exclusionPatterns, true))
 												    return false;
 											}
 											if (hasOutputs && outputs.contains(proxy.requestFullPath()))
@@ -185,7 +185,7 @@ public class IndexAllProject extends IndexRequest {
 														return false;
 												String relativePathString = Util.relativePath(file.getFullPath(), 1/*remove project segment*/);
 												indexedFileNames.put(relativePathString,
-													indexedFileNames.get(relativePathString) == null 
+													indexedFileNames.get(relativePathString) == null
 															|| indexLastModified < EFS.getStore(location).fetchInfo().getLastModified()
 														? (Object) file
 														: (Object) OK);
@@ -206,7 +206,7 @@ public class IndexAllProject extends IndexRequest {
 					}
 				}
 			}
-			
+
 			SourceElementParser parser = this.manager.getSourceElementParser(javaProject, null/*requestor will be set by indexer*/);
 			Object[] names = indexedFileNames.keyTable;
 			Object[] values = indexedFileNames.valueTable;

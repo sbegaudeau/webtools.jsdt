@@ -13,11 +13,8 @@ package org.eclipse.wst.jsdt.internal.ui.text.java;
 
 
 import org.eclipse.core.runtime.Assert;
-
-import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.jface.text.IDocument;
-
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
 
 

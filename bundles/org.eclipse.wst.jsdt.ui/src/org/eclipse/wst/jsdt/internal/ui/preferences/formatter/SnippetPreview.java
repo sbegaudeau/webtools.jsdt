@@ -18,11 +18,8 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-
 import org.eclipse.swt.widgets.Composite;
-
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaStatusConstants;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 

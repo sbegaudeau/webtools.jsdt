@@ -18,16 +18,16 @@ package org.eclipse.wst.jsdt.core.jdom;
  * This interface is not intended to be implemented by clients.
  * </p>
  * @deprecated The JDOM was made obsolete by the addition in 2.0 of the more
- * powerful, fine-grained DOM/AST API found in the 
+ * powerful, fine-grained DOM/AST API found in the
  * org.eclipse.wst.jsdt.core.dom package.
  */
 public interface IDOMImport extends IDOMNode {
 /**
  * The <code>IDOMImport</code> refinement of this <code>IDOMNode</code>
- * method returns the name of this import. The syntax for an import name 
+ * method returns the name of this import. The syntax for an import name
  * corresponds to a fully qualified type name, or to an on-demand package name
  * as defined by ImportDeclaration (JLS2 7.5).
- * 
+ *
  * @return  the name of this import
  */
 public String getName();
@@ -59,7 +59,7 @@ void setFlags(int flags);
 
 /**
  * The <code>IDOMImport</code> refinement of this <code>IDOMNode</code>
- * method sets the name of this import. The syntax for an import name 
+ * method sets the name of this import. The syntax for an import name
  * corresponds to a fully qualified type name, or to an on-demand package name
  * as defined by ImportDeclaration (JLS2 7.5).
  *

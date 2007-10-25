@@ -15,17 +15,13 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
-
+import org.eclipse.search.ui.text.AbstractTextSearchViewPage;
+import org.eclipse.search.ui.text.Match;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.texteditor.ITextEditor;
-
-import org.eclipse.search.ui.text.AbstractTextSearchViewPage;
-import org.eclipse.search.ui.text.Match;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.ui.JavaUI;
 
 

@@ -13,9 +13,6 @@ package org.eclipse.wst.jsdt.internal.ui.viewsupport;
 
 import java.util.HashSet;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.ListenerList;
-
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
@@ -24,14 +21,13 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
-
-import org.eclipse.swt.widgets.Display;
-
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.text.source.AnnotationModelEvent;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelListener;
 import org.eclipse.jface.text.source.IAnnotationModelListenerExtension;
-
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitAnnotationModelEvent;
 import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;

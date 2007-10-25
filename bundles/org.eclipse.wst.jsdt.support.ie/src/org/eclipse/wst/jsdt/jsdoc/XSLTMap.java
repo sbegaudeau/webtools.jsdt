@@ -4,32 +4,30 @@ package org.eclipse.wst.jsdt.jsdoc;
  *
  * Bradley Childs (childsb@us.ibm.com)
  * Copyright IBM 2006.
- * 
- * XSL Mapper.  Very simple, takes a few things as input and translates them 
- * via the XSL file defined. 
+ *
+ * XSL Mapper.  Very simple, takes a few things as input and translates them
+ * via the XSL file defined.
  */
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.eclipse.wst.jsdt.jsdoc.MappingException;
-import org.w3c.dom.Document;
-import org.w3c.dom.DOMException;
-
-// For write operation
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
-import java.io.*;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 public class XSLTMap {
 
@@ -55,12 +53,12 @@ public class XSLTMap {
         Document document;
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(false);
-        
+
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
-            
+
             byte[] docBytes = dataString.getBytes();
-           
+
             document = builder.parse(new ByteArrayInputStream(docBytes));
             // Use a Transformer for output
             TransformerFactory tFactory = TransformerFactory.newInstance();
@@ -70,12 +68,12 @@ public class XSLTMap {
             /* Need to get an output stream to a string */
             StreamResult result = new StreamResult(_os);
             transformer.transform(source, result);
-            
+
             /* close things */
             transformer.clearParameters();
-          
-            
-            
+
+
+
         } catch (SAXException sxe) {
             throw new MappingException("Transformer c error:\n" + sxe.getMessage());
         } catch (TransformerConfigurationException tce) {
@@ -91,10 +89,10 @@ public class XSLTMap {
             // I/O error (probably corrupt DTD)
             throw new MappingException("I/O Exception error (probably bad/missing XSL map) :\n" + ioe.getMessage());
         } catch (Exception ex){
-            throw new MappingException("General exceptioned occured while mapping: " + ex.getMessage());   
+            throw new MappingException("General exceptioned occured while mapping: " + ex.getMessage());
         }
-        
-      
+
+
     }
 
 //    public static void main(String argv[]) {

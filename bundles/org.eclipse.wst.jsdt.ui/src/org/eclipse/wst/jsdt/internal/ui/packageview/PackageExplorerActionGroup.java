@@ -14,10 +14,6 @@ package org.eclipse.wst.jsdt.internal.ui.packageview;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyEvent;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -31,7 +27,8 @@ import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.OpenEvent;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -41,7 +38,6 @@ import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.actions.OpenInNewWindowAction;
-
 import org.eclipse.ui.views.framelist.BackAction;
 import org.eclipse.ui.views.framelist.ForwardAction;
 import org.eclipse.ui.views.framelist.Frame;
@@ -50,13 +46,16 @@ import org.eclipse.ui.views.framelist.FrameList;
 import org.eclipse.ui.views.framelist.GoIntoAction;
 import org.eclipse.ui.views.framelist.TreeFrame;
 import org.eclipse.ui.views.framelist.UpAction;
-
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.JavaCore;
-
+import org.eclipse.wst.jsdt.internal.ui.actions.CompositeActionGroup;
+import org.eclipse.wst.jsdt.internal.ui.actions.NewWizardsActionGroup;
+import org.eclipse.wst.jsdt.internal.ui.actions.SelectAllAction;
+import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.newsourcepage.GenerateBuildPathActionGroup;
+import org.eclipse.wst.jsdt.internal.ui.workingsets.ViewActionGroup;
 import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.actions.BuildActionGroup;
@@ -70,12 +69,6 @@ import org.eclipse.wst.jsdt.ui.actions.NavigateActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.OpenProjectAction;
 import org.eclipse.wst.jsdt.ui.actions.ProjectActionGroup;
 import org.eclipse.wst.jsdt.ui.actions.RefactorActionGroup;
-
-import org.eclipse.wst.jsdt.internal.ui.actions.CompositeActionGroup;
-import org.eclipse.wst.jsdt.internal.ui.actions.NewWizardsActionGroup;
-import org.eclipse.wst.jsdt.internal.ui.actions.SelectAllAction;
-import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.newsourcepage.GenerateBuildPathActionGroup;
-import org.eclipse.wst.jsdt.internal.ui.workingsets.ViewActionGroup;
 
 class PackageExplorerActionGroup extends CompositeActionGroup {
 

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.parser;
 
-import org.eclipse.wst.jsdt.core.compiler.*;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
@@ -20,8 +19,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class RecoveredBlock extends RecoveredStatement implements TerminalTokens {
 
@@ -30,12 +27,12 @@ public class RecoveredBlock extends RecoveredStatement implements TerminalTokens
 	public int statementCount;
 	public boolean preserveContent = false;
 	public RecoveredLocalVariable pendingArgument;
-	
+
 public RecoveredBlock(Block block, RecoveredElement parent, int bracketBalance){
 	super(block, parent, bracketBalance);
 	this.blockDeclaration = block;
 	this.foundOpeningBrace = true;
-	
+
 	this.preserveContent = this.parser().methodRecoveryActivated || this.parser().statementRecoveryActivated;
 }
 public RecoveredElement add(AbstractMethodDeclaration methodDeclaration, int bracketBalanceValue) {
@@ -50,17 +47,17 @@ public RecoveredElement add(AbstractMethodDeclaration methodDeclaration, int bra
 }
 
 /*
- * Record a nested block declaration 
+ * Record a nested block declaration
  */
 public RecoveredElement add(Block nestedBlockDeclaration, int bracketBalanceValue) {
 
 	/* do not consider a nested block starting passed the block end (if set)
 		it must be belonging to an enclosing block */
-	if (this.blockDeclaration.sourceEnd != 0 
+	if (this.blockDeclaration.sourceEnd != 0
 		&& nestedBlockDeclaration.sourceStart > this.blockDeclaration.sourceEnd){
 		return this.parent.add(nestedBlockDeclaration, bracketBalanceValue);
 	}
-			
+
 	RecoveredBlock element = new RecoveredBlock(nestedBlockDeclaration, this, bracketBalanceValue);
 
 	// if we have a pending Argument, promote it into the new block
@@ -73,26 +70,26 @@ public RecoveredElement add(Block nestedBlockDeclaration, int bracketBalanceValu
 	}
 	this.attach(element);
 	if (nestedBlockDeclaration.sourceEnd == 0) return element;
-	return this;	
+	return this;
 }
 /*
- * Record a local declaration 
+ * Record a local declaration
  */
 public RecoveredElement add(LocalDeclaration localDeclaration, int bracketBalanceValue) {
 	return this.add(localDeclaration, bracketBalanceValue, false);
 }
 /*
- * Record a local declaration 
+ * Record a local declaration
  */
 public RecoveredElement add(LocalDeclaration localDeclaration, int bracketBalanceValue, boolean delegatedByParent) {
 
 	/* local variables inside method can only be final and non void */
-/*	
-	char[][] localTypeName; 
-	if ((localDeclaration.modifiers & ~AccFinal) != 0 // local var can only be final 
+/*
+	char[][] localTypeName;
+	if ((localDeclaration.modifiers & ~AccFinal) != 0 // local var can only be final
 		|| (localDeclaration.type == null) // initializer
 		|| ((localTypeName = localDeclaration.type.getTypeName()).length == 1 // non void
-			&& CharOperation.equals(localTypeName[0], VoidBinding.sourceName()))){ 
+			&& CharOperation.equals(localTypeName[0], VoidBinding.sourceName()))){
 
 		if (delegatedByParent){
 			return this; //ignore
@@ -101,10 +98,10 @@ public RecoveredElement add(LocalDeclaration localDeclaration, int bracketBalanc
 			return this.parent.add(localDeclaration, bracketBalance);
 		}
 	}
-*/	
+*/
 		/* do not consider a local variable starting passed the block end (if set)
 		it must be belonging to an enclosing block */
-	if (this.blockDeclaration.sourceEnd != 0 
+	if (this.blockDeclaration.sourceEnd != 0
 			&& localDeclaration.declarationSourceStart > this.blockDeclaration.sourceEnd){
 		if (delegatedByParent) return this; //ignore
 		return this.parent.add(localDeclaration, bracketBalanceValue);
@@ -116,35 +113,35 @@ public RecoveredElement add(LocalDeclaration localDeclaration, int bracketBalanc
 		this.pendingArgument = element;
 		return this;
 	}
-	
+
 	this.attach(element);
 	if (localDeclaration.declarationSourceEnd == 0) return element;
-	return this;	
+	return this;
 }
 /*
- * Record a statement declaration 
+ * Record a statement declaration
  */
 public RecoveredElement add(Statement stmt, int bracketBalanceValue) {
 	return this.add(stmt, bracketBalanceValue, false);
 }
 
 /*
- * Record a statement declaration 
+ * Record a statement declaration
  */
 public RecoveredElement add(Statement stmt, int bracketBalanceValue, boolean delegatedByParent) {
 
 	/* do not consider a nested block starting passed the block end (if set)
 		it must be belonging to an enclosing block */
-	if (this.blockDeclaration.sourceEnd != 0 
+	if (this.blockDeclaration.sourceEnd != 0
 			&& stmt.sourceStart > this.blockDeclaration.sourceEnd){
 		if (delegatedByParent) return this; //ignore
 		return this.parent.add(stmt, bracketBalanceValue);
 	}
-			
+
 	RecoveredStatement element = new RecoveredStatement(stmt, this, bracketBalanceValue);
 	this.attach(element);
 	if (stmt.sourceEnd == 0) return element;
-	return this;	
+	return this;
 }
 /*
  * Addition of a type to an initializer (act like inside method body)
@@ -159,12 +156,12 @@ public RecoveredElement add(TypeDeclaration typeDeclaration, int bracketBalanceV
 
 	/* do not consider a type starting passed the block end (if set)
 		it must be belonging to an enclosing block */
-	if (this.blockDeclaration.sourceEnd != 0 
+	if (this.blockDeclaration.sourceEnd != 0
 			&& typeDeclaration.declarationSourceStart > this.blockDeclaration.sourceEnd){
 		if (delegatedByParent) return this; //ignore
 		return this.parent.add(typeDeclaration, bracketBalanceValue);
 	}
-			
+
 	RecoveredStatement element = new RecoveredType(typeDeclaration, this, bracketBalanceValue);
 	this.attach(element);
 	if (typeDeclaration.declarationSourceEnd == 0) return element;
@@ -181,16 +178,16 @@ void attach(RecoveredStatement recoveredStatement) {
 	} else {
 		if (this.statementCount == this.statements.length) {
 			System.arraycopy(
-				this.statements, 
-				0, 
-				(this.statements = new RecoveredStatement[2 * this.statementCount]), 
-				0, 
-				this.statementCount); 
+				this.statements,
+				0,
+				(this.statements = new RecoveredStatement[2 * this.statementCount]),
+				0,
+				this.statementCount);
 		}
 	}
 	this.statements[this.statementCount++] = recoveredStatement;
 }
-/* 
+/*
  * Answer the associated parsed structure
  */
 public ASTNode parseTree(){
@@ -218,8 +215,8 @@ public Block updatedBlock(){
 
 	Statement[] updatedStatements = new Statement[this.statementCount];
 	int updatedCount = 0;
-	
-	
+
+
 	// may need to update the end of the last statement
 	RecoveredStatement lastStatement = statements[statementCount - 1];
 	RecoveredMethod enclosingMethod = this.enclosingMethod();
@@ -235,7 +232,7 @@ public Block updatedBlock(){
 	} else {
 		bodyEndValue = this.blockDeclaration.sourceEnd - 1;
 	}
-	
+
 	if(lastStatement instanceof RecoveredLocalVariable) {
 		RecoveredLocalVariable lastLocalVariable = (RecoveredLocalVariable) lastStatement;
 		if(lastLocalVariable.localDeclaration.declarationSourceEnd == 0) {
@@ -252,15 +249,15 @@ public Block updatedBlock(){
 			lastStatement.statement.sourceEnd = bodyEndValue;
 		}
 	}
-	
+
 	int lastEnd = blockDeclaration.sourceStart;
-	
+
 	// only collect the non-null updated statements
 	for (int i = 0; i < this.statementCount; i++){
 		Statement updatedStatement = this.statements[i].updatedStatement();
 		if (updatedStatement != null){
 			updatedStatements[updatedCount++] = updatedStatement;
-			
+
 			if (updatedStatement instanceof LocalDeclaration) {
 				LocalDeclaration localDeclaration = (LocalDeclaration) updatedStatement;
 				if(localDeclaration.declarationSourceEnd > lastEnd) {
@@ -295,7 +292,7 @@ public Block updatedBlock(){
 			this.blockDeclaration.sourceEnd = lastEnd;
 		}
 	}
-	
+
 	return this.blockDeclaration;
 }
 /*
@@ -354,7 +351,7 @@ public Statement updateStatement(){
 
 	Statement[] updatedStatements = new Statement[this.statementCount];
 	int updatedCount = 0;
-	
+
 	// only collect the non-null updated statements
 	for (int i = 0; i < this.statementCount; i++){
 		Statement updatedStatement = this.statements[i].updatedStatement();
@@ -375,8 +372,8 @@ public Statement updateStatement(){
 	return this.blockDeclaration;
 }
 
-/* 
- * Record a field declaration 
+/*
+ * Record a field declaration
  */
 public RecoveredElement add(FieldDeclaration fieldDeclaration, int bracketBalanceValue) {
 	return add(fieldDeclaration,bracketBalanceValue,false);
@@ -385,18 +382,18 @@ public RecoveredElement add(FieldDeclaration fieldDeclaration, int bracketBalanc
 
 	throw new org.eclipse.wst.jsdt.core.UnimplementedException("SHOULD NOT BE CALLED");
 //	/* local variables inside method can only be final and non void */
-//	char[][] fieldTypeName; 
-//	if ((fieldDeclaration.modifiers & ~ClassFileConstants.AccFinal) != 0 // local var can only be final 
+//	char[][] fieldTypeName;
+//	if ((fieldDeclaration.modifiers & ~ClassFileConstants.AccFinal) != 0 // local var can only be final
 //		|| (fieldDeclaration.type == null) // initializer
 //		|| ((fieldTypeName = fieldDeclaration.type.getTypeName()).length == 1 // non void
-//			&& CharOperation.equals(fieldTypeName[0], TypeBinding.VOID.sourceName()))){ 
+//			&& CharOperation.equals(fieldTypeName[0], TypeBinding.VOID.sourceName()))){
 //		this.updateSourceEndIfNecessary(this.previousAvailableLineEnd(fieldDeclaration.declarationSourceStart - 1));
 //		return this.parent.add(fieldDeclaration, bracketBalanceValue);
 //	}
-//	
+//
 //	/* do not consider a local variable starting passed the block end (if set)
 //		it must be belonging to an enclosing block */
-//	if (this.blockDeclaration.sourceEnd != 0 
+//	if (this.blockDeclaration.sourceEnd != 0
 //		&& fieldDeclaration.declarationSourceStart > this.blockDeclaration.sourceEnd){
 //		return this.parent.add(fieldDeclaration, bracketBalanceValue);
 //	}
@@ -404,7 +401,7 @@ public RecoveredElement add(FieldDeclaration fieldDeclaration, int bracketBalanc
 //	// ignore the added field, since indicates a local variable behind recovery point
 //	// which thus got parsed as a field reference. This can happen if restarting after
 //	// having reduced an assistNode to get the following context (see 1GEK7SG)
-//	return this;	
+//	return this;
 }
 public ProgramElement updatedASTNode() {
 	return updateStatement();

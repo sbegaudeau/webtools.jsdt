@@ -10,12 +10,16 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public abstract class NameReference extends Reference implements InvocationSite {
 
 	public Binding binding;//, codegenBinding; //may be aTypeBinding-aFieldBinding-aLocalVariableBinding
-	
+
 	public TypeBinding actualReceiverType;	// modified receiver type - actual one according to namelookup
 
 	//the error printing
@@ -28,7 +32,7 @@ public abstract class NameReference extends Reference implements InvocationSite 
 public NameReference() {
 	super();
 	bits |= Binding.TYPE | Binding.VARIABLE; // restrictiveFlag
-	
+
 }
 public FieldBinding fieldBinding() {
 	//this method should be sent ONLY after a check against isFieldReference()
@@ -51,7 +55,7 @@ public void setActualReceiverType(ReferenceBinding receiverType) {
 	this.actualReceiverType = receiverType;
 }
 public void setDepth(int depth) {
-	bits &= ~DepthMASK; // flush previous depth if any			
+	bits &= ~DepthMASK; // flush previous depth if any
 	if (depth > 0) {
 		bits |= (depth & 0xFF) << DepthSHIFT; // encoded on 8 bits
 	}

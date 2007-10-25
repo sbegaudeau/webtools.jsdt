@@ -12,7 +12,6 @@
 package org.eclipse.wst.jsdt.internal.ui.preferences;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;

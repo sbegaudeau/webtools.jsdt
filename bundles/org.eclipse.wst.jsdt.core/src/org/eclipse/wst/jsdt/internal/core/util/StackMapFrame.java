@@ -28,10 +28,10 @@ public class StackMapFrame extends ClassFileStruct implements IStackMapFrame {
 	private IVerificationTypeInfo[] locals;
 	private IVerificationTypeInfo[] stackItems;
 	private int offsetDelta;
-	
+
 	/**
 	 * Constructor for StackMapFrame.
-	 * 
+	 *
 	 * @param classFileBytes
 	 * @param constantPool
 	 * @param offset
@@ -41,7 +41,7 @@ public class StackMapFrame extends ClassFileStruct implements IStackMapFrame {
 			byte[] classFileBytes,
 			IConstantPool constantPool,
 			int offset) throws ClassFormatException {
-		
+
 		final int type = u1At(classFileBytes, 0, offset);
 		this.frameType = type;
 		switch(type) {

@@ -15,7 +15,6 @@ import java.util.List;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Type;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.ParameterInfo;
 
 public interface IDefaultValueAdvisor {

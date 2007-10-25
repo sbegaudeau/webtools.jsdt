@@ -11,33 +11,13 @@
 package org.eclipse.wst.jsdt.launching;
 
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilder;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.core.Launch;
-import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.wst.jsdt.core.JavaCore;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 /**
  * Abstract implementation of a VM install.
  * <p>

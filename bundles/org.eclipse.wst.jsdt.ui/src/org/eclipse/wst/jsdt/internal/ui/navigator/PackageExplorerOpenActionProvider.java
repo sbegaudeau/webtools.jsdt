@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.ui.navigator;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.TreeViewer;
-
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.actions.ActionContext;
@@ -21,7 +20,6 @@ import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionConstants;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
-
 import org.eclipse.wst.jsdt.ui.actions.OpenAction;
 import org.eclipse.wst.jsdt.ui.actions.OpenEditorActionGroup;
 

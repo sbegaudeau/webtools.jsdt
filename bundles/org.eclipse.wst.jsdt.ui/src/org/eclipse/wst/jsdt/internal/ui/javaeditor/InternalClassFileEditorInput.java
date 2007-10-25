@@ -13,13 +13,10 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
 
 import org.eclipse.jface.resource.ImageDescriptor;
-
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistableElement;
-
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 
 

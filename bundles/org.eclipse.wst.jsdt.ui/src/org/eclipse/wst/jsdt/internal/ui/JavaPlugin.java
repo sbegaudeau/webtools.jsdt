@@ -14,21 +14,16 @@ package org.eclipse.wst.jsdt.internal.ui;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
-
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
@@ -37,16 +32,21 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
-
 import org.eclipse.jface.text.templates.ContextTypeRegistry;
 import org.eclipse.jface.text.templates.persistence.TemplateStore;
-
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.editors.text.EditorsUI;
+import org.eclipse.ui.editors.text.templates.ContributionContextTypeRegistry;
+import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
+import org.eclipse.ui.forms.FormColors;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
@@ -54,20 +54,11 @@ import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.texteditor.ConfigurationElementSorter;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.themes.IThemeManager;
-
-import org.eclipse.ui.editors.text.EditorsUI;
-import org.eclipse.ui.editors.text.templates.ContributionContextTypeRegistry;
-import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
-
-import org.eclipse.ui.forms.FormColors;
-import org.eclipse.ui.forms.widgets.FormToolkit;
-
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.manipulation.JavaManipulation;
-
 import org.eclipse.wst.jsdt.internal.corext.javadoc.JavaDocLocations;
 import org.eclipse.wst.jsdt.internal.corext.template.java.CodeTemplateContextType;
 import org.eclipse.wst.jsdt.internal.corext.template.java.JavaContextType;
@@ -75,12 +66,6 @@ import org.eclipse.wst.jsdt.internal.corext.template.java.JavaDocContextType;
 import org.eclipse.wst.jsdt.internal.corext.util.OpenTypeHistory;
 import org.eclipse.wst.jsdt.internal.corext.util.QualifiedTypeNameHistory;
 import org.eclipse.wst.jsdt.internal.corext.util.TypeFilter;
-
-import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
-import org.eclipse.wst.jsdt.ui.JavaUI;
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
-
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ClassFileDocumentProvider;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitDocumentProvider;
@@ -100,7 +85,10 @@ import org.eclipse.wst.jsdt.internal.ui.text.spelling.SpellCheckEngine;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageDescriptorRegistry;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ProblemMarkerManager;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.ClasspathAttributeConfigurationDescriptors;
-
+import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
+import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
+import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
 import org.osgi.framework.BundleContext;
 
 /**

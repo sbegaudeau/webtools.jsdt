@@ -1,28 +1,25 @@
 package org.eclipse.wst.jsdt.internal.core;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.core.JavaProjectElementInfo.LookupCache;
 import org.eclipse.wst.jsdt.internal.core.util.HashtableOfArrayToObject;
 
 public class LookupScopeElementInfo extends PackageFragmentRootInfo {
-	
+
 	private JavaProject javaProject;
 	private IPackageFragmentRoot[] rootsInScope;
 	private LookupCache cache;
 
 	//public static final String[] SYSTEM_LIBRARIES = {"system.js"};
-	
+
 	/* places imports in the document scope before the classpath entries */
 	private static final boolean LOOKUP_LOCAL_SCOPE_FIRST = false;
-	
+
 	static class LookupCache {
 		LookupCache(IPackageFragmentRoot[] allPkgFragmentRootsCache, HashtableOfArrayToObject allPkgFragmentsCache, HashtableOfArrayToObject isPackageCache, Map rootToResolvedEntries) {
 			this.allPkgFragmentRootsCache = allPkgFragmentRootsCache;
@@ -30,30 +27,30 @@ public class LookupScopeElementInfo extends PackageFragmentRootInfo {
 			this.isPackageCache = isPackageCache;
 			this.rootToResolvedEntries = rootToResolvedEntries;
 		}
-		
+
 		/*
 		 * A cache of all package fragment roots of this project.
 		 */
 		public IPackageFragmentRoot[] allPkgFragmentRootsCache;
-		
+
 		/*
 		 * A cache of all package fragments in this project.
 		 * (a map from String[] (the package name) to IPackageFragmentRoot[] (the package fragment roots that contain a package fragment with this name)
 		 */
 		public HashtableOfArrayToObject allPkgFragmentsCache;
-		
+
 		/*
 		 * A set of package names (String[]) that are known to be packages.
 		 */
 		public HashtableOfArrayToObject isPackageCache;
-	
-		public Map rootToResolvedEntries;		
+
+		public Map rootToResolvedEntries;
 	}
-	
+
 
 	public IPackageFragmentRoot[] getAllRoots() {
 		if(LOOKUP_LOCAL_SCOPE_FIRST) return getAllRootsLocalFirst();
-		
+
 		return getAllRootsGlobalFirst();
 	}
 
@@ -62,8 +59,8 @@ public class LookupScopeElementInfo extends PackageFragmentRootInfo {
 		int lastGood = 0;
 		try {
 			projectRoots = javaProject.getPackageFragmentRoots();
-			
-			
+
+
 			for(int i =0;i<projectRoots.length;i++) {
 				if(projectRoots[i].isLanguageRuntime()) {
 					projectRoots[lastGood++]=projectRoots[i];
@@ -72,21 +69,21 @@ public class LookupScopeElementInfo extends PackageFragmentRootInfo {
 		} catch (JavaModelException ex) {
 			projectRoots = new IPackageFragmentRoot[0];
 		}
-		
-		IPackageFragmentRoot[]  allRoots = new IPackageFragmentRoot[lastGood + rootsInScope.length ]; 
-		
+
+		IPackageFragmentRoot[]  allRoots = new IPackageFragmentRoot[lastGood + rootsInScope.length ];
+
 		System.arraycopy(projectRoots, 0, allRoots, 0, lastGood);
 		System.arraycopy(rootsInScope, 0, allRoots, lastGood, rootsInScope.length);
 		return allRoots;
 	}
-	
+
 	private IPackageFragmentRoot[] getAllRootsLocalFirst() {
 		IPackageFragmentRoot[] projectRoots = new IPackageFragmentRoot[0];
 		int lastGood = 0;
 		try {
 			projectRoots = javaProject.getPackageFragmentRoots();
-			
-			
+
+
 			for(int i =0;i<projectRoots.length;i++) {
 				if(projectRoots[i].isLanguageRuntime()) {
 					projectRoots[lastGood++]=projectRoots[i];
@@ -95,45 +92,45 @@ public class LookupScopeElementInfo extends PackageFragmentRootInfo {
 		} catch (JavaModelException ex) {
 			projectRoots = new IPackageFragmentRoot[0];
 		}
-		
-		IPackageFragmentRoot[]  allRoots = new IPackageFragmentRoot[lastGood + rootsInScope.length ]; 
-		
+
+		IPackageFragmentRoot[]  allRoots = new IPackageFragmentRoot[lastGood + rootsInScope.length ];
+
 		System.arraycopy(rootsInScope, 0, allRoots, 0, rootsInScope.length);
 		System.arraycopy(projectRoots, 0, allRoots, rootsInScope.length, lastGood);
 		return allRoots;
 	}
-	
+
 	public LookupScopeElementInfo(JavaProject project,IPackageFragmentRoot[] rootsInScope){
 		this.javaProject = project;
 		this.rootsInScope = rootsInScope;
-		
+
 
 	}
-	
+
 	NameLookup newNameLookup(ICompilationUnit[] workingCopies) {
 		BuildLookupScopeCache(getAllRoots());
 
 		return new NameLookup(cache.allPkgFragmentRootsCache, cache.allPkgFragmentsCache, workingCopies, cache.rootToResolvedEntries);
 	}
-	
+
 	public LookupCache BuildLookupScopeCache(IPackageFragmentRoot[] rootsInScope) {
-		
-		
+
+
 		Map reverseMap = new HashMap(3);
 //		IPackageFragmentRoot[] roots=null;
-//		
+//
 //		for(int i = 0;i<rootsInScope.length;i++) {
 //			try {
-//				
+//
 //				IClasspathEntry entry = javaProject.getClasspathEntryFor(rootsInScope[i].getPath());
 //				reverseMap.put(rootsInScope[i],entry);
 //			} catch (JavaModelException ex) {
 //				// TODO Auto-generated catch block
 //				ex.printStackTrace();
 //			}
-//			
+//
 //		}
-		
+
 //		try {
 //			roots = javaProject.getAllPackageFragmentRoots(reverseMap);
 //		} catch (JavaModelException e) {
@@ -194,11 +191,11 @@ public class LookupScopeElementInfo extends PackageFragmentRootInfo {
 				}
 			}
 			cache = new LookupCache(rootsInScope, fragmentsCache, isPackageCache, reverseMap);
-		
-		
+
+
 		return cache;
 	}
-	
+
 	public static void addNames(String[] name, HashtableOfArrayToObject set) {
 		set.put(name, name);
 		int length = name.length;

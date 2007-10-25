@@ -38,23 +38,23 @@ import java.util.List;
  * with two fragments, rather than being split up into a pair
  * of expressions.
  * </p>
- * 
+ *
  * @since 2.0
  */
 public class ForInStatement extends Statement {
- 
+
 	/**
 	 * The "initializers" structural property of this node type.
 	 * @since 3.0
 	 */
-	public static final ChildPropertyDescriptor ITERATION_VARIABLE_PROPERTY = 
+	public static final ChildPropertyDescriptor ITERATION_VARIABLE_PROPERTY =
 		new ChildPropertyDescriptor(ForInStatement.class, "iterationVariable", Statement.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "expression" structural property of this node type.
 	 * @since 3.0
 	 */
-	public static final ChildPropertyDescriptor COLLECTION_PROPERTY = 
+	public static final ChildPropertyDescriptor COLLECTION_PROPERTY =
 		new ChildPropertyDescriptor(ForInStatement.class, "collection", Expression.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
 
 
@@ -62,16 +62,16 @@ public class ForInStatement extends Statement {
 	 * The "body" structural property of this node type.
 	 * @since 3.0
 	 */
-	public static final ChildPropertyDescriptor BODY_PROPERTY = 
+	public static final ChildPropertyDescriptor BODY_PROPERTY =
 		new ChildPropertyDescriptor(ForInStatement.class, "body", Statement.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
-	 * A list of property descriptors (element type: 
+	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
 	 */
 	private static final List PROPERTY_DESCRIPTORS;
-	
+
 	static {
 		List properyList = new ArrayList(5);
 		createPropertyList(ForInStatement.class, properyList);
@@ -84,34 +84,34 @@ public class ForInStatement extends Statement {
 	/**
 	 * Returns a list of structural property descriptors for this node type.
 	 * Clients must not modify the result.
-	 * 
+	 *
 	 * @param apiLevel the API level; one of the
 	 * <code>AST.JLS*</code> constants
 
-	 * @return a list of property descriptors (element type: 
+	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
 	 * @since 3.0
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
 	}
-			
-	private Statement iterationVariable  = null; 
+
+	private Statement iterationVariable  = null;
 
 	private Expression collection = null;
-	
+
 
 	/**
 	 * The body statement; lazily initialized; defaults to an empty block
 	 * statement.
 	 */
 	private Statement body = null;
-			
+
 	/**
-	 * Creates a new AST node for a for statement owned by the given AST. 
-	 * By default, there are no initializers, no condition expression, 
+	 * Creates a new AST node for a for statement owned by the given AST.
+	 * By default, there are no initializers, no condition expression,
 	 * no updaters, and the body is an empty block.
-	 * 
+	 *
 	 * @param ast the AST that is to own this node
 	 */
 	ForInStatement(AST ast) {
@@ -124,7 +124,7 @@ public class ForInStatement extends Statement {
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
-	
+
 
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
@@ -157,7 +157,7 @@ public class ForInStatement extends Statement {
 		// allow default implementation to flag the error
 		return super.internalGetSetChildProperty(property, get, child);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -216,26 +216,26 @@ public class ForInStatement extends Statement {
 		}
 		visitor.endVisit(this);
 	}
-	
- 
+
+
 	/**
-	 * Returns the condition expression of this for statement, or 
+	 * Returns the condition expression of this for statement, or
 	 * <code>null</code> if there is none.
-	 * 
-	 * @return the condition expression node, or <code>null</code> if 
+	 *
+	 * @return the condition expression node, or <code>null</code> if
 	 *     there is none
-	 */ 
+	 */
 	public Expression getCollection() {
 		return this.collection;
 	}
-	
+
 	public Statement getIterationVariable() {
 		return this.iterationVariable;
 	}
-	
+
 	/**
 	 * Sets or clears the condition expression of this return statement.
-	 * 
+	 *
 	 * @param expression the condition expression node, or <code>null</code>
 	 *    if there is none
 	 * @exception IllegalArgumentException if:
@@ -244,7 +244,7 @@ public class ForInStatement extends Statement {
 	 * <li>the node already has a parent</li>
 	 * <li>a cycle in would be created</li>
 	 * </ul>
-	 */ 
+	 */
 	public void setCollection(Expression expression) {
 		ASTNode oldChild = this.collection;
 		preReplaceChild(oldChild, expression, COLLECTION_PROPERTY);
@@ -259,12 +259,12 @@ public class ForInStatement extends Statement {
 		postReplaceChild(oldChild, statement, ITERATION_VARIABLE_PROPERTY);
 	}
 
- 
+
 	/**
 	 * Returns the body of this for statement.
-	 * 
+	 *
 	 * @return the body statement node
-	 */ 
+	 */
 	public Statement getBody() {
 		if (this.body == null) {
 			// lazy init must be thread-safe for readers
@@ -278,7 +278,7 @@ public class ForInStatement extends Statement {
 		}
 		return this.body;
 	}
-	
+
 	/**
 	 * Sets the body of this for statement.
 	 * <p>
@@ -289,7 +289,7 @@ public class ForInStatement extends Statement {
 	 * compile, be sure to embed the <code>VariableDeclarationStatement</code>
 	 * inside a <code>Block</code>.
 	 * </p>
-	 * 
+	 *
 	 * @param statement the body statement node
 	 * @exception IllegalArgumentException if:
 	 * <ul>
@@ -297,7 +297,7 @@ public class ForInStatement extends Statement {
 	 * <li>the node already has a parent</li>
 	 * <li>a cycle in would be created</li>
 	 * </ul>
-	 */ 
+	 */
 	public void setBody(Statement statement) {
 		if (statement == null) {
 			throw new IllegalArgumentException();
@@ -307,14 +307,14 @@ public class ForInStatement extends Statement {
 		this.body = statement;
 		postReplaceChild(oldChild, statement, BODY_PROPERTY);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int memSize() {
 		return super.memSize() + 4 * 4;
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */

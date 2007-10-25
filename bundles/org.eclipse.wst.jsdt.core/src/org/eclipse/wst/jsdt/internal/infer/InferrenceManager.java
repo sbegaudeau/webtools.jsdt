@@ -7,7 +7,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.wst.jsdt.core.JavaCore;
 
@@ -18,24 +17,24 @@ public class InferrenceManager {
 	protected static final String TAG_INFERENGINE = "inferenceEngine";
 	protected static final String ATTR_INFERENGINE_CLASS = "class";
 
-	
+
 	private static InferrenceManager instance = null;
 
-	
+
 	private  InferrenceSupportExtension [] extensions;
-	
+
 	public static InferrenceManager getInstance(){
 		if( instance == null )
 			instance = new InferrenceManager();
-		
+
 		return instance;
 	}
-	
-	
-	
+
+
+
 	public InferEngine [] getInferenceEngines()
 	{
-		
+
 		if (extensions==null)
 		{
 			loadInferenceExtensions();
@@ -46,10 +45,10 @@ public class InferrenceManager {
 			  if (extensions[i].inferEngine!=null)
 				  extEngines.add(extensions[i].inferEngine);
 			}
-		return (InferEngine [] )extEngines.toArray(new InferEngine[extEngines.size()]); 
+		return (InferEngine [] )extEngines.toArray(new InferEngine[extEngines.size()]);
 	}
-	
-	
+
+
 	protected void loadInferenceExtensions() {
 		IExtensionRegistry registry = Platform.getExtensionRegistry();
 		ArrayList extList = new ArrayList();
@@ -84,6 +83,6 @@ public class InferrenceManager {
 		this.extensions = (InferrenceSupportExtension[]) extList
 				.toArray(new InferrenceSupportExtension[extList.size()]);
 	}
-	
+
 
 }

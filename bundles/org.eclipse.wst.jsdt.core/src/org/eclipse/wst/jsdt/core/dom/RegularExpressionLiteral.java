@@ -16,12 +16,11 @@ import java.util.List;
 
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
-import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 import org.eclipse.wst.jsdt.internal.compiler.parser.TerminalTokens;
 
 /**
  * Character literal nodes.
- * 
+ *
  * @since 2.0
  */
 public class RegularExpressionLiteral extends Expression {
@@ -30,16 +29,16 @@ public class RegularExpressionLiteral extends Expression {
 	 * The "escapedValue" structural property of this node type.
 	 * @since 3.0
 	 */
-	public static final SimplePropertyDescriptor REGULAR_EXPRESSION_PROPERTY = 
+	public static final SimplePropertyDescriptor REGULAR_EXPRESSION_PROPERTY =
 		new SimplePropertyDescriptor(RegularExpressionLiteral.class, "regularExpression", String.class, MANDATORY); //$NON-NLS-1$
-	
+
 	/**
-	 * A list of property descriptors (element type: 
+	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
 	 */
 	private static final List PROPERTY_DESCRIPTORS;
-	
+
 	static {
 		List properyList = new ArrayList(2);
 		createPropertyList(RegularExpressionLiteral.class, properyList);
@@ -50,11 +49,11 @@ public class RegularExpressionLiteral extends Expression {
 	/**
 	 * Returns a list of structural property descriptors for this node type.
 	 * Clients must not modify the result.
-	 * 
+	 *
 	 * @param apiLevel the API level; one of the
 	 * <code>AST.JLS*</code> constants
 
-	 * @return a list of property descriptors (element type: 
+	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
 	 * @since 3.0
 	 */
@@ -70,7 +69,7 @@ public class RegularExpressionLiteral extends Expression {
 	 * <p>
 	 * N.B. This constructor is package-private.
 	 * </p>
-	 * 
+	 *
 	 * @param ast the AST that is to own this node
 	 */
 	RegularExpressionLiteral(AST ast) {
@@ -83,7 +82,7 @@ public class RegularExpressionLiteral extends Expression {
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -99,7 +98,7 @@ public class RegularExpressionLiteral extends Expression {
 		// allow default implementation to flag the error
 		return super.internalGetSetObjectProperty(property, get, value);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -132,19 +131,19 @@ public class RegularExpressionLiteral extends Expression {
 		visitor.visit(this);
 		visitor.endVisit(this);
 	}
-	
+
 	/**
 	 * Returns the string value of this literal node. The value is the sequence
 	 * of characters that would appear in the source program, including
 	 * enclosing single quotes and embedded escapes.
-	 * 
+	 *
 	 * @return the escaped string value, including enclosing single quotes
 	 *    and embedded escapes
-	 */ 
+	 */
 	public String getRegularExpression() {
 		return this.regularExpression;
 	}
-		
+
 	/**
 	 * Sets the string value of this literal node. The value is the sequence
 	 * of characters that would appear in the source program, including
@@ -153,11 +152,11 @@ public class RegularExpressionLiteral extends Expression {
 	 * <li><code>'a'</code> <code>setEscapedValue("\'a\'")</code></li>
 	 * <li><code>'\n'</code> <code>setEscapedValue("\'\\n\'")</code></li>
 	 * </ul>
-	 * 
+	 *
 	 * @param value the string value, including enclosing single quotes
 	 *    and embedded escapes
 	 * @exception IllegalArgumentException if the argument is incorrect
-	 */ 
+	 */
 	public void setRegularExpression(String value) {
 		// check setInternalEscapedValue(String) if this method is changed
 		if (value == null) {
@@ -193,7 +192,7 @@ public class RegularExpressionLiteral extends Expression {
 		postValueChange(REGULAR_EXPRESSION_PROPERTY);
 	}
 
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -201,7 +200,7 @@ public class RegularExpressionLiteral extends Expression {
 		int size = BASE_NODE_SIZE + 1 * 4 + stringSize(regularExpression);
 		return size;
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */

@@ -14,8 +14,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.jface.text.IDocument;
-
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 

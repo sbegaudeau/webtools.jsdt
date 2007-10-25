@@ -28,7 +28,6 @@ import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite.ImportRewriteContext;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.ScopeAnalyzer;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 

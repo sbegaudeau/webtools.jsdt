@@ -14,12 +14,12 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
 public class SelectionOnLocalName extends LocalDeclaration{
-	
+
 	public SelectionOnLocalName(char[] name,	int sourceStart, int sourceEnd) {
 
 		super(name, sourceStart, sourceEnd);
 	}
-	
+
 	public void resolve(BlockScope scope) {
 
 		super.resolve(scope);
@@ -38,7 +38,7 @@ public class SelectionOnLocalName extends LocalDeclaration{
 		}
 		return output.append('>');
 	}
-	
+
 	public StringBuffer printStatement(int indent, StringBuffer output) {
 		this.printAsExpression(indent, output);
 		return output.append(';');

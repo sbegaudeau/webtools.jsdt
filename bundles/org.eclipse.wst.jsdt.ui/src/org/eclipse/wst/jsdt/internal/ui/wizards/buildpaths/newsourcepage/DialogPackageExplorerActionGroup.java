@@ -15,19 +15,15 @@ package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.newsourcepage;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.ToolBar;
-
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.viewers.IStructuredSelection;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.wst.jsdt.internal.corext.buildpath.IBuildpathModifierListener;
-
 import org.eclipse.wst.jsdt.internal.ui.actions.CompositeActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.util.ViewerPane;
 

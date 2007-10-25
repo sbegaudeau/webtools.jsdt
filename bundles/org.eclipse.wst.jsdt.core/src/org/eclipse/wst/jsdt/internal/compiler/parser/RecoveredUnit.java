@@ -11,18 +11,16 @@
 package org.eclipse.wst.jsdt.internal.compiler.parser;
 
 /**
- * Internal field structure for parsing recovery 
+ * Internal field structure for parsing recovery
  */
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
@@ -31,12 +29,12 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 public class RecoveredUnit extends RecoveredElement {
 
 	public CompilationUnitDeclaration unitDeclaration;
-	
+
 //	public RecoveredImport[] imports;
 //	public int importCount;
 //	public RecoveredType[] types;
 //	public int typeCount;
-	
+
 	public RecoveredElement[] statements;
 	public int statementCount;
 
@@ -44,9 +42,9 @@ public class RecoveredUnit extends RecoveredElement {
 	super(null, bracketBalance, parser);
 	this.unitDeclaration = unitDeclaration;
 }
-	
-	
-/* 
+
+
+/*
  *	Record a method declaration: should be attached to last type
  */
 public RecoveredElement add(AbstractMethodDeclaration methodDeclaration, int bracketBalanceValue) {
@@ -55,7 +53,7 @@ public RecoveredElement add(AbstractMethodDeclaration methodDeclaration, int bra
 	RecoveredMethod element = new RecoveredMethod(methodDeclaration, this, bracketBalanceValue, this.recoveringParser);
 	addStatement(element);
 
-	
+
 	/* consider that if the opening brace was not found, it is there */
 	if (!foundOpeningBrace){
 		foundOpeningBrace = true;
@@ -108,11 +106,11 @@ public RecoveredElement add(ImportReference importReference, int bracketBalanceV
 //	} else {
 //		if (this.importCount == this.imports.length) {
 //			System.arraycopy(
-//				this.imports, 
-//				0, 
-//				(this.imports = new RecoveredImport[2 * this.importCount]), 
-//				0, 
-//				this.importCount); 
+//				this.imports,
+//				0,
+//				(this.imports = new RecoveredImport[2 * this.importCount]),
+//				0,
+//				this.importCount);
 //		}
 //	}
 //	RecoveredImport element = new RecoveredImport(importReference, this, bracketBalanceValue);
@@ -120,10 +118,10 @@ public RecoveredElement add(ImportReference importReference, int bracketBalanceV
 //
 //	/* if import not finished, then import becomes current */
 //	if (importReference.declarationSourceEnd == 0) return element;
-	return this;		
+	return this;
 }
 public RecoveredElement add(TypeDeclaration typeDeclaration, int bracketBalanceValue) {
-	
+
 //	if ((typeDeclaration.bits & ASTNode.IsAnonymousType) != 0){
 //		if (this.typeCount > 0) {
 //			// add it to the last type
@@ -141,11 +139,11 @@ public RecoveredElement add(TypeDeclaration typeDeclaration, int bracketBalanceV
 //	} else {
 //		if (this.typeCount == this.types.length) {
 //			System.arraycopy(
-//				this.types, 
-//				0, 
-//				(this.types = new RecoveredType[2 * this.typeCount]), 
-//				0, 
-//				this.typeCount); 
+//				this.types,
+//				0,
+//				(this.types = new RecoveredType[2 * this.typeCount]),
+//				0,
+//				this.typeCount);
 //		}
 //	}
 //	RecoveredType element = new RecoveredType(typeDeclaration, this, bracketBalanceValue);
@@ -153,7 +151,7 @@ public RecoveredElement add(TypeDeclaration typeDeclaration, int bracketBalanceV
 //
 //	/* if type not finished, then type becomes current */
 //	if (typeDeclaration.declarationSourceEnd == 0) return element;
-	return this;	
+	return this;
 }
 
 private void addStatement(RecoveredElement statement)
@@ -164,16 +162,16 @@ private void addStatement(RecoveredElement statement)
 	} else {
 		if (this.statementCount == this.statements.length) {
 			System.arraycopy(
-				this.statements, 
-				0, 
-				(this.statements = new RecoveredElement[2 * this.statementCount]), 
-				0, 
-				this.statementCount); 
+				this.statements,
+				0,
+				(this.statements = new RecoveredElement[2 * this.statementCount]),
+				0,
+				this.statementCount);
 		}
 	}
 	this.statements[this.statementCount++] = statement;
 }
-/* 
+/*
  * Answer the associated parsed structure
  */
 public ASTNode parseTree(){
@@ -237,10 +235,10 @@ public CompilationUnitDeclaration updatedCompilationUnitDeclaration(){
 					functionExpression.methodDeclaration.bodyEnd=
 					functionExpression.methodDeclaration.sourceEnd=astNode.sourceEnd;
 				}
-					
-				
+
+
 			}
-			
+
 //			this.statements[this.statementCount - 1].updateSourceEndIfNecessary(sourceEnd)typeDeclaration.bodyEnd = this.unitDeclaration.sourceEnd;
 		}
 	    if (astNode instanceof AbstractMethodDeclaration && ((AbstractMethodDeclaration)astNode).bodyEnd<=0)
@@ -254,7 +252,7 @@ public CompilationUnitDeclaration updatedCompilationUnitDeclaration(){
 			 }
 			 if (updatedASTNode instanceof AbstractMethodDeclaration && ((AbstractMethodDeclaration)updatedASTNode).bodyEnd<=0 )
 				 ((AbstractMethodDeclaration)updatedASTNode).bodyEnd=this.unitDeclaration.sourceEnd;
-				 
+
 				//			  this.statements[i].updateParseTree();
 			// filter out local types (12454)
 //			if ((typeDecl.bits & ASTNode.IsLocalType) == 0){
@@ -263,10 +261,10 @@ public CompilationUnitDeclaration updatedCompilationUnitDeclaration(){
 		}
 //		if (actualCount != this.statementCount){
 //			System.arraycopy(
-//					stmts, 
-//				0, 
-//				stmts = new ProgramElement[existingCount+actualCount], 
-//				0, 
+//					stmts,
+//				0,
+//				stmts = new ProgramElement[existingCount+actualCount],
+//				0,
 //				existingCount+actualCount);
 //		}
 		this.unitDeclaration.statements = stmts;
@@ -288,13 +286,13 @@ public RecoveredElement add(Block nestedBlockDeclaration, int bracketBalanceValu
 	}
 	addStatement(element);
 	if (nestedBlockDeclaration.sourceEnd == 0) return element;
-	return this;	
+	return this;
 }
 public RecoveredElement add(Statement statement, int bracketBalanceValue) {
 	RecoveredStatement element = new RecoveredStatement(statement, this, bracketBalanceValue);
 	addStatement(element);
 	if (statement.sourceEnd == 0) return element;
-	return this;	
+	return this;
 }
 
 

@@ -12,16 +12,13 @@
 package org.eclipse.wst.jsdt.internal.corext.callhierarchy;
 
 import org.eclipse.core.runtime.IAdaptable;
-
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.Document;
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.Document;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 public class CallLocation implements IAdaptable {

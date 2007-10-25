@@ -14,7 +14,6 @@ import java.util.ResourceBundle;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
-
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -23,7 +22,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.RetargetTextEditorAction;
-
 import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 import org.eclipse.wst.jsdt.ui.actions.JdtActionConstants;
 

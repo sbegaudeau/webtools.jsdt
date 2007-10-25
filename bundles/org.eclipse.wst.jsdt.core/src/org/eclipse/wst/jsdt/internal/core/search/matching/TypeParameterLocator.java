@@ -11,7 +11,10 @@
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
 import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleTypeReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
@@ -132,7 +135,7 @@ public class TypeParameterLocator extends PatternLocator {
 	public int resolveLevel(Binding binding) {
 		if (binding == null) return INACCURATE_MATCH;
 		if (!(binding instanceof TypeVariableBinding)) return IMPOSSIBLE_MATCH;
-	
+
 		return matchTypeParameter((TypeVariableBinding) binding, true);
 	}
 

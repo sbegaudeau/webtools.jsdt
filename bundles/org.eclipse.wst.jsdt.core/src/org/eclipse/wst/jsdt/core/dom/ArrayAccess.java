@@ -21,32 +21,32 @@ import java.util.List;
  * ArrayAccess:
  *    Expression <b>[</b> Expression <b>]</b>
  * </pre>
- * 
+ *
  * @since 2.0
  */
 public class ArrayAccess extends Expression {
-	
+
 	/**
 	 * The "array" structural property of this node type.
 	 * @since 3.0
 	 */
-	public static final ChildPropertyDescriptor ARRAY_PROPERTY = 
+	public static final ChildPropertyDescriptor ARRAY_PROPERTY =
 		new ChildPropertyDescriptor(ArrayAccess.class, "array", Expression.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "index" structural property of this node type.
 	 * @since 3.0
 	 */
-	public static final ChildPropertyDescriptor INDEX_PROPERTY = 
+	public static final ChildPropertyDescriptor INDEX_PROPERTY =
 		new ChildPropertyDescriptor(ArrayAccess.class, "index", Expression.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
-	 * A list of property descriptors (element type: 
+	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
 	 */
 	private static final List PROPERTY_DESCRIPTORS;
-	
+
 	static {
 		List properyList = new ArrayList(3);
 		createPropertyList(ArrayAccess.class, properyList);
@@ -58,18 +58,18 @@ public class ArrayAccess extends Expression {
 	/**
 	 * Returns a list of structural property descriptors for this node type.
 	 * Clients must not modify the result.
-	 * 
+	 *
 	 * @param apiLevel the API level; one of the
 	 * <code>AST.JLS*</code> constants
 
-	 * @return a list of property descriptors (element type: 
+	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
 	 * @since 3.0
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
 	}
-			
+
 	/**
 	 * The array expression; lazily initialized; defaults to an unspecified,
 	 * but legal, expression.
@@ -83,13 +83,13 @@ public class ArrayAccess extends Expression {
 	private Expression indexExpression = null;
 
 	/**
-	 * Creates a new unparented array access expression node owned by the given 
-	 * AST. By default, the array and index expresssions are unspecified, 
+	 * Creates a new unparented array access expression node owned by the given
+	 * AST. By default, the array and index expresssions are unspecified,
 	 * but legal.
 	 * <p>
 	 * N.B. This constructor is package-private.
 	 * </p>
-	 * 
+	 *
 	 * @param ast the AST that is to own this node
 	 */
 	ArrayAccess(AST ast) {
@@ -102,7 +102,7 @@ public class ArrayAccess extends Expression {
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -126,7 +126,7 @@ public class ArrayAccess extends Expression {
 		// allow default implementation to flag the error
 		return super.internalGetSetChildProperty(property, get, child);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -165,12 +165,12 @@ public class ArrayAccess extends Expression {
 		}
 		visitor.endVisit(this);
 	}
-	
+
 	/**
 	 * Returns the array expression of this array access expression.
-	 * 
+	 *
 	 * @return the array expression node
-	 */ 
+	 */
 	public Expression getArray() {
 		if (this.arrayExpression == null) {
 			// lazy init must be thread-safe for readers
@@ -184,10 +184,10 @@ public class ArrayAccess extends Expression {
 		}
 		return this.arrayExpression;
 	}
-	
+
 	/**
 	 * Sets the array expression of this array access expression.
-	 * 
+	 *
 	 * @param expression the array expression node
 	 * @exception IllegalArgumentException if:
 	 * <ul>
@@ -195,7 +195,7 @@ public class ArrayAccess extends Expression {
 	 * <li>the node already has a parent</li>
 	 * <li>a cycle in would be created</li>
 	 * </ul>
-	 */ 
+	 */
 	public void setArray(Expression expression) {
 		if (expression == null) {
 			throw new IllegalArgumentException();
@@ -207,12 +207,12 @@ public class ArrayAccess extends Expression {
 		this.arrayExpression = expression;
 		postReplaceChild(oldChild, expression, ARRAY_PROPERTY);
 	}
-	
+
 	/**
 	 * Returns the index expression of this array access expression.
-	 * 
+	 *
 	 * @return the index expression node
-	 */ 
+	 */
 	public Expression getIndex() {
 		if (this.indexExpression == null) {
 			// lazy init must be thread-safe for readers
@@ -226,10 +226,10 @@ public class ArrayAccess extends Expression {
 		}
 		return this.indexExpression;
 	}
-	
+
 	/**
 	 * Sets the index expression of this array access expression.
-	 * 
+	 *
 	 * @param expression the index expression node
 	 * @exception IllegalArgumentException if:
 	 * <ul>
@@ -237,7 +237,7 @@ public class ArrayAccess extends Expression {
 	 * <li>the node already has a parent</li>
 	 * <li>a cycle in would be created</li>
 	 * </ul>
-	 */ 
+	 */
 	public void setIndex(Expression expression) {
 		if (expression == null) {
 			throw new IllegalArgumentException();

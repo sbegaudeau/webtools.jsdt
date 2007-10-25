@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.refactoring.sef;
 
+import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.sef.SelfEncapsulateFieldRefactoring;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
-
-import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 
 public class SelfEncapsulateFieldWizard extends RefactoringWizard {
 	

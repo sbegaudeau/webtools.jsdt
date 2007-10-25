@@ -15,13 +15,10 @@ import java.util.Iterator;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-
 import org.eclipse.ui.IWorkbenchSite;
-
-import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
-
 import org.eclipse.wst.jsdt.internal.corext.callhierarchy.CallLocation;
 import org.eclipse.wst.jsdt.internal.corext.callhierarchy.MethodWrapper;
+import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
 
 class OpenLocationAction extends SelectionDispatchAction {
     private CallHierarchyViewPart fPart;

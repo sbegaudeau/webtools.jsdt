@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -22,7 +21,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
-import org.eclipse.wst.jsdt.internal.compiler.flow.InitializationFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitBinding;
@@ -31,7 +29,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ImportBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.parser.NLSTag;
@@ -41,14 +38,13 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.AbortType;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
-import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
 import org.eclipse.wst.jsdt.internal.infer.InferredMethod;
 import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 public class CompilationUnitDeclaration
 	extends ASTNode
 	implements ProblemSeverities, ReferenceContext {
-	
+
 	protected void finalize() throws Throwable {
 //		System.out.println("finalize "+hashCode());
 		super.finalize();
@@ -75,30 +71,30 @@ public class CompilationUnitDeclaration
 	public InferredType [] inferredTypes = new InferredType[10];
 	public int numberInferredTypes=0;
 	public HashtableOfObject inferredTypesHash=new HashtableOfObject();
-	
+
 	public boolean ignoreFurtherInvestigation = false;	// once pointless to investigate due to errors
 	public boolean ignoreMethodBodies = false;
 	public CompilationUnitScope scope;
 	public ProblemReporter problemReporter;
 	public CompilationResult compilationResult;
 
-	
+
 	public LocalTypeBinding[] localTypes;
 	public int localTypeCount = 0;
 
 	public CompilationUnitBinding compilationUnitBinding;
-	
-	
+
+
 	public boolean isPropagatingInnerClassEmulation;
 
 	public Javadoc javadoc; // 1.5 addition for package-info.js
-	
+
 	public NLSTag[] nlsTags;
 	private StringLiteral[] stringLiterals;
 	private int stringLiteralsPtr;
-	
 
-	
+
+
 	public CompilationUnitDeclaration(
 		ProblemReporter problemReporter,
 		CompilationResult compilationResult,
@@ -143,7 +139,7 @@ public class CompilationUnitDeclaration
 			}
 			// request inner emulation propagation
 			propagateInnerEmulationForAllLocalTypes();
-			
+
 			this.scope.temporaryAnalysisIndex=0;
 			int maxVars=this.scope.localIndex;
 			for (Iterator iter = this.scope.externalCompilationUnits.iterator(); iter.hasNext();) {
@@ -153,7 +149,7 @@ public class CompilationUnitDeclaration
 			}
 			FlowInfo flowInfo=FlowInfo.initial(maxVars);
 			FlowContext flowContext = new FlowContext(null, this);
-	
+
 			if (statements != null) {
 				for (int i = 0, count = statements.length; i < count; i++) {
 					if (statements[i] instanceof  AbstractMethodDeclaration)
@@ -177,7 +173,7 @@ public class CompilationUnitDeclaration
 	 */
 	public void cleanUp() {
 		if (this.compilationUnitBinding!=null)
-			
+
 			this.compilationUnitBinding.cleanup();
 		if (this.types != null) {
 			for (int i = 0, max = this.types.length; i < max; i++) {
@@ -190,14 +186,14 @@ public class CompilationUnitDeclaration
 				localType.enclosingCase = null;
 			}
 		}
-		
+
 		for (int i = 0; i < this.numberInferredTypes; i++) {
 			SourceTypeBinding binding = this.inferredTypes[i].binding;
 			if (binding!=null)
 				binding.cleanup();
 		}
 		compilationResult.recoveryScannerData = null; // recovery is already done
-		
+
 		ClassFile[] classFiles = compilationResult.getClassFiles();
 		for (int i = 0, max = classFiles.length; i < max; i++) {
 			// clear the classFile back pointer to the bindings
@@ -222,7 +218,7 @@ public class CompilationUnitDeclaration
 	}
 
 	public void checkUnusedImports(){
-		
+
 		if (this.scope.imports != null){
 			for (int i = 0, max = this.scope.imports.length; i < max; i++){
 				ImportBinding importBinding = this.scope.imports[i];
@@ -233,7 +229,7 @@ public class CompilationUnitDeclaration
 			}
 		}
 	}
-	
+
 	public CompilationResult compilationResult() {
 		return this.compilationResult;
 	}
@@ -254,8 +250,8 @@ public class CompilationUnitDeclaration
 		}
 		return null;
 	}
-	
-	
+
+
 	public AbstractMethodDeclaration declarationOf(MethodBinding methodBinding) {
 		if (methodBinding != null && this.statements != null) {
 			for (int i = 0, max = this.statements.length; i < max; i++) {
@@ -331,7 +327,7 @@ public class CompilationUnitDeclaration
 	public boolean isPackageInfo() {
 		return CharOperation.equals(this.getMainTypeName(), TypeConstants.PACKAGE_INFO_NAME);
 	}
-	
+
 	public boolean hasErrors() {
 		return this.ignoreFurtherInvestigation;
 	}
@@ -364,7 +360,7 @@ public class CompilationUnitDeclaration
 		}
 		return output;
 	}
-	
+
 	/*
 	 * Force inner local types to update their innerclass emulation
 	 */
@@ -372,7 +368,7 @@ public class CompilationUnitDeclaration
 
 		isPropagatingInnerClassEmulation = true;
 		for (int i = 0, max = this.localTypeCount; i < max; i++) {
-				
+
 			LocalTypeBinding localType = localTypes[i];
 			// only propagate for reachable local types
 			if ((localType.classScope.referenceType().bits & IsReachable) != 0) {
@@ -396,7 +392,7 @@ public class CompilationUnitDeclaration
 					stackLength);
 			}
 		}
-		this.stringLiterals[this.stringLiteralsPtr++] = literal;		
+		this.stringLiterals[this.stringLiteralsPtr++] = literal;
 	}
 
 	/*
@@ -554,7 +550,7 @@ public class CompilationUnitDeclaration
 						if (tag != null) {
 							scope.problemReporter().unnecessaryNLSTags(tag.start, tag.end);
 						}
-					}						
+					}
 				}
 			}
 		}
@@ -564,14 +560,14 @@ public class CompilationUnitDeclaration
 		ignoreFurtherInvestigation = true;
 	}
 
-	
-	
+
+
 	public void traverse(
 			ASTVisitor visitor,
 			CompilationUnitScope unitScope) {
 		traverse(visitor, scope,false);
 	}
-	
+
 	public void traverse(
 		ASTVisitor visitor,
 		CompilationUnitScope unitScope, boolean ignoreErrors) {
@@ -598,7 +594,7 @@ public class CompilationUnitDeclaration
 					}
 					}
 				}
-				
+
 //				if (currentPackage != null) {
 //					currentPackage.traverse(visitor, this.scope);
 //				}
@@ -645,20 +641,20 @@ public class CompilationUnitDeclaration
 			visitor.endVisit(inferredType, scope);
 		}
 	}
-	
+
 	public InferredType findInferredType(char [] name)
 	{
 		return (InferredType)inferredTypesHash.get(name);
 //		for (int i=0;i<this.numberInferredTypes;i++) {
 //			InferredType inferredType = this.inferredTypes[i];
 //			if (CharOperation.equals(name,inferredType.getName()))
-//					return inferredType; 
+//					return inferredType;
 //		}
 //		return null;
 	}
-	
-	
-	
+
+
+
 	public void printInferredTypes(StringBuffer sb)
 	{
 		for (int i=0;i<this.numberInferredTypes;i++) {
@@ -669,6 +665,6 @@ public class CompilationUnitDeclaration
 					sb.append("\n");
 				}
 		}
-		
+
 	}
 }

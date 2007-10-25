@@ -14,17 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.rewrite.TargetSourceRangeComputer;
 import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.TokenScanner;
 
 public class SelectionAwareSourceRangeComputer extends TargetSourceRangeComputer {

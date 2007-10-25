@@ -13,19 +13,14 @@ package org.eclipse.wst.jsdt.core.dom;
 
 import java.util.Iterator;
 import java.util.List;
+
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryAnnotation;
-import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
 import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
-import org.eclipse.wst.jsdt.internal.compiler.env.NameEnvironmentAnswer;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.BinaryTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 import org.eclipse.wst.jsdt.internal.core.NameLookup;
 import org.eclipse.wst.jsdt.internal.core.SearchableEnvironment;
@@ -38,20 +33,20 @@ class PackageBinding implements IPackageBinding {
 	private static final String[] NO_NAME_COMPONENTS = CharOperation.NO_STRINGS;
 	private static final String UNNAMED = Util.EMPTY_STRING;
 	private static final char PACKAGE_NAME_SEPARATOR = '.';
-	
+
 	private org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding binding;
 	private String name;
 	private BindingResolver resolver;
 	private String[] components;
-		
+
 	PackageBinding(org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding binding, BindingResolver resolver) {
-		this.binding = binding;		
+		this.binding = binding;
 		this.resolver = resolver;
 	}
 
 	public IAnnotationBinding[] getAnnotations() {
 		try {
-			INameEnvironment nameEnvironment = this.binding.environment.nameEnvironment; 
+			INameEnvironment nameEnvironment = this.binding.environment.nameEnvironment;
 			if (!(nameEnvironment instanceof SearchableEnvironment))
 				return AnnotationBinding.NoAnnotations;
 			NameLookup nameLookup = ((SearchableEnvironment) nameEnvironment).nameLookup;
@@ -65,11 +60,11 @@ class PackageBinding implements IPackageBinding {
 			for (int i = 0, len = pkgs.length; i < len; i++) {
 				int fragType = pkgs[i].getKind();
 				switch(fragType) {
-					case IPackageFragmentRoot.K_SOURCE:				
+					case IPackageFragmentRoot.K_SOURCE:
 						String unitName = "package-info.js"; //$NON-NLS-1$
 						ICompilationUnit unit = pkgs[i].getCompilationUnit(unitName);
 						if (unit != null) {
-							ASTParser p = ASTParser.newParser(AST.JLS3);					
+							ASTParser p = ASTParser.newParser(AST.JLS3);
 							p.setSource(unit);
 							p.setResolveBindings(true);
 							p.setUnitName(unitName);
@@ -80,23 +75,23 @@ class PackageBinding implements IPackageBinding {
 							if (pkgDecl != null) {
 								List annos = pkgDecl.annotations();
 								if (annos == null || annos.isEmpty())
-									return AnnotationBinding.NoAnnotations; 
+									return AnnotationBinding.NoAnnotations;
 								IAnnotationBinding[] result = new IAnnotationBinding[annos.size()];
 								int index=0;
 		 						for (Iterator it = annos.iterator(); it.hasNext(); index++) {
 									result[index] = ((Annotation) it.next()).resolveAnnotationBinding();
 									// not resolving bindings
 									if (result[index] == null)
-										return AnnotationBinding.NoAnnotations;							
+										return AnnotationBinding.NoAnnotations;
 								}
 								return result;
 							}
 						}
 						break;
-					case IPackageFragmentRoot.K_BINARY:		
-						
-// unused code						
-//						NameEnvironmentAnswer answer = 
+					case IPackageFragmentRoot.K_BINARY:
+
+// unused code
+//						NameEnvironmentAnswer answer =
 //							nameEnvironment.findType(TypeConstants.PACKAGE_INFO_NAME, this.binding.compoundName);
 //						if (answer != null && answer.isBinaryType()) {
 //							IBinaryType type = answer.getBinaryType();
@@ -110,17 +105,17 @@ class PackageBinding implements IPackageBinding {
 //							for (int a = 0; a < total; a++) {
 //								final IAnnotationBinding annotationInstance = this.resolver.getAnnotationInstance(allInstances[a]);
 //								if (annotationInstance == null) {// not resolving binding
-//									return AnnotationBinding.NoAnnotations; 
+//									return AnnotationBinding.NoAnnotations;
 //								}
 //								domInstances[a] = annotationInstance;
 //							}
 //							return domInstances;
 //						}
-				}	
-			}		
+				}
+			}
 		} catch(JavaModelException e) {
 			return AnnotationBinding.NoAnnotations;
-		}		
+		}
 		return AnnotationBinding.NoAnnotations;
 	}
 
@@ -178,7 +173,7 @@ class PackageBinding implements IPackageBinding {
 	public boolean isRecovered() {
 		return false;
 	}
-	
+
 	/**
 	 * @see IBinding#isSynthetic()
 	 */
@@ -198,14 +193,14 @@ class PackageBinding implements IPackageBinding {
 		if (pkgs == null) return null;
 		return pkgs[0];
 	}
-	
+
 	/*
 	 * @see IBinding#getKey()
 	 */
 	public String getKey() {
 		return new String(this.binding.computeUniqueKey());
 	}
-	
+
 	/*
 	 * @see IBinding#isEqualTo(Binding)
 	 * @since 3.1
@@ -225,7 +220,7 @@ class PackageBinding implements IPackageBinding {
 		org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding packageBinding2 = ((PackageBinding) other).binding;
 		return CharOperation.equals(this.binding.compoundName, packageBinding2.compoundName);
 	}
-	
+
 	private void computeNameAndComponents() {
 		char[][] compoundName = this.binding.compoundName;
 		if (compoundName == CharOperation.NO_CHAR_CHAR || compoundName == null) {
@@ -244,12 +239,12 @@ class PackageBinding implements IPackageBinding {
 			name = buffer.toString();
 		}
 	}
-	
-	/* 
+
+	/*
 	 * For debugging purpose only.
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
 		return this.binding.toString();
-	}	
+	}
 }

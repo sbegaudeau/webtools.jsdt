@@ -10,28 +10,22 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.compare;
 
+import org.eclipse.compare.IStreamContentAccessor;
 import org.eclipse.core.runtime.CoreException;
-
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.source.SourceViewer;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.Viewer;
-
-import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.source.SourceViewer;
-
-import org.eclipse.compare.IStreamContentAccessor;
-
-import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.IPropertiesFilePartitions;
 import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.PropertiesFileSourceViewerConfiguration;
+import org.eclipse.wst.jsdt.ui.text.JavaTextTools;
 
 /**
  * Properties file viewer. 

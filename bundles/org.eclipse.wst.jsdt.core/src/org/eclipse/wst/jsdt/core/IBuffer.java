@@ -15,15 +15,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * A buffer contains the text contents of a resource. It is not language-specific.
- * The contents may be in the process of being edited, differing from the actual contents of the 
- * underlying resource. A buffer has an owner, which is an <code>IOpenable</code>. 
- * If a buffer does not have an underlying resource, saving the buffer has no effect. 
+ * The contents may be in the process of being edited, differing from the actual contents of the
+ * underlying resource. A buffer has an owner, which is an <code>IOpenable</code>.
+ * If a buffer does not have an underlying resource, saving the buffer has no effect.
  * Buffers can be read-only.
  * <p>
- * Note that java model operations that manipulate an <code>IBuffer</code> (for example, 
- * <code>IType.createMethod(...)</code>) ensures that the same line delimiter 
- * (either <code>"\n"</code> or <code>"\r"</code> or <code>"\r\n"</code>) is 
- * used across the whole buffer. Thus these operations may change the line delimiter(s) 
+ * Note that java model operations that manipulate an <code>IBuffer</code> (for example,
+ * <code>IType.createMethod(...)</code>) ensures that the same line delimiter
+ * (either <code>"\n"</code> or <code>"\r"</code> or <code>"\r\n"</code>) is
+ * used across the whole buffer. Thus these operations may change the line delimiter(s)
  * included in the string to be append, or replaced.
  * However implementers of this interface should be aware that other clients of <code>IBuffer</code>
  * might not do such transformations beforehand.
@@ -32,12 +32,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * </p>
  */
 public interface IBuffer {
-	
+
 /**
  * Adds the given listener for changes to this buffer.
  * Has no effect if an identical listener is already registered or if the buffer
  * is closed.
- * 
+ *
  * @param listener the listener of buffer changes
  */
 public void addBufferChangedListener(IBufferChangedListener listener);
@@ -144,7 +144,7 @@ public IResource getUnderlyingResource();
  * If a buffer does not have an underlying resource, this method always
  * returns <code>true</code>.
  * <p>
- * NOTE: when a buffer does not have unsaved changes, the model may decide to close it 
+ * NOTE: when a buffer does not have unsaved changes, the model may decide to close it
  * to claim some memory back. If the associated element needs to be reopened later on, its
  * buffer factory will be requested to create a new buffer.
  * </p>
@@ -207,12 +207,12 @@ public void replace(int position, int length, String text);
  * cases where the workbench is not completely in sync with the local file system.
  * If <code>false</code> is specified, this method will only attempt
  * to overwrite a corresponding file in the local file system provided
- * it is in sync with the workbench. This option ensures there is no 
+ * it is in sync with the workbench. This option ensures there is no
  * unintended data loss; it is the recommended setting.
  * However, if <code>true</code> is specified, an attempt will be made
- * to write a corresponding file in the local file system, 
+ * to write a corresponding file in the local file system,
  * overwriting any existing one if need be.
- * In either case, if this method succeeds, the resource will be marked 
+ * In either case, if this method succeeds, the resource will be marked
  * as being local (even if it wasn't before).
  * <p>
  * Has no effect if this buffer is read-only or if the buffer is closed.
@@ -223,7 +223,7 @@ public void replace(int position, int length, String text);
  *
  * @exception JavaModelException if an error occurs writing the buffer
  *	to the underlying resource
- * 
+ *
  * @see org.eclipse.core.resources.IFile#setContents(java.io.InputStream, boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)
  */
 public void save(IProgressMonitor progress, boolean force) throws JavaModelException;

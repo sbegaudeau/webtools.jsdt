@@ -15,7 +15,9 @@ import java.io.IOException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.wst.jsdt.core.search.*;
+import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.SearchParticipant;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.index.Index;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IndexManager;
@@ -44,7 +46,7 @@ public boolean belongsTo(String jobFamily) {
 	return true;
 }
 public void cancel() {
-	// search job is cancelled through progress 
+	// search job is cancelled through progress
 }
 public void ensureReadyToRun() {
 	if (!this.areIndexesReady)
@@ -96,12 +98,12 @@ public Index[] getIndexes(IProgressMonitor progressMonitor) {
 		if (index != null)
 			indexes[count++] = index; // only consider indexes which are ready
 	}
-	if (count == length) 
+	if (count == length)
 		this.areIndexesReady = true;
 	else
 		System.arraycopy(indexes, 0, indexes=new Index[count], 0, count);
 	return indexes;
-}	
+}
 public boolean search(Index index, IProgressMonitor progressMonitor) {
 	if (index == null) return COMPLETE;
 	if (progressMonitor != null && progressMonitor.isCanceled()) throw new OperationCanceledException();

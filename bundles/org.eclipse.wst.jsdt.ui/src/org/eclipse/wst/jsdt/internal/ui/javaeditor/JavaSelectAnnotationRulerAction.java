@@ -13,10 +13,7 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 import java.util.Iterator;
 import java.util.ResourceBundle;
 
-import org.eclipse.swt.widgets.Event;
-
 import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.Position;
@@ -24,23 +21,20 @@ import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationAccessExtension;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRulerInfo;
-
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AbstractMarkerAnnotationModel;
 import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.AnnotationPreferenceLookup;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorExtension;
 import org.eclipse.ui.texteditor.SelectMarkerRulerAction;
-
-import org.eclipse.ui.editors.text.EditorsUI;
-
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.JavaCorrectionProcessor;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.QuickAssistLightBulbUpdater.AssistAnnotation;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 /**
  * Action which gets triggered when selecting (annotations) in the vertical ruler.

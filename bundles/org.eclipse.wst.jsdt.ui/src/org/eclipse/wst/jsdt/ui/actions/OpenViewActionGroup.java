@@ -16,7 +16,6 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchSite;
@@ -29,12 +28,10 @@ import org.eclipse.ui.dialogs.PropertyDialogAction;
 import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
-
-import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
-
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.callhierarchy.OpenCallHierarchyAction;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
+import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 
 /**
  * Action group that adds actions to open a new JDT view part or an external 

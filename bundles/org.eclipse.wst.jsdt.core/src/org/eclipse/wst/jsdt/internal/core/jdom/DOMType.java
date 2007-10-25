@@ -17,7 +17,9 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
-import org.eclipse.wst.jsdt.core.jdom.*;
+import org.eclipse.wst.jsdt.core.jdom.IDOMMethod;
+import org.eclipse.wst.jsdt.core.jdom.IDOMNode;
+import org.eclipse.wst.jsdt.core.jdom.IDOMType;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
 import org.eclipse.wst.jsdt.internal.compiler.parser.TerminalTokens;
 import org.eclipse.wst.jsdt.internal.core.util.CharArrayBuffer;
@@ -28,9 +30,9 @@ import org.eclipse.wst.jsdt.internal.core.util.Messages;
  * @see IDOMType
  * @see DOMNode
  * @deprecated The JDOM was made obsolete by the addition in 2.0 of the more
- * powerful, fine-grained DOM/AST API found in the 
+ * powerful, fine-grained DOM/AST API found in the
  * org.eclipse.wst.jsdt.core.dom package.
- */ 
+ */
 // TODO (jerome) - add implementation support for 1.5 features
 /* package */ class DOMType extends DOMMember implements IDOMType {
 	/**
@@ -72,7 +74,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Messages;
 	 * The original inclusive souce range of the 'implements' keyword
 	 * in the document, including surrounding whitespace, or -1's if
 	 * the keyword was not present in the document.
-	 */	
+	 */
 	protected int[]	 fImplementsRange;
 
 	/**
@@ -90,22 +92,22 @@ import org.eclipse.wst.jsdt.internal.core.util.Messages;
 	 */
 	protected int[]  fInterfacesRange;
 
-	
 
-	/** 
+
+	/**
 	 * The original source range of the first character following the
 	 * type name superclass name, or interface list, up to and including
 	 * the first character before the first type member.
-	 */	
+	 */
 	protected int[]  fOpenBodyRange;
 
-	/** 
+	/**
 	 * The original source range of the first new line or non whitespace
 	 * character preceding the close brace of the type's body, up to the
 	 * and including the first character before the next node (if there are
 	 * no following nodes, the range ends at the position of the last
 	 * character in the document).
-	 */	
+	 */
 	protected int[]  fCloseBodyRange;
 
 	/**
@@ -114,7 +116,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Messages;
 	 * or implement any interfaces.
 	 */
 	protected String[] fSuperInterfaces= CharOperation.NO_STRINGS;
-	
+
 	/**
 	 * The formal type parameters.
 	 * @since 3.0
@@ -126,13 +128,13 @@ import org.eclipse.wst.jsdt.internal.core.util.Messages;
 	 * @since 3.0
 	 */
 	protected boolean fIsEnum= false;
-	
+
 	/**
 	 * Indicates this type is an annotatation type (interface).
 	 * @since 3.0
 	 */
 	protected boolean fIsAnnotation= false;
-	
+
 	/**
 	 * This position is the position of the end of the last line separator before the closing brace starting
 	 * position of the receiver.
@@ -255,7 +257,7 @@ DOMType(char[] document, int[] sourceRange, String name, int[] nameRange, int fl
  */
 public void addSuperInterface(String name) throws IllegalArgumentException {
 	if (name == null) {
-		throw new IllegalArgumentException(Messages.dom_addNullInterface); 
+		throw new IllegalArgumentException(Messages.dom_addNullInterface);
 	}
 	if (fSuperInterfaces == null) {
 		fSuperInterfaces= new String[1];
@@ -278,7 +280,7 @@ protected void appendMemberBodyContents(CharArrayBuffer buffer) {
  * @see DOMMember#appendMemberDeclarationContents(CharArrayBuffer )
  */
 protected void appendMemberDeclarationContents(CharArrayBuffer  buffer) {
-	
+
 	if (fTypeKeyword != null) {
 		buffer.append(fTypeKeyword);
 		buffer.append(fDocument, fTypeRange[1], fNameRange[0] - fTypeRange[1] );
@@ -352,7 +354,7 @@ protected void appendMemberDeclarationContents(CharArrayBuffer  buffer) {
 			}
 		}
 	}
-	
+
 }
 /**
  * @see DOMMember#appendSimpleContents(CharArrayBuffer)
@@ -363,7 +365,7 @@ protected void appendSimpleContents(CharArrayBuffer buffer) {
 	// append my name
 	buffer.append(fName);
 
-	
+
 	// append everything after my name and before my first child
 	buffer.append(fDocument, fNameRange[1] + 1, fOpenBodyRange[1] - fNameRange[1]);
 	// append my children
@@ -410,9 +412,9 @@ public IJavaElement getJavaElement(IJavaElement parent) throws IllegalArgumentEx
 			return ((ICompilationUnit)parent).getType(getName());
 		case IJavaElement.TYPE:
 			return ((IType)parent).getType(getName());
-		// Note: creating local/anonymous type is not supported 
+		// Note: creating local/anonymous type is not supported
 		default:
-			throw new IllegalArgumentException(Messages.element_illegalParent); 
+			throw new IllegalArgumentException(Messages.element_illegalParent);
 	}
 }
 /**
@@ -460,12 +462,12 @@ public String[] getSuperInterfaces() {
 public boolean isAllowableChild(IDOMNode node) {
 	if (node != null) {
 		int type= node.getNodeType();
-		return type == IDOMNode.TYPE || type == IDOMNode.FIELD|| type == IDOMNode.METHOD || 
-			type == IDOMNode.INITIALIZER; 
+		return type == IDOMNode.TYPE || type == IDOMNode.FIELD|| type == IDOMNode.METHOD ||
+			type == IDOMNode.INITIALIZER;
 	} else {
 		return false;
 	}
-	
+
 }
 /**
  * @see IDOMType#isClass()
@@ -493,14 +495,14 @@ void normalize(ILineStartFinder finder) {
 	Scanner scanner = new Scanner();
 	scanner.setSource(fDocument);
 	scanner.resetTo(fNameRange[1] + 1, fDocument.length);
-	
+
 	try {
 		int currentToken = scanner.getNextToken();
 		while(currentToken != TerminalTokens.TokenNameLBRACE &&
 				currentToken != TerminalTokens.TokenNameEOF) {
 			currentToken = scanner.getNextToken();
 		}
-		if(currentToken == TerminalTokens.TokenNameLBRACE) {		
+		if(currentToken == TerminalTokens.TokenNameLBRACE) {
 			openBodyEnd = scanner.currentPosition - 1;
 			openBodyStart = scanner.startPosition;
 		} else {
@@ -517,7 +519,7 @@ void normalize(ILineStartFinder finder) {
 			openBodyEnd = lineStart - 1;
 		} else {
 			openBodyEnd = first.getStartPosition() - 1;
-		}		
+		}
 		lastNode = (DOMNode) first.getNextNode();
 		if (lastNode == null) {
 			lastNode = first;
@@ -534,7 +536,7 @@ void normalize(ILineStartFinder finder) {
 					currentToken != TerminalTokens.TokenNameEOF) {
 				currentToken = scanner.getNextToken();
 			}
-			if(currentToken == TerminalTokens.TokenNameRBRACE) {		
+			if(currentToken == TerminalTokens.TokenNameRBRACE) {
 				closeBodyStart = scanner.startPosition;
 				closeBodyEnd = scanner.currentPosition - 1;
 			} else {
@@ -553,7 +555,7 @@ void normalize(ILineStartFinder finder) {
 					currentToken != TerminalTokens.TokenNameEOF) {
 				currentToken = scanner.getNextToken();
 			}
-			if(currentToken == TerminalTokens.TokenNameRBRACE) {		
+			if(currentToken == TerminalTokens.TokenNameRBRACE) {
 				closeBodyStart = scanner.startPosition;
 				closeBodyEnd = scanner.currentPosition - 1;
 			} else {
@@ -629,13 +631,13 @@ public void setClass(boolean b) {
 	}
 }
 /**
- * Sets the end of the close body range 
+ * Sets the end of the close body range
  */
 void setCloseBodyRangeEnd(int end) {
 	fCloseBodyRange[1] = end;
 }
 /**
- * Sets the start of the close body range 
+ * Sets the start of the close body range
  */
 void setCloseBodyRangeStart(int start) {
 	fCloseBodyRange[0] = start;
@@ -651,7 +653,7 @@ void setCloseBodyRangeStart(int start) {
  */
 public void setName(String name) throws IllegalArgumentException {
 	if (name == null) {
-		throw new IllegalArgumentException(Messages.element_nullName); 
+		throw new IllegalArgumentException(Messages.element_nullName);
 	}
 	super.setName(name);
 	Enumeration children= getChildren();
@@ -663,13 +665,13 @@ public void setName(String name) throws IllegalArgumentException {
 	}
 }
 /**
- * Sets the end of the open body range 
+ * Sets the end of the open body range
  */
 void setOpenBodyRangeEnd(int end) {
 	fOpenBodyRange[1] = end;
 }
 /**
- * Sets the start of the open body range 
+ * Sets the start of the open body range
  */
 void setOpenBodyRangeStart(int start) {
 	fOpenBodyRange[0] = start;
@@ -689,7 +691,7 @@ public void setSuperclass(String superclassName) {
 public void setSuperInterfaces(String[] names) {
 	becomeDetailed();
 	if (names == null) {
-		throw new IllegalArgumentException(Messages.dom_nullInterfaces); 
+		throw new IllegalArgumentException(Messages.dom_nullInterfaces);
 	}
 	fragment();
 	fSuperInterfaces= names;

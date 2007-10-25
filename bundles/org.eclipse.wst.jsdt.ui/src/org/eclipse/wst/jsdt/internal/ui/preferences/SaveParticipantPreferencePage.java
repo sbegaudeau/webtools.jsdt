@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.preferences;
 
-import org.eclipse.core.runtime.preferences.IScopeContext;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
-
+import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 

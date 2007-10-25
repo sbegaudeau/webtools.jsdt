@@ -10,18 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.refactoring.changes;
 
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IResource;
-
-import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
-import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
+import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 
 public class MoveResourceChange extends ResourceReorgChange {
 	

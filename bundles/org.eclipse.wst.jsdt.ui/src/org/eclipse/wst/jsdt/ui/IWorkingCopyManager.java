@@ -11,9 +11,7 @@
 package org.eclipse.wst.jsdt.ui;
 
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.ui.IEditorInput;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 
 /**

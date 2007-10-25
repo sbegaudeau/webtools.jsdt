@@ -10,17 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.refactoring.rename;
 
-import com.ibm.icu.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
-
-
 import org.eclipse.wst.jsdt.internal.ui.text.JavaWordIterator;
+
+import com.ibm.icu.text.BreakIterator;
 
 /**
  * This class contains methods for suggesting new names for variables or methods

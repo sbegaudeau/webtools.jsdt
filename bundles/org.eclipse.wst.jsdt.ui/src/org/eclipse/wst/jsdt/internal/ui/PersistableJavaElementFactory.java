@@ -11,11 +11,11 @@
 package org.eclipse.wst.jsdt.internal.ui;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistableElement;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.JavaCore;
 
 /** 
  * The JavaElementFactory is used to save and recreate an IJavaElement object.

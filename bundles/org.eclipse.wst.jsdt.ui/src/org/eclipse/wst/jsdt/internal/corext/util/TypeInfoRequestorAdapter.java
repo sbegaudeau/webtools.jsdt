@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.internal.corext.util;
 
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
-
 import org.eclipse.wst.jsdt.ui.dialogs.ITypeInfoRequestor;
 
 

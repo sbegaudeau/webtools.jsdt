@@ -11,13 +11,16 @@
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.IPackageFragment;
+import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.SearchDocument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileReader;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
-import org.eclipse.wst.jsdt.internal.core.*;
+import org.eclipse.wst.jsdt.internal.core.ClassFile;
+import org.eclipse.wst.jsdt.internal.core.CompilationUnit;
+import org.eclipse.wst.jsdt.internal.core.Openable;
+import org.eclipse.wst.jsdt.internal.core.PackageFragment;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 public class PossibleMatch implements ICompilationUnit {
@@ -122,7 +125,7 @@ private char[] getQualifiedName() {
 private String getSourceFileName() {
 	if (this.sourceFileName != null) return this.sourceFileName;
 
-	this.sourceFileName = NO_SOURCE_FILE_NAME; 
+	this.sourceFileName = NO_SOURCE_FILE_NAME;
 //	if (this.openable.getSourceMapper() != null) {
 //		BinaryType type = (BinaryType) ((ClassFile) this.openable).getType();
 //		ClassFileReader reader = MatchLocator.classFileReader(type);
@@ -132,7 +135,7 @@ private String getSourceFileName() {
 //		}
 //	}
 	return this.sourceFileName;
-}	
+}
 public int hashCode() {
 	if (this.compoundName == null) return super.hashCode();
 

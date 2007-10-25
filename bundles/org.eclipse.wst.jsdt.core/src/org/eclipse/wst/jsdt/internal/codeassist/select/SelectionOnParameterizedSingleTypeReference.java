@@ -20,17 +20,17 @@ public class SelectionOnParameterizedSingleTypeReference extends ParameterizedSi
 	public SelectionOnParameterizedSingleTypeReference(char[] name, TypeReference[] typeArguments, long pos){
 		super(name, typeArguments, 0, pos);
 	}
-	
+
 	public TypeBinding resolveType(BlockScope scope, boolean checkBounds) {
 		super.resolveType(scope, checkBounds);
 		throw new SelectionNodeFound(this.resolvedType);
 	}
-	
+
 	public TypeBinding resolveType(ClassScope scope) {
 		super.resolveType(scope);
 		throw new SelectionNodeFound(this.resolvedType);
 	}
-	
+
 	public StringBuffer printExpression(int indent, StringBuffer output){
 		output.append("<SelectOnType:");//$NON-NLS-1$
 		output.append(token);
@@ -42,7 +42,7 @@ public class SelectionOnParameterizedSingleTypeReference extends ParameterizedSi
 		}
 		typeArguments[max].print(0, output);
 		output.append('>');
-		output.append('>'); 
+		output.append('>');
 		return output;
 	}
 }

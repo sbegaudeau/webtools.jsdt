@@ -31,9 +31,11 @@ package org.eclipse.wst.jsdt.internal.codeassist.complete;
  * which should be replaced by the completion.
  */
 
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
- 
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
+
 public class CompletionOnSingleNameReference extends SingleNameReference {
 
 	public char[][] possibleKeywords;
@@ -52,7 +54,7 @@ public class CompletionOnSingleNameReference extends SingleNameReference {
 	}
 
 	public StringBuffer printExpression(int indent, StringBuffer output) {
-		
+
 		output.append("<CompleteOnName:"); //$NON-NLS-1$
 		return super.printExpression(0, output).append('>');
 	}
@@ -63,7 +65,7 @@ public class CompletionOnSingleNameReference extends SingleNameReference {
 		}
 		throw new CompletionNodeFound(this, scope);
 	}
-	
+
 	public boolean isSpecialNode()
 	{
 		return true;

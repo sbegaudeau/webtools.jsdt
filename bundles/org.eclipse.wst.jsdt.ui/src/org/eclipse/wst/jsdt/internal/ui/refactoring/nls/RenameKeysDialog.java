@@ -12,12 +12,10 @@ package org.eclipse.wst.jsdt.internal.ui.refactoring.nls;
 
 import java.util.List;
 
+import org.eclipse.jface.dialogs.StatusDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.jface.dialogs.StatusDialog;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.NLSSubstitution;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringDialogField;

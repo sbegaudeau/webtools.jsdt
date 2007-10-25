@@ -12,9 +12,7 @@ package org.eclipse.wst.jsdt.internal.ui.commands;
 
 import org.eclipse.core.commands.AbstractParameterValueConverter;
 import org.eclipse.core.commands.ParameterValueConversionException;
-
 import org.eclipse.core.resources.ResourcesPlugin;
-
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaModel;

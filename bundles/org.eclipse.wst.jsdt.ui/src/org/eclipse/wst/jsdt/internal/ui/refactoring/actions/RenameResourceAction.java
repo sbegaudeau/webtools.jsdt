@@ -11,21 +11,15 @@
 package org.eclipse.wst.jsdt.internal.ui.refactoring.actions;
 
 
-import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.core.resources.IResource;
-
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
-
 import org.eclipse.ui.IWorkbenchSite;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringExecutionStarter;
-
-import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
-
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
+import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
 
 public class RenameResourceAction extends SelectionDispatchAction {
 

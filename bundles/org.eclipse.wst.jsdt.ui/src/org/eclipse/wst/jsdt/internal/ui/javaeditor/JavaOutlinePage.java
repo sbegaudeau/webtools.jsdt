@@ -16,24 +16,10 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.ListenerList;
-
-import org.eclipse.core.resources.IResource;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.BusyIndicator;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Item;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.Widget;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
@@ -43,6 +29,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.util.TransferDragSourceListener;
@@ -60,9 +47,17 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-
-import org.eclipse.jface.text.ITextSelection;
-
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Item;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionContext;
@@ -78,10 +73,8 @@ import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.IUpdate;
-
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
-
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
@@ -99,22 +92,7 @@ import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-
-import org.eclipse.wst.jsdt.ui.JavaElementComparator;
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.JavaUI;
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator.ProblemsLabelChangedEvent;
-import org.eclipse.wst.jsdt.ui.actions.CCPActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.CustomFiltersActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.GenerateActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.JavaSearchActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.MemberFilterActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.OpenViewActionGroup;
-import org.eclipse.wst.jsdt.ui.actions.RefactorActionGroup;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
@@ -131,6 +109,18 @@ import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.DecoratingJavaLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.SourcePositionComparator;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.StatusBarUpdater;
+import org.eclipse.wst.jsdt.ui.JavaElementComparator;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
+import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
+import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator.ProblemsLabelChangedEvent;
+import org.eclipse.wst.jsdt.ui.actions.CCPActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.CustomFiltersActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.GenerateActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.JavaSearchActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.MemberFilterActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.OpenViewActionGroup;
+import org.eclipse.wst.jsdt.ui.actions.RefactorActionGroup;
 
 
 /**

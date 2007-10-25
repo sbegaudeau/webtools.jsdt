@@ -11,15 +11,10 @@
 package org.eclipse.wst.jsdt.internal.ui.text.javadoc;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.text.IDocument;
-
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-
-
-import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
-
 import org.eclipse.wst.jsdt.internal.ui.text.java.LazyJavaTypeCompletionProposal;
+import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
 
 /**
  * Types directly completed to &#x7b;&#x40;link Type&#x7d;. See {@link CompletionProposal#JAVADOC_TYPE_REF}.

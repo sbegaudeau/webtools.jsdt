@@ -10,20 +10,50 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.util;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.net.URI;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ProjectScope;
+import org.eclipse.core.resources.ResourceAttributes;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.text.edits.MalformedTreeException;
+import org.eclipse.text.edits.TextEdit;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IPackageFragment;
+import org.eclipse.wst.jsdt.core.JavaConventions;
+import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
@@ -50,9 +80,6 @@ import org.eclipse.wst.jsdt.internal.core.JavaElement;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.PackageFragmentRoot;
 import org.eclipse.wst.jsdt.internal.infer.InferEngine;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.text.edits.MalformedTreeException;
-import org.eclipse.text.edits.TextEdit;
 
 /**
  * Provides convenient utility methods to other types in this package.
@@ -77,7 +104,7 @@ public class Util {
 	private static final String ARGUMENTS_DELIMITER = "#"; //$NON-NLS-1$
 
 	private static final String EMPTY_ARGUMENT = "   "; //$NON-NLS-1$
-	
+
 	private static char[][] JAVA_LIKE_EXTENSIONS;
 	public static boolean ENABLE_JAVA_LIKE_EXTENSIONS = true;
 
@@ -91,7 +118,7 @@ public class Util {
 	private static final char[] SHORT = "short".toCharArray(); //$NON-NLS-1$
 	private static final char[] VOID = "void".toCharArray(); //$NON-NLS-1$
 	private static final char[] INIT = "<init>".toCharArray(); //$NON-NLS-1$
-	
+
 	private Util() {
 		// cannot be instantiated
 	}
@@ -99,13 +126,13 @@ public class Util {
 		if(path1==null || tail==null) return false;
 		int index =  path1.toLowerCase().indexOf(tail.toLowerCase());
 		return (index >-1 && (index + tail.length() == path1.length()));
-		
+
 	}
-	
+
 	public static boolean isSameResourceString(IPath path1, IPath tail) {
 		return isSameResourceString(path1.toString(), tail.toString());
 	}
-	
+
 	/**
 	 * Returns a new array adding the second array at the end of first array.
 	 * It answers null if the first and second are null.
@@ -133,7 +160,7 @@ public class Util {
 	 * </pre>
 	 * </li>
 	 * </ol>
-	 * 
+	 *
 	 * @param first the first array to concatenate
 	 * @param second the array to add at the end of the first array
 	 * @return a new array adding the second array at the end of first array, or null if the two arrays are null.
@@ -148,7 +175,7 @@ public class Util {
 		if (first.length == 0) {
 			return new String[] {second};
 		}
-		
+
 		String[] result = new String[length + 1];
 		System.arraycopy(first, 0, result, 0, length);
 		result[length] = second;
@@ -156,7 +183,7 @@ public class Util {
 	}
 
 	/**
-	 * Checks the type signature in String sig, 
+	 * Checks the type signature in String sig,
 	 * starting at start and ending before end (end is not included).
 	 * Returns the index of the character immediately after the signature if valid,
 	 * or -1 if not valid.
@@ -173,12 +200,12 @@ public class Util {
 		}
 		switch (c) {
 			case 'B':
-			case 'C': 
+			case 'C':
 			case 'D':
 			case 'F':
 			case 'I':
 			case 'J':
-			case 'S': 
+			case 'S':
 			case 'Z':
 				break;
 			case 'V':
@@ -197,16 +224,16 @@ public class Util {
 		}
 		return i;
 	}
-	
+
 	/**
 	 * Combines two hash codes to make a new one.
 	 */
 	public static int combineHashCodes(int hashCode1, int hashCode2) {
 		return hashCode1 * 17 + hashCode2;
 	}
-	
+
 	/**
-	 * Compares two byte arrays.  
+	 * Compares two byte arrays.
 	 * Returns <0 if a byte in a is less than the corresponding byte in b, or if a is shorter, or if a is null.
 	 * Returns >0 if a byte in a is greater than the corresponding byte in b, or if a is longer, or if b is null.
 	 * Returns 0 if they are equal or both null.
@@ -231,13 +258,13 @@ public class Util {
 		return 0;
 	}
 	/**
-	 * Compares two strings lexicographically. 
+	 * Compares two strings lexicographically.
 	 * The comparison is based on the Unicode value of each character in
-	 * the strings. 
+	 * the strings.
 	 *
 	 * @return  the value <code>0</code> if the str1 is equal to str2;
 	 *          a value less than <code>0</code> if str1
-	 *          is lexicographically less than str2; 
+	 *          is lexicographically less than str2;
 	 *          and a value greater than <code>0</code> if str1 is
 	 *          lexicographically greater than str2.
 	 */
@@ -271,7 +298,7 @@ public class Util {
 		s2.getChars(0, l2, buf, l1 + 1);
 		return new String(buf);
 	}
-	
+
 	/**
 	 * Concatenate two strings.
 	 * Much faster than using +, which:
@@ -311,7 +338,7 @@ public class Util {
 	 *    => result = ""
 	 * </pre></li>
 	 * </ol>
-	 * 
+	 *
 	 * @param array the given array
 	 * @param separator the given separator
 	 * @return the concatenation of the given array parts using the given separator between each part
@@ -325,7 +352,7 @@ public class Util {
 		}
 		return buffer.toString();
 	}
-	
+
 	/**
 	 * Returns the concatenation of the given array parts using the given separator between each
 	 * part and appending the given name at the end.
@@ -353,7 +380,7 @@ public class Util {
 	 *    => result = "c"
 	 * </pre></li>
 	 * </ol>
-	 * 
+	 *
 	 * @param array the given array
 	 * @param name the given name
 	 * @param separator the given separator
@@ -364,7 +391,7 @@ public class Util {
 		String[] array,
 		String name,
 		char separator) {
-		
+
 		if (array == null || array.length == 0) return name;
 		if (name == null || name.length() == 0) return concatWith(array, separator);
 		StringBuffer buffer = new StringBuffer();
@@ -374,9 +401,9 @@ public class Util {
 		}
 		buffer.append(name);
 		return buffer.toString();
-		
+
 	}
-	
+
 	/**
 	 * Concatenate three strings.
 	 * @see #concat(String, String)
@@ -394,14 +421,14 @@ public class Util {
 		s3.getChars(0, l3, buf, l1 + l2);
 		return new String(buf);
 	}
-		
+
 	/**
 	 * Converts a type signature from the IBinaryType representation to the DC representation.
 	 */
 	public static String convertTypeSignature(char[] sig, int start, int length) {
 		return new String(sig, start, length).replace('/', '.');
 	}
-	
+
 	/*
 	 * Returns the default java extension (".js").
 	 * To be used when the extension is not known.
@@ -413,10 +440,10 @@ public class Util {
 	/**
 	 * Apply the given edit on the given string and return the updated string.
 	 * Return the given string if anything wrong happen while applying the edit.
-	 * 
+	 *
 	 * @param original the given string
 	 * @param edit the given edit
-	 * 
+	 *
 	 * @return the updated string
 	 */
 	public final static String editedString(String original, TextEdit edit) {
@@ -440,21 +467,21 @@ public class Util {
 	 * implementation is not creating extra strings.
 	 */
 	public final static boolean endsWithIgnoreCase(String str, String end) {
-		
+
 		int strLength = str == null ? 0 : str.length();
 		int endLength = end == null ? 0 : end.length();
-		
+
 		// return false if the string is smaller than the end.
 		if(endLength > strLength)
 			return false;
-			
+
 		// return false if any character of the end are
 		// not the same in lower case.
 		for(int i = 1 ; i <= endLength; i++){
 			if(ScannerHelper.toLowerCase(end.charAt(endLength - i)) != ScannerHelper.toLowerCase(str.charAt(strLength - i)))
 				return false;
 		}
-		
+
 		return true;
 	}
 
@@ -513,7 +540,7 @@ public class Util {
 
 		int len = a.length;
 		if (len != b.length) return false;
-		// walk array from end to beginning as this optimizes package name cases 
+		// walk array from end to beginning as this optimizes package name cases
 		// where the first part is always the same (e.g. org.eclipse.wst.jsdt)
 		for (int i = len-1; i >= 0; i--) {
 			if (a[i] == null) {
@@ -524,7 +551,7 @@ public class Util {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Compares two arrays using equals() on the elements.
 	 * The arrays are first sorted.
@@ -549,7 +576,7 @@ public class Util {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Compares two String arrays using equals() on the elements.
 	 * The arrays are first sorted.
@@ -574,7 +601,7 @@ public class Util {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Compares two objects using equals().
 	 * Either or both array may be null.
@@ -591,7 +618,7 @@ public class Util {
 		}
 		return a.equals(b);
 	}
-	
+
 	/*
 	 * Returns whether the given file name equals to the given string ignoring the java like extension
 	 * of the file name.
@@ -613,14 +640,14 @@ public class Util {
 			if (extensionStart + suffix.length != fileNameLength) continue;
 			if (fileName.charAt(stringLength) != '.') continue;
 			for (int j = extensionStart; j < fileNameLength; j++) {
-				if (fileName.charAt(j) != suffix[j-extensionStart]) 
+				if (fileName.charAt(j) != suffix[j-extensionStart])
 					continue suffixes;
 			}
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Given a qualified name, extract the last component.
 	 * If the input is not qualified, the same string is answered.
@@ -630,7 +657,7 @@ public class Util {
 		if (i == -1) return qualifiedName;
 		return qualifiedName.substring(i+1);
 	}
-	
+
 	/**
 	 * Extracts the parameter types from a method signature.
 	 */
@@ -672,7 +699,7 @@ public class Util {
 	public static String extractReturnType(String sig) {
 		int i = sig.lastIndexOf(')');
 		Assert.isTrue(i != -1);
-		return sig.substring(i+1);	
+		return sig.substring(i+1);
 	}
 	private static IFile findFirstClassFile(IFolder folder) {
 		try {
@@ -690,7 +717,7 @@ public class Util {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Finds the first line separator used by the given text.
 	 *
@@ -714,7 +741,7 @@ public class Util {
 		// not found
 		return null;
 	}
-	
+
 	public static IClassFileAttribute getAttribute(IClassFileReader classFileReader, char[] attributeName) {
 		IClassFileAttribute[] attributes = classFileReader.getAttributes();
 		for (int i = 0, max = attributes.length; i < max; i++) {
@@ -724,7 +751,7 @@ public class Util {
 		}
 		return null;
 	}
-	
+
 	public static IClassFileAttribute getAttribute(ICodeAttribute codeAttribute, char[] attributeName) {
 		IClassFileAttribute[] attributes = codeAttribute.getAttributes();
 		for (int i = 0, max = attributes.length; i < max; i++) {
@@ -733,8 +760,8 @@ public class Util {
 			}
 		}
 		return null;
-	}	
-	
+	}
+
 	public static IClassFileAttribute getAttribute(IFieldInfo fieldInfo, char[] attributeName) {
 		IClassFileAttribute[] attributes = fieldInfo.getAttributes();
 		for (int i = 0, max = attributes.length; i < max; i++) {
@@ -754,7 +781,7 @@ public class Util {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns the registered Java like extensions.
 	 */
@@ -851,7 +878,7 @@ public class Util {
 		}
 		return 0;
 	}
-	
+
 	/**
 	 * Returns the substring of the given file name, ending at the start of a
 	 * Java like extension. The entire file name is returned if it doesn't end
@@ -863,7 +890,7 @@ public class Util {
 			return fileName;
 		return fileName.substring(0, index);
 	}
-	
+
 	/**
 	 * Returns the line separator found in the given text.
 	 * If it is null, or not found return the line delimitor for the given project.
@@ -872,14 +899,14 @@ public class Util {
 	 */
 	public static String getLineSeparator(String text, IJavaProject project) {
 		String lineSeparator = null;
-		
+
 		// line delimiter in given text
 		if (text != null && text.length() != 0) {
 			lineSeparator = findLineSeparator(text.toCharArray());
 			if (lineSeparator != null)
 				return lineSeparator;
 		}
-		
+
 		// line delimiter in project preference
 		IScopeContext[] scopeContext;
 		if (project != null) {
@@ -888,17 +915,17 @@ public class Util {
 			if (lineSeparator != null)
 				return lineSeparator;
 		}
-		
+
 		// line delimiter in workspace preference
 		scopeContext= new IScopeContext[] { new InstanceScope() };
 		lineSeparator = Platform.getPreferencesService().getString(Platform.PI_RUNTIME, Platform.PREF_LINE_SEPARATOR, null, scopeContext);
 		if (lineSeparator != null)
 			return lineSeparator;
-		
+
 		// system line delimiter
 		return org.eclipse.wst.jsdt.internal.compiler.util.Util.LINE_SEPARATOR;
 	}
-	
+
 	/**
 	 * Returns the line separator used by the given buffer.
 	 * Uses the given text if none found.
@@ -918,7 +945,7 @@ public class Util {
 		}
 		return lineSeparator;
 	}
-		
+
 	/**
 	 * Returns the number of parameter types in a method signature.
 	 */
@@ -947,31 +974,31 @@ public class Util {
 		}
 		return count;
 	}
-	
+
 	/**
 	 * Put all the arguments in one String.
 	 */
 	public static String getProblemArgumentsForMarker(String[] arguments){
 		StringBuffer args = new StringBuffer(10);
-		
+
 		args.append(arguments.length);
 		args.append(':');
-		
-			
+
+
 		for (int j = 0; j < arguments.length; j++) {
 			if(j != 0)
 				args.append(ARGUMENTS_DELIMITER);
-			
+
 			if(arguments[j].length() == 0) {
 				args.append(EMPTY_ARGUMENT);
-			} else {			
+			} else {
 				args.append(arguments[j]);
 			}
 		}
-		
+
 		return args.toString();
 	}
-	
+
 	/**
 	 * Separate all the arguments of a String made by getProblemArgumentsForMarker
 	 */
@@ -980,7 +1007,7 @@ public class Util {
 		int index = argumentsString.indexOf(':');
 		if(index == -1)
 			return null;
-		
+
 		int length = argumentsString.length();
 		int numberOfArg;
 		try{
@@ -989,10 +1016,10 @@ public class Util {
 			return null;
 		}
 		argumentsString = argumentsString.substring(index + 1, length);
-		
+
 		String[] args = new String[length];
 		int count = 0;
-		
+
 		StringTokenizer tokenizer = new StringTokenizer(argumentsString, ARGUMENTS_DELIMITER);
 		while(tokenizer.hasMoreTokens()) {
 			String argument = tokenizer.nextToken();
@@ -1000,14 +1027,14 @@ public class Util {
 				argument = "";  //$NON-NLS-1$
 			args[count++] = argument;
 		}
-		
+
 		if(count != numberOfArg)
 			return null;
-		
+
 		System.arraycopy(args, 0, args = new String[count], 0, count);
 		return args;
 	}
-	
+
 	/**
 	 * Returns the given file's contents as a byte array.
 	 */
@@ -1030,7 +1057,7 @@ public class Util {
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns the given file's contents as a character array.
 	 */
@@ -1045,8 +1072,8 @@ public class Util {
 		}
 		return getResourceContentsAsCharArray(file, encoding);
 	}
-		
-	public static char[] getResourceContentsAsCharArray(IFile file, String encoding) throws JavaModelException {		
+
+	public static char[] getResourceContentsAsCharArray(IFile file, String encoding) throws JavaModelException {
 		// Get file length
 		// workaround https://bugs.eclipse.org/bugs/show_bug.cgi?id=130736 by using java.io.File if possible
 		IPath location = file.getLocation();
@@ -1062,7 +1089,7 @@ public class Util {
 			// local file
 			length = location.toFile().length();
 		}
-		
+
 		// Get resource contents
 		InputStream stream= null;
 		try {
@@ -1082,7 +1109,7 @@ public class Util {
 			}
 		}
 	}
-	
+
 	/*
 	 * Returns the signature of the given type.
 	 */
@@ -1091,7 +1118,7 @@ public class Util {
 		getFullyQualifiedName(type, buffer);
 		return Signature.createTypeSignature(buffer.toString(), false/*not resolved in source*/);
 	}
-	
+
 	/*
 	 * Returns the source attachment property for this package fragment root's path
 	 */
@@ -1115,7 +1142,7 @@ public class Util {
 		} else
 			return property;
 	}
-	
+
 	private static QualifiedName getSourceAttachmentPropertyName(IPath path) {
 		return new QualifiedName(JavaCore.PLUGIN_ID, "sourceattachment: " + path.toOSString()); //$NON-NLS-1$
 	}
@@ -1128,11 +1155,11 @@ public class Util {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/*
 	 * Returns the declaring type signature of the element represented by the given binding key.
 	 * Returns the signature of the element if it is a type.
-	 * 
+	 *
 	 * @return the declaring type signature
 	 */
 	public static String getDeclaringTypeSignature(String key) {
@@ -1140,7 +1167,7 @@ public class Util {
 		keyToSignature.parse();
 		return keyToSignature.signature.toString();
 	}
-	
+
 	/*
 	 * Appends to the given buffer the fully qualified name (as it appears in the source) of the given type
 	 */
@@ -1207,7 +1234,7 @@ public class Util {
 		}
 		return result;
 	}
-	
+
 		/*
 	 * Returns the index of the most specific argument paths which is strictly enclosing the path to check
 	 */
@@ -1226,15 +1253,15 @@ public class Util {
 		}
 		return bestMatch;
 	}
-	
+
 	/*
 	 * Returns the index of the Java like extension of the given file name
-	 * or -1 if it doesn't end with a known Java like extension. 
+	 * or -1 if it doesn't end with a known Java like extension.
 	 * Note this is the index of the '.' even if it is not considered part of the extension.
 	 */
 	public static int indexOfJavaLikeExtension(String fileName) {
-		
-		
+
+
 		int fileNameLength = fileName.length();
 		char[][] javaLikeExtensions = getJavaLikeExtensions();
 		extensions: for (int i = 0, length = javaLikeExtensions.length; i < length; i++) {
@@ -1252,7 +1279,7 @@ public class Util {
 		}
 		return -1;
 	}
-	
+
 	/*
 	 * Returns the index of the first argument paths which is equal to the path to check
 	 */
@@ -1282,7 +1309,7 @@ public class Util {
 	protected static boolean isAttributeSupported(int attribute) {
 		return (EFS.getLocalFileSystem().attributes() & attribute) != 0;
 	}
-	
+
 	/**
 	 * Returns whether the given resource is read-only or not.
 	 * @param resource
@@ -1322,16 +1349,16 @@ public class Util {
 				PackageFragmentRoot root = (PackageFragmentRoot)element.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
 				IResource resource = element.getResource();
 				return resource != null && isExcluded(resource, root.fullInclusionPatternChars(), root.fullExclusionPatternChars());
-				
+
 			case IJavaElement.COMPILATION_UNIT:
 				root = (PackageFragmentRoot)element.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
 				resource = element.getResource();
-				if (resource == null) 
+				if (resource == null)
 					return false;
 				if (isExcluded(resource, root.fullInclusionPatternChars(), root.fullExclusionPatternChars()))
 					return true;
 				return isExcluded(element.getParent());
-				
+
 			default:
 				IJavaElement cu = element.getAncestor(IJavaElement.COMPILATION_UNIT);
 				return cu != null && isExcluded(cu);
@@ -1347,7 +1374,7 @@ public class Util {
 	public final static boolean isExcluded(IPath resourcePath, char[][] inclusionPatterns, char[][] exclusionPatterns, boolean isFolderPath) {
 		if (inclusionPatterns == null && exclusionPatterns == null) return false;
 		return org.eclipse.wst.jsdt.internal.compiler.util.Util.isExcluded(resourcePath.toString().toCharArray(), inclusionPatterns, exclusionPatterns, isFolderPath);
-	}	
+	}
 
 	/*
 	 * Returns whether the given resource matches one of the exclusion patterns.
@@ -1362,7 +1389,7 @@ public class Util {
 	}
 
 	public final static boolean isExcluded(IPath path, char[][] inclusionPatterns, char[][] exclusionPatterns) {
-		
+
 		return isExcluded(path, inclusionPatterns, exclusionPatterns, path.toFile().isDirectory());
 	}
 
@@ -1379,7 +1406,7 @@ public class Util {
 	 * @param sourceLevel the source level
 	 * @param complianceLevel the compliance level
 	 * @return a status object with code <code>IStatus.OK</code> if
-	 *		the given name is valid as a .class file name, otherwise a status 
+	 *		the given name is valid as a .class file name, otherwise a status
 	 *		object indicating what is wrong with the name
 	 */
 	public static boolean isValidClassFileName(String name, String sourceLevel, String complianceLevel) {
@@ -1400,7 +1427,7 @@ public class Util {
 	 * @param sourceLevel the source level
 	 * @param complianceLevel the compliance level
 	 * @return a status object with code <code>IStatus.OK</code> if
-	 *		the given name is valid as a compilation unit name, otherwise a status 
+	 *		the given name is valid as a compilation unit name, otherwise a status
 	 *		object indicating what is wrong with the name
 	 */
 	public static boolean isValidCompilationUnitName(String name, String sourceLevel, String complianceLevel) {
@@ -1416,7 +1443,7 @@ public class Util {
 	 */
 	public static boolean isValidFolderNameForPackage(String folderName, String sourceLevel, String complianceLevel) {
 		return JavaConventions.validateIdentifier(folderName, sourceLevel, complianceLevel).getSeverity() != IStatus.ERROR;
-	}	
+	}
 
 	/**
 	 * Returns true if the given method signature is valid,
@@ -1439,7 +1466,7 @@ public class Util {
 		i = checkTypeSignature(sig, i, len, true);
 		return i == len;
 	}
-	
+
 	/**
 	 * Returns true if the given type signature is valid,
 	 * false if it is not.
@@ -1448,13 +1475,13 @@ public class Util {
 		int len = sig.length();
 		return checkTypeSignature(sig, 0, len, allowVoid) == len;
 	}
-	
+
 	/*
 	 * Returns the simple name of a local type from the given binary type name.
 	 * The last '$' is at lastDollar. The last character of the type name is at end-1.
 	 */
 	public static String localTypeName(String binaryTypeName, int lastDollar, int end) {
-		if (lastDollar > 0 && binaryTypeName.charAt(lastDollar-1) == '$') 
+		if (lastDollar > 0 && binaryTypeName.charAt(lastDollar-1) == '$')
 			// local name starts with a dollar sign
 			// (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=103466)
 			return binaryTypeName;
@@ -1469,19 +1496,19 @@ public class Util {
 	 */
 	public static void log(Throwable e, String message) {
 		Throwable nestedException;
-		if (e instanceof JavaModelException 
+		if (e instanceof JavaModelException
 				&& (nestedException = ((JavaModelException)e).getException()) != null) {
 			e = nestedException;
 		}
 		IStatus status= new Status(
-			IStatus.ERROR, 
-			JavaCore.PLUGIN_ID, 
-			IStatus.ERROR, 
-			message, 
-			e); 
+			IStatus.ERROR,
+			JavaCore.PLUGIN_ID,
+			IStatus.ERROR,
+			message,
+			e);
 		JavaCore.getPlugin().getLog().log(status);
-	}	
-	
+	}
+
 	public static ClassFileReader newClassFileReader(IResource resource) throws CoreException, ClassFormatException, IOException {
 		InputStream in = null;
 		try {
@@ -1753,7 +1780,7 @@ public class Util {
 	public static String relativePath(IPath fullPath, int skipSegmentCount) {
 		boolean hasTrailingSeparator = fullPath.hasTrailingSeparator();
 		String[] segments = fullPath.segments();
-		
+
 		// compute length
 		int length = 0;
 		int max = segments.length;
@@ -1787,16 +1814,16 @@ public class Util {
 			result[offset++] = '/';
 		return new String(result);
 	}
-	
+
 	/*
 	 * Resets the list of Java-like extensions after a change in content-type.
 	 */
 	public static void resetJavaLikeExtensions() {
 		JAVA_LIKE_EXTENSIONS = null;
 	}
-	
+
 	/**
-	 * Return a new array which is the split of the given string using the given divider. The given end 
+	 * Return a new array which is the split of the given string using the given divider. The given end
 	 * is exclusive and the given start is inclusive.
 	 * <br>
 	 * <br>
@@ -1811,7 +1838,7 @@ public class Util {
 	 * </pre>
 	 * </li>
 	 * </ol>
-	 * 
+	 *
 	 * @param divider the given divider
 	 * @param string the given string
 	 * @param start the given starting index
@@ -1846,9 +1873,9 @@ public class Util {
 	/**
 	 * Sets or unsets the given resource as read-only in the file system.
 	 * It's a no-op if the file system does not support the read-only attribute.
-	 * 
+	 *
 	 * @param resource The resource to set as read-only
-	 * @param readOnly <code>true</code> to set it to read-only, 
+	 * @param readOnly <code>true</code> to set it to read-only,
 	 *		<code>false</code> to unset
 	 */
 	public static void setReadOnly(IResource resource, boolean readOnly) {
@@ -1910,8 +1937,8 @@ public class Util {
 	}
 
 	/**
-	 * Sorts an array of Java elements based on their toStringWithAncestors(), 
-	 * returning a new array with the sorted items. 
+	 * Sorts an array of Java elements based on their toStringWithAncestors(),
+	 * returning a new array with the sorted items.
 	 * The original array is left untouched.
 	 */
 	public static IJavaElement[] sortCopy(IJavaElement[] elements) {
@@ -1925,7 +1952,7 @@ public class Util {
 		});
 		return copy;
 	}
-	
+
 	/**
 	 * Sorts an array of Strings, returning a new array
 	 * with the sorted items.  The original array is left untouched.
@@ -1952,7 +1979,7 @@ public class Util {
 
 	/*
 	 * Returns whether the given compound name starts with the given prefix.
-	 * Returns true if the n first elements of the prefix are equals and the last element of the 
+	 * Returns true if the n first elements of the prefix are equals and the last element of the
 	 * prefix is a prefix of the corresponding element in the compound name.
 	 */
 	public static boolean startsWithIgnoreCase(String[] compoundName, String[] prefix) {
@@ -2064,7 +2091,7 @@ public class Util {
 		sb.append(d);
 		return sb.toString();
 	}
-	
+
 	/*
 	 * Converts a char[][] to String[].
 	 */
@@ -2086,7 +2113,7 @@ public class Util {
 		if (c != Signature.C_ARRAY) {
 			throw new IllegalArgumentException();
 		}
-		
+
 		int index = start;
 		c = string[++index];
 		while(c == Signature.C_ARRAY) {
@@ -2096,9 +2123,9 @@ public class Util {
 			}
 			c = string[++index];
 		}
-		
+
 		appendTypeSignature(string, index, buffer, compact);
-		
+
 		for(int i = 0, dims = index - start; i < dims; i++) {
 			buffer.append('[').append(']');
 		}
@@ -2188,9 +2215,9 @@ public class Util {
 		if (firstParen == -1) {
 			return ""; //$NON-NLS-1$
 		}
-		
+
 		StringBuffer buffer = new StringBuffer(methodSignature.length + 10);
-		
+
 		// decode declaring class name
 		// it can be either an array signature or a type signature
 		if (declaringClass.length > 0) {
@@ -2217,7 +2244,7 @@ public class Util {
 				buffer.append(methodName);
 			}
 		}
-		
+
 		// parameters
 		buffer.append('(');
 		char[][] pts = Signature.getParameterTypes(methodSignature);
@@ -2229,7 +2256,7 @@ public class Util {
 			}
 		}
 		buffer.append(')');
-		
+
 		if (!isConstructor) {
 			buffer.append(" : "); //$NON-NLS-1$
 			// return type
@@ -2259,7 +2286,7 @@ public class Util {
 	}
 
 	/*
-	 * Returns the unresolved type signature of the given type reference, 
+	 * Returns the unresolved type signature of the given type reference,
 	 * e.g. "QString;", "[int", "[[Qjava.util.Vector;"
 	 */
 	public static String typeSignature(TypeReference type) {
@@ -2341,7 +2368,7 @@ public class Util {
 	 *  |  ClassTypeSignature
 	 *  |  TypeVariableSignature
 	 * </pre>
-	 * 
+	 *
 	 * @param string the signature string
 	 * @param start the 0-based character index of the first character
 	 * @return the 0-based character index of the last character
@@ -2394,7 +2421,7 @@ public class Util {
 	 * Note that although the base type "V" is only allowed in method return types,
 	 * there is no syntactic ambiguity. This method will accept them anywhere
 	 * without complaint.
-	 * 
+	 *
 	 * @param string the signature string
 	 * @param start the 0-based character index of the first character
 	 * @return the 0-based character index of the last character
@@ -2420,7 +2447,7 @@ public class Util {
 	 * ArrayTypeSignature:
 	 *     <b>[</b> TypeSignature
 	 * </pre>
-	 * 
+	 *
 	 * @param string the signature string
 	 * @param start the 0-based character index of the first character
 	 * @return the 0-based character index of the last character
@@ -2436,7 +2463,7 @@ public class Util {
 		if (c != Signature.C_ARRAY) {
 			throw new IllegalArgumentException();
 		}
-		
+
 		c = string[++start];
 		while(c == Signature.C_ARRAY) {
 			// need a minimum 2 char
@@ -2447,7 +2474,7 @@ public class Util {
 		}
 		return scanTypeSignature(string, start);
 	}
-	
+
 	/**
 	 * Scans the given string for a capture of a wildcard type signature starting at the given
 	 * index and returns the index of the last character.
@@ -2455,7 +2482,7 @@ public class Util {
 	 * CaptureTypeSignature:
 	 *     <b>!</b> TypeBoundSignature
 	 * </pre>
-	 * 
+	 *
 	 * @param string the signature string
 	 * @param start the 0-based character index of the first character
 	 * @return the 0-based character index of the last character
@@ -2471,7 +2498,7 @@ public class Util {
 			throw new IllegalArgumentException();
 		}
 		return scanTypeBoundSignature(string, start + 1);
-	}	
+	}
 
 	/**
 	 * Scans the given string for a type variable signature starting at the given
@@ -2480,7 +2507,7 @@ public class Util {
 	 * TypeVariableSignature:
 	 *     <b>T</b> Identifier <b>;</b>
 	 * </pre>
-	 * 
+	 *
 	 * @param string the signature string
 	 * @param start the 0-based character index of the first character
 	 * @return the 0-based character index of the last character
@@ -2488,7 +2515,7 @@ public class Util {
 	 */
 	public static int scanTypeVariableSignature(char[] string, int start) {
 		// need a minimum 3 chars "Tx;"
-		if (start >= string.length - 2) { 
+		if (start >= string.length - 2) {
 			throw new IllegalArgumentException();
 		}
 		// must start in "T"
@@ -2507,9 +2534,9 @@ public class Util {
 
 	/**
 	 * Scans the given string for an identifier starting at the given
-	 * index and returns the index of the last character. 
+	 * index and returns the index of the last character.
 	 * Stop characters are: ";", ":", "&lt;", "&gt;", "/", ".".
-	 * 
+	 *
 	 * @param string the signature string
 	 * @param start the 0-based character index of the first character
 	 * @return the 0-based character index of the last character
@@ -2517,7 +2544,7 @@ public class Util {
 	 */
 	public static int scanIdentifier(char[] string, int start) {
 		// need a minimum 1 char
-		if (start >= string.length) { 
+		if (start >= string.length) {
 			throw new IllegalArgumentException();
 		}
 		int p = start;
@@ -2545,7 +2572,7 @@ public class Util {
 	 * Note that although all "/"-identifiers most come before "."-identifiers,
 	 * there is no syntactic ambiguity. This method will accept them without
 	 * complaint.
-	 * 
+	 *
 	 * @param string the signature string
 	 * @param start the 0-based character index of the first character
 	 * @return the 0-based character index of the last character
@@ -2553,7 +2580,7 @@ public class Util {
 	 */
 	public static int scanClassTypeSignature(char[] string, int start) {
 		// need a minimum 3 chars "Lx;"
-		if (start >= string.length - 2) { 
+		if (start >= string.length - 2) {
 			throw new IllegalArgumentException();
 		}
 		// must start in "L" or "Q"
@@ -2589,7 +2616,7 @@ public class Util {
 	 *     <b>[-+]</b> TypeSignature <b>;</b>
 	 *     <b>*</b></b>
 	 * </pre>
-	 * 
+	 *
 	 * @param string the signature string
 	 * @param start the 0-based character index of the first character
 	 * @return the 0-based character index of the last character
@@ -2614,7 +2641,7 @@ public class Util {
 			default :
 				// must start in "+/-"
 					throw new IllegalArgumentException();
-				
+
 		}
 		c = string[++start];
 		switch (c) {
@@ -2636,7 +2663,7 @@ public class Util {
 				throw new IllegalArgumentException();
 		}
 	}
-	
+
 	/**
 	 * Scans the given string for a list of type argument signatures starting at
 	 * the given index and returns the index of the last character.
@@ -2647,7 +2674,7 @@ public class Util {
 	 * Note that although there is supposed to be at least one type argument, there
 	 * is no syntactic ambiguity if there are none. This method will accept zero
 	 * type argument signatures without complaint.
-	 * 
+	 *
 	 * @param string the signature string
 	 * @param start the 0-based character index of the first character
 	 * @return the 0-based character index of the last character
@@ -2689,7 +2716,7 @@ public class Util {
 	 * </pre>
 	 * Note that although base types are not allowed in type arguments, there is
 	 * no syntactic ambiguity. This method will accept them without complaint.
-	 * 
+	 *
 	 * @param string the signature string
 	 * @param start the 0-based character index of the first character
 	 * @return the 0-based character index of the last character
@@ -2710,11 +2737,11 @@ public class Util {
 			default :
 				return scanTypeSignature(string, start);
 		}
-	}	
+	}
 
 	/**
 	 * Get all type arguments from an array of signatures.
-	 * 
+	 *
 	 * Example:
 	 * 	For following type X<Y<Z>,V<W>,U>.A<B> signatures is:
 	 * 	[
@@ -2733,7 +2760,7 @@ public class Util {
 	 * 			['L','B',';']
 	 * 		]
 	 * 	]
-	 * 
+	 *
 	 * @param typeSignatures Array of signatures (one per each type levels)
 	 * @throws IllegalArgumentException If one of provided signature is malformed
 	 * @return char[][][] Array of type arguments for each signature
@@ -2749,16 +2776,16 @@ public class Util {
 	}
 	/**
 	 * Split signatures of all levels  from a type unique key.
-	 * 
+	 *
 	 * Example:
 	 * 	For following type X<Y<Z>,V<W>,U>.A<B>, unique key is:
 	 * 	"LX<LY<LZ;>;LV<LW;>;LU;>.LA<LB;>;"
-	 * 
+	 *
 	 * 	The return splitted signatures array is:
 	 * 	[
 	 * 		['L','X','<','L','Y','<','L','Z',';'>',';','L','V','<','L','W',';'>',';','L','U','>',';'],
 	 * 		['L','A','<','L','B',';','>',';']
-	 * 
+	 *
 	 * @param typeSignature ParameterizedSourceType type signature
 	 * @return char[][] Array of signatures for each level of given unique key
 	 */
@@ -2773,7 +2800,7 @@ public class Util {
 //		int[] lengthes = new int [10];
 		int typeArgsCount = 0;
 		int paramOpening = 0;
-		
+
 		// Scan each signature character
 		for (int idx=0, ln = source.length; idx < ln; idx++) {
 			switch (source[idx]) {
@@ -2821,9 +2848,9 @@ public class Util {
 		}
 		return typeSignatures;
 	}
-	
+
 	/*
-	 * Can throw IllegalArgumentException or ArrayIndexOutOfBoundsException 
+	 * Can throw IllegalArgumentException or ArrayIndexOutOfBoundsException
 	 */
 	public static String toAnchor(char[] methodSignature, String methodName, boolean isVarArgs) {
 		try {
@@ -2837,14 +2864,14 @@ public class Util {
 		if (firstParen == -1) {
 			throw new IllegalArgumentException();
 		}
-		
+
 		StringBuffer buffer = new StringBuffer(methodSignature.length + 10);
 
 		// selector
 		if (methodName != null) {
 			buffer.append(methodName);
 		}
-		
+
 		// parameters
 		buffer.append('(');
 		char[][] pts = Signature.getParameterTypes(methodSignature);
@@ -2979,7 +3006,7 @@ public class Util {
 		if (c != Signature.C_ARRAY) {
 			throw new IllegalArgumentException();
 		}
-		
+
 		int index = start;
 		c = string[++index];
 		while(c == Signature.C_ARRAY) {
@@ -2989,13 +3016,13 @@ public class Util {
 			}
 			c = string[++index];
 		}
-		
+
 		int e = appendTypeSignatureForAnchor(string, index, buffer, false);
-		
+
 		for(int i = 1, dims = index - start; i < dims; i++) {
 			buffer.append('[').append(']');
 		}
-		
+
 		if (isVarArgs) {
 			buffer.append('.').append('.').append('.');
 		} else {
@@ -3005,7 +3032,7 @@ public class Util {
 	}
 	private static int appendClassTypeSignatureForAnchor(char[] string, int start, StringBuffer buffer) {
 		// need a minimum 3 chars "Lx;"
-		if (start >= string.length - 2) { 
+		if (start >= string.length - 2) {
 			throw new IllegalArgumentException();
 		}
 		// must start in "L" or "Q"
@@ -3073,33 +3100,33 @@ public class Util {
 		}
 		return start;
 	}
-	
+
 
 	/*
 	 * @GINO: Anonymous UI Label
-	 * 
+	 *
 	 * marker and label
 	 */
 	public static final String ANONYMOUS_MARKER = new String( CharOperation.concat(InferEngine.ANONYMOUS_PREFIX, InferEngine.ANONYMOUS_CLASS_ID) );
 	public static final String ANONYMOUS_LABEL = "{}";
-	
+
 	/*
 	 * @GINO: Anonymous UI Label
-	 * 
+	 *
 	 * This method is used to hide the internal name used for anonymous types
 	 */
 	public static void insertTypeLabel(char[] typeName, StringBuffer buf) {
 		insertTypeLabel( new String(typeName), buf );
 	}
-	
+
 	/*
 	 * @GINO: Anonymous UI Label
-	 * 
+	 *
 	 * This method is used to hide the internal name used for anonymous types
 	 */
 	public static void insertTypeLabel(String typeName, StringBuffer buf) {
 		if( typeName.startsWith(ANONYMOUS_MARKER) ){
-			buf.append( ANONYMOUS_LABEL );				
+			buf.append( ANONYMOUS_LABEL );
 		}
 		else{
 			buf.append(typeName);

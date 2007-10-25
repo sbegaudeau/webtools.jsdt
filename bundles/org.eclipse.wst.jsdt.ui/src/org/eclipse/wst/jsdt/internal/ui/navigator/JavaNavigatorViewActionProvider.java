@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.ui.navigator;
 import java.util.Arrays;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.actions.ActionContext;
@@ -22,7 +21,6 @@ import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.IExtensionActivationListener;
 import org.eclipse.ui.navigator.IExtensionStateModel;
 import org.eclipse.ui.navigator.INavigatorActivationService;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.navigator.IExtensionStateConstants.Values;
 

@@ -12,16 +12,15 @@ package org.eclipse.wst.jsdt.internal.ui.browsing;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.debug.ui.IDebugUIConstants;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.ui.JavaUI;
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.IPlaceholderFolderLayout;
 import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.progress.IProgressConstants;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.ui.JavaUI;
+import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 
 public class JavaBrowsingPerspectiveFactory implements IPerspectiveFactory {

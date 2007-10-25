@@ -27,14 +27,14 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 public class ClasspathJar extends ClasspathLocation {
-	
+
 protected File file;
 protected ZipFile zipFile;
 protected boolean closeZipFileAtEnd;
 protected Hashtable packageCache;
 protected char[] normalizedPath;
 
-public ClasspathJar(File file, boolean closeZipFileAtEnd, 
+public ClasspathJar(File file, boolean closeZipFileAtEnd,
 		AccessRuleSet accessRuleSet, String destinationPath) {
 	super(accessRuleSet, destinationPath);
 	this.file = file;
@@ -44,7 +44,7 @@ public NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageN
 	return findClass(typeName, qualifiedPackageName, qualifiedBinaryFileName, false);
 }
 public NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageName, String qualifiedBinaryFileName, boolean asBinaryOnly) {
-	if (!isPackage(qualifiedPackageName)) 
+	if (!isPackage(qualifiedPackageName))
 		return null; // most common case
 
 	try {
@@ -59,7 +59,7 @@ public NameEnvironmentAnswer findClass(char[] typeName, String qualifiedPackageN
 	return null;
 }
 public char[][][] findTypeNames(String qualifiedPackageName) {
-	if (!isPackage(qualifiedPackageName)) 
+	if (!isPackage(qualifiedPackageName))
 		return null; // most common case
 
 	ArrayList answers = new ArrayList();
@@ -120,7 +120,7 @@ public boolean isPackage(String qualifiedPackageName) {
 }
 public void reset() {
 	if (this.zipFile != null && this.closeZipFileAtEnd) {
-		try { 
+		try {
 			this.zipFile.close();
 		} catch(IOException e) {
 			// ignore

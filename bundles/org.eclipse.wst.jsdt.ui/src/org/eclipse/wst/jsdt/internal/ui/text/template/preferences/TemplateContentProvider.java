@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.internal.ui.text.template.preferences;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-
 import org.eclipse.wst.jsdt.internal.corext.template.java.TemplateSet;
 
 

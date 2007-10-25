@@ -18,14 +18,11 @@ import java.util.Map;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
-
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
-
+import org.eclipse.wst.jsdt.internal.ui.preferences.PreferencesAccess;
 import org.eclipse.wst.jsdt.ui.JavaUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-
-import org.eclipse.wst.jsdt.internal.ui.preferences.PreferencesAccess;
 
 public class FormatterProfileManager extends ProfileManager {
 	

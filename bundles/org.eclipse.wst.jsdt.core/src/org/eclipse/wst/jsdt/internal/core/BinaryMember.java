@@ -49,14 +49,14 @@ public String[] getCategories() throws JavaModelException {
 	if (mapper != null) {
 		// ensure the class file's buffer is open so that categories are computed
 		((ClassFile)getClassFile()).getBuffer();
-		
+
 		if (mapper.categories != null) {
 			String[] categories = (String[]) mapper.categories.get(this);
 			if (categories != null)
 				return categories;
 		}
 	}
-	return CharOperation.NO_STRINGS;	
+	return CharOperation.NO_STRINGS;
 }
 public String getKey() {
 	try {
@@ -78,7 +78,7 @@ public ISourceRange getNameRange() throws JavaModelException {
 	if (mapper != null) {
 		// ensure the class file's buffer is open so that source ranges are computed
 		((ClassFile)getClassFile()).getBuffer();
-		
+
 		return mapper.getNameRange(this);
 	} else {
 		return SourceMapper.UNKNOWN_RANGE;

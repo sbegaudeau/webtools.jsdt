@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.codeassist.select;
 
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 
 public class SelectionNodeFound extends RuntimeException {
-	
+
 	public Binding binding;
 	public boolean isDeclaration;
 	private static final long serialVersionUID = -7335444736618092295L; // backward compatible
-	
+
 public SelectionNodeFound() {
 	this(null, false); // we found a problem in the selection node
 }

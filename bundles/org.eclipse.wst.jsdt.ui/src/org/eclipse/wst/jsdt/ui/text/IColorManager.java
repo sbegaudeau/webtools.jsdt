@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui.text;
 
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.jface.text.source.ISharedTextColors;
+import org.eclipse.swt.graphics.Color;
 
 
 /**

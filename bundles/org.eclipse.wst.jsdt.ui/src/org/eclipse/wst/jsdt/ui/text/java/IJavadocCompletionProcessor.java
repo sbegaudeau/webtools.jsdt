@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.ui.text.java;
 
 import org.eclipse.jface.text.contentassist.IContextInformation;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 
 

@@ -11,17 +11,14 @@
 package org.eclipse.wst.jsdt.internal.ui.workingsets;
 
 import org.eclipse.core.runtime.Assert;
-
+import org.eclipse.jface.action.ContributionItem;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-
-import org.eclipse.jface.action.ContributionItem;
-import org.eclipse.jface.resource.ImageDescriptor;
-
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;

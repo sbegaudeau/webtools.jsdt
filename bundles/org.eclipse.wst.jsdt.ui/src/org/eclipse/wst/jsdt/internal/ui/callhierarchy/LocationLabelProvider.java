@@ -11,14 +11,11 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.callhierarchy;
 
-import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
-
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.internal.corext.callhierarchy.CallLocation;
+import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 
 class LocationLabelProvider extends LabelProvider implements ITableLabelProvider {
     private static final int COLUMN_ICON= 0;

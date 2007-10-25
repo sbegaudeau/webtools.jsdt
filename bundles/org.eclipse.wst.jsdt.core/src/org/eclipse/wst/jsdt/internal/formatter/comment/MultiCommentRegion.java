@@ -14,14 +14,14 @@ package org.eclipse.wst.jsdt.internal.formatter.comment;
 import java.util.Iterator;
 import java.util.ListIterator;
 
-import org.eclipse.wst.jsdt.internal.formatter.CodeFormatterVisitor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
+import org.eclipse.wst.jsdt.internal.formatter.CodeFormatterVisitor;
 
 /**
  * Multi-comment region in a source code document.
- * 
+ *
  * @since 3.0
  */
 public class MultiCommentRegion extends CommentRegion implements IJavaDocTagConstants {
@@ -40,7 +40,7 @@ public class MultiCommentRegion extends CommentRegion implements IJavaDocTagCons
 
  	/**
 	 * Creates a new multi-comment region.
-	 * 
+	 *
 	 * @param document the document which contains the comment region
 	 * @param position the position of this comment region in the document
 	 * @param formatter the given formatter
@@ -70,10 +70,10 @@ public class MultiCommentRegion extends CommentRegion implements IJavaDocTagCons
 			return false;
 
 		if (previous != null) {
-			
+
 			if (index != 0 && (blank || previous.hasAttribute(COMMENT_BLANKLINE) || next.hasAttribute(COMMENT_PARAMETER) || next.hasAttribute(COMMENT_ROOT) || next.hasAttribute(COMMENT_SEPARATOR) || next.hasAttribute(COMMENT_NEWLINE) || previous.hasAttribute(COMMENT_BREAK) || previous.hasAttribute(COMMENT_SEPARATOR)))
 				return false;
-			
+
 			if (previous.hasAttribute(COMMENT_ROOT))
 				return true;
 
@@ -96,7 +96,7 @@ public class MultiCommentRegion extends CommentRegion implements IJavaDocTagCons
 			CommentRange current= null;
 			while (iter.hasNext() && current != next)
 				current= (CommentRange) iter.next();
-			
+
 			if (current != null && iter.hasNext()) {
 				try {
 					int lineNumber= getDocument().getLineOfOffset(getOffset() + current.getOffset());
@@ -159,7 +159,7 @@ public class MultiCommentRegion extends CommentRegion implements IJavaDocTagCons
 
 	/**
 	 * Should root tag parameter descriptions be indented after the tag?
-	 * 
+	 *
 	 * @return <code>true</code> iff the descriptions should be indented
 	 *         after, <code>false</code> otherwise.
 	 */
@@ -169,7 +169,7 @@ public class MultiCommentRegion extends CommentRegion implements IJavaDocTagCons
 
 	/**
 	 * Should root tag parameter descriptions be indented?
-	 * 
+	 *
 	 * @return <code>true</code> iff the root tags should be indented,
 	 *         <code>false</code> otherwise.
 	 */
@@ -186,7 +186,7 @@ public class MultiCommentRegion extends CommentRegion implements IJavaDocTagCons
 
 	/**
 	 * Marks the comment range with its HTML tag attributes.
-	 * 
+	 *
 	 * @param range the comment range to mark
 	 * @param token token associated with the comment range
 	 */
@@ -196,7 +196,7 @@ public class MultiCommentRegion extends CommentRegion implements IJavaDocTagCons
 
 	/**
 	 * Marks the comment range with its javadoc tag attributes.
-	 * 
+	 *
 	 * @param range the comment range to mark
 	 * @param token token associated with the comment range
 	 */
@@ -234,7 +234,7 @@ public class MultiCommentRegion extends CommentRegion implements IJavaDocTagCons
 		}
 		markHtmlRanges();
 	}
-	
+
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.corext.text.comment.CommentRegion#createLine()
 	 * @since 3.1

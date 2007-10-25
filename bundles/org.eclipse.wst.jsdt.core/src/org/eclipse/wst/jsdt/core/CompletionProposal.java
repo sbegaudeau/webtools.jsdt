@@ -31,10 +31,10 @@ import org.eclipse.wst.jsdt.internal.codeassist.InternalCompletionProposal;
  * <p>
  * The proposal is as follows: insert
  * the {@linkplain #getCompletion() completion string} into the
- * source file buffer, replacing the characters between 
+ * source file buffer, replacing the characters between
  * {@linkplain #getReplaceStart() the start}
  * and {@linkplain #getReplaceEnd() end}. The string
- * can be arbitrary; for example, it might include not only the 
+ * can be arbitrary; for example, it might include not only the
  * name of a method but a set of parentheses. Moreover, the source
  * range may include source positions before or after the source
  * position where <code>ICodeAssist.codeComplete</code> was invoked.
@@ -43,10 +43,10 @@ import org.eclipse.wst.jsdt.internal.codeassist.InternalCompletionProposal;
  * competing proposals.
  * </p>
  * <p>
- * The completion engine creates instances of this class; it is not intended 
+ * The completion engine creates instances of this class; it is not intended
  * to be instantiated or subclassed by clients.
  * </p>
- * 
+ *
  * @see ICodeAssist#codeComplete(int, CompletionRequestor)
  * @since 3.0
  */
@@ -80,7 +80,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </li>
 	 * </ul>
 	 * </p>
-	 * 
+	 *
 	 * @see #getKind()
 	 */
 	public static final int ANONYMOUS_CLASS_DECLARATION = 1;
@@ -110,7 +110,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </li>
 	 * </ul>
 	 * </p>
-	 * 
+	 *
 	 * @see #getKind()
 	 */
 	public static final int FIELD_REF = 2;
@@ -132,7 +132,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </li>
 	 * </ul>
 	 * </p>
-	 * 
+	 *
 	 * @see #getKind()
 	 */
 	public static final int KEYWORD = 3;
@@ -151,7 +151,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </li>
 	 * </ul>
 	 * </p>
-	 * 
+	 *
 	 * @see #getKind()
 	 */
 	public static final int LABEL_REF = 4;
@@ -176,7 +176,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </li>
 	 * </ul>
 	 * </p>
-	 * 
+	 *
 	 * @see #getKind()
 	 */
 	public static final int LOCAL_VARIABLE_REF = 5;
@@ -204,7 +204,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </li>
 	 * </ul>
 	 * </p>
-	 * 
+	 *
 	 * @see #getKind()
 	 */
 	public static final int METHOD_REF = 6;
@@ -244,7 +244,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </li>
 	 * </ul>
 	 * </p>
-	 * 
+	 *
 	 * @see #getKind()
 	 */
 	public static final int METHOD_DECLARATION = 7;
@@ -263,7 +263,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </li>
 	 * </ul>
 	 * </p>
-	 * 
+	 *
 	 * @see #getKind()
 	 */
 	public static final int PACKAGE_REF = 8;
@@ -292,7 +292,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </li>
 	 * </ul>
 	 * </p>
-	 * 
+	 *
 	 * @see #getKind()
 	 */
 	public static final int TYPE_REF = 9;
@@ -346,12 +346,12 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </li>
 	 * </ul>
 	 * </p>
-	 * 
+	 *
 	 * @see #getKind()
      * @since 3.1
 	 */
 	public static final int POTENTIAL_METHOD_DECLARATION = 11;
-	
+
 	/**
 	 * Completion is a reference to a method name.
 	 * This kind of completion might occur in a context like
@@ -375,12 +375,12 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </li>
 	 * </ul>
 	 * </p>
-	 * 
+	 *
 	 * @see #getKind()
      * @since 3.1
 	 */
 	public static final int METHOD_NAME_REFERENCE = 12;
-	
+
 	/**
 	 * Completion is a reference to annotation's attribute.
 	 * This kind of completion might occur in a context like
@@ -406,7 +406,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </li>
 	 * </ul>
 	 * </p>
-	 * 
+	 *
 	 * @see #getKind()
 	 * @since 3.1
 	 */
@@ -437,7 +437,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </li>
 	 * </ul>
 	 * </p>
-	 * 
+	 *
 	 * @see #getKind()
 	 * @since 3.2
 	 */
@@ -466,7 +466,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </li>
 	 * </ul>
 	 * </p>
-	 * 
+	 *
 	 * @see #getKind()
 	 * @since 3.2
 	 */
@@ -496,7 +496,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </li>
 	 * </ul>
 	 * </p>
-	 * 
+	 *
 	 * @see #getKind()
 	 * @since 3.2
 	 */
@@ -527,7 +527,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </li>
 	 * </ul>
 	 * </p>
-	 * 
+	 *
 	 * @see #getKind()
 	 * @since 3.2
 	 */
@@ -562,7 +562,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </li>
 	 * </ul>
 	 * </p>
-	 * 
+	 *
 	 * @see #getKind()
 	 * @since 3.2
 	 */
@@ -593,7 +593,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </li>
 	 * </ul>
 	 * </p>
-	 * 
+	 *
 	 * @see #getKind()
 	 * @since 3.2
 	 */
@@ -624,7 +624,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </li>
 	 * </ul>
 	 * </p>
-	 * 
+	 *
 	 * @see #getKind()
 	 * @since 3.2
 	 */
@@ -656,13 +656,13 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </li>
 	 * </ul>
 	 * </p>
-	 * 
+	 *
 	 * @see #getKind()
-	 * 
+	 *
 	 * @since 3.3
 	 */
 	public static final int FIELD_IMPORT = 21;
-	
+
 	/**
 	 * Completion is an import of reference to a static method.
 	 * <p>
@@ -687,13 +687,13 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </li>
 	 * </ul>
 	 * </p>
-	 * 
+	 *
 	 * @see #getKind()
-	 * 
+	 *
 	 * @since 3.3
 	 */
 	public static final int METHOD_IMPORT = 22;
-	
+
 	/**
 	 * Completion is an import of reference to a type.
 	 * Only reference to reference types are allowed.
@@ -718,91 +718,91 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </li>
 	 * </ul>
 	 * </p>
-	 * 
+	 *
 	 * @see #getKind()
-	 * 
+	 *
 	 * @since 3.3
 	 */
 	public static final int TYPE_IMPORT = 23;
-	
+
 	/**
 	 * First valid completion kind.
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	protected static final int FIRST_KIND = ANONYMOUS_CLASS_DECLARATION;
-	
+
 	/**
 	 * Last valid completion kind.
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	protected static final int LAST_KIND = TYPE_IMPORT;
-	
+
 	/**
 	 * Kind of completion request.
 	 */
 	private int completionKind;
-	
+
 	/**
 	 * Offset in original buffer where ICodeAssist.codeComplete() was
 	 * requested.
 	 */
 	private int completionLocation;
-	
+
 	/**
-	 * Start position (inclusive) of source range in original buffer 
+	 * Start position (inclusive) of source range in original buffer
 	 * containing the relevant token
 	 * defaults to empty subrange at [0,0).
 	 */
 	private int tokenStart = 0;
-	
+
 	/**
-	 * End position (exclusive) of source range in original buffer 
+	 * End position (exclusive) of source range in original buffer
 	 * containing the relevant token;
 	 * defaults to empty subrange at [0,0).
 	 */
 	private int tokenEnd = 0;
-	
+
 	/**
 	 * Completion string; defaults to empty string.
 	 */
 	private char[] completion = CharOperation.NO_CHAR;
-	
+
 	/**
-	 * Start position (inclusive) of source range in original buffer 
-	 * to be replaced by completion string; 
+	 * Start position (inclusive) of source range in original buffer
+	 * to be replaced by completion string;
 	 * defaults to empty subrange at [0,0).
 	 */
 	private int replaceStart = 0;
-	
+
 	/**
-	 * End position (exclusive) of source range in original buffer 
+	 * End position (exclusive) of source range in original buffer
 	 * to be replaced by completion string;
 	 * defaults to empty subrange at [0,0).
 	 */
 	private int replaceEnd = 0;
-	
+
 	/**
 	 * Relevance rating; positive; higher means better;
 	 * defaults to minimum rating.
 	 */
 	private int relevance = 1;
-	
+
 	/**
 	 * Signature of the relevant package or type declaration
 	 * in the context, or <code>null</code> if none.
 	 * Defaults to null.
 	 */
 	private char[] declarationSignature = null;
-	
+
 	/**
 	 * Unique key of the relevant package or type declaration
 	 * in the context, or <code>null</code> if none.
 	 * Defaults to null.
 	 */
 	private char[] declarationKey = null;
-	
+
 	/**
 	 * Simple name of the method, field,
 	 * member, or variable relevant in the context, or
@@ -810,54 +810,54 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * Defaults to null.
 	 */
 	private char[] name = null;
-	
+
 	/**
 	 * Signature of the method, field type, member type,
 	 * relevant in the context, or <code>null</code> if none.
 	 * Defaults to null.
 	 */
 	private char[] signature = null;
-	
+
 	/**
 	 * Unique of the method, field type, member type,
 	 * relevant in the context, or <code>null</code> if none.
 	 * Defaults to null.
 	 */
 	private char[] key = null;
-	
+
 	/**
 	 * Array of required completion proposals, or <code>null</code> if none.
 	 * The proposal can not be applied if the required proposals aren't applied.
 	 * Defaults to <code>null</code>.
 	 */
 	private CompletionProposal[] requiredProposals;
-	
+
 	/**
 	 * Modifier flags relevant in the context, or
 	 * <code>Flags.AccDefault</code> if none.
 	 * Defaults to <code>Flags.AccDefault</code>.
 	 */
 	private int flags = Flags.AccDefault;
-	
+
 	/**
 	 * Completion flags relevant in the context, or
 	 * <code>CompletionFlags.Default</code> if none.
 	 * Defaults to <code>CompletionFlags.Default</code>.
 	 */
 	private int additionalFlags = CompletionFlags.Default;
-	
+
 	/**
 	 * Parameter names (for method completions), or
 	 * <code>null</code> if none. Lazily computed.
 	 * Defaults to <code>null</code>.
 	 */
 	private char[][] parameterNames = null;
-	
+
 	/**
 	 * Indicates whether parameter names have been computed.
 	 */
 	private boolean parameterNamesComputed = false;
-	
+
 	/**
 	 * Creates a basic completion proposal. All instance
 	 * field have plausible default values unless otherwise noted.
@@ -866,7 +866,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * Java model implementation. Clients cannot directly create
 	 * CompletionProposal objects.
 	 * </p>
-	 * 
+	 *
 	 * @param kind one of the kind constants declared on this class
 	 * @param completionOffset original offset of code completion request
 	 * @return a new completion proposal
@@ -874,7 +874,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	public static CompletionProposal create(int kind, int completionOffset) {
 		return new CompletionProposal(kind, completionOffset);
 	}
-	
+
 	/**
 	 * Creates a basic completion proposal. All instance
 	 * field have plausible default values unless otherwise noted.
@@ -883,7 +883,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * Java model implementation. Clients cannot directly create
 	 * CompletionProposal objects.
 	 * </p>
-	 * 
+	 *
 	 * @param kind one of the kind constants declared on this class
 	 * @param completionLocation original offset of code completion request
 	 */
@@ -904,7 +904,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 		this.completionKind = kind;
 		this.completionLocation = completionLocation;
 	}
-	
+
 	/**
 	 * Returns the completion flags relevant in the context, or
 	 * <code>CompletionFlags.Default</code> if none.
@@ -925,11 +925,11 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * For other kinds of completion proposals, this method returns
 	 * <code>CompletionFlags.Default</code>.
 	 * </p>
-	 * 
+	 *
 	 * @return the completion flags, or
 	 * <code>CompletionFlags.Default</code> if none
 	 * @see CompletionFlags
-	 * 
+	 *
 	 * @since 3.3
 	 */
 	public int getAdditionalFlags() {
@@ -945,16 +945,16 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * The completion engine creates instances of this class and sets
 	 * its properties; this method is not intended to be used by other clients.
 	 * </p>
-	 * 
+	 *
 	 * @param additionalFlags the completion flags, or
 	 * <code>CompletionFlags.Default</code> if none
-	 * 
+	 *
 	 * @since 3.3
 	 */
 	public void setAdditionalFlags(int additionalFlags) {
 		this.additionalFlags = additionalFlags;
 	}
-	
+
 	/**
 	 * Returns the kind of completion being proposed.
 	 * <p>
@@ -964,7 +964,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * ones they know about, and code defensively for the
 	 * possibility of unexpected future growth.
 	 * </p>
-	 * 
+	 *
 	 * @return the kind; one of the kind constants
 	 * declared on this class, or possibly a kind unknown
 	 * to the caller
@@ -972,13 +972,13 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	public int getKind() {
 		return this.completionKind;
 	}
-	
+
 	/**
 	 * Returns the character index in the source file buffer
-	 * where source completion was requested (the 
+	 * where source completion was requested (the
 	 * <code>offset</code> parameter to
 	 * <code>ICodeAssist.codeComplete</code> minus one).
-	 * 
+	 *
 	 * @return character index in source file buffer
 	 * @see ICodeAssist#codeComplete(int,CompletionRequestor)
 	 */
@@ -986,37 +986,37 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	public int getCompletionLocation() {
 		return this.completionLocation;
 	}
-	
+
 	/**
 	 * Returns the character index of the start of the
 	 * subrange in the source file buffer containing the
 	 * relevant token being completed. This
 	 * token is either the identifier or Java language keyword
-	 * under, or immediately preceding, the original request 
+	 * under, or immediately preceding, the original request
 	 * offset. If the original request offset is not within
 	 * or immediately after an identifier or keyword, then the
 	 * position returned is original request offset and the
 	 * token range is empty.
-	 * 
+	 *
 	 * @return character index of token start position (inclusive)
 	 */
 	public int getTokenStart() {
 		return this.tokenStart;
 	}
-	
+
 	/**
 	 * Returns the character index of the end (exclusive) of the subrange
 	 * in the source file buffer containing the
 	 * relevant token. When there is no relevant token, the
 	 * range is empty
 	 * (<code>getEndToken() == getStartToken()</code>).
-	 * 
+	 *
 	 * @return character index of token end position (exclusive)
 	 */
 	public int getTokenEnd() {
 		return this.tokenEnd;
 	}
-	
+
 	/**
 	 * Sets the character indices of the subrange in the
 	 * source file buffer containing the relevant token being
@@ -1029,7 +1029,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * <p>
 	 * If not set, defaults to empty subrange at [0,0).
 	 * </p>
-	 * 
+	 *
 	 * @param startIndex character index of token start position (inclusive)
 	 * @param endIndex character index of token end position (exclusive)
 	 */
@@ -1040,7 +1040,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 		this.tokenStart = startIndex;
 		this.tokenEnd = endIndex;
 	}
-	
+
 	/**
 	 * Returns the proposed sequence of characters to insert into the
 	 * source file buffer, replacing the characters at the specified
@@ -1049,7 +1049,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * <p>
 	 * The client must not modify the array returned.
 	 * </p>
-	 * 
+	 *
 	 * @return the completion string
 	 */
 	public char[] getCompletion() {
@@ -1057,16 +1057,16 @@ public final class CompletionProposal extends InternalCompletionProposal {
 			this.findParameterNames(null);
 			if(this.updateCompletion) {
 				this.updateCompletion = false;
-				
+
 				if(this.parameterNames != null) {
 					int length = this.parameterNames.length;
 					StringBuffer completionBuffer = new StringBuffer(this.completion.length);
-						
+
 					int start = 0;
 					int end = CharOperation.indexOf('%', this.completion);
-	
+
 					completionBuffer.append(this.completion, start, end - start);
-					
+
 					for(int i = 0 ; i < length ; i++){
 						completionBuffer.append(this.parameterNames[i]);
 						start = end + 1;
@@ -1085,7 +1085,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 		}
 		return this.completion;
 	}
-	
+
 	/**
 	 * Sets the proposed sequence of characters to insert into the
 	 * source file buffer, replacing the characters at the specified
@@ -1098,13 +1098,13 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * The completion engine creates instances of this class and sets
 	 * its properties; this method is not intended to be used by other clients.
 	 * </p>
-	 * 
+	 *
 	 * @param completion the completion string
 	 */
 	public void setCompletion(char[] completion) {
 		this.completion = completion;
 	}
-	
+
 	/**
 	 * Returns the character index of the start of the
 	 * subrange in the source file buffer to be replaced
@@ -1113,23 +1113,23 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * the completion string is to be inserted at this
 	 * index.
 	 * <p>
-	 * Note that while the token subrange is precisely 
+	 * Note that while the token subrange is precisely
 	 * specified, the replacement range is loosely
 	 * constrained and may not bear any direct relation
 	 * to the original request offset. For example,
-	 * it would be possible for a type completion to 
+	 * it would be possible for a type completion to
 	 * propose inserting an import declaration at the
 	 * top of the compilation unit; or the completion
 	 * might include trailing parentheses and
 	 * punctuation for a method completion.
 	 * </p>
-	 * 
+	 *
 	 * @return replacement start position (inclusive)
 	 */
 	public int getReplaceStart() {
 		return this.replaceStart;
 	}
-	
+
 	/**
 	 * Returns the character index of the end of the
 	 * subrange in the source file buffer to be replaced
@@ -1137,13 +1137,13 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * (<code>getReplaceEnd() == getReplaceStart()</code>),
 	 * the completion string is to be inserted at this
 	 * index.
-	 * 
+	 *
 	 * @return replacement end position (exclusive)
 	 */
 	public int getReplaceEnd() {
 		return this.replaceEnd;
 	}
-	
+
 	/**
 	 * Sets the character indices of the subrange in the
 	 * source file buffer to be replaced by the completion
@@ -1158,7 +1158,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * The completion engine creates instances of this class and sets
 	 * its properties; this method is not intended to be used by other clients.
 	 * </p>
-	 * 
+	 *
 	 * @param startIndex character index of replacement start position (inclusive)
 	 * @param endIndex character index of replacement end position (exclusive)
 	 */
@@ -1169,16 +1169,16 @@ public final class CompletionProposal extends InternalCompletionProposal {
 		this.replaceStart = startIndex;
 		this.replaceEnd = endIndex;
 	}
-	
+
 	/**
 	 * Returns the relative relevance rating of this proposal.
-	 * 
+	 *
 	 * @return relevance rating of this proposal; ratings are positive; higher means better
 	 */
 	public int getRelevance() {
 		return this.relevance;
 	}
-	
+
 	/**
 	 * Sets the relative relevance rating of this proposal.
 	 * <p>
@@ -1188,7 +1188,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * The completion engine creates instances of this class and sets
 	 * its properties; this method is not intended to be used by other clients.
 	 * </p>
-	 * 
+	 *
 	 * @param rating relevance rating of this proposal; ratings are positive; higher means better
 	 */
 	public void setRelevance(int rating) {
@@ -1197,7 +1197,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 		}
 		this.relevance = rating;
 	}
-	
+
 	/**
 	 * Returns the type signature or package name of the relevant
 	 * declaration in the context, or <code>null</code> if none.
@@ -1220,11 +1220,11 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * 	<li><code>METHOD_DECLARATION</code> - type signature
 	 * of the type that declares the method that is being
 	 * implemented or overridden</li>
-	 * 	<li><code>PACKAGE_REF</code> - dot-based package 
+	 * 	<li><code>PACKAGE_REF</code> - dot-based package
 	 * name of the package that is referenced</li>
-	 * 	<li><code>TYPE_IMPORT</code> - dot-based package 
+	 * 	<li><code>TYPE_IMPORT</code> - dot-based package
 	 * name of the package containing the type that is imported</li>
-	 *  <li><code>TYPE_REF</code> - dot-based package 
+	 *  <li><code>TYPE_REF</code> - dot-based package
 	 * name of the package containing the type that is referenced</li>
 	 *  <li><code>POTENTIAL_METHOD_DECLARATION</code> - type signature
 	 * of the type that declares the method that is being created</li>
@@ -1233,7 +1233,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * <code>null</code>. Clients must not modify the array
 	 * returned.
 	 * </p>
-	 * 
+	 *
 	 * @return a type signature or a package name (depending
 	 * on the kind of completion), or <code>null</code> if none
 	 * @see Signature
@@ -1241,7 +1241,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	public char[] getDeclarationSignature() {
 		return this.declarationSignature;
 	}
-	
+
 	/**
 	 * Returns the key of the relevant
 	 * declaration in the context, or <code>null</code> if none.
@@ -1259,7 +1259,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * <code>null</code>. Clients must not modify the array
 	 * returned.
 	 * </p>
-	 * 
+	 *
 	 * @return a key, or <code>null</code> if none
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTParser#createASTs(ICompilationUnit[], String[], org.eclipse.wst.jsdt.core.dom.ASTRequestor, IProgressMonitor)
      * @since 3.1
@@ -1267,7 +1267,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	public char[] getDeclarationKey() {
 		return this.declarationKey;
 	}
-	
+
 	/**
 	 * Sets the type or package signature of the relevant
 	 * declaration in the context, or <code>null</code> if none.
@@ -1278,14 +1278,14 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * The completion engine creates instances of this class and sets
 	 * its properties; this method is not intended to be used by other clients.
 	 * </p>
-	 * 
+	 *
 	 * @param signature the type or package signature, or
 	 * <code>null</code> if none
 	 */
 	public void setDeclarationSignature(char[] signature) {
 		this.declarationSignature = signature;
 	}
-	
+
 	/**
 	 * Sets the type or package key of the relevant
 	 * declaration in the context, or <code>null</code> if none.
@@ -1296,7 +1296,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * The completion engine creates instances of this class and sets
 	 * its properties; this method is not intended to be used by other clients.
 	 * </p>
-	 * 
+	 *
 	 * @param key the type or package key, or
 	 * <code>null</code> if none
      * @since 3.1
@@ -1304,7 +1304,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	public void setDeclarationKey(char[] key) {
 		this.declarationKey = key;
 	}
-	
+
 	/**
 	 * Returns the simple name of the method, field,
 	 * member, or variable relevant in the context, or
@@ -1329,15 +1329,15 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * <code>null</code>. Clients must not modify the array
 	 * returned.
 	 * </p>
-	 * 
+	 *
 	 * @return the keyword, field, method, local variable, or member
 	 * name, or <code>null</code> if none
 	 */
 	public char[] getName() {
 		return this.name;
 	}
-	
-	
+
+
 	/**
 	 * Sets the simple name of the method (type simple name for constructor), field,
 	 * member, or variable relevant in the context, or
@@ -1349,14 +1349,14 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * The completion engine creates instances of this class and sets
 	 * its properties; this method is not intended to be used by other clients.
 	 * </p>
-	 * 
+	 *
 	 * @param name the keyword, field, method, local variable,
 	 * or member name, or <code>null</code> if none
 	 */
 	public void setName(char[] name) {
 		this.name = name;
 	}
-	
+
 	/**
 	 * Returns the signature of the method or type
 	 * relevant in the context, or <code>null</code> if none.
@@ -1393,14 +1393,14 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * <code>null</code>. Clients must not modify the array
 	 * returned.
 	 * </p>
-	 * 
+	 *
 	 * @return the signature, or <code>null</code> if none
 	 * @see Signature
 	 */
 	public char[] getSignature() {
 		return this.signature;
 	}
-	
+
 	/**
 	 * Returns the key relevant in the context,
 	 * or <code>null</code> if none.
@@ -1418,7 +1418,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * <code>null</code>. Clients must not modify the array
 	 * returned.
 	 * </p>
-	 * 
+	 *
 	 * @return the key, or <code>null</code> if none
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTParser#createASTs(ICompilationUnit[], String[], org.eclipse.wst.jsdt.core.dom.ASTRequestor, IProgressMonitor)
      * @since 3.1
@@ -1426,7 +1426,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	public char[] getKey() {
 		return this.key;
 	}
-	
+
 //	/**
 //	 * Returns the package name of the relevant
 //	 * declaration in the context, or <code>null</code> if none.
@@ -1448,22 +1448,22 @@ public final class CompletionProposal extends InternalCompletionProposal {
 //	 * <code>null</code>. Clients must not modify the array
 //	 * returned.
 //	 * </p>
-//	 * 
+//	 *
 //	 * @return the dot-based package name, or
 //	 * <code>null</code> if none
 //	 * @see #getDeclarationSignature()
 //	 * @see #getSignature()
-//	 * 
+//	 *
 //	 * @since 3.1
 //	 */
 //	public char[] getDeclarationPackageName() {
 //		return this.declarationPackageName;
 //	}
-//	
+//
 //	/**
 //	 * Returns the type name of the relevant
 //	 * declaration in the context without the package fragment,
-//	 * or <code>null</code> if none. 
+//	 * or <code>null</code> if none.
 //	 * <p>
 //	 * This field is available for the following kinds of
 //	 * completion proposals:
@@ -1484,18 +1484,18 @@ public final class CompletionProposal extends InternalCompletionProposal {
 //	 * <code>null</code>. Clients must not modify the array
 //	 * returned.
 //	 * </p>
-//	 * 
+//	 *
 //	 * @return the dot-based package name, or
 //	 * <code>null</code> if none
 //	 * @see #getDeclarationSignature()
 //	 * @see #getSignature()
-//	 * 
+//	 *
 //	 * @since 3.1
 //	 */
 	public char[] getDeclarationTypeName() {
 		return this.declarationTypeName;
 	}
-//	
+//
 //	/**
 //	 * Returns the package name of the method or type
 //	 * relevant in the context, or <code>null</code> if none.
@@ -1523,18 +1523,18 @@ public final class CompletionProposal extends InternalCompletionProposal {
 //	 * <code>null</code>. Clients must not modify the array
 //	 * returned.
 //	 * </p>
-//	 * 
+//	 *
 //	 * @return the package name, or <code>null</code> if none
-//	 * 
+//	 *
 //	 * @see #getDeclarationSignature()
 //	 * @see #getSignature()
-//	 * 
+//	 *
 //	 * @since 3.1
 //	 */
 //	public char[] getPackageName() {
 //		return this.packageName;
 //	}
-//	
+//
 //	/**
 //	 * Returns the type name without the package fragment of the method or type
 //	 * relevant in the context, or <code>null</code> if none.
@@ -1560,20 +1560,20 @@ public final class CompletionProposal extends InternalCompletionProposal {
 //	 * <code>null</code>. Clients must not modify the array
 //	 * returned.
 //	 * </p>
-//	 * 
+//	 *
 //	 * @return the package name, or <code>null</code> if none
-//	 * 
+//	 *
 //	 * @see #getDeclarationSignature()
 //	 * @see #getSignature()
-//	 * 
+//	 *
 //	 * @since 3.1
 //	 */
 //	public char[] getTypeName() {
 //		return this.typeName;
 //	}
-//	
+//
 //	/**
-//	 * Returns the parameter package names of the method 
+//	 * Returns the parameter package names of the method
 //	 * relevant in the context, or <code>null</code> if none.
 //	 * <p>
 //	 * This field is available for the following kinds of
@@ -1590,18 +1590,18 @@ public final class CompletionProposal extends InternalCompletionProposal {
 //	 * <code>null</code>. Clients must not modify the array
 //	 * returned.
 //	 * </p>
-//	 * 
+//	 *
 //	 * @return the package name, or <code>null</code> if none
-//	 * 
+//	 *
 //	 * @see #getDeclarationSignature()
 //	 * @see #getSignature()
-//	 * 
+//	 *
 //	 * @since 3.1
 //	 */
 //	public char[][] getParameterPackageNames() {
 //		return this.parameterPackageNames;
 //	}
-//	
+//
 //	/**
 //	 * Returns the parameter type names without the package fragment of
 //	 * the method relevant in the context, or <code>null</code> if none.
@@ -1620,18 +1620,18 @@ public final class CompletionProposal extends InternalCompletionProposal {
 //	 * <code>null</code>. Clients must not modify the array
 //	 * returned.
 //	 * </p>
-//	 * 
+//	 *
 //	 * @return the package name, or <code>null</code> if none
-//	 * 
+//	 *
 //	 * @see #getDeclarationSignature()
 //	 * @see #getSignature()
-//	 * 
+//	 *
 //	 * @since 3.1
 //	 */
 //	public char[][] getParameterTypeNames() {
 //		return this.parameterTypeNames;
 //	}
-	
+
 	/**
 	 * Sets the signature of the method, field type, member type,
 	 * relevant in the context, or <code>null</code> if none.
@@ -1642,13 +1642,13 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * The completion engine creates instances of this class and sets
 	 * its properties; this method is not intended to be used by other clients.
 	 * </p>
-	 * 
+	 *
 	 * @param signature the signature, or <code>null</code> if none
 	 */
 	public void setSignature(char[] signature) {
 		this.signature = signature;
 	}
-	
+
 	/**
 	 * Sets the key of the method, field type, member type,
 	 * relevant in the context, or <code>null</code> if none.
@@ -1659,14 +1659,14 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * The completion engine creates instances of this class and sets
 	 * its properties; this method is not intended to be used by other clients.
 	 * </p>
-	 * 
+	 *
 	 * @param key the key, or <code>null</code> if none
      * @since 3.1
 	 */
 	public void setKey(char[] key) {
 		this.key = key;
 	}
-	
+
 	/**
 	 * Returns the modifier flags relevant in the context, or
 	 * <code>Flags.AccDefault</code> if none.
@@ -1675,13 +1675,13 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * completion proposals:
 	 * <ul>
 	 * <li><code>ANNOTATION_ATTRIBUT_REF</code> - modifier flags
-	 * of the attribute that is referenced; 
+	 * of the attribute that is referenced;
 	 * <li><code>ANONYMOUS_CLASS_DECLARATION</code> - modifier flags
 	 * of the constructor that is referenced</li>
 	 * 	<li><code>FIELD_IMPORT</code> - modifier flags
 	 * of the field that is imported.</li>
 	 *  <li><code>FIELD_REF</code> - modifier flags
-	 * of the field that is referenced; 
+	 * of the field that is referenced;
 	 * <code>Flags.AccEnum</code> can be used to recognize
 	 * references to enum constants
 	 * </li>
@@ -1701,12 +1701,12 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * for the method that is being implemented or overridden</li>
 	 * <li><code>TYPE_IMPORT</code> - modifier flags
 	 * of the type that is imported; <code>Flags.AccInterface</code>
-	 * can be used to recognize references to interfaces, 
+	 * can be used to recognize references to interfaces,
 	 * <code>Flags.AccEnum</code> enum types,
 	 * and <code>Flags.AccAnnotation</code> annotation types</li>
 	 * <li><code>TYPE_REF</code> - modifier flags
 	 * of the type that is referenced; <code>Flags.AccInterface</code>
-	 * can be used to recognize references to interfaces, 
+	 * can be used to recognize references to interfaces,
 	 * <code>Flags.AccEnum</code> enum types,
 	 * and <code>Flags.AccAnnotation</code> annotation types
 	 * </li>
@@ -1718,7 +1718,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * For other kinds of completion proposals, this method returns
 	 * <code>Flags.AccDefault</code>.
 	 * </p>
-	 * 
+	 *
 	 * @return the modifier flags, or
 	 * <code>Flags.AccDefault</code> if none
 	 * @see Flags
@@ -1726,7 +1726,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	public int getFlags() {
 		return this.flags;
 	}
-	
+
 	/**
 	 * Sets the modifier flags relevant in the context.
 	 * <p>
@@ -1736,19 +1736,19 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * The completion engine creates instances of this class and sets
 	 * its properties; this method is not intended to be used by other clients.
 	 * </p>
-	 * 
+	 *
 	 * @param flags the modifier flags, or
 	 * <code>Flags.AccDefault</code> if none
 	 */
 	public void setFlags(int flags) {
 		this.flags = flags;
 	}
-	
+
 	/**
 	 * Returns the required completion proposals.
 	 * The proposal can be apply only if these required completion proposals are also applied.
 	 * If the required proposal aren't applied the completion could create completion problems.
-	 * 
+	 *
 	 * <p>
 	 * This field is available for the following kinds of
 	 * completion proposals:
@@ -1771,24 +1771,24 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * </p>
 	 * <p>
 	 * Other kinds of required proposals will be returned in the future, therefore clients of this
-	 * API must allow with {@link CompletionRequestor#setAllowsRequiredProposals(int, int, boolean)} 
+	 * API must allow with {@link CompletionRequestor#setAllowsRequiredProposals(int, int, boolean)}
 	 * only kinds which are in this list to avoid unexpected results in the future.
 	 * </p>
 	 * <p>
 	 * A required completion proposal cannot have required completion proposals.
 	 * </p>
-	 * 
+	 *
 	 * @return the required completion proposals, or <code>null</code> if none.
-	 * 
+	 *
 	 * @see CompletionRequestor#setAllowsRequiredProposals(int, int,boolean)
-	 * 
+	 *
 	 * @since 3.3
 	 */
 	public CompletionProposal[] getRequiredProposals() {
 		return this.requiredProposals;
 	}
-	
-	
+
+
 	/**
 	 * Sets the list of required completion proposals, or <code>null</code> if none.
 	 * <p>
@@ -1798,7 +1798,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * The completion engine creates instances of this class and sets
 	 * its properties; this method is not intended to be used by other clients.
 	 * </p>
-	 * 
+	 *
 	 * @param proposals the list of required completion proposals, or
 	 * <code>null</code> if none
      * @since 3.3
@@ -1806,7 +1806,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	public void setRequiredProposals(CompletionProposal[] proposals) {
 		this.requiredProposals = proposals;
 	}
-	
+
 	/**
 	 * Finds the method parameter names.
 	 * This information is relevant to method reference (and
@@ -1819,7 +1819,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * <b>Note that this is an expensive thing to compute, which may require
 	 * parsing Java source files, etc. Use sparingly.</b>
 	 * </p>
-	 * 
+	 *
 	 * @param monitor the progress monitor, or <code>null</code> if none
 	 * @return the parameter names, or <code>null</code> if none
 	 * or not available or not relevant
@@ -1827,7 +1827,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	public char[][] findParameterNames(IProgressMonitor monitor) {
 		if (!this.parameterNamesComputed) {
 			this.parameterNamesComputed = true;
-			
+
 			switch(this.completionKind) {
 				case ANONYMOUS_CLASS_DECLARATION:
 					try {
@@ -1880,11 +1880,11 @@ public final class CompletionProposal extends InternalCompletionProposal {
 						this.updateCompletion = true;
 					}
 					break;
-			}			
+			}
 		}
 		return this.parameterNames;
 	}
-	
+
 	/**
 	 * Sets the method parameter names.
 	 * This information is relevant to method reference (and
@@ -1893,14 +1893,14 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * The completion engine creates instances of this class and sets
 	 * its properties; this method is not intended to be used by other clients.
 	 * </p>
-	 * 
+	 *
 	 * @param parameterNames the parameter names, or <code>null</code> if none
 	 */
 	public void setParameterNames(char[][] parameterNames) {
 		this.parameterNames = parameterNames;
 		this.parameterNamesComputed = true;
 	}
-	
+
 	/**
 	 * Returns the accessibility of the proposal.
 	 * <p>
@@ -1914,17 +1914,17 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * or {@link IAccessRule#K_NON_ACCESSIBLE}.
 	 * By default this method return {@link IAccessRule#K_ACCESSIBLE}.
 	 * </p>
-	 * 
+	 *
 	 * @see IAccessRule
-	 * 
+	 *
 	 * @return the accessibility of the proposal
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	public int getAccessibility() {
 		return this.accessibility;
 	}
-	
+
 	/**
 	 * Returns whether this proposal is a constructor.
 	 * <p>
@@ -1939,14 +1939,14 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * For kinds of completion proposals, this method returns
 	 * <code>false</code>.
 	 * </p>
-	 * 
+	 *
 	 * @return <code>true</code> if the proposal is a constructor.
 	 * @since 3.1
 	 */
 	public boolean isConstructor() {
 		return this.isConstructor;
 	}
-	
+
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append('[');
@@ -2029,12 +2029,12 @@ public final class CompletionProposal extends InternalCompletionProposal {
 			default :
 				buffer.append("PROPOSAL"); //$NON-NLS-1$
 				break;
-				
+
 		}
 		buffer.append("]{completion:"); //$NON-NLS-1$
 		if (this.completion != null) buffer.append(this.completion);
 		buffer.append(", declSign:"); //$NON-NLS-1$
-		if (this.declarationSignature != null) buffer.append(this.declarationSignature);  
+		if (this.declarationSignature != null) buffer.append(this.declarationSignature);
 		buffer.append(", sign:"); //$NON-NLS-1$
 		if (this.signature != null) buffer.append(this.signature);
 		buffer.append(", declKey:"); //$NON-NLS-1$

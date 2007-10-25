@@ -10,15 +10,20 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public abstract class Statement extends ProgramElement {
-	
+
 	public abstract FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo);
-	
+
 	/**
 	 * INTERNAL USE ONLY.
 	 * This is used to redirect inter-statements jumps.
@@ -26,10 +31,10 @@ public abstract class Statement extends ProgramElement {
 	public void branchChainTo(BranchLabel label) {
 		// do nothing by default
 	}
-	
+
 	// Report an error if necessary
 	public boolean complainIfUnreachable(FlowInfo flowInfo, BlockScope scope, boolean didAlreadyComplain) {
-	
+
 		if ((flowInfo.reachMode() & FlowInfo.UNREACHABLE) != 0) {
 			this.bits &= ~ASTNode.IsReachable;
 			boolean reported = flowInfo == FlowInfo.DEAD_END;
@@ -45,9 +50,9 @@ public abstract class Statement extends ProgramElement {
 	 * Generate invocation arguments, considering varargs methods
 	 */
 	public void generateArguments(MethodBinding binding, Expression[] arguments, BlockScope currentScope, CodeStream codeStream) {
-		
+
 		if (binding.isVarargs()) {
-			// 5 possibilities exist for a call to the vararg method foo(int i, int ... value) : 
+			// 5 possibilities exist for a call to the vararg method foo(int i, int ... value) :
 			//      foo(1), foo(1, null), foo(1, 2), foo(1, 2, 3, 4) & foo(1, new int[] {1, 2})
 			TypeBinding[] params = binding.parameters;
 			int paramLength = params.length;
@@ -104,11 +109,11 @@ public abstract class Statement extends ProgramElement {
 	}
 
 	public abstract void generateCode(BlockScope currentScope, CodeStream codeStream);
-	
+
 	public boolean isEmptyBlock() {
 		return false;
 	}
-	
+
 	public boolean isValidJavaStatement() {
 		//the use of this method should be avoid in most cases
 		//and is here mostly for documentation purpose.....
@@ -123,19 +128,19 @@ public abstract class Statement extends ProgramElement {
 
 		return true;
 	}
-	
+
 	public StringBuffer print(int indent, StringBuffer output) {
 		return printStatement(indent, output);
 	}
 //	public abstract StringBuffer printStatement(int indent, StringBuffer output);
 
 	public abstract void resolve(BlockScope scope);
-	
+
 	/**
 	 * Returns case constant associated to this statement (NotAConstant if none)
 	 */
 	public Constant resolveCase(BlockScope scope, TypeBinding testType, SwitchStatement switchStatement) {
-		// statement within a switch that are not case are treated as normal statement.... 
+		// statement within a switch that are not case are treated as normal statement....
 
 		resolve(scope);
 		return Constant.NotAConstant;

@@ -11,9 +11,9 @@
 package org.eclipse.wst.jsdt.internal.compiler.impl;
 
 public class IntConstant extends Constant {
-	
+
 	int value;
-	
+
 	private static final IntConstant MINUS_FOUR = new IntConstant(-4);
 	private static final IntConstant MINUS_THREE = new IntConstant(-3);
 	private static final IntConstant MINUS_TWO = new IntConstant(-2);
@@ -29,7 +29,7 @@ public class IntConstant extends Constant {
 	private static final IntConstant EIGHT= new IntConstant(8);
 	private static final IntConstant NINE = new IntConstant(9);
 	private static final IntConstant TEN = new IntConstant(10);
-	
+
 	public static Constant fromValue(int value) {
 
 		switch (value) {
@@ -51,39 +51,39 @@ public class IntConstant extends Constant {
 		}
 		return new IntConstant(value);
 	}
-	
+
 	private IntConstant(int value) {
 		this.value = value;
 	}
-	
+
 	public byte byteValue() {
 		return (byte) value;
 	}
-	
+
 	public char charValue() {
 		return (char) value;
 	}
-	
+
 	public double doubleValue() {
 		return value; // implicit cast to return type
 	}
-	
+
 	public float floatValue() {
 		return value; // implicit cast to return type
 	}
-	
+
 	public int intValue() {
 		return value;
 	}
-	
+
 	public long longValue() {
 		return value; // implicit cast to return type
 	}
-	
+
 	public short shortValue() {
 		return (short) value;
 	}
-	
+
 	public String stringValue() {
 		//spec 15.17.11
 		return String.valueOf(this.value);
@@ -91,7 +91,7 @@ public class IntConstant extends Constant {
 
 	public String toString() {
 		return "(int)" + value; //$NON-NLS-1$
-	} 
+	}
 
 	public int typeID() {
 		return T_int;

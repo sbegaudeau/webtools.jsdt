@@ -15,24 +15,16 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-
-import org.eclipse.core.resources.IResource;
-
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableContext;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-
-import org.eclipse.jface.text.ITextSelection;
-
-import org.eclipse.ui.PlatformUI;
-
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
@@ -40,7 +32,8 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.core.refactoring.participants.CopyRefactoring;
 import org.eclipse.ltk.core.refactoring.participants.DeleteRefactoring;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
-
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IField;
@@ -56,7 +49,6 @@ import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.RefactoringStatusCodes;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.ConvertAnonymousToNestedRefactoring;
@@ -96,10 +88,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.PushDownRefact
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.PushDownRefactoringProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.UseSuperTypeProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.UseSuperTypeRefactoring;
-
-import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
-import org.eclipse.wst.jsdt.ui.refactoring.RenameSupport;
-
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
 import org.eclipse.wst.jsdt.internal.ui.fix.CleanUpRefactoringWizard;
 import org.eclipse.wst.jsdt.internal.ui.fix.ICleanUp;
@@ -137,6 +125,8 @@ import org.eclipse.wst.jsdt.internal.ui.refactoring.reorg.ReorgMoveWizard;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.reorg.ReorgQueries;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.sef.SelfEncapsulateFieldWizard;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
+import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
+import org.eclipse.wst.jsdt.ui.refactoring.RenameSupport;
 
 /**
  * Helper class to run refactorings from action code.

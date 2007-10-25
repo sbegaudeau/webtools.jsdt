@@ -16,7 +16,6 @@ import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.Token;
-
 import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
 
 

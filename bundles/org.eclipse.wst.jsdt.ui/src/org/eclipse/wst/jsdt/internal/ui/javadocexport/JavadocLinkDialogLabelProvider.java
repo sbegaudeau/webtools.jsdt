@@ -12,22 +12,17 @@ package org.eclipse.wst.jsdt.internal.ui.javadocexport;
 
 import java.net.URL;
 
-import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.LabelProvider;
-
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
 import org.eclipse.wst.jsdt.ui.ISharedImages;
 import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
 import org.eclipse.wst.jsdt.ui.JavaUI;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
 
 
 public class JavadocLinkDialogLabelProvider extends LabelProvider {

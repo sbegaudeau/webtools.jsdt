@@ -12,8 +12,9 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
-import org.eclipse.wst.jsdt.internal.compiler.impl.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public abstract class Literal extends Expression {
 
@@ -27,7 +28,7 @@ public abstract class Literal extends Expression {
 		BlockScope currentScope,
 		FlowContext flowContext,
 		FlowInfo flowInfo) {
-			
+
 		return flowInfo;
 	}
 
@@ -36,10 +37,10 @@ public abstract class Literal extends Expression {
 	public abstract TypeBinding literalType(BlockScope scope);
 
 	public StringBuffer printExpression(int indent, StringBuffer output){
-	
+
 		return output.append(source());
 	 }
-	 
+
 	public TypeBinding resolveType(BlockScope scope) {
 		// compute the real value, which must range its type's range
 		this.resolvedType = literalType(scope);

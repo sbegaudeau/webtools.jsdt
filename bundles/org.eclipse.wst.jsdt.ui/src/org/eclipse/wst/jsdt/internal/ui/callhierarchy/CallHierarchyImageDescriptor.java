@@ -12,13 +12,10 @@
 package org.eclipse.wst.jsdt.internal.ui.callhierarchy;
 
 import org.eclipse.core.runtime.Assert;
-
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.Point;
-
 import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
-
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 

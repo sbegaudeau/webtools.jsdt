@@ -14,26 +14,22 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.jface.resource.StringConverter;
+import org.eclipse.jface.text.Position;
+import org.eclipse.jface.text.Region;
+import org.eclipse.jface.text.TextAttribute;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
-
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceConverter;
-import org.eclipse.jface.resource.StringConverter;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
-
-import org.eclipse.jface.text.Position;
-import org.eclipse.jface.text.Region;
-import org.eclipse.jface.text.TextAttribute;
-
+import org.eclipse.wst.jsdt.internal.ui.text.JavaPresentationReconciler;
 import org.eclipse.wst.jsdt.ui.text.IColorManager;
 import org.eclipse.wst.jsdt.ui.text.IColorManagerExtension;
 import org.eclipse.wst.jsdt.ui.text.JavaSourceViewerConfiguration;
-
-import org.eclipse.wst.jsdt.internal.ui.text.JavaPresentationReconciler;
 
 /**
  * Semantic highlighting manager

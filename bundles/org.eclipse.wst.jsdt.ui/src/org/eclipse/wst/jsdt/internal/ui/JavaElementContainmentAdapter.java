@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui;
 
-import org.eclipse.core.runtime.IAdaptable;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.IContainmentAdapter;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaModel;
 import org.eclipse.wst.jsdt.core.JavaCore;

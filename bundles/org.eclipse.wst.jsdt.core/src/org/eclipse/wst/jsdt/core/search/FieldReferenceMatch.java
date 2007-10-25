@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
  * <p>
  * This class is intended to be instantiated and subclassed by clients.
  * </p>
- * 
+ *
  * @since 3.0
  */
 public class FieldReferenceMatch extends SearchMatch {
@@ -29,7 +29,7 @@ public class FieldReferenceMatch extends SearchMatch {
 
 	/**
 	 * Creates a new field reference match.
-	 * 
+	 *
 	 * @param enclosingElement the inner-most enclosing member that references this field
 	 * @param accuracy one of {@link #A_ACCURATE} or {@link #A_INACCURATE}
 	 * @param offset the offset the match starts at, or -1 if unknown
@@ -47,11 +47,11 @@ public class FieldReferenceMatch extends SearchMatch {
 		this.isWriteAccess = isWriteAccess;
 		setInsideDocComment(insideDocComment);
 	}
-	
+
 	/**
 	 * Returns whether the field reference is a read access to the field.
 	 * Note that a field reference can be read and written at once in case of compound assignments (e.g. i += 0;)
-	 * 
+	 *
 	 * @return whether the field reference is a read access to the field.
 	 */
 	public final boolean isReadAccess() {
@@ -61,11 +61,11 @@ public class FieldReferenceMatch extends SearchMatch {
 	/**
 	 * Returns whether the field reference is a write access to the field.
 	 * Note that a field reference can be read and written at once in case of compound assignments (e.g. i += 0;)
-	 * 
+	 *
 	 * @return whether the field reference is a write access to the field.
 	 */
 	public final boolean isWriteAccess() {
 		return this.isWriteAccess;
 	}
-	
+
 }

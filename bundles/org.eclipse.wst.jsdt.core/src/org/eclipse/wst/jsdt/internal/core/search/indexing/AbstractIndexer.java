@@ -15,7 +15,11 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.SearchDocument;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
-import org.eclipse.wst.jsdt.internal.core.search.matching.*;
+import org.eclipse.wst.jsdt.internal.core.search.matching.ConstructorPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.FieldPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.MethodPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.SuperTypeReferencePattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.TypeDeclarationPattern;
 
 public abstract class AbstractIndexer implements IIndexConstants {
 
@@ -28,16 +32,16 @@ public abstract class AbstractIndexer implements IIndexConstants {
 		addTypeDeclaration(modifiers, packageName, name, enclosingTypeNames, secondary);
 
 		addIndexEntry(
-			SUPER_REF, 
+			SUPER_REF,
 			SuperTypeReferencePattern.createIndexKey(
 				modifiers, packageName, name, enclosingTypeNames, null, ANNOTATION_TYPE_SUFFIX, CharOperation.concatWith(TypeConstants.JAVA_LANG_ANNOTATION_ANNOTATION, '.'), ANNOTATION_TYPE_SUFFIX));
-	}	
+	}
 	public void addClassDeclaration(
-			int modifiers, 
+			int modifiers,
 			char[] packageName,
-			char[] name, 
-			char[][] enclosingTypeNames, 
-			char[] superclass, 
+			char[] name,
+			char[][] enclosingTypeNames,
+			char[] superclass,
 			char[][] superinterfaces,
 			char[][] typeParameterSignatures,
 			boolean secondary) {
@@ -48,7 +52,7 @@ public abstract class AbstractIndexer implements IIndexConstants {
 			addTypeReference(superclass);
 		}
 		addIndexEntry(
-			SUPER_REF, 
+			SUPER_REF,
 			SuperTypeReferencePattern.createIndexKey(
 				modifiers, packageName, name, enclosingTypeNames, typeParameterSignatures, CLASS_SUFFIX, superclass, CLASS_SUFFIX));
 		if (superinterfaces != null) {
@@ -64,14 +68,14 @@ public abstract class AbstractIndexer implements IIndexConstants {
 	}
 	private char[] erasure(char[] typeName) {
 		int genericStart = CharOperation.indexOf(Signature.C_GENERIC_START, typeName);
-		if (genericStart > -1) 
+		if (genericStart > -1)
 			typeName = CharOperation.subarray(typeName, 0, genericStart);
 		return typeName;
 	}
 	public void addConstructorDeclaration(char[] typeName, char[][] parameterTypes, char[][] exceptionTypes) {
 		int argCount = parameterTypes == null ? 0 : parameterTypes.length;
 		addIndexEntry(CONSTRUCTOR_DECL, ConstructorPattern.createIndexKey(CharOperation.lastSegment(typeName,'.'), argCount));
-	
+
 		if (parameterTypes != null) {
 			for (int i = 0; i < argCount; i++)
 				addTypeReference(parameterTypes[i]);
@@ -92,7 +96,7 @@ public abstract class AbstractIndexer implements IIndexConstants {
 		addTypeDeclaration(modifiers, packageName, name, enclosingTypeNames, secondary);
 
 		addIndexEntry(
-			SUPER_REF, 
+			SUPER_REF,
 			SuperTypeReferencePattern.createIndexKey(
 				modifiers, packageName, name, enclosingTypeNames, null, ENUM_SUFFIX, superclass, CLASS_SUFFIX));
 		if (superinterfaces != null) {
@@ -105,7 +109,7 @@ public abstract class AbstractIndexer implements IIndexConstants {
 						modifiers, packageName, name, enclosingTypeNames, null, ENUM_SUFFIX, superinterface, INTERFACE_SUFFIX));
 			}
 		}
-	}	
+	}
 	public void addFieldDeclaration(char[] typeName, char[] fieldName, boolean isVar) {
 		char [] key = isVar ? VAR_DECL:FIELD_DECL;
 		addIndexEntry(key, FieldPattern.createIndexKey(fieldName));
@@ -132,11 +136,11 @@ public abstract class AbstractIndexer implements IIndexConstants {
 			}
 		}
 	}
-	public void addMethodDeclaration(char[] methodName, char[][] parameterTypes, 
+	public void addMethodDeclaration(char[] methodName, char[][] parameterTypes,
 				char[] returnType, char[][] exceptionTypes,boolean isFunction) {
 		int argCount = parameterTypes == null ? 0 : parameterTypes.length;
 		addIndexEntry(isFunction ? FUNCTION_DECL : METHOD_DECL, MethodPattern.createIndexKey(methodName, argCount));
-	
+
 		if (parameterTypes != null) {
 			for (int i = 0; i < argCount; i++)
 				addTypeReference(parameterTypes[i]);

@@ -15,29 +15,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-
 import org.eclipse.core.resources.IFile;
-
-import org.eclipse.swt.graphics.Image;
-
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
-
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
+import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.internal.ui.text.java.JavaCompletionProposal;
 import org.eclipse.wst.jsdt.ui.JavaUI;
 import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
 import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposalComputer;
 import org.eclipse.wst.jsdt.ui.text.java.IJavadocCompletionProcessor;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
-import org.eclipse.wst.jsdt.internal.ui.text.java.JavaCompletionProposal;
 
 /**
  * @since 3.2 (renamed from JavaDocCompletionEvaluator which got introduced in 2.0)

@@ -18,7 +18,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-
 import org.eclipse.wst.jsdt.internal.ui.fix.ICleanUp;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.JavaPreview;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ModifyDialogTabPage;

@@ -27,10 +27,8 @@ import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubProgressMonitor;
-
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.ArrayType;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.HierarchyType;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.TType;

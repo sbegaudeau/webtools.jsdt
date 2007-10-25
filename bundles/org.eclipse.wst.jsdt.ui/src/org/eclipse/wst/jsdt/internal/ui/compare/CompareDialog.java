@@ -12,21 +12,19 @@ package org.eclipse.wst.jsdt.internal.ui.compare;
 
 import java.util.ResourceBundle;
 
+import org.eclipse.compare.CompareConfiguration;
+import org.eclipse.compare.CompareUI;
+import org.eclipse.compare.CompareViewerSwitchingPane;
+import org.eclipse.compare.structuremergeviewer.ICompareInput;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-
-import org.eclipse.jface.dialogs.*;
-import org.eclipse.jface.viewers.Viewer;
-
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-
-import org.eclipse.compare.*;
-import org.eclipse.compare.structuremergeviewer.ICompareInput;
-
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 
 

@@ -14,31 +14,21 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.viewers.StructuredSelection;
-
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.LibrarySuperType;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
-import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ComboDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
-import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IStringButtonAdapter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ListDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ObjectStringStatusButtonDialogField;
-import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.Separator;
-import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonDialogField;
-import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonStatusDialogField;
-import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringDialogField;
 import org.eclipse.wst.jsdt.ui.wizards.BuildPathDialogAccess;
 
 
@@ -83,7 +73,7 @@ public class ClasspathOrderingWorkbookPage extends BuildPathBasePage {
 					IPath cpEntryPath = superType.getRawContainerPath();
 					
 					Iterator listItt = allCpElements.iterator();
-					CPListElement found = null;;
+					CPListElement found = null;
 					int foundIndex = -1;
 					
 					while(listItt.hasNext()) {

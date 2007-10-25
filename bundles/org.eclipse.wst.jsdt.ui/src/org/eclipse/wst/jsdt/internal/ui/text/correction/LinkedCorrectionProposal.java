@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.ui.text.correction;
 
 import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;

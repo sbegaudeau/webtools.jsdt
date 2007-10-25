@@ -30,7 +30,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 /**
- * <p>This operation creates an instance method. 
+ * <p>This operation creates an instance method.
  *
  * <p>Required Attributes:<ul>
  *  <li>Containing type
@@ -39,9 +39,9 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  * </ul>
  */
 public class CreateMethodOperation extends CreateTypeMemberOperation {
-	
+
 	protected String[] parameterTypes;
-	
+
 /**
  * When executed, this operation will create a method
  * in the given type with the specified source.
@@ -97,7 +97,7 @@ private String getASTNodeName() {
  * @see CreateElementInCUOperation#getMainTaskName()
  */
 public String getMainTaskName(){
-	return Messages.operation_createMethodProgress; 
+	return Messages.operation_createMethodProgress;
 }
 protected SimpleName rename(ASTNode node, SimpleName newName) {
 	MethodDeclaration method = (MethodDeclaration) node;
@@ -131,5 +131,5 @@ protected SimpleName rename(ASTNode node, SimpleName newName) {
 
 		}
 		return JavaModelStatus.VERIFIED_OK;
-	} 
+	}
 }

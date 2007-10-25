@@ -37,7 +37,7 @@ class AddLibraryFolderToIndex extends IndexRequest {
 		this.inclusionPatterns = inclusionPatterns;
 		this.exclusionPatterns = exclusionPatterns;
 	}
-	
+
 	private void indexFile(IFile resource) {
 		AddLibraryFileToIndex request = new AddLibraryFileToIndex(resource,this.manager);
 		if (!this.manager.isJobWaiting(request))
@@ -48,7 +48,7 @@ class AddLibraryFolderToIndex extends IndexRequest {
 		if (!this.manager.isJobWaiting(request))
 			this.manager.request(request);
 	}
-	
+
 	public boolean execute(IProgressMonitor progressMonitor) {
 
 		if (this.isCancelled || progressMonitor != null && progressMonitor.isCanceled()) return true;
@@ -99,7 +99,7 @@ class AddLibraryFolderToIndex extends IndexRequest {
 								case IResource.FOLDER :
 									if (exclusionPatterns != null && inclusionPatterns == null) {
 										// if there are inclusion patterns then we must walk the children
-										if (Util.isExcluded(proxy.requestFullPath(), inclusionPatterns, exclusionPatterns, true)) 
+										if (Util.isExcluded(proxy.requestFullPath(), inclusionPatterns, exclusionPatterns, true))
 										    return false;
 									}
 							}

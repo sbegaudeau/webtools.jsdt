@@ -12,8 +12,8 @@ package org.eclipse.wst.jsdt.internal.compiler.flow;
 
 import java.util.ArrayList;
 
-import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SubRoutineStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TryStatement;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.ObjectCache;
@@ -29,9 +29,9 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
  *	try statements, exception handlers, etc...
  */
 public class ExceptionHandlingFlowContext extends FlowContext {
-	
+
 	public final static int BitCacheSize = 32; // 32 bits per int
-	
+
 	public ReferenceBinding[] handledExceptions;
 	int[] isReached;
 	int[] isNeeded;
@@ -43,7 +43,7 @@ public class ExceptionHandlingFlowContext extends FlowContext {
 
 	// for dealing with anonymous constructor thrown exceptions
 	public ArrayList extendedExceptions;
-	
+
 public ExceptionHandlingFlowContext(
 		FlowContext parent,
 		ASTNode associatedNode,
@@ -69,7 +69,7 @@ public ExceptionHandlingFlowContext(
 		}
 	}
 	System.arraycopy(this.isReached, 0, this.isNeeded, 0, cacheSize);
-	this.initsOnReturn = FlowInfo.DEAD_END;	
+	this.initsOnReturn = FlowInfo.DEAD_END;
 }
 
 public void complainIfUnusedExceptionHandlers(AbstractMethodDeclaration method) {
@@ -79,7 +79,7 @@ public void complainIfUnusedExceptionHandlers(AbstractMethodDeclaration method) 
 	        && !scope.compilerOptions().reportUnusedDeclaredThrownExceptionWhenOverriding) {
 	    return;
 	}
-	    
+
 	// report errors for unreachable exception handlers
 	for (int i = 0, count = this.handledExceptions.length; i < count; i++) {
 		int index = this.indexes.get(this.handledExceptions[i]);
@@ -147,7 +147,7 @@ public UnconditionalFlowInfo initsOnException(ReferenceBinding exceptionType) {
 public UnconditionalFlowInfo initsOnReturn(){
 	return this.initsOnReturn;
 }
-	
+
 /*
  * Compute a merged list of unhandled exception types (keeping only the most generic ones).
  * This is necessary to add synthetic thrown exceptions for anonymous type constructors (JLS 8.6).
@@ -160,7 +160,7 @@ public void mergeUnhandledException(TypeBinding newException){
 		}
 	}
 	boolean isRedundant = false;
-	
+
 	for(int i = this.extendedExceptions.size()-1; i >= 0; i--){
 		switch(Scope.compareTypes(newException, (TypeBinding)this.extendedExceptions.get(i))){
 			case Scope.MORE_GENERIC :
@@ -177,14 +177,14 @@ public void mergeUnhandledException(TypeBinding newException){
 		this.extendedExceptions.add(newException);
 	}
 }
-	
+
 public void recordHandlingException(
 		ReferenceBinding exceptionType,
 		UnconditionalFlowInfo flowInfo,
 		TypeBinding raisedException,
 		ASTNode invocationSite,
 		boolean wasAlreadyDefinitelyCaught) {
-		
+
 	int index = this.indexes.get(exceptionType);
 	// if already flagged as being reached (unchecked exception handler)
 	int cacheIndex = index / ExceptionHandlingFlowContext.BitCacheSize;
@@ -193,7 +193,7 @@ public void recordHandlingException(
 		this.isNeeded[cacheIndex] |= bitMask;
 	}
 	this.isReached[cacheIndex] |= bitMask;
-	
+
 	this.initsOnExceptions[index] =
 		(this.initsOnExceptions[index].tagBits & FlowInfo.UNREACHABLE) == 0 ?
 			this.initsOnExceptions[index].mergedWith(flowInfo):
@@ -204,7 +204,7 @@ public void recordReturnFrom(UnconditionalFlowInfo flowInfo) {
 	if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0) {
 		if ((this.initsOnReturn.tagBits & FlowInfo.UNREACHABLE) == 0) {
 			this.initsOnReturn = this.initsOnReturn.mergedWith(flowInfo);
-		} 
+		}
 		else {
 			this.initsOnReturn = (UnconditionalFlowInfo) flowInfo.copy();
 		}
@@ -221,8 +221,8 @@ public void recordReturnFrom(UnconditionalFlowInfo flowInfo) {
 public SubRoutineStatement subroutine() {
 	if (this.associatedNode instanceof SubRoutineStatement) {
 		// exception handler context may be child of InsideSubRoutineFlowContext, which maps to same handler
-		if (this.parent.subroutine() == this.associatedNode) 
-			return null;		
+		if (this.parent.subroutine() == this.associatedNode)
+			return null;
 		return (SubRoutineStatement) this.associatedNode;
 	}
 	return null;

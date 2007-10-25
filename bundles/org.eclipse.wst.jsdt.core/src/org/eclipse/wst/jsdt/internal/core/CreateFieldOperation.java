@@ -31,10 +31,10 @@ import org.eclipse.wst.jsdt.internal.core.util.Messages;
 /**
  * <p>
  * This operation creates a field declaration in a type.
- * 
+ *
  * <p>
  * Required Attributes:
- * <ul> 
+ * <ul>
  * <li>Containing Type
  * <li>The source code for the declaration. No verification of the source is
  * performed.
@@ -44,7 +44,7 @@ public class CreateFieldOperation extends CreateTypeMemberOperation {
 	/**
 	 * When executed, this operation will create a field with the given name in
 	 * the given type with the specified source.
-	 * 
+	 *
 	 * <p>
 	 * By default the new field is positioned after the last existing field
 	 * declaration, or as the first member in the type if there are no field

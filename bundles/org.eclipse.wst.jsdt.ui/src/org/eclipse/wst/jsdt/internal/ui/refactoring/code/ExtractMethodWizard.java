@@ -13,14 +13,11 @@ package org.eclipse.wst.jsdt.internal.ui.refactoring.code;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-
-import org.eclipse.wst.jsdt.internal.corext.refactoring.code.ExtractMethodRefactoring;
-
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
-
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
+import org.eclipse.wst.jsdt.internal.corext.refactoring.code.ExtractMethodRefactoring;
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
 
 public class ExtractMethodWizard extends RefactoringWizard {
 	

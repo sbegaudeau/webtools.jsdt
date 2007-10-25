@@ -11,15 +11,12 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.scripting;
 
 import org.eclipse.core.runtime.CoreException;
-
+import org.eclipse.ltk.core.refactoring.Refactoring;
+import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
 import org.eclipse.wst.jsdt.core.refactoring.descriptors.UseSupertypeDescriptor;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringContribution;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.UseSuperTypeProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.UseSuperTypeRefactoring;
-
-import org.eclipse.ltk.core.refactoring.Refactoring;
-import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
 
 /**
  * Refactoring contribution for the use supertype refactoring.

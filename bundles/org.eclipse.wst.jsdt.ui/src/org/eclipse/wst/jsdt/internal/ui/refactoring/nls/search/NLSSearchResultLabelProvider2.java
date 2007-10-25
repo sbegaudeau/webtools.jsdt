@@ -12,15 +12,11 @@
 package org.eclipse.wst.jsdt.internal.ui.refactoring.nls.search;
 
 import org.eclipse.search.ui.text.AbstractTextSearchViewPage;
-
-import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.swt.graphics.Image;
-
+import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.search.TextSearchLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 
 class NLSSearchResultLabelProvider2 extends TextSearchLabelProvider {

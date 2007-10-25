@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.ui.text.folding;
 
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
-
 import org.eclipse.ui.texteditor.ITextEditor;
 
 

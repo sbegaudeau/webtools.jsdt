@@ -25,7 +25,7 @@ public class JavaElementDelta extends SimpleDelta implements IJavaElementDelta {
 	 * @see #getAffectedChildren()
 	 */
 	protected IJavaElementDelta[] affectedChildren = EMPTY_DELTA;
-	
+
 	/*
 	 * The AST created during the last reconcile operation.
 	 * Non-null only iff:
@@ -39,7 +39,7 @@ public class JavaElementDelta extends SimpleDelta implements IJavaElementDelta {
 	 * The element that this delta describes the change to.
 	 */
 	protected IJavaElement changedElement;
-	
+
 	/**
 	 * Collection of resource deltas that correspond to non java resources deltas.
 	 */
@@ -95,12 +95,12 @@ protected void addAffectedChild(JavaElementDelta child) {
 			this.changeFlags |= F_CHILDREN;
 	}
 
-	// if a child delta is added to a compilation unit delta or below, 
+	// if a child delta is added to a compilation unit delta or below,
 	// it's a fine grained delta
 	if (this.changedElement.getElementType() >= IJavaElement.COMPILATION_UNIT) {
 		this.fineGrained();
 	}
-	
+
 	if (this.affectedChildren.length == 0) {
 		this.affectedChildren = new IJavaElementDelta[] {child};
 		return;
@@ -153,19 +153,19 @@ protected void addAffectedChild(JavaElementDelta child) {
 							JavaElementDelta childsChild = (JavaElementDelta) children[i];
 							existingChild.addAffectedChild(childsChild);
 						}
-						
+
 						// update flags
 						boolean childHadContentFlag = (child.changeFlags & F_CONTENT) != 0;
 						boolean existingChildHadChildrenFlag = (existingChild.changeFlags & F_CHILDREN) != 0;
 						existingChild.changeFlags |= child.changeFlags;
-						
-						// remove F_CONTENT flag if existing child had F_CHILDREN flag set 
-						// (case of fine grained delta (existing child) and delta coming from 
+
+						// remove F_CONTENT flag if existing child had F_CHILDREN flag set
+						// (case of fine grained delta (existing child) and delta coming from
 						// DeltaProcessor (child))
 						if (childHadContentFlag && existingChildHadChildrenFlag) {
 							existingChild.changeFlags &= ~F_CONTENT;
 						}
-						
+
 						// add the non-java resource deltas if needed
 						// note that the child delta always takes precedence over this existing child delta
 						// as non-java resource deltas are always created last (by the DeltaProcessor)
@@ -174,11 +174,11 @@ protected void addAffectedChild(JavaElementDelta child) {
 							existingChild.resourceDeltas = resDeltas;
 							existingChild.resourceDeltasCounter = child.resourceDeltasCounter;
 						}
-						
+
 						return;
 				}
 				break;
-			default: 
+			default:
 				// unknown -> existing child becomes the child with the existing child's flags
 				int flags = existingChild.getFlags();
 				this.affectedChildren[existingChildIndex] = child;
@@ -189,7 +189,7 @@ protected void addAffectedChild(JavaElementDelta child) {
 /**
  * Creates the nested deltas resulting from an add operation.
  * Convenience method for creating add deltas.
- * The constructor should be used to create the root delta 
+ * The constructor should be used to create the root delta
  * and then an add operation should call this method.
  */
 public void added(IJavaElement element) {
@@ -232,7 +232,7 @@ protected void addResourceDelta(IResourceDelta child) {
 /**
  * Creates the nested deltas resulting from a change operation.
  * Convenience method for creating change deltas.
- * The constructor should be used to create the root delta 
+ * The constructor should be used to create the root delta
  * and then a change operation should call this method.
  */
 public JavaElementDelta changed(IJavaElement element, int changeFlag) {
@@ -378,7 +378,7 @@ protected IJavaElementDelta[] getChildrenOfType(int type) {
 
 	IJavaElementDelta[] childrenOfType = new IJavaElementDelta[children.size()];
 	children.toArray(childrenOfType);
-	
+
 	return childrenOfType;
 }
 /**
@@ -461,7 +461,7 @@ protected void insertDeltaTree(IJavaElement element, JavaElementDelta delta) {
 /**
  * Creates the nested deltas resulting from an move operation.
  * Convenience method for creating the "move from" delta.
- * The constructor should be used to create the root delta 
+ * The constructor should be used to create the root delta
  * and then the move operation should call this method.
  */
 public void movedFrom(IJavaElement movedFromElement, IJavaElement movedToElement) {
@@ -474,7 +474,7 @@ public void movedFrom(IJavaElement movedFromElement, IJavaElement movedToElement
 /**
  * Creates the nested deltas resulting from an move operation.
  * Convenience method for creating the "move to" delta.
- * The constructor should be used to create the root delta 
+ * The constructor should be used to create the root delta
  * and then the move operation should call this method.
  */
 public void movedTo(IJavaElement movedToElement, IJavaElement movedFromElement) {
@@ -525,7 +525,7 @@ protected IJavaElementDelta[] removeAndShrinkArray(IJavaElementDelta[] old, int 
 /**
  * Creates the nested deltas resulting from an delete operation.
  * Convenience method for creating removed deltas.
- * The constructor should be used to create the root delta 
+ * The constructor should be used to create the root delta
  * and then the delete operation should call this method.
  */
 public void removed(IJavaElement element) {
@@ -544,7 +544,7 @@ public void removed(IJavaElement element, int flags) {
 /**
  * Creates the nested deltas resulting from a change operation.
  * Convenience method for creating change deltas.
- * The constructor should be used to create the root delta 
+ * The constructor should be used to create the root delta
  * and then a change operation should call this method.
  */
 public void sourceAttached(IJavaElement element) {
@@ -555,7 +555,7 @@ public void sourceAttached(IJavaElement element) {
 /**
  * Creates the nested deltas resulting from a change operation.
  * Convenience method for creating change deltas.
- * The constructor should be used to create the root delta 
+ * The constructor should be used to create the root delta
  * and then a change operation should call this method.
  */
 public void sourceDetached(IJavaElement element) {
@@ -563,7 +563,7 @@ public void sourceDetached(IJavaElement element) {
 	detachedDelta.changed(F_SOURCEDETACHED);
 	insertDeltaTree(element, detachedDelta);
 }
-/** 
+/**
  * Returns a string representation of this delta's
  * structure suitable for debug purposes.
  *
@@ -722,7 +722,7 @@ protected boolean toDebugString(StringBuffer buffer, int flags) {
 	}
 	return prev;
 }
-/** 
+/**
  * Returns a string representation of this delta's
  * structure suitable for debug purposes.
  */

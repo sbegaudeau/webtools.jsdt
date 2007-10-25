@@ -17,12 +17,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -31,19 +25,21 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.mapping.ResourceMapping;
 import org.eclipse.core.resources.mapping.ResourceMappingContext;
 import org.eclipse.core.resources.mapping.ResourceTraversal;
-
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
+import org.eclipse.ltk.core.refactoring.RefactoringDescriptorProxy;
+import org.eclipse.ltk.core.refactoring.history.RefactoringHistory;
+import org.eclipse.ltk.ui.refactoring.model.AbstractSynchronizationContentProvider;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.TreeViewer;
-
-import org.eclipse.ui.navigator.IPipelinedTreeContentProvider;
-import org.eclipse.ui.navigator.PipelinedShapeModification;
-import org.eclipse.ui.navigator.PipelinedViewerUpdate;
-
 import org.eclipse.team.core.diff.FastDiffFilter;
 import org.eclipse.team.core.diff.IDiff;
 import org.eclipse.team.core.diff.IDiffChangeEvent;
@@ -53,21 +49,16 @@ import org.eclipse.team.core.mapping.IResourceDiffTree;
 import org.eclipse.team.core.mapping.ISynchronizationContext;
 import org.eclipse.team.core.mapping.ISynchronizationScope;
 import org.eclipse.team.core.mapping.provider.ResourceDiffTree;
-
-import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
-import org.eclipse.ltk.core.refactoring.RefactoringDescriptorProxy;
-import org.eclipse.ltk.core.refactoring.history.RefactoringHistory;
-import org.eclipse.ltk.ui.refactoring.model.AbstractSynchronizationContentProvider;
-
+import org.eclipse.ui.navigator.IPipelinedTreeContentProvider;
+import org.eclipse.ui.navigator.PipelinedShapeModification;
+import org.eclipse.ui.navigator.PipelinedViewerUpdate;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
-
 import org.eclipse.wst.jsdt.internal.corext.util.JavaElementResourceMapping;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 /**

@@ -15,7 +15,7 @@ public class CombinedSourceTypeBinding extends SourceTypeBinding {
 		sourceTypes[1]=initialSourceType2;
 	}
 
-	
+
 	public void addSourceType(SourceTypeBinding binding)
 	{
 		int length = this.sourceTypes.length;
@@ -71,14 +71,14 @@ public class CombinedSourceTypeBinding extends SourceTypeBinding {
 		for (int i = 0; i < this.sourceTypes.length ; i++) {
 			if (this.sourceTypes[i].hasMemberTypes())
 			return true;
-		}	
+		}
 		return false;
 	}
 
 
 	public boolean isEquivalentTo(TypeBinding otherType) {
 		if (this == otherType) return true;
-		
+
 		return false;
 	}
 
@@ -118,24 +118,24 @@ public class CombinedSourceTypeBinding extends SourceTypeBinding {
 			MethodBinding exactConstructor = this.sourceTypes[i].getExactConstructor(argumentTypes);
 			if (exactConstructor!=null && exactConstructor.isValidBinding())
 				return exactConstructor;
-		}	
+		}
 		return null;
 	}
 
 
 	public boolean contains(ReferenceBinding binding)
 	{
-		for (int i = 0; i < this.sourceTypes.length ; i++) 
+		for (int i = 0; i < this.sourceTypes.length ; i++)
 			if (this.sourceTypes[i]==binding)
 				return true;
-		
+
 		return false;
 	}
 
 	public void cleanup()
 	{
-		for (int i = 0; i < this.sourceTypes.length ; i++) 
-			this.sourceTypes[i].cleanup();		
+		for (int i = 0; i < this.sourceTypes.length ; i++)
+			this.sourceTypes[i].cleanup();
 	}
 
 }

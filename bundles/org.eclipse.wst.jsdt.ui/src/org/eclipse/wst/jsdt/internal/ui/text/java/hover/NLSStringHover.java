@@ -13,15 +13,11 @@ package org.eclipse.wst.jsdt.internal.ui.text.java.hover;
 import java.util.Properties;
 
 import org.eclipse.core.resources.IStorage;
-
 import org.eclipse.jface.internal.text.html.HTMLPrinter;
-
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;
-
 import org.eclipse.ui.IEditorInput;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
@@ -29,11 +25,9 @@ import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.StringLiteral;
-
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.AccessorClassReference;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.nls.NLSHintHelper;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ClassFileEditor;

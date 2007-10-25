@@ -31,7 +31,7 @@ class VariableBinding implements IVariableBinding {
 
 	private static final int VALID_MODIFIERS = Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE |
 		Modifier.STATIC | Modifier.FINAL | Modifier.TRANSIENT | Modifier.VOLATILE;
-	
+
 	private org.eclipse.wst.jsdt.internal.compiler.lookup.VariableBinding binding;
 	private ITypeBinding declaringClass;
 	private String key;
@@ -44,7 +44,7 @@ class VariableBinding implements IVariableBinding {
 		this.binding = binding;
 	}
 
-	public IAnnotationBinding[] getAnnotations() { 
+	public IAnnotationBinding[] getAnnotations() {
 		org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding[] internalAnnotations = this.binding.getAnnotations();
 		// the variable is not an enum constant nor a field nor an argument.
 		int length = internalAnnotations == null ? 0 : internalAnnotations.length;
@@ -53,11 +53,11 @@ class VariableBinding implements IVariableBinding {
 		for (int i = 0; i < length; i++) {
 			final IAnnotationBinding annotationInstance = this.resolver.getAnnotationInstance(internalAnnotations[i]);
 			if (annotationInstance == null) {// not resolving binding
-				return AnnotationBinding.NoAnnotations; 
+				return AnnotationBinding.NoAnnotations;
 			}
 			domInstances[i] = annotationInstance;
 		}
-		return domInstances;                                                                  
+		return domInstances;
 	}
 
 	/* (non-Javadoc)
@@ -136,7 +136,7 @@ class VariableBinding implements IVariableBinding {
 			return null;
 		return element.resolved(this.binding);
 	}
-	
+
 	/*
 	 * @see IBinding#getKey()
 	 */
@@ -146,14 +146,14 @@ class VariableBinding implements IVariableBinding {
 		}
 		return this.key;
 	}
-	
+
 	/*
 	 * @see IBinding#getKind()
 	 */
 	public int getKind() {
 		return IBinding.VARIABLE;
 	}
-	
+
 	/*
 	 * @see IBinding#getModifiers()
 	 */
@@ -223,7 +223,7 @@ class VariableBinding implements IVariableBinding {
 		char[] typeSig = this.binding.type.genericTypeSignature();
 		return new LocalVariable(method, localVar.getName().getIdentifier(), sourceStart, sourceStart+sourceLength-1, nameStart, nameStart+nameLength-1, new String(typeSig));
 	}
-	
+
 	/*
 	 * @see IVariableBinding#getVariableDeclaration()
 	 * @since 3.1
@@ -235,7 +235,7 @@ class VariableBinding implements IVariableBinding {
 		}
 		return this;
 	}
-	
+
 	/*
 	 * @see IVariableBinding#getVariableId()
 	 */
@@ -258,7 +258,7 @@ class VariableBinding implements IVariableBinding {
 		}
 		return false;
 	}
-	
+
 	/*
 	 * @see IVariableBinding#isEnumConstant()
 	 * @since 3.1
@@ -327,15 +327,15 @@ class VariableBinding implements IVariableBinding {
 		return false;
 	}
 
-	/* 
+	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.jdt.core.dom.IBinding#isRecovered()
 	 */
 	public boolean isRecovered() {
 		return false;
 	}
-	
-	/* 
+
+	/*
 	 * For debugging purpose only.
 	 * @see java.lang.Object#toString()
 	 */

@@ -10,18 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.actions;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-
-import org.eclipse.core.resources.IResource;
-
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.actions.NewWizardMenu;
 import org.eclipse.wst.jsdt.core.IJavaElement;
-
 import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 
 

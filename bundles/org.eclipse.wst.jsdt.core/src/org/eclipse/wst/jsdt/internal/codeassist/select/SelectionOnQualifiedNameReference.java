@@ -56,7 +56,7 @@ public StringBuffer printExpression(int indent, StringBuffer output) {
 		if (i > 0) output.append('.');
 		output.append(tokens[i]);
 	}
-	return output.append('>'); 
+	return output.append('>');
 }
 public TypeBinding resolveType(BlockScope scope) {
 	// it can be a package, type, member type, local variable or field

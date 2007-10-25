@@ -16,9 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2.CastVariable2;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2.CollectionElementVariable2;
 

@@ -10,19 +10,39 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
-import java.util.Iterator;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.search.*;
-import org.eclipse.wst.jsdt.internal.compiler.ast.*;
+import org.eclipse.wst.jsdt.core.search.FieldDeclarationMatch;
+import org.eclipse.wst.jsdt.core.search.SearchMatch;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedFieldBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
-import org.eclipse.wst.jsdt.internal.core.LocalVariable;
 import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
 
 public class FieldLocator extends VariableLocator {
@@ -199,7 +219,7 @@ protected void matchReportReference(ASTNode reference, IJavaElement element, Bin
 		if (accuracy != SearchMatch.A_ACCURATE) return;
 
 		// element that references the field must be included in the enclosing element
-		DeclarationOfAccessedFieldsPattern declPattern = (DeclarationOfAccessedFieldsPattern) this.pattern; 
+		DeclarationOfAccessedFieldsPattern declPattern = (DeclarationOfAccessedFieldsPattern) this.pattern;
 		while (element != null && !declPattern.enclosingElement.equals(element))
 			element = element.getParent();
 		if (element != null) {
@@ -307,7 +327,7 @@ protected void updateMatch(ParameterizedTypeBinding parameterizedBinding, char[]
 protected void reportDeclaration(FieldBinding fieldBinding, MatchLocator locator, SimpleSet knownFields) throws CoreException {
 	// ignore length field
 	if (fieldBinding == ArrayBinding.ArrayLength) return;
-	
+
 	ReferenceBinding declaringClass = fieldBinding.declaringClass;
 	IType type = locator.lookupType(declaringClass);
 	if (type == null) return; // case of a secondary type
@@ -357,7 +377,7 @@ protected void reportDeclaration(FieldBinding fieldBinding, MatchLocator locator
 						attribute =element;
 						break;
 					}
-					
+
 				}
 				if (attribute != null) {
 					int offset = attribute.sourceStart;
@@ -367,9 +387,9 @@ protected void reportDeclaration(FieldBinding fieldBinding, MatchLocator locator
 									.getParticipant(), resource);
 					locator.report(match);
 				}
-				
+
 			}
-				
+
 		}
 		else if (scp !=null)
 			//TODO: could be compilation unit scope
@@ -429,7 +449,7 @@ protected int resolveLevel(NameReference nameRef) {
 			int level = matchField(fieldBinding, false);
 			if (level != IMPOSSIBLE_MATCH) return level;
 		}
-	} 
+	}
 	int otherMax = qNameRef.otherBindings == null ? 0 : qNameRef.otherBindings.length;
 	for (int i = 0; i < otherMax; i++) {
 		char[] token = qNameRef.tokens[i + qNameRef.indexOfFirstFieldBinding];

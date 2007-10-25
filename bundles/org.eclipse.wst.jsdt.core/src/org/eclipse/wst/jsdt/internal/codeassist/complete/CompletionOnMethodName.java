@@ -20,7 +20,7 @@ public class CompletionOnMethodName extends MethodDeclaration {
 	public CompletionOnMethodName(CompilationResult compilationResult){
 		super(compilationResult);
 	}
-	
+
 	public StringBuffer print(int indent, StringBuffer output) {
 
 		printIndent(indent, output);
@@ -44,9 +44,9 @@ public class CompletionOnMethodName extends MethodDeclaration {
 		}
 		return output.append('>');
 	}
-	
+
 	public void resolve(ClassScope upperScope) {
-		
+
 		super.resolve(upperScope);
 		throw new CompletionNodeFound(this, upperScope);
 	}

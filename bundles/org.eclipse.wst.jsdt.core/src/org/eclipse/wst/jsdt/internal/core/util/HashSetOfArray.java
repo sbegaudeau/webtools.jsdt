@@ -14,7 +14,7 @@ package org.eclipse.wst.jsdt.internal.core.util;
  * HashSet of Object[]
  */
 public final class HashSetOfArray implements Cloneable {
-	
+
 	// to avoid using Enumerations, walk the individual tables skipping nulls
 	public Object[][] set;
 
@@ -65,14 +65,14 @@ public final class HashSetOfArray implements Cloneable {
 	private int hashCode(Object[] element) {
 		return hashCode(element, element.length);
 	}
-	
+
 	private int hashCode(Object[] element, int length) {
 		int hash = 0;
 		for (int i = length-1; i >= 0; i--)
 			hash = Util.combineHashCodes(hash, element[i].hashCode());
 		return hash & 0x7FFFFFFF;
 	}
-	
+
 	public Object add(Object[] array) {
 		int length = this.set.length;
 		int index = hashCode(array) % length;
@@ -137,7 +137,7 @@ public final class HashSetOfArray implements Cloneable {
 				buffer.append('{');
 				for (int j = 0, length2 = element.length; j < length2; j++) {
 					buffer.append(element[j]);
-					if (j != length2-1) 
+					if (j != length2-1)
 						buffer.append(", "); //$NON-NLS-1$
 				}
 				buffer.append("}");  //$NON-NLS-1$

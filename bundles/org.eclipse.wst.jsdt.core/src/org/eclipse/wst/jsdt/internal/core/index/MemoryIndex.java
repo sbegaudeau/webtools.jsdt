@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.index;
 
-import org.eclipse.wst.jsdt.core.search.*;
-import org.eclipse.wst.jsdt.internal.core.util.*;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
+import org.eclipse.wst.jsdt.internal.core.util.SimpleWordSet;
 
 public class MemoryIndex {
 
@@ -63,7 +63,7 @@ void addIndexEntry(char[] category, char[] key, String documentName) {
 	existingWords.add(this.allWords.add(key));
 	referenceTable.put(category,existingWords);
 
-	
+
 }
 HashtableOfObject addQueryResults(char[][] categories, char[] key, int matchRule, HashtableOfObject results) {
 	// assumed the disk index already skipped over documents which have been added/changed/deleted

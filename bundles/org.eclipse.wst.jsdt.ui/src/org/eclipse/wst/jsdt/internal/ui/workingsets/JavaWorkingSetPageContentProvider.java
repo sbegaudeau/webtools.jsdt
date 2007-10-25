@@ -12,12 +12,10 @@ package org.eclipse.wst.jsdt.internal.ui.workingsets;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-
 import org.eclipse.wst.jsdt.core.IJavaModel;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.ui.StandardJavaElementContentProvider;
 
 class JavaWorkingSetPageContentProvider extends StandardJavaElementContentProvider {

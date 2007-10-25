@@ -10,24 +10,17 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.text.correction;
 
-import org.eclipse.text.edits.TextEdit;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-
-import org.eclipse.swt.graphics.Image;
-
 import org.eclipse.jface.text.IDocument;
-
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
-
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
-
-
 import org.eclipse.wst.jsdt.internal.ui.JavaUIStatus;
 
 /**

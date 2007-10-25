@@ -18,7 +18,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 
 public class AnnotationMethodDeclaration extends MethodDeclaration {
-	
+
 	public Expression defaultValue;
 	public int extendedDimensions;
 
@@ -35,28 +35,28 @@ public class AnnotationMethodDeclaration extends MethodDeclaration {
 		int attributeNumber = classFile.generateMethodInfoAttribute(this.binding, this);
 		classFile.completeMethodInfo(methodAttributeOffset, attributeNumber);
 	}
-	
+
 	public boolean isAnnotationMethod() {
 
 		return true;
 	}
-	
+
 	public boolean isMethod() {
 
 		return false;
 	}
-	
+
 	public void parseStatements(Parser parser, CompilationUnitDeclaration unit) {
 		// nothing to do
 		// annotation type member declaration don't have any body
 	}
-	
+
 	public StringBuffer print(int tab, StringBuffer output) {
 
 		printIndent(tab, output);
 		printModifiers(this.modifiers, output);
 		if (this.annotations != null) printAnnotations(this.annotations, output);
-		
+
 		TypeParameter[] typeParams = typeParameters();
 		if (typeParams != null) {
 			output.append('<');
@@ -68,7 +68,7 @@ public class AnnotationMethodDeclaration extends MethodDeclaration {
 			typeParams[max].print(0, output);
 			output.append('>');
 		}
-		
+
 		printReturnType(0, output).append(this.selector).append('(');
 		if (this.arguments != null) {
 			for (int i = 0; i < this.arguments.length; i++) {
@@ -84,16 +84,16 @@ public class AnnotationMethodDeclaration extends MethodDeclaration {
 				this.thrownExceptions[i].print(0, output);
 			}
 		}
-		
+
 		if (this.defaultValue != null) {
 			output.append(" default "); //$NON-NLS-1$
 			this.defaultValue.print(0, output);
 		}
-		
+
 		printBody(tab + 1, output);
 		return output;
 	}
-	
+
 	public void resolveStatements() {
 
 		super.resolveStatements();
@@ -104,12 +104,12 @@ public class AnnotationMethodDeclaration extends MethodDeclaration {
 			scope.problemReporter().annotationMembersCannotHaveTypeParameters(this);
 		}
 		if (this.extendedDimensions != 0) {
-			scope.problemReporter().illegalExtendedDimensions(this);		
-		}		
+			scope.problemReporter().illegalExtendedDimensions(this);
+		}
 		if (this.binding == null) return;
 		TypeBinding returnTypeBinding = this.binding.returnType;
 		if (returnTypeBinding != null) {
-				
+
 			// annotation methods can only return base types, String, Class, enum type, annotation types and arrays of these
 			checkAnnotationMethodType: {
 				TypeBinding leafReturnType = returnTypeBinding.leafComponentType();

@@ -11,9 +11,7 @@
 package org.eclipse.wst.jsdt.ui.wizards;
 
 import org.eclipse.core.runtime.IStatus;
-
 import org.eclipse.jface.wizard.WizardPage;
-
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusUtil;
 

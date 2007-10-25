@@ -19,9 +19,6 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-
-import org.eclipse.swt.widgets.Shell;
-
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -29,30 +26,27 @@ import org.eclipse.jface.util.OpenStrategy;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.texteditor.ITextEditor;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
-import org.eclipse.wst.jsdt.ui.JavaUI;
-
+import org.eclipse.wst.jsdt.internal.corext.callhierarchy.CallHierarchy;
+import org.eclipse.wst.jsdt.internal.corext.callhierarchy.CallLocation;
+import org.eclipse.wst.jsdt.internal.corext.callhierarchy.MethodWrapper;
+import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaStatusConstants;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectionConverter;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
-import org.eclipse.wst.jsdt.internal.corext.callhierarchy.CallHierarchy;
-import org.eclipse.wst.jsdt.internal.corext.callhierarchy.CallLocation;
-import org.eclipse.wst.jsdt.internal.corext.callhierarchy.MethodWrapper;
-import org.eclipse.wst.jsdt.internal.corext.util.Messages;
+import org.eclipse.wst.jsdt.ui.JavaUI;
 
 public class CallHierarchyUI {
     private static final int DEFAULT_MAX_CALL_DEPTH= 10;    

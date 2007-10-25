@@ -10,25 +10,18 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
-import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.core.resources.IResource;
-
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
-
-
 import org.eclipse.ui.IEditorInput;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
-
-import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.IProblemChangedListener;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaUILabelProvider;
+import org.eclipse.wst.jsdt.ui.ProblemsLabelDecorator;
 
 /**
  * The <code>JavaEditorErrorTickUpdater</code> will register as a IProblemChangedListener

@@ -19,13 +19,9 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.PlatformObject;
-
 import org.eclipse.ui.model.IWorkbenchAdapter;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
-
-
 import org.eclipse.wst.jsdt.internal.ui.callhierarchy.MethodWrapperWorkbenchAdapter;
 
 /**

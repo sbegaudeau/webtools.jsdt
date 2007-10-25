@@ -14,7 +14,11 @@ package org.eclipse.wst.jsdt.internal.ui.dialogs;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.Assert;
-
+import org.eclipse.jface.operation.IRunnableContext;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.dialogs.TwoPaneElementSelector;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
@@ -22,12 +26,6 @@ import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.MainMethodSearchEngine;
 import org.eclipse.wst.jsdt.ui.JavaElementLabelProvider;
-import org.eclipse.jface.operation.IRunnableContext;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
-
-import org.eclipse.ui.dialogs.TwoPaneElementSelector;
 
 /**
  * A dialog to select a type from a list of types. The dialog allows

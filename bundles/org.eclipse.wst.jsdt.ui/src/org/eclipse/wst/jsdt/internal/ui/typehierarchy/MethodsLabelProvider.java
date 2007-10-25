@@ -10,27 +10,22 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.typehierarchy;
 
-import org.eclipse.swt.graphics.Color;
-
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
-
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.internal.corext.util.MethodOverrideTester;
-
-import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredString;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
+import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
 /**
  * Label provider for the hierarchy method viewers. 

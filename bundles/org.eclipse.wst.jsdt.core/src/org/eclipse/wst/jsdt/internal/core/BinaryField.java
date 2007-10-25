@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 /* package */ class BinaryField extends BinaryMember implements IField {
 
 /*
- * Constructs a handle to the field with the given name in the specified type. 
+ * Constructs a handle to the field with the given name in the specified type.
  */
 protected BinaryField(JavaElement parent, String name) {
 	super(parent, name);

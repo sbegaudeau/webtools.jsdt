@@ -13,13 +13,10 @@ package org.eclipse.wst.jsdt.internal.ui.commands;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-
 import org.eclipse.wst.jsdt.ui.JavaUI;
 
 /**

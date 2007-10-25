@@ -21,11 +21,11 @@ public class AccessRuleSet {
 	private AccessRule[] accessRules;
 	public String[] messageTemplates;
 	public static final int MESSAGE_TEMPLATES_LENGTH = 4;
-	
+
 	/**
 	 * Make a new set of access rules.
 	 * @param accessRules the access rules to be contained by the new set
-	 * @param messageTemplates a Sting[4] array specifying the messages for type, 
+	 * @param messageTemplates a Sting[4] array specifying the messages for type,
 	 * constructor, method and field access violation; each should contain as many
 	 * placeholders as expected by the respective access violation message (that is,
 	 * one for type and constructor, two for method and field); replaced by a
@@ -38,12 +38,12 @@ public class AccessRuleSet {
 		else
 			this.messageTemplates = new String[] {"{0}", "{0}", "{0} {1}", "{0} {1}"};  //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
 	}
-	
+
 	/**
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean equals(Object object) {
-		if (this == object) 
+		if (this == object)
 			return true;
 		if (!(object instanceof AccessRuleSet))
 			return false;
@@ -51,8 +51,8 @@ public class AccessRuleSet {
 		if (this.messageTemplates.length != MESSAGE_TEMPLATES_LENGTH ||
 				otherRuleSet.messageTemplates.length != MESSAGE_TEMPLATES_LENGTH)
 			return false; // guard
-		for (int i = 0; i < MESSAGE_TEMPLATES_LENGTH; i++) 
-			if (!this.messageTemplates[i].equals(otherRuleSet.messageTemplates[i])) 
+		for (int i = 0; i < MESSAGE_TEMPLATES_LENGTH; i++)
+			if (!this.messageTemplates[i].equals(otherRuleSet.messageTemplates[i]))
 				return false;
 		int rulesLength = this.accessRules.length;
 		if (rulesLength != otherRuleSet.accessRules.length) return false;
@@ -61,22 +61,22 @@ public class AccessRuleSet {
 				return false;
 		return true;
 	}
-	
+
 	public AccessRule[] getAccessRules() {
 		return this.accessRules;
 	}
-	
+
 /**
- * Select the first access rule which is violated when accessing a given type, 
+ * Select the first access rule which is violated when accessing a given type,
  * or null if no 'non accessible' access rule applies.
- * @param targetTypeFilePath the target type file path, formed as: 
+ * @param targetTypeFilePath the target type file path, formed as:
  * "org/eclipse/jdt/core/JavaCore"
  * @return the first access restriction that applies if any, null else
  */
 public AccessRestriction getViolatedRestriction(char[] targetTypeFilePath) {
 	for (int i = 0, length = this.accessRules.length; i < length; i++) {
 		AccessRule accessRule = this.accessRules[i];
-		if (CharOperation.pathMatch(accessRule.pattern, targetTypeFilePath, 
+		if (CharOperation.pathMatch(accessRule.pattern, targetTypeFilePath,
 				true/*case sensitive*/, '/')) {
 			switch (accessRule.getProblemId()) {
 				case IProblem.ForbiddenReference:
@@ -89,11 +89,11 @@ public AccessRestriction getViolatedRestriction(char[] targetTypeFilePath) {
 	}
 	return null;
 }
-	
+
 	public String toString() {
 		return toString(true/*wrap lines*/);
 	}
-	
+
 	public String toString(boolean wrap) {
 		StringBuffer buffer = new StringBuffer(200);
 		buffer.append("AccessRuleSet {"); //$NON-NLS-1$

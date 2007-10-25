@@ -11,13 +11,16 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.impl.*;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class ArrayReference extends Reference {
-	
+
 	public Expression receiver;
 	public Expression position;
 
@@ -64,8 +67,8 @@ public FlowInfo analyseCode(
 		receiver.generateCode(currentScope, codeStream, true);
 		if (receiver instanceof CastExpression	// ((type[])null)[0]
 				&& ((CastExpression)receiver).innermostCastedExpression().resolvedType == TypeBinding.NULL){
-			codeStream.checkcast(receiver.resolvedType); 
-		}	
+			codeStream.checkcast(receiver.resolvedType);
+		}
 		codeStream.recordPositionsFrom(pc, this.sourceStart);
 		position.generateCode(currentScope, codeStream, true);
 		assignment.expression.generateCode(currentScope, codeStream, true);
@@ -87,8 +90,8 @@ public FlowInfo analyseCode(
 		receiver.generateCode(currentScope, codeStream, true);
 		if (receiver instanceof CastExpression	// ((type[])null)[0]
 				&& ((CastExpression)receiver).innermostCastedExpression().resolvedType == TypeBinding.NULL){
-			codeStream.checkcast(receiver.resolvedType); 
-		}			
+			codeStream.checkcast(receiver.resolvedType);
+		}
 		position.generateCode(currentScope, codeStream, true);
 		codeStream.arrayAt(this.resolvedType.id);
 		// Generating code for the potential runtime type checking
@@ -116,8 +119,8 @@ public FlowInfo analyseCode(
 		receiver.generateCode(currentScope, codeStream, true);
 		if (receiver instanceof CastExpression	// ((type[])null)[0]
 				&& ((CastExpression)receiver).innermostCastedExpression().resolvedType == TypeBinding.NULL){
-			codeStream.checkcast(receiver.resolvedType); 
-		}	
+			codeStream.checkcast(receiver.resolvedType);
+		}
 		position.generateCode(currentScope, codeStream, true);
 		codeStream.dup2();
 		codeStream.arrayAt(this.resolvedType.id);
@@ -154,8 +157,8 @@ public FlowInfo analyseCode(
 		receiver.generateCode(currentScope, codeStream, true);
 		if (receiver instanceof CastExpression	// ((type[])null)[0]
 				&& ((CastExpression)receiver).innermostCastedExpression().resolvedType == TypeBinding.NULL){
-			codeStream.checkcast(receiver.resolvedType); 
-		}	
+			codeStream.checkcast(receiver.resolvedType);
+		}
 		position.generateCode(currentScope, codeStream, true);
 		codeStream.dup2();
 		codeStream.arrayAt(this.resolvedType.id);
@@ -167,7 +170,7 @@ public FlowInfo analyseCode(
 				codeStream.dup_x2();
 			}
 		}
-		codeStream.generateImplicitConversion(implicitConversion);		
+		codeStream.generateImplicitConversion(implicitConversion);
 		codeStream.generateConstant(
 			postIncrement.expression.constant,
 			implicitConversion);
@@ -185,7 +188,7 @@ public int nullStatus(FlowInfo flowInfo) {
 
 		receiver.printExpression(0, output).append('[');
 		return position.printExpression(0, output).append(']');
-	} 
+	}
 
 	public TypeBinding resolveType(BlockScope scope) {
 
@@ -193,7 +196,7 @@ public int nullStatus(FlowInfo flowInfo) {
 //		if (receiver instanceof CastExpression	// no cast check for ((type[])null)[0]
 //				&& ((CastExpression)receiver).innermostCastedExpression() instanceof NullLiteral) {
 //			this.receiver.bits |= DisableUnnecessaryCastCheck; // will check later on
-//		}		
+//		}
 		TypeBinding arrayType = receiver.resolveType(scope);
 		if (arrayType != null) {
 			receiver.computeConversion(scope, arrayType, arrayType);
@@ -213,7 +216,7 @@ public int nullStatus(FlowInfo flowInfo) {
 	}
 
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
-		
+
 		if (visitor.visit(this, scope)) {
 			receiver.traverse(visitor, scope);
 			position.traverse(visitor, scope);

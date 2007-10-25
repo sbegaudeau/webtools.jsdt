@@ -13,11 +13,6 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.runtime.Assert;
-
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Event;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -31,16 +26,16 @@ import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.source.ILineRange;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.LineRange;
-
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IEditorStatusLine;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.TextEditorAction;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaProject;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.IndentUtil.IndentResult;
 

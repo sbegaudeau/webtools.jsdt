@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
@@ -37,7 +38,7 @@ import org.osgi.service.prefs.BackingStoreException;
  *
  */
 public class UserLibraryManager {
-	
+
 	public final static String CP_USERLIBRARY_PREFERENCES_PREFIX = JavaCore.PLUGIN_ID+".userLibrary."; //$NON-NLS-1$
 	public final static String CP_ENTRY_IGNORE = "##<cp entry ignore>##"; //$NON-NLS-1$
 
@@ -55,26 +56,26 @@ public class UserLibraryManager {
 					if (logProblems) {
 						Util.log(e, "Exception while rebinding user library '"+ key.substring(CP_USERLIBRARY_PREFERENCES_PREFIX.length()) +"'."); //$NON-NLS-1$ //$NON-NLS-2$
 					}
-					
+
 				}
 			}
 		}
 	};
-	
+
 	private UserLibraryManager() {
 		// do not instantiate
 	}
-		
+
 	/**
 	 * Returns the names of all defined user libraries. The corresponding classpath container path
-	 * is the name appended to the CONTAINER_ID.  
+	 * is the name appended to the CONTAINER_ID.
 	 * @return Return an array containing the names of all known user defined.
 	 */
 	public static String[] getUserLibraryNames() {
 		Set set= getLibraryMap().keySet();
 		return (String[]) set.toArray(new String[set.size()]);
 	}
-	
+
 	/**
 	 * Gets the library for a given name or <code>null</code> if no such library exists.
 	 * @param name The name of the library
@@ -86,7 +87,7 @@ public class UserLibraryManager {
 
 	/**
 	 * Registers user libraries for given names. If a library for the given name already exists, its value will be updated.
-	 * This call will also rebind all related classpath container. 
+	 * This call will also rebind all related classpath container.
 	 * @param newNames The names to register the libraries for
 	 * @param newLibs The libraries to register
 	 * @param monitor A progress monitor used when rebinding the classpath containers
@@ -94,11 +95,11 @@ public class UserLibraryManager {
 	 */
 	public static void setUserLibraries(String[] newNames, UserLibrary[] newLibs, IProgressMonitor monitor) throws JavaModelException {
 		Assert.isTrue(newNames.length == newLibs.length, "names and libraries should have the same length"); //$NON-NLS-1$
-		
+
 		if (monitor == null) {
 			monitor= new NullProgressMonitor();
 		}
-		
+
 		try {
 			monitor.beginTask("", newNames.length);	//$NON-NLS-1$
 			int last= newNames.length - 1;
@@ -109,10 +110,10 @@ public class UserLibraryManager {
 			monitor.done();
 		}
 	}
-	
+
 	/**
 	 * Registers a user library for a given name. If a library for the given name already exists, its value will be updated.
-	 * This call will also rebind all related classpath container. 
+	 * This call will also rebind all related classpath container.
 	 * @param name The name to register the library for
 	 * @param library The library to register
 	 * @param monitor A progress monitor used when rebinding the classpath containers
@@ -121,7 +122,7 @@ public class UserLibraryManager {
 	public static void setUserLibrary(String name, UserLibrary library, IProgressMonitor monitor) throws JavaModelException {
 		internalSetUserLibrary(name, library, true, true, monitor);
 	}
-	
+
 	static Map getLibraryMap() {
 		if (UserLibraries == null) {
 			HashMap libraries = (HashMap) InitializingLibraries.get();
@@ -132,7 +133,7 @@ public class UserLibraryManager {
 				// load variables and containers from preferences into cache
 				IEclipsePreferences instancePreferences = JavaModelManager.getJavaModelManager().getInstancePreferences();
 				instancePreferences.addPreferenceChangeListener(listener);
-	
+
 				// only get variable from preferences not set to their default
 				try {
 					String[] propertyNames = instancePreferences.keys();
@@ -158,7 +159,7 @@ public class UserLibraryManager {
 		}
 		return UserLibraries;
 	}
-	
+
 	static void recreatePersistedUserLibraryEntry(String propertyName, String savedString, boolean save, boolean rebind) throws JavaModelException {
 		String libName= propertyName.substring(CP_USERLIBRARY_PREFERENCES_PREFIX.length());
 		if (savedString == null || savedString.equals(CP_ENTRY_IGNORE)) {
@@ -191,7 +192,7 @@ public class UserLibraryManager {
 				return; // no change
 			}
 		}
-		
+
 		IEclipsePreferences instancePreferences = JavaModelManager.getJavaModelManager().getInstancePreferences();
 		String containerKey = CP_USERLIBRARY_PREFERENCES_PREFIX+name;
 		String containerString = CP_ENTRY_IGNORE;
@@ -215,7 +216,7 @@ public class UserLibraryManager {
 			if (rebind) {
 				rebindClasspathEntries(name, library==null, monitor);
 			}
-			
+
 		} finally {
 			instancePreferences.addPreferenceChangeListener(listener);
 		}
@@ -229,9 +230,9 @@ public class UserLibraryManager {
 			IWorkspaceRoot root= ResourcesPlugin.getWorkspace().getRoot();
 			IJavaProject[] projects= JavaCore.create(root).getJavaProjects();
 			IPath containerPath= new Path(JavaCore.USER_LIBRARY_CONTAINER_ID).append(name);
-			
+
 			ArrayList affectedProjects= new ArrayList();
-			
+
 			for (int i= 0; i < projects.length; i++) {
 				IJavaProject project= projects[i];
 				IClasspathEntry[] entries= project.getRawClasspath();
@@ -241,7 +242,7 @@ public class UserLibraryManager {
 						if (containerPath.equals(curr.getPath())) {
 							affectedProjects.add(project);
 							break;
-						}				
+						}
 					}
 				}
 			}
@@ -262,7 +263,7 @@ public class UserLibraryManager {
 					containers[0] = container;
 				}
 				JavaCore.setClasspathContainer(containerPath, affected, containers, monitor == null ? null : new SubProgressMonitor(monitor, 1));
-			} 
+			}
 		} finally {
 			if (monitor != null) {
 				monitor.done();
@@ -271,5 +272,5 @@ public class UserLibraryManager {
 	}
 
 
-	
+
 }

@@ -37,13 +37,10 @@ import javax.xml.transform.stream.StreamResult;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-
 import org.eclipse.wst.jsdt.internal.corext.CorextMessages;
-
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIException;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIStatus;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

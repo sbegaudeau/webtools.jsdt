@@ -10,21 +10,23 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.index;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.search.*;
+import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.ReadWriteMonitor;
 
 /**
  * An <code>Index</code> maps document names to their referenced words in various categories.
- * 
+ *
  * Queries can search a single category or several at the same time.
- * 
+ *
  * Indexes are not synchronized structures and should only be queried/updated one at a time.
  */
 
@@ -100,14 +102,14 @@ public void addIndexEntry(char[] category, char[] key, String containerRelativeP
 public String containerRelativePath(String documentPath) {
 	int index = documentPath.indexOf(IJavaSearchScope.JAR_FILE_ENTRY_SEPARATOR);
 	if (index == -1) {
-		
+
 		IPath containerPath = new Path(this.containerPath);
 		IPath docPath = new Path(documentPath);
-		
+
 		if(containerPath.makeAbsolute().equals(docPath.makeAbsolute())) {
 			return documentPath;
 		}
-		
+
 		index = this.containerPath.length();
 		if (documentPath.length() <  index)
 			throw new IllegalArgumentException("Document path " + documentPath + " must be relative to " + this.containerPath); //$NON-NLS-1$ //$NON-NLS-2$

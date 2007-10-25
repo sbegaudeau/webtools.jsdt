@@ -12,18 +12,25 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.flow.InitializationFlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.InsideSubRoutineFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class ReturnStatement extends Statement {
-		
+
 	public Expression expression;
 	public SubRoutineStatement[] subroutines;
 	public LocalVariableBinding saveValueVariable;
 	public int initStateIndex = -1;
-	
+
 public ReturnStatement(Expression expression, int sourceStart, int sourceEnd) {
 	this.sourceStart = sourceStart;
 	this.sourceEnd = sourceEnd;
@@ -44,8 +51,8 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 	FlowContext traversedContext = flowContext;
 	int subCount = 0;
 	boolean saveValueNeeded = false;
-	boolean hasValueToSave = this.expression != null 
-						&& this.expression.constant == Constant.NotAConstant 
+	boolean hasValueToSave = this.expression != null
+						&& this.expression.constant == Constant.NotAConstant
 						&& !(this.expression instanceof NullLiteral);
 	do {
 		SubRoutineStatement sub;
@@ -84,7 +91,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 				return FlowInfo.DEAD_END;
 		}
 	} while ((traversedContext = traversedContext.parent) != null);
-	
+
 	// resize subroutines
 	if ((this.subroutines != null) && (subCount != this.subroutines.length)) {
 		System.arraycopy(this.subroutines, 0, (this.subroutines = new SubRoutineStatement[subCount]), 0, subCount);
@@ -103,7 +110,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 	}
 	return FlowInfo.DEAD_END;
 }
- 
+
 /**
  * Retrun statement code generation
  *
@@ -124,7 +131,7 @@ public void generateCode(BlockScope currentScope, CodeStream codeStream) {
 		this.expression.generateCode(currentScope, codeStream, needValue()); // no value needed if non-returning subroutine
 		generateStoreSaveValueIfNecessary(codeStream);
 	}
-	
+
 	// generation of code responsible for invoking the finally blocks in sequence
 	if (this.subroutines != null) {
 		Object reusableJSRTarget = this.expression == null ? (Object)TypeBinding.VOID : this.expression.reusableJSRTarget();
@@ -144,17 +151,17 @@ public void generateCode(BlockScope currentScope, CodeStream codeStream) {
 	}
 	if (this.expression != null && !alreadyGeneratedExpression) {
 		this.expression.generateCode(currentScope, codeStream, true);
-		generateStoreSaveValueIfNecessary(codeStream);	
+		generateStoreSaveValueIfNecessary(codeStream);
 	}
 	// output the suitable return bytecode or wrap the value inside a descriptor for doits
 	this.generateReturnBytecode(codeStream);
 	if (this.saveValueVariable != null) {
 		codeStream.removeVariable(this.saveValueVariable);
-	}	
+	}
 	if (this.initStateIndex != -1) {
 		codeStream.removeNotDefinitelyAssignedVariables(currentScope, this.initStateIndex);
 		codeStream.addDefinitelyAssignedVariables(currentScope, this.initStateIndex);
-	}	
+	}
 	codeStream.recordPositionsFrom(pc, this.sourceStart);
 	SubRoutineStatement.reenterAllExceptionHandlers(this.subroutines, -1, codeStream);
 }
@@ -174,7 +181,7 @@ public void generateStoreSaveValueIfNecessary(CodeStream codeStream){
 }
 
 public boolean needValue() {
-	return this.saveValueVariable != null 
+	return this.saveValueVariable != null
 	|| (this.bits & ASTNode.IsSynchronized) != 0
 	|| ((this.bits & ASTNode.IsAnySubRoutineEscaping) == 0);
 }
@@ -192,18 +199,18 @@ public StringBuffer printStatement(int tab, StringBuffer output){
 
 public void resolve(BlockScope scope) {
 	MethodScope methodScope = scope.methodScope();
-	
+
 	if(methodScope==null) {
 		/* return statement outside of a method */
 		scope.problemReporter().cannotReturnOutsideFunction(this);
 		return;
 	}
-	
+
 	MethodBinding methodBinding;
 	TypeBinding methodType =
 		(methodScope.referenceContext instanceof AbstractMethodDeclaration)
-			? ((methodBinding = ((AbstractMethodDeclaration) methodScope.referenceContext).binding) == null 
-				? null 
+			? ((methodBinding = ((AbstractMethodDeclaration) methodScope.referenceContext).binding) == null
+				? null
 				: methodBinding.returnType)
 			: TypeBinding.VOID;
 	TypeBinding expressionType;
@@ -225,7 +232,7 @@ public void resolve(BlockScope scope) {
 		scope.problemReporter().attemptToReturnVoidValue(this);
 		return;
 	}
-	if (methodType == null) 
+	if (methodType == null)
 		return;
 
 	if (methodType != expressionType) // must call before computeConversion() and typeMismatchError()
@@ -237,10 +244,10 @@ public void resolve(BlockScope scope) {
 		if (expressionType.needsUncheckedConversion(methodType)) {
 		    scope.problemReporter().unsafeTypeConversion(this.expression, expressionType, methodType);
 		}
-		if (this.expression instanceof CastExpression 
+		if (this.expression instanceof CastExpression
 				&& (this.expression.bits & (ASTNode.UnnecessaryCast|ASTNode.DisableUnnecessaryCastCheck)) == 0) {
 			CastExpression.checkNeedForAssignedCast(scope, methodType, (CastExpression) this.expression);
-		}			
+		}
 		return;
 	} else if (scope.isBoxingCompatibleWith(expressionType, methodType)
 						|| (expressionType.isBaseType()  // narrowing then boxing ?
@@ -248,7 +255,7 @@ public void resolve(BlockScope scope) {
 								&& !methodType.isBaseType()
 								&& this.expression.isConstantValueOfTypeAssignableToType(expressionType, scope.environment().computeBoxingType(methodType)))) {
 		this.expression.computeConversion(scope, methodType, expressionType);
-		if (this.expression instanceof CastExpression 
+		if (this.expression instanceof CastExpression
 				&& (this.expression.bits & (ASTNode.UnnecessaryCast|ASTNode.DisableUnnecessaryCastCheck)) == 0) {
 			CastExpression.checkNeedForAssignedCast(scope, methodType, (CastExpression) this.expression);
 		}			return;

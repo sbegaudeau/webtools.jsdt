@@ -12,11 +12,8 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.changes;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-
 import org.eclipse.ltk.core.refactoring.MultiStateTextFileChange;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 

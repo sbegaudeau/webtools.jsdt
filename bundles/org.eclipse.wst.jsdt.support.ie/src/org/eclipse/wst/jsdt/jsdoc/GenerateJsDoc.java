@@ -8,17 +8,17 @@ import org.eclipse.wst.jsdt.jsdoc.msdn.IeFromMsdn;
 // import com.sun.org.apache.xpath.internal.FoundIndex;
 
 /**
- * 
+ *
  */
 /**
  * @author childsb
  *
  */
 public class GenerateJsDoc {
-	
-	
-	
-	
+
+
+
+
 	static final String outDirectory = "./libraries";
 	static final String outFileName = "JScptBrowserObj.js";
 	static final int REPLACE_FILE = 0;
@@ -29,21 +29,21 @@ public class GenerateJsDoc {
 	static final boolean USE_CACHE=true;
 	static final IJsDocSource source = new IeFromMsdn(USE_CACHE, !CLEAR_CACHE_ON_EXIT);
 	static final String JS_PREFIX="IE_";
-	
-	
+
+
 	public static String getOutFile(String fileName) {
 		File outDir = new File(outDirectory);
 		if(!outDir.exists()) outDir.mkdir();
 		File outFile = new File(outDir.getAbsolutePath() + "/" + fileName);
 		return outFile.getAbsolutePath();
 	}
-	
+
 	public static void main(String[] args) {
 		ElementInfo tempElement = new ElementInfo(null,null);
-		
+
 		ElementInfo[] tops = source.getTopObjects();
 		ArrayList allFoundNodes= new ArrayList();
-		
+
 		boolean workDone = true;
 		while(workDone) {
 			workDone = false;
@@ -54,7 +54,7 @@ public class GenerateJsDoc {
 				File theFile = new File(fileName);
 				switch(LIB_FILE_ACTION) {
 					case SKIP_FILE:
-						
+
 						if(theFile.exists()) {
 							System.out.println("Skipping output to file : " + theFile.getAbsolutePath());
 							ElementInfo[] foundObjects = tops[i].getFoundObjects();
@@ -72,20 +72,20 @@ public class GenerateJsDoc {
 						break;
 					case REPLACE_FILE:
 					{
-						
+
 						if(theFile.exists()) theFile.delete();
 						break;
-					}	
+					}
 					case APPEND:
-						
-						
+
+
 				}
 				workDone = true;
 				System.out.println("Writing Class '" + tops[i].getName() + "' to disk in " + fileName );
 				tops[i].getChildren();
 				String jsSctureture = tops[i].getJsStructure();
 				Util.stringToFile(jsSctureture, fileName, true, false);
-				
+
 				ElementInfo[] foundObjects = tops[i].getFoundObjects();
 				for(int k = 0;k<foundObjects.length;k++) {
 					if(!allFoundNodes.contains(foundObjects[k])) {
@@ -98,14 +98,14 @@ public class GenerateJsDoc {
 				System.gc();
 			}
 			System.out.println("Writing Collections and Events....");
-			
+
 			tops = (ElementInfo[])allFoundNodes.toArray(new ElementInfo[allFoundNodes.size()]);
 			tempElement=null;
 		}
-		
+
 	}
-	
-	
-	
-	
+
+
+
+
 }

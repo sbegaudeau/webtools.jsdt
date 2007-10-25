@@ -11,9 +11,7 @@
 package org.eclipse.wst.jsdt.internal.ui.packageview;
 
 import org.eclipse.jface.viewers.Viewer;
-
 import org.eclipse.ui.IWorkingSet;
-
 import org.eclipse.wst.jsdt.ui.JavaElementComparator;
 
 public class WorkingSetAwareJavaElementSorter extends JavaElementComparator {

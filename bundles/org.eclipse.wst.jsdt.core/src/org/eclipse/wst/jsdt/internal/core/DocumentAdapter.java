@@ -10,17 +10,17 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
+import org.eclipse.wst.jsdt.core.IBuffer;
 
 /*
  * Adapts an IBuffer to IDocument
  */
 public class DocumentAdapter extends Document {
-	
+
 	private IBuffer buffer;
-	
+
 	public DocumentAdapter(IBuffer buffer) {
 		super(buffer.getContents());
 		this.buffer = buffer;

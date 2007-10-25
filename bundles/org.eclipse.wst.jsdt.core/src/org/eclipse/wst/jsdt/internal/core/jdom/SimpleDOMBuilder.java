@@ -15,7 +15,8 @@ import java.util.Map;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.jdom.*;
+import org.eclipse.wst.jsdt.core.jdom.IDOMCompilationUnit;
+import org.eclipse.wst.jsdt.core.jdom.IDOMFactory;
 import org.eclipse.wst.jsdt.internal.compiler.ISourceElementRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.SourceElementParser;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
@@ -25,7 +26,7 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblemFactory;
 /**
  * A DOM builder that uses the SourceElementParser
  * @deprecated The JDOM was made obsolete by the addition in 2.0 of the more
- * powerful, fine-grained DOM/AST API found in the 
+ * powerful, fine-grained DOM/AST API found in the
  * org.eclipse.wst.jsdt.core.dom package.
  */
 public class SimpleDOMBuilder extends AbstractDOMBuilder implements ISourceElementRequestor {
@@ -45,12 +46,12 @@ public void acceptImport(int declarationStart, int declarationEnd, char[][] toke
 		importName+=".*"; //$NON-NLS-1$
 	}
 	fNode= new DOMImport(fDocument, sourceRange, importName, onDemand, modifiers);
-	addChild(fNode);	
+	addChild(fNode);
 }
 public void acceptPackage(int declarationStart, int declarationEnd, char[] name) {
 	int[] sourceRange= new int[] {declarationStart, declarationEnd};
 	fNode= new DOMPackage(fDocument, sourceRange, CharOperation.charToString(name));
-	addChild(fNode);	
+	addChild(fNode);
 }
 /**
  * @see IDOMFactory#createCompilationUnit(String, String)
@@ -70,17 +71,17 @@ public IDOMCompilationUnit createCompilationUnit(ICompilationUnit compilationUni
  * Creates a new DOMMethod and inizializes.
  */
 protected void enterAbstractMethod(MethodInfo methodInfo) {
-		
+
 	int[] sourceRange = {methodInfo.declarationStart, -1}; // will be fixed up on exit
 	int[] nameRange = {methodInfo.nameSourceStart, methodInfo.nameSourceEnd};
-	fNode = new DOMMethod(fDocument, sourceRange, CharOperation.charToString(methodInfo.name), nameRange, methodInfo.modifiers, 
+	fNode = new DOMMethod(fDocument, sourceRange, CharOperation.charToString(methodInfo.name), nameRange, methodInfo.modifiers,
 		methodInfo.isConstructor, CharOperation.charToString(methodInfo.returnType),
 		CharOperation.charArrayToStringArray(methodInfo.parameterTypes),
-		CharOperation.charArrayToStringArray(methodInfo.parameterNames), 
+		CharOperation.charArrayToStringArray(methodInfo.parameterNames),
 		CharOperation.charArrayToStringArray(methodInfo.exceptionTypes));
 	addChild(fNode);
 	fStack.push(fNode);
-	
+
 	// type parameters not supported by JDOM
 }
 /**
@@ -104,7 +105,7 @@ public void enterField(FieldInfo fieldInfo) {
 	if (fNode instanceof DOMField) {
 		isSecondary = fieldInfo.declarationStart == fNode.fSourceRange[0];
 	}
-	fNode = new DOMField(fDocument, sourceRange, CharOperation.charToString(fieldInfo.name), nameRange, 
+	fNode = new DOMField(fDocument, sourceRange, CharOperation.charToString(fieldInfo.name), nameRange,
 		fieldInfo.modifiers, CharOperation.charToString(fieldInfo.type), isSecondary);
 	addChild(fNode);
 	fStack.push(fNode);
@@ -133,7 +134,7 @@ public void enterType(TypeInfo typeInfo) {
 			typeInfo.modifiers, CharOperation.charArrayToStringArray(typeInfo.superinterfaces), TypeDeclaration.kind(typeInfo.modifiers) == TypeDeclaration.CLASS_DECL); // TODO (jerome) should pass in kind
 		addChild(fNode);
 		fStack.push(fNode);
-		
+
 		// type parameters not supported by JDOM
 	}
 }

@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.jdom;
 
-import org.eclipse.wst.jsdt.internal.core.jdom.*;
+import org.eclipse.wst.jsdt.internal.core.jdom.DOMBuilder;
+import org.eclipse.wst.jsdt.internal.core.jdom.SimpleDOMBuilder;
 
 /**
  * Standard implementation of <code>IDOMFactory</code>, and the only means
@@ -19,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.core.jdom.*;
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
  * @deprecated The JDOM was made obsolete by the addition in 2.0 of the more
- * powerful, fine-grained DOM/AST API found in the 
+ * powerful, fine-grained DOM/AST API found in the
  * org.eclipse.wst.jsdt.core.dom package.
  */
 public class DOMFactory implements IDOMFactory {
@@ -43,7 +44,7 @@ public IDOMCompilationUnit createCompilationUnit() {
 public IDOMCompilationUnit createCompilationUnit(char[] sourceCode, String name)  {
 	if(sourceCode == null) {
 		return null;
-	}		
+	}
 	return (new SimpleDOMBuilder()).createCompilationUnit(sourceCode, name.toCharArray());
 }
 /* (non-Javadoc)
@@ -52,7 +53,7 @@ public IDOMCompilationUnit createCompilationUnit(char[] sourceCode, String name)
 public IDOMCompilationUnit createCompilationUnit(String sourceCode, String name) {
 	if(sourceCode == null) {
 		return null;
-	}	
+	}
 	return (new SimpleDOMBuilder()).createCompilationUnit(sourceCode.toCharArray(), name.toCharArray());
 }
 /* (non-Javadoc)
@@ -67,7 +68,7 @@ public IDOMField createField() {
 public IDOMField createField(String sourceCode) {
 	if(sourceCode == null) {
 		return null;
-	}		
+	}
 	return (new DOMBuilder()).createField(sourceCode.toCharArray());
 }
 /* (non-Javadoc)
@@ -82,7 +83,7 @@ public IDOMImport createImport() {
 public IDOMImport createImport(String sourceCode) {
 	if(sourceCode == null) {
 		return null;
-	}		
+	}
 	return (new DOMBuilder()).createImport(sourceCode.toCharArray());
 }
 /* (non-Javadoc)
@@ -97,7 +98,7 @@ public IDOMInitializer createInitializer() {
 public IDOMInitializer createInitializer(String sourceCode) {
 	if(sourceCode == null) {
 		return null;
-	}		
+	}
 	return (new DOMBuilder()).createInitializer(sourceCode.toCharArray());
 }
 /* (non-Javadoc)
@@ -112,7 +113,7 @@ public IDOMMethod createMethod() {
 public IDOMMethod createMethod(String sourceCode) {
 	if(sourceCode == null) {
 		return null;
-	}		
+	}
 	return (new DOMBuilder()).createMethod(sourceCode.toCharArray());
 }
 /* (non-Javadoc)
@@ -127,7 +128,7 @@ public IDOMPackage createPackage() {
 public IDOMPackage createPackage(String sourceCode) {
 	if(sourceCode == null) {
 		return null;
-	}		
+	}
 	return (new DOMBuilder()).createPackage(sourceCode.toCharArray());
 }
 /* (non-Javadoc)
@@ -154,7 +155,7 @@ public IDOMType createInterface() {
 public IDOMType createType(String sourceCode) {
 	if(sourceCode == null) {
 		return null;
-	}		
+	}
 	return (new DOMBuilder()).createType(sourceCode.toCharArray());
 }
 }

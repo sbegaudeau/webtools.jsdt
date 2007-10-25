@@ -12,23 +12,6 @@ package org.eclipse.wst.jsdt.internal.ui.compare;
 
 import java.io.IOException;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
-
-import org.eclipse.swt.graphics.Image;
-
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IDocumentPartitioner;
-import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.rules.FastPartitioner;
-
 import org.eclipse.compare.CompareUI;
 import org.eclipse.compare.IEditableContent;
 import org.eclipse.compare.ISharedDocumentAdapter;
@@ -38,7 +21,20 @@ import org.eclipse.compare.structuremergeviewer.DocumentRangeNode;
 import org.eclipse.compare.structuremergeviewer.IStructureComparator;
 import org.eclipse.compare.structuremergeviewer.StructureCreator;
 import org.eclipse.compare.structuremergeviewer.StructureRootNode;
-
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentPartitioner;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.rules.FastPartitioner;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.IPropertiesFilePartitions;
 import org.eclipse.wst.jsdt.internal.ui.propertiesfileeditor.PropertiesFilePartitionScanner;

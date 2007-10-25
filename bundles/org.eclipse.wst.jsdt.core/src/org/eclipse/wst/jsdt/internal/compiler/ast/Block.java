@@ -12,21 +12,23 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
 public class Block extends Statement {
-	
+
 	public Statement[] statements;
 	public int explicitDeclarations;
 	// the number of explicit declaration , used to create scope
 	public BlockScope scope;
-	
+
 	public Block(int explicitDeclarations) {
 		this.explicitDeclarations = explicitDeclarations;
 	}
-	
+
 	public FlowInfo analyseCode(
 		BlockScope currentScope,
 		FlowContext flowContext,
@@ -75,7 +77,7 @@ public class Block extends Statement {
 		if (this.statements == null) return output;
 		for (int i = 0; i < statements.length; i++) {
 			statements[i].printStatement(indent + 1, output);
-			output.append('\n'); 
+			output.append('\n');
 		}
 		return output;
 	}
@@ -131,7 +133,7 @@ public class Block extends Statement {
 		}
 		visitor.endVisit(this, blockScope);
 	}
-	
+
 	/**
 	 * Dispatch the call on its last statement.
 	 */
@@ -140,5 +142,5 @@ public class Block extends Statement {
 		 	this.statements[statements.length - 1].branchChainTo(label);
 		 }
 	}
-	
+
 }

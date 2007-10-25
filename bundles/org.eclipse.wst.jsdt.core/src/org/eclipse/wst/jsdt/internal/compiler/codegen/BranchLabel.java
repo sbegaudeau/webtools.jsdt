@@ -16,16 +16,16 @@ import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 
 public class BranchLabel extends Label {
-	
+
 	private int[] forwardReferences = new int[10]; // Add an overflow check here.
 	private int forwardReferenceCount = 0;
 	BranchLabel delegate; //
-	
+
 	// Label tagbits
 	public int tagBits;
 	public final static int WIDE = 1;
 	public final static int USED = 2;
-	
+
 public BranchLabel() {
 	// for creating labels ahead of code generation
 }
@@ -52,7 +52,7 @@ void addForwardReference(int pos) {
 			int length;
 			if (count >= (length = this.forwardReferences.length))
 				System.arraycopy(this.forwardReferences, 0, (this.forwardReferences = new int[2*length]), 0, length);
-			this.forwardReferences[this.forwardReferenceCount++] = pos;			
+			this.forwardReferences[this.forwardReferenceCount++] = pos;
 		} else if (previousValue > pos) {
 			int[] refs = this.forwardReferences;
 			// check for duplicates
@@ -79,7 +79,7 @@ void addForwardReference(int pos) {
 public void becomeDelegateFor(BranchLabel otherLabel) {
 	// other label is delegating to receiver from now on
 	otherLabel.delegate = this;
-	
+
 	// all existing forward refs to other label are inlined into current label
 	final int otherCount = otherLabel.forwardReferenceCount;
 	if (otherCount == 0) return;
@@ -253,7 +253,7 @@ public void place() { // Currently lacking wide support.
 public String toString() {
 	String basic = getClass().getName();
 	basic = basic.substring(basic.lastIndexOf('.')+1);
-	StringBuffer buffer = new StringBuffer(basic); 
+	StringBuffer buffer = new StringBuffer(basic);
 	buffer.append('@').append(Integer.toHexString(hashCode()));
 	buffer.append("(position=").append(this.position); //$NON-NLS-1$
 	if (this.delegate != null) buffer.append("delegate=").append(this.delegate); //$NON-NLS-1$

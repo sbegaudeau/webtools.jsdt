@@ -19,9 +19,7 @@ import org.eclipse.jface.text.BadPartitioningException;
 import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.ITypedRegion;
-
 import org.eclipse.ui.texteditor.ITextEditor;
-
 import org.eclipse.wst.jsdt.ui.text.IJavaPartitions;
 
 

@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.structure.constraints;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2.ConstraintVariable2;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2.ITypeConstraint2;
 

@@ -14,7 +14,6 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.code.flow;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
@@ -30,8 +29,6 @@ import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.core.dom.Statement;
 import org.eclipse.wst.jsdt.core.dom.SwitchStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
-
-
 import org.eclipse.wst.jsdt.internal.corext.dom.Selection;
 
 public class InputFlowAnalyzer extends FlowAnalyzer {

@@ -21,7 +21,7 @@ public class CompletionOnMarkerAnnotationName extends MarkerAnnotation {
 	public CompletionOnMarkerAnnotationName(TypeReference type, int sourceStart){
 		super(type, sourceStart);
 	}
-	
+
 	public TypeBinding resolveType(BlockScope scope) {
 		if(type instanceof QualifiedTypeReference) {
 			QualifiedTypeReference qualifiedTypeReference = (QualifiedTypeReference) type;

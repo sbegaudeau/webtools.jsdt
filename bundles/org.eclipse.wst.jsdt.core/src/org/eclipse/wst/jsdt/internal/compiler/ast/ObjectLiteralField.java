@@ -11,9 +11,9 @@ public class ObjectLiteralField extends Expression {
 	public Expression fieldName;
 	public Expression initializer;
 	public Javadoc  javaDoc;
-	
+
 	public ObjectLiteralField(Expression field, Expression value, int start, int end) {
-		
+
 		this.fieldName=field;
 		this.initializer=value;
 		this.sourceEnd=end;
@@ -30,7 +30,7 @@ public class ObjectLiteralField extends Expression {
 
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
 		if (visitor.visit(this, scope)) {
-			
+
 			if (javaDoc!=null)
 				javaDoc.traverse(visitor, scope);
 			if (fieldName!=null)
@@ -46,12 +46,12 @@ public class ObjectLiteralField extends Expression {
 		return initializer.resolveType(scope);
 	}
 
-	
+
 	public FlowInfo analyseCode(
 			BlockScope classScope,
 			FlowContext initializationContext,
 			FlowInfo flowInfo) {
-			flowInfo=initializer.analyseCode(classScope,initializationContext, flowInfo); 
+			flowInfo=initializer.analyseCode(classScope,initializationContext, flowInfo);
 
 		return flowInfo;
 	}

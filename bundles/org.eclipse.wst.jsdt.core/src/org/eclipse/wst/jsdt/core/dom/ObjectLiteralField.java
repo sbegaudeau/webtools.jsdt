@@ -21,23 +21,23 @@ public class ObjectLiteralField extends Expression {
 	 * The "type" structural property of this node type.
 	 * @since 3.0
 	 */
-	public static final ChildPropertyDescriptor FIELD_NAME_PROPERTY = 
+	public static final ChildPropertyDescriptor FIELD_NAME_PROPERTY =
 		new ChildPropertyDescriptor(ObjectLiteralField.class, "fieldName", Expression.class, MANDATORY, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "expression" structural property of this node type.
 	 * @since 3.0
 	 */
-	public static final ChildPropertyDescriptor INITIALIZER_PROPERTY = 
+	public static final ChildPropertyDescriptor INITIALIZER_PROPERTY =
 		new ChildPropertyDescriptor(ObjectLiteralField.class, "initializer", Expression.class, MANDATORY, CYCLE_RISK); //$NON-NLS-1$
 
 	/**
-	 * A list of property descriptors (element type: 
+	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
 	 * or null if uninitialized.
 	 */
 	private static final List PROPERTY_DESCRIPTORS;
-	
+
 	static {
 		List properyList = new ArrayList(3);
 		createPropertyList(ObjectLiteralField.class, properyList);
@@ -49,17 +49,17 @@ public class ObjectLiteralField extends Expression {
 	/**
 	 * Returns a list of structural property descriptors for this node type.
 	 * Clients must not modify the result.
-	 * 
+	 *
 	 * @param apiLevel the API level; one of the
 	 * <code>AST.JLS*</code> constants
-	 * @return a list of property descriptors (element type: 
+	 * @return a list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor})
 	 * @since 3.0
 	 */
 	public static List propertyDescriptors(int apiLevel) {
 		return PROPERTY_DESCRIPTORS;
 	}
-			
+
 	/**
 	 * The type; lazily initialized; defaults to a unspecified,
 	 * legal type.
@@ -73,12 +73,12 @@ public class ObjectLiteralField extends Expression {
 	private Expression initializer = null;
 
 	/**
-	 * Creates a new AST node for a cast expression owned by the given 
+	 * Creates a new AST node for a cast expression owned by the given
 	 * AST. By default, the type and expression are unspecified (but legal).
 	 * <p>
 	 * N.B. This constructor is package-private.
 	 * </p>
-	 * 
+	 *
 	 * @param ast the AST that is to own this node
 	 */
 	ObjectLiteralField(AST ast) {
@@ -91,7 +91,7 @@ public class ObjectLiteralField extends Expression {
 	final List internalStructuralPropertiesForType(int apiLevel) {
 		return propertyDescriptors(apiLevel);
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
@@ -154,12 +154,12 @@ public class ObjectLiteralField extends Expression {
 		}
 		visitor.endVisit(this);
 	}
-	
+
 	/**
 	 * Returns the type in this cast expression.
-	 * 
+	 *
 	 * @return the type
-	 */ 
+	 */
 	public Expression getFieldName() {
 		if (this.fieldName == null) {
 			// lazy init must be thread-safe for readers
@@ -176,14 +176,14 @@ public class ObjectLiteralField extends Expression {
 
 	/**
 	 * Sets the type in this cast expression to the given type.
-	 * 
+	 *
 	 * @param type the new type
 	 * @exception IllegalArgumentException if:
 	 * <ul>
 	 * <li>the node belongs to a different AST</li>
 	 * <li>the node already has a parent</li>
 	 * </ul>
-	 */ 
+	 */
 	public void setFieldName(Expression name) {
 		if (name == null) {
 			throw new IllegalArgumentException();
@@ -193,12 +193,12 @@ public class ObjectLiteralField extends Expression {
 		this.fieldName = name;
 		postReplaceChild(oldChild, name, FIELD_NAME_PROPERTY);
 	}
-	
+
 	/**
 	 * Returns the expression of this cast expression.
-	 * 
+	 *
 	 * @return the expression node
-	 */ 
+	 */
 	public Expression getInitializer() {
 		if (this.initializer == null) {
 			// lazy init must be thread-safe for readers
@@ -212,10 +212,10 @@ public class ObjectLiteralField extends Expression {
 		}
 		return this.initializer;
 	}
-		
+
 	/**
 	 * Sets the expression of this cast expression.
-	 * 
+	 *
 	 * @param expression the new expression node
 	 * @exception IllegalArgumentException if:
 	 * <ul>
@@ -223,7 +223,7 @@ public class ObjectLiteralField extends Expression {
 	 * <li>the node already has a parent</li>
 	 * <li>a cycle in would be created</li>
 	 * </ul>
-	 */ 
+	 */
 	public void setInitializer(Expression expression) {
 		if (expression == null) {
 			throw new IllegalArgumentException();
@@ -241,12 +241,12 @@ public class ObjectLiteralField extends Expression {
 		// treat Code as free
 		return BASE_NODE_SIZE + 2 * 4;
 	}
-	
+
 	/* (omit javadoc for this method)
 	 * Method declared on ASTNode.
 	 */
 	int treeSize() {
-		return 
+		return
 			memSize()
 			+ (this.fieldName == null ? 0 : getFieldName().treeSize())
 			+ (this.initializer == null ? 0 : getInitializer().treeSize());

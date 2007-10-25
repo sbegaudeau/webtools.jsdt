@@ -13,10 +13,8 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.IAdaptable;
-
 import org.eclipse.core.resources.IFile;
-
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.CompositeChange;
 

@@ -12,16 +12,20 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.*;
-import org.eclipse.wst.jsdt.internal.compiler.flow.*;
+import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
+import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.*;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BaseTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class ArrayInitializer extends Expression {
-		
+
 	public Expression[] expressions;
 	public ArrayBinding binding; //the type of the { , , , }
-	
+
 	/**
 	 * ArrayInitializer constructor comment.
 	 */
@@ -112,11 +116,11 @@ public class ArrayInitializer extends Expression {
 	}
 
 	public StringBuffer printExpression(int indent, StringBuffer output) {
-	
+
 		output.append('[');
-		if (expressions != null) { 	
-			int j = 20 ; 
-			for (int i = 0 ; i < expressions.length ; i++) {	
+		if (expressions != null) {
+			int j = 20 ;
+			for (int i = 0 ; i < expressions.length ; i++) {
 				if (i > 0) output.append(", "); //$NON-NLS-1$
 				if (expressions[i]!=null)
 					expressions[i].printExpression(0, output);
@@ -135,11 +139,11 @@ public class ArrayInitializer extends Expression {
 		// Array initializers can only occur on the right hand side of an assignment
 		// expression, therefore the expected type contains the valid information
 		// concerning the type that must be enforced by the elements of the array initializer.
-	
+
 		// this method is recursive... (the test on isArrayType is the stop case)
-	
+
 		this.constant = Constant.NotAConstant;
-		
+
 		if (expectedType instanceof ArrayBinding) {
 			// allow new List<?>[5]
 			if ((this.bits & IsAnnotationDefaultValue) == 0) { // annotation default value need only to be commensurate JLS9.7
@@ -170,7 +174,7 @@ public class ArrayInitializer extends Expression {
 						|| (elementType.isBaseType() && BaseTypeBinding.isWidening(elementType.id, exprType.id)))
 						|| exprType.isCompatibleWith(elementType)) {
 					expression.computeConversion(scope, elementType, exprType);
-				} else if (scope.isBoxingCompatibleWith(exprType, elementType) 
+				} else if (scope.isBoxingCompatibleWith(exprType, elementType)
 									|| (exprType.isBaseType()  // narrowing then boxing ?
 											&& scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5 // autoboxing
 											&& !elementType.isBaseType()
@@ -179,11 +183,11 @@ public class ArrayInitializer extends Expression {
 				} else {
 					scope.problemReporter().typeMismatchError(exprType, elementType, expression);
 					return null;
-				} 				
+				}
 			}
 			return this.binding;
 		}
-		
+
 		// infer initializer type for error reporting based on first element
 		TypeBinding leafElementType = null;
 		int dim = 1;
@@ -218,7 +222,7 @@ public class ArrayInitializer extends Expression {
 		}
 		return null;
 	}
-	
+
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
 
 		if (visitor.visit(this, scope)) {
