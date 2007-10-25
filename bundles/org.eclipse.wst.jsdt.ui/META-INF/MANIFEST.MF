@@ -90,7 +90,6 @@ Export-Package: org.eclipse.wst.jsdt.internal.corext;x-friends:="org.eclipse.wst
  org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.newsourcepage;x-internal:=true,
  org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields;x-internal:=true,
  org.eclipse.wst.jsdt.internal.ui.workingsets;x-internal:=true,
- org.eclipse.wst.jsdt.launching,
  org.eclipse.wst.jsdt.libraries,
  org.eclipse.wst.jsdt.ui,
  org.eclipse.wst.jsdt.ui.actions,

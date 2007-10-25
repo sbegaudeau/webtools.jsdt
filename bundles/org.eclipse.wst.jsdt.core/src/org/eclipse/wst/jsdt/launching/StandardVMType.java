@@ -23,7 +23,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 /**
  * A VM install type for VMs the conform to the standard
@@ -402,7 +402,7 @@ public class StandardVMType extends AbstractVMInstallType {
 									LibraryLocation library = new LibraryLocation(libPath, Path.EMPTY, Path.EMPTY, null);
 									libraries.add(library);
 								} catch (IOException e) {
-									JavaPlugin.log(e);
+									Util.log(e, "");
 								}
 							}
 						}
