@@ -5203,6 +5203,7 @@
 		</provider>
 	</extension>
 
+<!--
 	<extension point="org.eclipse.debug.core.launchConfigurationTypes">
     	<launchConfigurationType
            delegate="org.eclipse.wst.jsdt.internal.ui.text.correction.SerialVersionLaunchConfigurationDelegate"
@@ -5212,6 +5213,7 @@
            id="org.eclipse.wst.jsdt.ui.serial.support">
     	</launchConfigurationType>
 	</extension>
+-->
 
 <!-- no need to provide a global SpellingEngine -->
 <!--
