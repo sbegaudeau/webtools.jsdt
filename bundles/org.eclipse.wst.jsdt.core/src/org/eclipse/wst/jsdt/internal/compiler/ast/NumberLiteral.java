@@ -12,23 +12,23 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 public abstract class NumberLiteral extends Literal {
 
-	char[] source;
-
+	public char[] source;
+	
 	public NumberLiteral(char[] token, int s, int e) {
-
+		
 		this(s,e) ;
 		source = token ;
 	}
-
+	
 	public NumberLiteral(int s, int e) {
 		super (s,e) ;
 	}
-
+	
 	public boolean isValidJavaStatement(){
 
 		return false ;
 	}
-
+	
 	public char[] source(){
 
 		return source;

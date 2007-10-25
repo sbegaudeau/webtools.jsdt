@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 
 public class CharLiteral extends NumberLiteral {
-	char value;
+	public char value;
 public CharLiteral(char[] token, int s, int e) {
 	super(token, s, e);
 //	computeValue();
