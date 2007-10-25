@@ -268,7 +268,8 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 	int count = 0;
 
 
-	nextType: for (int i = 0; i < typeLength; i++) {
+//	nextType:
+	for (int i = 0; i < typeLength; i++) {
 		InferredType typeDecl =  referenceContext.inferredTypes[i];
 		if (typeDecl.isDefinition) {
 			ReferenceBinding typeBinding = environment.defaultPackage

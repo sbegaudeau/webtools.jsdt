@@ -864,7 +864,8 @@ public MethodBinding getExactConstructor(TypeBinding[] argumentTypes) {
 		}
 		long range;
 		if ((range = ReferenceBinding.binarySearch(TypeConstants.INIT, this.methods)) >= 0) {
-			nextMethod: for (int imethod = (int)range, end = (int)(range >> 32); imethod <= end; imethod++) {
+//			nextMethod: 
+				for (int imethod = (int)range, end = (int)(range >> 32); imethod <= end; imethod++) {
 				MethodBinding method = this.methods[imethod];
 				if (resolveTypesFor(method) == null || method.returnType == null) {
 					methods();
@@ -894,7 +895,8 @@ public MethodBinding getExactMethod(char[] selector, TypeBinding[] argumentTypes
 	if ((this.tagBits & TagBits.AreMethodsComplete) != 0) { // have resolved all arg types & return type of the methods
 		long range;
 		if ((range = ReferenceBinding.binarySearch(selector, this.methods)) >= 0) {
-			nextMethod: for (int imethod = (int)range, end = (int)(range >> 32); imethod <= end; imethod++) {
+//			nextMethod:
+				for (int imethod = (int)range, end = (int)(range >> 32); imethod <= end; imethod++) {
 				MethodBinding method = this.methods[imethod];
 				foundNothing = false; // inner type lookups must know that a method with this name exists
 //				if (method.parameters.length == argCount) {

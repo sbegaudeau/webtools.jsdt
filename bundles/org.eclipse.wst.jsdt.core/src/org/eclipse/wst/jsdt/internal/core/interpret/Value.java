@@ -1,0 +1,77 @@
+package org.eclipse.wst.jsdt.internal.core.interpret;
+
+import org.eclipse.wst.jsdt.core.UnimplementedException;
+
+public class Value implements Contants {
+	public static final int BOOLEAN =1;
+	public static final int NUMBER = 2;
+	public static final int STRING = 3;
+	public static final int OBJECT = 4;
+	public static final int UNDEFINED = 5;
+	public static final int NULL = 6;
+	public static final int FUNCTION = 7;
+	
+	int type;
+	
+	public static Value UndefinedObjectValue=new Value(UNDEFINED); 
+	public static Value NullObjectValue=new Value(NULL); 
+	
+		
+	protected Value(int type)
+	{
+		this.type=type;
+	}
+		
+	public  int numberValue()
+	{
+		return 0;
+	}
+	
+	public final int getType()
+	{return type;}
+	
+	public  String stringValue() 
+	{
+		switch (type)
+		{
+		case NULL:
+			return "null";
+		case UNDEFINED: 
+			return "undefined";
+		}
+		return "";
+	}
+	public  boolean booleanValue() {return false;}
+	
+	public ObjectValue getObjectValue()
+	{
+		
+		
+		switch (type)
+		{
+		case NULL:
+		case UNDEFINED:
+			throw new InterpretException("null reference");
+		case BOOLEAN:
+		case NUMBER:
+		case STRING:
+			ObjectValue obj= new ObjectValue();
+					obj.setValue(VALUE_ARR,this);
+					return obj;
+		}
+			
+		throw new UnimplementedException();
+	
+	
+	}
+
+	public Object valueObject() {
+		return null;
+	}
+	
+	Value getValue()
+	{
+		return this;
+	}
+
+}

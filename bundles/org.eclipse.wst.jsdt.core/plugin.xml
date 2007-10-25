@@ -85,7 +85,7 @@
 <!-- =================================================================================== -->
 <!-- Extension: JavaScript Problem                                                             -->
 <!-- =================================================================================== -->
-<extension id="problem" point="org.eclipse.core.resources.markers" name="%jsScriptProblemName">
+<extension id="problem" point="org.eclipse.core.resources.markers" name="%jsProblemName">
 	<super type="org.eclipse.core.resources.problemmarker"/>
 	<super type="org.eclipse.core.resources.textmarker"/>
 	<persistent value="true"/>
@@ -110,7 +110,7 @@
 <!-- =================================================================================== -->
 <!-- Extension: JavaScript Transient Problem                                                   -->
 <!-- =================================================================================== -->
-<extension id="transient_problem" point="org.eclipse.core.resources.markers" name="%transientJavaProblemName">
+<extension id="transient_problem" point="org.eclipse.core.resources.markers" name="%transientJsProblemName">
 	<super type="org.eclipse.core.resources.textmarker"/>
 	<persistent value="false"/>
 	<attribute name="id"/>
@@ -121,7 +121,7 @@
 <!-- =================================================================================== -->
 <!-- Extension: Java Task                                                                -->
 <!-- =================================================================================== -->
-<extension id="task" name="%jsScriptTaskName" point="org.eclipse.core.resources.markers">
+<extension id="task" name="%jsTaskName" point="org.eclipse.core.resources.markers">
     <super type="org.eclipse.core.resources.taskmarker"/> 
     <persistent value="true"/>
 </extension>
@@ -129,16 +129,18 @@
 <!-- =================================================================================== -->
 <!-- Extension: Javac Ant Adapter                                                        -->
 <!-- =================================================================================== -->
+<!--
 <extension 
 	point="org.eclipse.ant.core.extraClasspathEntries">
 	<extraClasspathEntry
 		library="jsdtCompilerAdapter.jar">
 	</extraClasspathEntry>
 </extension> 
-
+-->
 <!-- =================================================================================== -->
 <!-- Extension: Javac Ant Task                                                           -->
 <!-- =================================================================================== -->
+<!--
 <extension point="org.eclipse.ant.core.antTasks">
 	<antTask
 		name="eclipse.checkDebugAttributes"
@@ -146,7 +148,7 @@
 		library="jsdtCompilerAdapter.jar">
 	</antTask>
 </extension>
-      
+   -->   
 <!-- =================================================================================== -->
 <!-- Extension: User Library Container                                                   -->
 <!-- =================================================================================== -->

@@ -185,7 +185,7 @@ public class NameLookup implements SuffixConstants {
 			Util.verbose(" -> working copy size: " + (workingCopies == null ? 0 : workingCopies.length));  //$NON-NLS-1$
 			start = System.currentTimeMillis();
 		}
-		this.restrictedRequestor=restrictedRequestor;
+//		this.restrictedRequestor=restrictedRequestor;
 		//this.restrictToLanguage=restrictToLanguage;
 		this.packageFragmentRoots = packageFragmentRoots;
 		if (workingCopies == null) {

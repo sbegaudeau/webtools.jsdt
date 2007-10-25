@@ -296,7 +296,6 @@ public final class CompletionEngine
 			    this.bindingType=bindingType;
 				this.packageName = packageName;
 				this.simpleTypeName = simpleTypeName;
-				this.enclosingTypeNames = enclosingTypeNames;
 				this.modifiers = modifiers;
 				this.accessibility = accessibility;
 			}
@@ -858,7 +857,7 @@ public final class CompletionEngine
 		if(length == 0) return;
 
 
-		next : for (int i = 0; i < length; i++) {
+		 for (int i = 0; i < length; i++) {
 			AcceptedBinding acceptedType = (AcceptedBinding)this.acceptedTypes.elementAt(i);
 			char[] packageName = acceptedType.packageName;
 			char[] bindingName = acceptedType.simpleTypeName;
