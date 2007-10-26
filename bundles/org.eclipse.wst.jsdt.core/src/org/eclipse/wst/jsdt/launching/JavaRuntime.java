@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.wst.jsdt.core.IClasspathContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
@@ -523,19 +524,19 @@ public final class JavaRuntime {
 //	public static IRuntimeClasspathEntry newDefaultProjectClasspathEntry(IJavaProject project) {
 //		return new DefaultProjectClasspathEntry(project);
 //	}	
-//	
-//	/**
-//	 * Returns a new runtime classpath entry for the given project.
-//	 * 
-//	 * @param project Java project
-//	 * @return runtime classpath entry
-//	 * @since 2.0
-//	 */
-//	public static IRuntimeClasspathEntry newProjectRuntimeClasspathEntry(IJavaProject project) {
-//		IClasspathEntry cpe = JavaCore.newProjectEntry(project.getProject().getFullPath());
-//		return newRuntimeClasspathEntry(cpe);
-//	}
-//	
+	
+	/**
+	 * Returns a new runtime classpath entry for the given project.
+	 * 
+	 * @param project Java project
+	 * @return runtime classpath entry
+	 * @since 2.0
+	 */
+	public static IRuntimeClasspathEntry newProjectRuntimeClasspathEntry(IJavaProject project) {
+		IClasspathEntry cpe = JavaCore.newProjectEntry(project.getProject().getFullPath());
+		return newRuntimeClasspathEntry(cpe);
+	}
+	
 	
 	/**
 	 * Returns a new runtime classpath entry for the given archive.
@@ -1127,19 +1128,22 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //		return result;
 	}
 			
-//	/**
-//	 * Computes and returns the unresolved class path for the given launch configuration.
-//	 * Variable and container entries are unresolved.
-//	 * 
-//	 * @param configuration launch configuration
-//	 * @return unresolved runtime classpath entries
-//	 * @exception CoreException if unable to compute the classpath
-//	 * @since 2.0
-//	 */
-//	public static IRuntimeClasspathEntry[] computeUnresolvedRuntimeClasspath(ILaunchConfiguration configuration) throws CoreException {
+	/**
+	 * Computes and returns the unresolved class path for the given launch configuration.
+	 * Variable and container entries are unresolved.
+	 * 
+	 * @param configuration launch configuration
+	 * @return unresolved runtime classpath entries
+	 * @exception CoreException if unable to compute the classpath
+	 * @since 2.0
+	 */
+	public static IRuntimeClasspathEntry[] computeUnresolvedRuntimeClasspath(ILaunchConfiguration configuration) throws CoreException {
 //		return getClasspathProvider(configuration).computeUnresolvedClasspath(configuration);
-//	}
-//	
+		//TODO: implement
+		throw new org.eclipse.wst.jsdt.core.UnimplementedException();
+
+	}
+	
 //	/**
 //	 * Resolves the given classpath, returning the resolved classpath
 //	 * in the context of the given launch configuration.
@@ -1693,34 +1697,34 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 		return new Path(JRE_CONTAINER);
 	}
 	
-//	/**
-//	 * Returns a path for the JRE classpath container identifying the 
-//	 * specified VM install by type and name.
-//	 * 
-//	 * @param vm vm install
-//	 * @return classpath container path
-//	 * @since 3.2
-//	 */
-//	public static IPath newJREContainerPath(IVMInstall vm) {
-//		return newJREContainerPath(vm.getVMInstallType().getId(), vm.getName());
-//	}
-//	
-//	/**
-//	 * Returns a path for the JRE classpath container identifying the 
-//	 * specified VM install by type and name.
-//	 * 
-//	 * @param typeId vm install type identifier
-//	 * @param name vm install name
-//	 * @return classpath container path
-//	 * @since 3.2
-//	 */	
-//	public static IPath newJREContainerPath(String typeId, String name) {
-//		IPath path = newDefaultJREContainerPath();
-//		path = path.append(typeId);
-//		path = path.append(name);
-//		return path;		
-//	}
-//	
+	/**
+	 * Returns a path for the JRE classpath container identifying the 
+	 * specified VM install by type and name.
+	 * 
+	 * @param vm vm install
+	 * @return classpath container path
+	 * @since 3.2
+	 */
+	public static IPath newJREContainerPath(IVMInstall vm) {
+		return newJREContainerPath(vm.getVMInstallType().getId(), vm.getName());
+	}
+	
+	/**
+	 * Returns a path for the JRE classpath container identifying the 
+	 * specified VM install by type and name.
+	 * 
+	 * @param typeId vm install type identifier
+	 * @param name vm install name
+	 * @return classpath container path
+	 * @since 3.2
+	 */	
+	public static IPath newJREContainerPath(String typeId, String name) {
+		IPath path = newDefaultJREContainerPath();
+		path = path.append(typeId);
+		path = path.append(name);
+		return path;		
+	}
+	
 //	/**
 //	 * Returns a path for the JRE classpath container identifying the 
 //	 * specified execution environment.
@@ -1735,19 +1739,19 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //		path = path.append(JREContainerInitializer.encodeEnvironmentId(environment.getId()));
 //		return path;
 //	}	
-//	
-//	/**
-//	 * Returns the JRE referenced by the specified JRE classpath container
-//	 * path or <code>null</code> if none.
-//	 *  
-//	 * @param jreContainerPath
-//	 * @return JRE referenced by the specified JRE classpath container
-//	 *  path or <code>null</code>
-//	 * @since 3.2
-//	 */
-//	public static IVMInstall getVMInstall(IPath jreContainerPath) {
-//		return JREContainerInitializer.resolveVM(jreContainerPath);
-//	}
+	
+	/**
+	 * Returns the JRE referenced by the specified JRE classpath container
+	 * path or <code>null</code> if none.
+	 *  
+	 * @param jreContainerPath
+	 * @return JRE referenced by the specified JRE classpath container
+	 *  path or <code>null</code>
+	 * @since 3.2
+	 */
+	public static IVMInstall getVMInstall(IPath jreContainerPath) {
+		return JREContainerInitializer.resolveVM(jreContainerPath);
+	}
 //	
 //	/**
 //	 * Returns the identifier of the VM install type referenced by the
@@ -1941,26 +1945,26 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	public static IVMConnector[] getVMConnectors() {
 //		return LaunchingPlugin.getDefault().getVMConnectors();
 //	}	
-//	
-//	/**
-//	 * Returns the preference store for the launching plug-in.
-//	 * 
-//	 * @return the preference store for the launching plug-in
-//	 * @since 2.0
-//	 */
-//	public static Preferences getPreferences() {
-//		return LaunchingPlugin.getDefault().getPluginPreferences();
-//	}
-//	
-//	/**
-//	 * Saves the preferences for the launching plug-in.
-//	 * 
-//	 * @since 2.0
-//	 */
-//	public static void savePreferences() {
-//		LaunchingPlugin.getDefault().savePluginPreferences();
-//	}
-//	
+	
+	/**
+	 * Returns the preference store for the launching plug-in.
+	 * 
+	 * @return the preference store for the launching plug-in
+	 * @since 2.0
+	 */
+	public static Preferences getPreferences() {
+		return JavaCore.getPlugin().getPluginPreferences();
+	}
+	
+	/**
+	 * Saves the preferences for the launching plug-in.
+	 * 
+	 * @since 2.0
+	 */
+	public static void savePreferences() {
+		 JavaCore.getPlugin().savePluginPreferences();
+	}
+	
 //	/**
 //	 * Registers the given resolver for the specified variable.
 //	 * 
