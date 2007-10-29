@@ -265,7 +265,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 			current = javaProject.getRawClasspath();
 		} catch (JavaModelException ex) {
 			// TODO Auto-generated catch block
-			ex.printStackTrace();
+		//	ex.printStackTrace();
 		}
 		for(int i = 0;i<current.length;i++) {
 			ClasspathContainerInitializer init = JSDScopeUtil.getContainerInitializer(current[i].getPath());
@@ -306,7 +306,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 		}
 	}
 
-//	private void removeStaleClasspath(String[] oldEntries) {
+	//private void removeStaleClasspath(String[] oldEntries) {
 //
 //	}
 
@@ -331,7 +331,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 			current = javaProject.getRawClasspath();
 		} catch (JavaModelException ex) {
 			// TODO Auto-generated catch block
-			ex.printStackTrace();
+		//	ex.printStackTrace();
 		}
 
 
@@ -501,7 +501,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 		if(file.isFile()) {
 			return file;
 		}else {
-//			IPath childPath = new Path(importName);
+	//		IPath childPath = new Path(importName);
 			IFile resolved = null;
 			/* since eclipse throws an exception if it doesn't exists (contrary to its API) we have to catch it*/
 
