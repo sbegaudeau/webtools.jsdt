@@ -1049,7 +1049,7 @@ public int getNextToken() throws InvalidInputException {
 		pushedBack = false;
 		return currentToken;
 	}
-	int previousToken = this.currentToken;
+//	int previousToken = this.currentToken;
 	int previousTokenNonWS = this.currentNonWhitespaceToken;
 	this.wasAcr = false;
 	if (this.diet) {
@@ -4335,11 +4335,11 @@ protected boolean checkIfRegExp() throws IndexOutOfBoundsException, InvalidInput
 
 	// consume next character
 	this.unicodeAsBackSlash = false;
-	boolean isUnicode = false;
+//	boolean isUnicode = false;
 	if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
 		&& (this.source[this.currentPosition] == 'u')) {
 		getNextUnicodeChar();
-		isUnicode = true;
+//		isUnicode = true;
 	} else {
 		if (this.withoutUnicodePtr != 0) {
 			unicodeStore();
@@ -4357,10 +4357,10 @@ protected boolean checkIfRegExp() throws IndexOutOfBoundsException, InvalidInput
 					this.unicodeAsBackSlash = false;
 					if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\') && (this.source[this.currentPosition] == 'u')) {
 						getNextUnicodeChar();
-						isUnicode = true;
+//						isUnicode = true;
 						this.withoutUnicodePtr--;
 					} else {
-						isUnicode = false;
+//						isUnicode = false;
 					}
 				} else {
 					if (this.withoutUnicodePtr == 0) {
@@ -4384,9 +4384,9 @@ protected boolean checkIfRegExp() throws IndexOutOfBoundsException, InvalidInput
 			if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
 				&& (this.source[this.currentPosition] == 'u')) {
 				getNextUnicodeChar();
-				isUnicode = true;
+//				isUnicode = true;
 			} else {
-				isUnicode = false;
+//				isUnicode = false;
 				if (this.withoutUnicodePtr != 0) {
 					unicodeStore();
 				}

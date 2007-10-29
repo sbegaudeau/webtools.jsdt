@@ -1263,7 +1263,7 @@ private boolean checkClassLiteralAccess() {
 }
 private boolean checkKeyword() {
 	if (currentElement instanceof RecoveredUnit) {
-		RecoveredUnit unit = (RecoveredUnit) currentElement;
+//		RecoveredUnit unit = (RecoveredUnit) currentElement;
 		int index = -1;
 		if ((index = this.indexOfAssistIdentifier()) > -1) {
 			int ptr = this.identifierPtr - this.identifierLengthStack[this.identifierLengthPtr] + index + 1;
@@ -2472,15 +2472,15 @@ protected void consumeMethodHeaderName(boolean isAnnotationMethod) {
 			// recovery
 			if (currentElement != null) {
 				//name
-				char[] selector = identifierStack[identifierPtr + 1];
-				long selectorSource = identifierPositionStack[identifierPtr + 1];
+//				char[] selector = identifierStack[identifierPtr + 1];
+//				long selectorSource = identifierPositionStack[identifierPtr + 1];
 
 //				//type
 //				TypeReference type = getTypeReference(intStack[intPtr--]);
 //				((CompletionOnSingleTypeReference)type).isCompletionNode = false;
 //				//modifiers
-				int declarationSourceStart = intStack[intPtr--];
-				int mod = intStack[intPtr--];
+//				int declarationSourceStart = intStack[intPtr--];
+//				int mod = intStack[intPtr--];
 
 //				if(Util.getLineNumber(type.sourceStart, scanner.lineEnds, 0, scanner.linePtr)
 //						!= Util.getLineNumber((int) (selectorSource >>> 32), scanner.lineEnds, 0, scanner.linePtr)) {

@@ -12,11 +12,9 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
-import org.eclipse.wst.jsdt.internal.compiler.impl.CharConstant;
 import org.eclipse.wst.jsdt.internal.compiler.impl.StringConstant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 
 public class CharLiteral extends NumberLiteral {
 	public char value;
@@ -31,53 +29,53 @@ public void computeConstant() {
 
 	constant = StringConstant.fromValue(String.valueOf(source));
 }
-private void computeValue() {
-	//The source is a  char[3] first and last char are '
-	//This is true for both regular char AND unicode char
-	//BUT not for escape char like '\b' which are char[4]....
-
-	if ((value = source[1]) != '\\')
-		return;
-	char digit;
-	switch (digit = source[2]) {
-		case 'b' :
-			value = '\b';
-			break;
-		case 't' :
-			value = '\t';
-			break;
-		case 'n' :
-			value = '\n';
-			break;
-		case 'f' :
-			value = '\f';
-			break;
-		case 'r' :
-			value = '\r';
-			break;
-		case '\"' :
-			value = '\"';
-			break;
-		case '\'' :
-			value = '\'';
-			break;
-		case '\\' :
-			value = '\\';
-			break;
-		default : //octal (well-formed: ended by a ' )
-			int number = ScannerHelper.getNumericValue(digit);
-			if ((digit = source[3]) != '\'')
-				number = (number * 8) + ScannerHelper.getNumericValue(digit);
-			else {
-				constant = CharConstant.fromValue(value = (char) number);
-				break;
-			}
-			if ((digit = source[4]) != '\'')
-				number = (number * 8) + ScannerHelper.getNumericValue(digit);
-			value = (char) number;
-			break;
-	}
-}
+//private void computeValue() {
+//	//The source is a  char[3] first and last char are '
+//	//This is true for both regular char AND unicode char
+//	//BUT not for escape char like '\b' which are char[4]....
+//
+//	if ((value = source[1]) != '\\')
+//		return;
+//	char digit;
+//	switch (digit = source[2]) {
+//		case 'b' :
+//			value = '\b';
+//			break;
+//		case 't' :
+//			value = '\t';
+//			break;
+//		case 'n' :
+//			value = '\n';
+//			break;
+//		case 'f' :
+//			value = '\f';
+//			break;
+//		case 'r' :
+//			value = '\r';
+//			break;
+//		case '\"' :
+//			value = '\"';
+//			break;
+//		case '\'' :
+//			value = '\'';
+//			break;
+//		case '\\' :
+//			value = '\\';
+//			break;
+//		default : //octal (well-formed: ended by a ' )
+//			int number = ScannerHelper.getNumericValue(digit);
+//			if ((digit = source[3]) != '\'')
+//				number = (number * 8) + ScannerHelper.getNumericValue(digit);
+//			else {
+//				constant = CharConstant.fromValue(value = (char) number);
+//				break;
+//			}
+//			if ((digit = source[4]) != '\'')
+//				number = (number * 8) + ScannerHelper.getNumericValue(digit);
+//			value = (char) number;
+//			break;
+//	}
+//}
 /**
  * CharLiteral code generation
  *

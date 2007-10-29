@@ -586,7 +586,7 @@ public class InterpreterEngine extends ASTVisitor implements Contants{
 		else
 			arguments= new Value[0];
 		
-		function.execute(this, (ObjectValue)receiver, arguments);
+		function.execute(this,  receiver, arguments);
 		this.stackPtr=restoreStackPtr;
 		pushValue(receiver,false);
 

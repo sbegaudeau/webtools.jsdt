@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.core.formatter;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.internal.formatter.DefaultCodeFormatterOptions;
 import org.eclipse.wst.jsdt.internal.formatter.align.Alignment;
 
@@ -3113,10 +3112,10 @@ public class DefaultCodeFormatterConstants {
 	 *     - possible values:   { TRUE, FALSE }
 	 *     - default:           FALSE
 	 * </pre>
-	 * Note that this option is ignored if the formatter is created with the mode {@link ToolFactory#M_FORMAT_NEW}.
+	 * Note that this option is ignored if the formatter is created with the mode {@link org.eclipse.wst.jsdt.core.ToolFactory#M_FORMAT_NEW}.
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @see ToolFactory#createCodeFormatter(Map, int)
+	 * @see org.eclipse.wst.jsdt.core.ToolFactory#createCodeFormatter(Map, int)
 	 * @since 3.3
 	 */
 	public static final String FORMATTER_NEVER_INDENT_BLOCK_COMMENTS_ON_FIRST_COLUMN = JavaCore.PLUGIN_ID + ".formatter.never_indent_block_comments_on_first_column"; //$NON-NLS-1$
@@ -3127,10 +3126,10 @@ public class DefaultCodeFormatterConstants {
 	 *     - possible values:   { TRUE, FALSE }
 	 *     - default:           FALSE
 	 * </pre>
-	 * Note that this option is ignored if the formatter is created with the mode {@link ToolFactory#M_FORMAT_NEW}.
+	 * Note that this option is ignored if the formatter is created with the mode {@link org.eclipse.wst.jsdt.core.ToolFactory#M_FORMAT_NEW}.
 	 * @see #TRUE
 	 * @see #FALSE
-	 * @see ToolFactory#createCodeFormatter(Map, int)
+	 * @see org.eclipse.wst.jsdt.core.ToolFactory#createCodeFormatter(Map, int)
 	 * @since 3.3
 	 */
 	public static final String FORMATTER_NEVER_INDENT_LINE_COMMENTS_ON_FIRST_COLUMN = JavaCore.PLUGIN_ID + ".formatter.never_indent_line_comments_on_first_column"; //$NON-NLS-1$

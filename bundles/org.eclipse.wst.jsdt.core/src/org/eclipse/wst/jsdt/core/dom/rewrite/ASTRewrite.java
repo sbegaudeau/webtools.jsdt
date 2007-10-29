@@ -19,14 +19,10 @@ import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
@@ -165,7 +161,7 @@ public class ASTRewrite {
 	 * @param options the table of formatter options
 	 * (key type: <code>String</code>; value type: <code>String</code>);
 	 * or <code>null</code> to use the standard global options
-	 * {@link JavaCore#getOptions() JavaCore.getOptions()}
+	 * {@link org.eclipse.wst.jsdt.core.JavaCore#getOptions() org.eclipse.wst.jsdt.core.JavaCore.getOptions()}
 	 * @return text edit object describing the changes to the
 	 * document corresponding to the changes recorded by this rewriter
 	 * @throws IllegalArgumentException An <code>IllegalArgumentException</code>
@@ -196,9 +192,9 @@ public class ASTRewrite {
 	 * The type root's source itself is not modified by this method call.
 	 * <p>
 	 * Important: This API can only be used if the modified AST has been created from a
-	 * {@link ITypeRoot} with source. That means {@link ASTParser#setSource(ICompilationUnit)},
-	 * {@link ASTParser#setSource(IClassFile)} or {@link ASTParser#setSource(ITypeRoot)}
-	 * has been used when initializing the {@link ASTParser}. A {@link IllegalArgumentException} is thrown
+	 * {@link ITypeRoot} with source. That means {@link org.eclipse.wst.jsdt.core.dom.ASTParser#setSource(org.eclipse.wst.jsdt.core.ICompilationUnit)},
+	 * {@link org.eclipse.wst.jsdt.core.dom.ASTParser#setSource(org.eclipse.wst.jsdt.core.IClassFile)} or {@link org.eclipse.wst.jsdt.core.dom.ASTParser#setSource(ITypeRoot)}
+	 * has been used when initializing the {@link org.eclipse.wst.jsdt.core.dom.ASTParser}. A {@link IllegalArgumentException} is thrown
 	 * otherwise. An {@link IllegalArgumentException} is also thrown when the type roots buffer does not correspond
 	 * anymore to the AST. Use {@link #rewriteAST(IDocument, Map)} for all ASTs created from other content.
 	 * </p>

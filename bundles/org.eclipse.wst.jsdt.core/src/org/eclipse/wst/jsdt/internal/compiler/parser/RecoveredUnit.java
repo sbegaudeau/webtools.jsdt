@@ -317,7 +317,6 @@ public ProgramElement updatedASTNode() {
 public void updateFromParserState() {
 		if (parser().astPtr>=0)
 		{
-			int i=0;
 		}
 }
 }

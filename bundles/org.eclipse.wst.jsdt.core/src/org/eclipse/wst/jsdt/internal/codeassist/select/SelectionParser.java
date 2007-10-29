@@ -28,7 +28,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CaseStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ExplicitConstructorCall;
@@ -255,7 +254,7 @@ protected void consumeArrayCreationExpressionWithoutInitializer() {
 
 	super.consumeArrayCreationExpressionWithoutInitializer();
 
-	ArrayAllocationExpression alloc = (ArrayAllocationExpression)expressionStack[expressionPtr];
+//	ArrayAllocationExpression alloc = (ArrayAllocationExpression)expressionStack[expressionPtr];
 //	if (alloc.type == assistNode){
 //		if (!diet){
 //			this.restartRecovery	= true;	// force to restart in recovery mode
@@ -269,7 +268,7 @@ protected void consumeArrayCreationExpressionWithInitializer() {
 
 	super.consumeArrayCreationExpressionWithInitializer();
 
-	ArrayAllocationExpression alloc = (ArrayAllocationExpression)expressionStack[expressionPtr];
+//	ArrayAllocationExpression alloc = (ArrayAllocationExpression)expressionStack[expressionPtr];
 //	if (alloc.type == assistNode){
 //		if (!diet){
 //			this.restartRecovery	= true;	// force to restart in recovery mode
@@ -464,7 +463,7 @@ protected void consumeEnterVariable() {
 
 	super.consumeEnterVariable();
 
-	AbstractVariableDeclaration variable = (AbstractVariableDeclaration) astStack[astPtr];
+//	AbstractVariableDeclaration variable = (AbstractVariableDeclaration) astStack[astPtr];
 //	if (variable.type == assistNode){
 //		if (!diet){
 //			this.restartRecovery	= true;	// force to restart in recovery mode

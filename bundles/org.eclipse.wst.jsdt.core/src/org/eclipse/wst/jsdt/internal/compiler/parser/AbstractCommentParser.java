@@ -910,14 +910,14 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 		int currentPosition = this.scanner.currentPosition;
 		try {
 			ArrayList  typeRefs = new ArrayList();
-			Object reference = null;
-			int previousPosition = -1;
-			int typeRefStartPosition = -1;
+//			Object reference = null;
+//			int previousPosition = -1;
+//			int typeRefStartPosition = -1;
 			boolean expectingRef=true;
 
 			// Get reference tokens
 			nextToken : while (this.index < this.scanner.eofPosition ) {
-				previousPosition = this.index;
+//				previousPosition = this.index;
 				int token = readTokenSafely();
 				switch (token) {
 				case TerminalTokens.TokenNameRBRACE :
@@ -968,7 +968,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 					case TerminalTokens.TokenNameIdentifier :
 						     if (!expectingRef)
 						    	 return null;
-							typeRefStartPosition = this.scanner.getCurrentTokenStartPosition();
+//							typeRefStartPosition = this.scanner.getCurrentTokenStartPosition();
 							Object ref =  parseQualifiedName(true);
 							if (ref!=null)
 								typeRefs.add(ref);

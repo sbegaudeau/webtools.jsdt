@@ -672,8 +672,8 @@ public class ClassFile
 		}
 	}
 
-	private int addFieldAttributes(FieldBinding fieldBinding, int fieldAttributeOffset) {
-		return 0;
+//	private int addFieldAttributes(FieldBinding fieldBinding, int fieldAttributeOffset) {
+//		return 0;
 //		int attributesNumber = 0;
 //		// 4.7.2 only static constant fields get a ConstantAttribute
 //		// Generate the constantValueAttribute
@@ -817,47 +817,47 @@ public class ClassFile
 //			}
 //		}
 //		return attributesNumber;
-	}
+//	}
 
 	/**
 	 * INTERNAL USE-ONLY
 	 * This methods generates the bytes for the given field binding
 	 * @param fieldBinding the given field binding
 	 */
-	private void addFieldInfo(FieldBinding fieldBinding) {
-		// check that there is enough space to write all the bytes for the field info corresponding
-		// to the @fieldBinding
-		if (contentsOffset + 8 >= contents.length) {
-			resizeContents(8);
-		}
-		// Now we can generate all entries into the byte array
-		// First the accessFlags
-		int accessFlags = fieldBinding.getAccessFlags();
-		if (targetJDK < ClassFileConstants.JDK1_5) {
-		    // pre 1.5, synthetic was an attribute, not a modifier
-		    accessFlags &= ~ClassFileConstants.AccSynthetic;
-		}
-		contents[contentsOffset++] = (byte) (accessFlags >> 8);
-		contents[contentsOffset++] = (byte) accessFlags;
-		// Then the nameIndex
-		int nameIndex = constantPool.literalIndex(fieldBinding.name);
-		contents[contentsOffset++] = (byte) (nameIndex >> 8);
-		contents[contentsOffset++] = (byte) nameIndex;
-		// Then the descriptorIndex
-		int descriptorIndex = constantPool.literalIndex(fieldBinding.type);
-		contents[contentsOffset++] = (byte) (descriptorIndex >> 8);
-		contents[contentsOffset++] = (byte) descriptorIndex;
-		int fieldAttributeOffset = contentsOffset;
-		int attributeNumber = 0;
-		// leave some space for the number of attributes
-		contentsOffset += 2;
-		attributeNumber += addFieldAttributes(fieldBinding, fieldAttributeOffset);
-		if (contentsOffset + 2 >= contents.length) {
-			resizeContents(2);
-		}
-		contents[fieldAttributeOffset++] = (byte) (attributeNumber >> 8);
-		contents[fieldAttributeOffset] = (byte) attributeNumber;
-	}
+//	private void addFieldInfo(FieldBinding fieldBinding) {
+//		// check that there is enough space to write all the bytes for the field info corresponding
+//		// to the @fieldBinding
+//		if (contentsOffset + 8 >= contents.length) {
+//			resizeContents(8);
+//		}
+//		// Now we can generate all entries into the byte array
+//		// First the accessFlags
+//		int accessFlags = fieldBinding.getAccessFlags();
+//		if (targetJDK < ClassFileConstants.JDK1_5) {
+//		    // pre 1.5, synthetic was an attribute, not a modifier
+//		    accessFlags &= ~ClassFileConstants.AccSynthetic;
+//		}
+//		contents[contentsOffset++] = (byte) (accessFlags >> 8);
+//		contents[contentsOffset++] = (byte) accessFlags;
+//		// Then the nameIndex
+//		int nameIndex = constantPool.literalIndex(fieldBinding.name);
+//		contents[contentsOffset++] = (byte) (nameIndex >> 8);
+//		contents[contentsOffset++] = (byte) nameIndex;
+//		// Then the descriptorIndex
+//		int descriptorIndex = constantPool.literalIndex(fieldBinding.type);
+//		contents[contentsOffset++] = (byte) (descriptorIndex >> 8);
+//		contents[contentsOffset++] = (byte) descriptorIndex;
+//		int fieldAttributeOffset = contentsOffset;
+//		int attributeNumber = 0;
+//		// leave some space for the number of attributes
+//		contentsOffset += 2;
+//		attributeNumber += addFieldAttributes(fieldBinding, fieldAttributeOffset);
+//		if (contentsOffset + 2 >= contents.length) {
+//			resizeContents(2);
+//		}
+//		contents[fieldAttributeOffset++] = (byte) (attributeNumber >> 8);
+//		contents[fieldAttributeOffset] = (byte) attributeNumber;
+//	}
 	/**
 	 * INTERNAL USE-ONLY
 	 * This methods generate all the fields infos for the receiver.
@@ -900,37 +900,37 @@ public class ClassFile
 //			}
 //		}
 	}
-	private void addMissingAbstractProblemMethod(MethodDeclaration methodDeclaration, MethodBinding methodBinding, CategorizedProblem problem, CompilationResult compilationResult) {
-		// always clear the strictfp/native/abstract bit for a problem method
-		generateMethodInfoHeader(methodBinding, methodBinding.modifiers & ~(ClassFileConstants.AccStrictfp | ClassFileConstants.AccNative | ClassFileConstants.AccAbstract));
-		int methodAttributeOffset = contentsOffset;
-		int attributeNumber = generateMethodInfoAttribute(methodBinding);
-
-		// Code attribute
-		attributeNumber++;
-
-		int codeAttributeOffset = contentsOffset;
-		generateCodeAttributeHeader();
-		StringBuffer buffer = new StringBuffer(25);
-		buffer.append("\t"  + problem.getMessage() + "\n" ); //$NON-NLS-1$ //$NON-NLS-2$
-		buffer.insert(0, Messages.compilation_unresolvedProblem);
-		String problemString = buffer.toString();
-
-		codeStream.init(this);
-		codeStream.preserveUnusedLocals = true;
-		codeStream.initializeMaxLocals(methodBinding);
-
-		// return codeStream.generateCodeAttributeForProblemMethod(comp.options.runtimeExceptionNameForCompileError, "")
-		codeStream.generateCodeAttributeForProblemMethod(problemString);
-
-		completeCodeAttributeForMissingAbstractProblemMethod(
-			methodBinding,
-			codeAttributeOffset,
-			compilationResult.getLineSeparatorPositions(),
-			problem.getSourceLineNumber());
-
-		completeMethodInfo(methodAttributeOffset, attributeNumber);
-	}
+//	private void addMissingAbstractProblemMethod(MethodDeclaration methodDeclaration, MethodBinding methodBinding, CategorizedProblem problem, CompilationResult compilationResult) {
+//		// always clear the strictfp/native/abstract bit for a problem method
+//		generateMethodInfoHeader(methodBinding, methodBinding.modifiers & ~(ClassFileConstants.AccStrictfp | ClassFileConstants.AccNative | ClassFileConstants.AccAbstract));
+//		int methodAttributeOffset = contentsOffset;
+//		int attributeNumber = generateMethodInfoAttribute(methodBinding);
+//
+//		// Code attribute
+//		attributeNumber++;
+//
+//		int codeAttributeOffset = contentsOffset;
+//		generateCodeAttributeHeader();
+//		StringBuffer buffer = new StringBuffer(25);
+//		buffer.append("\t"  + problem.getMessage() + "\n" ); //$NON-NLS-1$ //$NON-NLS-2$
+//		buffer.insert(0, Messages.compilation_unresolvedProblem);
+//		String problemString = buffer.toString();
+//
+//		codeStream.init(this);
+//		codeStream.preserveUnusedLocals = true;
+//		codeStream.initializeMaxLocals(methodBinding);
+//
+//		// return codeStream.generateCodeAttributeForProblemMethod(comp.options.runtimeExceptionNameForCompileError, "")
+//		codeStream.generateCodeAttributeForProblemMethod(problemString);
+//
+//		completeCodeAttributeForMissingAbstractProblemMethod(
+//			methodBinding,
+//			codeAttributeOffset,
+//			compilationResult.getLineSeparatorPositions(),
+//			problem.getSourceLineNumber());
+//
+//		completeMethodInfo(methodAttributeOffset, attributeNumber);
+//	}
 
 	/**
 	 * INTERNAL USE-ONLY

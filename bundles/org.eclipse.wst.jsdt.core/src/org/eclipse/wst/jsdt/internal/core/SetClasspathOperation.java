@@ -14,13 +14,12 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 
 /**
  * This operation sets an <code>IJavaProject</code>'s classpath.
  *
- * @see IJavaProject
+ * @see org.eclipse.wst.jsdt.core.IJavaProject
  */
 public class SetClasspathOperation extends ChangeClasspathOperation {
 

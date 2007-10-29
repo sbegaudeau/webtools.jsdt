@@ -19,10 +19,7 @@ import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IOpenable;
-import org.eclipse.wst.jsdt.core.IParent;
-import org.eclipse.wst.jsdt.core.ISourceManipulation;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.JavaModelException;
@@ -63,7 +60,7 @@ protected Object createElementInfo() {
 	return null; // not used for source ref elements
 }
 /**
- * @see ISourceManipulation
+ * @see org.eclipse.wst.jsdt.core.ISourceManipulation
  */
 public void copy(IJavaElement container, IJavaElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaModelException {
 	if (container == null) {
@@ -82,7 +79,7 @@ public void copy(IJavaElement container, IJavaElement sibling, String rename, bo
 	getJavaModel().copy(elements, containers, siblings, renamings, force, monitor);
 }
 /**
- * @see ISourceManipulation
+ * @see org.eclipse.wst.jsdt.core.ISourceManipulation
  */
 public void delete(boolean force, IProgressMonitor monitor) throws JavaModelException {
 	IJavaElement[] elements = new IJavaElement[] {this};
@@ -119,7 +116,7 @@ protected void generateInfos(Object info, HashMap newElements, IProgressMonitor 
 	}
 }
 /**
- * @see IMember
+ * @see org.eclipse.wst.jsdt.core.IMember
  */
 public ICompilationUnit getCompilationUnit() {
 	return (ICompilationUnit) getAncestor(COMPILATION_UNIT);
@@ -163,7 +160,7 @@ public IJavaElement getHandleUpdatingCountFromMemento(MementoTokenizer memento, 
 	return getHandleFromMemento(token, memento, owner);
 }
 /*
- * @see IMember#getOccurrenceCount()
+ * @see org.eclipse.wst.jsdt.core.IMember#getOccurrenceCount()
  */
 public int getOccurrenceCount() {
 	return this.occurrenceCount;
@@ -230,7 +227,7 @@ public IResource getUnderlyingResource() throws JavaModelException {
 	return getParent().getUnderlyingResource();
 }
 /**
- * @see IParent
+ * @see org.eclipse.wst.jsdt.core.IParent
  */
 public boolean hasChildren() throws JavaModelException {
 	return getChildren().length > 0;
@@ -243,7 +240,7 @@ public boolean isStructureKnown() throws JavaModelException {
 	return true;
 }
 /**
- * @see ISourceManipulation
+ * @see org.eclipse.wst.jsdt.core.ISourceManipulation
  */
 public void move(IJavaElement container, IJavaElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaModelException {
 	if (container == null) {
@@ -265,7 +262,7 @@ public void move(IJavaElement container, IJavaElement sibling, String rename, bo
 	getJavaModel().move(elements, containers, siblings, renamings, force, monitor);
 }
 /**
- * @see ISourceManipulation
+ * @see org.eclipse.wst.jsdt.core.ISourceManipulation
  */
 public void rename(String newName, boolean force, IProgressMonitor monitor) throws JavaModelException {
 	if (newName == null) {

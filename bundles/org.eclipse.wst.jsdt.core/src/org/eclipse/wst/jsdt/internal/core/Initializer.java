@@ -15,8 +15,6 @@ import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IInitializer;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.ISourceManipulation;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaModelException;
@@ -69,13 +67,13 @@ public String readableName() {
 	return ((JavaElement)getDeclaringType()).readableName();
 }
 /**
- * @see ISourceManipulation
+ * @see org.eclipse.wst.jsdt.core.ISourceManipulation
  */
 public void rename(String newName, boolean force, IProgressMonitor monitor) throws JavaModelException {
 	throw new JavaModelException(new JavaModelStatus(IJavaModelStatusConstants.INVALID_ELEMENT_TYPES, this));
 }
 /**
- * @see IMember
+ * @see org.eclipse.wst.jsdt.core.IMember
  */
 public ISourceRange getNameRange() {
 	return null;

@@ -326,17 +326,17 @@ protected void compute() throws JavaModelException, CoreException {
 	} // else a RegionBasedTypeHierarchy should be used
 }
 
-private String typehash(IJavaElement type)
-{
-	StringBuffer sb=new StringBuffer();
-	while (type !=null && type.getElementType()!=IJavaElement.JAVA_MODEL)
-	{
-		sb.append(type.getElementName());
-		sb.append(" - ");
-		type=type.getParent();
-	}
-	return sb.toString();
-}
+//private String typehash(IJavaElement type)
+//{
+//	StringBuffer sb=new StringBuffer();
+//	while (type !=null && type.getElementType()!=IJavaElement.JAVA_MODEL)
+//	{
+//		sb.append(type.getElementName());
+//		sb.append(" - ");
+//		type=type.getParent();
+//	}
+//	return sb.toString();
+//}
 /**
  * @see ITypeHierarchy
  */

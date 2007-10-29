@@ -18,8 +18,6 @@ import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.internal.compiler.SourceElementParser;
 import org.eclipse.wst.jsdt.internal.core.index.Index;
 import org.eclipse.wst.jsdt.internal.core.search.processing.JobManager;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
@@ -43,11 +41,11 @@ class AddLibraryFolderToIndex extends IndexRequest {
 		if (!this.manager.isJobWaiting(request))
 			this.manager.request(request);
 	}
-	private void indexFile(IPath resource) {
-		AddLibraryFileToIndex request = new AddLibraryFileToIndex(resource,this.manager);
-		if (!this.manager.isJobWaiting(request))
-			this.manager.request(request);
-	}
+//	private void indexFile(IPath resource) {
+//		AddLibraryFileToIndex request = new AddLibraryFileToIndex(resource,this.manager);
+//		if (!this.manager.isJobWaiting(request))
+//			this.manager.request(request);
+//	}
 
 	public boolean execute(IProgressMonitor progressMonitor) {
 
@@ -65,9 +63,9 @@ class AddLibraryFolderToIndex extends IndexRequest {
 		try {
 			monitor.enterRead(); // ask permission to read
 
-			final IPath container = this.containerPath;
-			final IndexManager indexManager = this.manager;
-			final SourceElementParser parser = indexManager.getSourceElementParser(JavaCore.create(this.project), null/*requestor will be set by indexer*/);
+//			final IPath container = this.containerPath;
+//			final IndexManager indexManager = this.manager;
+//			final SourceElementParser parser = indexManager.getSourceElementParser(JavaCore.create(this.project), null/*requestor will be set by indexer*/);
 			if (this.exclusionPatterns == null && this.inclusionPatterns == null) {
 				folder.accept(
 					new IResourceProxyVisitor() {

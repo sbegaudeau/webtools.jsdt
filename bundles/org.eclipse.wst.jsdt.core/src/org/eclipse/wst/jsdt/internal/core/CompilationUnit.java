@@ -32,7 +32,6 @@ import org.eclipse.wst.jsdt.core.CompletionRequestor;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.IBufferFactory;
-import org.eclipse.wst.jsdt.core.ICodeAssist;
 import org.eclipse.wst.jsdt.core.ICodeCompletionRequestor;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.ICompletionRequestor;
@@ -44,17 +43,13 @@ import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IMethod;
-import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IProblemRequestor;
-import org.eclipse.wst.jsdt.core.ISourceManipulation;
 import org.eclipse.wst.jsdt.core.ISourceRange;
-import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.IWorkingCopy;
 import org.eclipse.wst.jsdt.core.JavaConventions;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
@@ -281,7 +276,7 @@ public boolean canBufferBeRemovedFromCache(IBuffer buffer) {
 	if (getPerWorkingCopyInfo() != null) return false; // working copy buffers should remain in the cache until working copy is destroyed
 	return super.canBufferBeRemovedFromCache(buffer);
 }/*
- * @see IOpenable#close
+ * @see org.eclipse.wst.jsdt.core.IOpenable#close
  */
 public void close() throws JavaModelException {
 	if (getPerWorkingCopyInfo() != null) return; // a working copy must remain opened until it is discarded
@@ -296,14 +291,14 @@ protected void closing(Object info) {
 	} // else the buffer of a working copy must remain open for the lifetime of the working copy
 }
 /**
- * @see ICodeAssist#codeComplete(int, ICompletionRequestor)
+ * @see org.eclipse.wst.jsdt.core.ICodeAssist#codeComplete(int, ICompletionRequestor)
  * @deprecated
  */
 public void codeComplete(int offset, ICompletionRequestor requestor) throws JavaModelException {
 	codeComplete(offset, requestor, DefaultWorkingCopyOwner.PRIMARY);
 }
 /**
- * @see ICodeAssist#codeComplete(int, ICompletionRequestor, WorkingCopyOwner)
+ * @see org.eclipse.wst.jsdt.core.ICodeAssist#codeComplete(int, ICompletionRequestor, WorkingCopyOwner)
  * @deprecated
  */
 public void codeComplete(int offset, ICompletionRequestor requestor, WorkingCopyOwner workingCopyOwner) throws JavaModelException {
@@ -313,7 +308,7 @@ public void codeComplete(int offset, ICompletionRequestor requestor, WorkingCopy
 	codeComplete(offset, new org.eclipse.wst.jsdt.internal.codeassist.CompletionRequestorWrapper(requestor), workingCopyOwner);
 }
 /**
- * @see ICodeAssist#codeComplete(int, ICodeCompletionRequestor)
+ * @see org.eclipse.wst.jsdt.core.ICodeAssist#codeComplete(int, ICodeCompletionRequestor)
  * @deprecated - use codeComplete(int, ICompletionRequestor)
  */
 public void codeComplete(int offset, final ICodeCompletionRequestor requestor) throws JavaModelException {
@@ -386,19 +381,19 @@ public void codeComplete(int offset, CompletionRequestor requestor, WorkingCopyO
 }
 
 /**
- * @see ICodeAssist#codeSelect(int, int)
+ * @see org.eclipse.wst.jsdt.core.ICodeAssist#codeSelect(int, int)
  */
 public IJavaElement[] codeSelect(int offset, int length) throws JavaModelException {
 	return codeSelect(offset, length, DefaultWorkingCopyOwner.PRIMARY);
 }
 /**
- * @see ICodeAssist#codeSelect(int, int, WorkingCopyOwner)
+ * @see org.eclipse.wst.jsdt.core.ICodeAssist#codeSelect(int, int, WorkingCopyOwner)
  */
 public IJavaElement[] codeSelect(int offset, int length, WorkingCopyOwner workingCopyOwner) throws JavaModelException {
 	return super.codeSelect(this, offset, length, workingCopyOwner);
 }
 /**
- * @see IWorkingCopy#commit(boolean, IProgressMonitor)
+ * @see org.eclipse.wst.jsdt.core.IWorkingCopy#commit(boolean, IProgressMonitor)
  * @deprecated
  */
 public void commit(boolean force, IProgressMonitor monitor) throws JavaModelException {
@@ -412,7 +407,7 @@ public void commitWorkingCopy(boolean force, IProgressMonitor monitor) throws Ja
 	op.runOperation(monitor);
 }
 /**
- * @see ISourceManipulation#copy(IJavaElement, IJavaElement, String, boolean, IProgressMonitor)
+ * @see org.eclipse.wst.jsdt.core.ISourceManipulation#copy(IJavaElement, IJavaElement, String, boolean, IProgressMonitor)
  */
 public void copy(IJavaElement container, IJavaElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaModelException {
 	if (container == null) {
@@ -485,14 +480,14 @@ public IType createType(String content, IJavaElement sibling, boolean force, IPr
 	return (IType) op.getResultElements()[0];
 }
 /**
- * @see ISourceManipulation#delete(boolean, IProgressMonitor)
+ * @see org.eclipse.wst.jsdt.core.ISourceManipulation#delete(boolean, IProgressMonitor)
  */
 public void delete(boolean force, IProgressMonitor monitor) throws JavaModelException {
 	IJavaElement[] elements= new IJavaElement[] {this};
 	getJavaModel().delete(elements, force, monitor);
 }
 /**
- * @see IWorkingCopy#destroy()
+ * @see org.eclipse.wst.jsdt.core.IWorkingCopy#destroy()
  * @deprecated
  */
 public void destroy() {
@@ -607,7 +602,7 @@ public IType findPrimaryType() {
 }
 
 /**
- * @see IWorkingCopy#findSharedWorkingCopy(IBufferFactory)
+ * @see org.eclipse.wst.jsdt.core.IWorkingCopy#findSharedWorkingCopy(IBufferFactory)
  * @deprecated
  */
 public IJavaElement findSharedWorkingCopy(IBufferFactory factory) {
@@ -853,7 +848,7 @@ public char[] getMainTypeName(){
 	return Util.getNameWithoutJavaLikeExtension(getElementName()).toCharArray();
 }
 /**
- * @see IWorkingCopy#getOriginal(IJavaElement)
+ * @see org.eclipse.wst.jsdt.core.IWorkingCopy#getOriginal(IJavaElement)
  * @deprecated
  */
 public IJavaElement getOriginal(IJavaElement workingCopyElement) {
@@ -867,7 +862,7 @@ public IJavaElement getOriginal(IJavaElement workingCopyElement) {
 	return workingCopyElement.getPrimaryElement();
 }
 /**
- * @see IWorkingCopy#getOriginalElement()
+ * @see org.eclipse.wst.jsdt.core.IWorkingCopy#getOriginalElement()
  * @deprecated
  */
 public IJavaElement getOriginalElement() {
@@ -954,7 +949,7 @@ public IResource getResource() {
 	return null;
 }
 /**
- * @see ISourceReference#getSource()
+ * @see org.eclipse.wst.jsdt.core.ISourceReference#getSource()
  */
 public String getSource() throws JavaModelException {
 	IBuffer buffer = getBuffer();
@@ -962,7 +957,7 @@ public String getSource() throws JavaModelException {
 	return buffer.getContents();
 }
 /**
- * @see ISourceReference#getSourceRange()
+ * @see org.eclipse.wst.jsdt.core.ISourceReference#getSourceRange()
  */
 public ISourceRange getSourceRange() throws JavaModelException {
 	return ((CompilationUnitElementInfo) getElementInfo()).getSourceRange();
@@ -990,7 +985,7 @@ public IResource getUnderlyingResource() throws JavaModelException {
 	return super.getUnderlyingResource();
 }
 /**
- * @see IWorkingCopy#getSharedWorkingCopy(IProgressMonitor, IBufferFactory, IProblemRequestor)
+ * @see org.eclipse.wst.jsdt.core.IWorkingCopy#getSharedWorkingCopy(IProgressMonitor, IBufferFactory, IProblemRequestor)
  * @deprecated
  */
 public IJavaElement getSharedWorkingCopy(IProgressMonitor pm, IBufferFactory factory, IProblemRequestor problemRequestor) throws JavaModelException {
@@ -1001,7 +996,7 @@ public IJavaElement getSharedWorkingCopy(IProgressMonitor pm, IBufferFactory fac
 	return getWorkingCopy(BufferFactoryWrapper.create(factory), problemRequestor, pm);
 }
 /**
- * @see IWorkingCopy#getWorkingCopy()
+ * @see org.eclipse.wst.jsdt.core.IWorkingCopy#getWorkingCopy()
  * @deprecated
  */
 public IJavaElement getWorkingCopy() throws JavaModelException {
@@ -1020,7 +1015,7 @@ public ICompilationUnit getWorkingCopy(WorkingCopyOwner workingCopyOwner, IProgr
 	return getWorkingCopy(workingCopyOwner, null, monitor);
 }
 /**
- * @see IWorkingCopy#getWorkingCopy(IProgressMonitor, IBufferFactory, IProblemRequestor)
+ * @see org.eclipse.wst.jsdt.core.IWorkingCopy#getWorkingCopy(IProgressMonitor, IBufferFactory, IProblemRequestor)
  * @deprecated
  */
 public IJavaElement getWorkingCopy(IProgressMonitor monitor, IBufferFactory factory, IProblemRequestor problemRequestor) throws JavaModelException {
@@ -1066,7 +1061,7 @@ public boolean hasResourceChanged() {
 	return ((CompilationUnitElementInfo)info).timestamp != resource.getModificationStamp();
 }
 /**
- * @see IWorkingCopy#isBasedOn(IResource)
+ * @see org.eclipse.wst.jsdt.core.IWorkingCopy#isBasedOn(IResource)
  * @deprecated
  */
 public boolean isBasedOn(IResource resource) {
@@ -1075,7 +1070,7 @@ public boolean isBasedOn(IResource resource) {
 	return !hasResourceChanged();
 }
 /**
- * @see IOpenable#isConsistent()
+ * @see org.eclipse.wst.jsdt.core.IOpenable#isConsistent()
  */
 public boolean isConsistent() {
 	return !JavaModelManager.getJavaModelManager().getElementsOutOfSynchWithBuffers().contains(this);
@@ -1118,7 +1113,7 @@ public boolean isWorkingCopy() {
 	return !isPrimary() || getPerWorkingCopyInfo() != null;
 }
 /**
- * @see IOpenable#makeConsistent(IProgressMonitor)
+ * @see org.eclipse.wst.jsdt.core.IOpenable#makeConsistent(IProgressMonitor)
  */
 public void makeConsistent(IProgressMonitor monitor) throws JavaModelException {
 	makeConsistent(NO_AST, false/*don't resolve bindings*/, 0 /* don't perform statements recovery */, null/*don't collect problems but report them*/, monitor);
@@ -1144,7 +1139,7 @@ public org.eclipse.wst.jsdt.core.dom.CompilationUnit makeConsistent(int astLevel
 	}
 }
 /**
- * @see ISourceManipulation#move(IJavaElement, IJavaElement, String, boolean, IProgressMonitor)
+ * @see org.eclipse.wst.jsdt.core.ISourceManipulation#move(IJavaElement, IJavaElement, String, boolean, IProgressMonitor)
  */
 public void move(IJavaElement container, IJavaElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaModelException {
 	if (container == null) {
@@ -1294,7 +1289,7 @@ public org.eclipse.wst.jsdt.core.dom.CompilationUnit reconcile(
 }
 
 /**
- * @see ISourceManipulation#rename(String, boolean, IProgressMonitor)
+ * @see org.eclipse.wst.jsdt.core.ISourceManipulation#rename(String, boolean, IProgressMonitor)
  */
 public void rename(String newName, boolean force, IProgressMonitor monitor) throws JavaModelException {
 	if (newName == null) {
@@ -1320,7 +1315,7 @@ public void restore() throws JavaModelException {
 	makeConsistent(null);
 }
 /**
- * @see IOpenable
+ * @see org.eclipse.wst.jsdt.core.IOpenable
  */
 public void save(IProgressMonitor pm, boolean force) throws JavaModelException {
 	if (isWorkingCopy()) {

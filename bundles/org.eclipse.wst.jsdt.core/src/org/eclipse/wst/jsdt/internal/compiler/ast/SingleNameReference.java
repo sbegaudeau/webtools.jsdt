@@ -877,7 +877,6 @@ public int nullStatus(FlowInfo flowInfo) {
 
 					if (binding instanceof MethodBinding)
 					{
-						MethodBinding methodBinding=(MethodBinding)binding;
 						return scope.getJavaLangFunction();
 					}
 					else

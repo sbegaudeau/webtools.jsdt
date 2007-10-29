@@ -16,7 +16,6 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.IJarEntryResource;
 import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
@@ -26,7 +25,7 @@ import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 /**
  * A jar entry that represents a non-java file found in a JAR.
  *
- * @see IStorage
+ * @see org.eclipse.core.resources.IStorage
  */
 public class JarEntryFile  extends JarEntryResource {
 	private static final IJarEntryResource[] NO_CHILDREN = new IJarEntryResource[0];

@@ -571,7 +571,7 @@ public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FlowInfo f
 		return;
 	// if field from parameterized type got found, use the original field at codegen time
 	if (this.binding instanceof ParameterizedFieldBinding) {
-	    ParameterizedFieldBinding parameterizedField = (ParameterizedFieldBinding) this.binding;
+//	    ParameterizedFieldBinding parameterizedField = (ParameterizedFieldBinding) this.binding;
 //	    this.codegenBinding = parameterizedField.originalField;
 //	    FieldBinding fieldCodegenBinding = (FieldBinding)this.codegenBinding;
 //	    // extra cast needed if field type was type variable

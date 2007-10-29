@@ -306,9 +306,9 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 		}
 	}
 
-	private void removeStaleClasspath(String[] oldEntries) {
-
-	}
+//	private void removeStaleClasspath(String[] oldEntries) {
+//
+//	}
 
 	private void updateClasspathIfNeeded() {
 
@@ -501,7 +501,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 		if(file.isFile()) {
 			return file;
 		}else {
-			IPath childPath = new Path(importName);
+//			IPath childPath = new Path(importName);
 			IFile resolved = null;
 			/* since eclipse throws an exception if it doesn't exists (contrary to its API) we have to catch it*/
 

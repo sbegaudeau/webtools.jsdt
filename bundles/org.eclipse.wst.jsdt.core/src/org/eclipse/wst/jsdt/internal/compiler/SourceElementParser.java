@@ -350,9 +350,9 @@ protected void classInstanceCreation(boolean alwaysQualified, boolean isShort) {
 	reportReferenceInfo = previousFlag;
 	if (reportReferenceInfo){
 		AllocationExpression alloc = (AllocationExpression)expressionStack[expressionPtr];
-		TypeReference typeRef = alloc.type;
+//		TypeReference typeRef = alloc.type;
 		char [] name={};
-		if (alloc.member instanceof Expression)
+		if (alloc.member !=null)
 		{
 			name=Util.getTypeName(alloc.member);
 		}
@@ -1129,8 +1129,8 @@ public void notifySourceElementRequestor(CompilationUnitDeclaration parsedUnit) 
 				&& scanner.eofPosition >= parsedUnit.sourceEnd;
 
 	// collect the top level ast nodes
-	int length = 0;
-	ASTNode[] nodes = null;
+//	int length = 0;
+//	ASTNode[] nodes = null;
 	if (sourceType == null){
 		if (isInRange) {
 			requestor.enterCompilationUnit();
@@ -1302,7 +1302,7 @@ public void notifySourceElementRequestor( InferredType type ) {
 				argumentNames[i] = arguments[i].name;
 			}
 		}
-		int selectorSourceEnd = this.sourceEnds.get(methodDeclaration);
+//		int selectorSourceEnd = this.sourceEnds.get(methodDeclaration);
 
 		methodInfo.declarationStart = methodDeclaration.declarationSourceStart;
 		methodInfo.modifiers = 0;
@@ -1328,10 +1328,10 @@ public void notifySourceElementRequestor( InferredType type ) {
 
 }
 
-private void notifySourceStatment(ASTNode node) {
-	// TODO Auto-generated method stub
-
-}
+//private void notifySourceStatment(ASTNode node) {
+//	// TODO Auto-generated method stub
+//
+//}
 
 /*
  * Update the bodyStart of the corresponding parse node
@@ -1546,7 +1546,7 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 
 					char[][] argumentTypes = null;
 					char[][] argumentNames = null;
-					boolean isVarArgs = false;
+//					boolean isVarArgs = false;
 					Argument[] arguments = methodDeclaration.arguments;
 					if (arguments != null) {
 						int argumentLength = arguments.length;
@@ -1557,7 +1557,7 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 								argumentTypes[i] = CharOperation.concatWith(arguments[i].type.getParameterizedTypeName(), '.');
 							argumentNames[i] = arguments[i].name;
 						}
-						isVarArgs = arguments[argumentLength-1].isVarArgs();
+//						isVarArgs = arguments[argumentLength-1].isVarArgs();
 					}
 
 					ISourceElementRequestor.MethodInfo methodInfo = new ISourceElementRequestor.MethodInfo();
@@ -1970,32 +1970,32 @@ public void parseTypeMemberDeclarations(
 /*
  * Sort the given ast nodes by their positions.
  */
-private static void quickSort(ASTNode[] sortedCollection, int left, int right) {
-	int original_left = left;
-	int original_right = right;
-	ASTNode mid = sortedCollection[ left +  (right - left) / 2];
-	do {
-		while (sortedCollection[left].sourceStart < mid.sourceStart) {
-			left++;
-		}
-		while (mid.sourceStart < sortedCollection[right].sourceStart) {
-			right--;
-		}
-		if (left <= right) {
-			ASTNode tmp = sortedCollection[left];
-			sortedCollection[left] = sortedCollection[right];
-			sortedCollection[right] = tmp;
-			left++;
-			right--;
-		}
-	} while (left <= right);
-	if (original_left < right) {
-		quickSort(sortedCollection, original_left, right);
-	}
-	if (left < original_right) {
-		quickSort(sortedCollection, left, original_right);
-	}
-}
+//private static void quickSort(ASTNode[] sortedCollection, int left, int right) {
+//	int original_left = left;
+//	int original_right = right;
+//	ASTNode mid = sortedCollection[ left +  (right - left) / 2];
+//	do {
+//		while (sortedCollection[left].sourceStart < mid.sourceStart) {
+//			left++;
+//		}
+//		while (mid.sourceStart < sortedCollection[right].sourceStart) {
+//			right--;
+//		}
+//		if (left <= right) {
+//			ASTNode tmp = sortedCollection[left];
+//			sortedCollection[left] = sortedCollection[right];
+//			sortedCollection[right] = tmp;
+//			left++;
+//			right--;
+//		}
+//	} while (left <= right);
+//	if (original_left < right) {
+//		quickSort(sortedCollection, original_left, right);
+//	}
+//	if (left < original_right) {
+//		quickSort(sortedCollection, left, original_right);
+//	}
+//}
 private void rememberCategories() {
 	if (this.useSourceJavadocParser) {
 		SourceJavadocParser sourceJavadocParser = (SourceJavadocParser) this.javadocParser;

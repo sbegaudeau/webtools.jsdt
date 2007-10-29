@@ -30,8 +30,6 @@ import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.IParent;
-import org.eclipse.wst.jsdt.core.ISourceManipulation;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
@@ -127,7 +125,7 @@ public boolean containsJavaResources() throws JavaModelException {
 	return ((PackageFragmentInfo) getElementInfo()).containsJavaResources();
 }
 /**
- * @see ISourceManipulation
+ * @see org.eclipse.wst.jsdt.core.ISourceManipulation
  */
 public void copy(IJavaElement container, IJavaElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaModelException {
 	if (container == null) {
@@ -160,7 +158,7 @@ protected Object createElementInfo() {
 	return new PackageFragmentInfo();
 }
 /**
- * @see ISourceManipulation
+ * @see org.eclipse.wst.jsdt.core.ISourceManipulation
  */
 public void delete(boolean force, IProgressMonitor monitor) throws JavaModelException {
 	IJavaElement[] elements = new IJavaElement[] {this};
@@ -395,7 +393,7 @@ public int hashCode() {
 	return hash;
 }
 /**
- * @see IParent
+ * @see org.eclipse.wst.jsdt.core.IParent
  */
 public boolean hasChildren() throws JavaModelException {
 	return getChildren().length > 0;
@@ -423,7 +421,7 @@ public boolean isDefaultPackage() {
 	return this.names.length == 0;
 }
 /**
- * @see ISourceManipulation#move(IJavaElement, IJavaElement, String, boolean, IProgressMonitor)
+ * @see org.eclipse.wst.jsdt.core.ISourceManipulation#move(IJavaElement, IJavaElement, String, boolean, IProgressMonitor)
  */
 public void move(IJavaElement container, IJavaElement sibling, String rename, boolean force, IProgressMonitor monitor) throws JavaModelException {
 	if (container == null) {
@@ -442,7 +440,7 @@ public void move(IJavaElement container, IJavaElement sibling, String rename, bo
 	getJavaModel().move(elements, containers, siblings, renamings, force, monitor);
 }
 /**
- * @see ISourceManipulation#rename(String, boolean, IProgressMonitor)
+ * @see org.eclipse.wst.jsdt.core.ISourceManipulation#rename(String, boolean, IProgressMonitor)
  */
 public void rename(String newName, boolean force, IProgressMonitor monitor) throws JavaModelException {
 	if (newName == null) {

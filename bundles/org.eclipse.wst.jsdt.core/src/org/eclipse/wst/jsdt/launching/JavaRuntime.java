@@ -13,10 +13,8 @@ package org.eclipse.wst.jsdt.launching;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -207,7 +205,7 @@ public final class JavaRuntime {
 	
 	private static IVMInstallType[] fgVMTypes= null;
 	private static String fgDefaultVMId= null;
-	private static String fgDefaultVMConnectorId = null;
+//	private static String fgDefaultVMConnectorId = null;
 	
 	/**
 	 * Resolvers keyed by variable name, container id,
@@ -215,17 +213,17 @@ public final class JavaRuntime {
 	 */
 	private static Map fgVariableResolvers = null;
 	private static Map fgContainerResolvers = null;
-	private static Map fgRuntimeClasspathEntryResolvers = null;
+//	private static Map fgRuntimeClasspathEntryResolvers = null;
 	
 	/**
 	 * Path providers keyed by id
 	 */
-	private static Map fgPathProviders = null;
+//	private static Map fgPathProviders = null;
 	
 	/**
 	 * Default classpath and source path providers.
 	 */
-	private static IRuntimeClasspathProvider fgDefaultClasspathProvider = new StandardClasspathProvider();
+//	private static IRuntimeClasspathProvider fgDefaultClasspathProvider = new StandardClasspathProvider();
 //	private static IRuntimeClasspathProvider fgDefaultSourcePathProvider = new StandardSourcePathProvider();
 	
 	/**
@@ -238,13 +236,13 @@ public final class JavaRuntime {
 	 * cycles in project dependencies when resolving classpath container entries.
 	 * Counters used to know when entering/exiting to clear cache
 	 */
-	private static ThreadLocal fgProjects = new ThreadLocal(); // Lists
-	private static ThreadLocal fgEntryCount = new ThreadLocal(); // Integers
+//	private static ThreadLocal fgProjects = new ThreadLocal(); // Lists
+//	private static ThreadLocal fgEntryCount = new ThreadLocal(); // Integers
 	
     /**
      *  Set of IDs of VMs contributed via vmInstalls extension point.
      */
-    private static Set fgContributedVMs = new HashSet();
+//    private static Set fgContributedVMs = new HashSet();
 
 	private static IVMInstall defaultVM;
     
@@ -1037,96 +1035,96 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	 * Performs default resolution for a container entry.
 	 * Delegates to the Java model.
 	 */
-	private static IRuntimeClasspathEntry[] computeDefaultContainerEntries(IRuntimeClasspathEntry entry, ILaunchConfiguration config) throws CoreException {
-		IJavaProject project = entry.getJavaProject();
-		if (project == null) {
-			project = getJavaProject(config);
-		}
-		return computeDefaultContainerEntries(entry, project);
-	}
+//	private static IRuntimeClasspathEntry[] computeDefaultContainerEntries(IRuntimeClasspathEntry entry, ILaunchConfiguration config) throws CoreException {
+//		IJavaProject project = entry.getJavaProject();
+//		if (project == null) {
+//			project = getJavaProject(config);
+//		}
+//		return computeDefaultContainerEntries(entry, project);
+//	}
 	
 	/**
 	 * Performs default resolution for a container entry.
 	 * Delegates to the Java model.
 	 */
-	private static IRuntimeClasspathEntry[] computeDefaultContainerEntries(IRuntimeClasspathEntry entry, IJavaProject project) throws CoreException {
-		//TODO: implement
-		throw new org.eclipse.wst.jsdt.core.UnimplementedException();
-//		if (project == null || entry == null) {
-//			// cannot resolve without entry or project context
-//			return new IRuntimeClasspathEntry[0];
-//		} 
-//		IClasspathContainer container = JavaCore.getClasspathContainer(entry.getPath(), project);
-//		if (container == null) {
-//			abort(MessageFormat.format(LaunchingMessages.JavaRuntime_Could_not_resolve_classpath_container___0__1, new String[]{entry.getPath().toString()}), null); 
-//			// execution will not reach here - exception will be thrown
-//			return null;
-//		} 
-//		IClasspathEntry[] cpes = container.getClasspathEntries();
-//		int property = -1;
-//		switch (container.getKind()) {
-//			case IClasspathContainer.K_APPLICATION:
-//				property = IRuntimeClasspathEntry.USER_CLASSES;
-//				break;
-//			case IClasspathContainer.K_DEFAULT_SYSTEM:
-//				property = IRuntimeClasspathEntry.STANDARD_CLASSES;
-//				break;	
-//			case IClasspathContainer.K_SYSTEM:
-//				property = IRuntimeClasspathEntry.BOOTSTRAP_CLASSES;
-//				break;
-//		}			
-//		List resolved = new ArrayList(cpes.length);
-//		List projects = (List) fgProjects.get();
-//		Integer count = (Integer) fgEntryCount.get();
-//		if (projects == null) {
-//			projects = new ArrayList();
-//			fgProjects.set(projects);
-//			count = new Integer(0);
-//		}
-//		int intCount = count.intValue();
-//		intCount++;
-//		fgEntryCount.set(new Integer(intCount));
-//		try {
-//			for (int i = 0; i < cpes.length; i++) {
-//				IClasspathEntry cpe = cpes[i];
-//				if (cpe.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
-//					IProject p = ResourcesPlugin.getWorkspace().getRoot().getProject(cpe.getPath().segment(0));
-//					IJavaProject jp = JavaCore.create(p);
-//					if (!projects.contains(jp)) {
-//						projects.add(jp);
-//						IRuntimeClasspathEntry classpath = newDefaultProjectClasspathEntry(jp);
-//						IRuntimeClasspathEntry[] entries = resolveRuntimeClasspathEntry(classpath, jp);
-//						for (int j = 0; j < entries.length; j++) {
-//							IRuntimeClasspathEntry e = entries[j];
-//							if (!resolved.contains(e)) {
-//								resolved.add(entries[j]);
-//							}
-//						}
-//					}
-//				} else {
-//					IRuntimeClasspathEntry e = newRuntimeClasspathEntry(cpe);
-//					if (!resolved.contains(e)) {
-//						resolved.add(e);
-//					}
-//				}
-//			}
-//		} finally {
-//			intCount--;
-//			if (intCount == 0) {
-//				fgProjects.set(null);
-//				fgEntryCount.set(null);
-//			} else {
-//				fgEntryCount.set(new Integer(intCount));
-//			}
-//		}
-//		// set classpath property
-//		IRuntimeClasspathEntry[] result = new IRuntimeClasspathEntry[resolved.size()];
-//		for (int i = 0; i < result.length; i++) {
-//			result[i] = (IRuntimeClasspathEntry) resolved.get(i);
-//			result[i].setClasspathProperty(property);
-//		}
-//		return result;
-	}
+//	private static IRuntimeClasspathEntry[] computeDefaultContainerEntries(IRuntimeClasspathEntry entry, IJavaProject project) throws CoreException {
+//		//TODO: implement
+//		throw new org.eclipse.wst.jsdt.core.UnimplementedException();
+////		if (project == null || entry == null) {
+////			// cannot resolve without entry or project context
+////			return new IRuntimeClasspathEntry[0];
+////		} 
+////		IClasspathContainer container = JavaCore.getClasspathContainer(entry.getPath(), project);
+////		if (container == null) {
+////			abort(MessageFormat.format(LaunchingMessages.JavaRuntime_Could_not_resolve_classpath_container___0__1, new String[]{entry.getPath().toString()}), null); 
+////			// execution will not reach here - exception will be thrown
+////			return null;
+////		} 
+////		IClasspathEntry[] cpes = container.getClasspathEntries();
+////		int property = -1;
+////		switch (container.getKind()) {
+////			case IClasspathContainer.K_APPLICATION:
+////				property = IRuntimeClasspathEntry.USER_CLASSES;
+////				break;
+////			case IClasspathContainer.K_DEFAULT_SYSTEM:
+////				property = IRuntimeClasspathEntry.STANDARD_CLASSES;
+////				break;	
+////			case IClasspathContainer.K_SYSTEM:
+////				property = IRuntimeClasspathEntry.BOOTSTRAP_CLASSES;
+////				break;
+////		}			
+////		List resolved = new ArrayList(cpes.length);
+////		List projects = (List) fgProjects.get();
+////		Integer count = (Integer) fgEntryCount.get();
+////		if (projects == null) {
+////			projects = new ArrayList();
+////			fgProjects.set(projects);
+////			count = new Integer(0);
+////		}
+////		int intCount = count.intValue();
+////		intCount++;
+////		fgEntryCount.set(new Integer(intCount));
+////		try {
+////			for (int i = 0; i < cpes.length; i++) {
+////				IClasspathEntry cpe = cpes[i];
+////				if (cpe.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
+////					IProject p = ResourcesPlugin.getWorkspace().getRoot().getProject(cpe.getPath().segment(0));
+////					IJavaProject jp = JavaCore.create(p);
+////					if (!projects.contains(jp)) {
+////						projects.add(jp);
+////						IRuntimeClasspathEntry classpath = newDefaultProjectClasspathEntry(jp);
+////						IRuntimeClasspathEntry[] entries = resolveRuntimeClasspathEntry(classpath, jp);
+////						for (int j = 0; j < entries.length; j++) {
+////							IRuntimeClasspathEntry e = entries[j];
+////							if (!resolved.contains(e)) {
+////								resolved.add(entries[j]);
+////							}
+////						}
+////					}
+////				} else {
+////					IRuntimeClasspathEntry e = newRuntimeClasspathEntry(cpe);
+////					if (!resolved.contains(e)) {
+////						resolved.add(e);
+////					}
+////				}
+////			}
+////		} finally {
+////			intCount--;
+////			if (intCount == 0) {
+////				fgProjects.set(null);
+////				fgEntryCount.set(null);
+////			} else {
+////				fgEntryCount.set(new Integer(intCount));
+////			}
+////		}
+////		// set classpath property
+////		IRuntimeClasspathEntry[] result = new IRuntimeClasspathEntry[resolved.size()];
+////		for (int i = 0; i < result.length; i++) {
+////			result[i] = (IRuntimeClasspathEntry) resolved.get(i);
+////			result[i].setClasspathProperty(property);
+////		}
+////		return result;
+//	}
 			
 	/**
 	 * Computes and returns the unresolved class path for the given launch configuration.

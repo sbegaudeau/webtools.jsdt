@@ -153,7 +153,6 @@ public class LibrarySuperType {
 
 	public IPackageFragment[] getPackageFragments(){
 		IClasspathEntry[] entries = getClasspathEntries();
-		IPackageFragment[] frags;
 		ArrayList allFrags = new ArrayList();
 
 		try {

@@ -36,12 +36,10 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchDocument;
-import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.core.search.SearchRequestor;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
-import org.eclipse.wst.jsdt.core.search.TypeNameRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.DefaultErrorHandlingPolicies;
@@ -121,7 +119,7 @@ public class BasicSearchEngine {
 	}
 
 	/**
-	 * @see SearchEngine#SearchEngine(ICompilationUnit[]) for detailed comment.
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#SearchEngine(ICompilationUnit[]) for detailed comment.
 	 */
 	public BasicSearchEngine(ICompilationUnit[] workingCopies) {
 		this.workingCopies = workingCopies;
@@ -137,35 +135,35 @@ public class BasicSearchEngine {
 		}
 	}
 	/**
-	 * @see SearchEngine#SearchEngine(WorkingCopyOwner) for detailed comment.
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#SearchEngine(WorkingCopyOwner) for detailed comment.
 	 */
 	public BasicSearchEngine(WorkingCopyOwner workingCopyOwner) {
 		this.workingCopyOwner = workingCopyOwner;
 	}
 
 	/**
-	 * @see SearchEngine#createHierarchyScope(IType) for detailed comment.
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#createHierarchyScope(IType) for detailed comment.
 	 */
 	public static IJavaSearchScope createHierarchyScope(IType type) throws JavaModelException {
 		return createHierarchyScope(type, DefaultWorkingCopyOwner.PRIMARY);
 	}
 
 	/**
-	 * @see SearchEngine#createHierarchyScope(IType,WorkingCopyOwner) for detailed comment.
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#createHierarchyScope(IType,WorkingCopyOwner) for detailed comment.
 	 */
 	public static IJavaSearchScope createHierarchyScope(IType type, WorkingCopyOwner owner) throws JavaModelException {
 		return new HierarchyScope(type, owner);
 	}
 
 	/**
-	 * @see SearchEngine#createJavaSearchScope(IJavaElement[]) for detailed comment.
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#createJavaSearchScope(IJavaElement[]) for detailed comment.
 	 */
 	public static IJavaSearchScope createJavaSearchScope(IJavaElement[] elements) {
 		return createJavaSearchScope(elements, true);
 	}
 
 	/**
-	 * @see SearchEngine#createJavaSearchScope(IJavaElement[], boolean) for detailed comment.
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#createJavaSearchScope(IJavaElement[], boolean) for detailed comment.
 	 */
 	public static IJavaSearchScope createJavaSearchScope(IJavaElement[] elements, boolean includeReferencedProjects) {
 		int includeMask = IJavaSearchScope.SOURCES | IJavaSearchScope.APPLICATION_LIBRARIES | IJavaSearchScope.SYSTEM_LIBRARIES;
@@ -176,7 +174,7 @@ public class BasicSearchEngine {
 	}
 
 	/**
-	 * @see SearchEngine#createJavaSearchScope(IJavaElement[], int) for detailed comment.
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#createJavaSearchScope(IJavaElement[], int) for detailed comment.
 	 */
 	public static IJavaSearchScope createJavaSearchScope(IJavaElement[] elements, int includeMask) {
 		JavaSearchScope scope = new JavaSearchScope();
@@ -199,14 +197,14 @@ public class BasicSearchEngine {
 	}
 
 	/**
-	 * @see SearchEngine#createTypeNameMatch(IType, int) for detailed comment.
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#createTypeNameMatch(IType, int) for detailed comment.
 	 */
 	public static TypeNameMatch createTypeNameMatch(IType type, int modifiers) {
 		return new JavaSearchTypeNameMatch(type, modifiers);
 	}
 
 	/**
-	 * @see SearchEngine#createWorkspaceScope() for detailed comment.
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#createWorkspaceScope() for detailed comment.
 	 */
 	public static IJavaSearchScope createWorkspaceScope() {
 		return JavaModelManager.getJavaModelManager().getWorkspaceScope();
@@ -548,7 +546,7 @@ public class BasicSearchEngine {
 	 * methods (from a String pattern or a Java element) and encapsulate the description of what is
 	 * being searched (for example, search method declarations in a case sensitive way).
 	 *
-	 * @see SearchEngine#search(SearchPattern, SearchParticipant[], IJavaSearchScope, SearchRequestor, IProgressMonitor)
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#search(SearchPattern, SearchParticipant[], IJavaSearchScope, SearchRequestor, IProgressMonitor)
 	 * 	for detailed comment
 	 */
 	public void search(SearchPattern pattern, SearchParticipant[] participants, IJavaSearchScope scope, SearchRequestor requestor, IProgressMonitor monitor) throws CoreException {
@@ -828,15 +826,15 @@ public class BasicSearchEngine {
 								for (int j = 0, allMethodsLength = allMethods.length; j < allMethodsLength; j++) {
 									IMethod method = allMethods[j];
 									IJavaElement parent = method.getParent();
-									char[][] enclosingTypeNames;
+//									char[][] enclosingTypeNames;
 									if (parent instanceof IType) {
-										char[] parentQualifiedName = ((IType)parent).getTypeQualifiedName('.').toCharArray();
-										enclosingTypeNames = CharOperation.splitOn('.', parentQualifiedName);
+//										char[] parentQualifiedName = ((IType)parent).getTypeQualifiedName('.').toCharArray();
+//										enclosingTypeNames = CharOperation.splitOn('.', parentQualifiedName);
 									} else {
-										enclosingTypeNames = CharOperation.NO_CHAR_CHAR;
+//										enclosingTypeNames = CharOperation.NO_CHAR_CHAR;
 									}
 									char[] simpleName = method.getElementName().toCharArray();
-									int kind;
+//									int kind;
 									if (match(typeSuffix, packageName, bindingName, matchRule, 0, packageDeclaration, simpleName)) {
 										nameRequestor.acceptBinding(bindingType,method.getFlags(), packageDeclaration, simpleName,   path, null);
 									}
@@ -875,9 +873,9 @@ public class BasicSearchEngine {
 							if (parsedUnit != null) {
 								final char[] packageDeclaration = parsedUnit.currentPackage == null ? CharOperation.NO_CHAR : CharOperation.concatWith(parsedUnit.currentPackage.getImportName(), '.');
 								class AllTypeDeclarationsVisitor extends ASTVisitor {
-									public boolean visit(TypeDeclaration typeDeclaration, Scope blockScope) {
-										return false; // no local/anonymous type
-									}
+//									public boolean visit(TypeDeclaration typeDeclaration, Scope blockScope) {
+//										return false; // no local/anonymous type
+//									}
 									public boolean visit(TypeDeclaration typeDeclaration, CompilationUnitScope compilationUnitScope) {
 										if (bindingType==Binding.TYPE &&
 												match(typeSuffix, packageName, bindingName, matchRule, TypeDeclaration.kind(typeDeclaration.modifiers), packageDeclaration, typeDeclaration.name)) {
@@ -1064,7 +1062,7 @@ public class BasicSearchEngine {
 	 * The search can be selecting specific types (given a package or a type name
 	 * prefix and match modes).
 	 *
-	 * @see SearchEngine#searchAllTypeNames(char[], int, char[], int, int, IJavaSearchScope, TypeNameRequestor, int, IProgressMonitor)
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#searchAllTypeNames(char[], int, char[], int, int, IJavaSearchScope, org.eclipse.wst.jsdt.core.search.TypeNameRequestor, int, IProgressMonitor)
 	 * 	for detailed comment
 	 */
 	public void searchAllTypeNames(
@@ -1319,7 +1317,7 @@ public class BasicSearchEngine {
 	 * Searches for all top-level types and member types in the given scope using  a case sensitive exact match
 	 * with the given qualified names and type names.
 	 *
-	 * @see SearchEngine#searchAllTypeNames(char[][], char[][], IJavaSearchScope, TypeNameRequestor, int, IProgressMonitor)
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#searchAllTypeNames(char[][], char[][], IJavaSearchScope, org.eclipse.wst.jsdt.core.search.TypeNameRequestor, int, IProgressMonitor)
 	 * 	for detailed comment
 	 */
 	public void searchAllTypeNames(
@@ -1603,7 +1601,7 @@ public class BasicSearchEngine {
 	 * The element can be a compilation unit, a source type, or a source method.
 	 * Reports the field declarations using the given requestor.
 	 *
-	 * @see SearchEngine#searchDeclarationsOfAccessedFields(IJavaElement, SearchRequestor, IProgressMonitor)
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#searchDeclarationsOfAccessedFields(IJavaElement, SearchRequestor, IProgressMonitor)
 	 * 	for detailed comment
 	 */
 	public void searchDeclarationsOfAccessedFields(IJavaElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaModelException {
@@ -1619,7 +1617,7 @@ public class BasicSearchEngine {
 	 * The element can be a compilation unit, a source type, or a source method.
 	 * Reports the type declarations using the given requestor.
 	 *
-	 * @see SearchEngine#searchDeclarationsOfReferencedTypes(IJavaElement, SearchRequestor, IProgressMonitor)
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#searchDeclarationsOfReferencedTypes(IJavaElement, SearchRequestor, IProgressMonitor)
 	 * 	for detailed comment
 	 */
 	public void searchDeclarationsOfReferencedTypes(IJavaElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaModelException {
@@ -1635,7 +1633,7 @@ public class BasicSearchEngine {
 	 * The element can be a compilation unit, a source type, or a source method.
 	 * Reports the method declarations using the given requestor.
 	 *
-	 * @see SearchEngine#searchDeclarationsOfSentMessages(IJavaElement, SearchRequestor, IProgressMonitor)
+	 * @see org.eclipse.wst.jsdt.core.search.SearchEngine#searchDeclarationsOfSentMessages(IJavaElement, SearchRequestor, IProgressMonitor)
 	 * 	for detailed comment
 	 */
 	public void searchDeclarationsOfSentMessages(IJavaElement enclosingElement, SearchRequestor requestor, IProgressMonitor monitor) throws JavaModelException {

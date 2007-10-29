@@ -16,7 +16,6 @@ import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.jdom.IDOMCompilationUnit;
-import org.eclipse.wst.jsdt.core.jdom.IDOMFactory;
 import org.eclipse.wst.jsdt.internal.compiler.ISourceElementRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.SourceElementParser;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
@@ -54,13 +53,13 @@ public void acceptPackage(int declarationStart, int declarationEnd, char[] name)
 	addChild(fNode);
 }
 /**
- * @see IDOMFactory#createCompilationUnit(String, String)
+ * @see org.eclipse.wst.jsdt.core.jdom.IDOMFactory#createCompilationUnit(String, String)
  */
 public IDOMCompilationUnit createCompilationUnit(String sourceCode, String name) {
 	return createCompilationUnit(sourceCode.toCharArray(), name.toCharArray());
 }
 /**
- * @see IDOMFactory#createCompilationUnit(String, String)
+ * @see org.eclipse.wst.jsdt.core.jdom.IDOMFactory#createCompilationUnit(String, String)
  */
 public IDOMCompilationUnit createCompilationUnit(ICompilationUnit compilationUnit) {
 	initializeBuild(compilationUnit.getContents(), true, true);

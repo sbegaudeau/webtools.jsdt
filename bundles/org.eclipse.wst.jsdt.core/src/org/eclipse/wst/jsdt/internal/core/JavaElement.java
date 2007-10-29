@@ -27,7 +27,6 @@ import java.util.HashMap;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -44,7 +43,6 @@ import org.eclipse.wst.jsdt.core.IJavaModel;
 import org.eclipse.wst.jsdt.core.IJavaModelStatus;
 import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IParent;
@@ -240,13 +238,13 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 		return list;
 	}
 	/**
-	 * @see IMember
+	 * @see org.eclipse.wst.jsdt.core.IMember
 	 */
 	public IClassFile getClassFile() {
 		return null;
 	}
 	/**
-	 * @see IMember
+	 * @see org.eclipse.wst.jsdt.core.IMember
 	 */
 	public ICompilationUnit getCompilationUnit() {
 		return null;
@@ -276,7 +274,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 		return openWhenClosed(createElementInfo(), monitor);
 	}
 	/**
-	 * @see IAdaptable
+	 * @see org.eclipse.core.runtime.IAdaptable
 	 */
 	public String getElementName() {
 		return ""; //$NON-NLS-1$

@@ -32,7 +32,6 @@ import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
 import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.wst.jsdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
-import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
@@ -294,53 +293,53 @@ private void createParentFolder(IContainer parent) throws CoreException {
 	}
 }
 
-private NameEnvironmentAnswer findClass(String qualifiedTypeName, char[] typeName) {
-	if (this.notifier != null)
-		this.notifier.checkCancelWithinCompiler();
-
-	if (this.initialTypeNames != null && this.initialTypeNames.includes(qualifiedTypeName)) {
-		if (isIncrementalBuild)
-			// catch the case that a type inside a source file has been renamed but other class files are looking for it
-			throw new AbortCompilation(true, new AbortIncrementalBuildException(qualifiedTypeName));
-		return null; // looking for a file which we know was provided at the beginning of the compilation
-	}
-
-	if (this.additionalUnits != null && this.sourceLocations.length > 0) {
-		// if an additional source file is waiting to be compiled, answer it BUT not if this is a secondary type search
-		// if we answer X.js & it no longer defines Y then the binary type looking for Y will think the class path is wrong
-		// let the recompile loop fix up dependents when the secondary type Y has been deleted from X.js
-		SourceFile unit = (SourceFile) this.additionalUnits.get(qualifiedTypeName); // doesn't have file extension
-		if (unit != null)
-			return new NameEnvironmentAnswer(unit, null /*no access restriction*/);
-	}
-
-	String qBinaryFileName = qualifiedTypeName + SUFFIX_STRING_class;
-	String binaryFileName = qBinaryFileName;
-	String qPackageName =  ""; //$NON-NLS-1$
-	if (qualifiedTypeName.length() > typeName.length) {
-		int typeNameStart = qBinaryFileName.length() - typeName.length - 6; // size of ".class"
-		qPackageName =  qBinaryFileName.substring(0, typeNameStart - 1);
-		binaryFileName = qBinaryFileName.substring(typeNameStart);
-	}
-
-	// NOTE: the output folders are added at the beginning of the binaryLocations
-	NameEnvironmentAnswer suggestedAnswer = null;
-	for (int i = 0, l = binaryLocations.length; i < l; i++) {
-		NameEnvironmentAnswer answer = binaryLocations[i].findClass(binaryFileName, qPackageName, qBinaryFileName);
-		if (answer != null) {
-			if (!answer.ignoreIfBetter()) {
-				if (answer.isBetter(suggestedAnswer))
-					return answer;
-			} else if (answer.isBetter(suggestedAnswer))
-				// remember suggestion and keep looking
-				suggestedAnswer = answer;
-		}
-	}
-	if (suggestedAnswer != null)
-		// no better answer was found
-		return suggestedAnswer;
-	return null;
-}
+//private NameEnvironmentAnswer findClass(String qualifiedTypeName, char[] typeName) {
+//	if (this.notifier != null)
+//		this.notifier.checkCancelWithinCompiler();
+//
+//	if (this.initialTypeNames != null && this.initialTypeNames.includes(qualifiedTypeName)) {
+//		if (isIncrementalBuild)
+//			// catch the case that a type inside a source file has been renamed but other class files are looking for it
+//			throw new AbortCompilation(true, new AbortIncrementalBuildException(qualifiedTypeName));
+//		return null; // looking for a file which we know was provided at the beginning of the compilation
+//	}
+//
+//	if (this.additionalUnits != null && this.sourceLocations.length > 0) {
+//		// if an additional source file is waiting to be compiled, answer it BUT not if this is a secondary type search
+//		// if we answer X.js & it no longer defines Y then the binary type looking for Y will think the class path is wrong
+//		// let the recompile loop fix up dependents when the secondary type Y has been deleted from X.js
+//		SourceFile unit = (SourceFile) this.additionalUnits.get(qualifiedTypeName); // doesn't have file extension
+//		if (unit != null)
+//			return new NameEnvironmentAnswer(unit, null /*no access restriction*/);
+//	}
+//
+//	String qBinaryFileName = qualifiedTypeName + SUFFIX_STRING_class;
+//	String binaryFileName = qBinaryFileName;
+//	String qPackageName =  ""; //$NON-NLS-1$
+//	if (qualifiedTypeName.length() > typeName.length) {
+//		int typeNameStart = qBinaryFileName.length() - typeName.length - 6; // size of ".class"
+//		qPackageName =  qBinaryFileName.substring(0, typeNameStart - 1);
+//		binaryFileName = qBinaryFileName.substring(typeNameStart);
+//	}
+//
+//	// NOTE: the output folders are added at the beginning of the binaryLocations
+//	NameEnvironmentAnswer suggestedAnswer = null;
+//	for (int i = 0, l = binaryLocations.length; i < l; i++) {
+//		NameEnvironmentAnswer answer = binaryLocations[i].findClass(binaryFileName, qPackageName, qBinaryFileName);
+//		if (answer != null) {
+//			if (!answer.ignoreIfBetter()) {
+//				if (answer.isBetter(suggestedAnswer))
+//					return answer;
+//			} else if (answer.isBetter(suggestedAnswer))
+//				// remember suggestion and keep looking
+//				suggestedAnswer = answer;
+//		}
+//	}
+//	if (suggestedAnswer != null)
+//		// no better answer was found
+//		return suggestedAnswer;
+//	return null;
+//}
 
 public NameEnvironmentAnswer findType(char[][] compoundName, ITypeRequestor requestor) {
 //	if (compoundName != null)

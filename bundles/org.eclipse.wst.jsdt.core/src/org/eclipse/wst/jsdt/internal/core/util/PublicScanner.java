@@ -4105,7 +4105,7 @@ protected boolean checkIfRegExp() throws IndexOutOfBoundsException, InvalidInput
 	// Try to process as regular expression
 
  	int regExpPosition = this.currentPosition;
-	char regexpCharacter = this.currentCharacter;
+//	char regexpCharacter = this.currentCharacter;
 	char orginalCharacter = this.currentCharacter;
 	char previousCharacter = this.currentCharacter;
 	int previousPosition = this.currentPosition;
@@ -4114,11 +4114,11 @@ protected boolean checkIfRegExp() throws IndexOutOfBoundsException, InvalidInput
 
 	// consume next character
 	this.unicodeAsBackSlash = false;
-	boolean isUnicode = false;
+//	boolean isUnicode = false;
 	if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
 		&& (this.source[this.currentPosition] == 'u')) {
 		getNextUnicodeChar();
-		isUnicode = true;
+//		isUnicode = true;
 	} else {
 		if (this.withoutUnicodePtr != 0) {
 			unicodeStore();
@@ -4136,10 +4136,10 @@ protected boolean checkIfRegExp() throws IndexOutOfBoundsException, InvalidInput
 					this.unicodeAsBackSlash = false;
 					if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\') && (this.source[this.currentPosition] == 'u')) {
 						getNextUnicodeChar();
-						isUnicode = true;
+//						isUnicode = true;
 						this.withoutUnicodePtr--;
 					} else {
-						isUnicode = false;
+//						isUnicode = false;
 					}
 				} else {
 					if (this.withoutUnicodePtr == 0) {
@@ -4163,9 +4163,9 @@ protected boolean checkIfRegExp() throws IndexOutOfBoundsException, InvalidInput
 			if (((this.currentCharacter = this.source[this.currentPosition++]) == '\\')
 				&& (this.source[this.currentPosition] == 'u')) {
 				getNextUnicodeChar();
-				isUnicode = true;
+//				isUnicode = true;
 			} else {
-				isUnicode = false;
+//				isUnicode = false;
 				if (this.withoutUnicodePtr != 0) {
 					unicodeStore();
 				}

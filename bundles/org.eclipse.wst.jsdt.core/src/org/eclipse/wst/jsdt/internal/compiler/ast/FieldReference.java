@@ -144,9 +144,9 @@ public void computeConversion(Scope scope, TypeBinding runtimeTimeType, TypeBind
 				&& originalType != this.binding.type
 				&& runtimeTimeType.id != T_JavaLangObject
 				&& (originalType.tagBits & TagBits.HasTypeVariable) != 0) {
-	    	TypeBinding targetType = (!compileTimeType.isBaseType() && runtimeTimeType.isBaseType())
-	    		? compileTimeType  // unboxing: checkcast before conversion
-	    		: runtimeTimeType;
+//	    	TypeBinding targetType = (!compileTimeType.isBaseType() && runtimeTimeType.isBaseType())
+//	    		? compileTimeType  // unboxing: checkcast before conversion
+//	    		: runtimeTimeType;
 //	        this.genericCast = originalBinding.type.genericCast(targetType);
 		}
 	}

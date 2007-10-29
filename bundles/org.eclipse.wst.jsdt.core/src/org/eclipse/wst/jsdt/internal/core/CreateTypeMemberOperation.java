@@ -161,8 +161,8 @@ protected abstract SimpleName rename(ASTNode node, SimpleName newName);
 protected String generateSyntaxIncorrectAST() {
 	//create some dummy source to generate an ast node
 	StringBuffer buff = new StringBuffer();
-	IType type = getType();
-	String lineSeparator = org.eclipse.wst.jsdt.internal.core.util.Util.getLineSeparator(this.source, type == null ? null : type.getJavaProject());
+//	IType type = getType();
+//	String lineSeparator = org.eclipse.wst.jsdt.internal.core.util.Util.getLineSeparator(this.source, type == null ? null : type.getJavaProject());
 //	buff.append(lineSeparator + " public class A {" + lineSeparator); //$NON-NLS-1$
 	buff.append(this.source);
 //	buff.append(lineSeparator).append('}');

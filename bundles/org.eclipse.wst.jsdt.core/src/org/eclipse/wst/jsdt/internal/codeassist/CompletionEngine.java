@@ -337,8 +337,8 @@ public final class CompletionEngine
 
 	private final static char[] CLASS = "Class".toCharArray();  //$NON-NLS-1$
 	private final static char[] VOID = "void".toCharArray();  //$NON-NLS-1$
-	private final static char[] INT = "int".toCharArray();  //$NON-NLS-1$
-	private final static char[] INT_SIGNATURE = new char[]{Signature.C_INT};
+//	private final static char[] INT = "int".toCharArray();  //$NON-NLS-1$
+//	private final static char[] INT_SIGNATURE = new char[]{Signature.C_INT};
 	private final static char[] VALUE = "value".toCharArray();  //$NON-NLS-1$
 	private final static char[] EXTENDS = "extends".toCharArray();  //$NON-NLS-1$
 	private final static char[] SUPER = "super".toCharArray();  //$NON-NLS-1$
@@ -863,7 +863,7 @@ public final class CompletionEngine
 			char[] bindingName = acceptedType.simpleTypeName;
 			char[][] enclosingTypeNames = acceptedType.enclosingTypeNames;
 			int modifiers = acceptedType.modifiers;
-			int accessibility = acceptedType.accessibility;
+//			int accessibility = acceptedType.accessibility;
 			if (packageName==null)
 				packageName=new char[0];
 
@@ -916,7 +916,7 @@ public final class CompletionEngine
 						parameterPackageNames[i] = type.qualifiedPackageName();
 						parameterTypeNames[i] = type.qualifiedSourceName();
 					}
-					char[][] parameterNames = findMethodParameterNames(method,parameterTypeNames);
+//					char[][] parameterNames = findMethodParameterNames(method,parameterTypeNames);
 
 					this.noProposal = false;
 					// Standard proposal
@@ -1253,16 +1253,16 @@ public final class CompletionEngine
 
 		this.knownPkgs.put(packageName, this);
 
-		char[] completion;
-		if(this.resolvingImports) {
-			if(this.resolvingStaticImports) {
-				completion = CharOperation.concat(packageName, new char[] { '.' });
-			} else {
-				completion = CharOperation.concat(packageName, new char[] { '.', '*', ';' });
-			}
-		} else {
-			completion = packageName;
-		}
+//		char[] completion;
+//		if(this.resolvingImports) {
+//			if(this.resolvingStaticImports) {
+//				completion = CharOperation.concat(packageName, new char[] { '.' });
+//			} else {
+//				completion = CharOperation.concat(packageName, new char[] { '.', '*', ';' });
+//			}
+//		} else {
+//			completion = packageName;
+//		}
 
 		int relevance = computeBaseRelevance();
 		relevance += computeRelevanceForResolution();
@@ -6945,15 +6945,15 @@ public final class CompletionEngine
 		}
 	}
 
-	private void findPackages(CompletionOnPackageReference packageStatement) {
-
-		this.completionToken = CharOperation.concatWith(packageStatement.tokens, '.');
-		if (this.completionToken.length == 0)
-			return;
-
-		setSourceRange(packageStatement.sourceStart, packageStatement.sourceEnd);
-		this.nameEnvironment.findPackages(CharOperation.toLowerCase(this.completionToken), this);
-	}
+//	private void findPackages(CompletionOnPackageReference packageStatement) {
+//
+//		this.completionToken = CharOperation.concatWith(packageStatement.tokens, '.');
+//		if (this.completionToken.length == 0)
+//			return;
+//
+//		setSourceRange(packageStatement.sourceStart, packageStatement.sourceEnd);
+//		this.nameEnvironment.findPackages(CharOperation.toLowerCase(this.completionToken), this);
+//	}
 
 	private void findParameterizedType(TypeReference ref, Scope scope) {
 		ReferenceBinding refBinding = (ReferenceBinding) ref.resolvedType;

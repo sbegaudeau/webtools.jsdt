@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.core.jdom;
 import java.util.Stack;
 
 import org.eclipse.wst.jsdt.core.jdom.IDOMCompilationUnit;
-import org.eclipse.wst.jsdt.core.jdom.IDOMFactory;
 import org.eclipse.wst.jsdt.core.jdom.IDOMNode;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.core.util.ReferenceInfoAdapter;
@@ -133,13 +132,13 @@ protected void addChild(IDOMNode child) {
 	}
 }
 /**
- * @see IDOMFactory#createCompilationUnit(String, String)
+ * @see org.eclipse.wst.jsdt.core.jdom.IDOMFactory#createCompilationUnit(String, String)
  */
 public IDOMCompilationUnit createCompilationUnit(char[] contents, char[] name) {
 	return createCompilationUnit(new CompilationUnit(contents, name));
 }
 /**
- * @see IDOMFactory#createCompilationUnit(String, String)
+ * @see org.eclipse.wst.jsdt.core.jdom.IDOMFactory#createCompilationUnit(String, String)
  */
 public IDOMCompilationUnit createCompilationUnit(ICompilationUnit compilationUnit) {
 	if (fAbort) {

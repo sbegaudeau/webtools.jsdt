@@ -1543,10 +1543,10 @@ public class JavaProject
 		}
 		return -1;
 	}
-	private int getJavaCommandIndex(ICommand[] buildSpec) {
-		return getJavaCommandIndex(buildSpec, JavaCore.BUILDER_ID);
-
-	}
+//	private int getJavaCommandIndex(ICommand[] buildSpec) {
+//		return getJavaCommandIndex(buildSpec, JavaCore.BUILDER_ID);
+//
+//	}
 	/**
 	 * Convenience method that returns the specific type of info for a Java project.
 	 */

@@ -79,7 +79,6 @@ public class SystemLibraryLocation implements LibraryLocation {
 
 
 				if(!library.exists()) {
-					URL url = null;
 					InputStream is = null;
 
 					is	 = FileLocator.openStream(Platform.getBundle(getPluginId()),getLibraryPathInPlugin().append(new String(libFiles[i])), false);
@@ -97,7 +96,6 @@ public class SystemLibraryLocation implements LibraryLocation {
 					if(lastModNew>lastModold) {
 					//	System.out.println("Updating old library file : " + path.getFile());
 						library.delete();
-						URL url = null;
 						InputStream is = null;
 
 						is	 = FileLocator.openStream(Platform.getBundle(getPluginId()),getLibraryPathInPlugin().append(new String(libFiles[i])), false);

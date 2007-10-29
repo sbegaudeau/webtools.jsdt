@@ -34,9 +34,9 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 
 public class TryStatement extends SubRoutineStatement {
 
-	private final static char[] SECRET_RETURN_ADDRESS_NAME = " returnAddress".toCharArray(); //$NON-NLS-1$
-	private final static char[] SECRET_ANY_HANDLER_NAME = " anyExceptionHandler".toCharArray(); //$NON-NLS-1$
-	private final static char[] SECRET_RETURN_VALUE_NAME = " returnValue".toCharArray(); //$NON-NLS-1$
+//	private final static char[] SECRET_RETURN_ADDRESS_NAME = " returnAddress".toCharArray(); //$NON-NLS-1$
+//	private final static char[] SECRET_ANY_HANDLER_NAME = " anyExceptionHandler".toCharArray(); //$NON-NLS-1$
+//	private final static char[] SECRET_RETURN_VALUE_NAME = " returnValue".toCharArray(); //$NON-NLS-1$
 
 	public Block tryBlock;
 	public Block[] catchBlocks;

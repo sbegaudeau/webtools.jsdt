@@ -46,7 +46,6 @@ public class JSDScopeUtil {
 	}
 
 	public static ClasspathContainerInitializer findLibraryInitializer(IPath compUnitPath, IJavaProject javaProject) {
-		IJavaElement element=null;
 		IPackageFragmentRoot[] roots = new IPackageFragmentRoot[0];
 		try {
 			roots = javaProject.getAllPackageFragmentRoots();

@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.index;
 
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.io.UTFDataFormatException;
 
@@ -838,7 +836,7 @@ private void readStreamBuffer(FileInputStream stream) throws IOException {
  *
  * @param      stream   a data input stream.
  * @return     UTF decoded string as a char array
- * @exception  EOFException if this end of data input is reached while reading it.
+ * @exception  java.io.EOFException if this end of data input is reached while reading it.
  * @exception  IOException if an I/O error occurs while reading data input.
  * @exception  UTFDataFormatException  if the bytes do not represent a
  *               valid UTF-8 encoding of a Unicode string.
@@ -1174,7 +1172,7 @@ private void writeOffsetToHeader(int offsetToHeader) throws IOException {
  * </p>
  * <p>
  * Then the entire byte array is written to the output stream
- * using {@link OutputStream#write(byte[], int, int)} method.
+ * using {@link java.io.OutputStream#write(byte[], int, int)} method.
  * </p>
  *
  * @param array char array to be written.

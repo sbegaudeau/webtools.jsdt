@@ -15,7 +15,6 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
-import org.eclipse.wst.jsdt.core.ICodeCompletionRequestor;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.ICompletionRequestor;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
@@ -375,7 +374,7 @@ public void validateImports(ICodeSnippetRequestor requestor) {
 	}
 }
 /**
- * @see IEvaluationContext#codeComplete(String, int, ICodeCompletionRequestor)
+ * @see IEvaluationContext#codeComplete(String, int, org.eclipse.wst.jsdt.core.ICodeCompletionRequestor)
  * @deprecated - use codeComplete(String, int, ICompletionRequestor) instead
  */
 public void codeComplete(String codeSnippet, int position, final org.eclipse.wst.jsdt.core.ICodeCompletionRequestor requestor) throws JavaModelException {

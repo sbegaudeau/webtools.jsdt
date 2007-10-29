@@ -80,7 +80,7 @@ public class DocumentContextFragment extends PackageFragment{
 	public IJavaElement getJavaElement(String resource) {
 		/* if resource exists in project, return compunit, else return class */
 		//if(!DocumentContextFragmentRoot.RETURN_CU) return getClassFile(resource);
-		IPath workspacePath = getPackageFragmentRoot().getJavaProject().getProject().getWorkspace().getRoot().getLocation();
+//		IPath workspacePath = getPackageFragmentRoot().getJavaProject().getProject().getWorkspace().getRoot().getLocation();
 		/* remove the file part of the path */
 		IResource elementResource=null;
 		if(getResource() instanceof IContainer) {
@@ -95,7 +95,7 @@ public class DocumentContextFragment extends PackageFragment{
 				//((CompilationUnit)unit).buildStructure(new CompilationUnitElementInfo(), new NullProgressMonitor(), new HashMap(), ((IContainer)getParent().getResource()).findMember(resource));
 				//unit.makeConsistent(new NullProgressMonitor());
 				//((JavaElement)unit).openWhenClosed(new CompilationUnitElementInfo(), new NullProgressMonitor());
-				boolean unitExists = unit.exists();
+//				boolean unitExists = unit.exists();
 				return unit;
 			} catch (Exception ex) {
 				// TODO Auto-generated catch block

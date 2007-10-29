@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -33,8 +32,6 @@ import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICodeAssist;
-import org.eclipse.wst.jsdt.core.ICodeCompletionRequestor;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.ICompletionRequestor;
 import org.eclipse.wst.jsdt.core.IField;
@@ -42,21 +39,18 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaModelStatus;
 import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IParent;
 import org.eclipse.wst.jsdt.core.IProblemRequestor;
 import org.eclipse.wst.jsdt.core.ISourceRange;
-import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaConventions;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.LibrarySuperType;
-import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.internal.compiler.IProblemFactory;
@@ -126,7 +120,7 @@ public ICompilationUnit becomeWorkingCopy(IProblemRequestor problemRequestor, Wo
  * if successful, or false if an error is encountered parsing the class file.
  *
  * @see Openable
- * @see Signature
+ * @see org.eclipse.wst.jsdt.core.Signature
  */
 protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource) throws JavaModelException {
 	// check whether the class file can be opened
@@ -147,18 +141,18 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 	boolean createAST;
 	boolean resolveBindings;
 	int reconcileFlags;
-	HashMap problems;
+//	HashMap problems;
 	if (info instanceof ASTHolderCUInfo) {
 		ASTHolderCUInfo astHolder = (ASTHolderCUInfo) info;
 		createAST = astHolder.astLevel != ICompilationUnit.NO_AST;
 		resolveBindings = astHolder.resolveBindings;
 		reconcileFlags = astHolder.reconcileFlags;
-		problems = astHolder.problems;
+//		problems = astHolder.problems;
 	} else {
 		createAST = false;
 		resolveBindings = false;
 		reconcileFlags = 0;
-		problems = null;
+//		problems = null;
 	}
 
 	boolean computeProblems = false;//perWorkingCopyInfo != null && perWorkingCopyInfo.isActive() && project != null && JavaProject.hasJavaNature(project.getProject());
@@ -180,7 +174,8 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 	if (!computeProblems && !resolveBindings && !createAST) // disable javadoc parsing if not computing problems, not resolving and not creating ast
 		parser.javadocParser.checkDocComment = false;
 	requestor.parser = parser;
-	CompilationUnitDeclaration unit = parser.parseCompilationUnit(
+//	CompilationUnitDeclaration unit =
+		parser.parseCompilationUnit(
 			this,
 		true /*full parse to find local elements*/);
 
@@ -198,7 +193,7 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 	try {
 
 		if (createAST) {
-			int astLevel = ((ASTHolderCUInfo) info).astLevel;
+//			int astLevel = ((ASTHolderCUInfo) info).astLevel;
 //			org.eclipse.wst.jsdt.core.dom.CompilationUnit cu = AST.convertCompilationUnit(astLevel, unit, contents, options, computeProblems, this, pm);
 //			((ASTHolderCUInfo) info).ast = cu;
 			throw new RuntimeException("Implement this");
@@ -229,14 +224,14 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 	return true;
 }
 /**
- * @see ICodeAssist#codeComplete(int, ICompletionRequestor)
+ * @see org.eclipse.wst.jsdt.core.ICodeAssist#codeComplete(int, ICompletionRequestor)
  * @deprecated
  */
 public void codeComplete(int offset, ICompletionRequestor requestor) throws JavaModelException {
 	codeComplete(offset, requestor, DefaultWorkingCopyOwner.PRIMARY);
 }
 /**
- * @see ICodeAssist#codeComplete(int, ICompletionRequestor, WorkingCopyOwner)
+ * @see org.eclipse.wst.jsdt.core.ICodeAssist#codeComplete(int, ICompletionRequestor, WorkingCopyOwner)
  * @deprecated
  */
 public void codeComplete(int offset, ICompletionRequestor requestor, WorkingCopyOwner owner) throws JavaModelException {
@@ -271,13 +266,13 @@ public void codeComplete(int offset, CompletionRequestor requestor, WorkingCopyO
 }
 
 /**
- * @see ICodeAssist#codeSelect(int, int)
+ * @see org.eclipse.wst.jsdt.core.ICodeAssist#codeSelect(int, int)
  */
 public IJavaElement[] codeSelect(int offset, int length) throws JavaModelException {
 	return codeSelect(offset, length, DefaultWorkingCopyOwner.PRIMARY);
 }
 /**
- * @see ICodeAssist#codeSelect(int, int, WorkingCopyOwner)
+ * @see org.eclipse.wst.jsdt.core.ICodeAssist#codeSelect(int, int, WorkingCopyOwner)
  */
 public IJavaElement[] codeSelect(int offset, int length, WorkingCopyOwner owner) throws JavaModelException {
 	IBuffer buffer = getBuffer();
@@ -495,13 +490,13 @@ public IBuffer getBuffer() throws JavaModelException {
 	}
 }
 /**
- * @see IMember
+ * @see org.eclipse.wst.jsdt.core.IMember
  */
 public IClassFile getClassFile() {
 	return this;
 }
 /**
- * @see IMember#getTypeRoot()
+ * @see org.eclipse.wst.jsdt.core.IMember#getTypeRoot()
  */
 public ITypeRoot getTypeRoot() {
 	return this;
@@ -650,7 +645,7 @@ public IResource getResource() {
 	}
 }
 /**
- * @see ISourceReference
+ * @see org.eclipse.wst.jsdt.core.ISourceReference
  */
 public String getSource() throws JavaModelException {
 	IBuffer buffer = getBuffer();
@@ -660,7 +655,7 @@ public String getSource() throws JavaModelException {
 	return buffer.getContents();
 }
 /**
- * @see ISourceReference
+ * @see org.eclipse.wst.jsdt.core.ISourceReference
  */
 public ISourceRange getSourceRange() throws JavaModelException {
 	IBuffer buffer = getBuffer();
@@ -889,7 +884,7 @@ public static char[] translatedName(char[] name) {
 }
 
 /**
- * @see ICodeAssist#codeComplete(int, ICodeCompletionRequestor)
+ * @see org.eclipse.wst.jsdt.core.ICodeAssist#codeComplete(int, org.eclipse.wst.jsdt.core.ICodeCompletionRequestor)
  * @deprecated - should use codeComplete(int, ICompletionRequestor) instead
  */
 public void codeComplete(int offset, final org.eclipse.wst.jsdt.core.ICodeCompletionRequestor requestor) throws JavaModelException {

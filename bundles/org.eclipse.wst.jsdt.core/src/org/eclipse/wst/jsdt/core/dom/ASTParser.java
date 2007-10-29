@@ -29,7 +29,6 @@ import org.eclipse.wst.jsdt.internal.compiler.parser.RecoveryScanner;
 import org.eclipse.wst.jsdt.internal.compiler.parser.RecoveryScannerData;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
 import org.eclipse.wst.jsdt.internal.core.BasicCompilationUnit;
-import org.eclipse.wst.jsdt.internal.core.BinaryType;
 import org.eclipse.wst.jsdt.internal.core.DefaultWorkingCopyOwner;
 import org.eclipse.wst.jsdt.internal.core.PackageFragment;
 import org.eclipse.wst.jsdt.internal.core.util.CodeSnippetParsingUtil;
@@ -832,7 +831,7 @@ public class ASTParser {
 								throw new IllegalStateException();
 							}
 							PackageFragment packageFragment = (PackageFragment) this.typeRoot.getParent();
-							BinaryType type = (BinaryType) this.typeRoot.findPrimaryType();
+//							BinaryType type = (BinaryType) this.typeRoot.findPrimaryType();
 							char[] fileName =this.typeRoot.getElementName().toCharArray();
 //							IBinaryType binaryType = (IBinaryType) type.getElementInfo();
 //							// file name is used to recreate the Java element, so it has to be the toplevel .class file name

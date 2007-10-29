@@ -36,12 +36,12 @@ class PackageBinding implements IPackageBinding {
 
 	private org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding binding;
 	private String name;
-	private BindingResolver resolver;
+//	private BindingResolver resolver;
 	private String[] components;
 
 	PackageBinding(org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding binding, BindingResolver resolver) {
 		this.binding = binding;
-		this.resolver = resolver;
+//		this.resolver = resolver;
 	}
 
 	public IAnnotationBinding[] getAnnotations() {

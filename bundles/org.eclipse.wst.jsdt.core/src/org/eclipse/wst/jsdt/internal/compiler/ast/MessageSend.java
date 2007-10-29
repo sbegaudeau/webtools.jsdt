@@ -32,7 +32,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.RawTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 
@@ -218,14 +217,14 @@ public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FlowInfo f
 	} else if (receiver instanceof QualifiedSuperReference){ // qualified super
 
 		// qualified super need emulation always
-		SourceTypeBinding destinationType = (SourceTypeBinding)(((QualifiedSuperReference)receiver).currentCompatibleType);
+//		SourceTypeBinding destinationType = (SourceTypeBinding)(((QualifiedSuperReference)receiver).currentCompatibleType);
 //		syntheticAccessor = destinationType.addSyntheticMethod(this.codegenBinding, isSuperAccess());
 //		currentScope.problemReporter().needToEmulateMethodAccess(this.codegenBinding, this);
 		return;
 
 	} else if (binding.isProtected()){
 
-		SourceTypeBinding enclosingSourceType;
+//		SourceTypeBinding enclosingSourceType;
 //		if (((bits & DepthMASK) != 0)
 //				&& this.codegenBinding.declaringClass.getPackage()
 //					!= (enclosingSourceType = currentScope.enclosingSourceType()).getPackage()){

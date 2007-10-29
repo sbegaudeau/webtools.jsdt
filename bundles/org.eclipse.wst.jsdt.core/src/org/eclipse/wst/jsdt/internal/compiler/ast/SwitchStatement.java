@@ -273,7 +273,7 @@ public class SwitchStatement extends Statement {
 	public void resolve(BlockScope upperScope) {
 
 	    try {
-			boolean isEnumSwitch = false;
+//			boolean isEnumSwitch = false;
 			TypeBinding expressionType = expression.resolveType(upperScope);
 			if (expressionType != null) {
 				expression.computeConversion(upperScope, expressionType, expressionType);

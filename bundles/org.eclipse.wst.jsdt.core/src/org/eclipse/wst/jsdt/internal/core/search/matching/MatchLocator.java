@@ -2614,7 +2614,7 @@ protected void reportMatching(InferredType type, IJavaElement parent, int accura
 		report(match);
 	}
 
-	boolean matchedClassContainer = (this.matchContainer & PatternLocator.CLASS_CONTAINER) != 0;
+//	boolean matchedClassContainer = (this.matchContainer & PatternLocator.CLASS_CONTAINER) != 0;
 
 }
 

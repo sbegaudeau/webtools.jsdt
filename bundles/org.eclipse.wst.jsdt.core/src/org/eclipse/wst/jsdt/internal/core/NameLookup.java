@@ -847,7 +847,7 @@ public class NameLookup implements SuffixConstants {
 		int length= packages.length;
 		HashSet projects = null;
 		IJavaProject javaProject = null;
-		Answer suggestedAnswer = null;
+//		Answer suggestedAnswer = null;
 		ArrayList found = new ArrayList();
 
 		for (int i= 0; i < length; i++) {
@@ -1365,19 +1365,19 @@ public class NameLookup implements SuffixConstants {
 //		}
 	}
 
-	private String [] splitPackageName(String name)
-	{
-		String[] strings;
-		if (name.endsWith(".js"))
-		{
-			strings= Util.splitOn('.', name, 0, name.length()-3);
-			strings[strings.length-1]=strings[strings.length-1]+".js";
-		}
-		else
-		strings  = Util.splitOn('.', name, 0, name.length());
-
-		return strings;
-	}
+//	private String [] splitPackageName(String name)
+//	{
+//		String[] strings;
+//		if (name.endsWith(".js"))
+//		{
+//			strings= Util.splitOn('.', name, 0, name.length()-3);
+//			strings[strings.length-1]=strings[strings.length-1]+".js";
+//		}
+//		else
+//		strings  = Util.splitOn('.', name, 0, name.length());
+//
+//		return strings;
+//	}
 	/**
 	 * Notifies the given requestor of all types (classes and interfaces) in the
 	 * given package fragment with the given (unqualified) name.
@@ -1704,7 +1704,7 @@ public class NameLookup implements SuffixConstants {
 						if (requestor.isCanceled())
 							return;
 						IJavaElement cu = compilationUnits[i];
-						String cuName = cu.getElementName();
+//						String cuName = cu.getElementName();
 						//int lastDot = cuName.lastIndexOf('.');
 						//if (lastDot != topLevelTypeName.length() || !topLevelTypeName.regionMatches(0, cuName, 0, lastDot)) \
 						//if(topLevelTypeName!=null && !topLevelTypeName.equals(cuName))

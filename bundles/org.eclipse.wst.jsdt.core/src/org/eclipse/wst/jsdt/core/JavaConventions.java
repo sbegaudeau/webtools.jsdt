@@ -22,9 +22,8 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
-import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
+import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper; 
 import org.eclipse.wst.jsdt.internal.compiler.parser.TerminalTokens;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.ClasspathEntry;
@@ -41,7 +40,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Messages;
 public final class JavaConventions {
 
 	private static final char DOT= '.';
-	private static final String PACKAGE_INFO = new String(TypeConstants.PACKAGE_INFO_NAME);
+//	private static final String PACKAGE_INFO = new String(TypeConstants.PACKAGE_INFO_NAME);
 	private static final Scanner SCANNER = new Scanner(false /*comment*/, true /*whitespace*/, false /*nls*/, ClassFileConstants.JDK1_3 /*sourceLevel*/, null/*taskTag*/, null/*taskPriorities*/, true /*taskCaseSensitive*/);
 
 	private JavaConventions() {
@@ -158,13 +157,13 @@ public final class JavaConventions {
 		if (!org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(name)) {
 			return new Status(IStatus.ERROR, JavaCore.PLUGIN_ID, -1, Messages.convention_unit_notJavaName, null);
 		}
-		String identifier;
+//		String identifier;
 		int index;
 		index = name.lastIndexOf('.');
 		if (index == -1) {
 			return new Status(IStatus.ERROR, JavaCore.PLUGIN_ID, -1, Messages.convention_unit_notJavaName, null);
 		}
-		identifier = name.substring(0, index);
+//		identifier = name.substring(0, index);
 		// JSR-175 metadata strongly recommends "package-info.js" as the
 		// file in which to store package annotations and
 		// the package-level spec (replaces package.html)
@@ -230,13 +229,13 @@ public final class JavaConventions {
 		if (!org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(name)) {
 			return new Status(IStatus.ERROR, JavaCore.PLUGIN_ID, -1, Messages.convention_classFile_notClassFileName, null);
 		}
-		String identifier;
+//		String identifier;
 		int index;
 		index = name.lastIndexOf('.');
 		if (index == -1) {
 			return new Status(IStatus.ERROR, JavaCore.PLUGIN_ID, -1, Messages.convention_classFile_notClassFileName, null);
 		}
-		identifier = name.substring(0, index);
+//		identifier = name.substring(0, index);
 		// JSR-175 metadata strongly recommends "package-info.js" as the
 		// file in which to store package annotations and
 		// the package-level spec (replaces package.html)

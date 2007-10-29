@@ -1295,7 +1295,7 @@ public RecoveredElement recoverAST(RecoveredElement element) {
 
 protected RecoveredElement recoverFunctionExpression(RecoveredElement element, AbstractMethodDeclaration method) {
 	int start = method.exprStackPtr;
-	int end=this.expressionPtr;
+//	int end=this.expressionPtr;
 	boolean isAssignment=true;
 	Statement expression=null;
 
@@ -3241,7 +3241,7 @@ protected void consumeEnterVariable() {
 
 	this.identifierPtr--;
 	this.identifierLengthPtr--;
-	TypeReference type;
+//	TypeReference type;
 	int variableIndex = this.variablesCounter[this.nestedType];
 //	int typeDim = 0;
 	if (variableIndex == 0) {
@@ -3875,7 +3875,7 @@ protected void consumeFormalParameter(boolean isVarArgs) {
 			this.intStack[this.intPtr + 1] & ~ClassFileConstants.AccDeprecated); // modifiers
 	arg.declarationSourceStart = modifierPositions;
 	// consume annotations
-	int length;
+//	int length;
 //	if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
 //		System.arraycopy(
 //			this.expressionStack,
@@ -5177,7 +5177,7 @@ protected void consumeQualifiedName() {
 }
 protected void consumeRecoveryMethodHeaderName() {
 	// this method is call only inside recovery
-	boolean isAnnotationMethod = false;
+//	boolean isAnnotationMethod = false;
 //	if(this.currentElement instanceof RecoveredType) {
 //		isAnnotationMethod = (((RecoveredType)this.currentElement).typeDeclaration.modifiers & ClassFileConstants.AccAnnotation) != 0;
 //	} else {
@@ -5264,7 +5264,7 @@ private void consumeFunctionExpression() {
 }
 
 private void consumeStatementForIn() {
-	int length;
+//	int length;
 	Expression collection = null;
 	Statement iteratorVar;
 	boolean scope = true;
@@ -8915,7 +8915,7 @@ protected void parse() {
 			{
 				if (isErrorState(act))
 				{
-				  if (shouldInsertSemicolon(prevPos, prevToken) )
+				  if (!insertedSemicolon && shouldInsertSemicolon(prevPos, prevToken) )
 				  {
 					currentToken = TokenNameSEMICOLON;
 					this.insertedSemicolonPosition=prevPos;
@@ -9781,7 +9781,7 @@ protected void recoverStatements() {
 		}
 		private void endVisitMethod(AbstractMethodDeclaration methodDeclaration, Scope scope) {
 			TypeDeclaration[] foundTypes = null;
-			int length = 0;
+//			int length = 0;
 //			if(this.typePtr > -1) {
 //				length = this.typePtr + 1;
 //				foundTypes = new TypeDeclaration[length];
@@ -10072,7 +10072,7 @@ private void reportSyntaxErrorsForSkippedMethod(ProgramElement[] statements){
 			}
 			else if (statements[i] instanceof FieldDeclaration )
 			{
-			  FieldDeclaration   field =(FieldDeclaration) statements[i] ;
+//			  FieldDeclaration   field =(FieldDeclaration) statements[i] ;
 //			if (fields != null) {
 //				int length = fields.length;
 //				for (int j = 0; j < length; j++) {

@@ -461,8 +461,8 @@ class DefaultBindingResolver extends BindingResolver {
 	boolean isResolvedTypeInferredFromExpectedType(MethodInvocation methodInvocation) {
 		Object oldNode = this.newAstToOldAst.get(methodInvocation);
 		if (oldNode instanceof MessageSend) {
-			MessageSend messageSend = (MessageSend) oldNode;
-			org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding methodBinding = messageSend.binding;
+//			MessageSend messageSend = (MessageSend) oldNode;
+//			org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding methodBinding = messageSend.binding;
 //			if (methodBinding instanceof ParameterizedGenericMethodBinding) {
 //				ParameterizedGenericMethodBinding genericMethodBinding = (ParameterizedGenericMethodBinding) methodBinding;
 //				return genericMethodBinding.inferredReturnType;
@@ -474,8 +474,8 @@ class DefaultBindingResolver extends BindingResolver {
 	boolean isResolvedTypeInferredFromExpectedType(SuperMethodInvocation superMethodInvocation) {
 		Object oldNode = this.newAstToOldAst.get(superMethodInvocation);
 		if (oldNode instanceof MessageSend) {
-			MessageSend messageSend = (MessageSend) oldNode;
-			org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding methodBinding = messageSend.binding;
+//			MessageSend messageSend = (MessageSend) oldNode;
+//			org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding methodBinding = messageSend.binding;
 //			if (methodBinding instanceof ParameterizedGenericMethodBinding) {
 //				ParameterizedGenericMethodBinding genericMethodBinding = (ParameterizedGenericMethodBinding) methodBinding;
 //				return genericMethodBinding.inferredReturnType;

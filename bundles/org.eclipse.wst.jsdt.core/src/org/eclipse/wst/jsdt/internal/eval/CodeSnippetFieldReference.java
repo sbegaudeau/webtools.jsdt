@@ -16,7 +16,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
-import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
@@ -312,7 +311,7 @@ public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FlowInfo f
 			&& this.binding.declaringClass != null // array.length
 			&& this.binding.constant() == Constant.NotAConstant) {
 
-		CompilerOptions options = currentScope.compilerOptions();
+//		CompilerOptions options = currentScope.compilerOptions();
 //		if ((options.targetJDK >= ClassFileConstants.JDK1_2
 //				&& (options.complianceLevel >= ClassFileConstants.JDK1_4 || !receiver.isImplicitThis() || !this.codegenBinding.isStatic())
 //				&& this.binding.declaringClass.id != T_JavaLangObject) // no change for Object fields

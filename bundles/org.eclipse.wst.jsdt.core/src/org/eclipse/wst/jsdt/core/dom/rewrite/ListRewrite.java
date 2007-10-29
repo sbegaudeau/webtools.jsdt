@@ -16,7 +16,6 @@ import java.util.List;
 import org.eclipse.text.edits.TextEditGroup;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Block;
-import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Statement;
 import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
@@ -31,7 +30,7 @@ import org.eclipse.wst.jsdt.internal.core.dom.rewrite.RewriteEventStore.CopySour
  * <p>
  * This class is not intended to be subclassed.
  * </p>
- * @see ASTRewrite#getListRewrite(ASTNode, ChildListPropertyDescriptor)
+ * @see ASTRewrite#getListRewrite(ASTNode, org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor)
  * @since 3.0
  */
 public final class ListRewrite {

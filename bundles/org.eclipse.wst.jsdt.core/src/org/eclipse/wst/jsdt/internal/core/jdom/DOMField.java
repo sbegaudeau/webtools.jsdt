@@ -17,7 +17,6 @@ import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.jdom.DOMException;
 import org.eclipse.wst.jsdt.core.jdom.IDOMField;
-import org.eclipse.wst.jsdt.core.jdom.IDOMMember;
 import org.eclipse.wst.jsdt.core.jdom.IDOMNode;
 import org.eclipse.wst.jsdt.internal.core.util.CharArrayBuffer;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
@@ -529,14 +528,14 @@ public void remove() {
 	super.remove();
 }
 /**
- * @see IDOMMember#setComment(String)
+ * @see org.eclipse.wst.jsdt.core.jdom.IDOMMember#setComment(String)
  */
 public void setComment(String comment) {
 	expand();
 	super.setComment(comment);
 }
 /**
- * @see IDOMMember#setFlags(int)
+ * @see org.eclipse.wst.jsdt.core.jdom.IDOMMember#setFlags(int)
  */
 public void setFlags(int flags) {
 	expand();

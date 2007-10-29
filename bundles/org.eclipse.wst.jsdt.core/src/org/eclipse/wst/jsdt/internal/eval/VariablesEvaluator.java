@@ -18,8 +18,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
 import org.eclipse.wst.jsdt.internal.compiler.Compiler;
 import org.eclipse.wst.jsdt.internal.compiler.ICompilerRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.IProblemFactory;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileReader;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFormatException;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
 import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
 
@@ -157,13 +155,13 @@ Compiler getCompiler(ICompilerRequestor compilerRequestor) {
 	if (installedVars != null) {
 		ClassFile[] classFiles = installedVars.classFiles;
 		for (int i = 0; i < classFiles.length; i++) {
-			ClassFile classFile = classFiles[i];
-			IBinaryType binary = null;
-			try {
-				binary = new ClassFileReader(classFile.getBytes(), null);
-			} catch (ClassFormatException e) {
-				e.printStackTrace(); // Should never happen since we compiled this type
-			}
+//			ClassFile classFile = classFiles[i];
+//			IBinaryType binary = null;
+//			try {
+//				binary = new ClassFileReader(classFile.getBytes(), null);
+//			} catch (ClassFormatException e) {
+//				e.printStackTrace(); // Should never happen since we compiled this type
+//			}
 //			compiler.lookupEnvironment.cacheBinaryType(binary, null /*no access restriction*/);
 		}
 	}

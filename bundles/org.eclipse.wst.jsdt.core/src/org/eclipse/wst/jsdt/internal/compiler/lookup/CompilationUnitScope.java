@@ -143,7 +143,7 @@ void buildFieldsAndMethods() {
 }
 void buildTypeBindings(AccessRestriction accessRestriction) {
 	topLevelTypes = new SourceTypeBinding[0]; // want it initialized if the package cannot be resolved
-	boolean firstIsSynthetic = false;
+//	boolean firstIsSynthetic = false;
 //	if (referenceContext.compilationResult.compilationUnit != null) {
 //		char[][] expectedPackageName = referenceContext.compilationResult.compilationUnit.getPackageName();
 //		if (expectedPackageName != null

@@ -58,23 +58,23 @@ public class JREContainer implements IClasspathContainer {
 		if (fgClasspathEntries == null) {
 			fgClasspathEntries = new HashMap(10);
 			// add a listener to clear cached value when a VM changes or is removed
-			IVMInstallChangedListener listener = new IVMInstallChangedListener() {
-				public void defaultVMInstallChanged(IVMInstall previous, IVMInstall current) {
-				}
-
-				public void vmChanged(PropertyChangeEvent event) {
-					if (event.getSource() != null) {
-						fgClasspathEntries.remove(event.getSource());
-					}
-				}
-
-				public void vmAdded(IVMInstall newVm) {
-				}
-
-				public void vmRemoved(IVMInstall removedVm) {
-					fgClasspathEntries.remove(removedVm);
-				}
-			}; 
+//			IVMInstallChangedListener listener = new IVMInstallChangedListener() {
+//				public void defaultVMInstallChanged(IVMInstall previous, IVMInstall current) {
+//				}
+//
+//				public void vmChanged(PropertyChangeEvent event) {
+//					if (event.getSource() != null) {
+//						fgClasspathEntries.remove(event.getSource());
+//					}
+//				}
+//
+//				public void vmAdded(IVMInstall newVm) {
+//				}
+//
+//				public void vmRemoved(IVMInstall removedVm) {
+//					fgClasspathEntries.remove(removedVm);
+//				}
+//			}; 
 //			JavaRuntime.addVMInstallChangedListener(listener);
 		}
 		IClasspathEntry[] entries = (IClasspathEntry[])fgClasspathEntries.get(vm);

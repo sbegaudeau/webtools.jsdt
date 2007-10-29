@@ -37,7 +37,6 @@ import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.IParent;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
@@ -755,7 +754,7 @@ public IResource getUnderlyingResource() throws JavaModelException {
 }
 
 /**
- * @see IParent
+ * @see org.eclipse.wst.jsdt.core.IParent
  */
 public boolean hasChildren() throws JavaModelException {
 	// a package fragment root always has the default package as a child

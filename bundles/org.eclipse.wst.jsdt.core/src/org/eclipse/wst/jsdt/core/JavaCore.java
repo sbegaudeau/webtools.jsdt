@@ -118,7 +118,6 @@ import org.eclipse.wst.jsdt.internal.core.ClasspathAttribute;
 import org.eclipse.wst.jsdt.internal.core.ClasspathEntry;
 import org.eclipse.wst.jsdt.internal.core.CreateTypeHierarchyOperation;
 import org.eclipse.wst.jsdt.internal.core.DefaultWorkingCopyOwner;
-import org.eclipse.wst.jsdt.internal.core.JavaCorePreferenceInitializer;
 import org.eclipse.wst.jsdt.internal.core.JavaModel;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.JavaProject;
@@ -3048,7 +3047,7 @@ public final class JavaCore extends Plugin {
 	 * @param optionName the name of an option
 	 * @return the String value of a given option
 	 * @see JavaCore#getDefaultOptions()
-	 * @see JavaCorePreferenceInitializer for changing default settings
+	 * @see org.eclipse.wst.jsdt.internal.core.JavaCorePreferenceInitializer for changing default settings
 	 * @since 2.0
 	 */
 	public static String getOption(String optionName) {
@@ -3064,7 +3063,7 @@ public final class JavaCore extends Plugin {
 	 * @return table of current settings of all options
 	 *   (key type: <code>String</code>; value type: <code>String</code>)
 	 * @see #getDefaultOptions()
-	 * @see JavaCorePreferenceInitializer for changing default settings
+	 * @see org.eclipse.wst.jsdt.internal.core.JavaCorePreferenceInitializer for changing default settings
 	 */
 	public static Hashtable getOptions() {
 		return JavaModelManager.getJavaModelManager().getOptions();
@@ -4734,7 +4733,7 @@ public final class JavaCore extends Plugin {
 	 *            <code>String</code>), or <code>null</code> to reset all
 	 *            options to their default values
 	 * @see JavaCore#getDefaultOptions()
-	 * @see JavaCorePreferenceInitializer for changing default settings
+	 * @see org.eclipse.wst.jsdt.internal.core.JavaCorePreferenceInitializer for changing default settings
 	 */
 	public static void setOptions(Hashtable newOptions) {
 		JavaModelManager.getJavaModelManager().setOptions(newOptions);

@@ -421,7 +421,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		int operator,
 		BlockScope scope) {
 
-		boolean addSpace= operator==TerminalTokens.TokenNamein || operator==TerminalTokens.TokenNameinstanceof;
+//		boolean addSpace= operator==TerminalTokens.TokenNamein || operator==TerminalTokens.TokenNameinstanceof;
 		final int numberOfParens = (binaryExpression.bits & ASTNode.ParenthesizedMASK) >> ASTNode.ParenthesizedSHIFT;
 
 		if (numberOfParens > 0) {
@@ -1469,7 +1469,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 	 * Merged traversal of member (types, fields, methods)
 	 */
 	private void formatClassBodyDeclarations(ASTNode[] nodes) {
-		final int FIELD = 1, METHOD = 2, TYPE = 3;
+		final int FIELD = 1, METHOD = 2;//, TYPE = 3;
 		this.scribe.lastNumberOfNewLines = 1;
 		ASTNode[] mergedNodes = computeMergedMemberDeclarations(nodes);
 		Alignment memberAlignment = this.scribe.createMemberAlignment("typeMembers", this.preferences.align_type_members_on_columns ? Alignment.M_MULTICOLUMN : Alignment.M_NO_ALIGNMENT, 4, this.scribe.scanner.currentPosition); //$NON-NLS-1$

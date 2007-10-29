@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.SearchDocument;
@@ -79,7 +78,7 @@ public char[] getContents() {
  * The exact openable file name. In particular, will be the originating .class file for binary openable with attached
  * source.
  * @see org.eclipse.wst.jsdt.internal.compiler.env.IDependent#getFileName()
- * @see PackageReferenceLocator#isDeclaringPackageFragment(IPackageFragment, org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding)
+ * @see PackageReferenceLocator#isDeclaringPackageFragment(org.eclipse.wst.jsdt.core.IPackageFragment, org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding)
  */
 public char[] getFileName() {
 	return this.openable.getElementName().toCharArray();

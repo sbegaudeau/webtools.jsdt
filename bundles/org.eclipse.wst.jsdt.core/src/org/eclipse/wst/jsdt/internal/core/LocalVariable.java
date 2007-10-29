@@ -20,7 +20,6 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.ISourceRange;
-import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
@@ -141,7 +140,7 @@ public class LocalVariable extends SourceRefElement implements ILocalVariable {
 	}
 
 	/**
-	 * @see ISourceReference
+	 * @see org.eclipse.wst.jsdt.core.ISourceReference
 	 */
 	public String getSource() throws JavaModelException {
 		IOpenable openable = this.parent.getOpenableParent();
@@ -163,7 +162,7 @@ public class LocalVariable extends SourceRefElement implements ILocalVariable {
 	}
 
 	/**
-	 * @see ISourceReference
+	 * @see org.eclipse.wst.jsdt.core.ISourceReference
 	 */
 	public ISourceRange getSourceRange() {
 		return new SourceRange(this.declarationSourceStart, this.declarationSourceEnd-this.declarationSourceStart+1);

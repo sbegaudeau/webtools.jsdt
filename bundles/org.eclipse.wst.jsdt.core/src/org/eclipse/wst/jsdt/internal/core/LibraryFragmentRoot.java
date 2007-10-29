@@ -1,17 +1,14 @@
 package org.eclipse.wst.jsdt.internal.core;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
-import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IClasspathContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
@@ -138,22 +135,22 @@ protected boolean resourceExists() {
 	}
 }
 
-private ClassFile getLibraryClassFile(){
-	try {
-		ArrayList childrenOfType = getChildrenOfType(IJavaElement.PACKAGE_FRAGMENT);
-		if (!childrenOfType.isEmpty())
-		{
-			IPackageFragment child=(IPackageFragment)childrenOfType.get(0);
-			IClassFile[] classFiles = child.getClassFiles();
-			if (classFiles!=null && classFiles.length>0)
-				return (ClassFile)classFiles[0];
-		}
-	} catch (JavaModelException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	return null;
-}
+//private ClassFile getLibraryClassFile(){
+//	try {
+//		ArrayList childrenOfType = getChildrenOfType(IJavaElement.PACKAGE_FRAGMENT);
+//		if (!childrenOfType.isEmpty())
+//		{
+//			IPackageFragment child=(IPackageFragment)childrenOfType.get(0);
+//			IClassFile[] classFiles = child.getClassFiles();
+//			if (classFiles!=null && classFiles.length>0)
+//				return (ClassFile)classFiles[0];
+//		}
+//	} catch (JavaModelException e) {
+//		// TODO Auto-generated catch block
+//		e.printStackTrace();
+//	}
+//	return null;
+//}
 
 	protected void toStringAncestors(StringBuffer buffer) {
 		if (isExternal())

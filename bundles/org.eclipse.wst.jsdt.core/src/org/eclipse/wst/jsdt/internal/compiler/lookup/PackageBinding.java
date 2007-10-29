@@ -48,11 +48,11 @@ public PackageBinding(LookupEnvironment environment) {
 private void addNotFoundPackage(char[] simpleName) {
 	knownPackages.put(simpleName, LookupEnvironment.TheNotFoundPackage);
 }
-private void addNotFoundType(char[] simpleName) {
-	if (knownBindings[Binding.TYPE] == null)
-		knownBindings[Binding.TYPE] = new HashtableOfBinding(25);
-	knownBindings[Binding.TYPE].put(simpleName, LookupEnvironment.TheNotFoundType);
-}
+//private void addNotFoundType(char[] simpleName) {
+//	if (knownBindings[Binding.TYPE] == null)
+//		knownBindings[Binding.TYPE] = new HashtableOfBinding(25);
+//	knownBindings[Binding.TYPE].put(simpleName, LookupEnvironment.TheNotFoundType);
+//}
 
 private void addNotFoundBinding1(char[] simpleName,int mask) {
 	if (knownBindings[mask] == null)

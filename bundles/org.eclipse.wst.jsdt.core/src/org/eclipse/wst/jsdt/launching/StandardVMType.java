@@ -15,10 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -41,7 +38,7 @@ public class StandardVMType extends AbstractVMInstallType {
 	 * Map of the install path for which we were unable to generate
 	 * the library info during this session.
 	 */
-	private static Map fgFailedInstallPath= new HashMap();
+//	private static Map fgFailedInstallPath= new HashMap();
 		
 	/**
 	 * Convenience handle to the system-specific file separator character
@@ -321,16 +318,16 @@ public class StandardVMType extends AbstractVMInstallType {
 	 * @param libraryLocations libraries to append
 	 * @param allLibs list to append to, omitting duplicates
 	 */
-	private void appendLibraries(List libraryLocations, List allLibs) {
-		Iterator iter = libraryLocations.iterator();
-		while (iter.hasNext()) {
-			LibraryLocation lib = (LibraryLocation)iter.next();
-			// check for dups, in case bootpath contains an ext dir entry (see bug 50201)
-			if (!isDuplicateLibrary(allLibs, lib)) {
-				allLibs.add(lib);
-			}
-		}
-	}
+//	private void appendLibraries(List libraryLocations, List allLibs) {
+//		Iterator iter = libraryLocations.iterator();
+//		while (iter.hasNext()) {
+//			LibraryLocation lib = (LibraryLocation)iter.next();
+//			// check for dups, in case bootpath contains an ext dir entry (see bug 50201)
+//			if (!isDuplicateLibrary(allLibs, lib)) {
+//				allLibs.add(lib);
+//			}
+//		}
+//	}
 	
 	/**
 	 * Returns whether the given library is already contained in the given list.
@@ -341,16 +338,16 @@ public class StandardVMType extends AbstractVMInstallType {
 	 * @param dup possible dup
 	 * @return whether dup is contained in list of libraries
 	 */
-	private boolean isDuplicateLibrary(List libs, LibraryLocation dup) {
-		String osPath = dup.getSystemLibraryPath().toOSString();
-		for (int i = 0; i < libs.size(); i++) {
-			LibraryLocation location = (LibraryLocation) libs.get(i);
-			if (location.getSystemLibraryPath().toOSString().equalsIgnoreCase(osPath)) {
-				return true;
-			}
-		}
-		return false;
-	}
+//	private boolean isDuplicateLibrary(List libs, LibraryLocation dup) {
+//		String osPath = dup.getSystemLibraryPath().toOSString();
+//		for (int i = 0; i < libs.size(); i++) {
+//			LibraryLocation location = (LibraryLocation) libs.get(i);
+//			if (location.getSystemLibraryPath().toOSString().equalsIgnoreCase(osPath)) {
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 	
 //	/**
 //	 * Returns default library info for the given install location.
@@ -589,7 +586,7 @@ public class StandardVMType extends AbstractVMInstallType {
 	public void disposeVMInstall(String id) {
 		IVMInstall vm = findVMInstall(id);
 		if (vm != null) {
-			String path = vm.getInstallLocation().getAbsolutePath();
+//			String path = vm.getInstallLocation().getAbsolutePath();
 //            LaunchingPlugin.setLibraryInfo(path, null);
 //            fgFailedInstallPath.remove(path);
 			//TODO: implement

@@ -22,7 +22,6 @@ import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.core.search.TypeNameMatchRequestor;
-import org.eclipse.wst.jsdt.core.search.TypeNameRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.core.LibraryFragmentRoot;
 import org.eclipse.wst.jsdt.internal.core.LibraryPackageFragment;
@@ -32,7 +31,7 @@ import org.eclipse.wst.jsdt.internal.core.util.HandleFactory;
 import org.eclipse.wst.jsdt.internal.core.util.HashtableOfArrayToObject;
 
 /**
- * Wrapper used to link {@link IRestrictedAccessTypeRequestor} with {@link TypeNameRequestor}.
+ * Wrapper used to link {@link IRestrictedAccessTypeRequestor} with {@link org.eclipse.wst.jsdt.core.search.TypeNameRequestor}.
  * This wrapper specifically allows usage of internal method {@link BasicSearchEngine#searchAllTypeNames(
  * 	char[] packageName,
  * 	int packageMatchRule,
@@ -50,7 +49,7 @@ import org.eclipse.wst.jsdt.internal.core.util.HashtableOfArrayToObject;
  * 	int matchRule,
  * 	int searchFor,
  * 	org.eclipse.wst.jsdt.core.search.IJavaSearchScope scope,
- * 	TypeNameRequestor nameRequestor,
+ * 	org.eclipse.wst.jsdt.core.search.TypeNameRequestor nameRequestor,
  * 	int waitingPolicy,
  * 	org.eclipse.core.runtime.IProgressMonitor monitor) }.
  */

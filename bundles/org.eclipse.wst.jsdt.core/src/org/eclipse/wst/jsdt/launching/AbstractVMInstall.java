@@ -35,7 +35,7 @@ public abstract class AbstractVMInstall implements IVMInstall, IVMInstall2, IVMI
 	private String fVMArgs;
 	// system properties are cached in user preferences prefixed with this key, followed
 	// by vm type, vm id, and system property name
-	private static final String PREF_VM_INSTALL_SYSTEM_PROPERTY = "PREF_VM_INSTALL_SYSTEM_PROPERTY"; //$NON-NLS-1$
+//	private static final String PREF_VM_INSTALL_SYSTEM_PROPERTY = "PREF_VM_INSTALL_SYSTEM_PROPERTY"; //$NON-NLS-1$
 	// whether change events should be fired
 	private boolean fNotify = true;
 	
@@ -437,17 +437,17 @@ public abstract class AbstractVMInstall implements IVMInstall, IVMInstall2, IVMI
 	 * @param property system property name
 	 * @return preference store key
 	 */
-	private String getSystemPropertyKey(String property) {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append(PREF_VM_INSTALL_SYSTEM_PROPERTY);
-		buffer.append("."); //$NON-NLS-1$
-		buffer.append(getVMInstallType().getId());
-		buffer.append("."); //$NON-NLS-1$
-		buffer.append(getId());
-		buffer.append("."); //$NON-NLS-1$
-		buffer.append(property);
-		return buffer.toString();
-	}
+//	private String getSystemPropertyKey(String property) {
+//		StringBuffer buffer = new StringBuffer();
+//		buffer.append(PREF_VM_INSTALL_SYSTEM_PROPERTY);
+//		buffer.append("."); //$NON-NLS-1$
+//		buffer.append(getVMInstallType().getId());
+//		buffer.append("."); //$NON-NLS-1$
+//		buffer.append(getId());
+//		buffer.append("."); //$NON-NLS-1$
+//		buffer.append(property);
+//		return buffer.toString();
+//	}
 	
 	/**
 	 * Throws a core exception with an error status object built from the given

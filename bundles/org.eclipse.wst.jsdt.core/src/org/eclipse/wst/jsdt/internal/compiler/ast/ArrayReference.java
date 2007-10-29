@@ -208,7 +208,7 @@ public int nullStatus(FlowInfo flowInfo) {
 				this.resolvedType=TypeBinding.UNKNOWN;
 			}
 		}
-		TypeBinding positionType = position.resolveTypeExpecting(scope, new TypeBinding[] {scope.getJavaLangNumber(),scope.getJavaLangString()});
+//		TypeBinding positionType = position.resolveTypeExpecting(scope, new TypeBinding[] {scope.getJavaLangNumber(),scope.getJavaLangString()});
 //		if (positionType != null) {
 //			position.computeConversion(scope, TypeBinding.INT, positionType);
 //		}

@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.core.search;
 
 import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
 
@@ -114,7 +113,7 @@ public abstract IType getType();
  * as separator (e.g. package name + '.' + enclosing type names).
  *
  * @see #getType()
- * @see IMember#getDeclaringType()
+ * @see org.eclipse.wst.jsdt.core.IMember#getDeclaringType()
  *
  * @throws NullPointerException if matched type is <code> null</code>
  * @return name of the type container

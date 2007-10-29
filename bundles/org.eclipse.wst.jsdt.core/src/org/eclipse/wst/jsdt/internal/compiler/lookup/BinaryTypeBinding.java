@@ -340,10 +340,10 @@ private void createFields(ISourceField[] iFields, long sourceLevel) {
 		int size = iFields.length;
 		if (size > 0) {
 			this.fields = new FieldBinding[size];
-			boolean use15specifics = sourceLevel >= ClassFileConstants.JDK1_5;
+//			boolean use15specifics = sourceLevel >= ClassFileConstants.JDK1_5;
 			boolean isViewedAsDeprecated = isViewedAsDeprecated();
 			boolean hasRestrictedAccess = hasRestrictedAccess();
-			int firstAnnotatedFieldIndex = -1;
+//			int firstAnnotatedFieldIndex = -1;
 			for (int i = 0; i < size; i++) {
 				ISourceField binaryField = iFields[i];
 				char[] fieldSignature = null;//use15specifics ? binaryField.getGenericSignature() : null;
@@ -387,11 +387,11 @@ private MethodBinding createMethod(ISourceMethod method, long sourceLevel) {
 	int methodModifiers = method.getModifiers() | ExtraCompilerModifiers.AccUnresolved;
 	if (sourceLevel < ClassFileConstants.JDK1_5)
 		methodModifiers &= ~ClassFileConstants.AccVarargs; // vararg methods are not recognized until 1.5
-	ReferenceBinding[] exceptions = Binding.NO_EXCEPTIONS;
-	TypeBinding[] parameters = Binding.NO_PARAMETERS;
-	TypeVariableBinding[] typeVars = Binding.NO_TYPE_VARIABLES;
-	AnnotationBinding[][] paramAnnotations = null;
-	TypeBinding returnType = null;
+//	ReferenceBinding[] exceptions = Binding.NO_EXCEPTIONS;
+//	TypeBinding[] parameters = Binding.NO_PARAMETERS;
+//	TypeVariableBinding[] typeVars = Binding.NO_TYPE_VARIABLES;
+//	AnnotationBinding[][] paramAnnotations = null;
+//	TypeBinding returnType = null;
 
 	throw new UnimplementedException("fix compile errors for this code");
 //	final boolean use15specifics = sourceLevel >= ClassFileConstants.JDK1_5;

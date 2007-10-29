@@ -10,19 +10,18 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.wst.jsdt.core.IJavaElement;
 
 /** Element info for IOpenable elements. */
 public class OpenableElementInfo extends JavaElementInfo {
 
 	/**
 	 * Is the structure of this element known
-	 * @see IJavaElement#isStructureKnown()
+	 * @see org.eclipse.wst.jsdt.core.IJavaElement#isStructureKnown()
 	 */
 	protected boolean isStructureKnown = false;
 
 	/**
-	 * @see IJavaElement#isStructureKnown()
+	 * @see org.eclipse.wst.jsdt.core.IJavaElement#isStructureKnown()
 	 */
 	public boolean isStructureKnown() {
 		return this.isStructureKnown;
@@ -30,7 +29,7 @@ public class OpenableElementInfo extends JavaElementInfo {
 
 	/**
 	 * Sets whether the structure of this element known
-	 * @see IJavaElement#isStructureKnown()
+	 * @see org.eclipse.wst.jsdt.core.IJavaElement#isStructureKnown()
 	 */
 	public void setIsStructureKnown(boolean newIsStructureKnown) {
 		this.isStructureKnown = newIsStructureKnown;

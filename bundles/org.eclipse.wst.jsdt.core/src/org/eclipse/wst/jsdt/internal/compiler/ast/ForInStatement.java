@@ -124,9 +124,9 @@ public class ForInStatement extends Statement {
 
 		// we need the variable to iterate the collection even if the
 		// element variable is not used
-		final boolean hasEmptyAction = this.action == null
-				|| this.action.isEmptyBlock()
-				|| ((this.action.bits & IsUsefulEmptyStatement) != 0);
+//		final boolean hasEmptyAction = this.action == null
+//				|| this.action.isEmptyBlock()
+//				|| ((this.action.bits & IsUsefulEmptyStatement) != 0);
 
 
 		//end of loop

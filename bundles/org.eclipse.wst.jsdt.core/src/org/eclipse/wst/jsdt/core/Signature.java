@@ -2421,7 +2421,6 @@ private static int appendCompilationUnitSignature(char[] string, int start, bool
 		throw new IllegalArgumentException();
 	}
 	int p = start + 1;
-	int checkpoint = buffer.length();
 	while (true) {
 		if (p >= string.length) {
 			throw new IllegalArgumentException();

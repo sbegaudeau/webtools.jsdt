@@ -32,7 +32,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.DefaultErrorHandlingPolicies;
@@ -246,87 +245,87 @@ private IType findSuperClass(IGenericType type, ReferenceBinding typeBinding) {
  * Returns the handles of the super interfaces of the given type.
  * Adds the simple name to the hierarchy missing types if an interface is not found (but don't put null in the returned array)
  */
-private IType[] findSuperInterfaces(IGenericType type, ReferenceBinding typeBinding) {
-	char[][] superInterfaceNames;
-	char separator;
-	if (type instanceof IBinaryType) {
-		superInterfaceNames = ((IBinaryType)type).getInterfaceNames();
-		separator = '/';
-	} else if (type instanceof ISourceType) {
-		ISourceType sourceType = (ISourceType)type;
-		if (sourceType.getName().length == 0) { // if anonymous type
-			if (typeBinding.superInterfaces() != null && typeBinding.superInterfaces().length > 0) {
-				superInterfaceNames = new char[][] {sourceType.getSuperclassName()};
-			} else {
-				superInterfaceNames = sourceType.getInterfaceNames();
-			}
-		} else {
-			if (TypeDeclaration.kind(sourceType.getModifiers()) == TypeDeclaration.ANNOTATION_TYPE_DECL)
-				superInterfaceNames = new char[][] {TypeConstants.CharArray_JAVA_LANG_ANNOTATION_ANNOTATION};
-			else
-				superInterfaceNames = sourceType.getInterfaceNames();
-		}
-		separator = '.';
-	} else if (type instanceof HierarchyType) {
-		HierarchyType hierarchyType = (HierarchyType)type;
-		if (hierarchyType.name.length == 0) { // if anonymous type
-			if (typeBinding.superInterfaces() != null && typeBinding.superInterfaces().length > 0) {
-				superInterfaceNames = new char[][] {hierarchyType.superclassName};
-			} else {
-				superInterfaceNames = hierarchyType.superInterfaceNames;
-			}
-		} else {
-			superInterfaceNames = hierarchyType.superInterfaceNames;
-		}
-		separator = '.';
-	} else{
-		return null;
-	}
-
-	ReferenceBinding[] interfaceBindings = typeBinding.superInterfaces();
-	int bindingIndex = 0;
-	int bindingLength = interfaceBindings == null ? 0 : interfaceBindings.length;
-	int length = superInterfaceNames == null ? 0 : superInterfaceNames.length;
-	IType[] superinterfaces = new IType[length];
-	int index = 0;
-	next : for (int i = 0; i < length; i++) {
-		char[] superInterfaceName = superInterfaceNames[i];
-		int end = superInterfaceName.length;
-
-		// find the end of simple name
-		int genericStart = CharOperation.indexOf(Signature.C_GENERIC_START, superInterfaceName);
-		if (genericStart != -1) end = genericStart;
-
-		// find the start of simple name
-		int lastSeparator = CharOperation.lastIndexOf(separator, superInterfaceName, 0, end);
-		int start = lastSeparator + 1;
-
-		// case of binary inner type -> take the last part
-		int lastDollar = CharOperation.lastIndexOf('$', superInterfaceName, start);
-		if (lastDollar != -1) start = lastDollar + 1;
-
-		char[] simpleName = CharOperation.subarray(superInterfaceName, start, end);
-
-		if (bindingIndex < bindingLength) {
-			ReferenceBinding interfaceBinding = (ReferenceBinding) interfaceBindings[bindingIndex].erasure();
-
-			// ensure that the binding corresponds to the interface defined by the user
-			if (CharOperation.equals(simpleName, interfaceBinding.sourceName)) {
-				bindingIndex++;
-				for (int t = this.typeIndex; t >= 0; t--) {
-					if (this.typeBindings[t] == interfaceBinding) {
-						superinterfaces[index++] = this.builder.getHandle(this.typeModels[t], interfaceBinding);
-						continue next;
-					}
-				}
-			}
-		}
-		this.builder.hierarchy.missingTypes.add(new String(simpleName));
-	}
-	if (index != length)
-		System.arraycopy(superinterfaces, 0, superinterfaces = new IType[index], 0, index);
-	return superinterfaces;
-}
+//private IType[] findSuperInterfaces(IGenericType type, ReferenceBinding typeBinding) {
+//	char[][] superInterfaceNames;
+//	char separator;
+//	if (type instanceof IBinaryType) {
+//		superInterfaceNames = ((IBinaryType)type).getInterfaceNames();
+//		separator = '/';
+//	} else if (type instanceof ISourceType) {
+//		ISourceType sourceType = (ISourceType)type;
+//		if (sourceType.getName().length == 0) { // if anonymous type
+//			if (typeBinding.superInterfaces() != null && typeBinding.superInterfaces().length > 0) {
+//				superInterfaceNames = new char[][] {sourceType.getSuperclassName()};
+//			} else {
+//				superInterfaceNames = sourceType.getInterfaceNames();
+//			}
+//		} else {
+//			if (TypeDeclaration.kind(sourceType.getModifiers()) == TypeDeclaration.ANNOTATION_TYPE_DECL)
+//				superInterfaceNames = new char[][] {TypeConstants.CharArray_JAVA_LANG_ANNOTATION_ANNOTATION};
+//			else
+//				superInterfaceNames = sourceType.getInterfaceNames();
+//		}
+//		separator = '.';
+//	} else if (type instanceof HierarchyType) {
+//		HierarchyType hierarchyType = (HierarchyType)type;
+//		if (hierarchyType.name.length == 0) { // if anonymous type
+//			if (typeBinding.superInterfaces() != null && typeBinding.superInterfaces().length > 0) {
+//				superInterfaceNames = new char[][] {hierarchyType.superclassName};
+//			} else {
+//				superInterfaceNames = hierarchyType.superInterfaceNames;
+//			}
+//		} else {
+//			superInterfaceNames = hierarchyType.superInterfaceNames;
+//		}
+//		separator = '.';
+//	} else{
+//		return null;
+//	}
+//
+//	ReferenceBinding[] interfaceBindings = typeBinding.superInterfaces();
+//	int bindingIndex = 0;
+//	int bindingLength = interfaceBindings == null ? 0 : interfaceBindings.length;
+//	int length = superInterfaceNames == null ? 0 : superInterfaceNames.length;
+//	IType[] superinterfaces = new IType[length];
+//	int index = 0;
+//	next : for (int i = 0; i < length; i++) {
+//		char[] superInterfaceName = superInterfaceNames[i];
+//		int end = superInterfaceName.length;
+//
+//		// find the end of simple name
+//		int genericStart = CharOperation.indexOf(Signature.C_GENERIC_START, superInterfaceName);
+//		if (genericStart != -1) end = genericStart;
+//
+//		// find the start of simple name
+//		int lastSeparator = CharOperation.lastIndexOf(separator, superInterfaceName, 0, end);
+//		int start = lastSeparator + 1;
+//
+//		// case of binary inner type -> take the last part
+//		int lastDollar = CharOperation.lastIndexOf('$', superInterfaceName, start);
+//		if (lastDollar != -1) start = lastDollar + 1;
+//
+//		char[] simpleName = CharOperation.subarray(superInterfaceName, start, end);
+//
+//		if (bindingIndex < bindingLength) {
+//			ReferenceBinding interfaceBinding = (ReferenceBinding) interfaceBindings[bindingIndex].erasure();
+//
+//			// ensure that the binding corresponds to the interface defined by the user
+//			if (CharOperation.equals(simpleName, interfaceBinding.sourceName)) {
+//				bindingIndex++;
+//				for (int t = this.typeIndex; t >= 0; t--) {
+//					if (this.typeBindings[t] == interfaceBinding) {
+//						superinterfaces[index++] = this.builder.getHandle(this.typeModels[t], interfaceBinding);
+//						continue next;
+//					}
+//				}
+//			}
+//		}
+//		this.builder.hierarchy.missingTypes.add(new String(simpleName));
+//	}
+//	if (index != length)
+//		System.arraycopy(superinterfaces, 0, superinterfaces = new IType[index], 0, index);
+//	return superinterfaces;
+//}
 private void fixSupertypeBindings() {
 	for (int current = this.typeIndex; current >= 0; current--) {
 		ReferenceBinding typeBinding = this.typeBindings[current];

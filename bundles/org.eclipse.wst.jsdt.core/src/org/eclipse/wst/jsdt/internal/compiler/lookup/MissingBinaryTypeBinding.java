@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 
 public class MissingBinaryTypeBinding extends BinaryTypeBinding {
@@ -50,7 +49,7 @@ public int problemId() {
 /**
  * Only used to fixup the superclass hierarchy of proxy binary types
  * @param missingSuperclass
- * @see LookupEnvironment#cacheMissingBinaryType(char[][], CompilationUnitDeclaration)
+ * @see LookupEnvironment#cacheMissingBinaryType(char[][], org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration)
  */
 void setMissingSuperclass(ReferenceBinding missingSuperclass) {
 	this.superclass = missingSuperclass;

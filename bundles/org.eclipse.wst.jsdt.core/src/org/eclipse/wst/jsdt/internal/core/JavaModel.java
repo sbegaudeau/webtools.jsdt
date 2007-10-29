@@ -29,7 +29,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaModel;
 import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.internal.core.util.MementoTokenizer;
@@ -243,7 +242,7 @@ public IResource getResource() {
 	return ResourcesPlugin.getWorkspace().getRoot();
 }
 /**
- * @see IOpenable
+ * @see org.eclipse.wst.jsdt.core.IOpenable
  */
 public IResource getUnderlyingResource() {
 	return null;

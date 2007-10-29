@@ -12,10 +12,7 @@
 package org.eclipse.wst.jsdt.core;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.wst.jsdt.core.dom.AST;
-import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-import org.eclipse.wst.jsdt.core.dom.IBinding;
 
 
 /**
@@ -48,15 +45,15 @@ public static final int FORCE_PROBLEM_DETECTION = 0x01;
 
 /**
  * Constant indicating that a reconcile operation should enable the statements recovery.
- * @see ASTParser#setStatementsRecovery(boolean)
+ * @see org.eclipse.wst.jsdt.core.dom.ASTParser#setStatementsRecovery(boolean)
  * @since 3.3
  */
 public static final int ENABLE_STATEMENTS_RECOVERY = 0x02;
 
 /**
  * Constant indicating that a reconcile operation should enable the bindings recovery
- * @see ASTParser#setBindingsRecovery(boolean)
- * @see IBinding#isRecovered()
+ * @see org.eclipse.wst.jsdt.core.dom.ASTParser#setBindingsRecovery(boolean)
+ * @see org.eclipse.wst.jsdt.core.dom.IBinding#isRecovered()
  * @since 3.3
  */
 public static final int ENABLE_BINDINGS_RECOVERY = 0x04;
@@ -616,7 +613,7 @@ CompilationUnit reconcile(int astLevel, boolean forceProblemDetection, WorkingCo
  * </p>
  *
  * @param astLevel either {@link #NO_AST} if no AST is wanted,
- * or the {@linkplain AST#newAST(int) AST API level} of the AST if one is wanted
+ * or the {@linkplain org.eclipse.wst.jsdt.core.dom.AST#newAST(int) AST API level} of the AST if one is wanted
  * @param forceProblemDetection boolean indicating whether problem should be
  *   recomputed even if the source hasn't changed
  * @param enableStatementsRecovery if <code>true</code> statements recovery is enabled.
@@ -690,7 +687,7 @@ CompilationUnit reconcile(int astLevel, boolean forceProblemDetection, boolean e
  * </p>
  *
  * @param astLevel either {@link #NO_AST} if no AST is wanted,
- * or the {@linkplain AST#newAST(int) AST API level} of the AST if one is wanted
+ * or the {@linkplain org.eclipse.wst.jsdt.core.dom.AST#newAST(int) AST API level} of the AST if one is wanted
  * @param reconcileFlags the given reconcile flags
  * @param owner the owner of working copies that take precedence over the
  *   original compilation units, or <code>null</code> if the primary working

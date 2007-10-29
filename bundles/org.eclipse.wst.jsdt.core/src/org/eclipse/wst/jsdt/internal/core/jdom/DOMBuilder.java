@@ -17,7 +17,6 @@ import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.jdom.IDOMCompilationUnit;
-import org.eclipse.wst.jsdt.core.jdom.IDOMFactory;
 import org.eclipse.wst.jsdt.core.jdom.IDOMField;
 import org.eclipse.wst.jsdt.core.jdom.IDOMImport;
 import org.eclipse.wst.jsdt.core.jdom.IDOMInitializer;
@@ -150,13 +149,13 @@ protected void addChild(IDOMNode child) {
 	}
 }
 /**
- * @see IDOMFactory#createCompilationUnit()
+ * @see org.eclipse.wst.jsdt.core.jdom.IDOMFactory#createCompilationUnit()
  */
 public IDOMCompilationUnit createCompilationUnit() {
 	return new DOMCompilationUnit();
 }
 /**
- * @see IDOMFactory#createCompilationUnit(String, String)
+ * @see org.eclipse.wst.jsdt.core.jdom.IDOMFactory#createCompilationUnit(String, String)
  */
 public IDOMCompilationUnit createCompilationUnit(ICompilationUnit compilationUnit) {
 	initializeBuild(compilationUnit.getContents(), true, true, false);
@@ -164,7 +163,7 @@ public IDOMCompilationUnit createCompilationUnit(ICompilationUnit compilationUni
 	return super.createCompilationUnit(compilationUnit);
 }
 /**
- * @see IDOMFactory#createField(String)
+ * @see org.eclipse.wst.jsdt.core.jdom.IDOMFactory#createField(String)
  */
 public IDOMField createField(char[] sourceCode) {
 	initializeBuild(sourceCode, false, false, true);
@@ -205,13 +204,13 @@ public IDOMField[] createFields(char[] sourceCode) {
 	return fields;
 }
 /**
- * @see IDOMFactory#createImport()
+ * @see org.eclipse.wst.jsdt.core.jdom.IDOMFactory#createImport()
  */
 public IDOMImport createImport() {
 	return new DOMImport();
 }
 /**
- * @see IDOMFactory#createImport(String)
+ * @see org.eclipse.wst.jsdt.core.jdom.IDOMFactory#createImport(String)
  */
 public IDOMImport createImport(char[] sourceCode) {
 	initializeBuild(sourceCode, false, false, true);
@@ -225,7 +224,7 @@ public IDOMImport createImport(char[] sourceCode) {
 /**
  * Creates an INITIALIZER document fragment from the given source.
  *
- * @see IDOMFactory#createInitializer(String)
+ * @see org.eclipse.wst.jsdt.core.jdom.IDOMFactory#createInitializer(String)
  */
 public IDOMInitializer createInitializer(char[] sourceCode) {
 	initializeBuild(sourceCode, false, false, true);
@@ -237,7 +236,7 @@ public IDOMInitializer createInitializer(char[] sourceCode) {
 	return (IDOMInitializer)fNode;
 }
 /**
- * @see IDOMFactory#createMethod(String)
+ * @see org.eclipse.wst.jsdt.core.jdom.IDOMFactory#createMethod(String)
  */
 public IDOMMethod createMethod(char[] sourceCode) {
 	initializeBuild(sourceCode, false, false, true);
@@ -249,13 +248,13 @@ public IDOMMethod createMethod(char[] sourceCode) {
 	return (IDOMMethod)fNode;
 }
 /**
- * @see IDOMFactory#createPackage()
+ * @see org.eclipse.wst.jsdt.core.jdom.IDOMFactory#createPackage()
  */
 public IDOMPackage createPackage() {
 	return new DOMPackage();
 }
 /**
- * @see IDOMFactory#createPackage(String)
+ * @see org.eclipse.wst.jsdt.core.jdom.IDOMFactory#createPackage(String)
  */
 public IDOMPackage createPackage(char[] sourceCode) {
 	initializeBuild(sourceCode, false, false, true);
@@ -267,7 +266,7 @@ public IDOMPackage createPackage(char[] sourceCode) {
 	return (IDOMPackage)fNode;
 }
 /**
- * @see IDOMFactory#createType(String)
+ * @see org.eclipse.wst.jsdt.core.jdom.IDOMFactory#createType(String)
  */
 public IDOMType createType(char[] sourceCode) {
 	initializeBuild(sourceCode, false, true, false);
