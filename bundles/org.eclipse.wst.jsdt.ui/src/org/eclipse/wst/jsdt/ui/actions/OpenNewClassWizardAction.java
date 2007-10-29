@@ -12,7 +12,6 @@
 package org.eclipse.wst.jsdt.ui.actions;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
@@ -23,7 +22,7 @@ import org.eclipse.wst.jsdt.ui.wizards.NewClassWizardPage;
 
 /**
  * <p>Action that opens the new class wizard. The action initialized the wizard with either the selection
- * as configured by {@link #setSelection(IStructuredSelection)} or takes a preconfigured
+ * as configured by {@link #setSelection(org.eclipse.jface.viewers.IStructuredSelection)} or takes a preconfigured
  * new class wizard page, see {@link #setConfiguredWizardPage(NewClassWizardPage)}.</p>
  * 
  * <p>
@@ -53,7 +52,7 @@ public class OpenNewClassWizardAction extends AbstractOpenWizardAction {
 	
 	/**
 	 * Sets a page to be used by the wizard or <code>null</code> to use a page initialized with values
-	 * from the current selection (see {@link #getSelection()} and {@link #setSelection(IStructuredSelection)}).
+	 * from the current selection (see {@link #getSelection()} and {@link #setSelection(org.eclipse.jface.viewers.IStructuredSelection)}).
 	 * @param page the page to use or <code>null</code>
 	 */
 	public void setConfiguredWizardPage(NewClassWizardPage page) {

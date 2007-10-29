@@ -514,15 +514,15 @@ public class NewJavaProjectPreferencePage extends PreferencePage implements IWor
 		return super.performOk();
 	}
 	
-	private String[] getJRENames() {
-		String prefString= getPreferenceStore().getString(CLASSPATH_JRELIBRARY_LIST);
-		ArrayList list= new ArrayList();
-		StringTokenizer tok= new StringTokenizer(prefString, ";"); //$NON-NLS-1$
-		while (tok.hasMoreTokens()) {
-			list.add(decodeJRELibraryDescription(tok.nextToken()));
-		}
-		return (String[]) list.toArray(new String[list.size()]);
-	}
+//	private String[] getJRENames() {
+//		String prefString= getPreferenceStore().getString(CLASSPATH_JRELIBRARY_LIST);
+//		ArrayList list= new ArrayList();
+//		StringTokenizer tok= new StringTokenizer(prefString, ";"); //$NON-NLS-1$
+//		while (tok.hasMoreTokens()) {
+//			list.add(decodeJRELibraryDescription(tok.nextToken()));
+//		}
+//		return (String[]) list.toArray(new String[list.size()]);
+//	}
 
 }
 

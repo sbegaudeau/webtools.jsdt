@@ -46,7 +46,6 @@ import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
@@ -77,7 +76,6 @@ import org.eclipse.wst.jsdt.core.dom.Statement;
 import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.SwitchCase;
-import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
@@ -90,7 +88,6 @@ import org.eclipse.wst.jsdt.internal.corext.Corext;
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
-import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.dom.ScopeAnalyzer;
 import org.eclipse.wst.jsdt.internal.corext.dom.fragments.ASTFragmentFactory;
 import org.eclipse.wst.jsdt.internal.corext.dom.fragments.IASTFragment;
@@ -113,7 +110,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParse
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.ResourceUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.internal.ui.text.correction.ASTResolving;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
 import org.eclipse.wst.jsdt.ui.JavaElementLabels;
 
@@ -346,7 +342,7 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 	private LinkedProposalModel fLinkedProposalModel;
 	
 	private static final String KEY_NAME= "name"; //$NON-NLS-1$
-	private static final String KEY_TYPE= "type"; //$NON-NLS-1$
+//	private static final String KEY_TYPE= "type"; //$NON-NLS-1$
 	
 
 	/**
@@ -832,42 +828,42 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 		return fSelectedExpression;
 	}
 
-	private Type createTempType() throws CoreException {
-		Expression expression= getSelectedExpression().getAssociatedExpression();
-		
-		Type resultingType= null;
-		ITypeBinding typeBinding= expression.resolveTypeBinding();
-		
-		ASTRewrite rewrite= fCURewrite.getASTRewrite();
-		AST ast= rewrite.getAST();
-		
-		if (expression instanceof ClassInstanceCreation) {
-			resultingType= (Type) rewrite.createCopyTarget(((ClassInstanceCreation) expression).getType());
-		} else if (expression instanceof CastExpression) {
-			resultingType= (Type) rewrite.createCopyTarget(((CastExpression) expression).getType());
-		} else {
-			if (typeBinding == null) {
-				typeBinding= ASTResolving.guessBindingForReference(expression);
-			}
-			if (typeBinding != null) {
-				typeBinding= Bindings.normalizeForDeclarationUse(typeBinding, ast);
-				resultingType= fCURewrite.getImportRewrite().addImport(typeBinding, ast);
-			} else {
-				resultingType= ast.newSimpleType(ast.newSimpleName("Object")); //$NON-NLS-1$
-			}
-		}
-		if (fLinkedProposalModel != null) {
-			LinkedProposalPositionGroup typeGroup= fLinkedProposalModel.getPositionGroup(KEY_TYPE, true);
-			typeGroup.addPosition(rewrite.track(resultingType), false);
-			if (typeBinding != null) {
-				ITypeBinding[] relaxingTypes= ASTResolving.getNarrowingTypes(ast, typeBinding);
-				for (int i= 0; i < relaxingTypes.length; i++) {
-					typeGroup.addProposal(relaxingTypes[i], fCURewrite.getCu(), relaxingTypes.length - i);
-				}
-			}
-		}
-		return resultingType;
-	}
+//	private Type createTempType() throws CoreException {
+//		Expression expression= getSelectedExpression().getAssociatedExpression();
+//		
+//		Type resultingType= null;
+//		ITypeBinding typeBinding= expression.resolveTypeBinding();
+//		
+//		ASTRewrite rewrite= fCURewrite.getASTRewrite();
+//		AST ast= rewrite.getAST();
+//		
+//		if (expression instanceof ClassInstanceCreation) {
+//			resultingType= (Type) rewrite.createCopyTarget(((ClassInstanceCreation) expression).getType());
+//		} else if (expression instanceof CastExpression) {
+//			resultingType= (Type) rewrite.createCopyTarget(((CastExpression) expression).getType());
+//		} else {
+//			if (typeBinding == null) {
+//				typeBinding= ASTResolving.guessBindingForReference(expression);
+//			}
+//			if (typeBinding != null) {
+//				typeBinding= Bindings.normalizeForDeclarationUse(typeBinding, ast);
+//				resultingType= fCURewrite.getImportRewrite().addImport(typeBinding, ast);
+//			} else {
+//				resultingType= ast.newSimpleType(ast.newSimpleName("Object")); //$NON-NLS-1$
+//			}
+//		}
+//		if (fLinkedProposalModel != null) {
+//			LinkedProposalPositionGroup typeGroup= fLinkedProposalModel.getPositionGroup(KEY_TYPE, true);
+//			typeGroup.addPosition(rewrite.track(resultingType), false);
+//			if (typeBinding != null) {
+//				ITypeBinding[] relaxingTypes= ASTResolving.getNarrowingTypes(ast, typeBinding);
+//				for (int i= 0; i < relaxingTypes.length; i++) {
+//					typeGroup.addProposal(relaxingTypes[i], fCURewrite.getCu(), relaxingTypes.length - i);
+//				}
+//			}
+//		}
+//		return resultingType;
+//	}
 
 	public String guessTempName() {
 		String[] proposals= guessTempNames();

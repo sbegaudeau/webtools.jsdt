@@ -29,7 +29,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
-import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposalComputer;
 import org.osgi.framework.Bundle;
 
 /**
@@ -241,7 +240,7 @@ public final class CompletionProposalCategory {
 	/**
 	 * Safely computes completion proposals of all computers of this category through their
 	 * extension. If an extension is disabled, throws an exception or otherwise does not adhere to
-	 * the contract described in {@link IJavaCompletionProposalComputer}, it is disabled.
+	 * the contract described in {@link org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposalComputer}, it is disabled.
 	 * 
 	 * @param context the invocation context passed on to the extension
 	 * @param partition the partition type where to invocation occurred
@@ -266,7 +265,7 @@ public final class CompletionProposalCategory {
 	/**
 	 * Safely computes context information objects of all computers of this category through their
 	 * extension. If an extension is disabled, throws an exception or otherwise does not adhere to
-	 * the contract described in {@link IJavaCompletionProposalComputer}, it is disabled.
+	 * the contract described in {@link org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposalComputer}, it is disabled.
 	 * 
 	 * @param context the invocation context passed on to the extension
 	 * @param partition the partition type where to invocation occurred

@@ -30,7 +30,6 @@ import org.eclipse.compare.structuremergeviewer.IDiffContainer;
 import org.eclipse.compare.structuremergeviewer.IDiffElement;
 import org.eclipse.compare.structuremergeviewer.IStructureComparator;
 import org.eclipse.compare.structuremergeviewer.StructureCreator;
-import org.eclipse.compare.structuremergeviewer.StructureRootNode;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -60,7 +59,7 @@ public class JavaStructureCreator extends StructureCreator {
 	private Map fDefaultCompilerOptions;
 	
 	/**
-	 * A root node for the structure. It is similar to {@link StructureRootNode} but needed
+	 * A root node for the structure. It is similar to {@link org.eclipse.compare.structuremergeviewer.StructureRootNode} but needed
 	 * to be a subclass of {@link JavaNode} because of the code used to build the structure.
 	 */
 	private final class RootJavaNode extends JavaNode implements IDisposable {

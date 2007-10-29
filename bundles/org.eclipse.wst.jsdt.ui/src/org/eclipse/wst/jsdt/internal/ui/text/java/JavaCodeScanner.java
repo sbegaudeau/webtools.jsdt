@@ -373,7 +373,7 @@ public final class JavaCodeScanner extends AbstractJavaScanner {
 		"while" //$NON-NLS-1$
 	};
 
-	private static final String INTERFACE= "interface";  //$NON-NLS-1$
+//	private static final String INTERFACE= "interface";  //$NON-NLS-1$
 	private static final String RETURN= "return"; //$NON-NLS-1$
 	private static String[] fgJava14Keywords= { /*"assert"*/ }; //$NON-NLS-1$
 	private static String[] fgJava15Keywords= { "enum" }; //$NON-NLS-1$

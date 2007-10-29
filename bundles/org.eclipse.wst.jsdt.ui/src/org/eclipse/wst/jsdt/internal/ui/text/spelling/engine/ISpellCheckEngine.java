@@ -13,8 +13,6 @@ package org.eclipse.wst.jsdt.internal.ui.text.spelling.engine;
 
 import java.util.Locale;
 
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
-
 /**
  * Interface for a spell check engine.
  * <p>
@@ -29,7 +27,7 @@ public interface ISpellCheckEngine {
 	/**
 	 * Returns a spell checker configured with the global
 	 * dictionaries and the locale dictionary that correspond to the current
-	 * {@linkplain PreferenceConstants#SPELLING_LOCALE locale preference}.
+	 * {@linkplain org.eclipse.wst.jsdt.ui.PreferenceConstants#SPELLING_LOCALE locale preference}.
 	 * <p>
 	 * <strong>Note:</strong> Changes to the spelling engine dictionaries
 	 * are not propagated to this spell checker.</p>

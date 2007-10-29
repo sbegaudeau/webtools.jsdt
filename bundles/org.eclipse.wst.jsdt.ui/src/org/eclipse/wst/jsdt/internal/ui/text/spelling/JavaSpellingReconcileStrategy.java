@@ -34,7 +34,6 @@ import org.eclipse.ui.texteditor.spelling.SpellingContext;
 import org.eclipse.ui.texteditor.spelling.SpellingProblem;
 import org.eclipse.ui.texteditor.spelling.SpellingService;
 import org.eclipse.wst.jsdt.core.IProblemRequestor;
-import org.eclipse.wst.jsdt.core.compiler.IProblem;
 
 /**
  * Reconcile strategy for spell checking comments.
@@ -54,7 +53,7 @@ public class JavaSpellingReconcileStrategy implements IReconcilingStrategy, IRec
 	
 	/**
 	 * Spelling problem collector that forwards {@link SpellingProblem}s as
-	 * {@link IProblem}s to the {@link IProblemRequestor}.
+	 * {@link org.eclipse.wst.jsdt.core.compiler.IProblem}s to the {@link org.eclipse.wst.jsdt.core.compiler.IProblemRequestor}.
 	 */
 	private class SpellingProblemCollector implements ISpellingProblemCollector {
 
@@ -116,7 +115,7 @@ public class JavaSpellingReconcileStrategy implements IReconcilingStrategy, IRec
 	private IProblemRequestor fRequestor;
 
 	/** The text editor to operate on. */
-	private ISourceViewer fViewer;
+//	private ISourceViewer fViewer;
 
 	/** The document to operate on. */
 	private IDocument fDocument;
@@ -124,7 +123,7 @@ public class JavaSpellingReconcileStrategy implements IReconcilingStrategy, IRec
 	/** The progress monitor. */
 	private IProgressMonitor fProgressMonitor;
 
-	private SpellingService fSpellingService;
+//	private SpellingService fSpellingService;
 	
 	private ISpellingProblemCollector fSpellingProblemCollector;
 	
@@ -140,7 +139,7 @@ public class JavaSpellingReconcileStrategy implements IReconcilingStrategy, IRec
 	public JavaSpellingReconcileStrategy(ISourceViewer viewer, ITextEditor editor) {
 		
 		Assert.isNotNull(viewer);
-		fViewer= viewer;
+//		fViewer= viewer;
 		fSpellingContext= new SpellingContext();
 		
 		fEditor= editor;

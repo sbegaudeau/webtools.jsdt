@@ -36,10 +36,6 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -54,12 +50,8 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.model.WorkbenchContentProvider;
-import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
-import org.eclipse.ui.views.navigator.ResourceComparator;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
@@ -74,8 +66,6 @@ import org.eclipse.wst.jsdt.internal.ui.util.CoreUtility;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageDisposer;
 import org.eclipse.wst.jsdt.internal.ui.wizards.IStatusChangeListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
-import org.eclipse.wst.jsdt.internal.ui.wizards.TypedElementSelectionValidator;
-import org.eclipse.wst.jsdt.internal.ui.wizards.TypedViewerFilter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.newsourcepage.NewSourceContainerWorkbookPage;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.CheckedListDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
@@ -83,7 +73,6 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListene
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IListAdapter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IStringButtonAdapter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ListDialogField;
-import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonDialogField;
 import org.eclipse.wst.jsdt.launching.JavaRuntime;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
@@ -104,10 +93,10 @@ public class BuildPathsBlock {
 	}
 
 
-	private IWorkspaceRoot fWorkspaceRoot;
+//	private IWorkspaceRoot fWorkspaceRoot;
 
 	private CheckedListDialogField fClassPathList;
-	private StringButtonDialogField fBuildPathDialogField;
+//	private StringButtonDialogField fBuildPathDialogField;
 	
 	private StatusInfo fClassPathStatus;
 	private StatusInfo fOutputFolderStatus;	
@@ -148,7 +137,7 @@ public class BuildPathsBlock {
 	
 	public BuildPathsBlock(IRunnableContext runnableContext, IStatusChangeListener context, int pageToShow, boolean useNewPage, IWorkbenchPreferenceContainer pageContainer) {
 		fPageContainer= pageContainer;
-		fWorkspaceRoot= JavaPlugin.getWorkspace().getRoot();
+//		fWorkspaceRoot= JavaPlugin.getWorkspace().getRoot();
 		fContext= context;
 		fUseNewPage= useNewPage;
 		
@@ -1113,41 +1102,41 @@ public class BuildPathsBlock {
 	
 	// ---------- util method ------------
 		
-	private IContainer chooseContainer() {
-		Class[] acceptedClasses= new Class[] { IProject.class, IFolder.class };
-		ISelectionStatusValidator validator= new TypedElementSelectionValidator(acceptedClasses, false);
-		IProject[] allProjects= fWorkspaceRoot.getProjects();
-		ArrayList rejectedElements= new ArrayList(allProjects.length);
-		IProject currProject= fCurrJProject.getProject();
-		for (int i= 0; i < allProjects.length; i++) {
-			if (!allProjects[i].equals(currProject)) {
-				rejectedElements.add(allProjects[i]);
-			}
-		}
-		ViewerFilter filter= new TypedViewerFilter(acceptedClasses, rejectedElements.toArray());
-
-		ILabelProvider lp= new WorkbenchLabelProvider();
-		ITreeContentProvider cp= new WorkbenchContentProvider();
-
-		IResource initSelection= null;
-//		if (fOutputLocationPath != null) {
-//			initSelection= fWorkspaceRoot.findMember(fOutputLocationPath);
+//	private IContainer chooseContainer() {
+//		Class[] acceptedClasses= new Class[] { IProject.class, IFolder.class };
+//		ISelectionStatusValidator validator= new TypedElementSelectionValidator(acceptedClasses, false);
+//		IProject[] allProjects= fWorkspaceRoot.getProjects();
+//		ArrayList rejectedElements= new ArrayList(allProjects.length);
+//		IProject currProject= fCurrJProject.getProject();
+//		for (int i= 0; i < allProjects.length; i++) {
+//			if (!allProjects[i].equals(currProject)) {
+//				rejectedElements.add(allProjects[i]);
+//			}
 //		}
-		
-		FolderSelectionDialog dialog= new FolderSelectionDialog(getShell(), lp, cp);
-		dialog.setTitle(NewWizardMessages.BuildPathsBlock_ChooseOutputFolderDialog_title); 
-		dialog.setValidator(validator);
-		dialog.setMessage(NewWizardMessages.BuildPathsBlock_ChooseOutputFolderDialog_description); 
-		dialog.addFilter(filter);
-		dialog.setInput(fWorkspaceRoot);
-		dialog.setInitialSelection(initSelection);
-		dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));
-		
-		if (dialog.open() == Window.OK) {
-			return (IContainer)dialog.getFirstResult();
-		}
-		return null;
-	}
+//		ViewerFilter filter= new TypedViewerFilter(acceptedClasses, rejectedElements.toArray());
+//
+//		ILabelProvider lp= new WorkbenchLabelProvider();
+//		ITreeContentProvider cp= new WorkbenchContentProvider();
+//
+//		IResource initSelection= null;
+////		if (fOutputLocationPath != null) {
+////			initSelection= fWorkspaceRoot.findMember(fOutputLocationPath);
+////		}
+//		
+//		FolderSelectionDialog dialog= new FolderSelectionDialog(getShell(), lp, cp);
+//		dialog.setTitle(NewWizardMessages.BuildPathsBlock_ChooseOutputFolderDialog_title); 
+//		dialog.setValidator(validator);
+//		dialog.setMessage(NewWizardMessages.BuildPathsBlock_ChooseOutputFolderDialog_description); 
+//		dialog.addFilter(filter);
+//		dialog.setInput(fWorkspaceRoot);
+//		dialog.setInitialSelection(initSelection);
+//		dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));
+//		
+//		if (dialog.open() == Window.OK) {
+//			return (IContainer)dialog.getFirstResult();
+//		}
+//		return null;
+//	}
 	
 	// -------- tab switching ----------
 	

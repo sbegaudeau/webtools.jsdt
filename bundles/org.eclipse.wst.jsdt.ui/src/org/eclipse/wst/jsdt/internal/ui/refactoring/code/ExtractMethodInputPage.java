@@ -265,16 +265,16 @@ public class ExtractMethodInputPage extends UserInputWizardPage {
 		return RefactoringMessages.ExtractMethodInputPage_label_text; 
 	}
 	
-	private void setVisibility(Integer visibility) {
-		fRefactoring.setVisibility(visibility.intValue());
-		updatePreview(getText());
-	}
-	
-	private void setRethrowRuntimeException(boolean value) {
-		fSettings.put(THROW_RUNTIME_EXCEPTIONS, value);
-		fRefactoring.setThrowRuntimeExceptions(value);
-		updatePreview(getText());
-	}
+//	private void setVisibility(Integer visibility) {
+//		fRefactoring.setVisibility(visibility.intValue());
+//		updatePreview(getText());
+//	}
+//	
+//	private void setRethrowRuntimeException(boolean value) {
+//		fSettings.put(THROW_RUNTIME_EXCEPTIONS, value);
+//		fRefactoring.setThrowRuntimeExceptions(value);
+//		updatePreview(getText());
+//	}
 	
 	private boolean computeGenerateJavadoc() {
 		boolean result= fRefactoring.getGenerateJavadoc();

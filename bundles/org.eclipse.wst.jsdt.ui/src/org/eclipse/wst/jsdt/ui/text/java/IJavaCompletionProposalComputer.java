@@ -13,8 +13,6 @@ package org.eclipse.wst.jsdt.ui.text.java;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.text.contentassist.ICompletionProposal;
-import org.eclipse.jface.text.contentassist.IContextInformation;
 
 /**
  * Computes completions and context information displayed by the Java editor content assistant.
@@ -39,7 +37,7 @@ public interface IJavaCompletionProposalComputer {
 	 * @param context the context of the content assist invocation
 	 * @param monitor a progress monitor to report progress. The monitor is private to this
 	 *        invocation, i.e. there is no need for the receiver to spawn a sub monitor.
-	 * @return a list of completion proposals (element type: {@link ICompletionProposal})
+	 * @return a list of completion proposals (element type: {@link org.eclipse.jface.text.contentassist.ICompletionProposal})
 	 */
 	List computeCompletionProposals(ContentAssistInvocationContext context, IProgressMonitor monitor);
 
@@ -49,7 +47,7 @@ public interface IJavaCompletionProposalComputer {
 	 * @param context the context of the content assist invocation
 	 * @param monitor a progress monitor to report progress. The monitor is private to this
 	 *        invocation, i.e. there is no need for the receiver to spawn a sub monitor.
-	 * @return a list of context information objects (element type: {@link IContextInformation})
+	 * @return a list of context information objects (element type: {@link org.eclipse.jface.text.contentassist.IContextInformation})
 	 */
 	List computeContextInformation(ContentAssistInvocationContext context, IProgressMonitor monitor);
 

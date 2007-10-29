@@ -26,7 +26,6 @@ import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
-import org.eclipse.jface.text.quickassist.IQuickAssistAssistant;
 import org.eclipse.jface.text.quickassist.QuickAssistAssistant;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
@@ -138,7 +137,7 @@ public class JavaCorrectionAssistant extends QuickAssistAssistant {
 	 * to right and restarting at end of line if the
 	 * beginning of the line is reached.
 	 *
-	 * @see IQuickAssistAssistant#showPossibleQuickAssists()
+	 * @see org.eclipse.jface.text.quickassist.IQuickAssistAssistant#showPossibleQuickAssists()
 	 */
 	public String showPossibleQuickAssists() {
 		fPosition= null;

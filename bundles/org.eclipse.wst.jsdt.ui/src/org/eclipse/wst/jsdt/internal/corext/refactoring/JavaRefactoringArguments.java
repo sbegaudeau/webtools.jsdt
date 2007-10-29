@@ -14,16 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.ltk.core.refactoring.RefactoringContribution;
-import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 
 /**
  * Refactoring arguments which provide the ability to set arguments using
  * key-value pairs of strings.
  * 
- * @see RefactoringContribution
- * @see RefactoringDescriptor
+ * @see org.eclipse.ltk.core.refactoring.RefactoringContribution
+ * @see org.eclipse.ltk.core.refactoring.RefactoringDescriptor
  * 
  * @since 3.2
  */

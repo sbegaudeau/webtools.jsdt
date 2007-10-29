@@ -26,7 +26,6 @@ import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CleanUpMessages;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CleanUpProfileManager;
 import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CleanUpProfileVersioner;
-import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileStore;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.BuiltInProfile;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.CustomProfile;
@@ -173,7 +172,7 @@ public class CleanUpPreferenceUtil {
     }
 
 	/**
-	 * Returns a list of {@link ProfileManager.Profile} stored in the <code>scope</code>
+	 * Returns a list of {@link org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileManager.Profile} stored in the <code>scope</code>
 	 * including the built in profiles.
 	 * @param scope the context from which to retrieve the profiles
 	 * @return list of profiles, not null

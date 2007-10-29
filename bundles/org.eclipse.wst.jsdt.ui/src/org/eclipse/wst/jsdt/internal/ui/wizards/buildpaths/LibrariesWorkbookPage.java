@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -38,11 +36,8 @@ import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.WorkbenchRunnableAdapter;
-import org.eclipse.wst.jsdt.internal.ui.jarimport.JarImportWizard;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
@@ -320,31 +315,31 @@ public class LibrariesWorkbookPage extends BuildPathBasePage {
 //		}
 //	}
 
-	private IPackageFragmentRoot getSelectedPackageFragmentRoot() {
-		final List elements= fLibrariesList.getSelectedElements();
-		if (elements.size() == 1) {
-			final Object object= elements.get(0);
-			if (object instanceof CPListElement) {
-				final CPListElement element= (CPListElement) object;
-				final IClasspathEntry entry= element.getClasspathEntry();
-				if (JarImportWizard.isValidClassPathEntry(entry)) {
-					final IJavaProject project= element.getJavaProject();
-					if (project != null) {
-						try {
-							final IPackageFragmentRoot[] roots= project.getPackageFragmentRoots();
-							for (int index= 0; index < roots.length; index++) {
-								if (entry.equals(roots[index].getRawClasspathEntry()))
-									return roots[index];
-							}
-						} catch (JavaModelException exception) {
-							JavaPlugin.log(exception);
-						}
-					}
-				}
-			}
-		}
-		return null;
-	}
+//	private IPackageFragmentRoot getSelectedPackageFragmentRoot() {
+//		final List elements= fLibrariesList.getSelectedElements();
+//		if (elements.size() == 1) {
+//			final Object object= elements.get(0);
+//			if (object instanceof CPListElement) {
+//				final CPListElement element= (CPListElement) object;
+//				final IClasspathEntry entry= element.getClasspathEntry();
+//				if (JarImportWizard.isValidClassPathEntry(entry)) {
+//					final IJavaProject project= element.getJavaProject();
+//					if (project != null) {
+//						try {
+//							final IPackageFragmentRoot[] roots= project.getPackageFragmentRoots();
+//							for (int index= 0; index < roots.length; index++) {
+//								if (entry.equals(roots[index].getRawClasspathEntry()))
+//									return roots[index];
+//							}
+//						} catch (JavaModelException exception) {
+//							JavaPlugin.log(exception);
+//						}
+//					}
+//				}
+//			}
+//		}
+//		return null;
+//	}
 
 	private void removeEntry() {
 		List selElements= fLibrariesList.getSelectedElements();
@@ -522,7 +517,7 @@ public class LibrariesWorkbookPage extends BuildPathBasePage {
 			res= openContainerSelectionDialog(elem);
 			break;
 		case IClasspathEntry.CPE_LIBRARY:
-			IResource resource= elem.getResource();
+//			IResource resource= elem.getResource();
 //			if (resource == null) {
 //				res= openExtJarFileDialog(elem);
 //			} else if (resource.getType() == IResource.FOLDER) {
@@ -700,32 +695,32 @@ public class LibrariesWorkbookPage extends BuildPathBasePage {
 //		return null;
 //	}
 	
-	private IPath[] getUsedContainers(CPListElement existing) {
-		ArrayList res= new ArrayList();
-		if (fCurrJProject.exists()) {
-			try {
-				IPath outputLocation= fCurrJProject.getOutputLocation();
-				if (outputLocation != null && outputLocation.segmentCount() > 1) { // != Project
-					res.add(outputLocation);
-				}
-			} catch (JavaModelException e) {
-				// ignore it here, just log
-				JavaPlugin.log(e.getStatus());
-			}
-		}	
-			
-		List cplist= fLibrariesList.getElements();
-		for (int i= 0; i < cplist.size(); i++) {
-			CPListElement elem= (CPListElement)cplist.get(i);
-			if (elem.getEntryKind() == IClasspathEntry.CPE_LIBRARY && (elem != existing)) {
-				IResource resource= elem.getResource();
-				if (resource instanceof IContainer && !resource.equals(existing)) {
-					res.add(resource.getFullPath());
-				}
-			}
-		}
-		return (IPath[]) res.toArray(new IPath[res.size()]);
-	}
+//	private IPath[] getUsedContainers(CPListElement existing) {
+//		ArrayList res= new ArrayList();
+//		if (fCurrJProject.exists()) {
+//			try {
+//				IPath outputLocation= fCurrJProject.getOutputLocation();
+//				if (outputLocation != null && outputLocation.segmentCount() > 1) { // != Project
+//					res.add(outputLocation);
+//				}
+//			} catch (JavaModelException e) {
+//				// ignore it here, just log
+//				JavaPlugin.log(e.getStatus());
+//			}
+//		}	
+//			
+//		List cplist= fLibrariesList.getElements();
+//		for (int i= 0; i < cplist.size(); i++) {
+//			CPListElement elem= (CPListElement)cplist.get(i);
+//			if (elem.getEntryKind() == IClasspathEntry.CPE_LIBRARY && (elem != existing)) {
+//				IResource resource= elem.getResource();
+//				if (resource instanceof IContainer && !resource.equals(existing)) {
+//					res.add(resource.getFullPath());
+//				}
+//			}
+//		}
+//		return (IPath[]) res.toArray(new IPath[res.size()]);
+//	}
 	
 //	private IPath[] getUsedJARFiles(CPListElement existing) {
 //		List res= new ArrayList();

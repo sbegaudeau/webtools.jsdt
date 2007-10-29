@@ -200,7 +200,7 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 
 		ArrayList folders= new ArrayList();
 	
-		boolean useFolderOutputs= false;
+//		boolean useFolderOutputs= false;
 		List cpelements= fClassPathList.getElements();
 		for (int i= 0; i < cpelements.size(); i++) {
 			CPListElement cpe= (CPListElement)cpelements.get(i);
@@ -208,7 +208,7 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 				folders.add(cpe);
 				boolean hasOutputFolder= (cpe.getAttribute(CPListElement.OUTPUT) != null);
 				if (hasOutputFolder) {
-					useFolderOutputs= true;
+//					useFolderOutputs= true;
 				}
 
 			}
@@ -975,7 +975,7 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 		fFoldersList.enableButton(IDX_REMOVE, canRemove(selElements));
 		//fFoldersList.enableButton(IDX_REPLACE, getSelectedPackageFragmentRoot() != null);
 		
-		boolean noAttributes= containsOnlyTopLevelEntries(selElements);
+//		boolean noAttributes= containsOnlyTopLevelEntries(selElements);
 		//fLibrariesList.enableButton(IDX_ADDEXT, noAttributes);
 		//fLibrariesList.enableButton(IDX_ADDFOL, noAttributes);
 		//fLibrariesList.enableButton(IDX_ADDJAR, noAttributes);

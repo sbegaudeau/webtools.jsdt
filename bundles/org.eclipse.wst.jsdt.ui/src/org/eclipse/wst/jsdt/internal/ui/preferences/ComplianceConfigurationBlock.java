@@ -34,7 +34,6 @@ import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
-import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.IStatusChangeListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathSupport;
 import org.eclipse.wst.jsdt.launching.IVMInstall;
@@ -61,11 +60,11 @@ public class ComplianceConfigurationBlock extends OptionsConfigurationBlock {
 	private static final Key INTR_DEFAULT_COMPLIANCE= getJDTUIKey("internal.default.compliance"); //$NON-NLS-1$
 
 	// values
-	private static final String GENERATE= JavaCore.GENERATE;
-	private static final String DO_NOT_GENERATE= JavaCore.DO_NOT_GENERATE;
-	
-	private static final String PRESERVE= JavaCore.PRESERVE;
-	private static final String OPTIMIZE_OUT= JavaCore.OPTIMIZE_OUT;
+//	private static final String GENERATE= JavaCore.GENERATE;
+//	private static final String DO_NOT_GENERATE= JavaCore.DO_NOT_GENERATE;
+//	
+//	private static final String PRESERVE= JavaCore.PRESERVE;
+//	private static final String OPTIMIZE_OUT= JavaCore.OPTIMIZE_OUT;
 	
 	private static final String VERSION_1_1= JavaCore.VERSION_1_1;
 	private static final String VERSION_1_2= JavaCore.VERSION_1_2;
@@ -79,14 +78,14 @@ public class ComplianceConfigurationBlock extends OptionsConfigurationBlock {
 	private static final String IGNORE= JavaCore.IGNORE;
 
 	private static final String ENABLED= JavaCore.ENABLED;
-	private static final String DISABLED= JavaCore.DISABLED;
+//	private static final String DISABLED= JavaCore.DISABLED;
 	
 	
 	private static final String DEFAULT_CONF= "default"; //$NON-NLS-1$
 	private static final String USER_CONF= "user";	 //$NON-NLS-1$
 
 	private ArrayList fComplianceControls;
-	private PixelConverter fPixelConverter;
+//	private PixelConverter fPixelConverter;
 
 	private String[] fRememberedUserCompliance;
 	
@@ -143,7 +142,7 @@ public class ComplianceConfigurationBlock extends OptionsConfigurationBlock {
 	 * @see org.eclipse.jface.preference.PreferencePage#createContents(Composite)
 	 */
 	protected Control createContents(Composite parent) {
-		fPixelConverter= new PixelConverter(parent);
+//		fPixelConverter= new PixelConverter(parent);
 		setShell(parent.getShell());
 		
 		Composite complianceComposite= createComplianceTabContent(parent);
@@ -338,7 +337,7 @@ public class ComplianceConfigurationBlock extends OptionsConfigurationBlock {
 				fComplianceStatus= validateCompliance();
 			} else if (PREF_COMPLIANCE.equals(changedKey)) {
 			    // set compliance settings to default
-			    Object oldDefault= setValue(INTR_DEFAULT_COMPLIANCE, DEFAULT_CONF);
+//			    Object oldDefault= setValue(INTR_DEFAULT_COMPLIANCE, DEFAULT_CONF);
 			    updateComplianceEnableState();
 //				updateComplianceDefaultSettings(USER_CONF.equals(oldDefault), oldValue);
 				fComplianceStatus= validateCompliance();

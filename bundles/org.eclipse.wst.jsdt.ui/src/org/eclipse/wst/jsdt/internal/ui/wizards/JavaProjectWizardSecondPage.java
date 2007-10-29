@@ -202,13 +202,13 @@ public class JavaProjectWizardSecondPage extends JavaCapabilityConfigurationPage
 			}
 				
 			IClasspathEntry[] entries= null;
-			IPath outputLocation= null;
+//			IPath outputLocation= null;
 	
 			if (fFirstPage.getDetect()) {
 				if (!fCurrProject.getFile(JavaProject.CLASSPATH_FILENAME).exists()) { 
 					final ClassPathDetector detector= new ClassPathDetector(fCurrProject, new SubProgressMonitor(monitor, 2));
 					entries= detector.getClasspath();
-                    outputLocation= detector.getOutputLocation();
+//                    outputLocation= detector.getOutputLocation();
 				} else {
 					monitor.worked(2);
 				}
@@ -240,7 +240,7 @@ public class JavaProjectWizardSecondPage extends JavaCapabilityConfigurationPage
 				entries= (IClasspathEntry[]) cpEntries.toArray(new IClasspathEntry[cpEntries.size()]);
 				
 				// configure the output location
-				outputLocation= projectPath.append(binPath);
+//				outputLocation= projectPath.append(binPath);
 			} else {
 				IPath projectPath= fCurrProject.getFullPath();
 				List cpEntries= new ArrayList();
@@ -248,7 +248,7 @@ public class JavaProjectWizardSecondPage extends JavaCapabilityConfigurationPage
 				cpEntries.addAll(Arrays.asList(getDefaultClasspathEntry()));
 				entries= (IClasspathEntry[]) cpEntries.toArray(new IClasspathEntry[cpEntries.size()]);
 
-				outputLocation= projectPath;
+//				outputLocation= projectPath;
 				monitor.worked(2);
 			}
 			if (monitor.isCanceled()) {

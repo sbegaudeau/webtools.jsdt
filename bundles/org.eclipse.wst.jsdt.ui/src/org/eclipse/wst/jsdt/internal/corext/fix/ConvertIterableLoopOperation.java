@@ -463,8 +463,8 @@ public final class ConvertIterableLoopOperation extends ConvertLoopOperation {
 					
 					private boolean visit(final Expression left, final Expression right) {
 						if (right instanceof MethodInvocation) {
-							final MethodInvocation invocation= (MethodInvocation)right;
-							final IMethodBinding binding= invocation.resolveMethodBinding();
+//							final MethodInvocation invocation= (MethodInvocation)right;
+//							final IMethodBinding binding= invocation.resolveMethodBinding();
 //							if (binding != null && (binding.getName().equals("next") || binding.getName().equals("nextElement"))) { //$NON-NLS-1$ //$NON-NLS-2$
 //								final Expression expression= invocation.getExpression();
 //								if (expression instanceof Name) {
@@ -572,7 +572,7 @@ public final class ConvertIterableLoopOperation extends ConvertLoopOperation {
 		if (declaringClass == null)
 			return new StatusInfo(IStatus.ERROR, ""); //$NON-NLS-1$
 			
-		String qualifiedName= declaringClass.getQualifiedName();
+//		String qualifiedName= declaringClass.getQualifiedName();
 //		String methodName= invoc.getName().getIdentifier();
 //		if (qualifiedName.startsWith("java.util.Enumeration")) { //$NON-NLS-1$
 //			if (!methodName.equals("hasMoreElements")) //$NON-NLS-1$

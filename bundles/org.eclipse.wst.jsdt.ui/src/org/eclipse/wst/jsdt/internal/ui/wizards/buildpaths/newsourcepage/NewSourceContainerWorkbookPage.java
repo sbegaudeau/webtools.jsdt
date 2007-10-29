@@ -62,7 +62,7 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
 
 	private final IRunnableContext fContext;
 
-	private final BuildPathsBlock fBuildPathsBlock;
+//	private final BuildPathsBlock fBuildPathsBlock;
 
 
     /**
@@ -80,7 +80,7 @@ public class NewSourceContainerWorkbookPage extends BuildPathBasePage implements
         fClassPathList= classPathList;
 		//fOutputLocationField= outputLocationField;
 		fContext= context;
-		fBuildPathsBlock= buildPathsBlock;
+//		fBuildPathsBlock= buildPathsBlock;
     
 //        fUseFolderOutputs= new SelectionButtonDialogField(SWT.CHECK);
 //        fUseFolderOutputs.setSelection(false);

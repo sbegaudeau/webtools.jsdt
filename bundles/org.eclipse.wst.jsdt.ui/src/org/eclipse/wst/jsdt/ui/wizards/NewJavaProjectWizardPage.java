@@ -61,7 +61,7 @@ public class NewJavaProjectWizardPage extends NewElementWizardPage {
 
 	private WizardNewProjectCreationPage fMainPage;
 	
-	private IPath fOutputLocation;
+//	private IPath fOutputLocation;
 	private IClasspathEntry[] fClasspathEntries;
 	private BuildPathsBlock fBuildPathsBlock;
 
@@ -92,7 +92,7 @@ public class NewJavaProjectWizardPage extends NewElementWizardPage {
 		fBuildPathsBlock= new BuildPathsBlock(new BusyIndicatorRunnableContext(), listener, 0, false, null);
 		
 		fProjectModified= true;
-		fOutputLocation= null;
+//		fOutputLocation= null;
 		fClasspathEntries= null;
 	}		
 	
@@ -128,7 +128,7 @@ public class NewJavaProjectWizardPage extends NewElementWizardPage {
 	 * @param path the folder to be taken as the default output path
 	 */
 	public void setDefaultOutputFolder(IPath path) {
-		fOutputLocation= path;
+//		fOutputLocation= path;
 		setProjectModified();
 	}	
 

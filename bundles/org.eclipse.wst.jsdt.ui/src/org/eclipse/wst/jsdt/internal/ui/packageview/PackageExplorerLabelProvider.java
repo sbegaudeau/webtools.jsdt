@@ -90,7 +90,6 @@ public class PackageExplorerLabelProvider extends AppearanceAwareLabelProvider {
 			return decorateText(text, element);
 		}
 		text = super.getText(element);
-		IPath itsPath=null;
 		if(element instanceof IClassFile) {
 			text = ((IClassFile)element).getPath().lastSegment();
 		}else if (element instanceof ICompilationUnit) {

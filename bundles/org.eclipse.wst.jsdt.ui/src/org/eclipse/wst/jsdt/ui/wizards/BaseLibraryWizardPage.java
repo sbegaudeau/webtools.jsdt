@@ -19,7 +19,7 @@ public class BaseLibraryWizardPage extends NewElementWizardPage implements IClas
 	
 //	private IJavaProject fCurrentProject;
 //	private IClasspathEntry[] fCurrentEntries;
-	private static final String LIBRARY_FILE_NAME = "baseBrowserLibrary.js";
+//	private static final String LIBRARY_FILE_NAME = "baseBrowserLibrary.js";
 	//private static final String MY_PLUGIN_ID="org.eclipse.wst.jsdt.base.library";
 	private static final String CONTAINER_ID="org.eclipse.wst.jsdt.launching.baseBrowserLibrary";
 	

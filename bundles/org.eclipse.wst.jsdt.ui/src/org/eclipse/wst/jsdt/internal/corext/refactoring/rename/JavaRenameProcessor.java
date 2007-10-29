@@ -26,7 +26,6 @@ import org.eclipse.ltk.core.refactoring.participants.ValidateEditChecker;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.ICommentProvider;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.INameUpdating;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.IScriptableRefactoring;
-import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper;
 
 public abstract class JavaRenameProcessor extends RenameProcessor implements IScriptableRefactoring, INameUpdating, ICommentProvider {
 	
@@ -78,9 +77,9 @@ public abstract class JavaRenameProcessor extends RenameProcessor implements ISc
 	}
 	
 	/**
-	 * @return a save mode from {@link RefactoringSaveHelper}
+	 * @return a save mode from {@link org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper}
 	 * 
-	 * @see RefactoringSaveHelper
+	 * @see org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper
 	 */
 	public abstract int getSaveMode();
 

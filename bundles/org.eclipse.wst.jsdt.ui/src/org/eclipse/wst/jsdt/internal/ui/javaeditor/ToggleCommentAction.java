@@ -31,7 +31,6 @@ import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.ui.texteditor.ResourceAction;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
@@ -59,7 +58,7 @@ public final class ToggleCommentAction extends TextEditorAction {
 	 *   (described in <code>ResourceAction</code> constructor), or
 	 *   <code>null</code> if none
 	 * @param editor the text editor
-	 * @see ResourceAction#ResourceAction(ResourceBundle, String, int)
+	 * @see org.eclipse.ui.texteditor.ResourceAction#ResourceAction(ResourceBundle, String, int)
 	 */
 	public ToggleCommentAction(ResourceBundle bundle, String prefix, ITextEditor editor) {
 		super(bundle, prefix, editor);

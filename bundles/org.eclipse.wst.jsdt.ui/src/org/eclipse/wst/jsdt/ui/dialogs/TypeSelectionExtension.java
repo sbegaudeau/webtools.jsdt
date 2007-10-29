@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.ui.dialogs;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
-import org.eclipse.wst.jsdt.core.IType;
 
 /**
  * The class provides API to extend type selection dialogs like the
@@ -75,7 +74,7 @@ public abstract class TypeSelectionExtension {
 	/**
 	 * Returns the selection validator or <code>null</code> if
 	 * selection validation is not required. The elements passed
-	 * to the selection validator are of type {@link IType}.
+	 * to the selection validator are of type {@link org.eclipse.wst.jsdt.core.IType}.
 	 * 
 	 * @return the selection validator or <code>null</code>
 	 */

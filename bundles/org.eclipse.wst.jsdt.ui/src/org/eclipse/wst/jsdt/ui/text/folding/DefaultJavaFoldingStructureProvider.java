@@ -40,8 +40,6 @@ import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
-import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
 import org.eclipse.wst.jsdt.core.IImportContainer;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
@@ -81,7 +79,7 @@ import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructureProvider, IJavaFoldingStructureProviderExtension {
 	/**
 	 * A context that contains the information needed to compute the folding structure of an
-	 * {@link ICompilationUnit} or an {@link IClassFile}. Computed folding regions are collected
+	 * {@link org.eclipse.wst.jsdt.core.ICompilationUnit} or an {@link org.eclipse.wst.jsdt.core.IClassFile}. Computed folding regions are collected
 	 * via
 	 * {@linkplain #addProjectionRange(DefaultJavaFoldingStructureProvider.JavaProjectionAnnotation, Position) addProjectionRange}.
 	 */

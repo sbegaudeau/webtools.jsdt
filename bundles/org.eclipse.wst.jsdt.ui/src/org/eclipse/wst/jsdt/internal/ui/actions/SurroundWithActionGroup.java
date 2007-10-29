@@ -22,8 +22,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitEditor;
-import org.eclipse.wst.jsdt.ui.actions.IJavaEditorActionDefinitionIds;
-import org.eclipse.wst.jsdt.ui.actions.SurroundWithTryCatchAction;
 
 public class SurroundWithActionGroup extends ActionGroup {
 	
@@ -83,11 +81,11 @@ public class SurroundWithActionGroup extends ActionGroup {
 		return bindingService.getBestActiveBindingFormattedFor(SurroundWithTemplateMenuAction.SURROUND_WITH_QUICK_MENU_ACTION_ID);
 	}
 	
-	private static SurroundWithTryCatchAction createSurroundWithTryCatchAction(CompilationUnitEditor editor) {
-		SurroundWithTryCatchAction result= new SurroundWithTryCatchAction(editor);
-		result.setText(ActionMessages.SurroundWithTemplateMenuAction_SurroundWithTryCatchActionName);
-		result.setActionDefinitionId(IJavaEditorActionDefinitionIds.SURROUND_WITH_TRY_CATCH);
-		editor.setAction("SurroundWithTryCatch", result); //$NON-NLS-1$		
-		return result;
-	}
+//	private static SurroundWithTryCatchAction createSurroundWithTryCatchAction(CompilationUnitEditor editor) {
+//		SurroundWithTryCatchAction result= new SurroundWithTryCatchAction(editor);
+//		result.setText(ActionMessages.SurroundWithTemplateMenuAction_SurroundWithTryCatchActionName);
+//		result.setActionDefinitionId(IJavaEditorActionDefinitionIds.SURROUND_WITH_TRY_CATCH);
+//		editor.setAction("SurroundWithTryCatch", result); //$NON-NLS-1$		
+//		return result;
+//	}
 }

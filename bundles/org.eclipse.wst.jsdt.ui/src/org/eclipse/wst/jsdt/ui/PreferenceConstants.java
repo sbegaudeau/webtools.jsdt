@@ -33,7 +33,6 @@ import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightings;
 import org.eclipse.wst.jsdt.internal.ui.preferences.NewJavaProjectPreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.FormatterProfileManager;
-import org.eclipse.wst.jsdt.internal.ui.text.java.ProposalSorterRegistry;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.JavaSpellingEngine;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.SpellCheckEngine;
 import org.eclipse.wst.jsdt.ui.text.IJavaColorConstants;
@@ -3472,7 +3471,7 @@ public class PreferenceConstants {
 	 * Value is a {@link String}.
 	 * </p>
 	 * 
-	 * @see ProposalSorterRegistry
+	 * @see org.eclipse.wst.jsdt.internal.ui.text.java.ProposalSorterRegistry
 	 * @since 3.2
 	 */
 	public static final String CODEASSIST_SORTER= "content_assist_sorter"; //$NON-NLS-1$

@@ -12,7 +12,6 @@
 package org.eclipse.wst.jsdt.ui.actions;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
@@ -22,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.NewSourceFolderCreationWizard;
 
 /**
  * <p>Action that opens the new source folder wizard. The action initializes the wizard with the
- * selection as configured by {@link #setSelection(IStructuredSelection)} or the selection of
+ * selection as configured by {@link #setSelection(org.eclipse.jface.viewers.IStructuredSelection)} or the selection of
  * the active workbench window.</p>
  * 
  * <p>

@@ -27,7 +27,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-import org.eclipse.wst.jsdt.core.CompletionRequestor;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
@@ -205,7 +204,7 @@ public class JavaCompletionProposalComputer implements IJavaCompletionProposalCo
 	 * Returns the array with favorite static members.
 	 * 
 	 * @return the <code>String</code> array with with favorite static members
-	 * @see CompletionRequestor#setFavoriteReferences(String[])
+	 * @see org.eclipse.wst.jsdt.core.CompletionRequestor#setFavoriteReferences(String[])
 	 * @since 3.3
 	 */
 	private String[] getFavoriteStaticMembers() {

@@ -14,7 +14,6 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.wst.jsdt.core.CompletionContext;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-import org.eclipse.wst.jsdt.core.ICodeAssist;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -107,7 +106,7 @@ public class JavaContentAssistInvocationContext extends ContentAssistInvocationC
 	 * Returns the keyword proposals that are available in this context, possibly none.
 	 * <p>
 	 * <strong>Note:</strong> This method may run
-	 * {@linkplain ICodeAssist#codeComplete(int, org.eclipse.wst.jsdt.core.CompletionRequestor) codeComplete}
+	 * {@linkplain org.eclipse.wst.jsdt.core.ICodeAssist#codeComplete(int, org.eclipse.wst.jsdt.core.CompletionRequestor) codeComplete}
 	 * on the compilation unit.
 	 * </p>
 	 * 
@@ -132,7 +131,7 @@ public class JavaContentAssistInvocationContext extends ContentAssistInvocationC
 	 * otherwise.
 	 * <p>
 	 * <strong>Note:</strong> This method may run
-	 * {@linkplain ICodeAssist#codeComplete(int, org.eclipse.wst.jsdt.core.CompletionRequestor) codeComplete}
+	 * {@linkplain org.eclipse.wst.jsdt.core.ICodeAssist#codeComplete(int, org.eclipse.wst.jsdt.core.CompletionRequestor) codeComplete}
 	 * on the compilation unit.
 	 * </p>
 	 * 
@@ -156,7 +155,7 @@ public class JavaContentAssistInvocationContext extends ContentAssistInvocationC
 	 * <code>qualifiedTypeName</code> has most recently been used in a similar context.
 	 * <p>
 	 * <strong>Note:</strong> This method may run
-	 * {@linkplain ICodeAssist#codeComplete(int, org.eclipse.wst.jsdt.core.CompletionRequestor) codeComplete}
+	 * {@linkplain org.eclipse.wst.jsdt.core.ICodeAssist#codeComplete(int, org.eclipse.wst.jsdt.core.CompletionRequestor) codeComplete}
 	 * on the compilation unit.
 	 * </p>
 	 * 
@@ -192,7 +191,7 @@ public class JavaContentAssistInvocationContext extends ContentAssistInvocationC
 	 * Returns the expected type if any, <code>null</code> otherwise.
 	 * <p>
 	 * <strong>Note:</strong> This method may run
-	 * {@linkplain ICodeAssist#codeComplete(int, org.eclipse.wst.jsdt.core.CompletionRequestor) codeComplete}
+	 * {@linkplain org.eclipse.wst.jsdt.core.ICodeAssist#codeComplete(int, org.eclipse.wst.jsdt.core.CompletionRequestor) codeComplete}
 	 * on the compilation unit.
 	 * </p>
 	 * 

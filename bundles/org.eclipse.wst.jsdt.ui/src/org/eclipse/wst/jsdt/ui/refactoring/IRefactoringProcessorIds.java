@@ -10,12 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui.refactoring;
 
-import org.eclipse.core.resources.IResourceVisitor;
-import org.eclipse.core.resources.mapping.ResourceMapping;
-import org.eclipse.core.resources.mapping.ResourceMappingContext;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ltk.core.refactoring.IResourceMapper;
-import org.eclipse.wst.jsdt.core.refactoring.IJavaElementMapper;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameCompilationUnitProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameEnumConstProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameFieldProcessor;
@@ -86,7 +80,7 @@ public interface IRefactoringProcessorIds {
 	 * <p>The refactoring processor moves and renames Java elements and resources.
 	 * Rename package fragment participants can retrieve the new location of
 	 * Java elements and resources through the interfaces
-	 * {@link IJavaElementMapper} and {@link IResourceMapper}, which can be
+	 * {@link org.eclipse.wst.jsdt.core.refactoring.IJavaElementMapper} and {@link org.eclipse.ltk.core.refactoring.IResourceMapper}, which can be
 	 * retrieved from the processor using the getAdapter() method.</p>
 	 */
 	public static String RENAME_PACKAGE_FRAGMENT_PROCESSOR= RenamePackageProcessor.IDENTIFIER;
@@ -127,7 +121,7 @@ public interface IRefactoringProcessorIds {
 	 * <p>Rename type participants can retrieve information about similar declarations by casting the
 	 * RenameArguments to RenameTypeArguments. The new signatures of similar declarations
 	 * (and of other Java elements or resources) are available 
-	 * through the interfaces {@link IJavaElementMapper} and {@link IResourceMapper}, which can be retrieved from the 
+	 * through the interfaces {@link org.eclipse.wst.jsdt.core.refactoring.IJavaElementMapper} and {@link org.eclipse.ltk.core.refactoring.IResourceMapper}, which can be retrieved from the 
 	 * processor using the getAdapter() method.</p>
 	 * 
 	 */
@@ -252,11 +246,11 @@ public interface IRefactoringProcessorIds {
 	 * <ul>
 	 *   <li><code>IJavaProject</code>: no participants are loaded.</li>
 	 *   <li><code>IPackageFragmentRoot</code>: participants registered for copying 
-	 *       <code>IPackageFragmentRoot</code> and <code>ResourceMapping</code>.</li>
+	 *       <code>IPackageFragmentRoot</code> and <code>org.eclipse.core.resources.mapping.ResourceMapping</code>.</li>
 	 *   <li><code>IPackageFragment</code>: participants registered for copying 
-	 *       <code>IPackageFragment</code> and <code>ResourceMapping</code>.</li>
+	 *       <code>IPackageFragment</code> and <code>org.eclipse.core.resources.mapping.ResourceMapping</code>.</li>
 	 *   <li><code>ICompilationUnit</code>: participants registered for copying 
-	 *       <code>ICompilationUnit</code> and <code>ResourceMapping</code>.</li>
+	 *       <code>ICompilationUnit</code> and <code>org.eclipse.core.resources.mapping.ResourceMapping</code>.</li>
 	 *   <li><code>IType</code>: like ICompilationUnit if the primary top level type is copied.
 	 *       Otherwise no participants are loaded.</li>
 	 *   <li><code>IMember</code>: no participants are loaded.</li>
@@ -264,9 +258,9 @@ public interface IRefactoringProcessorIds {
 	 *   <li><code>IFile</code>: participants registered for copying files.</li>
 	 * </ul>
 	 * <p>
-	 * Use the method {@link ResourceMapping#accept(ResourceMappingContext context, IResourceVisitor visitor, IProgressMonitor monitor)} 
-	 * to enumerate the resources which form the Java element. <code>ResourceMappingContext.LOCAL_CONTEXT</code> 
-	 * should be use as the <code>ResourceMappingContext</code> passed to the accept method.
+	 * Use the method {@link org.eclipse.core.resources.mapping.ResourceMapping#accept(org.eclipse.core.resources.mapping.ResourceMappingContext context, org.eclipse.core.resources.IResourceVisitor visitor, org.eclipse.core.runtime.IProgressMonitor monitor)} 
+	 * to enumerate the resources which form the Java element. <code>org.eclipse.core.resources.mapping.ResourceMappingContext.LOCAL_CONTEXT</code> 
+	 * should be use as the <code>org.eclipse.core.resources.mapping.ResourceMappingContext</code> passed to the accept method.
 	 * </p>
 	 * @see org.eclipse.core.resources.mapping.ResourceMapping
 	 * @since 3.3

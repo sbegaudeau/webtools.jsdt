@@ -379,20 +379,20 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 		}
 		return result.toArray();
 	}
-	private Object[] getContainerPackageFragmentRoots3(PackageFragmentRootContainer container) {
-		Object[] children = container.getChildren();
-		if(children==null) return null;
-		ArrayList allChildren = new ArrayList();
-		for(int i=0;i<children.length;i++) {
-			try {
-				allChildren.addAll(Arrays.asList(((IPackageFragmentRoot)children[i]).getChildren()));
-			} catch (JavaModelException ex) {
-				
-			}
-		}
-		return allChildren.toArray();
-	}
-	
+//	private Object[] getContainerPackageFragmentRoots3(PackageFragmentRootContainer container) {
+//		Object[] children = container.getChildren();
+//		if(children==null) return null;
+//		ArrayList allChildren = new ArrayList();
+//		for(int i=0;i<children.length;i++) {
+//			try {
+//				allChildren.addAll(Arrays.asList(((IPackageFragmentRoot)children[i]).getChildren()));
+//			} catch (JavaModelException ex) {
+//				
+//			}
+//		}
+//		return allChildren.toArray();
+//	}
+//	
 	private Object[] getContainerPackageFragmentRoots(PackageFragmentRootContainer container) {
 		return getContainerPackageFragmentRoots(container, false);
 	}

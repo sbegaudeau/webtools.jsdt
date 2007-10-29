@@ -112,8 +112,6 @@ import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.SelectionUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathsBlock;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.OthersWorkingSetUpdater;
-import org.eclipse.wst.jsdt.launching.IVMInstall;
-import org.eclipse.wst.jsdt.launching.IVMInstall2;
 import org.eclipse.wst.jsdt.ui.JavaUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
@@ -681,14 +679,14 @@ public class PasteAction extends SelectionDispatchAction{
 //					}
 				}
 
-				private String getVMVersion(IVMInstall vm) {
-					if (vm instanceof IVMInstall2) {
-						IVMInstall2 vm2= (IVMInstall2) vm;
-						return JavaModelUtil.getCompilerCompliance(vm2, null);
-					} else {
-						return null;
-					}
-				}
+//				private String getVMVersion(IVMInstall vm) {
+//					if (vm instanceof IVMInstall2) {
+//						IVMInstall2 vm2= (IVMInstall2) vm;
+//						return JavaModelUtil.getCompilerCompliance(vm2, null);
+//					} else {
+//						return null;
+//					}
+//				}
 
 				private void removePackageDeclaration(final ICompilationUnit cu) throws JavaModelException, CoreException {
 					IPackageDeclaration[] packageDeclarations= cu.getPackageDeclarations();

@@ -16,7 +16,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ltk.core.refactoring.Refactoring;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenamingNameSuggestor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.INameUpdating;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
@@ -48,7 +47,7 @@ public class RenameRefactoringWizard extends RefactoringWizard {
 	public static final String TYPE_UPDATE_SIMILAR_ELEMENTS= "updateSimilarElements"; //$NON-NLS-1$
 	/**
 	 * Dialog settings key (value is of type int).
-	 * @see RenamingNameSuggestor
+	 * @see org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenamingNameSuggestor
 	 */
 	public static final String TYPE_SIMILAR_MATCH_STRATEGY= "updateSimilarElementsMatchStrategy"; //$NON-NLS-1$
 	

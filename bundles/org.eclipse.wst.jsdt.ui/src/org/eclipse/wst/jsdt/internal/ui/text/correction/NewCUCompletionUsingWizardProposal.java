@@ -12,7 +12,6 @@
 package org.eclipse.wst.jsdt.internal.ui.text.correction;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
@@ -51,8 +50,6 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.NewElementWizard;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewEnumCreationWizard;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewInterfaceCreationWizard;
 import org.eclipse.wst.jsdt.ui.JavaElementLabels;
-import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
-import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
 import org.eclipse.wst.jsdt.ui.wizards.NewTypeWizardPage;
 
 /**
@@ -61,7 +58,7 @@ import org.eclipse.wst.jsdt.ui.wizards.NewTypeWizardPage;
  * If selected, this proposal will open a {@link NewClassCreationWizard},
  * {@link NewInterfaceCreationWizard}, {@link NewEnumCreationWizard} or {@link NewAnnotationCreationWizard}.
  *
- * @see UnresolvedElementsSubProcessor#getTypeProposals(IInvocationContext, IProblemLocation, Collection)
+ * @see UnresolvedElementsSubProcessor#getTypeProposals(org.eclipse.wst.jsdt.ui.text.java.IInvocationContext, org.eclipse.wst.jsdt.ui.text.java.IProblemLocation, java.util.Collection)
  */
 
 public class NewCUCompletionUsingWizardProposal extends ChangeCorrectionProposal {

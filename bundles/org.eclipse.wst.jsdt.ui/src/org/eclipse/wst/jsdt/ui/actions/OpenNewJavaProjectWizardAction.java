@@ -12,7 +12,6 @@
 package org.eclipse.wst.jsdt.ui.actions;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.PlatformUI;
@@ -24,7 +23,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.JavaProjectWizard;
 
 /**
  * <p>Action that opens the new Java project wizard. The action initializes the wizard with the
- * selection as configured by {@link #setSelection(IStructuredSelection)} or the selection of
+ * selection as configured by {@link #setSelection(org.eclipse.jface.viewers.IStructuredSelection)} or the selection of
  * the active workbench window.</p>
  * 
  * <p>

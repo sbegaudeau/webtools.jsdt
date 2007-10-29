@@ -23,12 +23,11 @@ import org.eclipse.wst.jsdt.core.dom.MemberRef;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.MoveStaticMembersProcessor;
 
 /**
  * Delegate creator for static fields. Note that this implementation assumes a
  * field <strong>with only one fragment</strong>. See
- * {@link MoveStaticMembersProcessor#getASTMembers(org.eclipse.ltk.core.refactoring.RefactoringStatus)}
+ * {@link org.eclipse.wst.jsdt.internal.corext.refactoring.structure.MoveStaticMembersProcessor#getASTMembers(org.eclipse.ltk.core.refactoring.RefactoringStatus)}
  * for more information.
  * 
  * @since 3.2

@@ -19,9 +19,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpPostSaveListener;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.fix.CleanUpSaveParticipantPreferenceConfiguration;
-import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitDocumentProvider;
 
 /**
  * A registry for save participants. This registry manages
@@ -32,10 +30,10 @@ import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitDocumentProvid
  * Save Participants preference page. Enabled save participants are notified
  * through a call to
  * {@link IPostSaveListener#saved(org.eclipse.wst.jsdt.core.ICompilationUnit, org.eclipse.core.runtime.IProgressMonitor)}
- * whenever the {@link CompilationUnitDocumentProvider} saves a compilation unit
+ * whenever the {@link org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitDocumentProvider} saves a compilation unit
  * that is in the workspace.</p>
  * <p>
- * An instance of this registry can be received through a call to {@link JavaPlugin#getSaveParticipantRegistry()}.</p>
+ * An instance of this registry can be received through a call to {@link org.eclipse.wst.jsdt.internal.ui.JavaPlugin#getSaveParticipantRegistry()}.</p>
  * 
  * @since 3.3
  */

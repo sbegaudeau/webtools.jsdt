@@ -99,9 +99,9 @@ public class ClasspathOrderingWorkbookPage extends BuildPathBasePage {
 		
 	}
 	
-	private String[] popupFieldSelectionDialog() {
-		return new String[] {"Window","Basic Browser Library"};
-	}
+//	private String[] popupFieldSelectionDialog() {
+//		return new String[] {"Window","Basic Browser Library"};
+//	}
 	
 	public Control getControl(Composite parent) {
 		PixelConverter converter= new PixelConverter(parent);

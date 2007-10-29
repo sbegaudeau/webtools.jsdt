@@ -54,7 +54,7 @@ import org.eclipse.wst.jsdt.launching.JavaRuntime;
 public final class SerialVersionHashOperation extends AbstractSerialVersionOperation {
 
 	/** The serial support jar */
-	private static final String SERIAL_SUPPORT_JAR= "serialsupport.jar"; //$NON-NLS-1$
+//	private static final String SERIAL_SUPPORT_JAR= "serialsupport.jar"; //$NON-NLS-1$
 
 	/**
 	 * Computes the class path entries which are on the user class path and are

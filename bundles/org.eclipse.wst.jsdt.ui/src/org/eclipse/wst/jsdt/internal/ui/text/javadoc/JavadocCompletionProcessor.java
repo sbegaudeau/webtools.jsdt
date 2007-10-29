@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.ui.text.javadoc;
 
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
-import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.wst.jsdt.internal.ui.text.java.JavaCompletionProcessor;
@@ -46,7 +45,7 @@ public class JavadocCompletionProcessor extends JavaCompletionProcessor {
 	}
 
 	/**
-	 * @see IContentAssistProcessor#getContextInformationValidator()
+	 * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getContextInformationValidator()
 	 */
 	public IContextInformationValidator getContextInformationValidator() {
 		return null;

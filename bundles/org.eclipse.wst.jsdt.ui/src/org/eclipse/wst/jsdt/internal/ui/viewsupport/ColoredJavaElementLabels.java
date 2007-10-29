@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.ui.viewsupport;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.wst.jsdt.core.BindingKey;
 import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
 import org.eclipse.wst.jsdt.core.Flags;
@@ -62,7 +61,7 @@ public class ColoredJavaElementLabels {
 	}
 	
 	/**
-	 * Returns the label of the given object. The object must be of type {@link IJavaElement} or adapt to {@link IWorkbenchAdapter}. The empty string is returned
+	 * Returns the label of the given object. The object must be of type {@link IJavaElement} or adapt to {@link org.eclipse.ui.model.IWorkbenchAdapter}. The empty string is returned
 	 * if the element type is not known.
 	 * @param obj Object to get the label from.
 	 * @param flags The rendering flags

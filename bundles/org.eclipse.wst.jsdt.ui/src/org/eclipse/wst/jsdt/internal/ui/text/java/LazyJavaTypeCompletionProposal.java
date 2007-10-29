@@ -24,13 +24,9 @@ import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
-import org.eclipse.wst.jsdt.internal.corext.codemanipulation.ContextSensitiveImportRewriteContext;
-import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.util.QualifiedTypeNameHistory;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
 
@@ -49,7 +45,7 @@ public class LazyJavaTypeCompletionProposal extends LazyJavaCompletionProposal {
 	private String fQualifiedName;
 	private String fSimpleName;
 	private ImportRewrite fImportRewrite;
-	private ContextSensitiveImportRewriteContext fImportContext;
+//	private ContextSensitiveImportRewriteContext fImportContext;
 
 	public LazyJavaTypeCompletionProposal(CompletionProposal proposal, JavaContentAssistInvocationContext context) {
 		super(proposal, context);
@@ -142,29 +138,29 @@ public class LazyJavaTypeCompletionProposal extends LazyJavaCompletionProposal {
 		return last == ';' || last == '.';
 	}
 
-	private ImportRewrite createImportRewrite() {
-		if (fCompilationUnit != null && allowAddingImports()) {
-			try {
-				CompilationUnit cu= getASTRoot(fCompilationUnit);
-				if (cu == null) {
-					ImportRewrite rewrite= StubUtility.createImportRewrite(fCompilationUnit, true);
-					fImportContext= null;
-					return rewrite;
-				} else {
-					ImportRewrite rewrite= StubUtility.createImportRewrite(cu, true);
-					fImportContext= new ContextSensitiveImportRewriteContext(cu, fInvocationContext.getInvocationOffset(), rewrite);
-					return rewrite;
-				}
-			} catch (CoreException x) {
-				JavaPlugin.log(x);
-			}
-		}
-		return null;
-	}
+//	private ImportRewrite createImportRewrite() {
+//		if (fCompilationUnit != null && allowAddingImports()) {
+//			try {
+//				CompilationUnit cu= getASTRoot(fCompilationUnit);
+//				if (cu == null) {
+//					ImportRewrite rewrite= StubUtility.createImportRewrite(fCompilationUnit, true);
+//					fImportContext= null;
+//					return rewrite;
+//				} else {
+//					ImportRewrite rewrite= StubUtility.createImportRewrite(cu, true);
+//					fImportContext= new ContextSensitiveImportRewriteContext(cu, fInvocationContext.getInvocationOffset(), rewrite);
+//					return rewrite;
+//				}
+//			} catch (CoreException x) {
+//				JavaPlugin.log(x);
+//			}
+//		}
+//		return null;
+//	}
 
-	private CompilationUnit getASTRoot(ICompilationUnit compilationUnit) {
-		return JavaPlugin.getDefault().getASTProvider().getAST(compilationUnit, ASTProvider.WAIT_NO, new NullProgressMonitor());
-	}
+//	private CompilationUnit getASTRoot(ICompilationUnit compilationUnit) {
+//		return JavaPlugin.getDefault().getASTProvider().getAST(compilationUnit, ASTProvider.WAIT_NO, new NullProgressMonitor());
+//	}
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.text.java.LazyJavaCompletionProposal#apply(org.eclipse.jface.text.IDocument, char, int)

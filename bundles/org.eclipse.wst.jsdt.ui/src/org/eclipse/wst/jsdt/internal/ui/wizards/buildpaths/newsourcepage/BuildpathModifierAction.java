@@ -30,7 +30,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchSite;
-import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.part.ISetSelectionTarget;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.BuildpathDelta;
 import org.eclipse.wst.jsdt.internal.corext.buildpath.IBuildpathModifierListener;
@@ -79,7 +78,7 @@ public abstract class BuildpathModifierAction extends Action implements ISelecti
     }
 
 	/**
-	 * A detailed description usable for a {@link FormText} 
+	 * A detailed description usable for a {@link org.eclipse.ui.forms.widgets.FormText} 
 	 * depending on the current selection, or <code>null</code>
 	 * if <code>!enabled()</code>
 	 * 

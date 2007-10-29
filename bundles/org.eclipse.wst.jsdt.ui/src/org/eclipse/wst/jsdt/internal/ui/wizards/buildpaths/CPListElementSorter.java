@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ContentViewer;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -19,7 +17,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.launching.JavaRuntime;
 
 public class CPListElementSorter extends ViewerComparator {
 	
@@ -46,8 +43,8 @@ public class CPListElementSorter extends ViewerComparator {
 			}
 			
 
-			IPath containerPath = element.getPath();
-			IPath JREPath = new Path(JavaRuntime.JRE_CONTAINER);
+//			IPath containerPath = element.getPath();
+//			IPath JREPath = new Path(JavaRuntime.JRE_CONTAINER);
 			
 			if(element.isJRE()) {
 				return JRE_ENTRY;

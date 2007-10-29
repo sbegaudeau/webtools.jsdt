@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui;
 
-import org.eclipse.wst.jsdt.internal.ui.javaeditor.saveparticipant.IPostSaveListener;
 
 /**
  * Defines status codes relevant to the Java UI plug-in. When a 
@@ -53,7 +52,7 @@ public interface IJavaStatusConstants {
 	 * Status constant indicating that a problem occurred while notifying a post
 	 * save listener.
 	 * 
-	 * @see IPostSaveListener
+	 * @see org.eclipse.wst.jsdt.internal.ui.javaeditor.saveparticipant.IPostSaveListener
 	 * @since 3.3
 	 */
 	public static final int EDITOR_POST_SAVE_NOTIFICATION= 10006;

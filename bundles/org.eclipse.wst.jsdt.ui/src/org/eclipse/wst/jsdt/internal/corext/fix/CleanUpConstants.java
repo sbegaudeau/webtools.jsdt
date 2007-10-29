@@ -16,8 +16,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
-import org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CleanUpProfileVersioner;
 
 public class CleanUpConstants {
 	
@@ -76,7 +74,7 @@ public class CleanUpConstants {
 	 * @see #TRUE
 	 * @see #FALSE
 	 * @since 3.3
-	 * @deprecated replaced by {@link DefaultCodeFormatterConstants#FORMATTER_COMMENT_FORMAT_LINE_COMMENT}
+	 * @deprecated replaced by {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_COMMENT_FORMAT_LINE_COMMENT}
 	 */
 	public static final String FORMAT_SINGLE_LINE_COMMENT= "cleanup.format_single_line_comment"; //$NON-NLS-1$
 	
@@ -91,7 +89,7 @@ public class CleanUpConstants {
 	 * @see #TRUE
 	 * @see #FALSE
 	 * @since 3.3
-	 * @deprecated replaced by {@link DefaultCodeFormatterConstants#FORMATTER_COMMENT_FORMAT_BLOCK_COMMENT}
+	 * @deprecated replaced by {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_COMMENT_FORMAT_BLOCK_COMMENT}
 	 */
 	public static final String FORMAT_MULTI_LINE_COMMENT= "cleanup.format_multi_line_comment"; //$NON-NLS-1$
 	
@@ -106,7 +104,7 @@ public class CleanUpConstants {
 	 * @see #TRUE
 	 * @see #FALSE
 	 * @since 3.3
-	 * @deprecated replaced by {@link DefaultCodeFormatterConstants#FORMATTER_COMMENT_FORMAT_JAVADOC_COMMENT}
+	 * @deprecated replaced by {@link org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants#FORMATTER_COMMENT_FORMAT_JAVADOC_COMMENT}
 	 */
 	public static final String FORMAT_JAVADOC= "cleanup.format_javadoc"; //$NON-NLS-1$
 	
@@ -1034,7 +1032,7 @@ public class CleanUpConstants {
 	 * A key to the version of the profile stored in the preferences.<br>
 	 * <br>
 	 * Possible values: Integer value<br>
-	 * Default value: {@link CleanUpProfileVersioner#CURRENT_VERSION} <br>
+	 * Default value: {@link org.eclipse.wst.jsdt.internal.ui.preferences.cleanup.CleanUpProfileVersioner#CURRENT_VERSION} <br>
 	 * 
 	 * @since 3.3
 	 */

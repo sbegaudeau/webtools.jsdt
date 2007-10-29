@@ -44,12 +44,10 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
-import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
-import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
@@ -560,12 +558,12 @@ public class AddUnimplementedConstructorsAction extends SelectionDispatchAction 
 	 * Returns a runnable that creates the constructor stubs.
 	 * 
 	 * @param astRoot the AST of the compilation unit to work on. The AST must have been created from a {@link ICompilationUnit}, that
-	 * means {@link ASTParser#setSource(ICompilationUnit)} was used.
+	 * means {@link org.eclipse.wst.jsdt.core.dom.ASTParser#setSource(ICompilationUnit)} was used.
 	 * @param type the binding of the type to add the new methods to. The type binding must correspond to a type declaration in the AST.
 	 * @param constructorsToOverride the bindings of constructors to override or <code>null</code> to implement all visible constructors from the super class.
 	 * @param insertPos a hint for a location in the source where to insert the new methods or <code>-1</code> to use the default behavior.
 	 * @param createComments if set, comments will be added to the new methods.
-	 * @param visibility the visibility for the new modifiers. (see {@link Flags}) for visibility constants.
+	 * @param visibility the visibility for the new modifiers. (see {@link org.eclipse.wst.jsdt.core.Flags}) for visibility constants.
 	 * @param omitSuper if set, no <code>super()</code> call without arguments will be created.
 	 * @return returns a runnable that creates the constructor stubs.
 	 * @throws IllegalArgumentException a {@link IllegalArgumentException} is thrown if the AST passed has not been created from a {@link ICompilationUnit}.

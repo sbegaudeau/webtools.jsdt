@@ -295,10 +295,10 @@ public class JavaElementImageProvider {
 		}
 	}
 	
-	private static boolean isDefaultFlag(int flags) {
-		return !Flags.isPublic(flags) && !Flags.isProtected(flags) && !Flags.isPrivate(flags);
-	}
-	
+//	private static boolean isDefaultFlag(int flags) {
+//		return !Flags.isPublic(flags) && !Flags.isProtected(flags) && !Flags.isPrivate(flags);
+//	}
+//	
 	protected ImageDescriptor getPackageFragmentIcon(IJavaElement element, int renderFlags) throws JavaModelException {
 		IPackageFragment fragment= (IPackageFragment)element;
 		boolean containsJavaElements= false;

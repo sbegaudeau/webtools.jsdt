@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.ui.text.java;
 
 import java.util.Comparator;
 
-import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 
 /**
@@ -33,7 +32,7 @@ public abstract class AbstractProposalSorter implements Comparator {
 
 	/**
 	 * Creates a new sorter. Note that subclasses must provide a zero-argument constructor to be
-	 * instantiatable via {@link IConfigurationElement#createExecutableExtension(String)}.
+	 * instantiatable via {@link org.eclipse.core.runtime.IConfigurationElement#createExecutableExtension(String)}.
 	 */
 	protected AbstractProposalSorter() {
 	}

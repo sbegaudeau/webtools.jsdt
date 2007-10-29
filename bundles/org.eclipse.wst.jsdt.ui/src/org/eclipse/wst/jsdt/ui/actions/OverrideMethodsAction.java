@@ -28,7 +28,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
@@ -245,7 +244,7 @@ public class OverrideMethodsAction extends SelectionDispatchAction {
 	 * Returns a runnable that creates the method stubs for overridden methods.
 	 * 
 	 * @param astRoot the AST of the compilation unit to work on. The AST must have been created from a {@link ICompilationUnit}, that
-	 * means {@link ASTParser#setSource(ICompilationUnit)} was used.
+	 * means {@link org.eclipse.wst.jsdt.core.dom.ASTParser#setSource(ICompilationUnit)} was used.
 	 * @param type the binding of the type to add the new methods to. The type binding must correspond to a type declaration in the AST.
 	 * @param methodToOverride the bindings of methods to override or <code>null</code> to implement all unimplemented, abstract methods from super types.
 	 * @param insertPos a hint for a location in the source where to insert the new methods or <code>-1</code> to use the default behavior.

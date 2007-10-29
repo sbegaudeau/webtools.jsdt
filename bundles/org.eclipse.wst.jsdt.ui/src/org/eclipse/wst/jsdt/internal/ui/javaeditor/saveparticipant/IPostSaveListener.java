@@ -13,11 +13,10 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor.saveparticipant;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitDocumentProvider;
 
 /**
  * This <code>IPostSaveListener</code> is informed when 
- * a compilation unit is saved through the {@link CompilationUnitDocumentProvider}.
+ * a compilation unit is saved through the {@link org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitDocumentProvider}.
  * <p>
  * In oder to get notified the listener must be registered with the {@link SaveParticipantRegistry}
  * and be enabled on the save participant preference page.</p>
@@ -28,7 +27,7 @@ import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitDocumentProvid
  * </p>
  * 
  * @see SaveParticipantDescriptor
- * @see CompilationUnitDocumentProvider
+ * @see org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitDocumentProvider
  * @since 3.3
  */
 public interface IPostSaveListener {
@@ -49,7 +48,7 @@ public interface IPostSaveListener {
 	
 	/**
 	 * Informs this post save listener that the given <code>compilationUnit</code> 
-	 * has been saved by the {@link CompilationUnitDocumentProvider}. The listener
+	 * has been saved by the {@link org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitDocumentProvider}. The listener
 	 * is allowed to modify the given compilation unit and to open a dialog.
 	 * <p>
 	 * <em>Every implementor of this method must strictly obey these rules:</em>
@@ -66,7 +65,7 @@ public interface IPostSaveListener {
 	 *
 	 * @param compilationUnit the compilation unit which was saved
 	 * @param monitor the progress monitor for reporting progress
-	 * @see CompilationUnitDocumentProvider
+	 * @see org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitDocumentProvider
 	 */
 	void saved(ICompilationUnit compilationUnit, IProgressMonitor monitor) throws CoreException;
 

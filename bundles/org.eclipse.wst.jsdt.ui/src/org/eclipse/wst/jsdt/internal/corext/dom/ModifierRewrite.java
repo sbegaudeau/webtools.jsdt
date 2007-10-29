@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.corext.dom;
 import java.util.List;
 
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnnotationTypeMemberDeclaration;
@@ -37,7 +36,7 @@ public class ModifierRewrite {
 	public static final int VISIBILITY_MODIFIERS= Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED;
 	
 	private ListRewrite fModifierRewrite;
-	private AST fAst;
+//	private AST fAst;
 
 
 	public static ModifierRewrite create(ASTRewrite rewrite, ASTNode declNode) {
@@ -46,7 +45,7 @@ public class ModifierRewrite {
 
 	private ModifierRewrite(ASTRewrite rewrite, ASTNode declNode) {
 		fModifierRewrite= evaluateListRewrite(rewrite, declNode);
-		fAst= declNode.getAST();
+//		fAst= declNode.getAST();
 	}
 
 	private ListRewrite evaluateListRewrite(ASTRewrite rewrite, ASTNode declNode) {
@@ -107,7 +106,7 @@ public class ModifierRewrite {
 	
 	private void internalSetModifiers(int modfiers, int consideredFlags, TextEditGroup editGroup) {
 		// remove modifiers
-		int newModifiers= modfiers & consideredFlags;
+//		int newModifiers= modfiers & consideredFlags;
 		
 //		List originalList= fModifierRewrite.getOriginalList();
 //		for (int i= 0; i < originalList.size(); i++) {
