@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.refactoring;
 
-import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
-
 import org.eclipse.wst.jsdt.core.IJavaElement;
 
 /**
@@ -19,7 +17,7 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
  * elements to its refactored counterparts.
  * <p>
  * An <code>IJavaElementMapper</code> can be obtained via 
- * {@link RefactoringProcessor#getAdapter(Class)}. 
+ * {@link org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor#getAdapter(Class)}. 
  * </p>
  * 
  * @since 3.2

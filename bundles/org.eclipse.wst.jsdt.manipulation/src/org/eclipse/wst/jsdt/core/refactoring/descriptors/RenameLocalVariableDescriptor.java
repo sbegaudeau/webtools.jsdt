@@ -11,24 +11,19 @@
 package org.eclipse.wst.jsdt.core.refactoring.descriptors;
 
 import org.eclipse.core.runtime.Assert;
-
-import org.eclipse.ltk.core.refactoring.RefactoringContribution;
-import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
-
 import org.eclipse.wst.jsdt.internal.core.refactoring.descriptors.DescriptorMessages;
 
 /**
  * Refactoring descriptor for the rename local variable refactoring.
  * <p>
  * An instance of this refactoring descriptor may be obtained by calling
- * {@link RefactoringContribution#createDescriptor()} on a refactoring
+ * {@link org.eclipse.ltk.core.refactoring.RefactoringContribution#createDescriptor()} on a refactoring
  * contribution requested by invoking
- * {@link RefactoringCore#getRefactoringContribution(String)} with the
+ * {@link org.eclipse.ltk.core.refactoring.RefactoringCore#getRefactoringContribution(String)} with the
  * appropriate refactoring id.
  * </p>
  * <p>

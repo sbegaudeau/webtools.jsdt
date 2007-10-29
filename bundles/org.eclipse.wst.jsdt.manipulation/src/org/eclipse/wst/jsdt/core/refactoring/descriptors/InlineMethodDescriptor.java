@@ -10,18 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.refactoring.descriptors;
 
-import org.eclipse.ltk.core.refactoring.RefactoringContribution;
-import org.eclipse.ltk.core.refactoring.RefactoringCore;
-
 import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
 
 /**
  * Refactoring descriptor for the inline method refactoring.
  * <p>
  * An instance of this refactoring descriptor may be obtained by calling
- * {@link RefactoringContribution#createDescriptor()} on a refactoring
+ * {@link org.eclipse.ltk.core.refactoring.RefactoringContribution#createDescriptor()} on a refactoring
  * contribution requested by invoking
- * {@link RefactoringCore#getRefactoringContribution(String)} with the
+ * {@link org.eclipse.ltk.core.refactoring.RefactoringCore#getRefactoringContribution(String)} with the
  * appropriate refactoring id.
  * </p>
  * <p>

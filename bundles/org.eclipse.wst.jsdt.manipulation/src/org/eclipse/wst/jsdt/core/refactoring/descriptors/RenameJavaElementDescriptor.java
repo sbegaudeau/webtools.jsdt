@@ -11,29 +11,19 @@
 package org.eclipse.wst.jsdt.core.refactoring.descriptors;
 
 import org.eclipse.core.runtime.Assert;
-
-import org.eclipse.ltk.core.refactoring.RefactoringContribution;
-import org.eclipse.ltk.core.refactoring.RefactoringCore;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-
-import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IMethod;
-import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.refactoring.IJavaRefactorings;
-
 import org.eclipse.wst.jsdt.internal.core.refactoring.descriptors.DescriptorMessages;
 
 /**
  * Refactoring descriptor for the rename java element refactoring.
  * <p>
  * An instance of this refactoring descriptor may be obtained by calling
- * {@link RefactoringContribution#createDescriptor()} on a refactoring
+ * {@link org.eclipse.ltk.core.refactoring.RefactoringContribution#createDescriptor()} on a refactoring
  * contribution requested by invoking
- * {@link RefactoringCore#getRefactoringContribution(String)} with the
+ * {@link org.eclipse.ltk.core.refactoring.RefactoringCore#getRefactoringContribution(String)} with the
  * appropriate refactoring id.
  * </p>
  * <p>
@@ -204,6 +194,7 @@ public final class RenameJavaElementDescriptor extends JavaRefactoringDescriptor
 			case IJavaElement.TYPE:
 			case IJavaElement.FIELD:
 				fArguments.put(ATTRIBUTE_TEXTUAL_MATCHES, Boolean.toString(fTextual));
+				break;
 			default:
 				break;
 		}
@@ -212,6 +203,7 @@ public final class RenameJavaElementDescriptor extends JavaRefactoringDescriptor
 			case IJavaElement.FIELD:
 				fArguments.put(ATTRIBUTE_DEPRECATE, Boolean.toString(fDeprecate));
 				fArguments.put(ATTRIBUTE_DELEGATE, Boolean.toString(fDelegate));
+				break;
 			default:
 				break;
 		}
@@ -221,6 +213,7 @@ public final class RenameJavaElementDescriptor extends JavaRefactoringDescriptor
 				fArguments.put(ATTRIBUTE_QUALIFIED, Boolean.toString(fQualified));
 				if (fPatterns != null && !"".equals(fPatterns)) //$NON-NLS-1$
 					fArguments.put(ATTRIBUTE_PATTERNS, fPatterns);
+				break;
 			default:
 				break;
 		}
@@ -228,12 +221,14 @@ public final class RenameJavaElementDescriptor extends JavaRefactoringDescriptor
 			case IJavaElement.TYPE:
 				fArguments.put(ATTRIBUTE_SIMILAR_DECLARATIONS, Boolean.toString(fSimilarDeclarations));
 				fArguments.put(ATTRIBUTE_MATCH_STRATEGY, Integer.toString(fMatchStrategy));
+				break;
 			default:
 				break;
 		}
 		switch (type) {
 			case IJavaElement.PACKAGE_FRAGMENT:
 				fArguments.put(ATTRIBUTE_HIERARCHICAL, Boolean.toString(fHierarchical));
+				break;
 			default:
 				break;
 		}
@@ -244,7 +239,7 @@ public final class RenameJavaElementDescriptor extends JavaRefactoringDescriptor
 	 * deprecated.
 	 * <p>
 	 * Note: Deprecation of the delegate is currently applicable to the Java elements
-	 * {@link IMethod} and {@link IField}. The default is to not deprecate the
+	 * {@link org.eclipse.wst.jsdt.core.IMethod} and {@link org.eclipse.wst.jsdt.core.IField}. The default is to not deprecate the
 	 * delegate.
 	 * </p>
 	 * 
@@ -269,7 +264,7 @@ public final class RenameJavaElementDescriptor extends JavaRefactoringDescriptor
 	 * </p>
 	 * <p>
 	 * Note: Qualified name updating is currently applicable to the Java elements
-	 * {@link IPackageFragment} and {@link IType}. The default is to use no
+	 * {@link org.eclipse.wst.jsdt.core.IPackageFragment} and {@link org.eclipse.wst.jsdt.core.IType}. The default is to use no
 	 * file name patterns (meaning that all files are processed).
 	 * </p>
 	 * 
@@ -303,7 +298,7 @@ public final class RenameJavaElementDescriptor extends JavaRefactoringDescriptor
 	 * delegate to the renamed one.
 	 * <p>
 	 * Note: Keeping of original elements as delegates is currently applicable to the Java
-	 * elements {@link IMethod} and {@link IField}. The default is to not keep
+	 * elements {@link org.eclipse.wst.jsdt.core.IMethod} and {@link org.eclipse.wst.jsdt.core.IField}. The default is to not keep
 	 * the original as delegate.
 	 * </p>
 	 * 
@@ -324,7 +319,7 @@ public final class RenameJavaElementDescriptor extends JavaRefactoringDescriptor
 	 * </p>
 	 * <p>
 	 * Note: Similar declaration updating is currently applicable to Java elements of type
-	 * {@link IType}. The default is to use the {@link #STRATEGY_EXACT} match
+	 * {@link org.eclipse.wst.jsdt.core.IType}. The default is to use the {@link #STRATEGY_EXACT} match
 	 * strategy.
 	 * </p>
 	 * 
@@ -372,7 +367,7 @@ public final class RenameJavaElementDescriptor extends JavaRefactoringDescriptor
 	/**
 	 * Determines whether getter methods for the Java element should be renamed.
 	 * <p>
-	 * Note: Renaming of getter methods is applicable for {@link IField}
+	 * Note: Renaming of getter methods is applicable for {@link org.eclipse.wst.jsdt.core.IField}
 	 * elements which do not represent enum constants only. The default is to
 	 * not rename any getter methods.
 	 * </p>
@@ -388,7 +383,7 @@ public final class RenameJavaElementDescriptor extends JavaRefactoringDescriptor
 	/**
 	 * Determines whether setter methods for the Java element should be renamed.
 	 * <p>
-	 * Note: Renaming of setter methods is applicable for {@link IField}
+	 * Note: Renaming of setter methods is applicable for {@link org.eclipse.wst.jsdt.core.IField}
 	 * elements which do not represent enum constants only. The default is to
 	 * not rename any setter methods.
 	 * </p>
@@ -406,7 +401,7 @@ public final class RenameJavaElementDescriptor extends JavaRefactoringDescriptor
 	 * element should be renamed as well.
 	 * <p>
 	 * Note: Hierarchical updating is currently applicable for Java elements of
-	 * type {@link IPackageFragment}. The default is to not update Java
+	 * type {@link org.eclipse.wst.jsdt.core.IPackageFragment}. The default is to not update Java
 	 * elements hierarchically.
 	 * </p>
 	 * 
@@ -428,7 +423,7 @@ public final class RenameJavaElementDescriptor extends JavaRefactoringDescriptor
 	 * </p>
 	 * <p>
 	 * Note: Qualified name updating is currently applicable to the Java elements
-	 * {@link IPackageFragment} and {@link IType}. The default is to not rename
+	 * {@link org.eclipse.wst.jsdt.core.IPackageFragment} and {@link org.eclipse.wst.jsdt.core.IType}. The default is to not rename
 	 * qualified names.
 	 * </p>
 	 * 
@@ -444,7 +439,7 @@ public final class RenameJavaElementDescriptor extends JavaRefactoringDescriptor
 	 * Determines whether references to the Java element should be renamed.
 	 * <p>
 	 * Note: Reference updating is currently applicable to all Java element types except
-	 * {@link IPackageFragmentRoot}. The default is to not update references.
+	 * {@link org.eclipse.wst.jsdt.core.IPackageFragmentRoot}. The default is to not update references.
 	 * </p>
 	 * 
 	 * @param update
@@ -460,7 +455,7 @@ public final class RenameJavaElementDescriptor extends JavaRefactoringDescriptor
 	 * updated.
 	 * <p>
 	 * Note: Similar declaration updating is currently applicable to Java elements of type
-	 * {@link IType}. The default is to not update similar declarations.
+	 * {@link org.eclipse.wst.jsdt.core.IType}. The default is to not update similar declarations.
 	 * </p>
 	 * 
 	 * @param update
@@ -480,7 +475,7 @@ public final class RenameJavaElementDescriptor extends JavaRefactoringDescriptor
 	 * </p>
 	 * <p>
 	 * Note: Textual occurrence updating is currently applicable to the Java elements
-	 * {@link IPackageFragment}, {@link IType} and {@link IField}. The default
+	 * {@link org.eclipse.wst.jsdt.core.IPackageFragment}, {@link org.eclipse.wst.jsdt.core.IType} and {@link org.eclipse.wst.jsdt.core.IField}. The default
 	 * is to not rename textual occurrences.
 	 * </p>
 	 * 
