@@ -230,7 +230,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 	}
 
 
-	public void setIncludedFiles(String[] fileNames) {
+	public void setIncludedFiles2(String[] fileNames) {
 
 
 
@@ -284,7 +284,70 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 		updateClasspathIfNeeded();
 		dojoHack();
 	}
+	public void setIncludedFiles(String[] fileNames) {
+		
+		
+		
+		String[] newImports = new String[fileNames.length];
+		//Long[] newTimestamps = new Long[fileNames.length];
+		int arrayLength = 0;
+		
+		for(int i = 0; i<fileNames.length;i++) {
+			File importFile = isValidImport(fileNames[i]);
+			if(importFile==null) continue;
+			IPath importPath = resolveChildPath(fileNames[i]);	
+			newImports[arrayLength++] = importPath.toString();
+			//newTimestamps[arrayLength] = new Long(importFile.lastModified());	
 
+			//arrayLength++;
+		}
+		
+		boolean equals = includedFiles!=null && arrayLength==includedFiles.length;
+		
+		for(int i=0;equals && i<arrayLength;i++) {
+			if(newImports[i].compareTo(includedFiles[i])!=0) equals=false;
+		}
+		
+		//this.includedFiles!=null && (newImports !=null) &&   this.includedFiles.length == arrayLength;
+		
+		//equals = equals || (this.includedFiles==null && newImports ==null);
+		//if(!equals) removeStaleClasspath(this.includedFiles);
+		
+		//		
+//
+//		if(!equals) dirty = true;
+//		
+//		/* try some more cases */
+//		
+//		for(int i = 0;!dirty && i<this.includedFiles.length;i++) {
+//			if(!(this.includedFiles[i].equals(newImports[i]))) {
+//				dirty = true;
+//				
+//			}
+//		}
+//		
+//		for(int i = 0;!dirty && i<newTimestamps.length;i++) {
+//			if(!(this.timeStamps[i].equals(newTimestamps[i]))) {
+//				dirty = true;
+//			}
+//		}
+//		
+//		if(!dirty) return;
+		if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Imports " + (equals?"did NOT change": "CHANGED:") + "\n");
+		if(DEBUG) {
+			for(int i = 0;includedFiles!=null && i<includedFiles.length;i++) {
+				System.out.println("\t\t" + includedFiles[i]);
+			}
+		}
+		if(equals) return;
+		this.includedFiles = new String[arrayLength];
+	//	this.timeStamps = new Long[arrayLength];
+		System.arraycopy(newImports, 0, this.includedFiles, 0, arrayLength);
+	//	System.arraycopy(newTimestamps, 0, this.timeStamps, 0, arrayLength);
+		updateClasspathIfNeeded();
+		dojoHack();
+		
+	}
 	private void dojoHack() {
 		if(!HACK_DOJO) return;
 		String UNCOMPRESSED_DOJO="dojo.js.uncompressed.js";
