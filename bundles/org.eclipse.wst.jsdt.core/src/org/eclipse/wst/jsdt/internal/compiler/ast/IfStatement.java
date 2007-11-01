@@ -127,7 +127,7 @@ public class IfStatement extends Statement {
 				{
 					LocalVariableBinding local = snr.localVariableBinding();
 					if (local==null)
-						snr.resolve(currentScope);
+						snr.resolveType(currentScope, true,null);
 					local = snr.localVariableBinding();
 					if (local!=null)
 					{
