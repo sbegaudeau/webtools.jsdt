@@ -9927,7 +9927,7 @@ protected void recoverStatements() {
 				new CompilationUnitDeclaration(
 					this.problemReporter,
 					compilationUnitDeclaration.compilationResult,
-					0);
+					end);
 
 		Parser.this.parseStatements(
 				compilationUnitDeclaration,

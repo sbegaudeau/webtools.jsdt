@@ -688,7 +688,7 @@ FormalParameter ::= Modifiersopt VariableDeclaratorId
 MethodBody ::= NestedMethod '{' BlockStatementsopt '}' 
 /.$putCase consumeMethodBody(); $break ./
 /:$readableName MethodBody:/
-/:$no_statements_recovery:/
+-- /:$no_statements_recovery:/
 
 NestedMethod ::= $empty
 /.$putCase consumeNestedMethod(); $break ./
