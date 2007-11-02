@@ -42,7 +42,9 @@ import org.eclipse.wst.jsdt.internal.eval.GlobalVariable;
 import org.eclipse.wst.jsdt.internal.eval.IRequestor;
 import org.eclipse.wst.jsdt.internal.eval.InstallException;
 
+
 public class EvaluationTest extends AbstractCompilerTest implements StopableTestCase {
+	public static final boolean JSDT_ENABLE=false;
 
 	public class Requestor implements IRequestor {
 		public int resultIndex = -1;

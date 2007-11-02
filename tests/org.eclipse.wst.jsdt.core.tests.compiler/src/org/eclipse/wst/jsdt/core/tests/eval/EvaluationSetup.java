@@ -41,38 +41,44 @@ public class EvaluationSetup extends CompilerTestSetup {
 		super(test, complianceLevel);
 	}
 
+	
 	protected void setUp() {
 		if (this.context == null) { // non null if called from subclass
+			
 			// Launch VM in evaluation mode
-			int evalPort = Util.getFreePort();
-			try {
-				LocalVMLauncher launcher = LocalVMLauncher.getLauncher();
-				launcher.setVMPath(JRE_PATH);
-				launcher.setEvalPort(evalPort);
-				launcher.setEvalTargetPath(EVAL_DIRECTORY);
-				this.launchedVM = launcher.launch();
-			} catch (TargetException e) {
-				throw new Error(e.getMessage());
-			}
-
-			// Thread that read the stout of the VM so that the VM doesn't block
-			try {
-				startReader("VM's stdout reader", this.launchedVM.getInputStream(), System.out);
-			} catch (TargetException e) {
-			}
-
-			// Thread that read the sterr of the VM so that the VM doesn't block
-			try {
-				startReader("VM's sterr reader", this.launchedVM.getErrorStream(), System.err);
-			} catch (TargetException e) {
-			}
-
+			int evalPort;
+			if (EvaluationTest.JSDT_ENABLE) {
+				evalPort = Util.getFreePort();
+				try {
+					LocalVMLauncher launcher = LocalVMLauncher.getLauncher();
+					launcher.setVMPath(JRE_PATH);
+					launcher.setEvalPort(evalPort);
+					launcher.setEvalTargetPath(EVAL_DIRECTORY);
+					this.launchedVM = launcher.launch();
+				} catch (TargetException e) {
+					throw new Error(e.getMessage());
+				}
+				// Thread that read the stout of the VM so that the VM doesn't block
+				try {
+					startReader("VM's stdout reader", this.launchedVM
+							.getInputStream(), System.out);
+				} catch (TargetException e) {
+				}
+				// Thread that read the sterr of the VM so that the VM doesn't block
+				try {
+					startReader("VM's sterr reader", this.launchedVM
+							.getErrorStream(), System.err);
+				} catch (TargetException e) {
+				}
+			}			
 			// Create context
 			this.context = new EvaluationContext();
 
+			if (EvaluationTest.JSDT_ENABLE) {
 			// Create target
 			this.target = new TargetInterface();
 			this.target.connect("localhost", evalPort, 10000);
+			}
 
 			// Create name environment
 			this.env = new FileSystem(Util.getJavaClassLibs(), new String[0], null);

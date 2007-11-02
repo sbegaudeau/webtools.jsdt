@@ -36,8 +36,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 				"var i=1,c=4;" + 
 				"\n",
 			"X.js",
-			"var i = 1;\n" + 
-			"var c = 4;" + 
+			"var i = 1, c = 4;" + 
 			"\n"
 		 );
 		 
@@ -45,8 +44,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 				"var i=1,c;" + 
 				"\n",
 			"X.js",
-			"var i = 1;\n" + 
-			"var c;" + 
+			"var i = 1, c;" + 
 			"\n"
 		 );
 	}
@@ -64,8 +62,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 				"var i=1,c;" + 
 				"\n",
 			"X.js",
-			"var i = 1;\n" + 
-			"var c;" + 
+			"var i = 1, c;" + 
 			"\n"
 		 );
 	}
@@ -773,7 +770,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		this.runParseTest(
 				"(function (){});\n",
 			"X.js",
-				"(function (){});\n"			
+				"function () {\n};\n"			
 		);
 	}
 
@@ -846,7 +843,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		this.runParseTest(
 				"((weight + 1)/2)",
 			"X.js",
-				"((weight + 1)/2)"			
+				"((weight + 1) / 2);\n"			
 		);
 	}
 
@@ -877,6 +874,70 @@ public class BasicParserTests extends AbstractRegressionTest {
 		);
 	}
   
+	public void test051() {
+		// method on function object 
+		this.runParseTest(
+				"var c=function(){}.bind();",
+			"X.js",
+				"var c = function () {\n}.bind();\n"			
+		);
+	}
+  
+	public void test051b() {
+		// method on function object 
+		this.runParseTest(
+					 
+				      "transforms = map(function (){\n"+
+				      "}.bind()).reject(function (){\n"+
+				      "});", 
+				      
+			"X.js",
+		      "transforms = map(function () {\n"+
+		      "}.bind()).reject(function () {\n"+
+		      "});\n"
+		);
+	}
+  
 
+	public void test051c() {
+		// method on function object 
+		this.runParseTest(
+					 
+			    "map(function(){"+
+			     "if(true) {"+
+			     "} else if(true)"+ 
+			       "var components = value.match(),"+
+			        "unit =  null;"+
+			   		"}.bind(this));",
+				      
+			"X.js",
+		    "map(function () {\n"+
+		     "  if (true)\n      {\n"+
+		     "      }\n  else\n      if (true)\n"+ 
+		       "          var components = value.match(),"+
+		        " unit = null;"+
+		   		"\n}.bind(this));\n"
+		);
+	}
+  
+	public void test051d() {
+		this.runParseTest(
+					 
+			    "function bb(){"+
+			     "if(true)"+ 
+			       "var components = value.match(),"+
+			        "unit =  null;"+
+			   		"};",
+				      
+			"X.js",
+		    "function bb() {\n"+
+		     "  if (true)\n"+ 
+		       "      var components = value.match(),"+
+		        " unit = null;"+
+		   		"\n}\n;\n"  
+		);
+	}
+  
 
+   
 }

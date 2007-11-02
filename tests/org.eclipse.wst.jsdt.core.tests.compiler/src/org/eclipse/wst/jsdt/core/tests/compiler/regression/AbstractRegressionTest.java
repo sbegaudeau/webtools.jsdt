@@ -392,6 +392,9 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest implem
 		defaultOptions.put(CompilerOptions.OPTION_ReportSyntheticAccessEmulation, CompilerOptions.WARNING);
 		defaultOptions.put(CompilerOptions.OPTION_PreserveUnusedLocal, CompilerOptions.PRESERVE);
 		defaultOptions.put(CompilerOptions.OPTION_ReportUnnecessaryElse, CompilerOptions.WARNING );
+		defaultOptions.put(CompilerOptions.OPTION_Unresolved_Field, CompilerOptions.ERROR );
+		defaultOptions.put(CompilerOptions.OPTION_Unresolved_Method, CompilerOptions.ERROR );
+		defaultOptions.put(CompilerOptions.OPTION_Unresolved_Type, CompilerOptions.ERROR );
 		return defaultOptions;
 	}
 
