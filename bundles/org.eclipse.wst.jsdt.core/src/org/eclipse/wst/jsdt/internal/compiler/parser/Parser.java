@@ -4293,12 +4293,16 @@ protected void consumeLocalVariableDeclarationStatement() {
 
 	// update source end to include the semi-colon
 	int variableDeclaratorsCounter = this.astLengthStack[this.astLengthPtr];
-	for (int i = variableDeclaratorsCounter - 1; i >= 0; i--) {
+	AbstractVariableDeclaration nextDeclaration =null;
+	for (int i = 0; i<variableDeclaratorsCounter; i++) {
 		AbstractVariableDeclaration localDeclaration = (AbstractVariableDeclaration) this.astStack[this.astPtr - i];
 		localDeclaration.declarationSourceEnd = this.endStatementPosition;
 		localDeclaration.declarationEnd = this.endStatementPosition;	// semi-colon included
+		localDeclaration.nextLocal=nextDeclaration;
+		nextDeclaration=localDeclaration;
 	}
-
+	this.astPtr-=variableDeclaratorsCounter-1;
+	this.astLengthStack[this.astLengthPtr]=1;
 	this.lastCheckPoint = endStatementPosition+1;
 
 }

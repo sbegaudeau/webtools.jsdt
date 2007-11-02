@@ -34,6 +34,9 @@ public abstract class AbstractVariableDeclaration extends Statement implements I
 	public char[] name;
 
 	public TypeReference type;
+	
+	public AbstractVariableDeclaration nextLocal;
+
 
 	public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
 		return flowInfo;
@@ -89,6 +92,16 @@ public abstract class AbstractVariableDeclaration extends Statement implements I
 		output.append("var ");
 		if (this.annotations != null) printAnnotations(this.annotations, output);
 
+		printFragment(indent, output);
+		if (this.nextLocal!=null)
+		{
+			output.append(", "); //$NON-NLS-1$
+			this.nextLocal.printFragment(indent, output);
+		}
+		return output;
+	}
+
+	protected void printFragment(int indent, StringBuffer output) {
 		if (type != null) {
 			type.print(0, output).append(' ');
 		}
@@ -105,7 +118,6 @@ public abstract class AbstractVariableDeclaration extends Statement implements I
 					initialization.printExpression(indent, output);
 				}
 		}
-		return output;
 	}
 
 	public void resolve(BlockScope scope) {

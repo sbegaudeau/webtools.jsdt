@@ -377,23 +377,26 @@ class ASTConverter {
 	}
 
 	protected void checkAndAddMultipleLocalDeclaration(org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement[] stmts, int index, List blockStatements) {
-		if (index > 0
-		    && stmts[index - 1] instanceof org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration) {
-		    	org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration local1 = (org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration) stmts[index - 1];
-		    	org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration local2 = (org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration) stmts[index];
-			   if (local1.declarationSourceStart == local2.declarationSourceStart) {
-					// we have a multiple local declarations
-					// We retrieve the existing VariableDeclarationStatement to add the new VariableDeclarationFragment
-					VariableDeclarationStatement variableDeclarationStatement = (VariableDeclarationStatement) blockStatements.get(blockStatements.size() - 1);
-					variableDeclarationStatement.fragments().add(convertToVariableDeclarationFragment((org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration)stmts[index]));
-			   } else {
-					// we can create a new FieldDeclaration
-					blockStatements.add(convertToVariableDeclarationStatement((org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration)stmts[index]));
-			   }
-		} else {
-			// we can create a new FieldDeclaration
-			blockStatements.add(convertToVariableDeclarationStatement((org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration)stmts[index]));
-		}
+//		if (index > 0
+//		    && stmts[index - 1] instanceof org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration) {
+//		    	org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration local1 = (org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration) stmts[index - 1];
+//		    	org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration local2 = (org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration) stmts[index];
+//			   if (local1.declarationSourceStart == local2.declarationSourceStart) {
+//					// we have a multiple local declarations
+//					// We retrieve the existing VariableDeclarationStatement to add the new VariableDeclarationFragment
+//					VariableDeclarationStatement variableDeclarationStatement = (VariableDeclarationStatement) blockStatements.get(blockStatements.size() - 1);
+//					variableDeclarationStatement.fragments().add(convertToVariableDeclarationFragment((org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration)stmts[index]));
+//			   } else {
+//					// we can create a new FieldDeclaration
+//					blockStatements.add(convertToVariableDeclarationStatement((org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration)stmts[index]));
+//			   }
+//		} else {
+//			// we can create a new FieldDeclaration
+//			blockStatements.add(convertToVariableDeclarationStatement((org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration)stmts[index]));
+//		}
+    	org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration local = (org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration) stmts[index];
+		VariableDeclarationStatement variableDeclarationStatement = convertToVariableDeclarationStatement((org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration)stmts[index]);
+		blockStatements.add(variableDeclarationStatement);
 	}
 
 	protected void checkCanceled() {
@@ -3278,6 +3281,12 @@ class ASTConverter {
 		  Type type = convertType(localDeclaration.type,localDeclaration.inferredType);
 		  setTypeForVariableDeclarationStatement(variableDeclarationStatement, type, variableDeclarationFragment.getExtraDimensions());
 		}
+		org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration local = localDeclaration;
+    	while (local.nextLocal!=null) {
+ 			variableDeclarationStatement.fragments().add(convertToVariableDeclarationFragment(local.nextLocal));
+    		local=(org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration)local.nextLocal;
+		}
+
 		if (localDeclaration.modifiersSourceStart != -1) {
 			setModifiers(variableDeclarationStatement, localDeclaration);
 		}

@@ -47,34 +47,36 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 	if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0) {
 		bits |= ASTNode.IsLocalDeclarationReachable; // only set if actually reached
 	}
-	if (this.initialization == null) {
-		return flowInfo;
-	}
-	int nullStatus = this.initialization.nullStatus(flowInfo);
-	flowInfo =
-		this.initialization
-			.analyseCode(currentScope, flowContext, flowInfo)
-			.unconditionalInits();
-	if (!flowInfo.isDefinitelyAssigned(this.binding)){// for local variable debug attributes
-		this.bits |= FirstAssignmentToLocal;
-	} else {
-		this.bits &= ~FirstAssignmentToLocal;  // int i = (i = 0);
-	}
-	flowInfo.markAsDefinitelyAssigned(binding);
-	if ( true){//(this.binding.type.tagBits & TagBits.IsBaseType) == 0) {
-		switch(nullStatus) {
-			case FlowInfo.NULL :
-				flowInfo.markAsDefinitelyNull(this.binding);
-				break;
-			case FlowInfo.NON_NULL :
-				flowInfo.markAsDefinitelyNonNull(this.binding);
-				break;
-			default:
-				flowInfo.markAsDefinitelyUnknown(this.binding);
+	if (this.initialization != null) {
+		int nullStatus = this.initialization.nullStatus(flowInfo);
+		flowInfo =
+			this.initialization
+				.analyseCode(currentScope, flowContext, flowInfo)
+				.unconditionalInits();
+		if (!flowInfo.isDefinitelyAssigned(this.binding)){// for local variable debug attributes
+			this.bits |= FirstAssignmentToLocal;
+		} else {
+			this.bits &= ~FirstAssignmentToLocal;  // int i = (i = 0);
 		}
-		// no need to inform enclosing try block since its locals won't get
-		// known by the finally block
+		flowInfo.markAsDefinitelyAssigned(binding);
+		if ( true){//(this.binding.type.tagBits & TagBits.IsBaseType) == 0) {
+			switch(nullStatus) {
+				case FlowInfo.NULL :
+					flowInfo.markAsDefinitelyNull(this.binding);
+					break;
+				case FlowInfo.NON_NULL :
+					flowInfo.markAsDefinitelyNonNull(this.binding);
+					break;
+				default:
+					flowInfo.markAsDefinitelyUnknown(this.binding);
+			}
+			// no need to inform enclosing try block since its locals won't get
+			// known by the finally block
+		}
 	}
+	if (this.nextLocal!=null)
+		flowInfo=this.nextLocal.analyseCode(currentScope, flowContext, flowInfo);
+		
 	return flowInfo;
 }
 
@@ -165,6 +167,8 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 		// create a binding and add it to the scope
 		TypeBinding variableType = resolveVarType(scope);
 
+		if (this.nextLocal!=null)
+			this.nextLocal.resolve(scope);
 		if (variableType != null) {
 			if (variableType == TypeBinding.VOID) {
 				scope.problemReporter().variableTypeCannotBeVoid(this);
@@ -342,6 +346,8 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 				initialization.traverse(visitor, scope);
 		}
 		visitor.endVisit(this, scope);
+		if (this.nextLocal!=null)
+			this.nextLocal.traverse(visitor, scope);
 	}
 
 	public String getTypeName()
