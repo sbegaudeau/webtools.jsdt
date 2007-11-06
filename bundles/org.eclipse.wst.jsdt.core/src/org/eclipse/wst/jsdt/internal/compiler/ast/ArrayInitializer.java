@@ -135,6 +135,17 @@ public class ArrayInitializer extends Expression {
 		return output.append(']');
 	}
 
+	public TypeBinding resolveType(BlockScope scope) {
+		this.constant = Constant.NotAConstant;
+		this.resolvedType = this.binding = new ArrayBinding(TypeBinding.UNKNOWN,1,scope.environment());
+		if (this.expressions!=null)
+		  for (int i = 0, length = this.expressions.length; i < length; i++) {
+			Expression expression = this.expressions[i];
+			 expression.resolveType(scope);
+		}		
+		return this.resolvedType;
+	}
+
 	public TypeBinding resolveTypeExpecting(BlockScope scope, TypeBinding expectedType) {
 		// Array initializers can only occur on the right hand side of an assignment
 		// expression, therefore the expected type contains the valid information

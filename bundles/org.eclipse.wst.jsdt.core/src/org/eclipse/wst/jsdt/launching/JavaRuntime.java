@@ -20,14 +20,18 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.wst.jsdt.core.IClasspathContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
+
+import com.ibm.icu.text.MessageFormat;
 
 /**
  * The central access point for launching support. This class manages
@@ -1142,19 +1146,21 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 
 	}
 	
-//	/**
-//	 * Resolves the given classpath, returning the resolved classpath
-//	 * in the context of the given launch configuration.
-//	 *
-//	 * @param entries unresolved classpath
-//	 * @param configuration launch configuration
-//	 * @return resolved runtime classpath entries
-//	 * @exception CoreException if unable to compute the classpath
-//	 * @since 2.0
-//	 */
-//	public static IRuntimeClasspathEntry[] resolveRuntimeClasspath(IRuntimeClasspathEntry[] entries, ILaunchConfiguration configuration) throws CoreException {
+	/**
+	 * Resolves the given classpath, returning the resolved classpath
+	 * in the context of the given launch configuration.
+	 *
+	 * @param entries unresolved classpath
+	 * @param configuration launch configuration
+	 * @return resolved runtime classpath entries
+	 * @exception CoreException if unable to compute the classpath
+	 * @since 2.0
+	 */
+	public static IRuntimeClasspathEntry[] resolveRuntimeClasspath(IRuntimeClasspathEntry[] entries, ILaunchConfiguration configuration) throws CoreException {
+//		TODO: implement
+		throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //		return getClasspathProvider(configuration).resolveClasspath(entries, configuration);
-//	}	
+	}	
 	
 	/**
 	 * Return the <code>IJavaProject</code> referenced in the specified configuration or
@@ -1187,117 +1193,117 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //		return JavaCore.create(ResourcesPlugin.getWorkspace().getRoot());
 //	}
 //	
-//	/**
-//	 * Returns the VM install for the given launch configuration.
-//	 * The VM install is determined in the following prioritized way:
-//	 * <ol>
-//	 * <li>The VM install is explicitly specified on the launch configuration
-//	 *  via the <code>ATTR_JRE_CONTAINER_PATH</code> attribute (since 3.2).</li>
-//	 * <li>The VM install is explicitly specified on the launch configuration
-//	 * 	via the <code>ATTR_VM_INSTALL_TYPE</code> and <code>ATTR_VM_INSTALL_ID</code>
-//	 *  attributes.</li>
-//	 * <li>If no explicit VM install is specified, the VM install associated with
-//	 * 	the launch configuration's project is returned.</li>
-//	 * <li>If no project is specified, or the project does not specify a custom
-//	 * 	VM install, the workspace default VM install is returned.</li>
-//	 * </ol>
-//	 * 
-//	 * @param configuration launch configuration
-//	 * @return vm install
-//	 * @exception CoreException if unable to compute a vm install
-//	 * @since 2.0
-//	 */
-//	public static IVMInstall computeVMInstall(ILaunchConfiguration configuration) throws CoreException {
-//		String jreAttr = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_JRE_CONTAINER_PATH, (String)null);
-//		if (jreAttr == null) {
-//			String type = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_TYPE, (String)null);
-//			if (type == null) {
-//				IJavaProject proj = getJavaProject(configuration);
-//				if (proj != null) {
-//					IVMInstall vm = getVMInstall(proj);
-//					if (vm != null) {
-//						return vm;
-//					}
-//				}
-//			} else {
-//				String name = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_NAME, (String)null);
-//				return resolveVM(type, name, configuration);
-//			}
-//		} else {
-//			IPath jrePath = Path.fromPortableString(jreAttr);
-//			IClasspathEntry entry = JavaCore.newContainerEntry(jrePath);
-//			IRuntimeClasspathEntryResolver2 resolver = getVariableResolver(jrePath.segment(0));
-//			if (resolver != null) {
-//				return resolver.resolveVMInstall(entry);
-//			} else {
-//				resolver = getContainerResolver(jrePath.segment(0));
-//				if (resolver != null) {
-//					return resolver.resolveVMInstall(entry);
-//				}
-//			}
-//		}
-//		
-//		return getDefaultVMInstall();
-//	}
-//	/**
-//	 * Returns the VM of the given type with the specified name.
-//	 *  
-//	 * @param type vm type identifier
-//	 * @param name vm name
-//	 * @return vm install
-//	 * @exception CoreException if unable to resolve
-//	 * @since 3.2
-//	 */
-//	private static IVMInstall resolveVM(String type, String name, ILaunchConfiguration configuration) throws CoreException {
-//		IVMInstallType vt = getVMInstallType(type);
-//		if (vt == null) {
-//			// error type does not exist
-//			abort(MessageFormat.format(LaunchingMessages.JavaRuntime_Specified_VM_install_type_does_not_exist___0__2, new String[] {type}), null); 
-//		}
-//		IVMInstall vm = null;
-//		// look for a name
-//		if (name == null) {
-//			// error - type specified without a specific install (could be an old config that specified a VM ID)
-//			// log the error, but choose the default VM.
-//			IStatus status = new Status(IStatus.WARNING, JavaCore.PLUGIN_ID, IJavaLaunchConfigurationConstants.ERR_UNSPECIFIED_VM_INSTALL, MessageFormat.format(LaunchingMessages.JavaRuntime_VM_not_fully_specified_in_launch_configuration__0____missing_VM_name__Reverting_to_default_VM__1, new String[] {configuration.getName()}), null); 
-//			LaunchingPlugin.log(status);
-//			return getDefaultVMInstall();
-//		} 
-//		vm = vt.findVMInstallByName(name);
-//		if (vm == null) {
-//			// error - install not found
-//			abort(MessageFormat.format(LaunchingMessages.JavaRuntime_Specified_VM_install_not_found__type__0___name__1__2, new String[] {vt.getName(), name}), null);					 
-//		} else {
-//			return vm;
-//		}
-//		// won't reach here
-//		return null;
-//	}
-//	
-//	/**
-//	 * Throws a core exception with an internal error status.
-//	 * 
-//	 * @param message the status message
-//	 * @param exception lower level exception associated with the
-//	 *  error, or <code>null</code> if none
-//	 */
-//	private static void abort(String message, Throwable exception) throws CoreException {
-//		abort(message, IJavaLaunchConfigurationConstants.ERR_INTERNAL_ERROR, exception);
-//	}	
-//		
-//		
-//	/**
-//	 * Throws a core exception with an internal error status.
-//	 * 
-//	 * @param message the status message
-//	 * @param code status code
-//	 * @param exception lower level exception associated with the
-//	 * 
-//	 *  error, or <code>null</code> if none
-//	 */
-//	private static void abort(String message, int code, Throwable exception) throws CoreException {
-//		throw new CoreException(new Status(IStatus.ERROR, JavaCore.PLUGIN_ID, code, message, exception));
-//	}	
+	/**
+	 * Returns the VM install for the given launch configuration.
+	 * The VM install is determined in the following prioritized way:
+	 * <ol>
+	 * <li>The VM install is explicitly specified on the launch configuration
+	 *  via the <code>ATTR_JRE_CONTAINER_PATH</code> attribute (since 3.2).</li>
+	 * <li>The VM install is explicitly specified on the launch configuration
+	 * 	via the <code>ATTR_VM_INSTALL_TYPE</code> and <code>ATTR_VM_INSTALL_ID</code>
+	 *  attributes.</li>
+	 * <li>If no explicit VM install is specified, the VM install associated with
+	 * 	the launch configuration's project is returned.</li>
+	 * <li>If no project is specified, or the project does not specify a custom
+	 * 	VM install, the workspace default VM install is returned.</li>
+	 * </ol>
+	 * 
+	 * @param configuration launch configuration
+	 * @return vm install
+	 * @exception CoreException if unable to compute a vm install
+	 * @since 2.0
+	 */
+	public static IVMInstall computeVMInstall(ILaunchConfiguration configuration) throws CoreException {
+		String jreAttr = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_JRE_CONTAINER_PATH, (String)null);
+		if (jreAttr == null) {
+			String type = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_TYPE, (String)null);
+			if (type == null) {
+				IJavaProject proj = getJavaProject(configuration);
+				if (proj != null) {
+					IVMInstall vm = getVMInstall(proj);
+					if (vm != null) {
+						return vm;
+					}
+				}
+			} else {
+				String name = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_NAME, (String)null);
+				return resolveVM(type, name, configuration);
+			}
+		} else {
+			IPath jrePath = Path.fromPortableString(jreAttr);
+			IClasspathEntry entry = JavaCore.newContainerEntry(jrePath);
+			IRuntimeClasspathEntryResolver2 resolver = getVariableResolver(jrePath.segment(0));
+			if (resolver != null) {
+				return resolver.resolveVMInstall(entry);
+			} else {
+				resolver = getContainerResolver(jrePath.segment(0));
+				if (resolver != null) {
+					return resolver.resolveVMInstall(entry);
+				}
+			}
+		}
+		
+		return getDefaultVMInstall();
+	}
+	/**
+	 * Returns the VM of the given type with the specified name.
+	 *  
+	 * @param type vm type identifier
+	 * @param name vm name
+	 * @return vm install
+	 * @exception CoreException if unable to resolve
+	 * @since 3.2
+	 */
+	private static IVMInstall resolveVM(String type, String name, ILaunchConfiguration configuration) throws CoreException {
+		IVMInstallType vt = getVMInstallType(type);
+		if (vt == null) {
+			// error type does not exist
+			abort(MessageFormat.format(LaunchingMessages.JavaRuntime_Specified_VM_install_type_does_not_exist___0__2, new String[] {type}), null); 
+		}
+		IVMInstall vm = null;
+		// look for a name
+		if (name == null) {
+			// error - type specified without a specific install (could be an old config that specified a VM ID)
+			// log the error, but choose the default VM.
+			IStatus status = new Status(IStatus.WARNING, JavaCore.PLUGIN_ID, IJavaLaunchConfigurationConstants.ERR_UNSPECIFIED_VM_INSTALL, MessageFormat.format(LaunchingMessages.JavaRuntime_VM_not_fully_specified_in_launch_configuration__0____missing_VM_name__Reverting_to_default_VM__1, new String[] {configuration.getName()}), null); 
+			JavaCore.getPlugin().getLog().log(status);
+			return getDefaultVMInstall();
+		} 
+		vm = vt.findVMInstallByName(name);
+		if (vm == null) {
+			// error - install not found
+			abort(MessageFormat.format(LaunchingMessages.JavaRuntime_Specified_VM_install_not_found__type__0___name__1__2, new String[] {vt.getName(), name}), null);					 
+		} else {
+			return vm;
+		}
+		// won't reach here
+		return null;
+	}
+	
+	/**
+	 * Throws a core exception with an internal error status.
+	 * 
+	 * @param message the status message
+	 * @param exception lower level exception associated with the
+	 *  error, or <code>null</code> if none
+	 */
+	private static void abort(String message, Throwable exception) throws CoreException {
+		abort(message, IJavaLaunchConfigurationConstants.ERR_INTERNAL_ERROR, exception);
+	}	
+		
+		
+	/**
+	 * Throws a core exception with an internal error status.
+	 * 
+	 * @param message the status message
+	 * @param code status code
+	 * @param exception lower level exception associated with the
+	 * 
+	 *  error, or <code>null</code> if none
+	 */
+	private static void abort(String message, int code, Throwable exception) throws CoreException {
+		throw new CoreException(new Status(IStatus.ERROR, JavaCore.PLUGIN_ID, code, message, exception));
+	}	
 		
 	/**
 	 * Computes the default application classpath entries for the given 

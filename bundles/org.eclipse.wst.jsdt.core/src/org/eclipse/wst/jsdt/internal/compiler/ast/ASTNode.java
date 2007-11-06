@@ -331,7 +331,8 @@ public abstract class ASTNode implements TypeConstants, TypeIds {
 					}
 				}
 			} else {
-				for (int i = 0; i < paramLength; i++) {
+				int length = (paramLength<arguments.length) ? paramLength : arguments.length;
+				for (int i = 0; i < length; i++) {
 					TypeBinding originalRawParam = rawOriginalGenericMethod == null ? null : rawOriginalGenericMethod.parameters[i];
 					invocationStatus |= checkInvocationArgument(scope, arguments[i], params[i], argumentTypes[i], originalRawParam);
 				}
