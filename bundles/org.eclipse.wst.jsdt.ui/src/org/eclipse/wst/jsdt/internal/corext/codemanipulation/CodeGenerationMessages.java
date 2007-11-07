@@ -31,7 +31,6 @@ public final class CodeGenerationMessages extends NLS {
 	public static String OrganizeImportsOperation_description;
 	public static String AddJavaDocStubOperation_description;
 	public static String AddDelegateMethodsOperation_monitor_message;
-	public static String ImportsStructure_operation_description;
 	public static String GenerateHashCodeEqualsOperation_description;
 
 	static {

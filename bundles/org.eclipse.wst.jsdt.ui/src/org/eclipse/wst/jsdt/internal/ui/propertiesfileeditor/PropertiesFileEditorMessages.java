@@ -42,13 +42,10 @@ final class PropertiesFileEditorMessages extends NLS {
 
 	public static String OpenAction_label;
 	public static String OpenAction_tooltip;
-	public static String OpenAction_select_element;
 	public static String OpenAction_error_title;
 	public static String OpenAction_error_message;
 	public static String OpenAction_error_messageArgs;
 	public static String OpenAction_error_messageProblems;
-	public static String OpenAction_error_messageBadSelection;
-	public static String OpenAction_error_messageErrorResolvingSelection;
 	public static String OpenAction_error_messageErrorSearchingKey;
 	public static String OpenAction_error_messageNoResult;
 	public static String OpenAction_SelectionDialog_title;

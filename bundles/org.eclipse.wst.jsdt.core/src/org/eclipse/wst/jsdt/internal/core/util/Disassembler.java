@@ -32,15 +32,9 @@ import org.eclipse.wst.jsdt.core.util.IConstantPoolEntry;
 import org.eclipse.wst.jsdt.core.util.IConstantValueAttribute;
 import org.eclipse.wst.jsdt.core.util.IEnclosingMethodAttribute;
 import org.eclipse.wst.jsdt.core.util.IExceptionAttribute;
-import org.eclipse.wst.jsdt.core.util.IExceptionTableEntry;
 import org.eclipse.wst.jsdt.core.util.IFieldInfo;
 import org.eclipse.wst.jsdt.core.util.IInnerClassesAttribute;
 import org.eclipse.wst.jsdt.core.util.IInnerClassesAttributeEntry;
-import org.eclipse.wst.jsdt.core.util.ILineNumberAttribute;
-import org.eclipse.wst.jsdt.core.util.ILocalVariableAttribute;
-import org.eclipse.wst.jsdt.core.util.ILocalVariableTableEntry;
-import org.eclipse.wst.jsdt.core.util.ILocalVariableTypeTableAttribute;
-import org.eclipse.wst.jsdt.core.util.ILocalVariableTypeTableEntry;
 import org.eclipse.wst.jsdt.core.util.IMethodInfo;
 import org.eclipse.wst.jsdt.core.util.IModifierConstants;
 import org.eclipse.wst.jsdt.core.util.IParameterAnnotation;
@@ -50,10 +44,6 @@ import org.eclipse.wst.jsdt.core.util.IRuntimeVisibleAnnotationsAttribute;
 import org.eclipse.wst.jsdt.core.util.IRuntimeVisibleParameterAnnotationsAttribute;
 import org.eclipse.wst.jsdt.core.util.ISignatureAttribute;
 import org.eclipse.wst.jsdt.core.util.ISourceAttribute;
-import org.eclipse.wst.jsdt.core.util.IStackMapAttribute;
-import org.eclipse.wst.jsdt.core.util.IStackMapFrame;
-import org.eclipse.wst.jsdt.core.util.IStackMapTableAttribute;
-import org.eclipse.wst.jsdt.core.util.IVerificationTypeInfo;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 
 /**
@@ -62,7 +52,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
  */
 public class Disassembler extends ClassFileBytesDisassembler {
 
-	private static final char[] ANY_EXCEPTION = Messages.classfileformat_anyexceptionhandler.toCharArray();
+//	private static final char[] ANY_EXCEPTION = Messages.classfileformat_anyexceptionhandler.toCharArray();
 	private static final String VERSION_UNKNOWN = Messages.classfileformat_versionUnknown;
 
 	private boolean appendModifier(StringBuffer buffer, int accessFlags, int modifierConstant, String modifier, boolean firstModifier) {
@@ -1025,305 +1015,305 @@ public class Disassembler extends ClassFileBytesDisassembler {
 		return false;
 	}
 	private void disassemble(ICodeAttribute codeAttribute, StringBuffer buffer, String lineSeparator, int tabNumber, int mode) {
-		writeNewLine(buffer, lineSeparator, tabNumber - 1);
-		DefaultBytecodeVisitor visitor = new DefaultBytecodeVisitor(codeAttribute, buffer, lineSeparator, tabNumber, mode);
-		try {
-			codeAttribute.traverse(visitor);
-		} catch(ClassFormatException e) {
-			dumpTab(tabNumber + 2, buffer);
-			buffer.append(Messages.classformat_classformatexception);
-			writeNewLine(buffer, lineSeparator, tabNumber + 1);
-		}
-		final int exceptionTableLength = codeAttribute.getExceptionTableLength();
-		boolean isFirstAttribute = true;
-		if (exceptionTableLength != 0) {
-			final int tabNumberForExceptionAttribute = tabNumber + 2;
-			isFirstAttribute = false;
-			dumpTab(tabNumberForExceptionAttribute, buffer);
-			final IExceptionTableEntry[] exceptionTableEntries = codeAttribute.getExceptionTable();
-			buffer.append(Messages.disassembler_exceptiontableheader);
-			writeNewLine(buffer, lineSeparator, tabNumberForExceptionAttribute + 1);
-			for (int i = 0; i < exceptionTableLength; i++) {
-				if (i != 0) {
-					writeNewLine(buffer, lineSeparator, tabNumberForExceptionAttribute + 1);
-				}
-				IExceptionTableEntry exceptionTableEntry = exceptionTableEntries[i];
-				char[] catchType;
-				if (exceptionTableEntry.getCatchTypeIndex() != 0) {
-					catchType = exceptionTableEntry.getCatchType();
-					CharOperation.replace(catchType, '/', '.');
-					catchType = returnClassName(catchType, '.', mode);
-				} else {
-					catchType = ANY_EXCEPTION;
-				}
-				buffer.append(Messages.bind(Messages.classfileformat_exceptiontableentry,
-					new String[] {
-						Integer.toString(exceptionTableEntry.getStartPC()),
-						Integer.toString(exceptionTableEntry.getEndPC()),
-						Integer.toString(exceptionTableEntry.getHandlerPC()),
-						new String(catchType)
-					}));
-			}
-		}
-		final ILineNumberAttribute lineNumberAttribute = codeAttribute.getLineNumberAttribute();
-		final int lineAttributeLength = lineNumberAttribute == null ? 0 : lineNumberAttribute.getLineNumberTableLength();
-		if (lineAttributeLength != 0) {
-			int tabNumberForLineAttribute = tabNumber + 2;
-			if (!isFirstAttribute) {
-				writeNewLine(buffer, lineSeparator, tabNumberForLineAttribute);
-			} else {
-				dumpTab(tabNumberForLineAttribute, buffer);
-				isFirstAttribute = false;
-			}
-			buffer.append(Messages.disassembler_linenumberattributeheader);
-			writeNewLine(buffer, lineSeparator, tabNumberForLineAttribute + 1);
-			int[][] lineattributesEntries = lineNumberAttribute.getLineNumberTable();
-			for (int i = 0; i < lineAttributeLength; i++) {
-				if (i != 0) {
-					writeNewLine(buffer, lineSeparator, tabNumberForLineAttribute + 1);
-				}
-				buffer.append(Messages.bind(Messages.classfileformat_linenumbertableentry,
-					new String[] {
-						Integer.toString(lineattributesEntries[i][0]),
-						Integer.toString(lineattributesEntries[i][1])
-					}));
-			}
-		}
-		final ILocalVariableAttribute localVariableAttribute = codeAttribute.getLocalVariableAttribute();
-		final int localVariableAttributeLength = localVariableAttribute == null ? 0 : localVariableAttribute.getLocalVariableTableLength();
-		if (localVariableAttributeLength != 0) {
-			int tabNumberForLocalVariableAttribute = tabNumber + 2;
-			if (!isFirstAttribute) {
-				writeNewLine(buffer, lineSeparator, tabNumberForLocalVariableAttribute);
-			} else {
-				isFirstAttribute = false;
-				dumpTab(tabNumberForLocalVariableAttribute, buffer);
-			}
-			buffer.append(Messages.disassembler_localvariabletableattributeheader);
-			writeNewLine(buffer, lineSeparator, tabNumberForLocalVariableAttribute + 1);
-			ILocalVariableTableEntry[] localVariableTableEntries = localVariableAttribute.getLocalVariableTable();
-			for (int i = 0; i < localVariableAttributeLength; i++) {
-				if (i != 0) {
-					writeNewLine(buffer, lineSeparator, tabNumberForLocalVariableAttribute + 1);
-				}
-				ILocalVariableTableEntry localVariableTableEntry = localVariableTableEntries[i];
-				int index= localVariableTableEntry.getIndex();
-				int startPC = localVariableTableEntry.getStartPC();
-				int length  = localVariableTableEntry.getLength();
-				final char[] typeName = Signature.toCharArray(localVariableTableEntry.getDescriptor());
-				CharOperation.replace(typeName, '/', '.');
-				buffer.append(Messages.bind(Messages.classfileformat_localvariabletableentry,
-					new String[] {
-						Integer.toString(startPC),
-						Integer.toString(startPC + length),
-						new String(localVariableTableEntry.getName()),
-						Integer.toString(index),
-						new String(returnClassName(typeName, '.', mode))
-					}));
-			}
-		}
-		final ILocalVariableTypeTableAttribute localVariableTypeAttribute= (ILocalVariableTypeTableAttribute) getAttribute(IAttributeNamesConstants.LOCAL_VARIABLE_TYPE_TABLE, codeAttribute);
-		final int localVariableTypeTableLength = localVariableTypeAttribute == null ? 0 : localVariableTypeAttribute.getLocalVariableTypeTableLength();
-		if (localVariableTypeTableLength != 0) {
-			int tabNumberForLocalVariableAttribute = tabNumber + 2;
-			if (!isFirstAttribute) {
-				writeNewLine(buffer, lineSeparator, tabNumberForLocalVariableAttribute);
-			} else {
-				isFirstAttribute = false;
-				dumpTab(tabNumberForLocalVariableAttribute, buffer);
-			}
-			buffer.append(Messages.disassembler_localvariabletypetableattributeheader);
-			writeNewLine(buffer, lineSeparator, tabNumberForLocalVariableAttribute + 1);
-			ILocalVariableTypeTableEntry[] localVariableTypeTableEntries = localVariableTypeAttribute.getLocalVariableTypeTable();
-			for (int i = 0; i < localVariableTypeTableLength; i++) {
-				if (i != 0) {
-					writeNewLine(buffer, lineSeparator, tabNumberForLocalVariableAttribute + 1);
-				}
-				ILocalVariableTypeTableEntry localVariableTypeTableEntry = localVariableTypeTableEntries[i];
-				int index= localVariableTypeTableEntry.getIndex();
-				int startPC = localVariableTypeTableEntry.getStartPC();
-				int length  = localVariableTypeTableEntry.getLength();
-				final char[] typeName = Signature.toCharArray(localVariableTypeTableEntry.getSignature());
-				CharOperation.replace(typeName, '/', '.');
-				buffer.append(Messages.bind(Messages.classfileformat_localvariabletableentry,
-					new String[] {
-						Integer.toString(startPC),
-						Integer.toString(startPC + length),
-						new String(localVariableTypeTableEntry.getName()),
-						Integer.toString(index),
-						new String(returnClassName(typeName, '.', mode))
-					}));
-			}
-		}
-		final int length = codeAttribute.getAttributesCount();
-		if (length != 0) {
-			IClassFileAttribute[] attributes = codeAttribute.getAttributes();
-			for (int i = 0; i < length; i++) {
-				IClassFileAttribute attribute = attributes[i];
-				if (CharOperation.equals(attribute.getAttributeName(), IAttributeNamesConstants.STACK_MAP_TABLE)) {
-					IStackMapTableAttribute stackMapTableAttribute = (IStackMapTableAttribute) attribute;
-					if (!isFirstAttribute) {
-						writeNewLine(buffer, lineSeparator, tabNumber + 2);
-					} else {
-						isFirstAttribute = false;
-						dumpTab(tabNumber + 1, buffer);
-					}
-					int numberOfEntries = stackMapTableAttribute.getNumberOfEntries();
-					buffer.append(Messages.bind(Messages.disassembler_stackmaptableattributeheader, Integer.toString(numberOfEntries)));
-					if (numberOfEntries != 0) {
-						disassemble(stackMapTableAttribute, buffer, lineSeparator, tabNumber, mode);
-					}
-				} else if (CharOperation.equals(attribute.getAttributeName(), IAttributeNamesConstants.STACK_MAP)) {
-					IStackMapAttribute stackMapAttribute = (IStackMapAttribute) attribute;
-					if (!isFirstAttribute) {
-						writeNewLine(buffer, lineSeparator, tabNumber + 2);
-					} else {
-						isFirstAttribute = false;
-						dumpTab(tabNumber + 1, buffer);
-					}
-					int numberOfEntries = stackMapAttribute.getNumberOfEntries();
-					buffer.append(Messages.bind(Messages.disassembler_stackmapattributeheader, Integer.toString(numberOfEntries)));
-					if (numberOfEntries != 0) {
-						disassemble(stackMapAttribute, buffer, lineSeparator, tabNumber, mode);
-					}
-				} else if (attribute != lineNumberAttribute
-						&& attribute != localVariableAttribute
-						&& attribute != localVariableTypeAttribute) {
-					if (!isFirstAttribute) {
-						writeNewLine(buffer, lineSeparator, tabNumber + 2);
-					} else {
-						isFirstAttribute = false;
-						dumpTab(tabNumber + 1, buffer);
-					}
-					buffer.append(Messages.bind(Messages.disassembler_genericattributeheader,
-						new String[] {
-							new String(attribute.getAttributeName()),
-							Long.toString(attribute.getAttributeLength())
-						}));
-				}
-			}
-		}
+//		writeNewLine(buffer, lineSeparator, tabNumber - 1);
+//		DefaultBytecodeVisitor visitor = new DefaultBytecodeVisitor(codeAttribute, buffer, lineSeparator, tabNumber, mode);
+//		try {
+//			codeAttribute.traverse(visitor);
+//		} catch(ClassFormatException e) {
+//			dumpTab(tabNumber + 2, buffer);
+//			buffer.append(Messages.classformat_classformatexception);
+//			writeNewLine(buffer, lineSeparator, tabNumber + 1);
+//		}
+//		final int exceptionTableLength = codeAttribute.getExceptionTableLength();
+//		boolean isFirstAttribute = true;
+//		if (exceptionTableLength != 0) {
+//			final int tabNumberForExceptionAttribute = tabNumber + 2;
+//			isFirstAttribute = false;
+//			dumpTab(tabNumberForExceptionAttribute, buffer);
+//			final IExceptionTableEntry[] exceptionTableEntries = codeAttribute.getExceptionTable();
+//			buffer.append(Messages.disassembler_exceptiontableheader);
+//			writeNewLine(buffer, lineSeparator, tabNumberForExceptionAttribute + 1);
+//			for (int i = 0; i < exceptionTableLength; i++) {
+//				if (i != 0) {
+//					writeNewLine(buffer, lineSeparator, tabNumberForExceptionAttribute + 1);
+//				}
+//				IExceptionTableEntry exceptionTableEntry = exceptionTableEntries[i];
+//				char[] catchType;
+//				if (exceptionTableEntry.getCatchTypeIndex() != 0) {
+//					catchType = exceptionTableEntry.getCatchType();
+//					CharOperation.replace(catchType, '/', '.');
+//					catchType = returnClassName(catchType, '.', mode);
+//				} else {
+//					catchType = ANY_EXCEPTION;
+//				}
+//				buffer.append(Messages.bind(Messages.classfileformat_exceptiontableentry,
+//					new String[] {
+//						Integer.toString(exceptionTableEntry.getStartPC()),
+//						Integer.toString(exceptionTableEntry.getEndPC()),
+//						Integer.toString(exceptionTableEntry.getHandlerPC()),
+//						new String(catchType)
+//					}));
+//			}
+//		}
+//		final ILineNumberAttribute lineNumberAttribute = codeAttribute.getLineNumberAttribute();
+//		final int lineAttributeLength = lineNumberAttribute == null ? 0 : lineNumberAttribute.getLineNumberTableLength();
+//		if (lineAttributeLength != 0) {
+//			int tabNumberForLineAttribute = tabNumber + 2;
+//			if (!isFirstAttribute) {
+//				writeNewLine(buffer, lineSeparator, tabNumberForLineAttribute);
+//			} else {
+//				dumpTab(tabNumberForLineAttribute, buffer);
+//				isFirstAttribute = false;
+//			}
+//			buffer.append(Messages.disassembler_linenumberattributeheader);
+//			writeNewLine(buffer, lineSeparator, tabNumberForLineAttribute + 1);
+//			int[][] lineattributesEntries = lineNumberAttribute.getLineNumberTable();
+//			for (int i = 0; i < lineAttributeLength; i++) {
+//				if (i != 0) {
+//					writeNewLine(buffer, lineSeparator, tabNumberForLineAttribute + 1);
+//				}
+//				buffer.append(Messages.bind(Messages.classfileformat_linenumbertableentry,
+//					new String[] {
+//						Integer.toString(lineattributesEntries[i][0]),
+//						Integer.toString(lineattributesEntries[i][1])
+//					}));
+//			}
+//		}
+//		final ILocalVariableAttribute localVariableAttribute = codeAttribute.getLocalVariableAttribute();
+//		final int localVariableAttributeLength = localVariableAttribute == null ? 0 : localVariableAttribute.getLocalVariableTableLength();
+//		if (localVariableAttributeLength != 0) {
+//			int tabNumberForLocalVariableAttribute = tabNumber + 2;
+//			if (!isFirstAttribute) {
+//				writeNewLine(buffer, lineSeparator, tabNumberForLocalVariableAttribute);
+//			} else {
+//				isFirstAttribute = false;
+//				dumpTab(tabNumberForLocalVariableAttribute, buffer);
+//			}
+//			buffer.append(Messages.disassembler_localvariabletableattributeheader);
+//			writeNewLine(buffer, lineSeparator, tabNumberForLocalVariableAttribute + 1);
+//			ILocalVariableTableEntry[] localVariableTableEntries = localVariableAttribute.getLocalVariableTable();
+//			for (int i = 0; i < localVariableAttributeLength; i++) {
+//				if (i != 0) {
+//					writeNewLine(buffer, lineSeparator, tabNumberForLocalVariableAttribute + 1);
+//				}
+//				ILocalVariableTableEntry localVariableTableEntry = localVariableTableEntries[i];
+//				int index= localVariableTableEntry.getIndex();
+//				int startPC = localVariableTableEntry.getStartPC();
+//				int length  = localVariableTableEntry.getLength();
+//				final char[] typeName = Signature.toCharArray(localVariableTableEntry.getDescriptor());
+//				CharOperation.replace(typeName, '/', '.');
+//				buffer.append(Messages.bind(Messages.classfileformat_localvariabletableentry,
+//					new String[] {
+//						Integer.toString(startPC),
+//						Integer.toString(startPC + length),
+//						new String(localVariableTableEntry.getName()),
+//						Integer.toString(index),
+//						new String(returnClassName(typeName, '.', mode))
+//					}));
+//			}
+//		}
+//		final ILocalVariableTypeTableAttribute localVariableTypeAttribute= (ILocalVariableTypeTableAttribute) getAttribute(IAttributeNamesConstants.LOCAL_VARIABLE_TYPE_TABLE, codeAttribute);
+//		final int localVariableTypeTableLength = localVariableTypeAttribute == null ? 0 : localVariableTypeAttribute.getLocalVariableTypeTableLength();
+//		if (localVariableTypeTableLength != 0) {
+//			int tabNumberForLocalVariableAttribute = tabNumber + 2;
+//			if (!isFirstAttribute) {
+//				writeNewLine(buffer, lineSeparator, tabNumberForLocalVariableAttribute);
+//			} else {
+//				isFirstAttribute = false;
+//				dumpTab(tabNumberForLocalVariableAttribute, buffer);
+//			}
+//			buffer.append(Messages.disassembler_localvariabletypetableattributeheader);
+//			writeNewLine(buffer, lineSeparator, tabNumberForLocalVariableAttribute + 1);
+//			ILocalVariableTypeTableEntry[] localVariableTypeTableEntries = localVariableTypeAttribute.getLocalVariableTypeTable();
+//			for (int i = 0; i < localVariableTypeTableLength; i++) {
+//				if (i != 0) {
+//					writeNewLine(buffer, lineSeparator, tabNumberForLocalVariableAttribute + 1);
+//				}
+//				ILocalVariableTypeTableEntry localVariableTypeTableEntry = localVariableTypeTableEntries[i];
+//				int index= localVariableTypeTableEntry.getIndex();
+//				int startPC = localVariableTypeTableEntry.getStartPC();
+//				int length  = localVariableTypeTableEntry.getLength();
+//				final char[] typeName = Signature.toCharArray(localVariableTypeTableEntry.getSignature());
+//				CharOperation.replace(typeName, '/', '.');
+//				buffer.append(Messages.bind(Messages.classfileformat_localvariabletableentry,
+//					new String[] {
+//						Integer.toString(startPC),
+//						Integer.toString(startPC + length),
+//						new String(localVariableTypeTableEntry.getName()),
+//						Integer.toString(index),
+//						new String(returnClassName(typeName, '.', mode))
+//					}));
+//			}
+//		}
+//		final int length = codeAttribute.getAttributesCount();
+//		if (length != 0) {
+//			IClassFileAttribute[] attributes = codeAttribute.getAttributes();
+//			for (int i = 0; i < length; i++) {
+//				IClassFileAttribute attribute = attributes[i];
+//				if (CharOperation.equals(attribute.getAttributeName(), IAttributeNamesConstants.STACK_MAP_TABLE)) {
+//					IStackMapTableAttribute stackMapTableAttribute = (IStackMapTableAttribute) attribute;
+//					if (!isFirstAttribute) {
+//						writeNewLine(buffer, lineSeparator, tabNumber + 2);
+//					} else {
+//						isFirstAttribute = false;
+//						dumpTab(tabNumber + 1, buffer);
+//					}
+//					int numberOfEntries = stackMapTableAttribute.getNumberOfEntries();
+//					buffer.append(Messages.bind(Messages.disassembler_stackmaptableattributeheader, Integer.toString(numberOfEntries)));
+//					if (numberOfEntries != 0) {
+//						disassemble(stackMapTableAttribute, buffer, lineSeparator, tabNumber, mode);
+//					}
+//				} else if (CharOperation.equals(attribute.getAttributeName(), IAttributeNamesConstants.STACK_MAP)) {
+//					IStackMapAttribute stackMapAttribute = (IStackMapAttribute) attribute;
+//					if (!isFirstAttribute) {
+//						writeNewLine(buffer, lineSeparator, tabNumber + 2);
+//					} else {
+//						isFirstAttribute = false;
+//						dumpTab(tabNumber + 1, buffer);
+//					}
+//					int numberOfEntries = stackMapAttribute.getNumberOfEntries();
+//					buffer.append(Messages.bind(Messages.disassembler_stackmapattributeheader, Integer.toString(numberOfEntries)));
+//					if (numberOfEntries != 0) {
+//						disassemble(stackMapAttribute, buffer, lineSeparator, tabNumber, mode);
+//					}
+//				} else if (attribute != lineNumberAttribute
+//						&& attribute != localVariableAttribute
+//						&& attribute != localVariableTypeAttribute) {
+//					if (!isFirstAttribute) {
+//						writeNewLine(buffer, lineSeparator, tabNumber + 2);
+//					} else {
+//						isFirstAttribute = false;
+//						dumpTab(tabNumber + 1, buffer);
+//					}
+//					buffer.append(Messages.bind(Messages.disassembler_genericattributeheader,
+//						new String[] {
+//							new String(attribute.getAttributeName()),
+//							Long.toString(attribute.getAttributeLength())
+//						}));
+//				}
+//			}
+//		}
 	}
 
-	private void disassemble(IStackMapTableAttribute attribute, StringBuffer buffer, String lineSeparator, int tabNumber, int mode) {
-		writeNewLine(buffer, lineSeparator, tabNumber + 3);
-		int numberOfEntries = attribute.getNumberOfEntries();
-		final IStackMapFrame[] stackMapFrames = attribute.getStackMapFrame();
-		int absolutePC = -1;
-		for (int j = 0; j < numberOfEntries; j++) {
-			if (j > 0) {
-				writeNewLine(buffer, lineSeparator, tabNumber + 3);
-			}
-			final IStackMapFrame frame = stackMapFrames[j];
-			// disassemble each frame
-			int type = frame.getFrameType();
-			int offsetDelta = frame.getOffsetDelta();
-			if (absolutePC == -1) {
-				absolutePC = offsetDelta;
-			} else {
-				absolutePC += (offsetDelta + 1);
-			}
-			switch(type) {
-				case 247 : // SAME_LOCALS_1_STACK_ITEM_EXTENDED
-					buffer.append(
-						Messages.bind(
-							Messages.disassembler_frame_same_locals_1_stack_item_extended,
-							Integer.toString(absolutePC),
-							disassemble(frame.getStackItems(), mode)));
-					break;
-				case 248 :
-				case 249 :
-				case 250:
-					// CHOP
-					buffer.append(
-							Messages.bind(
-								Messages.disassembler_frame_chop,
-								Integer.toString(absolutePC),
-								Integer.toString(251 - type)));
-					break;
-				case 251 :
-					// SAME_FRAME_EXTENDED
-					buffer.append(
-							Messages.bind(
-								Messages.disassembler_frame_same_frame_extended,
-								Integer.toString(absolutePC)));
-					break;
-				case 252 :
-				case 253 :
-				case 254 :
-					// APPEND
-					buffer.append(
-							Messages.bind(
-								Messages.disassembler_frame_append,
-								Integer.toString(absolutePC),
-								disassemble(frame.getLocals(), mode)));
-					break;
-				case 255 :
-					// FULL_FRAME
-					buffer.append(
-							Messages.bind(
-								Messages.disassembler_frame_full_frame,
-								new String[] {
-									Integer.toString(absolutePC),
-									Integer.toString(frame.getNumberOfLocals()),
-									disassemble(frame.getLocals(), mode),
-									Integer.toString(frame.getNumberOfStackItems()),
-									disassemble(frame.getStackItems(), mode),
-									dumpNewLineWithTabs(lineSeparator, tabNumber + 5)
-								}));
-					break;
-				default:
-					if (type <= 63) {
-						// SAME_FRAME
-						offsetDelta = type;
-						buffer.append(
-								Messages.bind(
-									Messages.disassembler_frame_same_frame,
-									Integer.toString(absolutePC)));
-					} else if (type <= 127) {
-						// SAME_LOCALS_1_STACK_ITEM
-						offsetDelta = type - 64;
-						buffer.append(
-								Messages.bind(
-									Messages.disassembler_frame_same_locals_1_stack_item,
-									Integer.toString(absolutePC),
-									disassemble(frame.getStackItems(), mode)));
-					}
-			}
-		}
-	}
+//	private void disassemble(IStackMapTableAttribute attribute, StringBuffer buffer, String lineSeparator, int tabNumber, int mode) {
+//		writeNewLine(buffer, lineSeparator, tabNumber + 3);
+//		int numberOfEntries = attribute.getNumberOfEntries();
+//		final IStackMapFrame[] stackMapFrames = attribute.getStackMapFrame();
+//		int absolutePC = -1;
+//		for (int j = 0; j < numberOfEntries; j++) {
+//			if (j > 0) {
+//				writeNewLine(buffer, lineSeparator, tabNumber + 3);
+//			}
+//			final IStackMapFrame frame = stackMapFrames[j];
+//			// disassemble each frame
+//			int type = frame.getFrameType();
+//			int offsetDelta = frame.getOffsetDelta();
+//			if (absolutePC == -1) {
+//				absolutePC = offsetDelta;
+//			} else {
+//				absolutePC += (offsetDelta + 1);
+//			}
+//			switch(type) {
+//				case 247 : // SAME_LOCALS_1_STACK_ITEM_EXTENDED
+//					buffer.append(
+//						Messages.bind(
+//							Messages.disassembler_frame_same_locals_1_stack_item_extended,
+//							Integer.toString(absolutePC),
+//							disassemble(frame.getStackItems(), mode)));
+//					break;
+//				case 248 :
+//				case 249 :
+//				case 250:
+//					// CHOP
+//					buffer.append(
+//							Messages.bind(
+//								Messages.disassembler_frame_chop,
+//								Integer.toString(absolutePC),
+//								Integer.toString(251 - type)));
+//					break;
+//				case 251 :
+//					// SAME_FRAME_EXTENDED
+//					buffer.append(
+//							Messages.bind(
+//								Messages.disassembler_frame_same_frame_extended,
+//								Integer.toString(absolutePC)));
+//					break;
+//				case 252 :
+//				case 253 :
+//				case 254 :
+//					// APPEND
+//					buffer.append(
+//							Messages.bind(
+//								Messages.disassembler_frame_append,
+//								Integer.toString(absolutePC),
+//								disassemble(frame.getLocals(), mode)));
+//					break;
+//				case 255 :
+//					// FULL_FRAME
+//					buffer.append(
+//							Messages.bind(
+//								Messages.disassembler_frame_full_frame,
+//								new String[] {
+//									Integer.toString(absolutePC),
+//									Integer.toString(frame.getNumberOfLocals()),
+//									disassemble(frame.getLocals(), mode),
+//									Integer.toString(frame.getNumberOfStackItems()),
+//									disassemble(frame.getStackItems(), mode),
+//									dumpNewLineWithTabs(lineSeparator, tabNumber + 5)
+//								}));
+//					break;
+//				default:
+//					if (type <= 63) {
+//						// SAME_FRAME
+//						offsetDelta = type;
+//						buffer.append(
+//								Messages.bind(
+//									Messages.disassembler_frame_same_frame,
+//									Integer.toString(absolutePC)));
+//					} else if (type <= 127) {
+//						// SAME_LOCALS_1_STACK_ITEM
+//						offsetDelta = type - 64;
+//						buffer.append(
+//								Messages.bind(
+//									Messages.disassembler_frame_same_locals_1_stack_item,
+//									Integer.toString(absolutePC),
+//									disassemble(frame.getStackItems(), mode)));
+//					}
+//			}
+//		}
+//	}
 
-	private void disassemble(IStackMapAttribute attribute, StringBuffer buffer, String lineSeparator, int tabNumber, int mode) {
-		writeNewLine(buffer, lineSeparator, tabNumber + 3);
-		int numberOfEntries = attribute.getNumberOfEntries();
-		final IStackMapFrame[] stackMapFrames = attribute.getStackMapFrame();
-		int absolutePC = -1;
-		for (int j = 0; j < numberOfEntries; j++) {
-			if (j > 0) {
-				writeNewLine(buffer, lineSeparator, tabNumber + 3);
-			}
-			final IStackMapFrame frame = stackMapFrames[j];
-			// disassemble each frame
-			int offsetDelta = frame.getOffsetDelta();
-			if (absolutePC == -1) {
-				absolutePC = offsetDelta;
-			} else {
-				absolutePC += (offsetDelta + 1);
-			}
-			// FULL_FRAME
-			buffer.append(
-					Messages.bind(
-						Messages.disassembler_frame_full_frame,
-						new String[] {
-							Integer.toString(absolutePC),
-							Integer.toString(frame.getNumberOfLocals()),
-							disassemble(frame.getLocals(), mode),
-							Integer.toString(frame.getNumberOfStackItems()),
-							disassemble(frame.getStackItems(), mode),
-							dumpNewLineWithTabs(lineSeparator, tabNumber + 5)
-						}));
-		}
-	}
+//	private void disassemble(IStackMapAttribute attribute, StringBuffer buffer, String lineSeparator, int tabNumber, int mode) {
+//		writeNewLine(buffer, lineSeparator, tabNumber + 3);
+//		int numberOfEntries = attribute.getNumberOfEntries();
+//		final IStackMapFrame[] stackMapFrames = attribute.getStackMapFrame();
+//		int absolutePC = -1;
+//		for (int j = 0; j < numberOfEntries; j++) {
+//			if (j > 0) {
+//				writeNewLine(buffer, lineSeparator, tabNumber + 3);
+//			}
+//			final IStackMapFrame frame = stackMapFrames[j];
+//			// disassemble each frame
+//			int offsetDelta = frame.getOffsetDelta();
+//			if (absolutePC == -1) {
+//				absolutePC = offsetDelta;
+//			} else {
+//				absolutePC += (offsetDelta + 1);
+//			}
+//			// FULL_FRAME
+//			buffer.append(
+//					Messages.bind(
+//						Messages.disassembler_frame_full_frame,
+//						new String[] {
+//							Integer.toString(absolutePC),
+//							Integer.toString(frame.getNumberOfLocals()),
+//							disassemble(frame.getLocals(), mode),
+//							Integer.toString(frame.getNumberOfStackItems()),
+//							disassemble(frame.getStackItems(), mode),
+//							dumpNewLineWithTabs(lineSeparator, tabNumber + 5)
+//						}));
+//		}
+//	}
 
 	private void disassemble(IConstantPool constantPool, StringBuffer buffer, String lineSeparator, int tabNumber) {
 		writeNewLine(buffer, lineSeparator, tabNumber);
@@ -1744,55 +1734,55 @@ public class Disassembler extends ClassFileBytesDisassembler {
 		}
 	}
 
-	private String disassemble(IVerificationTypeInfo[] infos, int mode) {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append('{');
-		for (int i = 0, max = infos.length; i < max; i++) {
-			if(i != 0) {
-				buffer
-						.append(Messages.disassembler_comma)
-						.append(Messages.disassembler_space);
-			}
-			switch(infos[i].getTag()) {
-				case IVerificationTypeInfo.ITEM_DOUBLE :
-					buffer.append("double"); //$NON-NLS-1$
-					break;
-				case IVerificationTypeInfo.ITEM_FLOAT :
-					buffer.append("float"); //$NON-NLS-1$
-					break;
-				case IVerificationTypeInfo.ITEM_INTEGER :
-					buffer.append("int"); //$NON-NLS-1$
-					break;
-				case IVerificationTypeInfo.ITEM_LONG :
-					buffer.append("long"); //$NON-NLS-1$
-					break;
-				case IVerificationTypeInfo.ITEM_NULL :
-					buffer.append("null"); //$NON-NLS-1$
-					break;
-				case IVerificationTypeInfo.ITEM_OBJECT :
-					char[] classTypeName = infos[i].getClassTypeName();
-					CharOperation.replace(classTypeName, '/', '.');
-					if (classTypeName.length > 0 && classTypeName[0] == '[') { // length check for resilience
-						classTypeName = Signature.toCharArray(classTypeName);
-					}
-					buffer.append(returnClassName(classTypeName, '.', mode));
-					break;
-				case IVerificationTypeInfo.ITEM_TOP :
-					buffer.append("_"); //$NON-NLS-1$
-					break;
-				case IVerificationTypeInfo.ITEM_UNINITIALIZED :
-					buffer.append("uninitialized("); //$NON-NLS-1$
-					buffer.append(infos[i].getOffset());
-					buffer.append(')');
-					break;
-				case IVerificationTypeInfo.ITEM_UNINITIALIZED_THIS :
-					buffer.append("uninitialized_this"); //$NON-NLS-1$
-			}
-		}
-		buffer.append('}');
-		return String.valueOf(buffer);
-	}
-
+//	private String disassemble(IVerificationTypeInfo[] infos, int mode) {
+//		StringBuffer buffer = new StringBuffer();
+//		buffer.append('{');
+//		for (int i = 0, max = infos.length; i < max; i++) {
+//			if(i != 0) {
+//				buffer
+//						.append(Messages.disassembler_comma)
+//						.append(Messages.disassembler_space);
+//			}
+//			switch(infos[i].getTag()) {
+//				case IVerificationTypeInfo.ITEM_DOUBLE :
+//					buffer.append("double"); //$NON-NLS-1$
+//					break;
+//				case IVerificationTypeInfo.ITEM_FLOAT :
+//					buffer.append("float"); //$NON-NLS-1$
+//					break;
+//				case IVerificationTypeInfo.ITEM_INTEGER :
+//					buffer.append("int"); //$NON-NLS-1$
+//					break;
+//				case IVerificationTypeInfo.ITEM_LONG :
+//					buffer.append("long"); //$NON-NLS-1$
+//					break;
+//				case IVerificationTypeInfo.ITEM_NULL :
+//					buffer.append("null"); //$NON-NLS-1$
+//					break;
+//				case IVerificationTypeInfo.ITEM_OBJECT :
+//					char[] classTypeName = infos[i].getClassTypeName();
+//					CharOperation.replace(classTypeName, '/', '.');
+//					if (classTypeName.length > 0 && classTypeName[0] == '[') { // length check for resilience
+//						classTypeName = Signature.toCharArray(classTypeName);
+//					}
+//					buffer.append(returnClassName(classTypeName, '.', mode));
+//					break;
+//				case IVerificationTypeInfo.ITEM_TOP :
+//					buffer.append("_"); //$NON-NLS-1$
+//					break;
+//				case IVerificationTypeInfo.ITEM_UNINITIALIZED :
+//					buffer.append("uninitialized("); //$NON-NLS-1$
+//					buffer.append(infos[i].getOffset());
+//					buffer.append(')');
+//					break;
+//				case IVerificationTypeInfo.ITEM_UNINITIALIZED_THIS :
+//					buffer.append("uninitialized_this"); //$NON-NLS-1$
+//			}
+//		}
+//		buffer.append('}');
+//		return String.valueOf(buffer);
+//	}
+//
 	private void disassembleAsModifier(IAnnotation annotation, StringBuffer buffer, String lineSeparator, int tabNumber, int mode) {
 		final char[] typeName = CharOperation.replaceOnCopy(annotation.getTypeName(), '/', '.');
 		buffer.append('@').append(returnClassName(Signature.toCharArray(typeName), '.', mode));
@@ -2002,11 +1992,11 @@ public class Disassembler extends ClassFileBytesDisassembler {
 		}
 	}
 
-	private final String dumpNewLineWithTabs(String lineSeparator, int tabNumber) {
-		StringBuffer buffer = new StringBuffer();
-		writeNewLine(buffer, lineSeparator, tabNumber);
-		return String.valueOf(buffer);
-	}
+//	private final String dumpNewLineWithTabs(String lineSeparator, int tabNumber) {
+//		StringBuffer buffer = new StringBuffer();
+//		writeNewLine(buffer, lineSeparator, tabNumber);
+//		return String.valueOf(buffer);
+//	}
 
 	/**
 	 * @see org.eclipse.wst.jsdt.core.util.ClassFileBytesDisassembler#getDescription()
@@ -2024,78 +2014,78 @@ public class Disassembler extends ClassFileBytesDisassembler {
 		}
 		return null;
 	}
-	private IClassFileAttribute getAttribute(final char[] attributeName, final ICodeAttribute codeAttribute) {
-		IClassFileAttribute[] attributes = codeAttribute.getAttributes();
-		for (int i = 0, max = attributes.length; i < max; i++) {
-			if (CharOperation.equals(attributes[i].getAttributeName(), attributeName)) {
-				return attributes[i];
-			}
-		}
-		return null;
-	}
+//	private IClassFileAttribute getAttribute(final char[] attributeName, final ICodeAttribute codeAttribute) {
+//		IClassFileAttribute[] attributes = codeAttribute.getAttributes();
+//		for (int i = 0, max = attributes.length; i < max; i++) {
+//			if (CharOperation.equals(attributes[i].getAttributeName(), attributeName)) {
+//				return attributes[i];
+//			}
+//		}
+//		return null;
+//	}
 
 	private char[][] getParameterNames(char[] methodDescriptor, ICodeAttribute codeAttribute, int accessFlags) {
 		int paramCount = Signature.getParameterCount(methodDescriptor);
 		char[][] parameterNames = new char[paramCount][];
-		// check if the code attribute has debug info for this method
-		if (codeAttribute != null) {
-			ILocalVariableAttribute localVariableAttribute = codeAttribute.getLocalVariableAttribute();
-			if (localVariableAttribute != null) {
-				ILocalVariableTableEntry[] entries = localVariableAttribute.getLocalVariableTable();
-				final int startingIndex = (accessFlags & IModifierConstants.ACC_STATIC) != 0 ? 0 : 1;
-				for (int i = 0; i < paramCount; i++) {
-					ILocalVariableTableEntry searchedEntry = getEntryFor(getLocalIndex(startingIndex, i, methodDescriptor), entries);
-					if (searchedEntry != null) {
-						parameterNames[i] = searchedEntry.getName();
-					} else {
-						parameterNames[i] = CharOperation.concat(Messages.disassembler_parametername.toCharArray(), Integer.toString(i).toCharArray());
-					}
-				}
-			} else {
-				for (int i = 0; i < paramCount; i++) {
-					parameterNames[i] = CharOperation.concat(Messages.disassembler_parametername.toCharArray(), Integer.toString(i).toCharArray());
-				}
-			}
-		} else {
-			for (int i = 0; i < paramCount; i++) {
-				parameterNames[i] = CharOperation.concat(Messages.disassembler_parametername.toCharArray(), Integer.toString(i).toCharArray());
-			}
-		}
+//		// check if the code attribute has debug info for this method
+//		if (codeAttribute != null) {
+//			ILocalVariableAttribute localVariableAttribute = codeAttribute.getLocalVariableAttribute();
+//			if (localVariableAttribute != null) {
+//				ILocalVariableTableEntry[] entries = localVariableAttribute.getLocalVariableTable();
+//				final int startingIndex = (accessFlags & IModifierConstants.ACC_STATIC) != 0 ? 0 : 1;
+//				for (int i = 0; i < paramCount; i++) {
+//					ILocalVariableTableEntry searchedEntry = getEntryFor(getLocalIndex(startingIndex, i, methodDescriptor), entries);
+//					if (searchedEntry != null) {
+//						parameterNames[i] = searchedEntry.getName();
+//					} else {
+//						parameterNames[i] = CharOperation.concat(Messages.disassembler_parametername.toCharArray(), Integer.toString(i).toCharArray());
+//					}
+//				}
+//			} else {
+//				for (int i = 0; i < paramCount; i++) {
+//					parameterNames[i] = CharOperation.concat(Messages.disassembler_parametername.toCharArray(), Integer.toString(i).toCharArray());
+//				}
+//			}
+//		} else {
+//			for (int i = 0; i < paramCount; i++) {
+//				parameterNames[i] = CharOperation.concat(Messages.disassembler_parametername.toCharArray(), Integer.toString(i).toCharArray());
+//			}
+//		}
 		return parameterNames;
 	}
 
-	private int getLocalIndex(final int startingSlot, final int index, final char[] methodDescriptor) {
-		int slot = startingSlot;
-		final char[][] types = Signature.getParameterTypes(methodDescriptor);
-		for (int i = 0; i < index; i++) {
-			final char[] type = types[i];
-			switch(type.length) {
-				case 1 :
-					switch(type[0]) {
-						case 'D' :
-						case 'J' :
-							slot += 2;
-							break;
-						default :
-							slot++;
-					}
-					break;
-				default :
-					slot++;
-			}
-		}
-		return slot;
-	}
+//	private int getLocalIndex(final int startingSlot, final int index, final char[] methodDescriptor) {
+//		int slot = startingSlot;
+//		final char[][] types = Signature.getParameterTypes(methodDescriptor);
+//		for (int i = 0; i < index; i++) {
+//			final char[] type = types[i];
+//			switch(type.length) {
+//				case 1 :
+//					switch(type[0]) {
+//						case 'D' :
+//						case 'J' :
+//							slot += 2;
+//							break;
+//						default :
+//							slot++;
+//					}
+//					break;
+//				default :
+//					slot++;
+//			}
+//		}
+//		return slot;
+//	}
 
-	private ILocalVariableTableEntry getEntryFor(final int index, final ILocalVariableTableEntry[] entries) {
-		for (int i = 0, max = entries.length; i < max; i++) {
-			ILocalVariableTableEntry entry = entries[i];
-			if (index == entry.getIndex()) {
-				return entry;
-			}
-		}
-		return null;
-	}
+//	private ILocalVariableTableEntry getEntryFor(final int index, final ILocalVariableTableEntry[] entries) {
+//		for (int i = 0, max = entries.length; i < max; i++) {
+//			ILocalVariableTableEntry entry = entries[i];
+//			if (index == entry.getIndex()) {
+//				return entry;
+//			}
+//		}
+//		return null;
+//	}
 
 	private char[] getSignatureForField(char[] fieldDescriptor) {
 		char[] newFieldDescriptor = CharOperation.replaceOnCopy(fieldDescriptor, '/', '.');

@@ -48,8 +48,6 @@ public final class JarPackagerMessages extends NLS {
 
 	public static String JarFileExportOperation_errorSavingManifest;
 
-	public static String JarFileExportOperation_errorSavingModifiedResources;
-
 	public static String JarFileExportOperation_exportedWithCompileErrors;
 
 	public static String JarFileExportOperation_exportedWithCompileWarnings;
@@ -93,10 +91,6 @@ public final class JarPackagerMessages extends NLS {
 	public static String JarFileExportOperation_resourceNotFound;
 
 	public static String JarFileExportOperation_savingFiles;
-
-	public static String JarFileExportOperation_savingModifiedResources;
-
-	public static String JarFileExportOperation_underlyingResourceNotFound;
 
 	public static String JarManifestWizardPage_description;
 
@@ -319,38 +313,6 @@ public final class JarPackagerMessages extends NLS {
 	public static String JarWriter_error_couldNotGetXmlBuilder;
 
 	public static String JarWriter_error_couldNotTransformToXML;
-
-	public static String JarWriter_output_compressed;
-
-	public static String JarWriter_output_descriptionFile;
-
-	public static String JarWriter_output_exportBin;
-
-	public static String JarWriter_output_exportJava;
-
-	public static String JarWriter_output_exportOutputFolders;
-
-	public static String JarWriter_output_generateManifest;
-
-	public static String JarWriter_output_jarFileName;
-
-	public static String JarWriter_output_jarSealed;
-
-	public static String JarWriter_output_lineSeparator;
-
-	public static String JarWriter_output_mainClass;
-
-	public static String JarWriter_output_manifestName;
-
-	public static String JarWriter_output_overwrite;
-
-	public static String JarWriter_output_reuseManifest;
-
-	public static String JarWriter_output_saveDescription;
-
-	public static String JarWriter_output_saveManifest;
-
-	public static String JarWriter_output_title;
 
 	public static String JarWriter_writeProblem;
 

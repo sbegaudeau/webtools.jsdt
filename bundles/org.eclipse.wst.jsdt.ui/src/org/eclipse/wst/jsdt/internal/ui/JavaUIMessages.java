@@ -42,13 +42,8 @@ public final class JavaUIMessages extends NLS {
 	public static String PackageSelectionDialog_progress_findEmpty;
 	public static String PackageSelectionDialog_progress_search;
 	
-	public static String TypeSelectionDialog_errorMessage;
 	public static String TypeSelectionDialog_dialogMessage;
 	public static String TypeSelectionDialog_errorTitle;
-	public static String TypeSelectionDialog_lowerLabel;
-	public static String TypeSelectionDialog_upperLabel;
-	public static String TypeSelectionDialog_notypes_title;
-	public static String TypeSelectionDialog_notypes_message;
 	public static String TypeSelectionDialog_error3Message;
 	public static String TypeSelectionDialog_error3Title;
 	public static String TypeSelectionDialog_progress_consistency;
@@ -74,15 +69,11 @@ public final class JavaUIMessages extends NLS {
 	public static String OverrideMethodDialog_link_message;
 	
 	public static String GenerateHashCodeEqualsDialog_dialog_title;
-	public static String GenerateHashCodeEqualsDialog_dialog_description;
 	public static String GenerateHashCodeEqualsDialog_selectioninfo_more;
 	public static String GenerateHashCodeEqualsDialog_no_entries;
 	public static String GenerateHashCodeEqualsDialog_select_at_least_one_field;
 	public static String GenerateHashCodeEqualsDialog_select_fields_to_include;
 		
-
-		
-	public static String JavaImageLabelprovider_assert_wrongImage;
 	
 	public static String JavaElementLabels_default_package;
 	public static String JavaElementLabels_anonym_type;
@@ -130,9 +121,6 @@ public final class JavaUIMessages extends NLS {
 	public static String JavaAnnotationHover_multipleMarkersAtThisLine;
 	public static String JavaEditor_codeassist_noCompletions;
 	
-	public static String HTMLTextPresenter_ellipsis;
-	public static String HTML2TextReader_listItemPrefix;
-	
 	public static String OptionalMessageDialog_dontShowAgain;
 	public static String ElementValidator_cannotPerform;
 	public static String SelectionListenerWithASTManager_job_title;
@@ -177,7 +165,6 @@ public final class JavaUIMessages extends NLS {
 	
 	public static String InitializeAfterLoadJob_starter_job_name;
 	
-	public static String SortMembersMessageDialog_configure_preferences_tool_tip;
 	
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, JavaUIMessages.class);

@@ -89,7 +89,6 @@ final class NLSUIMessages extends NLS {
 	public static String ExternalizeWizardPage_value;
 	public static String ExternalizeWizardPage_Edit_key_and_value;
 	public static String ExternalizeWizardPage_accessorclass_label;
-	public static String ExternalizeWizardPage_propertiesfile_label;
 	public static String ExternalizeWizardPage_configure_button;
 	public static String ExternalizeWizardPage_warning_conflicting;
 	public static String ExternalizeWizardPage_warning_keymissing;

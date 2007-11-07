@@ -18,7 +18,6 @@ public final class FixMessages extends NLS {
 	private FixMessages() {
 	}
 
-	public static String CleanUpPostSaveListener_exception_error;
 	public static String CleanUpPostSaveListener_name;
 	public static String CleanUpPostSaveListener_SaveAction_ChangeName;
 	public static String CleanUpPostSaveListener_unknown_profile_error_message;
@@ -40,11 +39,7 @@ public final class FixMessages extends NLS {
 	public static String ExpressionsFix_remove_parenthesis_change_name;
 	public static String ImportsFix_OrganizeImports_Description;
 	public static String Java50Fix_add_annotations_change_name;
-	public static String PotentialProgrammingProblemsFix_add_id_change_name;
 	
-	public static String PotentialProgrammingProblemsFix_calculatingUIDFailed_binding;
-	public static String PotentialProgrammingProblemsFix_calculatingUIDFailed_exception;
-	public static String PotentialProgrammingProblemsFix_calculatingUIDFailed_unknown;
 	public static String SortMembersFix_Change_description;
 	public static String SortMembersFix_Fix_description;
 	public static String UnusedCodeFix_change_name;
@@ -68,19 +63,13 @@ public final class FixMessages extends NLS {
 	public static String Java50Fix_AddDeprecated_description;
 	public static String Java50Fix_AddOverride_description;
 	public static String Java50Fix_ConvertToEnhancedForLoop_description;
-	public static String Java50Fix_ParametrizeTypeReference_description;
 	public static String Java50Fix_AddTypeParameters_description;
-	public static String Java50Fix_SerialVersion_default_description;
-	public static String Java50Fix_SerialVersion_hash_description;
-	public static String Java50Fix_InitializeSerialVersionId_subtask_description;
-	public static String Java50Fix_SerialVersion_CalculateHierarchy_description;
 	
 	public static String StringFix_AddRemoveNonNls_description;
 	public static String StringFix_AddNonNls_description;
 	public static String StringFix_RemoveNonNls_description;
 	
 	public static String CodeStyleFix_ChangeAccessToStatic_description;
-	public static String CodeStyleFix_AddThisQualifier_description;
 	public static String CodeStyleFix_QualifyWithThis_description;
 	public static String CodeStyleFix_ChangeAccessToStaticUsingInstanceType_description;
 	public static String CodeStyleFix_ChangeStaticAccess_description;

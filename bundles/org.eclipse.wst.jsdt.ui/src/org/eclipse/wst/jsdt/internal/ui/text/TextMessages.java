@@ -23,10 +23,6 @@ final class TextMessages extends NLS {
 		// Do not instantiate
 	}
 
-	public static String AbstractInformationControl_viewMenu_toolTipText;
-	public static String AbstractInformationControl_viewMenu_move_label;
-	public static String AbstractInformationControl_viewMenu_resize_label;
-	public static String AbstractInformationControl_viewMenu_remember_label;
 	public static String JavaOutlineInformationControl_SortByDefiningTypeAction_label;
 	public static String JavaOutlineInformationControl_SortByDefiningTypeAction_tooltip;
 	public static String JavaOutlineInformationControl_SortByDefiningTypeAction_description;

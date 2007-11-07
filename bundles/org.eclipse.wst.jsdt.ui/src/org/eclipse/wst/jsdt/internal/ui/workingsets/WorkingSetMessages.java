@@ -39,13 +39,10 @@ public final class WorkingSetMessages extends NLS {
 	public static String JavaWorkingSetPage_warning_workingSetExists;
 	public static String JavaWorkingSetPage_warning_resourceMustBeChecked;
 	public static String JavaWorkingSetPage_warning_nameWhitespace;
-	public static String JavaWorkingSetPage_projectClosedDialog_message;
-	public static String JavaWorkingSetPage_projectClosedDialog_title;
 	public static String JavaWorkingSetPage_selectAll_label;
 	public static String JavaWorkingSetPage_selectAll_toolTip;
 	public static String JavaWorkingSetPage_deselectAll_label;
 	public static String JavaWorkingSetPage_deselectAll_toolTip;
-	public static String OpenCloseWorkingSetAction_error_details;
 	
 	public static String SelectWorkingSetAction_text;
 	public static String SelectWorkingSetAction_toolTip;
@@ -69,7 +66,6 @@ public final class WorkingSetMessages extends NLS {
 	public static String WorkingSetConfigurationBlock_SelectWorkingSet_button;
 	public static String WorkingSetConfigurationBlock_WorkingSetText_name;
 	
-	public static String WorkingSetModel_histroy_name;
 	public static String WorkingSetModel_others_name;
 	
 	public static String WorkingSetConfigurationDialog_title;
@@ -82,12 +78,6 @@ public final class WorkingSetMessages extends NLS {
 	public static String WorkingSetConfigurationDialog_selectAll_label;
 	public static String WorkingSetConfigurationDialog_deselectAll_label;
 	
-	public static String OpenCloseWorkingSetAction_close_label;
-	public static String OpenCloseWorkingSetAction_close_error_title;
-	public static String OpenCloseWorkingSetAction_close_error_message;
-	public static String OpenCloseWorkingSetAction_open_label;
-	public static String OpenCloseWorkingSetAction_open_error_title;
-	public static String OpenCloseWorkingSetAction_open_error_message;
 	public static String OpenPropertiesWorkingSetAction_label;
 	public static String RemoveWorkingSetElementAction_label;
 

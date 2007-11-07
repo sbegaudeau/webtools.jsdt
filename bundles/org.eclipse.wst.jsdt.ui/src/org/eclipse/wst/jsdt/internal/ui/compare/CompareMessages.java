@@ -43,7 +43,6 @@ public final class CompareMessages extends NLS {
 	public static String AddFromHistory_title;
 	public static String AddFromHistory_internalErrorMessage;
 	public static String AddFromHistory_invalidSelectionMessage;
-	public static String AddFromHistory_noHistoryMessage;
 	public static String Editor_Buffer;
 	public static String Workspace_File;
 	public static String LocalHistoryActionGroup_menu_local_history;

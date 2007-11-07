@@ -29,8 +29,6 @@ public final class CorextMessages extends NLS {
 	public static String JavaDocLocations_error_readXML;
 	public static String JavaDocLocations_migratejob_name;
 	
-	public static String AllTypesCache_searching;
-	public static String AllTypesCache_checking_type_cache;
 	
 	public static String History_error_serialize;
 	public static String History_error_read;

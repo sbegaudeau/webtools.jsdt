@@ -19,15 +19,10 @@ public class CleanUpMessages extends NLS {
 	public static String CleanUpConfigurationBlock_SelectedCleanUps_label;
 	public static String CleanUpConfigurationBlock_ShowCleanUpWizard_checkBoxLabel;
 
-	public static String CleanUpModifyDialog_SelectOne_Error;
 
 	public static String CleanUpModifyDialog_TabPageName_CodeFormating;
 	public static String CleanUpModifyDialog_TabPageName_CodeStyle;
-	public static String CleanUpModifyDialog_TabPageName_MemberAccesses;
-	public static String CleanUpModifyDialog_TabPageName_MissingCode;
-	public static String CleanUpModifyDialog_TabPageName_UnnecessaryCode;
 
-	public static String CleanUpModifyDialog_XofYSelected_Label;
 	
 	public static String CleanUpProfileManager_ProfileName_EclipseBuildIn;
 
@@ -38,9 +33,7 @@ public class CleanUpMessages extends NLS {
 //	public static String CodeFormatingTabPage_OrganizeImports_CheckBoxLable;
 //	public static String CodeFormatingTabPage_OrganizeImportsSettings_Description;
 	public static String CodeFormatingTabPage_SortMembers_GroupName;
-	public static String CodeFormatingTabPage_SortMembers_CheckBoxLabel;
 	public static String CodeFormatingTabPage_SortMembers_Description;
-	public static String CodeFormatingTabPage_SortMembersExclusive_radio0;
 //	public static String CodeFormatingTabPage_SortMembersFields_CheckBoxLabel;
 
 	public static String CodeFormatingTabPage_RemoveTrailingWhitespace_all_radio;
@@ -49,7 +42,6 @@ public class CleanUpMessages extends NLS {
 
 	public static String CodeFormatingTabPage_RemoveTrailingWhitespace_ignoreEmpty_radio;
 
-	public static String CodeFormatingTabPage_SortMembersSemanticChange_warning;
 
 	public static String CodeStyleTabPage_CheckboxName_ConvertForLoopToEnhanced;
 	public static String CodeStyleTabPage_CheckboxName_UseBlocks;
@@ -81,24 +73,12 @@ public class CleanUpMessages extends NLS {
 	public static String MemberAccessesTabPage_RadioName_NeverThisForFields;
 	public static String MemberAccessesTabPage_RadioName_NeverThisForMethods;
 
-	public static String MissingCodeTabPage_CheckboxName_AddMissingAnnotations;
-	public static String MissingCodeTabPage_CheckboxName_AddMissingDeprecatedAnnotations;
-	public static String MissingCodeTabPage_CheckboxName_AddMissingOverrideAnnotations;
-	public static String MissingCodeTabPage_CheckboxName_AddSUID;
-	public static String MissingCodeTabPage_GroupName_Annotations;
-	public static String MissingCodeTabPage_GroupName_PotentialProgrammingProblems;
-	public static String MissingCodeTabPage_RadioName_AddDefaultSUID;
-	public static String MissingCodeTabPage_RadioName_AddGeneratedSUID;
 
-	public static String UnnecessaryCodeTabPage_CheckboxName_UnnecessaryCasts;
 	public static String UnnecessaryCodeTabPage_CheckboxName_UnnecessaryNLSTags;
-	public static String UnnecessaryCodeTabPage_CheckboxName_UnusedConstructors;
 	public static String UnnecessaryCodeTabPage_CheckboxName_UnusedFields;
-	public static String UnnecessaryCodeTabPage_CheckboxName_UnusedImports;
 	public static String UnnecessaryCodeTabPage_CheckboxName_UnusedLocalVariables;
 	public static String UnnecessaryCodeTabPage_CheckboxName_UnusedMembers;
 	public static String UnnecessaryCodeTabPage_CheckboxName_UnusedMethods;
-	public static String UnnecessaryCodeTabPage_CheckboxName_UnusedTypes;
 	public static String UnnecessaryCodeTabPage_GroupName_UnnecessaryCode;
 	public static String UnnecessaryCodeTabPage_GroupName_UnusedCode;
 

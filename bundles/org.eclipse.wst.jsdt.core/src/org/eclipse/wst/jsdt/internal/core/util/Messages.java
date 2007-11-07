@@ -79,7 +79,6 @@ public final class Messages extends NLS {
 	public static String build_readingDelta;
 	public static String build_analyzingDeltas;
 	public static String build_analyzingSources;
-	public static String build_cleaningOutput;
 	public static String build_copyingResources;
 	public static String build_compiling;
 	public static String build_foundHeader;
@@ -132,7 +131,6 @@ public final class Messages extends NLS {
 	public static String classpath_cannotNestEntryInEntry;
 	public static String classpath_cannotNestEntryInEntryNoExclusion;
 	public static String classpath_cannotNestEntryInLibrary;
-	public static String classpath_cannotNestEntryInOutput;
 	public static String classpath_cannotNestOutputInEntry;
 	public static String classpath_cannotNestOutputInOutput;
 	public static String classpath_cannotReadClasspathFile;
@@ -140,7 +138,6 @@ public final class Messages extends NLS {
 	public static String classpath_cannotUseDistinctSourceFolderAsOutput;
 	public static String classpath_cannotUseLibraryAsOutput;
 	public static String classpath_closedProject;
-	public static String classpath_couldNotWriteClasspathFile;
 	public static String classpath_cycle;
 	public static String classpath_duplicateEntryPath;
 	public static String classpath_illegalContainerPath;
@@ -151,14 +148,11 @@ public final class Messages extends NLS {
 	public static String classpath_illegalProjectPath;
 	public static String classpath_illegalSourceFolderPath;
 	public static String classpath_illegalVariablePath;
-	public static String classpath_invalidClasspathInClasspathFile;
 	public static String classpath_invalidContainer;
 	public static String classpath_mustEndWithSlash;
 	public static String classpath_unboundContainerPath;
 	public static String classpath_unboundLibrary;
 	public static String classpath_unboundProject;
-	public static String classpath_settingOutputLocationProgress;
-	public static String classpath_settingProgress;
 	public static String classpath_unboundSourceAttachment;
 	public static String classpath_unboundSourceFolder;
 	public static String classpath_unboundVariablePath;
@@ -232,8 +226,6 @@ public final class Messages extends NLS {
 	public static String disassembler_description;
 	public static String disassembler_opentypedeclaration;
 	public static String disassembler_closetypedeclaration;
-	public static String disassembler_parametername;
-	public static String disassembler_localvariablename;
 	public static String disassembler_endofmethodheader;
 	public static String disassembler_begincommentline;
 	public static String disassembler_fieldhasconstant;
@@ -244,7 +236,6 @@ public final class Messages extends NLS {
 	public static String disassembler_linenumberattributeheader;
 	public static String disassembler_localvariabletableattributeheader;
 	public static String disassembler_localvariabletypetableattributeheader;
-	public static String disassembler_arraydimensions;
 	public static String disassembler_innerattributesheader;
 	public static String disassembler_inner_class_info_name;
 	public static String disassembler_outer_class_info_name;
@@ -326,7 +317,6 @@ public final class Messages extends NLS {
 	public static String classformat_newarray_long;
 	public static String classformat_store;
 	public static String classformat_load;
-	public static String classfileformat_anyexceptionhandler;
 	public static String classfileformat_exceptiontableentry;
 	public static String classfileformat_linenumbertableentry;
 	public static String classfileformat_localvariabletableentry;
@@ -334,7 +324,6 @@ public final class Messages extends NLS {
 
 	public static String disassembler_frame_same_locals_1_stack_item_extended;
 	public static String disassembler_frame_chop;
-	public static String disassembler_frame_same_frame_extended;
 	public static String disassembler_frame_append;
 	public static String disassembler_frame_full_frame;
 	public static String disassembler_frame_same_frame;

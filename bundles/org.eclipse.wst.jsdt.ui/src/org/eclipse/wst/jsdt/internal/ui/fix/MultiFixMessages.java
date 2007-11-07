@@ -28,8 +28,6 @@ public class MultiFixMessages extends NLS {
 	public static String CleanUpRefactoringWizard_ConfigureCustomProfile_button;
 	public static String CleanUpRefactoringWizard_CustomCleanUpsDialog_title;
 	public static String CleanUpRefactoringWizard_HideWizard_Link;
-	public static String CleanUpRefactoringWizard_member_accesses_tab;
-	public static String CleanUpRefactoringWizard_missing_code_tab;
 	public static String CleanUpRefactoringWizard_Profile_TableHeader;
 	public static String CleanUpRefactoringWizard_Project_TableHeader;
 	public static String CleanUpRefactoringWizard_unknownProfile_Name;
@@ -37,10 +35,6 @@ public class MultiFixMessages extends NLS {
 	public static String CleanUpRefactoringWizard_unnecessary_code_tab;
 	public static String CleanUpRefactoringWizard_use_configured_radio;
 	public static String CleanUpRefactoringWizard_use_custom_radio;
-	public static String CleanUpSaveParticipantPreferenceConfiguration_clean_up_preference_link;
-	public static String CleanUpSaveParticipantPreferenceConfiguration_edit_button_label;
-	public static String CleanUpSaveParticipantPreferenceConfiguration_unknown_profile_name;
-	public static String CleanUpSaveParticipantPreferenceConfiguration_use_clean_up_profile_label;
 	public static String CodeFormatCleanUp_RemoveTrailingAll_description;
 	public static String CodeFormatCleanUp_RemoveTrailingNoEmpty_description;
 	public static String CodeFormatFix_RemoveTrailingWhitespace_changeDescription;
@@ -53,10 +47,7 @@ public class MultiFixMessages extends NLS {
 	
 	public static String UnusedCodeMultiFix_RemoveUnusedVariable_description;
 	public static String UnusedCodeMultiFix_RemoveUnusedField_description;
-	public static String UnusedCodeMultiFix_RemoveUnusedType_description;
-	public static String UnusedCodeMultiFix_RemoveUnusedConstructor_description;
 	public static String UnusedCodeMultiFix_RemoveUnusedMethod_description;
-	public static String UnusedCodeMultiFix_RemoveUnusedImport_description;
 	public static String UnusedCodeCleanUp_RemoveUnusedCasts_description;
 	
 	public static String CodeStyleMultiFix_ChangeNonStaticAccess_description;
@@ -64,7 +55,6 @@ public class MultiFixMessages extends NLS {
 	public static String CodeStyleMultiFix_QualifyAccessToStaticField;
 	public static String CodeStyleMultiFix_ChangeIndirectAccessToStaticToDirect;
 	public static String CodeStyleMultiFix_ConvertSingleStatementInControlBodeyToBlock_description;
-	public static String CodeStyleCleanUp_addDefaultSerialVersionId_description;
 	public static String CodeStyleCleanUp_QualifyNonStaticMethod_description;
 	public static String CodeStyleCleanUp_QualifyStaticMethod_description;
 	public static String CodeStyleCleanUp_removeFieldThis_description;
@@ -74,8 +64,6 @@ public class MultiFixMessages extends NLS {
 	public static String Java50MultiFix_AddMissingOverride_description;
 	public static String Java50CleanUp_ConvertToEnhancedForLoop_description;
 	public static String Java50CleanUp_AddTypeParameters_description;
-
-	public static String SerialVersionCleanUp_Generated_description;
 	
 	public static String CleanUpRefactoringWizard_WindowTitle;
 	public static String CleanUpRefactoringWizard_PageTitle;
@@ -94,9 +82,6 @@ public class MultiFixMessages extends NLS {
 	public static String CodeFormatCleanUp_description;
 	public static String CodeFormatFix_description;
 	
-	public static String CommentFormatCleanUp_javadocComments;
-	public static String CommentFormatCleanUp_multiLineComments;
-	public static String CommentFormatCleanUp_singleLineComments;
 	public static String CommentFormatFix_description;
 	
 	static {

@@ -71,11 +71,9 @@ public final class SearchMessages extends NLS {
 	public static String SearchPage_searchFor_function;
 	public static String SearchPage_searchFor_var;
 	public static String SearchPage_searchFor_field;
-	public static String SearchPage_searchFor_package;
 	public static String SearchPage_searchFor_constructor;
 	public static String SearchPage_limitTo_label;
 	public static String SearchPage_limitTo_declarations;
-	public static String SearchPage_limitTo_implementors;
 	public static String SearchPage_limitTo_references;
 	public static String SearchPage_limitTo_allOccurrences;
 	public static String SearchPage_limitTo_readReferences;
@@ -87,7 +85,6 @@ public final class SearchMessages extends NLS {
 	public static String SearchPage_searchIn_libraries;
 	public static String SearchPage_searchIn_projects;
 	public static String SearchPage_searchIn_sources;
-	public static String SearchPage_searchJRE_label;
 	public static String SearchUtil_workingSetConcatenation;
 	public static String Search_FindDeclarationAction_label;
 	public static String Search_FindDeclarationAction_tooltip;

@@ -2418,19 +2418,19 @@
 <!-- script group  -->
         <action
               class="org.eclipse.wst.jsdt.internal.ui.refactoring.actions.ShowRefactoringHistoryAction"
-              definitionId="org.eclipse.ltk.ui.refactor.show.refactoring.history"
+              definitionId="org.eclipse.wst.jsdt.ui.refactor.show.refactoring.history"
               id="org.eclipse.ltk.ui.actions.ShowRefactoringHistory"
               label="%Refactoring.showHistory.label"
               menubarPath="org.eclipse.wst.jsdt.ui.refactoring.menu/scriptGroup"/>         
         <action
                class="org.eclipse.wst.jsdt.internal.ui.refactoring.actions.ApplyRefactoringScriptAction"
-               definitionId="org.eclipse.ltk.ui.refactor.apply.refactoring.script"
+               definitionId="org.eclipse.wst.jsdt.ui.refactor.apply.refactoring.script"
                id="org.eclipse.ltk.ui.actions.ApplyRefactoringStript"
                label="%Refactoring.applyScript.label"
                menubarPath="org.eclipse.wst.jsdt.ui.refactoring.menu/scriptGroup"/>
         <action
               class="org.eclipse.wst.jsdt.internal.ui.refactoring.actions.CreateRefactoringScriptAction"
-              definitionId="org.eclipse.ltk.ui.refactor.create.refactoring.script"
+              definitionId="org.eclipse.wst.jsdt.ui.refactor.create.refactoring.script"
               id="org.eclipse.ltk.ui.actions.CreateRefactoringScript"
               label="%Refactoring.createScript.label"
               menubarPath="org.eclipse.wst.jsdt.ui.refactoring.menu/scriptGroup"/>
@@ -3635,13 +3635,13 @@
       <command
             categoryId="org.eclipse.wst.jsdt.ui.category.refactoring"
             description="%ActionDefinition.apply.description"
-            id="org.eclipse.ltk.ui.refactor.apply.refactoring.script"
+            id="org.eclipse.wst.jsdt.ui.refactor.apply.refactoring.script"
             name="%ActionDefinition.apply.name">
       </command>
       <command
             categoryId="org.eclipse.wst.jsdt.ui.category.refactoring"
             description="%ActionDefinition.create.description"
-            id="org.eclipse.ltk.ui.refactor.create.refactoring.script"
+            id="org.eclipse.wst.jsdt.ui.refactor.create.refactoring.script"
             name="%ActionDefinition.create.name">
        </command>
       <command
