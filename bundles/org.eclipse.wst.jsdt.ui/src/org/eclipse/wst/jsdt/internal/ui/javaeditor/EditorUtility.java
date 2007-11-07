@@ -305,7 +305,7 @@ public class EditorUtility {
 		   IEditorDescriptor desc = PlatformUI.getWorkbench().
 		      getEditorRegistry().getDefaultEditor(file.getPath());
 		if(desc==null) {
-			throwPartInitException("Can't find Editor for file: " + file.toString());
+			throwPartInitException(JavaEditorMessages.EditorUtility_cantFindEditor + file.toString());
 		}
 		IEditorPart editorPart= IDE.openEditor(p, file, desc.getId(), activate);
 		initializeHighlightRange(editorPart);

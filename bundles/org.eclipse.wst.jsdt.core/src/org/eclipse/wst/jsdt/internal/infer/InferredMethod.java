@@ -21,30 +21,30 @@ public class InferredMethod extends InferredMember{
 
 	public StringBuffer print(int indent, StringBuffer output)
 	{
-		String modifier=(isStatic)? "static ":"";
+		String modifier=(isStatic)? "static ":""; //$NON-NLS-1$ //$NON-NLS-2$
 		printIndent(indent, output).append(modifier);
 		if (!isConstructor)
 		{
 		 if (methodDeclaration.inferredType!=null)
 			 methodDeclaration.inferredType.dumpReference(output);
 		else
-			output.append("??");
-		output.append(" ");
+			output.append("??"); //$NON-NLS-1$
+		output.append(" "); //$NON-NLS-1$
 		}
 
-		output.append(name).append("(");
+		output.append(name).append("("); //$NON-NLS-1$
 		   if (methodDeclaration.arguments!=null)
 			   for (int i = 0; i < methodDeclaration.arguments.length; i++) {
 				   if (i>0)
-					   output.append(", ");
+					   output.append(", "); //$NON-NLS-1$
 				  InferredType argumentType = methodDeclaration.arguments[i].inferredType;
 				  if (argumentType!=null )
 				  {
-					  output.append(argumentType.name).append(" ");
+					  output.append(argumentType.name).append(" "); //$NON-NLS-1$
 				  }
 				   output.append(methodDeclaration.arguments[i].name);
 			   }
-		   output.append(")");
+		   output.append(")"); //$NON-NLS-1$
 
 		   return output;
 	}

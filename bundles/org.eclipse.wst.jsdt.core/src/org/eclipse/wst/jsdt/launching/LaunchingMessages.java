@@ -74,6 +74,14 @@ public class LaunchingMessages extends NLS {
 	public static String JavaRuntime_32;
 	public static String JavaRuntime_0;
 
+	public static String JREContainerInitializer_Array;
+
+	public static String JREContainerInitializer_Global;
+
+	public static String JREContainerInitializer_JsECMA_NAME;
+
+	public static String JREContainerInitializer_Object;
+
 	public static String LaunchingPlugin_35;
 
 	public static String LaunchingPlugin_36;

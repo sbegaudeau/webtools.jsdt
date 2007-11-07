@@ -10,7 +10,7 @@ import org.eclipse.ui.texteditor.ResourceMarkerAnnotationModel;
  * Source editor resource marker annotation model implementation
  */
 public class StorageMarkerAnnotationModel extends ResourceMarkerAnnotationModel {
-	public final static String SECONDARY_ID_KEY = "org.eclipse.wst.sse.ui.extensions.breakpoint.path";
+	public final static String SECONDARY_ID_KEY = "org.eclipse.wst.sse.ui.extensions.breakpoint.path"; //$NON-NLS-1$
 	protected IResource fMarkerResource;
 	protected String fSecondaryMarkerAttributeValue;
 

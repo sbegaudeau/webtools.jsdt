@@ -12,10 +12,10 @@ import org.eclipse.wst.jsdt.core.JavaCore;
 
 public class InferrenceManager {
 
-	public static final String EXTENSION_POINT= "inferrenceSupport";
+	public static final String EXTENSION_POINT= "inferrenceSupport"; //$NON-NLS-1$
 
-	protected static final String TAG_INFERENGINE = "inferenceEngine";
-	protected static final String ATTR_INFERENGINE_CLASS = "class";
+	protected static final String TAG_INFERENGINE = "inferenceEngine"; //$NON-NLS-1$
+	protected static final String ATTR_INFERENGINE_CLASS = "class"; //$NON-NLS-1$
 
 
 	private static InferrenceManager instance = null;

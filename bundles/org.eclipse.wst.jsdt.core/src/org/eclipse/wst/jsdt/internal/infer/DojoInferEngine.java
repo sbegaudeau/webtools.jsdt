@@ -11,7 +11,7 @@ public class DojoInferEngine extends InferEngine {
 	}
 
 	protected boolean handleFunctionCall(MessageSend messageSend) {
-		if (isFunction(messageSend,"dojo.provide"))
+		if (isFunction(messageSend,"dojo.provide")) //$NON-NLS-1$
 		{
 			char [] className=null;
 			Expression expression =messageSend.arguments[0];

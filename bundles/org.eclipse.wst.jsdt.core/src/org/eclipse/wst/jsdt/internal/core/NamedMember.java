@@ -70,7 +70,7 @@ public abstract class NamedMember extends Member {
 		// declaring class
 
 		IJavaElement parent = field.getParent();
-		String declaringKey = "??";
+		String declaringKey = "??"; //$NON-NLS-1$
 		if (parent instanceof ICompilationUnit)
 			 declaringKey = getKey((ICompilationUnit) parent, forceOpen);
 		else if (parent instanceof IType)
@@ -89,7 +89,7 @@ public abstract class NamedMember extends Member {
 
 		// declaring class
 		IJavaElement parent = method.getParent();
-		String declaringKey = "??";
+		String declaringKey = "??"; //$NON-NLS-1$
 		if (parent instanceof ICompilationUnit)
 			 declaringKey = getKey((ICompilationUnit) parent, forceOpen);
 		else if (parent instanceof IType)
@@ -247,7 +247,7 @@ public abstract class NamedMember extends Member {
 				return null;
 		}
 		String typeQualifiedName = declaringType!=null ?
-				declaringType.getTypeQualifiedName(enclosingTypeSeparator, showParameters) : "";
+				declaringType.getTypeQualifiedName(enclosingTypeSeparator, showParameters) : ""; //$NON-NLS-1$
 		StringBuffer buffer = new StringBuffer(typeQualifiedName);
 		buffer.append(enclosingTypeSeparator);
 		String simpleName = this.name.length() == 0 ? Integer.toString(this.occurrenceCount) : this.name;

@@ -288,7 +288,7 @@ public boolean shouldExclude(String container, String resourceName) {
 
 	IPath[] exclusions = (IPath[])exclusionPathList.get(container);
 	if(exclusions==null) return false;
-	IPath fullPath = new Path(container + "/" + resourceName);
+	IPath fullPath = new Path(container + "/" + resourceName); //$NON-NLS-1$
 
 	for(int i=0;!shouldExclude && i<exclusions.length;i++) {
 		shouldExclude = Util.isExcluded(fullPath, new char[0][], new char[][] {exclusions[i].toString().toCharArray()});

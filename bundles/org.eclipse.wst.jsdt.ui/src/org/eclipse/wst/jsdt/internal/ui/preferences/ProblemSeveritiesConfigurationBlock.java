@@ -211,18 +211,18 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 		ExpandableComposite excomposite;
 		Composite inner;
 		/* START -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
-		label= "&Resolution";
+		label= PreferencesMessages.ProblemSeveritiesConfigurationBlock_Resolution;
 		excomposite= createStyleSection(composite, label, nColumns);
 		
 		inner= new Composite(excomposite, SWT.NONE);
 		inner.setFont(composite.getFont());
 		inner.setLayout(new GridLayout(nColumns, false));
 		excomposite.setClient(inner);
-		label= "Unresolved Types"; 
+		label= PreferencesMessages.ProblemSeveritiesConfigurationBlock_UnresolvedTypes; 
 		addComboBox(inner, label, PREF_UNRESOLVED_TYPE_OPTIONAL_ERROR, errorWarningIgnore, errorWarningIgnoreLabels, defaultIndent);
-		label= "Unresolved Fields"; 
+		label= PreferencesMessages.ProblemSeveritiesConfigurationBlock_UnresolvedFields; 
 		addComboBox(inner, label, PREF_UNRESOLVED_FIELD_OPTIONAL_ERROR, errorWarningIgnore, errorWarningIgnoreLabels, defaultIndent);
-		label= "Unresolved Methods"; 
+		label= PreferencesMessages.ProblemSeveritiesConfigurationBlock_UnresolvedMethods; 
 		addComboBox(inner, label, PREF_UNRESOLVED_METHOD_OPTIONAL_ERROR, errorWarningIgnore, errorWarningIgnoreLabels, defaultIndent);
 		/* END -------------------------------- Bug 203292 Type/Method/Filed resolution error configuration --------------------- */
 		// --- style
@@ -270,10 +270,10 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 		excomposite.setClient(inner);
 	/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
 
-		label= "Loosely Declared, Globaly Scoped Variable Usage"; 
+		label= PreferencesMessages.ProblemSeveritiesConfigurationBlock_LooselyDeclaredGlobalVar; 
 		addComboBox(inner, label, PREF_LOOSE_VAR, errorWarningIgnore, errorWarningIgnoreLabels, defaultIndent);			
 
-		label= "Optional Semi-Colon"; 
+		label= PreferencesMessages.ProblemSeveritiesConfigurationBlock_Optionalsemicolon; 
 		addComboBox(inner, label, PREF_OPTIONAL_SEMICOLON, errorWarningIgnore, errorWarningIgnoreLabels, defaultIndent);			
 
 		/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */

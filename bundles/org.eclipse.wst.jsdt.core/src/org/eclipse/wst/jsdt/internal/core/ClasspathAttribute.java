@@ -30,11 +30,11 @@ public class ClasspathAttribute implements IClasspathAttribute {
 	}
 
     public String getName() {
-		return this.name!=null?this.name:"";
+		return this.name!=null?this.name:""; //$NON-NLS-1$
     }
 
     public String getValue() {
-		return this.value!=null?this.value:"";
+		return this.value!=null?this.value:""; //$NON-NLS-1$
     }
 
     public int hashCode() {

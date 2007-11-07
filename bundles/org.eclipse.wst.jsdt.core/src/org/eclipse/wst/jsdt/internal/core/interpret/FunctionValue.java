@@ -26,7 +26,7 @@ public class FunctionValue extends ObjectValue {
 		if (CharOperation.equals(Contants.PROTOTYPE_ARR, name))
 		{
 			if (value.type!=OBJECT)
-				throw new InterpretException("invalid prototype");
+				throw new InterpretException("invalid prototype"); //$NON-NLS-1$
 			this.prototype=(ObjectValue)value;
 		}
 		super.setValue(name, value);

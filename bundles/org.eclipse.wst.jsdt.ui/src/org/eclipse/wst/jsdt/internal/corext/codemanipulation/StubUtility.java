@@ -586,7 +586,7 @@ public class StubUtility {
 	 */
 	public static String getMethodComment(ICompilationUnit cu, String typeName, MethodDeclaration decl, boolean isDeprecated, String targetName, String targetMethodDeclaringTypeName, String[] targetMethodParameterTypeNames, boolean delegate, String lineDelimiter) throws CoreException {
 		if (typeName==null)
-			typeName="";
+			typeName=""; //$NON-NLS-1$
 		boolean needsTarget= targetMethodDeclaringTypeName != null && targetMethodParameterTypeNames != null;
 		String templateName= CodeTemplateContextType.METHODCOMMENT_ID;
 		if (decl.isConstructor()) {

@@ -221,7 +221,7 @@ public ICompilationUnit getCompilationUnit(String cuName, String superTypeName) 
 	String parentName = new String();
 	try {
 		IResource parentNameR = this.parent.getResource();
-		parentName = parentNameR==null?null:parentNameR.getName() + "/";
+		parentName = parentNameR==null?null:parentNameR.getName() + "/"; //$NON-NLS-1$
 		//String parentString = parentName.getProjectRelativePath().toString();
 	} catch (Exception ex) {
 
@@ -230,7 +230,7 @@ public ICompilationUnit getCompilationUnit(String cuName, String superTypeName) 
 	if(parentName!=null) {
 		int pi = cuName.indexOf(parentName);
 		if( pi>-1 && pi<2  ) {
-			String newCp = "/" + cuName.substring(pi+parentName.length(),cuName.length());
+			String newCp = "/" + cuName.substring(pi+parentName.length(),cuName.length()); //$NON-NLS-1$
 			return new CompilationUnit(this, newCp,superTypeName, DefaultWorkingCopyOwner.PRIMARY);
 		}
 	}

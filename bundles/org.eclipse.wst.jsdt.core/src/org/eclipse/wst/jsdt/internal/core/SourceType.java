@@ -879,7 +879,7 @@ public String[][] resolveType(String typeName, WorkingCopyOwner owner) throws Ja
  */
 public String getDisplayName() {
 	if( isAnonymous() )
-		return "";
+		return ""; //$NON-NLS-1$
 	else
 		return super.getDisplayName();
 }

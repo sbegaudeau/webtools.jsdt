@@ -432,7 +432,7 @@ public class IntroduceParameterRefactoring extends ScriptableRefactoring impleme
 		}
 		}
 		else
-			methodName="indirectFunctionCall";
+			methodName="indirectFunctionCall"; //$NON-NLS-1$
 		String[] proposals= StubUtility.getLocalNameSuggestions(fSourceCU.getJavaProject(), methodName, 0, excludedVariableNames);
 		return Arrays.asList(proposals);
 	}

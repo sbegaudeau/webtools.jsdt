@@ -162,7 +162,7 @@ public class IfStatement extends Statement {
 					(((unaryExpression.bits & OperatorMASK) >> OperatorSHIFT)==OperatorIds.TYPEOF)
 					)
 		{
-				isDefined[0]=!((StringConstant)expression2.constant).stringValue().equals("undefined");
+				isDefined[0]=!((StringConstant)expression2.constant).stringValue().equals("undefined"); //$NON-NLS-1$
 				return (SingleNameReference)unaryExpression.expression ;
 
 		}

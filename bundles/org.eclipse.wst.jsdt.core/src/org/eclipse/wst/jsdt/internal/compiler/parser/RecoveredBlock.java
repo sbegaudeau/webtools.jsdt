@@ -380,7 +380,7 @@ public RecoveredElement add(FieldDeclaration fieldDeclaration, int bracketBalanc
 }
 public RecoveredElement add(FieldDeclaration fieldDeclaration, int bracketBalanceValue, boolean delegatedByParent ) {
 
-	throw new org.eclipse.wst.jsdt.core.UnimplementedException("SHOULD NOT BE CALLED");
+	throw new org.eclipse.wst.jsdt.core.UnimplementedException("SHOULD NOT BE CALLED"); //$NON-NLS-1$
 //	/* local variables inside method can only be final and non void */
 //	char[][] fieldTypeName;
 //	if ((fieldDeclaration.modifiers & ~ClassFileConstants.AccFinal) != 0 // local var can only be final

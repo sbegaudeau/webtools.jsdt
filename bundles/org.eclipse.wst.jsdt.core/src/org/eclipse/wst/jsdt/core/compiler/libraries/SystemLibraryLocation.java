@@ -35,7 +35,7 @@ public class SystemLibraryLocation implements LibraryLocation {
 	}
 
 	public IPath getLibraryPathInPlugin() {
-		return new Path("libraries");
+		return new Path("libraries"); //$NON-NLS-1$
 	}
 
 	public char[][] getLibraryFileNames() {
@@ -53,7 +53,7 @@ public class SystemLibraryLocation implements LibraryLocation {
 		while(entries.hasMoreElements()) {
 			Path value = new Path((String)entries.nextElement());
 			String extension = value.getFileExtension();
-			if(extension!=null && extension.equalsIgnoreCase("js")) {
+			if(extension!=null && extension.equalsIgnoreCase("js")) { //$NON-NLS-1$
 				allEntries.add(value.lastSegment().toCharArray());
 			}
 		}
@@ -113,7 +113,7 @@ public class SystemLibraryLocation implements LibraryLocation {
 
 	public IPath getWorkingLibPath(){
 
-		return new Path(getLibraryPath(""));
+		return new Path(getLibraryPath("")); //$NON-NLS-1$
 
 	}
 

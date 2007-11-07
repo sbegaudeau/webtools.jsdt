@@ -18,6 +18,7 @@ import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.parser.NLSTag;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
+import org.eclipse.wst.jsdt.internal.compiler.util.Messages;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 public class PublicScanner implements IScanner, ITerminalSymbols {
@@ -4097,9 +4098,10 @@ protected boolean checkIfDivide(int previousToken){
  *  This code is duplicated in PublicScanner.java
  */
 
-public static final String NON_TERM_REGEXP = "Non-Terminating_Regular_Expression";
-public static final String INVALID_REGEXP_OPT = "Invalid_Regular_Expression_Options";
-public static final String UNEXP_REGEXP = "Unexpected_Error_Processing_Regular_Expression";
+public static final String NON_TERM_REGEXP = Messages.Scanner_NON_TERM_REGEXP;  
+public static final String INVALID_REGEXP_OPT = Messages.Scanner_INVALID_REGEXP_OPT; 
+public static final String UNEXP_REGEXP = Messages.Scanner_UNEXP_REGEXP; 
+
 
 protected boolean checkIfRegExp() throws IndexOutOfBoundsException, InvalidInputException {
 	// Try to process as regular expression

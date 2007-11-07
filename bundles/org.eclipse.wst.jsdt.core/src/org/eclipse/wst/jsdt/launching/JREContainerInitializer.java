@@ -25,7 +25,7 @@ import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
  */ 
 public class JREContainerInitializer extends ClasspathContainerInitializer {
 	
-	public static final String JsECMA_NAME = "JavaScript Language (ECMA-262)";
+	public static final String JsECMA_NAME = LaunchingMessages.JREContainerInitializer_JsECMA_NAME;
 
 	/**
 	 * @see ClasspathContainerInitializer#initialize(IPath, IJavaProject)
@@ -121,7 +121,7 @@ public class JREContainerInitializer extends ClasspathContainerInitializer {
 	 */
 	public static String getExecutionEnvironmentId(IPath path) {
 		
-		if(path!=null && path.lastSegment().equalsIgnoreCase("system.js")) return JsECMA_NAME;
+		if(path!=null && path.lastSegment().equalsIgnoreCase("system.js")) return JsECMA_NAME; //$NON-NLS-1$
 		
 		return null;
 //		String name = getVMName(path);
@@ -254,7 +254,7 @@ public class JREContainerInitializer extends ClasspathContainerInitializer {
 	 * @see org.eclipse.jdt.core.ClasspathContainerInitializer#getDescription(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject)
 	 */
 	public String getDescription(IPath containerPath, IJavaProject project) {
-		if(containerPath!=null && containerPath.lastSegment().equalsIgnoreCase("system.js")) return JsECMA_NAME;
+		if(containerPath!=null && containerPath.lastSegment().equalsIgnoreCase("system.js")) return JsECMA_NAME; //$NON-NLS-1$
 //		String tag = getExecutionEnvironmentId(containerPath);
 //		if (tag == null && containerPath.segmentCount() > 2) {
 //			tag = getVMName(containerPath);
@@ -283,7 +283,7 @@ public class JREContainerInitializer extends ClasspathContainerInitializer {
 	 * @see org.eclipse.wst.jsdt.core.ClasspathContainerInitializer#containerSuperTypes()
 	 */
 	public String[] containerSuperTypes() {
-		return new String[] {"Global","Object","Array"};
+		return new String[] {LaunchingMessages.JREContainerInitializer_Global,LaunchingMessages.JREContainerInitializer_Object,LaunchingMessages.JREContainerInitializer_Array};
 	}
 	
 	

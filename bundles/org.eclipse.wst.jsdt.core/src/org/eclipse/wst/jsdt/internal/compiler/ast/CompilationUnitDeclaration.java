@@ -662,7 +662,7 @@ public class CompilationUnitDeclaration
 				if (inferredType.isDefinition)
 				{
 					inferredType.print(0,sb);
-					sb.append("\n");
+					sb.append("\n"); //$NON-NLS-1$
 				}
 		}
 

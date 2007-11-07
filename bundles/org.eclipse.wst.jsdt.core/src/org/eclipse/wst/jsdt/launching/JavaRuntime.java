@@ -2440,7 +2440,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 				try {
 					fgInitializingVMs = true;
 					fgVMTypes=new IVMInstallType[]{new StandardVMType()};
-					defaultVM = new StandardVM(fgVMTypes[0],"defaultVM");
+					defaultVM = new StandardVM(fgVMTypes[0],"defaultVM"); //$NON-NLS-1$
 					fgDefaultVMId=defaultVM.getId();
 					File location = SystemLibraryLocation.getInstance().getWorkingLibPath().toFile();
 					defaultVM.setInstallLocation(location);

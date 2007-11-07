@@ -297,8 +297,14 @@ public final class PreferencesMessages extends NLS {
 	public static String JavadocConfigurationBlock_browse_archive_button;
 	public static String JavadocConfigurationBlock_browse_archive_path_button;
 	public static String ProblemSeveritiesConfigurationBlock_ignore_documented_unused_parameters;
+	public static String ProblemSeveritiesConfigurationBlock_LooselyDeclaredGlobalVar;
+	public static String ProblemSeveritiesConfigurationBlock_Optionalsemicolon;
 	public static String ProblemSeveritiesConfigurationBlock_pb_redundant_null_check;
+	public static String ProblemSeveritiesConfigurationBlock_Resolution;
 	public static String ProblemSeveritiesConfigurationBlock_treat_optional_as_fatal;
+	public static String ProblemSeveritiesConfigurationBlock_UnresolvedFields;
+	public static String ProblemSeveritiesConfigurationBlock_UnresolvedMethods;
+	public static String ProblemSeveritiesConfigurationBlock_UnresolvedTypes;
 	public static String SourceAttachmentPropertyPage_error_title;
 	public static String SourceAttachmentPropertyPage_error_message;
 	public static String SourceAttachmentPropertyPage_invalid_container;

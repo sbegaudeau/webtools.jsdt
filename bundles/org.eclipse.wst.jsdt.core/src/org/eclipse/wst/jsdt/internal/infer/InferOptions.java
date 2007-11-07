@@ -55,8 +55,8 @@ public class InferOptions {
 
 	public Map getMap() {
 		Map optionsMap = new HashMap(30);
-		optionsMap.put(OPTION_UseAssignments, this.useAssignments ? "true":"false");
-		optionsMap.put(OPTION_UseInitMethod, this.useInitMethod ? "true":"false");
+		optionsMap.put(OPTION_UseAssignments, this.useAssignments ? "true":"false"); //$NON-NLS-1$ //$NON-NLS-2$
+		optionsMap.put(OPTION_UseInitMethod, this.useInitMethod ? "true":"false"); //$NON-NLS-1$ //$NON-NLS-2$
 		return optionsMap;
 	}
 
@@ -65,10 +65,10 @@ public class InferOptions {
 
 		Object optionValue;
 		if ((optionValue = optionsMap.get(OPTION_UseAssignments)) != null) {
-			this.useAssignments="true".equals(optionValue) ;
+			this.useAssignments="true".equals(optionValue) ; //$NON-NLS-1$
 		}
 		if ((optionValue = optionsMap.get(OPTION_UseInitMethod)) != null) {
-			this.useInitMethod="true".equals(optionValue) ;
+			this.useInitMethod="true".equals(optionValue) ; //$NON-NLS-1$
 		}
 	}
 

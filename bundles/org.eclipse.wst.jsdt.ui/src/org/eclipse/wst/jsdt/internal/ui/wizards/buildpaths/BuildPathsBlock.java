@@ -224,7 +224,7 @@ public class BuildPathsBlock {
 		
 		
 		item= new TabItem(folder, SWT.NONE);
-		item.setText("Global Order/SuperType"); 
+		item.setText(NewWizardMessages.BuildPathsBlock_GlobalOrder); 
 		item.setImage(cpoImage);
 		item.setData(ordpage);
 		item.setControl(ordpage.getControl(folder));
@@ -453,7 +453,7 @@ public class BuildPathsBlock {
 	 */	
 	public IPath getOutputLocation() {
 		//return new Path(fBuildPathDialogField.getText()).makeAbsolute();
-		return new Path("");
+		return new Path(""); //$NON-NLS-1$
 	}
 	
 	/**
@@ -891,7 +891,7 @@ public class BuildPathsBlock {
 	//public static void flush(List classPathEntries, IPath outputLocation, IJavaProject javaProject, IProgressMonitor monitor) throws CoreException, OperationCanceledException {		
 	public static void flush(List classPathEntries,  IJavaProject javaProject, LibrarySuperType superType, IProgressMonitor monitor) throws CoreException, OperationCanceledException {
 		if(superType==null) {
-			System.out.println("---------------------------------- NULL SUPER TYPE -------------------------");
+			System.out.println("---------------------------------- NULL SUPER TYPE -------------------------"); //$NON-NLS-1$
 		}
 		setProjectSuperType(javaProject, superType);
 		if (monitor == null) {

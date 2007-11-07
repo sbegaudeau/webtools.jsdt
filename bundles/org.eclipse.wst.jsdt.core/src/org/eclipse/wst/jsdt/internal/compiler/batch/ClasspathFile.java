@@ -153,6 +153,6 @@ public String getPath(){
 }
 
 public char[][][] findTypeNames(String qualifiedPackageName) {
-	throw new UnimplementedException("implement");
+	throw new UnimplementedException("implement"); //$NON-NLS-1$
 }
 }

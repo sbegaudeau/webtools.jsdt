@@ -978,7 +978,7 @@ public class NameLookup implements SuffixConstants {
 		}
 
 		if (VERBOSE)
-			System.out.println("find binding: "+bindingName);
+			System.out.println("find binding: "+bindingName); //$NON-NLS-1$
 		// Look for concerned package fragments
 		JavaElementRequestor elementRequestor = new JavaElementRequestor();
 		seekPackageFragments(packageName, false, elementRequestor);

@@ -463,7 +463,7 @@ public final class BuildPathDialogAccess {
 				}else if(((LibrarySuperType)selection[0]).isParent()) {
 					return new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.ERROR, null, null);
 				}
-				return new Status(IStatus.OK, JavaPlugin.getPluginId(), IStatus.OK, "", null);
+				return new Status(IStatus.OK, JavaPlugin.getPluginId(), IStatus.OK, "", null); //$NON-NLS-1$
 			}
 			
 		}
@@ -474,8 +474,8 @@ public final class BuildPathDialogAccess {
 		dialog.setHelpAvailable(false);
 		dialog.setInput(libSupers);
 		dialog.setValidator(libValidator);
-		dialog.setTitle("JavaScript Sourcefile SuperType Selection"); 
-		dialog.setMessage("Select a class from the installed libraries to use as \nthe SuperType for all JavaScript Source Files:"); 
+		dialog.setTitle(NewWizardMessages.BuildPathDialogAccess_SuperTypeSelection); 
+		dialog.setMessage(NewWizardMessages.BuildPathDialogAccess_SelectSupertType); 
 		//dialog.addFilter(new ArchiveFileFilter(usedJars, true));
 		if(currentIsValid) dialog.setInitialSelection(initialSelection);
 	//	dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));

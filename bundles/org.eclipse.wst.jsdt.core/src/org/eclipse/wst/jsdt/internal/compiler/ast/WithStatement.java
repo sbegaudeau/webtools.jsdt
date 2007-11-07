@@ -78,7 +78,7 @@ public class WithStatement extends Statement {
 	public StringBuffer printStatement(int tab, StringBuffer output) {
 
 		printIndent(tab, output).append("with ("); //$NON-NLS-1$
-		condition.printExpression(0, output).append(")\n");
+		condition.printExpression(0, output).append(")\n"); //$NON-NLS-1$
 		if (action == null)
 			output.append(';');
 		else

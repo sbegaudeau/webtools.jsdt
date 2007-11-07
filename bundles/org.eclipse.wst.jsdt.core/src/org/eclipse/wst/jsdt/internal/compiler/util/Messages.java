@@ -110,6 +110,9 @@ public final class Messages {
 	public static String ast_missingCode;
 	public static String constant_cannotCastedInto;
 	public static String constant_cannotConvertedTo;
+	public static String Scanner_NON_TERM_REGEXP;
+	public static String Scanner_INVALID_REGEXP_OPT;
+	public static String Scanner_UNEXP_REGEXP;
 
 	static {
 		initializeMessages(BUNDLE_NAME, Messages.class);

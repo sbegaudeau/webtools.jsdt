@@ -33,7 +33,7 @@ public class Interpreter {
 							new DefaultProblemFactory(Locale.getDefault())),
 				true); 
 
-		ICompilationUnit sourceUnit = new CompilationUnit(source, "interpreted", null);
+		ICompilationUnit sourceUnit = new CompilationUnit(source, "interpreted", null); //$NON-NLS-1$
 
 		CompilationResult compilationUnitResult = new CompilationResult(sourceUnit, 0, 0,  compilerOptions.maxProblemsPerUnit);
 		CompilationUnitDeclaration parsedUnit = parser.parse(sourceUnit, compilationUnitResult);

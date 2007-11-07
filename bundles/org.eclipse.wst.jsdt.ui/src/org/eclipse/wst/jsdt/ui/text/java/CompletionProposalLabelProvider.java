@@ -355,7 +355,7 @@ public class CompletionProposalLabelProvider {
 		ClasspathContainerInitializer init = JSDScopeUtil.findLibraryInitializer(new Path(new String(compUnit)),project);
 		if(init!=null) {
 			String description = init.getDescription(new Path(new String(compUnit)),project);
-			if( description!=null) return  "[" +  description + "]";
+			if( description!=null) return  "[" +  description + "]"; //$NON-NLS-1$ //$NON-NLS-2$
 			
 		}
 		

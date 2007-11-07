@@ -474,7 +474,7 @@ public MatchLocator(
  */
 public void accept(IBinaryType binaryType, PackageBinding packageBinding, AccessRestriction accessRestriction) {
 	/* commented out below is the original code with a compilation error */
-	System.out.println("Bad call to method-- IMPLEMENT MatchLocator. accept(IBinaryType binaryType, PackageBinding packageBinding, AccessRestriction accessRestriction) ");
+	System.out.println("Bad call to method-- IMPLEMENT MatchLocator. accept(IBinaryType binaryType, PackageBinding packageBinding, AccessRestriction accessRestriction) "); //$NON-NLS-1$
 	//this.lookupEnvironment.createBinaryTypeFrom(binaryType., packageBinding, accessRestriction);
 }
 /**

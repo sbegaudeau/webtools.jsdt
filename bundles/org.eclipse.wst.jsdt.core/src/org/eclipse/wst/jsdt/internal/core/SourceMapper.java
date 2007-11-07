@@ -1060,7 +1060,7 @@ public class SourceMapper
 			try {
 				return (SourceRange)((ISourceReference)element).getSourceRange();
 			} catch (JavaModelException e) {
-				org.eclipse.wst.jsdt.internal.core.util.Util.log(e, "error getting source range");
+				org.eclipse.wst.jsdt.internal.core.util.Util.log(e, "error getting source range"); //$NON-NLS-1$
 				return UNKNOWN_RANGE;
 			}
 		switch(element.getElementType()) {

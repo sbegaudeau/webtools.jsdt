@@ -35,11 +35,11 @@ public class Value implements Contants {
 		switch (type)
 		{
 		case NULL:
-			return "null";
+			return "null"; //$NON-NLS-1$
 		case UNDEFINED: 
-			return "undefined";
+			return "undefined"; //$NON-NLS-1$
 		}
-		return "";
+		return ""; //$NON-NLS-1$
 	}
 	public  boolean booleanValue() {return false;}
 	
@@ -51,7 +51,7 @@ public class Value implements Contants {
 		{
 		case NULL:
 		case UNDEFINED:
-			throw new InterpretException("null reference");
+			throw new InterpretException("null reference"); //$NON-NLS-1$
 		case BOOLEAN:
 		case NUMBER:
 		case STRING:

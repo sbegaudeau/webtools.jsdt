@@ -1072,7 +1072,7 @@ class NaiveASTFlattener extends ASTVisitor {
 
 	public boolean visit(ObjectLiteralField node) {
 		node.getFieldName().accept(this);
-		this.buffer.append(" : ");
+		this.buffer.append(" : "); //$NON-NLS-1$
 		node.getInitializer().accept(this);
 		return false;
 	}

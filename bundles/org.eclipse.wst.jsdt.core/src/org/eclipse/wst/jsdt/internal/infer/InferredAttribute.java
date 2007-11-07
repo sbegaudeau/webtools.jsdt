@@ -19,13 +19,13 @@ public class InferredAttribute extends InferredMember{
 
 	public StringBuffer print(int indent, StringBuffer output)
 	{
-		String modifier=(isStatic)? "static ":"";
+		String modifier=(isStatic)? "static ":""; //$NON-NLS-1$ //$NON-NLS-2$
 		printIndent(indent, output).append(modifier);
 	   if (type!=null)
 		   type.dumpReference(output);
 	   else
-		   output.append("??");
-	   output.append(" ").append(name);
+		   output.append("??"); //$NON-NLS-1$
+	   output.append(" ").append(name); //$NON-NLS-1$
 	   return output;
 	}
 

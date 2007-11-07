@@ -946,7 +946,7 @@ protected IJavaElement resolveCompilationUnit(char[] packageName, char[] compila
 	if (this.openable instanceof CompilationUnit || this.openable instanceof ClassFile) {
 		if ( (cuName.equals(this.openable.getElementName()) &&
 				new String(packageName).equals(this.openable.getParent().getElementName())
-				) || fullCUName.startsWith("http:")&&fullCUName.equals(this.openable.getElementName()))
+				) || fullCUName.startsWith("http:")&&fullCUName.equals(this.openable.getElementName())) //$NON-NLS-1$
 		{
 			return this.openable;
 		}

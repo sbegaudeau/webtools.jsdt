@@ -393,7 +393,7 @@ private MethodBinding createMethod(ISourceMethod method, long sourceLevel) {
 //	AnnotationBinding[][] paramAnnotations = null;
 //	TypeBinding returnType = null;
 
-	throw new UnimplementedException("fix compile errors for this code");
+	throw new UnimplementedException("fix compile errors for this code"); //$NON-NLS-1$
 //	final boolean use15specifics = sourceLevel >= ClassFileConstants.JDK1_5;
 //	char[] methodSignature = use15specifics ? method.getGenericSignature() : null;
 //	if (methodSignature == null) { // no generics

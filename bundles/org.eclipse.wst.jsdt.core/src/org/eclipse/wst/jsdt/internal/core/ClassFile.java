@@ -196,7 +196,7 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 //			int astLevel = ((ASTHolderCUInfo) info).astLevel;
 //			org.eclipse.wst.jsdt.core.dom.CompilationUnit cu = AST.convertCompilationUnit(astLevel, unit, contents, options, computeProblems, this, pm);
 //			((ASTHolderCUInfo) info).ast = cu;
-			throw new RuntimeException("Implement this");
+			throw new RuntimeException("Implement this"); //$NON-NLS-1$
 		}
 	} finally {
 	    if (compilationUnitDeclaration != null) {

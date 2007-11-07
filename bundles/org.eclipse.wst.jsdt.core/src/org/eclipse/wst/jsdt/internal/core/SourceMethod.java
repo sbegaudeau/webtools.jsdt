@@ -277,7 +277,7 @@ protected void toStringInfo(int tab, StringBuffer buffer, Object info, boolean s
 		}
 		if (!methodInfo.isConstructor()) {
 //			buffer.append(methodInfo.getReturnTypeName());
-			buffer.append("function ");
+			buffer.append("function "); //$NON-NLS-1$
 		}
 		toStringName(buffer, flags);
 	}
@@ -296,7 +296,7 @@ protected void toStringName(StringBuffer buffer, int flags) {
 			try {
 				if (i < length - 1) {
 //					buffer.append(Signature.toString(parameters[i]));
-					buffer.append("p"+i);
+					buffer.append("p"+i); //$NON-NLS-1$
 					buffer.append(", "); //$NON-NLS-1$
 				} else if (isVarargs) {
 					// remove array from signature
@@ -305,7 +305,7 @@ protected void toStringName(StringBuffer buffer, int flags) {
 					buffer.append(" ..."); //$NON-NLS-1$
 				} else {
 //					buffer.append(Signature.toString(parameters[i]));
-					buffer.append("p"+i);
+					buffer.append("p"+i); //$NON-NLS-1$
 				}
 			} catch (IllegalArgumentException e) {
 				// parameter signature is malformed

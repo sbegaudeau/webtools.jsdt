@@ -525,7 +525,7 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 		IJavaElement[] children= parent.getChildren();
 		String prefix= fragment != null ? fragment.getElementName() + '/' : ""; //$NON-NLS-1$
 		if (prefix.length()==1)
-			prefix="";
+			prefix=""; //$NON-NLS-1$
 		int prefixLen= prefix.length();
 		for (int i= 0; i < children.length; i++) {
 			IPackageFragment curr= (IPackageFragment) children[i];

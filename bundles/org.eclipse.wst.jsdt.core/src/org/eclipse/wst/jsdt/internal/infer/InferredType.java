@@ -205,18 +205,18 @@ public class InferredType extends ASTNode {
 	public StringBuffer print(int indent, StringBuffer output) {
 		printIndent(indent, output);
 		char[] superName= getSuperClassName();
-		output.append("class ").append(name).append(" extends ").append(superName).append("{\n");
+		output.append("class ").append(name).append(" extends ").append(superName).append("{\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		for (int i=0;i<this.numberAttributes;i++) {
 				this.attributes[i].print(indent+1,output);
-				output.append(";\n");
+				output.append(";\n"); //$NON-NLS-1$
 			}
 		if (methods!=null)
 			for (Iterator methodIterator = methods.iterator(); methodIterator.hasNext();) {
 				InferredMethod method = (InferredMethod) methodIterator.next();
 				method.print(indent+1,output);
-				output.append("\n");
+				output.append("\n"); //$NON-NLS-1$
 			}
-		output.append("}");
+		output.append("}"); //$NON-NLS-1$
 		return output;
 	}
 

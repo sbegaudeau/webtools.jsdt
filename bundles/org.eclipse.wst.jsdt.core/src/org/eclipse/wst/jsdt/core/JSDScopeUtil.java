@@ -54,7 +54,7 @@ public class JSDScopeUtil {
 			ex.printStackTrace();
 		}
 		for (int i = 0;i<roots.length;i++) {
-			IPackageFragment frag = roots[i].getPackageFragment("");
+			IPackageFragment frag = roots[i].getPackageFragment(""); //$NON-NLS-1$
 
 			try {
 				IClassFile classfile = frag.getClassFile(compUnitPath.toString());

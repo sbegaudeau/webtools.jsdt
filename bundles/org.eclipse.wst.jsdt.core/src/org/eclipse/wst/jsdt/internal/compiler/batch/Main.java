@@ -991,7 +991,7 @@ public class Main implements ProblemSeverities, SuffixConstants {
 						this.log.println("# " + dateFormat.format(date));//$NON-NLS-1$
 					}
 				} else {
-					if (logFileName.equals("con"))
+					if (logFileName.equals("con")) //$NON-NLS-1$
 						this.log=new PrintWriter(System.out);
 					else
 						this.log = new PrintWriter(new FileOutputStream(logFileName, false));

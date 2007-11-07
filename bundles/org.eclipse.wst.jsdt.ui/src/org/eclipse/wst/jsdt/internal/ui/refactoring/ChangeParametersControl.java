@@ -192,8 +192,8 @@ public class ChangeParametersControl extends Composite {
 		}
 	}
 
-	private static final String[] PROPERTIES_NO_RETURN = new String[] {  "new", "default" }; 
-	private static final String[] PROPERTIES_WITH_RETURN = new String[] { "type", "new", "default" }; 
+	private static final String[] PROPERTIES_NO_RETURN = new String[] {  RefactoringMessages.ChangeParametersControl_new, RefactoringMessages.ChangeParametersControl_default }; 
+	private static final String[] PROPERTIES_WITH_RETURN = new String[] { RefactoringMessages.ChangeParametersControl_type, RefactoringMessages.ChangeParametersControl_new, RefactoringMessages.ChangeParametersControl_default }; 
 	
 	private static final String[] PROPERTIES= JavaCore.IS_EMCASCRIPT4?PROPERTIES_WITH_RETURN:PROPERTIES_NO_RETURN;
 	
@@ -297,7 +297,7 @@ public class ChangeParametersControl extends Composite {
 		if(JavaCore.IS_EMCASCRIPT4) {
 			tc= new TableColumn(table, SWT.NONE, TYPE_PROP);
 			tc.setResizable(true);
-			tc.setText(SHOW_TYPES?RefactoringMessages.ChangeParametersControl_table_type:"");
+			tc.setText(SHOW_TYPES?RefactoringMessages.ChangeParametersControl_table_type:""); //$NON-NLS-1$
 //		
 			}
 		

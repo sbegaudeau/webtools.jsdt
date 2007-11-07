@@ -40,8 +40,15 @@ public final class NewWizardMessages extends NLS {
 	public static String AddSourceFolderWizardPage_conflictWarning;
 	public static String AddSourceFolderWizardPage_ignoreNestingConflicts;
 	public static String AddSourceFolderWizardPage_replaceSourceFolderInfo;
+	public static String BaseLibraryWizardPage_DefaultBrowserLibraryAdded;
+	public static String BaseLibraryWizardPage_WebBrowserSupport;
+	public static String BuildPathDialogAccess_SelectSupertType;
+	public static String BuildPathDialogAccess_SuperTypeSelection;
+	public static String BuildPathsBlock_GlobalOrder;
 	public static String BuildPathsBlock_RemoveOldOutputFolder_description;
 	public static String BuildPathSupport_deprecated;
+	public static String ClasspathOrderingWorkbookPage_SelectReorder;
+	public static String ClasspathOrderingWorkbookPage_SuperType;
 	public static String CPListLabelProvider_attribute_label;
 	public static String CPVariableElementLabelProvider_appendix;
 	public static String CPVariableElementLabelProvider_deprecated;

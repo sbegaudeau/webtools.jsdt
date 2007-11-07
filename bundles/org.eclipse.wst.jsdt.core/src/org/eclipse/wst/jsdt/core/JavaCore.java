@@ -4770,7 +4770,7 @@ public final class JavaCore extends Plugin {
 	}
 	public static String getSystemPath()
 	{
-		URL url=FileLocator.find(getJavaCore().getBundle(),new Path("libraries"),null);
+		URL url=FileLocator.find(getJavaCore().getBundle(),new Path("libraries"),null); //$NON-NLS-1$
 		return url.getFile();
 	}
 

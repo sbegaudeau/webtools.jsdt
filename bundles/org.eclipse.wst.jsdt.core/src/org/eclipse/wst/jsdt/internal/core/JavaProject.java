@@ -155,7 +155,7 @@ public class JavaProject
 	 */
 	private static final IClasspathEntry[] RESOLUTION_IN_PROGRESS = new IClasspathEntry[0];
 
-	private static final String SHARED_PROPERTIES_DIRECTORY = ".settings";
+	private static final String SHARED_PROPERTIES_DIRECTORY = ".settings"; //$NON-NLS-1$
 
 	/**
 	 * The platform project this <code>IJavaProject</code> is based on

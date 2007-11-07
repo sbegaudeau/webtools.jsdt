@@ -1019,7 +1019,7 @@ public class InferEngine extends ASTVisitor {
 	}
 
 	protected boolean isFunction(MessageSend messageSend,String string) {
-		String []names=string.split("\\.");
+		String []names=string.split("\\."); //$NON-NLS-1$
 		char [] functionName=names[names.length-1].toCharArray();
 		if (!CharOperation.equals(functionName, messageSend.selector))
 			return false;

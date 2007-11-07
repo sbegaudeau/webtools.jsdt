@@ -15,23 +15,23 @@ public class ObjectLiteral extends Expression {
 	public StringBuffer printExpression(int indent, StringBuffer output) {
 		if (fields==null || fields.length==0)
 		{
-			output.append("{}");
+			output.append("{}"); //$NON-NLS-1$
 		}
 		else
 		{
-			output.append("{\n");
+			output.append("{\n"); //$NON-NLS-1$
 			printIndent(indent+1, output);
 			for (int i = 0; i < fields.length; i++) {
 				if (i>0)
 				{
-					output.append(",\n");
+					output.append(",\n"); //$NON-NLS-1$
 					printIndent(indent+1, output);
 				}
 				fields[i].printExpression(indent, output);
 			}
-			output.append("\n");
+			output.append("\n"); //$NON-NLS-1$
 			printIndent(indent, output);
-			output.append("}");
+			output.append("}"); //$NON-NLS-1$
 		}
 		return output;
 	}

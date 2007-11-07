@@ -16,15 +16,15 @@ import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 import org.eclipse.wst.jsdt.internal.ui.IClasspathContainerInitialzerExtension;
 
 public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathContainerInitializer implements IClasspathContainer, IClasspathContainerInitialzerExtension {
-	private static final String CONTAINER_ID = "org.eclipse.wst.jsdt.launching.baseBrowserLibrary";
-	private static final String ContainerDescription = "ECMA 3 Browser Support";
-	private static final String FILE_DESCRIPTION0 = "ECMA 3 DOM";
-	private static final String FILE_DESCRIPTION1 = "Common Web Browser";
+	private static final String CONTAINER_ID = "org.eclipse.wst.jsdt.launching.baseBrowserLibrary"; //$NON-NLS-1$
+	private static final String ContainerDescription = Messages.BasicBrowserLibraryClassPathContainerInitializer_ECMA3Browser;
+	private static final String FILE_DESCRIPTION0 = Messages.BasicBrowserLibraryClassPathContainerInitializer_ECMA3DOM;
+	private static final String FILE_DESCRIPTION1 = Messages.BasicBrowserLibraryClassPathContainerInitializer_CommonWebBrowser;
 	private static final char[][] LIBRARY_FILE_NAME = {
 														{ 'b', 'a', 's', 'e', 'B', 'r', 'o', 'w', 's', 'e', 'r', 'L', 'i', 'b', 'r', 'a', 'r', 'y', '.', 'j', 's' },
 														{'b','r','o','w','s','e','r','W','i','n','d','o','w','.','j','s'}
 													  };
-	private static final String LibraryDescription = "ECMA 3 Browser Support Library";
+	private static final String LibraryDescription = Messages.BasicBrowserLibraryClassPathContainerInitializer_ECMA3BrowserLibrary;
 	
 	class BasicLibLocation extends SystemLibraryLocation {
 		BasicLibLocation() {
@@ -99,7 +99,7 @@ public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathC
 	 * @see org.eclipse.wst.jsdt.core.ClasspathContainerInitializer#containerSuperTypes()
 	 */
 	public String[] containerSuperTypes() {
-		return new String[] {"Window"};
+		return new String[] {Messages.BasicBrowserLibraryClassPathContainerInitializer_Window};
 	}
 
 	/* (non-Javadoc)
@@ -120,7 +120,7 @@ public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathC
 			return null;
 		}
 		
-		return ImageDescriptor.createFromFile(this.getClass(),"rino.jpg");
+		return ImageDescriptor.createFromFile(this.getClass(),"rino.jpg"); //$NON-NLS-1$
 	//	System.out.println("Unimplemented method:BasicBrowserLibraryClassPathContainerInitializer.getImage");
 		//return null;
 	}

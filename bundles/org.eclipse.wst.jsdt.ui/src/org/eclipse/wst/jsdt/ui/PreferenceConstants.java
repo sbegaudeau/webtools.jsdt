@@ -409,8 +409,8 @@ public class PreferenceConstants {
 
 
 	/* supertype preferences */
-	public static final String SUPER_TYPE_CONTAINER= "org.eclipse.wst.jsdt.ui.superType.container";
-	public static final String SUPER_TYPE_NAME= "org.eclipse.wst.jsdt.ui.superType.name";
+	public static final String SUPER_TYPE_CONTAINER= "org.eclipse.wst.jsdt.ui.superType.container"; //$NON-NLS-1$
+	public static final String SUPER_TYPE_NAME= "org.eclipse.wst.jsdt.ui.superType.name"; //$NON-NLS-1$
 	
 
 	/**

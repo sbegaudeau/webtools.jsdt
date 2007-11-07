@@ -710,7 +710,7 @@ public class SearchableEnvironment implements INameEnvironment,
 		if (index == -1) {
 			this.nameLookup.seekBindings(prefix, bindingType,null, true, type, requestor);
 		} else {
-			throw new UnimplementedException("shouldnt get here");
+			throw new UnimplementedException("shouldnt get here"); //$NON-NLS-1$
 //			String packageName = prefix.substring(0, index);
 //			JavaElementRequestor elementRequestor = new JavaElementRequestor();
 //			this.nameLookup.seekPackageFragments(packageName, false,

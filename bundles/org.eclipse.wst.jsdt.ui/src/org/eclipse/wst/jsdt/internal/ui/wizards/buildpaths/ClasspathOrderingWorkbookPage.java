@@ -24,6 +24,7 @@ import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
+import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IStringButtonAdapter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
@@ -108,10 +109,10 @@ public class ClasspathOrderingWorkbookPage extends BuildPathBasePage {
 		
 		Composite composite= new Composite(parent, SWT.NONE);
 		composite.setFont(parent.getFont());
-		superTypeField.setButtonLabel("Select && Re-order Libraries"); 
+		superTypeField.setButtonLabel(NewWizardMessages.ClasspathOrderingWorkbookPage_SelectReorder); 
 		//superTypeField.setDialogFieldListener(null);
 		
-		superTypeField.setLabelText("JavaScript file 'SuperType'  ---\n  [Every (.js) file will inherit the 'SuperType' fields/methods]:"); 
+		superTypeField.setLabelText(NewWizardMessages.ClasspathOrderingWorkbookPage_SuperType); 
 
 		LayoutUtil.doDefaultLayout(composite, new DialogField[] { fClassPathList, superTypeField }, true, SWT.DEFAULT, SWT.DEFAULT);
 		LayoutUtil.setHorizontalGrabbing(fClassPathList.getListControl(null));

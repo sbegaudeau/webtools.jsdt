@@ -400,7 +400,7 @@ public class NewJavaProjectPreferencePage extends PreferencePage implements IWor
 		//fBinFolderNameLabel.setEnabled(useFolders);		
 		if (useFolders) {
 			String srcName= fSrcFolderNameText.getText();
-			String binName= "";
+			String binName= ""; //$NON-NLS-1$
 			if (srcName.length() + binName.length() == 0) {
 				updateStatus(new StatusInfo(IStatus.ERROR,  PreferencesMessages.NewJavaProjectPreferencePage_folders_error_namesempty)); 
 				return;

@@ -78,13 +78,13 @@ public class JavadocSingleNameReference extends SingleNameReference {
 
 		if (types!=null && types.length>0)
 		{
-			output.append("{");
+			output.append("{"); //$NON-NLS-1$
 			for (int i = 0; i < types.length; i++) {
 				if (i>0)
 					output.append('|');
 				types[i].printExpression(indent, output);
 			}
-			output.append("} ");
+			output.append("} "); //$NON-NLS-1$
 		}
 		output=super.printExpression(indent, output);
 		return output;

@@ -15,7 +15,7 @@ public class BuiltInObject {
 
 		ObjectValue prototype = new ObjectValue();
 		
-		prototype.setValue("toString".toCharArray(),
+		prototype.setValue("toString".toCharArray(), //$NON-NLS-1$
 				new NativeFunction()	{
 
 			public Value execute(InterpreterEngine interpreter,ObjectValue receiver,  Value[] arguments) {
@@ -26,7 +26,7 @@ public class BuiltInObject {
 			
 		});
 
-		prototype.setValue("hasProperty".toCharArray(),
+		prototype.setValue("hasProperty".toCharArray(), //$NON-NLS-1$
 				new NativeFunction()	{
 
 			public Value execute(InterpreterEngine interpreter,ObjectValue receiver,  Value[] arguments) {

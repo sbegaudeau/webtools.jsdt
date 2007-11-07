@@ -115,7 +115,7 @@ class NewJSFileWizardPage extends WizardNewFileCreationPage {
 	private IContentType getContentType() {
 		if (fContentType == null)
 //			fContentType = Platform.getContentTypeManager().getContentType(ContentTypeIdForJavaScript.ContentTypeID_JAVASCRIPT);
-			fContentType = Platform.getContentTypeManager().getContentType("org.eclipse.wst.jsdt.core.jsSource");
+			fContentType = Platform.getContentTypeManager().getContentType("org.eclipse.wst.jsdt.core.jsSource"); //$NON-NLS-1$
 		return fContentType;
 	}
 
@@ -172,7 +172,7 @@ class NewJSFileWizardPage extends WizardNewFileCreationPage {
 
 		newFileName.append("."); //$NON-NLS-1$
 //		newFileName.append(ext);
-newFileName.append("js");
+newFileName.append("js"); //$NON-NLS-1$
 		return newFileName.toString();
 	}
 	
@@ -236,7 +236,7 @@ return true;
 		if (project != null && isWebProject(project)) {			
 //			IVirtualComponent component = ComponentCore.createComponent(project);
 //			path = component.getRootFolder().getWorkspaceRelativePath();
-path.append("/");
+path.append("/"); //$NON-NLS-1$
 		}
 		
 		return path;

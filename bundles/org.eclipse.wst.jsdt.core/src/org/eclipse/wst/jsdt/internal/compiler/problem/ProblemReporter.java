@@ -1671,8 +1671,8 @@ public void errorNoMethodFor(MessageSend messageSend, TypeBinding recType, TypeB
 		shortBuffer.append(new String(params[i].shortReadableName()));
 	}
 
-	String shortName="";
-	String readableName="";
+	String shortName=""; //$NON-NLS-1$
+	String readableName=""; //$NON-NLS-1$
 	if (recType!=null)
 	{
 		readableName=new String(recType.readableName());
@@ -3361,9 +3361,9 @@ public void invalidMethod(MessageSend messageSend, MethodBinding method) {
 			break;
 	}
 
-	String shortName="";
-	String readableName="";
-	String methodName=(shownMethod.selector!=null)? new String(shownMethod.selector):"";
+	String shortName=""; //$NON-NLS-1$
+	String readableName=""; //$NON-NLS-1$
+	String methodName=(shownMethod.selector!=null)? new String(shownMethod.selector):""; //$NON-NLS-1$
 	if (method.declaringClass!=null)
 	{
 		shortName=		readableName=new String(method.declaringClass.readableName());
@@ -5084,7 +5084,7 @@ public void looseVariableDecleration(ASTNode location, Assignment assignment) {
 
 public void optionalSemicolon(ASTNode location) {
 	// Do something else
-	System.out.println("Optional Semi");
+	System.out.println("Optional Semi"); //$NON-NLS-1$
 }
 
 public void nonStaticContextForEnumMemberType(SourceTypeBinding type) {
@@ -5470,7 +5470,7 @@ public void parseErrorInsertToComplete(
 	String inserted,
 	String completed){
 	String[] arguments = new String[] {inserted, completed};
-	if (";".equals(inserted))	// ignore missing semicolon error
+	if (";".equals(inserted))	// ignore missing semicolon error //$NON-NLS-1$
 		return;
 	this.handle(
 		IProblem.ParsingErrorInsertToComplete,

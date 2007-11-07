@@ -1084,7 +1084,7 @@ public class JavaElementLabels {
 				}
 				buf.append(name.substring(start));
 		} else {
-			buf.append( "[" + pack.getDisplayName() + "]");
+			buf.append( "[" + pack.getDisplayName() + "]"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		if (getFlag(flags, P_POST_QUALIFIED)) {
 			buf.append(CONCAT_STRING);

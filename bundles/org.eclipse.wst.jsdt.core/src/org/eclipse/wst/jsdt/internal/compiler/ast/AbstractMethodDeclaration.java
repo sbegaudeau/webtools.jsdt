@@ -391,7 +391,7 @@ public abstract class AbstractMethodDeclaration
 //			typeParams[max].print(0, output);
 //			output.append('>');
 //		}
-		output.append("function ");
+		output.append("function "); //$NON-NLS-1$
 		if (this.selector!=null)
 			output.append(this.selector);
 		output.append('(');

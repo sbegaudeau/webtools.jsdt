@@ -143,7 +143,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 	private static final String ATTRIBUTE_KIND= "kind"; //$NON-NLS-1$
 	private static final String ATTRIBUTE_DELEGATE= "delegate"; //$NON-NLS-1$
 	private static final String ATTRIBUTE_DEPRECATE= "deprecate"; //$NON-NLS-1$
-	private static final String ATTRIBUTE_FUNCTION_HEAD="function";
+	private static final String ATTRIBUTE_FUNCTION_HEAD="function"; //$NON-NLS-1$
 	
 	private static final boolean PREFIX_FUNCTION_HEAD = true;
 	
@@ -873,7 +873,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		}
 		
 		if(PREFIX_FUNCTION_HEAD) {
-			buff.append(ATTRIBUTE_FUNCTION_HEAD + " ");
+			buff.append(ATTRIBUTE_FUNCTION_HEAD + " "); //$NON-NLS-1$
 		}
 		
 		if (! getMethod().isConstructor() && JavaCore.IS_EMCASCRIPT4)
@@ -895,7 +895,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 	public String getNewMethodSignature() throws JavaModelException{
 		StringBuffer buff= new StringBuffer();
 		if(PREFIX_FUNCTION_HEAD) {
-			buff.append(ATTRIBUTE_FUNCTION_HEAD + " ");
+			buff.append(ATTRIBUTE_FUNCTION_HEAD + " "); //$NON-NLS-1$
 		}
 		if(JavaCore.IS_EMCASCRIPT4) {
 			buff.append(getVisibilityString(fVisibility));

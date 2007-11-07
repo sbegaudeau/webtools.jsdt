@@ -81,7 +81,7 @@ public class InterpreterEngine extends ASTVisitor implements Contants{
 			switch (type)
 			{
 			case Value.BOOLEAN:
-				return value!=0 ?"true":"false";
+				return value!=0 ?"true":"false"; //$NON-NLS-1$ //$NON-NLS-2$
 			case Value.NUMBER:
 				return String.valueOf(value);
 			case Value.STRING:
@@ -115,7 +115,7 @@ public class InterpreterEngine extends ASTVisitor implements Contants{
 			case FUNCTION:
 				return (ObjectValue)objValue;
 			case UNDEFINED:
-				throw new InterpretException("null reference");
+				throw new InterpretException("null reference"); //$NON-NLS-1$
 			case BOOLEAN:
 			case NUMBER:
 			case STRING:
@@ -176,7 +176,7 @@ public class InterpreterEngine extends ASTVisitor implements Contants{
 	public InterpreterResult interpret(CompilationUnitDeclaration ast)
 	{
 		if (ast.ignoreFurtherInvestigation)
-			throw new InterpretException("compile errors");
+			throw new InterpretException("compile errors"); //$NON-NLS-1$
 		
 		execBlock(ast.statements);
 		if (stackPtr>=0)
@@ -249,7 +249,7 @@ public class InterpreterEngine extends ASTVisitor implements Contants{
 				resultInt =  (value1.booleanValue() || value2.booleanValue())?1:0;
 				break;
 			default:
-				throw new UnimplementedException("");
+				throw new UnimplementedException(""); //$NON-NLS-1$
 				
 		}
 		
@@ -312,7 +312,7 @@ public class InterpreterEngine extends ASTVisitor implements Contants{
 					equal = !equal;
 					break;
 			default:
-				throw new UnimplementedException("");
+				throw new UnimplementedException(""); //$NON-NLS-1$
 				
 		}
 		
@@ -324,7 +324,7 @@ public class InterpreterEngine extends ASTVisitor implements Contants{
     public boolean visit(PostfixExpression postfixExpression, BlockScope scope) {
     	ExprStackItem value= execute(postfixExpression.lhs);
 		if (value.reference==null)
-			throw new InterpretException("invalid assigment left hand side");
+			throw new InterpretException("invalid assigment left hand side"); //$NON-NLS-1$
 
 		int number=value.numberValue();
 		int orgNumber=number;
@@ -346,7 +346,7 @@ public class InterpreterEngine extends ASTVisitor implements Contants{
 	public boolean visit(PrefixExpression prefixExpression, BlockScope scope) {
     	ExprStackItem value= execute(prefixExpression.lhs);
 		if (value.reference==null)
-			throw new InterpretException("invalid assigment left hand side");
+			throw new InterpretException("invalid assigment left hand side"); //$NON-NLS-1$
 
 		int number=value.numberValue();
 		
@@ -445,7 +445,7 @@ public class InterpreterEngine extends ASTVisitor implements Contants{
 		ExprStackItem assignValue= stack[stackPtr--];
 		ExprStackItem refValue= stack[stackPtr--];
 		if (refValue.reference==null)
-			throw new InterpretException("invalid assigment left hand side");
+			throw new InterpretException("invalid assigment left hand side"); //$NON-NLS-1$
 		refValue.reference.setValue(refValue.referenceName, assignValue.getValue());
 		pushExprStackItem(assignValue);
 	}
@@ -460,7 +460,7 @@ public class InterpreterEngine extends ASTVisitor implements Contants{
 		else if (field.fieldName instanceof StringLiteral)
 			name=((StringLiteral)field.fieldName).source();
 		else
-			throw new InterpretException("invalid object literal field");
+			throw new InterpretException("invalid object literal field"); //$NON-NLS-1$
 		object.setValue(name, fieldValue);
 	}
 
@@ -523,7 +523,7 @@ public class InterpreterEngine extends ASTVisitor implements Contants{
 				if (receiver.type==Value.FUNCTION)
 				  function=(FunctionValue)receiver;
 				else
-					throw new InterpretException("not a function:"+new String((messageSend.selector)));
+					throw new InterpretException("not a function:"+new String((messageSend.selector))); //$NON-NLS-1$
 		  	
 		}
 		
@@ -568,7 +568,7 @@ public class InterpreterEngine extends ASTVisitor implements Contants{
 	public boolean visit(AllocationExpression allocationExpression, BlockScope scope) {
 		Value value = execute(allocationExpression.member);
 		if (value.type!=Value.FUNCTION)
-				throw new InterpretException("not a function:"+allocationExpression.member.toString());
+				throw new InterpretException("not a function:"+allocationExpression.member.toString()); //$NON-NLS-1$
 		FunctionValue  function= (FunctionValue) value.valueObject();
 		
 		ObjectValue receiver = new ObjectValue(function.prototype);

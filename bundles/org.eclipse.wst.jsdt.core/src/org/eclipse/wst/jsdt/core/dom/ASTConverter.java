@@ -1374,7 +1374,7 @@ class ASTConverter {
 					type = convert((org.eclipse.wst.jsdt.internal.compiler.ast.Statement )programElement);
 				}
 				else
-					throw new RuntimeException("");
+					throw new RuntimeException(""); //$NON-NLS-1$
 
 
 				if (type == null) {

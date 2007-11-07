@@ -23,7 +23,7 @@ public class ObjectLiteralField extends Expression {
 		if (this.javaDoc!=null)
 			this.javaDoc.print(indent, output);
 		fieldName.printExpression(indent, output);
-		output.append(" : ");
+		output.append(" : "); //$NON-NLS-1$
 		initializer.printExpression(indent, output) ;
 		return output;
 	}

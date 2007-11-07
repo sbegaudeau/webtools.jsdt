@@ -260,7 +260,7 @@ public class CodeGeneration {
 		String[] paramNames= method.getParameterNames();
 		String[] typeParameterNames= StubUtility.getTypeParameterNames(method.getTypeParameters());
 		
-		String typeName = (method.getDeclaringType()!=null) ? method.getDeclaringType().getElementName() : "";
+		String typeName = (method.getDeclaringType()!=null) ? method.getDeclaringType().getElementName() : ""; //$NON-NLS-1$
 		return StubUtility.getMethodComment(method.getCompilationUnit(), typeName,
 			method.getElementName(), paramNames, method.getExceptionTypes(), retType, typeParameterNames, overridden, false, lineDelimiter);
 	}

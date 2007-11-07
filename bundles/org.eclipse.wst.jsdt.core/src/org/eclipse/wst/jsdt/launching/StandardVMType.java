@@ -262,7 +262,7 @@ public class StandardVMType extends AbstractVMInstallType {
 	public LibraryLocation[] getDefaultLibraryLocations(File installLocation) {
 
 		
-		File libFile = new File(installLocation,"system.js");
+		File libFile = new File(installLocation,"system.js"); //$NON-NLS-1$
 		Path libPath = new Path(libFile.getAbsolutePath());
 		LibraryLocation location = new LibraryLocation(libPath,null,null);
 		return new LibraryLocation[]{location};
@@ -399,7 +399,7 @@ public class StandardVMType extends AbstractVMInstallType {
 									LibraryLocation library = new LibraryLocation(libPath, Path.EMPTY, Path.EMPTY, null);
 									libraries.add(library);
 								} catch (IOException e) {
-									Util.log(e, "");
+									Util.log(e, ""); //$NON-NLS-1$
 								}
 							}
 						}

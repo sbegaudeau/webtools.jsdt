@@ -23,7 +23,7 @@ public class PossibleMatchSet {
 
 private SimpleLookupTable rootsToPossibleMatches = new SimpleLookupTable(5);
 private int elementCount = 0;
-private static final IPath VIRTUAL_RESOURCE = new Path("****&&VIRTUALRESOURCE&&*****");
+private static final IPath VIRTUAL_RESOURCE = new Path("****&&VIRTUALRESOURCE&&*****"); //$NON-NLS-1$
 
 public void add(PossibleMatch possibleMatch) {
 	IPath path = null;

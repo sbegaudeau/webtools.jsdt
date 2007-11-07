@@ -19,8 +19,8 @@ public class LibrarySuperType {
 	String libraryName;
 	IJavaProject javaProject;
 
-	public static final String SUPER_TYPE_CONTAINER= "org.eclipse.wst.jsdt.ui.superType.container";
-	public static final String SUPER_TYPE_NAME= "org.eclipse.wst.jsdt.ui.superType.name";
+	public static final String SUPER_TYPE_CONTAINER= "org.eclipse.wst.jsdt.ui.superType.container"; //$NON-NLS-1$
+	public static final String SUPER_TYPE_NAME= "org.eclipse.wst.jsdt.ui.superType.name"; //$NON-NLS-1$
 
 	/* Only one superTypeName per instance so enforce that */
 	public LibrarySuperType(IPath classPathEntry, IJavaProject project, String superTypeName) {
@@ -126,7 +126,7 @@ public class LibrarySuperType {
 
 		}
 
-		return superTypeName + "() in " + getLibraryName();
+		return superTypeName + "() in " + getLibraryName(); //$NON-NLS-1$
 	}
 
 	public boolean equals(Object o) {

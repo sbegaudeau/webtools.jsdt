@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 
@@ -21,10 +22,10 @@ public class BaseLibraryWizardPage extends NewElementWizardPage implements IClas
 //	private IClasspathEntry[] fCurrentEntries;
 //	private static final String LIBRARY_FILE_NAME = "baseBrowserLibrary.js";
 	//private static final String MY_PLUGIN_ID="org.eclipse.wst.jsdt.base.library";
-	private static final String CONTAINER_ID="org.eclipse.wst.jsdt.launching.baseBrowserLibrary";
+	private static final String CONTAINER_ID="org.eclipse.wst.jsdt.launching.baseBrowserLibrary"; //$NON-NLS-1$
 	
 	public BaseLibraryWizardPage() {
-		super("BaseicLibraryWizzardPage");
+		super("BaseicLibraryWizzardPage"); //$NON-NLS-1$
 	}
 
 	public boolean finish() {
@@ -33,7 +34,7 @@ public class BaseLibraryWizardPage extends NewElementWizardPage implements IClas
 
 	public IClasspathEntry getSelection() {
 		// TODO Auto-generated method stub
-		System.out.println("Unimplemented method:BaseLibraryWizardPage.getSelection");
+		System.out.println("Unimplemented method:BaseLibraryWizardPage.getSelection"); //$NON-NLS-1$
 		return null;
 	}
 
@@ -45,13 +46,13 @@ public class BaseLibraryWizardPage extends NewElementWizardPage implements IClas
 		DialogField field = new DialogField();
 		
 		//field.createEmptySpace(parent);
-		field.setLabelText("Default Browser Library added to Project.\n\n  - This library supports the document and window objects supported by most browsers.");
+		field.setLabelText(NewWizardMessages.BaseLibraryWizardPage_DefaultBrowserLibraryAdded);
 		//field.setText("Default Browser Library added to project");
 		LayoutUtil.doDefaultLayout(composite, new DialogField[] {field }, false, SWT.DEFAULT, SWT.DEFAULT);
 		//LayoutUtil.setHorizontalGrabbing(fLibrarySelector.getListControl(null));
 		Dialog.applyDialogFont(composite);
 		setControl(composite);
-		setDescription("Web Browser Support");
+		setDescription(NewWizardMessages.BaseLibraryWizardPage_WebBrowserSupport);
 		
 	}
 

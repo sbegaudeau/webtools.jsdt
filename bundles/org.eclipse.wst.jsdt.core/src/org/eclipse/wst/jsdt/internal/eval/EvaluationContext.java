@@ -145,7 +145,7 @@ public void complete(char[] codeSnippet, int completionPosition, SearchableEnvir
 		}
 		public LibrarySuperType getCommonSuperType() {
 			// TODO Auto-generated method stub
-			System.out.println("Unimplemented method:.getCommonSuperType");
+			System.out.println("Unimplemented method:.getCommonSuperType"); //$NON-NLS-1$
 			return null;
 		}
 	};
@@ -596,7 +596,7 @@ public void select(
 		}
 		public LibrarySuperType getCommonSuperType() {
 			// TODO Auto-generated method stub
-			System.out.println("Unimplemented method:.getCommonSuperType");
+			System.out.println("Unimplemented method:.getCommonSuperType"); //$NON-NLS-1$
 			return null;
 		}
 	};

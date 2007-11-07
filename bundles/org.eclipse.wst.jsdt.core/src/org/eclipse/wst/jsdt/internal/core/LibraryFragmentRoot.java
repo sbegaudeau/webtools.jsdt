@@ -69,7 +69,7 @@ public class LibraryFragmentRoot extends PackageFragmentRoot implements IVirtual
 
 	protected boolean computeChildren(OpenableElementInfo info, Map newElements) throws JavaModelException {
 
-		String name[]={""};//libraryPath.lastSegment()};
+		String name[]={""};//libraryPath.lastSegment()}; //$NON-NLS-1$
 		LibraryPackageFragment packFrag=  new LibraryPackageFragment(this, name);
 		LibraryPackageFragmentInfo fragInfo= new LibraryPackageFragmentInfo();
 

@@ -38,7 +38,7 @@ public class ObjectStringStatusButtonDialogField extends StringButtonDialogField
 	
 	public String getDescription() {
 		if(description==null && enclosedObject==null)
-			return "";
+			return ""; //$NON-NLS-1$
 		return description==null?enclosedObject.toString():description;
 	}
 	

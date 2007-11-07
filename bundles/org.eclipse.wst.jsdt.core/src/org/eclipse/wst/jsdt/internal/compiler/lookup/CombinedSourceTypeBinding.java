@@ -53,7 +53,7 @@ public class CombinedSourceTypeBinding extends SourceTypeBinding {
 
 
 	public InferredType getInferredType() {
-		throw new UnimplementedException("should not get here");
+		throw new UnimplementedException("should not get here"); //$NON-NLS-1$
 	}
 
 
@@ -104,12 +104,12 @@ public class CombinedSourceTypeBinding extends SourceTypeBinding {
 
 
 	public void setFields(FieldBinding[] fields) {
-		throw new UnimplementedException("should not get here");
+		throw new UnimplementedException("should not get here"); //$NON-NLS-1$
 	}
 
 
 	public void setMethods(MethodBinding[] methods) {
-	throw new UnimplementedException("should not get here");
+	throw new UnimplementedException("should not get here"); //$NON-NLS-1$
 	}
 
 

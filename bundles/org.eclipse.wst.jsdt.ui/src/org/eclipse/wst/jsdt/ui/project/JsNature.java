@@ -17,6 +17,7 @@ import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.internal.core.JavaProject;
+import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 public class JsNature implements IProjectNature {
@@ -25,8 +26,8 @@ public class JsNature implements IProjectNature {
 	// {"org.eclipse.wst.jsdt.web.core.embeded.jsNature",JavaCore.NATURE_ID};
 	// //$NON-NLS-1$
 	private static final String NATURE_IDS[] = { JavaCore.NATURE_ID };
-	private static final String SUPER_TYPE_NAME = "Global";
-	private static final String SUPER_TYPE_LIBRARY = "org.eclipse.wst.jsdt.launching.JRE_CONTAINER";
+	private static final String SUPER_TYPE_NAME = JavaUIMessages.JsNature_Global;
+	private static final String SUPER_TYPE_LIBRARY = "org.eclipse.wst.jsdt.launching.JRE_CONTAINER"; //$NON-NLS-1$
 	
 	public static void addJsNature(IProject project, IProgressMonitor monitor) throws CoreException {
 		if (monitor != null && monitor.isCanceled()) {
@@ -201,7 +202,7 @@ public class JsNature implements IProjectNature {
 				}
 			} catch (Exception e) {
 				if (DEBUG) {
-					System.out.println("Error checking sourcepath:" + e);
+					System.out.println("Error checking sourcepath:" + e); //$NON-NLS-1$
 				}
 			}
 		}
@@ -227,7 +228,7 @@ public class JsNature implements IProjectNature {
 			classPathEntries.add(defaultJRELibrary[0]);
 		} catch (Exception e) {
 			if (DEBUG) {
-				System.out.println("Error checking sourcepath:" + e);
+				System.out.println("Error checking sourcepath:" + e); //$NON-NLS-1$
 			}
 		}
 	}
@@ -238,7 +239,7 @@ public class JsNature implements IProjectNature {
 		
 		
 		//IPath webRoot = WebRootFinder.getWebContentFolder(fCurrProject);
-		IClasspathEntry source = JavaCore.newSourceEntry(fCurrProject.getFullPath().append("/"));
+		IClasspathEntry source = JavaCore.newSourceEntry(fCurrProject.getFullPath().append("/")); //$NON-NLS-1$
 	//	classPathEntries.add(source);
 		return new IClasspathEntry[] {source};
 	}

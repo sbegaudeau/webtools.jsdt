@@ -14,7 +14,7 @@ public class BooleanValue extends Value {
 		return value? 1 : 0;
 	}
 	public String stringValue() {
-		return value?"true":"false";
+		return value?"true":"false"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 }

@@ -718,7 +718,7 @@ public int getElementType() {
  * @see org.eclipse.wst.jsdt.internal.compiler.env.IDependent#getFileName()
  */
 public char[] getFileName(){
-	if (name.startsWith("http:"))
+	if (name.startsWith("http:")) //$NON-NLS-1$
 		return name.toCharArray();
 	return getPath().toString().toCharArray();
 }

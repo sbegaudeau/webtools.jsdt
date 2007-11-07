@@ -14,7 +14,7 @@ public class UpdateParserFiles {
 	}
 
 	public static void printUsage() {
-		System.out.println("Usage: UpdateParserFiles <path to javadcl.java> <path to javahdr.java>");
-		System.out.println("e.g. UpdateParserFiles c:/javadcl.java c:/javahdr.java");
+		System.out.println("Usage: UpdateParserFiles <path to javadcl.java> <path to javahdr.java>"); //$NON-NLS-1$
+		System.out.println("e.g. UpdateParserFiles c:/javadcl.java c:/javahdr.java"); //$NON-NLS-1$
 	}
 }

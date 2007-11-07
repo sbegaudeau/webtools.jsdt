@@ -8812,7 +8812,7 @@ protected boolean isErrorState(int act) {
 			stackTop--;
 
 		} else if (act > ERROR_ACTION) { /* shift-reduce */
-			if (DEBUG) System.out.println("<<shift-reduce consume Token: "+scanner.toStringAction(this.currentToken));
+			if (DEBUG) System.out.println("<<shift-reduce consume Token: "+scanner.toStringAction(this.currentToken)); //$NON-NLS-1$
 			return false;
 //			consumeToken(this.currentToken);
 //			if (this.currentElement != null) this.recoveryTokenCheck();
@@ -8837,7 +8837,7 @@ protected boolean isErrorState(int act) {
 
 		} else {
 		    if (act < ACCEPT_ACTION) { /* shift */
-				if (DEBUG) System.out.println("<<shift consume Token: "+scanner.toStringAction(this.currentToken));
+				if (DEBUG) System.out.println("<<shift consume Token: "+scanner.toStringAction(this.currentToken)); //$NON-NLS-1$
 				return false;
 //				consumeToken(this.currentToken);
 //				if (this.currentElement != null) this.recoveryTokenCheck();
@@ -8910,7 +8910,7 @@ protected void parse() {
 		this.stack[this.stateStackTop] = act;
 
 		if (DEBUG)
-			System.out.println("action="+act+ ((term_check[base_action[act]+this.currentToken] == this.currentToken)?"":" - take default") );
+			System.out.println("action="+act+ ((term_check[base_action[act]+this.currentToken] == this.currentToken)?"":" - take default") ); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		prevAct=act;
 
 		if (optionalSemicolonState[act])
@@ -8962,7 +8962,7 @@ protected void parse() {
 				act = START_STATE;
 				this.stateStackTop = -1;
 				this.currentToken = getFirstToken();
-				if (DEBUG) System.out.println("!! Resume on syntax error");
+				if (DEBUG) System.out.println("!! Resume on syntax error"); //$NON-NLS-1$
 				continue ProcessTerminals;
 			}
 			act = ERROR_ACTION;
@@ -8977,7 +8977,7 @@ protected void parse() {
 			}
 
 		} else if (act > ERROR_ACTION) { /* shift-reduce */
-			if (DEBUG) System.out.println("<<shift-reduce consume Token: "+scanner.toStringAction(this.currentToken));
+			if (DEBUG) System.out.println("<<shift-reduce consume Token: "+scanner.toStringAction(this.currentToken)); //$NON-NLS-1$
 			consumeToken(this.currentToken);
 			if (this.currentElement != null) this.recoveryTokenCheck();
 			try {
@@ -8985,7 +8985,7 @@ protected void parse() {
 				prevToken = currentToken;
 				insertedSemicolon = false;
 				this.currentToken = this.scanner.getNextToken();
-				if (DEBUG) System.out.println(">>shift-reduce Next Token: "+scanner.dumpCurrent());
+				if (DEBUG) System.out.println(">>shift-reduce Next Token: "+scanner.dumpCurrent()); //$NON-NLS-1$
 			} catch(InvalidInputException e){
 				if (!this.hasReportedError){
 					this.problemReporter().scannerError(this, e.getMessage());
@@ -9005,7 +9005,7 @@ protected void parse() {
 
 		} else {
 		    if (act < ACCEPT_ACTION) { /* shift */
-				if (DEBUG) System.out.println("<<shift consume Token: "+scanner.toStringAction(this.currentToken));
+				if (DEBUG) System.out.println("<<shift consume Token: "+scanner.toStringAction(this.currentToken)); //$NON-NLS-1$
 				consumeToken(this.currentToken);
 				if (this.currentElement != null) this.recoveryTokenCheck();
 				try{
@@ -9013,7 +9013,7 @@ protected void parse() {
 					prevToken = currentToken;
 					insertedSemicolon = false;
 					this.currentToken = this.scanner.getNextToken();
-					if (DEBUG) System.out.println(">>shift next Token: "+scanner.dumpCurrent());
+					if (DEBUG) System.out.println(">>shift next Token: "+scanner.dumpCurrent()); //$NON-NLS-1$
 				} catch(InvalidInputException e){
 					if (!this.hasReportedError){
 						this.problemReporter().scannerError(this, e.getMessage());
@@ -9270,7 +9270,7 @@ public CompilationUnitDeclaration parse(
 		}
 		/* run automaton */
 if (false)
-	System.out.println("parsing "+new String(sourceUnit.getFileName()));
+	System.out.println("parsing "+new String(sourceUnit.getFileName())); //$NON-NLS-1$
 		parse();
 	} finally {
 		unit = this.compilationUnit;

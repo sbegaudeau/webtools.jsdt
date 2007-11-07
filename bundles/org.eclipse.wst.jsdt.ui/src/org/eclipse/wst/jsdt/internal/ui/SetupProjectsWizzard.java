@@ -23,7 +23,7 @@ public class SetupProjectsWizzard implements IObjectActionDelegate, IActionDeleg
 	Object[] fTarget;
 
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		throw new UnimplementedException("setActivePart(IAction action, IWorkbenchPart targetPart)");
+		throw new UnimplementedException("setActivePart(IAction action, IWorkbenchPart targetPart)"); //$NON-NLS-1$
 	}
 
 	public void run(IAction action) {

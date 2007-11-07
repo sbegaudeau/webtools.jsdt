@@ -32,7 +32,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Messages;
  * @see org.eclipse.wst.jsdt.core.IPackageFragment
  */
 public class LibraryPackageFragment extends PackageFragment implements SuffixConstants, IVirtualParent {
-final static String[]DEFAULT_PACKAGE={""};
+final static String[]DEFAULT_PACKAGE={""}; //$NON-NLS-1$
 /**
  * Constructs a package fragment that is contained within a jar or a zip.
  */

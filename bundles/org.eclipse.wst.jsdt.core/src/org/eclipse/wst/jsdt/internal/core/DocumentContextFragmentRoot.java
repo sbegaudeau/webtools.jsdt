@@ -36,7 +36,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 	 */
 	public static final boolean HACK_DOJO= true;
 
-	private static final ClasspathAttribute HIDE = new ClasspathAttribute("hide","true");
+	private static final ClasspathAttribute HIDE = new ClasspathAttribute("hide","true"); //$NON-NLS-1$ //$NON-NLS-2$
 	private String[] includedFiles;
 	//private Long[] timeStamps;
 	private IFile fRelativeFile;
@@ -72,10 +72,10 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 				IJavaProject proj = getJavaProject();
 				try {
 					IClasspathEntry[] entries = proj.getResolvedClasspath(true);
-					System.out.println("DocumentContextFragmentRoot ====>" +"Project Classpath : \n");
+					System.out.println("DocumentContextFragmentRoot ====>" +"Project Classpath : \n"); //$NON-NLS-1$ //$NON-NLS-2$
 
 					for(int i = 0;i<entries.length;i++) {
-						System.out.println("\t" + entries[i].getPath());
+						System.out.println("\t" + entries[i].getPath()); //$NON-NLS-1$
 
 					}
 				} catch (JavaModelException ex) {
@@ -85,15 +85,15 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 			}
 			for (int i = 0; workingCopies!=null && i < workingCopies.length; i++) {
 				if (workingCopies[i].getPath().toString().equals(path)) {
-					if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" +"REJECTING binding..\n\t" + new String(simpleTypeName) + " in " + path + "\n\tfor file " + fRelativeFile.toString());
-					if(DEBUG) System.out.println("\tType is in WorkingCopies ");
+					if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" +"REJECTING binding..\n\t" + new String(simpleTypeName) + " in " + path + "\n\tfor file " + fRelativeFile.toString()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+					if(DEBUG) System.out.println("\tType is in WorkingCopies "); //$NON-NLS-1$
 					return false;
 				}
 			}
 
 			for(int i = 0;i<includedFiles.length;i++) {
 				if(Util.isSameResourceString(path, includedFiles[i])) {
-					if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Accepting binding.. " + new String(simpleTypeName) + " in " + path + "\n\tfor file " + fRelativeFile.toString());
+					if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Accepting binding.. " + new String(simpleTypeName) + " in " + path + "\n\tfor file " + fRelativeFile.toString()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 					this.foundPaths.add(path);
 					return true;
 				}
@@ -103,16 +103,16 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 
 			for(int i = 0;i<systemFiles.length;i++) {
 				if(Util.isSameResourceString(path, systemFiles[i]) || (new Path(systemFiles[i])).isPrefixOf(new Path(path))) {
-					if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Accepting binding.. " + new String(simpleTypeName) + " in " + path + " \n\tfor file " + fRelativeFile.toString());
+					if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Accepting binding.. " + new String(simpleTypeName) + " in " + path + " \n\tfor file " + fRelativeFile.toString()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 					this.foundPaths.add(path);
 					return true;
 				}
 			}
-			if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" +"REJECTING binding..\n\t" + new String(simpleTypeName) + " in " + path + " \n\tfor file " + fRelativeFile.toString());
-			if(DEBUG) System.out.println("\t(relative) page includes = : " );
+			if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" +"REJECTING binding..\n\t" + new String(simpleTypeName) + " in " + path + " \n\tfor file " + fRelativeFile.toString()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+			if(DEBUG) System.out.println("\t(relative) page includes = : " ); //$NON-NLS-1$
 			if(DEBUG) {
 				for(int i = 0;includedFiles!=null && i<includedFiles.length;i++) {
-					System.out.println("\t\t" + includedFiles[i]);
+					System.out.println("\t\t" + includedFiles[i]); //$NON-NLS-1$
 				}
 			}
 			//this.foundPath=null;
@@ -189,14 +189,14 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 		this.webContext=webContext;
 		this.rawClassPathEntry = rawClassPath;
 		//dirty = true;
-		if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Creating instance for total of:>>" + ++instances + "<<.  \n\tRelative file:" + fRelativeFile.toString());
+		if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Creating instance for total of:>>" + ++instances + "<<.  \n\tRelative file:" + fRelativeFile.toString()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 
 	}
 
 	public void finalize() {
 
-		if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "finalize() for a  total of:>>" + --instances + "<<.  \n\tRelative file:" + fRelativeFile!=null?null:fRelativeFile.toString());
+		if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "finalize() for a  total of:>>" + --instances + "<<.  \n\tRelative file:" + fRelativeFile!=null?null:fRelativeFile.toString()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 
@@ -226,7 +226,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 	public DocumentContextFragmentRoot(IJavaProject project,
 			   						   IFile resourceRelativeFile) {
 
-			this(project,resourceRelativeFile, new Path(""), new Path(""));
+			this(project,resourceRelativeFile, new Path(""), new Path("")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 
@@ -250,10 +250,10 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 			if(((String)newImports.get(i)).compareTo(includedFiles[i])!=0) equals=false;
 		}
 
-		if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Imports " + (equals?"did NOT change": "CHANGED:") + "\n");
+		if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Imports " + (equals?"did NOT change": "CHANGED:") + "\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 		if(DEBUG) {
 			for(int i = 0;includedFiles!=null && i<includedFiles.length;i++) {
-				System.out.println("\t\t" + includedFiles[i]);
+				System.out.println("\t\t" + includedFiles[i]); //$NON-NLS-1$
 			}
 		}
 		if(equals) return;
@@ -333,10 +333,10 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 //		}
 //		
 //		if(!dirty) return;
-		if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Imports " + (equals?"did NOT change": "CHANGED:") + "\n");
+		if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Imports " + (equals?"did NOT change": "CHANGED:") + "\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 		if(DEBUG) {
 			for(int i = 0;includedFiles!=null && i<includedFiles.length;i++) {
-				System.out.println("\t\t" + includedFiles[i]);
+				System.out.println("\t\t" + includedFiles[i]); //$NON-NLS-1$
 			}
 		}
 		if(equals) return;
@@ -350,8 +350,8 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 	}
 	private void dojoHack() {
 		if(!HACK_DOJO) return;
-		String UNCOMPRESSED_DOJO="dojo.js.uncompressed.js";
-		String DOJO_COMPRESSED = "dojo.js";
+		String UNCOMPRESSED_DOJO="dojo.js.uncompressed.js"; //$NON-NLS-1$
+		String DOJO_COMPRESSED = "dojo.js"; //$NON-NLS-1$
 
 		for(int i = 0;i<includedFiles.length;i++) {
 			String includeString = includedFiles[i];
@@ -417,7 +417,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 		 * if the file does not exist in context root, the path is the absolute path on the filesystem.
 		 */
 		if(childPathString==null) return null;
-		if(childPathString.length()==0) return new Path("");
+		if(childPathString.length()==0) return new Path(""); //$NON-NLS-1$
 		IPath resolvedPath = null;
 		IResource member;
 		switch(childPathString.charAt(0)) {
@@ -577,7 +577,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 			if( importName.charAt(0)=='\\' || importName.charAt(0)=='/'){
 				int seg  = resolved.getFullPath().matchingFirstSegments(webContext);
 
-				exists = exists && (webContext!=new Path("") && seg >0);
+				exists = exists && (webContext!=new Path("") && seg >0); //$NON-NLS-1$
 			}
 			if(exists) return new File(resolved.getLocation().toString());
 		}
@@ -590,11 +590,11 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 
 
 	public String toString() {
-		StringBuffer me = new StringBuffer("Relative to: " + fRelativeFile.getName() + "\n");
-		me.append("Absolute to: " + webContext + "\n");
-		me.append("Included File\t\t\tLast Moddified\n");
+		StringBuffer me = new StringBuffer("Relative to: " + fRelativeFile.getName() + "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+		me.append("Absolute to: " + webContext + "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+		me.append("Included File\t\t\tLast Moddified\n"); //$NON-NLS-1$
 		for(int i = 0;i<includedFiles.length;i++) {
-			me.append(includedFiles[i] /*+ "\t\t\t\t" + timeStamps[i].longValue()*/ + "\n");
+			me.append(includedFiles[i] /*+ "\t\t\t\t" + timeStamps[i].longValue()*/ + "\n"); //$NON-NLS-1$
 		}
 
 		return me.toString();
