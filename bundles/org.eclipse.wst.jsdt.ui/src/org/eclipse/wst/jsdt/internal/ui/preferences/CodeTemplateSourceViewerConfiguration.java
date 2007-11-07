@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.ui.preferences;
 
 import java.util.Iterator;
 
-import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
+import org.eclipse.wst.jsdt.internal.ui.text.html.HTMLTextPresenter;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.BadLocationException;

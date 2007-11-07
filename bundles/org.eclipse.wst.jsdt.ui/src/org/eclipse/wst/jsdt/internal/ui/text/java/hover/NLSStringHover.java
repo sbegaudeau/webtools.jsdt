@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.ui.text.java.hover;
 import java.util.Properties;
 
 import org.eclipse.core.resources.IStorage;
-import org.eclipse.jface.internal.text.html.HTMLPrinter;
+import org.eclipse.wst.jsdt.internal.ui.text.html.HTMLPrinter;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;

@@ -280,12 +280,12 @@ public class BuildPathsBlock {
 		return composite;
 	}
 	
-	private Shell getShell() {
-		if (fSWTWidget != null) {
-			return fSWTWidget.getShell();
-		}
-		return JavaPlugin.getActiveWorkbenchShell();
-	}
+//	private Shell getShell() {
+//		if (fSWTWidget != null) {
+//			return fSWTWidget.getShell();
+//		}
+//		return JavaPlugin.getActiveWorkbenchShell();
+//	}
 	
 	/**
 	 * Initializes the classpath for the given project. Multiple calls to init are allowed,

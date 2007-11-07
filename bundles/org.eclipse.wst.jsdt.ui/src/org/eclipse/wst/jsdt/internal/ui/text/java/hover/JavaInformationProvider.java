@@ -11,8 +11,8 @@
 package org.eclipse.wst.jsdt.internal.ui.text.java.hover;
 
 
-import org.eclipse.jface.internal.text.html.BrowserInformationControl;
-import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
+import org.eclipse.wst.jsdt.internal.ui.text.html.BrowserInformationControl;
+import org.eclipse.wst.jsdt.internal.ui.text.html.HTMLTextPresenter;
 import org.eclipse.jface.text.AbstractReusableInformationControlCreator;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;

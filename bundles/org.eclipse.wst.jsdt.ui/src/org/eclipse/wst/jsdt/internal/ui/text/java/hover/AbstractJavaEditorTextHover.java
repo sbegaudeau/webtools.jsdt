@@ -17,8 +17,8 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.internal.text.html.HTMLPrinter;
-import org.eclipse.jface.internal.text.html.HTMLTextPresenter;
+import org.eclipse.wst.jsdt.internal.ui.text.html.HTMLPrinter;
+import org.eclipse.wst.jsdt.internal.ui.text.html.HTMLTextPresenter;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;

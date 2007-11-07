@@ -23,7 +23,7 @@ import org.eclipse.help.HelpSystem;
 import org.eclipse.help.IContext;
 import org.eclipse.help.IContext2;
 import org.eclipse.help.IHelpResource;
-import org.eclipse.jface.internal.text.html.HTML2TextReader;
+import org.eclipse.wst.jsdt.internal.ui.text.html.HTML2TextReader;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
