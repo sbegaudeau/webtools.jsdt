@@ -13,10 +13,12 @@ package org.eclipse.wst.jsdt.launching;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,6 +29,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.wst.jsdt.core.IClasspathContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
+import org.eclipse.wst.jsdt.core.IJavaModel;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
@@ -1170,29 +1173,29 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 	 * @since 2.0
 	 */
 	public static IJavaProject getJavaProject(ILaunchConfiguration configuration) throws CoreException {
-//TODO: implement
-throw new org.eclipse.wst.jsdt.core.UnimplementedException();
-		//		String projectName = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String)null);
-//		if ((projectName == null) || (projectName.trim().length() < 1)) {
-//			return null;
-//		}			
-//		IJavaProject javaProject = getJavaModel().getJavaProject(projectName);
-//		if (javaProject != null && javaProject.getProject().exists() && !javaProject.getProject().isOpen()) {
-//			abort(MessageFormat.format(LaunchingMessages.JavaRuntime_28, new String[] {configuration.getName(), projectName}), IJavaLaunchConfigurationConstants.ERR_PROJECT_CLOSED, null); 
-//		}
-//		if ((javaProject == null) || !javaProject.exists()) {
-//			abort(MessageFormat.format(LaunchingMessages.JavaRuntime_Launch_configuration__0__references_non_existing_project__1___1, new String[] {configuration.getName(), projectName}), IJavaLaunchConfigurationConstants.ERR_NOT_A_JAVA_PROJECT, null); 
-//		}
-//		return javaProject;
+////TODO: implement
+//throw new org.eclipse.wst.jsdt.core.UnimplementedException();
+				String projectName = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String)null);
+		if ((projectName == null) || (projectName.trim().length() < 1)) {
+			return null;
+		}			
+		IJavaProject javaProject = getJavaModel().getJavaProject(projectName);
+		if (javaProject != null && javaProject.getProject().exists() && !javaProject.getProject().isOpen()) {
+			abort(MessageFormat.format(LaunchingMessages.JavaRuntime_28, new String[] {configuration.getName(), projectName}), IJavaLaunchConfigurationConstants.ERR_PROJECT_CLOSED, null); 
+		}
+		if ((javaProject == null) || !javaProject.exists()) {
+			abort(MessageFormat.format(LaunchingMessages.JavaRuntime_Launch_configuration__0__references_non_existing_project__1___1, new String[] {configuration.getName(), projectName}), IJavaLaunchConfigurationConstants.ERR_NOT_A_JAVA_PROJECT, null); 
+		}
+		return javaProject;
 	}
 				
-//	/**
-//	 * Convenience method to get the java model.
-//	 */
-//	private static IJavaModel getJavaModel() {
-//		return JavaCore.create(ResourcesPlugin.getWorkspace().getRoot());
-//	}
-//	
+	/**
+	 * Convenience method to get the java model.
+	 */
+	private static IJavaModel getJavaModel() {
+		return JavaCore.create(ResourcesPlugin.getWorkspace().getRoot());
+	}
+	
 	/**
 	 * Returns the VM install for the given launch configuration.
 	 * The VM install is determined in the following prioritized way:
@@ -2024,8 +2027,9 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //	}	
 //
 	private static void initializeResolvers() {
+		fgContainerResolvers=new HashMap();
 //TODO: implement
-throw new org.eclipse.wst.jsdt.core.UnimplementedException();
+//throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 		//		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(LaunchingPlugin.ID_PLUGIN, EXTENSION_POINT_RUNTIME_CLASSPATH_ENTRY_RESOLVERS);
 //		IConfigurationElement[] extensions = point.getConfigurationElements();
 //		fgVariableResolvers = new HashMap(extensions.length);

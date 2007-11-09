@@ -48,6 +48,8 @@ public class LaunchingMessages extends NLS {
 
 	public static String JREContainerInitializer_Default_System_Library_1;
 
+	public static String JavaRuntime_28;
+	public static String JavaRuntime_Launch_configuration__0__references_non_existing_project__1___1;
 
 
 	static {
