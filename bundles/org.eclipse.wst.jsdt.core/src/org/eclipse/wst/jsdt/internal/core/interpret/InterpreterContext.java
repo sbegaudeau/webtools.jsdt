@@ -1,11 +1,14 @@
 package org.eclipse.wst.jsdt.internal.core.interpret;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.core.interpret.builtin.BuiltInHelper;
 
 public class InterpreterContext implements ValueReference{
 
-	HashtableOfObject values=new HashtableOfObject();
+	protected HashtableOfObject values=new HashtableOfObject();
 	InterpreterContext parent;
 	InterpreterContext lastReference;
 	public Value returnValue;
@@ -62,5 +65,21 @@ public class InterpreterContext implements ValueReference{
 			checkContext=checkContext.parent;
 		return checkContext;
 		
+	}
+	
+	public List getContextStack()
+	{
+		ArrayList list=new ArrayList();
+		InterpreterContext currentContext=this;
+		while (currentContext!=null)
+		{
+			list.add(0, currentContext);
+			currentContext=currentContext.parent;
+		}
+		return list;
+	}
+
+	public ValueReference getThisObject() {
+		return thisObject;
 	}
 }

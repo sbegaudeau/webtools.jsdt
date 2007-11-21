@@ -487,4 +487,5 @@ public interface IJavaLaunchConfigurationConstants {
 	 * @since 2.1
 	 */	
 	public static final String DEFAULT_APPLETVIEWER_CLASS = "sun.applet.AppletViewer";	 //$NON-NLS-1$
+	public static final String MAIN_ENTRY_METHOD_NAME="$$main$$";
 }

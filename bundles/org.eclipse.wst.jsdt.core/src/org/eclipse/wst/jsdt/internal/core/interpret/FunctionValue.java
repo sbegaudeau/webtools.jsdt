@@ -35,8 +35,8 @@ public class FunctionValue extends ObjectValue {
 
 	public Value execute(InterpreterEngine interpreter,ObjectValue receiver, Value[] arguments)
 	{
-		InterpreterContext context = interpreter.context=new InterpreterContext(interpreter.context,receiver);
 		MethodDeclaration method=this.method;
+		InterpreterContext context = interpreter.context=interpreter.newContext(interpreter.context,receiver, method);
 		if (method.arguments!=null)
 		  for (int i=0;i<method.arguments.length;i++)
 		{

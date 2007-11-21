@@ -42,7 +42,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 public class InterpreterEngine extends ASTVisitor implements Contants{
 
 	
-	InterpreterContext context;
+	protected InterpreterContext context;
 	InterpreterResult result = new InterpreterResult();
 
 	static final int STOP_RETURN =1;
@@ -697,7 +697,10 @@ public class InterpreterEngine extends ASTVisitor implements Contants{
 
 	
 	
-	
+	protected InterpreterContext newContext(InterpreterContext parent,ObjectValue thisObject, ProgramElement method)
+	{
+		return new InterpreterContext( parent, thisObject);
+	}
 
 
 	
